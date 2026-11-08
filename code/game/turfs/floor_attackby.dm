@@ -1205,6 +1205,9 @@
 			if (user.z <= 1)
 				to_chat(user, "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>")
 				return
+			if (turf_is_above_ground(get_turf(user)))
+				to_chat(user, SPAN_NOTICE("You can't dig a tunnel here, there is no earth below."))
+				return
 			var/digging_tunnel_time = 200
 			digging_tunnel_time /= user.getStatCoeff("strength")
 			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))

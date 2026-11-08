@@ -375,6 +375,7 @@ This function restores all organs.
 		for (var/datum/reagent/opium/O in ingested.reagent_list)
 			traumatic_shock -= O.volume/2
 			shock_stage -= O.volume/4
+	traumatic_shock *= leader_order_hold_mult()
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 

@@ -61,6 +61,9 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	spawn (0)
 		while(persistence_restart.startup_hold) sleep(10)
 		if(map_storage.round_restored) return
+		// Battle maps swap their variation slots before anyone spawns.
+		if (apply_map_variations())
+			announce_map_variations()
 		// A region other than the mainland starts its round without an admin,
 		// once world setup and any save load have finished (shard_group.dm).
 		var/region_autostart = text2path("/proc/region_round_autostart")

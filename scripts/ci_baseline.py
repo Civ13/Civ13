@@ -52,6 +52,14 @@ SUITES = {
                          'code/modules/1713/factory_chemistry.dm',
                          'code/modules/1713/factory_pipes.dm',
                          'tests/save_movement/source_adapter.py')},
+    # Explosion remains above the ground: production wiring and map level audit.
+    'explosion_remains': {'files': ('tests/explosion_remains/test_explosion_remains.py',),
+        'paths': ('tests/explosion_remains/',), 'shared_paths': (
+            'code/modules/multiz/explosion_remains.dm', 'code/game/turfs/floor.dm',
+            'code/game/turfs/floor_types.dm', 'code/game/turfs/walls.dm',
+            'code/game/turfs/floor_attackby.dm', 'code/modules/1713/tools.dm',
+            'code/modules/projectiles/__projectiles.dm',
+            'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     # Chicken navigation predicates and collision dispatch; fake engine only.
     'chicken_water': {'files': ('tests/chicken_water/test_chicken_water.py',),
         'paths': ('tests/chicken_water/',), 'shared_paths': (
@@ -201,12 +209,26 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Per-round battle map variation inserts: generator freshness, slot bounds,
+    # open-ground placement against the base maps and loader rules; no BYOND runtime.
+    'map_variations': {'files': ('tests/map_variations/test_map_variations.py',),
+        'paths': ('tests/map_variations/', 'maps/zones/variations/',
+                  'code/modules/map_variations/'), 'shared_paths': (
+            'maps/1943/smallingrad.dmm', 'maps/1903/hill_203.dmm',
+            'code/game/objects/map_metadata/stalingrad.dm',
+            'code/game/objects/map_metadata/hill203.dm',
+            'code/game/gameticker.dm', 'code/__defines/maps.dm', 'civ13.dme')},
     # Zombie city generator: base map regeneration, placed-type and contract
     # name projection, checker fixtures; no BYOND runtime.
     'zombie_city': {'files': ('tests/zombie_city/test_zombie_city.py',),
         'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
                   'code/modules/zombie_city/'), 'shared_paths': (
             'code/__defines/maps.dm', 'civ13.dme')},
+    # Live tactical map wiring, permission guards and the client script run in
+    # Node (skipped without it); native_probe.py is developer evidence only.
+    'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
+        'paths': ('tests/tactical_map/',), 'shared_paths': (
+            'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
         'paths': ('tests/research_bench/',), 'shared_paths': (
@@ -871,6 +893,10 @@ SUITES = {
     'save_policy': {'files': ('tests/save_policy/test_policy.py', 'tests/save_policy/test_runtime_var_cache.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm')},
+    # Offline source contracts for the fireman carry (grab on a downed human).
+    'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
+        'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
+        'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
@@ -878,6 +904,11 @@ SUITES = {
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
+    # In-game bug reports wiring and safety; tests/bug_reports/native_format.py is the manual native check.
+    'bug_reports': {'files': ('tests/bug_reports/test_bug_reports.py',),
+        'paths': ('tests/bug_reports/', 'code/modules/bug_reports/'),
+        'shared_paths': ('interface/skin.dmf', 'code/datums/configuration.dm', 'code/datums/http.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/adminhelp.dm', 'civ13.dme')},
     # Fit Viewport skin wiring; tests/fit_viewport/native_width.py is the manual native width check.
     'fit_viewport': {'files': ('tests/fit_viewport/test_fit_viewport.py',),
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),

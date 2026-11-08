@@ -103,6 +103,8 @@ avoid code duplication. This includes items that may sometimes act as a standard
 			return
 	user.lastattacked = M
 	M.lastattacker = user
+	if (round_facts)
+		round_facts.record_hit(M, user, name)
 	if (!no_attack_log)
 		user.append_attack_log("\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey])([M.stat]) with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])</font>")
 		M.append_attack_log("\[[time_stamp()]\]<font color='orange'> Attacked by [user.name] ([user.ckey]) with [name] (INTENT: [uppertext(user.a_intent)]) (DAMTYE: [uppertext(damtype)])</font>")

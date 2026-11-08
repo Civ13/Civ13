@@ -496,7 +496,7 @@
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
 	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
 		cold_wetness = 1
-	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon"))
+	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
 		cold_wetness = min(1, cold_wetness + 0.01)
 	else
 		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
@@ -505,6 +505,7 @@
 	else if (cold_wetness <= 0 && previous_wetness > 0)
 		to_chat(src, "<span class='notice'>You have dried off completely.</span>")
 
+	loc_temp = canopy_shelter_temperature(exposure_turf, loc_temp)
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)

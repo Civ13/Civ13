@@ -299,6 +299,8 @@
 	if (is_radioman)
 		H.make_artillery_radioman()
 		H.add_note("Radio Operator", "As a radio operator, you can order air strikes on your commander's provided coordinates.</span>")
+	if (H.give_codebook())
+		H.add_note("Codebook", "You carry this round's radio codebook. Challenge unknown voices with a call; friends answer with the matching response.")
 
 	// hack to make scope icons immediately appear - Kachnov
 	spawn (20)

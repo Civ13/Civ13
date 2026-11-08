@@ -1,5 +1,6 @@
 """Production admission contracts and eye-relative arithmetic, not native pixels."""
 from fractions import Fraction as Q
+import re
 import unittest
 import importlib.util
 from pathlib import Path
@@ -320,22 +321,29 @@ class InventoryHoverName(unittest.TestCase):
                 invisibility=0,x=1,y=1,z=1,deleted=False,gcDestroyed=False,gc_destroyed=False)
             defaults.update(values);return Node(**defaults)
         body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={},s_active=None)
-        C=Node(mob=body,screen=[],view=7,eye=body)
+        C=Node(mob=body,screen=[],view=7,eye=body,mouse_screen_x=1,mouse_screen_y=1,mouse_screen_pixel_x=0,mouse_screen_pixel_y=0)
         body.client=C;body.get_equipped_item=lambda slot:body.slots.get(slot)
         W=atom('/obj/screen/hover_name',parentmob=body,hover_target=None,hover_origin=None,
-               hover_inventory=False,hover_screen_loc=None,hover_storage=None,maptext='')
+               hover_inventory=False,hover_screen_loc=None,hover_storage=None,maptext='',
+               hover_text=None,hover_text_width=0,hover_text_height=0,maptext_width=384,maptext_height=32,screen_loc='WEST:2,NORTH:-2')
+        W.update_backdrop=lambda:None  # underlay rendering is an engine boundary; the native fixture checks it
         body.HUDneed['hover name']=W;C.screen.append(W)
-        world_visible=set();readable=set();read_calls=[];parents=[]
+        world_visible=set();on_screen=set();readable=set();read_calls=[];parents=[]
         def allowed(user,target,operation):
             read_calls.append((user,target,operation));return target in readable or storage_visible(user,target)
         env=dict(istype=lambda x,t:bool(x and x.type.startswith(t)),ismovable=lambda x:bool(x and not x.type.startswith('/turf/')),
             typed_iter=lambda xs,t:[x for x in xs if x and x.type.startswith(t)],
             isturf=lambda x:bool(x and x.type.startswith('/turf/')),ishuman=lambda x:bool(x and x.type.startswith('/mob/living/human')),
             los_read_allowed=allowed,view=lambda v,e:world_visible,WEAKREF=Handle,
+            range=lambda v,e:world_visible|on_screen,los_tree_canopy_readable=lambda x:bool(x and x.type.startswith('/obj/structure/wild/tree') and getattr(x,'opacity',0) and x.loc and x.loc.type.startswith('/turf/')),
             resolve=lambda h:h.resolve() if h else None,length=lambda x:len(x) if x else 0,
             html_encode=html.escape,copytext=lambda text,start,end:text[start-1:end-1],
             parent_call=lambda:parents.append('parent'),parent_runtime=lambda key:key=='persistence_export_frame',
-            list=lambda *xs:list(xs))
+            list=lambda *xs:list(xs),
+            # Panel placement boundaries: DM lists are 1-based, round() floors, and
+            # the styled span is client rendering (the native fixture checks its markup).
+            getviewsize=lambda v:{1:2*v+1,2:2*v+1},round=lambda a:__import__('math').floor(a),
+            hover_name_span=lambda text,border:"<span style='"+('border' if border else 'text')+"'>&nbsp;"+text+"&nbsp;</span>")
         helper_source=core_source or CORE.read_text()
         helper_source=re.sub(r'(, )(/obj/[\w/]+)(?=\))', lambda m:m[1]+repr(m[2]), helper_source)
         storage_visible=A.project(helper_source,'/proc/los_storage_hover_visible','user, target',env)
@@ -348,6 +356,7 @@ class InventoryHoverName(unittest.TestCase):
             text=text.replace('|| ..()', '|| parent_runtime(key)').replace('..()', 'parent_call()')
             text=text.replace("[html_encode(copytext(label, 1, 129))]",'" + html_encode(copytext(label, 1, 129)) + "')
             text=text.replace('object ? object.x : 0','(object.x if object else 0)').replace('object ? object.y : 0','(object.y if object else 0)')
+            text=text.replace('"[tx + 1]:[x - tx * 32],[ty + 1]:[y - ty * 32]"','f"{tx + 1}:{x - tx * 32},{ty + 1}:{y - ty * 32}"')
             lines=text.split('\n');head,tail=lines[0],'\n'.join(lines[1:])
             pieces=re.split(r'("(?:[^"\\]|\\.)*")',tail)
             for i in range(0,len(pieces),2):
@@ -357,11 +366,16 @@ class InventoryHoverName(unittest.TestCase):
             text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
             return A.project(text,declaration,'self'+(', '+args if args else ''),env)
         fields=['hover_target','hover_origin','hover_storage','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
-                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
+                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process',
+                'hover_text','hover_text_width','hover_text_height','maptext_width','maptext_height','screen_loc',
+                'show_label','follow_pointer','update_backdrop']
         for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
-                          ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key')]:
+                          ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key'),
+                          ('show_label','text'),('follow_pointer','')]:
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
+            if name in ('show_label','follow_pointer') and sig+'(' not in source:
+                continue  # the frozen top-left preimage has no pointer-following panel
             f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
         f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
         for name,args in [('hover_name_widget',''),('update_hover_name','target'),('clear_hover_name','')]:
@@ -383,7 +397,65 @@ class InventoryHoverName(unittest.TestCase):
             if item:
                 item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
             body.slots[slot_id]=item;return S
-        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,readable=readable,reads=read_calls,source=source,env=env)
+        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,on_screen=on_screen,readable=readable,reads=read_calls,source=source,env=env)
+
+    def test_hover_reads_tree_canopy_hidden_from_view(self):
+        m=self.model();T=m.atom('/turf/grass',name='grass')
+        tree=m.atom('/obj/structure/wild/tree',name='oak tree',opacity=1,loc=T)
+        m.readable.add(tree);m.on_screen.add(tree)
+        m.C.MouseEntered(tree)
+        self.assertIn('oak tree',m.W.maptext)
+        m.on_screen.discard(tree);m.W.process()
+        self.assertEqual(m.W.maptext,'')
+        rock=m.atom('/obj/structure/rock',name='rock',opacity=1,loc=T)
+        m.readable.add(rock);m.on_screen.add(rock)
+        m.C.MouseEntered(rock)
+        self.assertEqual(m.W.maptext,'')
+
+    def test_panel_follows_pointer_and_only_moves_on_an_unchanged_target(self):
+        # view 7 is 15 tiles: a 480px map. Tooltip offset is (+10, -20); the
+        # text sits at the top of the 32px maptext box.
+        m=self.model();I=m.atom(name='oak tree',loc=m.atom('/turf/floor'))
+        m.visible.add(I);m.readable.add(I)
+        def pointer(tx,px,ty,py):
+            m.C.mouse_screen_x,m.C.mouse_screen_pixel_x,m.C.mouse_screen_y,m.C.mouse_screen_pixel_y=tx,px,ty,py
+        pointer(5,6,8,10);m.C.MouseEntered(I)
+        self.assertIn('&nbsp;oak tree&nbsp;',m.W.maptext)
+        self.assertEqual(m.W.hover_text,'oak tree')
+        self.assertEqual((m.W.hover_text_width,m.W.hover_text_height),(68,16))
+        # mouse at (134, 234): panel left 144 -> tile 5 px 16; box bottom 234-20-32=182 -> tile 6 px 22
+        self.assertEqual(m.W.screen_loc,'5:16,6:22')
+        maptext=m.W.maptext;reads=len(m.reads)
+        pointer(5,7,8,10);m.C.MouseMove(I)
+        self.assertEqual(m.W.screen_loc,'5:17,6:22')
+        self.assertIs(m.W.maptext,maptext)  # same target: no label rebuild
+        self.assertEqual(len(m.reads),reads+1)  # but visibility is still re-read
+        self.assertIs(m.W.hover_target.resolve(),I)
+        pointer(15,20,8,10);m.C.MouseMove(I)  # right edge: 468+10 clamps to 480-68
+        self.assertEqual(m.W.screen_loc,'13:28,6:22')
+        pointer(5,6,1,0);m.C.MouseMove(I)  # bottom: flips above the pointer, box bottom 0+8+16-32 clamps to 0
+        self.assertEqual(m.W.screen_loc,'5:16,1:0')
+        pointer(5,6,2,12);m.C.MouseMove(I)  # 44-20=24 is below the box height: flip, bottom 44+24-32=36
+        self.assertEqual(m.W.screen_loc,'5:16,2:4')
+        m.C.view=5;pointer(11,20,8,10);m.C.MouseMove(I)  # a smaller live view clamps earlier: 352-68
+        self.assertEqual(m.W.screen_loc,'9:28,6:22')
+        # A long encoded name wraps: the estimate is capped at the maptext box.
+        long_item=m.atom(name='x'*120,loc=m.atom('/turf/floor'));m.visible.add(long_item);m.readable.add(long_item)
+        m.C.MouseEntered(long_item)
+        self.assertEqual((m.W.hover_text_width,m.W.hover_text_height),(384,32))
+        self.assertEqual(m.W.hover_text,'x'*120)
+        m.C.MouseExited(long_item)
+        self.assertEqual((m.W.maptext,m.W.hover_text,m.W.hover_text_width,m.W.hover_text_height),('',None,0,0))
+
+    def test_same_target_refresh_still_clears_a_target_that_became_unreadable(self):
+        m=self.model();I=m.atom(name='oak tree',loc=m.atom('/turf/floor'))
+        m.visible.add(I);m.readable.add(I);m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+        m.readable.remove(I);m.C.MouseMove(I)
+        self.assertEqual(m.W.maptext,'');self.assertIsNone(m.W.hover_target)
+        m.readable.add(I);m.C.MouseMove(I);self.assertTrue(m.W.maptext)
+        slot_item=m.atom(name='pouch');S=m.slot(slot_item);m.C.MouseEntered(S);self.assertTrue(m.W.hover_inventory)
+        slot_item.screen_loc='9,9';S.screen_loc='9,9';m.C.MouseMove(S)  # moved slot: full re-entry, not a stale refresh
+        self.assertTrue(m.W.maptext);self.assertEqual(m.W.hover_screen_loc,'9,9')
 
     def storage_view(self, m, name='visible <storage item>'):
         S=m.atom('/obj/item/weapon/storage',is_seeing=[m.H],contents=[])
@@ -609,7 +681,9 @@ class InventoryHoverName(unittest.TestCase):
                 m.C.MouseEntered(origin)
             target=m.W.hover_target.resolve() if m.W.hover_target else None
             pointer=m.W.hover_origin.resolve() if m.W.hover_origin else None
-            return (m.W.maptext,m.W.hover_inventory,m.W.hover_screen_loc,
+            # The panel markup and padding changed; the disclosed text must not.
+            shown=re.sub(r'<[^>]*>|&nbsp;','',m.W.maptext)
+            return (shown,m.W.hover_inventory,m.W.hover_screen_loc,
                     target is I,pointer is origin and pointer is not None,names,masked)
         for case in ['world','owned-item','slot-art','hidden-slot','foreign-slot','replaced-item',
                      'los-denied','outside-native-view','alpha-zero','no-mouse','invisible','deleted',
@@ -736,7 +810,7 @@ class InventoryHoverName(unittest.TestCase):
         human=m.atom('/mob/living/human',name='Secret identity',loc=m.atom('/turf/floor'),get_visible_name=lambda:'Unknown')
         m.visible.add(human);m.readable.add(human);m.C.MouseEntered(human)
         self.assertIn('Unknown',m.W.maptext);self.assertNotIn('Secret',m.W.maptext)
-        for key in ['hover_target','hover_origin','hover_inventory','hover_screen_loc','parentmob','maptext','persistence_export_frame']:
+        for key in ['hover_target','hover_origin','hover_inventory','hover_screen_loc','hover_text','hover_text_width','hover_text_height','parentmob','maptext','persistence_export_frame']:
             self.assertTrue(m.W.persistence_runtime_var(key),key)
         self.assertFalse(m.W.persistence_runtime_var('durable_example'))
         m.W.destroy();self.assertEqual(m.W.maptext,'');self.assertIsNone(m.W.parentmob)

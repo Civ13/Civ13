@@ -46,6 +46,8 @@
 
 // Where a ladder, tunnel or falling item goes from z. 0 means solid ground.
 /proc/multiz_level_below(z)
+	if (practice_room_z && z == practice_room_z)
+		return 0
 	// An orbit world's decks are linked planes (space/orbit_world.dm).
 	if (orbit_world())
 		return orbit_plane_link(z, "down")
@@ -59,6 +61,8 @@
 	return z > 1 ? z - 1 : 0
 
 /proc/multiz_level_above(z)
+	if (practice_room_z && (z == practice_room_z || z + 1 == practice_room_z))
+		return 0
 	if (orbit_world())
 		return orbit_plane_link(z, "up")
 	var/dug = dug_underground_z()
@@ -73,12 +77,13 @@
 // level can be world.maxz while lying under the surface, and an added building
 // level is open air over the surface (Gaia keeps one from round start).
 /proc/multiz_top_z()
+	var/top = practice_room_z && practice_room_z == world.maxz ? world.maxz - 1 : world.maxz
 	var/dug = dug_underground_z()
-	if (dug && dug == world.maxz)
-		return world.maxz - 1
-	if (map && map.building_levels && world.maxz > building_base_maxz())
+	if (dug && dug == top)
+		return top - 1
+	if (map && map.building_levels && top > building_base_maxz())
 		return building_base_maxz()
-	return world.maxz
+	return top
 
 /proc/dug_underground_area()
 	for (var/area/caribbean/void/caves/A in world)

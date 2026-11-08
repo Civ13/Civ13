@@ -31,6 +31,10 @@ static class LocalHostingTests {
 
         Require(LocalHosting.Load(launcher) is null, "hosting enabled without host.json");
         Require(LocalHosting.MobileAddress("https://192.168.1.8:8443") == "https://192.168.1.8:8443", "mobile LAN address changed");
+        Require(LocalHosting.BattlePhase("rotating") == "building the next map" && LocalHosting.BattlePhase("pregame") == "forming"
+            && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
+        using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
+            Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
         foreach (var invalid in new[] { "http://192.168.1.8:8443", "https://8.8.8.8:8443", "https://localhost:8443",
                 "https://192.168.1.8:8443/path", "https://user@192.168.1.8:8443", "https://192.168.1.8:8443/?token=secret" })
             Reject(() => LocalHosting.MobileAddress(invalid), "unsafe mobile address");
@@ -208,6 +212,20 @@ static class LocalHostingTests {
         HostSettings.Save(places[0], HostSettings.LocalConfig, "WEBHOOK_ADDRESS http://127.0.0.1\n");
         Require(HostSettings.Read(places[0], HostSettings.LocalConfig) == "WEBHOOK_ADDRESS http://127.0.0.1\n"
             && File.ReadAllText(Path.Combine(sharedOverlay, "config", "config.local.txt.previous")).Contains("DAYNIGHT_CLIENT_TINT"), "save keeps the previous version");
+        Require(HostSettings.WithSetting("# shared\nWEBHOOK_KEY k\n#BUG_REPORT_GITHUB_TOKEN old\nbug_report_github_token older\n", HostSettings.BugReportToken, "github_pat_new")
+            == "# shared\nWEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN github_pat_new\n", "bug report token replaces the old lines in place");
+        Require(HostSettings.WithSetting("WEBHOOK_KEY k", HostSettings.BugReportToken, " ghp_x ") == "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN ghp_x\n"
+            && HostSettings.WithSetting("", HostSettings.BugReportToken, "ghp_x") == "BUG_REPORT_GITHUB_TOKEN ghp_x\n", "bug report token is appended");
+        Require(HostSettings.TokenValid("github_pat_11AAAAAAAAAAAAAAAAAAAA") && !HostSettings.TokenValid("short")
+            && !HostSettings.TokenValid("github_pat_with space inside it"), "bug report token format");
+        Require(HostSettings.Problem(HostSettings.LocalConfig, HostSettings.WithSetting("", HostSettings.BugReportToken, "ghp_x")) == null, "the token line is a valid setting");
+        Reject(() => HostSettings.WithSetting("", "BAD KEY", "x"), "a setting name with a space");
+        var withToken = "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n";
+        Require(HostSettings.HideSecrets(withToken) == "WEBHOOK_KEY k\nBUG_REPORT_GITHUB_TOKEN (hidden)\n"
+            && !HostSettings.HideSecrets(withToken).Contains("github_pat_secret"), "the editor never shows the token");
+        Require(HostSettings.RestoreSecrets("WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN (hidden)\n", withToken)
+            == "WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n", "saving puts the hidden token back");
+        Require(HostSettings.RestoreSecrets("WEBHOOK_KEY k\n", withToken) == "WEBHOOK_KEY k\n", "deleting the hidden line removes the token");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
         Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");

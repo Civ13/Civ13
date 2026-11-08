@@ -92,6 +92,19 @@ def lint_file(path):
     return errors, warnings
 
 
+# Map variation inserts are overlays: cells without a turf keep the ground they
+# land on and they never carry areas. tests/map_variations checks them instead.
+OVERLAY_DIRS = ('maps/zones/variations/',)
+
+
+def is_overlay(path):
+    try:
+        rel = path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return False
+    return rel.startswith(OVERLAY_DIRS)
+
+
 def changed_maps(base):
     out = subprocess.check_output(
         ['git', 'diff', '--name-only', '--diff-filter=ACMR', base, '--', '*.dmm'],
@@ -112,6 +125,7 @@ def main(argv=None):
         files = [pathlib.Path(f) for f in args.files]
     else:
         files = sorted((ROOT / 'maps').rglob('*.dmm'))
+    files = [path for path in files if not is_overlay(path)]
     error_count = warning_count = 0
     if len(files) > 8:
         with concurrent.futures.ProcessPoolExecutor() as pool:

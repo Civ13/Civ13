@@ -172,6 +172,35 @@
 		lib_call("savestream_close", list(id))
 	id = null
 	mode = null
+	forget_value_tokens()
+
+// Resource files and appearances cannot change, and a level repeats the same
+// few hundred of them thousands of times; exporting one costs about 7 ms
+// (icon bytes included). Each is encoded once per stream: a text token is
+// reused, and a value file is copied from a kept template, because the helper
+// deletes every value file it reads.
+/datum/save_stream/var/list/value_tokens
+/datum/save_stream/var/list/value_templates
+/datum/save_stream/var/value_token_bytes = 0
+/datum/save_stream/var/value_token_limit = 16777216
+
+/datum/save_stream/proc/forget_value_tokens()
+	for(var/value in value_templates)
+		fdel(value_templates[value])
+	value_tokens = null
+	value_templates = null
+	value_token_bytes = 0
+
+/datum/save_stream/proc/remember_value_token(value, token, file_name)
+	if(value_token_bytes + length(token) > value_token_limit) return
+	if(file_name)
+		var/template = "savestream_template_[copytext("\ref[src]", 4, -1)]_[value_files].sav"
+		if(!fcopy(file_name, template)) return
+		if(!value_templates) value_templates = list()
+		value_templates[value] = template
+	if(!value_tokens) value_tokens = list()
+	value_tokens[value] = token
+	value_token_bytes += length(token)
 
 // Returns the stored value; `found` is set FALSE for a missing path.
 /datum/save_stream/var/found = FALSE
@@ -314,6 +343,15 @@
 			joined += part
 		return joined
 	// Icons, sounds, appearances: BYOND's own savefile text for the value.
+	// Icons, images, mutable appearances and sounds are datums: never reused.
+	var/reusable = !istype(value, /datum)
+	if(reusable && value_tokens)
+		var/cached = value_tokens[value]
+		if(cached)
+			var/template = value_templates ? value_templates[value] : null
+			if(!template) return cached
+			var/copy_name = "savestream_value_[++value_files]_[world.timeofday].sav"
+			if(fcopy(template, copy_name)) return "Y[length(copy_name)]:[copy_name]"
 	if(!scratch) scratch = new /savefile()
 	scratch["v"] << value
 	var/text = scratch.ExportText("v")
@@ -326,10 +364,14 @@
 		var/savefile/value_file = new(file_name)
 		value_file["v"] << value
 		del(value_file)
-		return "Y[length(file_name)]:[file_name]"
+		var/file_token = "Y[length(file_name)]:[file_name]"
+		if(reusable) remember_value_token(value, file_token, file_name)
+		return file_token
 	if(copytext(text, 1, 5) == ". = ") text = copytext(text, 5)
 	while(length(text) && copytext(text, length(text)) == "\n") text = copytext(text, 1, length(text))
-	return "X[length(text)]:[text]"
+	var/text_token = "X[length(text)]:[text]"
+	if(reusable) remember_value_token(value, text_token)
+	return text_token
 
 // cursor is a one-element list holding the next byte position.
 /datum/save_stream/proc/decode(text, list/cursor)

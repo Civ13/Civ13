@@ -146,6 +146,8 @@ Please contact me on #coderbus IRC. ~Carn x
 	if(client)
 		human_clients_mob_list |= src
 	update_hud()
+	show_location_blurb()
+	holiday_login()
 	return
 
 //UPDATES OVERLAYS FROM OVERLAYS_LYING/OVERLAYS_STANDING

@@ -47,6 +47,7 @@ def build_source(root, prefix):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--view-out', type=Path, help='copy the character_view dump the probe made here')
     args = parser.parse_args()
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -76,6 +77,8 @@ def main():
             if (ran.returncode or not result or result.get('failures') != 0 or result.get('checks', 0) < 1
                     or result.get('runtime_error') or current.DIAGNOSTIC.search(log)):
                 raise RuntimeError(f'Agent observe fixture failed: {result}')
+            if args.view_out and (target / 'view.json').exists():
+                shutil.copy2(target / 'view.json', args.view_out)
             print(f"PASS: {result['checks']} agent observe checks")
     finally:
         for path in generated:

@@ -578,28 +578,11 @@
 /obj/item/projectile/bullet/rifle/a50cal_he/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
-	if (istype(A, /turf))
-		var/turf/T = A
-		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	if (istype(A, /obj/structure/vehicleparts/frame))
-		var/obj/structure/vehicleparts/frame/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	if (istype(A, /obj/structure/simple_door))
-		var/obj/structure/simple_door/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	else
-		var/turf/T = A
-		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return
+	T.scorch_ground()
+	explosion(T, 1, 0, 2, 1)
 
 /obj/item/projectile/bullet/rifle/a127
 	damage = DAMAGE_OH_GOD + 65
@@ -639,33 +622,15 @@
 /obj/item/projectile/bullet/rifle/a15115_aphe/on_impact(var/atom/A)
 	impact_effect(effect_transform)
 	playsound(src, "ric_sound", 50, TRUE, -2)
-	if (istype(A, /turf))
-		var/turf/T = A
-		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-			T.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 0, 0, 2, 1)
-	if (istype(A, /obj/structure/vehicleparts/frame))
-		var/obj/structure/vehicleparts/frame/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
-	if (istype(A, /obj/structure/simple_door))
-		var/obj/structure/simple_door/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
-		explosion(T, 1, 0, 2, 1)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return
+	T.scorch_ground()
 	if (istype(A, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
-		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/T = A
-		var/turf/TU
-		if (!istype(TU, /turf/floor/beach) && !istype(TU, /turf/floor/broken_floor))
-			TU.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 1, 0, 3, 1)
+	else if (istype(A, /obj/structure/vehicleparts/frame) || istype(A, /obj/structure/simple_door))
+		explosion(T, 1, 0, 2, 1)
 	else
-		var/turf/T = A
-		if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-			T.ChangeTurf(/turf/floor/dirt/burned)
 		explosion(T, 0, 0, 2, 1)
 
 /obj/item/projectile/bullet/rifle/a145_ap

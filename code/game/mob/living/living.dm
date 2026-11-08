@@ -554,11 +554,17 @@ default behaviour is:
 	// is two tiles away by loc but still touching. Keep the pull and drag it
 	// only once the step lands on the tile, when the tile behind is free.
 	var/subtile_pull_step = FALSE
+	var/mob/living/human/pull_walker
 	if (pulling && ishuman(src))
-		var/mob/living/human/pull_walker = src
+		pull_walker = src
 		subtile_pull_step = !!pull_walker.human_subtile_pulse
 	if ((t7 && (pulling && ((get_dist(src, pulling) <= 1 || pulling.loc == loc || (subtile_pull_step && isturf(pulling.loc) && bounds_dist(src, pulling) < 32)) && (client && client.moving)))))
 		var/turf/T = loc
+		if (subtile_pull_step)
+			// West/south steps change loc on the first pulse, so loc is not
+			// the tile this step vacates. Drag toward the tile behind it.
+			var/datum/human_subtile_pulse/pull_pulse = pull_walker.human_subtile_pulse
+			T = get_step(pull_pulse.destination, turn(pull_pulse.direction, 180))
 		moved = ..()
 		if (subtile_pull_step && (step_x || step_y))
 			return moved

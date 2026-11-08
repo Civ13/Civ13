@@ -13,6 +13,7 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/bug_reports_panel,
 	/client/proc/crossroads_reroll_loot_pads,
 	/client/proc/crossroads_loot_report,
 	/client/proc/toggle_disruptive_votes,

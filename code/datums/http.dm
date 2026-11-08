@@ -66,6 +66,7 @@
 		var/list/L = json_decode(_raw_response)
 		R.headers = L["headers"]
 		R.body = L["body"]
+		R.status_code = L["status_code"]
 	catch
 		R.error = _raw_response
 
@@ -74,5 +75,6 @@
 /datum/http_response
 	var/body
 	var/list/headers
+	var/status_code
 
 	var/error
