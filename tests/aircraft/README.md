@@ -10,7 +10,7 @@ The probe covers phases 1 and 2 of modular aircraft (`code/modules/1713/machiner
 
 - **Build:** the admin-spawned light plane builds twelve frames in a 4x4 turning square with four wheels, an engine, a fuel tank and a pilot's seat whose control column steers it.
 - **Airstrip spawner:** lays a 3x16 runway with the light plane parked at its north end, which can take off from it and land back on it.
-- **Takeoff:** a slow roll stays on the ground; a full-throttle roll along eight runway tiles lifts the whole airframe, its engine, passengers and loose cargo to the level above; a full-throttle roll off the runway never takes off; with no level above there is nowhere to climb.
+- **Takeoff:** a slow roll stays on the ground; a full-throttle roll along eight runway tiles lifts the whole airframe, its engine, passengers and loose cargo to the level above; a full-throttle roll on open ground takes off after a longer roll (16 tiles); Climb on the ground says what is missing (engine, throttle, tiles left); with no level above there is nowhere to climb.
 - **Open air:** what stands on an airborne frame stays aboard; an item dropped away from the aircraft, or a passenger who steps off it, falls to the ground.
 - **Flight:** low flight moves everything aboard; cruise passes over an upper storey and refuses to descend into it; climbing twice or on the ground is refused.
 - **Landing:** descending over a runway too fast is refused; at approach speed it lands with the passenger and leaves the airborne list.

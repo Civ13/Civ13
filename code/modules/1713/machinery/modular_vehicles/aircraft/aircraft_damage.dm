@@ -84,17 +84,35 @@
 		pilot_message(SPAN_WARNING("The airframe is shaking apart. Land soon."))
 	return TRUE
 
-// Welding an airframe section on the ground mends the airframe.
+/obj/structure/vehicleparts/axis/aircraft/proc/landing_gear_broken()
+	for (var/obj/structure/vehicleparts/movement/W in wheels)
+		if (W.broken)
+			return TRUE
+	return FALSE
+
+// The landing gear is one part: mending it fixes every wheel at once.
+/obj/structure/vehicleparts/axis/aircraft/proc/mend_landing_gear()
+	for (var/obj/structure/vehicleparts/movement/W in wheels)
+		W.broken = FALSE
+		W.update_icon()
+
+// Welding an airframe section on the ground mends the airframe, then the
+// landing gear a crash broke.
 /obj/structure/vehicleparts/frame/car/aircraft/attackby(obj/item/W, mob/living/human/user)
 	var/obj/structure/vehicleparts/axis/aircraft/A = axis
-	if (istype(W, /obj/item/weapon/weldingtool) && istype(A) && A.airframe_damage > 0)
+	if (istype(W, /obj/item/weapon/weldingtool) && istype(A) && (A.airframe_damage > 0 || A.landing_gear_broken()))
 		if (A.airborne())
 			to_chat(user, SPAN_WARNING("You can't mend the airframe in flight."))
 			return
-		to_chat(user, SPAN_NOTICE("You start welding the torn airframe..."))
+		var/gear = !A.airframe_damage
+		to_chat(user, SPAN_NOTICE(gear ? "You start welding the bent landing gear..." : "You start welding the torn airframe..."))
 		if (do_after(user, 60, src) && istype(A) && !A.airborne())
-			A.airframe_damage = max(0, A.airframe_damage - AIRCRAFT_WELD_REPAIR)
-			to_chat(user, SPAN_NOTICE(A.airframe_damage ? "The airframe is sounder, but still torn." : "The airframe is whole again."))
+			if (gear)
+				A.mend_landing_gear()
+				to_chat(user, SPAN_NOTICE("The landing gear is fixed. The plane can roll again."))
+			else
+				A.airframe_damage = max(0, A.airframe_damage - AIRCRAFT_WELD_REPAIR)
+				to_chat(user, SPAN_NOTICE(A.airframe_damage ? "The airframe is sounder, but still torn." : (A.landing_gear_broken() ? "The airframe is whole again. Weld it once more to fix the landing gear." : "The airframe is whole again.")))
 		return
 	return ..()
 
@@ -104,6 +122,8 @@
 		to_chat(user, SPAN_DANGER("The airframe is badly torn."))
 	else if (airframe_damage > 0)
 		to_chat(user, SPAN_WARNING("The airframe is holed in places."))
+	if (landing_gear_broken())
+		to_chat(user, SPAN_WARNING("The landing gear is broken. Weld any part of the airframe to fix it."))
 
 #undef AIRCRAFT_HIT_CHANCE_LOW
 #undef AIRCRAFT_HIT_CHANCE_CRUISE

@@ -132,6 +132,10 @@
 				visible_message("[H] successfully repairs \the [repair_type].")
 				broken = FALSE
 				update_icon()
+				// A plane's landing gear is one part.
+				if (istype(axis, /obj/structure/vehicleparts/axis/aircraft))
+					var/obj/structure/vehicleparts/axis/aircraft/plane = axis
+					plane.mend_landing_gear()
 				return
 		else
 			..()

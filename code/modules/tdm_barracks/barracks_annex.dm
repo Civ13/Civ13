@@ -446,7 +446,7 @@ var/global/list/barracks_orders = null
 
 /obj/structure/barracks/vehicle_bay/plane/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Taxi onto the runway, roll down it at full throttle to take off, and descend over the runway at low speed to land."))
+	to_chat(user, SPAN_NOTICE("Taxi onto the runway and roll down it at full throttle: the plane lifts off by itself after 8 tiles. Descend over the runway at low speed to land. Weld the airframe to fix it after a crash."))
 
 /obj/structure/barracks/vehicle_bay/plane/build(mob/user)
 	build_light_plane(locate(x + 1, y + 1, z))

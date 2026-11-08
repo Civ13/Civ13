@@ -4,7 +4,7 @@
 
 /obj/structure/car_workshop/hangar
 	name = "aircraft hangar"
-	desc = "An assembly press and jig for light airframes. Feed steel, glass, cloth, cable and four unattached wheels. It builds an aircraft in the clear square northeast of the press. Finished aircraft need fuel and a runway."
+	desc = "An assembly press and jig for light airframes. Feed steel, glass, cloth, cable and four unattached wheels. It builds an aircraft in the clear square northeast of the press. Finished aircraft need fuel and room for a takeoff roll."
 	icon_state = "workbench"
 
 /obj/structure/car_workshop/hangar/models()
@@ -25,10 +25,10 @@
 	return "Powered Flight research is required."
 
 /obj/structure/car_workshop/hangar/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane costs 50/6/4/8/4. Keep the northeast 4x4 bay empty; the plane needs a runway to take off. Taxi a landed plane into the bay to hangar it."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane costs 50/6/4/8/4. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
-	return "Your [model] is assembled. Fill its tank with gasoline and roll it onto a runway before taking off."
+	return "Your [model] is assembled. Fill its tank with gasoline, then roll it at full throttle to take off: 8 tiles on a runway or 16 on open ground."
 
 // The light plane comes from the aircraft builder, not a car template, and
 // leaves the press with an empty tank like every workshop vehicle.
@@ -41,7 +41,7 @@
 		return null
 	if (A.engine && A.engine.fueltank)
 		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/old = A.engine.fueltank
-		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/empty = new(old.loc)
+		var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/empty = new(old.loc)
 		empty.anchored = TRUE
 		empty.icon_state = "fueltank_incar"
 		A.engine.fueltank = empty
