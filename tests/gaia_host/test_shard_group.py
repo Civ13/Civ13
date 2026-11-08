@@ -1400,6 +1400,29 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(len(refused), 1)
         self.assertIn(self.LIVE, self.machine.up)
 
+    def test_standby_open_uses_the_session_the_loaded_standby_reports(self):
+        # Live Gaia, 2026-11-08: standby_open with the session read before the load was
+        # refused for a minute and the region stayed down; the session read back worked.
+        group, host = self.staged()
+        query = self.machine.query
+        fresh = 'f' * 32
+        loaded = []
+
+        def reloaded(port, token, action='status', operation=None, session=None, extra=None):
+            if port == self.STANDBY and action == 'standby_load':
+                loaded.append(True)
+            if port == self.STANDBY and action == 'standby_open' and session != fresh:
+                raise RuntimeError('Lifecycle request rejected: invalid_session_or_operation')
+            answer = query(port, token, action, operation, session, extra)
+            if port == self.STANDBY and loaded and isinstance(answer, dict) and 'session' in answer:
+                answer = dict(answer, session=fresh)
+            return answer
+        self.machine.query = reloaded
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertIn(self.LIVE, self.machine.up)
+
     def test_handover_moves_the_region_onto_the_staged_build_without_stopping_it(self):
         group, host = self.staged()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'

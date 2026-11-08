@@ -65,6 +65,7 @@ DMB_SLOTS = ('region.dmb', 'region.b.dmb')
 STANDBY_PORT_OFFSET = 10  # the standby's loopback control port unless the region sets standby_port
 STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
+OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
@@ -740,8 +741,18 @@ class RegionHost(Host):
                     continue
                 raise RuntimeError('the old world kept port %d; the loaded standby still answers on port %d' % (port, spare_port))
             self.platform.sleep(2)
-        deadline = self.platform.now() + 60
+        # The region is offline from here until the standby opens its port, so keep trying for
+        # a while. Each try uses the session the standby reports now: on 2026-11-08 every
+        # standby_open after a live Gaia load was refused for a minute and the region stayed
+        # down, then one sent with the session read back from its status succeeded at once.
+        deadline = self.platform.now() + OPEN_SECONDS
         while True:
+            try:
+                current = self.platform.query(spare_port, token).get('session', '')
+                if gaia_host.HEX32.match(current or ''):
+                    standby_session = current
+            except (OSError, RuntimeError, ValueError):
+                pass
             try:
                 self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
                 break
