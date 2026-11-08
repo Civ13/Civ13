@@ -82,6 +82,14 @@
 	var/mouse_screen_y = 0
 	var/mouse_screen_pixel_x = 0
 	var/mouse_screen_pixel_y = 0
+	var/list/measured = list()
+// The client's text measurement is a network round trip; this boundary answers
+// at once with a size that follows the styled font size: 4em wide, 1.2em high.
+/datum/hover_client/proc/MeasureText(text, style, width)
+	measured += text
+	var/start = findtext(text, "font-size:") + 10
+	var/px = text2num(copytext(text, start, findtext(text, "px", start)))
+	return "[px * 4]x[round(px * 1.2)]"
 // The native fixture does not execute the full LOS subsystem or tree presenter.
 /proc/los_read_allowed(mob/user, atom/target, operation)
 	return !!user && !!target && operation == "hover"
@@ -119,32 +127,42 @@
 	B.name = "rifle"
 	C.MouseEntered(A, null, "map", "")
 	check(C.mouse_x == 9 && C.mouse_y == 8, "existing coordinates")
-	check(findtext(L.maptext, "&nbsp;&lt;b&gt;scope &amp; mount&lt;/b&gt;&nbsp;"), "escaped public name with panel padding")
-	check(findtext(L.maptext, "vertical-align:top;text-align:left"), "explicit top-left text alignment")
-	check(findtext(L.maptext, "-dm-text-outline:1px #1c110a") && findtext(L.maptext, "color:#f3e9d6;background-color:#3b2c1e"), "outlined text on the panel fill")
-	check(length(L.underlays) == 4, "four border underlays")
+	check(findtext(L.maptext, ">&lt;b&gt;scope &amp; mount&lt;/b&gt;</span>"), "escaped public name")
+	check(findtext(L.maptext, "text-align:center;vertical-align:middle;"), "text centred in the panel both ways")
+	check(findtext(L.maptext, "-dm-text-outline:1px #1c110a") && findtext(L.maptext, "color:#f3e9d6") && !findtext(L.maptext, "background-color"), "outlined text without its own background")
+	check(length(C.measured) == 1 && C.measured[1] == L.maptext, "the client measures the drawn label")
+	// 11px: measured 44x13 plus 5px/2px padding, rounded up to even sizes.
+	check(L.maptext_width == 54 && L.maptext_height == 18 && L.hover_text_width == 56 && L.hover_text_height == 20 && !L.maptext_x && !L.maptext_y, "panel fits the measured text")
+	check(length(L.underlays) == 2, "border and fill underlays")
 	var/image/edge = L.underlays[1]
-	check(findtext(edge.maptext, "&nbsp;&lt;b&gt;scope &amp; mount&lt;/b&gt;&nbsp;") && findtext(edge.maptext, "color:#9a8468;background-color:#9a8468") && !findtext(edge.maptext, "outline"), "border underlays repeat the text in the border colour")
-	check(edge.maptext_width == 384 && edge.maptext_height == 32 && edge.maptext_x == -1 && !edge.maptext_y, "border underlay shifted one pixel")
+	var/image/fill = L.underlays[2]
+	var/matrix/m = edge.transform
+	check(edge.color == "#9a8468" && edge.layer < fill.layer && m.a == 56 / 32 && m.e == 20 / 32 && m.c == -1 + 28 - 16 && m.f == -1 + 10 - 16, "border rectangle one pixel outside the box, behind the fill")
+	m = fill.transform
+	check(fill.color == "#3b2c1e" && fill.icon_state == "white" && m.a == 54 / 32 && m.e == 18 / 32 && m.c == 27 - 16 && m.f == 9 - 16, "fill rectangle covers exactly the maptext box")
+	check((fill.appearance_flags & PIXEL_SCALE), "rectangles keep hard edges")
 	C.MouseEntered(B, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "target transition")
 	// The label follows Hover Text Size, not HUD Scale: 11px at 100% (and with no preferences).
-	check(findtext(L.maptext, "font-size:11px;") && L.maptext_height == 32, "11px label at 100%")
+	check(findtext(L.maptext, "font-size:11px;") && L.maptext_width == 54 && L.maptext_height == 18, "11px label at 100%")
 	C.prefs = new
 	C.prefs.hud_scale = 2
 	L.process()
 	check(findtext(L.maptext, "font-size:11px;"), "HUD Scale leaves the label alone")
 	C.prefs.hover_text_scale = 2
 	L.process()
-	check(findtext(L.maptext, "font-size:22px;") && L.maptext_height == 60 && L.hover_font_px == 22, "label doubles at 200%")
+	check(findtext(L.maptext, "font-size:22px;") && L.maptext_width == 110 && L.maptext_height == 34 && L.hover_font_px == 22, "label doubles at 200%")
 	edge = L.underlays[1]
-	check(findtext(edge.maptext, "font-size:22px;") && edge.maptext_height == 60, "border follows the larger label")
+	m = edge.transform
+	check(m.a == 112 / 32 && m.e == 36 / 32, "border follows the larger label")
 	C.prefs.hover_text_scale = 0.5
 	L.process()
-	check(findtext(L.maptext, "font-size:6px;") && L.maptext_height == 19, "label shrinks to a readable minimum at 50%")
+	check(findtext(L.maptext, "font-size:6px;") && L.maptext_width == 30 && L.maptext_height == 10, "label shrinks to a readable minimum at 50%")
 	C.prefs.hover_text_scale = 1
 	L.process()
-	check(findtext(L.maptext, "font-size:11px;") && L.maptext_height == 32, "label back to 11px")
+	var/asked = length(C.measured)
+	check(findtext(L.maptext, "font-size:11px;") && L.maptext_width == 54 && L.maptext_height == 18, "label back to 11px")
+	check(asked == 4, "a measured label and size is not measured again")
 	C.MouseExited(A, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "late exit")
 	C.MouseExited(B, null, "map", "")
@@ -156,18 +174,18 @@
 	// The fixture view is 5 (11 tiles, 352px). Pointer at 2:1,3:1 is pixel (33, 65).
 	C.MouseMove(A, null, "map", "screen-loc=2:1,3:1")
 	check(C.mouse_screen_x == 2 && C.mouse_screen_pixel_x == 1 && C.mouse_screen_y == 3 && C.mouse_screen_pixel_y == 1, "move parses the pointer position")
-	check(L.maptext && L.screen_loc == "2:11,1:13" && length(L.underlays) == 4, "panel below and right of the pointer")
+	check(L.maptext && L.screen_loc == "2:11,1:26" && length(L.underlays) == 2, "panel below and right of the pointer")
 	var/panel = L.maptext
 	C.MouseMove(A, null, "map", "screen-loc=2:1,3:1")
-	check(L.maptext == panel && L.screen_loc == "2:11,1:13" && length(L.underlays) == 4, "unchanged target keeps its panel")
+	check(L.maptext == panel && L.screen_loc == "2:11,1:26" && length(L.underlays) == 2, "unchanged target keeps its panel")
 	C.MouseMove(A, null, "map", "screen-loc=10:0,3:0")
-	check(L.screen_loc == "3:24,1:12", "panel clamped at the right edge")
+	check(L.screen_loc == "10:9,1:25", "panel clamped at the right edge")
 	C.MouseMove(null, null, "map", "")
 	check(!L.maptext && !length(L.underlays), "empty pointer clears")
 	C.MouseDrag(A, B, null, null, "map", "map", "screen-loc=10:0,1:10")
-	check(findtext(L.maptext, "rifle") && L.screen_loc == "10:10,1:2", "drag dispatch flips the panel above a low pointer")
+	check(findtext(L.maptext, "rifle") && L.screen_loc == "10:9,1:19", "drag dispatch flips the panel above a low pointer")
 	C.MouseDrag(A, B, null, null, "map", "map", "drag")
-	check(findtext(L.maptext, "rifle") && L.screen_loc == "10:10,1:2", "drag without a position keeps the last one")
+	check(findtext(L.maptext, "rifle") && L.screen_loc == "10:9,1:19", "drag without a position keeps the last one")
 	var/mob/living/human/masked = new(locate(9,9,1))
 	masked.real_name = "Secret Identity"
 	masked.name = "Secret Identity"

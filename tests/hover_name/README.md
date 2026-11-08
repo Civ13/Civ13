@@ -14,17 +14,21 @@ onto empty space or a HUD control clears the text. Human names use
 
 The look matches the 1713 HUD palette: Verdana cream text (`#f3e9d6`, 11px at 100% Hover Text Size and scaled with it, 6-22px)
 with a 1px dark outline on a wood-brown panel (`#3b2c1e`) with a 1px light
-border (`#9a8468`). The panel is pure maptext, so it always fits the text the
-client actually draws: the text span carries the fill colour with a `&nbsp;`
-on each side as padding, and four underlays repeat the same span in the border
-colour shifted one pixel up, down, left and right. The widget uses layer 30 on
-the HUD plane so HUD controls never cover it, and `mouse_opacity` stays 0 so it
-never takes a click or hover. A move across the same pointer target only
-revalidates and moves the panel (an unchanged `screen_loc` is not reassigned);
-the label and underlays are rebuilt only when the target or its name changes.
-No width measurement exists server-side: a rough 7px-per-character estimate
-(`hover_text_width`/`hover_text_height`, capped at the maptext box) only drives
-the edge clamp and the flip, never the drawn border.
+border (`#9a8468`). The panel is two solid rectangles drawn as underlays from
+the white `icons/effects/effects.dmi` state (the border one pixel larger on
+every side, behind the fill), and the maptext box is exactly the fill, with the
+text styled `text-align:center;vertical-align:middle`, so the text is centred on
+the panel at every Hover Text Size. The client measures each label once with
+`client.MeasureText` (cached per text and size, 256 entries) to fit the panel
+to the drawn text plus padding; until that answer arrives a rough
+7px-per-character estimate sizes the panel, and the text is still centred. The
+widget uses layer 30 on the HUD plane so HUD controls never cover it, and
+`mouse_opacity` stays 0 so it never takes a click or hover. A move across the
+same pointer target only revalidates and moves the panel (an unchanged
+`screen_loc` is not reassigned); the label and underlays are rebuilt only when
+the target, its name or the measured size changes. `hover_text_width` and
+`hover_text_height` hold the panel size including the border and drive the
+edge clamp and the flip.
 
 Inventory slot art resolves only the current body's registered, displayed slot
 to its actual equipped item. The item must belong directly to that body and be

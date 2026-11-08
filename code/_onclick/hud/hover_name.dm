@@ -1,10 +1,12 @@
 // Pointer feedback belongs to the disposable HUD, never to saved characters.
 // The label is a tooltip that follows the pointer: cream text with a dark
 // outline on a dark wood-brown panel with a one pixel light border, in the
-// 1713 HUD palette. The panel is pure maptext, so it always fits the text the
-// client actually draws: the text span carries the fill colour, and four
-// underlays repeat the same span in the border colour one pixel out on each
-// side. Only screen_loc changes while the pointer moves over one target.
+// 1713 HUD palette. The panel is two solid rectangles (border behind fill)
+// drawn as underlays, and the maptext box is exactly the fill rectangle with
+// the text centred both ways, so the text always sits in the middle of the
+// panel. The client measures each label once (MeasureText) to size the panel;
+// until that answer arrives a rough estimate is used, still centred.
+// Only screen_loc changes while the pointer moves over one target.
 /obj/screen/hover_name
 	name = "hover name"
 	icon = null
@@ -20,25 +22,45 @@
 	var/tmp/datum/weakref/hover_storage
 	var/tmp/hover_inventory = FALSE
 	var/tmp/hover_screen_loc
-	// The encoded label currently drawn, with its estimated panel size in
-	// pixels; the estimate only places the panel, the drawn border fits itself.
+	// The encoded label currently drawn, with its panel size in pixels
+	// including the one pixel border.
 	var/tmp/hover_text
 	var/tmp/hover_text_width = 0
 	var/tmp/hover_text_height = 0
 	// Font size in pixels; follows the player's Hover Text Size (11px at 100%).
 	var/tmp/hover_font_px = 11
+	// Client text measurements, "[px]|[text]" -> list(width, height).
+	var/tmp/list/hover_measured
+	var/tmp/hover_measuring
 
-// One styled span: the text with a nbsp on each side as horizontal padding.
-// border = TRUE draws the same span in the border colour for the underlays.
-// px is the font size in pixels.
-/proc/hover_name_span(text, border, px = 11)
-	var/ink = border ? "#9a8468" : "#f3e9d6"
-	var/fill = border ? "#9a8468" : "#3b2c1e"
-	var/outline = border ? "" : "-dm-text-outline:1px #1c110a;"
-	return "<span style='vertical-align:top;text-align:left;font-family:Verdana,sans-serif;font-size:[px]px;[outline]color:[ink];background-color:[fill]'>&nbsp;[text]&nbsp;</span>"
+#define HOVER_NAME_MAX_WIDTH 384
+#define HOVER_NAME_MEASURE_CACHE 256
+
+// The styled label text, centred in its maptext box. px is the font size.
+/proc/hover_name_span(text, px = 11)
+	return "<span style='text-align:center;vertical-align:middle;font-family:Verdana,sans-serif;font-size:[px]px;-dm-text-outline:1px #1c110a;color:#f3e9d6'>[text]</span>"
+
+/proc/hover_name_measure_key(text, px)
+	return "[px]|[text]"
+
+// Padding between the text and the panel edge for a font size.
+/proc/hover_name_pad_x(px)
+	return max(3, round(px / 2))
+
+/proc/hover_name_pad_y(px)
+	return max(1, round(px / 5))
+
+// One solid panel rectangle w x h pixels with its lower left corner at x,y
+// relative to the label, from a white 32x32 state scaled about its centre.
+/proc/hover_name_rect(w, h, x, y, colour, rect_layer)
+	var/image/rect = image('icons/effects/effects.dmi', icon_state = "white", layer = rect_layer)
+	rect.color = colour
+	rect.appearance_flags = PIXEL_SCALE | RESET_COLOR
+	rect.transform = matrix(w / 32, 0, x + w / 2 - 16, 0, h / 32, y + h / 2 - 16)
+	return rect
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "hover_font_px", "maptext_height", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "hover_font_px", "hover_measured", "hover_measuring", "maptext_width", "maptext_height", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
@@ -52,20 +74,16 @@
 	maptext = ""
 	update_backdrop()
 
-// Rebuild the border underlays for hover_text, or remove them when it is empty.
+// Rebuild the panel underlays for hover_text, or remove them when it is empty:
+// the border rectangle one pixel larger on every side, behind the fill, which
+// covers exactly the maptext box.
 /obj/screen/hover_name/proc/update_backdrop()
 	if (length(underlays))
 		underlays.Cut()
 	if (!hover_text)
 		return
-	for (var/list/shift in list(list(-1, 0), list(1, 0), list(0, -1), list(0, 1)))
-		var/image/edge = image(null)
-		edge.maptext = hover_name_span(hover_text, TRUE, hover_font_px)
-		edge.maptext_width = maptext_width
-		edge.maptext_height = maptext_height
-		edge.maptext_x = shift[1]
-		edge.maptext_y = shift[2]
-		underlays += edge
+	underlays += hover_name_rect(maptext_width + 2, maptext_height + 2, -1, -1, "#9a8468", FLOAT_LAYER - 1)
+	underlays += hover_name_rect(maptext_width, maptext_height, 0, 0, "#3b2c1e", FLOAT_LAYER)
 
 // The label's font size: 11px at 100% Hover Text Size, scaled with it.
 // This is its own setting so the text can stay small with a large HUD.
@@ -78,6 +96,49 @@
 		return 11
 	return clamp(round(11 * g), 6, 22)
 
+// Size the panel around text_w x text_h pixels of text; even sizes keep the
+// scaled rectangles on whole pixels.
+/obj/screen/hover_name/proc/set_panel_size(text_w, text_h)
+	var/px = hover_font_px
+	var/w = min(HOVER_NAME_MAX_WIDTH, text_w + 2 * hover_name_pad_x(px))
+	var/h = text_h + 2 * hover_name_pad_y(px)
+	w += w % 2
+	h += h % 2
+	maptext_width = w
+	maptext_height = h
+	hover_text_width = w + 2
+	hover_text_height = h + 2
+	update_backdrop()
+
+// Ask the client how large it draws a label, once per text and size. The
+// answer arrives after a round trip; a label that changed meanwhile only
+// caches it.
+/obj/screen/hover_name/proc/measure_label(text, px)
+	set waitfor = FALSE
+	var/key = hover_name_measure_key(text, px)
+	if (hover_measuring == key || !parentmob || !parentmob.client)
+		return
+	hover_measuring = key
+	var/client/C = parentmob.client
+	var/result = C.MeasureText(hover_name_span(text, px), null, HOVER_NAME_MAX_WIDTH - 2 * hover_name_pad_x(px))
+	if (hover_measuring == key)
+		hover_measuring = null
+	if (QDELETED(src) || !istext(result))
+		return
+	var/split = findtext(result, "x")
+	var/w = split ? text2num(copytext(result, 1, split)) : null
+	var/h = split ? text2num(copytext(result, split + 1)) : null
+	if (!isnum(w) || !isnum(h) || w <= 0 || h <= 0)
+		return
+	if (!hover_measured)
+		hover_measured = list()
+	else if (length(hover_measured) >= HOVER_NAME_MEASURE_CACHE)
+		hover_measured.Cut()
+	hover_measured[key] = list(w, h)
+	if (hover_text == text && hover_font_px == px)
+		set_panel_size(w, h)
+		follow_pointer()
+
 // Draw an encoded label; an unchanged label resends nothing.
 /obj/screen/hover_name/proc/show_label(text)
 	var/px = hover_label_px()
@@ -85,15 +146,20 @@
 		return
 	hover_text = text
 	hover_font_px = px
-	// Two lines of text fit in the box: 32px at 11px.
-	maptext_height = round(28 * px / 11) + 4
-	// Rough Verdana metrics, erring wide: about 7px per character at 11px
-	// plus the padding and border, wrapping at the maptext width, 14px per line.
-	var/estimate = round(7 * px / 11 * length(text)) + 12
-	hover_text_width = min(maptext_width, estimate)
-	hover_text_height = min(maptext_height, round(14 * px / 11) * -round(-estimate / maptext_width) + 2)
-	maptext = hover_name_span(text, FALSE, px)
-	update_backdrop()
+	maptext = hover_name_span(text, px)
+	var/list/size = null
+	if (hover_measured)
+		size = hover_measured[hover_name_measure_key(text, px)]
+	if (size)
+		set_panel_size(size[1], size[2])
+		return
+	// Rough Verdana metrics, erring wide, until the client answers: about 7px
+	// per character at 11px, wrapping at the maximum width, 14px per line.
+	var/max_text = HOVER_NAME_MAX_WIDTH - 2 * hover_name_pad_x(px)
+	var/estimate = round(7 * px / 11 * length(text))
+	var/lines = max(1, -round(-estimate / max_text))
+	set_panel_size(min(max_text, estimate), round(14 * px / 11) * lines)
+	measure_label(text, px)
 
 // Place the panel just below and right of the pointer, clamped to the right
 // edge and flipped above the pointer near the bottom, using the pixel position
@@ -107,12 +173,12 @@
 	var/view_h = size[2] * 32
 	var/mx = (C.mouse_screen_x - 1) * 32 + C.mouse_screen_pixel_x
 	var/my = (C.mouse_screen_y - 1) * 32 + C.mouse_screen_pixel_y
-	var/x = max(0, min(mx + 10, view_w - hover_text_width))
-	// The text sits at the top of the maptext box; keep the box above the edge.
+	var/x = max(1, min(mx + 10, view_w - hover_text_width + 1))
+	// The panel hangs below the pointer; near the bottom edge it flips above.
 	var/top = my - 20
-	if (top < maptext_height)
+	if (top < hover_text_height)
 		top = min(view_h, my + 8 + hover_text_height)
-	var/y = max(0, top - maptext_height)
+	var/y = max(1, top - hover_text_height + 1)
 	var/tx = round(x / 32)
 	var/ty = round(y / 32)
 	var/pointer_loc = "[tx + 1]:[x - tx * 32],[ty + 1]:[y - ty * 32]"

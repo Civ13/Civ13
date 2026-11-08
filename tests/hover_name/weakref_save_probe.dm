@@ -50,6 +50,12 @@
 	var/mouse_screen_y = 0
 	var/mouse_screen_pixel_x = 0
 	var/mouse_screen_pixel_y = 0
+	var/datum/hover_test_prefs/prefs
+// The client's text measurement is a network round trip; answer at once.
+/datum/hover_client/proc/MeasureText(text, style, width)
+	return "40x13"
+/datum/hover_test_prefs
+	var/hover_text_scale = 1
 
 /proc/check_weakref_save()
 	var/mob/living/human/H = new(locate(2,2,1))

@@ -96,9 +96,14 @@ class HudLayoutWiring(unittest.TestCase):
         self.assertIn('prefs.save_preferences()', verb)
         show = proc_body(hover, '/obj/screen/hover_name/proc/show_label(text)')
         self.assertIn('px == hover_font_px', show)
-        self.assertIn('hover_name_span(text, FALSE, px)', show)
-        self.assertIn('hover_name_span(hover_text, TRUE, hover_font_px)', hover)
+        self.assertIn('hover_name_span(text, px)', show)
         self.assertIn('font-size:[px]px;', hover)
+        # The text is centred in a maptext box that is exactly the panel fill.
+        self.assertIn('text-align:center;vertical-align:middle;', hover)
+        backdrop = proc_body(hover, '/obj/screen/hover_name/proc/update_backdrop()')
+        self.assertIn('hover_name_rect(maptext_width, maptext_height, 0, 0,', backdrop)
+        self.assertIn('hover_name_rect(maptext_width + 2, maptext_height + 2, -1, -1,', backdrop)
+        self.assertIn('C.MeasureText(hover_name_span(text, px)', hover)
 
     def test_large_scales_reflow_only_default_tiles(self):
         body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
