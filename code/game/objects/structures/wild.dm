@@ -260,6 +260,53 @@ var/list/seed_list_jungle
 	else
 		..()
 
+// Collision chopping: walking into a dense tree with a chopping tool held starts
+// the same click chop (wild/attackby). The active hand wins, then the other hand;
+// tools on the back, belt or in a bag do not qualify. One reservation per actor
+// is taken before the chop starts, so held movement keys cannot queue more chops.
+// Keep this list in step with the gate in /obj/structure/wild/attackby.
+/proc/tree_chopping_tool(obj/item/W)
+	return istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool)
+
+/proc/bump_choppable_tree(atom/A)
+	return (istype(A, /obj/structure/wild/tree) || istype(A, /obj/structure/wild/jungle)) && A.density
+
+/mob/living/human/var/tmp/obj/structure/wild/bump_chop_target = null
+
+/mob/living/human/proc/held_chopping_tool()
+	var/obj/item/W = get_active_hand()
+	if (tree_chopping_tool(W) && W.loc == src)
+		return W
+	W = get_inactive_hand()
+	return tree_chopping_tool(W) && W.loc == src ? W : null
+
+/mob/living/human/proc/try_bump_chopping(atom/A)
+	if (!bump_choppable_tree(A) || QDELETED(A) || !bump_mining_authority() || world.time <= next_click)
+		return FALSE
+	if (bump_chop_target || pickaxe_mining_action || !may_do_after || !pickaxe_mining_ready() || !canClick() || !A.Adjacent(src))
+		return FALSE
+	var/obj/item/weapon/material/HT = held_chopping_tool()
+	if (!HT)
+		return FALSE
+	bump_chop_target = A
+	next_click = world.time + 1
+	perform_bump_chop(A, HT)
+	return TRUE
+
+// Returns to Bump at the chop's first sleep; the reservation is held until the
+// click chop finishes or fails.
+/mob/living/human/proc/perform_bump_chop(obj/structure/wild/T, obj/item/weapon/material/HT)
+	set waitfor = FALSE
+	try
+		if (!QDELETED(T) && !QDELETED(HT) && HT.loc == src && (l_hand == HT || r_hand == HT) && T.Adjacent(src))
+			T.attackby(HT, src)
+	catch (var/exception/chopping_error)
+		if (bump_chop_target == T)
+			bump_chop_target = null
+		throw chopping_error
+	if (bump_chop_target == T)
+		bump_chop_target = null
+
 /obj/structure/wild/tree/cactus
 	name = "cactus"
 	icon = 'icons/obj/flora/bigtrees.dmi'

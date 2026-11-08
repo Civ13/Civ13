@@ -408,6 +408,8 @@ var/global/list/persistence_type_var_names = list()
 		return TRUE
 	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation" || key == "LAssailant")
 		return TRUE
+	if (key == "bump_chop_target")
+		return TRUE
 	if (key == "lastattacker" || key == "lastattacked" || key == "attack_log" || key == "teleop")
 		return TRUE
 	// A body left by abandon mob, ghosting or a mind transfer keeps its mind

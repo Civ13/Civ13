@@ -85,5 +85,48 @@ class ChainsawTests(unittest.TestCase):
             self.assertIn('"' + state + '"', self.block)
 
 
+class TreeBumpChopping(unittest.TestCase):
+    """Walking into a tree with a chopping tool held reuses the click chop."""
+
+    def setUp(self):
+        self.wild = source('code/game/objects/structures/wild.dm')
+
+    def proc(self, name):
+        start = self.wild.index(name)
+        end = self.wild.index('\n\n', start)
+        return self.wild[start:end]
+
+    def test_bump_tool_list_matches_click_chop_gate(self):
+        attack = self.wild[self.wild.index('/obj/structure/wild/attackby('):]
+        gate = attack[:attack.index('\n', attack.index('if (istype(W,'))]
+        click = set(re.findall(r'istype\(W, ?(/[\w/]+)\)', gate))
+        bump = set(re.findall(r'istype\(W, ?(/[\w/]+)\)', self.proc('/proc/tree_chopping_tool(')))
+        self.assertIn('/obj/item/weapon/material/hatchet', bump)
+        self.assertEqual(click, bump)
+
+    def test_human_bump_dispatches_after_mining(self):
+        carbon = source('code/game/mob/living/carbon/carbon.dm')
+        bump = carbon[carbon.index('/mob/living/human/Bump('):carbon.index('/mob/living/human/slip(')]
+        self.assertLess(bump.index('try_bump_mining(AM)'), bump.index('try_bump_chopping(AM)'))
+        self.assertLess(bump.index('try_bump_chopping(AM)'), bump.index('\t..()'))
+
+    def test_bump_reuses_click_chop_and_reserves_before_spawn(self):
+        body = self.proc('/mob/living/human/proc/try_bump_chopping(')
+        self.assertIn('bump_mining_authority()', body)
+        self.assertLess(body.index('bump_chop_target = A'), body.index('perform_bump_chop(A, HT)'))
+        chop = self.proc('/mob/living/human/proc/perform_bump_chop(')
+        self.assertIn('set waitfor = FALSE', chop)
+        self.assertIn('T.attackby(HT, src)', chop)
+        self.assertIn('bump_chop_target ||', body)
+        held = self.proc('/mob/living/human/proc/held_chopping_tool(')
+        self.assertLess(held.index('get_active_hand()'), held.index('get_inactive_hand()'))
+        self.assertNotIn('swap_hand(', body + held)
+
+    def test_reservation_is_runtime_only(self):
+        self.assertIn('/mob/living/human/var/tmp/obj/structure/wild/bump_chop_target', self.wild)
+        functions = source('code/modules/persistence/functions.dm')
+        self.assertIn('key == "bump_chop_target"', functions)
+
+
 if __name__ == '__main__':
     unittest.main()

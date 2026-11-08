@@ -418,6 +418,8 @@
 		return
 	if (try_bump_mining(AM))
 		return
+	if (try_bump_chopping(AM))
+		return
 	..()
 
 /mob/living/human/slip(var/slipped_on,stun_duration=8)
