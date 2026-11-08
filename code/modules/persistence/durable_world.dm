@@ -110,11 +110,23 @@
 	if(validated_roof_areas.len || validated_zone_state)
 		// A base area can lose its last turf to saved roofs. Validate the
 		// prospective inventory, including every uncovered base-map turf.
-		for(var/z = 1, z <= save_validation_maxz(), z++)
-			for(var/y = 1, y <= world.maxy, y++)
-				for(var/x = 1, x <= world.maxx, x++)
-					if(!seen[save_validation_area_key(x, y, z)]) throw EXCEPTION("Missing prospective durable area")
-					TICK_CHECK
+		if(validated_zone_state)
+			// Every cell's key is "zone:<its grid id>": check each distinct id
+			// once instead of building a key for all of a world's cells.
+			var/list/checked = list()
+			var/cells = world.maxx * world.maxy * save_validation_maxz()
+			for(var/i = 1, i <= cells, i++)
+				var/id = "[validated_zone_grid[i]]"
+				if(checked[id]) continue
+				checked[id] = TRUE
+				if(!seen["zone:[id]"]) throw EXCEPTION("Missing prospective durable area")
+				TICK_CHECK
+		else
+			for(var/z = 1, z <= save_validation_maxz(), z++)
+				for(var/y = 1, y <= world.maxy, y++)
+					for(var/x = 1, x <= world.maxx, x++)
+						if(!seen[save_validation_area_key(x, y, z)]) throw EXCEPTION("Missing prospective durable area")
+						TICK_CHECK
 	else
 		for(var/area/A in world)
 			var/turf/T = locate(/turf) in A
