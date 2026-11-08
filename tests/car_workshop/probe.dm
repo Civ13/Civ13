@@ -143,6 +143,13 @@ var/car_probe_error = FALSE
 		map.ordinal_age = 8
 		car_check(W.allowed(H), "modern baseline granted")
 		car_fill(W,"ASNO Piccolino")
+		for (var/dx = 1, dx <= 3, dx++)
+			for (var/dy = 1, dy <= 3, dy++)
+				new /atom/movable/lighting_overlay(locate(12+dx,12+dy,1), TRUE)
+		car_check(W.clear_footprint("ASNO Piccolino"), "lighting overlays do not obstruct an empty bay")
+		for (var/atom/movable/lighting_overlay/L in world)
+			qdel(L)
+			if (L) del(L)
 		var/obj/O = new(locate(13,13,1))
 		car_check(!W.complete_assembly("ASNO Piccolino") && W.stock["steel"] == 40, "obstruction prevents payment")
 		qdel(O)
