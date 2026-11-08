@@ -64,6 +64,31 @@ var/aircraft_runtime_error = FALSE
 		W.broken = FALSE
 	A.engine.on = TRUE
 
+// The fixture is 60 tiles tall and every test rolls south: move a grounded
+// aircraft back up the map (same level) before another takeoff run.
+/proc/aircraft_reset_north(obj/structure/vehicleparts/axis/aircraft/A, front_y = 45)
+	var/dy = front_y - aircraft_front_y(A)
+	if (dy)
+		A.aircraft_shift(A.flight_z(), 0, dy)
+	aircraft_lay_runway(A)
+
+// Runway under the aircraft and far enough ahead (south) for a takeoff roll.
+/proc/aircraft_lay_runway(obj/structure/vehicleparts/axis/aircraft/A)
+	var/min_x = 1000
+	var/max_x = 0
+	var/min_y = 1000
+	var/max_y = 0
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		min_x = min(min_x, F.x)
+		max_x = max(max_x, F.x)
+		min_y = min(min_y, F.y)
+		max_y = max(max_y, F.y)
+	for (var/x = min_x, x <= max_x, x++)
+		for (var/y = max(1, min_y - A.takeoff_roll - 4), y <= max_y, y++)
+			var/turf/T = locate(x, y, 1)
+			if (T && !(locate(/obj/covers/roads/modern/runway) in T))
+				new /obj/covers/roads/modern/runway(T)
+
 // Every frame casts a shadow on the ground turf straight below it.
 /proc/aircraft_shadows_below(obj/structure/vehicleparts/axis/aircraft/A, ground)
 	var/list/F = A.frames()
@@ -77,10 +102,14 @@ var/aircraft_runtime_error = FALSE
 	return TRUE
 
 /proc/aircraft_ground_shown(obj/structure/vehicleparts/axis/aircraft/A, turf/T)
-	return A.ground_view && (T in A.ground_view.vis_contents)
+	return A.ground_shown(T)
+
+/proc/aircraft_tank_fuel(obj/structure/vehicleparts/axis/aircraft/A)
+	var/obj/structure/engine/internal/E = A.engine
+	return E.fueltank.reagents.get_reagent_amount(E.fuels[1])
 
 /proc/aircraft_visuals_gone(obj/structure/vehicleparts/axis/aircraft/A, list/old_turfs)
-	if (A.shadows || A.ground_view || A.ground_view_anchor)
+	if (A.shadows || A.ground_view || A.ground_view_far || A.ground_view_anchor)
 		return FALSE
 	for (var/turf/T in old_turfs)
 		for (var/atom/V in T.vis_contents)
@@ -106,6 +135,11 @@ var/aircraft_runtime_error = FALSE
 	E.fueltank.reagents.add_reagent(E.fuels[1], 100, safety = TRUE)
 	E.on = TRUE
 	aircraft_check(A.check_engine(), "the fuelled engine runs")
+	aircraft_check(A.engine.fueltank in A.transporting, "the fuel tank is known to be aboard from the start")
+	A.moving = TRUE
+	A.currentspeed = 2
+	A.do_vehicle_check()
+	aircraft_check(!QDELETED(A.engine.fueltank), "the vehicle check does not crush the tank on its own nose")
 
 	var/mob/living/aircraft_probe/M = new(locate(4, 51, 1))
 	var/obj/item/cargo = new /obj/item(locate(3, 52, 1))
@@ -127,7 +161,15 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(aircraft_shadows_below(A, 1), "each frame casts a shadow on the ground below it")
 	var/obj/structure/vehicleparts/frame/nose = A.corners[2]
 	aircraft_check(aircraft_ground_shown(A, locate(nose.x, nose.y, 1)) && aircraft_ground_shown(A, locate(nose.x - 3, nose.y - 6, 1)), "the open air shows the ground below and around the aircraft")
-	aircraft_check(A.ground_view_anchor && A.ground_view_anchor.z == 2 && (A.ground_view in A.ground_view_anchor.vis_contents) && !A.ground_view.loc, "the ground view is drawn through the open air, not placed on the map")
+	aircraft_check(A.ground_view_anchor && A.ground_view_anchor.z == 2 && (A.ground_view in A.ground_view_anchor.vis_contents) && (A.ground_view_far in A.ground_view_anchor.vis_contents) && !A.ground_view.loc && !A.ground_view_far.loc, "the ground view is drawn through the open air, not placed on the map")
+	var/turf/centre = A.footprint_centre()
+	aircraft_check(centre && centre.x == nose.x - 1 && (centre.y == nose.y + 1 || centre.y == nose.y + 2), "the ground view is centred on the airframe, not its corner")
+	var/turf/near_tile = locate(centre.x, centre.y + 7, 1)
+	var/turf/far_tile = locate(centre.x, centre.y + 9, 1)
+	aircraft_check((near_tile in A.ground_view.vis_contents) && (far_tile in A.ground_view_far.vis_contents) && !aircraft_ground_shown(A, locate(centre.x, centre.y + 11, 1)), "the ground shows in full to seven tiles, faintly to ten, and not beyond")
+	var/list/far_haze = A.ground_view_far.color
+	var/list/near_haze = A.ground_view.color
+	aircraft_check(istype(A.ground_view_far, /obj/effect/aircraft_ground_view/far) && islist(far_haze) && far_haze[16] < near_haze[16], "the outer ring is fainter than the inner view")
 	var/obj/covers/roof_floor = new /obj/covers/wood(locate(nose.x + 3, nose.y - 2, 2))
 	A.update_flight_visuals()
 	aircraft_check(!aircraft_ground_shown(A, locate(nose.x + 3, nose.y - 2, 1)) && aircraft_ground_shown(A, locate(nose.x + 4, nose.y - 2, 1)), "a floor on the upper level hides the ground under it")
@@ -159,6 +201,13 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(!A.climb(M), "climbing again is refused")
 	var/obj/structure/aircraft_probe_wall/W = new(locate(4, aircraft_front_y(A) - 1, 2))
 	aircraft_check(aircraft_step(A) && A.flight_state == AIRCRAFT_CRUISE, "cruise flies over an upper storey")
+	var/obj/structure/vehicleparts/frame/wing = locate(/obj/structure/vehicleparts/frame/car/aircraft/wing) in A.components
+	var/obj/covers/storey_floor = new /obj/covers/wood(get_turf(wing))
+	A.update_flight_visuals()
+	aircraft_check(wing && !A.shadows[wing] && A.shadows.len == A.frames().len - 1, "a frame over an upper floor throws no shadow on the ground below")
+	qdel(storey_floor)
+	A.update_flight_visuals()
+	aircraft_check(A.shadows[wing], "the shadow returns over open air")
 	aircraft_check(!A.descend(M) && A.flight_state == AIRCRAFT_CRUISE, "descending onto an upper storey is refused")
 	for (var/i = 1, i <= 4, i++)
 		aircraft_step(A)
@@ -181,6 +230,9 @@ var/aircraft_runtime_error = FALSE
 	// Hitting an upper storey in low flight crashes.
 	aircraft_roll(A, A.takeoff_roll)
 	aircraft_check(A.airborne(), "the aircraft takes off again")
+	var/fuel_before = aircraft_tank_fuel(A)
+	A.flight_watch_tick()
+	aircraft_check(aircraft_tank_fuel(A) < fuel_before && A.stall_seconds == 0, "a second of flight burns fuel from the tank without counting as a stall")
 	var/obj/structure/aircraft_probe_wall/W2 = new(locate(4, aircraft_front_y(A) - 1, 2))
 	A.currentspeed = A.speeds
 	aircraft_check(!aircraft_step(A) && !A.airborne() && aircraft_frames_z(A, 1), "flying into an upper storey in low flight crashes to the ground")
@@ -195,13 +247,28 @@ var/aircraft_runtime_error = FALSE
 	aircraft_roll(A, A.takeoff_roll)
 	aircraft_check(A.airborne(), "the repaired aircraft takes off again")
 	E.on = FALSE
-	sleep(4.5 SECONDS)
-	aircraft_check(!A.airborne() && aircraft_frames_z(A, 1), "with the engine off it stalls and comes down")
+	for (var/i = 1, i <= 3, i++)
+		A.flight_watch_tick()
+	aircraft_check(!A.airborne() && aircraft_frames_z(A, 1), "with the engine off it stalls and comes down after three watch ticks")
 
 	// Off the runway a landing must be forced with a second Descend.
 	aircraft_repair(A)
+	aircraft_reset_north(A)
 	aircraft_roll(A, A.takeoff_roll)
 	aircraft_check(A.airborne(), "the aircraft takes off a fourth time")
+	var/west_x = 1000
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		west_x = min(west_x, F.x)
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		if (F.x == west_x)
+			for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
+				qdel(R)
+	A.currentspeed = A.landing_gear
+	aircraft_check(A.runway_share(1) > 0.6 && A.runway_share(1) < 0.7 && A.descend(M) && !A.airborne(), "a plane one tile off the strip, with two of three columns on runway, still lands")
+	aircraft_repair(A)
+	aircraft_reset_north(A)
+	aircraft_roll(A, A.takeoff_roll)
+	aircraft_check(A.airborne(), "the aircraft takes off a fifth time")
 	for (var/obj/structure/vehicleparts/frame/F in A.frames())
 		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
 			qdel(R)
@@ -209,6 +276,59 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(!A.descend(M) && A.airborne() && A.force_landing_until > world.time, "descending with no runway below asks for confirmation")
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1), "a second Descend forces a crash landing")
 	aircraft_check(aircraft_visuals_gone(A, list()), "a crashed aircraft drops its shadow and ground view")
+
+	// A crash over an obstacle comes down on the nearest clear ground.
+	aircraft_repair(A)
+	aircraft_reset_north(A)
+	aircraft_roll(A, A.takeoff_roll)
+	aircraft_check(A.airborne(), "the aircraft takes off a sixth time")
+	var/obj/structure/vehicleparts/frame/under = A.corners[2]
+	var/obj/structure/aircraft_probe_wall/ground_wall = new(locate(under.x, under.y, 1))
+	var/list/offset = A.clear_footprint_offset(1)
+	aircraft_check(islist(offset) && (offset[1] || offset[2]) && max(abs(offset[1]), abs(offset[2])) == 1, "a wall under one frame moves the landing one tile over")
+	A.currentspeed = A.landing_gear
+	A.descend(M)
+	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && !(locate(/obj/structure/vehicleparts/frame) in ground_wall.loc), "the forced landing comes down beside the wall, not in it")
+	qdel(ground_wall)
+
+	// With no clear ground within reach the airframe breaks up.
+	var/obj/structure/vehicleparts/axis/aircraft/X = build_light_plane(locate(13, 44, 2))
+	var/obj/structure/engine/internal/XE = X.engine
+	XE.fueltank.reagents.add_reagent(XE.fuels[1], 100, safety = TRUE)
+	XE.on = TRUE
+	var/mob/living/aircraft_probe/doomed = new(locate(14, 45, 2))
+	X.set_flight_state(AIRCRAFT_LOW)
+	var/list/rubble_tiles = list()
+	for (var/turf/T in block(locate(5, 36, 1), locate(20, 59, 1)))
+		if (T.x >= 13 && T.x <= 16 && T.y >= 44 && T.y <= 47)
+			rubble_tiles += T
+			continue
+		new /obj/structure/aircraft_probe_wall(T)
+	for (var/turf/T in rubble_tiles)
+		if (T.x == 14 && T.y == 45)
+			continue
+		new /obj/structure/aircraft_probe_wall(T)
+	aircraft_check(!X.clear_footprint_offset(1), "no clear footprint is found among the walls")
+	var/hurt_before = doomed.getBruteLoss()
+	aircraft_check(X.crash_land("the probe") && QDELETED(X), "the aircraft breaks up instead of landing in the walls")
+	aircraft_check(doomed.z == 1 && doomed.getBruteLoss() > hurt_before, "the crew fall to the ground, hurt")
+	aircraft_check(locate(/obj/structure/barricade/debris) in locate(14, 45, 1), "debris lands on the clear tile under the footprint")
+	for (var/obj/structure/aircraft_probe_wall/PW in world)
+		if (PW.z == 1 && PW.y >= 36)
+			qdel(PW)
+
+	// Holding at the edge of the world counts as losing lift.
+	var/obj/structure/vehicleparts/axis/aircraft/edge = build_light_plane(locate(6, 1, 2))
+	var/obj/structure/engine/internal/EE = edge.engine
+	EE.fueltank.reagents.add_reagent(EE.fuels[1], 100, safety = TRUE)
+	EE.on = TRUE
+	edge.set_flight_state(AIRCRAFT_LOW)
+	edge.moving = TRUE
+	edge.currentspeed = edge.speeds
+	aircraft_check(!edge.do_vehicle_check() && edge.edge_blocked, "a step off the edge of the world is refused and remembered")
+	for (var/i = 1, i <= 3, i++)
+		edge.flight_watch_tick()
+	aircraft_check(!edge.airborne() && aircraft_frames_z(edge, 1), "holding at the edge stalls the aircraft within three seconds")
 
 	// Saved in flight: after a load the aircraft is set down on the ground.
 	var/obj/structure/vehicleparts/axis/aircraft/D = build_light_plane(locate(6, 5, 2))

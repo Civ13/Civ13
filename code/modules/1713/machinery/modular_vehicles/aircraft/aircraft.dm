@@ -8,13 +8,22 @@
 // over them). Descending in low flight over a runway at approach speed lands
 // it; anywhere else, or after a stall, it crash-lands.
 
-#define AIRCRAFT_GROUND "ground"
-#define AIRCRAFT_LOW "low"
-#define AIRCRAFT_CRUISE "cruise"
+// AIRCRAFT_GROUND, AIRCRAFT_LOW and AIRCRAFT_CRUISE live in code/__defines/aircraft.dm.
 // Seconds without lift (engine off, too slow, stopped) before a stall crash.
 #define AIRCRAFT_STALL_SECONDS 3
 // A second Descend within this time forces a crash landing off a runway.
 #define AIRCRAFT_FORCE_LANDING_WINDOW (5 SECONDS)
+// Share of the frames that must be over runway for a landing. A 3-wide plane
+// drifting one tile off a 3-wide strip still lands.
+#define AIRCRAFT_LANDING_RUNWAY_SHARE 0.5
+// How far (in tiles) a crashing or restored aircraft looks for clear ground.
+#define AIRCRAFT_CRASH_SEARCH 6
+// Extra fuel burnt per second of flight, as a multiple of the engine's full-
+// load burn per tick; cruise is leaner than low flight.
+#define AIRCRAFT_FLIGHT_BURN_LOW 1.5
+#define AIRCRAFT_FLIGHT_BURN_CRUISE 1
+// The engine module's FUEL_CONSUMPTION_MODIFIER, which is file-local there.
+#define AIRCRAFT_FUEL_MODIFIER 2
 
 var/global/list/airborne_aircraft = list()
 
@@ -38,9 +47,11 @@ var/global/list/airborne_aircraft = list()
 	var/tmp/flight_watching = FALSE
 	var/tmp/force_landing_until = 0
 	var/tmp/no_airspace_warned = FALSE
+	// The last step was refused by the edge of the world: no lift either.
+	var/tmp/edge_blocked = FALSE
 
 /obj/structure/vehicleparts/axis/aircraft/persistence_runtime_var(key)
-	return (key in list("runway_roll", "stall_seconds", "flight_watching", "force_landing_until", "no_airspace_warned")) || ..(key)
+	return (key in list("runway_roll", "stall_seconds", "flight_watching", "force_landing_until", "no_airspace_warned", "edge_blocked")) || ..(key)
 
 /obj/structure/vehicleparts/axis/aircraft/proc/airborne()
 	return flight_state != AIRCRAFT_GROUND
@@ -99,6 +110,17 @@ var/global/list/airborne_aircraft = list()
 			return FALSE
 	return TRUE
 
+// The share of frames that would stand on runway at target_z, 0 to 1.
+/obj/structure/vehicleparts/axis/aircraft/proc/runway_share(target_z)
+	var/list/F = frames()
+	if (!F.len)
+		return 0
+	var/on = 0
+	for (var/obj/structure/vehicleparts/frame/FR in F)
+		if (aircraft_runway_at(locate(FR.x, FR.y, target_z)))
+			on++
+	return on / F.len
+
 // The first thing at T that an aircraft on that level would fly into.
 /obj/structure/vehicleparts/axis/aircraft/proc/obstacle_at(turf/T)
 	if (!T)
@@ -118,16 +140,32 @@ var/global/list/airborne_aircraft = list()
 		return S
 	return null
 
-/obj/structure/vehicleparts/axis/aircraft/proc/clear_at_level(target_z)
+/obj/structure/vehicleparts/axis/aircraft/proc/clear_at_level(target_z, dx = 0, dy = 0)
 	for (var/obj/structure/vehicleparts/frame/F in frames())
-		var/turf/T = locate(F.x, F.y, target_z)
+		var/turf/T = locate(F.x + dx, F.y + dy, target_z)
 		var/hit = obstacle_at(T)
 		if (hit)
 			return hit
 	return null
 
-// Moves the whole aircraft and everything aboard straight up or down.
-/obj/structure/vehicleparts/axis/aircraft/proc/aircraft_shift(target_z)
+// The nearest offset at which the whole footprint fits on target_z without
+// hitting anything, searching outward from straight below; null when none
+// is within AIRCRAFT_CRASH_SEARCH tiles.
+/obj/structure/vehicleparts/axis/aircraft/proc/clear_footprint_offset(target_z)
+	if (!clear_at_level(target_z))
+		return list(0, 0)
+	for (var/r = 1, r <= AIRCRAFT_CRASH_SEARCH, r++)
+		for (var/dx = -r, dx <= r, dx++)
+			for (var/dy = -r, dy <= r, dy++)
+				if (abs(dx) != r && abs(dy) != r)
+					continue
+				if (!clear_at_level(target_z, dx, dy))
+					return list(dx, dy)
+	return null
+
+// Moves the whole aircraft and everything aboard to target_z, shifted by
+// dx, dy tiles (straight up or down by default).
+/obj/structure/vehicleparts/axis/aircraft/proc/aircraft_shift(target_z, dx = 0, dy = 0)
 	if (!target_z || transforming_vehicle)
 		return FALSE
 	add_transporting(FALSE)
@@ -137,7 +175,7 @@ var/global/list/airborne_aircraft = list()
 	for (var/atom/movable/M in (transporting | components))
 		if (QDELETED(M) || !isturf(M.loc))
 			continue
-		var/turf/D = locate(M.x, M.y, target_z)
+		var/turf/D = locate(M.x + dx, M.y + dy, target_z)
 		if (!D)
 			return FALSE
 		movers += M
@@ -173,6 +211,7 @@ var/global/list/airborne_aircraft = list()
 	else
 		airborne_aircraft -= src
 		stall_seconds = 0
+		edge_blocked = FALSE
 	update_flight_visuals()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/try_takeoff()
@@ -222,11 +261,7 @@ var/global/list/airborne_aircraft = list()
 	if (!down)
 		to_chat(user, SPAN_WARNING("There is no ground below to land on."))
 		return FALSE
-	var/runway = TRUE
-	for (var/obj/structure/vehicleparts/frame/F in frames())
-		if (!aircraft_runway_at(locate(F.x, F.y, down)))
-			runway = FALSE
-			break
+	var/runway = runway_share(down) >= AIRCRAFT_LANDING_RUNWAY_SHARE
 	var/hit = clear_at_level(down)
 	if (runway && !hit && currentspeed <= landing_gear)
 		if (!aircraft_shift(down))
@@ -238,7 +273,7 @@ var/global/list/airborne_aircraft = list()
 	if (runway && !hit)
 		to_chat(user, SPAN_WARNING("Too fast to land: slow to gear [landing_gear] or lower first."))
 		return FALSE
-	if (world.time <= force_landing_until)
+	if (force_landing_until && world.time <= force_landing_until)
 		force_landing_until = 0
 		crash_land(runway ? "a hard landing" : "a crash landing")
 		return TRUE
@@ -246,13 +281,17 @@ var/global/list/airborne_aircraft = list()
 	to_chat(user, SPAN_DANGER("[hit ? "[hit] is in the way below" : "There is no runway below"]. Descend again within five seconds to force a crash landing."))
 	return FALSE
 
-// Down to the level below wherever the aircraft is, broken and stopped.
+// Down to the level below, broken and stopped. The aircraft comes down on the
+// nearest clear ground; with nothing clear nearby it breaks up (wreck()).
 /obj/structure/vehicleparts/axis/aircraft/proc/crash_land(reason = "a crash")
 	if (!airborne())
 		return FALSE
 	var/down = multiz_level_below(flight_z())
+	var/list/offset = down ? clear_footprint_offset(down) : null
+	if (down && !offset)
+		return wreck(reason)
 	if (down)
-		aircraft_shift(down)
+		aircraft_shift(down, offset[1], offset[2])
 	set_flight_state(AIRCRAFT_GROUND)
 	moving = FALSE
 	currentspeed = 0
@@ -269,24 +308,81 @@ var/global/list/airborne_aircraft = list()
 	playsound(get_turf(src), 'sound/effects/bang.ogg', 70, TRUE)
 	return TRUE
 
-// While airborne: no lift for a few seconds means a stall and a crash.
+// No clear ground within reach: the airframe breaks up over whatever is
+// below. The crew and cargo fall to the ground, hurt; the frames become
+// debris on the clear tiles under the footprint, and the rest is lost.
+/obj/structure/vehicleparts/axis/aircraft/proc/wreck(reason = "a crash")
+	var/down = multiz_level_below(flight_z())
+	add_transporting(FALSE)
+	var/list/F = frames()
+	var/turf/here = get_turf(src)
+	visible_message(SPAN_DANGER("\The [src] breaks up in [reason]!"))
+	if (here)
+		playsound(here, 'sound/effects/bang.ogg', 90, TRUE)
+	for (var/atom/movable/M in transporting)
+		if (QDELETED(M) || (M in components))
+			continue
+		var/turf/T = down ? locate(M.x, M.y, down) : null
+		if (T && !T.density)
+			M.forceMove(T)
+		if (isliving(M))
+			var/mob/living/L = M
+			L.adjustBruteLoss(rand(30, 60))
+			L.Weaken(5)
+			to_chat(L, SPAN_DANGER("\The [src] breaks up in [reason] and you fall!"))
+	for (var/obj/structure/vehicleparts/frame/FR in F)
+		var/turf/T = down ? locate(FR.x, FR.y, down) : null
+		if (T && !T.density && !(locate(/obj/structure) in T))
+			new /obj/structure/barricade/debris(T)
+	set_flight_state(AIRCRAFT_GROUND)
+	moving = FALSE
+	currentspeed = 0
+	for (var/atom/movable/C in components.Copy())
+		if (C != src)
+			qdel(C)
+	qdel(src)
+	return TRUE
+
+// While airborne: no lift for a few seconds means a stall and a crash. One
+// addtimer step per second; flight fuel burns here too.
 /obj/structure/vehicleparts/axis/aircraft/proc/flight_watch()
-	set waitfor = FALSE
 	if (flight_watching)
 		return
 	flight_watching = TRUE
-	while (airborne() && !QDELETED(src))
-		if (!moving || currentspeed < stall_gear || !check_engine())
-			stall_seconds++
-			if (stall_seconds == 1)
-				pilot_message(SPAN_DANGER("The aircraft is losing lift! Throttle up!"))
-			if (stall_seconds >= AIRCRAFT_STALL_SECONDS)
-				crash_land("a stall")
-				break
-		else
-			stall_seconds = 0
-		sleep(1 SECOND)
-	flight_watching = FALSE
+	addtimer(CALLBACK(src, PROC_REF(flight_watch_tick)), 1 SECOND)
+
+/obj/structure/vehicleparts/axis/aircraft/proc/flight_watch_tick()
+	if (QDELETED(src) || !airborne())
+		flight_watching = FALSE
+		return
+	burn_flight_fuel()
+	if (!moving || edge_blocked || currentspeed < stall_gear || !check_engine())
+		stall_seconds++
+		if (stall_seconds == 1)
+			pilot_message(SPAN_DANGER("The aircraft is losing lift! Throttle up!"))
+		if (stall_seconds >= AIRCRAFT_STALL_SECONDS)
+			flight_watching = FALSE
+			crash_land("a stall")
+			return
+	else
+		stall_seconds = 0
+	addtimer(CALLBACK(src, PROC_REF(flight_watch_tick)), 1 SECOND)
+
+// Staying in the air costs more than rolling: a second of flight burns an
+// extra share of the engine's full-load consumption from its tank.
+/obj/structure/vehicleparts/axis/aircraft/proc/burn_flight_fuel()
+	if (!engine || !engine.on || !engine.fueltank || !engine.fueltank.reagents)
+		return 0
+	var/obj/structure/engine/internal/E = engine
+	if (!istype(E))
+		return 0
+	var/share = flight_state == AIRCRAFT_CRUISE ? AIRCRAFT_FLIGHT_BURN_CRUISE : AIRCRAFT_FLIGHT_BURN_LOW
+	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share
+	for (var/F in E.fuels)
+		if (E.fueltank.reagents.has_reagent(F, amount))
+			E.fueltank.reagents.remove_reagent(F, amount)
+			return amount
+	return 0
 
 /obj/structure/vehicleparts/axis/aircraft/do_vehicle_check()
 	if (!airborne())
@@ -297,7 +393,9 @@ var/global/list/airborne_aircraft = list()
 	for (var/obj/structure/vehicleparts/frame/F in frames())
 		var/turf/T = get_step(F.loc, m_dir)
 		if (!T)
-			pilot_message(SPAN_WARNING("You are at the edge of the world. Turn back."))
+			if (!edge_blocked)
+				pilot_message(SPAN_WARNING("You are at the edge of the world. Turn back or you will stall."))
+			edge_blocked = TRUE
 			return FALSE
 		if (flight_state == AIRCRAFT_CRUISE)
 			continue
@@ -305,6 +403,7 @@ var/global/list/airborne_aircraft = list()
 		if (hit)
 			crash_land("a collision with [hit]")
 			return FALSE
+	edge_blocked = FALSE
 	return TRUE
 
 // The parent loop stops on a broken wheel; in the air the gear is tucked away,
@@ -350,5 +449,10 @@ var/global/list/airborne_aircraft = list()
 	else
 		runway_roll = 0
 
+#undef AIRCRAFT_FUEL_MODIFIER
+#undef AIRCRAFT_FLIGHT_BURN_CRUISE
+#undef AIRCRAFT_FLIGHT_BURN_LOW
+#undef AIRCRAFT_CRASH_SEARCH
+#undef AIRCRAFT_LANDING_RUNWAY_SHARE
 #undef AIRCRAFT_FORCE_LANDING_WINDOW
 #undef AIRCRAFT_STALL_SECONDS

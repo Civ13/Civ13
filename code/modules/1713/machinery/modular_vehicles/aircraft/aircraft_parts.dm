@@ -173,6 +173,8 @@ var/global/list/aircraft_light_plane_layout = list(
 				P.dir = SOUTH
 				A.components += P
 	A.check_matrix()
+	// Know what is aboard before the first move looks ahead over the hull.
+	A.add_transporting(FALSE)
 	for (var/obj/O in parts)
 		O.update_icon()
 	return A
