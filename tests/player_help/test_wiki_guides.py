@@ -138,13 +138,13 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '4862bc0b49383660694e71b808b904f5c6610f7c')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'b1cf4db981894d7a0f22030850cd677a675b1a91')
         cases = {
-            'Chemistry': ('8e911052635f458944f9d5e9727093538cfccbcf458c953378b0741d769c8dfb',
+            'Chemistry': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892',
                           'chemistry reaction bench',
                           'The installed mixture stays inert, avoiding competing automatic reactions.',
                           'How do I use a laboratory reaction bench?'),
-            'Medical': ('32dc94e3dda70d49877b3f4f81d53c52bc1b9568d3de0034545dc4eb97216bf2',
+            'Medical': ('e2508dd0a9146a1978618d4de4a0f1ef57ab9e79791e4d00bc7d9e6d543944b8',
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
@@ -152,7 +152,7 @@ class WikiGuideTests(unittest.TestCase):
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('f53b8e81f94789c5b607bda6d65f00b597c71dda3e3628557f4d2494aec0a53b',
+            'Trains': ('51c1624333ef8b81a09ad16c3252d7e33483a3dafd2c96f78e74ce174378807a',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),
