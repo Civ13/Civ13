@@ -201,6 +201,15 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
+    # Per-round battle map variation inserts: generator freshness, slot bounds,
+    # open-ground placement against the base maps and loader rules; no BYOND runtime.
+    'map_variations': {'files': ('tests/map_variations/test_map_variations.py',),
+        'paths': ('tests/map_variations/', 'maps/zones/variations/',
+                  'code/modules/map_variations/'), 'shared_paths': (
+            'maps/1943/smallingrad.dmm', 'maps/1903/hill_203.dmm',
+            'code/game/objects/map_metadata/stalingrad.dm',
+            'code/game/objects/map_metadata/hill203.dm',
+            'code/game/gameticker.dm', 'code/__defines/maps.dm', 'civ13.dme')},
     # Zombie city generator: base map regeneration, placed-type and contract
     # name projection, checker fixtures; no BYOND runtime.
     'zombie_city': {'files': ('tests/zombie_city/test_zombie_city.py',),
