@@ -825,6 +825,8 @@
 #include "code\modules\1713\cane.dm"
 #include "code\modules\1713\canopy_shelter.dm"
 #include "code\modules\1713\closets.dm"
+#include "code\modules\1713\cmss13_gear.dm"
+#include "code\modules\1713\codebook_emotes.dm"
 #include "code\modules\1713\clothing.dm"
 #include "code\modules\1713\complex_production.dm"
 #include "code\modules\1713\cutting_board.dm"
