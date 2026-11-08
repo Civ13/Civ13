@@ -70,6 +70,48 @@ var/list/hud_failures = list()
 		hud_failures += message
 /proc/loc_text(list/L)
 	return L ? jointext(L, "|") : "null"
+// The live default HUD positions (pixels from the lower-left, 15x15 view).
+var/list/default_hud_tiles = list(
+	"health" = list(448, 192), "nutrition" = list(448, 160), "bodytemp" = list(448, 256), "mood" = list(448, 224),
+	"throw" = list(416, 32), "pull" = list(416, 32), "resist" = list(416, 32), "drop" = list(416, 32), "m_intent" = list(416, 0),
+	"equip" = list(192, 32), "swap" = list(192, 32), "intent" = list(368, 0), "help" = list(352, 0), "harm" = list(384, 0),
+	"zone" = list(448, 0), "rzone" = list(448, 64), "fixeye" = list(448, 77), "gunmode" = list(96, 32), "move" = list(128, 32),
+	"itemuse" = list(160, 32), "inventory" = list(0, 0), "mode" = list(288, 0), "secondary" = list(320, 0), "tactic" = list(256, 0),
+	"inv14" = list(32, 64), "inv13" = list(32, 32), "inv2" = list(64, 64), "inv10" = list(0, 64), "inv8" = list(0, 96),
+	"inv20" = list(64, 96), "inv11" = list(32, 128), "inv12" = list(0, 32), "inv1" = list(160, 0), "inv22" = list(128, 0),
+	"inv9" = list(32, 96), "inv7" = list(64, 32), "inv15" = list(32, 0), "inv16" = list(64, 0), "inv6" = list(96, 0),
+	"inv4" = list(224, 0), "inv5" = list(192, 0))
+/proc/hud_rects_overlap(list/A, list/B, s)
+	return A[1] < B[1] + s - 0.01 && B[1] < A[1] + s - 0.01 && A[2] < B[2] + s - 0.01 && B[2] < A[2] + s - 0.01
+// Reflows the default HUD at scale g; returns a failure text or null.
+/proc/check_reflow(g)
+	var/view = 480
+	var/list/flow = list()
+	var/list/tiles = list()
+	for (var/name in default_hud_tiles)
+		var/list/P = default_hud_tiles[name]
+		var/obj/screen/S = new
+		S.name = name
+		var/list/D = hud_infer_anchor(list("WEST", P[1], "SOUTH", P[2]), view, view)
+		flow += list(list(S, hud_anchor_origin(D[1], view) + D[2], hud_anchor_origin(D[3], view) + D[4]))
+		tiles[S] = P
+	hud_reflow(flow, g, view, view)
+	var/s = 32 * g
+	var/list/placed = list()
+	for (var/obj/screen/S in tiles)
+		var/list/R = list(hud_anchor_origin(S.hud_ax, view) + S.hud_ox, hud_anchor_origin(S.hud_ay, view) + S.hud_oy)
+		if (R[1] < -0.01 || R[2] < -0.01 || R[1] + s > view + 0.01 || R[2] + s > view + 0.01)
+			return "[S.name] off screen at [g]"
+		placed[S] = R
+	for (var/obj/screen/A in placed)
+		for (var/obj/screen/B in placed)
+			if (A == B || A.name > B.name)
+				continue
+			if (hud_rects_overlap(tiles[A], tiles[B], 32))
+				continue // tiles that already share a spot at 100% keep sharing it
+			if (hud_rects_overlap(placed[A], placed[B], s))
+				return "[A.name] covers [B.name] at [g]"
+	return null
 /world/New()
 	OpenPort("none")
 	check(port == 0 && byond_version == 516 && byond_build == 1688, "pin and closed port")
@@ -143,9 +185,16 @@ var/list/hud_failures = list()
 	check(Q.hud_scale == 1, "out-of-range scale reset")
 	Q.hud_layout = list("", "junk", "1713Style~need:mood~WEST")
 	check(!Q.hud_layout_entry("1713Style", "need:mood"), "malformed entries ignored")
+	// Default tiles keep the edge they sit on, so small scales stay in the corners.
+	check(loc_text(hud_infer_anchor(list("WEST", 448, "SOUTH", 192), 480, 480)) == "EAST|-32|CENTER|-48", "right column anchors east: [loc_text(hud_infer_anchor(list("WEST", 448, "SOUTH", 192), 480, 480))]")
+	check(loc_text(hud_infer_anchor(list("WEST", 0, "SOUTH", 0), 480, 480)) == "WEST|0|SOUTH|0", "lower-left stays west/south")
+	check(loc_text(hud_infer_anchor(list("WEST", 224, "SOUTH", 0), 480, 480)) == "CENTER|-16|SOUTH|0", "middle hand anchors centre")
+	for (var/g in list(1.25, 1.5, 1.75, 2))
+		var/err = check_reflow(g)
+		check(!err, "reflow: [err]")
 	if (hud_failures.len)
 		world.log << "FAIL hud layout: [jointext(hud_failures, "; ")]"
 		del(world)
 		return
-	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load"
+	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load, inferred anchors, reflow without overlap at 125-200%"
 	del(world)
