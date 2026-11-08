@@ -5,20 +5,8 @@
 //	set hidden = TRUE
 
 	var/choice = WWinput(usr, "What screen size?", "Size", "Auto", list("Auto","128x128","96x96","64x64","48x48","32x32"))
-	if (choice == "Auto")
-		winset(src, "mapwindow.map", "icon-size=0")
-	else if (choice == "128x128")
-		winset(src, "mapwindow.map", "icon-size=128")
-	else if (choice == "96x96")
-		winset(src, "mapwindow.map", "icon-size=96")
-	else if (choice == "64x64")
-		winset(src, "mapwindow.map", "icon-size=64")
-	else if (choice == "48x48")
-		winset(src, "mapwindow.map", "icon-size=48")
-	else if (choice == "32x32")
-		winset(src, "mapwindow.map", "icon-size=32")
-	else
-		winset(src, "mapwindow.map", "icon-size=0")
+	var/list/sizes = list("Auto" = 0, "128x128" = 128, "96x96" = 96, "64x64" = 64, "48x48" = 48, "32x32" = 32)
+	set_map_icon_size(sizes[choice] || 0)
 	return
 
 /client/verb/icons_scale()

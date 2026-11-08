@@ -13,11 +13,15 @@ client/verb/updateFullscreen()
 		winset(src, "mainwindow.mainvsplit", "splitter=78")
 		winset(src, "mainwindow", "is-maximized=true")
 		fullscreen = TRUE
+		if(is_preference_enabled(/datum/client_preference/fit_viewport))
+			fit_viewport()
 		return
 	else
 		winset(src, "mainwindow", "can-resize=true;titlebar=true;menu=menu")
 		winset(src, "mainwindow.mainvsplit", "splitter=75")
 		fullscreen = FALSE
+		if(is_preference_enabled(/datum/client_preference/fit_viewport))
+			fit_viewport()
 		return
 
 client/verb/fixFullscreen()
