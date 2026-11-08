@@ -3,13 +3,16 @@
 DM reaches it with rustg_http_request_async; the coordinator reaches it to move
 envelopes. It listens on 127.0.0.1 only, refuses other client addresses, and
 requires the shared token from the region's token file on every request.
-Requests are served one at a time, so the store sees no concurrency.
+Each connection is read on its own thread with a socket timeout, so a client
+that connects and never sends (or a slow one) cannot stall the others; the
+routes still run one at a time under a lock, so the store sees no concurrency.
 """
 import argparse
 import hmac
 import json
 import sys
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 if __package__ in (None, ''):
     import os
@@ -18,6 +21,7 @@ from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
 
 MAX_BODY = 1 << 20  # 1 MiB per request
+READ_TIMEOUT = 10  # seconds a connection may take to send its request
 
 
 def _load(store, body):
@@ -71,9 +75,11 @@ def make_server(store, token, port=0, radio=None):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError('the agent token must be at least 32 characters')
     routes = _routes(store, radio or RadioRelay(store.region, store.group))
+    lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
         server_version = 'civ13-transfer-agent/1'
+        timeout = READ_TIMEOUT
 
         def log_message(self, fmt, *args):
             pass  # no request bodies or items in logs
@@ -104,7 +110,9 @@ def make_server(store, token, port=0, radio=None):
                 body = json.loads(self.rfile.read(length) or b'{}')
                 if type(body) is not dict:
                     raise ValueError('body must be an object')
-                return self._answer(200, {'ok': True, 'result': route(body)})
+                with lock:
+                    result = route(body)
+                return self._answer(200, {'ok': True, 'result': result})
             except RegionHeld as e:
                 return self._answer(409, {'ok': False, 'held': True, 'error': str(e)})
             except (TransferError, RadioError, KeyError, TypeError, ValueError) as e:
@@ -113,7 +121,9 @@ def make_server(store, token, port=0, radio=None):
         def do_GET(self):
             self._answer(405, {'error': 'use POST'})
 
-    return HTTPServer(('127.0.0.1', port), Handler)
+    server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    server.daemon_threads = True
+    return server
 
 
 def main(argv=None):

@@ -82,6 +82,19 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(413, response.status)
         conn.close()
 
+    def test_idle_connection_does_not_stall_other_requests(self):
+        # A client that connects and never sends (seen live on 2026-11-08) must
+        # not block the world's once-a-second polls behind it.
+        import socket
+        import time
+        idle = socket.create_connection(('127.0.0.1', self.servers['alpha'].server_address[1]))
+        try:
+            started = time.monotonic()
+            self.assertTrue(self.a('/status')['ok'])
+            self.assertLess(time.monotonic() - started, 2)
+        finally:
+            idle.close()
+
     def test_refusals_are_reported_not_raised(self):
         answer = self.a('/escrow', {'peer': 'gamma', 'payloads': ['axe']})
         self.assertFalse(answer['ok'])

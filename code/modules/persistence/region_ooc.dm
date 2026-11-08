@@ -10,13 +10,18 @@
 // holds an OOC ban in this world's ban list too.
 //
 // Transport is the region's transfer agent (tools/transfer_storage/radio.py,
-// /ooc/send and /ooc/inbox); the radio process moves it once a second. Off
-// unless the world is in a region group and has a transfer agent.
+// /ooc/send and /ooc/inbox). The radio process sends queued lines once a
+// second and polls the inbox every few seconds, never while an earlier OOC
+// call is still waiting on the agent. Off unless the world is in a region
+// group and has a transfer agent.
 #define REGION_OOC_QUEUE_LIMIT 50
 #define REGION_OOC_SEND_LIMIT 10
 #define REGION_OOC_RECEIVE_LIMIT 50
+#define REGION_OOC_POLL_INTERVAL 30 // deciseconds between inbox polls
 
 var/global/list/region_ooc_outbound_queue = list()
+var/global/region_ooc_busy = FALSE
+var/global/region_ooc_next_poll = 0
 
 /proc/region_ooc_enabled()
 	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled() && ticker && ticker.current_state == GAME_STATE_PLAYING
@@ -112,11 +117,22 @@ var/global/list/region_ooc_outbound_queue = list()
 	if (!region_ooc_enabled())
 		region_ooc_outbound_queue.Cut()
 		return
+	if (region_ooc_busy)
+		return
+	region_ooc_busy = TRUE
+	. = region_ooc_exchange()
+	region_ooc_busy = FALSE
+
+/proc/region_ooc_exchange()
 	var/sent = 0
 	while (region_ooc_outbound_queue.len && ++sent <= REGION_OOC_SEND_LIMIT)
 		var/list/envelope = region_ooc_outbound_queue[1]
 		region_ooc_outbound_queue.Cut(1, 2)
-		transfer_bridge.request("/ooc/send", list("envelope" = envelope))
+		if (!transfer_bridge.request("/ooc/send", list("envelope" = envelope)))
+			return // the agent is not answering; the rest waits for the next tick
+	if (world.time < region_ooc_next_poll)
+		return
+	region_ooc_next_poll = world.time + REGION_OOC_POLL_INTERVAL
 	var/list/answer = transfer_bridge.request("/ooc/inbox", list())
 	if (!islist(answer) || !answer["ok"] || !islist(answer["result"]) || !islist(answer["result"]["envelopes"]))
 		return
@@ -129,3 +145,4 @@ var/global/list/region_ooc_outbound_queue = list()
 #undef REGION_OOC_QUEUE_LIMIT
 #undef REGION_OOC_SEND_LIMIT
 #undef REGION_OOC_RECEIVE_LIMIT
+#undef REGION_OOC_POLL_INTERVAL

@@ -9,6 +9,9 @@
 // Character effects travel fast instead: the agent journals them as confirmed at
 // once, and a load whose save lacks one gets it back to replay.
 
+// A stalled agent must not cost the world one rust_g thread per poll.
+#define TRANSFER_BRIDGE_ABANDONED_LIMIT 4
+
 var/global/datum/transfer_bridge/transfer_bridge = new
 
 /datum/transfer_bridge
@@ -30,6 +33,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	var/polling = FALSE
 	// Deciseconds between arrival polls (config "poll_seconds", 1-300).
 	var/poll_interval = 300
+	// Requests that missed their deadline. rust_g keeps a thread for each one
+	// until it finishes and is checked, so they are checked again later and no
+	// new request is sent while too many are still out.
+	var/list/abandoned = list()
 
 /datum/transfer_bridge/New()
 	..()
@@ -66,6 +73,10 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 // cannot be reached within five seconds.
 /datum/transfer_bridge/proc/request(path, list/body)
 	if(!enabled()) return null
+	for(var/datum/http_request/stale in abandoned.Copy())
+		if(stale.is_complete())
+			abandoned -= stale
+	if(length(abandoned) >= TRANSFER_BRIDGE_ABANDONED_LIMIT) return null
 	var/datum/http_request/R = new
 	// An empty DM list encodes as a JSON array; the agent wants an object.
 	var/payload = length(body) ? json_encode(body) : "{}"
@@ -73,7 +84,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	R.begin_async()
 	var/deadline = world.timeofday + 50
 	while(!R.is_complete())
-		if(world.timeofday > deadline || world.timeofday < deadline - 100) return null
+		if(world.timeofday > deadline || world.timeofday < deadline - 100)
+			abandoned += R
+			return null
 		sleep(1)
 	var/datum/http_response/response = R.into_response()
 	if(response.error || !istext(response.body)) return null
