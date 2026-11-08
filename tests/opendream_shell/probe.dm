@@ -25,6 +25,8 @@ var/failures = 0
 	var/last = 0
 /process/python/proc/getScriptDir()
 	return "scripts"
+/process/python/proc/unix_runner()
+	return "sudo python3"
 /proc/ishuman(mob/M)
 	return istype(M, /mob/living/human)
 /proc/log_debug(message)

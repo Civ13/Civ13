@@ -208,6 +208,9 @@ jobs:
       - name: Test optional geographic elevation offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation')
         run: python3 -B -m unittest discover -s tests/elevation -v
+      - name: Test supervised map swap scripts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/server_scripts')
+        run: python3 -B -m unittest discover -s tests/server_scripts -p 'test_*.py' -v
       - name: Check zone and spawn persistence contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/zone_persistence')
         run: python3 -B -m unittest discover -s tests/zone_persistence -v

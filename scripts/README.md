@@ -50,3 +50,48 @@ mdir:/path/to/server/
 cdir:/path/to/live/
 port:1313
 ```
+
+### Supervised hosting (systemd)
+
+A host can run DreamDaemon as an ordinary user under a service manager instead
+of the root `sudo` flow. Add optional lines to the live copy's `paths.txt`:
+
+```
+gitdir:civ13-tdm-src
+supervisor:systemd
+```
+
+`gitdir` names the build checkout (a folder under `mdir`, or an absolute path;
+default `civ13-git`). With `supervisor:systemd`, `mapswap.py` fetches master,
+selects the voted map, compiles with the `DreamMaker` on `PATH`, copies config,
+installs `civ13.dmb`/`civ13.rsc` by rename, then sends the server `SIGTERM` so
+the service restarts it. A failed build leaves the running world alone. Add
+`UNPRIVILEGED_SCRIPTS` to `config/config.txt` so the game calls `python3`
+rather than `sudo python3`.
+
+Example system unit (`/etc/systemd/system/civ13-tdm.service`). It runs as an
+ordinary user; container hosts such as OpenVZ often cannot run a per-user
+systemd manager, so prefer a system unit there:
+
+```ini
+[Unit]
+Description=Civ13 TDM (DreamDaemon)
+After=network-online.target
+
+[Service]
+User=civ13
+WorkingDirectory=/home/civ13/civ13-tdm
+Environment=PATH=/home/civ13/byond-516.1688/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LD_LIBRARY_PATH=/home/civ13/byond-516.1688/bin
+ExecStart=/home/civ13/byond-516.1688/bin/DreamDaemon /home/civ13/civ13-tdm/civ13.dmb 1714 -trusted -webclient -logself
+KillMode=mixed
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+CivilizationBot controls the unit with its `systemd` server option. A bot that
+is not root needs a sudoers rule for exactly
+`/usr/bin/systemctl --no-block start|stop|restart civ13-tdm.service`.

@@ -111,6 +111,8 @@
 	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		// Freeze this level's players only while it is captured (restart_transaction.dm).
+		persistence_freeze_level(A)
 		saving_content_owners = alist()
 		saving_lists = alist()
 		saving_reference_pins = list()
@@ -176,6 +178,7 @@
 			saving_segments = null
 		savefile.Flush()
 		savefile = null // Close the candidate level before consistency validation.
+		persistence_release_level(A)
 		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
 		save_phase_started = persistence_save_phase_log("level [A]", save_phase_started)

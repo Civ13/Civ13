@@ -727,7 +727,7 @@ var/global/datum/persistence_admission_identity
 			return null
 #endif
 		if(kind == "save")
-			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
+			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement. Players are held still only while their own level is being saved.</B></FONT>")
 	catch(var/exception/admission_error)
 		operation.withdraw()
 		throw admission_error
@@ -873,6 +873,8 @@ var/global/datum/persistence_admission_identity
 #endif
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
+		// A handover keeps its frozen levels until the move ends (set_world_moving).
+		persistence_release_all_levels()
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE

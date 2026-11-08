@@ -1359,6 +1359,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/road" = "paved_infrastructure",
 		"/obj/covers/roads/cobble" = "paved_infrastructure",
 		"/obj/covers/roads/modern" = "paved_infrastructure",
+		"/obj/covers/roads/modern/runway" = "powered_flight",
 		"/obj/covers/roads/roman" = "paved_infrastructure",
 		// --- pharmacology (5) ---
 		"/obj/structure/fluid_tablet_press" = "pharmacology",
