@@ -374,6 +374,10 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Parcels.** Anyone welcome may leave a held item as a parcel for the
   port's station; the owners may leave parcels for a guest party. Each
   party collects its own parcels there (20 at most per port).
+- **Boarding raids.** A party may also force a docking (30 s, owners
+  warned) at a port that does not welcome it, only while some of that
+  station's owners are online (`crew_aboard`, the train raid rule). Raiders
+  land beside the port and ferry home the normal way.
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
 

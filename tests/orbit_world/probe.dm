@@ -1448,6 +1448,13 @@ var/global/orbit_failures = 0
 	map.ordinal_age = 7
 	shard_group.region = "orbit"
 
+// A port whose owners count as online when crew is set.
+/obj/structure/docking_port/probe_crew
+	var/crew = FALSE
+
+/obj/structure/docking_port/probe_crew/crew_aboard()
+	return crew
+
 // Station visits (orbit_docking.dm): ports belong to their plane's station,
 // who may dock, ferrying across and home again, and parcels.
 /proc/orbit_docking_checks()
@@ -1474,7 +1481,7 @@ var/global/orbit_failures = 0
 	map.ordinal_age = 8
 	var/obj/structure/region_gate/station_hatch/HA = orbit_station_hatch(host)
 	var/obj/structure/region_gate/station_hatch/HB = orbit_station_hatch(visitor)
-	var/obj/structure/docking_port/A = new(orbit_freight_beside(get_turf(HA)))
+	var/obj/structure/docking_port/probe_crew/A = new(orbit_freight_beside(get_turf(HA)))
 	var/obj/structure/docking_port/B = new(orbit_freight_beside(get_turf(HB)))
 	orbit_check("ports belong to their stations", "[A.owner()]|[B.owner()]", "[host]|[visitor]")
 	var/obj/structure/docking_port/stray = new(locate(3, 3, 1))
@@ -1500,6 +1507,26 @@ var/global/orbit_failures = 0
 	orbit_check("way home offered", ("Home: your station" in A.ferry_choices(visitor)) ? 1 : 0, 1)
 	orbit_check("ferry home", "[A.cross(V, "Home: your station")]", "")
 	orbit_check("visitor home again", V.z, B.z)
+
+	// Boarding raids: only while some of the owners are online.
+	A.welcome = "owners"
+	A.guests -= visitor
+	var/raid_label = "Board [party_train_party_name(host)]"
+	A.crew = FALSE
+	orbit_check("no boarding while the owners are away", (raid_label in B.ferry_choices(visitor, TRUE)) ? 1 : 0, 0)
+	orbit_check("the crew check asks who is online", B.crew_aboard() ? 1 : 0, 0)
+	A.crew = TRUE
+	orbit_check("boarding offered while the owners are aboard", (raid_label in B.ferry_choices(visitor, TRUE)) ? 1 : 0, 1)
+	orbit_check("raiders board by force", "[B.cross(V, raid_label, TRUE)]", "")
+	orbit_check("raider aboard the host station", V.z, A.z)
+	orbit_check("raider can still ferry home", ("Home: your station" in A.ferry_choices(visitor)) ? 1 : 0, 1)
+	A.cross(V, "Home: your station")
+	A.crew = FALSE
+	orbit_check("boarding refused once the crew leaves", findtext("[B.cross(V, raid_label, TRUE)]", "crew has left") ? 1 : 0, 1)
+	A.welcome = "everyone"
+	A.crew = TRUE
+	orbit_check("no boarding a welcoming station", (raid_label in B.ferry_choices(visitor, TRUE)) ? 1 : 0, 0)
+	A.welcome = "owners"
 
 	// Parcels: anyone welcome leaves one for the station; owners for guests.
 	var/obj/item/stack/material/steel/S = new(get_turf(A), 12)
