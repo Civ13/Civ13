@@ -246,6 +246,16 @@ class Platform:
         return result.returncode, (result.stdout + result.stderr)[-4000:]
 
     def listening(self, port):
+        # On Windows a loopback connect to a closed port is retried for about 2 s before it is
+        # refused, and the doorman asks this several times per cold region for every status
+        # request it serves under one lock. With three cold regions each host_status took ~20 s
+        # and the doorman stopped answering at all (2026-11-08). The listening table answers
+        # at once; the connect stays as the fallback and for other systems.
+        if os.name == 'nt':
+            try:
+                return any(row[0] == port and row[2] == 'LISTENING' for row in windows_tcp_rows())
+            except (OSError, ValueError, AttributeError):
+                pass
         try:
             with socket.create_connection(('127.0.0.1', port), timeout=2):
                 return True
