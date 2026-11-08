@@ -10,8 +10,7 @@ import os
 from pathlib import Path
 import re
 import signal
-import subprocess
-import sys
+import socket
 import time
 import threading
 import urllib.parse
@@ -19,6 +18,8 @@ import urllib.request
 import uuid
 
 MAX_RESPONSE = 65536
+DEFAULT_POLL_SECONDS = 0.25  # spool scan interval; the game polls responses every 2 s
+HEARTBEAT_SECONDS = 1.0  # health.json sequence refresh; the game wants a change within 10 s
 MAX_REQUEST_ID = 100
 HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
@@ -1028,6 +1029,9 @@ def load_config(path):
         raise ValueError('num_ctx must be an integer in 4096..32768')
     if type(config['think']) is not bool:
         raise ValueError('think must be true or false')
+    config['poll_seconds'] = config.get('poll_seconds', DEFAULT_POLL_SECONDS)
+    if type(config['poll_seconds']) not in (int, float) or isinstance(config['poll_seconds'], bool) or not 0.05 <= config['poll_seconds'] <= 5:
+        raise ValueError('poll_seconds must be a number in 0.05..5')
     config['keep_alive'] = config.get('keep_alive', DEFAULT_KEEP_ALIVE)
     if type(config['keep_alive']) is int and -1 <= config['keep_alive'] <= 86400 * 30:
         config['keep_alive'] = str(config['keep_alive'])
@@ -1046,7 +1050,7 @@ def load_config(path):
     return config
 
 
-def network_child(endpoint, payload, headers, timeout):
+def network_child(endpoint, payload, headers, timeout, holder=None):
     # No environment proxy or redirect: the configured origin is the only destination.
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *args):
@@ -1054,22 +1058,55 @@ def network_child(endpoint, payload, headers, timeout):
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
     request = urllib.request.Request(endpoint, json.dumps(payload).encode(), headers, method='POST')
     with opener.open(request, timeout=timeout) as response:
+        if holder is not None:
+            holder['response'] = response
         raw = response.read(MAX_RESPONSE + 1)
     if len(raw) > MAX_RESPONSE:
         raise ValueError('Oversized model response')
     return json.loads(raw)
 
 
+def _abandon(holder):
+    """Unblock a transport thread that outlived its deadline by closing its socket."""
+    response = holder.get('response')
+    if response is None:
+        return
+    try:
+        sock = response.fp.raw._sock
+        sock.shutdown(socket.SHUT_RDWR)
+    except Exception:
+        pass
+    try:
+        response.close()
+    except Exception:
+        pass
+
+
 def network(endpoint, payload, headers, timeout):
-    # A separate child gives a wall-clock deadline even for a slow trickling server.
-    # Credentials travel over stdin, never command arguments or diagnostic output.
-    result = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--network-worker'],
-                            input=json.dumps([endpoint, payload, headers, timeout]), text=True,
-                            capture_output=True, timeout=timeout, check=True,
-                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
-    if len(result.stdout) > 400000:
-        raise ValueError('Oversized transport output')
-    return json.loads(result.stdout)
+    """One model call with a wall-clock deadline, in this process.
+
+    urllib's timeout bounds each socket operation, not the whole exchange, so a
+    slow trickling server could hold a worker past timeout. The call runs in a
+    daemon thread; the caller waits at most `timeout` seconds, then shuts the
+    socket and raises TimeoutError. Credentials stay in memory; nothing is spawned.
+    """
+    holder, result = {}, {}
+
+    def run():
+        try:
+            result['value'] = network_child(endpoint, payload, headers, timeout, holder)
+        except BaseException as exc:  # reported to the waiter, never printed
+            result['error'] = exc
+
+    worker = threading.Thread(target=run, name='player-help-network', daemon=True)
+    worker.start()
+    worker.join(timeout)
+    if worker.is_alive():
+        _abandon(holder)
+        raise TimeoutError('model call exceeded its deadline')
+    if 'error' in result:
+        raise result['error']
+    return result['value']
 
 
 def render_format(request):
@@ -1181,6 +1218,7 @@ class Bridge:
         self.active = {}
         self.limiter = RequestLimiter(config)
         self.running = True
+        self.heartbeat_at, self.heartbeat_enabled = None, None
         self.root.mkdir(parents=True, exist_ok=True)
         self.lock = self.root / 'worker.lock'
         self.lock.mkdir()
@@ -1369,9 +1407,19 @@ class Bridge:
             # Never expose endpoint, headers, credentials, raw response or exception to player/log.
             return {'id': request['id'], 'status': 'unavailable'}
 
-    def tick(self, admit=True):
+    def heartbeat(self, admit=True, now=None):
+        """Refresh limits.json and health.json at most once per HEARTBEAT_SECONDS, or on an admit change."""
+        now = time.monotonic() if now is None else now
+        enabled = self.config['enabled'] and admit
+        if self.heartbeat_at is not None and now - self.heartbeat_at < HEARTBEAT_SECONDS and enabled == self.heartbeat_enabled:
+            return False
+        self.heartbeat_at, self.heartbeat_enabled = now, enabled
         atomic_json(self.root / 'limits.json', self.limiter.limits)
-        atomic_json(self.root / 'health.json', {'enabled': self.config['enabled'] and admit, 'sequence': uuid.uuid4().hex, 'conversation_protocol': 1, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
+        atomic_json(self.root / 'health.json', {'enabled': enabled, 'sequence': uuid.uuid4().hex, 'conversation_protocol': 1, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
+        return True
+
+    def tick(self, admit=True):
+        self.heartbeat(admit)
         for slot, (request_id, future) in list(self.active.items()):
             ready = self.root / f'{slot}.ready'
             current = read_ready_id(ready)
@@ -1446,25 +1494,19 @@ def main():
     signal.signal(signal.SIGTERM, stop)
     signal.signal(signal.SIGINT, stop)
     try:
+        poll = config.get('poll_seconds', DEFAULT_POLL_SECONDS)
         while bridge.running and not (args.stop_file and args.stop_file.exists()):
             bridge.tick()
-            time.sleep(1)
+            time.sleep(poll)
     finally:
         try:
             while bridge.active:
                 bridge.tick(admit=False)
                 if bridge.active:
-                    time.sleep(1)
+                    time.sleep(config.get('poll_seconds', DEFAULT_POLL_SECONDS))
         finally:
             bridge.close()
 
 
 if __name__ == '__main__':
-    if sys.argv[1:] == ['--network-worker']:
-        try:
-            arguments = json.loads(sys.stdin.read(64000))
-            print(json.dumps(network_child(*arguments)))
-        except Exception:
-            sys.exit(1)
-    else:
-        main()
+    main()
