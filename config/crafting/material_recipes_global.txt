@@ -493,6 +493,10 @@ RECIPE: /material/plastic/,pressure helmet,/obj/item/clothing/head/pressure_helm
 RECIPE: /material/steel/,suit air tank,/obj/item/pressure_tank,10,150,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/plastic/,suit patch kit,/obj/item/pressure_suit_patch,3,100,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/plastic/,sorbent cartridge,/obj/item/sorbent_cartridge,4,100,0,1,spaceflight,235,0,0,8,null
+RECIPE: /material/plastic/,green glowstick,/obj/item/flashlight/flare/glowstick,1,30,0,1,glowsticks,0,0,0,8,null
+RECIPE: /material/plastic/,blue glowstick,/obj/item/flashlight/flare/glowstick/blue,1,30,0,1,glowsticks,0,0,0,8,null
+RECIPE: /material/plastic/,red glowstick,/obj/item/flashlight/flare/glowstick/red,1,30,0,1,glowsticks,0,0,0,8,null
+RECIPE: /material/plastic/,yellow glowstick,/obj/item/flashlight/flare/glowstick/yellow,1,30,0,1,glowsticks,0,0,0,8,null
 RECIPE: /material/steel/,regolith drill rig,/obj/structure/drill/regolith_rig,30,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,ice melter,/obj/structure/reagent_dispensers/ice_melter,15,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,rover assembly bay,/obj/structure/car_workshop/rover_bay,40,300,1,1,spaceflight,235,0,0,8,null
@@ -1607,6 +1611,7 @@ RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 //*************************************************************
 
 RECIPE: /material/glass/,fermentation jar,/obj/item/weapon/starterjar,3,50,0,1,none,0,0,0,8,null
+RECIPE: /material/glass/,display case,/obj/structure/display_case,6,120,1,1,none,0,0,0,8,null
 RECIPE: /material/glass/,vial arrowhead (x4),/obj/item/stack/arrowhead/vial,1,10,0,1,none,0,26,26,8,null
 RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12,180,1,1,none,90,0,0,8,null
 RECIPE: /material/glass/,glass roof builder,/obj/item/weapon/roofbuilder/glass,1,20,0,1,none,103,0,0,8,null
@@ -1899,6 +1904,7 @@ RECIPE: /material/steel/,fire striker,/obj/item/weapon/flame/lighter/striker,1,4
 //*********************| STEEL WEAPONS & TOOLS |**************************
 
 RECIPE: /material/steel/,whistle,/obj/item/weapon/whistle,4,70,0,1,tools,80,0,0,8,null
+RECIPE: /material/steel/,megaphone,/obj/item/weapon/megaphone,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90,0,1,tools,60,0,0,8,null
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
@@ -2782,6 +2788,7 @@ RECIPE: /material/iron/,screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,
 RECIPE: /material/iron/,lockpick,/obj/item/weapon/lockpick,1,60,0,1,tools,18,0,0,8,null
 RECIPE: /material/iron/,legcuffs,/obj/item/weapon/legcuffs,2,60,0,1,tools,0,61,0,8,null
 RECIPE: /material/tin/,tin whistle,/obj/item/weapon/whistle/tin,2,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/tin/,tripwire alarm,/obj/item/weapon/tripwire_kit,2,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/plastic/,police tape,/obj/item/taperoll/police,2,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,bag valve mask,/obj/item/bag_valve_mask,4,90,0,1,medical,0,0,60,8,null
 RECIPE: /material/plastic/,empty pill pack,/obj/item/weapon/pill_pack,1,30,0,1,medical,0,0,60,8,null

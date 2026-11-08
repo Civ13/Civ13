@@ -124,6 +124,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		var/mob/living/human/H = src
 		if (H.wolfman && howl)
 			message_range = 30
+	message_range = speech_range_bonus(message_range)
 
 	var/list/listening = list()
 	var/list/listening_obj = list()
