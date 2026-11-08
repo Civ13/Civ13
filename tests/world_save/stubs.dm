@@ -266,6 +266,14 @@ var/list/mutate_on_tick = null
 // offline suite projects bed_return.dm; these adapters are not bed acceptance.
 /proc/persistence_bed_return_enabled()
 	return FALSE
+// Fixtures hold no players, so the per-level save freeze of
+// restart_transaction.dm has nothing to hold or release.
+/proc/persistence_freeze_level(z)
+	return
+/proc/persistence_release_level(z)
+	return
+/proc/persistence_release_all_levels()
+	return
 /map_storage/proc/prepare_character_return(mob/living/human/H)
 	return TRUE
 /map_storage/proc/finish_character_return(mob/living/human/H)
