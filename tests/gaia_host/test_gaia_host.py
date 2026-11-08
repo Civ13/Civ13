@@ -548,6 +548,26 @@ Active Connections
 
 
 
+class ListeningTests(unittest.TestCase):
+    """2026-11-08: a refused loopback connect costs ~2 s on Windows, and the doorman's
+    host_status asked it per cold region under its lock until it stopped answering."""
+
+    def test_windows_reads_the_listening_table_without_connecting(self):
+        from unittest import mock
+        rows = [(1714, '0.0.0.0', 'LISTENING', 1), (1715, '127.0.0.1', 'ESTABLISHED', 2)]
+        with mock.patch.object(gaia_host.os, 'name', 'nt'),                 mock.patch.object(gaia_host, 'windows_tcp_rows', return_value=rows),                 mock.patch.object(gaia_host.socket, 'create_connection', side_effect=AssertionError('connected')):
+            platform = gaia_host.Platform()
+            self.assertTrue(platform.listening(1714))
+            self.assertFalse(platform.listening(1715))  # only an established row, nothing listens
+            self.assertFalse(platform.listening(1720))
+
+    def test_a_table_that_cannot_be_read_falls_back_to_connecting(self):
+        from unittest import mock
+        with mock.patch.object(gaia_host.os, 'name', 'nt'),                 mock.patch.object(gaia_host, 'windows_tcp_rows', side_effect=OSError('no table')),                 mock.patch.object(gaia_host.socket, 'create_connection', side_effect=OSError('refused')) as connect:
+            self.assertFalse(gaia_host.Platform().listening(1714))
+            connect.assert_called_once()
+
+
 class NoConsoleWindowTests(unittest.TestCase):
     def test_console_programs_run_without_a_window(self):
         # The windowless host service (pythonw) would flash a console for every
