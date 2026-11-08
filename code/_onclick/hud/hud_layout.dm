@@ -11,7 +11,7 @@
 #define HUD_LAYOUT_MAX_SIZE 3
 #define HUD_LAYOUT_SIZE_STEP 0.25
 
-var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25, "150%" = 1.5, "175%" = 1.75, "200%" = 2)
+var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, "125%" = 1.25, "150%" = 1.5, "175%" = 1.75, "200%" = 2)
 
 /datum/preferences
 	var/hud_scale = 1
@@ -32,6 +32,9 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	var/hud_ox = 0
 	var/hud_ay = null
 	var/hud_oy = 0
+	// Action buttons move as one bar; this is a button's offset from the first.
+	var/hud_rel_x = 0
+	var/hud_rel_y = 0
 
 ////////////////////////// screen_loc helpers //////////////////////////
 
@@ -188,6 +191,76 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		if (!S.hud_layout_key)
 			S.hud_layout_key = "inv:[S.slot_id]"
 		. += S
+	if (hud_used)
+		for (var/obj/screen/S in hud_used.vehicle_hud)
+			if (!S.hud_layout_key)
+				S.hud_layout_key = "veh:[S.type]"
+			. += S
+
+// Action buttons in bar order, skipping any an older drag pinned in place.
+/mob/living/human/proc/hud_action_buttons()
+	. = list()
+	for (var/datum/action/A in actions)
+		var/obj/screen/movable/action_button/B = A.button
+		. += B
+	for (var/obj/screen/movable/action_button/B in .)
+		if (B.moved)
+			. -= B
+
+/mob/living/human/update_action_buttons()
+	..()
+	apply_action_bar_layout()
+
+// The action bar keeps its default spacing; its first button is the bar's
+// position, and HUD scale and the bar's size scale the whole bar.
+/mob/living/human/proc/apply_action_bar_layout()
+	if (!client || !client.prefs || !hud_used)
+		return
+	var/datum/preferences/P = client.prefs
+	P.sanitize_hud_scale()
+	var/g = P.hud_scale
+	var/size = 1
+	var/list/D1 = hud_parse_screen_loc(hud_used.ButtonNumberToScreenCoords(1))
+	if (!D1)
+		return
+	var/list/bar = D1
+	var/list/F = P.hud_layout_entry(defaultHUD, "actions")
+	if (F)
+		var/stored_size = text2num(F[7])
+		if (isnum(stored_size))
+			size = clamp(stored_size, HUD_LAYOUT_MIN_SIZE, HUD_LAYOUT_MAX_SIZE)
+		if (F[3] != "D")
+			var/ox = text2num(F[4])
+			var/oy = text2num(F[6])
+			if (isnum(ox) && isnum(oy) && (F[3] in list("WEST", "CENTER", "EAST")) && (F[5] in list("SOUTH", "CENTER", "NORTH")))
+				bar = list(F[3], ox, F[5], oy)
+	var/k = g * size
+	var/list/V = getviewsize(client.view)
+	var/view_w = V[1] * 32
+	var/view_h = V[2] * 32
+	var/x0 = hud_anchor_origin(bar[1], view_w)
+	var/y0 = hud_anchor_origin(bar[3], view_h)
+	var/n = 0
+	for (var/datum/action/A in actions)
+		n++
+		var/obj/screen/movable/action_button/B = A.button
+		if (!B || B.moved)
+			continue
+		var/list/Dn = hud_parse_screen_loc(hud_used.ButtonNumberToScreenCoords(n))
+		if (!Dn)
+			continue
+		B.hud_layout_key = "actions"
+		B.hud_size = size
+		B.hud_rel_x = (Dn[2] - D1[2]) * k
+		B.hud_rel_y = (Dn[4] - D1[4]) * k
+		B.hud_ax = bar[1]
+		B.hud_ay = bar[3]
+		B.hud_ox = clamp(x0 + bar[2] * g + B.hud_rel_x, 0, max(0, view_w - 32 * k)) - x0
+		B.hud_oy = clamp(y0 + bar[4] * g + B.hud_rel_y, 0, max(0, view_h - 32 * k)) - y0
+		B.screen_loc = "[hud_axis_text(B.hud_ax, B.hud_ox)],[hud_axis_text(B.hud_ay, B.hud_oy)]"
+		B.transform = hud_scale_matrix(k)
+		if (client.hud_edit_mode)
+			B.color = hud_tile_locked(B) ? "#ff8a8a" : "#9cff9c"
 
 /mob/living/human/proc/apply_hud_layout()
 	if (!client || !client.prefs)
@@ -228,6 +301,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
 		S.transform = hud_scale_matrix(g * size)
 	sync_inventory_screen_locs()
+	apply_action_bar_layout()
 	if (client.hud_edit_mode)
 		hud_edit_tint()
 
@@ -236,7 +310,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	return F && F[8] == "1"
 
 /mob/living/human/proc/hud_edit_tint()
-	for (var/obj/screen/S in hud_layout_elements())
+	for (var/obj/screen/S in hud_layout_elements() + hud_action_buttons())
 		S.color = hud_tile_locked(S) ? "#ff8a8a" : "#9cff9c"
 
 // The editable tile under the mouse: the tile itself or an item worn in its slot.
@@ -246,11 +320,18 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	var/list/elements = hud_layout_elements()
 	if (object in elements)
 		return object
+	if (istype(object, /obj/screen/movable/action_button) && (object in hud_action_buttons()))
+		return object
 	if (istype(object, /obj/item))
 		for (var/obj/screen/inventory/S in HUDinventory)
 			if (S.slot_id && get_equipped_item(S.slot_id) == object && (S in elements))
 				return S
 	return null
+
+/proc/hud_tile_name(obj/screen/S)
+	if (S.hud_layout_key == "actions")
+		return "The action bar"
+	return capitalize(S.name)
 
 /mob/living/human/proc/hud_tile_entry(obj/screen/S)
 	var/list/F = client.prefs.hud_layout_entry(defaultHUD, S.hud_layout_key)
@@ -264,8 +345,8 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	var/h = V[2] * 32
 	var/g = client.prefs.hud_scale
 	var/k = g * S.hud_size
-	var/x = clamp(mouse[1] - client.hud_grab_x, 0, max(0, w - 32 * k))
-	var/y = clamp(mouse[2] - client.hud_grab_y, 0, max(0, h - 32 * k))
+	var/x = clamp(mouse[1] - client.hud_grab_x - S.hud_rel_x, 0, max(0, w - 32 * k))
+	var/y = clamp(mouse[2] - client.hud_grab_y - S.hud_rel_y, 0, max(0, h - 32 * k))
 	var/cx = x + 16 * k
 	var/cy = y + 16 * k
 	var/ax = cx < w / 3 ? "WEST" : (cx > w * 2 / 3 ? "EAST" : "CENTER")
@@ -287,7 +368,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 	F[7] = "[size]"
 	client.prefs.set_hud_layout_entry(defaultHUD, S.hud_layout_key, F)
 	apply_hud_layout()
-	to_chat(src, SPAN_NOTICE("[capitalize(S.name)] is now [round(size * 100)]% size."))
+	to_chat(src, SPAN_NOTICE("[hud_tile_name(S)] is now [round(size * 100)]% size."))
 
 /mob/living/human/proc/hud_toggle_lock(obj/screen/S)
 	var/list/F = hud_tile_entry(S)
@@ -296,13 +377,18 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		F = null
 	client.prefs.set_hud_layout_entry(defaultHUD, S.hud_layout_key, F)
 	hud_edit_tint()
-	to_chat(src, SPAN_NOTICE("[capitalize(S.name)] is now [(F && F[8] == "1") ? "locked" : "unlocked"]."))
+	to_chat(src, SPAN_NOTICE("[hud_tile_name(S)] is now [(F && F[8] == "1") ? "locked" : "unlocked"]."))
 
 /mob/living/human/proc/end_hud_edit()
 	if (!client)
 		return
 	client.hud_edit_mode = FALSE
 	recolor_HUD(client.prefs.UI_style_color, client.prefs.UI_style_alpha)
+	if (hud_used)
+		for (var/obj/screen/S in hud_used.vehicle_hud)
+			S.color = null
+	// Restores each action button's availability colour.
+	update_action_buttons()
 
 ////////////////////////// mouse hooks //////////////////////////
 
@@ -336,7 +422,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		var/obj/screen/S = H.hud_layout_target(src_object)
 		if (S)
 			if (H.hud_tile_locked(S))
-				to_chat(H, SPAN_WARNING("[capitalize(S.name)] is locked. Click it to unlock it."))
+				to_chat(H, SPAN_WARNING("[hud_tile_name(S)] is locked. Click it to unlock it."))
 				return
 			var/list/mouse = hud_mouse_pixels(params)
 			if (mouse)
@@ -359,7 +445,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		var/obj/screen/S = H.hud_layout_target(object)
 		if (S)
 			if (H.hud_tile_locked(S))
-				to_chat(H, SPAN_WARNING("[capitalize(S.name)] is locked. Click it to unlock it."))
+				to_chat(H, SPAN_WARNING("[hud_tile_name(S)] is locked. Click it to unlock it."))
 				return
 			if (delta_y)
 				H.hud_resize_tile(S, delta_y > 0 ? HUD_LAYOUT_SIZE_STEP : -HUD_LAYOUT_SIZE_STEP)
@@ -384,7 +470,7 @@ var/global/list/hud_scale_choices = list("75%" = 0.75, "100%" = 1, "125%" = 1.25
 		return
 	hud_edit_mode = TRUE
 	H.hud_edit_tint()
-	to_chat(src, SPAN_NOTICE("<b>Editing your HUD.</b> Drag a tile to move it. Scroll the mouse wheel over a tile to resize it. Click a tile to lock or unlock it; locked tiles are red and stay put. Use <b>Edit HUD Layout</b> again to save and finish."))
+	to_chat(src, SPAN_NOTICE("<b>Editing your HUD.</b> Drag a tile to move it. Scroll the mouse wheel over a tile to resize it. Click a tile to lock or unlock it; locked tiles are red and stay put. Action buttons move and resize together as one bar. Use <b>Edit HUD Layout</b> again to save and finish."))
 
 /client/verb/set_hud_scale()
 	set name = "HUD Scale"
