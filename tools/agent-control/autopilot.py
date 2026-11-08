@@ -1011,11 +1011,16 @@ def parse_decision(text, refs):
     return args
 
 
+def _text_int(word):
+    """An integer token from a text step, allowing list punctuation around it: "[3]", "(2)", "#3", "3,"."""
+    return _decision_int(word.strip("[]()#,"))
+
+
 def coerce_step(item):
     """Accept a few legacy text forms without repairing malformed numeric tokens.
 
-    Prefer JSON steps. Text targets may have a label ("find_flint on rock 5"),
-    but numbers must be complete integer tokens, not fragments of "1/2" or "0x2".
+    Prefer JSON steps. Text targets may have a label ("find_flint on rock 5", "chop tree (2)"),
+    but numbers must be complete integer tokens, not fragments of "1/2", "0x2" or "1.".
     """
     if not isinstance(item, str):
         return item
@@ -1026,9 +1031,9 @@ def coerce_step(item):
     step = {"do": action}
     try:
         if action in SKILLS or action in ("go", "flee", "click", "examine", "board", "throw"):
-            if len(words) < 2 or any(not re.fullmatch(r"[a-z_]+", word) for word in words[1:-1]):
+            if len(words) < 2 or any(not re.fullmatch(r"[a-z_'-]+,?", word) for word in words[1:-1]):
                 return item
-            step["target"] = _decision_int(words[-1])
+            step["target"] = _text_int(words[-1])
         elif action in ("move", "face", "explore", "travel"):
             if len(words) not in ((2, 3) if action == "travel" else (2,)) or words[1] not in DIRS:
                 return item
@@ -1036,6 +1041,8 @@ def coerce_step(item):
             if len(words) == 3:
                 step["tiles"] = _decision_int(words[2])
         elif action == "wait":
+            if len(words) == 3 and words[2] in ("ticks", "tick", "turns", "turn"):
+                words = words[:2]
             if len(words) > 2:
                 return item
             if len(words) == 2:
@@ -1061,6 +1068,9 @@ def plan_problem(text, refs):
         return "your plan was empty"
     for item in raw[:MAX_PLAN]:
         item = coerce_step(item)
+        if isinstance(item, str):
+            return (f'could not read the text step "{item.strip()[:40]}": numbers must be whole integers like 5. '
+                    'Write steps as objects like {"do": "find_flint", "target": 5}')
         if not isinstance(item, dict):
             return 'each plan step must be an object like {"do": "find_flint", "target": 5}, not text'
 

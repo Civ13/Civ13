@@ -341,8 +341,10 @@ the plan at its valid prefix; later steps do not run. This validation is not pro
 that the game executed an action: queue results remain the execution evidence.
 JSON is preferred. The legacy text fallback accepts forms such as
 `find_flint on rock 5`, `explore north`, `wait 10` and `travel north 20`.
-It requires complete integer tokens; fractions, hexadecimal notation, multiple
-target numbers and trailing numeric punctuation (such as `click 1.`) are refused.
+It requires complete integer tokens, which may carry list punctuation such as
+`click [3]`, `chop tree (2)` or `find_flint on rock #3`; fractions, hexadecimal
+notation, multiple target numbers and trailing numeric punctuation (such as
+`click 1.`) are refused, and the feedback quotes the unreadable step.
 Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
 target; the autopilot walks next to the target (stepping around blocked
 tiles), swaps to the right hand and intent before the click, stows (or drops) a

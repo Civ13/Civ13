@@ -467,6 +467,23 @@ class AutopilotTests(unittest.TestCase):
                                ("click 1", {"do": "click", "target": "[0x1]"})):
             self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [expected])
 
+    def test_text_steps_accept_list_punctuation_around_whole_integers(self):
+        refs = ["[0x9]", "[0x1]", "[0x2]", "[0x3]"]
+        for text, expected in (("click [3]", {"do": "click", "target": "[0x3]"}),
+                               ("find_flint on rock #3", {"skill": "find_flint", "target": "[0x3]"}),
+                               ("chop tree (2)", {"skill": "chop", "target": "[0x2]"}),
+                               ("click rock, 3", {"do": "click", "target": "[0x3]"}),
+                               ("attack grey-wolf 2", {"skill": "attack", "target": "[0x2]"}),
+                               ("wait 10 ticks", {"do": "wait", "ticks": 10})):
+            with self.subTest(text=text):
+                self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [expected])
+        for text in ("click [1.5]", "click (1/2)", "click #1.", "wait 10 minutes", "click [3] [2]"):
+            with self.subTest(text=text):
+                self.assertEqual(autopilot.parse_plan(json.dumps({"plan": [text]}), refs), [])
+                problem = autopilot.plan_problem(json.dumps({"plan": [text]}), refs)
+                self.assertIn("whole integers", problem)
+                self.assertIn(text, problem)
+
     def test_repeated_messages_do_not_crowd_out_speech(self):
         observation = {"self": {"name": "Bo"}, "messages": [{"text": "Ada says, \"hi\""}] + [{"text": "You feel the ground burn your feet."}] * 12 + [{"text": "Macks begins building a roof."}] * 5 + [{"text": "Macks hands Bo a stick."}]}
         text, _ = autopilot.summarize(observation)
