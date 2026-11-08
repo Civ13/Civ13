@@ -290,7 +290,12 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(persistence_restart.busy || persistence_restart.startup_hold) return
 
 		var/sleeptime = 0
-		to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
+		// A TDM battle world sends everyone back to its barracks instead, then
+		// waits for the next voted map to finish compiling (tdm_barracks/battle.dm).
+		if(tdm_battle_active())
+			tdm_battle.before_reboot()
+		else
+			to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		// sleep(0) yields too. A transaction can acquire ownership while the

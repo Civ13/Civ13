@@ -31,6 +31,10 @@ static class LocalHostingTests {
 
         Require(LocalHosting.Load(launcher) is null, "hosting enabled without host.json");
         Require(LocalHosting.MobileAddress("https://192.168.1.8:8443") == "https://192.168.1.8:8443", "mobile LAN address changed");
+        Require(LocalHosting.BattlePhase("rotating") == "building the next map" && LocalHosting.BattlePhase("pregame") == "forming"
+            && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
+        using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
+            Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
         foreach (var invalid in new[] { "http://192.168.1.8:8443", "https://8.8.8.8:8443", "https://localhost:8443",
                 "https://192.168.1.8:8443/path", "https://user@192.168.1.8:8443", "https://192.168.1.8:8443/?token=secret" })
             Reject(() => LocalHosting.MobileAddress(invalid), "unsafe mobile address");

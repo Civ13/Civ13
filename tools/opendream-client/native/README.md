@@ -221,6 +221,9 @@ first through its lifecycle Topic (`set_epoch`) and must be awake; then every
 running region does. A region asleep or stopped follows the mainland by itself
 when it next runs. Epochs only move forward, and a world refuses while it saves.
 The group status line shows each running region's epoch.
+For a TDM group (Barracks and battle regions) it also shows what the battle is
+doing: forming, in progress, over (map vote), sending players back, or building
+the next map (`battle_phase` in `shard_group.py status`).
 
 ### Host settings
 
