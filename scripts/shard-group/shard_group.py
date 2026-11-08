@@ -610,9 +610,10 @@ class RegionHost(Host):
                 self.staged_file.unlink(missing_ok=True)
                 prepare_tree(group, region, path, latest, self.platform, self.config['git'])
                 self.stage_record(phase='compiling')
+                before = dmb_mtime(path / 'region.dmb')
                 code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800,
                                               low_priority=True)
-                if code != 0 or '0 errors' not in out:
+                if not compile_succeeded(code, out, path / 'region.dmb', before):
                     raise RuntimeError('compile failed: ' + out.strip()[-300:])
                 stat = (path / 'region.dmb').stat()
                 self.write_json(self.staged_file, {'revision': latest, 'dmb': [stat.st_size, stat.st_mtime_ns],
@@ -928,11 +929,30 @@ class RegionHost(Host):
             self.record(phase='compiled', revision=revision, map=region['map'], staged=True)
             return
         self.record(phase='compiling', revision=revision)
+        before = dmb_mtime(path / 'region.dmb')
         code, out = self.platform.run([self.config['compiler'], 'region.dme'], cwd=path, timeout=1800)
-        if code != 0 or '0 errors' not in out:
+        if not compile_succeeded(code, out, path / 'region.dmb', before):
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         self.record_build(revision, DMB_SLOTS[0])
         self.record(phase='compiled', revision=revision, map=region['map'])
+
+
+def dmb_mtime(path):
+    try:
+        return path.stat().st_mtime_ns
+    except OSError:
+        return None
+
+
+def compile_succeeded(code, out, dmb, before):
+    """A clean compile: '0 errors' and a .dmb written by it. DreamMaker 516.1688 can crash on
+    exit ("double free or corruption") after saving a clean build; that non-zero exit counts
+    as success when the output reports the saved .dmb with 0 errors."""
+    if '0 errors' not in (out or '') or dmb_mtime(dmb) is None:
+        return False
+    if code == 0:
+        return True
+    return dmb_mtime(dmb) != before and bool(re.search(r'\.dmb - 0 errors', out))
 
 
 def prepare_tree(group, region, path, revision, platform, git):
