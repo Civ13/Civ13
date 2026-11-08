@@ -116,6 +116,7 @@ var/global/orbit_failures = 0
 		orbit_modern_checks()
 		orbit_wear_checks()
 		orbit_sector_checks()
+		orbit_reusable_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -972,3 +973,48 @@ var/global/orbit_failures = 0
 	map.ordinal_age = 7
 	qdel(H)
 	qdel(O)
+
+// Reusable launch (orbit_reusable.dm): the 2026 gate, the crew ship's seats
+// and flight field, booster wear and return, refurbishment, and an
+// eight-seat capsule in orbit.
+/proc/orbit_reusable_checks()
+	var/obj/map_metadata/orbit_map = map
+	shard_group.region = "gaia"
+	shard_group.peers["orbit"]["free_planes"] = 3
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 8
+	var/obj/structure/crewed_lander/orbital_rocket/reusable/R = new(locate(2, 3, 1))
+	orbit_check("crew ship seats", R.seats, 8)
+	orbit_check("no reusable rockets before 2026", findtext("[R.vehicle_refusal("orbit")]", "2026") ? 1 : 0, 1)
+	map.ordinal_age = 9
+	orbit_check("reusable rocket flies to orbit", isnull(R.vehicle_refusal("orbit")) ? 1 : 0, 1)
+	orbit_check("reusable rocket flies nowhere else", findtext("[R.vehicle_refusal("moon")]", "only flies to orbit") ? 1 : 0, 1)
+	var/list/flight = list("lander" = "gaia-2-1", "orbit" = 1)
+	R.flight_extras(flight)
+	orbit_check("crew ship flight carries its seats", flight["seats"], 8)
+	orbit_check("seats payload valid", space_flight_payload_ok(flight) ? 1 : 0, 1)
+	orbit_check("too many seats refused", space_flight_payload_ok(list("lander" = "gaia-2-1", "orbit" = 1, "seats" = 9)) ? 1 : 0, 0)
+	orbit_check("seats only on orbit flights", space_flight_payload_ok(list("lander" = "gaia-2-1", "return" = 1, "seats" = 8)) ? 1 : 0, 0)
+	var/turf/T = get_turf(R)
+	qdel(R)
+	var/obj/structure/crewed_lander/orbital_rocket/reusable/B = orbit_booster_return(T, 100 - ORBIT_BOOSTER_WEAR)
+	orbit_check("booster lands back worn and empty", B ? "[B.condition],[B.propellant],[get_turf(B) == T ? 1 : 0]" : "none", "80,0,1")
+	B.condition = 10
+	orbit_check("a worn booster will not fly", findtext("[B.vehicle_refusal("orbit")]", "worn") ? 1 : 0, 1)
+	var/mob/living/human/eva_tester/H = new(locate(3, 3, 1))
+	H.m_intent = "stealth"
+	var/obj/item/stack/material/steel/S = new(H, 50)
+	B.attackby(S, H)
+	orbit_check("steel refurbishes the booster", "[B.condition],[S.amount]", "100,27")
+	orbit_check("reusable rocket gated", get_recipe_node_req("/obj/structure/crewed_lander/orbital_rocket/reusable"), "orbital_flight")
+	qdel(B)
+	qdel(H)
+	del(map)
+	map = orbit_map
+	map.ordinal_age = 7
+	shard_group.region = "orbit"
+	space_flight_arrival_turf(list("lander" = "gaia-2-2", "orbit" = 1, "seats" = 8), TRUE)
+	var/obj/structure/landed_lander/capsule/C = space_landed_lander("gaia-2-2")
+	orbit_check("crew ship capsule seats eight home", C ? C.lift_seats : 0, 8)
+	if (C)
+		C.spend()

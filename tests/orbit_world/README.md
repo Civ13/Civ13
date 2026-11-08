@@ -103,11 +103,16 @@ sorbent and stopping when empty, a cartridge refilling it, two spare
 cartridges in the starter crate, solar wings wearing only in sunlight down to
 half output, a glass repair, and the cartridge recipe gate.
 
-Last, sectors (`code/modules/space/orbit_sectors.dm`): the nearest edge and
+Then sectors (`code/modules/space/orbit_sectors.dm`): the nearest edge and
 reach, the 2026 gate, outsiders, claiming and linking a sector both ways,
 one sector per side, the seam into it, edge couplers pairing and joining
 cables across the seam, plain risers ignoring couplers, seam margins for
 modules and pods, a full pool, and the recipe gates.
+
+Then reusable launch (`code/modules/space/orbit_reusable.dm`): the 2026
+gate, eight seats and the `seats` flight field and its bounds, the booster
+landing back worn and empty, a worn booster refusing to fly, steel
+refurbishment, the recipe gate, and an eight-seat capsule in orbit.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe

@@ -421,6 +421,10 @@ var/global/list/space_cargo_stacks = list(
 			return closed
 	return null
 
+// Extra fields a craft adds to its flight to orbit (orbit_reusable.dm).
+/obj/structure/crewed_lander/proc/flight_extras(list/flight)
+	return
+
 // Null when this craft can fly to destination, otherwise why not. A lander
 // cannot reach orbit; a two-stage rocket flies nowhere else.
 /obj/structure/crewed_lander/proc/vehicle_refusal(destination)
@@ -519,6 +523,7 @@ var/global/list/space_cargo_stacks = list(
 		flight = list("lander" = lander_id, "return" = 1)
 	else if (orbital)
 		flight = list("lander" = lander_id, "orbit" = 1)
+		flight_extras(flight)
 	else
 		flight = list(
 			"lander" = lander_id,
@@ -577,7 +582,7 @@ var/global/list/space_cargo_stacks = list(
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"])
 	var/id = P["lander"]
 	if (!istext(id) || !length(id) || length(id) > 64)
 		return FALSE
@@ -593,10 +598,10 @@ var/global/list/space_cargo_stacks = list(
 				return FALSE
 	// A flight home carries no landing: the crew arrive like any traveller.
 	if (!isnull(P["return"]))
-		return P["return"] == 1 && isnull(P["orbit"]) && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"])
+		return P["return"] == 1 && isnull(P["orbit"]) && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"]) && isnull(P["seats"])
 	// A flight to orbit arrives in its capsule (orbital_flight.dm).
 	if (!isnull(P["orbit"]))
-		return P["orbit"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"])
+		return P["orbit"] == 1 && isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["sortie"]) && (isnull(P["seats"]) || space_flight_seats_ok(P["seats"]))
 	var/list/cell = P["landing"]
 	if (!islist(cell) || cell.len != 2)
 		return FALSE

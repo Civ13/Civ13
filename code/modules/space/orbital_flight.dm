@@ -181,6 +181,8 @@
 	var/obj/structure/landed_lander/capsule/C = new(T)
 	C.lander_id = P["lander"]
 	C.plane_owner = owner
+	if (space_flight_seats_ok(P["seats"]))
+		C.lift_seats = P["seats"]
 	C.deploy()
 	log_game("Orbital flight: capsule [C.lander_id] arrived at [T.x],[T.y],[T.z][owner ? " on its own plane" : " on the arrival plane"].")
 	return T

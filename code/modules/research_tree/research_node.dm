@@ -725,6 +725,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/crewed_lander" = "crewed_flight",
 		"/obj/item/lunar_kit" = "crewed_flight",
 		"/obj/structure/crewed_lander/orbital_rocket" = "orbital_flight",
+		"/obj/structure/crewed_lander/orbital_rocket/reusable" = "orbital_flight",
 		"/obj/structure/orbit_truss" = "orbital_flight",
 		"/obj/item/eva_tether" = "orbital_flight",
 		"/obj/item/habitat_kit/orbital_workshop" = "orbital_flight",

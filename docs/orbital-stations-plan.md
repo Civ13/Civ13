@@ -46,13 +46,14 @@ what the code does so far and the rules later steps must keep.
 | 10a | Upkeep: orbit decay by band, drag heating and strikes, reboost thruster, altitude on the console | #3952, `code/modules/space/orbit_upkeep.dm` |
 | 10b | 2013 layout and hardware: tracking solar array, radioisotope generator, bigger starter station | #3956, `orbit_station.dm`, `orbit_project.dm` |
 | 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | #3959, `code/modules/space/orbit_wear.dm` |
-| 11 | Sectors outward (2026): sector beacon claims a plane at an edge, edge couplers carry power across the seam, seam margins for modules and pods | `code/modules/space/orbit_sectors.dm` |
+| 11 | Sectors outward (2026): sector beacon claims a plane at an edge, edge couplers carry power across the seam, seam margins for modules and pods | #3961, `code/modules/space/orbit_sectors.dm` |
+| 12a | Reusable launch (2026): eight-seat crew ship on a booster that lands back, booster wear and steel refurbishment, eight seats home in orbit | `code/modules/space/orbit_reusable.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-12. Reusable launch: booster condition and refurbishment, crew ship, the 2026
-    starter layout.
+12b. The 2026 starter layout (two decks), the methane-oxygen propellant
+    plant and a compact fission reactor in orbit.
 13. Wider network: shuttles between orbit, the Moon and Mars; station radio.
 10d. The uncrewed cargo freighter. It needs items to cross regions without a
     traveller, which the transfer agent cannot do yet, so it waits for that
@@ -276,6 +277,18 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   risers ignore couplers.
 - **Seam margins.** In orbit, modules and pods keep two tiles clear of every
   edge, so nothing stands on a seam or on the tile where travellers arrive.
+
+## Reusable launch
+
+- **Reusable rocket** (120 electronics, Orbital Flight), from 2026 (age 9):
+  a crew ship with eight seats and a ten-item hold on a booster. It fills
+  and launches like the two-stage rocket and only flies to orbit.
+- **The booster comes back.** After a launch it lands beside the pad with
+  an empty tank and 20 points of wear (condition starts at 100). Below 20
+  it will not fly. Each steel sheet used on it restores 4 points.
+- **Eight seats home.** The crew ship arrives as a capsule that takes all
+  eight crew home in one deorbit (the flight's `seats` field, checked on
+  arrival).
 
 ## Tests
 
