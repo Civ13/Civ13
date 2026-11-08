@@ -268,3 +268,11 @@
 			if (!istype(FD, /obj/item/weapon/reagent_containers/food/snacks/poo))
 				smart_step_towards(FD)
 				return
+
+// Whether crop-eating (granivore) animals such as rabbits may eat or walk toward this plant.
+/obj/structure/farming/plant/proc/granivore_can_eat()
+	return TRUE
+
+// Young cotton is left alone until it is ready to pick.
+/obj/structure/farming/plant/cotton/granivore_can_eat()
+	return stage >= readyStageMin

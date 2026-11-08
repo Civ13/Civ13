@@ -517,10 +517,6 @@
 	biomes = list("jungle", "savanna", "desert", "semiarid")
 	max_water = 80
 
-// Whether crop-eating (granivore) animals such as rabbits may eat or seek out this plant.
-/obj/structure/farming/plant/proc/granivore_can_eat()
-	return TRUE
-
 /obj/structure/farming/plant/juniper
 	name = "juniper"
 	desc = "A juniper bush."
@@ -539,10 +535,6 @@
 	biomes = list("temperate", "desert", "sea", "semiarid")
 	seasons = list( "SUMMER", "SPRING", "Wet Season", "Dry Season")
 	max_water = 50
-
-// Young cotton is left alone by crop-eating animals (rabbits, mice, birds) until it is ready to pick.
-/obj/structure/farming/plant/cotton/granivore_can_eat()
-	return stage >= readyStageMin
 
 /obj/structure/farming/plant/tree
 	name = "tree seedling"
