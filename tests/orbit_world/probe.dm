@@ -123,6 +123,7 @@ var/global/orbit_failures = 0
 		orbit_freight_flight_checks()
 		orbit_satellite_checks()
 		orbit_docking_checks()
+		orbit_lab_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1478,3 +1479,76 @@ var/global/orbit_failures = 0
 	qdel(A)
 	qdel(B)
 	map.ordinal_age = 7
+
+// A lab that is always on the grid, so the checks need no generators.
+/obj/structure/zero_g_lab/probe_powered/draw_cable_power()
+	return TRUE
+
+// Zero-g manufacturing (orbit_lab.dm): where the lab works, feeding, batches,
+// programmes and the empty-world pause.
+/proc/orbit_lab_checks()
+	var/obj/structure/zero_g_lab/stray = new(locate(3, 3, 1))
+	orbit_check("lab refuses outside a module", findtext("[stray.work_refusal()]", "habitat") ? 1 : 0, 1)
+	qdel(stray)
+	var/z = 0
+	for (var/p in 2 to world.maxz)
+		if (orbit_station_party(p))
+			z = p
+	orbit_check("a station plane for the lab", z ? 1 : 0, 1)
+	if (!z)
+		return
+	var/turf/centre = locate(world.maxx - 5, world.maxy - 5, z)
+	var/obj/structure/habitat_core/C = habitat_unfold(centre, "laboratory")
+	orbit_check("lab module sealed", C.breaches(), 0)
+	var/obj/structure/zero_g_lab/probe_powered/L = new(locate(centre.x + 1, centre.y, z))
+	orbit_check("lab gated", get_recipe_node_req("/obj/structure/zero_g_lab"), "orbital_flight")
+	orbit_check("lab wants a cable", findtext("[L.work_refusal()]", "cable") ? 1 : 0, 1)
+	var/obj/structure/cable/wire = new(get_turf(L))
+	L.powersource = wire
+	orbit_check("lab ready once cabled", "[L.work_refusal()]", "")
+	orbit_check("lab idle unfed", L.step_work() || L.progress ? 1 : 0, 0)
+
+	var/obj/item/stack/material/glass/G = new(get_turf(L), 50)
+	var/obj/item/stack/material/copper/Cu = new(get_turf(L), 3)
+	var/obj/item/stack/material/steel/St = new(get_turf(L), 10)
+	orbit_check("lab takes glass", L.load(G), 50)
+	orbit_check("lab takes copper", L.load(Cu), 3)
+	orbit_check("lab refuses steel", L.load(St), 0)
+	orbit_check("lab fed", L.fed() ? 1 : 0, 1)
+	var/out = 0
+	for (var/i in 1 to 30)
+		if (L.step_work())
+			out++
+	orbit_check("one batch in thirty steps", out, 1)
+	var/obj/item/stack/material/electronics/E = locate() in get_turf(L)
+	orbit_check("semiconductors out", E ? E.amount : 0, 3)
+	orbit_check("feed used", "[L.feed["glass"]]|[L.feed["copper"]]", "44|2")
+
+	L.programme = "gems"
+	L.progress = 0
+	orbit_check("gems need coal", L.fed() ? 1 : 0, 0)
+	var/obj/item/stack/ore/coal/coal = new(get_turf(L), 20)
+	L.load(coal)
+	L.progress = 29
+	orbit_check("gem batch", L.step_work() ? 1 : 0, 1)
+	orbit_check("diamond out", (locate(/obj/item/stack/ore/diamond) in get_turf(L)) ? 1 : 0, 1)
+	orbit_check("coal used up", isnull(L.feed["coal"]) ? 1 : 0, 1)
+
+	L.programme = "proteins"
+	var/obj/item/stack/medical/bruise_pack/BP = new(get_turf(L), 5)
+	L.load(BP)
+	L.progress = 29
+	orbit_check("protein batch", L.step_work() ? 1 : 0, 1)
+	orbit_check("advanced packs out", (locate(/obj/item/stack/medical/advanced/bruise_pack) in get_turf(L)) ? 1 : 0, 1)
+
+	L.programme = "semiconductors"
+	L.progress = 5
+	L.process()
+	orbit_check("no work with nobody online", L.progress, clients.len ? 6 : 5)
+	for (var/turf/T in range(2, centre))
+		if (istype(T, /turf/wall/habitat_shell))
+			T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
+			break
+	orbit_check("breach stops the lab", findtext("[L.work_refusal()]", "breached") ? 1 : 0, 1)
+	qdel(L)
+	qdel(wire)
