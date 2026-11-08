@@ -884,6 +884,10 @@ SUITES = {
     'save_policy': {'files': ('tests/save_policy/test_policy.py', 'tests/save_policy/test_runtime_var_cache.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm')},
+    # Offline source contracts for the fireman carry (grab on a downed human).
+    'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
+        'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
+        'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',

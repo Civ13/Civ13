@@ -180,6 +180,7 @@
 #include "code\game\mob\emote.dm"
 #include "code\game\mob\gender.dm"
 #include "code\game\mob\grab.dm"
+#include "code\game\mob\grab_carry.dm"
 #include "code\game\mob\hear_say.dm"
 #include "code\game\mob\inventory.dm"
 #include "code\game\mob\keyboard.dm"

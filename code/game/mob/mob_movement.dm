@@ -837,7 +837,7 @@
 			//Something with grabbing things
 			if (mob.grab_list.len)
 			//	move_delay = max(move_delay, world.time + 7)
-				move_delay += 1.0
+				move_delay += mob.grab_move_delay()
 				var/list/L = mob.ret_grab()
 				if (istype(L, /list))
 					if (L.len == 2)

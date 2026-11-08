@@ -136,6 +136,8 @@
 			else
 				affecting.Weaken(20)
 
+	check_fireman_carry()
+
 	if (state >= GRAB_NECK && affecting)
 		affecting.Stun(2)
 		if (isliving(affecting))
@@ -177,6 +179,9 @@
 	if (!affecting)
 		return
 	if ((state == GRAB_NECK || state == GRAB_UPGRADING || state == GRAB_KILL) && (!assailant || !persistence_movement_allowed(affecting, assailant.loc))) return FALSE
+	if (carrying)
+		fireman_carry_position()
+		return
 	if (affecting.buckled)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		return
@@ -229,6 +234,9 @@
 		return
 	if (!assailant.canmove || assailant.lying)
 		qdel(src)
+		return
+	if (carrying)
+		to_chat(assailant, SPAN_WARNING("Put [affecting] down before changing your grip."))
 		return
 
 	last_action = world.time
@@ -328,7 +336,8 @@
 
 	//clicking on yourself while grabbing them
 	if (M == assailant && state >= GRAB_AGGRESSIVE)
-		devour(affecting, assailant)
+		if (!fireman_carry_click())
+			devour(affecting, assailant)
 
 /obj/item/weapon/grab/dropped()
 	if (ismob(loc))
