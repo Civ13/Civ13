@@ -167,11 +167,42 @@ tick, so one request replaces many polled ones and the request rate limit is
 not spent on retries. A failed step skips the rest unless `stop_on_failure` is
 false. `clear: true` cancels pending steps. `character_observe` reports the
 queue as `pending`, `running` and `results` with ids above `queue_since`.
+A step may take `repeat` (1-30): it runs that many times, each when its
+cooldown allows, and is recorded once as `done xN`. `until` stops the repeats
+early when a new message contains `message`, the active hand holds an item whose
+name contains `holding`, or the held stack reaches `amount`. A blocked move or a
+failure ends the repeats. Any step with a `target` may carry `expect_name`: the
+step fails with `target_changed` when that ref now names something else.
 Queued steps are logged like direct ones; releasing a character, or removing
 its agent from the config, stops its queue. Movement waits for the mob's
 movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
+
+### Change lists, prompts and sounds
+
+Every `character_observe` returns a `rev`. Passing it back as `since_rev`
+makes `nearby` list only the rows that appeared or changed since that observe
+(a row's position is compared in map coordinates, so walking does not mark
+everything changed), with `nearby_removed` refs and a `nearby_unchanged`
+count. When the baseline is gone (another observe ran in between) the full
+list comes back without `changes_since`.
+
+<a id="prompts"></a>A prompt (`WWinput`) the game raises for a character that its step did not
+answer with `choose` is listed under `prompts` (after `prompt_since`, newest id
+in `last_prompt`) with its text, the `choices` (or the input `kind`) and what
+the character `took`, so the agent can repeat the step with `choose`.
+
+<a id="sounds"></a>Sounds played within hearing range are listed under `sounds` (after
+`sound_since`, newest id in `last_sound`) with the sound's name, `dx`/`dy` and
+volume. Footsteps are left out unless `footsteps` is true. A deafened
+character hears nothing.
+
+The client takes `wait_s` (0-60) on `character_observe`: it polls twice a
+second until there is a message after `since`, a queue result after
+`queue_since`, a prompt after `prompt_since`, a sound after `sound_since` or a
+nearby change after `since_rev`, and reports `waited_s`. The world never sleeps
+inside a Topic reply.
 
 ### Boats
 
@@ -242,7 +273,9 @@ python tools/agent-control/civ13_agent.py mcp
 ```
 
 `mcp` is a stdio MCP server exposing one `civ13_<action>` tool per action with
-a JSON schema (from `tools/agent-control/catalog.py`). An MCP client entry:
+a JSON schema (from `tools/agent-control/catalog.py`). Read-only tools carry
+`readOnlyHint`; `set_var`, `call_proc`, `call_verb`, `kick`, `restart`,
+`delete_atom` and `character_release` carry `destructiveHint`. An MCP client entry:
 
 ```json
 {"mcpServers": {"civ13": {"command": "python", "args": ["tools/agent-control/civ13_agent.py", "mcp"],
@@ -508,4 +541,6 @@ python -B -m unittest discover -s tests/agent_control -v
 
 The offline suite covers the Topic packet format, client, MCP handshake and
 tool calls, catalog sync with the DM action table, autopilot parsing, and the
-security contracts above.
+security contracts above. `tests/agent_observe/run.py --byond-bin BIN` runs
+change lists, prompts, sounds, queue repeats and `expect_name` in a pinned
+BYOND fixture, and `tests/agent_boats/run.py` covers boats.

@@ -41,6 +41,8 @@
 					if (choices ? (answer in choices) : !isnull(answer))
 						agent.pending_choice = null // one answer per step
 						return answer
+				var/taken = (choices && !(default in choices)) ? FALSE : (default ? default : FALSE)
+				agent.note_prompt(message, title, choices, toc1, taken) // observe lists it so the step can be repeated with choose
 				if (choices && !(default in choices))
 					return FALSE
 				return default ? default : FALSE
