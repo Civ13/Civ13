@@ -2078,6 +2078,24 @@ RECIPE: /material/bronze/,monumental bronze statue of karl marx,/obj/structure/r
 RECIPE: /material/bronze/,bronze bust of karl marx,/obj/item/weapon/material/marx,3,80,0,0,religious & decoration,125,0,0,8,bronze
 RECIPE: /material/bronze/,globe,/obj/item/weapon/globe,8,90,0,1,religious & decoration,85,80,0,8,null
 
+//********************************************************
+//*********************| BRASS |**************************
+//********************************************************
+
+RECIPE: /material/brass/,brass razor blade,/obj/item/weapon/material/kitchen/utensil/knife/razorblade,2,40,0,1,hygiene,0,0,0,8,brass
+RECIPE: /material/brass/,handbell,/obj/item/weapon/handbell,2,50,0,1,none,40,0,0,8,null
+RECIPE: /material/brass/,trombone,/obj/item/trombone,6,155,0,1,none,83,0,0,8,null
+RECIPE: /material/brass/,globe,/obj/item/weapon/globe,8,90,0,1,religious & decoration,85,80,0,8,null
+RECIPE: /material/brass/,brass statue,/obj/structure/religious/statue,10,250,1,1,religious & decoration,10,0,0,8,brass
+
+//*********************| BRASS PROJECTILES |*************************
+
+RECIPE: /material/brass/,rifle casing (x3),/obj/item/stack/ammopart/casing/rifle,1,25,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,pistol casing (x3),/obj/item/stack/ammopart/casing/pistol,1,25,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,artillery casing,/obj/item/stack/ammopart/casing/artillery,2,35,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,field cannon casing,/obj/item/stack/ammopart/casing/tank,2,35,0,1,ammunition,105,0,0,8,null
+RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,2,35,0,1,ammunition,115,0,0,8,null
+
 //*******************************************************
 //*********************| WOOD |**************************
 //*******************************************************

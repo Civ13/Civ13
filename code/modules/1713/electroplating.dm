@@ -1,6 +1,6 @@
 // Electroplating: a cable-powered bath of sulphuric acid with a metal sheet
 // hung in it as the anode. A metal item lowered in comes out with a thin coat
-// of that metal. Gold and silver raise its trade value, copper and tin make
+// of that metal. Gold and silver raise its trade value, copper, tin and zinc make
 // worn weapons, tools and shields lose less health, and every coat renames and
 // tints the item. Unlocked by Electricity (Industrial Age).
 
@@ -13,10 +13,11 @@ var/global/list/plating_metals = list(
 	"gold" = list(/obj/item/stack/material/gold, "gold-plated", "#e8c547", 30, 1),
 	"silver" = list(/obj/item/stack/material/silver, "silver-plated", "#dfe3e8", 15, 1),
 	"copper" = list(/obj/item/stack/material/copper, "copper-plated", "#d08a52", 0, 0.75),
-	"tin" = list(/obj/item/stack/material/tin, "tin-plated", "#cfd3d8", 0, 0.5))
+	"tin" = list(/obj/item/stack/material/tin, "tin-plated", "#cfd3d8", 0, 0.5),
+	"zinc" = list(/obj/item/stack/material/zinc, "galvanized", "#b8c2c8", 0, 0.5))
 
 // Materials a material weapon may be made of to take a coat.
-var/global/list/plating_base_materials = list("iron", "steel", "bronze", "copper", "tin", "gold", "silver", "lead")
+var/global/list/plating_base_materials = list("iron", "steel", "bronze", "brass", "copper", "tin", "zinc", "gold", "silver", "lead")
 
 /obj/item/var/plating = null // metal id of the item's coat, if any
 
