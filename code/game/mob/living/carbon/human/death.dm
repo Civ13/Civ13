@@ -270,10 +270,7 @@
 							var/mob/living/human/Huser = last_harmed
 							spawn(rand(300,500))
 								if (comp_to_warrant != "Sheriff Office" && comp_to_warrant != "Government")
-									var/obj/item/weapon/paper_bin/police/PAR = null
-									for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
-										PAR = PAR2
-										break
+									var/obj/item/weapon/paper_bin/police/PAR = first_police_paper_bin()
 									if (PAR)
 										var/obj/item/weapon/paper/police/searchwarrant/SW = new /obj/item/weapon/paper/police/searchwarrant(PAR.loc)
 										SW.cmp = comp_to_warrant
@@ -321,10 +318,7 @@
 										map.warrants += Huser.real_name
 										Huser.gun_permit = 0
 										Huser.bail_price += 500
-										var/obj/item/weapon/paper_bin/police/PAR = null
-										for(var/obj/item/weapon/paper_bin/police/PAR2 in world)
-											PAR = PAR2
-											break
+										var/obj/item/weapon/paper_bin/police/PAR = first_police_paper_bin()
 										if (PAR)
 											var/obj/item/weapon/paper/police/warrant/AW = new /obj/item/weapon/paper/police/warrant(PAR.loc)
 											AW.tgt_mob = Huser

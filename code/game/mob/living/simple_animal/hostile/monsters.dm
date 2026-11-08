@@ -485,6 +485,27 @@
 		else
 			npc_subtile_species_walk("path", investigate_turf, move_to_delay, 0, TRUE)
 
+// Live echofiends, so every sound and footstep need not search range() for them.
+var/global/list/echofiend_list = list()
+
+/mob/living/simple_animal/hostile/echofiend/New()
+	..()
+	echofiend_list += src
+
+/mob/living/simple_animal/hostile/echofiend/Destroy()
+	echofiend_list -= src
+	return ..()
+
+// Same reach as `for (EF in range(reach, T))`: echofiends standing on a turf
+// on T's level within reach tiles.
+/proc/echofiends_hear(turf/T, reach)
+	if (!T || !echofiend_list.len)
+		return
+	for (var/mob/living/simple_animal/hostile/echofiend/EF in echofiend_list)
+		if (!isturf(EF.loc) || EF.z != T.z || get_dist(EF, T) > reach)
+			continue
+		EF.hear_sound(T)
+
 /mob/living/simple_animal/hostile/echofiend/proc/hear_sound(var/turf/T)
 	if (stat != CONSCIOUS || target_mob)
 		return
