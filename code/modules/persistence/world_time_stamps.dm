@@ -104,7 +104,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"round_started" = list(/obj/map_metadata/train_raid),
 	"round_deadline" = list(/obj/map_metadata/train_raid),
 	"created" = list(/datum/wound),
-	"last_recharge" = list(/obj/structure/survey_console)
+	"last_recharge" = list(/obj/structure/survey_console),
+	"record_start" = list(/obj/item/tape_recorder)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)

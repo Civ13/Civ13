@@ -879,6 +879,7 @@
 #include "code\modules\1713\signs_portraits_propaganda.dm"
 #include "code\modules\1713\structures.dm"
 #include "code\modules\1713\supplysystem.dm"
+#include "code\modules\1713\tape_recorder.dm"
 #include "code\modules\1713\telegraph.dm"
 #include "code\modules\1713\telephone.dm"
 #include "code\modules\1713\tools.dm"
