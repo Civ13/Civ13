@@ -154,6 +154,7 @@ var/survival_runtime_error = FALSE
 	H = new(locate(10,10,1))
 	var/obj/item/weapon/reagent_containers/glass/barrel/glass = new(H.loc)
 	var/obj/item/stack/ore/charcoal/charcoal = new(H.loc, 2)
+	H.put_in_active_hand(charcoal) // The barrel takes ingredients from the user's hands.
 	glass.attackby(charcoal, H)
 	survival_assert(glass.reagents.get_reagent_amount("carbon") == 3 && charcoal.amount == 1, "existing renewable carbon acquisition")
 	var/obj/item/weapon/starterjar/jar = new(H.loc)

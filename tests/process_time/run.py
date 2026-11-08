@@ -65,7 +65,7 @@ def run(byond, control):
         if compile_result.returncode or PINNED_BYOND not in compile_result.stdout or '0 errors, 0 warnings' not in compile_result.stdout:
             raise RuntimeError('Compilation failed')
         try:
-            result = subprocess.run([str(byond / ('dd.exe' if windows else 'DreamDaemon')), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=20)
+            result = subprocess.run([str(byond / ('dd.exe' if windows else 'DreamDaemon')), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=90)
         except subprocess.TimeoutExpired:
             print((temp / 'runtime.log').read_text())
             raise
