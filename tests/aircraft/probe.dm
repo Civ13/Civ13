@@ -279,6 +279,9 @@ var/aircraft_runtime_error = FALSE
 	var/fuel_before = aircraft_tank_fuel(A)
 	A.flight_watch_tick()
 	aircraft_check(aircraft_tank_fuel(A) < fuel_before && A.stall_seconds == 0, "a second of flight burns fuel from the tank without counting as a stall")
+	var/obj/structure/engine/internal/fuel_engine = A.engine
+	var/burn_per_second = fuel_engine.fuelefficiency * 2 * 2.5
+	aircraft_check(A.engine.fueltank.reagents.maximum_volume / burn_per_second >= 180, "a full tank keeps the plane in low flight for at least three minutes ([A.engine.fueltank.reagents.maximum_volume] u at [burn_per_second] u/s)")
 	var/obj/structure/aircraft_probe_wall/W2 = new(locate(4, aircraft_front_y(A) - 1, 2))
 	A.currentspeed = A.speeds
 	aircraft_check(!aircraft_step(A) && !A.airborne() && aircraft_frames_z(A, 1), "flying into an upper storey in low flight crashes to the ground")
@@ -286,6 +289,13 @@ var/aircraft_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/movement/WH in A.wheels)
 		all_broken = all_broken && WH.broken
 	aircraft_check(all_broken && !E.on && !A.moving, "a crash breaks the wheels and stops the engine")
+	aircraft_check(A.landing_gear_broken(), "the crash leaves the landing gear broken")
+	var/obj/structure/vehicleparts/movement/one_wheel = A.wheels[1]
+	aircraft_check(one_wheel.axis == A, "each wheel knows its aircraft")
+	A.mend_landing_gear()
+	aircraft_check(!A.landing_gear_broken(), "mending the landing gear fixes every wheel at once")
+	for (var/obj/structure/vehicleparts/movement/WH in A.wheels)
+		WH.broken = TRUE
 	qdel(W2)
 
 	// Losing lift in the air stalls it.
@@ -407,16 +417,33 @@ var/aircraft_runtime_error = FALSE
 	var/obj/structure/vehicleparts/axis/aircraft/P = build_light_plane(locate(11, 30, 1))
 	aircraft_check(!P.aloft_over_open_air() && !P.set_down_after_restore(), "an aircraft restored on the ground stays put")
 
-	// Off the runway it never takes off; with no level above it cannot.
-	var/obj/structure/vehicleparts/axis/aircraft/B = build_light_plane(locate(11, 40, 1))
+	// Off the runway it takes off from open ground after a longer roll;
+	// with no level above it cannot.
+	// Beside the runway (x 3-5), under the open air of x 1-10.
+	var/obj/structure/vehicleparts/axis/aircraft/B = build_light_plane(locate(6, 56, 1))
 	var/obj/structure/engine/internal/BE = B.engine
 	BE.fueltank.reagents.add_reagent(BE.fuels[1], 100, safety = TRUE)
 	B.engine.on = TRUE
-	aircraft_roll(B, 12)
-	aircraft_check(!B.airborne() && B.flight_z() == 1 && B.runway_roll == 0, "a full-throttle roll off the runway stays on the ground")
-	var/obj/structure/vehicleparts/axis/aircraft/C = build_light_plane(locate(12, 20, 2))
+	aircraft_check(!B.on_runway() && B.takeoff_distance() == B.rough_takeoff_roll && B.rough_takeoff_roll > B.takeoff_roll, "off a runway the takeoff roll is longer")
+	var/rough_rolled = aircraft_roll(B, B.takeoff_roll + 2)
+	aircraft_check(rough_rolled == B.takeoff_roll + 2 && !B.airborne() && B.flight_z() == 1 && B.runway_roll == B.takeoff_roll + 2, "a runway-length roll on open ground stays on the ground")
+	aircraft_check(findtext(B.takeoff_hint(), "more tiles of open ground"), "climb on open ground counts the tiles left")
+	B.engine.on = FALSE
+	aircraft_check(findtext(B.takeoff_hint(), "Start the engine"), "climb with the engine off says to start it")
+	B.engine.on = TRUE
+	rough_rolled += aircraft_roll(B, B.rough_takeoff_roll)
+	aircraft_check(B.airborne() && B.flight_z() == 2 && rough_rolled == B.rough_takeoff_roll, "a full-throttle roll of [B.rough_takeoff_roll] tiles of open ground takes off")
+	var/obj/structure/vehicleparts/axis/aircraft/C = build_light_plane(locate(16, 50, 2))
 	aircraft_check(!C.try_takeoff() && C.flight_z() == 2 && !C.airborne(), "with no level above there is nowhere to climb")
 	aircraft_check(!A.climb(M), "climb on the ground is refused")
+	S.engine.on = TRUE
+	S.currentspeed = 1
+	aircraft_check(!S.airborne() && S.on_runway() && findtext(S.takeoff_hint(), "Throttle up to full"), "climb on the runway below full throttle says to throttle up")
+	S.currentspeed = S.speeds
+	S.runway_roll = 3
+	aircraft_check(findtext(S.takeoff_hint(), "[S.takeoff_roll - 3] more tiles of runway"), "climb at full throttle counts the runway tiles left")
+	S.currentspeed = 0
+	S.runway_roll = 0
 
 	// The open-air hook only holds what an airborne aircraft carries.
 	aircraft_check(!aircraft_holds(locate(8, 8, 2), dropped), "nothing is held once no aircraft is airborne")

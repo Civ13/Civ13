@@ -101,7 +101,7 @@
 // Throttle and steering work like a car's wheel; Climb and Descend change height.
 /obj/item/vehicleparts/wheel/modular/aircraft
 	name = "control column"
-	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling along a runway at full throttle, and land by descending over one at low speed."
+	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling forward at full throttle (8 tiles of runway or 16 of open ground), and land by descending over a runway at low speed."
 
 /obj/item/vehicleparts/wheel/modular/aircraft/proc/flown_aircraft(mob/user)
 	var/obj/structure/vehicleparts/axis/aircraft/A = control && control.axis
@@ -140,6 +140,12 @@
 			if (AIRCRAFT_CRUISE)
 				to_chat(user, "The aircraft is at cruising height.")
 
+// The car V6's power with an aero engine's thrift: on the car figures a full
+// small tank lasted under twenty seconds in the air.
+/obj/structure/engine/internal/gasoline/premade/v6/aircraft
+	name = "aero engine"
+	fuelefficiency = 0.05
+
 /obj/structure/vehicleparts/axis/aircraft/light_plane
 	name = "light plane"
 	desc = "The controls of a single-engine light plane."
@@ -150,7 +156,7 @@
 // 4x4 square. Row 1 is the nose.
 var/global/list/aircraft_light_plane_layout = list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
-	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
 	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/right),
 	"2,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/bed/chair/drivers/aircraft),

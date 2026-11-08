@@ -38,6 +38,8 @@ var/global/list/airborne_aircraft = list()
 	var/flight_state = AIRCRAFT_GROUND
 	// Tiles rolled at full throttle on runway before the wheels leave it.
 	var/takeoff_roll = 8
+	// The same off a runway: open ground works, it just needs a longer roll.
+	var/rough_takeoff_roll = 16
 	// Lowest gear that keeps the aircraft flying.
 	var/stall_gear = 2
 	// Highest gear at which it can land on a runway.
@@ -230,13 +232,22 @@ var/global/list/airborne_aircraft = list()
 		return FALSE
 	runway_roll = 0
 	set_flight_state(AIRCRAFT_LOW)
-	visible_message(SPAN_NOTICE("\The [src] lifts off the runway and climbs into the air."))
+	visible_message(SPAN_NOTICE("\The [src] lifts off the ground and climbs into the air."))
 	return TRUE
+
+// What the pilot still has to do before the wheels leave the ground. Takeoff
+// itself is automatic (after_aircraft_move); Climb only works in the air.
+/obj/structure/vehicleparts/axis/aircraft/proc/takeoff_hint()
+	if (!engine || !engine.on)
+		return "Start the engine first: use the control column."
+	if (currentspeed < speeds || reverse)
+		return "Climb only works in the air. Throttle up to full (gear [speeds]) and roll forward in a straight line: the plane takes off by itself after [takeoff_roll] tiles of runway or [rough_takeoff_roll] tiles of open ground."
+	return "Keep rolling: the plane takes off by itself after [max(1, takeoff_distance() - runway_roll)] more tile\s of [on_runway() ? "runway" : "open ground"]."
 
 /obj/structure/vehicleparts/axis/aircraft/proc/climb(mob/user)
 	switch (flight_state)
 		if (AIRCRAFT_GROUND)
-			to_chat(user, SPAN_WARNING("Take off from a runway first: roll along it at full throttle."))
+			to_chat(user, SPAN_WARNING(takeoff_hint()))
 			return FALSE
 		if (AIRCRAFT_CRUISE)
 			to_chat(user, SPAN_WARNING("You are already at cruising height."))
@@ -419,6 +430,7 @@ var/global/list/airborne_aircraft = list()
 		if (!airborne_now)
 			for (var/obj/structure/vehicleparts/movement/W in wheels)
 				if (W.broken)
+					pilot_message(SPAN_WARNING("The landing gear is broken. Weld any part of the airframe to fix it."))
 					moving = FALSE
 					movement_processes--
 					stopmovementloop()
@@ -443,12 +455,16 @@ var/global/list/airborne_aircraft = list()
 	if (airborne())
 		update_flight_visuals()
 		return
-	if (currentspeed >= speeds && on_runway())
+	if (currentspeed >= speeds && !reverse)
 		runway_roll++
-		if (runway_roll >= takeoff_roll)
+		if (runway_roll >= takeoff_distance())
 			try_takeoff()
 	else
 		runway_roll = 0
+
+// Full-throttle tiles needed to lift off from where the aircraft is now.
+/obj/structure/vehicleparts/axis/aircraft/proc/takeoff_distance()
+	return on_runway() ? takeoff_roll : rough_takeoff_roll
 
 #undef AIRCRAFT_FUEL_MODIFIER
 #undef AIRCRAFT_FLIGHT_BURN_CRUISE
