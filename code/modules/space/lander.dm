@@ -153,22 +153,28 @@
 	var/ascent_propellant = LANDER_PROPELLANT / 2
 	var/seats = LANDER_SEATS
 	var/cargo_max = LANDER_CARGO_MAX
+	// Reagent ids the tank takes. One kind fills it at a time; fuel_kind is
+	// the kind in it while it holds any (methalox.dm adds methane-oxygen).
+	var/list/fuels = list("rocket_propellant")
+	var/fuel_kind = null
 	// ckeys of the crew who strapped in; they must stay on the lander's tile.
 	var/tmp/list/strapped = list()
 
 /obj/structure/crewed_lander/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Propellant: [propellant]/[propellant_needed]. Crew strapped in: [length(crew())]/[seats]. Cargo hold: [length(hold())]/[cargo_max]."))
+	to_chat(user, SPAN_NOTICE("[fuel_kind == "methalox" ? "Methalox" : "Propellant"]: [propellant]/[propellant_needed].[seats ? " Crew strapped in: [length(crew())]/[seats]." : ""] Cargo hold: [length(hold())]/[cargo_max]."))
 	if (ascent_propellant)
 		to_chat(user, SPAN_NOTICE("Fill it to [propellant_needed + ascent_propellant] for a sortie: it keeps enough for the ascent home after landing."))
 
 /obj/structure/crewed_lander/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && W.reagents.get_reagent_amount("rocket_propellant") > 0)
+	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && fuel_offered(W.reagents))
 		var/took = add_propellant(W.reagents)
 		if (took > 0)
 			to_chat(user, SPAN_NOTICE("You fill \the [src] ([propellant]/[propellant_needed])."))
 		else if (propellant >= propellant_needed + ascent_propellant)
 			to_chat(user, SPAN_WARNING("\The [src] is already full."))
+		else if (fuel_kind && propellant > 0)
+			to_chat(user, SPAN_WARNING("\The [src]'s tank already holds [fuel_kind == "methalox" ? "methalox" : "rocket propellant"]. Fly it before you change fuel."))
 		else
 			to_chat(user, SPAN_WARNING("\The [src] burns only rocket propellant."))
 		return
@@ -339,12 +345,35 @@ var/global/list/space_cargo_stacks = list(
 /obj/structure/crewed_lander/proc/sortie_ready()
 	return ascent_propellant > 0 && propellant >= propellant_needed + ascent_propellant
 
+// TRUE when R holds any fuel this craft burns.
+/obj/structure/crewed_lander/proc/fuel_offered(datum/reagents/R)
+	for (var/id in fuels)
+		if (R && R.get_reagent_amount(id) > 0)
+			return TRUE
+	return FALSE
+
+// The fuel id in R this tank can take now, or null: the kind already in the
+// tank, or the first of fuels that R holds.
+/obj/structure/crewed_lander/proc/fuel_in(datum/reagents/R)
+	if (!R)
+		return null
+	if (propellant > 0 && fuel_kind)
+		return R.get_reagent_amount(fuel_kind) > 0 ? fuel_kind : null
+	for (var/id in fuels)
+		if (R.get_reagent_amount(id) > 0)
+			return id
+	return null
+
 /obj/structure/crewed_lander/proc/add_propellant(datum/reagents/R)
-	var/amount = min(propellant_needed + ascent_propellant - propellant, R.get_reagent_amount("rocket_propellant"))
+	var/id = fuel_in(R)
+	if (!id)
+		return 0
+	var/amount = min(propellant_needed + ascent_propellant - propellant, R.get_reagent_amount(id))
 	if (amount <= 0)
 		return 0
-	R.remove_reagent("rocket_propellant", amount)
+	R.remove_reagent(id, amount)
 	propellant += amount
+	fuel_kind = id
 	return amount
 
 // Strapped-in crew still on the lander's tile, conscious and connected.

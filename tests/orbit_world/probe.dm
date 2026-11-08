@@ -119,6 +119,7 @@ var/global/orbit_failures = 0
 		orbit_reusable_checks()
 		orbit_two_deck_checks()
 		orbit_network_checks()
+		orbit_freight_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1103,4 +1104,119 @@ var/global/orbit_failures = 0
 	orbit_check("transceiver has its own dish", T.has_antenna() ? 1 : 0, 1)
 	orbit_check("transceiver gated like a relay", get_recipe_node_req("/obj/structure/telecom/relay/station"), "factories")
 	qdel(T)
+	map.ordinal_age = 7
+
+// Methane-oxygen fuel (methalox.dm) and the uncrewed cargo freighter
+// (orbit_freight.dm): chemistry, the plant's CO2, booster wear on methalox,
+// freight payloads, arrival beside the party's station hatch, a refused
+// flight coming back, and journal replays.
+/proc/orbit_freight_checks()
+	var/party = "civ:gaia:Delta"
+	map.ordinal_age = 9
+	// The probe world skips startup, which builds the reaction tables.
+	if (!length(chemical_reagents_list))
+		initialize_chemical_reagents()
+	if (!length(chemical_reactions_list))
+		initialize_chemical_reactions()
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/G = new(locate(3, 3, 1))
+	G.reagents.add_reagent("carbon_dioxide", 10)
+	G.reagents.add_reagent("hydrogen", 40)
+	// Reactions normally run on the chemistry process, which the probe lacks.
+	G.reagents.process_reactions()
+	orbit_check("CO2 and hydrogen make methane", round(G.reagents.get_reagent_amount("methane")), 10)
+	G.reagents.add_reagent("oxygen", 20)
+	G.reagents.process_reactions()
+	orbit_check("methane and oxygen make methalox", round(G.reagents.get_reagent_amount("methalox")), 30)
+	var/obj/structure/crewed_lander/orbital_rocket/reusable/R = new(locate(4, 3, 1))
+	orbit_check("booster takes methalox", R.add_propellant(G.reagents), 30)
+	orbit_check("methalox in the tank", R.fuel_kind, "methalox")
+	orbit_check("methalox halves booster wear", R.flight_wear(), ORBIT_BOOSTER_WEAR / 2)
+	G.reagents.add_reagent("rocket_propellant", 10)
+	orbit_check("one fuel at a time", R.add_propellant(G.reagents), 0)
+	var/obj/structure/crewed_lander/lander = new(locate(5, 3, 1))
+	orbit_check("a lander burns no methalox", lander.fuel_offered(G.reagents) && lander.fuel_in(G.reagents) == "rocket_propellant" ? 1 : 0, 1)
+	qdel(lander)
+	qdel(R)
+	qdel(G)
+
+	// The plant finds CO2 inside a module, never in open orbit.
+	var/obj/structure/reagent_dispensers/propellant_plant/methalox/P = new(locate(6, 3, 1))
+	orbit_check("no CO2 in open orbit", P.co2_source() ? 1 : 0, 0)
+	var/obj/structure/region_gate/station_hatch/hatch = orbit_station_hatch(party)
+	orbit_check("Delta's station hatch for freight", hatch ? 1 : 0, 1)
+	if (!hatch)
+		return
+	var/turf/floor/habitat/F = null
+	for (var/turf/floor/habitat/HT in orange(1, get_turf(hatch)))
+		if (HT.habitat_core())
+			F = HT
+			break
+	P.forceMove(F)
+	var/datum/habitat_ledger/L = P.co2_source()
+	orbit_check("plant takes CO2 from the module", istype(L) ? 1 : 0, 1)
+	if (istype(L))
+		L.co2 = 0.5
+		orbit_check("too little CO2 for a batch", P.feedstock_ready() ? 1 : 0, 0)
+		L.co2 = 3
+		orbit_check("enough CO2 for a batch", P.feedstock_ready() ? 1 : 0, 1)
+		P.use_feedstock()
+		orbit_check("a batch scrubs the module", L.co2, 2)
+	orbit_check("methalox plant gated", get_recipe_node_req("/obj/structure/reagent_dispensers/propellant_plant/methalox"), "local_resources")
+	qdel(P)
+
+	// Freight payloads.
+	var/obj/structure/crewed_lander/freighter/FR = new(locate(7, 3, 1))
+	map.ordinal_age = 7
+	orbit_check("no freighters before 2013", findtext("[FR.vehicle_refusal("gaia")]", "2013") ? 1 : 0, 1)
+	map.ordinal_age = 8
+	orbit_check("freighter takes methalox and propellant", ("methalox" in FR.fuels) && ("rocket_propellant" in FR.fuels) ? 1 : 0, 1)
+	orbit_check("freighter has no seats", FR.seats, 0)
+	orbit_check("freighter has an id", istext(FR.freight_id) ? 1 : 0, 1)
+	orbit_check("freighter gated", get_recipe_node_req("/obj/structure/crewed_lander/freighter"), "orbital_flight")
+	var/list/cargo = list(list("stack:steel", 30), list("/obj/item/pressure_tank", 1))
+	var/payload = orbit_freight_payload(FR.freight_id, party, locate(7, 3, 1), cargo, "tester")
+	var/list/decoded = orbit_freight_decode(payload)
+	orbit_check("freight payload round trip", decoded ? "[decoded["party"]],[length(decoded["cargo"])]" : "null", "[party],2")
+	orbit_check("freight payloads detected", orbit_freight_payloads(list(payload)) ? 1 : 0, 1)
+	orbit_check("characters are not freight", orbit_freight_payloads(list(json_encode(list("v" = 1, "kind" = "character")))) ? 1 : 0, 0)
+	var/list/extra = json_decode(payload)
+	extra["seats"] = 3
+	orbit_check("unknown freight fields refused", orbit_freight_decode(json_encode(extra)) ? 1 : 0, 0)
+	var/list/big = list()
+	for (var/i in 1 to 21)
+		big += list(list("stack:steel", 1))
+	orbit_check("an overfull hold refused", orbit_freight_decode(orbit_freight_payload("x", party, locate(7, 3, 1), big, null)) ? 1 : 0, 0)
+	orbit_check("unknown goods refused", orbit_freight_decode(orbit_freight_payload("x", party, locate(7, 3, 1), list(list("/obj/item/weapon/gun/energy", 1)), null)) ? 1 : 0, 0)
+
+	// Arrival beside the hatch, and a refused flight back where it left.
+	var/before = length(orbit_find_all(/obj/structure/closet/crate, hatch.z, hatch.x - 1, hatch.y - 1, hatch.x + 1, hatch.y + 1))
+	orbit_freight_arrive(list(payload), TRUE)
+	var/list/crates = orbit_find_all(/obj/structure/closet/crate, hatch.z, hatch.x - 1, hatch.y - 1, hatch.x + 1, hatch.y + 1)
+	orbit_check("freight lands beside the station hatch", length(crates) - before, 1)
+	var/obj/structure/closet/crate/delivered = null
+	for (var/obj/structure/closet/crate/C in crates)
+		if (C.name == "freight crate")
+			delivered = C
+	var/obj/item/stack/material/steel/steel = delivered ? locate() in delivered : null
+	orbit_check("freight crate holds the cargo", steel ? "[steel.amount],[(locate(/obj/item/pressure_tank) in delivered) ? 1 : 0]" : "none", "30,1")
+	orbit_check("crate off the hatch tile", delivered && get_turf(delivered) != get_turf(hatch) ? 1 : 0, 1)
+	orbit_freight_arrive(list(payload), FALSE)
+	var/obj/structure/closet/crate/back = locate() in locate(7, 3, 1)
+	orbit_check("refused freight comes back where it left", back ? back.name : "none", "returned freight crate")
+	if (back)
+		qdel(back)
+
+	// Journal replays: a departure finds the freighter by its id, and an
+	// arrival unpacks again.
+	var/obj/item/pressure_tank/tank = new(FR)
+	transfer_bridge.replay(list(list("effect_id" = "probe-freight:remove", "kind" = "remove", "payloads" = list(payload))))
+	orbit_check("replayed departure sends the freighter again", QDELETED(FR) && QDELETED(tank) ? 1 : 0, 1)
+	transfer_bridge.replay(list(list("effect_id" = "probe-freight:return", "kind" = "return", "payloads" = list(payload))))
+	back = locate() in locate(7, 3, 1)
+	orbit_check("replayed return unpacks the crate", back ? back.name : "none", "returned freight crate")
+	if (back)
+		qdel(back)
+	transfer_bridge.applied -= list("probe-freight:remove", "probe-freight:return")
+	if (delivered)
+		qdel(delivered)
 	map.ordinal_age = 7

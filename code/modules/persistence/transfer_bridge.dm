@@ -213,7 +213,13 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		applied += effect_id
 		count++
 		try
-			if(kind == "remove")
+			// An uncrewed freighter's flight (space/orbit_freight.dm).
+			if(orbit_freight_payloads(entry["payloads"]))
+				if(kind == "remove")
+					orbit_freight_replay_departure(entry["payloads"])
+				else
+					orbit_freight_arrive(entry["payloads"], kind == "credit")
+			else if(kind == "remove")
 				region_travel_replay_departure(entry["payloads"])
 			else
 				region_travel_arrive(entry["payloads"], kind == "credit", region_travel_arrival_turf(), TRUE)
@@ -246,6 +252,9 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		if(islist(transfer_kinds) && ("character" in transfer_kinds))
 			poll_character(transfer_id, directions[transfer_id] == "in")
 			continue
+		if(islist(transfer_kinds) && ("freight" in transfer_kinds))
+			poll_freight(transfer_id, directions[transfer_id] == "in")
+			continue
 		var/obj/structure/transfer_trade_post/post = transfer_trade_arrival_post()
 		if(!post) return
 		var/turf/post_turf = get_turf(post)
@@ -268,6 +277,15 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// The effect is recorded; build the character now, without sleeping. If the
 	// arrival point went away during the request, the build picks another.
 	region_travel_arrive(result["payloads"], incoming, T)
+
+// An uncrewed freighter's cargo (space/orbit_freight.dm) lands at the party's
+// station or launch complex, or comes back where it left.
+/datum/transfer_bridge/proc/poll_freight(transfer_id, incoming)
+	if(("[transfer_id]:[incoming ? "credit" : "return"]") in applied) return
+	var/list/result = incoming ? begin_import(transfer_id, TRUE) : begin_return(transfer_id, TRUE)
+	if(!result) return
+	// The effect is recorded; unpack the cargo now, without sleeping.
+	orbit_freight_arrive(result["payloads"], incoming)
 
 /map_storage/transfer_capture(generation)
 	return transfer_bridge.capture(generation)

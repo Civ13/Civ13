@@ -50,18 +50,16 @@ what the code does so far and the rules later steps must keep.
 | 12a | Reusable launch (2026): eight-seat crew ship on a booster that lands back, booster wear and steel refurbishment, eight seats home in orbit | #3966, `code/modules/space/orbit_reusable.dm` |
 | 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | #3978, `orbit_project.dm` |
 | 13 | Wider network: station transceiver (a relay with its own dish), flights from orbit down to the Moon and Mars and back up checked | `code/modules/space/orbit_network.dm` |
+| 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
+| 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-12c. A methane-oxygen propellant plant needs a methane reagent chain first;
-    waiting on Val. A compact fission reactor was dropped: the controlled
-    reactor generator (2013) already runs in orbit.
-13. Remaining: in-orbit fabrication with the 3D printer.
-10d. The uncrewed cargo freighter. It needs items to cross regions without a
-    traveller, which the transfer agent cannot do yet, so it waits for that
-    infrastructure. Seal and battery wear wait for a reason to exist (seals
-    already fail through breaches and strikes).
+A compact fission reactor was dropped: the controlled reactor generator
+(2013) already runs in orbit. The 3D printer already works in orbit. Seal
+and battery wear wait for a reason to exist (seals already fail through
+breaches and strikes).
 
 ## Orbital flight
 
@@ -306,6 +304,36 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Station transceiver** (20 electronics, researched like the relay): a long-range
   relay with its own dish, so a station needs no antenna on the hull. It
   keys, wears and repairs like any relay.
+
+## Cargo freighter
+
+- **Cargo freighter** (60 electronics, Orbital Flight), from 2013 (age 8):
+  an uncrewed rocket with no seats and a 20-item hold that takes what a
+  lander's hold takes. It burns 200 units of rocket propellant or methalox
+  and is spent on launch.
+- **Where it lands.** Whoever launches it sends it for their party. In
+  orbit the crate lands beside the party's station hatch; on another world
+  beside the party's launch complex office, else at the world's arrival
+  point. A refused flight comes back where it left.
+- **Fast freight.** The flight is one `freight` payload with the
+  freighter's saved id, the party, where it left and the cargo. The
+  transfer agent journals it like a character (`FAST_KINDS` in
+  `tools/transfer_storage/region.py`), so it arrives in seconds. A reload
+  replays a departure by deleting the freighter with that id and replays an
+  arrival or return by unpacking the crate again (`transfer_bridge.replay`).
+
+## Methane-oxygen fuel
+
+- **Chemistry.** Carbon dioxide 1 and hydrogen 4 give methane 1; methane 1
+  and oxygen 2 give methalox 3.
+- **Methalox plant** (50 steel, Local Resources): a propellant plant that
+  also needs CO2 for each piece of ice. Outside on Mars it draws it from
+  the air; inside a habitat module it takes 1 unit of the module's CO2 per
+  batch, so it helps the scrubber. In open orbit and on the Moon outside it
+  has none.
+- **Uses.** The reusable rocket and the freighter burn it. A tank holds one
+  fuel at a time (`fuels` and `fuel_kind` on the crewed lander). On
+  methalox the reusable booster wears 10 per flight instead of 20.
 
 ## Tests
 

@@ -73,11 +73,18 @@ def payload_kinds(manifest):
     return sorted(kinds)
 
 
+# Payload kinds the world can find and remove again after a reload: a character
+# by its owner, an uncrewed freighter's flight by its saved id.
+FAST_KINDS = ('character', 'freight')
+
+
 def _require_characters(payloads):
-    """Only character payloads can be journaled: the world can find and remove a
-    character again by its owner, but not an arbitrary stack of goods."""
-    if not payloads or payload_kinds(json.dumps({'items': payloads})) != ['character']:
-        raise TransferError('only character payloads can travel fast')
+    """Only character or freight payloads can be journaled, one kind per
+    transfer: the world can find and remove those again, but not an arbitrary
+    stack of goods."""
+    kinds = payload_kinds(json.dumps({'items': payloads})) if payloads else []
+    if len(kinds) != 1 or kinds[0] not in FAST_KINDS:
+        raise TransferError('only character or freight payloads can travel fast')
 
 
 class RegionStore:
@@ -212,7 +219,7 @@ class RegionStore:
 
         Returns (transfer_id, effect_id). DM removes the items only after this
         returns, and lists effect_id in the next world save. With fast, the
-        removal is journaled and the escrow is sent at once (characters only).
+        removal is journaled and the escrow is sent at once (characters and freight only).
         """
         if not payloads or any(type(p) is not str for p in payloads):
             raise TransferError('escrow needs a non-empty list of serialized items')
@@ -241,7 +248,7 @@ class RegionStore:
         """Destination: record the tentative credit, before DM creates the items.
 
         Returns (effect_id, payloads). With fast, the credit is journaled and the
-        receipt is sent at once (characters only).
+        receipt is sent at once (characters and freight only).
         """
         with self._tx():
             self._require_open()

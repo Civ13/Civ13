@@ -7,8 +7,9 @@
 // its tank empty and some wear. Only the crew ship and its hold travel.
 //
 // - Condition runs from 0 to 100, a plain saved number. Each flight costs
-//   ORBIT_BOOSTER_WEAR. A booster below that will not fly until it is
-//   refurbished: each steel sheet restores ORBIT_BOOSTER_REFIT_PER_SHEET.
+//   ORBIT_BOOSTER_WEAR, or half that on methalox. A booster below that will
+//   not fly until it is refurbished: each steel sheet restores
+//   ORBIT_BOOSTER_REFIT_PER_SHEET.
 // - The crew ship arrives in orbit as a capsule with eight seats home, so
 //   the whole crew can deorbit together (the "seats" flight field).
 // ============================================================
@@ -16,6 +17,8 @@
 #define ORBIT_REUSABLE_AGE 9
 #define ORBIT_CREW_SHIP_SEATS 8
 #define ORBIT_BOOSTER_WEAR 20
+// A flight on methane-oxygen (methalox.dm) burns clean and wears it half as much.
+#define ORBIT_BOOSTER_WEAR_METHALOX 10
 #define ORBIT_BOOSTER_REFIT_PER_SHEET 4
 
 // TRUE when n is a valid seat count for a flight's capsule.
@@ -24,14 +27,19 @@
 
 /obj/structure/crewed_lander/orbital_rocket/reusable
 	name = "reusable rocket"
-	desc = "A crew ship with eight seats on a booster that lands itself again. Fill it with rocket propellant beside a launch pad pointed at orbit, strap in on its tile and launch; the booster comes back to the pad."
+	desc = "A crew ship with eight seats on a booster that lands itself again. Fill it with rocket propellant or methalox beside a launch pad pointed at orbit, strap in on its tile and launch; the booster comes back to the pad."
 	seats = ORBIT_CREW_SHIP_SEATS
+	fuels = list("rocket_propellant", "methalox")
 	// 0 to 100; never a world.time stamp.
 	var/condition = 100
 
 /obj/structure/crewed_lander/orbital_rocket/reusable/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Booster condition: [round(condition)]%. Each flight wears it by [ORBIT_BOOSTER_WEAR]; steel sheets refurbish it."))
+	to_chat(user, SPAN_NOTICE("Booster condition: [round(condition)]%. Each flight wears it by [ORBIT_BOOSTER_WEAR], or [ORBIT_BOOSTER_WEAR_METHALOX] on methalox; steel sheets refurbish it."))
+
+// What the next flight costs the booster.
+/obj/structure/crewed_lander/orbital_rocket/reusable/proc/flight_wear()
+	return fuel_kind == "methalox" ? ORBIT_BOOSTER_WEAR_METHALOX : ORBIT_BOOSTER_WEAR
 
 /obj/structure/crewed_lander/orbital_rocket/reusable/vehicle_refusal(destination)
 	. = ..()
@@ -39,7 +47,7 @@
 		return
 	if (!map || map.ordinal_age < ORBIT_REUSABLE_AGE)
 		return "Reusable rockets only fly from 2026."
-	if (condition < ORBIT_BOOSTER_WEAR)
+	if (condition < flight_wear())
 		return "The booster is too worn to fly. Refurbish it with steel sheets."
 	return null
 
@@ -71,7 +79,7 @@
 
 /obj/structure/crewed_lander/orbital_rocket/reusable/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
 	var/turf/T = get_turf(src)
-	var/left = condition - ORBIT_BOOSTER_WEAR
+	var/left = condition - flight_wear()
 	. = ..()
 	if (isnull(.))
 		orbit_booster_return(T, left)

@@ -155,10 +155,16 @@ class Journal(unittest.TestCase):
         self.assertFalse(self.b.store.status().get('hold_reason'))
 
     def test_goods_cannot_travel_fast(self):
-        for payloads in (['plain'], [json.dumps({'kind': 'goods'})], [character('x'), 'plain']):
+        freight = json.dumps({'v': 1, 'kind': 'freight', 'id': 'f1'})
+        for payloads in (['plain'], [json.dumps({'kind': 'goods'})], [character('x'), 'plain'], [character('x'), freight]):
             with self.assertRaises(TransferError):
                 self.a.store.begin_escrow('beta', payloads, fast=True)
         self.assertEqual([], self.a.store.status()['active'])
+
+    def test_freight_travels_fast(self):
+        freight = json.dumps({'v': 1, 'kind': 'freight', 'id': 'f1'}, sort_keys=True)
+        tid, effect = self.a.store.begin_escrow('beta', [freight], fast=True)
+        self.assertEqual([freight], [p for e in self.a.store.replay() if e['effect_id'] == effect for p in e['payloads']])
 
     def test_older_backup_still_holds_the_region(self):
         snapshot = dict(self.a.saved)

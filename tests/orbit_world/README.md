@@ -119,9 +119,18 @@ sealed modules, open and joined deck hatches with the lower hub still
 sealed, the riser joining the upper cables to the lower spine, and a sector
 beacon in the crate.
 
-Last, the wider network (`code/modules/space/orbit_network.dm`): a station
+Then the wider network (`code/modules/space/orbit_network.dm`): a station
 pad offering the Moon and home but never orbit, a lander flying from orbit
 to the Moon, the Moon flying up to orbit, and the transceiver's own dish.
+
+Last, methalox (`code/modules/space/methalox.dm`) and the cargo freighter
+(`code/modules/space/orbit_freight.dm`): the methane and methalox
+reactions, the booster taking methalox and wearing half as much, one fuel
+per tank, a lander refusing methalox, the plant's CO2 (none in open orbit,
+a module's air, too little for a batch, a batch scrubbing it), the 2013
+gate, the recipe gates, freight payloads and their bounds, a crate landing
+beside the party's station hatch with its cargo, a refused flight coming
+back where it left, and journal replays of a departure and a return.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
