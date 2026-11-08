@@ -4,10 +4,13 @@
 // only through relay stations (radio_relay.dm).
 //
 // The sending world applies its own mutes, bans, spam and advertising checks
-// and is the only world that posts the line to Discord (webhook and ooc.log),
-// so CivilizationBot sees each line once. A receiving world shows it to its
-// clients with OOC enabled, unless OOC is globally muted here or the speaker
-// holds an OOC ban in this world's ban list too.
+// and posts the line to Discord (webhook and ooc.log) when its own webhook is
+// on. CivilizationBot knows one game server per group, so usually only the
+// mainland has a webhook: a line from a region without one ("posted" FALSE)
+// is posted by the mainland instead, tagged with its region, and by no other
+// world, so the bot sees each line once (Rail Yard, 2026-11-08). A receiving
+// world shows it to its clients with OOC enabled, unless OOC is globally muted
+// here or the speaker holds an OOC ban in this world's ban list too.
 //
 // Transport is the region's transfer agent (tools/transfer_storage/radio.py,
 // /ooc/send and /ooc/inbox). The radio process sends queued lines once a
@@ -39,7 +42,7 @@ var/global/region_ooc_next_poll = 0
 			fakekey = "[holder.fakekey]"
 		else
 			rank = "[holder.OOC_rank()]"
-	region_ooc_outbound_queue += list(list("name" = speaker.key, "ckey" = speaker.ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey))
+	region_ooc_outbound_queue += list(list("name" = speaker.key, "ckey" = speaker.ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled()))
 	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
 		region_ooc_outbound_queue.Cut(1, 2)
 	return TRUE
@@ -90,12 +93,15 @@ var/global/region_ooc_next_poll = 0
 		return FALSE
 	if (!(style in list("everyone", "elevated", "mentor", "moderator", "developer", "admin", "highstaff")))
 		style = "everyone"
-	if (!config.ooc_allowed && style == "everyone")
-		return FALSE
 	if (region_ooc_ckey_banned(ckey(speaker_ckey)))
 		return FALSE
 	var/region_name = html_encode(region_ooc_region_name(source))
 	name = html_encode(name)
+	// Before the mute check: a mute here hides the line here, not on Discord.
+	if (!envelope["posted"] && shard_group.region == shard_group.mainland)
+		region_ooc_post_to_discord(region_name, name, msg)
+	if (!config.ooc_allowed && style == "everyone")
+		return FALSE
 	var/rank = istext(envelope["rank"]) ? html_encode(envelope["rank"]) : ""
 	var/fakekey = istext(envelope["fakekey"]) ? html_encode(envelope["fakekey"]) : ""
 	log_ooc("\[[region_name]\] [name] : [msg]")
@@ -109,6 +115,15 @@ var/global/region_ooc_next_poll = 0
 		else if (length(rank))
 			display_name = "<span class = 'ping'>[rank]</span> [name]"
 		to_chat(target, "<span class='ooc'><span class='[style]'>" + create_text_tag("ooc", "OOC:", target) + " <small>\[[region_name]\]</small> <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
+	return TRUE
+
+// The mainland posts a line from a region without its own webhook, in the
+// format the OOC verb uses, with the region name where the map ID would be.
+/proc/region_ooc_post_to_discord(region_name, name, msg)
+	var/line = "__**\[[time_stamp()]] ([region_name]) OOC:**__ **[name]:** [msg]"
+	webhook_send_ooc(name, line)
+	var/oocdiary = file("ooc.log")
+	oocdiary << line
 	return TRUE
 
 // Called by the radio process once a second: posts queued lines and shows

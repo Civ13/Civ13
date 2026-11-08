@@ -157,6 +157,13 @@ class OocRingTests(unittest.TestCase):
         # Radio and OOC never mix.
         self.assertEqual([], self.beta.inbox())
 
+    def test_ooc_posted_flag_reaches_the_other_regions(self):
+        # The mainland posts a line to Discord only when its region did not (region_ooc.dm).
+        for sent, expected in ((1, True), (True, True), (0, False), (None, False), ('yes', False)):
+            self.alpha.ooc_send(ooc(posted=sent))
+            self.beta.deliver_ooc(self.alpha.outbox()['ooc'])
+            self.assertEqual([expected], [e['posted'] for e in self.beta.ooc_inbox()])
+
     def test_ooc_rings_are_bounded_and_expire(self):
         for i in range(RING + 5):
             self.alpha.ooc_send(ooc(message='line %d' % i))

@@ -136,10 +136,12 @@ var/global/datum/webhook_dispatcher/webhook_dispatcher = new
 #undef WEBHOOK_QUEUE_LIMIT
 #undef WEBHOOK_REQUEST_TICKS
 
+// TRUE when this world posts to CivilizationBot (WEBHOOK_CAN_FIRE with an address and key).
+/proc/webhook_enabled()
+	return config && config.webhook_can_fire && config.webhook_address && config.webhook_key ? TRUE : FALSE
+
 /proc/webhook_send(method, data)
-	if (!config || !config.webhook_can_fire)
-		return
-	if (!config.webhook_address || !config.webhook_key)
+	if (!webhook_enabled())
 		return
 
 	var/query = "[config.webhook_address]?key=[config.webhook_key]&method=[method]&data=[url_encode(json_encode(data))]"

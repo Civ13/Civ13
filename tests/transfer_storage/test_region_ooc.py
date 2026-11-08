@@ -1,7 +1,7 @@
 """Source contracts for group-wide OOC (region_ooc.dm). Never launches BYOND.
 
-Only the region a line was said in posts it to Discord, so CivilizationBot sees
-each line once; receiving regions show it with a region tag and skip it when
+A line reaches Discord once: from the region it was said in when that region
+has a webhook, otherwise from the mainland; receiving regions show it with a region tag and skip it when
 OOC is muted there or the speaker holds an OOC ban there.
 """
 import os
@@ -39,11 +39,29 @@ class RegionOoc(unittest.TestCase):
         self.assertLess(saved, verb.index('msg = ooc_ping_clients(msg)'))
         self.assertLess(verb.index('webhook_send_ooc'), verb.index('region_ooc_outbound(src, region_msg, ooc_style)'))
 
-    def test_receiving_regions_do_not_post_to_discord(self):
+    def test_only_the_mainland_posts_lines_their_region_did_not(self):
+        # Rail Yard has no webhook (the bot knows one server), so its OOC never
+        # reached Discord until the mainland posted it (2026-11-08).
         receive = proc(OOC, '/proc/region_ooc_receive')
+        outbound = proc(OOC, '/proc/region_ooc_outbound')
+        self.assertIn('"posted" = webhook_enabled()', outbound)
+        gate = '!envelope["posted"] && shard_group.region == shard_group.mainland'
+        self.assertIn(gate, receive)
+        post = receive.index('region_ooc_post_to_discord(region_name, name, msg)')
+        self.assertLess(receive.index(gate), post)
+        # After the sender and ban checks, before the local mute, which only hides it here.
+        self.assertLess(receive.index('findtext(msg, "<")'), post)
+        self.assertLess(receive.index('region_ooc_ckey_banned'), post)
+        self.assertLess(post, receive.index('config.ooc_allowed'))
         code = '\n'.join(line for line in OOC.split('\n') if not line.lstrip().startswith('//'))
         for call in ('webhook_send', 'discord_log', 'ooc.log'):
-            self.assertNotIn(call, code)
+            self.assertNotIn(call, code.replace(proc(OOC, '/proc/region_ooc_post_to_discord'), ''))
+        poster = proc(OOC, '/proc/region_ooc_post_to_discord')
+        self.assertIn('webhook_send_ooc(name, line)', poster)
+        self.assertIn('file("ooc.log")', poster)
+        self.assertIn('([region_name]) OOC:', poster)
+        hooks = read('code/modules/webhooks/webhooks.dm')
+        self.assertIn('if (!webhook_enabled())', proc(hooks, '/proc/webhook_send'))
         for check in ('config.ooc_allowed', 'region_ooc_ckey_banned', 'show_ooc', 'findtext(msg, "<")',
                       'source == shard_group.region', 'html_encode(name)'):
             self.assertIn(check, receive)
