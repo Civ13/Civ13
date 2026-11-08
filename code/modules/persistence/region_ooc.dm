@@ -22,17 +22,28 @@
 // second and polls the inbox every few seconds, never while an earlier OOC
 // call is still waiting on the agent. Off unless the world is in a region
 // group and has a transfer agent.
+//
+// A line said before the round is playing (the world is still loading its
+// save, or in the lobby) is queued and sent once the round starts; before,
+// it was dropped silently (Rail Yard, 2026-11-08). Lines queued longer than
+// REGION_OOC_MAX_AGE are dropped instead of arriving out of context.
 #define REGION_OOC_QUEUE_LIMIT 50
 #define REGION_OOC_SEND_LIMIT 10
 #define REGION_OOC_RECEIVE_LIMIT 50
 #define REGION_OOC_POLL_INTERVAL 30 // deciseconds between inbox polls
+#define REGION_OOC_MAX_AGE 3000 // deciseconds a queued line may wait for the round to start
 
 var/global/list/region_ooc_outbound_queue = list()
 var/global/region_ooc_busy = FALSE
 var/global/region_ooc_next_poll = 0
 
+// The world is in a region group with a transfer agent: OOC lines said here are queued.
+/proc/region_ooc_linked()
+	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled()
+
+// The queue is sent and the inbox read only while the round is playing.
 /proc/region_ooc_enabled()
-	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled() && ticker && ticker.current_state == GAME_STATE_PLAYING
+	return region_ooc_linked() && ticker && ticker.current_state == GAME_STATE_PLAYING
 
 // Queues one OOC line said here for the other regions. msg is the sanitized
 // text before mention highlighting; each region highlights its own clients.
@@ -50,9 +61,9 @@ var/global/region_ooc_next_poll = 0
 	return region_ooc_outbound_line(speaker.key, speaker.ckey, msg, style, rank, fakekey)
 
 /proc/region_ooc_outbound_line(name, speaker_ckey, msg, style, rank = "", fakekey = "")
-	if (!istext(name) || !length(name) || !istext(msg) || !length(msg) || !region_ooc_enabled())
+	if (!istext(name) || !length(name) || !istext(msg) || !length(msg) || !region_ooc_linked())
 		return FALSE
-	region_ooc_outbound_queue += list(list("name" = name, "ckey" = speaker_ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled()))
+	region_ooc_outbound_queue += list(list("name" = name, "ckey" = speaker_ckey, "message" = msg, "style" = style, "rank" = rank, "fakekey" = fakekey, "posted" = webhook_enabled(), "queued" = world.time))
 	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
 		region_ooc_outbound_queue.Cut(1, 2)
 	return TRUE
@@ -79,9 +90,9 @@ var/global/region_ooc_next_poll = 0
 
 // Hands one Discord message, already sanitized, on to the other regions.
 /proc/region_ooc_outbound_discord(sender, msg)
-	if (!istext(sender) || !length(sender) || !istext(msg) || !length(msg) || !region_ooc_enabled())
+	if (!istext(sender) || !length(sender) || !istext(msg) || !length(msg) || !region_ooc_linked())
 		return FALSE
-	region_ooc_outbound_queue += list(list("name" = sender, "ckey" = "discord", "message" = msg, "style" = "everyone", "discord" = TRUE, "posted" = TRUE))
+	region_ooc_outbound_queue += list(list("name" = sender, "ckey" = "discord", "message" = msg, "style" = "everyone", "discord" = TRUE, "posted" = TRUE, "queued" = world.time))
 	if (region_ooc_outbound_queue.len > REGION_OOC_QUEUE_LIMIT)
 		region_ooc_outbound_queue.Cut(1, 2)
 	return TRUE
@@ -184,9 +195,11 @@ var/global/region_ooc_next_poll = 0
 // Called by the radio process once a second: posts queued lines and shows
 // lines from the other regions.
 /proc/region_ooc_tick()
-	if (!region_ooc_enabled())
+	if (!region_ooc_linked())
 		region_ooc_outbound_queue.Cut()
 		return
+	if (!region_ooc_enabled())
+		return // lines said while the world starts wait for the round
 	if (region_ooc_busy)
 		return
 	region_ooc_busy = TRUE
@@ -198,6 +211,10 @@ var/global/region_ooc_next_poll = 0
 	while (region_ooc_outbound_queue.len && ++sent <= REGION_OOC_SEND_LIMIT)
 		var/list/envelope = region_ooc_outbound_queue[1]
 		region_ooc_outbound_queue.Cut(1, 2)
+		if (world.time - envelope["queued"] > REGION_OOC_MAX_AGE)
+			continue // waited too long for the round to start
+		envelope = envelope.Copy()
+		envelope -= "queued"
 		if (!transfer_bridge.request("/ooc/send", list("envelope" = envelope)))
 			return // the agent is not answering; the rest waits for the next tick
 	if (world.time < region_ooc_next_poll)
@@ -216,3 +233,4 @@ var/global/region_ooc_next_poll = 0
 #undef REGION_OOC_SEND_LIMIT
 #undef REGION_OOC_RECEIVE_LIMIT
 #undef REGION_OOC_POLL_INTERVAL
+#undef REGION_OOC_MAX_AGE

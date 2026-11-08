@@ -77,7 +77,7 @@ class RegionOoc(unittest.TestCase):
         self.assertLess(loop.index('discord_ooc_show(dsender, dtext)'), loop.index('region_ooc_outbound_discord(dsender, dtext)'))
         outbound = proc(OOC, '/proc/region_ooc_outbound_discord')
         self.assertIn('"discord" = TRUE, "posted" = TRUE', outbound)
-        self.assertIn('region_ooc_enabled()', outbound)
+        self.assertIn('region_ooc_linked()', outbound)
         receive = proc(OOC, '/proc/region_ooc_receive')
         branch = receive.index('if (envelope["discord"])')
         # Sender and markup checks first; shown before any Discord post or ckey ban check.
@@ -115,7 +115,26 @@ class RegionOoc(unittest.TestCase):
         bridge = proc(read('code/modules/persistence/transfer_bridge.dm'), '/datum/transfer_bridge/proc/request')
         self.assertIn('TRANSFER_BRIDGE_ABANDONED_LIMIT', bridge)
         self.assertIn('abandoned += R', bridge)
-        self.assertIn('shard_group.enabled', proc(OOC, '/proc/region_ooc_enabled'))
+        self.assertIn('shard_group.enabled', proc(OOC, '/proc/region_ooc_linked'))
+        self.assertIn('region_ooc_linked()', proc(OOC, '/proc/region_ooc_enabled'))
+
+    def test_lines_said_before_the_round_wait_instead_of_dropping(self):
+        # Val's Rail Yard line during the save load never left (2026-11-08).
+        enabled = proc(OOC, '/proc/region_ooc_enabled')
+        self.assertIn('GAME_STATE_PLAYING', enabled)
+        self.assertNotIn('GAME_STATE_PLAYING', proc(OOC, '/proc/region_ooc_linked'))
+        for name in ('/proc/region_ooc_outbound_line', '/proc/region_ooc_outbound_discord'):
+            body = proc(OOC, name)
+            self.assertIn('region_ooc_linked()', body)
+            self.assertNotIn('region_ooc_enabled()', body)
+            self.assertIn('"queued" = world.time', body)
+        tick = proc(OOC, '/proc/region_ooc_tick')
+        # Only an unlinked world clears the queue; a world not yet playing keeps it.
+        self.assertLess(tick.index('if (!region_ooc_linked())'), tick.index('region_ooc_outbound_queue.Cut()'))
+        self.assertLess(tick.index('region_ooc_outbound_queue.Cut()'), tick.index('if (!region_ooc_enabled())'))
+        exchange = proc(OOC, '/proc/region_ooc_exchange')
+        self.assertLess(exchange.index('REGION_OOC_MAX_AGE'), exchange.index('"/ooc/send"'))
+        self.assertLess(exchange.index('envelope -= "queued"'), exchange.index('"/ooc/send"'))
 
 
 if __name__ == '__main__':
