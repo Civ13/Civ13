@@ -875,6 +875,14 @@ jobs:
           /usr/bin/python3 -B -m unittest discover -s tests/track_laying -v
           /usr/bin/python3 tests/track_laying/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/track-laying"
 
+      - name: Verify practice rooms level, steps and save removal
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/practice_rooms')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/practice_rooms -v
+          /usr/bin/python3 tests/practice_rooms/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/practice-rooms"
+
       - name: Verify optional player help bridge and native negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/player_help')
         run: |
@@ -1670,6 +1678,13 @@ jobs:
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --output-dir "$RUNNER_TEMP/radiation-scope/positive"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control cross-z --output-dir "$RUNNER_TEMP/radiation-scope/cross-z"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control normalization --output-dir "$RUNNER_TEMP/radiation-scope/normalization"
+      - name: Verify explosion remains above the ground and controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/explosion_remains')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control dirt
+          python3 tests/explosion_remains/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control sky
       - name: Retain nuclear fallout scope evidence
         if: always() && needs.changes.result == 'success' && steps.radiation_scope.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/radiation_scope'))
         uses: actions/upload-artifact@v4
@@ -2014,6 +2029,13 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 tests/smart_home/run.py --byond-bin "$PWD/BYOND/byond/bin"
 
+      - name: Run tape recorder record, playback and save regression
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/tape_recorder')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/tape_recorder/run.py --byond-bin "$PWD/BYOND/byond/bin"
+
       - name: Run isolated crop diagnostics regression
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/plant_diagnostics')
         shell: bash
@@ -2093,7 +2115,7 @@ jobs:
           pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aircraft')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aircraft') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/vehicle_storage') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/party_freight')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -2123,6 +2145,8 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/space_settlement/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/wildlife_spawner/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/aircraft/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/vehicle_storage/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/party_freight/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/boat_movement')

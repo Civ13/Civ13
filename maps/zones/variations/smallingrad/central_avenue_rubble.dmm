@@ -1,0 +1,13 @@
+"aa" = (/obj/effect/map_variation_keep)
+"ab" = (/obj/structure/barricade/debris/brick)
+"ac" = (/obj/structure/barricade/debris)
+
+(1,1,1) = {"
+ababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababab
+aaaaabaaaaaaacacaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaacacaaaaaaabaaaa
+ababaaaaabaaacaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaacaaabaaaaabab
+abaaaaaaababaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacaaaaaaababaaaaaaab
+ababaaaaabaaacaaaaabaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaabaaaaacaaabaaaaabab
+aaaaabaaaaaaacacaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaaaaaacacaaaaaaabaaaa
+ababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababab
+"}

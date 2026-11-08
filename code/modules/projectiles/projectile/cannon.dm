@@ -45,8 +45,8 @@
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "cannonball")
-			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor) && !istype(T, /turf/floor/trench))
-				T.ChangeTurf(/turf/floor/dirt/burned)
+			if (!istype(T, /turf/floor/trench))
+				T.scorch_ground()
 			explosion(T, 1, 1, 1, 2)
 		else
 			if(!initiated)
@@ -108,9 +108,8 @@
 	if(!T)
 		return
 	var/caliber_modifier = clamp(round(caliber / 50), 0, 4)
-	if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor) && !istype(T, /turf/floor/trench))
-		if(caliber >= 37)
-			T.ChangeTurf(/turf/floor/dirt/burned)
+	if (caliber >= 37 && !istype(T, /turf/floor/trench))
+		T.scorch_ground()
 	if (atype == "HE")
 		var/he_range = caliber_modifier
 		var/list/fragment_types = list(/obj/item/projectile/bullet/pellet/fragment/short_range = 1)
@@ -260,12 +259,10 @@
 	if (istype(A, /turf))
 		var/turf/T = A
 		if (atype == "cannonball")
-			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-				T.ChangeTurf(/turf/floor/dirt/burned)
+			T.scorch_ground()
 			explosion(T, 1, 2, 2, 3)
 		else
-			if (!istype(T, /turf/floor/beach) && !istype(T, /turf/floor/broken_floor))
-				T.ChangeTurf(/turf/floor/dirt/burned)
+			T.scorch_ground()
 			explosion(T, 0, 0, 1, 3)
 	spawn(50)
 		if (src)

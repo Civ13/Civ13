@@ -475,9 +475,23 @@ public static class LocalHosting {
             else if (view.TryGetProperty("epoch", out var epoch) && epoch.ValueKind == JsonValueKind.Object && epoch.TryGetProperty("ordinal", out var ordinal)
                     && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index) && index >= 0 && index < EpochNames.Length)
                 parts.Add("epoch " + EpochNames[index]);
+            // TDM Barracks and battle regions: what the battle is doing.
+            if (Str(view, "error") == null && Str(view, "battle_phase") is { Length: > 0 } phase)
+                parts.Add("battle " + BattlePhase(phase));
         }
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
+
+    // shard_group.py region_view battle_phase (code/modules/tdm_barracks): plain words for the Host tab.
+    public static string BattlePhase(string phase) => phase switch {
+        "pregame" => "forming",
+        "playing" => "in progress",
+        "finished" => "over, map vote",
+        "returning" => "sending players back",
+        "rotating" => "building the next map",
+        "starting" => "starting up",
+        _ => Clean(phase),
+    };
 
     private static string Short(string text) => text.Length > 200 ? text[..200] : text;
 

@@ -16,6 +16,9 @@
 		return TRUE
 
 /process/mapswap/proc/execute_map_swap(winner)
+	// A TDM battle region builds the winner beside itself (tdm_barracks/battle.dm).
+	if(tdm_battle_active())
+		return tdm_battle.rotate(winner)
 	return processes.python.execute("mapswap.py", list(winner))
 
 /process/mapswap/proc/selected_extraction_map()

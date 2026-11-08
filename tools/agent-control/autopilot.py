@@ -30,6 +30,7 @@ import blueprints  # noqa: E402
 import leatherwork  # noqa: E402
 import boats  # noqa: E402
 import water  # noqa: E402
+import senses  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -311,6 +312,17 @@ def summarize(observation, note="", ignored=(), muted=()):
     boat_line = boats.describe(observation)
     if boat_line:
         lines.append("BOAT: " + boat_line)
+    news = observation.get("news") or {}
+    if news.get("appeared") or news.get("left"):
+        moved = []
+        if news.get("appeared"):
+            moved.append("came into view: " + ", ".join(dict.fromkeys(map(str, news["appeared"][:8]))))
+        if news.get("left"):
+            moved.append("went out of view: " + ", ".join(dict.fromkeys(map(str, news["left"][:8]))))
+        lines.append("Since your last look, " + "; ".join(moved) + ".")
+    heard = senses.heard_lines(news.get("sounds") or [])
+    if heard:
+        lines.append("Sounds you heard: " + "; ".join(heard) + ".")
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
@@ -377,7 +389,7 @@ def danger(observation, previous=None):
     attackers = attackers_of(observation)
     hurt = previous is not None and isinstance(previous.get("health"), (int, float)) and isinstance(me.get("health"), (int, float)) and me["health"] <= previous["health"] - 5
     if not attackers and not hurt:
-        return ""
+        return senses.sound_alarm((observation.get("news") or {}).get("sounds") or [])
     if not attackers:
         return f"WARNING: you lost health (now {me.get('health')}). Check for attackers, thirst, hunger and bleeding."
     return f"DANGER: {attackers[-1]} is attacking you (health {me.get('health')}). Flee from it, or attack it if you hold a weapon. Do this before anything else."
@@ -1896,7 +1908,7 @@ def main(argv=None):
         parser.error(str(exc))
     args.think = defaults.get("think") is True
     token = os.environ.get(defaults.get("auth_token_env") or "CIV13_OLLAMA_TOKEN")
-    client = RetryingClient(AgentClient.from_env())
+    client = senses.SensesClient(RetryingClient(AgentClient.from_env()))
 
     if args.watch:
         return watch(client, args)
@@ -2215,6 +2227,12 @@ def _run(client, args, character, token, model_pool):
                 memory.event("died")
                 memory.save()
             break
+        if hasattr(client, "take_news"):
+            observation["news"] = client.take_news(character, self_state)
+            unanswered = senses.prompt_lines(observation["news"].get("prompts") or [])
+            if unanswered:
+                feedback += "\n" + "\n".join(unanswered)
+                print("  prompt: " + " | ".join(unanswered))
         if memory is not None:
             memory.observe(observation, speech_lines(observation.get("messages", []), self_state.get("name")), attackers_of(observation))
         alarm = danger(observation, previous_self)

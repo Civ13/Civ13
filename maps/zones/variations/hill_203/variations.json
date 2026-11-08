@@ -1,0 +1,71 @@
+{
+	"map": "HILL_203",
+	"base_map": "maps/1903/hill_203.dmm",
+	"generated_by": "tests/map_variations/build_inserts.py",
+	"slots": [
+		{
+			"id": "west_slope",
+			"x": 1,
+			"y": 40,
+			"z": 1,
+			"width": 36,
+			"height": 81,
+			"variants": [
+				{
+					"id": "as_built",
+					"weight": 2
+				},
+				{
+					"id": "wire_belts",
+					"weight": 1,
+					"file": "west_slope_wire_belts.dmm",
+					"desc": "Belts of barbed wire cross the western slope."
+				},
+				{
+					"id": "shelled",
+					"weight": 1,
+					"file": "west_slope_shelled.dmm",
+					"desc": "Artillery has cratered the western slope."
+				},
+				{
+					"id": "sandbag_nests",
+					"weight": 1,
+					"file": "west_slope_sandbag_nests.dmm",
+					"desc": "Abandoned sandbag nests dot the western slope."
+				}
+			]
+		},
+		{
+			"id": "east_slope",
+			"x": 65,
+			"y": 40,
+			"z": 1,
+			"width": 36,
+			"height": 81,
+			"variants": [
+				{
+					"id": "as_built",
+					"weight": 2
+				},
+				{
+					"id": "wire_belts",
+					"weight": 1,
+					"file": "east_slope_wire_belts.dmm",
+					"desc": "Belts of barbed wire cross the eastern slope."
+				},
+				{
+					"id": "shelled",
+					"weight": 1,
+					"file": "east_slope_shelled.dmm",
+					"desc": "Artillery has cratered the eastern slope."
+				},
+				{
+					"id": "sandbag_nests",
+					"weight": 1,
+					"file": "east_slope_sandbag_nests.dmm",
+					"desc": "Abandoned sandbag nests dot the eastern slope."
+				}
+			]
+		}
+	]
+}

@@ -445,6 +445,7 @@ RECIPE: /material/electronics/,early camera,/obj/item/camera/early,5,150,1,1,non
 RECIPE: /material/electronics/,black and white camera,/obj/item/camera/earlymodern,6,150,1,1,none,115,0,0,7,null
 RECIPE: /material/electronics/,early color camera,/obj/item/camera/coldwar,7,150,1,1,none,160,0,0,7,null
 RECIPE: /material/electronics/,modern camera,/obj/item/camera,7,150,1,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,none,205,0,0,8,null
 
 //*****************| ELECTRONICS FURNITURE |***************************
 
@@ -928,6 +929,7 @@ RECIPE: /material/plastic/,decorative plastic pipe,/obj/structure/props/piping/s
 RECIPE: /material/plastic/,decorative plastic pipe elbow,/obj/structure/props/piping/small/plastic/elbow,1,55,1,1,plastic pipes,0,0,0,8,null
 RECIPE: /material/plastic/,decorative plastic pipe junction,/obj/structure/props/piping/small/plastic/junction,1,55,1,1,plastic pipes,0,0,0,8,null
 RECIPE: /material/plastic/,camera film,/obj/item/camera_film,4,55,1,1,none,102,0,0,8,null
+RECIPE: /material/plastic/,cassette tape,/obj/item/cassette,1,40,0,1,none,205,0,0,8,null
 RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/empty,2,40,0,1,none,0,0,102,8,null
 RECIPE: /material/plastic/,lighter,/obj/item/weapon/flame/lighter/random,3,95,0,1,none,150,0,0,8,null
 

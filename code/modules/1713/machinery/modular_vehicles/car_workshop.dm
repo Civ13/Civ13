@@ -116,10 +116,15 @@
 		to_chat(H, SPAN_WARNING(requirement_text()))
 		return
 	var/list/options = models()
+	var/list/extras = extra_options()
+	options += extras
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
 	var/choice = WWinput(H, menu_text(), name, "Cancel", options + list("Cancel"))
 	if (busy || !Adjacent(H) || !allowed(H))
+		return
+	if (choice in extras)
+		extra_action(H, extras[choice])
 		return
 	if (choice == "Unload inputs")
 		unload()
@@ -133,6 +138,13 @@
 		if (cars[car] && (action in list("Copy", "Rekey"))) service_vehicle_key(H, cars[car], action == "Rekey")
 		return
 	assemble_for(H, choice)
+
+// Subtypes add menu entries (label = action) handled by extra_action().
+/obj/structure/car_workshop/proc/extra_options()
+	return list()
+
+/obj/structure/car_workshop/proc/extra_action(mob/living/human/H, action)
+	return
 
 /obj/structure/car_workshop/proc/wait_for_assembly(mob/living/human/H)
 	return do_after(H, assembly_time, src)

@@ -124,6 +124,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 		var/mob/living/human/H = src
 		if (H.wolfman && howl)
 			message_range = 30
+	message_range = speech_range_bonus(message_range)
 
 	var/list/listening = list()
 	var/list/listening_obj = list()
@@ -141,6 +142,8 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	if (T)
 		//DO NOT FUCKING CHANGE THIS TO GET_OBJ_OR_MOB_AND_BULLSHIT() -- Hugs and Kisses ~Ccomp
 		var/list/hear = hear(message_range,T)
+		if (!animal && recording_tape_recorders.len)
+			tape_recorders_hear(src, message, verb, speaking, hear)
 		var/list/hearturfs = list()
 
 		for (var/I in hear)

@@ -101,7 +101,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -170,6 +170,11 @@ var/global/datum/shard_group/shard_group = new
 	// Launch offices ask before founding a station (space/orbit_world.dm).
 	if(kind == "ORBIT")
 		.["free_planes"] = length(orbit_free_planes())
+	// The host tool and launcher show what the TDM battle is doing (tdm_barracks).
+	if(kind == "BATTLE" && tdm_battle_active())
+		.["battle_phase"] = tdm_battle.phase()
+	if(kind == "BARRACKS" && tdm_barracks_active())
+		.["battle_phase"] = tdm_barracks.status_fresh() ? tdm_barracks.status["phase"] : null
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -222,7 +227,11 @@ var/global/datum/shard_group/shard_group = new
 // any save load has finished. A world holding a save it did not restore waits
 // for an admin rather than starting a fresh round over it.
 /datum/shard_group/proc/autostarts_round()
-	if(!enabled || !region || region == mainland)
+	// A TDM battle world waits for players like any TDM server; the barracks
+	// (tdm_barracks) is always playing, mainland or not.
+	if(enabled && kind == "BATTLE")
+		return FALSE
+	if(!enabled || !region || (region == mainland && kind != "BARRACKS"))
 		return FALSE
 	if(persistence_restart.startup_hold || map_storage.round_restored)
 		return FALSE
@@ -487,6 +496,8 @@ var/global/datum/shard_group/shard_group = new
 		if("RAILYARD") return "rail yard"
 		if("RAID") return "raid"
 		if("ORBIT") return "orbit"
+		if("BARRACKS") return "barracks"
+		if("BATTLE") return "battle"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"

@@ -83,8 +83,12 @@ LOCAL_CONFIG = 'config/config.local.txt'  # an overlay's own lines for config/co
 KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions an overlay keeps, never copied
 CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
-             'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt')
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER')
+             'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt',
+             'config/tdm-token.txt', 'config/shard_build.json')
+# BARRACKS is the always-on TDM world players wait and practise in; BATTLE runs the
+# TDM rounds, rotates its map after each vote and sends everyone back to the
+# barracks before it reboots (code/modules/tdm_barracks).
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -150,6 +154,16 @@ def load_group(path):
         raise ValueError('the mainland cannot be a RAID region')
     if any(r['id'] == mainland and r['kind'] == 'ORBIT' for r in regions):
         raise ValueError('the mainland cannot be an ORBIT region')
+    # A TDM pair: at most one barracks and one battle world, and a battle world
+    # needs a barracks to send its players back to.
+    barracks = [r for r in regions if r['kind'] == 'BARRACKS']
+    battles = [r for r in regions if r['kind'] == 'BATTLE']
+    if len(barracks) > 1 or len(battles) > 1:
+        raise ValueError('a group has at most one BARRACKS and one BATTLE region')
+    if battles and not barracks:
+        raise ValueError('a BATTLE region needs a BARRACKS region in its group')
+    if any(r['id'] == mainland for r in battles):
+        raise ValueError('the mainland cannot be a BATTLE region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -1286,6 +1300,13 @@ def setup(group, platform=None, region_id=None):
             settings.update(relay_settings(group))
             (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
+        if any(r['kind'] == 'BARRACKS' for r in group['regions']) and region['kind'] in ('BARRACKS', 'BATTLE'):
+            (config / 'tdm-token.txt').write_text(group_token(group, 'tdm-token.txt') + '\n', encoding='utf-8')
+        if region['kind'] == 'BATTLE':
+            # What scripts/shard-group/battle_mapswap.py needs to build the next voted map.
+            build = {'root': str(Path(group['root']).resolve()), 'region': region['id'], 'git': group['git'],
+                     'compiler': group['compiler']}
+            (config / 'shard_build.json').write_text(json.dumps(build, indent=1) + '\n', encoding='utf-8')
         token = config / 'lifecycle-token.txt'
         if not token.exists():
             token.write_text(secrets.token_hex(16) + '\n', encoding='utf-8')
@@ -1370,7 +1391,12 @@ def enrol_region(group, region_id):
 
 def relay_token(group):
     """The group's relay control token (root/relay-token.txt), made on first use."""
-    path = Path(group['root']) / 'relay-token.txt'
+    return group_token(group, 'relay-token.txt')
+
+
+def group_token(group, name):
+    """A token every region of the group shares (root/<name>), made on first use."""
+    path = Path(group['root']) / name
     if not path.exists():
         Path(group['root']).mkdir(parents=True, exist_ok=True)
         path.write_text(secrets.token_hex(24) + '\n', encoding='utf-8')
@@ -1746,6 +1772,9 @@ def group_status(group, only=None, view=region_view, platform=None):
                 entry['region_view'] = {'error': 'no matching shard_region answer'}
             else:
                 entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+                # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
+                if type(seen.get('battle_phase')) is str:
+                    entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
                 age = seen.get('ordinal_age')
                 if type(age) is int and 0 <= age < len(EPOCH_NAMES):
                     entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}

@@ -1,0 +1,52 @@
+# Party freight
+
+Val's direction (2026-11-08): players and factions store things in their safe
+houses and party trains from Gaia. Like hangars, shipping takes goods out of the
+game until they are recalled.
+
+A party is the same as for party trains: the player's faction, or the player
+alone. Code: `code/modules/persistence/party_freight.dm`. Test:
+`tests/party_freight/probe.dm`.
+
+## Shipments
+
+- A shipment is the item in the player's active hand, or one closed crate
+  standing next to the depot or office, with everything inside it (at most 60
+  items).
+- Every item becomes a record. The extraction equipment codec rebuilds items it
+  supports exactly (clothing, guns with their rounds, bags and their contents,
+  material tools, some stacks). Otherwise the region travel kinds apply
+  (allowlisted stacks and coins, untouched food and medicine, plain tools,
+  magazines by round count), then plain material sheets and ore by type and
+  amount. Anything else refuses the whole shipment and nothing moves.
+- The goods are deleted. The shipment is JSON text in an ordinary saved field
+  of the structure that holds it, so a world save carries it with no save code.
+  Shipping and recalling wait while a save runs.
+- Recall rebuilds the shipment at the player's feet, inside a new closed crate
+  of the same kind when it was shipped in one. Rebuilt items are saved with the
+  map again.
+
+## Safe houses
+
+`/obj/structure/safehouse_depot` (20 soft wood, Carts research) is built in a
+base. Every depot in a land opens onto the same safe house for each party: a
+party keeps up to 20 shipments and recalls them at any depot. Nobody else sees
+or takes them. Depots cannot be taken apart, burned or blown up; an admin
+deleting one is told how many shipments went with it and they are logged.
+
+## Party trains
+
+A finished railway works office (`party_train.dm`) offers its party "Board the
+train", "Load what you hold", "Load a crate next to the office" and "Unload a
+shipment". A train carries up to 30 shipments in the office's saved `freight`
+field. Other parties use the office as before: they can only read why they may
+not board.
+
+A faction rename carries both the train's freight and the faction's safe house
+shipments.
+
+## Not built
+
+- Freight stays in the land it was shipped from. A party's train berth in the
+  rail yard and extraction safe-house accounts do not see it; that would need a
+  new transfer agent payload kind.

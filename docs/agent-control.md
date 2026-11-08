@@ -212,6 +212,25 @@ second until there is a message after `since`, a queue result after
 nearby change after `since_rev`, and reports `waited_s`. The world never sleeps
 inside a Topic reply.
 
+### Seeing the view
+
+`character_view` returns what a character sees within `radius` (1-7, default 7):
+an appearance dump in the byond-devtools `ingame` format, with overlays,
+underlays, colours, planes and the plane masters a player's HUD builds. Only
+turfs in the character's view are listed, and things it cannot see are left
+out. Icons from the source tree are named by path. Icons made at runtime (human
+bodies, blended overlays) travel as base64 DMI bytes, up to 48 per view. A Topic
+reply holds at most 64 KB, so the dump is built once and read in parts
+(`view`, `part`, `parts`). The Python client and the MCP tool fetch every part.
+
+With `BYOND_DEVTOOLS` set to a byond-devtools checkout (Node 22+), the
+`civ13_character_view` MCP tool returns a PNG of the view next to a short
+summary. `civ13_agent.py view <character> out.png [radius]` writes the PNG.
+Without byond-devtools, the tool returns the dump, which byond-devtools'
+`dump_render` MCP tool or `node src/cli.js ingame --root <Civ13> --dump view.json
+--out view.png` can render. Filters, maptext and animation past the first frame
+are not modelled.
+
 ### Boats
 
 Characters use the same boats players do (`code/modules/agent_control/agent_boats.dm`):
@@ -283,7 +302,11 @@ python tools/agent-control/civ13_agent.py mcp
 `mcp` is a stdio MCP server exposing one `civ13_<action>` tool per action with
 a JSON schema (from `tools/agent-control/catalog.py`). Read-only tools carry
 `readOnlyHint`; `set_var`, `call_proc`, `call_verb`, `kick`, `restart`,
-`delete_atom` and `character_release` carry `destructiveHint`. An MCP client entry:
+`delete_atom` and `character_release` carry `destructiveHint`. It also serves
+two resources, this guide (`civ13://docs/agent-control`) and the action catalog
+(`civ13://actions`), and three prompts: `observe_and_act` (a character and a
+goal), `view_character` and `server_check` (read-only). Set `BYOND_DEVTOOLS` to
+a byond-devtools checkout for `civ13_character_view` pictures. An MCP client entry:
 
 ```json
 {"mcpServers": {"civ13": {"command": "python", "args": ["tools/agent-control/civ13_agent.py", "mcp"],
@@ -385,7 +408,13 @@ break; herbs only work on whoever chews them) and clicks the wound's body part o
 bleeding person within 5 tiles is treated before the model's plan when she carries a bandage and is
 not bleeding or under attack herself; she offers help first when they are awake. Whoever is
 attacking her, and people her memory distrusts, are not helped. When something attacks the
-character, a danger line leads the next prompt. While the character is
+character, a danger line leads the next prompt. The autopilot observes through
+`senses.SensesClient`: each look sends `since_rev`, `prompt_since` and
+`sound_since` and rebuilds the full nearby list from its cache. The prompt then
+lists what came into or went out of view since the last turn, the sounds heard
+(gunshots, explosions, animals, voices, with direction and distance; gunfire or
+an explosion within 12 tiles is a warning line), and any game prompt a step could
+not answer, with its options and how to repeat the step with `choose`. While the character is
 unconscious the run waits for them to come round (checking every 10 seconds,
 with no model calls), and it stops once the character is dead. A target the
 character cannot walk to is hidden for a while instead of retried. Water marked

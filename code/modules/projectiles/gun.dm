@@ -388,6 +388,7 @@
 /obj/item/weapon/gun/proc/handle_click_empty(mob/user)
 	if (user)
 		user.visible_message("*click click*", "<span class='danger'>*click*</span>")
+		balloon_alert(user, "empty")
 	else
 		visible_message("*click click*")
 
@@ -457,6 +458,13 @@
 	else if (dt_movement < 10)
 		accuracy_range = 40 / (dt_movement - 6)
 
+	if (isliving(user))
+		var/mob/living/L = user
+		accuracy_range *= L.leader_order_focus_mult()
+
+	recoil_range *= bipod_recoil_mult(user)
+	accuracy_range *= bipod_accuracy_mult(user)
+
 	return recoil_range + accuracy_range
 
 //does the actual launching of the projectile
@@ -501,6 +509,15 @@
 		if (istype(user, /mob/living/human))
 			if(user.m_intent != "run")
 				shot_accuracy *= 0.75
+
+	if (isliving(user))
+		var/mob/living/shooter = user
+		shot_accuracy *= shooter.leader_order_focus_mult()
+	if (bipod_braced(user))
+		shot_recoil *= bipod_recoil_mult(user)
+		shot_accuracy *= bipod_accuracy_mult(user)
+	if (round_facts && ishuman(user))
+		round_facts.record_shot(user)
 
 	var/shot_dispersion = clamp(shot_recoil + shot_accuracy, -40, 40)
 

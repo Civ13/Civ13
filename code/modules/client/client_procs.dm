@@ -286,6 +286,7 @@
 	movementMachine_clients += src
 
 /client/MouseEntered(atom/object, location, control, params)
+	UpdateMouseScreenLoc(params)
 	mouse_x = object ? object.x : 0
 	mouse_y = object ? object.y : 0
 	update_hover_name(object)

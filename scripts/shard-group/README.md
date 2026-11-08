@@ -42,8 +42,8 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
-with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`
-or `OTHER`; a `RAID` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
+with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
+`ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds` and `backups_kept`.
 
@@ -57,6 +57,25 @@ land they died in, start in the `mainland` region
 (optional key, default the first region) and reach the others only by
 travelling. Joining any other region shows where the character lives instead
 of starting a new one.
+
+## TDM: Barracks and battle worlds
+
+A group with one `BARRACKS` and one `BATTLE` region runs TDM as two worlds: the
+Barracks is always up, and players wait and practise there; the battle world
+runs the rounds and its map rotation. See [docs/tdm-barracks.md](../../docs/tdm-barracks.md)
+and [tdm.example.json](tdm.example.json). Use `persistent: false` (neither world
+saves) and a very large `freeze_idle_minutes`: the battle world reports to the
+Barracks every 10 seconds, and a frozen Barracks would hold those reports.
+
+- `setup` writes the group's shared `config/tdm-token.txt` into both worlds and
+  `config/shard_build.json` into the battle world.
+- When the map vote ends, the battle world runs
+  `scripts/shard-group/battle_mapswap.py MAP` from its worktree: it compiles that
+  map in `<root>/.rotation/<id>` at the region's own commit and renames the new
+  `region.dmb`/`region.rsc` over the live build slot. The world sends everyone to
+  the Barracks, waits for the build (`data/shard-host/rotation.json`), then reboots
+  onto the new map. A failed build reboots on the map it has.
+- A `start` or `update` of the battle region builds its configured `map` again.
 
 ## The live group (Gaia)
 

@@ -25,7 +25,8 @@ def proc(path, declaration):
 widget = (repo / 'code/_onclick/hud/hover_name.dm').read_text()
 storage_helper = proc('code/modules/visibility/los_context.dm', '/proc/los_storage_hover_visible(')
 events = ''.join(proc('code/modules/client/client_procs.dm', name) for name in [
-    '/client/MouseEntered(', '/client/MouseMove(', '/client/MouseDrag('])
+    '/client/MouseEntered(', '/client/MouseMove(', '/client/MouseDrag(', '/client/proc/UpdateMouseScreenLoc('])
+viewsize = proc('code/_helpers/view.dm', '/proc/getviewsize(')
 identity = proc('code/game/mob/living/carbon/human/human.dm', '/mob/living/human/proc/get_visible_name(')
 weakref = (repo / 'code/datums/weakref.dm').read_text()
 runtime = proc('code/modules/persistence/functions.dm', '/datum/proc/persistence_runtime_var(')
@@ -40,7 +41,8 @@ if args.negative_control == 'identity':
 elif args.negative_control == 'exit':
     mutate('label && label.hover_origin?.resolve() == object', 'label')
 elif args.negative_control == 'stale':
-    mutate('if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_target_current(target)) || !target_visible(target))\n\t\tclear_target()', 'if (!target)\n\t\tclear_target()')
+    # Keep origin referenced: the pinned compiler's unused_var warning would otherwise fail the build, not the assertion.
+    mutate('if (!origin || pointer_target(origin) != target || (hover_inventory && !inventory_target_current(target)) || !target_visible(target))\n\t\tclear_target()', 'if (!origin || !target)\n\t\tclear_target()')
 elif args.negative_control == 'parent':
     mutate('|| ..()', '|| FALSE')
 elif args.negative_control == 'storage-viewer':
@@ -52,7 +54,7 @@ elif args.negative_control == 'storage-origin':
 
 # The unavailable network-client and LOS-read boundaries are adapted. Event,
 # widget and storage-admission decisions, native locations and weakrefs are DM.
-production = widget + storage_helper + events + identity + weakref + runtime
+production = widget + storage_helper + events + viewsize + identity + weakref + runtime
 production = production.replace('/client/', '/datum/hover_client/')
 production = production.replace('var/client/C', 'var/datum/hover_client/C')
 production = production.replace('parentmob.client', 'parentmob.hover_client')

@@ -358,6 +358,8 @@ var/global/list/ecology_species_table = null
 	var/cells_x = round((world.maxx - 1) / ECOLOGY_CELL_SIZE) + 1
 	var/cells_y = round((world.maxy - 1) / ECOLOGY_CELL_SIZE) + 1
 	for (var/z = 1, z <= world.maxz, z++)
+		if (z == practice_room_z)
+			continue
 		for (var/cx = 1, cx <= cells_x, cx++)
 			for (var/cy = 1, cy <= cells_y, cy++)
 				var/list/keys_here = list()
