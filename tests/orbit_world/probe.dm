@@ -120,6 +120,7 @@ var/global/orbit_failures = 0
 		orbit_two_deck_checks()
 		orbit_network_checks()
 		orbit_freight_checks()
+		orbit_freight_flight_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1219,4 +1220,94 @@ var/global/orbit_failures = 0
 	transfer_bridge.applied -= list("probe-freight:remove", "probe-freight:return")
 	if (delivered)
 		qdel(delivered)
+	map.ordinal_age = 7
+
+// A stand-in transfer agent: it answers the bridge's requests the way the
+// real agent does (tools/transfer_storage/region.py), so a freighter's
+// launch and arrival run through the real bridge code. Everything it was sent
+// for escrow comes back as one pending incoming freight transfer.
+/datum/transfer_bridge/probe_agent
+	var/list/sent = list()
+	var/list/paths = list()
+	var/list/fast = list()
+
+/datum/transfer_bridge/probe_agent/request(path, list/body)
+	paths += path
+	if (islist(body) && !isnull(body["fast"]))
+		fast += body["fast"]
+	switch (path)
+		if ("/escrow")
+			sent += body["payloads"]
+			return list("ok" = 1, "result" = list("transfer_id" = "probe-out", "effect_id" = "probe-out:remove"))
+		if ("/status")
+			if (!length(sent))
+				return list("ok" = 1, "result" = list("pending_transfers" = list(), "active" = list()))
+			return list("ok" = 1, "result" = list(
+				"pending_transfers" = list("probe-in"),
+				"active" = list(list("transfer_id" = "probe-in", "direction" = "in")),
+				"pending_kinds" = list("probe-in" = list("freight"))))
+		if ("/import")
+			return list("ok" = 1, "result" = list("effect_id" = "probe-in:credit", "payloads" = sent.Copy()))
+	return null
+
+// A freighter flies from a station pad down to Gaia through the bridge,
+// then the same freight arrives back in orbit through the bridge's poll and
+// lands beside the party's station hatch.
+/proc/orbit_freight_flight_checks()
+	var/party = "civ:gaia:Delta"
+	var/datum/transfer_bridge/real_bridge = transfer_bridge
+	var/datum/transfer_bridge/probe_agent/agent = new
+	agent.port = 1
+	agent.token = "probe"
+	agent.ledger_base = 0
+	agent.peers = list("gaia")
+	transfer_bridge = agent
+	var/list/real_gaia = shard_group.peers["gaia"]
+	shard_group.peers["gaia"] = list("kind" = "NOMADS", "name" = "Gaia", "state" = "UP")
+	map.ordinal_age = 8
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(11, 3, 1))
+	pad.destination = "gaia"
+	pad.approved = TRUE
+	var/obj/structure/crewed_lander/freighter/F = new(locate(10, 3, 1))
+	var/fid = F.freight_id
+	var/mob/living/human/eva_tester/H = new(locate(10, 4, 1))
+	H.party_train_party = party
+	var/obj/item/stack/material/steel/S = new(F, 25)
+	new /obj/item/pressure_tank(F)
+	F.propellant = 200
+	F.fuel_kind = "methalox"
+	orbit_check("pad open for freight", "[pad.closed_reason()]", "")
+	orbit_check("freighter launch refusal", "[F.freight_refusal(H)]", "Only players with a BYOND account can launch a freighter.")
+	var/reason = F.launch_freight(pad, H)
+	orbit_check("freighter launched through the bridge", "[reason]", "")
+	orbit_check("freighter spent", QDELETED(F) && QDELETED(S) ? 1 : 0, 1)
+	orbit_check("one fast escrow sent", "[jointext(agent.paths, ",")]|[length(agent.sent)]", "/escrow|1")
+	var/list/P = length(agent.sent) ? orbit_freight_decode(agent.sent[1]) : null
+	orbit_check("escrowed freight payload", P ? "[P["id"] == fid ? 1 : 0],[P["party"]],[length(P["cargo"])]" : "null", "1,[party],2")
+	var/obj/structure/region_gate/station_hatch/hatch = orbit_station_hatch(party)
+	var/before = hatch ? length(orbit_find_all(/obj/structure/closet/crate, hatch.z, hatch.x - 1, hatch.y - 1, hatch.x + 1, hatch.y + 1)) : 0
+	agent.poll_once()
+	orbit_check("poll routes freight to an import", ("/import" in agent.paths) ? 1 : 0, 1)
+	orbit_check("escrow and import are both fast", jointext(agent.fast, ","), "1,1")
+	orbit_check("import recorded", ("probe-in:credit" in agent.applied) ? 1 : 0, 1)
+	var/list/crates = hatch ? orbit_find_all(/obj/structure/closet/crate, hatch.z, hatch.x - 1, hatch.y - 1, hatch.x + 1, hatch.y + 1) : list()
+	orbit_check("flown freight lands beside the hatch", length(crates) - before, 1)
+	var/obj/structure/closet/crate/landed = null
+	for (var/obj/structure/closet/crate/C in crates)
+		if (C.name == "freight crate")
+			landed = C
+	var/obj/item/stack/material/steel/arrived = landed ? locate() in landed : null
+	orbit_check("flown cargo intact", arrived ? "[arrived.amount],[(locate(/obj/item/pressure_tank) in landed) ? 1 : 0]" : "none", "25,1")
+	var/imports = 0
+	agent.poll_once()
+	for (var/p in agent.paths)
+		if (p == "/import")
+			imports++
+	orbit_check("a recorded import is not taken twice", imports, 1)
+	if (landed)
+		qdel(landed)
+	qdel(pad)
+	qdel(H)
+	transfer_bridge = real_bridge
+	shard_group.peers["gaia"] = real_gaia
 	map.ordinal_age = 7
