@@ -123,7 +123,8 @@
 	name = "roll of gauze"
 	singular_name = "gauze length"
 	desc = "Some sterile gauze to wrap around bloody stumps."
-	icon_state = "brutepack"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "gauze"
 	flammable = TRUE
 	treat_flags = MED_BANDAGE
 	treat_verb = "bandages"

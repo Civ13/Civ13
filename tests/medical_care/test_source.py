@@ -24,6 +24,43 @@ def block(source, path):
     return match.group()
 
 
+def dmi_states(path):
+    """Icon state names in a DMI (a PNG with a zTXt Description chunk)."""
+    import struct, zlib
+    data = (ROOT / path).read_bytes()
+    pos = 8
+    while pos < len(data):
+        length, kind = struct.unpack(">I4s", data[pos:pos + 8])
+        chunk = data[pos + 8:pos + 8 + length]
+        pos += 12 + length
+        if kind == b"zTXt" and chunk.startswith(b"Description\0"):
+            text = zlib.decompress(chunk[len(b"Description") + 2:]).decode("utf-8")
+            return set(re.findall(r'(?m)^state = "([^"]*)"', text))
+    raise AssertionError(f"no DMI metadata in {path}")
+
+
+def medical_stack_icons(sources):
+    """Resolved (icon, icon_state) for every /obj/item/stack/medical type defined in sources."""
+    own = {}
+    for source in sources:
+        for match in re.finditer(r"(?m)^(/obj/item/stack/medical[\w/]*)\n((?:\t[^\n]*\n|\n)*)", source):
+            path, body = match.group(1), match.group(2)
+            fields = own.setdefault(path, {})
+            for key in ("icon", "icon_state"):
+                found = re.search(rf"(?m)^\t{key} = ['\"]([^'\"]*)['\"]", body)
+                if found:
+                    fields[key] = found.group(1)
+    resolved = {}
+    for path in own:
+        fields = {}
+        parts = path.split("/")
+        for depth in range(len(parts), 1, -1):
+            for key, value in own.get("/".join(parts[:depth]), {}).items():
+                fields.setdefault(key, value)
+        resolved[path] = (fields.get("icon"), fields.get("icon_state"))
+    return resolved
+
+
 class MedicalCare(unittest.TestCase):
     def test_severed_artery_is_repairable(self):
         step = block(SURGERY, "/datum/surgery_step/fix_vein")
@@ -229,6 +266,22 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("if(I.is_bruised() && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
         self.assertIn("if(I.is_bruised() && prob(2))", pain)
         self.assertNotIn("I.damage > 2", pain)
+
+    def test_every_medical_stack_has_a_sprite(self):
+        # BYOND draws its ERROR icon when an icon_state is missing from the DMI.
+        biochemistry = (ROOT / "code/modules/reagents/biochemistry.dm").read_text(encoding="utf-8")
+        resolved = medical_stack_icons([MEDICAL, biochemistry])
+        self.assertIn("/obj/item/stack/medical/bruise_pack", resolved)
+        states = {}
+        for path, (icon, state) in sorted(resolved.items()):
+            if path == "/obj/item/stack/medical":
+                continue  # abstract parent, never spawned
+            with self.subTest(path=path):
+                self.assertTrue(icon and state, f"{path} has no icon or icon_state")
+                if icon not in states:
+                    states[icon] = dmi_states(icon)
+                self.assertIn(state, states[icon], f"{path} uses missing state {state!r} in {icon}")
+        self.assertEqual(resolved["/obj/item/stack/medical/bruise_pack"], ("icons/obj/surgery.dmi", "gauze"))
 
 if __name__ == "__main__":
     unittest.main()
