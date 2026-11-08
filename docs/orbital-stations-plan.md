@@ -51,6 +51,7 @@ what the code does so far and the rules later steps must keep.
 | 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | #3978, `orbit_project.dm` |
 | 13 | Wider network: station transceiver (a relay with its own dish), flights from orbit down to the Moon and Mars and back up checked | `code/modules/space/orbit_network.dm` |
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
+| 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
 ## Next
@@ -334,6 +335,23 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Uses.** The reusable rocket and the freighter burn it. A tank holds one
   fuel at a time (`fuels` and `fuel_kind` on the crewed lander). On
   methalox the reusable booster wears 10 per flight instead of 20.
+
+## Satellites
+
+- **Launch.** A satellite launcher (50 electronics) takes one satellite and
+  150 units of rocket propellant or methalox beside an approved pad. Nothing
+  travels to another world: the satellite is recorded in the nearest ground
+  station (25 electronics) within 7 tiles, which holds one of each kind.
+- **Weather** (1969): the station reads the weather, the next season and
+  the minutes until it (the `season_loop` durable timer), and storms
+  starting or under way (`blizzard`, `heat`, `sandstorm` timers).
+- **Comms** (1969): long-range relays within 7 tiles of the station need no
+  antenna and wear half as fast (`satellite_comms_link` in `radio_relay.dm`).
+- **Navigation** (2013): GPS receivers (5 electronics) in this world show
+  their fix and steer to up to five saved waypoints.
+- **Survey orbiter** (1969): flown from a pad pointed at the Moon or Mars
+  with a mission console within 7 tiles, it reveals the whole survey map
+  and marks up to six new flat landing sites.
 
 ## Tests
 

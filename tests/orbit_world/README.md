@@ -139,6 +139,12 @@ recorded import is not taken twice. The agent side of the same flight
 (fast freight, pending kinds, replay after a crash, random faults) is in
 `tests/transfer_storage/test_journal.py`.
 
+Then satellites (`code/modules/space/satellites.dm`): launches from a Gaia pad
+pointed at orbit, the payload, fuel and era refusals, the ground station's
+weather report, one satellite of a kind, the comms link standing in for a
+relay's antenna, GPS fixes and bearings, a ground station being required,
+and a survey orbiter mapping the whole Moon for a mission console.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer

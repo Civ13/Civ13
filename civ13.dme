@@ -1359,6 +1359,7 @@
 #include "code\modules\space\surface_mining.dm"
 #include "code\modules\space\surface_rovers.dm"
 #include "code\modules\space\survey.dm"
+#include "code\modules\space\satellites.dm"
 #include "code\modules\space\water_scarcity.dm"
 #include "code\modules\statpanel\statpanel.dm"
 #include "code\modules\submarine\damage_control.dm"

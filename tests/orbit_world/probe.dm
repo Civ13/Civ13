@@ -121,6 +121,7 @@ var/global/orbit_failures = 0
 		orbit_network_checks()
 		orbit_freight_checks()
 		orbit_freight_flight_checks()
+		orbit_satellite_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1311,3 +1312,93 @@ var/global/orbit_failures = 0
 	transfer_bridge = real_bridge
 	shard_group.peers["gaia"] = real_gaia
 	map.ordinal_age = 7
+
+// Satellites (satellites.dm): launches from a Gaia pad pointed at orbit, the
+// ground station's satellites, the weather report, the comms link for
+// relays, GPS fixes and bearings, the era gate, and a survey orbiter mapping
+// the Moon for a mission console.
+/proc/orbit_satellite_load(obj/structure/crewed_lander/satellite_launcher/L, path)
+	var/obj/item/satellite/S = new path(L)
+	L.propellant = 150
+	return S
+
+/proc/orbit_satellite_checks()
+	var/obj/map_metadata/orbit_map = map
+	shard_group.region = "gaia"
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 7
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(20, 3, 1))
+	pad.destination = "orbit"
+	pad.approved = TRUE
+	var/obj/structure/satellite_station/G = new(locate(24, 3, 1))
+	var/obj/structure/telecom/relay/R = new(locate(26, 3, 1))
+	orbit_check("relay without antenna or satellite", R.has_antenna() ? 1 : 0, 0)
+	orbit_check("no GPS fix without a satellite", satellite_service("navigation") ? 1 : 0, 0)
+	var/obj/structure/crewed_lander/satellite_launcher/L = new(locate(20, 4, 1))
+	orbit_check("launcher wants a satellite", "[L.satellite_refusal()]", "Load a satellite first.")
+	orbit_check("launcher takes only satellites", "[L.stow_refusal(new /obj/item/pressure_tank(locate(21, 4, 1)))]", "Only a satellite fits the fairing.")
+	orbit_satellite_load(L, /obj/item/satellite/navigation)
+	orbit_check("no navigation satellites before 2013", findtext("[L.satellite_refusal()]", "later age") ? 1 : 0, 1)
+	for (var/obj/item/I in L.hold())
+		qdel(I)
+	orbit_satellite_load(L, /obj/item/satellite/weather)
+	L.propellant = 100
+	orbit_check("launcher needs fuel", findtext("[L.satellite_refusal()]", "150") ? 1 : 0, 1)
+	L.propellant = 150
+	orbit_check("weather satellite goes up", "[L.launch_satellite(null)]", "")
+	orbit_check("launcher spent", QDELETED(L) ? 1 : 0, 1)
+	orbit_check("ground station talks to the weather satellite", ("weather" in G.satellites) ? 1 : 0, 1)
+	var/list/report = satellite_weather_report()
+	orbit_check("weather report", length(report) >= 2 && findtext(report[1], "Weather:") && findtext(report[2], "Forecast:") ? 1 : 0, 1)
+	L = new(locate(20, 4, 1))
+	orbit_satellite_load(L, /obj/item/satellite/weather)
+	orbit_check("one satellite of a kind per station", findtext("[L.satellite_refusal()]", "already") ? 1 : 0, 1)
+	for (var/obj/item/I in L.hold())
+		qdel(I)
+	orbit_satellite_load(L, /obj/item/satellite/comms)
+	orbit_check("comms satellite goes up", "[L.launch_satellite(null)]", "")
+	orbit_check("relay linked through the satellite", R.has_antenna() ? 1 : 0, 1)
+	map.ordinal_age = 8
+	L = new(locate(20, 4, 1))
+	orbit_satellite_load(L, /obj/item/satellite/navigation)
+	orbit_check("navigation satellite goes up", "[L.launch_satellite(null)]", "")
+	orbit_check("GPS fix with a navigation satellite", satellite_service("navigation") ? 1 : 0, 1)
+	orbit_check("GPS bearing", gps_bearing(locate(5, 5, 1), "9,2,1", "Home"), "Home is 4 tiles southeast.")
+	orbit_check("GPS bearing across levels", gps_bearing(locate(5, 5, 1), "5,5,2", "Deck"), "Deck is right here. It is 1 level up.")
+	orbit_check("GPS at the waypoint", gps_bearing(locate(5, 5, 1), "5,5,1", "Camp"), "You are at Camp.")
+	L = new(locate(20, 4, 1))
+	orbit_satellite_load(L, /obj/item/satellite/comms)
+	qdel(G)
+	orbit_check("a satellite needs a ground station", findtext("[L.satellite_refusal()]", "ground station") ? 1 : 0, 1)
+	for (var/obj/item/I in L.hold())
+		qdel(I)
+
+	// A survey orbiter flies to the Moon and maps it for a mission console.
+	var/datum/survey_map/moon_map = new
+	moon_map.region = "moon"
+	moon_map.seed = "probe"
+	moon_map.width = 4
+	moon_map.height = 2
+	moon_map.rows = list("..^.", "~...")
+	var/had_map = space_survey_maps["moon"]
+	space_survey_maps["moon"] = moon_map
+	pad.destination = "moon"
+	orbit_satellite_load(L, /obj/item/satellite/survey)
+	orbit_check("survey orbiter needs a mission console", findtext("[L.satellite_refusal()]", "mission console") ? 1 : 0, 1)
+	var/obj/structure/survey_console/C = new(locate(22, 5, 1))
+	orbit_check("survey orbiter goes to the Moon", "[L.launch_satellite(null)]", "")
+	orbit_check("orbiter maps the whole Moon", C.map_region == "moon" && C.revealed == "11111111" ? 1 : 0, 1)
+	orbit_check("orbiter marks every flat site it can", length(C.landing_sites_for("moon")), 6)
+	if (had_map)
+		space_survey_maps["moon"] = had_map
+	else
+		space_survey_maps -= "moon"
+	for (var/path in list("/obj/structure/crewed_lander/satellite_launcher", "/obj/structure/satellite_station", "/obj/item/satellite/weather", "/obj/item/satellite/survey", "/obj/item/gps_receiver"))
+		orbit_check("[path] gated", get_recipe_node_req(path), "orbital_flight")
+	qdel(C)
+	qdel(R)
+	qdel(pad)
+	del(map)
+	map = orbit_map
+	map.ordinal_age = 7
+	shard_group.region = "orbit"
