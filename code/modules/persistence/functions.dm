@@ -256,13 +256,7 @@ var/global/list/persistence_field_allowlists = list()
 	if (istype(src, /datum) && !istype(src, /mob) && !istype(src, /obj) && !istype(src, /turf))
 		partial = FALSE
 	if (partial)
-		// Parsed once per allowlist text (persistence_field_allowlist shares it).
-		var/list/allowlist = persistence_field_allowlists[map_storage_saved_vars]
-		if (!allowlist)
-			allowlist = list()
-			allowlist |= params2list(map_storage_saved_vars)
-			persistence_field_allowlists[map_storage_saved_vars] = allowlist
-		to_save = allowlist.Copy()
+		to_save |= params2list(map_storage_saved_vars)
 	else
 		var/list/runtime_cache = persistence_runtime_var_cache[type]
 		if (!runtime_cache)
