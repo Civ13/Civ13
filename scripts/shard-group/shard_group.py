@@ -1235,9 +1235,37 @@ def persistent_config(path, saving=True):
     path.write_text('\n'.join(out) + '\n', encoding='utf-8')
 
 
+def voted_battle_map(group, region, path):
+    """The include for a BATTLE region's last voted map, or None.
+
+    The map vote's winner is built by battle_mapswap.py, which records it in the
+    region's data/shard-host/rotation.json. Any later update (a start after master
+    moved, a watchdog restart, a staged build) builds that map again instead of the
+    configured one, so a voted or admin-picked map is not lost to a rebuild."""
+    if region.get('kind') != 'BATTLE':
+        return None
+    try:
+        state = json.loads((region_dir(group, region['id']) / 'data' / 'shard-host' / 'rotation.json').read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(state, dict) or state.get('state') not in ('ready', 'building'):
+        return None
+    map_id = state.get('map')
+    if type(map_id) is not str or not re.match(r'^[A-Za-z0-9_]{1,64}$', map_id):
+        return None
+    wanted = map_id.lower() + '.dmm'
+    files = sorted(p for p in (path / 'maps').rglob('*.dmm') if p.is_file())
+    # As battle_mapswap.find_map: the exact name first, then a partial match.
+    found = next((p for p in files if p.name.lower() == wanted), None) or next((p for p in files if wanted in p.name.lower()), None)
+    return str(found.relative_to(path)).replace('/', '\\') if found else None
+
+
 def place_map(group, region, path=None):
     """Return the region.dme include for the region's map, copying an outside map into the worktree."""
     path = path or region_dir(group, region['id'])
+    voted = voted_battle_map(group, region, path)
+    if voted:
+        return voted
     source = Path(region['map'])
     if not source.is_absolute():
         if '..' in source.parts or not (path / source).is_file():
