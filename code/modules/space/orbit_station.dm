@@ -127,6 +127,8 @@ var/global/orbit_day_last_advance = -1
 	..()
 	if (orbit_world())
 		to_chat(user, orbit_sunlit() ? "In sunlight for another [orbit_day_left()] seconds." : "In shadow for another [orbit_day_left()] seconds.")
+		// Cell wear (orbit_wear.dm).
+		to_chat(user, "Cell wear: [round(wear)]%[wear >= 25 ? ". Two glass sheets would replace the worst cells." : "."]")
 
 // 2013: a wider array on a gimbal that keeps it square to the sun.
 /obj/structure/civ_generator/solar/wing/tracking

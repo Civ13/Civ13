@@ -745,6 +745,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/habitat_sealant" = "sealed_habitats",
 		"/obj/structure/life_support/electrolyser" = "life_support",
 		"/obj/structure/life_support/scrubber" = "life_support",
+		"/obj/item/sorbent_cartridge" = "life_support",
 		"/obj/structure/life_support/heater" = "life_support",
 		"/obj/structure/life_support/water_recycler" = "life_support",
 		"/obj/structure/life_support/oxygen_reclaimer" = "life_support",

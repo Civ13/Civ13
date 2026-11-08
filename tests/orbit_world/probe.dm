@@ -114,6 +114,7 @@ var/global/orbit_failures = 0
 		orbit_deck_checks()
 		orbit_upkeep_checks()
 		orbit_modern_checks()
+		orbit_wear_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -802,3 +803,44 @@ var/global/orbit_failures = 0
 	orbit_check("isotope generator gated", get_recipe_node_req("/obj/structure/civ_generator/isotope"), "orbital_flight")
 	map.ordinal_age = 7
 	orbit_check("no isotope power before 2013", civ_generation_era(/obj/structure/civ_generator/isotope) ? 1 : 0, 0)
+
+// Wear (orbit_wear.dm): scrubber sorbent and its cartridge, panel wear in
+// sunlight only, its cap and output loss, glass repairs, starter spares.
+/proc/orbit_wear_checks()
+	var/mob/living/human/eva_tester/H = new(locate(3, 3, 5))
+	H.m_intent = "stealth"
+	var/obj/structure/life_support/scrubber/S = new(locate(3, 4, 5))
+	orbit_check("fresh sorbent bed", S.sorbent, 100)
+	orbit_sorbent_use(S, 100)
+	orbit_check("scrubbing wears the bed", S.sorbent, 90)
+	orbit_check("a part-used bed still works", orbit_sorbent_ready(S) ? 1 : 0, 1)
+	orbit_sorbent_use(S, 5000)
+	orbit_check("bed runs out", S.sorbent, 0)
+	orbit_check("a spent bed stops the scrubber", orbit_sorbent_ready(S) ? 1 : 0, 0)
+	var/obj/item/sorbent_cartridge/cart = new(H)
+	S.attackby(cart, H)
+	orbit_check("a cartridge refills the bed", "[S.sorbent],[QDELETED(cart) ? 1 : 0]", "100,1")
+	var/obj/structure/civ_generator/solar/wing/tracking/W = orbit_find_on(/obj/structure/civ_generator/solar/wing/tracking, 5)
+	var/obj/structure/orbit_registry/R = orbit_get_registry()
+	R.sunlit = 1
+	W.wear = 0
+	orbit_wear_step(3600)
+	orbit_check("cells wear in sunlight", round(W.wear, 0.01), 3)
+	orbit_check("worn cells give less", W.rated_output(), 34)
+	R.sunlit = 0
+	orbit_wear_step(3600)
+	orbit_check("no wear in the shade", round(W.wear, 0.01), 3)
+	R.sunlit = 1
+	orbit_wear_step(3600 * 100)
+	orbit_check("wear stops at half", W.wear, 50)
+	orbit_check("half output at worst", W.rated_output(), 18)
+	var/obj/item/stack/material/glass/G = new(H, 2)
+	W.attackby(G, H)
+	orbit_check("glass replaces cells", W.wear, 25)
+	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, 5)
+	var/carts = 0
+	for (var/obj/item/sorbent_cartridge/C in crate)
+		carts++
+	orbit_check("starter spares", carts, 2)
+	orbit_check("cartridge gated", get_recipe_node_req("/obj/item/sorbent_cartridge"), "life_support")
+	qdel(H)

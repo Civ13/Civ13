@@ -343,6 +343,8 @@ var/global/list/orbit_station_requirements = list(
 	if (crate)
 		for (var/path in list(/obj/item/habitat_sealant, /obj/item/habitat_sealant, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/suit/pressure_suit, /obj/item/clothing/head/pressure_helmet, /obj/item/clothing/head/pressure_helmet, /obj/item/pressure_tank, /obj/item/pressure_tank, /obj/item/pressure_suit_patch, /obj/item/eva_tether, /obj/item/eva_tether, /obj/item/stack/cable_coil/yellow))
 			new path(crate)
+		new /obj/item/sorbent_cartridge(crate)
+		new /obj/item/sorbent_cartridge(crate)
 		if (modern)
 			new /obj/item/habitat_kit/node(crate)
 		for (var/i in 1 to 6)
