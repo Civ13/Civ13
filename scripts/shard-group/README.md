@@ -136,7 +136,8 @@ answers.
 Set `relay_port` (0 = off) to put every region behind two public ports: the
 gate region's own port (`gate`, the mainland by default) and the relay port.
 Forward only those two on the router; the other region ports and every agent
-port stay closed. `relay_control_port` (default `relay_port + 1`) is loopback
+port stay closed. A routed region is never listed on the hub, even with
+`"public": true`, because its own port is not reachable from outside. `relay_control_port` (default `relay_port + 1`) is loopback
 only; `relay_bind` (`0.0.0.0`) and `relay_capture` (false) are optional. Setup
 writes `relay`, `relay_control` and `gate` into each region's
 `shard_region.json` and the group token into `config/relay-token.txt`; the host
