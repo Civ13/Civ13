@@ -56,6 +56,7 @@ var/probe_runtime_error = FALSE
 	round_fact_checks()
 	canopy_checks()
 	holiday_checks()
+	second_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -143,3 +144,110 @@ var/probe_runtime_error = FALSE
 	var/obj/item/treat = P.get_active_hand()
 	probe_check(G.gcDestroyed || !G.loc, "opening a gift uses it up")
 	probe_check(istype(treat, /obj/item/weapon/reagent_containers/food/snacks/cookie) || istype(treat, /obj/item/weapon/reagent_containers/food/snacks/chocolatebar), "a gift holds a treat that lands in hand")
+
+/proc/second_batch_checks()
+	// Megaphone
+	var/mob/living/human/S = probe_human(2, 25, "Speaker")
+	probe_check(S.speech_range_bonus(7) == 7, "normal speech range without a megaphone")
+	var/obj/item/weapon/megaphone/M = new(S.loc)
+	S.put_in_hands(M)
+	probe_check(S.speech_range_bonus(7) == 14, "a megaphone in hand doubles speech range")
+
+	// Glowstick
+	var/obj/item/flashlight/flare/glowstick/blue/G = new(locate(3, 25, 1))
+	probe_check(G.fuel == 1800 && !G.on, "a new glowstick has 30 minutes and is dark")
+	G.attack_self(S)
+	probe_check(G.on && G.icon_state == "glowstick_blue_on" && (G in processing_objects), "bending a glowstick lights it")
+	probe_check(!G.attack_self(S), "a lit glowstick cannot be switched off")
+	G.fuel = 1
+	G.process_interval(2)
+	probe_check(G.burnt_out && !G.on && findtext(G.name, "spent"), "a glowstick burns out when its fuel runs out")
+	probe_check(!G.attack_self(S), "a spent glowstick cannot be relit")
+
+	// Labels
+	var/obj/structure/closet/crate/C = new(locate(4, 25, 1))
+	var/base = C.name
+	probe_check(C.set_container_label("Grain") && C.name == "[base] (Grain)" && C.container_label == "Grain", "a label is added to the name")
+	probe_check(C.set_container_label("") && C.name == base && !C.container_label, "an empty label restores the name")
+	C.set_container_label("abcdefghijklmnopqrstuvwxyz0123")
+	probe_check(length(C.container_label) <= 24, "labels are capped at 24 characters")
+
+	// Display case
+	var/obj/structure/display_case/D = new(locate(5, 25, 1))
+	var/mob/living/human/O = probe_human(5, 24, "Collector")
+	var/obj/item/weapon/whistle/W = new(O.loc)
+	O.put_in_hands(W)
+	D.attackby(W, O)
+	probe_check(D.shown_item() == W && W.loc == D, "an item goes into the case")
+	var/obj/item/weapon/key/K = new(O.loc)
+	K.code = 4242
+	D.attackby(K, O)
+	probe_check(D.locked && D.custom_code == 4242, "a key locks the case")
+	D.attack_hand(O)
+	probe_check(W.loc == D, "a locked case keeps its item")
+	D.attackby(K, O)
+	D.attack_hand(O)
+	probe_check(!D.locked && W.loc != D && !D.shown_item(), "an unlocked case gives the item back")
+
+	// Tripwire
+	var/obj/structure/tripwire_alarm/T = new(locate(8, 25, 1))
+	var/mob/living/human/setter = probe_human(9, 25, "Setter")
+	setter.faction_text = "Red"
+	T.set_owner(setter)
+	var/mob/living/human/friend = probe_human(10, 25, "Friend")
+	friend.faction_text = "Red"
+	var/mob/living/human/stranger = probe_human(11, 25, "Stranger")
+	stranger.faction_text = "Blue"
+	probe_check(!T.trip(setter) && !T.trip(friend), "the setter's side walks through quietly")
+	probe_check(T.trip(stranger), "a stranger sets off the alarm")
+	probe_check(!T.trip(stranger), "the alarm does not rattle again within 3 seconds")
+	probe_check(T.persistence_runtime_var("next_rattle"), "the rattle cooldown is not saved")
+
+	// Rally flag
+	var/mob/living/human/L = probe_human(15, 15, "Flag Leader")
+	L.faction_text = "Green"
+	var/datum/job/J = new
+	J.is_squad_leader = TRUE
+	L.original_job = J
+	var/mob/living/human/A = probe_human(15, 23, "Flag Ally")
+	A.faction_text = "Green"
+	probe_check(!L.leader_order_near_flag(), "no flag nearby at first")
+	new /obj/structure/flag/pole(locate(16, 15, 1))
+	probe_check(!L.leader_order_near_flag(), "a bare flagpole is not a rally flag")
+	new /obj/structure/flag/white(locate(16, 16, 1))
+	probe_check(L.leader_order_near_flag(), "a flag within 2 tiles counts")
+	probe_check(L.issue_leader_order("move") == 2 && A.order_move_strength == 1.5, "an order by a flag gains half a strength and reaches 9 tiles")
+
+	// Codebook
+	var/list/red = codebook_pairs("Red")
+	var/list/blue = codebook_pairs("Blue")
+	probe_check(red.len == 10 && codebook_pairs("Red") == red, "a side keeps the same ten codes all round")
+	var/list/flat = list()
+	for (var/list/pair in red)
+		flat |= pair
+	probe_check(flat.len == 20, "every call and response is different")
+	probe_check(red[1][1] != blue[1][1] || red[1][2] != blue[1][2], "sides get different codes")
+	var/obj/item/weapon/paper/codebook/CB = new(locate(20, 25, 1), "Red")
+	probe_check(findtext(CB.info, red[1][1]) && findtext(CB.info, red[1][2]) && CB.name == "Red codebook", "the codebook lists the side's codes")
+	var/mob/living/human/officer = probe_human(21, 25, "Officer")
+	officer.faction_text = "Red"
+	var/datum/job/OJ = new
+	OJ.is_officer = TRUE
+	officer.original_job = OJ
+	var/obj/item/weapon/paper/codebook/given = officer.give_codebook()
+	probe_check(istype(given) && given.code_faction == "Red", "officers get their side's codebook in team rounds")
+	var/mob/living/human/private = probe_human(22, 25, "Private")
+	private.faction_text = "Red"
+	private.original_job = new /datum/job
+	probe_check(!private.give_codebook(), "ordinary soldiers get no codebook")
+
+	// Emote panel
+	var/datum/emote_panel/P = new(S)
+	var/list/acts = emote_panel_acts()
+	var/html = P.html()
+	var/links = 0
+	var/pos = findtext(html, "emote=")
+	while (pos)
+		links++
+		pos = findtext(html, "emote=", pos + 1)
+	probe_check(links == acts.len && !("point" in acts) && !("custom" in acts), "the panel lists every simple emote and no targeted ones")

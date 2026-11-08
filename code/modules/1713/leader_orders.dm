@@ -48,6 +48,13 @@
 			return W
 	return null
 
+// A flag (not a bare pole) within 2 tiles.
+/mob/living/human/proc/leader_order_near_flag()
+	for (var/obj/structure/flag/F in range(2, get_turf(src)))
+		if (F.type != /obj/structure/flag/pole)
+			return TRUE
+	return FALSE
+
 /mob/living/human/proc/is_order_ally(mob/living/human/H)
 	if (H == src)
 		return TRUE
@@ -77,7 +84,7 @@
 	set name = "Issue Order"
 	set desc = "Give an order to nearby allies: Move, Hold or Focus."
 	set category = "IC"
-	var/order = WWinput(src, "Move: allies run faster. Hold: allies feel less pain. Focus: allies aim steadier. A whistle makes orders stronger and carry further.", "Issue Order", "Cancel", list("Cancel", "Move", "Hold", "Focus"))
+	var/order = WWinput(src, "Move: allies run faster. Hold: allies feel less pain. Focus: allies aim steadier. A whistle, or standing by a flag, makes orders stronger and carry further.", "Issue Order", "Cancel", list("Cancel", "Move", "Hold", "Focus"))
 	if (order == "Cancel" || !order)
 		return
 	issue_leader_order(lowertext(order))
@@ -105,6 +112,11 @@
 		strength += 1
 		order_range += LEADER_ORDER_WHISTLE_RANGE
 		cooldown += LEADER_ORDER_WHISTLE_COOLDOWN
+	// Rally flag (CM-SS13 planted_flag.dm): an order given beside a flag is a
+	// little stronger and carries further.
+	if (leader_order_near_flag())
+		strength += 0.5
+		order_range += 2
 	strength = min(strength, LEADER_ORDER_MAX_STRENGTH)
 	var/duration = (strength + 1) * 10 SECONDS
 	leader_order_ready_at = world.time + cooldown
