@@ -873,7 +873,6 @@ var/global/datum/persistence_admission_identity
 #endif
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
-		// A handover keeps its frozen levels until the move ends (set_world_moving).
 		persistence_release_all_levels()
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold

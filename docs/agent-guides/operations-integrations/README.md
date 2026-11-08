@@ -85,8 +85,8 @@ replaces existing action-time confirmations, held-runner rules or runtime guards
 - Discord integration via Civilizationbot (file-based IPC through `SQL/discord2*.txt` files).
 - Region groups update running worlds with a handover (`scripts/shard-group/README.md`): a
   standby world (`-params standby=1`) boots the staged build beside the running one, the
-  running world saves while each captured level stays frozen (`world_moving`,
-  `persistence_frozen_levels`; an ordinary save freezes a level only during its capture),
+  running world saves, freezing each level only during its capture (`persistence_frozen_levels`;
+  play after a level's capture does not carry over and players are warned, `world_moving`),
   the standby loads the save and then
   opens the region's port with `world.OpenPort`. The lifecycle Topic actions are
   `handover_save`, `handover_release`, `handover_cancel`, `standby_load` and `standby_open`.
