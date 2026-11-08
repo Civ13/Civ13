@@ -61,6 +61,9 @@ var/global/list/civ_relay_outbound_queue = list()
 		network_key = ""
 
 /obj/structure/telecom/relay/proc/has_antenna()
+	// A comms satellite overhead stands in for the antenna (space/satellites.dm).
+	if (satellite_comms_link(src))
+		return TRUE
 	for (var/obj/structure/telecom/antenna/A in range(1, src))
 		if (!A.retired && (A in civ_telecom_devices) && A.anchored && isturf(A.loc) && A.z == z)
 			return TRUE
@@ -77,6 +80,8 @@ var/global/list/civ_relay_outbound_queue = list()
 /obj/structure/telecom/relay/proc/wear(amount)
 	if (!running() || amount <= 0)
 		return
+	if (satellite_comms_link(src))
+		amount /= 2
 	condition = max(0, condition - amount)
 	if (!condition)
 		visible_message("<span class='warning'>[src] crackles and falls silent. It needs repair.</span>")
