@@ -136,7 +136,7 @@ class StorageRuntime(unittest.TestCase):
         # and the actual loader decodes that entry as null before assignment.
         self.assertIn('if(!A.should_save)\n\t\treturn 0',SAVING)
         self.assertIn('if(!value["ref"])\n\t\t\t\treturn null',LOADING)
-        self.assertIn('if(object.persistence_runtime_var(v))',LOADING)
+        self.assertIn('if(persistence_runtime_field(object, v))',LOADING)
         for key in RUNTIME_CONTROLS:
             historical=None
             if not policy(key):setattr(bag,key,historical)

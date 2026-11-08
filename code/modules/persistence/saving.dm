@@ -151,13 +151,14 @@
 			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
 		else
 			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
-		var/list/turf_grid = (handover_turfs && !sparse_turf) ? list() : null
+		var/list/turf_grid = handover_turfs ? list() : null
 		if(turf_grid) handover_turfs["[A]"] = turf_grid
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
 				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
+					if(turf_grid) turf_grid += sparse_turf
 					continue // Regenerated on load; yields once per row below.
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)

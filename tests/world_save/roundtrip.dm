@@ -667,6 +667,10 @@ var/global/roundtrip_capture_failure = FALSE
 	check(level["/sparse/kind"] == "ground" && level["/sparse/turf"] == /turf/test && level["/sparse/cells"] > 0 && level["/sparse/cells"] < world.maxx * world.maxy, "ground level was not saved around its common tile")
 	level = null
 	check(map_storage.validate_world_save(), "ground sparse save rejected")
+	// The walk hands the load every cell's type: saved cells and the baseline.
+	var/list/grid = map_storage.validated_turf_grid(1)
+	var/turf/kept_cell = locate(4,4,1)
+	check(islist(grid) && grid.len == world.maxx * world.maxy && grid[(5 - 1) * world.maxx + 2] == /turf/test && grid[(4 - 1) * world.maxx + 4] == kept_cell.type, "ground sparse walk lacks the level's turf types")
 	var/turf/stray = locate(2,5,1)
 	stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
 	map_storage.ClearMap()

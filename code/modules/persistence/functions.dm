@@ -256,7 +256,13 @@ var/global/list/persistence_field_allowlists = list()
 	if (istype(src, /datum) && !istype(src, /mob) && !istype(src, /obj) && !istype(src, /turf))
 		partial = FALSE
 	if (partial)
-		to_save |= params2list(map_storage_saved_vars)
+		// Parsed once per allowlist text (persistence_field_allowlist shares it).
+		var/list/allowlist = persistence_field_allowlists[map_storage_saved_vars]
+		if (!allowlist)
+			allowlist = list()
+			allowlist |= params2list(map_storage_saved_vars)
+			persistence_field_allowlists[map_storage_saved_vars] = allowlist
+		to_save = allowlist.Copy()
 	else
 		var/list/runtime_cache = persistence_runtime_var_cache[type]
 		if (!runtime_cache)
@@ -264,7 +270,19 @@ var/global/list/persistence_field_allowlists = list()
 			persistence_runtime_var_cache[type] = runtime_cache
 		for (var/key in src.vars)
 #ifdef CIV13_VARIABLE_OBSERVABILITY
-			if (persistence_runtime_var(key))
+			// Every field is classified here, so this check uses the cache too.
+			var/observed = null
+			var/observed_instance = persistence_runtime_var_instance_keys[key]
+			if (!observed_instance)
+				observed = runtime_cache[key]
+			if (isnull(observed))
+				if (persistence_runtime_var(key))
+					observed = TRUE
+				else
+					observed = FALSE
+				if (!observed_instance)
+					runtime_cache[key] = observed
+			if (observed)
 				variable_observability_skipped(src.vars[key])
 				continue
 #endif
@@ -307,6 +325,21 @@ var/global/list/persistence_runtime_var_instance_keys = list("glide_size" = TRUE
 		if (persistence_runtime_var_instance_keys[key] || !isnull(cache[key])) continue
 		cache[key] = D.persistence_runtime_var(key) ? TRUE : FALSE
 	return cache
+
+// One field's answer through the same cache, for loops over a single datum's
+// fields (sparse checks and imports). Instance fields always ask D.
+/proc/persistence_runtime_field(datum/D, key)
+	if (persistence_runtime_var_instance_keys[key])
+		return D.persistence_runtime_var(key)
+	var/list/cache = persistence_runtime_var_cache[D.type]
+	if (!cache)
+		cache = list()
+		persistence_runtime_var_cache[D.type] = cache
+	var/cached = cache[key]
+	if (isnull(cached))
+		cached = D.persistence_runtime_var(key) ? TRUE : FALSE
+		cache[key] = cached
+	return cached
 
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
@@ -1748,7 +1781,7 @@ var/global/datum/persistence_admission_identity
 	if(T.persistence_export_frame) return FALSE
 	var/list/default_fields = T.persistence_field_allowlist()
 	for(var/v in T.get_saved_vars())
-		if(T.persistence_runtime_var(v)) continue
+		if(persistence_runtime_field(T, v)) continue
 		switch(v)
 			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 				continue
