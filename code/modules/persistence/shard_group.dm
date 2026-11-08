@@ -245,7 +245,7 @@ var/global/datum/shard_group/shard_group = new
 
 // Called by the lobby once any restart load has finished. Waits for world
 // setup, then lets the round start on the ordinary countdown as if an admin
-// had pressed Start Now.
+// had pressed Start Now. The TDM Barracks skips the countdown entirely.
 /proc/region_round_autostart(datum/controller/gameticker/T)
 	if(!T || !shard_group.autostarts_round())
 		return FALSE
@@ -254,6 +254,9 @@ var/global/datum/shard_group/shard_group = new
 	if(!shard_group.autostarts_round())
 		return FALSE
 	T.admin_started = TRUE
+	// The Barracks is an always-on lobby: no pregame countdown.
+	if(shard_group.kind == "BARRACKS")
+		T.skip_pregame_countdown = TRUE
 	log_game("Region group: [shard_group.region] starts its round on its own.")
 	return TRUE
 
