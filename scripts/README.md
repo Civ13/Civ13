@@ -50,3 +50,43 @@ mdir:/path/to/server/
 cdir:/path/to/live/
 port:1313
 ```
+
+### Supervised hosting (systemd)
+
+A host can run DreamDaemon as an ordinary user under a service manager instead
+of the root `sudo` flow. Add optional lines to the live copy's `paths.txt`:
+
+```
+gitdir:civ13-tdm-src
+supervisor:systemd
+```
+
+`gitdir` names the build checkout (a folder under `mdir`, or an absolute path;
+default `civ13-git`). With `supervisor:systemd`, `mapswap.py` fetches master,
+selects the voted map, compiles with the `DreamMaker` on `PATH`, copies config,
+installs `civ13.dmb`/`civ13.rsc` by rename, then sends the server `SIGTERM` so
+the service restarts it. A failed build leaves the running world alone. Add
+`UNPRIVILEGED_SCRIPTS` to `config/config.txt` so the game calls `python3`
+rather than `sudo python3`.
+
+Example user unit (`~/.config/systemd/user/civ13-tdm.service`, with
+`loginctl enable-linger <user>` so it runs without a login session):
+
+```ini
+[Unit]
+Description=Civ13 TDM (DreamDaemon)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/civ13-tdm
+Environment=PATH=%h/byond-516.1688/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LD_LIBRARY_PATH=%h/byond-516.1688/bin
+ExecStart=%h/byond-516.1688/bin/DreamDaemon %h/civ13-tdm/civ13.dmb 1714 -trusted -webclient -logself
+KillMode=mixed
+Restart=always
+RestartSec=5
+MemoryMax=2500M
+
+[Install]
+WantedBy=default.target
+```
