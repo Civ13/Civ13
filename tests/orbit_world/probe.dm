@@ -113,6 +113,7 @@ var/global/orbit_failures = 0
 		orbit_pod_checks()
 		orbit_deck_checks()
 		orbit_upkeep_checks()
+		orbit_modern_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -749,3 +750,55 @@ var/global/orbit_failures = 0
 	orbit_check("thruster gated", get_recipe_node_req("/obj/structure/orbit_thruster"), "orbital_flight")
 	qdel(H)
 	qdel(O)
+
+// The 2013 layout and hardware: tracking arrays, the radioisotope generator,
+// the extra node and greenhouse, six reboost burns and a node kit.
+/proc/orbit_modern_checks()
+	var/party = "civ:gaia:Gamma"
+	world.maxx = 32
+	world.maxy = 32
+	for (var/p in 2 to 5)
+		orbit_release_plane(p)
+	for (var/p in 2 to 4)
+		orbit_claim_plane("keep")
+	for (var/turf/T in block(locate(1, 1, 5), locate(world.maxx, world.maxy, 5)))
+		for (var/obj/O in T)
+			if (!istype(O, /obj/effect))
+				qdel(O)
+		if (!istype(T, /turf/floor/space/orbit))
+			T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
+	map.ordinal_age = 8
+	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia"))
+	orbit_check("2013 station founded", at ? at.z : 0, 5)
+	var/sealed = 0
+	var/list/kinds = list()
+	for (var/obj/structure/habitat_core/C in orbit_station_modules(5))
+		kinds += C.kind
+		if (!C.breaches())
+			sealed++
+	orbit_check("2013 modules", length(kinds), 4)
+	orbit_check("2013 modules sealed", sealed, 4)
+	orbit_check("2013 node and greenhouse", ("node" in kinds) && ("greenhouse" in kinds) ? 1 : 0, 1)
+	var/arrays = 0
+	for (var/obj/structure/civ_generator/solar/wing/tracking/W in world)
+		if (W.z != 5)
+			continue
+		W.settle_generation()
+		if (W.output_power == 35)
+			arrays++
+	orbit_check("two tracking arrays generating", arrays, 2)
+	var/obj/structure/civ_generator/isotope/I = orbit_find_on(/obj/structure/civ_generator/isotope, 5)
+	I.settle_generation()
+	orbit_check("isotope generator on the grid", I ? I.output_power : 0, 10)
+	var/obj/structure/orbit_registry/R = orbit_get_registry()
+	R.sunlit = 0
+	orbit_check("isotope generator ignores the shade", I.rated_output(), 10)
+	R.sunlit = 1
+	var/obj/structure/orbit_thruster/T = orbit_find_on(/obj/structure/orbit_thruster, 5)
+	orbit_check("six reboost burns", T ? T.propellant : 0, 120)
+	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, 5)
+	orbit_check("node kit in the crate", crate && (locate(/obj/item/habitat_kit/node) in crate) ? 1 : 0, 1)
+	orbit_check("tracking array gated", get_recipe_node_req("/obj/structure/civ_generator/solar/wing/tracking"), "orbital_flight")
+	orbit_check("isotope generator gated", get_recipe_node_req("/obj/structure/civ_generator/isotope"), "orbital_flight")
+	map.ordinal_age = 7
+	orbit_check("no isotope power before 2013", civ_generation_era(/obj/structure/civ_generator/isotope) ? 1 : 0, 0)

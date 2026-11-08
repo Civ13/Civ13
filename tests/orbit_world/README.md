@@ -84,6 +84,11 @@ low orbit, drag and skim heating, the floor and ceiling, thruster refusals
 for no propellant, outsiders and the ceiling, a reboost and its cost, and the
 console's altitude line.
 
+Last, the 2013 layout on a 32 x 32 world: four sealed modules including the
+node and greenhouse, two tracking arrays generating 35 PU, the radioisotope
+generator on the grid and steady in the shade, six reboost burns, a node kit
+in the crate, recipe gates, and no isotope power before 2013.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer
