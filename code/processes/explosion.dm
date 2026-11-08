@@ -94,7 +94,6 @@
 		if (HasBelow(epicenter.z) && z_transfer & DOWN)
 			call(/proc/explosion)(GetBelow(epicenter), max(0, devastation_range - 2), max(0, heavy_impact_range - 2), max(0, light_impact_range - 2), max(0, flash_range - 2), FALSE, DOWN, data.is_rec, data.sound, data.create_smoke, data.nomads_event)
 
-	var/max_range = max(devastation_range, heavy_impact_range, light_impact_range, flash_range)
 
 	// Play sounds; we want sounds to be different depending on distance so we will manually do it ourselves.
 	// Stereo users will also hear the direction of the explosion!
@@ -122,19 +121,21 @@
 	var/x0 = epicenter.x
 	var/y0 = epicenter.y
 
-	for (var/turf/T in trange(max_range, epicenter))
+	// Only turfs inside the light impact radius take damage; flash_range is not
+	// used below, so walking trange(flash_range) only skipped turfs (a range-200
+	// flash visited ~160k turfs for a ~2k-turf blast).
+	var/damage_range = max(devastation_range, heavy_impact_range, light_impact_range)
+
+	for (var/turf/T in trange(damage_range, epicenter))
 		var/dist = sqrt((T.x - x0)**2 + (T.y - y0)**2)
 
 		if (dist < devastation_range)		dist = 1
 		else if (dist < heavy_impact_range)	dist = 2
 		else if (dist < light_impact_range)	dist = 3
 		else								continue
-		var/found_epicenter = FALSE
-		var/found_target = FALSE
-		for (var/obj/structure/vehicleparts/frame/FE in epicenter)
-			found_epicenter = TRUE
-		for (var/obj/structure/vehicleparts/frame/FT in T)
-			found_target = TRUE
+		// Rechecked per turf: an earlier turf's ex_act can destroy the epicenter frame.
+		var/found_epicenter = (locate(/obj/structure/vehicleparts/frame) in epicenter) ? TRUE : FALSE
+		var/found_target = (locate(/obj/structure/vehicleparts/frame) in T) ? TRUE : FALSE
 		if (found_target == found_epicenter)
 			T.ex_act(dist)
 			if (T && !data.objects_with_immunity.Find(T))

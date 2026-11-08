@@ -21,6 +21,15 @@ class ExplosionRemains(unittest.TestCase):
             failures = load('run').static_checks()
         self.assertEqual(failures, [], out.getvalue())
 
+    def test_circular_explosion_walks_only_the_damage_radius(self):
+        # flash_range is never applied per turf; walking trange(flash_range)
+        # cost ~19 ms per (2, 2, 2, 100) artillery shell just to skip turfs.
+        source = (HERE.parents[1] / 'code/processes/explosion.dm').read_text()
+        body = source[source.index('/process/explosion/proc/explosion('):source.index('/process/explosion/proc/explosion_rec(')]
+        self.assertIn('var/damage_range = max(devastation_range, heavy_impact_range, light_impact_range)\n', body)
+        self.assertIn('for (var/turf/T in trange(damage_range, epicenter))', body)
+        self.assertNotIn('trange(max_range', body)
+
     def test_known_maps_classify_their_upper_levels(self):
         audit = load('map_audit')
         for rel, levels in audit.EXPECTED.items():
