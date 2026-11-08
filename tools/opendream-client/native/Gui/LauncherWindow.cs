@@ -756,7 +756,7 @@ internal sealed partial class LauncherWindow : Form {
             "kill" or "force-restart" => $"{label} {target}? It is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for a server that hangs.",
             "restart" => $"{label} {target}? It saves, stops and starts on the build it has, so players are kicked until it is back. " +
                 "To move players over without kicking them, use Save, update and restart: it builds the latest master beside the running world, " +
-                "and players switch to the new world only once it has loaded the save.",
+                "and players keep playing on the old world (held only while their own level saves) until the new one has loaded the save.",
             _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
         if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
@@ -847,8 +847,9 @@ internal sealed partial class LauncherWindow : Form {
 
     private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
         "is built beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each " +
-        "running region is handed over, one at a time: the new build starts beside it, the old world freezes play and saves, the new one " +
-        "loads that save, and players reconnect to it within seconds (Gaia is frozen for about the save and the load). If the save or the " +
+        "running region is handed over, one at a time: the new build starts beside it, the old world saves (players are held only while " +
+        "their own level is saved, a minute or two, then play on), the new one loads that save, and players reconnect to it within seconds. " +
+        "Anything done after a level was saved is end-of-round play and is not carried over. If the save or the " +
         "load fails, the old world carries on and nothing is lost. A region still on a build from before handovers is saved, stopped and " +
         "started instead, once. Regions that are asleep get the new build when they wake; regions left unticked keep running.";
 
