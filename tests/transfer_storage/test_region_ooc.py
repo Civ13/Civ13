@@ -53,8 +53,16 @@ class RegionOoc(unittest.TestCase):
         fire = proc(RELAY, '/process/civ_radio_relay/fire')
         self.assertLess(fire.index('region_ooc_tick()'), fire.index('if (!on_air.len)'))
         tick = proc(OOC, '/proc/region_ooc_tick')
-        self.assertIn('"/ooc/send"', tick)
-        self.assertIn('"/ooc/inbox"', tick)
+        exchange = proc(OOC, '/proc/region_ooc_exchange')
+        self.assertIn('"/ooc/send"', exchange)
+        self.assertIn('"/ooc/inbox"', exchange)
+        # One OOC exchange at a time, and the inbox is polled every few seconds,
+        # so a stalled agent cannot pile up rust_g requests (Rail Yard, 2026-11-08).
+        self.assertLess(tick.index('if (region_ooc_busy)'), tick.index('region_ooc_exchange()'))
+        self.assertLess(exchange.index('region_ooc_next_poll'), exchange.index('"/ooc/inbox"'))
+        bridge = proc(read('code/modules/persistence/transfer_bridge.dm'), '/datum/transfer_bridge/proc/request')
+        self.assertIn('TRANSFER_BRIDGE_ABANDONED_LIMIT', bridge)
+        self.assertIn('abandoned += R', bridge)
         self.assertIn('shard_group.enabled', proc(OOC, '/proc/region_ooc_enabled'))
 
 
