@@ -354,6 +354,7 @@
       "code/modules/persistence/admin.dm": 5,
       "code/modules/persistence/durable_nomads.dm": 1,
       "code/modules/persistence/durable_timers.dm": 1,
+      "code/modules/persistence/functions.dm": 2,
       "code/modules/persistence/nomads_lifecycle.dm": 3,
       "code/modules/persistence/persistence.dm": 1,
       "code/modules/persistence/region_home.dm": 1,

@@ -193,6 +193,12 @@
 	// Entry shards and list blocks share the cache; both are small (a few
 	// hundred KB of savefile tree each), and a refill re-reads a whole block.
 	limit = max(8, limit * 4)
+	// A normal-memory load keeps most of a level: with 24 files, Gaia's 572
+	// shards and blocks were imported 3050 times across the preflight walk
+	// and the load. 256 files cut the Gaia load by about 2.5 minutes for
+	// about 160 MiB more peak memory. Low-memory plans keep the small cache.
+	// 6 is PERSISTENCE_SEGMENT_CACHE_NORMAL (loading.dm, undefined here).
+	if(isnum(cache_limit) && cache_limit >= 6) limit = 256
 	var/path = level_stream_path(base_path)
 	if(F["/stream/file"] != level_stream_name(base_path)) throw EXCEPTION("Stream level index does not name [path]")
 	if(!fexists(path)) throw EXCEPTION("Missing level stream [path]")

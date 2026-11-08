@@ -1381,7 +1381,9 @@ var/global/datum/persistence_admission_identity
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
-		apply_restored_lighting()
+		// The daylight sweep yields per batch; let the load finish beside it.
+		spawn(0)
+			apply_restored_lighting()
 		return
 	global.game_id = state["game_id"]
 	round_elapsed_offset = state["elapsed"]
@@ -1401,7 +1403,9 @@ var/global/datum/persistence_admission_identity
 		target.minds = list()
 		target.collect_minds()
 		TOD_loop()
-		apply_restored_lighting()
+		// The daylight sweep yields per batch; let the load finish beside it.
+		spawn(0)
+			apply_restored_lighting()
 
 /datum/proc/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	return before_save()
