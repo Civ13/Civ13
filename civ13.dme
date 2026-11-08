@@ -1242,6 +1242,7 @@
 #include "code\modules\persistence\transfer_bridge.dm"
 #include "code\modules\persistence\transfer_trade_post.dm"
 #include "code\modules\persistence\region_home.dm"
+#include "code\modules\persistence\region_ooc.dm"
 #include "code\modules\persistence\region_travel.dm"
 #include "code\modules\persistence\region_trails.dm"
 #include "code\modules\persistence\party_train.dm"

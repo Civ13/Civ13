@@ -279,15 +279,11 @@
 			message_admins("[key_name_admin(src)] has attempted to advertise in OOC: [msg]", key_name_admin(src))
 			return
 
+	// The other regions of a region group get the line before highlighting (region_ooc.dm).
+	var/region_msg = msg
+
 	/* mentioning clients with @key or @ckey */
-	for (var/client/C in clients)
-		if (C.pingability)
-			var/imsg = msg
-			msg = replacetext(msg, "@[C.key]", "<span class='ping'>@[capitalize(C.key)]</span>")
-			msg = replacetext(msg, "@[C.ckey]", "<span class='ping'>@[capitalize(C.key)]</span>")
-			if (msg != imsg)
-				winset(C, "mainwindow", "flash=2;")
-				C << sound('sound/machines/ping.ogg')
+	msg = ooc_ping_clients(msg)
 
 	/* mentioning @everyone: staff only */
 	if (holder && holder.rights & R_ADMIN)
@@ -351,6 +347,8 @@
 					display_name = "<span class = 'ping'>[holder.OOC_rank()]</span> [display_name]"
 
 			to_chat(target, "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
+
+	region_ooc_outbound(src, region_msg, ooc_style)
 
 /client/verb/looc(msg as text)
 	set name = "LOOC"

@@ -423,6 +423,8 @@ var/global/list/civ_relay_outbound_queue = list()
 		var/list/envelope = civ_relay_outbound_queue[1]
 		civ_relay_outbound_queue.Cut(1, 2)
 		transfer_bridge.request("/radio/send", list("envelope" = envelope))
+	// Group-wide OOC rides the same agent and needs no relay station.
+	region_ooc_tick()
 	var/list/on_air = civ_relay_on_air_list()
 	since_heartbeat += 10
 	if (since_heartbeat >= CIV_RELAY_HEARTBEAT)
