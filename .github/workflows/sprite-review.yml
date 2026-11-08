@@ -5,6 +5,7 @@ on:
     paths:
       - '**.dmi'
       - 'scripts/sprite_review.py'
+      - 'tests/map_review/**'
       - '.github/workflows/sprite-review.yml'
   workflow_dispatch:
     inputs:
@@ -27,12 +28,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: Civ13/byond-devtools
-          ref: 8feda512c6a07f35123a0bd89acc13f0c9e9bc3d
+          ref: 0ed557447129495150cd50c8003da718598f4c70
           path: .byond-devtools
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      # Map pictures and lint skip here (no BYOND_BIN); the map-review workflow runs them.
+      - name: Review fixture tests
+        run: BYOND_DEVTOOLS="$PWD/.byond-devtools" python3 -B -m unittest tests/map_review/devtools_review.py -v
       - name: Compare changed sprites state by state
         env:
           BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base || 'origin/master' }}
