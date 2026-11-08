@@ -196,6 +196,13 @@ With `control.group` set, the Host server tab has two rows of group buttons. **A
 regions** runs each action for the whole group. **One region** has a region list (each with its game and travel port; the
 list re-reads the group config whenever it opens) and the same `shard_group.py`
 actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
+**Save, update and restart** (the handover deploy, `deploy.bat REGION`: its dialog
+starts with only that region ticked and deploys whatever is ticked when confirmed;
+it builds the latest master beside the running world and moves players across once
+the new world has loaded the save. A region still on a build from before handovers
+is saved, stopped and started instead, once, so its players are kicked that time.
+Restart always kicks them while it saves, stops and starts, and its confirmation
+says so),
 **Sleep now** and **Wake** (freeze or thaw an empty, saved world), **Apply host
 settings** (`config-apply`), **Set up** (create or refresh the region's worktree and
 config and enrol it with the running travel agents; refused while it runs, so a new

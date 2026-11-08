@@ -419,7 +419,7 @@ public static class LocalHosting {
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",
                 "stage" => "Building the update beside",
-                "handover" => "Handing over to the new build (the old world freezes and saves, the new one loads it, then players reconnect):",
+                "handover" => "Handing over to the new build (the old world saves one level at a time, holding only the level being saved, the new one loads the save, then players reconnect):",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
             if (refused != null) message += " Refused: " + refused + ".";

@@ -303,6 +303,7 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // One region of the group: the same shard_group.py actions with --region, plus sleep and wake, staging,
+    // the handover deploy for just this region (deploy.bat REGION),
     // applying host settings and setting a region up (a new one added to the group config, or a refresh).
     private void BuildRegionRow(HostGroup group, FlowLayoutPanel row) {
         IReadOnlyList<LocalHosting.GroupRegion> regions;
@@ -331,7 +332,7 @@ internal sealed partial class LauncherWindow : Form {
         row.Controls.Add(picker);
         string Chosen() => regions[Math.Max(0, picker.SelectedIndex)].Id;
         foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
-                ("Build update", "stage"), ("Sleep now", "freeze"), ("Wake", "thaw"), ("Apply host settings", "config-apply"), ("Set up", "setup"),
+                ("Build update", "stage"), ("Save, update and restart", "deploy"), ("Sleep now", "freeze"), ("Wake", "thaw"), ("Apply host settings", "config-apply"), ("Set up", "setup"),
                 ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
             var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             button.Click += async (_, _) => await GroupAction(action, text, Chosen());
@@ -753,9 +754,12 @@ internal sealed partial class LauncherWindow : Form {
             "setup" => $"Create or refresh {target}'s folder and config? It must be stopped. A region newly added to the group config is set up "
                 + "and enrolled for travel with the running regions, which keep running.",
             "kill" or "force-restart" => $"{label} {target}? It is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for a server that hangs.",
+            "restart" => $"{label} {target}? It saves, stops and starts on the build it has, so players are kicked until it is back. " +
+                "To move players over without kicking them, use Save, update and restart: it builds the latest master beside the running world, " +
+                "and players keep playing on the old world (held only while their own level saves) until the new one has loaded the save.",
             _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
-        if (action == "deploy") { await ChooseAndDeploy(label); return; }
+        if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
         SetHostBusy(true);
@@ -843,13 +847,15 @@ internal sealed partial class LauncherWindow : Form {
 
     private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
         "is built beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each " +
-        "running region is handed over, one at a time: the new build starts beside it, the old world freezes play and saves, the new one " +
-        "loads that save, and players reconnect to it within seconds (Gaia is frozen for about the save and the load). If the save or the " +
+        "running region is handed over, one at a time: the new build starts beside it, the old world saves (players are held only while " +
+        "their own level is saved, a minute or two, then play on), the new one loads that save, and players reconnect to it within seconds. " +
+        "Anything done after a level was saved is end-of-round play and is not carried over. If the save or the " +
         "load fails, the old world carries on and nothing is lost. A region still on a build from before handovers is saved, stopped and " +
         "started instead, once. Regions that are asleep get the new build when they wake; regions left unticked keep running.";
 
-    // Asks which regions to update (all ticked; the mainland first in line is marked), then deploys them.
-    private async Task ChooseAndDeploy(string label) {
+    // Asks which regions to update (all ticked, or only `only` from the One region row; the mainland is
+    // marked), then deploys them.
+    private async Task ChooseAndDeploy(string label, string? only = null) {
         if (host?.Control?.Group is not { } group) return;
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
@@ -862,7 +868,7 @@ internal sealed partial class LauncherWindow : Form {
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { Text = DeployQuestion, MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
         var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
-        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, true);
+        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, only == null || region.Id == only);
         layout.Controls.Add(list);
         var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
         var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
@@ -878,7 +884,8 @@ internal sealed partial class LauncherWindow : Form {
         if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
         var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
         // Every region ticked runs the whole group, so a region added to the config later is never skipped.
-        await DeployGroup(label, chosen.Count == regions.Count ? [] : chosen);
+        // From the One region row the ids stay explicit, so a region added meanwhile is never pulled in.
+        await DeployGroup(label, only == null && chosen.Count == regions.Count ? [] : chosen);
     }
 
     // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
