@@ -328,6 +328,8 @@ class InventoryHoverName(unittest.TestCase):
                hover_text=None,hover_text_width=0,hover_text_height=0,maptext_width=384,maptext_height=32,screen_loc='WEST:2,NORTH:-2')
         W.update_backdrop=lambda:None  # underlay rendering is an engine boundary; the native fixture checks it
         W.hover_font_px=11;W.hover_label_px=lambda:11  # 100% HUD scale; the native fixture checks other scales
+        W.hover_measured=None;W.measured=[]  # client MeasureText is an engine round trip: record the request only
+        W.measure_label=lambda text,px:W.measured.append((text,px))
         body.HUDneed['hover name']=W;C.screen.append(W)
         world_visible=set();on_screen=set();readable=set();read_calls=[];parents=[]
         def allowed(user,target,operation):
@@ -344,7 +346,9 @@ class InventoryHoverName(unittest.TestCase):
             # Panel placement boundaries: DM lists are 1-based, round() floors, and
             # the styled span is client rendering (the native fixture checks its markup).
             getviewsize=lambda v:{1:2*v+1,2:2*v+1},round=lambda a:__import__('math').floor(a),
-            hover_name_span=lambda text,border,px=11:"<span style='"+('border' if border else 'text')+"'>&nbsp;"+text+"&nbsp;</span>")
+            hover_name_span=lambda text,px=11:"<span style='text'>"+text+"</span>",
+            hover_name_measure_key=lambda text,px:f'{px}|{text}',min=min,max=max,
+            hover_name_pad_x=lambda px:max(3,px//2),hover_name_pad_y=lambda px:max(1,px//5),HOVER_NAME_MAX_WIDTH=384)
         helper_source=core_source or CORE.read_text()
         helper_source=re.sub(r'(, )(/obj/[\w/]+)(?=\))', lambda m:m[1]+repr(m[2]), helper_source)
         storage_visible=A.project(helper_source,'/proc/los_storage_hover_visible','user, target',env)
@@ -369,13 +373,14 @@ class InventoryHoverName(unittest.TestCase):
         fields=['hover_target','hover_origin','hover_storage','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
                 'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process',
                 'hover_text','hover_text_width','hover_text_height','maptext_width','maptext_height','screen_loc',
-                'show_label','follow_pointer','update_backdrop','hover_font_px','hover_label_px']
+                'show_label','follow_pointer','update_backdrop','hover_font_px','hover_label_px',
+                'hover_measured','set_panel_size','measure_label']
         for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key'),
-                          ('show_label','text'),('follow_pointer','')]:
+                          ('show_label','text'),('follow_pointer',''),('set_panel_size','text_w, text_h')]:
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
-            if name in ('show_label','follow_pointer') and sig+'(' not in source:
+            if name in ('show_label','follow_pointer','set_panel_size') and sig+'(' not in source:
                 continue  # the frozen top-left preimage has no pointer-following panel
             f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
         f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
@@ -414,36 +419,47 @@ class InventoryHoverName(unittest.TestCase):
         self.assertEqual(m.W.maptext,'')
 
     def test_panel_follows_pointer_and_only_moves_on_an_unchanged_target(self):
-        # view 7 is 15 tiles: a 480px map. Tooltip offset is (+10, -20); the
-        # text sits at the top of the 32px maptext box.
+        # view 7 is 15 tiles: a 480px map. Tooltip offset is (+10, -20). The
+        # panel is the maptext box (text centred in it) plus a 1px border, so
+        # its estimated size is the text estimate plus padding and border.
         m=self.model();I=m.atom(name='oak tree',loc=m.atom('/turf/floor'))
         m.visible.add(I);m.readable.add(I)
         def pointer(tx,px,ty,py):
             m.C.mouse_screen_x,m.C.mouse_screen_pixel_x,m.C.mouse_screen_y,m.C.mouse_screen_pixel_y=tx,px,ty,py
         pointer(5,6,8,10);m.C.MouseEntered(I)
-        self.assertIn('&nbsp;oak tree&nbsp;',m.W.maptext)
+        self.assertEqual(m.W.maptext,"<span style='text'>oak tree</span>")
         self.assertEqual(m.W.hover_text,'oak tree')
-        self.assertEqual((m.W.hover_text_width,m.W.hover_text_height),(68,16))
-        # mouse at (134, 234): panel left 144 -> tile 5 px 16; box bottom 234-20-32=182 -> tile 6 px 22
-        self.assertEqual(m.W.screen_loc,'5:16,6:22')
+        # 8 chars * 7px = 56 + 2*5 padding = 66 wide, 14 + 2*2 = 18 high; +2 border
+        self.assertEqual((m.W.maptext_width,m.W.maptext_height),(66,18))
+        self.assertEqual((m.W.hover_text_width,m.W.hover_text_height),(68,20))
+        self.assertEqual(m.W.measured,[('oak tree',11)])  # the client is asked for the real size
+        # mouse at (134, 234): box left 144 -> tile 5 px 16; panel top 214, box bottom 214-20+1=195 -> tile 7 px 3
+        self.assertEqual(m.W.screen_loc,'5:16,7:3')
         maptext=m.W.maptext;reads=len(m.reads)
         pointer(5,7,8,10);m.C.MouseMove(I)
-        self.assertEqual(m.W.screen_loc,'5:17,6:22')
+        self.assertEqual(m.W.screen_loc,'5:17,7:3')
         self.assertIs(m.W.maptext,maptext)  # same target: no label rebuild
         self.assertEqual(len(m.reads),reads+1)  # but visibility is still re-read
+        self.assertEqual(m.W.measured,[('oak tree',11)])
         self.assertIs(m.W.hover_target.resolve(),I)
-        pointer(15,20,8,10);m.C.MouseMove(I)  # right edge: 468+10 clamps to 480-68
-        self.assertEqual(m.W.screen_loc,'13:28,6:22')
-        pointer(5,6,1,0);m.C.MouseMove(I)  # bottom: flips above the pointer, box bottom 0+8+16-32 clamps to 0
-        self.assertEqual(m.W.screen_loc,'5:16,1:0')
-        pointer(5,6,2,12);m.C.MouseMove(I)  # 44-20=24 is below the box height: flip, bottom 44+24-32=36
-        self.assertEqual(m.W.screen_loc,'5:16,2:4')
-        m.C.view=5;pointer(11,20,8,10);m.C.MouseMove(I)  # a smaller live view clamps earlier: 352-68
-        self.assertEqual(m.W.screen_loc,'9:28,6:22')
-        # A long encoded name wraps: the estimate is capped at the maptext box.
+        pointer(15,20,8,10);m.C.MouseMove(I)  # right edge: 468+10 clamps so the border ends at 480
+        self.assertEqual(m.W.screen_loc,'13:29,7:3')
+        pointer(5,6,1,0);m.C.MouseMove(I)  # bottom: flips above the pointer, panel 8..28
+        self.assertEqual(m.W.screen_loc,'5:16,1:9')
+        pointer(5,6,2,12);m.C.MouseMove(I)  # 44-20=24 still fits the 20px panel below
+        self.assertEqual(m.W.screen_loc,'5:16,1:5')
+        m.C.view=5;pointer(11,20,8,10);m.C.MouseMove(I)  # a smaller live view clamps earlier: 352-68+1
+        self.assertEqual(m.W.screen_loc,'9:29,7:3')
+        # A measured size replaces the estimate for that text and size.
+        class Assoc(dict):
+            __missing__=lambda self,key:None  # a missing DM associative key reads null
+        m.W.hover_measured=Assoc({'11|oak tree':{1:50,2:13}});m.W.hover_text=None;m.W.process()  # DM lists are 1-based
+        self.assertEqual((m.W.maptext_width,m.W.maptext_height),(60,18))
+        self.assertEqual(m.W.measured,[('oak tree',11)])
+        # A long encoded name wraps: three estimated lines at the maximum width.
         long_item=m.atom(name='x'*120,loc=m.atom('/turf/floor'));m.visible.add(long_item);m.readable.add(long_item)
         m.C.MouseEntered(long_item)
-        self.assertEqual((m.W.hover_text_width,m.W.hover_text_height),(384,32))
+        self.assertEqual((m.W.maptext_width,m.W.maptext_height),(384,46))
         self.assertEqual(m.W.hover_text,'x'*120)
         m.C.MouseExited(long_item)
         self.assertEqual((m.W.maptext,m.W.hover_text,m.W.hover_text_width,m.W.hover_text_height),('',None,0,0))

@@ -49,6 +49,9 @@ adapter = (Path(__file__).with_name('weakref_save_probe.dm').read_text() + '\n'
            + declaration('code/game/mob/living/carbon/human/human.dm',
                          '/mob/living/human/proc/get_visible_name('))
 (root / 'weakref_save_adapter.dm').write_text(adapter)
+# The hover panel rectangles scale the production white icon state.
+(root / 'icons/effects').mkdir(parents=True, exist_ok=True)
+(root / 'icons/effects/effects.dmi').write_bytes((repo / 'icons/effects/effects.dmi').read_bytes())
 roundtrip = root / 'roundtrip.dm'
 source = roundtrip.read_text()
 anchor = '\t\tcheck_datum_constructor()\n'

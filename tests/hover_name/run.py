@@ -76,6 +76,9 @@ flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     root = Path(temp)
     (root / 'production.dm').write_text(production)
+    # The panel rectangles scale the production white icon state.
+    (root / 'icons/effects').mkdir(parents=True)
+    (root / 'icons/effects/effects.dmi').write_bytes((repo / 'icons/effects/effects.dmi').read_bytes())
     (root / 'fixture.dm').write_text(Path(__file__).with_name('fixture.dm').read_text() + '\n' + Path(__file__).with_name('own_body_probe.dm').read_text())
     (root / 'probe.dme').write_text('#include "fixture.dm"\n#include "production.dm"\n')
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
