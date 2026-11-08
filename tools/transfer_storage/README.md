@@ -63,8 +63,8 @@ It stays closed while the bridge is off or `peers` is empty in the config:
 ```
 
 - A player hands it a stack of an allowlisted material (wood, stone, clay,
-  rope, cloth, leather, copper, tin, bronze, iron, steel, silver or gold; exact
-  types only, up to one full stack) and names the recipient's key. The post
+  rope, cloth, leather, copper, tin, bronze, zinc, brass, iron, steel, silver or
+  gold; exact types only, up to one full stack) and names the recipient's key. The post
   holds the stack while the agent records the escrow, then deletes it. If the
   agent refuses, or a save starts meanwhile, the stack is put back.
 - Every 30 seconds the world asks its agent for committed arrivals and
