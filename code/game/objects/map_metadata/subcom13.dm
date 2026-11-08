@@ -61,8 +61,11 @@
 
 /obj/map_metadata/subcom13/proc/set_compartment_id(var/turf/floor/sub_deck/T)
 	if(T.compartment_id) return // Already set by subtype - skip runtime override
-	// Compartment layout for 58-wide submarine interior map.
-	// Bow = low x, stern = high x.
+	// Legacy fallback for untyped deck tiles only. The shipped map types every
+	// deck tile (maps/WIP/subcom13.dmm) and runs the other way: its bow and
+	// forward torpedo room sit at high x and the engine room at low x. This
+	// table describes the original 58-wide layout and is kept for maps that
+	// still use plain /turf/floor/sub_deck.
 	// Hull cap: x 1-2, Fwd Torpedo: 3-8, bulkhead: 9,
 	// Fwd Battery: 10-15, bulkhead: 16, Operations: 17-23,
 	// bulkhead: 24, Crew: 25-30, bulkhead: 31, Galley: 32-35,

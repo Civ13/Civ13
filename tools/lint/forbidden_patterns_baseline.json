@@ -375,7 +375,7 @@
       "code/modules/reagents/reagent_containers/food/snacks.dm": 3,
       "code/modules/reagents/reagent_containers/spray.dm": 2,
       "code/modules/submarine/submarine_lights.dm": 2,
-      "code/modules/submarine/submarine_machines.dm": 2,
+      "code/modules/submarine/submarine_machines.dm": 1,
       "code/modules/webhooks/game_ready.dm": 2,
       "code/movementMachine.dm": 1,
       "code/pathfinding.dm": 1,
