@@ -241,6 +241,8 @@ var/list/global_huds = list(
 	vehicle_hud += V
 	if (mymob && mymob.client)
 		mymob.client.screen |= vehicle_hud
+	if (H && H.client)
+		H.apply_hud_layout()
 
 /datum/hud/proc/remove_vehicle_hud(var/mob/living/human/H)
 	if (!vehicle_hud.len)

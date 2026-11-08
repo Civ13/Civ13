@@ -65,6 +65,22 @@ class HudLayoutWiring(unittest.TestCase):
         self.assertIn('clamp(x0 + D[2] * g, 0, max(0, view_w - edge)) - x0', body)
         self.assertIn('clamp(y0 + D[4] * g, 0, max(0, view_h - edge)) - y0', body)
 
+    def test_vehicle_controls_and_action_bar_are_editable(self):
+        source = read(LAYOUT)
+        elements = proc_body(source, '/mob/living/human/proc/hud_layout_elements()')
+        self.assertIn('hud_used.vehicle_hud', elements)
+        self.assertIn('"veh:[S.type]"', elements)
+        self.assertIn('H.apply_hud_layout()', proc_body(read('code/_onclick/hud/hud.dm'),
+                                                        '/datum/hud/proc/add_vehicle_hud(var/mob/living/human/H)'))
+        override = proc_body(source, '/mob/living/human/update_action_buttons()')
+        self.assertLess(override.index('..()'), override.index('apply_action_bar_layout()'))
+        bar = proc_body(source, '/mob/living/human/proc/apply_action_bar_layout()')
+        self.assertIn('if (!B || B.moved)', bar)
+        self.assertIn('B.hud_rel_x = (Dn[2] - D1[2]) * k', bar)
+        move = proc_body(source, '/mob/living/human/proc/hud_move_tile(obj/screen/S, list/mouse)')
+        self.assertIn('- S.hud_rel_x', move)
+        self.assertIn('update_action_buttons()', proc_body(source, '/mob/living/human/proc/end_hud_edit()'))
+
     def test_ranges_and_hover_label_are_not_editable(self):
         source = read(LAYOUT)
         self.assertIn('findtext(loc, " to ")', source)
