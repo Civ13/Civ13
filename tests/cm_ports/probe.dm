@@ -59,6 +59,7 @@ var/probe_runtime_error = FALSE
 	second_batch_checks()
 	third_batch_checks()
 	fourth_batch_checks()
+	fifth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -410,3 +411,82 @@ var/probe_runtime_error = FALSE
 	var/turf/far_turf = locate(25, 15, 1)
 	var/report = rangefinder_report(watcher, far_turf)
 	probe_check(findtext(report, "Range: 10 meters east") && findtext(report, "Coordinates 25,15") && findtext(report, "offset 10,0"), "the rangefinder gives exact range, bearing and coordinates: [report]")
+
+/proc/probe_has_overlay(atom/A, state)
+	for (var/O in A.overlays)
+		if (O:icon_state == state)
+			return TRUE
+	return FALSE
+
+/proc/fifth_batch_checks()
+	// Typing indicator
+	var/mob/living/human/talker = probe_human(3, 20, "Talker")
+	probe_check(typing_indicator_state("emote") == "typing_emote" && typing_indicator_state("say") == "typing", "speech and emotes have their own bubbles")
+	probe_check(("typing_emote" in icon_states('icons/mob/talk.dmi')) && ("typing" in icon_states('icons/mob/talk.dmi')), "both bubble sprites exist")
+	var/image/bubble = talker.make_typing_indicator("emote")
+	probe_check((bubble.appearance_flags & RESET_TRANSFORM) && bubble.icon_state == "typing_emote", "the bubble stays upright when its owner lies down")
+	probe_check(!talker.set_typing_indicator("say") && !talker.typing_indicator, "no bubble without a client")
+	talker.typing_indicator = bubble
+	talker.typing = "emote"
+	talker.overlays += bubble
+	probe_check(probe_has_overlay(talker, "typing_emote"), "the probe sees overlays by state")
+	talker.update_icons()
+	probe_check(!talker.typing_indicator && !talker.typing && !probe_has_overlay(talker, "typing_emote"), "a stale bubble is cleared when the owner can no longer type")
+	probe_check(talker.persistence_runtime_var("typing_indicator") && talker.persistence_runtime_var("typing"), "typing state is not saved")
+
+	// Triage tags
+	var/mob/living/human/medic = probe_human(5, 20, "Medic")
+	var/mob/living/human/patient = probe_human(6, 20, "Patient")
+	var/datum/job/MJ = new
+	MJ.is_medic = TRUE
+	medic.original_job = MJ
+	probe_check(can_triage(medic), "a medic can triage")
+	probe_check(!patient.set_triage_tag("blue"), "only the four triage colours are accepted")
+	probe_check(patient.set_triage_tag("red") && patient.triage_tag == "red" && probe_has_overlay(patient, "triage_red"), "a red tag shows on the patient")
+	patient.update_icons()
+	probe_check(probe_has_overlay(patient, "triage_red"), "the tag survives an icon rebuild")
+	var/image/old_tag = patient.triage_overlay
+	patient.set_triage_tag("black")
+	probe_check(old_tag && !probe_has_overlay(patient, "triage_red") && probe_has_overlay(patient, "triage_black"), "retagging replaces the old tag")
+	patient.set_triage_tag(null)
+	probe_check(!patient.triage_tag && !patient.triage_overlay && !probe_has_overlay(patient, "triage_black"), "the tag can be removed")
+	probe_check(patient.persistence_runtime_var("triage_tag") && patient.persistence_runtime_var("triage_overlay"), "triage tags are not saved")
+	for (var/colour in triage_tag_meanings())
+		probe_check("triage_[colour]" in icon_states('icons/obj/cmss13_ports.dmi'), "the [colour] tag has a sprite")
+
+	// Drag trails
+	var/mob/living/human/wounded = probe_human(10, 22, "Wounded")
+	probe_check(!wounded.is_bleeding_out(), "an unhurt body does not bleed")
+	var/obj/item/organ/external/chest = wounded.get_organ("chest")
+	chest.status |= ORGAN_BLEEDING
+	probe_check(wounded.is_bleeding_out(), "a bleeding organ is noticed")
+	var/turf/trail_turf = locate(10, 22, 1)
+	var/obj/effect/decal/cleanable/blood/drag/D = wounded.leave_drag_trail(trail_turf, EAST)
+	probe_check(istype(D) && D.dir == EAST && D.amount == 0, "a smear points the way the body went and is too thin to track")
+	probe_check(!wounded.leave_drag_trail(trail_turf, EAST), "one smear per tile")
+	var/mob/living/human/dragger = probe_human(12, 22, "Dragger")
+	wounded.pulledby = dragger
+	wounded.lying = TRUE
+	var/turf/drag_from = locate(10, 26, 1)
+	wounded.forceMove(drag_from)
+	wounded.Move(locate(11, 26, 1), EAST)
+	var/obj/effect/decal/cleanable/blood/drag/smear = locate() in drag_from
+	probe_check(wounded.x == 11 && smear && smear.dir == EAST, "dragging a bleeding body smears its old tile")
+	var/turf/clean_turf = locate(10, 24, 1)
+	var/mob/living/human/walker = probe_human(10, 24, "Walker")
+	walker.Move(locate(11, 24, 1), EAST)
+	probe_check(!(locate(/obj/effect/decal/cleanable/blood/drag) in clean_turf), "walking leaves no smear")
+	wounded.pulledby = null
+
+	// Signal smoke
+	for (var/colour in list("red", "green", "yellow", "purple"))
+		var/path = text2path("/obj/item/weapon/grenade/smokebomb/marker/[colour]")
+		var/obj/item/weapon/grenade/smokebomb/marker/S = new path(locate(20, 20, 1))
+		var/list/states = icon_states(S.icon)
+		probe_check(S.smoke && S.smoke.type == S.smoke_colour_type && (S.icon_state in states) && ("[S.icon_state]_active" in states), "[colour] signal smoke has its colour and sprites")
+		qdel(S)
+
+	// New-player marker
+	var/datum/new_player_marks/NPM = new
+	probe_check(!NPM.is_new(null) && !NPM.refresh(null) && !NPM.staff_can_see(null), "the marker ignores missing clients")
+	probe_check("new_player" in icon_states('icons/obj/cmss13_ports.dmi'), "the marker has a sprite")
