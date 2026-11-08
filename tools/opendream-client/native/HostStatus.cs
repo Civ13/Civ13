@@ -118,7 +118,7 @@ public static class HostStatus {
             if (root.TryGetProperty("schema", out var refusedSchema) && refusedSchema.TryGetInt32(out var refusedVersion) && refusedVersion == 1 &&
                 root.TryGetProperty("ok", out var refused) && refused.ValueKind == JsonValueKind.False &&
                 root.TryGetProperty("error", out var signedOut) && signedOut.ValueKind == JsonValueKind.String && signedOut.GetString() == "byond signed out")
-                throw new IOException(target.Name + " cannot start right now: its host is not signed in to BYOND. Try again later.");
+                throw new IOException(target.Name + " cannot start right now: its host is still signing in to BYOND. Try again in a minute.");
             if (root.TryGetProperty("schema", out refusedSchema) && refusedSchema.TryGetInt32(out refusedVersion) && refusedVersion == 1 &&
                 root.TryGetProperty("ok", out refused) && refused.ValueKind == JsonValueKind.False &&
                 root.TryGetProperty("error", out var error) && error.ValueKind == JsonValueKind.String && error.GetString() == "low memory") {

@@ -593,6 +593,33 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['gaia', 'deep'], sorted(json.loads(out.getvalue())['accepted'], reverse=True))
         self.assertEqual([('kill', 'gaia'), ('kill', 'deep'), ('force-restart', 'gaia'), ('force-restart', 'deep')], calls)
 
+    def test_start_waits_once_for_the_byond_pager_before_starting_the_regions(self):
+        self.write_group()
+        calls = []
+
+        class Machine:
+            def listening(self, port):
+                return False
+
+        class Region:
+            def __init__(self, name, public):
+                self.name, self.platform = name, Machine()
+                self.config = {'start_requires_byond_pager': public, 'port': 1}
+
+            def wait_for_byond(self):
+                calls.append(('wait', self.name))
+                return True
+
+            def request(self, action):
+                calls.append((action, self.name))
+                return {'accepted': True}
+
+        regions = [({'id': 'deep'}, Region('deep', False)), ({'id': 'gaia'}, Region('gaia', True)),
+                   ({'id': 'yard'}, Region('yard', True))]
+        with mock.patch.object(shard_group, 'hosts', return_value=regions),                 mock.patch.object(shard_group, 'ensure_coordinator', return_value=False), mock.patch('sys.stdout', io.StringIO()):
+            self.assertEqual(0, shard_group.main(['--config', str(self.path), 'start']))
+        self.assertEqual([('start', 'deep'), ('wait', 'gaia'), ('start', 'gaia'), ('start', 'yard')], calls)
+
     def test_unlock_and_force_unlock_reach_every_region(self):
         self.write_group()
         calls = []

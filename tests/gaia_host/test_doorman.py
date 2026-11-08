@@ -322,6 +322,9 @@ class DoormanTests(base.GaiaHostTests):
             self.host.request('start')
         self.assertIsNotNone(self.host.cold())
         self.machine.pager = True
+        self.assertFalse(self.ask('wake=1&port=1714')['ok'], 'a pager that has just started may still be signing in')
+        self.clock[0] += 45
+        self.machine.clock += 45
         self.assertTrue(self.ask('wake=1&port=1714', address='198.51.100.7')['ok'])
         self.assertEqual(self.machine.detached[-1][-2], 'start')
 
