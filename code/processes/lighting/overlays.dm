@@ -28,7 +28,7 @@
 		if (!isDeleted(L))
 			L.update_overlay()
 			L.needs_update = FALSE
-		if (priority != PROCESS_PRIORITY_VERY_HIGH && world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance)
+		if (priority != PROCESS_PRIORITY_VERY_HIGH && (world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance || world.tick_usage >= PROCESS_TICK_CEILING))
 			processing_batch = FALSE
 			if (batch_index <= current_list.len)
 				return PROCESS_TICK_CHECK_RETURNED_EARLY
