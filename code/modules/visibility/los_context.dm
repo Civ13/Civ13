@@ -721,7 +721,10 @@ var/global/list/los_active_contexts
 		count++
 	return count == audit_appearances.len
 
-/datum/los_context/proc/capture(presentation = FALSE)
+// A focus (one read's target, never a presentation) limits the walk to the
+// box spanning the eye and that target plus three tiles: every blocker the
+// eye-target hull or a neighbour check can touch lies inside it.
+/datum/los_context/proc/capture(presentation = FALSE, atom/focus = null)
 	var/key = policy_key()
 	if (!key)
 		return null
@@ -742,8 +745,17 @@ var/global/list/los_active_contexts
 	S.radius_y = radii[2]
 	// One extra tile covers fractional blockers and edge geometry. Ordinary
 	// clutter never invalidates the scene; opacity alone owns blocking geometry.
-	for (var/cx = max(1, body.x-S.radius_x-1), cx <= min(world.maxx, body.x+S.radius_x+1), cx++)
-		for (var/cy = max(1, body.y-S.radius_y-1), cy <= min(world.maxy, body.y+S.radius_y+1), cy++)
+	var/low_x = max(1, body.x-S.radius_x-1)
+	var/high_x = min(world.maxx, body.x+S.radius_x+1)
+	var/low_y = max(1, body.y-S.radius_y-1)
+	var/high_y = min(world.maxy, body.y+S.radius_y+1)
+	if (focus && !presentation && focus.z == S.eye_z)
+		low_x = max(low_x, min(body.x, focus.x) - 3)
+		high_x = min(high_x, max(body.x, focus.x) + 3)
+		low_y = max(low_y, min(body.y, focus.y) - 3)
+		high_y = min(high_y, max(body.y, focus.y) + 3)
+	for (var/cx = low_x, cx <= high_x, cx++)
+		for (var/cy = low_y, cy <= high_y, cy++)
 			var/turf/T = locate(cx, cy, S.eye_z)
 			if (!T)
 				continue
@@ -918,13 +930,16 @@ var/global/list/los_active_contexts
 		var/atom/movable/I = target
 		if (I.loc == body && (operation == "examine" || (I.screen_loc && (I in owner.screen))))
 			return LOS_OWN_SLOT
-	var/datum/los_snapshot/S = capture()
 	// A tree canopy the renderer shows through its exposed edge is drawn by the
 	// "visual_tree" rule. Hover and examine read the same rule, so a tree the
 	// player can see never refuses its name (or shows a name it does not draw).
+	// Its surface test reaches beyond the eye-target box: capture everything.
 	if ((operation == "hover" || operation == "examine") && los_tree_canopy_readable(target))
-		return decision_snapshot(target, S, "visual_tree")
-	return decision_snapshot(target, S, operation)
+		return decision_snapshot(target, capture(), "visual_tree")
+	var/atom/focus = null
+	if (isturf(target) || isturf(target.loc))
+		focus = target
+	return decision_snapshot(target, capture(FALSE, focus), operation)
 
 /proc/los_read_allowed(mob/user, atom/target, operation)
 	if (!CIV13_GEOMETRIC_LOS_CORE)

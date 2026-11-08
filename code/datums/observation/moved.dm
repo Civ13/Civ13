@@ -30,7 +30,7 @@ GLOBAL_DATUM_INIT(moved_event, /decl/observ/moved, new)
 	// Only a world tile can lose a blocker. A container (a mob's inventory, a
 	// backpack, a closet) never occluded anything, and invalidating it as
 	// "changed" withdrew every tree its owner sees when an item left a pocket.
-	if(old_loc && isturf(old_loc) && !los_presentation_exempt(am))
+	if(old_loc && isturf(old_loc) && am.opacity)
 		los_invalidate(old_loc, am.opacity)
 	los_invalidate(am)
 	GLOB.moved_event.raise_event(am, old_loc, am.loc)

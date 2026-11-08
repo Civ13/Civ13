@@ -9,6 +9,32 @@
 /client/var/tmp/los_camera_pan_x = 0
 /client/var/tmp/los_camera_pan_y = 0
 /client/var/tmp/los_camera_union_until = -1
+// Transparent movables that moved in this viewer's range since its last
+// publication. Only their own masks can change, so they are re-decided alone.
+/client/var/tmp/list/los_pending_movers
+
+// Note a transparent mover for a clean viewer; a long queue falls back to one
+// full refresh instead.
+/client/proc/los_note_mover(atom/movable/A)
+	if(los_dirty)
+		return
+	if(!los_pending_movers)
+		los_pending_movers = list()
+	if(los_pending_movers.len >= 64)
+		los_pending_movers = null
+		los_dirty = TRUE
+		return
+	los_pending_movers[A] = TRUE
+
+// Re-decide only the queued movers against one fresh capture. FALSE means the
+// caller must take the full refresh.
+/client/proc/los_refresh_pending_movers(datum/los_context/V)
+	var/list/movers = los_pending_movers
+	los_pending_movers = null
+	if(!los_presenter || los_presenter.retired || los_presenter.dirty)
+		return FALSE
+	// refresh_targets() refuses a missing capture.
+	return los_presenter.refresh_targets(V.capture(TRUE), movers)
 
 // animate() changes endpoint vars immediately. Preserve the previous viewport
 // and every still-active endpoint until the declared animation finishes. This
@@ -90,6 +116,10 @@
 		los_last_policy = null
 		los_dirty = TRUE
 		return
+	if(!los_dirty && key == los_last_policy && length(los_pending_movers))
+		if(los_refresh_pending_movers(V))
+			return TRUE
+		los_dirty = TRUE
 	if(!los_dirty && key == los_last_policy && world.time < los_next_audit)
 		return TRUE
 	// Only an unchanged, already published presentation may renew its audit
@@ -129,6 +159,7 @@
 	los_last_error = null
 	los_last_policy = key
 	los_dirty = FALSE
+	los_pending_movers = null
 	V.movement_turf = get_turf(mob)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
@@ -163,6 +194,11 @@
 		if(T && changed != V.body && (T.z != V.body.z || !radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
 			continue
 		affected |= V
+		// A transparent movable is no blocker: for other viewers only its own
+		// mask can change, so it is queued and re-decided alone.
+		if(ismovable(changed) && !possible_opacity && !changed.opacity && changed != V.body && C.los_presenter)
+			C.los_note_mover(changed)
+			continue
 		C.los_dirty = TRUE
 		if(C.root_tree_presenter)
 			C.root_tree_presenter.invalidate(changed, possible_opacity, viewer_refresh)
@@ -219,7 +255,8 @@
 		affected = list()
 	if(previous_contexts)
 		affected |= previous_contexts
-	if(tile_changed && previous_turf)
+	// Leaving a tile changes geometry only for an opaque mover.
+	if(tile_changed && previous_turf && A.opacity)
 		affected |= los_invalidate(previous_turf, A.opacity)
 	var/mob/M = null
 	if(ismob(A))
@@ -251,7 +288,11 @@
 			var/client/C = other_context.owner
 			if(!C || C == M.client || !los_movement_affects_context(other_context, previous_turf, current_turf))
 				continue
-			C.los_dirty = TRUE
+			// A transparent mover changes only its own mask for this viewer.
+			if(M.opacity)
+				C.los_dirty = TRUE
+			else
+				C.los_note_mover(M)
 			C.reconcile_geometric_los()
 
 /proc/los_movement_affects_context(datum/los_context/V, turf/old_turf, turf/new_turf)

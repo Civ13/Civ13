@@ -30,7 +30,7 @@ class TileMotion(unittest.TestCase):
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,abs=abs,list=lambda *a:Contexts(a),
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
             ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a if isinstance(a,Tile) else a.loc,
-            los_presentation_exempt=lambda a:False,
+            los_presentation_exempt=lambda a:False,ismovable=lambda a:not isinstance(a,Tile),
             los_invalidate=lambda a,possible=False,viewer_refresh=False:(events.append((a,possible)) or Contexts(contexts[:2])))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
@@ -38,14 +38,16 @@ class TileMotion(unittest.TestCase):
         after=A.project(source,'/proc/los_refresh_moved_viewer','A, force_refresh=False, previous_contexts=None',env)
         tile=Tile(3)
         actor=N(human=True,mob=True,opacity=False,loc=tile,x=3,y=1,z=1,step_x=0,step_y=0)
-        owner=N(los_dirty=False,captures=0,root_tree_presenter=None,los_presenter=None)
+        owner=N(los_dirty=False,captures=0,root_tree_presenter=None,los_presenter=None,noted=[])
+        owner.los_note_mover=lambda m:owner.noted.append(m)
         context=N(body=actor,owner=owner,retired=False,movement_turf=tile,viewport_radii=lambda:P.DMList([7,7]))
         actor.client=owner;owner.los_context=context
         geometry=P.projected_geometry()
         blocked=P.project(CORE,'/proc/los_target_blocked(',geometry)
         clients=[owner];contexts=Contexts([context])
         for x,z in [(1,1),(100,1),(1,2)]:
-            c=N(los_dirty=False,captures=0,masked=False,root_tree_presenter=None,los_presenter=None)
+            c=N(los_dirty=False,captures=0,masked=False,root_tree_presenter=None,los_presenter=None,noted=[])
+            c.los_note_mover=lambda m,c=c:c.noted.append(m)
             contexts.append(N(body=N(x=x,y=1,z=z),owner=c,viewport_radii=lambda:P.DMList([7,7])))
             c.los_context=contexts[-1]
             clients.append(c)
@@ -164,7 +166,10 @@ class TileMotion(unittest.TestCase):
         self.assertEqual([c.captures for c in s.clients],[1,1,0,0])
         self.assertTrue(s.clients[1].masked)
         self.assertIs(s.context.movement_turf,s.actor.loc)
-        self.assertIn((old,False),s.events)
+        # A transparent mover's old tile lost no blocker: no turf invalidation,
+        # nearby viewers only re-decide the mover itself.
+        self.assertNotIn((old,False),s.events)
+        self.assertIn(s.actor,s.clients[1].noted)
         count=len(s.events)
         s.actor.step_x=12;s.before(s.actor);s.after(s.actor)
         self.assertEqual(len(s.events),count)
@@ -319,11 +324,12 @@ class TileMotion(unittest.TestCase):
         capture=P.fragment(CORE,'/datum/los_context/proc/capture(')
         decision=P.fragment(CORE,'/datum/los_context/proc/decision_snapshot(')
         read=P.fragment(CORE,'/datum/los_context/proc/decision(')
-        self.assertIn('capture(presentation = FALSE)',capture)
+        self.assertIn('capture(presentation = FALSE, atom/focus = null)',capture)
+        self.assertIn('if (focus && !presentation && focus.z == S.eye_z)',capture)
         self.assertIn('if (!presentation)\n\t\tS.eye_x += body.step_x / 32',capture)
         self.assertIn('S.eye_y += body.step_y / 32',capture)
         self.assertIn('(!S.presentation || !ishuman(target))',decision)
-        self.assertIn('var/datum/los_snapshot/S = capture()',read)
+        self.assertIn('capture(FALSE, focus)',read)
         self.assertIn('S.policy != policy_key()',decision)
         self.assertIn('V.capture(TRUE)',LIFE)
         self.assertIn('los_next_audit = world.time + 10',LIFE)
@@ -437,7 +443,7 @@ class DistanceCamera(unittest.TestCase):
             S.blocks_target=lambda tx,ty,tile_x,tile_y,opacity:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opacity) for b in S.blockers)
             return S
         env.update(locate=locate,new_snapshot=snapshot,new_cell=lambda:N())
-        capture=method('capture','presentation=False',['body','revision','policy_key','viewport_radii'])
+        capture=method('capture','presentation=False, focus=None',['body','revision','policy_key','viewport_radii'])
         decision=method('decision_snapshot','target, S, operation="visual"',['body','revision','policy_key','verified_snapshot_time','verified_snapshot'])
         def target(x,y):
             return N(type='/obj/item',x=x,y=y,z=1,step_x=0,step_y=0,opacity=False,alpha=255,invisibility=0,
@@ -723,7 +729,8 @@ class DistanceCamera(unittest.TestCase):
         m=self.camera(96);events=[]
         m.C.root_tree_presenter=None;m.C.los_presenter=N(invalidate=lambda changed,possible,viewer_refresh=False:events.append((changed,possible)))
         env=dict(CIV13_GEOMETRIC_LOS_CORE=True,los_active_contexts=[m.V],get_turf=lambda a:a,
-                 typed_iter=lambda xs,t:xs,abs=abs,los_presentation_exempt=lambda a:False)
+                 typed_iter=lambda xs,t:xs,abs=abs,los_presentation_exempt=lambda a:False,
+                 ismovable=lambda a:not isinstance(a,Tile))
         env['list']=Contexts
         invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False, viewer_refresh=False',env)
         door=Tile(116,100);affected=invalidate(door,True);self.assertEqual(events,[(door,True)])
