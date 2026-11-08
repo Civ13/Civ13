@@ -266,6 +266,7 @@
 
 	spawn (1)
 		log_to_db()
+		player_age_logged()
 
 	spawn (1)
 		if (!istype(mob, /mob/new_player))

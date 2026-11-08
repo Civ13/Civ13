@@ -2592,6 +2592,10 @@ RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 RECIPE: /material/steel/,bipod,/obj/item/weapon/attachment/under/bipod,2,60,0,1,weapons,0,0,0,8,null
 RECIPE: /material/electronics/,weapon light,/obj/item/weapon/attachment/under/weapon_light,1,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/tin/,red signal smoke grenade,/obj/item/weapon/grenade/smokebomb/marker/red,2,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/tin/,green signal smoke grenade,/obj/item/weapon/grenade/smokebomb/marker/green,2,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/tin/,yellow signal smoke grenade,/obj/item/weapon/grenade/smokebomb/marker/yellow,2,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/tin/,purple signal smoke grenade,/obj/item/weapon/grenade/smokebomb/marker/purple,2,60,0,1,weapons,0,0,0,8,null
 RECIPE: /material/leather/,gun sling,/obj/item/weapon/gun_sling,2,40,0,1,weapons,0,0,0,8,null
 
 //*********************| IRON CONSTRUCTIONS |**************************

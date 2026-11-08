@@ -28,3 +28,9 @@ only), dog tags (dead bodies only, one set per body, comrade and enemy counts),
 commander medals (rank, side, citation and per-round limits), the weapon light
 (lit only in hand), the gun sling (caught onto the shoulder only when knocked
 down), the motion detector's contact list and the rangefinder report.
+
+The fifth batch checks the typing bubbles (separate speech and emote sprites,
+upright when lying down, cleared once the owner cannot type, not saved),
+triage tags (four colours, kept through icon rebuilds, removable, not saved),
+drag trails (only a dragged, bleeding body leaves one smear per tile), the four
+signal smoke colours and the new-player marker's handling of missing clients.
