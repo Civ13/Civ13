@@ -216,6 +216,11 @@ SUITES = {
         'paths': ('tests/zombie_city/', 'maps/zombie_city/zombie_city.dmm',
                   'code/modules/zombie_city/'), 'shared_paths': (
             'code/__defines/maps.dm', 'civ13.dme')},
+    # Live tactical map wiring, permission guards and the client script run in
+    # Node (skipped without it); native_probe.py is developer evidence only.
+    'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
+        'paths': ('tests/tactical_map/',), 'shared_paths': (
+            'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
         'paths': ('tests/research_bench/',), 'shared_paths': (
