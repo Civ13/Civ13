@@ -122,6 +122,7 @@ var/global/orbit_failures = 0
 		orbit_freight_checks()
 		orbit_freight_flight_checks()
 		orbit_satellite_checks()
+		orbit_docking_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1402,3 +1403,78 @@ var/global/orbit_failures = 0
 	map = orbit_map
 	map.ordinal_age = 7
 	shard_group.region = "orbit"
+
+// Station visits (orbit_docking.dm): ports belong to their plane's station,
+// who may dock, ferrying across and home again, and parcels.
+/proc/orbit_docking_checks()
+	var/host = "civ:gaia:Delta"
+	var/visitor = "civ:gaia:Echo"
+	map.ordinal_age = 8
+	// The fixture pool is small: free a plane the deck checks held back.
+	for (var/p in 2 to world.maxz)
+		if (orbit_plane_owner(p) == "keep")
+			orbit_release_plane(p)
+			for (var/turf/T in block(locate(1, 1, p), locate(world.maxx, world.maxy, p)))
+				for (var/obj/O in T)
+					if (!istype(O, /obj/effect))
+						qdel(O)
+				if (!istype(T, /turf/floor/space/orbit))
+					T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
+			break
+	var/turf/echo_at = party_train_arrival_turf(list("party" = visitor, "from" = "gaia"))
+	if (!echo_at || orbit_station_party(echo_at.z) != visitor)
+		visitor = null
+	orbit_check("two stations to visit between", visitor ? 1 : 0, 1)
+	if (!visitor)
+		return
+	map.ordinal_age = 8
+	var/obj/structure/region_gate/station_hatch/HA = orbit_station_hatch(host)
+	var/obj/structure/region_gate/station_hatch/HB = orbit_station_hatch(visitor)
+	var/obj/structure/docking_port/A = new(orbit_freight_beside(get_turf(HA)))
+	var/obj/structure/docking_port/B = new(orbit_freight_beside(get_turf(HB)))
+	orbit_check("ports belong to their stations", "[A.owner()]|[B.owner()]", "[host]|[visitor]")
+	var/obj/structure/docking_port/stray = new(locate(3, 3, 1))
+	orbit_check("a port off any station is idle", stray.owner() ? 1 : 0, 0)
+	qdel(stray)
+	var/mob/living/human/eva_tester/V = new(get_turf(B))
+	V.party_train_party = visitor
+	V.m_intent = "stealth"
+	orbit_check("visitor may use their port", "[B.use_refusal(V)]", "")
+	map.ordinal_age = 7
+	orbit_check("no docking before 2013", findtext("[B.use_refusal(V)]", "2013") ? 1 : 0, 1)
+	map.ordinal_age = 8
+	orbit_check("a closed station is not offered", length(B.ferry_choices(visitor)), 0)
+	orbit_check("owners always welcome", A.welcomes(host) ? 1 : 0, 1)
+	A.welcome = "guests"
+	orbit_check("guests only once invited", A.welcomes(visitor) ? 1 : 0, 0)
+	orbit_check("invite a guest", A.add_guest(visitor) ? 1 : 0, 1)
+	orbit_check("owners cannot be their own guests", A.add_guest(host) ? 1 : 0, 0)
+	var/label = "Station of [party_train_party_name(host)]"
+	orbit_check("guest station offered", (label in B.ferry_choices(visitor)) ? 1 : 0, 1)
+	orbit_check("ferry across", "[B.cross(V, label)]", "")
+	orbit_check("visitor aboard the host station", V.z, A.z)
+	orbit_check("way home offered", ("Home: your station" in A.ferry_choices(visitor)) ? 1 : 0, 1)
+	orbit_check("ferry home", "[A.cross(V, "Home: your station")]", "")
+	orbit_check("visitor home again", V.z, B.z)
+
+	// Parcels: anyone welcome leaves one for the station; owners for guests.
+	var/obj/item/stack/material/steel/S = new(get_turf(A), 12)
+	orbit_check("visitor leaves a parcel", "[A.leave_parcel(null, S, host)]", "")
+	orbit_check("parcel waits for the owners", "[length(A.parcels(host))],[length(A.parcels(visitor))]", "1,0")
+	orbit_check("no parcels for strangers", findtext("[A.leave_parcel(null, new /obj/item/pressure_tank(get_turf(A)), "civ:gaia:Nobody")]", "does not send") ? 1 : 0, 1)
+	var/mob/living/human/eva_tester/O = new(get_turf(A))
+	O.party_train_party = host
+	O.m_intent = "stealth"
+	orbit_check("owners collect their parcels", A.collect_parcels(O), 1)
+	orbit_check("collected cargo at their feet", S.loc == get_turf(O) && S.amount == 12 ? 1 : 0, 1)
+	A.welcome = "everyone"
+	orbit_check("an open port welcomes anyone", A.welcomes("civ:gaia:Nobody") ? 1 : 0, 1)
+	orbit_check("docking port gated", get_recipe_node_req("/obj/structure/docking_port"), "orbital_flight")
+	qdel(S)
+	for (var/obj/item/pressure_tank/T in get_turf(A))
+		qdel(T)
+	qdel(O)
+	qdel(V)
+	qdel(A)
+	qdel(B)
+	map.ordinal_age = 7

@@ -145,6 +145,11 @@ weather report, one satellite of a kind, the comms link standing in for a
 relay's antenna, GPS fixes and bearings, a ground station being required,
 and a survey orbiter mapping the whole Moon for a mission console.
 
+Then station visits (`code/modules/space/orbit_docking.dm`): ports belonging
+to their plane's station, the 2013 gate, who may dock, guests, ferrying
+across and home, parcels for the owners and refused for strangers, and an
+open port.
+
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer
