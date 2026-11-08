@@ -17,6 +17,7 @@ import os
 import socket
 import struct
 import sys
+import time
 import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -96,6 +97,8 @@ class AgentClient:
     def request(self, action, args=None):
         if action not in ACTIONS:
             raise AgentError(f"unknown action {action}")
+        if action == "character_observe" and args and "wait_s" in args:
+            return self.observe_wait(args)
         query = {"agent_control": "1", "agent": self.agent, "token": self.token, "action": action}
         if args:
             query["args"] = json.dumps(args, separators=(",", ":"))
@@ -108,12 +111,68 @@ class AgentClient:
             raise AgentError("server reply was not JSON") from exc
 
 
+    def observe_wait(self, args, poll_s=0.5, clock=time.monotonic, sleep=time.sleep):
+        """character_observe that waits up to wait_s seconds (0-60) for something new.
+
+        New means a message after since, a queue result after queue_since, a prompt after
+        prompt_since, a sound after sound_since, or with since_rev a nearby row that appeared,
+        changed or left. The world never sleeps in a Topic reply, so the client polls.
+        """
+        args = dict(args)
+        try:
+            wait_s = max(0.0, min(60.0, float(args.pop("wait_s"))))
+        except (TypeError, ValueError):
+            raise AgentError("wait_s must be a number of seconds (0-60)")
+        deadline = clock() + wait_s
+        while True:
+            reply = self.request("character_observe", args)
+            result = reply.get("result") if reply.get("ok") else None
+            if not isinstance(result, dict) or _observe_has_news(result, args) or clock() >= deadline:
+                if isinstance(result, dict):
+                    result["waited_s"] = round(max(0.0, wait_s - max(0.0, deadline - clock())), 1)
+                return reply
+            # Unchanged so far: the next poll compares against this observe.
+            if "since_rev" in args and result.get("rev"):
+                args["since_rev"] = result["rev"]
+            sleep(min(poll_s, max(0.0, deadline - clock())))
+
+
+def _observe_has_news(result, args):
+    if result.get("messages"):
+        return True
+    if "queue_since" in args and (result.get("queue") or {}).get("results"):
+        return True
+    if "prompt_since" in args and result.get("prompts"):
+        return True
+    if "sound_since" in args and result.get("sounds"):
+        return True
+    if "since_rev" in args:
+        if "changes_since" not in result:
+            return True  # no baseline: this is a full list
+        return bool(result.get("nearby") or result.get("nearby_removed"))
+    return False
+
+
+# Tool annotations (MCP hints for clients deciding what needs a confirmation).
+READ_ONLY_ACTIONS = frozenset({
+    "discover", "status", "players", "inspect", "look", "find", "logs", "job", "get_vars", "list_verbs",
+    "character_list", "character_observe", "character_route", "visit_status",
+})
+DESTRUCTIVE_ACTIONS = frozenset({"set_var", "call_proc", "call_verb", "kick", "restart", "delete_atom", "character_release"})
+
+
+def tool_annotations(name):
+    if name in READ_ONLY_ACTIONS:
+        return {"readOnlyHint": True, "destructiveHint": False, "openWorldHint": False}
+    return {"readOnlyHint": False, "destructiveHint": name in DESTRUCTIVE_ACTIONS, "idempotentHint": False, "openWorldHint": True}
+
+
 # ---------------------------------------------------------------------------
 # MCP stdio server: newline-delimited JSON-RPC 2.0.
 
 def mcp_tools():
     return [
-        {"name": f"civ13_{name}", "description": f"{description} (scope: {scope})", "inputSchema": schema}
+        {"name": f"civ13_{name}", "description": f"{description} (scope: {scope})", "inputSchema": schema, "annotations": tool_annotations(name)}
         for name, (scope, description, schema) in ACTIONS.items()
     ]
 

@@ -13,6 +13,9 @@
 #define AGENT_CHARACTER_SPEECH_DELAY 10
 #define AGENT_CHOICE_WINDOW 300 // ticks a step's prompt answer stays valid
 #define AGENT_WATCH_WINDOW 600 // ticks since an agent last listed its characters for it to count as watching
+#define AGENT_CHARACTER_PROMPTS 16
+#define AGENT_CHARACTER_SOUNDS 32
+#define AGENT_CHARACTER_REPEAT_MAX 30
 
 /datum/agent_character
 	var/mob/living/body
@@ -30,6 +33,12 @@
 	var/queue_running = FALSE
 	var/awaiting_driver = FALSE // spawned by an admin verb; no autopilot has looked through its eyes yet
 	var/requested_goal // what the admin asked the character to do
+	var/list/prompts = list() // prompts the game raised that no step answered (docs/agent-control.md#prompts)
+	var/prompt_serial = 0
+	var/list/sounds = list() // sounds the character heard (docs/agent-control.md#sounds)
+	var/sound_serial = 0
+	var/list/seen // ref -> signature of the last observe's nearby rows, for change lists
+	var/seen_rev = 0
 
 /datum/agent_character/proc/capture(message)
 	var/text = agent_plain_text(message)
@@ -39,6 +48,81 @@
 	messages += list(list("id" = message_serial, "time" = world.time, "text" = text))
 	if (messages.len > AGENT_CHARACTER_MESSAGES)
 		messages.Cut(1, 2)
+
+// A prompt (WWinput) the character could not answer from its step: what was asked
+// and what it took instead, so the agent can repeat the step with choose.
+/datum/agent_character/proc/note_prompt(message, title, list/choices, kind, taken)
+	prompt_serial++
+	var/list/row = list("id" = prompt_serial, "time" = world.time, "title" = agent_plain_text("[title]"), "text" = copytext(agent_plain_text("[message]"), 1, 301))
+	if (choices)
+		var/list/names = list()
+		for (var/choice in choices)
+			if (names.len >= 40)
+				break
+			names += copytext(agent_plain_text("[choice]"), 1, 65)
+		row["choices"] = names
+	else if (istext(kind))
+		row["kind"] = kind
+	row["took"] = isnull(taken) || taken == FALSE ? null : "[taken]"
+	prompts += list(row)
+	if (prompts.len > AGENT_CHARACTER_PROMPTS)
+		prompts.Cut(1, 2)
+
+// A sound played near the character (playsound reaches clients only; this is
+// the agent's ear). label is the sound's name or file without folder and extension.
+/datum/agent_character/proc/hear_sound(turf/source, label, vol)
+	var/turf/here = get_turf(body)
+	if (!here || !source)
+		return
+	sound_serial++
+	var/list/row = list("id" = sound_serial, "time" = world.time, "sound" = label, "dx" = source.x - here.x, "dy" = source.y - here.y, "volume" = round(vol))
+	if (findtext(label, "footstep"))
+		row["footsteps"] = TRUE
+	sounds += list(row)
+	if (sounds.len > AGENT_CHARACTER_SOUNDS)
+		sounds.Cut(1, 2)
+
+/proc/agent_sound_label(requested, soundin)
+	var/text = istext(requested) ? requested : "[soundin]"
+	var/slash = findlasttext(text, "/")
+	if (slash)
+		text = copytext(text, slash + 1)
+	var/dot = findlasttext(text, ".")
+	if (dot > 1)
+		text = copytext(text, 1, dot)
+	return copytext(text, 1, 65)
+
+// Called by playsound() after it reached the clients in range.
+/proc/agent_hear_sound(turf/source, requested, soundin, vol, extrarange, list/excluded)
+	if (!source || !vol || vol <= 0)
+		return
+	var/label = agent_sound_label(requested, soundin)
+	for (var/mob/living/M in agent_characters)
+		if (M.ear_deaf > 0 || (excluded && excluded.Find(M)))
+			continue
+		var/turf/T = get_turf(M)
+		if (!T || T.z != source.z || get_dist(T, source) > (7 * 3) + extrarange)
+			continue
+		var/datum/agent_character/C = agent_characters[M]
+		C.hear_sound(source, label, vol)
+
+// Queue step "until": stop repeating once this holds.
+/datum/agent_character/proc/until_met(list/step)
+	var/list/until = step["until"]
+	if (!islist(until))
+		return FALSE
+	if (istext(until["message"]))
+		for (var/list/message in messages)
+			if (message["id"] > step["message_from"] && findtext(message["text"], until["message"]))
+				return TRUE
+	var/obj/item/held = body.get_active_hand()
+	if (istext(until["holding"]) && held && findtext(held.name, until["holding"]))
+		return TRUE
+	if (isnum(until["amount"]) && istype(held, /obj/item/stack))
+		var/obj/item/stack/S = held
+		if (S.amount >= until["amount"])
+			return TRUE
+	return FALSE
 
 /datum/agent_character/proc/can_drive(datum/agent_identity/A)
 	if (handover_ckey)
@@ -303,6 +387,7 @@
 	var/mob/living/M = C.body
 	var/radius = clamp(round(text2num("[req["radius"]]") || 5), 1, 7)
 	var/since = text2num("[req["since"]]") || 0
+	var/list/signatures = list()
 	C.awaiting_driver = FALSE // an autopilot is driving it now
 	audit_read(A, "character_observe", "[M] ([agent_ref(M)])")
 	var/turf/here = get_turf(M)
@@ -366,6 +451,11 @@
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
+			// Change lists compare what is there, not where it is relative to the character.
+			var/list/signature = row.Copy()
+			signature -= "dx"
+			signature -= "dy"
+			signatures[row["ref"]] = "[json_encode(signature)]@[T.x],[T.y],[T.z]"
 			nearby += list(row)
 	var/list/surroundings = list()
 	var/obj/structure/vehicle/steering = null
@@ -438,7 +528,40 @@
 		var/area/HA = get_area(U)
 		if (HA && HA.location == AREA_INSIDE)
 			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
-	return list("self" = character_state(C), "here" = here_row, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+	var/list/out = list("self" = character_state(C), "here" = here_row, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
+	// since_rev: only nearby rows that appeared or changed since that observe, and the refs that left.
+	var/since_rev = text2num("[req["since_rev"]]")
+	if (isnum(since_rev) && since_rev > 0 && since_rev == C.seen_rev && islist(C.seen))
+		var/list/changed = list()
+		for (var/list/row in nearby)
+			if (C.seen[row["ref"]] != signatures[row["ref"]])
+				changed += list(row)
+		var/list/gone = list()
+		for (var/ref in C.seen)
+			if (!(ref in signatures))
+				gone += ref
+		out["nearby"] = changed
+		out["nearby_removed"] = gone
+		out["nearby_unchanged"] = nearby.len - changed.len
+		out["changes_since"] = since_rev
+	C.seen = signatures
+	out["rev"] = ++C.seen_rev
+	var/prompt_since = text2num("[req["prompt_since"]]") || 0
+	var/list/prompts = list()
+	for (var/list/prompt in C.prompts)
+		if (prompt["id"] > prompt_since)
+			prompts += list(prompt)
+	out["prompts"] = prompts
+	out["last_prompt"] = C.prompt_serial
+	var/sound_since = text2num("[req["sound_since"]]") || 0
+	var/footsteps = req["footsteps"] == TRUE || req["footsteps"] == 1
+	var/list/heard_sounds = list()
+	for (var/list/sound_row in C.sounds)
+		if (sound_row["id"] > sound_since && (footsteps || !sound_row["footsteps"]))
+			heard_sounds += list(sound_row)
+	out["sounds"] = heard_sounds
+	out["last_sound"] = C.sound_serial
+	return out
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
@@ -479,6 +602,12 @@
 	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
 	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
 	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
+	// expect_name: refuse when the ref now names something else (a recycled ref or a swapped object).
+	if (istext(req["expect_name"]) && length(req["expect_name"]) && !isnull(req["target"]))
+		var/atom/expected = agent_resolve_target(req["target"])
+		var/actual = isatom(expected) ? expected.name : "[expected]"
+		if (!findtext(actual, req["expect_name"]))
+			agent_fail("target_changed", "the target is now [actual], not [req["expect_name"]]")
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
@@ -758,7 +887,30 @@
 		agent_text_arg(step, "item", 64)
 	if (!isnull(step["choose"]))
 		agent_text_arg(step, "choose", 64)
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name"))
+	if (!isnull(step["expect_name"]))
+		agent_text_arg(step, "expect_name", 64)
+	if (!isnull(step["repeat"]))
+		var/repeat = text2num("[step["repeat"]]")
+		if (!isnum(repeat) || repeat < 1 || repeat > AGENT_CHARACTER_REPEAT_MAX)
+			agent_fail("bad_args", "repeat must be 1-[AGENT_CHARACTER_REPEAT_MAX]")
+		out["repeat"] = round(repeat)
+	if (!isnull(step["until"]))
+		var/list/until = step["until"]
+		if (!islist(until) || !until.len)
+			agent_fail("bad_args", "until must be an object with message, holding or amount")
+		var/list/kept_until = list()
+		for (var/key in until)
+			if (key in list("message", "holding"))
+				kept_until[key] = copytext(agent_text_arg(until, key, 64), 1, 65)
+			else if (key == "amount")
+				var/amount = text2num("[until[key]]")
+				if (!isnum(amount) || amount < 1)
+					agent_fail("bad_args", "until amount must be a positive number")
+				kept_until[key] = round(amount)
+			else
+				agent_fail("bad_args", "until takes message, holding or amount")
+		out["until"] = kept_until
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out
@@ -806,8 +958,19 @@
 			C.queue.Cut()
 			break
 		try
+			if (isnull(step["message_from"]))
+				step["message_from"] = C.message_serial
 			var/list/result = perform_step(A, C, step, TRUE)
-			C.record(step, TRUE, result["moved"] == FALSE ? "blocked" : "done")
+			var/count = (step["count"] || 0) + 1
+			step["count"] = count
+			var/repeat = step["repeat"] || 1
+			var/stopped = C.until_met(step)
+			if (result["moved"] == FALSE)
+				C.record(step, TRUE, repeat > 1 ? "blocked after [count]" : "blocked")
+			else if (count < repeat && !stopped)
+				C.queue.Insert(1, list(step)) // repeats run when the cooldown allows, one per tick
+			else
+				C.record(step, TRUE, repeat > 1 || step["until"] ? "done x[count][stopped ? " (until met)" : ""]" : "done")
 		catch(var/exception/E)
 			var/detail = E.name == "agent_control_error" ? E.desc : "runtime_error:[E.name] ([E.file]:[E.line])"
 			C.record(step, FALSE, detail)

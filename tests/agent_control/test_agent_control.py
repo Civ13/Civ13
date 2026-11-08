@@ -147,6 +147,88 @@ class McpTests(unittest.TestCase):
         self.assertNotIn("x" * 32, json.dumps(replies))
 
 
+class GistIdeaTests(unittest.TestCase):
+    """Waiting observes, change lists, queue repeats, name checks, prompts, sounds and tool hints."""
+
+    def test_tools_carry_read_only_and_destructive_hints(self):
+        tools = {t["name"]: t for t in agent.mcp_tools()}
+        self.assertTrue(tools["civ13_status"]["annotations"]["readOnlyHint"])
+        self.assertTrue(tools["civ13_character_observe"]["annotations"]["readOnlyHint"])
+        self.assertFalse(tools["civ13_character_act"]["annotations"]["readOnlyHint"])
+        for name in ("restart", "set_var", "delete_atom", "kick"):
+            self.assertTrue(tools[f"civ13_{name}"]["annotations"]["destructiveHint"])
+        self.assertFalse(tools["civ13_announce"]["annotations"]["destructiveHint"])
+        self.assertTrue(agent.READ_ONLY_ACTIONS <= set(ACTIONS))
+        self.assertTrue(agent.DESTRUCTIVE_ACTIONS <= set(ACTIONS))
+
+    def _waiting_client(self, replies):
+        sent = []
+
+        def transport(host, port, query, timeout):
+            args = json.loads(dict(urllib.parse.parse_qsl(query))["args"])
+            sent.append(args)
+            return json.dumps({"ok": True, "result": replies[min(len(sent), len(replies)) - 1]})
+        return agent.AgentClient("tester", "x" * 32, transport=transport), sent
+
+    def test_observe_waits_for_news_and_tracks_the_change_baseline(self):
+        quiet = {"messages": [], "queue": {"results": []}, "nearby": [], "nearby_removed": [], "changes_since": 4, "rev": 5}
+        news = dict(quiet, nearby=[{"ref": "[0x1]", "name": "wolf"}], rev=6)
+        client, sent = self._waiting_client([quiet, dict(quiet, rev=6), news])
+        now = [0.0]
+        reply = client.observe_wait({"character": "[0x9]", "since": 3, "since_rev": 4, "wait_s": 10}, clock=lambda: now[0], sleep=lambda s: now.__setitem__(0, now[0] + s))
+        self.assertEqual(reply["result"]["nearby"][0]["name"], "wolf")
+        self.assertEqual([a["since_rev"] for a in sent], [4, 5, 6])  # each poll compares with the last
+        self.assertNotIn("wait_s", sent[0])
+        self.assertEqual(reply["result"]["waited_s"], 1.0)
+        # Nothing new: it gives up at the deadline and returns the last observe.
+        client, sent = self._waiting_client([dict(quiet)])
+        now = [0.0]
+        reply = client.observe_wait({"character": "[0x9]", "queue_since": 2, "wait_s": 2}, clock=lambda: now[0], sleep=lambda s: now.__setitem__(0, now[0] + s))
+        self.assertEqual(len(sent), 5)
+        self.assertEqual(reply["result"]["waited_s"], 2.0)
+        with self.assertRaises(agent.AgentError):
+            client.observe_wait({"character": "[0x9]", "wait_s": "soon"})
+        # request() routes a wait_s observe through the waiting client.
+        client, sent = self._waiting_client([dict(quiet, messages=[{"id": 4, "text": "hi"}])])
+        self.assertEqual(client.request("character_observe", {"character": "[0x9]", "wait_s": 5})["result"]["messages"][0]["text"], "hi")
+        self.assertEqual(len(sent), 1)
+
+    def test_observe_reports_changes_prompts_and_sounds(self):
+        chars = dm_source("agent_characters.dm")
+        observe = re.search(r"/datum/agent_control/proc/act_character_observe\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn('signature -= "dx"', observe)
+        self.assertIn("since_rev == C.seen_rev", observe)
+        for key in ('"nearby_removed"', '"rev"', '"prompts"', '"last_prompt"', '"sounds"', '"last_sound"'):
+            self.assertIn(key, observe)
+        self.assertIn('footsteps || !sound_row["footsteps"]', observe)
+        wrapper = (ROOT / "code/_helpers/WWinput.dm").read_text(encoding="utf-8")
+        self.assertIn("agent.note_prompt(message, title, choices, toc1, taken)", wrapper)
+        sound = (ROOT / "code/game/sound.dm").read_text(encoding="utf-8")
+        self.assertIn("var/requested = soundin", sound)
+        self.assertIn("agent_hear_sound(turf_source, requested, soundin, vol, extrarange, excluded)", sound)
+        hear = re.search(r"/proc/agent_hear_sound\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("M.ear_deaf > 0", hear)
+        self.assertIn("T.z != source.z", hear)
+
+    def test_queue_steps_repeat_until_and_check_names(self):
+        chars = dm_source("agent_characters.dm")
+        check = re.search(r"/datum/agent_control/proc/check_step\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("AGENT_CHARACTER_REPEAT_MAX", check)
+        self.assertIn('"until takes message, holding or amount"', check)
+        self.assertIn('"expect_name"', re.search(r'for \(var/key in list\(([^)]*)\)\)\n\t\tif \(!isnull\(step\[key\]\)\)', chars).group(1))
+        run = re.search(r"/datum/agent_control/proc/run_queue\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn("C.queue.Insert(1, list(step))", run)
+        self.assertIn("C.until_met(step)", run)
+        self.assertIn('result["moved"] == FALSE', run)
+        step = re.search(r"/datum/agent_control/proc/perform_step\(.*?(?=\n/)", chars, re.S).group(0)
+        self.assertIn('agent_fail("target_changed"', step)
+        items = ACTIONS["character_queue"][2]["properties"]["actions"]["items"]["properties"]
+        self.assertEqual(items["repeat"]["maximum"], 30)
+        self.assertEqual(set(items["until"]["properties"]), {"message", "holding", "amount"})
+        self.assertIn("expect_name", ACTIONS["character_act"][2]["properties"])
+        self.assertIn("wait_s", ACTIONS["character_observe"][2]["properties"])
+
+
 class CatalogSyncTests(unittest.TestCase):
     def test_python_catalog_matches_dm_actions_and_scopes(self):
         source = dm_source("agent_control.dm")
