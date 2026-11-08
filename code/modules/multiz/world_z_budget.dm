@@ -15,7 +15,7 @@ var/datum/world_z_budget/world_z_budget = new
 /proc/new_z_grid_error(width, height, current_z, base_z, target_z, purpose, cell_limit, roof_limit, instance_reserve, safehouse_reserve, instance_used = 0, safehouse_used = 0)
 	if (!new_z_integer(width, NEW_Z_CELL_CEILING) || !width || !new_z_integer(height, NEW_Z_CELL_CEILING) || !height || !new_z_integer(current_z, BUILDING_MAX_Z) || !current_z || !new_z_integer(base_z, BUILDING_MAX_Z) || !base_z || base_z > current_z || !new_z_integer(target_z, BUILDING_MAX_Z) || target_z < current_z)
 		return "Invalid or unsupported world dimensions; no level was allocated."
-	if (!(purpose in list("roof", "restore", "instance", "safehouse", "underground")))
+	if (!(purpose in list("roof", "restore", "instance", "safehouse", "underground", "practice")))
 		return "Unknown level purpose; no level was allocated."
 	if (!new_z_integer(cell_limit, NEW_Z_CELL_CEILING) || !new_z_integer(roof_limit, NEW_Z_ROOF_CEILING) || !new_z_integer(instance_reserve, BUILDING_EXTRA_LEVELS) || !new_z_integer(safehouse_reserve, BUILDING_EXTRA_LEVELS) || !new_z_integer(instance_used, instance_reserve) || !new_z_integer(safehouse_used, safehouse_reserve))
 		return "Invalid level budget configuration; no level was allocated."
@@ -26,8 +26,8 @@ var/datum/world_z_budget/world_z_budget = new
 	if (purpose == "roof" && target_z > base_z + roof_limit)
 		return "This map permits at most [roof_limit] roof-added level(s); no level was allocated."
 	var/added = target_z - current_z
-	if (purpose == "underground" && added != 1)
-		return "A dug underground is exactly one level; no level was allocated."
+	if ((purpose == "underground" || purpose == "practice") && added != 1)
+		return "A dug underground or practice level is exactly one level; no level was allocated."
 	if (purpose == "instance" && added > instance_reserve - instance_used)
 		return "No configured instance reservation covers these [added] whole level(s)."
 	if (purpose == "safehouse" && added > safehouse_reserve - safehouse_used)
@@ -89,6 +89,9 @@ var/datum/world_z_budget/world_z_budget = new
 		return null
 	if ((purpose in list("roof", "restore")) && building_admitted(target_z))
 		return null
+	// A practice level is never saved and is removed before every save (practice_rooms.dm).
+	if (purpose == "practice" && practice_admitted(target_z))
+		return null
 	return "UNMEASURED: new levels are disabled until this map has a validated memory/headroom profile. Existing planes remain usable. Preserve saves and request a reviewed profile; no level was allocated."
 
 // A map that opted into a dug cave level (multiz/dug_underground.dm) may add
@@ -127,6 +130,9 @@ var/datum/world_z_budget/world_z_budget = new
 /datum/world_z_budget/proc/error(target_z, purpose, datum/new_z_reservation/owner)
 	if (active && active != owner)
 		return "Another level request owns allocation; try again shortly."
+	// The practice level must stay world.maxz so it can be removed whole.
+	if (practice_room_z && purpose != "practice")
+		return "A practice room level is open; try again in a few minutes."
 	var/owns_recovery = owner && owner == active && map_storage && map_storage.dimension_bootstrap_busy && map_storage.dimension_reservation == owner && purpose == "restore"
 	if (building_allocating_z || (map_storage && (map_storage.dimension_budget_hold || (map_storage.dimension_recovery_required && !owns_recovery))) || (persistence_save_in_progress && purpose != "restore"))
 		return "Level allocation is unavailable during saving or incomplete recovery."

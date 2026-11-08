@@ -952,7 +952,7 @@ var/global/list/landed_landers = list()
 		var/turf/T = locate(x, y, z)
 		if (T && istype(T.loc, /area/caribbean/nomads/barren))
 			return z
-	return world.maxz
+	return multiz_top_z()
 
 // The centre tile for survey cell cx,cy: the first spot in the cell whose
 // whole deck is clear, else the cell's middle.

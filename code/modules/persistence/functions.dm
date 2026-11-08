@@ -751,6 +751,8 @@ var/global/datum/persistence_admission_identity
 	if(kind == "save" && persistence_restart.startup_hold) return null
 	if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null
 	if((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && !restart_owner) return null
+	// Practice rooms are never saved: close them and remove their level first.
+	if(kind == "save" && !practice_rooms_close_for_save()) return null
 	var/datum/persistence_world_operation/operation = new
 	operation.storage = storage
 	operation.kind = kind

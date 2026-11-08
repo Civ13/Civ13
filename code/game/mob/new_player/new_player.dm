@@ -148,6 +148,9 @@ var/global/redirect_all_players = null
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
 	var/height = 280
+	if (ticker && !practice_rooms.entry_error())
+		output += "<p><a href='byond://?src=\ref[src];practice=1'>Practice Room</A></p>"
+		height += 30
 	if (client && client.holder)
 		output += "<p><a href='byond://?src=\ref[src];observe=1'>Observe</A></p>"
 	else if (map && map.ID != MAP_CAMPAIGN && map.ID != MAP_NATIONSRP_COLDWAR_CMP )
@@ -218,6 +221,10 @@ var/global/redirect_all_players = null
 				WWalert(src, "Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]", "Error")
 		else
 			ready = FALSE
+
+	if (href_list["practice"])
+		practice_rooms.enter(src)
+		return TRUE
 
 	if (href_list["refresh"])
 		src << browse(null, "window=playersetup") //closes the player setup window)
