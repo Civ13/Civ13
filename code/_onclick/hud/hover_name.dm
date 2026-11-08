@@ -25,17 +25,20 @@
 	var/tmp/hover_text
 	var/tmp/hover_text_width = 0
 	var/tmp/hover_text_height = 0
+	// Font size in pixels; follows the player's HUD Scale (11px at 100%).
+	var/tmp/hover_font_px = 11
 
 // One styled span: the text with a nbsp on each side as horizontal padding.
 // border = TRUE draws the same span in the border colour for the underlays.
-/proc/hover_name_span(text, border)
+// px is the font size in pixels.
+/proc/hover_name_span(text, border, px = 11)
 	var/ink = border ? "#9a8468" : "#f3e9d6"
 	var/fill = border ? "#9a8468" : "#3b2c1e"
 	var/outline = border ? "" : "-dm-text-outline:1px #1c110a;"
-	return "<span style='vertical-align:top;text-align:left;font-family:Verdana,sans-serif;font-size:11px;[outline]color:[ink];background-color:[fill]'>&nbsp;[text]&nbsp;</span>"
+	return "<span style='vertical-align:top;text-align:left;font-family:Verdana,sans-serif;font-size:[px]px;[outline]color:[ink];background-color:[fill]'>&nbsp;[text]&nbsp;</span>"
 
 /obj/screen/hover_name/persistence_runtime_var(key)
-	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "parentmob", "maptext")) || ..()
+	return (key in list("hover_target", "hover_origin", "hover_storage", "hover_inventory", "hover_screen_loc", "hover_text", "hover_text_width", "hover_text_height", "hover_font_px", "maptext_height", "parentmob", "maptext")) || ..()
 
 /obj/screen/hover_name/proc/clear_target()
 	hover_target = null
@@ -57,24 +60,38 @@
 		return
 	for (var/list/shift in list(list(-1, 0), list(1, 0), list(0, -1), list(0, 1)))
 		var/image/edge = image(null)
-		edge.maptext = hover_name_span(hover_text, TRUE)
+		edge.maptext = hover_name_span(hover_text, TRUE, hover_font_px)
 		edge.maptext_width = maptext_width
 		edge.maptext_height = maptext_height
 		edge.maptext_x = shift[1]
 		edge.maptext_y = shift[2]
 		underlays += edge
 
+// The label's font size: 11px at 100% HUD Scale, scaled with it.
+/obj/screen/hover_name/proc/hover_label_px()
+	if (!parentmob || !parentmob.client)
+		return 11
+	var/client/C = parentmob.client
+	var/g = C.prefs?.hud_scale
+	if (!isnum(g))
+		return 11
+	return clamp(round(11 * g), 7, 22)
+
 // Draw an encoded label; an unchanged label resends nothing.
 /obj/screen/hover_name/proc/show_label(text)
-	if (text == hover_text && maptext)
+	var/px = hover_label_px()
+	if (text == hover_text && px == hover_font_px && maptext)
 		return
 	hover_text = text
-	// Rough Verdana 11px metrics, erring wide: about 7px per character plus
-	// the padding and border, wrapping at the maptext width, 14px per line.
-	var/estimate = 7 * length(text) + 12
+	hover_font_px = px
+	// Two lines of text fit in the box: 32px at 11px.
+	maptext_height = round(28 * px / 11) + 4
+	// Rough Verdana metrics, erring wide: about 7px per character at 11px
+	// plus the padding and border, wrapping at the maptext width, 14px per line.
+	var/estimate = round(7 * px / 11 * length(text)) + 12
 	hover_text_width = min(maptext_width, estimate)
-	hover_text_height = min(maptext_height, 14 * -round(-estimate / maptext_width) + 2)
-	maptext = hover_name_span(text, FALSE)
+	hover_text_height = min(maptext_height, round(14 * px / 11) * -round(-estimate / maptext_width) + 2)
+	maptext = hover_name_span(text, FALSE, px)
 	update_backdrop()
 
 // Place the panel just below and right of the pointer, clamped to the right
