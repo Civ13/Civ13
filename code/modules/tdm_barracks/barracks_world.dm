@@ -441,10 +441,9 @@ var/global/list/barracks_football_score = list("Red" = 0, "Blue" = 0)
 				if (M.client)
 					to_chat(M, SPAN_NOTICE("[user] resets the pitch score: Red 0 - 0 Blue."))
 		if ("Ball to the centre spot")
-			for (var/obj/item/football/FB in world)
-				if (get_dist(get_turf(FB), src) <= 30)
-					barracks_football_reset(FB)
-					break
+			for (var/obj/item/football/FB in range(30, src))
+				barracks_football_reset(FB)
+				break
 
 /obj/structure/barracks/kit_locker/football_red
 	era = "Red football"
