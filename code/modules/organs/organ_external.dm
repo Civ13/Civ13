@@ -1001,6 +1001,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/mend_fracture()
 	status &= ~ORGAN_BROKEN
 	fracture_heal_ticks = 0
+	perma_injury = 0
 	return TRUE
 
 // A splinted break slowly knits back together; resting doubles the pace.
@@ -1069,7 +1070,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage
-	return max(brute_dam + burn_dam - perma_injury, perma_injury)	//could use max_damage?
+	// perma_injury is the brute a fracture was dealt with; it only keeps hurting
+	// while the bone is still broken, so a healed limb reads its real damage.
+	if (!(status & ORGAN_BROKEN))
+		return brute_dam + burn_dam
+	return max(brute_dam + burn_dam - perma_injury, perma_injury)
 
 /obj/item/organ/external/proc/has_infected_wound()
 	for (var/datum/wound/W in wounds)

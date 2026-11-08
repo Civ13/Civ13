@@ -14,6 +14,7 @@ BASE_ORGAN = (ROOT / "code/modules/organs/organ.dm").read_text(encoding="utf-8")
 AGENT = (ROOT / "code/modules/agent_control/agent_characters.dm").read_text(encoding="utf-8")
 BLOOD = (ROOT / "code/modules/organs/blood.dm").read_text(encoding="utf-8")
 LIFE = (ROOT / "code/game/mob/living/carbon/human/human_life.dm").read_text(encoding="utf-8")
+PAIN = (ROOT / "code/modules/organs/pain.dm").read_text(encoding="utf-8")
 
 
 def block(source, path):
@@ -215,6 +216,19 @@ class MedicalCare(unittest.TestCase):
         self.assertLess(check, body.index("rejecting = null"))
         self.assertLess(body.index("rejecting = null"), body.index("rejecting++"))
         self.assertLess(check, body.index('add_reagent("toxin"'))
+
+    def test_healed_body_has_no_phantom_pain(self):
+        # A mended bone stops counting its fracture damage as pain.
+        damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
+        self.assertLess(damage.index("if (!(status & ORGAN_BROKEN))"), damage.index("return max(brute_dam + burn_dam - perma_injury"))
+        self.assertIn("return brute_dam + burn_dam", damage)
+        mend = block(ORGAN, "/obj/item/organ/external/proc/mend_fracture()")
+        self.assertIn("perma_injury = 0", mend)
+        # Minor internal organ damage never heals, so only bruised organs hurt.
+        pain = block(PAIN, "/mob/living/human/proc/handle_pain()")
+        self.assertIn("if(I.is_bruised() && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
+        self.assertIn("if(I.is_bruised() && prob(2))", pain)
+        self.assertNotIn("I.damage > 2", pain)
 
 if __name__ == "__main__":
     unittest.main()
