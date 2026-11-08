@@ -48,12 +48,13 @@ what the code does so far and the rules later steps must keep.
 | 10c | Wear: scrubber sorbent beds and cartridges, solar cell wear and glass repairs | #3959, `code/modules/space/orbit_wear.dm` |
 | 11 | Sectors outward (2026): sector beacon claims a plane at an edge, edge couplers carry power across the seam, seam margins for modules and pods | #3961, `code/modules/space/orbit_sectors.dm` |
 | 12a | Reusable launch (2026): eight-seat crew ship on a booster that lands back, booster wear and steel refurbishment, eight seats home in orbit | `code/modules/space/orbit_reusable.dm` |
+| 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | `orbit_project.dm` |
 
 ## Next
 
 7. Live: the first orbit region (Val set it up on 2026-11-07).
-12b. The 2026 starter layout (two decks), the methane-oxygen propellant
-    plant and a compact fission reactor in orbit.
+12c. The methane-oxygen propellant plant and a compact fission reactor in
+    orbit (a subtype of the controlled reactor generator).
 13. Wider network: shuttles between orbit, the Moon and Mars; station radio.
 10d. The uncrewed cargo freighter. It needs items to cross regions without a
     traveller, which the transfer agent cannot do yet, so it waits for that
@@ -169,7 +170,12 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   recovers lost drifters: anyone stuck at an unlinked plane edge is reeled in
   beside it after 10 seconds. A console on a station plane only lets that
   party recover.
-- The 2026 layout comes with stage D.
+- **From 2026** the station launches two decks tall. A second node sits
+  above the hub with quarters west and storage east, its own heater,
+  radiator and scrubber in the node's corners, and power from the deck below
+  through a cable riser on both cores. Both deck hatches start open, so the
+  decks share air. The crate adds a sector beacon. When no second plane is
+  free, the station launches with one deck.
 
 ## 2013 hardware
 
