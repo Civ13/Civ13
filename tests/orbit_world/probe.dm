@@ -118,6 +118,7 @@ var/global/orbit_failures = 0
 		orbit_sector_checks()
 		orbit_reusable_checks()
 		orbit_two_deck_checks()
+		orbit_network_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1065,4 +1066,41 @@ var/global/orbit_failures = 0
 	orbit_check("upper scrubber cabled", S && S.powersource ? 1 : 0, 1)
 	var/obj/structure/closet/crate/crate = orbit_find_on(/obj/structure/closet/crate, 4)
 	orbit_check("sector beacon in the crate", crate && (locate(/obj/item/sector_beacon) in crate) ? 1 : 0, 1)
+	map.ordinal_age = 7
+
+// The wider network (orbit_network.dm): flights from orbit down to the Moon
+// and from the Moon up to orbit, and the station transceiver's built-in dish.
+/proc/orbit_network_checks()
+	var/obj/map_metadata/orbit_map = map
+	map.ordinal_age = 9
+	shard_group.region = "orbit"
+	// The probe runs without the shipped survey maps, so the Moon gets one.
+	var/datum/survey_map/moon_map = new
+	moon_map.region = "moon"
+	var/had_map = space_survey_maps["moon"]
+	space_survey_maps["moon"] = moon_map
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(3, 3, 1))
+	var/list/choices = pad.peer_choices()
+	orbit_check("a station pad leads to the Moon", ("Moon (moon)" in choices) ? 1 : 0, 1)
+	orbit_check("a station pad leads home", ("Gaia (gaia)" in choices) ? 1 : 0, 1)
+	orbit_check("a station pad never leads to orbit", ("Orbit (orbit)" in choices) ? 1 : 0, 0)
+	qdel(pad)
+	var/obj/structure/crewed_lander/lander = new(locate(4, 4, 1))
+	orbit_check("a lander flies from orbit to the Moon", isnull(lander.vehicle_refusal("moon")) ? 1 : 0, 1)
+	qdel(lander)
+	if (had_map)
+		space_survey_maps["moon"] = had_map
+	else
+		space_survey_maps -= "moon"
+	shard_group.region = "moon"
+	map = new /obj/map_metadata/nomads/flight_tester
+	map.ordinal_age = 9
+	orbit_check("the Moon can fly up to orbit", space_flight_orbit_ok("orbit") ? 1 : 0, 1)
+	del(map)
+	map = orbit_map
+	shard_group.region = "orbit"
+	var/obj/structure/telecom/relay/station/T = new(locate(5, 5, 1))
+	orbit_check("transceiver has its own dish", T.has_antenna() ? 1 : 0, 1)
+	orbit_check("transceiver gated like a relay", get_recipe_node_req("/obj/structure/telecom/relay/station"), "factories")
+	qdel(T)
 	map.ordinal_age = 7
