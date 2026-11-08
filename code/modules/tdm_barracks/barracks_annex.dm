@@ -348,7 +348,8 @@ var/global/list/barracks_orders = null
 
 // -- vehicle bays ---------------------------------------------------------------------
 // Each bay builds one vehicle in the clear square northeast of its console, with
-// fuel, whenever the square is empty. Vehicles here have no ignition keys.
+// fuel, whenever the square is empty. The doors lock, so whoever calls a car
+// gets its key (a premade car with no door code can never be opened).
 
 /obj/structure/barracks/vehicle_bay
 	name = "motor pool console"
@@ -394,11 +395,19 @@ var/global/list/barracks_orders = null
 		to_chat(user, SPAN_WARNING("The bay is not empty. Drive the last vehicle out, or stand clear, first."))
 		return
 	last_build = world.time
-	build()
+	build(user)
 	user.visible_message(SPAN_NOTICE("[user] calls a [model_name] up in the bay."), SPAN_NOTICE("A [model_name] is being rolled into the bay."))
 
-/obj/structure/barracks/vehicle_bay/proc/build()
-	new model(get_turf(src))
+/obj/structure/barracks/vehicle_bay/proc/build(mob/user)
+	var/obj/effects/premadevehicles/PV = new model(get_turf(src))
+	PV.doorcode = rand(1000, 9999)
+	PV.new_number()
+	var/obj/item/weapon/key/civ/K = new(get_turf(user))
+	K.name = "[PV.reg_number] key"
+	K.icon_state = "modern"
+	K.code = PV.doorcode
+	user.put_in_hands(K)
+	to_chat(user, SPAN_NOTICE("You take the [K.name]. Use it on a door of the car to unlock it."))
 
 /obj/structure/barracks/vehicle_bay/piccolino
 	model_name = "ASNO Piccolino"
@@ -439,7 +448,7 @@ var/global/list/barracks_orders = null
 	..()
 	to_chat(user, SPAN_NOTICE("Taxi onto the runway, roll down it at full throttle to take off, and descend over the runway at low speed to land."))
 
-/obj/structure/barracks/vehicle_bay/plane/build()
+/obj/structure/barracks/vehicle_bay/plane/build(mob/user)
 	build_light_plane(locate(x + 1, y + 1, z))
 
 #undef BARRACKS_BAY_COOLDOWN

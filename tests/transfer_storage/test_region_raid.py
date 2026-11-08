@@ -57,5 +57,13 @@ class RegionRaidTests(unittest.TestCase):
         self.assertIn('return origin', proc(RAID, '/proc/region_raid_death_origin'))
 
 
+    def test_tdm_worlds_keep_no_home_lands(self):
+        # Everyone plays in both the Barracks and the battle world; a home there
+        # refused every battle join ("Your character belongs to Barracks").
+        enabled = proc(HOME, '/proc/region_home_enabled')
+        self.assertLess(enabled.index('shard_group.kind in list("BARRACKS", "BATTLE"))) return FALSE'),
+                        enabled.index('return shard_group && shard_group.enabled'))
+
+
 if __name__ == '__main__':
     unittest.main()
