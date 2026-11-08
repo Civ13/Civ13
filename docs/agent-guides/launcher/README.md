@@ -15,7 +15,7 @@ Do not turn an evidence limitation into a new approval requirement.
 The Host server tab's One region row passes `--region` to shard_group.py for every group action,
 including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only; adopt,
 enrol and config-migrate stay off the launcher, and handover runs only through deploy (since
-2026-11-08 the One region row also has Save, update and restart: deploy.bat for that region alone,
+2026-11-08 the One region row also has Save, update and restart: the deploy dialog with only that region ticked, whose ids stay explicit,
 Val asked for the handover to be reachable per region; plain Restart's confirmation points to it). RegionDetails
 adds the port, DescribeStage (stage and standby), the watchdog record, transfer_agent and region_view;
 ParseGroup adds the coordinator. Keep them in step with RegionHost.status and gaia_host status.

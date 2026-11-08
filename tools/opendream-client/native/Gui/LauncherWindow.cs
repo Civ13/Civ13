@@ -884,7 +884,8 @@ internal sealed partial class LauncherWindow : Form {
         if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
         var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
         // Every region ticked runs the whole group, so a region added to the config later is never skipped.
-        await DeployGroup(label, chosen.Count == regions.Count ? [] : chosen);
+        // From the One region row the ids stay explicit, so a region added meanwhile is never pulled in.
+        await DeployGroup(label, only == null && chosen.Count == regions.Count ? [] : chosen);
     }
 
     // The whole update (deploy.bat): pull, stage the build beside the running worlds, then once every build is
