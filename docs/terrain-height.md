@@ -73,11 +73,14 @@ show nothing. The 624 sprites in `icons/turf/terrain_shade.dmi` are made by
 `scripts/terrain_heights.py bake-shading`; the tool's `corner_lights` and the
 game's `light_rows` use the same maths, and the native test compares them.
 
-The sprites are shared objects in the turf's `vis_contents`, on layer 2.035
-(above the ground, floor decals and fallen snow, below objects), with `mouse_opacity = 0`, so
-they are never clicked and never saved. The ticker places them once per round
-(`terrain_shading_check`), and `ChangeTurf` puts them back on replaced turfs,
-including turfs rebuilt by a save load.
+The sprites are shared images in the turf's own `overlays`, on the floor plane
+and layer 2.035 (above the ground, floor decals and fallen snow, below objects),
+with `mouse_opacity = 0`, so they are never clicked and never saved. They were
+first turf `vis_contents` objects: the server held them, but the real client
+never drew them, so live hills looked flat (2026-11-09). The ticker places them
+once per round (`terrain_shading_check`), `ChangeTurf` puts them back on
+replaced turfs, including turfs rebuilt by a save load, and a floor icon rebuild
+(`update_icon`, which clears overlays) re-adds them through `terrain_shade_icon()`.
 
 Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the

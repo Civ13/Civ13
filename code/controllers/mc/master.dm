@@ -150,6 +150,13 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 
 	var/datum/controller/subsystem/BadBoy = Master.last_type_processed
 	var/FireHim = FALSE
+	// Blame a subsystem only when the MC stalled inside its fire. An MC that
+	// stalled between fires (sleeping off tick contention) left its last
+	// subsystem idle; with SStimer as the only subsystem, the old check
+	// offlined Timer, and every addtimer() callback with it.
+	if(istype(BadBoy) && !(BadBoy.state in list(SS_RUNNING, SS_SLEEPING, SS_PAUSING)))
+		log_world("MC restart: [BadBoy.name] was not mid-fire (state [BadBoy.state]), so it is not blamed.")
+		BadBoy = null
 	if(istype(BadBoy))
 		msg = null
 		LAZYINITLIST(BadBoy.failure_strikes)
@@ -324,6 +331,7 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 	iteration = 1
 	var/error_level = 0
 	var/sleep_delta = 1
+	var/contended_skips = 0
 	var/list/subsystems_to_check
 	//the actual loop.
 
@@ -338,11 +346,19 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 		//Anti-tick-contention heuristics:
 		//if there are multiple sleeping procs running before us hogging the cpu, we have to run later.
 		//	(because sleeps are processed in the order received, longer sleeps are more likely to run first)
-		if (starting_tick_usage > TICK_LIMIT_MC) //if there isn't enough time to bother doing anything this tick, sleep a bit.
-			sleep_delta *= 2
+		// The back-off is bounded: unbounded doubling on a server whose ticks
+		// keep starting above TICK_LIMIT_MC (the process scheduler runs first)
+		// reached sleeps of 64+ ticks, so the MC never iterated and the
+		// failsafe walked DEFCON down to a kill and restart, over and over.
+		// After a few contended skips the MC runs anyway; its subsystems still
+		// stop at their own tick checks, so a busy tick only gets a short pass.
+		if (starting_tick_usage > TICK_LIMIT_MC && contended_skips < MC_CONTENDED_SKIP_LIMIT) //if there isn't enough time to bother doing anything this tick, sleep a bit.
+			contended_skips++
+			sleep_delta = min(sleep_delta * 2, MC_CONTENDED_SLEEP_CAP)
 			current_ticklimit = TICK_LIMIT_RUNNING * 0.5
 			sleep(world.tick_lag * (processing * sleep_delta))
 			continue
+		contended_skips = 0
 
 		//Byond resumed us late. assume it might have to do the same next tick
 		if (last_run + CEILING(world.tick_lag * (processing * sleep_delta), world.tick_lag) < world.time)

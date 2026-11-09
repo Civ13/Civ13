@@ -66,3 +66,13 @@ filters, keyboard focus and metadata-search negative controls. Modern frontend
 and server-adapter contracts live in the existing CraftingAtlas React tests and
 `tests/tgui/test_atlas_adapter.py`. These are source/DOM checks, not native game
 or installed-client acceptance. No recipe or crafting action is added.
+
+Personal manual hints use the optional presenter seam. `navigation.dm` checks
+HTML escaping, repeated graph/page navigation, changing viewers, learning and
+unchanged cached catalog data without importing gameplay into the standalone
+renderer. `tests/recipe_knowledge/game.dm` additionally checks the production
+adapter's known/unknown/disabled/basic/excluded states and direct stale stack
+recipe rejection without debit or output. A compile-only run does not execute
+these assertions. `CraftingAtlas.test.tsx` exercises repeated server snapshots
+and inspectable locked recipes; adapter source contracts cover link suppression,
+canonical station labels and learning refresh wiring.

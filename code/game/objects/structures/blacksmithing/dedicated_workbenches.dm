@@ -460,3 +460,8 @@
 
 #undef FOUNDRY_MAX_BATCH
 #undef FOUNDRY_MIN_AGE
+
+/obj/structure/component_workbench/toolsmith/foundry/recipe_manual_hint(mob/living/human/H, choice)
+	var/hint = ..()
+	var/foundry_hint = crafting_node_manual_hint(H, "machined_tools")
+	return hint && foundry_hint ? "[hint]; [foundry_hint]" : "[hint][foundry_hint]"

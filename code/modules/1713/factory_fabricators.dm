@@ -219,7 +219,16 @@ var/global/list/factory_active_fabricators = list()
 		to_chat(H, SPAN_WARNING("Your faction has not researched any recipe this fabricator can make."))
 		return
 	choices += "(clear recipe)"
-	var/choice = input(H, "Choose what \the [src] makes.", "Fabricator recipe", recipe_name) as null|anything in choices
+	var/list/labels = list()
+	var/default_label = recipe_name
+	for (var/recipe_choice in choices)
+		var/datum/factory_recipe/R = factory_get_recipes()[recipe_choice]
+		var/hint = R ? crafting_node_manual_hint(H, R.node) : ""
+		var/label = hint ? "[recipe_choice] - [hint]" : recipe_choice
+		labels[label] = recipe_choice
+		if (recipe_choice == recipe_name) default_label = label
+	var/selected_label = input(H, "Choose what \the [src] makes.", "Fabricator recipe", default_label) as null|anything in labels
+	var/choice = selected_label ? labels[selected_label] : null
 	if (!choice || QDELETED(src) || !H.Adjacent(src) || H.incapacitated())
 		return
 	if (choice != "(clear recipe)")
