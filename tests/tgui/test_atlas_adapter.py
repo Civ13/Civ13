@@ -33,6 +33,8 @@ class AtlasAdapterContract(unittest.TestCase):
    self.assertIn(marker,refresh)
   self.assertNotIn('for (',refresh)
   self.assertNotIn('show(src)',refresh)
+  learning=(ROOT/'code/modules/research_tree/character_knowledge.dm').read_text().split('/mob/living/human/proc/learn_recipe_node(',1)[1].split('/mob/living/human/proc/initialize_recipe_knowledge',1)[0]
+  self.assertIn('refresh_recipe_knowledge_menus()',learning)
 
  def test_unknown_stack_recipe_has_no_single_or_batch_craft_link(self):
   stack=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()

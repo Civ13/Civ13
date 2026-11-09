@@ -203,7 +203,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 			continue
 		shown++
 		var/list/recipe = variant_record(group, matches, recipe_id)
-		body += "<h3>[html_encode("[recipe["name"]]")]</h3><p>[html_encode("[recipe["kind"]]")]</p><p>Inputs: "
+		body += "<h3 style='color:[manual_hint(viewer, recipe) ? "#aaa" : "inherit"]'>[html_encode("[recipe["name"]]")]</h3><p>[html_encode("[recipe["kind"]]")]</p><p>Inputs: "
 		var/list/inputs = list()
 		for (var/list/ingredient in recipe["inputs"])
 			inputs += resource_html(viewer, ingredient)
@@ -281,7 +281,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 			inputs += "<p>[resource_html(viewer, ingredient)]</p>"
 		for (var/list/product in selected["outputs"])
 			outputs += "<p>[resource_html(viewer, product)]</p>"
-		diagram = "<h3>[html_encode("[selected["name"]]")]</h3><table class='dependency' width='100%'><tr><th>Inputs</th><th></th><th>Transformation</th><th></th><th>Outputs</th></tr><tr><td bgcolor='#254a35'>[jointext(inputs, "")]</td><td>&rarr;</td><td bgcolor='#254366'>[html_encode("[selected["kind"]]")]</td><td>&rarr;</td><td bgcolor='#5b4824'>[jointext(outputs, "")]</td></tr></table><p>Unlock era: [html_encode("[selected["era_label"]]")]. [html_encode("[selected["era_basis"]]")]</p><p>[html_encode("[selected["conditions"]]")]</p>"
+		diagram = "<h3 style='color:[manual_hint(viewer, selected) ? "#aaa" : "inherit"]'>[html_encode("[selected["name"]]")]</h3><table class='dependency' width='100%'><tr><th>Inputs</th><th></th><th>Transformation</th><th></th><th>Outputs</th></tr><tr><td bgcolor='#254a35'>[jointext(inputs, "")]</td><td>&rarr;</td><td bgcolor='#254366'>[html_encode("[selected["kind"]]")]</td><td>&rarr;</td><td bgcolor='#5b4824'>[jointext(outputs, "")]</td></tr></table><p>Unlock era: [html_encode("[selected["era_label"]]")]. [html_encode("[selected["era_basis"]]")]</p><p>[html_encode("[selected["conditions"]]")]</p>"
 		diagram = manual_hint_html(viewer, selected) + diagram
 		diagram = variant_html(selected_group, selected_matches, selected["id"], query, era, processor) + diagram + source_html(selected)
 	return "<html><head><title>Crafting Atlas</title><style>body{background:#17202b;color:#eee;font-family:Verdana;font-size:13px}a{color:#9ed2ff}td{padding:8px;vertical-align:top}input,select{margin:4px}small{color:#c4d2e2}</style></head><body><h2>Crafting Atlas</h2>[controls]<p>[matched] matching recipes, sorted by unlock era. [resource_matches.len] matching resources. Search a resource name or identifier for Resource results; filters apply to recipes. Research tiers can be ahead of map era; unknown and multiple-era records remain explicit. Map, faction, skills and other conditions still apply.</p><table width='100%'><tr><td width='26%'>[jointext(index, "")][matched > 150 ? "<p>First 150 recipe matches shown. Refine filters to find more.</p>" : ""]</td><td>[diagram]</td></tr></table><p><a href='?src=\ref[src];atlas_open=1'>Reset atlas</a> | <a href='?src=\ref[src];atlas_page=1'>Legacy paginated list</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Full web atlas</a></p></body></html>"

@@ -74,6 +74,7 @@ var/knowledge_failures = 0
 		knowledge_check(!QDELETED(B) && H.known_recipe_nodes.len == 1, "repeated reading preserves reusable book")
 		var/mob/living/human/knowledge_fixture/fresh = new(locate(3,2,1))
 		knowledge_check(!fresh.knows_recipe_node(node_id), "fresh body does not inherit another body's knowledge")
+		check_manual_menu_views(H, fresh, node_id)
 		H.forget_recipe_knowledge()
 		H.stat = DEAD
 		knowledge_check(!H.knows_recipe_node(node_id) && !H.known_recipe_nodes.len && !H.migrate_recipe_knowledge(), "death clears knowledge and closes migration")
@@ -116,3 +117,30 @@ var/knowledge_failures = 0
 	var/list/params = params2list(world.params)
 	text2file(json_encode(list("failures" = knowledge_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
+
+// Call the production action directly, as a saved/stale craft href would.
+/obj/item/stack/manual_menu_fixture/New()
+	amount = 10
+
+/proc/check_manual_menu_views(mob/living/human/known, mob/living/human/unknown, node_id)
+	var/list/recipe = list("research_status" = "gated", "research_nodes" = list(node_id))
+	var/snapshot = json_encode(recipe)
+	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(known, recipe), "known reader has no manual hint")
+	knowledge_check(crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "unknown reader sees manual hint")
+	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(known, recipe), "alternating readers cannot poison hints")
+	knowledge_check(json_encode(recipe) == snapshot, "manual hints do not mutate catalog records")
+	recipe["research_status"] = "excluded"
+	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "reaction and acquisition exclusions ignore output gate")
+	recipe["research_status"] = "basic"
+	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "basic route has no manual hint")
+	map.recipe_books = FALSE
+	knowledge_check(!crafting_node_manual_hint(unknown, node_id), "disabled maps have no personal hint")
+	map.recipe_books = TRUE
+	var/output_type = /obj/item/weapon/material/pickaxe
+	knowledge_check(!crafting_recipe_allowed(unknown, "[output_type]"), "unknown direct craft is gated")
+	var/obj/item/stack/manual_menu_fixture/materials = new(unknown.loc)
+	var/datum/stack_recipe/stale = new("stale fixture", output_type, 1)
+	var/before = unknown.loc.contents.len
+	materials.produce_recipe(stale, 1, unknown)
+	knowledge_check(materials.amount == 10 && unknown.loc.contents.len == before, "stale direct recipe consumes nothing and creates nothing")
+	qdel(materials)
