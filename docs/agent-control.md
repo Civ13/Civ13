@@ -360,6 +360,30 @@ engine, fuel, `key_ok`, and `flight`, `altitude` and `target_altitude` for
 aircraft) and `remote_controls` for held turret and drone controls. Trains and
 locomotives are clicked like any other machine.
 
+<a id="screens"></a>
+
+### Machine screens (NanoUI and tgui)
+
+Research benches, chemical dispensers, vending machines, faction creation and
+symbol desks, appearance changers and recruitment stations open a NanoUI or
+tgui screen when clicked (`code/modules/agent_control/agent_screens.dm`). For an
+agent character's body the screen stays open without a browser window, under
+the same status rules as a player's: it closes when the character walks away.
+
+- `character_observe` lists `screens`: number, title, template, `status`
+  (`interactive`, `view_only`, `disabled`), the machine's `ref`, the `actions`
+  the screen accepts and its `data` as JSON (cut at 4000 characters, with
+  `data_truncated`).
+- `screen` (`screen`: number or title, `act`: one of its actions, `value`:
+  default 1) presses that button and reaches the machine's Topic after the
+  same status and owner checks. Paint actions also take `x`, `y`, `cells` and
+  `stroke_continue`. A press may prompt (answer with `choose`), so it runs only
+  from `character_queue`. `close` (true) closes the screen directly.
+
+Reader screens with their own topic states (books, notes, faction and religion
+lists, photos, the crafting atlas, the paper editor) still need a connected
+client.
+
 ## Nomad visits
 
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):

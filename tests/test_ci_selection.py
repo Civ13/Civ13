@@ -389,7 +389,7 @@ class SelectionTests(unittest.TestCase):
     def test_agent_parity_probes_remain_manual_only(self):
         paths = {'tests/agent_control/windows_probe.dm', 'tests/agent_control/prompts_probe.dm',
                  'tests/agent_control/stance_probe.dm', 'tests/agent_control/move_probe.dm',
-                 'tests/agent_control/vehicle_probe.dm'}
+                 'tests/agent_control/vehicle_probe.dm', 'tests/agent_control/screens_probe.dm'}
         self.assertEqual(selection.AGENT_PARITY_MANUAL_NATIVE, paths)
         self.assertFalse(paths & selection.AGENT_CONTROL_OFFLINE_TESTS)
         for path in paths:

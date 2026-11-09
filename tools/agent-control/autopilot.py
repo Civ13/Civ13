@@ -76,7 +76,7 @@ MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
            "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water",
-           "topic", "close_window", "stance", "drive")
+           "topic", "close_window", "stance", "drive", "screen")
 DRIVE_CONTROLS = ("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
@@ -88,6 +88,7 @@ MAX_TERRAIN = 10
 MAX_PLAN = 3
 MAX_CONTENTS = 8  # items listed inside each nearby container
 MAX_WINDOWS = 2  # newest menu windows shown to the model
+MAX_SCREEN_DATA = 600  # characters of a machine screen's data shown to the model
 MAX_WINDOW_LINKS = 24
 MAX_WINDOW_TEXT = 400
 UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
@@ -227,6 +228,9 @@ How to play:
   then shifts up; gear_down shifts down and stops; climb and descend fly an aircraft once it has taken off at full gear.
   Holding turret or drone controls, "move" turns the turret (east/west, "hold": deciseconds) or changes its range
   (north/south), or flies the drone. {"do": "use", "alternate": true} presses the secondary-use key of the held item.
+- Machine screens: clicking a research bench, chemical dispenser, vending machine or faction desk opens a SCREEN with its data
+  and actions. {"do": "screen", "screen": 1, "act": <one of its actions>, "value": <an id or number from its data>} presses
+  that button; {"do": "screen", "screen": 1, "close": true} closes it. Walking away closes it too.
 - Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
@@ -370,6 +374,7 @@ def summarize(observation, note="", ignored=(), muted=()):
     if heard:
         lines.append("Sounds you heard: " + "; ".join(heard) + ".")
     lines.extend(window_lines(observation))
+    lines.extend(screen_lines(observation))
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
@@ -389,6 +394,20 @@ def window_lines(observation):
         links = [link for link in window.get("links") or [] if isinstance(link, dict)][:MAX_WINDOW_LINKS]
         if links:
             lines.append("  buttons: " + "; ".join(f"{link.get('link')}. {link.get('label')}" for link in links))
+    return lines
+
+
+def screen_lines(observation):
+    """Machine screens (research bench, dispensers, vending, faction desks) the character has open."""
+    lines = []
+    for screen in [s for s in observation.get("screens") or [] if isinstance(s, dict)][-MAX_WINDOWS:]:
+        data = " ".join(str(screen.get("data") or "").split())
+        if len(data) > MAX_SCREEN_DATA:
+            data = data[:MAX_SCREEN_DATA] + "..."
+        lines.append(f"SCREEN {screen.get('screen')} ({screen.get('title')}, {screen.get('status')}): {data or 'no data'}")
+        actions = [str(action) for action in screen.get("actions") or []][:16]
+        if actions:
+            lines.append("  actions: " + ", ".join(actions))
     return lines
 
 
@@ -1004,6 +1023,23 @@ def parse_decision(text, refs):
             if isinstance(data.get(key), bool):
                 args[key] = data[key]
         return args if len(args) > 1 else None
+    if action == "screen":
+        screen = str(data.get("screen", "")).strip()
+        if not screen:
+            return None
+        args["screen"] = screen[:64]
+        if data.get("close") is True:
+            args["close"] = True
+            return args
+        act = str(data.get("act", "")).strip()
+        if not act:
+            return None
+        args["act"] = act[:32]
+        if data.get("value") is not None:
+            args["value"] = str(data["value"])[:64]
+        if str(data.get("choose", "")).strip():
+            args["choose"] = str(data["choose"]).strip()[:64]
+        return args
     if action in ("topic", "close_window"):
         window = str(data.get("window", "")).strip()
         if not window:
