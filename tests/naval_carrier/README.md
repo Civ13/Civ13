@@ -88,3 +88,17 @@ The probe runs explosions at once through a stub of the call-proc scheduler, and
 - **Cook-off:** two bombs racked in the magazine; a heavy blast on the rack sets off the filled one, empties the rack, and the hull wall beside the magazine takes the blast (1000 to 700); an empty rack shrugs off the blast.
 
 Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), a strafing run from the air, the searchlights' beams and how the decks look on screen.
+
+## Slipway shipbuilding (`slipway_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/slipway_probe.dm
+```
+
+The fixture is the same three levels with sand ashore (x 1-20) and deep sea beyond. See `docs/slipway.md`.
+
+- **Gating and berth:** the slipway recipe is gated on Wagons & Ships; the schooner needs Wagons & Ships and the freighter Combustion; no keel without research, facing along the shore (no water to launch into), with a solid object on the berth or across another berth.
+- **Pieces:** a stack pays only the material the next piece needs and keeps the rest; the keel, ribs, hull and deck grow from stern to bow on the 62 berth frames; masts and wheel show as overlays; frames are never saved and come back after a load.
+- **Launch:** a wreck on the ways blocks it; the schooner slides 15 tiles to float with a sailor and a crate aboard, the berth is sand again, her wheel and masts stand; she makes half ahead at best and sails without fuel.
+- **Freighter:** a 132-tile berth reaching into the water; afloat she has 82 hold and engine room tiles in two compartments, the bunker in the engine room, paired ladders, and stays put with dry bunkers.
+- **Dry dock:** a schooner built in a dug trench is refused until the trench is flooded, then floats out; abandoning a project clears the berth.

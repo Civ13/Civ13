@@ -2166,6 +2166,7 @@ RECIPE: /material/wood/soft/,ship rudder axis (2500 weight),/obj/structure/vehic
 RECIPE: /material/wood/soft/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail,15,140,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 
 //*********************| WOOD PRODUCTION & ECONOMY |**************************
 

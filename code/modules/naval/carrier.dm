@@ -276,7 +276,7 @@
 // telegraph and bridge fittings of later phases build on it.
 /obj/structure/vessel_helm
 	name = "ship's wheel"
-	desc = "The carrier's wheel and engine telegraph."
+	desc = "The ship's wheel and engine telegraph."
 	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	icon_state = "ship_wheel"
 	anchored = TRUE
@@ -325,8 +325,8 @@
 	if (choice == "Chart")
 		to_chat(H, vessel.chart_text())
 		return
-	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < VESSEL_FUEL_PER_STEP)
-		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point on the hangar deck first."))
+	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < vessel.fuel_burn(VESSEL_SPEED_SLOW))
+		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point below decks first."))
 		return
 	switch (choice)
 		if ("Full ahead") vessel.set_speed(VESSEL_SPEED_FULL)
