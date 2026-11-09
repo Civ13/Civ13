@@ -894,6 +894,7 @@
 #include "code\modules\1713\tape_recorder.dm"
 #include "code\modules\1713\telegraph.dm"
 #include "code\modules\1713\telephone.dm"
+#include "code\modules\1713\terrain_height.dm"
 #include "code\modules\1713\tools.dm"
 #include "code\modules\1713\practice_rooms.dm"
 #include "code\modules\1713\track_laying.dm"

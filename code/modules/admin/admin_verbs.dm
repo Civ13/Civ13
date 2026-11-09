@@ -152,6 +152,7 @@ var/list/admin_verbs_server = list(
 var/list/admin_verbs_debug = list(
 	/client/proc/toggle_ecology_spawning,
 	/client/proc/ecology_spawning_status,
+	/client/proc/toggle_terrain_heights,
 	/client/proc/profile_dump,
 	/client/proc/gc_outcomes,
 	/client/proc/gc_inspect_owner_field,
