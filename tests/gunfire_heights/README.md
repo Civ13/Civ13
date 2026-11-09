@@ -14,9 +14,12 @@ per row and runs `probe.dm` once with real projectiles through `handleTurf`:
   still stops a level shot.
 - Someone standing well below the line is not hit.
 - Shooting up a slope at someone on the crest clears the hillside.
+- NPC sight: `ai_check_los` and a wolf's `FindTarget` do not see a target
+  behind the ridge, and do on flat ground.
 - The cost of the height work per tile is printed.
 
-`--negative-control ridge` (no ground stop), `cover` (walls ignore height) and
-`margin` (no body-height margin) change a generated copy; each must fail its
+`--negative-control ridge` (no ground stop), `cover` (walls ignore height),
+`margin` (no body-height margin) and `npc` (target finding ignores hills) change
+a generated copy; each must fail its
 named check. Evidence goes to a fresh temporary directory. No client, save or
 live server.

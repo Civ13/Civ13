@@ -105,7 +105,23 @@
 		stop = gunfire_heights_fly(gunfire_heights_round(shooter, 2, 8, 6, crest), 2, 7, 6)
 		gunfire_heights_assert(!stop, "Shot up the slope hit the hillside at x=[stop]")
 
-		// 7. Cost of the height work per tile.
+		// 7. NPC sight: the ridge hides a target from cover/peek checks and
+		// from target finding; on flat ground the same pair is seen.
+		gunfire_heights_assert(!ai_check_los(locate(2, 1, 1), locate(10, 1, 1)), "NPC saw through the ridge")
+		gunfire_heights_assert(ai_check_los(locate(2, 2, 1), locate(7, 2, 1)), "NPC lost sight on flat ground")
+		var/mob/living/simple_animal/hostile/wolf/W = new(locate(2, 1, 1))
+		W.faction = "gunfire_wolves"
+		var/mob/living/simple_animal/hostile/wolf/prey = new(locate(8, 1, 1))
+		prey.faction = "gunfire_prey"
+		W.stance = HOSTILE_STANCE_IDLE
+		gunfire_heights_assert(!W.FindTarget(), "NPC picked a target behind the ridge")
+		W.loc = locate(2, 2, 1)
+		prey.loc = locate(7, 2, 1)
+		W.stance = HOSTILE_STANCE_IDLE
+		gunfire_heights_assert(W.FindTarget() == prey, "NPC did not find a target on flat ground")
+		notes += "NPC sight blocked by the ridge"
+
+		// 8. Cost of the height work per tile.
 		var/obj/item/projectile/C = gunfire_heights_round(shooter, 2, 10, 3)
 		var/turf/T = locate(5, 3, 1)
 		var/start = world.timeofday

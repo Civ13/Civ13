@@ -86,10 +86,39 @@ var/global/invalidated = 0
 	for (var/n = 1 to 20000)
 		los_terrain_for(M, 9)
 	var/cached_ds = world.timeofday - start
+	// NPC sight: one ray per viewer/target pair, and the sweep's answer for the
+	// same pair (viewer centred, radius 14) for an agreement rate.
+	var/list/pairs = json_decode(file2text("pairs.json"))
+	var/list/rays = list()
+	var/agree = 0
+	var/mob/living/human/T = new
+	for (var/list/p in pairs)
+		M.loc = locate(p[1], p[2], 2)
+		M.step_x = 0
+		M.step_y = 0
+		M.lying = p[3]
+		T.loc = locate(p[4], p[5], 2)
+		T.lying = p[6]
+		var/blocked = los_terrain_ray_blocked(M, T)
+		rays += blocked ? 1 : 0
+		var/list/f = los_terrain_for(M, 14)
+		var/swept = FALSE
+		if (f)
+			var/datum/los_terrain_field/F = f[1]
+			swept = !F.visible(T.x - f[2], T.y - f[3], los_target_top(T))
+		if (!blocked == !swept)
+			agree++
+	start = world.timeofday
+	for (var/n = 1 to 20)
+		for (var/list/p in pairs)
+			M.loc = locate(p[1], p[2], 2)
+			T.loc = locate(p[4], p[5], 2)
+			los_terrain_ray_blocked(M, T)
+	var/ray_ds = world.timeofday - start
 	// Grading (terrain_heights/set_level) clears the cache and refreshes viewers.
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
-	text2file(json_encode(list("fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases())), "result.json")
+	text2file(json_encode(list("fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
 	world.log << "LOS_TERRAIN DONE"
 	shutdown()
 

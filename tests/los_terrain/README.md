@@ -12,7 +12,9 @@ sweep and of cached lookups, checks that a height change clears the cache and
 refreshes viewers, and runs the extracted 2D blocker query with heights: from
 a hill, ground well behind a lower wall shows, ground right behind it and
 anything behind a tree stays hidden, and indoors or on flat ground nothing is
-seen over the wall.
+seen over the wall. Finally it checks NPC sight (`los_terrain_ray_blocked`) for
+3000 random viewer/target pairs against a Python reference, requires at least
+90% agreement with the sweep and prints the cost per ray.
 
 ```
 source /root/byond-516.1688/byond/bin/byondsetup   # or pass --byond-bin

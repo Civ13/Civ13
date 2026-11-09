@@ -90,7 +90,7 @@ def project(source, declaration, args, env):
              'CALLBACK', 'SPAN_NOTICE', 'istype', 'ishuman', 'nomad_raid_bound',
              'qdel', 'new_casing', 'is_sidearm', 'Shoot', 'load_sidearm', 'check_friendly_fire',
              'visible_message', 'foe_ok', 'consume_next_projectile', 'handle_click_empty',
-             'process_projectile', 'handle_post_fire', 'Copy', 'update_icon'}
+             'process_projectile', 'handle_post_fire', 'Copy', 'update_icon', 'los_terrain_ray_blocked'}
     allowed = {ast.Module, ast.FunctionDef, ast.arguments, ast.arg, ast.If, ast.While,
                ast.For, ast.Return, ast.Assign, ast.AugAssign, ast.Expr, ast.Name,
                ast.Load, ast.Store, ast.Constant, ast.Attribute, ast.Call, ast.BoolOp,
@@ -184,6 +184,7 @@ class Fixture:
         self.visible = [self.foe]
         self.distance = 4
         self.friendly = False
+        self.ridge = False
         self.timers = []
         self.messages = []
         self.rolls = []
@@ -195,6 +196,7 @@ class Fixture:
                    QDELETED=lambda value: value is None or value.deleted,
                    view=lambda distance, src: self.visible,
                    get_dist=lambda src, target: self.distance,
+                   los_terrain_ray_blocked=lambda src, target: self.ridge,
                    max=max, prob=lambda chance: self.rolls.pop(0) if self.rolls else False,
                    pick=lambda *choices: choices[0],
                    SPAN_NOTICE=lambda text: text,
@@ -298,6 +300,14 @@ class CombatTests(unittest.TestCase):
         self.assertFalse(f.fire(True))
         self.assertEqual(f.gun.consumes, 1)
         f.visible.append(f.foe)
+        self.assertTrue(f.fire(True))
+
+    def test_ridge_between_hides_the_target(self):
+        f = Fixture()
+        f.ridge = True
+        self.assertFalse(f.fire(True))
+        self.assertEqual(f.gun.consumes, 0)
+        f.ridge = False
         self.assertTrue(f.fire(True))
 
     def test_six_shots_then_seventh_starts_reload_without_shooting(self):

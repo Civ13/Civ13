@@ -201,6 +201,18 @@ wall without moving is unmasked until the next refresh or the 1-second audit,
 and `view()`-based checks for that viewer reach past walls (clicks on hidden
 atoms still act on their tile).
 
+### NPC sight
+
+NPCs use a single-ray version of the same rule (`los_terrain_ray_blocked`):
+one height sample per tile along the line from the NPC's eye to the target's
+top, skipping the NPC's neighbours and the target's tile. It costs about
+0.03 ms and agrees with the player sweep on about 98% of random pairs on Gaia.
+`FindTarget` skips targets it hides, ranged human NPCs treat a hidden target as
+out of sight (they move up, peek or suppress its last position instead of
+firing), `ai_check_los` counts a ridge as cover and blocks peeks and raid
+sightings over it, and nomad raiders do not fire over a crest. NPCs do not see
+over walls from high ground; `view()` still decides walls for them.
+
 ### Gunfire
 
 Bullets follow the same heights (`code/modules/projectiles/projectile_heights.dm`).
@@ -232,12 +244,12 @@ with its level; use it again to hide the labels.
 - `python3 -m unittest tests/terrain_height/test_terrain_height.py` (offline:
   generator, file format, baked sprites, Gaia's file, movement and shading hooks).
 - `python3 tests/los_terrain/run.py --byond-bin <dir>` (native: line of sight
-  over hills on Gaia's heights against a Python reference, sweep cost, and
-  cache clearing on grading).
+  over hills on Gaia's heights against a Python reference, sweep cost, cache
+  clearing on grading, and NPC sight rays against a reference and the sweep).
 - `python3 tests/gunfire_heights/run.py --byond-bin <dir>` (native: real
   projectiles on a 16x6 hill world: ridge, hilltop over a wall, roof, people
   below the line, uphill to a crest, flat-ground controls and cost;
-  `--negative-control ridge|cover|margin` must fail).
+  NPC sight over the ridge; `--negative-control ridge|cover|margin|npc` must fail).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).

@@ -451,7 +451,7 @@ var/global/list/npc_appearance_cache = list()
 		LoseTarget()
 		return "lost"
 	
-	var/has_los = (target_mob in view(14, src))
+	var/has_los = (target_mob in view(14, src)) && !los_terrain_ray_blocked(src, target_mob)
 	
 	if (ranged)
 		var/dist = get_dist(src, target_mob)
@@ -528,7 +528,7 @@ var/global/list/npc_appearance_cache = list()
 	
 	var/dist = get_dist(src, target_mob)
 	if(ranged)
-		if(dist <= 12 && (target_mob in view(14, src)))
+		if(dist <= 12 && (target_mob in view(14, src)) && !los_terrain_ray_blocked(src, target_mob))
 			walk(src, 0)
 			do_movement(loc)
 			return

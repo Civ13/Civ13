@@ -80,10 +80,26 @@ def reference(H, x, y, sx, sy, lying, radius):
     return (tx, ty), {f'{c[0]},{c[1]}' for c in cells if hidden(c)}
 
 
+def ray_reference(H, ax, ay, alying, bx, by, blying):
+    """Independent restatement of los_terrain_ray_blocked for a human target."""
+    dx, dy = bx - ax, by - ay
+    steps = max(abs(dx), abs(dy))
+    if steps < 3:
+        return 0
+    eye = H(ax, ay) + (0.5 if alying else 1.5)
+    rise = H(bx, by) + (0.5 if blying else 1.5) - eye
+    for n in range(2, steps):
+        t = n / steps
+        if H(ax + math.floor(dx * t + 0.5), ay + math.floor(dy * t + 0.5)) > eye + rise * t + 0.001:
+            return 1
+    return 0
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, default=None, help='folder holding DreamMaker and DreamDaemon')
     p.add_argument('--eyes', type=int, default=300)
+    p.add_argument('--pairs', type=int, default=3000)
     a = p.parse_args()
     tool = lambda name: str(a.byond_bin / name) if a.byond_bin else name
     H = heights()
@@ -93,9 +109,14 @@ def main():
         x, y = rng.randint(2, 499), rng.randint(2, 349)
         eyes.append([x, y, rng.choice([0, 3, 4, 11, 12, 16, 20, 27, 31]), rng.choice([0, 5, 8, 19, 28]),
                      int(rng.random() < 0.25), rng.choice([9, 9, 12, 4])])
+    pairs = []
+    while len(pairs) < a.pairs:
+        x, y = rng.randint(16, 485), rng.randint(16, 335)
+        pairs.append([x, y, int(rng.random() < 0.25), x + rng.randint(-14, 14), y + rng.randint(-14, 14),
+                      int(rng.random() < 0.25)])
     terrain = (ROOT / 'code/modules/1713/terrain_height.dm').read_text(encoding='utf-8')
     parser = ''.join(fragment(terrain, name) for name in
-                     ['/datum/terrain_heights\n', '/proc/terrain_heights_parse(', '/proc/terrain_height_row_valid('])
+                     ['/datum/terrain_heights\n', '/datum/terrain_heights/proc/at(', '/proc/terrain_heights_parse(', '/proc/terrain_height_row_valid('])
     parser = '\n'.join(l for l in parser.split('\n') if 'base_rows_by_z' not in l)
     # The 2D blocker geometry the height rule plugs into.
     core = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
@@ -108,6 +129,7 @@ def main():
         (work / 'probe.dm').write_text((Path(__file__).parent / 'probe.dm').read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'heights.txt').write_text(HEIGHTS.read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'eyes.json').write_text(json.dumps(eyes), encoding='utf-8')
+        (work / 'pairs.json').write_text(json.dumps(pairs), encoding='utf-8')
         (work / 'probe.dme').write_text('#include "parser.dm"\n#include "los_terrain.dm"\n#include "probe.dm"\n', encoding='utf-8')
         build = subprocess.run([tool('DreamMaker'), 'probe.dme'], cwd=work, capture_output=True, text=True)
         print(build.stdout.strip().splitlines()[-1] if build.stdout.strip() else build.stderr)
@@ -143,6 +165,17 @@ def main():
             bad += 1
             print('MISMATCH see-over', name, result['see_over'].get(name), 'want', want)
     print('see-over cases:', ', '.join(f'{k}={v}' for k, v in result['see_over'].items()))
+    want_rays = [ray_reference(H, *pair) for pair in pairs]
+    ray_bad = sum(1 for got, want in zip(result['rays'], want_rays) if got != want)
+    if ray_bad:
+        bad += 1
+        print(f'MISMATCH NPC sight rays: {ray_bad} of {len(pairs)} differ from the reference')
+    agree = result['agree'] * 100 / max(1, len(pairs))
+    print(f"NPC sight: {sum(want_rays)} of {len(pairs)} pairs hidden; agrees with the player sweep on {agree:.1f}%; "
+          f"{20 * len(pairs)} rays in {result['ray_ds'] / 10:.1f} s, {result['ray_ds'] * 100 / max(1, 20 * len(pairs)):.4f} ms each")
+    if agree < 90:
+        bad += 1
+        print('MISMATCH NPC sight agrees with the player sweep on under 90% of pairs')
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')
