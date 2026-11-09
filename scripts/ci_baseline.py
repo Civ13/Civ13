@@ -1005,6 +1005,9 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+    # Trap disarm recheck and punji animal capture/release (#4248, #4249).
+    'traps': {'files': ('tests/traps/test_source.py',),
+        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
