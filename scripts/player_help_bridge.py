@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'fd655fa52a8c342651e53f220d362426c6af35a6'
+WIKI_REVIEWED_REVISION = '61558e2ddfc2fa8f2840a791b8d2ed159e4ca201'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
@@ -114,7 +114,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('12b5401794129f96e9657594c88dbcfd465a2f57dcaf4a3f0cdd367267219f0a', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('18faf7db8efbef0a9dac77db692dd75b70ff62de72bf8b66d7c902de3b8370d6', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
-    'guides/Guide_to_Aircraft_Carriers.md': ('c73e7a638c2311115b14ca40dc0668c6f1942452b35c277baa576121068c6a8c', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
+    'guides/Guide_to_Aircraft_Carriers.md': ('9d2e868f54283f421ce2a90b4a675c4c84f38778ad1234edd45302caf4e39dde', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Paperwork.md': ('7eb57d56e7a8ab8ea9c281a348193566af6a5efc3fd9cf9b56f60b6d7998daee', 'paper paperwork writing write pen book sign signature stamp'),
