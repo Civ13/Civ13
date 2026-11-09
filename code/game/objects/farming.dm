@@ -1095,19 +1095,20 @@
 	var/fruitpath
 	var/obj/item/I
 	if (stack <> "product_name") // Routine to spawn produces when in stack
-		fruitpath = "/obj/item/stack/[stack]"
-		I = new fruitpath(loc, stack_amount)
-		I.radiation = radiation/2
+		fruitpath = text2path("/obj/item/stack/[stack]")
+		// Stack constructors can merge and retire the new stack immediately.
+		// Finish the yield first so bonuses cannot be applied to a drained stack.
+		var/total = stack_amount
 		if (plant_nutrition >= 80)
-			I.amount *= rand(1, 3) // If the soil is fed, randomly increase production from 1 to 3
-		if (bonus > 0)
-			var/obj/item/stack/S = I
-			var/total = harvest_skill_amount(S.amount, bonus)
-			S.amount = S.max_amount ? min(total, S.max_amount) : total
-			S.update_strings()
-			if (total > S.amount)
-				var/obj/item/stack/extra = new fruitpath(loc, total - S.amount)
-				extra.radiation = radiation/2
+			total *= rand(1, 3)
+		total = harvest_skill_amount(total, bonus)
+		var/stack_limit = initial(fruitpath:max_amount)
+		while (total > 0)
+			var/batch = stack_limit ? min(total, stack_limit) : total
+			I = new fruitpath(loc, batch)
+			if (!QDELETED(I))
+				I.radiation = radiation/2
+			total -= batch
 	else
 		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"

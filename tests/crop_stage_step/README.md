@@ -18,8 +18,11 @@ library and does not launch a compiler, game, client, network or subprocess.
 
 `baseline_growth.json` retains the actual growth proc from the exact commit in
 `source.json`, including its whitespace. Replacing only the new growth proc/helper with this baseline must
-reconstruct the full original farming file's Git blob. That protects every other
-definition, subtype, constructor, harvest/resource proc and field byte-for-byte.
+reconstruct the full reviewed farming projection's Git blob. That protects every
+other definition, subtype, constructor, harvest/resource proc and field byte-for-byte.
+The original blob remains recorded for provenance; the reviewed projection also
+includes the stacked-harvest yield fix from #4206. Its behavior is tested separately
+by `tests/harvest_skills/`.
 
 The tests project the actual before/after callback, base stage proc and selected
 subtype overrides through a restricted, fail-closed syntax adapter. They compare
