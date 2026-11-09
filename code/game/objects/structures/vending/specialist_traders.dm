@@ -193,10 +193,14 @@ var/global/list/specialist_trader_sell_floor = null
 
 // Whether an entry is on sale now (age), and to this buyer (research).
 /datum/specialist_trader/proc/entry_in_season(list/entry)
+	if(ispath(entry[1], /obj/item/weapon/book/node_book) && (!map || !map.recipe_knowledge_enabled())) return FALSE
 	var/age = map ? map.ordinal_age : 0
 	return age >= entry[3] && age <= entry[4]
 
 /datum/specialist_trader/proc/entry_researched(list/entry, mob/living/human/H)
+	if(ispath(entry[1], /obj/item/weapon/book/node_book))
+		var/obj/item/weapon/book/node_book/B = entry[1]
+		return H && H.can_learn_recipe_node(initial(B.node_id))
 	if (!map)
 		return TRUE
 	var/node = get_recipe_node_req("[entry[1]]")
@@ -630,14 +634,17 @@ var/global/list/specialist_trader_sell_floor = null
 	deals_in_text = "food, drink, seeds, cloth, hides and clothing"
 	accepts = list(/obj/item/stack/money/coppercoin, /obj/item/stack/money/silvercoin)
 	pays = list(/obj/item/stack/money/silvercoin, /obj/item/stack/money/coppercoin)
-	buys = list(/obj/item/weapon/reagent_containers/food/snacks, /obj/item/weapon/reagent_containers/food/drinks, /obj/item/stack/farming/seeds, /obj/item/stack/material/cloth, /obj/item/stack/material/leather, /obj/item/stack/material/pelt, /obj/item/clothing)
+	buys = list(/obj/item/weapon/book/node_book, /obj/item/weapon/reagent_containers/food/snacks, /obj/item/weapon/reagent_containers/food/drinks, /obj/item/stack/farming/seeds, /obj/item/stack/material/cloth, /obj/item/stack/material/leather, /obj/item/stack/material/pelt, /obj/item/clothing)
 	refuses = list(/obj/item/clothing/suit/armor, /obj/item/clothing/head/helmet)
-	usual_worth = list(/obj/item/weapon/reagent_containers/food/snacks = 6, /obj/item/weapon/reagent_containers/food/drinks = 6, /obj/item/stack/farming/seeds = 1, /obj/item/stack/material/cloth = 2, /obj/item/stack/material/leather = 3, /obj/item/stack/material/pelt = 4, /obj/item/clothing = 20)
+	usual_worth = list(/obj/item/weapon/book/node_book = 1, /obj/item/weapon/reagent_containers/food/snacks = 6, /obj/item/weapon/reagent_containers/food/drinks = 6, /obj/item/stack/farming/seeds = 1, /obj/item/stack/material/cloth = 2, /obj/item/stack/material/leather = 3, /obj/item/stack/material/pelt = 4, /obj/item/clothing = 20)
 	min_condition = 0.25
 	purse_per_restock = 1500
 	primary_color = "#8a6d1f"
 	secondary_color = "#4e7a2e"
 	catalogue = list(
+		list(/obj/item/weapon/book/node_book/basic_tools, 1, 0, 9, 2, 3),
+		list(/obj/item/weapon/book/node_book/primitive_construction, 1, 0, 9, 2, 3),
+		list(/obj/item/weapon/book/node_book/pottery_storage, 1, 0, 9, 2, 3),
 		list(/obj/item/weapon/reagent_containers/food/snacks/meat, 1, 0, 9, 8, 6),
 		list(/obj/item/stack/farming/seeds/wheat, 5, 0, 9, 10, 5),
 		list(/obj/item/stack/farming/seeds/potato, 5, 0, 9, 10, 5),

@@ -36,3 +36,25 @@
 	check_atlas(!findtext(unsafe_query, "'><script>") && findtext(unsafe_query, "&#39;"), "navigation query attribute escaping")
 	check_variants(viewer, reference)
 	check_resource_search(viewer)
+	check_manual_presentation(viewer, reference)
+
+/datum/crafting_atlas_presenter/manual_fixture
+	var/mob/known_viewer
+
+/datum/crafting_atlas_presenter/manual_fixture/manual_hint(mob/viewer, list/recipe)
+	return viewer == known_viewer ? "" : "Needs the <Woodworking> manual"
+
+/proc/check_manual_presentation(mob/viewer, datum/crafting_atlas_reference/reference)
+	var/datum/crafting_atlas_presenter/original = crafting_atlas_presenter
+	var/datum/crafting_atlas_presenter/manual_fixture/presenter = new
+	crafting_atlas_presenter = presenter
+	var/before = json_encode(reference.recipes)
+	check_atlas(findtext(reference.graph_html(viewer), "Needs the &lt;Woodworking&gt; manual"), "manual hint graph escaping")
+	check_atlas(findtext(reference.page_html(viewer), "Needs the &lt;Woodworking&gt; manual"), "manual hint pages visible")
+	presenter.known_viewer = viewer
+	check_atlas(!findtext(reference.graph_html(viewer), "Needs the"), "manual learning refresh")
+	var/mob/other = new
+	check_atlas(findtext(reference.graph_html(other), "Needs the"), "manual viewer isolation")
+	check_atlas(!findtext(reference.page_html(viewer), "Needs the"), "manual repeated navigation")
+	check_atlas(json_encode(reference.recipes) == before, "manual does not mutate shared catalog")
+	crafting_atlas_presenter = original

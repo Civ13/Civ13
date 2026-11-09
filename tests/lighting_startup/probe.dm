@@ -109,6 +109,7 @@ var/list/lighting_overlay_list = list()
 /atom/movable/lighting_overlay
 	var/needs_update = FALSE
 	var/probe_render_calls = 0
+	var/tmp/registry_index = 0 // production declares it on the type; New() fills it
 /atom/movable/lighting_overlay/proc/update_overlay()
 	probe_render_calls++
 	return

@@ -14,6 +14,50 @@ def proc(content,name):
  return (body[:end.start()] if end else body).rstrip()+'\n'
 
 class AtlasAdapterContract(unittest.TestCase):
+ def test_personal_manuals_are_per_reader_route_metadata_not_output_inference(self):
+  hint=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/manual_hint(',1)[1]
+  self.assertIn('recipe["research_status"] != "gated"',hint)
+  self.assertIn('recipe["research_nodes"]',hint)
+  self.assertNotIn('outputs',hint)
+  self.assertNotRegex(hint,r'recipe\[[^\n]+\]\s*=')
+  helper=ADAPTER.split('/proc/crafting_node_manual_hint(',1)[1].split('/proc/crafting_recipe_manual_hint',1)[0]
+  for guard in ('map.recipe_knowledge_enabled()', '!ishuman(viewer)', 'H.knows_recipe_node(node_id)', 'get_research_node(node_id)'):
+   self.assertIn(guard,helper)
+  self.assertIn('html_encode(manual_hint(viewer, recipe))',ADAPTER)
+  self.assertIn('manual_hint_html(viewer, recipe)',proc(CORE,'page_html'))
+  self.assertIn('manual_hint_html(viewer, selected)',proc(CORE,'graph_html'))
+
+ def test_learning_refreshes_only_current_reader_and_retains_atlas_route(self):
+  refresh=ADAPTER.split('/mob/living/human/proc/refresh_recipe_knowledge_menus()',1)[1].split('/datum/crafting_atlas_presenter/tgui/manual_hint',1)[0]
+  for marker in ('ui.user == src', 'ui.render_arguments', 'ui.push_data(', 'stack.loc == src', 'item_is_in_hands(stack)'):
+   self.assertIn(marker,refresh)
+  self.assertNotIn('for (',refresh)
+  self.assertNotIn('show(src)',refresh)
+  learning=(ROOT/'code/modules/research_tree/character_knowledge.dm').read_text().split('/mob/living/human/proc/learn_recipe_node(',1)[1].split('/mob/living/human/proc/initialize_recipe_knowledge',1)[0]
+  self.assertIn('refresh_recipe_knowledge_menus()',learning)
+
+ def test_unknown_stack_recipe_has_no_single_or_batch_craft_link(self):
+  stack=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
+  menu=stack.split('/obj/item/stack/proc/list_recipes(',1)[1].split('// Custom qdel',1)[0]
+  lock=menu.index('if (manual_hint)')
+  self.assertLess(lock,menu.index('make=[i]'))
+  self.assertIn('continue',menu[lock:menu.index('if (can_build)',lock)])
+  self.assertIn('html_encode(manual_hint)',menu)
+
+ def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
+  anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
+  labels=[line for line in anvil.splitlines() if 'newlist += "[anvil_recipes[i][1]] - ' in line]
+  self.assertEqual(len(labels),10)
+  self.assertTrue(all('crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")' in line for line in labels))
+  workbench=(ROOT/'code/game/objects/structures/blacksmithing/component_workbench.dm').read_text()
+  for marker in ('choices[label] = recipe_name', 'choices[selected_label]', 'select_recipe(H, choice)'):
+   self.assertIn(marker,workbench)
+  dedicated=(ROOT/'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm').read_text()
+  self.assertIn('crafting_node_manual_hint(H, "machined_tools")',dedicated)
+  factory=(ROOT/'code/modules/1713/factory_fabricators.dm').read_text()
+  for marker in ('crafting_node_manual_hint(H, R.node)', 'labels[label] = recipe_choice', 'labels[selected_label]'):
+   self.assertIn(marker,factory)
+
  def test_existing_catalog_matching_and_real_classic_renderers_remain_unchanged(self):
   fixture=json.loads((ROOT/'tests/tgui/fixtures/atlas-legacy-contract.json').read_text())
   for name,digest in fixture['procs'].items():

@@ -232,3 +232,21 @@ focused evidence when their appearance matters.
 native BYOND fixture, checking pagination, ingredient search, escaping, real
 fallback sprites and zero item constructors. Its pagination negative control
 must fail. These contracts do not prove a particular BYOND client rendering.
+
+## Personal recipe manuals
+
+On persistent maps that opt into recipe manuals, a recipe can be researched by
+its faction but still unknown to your character. Locked stack-menu recipes stay
+visible in grey with **Needs the X manual**, without a craft link. Anvil, workbench and fabricator recipe prompts append the same manual name
+while preserving their normal recipe choices. Native choice lists cannot grey
+individual options; actual crafting still checks knowledge on the server. The in-game
+Atlas shows the same personal requirement while keeping ingredients, variants
+and gathering instructions available to inspect. The public web atlas cannot
+know your character's learned recipes.
+
+Study the named manual to learn its node's recipes. Manuals are reusable and
+learning does not skip faction research, the map's era ceiling, tools, skills or
+material costs. Open Atlas views refresh after learning; reopen a station prompt
+to refresh its choices. Death clears personal recipe knowledge. Maps without
+manuals enabled keep their existing rules. Chemistry reactions and gathering are
+not locked by a manual merely because the same output has a crafting recipe.
