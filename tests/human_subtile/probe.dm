@@ -53,11 +53,16 @@
 	var/fixture_human_completions = 0
 	var/fixture_living_completions = 0
 	var/list/fixture_rows = list()
+	// Stands in for the player's Toggle Tap To Step preference.
+	var/fixture_tap_step = FALSE
 
 /mob/living/human/subtile_fixture/human_subtile_authority(client/owner)
 	if (client)
 		return ..()
 	return fixture_authorized
+
+/mob/living/human/subtile_fixture/human_subtile_tap_step()
+	return fixture_tap_step || ..()
 
 /mob/living/human/subtile_fixture/persistence_runtime_var(key)
 	return copytext(key, 1, 9) == "fixture_" || ..()
@@ -366,6 +371,20 @@ var/human_subtile_fixture_deer_watched = FALSE
 	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
 	var/slid = (S.x - 3) * 32 + S.step_x - 6
 	human_subtile_fixture_assert(slid > 0 && slid < 32 && S.human_subtile_fine_released_at == world.time && world.time - slide_start < 4, "held_fine_stops_on_release")
+	// Tap to step: a released key finishes the tile, from an offset or aligned.
+	S.fixture_tap_step = TRUE
+	var/tap_target = ceil((S.x * 32 + S.step_x) / 32)
+	spawn(1)
+		S.movement_eastwest = null
+	S.movement_eastwest = EAST
+	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
+	var/tap_from_offset = S.x == tap_target && !S.step_x && S.human_subtile_fine_released_at != world.time
+	spawn(1)
+		S.movement_eastwest = null
+	S.movement_eastwest = EAST
+	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
+	human_subtile_fixture_assert(tap_from_offset && S.x == tap_target + 1 && !S.step_x && !S.step_y, "tap_step_finishes_the_tile")
+	S.fixture_tap_step = FALSE
 	S.movement_fine = FALSE
 	// Graal-style sliding: a straight slide clipping a corner slips sideways
 	// into the opening ahead, and a diagonal into a wall runs along it.
