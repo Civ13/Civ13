@@ -18,6 +18,12 @@
 	if (!(user.has_empty_hand(both = FALSE)))
 		to_chat(user, "<span class='warning'>You need both hands to swing the [src]!</span>")
 		return FALSE
+	return TRUE
+
+/obj/item/weapon/sledgehammer/attack(mob/living/M, mob/living/user, var/target_zone)
+	if (!special_check(user))
+		return FALSE
+	return ..()
 
 /obj/item/weapon/sledgehammer/stone/sledgehammer
 	name = "Stone Sledgehammer"
@@ -103,7 +109,9 @@
 	weight = 80
 	force = 60
 
-/obj/item/weapon/sledgehammer/uranium/attack()
+/obj/item/weapon/sledgehammer/uranium/attack(mob/living/M, mob/living/user, var/target_zone)
+	if (!special_check(user))
+		return FALSE
 	explosion(src.loc, 2, 2, 2, 2)
 	radiation_pulse(src.loc, 4, 15, 300, TRUE)
 	qdel(src)
