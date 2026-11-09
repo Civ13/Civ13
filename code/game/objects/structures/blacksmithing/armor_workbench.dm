@@ -39,7 +39,7 @@
 
 /obj/structure/component_workbench/armor/proc/recipe_available(mob/living/human/H, choice)
 	var/list/R = armor_recipes()[choice]
-	return R && map && map.ordinal_age >= R["era"] && map.is_node_done(H.civilization, R["node"])
+	return R && map && map.ordinal_age >= R["era"] && crafting_node_allowed(H, R["node"])
 
 /obj/structure/component_workbench/armor/proc/input_valid(obj/item/I, input_type, list/cost)
 	if (!islist(cost) || QDELETED(I)) return FALSE

@@ -170,6 +170,7 @@
 	save_epoch = persistence_admission_identity
 
 /datum/primitive_woodwork_action/proc/valid()
+	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
 	if (committed || !spec || QDELETED(source) || QDELETED(user) || QDELETED(tool))
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)

@@ -60,9 +60,14 @@ var/knowledge_failures = 0
 		knowledge_check(node_id && future_id, "real node registry supplies era boundaries")
 		var/mob/living/human/knowledge_fixture/H = new(locate(2,2,1))
 		knowledge_check(H.recipe_knowledge_initialized && !H.known_recipe_nodes.len, "new enabled body starts empty")
+		knowledge_check(!crafting_node_allowed(H, node_id) && crafting_recipe_allowed(H, "/obj/item/stack/material/rope"), "unknown node blocked while confirmed basics remain open")
+		map.persistence = FALSE
+		knowledge_check(crafting_node_allowed(H, node_id), "round maps bypass personal knowledge")
+		map.persistence = TRUE
 		knowledge_check(!H.migrate_recipe_knowledge() && !H.knows_recipe_node(node_id), "new body never receives legacy grant")
 		knowledge_check(!H.learn_recipe_node(null) && !H.learn_recipe_node(12) && !H.learn_recipe_node("missing") && !H.learn_recipe_node(future_id), "invalid IDs and future research rejected")
 		knowledge_check(H.learn_recipe_node(node_id) && H.learn_recipe_node(node_id) && H.known_recipe_nodes.len == 1, "learning is idempotent")
+		knowledge_check(crafting_node_allowed(H, node_id) && !crafting_node_allowed(H, future_id), "learned node crafts only under research ceiling")
 		var/obj/item/weapon/book/node_book/B = create_node_book(locate(2,2,1), node_id)
 		knowledge_check(B && B.node_id == node_id && !create_node_book(H, "missing"), "book creation validates text IDs")
 		B.attack_self(H)
