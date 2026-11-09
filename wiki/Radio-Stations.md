@@ -15,3 +15,7 @@ their existing Modern-era requirements in this phase.
 See [Radio station operation and course schedules](../docs/radio-stations.md)
 for power, frequency, regional relay and skill-course details. Recipe-node
 lessons and television cameras are separate features.
+
+## Recipe lessons
+
+On opted-in Persistence worlds, a knowledgeable live presenter can teach one recipe node in five minutes to up to 32 active listeners. Stay awake beside the same tuned receiver for the whole session. [Full requirements and limits](../docs/radio-node-lessons.md).

@@ -43,7 +43,10 @@ SUITES = {
             'code/modules/1713/production.dm',
             'code/modules/persistence/region_travel.dm',
             'code/game/objects/structures/vending/specialist_traders.dm')},
-
+    'node_broadcast': {'files': ('tests/node_broadcast/test_contract.py',),
+        'paths': ('tests/node_broadcast/',), 'shared_paths': (
+            'code/modules/research_tree/node_broadcast.dm',
+            'code/modules/1713/modern_telecom.dm')},
     'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',),
         'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
             'code/modules/research_tree/character_knowledge.dm',

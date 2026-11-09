@@ -30,7 +30,7 @@ var/global/civ_telecom_cursor = 1
 	var/required_skill = civ_telecom_crafting_skill(result_type)
 	if (!required_skill)
 		return TRUE
-	return H && H.stat == CONSCIOUS && civ_telecom_era_allowed(result_type) && H.getStat("crafting") >= required_skill && map.is_node_done(H.civilization, get_recipe_node_req("[result_type]"))
+	return H && H.stat == CONSCIOUS && civ_telecom_era_allowed(result_type) && H.getStat("crafting") >= required_skill && crafting_node_allowed(H, get_recipe_node_req("[result_type]"))
 
 // Authoritative running-server time, not wall time or per-device timers.
 // Each course occupies one minute in a repeating ten-minute schedule.
@@ -119,13 +119,17 @@ var/global/civ_telecom_cursor = 1
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
+		interrupt_node_reception()
 		enabled = !enabled
 		if (!enabled && powersource)
 			powersource.update_power(-powerneeded, 1, src)
 	if (choice == "Frequency")
 		var/value = input(H, "Frequency (150-300)", name, frequency) as num|null
 		if (!isnull(value) && H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
-			frequency = sanitize_integer(value, 150, 300, 200)
+			var/new_frequency = sanitize_integer(value, 150, 300, 200)
+			if (new_frequency != frequency)
+				interrupt_node_reception()
+			frequency = new_frequency
 	if (choice == "Program" && istype(src, /obj/structure/telecom/station))
 		var/value = input(H, "Educational program", name) in list("crafting", "farming", "medical")
 		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands() && H.stats[value][1] >= 100)
@@ -157,11 +161,12 @@ var/global/civ_telecom_cursor = 1
 	var/tmp/next_live_broadcast = 0
 
 /obj/structure/telecom/station/persistence_runtime_var(var_name)
-	if (var_name in list("presenter", "next_live_broadcast"))
+	if (var_name in list("presenter", "next_live_broadcast", "node_lesson_id", "node_lesson_teacher", "node_lesson_listeners", "node_lesson_progress", "node_lesson_last_tick", "node_lesson_cooldown_until"))
 		return TRUE
 	return ..()
 
 /obj/structure/telecom/station/Destroy()
+	stop_node_lesson(FALSE)
 	presenter = null
 	return ..()
 
@@ -173,8 +178,13 @@ var/global/civ_telecom_cursor = 1
 		return ..()
 	if (!can_present(H) || !H.can_use_hands())
 		return
-	var/choice = input(H, "Station controls", name) in list("Equipment", "Present live", "Stop presenting", "Station name", "Faction tag", "Cancel")
+	var/choice = input(H, "Station controls", name) in list("Equipment", "Present live", "Stop presenting", "Station name", "Faction tag", "Teach recipe node", "Cancel recipe lesson", "Cancel")
 	if (!can_present(H) || !H.can_use_hands())
+		return
+	if (choice == "Teach recipe node")
+		return prompt_node_lesson(H)
+	if (choice == "Cancel recipe lesson" && H == node_lesson_teacher)
+		stop_node_lesson()
 		return
 	if (choice == "Equipment")
 		return ..()
@@ -184,8 +194,8 @@ var/global/civ_telecom_cursor = 1
 			return
 		presenter = H
 		to_chat(H, "Your normal speech will air while you remain at this powered desk with an antenna. Use Stop presenting to end the broadcast.")
-	if (choice == "Stop presenting" && presenter == H)
-		presenter = null
+	if (choice == "Stop presenting")
+		stop_presenting(H)
 	if (choice == "Station name" || choice == "Faction tag")
 		var/value = input(H, "Display text (32 characters; faction tag is roleplay only)", name) as text|null
 		if (isnull(value) || !can_present(H) || !H.can_use_hands())
@@ -351,6 +361,7 @@ var/global/civ_telecom_cursor = 1
 /process/civ_telecom/fire()
 	civ_check_landlines()
 	civ_relay_tick()
+	civ_tick_node_lessons()
 	var/checks = min(16, civ_telecom_devices.len)
 	while (checks-- > 0 && civ_telecom_devices.len)
 		if (civ_telecom_cursor > civ_telecom_devices.len)
