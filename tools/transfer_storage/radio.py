@@ -15,6 +15,12 @@ it needs no relay station, because it is out of character and every region of
 the group shares one OOC channel. The sending world has already applied its
 mutes, bans and filters and posted the line to Discord, so a receiving world
 only shows it.
+
+Orbital strikes ride a third ring (``strike_send``, ``strike_inbox``): a
+station's battery names the region it fires on, and only that region's agent
+queues the strike. The target world checks the aim (a spotter's mark or the
+striking party's spy satellite) itself; a strike in flight is lost with a
+restart, like a chat line.
 """
 import re
 import time
@@ -30,6 +36,9 @@ MAX_TEXT = 32              # language, verb, relay name, frequency as text
 MAX_OOC = 6144             # the game's 1024-character limit after html_encode
 OOC_STYLES = ('everyone', 'elevated', 'mentor', 'moderator', 'developer', 'admin', 'highstaff')
 MAX_BATCH = 50             # envelopes per send_batch call (the world queues at most 50)
+STRIKE_MODES = ('spotter', 'imagery')
+MAX_COORD = 1000           # x, y and z of a strike's aim
+MAX_SHELLS = 6
 KEY = re.compile(r'^[a-z0-9_-]{1,16}$')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 
@@ -72,6 +81,8 @@ class RadioRelay:
         self._seen = deque(maxlen=RING * 4)
         self._ooc_out = deque(maxlen=RING)
         self._ooc_in = deque(maxlen=RING)
+        self._strike_out = deque(maxlen=RING)
+        self._strike_in = deque(maxlen=RING)
         self.local = {}            # key -> {'condition': n, 'at': clock}
         self.peers = {}            # region -> {key -> {'condition': n, 'at': clock}}
         self.dropped = 0
@@ -147,6 +158,53 @@ class RadioRelay:
         self._ooc_out.append(clean)
         return clean['id']
 
+    def strike_send(self, envelope):
+        """Record one orbital strike fired from here at another region. Returns its id."""
+        if type(envelope) is not dict:
+            raise RadioError('envelope must be an object')
+        clean = self._strike_fields(envelope)
+        if clean['target'] == self.region:
+            raise RadioError('a strike must target another region')
+        clean.update(id=uuid.uuid4().hex, group=self.group, source=self.region, at=self.clock())
+        self._strike_out.append(clean)
+        return clean['id']
+
+    def strike_inbox(self):
+        """Strikes fired at this region, oldest first, each handed out once."""
+        self._expire()
+        due = list(self._strike_in)
+        self._strike_in.clear()
+        return [self._public(e) for e in due]
+
+    def deliver_strikes(self, envelopes):
+        """Accept strikes from other regions; only those aimed here are queued."""
+        if not isinstance(envelopes, list):
+            raise RadioError('strikes must be a list')
+        now = self.clock()
+        queued = 0
+        for envelope in envelopes:
+            if type(envelope) is not dict or envelope.get('group') != self.group or envelope.get('target') != self.region:
+                continue
+            source, ident = envelope.get('source'), envelope.get('id')
+            if (not isinstance(ident, str) or not ID.match(ident) or ident in self._seen
+                    or not ID.match(source or '') or source == self.region):
+                self.dropped += 1
+                continue
+            try:
+                clean = self._strike_fields(envelope)
+                clean.update(id=ident, group=self.group, source=source,
+                             at=now - max(0.0, float(envelope.get('age', 0))))
+            except (RadioError, TypeError, ValueError):
+                self.dropped += 1
+                continue
+            if now - clean['at'] > TTL:
+                self.dropped += 1
+                continue
+            self._seen.append(ident)
+            self._strike_in.append(clean)
+            queued += 1
+        return queued
+
     def ooc_inbox(self):
         """OOC lines from peers, oldest first, each handed out once."""
         self._expire()
@@ -174,7 +232,8 @@ class RadioRelay:
             peers[region] = view
         return {'region': self.region, 'local': sorted(self.local), 'peers': peers,
                 'queued_out': len(self._outbox), 'queued_in': len(self._inbox),
-                'ooc_out': len(self._ooc_out), 'ooc_in': len(self._ooc_in), 'dropped': self.dropped}
+                'ooc_out': len(self._ooc_out), 'ooc_in': len(self._ooc_in),
+                'strikes_out': len(self._strike_out), 'strikes_in': len(self._strike_in), 'dropped': self.dropped}
 
     # -- what the coordinator moves -----------------------------------------
 
@@ -185,11 +244,14 @@ class RadioRelay:
         self._outbox.clear()
         ooc = list(self._ooc_out)
         self._ooc_out.clear()
+        strikes = list(self._strike_out)
+        self._strike_out.clear()
         now = self.clock()
         heartbeats = {key: {'condition': info['condition'], 'age': int(now - info['at'])}
                       for key, info in self.local.items() if now - info['at'] <= HEARTBEAT_TTL}
         return {'envelopes': [dict(e, age=round(now - e['at'], 2)) for e in due], 'heartbeats': heartbeats,
-                'ooc': [dict(e, age=round(now - e['at'], 2)) for e in ooc]}
+                'ooc': [dict(e, age=round(now - e['at'], 2)) for e in ooc],
+                'strikes': [dict(e, age=round(now - e['at'], 2)) for e in strikes]}
 
     def deliver_ooc(self, envelopes):
         """Accept OOC lines from other regions. Returns how many were queued."""
@@ -284,10 +346,30 @@ class RadioRelay:
 
     def _expire(self):
         now = self.clock()
-        for ring in (self._outbox, self._inbox, self._ooc_out, self._ooc_in):
+        for ring in (self._outbox, self._inbox, self._ooc_out, self._ooc_in, self._strike_out, self._strike_in):
             while ring and now - ring[0]['at'] > TTL:
                 ring.popleft()
                 self.dropped += 1
+
+    @staticmethod
+    def _strike_fields(envelope):
+        target = envelope.get('target')
+        if not isinstance(target, str) or not ID.match(target):
+            raise RadioError('target must be a region id')
+        mode = envelope.get('mode')
+        if mode not in STRIKE_MODES:
+            raise RadioError('mode must be one of %s' % ', '.join(STRIKE_MODES))
+        clean = {'target': target, 'mode': mode,
+                 'party': _text(envelope.get('party'), MAX_NAME, 'party'),
+                 'station': _text(envelope.get('station') or 'station', MAX_TEXT, 'station'),
+                 'ckey': _text(envelope.get('ckey') or '-', MAX_NAME, 'ckey')}
+        for field, low in (('x', 1), ('y', 1), ('z', 0), ('shells', 1)):
+            value = envelope.get(field)
+            high = MAX_SHELLS if field == 'shells' else MAX_COORD
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or value != int(value) or not low <= value <= high:
+                raise RadioError('%s must be a whole number from %d to %d' % (field, low, high))
+            clean[field] = int(value)
+        return clean
 
     @staticmethod
     def _ooc_fields(envelope):

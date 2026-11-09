@@ -204,9 +204,19 @@ var/global/list/specialist_trader_sell_floor = null
 		return TRUE
 	return map.is_node_done(H ? H.civilization : null, node)
 
-// Better terms from the buyer's own standing with the dealer; nothing yet.
+// Better terms from the buyer's party's safe house contacts desk: 5% a level
+// on what dealers pay, and 5% a level off what they charge.
 /datum/specialist_trader/proc/rate_bonus(mob/living/human/H)
-	return 0
+	var/party = istype(H) ? party_train_party_of(H) : null
+	return party ? 0.05 * safehouse_level(party, "contacts") : 0
+
+/datum/specialist_trader/proc/price_for(index, mob/living/human/H)
+	var/price = prices[index]
+	var/off = rate_bonus(H)
+	if (off <= 0)
+		return price
+	var/unit = smallest_unit(accepts)
+	return max(unit, -round(-(price * (1 - off)) / unit) * unit)
 
 // Whether anything is packed inside an item. Empty pockets and plain
 // accessories do not count; a holster with a gun in it does.
@@ -351,7 +361,7 @@ var/global/list/specialist_trader_sell_floor = null
 		var/atom/proto = path
 		var/item_name = initial(proto.name)
 		var/label = entry[2] > 1 ? "[entry[2]] x [item_name]" : "[item_name]"
-		var/price = specialist_trader_price_text(T.prices[i], T.accepts)
+		var/price = specialist_trader_price_text(T.price_for(i, H), T.accepts)
 		if (T.stock_left[i] <= 0)
 			rows += "[label]: [price] <i>(sold out)</i><br>"
 		else if (!T.entry_researched(entry, H))
@@ -389,7 +399,7 @@ var/global/list/specialist_trader_sell_floor = null
 	if (!T.entry_researched(entry, H))
 		to_chat(H, "<span class='warning'>Your people would not know what to do with that yet.</span>")
 		return FALSE
-	var/price = T.prices[index]
+	var/price = T.price_for(index, H)
 	if (!specialist_trader_take_payment(H, price, T.accepts, get_turf(H)))
 		to_chat(H, "<span class='warning'>That costs [specialist_trader_price_text(price, T.accepts)], in [specialist_trader_coin_list_text(T.accepts)]. Hold them or keep them in your pockets.</span>")
 		return FALSE

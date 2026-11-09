@@ -430,6 +430,8 @@ var/global/list/civ_relay_outbound_queue = list()
 		transfer_bridge.request("/radio/send", list("envelope" = envelope))
 	// Group-wide OOC rides the same agent and needs no relay station.
 	region_ooc_tick()
+	// Orbital strikes aimed at this world (orbit_artillery.dm).
+	orbit_artillery_tick()
 	var/list/on_air = civ_relay_on_air_list()
 	since_heartbeat += 10
 	if (since_heartbeat >= CIV_RELAY_HEARTBEAT)

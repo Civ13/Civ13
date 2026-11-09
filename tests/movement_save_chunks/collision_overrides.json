@@ -383,6 +383,16 @@
       ]
     },
     {
+      "path": "code/modules/1713/machinery/modular_vehicles/ships/sea_layer.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/CanPass(atom/movable/mover)",
+          "sha256_body": "4898f52330d28354241f42e5cce9d051eb8442038a2bd62fef46b6e40b46e082"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/modern_items.dm",
       "declarations": [
         {
@@ -404,6 +414,21 @@
           "owner": "",
           "declaration": "/obj/structure/props/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.",
           "sha256_body": "804806d80ed0dd1af11189905ac31c382b97b039c130dab38e9a4ded8194a187"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/train_platforms.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "b7a40b05c93b5c9758372a6244350f54e8c34097130074c32917732fdc92a21a"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
+          "sha256_body": "ba3d2ba3048e3f9d2c138935f7e2180d48ded8c9c458eb9fea19f173f0dcb233"
         }
       ]
     },

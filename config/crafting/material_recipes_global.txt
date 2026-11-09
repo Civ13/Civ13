@@ -460,6 +460,9 @@ RECIPE: /material/steel/,hull armour plate,/obj/item/hull_plate,15,150,0,1,space
 RECIPE: /material/electronics/,point-defence turret,/obj/structure/point_defence,45,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,microgravity lab,/obj/structure/zero_g_lab,40,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,orbital refinery,/obj/structure/zero_g_lab/refinery,35,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,orbital battery,/obj/structure/orbital_battery,60,500,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,orbital shell,/obj/item/orbital_shell,15,100,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,target designator,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder/target_designator,10,150,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,satellite launcher,/obj/structure/crewed_lander/satellite_launcher,50,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,ground station,/obj/structure/satellite_station,25,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,weather satellite,/obj/item/satellite/weather,30,300,1,1,spaceflight,235,0,0,8,null
@@ -1956,6 +1959,7 @@ RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,automobile workshop,/obj/structure/car_workshop,30,230,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,260,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 
@@ -2548,6 +2552,16 @@ RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1
 RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,platform car kit,/obj/structure/train_car_kit,12,300,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,rail warehouse office,/obj/structure/rail_warehouse,15,200,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,passenger coach kit,/obj/structure/train_car_kit/coach,16,300,1,1,trains,101,0,0,8,null
+RECIPE: /material/steel/,sleeper car kit,/obj/structure/train_car_kit/sleeper,20,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,dining car kit,/obj/structure/train_car_kit/dining,20,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,storage car kit,/obj/structure/train_car_kit/storage,18,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,armored locomotive,/obj/structure/trains/locomotive/coal/armored,30,300,1,1,trains,101,109,0,8,null
+RECIPE: /material/steel/,railway gun car kit,/obj/structure/train_car_kit/railgun,60,600,1,1,trains,101,109,0,8,null
+RECIPE: /material/steel/,armored wagon kit,/obj/structure/train_car_kit/armored,40,400,1,1,trains,101,125,0,8,null
+RECIPE: /material/steel/,flak car kit,/obj/structure/train_car_kit/flak,45,450,1,1,trains,101,125,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 

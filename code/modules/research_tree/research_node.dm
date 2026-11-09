@@ -332,6 +332,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
 	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	// Submarines (1900s) unlock the submarine pen that launches a diving boat.
+	register_research_node(new /datum/research_node("submarines", "Submarines", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
@@ -459,7 +461,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (19) ---
+		// --- assembly_line (22) ---
+		"/obj/structure/train_car_kit/dining" = "assembly_line",
+		"/obj/structure/train_car_kit/sleeper" = "assembly_line",
+		"/obj/structure/train_car_kit/storage" = "assembly_line",
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
@@ -502,6 +507,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/car_workshop/submarine_pen" = "submarines",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",
@@ -738,6 +744,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/freight_dispatcher" = "orbital_flight",
 		"/obj/structure/zero_g_lab" = "orbital_flight",
 		"/obj/structure/zero_g_lab/refinery" = "orbital_flight",
+		"/obj/structure/orbital_battery" = "orbital_flight",
+		"/obj/item/orbital_shell" = "orbital_flight",
+		"/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder/target_designator" = "orbital_flight",
 		"/obj/item/hull_plate" = "orbital_flight",
 		"/obj/structure/point_defence" = "orbital_flight",
 		"/obj/structure/crewed_lander/satellite_launcher" = "orbital_flight",
@@ -874,12 +883,14 @@ var/global/list/node_grid_col_cache = null
         "/obj/structure/telecom/terminal" = "assembly_line",
         "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
-		// --- field_artillery (5) ---
+		// --- field_artillery (7) ---
 		"/obj/item/stack/ammopart/casing/artillery" = "field_artillery",
 		"/obj/item/stack/ammopart/casing/tank" = "field_artillery",
 		"/obj/item/weapon/siegeladder/metal" = "field_artillery",
 		"/obj/structure/barricade/antitank" = "field_artillery",
 		"/obj/structure/cannon/modern" = "field_artillery",
+		"/obj/structure/train_car_kit/railgun" = "field_artillery",
+		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
 		"/obj/item/weapon/beartrap" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
@@ -1252,6 +1263,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
 		"/obj/item/weapon/gun_sling" = "gunsmithing",
 		"/obj/item/weapon/grenade/smokebomb/marker/red" = "automatic_weapons",
+		"/obj/structure/train_car_kit/armored" = "automatic_weapons",
+		"/obj/structure/train_car_kit/flak" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/green" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/yellow" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/purple" = "automatic_weapons",
@@ -1530,7 +1543,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (7) ---
+		// --- rail_steam (10) ---
+		"/obj/structure/rail_warehouse" = "rail_steam",
+		"/obj/structure/train_car_kit" = "rail_steam",
+		"/obj/structure/train_car_kit/coach" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
 		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",

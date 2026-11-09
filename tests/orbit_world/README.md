@@ -165,6 +165,14 @@ refusals, iron and gold ore loaded by hand and by belt, ice and coal
 refused, iron smelted two lumps to a steel sheet, gold one to one, belts
 taking its metal, and a lone lump of iron waiting for another.
 
+Then orbital artillery (`code/modules/space/orbit_artillery.dm`): the battery
+refusing off a station, uncabled, without shells, for a stranger and on a
+sleeping or closed world; spotter and imagery salvos, their shells and
+cooldowns and the strike they send; then the target side: no mark, a fresh
+and a faded mark, imagery needing the party's own spy satellite and an
+outdoor spot, a strike arriving through the inbox with its warning, the
+salvo landing at the end within a tile, and a garbled strike burning up.
+
 Then station defences (`code/modules/space/orbit_defences.dm`): armour
 plates soaking strikes, a turret shooting them down, the hull holed once the
 plates are gone, and turrets slowing a forced docking.

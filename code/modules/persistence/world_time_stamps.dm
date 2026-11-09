@@ -13,6 +13,7 @@
 var/global/list/persistence_world_time_stamps = list(
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
+	"last_moved" = list(/obj/structure/trains/platform),
 	"l_move_time" = list(/atom/movable),
 	"last_movement" = list(/mob),
 	"lastgib" = list(/mob),

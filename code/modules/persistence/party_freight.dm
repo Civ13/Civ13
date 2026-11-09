@@ -21,7 +21,6 @@
 
 #define PARTY_FREIGHT_ITEMS 60 // top-level items in one shipment
 #define PARTY_FREIGHT_TEXT 300000 // characters in one shipment record
-#define PARTY_FREIGHT_SAFEHOUSE 20 // shipments a party keeps in its safe house
 #define PARTY_FREIGHT_TRAIN 30 // shipments a party's train carries
 #define PARTY_FREIGHT_TIME 30
 
@@ -302,6 +301,8 @@ var/global/list/safehouse_depots = list()
 	crushable = FALSE
 	// One JSON shipment per entry, each naming its party; saved with the depot.
 	var/list/freight = list()
+	// One JSON record per party of its safe house rooms and work (safehouse_upgrades.dm).
+	var/list/rooms = list()
 	var/tmp/busy = FALSE
 
 /obj/structure/safehouse_depot/persistence_runtime_var(key)
@@ -312,6 +313,8 @@ var/global/list/safehouse_depots = list()
 	safehouse_depots |= src
 	if(!islist(freight))
 		freight = list()
+	if(!islist(rooms))
+		rooms = list()
 
 /obj/structure/safehouse_depot/Destroy()
 	safehouse_depots -= src
@@ -321,6 +324,9 @@ var/global/list/safehouse_depots = list()
 		message_admins("The safe house depot at [x],[y],[z] was deleted with [freight.len] shipment\s; they are in the game log.")
 		for(var/text in freight)
 			log_game("Party freight: deleted with the depot at [x],[y],[z]: [text]")
+	// Rooms and work are the party's, not this depot's: another depot keeps them.
+	if(rooms.len && !persistence_active_operation)
+		safehouse_rehome(src)
 	return ..()
 
 /obj/structure/safehouse_depot/after_load()
@@ -328,6 +334,8 @@ var/global/list/safehouse_depots = list()
 	busy = FALSE
 	if(!islist(freight))
 		freight = list()
+	if(!islist(rooms))
+		rooms = list()
 	safehouse_depots |= src
 
 /obj/structure/safehouse_depot/ex_act(severity)
@@ -357,7 +365,7 @@ var/global/list/safehouse_depots = list()
 	for(var/text in held)
 		var/list/shipment = party_freight_shipment(text)
 		names += shipment["name"]
-	to_chat(user, SPAN_NOTICE(names.len ? "[party_train_party_name(party)]'s safe house holds ([names.len]/[PARTY_FREIGHT_SAFEHOUSE]): [english_list(names)]." : "[party_train_party_name(party)]'s safe house is empty ([PARTY_FREIGHT_SAFEHOUSE] spaces)."))
+	to_chat(user, SPAN_NOTICE(names.len ? "[party_train_party_name(party)]'s safe house holds ([names.len]/[safehouse_capacity(party)]): [english_list(names)]." : "[party_train_party_name(party)]'s safe house is empty ([safehouse_capacity(party)] spaces)."))
 
 /obj/structure/safehouse_depot/attack_hand(mob/living/human/H)
 	if(busy || !istype(H) || !Adjacent(H) || H.stat != CONSCIOUS)
@@ -372,8 +380,12 @@ var/global/list/safehouse_depots = list()
 	var/list/options = list("Ship what you hold" = "hand", "Ship a crate next to the depot" = "crate")
 	if(held.len)
 		options["Recall a shipment"] = "recall"
-	var/choice = WWinput(H, "[party_train_party_name(party)]'s safe house holds [held.len]/[PARTY_FREIGHT_SAFEHOUSE] shipments.", name, "Cancel", options + list("Cancel"))
+	options["Safe house rooms and work"] = "rooms"
+	var/choice = WWinput(H, "[party_train_party_name(party)]'s safe house holds [held.len]/[safehouse_capacity(party)] shipments.", name, "Cancel", options + list("Cancel"))
 	if(!(choice in options))
+		return
+	if(options[choice] == "rooms")
+		rooms_menu(H, party)
 		return
 	use_depot(H, party, options[choice])
 
@@ -394,7 +406,7 @@ var/global/list/safehouse_depots = list()
 			if(D && Adjacent(H) && !party_freight_busy() && party_train_party_of(H) == party)
 				party_freight_recall(src, D.freight, text, party, H)
 		else
-			var/text = party_freight_ship(src, party, held.len, PARTY_FREIGHT_SAFEHOUSE, "Your safe house", H, action == "crate")
+			var/text = party_freight_ship(src, party, held.len, safehouse_capacity(party), "Your safe house", H, action == "crate")
 			if(text)
 				freight += text
 	busy = FALSE
@@ -446,6 +458,7 @@ var/global/list/safehouse_depots = list()
 		D.freight = party_freight_reparty(D.freight, old_party, new_party)
 	for(var/obj/structure/region_gate/railway_station/S in region_gates)
 		S.freight = party_freight_reparty(S.freight, old_party, new_party)
+	safehouse_rename(old_party, new_party)
 
 /proc/party_freight_reparty(list/stored, old_party, new_party)
 	. = list()
@@ -459,6 +472,5 @@ var/global/list/safehouse_depots = list()
 
 #undef PARTY_FREIGHT_ITEMS
 #undef PARTY_FREIGHT_TEXT
-#undef PARTY_FREIGHT_SAFEHOUSE
 #undef PARTY_FREIGHT_TRAIN
 #undef PARTY_FREIGHT_TIME
