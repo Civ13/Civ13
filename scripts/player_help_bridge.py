@@ -70,10 +70,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '17a764df2a51cb741641ffc4b2727ea8c3d3e584'
+WIKI_REVIEWED_REVISION = 'f9d9383fb6a4af75d65d3ad92d519600d02a4ae2'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('2269656030ec207f0451375bf72f0617ce64e6a6b10f3b4885e5ed1d16d76b31', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('6f38a398304e6adf2447ca28c2b152f0b516bb00ba7b0fc4fd7ee0531bd96461', 'communications radio transmit'),
@@ -81,14 +81,14 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('aa33b8d0baf799a2705fd6e525069ca5b7b53c4aa85a23614c42a4da81d2bd29', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('1b880de6c0ebadfac8e22e0cddf16b0f7c6844483e4f4b5f2fe6d00620d6bc98', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('e86e23c41d65e90d983e1e6f90abcb49c91e04f4b15cb3c25ca52dbccecda74f', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('51122e7eed5799b35279e3d32e49b45147d4349342b8a61730b00f859f5671d5', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('51bbdb510e76a957b74ce2e13288d9a32132bcf95aaaa77bd050238f2de85f04', 'hygiene clean washing soap'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('c908cf58111fef5ab8b0d55567be2c94b0f692e88eda269c29a54a535f5d3a03', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('5c866b474dcc4ed571b379be1c6ef3aa4b686d4188ae22e1181ba172c954defb', 'medical heal injury wound surgery'),
     'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('5f2ab72ae764f458c87fbfcf6b08b01e371eff8149a9c6954c8f7e5017f05247', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('52f18d58defc3e346041a4519805249f3882d11453162d80008198327add1785', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('55148c4894a79c600192d8eb72768fa1b1e6efe530e22187174fbd72ba26f6ca', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('d1e120e469a8ba315953efc59d4168464f88fd5f4a1bc3a986d6266225b59a2b', 'resource extraction gathering oil petroleum well fracturing'),
@@ -105,7 +105,7 @@ WIKI_REVIEWED_GUIDES = {
     'Colony_Medic.md': ('31a9166ec308b2196006cf409c37dbf861c040986a9d64c04e7f4d1f8aa077d3', 'medic doctor role clinic colony'),
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
-    'gamemodes/Team_Combat.md': ('e6459bd41788cb4622fec6518f47a4a25e11116580af177539124d727d16065b', 'team combat tdm deathmatch siege king hill area control objectives grace'),
+    'gamemodes/Team_Combat.md': ('348a3a1571374b483d66a5a05a90d55ec92ced3552b1cdfb352dc899de1764ae', 'team combat tdm deathmatch siege king hill area control objectives grace'),
     'gamemodes/Civilizations_and_Nomads.md': ('53c560ebde294bc42a807c87e74b5f94ced3f490b15b37bc98bba061382cae16', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
@@ -121,7 +121,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('3daf08740e021573fb85ce2ba447154f2438cc8fcac6c21ac63a4da6bf5ddc79', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('13e138b2c82d92cb69d88958f0ab85b2c00a4f9afd29a84329033e8193ed15e4', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
