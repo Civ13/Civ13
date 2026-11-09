@@ -5,9 +5,26 @@ ChangeTurf, saving, growth blocking, fuel and spills.
 """
 from pathlib import Path
 import re
+import struct
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def dmi_description(path):
+    """The DMI metadata text, read with the standard library (CI has no Pillow)."""
+    data = path.read_bytes()
+    pos = 8
+    while pos < len(data):
+        length, kind = struct.unpack('>I4s', data[pos:pos + 8])
+        body = data[pos + 8:pos + 8 + length]
+        if kind in (b'zTXt', b'tEXt'):
+            key, _, rest = body.partition(b'\0')
+            if key == b'Description':
+                return (zlib.decompress(rest[1:]) if kind == b'zTXt' else rest).decode('utf-8')
+        pos += 12 + length
+    return ''
 
 
 def read(path):
@@ -26,8 +43,7 @@ class Hooks(unittest.TestCase):
         self.assertTrue((ROOT / 'icons/effects/pollution.dmi').exists())
 
     def test_stain_states_exist(self):
-        from PIL import Image
-        desc = Image.open(ROOT / 'icons/effects/pollution.dmi').info['Description']
+        desc = dmi_description(ROOT / 'icons/effects/pollution.dmi')
         states = set(re.findall(r'state = "([^"]*)"', desc))
         self.assertEqual(states, {f'pollution{level}_{variant}' for level in (1, 2, 3) for variant in range(4)})
 
