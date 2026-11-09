@@ -145,9 +145,19 @@ class ToxinContextTests(unittest.TestCase):
         self.assertLessEqual(len(json.dumps([endpoint, payload, headers, timeout])), 32000)
         self.assertIn(record['text'], payload['messages'][0]['content'])
         self.assertIn('"context_truncated": true', payload['messages'][0]['content'])
+        # A larger envelope first drops the escaped history, never the record.
         with mock.patch.dict(os.environ, {'TEST_HELP_TOXIN_TOKEN': 't' * 24000}):
-            self.assertEqual(instance.answer(dict(request, account='b' * 32))['status'], 'unavailable')
-        self.assertEqual(len(calls), 1)
+            self.assertEqual(instance.answer(dict(request, account='b' * 32))['status'], 'ok')
+        endpoint, payload, headers, timeout = calls[1]
+        self.assertLessEqual(len(json.dumps([endpoint, payload, headers, timeout])), 32000)
+        self.assertIn(record['text'], payload['messages'][0]['content'])
+        self.assertEqual(len(payload['messages']), 2)
+        # When even the bare record cannot fit, the player is told so explicitly.
+        with mock.patch.dict(os.environ, {'TEST_HELP_TOXIN_TOKEN': 't' * 30000}):
+            result = instance.answer(dict(request, account='c' * 32))
+        self.assertEqual((result['status'], result['evidence']), ('ok', 'insufficient'))
+        self.assertIn('toxin damage', result['answer'])
+        self.assertEqual(len(calls), 2)
 
     def test_priority_record_is_not_cut_in_half_for_dispatch(self):
         record = bridge.toxin_knowledge(ROOT)[0]
@@ -163,7 +173,8 @@ class ToxinContextTests(unittest.TestCase):
         token_length = 32000 - len(json.dumps(calls[0])) + len(json.dumps(record['text'])) // 2
         self.assertGreater(token_length, 0)
         with mock.patch.dict(os.environ, {'TEST_HELP_TOXIN_TOKEN': 't' * token_length}):
-            self.assertEqual(instance.answer(dict(request, account='b' * 32))['status'], 'unavailable')
+            result = instance.answer(dict(request, account='b' * 32))
+        self.assertEqual((result['status'], result.get('evidence')), ('ok', 'insufficient'))
         self.assertEqual(len(calls), 1)
 
     def test_public_record_is_bounded_and_has_source_provenance(self):
