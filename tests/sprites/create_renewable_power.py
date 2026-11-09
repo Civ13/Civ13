@@ -1,4 +1,4 @@
-"""Original hand-placed 32px wind and solar generator sprites, no external or generated artwork.
+"""Original hand-placed 32px wind, solar and waterwheel generator sprites, no external or generated artwork.
 Run with Pillow to reproduce icons/obj/renewable_power.dmi; released under Civ13 AGPL-3.0.
 """
 import math
@@ -74,16 +74,46 @@ def solar_panel():
     return im
 
 
-def waterwheel(angle):
-    """Wooden paddles on a framed wheel, coupled to a small dynamo."""
+def waterwheel(angle, frame=0):
+    """Undershot paddle wheel standing in the stream on timber trestles.
+
+    The lower paddles dip below the waterline at row 22, so the water tile
+    beneath shows through them. Eight paddles repeat every 45 degrees, so
+    frames 11.25 degrees apart loop as a steady turn.
+    """
+    wheel = Image.new('RGBA', (SIZE, SIZE))
+    d = ImageDraw.Draw(wheel)
+    hub = (16, 13)
+    for i in range(8):
+        t = math.radians(angle + i * 45)
+        # Paddle stubs standing out past the rim.
+        d.line([(hub[0] + 9 * math.cos(t), hub[1] + 9 * math.sin(t)),
+                (hub[0] + 13 * math.cos(t), hub[1] + 13 * math.sin(t))], fill='#4f3520', width=3)
+    d.ellipse((5, 2, 27, 24), outline='#53371f', width=3)
+    d.ellipse((7, 4, 25, 22), outline='#b48854', width=1)
+    rotor(d, hub, 8, 9, angle, '#c69a60', '#694727')
+    # Submerged part: fade and cool the wood so the water reads through it.
+    px = wheel.load()
+    for y in range(23, SIZE):
+        for x in range(SIZE):
+            r, g, b, a = px[x, y]
+            if a:
+                px[x, y] = ((r + 40) // 3, (g + 90) // 3, (b + 120) // 3, a * 2 // 5)
     im = Image.new('RGBA', (SIZE, SIZE))
     d = ImageDraw.Draw(im)
-    d.line([(5, 30), (9, 15), (23, 15), (27, 30)], fill='#624228', width=2)
-    d.ellipse((5, 3, 27, 25), outline='#53371f', width=3)
-    d.ellipse((7, 5, 25, 23), outline='#b48854', width=1)
-    rotor(d, (16, 14), 8, 10, angle, '#c69a60', '#694727')
-    d.ellipse((13, 11, 19, 17), fill='#6c6d68', outline='#313633')
-    d.rectangle((22, 22, 30, 28), fill='#525b54', outline='#252d28')
+    # Timber trestles either side carry the axle.
+    for x0, x1 in ((3, 9), (29, 23)):
+        d.line([(x0, 24), (x1, 13)], fill='#3f2a17', width=3)
+        d.line([(x0, 24), (x1, 13)], fill='#7a5531')
+    im.alpha_composite(wheel)
+    d = ImageDraw.Draw(im)
+    d.line([(8, 13), (24, 13)], fill='#3a3a36', width=2)
+    d.ellipse((13, 10, 19, 16), fill='#6c6d68', outline='#313633')
+    # Foam where the paddles bite, shifting with each frame.
+    for i, x in enumerate(range(4 + frame % 2, 29, 3)):
+        y = 22 + ((i + frame) % 3 == 0)
+        d.point((x, y), fill='#e8f3f4')
+        d.point((x + 1, y), fill='#bcd8dc')
     return im
 
 
@@ -95,7 +125,7 @@ def main():
         ('wind_turbine_on', [wind_turbine(-90 + a) for a in (0, 30, 60, 90)]),
         ('solar_panel', [solar_panel()]),
         ('waterwheel', [waterwheel(0)]),
-        ('waterwheel_on', [waterwheel(a) for a in (0, 15, 30, 45)]),
+        ('waterwheel_on', [waterwheel(i * 11.25, i) for i in range(4)]),
     ]
     frames = [frame for _, group in states for frame in group]
     sheet = Image.new('RGBA', (SIZE * len(frames), SIZE))

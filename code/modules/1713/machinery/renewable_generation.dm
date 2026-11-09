@@ -86,21 +86,25 @@
 		if (4) return 1
 	return 0
 
-// A dynamo on the bank can draw from an adjacent flowing water tile.
+// The wheel stands in flowing water; its builder works from the bank and
+// places it on the water tile they face. A cable coil used on the wheel
+// lays the feed back toward the bank.
 /obj/structure/civ_generator/waterwheel
 	name = "waterwheel generator"
-	desc = "A waterwheel and dynamo. Place it beside flowing water and connect it to a cable."
+	desc = "A paddle wheel and dynamo on timber trestles. Build it from the bank into flowing water, then cable it back to shore."
 	icon = 'icons/obj/renewable_power.dmi'
 	icon_state = "waterwheel"
 	min_age = 5
 
 /obj/structure/civ_generator/waterwheel/rated_output()
-	if (!isturf(loc) || istype(loc, /turf/floor/beach/water))
+	if (!isturf(loc) || !river_current_direction(loc))
 		return 0
-	for (var/direction in list(NORTH, SOUTH, EAST, WEST))
-		if (river_current_direction(get_step(src, direction)))
-			return 12
-	return 0
+	return 12
+
+/obj/structure/civ_generator/waterwheel/examine(mob/user)
+	..()
+	if (isturf(loc) && !river_current_direction(loc))
+		to_chat(user, "The water here is still, so the wheel cannot turn.")
 
 /obj/structure/civ_generator/waterwheel/update_icon()
 	icon_state = (enabled && output_power > 0) ? "waterwheel_on" : "waterwheel"
@@ -112,3 +116,25 @@
 /obj/structure/civ_generator/waterwheel/stop_generation()
 	..()
 	update_icon()
+
+// The flowing water tile a builder on the bank would place a wheel on.
+/proc/waterwheel_build_target(mob/user)
+	if (!user || !isturf(user.loc))
+		return null
+	return get_step(user, user.dir)
+
+// Null when user may build result_type facing this way, otherwise why not.
+/proc/waterwheel_build_refusal(mob/user, result_type)
+	if (!ispath(result_type, /obj/structure/civ_generator/waterwheel))
+		return null
+	if (!user || !isturf(user.loc) || istype(user.loc, /turf/floor/beach/water))
+		return "Stand on the bank to build a waterwheel."
+	var/turf/T = waterwheel_build_target(user)
+	if (!istype(T, /turf/floor/beach/water) || !river_current_direction(T))
+		return "Face flowing river water to build a waterwheel."
+	if (T.density || T.iscovered())
+		return "There is no room for a waterwheel there."
+	for (var/atom/movable/A in T)
+		if (A.density)
+			return "There is no room for a waterwheel there."
+	return null

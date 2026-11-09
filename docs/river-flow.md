@@ -18,9 +18,11 @@ without reviewing and correcting the map.
 
 Flowing water attempts to move unanchored items and unrestrained living mobs
 one tile every five seconds, using normal movement and water collision rules.
-Covered water is sheltered. A waterwheel generator on land next to a flowing
-tile can feed an attached cable, subject to the electricity research and era
-rules. Examine water to see the direction. Visual current indicators and
+Covered water is sheltered. A waterwheel generator is built from the bank: the
+builder stands on land and the wheel is placed on the flowing water tile they
+face. It is anchored, so the current does not move it, and it generates only
+while its own tile flows. A cable coil used on the wheel lays the feed back
+toward the bank, subject to the electricity research and era rules. Examine water to see the direction. Visual current indicators and
 in-game behavior still need review.
 
 Seasonal mountain streams are a separate authored feature, not an automatic
