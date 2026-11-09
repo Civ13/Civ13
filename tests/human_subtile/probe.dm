@@ -454,7 +454,7 @@ var/human_subtile_fixture_phase = "initializing"
 	SA.a_intent = I_HELP
 	var/turf/pass_target = SB.loc
 	var/pass_moved = SA.Move(pass_target, get_dir(SA, pass_target))
-	human_subtile_fixture_assert(pass_help && !pass_harm && pass_moved && SA.loc == pass_target && SB.loc == pass_target, "help_intent_walks_through")
+	human_subtile_fixture_assert(pass_help && !pass_harm && pass_moved && SA.loc == pass_target && SB.loc == pass_target, "help_intent_walks_through [pass_help] [pass_harm] [pass_moved] [SA.x],[SA.y] [SB.x],[SB.y] [pass_target.x] canmove=[SA.canmove],[SB.canmove] stat=[SA.stat],[SB.stat] r=[SA.restrained()],[SB.restrained()]")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
