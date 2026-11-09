@@ -298,18 +298,19 @@ var/global/list/regrowing_stump_list = list()
 // Out of season, unseen wild plants wither a few at a time.
 /datum/flora_regrowth/proc/wither_plants()
 	var/withered = 0
-	var/checked = 0
-	for (var/obj/structure/farming/plant/P in wild_plant_list.Copy())
-		if (checked >= FLORA_WITHER_BUDGET * 4 || withered >= FLORA_WITHER_BUDGET)
-			break
-		checked++
+	var/remaining = min(wild_plant_list.len, FLORA_WITHER_BUDGET * 4)
+	while (remaining > 0 && wild_plant_list.len && withered < FLORA_WITHER_BUDGET)
+		var/obj/structure/farming/plant/P = wild_plant_list[1]
+		wild_plant_list.Cut(1, 2)
+		remaining--
 		if (QDELETED(P) || !P.wild)
-			wild_plant_list -= P
 			continue
 		if (season in P.seasons)
+			wild_plant_list += P
 			continue
 		var/turf/T = get_turf(P)
 		if (T && ecology_visible_to_players(T, FLORA_VIEW_MARGIN))
+			wild_plant_list += P
 			continue
 		qdel(P)
 		withered++
