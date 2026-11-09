@@ -8,7 +8,7 @@
 	return istype(H) && H.client && H.stat == CONSCIOUS && !H.incapacitated() && !H.restrained() && map && map.recipe_knowledge_enabled()
 
 /proc/recipe_blank_paper(obj/item/weapon/paper/P)
-	return istype(P) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
+	return istype(P) && P.type == /obj/item/weapon/paper && isnull(P.document_record) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
 
 /proc/recipe_held(mob/living/human/H, obj/item/I)
 	return I && !I.gcDestroyed && I.loc == H && (H.get_active_hand() == I || H.get_inactive_hand() == I)
@@ -53,7 +53,7 @@
 	if(!src || gcDestroyed) return FALSE
 	copying = FALSE
 	icon_state = "printingpress0"
-	if(!completed || H.client != session || !recipe_book_actor_valid(H) || !Adjacent(H) || !recipe_held(H, B) || B.node_id != id || !recipe_held(H, paper) || !recipe_blank_paper(paper)) return FALSE
+	if(!completed || !H || H.client != session || !recipe_book_actor_valid(H) || !Adjacent(H) || !recipe_held(H, B) || B.node_id != id || !recipe_held(H, paper) || !recipe_blank_paper(paper)) return FALSE
 	var/obj/item/weapon/book/node_book/result = create_node_book(get_turf(src), id)
 	if(!result) return FALSE
 	H.remove_from_mob(paper)
@@ -81,7 +81,7 @@
 	var/turf/student_place = get_turf(student)
 	// Validate both participants throughout, not just the teacher's action.
 	for(var/elapsed = 0, elapsed < RECIPE_TEACH_TIME, elapsed += 10)
-		if(!do_after(src, 10, student) || client != teacher_session || student.client != student_session || get_turf(src) != teacher_place || get_turf(student) != student_place || !recipe_teaching_valid(src, student, id)) return FALSE
+		if(!do_after(src, 10, student) || client != teacher_session || !student || student.client != student_session || get_turf(src) != teacher_place || get_turf(student) != student_place || !recipe_teaching_valid(src, student, id)) return FALSE
 	return student.learn_recipe_node(id)
 
 /obj/item/weapon/book/node_compendium
@@ -150,6 +150,9 @@
 /obj/structure/recipe_book_cache/starter
 	name = "starter recipe cache"
 	starter_only = TRUE
+
+/obj/structure/recipe_book_cache/persistence_runtime_var(key)
+	return key == "restock_checked_at" || ..()
 
 /obj/structure/recipe_book_cache/after_load()
 	. = ..()
