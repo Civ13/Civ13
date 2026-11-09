@@ -10,7 +10,7 @@ SHA-256 hashes in `receipt.json`. It never compiles or starts a daemon. Reprepar
 after every source change; an earlier receipt does not describe current bytes.
 
 Prepared scenarios: `walking`, `frontier`, `frontier-delete`, `delete`, `inventory`, `cross-z`, `legacy-step`, `legacy-cross-z`, `legacy-backstep`, `walker-backstep`, `sweep-reference`, `sweep-companion`, `sweep-container`, `sweep-cross-z`, `uncaptured-delete`, `yield`,
-`depth` and `overrun`. Positive cases assert exactly one saved animal parent and a completed
+`depth`, `overrun` and `late-reference`. Positive cases assert exactly one saved animal parent and a completed
 marker. Refusal cases assert no new marker, released capture state, and unchanged
 prior completed backup marker. The native benchmark verifies full prior-backup bytes. Typed graph roundtrips
 use a fresh reader process; full-world recovery and human inventory coherence

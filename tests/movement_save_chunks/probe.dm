@@ -145,6 +145,14 @@ var/peak_capture_tick_usage = 0
 			if(!mutations && !top && walker && saving_references[locate(2,1,1)] && !saving_references[walker])
 				walker.loc = locate(2,1,1)
 				mutations++
+		else if(world.params["scenario"] == "late-reference")
+			// Gaia 2026-11-09: after admission, before its chunk, the animal
+			// picks up a reference to a movable the walk has not reached yet.
+			if(!mutations && record && !record["ref"])
+				mutations++
+				var/obj/chunk_reference_holder/late_target = new(locate(3,1,1))
+				late_target.name = "late reference target"
+				subject.payload = list(late_target)
 		else if(world.params["scenario"] == "uncaptured-delete")
 			// An admitted animal is deleted before traversal reaches its turf.
 			if(!mutations && record && !record["ref"])
@@ -202,7 +210,7 @@ var/peak_capture_tick_usage = 0
 		del(cuffed)
 		if(mob_list.len) throw EXCEPTION("Optional-cuff fixture left registry debris")
 		subject = new(locate(4,1,1))
-		if(world.params["scenario"] == "headroom-unvisited") subject.loc = locate(1,1,1)
+		if(world.params["scenario"] in list("headroom-unvisited", "late-reference")) subject.loc = locate(1,1,1)
 		if(!map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Absent optional cuff fields rejected an ordinary animal")
 		if((world.params["scenario"] in list("legacy-step", "legacy-cross-z", "legacy-backstep")) || fixture_sweep_scenario())
 			// Like a spawner-linked turkey: excluded from the roster, legacy traversal.
@@ -308,6 +316,11 @@ var/peak_capture_tick_usage = 0
 				var/list/chunk_list = F["[map_storage.entry_path(F, found_ref)]/payload"]
 				if(legacy_list["kind"] != "list" || chunk_list["kind"] != "list" || legacy_list["ref"] != chunk_list["ref"])
 					throw EXCEPTION("Legacy/chunk shared list alias was split")
+			if(world.params["scenario"] == "late-reference")
+				if(found_x != 1) throw EXCEPTION("LATE_REFERENCE: animal was not saved on its tile")
+				if(!holder_ref) throw EXCEPTION("LATE_REFERENCE: referenced target was not saved on its tile")
+				var/list/late_payload = F["[map_storage.entry_path(F, found_ref)]/payload"]
+				if(!islist(late_payload)) throw EXCEPTION("LATE_REFERENCE: animal payload was not saved")
 			if(world.params["scenario"] == "overrun")
 				if(!map_storage.moving_save_demoted["\ref[subject]"]) throw EXCEPTION("OVERRUN: slow root was not moved to the turf path")
 			if(!fexists("map_saves/save_complete.txt")) throw EXCEPTION("completed marker missing")
