@@ -52,6 +52,7 @@ try {
         LocalBotTests.Run(root);
         Console.WriteLine("PASS bot command: " + await BotCommandTests.Run(root) + " assertions; --bot parsing, detached start, start/stop/restart sequences.");
         LocalHelpTests.Run(root);
+        StartMenuShortcutTests.Run(root);
         return 0;
     }
     if (args.SequenceEqual(new[] { "--presence-only" })) {
@@ -76,6 +77,7 @@ try {
     assertions += LocalBotTests.Run(root);
     assertions += await BotCommandTests.Run(root);
     assertions += LocalHelpTests.Run(root);
+    assertions += StartMenuShortcutTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
     assertions += await DiscordSignInTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";

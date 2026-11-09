@@ -16,6 +16,12 @@ Val asked (2026-11-09) that the bot be manageable through the launcher without i
 helper can restart it. `Civ13.exe --bot ACTION` (BotCommand.cs) reuses LocalBot.Control; only start
 differs from the window: CIM Win32_Process.Create detaches the supervisor, paths passed through env vars.
 
+<!-- 2026-11-09: Start-menu entry -->
+Val asked (2026-11-09) that agents can open the launcher later. The window keeps a per-user Start-menu
+entry "Civ13 Launcher" (StartMenuShortcut.cs) pointing at the running Civ13.exe, rewritten only when
+missing or pointing elsewhere; temp-folder copies and non-Civ13.exe hosts are skipped. Computer use
+resolves apps from the Start menu, so a portable exe without an entry cannot be opened by name.
+
 <!-- 2026-11-07: One region row -->
 The Host server tab's One region row passes `--region` to shard_group.py for every group action,
 including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only; adopt,
