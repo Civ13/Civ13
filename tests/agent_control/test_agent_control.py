@@ -2754,7 +2754,7 @@ class VehicleParityTests(unittest.TestCase):
 
     def test_drive_action_is_wired(self):
         characters = dm_source("agent_characters.dm")
-        self.assertIn('"stance", "drive")', characters)
+        self.assertIn('"stance", "drive", ', characters)
         self.assertIn("detail = agent_drive(C, req)", characters)
         self.assertIn('out["driving"] = driving', characters)
         self.assertIn("I.secondary_attack_self(M)", characters)
@@ -2765,6 +2765,44 @@ class VehicleParityTests(unittest.TestCase):
                        "MW.turndir(H, \"right\")", "TC.increase_distance(1)", "TC.start_rotation(turn)", "TC.stop_rotation()",
                        "RC.start_move_drone(d)", "RC.stop_move_drone()"):
             self.assertIn(anchor, vehicles)
+
+
+class ScreenTests(unittest.TestCase):
+    """agent_screens.dm keeps NanoUI and tgui screens open for agent bodies and presses their buttons."""
+
+    def test_open_is_hooked_for_both_renderers(self):
+        screens = dm_source("agent_screens.dm")
+        self.assertIn("/datum/nanoui/open()\n\tif (agent_screen_viewer(user))", screens)
+        self.assertIn("/datum/nanoui/tgui/open()\n\tif (agent_screen_viewer(user))", screens)
+        self.assertIn("GLOB.nanomanager.ui_opened(src)", screens)
+        self.assertIn("return allowed_actions()", screens)
+        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
+        self.assertLess(dme.index("code\\modules\\nano\\tgui.dm"), dme.index("code\\modules\\agent_control\\agent_screens.dm"),
+                        "the open() overrides must compile after the NanoUI and tgui definitions")
+
+    def test_topic_mirrors_the_nanoui_checks(self):
+        base = (ROOT / "code/modules/nano/_nanoui.dm").read_text(encoding="utf-8")
+        for rule in ("if (status != STATUS_INTERACTIVE || user != usr)", "if (consume_topic(href, href_list))",
+                     "if ((src_object && src_object.Topic(href, href_list, state)) || map_update)"):
+            self.assertIn(rule, base, "NanoUI Topic changed: update agent_topic in agent_screens.dm")
+        screens = dm_source("agent_screens.dm")
+        self.assertIn("if (status != STATUS_INTERACTIVE || user != usr)", screens)
+        self.assertIn("src_object.Topic(href, params, state)", screens)
+        tgui = (ROOT / "code/modules/nano/tgui.dm").read_text(encoding="utf-8")
+        self.assertIn('for (var/key in list("x", "y", "cells", "stroke_continue"))', screens)
+        self.assertIn('keys += list("x", "y")', tgui)
+        self.assertIn('keys += list("cells", "stroke_continue")', tgui)
+
+    def test_gameplay_states_admit_agent_bodies(self):
+        self.assertIn("if (stat || !nano_viewer_present(src))", (ROOT / "code/modules/nano/interaction/base.dm").read_text(encoding="utf-8"))
+        recruitment = (ROOT / "code/game/mob/groups/recruitment_station.dm").read_text(encoding="utf-8")
+        self.assertEqual(recruitment.count("nano_viewer_present("), 3)
+
+    def test_screen_action_is_wired(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('"drive", "screen")', characters)
+        self.assertIn("detail = agent_screen(C, req, from_queue)", characters)
+        self.assertIn('out["screens"] = agent_screen_rows(C.body)', characters)
 
 
 if __name__ == "__main__":

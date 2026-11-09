@@ -70,7 +70,7 @@
 /mob/living/human/var/tmp/datum/recruitment_panel/recruitment_panel = null
 
 /mob/living/human/proc/open_recruitment_panel(obj/structure/recruitment_station/S = null)
-	if (!client || !map)
+	if (!nano_viewer_present(src) || !map)
 		return
 	if (S && !Adjacent(S))
 		return
@@ -93,7 +93,7 @@
 	open_recruitment_panel(null)
 
 /datum/topic_state/recruitment_panel/can_use_topic(var/datum/recruitment_panel/P, var/mob/user)
-	if (!istype(P) || !user || user != P.viewer || !user.client || !map)
+	if (!istype(P) || !user || user != P.viewer || !nano_viewer_present(user) || !map)
 		return STATUS_CLOSE
 	var/mob/living/human/H = user
 	if (H.stat || H.restrained())
@@ -238,7 +238,7 @@
 
 // Every action rechecks who is acting and where, after any prompt too.
 /datum/recruitment_panel/proc/still_valid(mob/living/human/H)
-	if (H != viewer || QDELETED(H) || H.stat || H.restrained() || !H.client)
+	if (H != viewer || QDELETED(H) || H.stat || H.restrained() || !nano_viewer_present(H))
 		return FALSE
 	if (station && (QDELETED(station) || !isturf(station.loc) || !H.Adjacent(station)))
 		return FALSE

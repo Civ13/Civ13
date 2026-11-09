@@ -601,22 +601,24 @@
 	// Menu windows the character was shown (docs/agent-control.md#windows).
 	out["windows"] = C.window_rows(text2num("[req["window_since"]]") || 0)
 	out["last_window"] = C.window_serial
+	// Machine screens (NanoUI and tgui) the character has open (docs/agent-control.md#screens).
+	out["screens"] = agent_screen_rows(C.body)
 	return out
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
 			ready = max(ready, world.time + 2)
-	if (action in list("click", "use", "craft", "verb", "throw", "topic"))
+	if (action in list("click", "use", "craft", "verb", "throw", "topic", "screen"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote", "ooc", "bug_report"))
 		ready = max(ready, next_speech)
@@ -833,6 +835,8 @@
 			detail = agent_stance(C, req)
 		if ("drive")
 			detail = agent_drive(C, req)
+		if ("screen")
+			detail = agent_screen(C, req, from_queue)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -994,6 +998,10 @@
 		agent_fail("bad_args", "stance takes move, defense, tactic, secondary, face_lock or aim")
 	if (action == "drive" && !(lowertext("[step["control"]]") in list("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")))
 		agent_fail("bad_args", "drive control must be forward, reverse, turn_left, turn_right, gear_up, gear_down, climb or descend")
+	if (action == "screen" && isnull(step["screen"]))
+		agent_fail("bad_args", "screen needs screen (a number or title from character_observe screens)")
+	if (action == "screen" && step["close"] != TRUE && step["close"] != 1)
+		agent_text_arg(step, "act", 32)
 	if (action == "topic" && isnull(step["link"]) && isnull(step["label"]))
 		agent_fail("bad_args", "topic needs link (a number) or label")
 	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))
