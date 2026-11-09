@@ -1274,6 +1274,7 @@
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"
+#include "code\modules\persistence\save_validator.dm"
 #include "code\modules\persistence\shard_group.dm"
 #include "code\modules\persistence\stream\level_stream.dm"
 #include "code\modules\persistence\stream\save_stream.dm"

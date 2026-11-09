@@ -359,6 +359,32 @@ it past two minutes) and the standby reopens its own port when the bind fails;
 Linux DreamDaemon has no `-close`, so a released world leaves with `del(world)`
 there instead of rebooting out.
 
+## Save validator: faster starts after a crash
+
+A start skips the per-entry walk of its save when `map_saves/validated.json`
+vouches for those files on the running build. Handover and ordinary saves
+leave only a structural record (or none), so without help the next start after
+a crash, a power loss or a restart without new code walks every saved entry
+(Gaia: about 2.5 minutes).
+
+The host service (`supervise`, every half minute) fills that gap. When a
+region has a completed save with no full record and no pending restart
+intent, it copies the save and the region's build files (the dmb slots, the
+live `.rsc`, the savestream shim and helper, `config/` without its tokens) into
+`<root>/.validator/<region>` and boots DreamDaemon there with
+`-params validate_save=1` (`code/modules/persistence/save_validator.dm`). That
+world never opens the round, hub entry, scheduler or any link, refuses every
+Topic, runs the full check at the save's height, writes the record and ends.
+The supervisor copies the record into the region only while the region's own
+files still match its checksums, so a newer save just leaves it unused.
+
+One validator runs at a time for the whole group, never during a handover or
+an action, and only with `save_validator_min_free_mb` (default 2560) of free
+memory. A failed check is reported once in `supervise`'s result and waits for
+the next save; a validator still running after an hour is ended. Set
+`"save_validator": false` in the group config to turn it off. A Gaia check
+needs about 1 GB for a few minutes. The state is in `<root>/.validator/state.json`.
+
 ## Player help ("Ask for help")
 
 With a `player_help` key, the host service (`gaia_host.py serve`) also keeps

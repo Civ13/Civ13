@@ -87,6 +87,13 @@ var/world_is_open = TRUE
 	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
 		loop_checks = FALSE
 	config.post_load()
+	// The outside save validator (save_validator.dm) checks a copied save and ends:
+	// nothing past this point (hub, scheduler, round, relays) may start.
+	if (persistence_validate_only_requested())
+		persistence_validate_only = TRUE
+		world.visibility = FALSE
+		persistence_run_validate_only()
+		return
 	// A standby world stays off the hub until a handover opens the region's port.
 	if (persistence_restart.standby)
 		world.visibility = FALSE
@@ -217,6 +224,9 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/static/list/lasttimeaddr = list()
 	var/static/list/topic_handlers = TopicHandlers()
+
+	if (persistence_validate_only)
+		return
 
 	//LEAVE THIS COOLDOWN HANDLING IN PLACE, OR SO HELP ME I WILL MAKE YOU SUFFER
 	if (bannedsourceaddrs[addr])

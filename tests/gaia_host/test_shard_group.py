@@ -1795,3 +1795,106 @@ class HandoverTests(unittest.TestCase):
         result = json.loads(out.getvalue())
         self.assertEqual((code, sorted(result['accepted'])), (0, ['gaia']), result)
         self.assertIn('deep', result['refused'])
+
+
+class SaveValidatorTests(unittest.TestCase):
+    """The outside save validator (ensure_save_validation) and its record hand-back."""
+
+    GENERATION = 'round-v2:' + 'a' * 32
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.base = Path(self.tmp.name)
+        self.group = {'group': 'europe', 'root': str(self.base / 'regions'), 'daemon': 'DreamDaemon',
+                      'regions': [{'id': 'gaia', 'port': 1720}, {'id': 'deep', 'port': 1721}],
+                      'transfers': False}
+        self.region = self.base / 'regions' / 'gaia'
+        self.saves = self.region / 'map_saves'
+        self.saves.mkdir(parents=True)
+        for name, body in (('map.txt', 'meta'), ('round.json', '{}'), ('1.sav', 'level one'), ('1.stream.sav', 'stream')):
+            (self.saves / name).write_text(body)
+        (self.saves / 'save_complete.txt').write_text(self.GENERATION + '\n')
+        (self.region / 'region.dmb').write_bytes(b'dmb')
+        (self.region / 'region.rsc').write_bytes(b'rsc')
+        (self.region / 'libsavestream.so').write_bytes(b'shim')
+        (self.region / 'config').mkdir()
+        (self.region / 'config' / 'config.txt').write_text('SERVER_NAME x\n')
+        (self.region / 'config' / 'lifecycle-token.txt').write_text('secret\n')
+        self.started, self.alive, self.clock = [], set(), [1000.0]
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def config(self):
+        return {**self.group, '_path': str(self.base / 'group.json')}
+
+    def step(self, free=None):
+        def start(argv, cwd, log):
+            self.started.append((argv, Path(cwd)))
+            self.alive.add(77)
+            return 77
+        with mock.patch.object(shard_group, 'region_config', lambda group, region: {'state_dir': str(self.base / 'regions' / region['id'] / 'data' / 'shard-host')}):
+            return shard_group.ensure_save_validation(self.config(), start, free_mb=lambda: free,
+                                                      now=lambda: self.clock[0], alive=lambda pid: pid in self.alive,
+                                                      terminate=lambda pid: self.alive.discard(pid))
+
+    def finish_validator(self, ok=True, files=None):
+        """What the validate-only world leaves behind."""
+        folder = self.started[-1][1]
+        sums = files or {name: shard_group.file_md5(folder / 'map_saves' / name) for name in ('map.txt', 'round.json', '1.sav', '1.stream.sav')}
+        record = {'version': 2, 'kind': 'full', 'generation': self.GENERATION, 'files': sums, 'roofs': []}
+        if ok:
+            (folder / 'map_saves' / 'validated.json').write_text(json.dumps(record))
+        (folder / 'validation_result.json').write_text(json.dumps({'ok': 1 if ok else 0, 'full': 1 if ok else 0, 'error': None if ok else 'Missing saved z-level 2'}))
+        self.alive.discard(77)
+
+    def test_validates_a_new_save_in_a_private_copy_and_hands_the_record_back(self):
+        self.assertEqual({'save_validation': {'gaia': 'started'}}, self.step())
+        argv, folder = self.started[0]
+        self.assertIn('validate_save=1', argv)
+        self.assertEqual('region.dmb', argv[argv.index('DreamDaemon') + 1])
+        self.assertTrue((folder / 'map_saves' / '1.stream.sav').exists())
+        self.assertTrue((folder / 'region.rsc').exists() and (folder / 'libsavestream.so').exists())
+        self.assertTrue((folder / 'config' / 'config.txt').exists())
+        self.assertFalse((folder / 'config' / 'lifecycle-token.txt').exists())
+        self.assertEqual({}, self.step())  # still running
+        self.finish_validator()
+        self.assertEqual({'save_validation': {'gaia': 'validated'}}, self.step())
+        self.assertEqual('full', json.loads((self.saves / 'validated.json').read_text())['kind'])
+        self.assertFalse(folder.exists())
+        self.assertEqual({}, self.step())  # nothing left to check
+
+    def test_a_save_that_changed_meanwhile_gets_no_record(self):
+        self.step()
+        (self.saves / '1.sav').write_text('a newer level one')
+        self.finish_validator()
+        self.assertEqual({'save_validation': {'gaia': 'superseded'}}, self.step())
+        self.assertFalse((self.saves / 'validated.json').exists())
+
+    def test_a_failed_check_is_not_retried_until_the_next_save(self):
+        self.step()
+        self.finish_validator(ok=False)
+        result = self.step()
+        self.assertIn('failed', result['save_validation']['gaia'])
+        self.assertFalse((self.saves / 'validated.json').exists())
+        self.assertEqual({}, self.step())
+        (self.saves / 'save_complete.txt').write_text('round-v2:' + 'b' * 32 + '\n')
+        self.assertEqual({'save_validation': {'gaia': 'started'}}, self.step())
+
+    def test_waits_for_memory_a_pending_restart_and_an_existing_record(self):
+        self.assertEqual({}, self.step(free=1000))
+        (self.saves / 'restart_intent.json').write_text('{}')
+        self.assertEqual({}, self.step())
+        (self.saves / 'restart_intent.json').unlink()
+        (self.saves / 'validated.json').write_text(json.dumps({'kind': 'full', 'generation': self.GENERATION}))
+        self.assertEqual({}, self.step())
+        self.group['save_validator'] = False
+        (self.saves / 'validated.json').unlink()
+        self.assertEqual({}, self.step())
+        self.assertEqual([], self.started)
+
+    def test_a_hung_validator_is_ended(self):
+        self.step()
+        self.clock[0] += shard_group.VALIDATOR_TIMEOUT_SECONDS + 1
+        self.assertEqual({'save_validation': {'gaia': 'failed: timed out'}}, self.step())
+        self.assertNotIn(77, self.alive)

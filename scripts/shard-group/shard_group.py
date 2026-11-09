@@ -1769,6 +1769,189 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
     return {'stopped': stopped, 'forced': sorted(running)}
 
 
+# -- outside save validator ---------------------------------------------------------
+# A region's start skips the per-entry walk of its save when map_saves/validated.json
+# vouches for the files on the running build. A handover or an ordinary save leaves
+# only a structural record (or none), so the next start after a crash, a power loss or
+# a restart without new code walked every entry in the world (Gaia: about 2.5 min).
+# Between saves the supervisor copies the save and the region's build into a private
+# folder and boots it there with -params validate_save=1 (code/modules/persistence/
+# save_validator.dm): that world runs the full check, writes the record and ends. The
+# record comes back only while the region's own files still match its checksums.
+VALIDATOR_DIR = '.validator'
+VALIDATOR_BUILD_FILES = ('civ13.dmb', 'region.dmb', 'region.b.dmb')  # persistence_build_identity() hashes these
+VALIDATOR_HELPERS = ('savestream.dll', 'savestream_helper.exe', 'libsavestream.so', 'savestream_helper')
+VALIDATOR_SKIPPED_SAVES = ('validated.json', 'restart_intent.json')
+VALIDATOR_TIMEOUT_SECONDS = 3600
+VALIDATOR_MIN_FREE_MB = 2560
+
+
+def file_md5(path):
+    digest = hashlib.md5()
+    with open(path, 'rb') as handle:
+        for block in iter(lambda: handle.read(1 << 20), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def save_generation(saves):
+    """The generation of a completed save in saves, or None while there is none or a
+    restart intent is pending (the world is saving, handing over or restoring)."""
+    marker = saves / 'save_complete.txt'
+    if (saves / 'restart_intent.json').exists() or not marker.exists():
+        return None
+    try:
+        return marker.read_text(encoding='utf-8').strip() or None
+    except OSError:
+        return None
+
+
+def full_record_for(saves, generation):
+    record = read_record(saves / 'validated.json')
+    return bool(record) and record.get('kind') == 'full' and record.get('generation') == generation
+
+
+def save_snapshot(saves):
+    """(name, size, mtime) of every save file the validator copies."""
+    rows = []
+    for path in sorted(saves.iterdir()):
+        if path.is_file() and path.name not in VALIDATOR_SKIPPED_SAVES:
+            stat = path.stat()
+            rows.append((path.name, stat.st_size, stat.st_mtime_ns))
+    return rows
+
+
+def record_matches_saves(record, saves, generation):
+    """Whether a validator record vouches for exactly the files now in saves."""
+    files = record.get('files') if isinstance(record, dict) else None
+    if record.get('kind') != 'full' or record.get('generation') != generation or not isinstance(files, dict) or not files:
+        return False
+    try:
+        return all(file_md5(saves / name) == digest for name, digest in files.items())
+    except OSError:
+        return False
+
+
+def validator_state_path(group):
+    return Path(group['root']) / VALIDATOR_DIR / 'state.json'
+
+
+def validator_argv(group, dmb):
+    argv = [group['daemon'], dmb, '0', '-trusted', '-invisible', '-params', 'validate_save=1', '-log', 'validator.log']
+    if os.name == 'nt':
+        argv.insert(4, '-close')  # dd.exe would stay open after the world ends
+    elif shutil.which('nice'):
+        argv = ['nice', '-n', '10'] + argv  # the live worlds keep priority
+    return argv
+
+
+def prepare_validator(group, region_id, folder):
+    """Copy region_id's completed save and build into folder. Returns the generation,
+    or None when there is nothing to check or the save changed while it was copied."""
+    path = region_dir(group, region_id)
+    saves = path / 'map_saves'
+    generation = save_generation(saves)
+    if not generation or full_record_for(saves, generation):
+        return None
+    config = region_config(group, next(r for r in group['regions'] if r['id'] == region_id))
+    live = read_record(Path(config['state_dir']) / 'build.json').get('file')  # RegionHost.live_dmb_name()
+    live = live if live in DMB_SLOTS else DMB_SLOTS[0]
+    if not (path / live).exists():
+        return None
+    if folder.exists():
+        shutil.rmtree(folder)
+    (folder / 'map_saves').mkdir(parents=True)
+    before = save_snapshot(saves)
+    for name, _size, _mtime in before:
+        shutil.copy2(saves / name, folder / 'map_saves' / name)
+    if save_snapshot(saves) != before or save_generation(saves) != generation:
+        shutil.rmtree(folder)
+        return None  # a save ran meanwhile; the next pass copies the new one
+    for name in VALIDATOR_BUILD_FILES + VALIDATOR_HELPERS:
+        if (path / name).exists():
+            shutil.copy2(path / name, folder / name)
+    rsc = live[:-4] + '.rsc'
+    if (path / rsc).exists():
+        shutil.copy2(path / rsc, folder / rsc)
+    # The world reads its settings at boot; it never answers Topics, so no token is copied.
+    if (path / 'config').is_dir():
+        shutil.copytree(path / 'config', folder / 'config', ignore=shutil.ignore_patterns('*token*'))
+    write_record(folder / 'validator.json', region=region_id, generation=generation, dmb=live)
+    return generation
+
+
+def finish_validator(group, state):
+    """Read a finished validator's result; copy its record into the region if the region's
+    files still match it. Returns the outcome."""
+    folder = Path(state['dir'])
+    saves = region_dir(group, state['region']) / 'map_saves'
+    result = read_record(folder / 'validation_result.json')
+    record = read_record(folder / 'map_saves' / 'validated.json')
+    generation = state['generation']
+    if not result.get('ok') or not result.get('full') or not record:
+        outcome = 'failed: %s' % (result.get('error') or 'no result')[:300]
+    elif save_generation(saves) != generation or not record_matches_saves(record, saves, generation):
+        outcome = 'superseded'  # a newer save; the next pass checks that one
+    elif full_record_for(saves, generation):
+        outcome = 'already validated'
+    else:
+        temporary = saves / 'validated.json.validator'
+        temporary.write_text(json.dumps(record), encoding='utf-8')
+        os.replace(temporary, saves / 'validated.json')
+        outcome = 'validated'
+    shutil.rmtree(folder, ignore_errors=True)
+    return outcome
+
+
+def ensure_save_validation(group, start=None, free_mb=None, now=time.time, alive=None, terminate=None):
+    """One step of the outside save validator. Returns what it did, or {} when idle."""
+    if group.get('save_validator') is False:
+        return {}
+    alive = alive or process_alive
+    state_path = validator_state_path(group)
+    state = read_record(state_path)
+    done = state.get('done') if isinstance(state.get('done'), dict) else {}
+    if state.get('pid'):
+        if alive(state['pid']):
+            if now() - state.get('started', 0) < VALIDATOR_TIMEOUT_SECONDS:
+                return {}
+            (terminate or Platform().terminate)(state['pid'])
+            outcome = 'failed: timed out'
+            shutil.rmtree(state['dir'], ignore_errors=True)
+        else:
+            outcome = finish_validator(group, state)
+        if outcome != 'superseded':
+            done[state['region']] = {'generation': state['generation'], 'outcome': outcome, 'at': int(now())}
+        write_record(state_path, done=done)
+        return {'save_validation': {state['region']: outcome}}
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    if group_busy(group):
+        return {}
+    for region in group['regions']:
+        saves = region_dir(group, region['id']) / 'map_saves'
+        generation = save_generation(saves)
+        if not generation or full_record_for(saves, generation):
+            continue
+        if (done.get(region['id']) or {}).get('generation') == generation:
+            continue  # checked once already; a failure waits for the next save
+        free = free_mb() if free_mb else Platform().free_memory_mb()
+        if free is not None and free < int(group.get('save_validator_min_free_mb', VALIDATOR_MIN_FREE_MB)):
+            return {}
+        folder = Path(group['root']) / VALIDATOR_DIR / region['id']
+        try:
+            generation = prepare_validator(group, region['id'], folder)
+        except (OSError, StopIteration) as error:
+            shutil.rmtree(folder, ignore_errors=True)
+            return {'save_validation_error': {region['id']: str(error)[:300]}}
+        if not generation:
+            continue
+        dmb = read_record(folder / 'validator.json')['dmb']
+        pid = (start or detach)(validator_argv(group, dmb), folder, folder / 'validator.out')
+        write_record(state_path, done=done, pid=pid, region=region['id'], generation=generation, dir=str(folder), started=int(now()))
+        return {'save_validation': {region['id']: 'started'}}
+    return {}
+
+
 def supervise(group, start=detach):
     """Start the group's routing relay, transfer agents, coordinator or Player Help bridges if any is not running.
 
@@ -1788,6 +1971,11 @@ def supervise(group, start=detach):
         started['player_help'] = helped
     if help_errors:
         started['player_help_errors'] = help_errors
+    # The validator is a side job: its failure must not keep the helpers down.
+    try:
+        started.update(ensure_save_validation(group, start))
+    except (OSError, RuntimeError, ValueError, KeyError) as error:
+        started['save_validation_error'] = str(error)[:300]
     if not group['transfers']:
         return started
     # Helpers that run old code are restarted, but never in the middle of an action.
