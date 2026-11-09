@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c6120453b7bcc356870c6295c1e0caf31fad739b'
+WIKI_REVIEWED_REVISION = 'e529d432fba239a311bd7994698db229c53e089e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
