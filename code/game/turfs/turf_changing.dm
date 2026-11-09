@@ -20,6 +20,7 @@
 	var/datum/lighting_corner/old_corner_sw = corner_sw
 	var/datum/lighting_corner/old_corner_nw = corner_nw
 	var/old_radiation = radiation
+	var/old_terrain_grade = terrain_grade
 	var/turf/W
 	if(nomads_event && ispath(path, /turf/floor/lava))
 		W = new path(src, null, nomads_event)
@@ -27,6 +28,8 @@
 		W = new path(src)
 
 	W.levelupdate()
+	// Graded ground stays at its height when the turf on it changes.
+	W.terrain_grade = old_terrain_grade
 	. =  W
 //end of else
 	lighting_overlay = old_lighting_overlay

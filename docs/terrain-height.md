@@ -88,6 +88,19 @@ keeps its height and shading, but a step uphill onto it costs half
 Grass must be cleared with a shovel first, and snow, covers or crops block it.
 Tamped earth never turns to mud, and a shovel breaks it back into plain dirt.
 
+Grading changes the heights themselves, one level at a time. A shovel on
+disarm intent cuts a dirt or tamped-earth tile down a level (about 10 seconds,
+faster with strength), leaves loose dirt and drops a dirt pile
+(`/obj/item/weapon/barrier`). The rammer on a tile with a dirt pile on it
+packs the pile in, raises the tile a level and leaves tamped earth. A tile
+moves at most `TERRAIN_GRADE_LIMIT` (2) levels from the file's height and
+stays within 0-15; snow, covers, crops, dense objects or water within one tile
+block it. The change is `turf.terrain_grade` (saved only when non-zero,
+carried across `ChangeTurf`, re-applied by `after_load`). `set_level` patches
+the height rows and recomputes the corner lights around the tile
+(`light_char`, the same maths as `light_rows`); the original file rows stay in
+`base_rows_by_z`.
+
 ## Tools
 
 `scripts/terrain_heights.py`:
