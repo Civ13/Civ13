@@ -95,7 +95,7 @@ before enabling personal knowledge or accepting round-map balance changes.
 
 ## Verification
 
-The focused offline suite is `python scripts/ci_baseline.py unit --suite research_coverage`.
+The focused offline suite is `python scripts/ci_baseline.py unit --suite research_coverage --output data/research-coverage.json`.
 It includes missing-map and unknown-node negative controls, exact basic/exclusion
 boundaries, material aliases, route-specific factory requirements and runtime
 material admission/recheck wiring. The full pinned compiler, recipe fixture and

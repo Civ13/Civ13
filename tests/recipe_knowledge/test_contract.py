@@ -39,8 +39,9 @@ class KnowledgeContract(unittest.TestCase):
         self.assertIn('map.is_node_done(civilization, node_id)', body)
         self.assertIn('recipe_knowledge_initialized = TRUE', body)
         restore = proc(read('code/modules/persistence/player_reclaim.dm'), '/map_storage/proc/finish_player_restoration')
-        self.assertLess(restore.index('H.migrate_recipe_knowledge()'), restore.index('persistence_player_restore_ready = TRUE'))
-        self.assertIn('H.persistence_restored', restore)
+        self.assertLess(restore.index('H.finish_character_knowledge_restoration()'), restore.index('persistence_player_restore_ready = TRUE'))
+        self.assertIn('persistence_restored_characters', restore)
+        self.assertIn('migrate_recipe_knowledge()', proc(self.source, '/mob/living/human/finish_character_knowledge_restoration'))
         self.assertNotIn('migrate_recipe_knowledge', proc(self.source, '/mob/living/human/proc/knows_recipe_node'))
     def test_timed_reusable_book_rechecks_ceiling_and_identity(self):
         book = proc(self.source, '/obj/item/weapon/book/node_book/attack_self')

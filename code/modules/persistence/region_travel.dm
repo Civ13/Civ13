@@ -422,6 +422,9 @@ var/global/list/region_travel_carry_types = list(
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
 	H.regenerate_icons()
+	// Legacy arrivals snapshot once after destination faction restoration, not
+	// on a later login or after the research clock has advanced.
+	H.finish_character_knowledge_restoration()
 	return H
 
 // A rebuilt magazine holds exactly the rounds that travelled.

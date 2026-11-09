@@ -5,6 +5,11 @@
 /mob/living/human/persistence_runtime_var(key)
 	return key == "persistence_restored" || key == "laddervision" || ..()
 
+// All restored bodies, including legacy unowned ones, await final world state.
+var/global/list/persistence_restored_characters = list()
+/datum/proc/finish_character_knowledge_restoration()
+	return
+
 var/global/list/persistence_restored_bodies = list()
 var/global/persistence_player_restore_ready = FALSE
 var/global/list/persistence_player_claims = list()
@@ -76,10 +81,12 @@ var/global/list/persistence_player_claims = list()
 /map_storage/proc/reset_player_restoration()
 	persistence_player_restore_ready = FALSE
 	persistence_restored_bodies = list()
+	persistence_restored_characters = list()
 
 /map_storage/proc/register_restored_player(datum/D)
 	if(!istype(D, /mob/living/human)) return
 	var/mob/living/human/H = D
+	persistence_restored_characters |= H
 	var/account = H.persistence_owner_ckey
 	if(isnull(account)) return
 	if(!persistence_owner_valid(account))
@@ -159,8 +166,9 @@ var/global/list/persistence_player_claims = list()
 	if(player_restoration_blocked())
 		return FALSE
 	// Metadata and all body fields are restored before the migration snapshot.
-	for(var/mob/living/human/H in human_mob_list)
-		if(H.persistence_restored) H.migrate_recipe_knowledge()
+	for(var/mob/living/human/H in persistence_restored_characters)
+		H.finish_character_knowledge_restoration()
+	persistence_restored_characters = list()
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
 		var/mob/new_player/waiting = C.mob

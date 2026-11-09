@@ -48,7 +48,10 @@ def compile_body(text, signature, args, env, fields=()):
         if line.startswith('var/'):
             left,right=line.split(' = ',1)
             line=left.rsplit('/',1)[-1]+' = '+right
-        if line.startswith('if ('):
+        inline = re.fullmatch(r'if \((.*)\) return (.+)', line)
+        if inline:
+            line = 'if '+expr(inline[1], fields)+': return '+expr(inline[2], fields)
+        elif line.startswith('if ('):
             if not line.endswith(')'):
                 raise AssertionError(line)
             line='if '+expr(line[4:-1],fields)+':'
