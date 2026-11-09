@@ -327,7 +327,9 @@
 	var/deadline = world.time + duration
 	if (client)
 		client.move_delay = max(client.move_delay, deadline)
-	human_subtile_travel(n, direct, deadline, FALSE, posture)
+	// A held key crawls freely like walking: a whole tile's distance from
+	// wherever the body is, sliding along walls, stopping on release.
+	human_subtile_travel(n, direct, deadline, FALSE, posture, (held_movement_direction() == direct) ? FINE_STEP_HELD : FALSE)
 	return TRUE
 
 /mob/living/human/proc/set_human_subtile(enabled)
