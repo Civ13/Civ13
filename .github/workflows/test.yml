@@ -1201,6 +1201,10 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/light-plane-tools"
           "$RUNNER_TEMP/light-plane-tools/bin/python" -m pip install Pillow==11.3.0
           "$RUNNER_TEMP/light-plane-tools/bin/python" -B -m unittest discover -s tests/light_plane_composition -p 'test_*.py' -v
+          # exclusion_dispatch checks ancestry of reviewed commits that never reached master.
+          for sha in c4585fabaf81e1357054b4527d71d4f3a2d8a0b2 b2f6845438391f9874834d4c59cc1115f35c04b5 4f2868cd58e89ed99eda715b3241ff980d2de41d; do
+            git cat-file -e "$sha^{commit}" 2>/dev/null || git fetch --no-tags --quiet "https://github.com/${{ github.repository }}" "$sha"
+          done
           python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
           python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/enabled"
           python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/disabled"
