@@ -30,7 +30,7 @@ class VendorAndLegacy(unittest.TestCase):
                 if re.search(r'^\s*npc_subtile_enabled\s*=\s*TRUE\s*$', line):
                     declarations.append(path.relative_to(ROOT).as_posix())
         # Vendors opt in by type; the near-player auto admission sets it at runtime.
-        self.assertEqual(declarations, ['code/game/mob/living/simple_animal/subtile_movement.dm', 'code/game/objects/structures/vending/npc_vendors.dm'])
+        self.assertEqual(sorted(declarations), ['code/game/mob/living/simple_animal/subtile_movement.dm', 'code/game/objects/structures/vending/npc_vendors.dm'])
         for flag in ('npc_subtile_enabled', 'npc_subtile_follow_enabled', 'npc_subtile_flee_enabled',
                      'npc_subtile_pet_enabled', 'npc_subtile_species_enabled',
                      'npc_subtile_recovery_enabled', 'npc_subtile_large_exit_enabled'):
