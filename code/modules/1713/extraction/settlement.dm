@@ -57,7 +57,7 @@
 			if (!service.store.valid_profile(before, owner) || !service.store.valid_profile(after, owner) || before["state"] != "home" || after["state"] != "home" || after["revision"] != before["revision"] + 1 || before["level"] != after["level"] || before["raid_sequence"] != after["raid_sequence"] || !valid_wallet(before) || !valid_wallet(after)) return FALSE
 			if (!service.insurance_profile_valid(before) || !service.insurance_profile_valid(after) || md5(json_encode(before["insurance_claims"])) != md5(json_encode(after["insurance_claims"])) || md5(json_encode(before["insurance_recovered"])) != md5(json_encode(after["insurance_recovered"])) || md5(json_encode(before["insurance_mailbox"])) != md5(json_encode(after["insurance_mailbox"]))) return FALSE
 			var/datum/extraction_session/validator = new
-			if (!validator.valid_entries(before["stash"], before["level"] * 16) || !validator.valid_entries(after["stash"], after["level"] * 16)) return FALSE
+			if (!validator.valid_entries(before["stash"], extraction_profile_capacity(before)) || !validator.valid_entries(after["stash"], extraction_profile_capacity(after))) return FALSE
 			var/list/old_ids = service.store.recovery_ids(before)
 			var/list/new_ids = service.store.recovery_ids(after)
 			if (!islist(old_ids) || !islist(new_ids)) return FALSE

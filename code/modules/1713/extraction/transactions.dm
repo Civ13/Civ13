@@ -90,7 +90,7 @@
 	return json_decode(json_encode(profile))
 
 /datum/extraction_session/proc/capacity()
-	return profile["level"] * 16
+	return extraction_profile_capacity(profile)
 
 // Entries are opaque equipment graphs here; the production codec validates the
 // actual type/field/content schema before any game object is materialized.
