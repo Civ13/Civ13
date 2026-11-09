@@ -238,7 +238,11 @@ var/list/human_subtile_crawl_changes = list()
 	human_subtile_fixture_place(F, 10, 0)
 	F.movement_eastwest = EAST
 	var/dbg = "ready=[F.human_subtile_crawl_ready(EAST)] auth=[F.human_subtile_crawl_authority(F.client)] en=[F.human_subtile_enabled] pend=[F.human_subtile_default_pending] tx=[F.human_subtile_transaction] lying=[F.lying] own=[F.human_subtile_offset_owned] held=[F.held_movement_direction()]"
-	human_subtile_crawl_action(F, "scramble", EAST)
+	F.scrambling = TRUE
+	var/crawl_start = world.time
+	var/crawl_ret = F.human_subtile_crawl_move(get_step(F, EAST), 9, "scramble")
+	dbg += " ret=[crawl_ret] dt=[world.time - crawl_start] en2=[F.human_subtile_enabled]"
+	F.scrambling = FALSE
 	F.movement_eastwest = null
 	human_subtile_crawl_assert(F.x == 9 && F.step_x == 10 && F.human_subtile_offset_owned && !F.human_subtile_transaction, "crawl_held_slides_from_offset [dbg] [F.x] [F.step_x] [F.human_subtile_offset_owned] [F.human_subtile_transaction] [F.fixture_pulses]")
 	qdel(F)
