@@ -232,4 +232,13 @@ var/list/human_subtile_crawl_changes = list()
 	human_subtile_crawl_assert(P.x == 9 && P.fixture_pulses == 16 && P.prone && P.lying, "crawl_prone_adjacent_click_uses_scramble_without_posture_change")
 	human_subtile_crawl_assert(world.time >= click_started + 9 && world.time <= click_started + 9 + world.tick_lag, "crawl_prone_click_preserves_scramble_delay")
 	qdel(P)
+	// A held key crawls freely: a whole tile's distance from an offset.
+	var/mob/living/human/subtile_fixture/crawl/F = human_subtile_crawl_actor()
+	F.lying = TRUE
+	human_subtile_fixture_place(F, 10, 0)
+	F.movement_eastwest = EAST
+	human_subtile_crawl_action(F, "scramble", EAST)
+	F.movement_eastwest = null
+	human_subtile_crawl_assert(F.x == 9 && F.step_x == 10 && F.human_subtile_offset_owned && !F.human_subtile_transaction, "crawl_held_slides_from_offset")
+	qdel(F)
 	return TRUE

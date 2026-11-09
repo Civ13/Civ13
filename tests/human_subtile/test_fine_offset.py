@@ -50,7 +50,7 @@ class FineOffsetContracts(unittest.TestCase):
         self.assertIn('if (!remaining_x && !remaining_y)\n\t\t\tbreak', MODULE)
         self.assertIn('actor.Move(destination, direction)', MODULE)
         self.assertIn('actual_x != dx || actual_y != dy', MODULE)
-        self.assertIn('if (fine_step && !actor.human_subtile_fine_ready(direction))', MODULE)
+        self.assertIn('if (fine_step && !paid_posture && !actor.human_subtile_fine_ready(direction))', MODULE)
         self.assertIn('human_subtile_eligible(direction) && !driver && (!pulling || isturf(pulling.loc))', MODULE)
         self.assertIn('else if (!fine_step)\n\t\t\t\t\t. = mob.SelfMove(n, direct)', MOVE)
         validate_tile_restore(MODULE)
