@@ -474,6 +474,9 @@
 		if (do_after(user, 20, src) && W)
 			to_chat(user, "You finish adding bricks to the wall, completing it.")
 			var/choice = WWinput(user, "What type of wall?","Brick Walls","Wall",list("Wall","Window","Full Window"))
+			// A lagged repeat click must not finish this wall a second time.
+			if (QDELETED(src) || QDELETED(W) || W.loc != user)
+				return
 			if (choice == "Wall")
 				qdel(W)
 				new /obj/covers/brick_wall(loc)

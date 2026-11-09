@@ -165,8 +165,9 @@
 				betchoice = "2nd 12"
 			if("3rd 12")
 				betchoice = "3rd 12"
-		if (betchoice)
-			if (I)
+		// The menus sleep: one chip places one bet, and only while betting is open.
+		if (betchoice && !spinning && can_bet)
+			if (!QDELETED(I) && I.loc == user)
 				visible_message("<big>[user] has placed a bet of <b>[CHIP.value]</b> on <b>[betchoice]</b>!</big>")
 				current_bets += list(list(user,betchoice,CHIP.value))
 				qdel(I)

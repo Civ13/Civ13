@@ -89,8 +89,13 @@
 				else
 					product_records -= free
 			user.unEquip(W)
+			var/atom/drop_loc = W.loc
 			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
 			var/inputp = input(user, "What price do you want to set for \the [W]?", "Product Price") as num
+			// The prompt sleeps with the item on the floor; stock it only if it is
+			// still there, not after someone picked it up or it was stocked already.
+			if (QDELETED(W) || W.loc != drop_loc)
+				return FALSE
 			if (!inputp)
 				inputp = 0
 			if (inputp < 0)

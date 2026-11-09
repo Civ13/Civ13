@@ -7,6 +7,9 @@
 	opacity = TRUE
 	var/current_research = 0
 	var/sum_i = 0
+	// Set during a study wait; a second study (a lagged repeat click or another
+	// reader) would otherwise re-add the shelf's research to the shared sums.
+	var/tmp/studying = FALSE
 	var/sum_m = 0
 	var/sum_h = 0
 	flammable = TRUE
@@ -125,6 +128,9 @@
 	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
 	else
+		sum_i = 0
+		sum_m = 0
+		sum_h = 0
 		for (var/obj/item/weapon/book/research/RB in contents)
 			if (RB.completed.len)
 				if (RB.k_class == "medicine" || RB.k_class == "anatomy")
@@ -164,6 +170,9 @@
 			return
 		if(!contents.len)
 			to_chat(user, "The [name] is empty.")
+			return
+		if (studying)
+			to_chat(user, "Someone is already studying these documents.")
 			return
 		check_research()
 		if (user.original_job_title == "Nomad")
@@ -222,7 +231,10 @@
 			modif += 0.3
 		to_chat(user, SPAN_NOTICE("Studying these documents... This will take [displaytime] to finish."))
 
-		if (do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src))
+		studying = TRUE
+		var/studied = do_after(user,(studytime/user.getStatCoeff("philosophy"))/modif,src)
+		studying = FALSE
+		if (studied)
 			if (user.civilization != null && user.civilization != "none")
 				if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
 					sum_i = null  //Throwing the unused sum away
