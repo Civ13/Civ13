@@ -342,6 +342,9 @@ var/cloth_ci_assertions = 0
 
 /proc/recipe_ci_cloth_substitution()
 	map.ordinal_age = 0
+	// The synthetic output stands in for real cloth recipes here; admit it as a
+	// basic only for these payment checks (recipe_ci_craft_fixture covers gating).
+	basic_crafting_recipes |= "/obj/item/stack/recipe_ci_output"
 	cloth_ci_catalog()
 	cloth_ci_stock()
 	cloth_ci_projects()
@@ -351,6 +354,7 @@ var/cloth_ci_assertions = 0
 	cloth_ci_supplements()
 	cloth_ci_medical_gate()
 	cloth_ci_helmets()
+	basic_crafting_recipes -= "/obj/item/stack/recipe_ci_output"
 /proc/run_cloth_checks()
 	cloth_ci_setup()
 	recipe_ci_cloth_substitution()

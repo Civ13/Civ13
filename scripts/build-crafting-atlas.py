@@ -111,7 +111,8 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
         if typepath.startswith('/obj/structure/telecom') or typepath == '/obj/item/weapon/telephone/landline':
             skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
-            conditions+=f' Minimum era Modern (ordinal 8); native crafting skill {skill}; completed research node required at construction.'
+            era='1903 (ordinal 5)' if typepath in ('/obj/structure/telecom','/obj/structure/telecom/station','/obj/structure/telecom/antenna') else 'Modern (ordinal 8)'
+            conditions+=f' Minimum era {era}; native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
     if any(i['id'] == '/material/cloth' for i in inputs):
         conditions += ' Woolcloth sheets also accepted.'
