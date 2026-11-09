@@ -99,5 +99,47 @@ class RepeatClickPayment(unittest.TestCase):
         self.assertIn('/datum/program/bail/Topic', source)
 
 
+    def test_export_radios_pay_once(self):
+        for path, coin in (('code/game/objects/map_metadata/pepelsibirsk.dm', 'rubles'),
+                           ('code/game/objects/map_metadata/colonia.dm', 'silvercoin')):
+            with self.subTest(path=path):
+                source = read(path)
+                self.assert_order(source, 'Sell the whole stack for',
+                                  'if (exportChoice == "Yes" && !QDELETED(W) && W.loc == user && get_dist(src, user) <= 1)',
+                                  f'new/obj/item/stack/money/{coin}(loc, round(moneyin))', 'qdel(W)')
+
+    def test_research_desk_and_bookcase(self):
+        desk = proc('code/modules/1713/researchcost.dm', '/obj/structure/researchdesk/attackby')
+        self.assert_order(desk, 'Which category to research?', 'if (QDELETED(W) || W.loc != H)',
+                          'map.custom_civs[H.civilization][1] += (moneyin)')
+        shelf = read('code/game/objects/structures/bookcase.dm')
+        check = proc('code/game/objects/structures/bookcase.dm', '/obj/structure/bookcase/proc/check_research')
+        self.assert_order(check, 'sum_i = 0', 'sum_h = 0', 'for (var/obj/item/weapon/book/research/RB in contents)')
+        study = proc('code/game/objects/structures/bookcase.dm', '/obj/structure/bookcase/attackby')
+        self.assert_order(study, 'if (studying)', 'check_research()', 'studying = TRUE',
+                          'var/studied = do_after(', 'studying = FALSE', 'if (studied)')
+        self.assertIn('var/tmp/studying = FALSE', shelf)
+
+    def test_roulette_brick_wall_and_trench(self):
+        roulette = proc('code/game/objects/structures/roulette_table.dm', '/obj/structure/roulette/attackby')
+        self.assert_order(roulette, 'Where do you want to place your bet?', 'if (betchoice && !spinning && can_bet)',
+                          'if (!QDELETED(I) && I.loc == user)', 'current_bets += ')
+        wall = proc('code/game/objects/covers_types/covers_buildable.dm', '/obj/covers/brick_wall/incomplete/attackby')
+        self.assert_order(wall, 'What type of wall?', 'if (QDELETED(src) || QDELETED(W) || W.loc != user)', 'new /obj/covers/brick_wall(loc)')
+        trench = read('code/modules/1713/trench.dm')
+        self.assertEqual(trench.count('if (choice == "Yes" && !QDELETED(C) && C.loc == user)'), 2)
+
+    def test_market_programs_and_vendor(self):
+        programs = read('code/modules/1713/computers/programs.dm')
+        bank = proc('code/modules/1713/computers/programs.dm', '/datum/program/junglebank/Topic')
+        self.assert_order(bank, 'map.globalmarketplace[tcode][7] != 1', 'map.marketplaceaccounts[user.name] -= cost')
+        self.assert_order(bank, 'Are you sure you want to sell', 'map.globalmarketplace[tcode][2] != user',
+                          'map.marketplaceaccounts[user.name] += cost')
+        self.assertEqual(programs.count('QDELETED(ST) || user.get_active_hand() != ST)'), 2)
+        self.assertEqual(programs.count('QDELETED(M) || user.get_active_hand() != M)'), 2)
+        vendor = proc('code/game/objects/structures/vending/vending_sales.dm', '/obj/structure/vending/sales/attackby')
+        self.assert_order(vendor, 'var/atom/drop_loc = W.loc', 'What price do you want to set',
+                          'if (QDELETED(W) || W.loc != drop_loc)', 'product_records.Add(product)')
+
 if __name__ == '__main__':
     unittest.main()

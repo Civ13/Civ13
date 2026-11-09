@@ -522,7 +522,11 @@ SUITES = {
         'code/modules/1713/machinery/modular_vehicles/ships/frame_parts.dm',
         'code/modules/1713/machinery/engines/engines.dm', 'code/modules/projectiles/ammo_crafting.dm',
         'code/modules/1713/structures.dm', 'code/game/objects/structures/plant_pots.dm',
-        'code/modules/1713/computers/programs.dm')},
+        'code/modules/1713/computers/programs.dm', 'code/game/objects/map_metadata/pepelsibirsk.dm',
+        'code/game/objects/map_metadata/colonia.dm', 'code/modules/1713/researchcost.dm',
+        'code/game/objects/structures/bookcase.dm', 'code/game/objects/structures/roulette_table.dm',
+        'code/game/objects/covers_types/covers_buildable.dm', 'code/modules/1713/trench.dm',
+        'code/game/objects/structures/vending/vending_sales.dm')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
