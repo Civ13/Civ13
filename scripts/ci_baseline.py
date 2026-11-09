@@ -1050,6 +1050,10 @@ SUITES = {
     # Spray bottle acceptance, feedback and reagent logging (#4269, #4270).
     'spray': {'files': ('tests/spray/test_source.py',),
         'paths': ('tests/spray/', 'code/modules/reagents/reagent_containers/spray.dm')},
+    # Snow barricade completion keeps its own direction (#4290).
+    'snow_barricade': {'files': ('tests/snow_barricade/test_source.py',),
+        'paths': ('tests/snow_barricade/', 'code/modules/1713/barriers/snow_walls.dm'),
+        'shared_paths': ('code/modules/1713/barriers/sandbag.dm',)},
     # Trap disarm recheck and punji animal capture/release (#4248, #4249).
     'traps': {'files': ('tests/traps/test_source.py',),
         'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
