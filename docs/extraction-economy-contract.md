@@ -54,8 +54,36 @@ Extraction game modes must use actual real-world foreign-exchange (FX) rates
 when future traders value supported real-world currencies. Pounds, euros and
 other supported currencies must not be interchangeable skins for equal-value
 credits or use invented exchange rates. This means currency exchange rates,
-not stock/security prices. This is a future implementation requirement: the
-current prototype game-credit economy does not perform FX conversion.
+not stock/security prices.
+
+### Implemented currency traders
+
+`code/modules/1713/extraction/currency_traders.dm` implements the first traders
+under these rules. Tested by `tests/extraction/traders_probe.dm` (run through
+`tests/extraction/run.py --probe mode`).
+
+- Provider: European Central Bank euro foreign exchange reference rates
+  (`eurofxref-daily.xml`), free and public, published on TARGET working days and
+  quoted as units of currency per one euro. Rates are reference rates, not
+  executable prices, and the trader screens say so.
+- Base currency EUR. Credit mapping `civ13.extraction.credit-base.v1`: one game
+  credit is one euro of base value. Supported money is the GBP/EUR table below.
+- Fetches are asynchronous through rust_g, at most every six hours and only when
+  the trader menu opens, never inside a trade. The last good snapshot is cached in
+  `data/extraction_fx_snapshot.json`. Snapshots carry provider, effective date,
+  fetch time, base and an id derived from the quoted text; malformed, missing,
+  non-positive or out-of-band rates are refused.
+- Freshness: up to 4 days old is fresh, 5 to 7 days is shown as stale, older
+  rates or future dates are refused. The world round pins its first usable
+  snapshot; a refresh waits for the next round, and a pinned snapshot over the
+  limit closes the traders instead of repricing.
+- Rounding happens once: prices round up, payouts and exchanges round down.
+  Trader spreads (50% for specialists, the fence's 20% policy rate) and the 5%
+  exchange fee are separate from the rate. No trader sells for less than twice
+  what any trader pays, and every exchange round trip loses money.
+- Trades are single-account snapshot commits of the private room (notes are
+  stash equipment), with a two-minute quote bound to the snapshot id and the
+  account digest. Each trade is logged with the snapshot id and credit mapping.
 
 ### Currency and denomination identity
 
@@ -121,7 +149,10 @@ Before activation, cover GBP/EUR denominations and stacks, both quote directions
 cross-currency conversion, unsupported/historical money, missing/stale/malformed
 rates, provider outages, round snapshot pinning, quote expiry, rounding and
 split-stack arbitrage, bounds, concurrent confirmation and crash/replay. These
-are future acceptance requirements, not claims of implemented or tested FX.
+were the acceptance requirements. The traders probe covers denominations and
+stacks, both directions, cross-currency conversion, malformed/stale/future rates,
+round pinning, quote refusal, rounding and exchange loops; a live provider fetch
+and concurrent confirmation are not covered by a native test.
 
 ## Fixed-price listings and fees
 

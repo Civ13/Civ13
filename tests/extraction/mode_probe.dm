@@ -91,6 +91,7 @@
 	equipment_assert(istype(M), "original extraction map metadata loaded")
 	M.accounts.store.root = "data/mode_accounts/"
 	extraction_progression_probe(M)
+	extraction_traders_probe(M)
 	extraction_hub_probe(M)
 	// Preserve the 27 ordinary sources plus the two exact-target keyed caches.
 	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 29, "fixed room, deployment and loot pools")
