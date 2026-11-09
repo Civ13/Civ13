@@ -371,13 +371,32 @@ class SelectionTests(unittest.TestCase):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_agent_control_offline_admission_is_exact(self):
-        path = 'tests/agent_control/test_agent_control.py'
-        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
-            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
-        other = 'tests/agent_control/new_native_probe.dm'
-        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
-            with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
-                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        for path in ('tests/agent_control/test_agent_control.py',
+                     'tests/agent_control/test_perception_replay.py',
+                     'tests/agent_control/test_visibility.py'):
+            with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        for path in ('tests/agent_control/new_native_probe.dm',
+                     'tests/agent_control/visibility/rogue.py',
+                     'tests/agent_control/visibility/rogue.ps1',
+                     'tests/agent_control/visibility/rogue.sh'):
+            with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_agent_visibility_native_fixture_remains_manual_only(self):
+        paths = {'tests/agent_control/visibility/prepare.py',
+                 'tests/agent_control/visibility/run.py',
+                 'tests/agent_control/visibility/adapters.dm',
+                 'tests/agent_control/visibility/probe.dm'}
+        self.assertEqual(selection.AGENT_CONTROL_MANUAL_NATIVE, paths)
+        self.assertFalse(paths & selection.AGENT_CONTROL_OFFLINE_TESTS)
+        for path in paths:
+            with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+                with patch.object(selection, 'AGENT_CONTROL_MANUAL_NATIVE', frozenset()):
+                    with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
+                        selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:

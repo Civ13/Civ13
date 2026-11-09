@@ -313,6 +313,8 @@ class BaselinePolicyTests(unittest.TestCase):
         name = 'agent_control'
         suite = ci.SUITES[name]
         self.assertEqual(suite['files'], ('tests/agent_control/test_agent_control.py',
+            'tests/agent_control/test_perception_replay.py',
+            'tests/agent_control/test_visibility.py',
             'tools/agent-control/benchmarks/test_gateway_benchmark.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))

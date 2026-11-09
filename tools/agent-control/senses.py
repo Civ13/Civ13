@@ -7,6 +7,10 @@ appeared or left, unanswered prompts, sounds) until the main loop takes it with 
 """
 
 import math
+import time
+
+LAST_SEEN_MAX = 64
+LAST_SEEN_TTL = 300  # monotonic seconds; these are memories, never target refs
 
 NEWS_MAX = 12  # prompts or sounds kept between two take_news() calls
 DANGER_KINDS = ("gunshot", "explosion")
@@ -28,14 +32,17 @@ class _Seen:
         self.sounds = []
         self.appeared = {}  # ref -> name
         self.left = {}  # ref -> name
+        self.last_seen = {}  # ref -> last visible row; never merged into nearby
+        self.z = None
         self.radius = None  # comings and goings are only noted between looks of the same radius
 
 
 class SensesClient:
     """Change-list observing over any client with request(action, args)."""
 
-    def __init__(self, client):
+    def __init__(self, client, *, clock=time.monotonic):
         self.client = client
+        self.clock = clock
         self.seen = {}
 
     def request(self, action, args=None):
@@ -55,16 +62,26 @@ class SensesClient:
         return reply
 
     def _absorb(self, state, result, note=True):
+        now = self.clock()
         me = result.get("self") or {}
-        x, y = me.get("x"), me.get("y")
-        placed = isinstance(x, (int, float)) and isinstance(y, (int, float))
-        incremental = result.get("changes_since") is not None and result.get("changes_since") == state.rev and placed
+        x, y, z = me.get("x"), me.get("y"), me.get("z")
+        placed = all(type(n) in (int, float) and math.isfinite(n) for n in (x, y))
+        rev = result.get("rev")
+        reset = (type(rev) is int and rev < state.rev) or (state.z is not None and z != state.z)
+        if reset:
+            # Refs/revisions are session-local. Never carry a former world's objects
+            # into a new baseline, or subtract offsets across different z-levels.
+            state.rows, state.last_seen, state.appeared, state.left = {}, {}, {}, {}
+            note = False
+        state.z = z
+        incremental = result.get("changes_since") is not None and result.get("changes_since") == state.rev and placed and not reset
         if incremental:
             rows = dict(state.rows)
             for ref in result.get("nearby_removed") or []:
                 gone = rows.pop(ref, None)
                 if gone is not None and note:
                     state.left[ref] = gone.get("name")
+                    self._remember(state, ref, gone)
                     state.appeared.pop(ref, None)
         else:
             rows = {}
@@ -92,14 +109,20 @@ class SensesClient:
                 for ref, row in state.rows.items():
                     if ref not in fresh:
                         state.left[ref] = row.get("name")
+                        self._remember(state, ref, row)
                         state.appeared.pop(ref, None)
             rows = fresh
+        for ref, row in rows.items():
+            # An unchanged delta row is still confirmed visible by this response.
+            row = dict(row, _seen_at=now, _seen_rev=rev, _z=z)
+            rows[ref] = row
+            state.last_seen.pop(ref, None)
         state.rows = rows
         if isinstance(result.get("rev"), int):
             state.rev = result["rev"]
         nearby = []
         for row in rows.values():
-            out = {k: v for k, v in row.items() if k not in ("_x", "_y")}
+            out = {k: v for k, v in row.items() if not k.startswith("_")}
             if placed and "_x" in row:
                 out["dx"], out["dy"] = row["_x"] - x, row["_y"] - y
             nearby.append(out)
@@ -118,6 +141,31 @@ class SensesClient:
         if isinstance(result.get("last_sound"), int):
             state.sound_since = max(state.sound_since, result["last_sound"])
 
+    @staticmethod
+    def _remember(state, ref, row):
+        # Keep only visual metadata, not messages, inventory or account data.
+        state.last_seen.pop(ref, None)
+        state.last_seen[ref] = {key: row.get(key) for key in
+                                ("name", "_x", "_y", "_z", "_seen_at", "_seen_rev")}
+        while len(state.last_seen) > LAST_SEEN_MAX:
+            state.last_seen.pop(next(iter(state.last_seen)))
+
+    def _memories(self, state):
+        now = self.clock()
+        memories = []
+        for ref, row in list(state.last_seen.items()):
+            at = row.get("_seen_at")
+            age = now - at if isinstance(at, (int, float)) else -1
+            if not math.isfinite(age) or age < 0 or age > LAST_SEEN_TTL:
+                del state.last_seen[ref]
+                continue
+            memory = {"name": row.get("name"), "age_s": round(age, 1), "stale": True,
+                      "provenance": "character_observe", "last_seen_rev": row.get("_seen_rev")}
+            if all(row.get(key) is not None for key in ("_x", "_y", "_z")):
+                memory["position"] = {"x": row["_x"], "y": row["_y"], "z": row["_z"]}
+            memories.append(memory)
+        return memories
+
     def take_news(self, character, self_state=None):
         """Prompts, sounds and comings and goings since the last call; sound offsets are from where the character is now."""
         state = self.seen.get(str(character))
@@ -133,6 +181,9 @@ class SensesClient:
             sounds.append(out)
         news = {"prompts": state.prompts, "sounds": sounds,
                 "appeared": [n for n in state.appeared.values() if n], "left": [n for n in state.left.values() if n]}
+        memories = self._memories(state)
+        if memories:
+            news["last_seen"] = memories
         state.prompts, state.sounds, state.appeared, state.left = [], [], {}, {}
         return news
 
@@ -190,4 +241,15 @@ def prompt_lines(prompts, limit=3):
                          + 'To pick another, repeat that step with "choose": "<option>".')
         else:
             lines.append(f'The game asked "{asked}" ({prompt.get("kind") or "text"} input) and got no answer. Repeat that step with "choose": "<answer>".')
+    return lines
+
+
+def last_seen_lines(memories, limit=4):
+    """Explicitly stale visual memories, with no actionable target index or ref."""
+    lines = []
+    for row in memories[-limit:]:
+        pos = row.get("position") or {}
+        where = f" at ({pos['x']},{pos['y']},{pos['z']})" if all(k in pos for k in ("x", "y", "z")) else ""
+        lines.append(f"Last seen (stale): {row.get('name') or 'something'}{where}, "
+                     f"{row.get('age_s')} seconds ago via vision; current location unknown.")
     return lines
