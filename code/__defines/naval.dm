@@ -31,3 +31,7 @@
 #define CARRIER_COMP_QUARTERS "carrier_quarters"
 #define CARRIER_COMP_BUNKER "carrier_bunker"
 #define CARRIER_COMP_ENGINE_ROOM "carrier_engine_room"
+
+// Motor freighter compartments below the waterline (slipway.dm).
+#define FREIGHTER_COMP_HOLD "freighter_hold"
+#define FREIGHTER_COMP_ENGINE_ROOM "freighter_engine_room"

@@ -58,6 +58,9 @@ var/global/list/naval_vessels = list()
 	// Fuel oil in the bunkers; every hop burns VESSEL_FUEL_PER_STEP per step.
 	var/fuel = 0
 	var/fuel_capacity = VESSEL_FUEL_CAPACITY
+	// The fastest telegraph step she makes undamaged; a sailing ship tops
+	// out below full ahead.
+	var/top_speed = VESSEL_SPEED_FULL
 	// Flooding lists the ship: each flooded compartment takes a telegraph
 	// step off her (recomputed every second by damage_tick()).
 	var/max_speed = VESSEL_SPEED_FULL
@@ -80,6 +83,10 @@ var/global/list/naval_vessels = list()
 		global.flooding_controllers -= flooding
 		flooding = null
 	return ..()
+
+// Fuel oil one hop burns at a telegraph step. A ship under sail burns none.
+/datum/vessel/proc/fuel_burn(at_speed)
+	return at_speed * VESSEL_FUEL_PER_STEP
 
 // Whether a breached compartment lets its air out. A hangar deck below the
 // waterline keeps its pocket like a submerged hull.
@@ -396,7 +403,7 @@ var/global/list/naval_vessels = list()
 	// Never rewrite a level while the world save is capturing it.
 	if (persistence_save_in_progress)
 		return FALSE
-	var/burn = speed * VESSEL_FUEL_PER_STEP
+	var/burn = fuel_burn(speed)
 	if (fuel < burn)
 		last_refusal = "the bunkers are dry"
 		crew_message(SPAN_WARNING("<b>All stop!</b> The bunkers are dry."))
@@ -470,7 +477,7 @@ var/global/list/naval_vessels = list()
 	if (!placed || sunk)
 		return
 	var/flooded = flooded_compartments()
-	var/cap = max(VESSEL_SPEED_STOP, VESSEL_SPEED_FULL - flooded)
+	var/cap = max(VESSEL_SPEED_STOP, top_speed - flooded)
 	if (cap != max_speed)
 		var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 		max_speed = cap
@@ -545,6 +552,8 @@ var/global/list/naval_vessels = list()
 	return taken
 
 /datum/vessel/proc/hops_of_fuel()
+	if (!fuel_burn(VESSEL_SPEED_SLOW))
+		return INFINITY
 	if (speed <= 0)
 		return fuel >= VESSEL_FUEL_PER_STEP ? round(fuel / VESSEL_FUEL_PER_STEP) : 0
 	return round(fuel / (speed * VESSEL_FUEL_PER_STEP))
@@ -592,7 +601,10 @@ var/global/list/naval_vessels = list()
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/list/lines = list()
 	lines += "[capitalize(name)] at [ox + round((box_w() - 1) / 2)], [oy + round((box_h() - 1) / 2)], bow to the [dir2text(dir)], [speeds[speed + 1]], anchor [anchored ? "down" : "up"]."
-	lines += "Bunkers: [fuel] of [fuel_capacity] units of fuel oil, [hops_of_fuel()] hop\s at [speed > 0 ? speeds[speed + 1] : "slow ahead"]."
+	if (fuel_burn(VESSEL_SPEED_SLOW))
+		lines += "Bunkers: [fuel] of [fuel_capacity] units of fuel oil, [hops_of_fuel()] hop\s at [speed > 0 ? speeds[speed + 1] : "slow ahead"]."
+	else
+		lines += "Under sail: she needs no fuel and makes [speeds[top_speed + 1]] at best."
 	var/ahead = ahead_text()
 	lines += ahead ? "Ahead: [ahead]." : "Ahead: open sea for [VESSEL_CHART_RANGE] tiles."
 	var/list/comps = compartments()
