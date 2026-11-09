@@ -1714,7 +1714,8 @@
 		else
 			tolist = list("Cancel")
 		var/input = WWinput(user, "Add to original or copy?", "Printing Press", "Cancel", tolist)
-		if (input == "Cancel")
+		// A lagged repeat click must not add the same book to the press twice.
+		if (input == "Cancel" || QDELETED(W) || W.loc != user)
 			return
 		else if (input == "Original")
 			if (istype(W, /obj/item/weapon/book/language_book))

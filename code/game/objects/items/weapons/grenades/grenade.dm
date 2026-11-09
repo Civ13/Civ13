@@ -599,7 +599,9 @@
 		if (inp == "Yes")
 			to_chat(user, "Placing the booby trap...")
 			if (do_after(user, 100, src))
-				if (src)
+				// A lagged repeat click can reach here after the first one already
+				// placed this grenade; only a grenade still in hand becomes a mine.
+				if (!QDELETED(src) && loc == user)
 					to_chat(user, "You successfully place the booby trap here using \the [src].")
 					var/obj/item/mine/boobytrap/BT = new /obj/item/mine/boobytrap(get_turf(user))
 					BT.origin = src.type
@@ -977,7 +979,9 @@
 		if (inp == "Yes")
 			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
-				if (src)
+				// A lagged repeat click can reach here after the first one already
+				// placed this grenade; only a grenade still in hand becomes a mine.
+				if (!QDELETED(src) && loc == user)
 					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type
@@ -1000,7 +1004,9 @@
 		if (inp == "Yes")
 			to_chat(user, "Placing the mine...")
 			if (do_after(user, 60, src))
-				if (src)
+				// A lagged repeat click can reach here after the first one already
+				// placed this grenade; only a grenade still in hand becomes a mine.
+				if (!QDELETED(src) && loc == user)
 					to_chat(user, "You successfully place the mine here using \the [src].")
 					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
 					BT.origin = src.type

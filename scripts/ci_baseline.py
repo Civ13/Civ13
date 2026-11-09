@@ -526,7 +526,8 @@ SUITES = {
         'code/game/objects/map_metadata/colonia.dm', 'code/modules/1713/researchcost.dm',
         'code/game/objects/structures/bookcase.dm', 'code/game/objects/structures/roulette_table.dm',
         'code/game/objects/covers_types/covers_buildable.dm', 'code/modules/1713/trench.dm',
-        'code/game/objects/structures/vending/vending_sales.dm')},
+        'code/game/objects/structures/vending/vending_sales.dm',
+        'code/game/objects/items/weapons/grenades/grenade.dm', 'code/modules/1713/production.dm')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
