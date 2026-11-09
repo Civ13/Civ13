@@ -34,15 +34,14 @@
 	storedvalues = list()
 	return
 
-/obj/structure/betting_box/proc/process_results(var/result = "none")
+/obj/structure/betting_box/proc/process_results(var/result = "none", var/winning_total = 0, var/losing_total = 0)
 	if (result != "none" && result == bettingon)
-		var/tmptotal = process_totals()
-		var/totalreceived = transfer(result)
 		for (var/i in storedvalues)
-			var/pctg = i[2]/tmptotal
-			i[2] += totalreceived*pctg
-		payvalues = storedvalues
-		lastodd = (totalreceived/tmptotal)+1
+			if (winning_total > 0)
+				i[2] += losing_total * i[2] / winning_total
+		payvalues += storedvalues
+		if (winning_total > 0)
+			lastodd = (losing_total / winning_total) + 1
 		clear_bets()
 		return
 	else
@@ -55,13 +54,6 @@
 	for (var/i in storedvalues)
 		tmptotal += i[2]
 	return tmptotal
-
-/obj/structure/betting_box/proc/transfer(var/result = "none")
-	var/tmptotal_transfer = 0
-	for(var/obj/structure/betting_box/BB in range(5,src))
-		if (result != "none" && result == bettingon)
-			tmptotal_transfer = BB.process_totals()
-	return tmptotal_transfer
 
 /obj/structure/betting_box/attack_hand(var/mob/living/human/H)
 	if (!ishuman(H))
@@ -109,6 +101,8 @@
 	var/area/curr_area = null
 	var/mob/living/human/red_player = null
 	var/mob/living/human/blue_player = null
+	var/mob/living/human/last_red_player = null
+	var/mob/living/human/last_blue_player = null
 
 /obj/effect/bet_processor/New()
 	..()
@@ -130,7 +124,10 @@
 				found_players++
 				red_player = H
 
-		if (found == 2 && found_players == 2)
+		if (!(last_red_player in curr_area) || !(last_blue_player in curr_area))
+			last_red_player = null
+			last_blue_player = null
+		if (found == 2 && found_players == 2 && red_player && blue_player && red_player != blue_player && !(last_red_player && last_blue_player && ((red_player == last_red_player && blue_player == last_blue_player) || (red_player == last_blue_player && blue_player == last_red_player))))
 			match_running = TRUE
 			start_match()
 		else
@@ -149,29 +146,39 @@
 	process_match()
 	return
 
+/obj/effect/bet_processor/proc/settle_match(var/result)
+	var/list/boxes = list()
+	var/winning_total = 0
+	var/losing_total = 0
+	for (var/obj/structure/betting_box/BB in range(5, src))
+		boxes += BB
+		if (BB.bettingon == result)
+			winning_total += BB.process_totals()
+		else if (BB.bettingon == (result == "red" ? "blue" : "red"))
+			losing_total += BB.process_totals()
+	for (var/obj/structure/betting_box/BB in boxes)
+		BB.process_results(result, winning_total, losing_total)
+		BB.match_running = FALSE
+	last_red_player = red_player
+	last_blue_player = blue_player
+	match_running = FALSE
+	if (istype(map, /obj/map_metadata/gulag13))
+		var/obj/map_metadata/gulag13/G = map
+		G.gracedown1 = TRUE
+	spawn(10)
+		process_combats()
+
 /obj/effect/bet_processor/proc/process_match()
 	if (match_running)
 		for(var/mob/living/human/H in curr_area)
 			if (H.stat != CONSCIOUS || H.surrendered)
 				if (H == red_player)
 					H.visible_message("<big>The <font color='blue'>Blue Player</font> ([blue_player.real_name]) wins!</big>")
-					match_running = FALSE
-					for (var/obj/structure/betting_box/BB in range(5,src))
-						BB.match_running = FALSE
-						BB.process_results("blue")
-					if (istype(map, /obj/map_metadata/gulag13))
-						var/obj/map_metadata/gulag13/G = map
-						G.gracedown1 = TRUE
+					settle_match("blue")
 					return
 				else if (H == blue_player)
 					H.visible_message("<big>The <font color='red'>Red Player</font> ([red_player.real_name]) wins!</big>")
-					match_running = FALSE
-					for (var/obj/structure/betting_box/BB in range(5,src))
-						BB.match_running = FALSE
-						BB.process_results("red")
-					if (istype(map, /obj/map_metadata/gulag13))
-						var/obj/map_metadata/gulag13/G = map
-						G.gracedown1 = TRUE
+					settle_match("red")
 					return
 		spawn(10)
 			process_match()
