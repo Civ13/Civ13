@@ -63,6 +63,7 @@ var/probe_runtime_error = FALSE
 	sixth_batch_checks()
 	seventh_batch_checks()
 	eighth_batch_checks()
+	ninth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -850,3 +851,91 @@ var/probe_runtime_error = FALSE
 	probe_check(!scout.persistence_runtime_var("fire_team") && !scout.persistence_runtime_var("fire_team_kind") && !scout.persistence_runtime_var("fire_team_group") && !scout.persistence_runtime_var("fire_team_lead"), "fire teams are saved with the character")
 	map.faction1_squad_leaders[4] = null
 	map.civilizations = TRUE
+
+/proc/ninth_batch_checks()
+	// Ghillie camouflage
+	var/mob/living/human/sniper = probe_human(3, 27, "Sniper")
+	var/obj/item/clothing/suit/storage/ghillie/suit = new(locate(3, 27, 1))
+	sniper.equip_to_slot(suit, slot_wear_suit)
+	probe_check(sniper.wear_suit == suit && (suit in processing_objects), "wearing a ghillie suit starts watching for stillness")
+	sniper.lying = TRUE
+	sniper.ghillie_moved_at = world.time - 40
+	suit.process_interval(2)
+	probe_check(sniper.ghillie_hidden && sniper.alpha == 40, "lying still on grass in a ghillie suit fades you out")
+	var/mob/living/human/bumper = probe_human(4, 27, "Bumper")
+	sniper.Bumped(bumper)
+	probe_check(!sniper.ghillie_hidden && sniper.alpha == 255, "being bumped reveals you")
+	suit.process_interval(2)
+	probe_check(!sniper.ghillie_hidden, "you must lie still again before you fade")
+	sniper.ghillie_moved_at = world.time - 40
+	sniper.lying = FALSE
+	suit.process_interval(2)
+	probe_check(!sniper.ghillie_hidden, "standing up keeps you visible")
+	var/mob/living/human/snowman = probe_human(5, 27, "Snowman")
+	var/obj/item/clothing/suit/storage/ghillie/winter/WS = new(locate(5, 27, 1))
+	snowman.equip_to_slot(WS, slot_wear_suit)
+	snowman.lying = TRUE
+	snowman.ghillie_moved_at = world.time - 40
+	probe_check(!snowman.ghillie_can_hide(), "a winter ghillie does not hide you on grass")
+	probe_check(sniper.persistence_runtime_var("ghillie_hidden") && sniper.persistence_runtime_var("ghillie_moved_at"), "ghillie state is not saved")
+	sniper.alpha = 40
+	sniper.after_load()
+	probe_check(sniper.alpha == 255, "a body saved while hidden comes back visible")
+
+	// Night-vision goggles
+	var/mob/living/human/watcher = probe_human(7, 27, "Watcher")
+	var/obj/item/clothing/glasses/nvg/NV = new(locate(7, 27, 1))
+	watcher.equip_to_slot(NV, slot_eyes)
+	probe_check(!watcher.nvg_dazzle(), "goggles that are off are not dazzled")
+	NV.active = TRUE
+	probe_check(watcher.nvg_dazzle() && watcher.eye_blurry >= 5, "a bright light dazzles active goggles")
+
+	// Respawn countdown
+	probe_check(respawn_wait_text(0) == "now" && respawn_wait_text(135) == "2:15" && respawn_wait_text(5) == "0:05", "the respawn countdown reads minutes and seconds")
+	probe_check(respawn_wait_seconds(null) == 0, "no client means no wait")
+
+	// Cell timer
+	map.civilizations = FALSE
+	var/datum/job/OJ = new
+	OJ.is_officer = TRUE
+	var/mob/living/human/warden = probe_human(10, 26, "Warden")
+	warden.original_job = OJ
+	var/mob/living/human/inmate = probe_human(10, 28, "Inmate")
+	inmate.original_job = new /datum/job
+	probe_check(can_set_cell_timer(warden) && !can_set_cell_timer(inmate), "only officers set cell timers in battle")
+	var/obj/structure/simple_door/key_door/anyone/wood/cell = new(locate(10, 27, 1))
+	probe_check(cell.start_sentence(5, "Warden") && cell.cell_sentence_left == 3000 && (cell in processing_objects), "a sentence holds the door for its minutes")
+	probe_check(!cell.canOpen(inmate) && !cell.canOpen(warden), "nobody opens a door serving a sentence")
+	cell.process_interval(2)
+	probe_check(cell.cell_sentence_left == 2980, "the timer counts down")
+	probe_check(!cell.persistence_runtime_var("cell_sentence_left"), "the time left is saved")
+	processing_objects -= cell
+	cell.after_load()
+	probe_check(cell in processing_objects, "a loaded cell keeps counting")
+	cell.cell_sentence_left = 10
+	probe_check(cell.process_interval(2) == PROCESS_KILL && !cell.cell_sentence_left && cell.isSwitchingStates, "the door opens itself when the time is served")
+	var/obj/structure/simple_door/key_door/anyone/wood/cell2 = new(locate(12, 27, 1))
+	cell2.start_sentence(99, "Warden")
+	probe_check(cell2.cell_sentence_left == 18000, "sentences are capped at 30 minutes")
+	cell2.end_sentence(TRUE)
+	probe_check(!cell2.cell_sentence_left && cell2.canOpen(inmate), "a leader can release early")
+	map.civilizations = TRUE
+
+	// Breaching charge
+	var/obj/item/weapon/breaching_charge/BC = new(locate(15, 25, 1))
+	var/obj/item/weapon/reagent_containers/glass/beaker/NG = new(locate(15, 25, 1))
+	NG.reagents.add_reagent("nitroglycerin", 5)
+	var/mob/living/human/sapper = probe_human(15, 25, "Sapper")
+	BC.attackby(NG, sapper)
+	probe_check(BC.filled && NG.reagents.get_reagent_amount("nitroglycerin") == 2, "nitroglycerin fills the charge")
+	var/obj/structure/simple_door/key_door/anyone/wood/target = new(locate(15, 26, 1))
+	var/mob/living/human/behind = probe_human(15, 27, "Behind")
+	var/mob/living/human/beside = probe_human(14, 25, "Beside")
+	sapper.forceMove(locate(15, 25, 1))
+	probe_check(BC.plant(target, sapper) && !BC.loc && BC.target == target, "the charge is planted on the door")
+	BC.detonate()
+	probe_check(QDELETED(target), "the door is blown open")
+	probe_check(behind.weakened > 0 && !beside.weakened && !sapper.weakened, "whoever is behind the door is knocked down, the breacher's side is not ([behind.weakened], [beside.weakened], [sapper.weakened])")
+	var/obj/structure/window/classic/WIN = new(locate(18, 25, 1))
+	var/obj/structure/window/barrier/SB = new(locate(19, 25, 1))
+	probe_check(breach_target_ok(WIN) && !breach_target_ok(SB) && !breach_target_ok(sapper), "charges fit doors and windows, not sandbags or people")
