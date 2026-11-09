@@ -75,7 +75,9 @@ def main():
         if run.returncode or re.search(r'runtime error:|BUG:|Bad ref|Unhandled exception',logs,re.I) or (output/'errors.txt').exists():
             raise RuntimeError('Unexpected native diagnostic: '+str(output))
         expected={'migration':'Durable map field inventory differs at code/modules/persistence/durable_world.dm:',
-                  'strict-version':'versioned missing required field faction_renames'}
+                  # Treating every save as unversioned classifies the 133-field v3
+                  # roundtrip as v2, so the inventory check rejects it.
+                  'strict-version':'Durable map field inventory differs at code/modules/persistence/durable_world.dm:'}
         if args.negative_control:
             if not result.startswith('FAIL: '+expected[args.negative_control]): raise RuntimeError(result)
             print('PASS: intended '+args.negative_control+' mutation detected')

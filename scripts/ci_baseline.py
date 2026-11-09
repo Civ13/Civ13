@@ -1051,6 +1051,13 @@ SUITES = {
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
     # Handcuff placement races and per-human chew cooldown (#4229, #4230).
+    # Faction recruitment applications, offers and their durable field (#4237).
+    'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
+        'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
+        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
+            'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
+            'civ13.dme')},
     # Faction recruitment authority and the shared enrollment transition (#4237).
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',

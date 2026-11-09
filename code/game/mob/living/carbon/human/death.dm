@@ -50,6 +50,7 @@
 	update_fire(1)
 	if (stat == DEAD) return
 	forget_recipe_knowledge()
+	recruitment_life_id = null // a death ends every recruitment application of this life
 	region_home_death(src)
 	if (driver && driver_vehicle)
 		driver_vehicle.driver_died(src) // frees the seat so someone else can drive

@@ -41,7 +41,7 @@
 			for(var/x = 1, x <= 32, x++) pixels += list(I.GetPixel(x, y))
 		symbols[faction] = pixels
 	var/datum/durable_timer_queue/Q = map.durable_timer_queue()
-	var/list/result = list("schema" = 2, "map_fields_version" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
+	var/list/result = list("schema" = 2, "map_fields_version" = 3, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
 	if(map.durable_nomads_extension()) result["nomads_profile"] = capture_durable_nomads()
 	return result
 
