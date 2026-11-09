@@ -21,6 +21,9 @@ GEOMETRY = ['/proc/los_axis_separates(', '/proc/los_hull_axis_separates(', '/pro
             '/proc/los_target_blocked(', '/datum/los_snapshot/proc/index_blockers(', '/datum/los_snapshot/proc/blocks_target(']
 SEE_OVER = {'hill_far_ground': 0, 'hill_close_behind_wall': 1, 'hill_person_two_behind_wall': 0, 'hill_indoors': 1,
             'hill_line_clears': 1, 'hill_tree': 1, 'flat_wall': 1, 'flat_see_over': 0}
+# LOS_TERRAIN_RELIEF and LOS_TERRAIN_ALLOWANCE in los_terrain.dm.
+RELIEF = 0.5
+ALLOWANCE = 0.5
 PINNED = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
@@ -41,7 +44,7 @@ def heights():
     return lambda x, y: int(rows[my - y][x - 1], 16) if 1 <= x <= mx and 1 <= y <= my else 0
 
 
-def reference(H, x, y, sx, sy, lying, radius):
+def reference(H, x, y, sx, sy, lying, radius, top=0.25):
     """Independent restatement of los_terrain_for/build/sweep_cell/despeckle."""
     q = lambda s: math.floor(s / 16 + 0.5) * 16
     qx, qy = q(sx), q(sy)
@@ -51,8 +54,8 @@ def reference(H, x, y, sx, sy, lying, radius):
     g = {c: H(tx + c[0], ty + c[1]) for c in cells}
     if all(v == g[(0, 0)] for v in g.values()):
         return None
-    eye = g[(0, 0)] + (0.5 if lying else 1.5)
-    floor, need = dict(g), {}
+    eye = g[(0, 0)] * RELIEF + (0.5 if lying else 1.5)
+    floor, need = {c: v * RELIEF for c, v in g.items()}, {}
     for k in range(2, radius + 1):
         for i, j in [c for c in cells if max(abs(c[0]), abs(c[1])) == k]:
             if abs(i) >= abs(j):
@@ -73,11 +76,58 @@ def reference(H, x, y, sx, sy, lying, radius):
                 b = floor[(max(1 - k, min(k - 1, lo + 1)), j - s)]
             need[(i, j)] = eye + (a + (b - a) * t - eye) * d / dp
             floor[(i, j)] = max(floor[(i, j)], need[(i, j)])
-    hidden = lambda c: c in need and g[c] + 0.25 < need[c] - 0.001
+    hidden = lambda c: c in need and g[c] * RELIEF + 0.25 + ALLOWANCE < need[c] - 0.001
+    if top != 0.25:
+        shown = lambda c: c not in need or g[c] * RELIEF + top + ALLOWANCE >= need[c] - 0.001
+        speck = [c for c in cells if hidden(c) and sum(hidden((c[0] + a, c[1] + b)) for a in (-1, 0, 1) for b in (-1, 0, 1) if a or b) <= 2]
+        return (tx, ty), {f'{c[0]},{c[1]}' for c in cells if c not in speck and not shown(c)}
     speck = [c for c in cells if hidden(c) and sum(hidden((c[0] + a, c[1] + b)) for a in (-1, 0, 1) for b in (-1, 0, 1) if a or b) <= 2]
     for c in speck:
-        need[c] = g[c]
+        need[c] = g[c] * RELIEF
     return (tx, ty), {f'{c[0]},{c[1]}' for c in cells if hidden(c)}
+
+
+# Reported spots on Gaia (2026-11-09) where gentle slopes hid most of the view
+# (154, 167, 97 and 77 of 361 cells), with the most ground each may now hide.
+SOFT_SPOTS = {(348, 252): 80, (351, 250): 80, (350, 251): 20, (351, 268): 10}
+
+
+def intent(H):
+    """Gameplay intent of the reference: small rises do not black out the view,
+    ridges and cliffs still hide what lies behind them."""
+    bad = []
+    def ridge(height, at=(3, 4)):
+        return lambda x, y: height if at[0] <= x - 50 <= at[1] else 0
+    def seen(Hf, i, top):
+        r = reference(Hf, 50, 50, 0, 0, 0, 9, top)
+        return r is None or f'{i},0' not in r[1]
+    # A 2-level rise hides neither the ground nor a person behind it.
+    if not seen(ridge(2), 7, 0.25) or not seen(ridge(2), 7, 1.5):
+        bad.append('2-level rise hides what is behind it')
+    # A 3-level rise hides the ground right behind it but not a person.
+    if seen(ridge(3), 6, 0.25) or not seen(ridge(3), 7, 1.5):
+        bad.append('3-level rise: ground behind should hide, a person should show')
+    # An 8-level ridge hides a person and the ground behind it.
+    if seen(ridge(8), 7, 1.5) or seen(ridge(8), 7, 0.25):
+        bad.append('8-level ridge does not hide a person behind it')
+    for (x, y), most in SOFT_SPOTS.items():
+        n = len(reference(H, x, y, 0, 0, 0, 9)[1])
+        print(f'reported spot {x},{y}: {n} of 361 cells hidden (at most {most})')
+        if n > most:
+            bad.append(f'spot {x},{y} hides {n} cells')
+    rng = random.Random(7)
+    total = count = 0
+    while count < 300:
+        x, y = rng.randint(12, 488), rng.randint(12, 338)
+        if H(x, y) > 0:
+            r = reference(H, x, y, 0, 0, 0, 9)
+            total += len(r[1]) if r else 0
+            count += 1
+    share = total * 100 / (count * 361)
+    print(f'Gaia land eyes: {share:.1f}% of ground hidden on average (3% to 15% expected)')
+    if not 3 <= share <= 15:
+        bad.append(f'average hidden share {share:.1f}%')
+    return bad
 
 
 def ray_reference(H, ax, ay, alying, bx, by, blying):
@@ -86,11 +136,11 @@ def ray_reference(H, ax, ay, alying, bx, by, blying):
     steps = max(abs(dx), abs(dy))
     if steps < 3:
         return 0
-    eye = H(ax, ay) + (0.5 if alying else 1.5)
-    rise = H(bx, by) + (0.5 if blying else 1.5) - eye
+    eye = H(ax, ay) * RELIEF + (0.5 if alying else 1.5)
+    rise = H(bx, by) * RELIEF + (0.5 if blying else 1.5) + ALLOWANCE - eye
     for n in range(2, steps):
         t = n / steps
-        if H(ax + math.floor(dx * t + 0.5), ay + math.floor(dy * t + 0.5)) > eye + rise * t + 0.001:
+        if H(ax + math.floor(dx * t + 0.5), ay + math.floor(dy * t + 0.5)) * RELIEF > eye + rise * t + 0.001:
             return 1
     return 0
 
@@ -101,6 +151,9 @@ def main():
     p.add_argument('--eyes', type=int, default=300)
     p.add_argument('--pairs', type=int, default=3000)
     a = p.parse_args()
+    problems = intent(heights())
+    for problem in problems:
+        print('MISMATCH intent:', problem)
     tool = lambda name: str(a.byond_bin / name) if a.byond_bin else name
     H = heights()
     rng = random.Random(13)
@@ -144,7 +197,7 @@ def main():
             print(run.stdout + run.stderr)
             return 1
         result = json.loads((work / 'result.json').read_text())
-    bad = 0
+    bad = len(problems)
     hidden_total = 0
     for eye, got in zip(eyes, result['fields']):
         want = reference(H, *eye)

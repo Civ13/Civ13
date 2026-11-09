@@ -134,15 +134,9 @@
 	// Shed any research-tree appointment so it can't carry into a new faction.
 	if (map && map.faction_research_director[civilization] == src)
 		map.faction_research_director[civilization] = null
-	research_role = null
 	civilization = "none"
-	name = replacetext(real_name,"[title] ","")
-	title = ""
-	leader = FALSE
-	faction_perms = list(0,0,0,0)
+	clear_faction_privileges()
 	to_chat(src, "You left your faction. You are now a Nomad.")
-	remove_commander()
-	remove_faction_symbol_editor()
 	return TRUE
 
 /mob/living/human/proc/transfer_faction()
