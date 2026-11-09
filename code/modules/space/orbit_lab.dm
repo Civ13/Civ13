@@ -57,14 +57,22 @@ var/global/list/orbit_lab_feeds = list(
 
 /obj/structure/zero_g_lab/examine(mob/user)
 	..()
+	to_chat(user, SPAN_NOTICE(status_line()))
+	var/reason = work_refusal()
+	if (reason)
+		to_chat(user, SPAN_WARNING(reason))
+
+// What it is set to and holds, for examine.
+/obj/structure/zero_g_lab/proc/status_line()
 	var/list/P = orbit_lab_programmes[programme]
 	var/list/have = list()
 	for (var/kind in orbit_lab_feeds)
 		have += "[kind_name(kind)] [feed[kind] || 0]"
-	to_chat(user, SPAN_NOTICE("Programme: [P ? P[1] : "none"]. Loaded: [jointext(have, ", ")]."))
-	var/reason = work_refusal()
-	if (reason)
-		to_chat(user, SPAN_WARNING(reason))
+	return "Programme: [P ? P[1] : "none"]. Loaded: [jointext(have, ", ")]."
+
+// Process ticks per batch.
+/obj/structure/zero_g_lab/proc/batch_ticks()
+	return ORBIT_LAB_BATCH_TICKS
 
 /obj/structure/zero_g_lab/proc/kind_name(kind)
 	return kind == "bruise_pack" ? "bruise packs" : kind
@@ -107,7 +115,7 @@ var/global/list/orbit_lab_feeds = list(
 	if (!draw_cable_power())
 		return FALSE
 	progress++
-	if (progress < ORBIT_LAB_BATCH_TICKS)
+	if (progress < batch_ticks())
 		return FALSE
 	progress = 0
 	return finish_batch()

@@ -737,6 +737,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/docking_port" = "orbital_flight",
 		"/obj/structure/freight_dispatcher" = "orbital_flight",
 		"/obj/structure/zero_g_lab" = "orbital_flight",
+		"/obj/structure/zero_g_lab/refinery" = "orbital_flight",
 		"/obj/item/hull_plate" = "orbital_flight",
 		"/obj/structure/point_defence" = "orbital_flight",
 		"/obj/structure/crewed_lander/satellite_launcher" = "orbital_flight",

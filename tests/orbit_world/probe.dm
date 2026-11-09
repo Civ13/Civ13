@@ -125,6 +125,7 @@ var/global/orbit_failures = 0
 		orbit_satellite_checks()
 		orbit_docking_checks()
 		orbit_lab_checks()
+		orbit_refinery_checks()
 		orbit_defence_checks()
 		orbit_asteroid_checks()
 	catch (var/exception/E)
@@ -1812,3 +1813,58 @@ var/global/orbit_failures = 0
 	for (var/obj/item/stack/ore/O in get_turf(H))
 		qdel(O)
 	qdel(H)
+
+/obj/structure/zero_g_lab/refinery/probe_powered/draw_cable_power()
+	return TRUE
+
+// Orbital refinery (orbit_refinery.dm): where it works, ore it takes, steel
+// and ingots per batch, belts feeding it, and no fuel.
+/proc/orbit_refinery_checks()
+	var/obj/structure/zero_g_lab/refinery/stray = new(locate(3, 3, 1))
+	orbit_check("refinery refuses outside a module", findtext("[stray.work_refusal()]", "habitat") ? 1 : 0, 1)
+	qdel(stray)
+	var/z = 0
+	for (var/p in 2 to world.maxz)
+		if (orbit_station_party(p))
+			z = p
+	orbit_check("a station plane for the refinery", z ? 1 : 0, 1)
+	if (!z)
+		return
+	var/turf/centre = locate(world.maxx - 12, world.maxy - 5, z)
+	var/obj/structure/habitat_core/C = habitat_unfold(centre, "laboratory")
+	orbit_check("refinery module sealed", C.breaches(), 0)
+	var/obj/structure/zero_g_lab/refinery/probe_powered/R = new(locate(centre.x + 1, centre.y, z))
+	orbit_check("refinery gated", get_recipe_node_req("/obj/structure/zero_g_lab/refinery"), "orbital_flight")
+	orbit_check("refinery wants a cable", findtext("[R.work_refusal()]", "cable") ? 1 : 0, 1)
+	var/obj/structure/cable/wire = new(get_turf(R))
+	R.powersource = wire
+	orbit_check("refinery ready once cabled", "[R.work_refusal()]", "")
+	orbit_check("refinery idle unfed", R.step_work() || R.progress ? 1 : 0, 0)
+	var/turf/T = get_turf(R)
+	var/obj/item/stack/ore/iron/Fe = new(T, 9)
+	var/obj/item/stack/ore/gold/Au = new(T, 2)
+	var/obj/item/stack/ore/ice/Ice = new(T, 3)
+	var/obj/item/stack/ore/coal/Coal = new(T, 3)
+	orbit_check("refinery takes iron ore", R.load(Fe), 9)
+	orbit_check("belts feed it gold ore", R.factory_insert(Au), 2)
+	orbit_check("refinery takes no ice", R.load(Ice), 0)
+	orbit_check("refinery takes no coal", R.factory_accepts(Coal), 0)
+	var/out = 0
+	for (var/i in 1 to 10)
+		if (R.step_work())
+			out++
+	orbit_check("one batch in ten steps", out, 1)
+	var/obj/item/stack/material/steel/St = locate() in T
+	orbit_check("two lumps of iron make a steel sheet", St ? St.amount : 0, 4)
+	orbit_check("iron left after a batch", R.feed["iron"], 1)
+	orbit_check("belts take its metal", R.factory_offer() == St ? 1 : 0, 1)
+	qdel(St)
+	R.progress = 9
+	orbit_check("gold batch", R.step_work() ? 1 : 0, 1)
+	var/obj/item/stack/material/gold/G = locate() in T
+	orbit_check("one lump of gold makes one ingot", G ? G.amount : 0, 2)
+	orbit_check("a single lump of iron waits for another", R.fed() ? 1 : 0, 0)
+	for (var/obj/item/I in T)
+		qdel(I)
+	qdel(R)
+	qdel(wire)
