@@ -50,6 +50,7 @@ var/hs_runtime_error = FALSE
 		hs_skill_checks()
 		hs_butcher_checks()
 		hs_farming_checks()
+		hs_stacked_crop_checks()
 	catch(var/exception/e)
 		hs_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = hs_failures, "runtime_error" = hs_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -173,3 +174,41 @@ var/hs_runtime_error = FALSE
 	var/skilled_hemp = hs_stack_total(T, hemp)
 	hs_clear(T)
 	hs_check(base_hemp > 0 && skilled_hemp == base_hemp * 2, "master farmer doubles a stacked crop ([base_hemp] -> [skilled_hemp])")
+
+// Existing piles must not absorb the base crop before yield bonuses are applied.
+/proc/hs_stacked_crop_checks()
+	var/turf/T = locate(8, 8, 1)
+	var/hemp = /obj/item/stack/material/hemp
+	for (var/existing_amount in list(1, 49, 50))
+		var/obj/item/stack/material/hemp/existing = new(T, existing_amount, FALSE)
+		var/obj/structure/farming/plant/hemp/hs_probe/HP = new(T)
+		HP.plant_nutrition = 0
+		HP.spawn_produce(1)
+		hs_check(hs_stack_total(T, hemp) == existing_amount + 2, "trained harvest keeps both units beside a [existing_amount]-unit pile")
+		hs_check(existing.amount == min(50, existing_amount + 2), "trained harvest still fills an existing pile")
+		hs_check(hs_stack_bounds(T), "trained harvest keeps each stack within capacity")
+		hs_clear(T)
+	// Even the lowest soil roll must deliver six units: 3 base x 1 soil x 2 skill.
+	new /obj/item/stack/material/hemp(T, 1, FALSE)
+	var/obj/structure/farming/plant/hemp/hs_probe/fed = new(T)
+	fed.stack_amount = 3
+	fed.plant_nutrition = 100
+	fed.spawn_produce(1)
+	var/harvested = hs_stack_total(T, hemp) - 1
+	hs_check(harvested in list(6, 12, 18), "soil and skill bonuses survive merging ([harvested] harvested)")
+	hs_check(hs_stack_bounds(T), "fed harvest stays within stack capacity")
+	hs_clear(T)
+	// Exercise the existing spill contract with a larger fixture yield.
+	var/obj/structure/farming/plant/hemp/hs_probe/large = new(T)
+	large.stack_amount = 30
+	large.plant_nutrition = 0
+	large.spawn_produce(1)
+	hs_check(hs_stack_total(T, hemp) == 60, "yield above one stack preserves all sixty units")
+	hs_check(hs_stack_bounds(T), "yield above one stack is split at capacity")
+	hs_clear(T)
+
+/proc/hs_stack_bounds(turf/T)
+	for (var/obj/item/stack/S in T)
+		if (S.amount <= 0 || (S.max_amount && S.amount > S.max_amount))
+			return FALSE
+	return TRUE
