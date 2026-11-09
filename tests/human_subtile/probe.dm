@@ -399,7 +399,7 @@ var/human_subtile_fixture_phase = "initializing"
 	pull_crate.pulledby = PF
 	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1), "pull_waits_while_touching")
 	PF.loc = locate(16, 7, 1)
-	human_subtile_fixture_place(PF, 0, 0)
+	human_subtile_fixture_place(PF, 0, 2)
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
 	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_follows_round_a_turn")
