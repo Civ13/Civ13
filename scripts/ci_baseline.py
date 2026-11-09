@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py',),
+        'paths': ('tests/serving_tray/',), 'shared_paths': (
+            'code/game/objects/items/weapons/trays.dm', 'tests/save_movement/source_adapter.py')},
     'mop_cleaning': {'files': ('tests/mop_cleaning/test_completion.py',),
         'paths': ('tests/mop_cleaning/',), 'shared_paths': (
             'code/game/objects/items/weapons/mop.dm', 'code/game/turfs/turf.dm', 'tests/save_movement/source_adapter.py')},
