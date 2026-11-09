@@ -15,6 +15,9 @@
 // - Survey orbiter (1969): flown from a pad pointed at the Moon or Mars, it
 //   maps the whole world from orbit for the mission console beside the
 //   launcher and marks a few flat landing sites.
+// - Spy satellite (1969): the ground station shows its owners where rival
+//   ground stations, launch pads, vehicles and groups of people outdoors are
+//   on this world's surface, from imagery taken as it passes over.
 //
 // A ground station holds one satellite of each kind. Its satellites belong to
 // the party that first launched one to it, and serve only that party: GPS
@@ -32,6 +35,8 @@
 #define SATELLITE_WAYPOINTS 5
 #define SATELLITE_HACK_DELAY 300
 #define SATELLITE_RELINK_DELAY 600
+#define SATELLITE_SPY_LINES 6
+#define SATELLITE_SPY_GRID 16
 
 var/global/list/satellite_stations = list()
 
@@ -40,7 +45,8 @@ var/global/list/satellite_kinds = list(
 	"weather" = list("weather satellite", 7),
 	"comms" = list("comms satellite", 7),
 	"navigation" = list("navigation satellite", 8),
-	"survey" = list("survey orbiter", 7))
+	"survey" = list("survey orbiter", 7),
+	"spy" = list("spy satellite", 7))
 
 // TRUE when a ground station in this world holds a satellite of kind that
 // serves party (its own, or a station nobody owns).
@@ -101,6 +107,12 @@ var/global/list/satellite_kinds = list(
 	desc = "A mapping camera that circles another world. Flown to the Moon or Mars, it maps the whole surface for a mission console and picks flat landing sites."
 	color = "#e8c8ff"
 	kind = "survey"
+
+/obj/item/satellite/spy
+	name = "spy satellite"
+	desc = "A long-lens camera that photographs the ground as it passes over. Its ground station shows rival stations, launch pads, vehicles and gatherings outdoors."
+	color = "#ffc0c0"
+	kind = "spy"
 
 // ---------------------------------------------------------------- launcher
 
@@ -315,6 +327,8 @@ var/global/list/satellite_kinds = list(
 		lines += "<b>Comms:</b> [relays] long-range relay\s within [SATELLITE_COMMS_RANGE] tiles are linked through the satellite. They need no antenna and wear half as fast."
 	if ("navigation" in satellites)
 		lines += "<b>Navigation:</b> GPS receivers in this world have a fix. This station stands at [x], [y]."
+	if ("spy" in satellites)
+		lines += satellite_spy_report(owner, z)
 	to_chat(user, SPAN_NOTICE(jointext(lines, "<br>")))
 
 // ---------------------------------------------------------------- raids
@@ -437,6 +451,58 @@ var/global/list/satellite_kinds = list(
 			return "Smog"
 	return "Unsettled"
 
+// ---------------------------------------------------------------- spy
+
+// What a spy satellite sees on level z for party: rival ground stations,
+// launch pads, vehicles and groups of people outdoors, nearest grid square
+// for people. Indoors and underground stay hidden.
+/proc/satellite_spy_report(party, z)
+	var/list/lines = list()
+	var/list/found = list()
+	for (var/obj/structure/satellite_station/S in satellite_stations)
+		if (!QDELETED(S) && S.z == z && S.owner && S.owner != party && satellite_spy_sees(S))
+			found += "[party_train_party_name(S.owner)] at [S.x], [S.y]"
+	lines += satellite_spy_line("Ground stations", found)
+	found = list()
+	for (var/obj/structure/region_gate/trail_marker/launch_pad/P in region_gates)
+		if (!QDELETED(P) && P.z == z && satellite_spy_sees(P))
+			found += "[P.x], [P.y]"
+	lines += satellite_spy_line("Launch pads", found)
+	found = list()
+	for (var/obj/structure/vehicleparts/axis/A in vehicle_axes)
+		if (!QDELETED(A) && A.z == z && satellite_spy_sees(A))
+			found += "[A.x], [A.y]"
+	lines += satellite_spy_line("Vehicles", found)
+	var/list/groups = list()
+	for (var/mob/living/human/H in human_mob_list)
+		if (H.z != z || H.stat == DEAD || !satellite_spy_sees(H))
+			continue
+		if (party && party_train_party_of(H) == party)
+			continue
+		var/cell = "[round(H.x, SATELLITE_SPY_GRID)], [round(H.y, SATELLITE_SPY_GRID)]"
+		groups[cell] = (groups[cell] || 0) + 1
+	found = list()
+	for (var/cell in groups)
+		found += "[groups[cell]] near [cell]"
+	lines += satellite_spy_line("People outdoors", found)
+	return lines
+
+// TRUE when A stands outdoors, where a camera in orbit can see it.
+/proc/satellite_spy_sees(atom/A)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return FALSE
+	var/area/R = get_area(T)
+	return R && R.location == AREA_OUTSIDE
+
+/proc/satellite_spy_line(label, list/found)
+	if (!length(found))
+		return "<b>Imagery, [lowertext(label)]:</b> none seen."
+	var/more = length(found) - SATELLITE_SPY_LINES
+	if (more > 0)
+		found.Cut(SATELLITE_SPY_LINES + 1)
+	return "<b>Imagery, [lowertext(label)]:</b> [jointext(found, "; ")][more > 0 ? " and [more] more" : ""]."
+
 // ---------------------------------------------------------------- comms
 
 // A relay near a ground station with a comms satellite needs no antenna and
@@ -525,3 +591,5 @@ var/global/list/satellite_kinds = list(
 #undef SATELLITE_WAYPOINTS
 #undef SATELLITE_HACK_DELAY
 #undef SATELLITE_RELINK_DELAY
+#undef SATELLITE_SPY_LINES
+#undef SATELLITE_SPY_GRID

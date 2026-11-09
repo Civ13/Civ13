@@ -51,7 +51,7 @@ what the code does so far and the rules later steps must keep.
 | 12b | 2026 starter station: a second deck above the hub (node, quarters, storage, own life support, riser power, open deck hatches) and a sector beacon in the crate | #3978, `orbit_project.dm` |
 | 13 | Wider network: station transceiver (a relay with its own dish), flights from orbit down to the Moon and Mars and back up checked | `code/modules/space/orbit_network.dm` |
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
-| 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
+| 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints), spy satellite (rival stations, pads, vehicles and people outdoors) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
 | 19 | Freight routes: freight dispatcher beside a pad loads the freighter there from crates beside it and launches it for its party at a set load, never waking a sleeping world | `code/modules/space/orbit_freight_routes.dm` |
 | 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
@@ -357,6 +357,11 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Survey orbiter** (1969): flown from a pad pointed at the Moon or Mars
   with a mission console within 7 tiles, it reveals the whole survey map
   and marks up to six new flat landing sites.
+- **Spy satellite** (1969, 35 electronics): the station's report lists what
+  stands outdoors on its level: other parties' ground stations, launch pads,
+  vehicles (the `vehicle_axes` list) and people not of the owner's party,
+  counted per 16-tile square. Each list stops at six entries. Indoors and
+  underground stay hidden. The imagery is live; nothing is saved.
 - **Ownership and raids.** A ground station's satellites belong to the party
   that first launches to it (saved `owner`) and serve only that party: GPS
   fixes, reports and further launches. Another party can break in at its

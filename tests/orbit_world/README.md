@@ -146,7 +146,9 @@ relay's antenna, GPS fixes and bearings, a ground station being required,
 and a survey orbiter mapping the whole Moon for a mission console. Raids:
 the first launch claims a station, GPS serves only its owners, others cannot
 launch to it, a raider cuts a satellite's link, only the owners reacquire it,
-and then a raider takes the station over.
+and then a raider takes the station over. A spy satellite's imagery shows
+other parties' stations, launch pads, vehicles and people outdoors by
+16-tile square, leaves out the owner's own people and sees nothing indoors.
 
 Then station visits (`code/modules/space/orbit_docking.dm`): ports belonging
 to their plane's station, the 2013 gate, who may dock, guests, ferrying
