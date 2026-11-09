@@ -113,6 +113,14 @@ class InputTrace(unittest.TestCase):
                 self.assertEqual(body.count(approved), 1, 'approved crawl block: ' + proc)
                 body = body.replace(approved, historical)
             prior = prior[:start] + body + prior[end:]
+        # #4196 reads the ladder direction before clearing the view.
+        approved_ladder = ('\t\t\tvar/ladder_direction = H.laddervision_direction()\n'
+                           '\t\t\tH.update_laddervision(null)\n'
+                           '\t\t\tH.visible_message("<span class = \'notice\'>[H] stops looking [ladder_direction] the ladder.</span>")\n')
+        historical_ladder = ('\t\t\tH.update_laddervision(null)\n'
+                             '\t\t\tH.visible_message("<span class = \'notice\'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")\n')
+        self.assertEqual(prior.count(approved_ladder), 1, 'approved ladder stop block')
+        prior = prior.replace(approved_ladder, historical_ladder)
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')
