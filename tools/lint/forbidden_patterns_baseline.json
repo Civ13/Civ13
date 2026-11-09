@@ -230,7 +230,7 @@
       "code/game/objects/structures/vending/vending.dm": 3,
       "code/game/objects/structures/vending/vending_sales.dm": 4,
       "code/game/objects/structures/watercloset.dm": 14,
-      "code/game/objects/structures/wild.dm": 7,
+      "code/game/objects/structures/wild.dm": 6,
       "code/game/objects/structures/window.dm": 1,
       "code/game/objects/weapons.dm": 2,
       "code/game/turfs/floor_attackby.dm": 2,

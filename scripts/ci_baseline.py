@@ -798,6 +798,8 @@ SUITES = {
         'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
         'docs/ecology-activity-heatmap-prototype.md',
         'code/modules/persistence/functions.dm')},
+    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
+        'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Shared transport/persistence files retain their existing all-suite fallback.
