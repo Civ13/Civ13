@@ -7,6 +7,16 @@
 // ============================================================
 
 var/global/datum/flooding_controller/subcom_flooding
+// Every controller: the Submarine Commander boat's and one per turf-built
+// vessel (code/modules/naval/). The submarine process ticks them all.
+var/global/list/flooding_controllers = list()
+
+// The controller a deck tile reports to: its vessel's, or the SUBCOM13 one.
+/proc/flooding_for(turf/T)
+	var/datum/vessel/V = vessel_at(T)
+	if(V && V.flooding)
+		return V.flooding
+	return global.subcom_flooding
 
 // Registered in New() so the per-second tick never has to scan the world.
 // Bulkheads are turfs: ChangeTurf() retypes them in place with no Destroy(),
@@ -24,10 +34,16 @@ var/global/list/sub_blast_doors = list()
 	// Compartments whose ventilation was shut off from the compartment panel.
 	var/list/ventilation_off = list()
 	var/tick_counter = 0
+	// The turf-built vessel this controller serves; null for SUBCOM13's boat.
+	var/datum/vessel/vessel
 
-/datum/flooding_controller/New()
+/datum/flooding_controller/New(var/datum/vessel/V)
 	..()
-	global.subcom_flooding = src
+	flooding_controllers += src
+	if(V)
+		vessel = V
+	else
+		global.subcom_flooding = src
 
 // ---- Registration ----
 
@@ -35,6 +51,7 @@ var/global/list/sub_blast_doors = list()
 	if(!T) return
 	if(T in tracked_turfs) return  // Already registered
 	tracked_turfs += T
+	T.flooding_owner = src
 	if(T.compartment_id)
 		if(!compartment_turfs[T.compartment_id])
 			compartment_turfs[T.compartment_id] = list()
@@ -67,6 +84,52 @@ var/global/list/sub_blast_doors = list()
 		if(!turfs.len)
 			compartment_air -= T.compartment_id
 	tracked_turfs -= T
+
+// The partial pressures of every compartment, for rebind_turfs.
+/datum/flooding_controller/proc/air_snapshot()
+	var/list/snapshot = list()
+	for(var/cid in compartment_air)
+		var/datum/habitat_ledger/L = compartment_air[cid]
+		if(L && L.volume > 0)
+			snapshot[cid] = list(L.oxygen / L.volume, L.co2 / L.volume, L.inert / L.volume, L.temperature)
+	return snapshot
+
+// Rebuilds the tracked lists from the deck tiles a vessel now stands on, after
+// a hop has rewritten them. Turf references are positional, so the old lists
+// point at whatever stands where the decks were. Each compartment keeps the
+// air it had (from snapshot) at its new tile count; a compartment seen for
+// the first time gets sea-level air.
+/datum/flooding_controller/proc/rebind_turfs(var/list/turfs, var/list/snapshot)
+	tracked_turfs = list()
+	compartment_turfs = list()
+	for(var/turf/floor/sub_deck/T in turfs)
+		tracked_turfs += T
+		T.flooding_owner = src
+		if(T.compartment_id)
+			if(!compartment_turfs[T.compartment_id])
+				compartment_turfs[T.compartment_id] = list()
+			compartment_turfs[T.compartment_id] += T
+	for(var/cid in compartment_air.Copy())
+		if(!compartment_turfs[cid])
+			compartment_air -= cid
+	for(var/cid in compartment_turfs)
+		var/list/tiles = compartment_turfs[cid]
+		var/datum/habitat_ledger/L = compartment_air[cid]
+		if(!L)
+			L = new /datum/habitat_ledger(tiles.len)
+			compartment_air[cid] = L
+		L.resize(tiles.len)
+		var/list/kpa = snapshot ? snapshot[cid] : null
+		if(kpa)
+			L.oxygen = kpa[1] * tiles.len
+			L.co2 = kpa[2] * tiles.len
+			L.inert = kpa[3] * tiles.len
+			L.temperature = kpa[4]
+		else
+			L.oxygen = 0
+			L.co2 = 0
+			L.inert = 0
+			L.add_gas(SUB_AIR_SEA_O2_KPA * tiles.len, 0, SUB_AIR_SEA_INERT_KPA * tiles.len)
 
 // The air a compartment shares, or null for decks outside any compartment.
 /datum/flooding_controller/proc/get_air(var/compartment_id)
@@ -127,7 +190,7 @@ var/global/list/sub_blast_doors = list()
 			var/leak_cap = B.health > 0 ? 3 : 8
 			for(var/direction in list(NORTH, SOUTH, EAST, WEST))
 				var/turf/floor/sub_deck/neighbor = get_step(B, direction)
-				if(neighbor && istype(neighbor) && neighbor.water_depth > 10)
+				if(neighbor && istype(neighbor) && neighbor.flooding_owner == src && neighbor.water_depth > 10)
 					// Spread water through the now-open bulkhead
 					var/turf/floor/sub_deck/other_side = get_step(B, turn(direction, 180))
 					if(other_side && istype(other_side) && !other_side.water_sealed)
@@ -143,7 +206,7 @@ var/global/list/sub_blast_doors = list()
 		// Door is open - check both sides for water
 		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
 			var/turf/floor/sub_deck/neighbor = get_step(D, direction)
-			if(!neighbor || !istype(neighbor)) continue
+			if(!neighbor || !istype(neighbor) || neighbor.flooding_owner != src) continue
 			if(neighbor.water_depth > 10)
 				var/turf/floor/sub_deck/other_side = get_step(D, turn(direction, 180))
 				if(other_side && istype(other_side) && !other_side.water_sealed)
@@ -188,6 +251,8 @@ var/global/list/sub_blast_doors = list()
 // With no submarine datum (fixtures, a bare map) the hull is treated as
 // surfaced so a breach still vents.
 /datum/flooding_controller/proc/breaches_vent()
+	if(vessel)
+		return vessel.breaches_vent()
 	for(var/datum/submarine/S in all_submarines)
 		return S.depth <= 0
 	return TRUE
@@ -199,7 +264,7 @@ var/global/list/sub_blast_doors = list()
 		if(H.stat == DEAD)
 			continue
 		var/turf/floor/sub_deck/T = get_turf(H)
-		if(istype(T) && T.compartment_id && compartment_air[T.compartment_id])
+		if(istype(T) && T.flooding_owner == src && T.compartment_id && compartment_air[T.compartment_id])
 			counts[T.compartment_id] += 1
 	return counts
 
@@ -238,7 +303,7 @@ var/global/list/sub_blast_doors = list()
 		if(H.stat == DEAD)
 			continue
 		var/turf/floor/sub_deck/T = get_turf(H)
-		if(!istype(T))
+		if(!istype(T) || T.flooding_owner != src)
 			continue
 		var/datum/habitat_ledger/L = get_air(T.compartment_id)
 		if(!L)
