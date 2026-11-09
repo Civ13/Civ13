@@ -10,7 +10,7 @@
 /obj/structure/barbwire/New()
 	..()
 	for(var/mob/living/human/H in get_turf(src))
-		H.immune_to_barbwire = TRUE
+		H.immune_to_barbwire = src
 	return
 
 /obj/structure/barbwire/ex_act(severity)
@@ -66,7 +66,7 @@
 		var/mob/M = AM
 		if (ishuman(M))
 			var/mob/living/human/H = M
-			if(!H.immune_to_barbwire)
+			if(H.immune_to_barbwire != src)
 				if(prob(50))
 					M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
 					playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
@@ -79,7 +79,7 @@
 					M.visible_message(SPAN_DANGER("[M] frees themself from the barbed wire!"))
 					return TRUE
 			else
-				H.immune_to_barbwire = FALSE
+				H.immune_to_barbwire = null
 				return TRUE
 	return ..()
 
