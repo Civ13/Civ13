@@ -110,7 +110,7 @@ def validate_npc_receipt(row, head):
     current.require(row.get('head') == head and row.get('error') is None and
                     row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688),
                     'Wrong NPC source/engine or failed native fixture')
-    current.require(row.get('npc_checks') == 46, 'Incomplete NPC native assertions')
+    current.require(row.get('npc_checks') == 48, 'Incomplete NPC native assertions')
     rows = row.get('npc_rows')
     current.require(isinstance(rows, list) and [r.get('direction') for r in rows] == [1, 2, 4, 8, 5, 9, 6, 10], 'Missing NPC directions')
     for scene in rows:

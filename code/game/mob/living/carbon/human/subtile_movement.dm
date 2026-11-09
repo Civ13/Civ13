@@ -865,7 +865,8 @@
 			if (!T || T.density || T.vehicle_transforming)
 				return FALSE
 			for (var/atom/movable/A in T)
-				if (A != src && !A.CanPass(src, T, 1.5, FALSE))
+				// Bodies may overlap; only dense objects block a restore.
+				if (A != src && !ismob(A) && !A.CanPass(src, T, 1.5, FALSE))
 					return FALSE
 	return TRUE
 

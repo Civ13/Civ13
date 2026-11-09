@@ -467,6 +467,43 @@ var/human_subtile_fixture_phase = "initializing"
 	var/list/nudge_harm = SA.human_subtile_pass_nudge(EAST)
 	SA.a_intent = I_HELP
 	human_subtile_fixture_assert(nudge_away && nudge_away[1] == 0 && nudge_away[2] == -2 && nudge_right && nudge_right[2] == -2 && !nudge_diagonal && !nudge_harm, "passing_eases_sideways")
+	// Three bodies sharing one tile, two of them between tiles, save and load
+	// through the real codec onto that same tile without refusing anything.
+	var/turf/shared = locate(9, 12, 1)
+	var/list/stacked = list()
+	for (var/list/offset in list(list(0, 0), list(10, 0), list(0, 12)))
+		var/mob/living/human/subtile_fixture/SK = human_subtile_fixture_actor(9, 12)
+		SK.set_human_subtile(TRUE)
+		human_subtile_fixture_place(SK, offset[1], offset[2])
+		stacked += SK
+	var/stack_ok = TRUE
+	var/savefile/stack_file = new("human-subtile-stacked.sav")
+	stack_file["/format_version"] << 2
+	var/list/stack_refs = list()
+	for (var/mob/living/human/subtile_fixture/SK in stacked)
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		try
+			SK.before_save()
+			stack_refs += map_storage.BuildVarDirectory(stack_file, SK, 1)
+		catch
+			stack_ok = FALSE
+	stack_file.Flush()
+	for (var/mob/living/human/subtile_fixture/SK in stacked)
+		SK.forceMove(locate(15, 2, 1))
+	var/list/restored = list()
+	for (var/stack_ref in stack_refs)
+		map_storage.clear_bookkeeping()
+		try
+			var/mob/living/human/subtile_fixture/SR = map_storage.Load_Entry(stack_file, stack_ref, starting_loc = shared)
+			SR.after_load()
+			restored += SR
+		catch
+			stack_ok = FALSE
+	for (var/mob/living/human/subtile_fixture/SR in restored)
+		if (SR.loc != shared || SR.step_x || SR.step_y)
+			stack_ok = FALSE
+	human_subtile_fixture_assert(stack_ok && stack_refs.len == 3 && restored.len == 3, "stacked_bodies_save_and_load")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

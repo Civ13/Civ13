@@ -60,7 +60,7 @@ class NpcContracts(unittest.TestCase):
         spec.loader.exec_module(runner)
         # Synthetic oracle controls only: no BYOND execution or native result.
         row = dict(head=FIXTURE_HEAD, error=None, port=0, byond_version=516, byond_build=1688,
-                   npc_checks=46, npc_rows=[])
+                   npc_checks=48, npc_rows=[])
         for direction in (1, 2, 4, 8, 5, 9, 6, 10):
             dx = 1 if direction & 4 else -1 if direction & 8 else 0
             dy = 1 if direction & 1 else -1 if direction & 2 else 0
@@ -178,8 +178,9 @@ class NpcContracts(unittest.TestCase):
         for runtime in ('npc_subtile_transaction', 'npc_subtile_pulse', 'npc_subtile_until', 'npc_subtile_enabled'):
             self.assertIn('"' + runtime + '"', source)
         self.assertIn('Cannot snapshot an in-flight NPC pulse', source)
-        self.assertIn('NPC sub-tile destination occupied', source)
-        self.assertIn('Native NPC sub-tile restoration failed', source)
+        # A blocked or overlapped offset restores aligned instead of failing the load.
+        self.assertIn('npc_subtile_restore_aligned()', source)
+        self.assertIn("if (A != src && !ismob(A) && !A.CanPass(src, T, 1.5, FALSE))", source)
 
     def test_cadence_bound_and_diagonal_distance_budget(self):
         # Independent grid-distance budget, including odd legacy-import offsets.

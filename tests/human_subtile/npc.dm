@@ -96,6 +96,31 @@ var/list/npc_subtile_rows = list()
 	npc_subtile_assert(L.ai_step(get_step(L, WEST), 4), "npc_restored_recovery_admitted")
 	sleep(5)
 	npc_subtile_assert(!L.step_x && L.x == 5 && !L.npc_subtile_transaction, "npc_restored_recovery_aligned")
+	// Bodies may overlap: a person standing in the saved offset's way makes the
+	// animal restore aligned on its tile instead of failing the whole load.
+	var/mob/living/human/overlap = new(locate(6, 8, 1))
+	map_storage.clear_bookkeeping()
+	var/overlap_failed = FALSE
+	var/mob/living/simple_animal/npc_vendor/smuggler/subtile_fixture/O
+	try
+		O = map_storage.Load_Entry(F, ref, starting_loc = locate(5, 8, 1))
+		O.after_load()
+	catch
+		overlap_failed = TRUE
+	npc_subtile_assert(!overlap_failed && O && O.x == 5 && O.y == 8 && !O.npc_subtile_import_owned && !O.npc_subtile_pulse, "npc_overlapped_offset_restores_on_tile")
+	// A pulled animal at an offset saves tile-only instead of failing the save.
+	O.step_x = 6
+	O.npc_subtile_offset_owned = TRUE
+	O.pulledby = overlap
+	var/pulled_save_failed = FALSE
+	try
+		O.before_save()
+	catch
+		pulled_save_failed = TRUE
+	npc_subtile_assert(!pulled_save_failed && isnull(O.npc_subtile_position) && O.persistence_runtime_var("step_x"), "npc_pulled_offset_saves_tile_only")
+	O.pulledby = null
+	qdel(O)
+	qdel(overlap)
 	qdel(L)
 	qdel(S)
 	text2file(json_encode(list("head" = world.params["tested_commit"], "checks" = npc_subtile_checks, "rows" = npc_subtile_rows)), "npc-receipt.json")
