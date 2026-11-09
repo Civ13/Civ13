@@ -62,6 +62,8 @@
 	update_icon()
 
 	W.sync_fullbright_coverage()
+	if (terrain_shading_applied)
+		W.terrain_shade_refresh()
 	return W
 
 /turf/proc/transport_properties_from(turf/other)

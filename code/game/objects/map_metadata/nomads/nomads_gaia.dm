@@ -9,6 +9,8 @@
 	building_level_standing = TRUE
 	// The rock under Gaia's deep ocean (level 1) opens to the sea for submarines.
 	sea_layer_surface_z = 2
+	// Hills: per-tile heights for the surface (docs/terrain-height.md).
+	terrain_height_file = "maps/heights/nomads_gaia.txt"
 
 
 // Gaia's authored outdoors are on level 2; level 1 is underground. Do not use

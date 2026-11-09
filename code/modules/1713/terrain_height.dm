@@ -119,6 +119,127 @@
 		return -min(-levels * TERRAIN_DOWNHILL_BONUS, max(0, step_delay) * TERRAIN_DOWNHILL_MAX_SHARE)
 	return 0
 
+// Slope shading (scripts/terrain_heights.py bake-shading makes the sprites).
+// Each tile corner gets a light level from -2 (shadow) to 2 (lit), from the
+// heights around it, lit from the north-west. A tile shows the sprite for its
+// four corner levels, blended across the tile, so neighbours join smoothly.
+// Sprites are shared objects in turf vis_contents: drawn just above the ground
+// and below decals and objects, never clickable, never saved.
+#define TERRAIN_LIGHT_STEP 0.22
+#define TERRAIN_RELIEF 1.6
+#define TERRAIN_SHADE_LAYER 2.005
+
+var/global/list/terrain_shade_objects = list()
+// TRUE once the map's shading has been placed this round.
+var/global/terrain_shading_applied = FALSE
+
+/obj/effect/terrain_shade
+	icon = 'icons/turf/terrain_shade.dmi'
+	layer = TERRAIN_SHADE_LAYER
+	mouse_opacity = 0
+	anchored = TRUE
+	vis_flags = VIS_INHERIT_PLANE
+	should_save = FALSE
+
+/proc/terrain_shade_object(key)
+	var/obj/effect/terrain_shade/S = terrain_shade_objects[key]
+	if (!S)
+		S = new
+		S.icon_state = key
+		terrain_shade_objects[key] = S
+	return S
+
+// "z" -> list of (maxy + 1) strings of (maxx + 1) light chars a-e, north first.
+/datum/terrain_heights/var/list/light_rows_by_z = list()
+
+// Level at a north-first row and column, clamped to the edge like the tool.
+/datum/terrain_heights/proc/level_rc(list/rows, row, col)
+	var/code = text2ascii(rows[clamp(row, 1, maxy)], clamp(col, 1, maxx))
+	return code >= 97 ? code - 87 : code - 48
+
+/datum/terrain_heights/proc/light_rows(z)
+	var/key = "[z]"
+	if (light_rows_by_z[key])
+		return light_rows_by_z[key]
+	var/list/rows = rows_by_z[key]
+	if (!rows)
+		return null
+	var/width = maxx + 1
+	// Corner heights: corner (cx, cy), 0-based, north first, between rows cy/cy+1 and columns cx/cx+1.
+	var/list/corner = new /list(width * (maxy + 1))
+	for (var/cy in 0 to maxy)
+		for (var/cx in 0 to maxx)
+			corner[cy * width + cx + 1] = (level_rc(rows, cy, cx) + level_rc(rows, cy + 1, cx) + level_rc(rows, cy, cx + 1) + level_rc(rows, cy + 1, cx + 1)) / 4
+	var/static/light_x = -1 / sqrt(3.44)
+	var/static/light_y = -1 / sqrt(3.44)
+	var/static/light_z = 1.2 / sqrt(3.44)
+	var/list/out = list()
+	for (var/cy in 0 to maxy)
+		var/list/chars = list()
+		for (var/cx in 0 to maxx)
+			var/gx = (corner[cy * width + min(cx + 1, maxx) + 1] - corner[cy * width + max(cx - 1, 0) + 1]) / 2
+			var/gy = (corner[min(cy + 1, maxy) * width + cx + 1] - corner[max(cy - 1, 0) * width + cx + 1]) / 2
+			var/nx = -gx * TERRAIN_RELIEF
+			var/ny = -gy * TERRAIN_RELIEF
+			var/intensity = (nx * light_x + ny * light_y + light_z) / sqrt(nx * nx + ny * ny + 1) - light_z
+			chars += ascii2text(99 + clamp(floor(intensity / TERRAIN_LIGHT_STEP + 0.5), -2, 2))
+		out += jointext(chars, "")
+		CHECK_TICK
+	light_rows_by_z[key] = out
+	return out
+
+// Sprite key for a tile: corner lights nw, ne, sw, se; "cccc" means flat.
+/datum/terrain_heights/proc/shade_key(x, y, z)
+	var/list/lights = light_rows(z)
+	if (!lights || x < 1 || x > maxx || y < 1 || y > maxy)
+		return null
+	var/row = maxy - y + 1
+	return copytext(lights[row], x, x + 2) + copytext(lights[row + 1], x, x + 2)
+
+/turf/proc/terrain_shade_refresh()
+	for (var/obj/effect/terrain_shade/old in vis_contents)
+		vis_contents -= old
+	if (!map || !map.terrain_height_file || istype(src, /turf/floor/beach/water))
+		return
+	var/datum/terrain_heights/H = map.terrain_heights()
+	var/key = H ? H.shade_key(x, y, z) : null
+	if (key && key != "cccc")
+		vis_contents += terrain_shade_object(key)
+
+/proc/terrain_shading_apply()
+	var/datum/terrain_heights/H = map ? map.terrain_heights() : null
+	if (!H)
+		return 0
+	var/count = 0
+	for (var/zkey in H.rows_by_z)
+		var/z = text2num(zkey)
+		H.light_rows(z)
+		for (var/y in 1 to H.maxy)
+			for (var/x in 1 to H.maxx)
+				var/turf/T = locate(x, y, z)
+				if (!T || istype(T, /turf/floor/beach/water))
+					continue
+				var/key = H.shade_key(x, y, z)
+				if (key != "cccc")
+					T.vis_contents += terrain_shade_object(key)
+					count++
+			CHECK_TICK
+	return count
+
+// Called by the ticker every 2 seconds; places the shading once per round.
+/proc/terrain_shading_check()
+	if (terrain_shading_applied || !map || !map.terrain_height_file)
+		return
+	terrain_shading_applied = TRUE
+	terrain_shading_place()
+
+// Runs on its own so the ticker is not held while tiles are shaded.
+/proc/terrain_shading_place()
+	set waitfor = FALSE
+	var/started = REALTIMEOFDAY
+	var/count = terrain_shading_apply()
+	log_game("Terrain shading placed on [count] tiles of [map ? map.title : "no map"] in [(REALTIMEOFDAY - started) / 10] s.")
+
 // Admin view: the height number on every tile in view, until toggled off.
 /client/var/tmp/list/terrain_height_images
 
@@ -155,3 +276,6 @@
 #undef TERRAIN_DOWNHILL_BONUS
 #undef TERRAIN_DOWNHILL_MAX_SHARE
 #undef TERRAIN_MAX_LEVEL_STEP
+#undef TERRAIN_LIGHT_STEP
+#undef TERRAIN_RELIEF
+#undef TERRAIN_SHADE_LAYER

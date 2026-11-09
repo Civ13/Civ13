@@ -1,8 +1,9 @@
 # Terrain height (hills)
 
 Optional per-tile hill levels for a map's ground. A step uphill costs extra
-move delay, a step downhill saves a little. It is off unless a map names a
-height file, and no map does yet; every tile then reads height 0.
+move delay, a step downhill saves a little, and slopes are shaded so players
+can see them. It is off unless a map names a height file; every tile then
+reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`.
 
 This is separate from [geographic elevation](elevation.md) (metres per
 rectangle, used for climate). Native z-levels still model caves, floors and
@@ -44,17 +45,38 @@ one level up is about 22% slower and one level down about 22% faster.
 Smooth (sub-tile) steps go through the same code, so they pay the same cost.
 NPC and animal movement do not use terrain height yet.
 
+## Shading
+
+Each tile corner gets a light level from -2 (shadow) to 2 (lit), computed from
+the heights around it, with light from the north-west (`light_rows`). A tile
+shows the sprite for its four corner levels, blended across the tile, so
+neighbouring tiles join without seams; flat tiles (all corners 0) and water
+show nothing. The 624 sprites in `icons/turf/terrain_shade.dmi` are made by
+`scripts/terrain_heights.py bake-shading`; the tool's `corner_lights` and the
+game's `light_rows` use the same maths, and the native test compares them.
+
+The sprites are shared objects in the turf's `vis_contents`, on layer 2.005
+(above the ground, below decals and objects), with `mouse_opacity = 0`, so
+they are never clicked and never saved. The ticker places them once per round
+(`terrain_shading_check`), and `ChangeTurf` puts them back on replaced turfs,
+including turfs rebuilt by a save load.
+
+Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
+shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
+game for the first two). Re-bake after changing the alphas.
+
 ## Tools
 
 `scripts/terrain_heights.py`:
 
 - `generate --map maps/nomads/nomads_gaia.dmm --z 2 --out maps/heights/nomads_gaia.txt [--seed N]`
-  builds heights from the turfs: water 0, beaches at most 1, land rising
-  inland, ridges near rock walls and seeded noise, with neighbouring tiles
-  never more than 2 levels apart.
+  builds heights from the turfs: water 0, beaches at most 1, rounded hills from
+  smooth seeded noise on land that rises gently inland, and ridges near rock
+  walls, with neighbouring tiles never more than 2 levels apart.
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
   pixel per tile, level x 17) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
+- `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
 
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.
@@ -62,6 +84,7 @@ with its level; use it again to hide the labels.
 ## Tests
 
 - `python3 -m unittest tests/terrain_height/test_terrain_height.py` (offline:
-  generator, file format, movement hook).
+  generator, file format, baked sprites, Gaia's file, movement and shading hooks).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
-  parser, lookup and slope cost on a 12x12 fixture world).
+  parser, lookup, slope cost and shading on a 12x12 fixture world, and the
+  game's corner lights against the tool's).

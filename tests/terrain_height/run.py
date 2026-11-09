@@ -39,6 +39,20 @@ def isolate(stage):
     dme.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 
 
+def compare_lights(work):
+    """The game's corner lights must match the tool's, which baked the sprites."""
+    import importlib.util
+    import numpy
+    spec = importlib.util.spec_from_file_location('terrain_heights', ROOT / 'scripts/terrain_heights.py')
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    _, _, levels = tool.read_heights(ROOT / 'tests/terrain_height/fixture.txt')
+    expected = [''.join(tool.SHADE_KEYS[v + 2] for v in row) for row in tool.corner_lights(numpy, levels[1])]
+    path = work / 'lights.txt'
+    actual = path.read_text(encoding='ascii').strip().split('\n') if path.exists() else []
+    return 'PASS' if actual == expected else f'FAIL lights differ: game {actual} tool {expected}'
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -63,6 +77,9 @@ def main():
         result = (work / 'result.txt').read_text(encoding='utf-8').strip() if (work / 'result.txt').exists() else 'FAIL no result'
         receipt = json.loads((work / 'receipt.json').read_text(encoding='utf-8')) if (work / 'receipt.json').exists() else {}
         print(result, json.dumps(receipt))
+        if result == 'PASS':
+            result = compare_lights(work)
+            print(result)
         return 0 if result == 'PASS' else 1
     finally:
         if args.keep:

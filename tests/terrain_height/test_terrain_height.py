@@ -86,6 +86,42 @@ class Generator(unittest.TestCase):
         self.assertEqual(tool.read_heights(copy), tool.read_heights(out))
 
 
+class Shading(unittest.TestCase):
+    def test_baked_sprites_match_the_tool(self):
+        import numpy
+        from PIL import Image
+        dmi = Image.open(ROOT / 'icons/turf/terrain_shade.dmi')
+        states = re.findall(r'state = "(\w+)"', dmi.info['Description'])
+        self.assertEqual(states, tool.shade_states())
+        self.assertNotIn('cccc', states)
+        sheet = numpy.asarray(dmi.convert('RGBA'))
+        for i, key in enumerate(states):
+            y, x = divmod(i, 25)
+            numpy.testing.assert_array_equal(sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32], tool.shade_pixels(numpy, key), key)
+
+    def test_flat_ground_is_unlit_and_slopes_face_the_light(self):
+        import numpy
+        flat = tool.corner_lights(numpy, [[3] * 6] * 6)
+        self.assertTrue((flat == 0).all())
+        # Rising to the east faces west, towards the north-west light.
+        east = tool.corner_lights(numpy, [[x for x in range(6)] for _ in range(6)])
+        self.assertGreater(east[3, 3], 0)
+        west = tool.corner_lights(numpy, [[5 - x for x in range(6)] for _ in range(6)])
+        self.assertLess(west[3, 3], 0)
+
+    def test_neighbouring_tiles_share_corner_lights(self):
+        import numpy
+        sprite_a = tool.shade_pixels(numpy, 'ceac')
+        sprite_b = tool.shade_pixels(numpy, 'ecca')
+        # a's east edge corners (e, c) equal b's west edge corners (e, c): edge columns nearly match.
+        self.assertLessEqual(numpy.abs(sprite_a[:, -1, 3].astype(int) - sprite_b[:, 0, 3].astype(int)).max(), 12)
+
+    def test_gaia_heights_match_the_map(self):
+        tool.main(['check', '--heights', str(ROOT / 'maps/heights/nomads_gaia.txt'), '--map', str(ROOT / 'maps/nomads/nomads_gaia.dmm')])
+        gaia = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_gaia.dm').read_text(encoding='utf-8')
+        self.assertIn('terrain_height_file = "maps/heights/nomads_gaia.txt"', gaia)
+
+
 class Wiring(unittest.TestCase):
     def test_client_move_adds_slope_cost_for_walking_living_mobs(self):
         hook = re.search(r'\n\t\t// Hills:.*\n\t\tif \(mob_is_living && !mob\.buckled && isturf\(mob_loc\) && isturf\(n\)\)\n'
@@ -98,6 +134,14 @@ class Wiring(unittest.TestCase):
         self.assertIn(f'"{tool.HEADER.split()[0]}"', MODULE)
         self.assertIn('regex(@"[^0-9a-f]")', MODULE)
         self.assertEqual(tool.DIGITS, '0123456789abcdef')
+
+    def test_shading_is_placed_once_and_kept_on_turf_changes(self):
+        ticker = (ROOT / 'code/processes/ticker.dm').read_text(encoding='utf-8')
+        self.assertIn('\tterrain_shading_check()\n', ticker)
+        changing = (ROOT / 'code/game/turfs/turf_changing.dm').read_text(encoding='utf-8')
+        self.assertIn('\tif (terrain_shading_applied)\n\t\tW.terrain_shade_refresh()\n\treturn W\n', changing)
+        self.assertIn('mouse_opacity = 0', MODULE)
+        self.assertIn('should_save = FALSE', MODULE)
 
     def test_heights_are_not_saved(self):
         self.assertIn('var/tmp/datum/terrain_heights/terrain_heights_cache', MODULE)
