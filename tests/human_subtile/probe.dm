@@ -504,6 +504,24 @@ var/human_subtile_fixture_phase = "initializing"
 		if (SR.loc != shared || SR.step_x || SR.step_y)
 			stack_ok = FALSE
 	human_subtile_fixture_assert(stack_ok && stack_refs.len == 3 && restored.len == 3, "stacked_bodies_save_and_load")
+	// Riding moves freely: the mount keeps the rider's exact spot, and a
+	// ridden mount saves tile-only like its rider.
+	var/mob/living/human/subtile_fixture/RD = human_subtile_fixture_actor(15, 14)
+	RD.set_human_subtile(TRUE)
+	human_subtile_fixture_place(RD, 6, 0)
+	var/mob/living/simple_animal/horse/mount = new(locate(15, 14, 1))
+	mount.stop_automated_movement = TRUE
+	mount.ride = TRUE
+	mount.rider = RD
+	RD.riding = TRUE
+	RD.riding_mob = mount
+	RD.human_subtile_mount_follow()
+	RD.movement_eastwest = EAST
+	RD.SelfMove(get_step(RD, EAST), EAST, world.time + 4, FINE_STEP_HELD)
+	RD.movement_eastwest = null
+	human_subtile_fixture_assert(RD.x == 16 && RD.step_x == 6 && !RD.step_y && mount.loc == RD.loc && mount.step_x == 6 && !mount.step_y, "riding_moves_freely")
+	mount.before_save()
+	human_subtile_fixture_assert(isnull(mount.npc_subtile_position), "ridden_mount_saves_tile_only")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

@@ -1357,8 +1357,9 @@
 	if (npc_subtile_transaction)
 		npc_subtile_transaction.cancelled = TRUE
 	if (npc_subtile_offset_owned && (step_x || step_y))
-		// A pulled, pulling or buckled animal saves tile-only, never failing the save.
-		if (!npc_subtile_shape() || pulling || pulledby || buckled)
+		// A pulled, pulling, buckled or ridden animal saves tile-only (its rider
+		// saves tile-only too), never failing the save.
+		if (!npc_subtile_shape() || pulling || pulledby || buckled || rider)
 			npc_subtile_position = null
 		else
 			npc_subtile_position = npc_subtile_snapshot()

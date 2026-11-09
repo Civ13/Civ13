@@ -332,6 +332,7 @@
 				H.stop_pulling()
 			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
+			H.human_subtile_mount_follow()
 	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 
