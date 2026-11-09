@@ -5,6 +5,7 @@
 // applications share the same checks (#4237). Recruitment is not leadership:
 // holding it grants no treasury, tax, title or permission-management power.
 
+#define FACTION_PERM_MANAGEMENT 1
 #define FACTION_PERM_RECRUITMENT 4
 
 // The faction's actual leader, or a current member holding the Recruitment
@@ -18,13 +19,20 @@
 		return TRUE
 	return islist(H.faction_perms) && H.faction_perms.len >= FACTION_PERM_RECRUITMENT && H.faction_perms[FACTION_PERM_RECRUITMENT] == 1
 
-// Only the actual leader appoints recruiters and changes member permissions.
+// Who may change member permissions. perm is the faction_perms index being
+// changed, or 0 to ask whether they may open the menu at all. Only the actual
+// leader grants or removes Permission Management and Recruitment; a member
+// holding Permission Management may manage Announcements and Giving Titles.
 // The mob's own leader flag is not enough: it used to be set by granting
 // Recruitment, so old saves can carry it on ordinary members.
-/obj/map_metadata/proc/can_manage_faction_permissions(mob/living/human/H, faction)
+/obj/map_metadata/proc/can_manage_faction_permissions(mob/living/human/H, faction, perm = 0)
 	if (!istype(H) || QDELETED(H) || H.stat == DEAD)
 		return FALSE
-	return is_faction_leader(H, faction)
+	if (is_faction_leader(H, faction))
+		return TRUE
+	if (perm == FACTION_PERM_MANAGEMENT || perm == FACTION_PERM_RECRUITMENT)
+		return FALSE
+	return H.civilization == faction && islist(H.faction_perms) && H.faction_perms.len >= FACTION_PERM_MANAGEMENT && H.faction_perms[FACTION_PERM_MANAGEMENT] == 1
 
 // TRUE while this character is inside the rejoin cooldown for faction.
 /mob/living/human/proc/faction_rejoin_blocked(faction)

@@ -122,11 +122,14 @@
 
 	var/faction = user.civilization
 	if (!map.can_manage_faction_permissions(user, faction))
-		to_chat(user, "Only your faction's leader can change faction permissions.")
+		to_chat(user, "You don't have the permissions to change faction permissions.")
 		return
 
 	if (civilization != faction)
 		to_chat(user, "[src] is not a member of [faction].")
+		return
+	if (map.is_faction_leader(src, faction) && !map.is_faction_leader(user, faction))
+		to_chat(user, "You can't change your leader's permissions.")
 		return
 
 	if (src.incapacitated() || src.client == null)
@@ -141,6 +144,8 @@
 	for (var/i = 1, i <= perm_names.len, i++)
 		if (i == FACTION_PERM_RECRUITMENT && answer == "Add" && !map.nomads)
 			continue
+		if (!map.can_manage_faction_permissions(user, faction, i))
+			continue
 		if ((faction_perms[i] == 1) == (answer == "Remove"))
 			choices += perm_names[i]
 	var/choice = WWinput(user, "Which permission to [answer == "Add" ? "add" : "remove"]?", null, "Cancel", choices)
@@ -149,7 +154,7 @@
 		return
 
 	// The prompts yielded: recheck the leader and the member before changing anything.
-	if (QDELETED(user) || QDELETED(src) || user.stat || user.restrained() || user.civilization != faction || !map.can_manage_faction_permissions(user, faction))
+	if (QDELETED(user) || QDELETED(src) || user.stat || user.restrained() || user.civilization != faction || !map.can_manage_faction_permissions(user, faction, index))
 		return
 	if (civilization != faction)
 		to_chat(user, "[src] is no longer a member of [faction].")
