@@ -54,7 +54,8 @@ class BronzeRetrievalTests(unittest.TestCase):
                                  'CURRENT GAMEPLAY CODE (bronze availability',
                                  '"bronze_working"', '"pottery_storage"', '"stone_arms"',
                                  'map.is_node_done(research_faction, node_req)',
-                                 'map.ordinal_age <= text2num(i[12])',
+                                 'recipe_age_allowed(text2num(i[12]))',
+                                 'map.ordinal_age <= max_age',
                                  'does not report completed research nodes',
                                  'Missing retrieval is not evidence',
                                  'Do not claim research is unlocked from era alone.'):
@@ -70,7 +71,7 @@ class BronzeRetrievalTests(unittest.TestCase):
                      'REQUIREMENT alongside the full study'):
             self.assertIn(text, prompt)
         evidence = bridge.bronze_knowledge(ROOT)[0]
-        self.assertLessEqual(len(evidence['text']), 15000)
+        self.assertLessEqual(len(evidence['text']), 14000)
         self.assertIn('code/modules/research_tree/research_bench.dm', evidence['source_hashes'])
 
     def test_followup_keeps_availability_with_production(self):
