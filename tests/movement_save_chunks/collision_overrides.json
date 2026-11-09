@@ -23,7 +23,7 @@
         {
           "owner": "",
           "declaration": "/mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
-          "sha256_body": "0247081d58799107b4a0db722b068032f831aad4fad9836e6e19195aa16763e1"
+          "sha256_body": "37d126a291725e8bec029c1a46225c5e5f724c904928090231ca7475d839ed09"
         }
       ]
     },

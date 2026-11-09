@@ -1476,3 +1476,7 @@
 	npc_subtile_offset_owned = TRUE
 	npc_subtile_import_owned = FALSE
 	living_movement_completed()
+
+// A pulled animal owns the pixel offset the pulling rope gave it.
+/mob/living/simple_animal/pulled_offset_claim()
+	npc_subtile_offset_owned = !!(step_x || step_y)

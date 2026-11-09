@@ -626,59 +626,103 @@
 		. += list(vertical ? list(shift, 0) : list(0, shift))
 	return .
 
-// Free movement while pulling: step the pulled object onto the neighbouring
-// tile nearest the body's centre that the body no longer covers, when that
-// brings it closer. It trails one tile behind, wherever the body turns.
+// Free movement while pulling works like a rope: the pulled thing slides in
+// pixels toward the body, keeping a small gap (PULL_ROPE_GAP), up to
+// PULL_ROPE_STEP px per pulse. It moves with native collision, so it snags on
+// corners, walls, bodies and objects, sliding along an edge when only one axis
+// is blocked. Once the body gets PULL_ROPE_BREAK px away, the pull ends.
+#define PULL_ROPE_GAP 2
+#define PULL_ROPE_STEP 4
+#define PULL_ROPE_BREAK 16
 /mob/living/human/proc/human_subtile_pull_follow()
 	var/atom/movable/M = pulling
 	if (!M || !isturf(M.loc) || M.anchored || M.z != z)
 		return FALSE
-	// Pulled things follow the tiles the body's centre has walked through, so
-	// they trail along the path round corners instead of cutting sideways.
-	if (human_subtile_pull_trail_for != "\ref[M]" || !islist(human_subtile_pull_trail))
-		human_subtile_pull_trail = list()
-		human_subtile_pull_trail_for = "\ref[M]"
-	var/turf/centre = locate(x + (step_x >= 16 ? 1 : 0), y + (step_y >= 16 ? 1 : 0), z)
-	if (centre && (!human_subtile_pull_trail.len || human_subtile_pull_trail[human_subtile_pull_trail.len] != centre))
-		human_subtile_pull_trail += centre
-		if (human_subtile_pull_trail.len > 4)
-			human_subtile_pull_trail.Cut(1, 2)
-	// Follow only once a gap opens, so it never pushes into the body.
-	if (bounds_dist(src, M) <= 0)
+	if (M.bound_x || M.bound_y || M.bound_width != 32 || M.bound_height != 32)
+		return human_subtile_pull_follow_tile(M)
+	var/cx = x * 32 + step_x + bound_x + bound_width / 2
+	var/cy = y * 32 + step_y + bound_y + bound_height / 2
+	var/mx = M.x * 32 + M.step_x + 16
+	var/my = M.y * 32 + M.step_y + 16
+	var/gap_x = abs(cx - mx) - (bound_width + 32) / 2
+	var/gap_y = abs(cy - my) - (bound_height + 32) / 2
+	var/dx = (gap_x > PULL_ROPE_GAP) ? min(PULL_ROPE_STEP, gap_x - PULL_ROPE_GAP) * ((cx > mx) ? 1 : -1) : 0
+	var/dy = (gap_y > PULL_ROPE_GAP) ? min(PULL_ROPE_STEP, gap_y - PULL_ROPE_GAP) * ((cy > my) ? 1 : -1) : 0
+	// While dragged along one axis, it also eases into line behind the body,
+	// so it follows through doorways instead of catching on the frame.
+	if (dx && !dy && cy != my)
+		dy = min(2, abs(cy - my)) * ((cy > my) ? 1 : -1)
+	else if (dy && !dx && cx != mx)
+		dx = min(2, abs(cx - mx)) * ((cx > mx) ? 1 : -1)
+	var/moved = FALSE
+	if (dx || dy)
+		if (glide_size > 0)
+			M.glide_size = glide_size
+		moved = human_subtile_pull_shift(M, dx, dy)
+		// Blocked on one axis: slide along the other (a wall, a door frame).
+		if (!moved && dx && dy)
+			moved = human_subtile_pull_shift(M, dx, 0) || human_subtile_pull_shift(M, 0, dy)
+		// Caught on a corner within 12px of the body's line: slip toward it,
+		// up to 4px. Further off the line it stays caught.
+		if (!moved && dx && !dy && cy != my && abs(cy - my) <= 12)
+			moved = human_subtile_pull_shift(M, 0, min(PULL_ROPE_STEP, abs(cy - my)) * ((cy > my) ? 1 : -1))
+		else if (!moved && dy && !dx && cx != mx && abs(cx - mx) <= 12)
+			moved = human_subtile_pull_shift(M, min(PULL_ROPE_STEP, abs(cx - mx)) * ((cx > mx) ? 1 : -1), 0)
+	if (pulling == M && bounds_dist(src, M) > PULL_ROPE_BREAK)
+		to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
+		stop_pulling()
+	return moved
+
+// One collision-checked pixel slide of a pulled thing.
+/mob/living/human/proc/human_subtile_pull_shift(atom/movable/M, dx, dy)
+	var/tx = M.x
+	var/ty = M.y
+	var/sx = M.step_x + dx
+	var/sy = M.step_y + dy
+	while (sx < 0)
+		tx--
+		sx += 32
+	while (sx >= 32)
+		tx++
+		sx -= 32
+	while (sy < 0)
+		ty--
+		sy += 32
+	while (sy >= 32)
+		ty++
+		sy -= 32
+	var/turf/destination = locate(tx, ty, M.z)
+	if (!destination)
 		return FALSE
-	// The newest trail tile next to the object that the body has fully left.
-	var/turf/target
-	var/target_index = 0
-	for (var/i = human_subtile_pull_trail.len, i >= 1, i--)
-		var/turf/T = human_subtile_pull_trail[i]
-		if (T == M.loc || !T || T.z != M.z || T.density || (T in locs) || get_dist(M, T) != 1)
-			continue
-		target = T
-		target_index = i
-		break
-	if (!target)
-		// Off the trail and about to be left behind: step toward the body.
-		if (bounds_dist(src, M) < 32)
-			return FALSE
-		var/cx = x * 32 + step_x + 16
-		var/cy = y * 32 + step_y + 16
-		var/best = (cx - (M.x * 32 + M.step_x + 16)) ** 2 + (cy - (M.y * 32 + M.step_y + 16)) ** 2
-		for (var/dir_option in alldirs)
-			var/turf/T = get_step(M, dir_option)
-			if (!T || T.density || (T in locs))
-				continue
-			var/distance = (cx - (T.x * 32 + 16)) ** 2 + (cy - (T.y * 32 + 16)) ** 2
-			if (distance < best)
-				best = distance
-				target = T
-		if (!target)
-			return FALSE
-	else
-		human_subtile_pull_trail.Cut(1, target_index + 1)
-	// Glide the tile step at the body's own pace so it slides, not jumps.
+	var/before_x = M.x * 32 + M.step_x
+	var/before_y = M.y * 32 + M.step_y
+	var/direction = ((dx > 0) ? EAST : (dx < 0) ? WEST : 0) | ((dy > 0) ? NORTH : (dy < 0) ? SOUTH : 0)
+	var/old_dir = M.dir
+	M.Move(destination, direction, sx, sy)
+	// Objects keep facing; dragged bodies turn as ordinary pulls do.
+	if (!ismob(M))
+		M.dir = old_dir
+	if (M.x * 32 + M.step_x == before_x && M.y * 32 + M.step_y == before_y)
+		return FALSE
+	if (isliving(M))
+		var/mob/living/L = M
+		L.pulled_offset_claim()
+	return TRUE
+
+// Things with other bounds keep the earlier tile follow: one tile step toward
+// the body once it is a tile away.
+/mob/living/human/proc/human_subtile_pull_follow_tile(atom/movable/M)
+	if (bounds_dist(src, M) < 32)
+		return FALSE
+	var/turf/target = get_step_towards(M, src)
+	if (!target || target.density || (target in locs))
+		return FALSE
 	if (glide_size > 0)
-		M.glide_size = glide_size * ((get_dir(M, target) & (get_dir(M, target) - 1)) ? ROOT2_FAST : 1)
+		M.glide_size = glide_size
 	return step(M, get_dir(M, target))
+#undef PULL_ROPE_GAP
+#undef PULL_ROPE_STEP
+#undef PULL_ROPE_BREAK
 
 // Walking through someone (help intent), drift 2px per pulse away from them,
 // or to your right when dead centre, until at least 2px apart. Walls still
@@ -1179,3 +1223,7 @@
 	living_movement_completed()
 	human_movement_completed()
 #endif
+
+// A pulled body owns the pixel offset the rope gave it.
+/mob/living/human/pulled_offset_claim()
+	human_subtile_offset_owned = !!(step_x || step_y)
