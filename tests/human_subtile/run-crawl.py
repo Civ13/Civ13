@@ -91,7 +91,7 @@ def main():
     require((work / 'port-closed.txt').read_bytes() == ('closed' + ending).encode(), 'No closed-port witness')
     expected = {'none': (None, 199), 'late-start': ('crawl_progress_during_wait_final_arrival_paid', 4),
                 'lost-lock': ('crawl_cancel_retains_deadline_cleans_visuals', 150)}[args.control]
-    require((receipt['error'], receipt['crawl_checks']) == expected and receipt['checks'] == 53,
+    require((receipt['error'], receipt['crawl_checks']) == expected and receipt['checks'] == 55,
             'Unexpected/incomplete native assertion: ' + str((receipt['error'], receipt['crawl_checks'], receipt['checks'])))
     require((work / 'result.txt').read_bytes() == (('FAIL ' + expected[0] if expected[0] else 'PASS') + ending).encode(), 'Wrong result marker')
     (out / 'accepted.json').write_text(json.dumps(dict(head=manifest['head'], engine='516.1688', control=args.control,
