@@ -1,6 +1,7 @@
 """Offline algorithm and source-boundary checks; NOT native DM execution."""
 from copy import deepcopy
 from pathlib import Path
+import sys
 import unittest
 import re
 import tempfile
@@ -203,6 +204,9 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('holder.shared = subject.payload', probe)
         self.assertIn('map_storage_saved_vars = "name;shared;pet"', probe)
 
+    # Guards a Linux GitHub workflow step; Git Bash on Windows rewrites the
+    # path-list variables, so this behaviour check runs on Linux/macOS only.
+    @unittest.skipIf(sys.platform == 'win32', 'Linux workflow shell check')
     def test_vendor_setup_optional_library_path_under_nounset(self):
         import os
         import subprocess
