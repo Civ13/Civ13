@@ -256,12 +256,15 @@
 
 // Marks a node DONE faction-wide. Returns TRUE.
 /obj/map_metadata/proc/complete_node(faction, node_id)
+	if (is_node_done(faction, node_id))
+		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N)
 		return FALSE
 	var/list/entry = ensure_node_entry(faction, node_id)
 	entry[RNODE_ENTRY_STATUS] = RNODE_DONE
 	entry[RNODE_ENTRY_TICKS] = N.cost_ticks
+	produce_first_node_book(faction, node_id)
 	// Era-changing nodes (the PROTOTYPE-mode capstones) advance the WHOLE WORLD
 	// into their era the first time anyone completes one -- a global event,
 	// announced server-wide. Every other completion is a quiet faction notice
