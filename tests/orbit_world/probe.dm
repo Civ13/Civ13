@@ -126,6 +126,7 @@ var/global/orbit_failures = 0
 		orbit_docking_checks()
 		orbit_lab_checks()
 		orbit_refinery_checks()
+		orbit_artillery_checks()
 		orbit_defence_checks()
 		orbit_asteroid_checks()
 	catch (var/exception/E)
@@ -1868,3 +1869,155 @@ var/global/orbit_failures = 0
 		qdel(I)
 	qdel(R)
 	qdel(wire)
+
+// A strike that records where its shells land instead of exploding.
+/obj/effect/orbital_strike/probe
+	var/list/blasts = list()
+
+/obj/effect/orbital_strike/probe/blast(turf/T)
+	blasts += T
+
+// A transfer bridge that keeps strikes in a list instead of an agent.
+/datum/transfer_bridge/probe_strikes
+	var/list/fired = list()
+	var/list/incoming = list()
+
+/datum/transfer_bridge/probe_strikes/request(path, list/body)
+	switch (path)
+		if ("/strike/send")
+			fired += list(body["envelope"])
+			return list("ok" = 1, "result" = list("id" = "probe-strike"))
+		if ("/strike/inbox")
+			var/list/due = incoming
+			incoming = list()
+			return list("ok" = 1, "result" = list("envelopes" = due))
+	return list("ok" = 1, "result" = list())
+
+// Orbital artillery (orbit_artillery.dm): the battery on a station plane, its
+// refusals and salvo, then the target world taking the strike: a spotter's
+// mark, the spy satellite's view, warnings and the impact.
+/proc/orbit_artillery_checks()
+	var/datum/transfer_bridge/real_bridge = transfer_bridge
+	var/datum/transfer_bridge/probe_strikes/agent = new
+	agent.port = 1
+	agent.token = "probe"
+	agent.ledger_base = 0
+	transfer_bridge = agent
+	var/list/real_peers = shard_group.peers
+	var/real_region = shard_group.region
+	var/real_enabled = shard_group.enabled
+	shard_group.enabled = TRUE
+	shard_group.region = "orbit"
+	shard_group.peers = list(
+		"gaia" = list("name" = "Gaia", "kind" = "MAINLAND", "state" = "UP"),
+		"railyard" = list("name" = "Rail Yard", "kind" = "RAILYARD", "state" = "UP"),
+		"moon" = list("name" = "Moon", "kind" = "BARREN", "state" = "ASLEEP"))
+	var/obj/structure/orbital_battery/stray = new(locate(3, 3, 1))
+	orbit_check("battery refuses off a station", findtext("[stray.mount_refusal(null)]", "station") ? 1 : 0, 1)
+	qdel(stray)
+	var/z = 0
+	for (var/p in 2 to world.maxz)
+		if (orbit_station_party(p))
+			z = p
+	orbit_check("a station plane for the battery", z ? 1 : 0, 1)
+	if (!z)
+		transfer_bridge = real_bridge
+		shard_group.peers = real_peers
+		shard_group.region = real_region
+		shard_group.enabled = real_enabled
+		return
+	var/party = orbit_station_party(z)
+	var/obj/structure/orbital_battery/B = new(locate(world.maxx - 20, world.maxy - 5, z))
+	orbit_check("battery gated", get_recipe_node_req("/obj/structure/orbital_battery"), "orbital_flight")
+	orbit_check("shells gated", get_recipe_node_req("/obj/item/orbital_shell"), "orbital_flight")
+	orbit_check("designator gated", get_recipe_node_req("/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder/target_designator"), "orbital_flight")
+	orbit_check("battery wants a cable", findtext("[B.mount_refusal(null)]", "cable") ? 1 : 0, 1)
+	var/obj/structure/cable/wire = new(get_turf(B))
+	B.powersource = wire
+	orbit_check("battery mounted once cabled", "[B.mount_refusal(null)]", "")
+	var/list/worlds = B.targets()
+	orbit_check("battery fires only on awake ground worlds", jointext(worlds, ","), "Gaia")
+	orbit_check("battery wants shells", findtext("[B.fire(null, "spotter", "gaia", 30, 12)]", "shells") ? 1 : 0, 1)
+	B.shells = 6
+	orbit_check("battery refuses a sleeping world", findtext("[B.fire(null, "spotter", "moon", 30, 12)]", "not below") ? 1 : 0, 1)
+	orbit_check("battery refuses the rail yard", findtext("[B.fire(null, "imagery", "railyard", 30, 12)]", "not below") ? 1 : 0, 1)
+	orbit_check("spotter salvo fires", "[B.fire(null, "spotter", "gaia", 30, 12)]", "")
+	orbit_check("a salvo spends three shells", B.shells, 3)
+	orbit_check("spotter cooldown", B.cooldown, 600)
+	orbit_check("battery cools before firing again", findtext("[B.fire(null, "imagery", "gaia", 30, 12)]", "cooling") ? 1 : 0, 1)
+	var/list/sent = length(agent.fired) ? agent.fired[1] : list()
+	orbit_check("strike names its world, aim and party", "[sent["target"]]|[sent["mode"]]|[sent["x"]],[sent["y"]]|[sent["party"]]|[sent["shells"]]", "gaia|spotter|30,12|[party]|3")
+	B.cooldown = 0
+	orbit_check("imagery salvo fires", "[B.fire(null, "imagery", "gaia", 12, 12)]", "")
+	orbit_check("imagery cooldown is twice as long", B.cooldown, 1200)
+	var/mob/living/human/eva_tester/stranger = new(get_turf(B))
+	stranger.civilization = "Golf"
+	orbit_check("only the station's crew fires it", findtext("[B.mount_refusal(stranger)]", "crew") ? 1 : 0, 1)
+	qdel(stranger)
+	qdel(B)
+	qdel(wire)
+
+	// The ground world: a spotter's mark, then a spy satellite's view.
+	shard_group.region = "gaia"
+	var/area/A = get_area(locate(30, 12, 1))
+	var/old_location = A.location
+	A.location = AREA_OUTSIDE
+	var/list/spotter = agent.fired[1]
+	var/list/imagery = agent.fired[2]
+	spotter = spotter.Copy()
+	imagery = imagery.Copy()
+	spotter["source"] = "orbit"
+	imagery["source"] = "orbit"
+	orbit_check("no mark, no spotter strike", findtext("[orbit_artillery_aim(spotter)]", "painted") ? 1 : 0, 1)
+	var/mob/living/human/eva_tester/spot = new(locate(28, 12, 1))
+	spot.party_train_party = party
+	var/real_spot_party = party_train_party_of(spot)
+	orbit_artillery_marks += list(list(party, locate(31, 13, 1), world.time))
+	var/list/aim = orbit_artillery_aim(spotter)
+	orbit_check("a mark within three tiles takes the strike", islist(aim) ? "[aim[2]]|[aim[3]]|[aim[1] == locate(31, 13, 1)]" : "[aim]", "30|1|1")
+	orbit_artillery_marks = list(list(party, locate(31, 13, 1), world.time - 3001))
+	orbit_check("an old mark has faded", findtext("[orbit_artillery_aim(spotter)]", "painted") ? 1 : 0, 1)
+	orbit_check("a spotter's party paints marks", real_spot_party ? 1 : 0, 1)
+	orbit_check("imagery needs a spy satellite", findtext("[orbit_artillery_aim(imagery)]", "spy satellite") ? 1 : 0, 1)
+	var/obj/structure/satellite_station/G = new(locate(20, 20, 1))
+	G.owner = party
+	G.satellites = list("spy")
+	aim = orbit_artillery_aim(imagery)
+	orbit_check("the party's spy satellite aims an imagery strike", islist(aim) ? "[aim[2]]|[aim[3]]" : "[aim]", "60|3")
+	A.location = AREA_INSIDE
+	orbit_check("imagery cannot aim indoors", findtext("[orbit_artillery_aim(imagery)]", "cannot see") ? 1 : 0, 1)
+	A.location = AREA_OUTSIDE
+	G.owner = "civ:gaia:Golf"
+	orbit_check("another party's spy satellite does not aim it", findtext("[orbit_artillery_aim(imagery)]", "no spy satellite") ? 1 : 0, 1)
+	qdel(G)
+	orbit_artillery_marks = list(list(party, locate(30, 12, 1), world.time))
+	agent.incoming = list(spotter)
+	orbit_artillery_next_poll = 0
+	orbit_artillery_tick()
+	var/obj/effect/orbital_strike/S = locate() in locate(30, 12, 1)
+	orbit_check("the strike arrives and starts its warning", S ? S.left : 0, 30)
+	if (S)
+		processing_objects -= S
+		qdel(S)
+	var/obj/effect/orbital_strike/probe/P = new(locate(30, 12, 1))
+	P.left = 4
+	P.process()
+	orbit_check("nothing lands during the warning", P.blasts.len, 0)
+	P.process()
+	orbit_check("the salvo lands at the end of the warning", "[P.blasts.len]|[QDELETED(P) ? 1 : 0]", "3|1")
+	var/near = TRUE
+	for (var/turf/T in P.blasts)
+		if (get_dist(T, locate(30, 12, 1)) > 1)
+			near = FALSE
+	orbit_check("a spotter salvo lands within a tile", near ? 1 : 0, 1)
+	agent.incoming = list(list("mode" = "nuke", "party" = party, "x" = 40, "y" = 50))
+	orbit_artillery_next_poll = 0
+	orbit_artillery_tick()
+	orbit_check("a garbled strike burns up", (locate(/obj/effect/orbital_strike) in range(5, locate(30, 12, 1))) ? 1 : 0, 0)
+	orbit_artillery_marks = list()
+	qdel(spot)
+	A.location = old_location
+	transfer_bridge = real_bridge
+	shard_group.peers = real_peers
+	shard_group.region = real_region
+	shard_group.enabled = real_enabled

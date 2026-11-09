@@ -460,6 +460,9 @@ RECIPE: /material/steel/,hull armour plate,/obj/item/hull_plate,15,150,0,1,space
 RECIPE: /material/electronics/,point-defence turret,/obj/structure/point_defence,45,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,microgravity lab,/obj/structure/zero_g_lab,40,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,orbital refinery,/obj/structure/zero_g_lab/refinery,35,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,orbital battery,/obj/structure/orbital_battery,60,500,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,orbital shell,/obj/item/orbital_shell,15,100,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,target designator,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder/target_designator,10,150,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,satellite launcher,/obj/structure/crewed_lander/satellite_launcher,50,400,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,ground station,/obj/structure/satellite_station,25,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,weather satellite,/obj/item/satellite/weather,30,300,1,1,spaceflight,235,0,0,8,null

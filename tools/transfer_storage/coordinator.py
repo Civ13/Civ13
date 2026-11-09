@@ -152,7 +152,7 @@ class Coordinator:
         return len(queue)
 
     def relay_radio_once(self):
-        """Fan every region's radio envelopes, relay heartbeats and OOC lines out to every other region.
+        """Fan every region's radio envelopes, relay heartbeats, OOC lines and strikes out to every other region.
 
         Radio is ephemeral: an agent that is down keeps nothing waiting, and a
         pass that fails for one region still serves the others. Returns the
@@ -168,26 +168,30 @@ class Coordinator:
             result = answer.get('result') if answer.get('ok') else None
             if type(result) is dict:
                 ooc = result.get('ooc')
+                strikes = result.get('strikes')
                 collected[name] = (result.get('envelopes') or [], result.get('heartbeats') or {},
-                                   ooc if isinstance(ooc, list) else [])
+                                   ooc if isinstance(ooc, list) else [], strikes if isinstance(strikes, list) else [])
         delivered = 0
         for name, (url, token) in regions.items():
-            envelopes = [e for source, (batch, _, _) in collected.items() if source != name for e in batch
+            envelopes = [e for source, (batch, _, _, _) in collected.items() if source != name for e in batch
                          if type(e) is dict and e.get('group') == self.group]
-            heartbeats = {source: beats for source, (_, beats, _) in collected.items() if source != name}
+            heartbeats = {source: beats for source, (_, beats, _, _) in collected.items() if source != name}
             # OOC lines go to every other region whether or not it has a relay.
-            ooc = [e for source, (_, _, lines) in collected.items() if source != name for e in lines
+            ooc = [e for source, (_, _, lines, _) in collected.items() if source != name for e in lines
                    if type(e) is dict and e.get('group') == self.group]
-            if not envelopes and not heartbeats and not ooc:
+            # A strike goes only to the region it names.
+            strikes = [e for source, (_, _, _, fired) in collected.items() if source != name for e in fired
+                       if type(e) is dict and e.get('group') == self.group and e.get('target') == name]
+            if not envelopes and not heartbeats and not ooc and not strikes:
                 continue
             try:
                 answer = call(url, token, '/radio/deliver',
-                              {'envelopes': envelopes, 'heartbeats': heartbeats, 'ooc': ooc}, timeout=2)
+                              {'envelopes': envelopes, 'heartbeats': heartbeats, 'ooc': ooc, 'strikes': strikes}, timeout=2)
             except (OSError, ValueError):
                 continue
             if answer.get('ok'):
                 result = answer.get('result') or {}
-                delivered += result.get('queued', 0) + result.get('ooc', 0)
+                delivered += result.get('queued', 0) + result.get('ooc', 0) + result.get('strikes', 0)
         return delivered
 
     def relay_once(self):
