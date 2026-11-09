@@ -15,6 +15,8 @@
 	flora_regrowth = TRUE
 /obj/map_metadata/flora_probe/New()
 	return
+/mob/living/human/flora_probe/New()
+	return
 var/flora_failures = 0
 var/flora_runtime_error = FALSE
 /proc/flora_check(condition, label)
@@ -41,6 +43,7 @@ var/flora_runtime_error = FALSE
 			T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
 		flora_site_checks()
 		flora_plant_checks()
+		flora_palm_checks()
 		flora_stump_checks()
 		flora_persistence_checks()
 	catch(var/exception/e)
@@ -133,6 +136,42 @@ var/flora_runtime_error = FALSE
 	flora_check(PT != null, "plant tile existed")
 	for (var/obj/structure/farming/plant/W in wild_plant_list.Copy())
 		qdel(W)
+	// More than one scan budget of in-season plants must not hide later plants.
+	for (var/i = 1, i <= 32, i++)
+		var/obj/structure/farming/plant/wheat/retained = new(locate(6, 6, 1))
+		retained.make_wild()
+		retained.seasons = list("SUMMER")
+	var/obj/structure/farming/plant/wheat/expired = new(locate(6, 6, 1))
+	expired.make_wild()
+	expired.seasons = list("WINTER")
+	F.wither_plants()
+	flora_check(!QDELETED(expired), "bounded first scan leaves the later plant")
+	F.wither_plants()
+	flora_check(QDELETED(expired), "later out-of-season plant is visited on the next scan")
+	flora_check(wild_plant_list.len == 32, "in-season plants remain registered")
+	for (var/obj/structure/farming/plant/W in wild_plant_list.Copy())
+		qdel(W)
+
+/proc/flora_palm_checks()
+	var/turf/T = locate(15, 15, 1)
+	var/mob/living/human/flora_probe/H = new(T)
+	var/obj/structure/wild/palm/P = new(locate(16, 15, 1))
+	var/obj/item/knife = new(H)
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/pot = new(H)
+	var/obj/item/replacement = new(H)
+	H.r_hand = knife
+	H.l_hand = replacement
+	var/datum/epoch = persistence_admission_identity
+	flora_check(!P.finish_sap_extraction(H, knife, pot, TRUE, epoch) && !QDELETED(replacement) && !P.cooldown_sap, "replaced pot cannot be consumed or yield sap")
+	H.l_hand = pot
+	var/datum/old_epoch = new
+	flora_check(!P.finish_sap_extraction(H, knife, pot, TRUE, old_epoch) && !QDELETED(pot), "changed persistence identity cancels extraction")
+	flora_check(P.finish_sap_extraction(H, knife, pot, TRUE, epoch) && QDELETED(pot) && P.cooldown_sap, "valid extraction consumes the retained pot and claims cooldown")
+	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/second = new(H)
+	H.l_hand = second
+	flora_check(!P.finish_sap_extraction(H, knife, second, TRUE, epoch) && !QDELETED(second), "a competing extraction cannot consume a second pot")
+	qdel(P)
+	qdel(H)
 
 /proc/flora_stump_checks()
 	var/datum/flora_regrowth/F = flora_new_worker()

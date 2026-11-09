@@ -75,6 +75,11 @@ default behaviour is:
 		if (map && map.check_caribbean_block(AM, get_step(get_turf(AM), dir)))
 			return
 
+	// Decide now: the free-movement pulse that caused the bump is gone by spawn.
+	var/swap_vetoed = FALSE
+	if (ishuman(src) && isliving(AM))
+		var/mob/living/human/swapper = src
+		swap_vetoed = !swapper.human_subtile_swap_allowed(AM)
 	spawn(0)
 		if ((!( yes ) || now_pushing) || !loc)
 			return
@@ -101,7 +106,7 @@ default behaviour is:
 				now_pushing = FALSE
 				return
 
-			if (can_swap_with(tmob)) // mutual brohugs all around!
+			if (!swap_vetoed && can_swap_with(tmob)) // mutual brohugs all around!
 				if (ordinary_human_animal_swap(tmob))
 					now_pushing = FALSE
 					return
@@ -118,9 +123,7 @@ default behaviour is:
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
 					else
-						var/turf/oldloc = loc
-						forceMove(tmob.loc)
-						tmob.forceMove(oldloc)
+						swap_exact_positions(tmob)
 						now_pushing = FALSE
 				else if (istype(src, /mob/living/simple_animal/horse))
 					var/mob/living/simple_animal/horse/HR = src
@@ -128,9 +131,7 @@ default behaviour is:
 						var/t = get_dir(HR, tmob)
 						step(tmob, t)
 				else
-					var/turf/oldloc = loc
-					forceMove(tmob.loc)
-					tmob.forceMove(oldloc)
+					swap_exact_positions(tmob)
 					now_pushing = FALSE
 					return
 
@@ -168,6 +169,34 @@ default behaviour is:
 				now_pushing = FALSE
 			return
 	return
+
+// Swap two mobs' exact positions, pixel offsets included. Free movement
+// leaves bodies between tiles; swapping only loc kept each body's own offset
+// and could push it into a wall next to the other's tile.
+/mob/living/proc/swap_exact_positions(var/mob/living/tmob)
+	var/turf/my_loc = loc
+	var/my_sx = step_x
+	var/my_sy = step_y
+	var/turf/their_loc = tmob.loc
+	var/their_sx = tmob.step_x
+	var/their_sy = tmob.step_y
+	if (my_loc != their_loc)
+		forceMove(their_loc)
+		tmob.forceMove(my_loc)
+	var/same_shape = bound_x == tmob.bound_x && bound_y == tmob.bound_y && bound_width == tmob.bound_width && bound_height == tmob.bound_height
+	if (loc == their_loc)
+		step_x = same_shape ? their_sx : 0
+		step_y = same_shape ? their_sy : 0
+		swap_exact_offset_owner(src)
+	if (tmob.loc == my_loc)
+		tmob.step_x = same_shape ? my_sx : 0
+		tmob.step_y = same_shape ? my_sy : 0
+		swap_exact_offset_owner(tmob)
+
+/proc/swap_exact_offset_owner(var/mob/living/M)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
 
 /proc/swap_density_check(var/mob/swapper, var/mob/swapee)
 	var/turf/T = get_turf(swapper)
@@ -566,9 +595,9 @@ default behaviour is:
 			var/datum/human_subtile_pulse/pull_pulse = pull_walker.human_subtile_pulse
 			T = get_step(pull_pulse.destination, turn(pull_pulse.direction, 180))
 		moved = ..()
-		if (subtile_pull_step && (step_x || step_y))
-			// A free slide rarely lands on a tile. Drag the pulled object onto
-			// the next tile toward the body as soon as the body has cleared it.
+		if (subtile_pull_step && (step_x || step_y || (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step)))
+			// A free slide drags the pulled object along the body's path on
+			// every pulse, aligned or not, once the body has cleared a tile.
 			if (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step && pulling && isturf(pulling.loc) && !pulling.anchored)
 				pull_walker.human_subtile_pull_follow()
 			return moved

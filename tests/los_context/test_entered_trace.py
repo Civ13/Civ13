@@ -73,6 +73,7 @@ class IdentityTrace:
             m.C.mob = m.V.body
             m.V.owner, m.V.retired = m.C, False
             m.V.movement_turf = m.V.body.loc
+            m.V.movement_bucket = '0,0'
             m.V.viewport_radii = lambda: P.geometry.DMList([4, 4])
             m.C.los_dirty = False
             m.C.noted = []
@@ -93,6 +94,8 @@ class IdentityTrace:
             istype=lambda a, kind: a.type.startswith(kind),
             los_presentation_exempt=lambda a: a.type.startswith('/obj/item/projectile') and not a.opacity,
             ismovable=lambda a: not a.type.startswith('/turf/'),
+            # Quarter-tile eye buckets (los_terrain.dm); a 2px pulse stays in bucket 0 (16px steps).
+            los_eye_bucket=lambda a: f'{(a.step_x + 8) // 16 * 16},{(a.step_y + 8) // 16 * 16}',
             los_active_contexts=P.List([m.V for m in self.models]))
         invalidate = A.project(LIFE, '/proc/los_invalidate',
                                'changed, possible_opacity=False, viewer_refresh=False', self.env)

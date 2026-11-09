@@ -2,6 +2,8 @@
 /obj/map_metadata/nomads/jungle
 	ID = MAP_NOMADS_JUNGLE
 	title = "Nomads (Jungle)"
+	// Hills: per-tile heights for the surface, z 2 (docs/terrain-height.md).
+	terrain_height_file = "maps/heights/nomads_jungle.txt"
 	description = "Battle on the Nomads (Jungle) map."
 	research_active = TRUE
 

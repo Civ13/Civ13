@@ -596,32 +596,35 @@ var/list/seed_list_jungle
 			to_chat(user, SPAN_WARNING("You need to have a pot in one of your hands in order to extract palm sap."))
 			return
 		else
-			var/done = FALSE
-			if (cooldown_sap == TRUE)
+			if (cooldown_sap)
 				to_chat(user, SPAN_WARNING("Sap was extracted from this palm recently, you need to wait before collecting it again."))
 				return
-			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
-				to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
-				if (do_after(user, 50, user.loc) && done == FALSE)
-					to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
-					qdel(user.l_hand)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
-					cooldown_sap = TRUE
-					spawn(3000)
-						cooldown_sap = FALSE
-				done = TRUE
-			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
-				to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
-				if (do_after(user, 50, user.loc) && done == FALSE)
-					to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
-					qdel(user.r_hand)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
-					cooldown_sap = TRUE
-					spawn(3000)
-						cooldown_sap = FALSE
-				done = TRUE
+			if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+				return
+			var/datum/save_identity = persistence_admission_identity
+			var/pot_in_left_hand = istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot)
+			var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/pot = pot_in_left_hand ? user.l_hand : user.r_hand
+			to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
+			if (do_after(user, 50, src))
+				finish_sap_extraction(user, W, pot, pot_in_left_hand, save_identity)
 	else
 		..()
+
+/obj/structure/wild/palm/proc/finish_sap_extraction(mob/user, obj/item/knife, obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/pot, pot_in_left_hand, datum/save_identity)
+	if (QDELETED(src) || QDELETED(user) || QDELETED(knife) || QDELETED(pot) || cooldown_sap || !isturf(loc) || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated())
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_identity != persistence_admission_identity)
+		return FALSE
+	if (knife.loc != user || (user.l_hand != knife && user.r_hand != knife) || pot.loc != user || (pot_in_left_hand ? user.l_hand != pot : user.r_hand != pot))
+		return FALSE
+	// Claim the tree before consuming the pot so simultaneous waits cannot both succeed.
+	cooldown_sap = TRUE
+	qdel(pot)
+	new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+	to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
+	spawn(3000)
+		cooldown_sap = FALSE
+	return TRUE
 
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(45 * (temperature/500)))
@@ -1318,9 +1321,11 @@ var/list/seed_list_jungle
 	else
 		..()
 
-/obj/structure/wild/jungle/MouseDrop_T(var/mob/living/human/user as mob)
+/obj/structure/wild/jungle/MouseDrop_T(atom/dropping, mob/living/human/user)
+	if (dropping != user)
+		return
 	if (istype(user, /mob/living/human))
-		if (stored_unit)
+		if (stored_unit || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 			return
 		if (user.restrained() || user.stat || user.weakened || user.stunned || user.paralysis)
 			return
@@ -1328,16 +1333,35 @@ var/list/seed_list_jungle
 			return
 		var/mob/living/human/H = user
 		if (H.faction_text == "VIETNAMESE")
+			var/datum/save_identity = persistence_admission_identity
 			to_chat(user, SPAN_NOTICE("You start hiding in \the [src]..."))
 			if (do_after(user,100,src))
-				to_chat(user, SPAN_NOTICE("You finish hiding in \the [src]."))
-				stored_unit = user
-				if (user.client)
-					user.client.perspective = EYE_PERSPECTIVE
-					user.client.eye = src
-				user.forceMove(src)
+				finish_hiding(H, save_identity)
 	else
 		..()
+
+/obj/structure/wild/jungle/proc/finish_hiding(mob/living/human/H, datum/save_identity)
+	if (QDELETED(src) || QDELETED(H) || stored_unit || !isturf(loc) || !isturf(H.loc) || !H.Adjacent(src))
+		return FALSE
+	if (H.restrained() || H.stat || H.weakened || H.stunned || H.paralysis || H.faction_text != "VIETNAMESE")
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_identity != persistence_admission_identity)
+		return FALSE
+	stored_unit = H
+	if (!H.forceMove(src) || QDELETED(src) || QDELETED(H) || H.loc != src || stored_unit != H)
+		if (!QDELETED(src) && stored_unit == H)
+			stored_unit = null
+		return FALSE
+	if (H.client)
+		H.client.perspective = EYE_PERSPECTIVE
+		H.client.eye = src
+	to_chat(H, SPAN_NOTICE("You finish hiding in \the [src]."))
+	return TRUE
+
+/obj/structure/wild/jungle/Destroy()
+	if (stored_unit)
+		release_stored()
+	return ..()
 
 /obj/structure/wild/attack_hand(mob/user as mob)
 	if (stored_unit)
@@ -1348,12 +1372,14 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/proc/release_stored()
 	if (stored_unit)
-		if (stored_unit.client)
-			stored_unit.client.eye = stored_unit.client.mob
-			stored_unit.client.perspective = MOB_PERSPECTIVE
-			stored_unit.forceMove(get_turf(src))
-			stored_unit = null
-			return
+		var/mob/living/human/occupant = stored_unit
+		stored_unit = null
+		if (occupant.client && occupant.client.eye == src)
+			occupant.client.eye = occupant.client.mob
+			occupant.client.perspective = MOB_PERSPECTIVE
+		var/turf/T = get_turf(src)
+		if (occupant.loc == src && T)
+			occupant.forceMove(T)
 
 /obj/structure/wild/bamboo
 	name = "bamboo"

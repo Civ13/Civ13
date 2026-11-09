@@ -514,6 +514,19 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    # Stdlib-only order checks: prompt paths re-check before paying (lagged repeat clicks).
+    'repeat_click_payment': {'files': ('tests/repeat_click_payment/test_source.py',), 'paths': (
+        'tests/repeat_click_payment/',), 'shared_paths': ('tests/save_movement/source_adapter.py',
+        'code/game/objects/structures/blacksmithing/molds.dm',
+        'code/modules/1713/machinery/modular_vehicles/frame_parts.dm',
+        'code/modules/1713/machinery/modular_vehicles/ships/frame_parts.dm',
+        'code/modules/1713/machinery/engines/engines.dm', 'code/modules/projectiles/ammo_crafting.dm',
+        'code/modules/1713/structures.dm', 'code/game/objects/structures/plant_pots.dm',
+        'code/modules/1713/computers/programs.dm', 'code/game/objects/map_metadata/pepelsibirsk.dm',
+        'code/game/objects/map_metadata/colonia.dm', 'code/modules/1713/researchcost.dm',
+        'code/game/objects/structures/bookcase.dm', 'code/game/objects/structures/roulette_table.dm',
+        'code/game/objects/covers_types/covers_buildable.dm', 'code/modules/1713/trench.dm',
+        'code/game/objects/structures/vending/vending_sales.dm')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
@@ -798,6 +811,10 @@ SUITES = {
         'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
         'docs/ecology-activity-heatmap-prototype.md',
         'code/modules/persistence/functions.dm')},
+    'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
+        'tests/jungle_hiding/',)},
+    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
+        'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Shared transport/persistence files retain their existing all-suite fallback.

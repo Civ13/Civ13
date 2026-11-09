@@ -259,6 +259,17 @@
 	var/enginesize = 0
 
 
+// Takes engine steel from a held stack after the build wait. The amount shown
+// before the prompts can be stale (a lagged repeat click), so pay from the
+// stack as it is now and refuse when it is short.
+/proc/enginemaker_pay_steel(mob/living/human/H, cost)
+	if (QDELETED(H) || cost <= 0)
+		return FALSE
+	for (var/obj/item/stack/material/steel/S in list(H.l_hand, H.r_hand))
+		if (!QDELETED(S) && S.can_use(cost))
+			return S.use(cost)
+	return FALSE
+
 /obj/item/weapon/enginemaker/attack_self(mob/living/human/H)
 	if (!istype(H.l_hand, /obj/item/stack/material/steel) && !istype(H.r_hand, /obj/item/stack/material/steel))
 		to_chat(H, "<span class = 'warning'>You need to have a steel stack in one of your hands in order to make this.</span>")
@@ -288,10 +299,9 @@
 				done = TRUE
 				if (do_after(H,220,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*33
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*33
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*33))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/hotbulb/NEN = new/obj/structure/engine/internal/hotbulb(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -315,10 +325,9 @@
 				done = TRUE
 				if (do_after(H,220,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*73
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*73
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*73))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/turbine/NEN = new/obj/structure/engine/internal/turbine(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -342,10 +351,9 @@
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*40
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*40
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*40))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/gasoline/twostroke/NEN = new/obj/structure/engine/internal/gasoline/twostroke(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -369,10 +377,9 @@
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*50
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*50
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*50))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/gasoline/NEN = new/obj/structure/engine/internal/gasoline(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -396,10 +403,9 @@
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*100
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*100
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*100))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/gasoline/efficient/NEN = new/obj/structure/engine/internal/gasoline/efficient(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 40*(NEN.enginesize/1000)
@@ -423,10 +429,9 @@
 				done = TRUE
 				if (do_after(H,200,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*60
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*60
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*60))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/gasoline/ethanol/NEN = new/obj/structure/engine/internal/gasoline/ethanol(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -450,10 +455,9 @@
 				done = TRUE
 				if (do_after(H,270,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*40
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*40
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*40))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/diesel/NEN = new/obj/structure/engine/internal/diesel(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -477,10 +481,9 @@
 				done = TRUE
 				if (do_after(H,270,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*45
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*45
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*45))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/diesel/biodiesel/NEN = new/obj/structure/engine/internal/diesel/biodiesel(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)
@@ -504,10 +507,9 @@
 				done = TRUE
 				if (do_after(H,240,src))
 					if (done)
-						if (istype(H.l_hand, /obj/item/stack/material/steel))
-							H.l_hand.amount -= (enginesize/1000)*43
-						else if (istype(H.r_hand, /obj/item/stack/material/steel))
-							H.r_hand.amount -= (enginesize/1000)*43
+						if (!enginemaker_pay_steel(H, (enginesize/1000)*43))
+							to_chat(H, "<span class = 'warning'>You no longer have enough steel in hand for this engine.</span>")
+							return
 						var/obj/structure/engine/internal/hesselman/NEN = new/obj/structure/engine/internal/hesselman(get_turf(H))
 						NEN.enginesize = enginesize
 						NEN.weight = 20*(NEN.enginesize/1000)

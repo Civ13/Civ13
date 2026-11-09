@@ -497,8 +497,10 @@
 				marketval = W.value + rand(-round(W.value/10),round(W.value/10))
 				moneyin = marketval*W.amount-((marketval*W.amount)*(export_tax_rate/100))
 				var/exportChoice = WWinput(user, "Sell the whole stack for [moneyin] silver coins?", "Exporting", "Yes", list("Yes", "No"))
-				if (exportChoice == "Yes")
-					if (W && marketval > 0)
+				// The prompt sleeps: a lagged repeat click must not sell the same
+				// stack twice, so pay only for a stack that is still in hand.
+				if (exportChoice == "Yes" && !QDELETED(W) && W.loc == user && get_dist(src, user) <= 1)
+					if (marketval > 0)
 						new/obj/item/stack/money/silvercoin(loc, round(moneyin))	// Silver coins
 						qdel(W)
 						marketval = 0

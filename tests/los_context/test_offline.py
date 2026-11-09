@@ -208,6 +208,13 @@ def projected_geometry(source=None):
     for name in ['los_axis_separates','los_triangle_hits_cell','los_hull_axis_separates','los_footprint_hits_cell',
                  'los_ray_axis','los_ray_entry']:
         project(source, '/proc/'+name+'(', env)
+    # Hills (los_terrain.dm) are absent from these flat projections: half-tile
+    # eye quantization as in DM, and no terrain answer, as on a flat map.
+    import math
+    env.update(los_eye_quantized=lambda step: math.floor(step / 16 + 0.5) * 16,
+               los_eye_bucket=lambda body: f'{math.floor(body.step_x / 16 + 0.5) * 16},{math.floor(body.step_y / 16 + 0.5) * 16}',
+               los_terrain_for=lambda body, radius: None,
+               los_terrain_target_visible=lambda S, target: True)
     return env
 
 

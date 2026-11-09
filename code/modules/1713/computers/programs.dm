@@ -1017,7 +1017,7 @@
 								return
 							else
 								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
-								if (!isnum(price))
+								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
 									return
@@ -1033,7 +1033,7 @@
 									return
 						else
 							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
-							if (!isnum(price))
+							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)
 								return
@@ -1327,10 +1327,11 @@
 						M = user.get_active_hand()
 					else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 						M = user.get_inactive_hand()
-					if (M && M.value*M.amount >= U.bail_price*4)
-						M.amount-=U.bail_price/5
-						if (M.amount <= 0)
-							qdel(M)
+					// The prisoner menu sleeps: a repeat answer must not pay or score
+					// a bail that has already been paid.
+					if (QDELETED(U) || U.bail_price <= 0)
+						return
+					if (M && !QDELETED(M) && M.value*M.amount >= U.bail_price*4 && M.use(U.bail_price/5))
 						U.forceMove(locate(105,104,1))
 						U.bail_price = 0
 						mainbody = ""
@@ -1379,10 +1380,9 @@
 					if (M && M.value*M.amount >= 100*4)
 						if(WWinput(user, "This will attempt to repair any missing doors for 100 dollars. Are you sure?", "Door Repair", "Yes", list("Yes", "No")) == "No")
 							return
-						else	
-							M.amount-=100/5
-							if (M.amount <= 0)
-								qdel(M)
+						else if (QDELETED(M) || M.value*M.amount < 100*4 || !M.use(100/5)) // re-check after the prompt sleeps
+							return
+						else
 							switch(user.civilization)
 								if ("Goldstein Solutions")
 									for (var/obj/effect/spawner/objspawner/door/yellow/YD in world)
@@ -1766,7 +1766,7 @@
 								return
 							else
 								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the nile? (in dollars) 0 to cancel.") as num|null
-								if (!isnum(price))
+								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
 									return
@@ -1782,7 +1782,7 @@
 									return
 						else
 							var/price = input(user, "What price do you want to place the [M] for sale at nile.ug? (in dollars).") as num|null
-							if (!isnum(price))
+							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)
 								return
@@ -1953,6 +1953,12 @@
 	if (href_list["bank"])
 		if (findtext(href_list["bank"],"b"))
 			var/tcode = replacetext(href_list["bank"],"b","")
+			// A lagged repeat click on the link must not buy the same stock again.
+			if (!map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 1 || map.globalmarketplace[tcode][2] != null)
+				mainbody += "<b>That stock is no longer for sale.</b>"
+				sleep(0.5)
+				do_html(user)
+				return
 			var/cost = (map.globalmarketplace[tcode][4])
 			if (map.marketplaceaccounts[user.name])
 				if (map.marketplaceaccounts[user.name] < cost)
@@ -1972,7 +1978,9 @@
 			var/tcode = replacetext(href_list["bank"],"s","")
 			var/cost = (map.globalmarketplace[tcode][4])
 			var/choice1 = WWinput(user, "Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
-			if (choice1 != "Yes")
+			// The prompt sleeps: only sell a stock this user still owns, so two
+			// answers cannot both pay out.
+			if (choice1 != "Yes" || !map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 0 || map.globalmarketplace[tcode][2] != user)
 				sleep(0.5)
 				do_html(user)
 				return

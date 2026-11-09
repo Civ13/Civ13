@@ -19,6 +19,8 @@
 	var/tmp/human_subtile_chain_start
 	// world.time a held precision slide stopped because its chord was released.
 	var/tmp/human_subtile_fine_released_at
+	var/tmp/list/human_subtile_pull_trail
+	var/tmp/human_subtile_pull_trail_for
 	// Set by before_save when an offset capsule would be rejected on load.
 	var/tmp/human_subtile_save_aligned = FALSE
 	var/list/human_subtile_position
@@ -91,6 +93,8 @@
 	var/invalid = FALSE
 	var/restoring = FALSE
 	var/engine_return
+	// A sideways try after the straight pulse was blocked.
+	var/slide = FALSE
 
 /datum/human_subtile_transaction
 	should_save = FALSE
@@ -426,24 +430,68 @@
 	var/atom/movable/M = pulling
 	if (!M || !isturf(M.loc) || M.anchored || M.z != z)
 		return FALSE
-	var/cx = x * 32 + step_x + 16
-	var/cy = y * 32 + step_y + 16
-	var/mx = M.x * 32 + M.step_x + 16
-	var/my = M.y * 32 + M.step_y + 16
-	var/best_dir = 0
-	var/best = (cx - mx) ** 2 + (cy - my) ** 2
-	for (var/dir_option in alldirs)
-		var/turf/T = get_step(M, dir_option)
-		if (!T || T.density || (T in locs))
-			continue
-		var/distance = (cx - (T.x * 32 + 16)) ** 2 + (cy - (T.y * 32 + 16)) ** 2
-		if (distance < best)
-			best = distance
-			best_dir = dir_option
+	// Pulled things follow the tiles the body's centre has walked through, so
+	// they trail along the path round corners instead of cutting sideways.
+	if (human_subtile_pull_trail_for != "\ref[M]" || !islist(human_subtile_pull_trail))
+		human_subtile_pull_trail = list()
+		human_subtile_pull_trail_for = "\ref[M]"
+	var/turf/centre = locate(x + (step_x >= 16 ? 1 : 0), y + (step_y >= 16 ? 1 : 0), z)
+	if (centre && (!human_subtile_pull_trail.len || human_subtile_pull_trail[human_subtile_pull_trail.len] != centre))
+		human_subtile_pull_trail += centre
+		if (human_subtile_pull_trail.len > 4)
+			human_subtile_pull_trail.Cut(1, 2)
 	// Follow only once a gap opens, so it never pushes into the body.
-	if (!best_dir || bounds_dist(src, M) <= 0)
+	if (bounds_dist(src, M) <= 0)
 		return FALSE
-	return step(M, best_dir)
+	// The newest trail tile next to the object that the body has fully left.
+	var/turf/target
+	var/target_index = 0
+	for (var/i = human_subtile_pull_trail.len, i >= 1, i--)
+		var/turf/T = human_subtile_pull_trail[i]
+		if (T == M.loc || !T || T.z != M.z || T.density || (T in locs) || get_dist(M, T) != 1)
+			continue
+		target = T
+		target_index = i
+		break
+	if (!target)
+		// Off the trail and about to be left behind: step toward the body.
+		if (bounds_dist(src, M) < 32)
+			return FALSE
+		var/cx = x * 32 + step_x + 16
+		var/cy = y * 32 + step_y + 16
+		var/best = (cx - (M.x * 32 + M.step_x + 16)) ** 2 + (cy - (M.y * 32 + M.step_y + 16)) ** 2
+		for (var/dir_option in alldirs)
+			var/turf/T = get_step(M, dir_option)
+			if (!T || T.density || (T in locs))
+				continue
+			var/distance = (cx - (T.x * 32 + 16)) ** 2 + (cy - (T.y * 32 + 16)) ** 2
+			if (distance < best)
+				best = distance
+				target = T
+		if (!target)
+			return FALSE
+	else
+		human_subtile_pull_trail.Cut(1, target_index + 1)
+	// Glide the tile step at the body's own pace so it slides, not jumps.
+	if (glide_size > 0)
+		M.glide_size = glide_size * ((get_dir(M, target) & (get_dir(M, target) - 1)) ? ROOT2_FAST : 1)
+	return step(M, get_dir(M, target))
+
+// Free movement swaps places only when walking straight into someone head-on,
+// as in a corridor. Grazing them, moving diagonally or sliding round them
+// just blocks, so bodies never jump past each other.
+/mob/living/human/proc/human_subtile_swap_allowed(mob/living/other)
+	var/datum/human_subtile_pulse/P = human_subtile_pulse
+	if (!P || !human_subtile_transaction || !human_subtile_transaction.fine_step)
+		return TRUE
+	var/direction = P.direction
+	if (P.slide || (direction & (direction - 1)))
+		return FALSE
+	var/dx = (other.x * 32 + other.step_x) - (x * 32 + step_x)
+	var/dy = (other.y * 32 + other.step_y) - (y * 32 + step_y)
+	if (direction & (EAST | WEST))
+		return abs(dy) <= 12 && ((direction & EAST) ? dx > 0 : dx < 0)
+	return abs(dx) <= 12 && ((direction & NORTH) ? dy > 0 : dy < 0)
 
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
@@ -595,7 +643,9 @@
 			attempts += actor.human_subtile_slide_attempts(direction)
 		var/moved_pulse = FALSE
 		var/stop = FALSE
+		var/attempt_index = 0
 		for (var/list/attempt in attempts)
+			attempt_index++
 			var/dx = attempt[1]
 			var/dy = attempt[2]
 			var/tx = actor.x
@@ -625,6 +675,7 @@
 			P.direction = direction
 			P.sx = sx
 			P.sy = sy
+			P.slide = attempt_index > 1
 			P.before = expected
 			actor.human_subtile_pulse = P
 			// Actual human -> living -> movable chain. The third living flag is intact.
@@ -711,7 +762,7 @@
 	if (key == "step_x" || key == "step_y") return TRUE
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start", "human_subtile_fine_released_at")) || ..()
+	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start", "human_subtile_fine_released_at", "human_subtile_pull_trail", "human_subtile_pull_trail_for")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)
