@@ -996,6 +996,9 @@ SUITES = {
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
+    # Handcuff placement races and per-human chew cooldown (#4229, #4230).
+    'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
+        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

@@ -63,6 +63,11 @@
 
 	if(!can_place(target, user)) // victim may have resisted out of the grab in the meantime
 		return FALSE
+	if (H.handcuffed) // someone else finished cuffing them during the wait
+		to_chat(user, SPAN_WARNING("\The [H] is already handcuffed!"))
+		return FALSE
+	if (!dispenser && loc != user) // these cuffs left our hands during the wait
+		return FALSE
 
 	admin_attack_log(user, H, "Attempted to handcuff the victim", "Was target of an attempted handcuff", "attempted to handcuff")
 
@@ -73,8 +78,6 @@
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(H)
 
-	user.visible_message("<span class='danger'>\The [user] has put [cuff_type] on \the [H]!</span>", "<span class='notice'>You have put [cuff_type] on \the [H]!</span>")
-
 	// Apply cuffs.
 	var/obj/item/weapon/handcuffs/cuffs = src
 	if(dispenser)
@@ -82,12 +85,25 @@
 	else
 		user.drop_from_inventory(cuffs)
 	target.equip_to_slot(cuffs,slot_handcuffed)
+	if (H.handcuffed != cuffs || cuffs.loc != H)
+		if (dispenser)
+			qdel(cuffs)
+		else if (!QDELETED(cuffs) && cuffs.loc != H)
+			user.put_in_hands(cuffs)
+		return FALSE
+
+	user.visible_message("<span class='danger'>\The [user] has put [cuff_type] on \the [H]!</span>", "<span class='notice'>You have put [cuff_type] on \the [H]!</span>")
 	return 1
 
-var/last_chew = FALSE
+/mob/living/human
+	var/tmp/last_chew = null // world.time of this human's last chew; null until they first chew.
+
+/mob/living/human/persistence_runtime_var(key)
+	return key == "last_chew" || ..()
+
 /mob/living/human/RestrainedClickOn(var/atom/A)
 	if (A != src) return ..()
-	if (last_chew + 26 > world.time) return
+	if (!isnull(last_chew) && last_chew + 26 > world.time) return
 
 	var/mob/living/human/H = A
 	if (!H.handcuffed) return
