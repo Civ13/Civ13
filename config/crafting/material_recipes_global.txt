@@ -465,6 +465,7 @@ RECIPE: /material/electronics/,weather satellite,/obj/item/satellite/weather,30,
 RECIPE: /material/electronics/,comms satellite,/obj/item/satellite/comms,30,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,navigation satellite,/obj/item/satellite/navigation,40,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,survey orbiter,/obj/item/satellite/survey,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,spy satellite,/obj/item/satellite/spy,35,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,GPS receiver,/obj/item/gps_receiver,5,100,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,truss,/obj/structure/orbit_truss,2,40,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,safety tether,/obj/item/eva_tether,1,30,0,0,spaceflight,235,0,0,8,null

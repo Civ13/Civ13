@@ -1470,6 +1470,40 @@ var/global/orbit_failures = 0
 	G2.hack(raider)
 	orbit_check("raid takes the station over", G2.owner, golf)
 	orbit_check("the raiders read it now", G2.serves(golf) && !G2.serves(fox) ? 1 : 0, 1)
+	// A spy satellite shows its owners rivals outdoors on this level.
+	var/obj/structure/satellite_station/G3 = new(locate(30, 14, 1))
+	G3.owner = golf
+	L = new(locate(27, 10, 1))
+	orbit_satellite_load(L, /obj/item/satellite/spy)
+	L.propellant = 150
+	orbit_check("spy satellite flies in 1969", "[L.satellite_refusal(raider)]", "")
+	var/obj/structure/vehicleparts/axis/car = new(locate(12, 12, 1))
+	orbit_check("vehicle axes are tracked", (car in vehicle_axes) ? 1 : 0, 1)
+	var/area/A = get_area(locate(30, 11, 1))
+	human_mob_list |= list(owner, raider)
+	var/old_location = A.location
+	A.location = AREA_OUTSIDE
+	var/spy_report = jointext(satellite_spy_report(golf, 1), " ")
+	orbit_check("spy imagery shows rival ground stations", findtext(spy_report, "at 30, 14") ? 1 : 0, 0)
+	orbit_check("spy imagery shows launch pads", findtext(spy_report, "26, 10") ? 1 : 0, 1)
+	orbit_check("spy imagery shows vehicles", findtext(spy_report, "12, 12") ? 1 : 0, 1)
+	orbit_check("spy imagery shows rivals outdoors", findtext(spy_report, "1 near 32, 16") ? 1 : 0, 1)
+	spy_report = jointext(satellite_spy_report(fox, 1), " ")
+	orbit_check("spy imagery shows the other party's station", findtext(spy_report, "at 30, 14") ? 1 : 0, 1)
+	orbit_check("spy imagery counts one rival beside you", findtext(spy_report, "1 near 32, 16") ? 1 : 0, 1)
+	spy_report = jointext(satellite_spy_report(null, 1), " ")
+	orbit_check("an unowned station sees everyone", findtext(spy_report, "2 near 32, 16") ? 1 : 0, 1)
+	A.location = AREA_INSIDE
+	spy_report = jointext(satellite_spy_report(golf, 1), " ")
+	orbit_check("spy imagery cannot see indoors", findtext(spy_report, "people outdoors:</b> none seen") && findtext(spy_report, "vehicles:</b> none seen") ? 1 : 0, 1)
+	A.location = old_location
+	human_mob_list -= list(owner, raider)
+	qdel(car)
+	orbit_check("destroyed axes drop out", (car in vehicle_axes) ? 1 : 0, 0)
+	qdel(G3)
+	for (var/obj/item/I in L.hold())
+		qdel(I)
+	qdel(L)
 	qdel(owner)
 	qdel(raider)
 	qdel(pad2)
@@ -1500,7 +1534,7 @@ var/global/orbit_failures = 0
 		space_survey_maps["moon"] = had_map
 	else
 		space_survey_maps -= "moon"
-	for (var/path in list("/obj/structure/crewed_lander/satellite_launcher", "/obj/structure/satellite_station", "/obj/item/satellite/weather", "/obj/item/satellite/survey", "/obj/item/gps_receiver"))
+	for (var/path in list("/obj/structure/crewed_lander/satellite_launcher", "/obj/structure/satellite_station", "/obj/item/satellite/weather", "/obj/item/satellite/survey", "/obj/item/satellite/spy", "/obj/item/gps_receiver"))
 		orbit_check("[path] gated", get_recipe_node_req(path), "orbital_flight")
 	qdel(C)
 	qdel(R)

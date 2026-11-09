@@ -745,6 +745,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/satellite/comms" = "orbital_flight",
 		"/obj/item/satellite/navigation" = "orbital_flight",
 		"/obj/item/satellite/survey" = "orbital_flight",
+		"/obj/item/satellite/spy" = "orbital_flight",
 		"/obj/item/gps_receiver" = "orbital_flight",
 		"/obj/structure/orbit_truss" = "orbital_flight",
 		"/obj/item/eva_tether" = "orbital_flight",

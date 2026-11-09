@@ -42,6 +42,17 @@
 	var/matrix_h = 0
 	var/list/matrix_current_locs = list()
 
+// Every vehicle axis, so spy satellites need not scan the world.
+var/global/list/vehicle_axes = list()
+
+/obj/structure/vehicleparts/axis/New()
+	..()
+	vehicle_axes |= src
+
+/obj/structure/vehicleparts/axis/Destroy()
+	vehicle_axes -= src
+	return ..()
+
 /obj/structure/vehicleparts/axis/bike
 	name = "motorcycle axis"
 	currentspeed = 0
