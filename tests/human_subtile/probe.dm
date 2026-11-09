@@ -375,9 +375,9 @@ var/human_subtile_fixture_phase = "initializing"
 	K.movement_northsouth = null
 	corner.density = FALSE
 	human_subtile_fixture_phase = "headless wall slide"
-	var/list/wall = list(locate(6, 11, 1), locate(7, 11, 1), locate(8, 11, 1))
-	for (var/turf/W in wall)
-		W.density = TRUE
+	var/list/slide_wall = list(locate(6, 11, 1), locate(7, 11, 1), locate(8, 11, 1))
+	for (var/turf/WS in slide_wall)
+		WS.density = TRUE
 	var/mob/living/human/subtile_fixture/D2 = human_subtile_fixture_actor(6, 10)
 	D2.set_human_subtile(TRUE)
 	D2.movement_northsouth = NORTH
@@ -386,8 +386,8 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(D2.y == 10 && !D2.step_y && (D2.x - 6) * 32 + D2.step_x == 32, "diagonal_wall_slide")
 	D2.movement_northsouth = null
 	D2.movement_eastwest = null
-	for (var/turf/W in wall)
-		W.density = FALSE
+	for (var/turf/WS in slide_wall)
+		WS.density = FALSE
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
