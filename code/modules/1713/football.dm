@@ -64,7 +64,7 @@
 		stats["stamina"][1] = max(stats["stamina"][1] - 15, 0)
 		src.do_attack_animation(get_step(src,dir))
 		Weaken(1)
-		for (var/mob/living/human/HM in range(1,src))
+		for (var/mob/living/human/HM in get_step(src, src.dir))
 			if (HM.civilization != src.civilization) //no tackling on same team
 				if (prob(60))
 					visible_message("<font color='red'>[src] tackles [HM]!</font>")
