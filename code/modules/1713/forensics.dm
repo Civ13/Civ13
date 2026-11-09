@@ -583,6 +583,7 @@ proc/is_complete_print(var/print)
 
 	var/obj/item/weapon/forensics/sample = null
 	var/report_num = 0
+	var/tmp/sample_revision = 0
 
 /obj/machinery/microscope/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
@@ -595,6 +596,7 @@ proc/is_complete_print(var/print)
 		user.unEquip(W)
 		W.forceMove(src)
 		sample = W
+		sample_revision++
 		update_icon()
 		return
 
@@ -606,8 +608,10 @@ proc/is_complete_print(var/print)
 
 	to_chat(user, SPAN_NOTICE("The microscope whirrs as you examine \the [sample]."))
 
-	if(!do_after(user, 25) || !sample)
-		to_chat(user, SPAN_NOTICE("You stop examining \the [sample]."))
+	var/obj/item/weapon/forensics/examined_sample = sample
+	var/examined_revision = sample_revision
+	if(!do_after(user, 25, src) || QDELETED(src) || sample != examined_sample || sample_revision != examined_revision || QDELETED(examined_sample) || examined_sample.loc != src)
+		to_chat(user, SPAN_NOTICE("You stop examining \the [examined_sample]."))
 		return
 
 	to_chat(user, SPAN_NOTICE("Printing findings now..."))
@@ -621,7 +625,7 @@ proc/is_complete_print(var/print)
 		if(slide.has_swab)
 			var/obj/item/weapon/forensics/swab/swab = slide.has_swab
 
-			report.name = "GSR report #[++report_num]: [swab.name]"
+			report.name = "GSR report #[report_num]: [swab.name]"
 			report.info = "<b>Scanned item:</b><br>[swab.name]<br><br>"
 
 			if(swab.gsr)
@@ -661,6 +665,7 @@ proc/is_complete_print(var/print)
 		remover << SPAN_WARNING("\The [src] does not have a sample in it.")
 		return
 	remover << SPAN_NOTICE("You remove \the [sample] from \the [src].")
+	sample_revision++
 	sample.forceMove(get_turf(src))
 	remover.put_in_hands(sample)
 	sample = null
