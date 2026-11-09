@@ -127,7 +127,7 @@ var/terrain_height_probe_checks = 0
 	built = locate(7, 9, 1)
 	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in built.vis_contents, "removed_floor_shaded_again")
 
-	// Road tamping: only bare dirt can be packed; tamped earth is level, unshaded and never muddy.
+	// Road tamping: only bare dirt can be packed; tamped earth never turns to mud.
 	var/turf/road = locate(7, 9, 1)
 	terrain_height_probe_assert(road_tamping_problem(road), "tamping_needs_dirt")
 	road.ChangeTurf(/turf/floor/grass)
@@ -142,9 +142,12 @@ var/terrain_height_probe_checks = 0
 	road.ChangeTurf(/turf/floor/tamped_earth)
 	road = locate(7, 9, 1)
 	var/turf/floor/tamped_earth/tamped = road
-	terrain_height_probe_assert(istype(tamped) && tamped.terrain_smoothed() && !tamped.may_become_muddy, "tamped_earth_level_and_firm")
-	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), road, 2.85) == 0 && terrain_slope_delay(road, locate(8, 9, 1), 2.85) == 0, "tamped_earth_no_slope_cost")
-	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in road.vis_contents), "tamped_earth_unshaded")
+	// Packed, not levelled: the hill and shading stay, climbing onto it costs half.
+	terrain_height_probe_assert(istype(tamped) && tamped.terrain_packed() && !tamped.terrain_smoothed() && !tamped.may_become_muddy, "tamped_earth_packed_and_firm")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), road, 2.85), 0.5), "tamped_earth_half_climb")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(road, locate(6, 9, 1), 2.85), -0.5), "tamped_earth_downhill_unchanged")
+	terrain_height_probe_assert(terrain_slope_delay(road, locate(8, 9, 1), 2.85) == 1, "leaving_tamped_earth_full_climb")
+	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in road.vis_contents, "tamped_earth_still_shaded")
 	terrain_height_probe_assert(road_tamping_problem(road), "tamped_earth_not_retamped")
 	road.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
 
