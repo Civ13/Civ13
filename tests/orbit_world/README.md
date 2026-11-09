@@ -162,9 +162,14 @@ Then station defences (`code/modules/space/orbit_defences.dm`): armour
 plates soaking strikes, a turret shooting them down, the hull holed once the
 plates are gone, and turrets slowing a forced docking.
 
-Last, asteroid mining (`code/modules/space/orbit_asteroids.dm`): an
+Then asteroid mining (`code/modules/space/orbit_asteroids.dm`): an
 asteroid arriving with ore, drifting, held by a tether, mined out until it
 crumbles, and an untethered one drifting on.
+
+Last, freight routes (`code/modules/space/orbit_freight_routes.dm`): a
+dispatcher idle until set up, loading the freighter at its pad from a crate,
+waiting for propellant and for a sleeping world, a paused route, and a launch
+with nobody at the pad flown for the route's party.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe

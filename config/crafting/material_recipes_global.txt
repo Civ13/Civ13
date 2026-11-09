@@ -454,6 +454,7 @@ RECIPE: /material/electronics/,two-stage rocket,/obj/structure/crewed_lander/orb
 RECIPE: /material/electronics/,station transceiver,/obj/structure/telecom/relay/station,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,reusable rocket,/obj/structure/crewed_lander/orbital_rocket/reusable,120,600,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,cargo freighter,/obj/structure/crewed_lander/freighter,60,400,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,freight dispatcher,/obj/structure/freight_dispatcher,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,docking port,/obj/structure/docking_port,30,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,hull armour plate,/obj/item/hull_plate,15,150,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,point-defence turret,/obj/structure/point_defence,45,400,1,1,spaceflight,235,0,0,8,null

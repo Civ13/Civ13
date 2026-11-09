@@ -1384,6 +1384,7 @@
 #include "code\modules\space\orbit_sectors.dm"
 #include "code\modules\space\orbit_reusable.dm"
 #include "code\modules\space\orbit_freight.dm"
+#include "code\modules\space\orbit_freight_routes.dm"
 #include "code\modules\space\orbit_docking.dm"
 #include "code\modules\space\orbit_asteroids.dm"
 #include "code\modules\space\orbit_defences.dm"
