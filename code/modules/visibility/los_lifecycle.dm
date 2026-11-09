@@ -12,6 +12,9 @@
 // Transparent movables that moved in this viewer's range since its last
 // publication. Only their own masks can change, so they are re-decided alone.
 /client/var/tmp/list/los_pending_movers
+// The viewer's turf at its last full publication; a step since then skips
+// recording the audit scene.
+/client/var/tmp/turf/los_published_turf
 
 // Note a transparent mover for a clean viewer; a long queue falls back to one
 // full refresh instead.
@@ -161,10 +164,18 @@
 	los_dirty = FALSE
 	los_pending_movers = null
 	V.movement_turf = get_turf(mob)
+	var/stepped = V.movement_turf != los_published_turf
+	los_published_turf = V.movement_turf
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	// The recorded scene lets an unchanged audit skip the presenter refresh.
-	V.record_audit_scene(S)
+	// A viewer that just stepped a tile refreshes again on its next step, so
+	// recording (a range(view + 6) appearance scan) every step was wasted; the
+	// first audit after it stops records once.
+	if(stepped)
+		V.clear_audit_scene()
+	else
+		V.record_audit_scene(S)
 	los_next_audit = world.time + 10
 	return TRUE
 
