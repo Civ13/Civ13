@@ -46,8 +46,10 @@ class FactionMembershipSource(unittest.TestCase):
     def test_permissions_are_leader_only_and_rechecked(self):
         self.assertIn('map.can_manage_faction_permissions(user, faction)', PERMS)
         self.assertIn('if (civilization != faction)', PERMS)
+        self.assertIn('if (map.is_faction_leader(src, faction) && !map.is_faction_leader(user, faction))', PERMS)
         after = PERMS[PERMS.rindex('WWinput('):]
-        self.assertIn('map.can_manage_faction_permissions(user, faction)', after)
+        self.assertIn('map.can_manage_faction_permissions(user, faction, index)', after)
+        self.assertIn('map.can_manage_faction_permissions(user, faction, i)', PERMS)
         self.assertIn('if (civilization != faction)', after)
 
     def test_treasury_uses_the_stored_leader(self):
