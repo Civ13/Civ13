@@ -7,10 +7,10 @@
 // A washing machine takes one dose that its next finished cycle uses.
 
 #define LAUNDRY_SOAP_RESIST 50 // percent of dirt blocked after a soap wash
-#define LAUNDRY_SOAP_TICKS 1800 // worn life ticks (about an hour of wear)
+#define LAUNDRY_SOAP_TICKS 3600 // worn life ticks; Life runs once a second, so about an hour
 #define LAUNDRY_LARD_RESIST 35
 #define LAUNDRY_DETERGENT_RESIST 75
-#define LAUNDRY_DETERGENT_TICKS 3600 // about two hours of wear
+#define LAUNDRY_DETERGENT_TICKS 7200 // about two hours of wear
 #define LAUNDRY_SOAP_USE 2 // bar uses spent per laundry wash (a bar has 30)
 #define LAUNDRY_DETERGENT_DOSES 20
 
