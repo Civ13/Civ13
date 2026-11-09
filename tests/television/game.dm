@@ -205,7 +205,7 @@ var/tv_failures = 0
 		for (var/key in list("video_camera", "video_eye", "video_desk_origin", "video_camera_origin"))
 			tv_check(!(key in saved_desk) && S.persistence_runtime_var(key), "desk session transient: [key]")
 		var/list/saved_receiver = R.get_saved_vars()
-		for (var/key in list("tv_watchers", "watching_station", "receiver_origin"))
+		for (var/key in list("tv_watchers", "watching_station", "receiver_origin", "receiver_eye"))
 			tv_check(!(key in saved_receiver) && R.persistence_runtime_var(key), "receiver session transient: [key]")
 		tv_check(map_storage.Save_World() && map_storage.validate_world_save(), "native television world save")
 		map_storage.ClearMap()

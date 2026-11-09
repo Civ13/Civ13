@@ -155,6 +155,10 @@ var/global/list/civ_tv_receivers = list()
 	. = ..()
 	stop_video()
 
+/obj/structure/telecom/station/tv/Del()
+	stop_video()
+	return ..()
+
 /obj/structure/telecom/station/tv/Destroy()
 	stop_video()
 	return ..()
@@ -213,10 +217,11 @@ var/global/list/civ_tv_receivers = list()
 /obj/structure/telecom/tv
 	var/tmp/list/tv_watchers = list()
 	var/tmp/obj/structure/telecom/station/tv/watching_station
+	var/tmp/atom/movable/receiver_eye
 	var/tmp/turf/receiver_origin
 
 /obj/structure/telecom/tv/persistence_runtime_var(var_name)
-	return (var_name in list("tv_watchers", "watching_station", "receiver_origin")) || ..()
+	return (var_name in list("tv_watchers", "watching_station", "receiver_origin", "receiver_eye")) || ..()
 
 /obj/structure/telecom/tv/after_load()
 	. = ..()
@@ -262,9 +267,13 @@ var/global/list/civ_tv_receivers = list()
 	if (istype(H.using_object, /obj/structure/telecom/tv))
 		var/obj/structure/telecom/tv/previous = H.using_object
 		previous.stop_watching(H)
+	if (istype(H.using_object, /obj/item/overwatch_laptop))
+		var/obj/item/overwatch_laptop/previous_laptop = H.using_object
+		previous_laptop.stop_watching(null)
 	H.set_using_object(src)
 	watching_station = S
 	receiver_origin = get_turf(src)
+	receiver_eye = S.video_eye
 	tv_watchers[H] = get_turf(H)
 	civ_tv_receivers |= src
 	H.reset_view(S.video_eye)
@@ -276,20 +285,23 @@ var/global/list/civ_tv_receivers = list()
 
 /obj/structure/telecom/tv/proc/stop_watching(mob/living/human/H)
 	tv_watchers -= H
-	if (H && H.using_object == src)
-		H.unset_using_object()
+	var/owns_view = H && (H.using_object == src || (!H.using_object && H.client && H.client.eye == receiver_eye))
+	if (H && H.using_object == src) H.unset_using_object()
+	if (owns_view)
 		H.reset_view(null)
 		to_chat(H, "The television feed ends.")
 	if (!tv_watchers.len)
 		civ_tv_receivers -= src
 		watching_station = null
 		receiver_origin = null
+		receiver_eye = null
 
 /obj/structure/telecom/tv/proc/stop_all_watching()
 	for (var/mob/living/human/H in tv_watchers.Copy()) stop_watching(H)
 	civ_tv_receivers -= src
 	watching_station = null
 	receiver_origin = null
+	receiver_eye = null
 
 /obj/structure/telecom/tv/check_eye(mob/user)
 	if (feed_ok(user)) return 0

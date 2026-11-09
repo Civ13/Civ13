@@ -57,7 +57,7 @@ class TelevisionContracts(unittest.TestCase):
         for field in ('network_id', 'frequency', 'enabled', 'camera_health', 'battery_charge', 'tv_network_id'):
             self.assertRegex(SOURCE, r'var/' + field + r'\s*=')
             self.assertNotRegex(SOURCE, r'var/tmp/[^\n]*\b' + field + r'\b')
-        for field in ('video_camera', 'video_eye', 'video_desk_origin', 'video_camera_origin', 'tv_watchers', 'watching_station', 'receiver_origin'):
+        for field in ('video_camera', 'video_eye', 'video_desk_origin', 'video_camera_origin', 'tv_watchers', 'watching_station', 'receiver_origin', 'receiver_eye'):
             self.assertRegex(SOURCE, r'var/tmp/[^\n]*\b' + field + r'\b')
             self.assertIn('"' + field + '"', SOURCE)
         self.assertIn('/obj/structure/telecom/station/tv/after_load()', SOURCE)
