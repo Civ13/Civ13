@@ -369,11 +369,21 @@ def bronze_knowledge(root):
     molds = read('code/game/objects/structures/blacksmithing/molds.dm')
     anvil = read('code/game/objects/structures/blacksmithing/blacksmithing.dm')
     oven = read('code/game/objects/structures/kitchen/oven.dm')
+    pour_guard = between(molds, '/obj/item/weapon/clay/mold/proc/can_receive_pour',
+                         '/obj/item/weapon/clay/mold/attackby')
+    for marker in ('!fired || !ML.fired', 'capacity >= max_capacity',
+                   'current_material != ML.current_material', 'get_dist(user_turf, mold_turf) > 1'):
+        if marker not in pour_guard:
+            raise ValueError('Reviewed bronze pour guards changed')
+    if molds.count('if (ML.pouring || pouring)') != 1 or molds.count('if (!can_receive_pour(ML, user))') != 1:
+        raise ValueError('Reviewed bronze pour guards changed')
     production = '\n'.join([
         'Carved sandstone molds are an alternative to fired clay molds. The sandstone stack menu requires a chisel and hammer/mallet equipped or at your feet throughout carving. They need no oven firing; use the same fired clay blacksmith pot/jug and anvil. Ingots still require Bronze Working; tool molds retain their clay equivalents\' research gates. Sandstone occurs in sandy/desert underground mining; map access and obtainable mining tools are required. Clay pots, jugs and recipes remain unchanged.',
         between(refining, '/obj/structure/furnace/attack_hand', '/obj/structure/furnace/process()'),
         between(refining, '\t\tif (istype(I, /obj/item/weapon/clay/mold))', None),
-        between(molds, '/obj/item/weapon/clay/mold/attackby', '\telse if (istype(I, /obj/item/stack/ore)'),
+        between(molds, '/obj/item/weapon/clay/mold/attackby', '\t\tif (ML.pouring || pouring)'),
+        'Pouring requires both molds to be fired, within reach, and not already pouring; the destination must have space and contain the same metal or be empty. The requested amount is rechecked against current capacity after the prompt.',
+        between(molds, '\t\t\tamt_to_transfer = min(input,', '\telse if (istype(I, /obj/item/stack/ore)'),
         between(molds, '\telse if (istype(I, /obj/item/stack/ore)', '\t\t\tif (istype(O, /obj/item/stack/ore/gold))'),
         between(molds, '\t\t\telse if (istype(O, /obj/item/stack/ore/copper))', '\t\t\telse if (istype(O, /obj/item/stack/ore/lead))'),
         between(molds, '\n/obj/item/weapon/clay/mold/claypot/fired\n', '\n/obj/item/weapon/clay/mold/key/fired\n'),
@@ -403,6 +413,8 @@ def bronze_knowledge(root):
     bench = read('code/modules/research_tree/research_bench.dm')
     availability = '\n'.join(node_lines) + '\n' + between(
         crafting, '\t\tvar/research_allowed\n', '\t\t\tvar/supmat = i[13]')
+    availability += '\n' + between(crafting, '/proc/recipe_age_allowed(max_age)',
+                                   '/material/proc/generate_recipes_civs')
     availability += '\n' + between(molds, '\n/obj/item/weapon/clay/mold/axehead\n', '\n/obj/item/weapon/clay/mold/sword\n')
     availability += '\n' + between(bench,
         '\tif (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))',
@@ -413,15 +425,15 @@ def bronze_knowledge(root):
                            ('availability unlock research Bronze Working Pottery Cookware', availability)):
         if len(excerpt) > 11000:
             raise ValueError('Reviewed bronze excerpt grew beyond budget')
-        text = ('CURRENT GAMEPLAY CODE (bronze ' + label + '):\n' + excerpt +
-                '\nAvailability is conditional on the selected map catalog and research state. '
-                'The server snapshot does not report completed research nodes. Do not claim the '
-                'player can craft these now or infer an unlock from era alone. '
-                'Missing retrieval is not evidence that the game has no bronze recipe.')
+        text = 'CURRENT GAMEPLAY CODE (bronze ' + label + '):\n' + excerpt
         result.append({'topic': 'bronze ' + label, 'source': 'code', 'sha256': provenance,
                        'source_hashes': dict(sources), 'text': text})
     # Keep the availability gate and its production route inseparable during ranking.
-    result[0]['text'] = result[1]['text'] + '\n' + result[0]['text']
+    result[0]['text'] = (result[1]['text'] + '\n' + result[0]['text'] +
+                         '\nAvailability is conditional on the selected map catalog and research state. '
+                         'The server snapshot does not report completed research nodes. Do not claim the '
+                         'player can craft these now or infer an unlock from era alone. '
+                         'Missing retrieval is not evidence that the game has no bronze recipe.')
     if len(result[0]['text']) > 14000:
         raise ValueError('Combined bronze evidence grew beyond retrieval budget')
     result[0]['topic'] += ' ingots availability unlock research'

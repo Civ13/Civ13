@@ -54,7 +54,8 @@ class BronzeRetrievalTests(unittest.TestCase):
                                  'CURRENT GAMEPLAY CODE (bronze availability',
                                  '"bronze_working"', '"pottery_storage"', '"stone_arms"',
                                  'map.is_node_done(research_faction, node_req)',
-                                 'map.ordinal_age <= text2num(i[12])',
+                                 'recipe_age_allowed(text2num(i[12]))',
+                                 'max_age >= RECIPE_OPEN_ENDED_AGE || map.ordinal_age <= max_age',
                                  'does not report completed research nodes',
                                  'Missing retrieval is not evidence',
                                  'Do not claim research is unlocked from era alone.'):
@@ -78,6 +79,15 @@ class BronzeRetrievalTests(unittest.TestCase):
             {'question': 'How do I make bronze?', 'answer': 'Earlier answer may be incomplete.'}]})
         self.assertIn('MCC.current_material = "bronze"', prompt)
         self.assertIn('map.is_node_done(research_faction, node_req)', prompt)
+
+    def test_pour_summary_keeps_route_and_limits_in_bounded_record(self):
+        evidence = bridge.bronze_knowledge(ROOT)[0]['text']
+        self.assertLessEqual(len(evidence), 14000)
+        for text in ('both molds to be fired, within reach', 'not already pouring',
+                     'same metal or be empty', 'rechecked against current capacity',
+                     'amt_to_transfer = min(input,', 'src.capacity += amt_to_transfer',
+                     'ML.capacity -= amt_to_transfer', 'map.is_node_done(research_faction, node_req)'):
+            self.assertIn(text, evidence)
 
     def test_removing_new_evidence_reproduces_missing_production(self):
         old = [entry for entry in self.corpus if not entry['topic'].startswith('bronze production')
@@ -106,6 +116,24 @@ class BronzeRetrievalTests(unittest.TestCase):
             return raw
         with mock.patch.object(Path, 'read_bytes', changed):
             with self.assertRaisesRegex(ValueError, 'Reviewed bronze source markers changed'):
+                bridge.bronze_knowledge(ROOT)
+
+        def changed_pour(path):
+            raw = original(path)
+            if path.name == 'molds.dm':
+                return raw.replace(b'amt_to_transfer = min(input,', b'changed_transfer = min(input,')
+            return raw
+        with mock.patch.object(Path, 'read_bytes', changed_pour):
+            with self.assertRaisesRegex(ValueError, 'Reviewed bronze source markers changed'):
+                bridge.bronze_knowledge(ROOT)
+
+        def changed_guard(path):
+            raw = original(path)
+            if path.name == 'molds.dm':
+                return raw.replace(b'!fired || !ML.fired', b'!fired')
+            return raw
+        with mock.patch.object(Path, 'read_bytes', changed_guard):
+            with self.assertRaisesRegex(ValueError, 'Reviewed bronze pour guards changed'):
                 bridge.bronze_knowledge(ROOT)
 
 
