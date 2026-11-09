@@ -137,7 +137,8 @@ var/global/list/active_node_lesson_stations = list()
 	for (var/mob/living/human/listener in completed)
 		if (node_listener_eligible(listener, completed[listener], completed_node) && listener.learn_recipe_node(completed_node))
 			taught++
-			to_chat(listener, SPAN_NOTICE("You learned [get_research_node(completed_node).name] from the complete broadcast lesson."))
+			var/datum/research_node/learned_node = get_research_node(completed_node)
+			to_chat(listener, SPAN_NOTICE("You learned [learned_node.name] from the complete broadcast lesson."))
 	civ_relay_log_line("NODE LESSON", "[key_name(teacher)] at [broadcast_label()]: completed [completed_node] for [taught] listeners")
 
 /proc/civ_tick_node_lessons()
