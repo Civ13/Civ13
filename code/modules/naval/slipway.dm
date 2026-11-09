@@ -20,37 +20,17 @@
 
 // ---- Designs ----
 
+// A ship design is a piece plan (piece_projects.dm) with the berth looks.
 /datum/slipway_design
-	var/name = "ship"
+	parent_type = /datum/piece_plan
+	name = "ship"
 	var/vessel_type = null
-	var/node = null           // research node
-	var/blurb = ""
 	// The berth looks: a keel timber, the ribs, and the cradle under bare ground.
 	var/keel_icon = 'icons/turf/floors.dmi'
 	var/keel_state = "wood_ship1"
 	var/rib_icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
 	var/rib_state = "grid"
-	// Stages in order: list("name", "pieces", "cost" = material -> per piece,
-	// "part" = keel/frames/hull/deck/below/fittings, "verb" = what a piece is).
-	var/list/stages = list()
-
-/datum/slipway_design/proc/total_pieces()
-	. = 0
-	for (var/list/stage in stages)
-		. += stage["pieces"]
-
-/datum/slipway_design/proc/total_cost()
-	. = list()
-	for (var/list/stage in stages)
-		var/list/cost = stage["cost"]
-		for (var/key in cost)
-			.[key] = (.[key] || 0) + cost[key] * stage["pieces"]
-
-/proc/slipway_cost_text(list/cost)
-	var/list/parts = list()
-	for (var/key in cost)
-		parts += "[cost[key]] [key]"
-	return english_list(parts)
+	// Stage parts: keel/frames/hull/deck/below/fittings.
 
 /datum/slipway_design/schooner
 	name = "sailing schooner"
@@ -94,22 +74,6 @@ var/global/list/slipway_designs = null
 			var/datum/slipway_design/D = new path
 			slipway_designs[D.name] = D
 	return slipway_designs
-
-// What material a held item pays as, or null.
-/proc/slipway_material(obj/item/I)
-	if (istype(I, /obj/item/stack/material/wood))
-		return "wood"
-	if (istype(I, /obj/item/stack/material/steel))
-		return "steel"
-	if (istype(I, /obj/item/stack/material/glass))
-		return "glass"
-	if (istype(I, /obj/item/stack/material/rope))
-		return "rope"
-	if (istype(I, /obj/item/stack/cable_coil))
-		return "cable"
-	if (is_cloth_sheet(I))
-		return "cloth"
-	return null
 
 // ---- The post ----
 
@@ -243,55 +207,28 @@ var/global/list/slipway_designs = null
 // null when the ship is finished.
 /obj/structure/slipway/proc/next_piece()
 	var/datum/slipway_design/D = get_design()
-	if (!D)
-		return null
-	var/left = pieces_done
-	for (var/i in 1 to D.stages.len)
-		var/list/stage = D.stages[i]
-		if (left < stage["pieces"])
-			return list(i, left + 1)
-		left -= stage["pieces"]
-	return null
+	return D ? D.next_piece(pieces_done) : null
 
 /obj/structure/slipway/proc/finished()
 	return design && !next_piece()
 
 // What the next piece still needs: material -> amount.
 /obj/structure/slipway/proc/still_needed()
-	. = list()
-	var/list/next = next_piece()
-	if (!next)
-		return
 	var/datum/slipway_design/D = get_design()
-	var/list/stage = D.stages[next[1]]
-	var/list/cost = stage["cost"]
-	for (var/key in cost)
-		var/left = cost[key] - (paid[key] || 0)
-		if (left > 0)
-			.[key] = left
+	return D ? D.still_needed(pieces_done, paid) : list()
 
 // How many pieces of each stage are fitted: stage index -> count.
 /obj/structure/slipway/proc/stage_progress()
-	. = list()
 	var/datum/slipway_design/D = get_design()
-	if (!D)
-		return
-	var/left = pieces_done
-	for (var/i in 1 to D.stages.len)
-		var/list/stage = D.stages[i]
-		var/n = min(left, stage["pieces"])
-		.["[i]"] = n
-		left -= n
+	return D ? D.stage_progress(pieces_done) : list()
 
 /obj/structure/slipway/proc/status_text()
 	var/datum/slipway_design/D = get_design()
 	if (!D)
 		return "The berth is empty."
-	var/list/next = next_piece()
-	if (!next)
+	if (!next_piece())
 		return "The [D.name] is finished ([D.total_pieces()] pieces) and ready to launch."
-	var/list/stage = D.stages[next[1]]
-	return "Building a [D.name]: [pieces_done] of [D.total_pieces()] pieces fitted. Stage [next[1]] of [D.stages.len], [stage["name"]]: the next [stage["verb"]] ([next[2]] of [stage["pieces"]]) needs [slipway_cost_text(still_needed())]."
+	return D.progress_text(pieces_done, paid)
 
 /obj/structure/slipway/examine(mob/user, distance)
 	..()
@@ -300,20 +237,15 @@ var/global/list/slipway_designs = null
 // Pays what the held stack can towards the next piece and fits it when it is
 // paid for. Returns the amount taken.
 /obj/structure/slipway/proc/pay(obj/item/stack/S)
-	var/key = slipway_material(S)
-	var/list/needed = still_needed()
-	if (!key || !needed[key])
+	var/datum/slipway_design/D = get_design()
+	if (!D)
 		return 0
-	var/take = min(S.amount, needed[key])
-	if (take <= 0 || !S.use(take))
-		return 0
-	paid[key] = (paid[key] || 0) + take
-	var/list/left = still_needed()
-	if (!left.len)
+	var/list/result = piece_pay(D, pieces_done, paid, S)
+	if (result[2])
 		pieces_done++
 		paid = list()
 		update_frames()
-	return take
+	return result[1]
 
 // A player brings materials to the berth (the post or any part of the hull).
 /obj/structure/slipway/proc/add_piece(mob/living/human/H, obj/item/I, atom/target)
@@ -327,10 +259,10 @@ var/global/list/slipway_designs = null
 	if (!next)
 		to_chat(H, SPAN_NOTICE("The [D.name] is finished. Launch her from the slipway post."))
 		return TRUE
-	var/key = slipway_material(I)
+	var/key = piece_material(I)
 	var/list/needed = still_needed()
 	if (!key || !needed[key])
-		to_chat(H, SPAN_WARNING("The next piece needs [slipway_cost_text(needed)], not [I.name]."))
+		to_chat(H, SPAN_WARNING("The next piece needs [piece_cost_text(needed)], not [I.name]."))
 		return TRUE
 	var/list/stage = D.stages[next[1]]
 	busy = TRUE
@@ -347,16 +279,13 @@ var/global/list/slipway_designs = null
 		log_game("[key_name(H)] fitted [stage["verb"]] [next[2]]/[stage["pieces"]] of a [D.name] at [x],[y],[z].")
 		H.visible_message(SPAN_NOTICE("[H] fits the [stage["verb"]] on the [D.name]."), SPAN_NOTICE("You fit the [stage["verb"]]. [status_text()]"))
 	else
-		to_chat(H, SPAN_NOTICE("You set out [took] [key] for the [stage["verb"]]; it still needs [slipway_cost_text(still_needed())]."))
+		to_chat(H, SPAN_NOTICE("You set out [took] [key] for the [stage["verb"]]; it still needs [piece_cost_text(still_needed())]."))
 	return TRUE
 
 // pieces_done as it stood when next was read.
 /obj/structure/slipway/proc/next_index_of(list/next)
 	var/datum/slipway_design/D = get_design()
-	. = next[2] - 1
-	for (var/i in 1 to next[1] - 1)
-		var/list/stage = D.stages[i]
-		. += stage["pieces"]
+	return D.index_of(next)
 
 /obj/structure/slipway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench) && !busy && !design)
@@ -387,7 +316,7 @@ var/global/list/slipway_designs = null
 		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid.")
 		for (var/name in slipway_design_list())
 			var/datum/slipway_design/S = slipway_design_list()[name]
-			lines += "A [S.name] is [S.blurb]. She takes [S.total_pieces()] pieces: [slipway_cost_text(S.total_cost())] in all."
+			lines += "A [S.name] is [S.blurb]. She takes [S.total_pieces()] pieces: [piece_cost_text(S.total_cost())] in all."
 		text = jointext(lines, " ")
 	var/choice = WWinput(H, text, name, "Cancel", options + list("Cancel"))
 	if (!(choice in options) || busy || !Adjacent(H))
@@ -602,7 +531,7 @@ var/global/list/slipway_designs = null
 			for (var/list/uv in fit_cells)
 				if (uv[1] == u)
 					order += list(uv)
-		var/list/shares = slipway_split(order, fit_stages.len)
+		var/list/shares = piece_split(order, fit_stages.len)
 		for (var/n in 1 to fit_stages.len)
 			var/list/stage = D.stages[fit_stages[n]]
 			var/list/share = shares[n]
@@ -645,18 +574,6 @@ var/global/list/slipway_designs = null
 				var/obj/O = path
 				F.overlays += image(icon = initial(O.icon), icon_state = initial(O.icon_state))
 	qdel(V)
-
-// Splits list L into n consecutive shares, as even as they come.
-/proc/slipway_split(list/L, n)
-	. = list()
-	var/start = 1
-	for (var/i in 1 to n)
-		var/stop = round(L.len * i / n)
-		var/list/share = list()
-		for (var/j = start, j <= stop, j++)
-			share += list(L[j])
-		. += list(share)
-		start = stop + 1
 
 // ---- The ships ----
 

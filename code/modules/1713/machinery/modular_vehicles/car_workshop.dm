@@ -30,13 +30,14 @@ var/global/list/car_workshop_prototypes = list()
 	return P.build_refusal(user, get_turf(user))
 
 /obj/structure/car_workshop/persistence_runtime_var(key)
-	return (key in list("busy", "assembly_time", "powerneeded", "powersource")) || ..(key)
+	return (key in list("busy", "assembly_time", "powerneeded", "powersource", "project_frames")) || ..(key)
 
 /obj/structure/car_workshop/after_load()
 	..()
 	busy = FALSE
 	powerneeded = 0
 	powersource = null
+	update_project_frames()
 
 /obj/structure/car_workshop/proc/models()
 	return list("ASNO Piccolino" = /obj/effects/premadevehicles/asno/piccolino, "ASNO Quattroporte" = /obj/effects/premadevehicles/asno/quattroporte, "Ubermacht Erstenklasse" = /obj/effects/premadevehicles/ubermacht/erstenklasse, "SMC Falcon" = /obj/effects/premadevehicles/smc/falcon, "SMC Falcon Unmarked" = /obj/effects/premadevehicles/smc/falcon/unmarked, "SMC Wyoming" = /obj/effects/premadevehicles/smc/wyoming, "Yamasaki Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu, "Yamasaki Police Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu/police, "Yamasaki Kazoku" = /obj/effects/premadevehicles/yamasaki/kazoku)
@@ -146,6 +147,10 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/attackby(obj/item/I, mob/living/human/H)
 	if (busy || QDELETED(I) || !allowed(H) || !Adjacent(H))
 		return
+	// A project in the bay takes the materials for its next piece.
+	if (project && istype(I, /obj/item/stack))
+		project_add(H, I)
+		return
 	var/key
 	if (istype(I, /obj/item/stack/material/steel)) key = "steel"
 	else if (istype(I, /obj/item/stack/material/glass)) key = "glass"
@@ -173,6 +178,9 @@ var/global/list/car_workshop_prototypes = list()
 		powersource.connections |= src
 		to_chat(H, SPAN_NOTICE("Workshop connected to the power cable."))
 		return
+	if (project && istype(O, /obj/structure/vehicleparts/movement))
+		project_add(H, O)
+		return
 	if (O.type == /obj/structure/vehicleparts/movement && stock["wheels"] < 4)
 		var/obj/structure/vehicleparts/movement/W = O
 		if (!W.axis && !W.connected && !W.broken && !W.anchored)
@@ -188,13 +196,23 @@ var/global/list/car_workshop_prototypes = list()
 	var/list/options = models()
 	var/list/extras = extra_options()
 	options += extras
+	var/list/projects = project_options()
+	options += projects
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
-	var/choice = WWinput(H, menu_text(), name, "Cancel", options + list("Cancel"))
+	var/text = menu_text()
+	if (piece_projects)
+		text += " [project_status()]"
+		if (!project)
+			text += " Or build one piece by piece in the bay: the materials are brought a piece at a time, by anyone, to the press or to the vehicle."
+	var/choice = WWinput(H, text, name, "Cancel", options + list("Cancel"))
 	if (busy || !Adjacent(H) || !allowed(H))
 		return
 	if (choice in extras)
 		extra_action(H, extras[choice])
+		return
+	if (choice in projects)
+		project_action(H, projects[choice])
 		return
 	if (choice == "Unload inputs")
 		unload()
@@ -250,6 +268,7 @@ var/global/list/car_workshop_prototypes = list()
 
 /obj/structure/car_workshop/Destroy()
 	finish_work()
+	clear_project_frames()
 	return ..()
 
 /obj/structure/car_workshop/proc/unload()
