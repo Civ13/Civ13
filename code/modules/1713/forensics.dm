@@ -611,7 +611,7 @@ proc/is_complete_print(var/print)
 	var/obj/item/weapon/forensics/examined_sample = sample
 	var/examined_revision = sample_revision
 	if(!do_after(user, 25, src) || QDELETED(src) || sample != examined_sample || sample_revision != examined_revision || QDELETED(examined_sample) || examined_sample.loc != src)
-		to_chat(user, SPAN_NOTICE("You stop examining \the [sample]."))
+		to_chat(user, SPAN_NOTICE("You stop examining \the [examined_sample]."))
 		return
 
 	to_chat(user, SPAN_NOTICE("Printing findings now..."))
