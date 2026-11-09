@@ -171,6 +171,25 @@ var/telecom_failures = 0
 		telecom_check(T.send_network_message("local test") == 1 && !T.send_network_message("rate limited"), "terminals share power cable and rate limit")
 		var/p_number = P.phonenumber
 		var/q_number = Q.phonenumber
+		// #4222: restored phones whose saved numbers are each other's temporary
+		// constructor numbers keep their saved numbers; a real duplicate does not.
+		var/obj/item/weapon/telephone/landline/swap_a = new(locate(6,6,1))
+		var/obj/item/weapon/telephone/landline/swap_b = new(locate(7,6,1))
+		var/temp_a = swap_a.phonenumber
+		var/temp_b = swap_b.phonenumber
+		swap_a.phonenumber = temp_b
+		swap_b.phonenumber = temp_a
+		swap_a.after_load()
+		swap_b.after_load()
+		telecom_check(swap_a.phonenumber == temp_b && swap_b.phonenumber == temp_a && swap_a.registered_number == temp_b && swap_b.registered_number == temp_a && (temp_a in phone_numbers) && (temp_b in phone_numbers), "saved landline numbers survive a reversed restore order")
+		var/obj/item/weapon/telephone/landline/dup = new(locate(8,6,1))
+		var/dup_temp = dup.phonenumber
+		dup.phonenumber = temp_a
+		dup.after_load()
+		telecom_check(swap_b.phonenumber == temp_a && dup.phonenumber != temp_a && dup.phonenumber == dup.registered_number && !(dup_temp in phone_numbers && dup_temp != dup.phonenumber), "a real duplicate saved number is still replaced")
+		qdel(swap_a)
+		qdel(swap_b)
+		qdel(dup)
 		// Cross-region relay (radio_relay.dm): keyed, powered, worn and repaired; heard through local receivers.
 		var/fixture_group = json_encode(list("group" = "g", "region" = "alpha", "regions" = list(list("id" = "alpha", "name" = "Alpha Land", "kind" = "SURFACE", "address" = "127.0.0.1:1731"), list("id" = "beta", "name" = "Beta Land", "kind" = "SURFACE", "address" = "127.0.0.1:1732"))))
 		telecom_check(shard_group.configure(fixture_group) && ("beta" in shard_group.peers), "fixture region group with one peer")

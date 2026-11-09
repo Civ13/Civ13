@@ -174,8 +174,8 @@
 
 					user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
 					user.do_attack_animation(target)
-					var/turf/tloc = target.loc
-					if (do_after(user, injtime, tloc))
+					// Watch the patient, not the tile they stood on, and recheck reach (#4227).
+					if (do_after(user, injtime, target) && !QDELETED(target) && user.Adjacent(target))
 						user.visible_message("<span class='warning'>[user] injects [target] with the syringe!</span>")
 					else
 						return

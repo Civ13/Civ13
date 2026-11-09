@@ -33,10 +33,31 @@ var/global/civ_landline_cursor = 1
 	phonenumber = 0
 	registered_number = 0
 
+// Restoring a level constructs every phone (each takes a temporary number)
+// before any after_load(). A phone whose restored number differs from what it
+// registered is still holding such a temporary number (#4222).
+/obj/item/weapon/telephone/landline/proc/holds_temporary_number()
+	return !retired && registered_number && registered_number != phonenumber
+
+// Move a not-yet-restored phone's temporary number aside, keeping its saved one.
+/obj/item/weapon/telephone/landline/proc/move_temporary_number()
+	phone_numbers -= registered_number
+	registered_number = 0
+	for (var/number = 1000, number <= 9999, number++)
+		if (!(number in phone_numbers))
+			registered_number = number
+			phone_numbers |= number
+			return
+
 /obj/item/weapon/telephone/landline/after_load()
 	. = ..()
 	phone_numbers -= registered_number
 	registered_number = 0
+	if (isnum(phonenumber) && (phonenumber in phone_numbers))
+		for (var/obj/item/weapon/telephone/landline/other in civ_landlines)
+			if (other != src && other.registered_number == phonenumber && other.holds_temporary_number())
+				other.move_temporary_number()
+				break
 	if (!isnum(phonenumber) || phonenumber < 1000 || phonenumber > 9999 || phonenumber != round(phonenumber) || (phonenumber in phone_numbers))
 		new_phonenumber()
 	else
