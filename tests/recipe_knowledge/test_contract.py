@@ -15,6 +15,7 @@ class KnowledgeContract(unittest.TestCase):
     def test_flag_is_configuration_not_new_durable_metadata(self):
         self.assertIn('return persistence && recipe_books', self.source)
         self.assertNotIn('recipe_books', read('code/modules/persistence/durable_contract.dm'))
+        self.assertIn('persistence_save_in_progress || persistence_active_operation', proc(self.source, '/obj/map_metadata/proc/activate_recipe_books'))
         self.assertNotRegex(read('code/game/objects/map_metadata/nomads/nomads_gaia.dm'), r'(?m)^\s*recipe_books\s*=\s*TRUE')
     def test_central_gate_adds_knowledge_without_hiding_menu_rows(self):
         gate = proc(read('code/modules/research_tree/recipe_gates.dm'), '/proc/crafting_node_allowed')
