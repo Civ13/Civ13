@@ -60,6 +60,9 @@
 	recipe_knowledge_initialized = TRUE
 	return TRUE
 
+/mob/living/human/finish_character_knowledge_restoration()
+	migrate_recipe_knowledge()
+
 /mob/living/human/persistence_import_fields(list/saved_fields)
 	. = ..()
 	// Missing marker means legacy, not a newly spawned body. Invalid present
