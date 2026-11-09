@@ -77,7 +77,7 @@ class RunnerContracts(unittest.TestCase):
         rows = [dict(enabled=enabled, sy=sy, client=0, effects=1, bumps=3)
                 for enabled, sy in ((0, 0), (1, 0), (1, 4), (1, 28))]
         receipt = dict(head='abc', byond_version=516, byond_build=1688,
-                       error=None, mining_checks=55, mining_rows=rows)
+                       error=None, mining_checks=57, mining_rows=rows)
         runner.validate_receipt(receipt, 'mining', 'none', 'abc')
         for key, value in [('head', 'wrong'), ('mining_checks', 51),
                            ('error', 'mining_native_collision_dispatch'), ('mining_rows', rows[:3])]:
@@ -121,7 +121,7 @@ class RunnerContracts(unittest.TestCase):
 
     def test_exact_human_receipt_and_omission_controls(self):
         row = {'head': 'a' * 40, 'byond_version': 516, 'byond_build': 1688,
-               'checks': 55, 'error': None, 'rows': [{'scene': 'normal', 'rows':
+               'checks': 57, 'error': None, 'rows': [{'scene': 'normal', 'rows':
                 [{'sx': 2, 'locs': 2, 'native': 2}] + [{'native': 2}] * 15}]}
         runner.validate_receipt(row, 'human', 'none', 'a' * 40)
         for key, value in (('head', 'b' * 40), ('checks', 41), ('error', 'failed'),

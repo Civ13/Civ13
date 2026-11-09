@@ -477,6 +477,26 @@
 		M.glide_size = glide_size * ((get_dir(M, target) & (get_dir(M, target) - 1)) ? ROOT2_FAST : 1)
 	return step(M, get_dir(M, target))
 
+// Walking through someone (help intent), drift 2px per pulse away from them,
+// or to your right when dead centre, until at least 2px apart. Walls still
+// win: in a one-tile corridor the sideways try fails and you pass overlapping.
+/mob/living/human/proc/human_subtile_pass_nudge(direction)
+	if (!direction || (direction & (direction - 1)))
+		return null
+	var/cx = x * 32 + step_x
+	var/cy = y * 32 + step_y
+	for (var/mob/living/L in obounds(src, 2))
+		if (L == src || !L.density || !swap_passable(L))
+			continue
+		var/lx = L.x * 32 + L.step_x
+		var/ly = L.y * 32 + L.step_y
+		if (direction & (EAST | WEST))
+			var/side_y = (cy > ly) ? 2 : (cy < ly) ? -2 : ((direction & EAST) ? -2 : 2)
+			return list(0, side_y)
+		var/side_x = (cx > lx) ? 2 : (cx < lx) ? -2 : ((direction & NORTH) ? 2 : -2)
+		return list(side_x, 0)
+	return null
+
 // Free movement swaps places only when walking straight into someone head-on,
 // as in a corridor. Grazing them, moving diagonally or sliding round them
 // just blocks, so bodies never jump past each other.
@@ -640,6 +660,10 @@
 		// free, and a straight move slips sideways around a corner into an opening.
 		var/list/attempts = list(list(main_dx, main_dy))
 		if (fine_step == FINE_STEP_HELD)
+			// Passing through someone, ease sideways to keep a little distance.
+			var/list/nudge = actor.human_subtile_pass_nudge(direction)
+			if (nudge)
+				attempts.Insert(1, list(list(main_dx + nudge[1], main_dy + nudge[2])))
 			attempts += actor.human_subtile_slide_attempts(direction)
 		var/moved_pulse = FALSE
 		var/stop = FALSE

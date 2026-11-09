@@ -18,6 +18,16 @@
       ]
     },
     {
+      "path": "code/game/mob/living/living.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "b026573ee7385911a2f9df6eb4e8a9a2736ec5c5959c92865a58fc6a930a5e1a"
+        }
+      ]
+    },
+    {
       "path": "code/game/mob/mob_movement.dm",
       "declarations": [
         {

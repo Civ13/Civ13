@@ -208,7 +208,54 @@ default behaviour is:
 		if (!A.CanPass(swapee, T, TRUE))
 			return TRUE
 
+// Whenever two mobs could swap places, they walk through each other instead
+// and may share a tile: the same consent as a swap, without moving anyone.
+/mob/living/proc/swap_passable(var/mob/living/tmob)
+	if (!istype(tmob) || tmob == src || throwing || tmob.throwing)
+		return FALSE
+	if ((status_flags & LEAPING) || ordinary_human_animal_swap(tmob))
+		return FALSE
+	if (istype(src, /mob/living/simple_animal/horse))
+		return FALSE
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		if (H.riding)
+			return FALSE
+	if (tmob.pinned.len || locate(/obj/item/weapon/grab, tmob.grabbed_by))
+		return FALSE
+	for (var/mob/living/M in range(tmob, TRUE))
+		if (M.pulling == tmob && tmob.restrained() && !M.restrained() && M.stat == FALSE)
+			return FALSE
+	return can_swap_consent(tmob)
+
+/mob/living/Cross(atom/movable/O)
+	if (isliving(O))
+		var/mob/living/L = O
+		if (L.swap_passable(src))
+			return TRUE
+	return ..()
+
+/mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (isliving(mover))
+		var/mob/living/L = mover
+		if (L.swap_passable(src))
+			return TRUE
+	return ..()
+
 /mob/living/proc/can_swap_with(var/mob/living/tmob)
+	if (!can_swap_consent(tmob))
+		return FALSE
+
+	if (swap_density_check(src, tmob))
+		return FALSE
+
+	if (swap_density_check(tmob, src))
+		return FALSE
+
+	return TRUE
+
+// Both mobs agree to swap: intent, restraints, buckles and football rules.
+/mob/living/proc/can_swap_consent(var/mob/living/tmob)
 	if (map && istype(map, /obj/map_metadata/football))
 		return FALSE
 	if (ishuman(src))
@@ -222,13 +269,6 @@ default behaviour is:
 		return FALSE
 	if (!tmob.canmove || !canmove)
 		return FALSE
-
-	if (swap_density_check(src, tmob))
-		return FALSE
-
-	if (swap_density_check(tmob, src))
-		return FALSE
-
 	return can_move_mob(tmob, TRUE, FALSE)
 
 /mob/living/verb/succumb()

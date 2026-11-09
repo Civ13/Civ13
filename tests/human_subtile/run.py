@@ -272,14 +272,14 @@ def validate_receipt(row, suite, control, head):
                 raise ValueError('Mining position control failed outside intended oracle')
             return
         rows = row.get('mining_rows')
-        if row.get('error') is not None or row.get('mining_checks') != 55:
+        if row.get('error') is not None or row.get('mining_checks') != 57:
             raise ValueError('Mining integration failed/incomplete checks')
         if not isinstance(rows, list) or [(r.get('enabled'), r.get('sy')) for r in rows] != [(0, 0), (1, 0), (1, 4), (1, 28)]:
             raise ValueError('Mining integration cases missing')
         if any(r.get('client') != 0 or r.get('effects') != 1 or r.get('bumps', 0) < 3 for r in rows):
             raise ValueError('Mining integration observations failed')
     else:
-        if row.get('head') != head or row.get('checks') != 55 or row.get('error') is not None:
+        if row.get('head') != head or row.get('checks') != 57 or row.get('error') is not None:
             raise ValueError('Human fixture failed/wrong source')
         rows = row.get('rows')
         if not isinstance(rows, list) or len(rows) != 1 or rows[0].get('scene') != 'normal':

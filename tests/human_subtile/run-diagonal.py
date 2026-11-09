@@ -142,11 +142,11 @@ def main():
         expected_result = ('FAIL ' + expected_error if expected_error else 'PASS') + ('\r\n' if os.name == 'nt' else '\n')
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
-            require(receipt['checks'] == 55, 'Incomplete existing human regression checks')
+            require(receipt['checks'] == 57, 'Incomplete existing human regression checks')
             expected_checks = 86 if args.control == 'offset-recovery' else 4 if expected_error else 119
             require(receipt['diagonal_checks'] == expected_checks, 'Incomplete diagonal checks')
         else:
-            require(receipt['mining_checks'] == 55, 'Incomplete mining assertions')
+            require(receipt['mining_checks'] == 57, 'Incomplete mining assertions')
             mining = receipt['mining_rows']
             require([(r['enabled'], r['sy']) for r in mining] == [(0, 0), (1, 0), (1, 4), (1, 28)], 'Missing mining cases')
             require(all(r['client'] == 0 and r['effects'] == 1 and r['bumps'] >= 3 for r in mining), 'Mining observations failed')
