@@ -76,14 +76,16 @@ MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
            "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water",
-           "topic", "close_window")
+           "topic", "close_window", "stance")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
+EQUIP_SLOTS = ("back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder")
 MAX_NEARBY = 24
 MAX_TERRAIN = 10
 MAX_PLAN = 3
+MAX_CONTENTS = 8  # items listed inside each nearby container
 MAX_WINDOWS = 2  # newest menu windows shown to the model
 MAX_WINDOW_LINKS = 24
 MAX_WINDOW_TEXT = 400
@@ -214,7 +216,12 @@ How to play:
 - Help people in need: when a HELP line names someone hurt, offer help with a short "say" and treat them with your bandages
   (unconscious people cannot answer: just treat them). Never treat someone who is attacking you.
 - When a player talks to you, answer first with a short in-character "say", then carry on. Greet people you meet and cooperate.
-- Hold an item and {"do": "equip"} to wear it or put it on your belt or back. "use" uses the held item by itself.
+- Hold an item and {"do": "equip"} to wear it or put it on your belt or back; add "slot": back|belt|head|suit|uniform|shoes|
+  gloves|mask|eyes|shoulder|l_store|r_store|s_store to put it in that slot.
+- Stance: {"do": "stance", "move": run|walk|sneak|crawl, "defense": dodge|parry, "tactic": charge|aim|rush|defend,
+  "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
+  Run to travel, walk to save stamina, sneak or crawl to hide, parry with a weapon, dodge without one.
+- Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
 - Items in or next to other players' buildings, fences, workshops or camps belong to them: never take or break them. Gather from the wild instead.
@@ -295,6 +302,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append(f"ILLNESS: {sick.get('type')}, {sick.get('stage', 'ill')}" + (", treatment running" if _float(sick.get("remedy"), 0) >= 3 else ", NOT being treated") + ".")
     if needs:
         lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
+    stance = self_state.get("stance") or {}
+    if stance:
+        lines.append("Stance: " + ", ".join(f"{key} {value}" for key, value in stance.items()))
     if self_state.get("verbs"):
         lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
     if self_state.get("item_verbs"):
@@ -310,6 +320,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
         lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{' (unclean)' if row.get('sickness') else ''}{_fire_mark(row)}{_verb_mark(row)}")
+        for inside in [item for item in row.get("contents") or [] if isinstance(item, dict)][:MAX_CONTENTS]:
+            refs.append(inside.get("ref"))
+            lines.append(f"     {len(refs) - 1}. {inside.get('name')} (inside {row.get('name')}; click it with an empty hand to take it)")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -956,6 +969,19 @@ def parse_decision(text, refs):
         return out
     if action == "disembark":
         return args
+    if action == "stance":
+        allowed = {"move": ("run", "walk", "sneak", "crawl"), "defense": ("dodge", "parry"),
+                   "tactic": ("charge", "aim", "rush", "defend"), "secondary": ("kick", "jump", "bite")}
+        for key, values in allowed.items():
+            value = str(data.get(key, "")).strip().lower()
+            if value:
+                if value not in values:
+                    return None
+                args[key] = value
+        for key in ("face_lock", "aim"):
+            if isinstance(data.get(key), bool):
+                args[key] = data[key]
+        return args if len(args) > 1 else None
     if action in ("topic", "close_window"):
         window = str(data.get("window", "")).strip()
         if not window:
@@ -1061,6 +1087,8 @@ def parse_decision(text, refs):
         material = str(data.get("material", "")).strip()
         if material:
             args["material"] = material[:64]
+    elif action == "equip" and str(data.get("slot", "")).strip().lower() in EQUIP_SLOTS:
+        args["slot"] = str(data["slot"]).strip().lower()
     elif action == "intent":
         intent = str(data.get("intent", "")).lower()
         if intent not in INTENTS:

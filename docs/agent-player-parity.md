@@ -15,9 +15,9 @@ crafting from stacks, equip and take, examine, drop, swap hand, resist, verbs
 | --- | --- | --- | --- |
 | 1 | Menu windows | HTML windows and their links (research, trade posts, suppliers, faction and recruitment desks, books, telephones) | Closed: `windows` in observe, `topic` and `close_window` actions |
 | 2 | Typed prompts | Raw `input()`/`alert()` (stack split amounts, names, paper, frequencies, money) answer nothing for a clientless character | Closed: `player_input`/`player_alert` answer from `choose`; the few raw calls left are listed in `PromptTests` |
-| 3 | HUD-only toggles | Run/walk/sneak/prone, dodge/parry, tactic, kick/jump/bite, fixed facing, gun aim modes, equip to a chosen slot | Open |
+| 3 | HUD-only toggles | Run/walk/sneak/prone, dodge/parry, tactic, kick/jump/bite, fixed facing, gun aim modes, equip to a chosen slot | Closed: `stance` action, `equip` with `slot` |
 | 4 | Movement parity | `move` calls `Move()` directly: no hill climbing cost, no riding animals or wheelchairs, grabs and pulls skip the client path | Open |
 | 5 | Vehicles beyond boats | Cars and carts (wheel, gears), trains, aircraft (climb/descend), drones, turret controls | Open |
-| 6 | Observation | Contents of crates and closets, terrain height, light level | Open |
+| 6 | Observation | Contents of crates and closets, terrain height, light level | Closed for storage containers (`contents`, click inside), `height` and `light`; closets dump their contents on the floor when opened, so they need nothing more |
 | 7 | TGUI and NanoUI screens | Crafting atlas, chemistry machines and similar | Open |
 | 8 | Region travel | Gates require a BYOND key; an agent body cannot travel and its agent cannot follow | Open: needs a design decision |

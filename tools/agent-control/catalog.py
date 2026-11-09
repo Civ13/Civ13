@@ -19,9 +19,10 @@ VALUE = {
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
 WINDOW = {"type": "string", "description": "topic/close_window: a window name from character_observe windows"}
+SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder"], "description": "equip: the slot to put the held item in"}
 LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
 LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window"]
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
@@ -78,7 +79,7 @@ ACTIONS = {
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows) or close_window; board, disembark, drag, verb, throw and topic only through character_queue. While driving a boat, move steers it one tile.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, or stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim); equip takes an optional slot; board, disembark, drag, verb, throw and topic only through character_queue. While driving a boat, move steers it one tile.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -97,6 +98,13 @@ ACTIONS = {
         "window": WINDOW,
         "link": LINK,
         "label": LINK_LABEL,
+        "slot": SLOT,
+        "move": {"type": "string", "enum": ["run", "walk", "sneak", "crawl"], "description": "stance: movement mode"},
+        "defense": {"type": "string", "enum": ["dodge", "parry"], "description": "stance"},
+        "tactic": {"type": "string", "enum": ["charge", "aim", "rush", "defend"], "description": "stance"},
+        "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
+        "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
+        "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -121,6 +129,13 @@ ACTIONS = {
         "window": WINDOW,
         "link": LINK,
         "label": LINK_LABEL,
+        "slot": SLOT,
+        "move": {"type": "string", "enum": ["run", "walk", "sneak", "crawl"], "description": "stance: movement mode"},
+        "defense": {"type": "string", "enum": ["dodge", "parry"], "description": "stance"},
+        "tactic": {"type": "string", "enum": ["charge", "aim", "rush", "defend"], "description": "stance"},
+        "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
+        "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
+        "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
                 "repeat": {"type": "integer", "minimum": 1, "maximum": 30, "description": "run this step up to this many times (each when its cooldown allows); a blocked move or a failure stops it"},
                 "until": UNTIL,
             },
