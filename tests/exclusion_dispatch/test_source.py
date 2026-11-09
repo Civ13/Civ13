@@ -423,7 +423,7 @@ class LightingCurrentMasterContractTests(unittest.TestCase):
                                         (ROOT / PATH).read_text(), re.M).group()
             for variant in ('baseline', 'candidate'):
                 selected = production.split(f'/datum/proc/{variant}_saved()', 1)[1].split('/turf/floor/dirt/', 1)[0]
-                self.assertIn('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n#endif\n\t\t\t\tcontinue', selected)
+                self.assertIn('\t\t\tif (observed)\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n\t\t\t\tcontinue\n#endif', selected)
                 self.assertIn('\n\treturn to_save\n', selected)
                 movable = list(re.finditer(rf'^/atom/movable/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M))
                 self.assertEqual(len(movable), 2)
