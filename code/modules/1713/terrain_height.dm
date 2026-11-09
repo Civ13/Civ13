@@ -248,11 +248,13 @@
 // Each tile corner gets a light level from -2 (shadow) to 2 (lit), from the
 // heights around it, lit from the north-west. A tile shows the sprite for its
 // four corner levels, blended across the tile, so neighbours join smoothly.
-// Sprites are shared objects in turf vis_contents: drawn just above the ground
-// and below decals and objects, never clickable, never saved.
+// Sprites are shared objects in turf vis_contents, never clickable, never saved.
+// They sit above the ground, its decals and fallen snow (layer 2.03, which is
+// opaque and would hide the hills all winter) and below objects; the copies of
+// decals that winter lifts above the snow (2.04) stay on top.
 #define TERRAIN_LIGHT_STEP 0.22
 #define TERRAIN_RELIEF 1.6
-#define TERRAIN_SHADE_LAYER 2.005
+#define TERRAIN_SHADE_LAYER 2.035
 
 var/global/list/terrain_shade_objects = list()
 // TRUE once the map's shading has been placed this round.
