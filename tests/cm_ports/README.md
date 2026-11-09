@@ -53,3 +53,10 @@ the field HUD marker), rally points (who may set one, the tracker pointing at
 it, replacing and clearing), the death recap lines and killing blow, personal
 round stats, the searchlight beam (reach, walls, turning, on and off, what is
 saved) and that fire teams are saved with the character.
+
+The ninth batch checks ghillie camouflage (fading after lying still on the
+right ground, revealing when bumped or standing, the winter suit, what is
+saved), night-vision dazzle, the respawn countdown text, cell timers (who may
+set one, holding the door, counting down, saving and reloading, the cap,
+release) and breaching charges (filling, planting, blowing the door, who is
+knocked down, valid targets).

@@ -830,6 +830,7 @@
 #include "code\modules\1713\cmss13_command.dm"
 #include "code\modules\1713\cmss13_field.dm"
 #include "code\modules\1713\cmss13_marks.dm"
+#include "code\modules\1713\cmss13_ops.dm"
 #include "code\modules\1713\cmss13_squad.dm"
 #include "code\modules\1713\cmss13_teams.dm"
 #include "code\modules\1713\cmss13_gear.dm"
