@@ -418,6 +418,7 @@
 	workers_work.Cut()
 
 /obj/structure/mill/proc/produce(var/obj/item/weapon/reagent_containers/W, var/mob/living/human/H, var/obj/item/weapon/reagent_containers/P)
+	if (!crafting_recipe_allowed(H, "[type]")) return
 	if(!anchored)
 		to_chat(H, "<span class='warning'>\The [src] needs to be locked in place before anything can be ground.</span>")
 		return
@@ -472,7 +473,7 @@
 				some_work_done = TRUE
 				is_mentally_tired = TRUE
 				break
-			if (do_after(H, 10, H.loc, TRUE, FALSE))
+			if (do_after(H, 10, H.loc, TRUE, FALSE) && crafting_recipe_allowed(H, "[type]"))
 				complete_percent += 6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")
 				total_work += 10
 				workers_work[work_index] = total_work
@@ -2365,7 +2366,7 @@
 		if (!continuing)
 			to_chat(H, SPAN_WARNING("This mill cannot process that kind of wood."))
 		return FALSE
-	if (primitive_busy || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || W.onfire || W.amount < 1 || !H.in_mood() || H.getStatCoeff("strength") <= 0)
+	if (primitive_busy || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || !crafting_recipe_allowed(H, "[type]") || W.onfire || W.amount < 1 || !H.in_mood() || H.getStatCoeff("strength") <= 0)
 		if (!continuing)
 			to_chat(H, SPAN_WARNING("The mill must be anchored and idle, with a usable flint blade and a held log."))
 		return FALSE
@@ -2381,7 +2382,7 @@
 	if (QDELETED(src) || token != primitive_epoch)
 		return FALSE
 	cancel_primitive_work()
-	if (!completed || loc != mill_location || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || W.onfire || W.amount < 1 || W.default_type != "wood" || !W.material || W.material.name != "wood")
+	if (!completed || loc != mill_location || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || !crafting_recipe_allowed(H, "[type]") || W.onfire || W.amount < 1 || W.default_type != "wood" || !W.material || W.material.name != "wood")
 		return FALSE
 	var/turf/site = get_turf(src)
 	var/wood_color = W.color
@@ -2455,6 +2456,7 @@
 	work_time_amount = 0
 
 /obj/structure/sawmill/proc/produce(var/obj/item/stack/W, var/mob/living/human/H, var/obj/item/stack/P)
+	if (!crafting_recipe_allowed(H, "[type]")) return
 	check_power()
 	if (!H.in_mood())
 		return
@@ -2489,6 +2491,13 @@
 		"<span class='notice'>You hear someone begin to cut on \the [src.name].</span>")
 	work_time_amount = work_time_amount*(0.67/H.getStatCoeff("crafting") + 0.33/H.getStatCoeff("dexterity"))
 	if (do_after(H, work_time_amount, src.loc))
+		if (!crafting_recipe_allowed(H, "[type]"))
+			qdel(current_work)
+			current_work = null
+			current_material = null
+			current_user = null
+			icon_state = istype(src, /obj/structure/sawmill/powered) ? "sawmill_power" : "sawmill"
+			return
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
 		finish_work()
 	else

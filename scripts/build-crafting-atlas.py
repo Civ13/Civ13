@@ -7,6 +7,7 @@ from atlas.rope_making import add_rope_making
 from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
+from atlas.research_coverage import annotate_research
 
 
 def catalog_text(game):
@@ -309,7 +310,7 @@ elif dedicated:
     issues.append(dict(file=dedicated_path,line=1,reason='Toolsmith recipe table changed; inspect atlas extraction',raw='toolsmith_recipes'))
 foundry_line=dedicated.find('/obj/structure/component_workbench/toolsmith/foundry')
 foundry_age=re.search(r'#define FOUNDRY_MIN_AGE (\d+)',dedicated)
-if foundry_line>=0 and foundry_age and toolsmith_rows and metals and 'is_node_done(H.civilization, "machined_tools")' in dedicated:
+if foundry_line>=0 and foundry_age and toolsmith_rows and metals and 'crafting_node_allowed(H, "machined_tools")' in dedicated:
     for name,result,metal,max_age in toolsmith_rows:
         if int(max_age)<int(foundry_age[1]):continue
         for sheet,metal_name in re.findall(r'(/obj/item/stack/material/\w+) = "(\w+)"',metals[1]):
@@ -394,6 +395,7 @@ for route in tanning_routes + rope_routes + woodworking_routes:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 add_tablet_press(files, add, records)
+annotate_research(records, files, canon)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)
 annotate_families(records, files)

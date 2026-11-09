@@ -65,7 +65,7 @@
 		if (assemble_work_tool(HANDLE, H))
 			to_chat(H, "You finish assembling the [result_name].")
 		return
-	if (result && material && src && istype(HANDLE, /obj/item/weapon/material/handle))
+	if (result && material && src && istype(HANDLE, /obj/item/weapon/material/handle) && crafting_recipe_allowed(H, "[result]"))
 		var/obj/item/weapon/material/M = new result(get_turf(H),material.name)
 		M.loc = H.loc
 		qdel(HANDLE)
@@ -81,6 +81,7 @@
 /obj/item/weapon/material/part/proc/assemble_work_tool(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
 	if (!is_work_tool_head() || QDELETED(src) || QDELETED(HANDLE) || !istype(HANDLE) || !istype(H))
 		return
+	if (!crafting_recipe_allowed(H, "[result]")) return
 	if (!material || !HANDLE.material || health <= 0 || maxhealth <= 0 || HANDLE.health <= 0 || HANDLE.maxhealth <= 0)
 		return
 	if (HANDLE.loc != H || (H.l_hand != HANDLE && H.r_hand != HANDLE) || get_dist(H, src) > 1)

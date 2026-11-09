@@ -317,6 +317,9 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/mob/living/human/H = user
+	if (!crafting_recipe_allowed(H, "[recipe.result_type]"))
+		to_chat(user, SPAN_WARNING("This recipe requires its research node."))
+		return
 	var/datum/cloth_recipe_payment/cloth_payment
 	if (is_cloth_sheet(src))
 		cloth_payment = new(src, H, recipe, quantity)
@@ -1727,7 +1730,7 @@
 		buildtime = round(buildtime)
 
 		to_chat(user, "<span class='notice'>Building [recipe.title] ...</span>")
-		if (!do_after(user, buildtime))
+		if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
 			if (H.key in handReturnMap)
 				var/atom/O
 				var/datum/A
