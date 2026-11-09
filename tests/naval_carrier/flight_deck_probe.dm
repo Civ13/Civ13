@@ -117,11 +117,11 @@ var/naval_runtime_error = FALSE
 		return
 	naval_check(naval_count(2, /turf/floor/plating/carrier_deck) == 360 && naval_count(2, /turf/floor/plating/carrier_deck/wires) == 36 && naval_count(2, /turf/floor/plating/carrier_deck/elevator) == 32, "the flight deck has 360 tiles, 36 of arresting wires and 32 of elevator platform")
 	naval_check(naval_count(1, /turf/floor/sub_deck/carrier/hangar) == 113 && naval_count(1, /turf/floor/sub_deck/carrier/hangar/elevator) == 32, "the hangar keeps 113 deck tiles, 32 of them elevator floor")
-	naval_check(naval_count_objects(2, /obj/structure/vessel_elevator_lever) == 2 && naval_count_objects(1, /obj/structure/vessel_elevator_lever) == 2, "each elevator has a lever on the flight deck and one in the hangar")
-	naval_check(istype(locate(12, 17, 2), /turf/floor/plating/carrier_deck/wires) && istype(locate(11, 24, 2), /turf/floor/plating/carrier_deck/elevator) && istype(locate(14, 39, 1), /turf/floor/sub_deck/carrier/hangar/elevator) && (locate(/obj/structure/vessel_elevator_lever) in locate(12, 28, 2)) && (locate(/obj/structure/vessel_elevator_lever) in locate(12, 35, 1)), "wires, platforms and levers lie where the plan puts them")
-	var/obj/structure/vessel_elevator_lever/L1 = locate(/obj/structure/vessel_elevator_lever) in locate(12, 28, 2)
-	var/obj/structure/vessel_elevator_lever/L1_hangar = locate(/obj/structure/vessel_elevator_lever) in locate(12, 28, 1)
-	var/obj/structure/vessel_elevator_lever/L2 = locate(/obj/structure/vessel_elevator_lever) in locate(12, 35, 2)
+	naval_check(naval_count_objects(2, /obj/structure/vessel_lever/elevator) == 2 && naval_count_objects(1, /obj/structure/vessel_lever/elevator) == 2, "each elevator has a lever on the flight deck and one in the hangar")
+	naval_check(istype(locate(12, 17, 2), /turf/floor/plating/carrier_deck/wires) && istype(locate(11, 24, 2), /turf/floor/plating/carrier_deck/elevator) && istype(locate(14, 39, 1), /turf/floor/sub_deck/carrier/hangar/elevator) && (locate(/obj/structure/vessel_lever/elevator) in locate(12, 28, 2)) && (locate(/obj/structure/vessel_lever/elevator) in locate(12, 35, 1)), "wires, platforms and levers lie where the plan puts them")
+	var/obj/structure/vessel_lever/elevator/L1 = locate(/obj/structure/vessel_lever/elevator) in locate(12, 28, 2)
+	var/obj/structure/vessel_lever/elevator/L1_hangar = locate(/obj/structure/vessel_lever/elevator) in locate(12, 28, 1)
+	var/obj/structure/vessel_lever/elevator/L2 = locate(/obj/structure/vessel_lever/elevator) in locate(12, 35, 2)
 	naval_check(L1 && L1.vessel == C && L1.platform().len == 16 && L2 && L2.platform().len == 16 && (L1.platform() & L2.platform()).len == 0 && L1_hangar && L1_hangar.platform().len == 16, "each lever serves its own 16-tile platform")
 	naval_check(L1.target_z() == 1 && L1_hangar.target_z() == 2, "the deck lever goes down to the hangar and the hangar lever up to the deck")
 

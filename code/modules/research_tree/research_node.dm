@@ -511,6 +511,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
 		"/obj/structure/car_workshop/submarine_pen" = "submarines",
 		"/obj/structure/car_workshop/shipyard" = "naval_aviation",
+		"/obj/item/weapon/shoring_kit" = "submarines",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",

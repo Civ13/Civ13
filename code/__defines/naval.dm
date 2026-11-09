@@ -21,6 +21,8 @@
 // Flooded compartments (average water at or over the deck's flooded mark)
 // that sink a vessel; each one before that takes a telegraph step off her.
 #define VESSEL_SINK_COMPARTMENTS 3
+// Tiles the island radar picks out ships and aircraft at.
+#define VESSEL_RADAR_RANGE 40
 
 // Carrier compartments on the hangar deck, bow to stern.
 #define CARRIER_COMP_FORWARD "carrier_forward"

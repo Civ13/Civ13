@@ -83,10 +83,22 @@
 	return TRUE
 
 // The deck elevator platform: a 4x4 square that moves with the hangar
-// elevator floor below it (vessel_elevator_lever).
+// elevator floor below it (vessel_lever/elevator).
 /turf/floor/plating/carrier_deck/elevator
 	name = "deck elevator"
 	desc = "The platform of an aircraft elevator, flush with the flight deck. The lever beside it lowers whatever stands on it to the hangar."
+
+// Catapult track at the bow: runway like the rest, but the catapult lever
+// beside it throws a plane standing on it straight into the air.
+/turf/floor/plating/carrier_deck/catapult
+	name = "catapult track"
+	desc = "Steel flight deck plating with the catapult shuttle track let into it. A plane parked on the track, nose to the bow, is launched by the lever beside it."
+
+// A sponson at each corner of the deck for a mounted gun: not runway.
+/turf/floor/plating/carrier_deck/gun_tub
+	name = "gun tub"
+	desc = "A railed sponson at the deck's edge for a mounted gun. Planes keep off it."
+	runway = FALSE
 
 /turf/floor/plating/carrier_deck/island
 	name = "island deck"
@@ -176,51 +188,61 @@
 		"5" = list("turf" = /turf/floor/sub_deck/carrier/forward, "spawn" = list(/obj/structure/simple_door/blast)),
 		"L" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/multiz/ladder/up)),
 		"E" = list("turf" = /turf/floor/sub_deck/carrier/hangar/elevator),
-		"V" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/vessel_elevator_lever)),
+		"V" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/vessel_lever/elevator)),
 		"T" = list("turf" = /turf/floor/sub_deck/carrier/bunker, "spawn" = list(/obj/structure/vessel_bunker)),
 	)
 	return L
 
 // The flight deck at the surface: plating from stern to bow, every tile a
-// runway. Arresting wires cross the after deck (u 6-9), two elevator
-// platforms lie on the port side over the hangar elevators with their levers
-// beside them, a ladder goes down to the hangar amidships and another up to
-// the island on the starboard side.
+// runway but the four gun tubs at the corners. Arresting wires cross the
+// after deck (u 6-9), two elevator platforms lie on the port side over the
+// hangar elevators with their levers beside them, the catapult track runs
+// along the port side of the bow (u 35-38) with its lever aft of it, deck
+// lights stand along both edges, a ladder goes down to the hangar amidships
+// and another up to the island on the starboard side.
 /proc/carrier_flight_deck_level()
 	var/datum/vessel_level/L = new
 	L.dz = 0
 	L.allowed = list(/turf/floor/beach/water/deep)
-	var/deck = "FFFFFFAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-	var/lift = "FFFFFFAAAAFFFFEEEEFFFFFFFFEEEEFFFFFFFFFF"
-	var/lever = "FFFFFFAAAAFFFFEEEEVFFFFFFVEEEEFFFFFFFFFF"
+	var/edge = "GFFlFFAAAAFFlFFFlFFFlFFFlFFFlFFFlFFFlFFG"
+	var/cat1 = "FFFFFFAAAAFFFFEEEEFFFFFFFFEEEEFFFFFCCCCF"
+	var/cat2 = "FFFFFFAAAAFFFFEEEEVFFFFFFVEEEEFFFFYCCCCF"
 	var/hatch = "FFFFFFAAAAFFFFEEEEFFKFFFFFEEEEFFFFFFFFFF"
+	var/deck = "FFFFFFAAAAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
 	var/stair = "FFFFFFAAAAFFFFFFFFUFFFFFFFFFFFFFFFFFFFFF"
-	L.rows = list(deck, lift, lever, lift, hatch, deck, stair, deck, deck)
+	L.rows = list(edge, cat1, cat2, cat1, hatch, deck, stair, deck, edge)
 	L.legend = list(
 		"F" = list("turf" = /turf/floor/plating/carrier_deck),
 		"A" = list("turf" = /turf/floor/plating/carrier_deck/wires),
 		"E" = list("turf" = /turf/floor/plating/carrier_deck/elevator),
-		"V" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/vessel_elevator_lever)),
+		"C" = list("turf" = /turf/floor/plating/carrier_deck/catapult),
+		"G" = list("turf" = /turf/floor/plating/carrier_deck/gun_tub),
+		"l" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/lamp/lamp_small/alwayson/deck)),
+		"V" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/vessel_lever/elevator)),
+		"Y" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/vessel_lever/catapult)),
 		"K" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/multiz/ladder)),
 		"U" = list("turf" = /turf/floor/plating/carrier_deck, "spawn" = list(/obj/structure/multiz/ladder/up)),
 	)
 	return L
 
 // The island on the open-air level: a 5x3 superstructure on the starboard
-// side amidships with the helm, reached by the flight deck ladder.
+// side amidships with the helm, the radar set and two searchlights, reached
+// by the flight deck ladder.
 /proc/carrier_island_level()
 	var/datum/vessel_level/L = new
 	L.dz = 1
 	L.allowed = list(/turf/sky)
 	var/empty = "........................................"
 	var/top = "..................JIIII................."
-	var/mid = "..................IIWII................."
-	var/low = "..................IIIII................."
+	var/mid = "..................IIWIR................."
+	var/low = "..................SIIIS................."
 	L.rows = list(empty, empty, empty, empty, empty, empty, top, mid, low)
 	L.legend = list(
 		"I" = list("turf" = /turf/floor/plating/carrier_deck/island),
 		"J" = list("turf" = /turf/floor/plating/carrier_deck/island, "spawn" = list(/obj/structure/multiz/ladder)),
 		"W" = list("turf" = /turf/floor/plating/carrier_deck/island, "spawn" = list(/obj/structure/vessel_helm)),
+		"R" = list("turf" = /turf/floor/plating/carrier_deck/island, "spawn" = list(/obj/structure/vessel_radar)),
+		"S" = list("turf" = /turf/floor/plating/carrier_deck/island, "spawn" = list(/obj/structure/searchlight)),
 	)
 	return L
 
@@ -295,7 +317,7 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Chart", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", "Cancel")
+	var/list/options = list("Chart", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
@@ -312,6 +334,8 @@
 		if ("All stop") vessel.set_speed(VESSEL_SPEED_STOP)
 		if ("Weigh anchor") vessel.set_anchor(FALSE)
 		if ("Drop anchor") vessel.set_anchor(TRUE)
+		if ("Deck lights on") vessel.set_deck_lights(TRUE)
+		if ("Deck lights off") vessel.set_deck_lights(FALSE)
 		if ("Head north", "Head east", "Head south", "Head west")
 			var/heading = text2dir(copytext(choice, 6))
 			if (vessel.anchored)
@@ -379,30 +403,38 @@
 // platforms are nine tiles apart, so each lever reaches only its own.
 #define VESSEL_ELEVATOR_REACH 5
 
-// The lever beside an elevator platform. On the flight deck it lowers what
-// stands on the platform to the hangar; in the hangar it lifts it to the
-// flight deck. Aircraft move whole (every frame must be on the platform),
-// crew and cargo tile by tile.
-/obj/structure/vessel_elevator_lever
-	name = "elevator lever"
-	desc = "The control lever of an aircraft elevator. Pull it to move whatever stands on the platform beside it to the other deck."
+// A lever on a vessel's deck. Planes taxi over it: vehicles neither crush
+// nor carry it (axis.dm keeps /obj/structure/vessel_lever where it stands).
+/obj/structure/vessel_lever
 	icon = 'icons/obj/vehicles/train_lever.dmi'
 	icon_state = "lever_none"
 	anchored = TRUE
 	density = FALSE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	// Planes taxi over it; a vehicle must not crush it.
 	crushable = FALSE
 	var/tmp/datum/vessel/vessel
 	var/tmp/busy = FALSE
 
-/obj/structure/vessel_elevator_lever/New(loc)
+/obj/structure/vessel_lever/New(loc)
 	..()
 	vessel = vessel_at(get_turf(src))
 
+/obj/structure/vessel_lever/proc/ship()
+	if (!vessel)
+		vessel = vessel_at(get_turf(src))
+	return vessel
+
+// The lever beside an elevator platform. On the flight deck it lowers what
+// stands on the platform to the hangar; in the hangar it lifts it to the
+// flight deck. Aircraft move whole (every frame must be on the platform),
+// crew and cargo tile by tile.
+/obj/structure/vessel_lever/elevator
+	name = "elevator lever"
+	desc = "The control lever of an aircraft elevator. Pull it to move whatever stands on the platform beside it to the other deck."
+
 // The platform tiles this lever serves, on its own level.
-/obj/structure/vessel_elevator_lever/proc/platform()
+/obj/structure/vessel_lever/elevator/proc/platform()
 	. = list()
 	var/turf/here = get_turf(src)
 	if (!here)
@@ -412,18 +444,18 @@
 			. += T
 
 // The level the platform moves to: down from the flight deck, up from the hangar.
-/obj/structure/vessel_elevator_lever/proc/target_z()
+/obj/structure/vessel_lever/elevator/proc/target_z()
 	var/turf/here = get_turf(src)
 	if (!here)
 		return 0
 	return istype(here, /turf/floor/plating/carrier_deck) ? multiz_level_below(here.z) : multiz_level_above(here.z)
 
-/obj/structure/vessel_elevator_lever/examine(mob/user)
+/obj/structure/vessel_lever/elevator/examine(mob/user)
 	..()
 	var/turf/here = get_turf(src)
 	to_chat(user, istype(here, /turf/floor/plating/carrier_deck) ? "This lever lowers the platform to the hangar." : "This lever raises the platform to the flight deck.")
 
-/obj/structure/vessel_elevator_lever/attack_hand(mob/living/human/H)
+/obj/structure/vessel_lever/elevator/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
 	var/result = operate(H)
@@ -431,7 +463,7 @@
 		to_chat(H, SPAN_WARNING(result))
 
 // Moves the platform's load. Returns null when done, else the reason it stayed.
-/obj/structure/vessel_elevator_lever/proc/operate(mob/user)
+/obj/structure/vessel_lever/elevator/proc/operate(mob/user)
 	if (busy)
 		return "The elevator is already moving."
 	var/list/tiles = platform()
@@ -487,6 +519,170 @@
 	return null
 
 #undef VESSEL_ELEVATOR_REACH
+
+// ---- Catapult ----
+
+// How far from its lever the catapult track can lie.
+#define VESSEL_CATAPULT_REACH 5
+
+// The catapult lever beside the track at the bow. A plane parked on the
+// track with its nose to the bow and its engine running is thrown into the
+// air at full throttle, no takeoff roll needed.
+/obj/structure/vessel_lever/catapult
+	name = "catapult lever"
+	desc = "The firing lever of the bow catapult. A plane parked on the track beside it, nose to the bow with its engine running, is thrown into the air."
+
+/obj/structure/vessel_lever/catapult/proc/track()
+	. = list()
+	var/turf/here = get_turf(src)
+	if (!here)
+		return
+	for (var/turf/floor/plating/carrier_deck/catapult/T in range(VESSEL_CATAPULT_REACH, here))
+		if (T.z == here.z)
+			. += T
+
+/obj/structure/vessel_lever/catapult/attack_hand(mob/living/human/H)
+	if (!istype(H))
+		return ..()
+	var/result = launch(H)
+	if (result)
+		to_chat(H, SPAN_WARNING(result))
+
+// Launches the plane on the track. Returns null when it flew, else why not.
+/obj/structure/vessel_lever/catapult/proc/launch(mob/user)
+	if (busy)
+		return "The catapult is still being run back."
+	var/list/tiles = track()
+	if (!tiles.len)
+		return "The lever is not connected to a catapult."
+	var/datum/vessel/V = ship()
+	var/obj/structure/vehicleparts/axis/aircraft/A
+	for (var/turf/T in tiles)
+		for (var/obj/structure/vehicleparts/frame/F in T)
+			if (istype(F.axis, /obj/structure/vehicleparts/axis/aircraft))
+				A = F.axis
+				break
+		if (A)
+			break
+	if (!A)
+		return "There is no aircraft on the catapult."
+	if (A.airborne())
+		return "[A.name] is already flying."
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		if (!(get_turf(F) in tiles))
+			return "[A.name] is not fully on the catapult track."
+	if (V && A.dir != V.dir)
+		return "[A.name] must point its nose to the bow ([dir2text(V.dir)])."
+	if (!A.check_engine())
+		return "[A.name]'s engine is not running."
+	var/turf/here = get_turf(A)
+	var/up = multiz_level_above(here.z)
+	if (!up)
+		return "There is no open sky above to launch into."
+	var/hit = A.clear_at_level(up)
+	if (hit)
+		return "[hit] is in the way above the catapult."
+	busy = TRUE
+	A.visible_message(SPAN_WARNING("The catapult fires and hurls \the [A] off the bow!"))
+	if (!A.aircraft_shift(up))
+		busy = FALSE
+		return "The catapult jammed."
+	A.runway_roll = 0
+	A.set_flight_state(AIRCRAFT_LOW)
+	A.currentspeed = A.speeds
+	A.reverse = FALSE
+	A.startmovementloop()
+	busy = FALSE
+	return null
+
+#undef VESSEL_CATAPULT_REACH
+
+// ---- Deck lights ----
+
+// A deck edge light. Unpowered, lit while the helm has the deck lights on,
+// and left where it stands by vehicles rolling over it like every lamp.
+/obj/structure/lamp/lamp_small/alwayson/deck
+	name = "deck light"
+	desc = "A low shielded lamp at the edge of the flight deck, switched from the wheel."
+	brightness_color = "#ffffff"
+	light_amt = 3
+	not_movable = TRUE
+	var/lit = TRUE
+
+/obj/structure/lamp/lamp_small/alwayson/deck/do_light()
+	if (!lit)
+		set_light(0)
+		on = FALSE
+		update_icon()
+		return
+	..()
+
+// ---- Radar ----
+
+// The island radar set: ships, aircraft and other vessels within range,
+// with distance and bearing from the island.
+/obj/structure/vessel_radar
+	name = "radar set"
+	desc = "The carrier's air and surface search radar. Use it to read the contacts around the ship."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "transponder"
+	anchored = TRUE
+	density = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/tmp/datum/vessel/vessel
+
+/obj/structure/vessel_radar/proc/ship()
+	if (!vessel)
+		vessel = vessel_at(get_turf(src))
+	return vessel
+
+// Lines describing every contact in range. The ship herself is left out.
+/obj/structure/vessel_radar/proc/contacts()
+	. = list()
+	var/turf/here = get_turf(src)
+	var/datum/vessel/V = ship()
+	if (!here)
+		return
+	var/turf/surface = V ? locate(here.x, here.y, V.base_z) : locate(here.x, here.y, multiz_level_below(here.z) || here.z)
+	if (!surface)
+		surface = here
+	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
+		var/turf/T = get_turf(S)
+		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
+			continue
+		. += "Ship: [S.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
+	for (var/datum/vessel/O in naval_vessels)
+		if (O == V || !O.placed || O.base_z != surface.z)
+			continue
+		var/turf/T = locate(O.ox + round((O.box_w() - 1) / 2), O.oy + round((O.box_h() - 1) / 2), O.base_z)
+		if (!T || get_dist(T, surface) > VESSEL_RADAR_RANGE)
+			continue
+		. += "Vessel: [O.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(O.dir)][O.speed > 0 && !O.anchored ? "" : ", stopped"]."
+	for (var/obj/structure/vehicleparts/axis/aircraft/A in airborne_aircraft)
+		var/turf/T = get_turf(A)
+		if (!T || multiz_level_below(T.z) != surface.z)
+			continue
+		var/turf/below = locate(T.x, T.y, surface.z)
+		if (!below || get_dist(below, surface) > VESSEL_RADAR_RANGE)
+			continue
+		. += "Aircraft: [A.name], [get_dist(below, surface)] tiles [submarine_bearing(surface, below)], heading [dir2text(A.dir)][A.flight_state == AIRCRAFT_CRUISE ? ", high" : ", low"]."
+
+/obj/structure/vessel_radar/attack_hand(mob/living/human/H)
+	if (!istype(H))
+		return ..()
+	var/list/lines = contacts()
+	to_chat(H, SPAN_NOTICE("The radar sweeps [VESSEL_RADAR_RANGE] tiles around the ship."))
+	if (!lines.len)
+		to_chat(H, "No contacts.")
+		return
+	for (var/line in lines)
+		to_chat(H, line)
+
+/obj/structure/vessel_radar/examine(mob/user)
+	..()
+	var/list/lines = contacts()
+	to_chat(user, lines.len ? "[lines.len] contact\s on the screen." : "The screen is clear.")
 
 // ---- Admin spawn ----
 
