@@ -388,6 +388,20 @@ var/human_subtile_fixture_phase = "initializing"
 	D2.movement_eastwest = null
 	for (var/turf/WS in slide_wall)
 		WS.density = FALSE
+	// Free movement pulling: the pulled object steps onto the uncovered tile
+	// nearest the body, so it trails round a turn instead of being dropped.
+	human_subtile_fixture_phase = "headless pull follow"
+	var/mob/living/human/subtile_fixture/PF = human_subtile_fixture_actor(16, 6)
+	PF.set_human_subtile(TRUE)
+	var/obj/structure/pull_crate = new(locate(15, 5, 1))
+	PF.pulling = pull_crate
+	pull_crate.pulledby = PF
+	human_subtile_fixture_place(PF, 10, 0)
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_follows_round_a_turn")
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_waits_while_touching")
+	PF.pulling = null
+	pull_crate.pulledby = null
+	qdel(pull_crate)
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
