@@ -297,6 +297,17 @@ class StagingContracts(unittest.TestCase):
         self.assertEqual(result.count('operation.debug_recovery.attempt == 2'), 2)
         self.assertIn('combined_capsule = position.Copy()', result)
         self.assertIn('combined_pulses_after++', result)
+        handoff = ('\t\t\texpected = after\n'
+                   '\t\t\tif (actor.human_subtile_save_request)\n'
+                   '\t\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)')
+        self.assertEqual(source.count(handoff), 1)
+        counter = ('\t\t\tif (actor == combined_actor && combined_capsule && persistence_save_in_progress && persistence_active_operation && persistence_active_operation.debug_recovery && persistence_active_operation.debug_recovery.attempt == 2) combined_pulses_after++\n')
+        self.assertIn(handoff.replace('\t\t\tif (actor.human_subtile_save_request)',
+                                     counter + '\t\t\tif (actor.human_subtile_save_request)'), result)
+        self.assertEqual(result.count('actor.human_subtile_save_request.acknowledge(actor, src)'),
+                         source.count('actor.human_subtile_save_request.acknowledge(actor, src)'))
+        with self.assertRaises(ValueError):
+            stage.instrument_human(source.replace('acknowledge(actor, src)', 'acknowledge(actor, null)'))
         with self.assertRaises(ValueError):
             stage.instrument_human(source.replace('owner && client == owner && owner.mob == src && owner.canmove && owner.moving', 'FALSE'))
         with self.assertRaises(ValueError):
