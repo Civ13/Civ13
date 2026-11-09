@@ -215,6 +215,28 @@
 			return TRUE
 	return FALSE
 
+// A free slide at an offset that would reach a trench edge takes the tile path
+// instead: that step aligns the body, and the next aligned step owns the climb.
+/mob/living/human/proc/human_subtile_trench_near(direction)
+	if (!isturf(loc))
+		return FALSE
+	var/list/fronts = list(direction)
+	if (direction & (direction - 1))
+		fronts += direction & (NORTH | SOUTH)
+		fronts += direction & (EAST | WEST)
+	var/level = null
+	for (var/turf/T in locs)
+		var/here = T.trench_climb_level()
+		if (isnull(level))
+			level = here
+		else if (here != level)
+			return TRUE
+		for (var/front_direction in fronts)
+			var/turf/front = get_step(T, front_direction)
+			if (front && front.trench_climb_level() != level)
+				return TRUE
+	return FALSE
+
 // Fine input never falls back to tile movement or takes ownership of a link.
 /mob/living/human/proc/human_subtile_fine_ready(direction)
 	return human_subtile_eligible(direction) && !pulling && !driver && !confused && ((!step_x && !step_y) || human_subtile_offset_owned)
@@ -359,6 +381,53 @@
 		delay *= ROOT2_FAST
 	return now + delay
 
+// Whether a body could stand on T ahead, judged without calling Enter (trench
+// and other turfs sleep or have side effects there). Native collision still
+// decides every pulse; this only picks which way to slide.
+/mob/living/human/proc/human_subtile_slide_open(turf/T)
+	if (!T || T.density)
+		return FALSE
+	for (var/atom/movable/A in T)
+		if (A != src && A.density && !istype(A, /mob))
+			return FALSE
+	return TRUE
+
+// Graal-style sliding for a blocked free or held slide. Diagonals slide along
+// a wall on either axis. A straight move that clips a corner shifts sideways
+// toward the open tile ahead (a doorway), or to the nearer alignment when
+// it is within 12px of one.
+/mob/living/human/proc/human_subtile_slide_attempts(direction)
+	. = list()
+	if (direction & (direction - 1))
+		. += list(list((direction & EAST) ? 2 : -2, 0))
+		. += list(list(0, (direction & NORTH) ? 2 : -2))
+		return .
+	var/vertical = direction & (NORTH | SOUTH)
+	var/offset = vertical ? step_x : step_y
+	if (!offset || !isturf(loc))
+		return .
+	// With an offset along the travel axis, east/north fronts sit a tile further on.
+	var/turf/base = loc
+	if (((direction & EAST) && step_x) || ((direction & NORTH) && step_y))
+		base = get_step(base, direction)
+	var/turf/near_side = get_step(base, direction)
+	var/turf/far_side = near_side ? get_step(near_side, vertical ? EAST : NORTH) : null
+	var/open_near = human_subtile_slide_open(near_side)
+	var/open_far = human_subtile_slide_open(far_side)
+	var/shift = 0
+	if (open_near && !open_far)
+		shift = -min(2, offset)
+	else if (open_far && !open_near)
+		shift = min(2, 32 - offset)
+	else if (open_near && open_far)
+		if (offset <= 12)
+			shift = -min(2, offset)
+		else if (offset >= 20)
+			shift = min(2, 32 - offset)
+	if (shift)
+		. += list(vertical ? list(shift, 0) : list(0, shift))
+	return .
+
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
 	var/remaining_x = (direction & EAST) ? 32 - step_x : (direction & WEST) ? (step_x ? step_x : 32) : 0
@@ -478,30 +547,11 @@
 			sleep(due - world.time)
 		if (!valid(direction))
 			break
-		if (fine_step == FINE_STEP_HELD && (!actor.movement_fine || actor.held_movement_direction() != direction))
+		if (fine_step == FINE_STEP_HELD && actor.held_movement_direction() != direction)
 			actor.human_subtile_fine_released_at = world.time
 			break
-		var/dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
-		var/dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
-		var/tx = actor.x
-		var/ty = actor.y
-		var/sx = actor.step_x + dx
-		var/sy = actor.step_y + dy
-		if (sx < 0)
-			tx--
-			sx += 32
-		if (sx >= 32)
-			tx++
-			sx -= 32
-		if (sy < 0)
-			ty--
-			sy += 32
-		if (sy >= 32)
-			ty++
-			sy -= 32
-		var/turf/destination = locate(tx, ty, actor.z)
-		if (!destination)
-			break
+		var/main_dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
+		var/main_dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
 		// Admission rules for grace walls and hanging apply to every fresh pulse.
 		var/grace_blocked = FALSE
 		var/list/front_directions = list(direction)
@@ -520,38 +570,81 @@
 				hanging = TRUE
 		if (hanging)
 			break
-		var/datum/human_subtile_pulse/P = new
-		attempted = TRUE
-		P.actor = actor
-		P.destination = destination
-		P.direction = direction
-		P.sx = sx
-		P.sy = sy
-		P.before = expected
-		actor.human_subtile_pulse = P
-		// Actual human -> living -> movable chain. The third living flag is intact.
-		actor.Move(destination, direction)
-		if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)
+		// Free and held slides try the pulse straight on first. When it is blocked
+		// outright they slide: a diagonal runs along the wall on whichever axis is
+		// free, and a straight move slips sideways around a corner into an opening.
+		var/list/attempts = list(list(main_dx, main_dy))
+		if (fine_step == FINE_STEP_HELD)
+			attempts += actor.human_subtile_slide_attempts(direction)
+		var/moved_pulse = FALSE
+		var/stop = FALSE
+		for (var/list/attempt in attempts)
+			var/dx = attempt[1]
+			var/dy = attempt[2]
+			var/tx = actor.x
+			var/ty = actor.y
+			var/sx = actor.step_x + dx
+			var/sy = actor.step_y + dy
+			if (sx < 0)
+				tx--
+				sx += 32
+			if (sx >= 32)
+				tx++
+				sx -= 32
+			if (sy < 0)
+				ty--
+				sy += 32
+			if (sy >= 32)
+				ty++
+				sy -= 32
+			var/turf/destination = locate(tx, ty, actor.z)
+			if (!destination)
+				stop = TRUE
+				break
+			var/datum/human_subtile_pulse/P = new
+			attempted = TRUE
+			P.actor = actor
+			P.destination = destination
+			P.direction = direction
+			P.sx = sx
+			P.sy = sy
+			P.before = expected
+			actor.human_subtile_pulse = P
+			// Actual human -> living -> movable chain. The third living flag is intact.
+			actor.Move(destination, direction)
+			if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)
+				stop = TRUE
+				break
+			actor.human_subtile_pulse = null
+			if (paid_posture ? !actor.human_subtile_crawl_authority(owner) : (legacy_posture ? !actor.human_subtile_posture_authority(owner) : !actor.human_subtile_authority(owner)))
+				stop = TRUE
+				break
+			var/list/after = actor.human_subtile_snapshot()
+			if (after["z"] != expected["z"])
+				cancelled = TRUE
+				stop = TRUE
+				break
+			var/actual_x = (after["x"] - expected["x"]) * 32 + after["sx"] - expected["sx"]
+			var/actual_y = (after["y"] - expected["y"]) * 32 + after["sy"] - expected["sy"]
+			observations += list(list("at" = world.time, "due" = due, "engine_return" = P.engine_return, "dx" = actual_x, "dy" = actual_y, "x" = actor.x, "y" = actor.y, "sx" = actor.step_x, "sy" = actor.step_y))
+			expected = after
+			if (actor.human_subtile_save_request)
+				actor.human_subtile_save_request.acknowledge(actor, src)
+			if (total_distance > 0)
+				actor.human_subtile_offset_owned = TRUE
+			if (P.invalid || ((actual_x || actual_y) && (actual_x != dx || actual_y != dy)))
+				stop = TRUE
+				break
+			if (actual_x == dx && actual_y == dy)
+				moved_pulse = TRUE
+				// A sideways slide does not shorten the step's own travel.
+				if (direction & (EAST | WEST))
+					remaining_x -= abs(actual_x)
+				if (direction & (NORTH | SOUTH))
+					remaining_y -= abs(actual_y)
+				break
+		if (stop || !moved_pulse)
 			break
-		actor.human_subtile_pulse = null
-		if (paid_posture ? !actor.human_subtile_crawl_authority(owner) : (legacy_posture ? !actor.human_subtile_posture_authority(owner) : !actor.human_subtile_authority(owner)))
-			break
-		var/list/after = actor.human_subtile_snapshot()
-		if (after["z"] != expected["z"])
-			cancelled = TRUE
-			break
-		var/actual_x = (after["x"] - expected["x"]) * 32 + after["sx"] - expected["sx"]
-		var/actual_y = (after["y"] - expected["y"]) * 32 + after["sy"] - expected["sy"]
-		observations += list(list("at" = world.time, "due" = due, "engine_return" = P.engine_return, "dx" = actual_x, "dy" = actual_y, "x" = actor.x, "y" = actor.y, "sx" = actor.step_x, "sy" = actor.step_y))
-		expected = after
-		if (actor.human_subtile_save_request)
-			actor.human_subtile_save_request.acknowledge(actor, src)
-		if (total_distance > 0)
-			actor.human_subtile_offset_owned = TRUE
-		if (P.invalid || actual_x != dx || actual_y != dy)
-			break
-		remaining_x -= abs(actual_x)
-		remaining_y -= abs(actual_y)
 	wait_paid_interval()
 	return total_distance > 0
 

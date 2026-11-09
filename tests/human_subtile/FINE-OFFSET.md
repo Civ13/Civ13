@@ -1,4 +1,19 @@
-# Modifier-held precision movement
+# Free movement and modifier-held precision movement
+
+Plain direction keys slide freely by default: `startmoving*` and the
+movementMachine pass `FINE_STEP_FREE`, which `client.Move` turns into a held
+slide (below) when the body can slide (`human_subtile_fine_ready` and no trench
+edge ahead, `human_subtile_trench_near`), and into an ordinary tile step
+otherwise (pulling, driving, confusion, trench edges, smooth movement off,
+non-humans). The body stops where the key is released, with no tile snapping.
+
+A blocked slide tries Graal-style sliding before it stops
+(`human_subtile_slide_attempts`): a diagonal runs along a wall on whichever axis
+is free, and a straight move that clips a corner shifts sideways 2px per pulse
+toward the open tile ahead (a doorway), or toward the nearer alignment when it
+is within 12px and both tiles look open. Native collision judges every attempt;
+a sideways shift does not count as travel along the step.
+
 
 Hold Alt and press an arrow (either macro mode) or WASD (hotkey mode) to move
 by offset instead of by tile. Alt+numpad diagonal direction keys move diagonally.
