@@ -185,8 +185,9 @@
 	if (istype(A, /obj/structure/multiz/ladder/ww2)) // stop looking down a ladder 
 		var/mob/living/human/H = src
 		if (istype(H) && H.laddervision)
+			var/ladder_direction = H.laddervision_direction()
 			H.update_laddervision(null)
-			H.visible_message("<span class = 'notice'>[H] stops looking [H.laddervision_direction()] the ladder.</span>")
+			H.visible_message("<span class = 'notice'>[H] stops looking [ladder_direction] the ladder.</span>")
 			return
 	if (restrained())
 		blackout_click_trace("restrained")

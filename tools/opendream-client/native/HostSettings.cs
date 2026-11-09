@@ -106,6 +106,68 @@ public static class HostSettings {
         return string.Join("\n", result) + "\n";
     }
 
+    // The hub name: SERVER_NAME is the bold title of the world's BYOND hub entry and its window title
+    // (code/world.dm update_status, customserver_name()); each world reads it once at startup.
+    public const string ServerName = "SERVER_NAME";
+    public const string DefaultServerName = "Civilization 13";
+    public const int ServerNameLength = 60;
+
+    // Why the name cannot be the hub name, or null. Empty means "no line here" (follow the shared or
+    // repository value). Quotes would break the window-title winset and the config line.
+    public static string? ServerNameProblem(string name) {
+        var text = name.Trim();
+        if (text.Length == 0) return null;
+        if (text.Length > ServerNameLength) return $"Keep the name to {ServerNameLength} characters.";
+        if (text.Any(char.IsControl)) return "The name cannot hold control characters.";
+        if (text.IndexOfAny(['\'', '"', '\\', '<', '>']) >= 0) return "Leave out quotes, backslashes and < > in the name.";
+        if (text.StartsWith('#')) return "The name cannot start with #.";
+        return null;
+    }
+
+    // The value the config text gives a setting, as the game reads it: the last active "KEY value"
+    // line wins; null when no active line names it. "#KEY" lines and comments are skipped.
+    public static string? SettingValue(string text, string name) {
+        string? found = null;
+        foreach (var raw in text.Replace("\r\n", "\n").Split('\n')) {
+            var line = raw.Trim();
+            if (line.Length == 0 || line.StartsWith('#')) continue;
+            var parts = line.Split(' ', 2);
+            if (string.Equals(parts[0], name, StringComparison.OrdinalIgnoreCase)) found = parts.Length > 1 ? parts[1].Trim() : "";
+        }
+        return found;
+    }
+
+    // config.local.txt text with every line for the setting ("KEY value" or "#KEY") removed, so it
+    // follows the shared overlay or the repository again.
+    public static string WithoutSetting(string text, string name) {
+        if (!SettingName.IsMatch(name)) throw new InvalidDataException("Not a setting: " + name);
+        var kept = text.Replace("\r\n", "\n").Split('\n').Where(raw => {
+            var line = raw.Trim();
+            if (line.StartsWith('#') && line.Contains(' ')) return true; // a comment
+            return !string.Equals(line.TrimStart('#').Split(' ', 2)[0], name, StringComparison.OrdinalIgnoreCase);
+        }).ToList();
+        while (kept.Count > 0 && kept[^1].Length == 0) kept.RemoveAt(kept.Count - 1);
+        return kept.Count == 0 ? "" : string.Join("\n", kept) + "\n";
+    }
+
+    // config.local.txt text with the hub name set, or its line removed when name is empty.
+    public static string WithServerName(string text, string name) {
+        if (ServerNameProblem(name) is { } problem) throw new InvalidDataException(problem);
+        return name.Trim().Length == 0 ? WithoutSetting(text, ServerName) : WithSetting(text, ServerName, name);
+    }
+
+    // The hub name a region's world uses now: the SERVER_NAME in the region's merged config/config.txt
+    // (written on its last update or config apply), or null when the region folder has none yet.
+    public static string? RegionServerName(HostGroup group, string region) {
+        if (!RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
+        using var document = JsonDocument.Parse(File.ReadAllText(group.Config));
+        if (document.RootElement.ValueKind != JsonValueKind.Object || !document.RootElement.TryGetProperty("root", out var rootJson)
+            || rootJson.ValueKind != JsonValueKind.String || rootJson.GetString() is not { Length: > 0 } root) return null;
+        var path = Path.Combine(Path.GetFullPath(root), region, "config", "config.txt");
+        if (!File.Exists(path)) return null;
+        return SettingValue(File.ReadAllText(path), ServerName) is { Length: > 0 } name ? name : DefaultServerName;
+    }
+
     // The editor never shows the token: its line reads "BUG_REPORT_GITHUB_TOKEN (hidden)".
     public const string Hidden = "(hidden)";
 

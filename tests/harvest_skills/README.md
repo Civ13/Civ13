@@ -16,3 +16,22 @@ python3 tests/ecology_spawning/run_linux.py . tests/harvest_skills/probe.dm
 
 Expect `"failures": 0` and no runtime error. The probe does not exercise
 clicks, waits or connected clients.
+
+## Stacked harvest regression
+
+The probe also harvests beside existing 1-, 49- and 50-unit hemp piles. It checks
+that soil and farming bonuses survive automatic merging, and larger fixture
+yields split without losing units or exceeding stack capacity. Unmodified
+master 2143aad fails four of these assertions with zero runtime errors.
+
+Windows, using the existing isolated runner and installed pinned BYOND:
+
+```powershell
+& tests/resource_extraction/run.ps1 -ByondBin 'C:\Program Files (x86)\BYOND\bin' -Probe tests/harvest_skills/probe.dm
+```
+
+`python tests/harvest_skills/test_stacked_crops.py` executes the complete stacked
+yield branch offline with fake constructor/merge boundaries over 128 input
+combinations. It is registered as `stacked_crop_yields` in the offline CI
+registry. The existing native probe is an explicit local check; ordinary PR CI
+does not run it. Neither check establishes real-client or save/load behavior.

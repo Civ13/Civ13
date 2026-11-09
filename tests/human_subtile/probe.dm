@@ -126,6 +126,12 @@ var/human_subtile_fixture_phase = "initializing"
 	map = new /obj/map_metadata/subtile_fixture
 	return TRUE
 
+var/human_subtile_fixture_deer_watched = FALSE
+/mob/living/simple_animal/deer/subtile_fixture_watched/Life()
+	return
+/mob/living/simple_animal/deer/subtile_fixture_watched/npc_subtile_watched()
+	return human_subtile_fixture_deer_watched
+
 /proc/human_subtile_fixture_actor(tx, ty)
 	var/mob/living/human/subtile_fixture/H = new(locate(tx, ty, 1))
 	H.canmove = TRUE
@@ -388,25 +394,41 @@ var/human_subtile_fixture_phase = "initializing"
 	D2.movement_eastwest = null
 	for (var/turf/WS in slide_wall)
 		WS.density = FALSE
-	// Free movement pulling: the pulled object follows the tiles the body's
-	// centre walked through, so it trails round a turn and never cuts sideways.
-	human_subtile_fixture_phase = "headless pull follow"
+	// Free movement pulling works like a rope: the pulled thing slides in
+	// pixels after the body, snags on walls, and the pull ends when too far.
+	human_subtile_fixture_phase = "headless pull rope"
 	var/mob/living/human/subtile_fixture/PF = human_subtile_fixture_actor(16, 6)
 	PF.set_human_subtile(TRUE)
 	var/obj/structure/pull_crate = new(locate(15, 6, 1))
 	pull_crate.anchored = FALSE
+	pull_crate.density = TRUE
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1), "pull_waits_while_touching")
-	PF.loc = locate(16, 7, 1)
-	human_subtile_fixture_place(PF, 0, 2)
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1) && !pull_crate.step_x, "pull_waits_while_touching")
+	human_subtile_fixture_place(PF, 8, 0)
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_follows_round_a_turn")
-	human_subtile_fixture_place(PF, 0, 16)
-	PF.pulling = pull_crate
-	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_never_steps_sideways")
+	var/rope_first = PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.step_x == 4 && !pull_crate.step_y
+	PF.human_subtile_pull_follow()
+	human_subtile_fixture_assert(rope_first && pull_crate.x == 15 && pull_crate.step_x == 6 && !PF.human_subtile_pull_follow() && PF.pulling == pull_crate, "pull_rope_trails_in_pixels")
+	// Moving up past it (here: it sits half a tile lower), the rope tugs it along at once rather than waiting
+	// until the body has cleared it and then catching up a whole tile.
+	pull_crate.Move(locate(15, 5, 1), SOUTH, 6, 16)
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.y == 5 && pull_crate.step_x == 6 && pull_crate.step_y == 18, "pull_rope_tugs_sideways")
+	// Pulling straight into a wall snags: no free axis or corner to slide round.
+	var/turf/rope_wall = locate(17, 10, 1)
+	rope_wall.density = TRUE
+	var/mob/living/human/subtile_fixture/PS = human_subtile_fixture_actor(17, 11)
+	PS.set_human_subtile(TRUE)
+	var/obj/structure/snag_crate = new(locate(17, 9, 1))
+	snag_crate.anchored = FALSE
+	snag_crate.density = TRUE
+	PS.pulling = snag_crate
+	snag_crate.pulledby = PS
+	var/snagged = !PS.human_subtile_pull_follow() && snag_crate.loc == locate(17, 9, 1) && !snag_crate.step_x && !snag_crate.step_y
+	human_subtile_fixture_assert(snagged, "pull_snags_on_walls")
+	human_subtile_fixture_assert(!PS.pulling && !snag_crate.pulledby, "pull_breaks_when_too_far")
+	rope_wall.density = FALSE
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
@@ -522,6 +544,18 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(RD.x == 16 && RD.step_x == 6 && !RD.step_y && mount.loc == RD.loc && mount.step_x == 6 && !mount.step_y, "riding_moves_freely")
 	mount.before_save()
 	human_subtile_fixture_assert(isnull(mount.npc_subtile_position), "ridden_mount_saves_tile_only")
+	// Animals move freely only while a player can see them, in 8px pulses.
+	var/mob/living/simple_animal/deer/subtile_fixture_watched/WD = new(locate(2, 14, 1))
+	WD.stop_automated_movement = TRUE
+	human_subtile_fixture_deer_watched = TRUE
+	var/step_ok = WD.ai_step(get_step(WD, EAST), 4)
+	var/first_offset = WD.step_x
+	sleep(6)
+	human_subtile_fixture_assert(step_ok && first_offset == 8 && WD.x == 3 && !WD.step_x && WD.npc_subtile_auto_owned && WD.npc_subtile_enabled && WD.persistence_runtime_var("npc_subtile_enabled"), "watched_animal_moves_freely")
+	human_subtile_fixture_deer_watched = FALSE
+	WD.npc_subtile_watch_checked = -INFINITY
+	WD.ai_step(get_step(WD, EAST), 4)
+	human_subtile_fixture_assert(WD.x == 4 && !WD.step_x && !WD.npc_subtile_enabled && !WD.npc_subtile_auto_owned && !WD.npc_subtile_transaction, "unwatched_animal_takes_tile_steps")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

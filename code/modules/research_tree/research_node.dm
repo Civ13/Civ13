@@ -873,6 +873,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fluid_intake" = "factories",
 		"/obj/structure/water_tap" = "factories",
 		"/obj/structure/shower/piped" = "factories",
+		"/obj/machinery/washing_machine/piped" = "factories",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/hangou" = "factories",
 		"/obj/item/weapon/storage/ww2" = "factories",
 		"/obj/structure/closet" = "factories",

@@ -33,6 +33,7 @@
 	equiptimer = 25
 	load_delay = 60
 	accuracy = 1
+	can_lob = FALSE
 
 /obj/item/weapon/gun/projectile/bow/crossbow/New()
 	..()

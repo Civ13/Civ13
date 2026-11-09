@@ -802,6 +802,11 @@ SUITES = {
     # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
     'crop_stage_step': {'files': ('tests/crop_stage_step/test_source.py',), 'paths': (
         'tests/crop_stage_step/', 'tests/plant_lifecycle/')},
+    # Complete stacked-yield branch with fake construction/merge boundaries.
+    # Keep farming.dm unmapped so its conservative all-suite fallback remains.
+    'stacked_crop_yields': {'files': ('tests/harvest_skills/test_stacked_crops.py',),
+        'paths': ('tests/harvest_skills/',),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
         'code/processes/_process.dm', 'code/processes/___defines.dm',

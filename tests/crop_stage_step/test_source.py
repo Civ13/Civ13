@@ -221,7 +221,7 @@ class CropStageStep(unittest.TestCase):
         restored = without.replace(changed_growth, BASE_GROWTH.rstrip(), 1)
         payload = restored.encode('utf-8')
         blob = hashlib.sha1(b'blob ' + str(len(payload)).encode() + b'\0' + payload).hexdigest()
-        self.assertEqual(blob, PIN['baseline_farming_blob'])
+        self.assertEqual(blob, PIN['reviewed_farming_projection_blob'])
 
     def test_sampling_and_wait_prefix_are_identical(self):
         self.assertEqual(callback(BASE_GROWTH)[0], callback(CURRENT_GROWTH)[0])

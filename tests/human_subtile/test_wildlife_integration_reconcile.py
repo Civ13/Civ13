@@ -29,7 +29,7 @@ class IntegratedOwnership(unittest.TestCase):
   self.assertNotEqual(compile_source(mutant)(None,4),4)
  def test_cardinal_diagonal_and_blocking_use_authorized_pulses(self):
   advance=body(self.npc,'/datum/npc_subtile_transaction/proc/advance()\n','/datum/npc_subtile_transaction/proc/perform_rest(')
-  for token in ('min(2, remaining_x)','min(2, remaining_y)','direction & (direction - 1)',
+  for token in ('min(pulse_px, remaining_x)','min(pulse_px, remaining_y)','direction & (direction - 1)',
                 'fronts += direction & (NORTH | SOUTH)','fronts += direction & (EAST | WEST)',
                 'map.check_caribbean_block(actor, front)','actor.Move(destination, direction)',
                 'P.armed || actual_x != dx || actual_y != dy','failed_pulse = TRUE'):

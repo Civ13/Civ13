@@ -155,7 +155,10 @@ default behaviour is:
 			if (!now_pushing)
 				now_pushing = TRUE
 
-				if (!AM.anchored)
+				// Walking back into your own pulled thing under free movement
+				// stops against it rather than shoving it a whole tile.
+				var/own_rope = AM == pulling && (AM.step_x || AM.step_y || step_x || step_y)
+				if (!AM.anchored && !own_rope)
 					var/t = get_dir(src, AM)
 					if (istype(AM, /obj/structure/window))
 						for (var/obj/structure/window/win in get_step(AM,t))
@@ -237,8 +240,16 @@ default behaviour is:
 			return TRUE
 	return ..()
 
+// Free-movement pulls: the pulled mob keeps the offset it was dragged to.
+/mob/living/proc/pulled_offset_claim()
+	return
+
 /mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (riding_pair(mover))
+		return TRUE
+	// A pulled thing may trail into the puller's tile; native bounds still
+	// keep it from overlapping the puller (see human_subtile_pull_follow).
+	if (mover && mover == pulling && (mover.step_x || mover.step_y || step_x || step_y))
 		return TRUE
 	if (isliving(mover))
 		var/mob/living/L = mover
