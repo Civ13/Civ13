@@ -30,6 +30,7 @@ on:
       - Isolated DreamSeeker feasibility
       - Map review
       - MCP protocol checks
+      - Native runner sweep
       - Native supervisor consumer contracts
       - Native Windows launcher
       - Nomads durable profile roundtrips

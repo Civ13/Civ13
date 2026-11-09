@@ -30,9 +30,34 @@ alone. Code: `code/modules/persistence/party_freight.dm`. Test:
 
 `/obj/structure/safehouse_depot` (20 soft wood, Carts research) is built in a
 base. Every depot in a land opens onto the same safe house for each party: a
-party keeps up to 20 shipments and recalls them at any depot. Nobody else sees
+party keeps up to 20 shipments (more with a stash, below) and recalls them at any depot. Nobody else sees
 or takes them. Depots cannot be taken apart, burned or blown up; an admin
 deleting one is told how many shipments went with it and they are logged.
+
+### Rooms and work
+
+"Safe house rooms and work" on a depot (`safehouse_upgrades.dm`) builds the
+party's rooms, three levels each, from supplies in the player's hand and in
+closed crates next to the depot:
+
+| Room | Level 1 | Level 2 | Level 3 | Gives |
+| --- | --- | --- | --- | --- |
+| Stash | 30 wood | 30 wood, 20 iron | 10 iron, 20 steel | 10 more shipments a level (30/40/50) |
+| Workshop | 20 wood, 20 stone | 20 iron, a hammer | 20 steel, a wrench | smelt iron; make steel; cast bullets, draw rifle casings |
+| Infirmary | 20 wood, 10 cloth | 20 cloth, 10 glass | 10 steel, 20 glass | bandages or gauze; splints; trauma kits |
+| Kitchen | 20 wood, 20 stone | 10 iron, 20 stone | 10 steel, 10 glass | dried meat; hardtack; cured ham |
+| Still | 20 wood, 10 copper | 20 copper, 10 glass | 10 steel, 20 glass | beer; vodka; whiskey |
+| Contacts desk | 10 wood, 100 silver coins | 50 gold coins | 150 gold coins | 5% a level better specialist trader prices, both ways |
+
+Work takes its inputs at once and is ready after a set number of real-time
+minutes (20 to 120), so it runs while everyone is offline; each room does one
+job at a time, and the goods are collected at any depot of the land. Work
+follows the age and the player's research like the traders' stock.
+
+Each party's rooms and jobs are one JSON record in a depot's saved `rooms`
+field. Job times are text minutes since 2000, since a JSON number that large
+loses digits. A deleted depot hands its records to another depot of the land;
+a faction rename carries them.
 
 ## Party trains
 

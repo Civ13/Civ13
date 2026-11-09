@@ -875,6 +875,14 @@ jobs:
           /usr/bin/python3 -B -m unittest discover -s tests/track_laying -v
           /usr/bin/python3 tests/track_laying/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/track-laying"
 
+      - name: Verify walkable train platform cars
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/train_platforms')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/train_platforms -v
+          /usr/bin/python3 tests/train_platforms/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/train-platforms"
+
       - name: Verify practice rooms level, steps and save removal
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/practice_rooms')
         shell: bash

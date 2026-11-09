@@ -461,7 +461,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
-		// --- assembly_line (19) ---
+		// --- assembly_line (22) ---
+		"/obj/structure/train_car_kit/dining" = "assembly_line",
+		"/obj/structure/train_car_kit/sleeper" = "assembly_line",
+		"/obj/structure/train_car_kit/storage" = "assembly_line",
 		"/obj/item/camera/coldwar" = "assembly_line",
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
@@ -741,6 +744,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/freight_dispatcher" = "orbital_flight",
 		"/obj/structure/zero_g_lab" = "orbital_flight",
 		"/obj/structure/zero_g_lab/refinery" = "orbital_flight",
+		"/obj/structure/orbital_battery" = "orbital_flight",
+		"/obj/item/orbital_shell" = "orbital_flight",
+		"/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/rangefinder/target_designator" = "orbital_flight",
 		"/obj/item/hull_plate" = "orbital_flight",
 		"/obj/structure/point_defence" = "orbital_flight",
 		"/obj/structure/crewed_lander/satellite_launcher" = "orbital_flight",
@@ -1533,7 +1539,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (7) ---
+		// --- rail_steam (9) ---
+		"/obj/structure/train_car_kit" = "rail_steam",
+		"/obj/structure/train_car_kit/coach" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
 		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",
