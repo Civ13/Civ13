@@ -80,6 +80,8 @@ internal sealed partial class LauncherWindow : Form {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            // Start-menu entry so Windows search (and computer use) can open the portable launcher.
+            if (StartMenuShortcut.Ensure() is { } shortcutProblem) Console.WriteLine(shortcutProblem);
             using var window = new LauncherWindow(root, version);
             Application.ThreadException += (_, e) => window.ReportError("Unexpected error", e.Exception);
             Application.Run(window);

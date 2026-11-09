@@ -11,6 +11,12 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-09: Start-menu entry -->
+Val asked (2026-11-09) that agents can open the launcher later. The window keeps a per-user Start-menu
+entry "Civ13 Launcher" (StartMenuShortcut.cs) pointing at the running Civ13.exe, rewritten only when
+missing or pointing elsewhere; temp-folder copies and non-Civ13.exe hosts are skipped. Computer use
+resolves apps from the Start menu, so a portable exe without an entry cannot be opened by name.
+
 <!-- 2026-11-07: One region row -->
 The Host server tab's One region row passes `--region` to shard_group.py for every group action,
 including freeze, thaw, stage and setup (GroupActions). Setup is offered per region only; adopt,
