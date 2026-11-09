@@ -38,6 +38,10 @@ var/global/list/probe_failures = list()
 	var/age8_done = FALSE
 	var/age9_done = FALSE
 
+// Books are outside this world-research-only fixture.
+/obj/map_metadata/proc/produce_first_node_book(faction, node_id)
+	return
+
 /proc/check(condition, label)
 	if (!condition)
 		probe_failures += label

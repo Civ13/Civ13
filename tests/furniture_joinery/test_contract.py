@@ -74,6 +74,7 @@ class Fixture:
                  get_turf=lambda x:x.site, text2path=lambda x:x, locate=lambda x:x,
                  istype=lambda x,p:x.type==p or x.type.startswith(p+'/'), get_recipe_node_req=lambda x:'basic_furniture',
                  map=NS(is_node_done=lambda f,n:self.researched),
+                 crafting_node_allowed=lambda actor,node: bool(actor and node and self.researched),
                  furniture_joinery_equipped=lambda a,i:i is not None and not i.deleted and i.loc is a and i.equipped and (i.health is None or i.health>0) if hasattr(i,'health') else i is not None and not i.deleted and i.loc is a and i.equipped,
                  furniture_joinery_available=lambda a,i:i is not None and not i.deleted and ((i.loc is a and i.equipped and (i.health is None or i.health>0)) or i.loc is self.site),
                  furniture_joinery_tool=lambda i,r,m:i is not None and not i.deleted)
