@@ -146,6 +146,7 @@
 				break
 		if (!head) break
 		var/result_type = fletched_type(head, shaft.type)
+		if (!crafting_recipe_allowed(H, "[result_type]")) break
 		if (istype(head, /obj/item/stack))
 			var/obj/item/stack/S = head
 			if (!S.use(1)) break
@@ -162,6 +163,8 @@
 	if (busy || !can_use(H)) return 0
 	var/count = ready_count()
 	if (count <= 0) return 0
+	var/list/heads = stored_heads()
+	if (!heads.len || !crafting_recipe_allowed(H, "[fletched_type(heads[1], shaft_type())]")) return 0
 	var/choice = selected_tool
 	var/turf/site = loc
 	var/datum/epoch = persistence_admission_identity
@@ -273,6 +276,10 @@
 		return "You don't know how to use this."
 	return null
 
+/obj/structure/component_workbench/toolsmith/proc/recipe_research_allowed(mob/living/human/H, choice)
+	var/list/R = toolsmith_recipes()[choice]
+	return R && crafting_recipe_allowed(H, "[R["result"]]")
+
 /obj/structure/component_workbench/toolsmith/proc/recipe_available(choice)
 	var/list/R = toolsmith_recipes()[choice]
 	return R && recipe_age_allowed(R["max_age"])
@@ -304,7 +311,7 @@
 
 // Pays for and makes one tool. No sleeps from validation to output.
 /obj/structure/component_workbench/toolsmith/proc/commit_tool(mob/living/human/H, choice, turf/site, datum/epoch, metal_kind)
-	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(choice) || smith_refusal(H)) return null
+	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(choice) || !recipe_research_allowed(H, choice) || smith_refusal(H)) return null
 	if (ready_count(choice) < 1) return null
 	var/list/R = toolsmith_recipes()[choice]
 	var/obj/item/stack/material/metal = stored_metal()
@@ -317,7 +324,7 @@
 	return new result_type(get_turf(src), metal_kind)
 
 /obj/structure/component_workbench/toolsmith/assemble(mob/living/human/H)
-	if (busy || !can_use(H) || !recipe_available(selected_tool)) return 0
+	if (busy || !can_use(H) || !recipe_available(selected_tool) || !recipe_research_allowed(H, selected_tool)) return 0
 	var/refusal = smith_refusal(H)
 	if (refusal)
 		to_chat(H, refusal)
@@ -403,7 +410,7 @@
 /obj/structure/component_workbench/toolsmith/foundry/smith_refusal(mob/living/human/H)
 	if (!map || map.ordinal_age < FOUNDRY_MIN_AGE)
 		return "Casting tools needs the industrial age."
-	if (!map.is_node_done(H.civilization, "machined_tools"))
+	if (!crafting_node_allowed(H, "machined_tools"))
 		return "Casting tools needs Machined Tools research."
 	return null
 
@@ -430,7 +437,7 @@
 
 // Pours and makes one tool. No sleeps from validation to output.
 /obj/structure/component_workbench/toolsmith/foundry/commit_tool(mob/living/human/H, choice, turf/site, datum/epoch, metal_kind)
-	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(choice) || smith_refusal(H)) return null
+	if (!busy || cancelled || assembler != H || !can_use(H) || loc != site || selected_tool != choice || epoch != persistence_admission_identity || !recipe_available(choice) || !recipe_research_allowed(H, choice) || smith_refusal(H)) return null
 	if (ready_count(choice) < 1) return null
 	var/list/R = toolsmith_recipes()[choice]
 	var/obj/item/weapon/clay/mold/pot = stored_metal()

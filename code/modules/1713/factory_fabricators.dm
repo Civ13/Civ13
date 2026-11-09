@@ -231,6 +231,9 @@ var/global/list/factory_active_fabricators = list()
 	var/choice = selected_label ? labels[selected_label] : null
 	if (!choice || QDELETED(src) || !H.Adjacent(src) || H.incapacitated())
 		return
+	if (choice != "(clear recipe)")
+		var/datum/factory_recipe/R = factory_get_recipes()[choice]
+		if (!R || R.tier > tier || !crafting_node_allowed(H, R.node)) return
 	set_recipe(choice == "(clear recipe)" ? null : choice)
 	to_chat(H, SPAN_NOTICE(recipe_name ? "\The [src] will now make [recipe_name]." : "You clear \the [src]'s recipe."))
 

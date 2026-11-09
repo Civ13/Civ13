@@ -96,6 +96,7 @@
 // No sleeping operations in this commit. Exact references must still be staged.
 /obj/structure/component_workbench/proc/finish_assembly(mob/living/human/H, obj/item/weapon/material/part/P, obj/item/weapon/material/handle/B, choice)
 	if (!busy || cancelled || assembler != H || !can_use(H) || selected_tool != choice || !valid_component(P) || !valid_component(B) || P.loc != src || B.loc != src || P.result != tool_recipes()[choice] || !accepts_head(P)) return
+	if (!crafting_recipe_allowed(H, "[P.result]")) return
 	var/obj/item/weapon/material/M = new P.result(get_turf(src), P.material.name)
 	M.record_tool_components(P, B)
 	qdel(P)
@@ -107,7 +108,7 @@
 	if (busy || !can_use(H)) return
 	var/obj/item/weapon/material/part/P = find_head()
 	var/obj/item/weapon/material/handle/B = find_handle()
-	if (!P || !B || contents.len != 2) return
+	if (!P || !B || contents.len != 2 || !crafting_recipe_allowed(H, "[P.result]")) return
 	var/choice = selected_tool
 	busy = TRUE
 	cancelled = FALSE

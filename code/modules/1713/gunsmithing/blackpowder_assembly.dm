@@ -2,7 +2,7 @@
 // Parts sprites: mohamed/mm2hn (@not_an_egyptian_spy). See docs/flintlock-assembly.md.
 
 /proc/blackpowder_crafting_allowed(mob/living/human/H)
-	return H && map && map.ordinal_age >= 3 && map.ordinal_age <= 4 && map.is_node_done(H.civilization, "gunsmithing")
+	return H && map && map.ordinal_age >= 3 && map.ordinal_age <= 4 && crafting_node_allowed(H, "gunsmithing")
 
 /obj/item/blackpowder_part
 	icon = 'icons/obj/guns/flintlocks.dmi'
