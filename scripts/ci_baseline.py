@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'navigation_tablet': {'files': ('tests/navigation_tablet/test_alt_click.py',),
+        'paths': ('tests/navigation_tablet/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'code/_onclick/click.dm')},
     'cane_stance': {'files': ('tests/cane_stance/test_cane_stance.py',),
         'paths': ('tests/cane_stance/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_organs.dm',
