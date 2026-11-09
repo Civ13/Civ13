@@ -91,10 +91,20 @@
 	state = 5
 	update_icon()
 	sleep(200)
+	if (QDELETED(src))
+		return
+	complete_wash()
+
+// A finished cycle cleans everything still inside, like washing it at a sink.
+/obj/machinery/washing_machine/proc/complete_wash()
 	for(var/atom/A in washing)
+		if (QDELETED(A) || A.loc != src)
+			washing -= A
+			continue
 		A.clean_blood()
 	for(var/obj/item/clothing/C in washing)
 		C.dirtyness = -100
+		C.fleas = FALSE
 	state = 4
 	update_icon()
 
