@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'newspaper_reading': {'files': ('tests/newspaper_reading/test_reading.py',),
+        'paths': ('tests/newspaper_reading/',), 'shared_paths': (
+            'code/modules/1713/newspaper.dm', 'tests/save_movement/source_adapter.py')},
     'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
         'paths': ('tests/football_tackle/',), 'shared_paths': (
             'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
