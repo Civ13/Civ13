@@ -1393,6 +1393,7 @@
 #include "code\modules\space\orbit_defences.dm"
 #include "code\modules\space\orbit_lab.dm"
 #include "code\modules\space\orbit_refinery.dm"
+#include "code\modules\space\orbit_artillery.dm"
 #include "code\modules\space\orbit_network.dm"
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"

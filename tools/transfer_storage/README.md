@@ -206,6 +206,13 @@ it to Discord, so CivilizationBot sees it once; receiving regions show it
 tagged with the source region, unless OOC is globally muted there or the
 speaker holds an OOC ban in that region's ban list.
 
+Orbital strikes (`code/modules/space/orbit_artillery.dm`) ride a third ring.
+A station's battery posts one to `/strike/send` naming the region it fires
+on; the coordinator's radio pass carries it in the `strikes` list and hands it
+only to that region's `/radio/deliver`, and that world polls
+`/strike/inbox`. The target world decides whether the strike lands. Like a
+chat line, a strike in flight is lost if an agent restarts.
+
 ## Two-region pilot (phase 3)
 
 `tests/transfer_storage/pilot/run.py` runs two DreamDaemon regions built from
