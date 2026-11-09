@@ -653,15 +653,8 @@
 				var/mob/living/human/driving = M
 				if (driving.driver && driving.driver_vehicle)
 					return agent_drive_step(A, C, driving.driver_vehicle, d)
-			if (M.stat != CONSCIOUS || !M.canmove || M.restrained() || M.buckled)
-				agent_fail("cannot_move", "the character cannot move right now")
-			var/turf/old = get_turf(M)
-			M.Move(get_step(M, d), d)
-			var/moved = get_turf(M) != old
-			C.next_action = world.time + max(1, M.movement_delay())
-			detail = "[dir2text(d)] [moved ? "moved" : "blocked"] from [old.x],[old.y],[old.z]"
-			game_log("AGENT", "[A.name] moved [M] ([agent_ref(M)]) [detail]")
-			return list("moved" = moved ? TRUE : FALSE, "self" = character_state(C))
+			// The player's movement rules, timing and costs (agent_movement.dm).
+			return agent_walk_step(A, C, d, from_queue)
 		if ("face")
 			var/d = agent_dir(req["dir"])
 			M.set_dir(d)

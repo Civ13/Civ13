@@ -2680,5 +2680,50 @@ class StanceTests(unittest.TestCase):
         self.assertEqual(sorted(slots), sorted(autopilot.EQUIP_SLOTS))
 
 
+class MovementParityTests(unittest.TestCase):
+    """agent_movement.dm mirrors /client/Move; these are the client lines it copies."""
+
+    CLIENT_RULES = (
+        'if (map && map.check_caribbean_block(mob, mob.loc))',
+        'if (N.hanging == mob)',
+        'if (mob.prone && istype(n, /turf))',
+        'if (mob.lying && istype(n, /turf))',
+        'if (H.crouching)',
+        'if (mob.pinned.len)',
+        'move_delay += mob.get_run_delay() + standing_on_snow',
+        'move_delay += mob.get_walk_delay() + standing_on_snow',
+        'move_delay += mob.get_stealth_delay() + standing_on_snow',
+        'H.nutrition -= 0.005 * distance_fraction',
+        'H.nutrition -= 0.002 * distance_fraction',
+        'H.nutrition -= 0.004 * distance_fraction',
+        'H.nutrition -= 0.0015 * distance_fraction',
+        'move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)',
+        'terrain_climb_effects(H, mob_loc, n, distance_fraction)',
+        'if (mob.drowsyness > 0)\n\t\t\tmove_delay += 3',
+        'move_delay += 1.25',
+        'move_delay += 0.75',
+        't_movement_speed_multiplier *= 0.85',
+        't_movement_speed_multiplier *= 1.15',
+        't_movement_speed_multiplier *= 0.9',
+        'move_delay = 0.5',
+        'standing_on_snow = 1.75',
+        'standing_on_snow = rand(2,3)',
+    )
+
+    def test_client_rules_still_match(self):
+        client = (ROOT / "code/game/mob/mob_movement.dm").read_text(encoding="utf-8")
+        for rule in self.CLIENT_RULES:
+            self.assertIn(rule, client, "client movement changed: update agent_movement.dm to match, then this list")
+
+    def test_agent_move_uses_the_mirror(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn("return agent_walk_step(A, C, d, from_queue)", characters)
+        movement = dm_source("agent_movement.dm")
+        for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
+                       "terrain_climb_effects(H, old, n, 1)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
+                       "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015"):
+            self.assertIn(anchor, movement)
+
+
 if __name__ == "__main__":
     unittest.main()
