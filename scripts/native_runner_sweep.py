@@ -72,12 +72,18 @@ def run_one(runner, byond_bin, settings, scratch):
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
     try:
         result = subprocess.run(args, cwd=ROOT, capture_output=True, text=True, errors='replace',
-                                timeout=timeout, env=env)
+                                timeout=timeout, env=env, check=False)
         status = 'pass' if result.returncode == 0 else 'fail'
         output = result.stdout + result.stderr
     except subprocess.TimeoutExpired as error:
         status = 'timeout'
-        output = (error.stdout or '') if isinstance(error.stdout, str) else ''
+        # The partial output may be bytes even in text mode; keep both streams for the report.
+        parts = []
+        for stream in (error.stdout, error.stderr):
+            if isinstance(stream, bytes):
+                stream = stream.decode('utf-8', errors='replace')
+            parts.append(stream or '')
+        output = ''.join(parts)
     return {'runner': runner, 'status': status, 'seconds': round(time.monotonic() - started, 1),
             'tail': output[-TAIL:]}
 
