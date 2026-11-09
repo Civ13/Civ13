@@ -443,7 +443,7 @@ class CraftingMovementContracts(unittest.TestCase):
             ('var/required = quantity*recipe.req_amount', 'var/required = recipe.req_amount'),
             ('buildtime = round(buildtime)', 'buildtime = 1'),
             ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
-            ('if (!do_after(user, buildtime))', 'if (do_after(user, buildtime))'),
+            ('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime))'),
             ('H.put_in_hands(O)', 'H.drop_from_inventory(O)'),
             ('handReturnMap.Remove(H.key)', 'handReturnMap.Remove(user)'),
             ('if (required > 0)', 'if (required > 1)'),

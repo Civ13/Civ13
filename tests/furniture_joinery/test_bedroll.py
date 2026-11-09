@@ -164,7 +164,7 @@ class HammockContracts(unittest.TestCase):
         production=block(source,'/obj/item/stack/proc/produce_recipe(')
         start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
         end=production.index('\t\tif (!exercise_can_build',start)
-        self.assertLess(production.index('if (!do_after(user, buildtime))'),start)
+        self.assertLess(production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'),start)
         self.assertLess(start,production.index('H.adaptStat("crafting"'))
         self.assertLess(start,production.index('\tif (use(required,'))
         body='\n'.join(line[1:] for line in production[start:end].splitlines())
@@ -195,7 +195,7 @@ class HammockContracts(unittest.TestCase):
         prepayment=prepayment[:prepayment.index('\n\telse if (')]
         self.assertIn('NR.amount -= 1',prepayment)
         self.assertIn('qdelHandReturn(',prepayment)
-        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime))'))
+        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'))
         rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
         fields=next(row.split('RECIPE: ',1)[1].split(',') for row in rows if ','+sawmill+',' in row)
         self.assertEqual(fields[5],'1')
