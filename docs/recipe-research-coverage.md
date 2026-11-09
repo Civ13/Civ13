@@ -79,12 +79,11 @@ and production route, not display-name substring matching at runtime.
   necessary. These nodes do not change electrochemistry or voltage behavior.
 - Manual mills and primitive sawmills use Resource Processing; automated large
   mills and larger sawmills use Watermills. Foundry use retains tier 4.
-- Existing specialist nodes Mail & Plate, Trench Warfare and Modern Armor are
-  used for their matching anvil armor. **87 source anvil rows now require these
-  specialist nodes.** Specialist nodes do not automatically unlock for factionless
-  round-map players. This is a real new restriction, not eliminated merely by
-  matching the era. Keep this draft open for review of round-critical armor access;
-  no global bypass or specialist-to-Main tree migration is included.
+- Anvil armor uses Main-tree nodes from the same era, so anyone with era access
+  can forge it: medieval mail and plate use Steel Blades (era 2), trench-era
+  armor uses Cartridge Ammo (era 5) and modern armor uses Automatic Weapons
+  (era 7). The specialist armor nodes are not used for anvil recipes, because
+  they never unlock for factionless round-map players.
 - Fletched bolts now require Crossbows (tier 2); arrows require Archery (tier 0).
   Hand hide processing requires Resource Processing (tier 1), consistent with
   rack construction but stricter than previously ungated scraping.

@@ -236,7 +236,21 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('(last_error && last_error != last_export_error)', reclaim)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || usage_delta > 40 || elapsed_ds > 1', SAVING)
+        self.assertIn('work > 8192 || tick_delta || elapsed_ds > 1', SAVING)
+
+    def test_tick_share_overrun_keeps_capture_and_demotes_root(self):
+        # Gaia 2026-11-09 (round cIh-c7qU): an ordinary buffalo hit usage_delta
+        # 40.06 on 624 work units and the throw failed the whole save. Tick
+        # usage is wall-clock cost, not a consistency failure: keep the
+        # snapshot and move the root to the turf path for later saves.
+        capture = SAVING.split('/datum/moving_save_capture\n', 1)[1].split('proc/reserve_bytes', 1)[0]
+        self.assertIn('if(usage_delta > 40) overrun_usage = max(overrun_usage, usage_delta)', capture)
+        throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
+        self.assertNotIn('usage_delta', throw_line)
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage)')
+        self.assertLess(detach, root.index('moving_save_demoted[record["identity"]] = TRUE', detach))
+        self.assertLess(root.index('if(chunk.overrun_usage)'), root.index('record["ref"] = ref'))
 
     def test_busy_tick_admission_does_not_fail_capture(self):
         # Gaia 2026-11-09: an elk admitted at 76% usage cost 13.7% and hit the

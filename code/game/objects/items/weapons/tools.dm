@@ -60,7 +60,8 @@
 	var/max_range = 1
 	New()
 		..()
-		reagents.add_reagent("water",30)
+		if (!istype(src, /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty))
+			reagents.add_reagent("water",30)
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
 	..()
@@ -734,7 +735,9 @@ Shinobi's unfinished welder stuff - siro*/
 	else
 		. = ..()
 
-/obj/item/weapon/compass/modern/AltClick()
+/obj/item/weapon/compass/modern/AltClick(mob/user)
+	if (!istype(user, /mob/living) || user.incapacitated() || (loc != user && (!isturf(loc) || !user.Adjacent(src))))
+		return
 	..()
 	turn_on()
 

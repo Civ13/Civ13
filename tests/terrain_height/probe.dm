@@ -46,6 +46,19 @@ var/terrain_height_probe_checks = 0
 /mob/living/human/terrain_height_probe_climber/New()
 	return
 
+// Shading is an overlay; overlays hold appearances, so read them untyped.
+/proc/terrain_height_probe_shade(turf/T)
+	for (var/O in T.overlays)
+		if (O:icon == 'icons/turf/terrain_shade.dmi')
+			return O:icon_state
+	return null
+
+/proc/terrain_height_probe_shades(turf/T)
+	. = 0
+	for (var/O in T.overlays)
+		if (O:icon == 'icons/turf/terrain_shade.dmi')
+			.++
+
 /proc/terrain_height_probe_close(a, b)
 	return abs(a - b) < 0.0001
 
@@ -118,21 +131,22 @@ var/terrain_height_probe_checks = 0
 	var/slope_key = fixture.shade_key(6, 9, 1)
 	terrain_height_probe_assert(slope_key && slope_key != "cccc", "slope_tile_shaded")
 	slope.terrain_shade_refresh()
-	var/obj/effect/terrain_shade/shade = locate() in slope.vis_contents
-	terrain_height_probe_assert(shade && shade.icon_state == slope_key && shade.mouse_opacity == 0, "slope_tile_shows_sprite")
-	terrain_height_probe_assert(shade == terrain_shade_object(slope_key), "sprites_are_shared")
+	terrain_height_probe_assert(terrain_height_probe_shade(slope) == slope_key, "slope_tile_shows_sprite")
+	var/image/shade = terrain_shade_image(slope_key)
+	terrain_height_probe_assert(slope.terrain_shade_overlay == shade && shade.mouse_opacity == 0 && shade.plane == FLOOR_PLANE && shade.layer > 2.03 && shade.layer < 2.04, "sprites_are_shared_floor_overlays")
+	terrain_height_probe_assert(!length(slope.vis_contents), "shading_is_not_vis_contents")
 	slope.terrain_shade_refresh()
-	var/shades = 0
-	for (var/obj/effect/terrain_shade/S in slope.vis_contents)
-		shades++
-	terrain_height_probe_assert(shades == 1, "refresh_does_not_stack")
+	terrain_height_probe_assert(terrain_height_probe_shades(slope) == 1, "refresh_does_not_stack")
+	var/turf/floor/slope_floor = slope
+	slope_floor.update_icon()
+	terrain_height_probe_assert(terrain_height_probe_shade(slope) == slope_key && terrain_height_probe_shades(slope) == 1, "floor_icon_rebuild_keeps_shading")
 	terrain_height_probe_assert(terrain_shading_apply() > 0, "apply_places_shading")
 	terrain_shading_applied = TRUE
 	var/turf/flat = locate(2, 2, 1)
-	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in flat.vis_contents), "flat_ground_left_alone")
+	terrain_height_probe_assert(!terrain_height_probe_shade(flat), "flat_ground_left_alone")
 	slope.ChangeTurf(/turf/floor/rocky/terrain_height_probe/other)
 	slope = locate(6, 9, 1)
-	terrain_height_probe_assert(!terrain_shading_applied || (locate(/obj/effect/terrain_shade) in slope.vis_contents), "changeturf_keeps_shading")
+	terrain_height_probe_assert(!terrain_shading_applied || terrain_height_probe_shade(slope), "changeturf_keeps_shading")
 
 	// Built floors are laid level: no slope cost onto, off or across them, and no shading.
 	var/turf/built = locate(7, 9, 1)
@@ -141,10 +155,10 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(built.terrain_smoothed() && !slope.terrain_smoothed(), "built_vs_natural")
 	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), built, 2.85) == 0 && terrain_slope_delay(built, locate(8, 9, 1), 2.85) == 0, "built_floor_no_slope_cost")
 	terrain_height_probe_assert(terrain_slope_delay(locate(8, 9, 1), locate(9, 9, 1), 2.85) == 1, "natural_ground_keeps_cost")
-	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in built.vis_contents), "built_floor_unshaded")
+	terrain_height_probe_assert(!terrain_height_probe_shade(built), "built_floor_unshaded")
 	built.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
 	built = locate(7, 9, 1)
-	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in built.vis_contents, "removed_floor_shaded_again")
+	terrain_height_probe_assert(terrain_height_probe_shade(built), "removed_floor_shaded_again")
 
 	// Road tamping: only bare dirt can be packed; tamped earth never turns to mud.
 	var/turf/road = locate(7, 9, 1)
@@ -166,7 +180,7 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), road, 2.85), 0.5), "tamped_earth_half_climb")
 	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(road, locate(6, 9, 1), 2.85), -0.5), "tamped_earth_downhill_unchanged")
 	terrain_height_probe_assert(terrain_slope_delay(road, locate(8, 9, 1), 2.85) == 1, "leaving_tamped_earth_full_climb")
-	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in road.vis_contents, "tamped_earth_still_shaded")
+	terrain_height_probe_assert(terrain_height_probe_shade(road), "tamped_earth_still_shaded")
 	terrain_height_probe_assert(road_tamping_problem(road), "tamped_earth_not_retamped")
 	road.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
 
@@ -175,10 +189,10 @@ var/terrain_height_probe_checks = 0
 	var/obj/covers/wood/floor_cover = new(covered)
 	floor_cover.updateturf()
 	terrain_height_probe_assert(covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 0, "floor_cover_no_slope_cost")
-	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in covered.vis_contents), "floor_cover_unshaded")
+	terrain_height_probe_assert(!terrain_height_probe_shade(covered), "floor_cover_unshaded")
 	qdel(floor_cover)
 	terrain_height_probe_assert(!covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 1, "removed_cover_slope_back")
-	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in covered.vis_contents, "removed_cover_shaded_again")
+	terrain_height_probe_assert(terrain_height_probe_shade(covered), "removed_cover_shaded_again")
 	var/obj/covers/wood_wall/wall_cover = new(covered)
 	terrain_height_probe_assert(!covered.terrain_smoothed(), "cover_wall_not_a_floor")
 	qdel(wall_cover)
@@ -206,8 +220,7 @@ var/terrain_height_probe_checks = 0
 	var/list/patched = fixture.light_rows(1).Copy()
 	fixture.light_rows_by_z -= "1"
 	terrain_height_probe_assert(jointext(patched, "|") == jointext(fixture.light_rows(1), "|"), "graded_lights_match_full_pass")
-	var/obj/effect/terrain_shade/graded_shade = locate() in graded.vis_contents
-	terrain_height_probe_assert((graded_shade ? graded_shade.icon_state : "cccc") == fixture.shade_key(7, 9, 1), "graded_tile_reshaded")
+	terrain_height_probe_assert((terrain_height_probe_shade(graded) || "cccc") == fixture.shade_key(7, 9, 1), "graded_tile_reshaded")
 	// The grade survives turf changes and is saved only when set.
 	graded.ChangeTurf(/turf/floor/tamped_earth)
 	graded = locate(7, 9, 1)

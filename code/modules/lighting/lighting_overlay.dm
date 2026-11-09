@@ -39,6 +39,10 @@
 	// last_color copy per overlay cost about 500 bytes times ~350k Gaia turfs.
 	var/tmp/color_committed = FALSE
 	var/last_luminosity
+	// Slot in lighting_overlay_list, so leaving it is O(1). That list holds
+	// one overlay per lit turf (about a million on Gaia), and `list -= src`
+	// scanned it: about 1 ms per destroyed overlay, seconds per season sweep.
+	var/tmp/registry_index = 0
 
 /atom/movable/lighting_overlay/pre_bullet_act(var/obj/item/projectile/P)
 	return FALSE
@@ -82,7 +86,29 @@
 	invisibility = 0
 	#endif
 
+	lighting_overlay_register()
+
+/atom/movable/lighting_overlay/proc/lighting_overlay_register()
+	if (registry_index && registry_index <= lighting_overlay_list.len && lighting_overlay_list[registry_index] == src)
+		return
 	lighting_overlay_list += src
+	registry_index = lighting_overlay_list.len
+
+// Swap-remove: the last overlay takes this slot. Order is not meaningful.
+/atom/movable/lighting_overlay/proc/lighting_overlay_unregister()
+	var/index = registry_index
+	registry_index = 0
+	var/count = lighting_overlay_list.len
+	if (!index || index > count || lighting_overlay_list[index] != src)
+		// Added without a slot (direct list edits): fall back to the scan.
+		lighting_overlay_list -= src
+		return
+	if (index != count)
+		var/atom/movable/lighting_overlay/last = lighting_overlay_list[count]
+		lighting_overlay_list[index] = last
+		if (istype(last))
+			last.registry_index = index
+	lighting_overlay_list.len = count - 1
 
 /atom/movable/lighting_overlay/Destroy()
 	var/turf/T   = loc
@@ -96,7 +122,7 @@
 	..()
 
 /atom/movable/lighting_overlay/Destroy()
-	lighting_overlay_list -= src
+	lighting_overlay_unregister()
 	..()
 
 /proc/copylist(var/list/L)
