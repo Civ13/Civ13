@@ -83,6 +83,9 @@ var/knowledge_failures = 0
 		map.recipe_books = FALSE
 		var/mob/living/human/knowledge_fixture/legacy = new(locate(4,2,1))
 		knowledge_check(!legacy.recipe_knowledge_initialized && !legacy.can_learn_recipe_node(node_id), "disabled mode preserves legacy migration eligibility")
+		persistence_save_in_progress = TRUE
+		knowledge_check(!map.activate_recipe_books() && !map.recipe_books && !legacy.recipe_knowledge_initialized, "activation refuses an in-progress save or load")
+		persistence_save_in_progress = FALSE
 		map.activate_recipe_books()
 		knowledge_check(legacy.knows_recipe_node(node_id) && !legacy.knows_recipe_node(future_id), "activation grants current research only")
 		map.ordinal_age = 9

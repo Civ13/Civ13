@@ -78,7 +78,7 @@
 /obj/map_metadata/proc/activate_recipe_books()
 	// Explicit operator integration point. Not called by this feature; a map
 	// choosing live activation must snapshot existing bodies before any yield.
-	if (!persistence)
+	if (!persistence || persistence_save_in_progress || persistence_active_operation)
 		return FALSE
 	recipe_books = TRUE
 	for (var/mob/living/human/H in human_mob_list)
