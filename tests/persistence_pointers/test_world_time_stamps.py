@@ -39,6 +39,7 @@ REVIEWED = {
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
     'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
+    'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

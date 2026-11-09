@@ -491,6 +491,10 @@
 	if ((bumped && !forced) || (permutated.len && (permutated.Find(T))))
 		return FALSE
 
+	// A lobbed arrow flies over everything but hills (projectile_lob.dm).
+	if (lobbed)
+		return lob_enter(T)
+
 	var/direction = get_direction()
 	var/turf/previous_step = starting
 	if(T!= starting && permutated.len)
@@ -780,6 +784,10 @@
 		firstmove = TRUE
 		alpha = 0
 
+	// A lob takes longer in the air than a direct shot.
+	if (lobbed && !lob_ready())
+		return
+
 	angle = get_angle()
 
 	if (src && loc)
@@ -884,6 +892,8 @@
 	var/dist = permutated.len * world.icon_size
 	pixel_x = (cos(angle) * dist) - ((x - starting.x) * world.icon_size)
 	pixel_y = (sin(angle) * dist) - ((y - starting.y) * world.icon_size)
+	if (lobbed)
+		lob_update_icon()
 
 /obj/item/projectile/proc/muzzle_effect()
 	if (silenced)
