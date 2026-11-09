@@ -42,6 +42,9 @@ SUITES = {
                          'scripts/build-crafting-atlas.py', 'scripts/atlas/',
                          'UI/crafting-atlas.json', 'code/game/objects/items/stacks/stack.dm',
                          'code/game/objects/items/stacks/civ_recipes.dm')},
+    'navigation_tablet': {'files': ('tests/navigation_tablet/test_alt_click.py',),
+        'paths': ('tests/navigation_tablet/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'code/_onclick/click.dm')},
     'cane_stance': {'files': ('tests/cane_stance/test_cane_stance.py',),
         'paths': ('tests/cane_stance/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_organs.dm',
