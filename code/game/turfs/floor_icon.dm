@@ -307,6 +307,7 @@ var/list/flooring_cache = list()
 			else
 				name = replacetext(name, "irradiated ", "")
 	snowfall_ground_icon()
+	terrain_shade_icon()
 
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE, var/edge_icon)
 	if (!flooring_cache[cache_key])
