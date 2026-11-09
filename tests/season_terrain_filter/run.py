@@ -40,6 +40,12 @@ def main():
     # The pass count follows the season code (27 when written, 11 once snow moved out);
     # every remaining turf pass must still use the typed filter.
     assert calls, 'Missing seasonal passes'
+    # Every get_area_turfs pass must be one the pattern above recognised, so a
+    # reformatted loop cannot drop out of the filter check unnoticed.
+    pattern = r'for\s*\(var/(turf[^ ]+)/(\w+) in get_area_turfs\(([^\n]+)\)\)'
+    unrecognised = [line.strip() for line in seasonal.splitlines()
+                    if 'get_area_turfs(' in line and 'var/turf' in line and not re.search(pattern, line)]
+    assert not unrecognised, 'Unrecognised seasonal turf pass: ' + '; '.join(unrecognised)
     for turf, _, args in calls:
         assert args.endswith(', null, /' + turf + ', src, epoch'), 'Unfiltered or mismatched seasonal pass: ' + turf
     # Full transition/RNG/weather parity belongs to tests/season_transition.

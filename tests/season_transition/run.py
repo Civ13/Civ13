@@ -56,7 +56,7 @@ def prepare(repo, mode, size, negative, requests_enabled=False, profile=False):
         returns = set()
         for i, line in enumerate(lines):
             match = re.match(r'^(\t*)spawn\(([^)]+)\)', line)
-            if not match or match[2] == '18000':
+            if not match or match[2] == '18000' or match[2].startswith('probe_loop_delay('):
                 continue
             indent = len(match[1])
             end = i + 1
@@ -81,12 +81,18 @@ def prepare(repo, mode, size, negative, requests_enabled=False, profile=False):
                 output.append('\t' * indent + 'probe_phase_pending--\n')
             output.append(lines[i])
         return ''.join(output)
+    # The recurring loop waits season_loop_delay() (60 minutes by default)
+    # through spawn(delay); the frozen baseline still uses spawn(18000).
+    loop = '\tif(durable_schedule("season_loop", delay)) return\n\tspawn(delay)\n'
+    if mode != 'baseline':
+        assert seasons.count(loop) == 1, 'Recurring season loop changed shape'
+        seasons = seasons.replace(loop, '\tif(durable_schedule("season_loop", delay)) return\n\tprobe_timer_armed(src, delay)\n\tspawn(probe_loop_delay(delay))\n\t\tprobe_timer_fired(src)\n')
+    seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
     seasons = track_phases(seasons)
     seasons = seasons.replace('world.tick_usage >= 20', '(probe_force_budget ? probe_budget_usage(work, discovery) : world.tick_usage) >= 20')
     if requests_enabled:
         seasons = re.sub(r'(^/obj/map_metadata/proc/season_work_pause[^\n]*\n)', r'\1\tprobe_checkpoint(src, epoch, work, discovery)\n', seasons, flags=re.M)
     seasons = seasons.replace('call(src, kind)(value)', 'probe_delayed_call(src, kind, value)')
-    seasons = re.sub(r'^(\t*)spawn\(18000\)\n', lambda m: m[1] + 'probe_timer_armed(src, 18000)\n' + m[0] + m[1] + '\tprobe_timer_fired(src)\n', seasons, flags=re.M)
     helper = re.sub(r'^(\t+)return turfs$', lambda m: m[1] + 'probe_helper_peak_slots = max(probe_helper_peak_slots, turfs.len)\n' + m[0], helper, flags=re.M)
     # Only generated sources use deterministic RNG and accelerated delayed effects.
     seasons = re.sub(r'\bprob\(', 'probe_prob(', seasons)

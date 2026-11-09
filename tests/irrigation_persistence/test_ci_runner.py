@@ -1,5 +1,6 @@
 """Offline CI/CLI boundary checks. Every native subprocess is mocked."""
 from contextlib import redirect_stdout
+import contextlib
 import importlib.util
 import io
 import json
@@ -75,8 +76,11 @@ class CIRunner(unittest.TestCase):
     def test_historical_defaults_and_new_mode_are_not_interchangeable(self):
         parser = runner.argument_parser()
         old = parser.parse_args(['--byond-bin', '/placeholder'])
-        self.assertEqual(old.expected_byond_version, '516.1681')
+        self.assertEqual(old.expected_byond_version, '516.1688')
         self.assertFalse(old.compile_only)
+        # The retired 1681 pin is no longer an accepted target.
+        with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
+            parser.parse_args(['--byond-bin', '/placeholder', '--expected-byond-version', '516.1681'])
         new = parser.parse_args(['--byond-bin', '/placeholder', '--expected-byond-version', '516.1688', '--compile-only'])
         self.assertEqual(new.expected_byond_version, '516.1688')
         self.assertTrue(new.compile_only)
@@ -136,8 +140,8 @@ class CIRunner(unittest.TestCase):
     def test_compile_only_stops_before_daemon_and_config_copy(self):
         self.exercise_compile_only('516.1688', '516.1688', True)
 
-    def test_default_legacy_rejects_current_target_without_runtime(self):
-        self.exercise_compile_only('516.1681', '516.1688', False)
+    def test_compile_only_rejects_other_compiler_without_runtime(self):
+        self.exercise_compile_only('516.1688', '516.1681', False)
 
     def test_original_resource_limits_and_control_markers_remain(self):
         source = (ROOT / 'tests/trench_save/run.py').read_text()

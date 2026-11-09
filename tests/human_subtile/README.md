@@ -169,9 +169,8 @@ serializer preserves paid nested contents; the fixture exercises
 BuildVarDirectory, disk reopen, Load_Entry and the normal caller's explicit
 after_load phase.
 
-Only unlinked ordinary-body offset restoration is in this slice. The restored
-adapter is off and no worker is replayed; a retained offset refuses ordinary
-input until explicit re-enabling. Whole-world simultaneous collision preflight,
+A loaded body is centred on its saved tile with the adapter off and no worker
+replayed; the first eligible input re-enables it. Whole-world simultaneous collision preflight,
 arbitrary side-effecting CanPass rollback and all vehicle graphs are not newly
 guaranteed here. The earlier standalone relative-first-read savefile issue and
 its accepted absolute-entry proof remain separate retained evidence.

@@ -33,8 +33,9 @@ class SourcePreparation(unittest.TestCase):
             self.assertIn('tests/reserved_lighting/probe.dm', dme)
             self.assertNotIn('/world/New()', (out/'world.dm').read_text(encoding='utf-8'))
             self.assertNotIn('var/global/datum/global_init/init = new ()', (out/'world.dm').read_text(encoding='utf-8'))
-            self.assertIn('var/global/datum/global_init/init = null', (out/'world.dm').read_text(encoding='utf-8'))
-            self.assertIn('var/global/datum/global_init/init = new ()', (ROOT/'code/world.dm').read_text(encoding='utf-8'))
+            # Normal startup is created by the last include, which the probe omits.
+            self.assertNotIn('global_init_last.dm', dme)
+            self.assertIn('global_init_last.dm', (ROOT/'civ13.dme').read_text(encoding='utf-8'))
             for name, signature in (('movement.dm', '/client/proc/unused_reserved_movement_new()'),
                                     ('client_procs.dm', '/client/proc/unused_reserved_client_new(TopicData)')):
                 adapter = (out/name).read_text(encoding='utf-8')

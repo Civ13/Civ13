@@ -152,6 +152,6 @@
     {"path": "config/names/mongolian_female.txt", "bytes": 2247, "sha256": "234a637d7757d36cbb294a1be125a457416c012ffeac292b8980e5d42e9c226d"},
     {"path": "config/names/mongolian_male.txt", "bytes": 2232, "sha256": "0f3b48d84f41e22f47c07712a5030772b27d1098f202ceab1d4fc2481a937a75"},
     {"path": "config/names/verbs.txt", "bytes": 3981, "sha256": "3a2b75d1dd1d284d5c43d83afeac7c271804a355f9249ae35263d47fec76ac75"},
-    {"path": "config/crafting/material_recipes_global.txt", "bytes": 236231, "sha256": "520e031cbc7e8420a1a53b5e76fd579a9571582c8d1c39c7ea51835d15b81b3e"}
+    {"path": "config/crafting/material_recipes_global.txt", "bytes": 236455, "sha256": "733c010610c47a2615ae2d305bcf7784dcf50f0e6640ee46872128abcbc35929"}
   ]
 }
