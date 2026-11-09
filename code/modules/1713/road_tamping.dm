@@ -1,12 +1,12 @@
-// Road tamping (docs/terrain-height.md#tamped-earth): an early stone rammer
-// packs bare dirt into tamped earth, a level path. Tamped earth has no hill
-// cost or slope shading, never turns to mud, and a shovel breaks it back up.
+// Road tamping (docs/terrain-height.md): an early stone rammer packs bare dirt
+// into tamped earth. Tamped earth keeps its hill and shading but costs half as
+// much to climb, never turns to mud, and a shovel breaks it back up.
 
 #define TAMPING_TIME 30
 
 /obj/item/weapon/stone_rammer
 	name = "stone rammer"
-	desc = "A flat stone block lashed to a wooden pole. Pound bare dirt with it to pack a level path that stays firm in the rain."
+	desc = "A flat stone block lashed to a wooden pole. Pound bare dirt with it to pack a path that is easier to climb and stays firm in the rain."
 	icon = 'icons/obj/stone_rammer.dmi'
 	icon_state = "stone_rammer"
 	item_state = "pickaxe"
@@ -58,15 +58,15 @@
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
 	T.ChangeTurf(/turf/floor/tamped_earth)
-	user.visible_message(SPAN_NOTICE("[user] packs the dirt into a firm, level path."), SPAN_NOTICE("You pack the dirt into a firm, level path."))
+	user.visible_message(SPAN_NOTICE("[user] packs the dirt into a firm path."), SPAN_NOTICE("You pack the dirt into a firm path."))
 	if (istype(H))
 		H.adaptStat("strength", 1)
 	return TRUE
 
-// A /turf/floor, so terrain_smoothed() is TRUE: no hill cost, no shading.
+// Natural ground that is packed, not levelled: the hill stays, the climb is easier.
 /turf/floor/tamped_earth
 	name = "tamped earth"
-	desc = "Dirt pounded hard and level into a path. It stays firm in the rain, and a shovel will break it back up."
+	desc = "Dirt pounded hard into a path. It is easier to climb than loose ground, stays firm in the rain, and a shovel will break it back up."
 	icon = 'icons/turf/tamped_earth.dmi'
 	icon_state = "tamped_earth"
 	stepsound = "dirt"
@@ -74,6 +74,12 @@
 	uses_winter_overlay = TRUE
 	may_become_muddy = FALSE
 	is_diggable = FALSE
+
+/turf/floor/tamped_earth/terrain_smoothed()
+	return terrain_floor_covered()
+
+/turf/floor/tamped_earth/terrain_packed()
+	return TRUE
 
 /turf/floor/tamped_earth/attackby(obj/item/C, mob/user)
 	if (!istype(C, /obj/item/weapon/material/shovel))

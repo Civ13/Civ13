@@ -11,6 +11,8 @@
 #define TERRAIN_DOWNHILL_MAX_SHARE 0.25
 // A one-tile step never counts more than this many levels.
 #define TERRAIN_MAX_LEVEL_STEP 4
+// Share of the uphill delay paid when stepping onto packed ground (tamped earth).
+#define TERRAIN_PACKED_UPHILL_SHARE 0.5
 
 /obj/map_metadata
 	// Project-relative height file, for example "maps/heights/nomads_gaia.txt".
@@ -113,6 +115,10 @@
 /turf/proc/terrain_smoothed()
 	return terrain_floor_covered()
 
+// Packed paths (tamped earth) keep the hill but are easier to climb.
+/turf/proc/terrain_packed()
+	return FALSE
+
 // Floor and road covers (not cover walls) are built level over the slope.
 /turf/proc/terrain_floor_covered()
 	for (var/obj/covers/CV in src)
@@ -165,7 +171,7 @@
 		return 0
 	var/levels = clamp(terrain_height_at(destination) - terrain_height_at(origin), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
 	if (levels > 0)
-		return levels * TERRAIN_UPHILL_DELAY
+		return levels * TERRAIN_UPHILL_DELAY * (destination.terrain_packed() ? TERRAIN_PACKED_UPHILL_SHARE : 1)
 	if (levels < 0)
 		return -min(-levels * TERRAIN_DOWNHILL_BONUS, max(0, step_delay) * TERRAIN_DOWNHILL_MAX_SHARE)
 	return 0
@@ -342,6 +348,7 @@ var/global/terrain_shading_applied = FALSE
 #undef TERRAIN_DOWNHILL_BONUS
 #undef TERRAIN_DOWNHILL_MAX_SHARE
 #undef TERRAIN_MAX_LEVEL_STEP
+#undef TERRAIN_PACKED_UPHILL_SHARE
 #undef TERRAIN_LIGHT_STEP
 #undef TERRAIN_RELIEF
 #undef TERRAIN_SHADE_LAYER
