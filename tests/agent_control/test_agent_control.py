@@ -2717,12 +2717,54 @@ class MovementParityTests(unittest.TestCase):
 
     def test_agent_move_uses_the_mirror(self):
         characters = dm_source("agent_characters.dm")
-        self.assertIn("return agent_walk_step(A, C, d, from_queue)", characters)
+        self.assertIn("return agent_walk_step(A, C, d, from_queue, ", characters)
         movement = dm_source("agent_movement.dm")
         for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
                        "terrain_climb_effects(H, old, n, 1)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
                        "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015"):
             self.assertIn(anchor, movement)
+
+
+class VehicleParityTests(unittest.TestCase):
+    """agent_vehicles.dm presses the driver's seat HUD and the arrow-key extras; these are the client lines."""
+
+    HUD_RULES = (
+        ("code/_onclick/hud/hud_vehicles.dm", 'D.wheel.turndir(H, "left")'),
+        ("code/_onclick/hud/hud_vehicles.dm", 'D.wheel.turndir(H, "right")'),
+        ("code/_onclick/hud/hud_vehicles.dm", "D.wheel.attack_self(H)"),
+        ("code/_onclick/hud/hud_vehicles.dm", "D.wheel.secondary_attack_self(H)"),
+        ("code/_onclick/hud/hud_vehicles.dm", "this_axis.reverse = TRUE"),
+        ("code/_onclick/hud/hud_aircraft.dm", "A.climb(parentmob)"),
+        ("code/_onclick/hud/hud_aircraft.dm", "A.descend(parentmob)"),
+        ("code/game/mob/mob_movement.dm", "MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving"),
+        ("code/game/mob/mob_movement.dm", 'MW.turndir(mob,"right")'),
+        ("code/game/mob/mob_movement.dm", "C.increase_distance(1)"),
+        ("code/game/mob/mob_movement.dm", "C.increase_distance(-1)"),
+        ("code/game/mob/mob_movement.dm", "C.start_rotation(1)"),
+        ("code/game/mob/mob_movement.dm", "RC.start_move_drone(EAST)"),
+        ("code/game/mob/mob_movement.dm", "RC.stop_move_drone()"),
+        ("code/game/mob/living/living.dm", "if (using_drone)\n\t\treturn FALSE"),
+        ("code/game/mob/mob.dm", "W.secondary_attack_self(src)"),
+    )
+
+    def test_client_rules_still_match(self):
+        for path, rule in self.HUD_RULES:
+            with self.subTest(path=path, rule=rule):
+                self.assertIn(rule, (ROOT / path).read_text(encoding="utf-8"), "vehicle controls changed: update agent_vehicles.dm, then this list")
+
+    def test_drive_action_is_wired(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('"stance", "drive")', characters)
+        self.assertIn("detail = agent_drive(C, req)", characters)
+        self.assertIn('out["driving"] = driving', characters)
+        self.assertIn("I.secondary_attack_self(M)", characters)
+        movement = dm_source("agent_movement.dm")
+        self.assertIn("keys = agent_arrow_keys(M, d, hold)", movement)
+        vehicles = dm_source("agent_vehicles.dm")
+        for anchor in ("D.wheel.turndir(H,", "D.wheel.attack_self(H)", "D.wheel.secondary_attack_self(H)", "P.climb(H)", "P.descend(H)",
+                       "MW.turndir(H, \"right\")", "TC.increase_distance(1)", "TC.start_rotation(turn)", "TC.stop_rotation()",
+                       "RC.start_move_drone(d)", "RC.stop_move_drone()"):
+            self.assertIn(anchor, vehicles)
 
 
 if __name__ == "__main__":

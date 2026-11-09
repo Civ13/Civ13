@@ -80,6 +80,7 @@ AGENT_PARITY_MANUAL_NATIVE = frozenset({
     'tests/agent_control/prompts_probe.dm',
     'tests/agent_control/stance_probe.dm',
     'tests/agent_control/move_probe.dm',
+    'tests/agent_control/vehicle_probe.dm',
 })
 # Included only by the existing opt-in observe fixture; never auto-run on addition.
 AGENT_OBSERVE_MANUAL_NATIVE = frozenset({'tests/agent_observe/action_contract_probe.dm'})

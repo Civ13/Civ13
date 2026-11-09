@@ -329,6 +329,12 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	var/list/driving = agent_driving_row(M) // the driver's seat HUD: gear, direction, engine, height
+	if (driving)
+		out["driving"] = driving
+	var/list/remotes = agent_remote_rows(M)
+	if (remotes.len)
+		out["remote_controls"] = remotes
 	var/obj/structure/vehicle/riding = agent_vehicle_of(M)
 	if (riding)
 		out["vehicle"] = agent_vehicle_row(riding, M)
@@ -599,13 +605,13 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
@@ -654,7 +660,8 @@
 				if (driving.driver && driving.driver_vehicle)
 					return agent_drive_step(A, C, driving.driver_vehicle, d)
 			// The player's movement rules, timing and costs (agent_movement.dm).
-			return agent_walk_step(A, C, d, from_queue)
+			// hold: ticks an arrow key stays down for held turret and drone controls.
+			return agent_walk_step(A, C, d, from_queue, clamp(round(text2num("[req["hold"]]") || 5), 1, 50))
 		if ("face")
 			var/d = agent_dir(req["dir"])
 			M.set_dir(d)
@@ -715,13 +722,21 @@
 			if (!I)
 				agent_fail("empty_hand", "nothing in the active hand")
 			C.next_action = world.time + 2
-			detail = "[I]"
+			// alternate: the Activate Secondary Object key (gear down, switch weapon, drone special).
+			var/secondary = req["alternate"] == TRUE || req["alternate"] == 1
+			detail = secondary ? "[I] (secondary)" : "[I]"
 			if (from_queue)
-				I.attack_self(M)
+				if (secondary)
+					I.secondary_attack_self(M)
+				else
+					I.attack_self(M)
 			else
 				spawn(0)
 					usr = M
-					I.attack_self(M)
+					if (secondary)
+						I.secondary_attack_self(M)
+					else
+						I.attack_self(M)
 		if ("craft")
 			var/obj/item/stack/S = M.get_active_hand()
 			if (istype(S))
@@ -816,6 +831,8 @@
 			detail = agent_window_close(C, req)
 		if ("stance")
 			detail = agent_stance(C, req)
+		if ("drive")
+			detail = agent_drive(C, req)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -975,6 +992,8 @@
 		agent_text_arg(step, "window", 64)
 	if (action == "stance" && isnull(step["move"]) && isnull(step["defense"]) && isnull(step["tactic"]) && isnull(step["secondary"]) && isnull(step["face_lock"]) && isnull(step["aim"]))
 		agent_fail("bad_args", "stance takes move, defense, tactic, secondary, face_lock or aim")
+	if (action == "drive" && !(lowertext("[step["control"]]") in list("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")))
+		agent_fail("bad_args", "drive control must be forward, reverse, turn_left, turn_right, gear_up, gear_down, climb or descend")
 	if (action == "topic" && isnull(step["link"]) && isnull(step["label"]))
 		agent_fail("bad_args", "topic needs link (a number) or label")
 	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))

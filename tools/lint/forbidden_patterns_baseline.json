@@ -317,6 +317,7 @@
       "code/modules/admin/verbs/debug.dm": 1,
       "code/modules/agent_control/agent_actions.dm": 1,
       "code/modules/agent_control/agent_characters.dm": 5,
+      "code/modules/agent_control/agent_vehicles.dm": 2,
       "code/modules/client/asset_cache.dm": 1,
       "code/modules/client/client_procs.dm": 4,
       "code/modules/client/preferencesSQLite/preferences.dm": 1,
