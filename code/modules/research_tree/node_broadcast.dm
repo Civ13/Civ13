@@ -73,7 +73,7 @@ var/global/list/active_node_lesson_stations = list()
 	return start_node_lesson(H, options[choice])
 
 /obj/structure/telecom/station/proc/start_node_lesson(mob/living/human/H, node_id)
-	if (television || node_lesson_id || active_node_lesson_stations.len >= NODE_LESSON_MAX_STATIONS || node_lesson_time() < node_lesson_cooldown_until || !node_teacher_eligible(H, node_id))
+	if (node_lesson_id || active_node_lesson_stations.len >= NODE_LESSON_MAX_STATIONS || node_lesson_time() < node_lesson_cooldown_until || !node_teacher_eligible(H, node_id))
 		return FALSE
 	var/list/audience = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)

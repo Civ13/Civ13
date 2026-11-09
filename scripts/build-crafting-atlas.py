@@ -109,9 +109,9 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             modern=typepath.startswith('/obj/structure/exercise/modern')
             conditions+=f' Native crafting skill {105 if modern else 30}; completed research or existing faction baseline required at construction.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
-        if typepath.startswith('/obj/structure/telecom') or typepath == '/obj/item/weapon/telephone/landline':
-            skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
-            era='1903 (ordinal 5)' if typepath in ('/obj/structure/telecom','/obj/structure/telecom/station','/obj/structure/telecom/antenna') else 'Modern (ordinal 8)'
+        if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':
+            skill=100 if typepath.endswith('/landline') else 160 if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
+            era='1903 (ordinal 5)' if typepath in ('/obj/structure/telecom','/obj/structure/telecom/station','/obj/structure/telecom/antenna') else '1969 (ordinal 7)' if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv') else 'Modern (ordinal 8)'
             conditions+=f' Minimum era {era}; native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
     if any(i['id'] == '/material/cloth' for i in inputs):

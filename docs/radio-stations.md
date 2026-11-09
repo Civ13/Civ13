@@ -2,8 +2,8 @@
 
 Powered radio program desks, receivers and passive antennas become craftable at
 1903 (ordinal 5), retaining their paid materials, crafting skill and research
-requirements. Television, telephones, terminals and long-range relays retain
-their existing Modern-era availability in this phase.
+requirements. Television is available from 1969; telephones, terminals and long-range relays
+retain their Modern-era availability. See [Television stations](television-stations.md).
 
 Connect a laid adjacent cable by dragging it onto the desk and receivers. Place
 an anchored antenna beside the desk. In Equipment, enable power and tune both
@@ -32,4 +32,5 @@ crafting at 1:00 (Fall/Winter), farming at 3:00 (Spring/Summer), and medical at
 5:00 (all seasons). Fixed/no-cycle maps allow all courses. Each unique lesson
 is credited once per character, with the existing 125 skill cap.
 
-Recipe-node lessons, recipe books and television cameras are separate phases.
+See [recipe-node lessons](radio-node-lessons.md), [recipe manuals](recipe-knowledge.md)
+and [television cameras](television-stations.md) for their additional controls.

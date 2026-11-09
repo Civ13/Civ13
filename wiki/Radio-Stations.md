@@ -9,12 +9,11 @@ faction tags are roleplay labels only.
 Receivers reach listeners within three tiles and must be within 60 tiles of the
 station. Live broadcasts have a 32-listener cap, respect hearing and language,
 and are recorded in admin logs. Existing crafting, farming and medical courses
-also run on radio from 1903. Television and long-range relay construction keep
-their existing Modern-era requirements in this phase.
+also run on radio from 1903. Television becomes available in 1969; long-range relay construction keeps its
+Modern-era requirement. See [Television stations](Television-Stations.md).
 
 See [Radio station operation and course schedules](../docs/radio-stations.md)
-for power, frequency, regional relay and skill-course details. Recipe-node
-lessons and television cameras are separate features.
+for power, frequency, regional relay and skill-course details. Recipe-node lessons and television cameras have their own controls.
 
 ## Recipe lessons
 

@@ -43,6 +43,11 @@ SUITES = {
             'code/modules/1713/production.dm',
             'code/modules/persistence/region_travel.dm',
             'code/game/objects/structures/vending/specialist_traders.dm')},
+    'television': {'files': ('tests/television/test_contract.py',),
+        'paths': ('tests/television/',), 'shared_paths': (
+            'code/modules/1713/television.dm', 'code/modules/1713/modern_telecom.dm',
+            'code/modules/1713/cmss13_overwatch.dm',
+            'code/modules/research_tree/node_broadcast.dm')},
     'node_broadcast': {'files': ('tests/node_broadcast/test_contract.py',),
         'paths': ('tests/node_broadcast/',), 'shared_paths': (
             'code/modules/research_tree/node_broadcast.dm',

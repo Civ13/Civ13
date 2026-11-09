@@ -65,8 +65,8 @@ class AtlasNavigationTests(unittest.TestCase):
             self.assertEqual(row['maximum_era'], 8)
             self.assertIn('Construction minimum era', row['era_basis'])
         tv = [r for r in self.catalog['recipes'] if any(o['id'] in ('/obj/structure/telecom/tv', '/obj/structure/telecom/station/tv') for o in r['outputs'])]
-        self.assertEqual(len(tv), 2)
-        self.assertTrue(all(r['unlock_eras'] == [8] for r in tv))
+        self.assertEqual(len(tv), 3)
+        self.assertTrue(all(r['unlock_eras'] == [7] and r['maximum_era'] == 8 for r in tv))
 
     def test_constructed_grinder_has_exact_global_gate_and_prerequisite_notes(self):
         kind = '/obj/structure/grinder/constructed'
