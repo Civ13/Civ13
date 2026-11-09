@@ -12,6 +12,7 @@ import run  # noqa: E402
 
 SOURCE = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
 WARFARE = (ROOT / 'code/modules/1713/train_warfare.dm').read_text(encoding='utf-8')
+WAREHOUSE = (ROOT / 'code/modules/1713/rail_warehouse.dm').read_text(encoding='utf-8')
 TRAINS = (ROOT / 'code/modules/1713/trains.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
@@ -41,6 +42,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_platforms.dm"'), 1)
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_warfare.dm"'), 1)
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\rail_warehouse.dm"'), 1)
 
     def test_parts_are_rebuilt_not_saved(self):
         part = SOURCE[SOURCE.index('\n/obj/structure/train_part\n'):]
@@ -86,6 +88,16 @@ class TrainPlatformSourceTests(unittest.TestCase):
         consist = consist[:consist.index('\n/', 1)]
         self.assertIn('braced', consist)
         self.assertIn('wrecked', consist)
+
+    def test_rail_warehouse_is_craftable_and_keeps_cargo_in_contents(self):
+        self.assertRegex(RECIPES, r'(?m)^RECIPE: /material/iron/,rail warehouse office,/obj/structure/rail_warehouse,')
+        self.assertIn('"/obj/structure/rail_warehouse" = "rail_steam"', NODES)
+        # Stored units are nested contents of the post, so world saves carry them.
+        self.assertIn('var/obj/structure/rail_stored_unit/U = new(src)', WAREHOUSE)
+        self.assertNotIn('should_save = FALSE', WAREHOUSE)
+        # A stored platform segment has no deck until it rolls out again.
+        layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
+        self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))
 
     def test_native_fixture_preparation(self):
         generated = run.sources()

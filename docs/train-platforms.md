@@ -1,7 +1,8 @@
 # Walkable platform cars
 
-Code: `code/modules/1713/train_platforms.dm` and, for wartime cars,
-`code/modules/1713/train_warfare.dm`. Sprites: `icons/obj/vehicles/train_platforms.dmi`
+Code: `code/modules/1713/train_platforms.dm`, wartime cars in
+`code/modules/1713/train_warfare.dm` and the rail warehouse in
+`code/modules/1713/rail_warehouse.dm`. Sprites: `icons/obj/vehicles/train_platforms.dmi`
 and `icons/obj/vehicles/railway_gun.dmi`.
 Tests: `tests/train_platforms` (source contracts plus a native fixture).
 
@@ -86,3 +87,29 @@ The armored locomotive (`/obj/structure/trains/locomotive/coal/armored`, field
 artillery research) ignores bullets and loses health to explosions instead of
 being destroyed. At zero health its boiler is holed and it will not start until
 welded back above half health.
+
+## Rail warehouse
+
+A drive-through store for rolling stock (`/obj/structure/rail_warehouse`, rail
+steam research). The office post is built facing the track with one tile
+between them; the straight track running past it, `RAIL_WAREHOUSE_REACH` (6)
+tiles either way of the centre line, is the bay. Players build the walls and
+roof around it however they like; the track carries on through both ends.
+
+A unit is a platform car (its four segments) or a one-tile train object
+(locomotive, tender, wagon). The post puts away units with nothing hitched
+behind them, so a train standing in the bay is unloaded from the back, one
+car at a time or all at once. A unit must be wholly inside the bay, stopped,
+with nobody aboard and, for a railway gun car, its outriggers raised.
+
+Storing moves the unit and everything its tiles carry into
+`/obj/structure/rail_stored_unit` and `/obj/structure/rail_stored_tile` holders
+inside the post (segment and side per tile). Nothing stored is on the map, and
+world saves carry it as nested contents of the post. A stored platform segment
+keeps no deck parts (`apply_layout()` stops when its loc is not a turf).
+
+Taking a unit out rolls it onto the bay track behind the rear of the train in
+the bay, facing the same way, and couples it; furniture turns with it if the
+car faces another way than when it was stored. In an empty bay it rolls to the
+far end it faces. The tiles it needs (and the deck tiles either side for a
+platform car) must be straight bay track and clear.
