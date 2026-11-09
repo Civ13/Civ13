@@ -151,7 +151,7 @@
 					for (var/i = start, i <= min(start + 7, length(stash)), i++)
 						var/list/item = stash[i]
 						entries += list(extraction_ipc_root_projection(item))
-					result = response(request, "committed", "saved_snapshot", list("revision" = account["revision"], "level" = account["level"], "capacity" = account["level"] * 16, "state" = account["state"], "page" = payload["page"], "items" = entries))
+					result = response(request, "committed", "saved_snapshot", list("revision" = account["revision"], "level" = account["level"], "capacity" = extraction_profile_capacity(account), "state" = account["state"], "page" = payload["page"], "items" = entries))
 			else if (economic_adapter)
 				result = call(economic_adapter, "process")(src, request, candidate, now_text, owner)
 				if (!islist(result)) result = response(request, "rejected", "action_not_available")

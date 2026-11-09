@@ -76,6 +76,7 @@ var/global/list/extraction_account_read_leases = list()
 	if (!islist(P)) return FALSE
 	if (!isnull(P["garage"]) && !valid_garage(P["garage"])) return FALSE
 	if (!isnull(P["garage_purchase"]) && !valid_garage_purchase(P["garage_purchase"])) return FALSE
+	if (!extraction_rooms_valid(P)) return FALSE
 	var/list/stash = P["stash"]
 	return P["schema"] == EXTRACTION_STORE_VERSION && P["owner"] == owner && isnum(P["revision"]) && P["revision"] >= 0 && round(P["revision"]) == P["revision"] && isnum(P["level"]) && P["level"] >= 1 && P["level"] <= 4 && round(P["level"]) == P["level"] && islist(stash) && stash.len <= 64 && (P["state"] == "home" || P["state"] == "raid") && isnum(P["raid_sequence"]) && P["raid_sequence"] >= 0 && round(P["raid_sequence"]) == P["raid_sequence"]
 
@@ -393,3 +394,43 @@ var/global/list/extraction_account_read_leases = list()
 	return check["profile"]
 /proc/extraction_insurance_generation(value)
 	return isnum(value) && value >= 0 && value <= 16777215 && round(value) == value
+
+// Safe-house room shape shared by the account store and the room code in
+// safehouse_rooms.dm (which must agree; tests/extraction/rooms_probe.dm checks).
+/proc/extraction_room_limits()
+	return list("racks" = 3, "workbench" = 3, "medstation" = 2, "contacts" = 3)
+
+/proc/extraction_room_work()
+	return list("handle" = list("room" = "workbench", "level" = 1), "pickaxe" = list("room" = "workbench", "level" = 1), "magazine" = list("room" = "workbench", "level" = 2), "vest" = list("room" = "workbench", "level" = 3), "bandages" = list("room" = "medstation", "level" = 1), "splints" = list("room" = "medstation", "level" = 1), "bandage_bale" = list("room" = "medstation", "level" = 2))
+
+/proc/extraction_room_level(list/P, room)
+	var/list/rooms = islist(P) ? P["rooms"] : null
+	return islist(rooms) && isnum(rooms[room]) ? rooms[room] : 0
+
+/proc/extraction_profile_capacity(list/P)
+	return min(64, P["level"] * 16 + extraction_room_level(P, "racks") * 8)
+
+/proc/extraction_minutes_now()
+	return round(world.realtime / 600)
+
+// Profile shape checks for the optional "rooms" and "jobs" fields.
+/proc/extraction_rooms_valid(list/P)
+	var/list/limits = extraction_room_limits()
+	var/list/rooms = P["rooms"]
+	if (!isnull(rooms))
+		if (!islist(rooms) || rooms.len > limits.len) return FALSE
+		for (var/id in rooms)
+			var/level = rooms[id]
+			if (!istext(id) || !limits[id] || !isnum(level) || round(level) != level || level < 1 || level > limits[id] || !isnum(P["level"]) || level > P["level"]) return FALSE
+	var/list/jobs = P["jobs"]
+	if (!isnull(jobs))
+		if (!islist(jobs) || jobs.len > 4) return FALSE
+		var/list/busy = list()
+		var/regex/digits = regex("^\[0-9]{1,12}$")
+		for (var/list/job in jobs)
+			if (!islist(job) || job.len != 4) return FALSE
+			var/list/recipe = extraction_room_work()[job["recipe"]]
+			if (!recipe || job["room"] != recipe["room"] || busy[job["room"]] || extraction_room_level(P, job["room"]) < recipe["level"]) return FALSE
+			if (!istext(job["id"]) || length(job["id"]) != 32 || !istext(job["done"]) || !digits.Find(job["done"])) return FALSE
+			busy[job["room"]] = TRUE
+	return TRUE

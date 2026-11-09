@@ -314,7 +314,7 @@
 		if (!isnum(amount) || amount < 0 || amount > 1000000 || round(amount) != amount) return ipc.response(request, "rejected", "pricing_unavailable")
 		if ((action == "trade.confirm" && wallet(destination) < amount) || (action == "market.buy" && wallet(current) < amount)) return ipc.response(request, "rejected", "insufficient_funds")
 		if ((action == "trade.confirm" && wallet(current) + amount > 1000000) || (action == "market.buy" && wallet(seller) + amount > 1000000)) return ipc.response(request, "rejected", "capacity_exceeded")
-		if (length(destination["stash"]) + length(entries) > destination["level"] * 16) return ipc.response(request, "rejected", "capacity_exceeded")
+		if (length(destination["stash"]) + length(entries) > extraction_profile_capacity(destination)) return ipc.response(request, "rejected", "capacity_exceeded")
 		var/list/parts = list()
 		var/list/after_by_owner = list()
 		var/list/accounts = list(source, destination)

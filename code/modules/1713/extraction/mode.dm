@@ -138,7 +138,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M)) return
 		var/datum/extraction_session/initiating = session
-		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel. Traders deal in euros and pounds at real exchange rates.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Inspect stash", "Insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Traders", "Link Discord", "Save stash", "Cancel"))
+		var/choice = WWinput(H, "Carry your loadout to deploy. Insured deployment costs one workshop part per reusable equipment component, paid from parts left at home. Ammunition never returns. [M.round_briefing()] Leave equipment here before visiting the shared hub. House upgrades consume 5, 10, then 15 workshop parts. A level-two garage car costs 25 parts and has no fuel. Supplies exchange parts for game credits and sell crafting materials, gear and fuel. Traders deal in euros and pounds at real exchange rates. Rooms add storage, crafting and better trader prices.", "Private safe house", "Cancel", list("Deploy", "Deploy car", "Raid group", "Deploy as Scav", "Insure and deploy", "Inspect stash", "Insurance mail", "Visit hub", "Upgrade", "Buy car", "Supplies", "Traders", "Rooms", "Link Discord", "Save stash", "Cancel"))
 		if (!interaction_current(H, initiating)) return
 		switch (choice)
 			if ("Deploy") M.deploy(H)
@@ -153,6 +153,7 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 			if ("Buy car") M.buy_car(H)
 			if ("Supplies") M.manage_supplies(H)
 			if ("Traders") M.manage_traders(H)
+			if ("Rooms") M.manage_rooms(H)
 			if ("Link Discord") M.link_discord(H)
 			if ("Visit hub") M.visit_hub(H)
 

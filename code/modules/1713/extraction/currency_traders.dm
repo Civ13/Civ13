@@ -305,7 +305,7 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 		. += extraction_note_face(I)
 
 // What `trader_id` pays for `I`, as base value (euros), or 0 if refused.
-/obj/map_metadata/extraction_survival/proc/trader_base_offer(trader_id, obj/item/I)
+/obj/map_metadata/extraction_survival/proc/trader_base_offer(trader_id, obj/item/I, desk = 0)
 	var/list/trader = extraction_specialist_traders()[trader_id]
 	if (!trader || !I || I.extraction_insurance_token || I.extraction_secure_stored || extraction_currency_notes()[I.type]) return 0
 	var/list/graph = codec.encode(I, FALSE, FALSE)
@@ -317,11 +317,12 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 		if (!value) return 0
 		total += value
 	if (total > EXTRACTION_TRADE_MAX_FACE) return 0
-	return round(total * trader["spread_bps"] / 10000)
+	// A safe-house contacts desk adds 5% of the value per level.
+	return round(total * (trader["spread_bps"] + desk * 500) / 10000)
 
 // Commits one trade as a single account snapshot, then changes the world to match.
 // take: note -> count handed over; sold: items given up; given: new items; credits: delta.
-/obj/map_metadata/extraction_survival/proc/trader_commit(datum/extraction_session/S, list/take, list/sold, list/given, credits = 0)
+/obj/map_metadata/extraction_survival/proc/trader_commit(datum/extraction_session/S, list/take, list/sold, list/given, credits = 0, list/fields)
 	var/list/candidate = S.copy_profile()
 	var/list/removed = list()
 	var/list/replaced = list()
@@ -352,11 +353,13 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 		var/list/entry = record_item(I)
 		if (!entry || !codec.validate(entry["equipment"])) return FALSE
 		stash += list(entry)
-	if (stash.len > S.capacity()) return FALSE
 	var/balance = game_credits(S) + credits
 	if (balance < 0 || balance > 1000000) return FALSE
 	candidate["stash"] = stash
 	candidate["credits"] = balance
+	for (var/key in fields)
+		candidate[key] = fields[key]
+	if (stash.len > extraction_profile_capacity(candidate)) return FALSE
 	S.transitioning = TRUE
 	if (!S.commit(candidate))
 		S.transitioning = FALSE
@@ -396,13 +399,15 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 	var/datum/extraction_session/S = H.extraction_session
 	var/list/entry = trader["stock"][index]
 	if (S.profile["level"] < entry["level"]) return FALSE
-	var/exact = extraction_fx.from_base(snapshot, entry["price"], currency)
+	var/desk = extraction_room_level(S.profile, "contacts")
+	var/base_price = entry["price"] * (100 - desk * 5) / 100
+	var/exact = extraction_fx.from_base(snapshot, base_price, currency)
 	var/price = -round(-exact)
 	var/list/plan = extraction_payment_plan(money_roots(S, currency), price)
 	if (!plan) return FALSE
 	var/digest = md5(json_encode(S.profile))
 	var/expires = world.time + EXTRACTION_TRADE_QUOTE_LIFETIME
-	var/text = "[entry["label"]] from the [lowertext(trader["name"])]: base value [entry["price"]] credits = €[entry["price"]]"
+	var/text = "[entry["label"]] from the [lowertext(trader["name"])]: base value [entry["price"]] credits[desk ? ", less [desk * 5]% for your contacts desk" : ""] = €[base_price]"
 	if (currency != "EUR") text += " × [snapshot["rates"][currency]] [currency] per EUR = [extraction_currency_symbol(currency)][round(exact, 0.01)]"
 	text += ", rounded up to [extraction_money_text(currency, price)]. You hand over [extraction_money_text(currency, plan["paid"])][plan["change"] ? " and get [extraction_money_text(currency, plan["change"])] change" : ""]. [extraction_fx.describe(snapshot)] This quote holds for two minutes."
 	if (!confirm_trade(H, trader["name"], text) || !trader_still_valid(H, digest, snapshot, expires)) return FALSE
@@ -428,17 +433,18 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 	var/list/trader = extraction_specialist_traders()[trader_id]
 	var/datum/extraction_session/S = H.extraction_session
 	if (!snapshot || !trader || !(currency in trader["pays"]) || !(I in home_roots(S))) return FALSE
-	var/base = trader_base_offer(trader_id, I)
+	var/desk = extraction_room_level(S.profile, "contacts")
+	var/base = trader_base_offer(trader_id, I, desk)
 	if (base < 1) return FALSE
 	var/exact = extraction_fx.from_base(snapshot, base, currency)
 	var/pay = round(exact)
 	if (pay < 1) return FALSE
 	var/digest = md5(json_encode(S.profile))
 	var/expires = world.time + EXTRACTION_TRADE_QUOTE_LIFETIME
-	var/text = "The [lowertext(trader["name"])] offers [extraction_money_text(currency, pay)] for [I]: [trader["spread_bps"] < 10000 ? "half of " : ""]its trade value, worth €[base]"
+	var/text = "The [lowertext(trader["name"])] offers [extraction_money_text(currency, pay)] for [I]: [trader["spread_bps"] < 10000 ? "half of " : ""]its trade value[desk ? " plus [desk * 5]% for your contacts desk" : ""], worth €[base]"
 	if (currency != "EUR") text += " × [snapshot["rates"][currency]] [currency] per EUR = [extraction_currency_symbol(currency)][round(exact, 0.01)]"
 	text += ", rounded down. [extraction_fx.describe(snapshot)] This offer holds for two minutes."
-	if (!confirm_trade(H, trader["name"], text) || !trader_still_valid(H, digest, snapshot, expires) || !(I in home_roots(S)) || trader_base_offer(trader_id, I) != base) return FALSE
+	if (!confirm_trade(H, trader["name"], text) || !trader_still_valid(H, digest, snapshot, expires) || !(I in home_roots(S)) || trader_base_offer(trader_id, I, desk) != base) return FALSE
 	var/list/notes = extraction_make_notes(currency, pay)
 	if (!notes) return FALSE
 	if (!trader_commit(S, list(), list(I), notes))
@@ -525,7 +531,7 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 			for (var/i in 1 to stock.len)
 				var/list/entry = stock[i]
 				if (S.profile["level"] < entry["level"]) continue
-				options["[entry["label"]] - [extraction_money_text(currency, -round(-extraction_fx.from_base(snapshot, entry["price"], currency)))]"] = i
+				options["[entry["label"]] - [extraction_money_text(currency, -round(-extraction_fx.from_base(snapshot, entry["price"] * (100 - extraction_room_level(S.profile, "contacts") * 5) / 100, currency)))]"] = i
 			var/index = options[WWinput(H, "Choose what to buy. The price and change are confirmed before payment.", trader["name"], "Cancel", options + list("Cancel"))]
 			if (index) trader_buy(H, trader_id, index, currency)
 		if ("Sell")
@@ -533,7 +539,7 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 			if (!currency) return
 			var/list/options = list()
 			for (var/obj/item/I in home_roots(S))
-				var/base = trader_base_offer(trader_id, I)
+				var/base = trader_base_offer(trader_id, I, extraction_room_level(S.profile, "contacts"))
 				var/pay = base ? round(extraction_fx.from_base(snapshot, base, currency)) : 0
 				if (pay >= 1) options["[I] - [extraction_money_text(currency, pay)]"] = I
 			if (!options.len)
