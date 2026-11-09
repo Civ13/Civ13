@@ -107,10 +107,53 @@
 	var/datum/terrain_heights/H = map.terrain_heights()
 	return H ? H.at(T.x, T.y, T.z) : 0
 
+// Built ground (wood, stone, tiles, roads, decks, built walls) is laid level:
+// it has no slope cost and no shading. Natural ground keeps the hill.
+/turf/proc/terrain_smoothed()
+	return FALSE
+
+/turf/floor/terrain_smoothed()
+	return TRUE
+
+/turf/floor/grass/terrain_smoothed()
+	return FALSE
+
+/turf/floor/dirt/terrain_smoothed()
+	return FALSE
+
+/turf/floor/winter/terrain_smoothed()
+	return FALSE
+
+/turf/floor/beach/terrain_smoothed()
+	return FALSE
+
+/turf/floor/rocky/terrain_smoothed()
+	return FALSE
+
+/turf/floor/gravel/terrain_smoothed()
+	return FALSE
+
+/turf/floor/mining/terrain_smoothed()
+	return FALSE
+
+/turf/floor/trench/terrain_smoothed()
+	return FALSE
+
+/turf/floor/lava/terrain_smoothed()
+	return FALSE
+
+/turf/wall/terrain_smoothed()
+	return TRUE
+
+/turf/wall/rockwall/terrain_smoothed()
+	return FALSE
+
 // Extra move delay (negative when it saves time) for one step between two
 // neighbouring turfs, given the step's delay before this term.
 /proc/terrain_slope_delay(turf/origin, turf/destination, step_delay)
 	if (!origin || !destination || origin.z != destination.z || !map || !map.terrain_height_file)
+		return 0
+	if (origin.terrain_smoothed() || destination.terrain_smoothed())
 		return 0
 	var/levels = clamp(terrain_height_at(destination) - terrain_height_at(origin), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
 	if (levels > 0)
@@ -199,7 +242,7 @@ var/global/terrain_shading_applied = FALSE
 /turf/proc/terrain_shade_refresh()
 	for (var/obj/effect/terrain_shade/old in vis_contents)
 		vis_contents -= old
-	if (!map || !map.terrain_height_file || istype(src, /turf/floor/beach/water))
+	if (!map || !map.terrain_height_file || istype(src, /turf/floor/beach/water) || terrain_smoothed())
 		return
 	var/datum/terrain_heights/H = map.terrain_heights()
 	var/key = H ? H.shade_key(x, y, z) : null
@@ -217,7 +260,7 @@ var/global/terrain_shading_applied = FALSE
 		for (var/y in 1 to H.maxy)
 			for (var/x in 1 to H.maxx)
 				var/turf/T = locate(x, y, z)
-				if (!T || istype(T, /turf/floor/beach/water))
+				if (!T || istype(T, /turf/floor/beach/water) || T.terrain_smoothed())
 					continue
 				var/key = H.shade_key(x, y, z)
 				if (key != "cccc")
