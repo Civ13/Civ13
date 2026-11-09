@@ -236,7 +236,16 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('(last_error && last_error != last_export_error)', reclaim)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || usage_delta > 40 || current_usage >= 90 || elapsed_ds > 1', SAVING)
+        self.assertIn('work > 8192 || tick_delta || usage_delta > 40 || elapsed_ds > 1', SAVING)
+
+    def test_busy_tick_admission_does_not_fail_capture(self):
+        # Gaia 2026-11-09: an elk admitted at 76% usage cost 13.7% and hit the
+        # old 90% total-usage line, failing the whole save. Only the chunk's own
+        # cost and a yield may refuse it, and nothing inside a chunk sleeps.
+        capture = SAVING.split('/datum/moving_save_capture\n', 1)[1].split('proc/reserve_bytes', 1)[0]
+        self.assertNotIn('current_usage >=', capture)
+        work_check = SAVING.split('/map_storage/proc/save_work_check()', 1)[1].split('saving_work++', 1)[0]
+        self.assertIn('moving_save_chunk.check()\n\t\treturn', work_check)
         for field in ('work=[work]', 'tick_delta=[tick_delta]', 'usage_delta=[usage_delta]', 'total_usage=[current_usage]', 'elapsed_ds=[elapsed_ds]'):
             self.assertIn(field, SAVING)
 
