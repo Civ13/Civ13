@@ -217,7 +217,7 @@ var/global/list/fluid_vessels = list()
 		var/datum/chemical_reaction/R = controlled_reactions_by_id[id]
 		if (R.result)
 			options[R.name] = R.id
-	var/choice = input(user, "Choose the game reaction this vessel runs. It takes a full batch of inputs from its pipes.", name) as null|anything in options
+	var/choice = player_input(user, "Choose the game reaction this vessel runs. It takes a full batch of inputs from its pipes.", name, null, "anything", options, TRUE)
 	if (!choice || !user || user.incapacitated() || get_dist(user, src) > 1)
 		return
 	set_recipe(options[choice] == "none" ? null : options[choice])

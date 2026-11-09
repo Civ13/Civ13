@@ -33,13 +33,13 @@
 				return TRUE
 	if (href_list["skin_tone"])
 		if (can_change_skin_tone())
-			var/new_s_tone = input(usr, "Choose your character's skin-tone:\n(Light TRUE - 220 Dark)", "Skin Tone", -owner.s_tone + 35) as num|null
+			var/new_s_tone = player_input(usr, "Choose your character's skin-tone:\n(Light TRUE - 220 Dark)", "Skin Tone", -owner.s_tone + 35, "num", null, TRUE)
 			if (isnum(new_s_tone) && can_still_topic(state))
 				new_s_tone = 35 - max(min( round(new_s_tone), 220),1)
 				return owner.change_skin_tone(new_s_tone)
 	if (href_list["skin_color"])
 		if (can_change_skin_color())
-			var/new_skin = input(usr, "Choose your character's skin colour: ", "Skin Color", rgb(owner.r_skin, owner.g_skin, owner.b_skin)) as color|null
+			var/new_skin = player_input(usr, "Choose your character's skin colour: ", "Skin Color", rgb(owner.r_skin, owner.g_skin, owner.b_skin), "color", null, TRUE)
 			if (new_skin && can_still_topic(state))
 				var/r_skin = hex2num(copytext(new_skin, 2, 4))
 				var/g_skin = hex2num(copytext(new_skin, 4, 6))
@@ -55,7 +55,7 @@
 	if (href_list["hair_color"])
 		if (can_change(APPEARANCE_HAIR_COLOR))
 			/* New hair system, no more anime character hair - Kachnov */
-			var/new_hair = input(owner, "Please select a hair color.", "Hair Color") in hair_colors
+			var/new_hair = player_input(owner, "Please select a hair color.", "Hair Color", null, "anything", hair_colors, FALSE)
 			if (new_hair == "Cancel")
 				return
 			var/hex_hair = hair_colors[new_hair]
@@ -74,7 +74,7 @@
 				return TRUE
 	if (href_list["facial_hair_color"])
 		if (can_change(APPEARANCE_FACIAL_HAIR_COLOR))
-			var/new_facial = input("Please select facial hair color.", "Facial Hair Color") in hair_colors
+			var/new_facial = player_input(usr, "Please select facial hair color.", "Facial Hair Color", null, "anything", hair_colors, FALSE)
 			new_facial = hair_colors[new_facial]
 			if (new_facial && can_still_topic(state))
 				var/r_facial = hex2num(copytext(new_facial, 2, 4))
@@ -85,7 +85,7 @@
 					return TRUE
 	if (href_list["eye_color"])
 		if (can_change(APPEARANCE_EYE_COLOR))
-			var/new_eyes = input("Please select eye color.", "Eye Color", rgb(owner.r_eyes, owner.g_eyes, owner.b_eyes)) as color|null
+			var/new_eyes = player_input(usr, "Please select eye color.", "Eye Color", rgb(owner.r_eyes, owner.g_eyes, owner.b_eyes), "color", null, TRUE)
 			if (new_eyes && can_still_topic(state))
 				var/r_eyes = hex2num(copytext(new_eyes, 2, 4))
 				var/g_eyes = hex2num(copytext(new_eyes, 4, 6))

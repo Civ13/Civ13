@@ -115,7 +115,7 @@
 	var/list/names = list()
 	for (var/mob/living/human/H in feeds)
 		names["[H.real_name] ([get_area(H)])"] = H
-	var/choice = input(user, "Whose helmet camera do you want to watch?", "Overwatch") as null|anything in names
+	var/choice = player_input(user, "Whose helmet camera do you want to watch?", "Overwatch", null, "anything", names, TRUE)
 	if (!choice || loc != user)
 		return
 	start_watching(user, names[choice])

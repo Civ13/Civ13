@@ -176,7 +176,7 @@ var/global/list/orbit_station_requirements = list(
 	if (reason)
 		to_chat(user, SPAN_WARNING(reason))
 		return
-	if (alert(user, "Start building [party_train_party_name(new_party)]'s space station here? Bring [progress_text()] to finish it.", "Space station", "Start", "Cancel") != "Start")
+	if (player_alert(user, "Start building [party_train_party_name(new_party)]'s space station here? Bring [progress_text()] to finish it.", "Space station", list("Start", "Cancel")) != "Start")
 		return
 	// The prompt slept: check again.
 	if (QDELETED(src) || party || !user.client || !Adjacent(user) || party_train_party_of(user) != new_party)

@@ -68,7 +68,7 @@ var/global/list/active_node_lesson_stations = list()
 			var/datum/research_node/N = research_nodes[node_id]
 			options["[N.name] ([node_id])"] = node_id
 	if (!options.len) return FALSE
-	var/choice = input(H, "Teach one recipe group for five uninterrupted minutes. Listeners must stay awake and active beside the same tuned receiver. One-minute station cooldown follows.", "Recipe lesson") as null|anything in options
+	var/choice = player_input(H, "Teach one recipe group for five uninterrupted minutes. Listeners must stay awake and active beside the same tuned receiver. One-minute station cooldown follows.", "Recipe lesson", null, "anything", options, TRUE)
 	if (!choice) return FALSE
 	return start_node_lesson(H, options[choice])
 

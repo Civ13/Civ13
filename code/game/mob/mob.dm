@@ -386,7 +386,7 @@
 	set src in usr
 	if (usr != src)
 		to_chat(usr, "No.")
-	var/msg = sanitize(input(usr,"Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.","Flavor Text",html_decode(flavor_text)) as message|null, extra = FALSE)
+	var/msg = sanitize(player_input(usr, "Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.", "Flavor Text", html_decode(flavor_text), "message", null, TRUE), extra = FALSE)
 
 	if (msg != null)
 		flavor_text = msg
@@ -977,7 +977,7 @@ mob/proc/yank_out_object()
 			to_chat(U, "[src] has nothing stuck in their wounds that is large enough to remove.")
 		return
 
-	var/obj/item/weapon/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
+	var/obj/item/weapon/selection = player_input(usr, "What do you want to yank out?", "Embedded objects", null, "anything", valid_objects, FALSE)
 
 	if (self)
 		to_chat(src, SPAN_WARNING("You attempt to get a good grip on [selection] in your body."))

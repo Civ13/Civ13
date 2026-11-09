@@ -553,7 +553,7 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 			var/list/targets = list("EUR", "GBP", "CR") - from
 			var/target = choose_currency(H, targets, "Change into which currency?")
 			if (!target) return
-			var/amount = input(H, "How much [from == "CR" ? "in game credits" : (from == "EUR" ? "in euros" : "in pounds")]? You have [extraction_money_text(from, money_total(S, from))].", "Change money") as num|null
+			var/amount = player_input(H, "How much [from == "CR" ? "in game credits" : (from == "EUR" ? "in euros" : "in pounds")]? You have [extraction_money_text(from, money_total(S, from))].", "Change money", null, "num", null, TRUE)
 			if (isnum(amount)) trader_exchange(H, round(amount), from, target)
 
 #undef EXTRACTION_FX_PROVIDER

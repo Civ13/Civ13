@@ -81,7 +81,7 @@
 		return
 	if (stat == DEAD)
 		return
-	var/words = input(src, "Any last words? Leave it empty to say nothing.", "Last Words") as null|text
+	var/words = player_input(src, "Any last words? Leave it empty to say nothing.", "Last Words", null, "text", null, TRUE)
 	if (stat == DEAD)
 		return
 	if (words)

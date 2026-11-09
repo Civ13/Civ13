@@ -519,7 +519,7 @@
 	var/cont = FALSE
 
 	if (stored_ammo.len > 0 && stored_ammo.len < 20 && !istype(src,/obj/item/ammo_magazine/tibannagas))
-		if ((input(user, "Are you sure you want to empty the [src]?", "[src]") in list ("Yes", "No")) == "Yes")
+		if ((player_input(user, "Are you sure you want to empty the [src]?", "[src]", null, "anything", list ("Yes", "No"), FALSE)) == "Yes")
 			cont = TRUE
 
 	if (cont)

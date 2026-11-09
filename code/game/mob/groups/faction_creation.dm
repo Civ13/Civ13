@@ -87,7 +87,7 @@
 		return
 
 	if (href_list["set_name"])
-		var/newname = input(owner, "Choose a name for the faction:", "Faction Creation", draft_name) as text|null
+		var/newname = player_input(owner, "Choose a name for the faction:", "Faction Creation", draft_name, "text", null, TRUE)
 		if (newname && newname != "")
 			// The name becomes an assoc key everywhere (custom_civs,
 			// mob.civilization) AND raw HTML in the faction list, so strip
@@ -104,7 +104,7 @@
 			else
 				draft_name = newname
 	else if (href_list["set_motto"])
-		var/raw = input(owner, "Motto ([FACTION_MOTTO_MAX_CHARS] characters max; leave empty for none):", "Faction Creation", draft_motto) as text|null
+		var/raw = player_input(owner, "Motto ([FACTION_MOTTO_MAX_CHARS] characters max; leave empty for none):", "Faction Creation", draft_motto, "text", null, TRUE)
 		if (!isnull(raw))
 			// The character limit applies to what was TYPED -- enforce it
 			// before sanitize()'s html-encoding inflates e.g. "&" to "&amp;".
@@ -113,7 +113,7 @@
 				to_chat(owner, SPAN_WARNING("Your motto was over [FACTION_MOTTO_MAX_CHARS] characters and has been trimmed."))
 			draft_motto = sanitize(raw, 0)
 	else if (href_list["set_flavour"])
-		var/raw = input(owner, "Flavour text ([FACTION_FLAVOUR_MAX_WORDS] words max; leave empty for none):", "Faction Creation", draft_flavour) as message|null
+		var/raw = player_input(owner, "Flavour text ([FACTION_FLAVOUR_MAX_WORDS] words max; leave empty for none):", "Faction Creation", draft_flavour, "message", null, TRUE)
 		if (!isnull(raw))
 			// Word-count limit, so trim at a word boundary. Newlines get
 			// flattened to spaces by sanitize() anyway (it's shown as one
@@ -129,7 +129,7 @@
 	else if (href_list["set_tool"])
 		tool = href_list["set_tool"]
 	else if (href_list["pick_color"])
-		var/newcolor = input(owner, "Choose the active paint color:", "Faction Creation", paint_color) as color
+		var/newcolor = player_input(owner, "Choose the active paint color:", "Faction Creation", paint_color, "color", null, FALSE)
 		if (newcolor)
 			paint_color = newcolor
 	else if (href_list["paint"])

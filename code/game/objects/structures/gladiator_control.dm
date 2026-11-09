@@ -804,7 +804,7 @@
 					G.gladiator_stats += list(list(client.ckey,name,statlist,0,0,0))
 					return
 				else
-					var/input_name = input(src, "Choose the new name: (Max 25 characters)","Custom Name", name) as text
+					var/input_name = player_input(src, "Choose the new name: (Max 25 characters)", "Custom Name", name, "text", null, FALSE)
 					input_name = sanitizeName(input_name, 25, FALSE)
 					if (input_name != "" && input_name)
 						name = input_name

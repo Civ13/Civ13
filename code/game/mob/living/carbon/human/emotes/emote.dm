@@ -110,7 +110,7 @@ var/list/vocal_emotes = list(
 				m_type = 1
 /*
 			if ("custom")
-				var/input = sanitize(input("Choose an emote to display.") as text|null)
+				var/input = sanitize(player_input(usr, "Choose an emote to display.", null, null, "text", null, TRUE))
 				if (!input)
 					return
 				var/input2 = WWinput(src, "Is this a visible or hearable emote?", "Emote", "Visible", list("Visible", "Hearable"))

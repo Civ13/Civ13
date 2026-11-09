@@ -176,7 +176,7 @@
 	set category = null
 	set src in usr
 
-	var/n_name = sanitizeSafe(input(usr, "What would you like to label the bundle?", "Bundle Labelling", null)  as text, MAX_NAME_LEN)
+	var/n_name = sanitizeSafe(player_input(usr, "What would you like to label the bundle?", "Bundle Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE)
 		name = "[(n_name ? text("[n_name]") : "paper")]"
 	add_fingerprint(usr)

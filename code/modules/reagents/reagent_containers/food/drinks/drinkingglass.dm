@@ -106,7 +106,7 @@
 		to_chat(user, "<span class='warning'>You can't think of anything to do with the glass.</span>")
 		return
 
-	var/action = input(user, "What do you want to do with [src]?") as null|anything in actions
+	var/action = player_input(user, "What do you want to do with [src]?", null, null, "anything", actions, TRUE)
 	switch(action)
 		if ("Remove the cherry")
 			new /obj/item/cocktail_stuff/maraschino_cherry(H.loc)

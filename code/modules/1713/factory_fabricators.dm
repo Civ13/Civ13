@@ -227,7 +227,7 @@ var/global/list/factory_active_fabricators = list()
 		var/label = hint ? "[recipe_choice] - [hint]" : recipe_choice
 		labels[label] = recipe_choice
 		if (recipe_choice == recipe_name) default_label = label
-	var/selected_label = input(H, "Choose what \the [src] makes.", "Fabricator recipe", default_label) as null|anything in labels
+	var/selected_label = player_input(H, "Choose what \the [src] makes.", "Fabricator recipe", default_label, "anything", labels, TRUE)
 	var/choice = selected_label ? labels[selected_label] : null
 	if (!choice || QDELETED(src) || !H.Adjacent(src) || H.incapacitated())
 		return

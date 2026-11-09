@@ -23,7 +23,7 @@
 			if (U.getStatCoeff("philosophy") < 2.49)
 				to_chat(usr, SPAN_WARNING("Your philosophy skill is too low. You need 2.5 or more to create a religion."))
 				return
-			var/choosename = input(src, "Choose a name for the new religion:") as text|null
+			var/choosename = player_input(src, "Choose a name for the new religion:", null, null, "text", null, TRUE)
 			create_religion_pr(choosename)
 			return
 	else

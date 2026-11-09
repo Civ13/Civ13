@@ -451,7 +451,7 @@
 					return
 				else
 					U = choice2
-					var/inp = input(user, "How long should the visa last? In minutes. (Up to 3 days - 4320 minutes)") as num|null
+					var/inp = player_input(user, "How long should the visa last? In minutes. (Up to 3 days - 4320 minutes)", null, null, "num", null, TRUE)
 					if (!isnum(inp))
 						return
 					if (inp <= 0)

@@ -215,7 +215,7 @@ var/global/list/party_train_requirements = list(
 	if(other)
 		to_chat(user, SPAN_WARNING("[party_train_party_name(new_party)] already has a train project at [other.x],[other.y]."))
 		return
-	if(alert(user, "Start building [party_train_party_name(new_party)]'s train here? Bring [progress_text()] to finish it.", "Party train", "Start", "Cancel") != "Start")
+	if(player_alert(user, "Start building [party_train_party_name(new_party)]'s train here? Bring [progress_text()] to finish it.", "Party train", list("Start", "Cancel")) != "Start")
 		return
 	// The prompt slept: the player's party, the track and other offices may have changed.
 	if(QDELETED(src) || party || !user.client || !Adjacent(user)) return

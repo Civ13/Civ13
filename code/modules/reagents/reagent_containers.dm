@@ -93,7 +93,7 @@
 	set name = "Set transfer amount"
 	set category = null
 	set src in range(0)
-	var/N = input("Amount per transfer from this:","[src]") as null|anything in possible_transfer_amounts
+	var/N = player_input(usr, "Amount per transfer from this:", "[src]", null, "anything", possible_transfer_amounts, TRUE)
 	if (N)
 		amount_per_transfer_from_this = N
 

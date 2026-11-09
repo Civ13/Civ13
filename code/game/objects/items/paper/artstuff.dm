@@ -168,7 +168,7 @@
 		return canvas_color
 
 /obj/item/canvas/proc/try_rename(mob/user)
-	var/new_name = input(user,"What do you want to name the painting?","painting","painting") as text
+	var/new_name = player_input(user, "What do you want to name the painting?", "painting", "painting", "text", null, FALSE)
 	if(!painting_name && new_name)
 		painting_name = new_name
 

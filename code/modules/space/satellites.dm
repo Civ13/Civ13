@@ -544,18 +544,18 @@ var/global/list/satellite_kinds = list(
 		if ("Where am I")
 			to_chat(user, SPAN_NOTICE("You are at [T.x], [T.y], level [T.z]."))
 		if ("Save waypoint")
-			var/label = sanitize(input(user, "Name the waypoint", "GPS receiver", "Waypoint [length(waypoints) + 1]") as null|text, 24)
+			var/label = sanitize(player_input(user, "Name the waypoint", "GPS receiver", "Waypoint [length(waypoints) + 1]", "text", null, TRUE), 24)
 			if (!label || QDELETED(src) || loc != user || length(waypoints) >= SATELLITE_WAYPOINTS)
 				return
 			waypoints[label] = "[T.x],[T.y],[T.z]"
 			to_chat(user, SPAN_NOTICE("Saved [label] at [T.x], [T.y]."))
 		if ("Steer to waypoint")
-			var/label = input(user, "Steer to which waypoint?", "GPS receiver") as null|anything in waypoints
+			var/label = player_input(user, "Steer to which waypoint?", "GPS receiver", null, "anything", waypoints, TRUE)
 			if (!label || QDELETED(src) || loc != user)
 				return
 			to_chat(user, SPAN_NOTICE(gps_bearing(get_turf(src), waypoints[label], label)))
 		if ("Forget waypoint")
-			var/label = input(user, "Forget which waypoint?", "GPS receiver") as null|anything in waypoints
+			var/label = player_input(user, "Forget which waypoint?", "GPS receiver", null, "anything", waypoints, TRUE)
 			if (label)
 				waypoints -= label
 

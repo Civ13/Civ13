@@ -89,7 +89,7 @@
 		var/label = hint ? "[recipe_name] - [hint]" : recipe_name
 		choices[label] = recipe_name
 		if (recipe_name == selected_tool) default_label = label
-	var/selected_label = input(H, "Recipe (changing returns stored items)", name, default_label) as null|anything in choices
+	var/selected_label = player_input(H, "Recipe (changing returns stored items)", name, default_label, "anything", choices, TRUE)
 	var/choice = selected_label ? choices[selected_label] : null
 	if (choice && select_recipe(H, choice)) to_chat(H, "[src] is now set to [selected_tool].")
 
@@ -125,7 +125,7 @@
 	var/list/options = list("Status", "Retrieve / cancel")
 	if (!busy) options += "Select recipe"
 	if (!busy && find_head() && find_handle()) options += "Assemble"
-	var/action = input(H, "[selected_tool]: one matching usable head and one usable handle. [busy ? "Assembly in progress" : "Idle"].", name) as null|anything in options
+	var/action = player_input(H, "[selected_tool]: one matching usable head and one usable handle. [busy ? "Assembly in progress" : "Idle"].", name, null, "anything", options, TRUE)
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)

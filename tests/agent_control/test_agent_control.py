@@ -2615,5 +2615,42 @@ class WindowTests(unittest.TestCase):
         self.assertIn("buttons: 1. Buy bread; 2. Sell", text)
 
 
+class PromptTests(unittest.TestCase):
+    """Typed prompts (code/modules/agent_control/agent_prompts.dm): gameplay uses player_input/player_alert."""
+
+    # Raw input() left on purpose: WWinput wraps it, admin-only tools, odd four-argument
+    # calls (officer, mob), and prompts pinned byte-for-byte by their own contract tests
+    # (tests/telephone_recipients, tests/stone_molds, tests/crafting_ui_contracts, paper).
+    RAW_INPUT_ALLOWED = {
+        "code/_helpers/WWinput.dm": 11, "code/game/mob/mob.dm": 1, "code/game/objects/items/paper/paper.dm": 1,
+        "code/game/objects/structures/blacksmithing/molds.dm": 1, "code/modules/1713/officer.dm": 2,
+        "code/modules/1713/telephone.dm": 5, "code/modules/collectibles/stickers_admin.dm": 11,
+        "code/modules/gameplay_bridge/bridge.dm": 1, "code/modules/nomad_raids/nomad_admin.dm": 5,
+    }
+
+    def test_gameplay_prompts_go_through_player_input(self):
+        call = re.compile(r"(?<![\w.])input\(")
+        found = {}
+        for path in (ROOT / "code").rglob("*.dm"):
+            rel = path.relative_to(ROOT).as_posix()
+            if re.match(r"code/modules/(admin|client|agent_control)/", rel):
+                continue
+            count = 0
+            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+                code = line.split("//")[0]
+                if not code.lstrip().startswith("*"):
+                    count += len(call.findall(code))
+            if count:
+                found[rel] = count
+        extra = {path: n for path, n in found.items() if n > self.RAW_INPUT_ALLOWED.get(path, 0)}
+        self.assertEqual(extra, {}, "use player_input()/player_alert() so agent characters can answer with choose")
+
+    def test_agent_answers_respect_the_prompt(self):
+        source = dm_source("agent_prompts.dm")
+        self.assertIn("if (pending_choice && world.time > pending_choice_until)", source)
+        self.assertIn('if (kind == "anything" && !(default in choices))', source)
+        self.assertIn("if (!M.client)", source)
+
+
 if __name__ == "__main__":
     unittest.main()

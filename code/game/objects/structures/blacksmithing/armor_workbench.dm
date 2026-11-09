@@ -139,7 +139,7 @@
 	var/list/options = list("Status", "Retrieve / cancel")
 	if (!busy) options += "Select recipe"
 	if (!busy && recipe_available(H, selected_tool) && staged_inputs(selected_tool)) options += "Assemble"
-	var/action = input(H, recipe_status(), name) as null|anything in options
+	var/action = player_input(H, recipe_status(), name, null, "anything", options, TRUE)
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)

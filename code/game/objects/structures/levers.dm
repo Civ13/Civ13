@@ -45,9 +45,9 @@
 	density = TRUE
 
 /obj/structure/skeleton_configurator/attack_hand(mob/living/user)
-	var/maxamount = input(user, "What is the maximum amount of Skeletons that can be alive, per spawn point? 1 to 50. Default 5.") as num
+	var/maxamount = player_input(user, "What is the maximum amount of Skeletons that can be alive, per spawn point? 1 to 50. Default 5.", null, null, "num", null, FALSE)
 	maxamount = Clamp(maxamount, 1, 50)
-	var/timer = input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 40.") as num
+	var/timer = player_input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 40.", null, null, "num", null, FALSE)
 	timer = Clamp(timer, 5, 300)
 	timer *= 10
 	for (var/obj/effect/spawner/mobspawner/skeletons/SK)
@@ -98,9 +98,9 @@
 	density = TRUE
 
 /obj/structure/townmilitia_configurator/attack_hand(mob/living/user)
-	var/maxamount = input(user, "What is the maximum amount of town militias that can be alive, per spawn point? 1 to 50. Default 5.") as num
+	var/maxamount = player_input(user, "What is the maximum amount of town militias that can be alive, per spawn point? 1 to 50. Default 5.", null, null, "num", null, FALSE)
 	maxamount = Clamp(maxamount, 1, 50)
-	var/timer = input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 75.") as num
+	var/timer = player_input(user, "What is the delay between spawnings, in seconds? The real value will vary between 100% and 150% of the value you put here. 5 to 300. Default 75.", null, null, "num", null, FALSE)
 	timer = Clamp(timer, 5, 300)
 	timer *= 10
 	for (var/obj/effect/spawner/mobspawner/townmilitia/RC)

@@ -71,7 +71,7 @@ var/global/list/region_trail_next_request = list()
 	if(!length(choices))
 		to_chat(user, SPAN_WARNING("No other lands are known from here."))
 		return
-	var/choice = input(user, "Which land should this trail lead to? An admin must approve it before it opens.", "Trail marker") as null|anything in choices
+	var/choice = player_input(user, "Which land should this trail lead to? An admin must approve it before it opens.", "Trail marker", null, "anything", choices, TRUE)
 	if(!choice || QDELETED(src) || !user.client || !Adjacent(user)) return
 	// The prompt slept: someone else may have asked meanwhile.
 	reason = request_refusal(user.client.ckey)
@@ -130,7 +130,7 @@ var/global/list/region_trail_next_request = list()
 	for(var/label in choices)
 		if(choices[label] == requested_destination)
 			current = label
-	var/choice = input(admin, "Where should this trail lead?", "Approve trail", current) as null|anything in choices
+	var/choice = player_input(admin, "Where should this trail lead?", "Approve trail", current, "anything", choices, TRUE)
 	if(!choice || QDELETED(src) || !check_rights(R_ADMIN, TRUE, admin)) return
 	if(approve(choices[choice], admin.ckey))
 		message_admins("[key_name_admin(admin)] approved the trail at [x],[y],[z] to [html_encode(destination_name())].")

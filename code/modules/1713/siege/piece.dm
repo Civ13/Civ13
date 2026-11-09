@@ -463,7 +463,7 @@
 					return
 
 	if (href_list["set_distance"])
-		distance = input(user, "Set Distance? (From [minrange] to [maxrange] meters)") as num
+		distance = player_input(user, "Set Distance? (From [minrange] to [maxrange] meters)", null, null, "num", null, FALSE)
 		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["distance_1minus"])
@@ -481,7 +481,7 @@
 		distance = clamp(distance, minrange, max_distance)
 
 	if (href_list["set_azimuth"])
-		azimuth = input(user, "Want to set the Azimuth to what? (From [0] to [359] degrees - N = 0, E = 90, S = 180, W = 270)") as num
+		azimuth = player_input(user, "Want to set the Azimuth to what? (From [0] to [359] degrees - N = 0, E = 90, S = 180, W = 270)", null, null, "num", null, FALSE)
 		if(azimuth < 0)
 			azimuth += 360
 		if(azimuth >= 360)

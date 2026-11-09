@@ -18,7 +18,7 @@
 	options["Peace maker - revolver"] = list(/obj/item/weapon/gun/projectile/revolver/frontier,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44,/obj/item/ammo_magazine/c44)
 	options["Beretta m9 - pistol"] = list(/obj/item/weapon/gun/projectile/pistol/m9beretta,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta,/obj/item/ammo_magazine/m9beretta)
 	options["TT-30 - less than lethal pistol"] = list(/obj/item/weapon/gun/projectile/pistol/tt30,/obj/item/ammo_magazine/tt30ll/rubber,/obj/item/ammo_magazine/tt30ll/rubber,/obj/item/ammo_magazine/tt30ll/rubber)
-	var/choice = input(user,"What type of equipment?") as null|anything in options
+	var/choice = player_input(user, "What type of equipment?", null, null, "anything", options, TRUE)
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
 		for(var/new_type in things_to_spawn)
@@ -43,7 +43,7 @@
 			options["Foldable Mortar"] = list(/obj/item/weapon/foldable/generic,/obj/item/weapon/storage/backpack/heavyrucksack/mortar,/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars)
 			options["Foldable PKM"] = list(/obj/item/weapon/foldable/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm,/obj/item/ammo_magazine/pkm)
 	
-	var/choice = input(user,"What type of equipment?") as null|anything in options
+	var/choice = player_input(user, "What type of equipment?", null, null, "anything", options, TRUE)
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
 		for(var/new_type in things_to_spawn)
@@ -69,7 +69,7 @@
 			options["Sniper"] = list(/obj/item/weapon/gun/projectile/semiautomatic/vintorez,/obj/item/ammo_magazine/vintorez,/obj/item/ammo_magazine/vintorez,/obj/item/clothing/suit/storage/ghillie,/obj/item/clothing/head/ghillie)
 			options["Anti-Tank"] = list(/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22,/obj/item/weapon/gun/launcher/rocket/single_shot/rpg22)
 			options["Grenadier - Underslung"] = list(/obj/item/weapon/gun/launcher/grenade/underslung/gp25,/obj/item/clothing/accessory/storage/webbing/vog25)
-	var/choice = input(user,"What type of equipment?") as null|anything in options
+	var/choice = player_input(user, "What type of equipment?", null, null, "anything", options, TRUE)
 	if(src && choice)
 		var/list/things_to_spawn = options[choice]
 		for(var/new_type in things_to_spawn)

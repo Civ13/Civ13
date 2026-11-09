@@ -189,7 +189,7 @@
 	var/list/options = list("Status", "Retrieve / cancel")
 	if (!busy) options += list("Select recipe", "Load shafts from floor")
 	if (!busy && ready_count()) options += "Fletch"
-	var/action = input(H, recipe_status(), name) as null|anything in options
+	var/action = player_input(H, recipe_status(), name, null, "anything", options, TRUE)
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)
@@ -363,7 +363,7 @@
 	var/list/options = list("Status", "Retrieve / cancel")
 	if (!busy) options += "Select recipe"
 	if (!busy && recipe_available(selected_tool) && ready_count(selected_tool)) options += "Make tools"
-	var/action = input(H, recipe_status(), name) as null|anything in options
+	var/action = player_input(H, recipe_status(), name, null, "anything", options, TRUE)
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)

@@ -376,7 +376,7 @@
 
 /obj/item/clothing/accessory/wearable_sign/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/pen))
-		var/newtext = input("What do you want to write on the sign? (Up to 30 characters)","Sign", "") as text
+		var/newtext = player_input(usr, "What do you want to write on the sign? (Up to 30 characters)", "Sign", "", "text", null, FALSE)
 		if (newtext == null)
 			newtext = ""
 		newtext = sanitize(newtext, 30, FALSE)

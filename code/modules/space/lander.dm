@@ -508,7 +508,7 @@ var/global/list/space_cargo_stacks = list(
 	for (var/label in sites)
 		options += label
 	options += unsurveyed
-	var/choice = input(H, "Where should the lander set down on [pad.destination_name()]? Everyone strapped in flies, with what they wear and carry. [sortie_ready() ? "It keeps propellant for the ascent home." : "It cannot fly home again: fill it to [propellant_needed + ascent_propellant] for a sortie."]", "Launch") as null|anything in options
+	var/choice = player_input(H, "Where should the lander set down on [pad.destination_name()]? Everyone strapped in flies, with what they wear and carry. [sortie_ready() ? "It keeps propellant for the ascent home." : "It cannot fly home again: fill it to [propellant_needed + ascent_propellant] for a sortie."]", "Launch", null, "anything", options, TRUE)
 	if (!choice || QDELETED(src) || !H.client || !in_range(src, H))
 		return
 	// The prompt slept: check everything again.

@@ -154,7 +154,7 @@ var/global/civ_landline_cursor = 1
 		hang_up()
 		to_chat(H, "You hang up.")
 		return
-	var/number = input(H, "Telephone number (1000-9999)", name) as num|null
+	var/number = player_input(H, "Telephone number (1000-9999)", name, null, "num", null, TRUE)
 	if (isnull(number) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	to_chat(H, dial(sanitize_integer(number, 1000, 9999, 0)) ? "Calling [number]..." : "Busy, missing infrastructure, or no route.")

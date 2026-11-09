@@ -281,7 +281,7 @@
 				options["Medical supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/medical)
 				options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 				options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
-				var/choice = input(user,"What type of supply drop?") as null|anything in options
+				var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
 				if(src && choice)
 					var/list/things_to_spawn = options[choice]
 					for(var/new_type in things_to_spawn)

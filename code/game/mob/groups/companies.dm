@@ -14,7 +14,7 @@
 	else
 		return
 	if (map.civilizations == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_COLONY || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
-		var/choosename = input(U, "Choose a name for the company:") as text|null
+		var/choosename = player_input(U, "Choose a name for the company:", null, null, "text", null, TRUE)
 		create_company_pr(choosename)
 		return
 	else
@@ -82,7 +82,7 @@
 			if (compchoice == "Cancel")
 				return
 			else
-				var/compchoice_amt = input(H, "You own [currlist[compchoice][1]]% of [compchoice]. How much do you want to transfer? (1 to [currlist[compchoice][1]])") as num|null
+				var/compchoice_amt = player_input(H, "You own [currlist[compchoice][1]]% of [compchoice]. How much do you want to transfer? (1 to [currlist[compchoice][1]])", null, null, "num", null, TRUE)
 				compchoice_amt = round(compchoice_amt)
 				if (compchoice_amt > currlist[compchoice][1])
 					compchoice_amt = currlist[compchoice][1]

@@ -431,7 +431,7 @@ proc/is_complete_print(var/print)
 	else if(choices.len == 1)
 		choice = choices[1]
 	else
-		choice = input("What kind of evidence are you looking for?","Evidence Collection") as null|anything in choices
+		choice = player_input(usr, "What kind of evidence are you looking for?", "Evidence Collection", null, "anything", choices, TRUE)
 
 	if(!choice)
 		return

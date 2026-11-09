@@ -50,9 +50,9 @@
 	set desc = "Name this."
 
 	set src in view(1)
-	var/yn = input(usr, "Give this [src] a name?") in list("Yes", "No")
+	var/yn = player_input(usr, "Give this [src] a name?", null, null, "anything", list("Yes", "No"), FALSE)
 	if (yn == "Yes")
-		var/_name = input(usr, "What name?") as text
+		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 		if (length(_name) <= 0)
 			return
 		name = sanitize(_name, 20)

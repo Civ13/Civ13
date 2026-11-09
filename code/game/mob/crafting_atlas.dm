@@ -360,7 +360,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 		if (resource_exists(resource_id))
 			show(viewer, resource_id, 1, resource_id)
 	else if (href_list["atlas_search"])
-		var/query = input(viewer, "Find a recipe, ingredient or product", "Crafting Atlas") as text|null
+		var/query = player_input(viewer, "Find a recipe, ingredient or product", "Crafting Atlas", null, "text", null, TRUE)
 		if (!isnull(query))
 			show(viewer, query)
 	else if (href_list["atlas_page"])

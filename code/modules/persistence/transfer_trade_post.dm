@@ -118,9 +118,9 @@ var/global/list/transfer_trade_posts = list()
 	if(busy || persistence_save_active())
 		to_chat(user, "<span class='warning'>The post is busy. Try again in a moment.</span>")
 		return
-	var/peer = transfer_bridge.peers.len == 1 ? transfer_bridge.peers[1] : input(user, "Ship to which land?", "Trade post") as null|anything in transfer_bridge.peers
+	var/peer = transfer_bridge.peers.len == 1 ? transfer_bridge.peers[1] : player_input(user, "Ship to which land?", "Trade post", null, "anything", transfer_bridge.peers, TRUE)
 	if(!peer) return
-	var/recipient = input(user, "Whose key should receive it?", "Trade post", user.ckey) as null|text
+	var/recipient = player_input(user, "Whose key should receive it?", "Trade post", user.ckey, "text", null, TRUE)
 	recipient = ckey(recipient)
 	if(!recipient || length(recipient) > 32) return
 	// The prompts slept: check everything again.
@@ -170,7 +170,7 @@ var/global/list/transfer_trade_posts = list()
 	if(!mine.len)
 		to_chat(user, "<span class='notice'>Nothing is waiting for you here.</span>")
 		return
-	var/choice = input(user, "Collect which goods?", "Trade post") as null|anything in mine
+	var/choice = player_input(user, "Collect which goods?", "Trade post", null, "anything", mine, TRUE)
 	if(!choice || QDELETED(src) || !Adjacent(user)) return
 	var/kind = mine[choice]
 	var/take = collect_goods(user.ckey, kind)

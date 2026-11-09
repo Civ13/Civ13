@@ -187,7 +187,7 @@ var/global/list/orbit_lab_feeds = list(
 			parts += "[needs[kind]] [kind_name(kind)]"
 		var/obj/out = P[3]
 		choices["[capitalize(P[1])]: [jointext(parts, " + ")] -> [P[4]] [initial(out.name)]"] = key
-	var/pick = input(user, "Grow which crystals? Each batch takes about a minute of power.", "Microgravity lab") as null|anything in choices
+	var/pick = player_input(user, "Grow which crystals? Each batch takes about a minute of power.", "Microgravity lab", null, "anything", choices, TRUE)
 	if (!pick || QDELETED(src) || !in_range(src, user))
 		return
 	if (choices[pick] != programme)

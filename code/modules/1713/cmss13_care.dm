@@ -64,7 +64,7 @@
 		choices["[capitalize(colour)]: [meanings[colour]]"] = colour
 	if (triage_tag)
 		choices["Remove the tag"] = "remove"
-	var/pick = input(M, "Tag [src] as:", "Triage Tag") as null|anything in choices
+	var/pick = player_input(M, "Tag [src] as:", "Triage Tag", null, "anything", choices, TRUE)
 	if (!pick || !M.Adjacent(src) || !can_triage(M))
 		return
 	var/colour = choices[pick]

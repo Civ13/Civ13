@@ -120,7 +120,7 @@ var/global/civ_telecom_cursor = 1
 /obj/structure/telecom/attack_hand(mob/living/human/H)
 	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
 		return
-	var/choice = input(H, "Tune or switch. Drag an adjacent laid cable onto the equipment to power it.", name) in list("Power", "Frequency", "Program", "Announcement", "Cancel")
+	var/choice = player_input(H, "Tune or switch. Drag an adjacent laid cable onto the equipment to power it.", name, null, "anything", list("Power", "Frequency", "Program", "Announcement", "Cancel"), FALSE)
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
@@ -129,21 +129,21 @@ var/global/civ_telecom_cursor = 1
 		if (!enabled && powersource)
 			powersource.update_power(-powerneeded, 1, src)
 	if (choice == "Frequency")
-		var/value = input(H, "Frequency (150-300)", name, frequency) as num|null
+		var/value = player_input(H, "Frequency (150-300)", name, frequency, "num", null, TRUE)
 		if (!isnull(value) && H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
 			var/new_frequency = sanitize_integer(value, 150, 300, 200)
 			if (new_frequency != frequency)
 				interrupt_node_reception()
 			frequency = new_frequency
 	if (choice == "Program" && istype(src, /obj/structure/telecom/station))
-		var/value = input(H, "Educational program", name) in list("crafting", "farming", "medical")
+		var/value = player_input(H, "Educational program", name, null, "anything", list("crafting", "farming", "medical"), FALSE)
 		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands() && H.stats[value][1] >= 100)
 			program = value
 			prepared = TRUE
 			program_line = 0
 			to_chat(H, "You prepare the [program] course. Check the station schedule; six lessons air ten seconds apart during its one-minute window.")
 	if (choice == "Announcement" && istype(src, /obj/structure/telecom/station))
-		var/value = input(H, "Station announcement (maximum 200 characters)", name) as text|null
+		var/value = player_input(H, "Station announcement (maximum 200 characters)", name, null, "text", null, TRUE)
 		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
 			announcement = sanitize(apply_dictionary_replacements(value), 200)
 
@@ -183,7 +183,7 @@ var/global/civ_telecom_cursor = 1
 		return
 	var/list/controls = list("Equipment", "Present live", "Stop presenting", "Station name", "Faction tag", "Teach recipe node", "Cancel recipe lesson", "Cancel")
 	if (television) controls += list("Video feed", "Stop video")
-	var/choice = input(H, "Station controls", name) in controls
+	var/choice = player_input(H, "Station controls", name, null, "anything", controls, FALSE)
 	if (!can_present(H) || !H.can_use_hands())
 		return
 	if (television && (choice == "Video feed" || choice == "Stop video"))
@@ -207,7 +207,7 @@ var/global/civ_telecom_cursor = 1
 	if (choice == "Stop presenting")
 		stop_presenting(H)
 	if (choice == "Station name" || choice == "Faction tag")
-		var/value = input(H, "Display text (32 characters; faction tag is roleplay only)", name) as text|null
+		var/value = player_input(H, "Display text (32 characters; faction tag is roleplay only)", name, null, "text", null, TRUE)
 		if (isnull(value) || !can_present(H) || !H.can_use_hands())
 			return
 		value = sanitize(apply_dictionary_replacements(value), 32)

@@ -196,13 +196,13 @@ var/global/datum/fallen_roll/fallen_roll = new
 	if (!choices.len)
 		to_chat(src, "<span class='warning'>Stand next to the soldier you want to decorate.</span>")
 		return
-	var/who = input(src, "Award a medal to whom?", "Award Medal") as null|anything in choices
+	var/who = player_input(src, "Award a medal to whom?", "Award Medal", null, "anything", choices, TRUE)
 	if (!who)
 		return
 	var/grade = WWinput(src, "Which medal?", "Award Medal", "Bronze", list("Bronze", "Silver", "Gold", "Cancel"))
 	if (grade == "Cancel")
 		return
-	var/citation = input(src, "Citation, up to 140 letters. It is read out at the end of the round.", "Award Medal") as text|null
+	var/citation = player_input(src, "Citation, up to 140 letters. It is read out at the end of the round.", "Award Medal", null, "text", null, TRUE)
 	var/mob/living/human/R = choices[who]
 	if (!R || !Adjacent(R))
 		to_chat(src, "<span class='warning'>[who] is no longer next to you.</span>")
