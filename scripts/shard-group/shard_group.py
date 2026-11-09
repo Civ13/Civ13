@@ -1373,7 +1373,27 @@ def setup(group, platform=None, region_id=None):
         result['region'] = region_id
         result['running'] = running  # their worlds pick up the new peer list on their next start
         result['enrolled'] = enrol_region(group, region_id) if group['transfers'] else []
+        if group['relay_port']:
+            result['relay_ports'] = relay_add_ports(group)
     return result
+
+
+def relay_add_ports(group, send=None):
+    """Tell a running relay every game port of the group, so it routes to a region added
+    while it runs (it reads --region-port only when it starts). Returns the ports it took,
+    or None when no relay answers (the next relay the host service starts gets them all)."""
+    if send is None:
+        import doorman
+        send = doorman.topic
+    token, taken = relay_token(group), []
+    for region in group['regions']:
+        try:
+            reply = json.loads(send(group['relay_control_port'], 'add_port=1&port=%d&token=%s' % (region['port'], token)))
+        except (OSError, RuntimeError, ValueError):
+            return None
+        if isinstance(reply, dict) and reply.get('ok'):
+            taken.append(region['port'])
+    return taken
 
 
 def write_json_atomic(path, value):

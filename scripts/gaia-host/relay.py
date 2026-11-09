@@ -19,6 +19,8 @@ Two listeners:
         ?route=1&ip=A&ckey=K&port=P&token=T   send A's next connections to P
         ?lookup=1&ckey=K&token=T              the routed address of K
         ?relay_status=1&token=T               route and connection counts
+        ?add_port=1&port=P&token=T            let routes name game port P too (a
+                                              region added while the relay runs)
 
 Routes are last-write-wins per address. One that is never used expires after
 ROUTE_UNUSED_SECONDS; a used one sticks for ROUTE_STICKY_SECONDS after its last
@@ -89,7 +91,7 @@ class Routes:
     """address -> the region port its next connections go to."""
 
     def __init__(self, ports, clock=time.monotonic):
-        self.ports = frozenset(ports)
+        self.ports = frozenset(ports)  # replaced whole under the lock, never changed in place
         self.clock = clock
         self.lock = threading.Lock()
         self.by_ip = {}      # ip -> {'ckey', 'port', 'set_at', 'used_at'}
@@ -104,6 +106,14 @@ class Routes:
         route = self.by_ip.pop(ip, None)
         if route is not None and self.by_ckey.get(route['ckey']) == ip:
             del self.by_ckey[route['ckey']]
+
+    def add_port(self, port):
+        """Accept routes to port as well; a region added to the group while the relay runs."""
+        if type(port) is not int or not 1024 <= port <= 65535:
+            return False
+        with self.lock:
+            self.ports = self.ports | {port}
+        return True
 
     def prune(self):
         now = self.clock()
@@ -208,6 +218,12 @@ class Relay:
         if values.get('lookup') == '1' and set(values) == {'lookup', 'ckey', 'token'}:
             found = self.routes.lookup(values['ckey'])
             return dict(found, ok=True) if found else {'ok': False}
+        if values.get('add_port') == '1' and set(values) == {'add_port', 'port', 'token'}:
+            port = int(values['port']) if values['port'].isdigit() and len(values['port']) <= 5 else 0
+            ok = self.routes.add_port(port)
+            if ok:
+                self.log({'ports': sorted(self.routes.ports)})
+            return {'ok': ok}
         if values.get('relay_status') == '1' and set(values) == {'relay_status', 'token'}:
             self.routes.prune()
             with self.lock:

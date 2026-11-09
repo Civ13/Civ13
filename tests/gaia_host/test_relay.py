@@ -84,6 +84,15 @@ class ControlTest(unittest.TestCase):
                          {'ok': True, 'ip': '203.0.113.5', 'port': 1716})
         self.assertEqual(self.relay.handle('relay_status=1&token=' + TOKEN), {'ok': True, 'routes': 1, 'connections': 0})
 
+    def test_add_port_lets_routes_name_a_new_region(self):
+        route = 'route=1&ip=203.0.113.5&ckey=alice&port=1740&token=' + TOKEN
+        self.assertEqual({'ok': False}, self.relay.handle(route))
+        self.assertIsNone(self.relay.handle('add_port=1&port=1740&token=' + 'cd' * 16))
+        self.assertEqual({'ok': False}, self.relay.handle('add_port=1&port=99999&token=' + TOKEN))
+        self.assertEqual({'ok': True}, self.relay.handle('add_port=1&port=1740&token=' + TOKEN))
+        self.assertEqual({'ok': True}, self.relay.handle(route))
+        self.assertEqual({'ports': [1714, 1716, 1740]}, self.logged[0])
+
     def test_wrong_token_or_shape_is_dropped(self):
         self.assertIsNone(self.relay.handle('route=1&ip=203.0.113.5&ckey=alice&port=1716&token=' + 'cd' * 16))
         self.assertIsNone(self.relay.handle('route=1&ip=203.0.113.5&ckey=alice&port=1716'))

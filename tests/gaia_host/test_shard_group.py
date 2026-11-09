@@ -295,6 +295,24 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual('1731', argv[argv.index('--control-port') + 1])
         self.assertEqual('1713', argv[argv.index('--doorman-port') + 1])
 
+    def test_setup_of_one_region_tells_the_running_relay_its_port(self):
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        token = (self.base / 'regions' / 'relay-token.txt').read_text().strip()
+        sent = []
+        def send(port, query):
+            sent.append((port, query))
+            return json.dumps({'ok': True})
+        self.assertEqual([1720, 1721], shard_group.relay_add_ports(group, send))
+        self.assertEqual([(1731, 'add_port=1&port=%d&token=%s' % (p, token)) for p in (1720, 1721)], sent)
+        def down(port, query):
+            raise OSError('refused')
+        self.assertIsNone(shard_group.relay_add_ports(group, down))
+        # setup --region reports what the relay took (none here: no relay listens).
+        with mock.patch.object(shard_group, 'relay_add_ports', lambda group: [1720, 1721]):
+            self.assertEqual([1720, 1721], shard_group.setup(group, self.machine, 'deep')['relay_ports'])
+
     def test_a_relay_that_cannot_start_does_not_stop_supervision(self):
         self.group['relay_port'] = 1730
         group = self.write_group()
