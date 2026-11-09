@@ -8,6 +8,7 @@
 		verbs += /mob/proc/religion_list
 		verbs += /mob/living/human/proc/create_company
 		verbs += /mob/living/human/proc/transfer_company_stock
+		verbs += /mob/living/human/proc/recruitment_applications
 
 /mob/living/human/proc/make_nation()
 	if (map.civilizations)
@@ -20,6 +21,7 @@
 		verbs += /mob/living/human/proc/abandon_religion
 		verbs += /mob/living/human/proc/create_company
 		verbs += /mob/living/human/proc/transfer_company_stock
+		verbs += /mob/living/human/proc/recruitment_applications
 
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction

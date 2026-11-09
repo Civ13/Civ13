@@ -49,6 +49,30 @@ class FactionRecruitmentSource(unittest.TestCase):
             self.assertNotIn(value, record)
         self.assertIn('"life" = H.recruitment_identity()', record)
 
+    def test_station_is_craftable_and_registered(self):
+        self.assertIn('#include "code\\game\\mob\\groups\\recruitment_station.dm"', read('civ13.dme'))
+        recipes = read('config/crafting/material_recipes_global.txt')
+        self.assertIn('recruitment station,/obj/structure/recruitment_station,10,', recipes)
+        self.assertIn('"/obj/structure/recruitment_station" = "basic_furniture"', read('code/modules/research_tree/research_node.dm'))
+        factions = read(run.FACTIONS)
+        self.assertGreaterEqual(factions.count('verbs += /mob/living/human/proc/recruitment_applications'), 2)
+        self.assertIn("'recruitment_station.tmpl': RecruitmentStation", read('tgui/src/interfaces/index.tsx'))
+        self.assertTrue((ROOT / 'UI/templates/recruitment_station.tmpl').is_file())
+
+    def test_panel_rechecks_after_prompts(self):
+        station = read('code/game/mob/groups/recruitment_station.dm')
+        state = run.proc_text(station, '/datum/topic_state/recruitment_panel/can_use_topic(')
+        self.assertIn('H.Adjacent(P.station)', state)
+        topic = run.proc_text(station, '/datum/recruitment_panel/Topic(')
+        # Every state change routes through the shared map helpers, never raw list edits.
+        for helper in ('map.recruitment_submit(', 'map.recruitment_decide(', 'map.recruitment_set_policy('):
+            self.assertIn(helper, topic)
+        self.assertNotIn('faction_recruitment[', topic)
+        self.assertGreaterEqual(topic.count('still_valid(H)'), 6)
+        # The client only ever sends opaque ids or fixed values.
+        template = read('UI/templates/recruitment_station.tmpl')
+        self.assertNotIn("'name': ", template)
+
 
 if __name__ == '__main__':
     unittest.main()

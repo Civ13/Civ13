@@ -1,0 +1,63 @@
+<!-- Server text is already entity encoded; actions carry only opaque ids or fixed values. -->
+<div class="item_list">
+{{if data.station && !data.bound}}
+	<h3>Recruitment Station</h3>
+	<p>This station has not been designated for a faction.</p>
+	{{if data.can_designate}}
+		<p>You lead {{:data.designate_faction}}.</p>
+		{{:helper.link('Designate for my faction', null, {'designate' : 1})}}
+	{{else}}
+		<p>Only a faction's leader can designate it.</p>
+	{{/if}}
+{{else}}
+	<h3>{{:data.faction}} recruitment</h3>
+	{{if data.motto}}<p><i>{{:data.motto}}</i></p>{{/if}}
+	{{if !data.supported}}<p>This faction is not recruiting here.</p>{{/if}}
+	<p>{{:data.summary}}</p>
+	<p>Applications and approved offers expire after {{>String(data.expiry_days)}} days.</p>
+	{{if data.can_unbind}}{{:helper.link('Release this station', null, {'unbind' : 1})}}{{/if}}
+	{{if data.applicant}}
+		<h3>Join</h3>
+		<p>{{:data.applicant.text}}</p>
+		{{if data.applicant.results && data.applicant.results.length}}<ul>{{for data.applicant.results}}<li>{{:value}}</li>{{/for}}</ul>{{/if}}
+		{{if data.applicant.action === 'join'}}{{:helper.link('Join', null, {'apply' : 1})}}{{/if}}
+		{{if data.applicant.action === 'apply'}}{{:helper.link('Apply', null, {'apply' : 1})}}{{/if}}
+		{{if data.applicant.application}}
+			<p>Status: {{>data.applicant.application.status_text}}. Expires in {{>data.applicant.application.expires}}.</p>
+			{{if data.applicant.application.reason}}<p>Reason: {{:data.applicant.application.reason}}</p>{{/if}}
+			{{if data.applicant.application.status === 'approved'}}{{:helper.link('Confirm and join', null, {'confirm' : data.applicant.application.id})}}{{/if}}
+			{{:helper.link('Withdraw', null, {'withdraw' : data.applicant.application.id})}}
+		{{/if}}
+	{{/if}}
+	{{if data.can_review}}
+		<h3>Applications</h3>
+		{{if data.queue && data.queue.length}}
+			{{for data.queue}}
+				<div class="item">
+					<p><b>{{:value.name}}</b>: {{>value.status_text}}. Applied {{>value.submitted}} ago, expires in {{>value.expires}}.{{if value.exception}} Approved as an exception to the rules.{{/if}}</p>
+					{{if value.intro}}<p><i>{{:value.intro}}</i></p>{{/if}}
+					<p>Rules when submitted:</p>
+					{{if value.results && value.results.length}}<ul>{{for value.results :line}}<li>{{:line}}</li>{{/for}}</ul>{{/if}}
+					{{if value.status === 'pending'}}{{:helper.link('Approve', null, {'approve' : value.id})}} {{:helper.link('Reject', null, {'reject' : value.id})}}{{/if}}
+					{{if value.status === 'approved'}}{{:helper.link('Revoke offer', null, {'revoke' : value.id})}}{{/if}}
+				</div>
+			{{/for}}
+		{{else}}
+			<p>No open applications.</p>
+		{{/if}}
+	{{/if}}
+	{{if data.policy}}
+		<h3>Rules (leader only)</h3>
+		<p>Mode: {{:helper.link('Closed', null, {'set_mode' : 'closed'}, data.policy.mode === 'closed' ? 'selected' : null)}}
+			{{:helper.link('Review every application', null, {'set_mode' : 'manual'}, data.policy.mode === 'manual' ? 'selected' : null)}}
+			{{:helper.link('Accept matching applicants at once', null, {'set_mode' : 'auto'}, data.policy.mode === 'auto' ? 'selected' : null)}}</p>
+		<p>Open recruitment (anyone eligible): {{:helper.link(data.policy.open ? 'On' : 'Off', null, {'set_open' : data.policy.open ? 0 : 1})}}</p>
+		<p>Known language: {{:data.policy.language ? data.policy.language : 'none'}} {{:helper.link('Change...', null, {'set_language' : 1})}}</p>
+		<p>Minimum skill levels (0-10, from Skill Progress):</p>
+		<ul>{{for data.policy.skills}}<li>{{>value.label}}: {{if value.level}}{{>String(value.level)}}{{else}}no rule{{/if}} {{:helper.link('Change...', null, {'set_skill' : value.key})}}</li>{{/for}}</ul>
+		<p>Applicants who don't meet the rules: {{:helper.link('Send for review', null, {'set_nonmatch' : 'review'}, data.policy.nonmatch === 'review' ? 'selected' : null)}}
+			{{:helper.link('Cannot apply', null, {'set_nonmatch' : 'refuse'}, data.policy.nonmatch === 'refuse' ? 'selected' : null)}}</p>
+		{{if data.audit && data.audit.length}}<p>Recent changes:</p><ul>{{for data.audit}}<li>{{:value}}</li>{{/for}}</ul>{{/if}}
+	{{/if}}
+{{/if}}
+</div>

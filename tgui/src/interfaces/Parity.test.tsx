@@ -98,6 +98,7 @@ describe('standard screen parity', () => {
       'paper_editor.tmpl',
       'photo_viewer.tmpl',
       'prompt.tmpl',
+      'recruitment_station.tmpl',
       'religion_list.tmpl',
       'research_bench.tmpl',
       'ship_stocks.tmpl',

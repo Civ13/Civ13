@@ -15,6 +15,7 @@ import { PhotoViewer } from './PhotoViewer';
 import { BookReader } from './BookReader';
 import { PaperEditor } from './PaperEditor';
 import { Prompt } from './Prompt';
+import { RecruitmentStation } from './RecruitmentStation';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -38,4 +39,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'book_reader.tmpl': BookReader,
   'paper_editor.tmpl': PaperEditor,
   'prompt.tmpl': Prompt,
+  'recruitment_station.tmpl': RecruitmentStation,
 };

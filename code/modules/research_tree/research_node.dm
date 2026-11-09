@@ -850,7 +850,7 @@ var/global/list/node_grid_col_cache = null
 		// --- hydroponics (2) ---
 		"/obj/structure/hydroponics_frame" = "hydroponics",
 		"/obj/structure/hydroponics_tray" = "hydroponics",
-		// --- basic_furniture (17) ---
+		// --- basic_furniture (18) ---
 		"/obj/item/weapon/stool/wood" = "basic_furniture",
 		"/obj/item/weapon/bedsheet" = "basic_furniture",
 		"/obj/item/weapon/bedsheet/blue" = "basic_furniture",
@@ -869,6 +869,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table" = "basic_furniture",
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
+		"/obj/structure/recruitment_station" = "basic_furniture",
 		// --- basic_tools (21) ---
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/rope_spindle" = "basic_tools",
