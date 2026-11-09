@@ -57,6 +57,7 @@ what the code does so far and the rules later steps must keep.
 | 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
 | 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
 | 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
+| 21 | Orbital artillery: a battery on the party's station fires three-shell salvos at an awake ground world through the agents (`/strike/send`); the target lands it on a spotter's painted mark (30 s warning, 10 min cooldown) or on what the party's spy satellite sees outdoors (60 s, 20 min), or it burns up | `code/modules/space/orbit_artillery.dm`, `tools/transfer_storage/radio.py` |
 | 20 | Orbital refinery: electric furnace in a sealed, cabled module smelts asteroid iron into steel (2:1) and copper, silver and gold ore into ingots, no fuel, belt ports | `code/modules/space/orbit_refinery.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
@@ -446,6 +447,28 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - Belts and arms feed it ore and take its metal (`factory_accepts`,
   `factory_insert`, `factory_offer`). Ice is refused: ice melters and
   electrolysers already take it.
+
+## Orbital artillery
+
+- **Orbital battery** (60 electronics, Orbital Flight). It works only on a
+  station plane of the user's party (`orbit_station_party`) while cabled, and
+  holds up to six **orbital shells** (15 steel each). A salvo fires three.
+- The crew picks an awake ground world (peers in state UP, not orbit, the
+  Rail Yard, TDM or raid worlds), how to aim, and X and Y. The strike goes to
+  the local agent (`/strike/send`), and the coordinator hands it only to the
+  region it names.
+- The target world polls `/strike/inbox` from the radio process every 5 s
+  and aims it itself (`orbit_artillery_aim`):
+  - **spotter**: a mark of the firing party within 3 tiles, painted with a
+    **target designator** (10 electronics, a rangefinder subtype) in the last
+    5 minutes, outdoors. 30 s warning, 1-tile scatter; battery cooldown 600 s.
+  - **imagery**: a ground station on that world owned by the party holds a
+    spy satellite and the spot is outdoors on its level. 60 s warning, 3-tile
+    scatter; cooldown 1200 s.
+  - anything else burns up and is logged.
+- Everyone within 15 tiles is warned on arrival and again 10 s out; each
+  shell is `explosion(T, 0, 1, 3, 4)`. Shells and cooldown are saved numbers;
+  marks use world.time and are runtime only.
 
 ## Tests
 

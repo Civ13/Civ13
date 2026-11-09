@@ -30,6 +30,13 @@ def envelope(**overrides):
     return base
 
 
+def strike(**overrides):
+    base = {'target': 'beta', 'mode': 'spotter', 'party': 'civ:orbit:Delta', 'station': 'orbital battery',
+            'ckey': 'ada', 'x': 40, 'y': 50, 'z': 0, 'shells': 3}
+    base.update(overrides)
+    return base
+
+
 def ooc(**overrides):
     base = {'name': 'Ada', 'ckey': 'ada', 'message': 'anyone on the moon?', 'style': 'everyone'}
     base.update(overrides)
@@ -180,6 +187,35 @@ class OocRingTests(unittest.TestCase):
         self.assertEqual([], self.alpha.outbox()['ooc'])
 
 
+    def test_strikes_validate_and_leave_in_their_own_list(self):
+        ident = self.alpha.strike_send(strike())
+        out = self.alpha.outbox()
+        self.assertEqual([ident], [e['id'] for e in out['strikes']])
+        self.assertEqual(('alpha', 'beta', 'spotter', 40, 50, 0, 3),
+                         tuple(out['strikes'][0][k] for k in ('source', 'target', 'mode', 'x', 'y', 'z', 'shells')))
+        self.assertEqual([], out['envelopes'])
+        self.assertEqual([], self.alpha.outbox()['strikes'])
+        for bad in (strike(target='alpha'), strike(target='Beta!'), strike(mode='nuke'), strike(party=''),
+                    strike(x=0), strike(y=1001), strike(z=-1), strike(shells=7), strike(shells=True),
+                    strike(x=1.5), 'not an object'):
+            with self.assertRaises(RadioError):
+                self.alpha.strike_send(bad)
+
+    def test_strikes_reach_only_their_target_once(self):
+        gamma = RadioRelay('gamma', 'g', self.clock)
+        self.alpha.strike_send(strike())
+        fired = self.alpha.outbox()['strikes']
+        self.assertEqual(0, gamma.deliver_strikes(fired))  # not aimed at gamma
+        self.assertEqual(1, self.beta.deliver_strikes(fired))
+        self.assertEqual(0, self.beta.deliver_strikes(fired))  # duplicate id
+        self.assertEqual(0, self.beta.deliver_strikes([dict(fired[0], id='other', group='h')]))
+        self.assertEqual(0, self.beta.deliver_strikes([dict(fired[0], id='late', age=TTL + 1)]))
+        got = self.beta.strike_inbox()
+        self.assertEqual([('alpha', 'civ:orbit:Delta')], [(e['source'], e['party']) for e in got])
+        self.assertNotIn('at', got[0])
+        self.assertEqual([], self.beta.strike_inbox())
+
+
 class AgentRadioTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -251,6 +287,15 @@ class AgentRadioTests(unittest.TestCase):
                              [(e['source'], e['name'], e['fakekey'], e['message']) for e in got], region)
             self.assertEqual([], self.post(region, '/radio/inbox')['result']['envelopes'])
         self.assertFalse(self.post('alpha', '/ooc/send', {'envelope': ooc(style='rainbow')})['ok'])
+
+    def test_strike_reaches_only_the_region_it_names(self):
+        sent = self.post('alpha', '/strike/send', {'envelope': strike(target='gamma', mode='imagery')})
+        self.assertTrue(sent['ok'], sent)
+        self.assertEqual(1, self.coordinator.relay_radio_once())
+        self.assertEqual([], self.post('beta', '/strike/inbox')['result']['envelopes'])
+        got = self.post('gamma', '/strike/inbox')['result']['envelopes']
+        self.assertEqual([('alpha', 'imagery')], [(e['source'], e['mode']) for e in got])
+        self.assertFalse(self.post('alpha', '/strike/send', {'envelope': strike(target='alpha')})['ok'])
 
     def test_refusals(self):
         bad = self.post('alpha', '/radio/send', {'envelope': envelope(key='NOPE')})
