@@ -906,6 +906,7 @@
 	// Pulses spread over the interval by the distance this step really covers,
 	// so a short step from an offset moves at the ordinary pace.
 	var/pulse_count = max(1, ceil(max(remaining_x, remaining_y) / 2))
+	var/tap_finishing = FALSE
 	if (paid_posture)
 		actor.human_subtile_update_visuals(duration, direction, owner, max(remaining_x, remaining_y))
 	for (var/i = 1, i <= 16, i++)
@@ -921,9 +922,26 @@
 			sleep(due - world.time)
 		if (!valid(direction))
 			break
-		if (fine_step == FINE_STEP_HELD && actor.held_movement_direction() != direction)
-			actor.human_subtile_fine_released_at = world.time
-			break
+		if (fine_step == FINE_STEP_HELD && !tap_finishing && actor.held_movement_direction() != direction)
+			if (!actor.human_subtile_tap_step())
+				actor.human_subtile_fine_released_at = world.time
+				break
+			// Tap to step: a released key still carries the body on to the
+			// next tile alignment, so a quick tap moves one whole tile.
+			tap_finishing = TRUE
+			// Before the first pulse the tap still owes the whole tile.
+			if (((direction & (EAST | WEST)) && remaining_x < 32) || ((direction & (NORTH | SOUTH)) && remaining_y < 32))
+				if (direction & EAST)
+					remaining_x = min(remaining_x, actor.step_x ? 32 - actor.step_x : 0)
+				else if (direction & WEST)
+					remaining_x = min(remaining_x, actor.step_x)
+				if (direction & NORTH)
+					remaining_y = min(remaining_y, actor.step_y ? 32 - actor.step_y : 0)
+				else if (direction & SOUTH)
+					remaining_y = min(remaining_y, actor.step_y)
+			if (!remaining_x && !remaining_y)
+				actor.human_subtile_fine_released_at = world.time
+				break
 		var/main_dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
 		var/main_dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
 		// Admission rules for grace walls and hanging apply to every fresh pulse.
@@ -1259,3 +1277,19 @@
 /mob/living/human/pulled_offset_claim()
 	human_subtile_offset_owned = !!(step_x || step_y)
 
+// Tap to step (OOC > Toggle Tap To Step): releasing a movement key finishes
+// the current tile instead of stopping where the body is.
+/datum/preferences
+	var/tap_step = FALSE
+
+/mob/living/human/proc/human_subtile_tap_step()
+	return client && client.prefs && client.prefs.tap_step
+
+/client/verb/toggle_tap_step()
+	set name = "Toggle Tap To Step"
+	set category = "OOC"
+	set desc = "Choose whether a quick tap of a movement key moves you one whole tile."
+
+	prefs.tap_step = !prefs.tap_step
+	prefs.save_preferences()
+	to_chat(src, SPAN_NOTICE("Tap to step [prefs.tap_step ? "on: a quick tap moves you one tile, and holding a key still slides freely" : "off: you stop exactly where you let go of the key"]."))

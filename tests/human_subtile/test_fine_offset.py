@@ -127,8 +127,10 @@ class FineOffsetContracts(unittest.TestCase):
         self.assertIn('. = H.SelfMove(n, direct, subtile_deadline, FINE_STEP_HELD)', MOVE)
         self.assertIn("fine_step != FINE_STEP_NUDGE && isnum(human_subtile_chain_start)", MODULE)
         self.assertIn('(fine_step == FINE_STEP_NUDGE) ? 2 : human_subtile_glide_distance(deadline, deadline - T.start_time)', MODULE)
-        # Release is seen before the next pulse and refunds the unused interval.
-        self.assertIn('if (fine_step == FINE_STEP_HELD && actor.held_movement_direction() != direction)', MODULE)
+        # Release is seen before the next pulse and refunds the unused interval,
+        # unless Tap To Step is on: then the slide finishes the current tile.
+        self.assertIn('if (fine_step == FINE_STEP_HELD && !tap_finishing && actor.held_movement_direction() != direction)', MODULE)
+        self.assertIn('if (!actor.human_subtile_tap_step())', MODULE)
         self.assertIn('actor.human_subtile_fine_released_at = world.time', MODULE)
         self.assertIn('if (H.human_subtile_fine_released_at == world.time)\n\t\t\t\t\t\t\t\tsubtile_deadline = world.time', MOVE)
         # Speed model at TICKLAG 0.4 with an unloaded walk (2.85 ds per tile):
