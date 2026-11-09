@@ -117,7 +117,7 @@
 			loaded = M
 
 	if (href_list["set_angle"])
-		angle = input(user, "Set the target distance to what? (From 5 to 80 meters)") as num
+		angle = player_input(user, "Set the target distance to what? (From 5 to 80 meters)", null, null, "num", null, FALSE)
 		angle = Clamp(angle, 5, 80)
 
 	if (href_list["fire"])

@@ -864,7 +864,7 @@
 		else if (href_list["addcustom"])
 
 			var/id = href_list["addcustom"]
-			useramount = input("Select the amount to transfer.", 30, useramount) as num
+			useramount = player_input(usr, "Select the amount to transfer.", 30, useramount, "num", null, FALSE)
 			useramount = Clamp(useramount, FALSE, 200)
 			Topic(null, list("amount" = "[useramount]", "add" = "[id]"))
 
@@ -882,7 +882,7 @@
 		else if (href_list["removecustom"])
 
 			var/id = href_list["removecustom"]
-			useramount = input("Select the amount to transfer.", 30, useramount) as num
+			useramount = player_input(usr, "Select the amount to transfer.", 30, useramount, "num", null, FALSE)
 			useramount = Clamp(useramount, FALSE, 200)
 			Topic(null, list("amount" = "[useramount]", "remove" = "[id]"))
 
@@ -905,7 +905,7 @@
 				return
 
 			if (href_list["createpill_multiple"])
-				count = input("Select the number of pills to make.", "Max [max_pill_count]", pillamount) as num
+				count = player_input(usr, "Select the number of pills to make.", "Max [max_pill_count]", pillamount, "num", null, FALSE)
 				count = Clamp(count, TRUE, max_pill_count)
 
 			if (reagents.total_volume/count < 1) //Sanity checking.
@@ -914,7 +914,7 @@
 			var/amount_per_pill = reagents.total_volume/count
 			if (amount_per_pill > 60) amount_per_pill = 60
 
-			var/name = sanitizeSafe(input(usr,"Name:","Name your pill!","[reagents.get_master_reagent_name()] ([amount_per_pill] units)"), MAX_NAME_LEN)
+			var/name = sanitizeSafe(player_input(usr, "Name:", "Name your pill!", "[reagents.get_master_reagent_name()] ([amount_per_pill] units)", "text", null, FALSE), MAX_NAME_LEN)
 
 			if (reagents.total_volume/count < 1) //Sanity checking.
 				return
@@ -933,7 +933,7 @@
 
 		else if (href_list["createbottle"])
 			if (!condi)
-				var/name = sanitizeSafe(input(usr,"Name:","Name your bottle!",reagents.get_master_reagent_name()), MAX_NAME_LEN)
+				var/name = sanitizeSafe(player_input(usr, "Name:", "Name your bottle!", reagents.get_master_reagent_name(), "text", null, FALSE), MAX_NAME_LEN)
 				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] bottle"

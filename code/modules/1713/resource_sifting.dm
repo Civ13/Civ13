@@ -42,7 +42,7 @@
 		// An agent-controlled character has no client for input(); it names its pick with the step's choose answer.
 		choice = WWinput(src, "Trace gathering", "Trace gathering", null, choices)
 	else
-		choice = input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Mining finite deposits produces much larger batches.", "Trace gathering") as null|anything in choices
+		choice = player_input(src, "Trace gathering yields one unit: three uninterrupted minutes by hand, two minutes with a sieve or river pan. Mining finite deposits produces much larger batches.", "Trace gathering", null, "anything", choices, TRUE)
 	if (choice)
 		sift_resource(T, choices[choice], tool, panning)
 	sifting_resources = FALSE

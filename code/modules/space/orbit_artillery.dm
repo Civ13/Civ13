@@ -167,14 +167,14 @@ var/global/orbit_artillery_busy = FALSE
 	if (!length(worlds))
 		to_chat(user, SPAN_WARNING("No ground world is awake below you."))
 		return
-	var/pick = input(user, "Fire on which world?", capitalize(name)) as null|anything in worlds
+	var/pick = player_input(user, "Fire on which world?", capitalize(name), null, "anything", worlds, TRUE)
 	if (!pick || QDELETED(src) || !in_range(src, user))
 		return
 	var/aim = WWinput(user, "Spotter: fire on a spot your spotter painted with a target designator ([ORBIT_ARTILLERY_SPOTTER_WARNING] s warning). Imagery: fire on a spot your spy satellite sees outdoors ([ORBIT_ARTILLERY_IMAGERY_WARNING] s warning, twice the cooldown).", capitalize(name), "Cancel", list("Spotter", "Imagery", "Cancel"))
 	if (aim == "Cancel" || QDELETED(src) || !in_range(src, user))
 		return
-	var/tx = input(user, "Target X coordinate", capitalize(name)) as null|num
-	var/ty = input(user, "Target Y coordinate", capitalize(name)) as null|num
+	var/tx = player_input(user, "Target X coordinate", capitalize(name), null, "num", null, TRUE)
+	var/ty = player_input(user, "Target Y coordinate", capitalize(name), null, "num", null, TRUE)
 	if (!isnum(tx) || !isnum(ty) || QDELETED(src) || !in_range(src, user) || user.incapacitated())
 		return
 	var/result = fire(user, lowertext(aim), worlds[pick], round(tx), round(ty))

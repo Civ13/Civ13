@@ -886,7 +886,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	for(var/obj/structure/vehicleparts/frame/F in loc)
 		if (F.axis && F.axis != src)
 			return
-		var/customname = input(H, "What do you want to name this vehicle?") as text
+		var/customname = player_input(H, "What do you want to name this vehicle?", null, null, "text", null, FALSE)
 		if (!customname || customname == "")
 			name = "[H]'s vehicle"
 		else

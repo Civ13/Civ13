@@ -131,7 +131,7 @@
 			if (I && !(I.status & ORGAN_CUT_AWAY) && I.parent_organ == target_zone)
 				attached_organs |= organ
 
-		var/organ_to_remove = input(user, "Which organ do you want to prepare for removal?") as null|anything in attached_organs
+		var/organ_to_remove = player_input(user, "Which organ do you want to prepare for removal?", null, null, "anything", attached_organs, TRUE)
 		if (!organ_to_remove)
 			return FALSE
 
@@ -188,7 +188,7 @@
 			if ((I.status & ORGAN_CUT_AWAY) && I.parent_organ == target_zone)
 				removable_organs |= organ
 
-		var/organ_to_remove = input(user, "Which organ do you want to remove?") as null|anything in removable_organs
+		var/organ_to_remove = player_input(user, "Which organ do you want to remove?", null, null, "anything", removable_organs, TRUE)
 		if (!organ_to_remove)
 			return FALSE
 

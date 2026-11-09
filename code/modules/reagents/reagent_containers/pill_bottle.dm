@@ -19,7 +19,7 @@
 
 /obj/item/weapon/storage/pill_bottle/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/pen))
-		var/label = sanitize(input(user, "What do you want to label the pill bottle as?") as text, 50)
+		var/label = sanitize(player_input(user, "What do you want to label the pill bottle as?", null, null, "text", null, FALSE), 50)
 		name = label
 		return TRUE
 	return ..(I, user)

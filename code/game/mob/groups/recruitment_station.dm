@@ -280,7 +280,7 @@
 		if (confirm != "Apply" && confirm != "Join")
 			return TRUE
 		if (needs_review)
-			var/written = input(H, "Optional: a short introduction for [faction] (up to [RECRUITMENT_INTRO_MAX] characters).", "Recruitment") as text|null
+			var/written = player_input(H, "Optional: a short introduction for [faction] (up to [RECRUITMENT_INTRO_MAX] characters).", "Recruitment", null, "text", null, TRUE)
 			intro = istext(written) ? written : ""
 		if (!still_valid(H) || !station.valid_for_recruitment() || station.faction != faction)
 			return TRUE
@@ -307,7 +307,7 @@
 		var/list/A = map.recruitment_app(id)
 		if (!A || A["faction"] != faction || !map.can_recruit_for_faction(H, faction))
 			return FALSE
-		var/written = input(H, "Optional: a short reason the applicant will see (up to [RECRUITMENT_REASON_MAX] characters).", "Recruitment") as text|null
+		var/written = player_input(H, "Optional: a short reason the applicant will see (up to [RECRUITMENT_REASON_MAX] characters).", "Recruitment", null, "text", null, TRUE)
 		if (!still_valid(H))
 			return TRUE
 		message = map.recruitment_decide(H, id, decision, istext(written) ? written : "") || "Done."

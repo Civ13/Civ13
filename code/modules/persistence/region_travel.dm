@@ -584,7 +584,7 @@ var/global/list/region_travel_carry_types = list(
 	if(istext(items))
 		to_chat(H, SPAN_WARNING(items))
 		return
-	if(alert(H, "Travel to [destination_name()]? You leave this land with what you wear and carry, and continue there.", "Travel", "Travel", "Stay") != "Travel")
+	if(player_alert(H, "Travel to [destination_name()]? You leave this land with what you wear and carry, and continue there.", "Travel", list("Travel", "Stay")) != "Travel")
 		return
 	// The prompt slept: check everything again.
 	reason = travel_refusal(H)

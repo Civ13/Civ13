@@ -27,7 +27,7 @@
 	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;custom_code;locked"
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (istype(W, /obj/item/weapon/pen))
-			var/tmp_label = sanitizeSafe(input(user, "Enter a label for [name]", "Label", label_text), MAX_NAME_LEN)
+			var/tmp_label = sanitizeSafe(player_input(user, "Enter a label for [name]", "Label", label_text, "text", null, FALSE), MAX_NAME_LEN)
 			if (length(tmp_label) > 15)
 				to_chat(user, "<span class='notice'>The label can be at most 15 characters long.</span>")
 			else
@@ -109,7 +109,7 @@
 		set name = "Set transfer amount"
 		set category = null
 		set src in view(1)
-		var/N = input("Amount per transfer from this:","[src]") as null|anything in possible_transfer_amounts
+		var/N = player_input(usr, "Amount per transfer from this:", "[src]", null, "anything", possible_transfer_amounts, TRUE)
 		if (N)
 			amount_per_transfer_from_this = N
 

@@ -509,7 +509,7 @@ var/global/list/smart_hubs = list()
 	if (level == SMART_OWNER)
 		choices += list("Pair device", "Unpair device", "Rename hub", "Add resident", "Remove resident", "Share with my faction: [share_faction ? "on" : "off"]", "Power: [enabled ? "on" : "off"]")
 	choices += "Cancel"
-	var/choice = input(H, "Smart hub \"[hub_name]\". Drag an adjacent laid cable onto it to power it.", name) in choices
+	var/choice = player_input(H, "Smart hub \"[hub_name]\". Drag an adjacent laid cable onto it to power it.", name, null, "anything", choices, FALSE)
 	if (!H || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1 || QDELETED(src))
 		return
 	level = access_level(H)
@@ -536,10 +536,10 @@ var/global/list/smart_hubs = list()
 			if (!options.len)
 				to_chat(H, "No unpaired lights, smart locks or powered machines are on this hub's cable network within [SMART_HUB_SCAN_RANGE] tiles.")
 				return
-			var/picked = input(H, "Pair which device?", name) as null|anything in options
+			var/picked = player_input(H, "Pair which device?", name, null, "anything", options, TRUE)
 			if (!picked || get_dist(H, src) > 1)
 				return
-			var/label = input(H, "Name it, for example \"kitchen light\" or \"front door\".", name) as text|null
+			var/label = player_input(H, "Name it, for example \"kitchen light\" or \"front door\".", name, null, "text", null, TRUE)
 			if (label && get_dist(H, src) <= 1 && access_level(H) == SMART_OWNER)
 				to_chat(H, pair(options[picked], label))
 		if ("Unpair device")
@@ -548,14 +548,14 @@ var/global/list/smart_hubs = list()
 			var/list/options = list()
 			for (var/obj/structure/S in devices())
 				options[S.smart_label] = S
-			var/picked = input(H, "Unpair which device?", name) as null|anything in options
+			var/picked = player_input(H, "Unpair which device?", name, null, "anything", options, TRUE)
 			if (picked && get_dist(H, src) <= 1 && access_level(H) == SMART_OWNER)
 				unpair(options[picked])
 				to_chat(H, "Unpaired [picked].")
 		if ("Rename hub")
 			if (level < SMART_OWNER)
 				return
-			var/value = smart_clean_text(input(H, "What should the hub answer to? One or two words.", name, hub_name) as text|null, 20)
+			var/value = smart_clean_text(player_input(H, "What should the hub answer to? One or two words.", name, hub_name, "text", null, TRUE), 20)
 			if (value && get_dist(H, src) <= 1 && access_level(H) == SMART_OWNER)
 				hub_name = value
 				to_chat(H, "The hub now answers to \"[hub_name]\".")
@@ -570,7 +570,7 @@ var/global/list/smart_hubs = list()
 				var/identity = other.smart_hub_identity()
 				if (other != H && identity && identity != owner_ckey && !(identity in residents))
 					options[other.real_name] = other
-			var/picked = input(H, "Who lives here? They must be in sight of the hub.", name) as null|anything in options
+			var/picked = player_input(H, "Who lives here? They must be in sight of the hub.", name, null, "anything", options, TRUE)
 			var/mob/living/human/chosen = options[picked]
 			if (chosen && get_dist(H, src) <= 1 && access_level(H) == SMART_OWNER && chosen.smart_hub_identity())
 				residents[chosen.smart_hub_identity()] = chosen.real_name
@@ -581,7 +581,7 @@ var/global/list/smart_hubs = list()
 			var/list/options = list()
 			for (var/identity in residents)
 				options["[residents[identity]]"] = identity
-			var/picked = input(H, "Remove which resident?", name) as null|anything in options
+			var/picked = player_input(H, "Remove which resident?", name, null, "anything", options, TRUE)
 			if (picked && get_dist(H, src) <= 1 && access_level(H) == SMART_OWNER)
 				residents -= options[picked]
 				to_chat(H, "Removed [picked].")
@@ -682,7 +682,7 @@ var/global/list/smart_hubs = list()
 	if (!hubs.len)
 		to_chat(H, "No smart hub you live at is in range.")
 		return
-	var/picked_hub = hubs.len == 1 ? hubs[1] : input(H, "Which hub?", "Smart Hub App") as null|anything in hubs
+	var/picked_hub = hubs.len == 1 ? hubs[1] : player_input(H, "Which hub?", "Smart Hub App", null, "anything", hubs, TRUE)
 	var/obj/structure/smart_hub/hub = hubs[picked_hub]
 	if (!hub || QDELETED(hub) || loc != H)
 		return
@@ -695,7 +695,7 @@ var/global/list/smart_hubs = list()
 	options["Lock up"] = "lock up"
 	options["Lights off"] = "lights off"
 	options["Lights on"] = "lights on"
-	var/picked = input(H, "Tap a device to switch it.", "[capitalize(hub.hub_name)]") as null|anything in options
+	var/picked = player_input(H, "Tap a device to switch it.", "[capitalize(hub.hub_name)]", null, "anything", options, TRUE)
 	if (!picked || loc != H || H.stat != CONSCIOUS || !hub.operational())
 		return
 	var/command = picked == "Status" ? "status" : options[picked]

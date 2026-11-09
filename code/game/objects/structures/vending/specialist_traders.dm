@@ -485,7 +485,7 @@ var/global/list/specialist_trader_sell_floor = null
 		to_chat(H, "<span class='warning'>[T.dealer]: \"I'd give you [specialist_trader_price_text(offer, T.pays)], but I'm short until my next delivery.\"</span>")
 		return FALSE
 	if (confirm)
-		var/choice = alert(H, "[T.dealer] offers [specialist_trader_price_text(offer, T.pays)] for [I].", T.title, "Sell", "Keep")
+		var/choice = player_alert(H, "[T.dealer] offers [specialist_trader_price_text(offer, T.pays)] for [I].", T.title, list("Sell", "Keep"))
 		if (choice != "Sell" || !can_deal(H) || I.loc != H)
 			return FALSE
 		T.restock_if_due()
@@ -511,7 +511,7 @@ var/global/list/specialist_trader_sell_floor = null
 		if (path != root)
 			options[specialist_trader_coin_name(path)] = path
 	if (!target)
-		var/choice = input(H, "Change your [M] into which coins? The jeweller keeps a twentieth.", "Jeweller") as null|anything in options
+		var/choice = player_input(H, "Change your [M] into which coins? The jeweller keeps a twentieth.", "Jeweller", null, "anything", options, TRUE)
 		if (!choice || !can_deal(H) || M.loc != H)
 			return FALSE
 		target = options[choice]

@@ -213,7 +213,7 @@
 	if (world.time < heal_cooldown)
 		src.say("Grak! Too soon, too soon! Come back when the poultice has set, yes?")
 		return
-	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
+	var/choice = player_alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", list("Yes please!", "No thanks."))
 	if (choice == "Yes please!")
 		if (!H || !src || src.stat || get_dist(H, src) > 1)
 			return

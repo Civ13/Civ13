@@ -141,7 +141,7 @@
 			to_chat(H, SPAN_WARNING("The nuclear missile has already been activated and calibrated."))
 			return
 		if (!src.unlocked)
-			var/code = input(H, "Enter the activation code:", "Access Termninal") as num
+			var/code = player_input(H, "Enter the activation code:", "Access Termninal", null, "num", null, FALSE)
 			if (code != SD.activation_code)
 				to_chat(H, SPAN_WARNING("\icon[getFlatIcon(src)] Wrong password."))
 				return

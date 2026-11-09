@@ -213,7 +213,12 @@ everything changed), with `nearby_removed` refs and a `nearby_unchanged`
 count. When the baseline is gone (another observe ran in between) the full
 list comes back without `changes_since`.
 
-<a id="prompts"></a>A prompt (`WWinput`) the game raises for a character that its step did not
+<a id="prompts"></a>Game prompts reach agent characters through `WWinput` and through
+`player_input`/`player_alert`, which gameplay code uses instead of raw `input()`
+and `alert()` (amounts, names, text, colours and picks from a list). A player
+sees the same prompt as before; an agent character answers it from its step's
+`choose` (a number for amounts, the text itself, `#rrggbb` for colours, or the
+option or button name, matched without case). A prompt the step did not
 answer with `choose` is listed under `prompts` (after `prompt_since`, newest id
 in `last_prompt`) with its text, the `choices` (or the input `kind`) and what
 the character `took`, so the agent can repeat the step with `choose`.

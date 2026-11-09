@@ -148,7 +148,7 @@ var/global/list/orbit_docking_ports = list()
 			if (!choices.len)
 				to_chat(user, SPAN_WARNING("No other station has a docking port to invite."))
 				return
-			var/pick = input(user, "Invite which party?", "Docking port") as null|anything in choices
+			var/pick = player_input(user, "Invite which party?", "Docking port", null, "anything", choices, TRUE)
 			if (!pick || QDELETED(src) || party_train_party_of(user) != owner())
 				return
 			if (!add_guest(choices[pick]))
@@ -159,7 +159,7 @@ var/global/list/orbit_docking_ports = list()
 			var/list/choices = list()
 			for (var/other in guests)
 				choices[party_train_party_name(other)] = other
-			var/pick = input(user, "Remove which party?", "Docking port") as null|anything in choices
+			var/pick = player_input(user, "Remove which party?", "Docking port", null, "anything", choices, TRUE)
 			if (pick && !QDELETED(src) && party_train_party_of(user) == owner())
 				guests -= choices[pick]
 
@@ -224,7 +224,7 @@ var/global/list/orbit_docking_ports = list()
 	if (!choices.len)
 		to_chat(user, SPAN_WARNING(forced ? "No station you could board has its crew aboard." : "No other station welcomes [party_train_party_name(party)]."))
 		return
-	var/pick = input(user, forced ? "Board which station by force?" : "Ferry to which station?", "Docking port") as null|anything in choices
+	var/pick = player_input(user, forced ? "Board which station by force?" : "Ferry to which station?", "Docking port", null, "anything", choices, TRUE)
 	if (!pick || QDELETED(src) || !in_range(src, user))
 		return
 	var/reason = ferry(user, pick, forced)
@@ -290,7 +290,7 @@ var/global/list/orbit_docking_ports = list()
 		if (!choices.len)
 			to_chat(user, SPAN_WARNING("Add a guest party first to leave parcels for them."))
 			return
-		var/pick = input(user, "Leave \the [I] for which party?", "Docking port") as null|anything in choices
+		var/pick = player_input(user, "Leave \the [I] for which party?", "Docking port", null, "anything", choices, TRUE)
 		if (!pick)
 			return
 		to_party = choices[pick]

@@ -247,7 +247,7 @@
 						return
 					else
 						U = choice2
-						var/inp = input(usr, "Choose a title to give:") as text|null
+						var/inp = player_input(usr, "Choose a title to give:", null, null, "text", null, TRUE)
 						if (inp == "" || !inp)
 							return
 						else

@@ -90,9 +90,9 @@
 	if (istype(src, /mob/living/simple_animal/complex_animal))
 		var/mob/living/simple_animal/complex_animal/CA = src
 		if (CA.owner || (mob_factions == faction))
-			var/yn = input(usr, "Name this [src]?") in list("Yes", "No")
+			var/yn = player_input(usr, "Name this [src]?", null, null, "anything", list("Yes", "No"), FALSE)
 			if (yn == "Yes")
-				var/_name = input(usr, "What name?") as text
+				var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 				name = sanitize(_name, 50)
 				return
 		else
@@ -100,9 +100,9 @@
 			return
 	else
 		if (name == initial(name) && !istype(src, /mob/living/simple_animal/hostile) && !istype(src, /mob/living/simple_animal/mosquito))
-			var/yn = input(usr, "Name this [src]?") in list("Yes", "No")
+			var/yn = player_input(usr, "Name this [src]?", null, null, "anything", list("Yes", "No"), FALSE)
 			if (yn == "Yes")
-				var/_name = input(usr, "What name?") as text
+				var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 				name = sanitize(_name, 50)
 				return
 	return

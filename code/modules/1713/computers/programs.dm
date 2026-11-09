@@ -881,9 +881,9 @@
 			if ("2")
 				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@kogama.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
 			if ("3")
-				tmp_comp_vars["mail_subj"] = input(user, "What is the subject?","e-mail",tmp_comp_vars["mail_subj"]) as text
+				tmp_comp_vars["mail_subj"] = player_input(user, "What is the subject?", "e-mail", tmp_comp_vars["mail_subj"], "text", null, FALSE)
 			if ("4")
-				tmp_comp_vars["mail_msg"] = input(user, "What is the message?","e-mail",tmp_comp_vars["mail_msg"]) as message
+				tmp_comp_vars["mail_msg"] = player_input(user, "What is the message?", "e-mail", tmp_comp_vars["mail_msg"], "message", null, FALSE)
 			if ("5")
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
 
@@ -976,7 +976,7 @@
 		if (findtext(href_list["deepnet"],"ch"))
 			var/tcode = replacetext(href_list["deepnet"],"ch","")
 			var/cost = (map.globalmarketplace[tcode][4])
-			var/newprice = input(user, "What shall the new price be, in dollars?","DEEPNET",cost/4) as num|null
+			var/newprice = player_input(user, "What shall the new price be, in dollars?", "DEEPNET", cost/4, "num", null, TRUE)
 			if (!isnum(newprice))
 				return
 			if (newprice <= 0)
@@ -1016,7 +1016,7 @@
 							if (ST.amount <= 0)
 								return
 							else
-								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.") as num|null
+								var/price = player_input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.", null, null, "num", null, TRUE)
 								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
@@ -1032,7 +1032,7 @@
 									do_html(user)
 									return
 						else
-							var/price = input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).") as num|null
+							var/price = player_input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).", null, null, "num", null, TRUE)
 							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)
@@ -1723,7 +1723,7 @@
 		if (findtext(href_list["nile"],"ch"))
 			var/tcode = replacetext(href_list["nile"],"ch","")
 			var/cost = text2num(map.globalmarketplace[tcode][4])
-			var/newprice = input(user, "What shall the new price be, in dollars?","nile.ug",cost/4) as num|null
+			var/newprice = player_input(user, "What shall the new price be, in dollars?", "nile.ug", cost/4, "num", null, TRUE)
 			if (!isnum(newprice))
 				return
 			if (newprice <= 0)
@@ -1765,7 +1765,7 @@
 							if (ST.amount <= 0)
 								return
 							else
-								var/price = input(user, "What price do you want to place the [ST.amount] [ST] for sale in the nile? (in dollars) 0 to cancel.") as num|null
+								var/price = player_input(user, "What price do you want to place the [ST.amount] [ST] for sale in the nile? (in dollars) 0 to cancel.", null, null, "num", null, TRUE)
 								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
@@ -1781,7 +1781,7 @@
 									do_html(user)
 									return
 						else
-							var/price = input(user, "What price do you want to place the [M] for sale at nile.ug? (in dollars).") as num|null
+							var/price = player_input(user, "What price do you want to place the [M] for sale at nile.ug? (in dollars).", null, null, "num", null, TRUE)
 							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)

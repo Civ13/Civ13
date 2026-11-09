@@ -739,7 +739,7 @@ var/global/list/hud_icon_px_cache = list()
 	for (var/label in hud_scale_choices)
 		if (hud_scale_choices[label] == prefs.hud_scale)
 			current = label
-	var/choice = input(src, "Choose a HUD scale. Your current scale is [current].", "HUD Scale", current) as null|anything in hud_scale_choices
+	var/choice = player_input(src, "Choose a HUD scale. Your current scale is [current].", "HUD Scale", current, "anything", hud_scale_choices, TRUE)
 	if (!choice)
 		return
 	prefs.hud_scale = hud_scale_choices[choice]
@@ -758,7 +758,7 @@ var/global/list/hud_icon_px_cache = list()
 	for (var/label in hud_scale_choices)
 		if (hud_scale_choices[label] == prefs.hover_text_scale)
 			current = label
-	var/choice = input(src, "Choose a size for the name shown under your mouse. Your current size is [current].", "Hover Text Size", current) as null|anything in hud_scale_choices
+	var/choice = player_input(src, "Choose a size for the name shown under your mouse. Your current size is [current].", "Hover Text Size", current, "anything", hud_scale_choices, TRUE)
 	if (!choice)
 		return
 	prefs.hover_text_scale = hud_scale_choices[choice]
@@ -782,7 +782,7 @@ var/global/list/hud_icon_px_cache = list()
 	set desc = "Put HUD tiles back in their default places."
 
 	var/style = ishuman(mob) ? mob:defaultHUD : prefs.UI_style
-	var/choice = input(src, "Reset which tiles of the [style] HUD?", "Reset HUD Layout") as null|anything in list("Unlocked tiles", "All tiles and the HUD scale")
+	var/choice = player_input(src, "Reset which tiles of the [style] HUD?", "Reset HUD Layout", null, "anything", list("Unlocked tiles", "All tiles and the HUD scale"), TRUE)
 	if (!choice)
 		return
 	var/prefix = "[style]~"

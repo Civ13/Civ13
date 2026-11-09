@@ -13,7 +13,7 @@
 
 	var/input
 	if (!message)
-		input = sanitize(input(src,"Choose an emote to display.") as text|null)
+		input = sanitize(player_input(src, "Choose an emote to display.", null, null, "text", null, TRUE))
 	else
 		input = message
 	if (input)
@@ -87,7 +87,7 @@
 
 	var/input
 	if (!message)
-		input = sanitize(input(src, "Choose an emote to display.") as text|null)
+		input = sanitize(player_input(src, "Choose an emote to display.", null, null, "text", null, TRUE))
 	else
 		input = message
 

@@ -47,7 +47,7 @@
 
 /obj/structure/buoy/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
-		message = input(usr, "What do you want the buoy to say?") as text
+		message = player_input(usr, "What do you want the buoy to say?", null, null, "text", null, FALSE)
 	else
 		..()
 

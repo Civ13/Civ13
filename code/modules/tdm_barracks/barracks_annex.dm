@@ -334,7 +334,7 @@ var/global/list/barracks_orders = null
 	var/choice = WWinput(user, "Write new [faction ? "orders" : "programme"] on [src]?", name, "Close", list("Close", "Write new text"))
 	if (choice != "Write new text")
 		return
-	var/new_text = input(user, "Up to 2000 characters. This replaces what is on the board.", name, text) as message|null
+	var/new_text = player_input(user, "Up to 2000 characters. This replaces what is on the board.", name, text, "message", null, TRUE)
 	if (isnull(new_text) || QDELETED(src))
 		return
 	new_text = copytext(new_text, 1, 2001)

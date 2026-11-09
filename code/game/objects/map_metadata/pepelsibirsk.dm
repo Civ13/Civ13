@@ -387,7 +387,7 @@ var/global/datum/external_relations/external_relations = new()
 		if (confirm == "No")
 			return
 		else
-			var/texttoadd = input(H, "What do you want to write? Up to 150 characters", "Notes", "") as text
+			var/texttoadd = player_input(H, "What do you want to write? Up to 150 characters", "Notes", "", "text", null, FALSE)
 			texttoadd = sanitize(texttoadd, 150, FALSE)
 			texttoadd = "<i>[texttoadd] - <b>[H.real_name]</b></i>"
 			guardnotes += texttoadd

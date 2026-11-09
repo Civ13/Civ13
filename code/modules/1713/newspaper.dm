@@ -60,7 +60,7 @@ obj/item/weapon/newspaper/attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (scribble_page == curr_page)
 			to_chat(user, "<span class = 'notice'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</span>")
 		else
-			var/s = sanitize(input(user, "Write something", "Newspaper", ""))
+			var/s = sanitize(player_input(user, "Write something", "Newspaper", "", "text", null, FALSE))
 			if (!s)
 				return
 			if (!in_range(src, usr) && loc != usr)

@@ -213,9 +213,9 @@
 				to_chat(usr, "<span class='warning'>The addressee and sender fields are already filled!</span>")
 				return TRUE
 			else
-				var/write_to = sanitize(input(user, "TO: Who is the addressee?", "Addressee", null)  as text, 128)
+				var/write_to = sanitize(player_input(user, "TO: Who is the addressee?", "Addressee", null, "text", null, FALSE), 128)
 				addressee = write_to
-				var/write_from = sanitize(input(user, "FROM: Who is the sender?", "Sender", null)  as text, 128)
+				var/write_from = sanitize(player_input(user, "FROM: Who is the sender?", "Sender", null, "text", null, FALSE), 128)
 				sender = write_from
 				if (!addressee || !sender)
 					desc = desc

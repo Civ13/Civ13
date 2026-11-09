@@ -19,7 +19,7 @@
 	if(!recipe_book_actor_valid(src)) return
 	var/list/choices = clean_recipe_node_ids(known_recipe_nodes)
 	if(!choices.len) return
-	var/id = input(src, "Which known recipe group will you copy?", "Write manual") as null|anything in choices
+	var/id = player_input(src, "Which known recipe group will you copy?", "Write manual", null, "anything", choices, TRUE)
 	if(!id) return
 	var/obj/item/weapon/pen/P = locate() in list(l_hand, r_hand)
 	var/obj/item/weapon/paper/paper = locate() in list(l_hand, r_hand)
@@ -65,9 +65,9 @@
 	set category = "IC"
 	if(!recipe_book_actor_valid(src) || !recipe_book_actor_valid(student)) return
 	var/list/choices = clean_recipe_node_ids(known_recipe_nodes)
-	var/id = input(src, "Which recipe group?", "Teach") as null|anything in choices
+	var/id = player_input(src, "Which recipe group?", "Teach", null, "anything", choices, TRUE)
 	if(!id || !recipe_teaching_valid(src, student, id)) return
-	if(alert(student, "[src] offers a two-minute lesson in [get_research_node(id).name]. Stay together?", "Recipe lesson", "Learn", "Decline") != "Learn") return
+	if(player_alert(student, "[src] offers a two-minute lesson in [get_research_node(id).name]. Stay together?", "Recipe lesson", list("Learn", "Decline")) != "Learn") return
 	teach_recipe_node(student, id)
 
 /proc/recipe_teaching_valid(mob/living/human/teacher, mob/living/human/student, id)
@@ -101,7 +101,7 @@
 /obj/item/weapon/book/node_compendium/attack_self(mob/user)
 	var/mob/living/human/H = user
 	if(!recipe_book_actor_valid(H) || !H.Adjacent(src)) return
-	var/id = input(H, "Study which chapter?", "Compendium") as null|anything in node_ids
+	var/id = player_input(H, "Study which chapter?", "Compendium", null, "anything", node_ids, TRUE)
 	if(!id || !(id in node_ids) || !H.can_learn_recipe_node(id) || H.knows_recipe_node(id)) return
 	if(do_after(H, 600, src) && src && !gcDestroyed && H.Adjacent(src) && recipe_book_actor_valid(H) && (id in node_ids))
 		H.learn_recipe_node(id)

@@ -21,7 +21,7 @@
 		if (choice1 == "Cancel")
 			return
 		else
-			choice2 = input(H, "How thick should the armor be? 1 [S] = 5mm. 0 to 50mm.") as num
+			choice2 = player_input(H, "How thick should the armor be? 1 [S] = 5mm. 0 to 50mm.", null, null, "num", null, FALSE)
 			if (!isnum(choice2))
 				return
 			else if (choice2 <= 0)

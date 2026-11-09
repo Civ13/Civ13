@@ -237,7 +237,7 @@
 
 /obj/item/weapon/cartography_map/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/weapon/pen))
-		var/title = input(user, "What should this map be called?", "Title the map", name) as text|null
+		var/title = player_input(user, "What should this map be called?", "Title the map", name, "text", null, TRUE)
 		title = sanitize(title, MAX_NAME_LEN)
 		if (!title || QDELETED(src) || !user.Adjacent(src))
 			return

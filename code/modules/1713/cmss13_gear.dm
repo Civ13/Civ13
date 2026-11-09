@@ -132,7 +132,7 @@
 		return FALSE
 	if (get_dist(user, src) > 1)
 		return FALSE
-	var/text = input(user, "Write a label (up to [CONTAINER_LABEL_MAX] letters). Leave it empty to remove the label.", "Label", container_label) as text|null
+	var/text = player_input(user, "Write a label (up to [CONTAINER_LABEL_MAX] letters). Leave it empty to remove the label.", "Label", container_label, "text", null, TRUE)
 	if (isnull(text) || get_dist(user, src) > 1 || !istype(user.get_active_hand(), /obj/item/weapon/pen))
 		return FALSE
 	if (set_container_label(text))

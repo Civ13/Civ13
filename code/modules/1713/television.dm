@@ -82,7 +82,7 @@ var/global/list/civ_tv_receivers = list()
 	var/list/options = list("Power", "Cancel")
 	if (!portable) options += "Install"
 	else options += "Fit to helmet"
-	var/choice = input(H, "Pair at the desk before installing. Helmet batteries recharge from a power cell.", name) as null|anything in options
+	var/choice = player_input(H, "Pair at the desk before installing. Helmet batteries recharge from a power cell.", name, null, "anything", options, TRUE)
 	if (!can_configure(H)) return
 	if (choice == "Power")
 		enabled = !enabled
@@ -191,7 +191,7 @@ var/global/list/civ_tv_receivers = list()
 	if (!options.len)
 		to_chat(H, "No powered cameras paired to this station are in range.")
 		return
-	var/choice = input(H, "Put a paired camera on air", name) as null|anything in options
+	var/choice = player_input(H, "Put a paired camera on air", name, null, "anything", options, TRUE)
 	if (choice && can_present(H) && H.can_use_hands()) start_video(options[choice])
 
 /obj/structure/telecom/station/tv/proc/start_video(obj/item/tv_camera/C)
@@ -243,7 +243,7 @@ var/global/list/civ_tv_receivers = list()
 	if (H in tv_watchers)
 		stop_watching(H)
 		return
-	var/choice = input(H, "Receiver controls", name) in list("Equipment", "Watch video", "Cancel")
+	var/choice = player_input(H, "Receiver controls", name, null, "anything", list("Equipment", "Watch video", "Cancel"), FALSE)
 	if (!can_watch(H)) return
 	if (choice == "Equipment") return ..()
 	if (choice != "Watch video") return
@@ -254,7 +254,7 @@ var/global/list/civ_tv_receivers = list()
 	if (!options.len)
 		to_chat(H, "No matching television station has a live video feed.")
 		return
-	var/selected = input(H, "Choose a station's video feed", name) as null|anything in options
+	var/selected = player_input(H, "Choose a station's video feed", name, null, "anything", options, TRUE)
 	if (selected) start_watching(H, options[selected])
 
 /obj/structure/telecom/tv/proc/start_watching(mob/living/human/H, obj/structure/telecom/station/tv/S)

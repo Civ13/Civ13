@@ -149,7 +149,8 @@ Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|exami
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
  "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second),
- "choose": "<option>" (click/use: the answer when it opens a menu)}.
+ "choose": "<answer>" (click/use/verb/topic: the answer when the game asks, an option from a menu, a number or a
+ name or line of text; an unanswered question shows under PROMPTS, so repeat the step with choose)}.
 Recipe book: {"do": "recipe", "item": "<thing>"} answers what that thing needs and how to get each part, from the game's own
 recipes. It takes no game time; use it before working towards something you have not made before.
 Blueprints: {"do": "blueprint", "name": "hut"|"house"} plans a whole building on a clear spot next to you ("none" drops

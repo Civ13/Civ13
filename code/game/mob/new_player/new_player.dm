@@ -437,7 +437,7 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/lobby_join_confirmation(message, selected_job)
 	if (!lobby_join_admission_current())
 		return "No"
-	var/result = input(src, message) in list("Yes", "No")
+	var/result = player_input(src, message, null, null, "anything", list("Yes", "No"), FALSE)
 	if (!lobby_join_admission_current() || result != "Yes" || !lobby_join_job_available(selected_job))
 		return "No"
 	return "Yes"

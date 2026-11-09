@@ -116,7 +116,7 @@ var/global/list/civ_relay_outbound_queue = list()
 /obj/structure/telecom/relay/attack_hand(mob/living/human/H)
 	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
 		return
-	var/choice = input(H, "Power it, set its network key, or repair it with electronics or copper wire. Drag an adjacent laid cable onto it to power it.", name) in list("Power", "Network key", "Cancel")
+	var/choice = player_input(H, "Power it, set its network key, or repair it with electronics or copper wire. Drag an adjacent laid cable onto it to power it.", name, null, "anything", list("Power", "Network key", "Cancel"), FALSE)
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
@@ -125,7 +125,7 @@ var/global/list/civ_relay_outbound_queue = list()
 			powersource.update_power(-powerneeded, 1, src)
 		to_chat(H, "You switch [src] [enabled ? "on" : "off"].")
 	if (choice == "Network key")
-		var/value = input(H, "Network key: 1 to [CIV_RELAY_KEY_LIMIT] lowercase letters, digits, - or _. Only relays with the same key exchange messages. Leave it empty to take the relay off the air.", name, network_key) as text|null
+		var/value = player_input(H, "Network key: 1 to [CIV_RELAY_KEY_LIMIT] lowercase letters, digits, - or _. Only relays with the same key exchange messages. Leave it empty to take the relay off the air.", name, network_key, "text", null, TRUE)
 		if (isnull(value) || !H || get_dist(H, src) > 1 || H.stat != CONSCIOUS || !H.can_use_hands())
 			return
 		value = lowertext(trim(value))

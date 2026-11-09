@@ -113,7 +113,7 @@
 		if (user in completed)
 			to_chat(user, "<span class='warning'>You have already read this book and it is unlikely that it will bring you new knowledge.</span>")
 			return
-		var/choice = input("This is a book by [author] on [k_class]. Do you want to study it?") in list("Yes", "No")
+		var/choice = player_input(usr, "This is a book by [author] on [k_class]. Do you want to study it?", null, null, "anything", list("Yes", "No"), FALSE)
 		if (choice == "No")
 			return
 		var/modif = 1

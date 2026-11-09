@@ -281,7 +281,7 @@
 		rename_edit = paper_document_prepare_edit(src)
 		if (!rename_edit)
 			return
-	var/n_name = sanitizeSafe(input(renamer, "What would you like to label the paper?", "Paper Labelling", null)  as text, MAX_NAME_LEN)
+	var/n_name = sanitizeSafe(player_input(renamer, "What would you like to label the paper?", "Paper Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 
 	// Retain the existing one-level label admission, including held containers.
 	// Bind the original body/client and reject a concurrent edit after input().

@@ -43,7 +43,7 @@
 		to_chat(user, SPAN_NOTICE("You put [W] into \the [src]."))
 		update_icon()
 	else if (istype(W, /obj/item/weapon/pen))
-		var/n_name = sanitizeSafe(input(usr, "What would you like to label the folder?", "Folder Labelling", null)  as text, MAX_NAME_LEN)
+		var/n_name = sanitizeSafe(player_input(usr, "What would you like to label the folder?", "Folder Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 		if ((loc == usr && usr.stat == FALSE))
 			name = "folder[(n_name ? text("- '[n_name]'") : null)]"
 	return

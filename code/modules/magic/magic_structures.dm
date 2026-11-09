@@ -186,7 +186,7 @@
 				to_chat(H, SPAN_WARNING("You must be holding a crafted wand to register it!"))
 				return
 			
-			var/choice = alert(H, "Do you want to save this [W.name] and replace your stored one?", "Wand Registration", "Yes", "No")
+			var/choice = player_alert(H, "Do you want to save this [W.name] and replace your stored one?", "Wand Registration", list("Yes", "No"))
 			if (choice == "Yes")
 				if (get_dist(H, src) > 1 || (H.get_active_hand() != W && H.get_inactive_hand() != W))
 					return

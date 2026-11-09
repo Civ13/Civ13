@@ -302,7 +302,7 @@ function changePrice() {
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
-		var/custn = input(user, "Choose a name for this pump:") as text|null
+		var/custn = player_input(user, "Choose a name for this pump:", null, null, "text", null, TRUE)
 		if (custn == "" || custn == null)
 			return
 		name = custn
@@ -355,7 +355,7 @@ function changePrice() {
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
-		var/custp = input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):") as num|null
+		var/custp = player_input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):", null, null, "num", null, TRUE)
 		if (!isnum(custp))
 			return
 		if (custp < 0)

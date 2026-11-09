@@ -84,7 +84,7 @@ mob/var/tmp/image/typing_indicator
 
 	set_typing_indicator("say")
 	hud_typing = TRUE
-	var/message = input("","say (text)") as text
+	var/message = player_input(usr, "", "say (text)", null, "text", null, FALSE)
 	hud_typing = FALSE
 	set_typing_indicator(FALSE)
 	if (message)
@@ -96,7 +96,7 @@ mob/var/tmp/image/typing_indicator
 
 	set_typing_indicator("emote")
 	hud_typing = TRUE
-	var/message = input("","me (text)") as text
+	var/message = player_input(usr, "", "me (text)", null, "text", null, FALSE)
 	hud_typing = FALSE
 	set_typing_indicator(FALSE)
 	if (message)

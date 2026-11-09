@@ -181,7 +181,7 @@ var/global/list/field_marks = list()
 		return
 	var/title = scopes[1]
 	if (scopes.len > 1)
-		title = input(src, "Rally point for whom?", "Rally Point") as null|anything in scopes
+		title = player_input(src, "Rally point for whom?", "Rally Point", null, "anything", scopes, TRUE)
 		if (!title)
 			return
 	var/choice = WWinput(src, "Rally point for [title]:", "Rally Point", "Here", list("Here", "Clear", "Cancel"))

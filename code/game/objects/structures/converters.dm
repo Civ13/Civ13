@@ -56,7 +56,7 @@
 	/*else
 		to_chat(user, "<span class='alert'> You empty the [name]. </span>")
 		for(var/i=0,i<=inputamount,i++)
-			new input(src.loc)
+			new player_input(usr, src.loc, null, null, "text", null, FALSE)
 		icon_state = idlesprite
 		if(overlayed)
 			remove_overlay(M)

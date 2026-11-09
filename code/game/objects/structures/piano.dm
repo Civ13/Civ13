@@ -344,7 +344,7 @@
 				spawn() playsong()
 
 		else if (href_list["newline"])
-			var/newline = html_encode(input("Enter your line: ", "Piano") as text|null)
+			var/newline = html_encode(player_input(usr, "Enter your line: ", "Piano", null, "text", null, TRUE))
 			if (!newline)
 				return
 			if (song.lines.len > MAX_LINES)
@@ -361,7 +361,7 @@
 
 		else if (href_list["modifyline"])
 			var/num = round(text2num(href_list["modifyline"]),1)
-			var/content = html_encode(input("Enter your line: ", "Piano", song.lines[num]) as text|null)
+			var/content = html_encode(player_input(usr, "Enter your line: ", "Piano", song.lines[num], "text", null, TRUE))
 			if (!content)
 				return
 			if (length(content) > MAX_CHARS_PER_LINE)
@@ -382,7 +382,7 @@
 		else if (href_list["import"])
 			var/t = ""
 			do
-				t = html_encode(input(usr, "Please paste the entire song, formatted:", text("[]", name), t)  as message)
+				t = html_encode(player_input(usr, "Please paste the entire song, formatted:", text("[]", name), t, "message", null, FALSE))
 				if (!in_range(src, usr))
 					return
 

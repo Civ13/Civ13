@@ -295,7 +295,7 @@ var/global/list/orbit_pods = list()
 	var/choice = WWinput(user, "Fire \the [P]'s thrusters. Each tile costs a unit of propellant ([round(P.propellant)] left).", "RCS", "Cancel", list("North", "East", "South", "West", "Cancel"))
 	if (!dirs[choice])
 		return
-	var/tiles = input(user, "How many tiles (1 to [ORBIT_POD_MAX_BURN])?", "RCS", 1) as null|num
+	var/tiles = player_input(user, "How many tiles (1 to [ORBIT_POD_MAX_BURN])?", "RCS", 1, "num", null, TRUE)
 	if (!tiles || QDELETED(P))
 		return
 	reason = P.burn(dirs[choice], tiles, user)

@@ -442,11 +442,11 @@ var/global/last_persistence_save_vote_time = 0
 						choices.Add(id)
 						choices[id] = 0
 				if ("custom")
-					var/custom_question = input(usr,"What is the vote for?") as text|null
+					var/custom_question = player_input(usr, "What is the vote for?", null, null, "text", null, TRUE)
 					if (!custom_question || mode || generation != setup_generation) return FALSE
 					var/list/custom_options = list()
 					for (var/i=1,i<=10,i++)
-						var/option = capitalize(input(usr,"Please enter an option or hit cancel to finish") as text|null)
+						var/option = capitalize(player_input(usr, "Please enter an option or hit cancel to finish", null, null, "text", null, TRUE))
 						if (mode || generation != setup_generation || !usr.client) return FALSE
 						if (!option) break
 						custom_options.Add(option)

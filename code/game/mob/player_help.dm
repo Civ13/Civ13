@@ -23,7 +23,7 @@ var/global/datum/player_help_service/player_help_service = new
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
-	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, mood category, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	return player_input(src, "Ask a gameplay question. Your question and gameplay condition (health, mood category, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help", null, "text", null, TRUE)
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"

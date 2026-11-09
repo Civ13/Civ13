@@ -72,7 +72,7 @@ var/global/list/recording_tape_recorders = list()
 
 /obj/item/cassette/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/weapon/pen))
-		var/new_label = input(user, "What do you want to write on the label? Leave it empty to rub the label off.", "Label tape", label) as text|null
+		var/new_label = player_input(user, "What do you want to write on the label? Leave it empty to rub the label off.", "Label tape", label, "text", null, TRUE)
 		if (isnull(new_label) || !user.Adjacent(src) || user.incapacitated())
 			return
 		label = sanitize(new_label, 32)

@@ -1264,7 +1264,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		return
 	if(ismob(M) && M.ckey && user.ckey != M.ckey)
 		user.visible_message("<span class='notice'>[user] offers \the [src] to [M].</span>")
-		var/response = alert(M, "[user] wants to give you \a [name]. Accept?", "Sticker Trade", "Accept", "Decline")
+		var/response = player_alert(M, "[user] wants to give you \a [name]. Accept?", "Sticker Trade", list("Accept", "Decline"))
 		if(response == "Accept" && isturf(user.loc) && isturf(M.loc) && get_dist(user, M) <= 1)
 			if(!istype(src) || qdeleted(src) || src.loc != user)
 				return

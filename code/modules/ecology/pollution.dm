@@ -341,10 +341,10 @@ var/global/pollution_cleaned_total = 0
 	var/turf/T = get_turf(mob)
 	if (!T)
 		return
-	var/amount = input(src, "Pollution at the centre (0-[POLLUTION_MAX]); it fades over the radius. 0 clears the area.", "Set Pollution Here", 70) as num|null
+	var/amount = player_input(src, "Pollution at the centre (0-[POLLUTION_MAX]); it fades over the radius. 0 clears the area.", "Set Pollution Here", 70, "num", null, TRUE)
 	if (isnull(amount))
 		return
-	var/radius = input(src, "Radius in tiles (0-[POLLUTION_MAX_RADIUS]).", "Set Pollution Here", 3) as num|null
+	var/radius = player_input(src, "Radius in tiles (0-[POLLUTION_MAX_RADIUS]).", "Set Pollution Here", 3, "num", null, TRUE)
 	if (isnull(radius))
 		return
 	amount = clamp(amount, 0, POLLUTION_MAX)
