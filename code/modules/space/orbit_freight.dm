@@ -124,13 +124,16 @@ var/global/list/orbit_freighters = list()
 
 // Sends the hold to the pad's world for H's party. Returns null once it
 // left, or the reason it did not.
-/obj/structure/crewed_lander/freighter/proc/launch_freight(obj/structure/region_gate/trail_marker/launch_pad/pad, mob/living/human/H)
+// A freight dispatcher (orbit_freight_routes.dm) passes no H, its route's
+// party and who set the route up, and never wakes a sleeping world.
+/obj/structure/crewed_lander/freighter/proc/launch_freight(obj/structure/region_gate/trail_marker/launch_pad/pad, mob/living/human/H, route_party = null, route_by = null)
 	var/destination = pad.destination
-	var/party = party_train_party_of(H)
+	var/party = route_party || party_train_party_of(H)
 	if (!party)
 		return "You have no party to send it for."
+	var/by = route_by || (H && H.client ? H.client.ckey : null)
 	// A sleeping world is woken first; that can take a while.
-	if (shard_group.enabled && shard_group.peers[destination] && shard_group.peers[destination]["state"] != "UP")
+	if (H && shard_group.enabled && shard_group.peers[destination] && shard_group.peers[destination]["state"] != "UP")
 		var/woke = shard_group.wake_peer(destination, H)
 		if (woke)
 			return woke
@@ -140,7 +143,7 @@ var/global/list/orbit_freighters = list()
 	if (!length(cargo))
 		return "Nothing in the hold can make the flight."
 	var/turf/T = get_turf(src)
-	var/payload = orbit_freight_payload(freight_id, party, T, cargo, H.client ? H.client.ckey : null)
+	var/payload = orbit_freight_payload(freight_id, party, T, cargo, by)
 	if (!orbit_freight_decode(payload))
 		return "Something in the hold cannot make the flight. Ask an admin."
 	// Hold the freighter while the agent records the flight, so the hold
@@ -154,7 +157,7 @@ var/global/list/orbit_freighters = list()
 	for (var/obj/item/I in hold())
 		qdel(I)
 	visible_message(SPAN_DANGER("\The [src] roars off the pad on a column of fire!"))
-	log_game("Cargo freighter: [freight_id] left [T.x],[T.y],[T.z] for [destination] with [length(cargo)] item\s for [party] (launched by [H.client ? H.client.ckey : "nobody"]).")
+	log_game("Cargo freighter: [freight_id] left [T.x],[T.y],[T.z] for [destination] with [length(cargo)] item\s for [party] ([route_party ? "freight route of [by || "nobody"]" : "launched by [by || "nobody"]"]).")
 	qdel(src)
 	return null
 

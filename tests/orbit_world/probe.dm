@@ -121,6 +121,7 @@ var/global/orbit_failures = 0
 		orbit_network_checks()
 		orbit_freight_checks()
 		orbit_freight_flight_checks()
+		orbit_freight_route_checks()
 		orbit_satellite_checks()
 		orbit_docking_checks()
 		orbit_lab_checks()
@@ -1313,6 +1314,65 @@ var/global/orbit_failures = 0
 		qdel(landed)
 	qdel(pad)
 	qdel(H)
+	transfer_bridge = real_bridge
+	shard_group.peers["gaia"] = real_gaia
+	map.ordinal_age = 7
+
+// Freight routes (orbit_freight_routes.dm): a dispatcher loads a freighter
+// at its pad from the crates beside it and launches it with nobody there.
+/proc/orbit_freight_route_checks()
+	var/party = "civ:gaia:Delta"
+	var/datum/transfer_bridge/real_bridge = transfer_bridge
+	var/datum/transfer_bridge/probe_agent/agent = new
+	agent.port = 1
+	agent.token = "probe"
+	agent.ledger_base = 0
+	agent.peers = list("gaia")
+	transfer_bridge = agent
+	var/list/real_gaia = shard_group.peers["gaia"]
+	shard_group.peers["gaia"] = list("kind" = "NOMADS", "name" = "Gaia", "state" = "UP")
+	map.ordinal_age = 8
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(11, 7, 1))
+	pad.destination = "gaia"
+	pad.approved = TRUE
+	var/obj/structure/crewed_lander/freighter/F = new(locate(10, 7, 1))
+	var/obj/structure/freight_dispatcher/D = new(locate(9, 7, 1))
+	var/obj/structure/closet/crate/C = new(locate(8, 7, 1))
+	var/obj/item/stack/material/steel/S = new(C, 30)
+	new /obj/item/pressure_tank(C)
+	var/mob/living/human/eva_tester/H = new(locate(9, 8, 1))
+	H.party_train_party = party
+	H.m_intent = "stealth"
+	orbit_check("no route until one is set", D.party ? 1 : 0, 0)
+	D.process()
+	orbit_check("an idle dispatcher loads nothing", length(F.hold()), 0)
+	D.set_route(H, 2)
+	orbit_check("route set for the party", "[D.party]|[D.load]", "[party]|2")
+	orbit_check("dispatcher finds the freighter at the pad", D.freighter() == F ? 1 : 0, 1)
+	orbit_check("loads from the crate beside it", D.load_freighter(F), 2)
+	orbit_check("crate emptied into the hold", length(C.contents), 0)
+	orbit_check("waits for propellant", findtext("[D.route_refusal(F)]", "propellant") ? 1 : 0, 1)
+	F.propellant = 200
+	shard_group.peers["gaia"]["state"] = "ASLEEP"
+	var/sent_before = length(agent.paths)
+	D.process()
+	orbit_check("never wakes a sleeping world", D.waiting && !QDELETED(F) && length(agent.paths) == sent_before ? 1 : 0, 1)
+	shard_group.peers["gaia"]["state"] = "UP"
+	D.paused = TRUE
+	D.process()
+	orbit_check("a paused route does not launch", QDELETED(F) ? 1 : 0, 0)
+	D.paused = FALSE
+	var/fid = F.freight_id
+	orbit_check("route launches with nobody at the pad", "[D.route_launch(F)]", "")
+	orbit_check("freighter spent", QDELETED(F) && QDELETED(S) ? 1 : 0, 1)
+	var/list/P = length(agent.sent) ? orbit_freight_decode(agent.sent[length(agent.sent)]) : null
+	orbit_check("route freight flies for the party", P ? "[P["id"] == fid ? 1 : 0],[P["party"]],[length(P["cargo"])]" : "null", "1,[party],2")
+	var/mob/living/human/eva_tester/O = new(locate(9, 6, 1))
+	O.party_train_party = "civ:gaia:Other"
+	O.m_intent = "stealth"
+	orbit_check("dispatcher gated", get_recipe_node_req("/obj/structure/freight_dispatcher"), "orbital_flight")
+	for (var/obj/O2 in list(D, C, pad, H, O))
+		qdel(O2)
 	transfer_bridge = real_bridge
 	shard_group.peers["gaia"] = real_gaia
 	map.ordinal_age = 7

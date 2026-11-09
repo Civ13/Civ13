@@ -53,6 +53,7 @@ what the code does so far and the rules later steps must keep.
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
+| 19 | Freight routes: freight dispatcher beside a pad loads the freighter there from crates beside it and launches it for its party at a set load, never waking a sleeping world | `code/modules/space/orbit_freight_routes.dm` |
 | 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
 | 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
 | 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
@@ -382,6 +383,17 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   land beside the port and ferry home the normal way.
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
+
+## Freight routes
+
+- **Freight dispatcher** (20 electronics, Orbital Flight). A party member
+  sets it up as a route for their party (saved `party`, `by`, `load`,
+  `paused`). Each process tick it finds a freighter at a pad within 2 tiles,
+  moves what the hold takes from closed crates within 1 tile into it, and
+  once the hold carries `load` items with a full tank, calls
+  `launch_freight(pad, null, party, by)` from a `waitfor = FALSE` proc.
+- It waits (shown on examine) while the pad is closed, the world saves, or
+  the destination is asleep: unlike a crew, a route never wakes a world.
 
 ## Asteroid mining
 
