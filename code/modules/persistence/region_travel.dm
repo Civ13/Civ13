@@ -68,6 +68,10 @@ var/global/list/region_travel_carry_types = list(
 // family, or null when it cannot travel.
 /proc/region_travel_item_kind(obj/item/I)
 	if(!istype(I)) return null
+	if(istype(I, /obj/item/weapon/book/node_compendium))
+		var/obj/item/weapon/book/node_compendium/C = I
+		var/kind = "compendium:[json_encode(C.node_ids)]"
+		return !length(C.contents) && recipe_compendium_wire_ids(kind) ? kind : null
 	if(istype(I, /obj/item/weapon/book/node_book))
 		var/obj/item/weapon/book/node_book/B = I
 		return valid_recipe_node_id(B.node_id) && !length(B.contents) ? "node:[B.node_id]" : null
@@ -168,7 +172,7 @@ var/global/list/region_travel_carry_types = list(
 		var/kind = region_travel_item_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
-		else if(copytext(kind, 1, 6) == "node:")
+		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:")
 			carried += list(list(slot_name, kind, 1))
 		else if(copytext(kind, 1, 6) == "ammo:")
 			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
@@ -185,7 +189,7 @@ var/global/list/region_travel_carry_types = list(
 		P["known_recipe_nodes"] = clean_recipe_node_ids(known_recipe_nodes)
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
 	for(var/list/entry in carried)
-		if(copytext(entry[2], 1, 6) == "node:")
+		if(copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")
 			P["v"] = 2
 	if(P["v"] == 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
@@ -246,7 +250,7 @@ var/global/list/region_travel_carry_types = list(
 		if(!istext(stat) || length(stat) > 32 || !islist(pair) || pair.len != 2 || !isnum(pair[1]) || !isnum(pair[2]) || pair[1] < 0 || pair[2] < 0 || pair[1] > 1000 || pair[2] > 1000) return null
 	for(var/list/entry in P["items"])
 		if(!islist(entry) || entry.len != 3 || !(entry[1] in region_travel_slots) || !istext(entry[2]) || !isnum(entry[3])) return null
-		if(P["v"] == 1 && copytext(entry[2], 1, 6) == "node:") return null
+		if(P["v"] == 1 && (copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")) return null
 		if(!region_travel_item_path(entry[2], entry[3])) return null
 	if(!isnull(P["party"]) && !party_train_valid_party(P["party"])) return null
 	// A solo party is only ever its own player's.
@@ -267,6 +271,8 @@ var/global/list/region_travel_carry_types = list(
 
 // The path an item entry rebuilds, or null when it is not allowed.
 /proc/region_travel_item_path(kind, amount)
+	if(copytext(kind, 1, 12) == "compendium:")
+		return amount == 1 && recipe_compendium_wire_ids(kind) ? /obj/item/weapon/book/node_compendium : null
 	if(copytext(kind, 1, 6) == "node:")
 		return amount == 1 && valid_recipe_node_id(copytext(kind, 6)) ? /obj/item/weapon/book/node_book : null
 	if(copytext(kind, 1, 7) == "stack:")
@@ -388,7 +394,10 @@ var/global/list/region_travel_carry_types = list(
 	for(var/list/entry in P["items"])
 		var/path = region_travel_item_path(entry[2], entry[3])
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
-		if(istype(I, /obj/item/weapon/book/node_book))
+		if(istype(I, /obj/item/weapon/book/node_compendium))
+			var/obj/item/weapon/book/node_compendium/C = I
+			C.node_ids = recipe_compendium_wire_ids(entry[2])
+		else if(istype(I, /obj/item/weapon/book/node_book))
 			var/obj/item/weapon/book/node_book/B = I
 			B.node_id = copytext(entry[2], 6)
 			B.refresh_node_title()

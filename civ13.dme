@@ -1393,6 +1393,7 @@
 #include "code\modules\research_tree\research_bench_admin.dm"
 #include "code\modules\research_tree\research_book.dm"
 #include "code\modules\research_tree\character_knowledge.dm"
+#include "code\modules\research_tree\book_distribution.dm"
 #include "code\modules\research_tree\research_faction.dm"
 #include "code\modules\research_tree\research_forge.dm"
 #include "code\modules\research_tree\research_node.dm"

@@ -96,6 +96,10 @@ var/knowledge_failures = 0
 		old_save.known_recipe_nodes = list(node_id, node_id, "missing", 17)
 		old_save.persistence_import_fields(list("recipe_knowledge_initialized", "known_recipe_nodes"))
 		knowledge_check(old_save.known_recipe_nodes.len == 1, "restored IDs are text-only validated and deduplicated")
+		var/obj/item/weapon/book/node_compendium/compendium = new(locate(6,2,1))
+		compendium.node_ids = list("basic_tools", "primitive_construction")
+		var/obj/structure/recipe_book_cache/cache = new(locate(7,2,1))
+		cache.restock_remaining = 12345
 		var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(6,2,1))
 		bench.faction = "Fixture"
 		knowledge_check(map.complete_node("Fixture", future_id), "research transitions to completed")
@@ -118,6 +122,10 @@ var/knowledge_failures = 0
 		knowledge_check(H && H.knows_recipe_node(node_id) && H.recipe_knowledge_initialized, "learned body knowledge survives actual reload")
 		knowledge_check(fresh && fresh.recipe_knowledge_initialized && !fresh.known_recipe_nodes.len, "empty fresh saved body remains empty after reload")
 		knowledge_check(B && B.node_id == node_id, "book text node id survives reload")
+		compendium = locate(/obj/item/weapon/book/node_compendium) in locate(6,2,1)
+		cache = locate(/obj/structure/recipe_book_cache) in locate(7,2,1)
+		knowledge_check(compendium && compendium.node_ids.len == 2 && istext(compendium.node_ids[1]) && ("basic_tools" in compendium.node_ids), "compendium text IDs survive production world reload")
+		knowledge_check(cache && cache.restock_remaining == 12345, "cache cooldown survives production world reload")
 		knowledge_check(!("recipe_books" in durable_metadata_map_schema()), "opt-in configuration does not expand durable map metadata")
 	catch (var/exception/e)
 		knowledge_failures++
