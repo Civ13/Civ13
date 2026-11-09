@@ -1,5 +1,9 @@
 {
- "runners": {},
+ "runners": {
+  "tests/wildlife_arrival/run.py": {
+   "serial": true
+  }
+ },
  "skip": {
   "tests/component_tools/run_windows.py": "Windows only",
   "tests/core_boot/run.py": "needs --compile-only and a CI output layout",
@@ -27,7 +31,6 @@
   "tests/attack_history/run.py": "Migrated writer expressions or multiplicities changed",
   "tests/chemistry/run.py": "polyethylene probe timed out after 45 s",
   "tests/cone_refresh/run.py": "Exactly one full pinned compiler banner required",
-  "tests/extraction/run_mall.py": "Native mall fixture did not produce its sole exact positive result",
   "tests/faction_ui_assets/run.py": "Missing or ambiguous source anchor: ui = new(user, src, ui_key, \"faction_creation.tmpl\", name, 620, 900)",
   "tests/flax_processing/run.py": "Required source input fingerprint changed: config/crafting/material_recipes_global.txt",
   "tests/food_progression/run.py": "Pinned production-source compilation failed",
@@ -43,7 +46,6 @@
   "tests/load_construction/run.py": "Load construction sweep failed",
   "tests/lobby_join/run.py": "control.dm:372:error: QDELETED: undefined proc",
   "tests/nanoui_ownership/run.py": "Pinned compilation failed",
-  "tests/npc_cover/run.py": "reads a commit that is not on master (git show)",
   "tests/pool_effects/run.py": "Actual production pooling assertions failed",
   "tests/region_relay/native_probe.py": "\"failed_phase\": \"route\",",
   "tests/reserved_lighting/run-ci.py": "global startup initializer anchor drift",

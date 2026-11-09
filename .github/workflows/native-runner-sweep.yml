@@ -32,6 +32,8 @@ jobs:
         env:
           BYOND_HOME: ${{ runner.temp }}/sweep-byond
         run: bash scripts/cloud_byond_setup.sh
+      - name: Install Pillow
+        run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Run every native runner
         env:
           BYOND_ARCHIVE: ${{ runner.temp }}/sweep-byond/pinned.zip

@@ -110,12 +110,22 @@ def main():
     todo = [r for r in runners if r not in manifest['skip']]
     results = []
     scratch = tempfile.mkdtemp(prefix='civ13-native-sweep-')
+    settings = manifest['runners']
+    # Timing-sensitive runners ("serial": true) run alone after the parallel batch.
+    serial = [r for r in todo if settings.get(r, {}).get('serial')]
+    parallel = [r for r in todo if r not in serial]
+    byond_bin = args.byond_bin.resolve()
+
+    def record(result):
+        results.append(result)
+        print(f"{result['status']:7} {result['seconds']:7.1f}s {result['runner']}", flush=True)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.jobs)) as pool:
-        futures = {pool.submit(run_one, r, args.byond_bin.resolve(), manifest['runners'].get(r, {}), scratch): r for r in todo}
+        futures = [pool.submit(run_one, r, byond_bin, settings.get(r, {}), scratch) for r in parallel]
         for future in concurrent.futures.as_completed(futures):
-            result = future.result()
-            results.append(result)
-            print(f"{result['status']:7} {result['seconds']:7.1f}s {result['runner']}", flush=True)
+            record(future.result())
+    for runner in serial:
+        record(run_one(runner, byond_bin, settings[runner], scratch))
     results.sort(key=lambda r: r['runner'])
     known = manifest['known_failing']
     failed = [r for r in results if r['status'] != 'pass']
