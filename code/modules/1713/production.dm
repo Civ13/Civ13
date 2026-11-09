@@ -1701,6 +1701,11 @@
 	not_disassemblable = TRUE
 
 /obj/structure/printingpress/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/book/node_book))
+		return print_recipe_manual(W, user)
+	if(istype(W, /obj/item/weapon/book/node_compendium))
+		to_chat(user, SPAN_WARNING("Print individual manuals before binding them into a compendium."))
+		return
 	if (istype(W, /obj/item/weapon/paper))
 		return insert_copy_paper(W, user)
 	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))
