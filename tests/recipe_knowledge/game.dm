@@ -15,6 +15,8 @@ var/knowledge_failures = 0
 /obj/map_metadata/knowledge_fixture/New()
 	return
 /mob/living/human/knowledge_fixture/New()
+	human_mob_list |= src
+	human_mob_list |= src
 	species = new /datum/species/human
 	body_build = new /datum/body_build
 	bloodstr = new /datum/reagents/metabolism(1000, src, CHEM_BLOOD)
@@ -24,6 +26,8 @@ var/knowledge_failures = 0
 	vessel = new /datum/reagents(1000, src)
 	if (!persistence_saved_atom_construction)
 		initialize_recipe_knowledge()
+/obj/structure/research_bench/knowledge_fixture/New()
+	research_benches |= src
 /proc/knowledge_check(condition, label)
 	if (!condition)
 		knowledge_failures++
@@ -74,8 +78,6 @@ var/knowledge_failures = 0
 		var/mob/living/human/knowledge_fixture/legacy = new(locate(4,2,1))
 		knowledge_check(!legacy.recipe_knowledge_initialized && !legacy.can_learn_recipe_node(node_id), "disabled mode preserves legacy migration eligibility")
 		map.activate_recipe_books()
-		// Fixture New skips production registration, so register this body explicitly.
-		legacy.migrate_recipe_knowledge()
 		knowledge_check(legacy.knows_recipe_node(node_id) && !legacy.knows_recipe_node(future_id), "activation grants current research only")
 		map.ordinal_age = 9
 		knowledge_check(!legacy.migrate_recipe_knowledge() && !legacy.knows_recipe_node(future_id), "later eras cannot repeat migration")
@@ -86,6 +88,13 @@ var/knowledge_failures = 0
 		old_save.known_recipe_nodes = list(node_id, node_id, "missing", 17)
 		old_save.persistence_import_fields(list("recipe_knowledge_initialized", "known_recipe_nodes"))
 		knowledge_check(old_save.known_recipe_nodes.len == 1, "restored IDs are text-only validated and deduplicated")
+		var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(6,2,1))
+		bench.faction = "Fixture"
+		knowledge_check(map.complete_node("Fixture", future_id), "research transitions to completed")
+		var/book_count = 0
+		for (var/obj/item/weapon/book/node_book/copy in locate(6,2,1))
+			if (copy.node_id == future_id) book_count++
+		knowledge_check(book_count == 1 && !map.complete_node("Fixture", future_id), "one first manual and duplicate completion refused")
 		knowledge_check(map_storage.Save_World() && map_storage.validate_world_save(), "native body and book durable save")
 		map_storage.ClearMap()
 		knowledge_check(map_storage.Load_World(), "native durable reload")

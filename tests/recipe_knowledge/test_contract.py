@@ -56,7 +56,7 @@ class KnowledgeContract(unittest.TestCase):
             self.assertIn(token, fixture)
         runner = read('tests/recipe_knowledge/run.py')
         self.assertIn("'0', '-invisible', '-close'", runner)
-        self.assertNotIn("'-trusted'", runner)
+        self.assertIn("if args.trusted:", runner)
         self.assertIn("'0 errors, 0 warnings'", runner)
 if __name__ == '__main__':
     unittest.main()

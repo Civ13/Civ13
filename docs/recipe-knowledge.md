@@ -39,5 +39,6 @@ compiles the production game with isolated startup and an 8x8 offline fixture.
 Its native cases cover real world-save/reload, new/dead bodies, legacy migration,
 repeat learning/reading, invalid IDs and the research ceiling. The fixture
 adapts human construction/physiology and does not establish connected-client
-reading cancellation or live-server migration acceptance. It runs without
-trusted mode, with no port and only disposable fixture files.
+reading cancellation or live-server migration acceptance. It defaults to untrusted mode. On Windows the save fixture requires explicit
+maintainer authorization for `--trusted`; it still opens no port and uses only
+disposable fixture files. Logs are retained under ignored `.ci/` evidence.
