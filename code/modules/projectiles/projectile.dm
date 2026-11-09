@@ -305,6 +305,8 @@
 	original = new_target
 
 	setup_trajectory(starting_loc, new_target)
+	// The height line was planned from the first start; a redirected shot uses flat rules.
+	height_start = null
 
 //Called when the projectile intercepts a mob. Returns TRUE if the projectile hit the mob, FALSE if it missed and should keep flying.
 /obj/item/projectile/proc/attack_mob(var/mob/living/target_mob, var/distance, var/miss_modifier=0)
@@ -518,6 +520,20 @@
 		qdel(src)
 		return FALSE
 
+	// Hills: ground above the shot's line stops it, and a line above a roof
+	// passes over the building (projectile_heights.dm).
+	var/height_verdict = height_enter(T)
+	if (height_verdict == PROJECTILE_HEIGHT_OVER)
+		forceMove(T)
+		permutated += T
+		return TRUE
+	if (height_verdict == PROJECTILE_HEIGHT_GROUND)
+		bumped = TRUE
+		loc = null
+		on_impact(T)
+		qdel(src)
+		return FALSE
+
 	var/T_density = T.density
 	for (var/atom/movable/AM in T.contents)
 		if (untouchable.Find(AM))
@@ -576,6 +592,8 @@
 
 		if (isliving(AM) && AM != firer && !is_firer_mount(AM))
 			var/mob/living/L = AM
+			if (L != original && height_passes_over(los_target_top(L)))
+				continue
 			if ((!L.lying || T == get_turf(original) || execution))
 				var/obj/item/weapon/grab/G = locate() in L
 				if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
@@ -618,6 +636,8 @@
 
 		else if (isobj(AM) && AM != firedfrom)
 			var/obj/O = AM
+			if (O != original && !istype(O, /obj/structure/vehicleparts/frame) && height_passes_over(los_target_top(O)))
+				continue
 			if ((istype(src, /obj/item/projectile/magic/pushum) || istype(src, /obj/item/projectile/magic/pullus)) && !O.anchored)
 				do_bullet_act(O)
 				on_impact(T)
@@ -692,7 +712,7 @@
 				do_bullet_act(T)
 				passthrough = FALSE
 
-	if (T_density)
+	if (T_density && !height_passes_over(T.opacity ? 3 : 1))
 		passthrough = FALSE
 
 	if (istype(src, /obj/item/projectile/shell))
@@ -749,6 +769,7 @@
 
 	if (!trajectory)
 		setup_trajectory(loc)
+		height_plan(starting)
 		firstmove = TRUE
 		alpha = 0
 
