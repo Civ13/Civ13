@@ -53,6 +53,7 @@ what the code does so far and the rules later steps must keep.
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
+| 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
 | 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
 | 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
@@ -381,6 +382,18 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   land beside the port and ferry home the normal way.
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
+
+## Asteroid mining
+
+- On each hazard step with a roll, a station with fewer than two asteroids on
+  its planes has a 4% chance per minute of one arriving on a clear orbit
+  tile at least 4 tiles from the edge (`orbit_asteroid_step` from
+  `orbit_upkeep_step`); its crew is told.
+- An untethered asteroid drifts on after 1800 hazard-clock seconds (saved
+  `drift_left`); a safety tether used on it holds it for good.
+- A pickaxe or jackhammer (3 s a swing) frees 1-3 lumps of iron (10-16),
+  copper (4-8), water ice (6-10), silver (0-3) or gold (0-2) until it
+  crumbles. Ore left is a saved list.
 
 ## Station defences
 

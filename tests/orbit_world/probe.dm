@@ -125,6 +125,7 @@ var/global/orbit_failures = 0
 		orbit_docking_checks()
 		orbit_lab_checks()
 		orbit_defence_checks()
+		orbit_asteroid_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -1671,3 +1672,49 @@ var/global/orbit_failures = 0
 		orbit_check("[path] gated", get_recipe_node_req(path), "orbital_flight")
 	for (var/obj/O in list(D, D2, D3, plain, port, H))
 		qdel(O)
+
+// Asteroid mining (orbit_asteroids.dm): arrival, drift, tethering and mining.
+/proc/orbit_asteroid_checks()
+	var/z = 0
+	for (var/p in 2 to world.maxz)
+		if (orbit_station_party(p))
+			z = p
+	if (!z)
+		orbit_check("a station plane for asteroids", 0, 1)
+		return
+	var/obj/structure/orbit_asteroid/A = orbit_asteroid_arrive(z)
+	orbit_check("an asteroid arrives in open space", A && istype(A.loc, /turf/floor/space/orbit) ? 1 : 0, 1)
+	if (!A)
+		return
+	orbit_check("it carries ore", A.lumps_left() >= 20 ? 1 : 0, 1)
+	orbit_check("it is counted on its plane", (A in orbit_asteroids_on(z)) ? 1 : 0, 1)
+	orbit_asteroid_step(600, FALSE)
+	orbit_check("still drifting after ten minutes", QDELETED(A) ? 0 : 1, 1)
+	orbit_check("drift counted down", A.drift_left, 1200)
+	var/mob/living/human/eva_tester/H = new(get_step(A, WEST))
+	H.m_intent = "stealth"
+	var/obj/item/eva_tether/T = new(get_turf(H))
+	H.put_in_active_hand(T)
+	A.attackby(T, H)
+	orbit_check("tethered", A.tethered ? 1 : 0, 1)
+	orbit_check("tether used up", QDELETED(T) ? 1 : 0, 1)
+	orbit_asteroid_step(3600, FALSE)
+	orbit_check("a tethered asteroid stays", QDELETED(A) ? 0 : 1, 1)
+	var/before = A.lumps_left()
+	var/got = A.mine_once(get_turf(H))
+	orbit_check("a swing frees ore", got && A.lumps_left() < before ? 1 : 0, 1)
+	var/found = 0
+	for (var/obj/item/stack/ore/O in get_turf(H))
+		found += O.amount
+	orbit_check("ore at the miner's feet", found, before - A.lumps_left())
+	var/swings = 0
+	while (!QDELETED(A) && swings < 200)
+		A.mine_once(get_turf(H))
+		swings++
+	orbit_check("worked out and crumbled", QDELETED(A) ? 1 : 0, 1)
+	var/obj/structure/orbit_asteroid/B = orbit_asteroid_arrive(z)
+	orbit_asteroid_step(1800, FALSE)
+	orbit_check("an untethered asteroid drifts on", QDELETED(B) ? 1 : 0, 1)
+	for (var/obj/item/stack/ore/O in get_turf(H))
+		qdel(O)
+	qdel(H)

@@ -158,9 +158,13 @@ refusals (outside a module, uncabled, breached), loading and refusing
 feedstock, one batch per thirty steps for each programme, and no work while
 nobody is online.
 
-Last, station defences (`code/modules/space/orbit_defences.dm`): armour
+Then station defences (`code/modules/space/orbit_defences.dm`): armour
 plates soaking strikes, a turret shooting them down, the hull holed once the
 plates are gone, and turrets slowing a forced docking.
+
+Last, asteroid mining (`code/modules/space/orbit_asteroids.dm`): an
+asteroid arriving with ore, drifting, held by a tether, mined out until it
+crumbles, and an untethered one drifting on.
 
 Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
