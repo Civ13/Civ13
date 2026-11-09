@@ -8,11 +8,82 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tests/save_movement'))
-from source_adapter import project
+from source_adapter import extract, project
 
 BASE = '/obj/structure/multiz/ladder'
 SOURCE = ROOT / 'code/modules/multiz/structures.dm'
 BEFORE = Path(__file__).with_name('fixtures') / 'destroy_before.txt'
+
+
+class LadderViewTests(unittest.TestCase):
+    """Execute the production control flow with engine boundaries stubbed."""
+
+    def setUp(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        body = extract(source, BASE + '/MouseDrop_T')
+        body = re.sub(r'(?m)^(\t*)visible_message\(.*\)$', r'\1visible_message()', body)
+        body = re.sub(r'\btarget\b', 'src.target', body)
+        self.env = dict(istype=lambda value: isinstance(value, Human),
+                        QDELETED=lambda value: value is None or getattr(value, 'deleted', False),
+                        visible_message=lambda: None, do_after=lambda *args: True)
+        self.action = project('/action(dropping, user)\n' + body + '\n', '/action',
+                              'src, dropping, user', self.env)
+        body = extract(source, '/mob/living/human/proc/update_laddervision')
+        body = re.sub(r'(?<![\w.])client\b', 'src.client', body)
+        body = re.sub(r'(?<![\w.])laddervision\b', 'src.laddervision', body)
+        self.update = project('/update(ladder)\n' + body + '\n', '/update', 'src, ladder',
+                              dict(istype=lambda value: isinstance(value, Ladder),
+                                   EYE_PERSPECTIVE='eye', MOB_PERSPECTIVE='mob'))
+
+    def human(self, connected=True):
+        human = Human()
+        human.client = SimpleNamespace(perspective='mob', eye=human) if connected else None
+        human.laddervision = None
+        human.update_laddervision = lambda ladder: self.update(human, ladder)
+        return human
+
+    def test_only_self_drag_can_start_and_repeat_stops_viewing(self):
+        actor, other, ladder, peer = self.human(), self.human(), Ladder(), Ladder()
+        ladder.target = peer
+        self.action(ladder, other, actor)
+        self.assertIsNone(other.laddervision)
+        self.assertIsNone(actor.laddervision)
+        self.action(ladder, actor, actor)
+        self.assertIs(actor.laddervision, peer)
+        self.assertIs(actor.client.eye, peer)
+        self.action(ladder, actor, actor)
+        self.assertIsNone(actor.laddervision)
+        self.assertIs(actor.client.eye, actor)
+        self.assertEqual(actor.client.perspective, 'mob')
+
+    def test_wait_rechecks_disconnect_and_target_replacement(self):
+        for mutation in ('disconnect', 'replace', 'delete', 'already_viewing'):
+            with self.subTest(mutation=mutation):
+                actor, ladder, peer = self.human(), Ladder(), Ladder()
+                ladder.target = peer
+                def wait(*args):
+                    if mutation == 'disconnect': actor.client = None
+                    if mutation == 'replace': ladder.target = Ladder()
+                    if mutation == 'delete': peer.deleted = True
+                    if mutation == 'already_viewing': actor.laddervision = Ladder()
+                    return True
+                self.env['do_after'] = wait
+                self.action(ladder, actor, actor)
+                self.assertIsNot(actor.laddervision, peer)
+
+    def test_clientless_clear_still_resets_state(self):
+        actor = self.human(connected=False)
+        actor.laddervision = Ladder()
+        self.update(actor, None)
+        self.assertIsNone(actor.laddervision)
+
+
+class Human:
+    pass
+
+
+class Ladder:
+    pass
 
 
 def definitions(text, path):

@@ -158,31 +158,34 @@
 
 /mob/living/human/var/laddervision = null
 
-/obj/structure/multiz/ladder/MouseDrop_T(var/mob/living/human/user as mob)
-	if (!user || !istype(user))
+/obj/structure/multiz/ladder/MouseDrop_T(atom/dropping, mob/living/human/user)
+	if (!istype(user) || dropping != user || !user.client)
 		return
-	if (user.laddervision == src)
+	if (user.laddervision)
+		user.update_laddervision(null)
 		return
 	if (!target)
 		return
-	if (user.laddervision)
-		user.update_laddervision(target) // stop looking up/down
-		return
 
+	var/obj/structure/multiz/ladder/view_target = target
 	visible_message("<span class = 'notice'>[user] starts to look [target.laddervision_direction()] \the [src].</span>")
 	if (do_after(user, 12, src))
-		user.update_laddervision(target)
+		if (QDELETED(src) || QDELETED(user) || !user.client || user.laddervision || target != view_target || QDELETED(view_target))
+			return
+		user.update_laddervision(view_target)
 		visible_message("<span class = 'notice'>[user] looks [user.laddervision_direction()] \the [src].</span>")
 
 /mob/living/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
 	if (ladder && istype(ladder))
-		client.perspective = EYE_PERSPECTIVE
 		laddervision = ladder
-		client.eye = laddervision
+		if (client)
+			client.perspective = EYE_PERSPECTIVE
+			client.eye = laddervision
 	else if (!ladder && laddervision)
-		client.perspective = MOB_PERSPECTIVE
-		client.eye = src
 		laddervision = null
+		if (client)
+			client.perspective = MOB_PERSPECTIVE
+			client.eye = src
 
 /obj/structure/multiz/proc/laddervision_direction()
 	if (istop)
