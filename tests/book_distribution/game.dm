@@ -102,6 +102,24 @@ var/distribution_mutation = null
 		distribution_check(!press.print_recipe_manual(B, H) && !press.copying && paper.loc == H, "cancelled printing clears lock without cost")
 		distribution_wait_result = TRUE
 		distribution_check(press.print_recipe_manual(B, H) && B.loc == H && (!paper || paper.gcDestroyed || !paper.loc), "printing consumes paper and preserves original")
+		var/obj/item/weapon/book/node_book/second = create_node_book(H, "primitive_construction")
+		H.r_hand = second
+		distribution_wait_result = FALSE
+		B.attackby(second, H)
+		distribution_check(B.loc == H && second.loc == H, "cancelled binding preserves both manuals")
+		distribution_wait_result = TRUE
+		B.attackby(second, H)
+		var/obj/item/weapon/book/node_compendium/bound = locate() in H
+		distribution_check(bound && bound.node_ids.len == 2 && (!B || B.gcDestroyed || !B.loc) && (!second || second.gcDestroyed || !second.loc), "binding consumes two manuals into one compendium")
+		var/obj/item/weapon/book/node_book/duplicate = create_node_book(H, "basic_tools")
+		H.r_hand = duplicate
+		bound.attackby(duplicate, H)
+		distribution_check(duplicate.loc == H && bound.node_ids.len == 2, "duplicate chapter is not consumed")
+		H.remove_from_mob(duplicate)
+		var/obj/item/weapon/book/node_book/extra = create_node_book(H, "pottery_storage")
+		H.r_hand = extra
+		bound.attackby(extra, H)
+		distribution_check(bound.node_ids.len == 3 && (!extra || extra.gcDestroyed || !extra.loc), "new chapter consumes its manual")
 		var/mob/living/human/distribution_fixture/student = new(locate(3,2,1))
 		distribution_mutation = "student"
 		distribution_check(!H.teach_recipe_node(student, "basic_tools") && !student.knows_recipe_node("basic_tools"), "unconscious student cancels teaching")

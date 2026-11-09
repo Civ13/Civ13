@@ -1,6 +1,6 @@
 # Recipe book distribution regressions
 
-Run `python tests/book_distribution/run.py --byond-bin <516.1688 bin>` only with
+Run `python tests/book_distribution/run.py --byond-bin <516.1688 bin> --trusted` only with
 explicit authorization for the isolated native runtime. `--compile-only` does
 not launch DreamDaemon. The fixture uses a temporary world with no listening
 port, no ordinary startup and no live saves. It retains its evidence directory.
