@@ -57,6 +57,8 @@
 			"You hear a latch click followed by the slow creaking of a spring."
 			)
 		if (do_after(user, 60, src))
+			if (!deployed || buckled_mob || !anchored)
+				return
 			user.visible_message(
 				"<span class='danger'>[user] has disarmed \the [src].</span>",
 				"<span class='notice'>You have disarmed \the [src]!</span>"
@@ -169,6 +171,8 @@
 			"<span class='notice'>You begin disarming \the [src]!</span>",
 			)
 		if (do_after(user, 90, src))
+			if (!deployed || buckled_mob || !anchored)
+				return
 			user.visible_message(
 				"<span class='danger'>[user] has disarmed \the [src].</span>",
 				"<span class='notice'>You have disarmed \the [src]!</span>"
@@ -207,15 +211,17 @@
 			)
 		if (istype(L, /mob/living/simple_animal))
 			var/mob/living/simple_animal/SA = L
-			SA.stop_automated_movement = TRUE
 			SA.adjustBruteLoss(rand(20,35))
-			return
+			set_dir(SA.dir)
+			can_buckle = TRUE
+			buckle_mob(SA)
+			can_buckle = initial(can_buckle)
 		else
 			attack_mob(L)
-			if (!buckled_mob)
-				anchored = FALSE
-			deployed = FALSE
-			update_icon()
+		if (!buckled_mob)
+			anchored = FALSE
+		deployed = FALSE
+		update_icon()
 	..()
 
 /obj/item/weapon/punji_sticks/update_icon()

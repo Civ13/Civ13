@@ -32,19 +32,23 @@
 		to_chat(user, "<span class='notice'>\The [src] is empty!</span>")
 		return
 
-	Spray_at(A, user, proximity)
+	var/has_sacid = reagents.has_reagent("sacid")
+	var/has_pacid = reagents.has_reagent("pacid")
+	var/has_lube = reagents.has_reagent("lube")
+	if (!Spray_at(A, user, proximity))
+		return
 
 	playsound(loc, 'sound/effects/spray2.ogg', 50, TRUE, -6)
 
 	user.setClickCooldown(4)
 
-	if (reagents.has_reagent("sacid"))
+	if (has_sacid)
 		message_admins("[key_name_admin(user)] fired sulphuric acid from \a [src].", key_name_admin(user))
 		log_game("[key_name(user)] fired sulphuric acid from \a [src].")
-	if (reagents.has_reagent("pacid"))
+	if (has_pacid)
 		message_admins("[key_name_admin(user)] fired Polyacid from \a [src].", key_name_admin(user))
 		log_game("[key_name(user)] fired Polyacid from \a [src].")
-	if (reagents.has_reagent("lube"))
+	if (has_lube)
 		message_admins("[key_name_admin(user)] fired Space lube from \a [src].", key_name_admin(user))
 		log_game("[key_name(user)] fired Space lube from \a [src].")
 	return
@@ -63,7 +67,7 @@
 			reagents.trans_to_obj(D, amount_per_transfer_from_this)
 			D.set_color()
 			D.set_up(my_target, spray_size, 10)
-	return
+	return TRUE
 
 /obj/item/weapon/reagent_containers/spray/attack_self(var/mob/user)
 	if (!possible_transfer_amounts)
@@ -133,8 +137,8 @@
 /obj/item/weapon/reagent_containers/spray/pepper/Spray_at(atom/A as mob|obj)
 	if (safety)
 		to_chat(usr, "<span class = 'warning'>The safety is on!</span>")
-		return
-	..()
+		return FALSE
+	return ..()
 
 /obj/item/weapon/reagent_containers/spray/waterflower
 	name = "water flower"
@@ -186,7 +190,7 @@
 			reagents.trans_to_obj(D, amount_per_transfer_from_this)
 			D.set_color()
 			D.set_up(my_target, rand(6, 8), 2)
-	return
+	return TRUE
 
 /obj/item/weapon/reagent_containers/spray/chemsprayer/filled/New()
 	..()

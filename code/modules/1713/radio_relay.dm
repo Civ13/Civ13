@@ -336,6 +336,19 @@ var/global/list/civ_relay_outbound_queue = list()
 					break
 		if (heard_on)
 			hearer.hear_relayed_radio(message, verbage, speaker, heard_on)
+	// Powered broadcast receivers also carry regional traffic, bounded per arrival.
+	var/list/station_audience = list()
+	for (var/obj/structure/telecom/R in civ_telecom_devices)
+		if (R.type != /obj/structure/telecom || R.frequency != freq || R.z != origin.z || get_dist(R, origin) > 60 || !R.operational())
+			continue
+		for (var/mob/living/human/H in view(3, R))
+			if (station_audience.len >= 32)
+				break
+			if ((H in station_audience) || !H.broadcast_online() || H.stat != CONSCIOUS || H.sleeping || (H.sdisabilities & DEAF) || H.ear_deaf || H.find_trait("Deaf"))
+				continue
+			station_audience |= H
+			var/heard = speaker.language && !H.say_understands(null, speaker.language) ? speaker.language.scramble(message, H) : message
+			H.hear_station_line("[speaker.real_name] (via [speaker.relay], [speaker.region]): [heard]")
 	for (var/mob/observer/O in mob_list)
 		O.hear_relayed_radio(message, verbage, speaker, null)
 

@@ -141,6 +141,9 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(locate(/obj/item/clothing/head/helmet/kevlarhelmet) in found, "helmet missing")
 		pass("rebuild")
 		mark("recipe_knowledge")
+		// The rebuild above hands ownership to the rebuilt body; give the
+		// sender its own owner again so the knowledge payload can decode.
+		H.persistence_owner_ckey = "carryprobeknowledge"
 		H.known_recipe_nodes = list("basic_tools", "primitive_construction")
 		H.recipe_knowledge_initialized = TRUE
 		var/obj/item/weapon/book/node_book/manual = create_node_book(T, "basic_tools")
