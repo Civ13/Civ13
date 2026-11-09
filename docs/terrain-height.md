@@ -3,7 +3,8 @@
 Optional per-tile hill levels for a map's ground. A step uphill costs extra
 move delay, a step downhill saves a little, and slopes are shaded so players
 can see them. It is off unless a map names a height file; every tile then
-reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`.
+reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`, designed from its terrain by the tool's
+`design` command with `maps/heights/nomads_gaia.design.json`.
 
 This is separate from [geographic elevation](elevation.md) (metres per
 rectangle, used for climate). Native z-levels still model caves, floors and
@@ -71,18 +72,98 @@ Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
 game for the first two). Re-bake after changing the alphas.
 
+## Floor covers and tamped earth
+
+Built ground is level: `/turf/floor` subtypes other than natural ground,
+built walls, and any floor or road cover (`/obj/covers` that is not a cover
+wall) on a natural tile. `terrain_smoothed()` covers all three, so these tiles
+have no slope cost and no shading. Covers refresh their tile's shading when
+they are laid (`updateturf`) and removed (`Destroy`).
+
+The stone rammer (`code/modules/1713/road_tamping.dm`, crafted from 2 stone
+with no research) packs bare dirt into `/turf/floor/tamped_earth` in about
+3 seconds (faster with strength). Tamped earth is packed, not levelled: it
+keeps its height and shading, but a step uphill onto it costs half
+(`terrain_packed()`, `TERRAIN_PACKED_UPHILL_SHARE`); downhill is unchanged.
+Grass must be cleared with a shovel first, and snow, covers or crops block it.
+Tamped earth never turns to mud, and a shovel breaks it back into plain dirt.
+
+Grading changes the heights themselves, one level at a time. A shovel on
+disarm intent cuts a dirt or tamped-earth tile down a level (about 10 seconds,
+faster with strength), leaves loose dirt and drops a dirt pile
+(`/obj/item/weapon/barrier`). The rammer on a tile with a dirt pile on it
+packs the pile in, raises the tile a level and leaves tamped earth. A tile
+moves at most `TERRAIN_GRADE_LIMIT` (2) levels from the file's height and
+stays within 0-15; snow, covers, crops, dense objects or water within one tile
+block it. The change is `turf.terrain_grade` (saved only when non-zero,
+carried across `ChangeTurf`, re-applied by `after_load`). `set_level` patches
+the height rows and recomputes the corner lights around the tile
+(`light_char`, the same maths as `light_rows`); the original file rows stay in
+`base_rows_by_z`.
+
 ## Tools
 
 `scripts/terrain_heights.py`:
 
 - `generate --map maps/nomads/nomads_gaia.dmm --z 2 --out maps/heights/nomads_gaia.txt [--seed N]`
-  builds heights from the turfs: water 0, beaches at most 1, rounded hills from
-  smooth seeded noise on land that rises gently inland, and ridges near rock
-  walls, with neighbouring tiles never more than 2 levels apart.
+  builds gentle heights from the turfs: water 0, beaches at most 1, rounded
+  hills from smooth seeded noise on land that rises gently inland, and ridges
+  near rock walls, with neighbouring tiles never more than 2 levels apart.
+- `design --map maps/nomads/nomads_gaia.dmm --z 2 --spec maps/heights/nomads_gaia.design.json --out maps/heights/nomads_gaia.txt`
+  builds heights that read the terrain, and is how Gaia's file is made. Rock
+  walls, bare rock floors and lava are highland plateaus (level 8 at the edge,
+  rising to 13, lava at 15). The land around a highland climbs steeply (3
+  levels per tile) where the range is within 12 tiles of the sea and gently
+  (1 per tile) inland. The coast is a low plain with rolling hills behind it;
+  rocky shores that are already 4 or higher stay up as sea cliffs, and sandy
+  beaches stay at most 1. Narrow arms of the sea are rivers: their valleys are
+  low, but a bank that is already high stays as a gorge wall. Desert lakes get
+  crater rims (level 4-5 right at the water), other lakes get gentle basins.
+  Marshes stay flat. The JSON spec adds hand-placed features in game
+  coordinates: `ridges` (a polyline, `height`, `width`, a steep and a gentle
+  side), `passes` (rectangles where highland approaches are gentle), `scarps`
+  (steep, with an optional `grade`), `craters` (lakes that get rims) and
+  `flat` rectangles (optionally with a `height`; Gaia flattens the ground
+  around its spawn landmarks). Any tuning value in `DESIGN_DEFAULTS` can be
+  overridden in the spec. Walkable neighbours never differ by more than 4
+  levels, the most the game counts for one step.
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
   pixel per tile, level x 17) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
 - `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
+
+## Line of sight
+
+Ground between a player's eye and a target hides the target when it rises
+above the sight line (`code/modules/visibility/los_terrain.dm`). Ridges hide
+what lies behind them, the top of a plateau above eye level is hidden from
+below, and a player on high ground sees further down the far slope. Hidden
+tiles are drawn black by the geometric visibility presenter and refuse hover
+and examine, like tiles behind a wall. It only ever hides more than before:
+walls still block sight from any height.
+
+- The eye is 1.5 levels above the ground standing and 0.5 lying, resting or
+  prone. A target shows when its top does: bare ground 0.25 above its level,
+  items 0.5, dense objects 1, people 1.5 (0.5 lying), walls 3 and trees 5. So
+  a person's head or a tree shows over a crest before the ground under it.
+- The answer for one eye position is a ring sweep outward from the eye: each
+  cell's sight-line floor comes from the two cells of the previous ring that
+  the ray passes between, interpolated (like XDraw), so a whole view costs one
+  pass instead of one ray per target. Hidden ground with at most two hidden
+  neighbours is shown, which removes specks from one-level dips.
+- Heights only change by grading, so the answer is cached per eye position
+  (tile, half-tile offset, posture, view radius; 96 entries) and shared by all
+  players. Grading (`terrain_heights/set_level`) clears the cache and refreshes
+  nearby viewers. Flat ground and levels without heights skip all of it.
+- The eye follows the player's pixel offset in half-tile steps, both for this
+  and for walls and trees, so a walker's view refreshes twice per tile instead
+  of once. These extra steps pause while `world.cpu` is above 85 and resume
+  below 60. Hover and examine use the exact offset.
+
+A fresh answer for a 19x19 field costs about 2.3 ms on the pinned DreamDaemon
+(`tests/los_terrain/run.py`); cached lookups are a list read. NPC sight and
+gunfire do not use heights yet, and nobody sees over a wall from high ground
+yet: the game hides everything behind an opaque wall regardless of height.
 
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.
@@ -91,6 +172,9 @@ with its level; use it again to hide the labels.
 
 - `python3 -m unittest tests/terrain_height/test_terrain_height.py` (offline:
   generator, file format, baked sprites, Gaia's file, movement and shading hooks).
+- `python3 tests/los_terrain/run.py --byond-bin <dir>` (native: line of sight
+  over hills on Gaia's heights against a Python reference, sweep cost, and
+  cache clearing on grading).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).

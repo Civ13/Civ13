@@ -187,6 +187,11 @@ var/global/list/los_active_contexts
 	var/list/clear_footprints = list()
 	var/list/tree_bounds
 	var/list/blocking_tiles
+	// Height-aware terrain answer (los_terrain.dm), null on flat ground, and
+	// the absolute tile its cells are relative to.
+	var/datum/los_terrain_field/terrain
+	var/terrain_tile_x = 0
+	var/terrain_tile_y = 0
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. The grid is derived once per fresh capture, never shared.
@@ -509,6 +514,8 @@ var/global/list/los_active_contexts
 	var/client/owner
 	var/mob/living/human/body
 	var/turf/movement_turf
+	// Half-tile eye offset at the last movement callback ("x,y" pixels).
+	var/movement_bucket
 	var/revision = 1
 	var/retired = FALSE
 	var/list/mutations = list()
@@ -570,6 +577,7 @@ var/global/list/los_active_contexts
 	owner = null
 	body = null
 	movement_turf = null
+	movement_bucket = null
 
 /datum/los_context/proc/advance_revision()
 	if (retired || revision >= 1000000)
@@ -649,7 +657,8 @@ var/global/list/los_active_contexts
 /datum/los_context/proc/policy_key(tile_anchored = FALSE)
 	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
 		return null
-	var/offset_key = tile_anchored ? "" : ",[body.step_x],[body.step_y]"
+	// Presentation follows the eye in half-tile steps; reads use the exact offset.
+	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
 	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
@@ -733,16 +742,24 @@ var/global/list/los_active_contexts
 	S.presentation = presentation
 	S.revision = revision
 	S.policy = key
-	// Tile cadence is a presentation policy. Information reads still capture
-	// fresh physical eye/target offsets rather than borrowing a visual lease.
-	S.eye_x = body.x
-	S.eye_y = body.y
-	if (!presentation)
-		S.eye_x += body.step_x / 32
-		S.eye_y += body.step_y / 32
+	// Presentation follows the eye's pixel offset in half-tile steps, so a
+	// sub-tile step refreshes it at most twice per tile. Information reads
+	// capture the exact physical offset rather than borrowing a visual lease.
+	if (presentation)
+		S.eye_x = body.x + los_eye_quantized(body.step_x) / 32
+		S.eye_y = body.y + los_eye_quantized(body.step_y) / 32
+	else
+		S.eye_x = body.x + body.step_x / 32
+		S.eye_y = body.y + body.step_y / 32
 	S.eye_z = body.z
 	S.radius_x = radii[1]
 	S.radius_y = radii[2]
+	// Hills: one shared, cached answer per eye position (null on flat ground).
+	var/list/terrain = los_terrain_for(body, max(S.radius_x, S.radius_y) + 2)
+	if (terrain)
+		S.terrain = terrain[1]
+		S.terrain_tile_x = terrain[2]
+		S.terrain_tile_y = terrain[3]
 	// One extra tile covers fractional blockers and edge geometry. Ordinary
 	// clutter never invalidates the scene; opacity alone owns blocking geometry.
 	var/low_x = max(1, body.x-S.radius_x-1)
@@ -832,6 +849,11 @@ var/global/list/los_active_contexts
 	// Adjacent() makes the real one-tile decision.
 	if (abs(target_tile_x) < 2 && abs(target_tile_y) < 2 && los_reach_admits(body, target))
 		return result
+	// Ground rising above the sight line hides the target unless its top
+	// shows over it. Depends on the target's height, so it is not cached in
+	// the footprint cache below.
+	if (!los_terrain_target_visible(S, target))
+		return LOS_DENY
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"

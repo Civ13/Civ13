@@ -566,7 +566,11 @@ default behaviour is:
 			var/datum/human_subtile_pulse/pull_pulse = pull_walker.human_subtile_pulse
 			T = get_step(pull_pulse.destination, turn(pull_pulse.direction, 180))
 		moved = ..()
-		if (subtile_pull_step && (step_x || step_y))
+		if (subtile_pull_step && (step_x || step_y || (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step)))
+			// A free slide drags the pulled object along the body's path on
+			// every pulse, aligned or not, once the body has cleared a tile.
+			if (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step && pulling && isturf(pulling.loc) && !pulling.anchored)
+				pull_walker.human_subtile_pull_follow()
 			return moved
 
 		if (pulling && pulling.loc)

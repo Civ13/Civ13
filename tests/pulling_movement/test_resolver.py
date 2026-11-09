@@ -157,7 +157,8 @@ class StuckPairResolverContracts(unittest.TestCase):
         self.assertIn('!human_subtile_pull_enabled || !human_subtile_enabled', ready)
         human = read(PREFIX + 'subtile_movement.dm')
         self.assertIn('if (key == "human_subtile_pull_enabled")\n\t\treturn TRUE', human)
-        self.assertRegex(human, r'verb/toggle_smooth_movement\(\)(?:.|\n)*set_human_subtile\(enabled\)')
+        # Free movement is the only walking mode: there is no player opt-out.
+        self.assertNotIn('verb/toggle_smooth_movement()', human)
 
 
 if __name__ == '__main__':

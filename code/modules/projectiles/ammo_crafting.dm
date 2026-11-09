@@ -49,11 +49,10 @@
 						resultpath = /obj/item/weapon/grenade/modern/custom
 						spam_check++
 
-				if (resultpath != null && gunpowder >= gunpowder_max && W.amount >= amount && spam_check <= 1)
-					W.amount -= amount
+				// The menu sleeps: a lagged repeat click must not reuse a casing
+				// that the first answer already turned into a grenade.
+				if (resultpath != null && gunpowder >= gunpowder_max && spam_check <= 1 && !QDELETED(src) && !QDELETED(W) && W.loc == user && ammo_part_stack_use(W, amount))
 					new resultpath(get_turf(src))
-					if (W.amount <= 0)
-						qdel(W)
 					qdel(src)
 					spam_check--
 					return
@@ -137,11 +136,10 @@
 				if ("Fragmentation")
 					resultpath = /obj/item/ammo_casing/rocket/og7v
 
-			if (resultpath != null && gunpowder >= gunpowder_max)
-				W.amount -= amount
+			// The menu sleeps: a lagged repeat click must not reuse a booster or
+			// warheads that the first answer already spent.
+			if (resultpath != null && gunpowder >= gunpowder_max && !QDELETED(src) && !QDELETED(W) && W.loc == user && ammo_part_stack_use(W, amount))
 				new resultpath(get_turf(src))
-				if (W.amount <= 0)
-					qdel(W)
 				qdel(src)
 				return
 			else
@@ -724,3 +722,6 @@
 	else
 		to_chat(user, "<span class = 'notice'>The casing is not complete yet.</span>")
 		return
+// Spends n items from a stack used on an ammo part; FALSE if it is short now.
+/proc/ammo_part_stack_use(obj/item/stack/S, n)
+	return istype(S) && S.use(n)

@@ -1002,6 +1002,7 @@ RECIPE: /material/stone/,scientific rock slate,/obj/item/weapon/book/research,4,
 
 RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/material/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/stone/,stone rammer,/obj/item/weapon/stone_rammer,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
 
 //*************| STONE FLOORS |***************

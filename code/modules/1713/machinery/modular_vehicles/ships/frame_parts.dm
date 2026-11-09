@@ -35,11 +35,13 @@
 		var/choice3 = WWinput(H, "Which type of wall?", "Wall Creation", "Cancel", list("Cancel","wall","crenelated wall","open window"))
 		if (choice3 == "Cancel")
 			return
+		// Re-check after the prompts so a lagged repeat click cannot pay twice.
+		// Every side costs 1 sheet per 5mm, as the thickness prompt says.
+		if (!pay_for_wall(S, H, choice1, choice2/5))
+			to_chat(H, "<span class='warning'>You can no longer build that wall.</span>")
+			return
 
 		if (choice1 == "left")
-			S.amount -= choice2/5
-			if (S.amount <= 0)
-				qdel(S)
 			if (choice3 == "crenelated wall")
 				w_left = list("boat_port2",TRUE,TRUE,choice2,choice2*0.75,FALSE,TRUE)
 			else if (choice3 == "open window")
@@ -47,9 +49,6 @@
 			else
 				w_left = list("boat_port0",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
 		else if (choice1 == "right")
-			S.amount -= choice2/10
-			if (S.amount <= 0)
-				qdel(S)
 			if (choice3 == "crenelated wall")
 				w_right = list("boat_port2",TRUE,TRUE,choice2,choice2*0.75,FALSE,TRUE)
 			else if (choice3 == "open window")
@@ -57,9 +56,6 @@
 			else
 				w_right = list("boat_port0",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
 		else if (choice1 == "front")
-			S.amount -= choice2/10
-			if (S.amount <= 0)
-				qdel(S)
 			if (choice3 == "crenelated wall")
 				w_front = list("boat_port2",TRUE,TRUE,choice2,choice2*0.75,FALSE,TRUE)
 			else if (choice3 == "open window")
@@ -67,9 +63,6 @@
 			else
 				w_front = list("boat_port0",TRUE,TRUE,choice2,choice2*1.5,FALSE,FALSE)
 		else if (choice1 == "back")
-			S.amount -= choice2/10
-			if (S.amount <= 0)
-				qdel(S)
 			if (choice3 == "crenelated wall")
 				w_back = list("boat_port2",TRUE,TRUE,choice2,choice2*0.75,FALSE,TRUE)
 			else if (choice3 == "open window")

@@ -19,6 +19,8 @@
 	var/tmp/human_subtile_chain_start
 	// world.time a held precision slide stopped because its chord was released.
 	var/tmp/human_subtile_fine_released_at
+	var/tmp/list/human_subtile_pull_trail
+	var/tmp/human_subtile_pull_trail_for
 	// Set by before_save when an offset capsule would be rejected on load.
 	var/tmp/human_subtile_save_aligned = FALSE
 	var/list/human_subtile_position
@@ -237,9 +239,10 @@
 				return TRUE
 	return FALSE
 
-// Fine input never falls back to tile movement or takes ownership of a link.
+// Free and fine input never take ownership of a link. Pulling slides too:
+// living/Move drags the pulled object onto each tile the body clears.
 /mob/living/human/proc/human_subtile_fine_ready(direction)
-	return human_subtile_eligible(direction) && !pulling && !driver && !confused && ((!step_x && !step_y) || human_subtile_offset_owned)
+	return human_subtile_eligible(direction) && !driver && (!pulling || isturf(pulling.loc)) && ((!step_x && !step_y) || human_subtile_offset_owned)
 
 /mob/living/human/proc/human_subtile_initialize_default(direction)
 	// Wait for an eligible input, after construction/placement/load. Do not adopt
@@ -339,16 +342,6 @@
 			client.human_subtile_release_visuals()
 	return TRUE
 
-/mob/living/human/verb/toggle_smooth_movement()
-	set name = "Toggle Smooth Movement"
-	set category = "IC"
-	var/enabled = !(human_subtile_enabled || human_subtile_default_pending)
-	if (!set_human_subtile(enabled))
-		to_chat(src, SPAN_NOTICE("Finish moving to a tile alignment before changing smooth movement. A reverse input can finish an interrupted step."))
-		return FALSE
-	to_chat(src, SPAN_NOTICE("Smooth movement is now [enabled ? "enabled" : "disabled"] for this body."))
-	return TRUE
-
 // This narrow hook is adapted explicitly by the headless fixture. Production
 // always requires the same real client/body and ordinary movement permission.
 /mob/living/human/proc/human_subtile_authority(client/owner)
@@ -427,6 +420,60 @@
 	if (shift)
 		. += list(vertical ? list(shift, 0) : list(0, shift))
 	return .
+
+// Free movement while pulling: step the pulled object onto the neighbouring
+// tile nearest the body's centre that the body no longer covers, when that
+// brings it closer. It trails one tile behind, wherever the body turns.
+/mob/living/human/proc/human_subtile_pull_follow()
+	var/atom/movable/M = pulling
+	if (!M || !isturf(M.loc) || M.anchored || M.z != z)
+		return FALSE
+	// Pulled things follow the tiles the body's centre has walked through, so
+	// they trail along the path round corners instead of cutting sideways.
+	if (human_subtile_pull_trail_for != "\ref[M]" || !islist(human_subtile_pull_trail))
+		human_subtile_pull_trail = list()
+		human_subtile_pull_trail_for = "\ref[M]"
+	var/turf/centre = locate(x + (step_x >= 16 ? 1 : 0), y + (step_y >= 16 ? 1 : 0), z)
+	if (centre && (!human_subtile_pull_trail.len || human_subtile_pull_trail[human_subtile_pull_trail.len] != centre))
+		human_subtile_pull_trail += centre
+		if (human_subtile_pull_trail.len > 4)
+			human_subtile_pull_trail.Cut(1, 2)
+	// Follow only once a gap opens, so it never pushes into the body.
+	if (bounds_dist(src, M) <= 0)
+		return FALSE
+	// The newest trail tile next to the object that the body has fully left.
+	var/turf/target
+	var/target_index = 0
+	for (var/i = human_subtile_pull_trail.len, i >= 1, i--)
+		var/turf/T = human_subtile_pull_trail[i]
+		if (T == M.loc || !T || T.z != M.z || T.density || (T in locs) || get_dist(M, T) != 1)
+			continue
+		target = T
+		target_index = i
+		break
+	if (!target)
+		// Off the trail and about to be left behind: step toward the body.
+		if (bounds_dist(src, M) < 32)
+			return FALSE
+		var/cx = x * 32 + step_x + 16
+		var/cy = y * 32 + step_y + 16
+		var/best = (cx - (M.x * 32 + M.step_x + 16)) ** 2 + (cy - (M.y * 32 + M.step_y + 16)) ** 2
+		for (var/dir_option in alldirs)
+			var/turf/T = get_step(M, dir_option)
+			if (!T || T.density || (T in locs))
+				continue
+			var/distance = (cx - (T.x * 32 + 16)) ** 2 + (cy - (T.y * 32 + 16)) ** 2
+			if (distance < best)
+				best = distance
+				target = T
+		if (!target)
+			return FALSE
+	else
+		human_subtile_pull_trail.Cut(1, target_index + 1)
+	// Glide the tile step at the body's own pace so it slides, not jumps.
+	if (glide_size > 0)
+		M.glide_size = glide_size * ((get_dir(M, target) & (get_dir(M, target) - 1)) ? ROOT2_FAST : 1)
+	return step(M, get_dir(M, target))
 
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
@@ -694,7 +741,7 @@
 	if (key == "step_x" || key == "step_y") return TRUE
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start", "human_subtile_fine_released_at")) || ..()
+	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start", "human_subtile_fine_released_at", "human_subtile_pull_trail", "human_subtile_pull_trail_for")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)

@@ -32,11 +32,15 @@ class LegacyPullFollowContracts(unittest.TestCase):
     def test_drag_waits_until_the_step_is_aligned(self):
         body = living_move()
         moved = body.index('moved = ..()')
-        guard = body.index('if (subtile_pull_step && (step_x || step_y))')
+        guard = body.index('if (subtile_pull_step && (step_x || step_y || (pull_walker.human_subtile_transaction && pull_walker.human_subtile_transaction.fine_step)))')
         drag = body.index('step(pulling, get_dir(pulling.loc, T))')
         self.assertLess(moved, guard)
         self.assertLess(guard, drag)
-        self.assertEqual(body[guard:].split('\n')[1].strip(), 'return moved')
+        # Mid-step, only a free slide's follow runs before returning.
+        tail = body[guard:drag]
+        self.assertIn('pull_walker.human_subtile_pull_follow()', tail)
+        self.assertIn('\t\t\treturn moved', tail)
+        self.assertNotIn('step(pulling', tail)
 
     def test_drag_targets_the_tile_the_step_vacated(self):
         # West/south steps change loc on the first pulse, so loc is the

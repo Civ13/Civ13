@@ -514,6 +514,15 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    # Stdlib-only order checks: prompt paths re-check before paying (lagged repeat clicks).
+    'repeat_click_payment': {'files': ('tests/repeat_click_payment/test_source.py',), 'paths': (
+        'tests/repeat_click_payment/',), 'shared_paths': ('tests/save_movement/source_adapter.py',
+        'code/game/objects/structures/blacksmithing/molds.dm',
+        'code/modules/1713/machinery/modular_vehicles/frame_parts.dm',
+        'code/modules/1713/machinery/modular_vehicles/ships/frame_parts.dm',
+        'code/modules/1713/machinery/engines/engines.dm', 'code/modules/projectiles/ammo_crafting.dm',
+        'code/modules/1713/structures.dm', 'code/game/objects/structures/plant_pots.dm',
+        'code/modules/1713/computers/programs.dm')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
