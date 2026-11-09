@@ -46,6 +46,9 @@ var/failures = 0
 	return
 /process/proc/may_run(allowance)
 	return FALSE
+// The mob loop's reset also advances the ecology rest phase; it has no scheduler effect.
+/proc/ecology_advance_rest_phase()
+	return
 /proc/calculate_run_time_allowance(priority)
 	return 10
 /processScheduler

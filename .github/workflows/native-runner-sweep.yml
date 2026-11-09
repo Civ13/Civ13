@@ -1,0 +1,48 @@
+name: Native runner sweep
+# Runs every native BYOND test runner (tests/**/run*.py) on the pinned compiler once a
+# week, so a runner broken by a production change is noticed. Known failures are listed
+# in tests/native_sweep/manifest.json; the job fails on any other failure.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+    paths:
+      - scripts/native_runner_sweep.py
+      - tests/native_sweep/**
+      - .github/workflows/native-runner-sweep.yml
+permissions:
+  contents: read
+concurrency:
+  group: native-runner-sweep-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      # The canonical compiler pin (tools/byond/version.json), from the repository mirror.
+      - name: Install pinned BYOND
+        env:
+          BYOND_HOME: ${{ runner.temp }}/sweep-byond
+        run: bash scripts/cloud_byond_setup.sh
+      - name: Run every native runner
+        env:
+          BYOND_ARCHIVE: ${{ runner.temp }}/sweep-byond/pinned.zip
+        run: |
+          source "$RUNNER_TEMP/sweep-byond/byond/bin/byondsetup"
+          python3 scripts/native_runner_sweep.py --byond-bin "$RUNNER_TEMP/sweep-byond/byond/bin" --jobs 3 --output "$RUNNER_TEMP/native-sweep.json"
+      - name: Keep the report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-runner-sweep-${{ github.run_id }}
+          path: ${{ runner.temp }}/native-sweep.json
+          if-no-files-found: warn
+          retention-days: 14
