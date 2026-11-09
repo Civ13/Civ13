@@ -150,6 +150,13 @@ GLOBAL_REAL(Master, /datum/controller/master) = new
 
 	var/datum/controller/subsystem/BadBoy = Master.last_type_processed
 	var/FireHim = FALSE
+	// Blame a subsystem only when the MC stalled inside its fire. An MC that
+	// stalled between fires (sleeping off tick contention) left its last
+	// subsystem idle; with SStimer as the only subsystem, the old check
+	// offlined Timer, and every addtimer() callback with it.
+	if(istype(BadBoy) && !(BadBoy.state in list(SS_RUNNING, SS_SLEEPING, SS_PAUSING)))
+		log_world("MC restart: [BadBoy.name] was not mid-fire (state [BadBoy.state]), so it is not blamed.")
+		BadBoy = null
 	if(istype(BadBoy))
 		msg = null
 		LAZYINITLIST(BadBoy.failure_strikes)
