@@ -98,10 +98,11 @@
 	levels += carrier_island_level()
 
 // The hangar deck, one level under the surface. Stern to bow: engine room,
-// fuel bunker, crew quarters, hangar, magazine, forward compartment (sick bay
-// and CIC), each behind a bulkhead with one blast door on the centreline.
-// Two 4x4 elevator floors sit on the port side of the hangar, under the
-// flight deck elevators, each with its lever on the tile aft of it.
+// fuel bunker (with the bunker filling point), crew quarters, hangar,
+// magazine, forward compartment (sick bay and CIC), each behind a bulkhead
+// with one blast door on the centreline. Two 4x4 elevator floors sit on the
+// port side of the hangar, under the flight deck elevators, each with its
+// lever on the tile aft of it.
 /proc/carrier_hangar_level()
 	var/datum/vessel_level/L = new
 	L.dz = -1
@@ -109,7 +110,7 @@
 	var/wall = ".HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH."
 	var/room = ".HeeeeBffBqqqBaaaaaaaaaaaaaaaaBmmBccccH."
 	var/lift = ".HeeeeBffBqqqBEEEEaaaaaaaaEEEEBmmBccccH."
-	var/lever = ".HeeeeBffBqqqBEEEEVaaaaaaVEEEEBmmBccccH."
+	var/lever = ".HeeeeBTfBqqqBEEEEVaaaaaaVEEEEBmmBccccH."
 	var/doors = ".Heeee1ff2qqq3EEEEaaLaaaaaEEEE4mm5ccccH."
 	L.rows = list(wall, lift, lever, lift, doors, room, room, room, wall)
 	L.legend = list(
@@ -129,6 +130,7 @@
 		"L" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/multiz/ladder/up)),
 		"E" = list("turf" = /turf/floor/sub_deck/carrier/hangar/elevator),
 		"V" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/vessel_elevator_lever)),
+		"T" = list("turf" = /turf/floor/sub_deck/carrier/bunker, "spawn" = list(/obj/structure/vessel_bunker)),
 	)
 	return L
 
@@ -211,11 +213,27 @@
 	density = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	var/datum/vessel/vessel
+	var/tmp/datum/vessel/vessel
+	// The ship's save_state() text, written before a save and read on load:
+	// the decks come back as turfs, the vessel datum from this.
+	var/vessel_state = ""
 
 /obj/structure/vessel_helm/New(loc)
 	..()
 	vessel = vessel_at(get_turf(src))
+
+/obj/structure/vessel_helm/before_save()
+	..()
+	if (vessel && vessel.placed)
+		vessel_state = vessel.save_state()
+
+// After a load the decks are on the map but no vessel claims them yet: the
+// helm rebuilds its ship from the saved state, once.
+/obj/structure/vessel_helm/after_load()
+	..()
+	vessel = vessel_at(get_turf(src))
+	if (!vessel && vessel_state)
+		vessel = vessel_restore_state(vessel_state)
 
 /obj/structure/vessel_helm/proc/status_text()
 	if (!vessel)
@@ -230,9 +248,15 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", "Cancel")
+	var/list/options = list("Chart", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
+		return
+	if (choice == "Chart")
+		to_chat(H, vessel.chart_text())
+		return
+	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < VESSEL_FUEL_PER_STEP)
+		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point on the hangar deck first."))
 		return
 	switch (choice)
 		if ("Full ahead") vessel.set_speed(VESSEL_SPEED_FULL)
@@ -250,6 +274,57 @@
 				to_chat(H, SPAN_WARNING("The ship cannot come about here: [vessel.last_refusal]."))
 				return
 	vessel.crew_message(SPAN_NOTICE("[H] at the wheel: [choice]. [status_text()]"))
+
+// ---- Bunkers ----
+
+// The filling point in the fuel bunker compartment. Pour diesel or petroleum
+// from any container into it; the ship burns VESSEL_FUEL_PER_STEP units per
+// telegraph step on every hop. The fuel itself is the vessel's ledger, so it
+// rides along and is saved with the helm.
+/obj/structure/vessel_bunker
+	name = "bunker filling point"
+	desc = "The filling valve of the ship's fuel bunkers. Pour diesel or petroleum into it."
+	icon = 'icons/obj/machines/submarine.dmi'
+	icon_state = "ballast"
+	anchored = TRUE
+	density = TRUE
+	not_movable = TRUE
+	not_disassemblable = TRUE
+	var/tmp/datum/vessel/vessel
+
+/obj/structure/vessel_bunker/proc/ship()
+	if (!vessel)
+		vessel = vessel_at(get_turf(src))
+	return vessel
+
+/obj/structure/vessel_bunker/examine(mob/user)
+	..()
+	var/datum/vessel/V = ship()
+	to_chat(user, V ? "The bunkers hold [V.fuel] of [V.fuel_capacity] units of fuel oil." : "The valve is not connected to a ship.")
+
+// Pouring: takes every unit of diesel and petroleum the container holds, up
+// to what the bunkers have room for. Other reagents stay in the container.
+/obj/structure/vessel_bunker/attackby(obj/item/I, mob/living/human/H)
+	var/obj/item/weapon/reagent_containers/C = I
+	if (!istype(C) || !C.reagents)
+		return ..()
+	var/datum/vessel/V = ship()
+	if (!V)
+		to_chat(H, SPAN_WARNING("The valve is not connected to a ship."))
+		return
+	var/poured = 0
+	for (var/fuel_id in list("diesel", "petroleum"))
+		var/have = C.reagents.get_reagent_amount(fuel_id)
+		if (have <= 0)
+			continue
+		var/taken = V.bunker(have)
+		if (taken > 0)
+			C.reagents.remove_reagent(fuel_id, taken)
+			poured += taken
+	if (!poured)
+		to_chat(H, SPAN_WARNING(V.fuel >= V.fuel_capacity ? "The bunkers are full." : "\The [C] holds no diesel or petroleum."))
+		return
+	to_chat(H, SPAN_NOTICE("You pour [poured] units of fuel oil into the bunkers: [V.fuel] of [V.fuel_capacity]."))
 
 // ---- Aircraft elevator ----
 
@@ -272,7 +347,7 @@
 	not_disassemblable = TRUE
 	// Planes taxi over it; a vehicle must not crush it.
 	crushable = FALSE
-	var/datum/vessel/vessel
+	var/tmp/datum/vessel/vessel
 	var/tmp/busy = FALSE
 
 /obj/structure/vessel_elevator_lever/New(loc)

@@ -12,6 +12,13 @@
 #define VESSEL_SPEED_HALF 2
 #define VESSEL_SPEED_FULL 3
 
+// Fuel oil (units of diesel or petroleum) a hop burns per telegraph step, and
+// how much a carrier's bunkers hold: about 170 hops at full ahead.
+#define VESSEL_FUEL_PER_STEP 2
+#define VESSEL_FUEL_CAPACITY 1000
+// How far the chart looks ahead of the bow.
+#define VESSEL_CHART_RANGE 12
+
 // Carrier compartments on the hangar deck, bow to stern.
 #define CARRIER_COMP_FORWARD "carrier_forward"
 #define CARRIER_COMP_MAGAZINE "carrier_magazine"
