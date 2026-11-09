@@ -105,8 +105,11 @@ var/pool_effect_task_calls = 0
     GLOB.task_triggered_event.register(pre_deleted, task_listener, /datum/pool_effect_task_listener/proc/retire_task)
     processes.scheduler.reset_current_list()
     processes.scheduler.fire()
-    pool_effect_check(!pre_deleted && !pool_effect_task_calls && !processes.scheduler.scheduled_tasks.len && !processes.scheduler.current_list.len, "scheduler pre_process deletion skips processing and consumes snapshot")
+    pool_effect_check(QDELETED(pre_deleted) && !pool_effect_task_calls && !processes.scheduler.scheduled_tasks.len && !processes.scheduler.current_list.len, "scheduler pre_process deletion skips processing and consumes snapshot")
     qdel(task_listener)
+    // Production fire() also stops at an absolute tick ceiling (PROCESS_TICK_CEILING).
+    // Start a fresh tick so this two-task snapshot is not cut short by startup work.
+    sleep(world.tick_lag)
     var/datum/scheduled_task/retire_peer = schedule_task(world.time - 1, /proc/pool_effect_retire_peer, list())
     var/datum/scheduled_task/peer = schedule_task(world.time - 1, /proc/pool_effect_task_call, list())
     retire_peer.arguments += peer

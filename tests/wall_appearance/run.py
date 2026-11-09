@@ -19,7 +19,8 @@ parser.add_argument('--negative-control', choices=['smoothing', 'duplicate', 'ov
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[2]
 path = 'code/game/turfs/wall_icon_exp.dm'
-baseline = subprocess.check_output(['git', 'show', BASELINE + ':' + path], cwd=repo, text=True)
+# Frozen copy of the file at BASELINE, so the runner never reads Git history.
+baseline = (Path(__file__).with_name('baseline') / (Path(path).name + '.txt')).read_text()
 current = (repo / path).read_text()
 # Fail closed if this patch grows beyond the measured removal.
 removed = '\tupdate_material()\n\tcheck_relatives(1,1)\n'
@@ -64,14 +65,17 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     (root / 'icons/turf').mkdir(parents=True)
     for asset in ('wall_masks.dmi', 'walls.dmi'):
         shutil.copyfile(repo / 'icons/turf' / asset, root / 'icons/turf' / asset)
-    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm']
+    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/debug_lossy.dm', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm']
     for i, support_path in enumerate(support):
         shutil.copyfile(repo / support_path, root / f'support-{i}.dm')
     (root / 'probe.dm').write_text(probe)
     (root / 'production.dm').write_text(source)
     includes = '#define TRUE 1\n#define FALSE 0\n#define TICK_CHECK fixture_tick_check()\n#define TICK_LIMIT_TO_RUN 100\n#define EXCEPTION(message) new /exception(message)\n'
     includes += ''.join(f'#include "support-{i}.dm"\n' for i in range(len(support)))
-    (root / 'probe.dme').write_text(includes + '#include "probe.dm"\n#include "production.dm"\n')
+    # Collaborators the wall constructor/Del gained later: the bulk-placement flag
+    # (off, as in ordinary play) and roofs, of which this fixture builds none.
+    (root / 'adapters.dm').write_text('var/global/wall_bulk_placement = FALSE\n/obj/roof/proc/collapse_check()\n\treturn\n')
+    (root / 'probe.dme').write_text(includes + '#include "adapters.dm"\n#include "probe.dm"\n#include "production.dm"\n')
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=root, capture_output=True, text=True, timeout=60, creationflags=flags)

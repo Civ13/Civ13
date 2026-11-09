@@ -9,14 +9,14 @@ import subprocess
 
 from prepare import CONTROLS, ROOT, prepare
 
-from evidence import DIAGNOSTIC, MAX_COMPILE_LOG, validate_compile
+from evidence import DIAGNOSTIC, MAX_COMPILE_LOG, PINNED_BYOND, validate_compile
 
 
 def validate_native(exit_code, diagnostics, result, receipt, control):
     if exit_code != 0 or DIAGNOSTIC.search(diagnostics):
         raise RuntimeError('Native exit/diagnostics invalidated evidence')
-    if receipt.get('byond_version') != 516 or receipt.get('byond_build') != 1681 or receipt.get('port') != 0:
-        raise RuntimeError('Pinned 516.1681 runtime and closed port required')
+    if receipt.get('byond_version') != 516 or receipt.get('byond_build') != int(PINNED_BYOND.split('.')[1]) or receipt.get('port') != 0:
+        raise RuntimeError('Pinned ' + PINNED_BYOND + ' runtime and closed port required')
     expected = 'FAIL: ' + CONTROLS[control][0] if control else 'PASS: cone refresh'
     if result != expected or not isinstance(receipt.get('checks'), int) or receipt['checks'] <= 0:
         raise RuntimeError(f'Incomplete or unintended result: {result!r}; expected {expected!r}')

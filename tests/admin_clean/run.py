@@ -53,7 +53,9 @@ def prepare(output, control):
     output.mkdir(parents=True)
     (output / "production.dm").write_text(bodies, encoding="utf-8")
     (output / "probe.dm").write_bytes((ROOT / "tests/admin_clean/probe.dm").read_bytes())
-    (output / "probe.dme").write_text('#define TRUE 1\n#define FALSE 0\n#define R_ADMIN 1\n#define QDELETED(X) (!X || X.gc_destroyed)\n#include "probe.dm"\n#include "production.dm"\n')
+    (output / "probe.dme").write_text('#define TRUE 1\n#define FALSE 0\n#define R_ADMIN 1\n#define QDELETED(X) (!X || X.gc_destroyed)\n#include "probe.dm"\n#include "production.dm"\n'
+                                       # check_rights() also admits agent proxies; none exist in this fixture.
+                                       '/mob/agent_proxy/proc/has_rights(rights_required)\n\treturn FALSE\n')
     metadata = {"head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "diff": subprocess.check_output(["git", "diff", "HEAD"], cwd=ROOT, text=True),
                 "production_sha256": hashlib.sha256(bodies.encode()).hexdigest(), "control": control,

@@ -39,7 +39,8 @@ def inspect_sources(sources, inventory):
                 migrated.append((path, owner, hashlib.sha256(expression.encode()).hexdigest()))
     expected = Counter((row['path'], row['owner'], row['expression_sha256'])
                        for row in inventory['writers'])
-    if Counter(migrated) != expected:
+    # Every migrated writer must remain; writers added later through the helper are fine.
+    if expected - Counter(migrated):
         violations.append('Migrated writer expressions or multiplicities changed')
     if allowed_counts != Counter({key: 1 for key in ALLOWED}):
         violations.append('Central history ownership or initialization changed')

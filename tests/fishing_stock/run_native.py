@@ -22,7 +22,7 @@ GIT_MEMORY_ARGS = ("-c", "core.packedGitWindowSize=16m",
                    "-c", "core.packedGitLimit=64m",
                    "-c", "core.deltaBaseCacheLimit=16m")
 PINS = {
-    "tests/animal_registry/run_native.py": "da0c2d5c7bebf45f584a6b0c8b67d8ab0094798024cddf9fc899ad482ba19b1f",
+    "tests/animal_registry/run_native.py": "6599024673815026860fcae86b12323722f781ae54d291a0467b6a7bfabe249e",
     "tests/animal_registry/test_source_contract.py": "485e34f625efd0064e2ee9f35aac0075a5332d951a4b0828fa7592cd0385f08a",
     "scripts/byond_runtime.py": "43346f4a9f33af6b6d9cbe67f15d4f1843c400fa758d4cccba35002f0c30da4c",
     "scripts/byond_toolchain.py": "4ed24048e3e375a037521c81a57c27318d9ba05671f8f53d91485ca5937276d5",

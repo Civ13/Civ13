@@ -88,7 +88,8 @@ var/global/list/holiday_gift_ckeys = list()
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
-/obj/item/weapon/holiday_gift/New()
+// First spawn only: a restored gift keeps the paper it was saved with.
+/obj/item/weapon/holiday_gift/on_runtime_spawn()
 	..()
 	icon_state = pick("gift1", "gift2", "gift3")
 

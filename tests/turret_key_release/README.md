@@ -15,11 +15,11 @@ py -3 -B -m unittest discover -s tests/turret_key_release -v
 py -3 -B tests/turret_key_release/run.py --prepare-only --output <fresh-directory>
 ```
 
-Native CI with reviewed BYOND 516.1681:
+Native CI on the canonical compiler pin (`tools/byond/version.json`):
 
 ```text
-python3 -B tests/turret_key_release/run.py --byond-bin <516.1681-bin> --output <fresh-directory>
-python3 -B tests/turret_key_release/run.py --byond-bin <516.1681-bin> --negative-control --output <another-fresh-directory>
+python3 -B tests/turret_key_release/run.py --byond-bin <BYOND-bin> --output <fresh-directory>
+python3 -B tests/turret_key_release/run.py --byond-bin <BYOND-bin> --negative-control --output <another-fresh-directory>
 ```
 
 The fixture extracts the actual two client release verb bodies and the actual
@@ -37,17 +37,13 @@ calls after release, mob position, inventory references and unchanged action
 clocks. They establish callback behavior through the declared client adapter,
 not real connected-client key dispatch or complete vehicle gameplay.
 
-The negative control uses the actual release code from immutable Civ13
-`cc03b199128f8afed58713912c551ad7556e6bc4`; it must compile/run successfully and
-then fail the named scheduled-stop assertion. Compile/runtime failures cannot
-count as a detected negative control. Preparation accepts only two exact
-whole-file movement fingerprints: the original reviewed turret port, or pinned
-`4b77eab58979ca718faf1aebe9a879a631dcdedf` sub-tile movement with only the same
-two release additions. Every Move/SelfMove admission, context and dispatch byte
-remains covered; unknown movement edits fail closed. Metadata identifies the
-selected reference. The immutable `cc03b199` release control remains unchanged.
-Six offline controls reject altered dispatch, identity gates, drone behavior and
-missing, duplicated or relocated release stops. The
+The negative control uses the actual release code from Civ13
+`cc03b199128f8afed58713912c551ad7556e6bc4`, frozen in `baseline/mob_movement.dm.txt`;
+it must compile/run successfully and then fail the named scheduled-stop assertion.
+Compile/runtime failures cannot count as a detected negative control. Preparation
+requires each current release verb to contain the turret stop exactly once, so
+later movement edits elsewhere in the file do not break the runner.
+The offline tests reject a release verb with a missing or duplicated stop. The
 collision, Move/forceMove, doors, trees, vehicles, multi-z, pathfinding, input
 cooldowns and save implementation are not replaced. No save/reload equivalence
 or native client presentation is claimed by this focused fixture.

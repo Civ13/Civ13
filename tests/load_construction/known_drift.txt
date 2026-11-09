@@ -292,7 +292,6 @@
 /obj/structure/barricade/car icon_state
 /obj/structure/billboard adnumber
 /obj/structure/cargo_container icon_state
-/obj/structure/compost current
 /obj/structure/computer mainbody
 /obj/structure/computer/nopower mainbody
 /obj/structure/fuelpump/premade/yamaha desc
@@ -314,3 +313,12 @@
 /obj/structure/toilet icon_state
 /obj/structure/toilet open
 /obj/structure/window/barrier/jersey icon_state
+# Zombie City horde zombies are never saved (should_save = FALSE); the drift is
+# the parent zombie's random stats.
+/mob/living/simple_animal/hostile/human/zombie/horde health
+/mob/living/simple_animal/hostile/human/zombie/horde maxHealth
+/mob/living/simple_animal/hostile/human/zombie/horde move_to_delay
+/mob/living/simple_animal/hostile/human/zombie/horde speed
+# A freighter's id defaults to null and is set once; a saved freighter always
+# holds its id, which the load restores.
+/obj/structure/crewed_lander/freighter freight_id

@@ -236,7 +236,7 @@ var/human_subtile_fixture_phase = "initializing"
 	map_storage.saving_z = 1
 	var/ref = map_storage.BuildVarDirectory(F, C, 1)
 	F.cd = map_storage.entry_path(F, ref)
-	human_subtile_fixture_assert(("human_subtile_position" in F.dir) && !("step_x" in F.dir) && !("human_subtile_transaction" in F.dir) && !("human_subtile_enabled" in F.dir), "owned_capsule_export_excludes_runtime_and_raw")
+	human_subtile_fixture_assert(!("human_subtile_position" in F.dir) && !("step_x" in F.dir) && !("human_subtile_transaction" in F.dir) && !("human_subtile_enabled" in F.dir), "tile_only_export_excludes_offset_and_runtime")
 	// Historical raw fields must be ignored based on entry ownership, not order.
 	var/entry = map_storage.entry_path(F, ref)
 	F["[entry]/step_x"] << list("kind" = "value", "value" = 31)
@@ -248,7 +248,7 @@ var/human_subtile_fixture_phase = "initializing"
 	map_storage.clear_bookkeeping()
 	var/mob/living/human/subtile_fixture/L = map_storage.Load_Entry(F, ref, starting_loc = locate(2, 8, 1))
 	L.after_load()
-	human_subtile_fixture_assert(L.x == 2 && L.y == 8 && L.step_x == 2 && L.step_y == 0 && L.dir == SOUTH, "actual_codec_anchor_offset_facing_roundtrip")
+	human_subtile_fixture_assert(L.x == 2 && L.y == 8 && L.step_x == 0 && L.step_y == 0 && L.dir == SOUTH, "actual_codec_tile_anchor_facing_roundtrip")
 	human_subtile_fixture_assert(!L.human_subtile_enabled && !L.human_subtile_transaction && !L.human_subtile_pulse && L.human_subtile_default_pending, "import_never_replays_worker_or_snaps_offset")
 	var/obj/item/subtile_fixture_paid/LI = locate() in L.contents
 	var/obj/item/subtile_fixture_paid/LC
@@ -267,11 +267,13 @@ var/human_subtile_fixture_phase = "initializing"
 	try
 		map_storage.Load_Entry(F, ref, replacement = B)
 		B.after_load()
-	catch (var/exception/blocked_error)
-		rejected = blocked_error.name == "Sub-tile anchor or destination rejected"
-	human_subtile_fixture_assert(rejected && B.x == 2 && B.y == 8 && B.step_x == 0 && B.next_move == clock && B.next_click == clock, "blocked_capsule_preserves_initial_position_and_clocks")
+	catch
+		rejected = TRUE
+	human_subtile_fixture_assert(!rejected && B.x == 2 && B.y == 8 && B.step_x == 0 && B.next_move == clock && B.next_click == clock, "tile_restore_ignores_blocked_neighbour_and_keeps_clocks")
 	blocked.density = FALSE
 	B.human_subtile_position = list("x" = 2, "y" = 8, "z" = 1, "sx" = "4", "sy" = 0)
+	// A historical capsule entry owns the import; tile-only saves never write one.
+	B.human_subtile_import_owned = TRUE
 	rejected = FALSE
 	try
 		B.after_load()
@@ -279,6 +281,7 @@ var/human_subtile_fixture_phase = "initializing"
 		rejected = malformed_error.name == "Malformed sub-tile position field"
 	human_subtile_fixture_assert(rejected && B.step_x == 0, "malformed_capsule_rejected_without_placement")
 	B.human_subtile_position = list("x" = 3, "y" = 8, "z" = 1, "sx" = 4, "sy" = 0)
+	B.human_subtile_import_owned = TRUE
 	rejected = FALSE
 	try
 		B.after_load()
@@ -291,7 +294,7 @@ var/human_subtile_fixture_phase = "initializing"
 	map_storage.clear_bookkeeping()
 	var/mob/living/human/subtile_fixture/old = map_storage.Load_Entry(legacy, 1, starting_loc = locate(11, 11, 1))
 	old.after_load()
-	human_subtile_fixture_assert(old.step_x == 4 && !old.human_subtile_import_owned && !old.human_subtile_offset_owned, "nonadapter_legacy_raw_offset_policy_unchanged")
+	human_subtile_fixture_assert(old.step_x == 0 && !old.human_subtile_import_owned && !old.human_subtile_offset_owned, "legacy_raw_offset_not_restored")
 	var/savefile/null_owned = new("human-subtile-null.sav")
 	null_owned["/format_version"] << 2
 	null_owned["/entries/0/1/type"] << /mob/living/human/subtile_fixture
@@ -310,21 +313,21 @@ var/human_subtile_fixture_phase = "initializing"
 	rejected = FALSE
 	try
 		C.before_save()
-	catch (var/exception/buckled_save_error)
-		rejected = buckled_save_error.name == "Unsupported sub-tile save geometry"
-	human_subtile_fixture_assert(rejected, "owned_unsupported_buckle_save_fails_closed")
+	catch
+		rejected = TRUE
+	human_subtile_fixture_assert(!rejected && isnull(C.human_subtile_position), "buckled_offset_saves_tile_only")
 	C.buckled = null
 	qdel(bed)
-	// A capsule that after_load would reject is never written: the body saves
-	// tile-aligned, without raw offsets, while it overlaps a dense object.
+	// Saves are tile-only: no capsule or raw offset is written, whether or not
+	// the body overlaps a dense object, and the live offset is left alone.
 	var/list/prior_position = C.human_subtile_position
 	var/obj/structure/closing = new(C.loc)
 	closing.density = TRUE
 	C.before_save()
-	human_subtile_fixture_assert(isnull(C.human_subtile_position) && C.human_subtile_save_aligned && C.persistence_runtime_var("step_x") && C.persistence_runtime_var("step_y") && C.step_x, "obstructed_offset_saves_tile_aligned")
+	human_subtile_fixture_assert(isnull(C.human_subtile_position) && !C.human_subtile_save_aligned && C.persistence_runtime_var("step_x") && C.persistence_runtime_var("step_y") && C.step_x, "obstructed_offset_saves_tile_only")
 	closing.density = FALSE
 	C.before_save()
-	human_subtile_fixture_assert(islist(C.human_subtile_position) && !C.human_subtile_save_aligned, "clear_offset_keeps_capsule")
+	human_subtile_fixture_assert(isnull(C.human_subtile_position) && !C.human_subtile_save_aligned && C.step_x, "clear_offset_saves_tile_only")
 	qdel(closing)
 	C.human_subtile_position = prior_position
 	// Actual target.Adjacent(user) direction used by the click gate.

@@ -50,8 +50,8 @@ class PoultrySourceTests(unittest.TestCase):
                 start = self.source.index(f'/mob/living/simple_animal/{kind}/New()')
                 end = self.source.index('\n/', start + 1)
                 self.assertIn(registry + ' |= src', self.source[start:end])
-        self.assertIn('chicken_count.len < 50', self.source)
-        self.assertIn('turkey_count.len < 35', self.source)
+        self.assertIn('chicken_count.len < 80', self.source)
+        self.assertIn('turkey_count.len < 80', self.source)
 
 
 class PoultryNativePreparationTests(unittest.TestCase):
@@ -86,17 +86,15 @@ class PoultryNativePreparationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 native.verify(broken, LOG, control, POULTRY_HOOKS)
 
-    def test_engine_version_is_strict_and_explicit(self):
+    def test_engine_version_is_strict_and_follows_the_pin(self):
+        build = native.VERSION.split('.')[1]
         default = native.prepare(self.source, hooks=POULTRY_HOOKS)['fixture.dm']
-        self.assertIn('byond_build != 1681', default)
-        self.assertIn('"version" = "516.1681"', default)
-        current = native.prepare(self.source, hooks=POULTRY_HOOKS, version='516.1688')['fixture.dm']
-        self.assertIn('byond_build != 1688', current)
-        self.assertIn('"version" = "516.1688"', current)
-        self.assertNotIn('@', current)
+        self.assertIn('byond_build != ' + build, default)
+        self.assertIn('"version" = "' + native.VERSION + '"', default)
+        self.assertNotIn('@', default)
         result = result_for()
-        result['version'] = '516.1688'
-        native.verify(result, LOG, hooks=POULTRY_HOOKS, version='516.1688')
+        native.verify(result, LOG, hooks=POULTRY_HOOKS)
+        result['version'] = '516.1'
         with self.assertRaises(ValueError):
             native.verify(result, LOG, hooks=POULTRY_HOOKS)
 

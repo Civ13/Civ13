@@ -153,25 +153,21 @@ combat or projectile equivalence follows from these checks.
 
 ## Actual serializer policy
 
-Adapter positions use a five-integer anchored capsule (`x,y,z,sx,sy`). Runtime
-enable, owner/context/import flags and deadlines are explicitly excluded by
-`persistence_runtime_var`; `tmp` alone is not relied upon. Saving a sleeping
-transaction cancels it and snapshots its completed physical position; saving an
-active pulse or an offset actor with unsupported links fails closed.
+Saves are tile-only (since #3607): the body is written on the tile it occupies,
+with no capsule and no raw step fields, so a walking player is never stopped by a
+save. Runtime enable, owner/context/import flags and deadlines are explicitly
+excluded by `persistence_runtime_var`; `tmp` alone is not relied upon. A buckled
+or obstructed offset body also saves tile-only and keeps its live offset.
 
-At the exact Load_Entry boundary, capsule field presence is captured before any
-assignments. Only owned entries suppress raw step fields, regardless of saved
-field order. No-capsule legacy human entries retain their prior raw-offset
-behavior. Malformed/null owned capsules fail instead of taking a legacy fallback.
-
-The post-load hook validates exact anchor/offset/bounds and checks the actual
-destination footprint through CanPass before one native Move. CanPass callbacks
-can have side effects and are not described as pure. A blocked destination is
-rejected before native placement; the fixture checks the initial replacement
-position and runtime clocks remain intact. No forced loc assignment restores
-offsets. Facing is preserved. The actual serializer preserves paid nested
-contents; the fixture exercises BuildVarDirectory, disk reopen, Load_Entry and
-the normal caller's explicit after_load phase.
+On load the body appears centred on its saved tile, facing preserved, with its
+runtime clocks intact; a blocked neighbouring tile does not matter. Raw step
+fields in older entries are ignored. Historical five-integer capsules
+(`x,y,z,sx,sy`) stay readable for validation only: at the Load_Entry boundary
+capsule field presence is captured before any assignments, and a malformed,
+null or mismatched capsule fails instead of taking a fallback. The actual
+serializer preserves paid nested contents; the fixture exercises
+BuildVarDirectory, disk reopen, Load_Entry and the normal caller's explicit
+after_load phase.
 
 Only unlinked ordinary-body offset restoration is in this slice. The restored
 adapter is off and no worker is replayed; a retained offset refuses ordinary

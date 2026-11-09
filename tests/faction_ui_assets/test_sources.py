@@ -97,7 +97,7 @@ class FactionAssets(unittest.TestCase):
         self.assertEqual(assets.replace('\t\tA.register()\n\t\treturn A\n', '\t\treturn A\n'), omission[PREFIX + '_assets.dm'])
         self.assertIn('/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n', assets)
         self.assertIn('fcopy_rsc(path + filename)', assets)
-        self.assertIn('/datum/nanoui/faction_assets_probe(user, src,', positive[PREFIX + '_creation.dm'])
+        self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_creation.dm'])
         self.assertNotIn('.dmm"', positive[PREFIX + '.dme'])
         self.assertNotIn('CIV13_GAMEPLAY_BRIDGE', positive[PREFIX + '.dme'])
         self.assertEqual(positive[PREFIX + '_creation.dm'], omission[PREFIX + '_creation.dm'])

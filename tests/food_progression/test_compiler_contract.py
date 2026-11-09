@@ -4,33 +4,31 @@ import subprocess
 import sys
 import unittest
 
-from compiler_contract import HISTORICAL_VERSION, VERSIONS, compiler_is_clean
+from compiler_contract import PINNED_VERSION, VERSIONS, compiler_is_clean
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
 class CompilerContractTests(unittest.TestCase):
-    def test_explicit_versions_and_historical_default(self):
-        self.assertEqual(VERSIONS, ('516.1681', '516.1688'))
-        self.assertEqual(HISTORICAL_VERSION, '516.1681')
-        for version in VERSIONS:
-            log = f'DM compiler version {version}\nprobe.dmb - 0 errors, 0 warnings (10/28/26 4:36 pm)\n'
-            self.assertTrue(compiler_is_clean(0, log, version))
-            other = '516.1688' if version == '516.1681' else '516.1681'
-            self.assertFalse(compiler_is_clean(0, log, other))
-            self.assertFalse(compiler_is_clean(0, log, '516.1700'))
+    def test_only_the_canonical_pin_is_admitted(self):
+        self.assertEqual(VERSIONS, (PINNED_VERSION,))
+        log = f'DM compiler version {PINNED_VERSION}\nprobe.dmb - 0 errors, 0 warnings (10/28/26 4:36 pm)\n'
+        self.assertTrue(compiler_is_clean(0, log, PINNED_VERSION))
+        self.assertFalse(compiler_is_clean(0, log, '516.1681'))
+        self.assertFalse(compiler_is_clean(0, log, '516.1700'))
+        self.assertFalse(compiler_is_clean(0, log.replace(PINNED_VERSION, '516.1681'), PINNED_VERSION))
 
     def test_fail_closed_for_bad_or_ambiguous_compiler_results(self):
-        good = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
-        for log in (good.replace('516.1688', '516.16880'),
+        good = 'DM compiler version ' + PINNED_VERSION + '\nprobe.dmb - 0 errors, 0 warnings\n'
+        for log in (good.replace(PINNED_VERSION, PINNED_VERSION + '0'),
                     good + 'DM compiler version 516.1681\n',
-                    good + 'DM compiler version 516.1688\n',
+                    good + 'DM compiler version ' + PINNED_VERSION + '\n',
                     good.replace('0 errors', '1 errors'),
                     good.replace('0 warnings', '1 warning'),
                     good.replace('probe.dmb - ', ''),
                     good + 'probe.dmb - 0 errors, 0 warnings\n'):
-            self.assertFalse(compiler_is_clean(0, log, '516.1688'), log)
-        self.assertFalse(compiler_is_clean(1, good, '516.1688'))
+            self.assertFalse(compiler_is_clean(0, log, PINNED_VERSION), log)
+        self.assertFalse(compiler_is_clean(1, good, PINNED_VERSION))
 
     def test_both_runners_reject_unapproved_cli_version_before_launch(self):
         for name in ('run.py', 'preservation_run.py'):

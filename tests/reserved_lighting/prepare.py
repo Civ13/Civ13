@@ -44,8 +44,15 @@ def prepare(repo, output, control=None, provenance=None):
         hashes[rel] = hashlib.sha256(dest.read_bytes()).hexdigest()
     source = (repo / 'civ13.dme').read_text(encoding='utf-8')
     lines = []
+    skipped_global_init = False
     for line in source.splitlines():
         if line.startswith('#include "maps\\') or (line.startswith('#include ') and '.dmf"' in line):
+            continue
+        # Disable normal global startup: the global_init instance is created by the
+        # last include (code/global_init_last.dm) and loads normal configuration.
+        # The isolated probe owns its minimal config and lighting initialization.
+        if line.replace('\\', '/') == '#include "code/global_init_last.dm"':
+            skipped_global_init = True
             continue
         if line.startswith('#include "'):
             rel = line.split('"')[1].replace('\\', '/')
@@ -54,11 +61,7 @@ def prepare(repo, output, control=None, provenance=None):
         lines.append(line)
     # Disable normal global/world startup; the probe owns minimal initialization.
     world = (repo / 'code/world.dm').read_text(encoding='utf-8')
-    global_startup = 'var/global/datum/global_init/init = new ()'
-    assert world.count(global_startup) == 1, 'global startup initializer anchor drift'
-    # This constructor runs before world/New and loads normal configuration.
-    # The isolated probe owns its minimal config and lighting initialization.
-    world = world.replace(global_startup, 'var/global/datum/global_init/init = null', 1)
+    assert skipped_global_init, 'global startup initializer anchor drift'
     start = world.index('/world/New()')
     parent = world.index('\n\t..()', start)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)

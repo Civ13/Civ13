@@ -10,6 +10,19 @@ import subprocess
 import tempfile
 
 
+ENDPOINT_ADAPTERS = """var/list/epoch_names = list("Stone Age")
+/proc/log_admin(text)
+	return
+/proc/announce_restored_round_once()
+	return
+/datum/configuration/var/hub = null
+/obj/map_metadata/var/ordinal_age = 0
+/obj/map_metadata/var/age = "Stone Age"
+/obj/map_metadata/proc/set_epoch(ordinal)
+	return FALSE
+"""
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
@@ -38,6 +51,9 @@ def main():
             raise RuntimeError('Authentication anchor changed')
         endpoint = endpoint.replace(anchor, 'if(peer[1] == "disabled-negative-control" || ', 1)
     (output / 'endpoint.dm').write_text(endpoint, encoding='utf-8')
+    # Collaborators the endpoint gained later (host epoch advance, standby handover,
+    # hub visibility). The probe sends none of those requests; these only declare them.
+    (output / 'endpoint_adapters.dm').write_text(ENDPOINT_ADAPTERS, encoding='utf-8')
     transaction = (output / 'transaction.dm').read_text(encoding='utf-8')
     if args.negative_control == 'shutdown-generation':
         anchor = 'if(!matches(I, read_intent()) || trim(file2text("map_saves/save_complete.txt")) != expected_generation)'
@@ -49,11 +65,13 @@ def main():
     # Adapt only the final native effect so rejected requests can be asserted in
     # one process; the final positive call invokes the actual native deletion.
     transaction = (output / 'transaction.dm').read_text(encoding='utf-8')
-    if transaction.count('\tdel(world)\n') != 1:
+    # The validated-shutdown deletion; the handover path has its own del(world).
+    effect = 'replace the binary before the next startup.\n\tdel(world)\n'
+    if transaction.count(effect) != 1:
         raise RuntimeError('Native shutdown effect changed')
-    transaction = transaction.replace('\tdel(world)\n', '\tlifecycle_native_shutdown()\n', 1)
+    transaction = transaction.replace(effect, 'replace the binary before the next startup.\n\tlifecycle_native_shutdown()\n', 1)
     (output / 'transaction.dm').write_text(transaction, encoding='utf-8')
-    (output / 'probe.dme').write_text('#define GAME_STATE_PLAYING 3\n' + dme + '#include "endpoint.dm"\n', encoding='utf-8')
+    (output / 'probe.dme').write_text('#define GAME_STATE_PLAYING 3\n' + dme + '#include "endpoint_adapters.dm"\n#include "endpoint.dm"\n', encoding='utf-8')
     receipt.update(negative_control=args.negative_control, prepared_only=args.prepare_only)
     receipt['production_hashes']['code/modules/persistence/nomads_lifecycle.dm'] = hashlib.sha256((root / 'code/modules/persistence/nomads_lifecycle.dm').read_bytes()).hexdigest()
     receipt['generated_hashes'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in output.iterdir() if p.suffix in ('.dm', '.dme')}

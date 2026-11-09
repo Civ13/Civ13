@@ -2,6 +2,7 @@
 import argparse, hashlib, json, os, re, subprocess, tempfile
 from pathlib import Path
 BASELINE = 'f6d769d3751275f63a4481db61290dde79e9cbb4'
+PINNED_BYOND = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 p = argparse.ArgumentParser()
 p.add_argument('--byond-bin', type=Path, required=True)
 p.add_argument('--baseline', action='store_true')
@@ -28,7 +29,7 @@ build = subprocess.run([str(compiler),'probe.dme'],cwd=a.evidence_dir,text=True,
 compile_log = build.stdout+build.stderr
 (a.evidence_dir/'compile.log').write_text(compile_log)
 print(compile_log,flush=True)
-if build.returncode or 'DM compiler version 516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned fixture compile failed')
+if build.returncode or 'DM compiler version ' + PINNED_BYOND not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned fixture compile failed')
 run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log'],cwd=a.evidence_dir,capture_output=True,timeout=20,creationflags=flags)
 log = (a.evidence_dir/'runtime.log').read_text()
 (a.evidence_dir/'daemon.log').write_bytes(run.stdout+run.stderr)

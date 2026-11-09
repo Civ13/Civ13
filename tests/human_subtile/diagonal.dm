@@ -198,10 +198,11 @@ var/human_subtile_diagonal_checks = 0
 	qdel(L)
 	F = new("diagonal-roundtrip.sav")
 	map_storage.clear_bookkeeping()
+	// Saves are tile-only: the diagonal offset is not written, so the body loads centred.
 	var/mob/living/human/subtile_fixture/loaded = map_storage.Load_Entry(F, ref, starting_loc = locate(8, 7, 1))
 	loaded.after_load()
-	human_subtile_diagonal_assert(!loaded.human_subtile_enabled && loaded.human_subtile_default_pending && loaded.step_x == 4 && loaded.step_y == 4 && !loaded.human_subtile_transaction, "diagonal_codec_restores_both_axes_without_worker")
-	human_subtile_diagonal_assert(loaded.human_subtile_input_supported(SOUTHWEST) && loaded.human_subtile_enabled && loaded.step_x == 4 && loaded.step_y == 4, "owned_restore_default_without_snap")
+	human_subtile_diagonal_assert(!loaded.human_subtile_enabled && loaded.human_subtile_default_pending && loaded.step_x == 0 && loaded.step_y == 0 && !loaded.human_subtile_transaction, "diagonal_codec_restores_tile_without_worker")
+	human_subtile_diagonal_assert(loaded.human_subtile_input_supported(SOUTHWEST) && loaded.human_subtile_enabled && loaded.step_x == 0 && loaded.step_y == 0, "tile_restore_default_on_first_input")
 	qdel(loaded)
 	var/mob/living/human/subtile_fixture/O = human_subtile_fixture_actor(8, 7)
 	O.bound_width = 16

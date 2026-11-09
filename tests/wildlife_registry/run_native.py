@@ -1,4 +1,4 @@
-"""Isolated production registry hooks, Linux BYOND (default 516.1681). Never starts Civ13."""
+"""Isolated production registry hooks, Linux BYOND (canonical pin). Never starts Civ13."""
 import argparse
 import hashlib
 import json
@@ -13,9 +13,9 @@ import time
 from test_source_contract import HOOKS, ROOT, SOURCES, load_source, violations
 
 
-VERSION = '516.1681'
-# Historical callers stay strict 1681; the hosted 1688 target is selected explicitly.
-VERSIONS = ('516.1681', '516.1688')
+# Compile and runtime checks follow the canonical compiler pin.
+VERSION = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+VERSIONS = (VERSION,)
 LIMIT = 2 * 1024 * 1024
 DIAGNOSTIC = re.compile(r'\bwarning:|\berror:|runtime error|\bRUNTIME\b|\bBUG\b|bad ref|bad loc|cannot read|cannot execute|segmentation|fatal|infinite loop|exception', re.I)
 

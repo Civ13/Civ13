@@ -34,9 +34,15 @@ jobs:
         run: bash scripts/cloud_byond_setup.sh
       - name: Install Pillow
         run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0
+      # The i686 rust-g 3.0.0 build (the version of rust_g.dll) for runners that call rust_g.
+      - name: Fetch rust-g 3.0.0
+        run: |
+          curl -sSLf --retry 3 -o "$RUNNER_TEMP/librust_g.so" https://github.com/tgstation/rust-g/releases/download/3.0.0/librust_g.so
+          echo "b92f18e19667148628b3f45dbdf58765eab18daa14d1d28db8dfe83211165b45  $RUNNER_TEMP/librust_g.so" | sha256sum -c -
       - name: Run every native runner
         env:
           BYOND_ARCHIVE: ${{ runner.temp }}/sweep-byond/pinned.zip
+          RUST_G: ${{ runner.temp }}/librust_g.so
         run: |
           source "$RUNNER_TEMP/sweep-byond/byond/bin/byondsetup"
           python3 scripts/native_runner_sweep.py --byond-bin "$RUNNER_TEMP/sweep-byond/byond/bin" --jobs 3 --output "$RUNNER_TEMP/native-sweep.json"

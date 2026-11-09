@@ -1,5 +1,9 @@
 """Pure bounded compiler/diagnostic evidence checks; no process execution."""
+import json
+from pathlib import Path
 import re
+
+PINNED_BYOND = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|bad loc|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error|unexpected runtime|\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b|invalid file', re.I)
 
@@ -13,10 +17,10 @@ def validate_compile(exit_code, log, artifact="probe.dmb"):
         raise RuntimeError('Compiler exit, output bound or diagnostics invalidated evidence')
     lines = log.splitlines()
     banners = [line for line in lines if re.search(r'DM compiler version', line, re.I)]
-    if banners != ['DM compiler version 516.1681']:
+    if banners != ['DM compiler version ' + PINNED_BYOND]:
         raise RuntimeError('Exactly one full pinned compiler banner required')
     results = [line for line in lines if re.search(r'\berrors?\b|\bwarnings?\b', line, re.I)]
-    # Native 516.1681 adds a local date/time to the result; synthetic logs may omit it.
+    # Native BYOND adds a local date/time to the result; synthetic logs may omit it.
     summary = re.escape(artifact) + r' - 0 errors, 0 warnings(?: \(\d{1,2}/\d{1,2}/\d{2,4} \d{1,2}:\d{2}(?::\d{2})? (?:am|pm)\))?'
     if len(results) != 1 or not re.fullmatch(summary, results[0]):
         raise RuntimeError('Exactly one bounded clean compiler result required')

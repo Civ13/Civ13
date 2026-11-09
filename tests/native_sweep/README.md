@@ -13,8 +13,9 @@ BYOND_ARCHIVE=~/byond-516.1688/pinned.zip python3 scripts/native_runner_sweep.py
   --byond-bin ~/byond-516.1688/byond/bin --jobs 3 [--only name ...] [--output report.json]
 ```
 
-The sweep gives each runner a fresh `--output`/`--evidence-dir` path and `--byond-archive`
-when it takes them. `manifest.json` holds:
+The sweep gives each runner a fresh `--output`/`--evidence-dir` path, `--byond-archive`
+(from `BYOND_ARCHIVE`) and `--rust-g` (from `RUST_G`, the i686 `librust_g.so` of rust-g
+3.0.0) when it takes them. `manifest.json` holds:
 
 - `runners`: extra arguments (`args`), a longer `timeout` (seconds), or `serial: true` for a
   timing-sensitive runner that must run alone after the parallel batch.

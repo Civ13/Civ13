@@ -124,7 +124,27 @@ def prepare(repo, mode, size, negative, requests_enabled=False, profile=False):
     field_names = re.findall(r'^\tvar/(?:tmp/)?(?:list/)?(season_\w+)', declarations, re.M)
     assert len(field_names) == len(set(field_names)), 'Duplicate extracted season fields'
 
-    production = types + '\n/obj/map_metadata\n' + declarations + '\n' + seasons + helper + asia + constructors
+    # Types the probe map builds, whether or not the current season code names them.
+    types += '/area/caribbean/nomads/snow\n/area/caribbean/roofed\n/turf/floor/winter/grass\n/turf/floor/dirt/winter\n'
+    # Durable (saved-world) calendar hooks: this fixture has no durable metadata, so every
+    # hook declines and the extracted spawn fallback schedules the work, as on a fresh map.
+    durable = '''
+/datum/probe_config/var/season_duration_minutes = 60
+/obj/map_metadata/var/obj/durable_callbacks // Always null here; typed for its Destroy() call.
+/obj/map_metadata/proc/durable_schedule(kind, delay)
+	return FALSE
+/obj/map_metadata/proc/season_note_next_change(delay)
+	return
+/obj/map_metadata/proc/durable_nomads_apply(value, advance_decay)
+	return
+/obj/map_metadata/proc/durable_cancel_season_phases()
+	return
+/obj/map_metadata/proc/uses_durable_metadata()
+	return FALSE
+/obj/map_metadata/proc/durable_nomads_fail(reason)
+	return
+''' if mode != 'baseline' else ''
+    production = types + '\n/obj/map_metadata\n' + declarations + '\n' + seasons + helper + asia + constructors + durable
     production += (repo / 'code/_helpers/functional.dm').read_text()
     probe = Path(__file__).with_name('probe.dm').read_text()
     requests = Path(__file__).with_name('requests.dm').read_text()

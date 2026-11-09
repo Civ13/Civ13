@@ -123,7 +123,8 @@ def main():
         runtime = subprocess.run([str(daemon), str(logs / generated[3].name), *platform_flags,
                                   '-trusted', '-params', f'tested_commit={commit}&probe={args.probe}',
                                   '-log', 'runtime.log'], cwd=logs,
-                                 capture_output=True, text=True, timeout=45,
+                                 # Full game global initialization alone takes about a minute now.
+                                 capture_output=True, text=True, timeout=240,
                                  creationflags=flags)
         (logs / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
         print(runtime.stdout + runtime.stderr, flush=True)
