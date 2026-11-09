@@ -64,6 +64,10 @@
 			if (!target.reagents.total_volume)
 				to_chat(user, "<span class='notice'>[target] is empty. Can't dissolve \the [src].</span>")
 				return
+			// The whole dose has to fit, or the pill would vanish with its medicine (#4226).
+			if (target.reagents.get_free_space() < reagents.total_volume)
+				to_chat(user, "<span class='notice'>[target] is too full to dissolve \the [src] in.</span>")
+				return
 			to_chat(user, "<span class='notice'>You dissolve \the [src] in [target].</span>")
 
 			user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Spiked \a [target] with a pill. Reagents: [reagentlist()]</font>"))

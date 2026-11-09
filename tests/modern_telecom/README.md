@@ -16,5 +16,6 @@ also cover real powered receiver delivery, frequency filtering, phone calls and
 power-loss teardown over electricity cables, and local terminal delivery/rate
 limits, and the cross-region long-range radio relay (keying, power, wear,
 garbling, the outbound window, arrivals heard through a tuned handset, every
-drop rule and the saved key and condition). They do not establish recipe
+drop rule and the saved key and condition), and saved landline numbers that
+restore in a different construction order (#4222). They do not establish recipe
 reachability or graphical acceptance.
