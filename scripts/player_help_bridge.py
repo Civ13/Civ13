@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '99901083f874765651ada42eeb46753db75d6681'
+WIKI_REVIEWED_REVISION = '2c4303df5be7e21ec9f49c4fdcd6465ad69d8327'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
@@ -98,7 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('6929f1b1b1d4bc9a888921e3a633c065a89f56dd8d96a5916b2398665e1c947b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('44eefb4c238a55b45d66e8d6c26e845a3c66a289657b9d5294f7d3f4376b17fe', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('a78afad5f55ddc0c9298e460ef71d6596eea6d43e573c2a2e335806719613a38', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('6520439f47c073fe363f76daa162523457cd5627a4c1afe99c04a7ed1690b3fc', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -112,7 +112,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('12b5401794129f96e9657594c88dbcfd465a2f57dcaf4a3f0cdd367267219f0a', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Boats.md': ('8c6b063004ea9cb950a32ae4b130820ca53f3d01682863442726d3b7477bb1ba', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('aa367da7e2ffc2bc84dac2db72ed9ac88941f6118b9453c3f18f8f76f006a2dd', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
