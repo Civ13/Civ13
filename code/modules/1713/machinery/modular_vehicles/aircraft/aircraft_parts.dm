@@ -136,9 +136,9 @@
 			if (AIRCRAFT_GROUND)
 				to_chat(user, "The aircraft is on the ground.")
 			if (AIRCRAFT_LOW)
-				to_chat(user, "The aircraft is in low flight.")
+				to_chat(user, "The aircraft is in low flight at height [A.altitude], [A.clearance()] above the ground, heading for height [A.target_altitude].")
 			if (AIRCRAFT_CRUISE)
-				to_chat(user, "The aircraft is at cruising height.")
+				to_chat(user, "The aircraft is at cruising height [A.altitude], above the hilltops, heading for height [A.target_altitude].")
 
 // The car V6's power with an aero engine's thrift: on the car figures a full
 // small tank lasted under twenty seconds in the air.

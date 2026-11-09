@@ -104,6 +104,19 @@ var/aircraft_runtime_error = FALSE
 /proc/aircraft_ground_shown(obj/structure/vehicleparts/axis/aircraft/A, turf/T)
 	return A.ground_shown(T)
 
+// A height grid for the fixture's ground (z1): every row is fill, except the
+// rows given as "y" = level character.
+/proc/aircraft_probe_heights(list/rows, fill = "0")
+	var/list/lines = list("civ13-terrain-heights 1", "size [world.maxx] [world.maxy]", "z 1")
+	for (var/y = world.maxy, y >= 1, y--)
+		var/c = rows["[y]"] || fill
+		var/row = ""
+		for (var/x = 1, x <= world.maxx, x++)
+			row += c
+		lines += row
+	var/datum/terrain_heights/H = terrain_heights_parse(jointext(lines, "\n"), world.maxx, world.maxy, world.maxz)
+	return H.error ? null : H
+
 /proc/aircraft_tank_fuel(obj/structure/vehicleparts/axis/aircraft/A)
 	var/obj/structure/engine/internal/E = A.engine
 	return E.fueltank.reagents.get_reagent_amount(E.fuels[1])
@@ -173,8 +186,11 @@ var/aircraft_runtime_error = FALSE
 	var/obj/covers/roof_floor = new /obj/covers/wood(locate(nose.x + 3, nose.y - 2, 2))
 	A.update_flight_visuals()
 	aircraft_check(!aircraft_ground_shown(A, locate(nose.x + 3, nose.y - 2, 1)) && aircraft_ground_shown(A, locate(nose.x + 4, nose.y - 2, 1)), "a floor on the upper level hides the ground under it")
+	// Off the map at once: the fixture has no garbage collector to clear it later.
+	roof_floor.loc = null
 	qdel(roof_floor)
-	aircraft_check(A.shadows[nose]:pixel_x == 8, "low flight casts a close shadow")
+	aircraft_check(A.altitude == 2 && A.target_altitude == 6 && A.clearance() == 2, "the wheels leave the ground two levels up, climbing on toward six")
+	aircraft_check(A.shadows[nose]:pixel_x == 6, "low flight close to the ground casts a close shadow")
 
 	// Over open air: aboard is held, overboard falls.
 	var/obj/structure/vehicleparts/frame/side = locate(/obj/structure/vehicleparts/frame) in locate(3, aircraft_front_y(A), 2)
@@ -193,6 +209,7 @@ var/aircraft_runtime_error = FALSE
 	var/y_before = aircraft_front_y(A)
 	A.currentspeed = A.speeds
 	aircraft_check(aircraft_step(A) && aircraft_front_y(A) == y_before - 1 && M.z == 2 && aircraft_frames_z(A, 2), "low flight moves the aircraft one tile and keeps the passenger aboard")
+	aircraft_check(A.altitude == 4, "each tile flown climbs two levels toward the target")
 	aircraft_check(aircraft_shadows_below(A, 1) && !(locate(/obj/effect/aircraft_shadow) in locate(nose.x, nose.y + 4, 1).vis_contents), "the shadows follow the aircraft and leave the tiles behind it")
 
 	// The airframe draws the plane, not a box truck: every section shows its
@@ -240,17 +257,24 @@ var/aircraft_runtime_error = FALSE
 	var/obj/structure/vehicleparts/frame/body = locate(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/center) in A.components
 	var/damage_before = A.airframe_damage
 	aircraft_check(A.airframe_hit(body, round) && A.airframe_damage == damage_before + round.damage && A.airborne(), "a hit wears the airframe without bringing it down")
-	// Cruise passes over upper storeys and will not descend into them.
-	aircraft_check(A.climb(M) && A.flight_state == AIRCRAFT_CRUISE, "climb reaches cruising height")
+	// Climb raises the target; the aircraft stays in low flight on the ground's
+	// height scale until it passes the top of it, then cruises.
+	aircraft_check(A.climb(M) && A.target_altitude == 11 && A.flight_state == AIRCRAFT_LOW, "climb raises the target altitude by five")
+	aircraft_check(A.climb(M) && A.climb(M) && A.target_altitude == AIRCRAFT_MAX_ALTITUDE && !A.climb(M), "climb stops at the highest the aircraft goes")
+	for (var/i = 1, i <= 5, i++)
+		aircraft_step(A)
+	aircraft_check(A.flight_state == AIRCRAFT_LOW && A.altitude == 14, "at height 14, under the top of the height scale, it is still in low flight")
+	aircraft_check(aircraft_step(A) && A.flight_state == AIRCRAFT_CRUISE && A.altitude == 16, "past height 15 it climbs to cruising height")
 	aircraft_check(!A.reachable_by(round) && A.reachable_by(shell), "at cruise only heavy weapons reach the aircraft")
-	aircraft_check(A.shadows[nose]:pixel_x == 16, "cruise casts a farther shadow")
-	aircraft_check(!A.climb(M), "climbing again is refused")
+	aircraft_check(A.shadows[nose]:pixel_x == 20, "cruise casts a farther shadow")
 	var/obj/structure/aircraft_probe_wall/W = new(locate(4, aircraft_front_y(A) - 1, 2))
 	aircraft_check(aircraft_step(A) && A.flight_state == AIRCRAFT_CRUISE, "cruise flies over an upper storey")
 	var/obj/structure/vehicleparts/frame/wing = locate(/obj/structure/vehicleparts/frame/car/aircraft/wing) in A.components
 	var/obj/covers/storey_floor = new /obj/covers/wood(get_turf(wing))
 	A.update_flight_visuals()
 	aircraft_check(wing && !A.shadows[wing] && A.shadows.len == A.frames().len - 1, "a frame over an upper floor throws no shadow on the ground below")
+	// Off the map at once: the fixture has no garbage collector to clear it later.
+	storey_floor.loc = null
 	qdel(storey_floor)
 	A.update_flight_visuals()
 	aircraft_check(A.shadows[wing], "the shadow returns over open air")
@@ -258,7 +282,15 @@ var/aircraft_runtime_error = FALSE
 	for (var/i = 1, i <= 4, i++)
 		aircraft_step(A)
 	qdel(W)
-	aircraft_check(A.descend(M) && A.flight_state == AIRCRAFT_LOW, "past it, descend returns to low flight")
+	aircraft_check(A.altitude == AIRCRAFT_MAX_ALTITUDE && A.descend(M) && A.descend(M) && A.target_altitude == 10, "past it, two presses of Descend aim below the top of the height scale")
+	for (var/i = 1, i <= 5 && A.flight_state == AIRCRAFT_CRUISE, i++)
+		aircraft_step(A)
+	aircraft_check(A.flight_state == AIRCRAFT_LOW && A.altitude == 14, "sinking past height 15 returns it to low flight")
+	aircraft_check(A.descend(M) && A.airborne() && A.clearance() > 2, "descending high above the ground eases down instead of landing")
+	for (var/i = 1, i <= 10 && A.clearance() > 2, i++)
+		A.descend(M)
+		aircraft_step(A)
+	aircraft_check(A.altitude == 2 && A.target_altitude == 1 && A.flight_state == AIRCRAFT_LOW, "the descent levels off just above the ground")
 
 	// Landing needs the runway below and approach speed.
 	A.currentspeed = A.speeds
@@ -479,6 +511,42 @@ var/aircraft_runtime_error = FALSE
 
 	// The open-air hook only holds what an airborne aircraft carries.
 	aircraft_check(!aircraft_holds(locate(8, 8, 2), dropped), "nothing is held once no aircraft is airborne")
+
+	// Hills: the ground's height scale reaches up to an aircraft in low flight.
+	var/hill_front = aircraft_front_y(B)
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = aircraft_probe_heights(list("[hill_front - 3]" = "c"))
+	aircraft_check(B.airborne() && B.altitude == 2 && B.highest_ground_ahead(SOUTH) == 12 && B.terrain_warning(), "a ridge ahead taller than the plane sounds the terrain warning")
+	B.currentspeed = B.speeds
+	var/hill_steps = 0
+	while (hill_steps < 6 && aircraft_step(B))
+		hill_steps++
+	aircraft_check(!B.airborne() && aircraft_frames_z(B, 1) && hill_steps == 2 && B.landing_gear_broken(), "flying into a ridge higher than the plane crashes it")
+	var/obj/structure/vehicleparts/axis/aircraft/H = build_light_plane(locate(1, 24, 2))
+	var/obj/structure/engine/internal/HE = H.engine
+	HE.fueltank.reagents.add_reagent(HE.fuels[1], 100, safety = TRUE)
+	HE.on = TRUE
+	var/ridge = aircraft_front_y(H) - 6
+	map.terrain_heights_cache = aircraft_probe_heights(list("[ridge]" = "9", "[ridge - 1]" = "9"))
+	H.set_flight_state(AIRCRAFT_LOW)
+	H.moving = TRUE
+	H.currentspeed = H.speeds
+	aircraft_check(H.climb(null) && H.target_altitude == 11, "a pilot who sees the ridge climbs")
+	hill_steps = 0
+	while (hill_steps < 7 && aircraft_step(H))
+		hill_steps++
+	aircraft_check(H.airborne() && hill_steps == 7 && H.altitude == 11 && H.ground_level() == 9 && H.clearance() == 2, "climbing in time clears the ridge, two levels above its crest")
+	aircraft_check(H.shadows && H.shadows[H.corners[2]] && H.shadows[H.corners[2]]:pixel_x == 6, "over the ridge the shadow falls close again")
+	aircraft_check(!H.footprint_level(1) && !H.rough_ground_below(1), "ground that drops away under the footprint is too steep for a rough landing")
+	map.terrain_heights_cache = aircraft_probe_heights(list(), "f")
+	H.target_altitude = AIRCRAFT_MAX_ALTITUDE
+	H.altitude = 16
+	H.flight_state = AIRCRAFT_CRUISE
+	aircraft_check(!H.descend(null) && H.flight_state == AIRCRAFT_CRUISE && findtext(H.low_flight_blocked(), "hillside"), "cruise will not sink into ground at the top of the height scale")
+	H.crash_land("the probe")
+	map.terrain_height_file = null
+	map.terrain_heights_cache = null
+	aircraft_check(terrain_height_at(locate(5, 5, 1)) == 0, "the probe leaves the fixture flat again")
 
 	// Players build the light plane at an aircraft hangar once Powered Flight
 	// is researched; it leaves the press with an empty tank and keys issued.

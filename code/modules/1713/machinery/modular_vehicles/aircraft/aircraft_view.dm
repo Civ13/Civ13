@@ -15,9 +15,10 @@
 // opacity. (alpha is folded into a colour matrix, so the ring has its own.)
 #define AIRCRAFT_GROUND_VIEW_HAZE list(0.8,0,0,0, 0,0.8,0,0, 0,0,0.8,0, 0,0,0,1, 0.08,0.1,0.14,0)
 #define AIRCRAFT_GROUND_VIEW_HAZE_FAR list(0.8,0,0,0, 0,0.8,0,0, 0,0,0.8,0, 0,0,0,0.43, 0.08,0.1,0.14,0)
-// Shadow offset in pixels: lower flight casts a closer shadow.
-#define AIRCRAFT_SHADOW_OFFSET_LOW 8
-#define AIRCRAFT_SHADOW_OFFSET_CRUISE 16
+// Shadow offset in pixels: the shadow falls farther from the airframe the
+// higher it flies above the ground under it.
+#define AIRCRAFT_SHADOW_OFFSET_MIN 4
+#define AIRCRAFT_SHADOW_OFFSET_MAX 20
 
 /obj/structure/vehicleparts/axis/aircraft
 	var/tmp/obj/effect/aircraft_ground_view/ground_view
@@ -168,7 +169,7 @@
 	if (!shadows)
 		shadows = list()
 		shadow_turfs = list()
-	var/offset = flight_state == AIRCRAFT_CRUISE ? AIRCRAFT_SHADOW_OFFSET_CRUISE : AIRCRAFT_SHADOW_OFFSET_LOW
+	var/offset = clamp(AIRCRAFT_SHADOW_OFFSET_MIN + clearance(), AIRCRAFT_SHADOW_OFFSET_MIN, AIRCRAFT_SHADOW_OFFSET_MAX)
 	var/list/current = frames()
 	for (var/obj/structure/vehicleparts/frame/gone in shadows)
 		if (!(gone in current))
@@ -267,8 +268,8 @@
 	visible_message(SPAN_NOTICE("\The [src] has been set down [hard ? "hard " : ""]on the ground below."))
 	return TRUE
 
-#undef AIRCRAFT_SHADOW_OFFSET_CRUISE
-#undef AIRCRAFT_SHADOW_OFFSET_LOW
+#undef AIRCRAFT_SHADOW_OFFSET_MAX
+#undef AIRCRAFT_SHADOW_OFFSET_MIN
 #undef AIRCRAFT_GROUND_VIEW_HAZE_FAR
 #undef AIRCRAFT_GROUND_VIEW_HAZE
 #undef AIRCRAFT_GROUND_VIEW_FAR

@@ -42,9 +42,9 @@
 /obj/screen/vehicle/flight/state/refresh_label(obj/structure/vehicleparts/axis/aircraft/A)
 	switch (A.flight_state)
 		if (AIRCRAFT_LOW)
-			label("LOW")
+			label("LOW [A.altitude]")
 		if (AIRCRAFT_CRUISE)
-			label("CRUISE")
+			label("HIGH [A.altitude]")
 		else
 			label("GROUND")
 
