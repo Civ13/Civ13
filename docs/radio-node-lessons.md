@@ -11,3 +11,5 @@ This change does not enable the map flag or deploy anything. It stacks on phases
 ## Verification
 
 `tests/node_broadcast/test_contract.py` is an offline source contract. `tests/node_broadcast/run.py --byond-bin <bin> --compile-only` compiles the full production fixture; it does not execute behavior. The optional native run checks partial/full attendance, late arrivals, AFK, sleep, frequency, power, range, teacher knowledge, research ceiling, long scheduler gaps, cap, cooldown and saved-field exclusion. It adapts startup, physiology/client activity and the clock, and is not connected-client acceptance. `--trusted` is opt-in and requires explicit maintainer permission. It runs no listener port and uses temporary files, with retained logs in ignored `.ci/node_broadcast`.
+
+The development safe-mode attempt reached all 26 behavior assertions, but BYOND denied temporary config/result I/O and the runner timed out. This is not a clean native pass. Trusted-mode execution and connected-client acceptance remain unverified.
