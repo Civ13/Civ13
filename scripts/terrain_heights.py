@@ -63,6 +63,23 @@ def read_dmm(path):
     return len(first[0]), len(first), levels
 
 
+def read_dmm_landmarks(path):
+    """Game coordinates (x, y, z) of every /obj/effect/landmark in a standard .dmm."""
+    text = Path(path).read_text(encoding='utf-8')
+    marks = {}
+    for match in re.finditer(r'^"(\w+)" = \((.*)\)$', text, re.M):
+        marks[match.group(1)] = '/obj/effect/landmark' in match.group(2)
+    width = len(next(iter(marks)))
+    found = []
+    for x, y, z, body in re.findall(r'^\((\d+),(\d+),(\d+)\) = \{"\n(.*?)\n"\}', text, re.M | re.S):
+        rows = body.split('\n')
+        for r, line in enumerate(rows):
+            for i in range(0, len(line), width):
+                if marks[line[i:i + width]]:
+                    found.append((i // width + 1, len(rows) - r, int(z)))
+    return found
+
+
 def classify(turf):
     """0 water, 1 shore, 2 land, 3 rock wall."""
     if 'rockwall' in turf or turf.startswith('/turf/wall/rock'):
@@ -232,14 +249,18 @@ def polyline_distance(np, shape, points, maxy, reach):
     return distance, side
 
 
-def design(np, rows, spec):
-    """Designed heights for one level; see the comment above DESIGN_MAX_STEP."""
+def design(np, rows, spec, landmarks=()):
+    """Designed heights for one level; see the comment above DESIGN_MAX_STEP.
+
+    landmarks are (x, y) game coordinates whose 5x5 surroundings are levelled."""
     cfg = dict(DESIGN_DEFAULTS)
     cfg.update(spec)
     h, w = len(rows), len(rows[0])
     maxy = h
     turf = np.array(rows)
-    rock = np.array([[t.startswith('/turf/wall') or 'rockwall' in t for t in row] for row in rows])
+    rock = np.array([['rockwall' in t or t.startswith('/turf/wall/rock') for t in row] for row in rows])
+    # Authored buildings and ruins (plating, built walls) sit on level ground.
+    built = np.array([[(t.startswith('/turf/wall') or t.startswith('/turf/floor/plating')) and not ('rockwall' in t or t.startswith('/turf/wall/rock')) for t in row] for row in rows])
     water = np.array([['water' in t for t in row] for row in rows])
     lava = np.array([['lava' in t and 'dry_lava' not in t for t in row] for row in rows])
     bare = np.array([['underground' in t or 'rocky' in t or 'dry_lava' in t for t in row] for row in rows])
@@ -342,6 +363,17 @@ def design(np, rows, spec):
         mask = rect_mask(np, (h, w), rect, maxy) & ~water
         if mask.any():
             height[mask] = rect['height'] if 'height' in rect else np.median(height[mask])
+    # Spawn landmarks get level ground around them, and each built structure sits
+    # on one level, so authored buildings never straddle a slope.
+    for x, y in landmarks:
+        mask = rect_mask(np, (h, w), {'x1': x - 2, 'y1': y - 2, 'x2': x + 2, 'y2': y + 2}, maxy) & ~water
+        if mask.any():
+            height[mask] = np.median(height[mask])
+    if built.any():
+        built_labels, built_count = label_components(np, built)
+        for i in range(1, built_count + 1):
+            component = built_labels == i
+            height[component] = np.median(height[component])
 
     height[beach] = np.minimum(height[beach], 1)
     levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
@@ -475,11 +507,12 @@ def cmd_design(args):
     np = load_numpy()
     maxx, maxy, levels = read_dmm(args.map)
     spec = json.loads(Path(args.spec).read_text(encoding='utf-8')) if args.spec else {}
+    landmarks = read_dmm_landmarks(args.map)
     out = {}
     for z in args.z:
         if z not in levels:
             sys.exit(f'{args.map} has no z {z}')
-        out[z] = design(np, levels[z], spec).tolist()
+        out[z] = design(np, levels[z], spec, [(x, y) for x, y, lz in landmarks if lz == z]).tolist()
     write_heights(args.out, maxx, maxy, out)
     print(f'wrote {args.out}: {maxx}x{maxy}, z {", ".join(map(str, sorted(out)))}')
 

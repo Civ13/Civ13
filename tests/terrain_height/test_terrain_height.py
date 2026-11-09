@@ -142,6 +142,28 @@ class Shading(unittest.TestCase):
         gaia = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_gaia.dm').read_text(encoding='utf-8')
         self.assertIn('terrain_height_file = "maps/heights/nomads_gaia.txt"', gaia)
 
+    def test_every_height_file_matches_its_map(self):
+        """Each map metadata naming a height file has that file, a design spec, and the sizes match."""
+        named = {}
+        for path in (ROOT / 'code/game/objects/map_metadata').rglob('*.dm'):
+            for match in re.finditer(r'terrain_height_file = "(maps/heights/(\w+)\.txt)"', path.read_text(encoding='utf-8')):
+                named[match.group(2)] = match.group(1)
+        self.assertGreaterEqual(len(named), 5)
+        for name, heights in named.items():
+            with self.subTest(map=name):
+                self.assertTrue((ROOT / f'maps/heights/{name}.design.json').exists(), f'{name} needs a design spec')
+                tool.main(['check', '--heights', str(ROOT / heights), '--map', str(ROOT / f'maps/nomads/{name}.dmm')])
+                maxx, maxy, levels = tool.read_heights(ROOT / heights)
+                _, _, turfs = tool.read_dmm(ROOT / f'maps/nomads/{name}.dmm')
+                for z, rows in levels.items():
+                    turf_rows = turfs[z]
+                    for y in range(maxy):
+                        for x in range(maxx):
+                            if 'water' in turf_rows[y][x]:
+                                self.assertEqual(rows[y][x], 0, f'{name} water at {x + 1},{maxy - y} must be 0')
+                            elif rows[y][x] and (x + 1 < maxx) and 'water' not in turf_rows[y][x + 1]:
+                                self.assertLessEqual(abs(rows[y][x] - rows[y][x + 1]), tool.DESIGN_MAX_STEP)
+
     def test_gaia_heights_are_designed(self):
         """Gaia's file comes from the design command: steep grades, but never more than the game counts."""
         maxx, maxy, levels = tool.read_heights(ROOT / 'maps/heights/nomads_gaia.txt')

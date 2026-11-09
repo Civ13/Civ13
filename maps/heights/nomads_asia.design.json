@@ -1,0 +1,4 @@
+{
+ "_comment": "Nomads (Asia) height design for scripts/terrain_heights.py design. Only the tool's terrain rules (DESIGN_DEFAULTS) apply; add ridges, passes, scarps, craters or flat rectangles here in game coordinates (x east, y north, from 1).",
+ "seed": 13
+}

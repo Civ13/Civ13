@@ -4,7 +4,10 @@ Optional per-tile hill levels for a map's ground. A step uphill costs extra
 move delay, a step downhill saves a little, and slopes are shaded so players
 can see them. It is off unless a map names a height file; every tile then
 reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`, designed from its terrain by the tool's
-`design` command with `maps/heights/nomads_gaia.design.json`.
+`design` command with `maps/heights/nomads_gaia.design.json`. The Nomads
+maps of the other earth regions, Europe (z 1), Jungle (z 2), Desert (z 2) and
+Asia (z 1), have their own `maps/heights/nomads_<map>.txt` and
+`.design.json` made the same way.
 
 This is separate from [geographic elevation](elevation.md) (metres per
 rectangle, used for climate). Native z-levels still model caves, floors and
@@ -123,8 +126,10 @@ the height rows and recomputes the corner lights around the tile
   coordinates: `ridges` (a polyline, `height`, `width`, a steep and a gentle
   side), `passes` (rectangles where highland approaches are gentle), `scarps`
   (steep, with an optional `grade`), `craters` (lakes that get rims) and
-  `flat` rectangles (optionally with a `height`; Gaia flattens the ground
-  around its spawn landmarks). Any tuning value in `DESIGN_DEFAULTS` can be
+  `flat` rectangles (optionally with a `height`). The ground around every
+  spawn landmark is levelled, and each authored building or ruin (plating and
+  built wall turfs) sits on one level; natural rock walls are highland, built
+  walls are not. Any tuning value in `DESIGN_DEFAULTS` can be
   overridden in the spec. Walkable neighbours never differ by more than 4
   levels, the most the game counts for one step.
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
