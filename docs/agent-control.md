@@ -228,6 +228,16 @@ the character `took`, so the agent can repeat the step with `choose`.
 volume. Footsteps are left out unless `footsteps` is true. A deafened
 character hears nothing.
 
+<a id="movement"></a>`move` follows the rules a player's step follows in `/client/Move`
+(`code/modules/agent_control/agent_movement.dm`): the grace-period wall, a level
+being saved, nooses, crouching, being held while restrained, and being pinned
+refuse it. While prone or lying the step is a crawl, which runs only from
+`character_queue`. A wheelchair rolls. The step's cooldown is the movement mode's
+delay (run, walk, sneak) plus ground (snow, mud, flood, the floor's own delay),
+hills, drowsiness, a deployed sarissa, pulling and speed traits, and it costs
+food, water, stamina and warmth the same way. A runner out of stamina drops to
+walking. Riding a mount moves at the mount's pace.
+
 <a id="stance"></a>`stance` sets what players change with HUD buttons: `move` (`run`, `walk`,
 `sneak`, `crawl`), `defense` (`dodge`, `parry`), `tactic` (`charge`, `aim`,
 `rush`, `defend`), `secondary` (the middle-click attack: `kick`, `jump`,

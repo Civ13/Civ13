@@ -1158,6 +1158,7 @@
 #include "code\modules\agent_control\agent_control.dm"
 #include "code\modules\agent_control\agent_actions.dm"
 #include "code\modules\agent_control\agent_characters.dm"
+#include "code\modules\agent_control\agent_movement.dm"
 #include "code\modules\agent_control\agent_prompts.dm"
 #include "code\modules\agent_control\agent_stance.dm"
 #include "code\modules\agent_control\agent_boats.dm"
