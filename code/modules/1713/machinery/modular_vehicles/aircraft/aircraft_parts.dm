@@ -101,7 +101,7 @@
 // Throttle and steering work like a car's wheel; Climb and Descend change height.
 /obj/item/vehicleparts/wheel/modular/aircraft
 	name = "control column"
-	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling forward at full throttle (8 tiles of runway or 16 of open ground), and land by descending at low speed: smoothly over a runway, or roughly on dry open ground."
+	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling forward at full throttle (8 tiles of runway or 16 of open ground), and land by descending at low speed: smoothly over a runway or flat open ground, roughly over a gentle slope or loose rock."
 
 /obj/item/vehicleparts/wheel/modular/aircraft/proc/flown_aircraft(mob/user)
 	var/obj/structure/vehicleparts/axis/aircraft/A = control && control.axis
@@ -232,6 +232,63 @@ var/global/list/aircraft_light_plane_layout = list(
 
 /proc/build_light_plane(turf/origin)
 	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/light_plane, aircraft_light_plane_layout, 3, 4)
+
+// The four-seat cabin plane: the light plane's airframe with the whole
+// fuselage row fitted out as a cabin (the pilot plus three passengers). It
+// keeps the 4x4 footprint, so it fits hangar bays and carrier elevators, but
+// the extra weight needs a longer takeoff roll.
+/obj/structure/vehicleparts/axis/aircraft/cabin_plane
+	name = "cabin plane"
+	desc = "The controls of a four-seat single-engine cabin plane."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	takeoff_roll = 10
+	rough_takeoff_roll = 20
+
+/obj/structure/bed/chair/carseat/aircraft_cabin
+	name = "cabin seat"
+	anchored = TRUE
+
+var/global/list/aircraft_cabin_plane_layout = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
+	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/bed/chair/drivers/aircraft),
+	"3,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/left),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/right, /obj/structure/bed/chair/carseat/aircraft_cabin),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/center, /obj/structure/bed/chair/carseat/aircraft_cabin),
+	"3,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/left, /obj/structure/bed/chair/carseat/aircraft_cabin),
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/right, /obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/center),
+	"3,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/left, /obj/structure/vehicleparts/movement/reversed),
+	)
+
+/proc/build_cabin_plane(turf/origin)
+	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/cabin_plane, aircraft_cabin_plane_layout, 3, 4)
+
+// Hangar models: name -> axis type. Every model is 3 wide in a 4x4 square.
+/proc/aircraft_models()
+	var/static/list/models = list(
+		"Light plane" = /obj/structure/vehicleparts/axis/aircraft/light_plane,
+		"Cabin plane" = /obj/structure/vehicleparts/axis/aircraft/cabin_plane,
+		)
+	return models
+
+/proc/aircraft_model_layout(model)
+	switch (model)
+		if ("Light plane")
+			return aircraft_light_plane_layout
+		if ("Cabin plane")
+			return aircraft_cabin_plane_layout
+	return null
+
+/proc/build_aircraft_model(model, turf/origin)
+	var/axis_type = aircraft_models()[model]
+	var/list/layout = aircraft_model_layout(model)
+	if (!axis_type || !layout)
+		return null
+	return build_aircraft(origin, axis_type, layout, 3, 4)
 
 // Admin spawn: builds the light plane facing south, with this tile as the
 // bottom-left of its 4x4 footprint.

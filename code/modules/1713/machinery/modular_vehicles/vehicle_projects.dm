@@ -110,13 +110,14 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	)
 
 /obj/structure/car_workshop/hangar/project_layout(model)
-	if (model != "Light plane")
+	var/list/layout = aircraft_model_layout(model)
+	if (!layout)
 		return null
 	. = list()
 	// build_aircraft(): origin x + 1, body against the east edge of the 4x4.
-	for (var/coords in aircraft_light_plane_layout)
+	for (var/coords in layout)
 		var/list/C = splittext(coords, ",")
-		.["[1 + 4 - 3 + text2num(C[1]) - 1],[text2num(C[2])]"] = aircraft_light_plane_layout[coords]
+		.["[1 + 4 - 3 + text2num(C[1]) - 1],[text2num(C[2])]"] = layout[coords]
 
 /obj/structure/car_workshop/proc/get_project_plan()
 	return project ? project_plan(project) : null

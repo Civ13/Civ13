@@ -199,6 +199,21 @@
 		high = isnull(high) ? h : max(high, h)
 	return isnull(low) || high - low <= AIRCRAFT_ROUGH_LANDING_SLOPE
 
+// The steepest step between neighbouring tiles under the footprint at
+// target_z, in levels (built ground counts as level, terrain_step_levels).
+/obj/structure/vehicleparts/axis/aircraft/proc/footprint_grade(target_z)
+	. = 0
+	var/list/tiles = list()
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		var/turf/T = locate(F.x, F.y, target_z)
+		if (T)
+			tiles += T
+	for (var/turf/T in tiles)
+		for (var/d in list(NORTH, EAST))
+			var/turf/N = get_step(T, d)
+			if (N in tiles)
+				. = max(., abs(terrain_step_levels(T, N)))
+
 #undef AIRCRAFT_LOW_OBSTACLE
 #undef AIRCRAFT_TALL_OBSTACLE
 #undef AIRCRAFT_ROUGH_LANDING_SLOPE

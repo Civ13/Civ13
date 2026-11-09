@@ -8,8 +8,9 @@
 // up to the top of that scale it is in low flight, among the hills, trees and
 // walls below and the upper storeys around it; above it, it cruises over them.
 // Descending in low flight close to the ground at approach speed lands it: smoothly
-// over a runway, or in a rough landing over clear, dry open ground, which
-// strains the airframe and drags the plane to a stop. Over water, trenches,
+// over a runway or over flat, smooth open ground (no grade under the airframe,
+// no loose rock or gravel), or in a rough landing over dry ground with a grade
+// of one level, which strains the airframe and drags the plane to a stop. Over water, trenches,
 // lava or obstacles, or after a stall, it crash-lands.
 
 // AIRCRAFT_GROUND, AIRCRAFT_LOW and AIRCRAFT_CRUISE live in code/__defines/aircraft.dm.
@@ -122,6 +123,20 @@ var/global/list/airborne_aircraft = list()
 /turf/floor/aircraft_rough_ground()
 	return ..() && !watertile && !water_level
 
+// Ground smooth enough to roll out on like a runway when it is also flat:
+// not loose rock, gravel or a mine floor.
+/turf/proc/aircraft_smooth_surface()
+	return TRUE
+
+/turf/floor/rocky/aircraft_smooth_surface()
+	return terrain_floor_covered()
+
+/turf/floor/gravel/aircraft_smooth_surface()
+	return terrain_floor_covered()
+
+/turf/floor/mining/aircraft_smooth_surface()
+	return terrain_floor_covered()
+
 /turf/floor/trench/aircraft_rough_ground()
 	return FALSE
 
@@ -167,6 +182,16 @@ var/global/list/airborne_aircraft = list()
 		if (!T || !T.aircraft_rough_ground())
 			return FALSE
 	return footprint_level(target_z)
+
+// Open ground flat and smooth enough for a landing without damage: no grade
+// at all under the footprint and no loose rock or gravel. Only checked where
+// rough_ground_below() already holds.
+/obj/structure/vehicleparts/axis/aircraft/proc/smooth_field_below(target_z)
+	for (var/obj/structure/vehicleparts/frame/FR in frames())
+		var/turf/T = locate(FR.x, FR.y, target_z)
+		if (!T || !T.aircraft_smooth_surface())
+			return FALSE
+	return footprint_grade(target_z) == 0
 
 // The first thing at T that an aircraft on that level would fly into.
 /obj/structure/vehicleparts/axis/aircraft/proc/obstacle_at(turf/T)
@@ -332,23 +357,24 @@ var/global/list/airborne_aircraft = list()
 	var/runway = runway_share(down) >= AIRCRAFT_LANDING_RUNWAY_SHARE
 	var/hit = clear_at_level(down)
 	var/rough = !runway && !hit && rough_ground_below(down)
-	if (rough && currentspeed <= landing_gear)
+	var/field = rough && smooth_field_below(down)
+	if (rough && !field && currentspeed <= landing_gear)
 		return rough_landing(down)
-	if (rough)
+	if (rough && !field)
 		to_chat(user, SPAN_WARNING("Too fast to land: slow to gear [landing_gear] or lower first."))
 		return FALSE
-	if (runway && !hit && currentspeed <= landing_gear)
+	if ((runway || field) && !hit && currentspeed <= landing_gear)
 		if (!aircraft_shift(down))
 			return FALSE
 		set_flight_state(AIRCRAFT_GROUND)
 		currentspeed = min(currentspeed, 1)
-		visible_message(SPAN_NOTICE("\The [src] touches down on the runway."))
+		visible_message(SPAN_NOTICE(runway ? "\The [src] touches down on the runway." : "\The [src] touches down smoothly on the level ground."))
 		if (on_arresting_wires())
 			currentspeed = 0
 			moving = FALSE
 			visible_message(SPAN_NOTICE("\The [src]'s tailhook catches the arresting wire and it jerks to a halt."))
 		return TRUE
-	if (runway && !hit)
+	if ((runway || field) && !hit)
 		to_chat(user, SPAN_WARNING("Too fast to land: slow to gear [landing_gear] or lower first."))
 		return FALSE
 	if (force_landing_until && world.time <= force_landing_until)

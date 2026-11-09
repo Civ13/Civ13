@@ -361,12 +361,36 @@ var/aircraft_runtime_error = FALSE
 		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
 			qdel(R)
 	aircraft_check(A.rough_ground_below(1) && !A.runway_share(1), "with no runway below, dry open ground is fit to land on")
+	aircraft_check(A.smooth_field_below(1) && A.footprint_grade(1) == 0, "flat, smooth open ground is a field to land on without damage")
+	var/list/rock_tiles = list()
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		rock_tiles += locate(F.x, F.y, 1)
+	var/turf/rock_tile = rock_tiles[1]
+	new /turf/floor/rocky(rock_tile)
+	aircraft_check(A.rough_ground_below(1) && !A.smooth_field_below(1), "loose rock under one frame makes it a rough landing")
+	new /turf(rock_tile)
 	A.currentspeed = A.speeds
 	aircraft_check(!A.descend(M) && A.airborne() && !A.force_landing_until, "a fast descent over open ground is refused without arming a crash landing")
 	A.currentspeed = A.landing_gear
 	A.airframe_damage = 0
-	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over open ground lands without a runway")
+	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over level open ground lands without a runway")
+	aircraft_check(A.airframe_damage == 0 && A.currentspeed == 1 && !A.landing_gear_broken() && E.on, "a landing on level, smooth ground does no damage and rolls on at taxi speed")
+	// A gentle grade of one level across the footprint is still landable, roughly.
+	aircraft_repair(A)
+	aircraft_reset_north(A)
+	aircraft_roll(A, A.takeoff_roll)
+	aircraft_check(A.airborne(), "the aircraft takes off from the field landing")
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
+			qdel(R)
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = aircraft_probe_heights(list("[aircraft_front_y(A)]" = "1"))
+	aircraft_check(A.footprint_grade(1) == 1 && A.rough_ground_below(1) && !A.smooth_field_below(1), "a one-level grade under the footprint is rough ground, not a field")
+	A.currentspeed = A.landing_gear
+	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1), "a slow descent over the gentle grade lands")
 	aircraft_check(A.airframe_damage == 25 && A.currentspeed == 0 && !A.moving && !A.landing_gear_broken() && E.on, "a rough landing strains the airframe and stops the plane, but keeps the gear and engine")
+	map.terrain_height_file = null
+	map.terrain_heights_cache = null
 	A.airframe_damage = 80
 	aircraft_reset_north(A)
 	aircraft_roll(A, A.takeoff_roll)
@@ -374,8 +398,12 @@ var/aircraft_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/frame/F in A.frames())
 		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
 			qdel(R)
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = aircraft_probe_heights(list("[aircraft_front_y(A)]" = "1"))
 	A.currentspeed = A.landing_gear
 	aircraft_check(A.descend(M) && !A.airborne() && A.landing_gear_broken() && A.airframe_damage < 150, "a badly shaken airframe lands rough on a broken landing gear")
+	map.terrain_height_file = null
+	map.terrain_heights_cache = null
 	A.airframe_damage = 0
 
 	// Water is no place to set down: that still needs a forced crash landing.
@@ -561,7 +589,7 @@ var/aircraft_runtime_error = FALSE
 			var/turf/BT = locate(bx, by, 1)
 			BT.ChangeTurf(/turf/floor/dirt)
 	var/obj/structure/car_workshop/hangar/hangar = new(locate(14, 2, 1))
-	aircraft_check(hangar.model_size("Light plane") == 4 && hangar.costs("Light plane")["steel"] == 50 && !hangar.costs("SMC Falcon") && !hangar.allowed(null), "the hangar builds only the light plane, after Powered Flight")
+	aircraft_check(hangar.model_size("Light plane") == 4 && hangar.costs("Light plane")["steel"] == 50 && !hangar.costs("SMC Falcon") && !hangar.allowed(null), "the hangar builds planes, not cars, after Powered Flight")
 	aircraft_check(!hangar.complete_assembly("Light plane"), "an empty hangar builds nothing")
 	hangar.stock = list("steel" = 60, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
 	var/obj/structure/vehicleparts/axis/aircraft/built = hangar.complete_assembly("Light plane")
@@ -570,6 +598,20 @@ var/aircraft_runtime_error = FALSE
 		aircraft_check(built.frames().len == 12 && built.engine && built.engine.fueltank && aircraft_tank_fuel(built) == 0, "the built plane is whole with an empty tank ([built.frames().len] frames, fuel [built.engine && built.engine.fueltank ? aircraft_tank_fuel(built) : "none"])")
 		aircraft_check(built.keyed_vehicle_id && hangar.stock["steel"] == 10 && hangar.stock["wheels"] == 0, "the hangar issues keys and spends its inputs (key [built.keyed_vehicle_id], steel [hangar.stock["steel"]], wheels [hangar.stock["wheels"]])")
 	aircraft_check(!hangar.complete_assembly("Light plane"), "the occupied bay refuses a second build")
+	aircraft_check(hangar.model_size("Cabin plane") == 4 && hangar.costs("Cabin plane")["steel"] == 65 && ("Cabin plane" in hangar.models()), "the hangar also offers the four-seat cabin plane in the same 4x4 bay")
+	var/obj/structure/vehicleparts/axis/aircraft/cabin = build_cabin_plane(locate(14, 30, 1))
+	if (istype(cabin))
+		var/seats = 0
+		for (var/obj/structure/vehicleparts/frame/F in cabin.frames())
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				seats++
+		aircraft_check(cabin.frames().len == 12 && seats == 4 && cabin.takeoff_roll > 8 && cabin.rough_takeoff_roll > 16, "the cabin plane has twelve frames, four seats and a longer takeoff roll ([seats] seats)")
+		for (var/atom/movable/part in cabin.components.Copy())
+			if (part != cabin)
+				qdel(part)
+		qdel(cabin)
+	else
+		aircraft_check(FALSE, "the cabin plane builds")
 
 	// Enough hits break the airframe up: the plane comes down where it is.
 	if (istype(built))
