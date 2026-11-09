@@ -60,6 +60,11 @@
 		done = TRUE
 		var/list/display = list("Industrial", "Military", "Health", "Cancel")
 		var/choice = WWinput(H, "This is worth [moneyin] research points. Which category to research?", "Research Desk", "Cancel", display)
+		// The menu sleeps: a lagged repeat click must not turn one item into
+		// research twice, so the item has to still be in hand.
+		if (QDELETED(W) || W.loc != H)
+			done = FALSE
+			return
 		if (choice == "Cancel" && W)
 			done = FALSE
 			return

@@ -11,6 +11,8 @@
 #define TERRAIN_DOWNHILL_MAX_SHARE 0.25
 // A one-tile step never counts more than this many levels.
 #define TERRAIN_MAX_LEVEL_STEP 4
+// Share of the uphill delay paid when stepping onto packed ground (tamped earth).
+#define TERRAIN_PACKED_UPHILL_SHARE 0.5
 
 /obj/map_metadata
 	// Project-relative height file, for example "maps/heights/nomads_gaia.txt".
@@ -26,8 +28,10 @@
 	should_save = FALSE
 	var/maxx = 0
 	var/maxy = 0
-	// "z" -> list of row strings, north row first.
+	// "z" -> list of row strings, north row first, with player grading applied.
 	var/list/rows_by_z = list()
+	// "z" -> the same rows as loaded from the file, before any grading.
+	var/list/base_rows_by_z = list()
 	var/error = null
 
 /datum/terrain_heights/proc/at(x, y, z)
@@ -81,9 +85,41 @@
 				return H
 			rows += row
 		H.rows_by_z["[z]"] = rows
+		H.base_rows_by_z["[z]"] = rows.Copy()
 	if (!H.rows_by_z.len)
 		H.error = "no z levels"
 	return H
+
+// The file's level for a tile, ignoring grading.
+/datum/terrain_heights/proc/base_at(x, y, z)
+	var/list/rows = base_rows_by_z["[z]"]
+	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
+		return 0
+	var/code = text2ascii(rows[maxy - y + 1], x)
+	return code >= 97 ? code - 87 : code - 48
+
+// Sets a graded tile's level and updates the corner lights around it.
+/datum/terrain_heights/proc/set_level(x, y, z, level)
+	var/list/rows = rows_by_z["[z]"]
+	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
+		return FALSE
+	level = clamp(round(level), 0, 15)
+	var/r = maxy - y + 1
+	var/row = rows[r]
+	rows[r] = copytext(row, 1, x) + ascii2text(level < 10 ? 48 + level : 87 + level) + copytext(row, x + 1)
+	var/list/lights = light_rows_by_z["[z]"]
+	if (lights)
+		// A tile moves the 4 corners around it; each light reads corners one step away.
+		for (var/cy in max(0, r - 3) to min(maxy, r + 2))
+			var/list/chars = list()
+			for (var/cx in max(0, x - 3) to min(maxx, x + 2))
+				chars += light_char(rows, cy, cx)
+			var/first = max(0, x - 3) + 1
+			var/old = lights[cy + 1]
+			lights[cy + 1] = copytext(old, 1, first) + jointext(chars, "") + copytext(old, first + chars.len)
+	// Line of sight caches terrain answers per eye position (los_terrain.dm).
+	los_terrain_heights_changed(locate(x, y, z))
+	return TRUE
 
 /proc/terrain_height_row_valid(row)
 	var/static/regex/bad = regex(@"[^0-9a-f]")
@@ -107,46 +143,58 @@
 	var/datum/terrain_heights/H = map.terrain_heights()
 	return H ? H.at(T.x, T.y, T.z) : 0
 
-// Built ground (wood, stone, tiles, roads, decks, built walls) is laid level:
-// it has no slope cost and no shading. Natural ground keeps the hill.
+// Built ground (wood, stone, tiles, roads, decks, built walls, tamped earth)
+// is laid level: it has no slope cost and no shading. Natural ground keeps the
+// hill unless a player-built floor or road cover lies on it.
 /turf/proc/terrain_smoothed()
+	return terrain_floor_covered()
+
+// Packed paths (tamped earth) keep the hill but are easier to climb.
+/turf/proc/terrain_packed()
+	return FALSE
+
+// Floor and road covers (not cover walls) are built level over the slope.
+/turf/proc/terrain_floor_covered()
+	for (var/obj/covers/CV in src)
+		if (!CV.wall && !QDELETED(CV))
+			return TRUE
 	return FALSE
 
 /turf/floor/terrain_smoothed()
 	return TRUE
 
 /turf/floor/grass/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/dirt/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/winter/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/beach/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/rocky/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/gravel/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/mining/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/trench/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/lava/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/wall/terrain_smoothed()
 	return TRUE
 
 /turf/wall/rockwall/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 // Extra move delay (negative when it saves time) for one step between two
 // neighbouring turfs, given the step's delay before this term.
@@ -157,7 +205,7 @@
 		return 0
 	var/levels = clamp(terrain_height_at(destination) - terrain_height_at(origin), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
 	if (levels > 0)
-		return levels * TERRAIN_UPHILL_DELAY
+		return levels * TERRAIN_UPHILL_DELAY * (destination.terrain_packed() ? TERRAIN_PACKED_UPHILL_SHARE : 1)
 	if (levels < 0)
 		return -min(-levels * TERRAIN_DOWNHILL_BONUS, max(0, step_delay) * TERRAIN_DOWNHILL_MAX_SHARE)
 	return 0
@@ -231,6 +279,23 @@ var/global/terrain_shading_applied = FALSE
 	light_rows_by_z[key] = out
 	return out
 
+// One corner light, computed alone; matches light_rows() exactly.
+/datum/terrain_heights/proc/corner_level(list/rows, cy, cx)
+	cy = clamp(cy, 0, maxy)
+	cx = clamp(cx, 0, maxx)
+	return (level_rc(rows, cy, cx) + level_rc(rows, cy + 1, cx) + level_rc(rows, cy, cx + 1) + level_rc(rows, cy + 1, cx + 1)) / 4
+
+/datum/terrain_heights/proc/light_char(list/rows, cy, cx)
+	var/static/light_x = -1 / sqrt(3.44)
+	var/static/light_y = -1 / sqrt(3.44)
+	var/static/light_z = 1.2 / sqrt(3.44)
+	var/gx = (corner_level(rows, cy, min(cx + 1, maxx)) - corner_level(rows, cy, max(cx - 1, 0))) / 2
+	var/gy = (corner_level(rows, min(cy + 1, maxy), cx) - corner_level(rows, max(cy - 1, 0), cx)) / 2
+	var/nx = -gx * TERRAIN_RELIEF
+	var/ny = -gy * TERRAIN_RELIEF
+	var/intensity = (nx * light_x + ny * light_y + light_z) / sqrt(nx * nx + ny * ny + 1) - light_z
+	return ascii2text(99 + clamp(floor(intensity / TERRAIN_LIGHT_STEP + 0.5), -2, 2))
+
 // Sprite key for a tile: corner lights nw, ne, sw, se; "cccc" means flat.
 /datum/terrain_heights/proc/shade_key(x, y, z)
 	var/list/lights = light_rows(z)
@@ -248,6 +313,21 @@ var/global/terrain_shading_applied = FALSE
 	var/key = H ? H.shade_key(x, y, z) : null
 	if (key && key != "cccc")
 		vis_contents += terrain_shade_object(key)
+
+// A floor cover laid or removed after the shading was placed changes whether
+// its tile is shaded. Covers call updateturf() shortly after they are placed.
+/obj/covers/updateturf()
+	. = ..()
+	var/turf/T = get_turf(src)
+	if (T && !wall && terrain_shading_applied)
+		T.terrain_shade_refresh()
+
+/obj/covers/Destroy()
+	var/turf/T = get_turf(src)
+	var/floor_cover = !wall
+	. = ..()
+	if (T && floor_cover && terrain_shading_applied)
+		T.terrain_shade_refresh()
 
 /proc/terrain_shading_apply()
 	var/datum/terrain_heights/H = map ? map.terrain_heights() : null
@@ -319,6 +399,7 @@ var/global/terrain_shading_applied = FALSE
 #undef TERRAIN_DOWNHILL_BONUS
 #undef TERRAIN_DOWNHILL_MAX_SHARE
 #undef TERRAIN_MAX_LEVEL_STEP
+#undef TERRAIN_PACKED_UPHILL_SHARE
 #undef TERRAIN_LIGHT_STEP
 #undef TERRAIN_RELIEF
 #undef TERRAIN_SHADE_LAYER

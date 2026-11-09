@@ -21,6 +21,9 @@ No metal contents, material, capacity or icon state is assigned by the fixture.
 - Actual mold `attackby` pours one copper into a sandstone pickaxe mold. It
   rejects gold with free mold space, rejects a zero amount, clamps a request of
   999 to two remaining units and refuses an already full mold.
+- A second pour issued while the first transfer prompt is still open (a lagged
+  double-click) is refused, so only one prompt pays. A source moved out of reach
+  while the prompt is open transfers nothing. Both cases conserve the copper.
 - Actual stone-anvil `attackby` and production `do_after` consume three copper
   and construct one real copper pickaxe head. The same mold refills and casts
   again. Gold is rejected by the stone anvil with charge and output preserved.

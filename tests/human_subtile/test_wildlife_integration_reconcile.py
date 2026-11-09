@@ -67,8 +67,8 @@ class IntegratedOwnership(unittest.TestCase):
  def test_existing_swap_veto_and_los_context_are_retained(self):
   living=read('code/game/mob/living/living.dm')
   self.assertIn('/mob/living/proc/ordinary_human_animal_swap',living)
-  swap=living.split('if (can_swap_with(tmob))',1)[1]
-  self.assertLess(swap.index('ordinary_human_animal_swap(tmob)'),swap.index('tmob.forceMove(oldloc)'))
+  swap=living.split('if (!swap_vetoed && can_swap_with(tmob))',1)[1]
+  self.assertLess(swap.index('ordinary_human_animal_swap(tmob)'),swap.index('swap_exact_positions(tmob)'))
   move=read('code/game/mob/mob_movement.dm')
   self.assertIn('los_move_contexts = los_invalidate_movement(src)',move)
   self.assertEqual(move.count('los_refresh_moved_viewer(src, FALSE, los_move_contexts)'),3)

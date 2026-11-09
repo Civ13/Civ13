@@ -2,6 +2,8 @@
 /obj/map_metadata/nomads/desert
 	ID = MAP_NOMADS_DESERT
 	title = "Nomads (Desert)"
+	// Hills: per-tile heights for the surface, z 2 (docs/terrain-height.md).
+	terrain_height_file = "maps/heights/nomads_desert.txt"
 	description = "Battle on the Nomads (Desert) map."
 	ambience = list("sound/ambience/desert.ogg")
 	research_active = TRUE

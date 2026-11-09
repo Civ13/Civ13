@@ -388,21 +388,63 @@ var/human_subtile_fixture_phase = "initializing"
 	D2.movement_eastwest = null
 	for (var/turf/WS in slide_wall)
 		WS.density = FALSE
-	// Free movement pulling: the pulled object steps onto the uncovered tile
-	// nearest the body, so it trails round a turn instead of being dropped.
+	// Free movement pulling: the pulled object follows the tiles the body's
+	// centre walked through, so it trails round a turn and never cuts sideways.
 	human_subtile_fixture_phase = "headless pull follow"
 	var/mob/living/human/subtile_fixture/PF = human_subtile_fixture_actor(16, 6)
 	PF.set_human_subtile(TRUE)
-	var/obj/structure/pull_crate = new(locate(15, 5, 1))
+	var/obj/structure/pull_crate = new(locate(15, 6, 1))
 	pull_crate.anchored = FALSE
-	human_subtile_fixture_place(PF, 10, 0)
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_follows_round_a_turn")
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_waits_while_touching")
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1), "pull_waits_while_touching")
+	PF.loc = locate(16, 7, 1)
+	human_subtile_fixture_place(PF, 0, 2)
+	PF.pulling = pull_crate
+	pull_crate.pulledby = PF
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_follows_round_a_turn")
+	human_subtile_fixture_place(PF, 0, 16)
+	PF.pulling = pull_crate
+	pull_crate.pulledby = PF
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_never_steps_sideways")
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
+	// Swapping places keeps each body's exact position: the swapped body takes
+	// the other's pixel offset instead of carrying its own into a wall.
+	human_subtile_fixture_phase = "headless exact swap"
+	var/mob/living/human/subtile_fixture/SA = human_subtile_fixture_actor(13, 12)
+	var/mob/living/human/subtile_fixture/SB = human_subtile_fixture_actor(14, 12)
+	SA.set_human_subtile(TRUE)
+	SB.set_human_subtile(TRUE)
+	human_subtile_fixture_place(SB, 0, 16)
+	var/turf/swap_wall = locate(13, 13, 1)
+	swap_wall.density = TRUE
+	SA.swap_exact_positions(SB)
+	human_subtile_fixture_assert(SA.loc == locate(14, 12, 1) && SA.step_x == 0 && SA.step_y == 16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
+	swap_wall.density = FALSE
+	// Free movement swaps only head-on: grazing, diagonal and sliding bumps block.
+	var/datum/human_subtile_transaction/swap_tx = new
+	swap_tx.fine_step = FINE_STEP_HELD
+	var/datum/human_subtile_pulse/swap_pulse = new
+	swap_pulse.direction = WEST
+	SA.human_subtile_transaction = swap_tx
+	SA.human_subtile_pulse = swap_pulse
+	var/swap_graze = SA.human_subtile_swap_allowed(SB)
+	SA.human_subtile_pulse = null
+	SA.human_subtile_transaction = null
+	human_subtile_fixture_place(SA, 0, 0)
+	SA.human_subtile_transaction = swap_tx
+	SA.human_subtile_pulse = swap_pulse
+	var/swap_head_on = SA.human_subtile_swap_allowed(SB)
+	swap_pulse.direction = NORTHWEST
+	var/swap_diagonal = SA.human_subtile_swap_allowed(SB)
+	swap_pulse.direction = WEST
+	swap_pulse.slide = TRUE
+	var/swap_slide = SA.human_subtile_swap_allowed(SB)
+	SA.human_subtile_pulse = null
+	SA.human_subtile_transaction = null
+	human_subtile_fixture_assert(!swap_graze && swap_head_on && !swap_diagonal && !swap_slide, "free_swap_only_head_on")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

@@ -596,32 +596,35 @@ var/list/seed_list_jungle
 			to_chat(user, SPAN_WARNING("You need to have a pot in one of your hands in order to extract palm sap."))
 			return
 		else
-			var/done = FALSE
-			if (cooldown_sap == TRUE)
+			if (cooldown_sap)
 				to_chat(user, SPAN_WARNING("Sap was extracted from this palm recently, you need to wait before collecting it again."))
 				return
-			if (istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
-				to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
-				if (do_after(user, 50, user.loc) && done == FALSE)
-					to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
-					qdel(user.l_hand)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
-					cooldown_sap = TRUE
-					spawn(3000)
-						cooldown_sap = FALSE
-				done = TRUE
-			else if (istype(user.r_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot) && cooldown_sap == FALSE)
-				to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
-				if (do_after(user, 50, user.loc) && done == FALSE)
-					to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
-					qdel(user.r_hand)
-					new/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
-					cooldown_sap = TRUE
-					spawn(3000)
-						cooldown_sap = FALSE
-				done = TRUE
+			if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+				return
+			var/datum/save_identity = persistence_admission_identity
+			var/pot_in_left_hand = istype(user.l_hand, /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot)
+			var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/pot = pot_in_left_hand ? user.l_hand : user.r_hand
+			to_chat(user, SPAN_NOTICE("You start extracting the palm sap..."))
+			if (do_after(user, 50, src))
+				finish_sap_extraction(user, W, pot, pot_in_left_hand, save_identity)
 	else
 		..()
+
+/obj/structure/wild/palm/proc/finish_sap_extraction(mob/user, obj/item/knife, obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/pot, pot_in_left_hand, datum/save_identity)
+	if (QDELETED(src) || QDELETED(user) || QDELETED(knife) || QDELETED(pot) || cooldown_sap || !isturf(loc) || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated())
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_identity != persistence_admission_identity)
+		return FALSE
+	if (knife.loc != user || (user.l_hand != knife && user.r_hand != knife) || pot.loc != user || (pot_in_left_hand ? user.l_hand != pot : user.r_hand != pot))
+		return FALSE
+	// Claim the tree before consuming the pot so simultaneous waits cannot both succeed.
+	cooldown_sap = TRUE
+	qdel(pot)
+	new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/tribalpot/palmsap(user.loc)
+	to_chat(user, SPAN_NOTICE("You finish extracting the palm sap."))
+	spawn(3000)
+		cooldown_sap = FALSE
+	return TRUE
 
 /obj/structure/wild/palm/fire_act(temperature)
 	if (prob(45 * (temperature/500)))
