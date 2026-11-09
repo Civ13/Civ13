@@ -80,6 +80,7 @@ def project_valid(source, **changes):
             setattr(env[target], field, value)
         else:
             env[key] = value
+    env['crafting_node_allowed'] = lambda actor, node: bool(actor and node and env['map'] and env['map'].is_node_done(actor.civilization, node))
     # Explicit DM typepath and interpolation boundaries; every proc line executes.
     source = source.replace('actual.type != /material/sandstone', 'actual.type != "sandstone_type"')
     stock_material = stock.get_material
@@ -151,7 +152,7 @@ class StoneMoldTests(unittest.TestCase):
         source=read(MOLDS)
         for guard,case in [('save_epoch != persistence_admission_identity', {'persistence_admission_identity':object()}),
                            ('actual.type != /material/sandstone', {'stock.get_material':lambda: NS(type='/material/stone')}),
-                           ('!map.is_node_done(actor.civilization, node)', {'map':NS(ordinal_age=0,is_node_done=lambda f,n:False)})]:
+                           ('!crafting_node_allowed(actor, node)', {'map':NS(ordinal_age=0,is_node_done=lambda f,n:False)})]:
             with self.subTest(guard=guard):
                 self.assertEqual(source.count(guard),1)
                 mutated=source.replace(guard,'FALSE')

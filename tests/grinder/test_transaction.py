@@ -776,6 +776,9 @@ class AcquisitionProjection(Projection):
         self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(
             r'"(/obj/[^"\n]+)" = "([a-z_]+)"', research)), text2num=int,
             material_prefix='/material/electronics/',
+            map=Record(ordinal_age=5,is_node_done=lambda faction,node: node=='electricity'),
+            is_basic_crafting_recipe=lambda value: value in ('/obj/item/stack/material/rope','/obj/item/stack/material/stonebrick','/obj/structure/researchdesk'),
+            crafting_recipe_allowed=lambda actor,path: bool(actor and self.globals['map'].is_node_done(actor.civilization,self.globals['recipe_node_requirements'][path])),
             get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
             locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
             exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
@@ -787,6 +790,7 @@ class AcquisitionProjection(Projection):
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.
         text = text.replace('/material/woolcloth', repr('/material/woolcloth'))
+        text = text.replace('"[recipe.result_type]"', 'recipe.result_type')
         text = text.replace('"[type]/"', 'material_prefix').replace('(joinery || carving) ? null : H', 'H')
         text = text.replace('new recipe.result_type(user.loc)', 'construct(recipe.result_type, user.loc)')
         return super().expression(text, receiver, local)
@@ -805,7 +809,7 @@ class AcquisitionProjection(Projection):
 
     def build(self, amount=20, production=False, complete=True, floor=True, occupied=False, crafting=1, strength=1, after_wait=None):
         row = grinder_recipe()
-        actor = Record(type='/mob/living/human', loc=BuildTurf(floor, occupied), key='fixture')
+        actor = Record(type='/mob/living/human', loc=BuildTurf(floor, occupied), key='fixture', civilization='fixture')
         actor.getStatCoeff = lambda name: crafting if name == 'crafting' else strength
         actor.adaptStat = lambda *_args: None
         actor.religion_check = lambda: 'Production' if production else 'none'

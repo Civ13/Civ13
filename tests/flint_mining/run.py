@@ -66,7 +66,7 @@ def source_checks():
         failures.append('flint attackby must fall back to the whetstone repair behavior')
     ammo = read('code/modules/projectiles/_ammo_casing.dm')
     for kind in ('arrow', 'bolt'):
-        if f'istype(W, /obj/item/stack/arrowhead/flint))\n\t\t\tnew/obj/item/ammo_casing/{kind}/flint(user.loc)' not in ammo:
+        if f'istype(W, /obj/item/stack/arrowhead/flint))\n\t\t\tif (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/{kind}/flint")) return\n\t\t\tnew/obj/item/ammo_casing/{kind}/flint(user.loc)' not in ammo:
             failures.append(f'flint arrowheads must make flint {kind}s, not god\'s finger {kind}s')
     if '/obj/item/stack/arrowhead/flint = "flint"' not in read('code/game/objects/structures/blacksmithing/dedicated_workbenches.dm'):
         failures.append('the fletching bench must accept knapped flint arrowheads')
