@@ -72,4 +72,19 @@ The carrier lies bow south so the light plane, built facing south, faces the bow
 - **Recipes:** shoring kits are gated on Submarines and the shipyard office on Naval Aviation.
 - **Sinking:** scuttling the other carrier takes her fittings and leaves this ship's; when this ship sinks her lights, radar, searchlights and levers go down with her.
 
-Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), the searchlights' beams and how the decks look on screen.
+## Phase 6: arming the aircraft (`arming_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/arming_probe.dm
+```
+
+The probe runs explosions at once through a stub of the call-proc scheduler, and steps projectiles by hand, since neither process runs in the fixture.
+
+- **Magazine:** two empty bomb racks stand in the carrier's magazine compartment; the rack takes bombs and nothing else. Bomb casings are a Powered Flight recipe.
+- **Filling:** a casing takes ten units of nitroglycerin from a container and refuses less.
+- **Mounting:** a Madsen bolts into the light plane's nose and a second gun is refused; a magazine loads through the nose section; one bomb hangs under each wing and a second on the same wing is refused; bombs are not dropped on the ground.
+- **Strafing:** the pilot fires the nose gun from the column on the deck; the round leaves the nose, not the pilot's tile, and hits a crate five tiles ahead.
+- **Bombing:** after a deck roll into the air the first bomb falls away and bursts, cratering the deck under the plane and its neighbours; the gun cannot be aimed from cruise height; the second bomb follows and the wings are empty.
+- **Cook-off:** two bombs racked in the magazine; a heavy blast on the rack sets off the filled one, empties the rack, and the hull wall beside the magazine takes the blast (1000 to 700); an empty rack shrugs off the blast.
+
+Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), a strafing run from the air, the searchlights' beams and how the decks look on screen.

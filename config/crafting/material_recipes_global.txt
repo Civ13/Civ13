@@ -2064,6 +2064,7 @@ RECIPE: /material/steel/,lunchkit,/obj/item/weapon/storage/ww2/slunch,8,180,0,1,
 RECIPE: /material/steel/,street lamp,/obj/structure/lamp/lamppost_small,3,35,0,1,electrical,99,0,0,8,null
 RECIPE: /material/steel/,searchlight,/obj/structure/searchlight,6,120,1,1,electrical,99,0,0,8,null
 RECIPE: /material/steel/,breaching charge,/obj/item/weapon/breaching_charge,2,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,aircraft bomb casing,/obj/item/weapon/aircraft_bomb,8,150,0,1,weapons,126,0,0,8,null
 
 RECIPE: /material/steel/,cell tower,/obj/structure/cell_tower,15,180,1,1,none,212,0,0,8,null
 
