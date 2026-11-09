@@ -389,6 +389,11 @@
 		fine_step = FALSE
 		if (ishuman(mob))
 			var/mob/living/human/free_actor = mob
+			// Confusion staggers the slide instead of forcing a tile step.
+			if (free_actor.confused && prob(40))
+				direct = pick(cardinal)
+				n = get_step(free_actor, direct)
+				ordinal = FALSE
 			free_actor.human_subtile_initialize_default(direct)
 			if (free_actor.human_subtile_fine_ready(direct) && !free_actor.human_subtile_trench_near(direct))
 				fine_step = FINE_STEP_HELD

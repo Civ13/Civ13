@@ -237,9 +237,10 @@
 				return TRUE
 	return FALSE
 
-// Fine input never falls back to tile movement or takes ownership of a link.
+// Free and fine input never take ownership of a link. Pulling slides too:
+// living/Move drags the pulled object onto each tile the body clears.
 /mob/living/human/proc/human_subtile_fine_ready(direction)
-	return human_subtile_eligible(direction) && !pulling && !driver && !confused && ((!step_x && !step_y) || human_subtile_offset_owned)
+	return human_subtile_eligible(direction) && !driver && (!pulling || isturf(pulling.loc)) && ((!step_x && !step_y) || human_subtile_offset_owned)
 
 /mob/living/human/proc/human_subtile_initialize_default(direction)
 	// Wait for an eligible input, after construction/placement/load. Do not adopt
@@ -339,16 +340,6 @@
 			client.human_subtile_release_visuals()
 	return TRUE
 
-/mob/living/human/verb/toggle_smooth_movement()
-	set name = "Toggle Smooth Movement"
-	set category = "IC"
-	var/enabled = !(human_subtile_enabled || human_subtile_default_pending)
-	if (!set_human_subtile(enabled))
-		to_chat(src, SPAN_NOTICE("Finish moving to a tile alignment before changing smooth movement. A reverse input can finish an interrupted step."))
-		return FALSE
-	to_chat(src, SPAN_NOTICE("Smooth movement is now [enabled ? "enabled" : "disabled"] for this body."))
-	return TRUE
-
 // This narrow hook is adapted explicitly by the headless fixture. Production
 // always requires the same real client/body and ordinary movement permission.
 /mob/living/human/proc/human_subtile_authority(client/owner)
@@ -427,6 +418,32 @@
 	if (shift)
 		. += list(vertical ? list(shift, 0) : list(0, shift))
 	return .
+
+// Free movement while pulling: step the pulled object onto the neighbouring
+// tile nearest the body's centre that the body no longer covers, when that
+// brings it closer. It trails one tile behind, wherever the body turns.
+/mob/living/human/proc/human_subtile_pull_follow()
+	var/atom/movable/M = pulling
+	if (!M || !isturf(M.loc) || M.anchored || M.z != z)
+		return FALSE
+	var/cx = x * 32 + step_x + 16
+	var/cy = y * 32 + step_y + 16
+	var/mx = M.x * 32 + M.step_x + 16
+	var/my = M.y * 32 + M.step_y + 16
+	var/best_dir = 0
+	var/best = (cx - mx) ** 2 + (cy - my) ** 2
+	for (var/dir_option in alldirs)
+		var/turf/T = get_step(M, dir_option)
+		if (!T || T.density || (T in locs))
+			continue
+		var/distance = (cx - (T.x * 32 + 16)) ** 2 + (cy - (T.y * 32 + 16)) ** 2
+		if (distance < best)
+			best = distance
+			best_dir = dir_option
+	// Follow only once a gap opens, so it never pushes into the body.
+	if (!best_dir || bounds_dist(src, M) <= 0)
+		return FALSE
+	return step(M, best_dir)
 
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
