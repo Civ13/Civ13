@@ -8,8 +8,8 @@ import unittest
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('existing_los',ROOT/'tests/los_context/test_offline.py')
 P=importlib.util.module_from_spec(spec);spec.loader.exec_module(P)
-SNAP=(ROOT/'code/modules/visibility/root_light_snapshot.dm').read_text()
-TREE=(ROOT/'code/modules/visibility/root_tree_presenter.dm').read_text()
+SNAP=(ROOT/'code/modules/visibility/root_light_snapshot.dm').read_text(encoding='utf-8')
+TREE=(ROOT/'code/modules/visibility/root_tree_presenter.dm').read_text(encoding='utf-8')
 
 class Values(list):
     # DM lists are 1-based for numeric indexes and associative for any other
@@ -323,9 +323,9 @@ class OwnershipAndComposition(unittest.TestCase):
         lit=P.fragment(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(')
         self.assertIn('make_relay(source, number, order, mouse_passthrough)',lit)
         # Native events retain the real atom; no nearest-mob/tree fabrication.
-        client=(ROOT/'code/modules/client/client_procs.dm').read_text()
-        hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text()
-        click=(ROOT/'code/_onclick/click.dm').read_text()
+        client=(ROOT/'code/modules/client/client_procs.dm').read_text(encoding='utf-8')
+        hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text(encoding='utf-8')
+        click=(ROOT/'code/_onclick/click.dm').read_text(encoding='utf-8')
         self.assertIn('update_hover_name(object)',client)
         self.assertIn('label = H.get_visible_name()',hover)
         self.assertIn('los_read_allowed(parentmob, target, "hover")',hover)
@@ -333,10 +333,10 @@ class OwnershipAndComposition(unittest.TestCase):
         self.assertIn('I.mouse_opacity = 0',P.fragment(TREE,'/datum/root_tree_presenter/proc/withdraw_tree('))
 
     def test_default_activation_has_owned_lifecycle(self):
-        core=(ROOT/'code/modules/visibility/los_context.dm').read_text()
+        core=(ROOT/'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
         self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 1',core)
         self.assertIn('#define CIV13_GEOMETRIC_LOS_CORE 1',core)
-        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
+        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text(encoding='utf-8')
         self.assertIn('new /datum/root_tree_presenter(src, V)',lifecycle)
         self.assertIn('los_context.retire()',lifecycle)
         self.assertNotIn('spawn(',TREE);self.assertNotIn('sleep(',TREE)
@@ -376,7 +376,7 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.eye = new_eye'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
             ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','color = L.Copy()')]:
-            source=(ROOT/path).read_text();check(source,signature,write)
+            source=(ROOT/path).read_text(encoding='utf-8');check(source,signature,write)
             mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)').replace('los_invalidate_movement(src)','removed_invalidation(src)').replace('root_tree_light_changed(loc)','removed_notification(loc)')
             with self.assertRaises(ValueError):check(mutant,signature,write)
 

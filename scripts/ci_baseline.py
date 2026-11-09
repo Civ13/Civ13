@@ -1173,7 +1173,12 @@ def run_unit(name, output):
         spec.loader.exec_module(module)
         suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(module))
     result = unittest.TextTestRunner(verbosity=2).run(suite)
-    passed = result.wasSuccessful() and result.testsRun > 0 and not result.skipped
+    # CI (Linux) still fails on any skip. A Windows developer host may skip
+    # tests that need FIFOs, symlink privilege, Bash or Linux BYOND, as long
+    # as some tests in the suite still ran.
+    allowed_skips = len(result.skipped) if os.name == 'nt' else 0
+    passed = (result.wasSuccessful() and result.testsRun > len(result.skipped)
+              and len(result.skipped) <= allowed_skips)
     write_json(output, dict(tests=result.testsRun, failures=len(result.failures),
                             errors=len(result.errors), skipped=len(result.skipped),
                             status='passed' if passed else 'failed'))

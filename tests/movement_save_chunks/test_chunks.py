@@ -1,6 +1,7 @@
 """Offline algorithm and source-boundary checks; NOT native DM execution."""
 from copy import deepcopy
 from pathlib import Path
+import sys
 import unittest
 import re
 import tempfile
@@ -203,6 +204,9 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('holder.shared = subject.payload', probe)
         self.assertIn('map_storage_saved_vars = "name;shared;pet"', probe)
 
+    # Guards a Linux GitHub workflow step; Git Bash on Windows rewrites the
+    # path-list variables, so this behaviour check runs on Linux/macOS only.
+    @unittest.skipIf(sys.platform == 'win32', 'Linux workflow shell check')
     def test_vendor_setup_optional_library_path_under_nounset(self):
         import os
         import subprocess
@@ -211,9 +215,11 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertLess(workflow.index(assignment), workflow.index('source "$PWD/BYOND/byond/bin/byondsetup"'))
         man_assignment = 'export MANPATH="${MANPATH:-}"'
         self.assertLess(workflow.index(man_assignment), workflow.index('source "$PWD/BYOND/byond/bin/byondsetup"'))
+        # Unset inside the shell too: Git Bash on Windows can supply its own
+        # MANPATH at startup, so popping it from the child environment is not enough.
         environment = dict(os.environ)
         for name in ('LD_LIBRARY_PATH', 'MANPATH'): environment.pop(name, None)
-        result = subprocess.run(['bash', '-c', 'set -eu; ' + assignment + '; ' + man_assignment + '; MANPATH="/test/man:$MANPATH"; test "$MANPATH" = /test/man:; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
+        result = subprocess.run(['bash', '-c', 'unset LD_LIBRARY_PATH MANPATH; set -eu; ' + assignment + '; ' + man_assignment + '; MANPATH="/test/man:$MANPATH"; test "$MANPATH" = /test/man:; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):

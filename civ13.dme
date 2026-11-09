@@ -750,6 +750,7 @@
 #include "code\game\objects\structures\vending\aotd_vendors.dm"
 #include "code\game\objects\structures\vending\fuel_pump.dm"
 #include "code\game\objects\structures\vending\npc_vendors.dm"
+#include "code\game\objects\structures\vending\specialist_traders.dm"
 #include "code\game\objects\structures\vending\supplier.dm"
 #include "code\game\objects\structures\vending\vending.dm"
 #include "code\game\objects\structures\vending\vending_product.dm"

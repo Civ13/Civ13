@@ -2189,6 +2189,11 @@ RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_st
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
+RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,apothecary's post,/obj/structure/specialist_trader/apothecary,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,scrap dealer's post,/obj/structure/specialist_trader/scrap_dealer,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,provisioner's post,/obj/structure/specialist_trader/provisioner,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,jeweller's post,/obj/structure/specialist_trader/jeweller,25,150,1,1,economy & production,24,0,0,8,null
 
 //*********************| WOOD CONSTRUCTIONS |**************************
 
