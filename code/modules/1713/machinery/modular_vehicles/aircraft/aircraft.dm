@@ -4,8 +4,10 @@
 // On the ground it taxis like a car. After a takeoff roll at full throttle on
 // runway tiles, the whole vehicle moves up to the level above the surface
 // (multiz_level_above), which on Gaia is the standing open-air building level.
-// There it flies in low flight (it can hit upper storeys) or cruise (it passes
-// over them). Descending in low flight at approach speed lands it: smoothly
+// Its altitude is counted on the ground's hill height scale (aircraft_altitude.dm):
+// up to the top of that scale it is in low flight, among the hills, trees and
+// walls below and the upper storeys around it; above it, it cruises over them.
+// Descending in low flight close to the ground at approach speed lands it: smoothly
 // over a runway, or in a rough landing over clear, dry open ground, which
 // strains the airframe and drags the plane to a stop. Over water, trenches,
 // lava or obstacles, or after a stall, it crash-lands.
@@ -164,7 +166,7 @@ var/global/list/airborne_aircraft = list()
 		var/turf/T = locate(FR.x, FR.y, target_z)
 		if (!T || !T.aircraft_rough_ground())
 			return FALSE
-	return TRUE
+	return footprint_level(target_z)
 
 // The first thing at T that an aircraft on that level would fly into.
 /obj/structure/vehicleparts/axis/aircraft/proc/obstacle_at(turf/T)
@@ -249,14 +251,23 @@ var/global/list/airborne_aircraft = list()
 	return TRUE
 
 /obj/structure/vehicleparts/axis/aircraft/proc/set_flight_state(state)
+	var/was_airborne = airborne()
 	flight_state = state
 	if (airborne())
+		if (!was_airborne)
+			start_altitude()
+		if (flight_state == AIRCRAFT_CRUISE)
+			altitude = max(altitude, AIRCRAFT_SURFACE_CEILING + 1)
+		else
+			altitude = min(altitude, AIRCRAFT_SURFACE_CEILING)
 		airborne_aircraft |= src
 		flight_watch()
 	else
 		airborne_aircraft -= src
 		stall_seconds = 0
 		edge_blocked = FALSE
+		altitude = 0
+		target_altitude = 0
 	update_flight_visuals()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/try_takeoff()
@@ -292,24 +303,27 @@ var/global/list/airborne_aircraft = list()
 		if (AIRCRAFT_GROUND)
 			to_chat(user, SPAN_WARNING(takeoff_hint()))
 			return FALSE
-		if (AIRCRAFT_CRUISE)
-			to_chat(user, SPAN_WARNING("You are already at cruising height."))
-			return FALSE
-	set_flight_state(AIRCRAFT_CRUISE)
-	to_chat(user, SPAN_NOTICE("You climb to cruising height, above the rooftops."))
+	if (target_altitude >= AIRCRAFT_MAX_ALTITUDE)
+		to_chat(user, SPAN_WARNING("You are already climbing as high as the aircraft goes."))
+		return FALSE
+	target_altitude = min(AIRCRAFT_MAX_ALTITUDE, max(target_altitude, altitude) + AIRCRAFT_CLIMB_STEP)
+	to_chat(user, SPAN_NOTICE("You pull back and climb toward height [target_altitude][target_altitude > AIRCRAFT_SURFACE_CEILING ? ", above the hilltops and rooftops" : ""]."))
 	return TRUE
 
 /obj/structure/vehicleparts/axis/aircraft/proc/descend(mob/user)
 	if (flight_state == AIRCRAFT_GROUND)
 		to_chat(user, SPAN_WARNING("You are already on the ground."))
 		return FALSE
-	if (flight_state == AIRCRAFT_CRUISE)
-		var/hit = clear_at_level(flight_z())
-		if (hit)
-			to_chat(user, SPAN_WARNING("You can't descend here, [hit] is right below you."))
-			return FALSE
-		set_flight_state(AIRCRAFT_LOW)
-		to_chat(user, SPAN_NOTICE("You descend to low flight."))
+	var/ground = ground_level()
+	if (flight_state == AIRCRAFT_CRUISE || altitude - ground > AIRCRAFT_LANDING_CLEARANCE)
+		var/new_target = max(ground + 1, min(target_altitude, altitude) - AIRCRAFT_CLIMB_STEP)
+		if (flight_state == AIRCRAFT_CRUISE && (new_target <= AIRCRAFT_SURFACE_CEILING || ground >= AIRCRAFT_SURFACE_CEILING))
+			var/hit = low_flight_blocked()
+			if (hit)
+				to_chat(user, SPAN_WARNING("You can't descend here, [hit] is right below you."))
+				return FALSE
+		target_altitude = new_target
+		to_chat(user, SPAN_NOTICE("You ease the nose down toward height [target_altitude][target_altitude <= ground + 1 ? ", just above the ground" : ""]."))
 		return TRUE
 	var/down = multiz_level_below(flight_z())
 	if (!down)
@@ -342,7 +356,7 @@ var/global/list/airborne_aircraft = list()
 		crash_land(runway ? "a hard landing" : "a crash landing")
 		return TRUE
 	force_landing_until = world.time + AIRCRAFT_FORCE_LANDING_WINDOW
-	to_chat(user, SPAN_DANGER("[hit ? "[hit] is in the way below" : "There is no runway or dry open ground below"]. Descend again within five seconds to force a crash landing."))
+	to_chat(user, SPAN_DANGER("[hit ? "[hit] is in the way below" : "There is no runway or dry, level open ground below"]. Descend again within five seconds to force a crash landing."))
 	return FALSE
 
 // Down to the level below, broken and stopped. The aircraft comes down on the
@@ -474,6 +488,12 @@ var/global/list/airborne_aircraft = list()
 		if (hit)
 			crash_land("a collision with [hit]")
 			return FALSE
+	// In low flight the hills, trees and walls below reach up to the aircraft.
+	if (flight_state == AIRCRAFT_LOW)
+		var/turf/G = ground_collision_ahead(m_dir, next_altitude())
+		if (G)
+			crash_land("a collision with [aircraft_ground_obstacle_name(G)]")
+			return FALSE
 	edge_blocked = FALSE
 	return TRUE
 
@@ -512,7 +532,9 @@ var/global/list/airborne_aircraft = list()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/after_aircraft_move()
 	if (airborne())
-		update_flight_visuals()
+		update_altitude()
+		if (airborne())
+			update_flight_visuals()
 		return
 	if (currentspeed >= speeds && !reverse)
 		runway_roll++
