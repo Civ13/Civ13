@@ -443,6 +443,13 @@
 				automovement = FALSE
 				L.adjustBruteLoss(100)
 				return FALSE
+		// Platform cars need room for their decks (train_platforms.dm).
+		var/atom/clearance = train_consist_obstacle(src, tgtt, fdir)
+		if (clearance)
+			visible_message("<span class = 'warning'>\The [src] grinds to a halt against \the [clearance]!</span>")
+			automovement = FALSE
+			set_light(0)
+			return FALSE
 		// ... and move this train
 		if (!src.Move(tgtt, fdir))
 			automovement = FALSE

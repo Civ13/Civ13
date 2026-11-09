@@ -2548,6 +2548,11 @@ RECIPE: /material/iron/,coal tender,/obj/structure/trains/storage/tender,6,250,1
 RECIPE: /material/iron/,cabin wagon,/obj/structure/trains/transport/cabin,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,platform car kit,/obj/structure/train_car_kit,12,300,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,passenger coach kit,/obj/structure/train_car_kit/coach,16,300,1,1,trains,101,0,0,8,null
+RECIPE: /material/steel/,sleeper car kit,/obj/structure/train_car_kit/sleeper,20,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,dining car kit,/obj/structure/train_car_kit/dining,20,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,storage car kit,/obj/structure/train_car_kit/storage,18,350,1,1,trains,140,0,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 

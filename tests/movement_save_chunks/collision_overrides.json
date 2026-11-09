@@ -408,6 +408,21 @@
       ]
     },
     {
+      "path": "code/modules/1713/train_platforms.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "83467b3254314cd353a95cc7febda26ce659e2146b4343d47d23b5bc9d25843e"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/train_part/edge/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
+          "sha256_body": "58423707fd664b0f338f01018d333897f13b1f0fc38e976418e389e3749dd781"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/weapons/football.dm",
       "declarations": [
         {
