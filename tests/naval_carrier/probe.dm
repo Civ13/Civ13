@@ -114,7 +114,9 @@ var/naval_runtime_error = FALSE
 	engine_air.oxygen *= 0.5
 	var/o2_before = engine_air.oxygen_kpa()
 
-	// One hop at full ahead: six tiles east with everything aboard.
+	// One hop at full ahead: six tiles east with everything aboard. The
+	// bunkers are filled first; the shipyard probe covers dry ones.
+	C.bunker(C.fuel_capacity)
 	C.set_anchor(FALSE)
 	C.set_speed(VESSEL_SPEED_FULL)
 	naval_check(C.hop_timer, "weighing anchor at full ahead starts the hop timer")

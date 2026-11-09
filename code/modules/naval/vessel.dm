@@ -55,6 +55,9 @@ var/global/list/naval_vessels = list()
 	var/placed = FALSE
 	var/speed = VESSEL_SPEED_STOP
 	var/anchored = TRUE
+	// Fuel oil in the bunkers; every hop burns VESSEL_FUEL_PER_STEP per step.
+	var/fuel = 0
+	var/fuel_capacity = VESSEL_FUEL_CAPACITY
 	var/hop_timer = 0
 	var/last_hop_ms = 0        // Wall time the last relocation took, for the probe.
 	var/last_refusal = ""
@@ -178,6 +181,12 @@ var/global/list/naval_vessels = list()
 	if (placed)
 		last_refusal = "already afloat"
 		return FALSE
+	if (!assign_levels(z))
+		return FALSE
+	return relocate(x, y, heading)
+
+// Gives each deck its level around surface level z.
+/datum/vessel/proc/assign_levels(z)
 	base_z = z
 	for (var/datum/vessel_level/L in levels)
 		var/lz = L.dz ? (L.dz > 0 ? multiz_level_above(z) : multiz_level_below(z)) : z
@@ -185,7 +194,18 @@ var/global/list/naval_vessels = list()
 			last_refusal = "no level [L.dz > 0 ? "above" : "below"] the surface for deck [L.dz]"
 			return FALSE
 		L.z = lz
-	return relocate(x, y, heading)
+	return TRUE
+
+// Whether an unplaced ship could be laid down with its box corner at (x, y)
+// on level z, bow to heading, without writing anything. The reason it could
+// not is in last_refusal.
+/datum/vessel/proc/fits(x, y, z, heading = EAST)
+	if (placed)
+		last_refusal = "already afloat"
+		return FALSE
+	if (!assign_levels(z))
+		return FALSE
+	return plan_move(x, y, heading, list(), list(), list())
 
 // Takes the ship off the map, putting back what was under it. Whatever stood
 // on it is left where it was.
@@ -208,20 +228,11 @@ var/global/list/naval_vessels = list()
 	for (var/datum/vessel_level/L in levels)
 		L.originals = list()
 
-// Moves the block so its box corner is at (x, y) with the bow to heading.
-// Refuses, leaving the ship where it is, when any destination tile is missing,
-// is not water, sea or sky the ship may use, or holds something solid that is
-// not ours. One call does the whole move and never sleeps, so nobody sees a
-// half-moved ship.
-/datum/vessel/proc/relocate(x, y, heading)
-	if (relocating)
-		last_refusal = "already moving"
-		return FALSE
-	var/started = world.timeofday
-	var/list/old_cells = placed ? cells() : list()
-	// Destinations with the spec that goes there and the cell it comes from.
-	var/list/dest_turfs = list()
-	var/list/dest_source = list()
+// Checks every destination cell of a move to (x, y, heading) and fills
+// dest_turfs (turf -> spec) and dest_source (turf -> the cell it comes from,
+// or null for a cell the ship did not cover). Cells in old_cells are the
+// ship's own and need no terrain check. Returns FALSE with last_refusal set.
+/datum/vessel/proc/plan_move(x, y, heading, list/old_cells, list/dest_turfs, list/dest_source)
 	for (var/datum/vessel_level/L in levels)
 		for (var/v = 0, v < beam, v++)
 			for (var/u = 0, u < length, u++)
@@ -247,6 +258,24 @@ var/global/list/naval_vessels = list()
 							return FALSE
 				dest_turfs[D] = spec
 				dest_source[D] = placed ? cell_turf(L, u, v, ox, oy, dir) : null
+	return TRUE
+
+// Moves the block so its box corner is at (x, y) with the bow to heading.
+// Refuses, leaving the ship where it is, when any destination tile is missing,
+// is not water, sea or sky the ship may use, or holds something solid that is
+// not ours. One call does the whole move and never sleeps, so nobody sees a
+// half-moved ship.
+/datum/vessel/proc/relocate(x, y, heading)
+	if (relocating)
+		last_refusal = "already moving"
+		return FALSE
+	var/started = world.timeofday
+	var/list/old_cells = placed ? cells() : list()
+	// Destinations with the spec that goes there and the cell it comes from.
+	var/list/dest_turfs = list()
+	var/list/dest_source = list()
+	if (!plan_move(x, y, heading, old_cells, dest_turfs, dest_source))
+		return FALSE
 	relocating = TRUE
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
@@ -362,6 +391,13 @@ var/global/list/naval_vessels = list()
 	// Never rewrite a level while the world save is capturing it.
 	if (persistence_save_in_progress)
 		return FALSE
+	var/burn = speed * VESSEL_FUEL_PER_STEP
+	if (fuel < burn)
+		last_refusal = "the bunkers are dry"
+		crew_message(SPAN_WARNING("<b>All stop!</b> The bunkers are dry."))
+		speed = VESSEL_SPEED_STOP
+		stop_sailing()
+		return FALSE
 	var/step = speed * VESSEL_TILES_PER_STEP
 	// A blocked full step tries shorter ones, so the ship closes up to an
 	// obstacle instead of stopping short of it.
@@ -374,6 +410,7 @@ var/global/list/naval_vessels = list()
 			if (NORTH) sy = tiles
 			if (SOUTH) sy = -tiles
 		if (relocate(ox + sx, oy + sy, dir))
+			fuel -= burn
 			return TRUE
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
 	speed = VESSEL_SPEED_STOP
@@ -393,6 +430,125 @@ var/global/list/naval_vessels = list()
 	var/ny = round(cy - (box_h() - 1) / 2)
 	dir = old_dir
 	return relocate(nx, ny, heading)
+
+// Takes fuel oil into the bunkers; returns how much was taken.
+/datum/vessel/proc/bunker(amount)
+	var/taken = clamp(amount, 0, fuel_capacity - fuel)
+	fuel += taken
+	return taken
+
+/datum/vessel/proc/hops_of_fuel()
+	if (speed <= 0)
+		return fuel >= VESSEL_FUEL_PER_STEP ? round(fuel / VESSEL_FUEL_PER_STEP) : 0
+	return round(fuel / (speed * VESSEL_FUEL_PER_STEP))
+
+// The first thing the surface deck would meet ahead of the bow within
+// VESSEL_CHART_RANGE tiles, as "name, N tiles ahead", or null for open sea.
+/datum/vessel/proc/ahead_text()
+	if (!placed)
+		return null
+	var/datum/vessel_level/L = level_for_z(base_z)
+	if (!L)
+		return null
+	var/dx = 0
+	var/dy = 0
+	switch (dir)
+		if (EAST) dx = 1
+		if (WEST) dx = -1
+		if (NORTH) dy = 1
+		if (SOUTH) dy = -1
+	for (var/tiles = 1, tiles <= VESSEL_CHART_RANGE, tiles++)
+		for (var/v = 0, v < beam, v++)
+			var/u = length - 1
+			if (!L.spec_at(u, v))
+				continue
+			var/turf/bow = cell_turf(L, u, v, ox, oy, dir)
+			if (!bow)
+				continue
+			var/turf/T = locate(bow.x + dx * tiles, bow.y + dy * tiles, bow.z)
+			if (!T)
+				return "the edge of the world, [tiles] tile\s ahead"
+			var/allowed = FALSE
+			for (var/path in L.allowed)
+				if (istype(T, path))
+					allowed = TRUE
+					break
+			if (!allowed)
+				return "[T.name], [tiles] tile\s ahead"
+			for (var/atom/movable/M in T)
+				if (M.loc == T && M.density && !istype(M, /atom/movable/lighting_overlay))
+					return "[M.name], [tiles] tile\s ahead"
+	return null
+
+// The chart and telegraph read at the helm.
+/datum/vessel/proc/chart_text()
+	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
+	var/list/lines = list()
+	lines += "[capitalize(name)] at [ox + round((box_w() - 1) / 2)], [oy + round((box_h() - 1) / 2)], bow to the [dir2text(dir)], [speeds[speed + 1]], anchor [anchored ? "down" : "up"]."
+	lines += "Bunkers: [fuel] of [fuel_capacity] units of fuel oil, [hops_of_fuel()] hop\s at [speed > 0 ? speeds[speed + 1] : "slow ahead"]."
+	var/ahead = ahead_text()
+	lines += ahead ? "Ahead: [ahead]." : "Ahead: open sea for [VESSEL_CHART_RANGE] tiles."
+	if (last_refusal)
+		lines += "Last refusal: [last_refusal]."
+	return jointext(lines, "<br>")
+
+// ---- Saved state ----
+
+// Everything a world save needs to bring the ship back: its type, place,
+// telegraph and fuel, and what lay under each cell. The decks themselves are
+// saved as turfs; the helm keeps this text and rebuilds the datum on load.
+/datum/vessel/proc/save_state()
+	var/list/state = list("type" = "[type]", "ox" = ox, "oy" = oy, "base_z" = base_z, "dir" = dir, "speed" = speed, "anchored" = anchored, "fuel" = fuel)
+	var/list/decks = list()
+	for (var/datum/vessel_level/L in levels)
+		var/list/originals = list()
+		for (var/key in L.originals)
+			originals[key] = "[L.originals[key]]"
+		decks += list(list("dz" = L.dz, "originals" = originals))
+	state["decks"] = decks
+	return json_encode(state)
+
+// Rebuilds a placed vessel from save_state() text over decks that are already
+// on the map, or returns null when the text is unusable.
+/proc/vessel_restore_state(text)
+	if (!text)
+		return null
+	var/list/state = json_decode(text)
+	if (!islist(state))
+		return null
+	var/path = text2path(state["type"])
+	if (!ispath(path, /datum/vessel))
+		return null
+	var/datum/vessel/V = new path
+	V.ox = state["ox"]
+	V.oy = state["oy"]
+	V.base_z = state["base_z"]
+	V.dir = state["dir"]
+	V.speed = state["speed"]
+	V.anchored = state["anchored"]
+	V.fuel = state["fuel"]
+	var/list/decks = state["decks"]
+	for (var/datum/vessel_level/L in V.levels)
+		L.z = V.base_z + L.dz
+		L.originals = list()
+		for (var/list/deck in decks)
+			if (deck["dz"] != L.dz)
+				continue
+			var/list/originals = deck["originals"]
+			for (var/key in originals)
+				var/original = text2path(originals[key])
+				if (original)
+					L.originals[key] = original
+	V.placed = TRUE
+	// The deck tiles registered with whatever controller they found while
+	// loading; they are the ship's now.
+	for (var/turf/floor/sub_deck/T in V.deck_turfs())
+		if (T.flooding_owner && T.flooding_owner != V.flooding)
+			T.flooding_owner.unregister_turf(T)
+	V.flooding.rebind_turfs(V.deck_turfs(), list())
+	if (V.speed > 0 && !V.anchored)
+		V.start_sailing()
+	return V
 
 // ---- Turf state carried across a hop ----
 

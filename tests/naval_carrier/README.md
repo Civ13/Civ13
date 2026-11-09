@@ -32,4 +32,18 @@ The carrier lies bow north in the same fixture so the light plane, which is buil
 - **Elevators:** the deck lever lowers a parked plane and a crate to the hangar and the hangar lever lifts them back; a plane half on the platform, a blocked hangar floor and a plane still rolling keep the elevator still; an empty elevator moves.
 - **Removal:** the sea comes back under wires and platforms.
 
-Not covered: a real client using the helm menu or the levers, the hop timer firing from the timer subsystem, saving and restoring a carrier (the deck turf types are not in the saved-turf allowlist yet), launch and recovery lights (fit-out phase) and how the decks look on screen.
+## Phase 3: the shipyard (`shipyard_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/shipyard_probe.dm
+```
+
+The probe's map metadata answers `is_node_done()` from a global toggle, so the research gate can be exercised without a faction.
+
+- **Research:** the Naval Aviation node needs Powered Flight and Submarines; the shipyard office recipe is gated on it.
+- **Office:** without research the placement refusal names the research and the missing cable but not the sea; with research only the cable. A carrier fits bow east or west on the sea north-east of the office; bow north it would run off the map; fit checks lay nothing down. Laying down costs 400 steel, 20 glass and 40 cable and leaves the ship anchored with empty bunkers; an office whose sea is under another ship lays nothing down.
+- **Bunkers:** a dry ship stops with the reason; pouring a barrel takes its diesel and petroleum and leaves the water; the bunkers hold 1000 units; a hop at full ahead burns 6 and the last hop stops the ship.
+- **Chart:** heading, telegraph, fuel, hops left, the map edge or rock ahead with the distance, and the last refusal.
+- **Saves:** the helm records the ship's state before a save; with the vessel datum deleted and the decks left on the map, the helm rebuilds the ship where it was with its fuel, the decks and controller are its again (222 tiles, hangar at 113 with sea-level air), a stopped ship does not sail by itself, a second load builds no second ship, and the rebuilt ship hops and restores the sea, rock and every tile on removal.
+
+Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, launch and recovery lights (fit-out phase) and how the decks look on screen.

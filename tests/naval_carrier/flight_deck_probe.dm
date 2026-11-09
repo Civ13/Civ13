@@ -140,6 +140,7 @@ var/naval_runtime_error = FALSE
 	// A parked plane and a crate ride a hop; the plane in the air does not.
 	var/obj/structure/vehicleparts/axis/aircraft/P = build_light_plane(locate(11, 20, 2))
 	var/obj/structure/closet/crate/crate = new(locate(12, 12, 2))
+	C.bunker(C.fuel_capacity)
 	C.set_anchor(FALSE)
 	C.set_speed(VESSEL_SPEED_SLOW)
 	C.stop_sailing()
