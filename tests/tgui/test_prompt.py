@@ -102,7 +102,8 @@ class PromptContract(unittest.TestCase):
         programs = (ROOT / 'code/modules/1713/computers/programs.dm').read_text()
         sale = section(programs, 'var/choice1 = WWinput(', 'map.globalmarketplace[tcode][7] = 1')
         self.assertTrue(sale.startswith('user, "Are you sure you want to sell'))
-        self.assertIn('if (choice1 != "Yes")', sale)
+        # Recheck both consent and current ownership after the sleeping prompt.
+        self.assertIn('if (choice1 != "Yes" || !map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 0 || map.globalmarketplace[tcode][2] != user)', sale)
 
 
 if __name__ == '__main__':
