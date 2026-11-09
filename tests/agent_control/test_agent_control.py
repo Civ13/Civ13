@@ -1340,7 +1340,11 @@ class AutopilotTests(unittest.TestCase):
         def popen(cmd, stdout=None, stderr=None):
             launched.append(cmd)
             children.append(Proc())
-            return children[-1]
+            child = children[-1]
+            poll = child.poll
+            # The fake child cooperates with the watcher's shutdown signal.
+            child.poll = lambda: 0 if os.path.exists(getattr(args, "pause_file", "")) else poll()
+            return child
 
         times = iter([0.0, 0.0, 10.0, 20.0, 20.0 + autopilot.WATCH_RETRY, 20.0 + autopilot.WATCH_RETRY])
 

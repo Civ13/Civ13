@@ -68,8 +68,9 @@ Keep the existing split rather than introduce another movement service:
   handle explicit blockage. Missing or uncertain completion receipts must stop
   instead of replaying a possibly executed action.
 
-The existing boat fixture changes terrain between route calls. Remaining action-contract/navigation tests should cover changed-next-hop and
-bounded blocked-route cases, unavailable routes and target visibility loss. Native traversal-time terrain changes and end-to-end
+The existing boat fixture changes terrain between route calls. Scripted replay
+coverage adds changed-next-hop and bounded blocked-route cases, unavailable routes,
+and target visibility loss. Native traversal-time terrain changes and end-to-end
 model gameplay remain separate acceptance work; offline replays are not those tests.
 
 ## Deterministic replay format

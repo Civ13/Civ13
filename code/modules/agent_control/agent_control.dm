@@ -215,6 +215,8 @@ var/global/list/agent_characters = list()
 		game_log("AGENT", "[A.name] denied [action]: missing scope [spec["scope"]].")
 		return error("forbidden", "Requires scope [spec["scope"]].", request_id)
 
+	// Transport metadata is never accepted from the action's JSON arguments.
+	req["_request_id"] = request_id
 	current_agent = A
 	var/result
 	try

@@ -22,15 +22,17 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+import uuid
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from civ13_agent import AgentClient, AgentError  # noqa: E402
+from civ13_agent import AgentClient, AgentError, ContractError  # noqa: E402
 import techtree  # noqa: E402
 import blueprints  # noqa: E402
 import leatherwork  # noqa: E402
 import boats  # noqa: E402
 import water  # noqa: E402
 import senses  # noqa: E402
+from action_contract import QueueClient, DecisionSlot, ModelWorker, targets_current  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -1600,11 +1602,15 @@ def wait_for_queue(client, character, queue_since, limit=30.0):
     while True:
         reply = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
         if not reply.get("ok"):
-            return []
+            raise ContractError("could not confirm queued action completion")
+        if reply.get("operator_paused"):
+            raise ContractError("operator pause requested")
         queue = reply["result"].get("queue", {})
         busy = reply["result"].get("self", {}).get("busy")
-        if (not queue.get("pending") and not queue.get("running") and not busy) or time.monotonic() > deadline:
+        if not queue.get("pending") and not queue.get("running") and not busy:
             return queue.get("results", [])
+        if time.monotonic() > deadline:
+            raise ContractError("queued action timed out; outcome is uncertain")
         time.sleep(0.5)
 
 
@@ -1669,6 +1675,8 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
         results = wait_for_queue(client, character, queue_since)
         if results:
             queue_since = max(r.get("id", 0) for r in results)
+            if any(not r.get("ok") for r in results):
+                return False, "queued movement failed", queue_since
             if any(r.get("detail") == "blocked" for r in results):
                 blocked.setdefault(here, set()).add(direction)
     return False, "still not there after walking", queue_since
@@ -1705,6 +1713,8 @@ def walk(client, character, queue_since, direction=None, away_from=None, moves=6
         results = wait_for_queue(client, character, queue_since)
         if results:
             queue_since = max(r.get("id", 0) for r in results)
+            if any(not r.get("ok") for r in results):
+                return False, "queued movement failed", queue_since
             if any(r.get("detail") == "blocked" for r in results):
                 blocked.add(choice)
                 continue
@@ -1751,8 +1761,10 @@ def execute(client, character, steps, queue_since):
     """Run expanded steps: "go" walks in the autopilot, runs of other steps go to the queue. Returns (summary, queue_since)."""
     parts = []
     chunk = []
+    failed = False
 
     def flush(queue_since):
+        nonlocal failed
         if not chunk:
             return queue_since
         soft = any(item.get("soft") for item in chunk)
@@ -1764,16 +1776,20 @@ def execute(client, character, steps, queue_since):
         chunk.clear()
         if not queued.get("ok"):
             parts.append(f"refused ({queued.get('error')} {queued.get('detail', '')})")
+            failed = True
             return queue_since
         results = wait_for_queue(client, character, queue_since)
         if results:
             queue_since = max(r.get("id", 0) for r in results)
         parts.extend(f"{r.get('do')} {'ok' if r.get('ok') else 'failed'} ({r.get('detail')})" for r in results)
+        failed = not soft and any(not r.get("ok") for r in results)
         return queue_since
 
     for step in steps:
         if step.get("do") == "travel":
             queue_since = flush(queue_since)
+            if failed:
+                return "; ".join(parts) + "; stopped there", queue_since
             hooks = {"run": lambda more, since: execute(client, character, more, since), "craft_steps": _expand_craft}
             ok, detail, queue_since = boats.travel(client, character, step, queue_since, hooks)
             parts.append(f"travel {'ok' if ok else 'failed'} ({detail})")
@@ -1783,9 +1799,13 @@ def execute(client, character, steps, queue_since):
         if step.get("do") not in ("go", "flee", "explore"):
             if chunk and bool(step.get("soft")) != bool(chunk[-1].get("soft")):
                 queue_since = flush(queue_since)
+                if failed:
+                    return "; ".join(parts) + "; stopped there", queue_since
             chunk.append(step)
             continue
         queue_since = flush(queue_since)
+        if failed:
+            return "; ".join(parts) + "; stopped there", queue_since
         if step["do"] == "go":
             ok, detail, queue_since = approach(client, character, step["target"], queue_since, reach=step.get("reach", 1))
         elif step["do"] == "flee":
@@ -1858,11 +1878,13 @@ class RetryingClient:
 
     def request(self, action, args=None):
         delays = list(self.delays) if action in RETRY_ACTIONS else []
+        if isinstance(self.client, QueueClient) and action == "character_release":
+            delays = []
         while True:
             try:
                 return self.client.request(action, args)
             except (OSError, AgentError) as exc:
-                if not delays:
+                if isinstance(exc, ContractError) or not delays:
                     raise
                 delay = delays.pop(0)
                 print(f"{action} failed ({exc}); retrying in {delay}s", file=sys.stderr)
@@ -1897,6 +1919,7 @@ def main(argv=None):
     parser.add_argument("--catalog", default="", help='game recipe catalog for the recipe book (built on first use; "none" turns it off)')
     parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
     parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
+    parser.add_argument("--pause-file", default="", help="stop safely when this operator-controlled file exists; remove it and restart to resume")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if args.steps is None:
@@ -1909,7 +1932,7 @@ def main(argv=None):
         parser.error(str(exc))
     args.think = defaults.get("think") is True
     token = os.environ.get(defaults.get("auth_token_env") or "CIV13_OLLAMA_TOKEN")
-    client = senses.SensesClient(RetryingClient(AgentClient.from_env()))
+    client = senses.SensesClient(RetryingClient(QueueClient(AgentClient.from_env(correlated=True), args.pause_file)))
 
     if args.watch:
         return watch(client, args)
@@ -1933,7 +1956,28 @@ def main(argv=None):
 
     try:
         return run(client, args, character, token)
+    except ContractError as exc:
+        print(f"stopped: {exc}; operator review required before restarting", file=sys.stderr)
+        return 0 if operator_paused(args) else CONTRACT_EXIT
+    except (AgentError, OSError) as exc:
+        print(f"stopped: {exc}", file=sys.stderr)
+        return 1
+    except KeyboardInterrupt:
+        return 0
     finally:
+        # One fresh, guarded cancellation attempt; never resend an uncertain mutation.
+        try:
+            client.request("character_observe", {"character": character, "radius": 1})
+        except (AgentError, OSError) as exc:
+            print(f"final observation failed: {exc}", file=sys.stderr)
+        try:
+            # A malformed completion can still carry a valid fresh guard. The
+            # wrapper sends nothing without one and cancels only our request id.
+            cancelled = client.request("character_queue", {"character": character, "clear": True})
+            if not cancelled.get("ok"):
+                print(f"queue cancellation refused: {cancelled.get('error')}", file=sys.stderr)
+        except (AgentError, OSError) as exc:
+            print(f"queue cancellation unconfirmed: {exc}; reconcile before resuming", file=sys.stderr)
         if args.release:
             try:
                 released = client.request("character_release", {"character": character, "delete": bool(args.spawn)})
@@ -1943,11 +1987,12 @@ def main(argv=None):
                 print(f"release failed: {exc}", file=sys.stderr)
 
 
+CONTRACT_EXIT = 2  # an ambiguous action is held, never automatically restarted
 WATCH_POLL = 10  # seconds between character_list polls in --watch mode
 WATCH_STEPS = 1000000  # a watched character plays until it dies or the run is stopped
 WATCH_RETRY = 300  # seconds after a failed run starts before its character is tried again
 # Flags a watched run passes on to each character's own run.
-WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval")
+WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval", "pause_file")
 
 
 def reap_runs(runs, rows=None):
@@ -1969,6 +2014,7 @@ def reap_runs(runs, rows=None):
                 del runs[ref]
                 continue
             entry["failed"] = True
+            entry["held"] = code == CONTRACT_EXIT
         if listed is not None and ref not in listed:
             del runs[ref]
 
@@ -1986,7 +2032,7 @@ def watch_targets(rows, runs, now, retry_failed=True):
             if row.get("waiting"):
                 out.append(row)
             continue
-        if entry.get("process") is not None or now - entry.get("at", 0) < WATCH_RETRY:
+        if entry.get("held") or entry.get("process") is not None or now - entry.get("at", 0) < WATCH_RETRY:
             continue
         if row.get("waiting") or (entry.get("failed") and retry_failed):
             out.append(dict(row, goal=row.get("goal") or entry.get("goal")))
@@ -2007,14 +2053,32 @@ def watch_command(args, row):
     return command
 
 
+def stop_watch_children(runs, clock=time.monotonic, sleep=time.sleep, timeout=120):
+    """Wait boundedly for children to observe their shared pause file and clean up."""
+    deadline = clock() + timeout
+    while any(entry.get("process") is not None and entry["process"].poll() is None for entry in runs.values()):
+        if clock() >= deadline:
+            print("child shutdown is unconfirmed; keep the pause file and inspect remaining runs", file=sys.stderr)
+            return CONTRACT_EXIT
+        sleep(0.5)
+    return 0
+
+
 def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess.Popen):
     """Play every character an admin spawns for this agent, each in its own autopilot run, until interrupted."""
     log_dir = args.log_dir or os.path.join(ROOT, "data", "agent-control")
     os.makedirs(log_dir, exist_ok=True)
+    owned_pause = not getattr(args, "pause_file", "")
+    if owned_pause:
+        args.pause_file = os.path.abspath(os.path.join(log_dir, ".watch-pause-" + uuid.uuid4().hex))
     runs = {}  # ref -> {"process", "at", "goal", "failed"}
     print(f"watching for characters spawned for agent {getattr(getattr(client, 'client', None), 'agent', '?')}; Ctrl+C stops")
     try:
         while True:
+            if operator_paused(args):
+                # Children receive this same persistent file and cancel their own
+                # pending work. Do not kill them before their finally blocks run.
+                return stop_watch_children(runs, sleep=sleep)
             try:
                 reply = client.request("character_list")
             except (AgentError, OSError) as exc:
@@ -2034,7 +2098,21 @@ def watch(client, args, clock=time.monotonic, sleep=time.sleep, popen=subprocess
                 print(f"playing {row.get('name')} {row['ref']}: {row.get('goal') or args.goal} (log {log_path})")
             sleep(WATCH_POLL)
     except KeyboardInterrupt:
-        return 0
+        try:
+            # A unique default file also gives Ctrl+C a cooperative child stop
+            # path. Explicit operator pause files are never removed by us.
+            try:
+                with open(args.pause_file, "x", encoding="utf-8") as stop_file:
+                    stop_file.write("Autopilot watcher requested shutdown.\n")
+            except FileExistsError:
+                pass
+            result = stop_watch_children(runs, sleep=sleep)
+            if result == 0 and owned_pause:
+                os.unlink(args.pause_file)
+            return result
+        except (OSError, KeyboardInterrupt) as exc:
+            print(f"child shutdown unconfirmed: {exc}; inspect remaining runs", file=sys.stderr)
+            return CONTRACT_EXIT
 
 
 MODEL_GRACE = 30  # seconds past the model's own timeout before a hung call is given up
@@ -2050,8 +2128,20 @@ def wait_for_model(future, args, deadline, tick, clock=time.monotonic, poll=REFL
     """
     limit = clock() + float(getattr(args, "timeout", 120) or 120) + MODEL_GRACE
     while True:
+        if operator_paused(args):
+            future.cancel()
+            return None, "operator pause requested"
+        if deadline and clock() > deadline:
+            future.cancel()
+            return None, "run time is up"
+        if clock() > limit:
+            future.cancel()
+            return None, "model unavailable (no answer in time)"
         done, _ = concurrent.futures.wait([future], timeout=poll)
         if done:
+            if operator_paused(args) or (deadline and clock() > deadline) or clock() > limit:
+                future.cancel()
+                return None, "decision expired or operator paused"
             try:
                 return future.result(), ""
             except Exception as exc:  # the call itself failed (timeout, refused, bad reply)
@@ -2068,9 +2158,13 @@ def wait_for_model(future, args, deadline, tick, clock=time.monotonic, poll=REFL
             return None, reason
 
 
+def operator_paused(args):
+    path = getattr(args, "pause_file", "")
+    return bool(path and os.path.exists(path))
+
+
 def run(client, args, character, token):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as model_pool:
-        return _run(client, args, character, token, model_pool)
+    return _run(client, args, character, token, ModelWorker())
 
 
 # What the recipe book is asked about for a ladder goal (matched on the goal's opening words).
@@ -2183,7 +2277,11 @@ def _run(client, args, character, token, model_pool):
     pinned_leather = leatherwork.product_name(args.leather) if getattr(args, "leather", "") else ""
     tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
+    decisions = DecisionSlot()
     for step in range(1, args.steps + 1):
+        if operator_paused(args):
+            print("operator pause requested; stopping")
+            break
         if deadline and time.monotonic() > deadline:
             print(f"time limit reached after {step - 1} steps")
             break
@@ -2207,7 +2305,7 @@ def _run(client, args, character, token, model_pool):
             if memory is not None:
                 memory.event("fell unconscious")
                 memory.save()
-            while self_state.get("stat") == 1 and not (deadline and time.monotonic() > deadline):
+            while self_state.get("stat") == 1 and not operator_paused(args) and not (deadline and time.monotonic() > deadline):
                 time.sleep(UNCONSCIOUS_POLL)
                 reply = client.request("character_observe", {"character": character, "since": since})
                 if not reply.get("ok"):
@@ -2296,6 +2394,7 @@ def _run(client, args, character, token, model_pool):
         # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
         reacted = []
         stats, asked_at = {}, time.monotonic()
+        decision_id = decisions.begin(observation, float(args.timeout) + MODEL_GRACE)
         future = model_pool.submit(ask_ollama, args.ollama_url, args.model, list(model_window(history)), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think, keep_alive=getattr(args, "keep_alive", DEFAULT_KEEP_ALIVE), stats=stats)
         pending = dict(zip(("steps", "what"), reflex(observation, previous_self)))
 
@@ -2308,7 +2407,9 @@ def _run(client, args, character, token, model_pool):
                 reacted.append(pending["what"])
                 pending["steps"] = None
             look = client.request("character_observe", {"character": character, "radius": 5, "since": since})
-            seen = look.get("result", {}) if look.get("ok") else {}
+            if not look.get("ok"):
+                return "character observation failed; control is unconfirmed"
+            seen = look.get("result", {})
             stat = seen.get("self", {}).get("stat") if seen else None
             if stat == 2:
                 return "the character is dead"
@@ -2319,16 +2420,40 @@ def _run(client, args, character, token, model_pool):
             tick()  # a threat already in view is met before the first poll
         answer, stop = wait_for_model(future, args, deadline, tick)
         if stop:
+            decisions.cancel()
             print(f"step {step}: {stop}; stopping", file=sys.stderr)
             return 1 if "model" in stop else 0
         print(f"  {timing_line(stats, time.monotonic() - asked_at)}")
         history.append({"role": "assistant", "content": answer})
         if reacted:
+            decisions.cancel()
             # The plan was made before the attack; plan again from the new situation.
             previous_self = self_state
             feedback = "\nWhile you were deciding, you " + " and ".join(dict.fromkeys(reacted)) + " by reflex. Plan again from where you are now."
             time.sleep(args.interval)
             continue
+        # Even an immediately completed future must pass a fresh authoritative look.
+        checked = client.request("character_observe", {"character": character, "radius": 5, "since": since})
+        if not checked.get("ok"):
+            decisions.cancel()
+            raise ContractError("cannot revalidate the model decision")
+        current = checked["result"]
+        candidate = parse_plan(answer, refs)
+        if not decisions.complete(decision_id, current) or not targets_current(candidate, observation, current):
+            feedback = "\nThe situation changed while you were deciding. Nothing from that answer was executed. Plan again."
+            previous_self = self_state
+            continue
+        fresh_reflex, fresh_reason = reflex(current, self_state) if current.get("self", {}).get("stat") in (None, 0) else (None, "")
+        if fresh_reflex:
+            summary, queue_since = execute(client, character, fresh_reflex, queue_since)
+            feedback = f"\nWhile you were deciding, {fresh_reason} required a reflex: {summary}. Plan again."
+            previous_self = self_state
+            continue
+        # Expansion and deterministic safety choices use the revalidated state,
+        # never the pre-inference inventory, terrain or hazard metadata.
+        observation = current
+        self_state = current.get("self", {})
+        avoid = shunned(observation, memory)
         note = parse_note(answer) or note
         fact = parse_remember(answer)
         if fact and memory is not None:

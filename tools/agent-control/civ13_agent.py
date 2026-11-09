@@ -22,6 +22,7 @@ import sys
 import tempfile
 import time
 import urllib.parse
+import uuid
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -34,6 +35,23 @@ SUPPORTED_VERSIONS = ("2025-06-18", "2025-03-26", "2024-11-05")
 
 class AgentError(Exception):
     pass
+
+
+class ContractError(AgentError):
+    """An ambiguous or mismatched receipt must never be retried as an action."""
+
+
+def _invalid_constant(value):
+    raise ValueError("non-finite JSON number")
+
+
+def _strict_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON field")
+        result[key] = value
+    return result
 
 
 def encode_topic(query):
@@ -82,12 +100,14 @@ def _recv_exact(sock, size):
 
 
 class AgentClient:
-    def __init__(self, agent, token, host="127.0.0.1", port=1714, timeout=15.0, transport=topic):
+    def __init__(self, agent, token, host="127.0.0.1", port=1714, timeout=15.0, transport=topic, correlated=False):
         if not agent or not token:
             raise AgentError("set CIV13_AGENT_NAME and CIV13_AGENT_TOKEN (or CIV13_AGENT_TOKEN_FILE)")
         self.agent, self.token = agent, token
         self.host, self.port, self.timeout = host, int(port), timeout
         self.transport = transport
+        self.correlated = correlated
+        self.last_request_id = None
 
     @classmethod
     def from_env(cls, env=None, **kwargs):
@@ -106,15 +126,27 @@ class AgentClient:
         if action == "character_view" and isinstance(args, dict) and not args.get("part"):
             return self.view(args)
         query = {"agent_control": "1", "agent": self.agent, "token": self.token, "action": action}
+        if self.correlated:
+            query["request_id"] = uuid.uuid4().hex
+            self.last_request_id = query["request_id"]
         if args:
-            query["args"] = json.dumps(args, separators=(",", ":"))
+            query["args"] = json.dumps(args, separators=(",", ":"), allow_nan=False)
         reply = self.transport(self.host, self.port, urllib.parse.urlencode(query), self.timeout)
         if not isinstance(reply, str):
             raise AgentError("server did not answer (is agent control enabled and the world running?)")
         try:
-            return json.loads(reply)
+            result = json.loads(reply, object_pairs_hook=_strict_object, parse_constant=_invalid_constant) if self.correlated else json.loads(reply)
         except ValueError as exc:
-            raise AgentError("server reply was not JSON") from exc
+            raise ContractError("server reply was not unambiguous JSON") from exc
+        if self.correlated:
+            valid_ok = isinstance(result, dict) and type(result.get("ok")) in (bool, int) and result["ok"] in (0, 1)
+            if not valid_ok or result.get("request_id") != query["request_id"]:
+                raise ContractError("missing or mismatched request receipt")
+            if result["ok"] and (result.get("action") != action or "result" not in result):
+                raise ContractError("mismatched action receipt")
+            if not result["ok"] and not isinstance(result.get("error"), str):
+                raise ContractError("malformed error receipt")
+        return result
 
 
     def observe_wait(self, args, poll_s=0.5, clock=time.monotonic, sleep=time.sleep):

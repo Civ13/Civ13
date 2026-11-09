@@ -9,7 +9,9 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
 `tools/agent-control/`. Tests: `tests/agent_control/`.
 
 Observation authority, stale visual memory, replay format and navigation limits:
-[observation contract](agent-observation-contract.md).
+[observation contract](agent-observation-contract.md). The autopilot's
+[guarded action contract](agent-action-contract.md) covers correlation, completion,
+cancellation and operator pause.
 
 ## Security model
 

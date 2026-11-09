@@ -16,6 +16,7 @@
 #define AGENT_CHARACTER_PROMPTS 16
 #define AGENT_CHARACTER_SOUNDS 32
 #define AGENT_CHARACTER_REPEAT_MAX 30
+#define AGENT_QUEUE_GUARD_TTL 300 // one observed queue ticket is valid for at most 30 seconds
 
 /datum/agent_character
 	var/mob/living/body
@@ -31,6 +32,12 @@
 	var/list/queue_results = list()
 	var/queue_serial = 0
 	var/queue_running = FALSE
+	var/queue_generation = 0 // cancellation invalidates repeats and sleeping steps
+	var/queue_guard
+	var/queue_guard_at = 0
+	var/queue_guard_agent
+	var/list/queue_request_ids = list() // bounded duplicate-id guard; consumed observation guards never replay
+	var/list/queue_active // a running game proc may sleep after leaving queue
 	var/awaiting_driver = FALSE // spawned by an admin verb; no autopilot has looked through its eyes yet
 	var/requested_goal // what the admin asked the character to do
 	var/list/prompts = list() // prompts the game raised that no step answered (docs/agent-control.md#prompts)
@@ -546,6 +553,9 @@
 		var/area/HA = get_area(U)
 		if (HA && HA.location == AREA_INSIDE)
 			here_row["cave_supported"] = U.mine_supported() ? TRUE : FALSE
+	C.queue_guard = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]-[agent_ref(C)]-[C.seen_rev]")
+	C.queue_guard_at = world.time
+	C.queue_guard_agent = A.name
 	var/list/out = list("self" = character_state(C), "here" = here_row, "surroundings" = surroundings, "nearby" = nearby, "terrain" = terrain, "messages" = heard, "last_message" = C.message_serial, "queue" = C.queue_state(queue_since))
 	// since_rev: only nearby rows that appeared or changed since that observe, and the refs that left.
 	var/since_rev = text2num("[req["since_rev"]]")
@@ -606,6 +616,7 @@
 	var/wait = (action in agent_character_actions()) ? C.wait_for(action) : 0
 	if (wait)
 		agent_fail("cooldown", "wait [wait] ticks")
+	C.queue_guard = null // manual actions invalidate an earlier autopilot observation
 	return perform_step(A, C, req)
 
 // One character action. Callers check wait_for() first. Clicks, use and
@@ -617,15 +628,17 @@
 	usr = M
 	var/action = lowertext("[req["do"]]")
 	var/detail = ""
-	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
-	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
-	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
+	if (!(action in agent_character_actions()))
+		agent_fail("bad_args", "unknown character action")
 	// expect_name: refuse when the ref now names something else (a recycled ref or a swapped object).
 	if (istext(req["expect_name"]) && length(req["expect_name"]) && !isnull(req["target"]))
 		var/atom/expected = agent_resolve_target(req["target"])
 		var/actual = isatom(expected) ? expected.name : "[expected]"
 		if (!findtext(actual, req["expect_name"]))
 			agent_fail("target_changed", "the target is now [actual], not [req["expect_name"]]")
+	// A step may carry the answer to a prompt it raises (a shovel asks what to dig).
+	C.pending_choice = req["choose"] ? copytext(agent_text_arg(req, "choose", 64), 1, 65) : null
+	C.pending_choice_until = world.time + AGENT_CHOICE_WINDOW
 	switch (action)
 		if ("move")
 			var/d = agent_dir(req["dir"])
@@ -855,35 +868,63 @@
 /datum/agent_control/proc/act_character_queue(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
 	var/list/steps = req["actions"]
+	var/clear = req["clear"] == TRUE || req["clear"] == 1
+	var/cancel_id = req["cancel_request_id"]
+	if (!isnull(cancel_id) && (!clear || !istext(cancel_id) || !length(cancel_id) || length(cancel_id) > 64))
+		agent_fail("bad_args", "cancel_request_id requires clear and a request id")
 	if (!isnull(steps) && !islist(steps))
 		agent_fail("bad_args", "actions must be a list")
-	if (req["clear"] == TRUE || req["clear"] == 1)
-		if (C.queue.len)
-			log_admin("AGENT [A.name]: character_queue cleared [C.queue.len] steps for [C.body] ([agent_ref(C.body)])")
-		C.queue.Cut()
-	var/list/added = list()
+	if (!isnull(req["clear"]) && req["clear"] != TRUE && req["clear"] != FALSE)
+		agent_fail("bad_args", "clear must be a boolean")
+	if (!isnull(req["stop_on_failure"]) && req["stop_on_failure"] != TRUE && req["stop_on_failure"] != FALSE)
+		agent_fail("bad_args", "stop_on_failure must be a boolean")
+	// Guarded autopilot calls consume one recent observation, never a replay.
+	if (!isnull(req["guard"]))
+		if (!istext(req["_request_id"]) || !length(req["_request_id"]) || length(req["_request_id"]) > 64)
+			agent_fail("bad_args", "guarded actions need a request_id")
+		if (!istext(req["guard"]) || !C.queue_guard || req["guard"] != C.queue_guard || C.queue_guard_agent != A.name || world.time < C.queue_guard_at || world.time - C.queue_guard_at > AGENT_QUEUE_GUARD_TTL)
+			agent_fail("stale_action", "Observe again; this queue guard is stale or already consumed.")
+		if (req["_request_id"] in C.queue_request_ids)
+			agent_fail("duplicate_action", "This request id was already accepted.")
+		if (clear && steps && steps.len)
+			agent_fail("bad_args", "guarded cancellation cannot include a replacement plan")
+		if (!clear && (C.queue_running || C.queue.len || !C.body.may_do_after))
+			agent_fail("action_pending", "Wait for the current action to finish before submitting another.")
+	var/list/checked = list()
 	if (steps && steps.len)
 		if (steps.len > AGENT_CHARACTER_QUEUE_BATCH)
 			agent_fail("bad_args", "at most [AGENT_CHARACTER_QUEUE_BATCH] actions per request")
-		if (C.queue.len + steps.len > AGENT_CHARACTER_QUEUE_MAX)
+		if ((!clear ? C.queue.len : 0) + steps.len > AGENT_CHARACTER_QUEUE_MAX)
 			agent_fail("queue_full", "the queue holds at most [AGENT_CHARACTER_QUEUE_MAX] steps; [C.queue.len] are pending")
-		var/list/checked = list()
 		for (var/list/step in steps)
 			checked += list(check_step(step))
 		if (checked.len != steps.len)
 			agent_fail("bad_args", "each action must be an object")
-		var/stop_on_failure = req["stop_on_failure"] != FALSE && req["stop_on_failure"] != 0
-		for (var/list/step in checked)
-			step["id"] = ++C.queue_serial
-			step["agent"] = A.name
-			step["stop_on_failure"] = stop_on_failure
-			C.queue += list(step)
-			added += step["id"]
+	// No mutations, including clear, take place until the whole replacement validates.
+	C.queue_guard = null
+	if (!isnull(req["guard"]))
+		C.queue_request_ids += req["_request_id"]
+		if (C.queue_request_ids.len > AGENT_CHARACTER_QUEUE_MAX)
+			C.queue_request_ids.Cut(1, 2)
+	if (clear)
+		log_admin("AGENT [A.name]: character_queue cleared [C.queue.len] steps for [C.body] ([agent_ref(C.body)])")
+		C.cancel_queue("cancelled: queue cleared", cancel_id)
+	var/list/added = list()
+	var/stop_on_failure = req["stop_on_failure"] != FALSE && req["stop_on_failure"] != 0
+	for (var/list/step in checked)
+		step["id"] = ++C.queue_serial
+		step["agent"] = A.name
+		step["identity"] = A // any config replacement invalidates accepted old authority
+		step["request_id"] = req["_request_id"]
+		step["stop_on_failure"] = stop_on_failure
+		C.queue += list(step)
+		added += step["id"]
+	if (added.len)
 		log_admin("AGENT [A.name]: character_queue [added.len] steps for [C.body] ([agent_ref(C.body)])")
 		if (!C.queue_running)
 			spawn(0)
 				run_queue(C)
-	return list("queued" = added, "queue" = C.queue_state())
+	return list("state" = "accepted", "request_id" = req["_request_id"], "queued" = added, "queue" = C.queue_state())
 
 // Validates a queued step up front so a typo fails the request, not step 7.
 /datum/agent_control/proc/check_step(list/step)
@@ -920,6 +961,8 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
+	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))
+		agent_fail("bad_args", "intent must be help, disarm, grab or harm")
 	if (!isnull(step["choose"]))
 		agent_text_arg(step, "choose", 64)
 	if (!isnull(step["expect_name"]))
@@ -958,12 +1001,36 @@
 	for (var/list/result in queue_results)
 		if (result["id"] > since)
 			done += list(result)
-	return list("pending" = pending, "running" = queue_running ? TRUE : FALSE, "results" = done)
+	return list("pending" = pending, "running" = queue_running ? TRUE : FALSE, "results" = done, "guard" = queue_guard)
 
 /datum/agent_character/proc/record(list/step, ok, detail)
-	queue_results += list(list("id" = step["id"], "do" = step["do"], "ok" = ok ? TRUE : FALSE, "detail" = detail, "time" = world.time))
+	var/list/receipt = list("state" = "completed", "request_id" = step["request_id"], "id" = step["id"], "do" = step["do"], "ok" = ok ? TRUE : FALSE, "detail" = detail, "time" = world.time)
+	// A cancelled suffix may finish before the running step returns. Keep id order.
+	var/at = queue_results.len + 1
+	for (var/i = 1, i <= queue_results.len, i++)
+		var/list/previous = queue_results[i]
+		if (previous["id"] >= step["id"])
+			at = i
+			break
+	queue_results.Insert(at, list(receipt))
 	if (queue_results.len > AGENT_CHARACTER_QUEUE_MAX)
 		queue_results.Cut(1, 2)
+
+// Pending steps receive terminal receipts. A running game proc is not rolled back;
+// its result is cancelled after it returns, and it cannot repeat or revive a plan.
+/datum/agent_character/proc/cancel_queue(detail, request_id)
+	if (!request_id || (queue_active && queue_active["request_id"] == request_id))
+		queue_generation++
+		pending_choice = null
+		pending_choice_until = 0
+	queue_guard = null
+	var/list/kept = list()
+	for (var/list/rest in queue)
+		if (!request_id || rest["request_id"] == request_id)
+			record(rest, FALSE, detail)
+		else
+			kept += list(rest)
+	queue = kept
 
 /datum/agent_control/proc/run_queue(datum/agent_character/C)
 	if (C.queue_running)
@@ -972,36 +1039,52 @@
 	while (C.queue.len)
 		var/mob/living/M = C.body
 		if (QDELETED(M) || agent_characters[M] != C)
-			C.queue.Cut()
+			C.cancel_queue("cancelled: character released or gone")
 			break
 		var/list/step = C.queue[1]
+		C.queue_active = step
+		var/generation = C.queue_generation
 		var/action = step["do"]
+		reload()
+		var/datum/agent_identity/A = agents[step["agent"]]
+		if (!A || A != step["identity"] || !A.has_scope("characters") || !C.can_drive(A))
+			C.cancel_queue("forbidden: the agent no longer controls this character")
+			break
 		if (action == "wait")
 			C.queue.Cut(1, 2)
 			sleep(step["ticks"])
-			C.record(step, TRUE, "waited [step["ticks"]] ticks")
+			reload()
+			A = agents[step["agent"]]
+			if (!A || A != step["identity"] || !A.has_scope("characters") || !C.can_drive(A))
+				C.cancel_queue("forbidden: the agent no longer controls this character")
+			if (generation != C.queue_generation || agent_characters[M] != C)
+				C.record(step, FALSE, "cancelled: wait interrupted")
+			else
+				C.record(step, TRUE, "waited [step["ticks"]] ticks")
 			continue
 		var/wait = C.wait_for(action)
 		if (wait)
 			sleep(wait)
 			continue
 		C.queue.Cut(1, 2)
-		reload() // a removed or changed agent stops its queued steps too
-		var/datum/agent_identity/A = agents[step["agent"]]
-		if (!A || !C.can_drive(A))
-			C.record(step, FALSE, "forbidden: the agent no longer controls this character")
-			C.queue.Cut()
-			break
 		try
 			if (isnull(step["message_from"]))
 				step["message_from"] = C.message_serial
 			var/list/result = perform_step(A, C, step, TRUE)
+			if (generation != C.queue_generation || agent_characters[M] != C)
+				C.record(step, FALSE, "cancelled: running action returned; effects may already have happened")
+				continue
 			var/count = (step["count"] || 0) + 1
 			step["count"] = count
 			var/repeat = step["repeat"] || 1
 			var/stopped = C.until_met(step)
 			if (result["moved"] == FALSE)
 				C.record(step, TRUE, repeat > 1 ? "blocked after [count]" : "blocked")
+				if (step["stop_on_failure"])
+					for (var/list/rest in C.queue)
+						C.record(rest, FALSE, "skipped: an earlier move was blocked")
+					C.queue.Cut()
+					break
 			else if (count < repeat && !stopped)
 				C.queue.Insert(1, list(step)) // repeats run when the cooldown allows, one per tick
 			else
@@ -1009,20 +1092,22 @@
 		catch(var/exception/E)
 			var/detail = E.name == "agent_control_error" ? E.desc : "runtime_error:[E.name] ([E.file]:[E.line])"
 			C.record(step, FALSE, detail)
-			if (step["stop_on_failure"])
+			if (step["stop_on_failure"] && generation == C.queue_generation)
 				for (var/list/rest in C.queue)
 					C.record(rest, FALSE, "skipped: an earlier step failed")
 				C.queue.Cut()
 				break
 		// At most one queued step per tick for each character.
 		sleep(1)
+	C.queue_active = null
 	C.queue_running = FALSE
 
 /datum/agent_control/proc/act_character_release(datum/agent_identity/A, list/req)
 	var/datum/agent_character/C = character_arg(A, req)
 	var/mob/living/M = C.body
 	agent_characters -= M
-	C.queue.Cut()
+	C.cancel_queue("cancelled: character released")
+	C.queue.Cut() // explicit empty queue before returning control
 	if (C.handover_ckey)
 		if (M.client)
 			to_chat(M, "<span class='notice'>The AI has handed control of your character back to you.</span>")
@@ -1054,6 +1139,7 @@
 			to_chat(src, "<span class='warning'>This character belongs to a server agent.</span>")
 			return
 		agent_characters -= M
+		C.cancel_queue("cancelled: player took back control")
 		to_chat(src, "<span class='notice'>You have taken back control of your character.</span>")
 		log_admin("AGENT handover: [key_name(src)] took back control of [M].")
 		return

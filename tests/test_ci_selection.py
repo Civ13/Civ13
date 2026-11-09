@@ -373,7 +373,9 @@ class SelectionTests(unittest.TestCase):
     def test_agent_control_offline_admission_is_exact(self):
         for path in ('tests/agent_control/test_agent_control.py',
                      'tests/agent_control/test_perception_replay.py',
-                     'tests/agent_control/test_visibility.py'):
+                     'tests/agent_control/test_visibility.py',
+                     'tests/agent_control/test_action_contract.py',
+                     'tests/agent_control/test_navigation_replay.py'):
             with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
                 self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         for path in ('tests/agent_control/new_native_probe.dm',
@@ -397,6 +399,18 @@ class SelectionTests(unittest.TestCase):
                 with patch.object(selection, 'AGENT_CONTROL_MANUAL_NATIVE', frozenset()):
                     with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
                         selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_action_contract_native_probe_remains_manual_only(self):
+        path = 'tests/agent_observe/action_contract_probe.dm'
+        self.assertEqual(selection.AGENT_OBSERVE_MANUAL_NATIVE, {path})
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+            with patch.object(selection, 'AGENT_OBSERVE_MANUAL_NATIVE', frozenset()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), ['tests/agent_observe'])
+        # Existing admission for unrelated observe fixtures is not broadened or exempted.
+        other = 'tests/agent_observe/unreviewed.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), ['tests/agent_observe'])
 
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:

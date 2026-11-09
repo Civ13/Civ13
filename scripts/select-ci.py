@@ -63,6 +63,8 @@ AGENT_CONTROL_OFFLINE_TESTS = frozenset({
     'tests/agent_control/test_agent_control.py',
     'tests/agent_control/test_perception_replay.py',
     'tests/agent_control/test_visibility.py',
+    'tests/agent_control/test_action_contract.py',
+    'tests/agent_control/test_navigation_replay.py',
 })
 # Explicitly opt-in source-bound fixture; do not admit its native runner to CI.
 AGENT_CONTROL_MANUAL_NATIVE = frozenset({
@@ -71,6 +73,8 @@ AGENT_CONTROL_MANUAL_NATIVE = frozenset({
     'tests/agent_control/visibility/adapters.dm',
     'tests/agent_control/visibility/probe.dm',
 })
+# Included only by the existing opt-in observe fixture; never auto-run on addition.
+AGENT_OBSERVE_MANUAL_NATIVE = frozenset({'tests/agent_observe/action_contract_probe.dm'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
@@ -482,7 +486,7 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/savestream/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered savestream executable test requires explicit CI review')
-        if path in AGENT_CONTROL_OFFLINE_TESTS or path in AGENT_CONTROL_MANUAL_NATIVE:
+        if path in AGENT_CONTROL_OFFLINE_TESTS or path in AGENT_CONTROL_MANUAL_NATIVE or path in AGENT_OBSERVE_MANUAL_NATIVE:
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
             continue
