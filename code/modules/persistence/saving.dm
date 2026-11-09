@@ -226,6 +226,7 @@
 	// Transfer effects applied in memory, so the committed save can confirm them.
 	var/list/transfer_capture = transfer_capture(generation)
 	if(transfer_capture) round_state["transfer"] = transfer_capture
+	round_state["saved_at"] = persistence_save_stamp()
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
@@ -270,6 +271,7 @@
 			debug_policy.stop_reason = "commit_log_unavailable"
 	log_startup_progress("Finished saving.")
 	persistence_save_phase_log("total", save_started)
+	persistence_last_save = list("generation" = generation, "stamp" = round_state["saved_at"])
 	return 1
 
 // Wall time of one save phase, for the server and game logs: the save runs
