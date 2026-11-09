@@ -94,8 +94,21 @@ var/global/list/airborne_aircraft = list()
 			return TRUE
 	return FALSE
 
+// Turf hooks for decks that act as runways without a runway cover, such as
+// a carrier's flight deck (code/modules/naval/carrier.dm).
+/turf/proc/aircraft_runway()
+	return FALSE
+
+// A deck a rolling plane must not leave: the step off it is refused.
+/turf/proc/aircraft_deck()
+	return FALSE
+
+// Arresting wires: a plane that lands here stops on the spot.
+/turf/proc/arrests_aircraft()
+	return FALSE
+
 /proc/aircraft_runway_at(turf/T)
-	return T && (locate(/obj/covers/roads/modern/runway) in T)
+	return T && (T.aircraft_runway() || (locate(/obj/covers/roads/modern/runway) in T))
 
 /obj/structure/vehicleparts/axis/aircraft/proc/frames()
 	. = list()
@@ -280,6 +293,10 @@ var/global/list/airborne_aircraft = list()
 		set_flight_state(AIRCRAFT_GROUND)
 		currentspeed = min(currentspeed, 1)
 		visible_message(SPAN_NOTICE("\The [src] touches down on the runway."))
+		if (on_arresting_wires())
+			currentspeed = 0
+			moving = FALSE
+			visible_message(SPAN_NOTICE("\The [src]'s tailhook catches the arresting wire and it jerks to a halt."))
 		return TRUE
 	if (runway && !hit)
 		to_chat(user, SPAN_WARNING("Too fast to land: slow to gear [landing_gear] or lower first."))
@@ -397,6 +414,12 @@ var/global/list/airborne_aircraft = list()
 
 /obj/structure/vehicleparts/axis/aircraft/do_vehicle_check()
 	if (!airborne())
+		if (deck_edge_ahead())
+			pilot_message(SPAN_WARNING("The deck ends here: the crash barrier stops the plane."))
+			moving = FALSE
+			currentspeed = 0
+			stopmovementloop()
+			return FALSE
 		return ..()
 	if (!check_engine() || currentspeed < stall_gear)
 		return FALSE
@@ -465,6 +488,27 @@ var/global/list/airborne_aircraft = list()
 // Full-throttle tiles needed to lift off from where the aircraft is now.
 /obj/structure/vehicleparts/axis/aircraft/proc/takeoff_distance()
 	return on_runway() ? takeoff_roll : rough_takeoff_roll
+
+// Any frame standing on arresting wires catches the hook.
+/obj/structure/vehicleparts/axis/aircraft/proc/on_arresting_wires()
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		var/turf/T = get_turf(F)
+		if (T && T.arrests_aircraft())
+			return TRUE
+	return FALSE
+
+// On a deck, the step that would take a frame off it is stopped by the
+// crash barrier at the deck's edge rather than rolled into the sea.
+/obj/structure/vehicleparts/axis/aircraft/proc/deck_edge_ahead()
+	var/m_dir = reverse ? OPPOSITE_DIR(dir) : dir
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		var/turf/here = get_turf(F)
+		if (!here || !here.aircraft_deck())
+			continue
+		var/turf/next = get_step(here, m_dir)
+		if (!next || !next.aircraft_deck())
+			return TRUE
+	return FALSE
 
 #undef AIRCRAFT_FUEL_MODIFIER
 #undef AIRCRAFT_FLIGHT_BURN_CRUISE

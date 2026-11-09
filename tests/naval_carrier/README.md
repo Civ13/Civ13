@@ -16,4 +16,20 @@ The probe covers phase 1 of the carrier (`code/modules/naval/`):
 - **Coming about:** turning north swaps the 40x9 box about its centre, the helm and the sailor are where the island and deck now stand, and nothing is left behind.
 - **Removal:** `remove()` restores every tile of sea, rock and sky, the controller forgets the decks, cargo is left in the water, and deleting the vessel clears the registries.
 
-Not covered: a real client using the helm menu, the hop timer firing from the timer subsystem, saving and restoring a carrier (the deck turf types are not in the saved-turf allowlist yet) and how the decks look on screen.
+## Phase 2: the flight deck (`flight_deck_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/flight_deck_probe.dm
+```
+
+The carrier lies bow north in the same fixture so the light plane, which is built facing south, rolls along the deck.
+
+- **Layout:** 360 flight deck tiles of which 36 are arresting wires (stern cells u 6-9) and 32 are two 4x4 elevator platforms on the port side; the hangar keeps its 113 tiles with 32 elevator floors under the platforms; each elevator has a lever on both decks that serves only its own 16 tiles.
+- **Runway:** deck, wires and platform tiles count for `aircraft_runway_at()`; the island deck, the sea and the hangar floor do not. A fuelled light plane takes off after the usual eight-tile roll and climbs to the level above the ship.
+- **Hops:** a parked plane rides a hop whole, still on runway, with a crate; the plane in the air stays where it flies; moving the ship back brings them back.
+- **Landing:** a descent over the wires lands and stops the plane at once (tailhook); a landing clear of the wires rolls on at taxi speed.
+- **Crash barrier:** the step off the stern is refused and the plane stops; amidships it may roll. The plane that rolled over the after lever at takeoff leaves it standing (ladders and levers are neither crushed nor carried by vehicles).
+- **Elevators:** the deck lever lowers a parked plane and a crate to the hangar and the hangar lever lifts them back; a plane half on the platform, a blocked hangar floor and a plane still rolling keep the elevator still; an empty elevator moves.
+- **Removal:** the sea comes back under wires and platforms.
+
+Not covered: a real client using the helm menu or the levers, the hop timer firing from the timer subsystem, saving and restoring a carrier (the deck turf types are not in the saved-turf allowlist yet), launch and recovery lights (fit-out phase) and how the decks look on screen.
