@@ -119,8 +119,9 @@ class NpcContracts(unittest.TestCase):
         worker = section(read(MODULE), '/datum/npc_subtile_transaction/proc/perform_rest(', '/datum/npc_subtile_transaction/proc/finish(')
         for forbidden in ('get_path(', 'cirrAstar(', 'FindTarget(', 'do_behaviour(', 'pick(', 'rand(', 'walk('):
             self.assertNotIn(forbidden, worker)
-        self.assertIn('i <= 16', worker)
-        self.assertIn('start_time + (i - 1) * (end_time - start_time) / 16', worker)
+        self.assertIn('var/pulses = 32 / pulse_px', worker)
+        self.assertIn('i <= pulses', worker)
+        self.assertIn('start_time + (i - 1) * (end_time - start_time) / pulses', worker)
         admit = section(read(MODULE), '/mob/living/simple_animal/proc/ai_step(', '/mob/living/simple_animal/proc/ai_step_wait(')
         self.assertIn('npc_subtile_transaction || world.time < npc_subtile_until', admit)
         self.assertEqual(admit.count('spawn(0)'), 1)
@@ -163,7 +164,7 @@ class NpcContracts(unittest.TestCase):
         for guard in ('actor.move_gen == generation', 'actor.target_obj == target',
                       'actor.target_mob == combat_target', 'actor.following_mob == following',
                       'actor.npc_subtile_transaction == src', 'persistence_save_in_progress',
-                      'human_subtile_same(expected, actor.npc_subtile_snapshot())',
+                      'actor.npc_subtile_at(expected)',
                       'abs(actual_x) > abs(dx)', 'actual_y * dy < 0'):
             self.assertIn(guard, source)
         self.assertIn('if (glide_size == npc_subtile_applied_glide)', source)
@@ -190,13 +191,15 @@ class NpcContracts(unittest.TestCase):
             self.assertLessEqual(max(rounded), duration + .5)
         source = read(MODULE)
         self.assertIn('interval < world.tick_lag || interval > 100', source)
-        self.assertIn('min(2, remaining_x)', source)
-        self.assertIn('min(2, remaining_y)', source)
-        for offset in range(32):
-            for direction in (-1, 1):
-                distance = (32 - offset) if direction == 1 else (offset or 32)
-                self.assertLessEqual(math.ceil(distance / 2), 16)
-                self.assertEqual((offset + distance * direction) % 32, 0)
+        self.assertIn('min(pulse_px, remaining_x)', source)
+        self.assertIn('min(pulse_px, remaining_y)', source)
+        self.assertIn('return npc_subtile_auto_owned ? 8 : 2', source)
+        for pulse in (2, 8):
+            for offset in range(0, 32, pulse):
+                for direction in (-1, 1):
+                    distance = (32 - offset) if direction == 1 else (offset or 32)
+                    self.assertLessEqual(math.ceil(distance / pulse), 32 // pulse)
+                    self.assertEqual((offset + distance * direction) % 32, 0)
 
 
 if __name__ == '__main__':

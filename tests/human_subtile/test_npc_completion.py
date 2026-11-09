@@ -42,7 +42,8 @@ class CompletionBridge(unittest.TestCase):
             npc_subtile_enabled=True, move_gen=1, target_obj='prey',
             target_mob='prey', following_mob=None, stance='attack',
             npc_subtile_ready=lambda: True, npc_subtile_intent_valid=lambda owner: owner is None,
-            npc_subtile_snapshot=lambda: self.position.copy())
+            npc_subtile_snapshot=lambda: self.position.copy(),
+            npc_subtile_at=lambda snapshot: snapshot == self.position)
         self.context = dict(cancelled=False, actor=self.actor, src=self.transaction,
             isDeleted=lambda actor: False, persistence_save_in_progress=False,
             world=SimpleNamespace(time=4, tick_lag=.5), end_time=4,

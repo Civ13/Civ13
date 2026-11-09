@@ -126,6 +126,12 @@ var/human_subtile_fixture_phase = "initializing"
 	map = new /obj/map_metadata/subtile_fixture
 	return TRUE
 
+var/human_subtile_fixture_deer_watched = FALSE
+/mob/living/simple_animal/deer/subtile_fixture_watched/Life()
+	return
+/mob/living/simple_animal/deer/subtile_fixture_watched/npc_subtile_watched()
+	return human_subtile_fixture_deer_watched
+
 /proc/human_subtile_fixture_actor(tx, ty)
 	var/mob/living/human/subtile_fixture/H = new(locate(tx, ty, 1))
 	H.canmove = TRUE
@@ -522,6 +528,18 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(RD.x == 16 && RD.step_x == 6 && !RD.step_y && mount.loc == RD.loc && mount.step_x == 6 && !mount.step_y, "riding_moves_freely")
 	mount.before_save()
 	human_subtile_fixture_assert(isnull(mount.npc_subtile_position), "ridden_mount_saves_tile_only")
+	// Animals move freely only while a player can see them, in 8px pulses.
+	var/mob/living/simple_animal/deer/subtile_fixture_watched/WD = new(locate(2, 14, 1))
+	WD.stop_automated_movement = TRUE
+	human_subtile_fixture_deer_watched = TRUE
+	var/step_ok = WD.ai_step(get_step(WD, EAST), 4)
+	var/first_offset = WD.step_x
+	sleep(6)
+	human_subtile_fixture_assert(step_ok && first_offset == 8 && WD.x == 3 && !WD.step_x && WD.npc_subtile_auto_owned && WD.npc_subtile_enabled && WD.persistence_runtime_var("npc_subtile_enabled"), "watched_animal_moves_freely")
+	human_subtile_fixture_deer_watched = FALSE
+	WD.npc_subtile_watch_checked = -INFINITY
+	WD.ai_step(get_step(WD, EAST), 4)
+	human_subtile_fixture_assert(WD.x == 4 && !WD.step_x && !WD.npc_subtile_enabled && !WD.npc_subtile_auto_owned && !WD.npc_subtile_transaction, "unwatched_animal_takes_tile_steps")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

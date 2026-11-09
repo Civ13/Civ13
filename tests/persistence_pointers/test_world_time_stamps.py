@@ -38,6 +38,7 @@ REVIEWED = {
     'time': 'assigned on a callproc helper, not on compasses or syringes',
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
+    'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
