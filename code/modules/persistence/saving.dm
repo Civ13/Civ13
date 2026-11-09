@@ -910,20 +910,27 @@
 	var/edges = 0
 	var/reserved_bytes = 0
 	var/list/paths = list()
+	// Highest tick share this capture used past its 40% share, or 0.
+	var/overrun_usage = 0
 	proc/check()
 		var/tick_delta = world.time - start_tick
 		var/current_usage = world.tick_usage
 		var/usage_delta = current_usage - start_usage
 		var/elapsed_ds = (world.timeofday - start_clock + 864000) % 864000
 		// The capture must stay inside one tick (tick_delta, elapsed_ds) and
-		// within its own 40% share. Its share was 10%, which a busy region's
-		// ordinary animals overran on every save (Gaia/Rail Yard, 2026-11-08).
-		// There is no total-usage line: nothing in a chunk sleeps
-		// (save_work_check only calls check() here), so a capture admitted on a
-		// busy tick can only run that tick over, never yield. A 90% line failed
-		// whole saves when admission at 76% left a 14%-cost elk too little room
-		// (Gaia, 2026-11-09).
-		if(++work > 8192 || tick_delta || usage_delta > 40 || elapsed_ds > 1)
+		// within its logical bounds (work here, nodes, edges and bytes below):
+		// those keep the snapshot consistent and its cost bounded.
+		// Tick usage is wall-clock time, so it only measures cost and never
+		// refuses the capture: nothing in a chunk sleeps (save_work_check only
+		// calls check() here), and throwing after the time is spent wastes it
+		// and fails the whole save. A 90% total line failed saves when an elk
+		// was admitted at 76% (Gaia, 2026-11-09), and the 40% share failed one
+		// when an ordinary buffalo (624 work units, about what a 10%-cost elk
+		// takes) hit 40% while Gaia ran at 78-89% (round cIh-c7qU, 2026-11-09).
+		// An overrun is noted instead; capture_moving_save_root keeps that
+		// root on the turf path from the next save on.
+		if(usage_delta > 40) overrun_usage = max(overrun_usage, usage_delta)
+		if(++work > 8192 || tick_delta || elapsed_ds > 1)
 			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: root=[root ? root.type : "null"] work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
@@ -1132,6 +1139,12 @@
 		if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE
 		throw error
 	moving_save_chunk = null
+	if(chunk.overrun_usage)
+		// The snapshot is consistent (same tick, within its logical bounds), so
+		// keep it; only its cost was high. Defer this animal to the turf path
+		// in later saves so a slow root does not keep costing a tick.
+		moving_save_demoted[record["identity"]] = TRUE
+		world.log << "Moving save chunk overran its tick share and was kept: root=[A.type] work=[chunk.work] usage_delta=[chunk.overrun_usage] admission_usage=[chunk.admission_usage] start_usage=[chunk.start_usage]"
 	record["origin"] = origin
 	record["ref"] = ref
 	if(saving_segments && destination == saving_segments.index) destination = saving_segments.current
