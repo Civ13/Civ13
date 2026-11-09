@@ -298,7 +298,7 @@
 	return client == owner && (!owner || (owner.mob == src && owner.canmove))
 
 /mob/living/human/proc/human_subtile_posture_move(turf/n)
-	var/direct = get_dir(src, n)
+	var/direct = get_dir(loc, n)
 	if (!human_subtile_posture_ready(direct) || n != get_step(src, direct) || !human_subtile_posture_authority(client))
 		return FALSE
 	// Called only after proning/scramble already consumed its original wait.
@@ -317,7 +317,8 @@
 	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
 
 /mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
-	var/direct = get_dir(src, n)
+	// From the anchor tile: a body between tiles overlaps n, so get_dir(src, n) is 0.
+	var/direct = get_dir(loc, n)
 	if (human_subtile_transaction || human_subtile_pulse || !scrambling || !human_subtile_crawl_ready(direct) || !human_subtile_crawl_authority(client) || n != get_step(src, direct) || !(posture in list("prone", "scramble")) || !isnum(duration) || duration <= 0 || duration >= INFINITY)
 		return FALSE
 	if (human_subtile_default_pending)
