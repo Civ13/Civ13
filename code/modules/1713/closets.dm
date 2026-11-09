@@ -100,7 +100,7 @@
 		icon_state = "extinguisher_empty"
 
 /obj/structure/closet/cabinet/extinguisher_cabinet/AltClick(mob/user)
-	if(!ishuman(user))
+	if (!ishuman(user) || user.incapacitated() || !user.Adjacent(src))
 		return
 	opened = !opened
 	update_icon()
