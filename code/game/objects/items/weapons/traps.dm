@@ -57,6 +57,8 @@
 			"You hear a latch click followed by the slow creaking of a spring."
 			)
 		if (do_after(user, 60, src))
+			if (!deployed || buckled_mob || !anchored)
+				return
 			user.visible_message(
 				"<span class='danger'>[user] has disarmed \the [src].</span>",
 				"<span class='notice'>You have disarmed \the [src]!</span>"
@@ -169,6 +171,8 @@
 			"<span class='notice'>You begin disarming \the [src]!</span>",
 			)
 		if (do_after(user, 90, src))
+			if (!deployed || buckled_mob || !anchored)
+				return
 			user.visible_message(
 				"<span class='danger'>[user] has disarmed \the [src].</span>",
 				"<span class='notice'>You have disarmed \the [src]!</span>"
