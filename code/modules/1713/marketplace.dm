@@ -81,7 +81,7 @@
 
 	// Build faction treasury section
 	var/treasury_html = ""
-	if (user.leader && user.civilization != "none")
+	if (user.civilization != "none" && map.is_faction_leader(user, user.civilization))
 		var/sales_tax = map.custom_civs[user.civilization][9]
 		var/business_tax = map.custom_civs[user.civilization][10]
 		var/tax_funds = map.custom_civs[user.civilization][5]
@@ -355,7 +355,7 @@
 
 	// Faction treasury - set sales tax
 	if (href_list["setsalestax"])
-		if (!H.leader)
+		if (!map.is_faction_leader(H, H.civilization))
 			return
 		var/val = text2num(href_list["setsalestax"])
 		if (isnull(val))
@@ -369,7 +369,7 @@
 
 	// Faction treasury - set business tax
 	if (href_list["setbusinesstax"])
-		if (!H.leader)
+		if (!map.is_faction_leader(H, H.civilization))
 			return
 		var/val = text2num(href_list["setbusinesstax"])
 		if (isnull(val))

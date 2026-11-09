@@ -22,7 +22,6 @@
       "code/game/mob/groups/factions.dm": 3,
       "code/game/mob/groups/religions.dm": 5,
       "code/game/mob/living/carbon/carbon.dm": 1,
-      "code/game/mob/living/carbon/give.dm": 1,
       "code/game/mob/living/carbon/human/corpse.dm": 2,
       "code/game/mob/living/carbon/human/death.dm": 4,
       "code/game/mob/living/carbon/human/emotes/emote.dm": 4,
