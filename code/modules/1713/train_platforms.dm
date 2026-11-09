@@ -227,6 +227,9 @@ var/global/train_platform_plan_time = -1
 	if (wrecked)
 		overlays += image(icon, "wreck", layer = layer + 0.01)
 	clear_parts()
+	// Stored in a rail warehouse (rail_warehouse.dm): no deck until it rolls out.
+	if (!isturf(loc))
+		return
 	deck_parts = list()
 	for (var/side in list(TRAIN_LEFT, TRAIN_RIGHT))
 		var/obj/structure/train_part/deck/D = new(null)

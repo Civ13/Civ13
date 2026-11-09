@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 40
+	maxx = 60
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -286,6 +286,69 @@ var/global/platform_probe_runtime_error = FALSE
 	AL.ex_act(1)
 	platform_check("armored_loco/survives", !QDELETED(AL) && AL.health == 2700 && !AL.disabled)
 
+// Drive-through rail warehouse: cars come off the back of the train in the
+// bay with their cargo and are coupled back on behind it.
+/proc/platform_warehouse_run()
+	for (var/y in 2 to 24)
+		platform_track(44, y, NORTH)
+	var/obj/structure/rail_warehouse/W = new(platform_turf(42, 13))
+	W.dir = EAST
+	var/list/bay = W.bay()
+	platform_check("warehouse/bay", bay.len == 13 && bay[1] == platform_turf(44, 7) && bay[bay.len] == platform_turf(44, 19))
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(44, 18))
+	L.dir = NORTH
+	var/obj/structure/trains/platform/car = platform_car("storage", 44, 17, NORTH)
+	var/list/segs = platform_segments(car)
+	L.connected = car
+	var/obj/structure/trains/transport/flatbed/F = new(platform_turf(44, 13))
+	F.dir = NORTH
+	var/obj/structure/trains/platform/car_rear = segs[segs.len]
+	car_rear.connected = F
+	var/obj/structure/closet/crate/deck_crate = new(platform_turf(45, 15))
+	var/obj/item/stack/material/iron/bar = new(deck_crate)
+	var/obj/structure/closet/crate/wagon_crate = new(platform_turf(44, 13))
+	var/list/rear = W.rear_units()
+	platform_check("warehouse/rear_unit", rear.len == 1 && rear[1][1] == F)
+	var/mob/living/human/platform_rider/rider = new(platform_turf(44, 13))
+	platform_check("warehouse/refuses_riders", W.store_problem(rear[1]))
+	qdel(rider)
+	platform_check("warehouse/stores_wagon", W.put_away(null, rear[1], FALSE) == 1 && !isturf(F.loc) && !car_rear.connected && !isturf(wagon_crate.loc))
+	rear = W.rear_units()
+	platform_check("warehouse/stores_car", rear.len == 1 && W.put_away(null, rear[1], FALSE) == 1)
+	var/parts_left = 0
+	for (var/x in 43 to 45)
+		for (var/y in 14 to 17)
+			for (var/obj/structure/train_part/P in platform_turf(x, y))
+				parts_left++
+	platform_check("warehouse/car_off_map", !isturf(car.loc) && !isturf(deck_crate.loc) && bar.loc == deck_crate && !parts_left && !L.connected)
+	platform_check("warehouse/two_stored", W.stored_units().len == 2)
+
+	// Couple the car back on behind the locomotive.
+	var/obj/structure/rail_stored_unit/stored_car = null
+	var/obj/structure/rail_stored_unit/stored_wagon = null
+	for (var/obj/structure/rail_stored_unit/U in W.stored_units())
+		if (U.unit_length == TRAIN_CAR_LENGTH)
+			stored_car = U
+		else
+			stored_wagon = U
+	platform_check("warehouse/retrieves_car", stored_car && !W.retrieve_problem(stored_car, W.retrieve_place(stored_car)) && W.retrieve_unit(stored_car) == car)
+	platform_check("warehouse/car_coupled", L.connected == car && car.loc == platform_turf(44, 17) && car_rear.loc == platform_turf(44, 14) && platform_parts_placed(segs))
+	platform_check("warehouse/cargo_back", deck_crate.loc == platform_turf(45, 15) && bar.loc == deck_crate)
+	platform_check("warehouse/retrieves_wagon", stored_wagon && W.retrieve_unit(stored_wagon) == F && F.loc == platform_turf(44, 13) && car_rear.connected == F && wagon_crate.loc == platform_turf(44, 13))
+
+	// The whole train goes away from the back, then rolls out into an empty bay.
+	platform_check("warehouse/whole_train", W.put_away(null, null, TRUE) == 3 && !W.rear_units().len && W.stored_units().len == 3)
+	var/obj/structure/rail_stored_unit/loco_unit = null
+	for (var/obj/structure/rail_stored_unit/U in W.stored_units())
+		if (U.unit_name == L.name)
+			loco_unit = U
+	platform_check("warehouse/empty_bay", loco_unit && W.retrieve_unit(loco_unit) == L && L.loc == platform_turf(44, 19) && L.dir == NORTH)
+	var/obj/structure/rail_stored_unit/blocked = W.stored_units()[1]
+	var/obj/structure/closet/crate/large/obstacle = new(platform_turf(44, 18))
+	obstacle.density = TRUE
+	platform_check("warehouse/blocked_bay", W.retrieve_problem(blocked, W.retrieve_place(blocked)))
+	qdel(obstacle)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -297,6 +360,7 @@ var/global/platform_probe_runtime_error = FALSE
 	try
 		platform_probe_run()
 		platform_warfare_run()
+		platform_warehouse_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
