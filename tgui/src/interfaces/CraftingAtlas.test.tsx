@@ -204,5 +204,8 @@ describe('Crafting Atlas personal manuals', () => {
     fireEvent.click(screen.getByText('Return to dependency atlas'));
     view.rerender(<CraftingAtlas {...ui({ detail: recipe })} />);
     expect(screen.queryByRole('status')).toBeNull();
+    view.unmount();
+    render(<CraftingAtlas {...ui({ detail: locked })} />);
+    expect(screen.getByRole('status').textContent).toBe('Needs the Woodworking manual');
   });
 });
