@@ -82,7 +82,15 @@
 	return TRUE
 
 /obj/structure/component_workbench/proc/recipe_prompt(mob/living/human/H)
-	var/choice = input(H, "Recipe (changing returns stored items)", name, selected_tool) as null|anything in tool_recipes()
+	var/list/choices = list()
+	var/default_label = selected_tool
+	for (var/recipe_name in tool_recipes())
+		var/hint = recipe_manual_hint(H, recipe_name)
+		var/label = hint ? "[recipe_name] - [hint]" : recipe_name
+		choices[label] = recipe_name
+		if (recipe_name == selected_tool) default_label = label
+	var/selected_label = input(H, "Recipe (changing returns stored items)", name, default_label) as null|anything in choices
+	var/choice = selected_label ? choices[selected_label] : null
 	if (choice && select_recipe(H, choice)) to_chat(H, "[src] is now set to [selected_tool].")
 
 // No sleeping operations in this commit. Exact references must still be staged.
@@ -131,3 +139,7 @@
 	assembler = null
 	for (var/obj/item/I in contents.Copy()) I.forceMove(get_turf(src))
 	return ..()
+
+/obj/structure/component_workbench/proc/recipe_manual_hint(mob/living/human/H, choice)
+	var/list/recipes = tool_recipes()
+	return crafting_recipe_manual_hint(H, "[recipes[choice]]")

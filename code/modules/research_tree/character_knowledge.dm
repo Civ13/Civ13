@@ -36,6 +36,7 @@
 	known_recipe_nodes = clean_recipe_node_ids(known_recipe_nodes)
 	known_recipe_nodes |= node_id
 	recipe_knowledge_initialized = TRUE
+	refresh_recipe_knowledge_menus()
 	return TRUE
 
 /mob/living/human/proc/initialize_recipe_knowledge()

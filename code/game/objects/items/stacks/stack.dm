@@ -276,6 +276,10 @@
 					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
 				else
 					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
+			var/manual_hint = crafting_recipe_manual_hint(user, "[R.result_type]")
+			if (manual_hint)
+				t1 += "<span style='color:#aaa'>[title] - [html_encode(manual_hint)]</span>"
+				continue
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
