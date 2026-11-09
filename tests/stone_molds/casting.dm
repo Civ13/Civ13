@@ -6,6 +6,11 @@ var/list/stone_casting_ci_sprites = list()
 /mob/living/human/handle_ci/stone_casting_ci
 	var/transfer_amount = 1
 	var/transfer_prompts = 0
+	// While a prompt is open: "click" pours reenter_source into reenter_target
+	// again (lagged double-click); "away" moves reenter_source out of reach.
+	var/reenter_mode = null
+	var/obj/item/weapon/clay/mold/reenter_target = null
+	var/obj/item/weapon/clay/mold/reenter_source = null
 
 /mob/living/human/handle_ci/stone_casting_ci/getStatCoeff(statname)
 	return 2
@@ -15,6 +20,12 @@ var/list/stone_casting_ci_sprites = list()
 		recipe_ci_fail("stone casting", "numeric prompt received another actor")
 		return null
 	H.transfer_prompts++
+	var/mode = H.reenter_mode
+	H.reenter_mode = null
+	if (mode == "click")
+		H.reenter_target.attackby(H.reenter_source, H)
+	else if (mode == "away")
+		H.reenter_source.loc = locate(4, 3, 1)
 	return H.transfer_amount
 
 /proc/stone_casting_ci_expect(condition, label)
@@ -92,6 +103,24 @@ var/list/stone_casting_ci_sprites = list()
 			H.transfer_amount = 3
 			M.attackby(V, H)
 			stone_casting_ci_expect(M.capacity == 3 && V.capacity == 14, "same mold refills from remaining production copper")
+	// Lagged double-click: a second pour issued while the first prompt is open
+	// must be refused instead of paying again from stale amounts.
+	H.reenter_target = M
+	H.reenter_source = V
+	H.reenter_mode = "click"
+	H.transfer_amount = 2
+	prompts_before = H.transfer_prompts
+	M.attackby(V, H)
+	stone_casting_ci_expect(M.capacity == 2 && M.current_material == "copper" && V.capacity == 12 && H.transfer_prompts == prompts_before + 1 && !M.pouring && !V.pouring, "repeated pour during an open prompt is refused and metal is conserved")
+	// Source moved out of reach while the prompt is open: nothing transfers.
+	H.reenter_mode = "away"
+	H.transfer_amount = 1
+	M.attackby(V, H)
+	stone_casting_ci_expect(M.capacity == 2 && V.capacity == 12 && V.current_material == "copper" && !M.pouring && !V.pouring, "pour rechecks reach after the prompt")
+	V.loc = T
+	H.transfer_amount = 2
+	V.attackby(M, H)
+	stone_casting_ci_expect(M.capacity == 0 && isnull(M.current_material) && V.capacity == 14, "re-entry checks return their copper to the vessel")
 	var/obj/item/weapon/clay/mold/pickaxe/fired/sandstone/gold_mold = new(T)
 	H.transfer_amount = 3
 	gold_mold.attackby(G, H)
