@@ -60,3 +60,8 @@ saved), night-vision dazzle, the respawn countdown text, cell timers (who may
 set one, holding the door, counting down, saving and reloading, the cap,
 release) and breaching charges (filling, planting, blowing the door, who is
 knocked down, valid targets).
+
+The tenth batch checks ghost death notices (text, follow link, who gets one),
+last words (empty, length, kept for the roll of the fallen, the round-end
+lines) and the time since death on a body (rounding, the medic-only revive
+hint).
