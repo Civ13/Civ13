@@ -332,6 +332,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("rail_steam","combustion"), 5))
 	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
 	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("automobiles","combustion"), 6))
+	// Submarines (1900s) unlock the submarine pen that launches a diving boat.
+	register_research_node(new /datum/research_node("submarines", "Submarines", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
@@ -502,6 +504,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/car_workshop/submarine_pen" = "submarines",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
 		"/obj/item/vehicleparts/frame/boat/rhib" = "automobiles",

@@ -1956,6 +1956,7 @@ RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,automobile workshop,/obj/structure/car_workshop,30,230,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,260,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 
