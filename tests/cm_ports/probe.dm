@@ -64,6 +64,7 @@ var/probe_runtime_error = FALSE
 	seventh_batch_checks()
 	eighth_batch_checks()
 	ninth_batch_checks()
+	tenth_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -939,3 +940,50 @@ var/probe_runtime_error = FALSE
 	var/obj/structure/window/classic/WIN = new(locate(18, 25, 1))
 	var/obj/structure/window/barrier/SB = new(locate(19, 25, 1))
 	probe_check(breach_target_ok(WIN) && !breach_target_ok(SB) && !breach_target_ok(sapper), "charges fit doors and windows, not sandbags or people")
+
+/proc/tenth_batch_checks()
+	// Death notices
+	var/mob/living/human/fallen = probe_human(22, 22, "Fallen Hero")
+	var/area/A = get_area(fallen)
+	var/mob/observer/ghost/G = new
+	G.forceMove(locate(23, 22, 1))
+	var/notice = death_notice_text(fallen, G)
+	probe_check(findtext(notice, "Fallen Hero") && findtext(notice, "has died in [A.name]") && findtext(notice, "track=\ref[fallen]"), "death notices name the dead, the area and a follow link: [notice]")
+	probe_check(!death_notice_wanted(fallen), "bodies with no player get no notice")
+	fallen.mind = new /datum/mind("probe_key")
+	probe_check(death_notice_wanted(fallen), "player characters get a notice")
+	var/mob/living/human/corpse/C = new(locate(24, 22, 1))
+	C.mind = new /datum/mind("probe_key2")
+	probe_check(!death_notice_wanted(C), "map corpses never get a notice")
+	probe_check(send_death_notices(fallen) == 0, "ghosts with no client hear nothing")
+
+	// Last words
+	map.civilizations = FALSE
+	var/mob/living/human/dying = probe_human(22, 23, "Dying Soldier")
+	dying.faction_text = "Red"
+	probe_check(!clean_last_words("   ") && !dying.say_last_words(""), "empty last words say nothing")
+	var/said = dying.say_last_words("Tell my mother I tried")
+	probe_check(said == "Tell my mother I tried" && fallen_roll.last_words["Dying Soldier"] == said, "last words are said and kept for the roll of the fallen")
+	var/long = ""
+	for (var/i = 1 to 30)
+		long += "words "
+	probe_check(length(clean_last_words(long)) <= 120, "last words are kept short")
+	probe_check(findtext(jointext(fallen_roll.last_words_lines(), "|"), "<b>Dying Soldier</b>: \"Tell my mother I tried\""), "the round end lists last words")
+	map.civilizations = TRUE
+
+	// Time since death
+	probe_check(time_since_death_text(0) == "moments ago" && time_since_death_text(6000) == "about 10 minutes ago" && time_since_death_text(72000) == "about 2 hours ago", "the time since death is rounded for reading")
+	var/mob/living/human/body = probe_human(22, 24, "Body")
+	var/mob/living/human/doc = probe_human(23, 24, "Doc")
+	var/datum/job/MJ = new
+	MJ.is_medic = TRUE
+	doc.original_job = MJ
+	var/mob/living/human/bystander = probe_human(21, 24, "Bystander")
+	bystander.stats["medical"] = list(10, 10)
+	probe_check(!body.death_time_lines(doc).len, "the living show no time of death")
+	body.stat = DEAD
+	body.timeofdeath = world.time - 3000
+	var/doc_view = jointext(body.death_time_lines(doc), "|")
+	var/plain_view = jointext(body.death_time_lines(bystander), "|")
+	probe_check(findtext(doc_view, "died about 5 minutes ago") && findtext(doc_view, "defibrillator") || findtext(doc_view, "too late"), "medics see the time and whether a revive could work: [doc_view]")
+	probe_check(findtext(plain_view, "died about 5 minutes ago") && !findtext(plain_view, "defibrillator") && !findtext(plain_view, "too late"), "others see only the time: [plain_view]")
