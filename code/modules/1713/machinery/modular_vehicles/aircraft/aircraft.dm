@@ -5,8 +5,10 @@
 // runway tiles, the whole vehicle moves up to the level above the surface
 // (multiz_level_above), which on Gaia is the standing open-air building level.
 // There it flies in low flight (it can hit upper storeys) or cruise (it passes
-// over them). Descending in low flight over a runway at approach speed lands
-// it; anywhere else, or after a stall, it crash-lands.
+// over them). Descending in low flight at approach speed lands it: smoothly
+// over a runway, or in a rough landing over clear, dry open ground, which
+// strains the airframe and drags the plane to a stop. Over water, trenches,
+// lava or obstacles, or after a stall, it crash-lands.
 
 // AIRCRAFT_GROUND, AIRCRAFT_LOW and AIRCRAFT_CRUISE live in code/__defines/aircraft.dm.
 // Seconds without lift (engine off, too slow, stopped) before a stall crash.
@@ -107,6 +109,23 @@ var/global/list/airborne_aircraft = list()
 /turf/proc/arrests_aircraft()
 	return FALSE
 
+// Ground an aircraft can set down on without a runway: dry, level and solid.
+// Obstacles on it are checked separately (obstacle_at).
+/turf/proc/aircraft_rough_ground()
+	return !density
+
+/turf/sky/aircraft_rough_ground()
+	return FALSE
+
+/turf/floor/aircraft_rough_ground()
+	return ..() && !watertile && !water_level
+
+/turf/floor/trench/aircraft_rough_ground()
+	return FALSE
+
+/turf/floor/lava/aircraft_rough_ground()
+	return FALSE
+
 /proc/aircraft_runway_at(turf/T)
 	return T && (T.aircraft_runway() || (locate(/obj/covers/roads/modern/runway) in T))
 
@@ -135,6 +154,17 @@ var/global/list/airborne_aircraft = list()
 		if (aircraft_runway_at(locate(FR.x, FR.y, target_z)))
 			on++
 	return on / F.len
+
+// Whether every frame would stand on dry open ground at target_z.
+/obj/structure/vehicleparts/axis/aircraft/proc/rough_ground_below(target_z)
+	var/list/F = frames()
+	if (!F.len)
+		return FALSE
+	for (var/obj/structure/vehicleparts/frame/FR in F)
+		var/turf/T = locate(FR.x, FR.y, target_z)
+		if (!T || !T.aircraft_rough_ground())
+			return FALSE
+	return TRUE
 
 // The first thing at T that an aircraft on that level would fly into.
 /obj/structure/vehicleparts/axis/aircraft/proc/obstacle_at(turf/T)
@@ -287,6 +317,12 @@ var/global/list/airborne_aircraft = list()
 		return FALSE
 	var/runway = runway_share(down) >= AIRCRAFT_LANDING_RUNWAY_SHARE
 	var/hit = clear_at_level(down)
+	var/rough = !runway && !hit && rough_ground_below(down)
+	if (rough && currentspeed <= landing_gear)
+		return rough_landing(down)
+	if (rough)
+		to_chat(user, SPAN_WARNING("Too fast to land: slow to gear [landing_gear] or lower first."))
+		return FALSE
 	if (runway && !hit && currentspeed <= landing_gear)
 		if (!aircraft_shift(down))
 			return FALSE
@@ -306,7 +342,7 @@ var/global/list/airborne_aircraft = list()
 		crash_land(runway ? "a hard landing" : "a crash landing")
 		return TRUE
 	force_landing_until = world.time + AIRCRAFT_FORCE_LANDING_WINDOW
-	to_chat(user, SPAN_DANGER("[hit ? "[hit] is in the way below" : "There is no runway below"]. Descend again within five seconds to force a crash landing."))
+	to_chat(user, SPAN_DANGER("[hit ? "[hit] is in the way below" : "There is no runway or dry open ground below"]. Descend again within five seconds to force a crash landing."))
 	return FALSE
 
 // Down to the level below, broken and stopped. The aircraft comes down on the

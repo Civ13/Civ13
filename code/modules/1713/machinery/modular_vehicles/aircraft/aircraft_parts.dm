@@ -101,7 +101,7 @@
 // Throttle and steering work like a car's wheel; Climb and Descend change height.
 /obj/item/vehicleparts/wheel/modular/aircraft
 	name = "control column"
-	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling forward at full throttle (8 tiles of runway or 16 of open ground), and land by descending over a runway at low speed."
+	desc = "Use it to throttle up, right-click it to throttle down, steer with the arrow keys. Climb and Descend change height: take off by rolling forward at full throttle (8 tiles of runway or 16 of open ground), and land by descending at low speed: smoothly over a runway, or roughly on dry open ground."
 
 /obj/item/vehicleparts/wheel/modular/aircraft/proc/flown_aircraft(mob/user)
 	var/obj/structure/vehicleparts/axis/aircraft/A = control && control.axis
