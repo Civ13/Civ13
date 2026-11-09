@@ -1,8 +1,7 @@
 """Run the recipe knowledge fixture (tests/recipe_knowledge/game.dm) on Linux or Windows.
 
-Same procedure as run.ps1: production sources are compiled without ordinary
-startup or maps. The world
-runs with no listening port and unique temporary save storage, and the result
+Production sources compile without ordinary startup or maps. The world runs
+with no listening port and unique temporary save storage, and the result
 JSON names the tested commit and compiler build. The compiler must match the
 pin in tools/byond/version.json.
 

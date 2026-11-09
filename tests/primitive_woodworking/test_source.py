@@ -53,7 +53,7 @@ class Fixture:
         if mode=='flatten':
             self.tool.type='/obj/item/weapon/material/hatchet/tribal/flint'
         self.user=NS(type='/mob/living/human',deleted=False,stat=0,connected=True,reachable=True,
-                     site=self.site,woodwork_owner=None)
+                     site=self.site,woodwork_owner=None,researched=True)
         self.tool.loc=self.user
         self.wedge.loc=self.user
         self.user.l_hand=self.tool
@@ -78,7 +78,7 @@ class Fixture:
         def construct(kind,site,count=1):
             self.outputs.append((kind,count))
             self.construct_hook()
-        self.env=dict(QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
+        self.env=dict(crafting_node_allowed=lambda user,node: bool(user and user.researched and node=="basic_tools"), QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
                       istype=istype,ispath=lambda kind,parent:kind==parent or kind.startswith(parent+'/'),
                       get_turf=lambda obj:obj.site,
                       hide_worker_can_reach=lambda user,source:user.connected and user.reachable and user.stat==0 and not source.deleted and (source.loc is self.site or source.loc is user),
@@ -164,6 +164,7 @@ class WoodworkingContracts(unittest.TestCase):
     def test_cancel_move_transfer_stack_change_tool_loss_and_save_holds_pay_nothing(self):
         mutations={
             'cancel':lambda f:False,
+            'research_revoked':lambda f:setattr(f.user,'researched',False),
             'source_transfer':lambda f:setattr(f.source,'loc',NS(type='/obj/storage')),
             'actor_move':lambda f:setattr(f.user,'site',NS(type='turf')),
             'stock_split':lambda f:setattr(f.source,'amount',f.source.amount+1),

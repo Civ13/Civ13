@@ -108,7 +108,7 @@ def main(argv=None):
             if args.negative_control == 'armor-consumption':
                 armor = replace_once(armor, '\t\t\tS.use(cost[1])', '\t\t\tS.can_use(cost[1])')
             else:
-                armor = replace_once(armor, 'map.is_node_done(H.civilization, R["node"])', 'TRUE')
+                armor = replace_once(armor, 'crafting_node_allowed(H, R["node"])', 'TRUE')
             (build / 'armor.dm').write_text(armor, encoding='utf-8')
             dme = replace_once(dme, '#include "code\\game\\objects\\structures\\blacksmithing\\armor_workbench.dm"', f'#include "{build.as_posix()}/armor.dm"')
         dme = replace_once(dme, '#include "code\\controllers\\mc\\globals.dm"', f'#include "{build.as_posix()}/globals.dm"')
