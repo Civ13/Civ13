@@ -735,7 +735,9 @@ Shinobi's unfinished welder stuff - siro*/
 	else
 		. = ..()
 
-/obj/item/weapon/compass/modern/AltClick()
+/obj/item/weapon/compass/modern/AltClick(mob/user)
+	if (!istype(user, /mob/living) || user.incapacitated() || (loc != user && (!isturf(loc) || !user.Adjacent(src))))
+		return
 	..()
 	turn_on()
 
