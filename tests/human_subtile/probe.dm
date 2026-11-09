@@ -394,25 +394,37 @@ var/human_subtile_fixture_deer_watched = FALSE
 	D2.movement_eastwest = null
 	for (var/turf/WS in slide_wall)
 		WS.density = FALSE
-	// Free movement pulling: the pulled object follows the tiles the body's
-	// centre walked through, so it trails round a turn and never cuts sideways.
-	human_subtile_fixture_phase = "headless pull follow"
+	// Free movement pulling works like a rope: the pulled thing slides in
+	// pixels after the body, snags on walls, and the pull ends when too far.
+	human_subtile_fixture_phase = "headless pull rope"
 	var/mob/living/human/subtile_fixture/PF = human_subtile_fixture_actor(16, 6)
 	PF.set_human_subtile(TRUE)
 	var/obj/structure/pull_crate = new(locate(15, 6, 1))
 	pull_crate.anchored = FALSE
+	pull_crate.density = TRUE
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1), "pull_waits_while_touching")
-	PF.loc = locate(16, 7, 1)
-	human_subtile_fixture_place(PF, 0, 2)
+	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(15, 6, 1) && !pull_crate.step_x, "pull_waits_while_touching")
+	human_subtile_fixture_place(PF, 8, 0)
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_follows_round_a_turn")
-	human_subtile_fixture_place(PF, 0, 16)
-	PF.pulling = pull_crate
-	pull_crate.pulledby = PF
-	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 6, 1), "pull_never_steps_sideways")
+	var/rope_first = PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.step_x == 4 && !pull_crate.step_y
+	PF.human_subtile_pull_follow()
+	human_subtile_fixture_assert(rope_first && pull_crate.x == 15 && pull_crate.step_x == 6 && !PF.human_subtile_pull_follow() && PF.pulling == pull_crate, "pull_rope_trails_in_pixels")
+	// Pulling straight into a wall snags: no free axis or corner to slide round.
+	var/turf/rope_wall = locate(17, 10, 1)
+	rope_wall.density = TRUE
+	var/mob/living/human/subtile_fixture/PS = human_subtile_fixture_actor(17, 11)
+	PS.set_human_subtile(TRUE)
+	var/obj/structure/snag_crate = new(locate(17, 9, 1))
+	snag_crate.anchored = FALSE
+	snag_crate.density = TRUE
+	PS.pulling = snag_crate
+	snag_crate.pulledby = PS
+	var/snagged = !PS.human_subtile_pull_follow() && snag_crate.loc == locate(17, 9, 1) && !snag_crate.step_x && !snag_crate.step_y
+	human_subtile_fixture_assert(snagged, "pull_snags_on_walls")
+	human_subtile_fixture_assert(!PS.pulling && !snag_crate.pulledby, "pull_breaks_when_too_far")
+	rope_wall.density = FALSE
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
