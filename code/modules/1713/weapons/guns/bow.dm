@@ -35,9 +35,14 @@
 	gtype = "none"
 	load_delay = 30
 	accuracy = 4
+	// Bows can lob arrows high over cover (projectile_lob.dm); lob_mode is the current setting.
+	var/can_lob = TRUE
+	var/lob_mode = FALSE
 
 /obj/item/weapon/gun/projectile/bow/New()
 	..()
+	if (!can_lob)
+		verbs -= /obj/item/weapon/gun/projectile/bow/verb/toggle_arc
 	if (map && !map.civilizations)
 		if (map.ordinal_age == 1)
 			loaded = list()
@@ -132,8 +137,44 @@
 	update_icon()
 
 /obj/item/weapon/gun/projectile/bow/Fire(atom/target, mob/living/user, clickparams = null, pointblank = FALSE, reflex = FALSE, forceburst = -1, force = FALSE, accuracy_mod = 1)
+	if (lob_mode && can_lob && user && los_turf_roofed(get_turf(user)))
+		to_chat(user, SPAN_WARNING("There is no room to lob an arrow under a roof. Alt-click \the [src] to shoot straight."))
+		return
 	..()
 	update_icon()
+
+// Direct fire shoots straight at what you click (with arrow drop on hill maps);
+// lobbed fire arcs high over cover and comes down on the clicked tile.
+/obj/item/weapon/gun/projectile/bow/proc/toggle_lob(mob/user)
+	if (!can_lob)
+		return
+	lob_mode = !lob_mode
+	if (user)
+		to_chat(user, SPAN_NOTICE(lob_mode ? "You will lob arrows high over cover, coming down where you aim." : "You will shoot arrows straight at your target."))
+		balloon_alert(user, lob_mode ? "lobbed" : "direct")
+
+/obj/item/weapon/gun/projectile/bow/verb/toggle_arc()
+	set name = "Toggle Firing Arc"
+	set category = null
+	set src in usr
+	toggle_lob(usr)
+
+/obj/item/weapon/gun/projectile/bow/AltClick(mob/user)
+	if (can_lob && user && loc == user)
+		toggle_lob(user)
+		return
+	..()
+
+/obj/item/weapon/gun/projectile/bow/examine(mob/user)
+	..()
+	if (can_lob)
+		to_chat(user, SPAN_NOTICE("It is set to [lob_mode ? "lob arrows high over cover" : "shoot straight"]. Alt-click it to switch."))
+
+/obj/item/weapon/gun/projectile/bow/process_projectile(obj/projectile, mob/user, atom/target, var/target_zone, var/params=null)
+	. = ..()
+	var/obj/item/projectile/P = projectile
+	if (!. && lob_mode && can_lob && istype(P) && !QDELETED(P) && P.loc && P.starting)
+		P.lob_plan(target, lob_scatter(get_dist(P.starting, target), P.dispersion))
 
 /obj/item/weapon/gun/projectile/bow/shortbow
 	name = "shortbow"
@@ -241,3 +282,4 @@
 	load_delay = 10
 	projtype = "stone"
 	accuracy = 10
+	can_lob = FALSE

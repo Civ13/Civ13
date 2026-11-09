@@ -261,6 +261,31 @@ Shrapnel, shells, aircraft guns and redirected shots keep the flat rules. The
 work is two height lookups and a square root per tile, about 0.008 ms against
 0.001 ms without heights, and maps without a height file skip it entirely.
 
+#### Lobbed arrows
+
+Bows (not crossbows or slings) have two firing arcs, switched by alt-clicking
+the bow in hand, the **Toggle Firing Arc** verb, and shown on examine. Direct
+is the shot above: straight at the target, with arrow drop on hill maps
+(sighted in at 5 tiles). Lobbed (`code/modules/projectiles/projectile_lob.dm`)
+sends the arrow up a high arc that comes down on the clicked tile:
+
+- The landing tile scatters around the aim point with a standard deviation of
+  `0.25 + 0.08 * distance + |dispersion| / 25` tiles, so moving or a long
+  lob lands less precisely.
+- The arc rises `3 + 0.5 * distance` levels above the straight line from the
+  bow (ground plus 1.4) to the landing point (ground plus 0.5). On the way it
+  passes over people, cover, walls, trees and roofs; only ground above the
+  arc stops it ("strikes the hillside"). Without a height file nothing stops
+  it before it lands.
+- On the landing tile it hits the aimed-at person with 70% chance (others
+  standing there 42%), striking from above (head, chest and arms most often).
+  A roofed tile takes it on the roof and a wall stops it; otherwise it sticks
+  in the ground.
+- Flight takes `0.3 + 0.06 * distance` seconds instead of a fraction of one,
+  so a moving target can walk out from under it.
+- It cannot be lobbed from under a roof. In flight the arrow sprite grows and
+  rises toward the top of the arc.
+
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.
 
@@ -276,6 +301,10 @@ with its level; use it again to hide the labels.
   below the line, uphill to a crest, bullet drop with and without hold-over,
   a cliff shot forgiving drop, flat-ground controls and cost;
   NPC sight over the ridge; `--negative-control ridge|cover|margin|npc|drop|span|holdover` must fail).
+- `python3 tests/bow_lob/run.py --byond-bin <dir>` (native: lobbed arrows on
+  a 16x6 world: over a wall to a target the direct shot cannot reach, over a
+  bystander, into a ridge, onto a roof, scatter growing with distance, flight
+  time and the bow's toggle; `--negative-control arc|ridge|roof|scatter` must fail).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).

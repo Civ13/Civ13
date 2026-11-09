@@ -1329,6 +1329,7 @@
 #include "code\modules\projectiles\effects.dm"
 #include "code\modules\projectiles\gun.dm"
 #include "code\modules\projectiles\projectile_heights.dm"
+#include "code\modules\projectiles\projectile_lob.dm"
 #include "code\modules\projectiles\projectile.dm"
 #include "code\modules\projectiles\guns\projectile.dm"
 #include "code\modules\projectiles\guns\projectile\dartgun.dm"
