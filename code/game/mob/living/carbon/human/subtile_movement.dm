@@ -586,7 +586,7 @@
 /datum/human_subtile_transaction/proc/valid(direction)
 	if (cancelled || !actor || isDeleted(actor) || actor.human_subtile_transaction != src || (persistence_save_in_progress && !human_subtile_save_motion_allowed()) || world.time > end_time + world.tick_lag)
 		return FALSE
-	if (fine_step && !actor.human_subtile_fine_ready(direction))
+	if (fine_step && !paid_posture && !actor.human_subtile_fine_ready(direction))
 		return FALSE
 	if (paid_posture)
 		if (!actor.scrambling || !actor.human_subtile_enabled || !actor.human_subtile_crawl_ready(direction) || !actor.human_subtile_crawl_authority(owner) || actor.prone != initial_prone || actor.lying != initial_lying)
