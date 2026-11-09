@@ -136,7 +136,8 @@ var/node_failures = 0
 		S.start_node_lesson(teacher, id)
 		node_fixture_time += 21
 		S.tick_node_lesson()
-		node_check(!S.node_lesson_id, "unobserved scheduler gaps receive no credit")
+		node_check(S.node_lesson_id && S.node_lesson_progress == 0, "unobserved scheduler gaps receive no credit but keep the session")
+		S.stop_node_lesson()
 		node_fixture_time += 601
 		S.start_node_lesson(teacher, id)
 		var/datum/research_node/N = get_research_node(id)

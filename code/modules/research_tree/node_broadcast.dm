@@ -115,11 +115,14 @@ var/global/list/active_node_lesson_stations = list()
 	if (!node_lesson_id) return
 	var/now = node_lesson_time()
 	var/elapsed = now - node_lesson_last_tick
-	// A stalled process must not credit an unobserved gap as attendance.
-	if (elapsed < 0 || elapsed > 20 || !node_teacher_eligible(node_lesson_teacher, node_lesson_id))
+	if (elapsed < 0 || !node_teacher_eligible(node_lesson_teacher, node_lesson_id))
 		stop_node_lesson()
 		return
 	node_lesson_last_tick = now
+	// A stalled low-priority process must not credit an unobserved gap as
+	// attendance, but server lag alone should not cancel the whole lesson.
+	if (elapsed > 20)
+		elapsed = 0
 	for (var/mob/living/human/listener in node_lesson_listeners.Copy())
 		if (!node_listener_eligible(listener, node_lesson_listeners[listener], node_lesson_id))
 			node_lesson_listeners.Remove(listener)
