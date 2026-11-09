@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "provenance": "Synthetic offline observations and model replies. No captured player data or credentials.",
+  "character": "fixture-character",
+  "frames": [
+    {
+      "at": 10,
+      "result": {
+        "self": {
+          "ref": "[0x9]",
+          "name": "Fixture Scout",
+          "x": 10,
+          "y": 20,
+          "z": 1
+        },
+        "rev": 1,
+        "nearby": [
+          {
+            "ref": "[0x2]",
+            "name": "fixture wolf",
+            "dx": 3,
+            "dy": 0,
+            "mob": true
+          },
+          {
+            "ref": "[0x3]",
+            "name": "fixture rock",
+            "dx": 1,
+            "dy": 1
+          }
+        ]
+      },
+      "expected_nearby": [
+        "fixture rock",
+        "fixture wolf"
+      ],
+      "model": "{\"do\":\"click\",\"target\":2}",
+      "expected_action": {
+        "do": "click",
+        "target": "[0x2]"
+      }
+    },
+    {
+      "at": 12,
+      "result": {
+        "self": {
+          "ref": "[0x9]",
+          "name": "Fixture Scout",
+          "x": 11,
+          "y": 20,
+          "z": 1
+        },
+        "rev": 2,
+        "changes_since": 1,
+        "nearby": [],
+        "nearby_removed": [
+          "[0x2]"
+        ]
+      },
+      "expected_nearby": [
+        "fixture rock"
+      ],
+      "model": "{\"do\":\"click\",\"target\":2}",
+      "expected_action": null,
+      "last_seen": {
+        "name": "fixture wolf",
+        "age_s": 2,
+        "stale": true,
+        "provenance": "character_observe",
+        "last_seen_rev": 1,
+        "position": {
+          "x": 13,
+          "y": 20,
+          "z": 1
+        }
+      }
+    },
+    {
+      "at": 15,
+      "result": {
+        "self": {
+          "ref": "[0x9]",
+          "name": "Fixture Scout",
+          "x": 11,
+          "y": 20,
+          "z": 1
+        },
+        "rev": 3,
+        "changes_since": 2,
+        "nearby": [
+          {
+            "ref": "[0x2]",
+            "name": "fixture wolf",
+            "dx": 1,
+            "dy": 1
+          }
+        ],
+        "nearby_removed": []
+      },
+      "expected_nearby": [
+        "fixture rock",
+        "fixture wolf"
+      ],
+      "model": "{\"do\":\"click\",\"target\":true}",
+      "expected_action": null
+    },
+    {
+      "at": 20,
+      "result": {
+        "self": {
+          "ref": "[0x9]",
+          "name": "Fixture Scout",
+          "x": 11,
+          "y": 20,
+          "z": 1
+        },
+        "rev": 4,
+        "changes_since": 3,
+        "nearby": [],
+        "nearby_removed": [
+          "[0x2]"
+        ]
+      },
+      "expected_nearby": [
+        "fixture rock"
+      ],
+      "model": "{\"do\":\"click\",\"target\":1}",
+      "expected_action": {
+        "do": "click",
+        "target": "[0x3]"
+      },
+      "last_seen": {
+        "name": "fixture wolf",
+        "age_s": 5,
+        "stale": true,
+        "provenance": "character_observe",
+        "last_seen_rev": 3,
+        "position": {
+          "x": 12,
+          "y": 21,
+          "z": 1
+        }
+      }
+    }
+  ]
+}

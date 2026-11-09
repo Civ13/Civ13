@@ -8,6 +8,9 @@ the host creates `config/agent-control.txt`.
 Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
 `tools/agent-control/`. Tests: `tests/agent_control/`.
 
+Observation authority, stale visual memory, replay format and navigation limits:
+[observation contract](agent-observation-contract.md).
+
 ## Security model
 
 - **Off by default.** Without `config/agent-control.txt` (git-ignored) or with

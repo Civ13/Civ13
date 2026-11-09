@@ -320,6 +320,7 @@ def summarize(observation, note="", ignored=(), muted=()):
         if news.get("left"):
             moved.append("went out of view: " + ", ".join(dict.fromkeys(map(str, news["left"][:8]))))
         lines.append("Since your last look, " + "; ".join(moved) + ".")
+    lines.extend(senses.last_seen_lines(news.get("last_seen") or []))
     heard = senses.heard_lines(news.get("sounds") or [])
     if heard:
         lines.append("Sounds you heard: " + "; ".join(heard) + ".")
