@@ -25,6 +25,7 @@ WALK_CHUNK = 10  # moves queued at once; a blocked one re-plans
 SAIL_CHUNK = 8
 MAX_ROUNDS = 12  # route requests per travel step
 MAX_TILES = 150  # the game plans at most this far ahead
+BLOCKED_REPLANS = 1  # one fresh route after a confirmed zero-progress blockage
 MOORED = re.compile(r"left the (.+?) moored at \((\d+),(\d+),(\d+)\)")
 
 
@@ -140,9 +141,23 @@ def _moves(letters):
 
 def _ran(summary, word="move"):
     """(moves that went, whether one was blocked or failed) from an execute summary."""
-    went = summary.count(f"{word} ok (done)")
-    stopped = f"{word} ok (blocked)" in summary or "failed" in summary or "refused" in summary
+    outcomes = [part.strip() for part in summary.split(";") if part.strip()]
+    went = outcomes.count(f"{word} ok (done)")
+    stopped = not outcomes or any(part != f"{word} ok (done)" for part in outcomes)
     return went, stopped
+
+
+def _confirmed_blockage(summary):
+    """Only a blocked move and its known terminal suffix may be replanned."""
+    outcomes = [part.strip() for part in summary.split(";") if part.strip()]
+    allowed = {"move ok (done)", "move ok (blocked)",
+               "move failed (skipped: an earlier move was blocked)", "stopped there"}
+    return "move ok (blocked)" in outcomes and all(part in allowed for part in outcomes)
+
+
+def _can_replan(summary, replans):
+    """Retry only confirmed blocked moves, never a refusal or an uncertain outcome."""
+    return replans < BLOCKED_REPLANS and _confirmed_blockage(summary)
 
 
 def _refuel_steps(boat, self_state):
@@ -158,6 +173,7 @@ def travel(client, character, step, queue_since, hooks, budget=60):
     x, y = step["x"], step["y"]
     run, craft_steps = hooks["run"], hooks["craft_steps"]
     travelled = 0
+    blocked_replans = 0
     notes = []
     for _ in range(MAX_ROUNDS):
         if travelled >= budget:
@@ -185,7 +201,12 @@ def travel(client, character, step, queue_since, hooks, budget=60):
             summary, queue_since = run(_moves(leg["moves"][:WALK_CHUNK]), queue_since)
             went, stopped = _ran(summary)
             travelled += went
+            if stopped and not _confirmed_blockage(summary):
+                return False, f"movement stopped ({summary[-120:] or 'no movement receipt'})", queue_since
             if stopped and not went:
+                if _can_replan(summary, blocked_replans):
+                    blocked_replans += 1
+                    continue
                 return travelled > 0, f"the way is blocked ({summary[-120:]})", queue_since
             continue
         # A boat leg: she is at the launch tile, or afloat.
@@ -201,7 +222,12 @@ def travel(client, character, step, queue_since, hooks, budget=60):
             summary, queue_since = run(_moves(leg["moves"][:SAIL_CHUNK]), queue_since)
             went, stopped = _ran(summary)
             travelled += went
+            if stopped and not _confirmed_blockage(summary):
+                return False, f"movement stopped ({summary[-120:] or 'no movement receipt'})", queue_since
             if stopped and not went:
+                if _can_replan(summary, blocked_replans):
+                    blocked_replans += 1
+                    continue
                 return travelled > 0, f"the {aboard.get('name')} is stuck ({summary[-120:]})", queue_since
             continue
         boats = [b for b in route.get("boats") or [] if not b.get("driver")]
@@ -247,6 +273,7 @@ def travel(client, character, step, queue_since, hooks, budget=60):
 
 def route_to(client, character, xy, queue_since, run, limit=6):
     """Walk (no boat) to a tile. Returns (ok, detail, queue_since)."""
+    blocked_replans = 0
     for _ in range(limit):
         route, error = _route(client, character, xy[0], xy[1])
         if route is None or not route.get("reachable"):
@@ -258,7 +285,12 @@ def route_to(client, character, xy, queue_since, run, limit=6):
             return False, "it is across water", queue_since
         summary, queue_since = run(_moves(legs[0]["moves"][:WALK_CHUNK]), queue_since)
         went, stopped = _ran(summary)
+        if stopped and not _confirmed_blockage(summary):
+            return False, f"movement stopped ({summary[-120:] or 'no movement receipt'})", queue_since
         if stopped and not went:
+            if _can_replan(summary, blocked_replans):
+                blocked_replans += 1
+                continue
             return False, "blocked", queue_since
     return False, "still walking", queue_since
 

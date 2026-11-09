@@ -1,3 +1,4 @@
+#include "action_contract_probe.dm"
 /world
 	hub = ""
 	hub_password = ""
@@ -45,6 +46,7 @@ var/observe_runtime_error = FALSE
 		observe_prompt_checks()
 		observe_sound_checks()
 		observe_queue_checks()
+		observe_action_contract_checks()
 		observe_view_checks()
 	catch(var/exception/e)
 		observe_check(FALSE, "exception [e] [e.file]:[e.line]")
