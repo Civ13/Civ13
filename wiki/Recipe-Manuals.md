@@ -14,3 +14,6 @@ a manual cannot let you craft technology your faction or era has not unlocked.
 Completed research produces one manual for the faction. More distribution and
 copying options are planned next. This feature is off by default and does not
 change ordinary round-map personal-knowledge requirements.
+
+After death, a new character currently studies for the same one minute. A shorter
+relearning time is not yet defined; already-known manuals need no further study.

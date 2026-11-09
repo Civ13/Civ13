@@ -48,7 +48,8 @@ def annotate_research(records, files, canon):
         elif kind == 'Factory fabricator':
             required = [recipe['raw'].split('|')[-1].strip()]
         elif kind == 'Foundry casting':
-            required = sorted({'machined_tools'} | {canonical[value] for value in outputs if value in canonical})
+            required = (sorted({'machined_tools'} | {canonical[value] for value in outputs})
+                        if outputs and all(value in canonical for value in outputs) else [])
         elif kind == 'Armor assembly':
             match = re.search(r'"node" = "([^"\n]+)"', recipe['raw'])
             required = [match[1]] if match else []
