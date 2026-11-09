@@ -36,6 +36,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'cane_stance': {'files': ('tests/cane_stance/test_cane_stance.py',),
+        'paths': ('tests/cane_stance/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
     'extinguisher': {'files': ('tests/extinguisher/test_initial_water.py',),
         'paths': ('tests/extinguisher/',), 'shared_paths': (
             'code/game/objects/items/weapons/tools.dm', 'config/crafting/material_recipes_global.txt')},
