@@ -17,6 +17,11 @@ Existing saved bodies receive one grant of the nodes unlocked by their restored
 faction and era, after world restoration. The marker and list are saved on each
 body. New bodies created with this feature enabled start empty, including after
 save/reload. Death clears personal knowledge; a fresh body does not inherit it.
+Already-known manuals return immediately. Faster relearning after death is not
+implemented: the plan does not define book ownership or whether memory may
+survive death, and this phase adds no account-level or seen-node history.
+That balance rule remains unresolved.
+
 AI-controlled Nomads are exempt from the personal gate, not the research ceiling.
 NPC trader shops are not player crafting actions.
 

@@ -39,6 +39,9 @@ var/list/component_errors = list()
 /proc/run_component_checks()
 	world.OpenPort("none")
 	populate_material_list()
+	map = new /obj/map_metadata/armor_ci
+	map.ordinal_age = 0
+	build_research_tree()
 	var/turf/T = locate(1,1,1)
 	var/mob/living/human/component_ci/H = new(T)
 	for (var/head_type in list(/obj/item/weapon/material/part/pickaxe, /obj/item/weapon/material/part/shovel, /obj/item/weapon/material/part/axehead/hatchet))

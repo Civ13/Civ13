@@ -45,3 +45,6 @@ stolen or destroyed. Compendiums save only bounded text IDs, not references.
 Knowledge-bearing travel requires updated peers; older regions reject it rather
 than silently discard your knowledge or manuals. This feature is off by default and does not
 change ordinary round-map personal-knowledge requirements.
+
+After death, a new character currently studies for the same one minute. A shorter
+relearning time is not yet defined; already-known manuals need no further study.
