@@ -320,14 +320,20 @@
 	if(!moving_save_chunk && istype(A, /atom/movable) && moving_save_roots["\ref[A]"])
 		var/list/root = moving_save_roots["\ref[A]"]
 		if(root["atom"] != A) throw EXCEPTION("Moving save root identity changed")
-		if(!saving_references[A]) return capture_moving_save_root(savefile, root)
+		if(!saving_references[A])
+			var/moving_ref = capture_moving_save_root(savefile, root)
+			if(moving_ref) return moving_ref
+			// Declined before any allocation: the root left the roster and
+			// continues on the ordinary path below.
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(!human_request && !moving_save_chunk && ishuman(A))
 		var/list/human_root = classify_human_save_entry(A, persistence_active_operation)
 		if(human_root["mode"] == "spatial" && !saving_references[save_entry_identity(A)]) return capture_human_save_root(savefile, human_root)
 #endif
 	if(moving_save_chunk && istype(A, /atom/movable) && A != moving_save_chunk.root && !saving_references[A])
-		throw EXCEPTION("Moving save chunk references an uncaptured external movable")
+		var/datum/save_export_frame/chunk_owner = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+		var/chunk_field = istype(chunk_owner, /datum/save_export_frame) && istext(chunk_owner.current_field) ? copytext("[chunk_owner.current_field]", 1, 81) : "none"
+		throw EXCEPTION("Moving save chunk references an uncaptured external movable: root=[moving_save_chunk.root ? moving_save_chunk.root.type : "null"] external=[A.type] field=[chunk_field]")
 	var/identity = save_entry_identity(A)
 	var/ind = saving_references[identity]
 	var/ref = 0
@@ -738,6 +744,17 @@
 		if((key in A.vars) && length(A.vars[key])) return FALSE
 	return TRUE
 
+// Side-effect-free closure walk (see /datum/moving_save_preflight): TRUE when
+// every saved value of A stays inside the chunk.
+/map_storage/proc/moving_save_root_closed(mob/living/simple_animal/A)
+	var/datum/moving_save_preflight/preflight = new
+	preflight.exporter = src
+	preflight.root = A
+	preflight.start_tick = world.time
+	preflight.start_usage = world.tick_usage
+	preflight.timed = FALSE
+	return preflight.accept(A)
+
 /map_storage/proc/prepare_moving_save_roster()
 	moving_save_roots = list()
 	// Fixtures without the production registry retain the legacy path.
@@ -863,8 +880,12 @@
 	var/work = 0
 	var/bytes = 0
 	var/list/seen = list()
+	// Admission spends at most 5% of a tick per animal. The capture-time
+	// recheck is untimed: its work and depth bounds already cap the walk, and a
+	// busy tick must not turn a closed animal away (it would only slow saves).
+	var/timed = TRUE
 	proc/accept(value, depth = 0)
-		if(++work > 512 || depth > 32 || world.time != start_tick || world.tick_usage - start_usage > 5) return FALSE
+		if(++work > 512 || depth > 32 || world.time != start_tick || (timed && world.tick_usage - start_usage > 5)) return FALSE
 		if(istext(value))
 			bytes += 4 * length(value)
 			return bytes <= 262144
@@ -895,7 +916,7 @@
 		for(var/field in fields)
 			if(D.persistence_runtime_var(field) || (field in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))) continue
 			if((field in D.vars) && !accept(D.vars[field], depth + 1)) return FALSE
-		return world.time == start_tick && world.tick_usage - start_usage <= 5
+		return world.time == start_tick && (!timed || world.tick_usage - start_usage <= 5)
 
 /datum/moving_save_capture
 	should_save = FALSE
@@ -1114,6 +1135,14 @@
 			throw EXCEPTION("Moving save capture has no tick headroom after bounded wait")
 	if(!A || record["atom"] != A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
 		throw EXCEPTION("Admitted moving save root changed containment, level or identity")
+	// Admission ran when the save began; a level can take minutes to reach
+	// this animal. If it has since picked up a reference to another movable
+	// (a target, a herd mate, a held item), the chunk cannot capture it.
+	// Repeat the side-effect-free closure walk and hand the animal back to
+	// the ordinary path instead (Gaia, 2026-11-09). Nothing is allocated yet.
+	if(!moving_save_root_closed(A))
+		moving_save_roots -= record["identity"]
+		return 0
 	var/turf/origin = A.loc
 	var/admission_usage = world.tick_usage
 	var/savefile/staged = new
@@ -1137,6 +1166,8 @@
 		// Keep this animal on the ordinary turf path from the next save on, so
 		// the same root cannot refuse every later save.
 		if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE
+		// A save hook can still add an outside reference after the recheck.
+		if(findtext("[error]", "uncaptured external movable")) moving_save_demoted[record["identity"]] = TRUE
 		throw error
 	moving_save_chunk = null
 	if(chunk.overrun_usage)
@@ -1235,7 +1266,8 @@
 		saving_content_owners[key] = parent_ref
 
 /map_storage/proc/drain_moving_save_roster(savefile/F)
-	for(var/identity in moving_save_roots)
+	// A root declined at capture leaves the roster; walk a copy.
+	for(var/identity in moving_save_roots.Copy())
 		var/list/record = moving_save_roots[identity]
 		if(record["z"] != saving_z) continue
 		var/mob/living/simple_animal/A = record["atom"]
@@ -1245,7 +1277,11 @@
 		if(!ref && (!A || A.gcDestroyed)) continue
 		if(!A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member disappeared or changed ownership")
-		if(!ref) ref = capture_moving_save_root(F, record)
+		if(!ref)
+			ref = capture_moving_save_root(F, record)
+			// Declined: no longer a roster root. The straggler sweep below
+			// saves it on its tile like any other uncaptured animal.
+			if(!ref) continue
 		// Replay yields too: match the ordinary traversal post-capture refusal.
 		if(!A || record["atom"] != A || "\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)
 			throw EXCEPTION("Moving save roster member changed during chunk replay")
