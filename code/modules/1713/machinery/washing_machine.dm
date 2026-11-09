@@ -16,6 +16,11 @@
 	var/water_stored = 0
 	// Mapped machines keep their own mains supply; the crafted piped model draws pumped water.
 	var/needs_pipe_water = FALSE
+	// One loaded soap or detergent dose, spent by the next finished cycle.
+	var/detergent_resist = 0
+	var/detergent_ticks = 0
+	var/detergent_name = null
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;water_stored;detergent_resist;detergent_ticks;detergent_name"
 
 #define WASHING_MACHINE_WATER 20
 
@@ -34,6 +39,14 @@
 
 /obj/machinery/washing_machine/after_load()
 	. = ..()
+	// The wash list is not saved: rebuild it from what is still inside. A cycle
+	// interrupted by the save stops with the door closed.
+	washing.Cut()
+	for (var/obj/item/I in contents)
+		if (istype(I, /obj/item/clothing) || istype(I, /obj/item/weapon/bedsheet))
+			washing += I
+	state = washing.len ? 4 : 2
+	update_icon()
 	fluid_mark_dirty()
 
 /obj/machinery/washing_machine/fluid_demand_tier()
@@ -55,6 +68,8 @@
 	..(user, distance)
 	if (needs_pipe_water)
 		to_chat(user, SPAN_NOTICE("Water in the machine: [round(water_stored)]/[WASHING_MACHINE_WATER] units."))
+	if (detergent_ticks > 0)
+		to_chat(user, SPAN_NOTICE("A dose of [detergent_name] is loaded for the next wash."))
 
 /obj/machinery/washing_machine/proc/wash_water_available()
 	if (fluid_networks_dirty)
@@ -105,6 +120,10 @@
 	for(var/obj/item/clothing/C in washing)
 		C.dirtyness = -100
 		C.fleas = FALSE
+		C.apply_laundry_treatment(detergent_resist, detergent_ticks)
+	detergent_resist = 0
+	detergent_ticks = 0
+	detergent_name = null
 	state = 4
 	update_icon()
 
@@ -117,6 +136,10 @@
 
 	if(is_type_in_list(W, disallowed_types))
 		to_chat(user, SPAN_WARNING("You can't fit \the [W] inside."))
+		return
+
+	else if(W.laundry_resist() > 0)
+		load_detergent(W, user)
 		return
 
 	else if(istype(W, /obj/item/clothing) || istype(W, /obj/item/weapon/bedsheet))
@@ -133,6 +156,21 @@
 	else
 		..()
 	update_icon()
+
+// Takes one dose from a soap bar or detergent box for the next cycle.
+/obj/machinery/washing_machine/proc/load_detergent(obj/item/W, mob/user)
+	if (state == 5)
+		to_chat(user, SPAN_WARNING("\The [src] is busy."))
+		return FALSE
+	if (detergent_ticks > 0)
+		to_chat(user, SPAN_NOTICE("\The [src] already has [detergent_name] loaded."))
+		return FALSE
+	detergent_resist = W.laundry_resist()
+	detergent_ticks = W.laundry_ticks()
+	detergent_name = W.name
+	to_chat(user, SPAN_NOTICE("You add some [W.name] to \the [src]."))
+	W.use_laundry_dose(user)
+	return TRUE
 
 /obj/machinery/washing_machine/attack_hand(mob/user as mob)
 	switch(state)

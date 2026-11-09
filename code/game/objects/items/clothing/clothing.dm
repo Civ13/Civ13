@@ -79,6 +79,7 @@
 			to_chat(user, "Looks extremely dirty!")
 	if (fleas)
 		to_chat(user, "<b>\The [src] is infested with fleas!</b>")
+	examine_laundry(user)
 ///////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/head/helmet

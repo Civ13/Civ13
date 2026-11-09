@@ -93,6 +93,9 @@ def restore_crafting_projection(path, source):
              '\t\t\t\tif (!TO.is_diggable)\n\t\t\t\t\treturn\n'),
             # Dig-down maps hand tunnel digging to dug_underground_tunnel first.
             ('\tif (user.ant && dug_underground_tunnel(user))\n\t\treturn\n', ''),
+            # Laundry: washing clothes in water shares the hand_wash proc (tests/laundry).
+            ('\t\t\tCL.hand_wash(user)\n',
+             '\t\t\tCL.clean_blood()\n\t\t\tCL.radiation = 0\n\t\t\tCL.dirtyness = 0\n\t\t\tCL.fleas = FALSE\n'),
             # Explosion remains: no tunnel down from a turf above the ground.
             ('\t\t\tif (turf_is_above_ground(get_turf(user)))\n\t\t\t\tto_chat(user, SPAN_NOTICE("You can\'t dig a tunnel here, there is no earth below."))\n\t\t\t\treturn\n', ''),
         )
