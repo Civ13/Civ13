@@ -35,6 +35,11 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertIn('/mob/living/human/practice/record_persistence_owner()\n\tpersistence_owner_ckey = null', rooms)
         self.assertIn('CM-SS13', rooms)
 
+    def test_ended_body_drops_its_key(self):
+        rooms = read('code/modules/1713/practice_rooms.dm')
+        end = rooms[rooms.index('/datum/practice_session/proc/end(reason)'):]
+        self.assertLess(end.index('body.key = null'), end.index('qdel(body)'))
+
     def test_lobby_link(self):
         lobby = read('code/game/mob/new_player/new_player.dm')
         self.assertIn('practice=1', lobby)

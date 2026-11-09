@@ -379,6 +379,11 @@ var/global/datum/practice_rooms/practice_rooms = new
 		practice_send_to_lobby(C)
 	if (body && !QDELETED(body))
 		body.practice = null
+		// A player who dropped out of the room must not reconnect into the
+		// deleted, nullspace body (Gaia 2026-11-08): clear its key first so a
+		// returning client gets a fresh lobby.
+		if (body.key)
+			body.key = null
 		for (var/obj/item/I in body.GetAllContents())
 			qdel(I)
 		body.loc = null
