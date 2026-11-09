@@ -17,3 +17,9 @@ headless and checks `result.json`:
 source ~/byond-516.1688/byond/bin/byondsetup
 python3 tests/region_carry/native_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
 ```
+
+Recipe knowledge uses wire version 2. Updated peers accept legacy v1 bodies
+without setting their migration marker; older peers refuse v2 rather than
+silently dropping learned nodes. The probe also checks text-ID knowledge and
+manual reconstruction, invalid/duplicate/associative IDs, malformed markers,
+invalid manual quantities, and refusal of unknown future versions.

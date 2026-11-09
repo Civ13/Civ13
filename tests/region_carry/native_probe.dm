@@ -140,6 +140,44 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(locate(/obj/item/weapon/reagent_containers/food/snacks/cracker) in found, "cracker missing")
 		require(locate(/obj/item/clothing/head/helmet/kevlarhelmet) in found, "helmet missing")
 		pass("rebuild")
+		mark("recipe_knowledge")
+		H.known_recipe_nodes = list("basic_tools", "primitive_construction")
+		H.recipe_knowledge_initialized = TRUE
+		var/obj/item/weapon/book/node_book/manual = create_node_book(T, "basic_tools")
+		require(manual && region_travel_item_kind(manual) == "node:basic_tools", "manual kind missing")
+		var/list/book_payload = region_travel_decode(H.region_travel_payload(list("l_hand" = manual)))
+		require(book_payload && book_payload["v"] == 2, "knowledge payload not version 2")
+		var/mob/living/human/reader = region_travel_build(book_payload, D)
+		require(reader.recipe_knowledge_initialized && reader.known_recipe_nodes.len == 2 && ("basic_tools" in reader.known_recipe_nodes), "travel lost character knowledge")
+		var/obj/item/weapon/book/node_book/rebuilt_manual = reader.l_hand
+		require(istype(rebuilt_manual) && rebuilt_manual.node_id == "basic_tools", "travel lost manual ID")
+		book_payload["v"] = 99
+		require(!region_travel_decode(json_encode(book_payload)), "future payload accepted")
+		book_payload["v"] = 1
+		require(!region_travel_decode(json_encode(book_payload)), "knowledge downgraded to v1")
+		book_payload["v"] = 2
+		book_payload["known_recipe_nodes"] = list("not_a_real_node")
+		require(!region_travel_decode(json_encode(book_payload)), "unknown node accepted")
+		book_payload["known_recipe_nodes"] = list("basic_tools", "basic_tools")
+		require(!region_travel_decode(json_encode(book_payload)), "duplicate knowledge accepted")
+		book_payload["known_recipe_nodes"] = list("basic_tools" = "hidden payload")
+		require(!region_travel_decode(json_encode(book_payload)), "associative knowledge accepted")
+		book_payload["known_recipe_nodes"] = list()
+		book_payload["recipe_knowledge_initialized"] = 2
+		require(!region_travel_decode(json_encode(book_payload)), "invalid initialized marker accepted")
+		book_payload["recipe_knowledge_initialized"] = FALSE
+		require(region_travel_decode(json_encode(book_payload)), "valid empty uninitialized knowledge rejected")
+		book_payload["items"] = list()
+		book_payload -= "known_recipe_nodes"
+		book_payload -= "recipe_knowledge_initialized"
+		book_payload["v"] = 1
+		var/list/legacy_payload = region_travel_decode(json_encode(book_payload))
+		require(legacy_payload, "legacy v1 refused")
+		var/mob/living/human/legacy_reader = region_travel_build(legacy_payload, D)
+		require(!legacy_reader.recipe_knowledge_initialized && !length(legacy_reader.known_recipe_nodes), "legacy migration marker changed")
+		require(!region_travel_item_path("node:not_a_real_node", 1) && !region_travel_item_path("node:basic_tools", 2), "malformed manual admitted")
+		pass("recipe_knowledge")
+
 	catch (var/exception/e)
 		failure = "[e.name] ([e.file]:[e.line])"
 		failed_phase = phase
