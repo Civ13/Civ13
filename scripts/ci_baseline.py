@@ -36,6 +36,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'research_coverage': {'files': ('tests/research_coverage/test_coverage.py',),
+        'paths': ('tests/research_coverage/', 'scripts/atlas/research_coverage.py'),
+        'shared_paths': ('code/modules/research_tree/', 'config/crafting/',
+                         'scripts/build-crafting-atlas.py', 'scripts/atlas/',
+                         'UI/crafting-atlas.json', 'code/game/objects/items/stacks/stack.dm',
+                         'code/game/objects/items/stacks/civ_recipes.dm')},
     'navigation_tablet': {'files': ('tests/navigation_tablet/test_alt_click.py',),
         'paths': ('tests/navigation_tablet/',), 'shared_paths': (
             'code/game/objects/items/weapons/tools.dm', 'code/_onclick/click.dm')},

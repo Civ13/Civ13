@@ -200,6 +200,7 @@
 	return ..()
 
 /obj/item/weapon/material/handle/proc/make_torch(mob/user, fuel_amount, obj/item/consumed)
+	if (!crafting_recipe_allowed(user, "/obj/item/flashlight/torch")) return null
 	if (QDELETED(src) || health <= 0 || !material)
 		return null
 	var/turf/T = get_turf(src)

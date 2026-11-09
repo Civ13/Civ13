@@ -9,7 +9,7 @@
 	if (!ispath(result_type, /obj/structure/exercise))
 		return TRUE
 	var/skill = ispath(result_type, /obj/structure/exercise/modern) ? 105 : 30
-	return H && H.stat == CONSCIOUS && exercise_recipe_era(result_type) && H.getStat("crafting") >= skill && map && map.is_node_done(H.civilization, get_recipe_node_req("[result_type]"))
+	return H && H.stat == CONSCIOUS && exercise_recipe_era(result_type) && H.getStat("crafting") >= skill && map && crafting_node_allowed(H, get_recipe_node_req("[result_type]"))
 
 /mob/living/human
 	var/exercise_fatigue = 0

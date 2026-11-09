@@ -368,4 +368,18 @@ Its own standalone tab, reachable once Basic Agriculture (in the Main tree) is r
 
 ---
 
-*This system replaces the old flat Industrial/Military/Health point-pool research. Recipes not yet migrated into the tree still use the legacy threshold gate as a fallback - over time, more of the crafting catalogue will be tied to specific nodes above.*
+## Crafting coverage (phase 0)
+
+Non-basic hand and station crafting now requires a research node. Ordinary rope,
+stone bricks and the research desk are the explicit free outputs; existing tools,
+materials, map modes and era limits still apply. Generic chemical reactions,
+gathering, mining and butchering remain open.
+
+The atlas lists each route's actual required nodes, including factory and foundry
+requirements. Early Chemical Cells and Galvanic Cells cover the pre-electrical-grid
+battery recipes. Personal recipe books are a later phase, not enabled by this change.
+
+The draft's armor mappings introduce specialist research requirements on round maps;
+these access changes still need review. See the [coverage and era audit](../docs/recipe-research-coverage.md)
+for exact exclusions and pending balance decisions. Unmapped crafting no longer
+falls back to flat research points.

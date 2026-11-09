@@ -639,7 +639,7 @@ class TabletAcquisitionTests(unittest.TestCase):
         menu = (ROOT/'code/game/objects/items/stacks/civ_recipes.dm').read_text()
         stack = (ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         self.assertIn('&& !tablet_press_year_allowed()', menu)
-        self.assertIn('if (!do_after(user, buildtime))', stack)
+        self.assertIn('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)
         self.assertGreaterEqual(stack.count('press_construction.valid()'), 3)
         self.assertLess(stack.rindex('press_construction.valid()'),
                         stack.index('if (use(required, (joinery || carving) ? null : H))'))
