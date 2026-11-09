@@ -23,6 +23,8 @@ public static class Program {
         output.WriteLine("  --local-dreamdaemon <absolute host receipt>");
         output.WriteLine("      Join the verified local host; requires --root.");
         output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
+        output.WriteLine("  --bot status|check-update|start|stop|restart|update [--root <absolute folder>]");
+        output.WriteLine("      Manage host.json's Civilizationbot without the window; start leaves it running.");
         output.WriteLine("Run without options for the normal launcher. The launcher is optional for BYOND gameplay.");
     }
 
@@ -74,6 +76,11 @@ public static class Program {
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
                 throw new PlatformNotSupportedException("Civ13 requires Windows x64.");
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
+            if (args.Length > 0 && args[0] == BotCommand.Option) {
+                var (action, botRoot) = BotCommand.Parse(args);
+                var bot = BotCommand.Load(botRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13"));
+                return await BotCommand.Run(action, bot, Console.Out, BotCommand.System);
+            }
             string? explicitRoot = null;
             string? localReceipt = null;
             var textMenu = false;
@@ -156,7 +163,7 @@ public static class Program {
             }
         } catch (Exception e) {
             Console.Error.WriteLine("Civ13: " + e.Message);
-            if (!(args.Length > 0 && args[0] == "--apply-update") && !Console.IsInputRedirected) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
+            if (!(args.Length > 0 && args[0] is "--apply-update" or BotCommand.Option) && !Console.IsInputRedirected) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
             return 1;
         }
     }
