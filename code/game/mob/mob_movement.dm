@@ -766,6 +766,8 @@
 		// Hills: climbing costs time, going downhill saves a little (terrain_height.dm).
 		if (mob_is_living && !mob.buckled && isturf(mob_loc) && isturf(n))
 			move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
+			if (mob_is_human)
+				terrain_climb_effects(H, mob_loc, n, distance_fraction)
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
