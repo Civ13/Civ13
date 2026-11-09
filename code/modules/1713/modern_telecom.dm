@@ -124,13 +124,17 @@ var/global/civ_telecom_cursor = 1
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
+		interrupt_node_reception()
 		enabled = !enabled
 		if (!enabled && powersource)
 			powersource.update_power(-powerneeded, 1, src)
 	if (choice == "Frequency")
 		var/value = input(H, "Frequency (150-300)", name, frequency) as num|null
 		if (!isnull(value) && H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
-			frequency = sanitize_integer(value, 150, 300, 200)
+			var/new_frequency = sanitize_integer(value, 150, 300, 200)
+			if (new_frequency != frequency)
+				interrupt_node_reception()
+			frequency = new_frequency
 	if (choice == "Program" && istype(src, /obj/structure/telecom/station))
 		var/value = input(H, "Educational program", name) in list("crafting", "farming", "medical")
 		if (H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands() && H.stats[value][1] >= 100)
@@ -200,8 +204,8 @@ var/global/civ_telecom_cursor = 1
 			return
 		presenter = H
 		to_chat(H, "Your normal speech will air while you remain at this powered desk with an antenna. Use Stop presenting to end the broadcast.")
-	if (choice == "Stop presenting" && presenter == H)
-		presenter = null
+	if (choice == "Stop presenting")
+		stop_presenting(H)
 	if (choice == "Station name" || choice == "Faction tag")
 		var/value = input(H, "Display text (32 characters; faction tag is roleplay only)", name) as text|null
 		if (isnull(value) || !can_present(H) || !H.can_use_hands())

@@ -38,6 +38,26 @@ var/global/list/active_node_lesson_stations = list()
 /obj/structure/telecom/station/proc/node_teacher_eligible(mob/living/human/H, node_id)
 	return H && H == presenter && can_present(H) && H.node_lesson_active() && H.knows_recipe_node(node_id) && H.can_learn_recipe_node(node_id) && operational() && has_antenna()
 
+/obj/structure/telecom/station/proc/stop_presenting(mob/living/human/H)
+	if (H != presenter) return FALSE
+	stop_node_lesson()
+	presenter = null
+	return TRUE
+
+// Explicit controls invalidate attendance immediately, even if toggled back
+// before the next one-second sample. Physical eligibility is sampled below.
+/obj/structure/telecom/proc/interrupt_node_reception()
+	for (var/obj/structure/telecom/station/S in active_node_lesson_stations.Copy())
+		if (S == src)
+			S.stop_node_lesson()
+			continue
+		for (var/mob/living/human/listener in S.node_lesson_listeners.Copy())
+			if (S.node_lesson_listeners[listener] == src)
+				S.node_lesson_listeners.Remove(listener)
+				if (listener && !QDELETED(listener))
+					to_chat(listener, SPAN_WARNING("The receiver change interrupted your recipe lesson."))
+		if (!S.node_lesson_listeners.len) S.stop_node_lesson()
+
 /obj/structure/telecom/station/proc/prompt_node_lesson(mob/living/human/H)
 	if (!map || !map.recipe_knowledge_enabled() || !can_present(H) || H != presenter)
 		to_chat(H, SPAN_WARNING("Present live at this station before starting a recipe lesson."))

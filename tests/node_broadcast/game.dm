@@ -80,6 +80,13 @@ var/node_failures = 0
 		teacher.learn_recipe_node(id)
 		node_check(S.start_node_lesson(teacher, id), "qualified presenter starts one node")
 		node_check(!S.start_node_lesson(teacher, id), "one simultaneous node per station")
+		node_advance(S, 50)
+		S.stop_presenting(teacher)
+		S.presenter = teacher
+		node_check(!S.node_lesson_id && !S.node_lesson_progress, "stop/resume between ticks discards prior lesson")
+		node_check(!S.start_node_lesson(teacher, id), "stop/resume between ticks enforces cooldown")
+		node_fixture_time += 601
+		node_check(S.start_node_lesson(teacher, id), "new lesson starts after explicit-stop cooldown")
 		node_advance(S, 299)
 		node_check(!student.knows_recipe_node(id), "partial 299-second attendance teaches nothing")
 		var/mob/living/human/node_fixture/late = new(locate(4,4,1))
@@ -102,15 +109,17 @@ var/node_failures = 0
 		node_fixture_time += 601
 		S.start_node_lesson(teacher, id)
 		R.frequency++
-		node_advance(S, 1)
+		R.interrupt_node_reception()
 		R.frequency--
-		node_check(!S.node_lesson_id && !late.knows_recipe_node(id), "retuning cuts attendance")
+		node_advance(S, 1)
+		node_check(!S.node_lesson_id && !late.knows_recipe_node(id), "retuning and returning between ticks cuts attendance")
 		node_fixture_time += 601
 		S.start_node_lesson(teacher, id)
 		R.enabled = FALSE
-		node_advance(S, 1)
+		R.interrupt_node_reception()
 		R.enabled = TRUE
-		node_check(!S.node_lesson_id, "receiver power-off cuts attendance")
+		node_advance(S, 1)
+		node_check(!S.node_lesson_id, "receiver power off/on between ticks cuts attendance")
 		node_fixture_time += 601
 		S.start_node_lesson(teacher, id)
 		late.loc = locate(90,4,1)
