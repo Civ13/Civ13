@@ -117,6 +117,7 @@
 #include "code\_onclick\hud\base_screen_objects.dm"
 #include "code\_onclick\hud\hover_name.dm"
 #include "code\modules\visibility\los_context.dm"
+#include "code\modules\visibility\los_terrain.dm"
 #include "code\modules\visibility\root_light_snapshot.dm"
 #include "code\modules\visibility\root_tree_presenter.dm"
 #include "code\modules\visibility\los_presenter.dm"

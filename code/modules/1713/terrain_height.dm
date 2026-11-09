@@ -117,6 +117,8 @@
 			var/first = max(0, x - 3) + 1
 			var/old = lights[cy + 1]
 			lights[cy + 1] = copytext(old, 1, first) + jointext(chars, "") + copytext(old, first + chars.len)
+	// Line of sight caches terrain answers per eye position (los_terrain.dm).
+	los_terrain_heights_changed(locate(x, y, z))
 	return TRUE
 
 /proc/terrain_height_row_valid(row)

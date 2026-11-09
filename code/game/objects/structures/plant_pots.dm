@@ -213,9 +213,12 @@
 				S.desc = "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."
 
 			S.filled_type = /obj/item/stack/material/plastic
-			W.amount -= 1
-			if (W.amount <= 0)
-				qdel(W)
+			// The plant menu sleeps: a lagged repeat click can answer after the
+			// first one already filled this pot, so keep only one filled pot.
+			var/obj/item/stack/material/plastic/P = W
+			if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))
+				qdel(S)
+				return
 			qdel(src)
 			return
 	..()
@@ -438,9 +441,12 @@
 				S.desc = "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."
 
 			S.filled_type = /obj/item/stack/material/plastic
-			W.amount -= 1
-			if (W.amount <= 0)
-				qdel(W)
+			// The plant menu sleeps: a lagged repeat click can answer after the
+			// first one already filled this pot, so keep only one filled pot.
+			var/obj/item/stack/material/plastic/P = W
+			if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))
+				qdel(S)
+				return
 			qdel(src)
 			return
 	..()

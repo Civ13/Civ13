@@ -1389,6 +1389,17 @@
 	density = FALSE
 	opacity = FALSE
 
+// The wall menu and build wait sleep, so a lagged repeat click can reach here
+// after the first build already used this frame. Pay only for a live frame.
+/obj/structure/wallframe/proc/pay_for_build(obj/item/W, mob/living/human/H, cost)
+	if (QDELETED(src) || QDELETED(W) || QDELETED(H) || W.loc != H)
+		return FALSE
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		return S.use(cost)
+	qdel(W)
+	return TRUE
+
 /obj/structure/wallframe/attackby(obj/item/W as obj, var/mob/living/human/H)
 	if(istype(W, /obj/item/stack/material/clay))
 		var/input
@@ -1399,16 +1410,14 @@
 			return
 		else if(input == "Medieval Window - 4")
 			if(W.amount >= 4)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 4))
 					new/obj/structure/window_frame/medieval(src.loc)
 					qdel(src)
-					W.amount -= 4
 		else if(input == "Medieval Wall - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 41, src))
+				if (do_after(H, 41, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/medieval(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/weapon/paper))
@@ -1420,28 +1429,24 @@
 			return
 		else if(input == "Shoji Door - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/structure/simple_door/key_door/anyone/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Wall - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/covers/wood_wall/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Divider - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/covers/wood_wall/shoji_divider(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Window - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/structure/window_frame/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/bamboo))
@@ -1450,13 +1455,12 @@
 			return
 		if(input == "Bamboo Wall - 3")
 			if(W.amount >= 3)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 3))
 					new/obj/covers/wood_wall/bamboo(src.loc)
 					qdel(src)
-					W.amount -= 3
 		else if(input == "Bamboo Doorway - 2")
 			if(W.amount >= 2)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 2))
 					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
 					S.icon_state = "bamboo-door"
 					S.name = "bamboo doorway"
@@ -1464,22 +1468,19 @@
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
-					W.amount -= 2
 		else if(input == "Bamboo Window - 2")
 			if(W.amount >= 2)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 2))
 					new/obj/structure/window_frame/bamboo(src.loc)
 					qdel(src)
-					W.amount -= 2
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/woodplank))
 		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE) //rip_pack.ogg
 		if(W.amount >= 10)
-			if (do_after(H, 40, src))
+			if (do_after(H, 40, src) && pay_for_build(W, H, 10))
 				new/obj/covers/wood_wall/adjustable(src.loc)
 				qdel(src)
-				W.amount -= 10
 		else
 			to_chat(H, "<span class='notice'>You need 10 planks to build the wall!</span>")
 
@@ -1501,25 +1502,22 @@
 			return
 		else if(input == "Oriental Window - 4")
 			if(W.amount >= 4)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 4))
 					new/obj/structure/window_frame/oriental(src.loc)
 					qdel(src)
-					W.amount -= 4
 		else if(input == "Oriental Wall - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 41, src))
+				if (do_after(H, 41, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Braced Wall (--) - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 43, src))
+				if (do_after(H, 43, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental/b(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Doorway - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 6))
 					var/obj/covers/wood_wall/oriental/S = new /obj/covers/wood_wall/oriental(loc)
 					S.icon_state = "oriental-door"
 					S.name = "oriental doorway"
@@ -1527,31 +1525,26 @@
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Two Panelled Wall (|) - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 42, src))
+				if (do_after(H, 42, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental/twop(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Two Panelled Braced Wall (-|-)")
 			if(W.amount >= 6)
-				if (do_after(H, 42, src))
+				if (do_after(H, 42, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental/twop/b(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Three Panelled Wall (||) - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 42, src))
+				if (do_after(H, 42, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental/threep(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else if(input == "Oriental Three Panelled Braced Wall (-|-|-) - 6")
 			if(W.amount >= 6)
-				if (do_after(H, 42, src))
+				if (do_after(H, 42, src) && pay_for_build(W, H, 6))
 					new/obj/covers/wood_wall/oriental/threep/b(src.loc)
 					qdel(src)
-					W.amount -= 6
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/weapon/paper))
@@ -1563,28 +1556,24 @@
 			return
 		else if(input == "Shoji Door - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/structure/simple_door/key_door/anyone/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Wall - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/covers/wood_wall/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Divider - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/covers/wood_wall/shoji_divider(src.loc)
 					qdel(src)
-					qdel(W)
 		else if(input == "Shoji Window - 1")
 			if(W.amount >= 1)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 1))
 					new/obj/structure/window_frame/shoji(src.loc)
 					qdel(src)
-					qdel(W)
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 	else if(istype(W, /obj/item/stack/material/bamboo))
@@ -1593,13 +1582,12 @@
 			return
 		if(input == "Bamboo Wall - 3")
 			if(W.amount >= 3)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 3))
 					new/obj/covers/wood_wall/bamboo(src.loc)
 					qdel(src)
-					W.amount -= 3
 		else if(input == "Bamboo Doorway - 2")
 			if(W.amount >= 2)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 2))
 					var/obj/covers/wood_wall/bamboo/S = new /obj/covers/wood_wall/bamboo(loc)
 					S.icon_state = "bamboo-door"
 					S.name = "bamboo doorway"
@@ -1607,13 +1595,11 @@
 					S.density = FALSE
 					S.opacity = FALSE
 					qdel(src)
-					W.amount -= 2
 		else if(input == "Bamboo Window - 2")
 			if(W.amount >= 2)
-				if (do_after(H, 40, src))
+				if (do_after(H, 40, src) && pay_for_build(W, H, 2))
 					new/obj/structure/window_frame/bamboo(src.loc)
 					qdel(src)
-					W.amount -= 2
 		else
 			to_chat(H, "<span class='notice'>That does not exist!</span>")
 

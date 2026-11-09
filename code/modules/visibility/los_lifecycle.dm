@@ -15,6 +15,8 @@
 // The viewer's turf at its last full publication; a step since then skips
 // recording the audit scene.
 /client/var/tmp/turf/los_published_turf
+// The viewer's half-tile eye offset at its last full publication.
+/client/var/tmp/los_published_bucket
 
 // Note a transparent mover for a clean viewer; a long queue falls back to one
 // full refresh instead.
@@ -164,8 +166,10 @@
 	los_dirty = FALSE
 	los_pending_movers = null
 	V.movement_turf = get_turf(mob)
-	var/stepped = V.movement_turf != los_published_turf
+	V.movement_bucket = los_eye_bucket(mob)
+	var/stepped = V.movement_turf != los_published_turf || V.movement_bucket != los_published_bucket
 	los_published_turf = V.movement_turf
+	los_published_bucket = V.movement_bucket
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	// The recorded scene lets an unchanged audit skip the presenter refresh.
@@ -248,7 +252,11 @@
 			if(!force_refresh && !H.opacity && !V.retired && V.body == H && V.owner == H.client && T && V.movement_turf == T)
 				// Recover an invalidated viewer without dirtying neighboring viewers.
 				// A transparent same-turf pulse changes no other viewer's geometry.
-				if(H.client.los_dirty && !H.client.reconcile_geometric_los())
+				// Crossing a half-tile eye step refreshes this viewer only.
+				var/bucket = los_eye_bucket(H)
+				var/eye_moved = V.movement_bucket != bucket
+				V.movement_bucket = bucket
+				if((H.client.los_dirty || eye_moved) && !H.client.reconcile_geometric_los())
 					if(H.client.root_tree_presenter)
 						H.client.root_tree_presenter.invalidate()
 					if(H.client.los_presenter)
@@ -257,6 +265,7 @@
 			previous_turf = V.movement_turf
 			tile_changed = previous_turf != T
 			V.movement_turf = T
+			V.movement_bucket = los_eye_bucket(H)
 	// Entered handles old/new tile neighborhoods. Blocker offsets still need
 	// immediate withdrawal even without a native tile transition. Avoid another
 	// post-move withdrawal for transparent viewers; native Entered can already

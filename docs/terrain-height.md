@@ -137,6 +137,39 @@ the height rows and recomputes the corner lights around the tile
 - `check --heights FILE [--map FILE.dmm]` validates a file.
 - `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
 
+## Line of sight
+
+Ground between a player's eye and a target hides the target when it rises
+above the sight line (`code/modules/visibility/los_terrain.dm`). Ridges hide
+what lies behind them, the top of a plateau above eye level is hidden from
+below, and a player on high ground sees further down the far slope. Hidden
+tiles are drawn black by the geometric visibility presenter and refuse hover
+and examine, like tiles behind a wall. It only ever hides more than before:
+walls still block sight from any height.
+
+- The eye is 1.5 levels above the ground standing and 0.5 lying, resting or
+  prone. A target shows when its top does: bare ground 0.25 above its level,
+  items 0.5, dense objects 1, people 1.5 (0.5 lying), walls 3 and trees 5. So
+  a person's head or a tree shows over a crest before the ground under it.
+- The answer for one eye position is a ring sweep outward from the eye: each
+  cell's sight-line floor comes from the two cells of the previous ring that
+  the ray passes between, interpolated (like XDraw), so a whole view costs one
+  pass instead of one ray per target. Hidden ground with at most two hidden
+  neighbours is shown, which removes specks from one-level dips.
+- Heights only change by grading, so the answer is cached per eye position
+  (tile, half-tile offset, posture, view radius; 96 entries) and shared by all
+  players. Grading (`terrain_heights/set_level`) clears the cache and refreshes
+  nearby viewers. Flat ground and levels without heights skip all of it.
+- The eye follows the player's pixel offset in half-tile steps, both for this
+  and for walls and trees, so a walker's view refreshes twice per tile instead
+  of once. These extra steps pause while `world.cpu` is above 85 and resume
+  below 60. Hover and examine use the exact offset.
+
+A fresh answer for a 19x19 field costs about 2.3 ms on the pinned DreamDaemon
+(`tests/los_terrain/run.py`); cached lookups are a list read. NPC sight and
+gunfire do not use heights yet, and nobody sees over a wall from high ground
+yet: the game hides everything behind an opaque wall regardless of height.
+
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.
 
@@ -144,6 +177,9 @@ with its level; use it again to hide the labels.
 
 - `python3 -m unittest tests/terrain_height/test_terrain_height.py` (offline:
   generator, file format, baked sprites, Gaia's file, movement and shading hooks).
+- `python3 tests/los_terrain/run.py --byond-bin <dir>` (native: line of sight
+  over hills on Gaia's heights against a Python reference, sweep cost, and
+  cache clearing on grading).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).
