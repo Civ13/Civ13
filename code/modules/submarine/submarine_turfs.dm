@@ -205,6 +205,7 @@
 
 	// ---- Compartment System ----
 	var/compartment_id = ""        // Which compartment this tile belongs to (e.g. "forward_torpedo", "reactor_room")
+	var/tmp/datum/flooding_controller/flooding_owner  // The controller this tile reports to (set on registration)
 
 	// ---- Visual / Info ----
 	var/water_warning_sent = FALSE  // Prevents spamming "water rising!" messages
@@ -217,13 +218,15 @@
 
 /turf/floor/sub_deck/New()
 	..()
-	// Register with the flooding controller
-	if(global.subcom_flooding)
-		global.subcom_flooding.register_turf(src)
+	// Register with the flooding controller: the vessel's, or SUBCOM13's.
+	var/datum/flooding_controller/F = flooding_for(src)
+	if(F)
+		F.register_turf(src)
 
 /turf/floor/sub_deck/Destroy()
-	if(global.subcom_flooding)
-		global.subcom_flooding.unregister_turf(src)
+	var/datum/flooding_controller/F = flooding_owner || flooding_for(src)
+	if(F)
+		F.unregister_turf(src)
 	..()
 
 // ============================================================
@@ -460,9 +463,10 @@
 
 // The compartment air this tile shares, or null outside any compartment.
 /turf/floor/sub_deck/proc/compartment_air()
-	if(!global.subcom_flooding)
+	var/datum/flooding_controller/F = flooding_owner || flooding_for(src)
+	if(!F)
 		return null
-	return global.subcom_flooding.get_air(compartment_id)
+	return F.get_air(compartment_id)
 
 // ============================================================
 // Examine / Info

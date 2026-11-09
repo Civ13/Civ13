@@ -1,0 +1,435 @@
+// Turf-built vessels: ships too large for the modular vehicle system (which
+// caps a vehicle at 25 frames). A vessel is a template of cells on one or more
+// stacked levels, written onto the map as turfs. It sails by hopping: every
+// VESSEL_HOP_INTERVAL the whole block moves along its heading, carrying
+// everything standing on it, and the sea it left is put back.
+//
+// The submarine module's hull, bulkhead and deck turfs do the damage control;
+// each vessel owns one flooding controller (flooding_controller.dm), found
+// from a deck tile through vessel_at().
+
+var/global/list/naval_vessels = list()
+
+// The vessel whose footprint holds T on T's level, or null.
+/proc/vessel_at(turf/T)
+	if (!T)
+		return null
+	for (var/datum/vessel/V in naval_vessels)
+		if (V.contains(T))
+			return V
+	return null
+
+// One deck: a grid of template characters, `length` columns (stern to bow)
+// by `beam` rows (port to starboard), on one z-level. '.' is not part of the
+// ship. The legend maps each other character to its turf type and the
+// structures spawned on it.
+/datum/vessel_level
+	var/z = 0
+	var/dz = 0                 // Level offset from the vessel's base level.
+	var/list/rows = list()     // beam strings of length characters.
+	var/list/legend = list()   // char -> list("turf" = type, "spawn" = list of types)
+	var/list/originals = list() // "x,y" -> the turf type found before the ship arrived.
+	var/list/allowed = list()  // Turf types the ship may move onto.
+
+/datum/vessel_level/proc/spec_at(u, v)
+	if (v < 0 || v >= rows.len)
+		return null
+	var/row = rows[v + 1]
+	if (u < 0 || u >= length(row))
+		return null
+	var/c = copytext(row, u + 1, u + 2)
+	if (c == ".")
+		return null
+	return legend[c]
+
+/datum/vessel
+	var/name = "vessel"
+	var/length = 1             // Along the bow axis.
+	var/beam = 1               // Across.
+	var/dir = EAST             // Where the bow points: a cardinal direction.
+	var/ox = 0                 // South-west corner of the footprint's bounding box.
+	var/oy = 0
+	var/base_z = 0             // The level of dz = 0 (the surface deck).
+	var/list/levels = list()   // /datum/vessel_level
+	var/datum/flooding_controller/flooding
+	var/placed = FALSE
+	var/speed = VESSEL_SPEED_STOP
+	var/anchored = TRUE
+	var/hop_timer = 0
+	var/last_hop_ms = 0        // Wall time the last relocation took, for the probe.
+	var/last_refusal = ""
+	var/tmp/relocating = FALSE
+
+/datum/vessel/New()
+	..()
+	naval_vessels += src
+	flooding = new /datum/flooding_controller(src)
+
+/datum/vessel/Destroy()
+	stop_sailing()
+	naval_vessels -= src
+	if (flooding)
+		global.flooding_controllers -= flooding
+		flooding = null
+	return ..()
+
+// Whether a breached compartment lets its air out. A hangar deck below the
+// waterline keeps its pocket like a submerged hull.
+/datum/vessel/proc/breaches_vent()
+	return FALSE
+
+// ---- Geometry ----
+
+// Bounding box width and height for the current heading.
+/datum/vessel/proc/box_w()
+	return (dir == EAST || dir == WEST) ? length : beam
+
+/datum/vessel/proc/box_h()
+	return (dir == EAST || dir == WEST) ? beam : length
+
+// World offset of ship cell (u, v) for a heading, relative to the box corner.
+// Port (v = 0) is to the left of the bow.
+/datum/vessel/proc/cell_dx(u, v, heading)
+	switch (heading)
+		if (EAST) return u
+		if (WEST) return length - 1 - u
+		if (NORTH) return v
+		if (SOUTH) return beam - 1 - v
+	return u
+
+/datum/vessel/proc/cell_dy(u, v, heading)
+	switch (heading)
+		if (EAST) return beam - 1 - v
+		if (WEST) return v
+		if (NORTH) return u
+		if (SOUTH) return length - 1 - u
+	return v
+
+// Inverse of cell_dx/cell_dy.
+/datum/vessel/proc/cell_u(dx, dy, heading)
+	switch (heading)
+		if (EAST) return dx
+		if (WEST) return length - 1 - dx
+		if (NORTH) return dy
+		if (SOUTH) return length - 1 - dy
+	return dx
+
+/datum/vessel/proc/cell_v(dx, dy, heading)
+	switch (heading)
+		if (EAST) return beam - 1 - dy
+		if (WEST) return dy
+		if (NORTH) return dx
+		if (SOUTH) return beam - 1 - dx
+	return dy
+
+/datum/vessel/proc/level_for_z(z)
+	for (var/datum/vessel_level/L in levels)
+		if (L.z == z)
+			return L
+	return null
+
+/datum/vessel/proc/contains(turf/T)
+	if (!placed || !T)
+		return FALSE
+	var/datum/vessel_level/L = level_for_z(T.z)
+	if (!L)
+		return FALSE
+	return L.spec_at(cell_u(T.x - ox, T.y - oy, dir), cell_v(T.x - ox, T.y - oy, dir)) != null
+
+// The world turf of ship cell (u, v) on level L at a given box corner and heading.
+/datum/vessel/proc/cell_turf(datum/vessel_level/L, u, v, x, y, heading)
+	return locate(x + cell_dx(u, v, heading), y + cell_dy(u, v, heading), L.z)
+
+// Every turf of the ship as it stands.
+/datum/vessel/proc/cells()
+	. = list()
+	if (!placed)
+		return
+	for (var/datum/vessel_level/L in levels)
+		for (var/v = 0, v < beam, v++)
+			for (var/u = 0, u < length, u++)
+				if (!L.spec_at(u, v))
+					continue
+				var/turf/T = cell_turf(L, u, v, ox, oy, dir)
+				if (T)
+					. += T
+
+/datum/vessel/proc/deck_turfs()
+	. = list()
+	for (var/turf/floor/sub_deck/T in cells())
+		. += T
+
+/datum/vessel/proc/crew()
+	. = list()
+	for (var/turf/T in cells())
+		for (var/mob/living/M in T)
+			. += M
+
+/datum/vessel/proc/crew_message(text)
+	for (var/mob/living/M in crew())
+		if (M.client)
+			to_chat(M, text)
+
+// ---- Placement ----
+
+// Lays the ship down with its box corner at (x, y) on level z, bow to heading.
+// Returns TRUE, or FALSE with the reason in last_refusal.
+/datum/vessel/proc/place(x, y, z, heading = EAST)
+	if (placed)
+		last_refusal = "already afloat"
+		return FALSE
+	base_z = z
+	for (var/datum/vessel_level/L in levels)
+		var/lz = L.dz ? (L.dz > 0 ? multiz_level_above(z) : multiz_level_below(z)) : z
+		if (!lz)
+			last_refusal = "no level [L.dz > 0 ? "above" : "below"] the surface for deck [L.dz]"
+			return FALSE
+		L.z = lz
+	return relocate(x, y, heading)
+
+// Takes the ship off the map, putting back what was under it. Whatever stood
+// on it is left where it was.
+/datum/vessel/proc/remove()
+	if (!placed)
+		return
+	stop_sailing()
+	var/list/old_cells = cells()
+	for (var/turf/floor/sub_deck/T in old_cells)
+		flooding.unregister_turf(T)
+	placed = FALSE
+	var/old_bulk = wall_bulk_placement
+	wall_bulk_placement = TRUE
+	for (var/turf/T in old_cells)
+		var/datum/vessel_level/L = level_for_z(T.z)
+		var/original = L ? L.originals["[T.x],[T.y]"] : null
+		if (original)
+			T.ChangeTurf(original)
+	wall_bulk_placement = old_bulk
+	for (var/datum/vessel_level/L in levels)
+		L.originals = list()
+
+// Moves the block so its box corner is at (x, y) with the bow to heading.
+// Refuses, leaving the ship where it is, when any destination tile is missing,
+// is not water, sea or sky the ship may use, or holds something solid that is
+// not ours. One call does the whole move and never sleeps, so nobody sees a
+// half-moved ship.
+/datum/vessel/proc/relocate(x, y, heading)
+	if (relocating)
+		last_refusal = "already moving"
+		return FALSE
+	var/started = world.timeofday
+	var/list/old_cells = placed ? cells() : list()
+	// Destinations with the spec that goes there and the cell it comes from.
+	var/list/dest_turfs = list()
+	var/list/dest_source = list()
+	for (var/datum/vessel_level/L in levels)
+		for (var/v = 0, v < beam, v++)
+			for (var/u = 0, u < length, u++)
+				var/list/spec = L.spec_at(u, v)
+				if (!spec)
+					continue
+				var/turf/D = cell_turf(L, u, v, x, y, heading)
+				if (!D)
+					last_refusal = "the edge of the world"
+					return FALSE
+				if (!(D in old_cells))
+					var/allowed = FALSE
+					for (var/path in L.allowed)
+						if (istype(D, path))
+							allowed = TRUE
+							break
+					if (!allowed)
+						last_refusal = "[D.name] ahead at [D.x],[D.y]"
+						return FALSE
+					for (var/atom/movable/M in D)
+						if (M.loc == D && M.density && !istype(M, /atom/movable/lighting_overlay))
+							last_refusal = "[M.name] in the way at [D.x],[D.y]"
+							return FALSE
+				dest_turfs[D] = spec
+				dest_source[D] = placed ? cell_turf(L, u, v, ox, oy, dir) : null
+	relocating = TRUE
+	var/old_bulk = wall_bulk_placement
+	wall_bulk_placement = TRUE
+	try
+		// What each old cell carries and how damaged it is, keyed by position.
+		var/list/states = list()
+		var/list/cargo = list()
+		for (var/turf/S in old_cells)
+			states[S] = S.vessel_capture()
+			var/list/aboard = list()
+			for (var/atom/movable/M in S)
+				if (M.loc != S || QDELETED(M))
+					continue
+				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+					continue
+				aboard += M
+			cargo[S] = aboard
+		// What lay under the ship before, per level, and what lies under the
+		// new footprint: cells the ship keeps covering carry their record over.
+		var/list/prior = list()
+		var/list/next = list()
+		for (var/datum/vessel_level/L in levels)
+			prior[L] = L.originals
+			next[L] = list()
+		for (var/turf/D in dest_turfs)
+			var/datum/vessel_level/L = level_for_z(D.z)
+			var/list/mine = next[L]
+			var/list/was = prior[L]
+			var/key = "[D.x],[D.y]"
+			mine[key] = (D in old_cells) ? was[key] : D.type
+		var/list/air = flooding.air_snapshot()
+		// The ship now stands at the new place: vessel_at() must find it from
+		// the constructors of the turfs written below.
+		ox = x
+		oy = y
+		dir = heading
+		placed = TRUE
+		for (var/datum/vessel_level/L in levels)
+			L.originals = next[L]
+		// Write the decks.
+		var/list/moved_to = list()
+		for (var/turf/D in dest_turfs)
+			var/list/spec = dest_turfs[D]
+			var/turf/S = dest_source[D]
+			var/turf/N = D.ChangeTurf(spec["turf"])
+			if (!N)
+				N = D
+			if (S)
+				if (states[S])
+					N.vessel_restore(states[S])
+				moved_to[N] = S
+			else if (spec["spawn"])
+				for (var/path in spec["spawn"])
+					new path(N)
+		// Carry everything across. Turf references are positional, so the
+		// cargo lists were taken before any turf changed.
+		for (var/turf/N in moved_to)
+			var/turf/S = moved_to[N]
+			if (S == N)
+				continue
+			for (var/atom/movable/M in cargo[S])
+				if (QDELETED(M) || M.loc != S)
+					continue
+				M.forceMove(N)
+		// Put the sea back where the ship was.
+		for (var/turf/S in old_cells)
+			if (S in dest_turfs)
+				continue
+			var/datum/vessel_level/L = level_for_z(S.z)
+			var/list/was = L ? prior[L] : null
+			var/original = was ? was["[S.x],[S.y]"] : null
+			if (original)
+				S.ChangeTurf(original)
+		flooding.rebind_turfs(deck_turfs(), air)
+		for (var/turf/N in moved_to)
+			for (var/obj/O in N)
+				O.update_icon()
+	catch (var/exception/e)
+		relocating = FALSE
+		wall_bulk_placement = old_bulk
+		throw e
+	wall_bulk_placement = old_bulk
+	relocating = FALSE
+	last_hop_ms = (world.timeofday - started) * 100
+	return TRUE
+
+// ---- Sailing ----
+
+/datum/vessel/proc/start_sailing()
+	if (hop_timer)
+		return
+	hop_timer = addtimer(CALLBACK(src, PROC_REF(sail_tick)), VESSEL_HOP_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
+
+/datum/vessel/proc/stop_sailing()
+	if (hop_timer)
+		deltimer(hop_timer)
+		hop_timer = 0
+
+/datum/vessel/proc/set_speed(new_speed)
+	speed = clamp(new_speed, VESSEL_SPEED_STOP, VESSEL_SPEED_FULL)
+	if (speed > 0 && !anchored)
+		start_sailing()
+
+/datum/vessel/proc/set_anchor(down)
+	anchored = down
+	if (!anchored && speed > 0)
+		start_sailing()
+
+// One hop along the heading. Returns TRUE when the ship moved.
+/datum/vessel/proc/sail_tick()
+	if (!placed || anchored || speed <= 0)
+		return FALSE
+	// Never rewrite a level while the world save is capturing it.
+	if (persistence_save_in_progress)
+		return FALSE
+	var/step = speed * VESSEL_TILES_PER_STEP
+	// A blocked full step tries shorter ones, so the ship closes up to an
+	// obstacle instead of stopping short of it.
+	for (var/tiles = step, tiles >= 1, tiles--)
+		var/sx = 0
+		var/sy = 0
+		switch (dir)
+			if (EAST) sx = tiles
+			if (WEST) sx = -tiles
+			if (NORTH) sy = tiles
+			if (SOUTH) sy = -tiles
+		if (relocate(ox + sx, oy + sy, dir))
+			return TRUE
+	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
+	speed = VESSEL_SPEED_STOP
+	stop_sailing()
+	return FALSE
+
+// Turning swaps the long axis of the footprint about the box centre; the new
+// box must be clear like any other move.
+/datum/vessel/proc/turn_to(heading)
+	if (heading == dir)
+		return TRUE
+	var/cx = ox + (box_w() - 1) / 2
+	var/cy = oy + (box_h() - 1) / 2
+	var/old_dir = dir
+	dir = heading
+	var/nx = round(cx - (box_w() - 1) / 2)
+	var/ny = round(cy - (box_h() - 1) / 2)
+	dir = old_dir
+	return relocate(nx, ny, heading)
+
+// ---- Turf state carried across a hop ----
+
+/turf/proc/vessel_capture()
+	return null
+
+/turf/proc/vessel_restore(list/state)
+	return
+
+/turf/wall/sub_hull/vessel_capture()
+	return list("integrity" = hull_integrity, "breached" = breached, "shored" = shored, "inflow" = breach_inflow_rate)
+
+/turf/wall/sub_hull/vessel_restore(list/state)
+	hull_integrity = state["integrity"]
+	breached = state["breached"]
+	shored = state["shored"]
+	breach_inflow_rate = state["inflow"]
+	if (breached)
+		overlays += image(icon = 'icons/obj/machines/submarine.dmi', icon_state = "breach_glow")
+
+/turf/wall/sub_bulkhead/vessel_capture()
+	return list("health" = health, "watertight" = watertight)
+
+/turf/wall/sub_bulkhead/vessel_restore(list/state)
+	health = state["health"]
+	watertight = state["watertight"]
+	if (health <= 0)
+		icon_state = "damaged"
+
+/turf/floor/sub_deck/vessel_capture()
+	return list("water" = water_depth, "inflow" = water_inflow_rate, "fire" = fire_active, "fire_temperature" = fire_temperature, "fire_duration" = fire_duration)
+
+/turf/floor/sub_deck/vessel_restore(list/state)
+	water_depth = state["water"]
+	water_inflow_rate = state["inflow"]
+	fire_active = state["fire"]
+	fire_temperature = state["fire_temperature"]
+	fire_duration = state["fire_duration"]
+	if (water_depth > 0)
+		refresh_water_overlay()
