@@ -70,12 +70,12 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c6120453b7bcc356870c6295c1e0caf31fad739b'
+WIKI_REVIEWED_REVISION = 'fd8514bf23d51a9e0a463bb810285e344c874c3a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('2269656030ec207f0451375bf72f0617ce64e6a6b10f3b4885e5ed1d16d76b31', 'combat fight fighting intent aim shoot melee grenade cover'),
+    'guides/Guide_to_Combat.md': ('28b002e1c7ce02bf5e49fff0ac596c77b499cd5f32cf12661d320866e9b684f7', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('6f38a398304e6adf2447ca28c2b152f0b516bb00ba7b0fc4fd7ee0531bd96461', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('42feaf01ea2344b3d2fb50ac3f878836fd96664aa16462b22ba56452cc389e24', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
