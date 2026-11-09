@@ -91,7 +91,7 @@ internal static class HostStatusTests {
                 Frame("{\"schema\":1,\"ok\":false,\"error\":\"byond signed out\",\"port\":1714}")));
             throw new Exception("Signed-out wake refusal accepted");
         } catch (IOException refusal) {
-            Require(refusal.Message == gaia.Name + " cannot start right now: its host is not signed in to BYOND. Try again later.",
+            Require(refusal.Message == gaia.Name + " cannot start right now: its host is still signing in to BYOND. Try again in a minute.",
                 "Signed-out refusal message changed: " + refusal.Message);
         }
         await Reject(() => HostStatus.Wake(new GameTarget("ValZarGaming", 1716), resolver,

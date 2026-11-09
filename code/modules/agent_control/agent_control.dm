@@ -112,7 +112,7 @@ var/global/list/agent_characters = list()
 		update_handover_verbs(C)
 
 /proc/agent_control_scopes()
-	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits", "ooc")
+	return list("*", "observe", "vars_read", "vars_write", "call_proc", "admin_verbs", "message", "moderation", "server", "spawn", "characters", "visits", "ooc", "bug_report")
 
 /proc/agent_control_valid_name(name)
 	if (!istext(name) || length(name) < 1 || length(name) > 32)

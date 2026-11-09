@@ -53,6 +53,7 @@ what the code does so far and the rules later steps must keep.
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
+| 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
 | 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
@@ -374,8 +375,22 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
 - **Parcels.** Anyone welcome may leave a held item as a parcel for the
   port's station; the owners may leave parcels for a guest party. Each
   party collects its own parcels there (20 at most per port).
+- **Boarding raids.** A party may also force a docking (30 s, owners
+  warned) at a port that does not welcome it, only while some of that
+  station's owners are online (`crew_aboard`, the train raid rule). Raiders
+  land beside the port and ferry home the normal way.
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
+
+## Station defences
+
+- **Hull armour plate** (15 steel). Used on a habitat core, up to three per
+  module (saved `armour`). `barren_meteor_strike` asks
+  `habitat_strike_blocked` first, so a plate soaks one debris strike in
+  orbit or meteorite on Mars and the Moon.
+- **Point-defence turret** (45 electronics, from 2013, cabled, 30 power).
+  Stops 75% of strikes on modules within 7 tiles and adds 15 s per ready
+  turret (two at most) to a forced docking at a port within 7 tiles.
 
 ## Zero-g manufacturing
 

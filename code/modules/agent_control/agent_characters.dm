@@ -583,7 +583,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -596,7 +596,7 @@
 			ready = max(ready, world.time + 2)
 	if (action in list("click", "use", "craft", "verb", "throw"))
 		ready = max(ready, body.next_move, body.next_click + 1)
-	if (action in list("say", "emote", "ooc"))
+	if (action in list("say", "emote", "ooc", "bug_report"))
 		ready = max(ready, next_speech)
 	return max(0, ready - world.time)
 
@@ -666,6 +666,20 @@
 				agent_fail("ooc_closed", "OOC is muted or the line was empty")
 			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
 			detail = message
+		if ("bug_report")
+			// Goes into the in-game bug report queue (code/modules/bug_reports) as
+			// "<character> (AI)". An admin still approves it before anything reaches GitHub.
+			if (!A.has_scope("bug_report"))
+				agent_fail("forbidden", "Requires scope bug_report.")
+			var/key = ckey("agent-[A.name]")
+			var/why = bug_reports.refusal_for(key)
+			if (why)
+				agent_fail("bug_report_refused", why)
+			var/datum/bug_report/R = bug_reports.add_from(key, "[M.real_name] (AI)", "[M.real_name] (AI, agent [A.name])", M, null,
+				agent_text_arg(req, "title", 80), agent_text_arg(req, "what", 2000), "[req["steps"]]", "[req["expected"]]")
+			C.next_speech = world.time + AGENT_CHARACTER_SPEECH_DELAY
+			game_log("AGENT", "[A.name] filed bug report #[R.id] as [M] ([agent_ref(M)]): [R.title]")
+			return list("report" = R.id, "title" = R.title, "self" = character_state(C))
 		if ("click")
 			var/atom/target = agent_resolve_target(req["target"])
 			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)))
@@ -889,6 +903,9 @@
 		agent_dir(step["dir"])
 	if (action in list("say", "emote", "ooc"))
 		agent_text_arg(step, "text", 256)
+	if (action == "bug_report")
+		agent_text_arg(step, "title", 80)
+		agent_text_arg(step, "what", 2000)
 	if (action in list("click", "examine", "board", "drag", "throw"))
 		agent_resolve_target(step["target"])
 	if (action == "verb")

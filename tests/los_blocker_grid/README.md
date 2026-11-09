@@ -11,6 +11,9 @@ always scanned.
 and checks, natively, that the grid answer equals the flat scan over every
 blocker for about 25,000 queries: indoor wall scenes, eye step offsets,
 moving blockers, fractional targets, both footprint sizes and two view sizes.
+It also checks that a read's focused capture (`capture(FALSE, focus)`, which
+walks only the box around the eye and the target plus three tiles) gives the
+same answer as the full capture for random targets in every scene.
 
 ```
 source /root/byond-516.1688/byond/bin/byondsetup   # or pass --byond-bin

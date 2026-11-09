@@ -94,6 +94,13 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # dd.exe -public needs the host's BYOND account signed in, which on Windows
                    # lives in the BYOND pager (byond.exe) of the same logon session
                    'start_requires_byond_pager': True,
+                   # When the pager is not running the host starts it (byond_pager, default byond.exe
+                   # beside the daemon or compiler; it signs in by itself with "remember me") at most
+                   # once per byond_pager_retry_seconds, and counts a pager it saw start as signed in
+                   # after byond_pager_settle_seconds. A start from start.bat waits up to
+                   # byond_pager_wait_seconds for that; the watchdog and the doorman keep retrying.
+                   'byond_pager': None, 'byond_pager_settle_seconds': 45, 'byond_pager_retry_seconds': 120,
+                   'byond_pager_wait_seconds': 300,
                    # watch/serve watchdog: start a world again that exited on its own (after
                    # crash_grace_seconds), and force-restart one whose lifecycle status has not
                    # answered for hang_minutes (the save timeout while it was busy saving). Both
@@ -114,6 +121,17 @@ HEX40 = re.compile(r'^[0-9a-f]{40}$')
 
 class Refused(Exception):
     """An action that was checked and declined; nothing was changed."""
+
+
+class SignedOut(Refused):
+    """A start declined only because the BYOND pager has not signed in yet; retried soon."""
+
+
+# The BYOND pager is one per logon session, shared by every world this process hosts (a
+# region group runs several), so when it was seen and started is kept once per process.
+PAGER = {}
+# A pager first seen this soon after boot may still be signing in, so it gets the settle time.
+PAGER_BOOT_SECONDS = 600
 
 
 def load_config(path):
@@ -291,6 +309,12 @@ class Platform:
     def task_ready(self, name):
         code, out = self.run(['schtasks', '/Query', '/TN', name, '/FO', 'LIST'], timeout=60)
         return code == 0 and re.search(r'^Status:\s+Ready\s*$', out, re.M) is not None
+
+    def start_byond_pager(self, path):
+        """Start the BYOND pager (a window of its own) in this logon session."""
+        subprocess.Popen([str(path)], cwd=str(Path(path).parent), stdin=subprocess.DEVNULL,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, close_fds=True,
+                         creationflags=0x00000200 if os.name == 'nt' else 0)  # CREATE_NEW_PROCESS_GROUP
 
     def detach(self, argv):
         flags = DETACH_FLAGS
@@ -698,7 +722,8 @@ class Host:
             self.recover_interrupted_save()
             check_save(self.repo / 'map_saves')
             if not self.byond_signed_in():
-                raise Refused('BYOND is not signed in: start the BYOND pager and sign in first')
+                raise SignedOut('BYOND is not signed in yet: the host starts the BYOND pager and retries once '
+                                'it has signed in (sign in there by hand if it does not remember the account)')
             if not self.task_ready_for_start():
                 raise Refused('the scheduled task is not Ready')
         elif action in ('stop', 'restart'):
@@ -795,10 +820,65 @@ class Host:
         return self.platform.task_ready(self.config['task'])
 
     def byond_signed_in(self):
-        """False only when the pager is known not to be running in this session."""
+        """False while the pager is known not to be running in this session (the host then starts
+        it), or has only just started and may still be signing in."""
         if not self.config['start_requires_byond_pager']:
             return True
-        return getattr(self.platform, 'byond_pager_running', lambda: None)() is not False
+        running = getattr(self.platform, 'byond_pager_running', lambda: None)()
+        if running is None:
+            return True
+        now = self.platform.now()
+        settle = self.config['byond_pager_settle_seconds']
+        if not running:
+            PAGER.pop('seen', None)
+            PAGER['absent'] = True
+            self.start_byond_pager(now)
+            return False
+        if PAGER.get('seen') is None:
+            # A pager already up when this host first looks signed in long ago, unless it was
+            # seen missing or the machine has only just booted (it starts beside this host at logon).
+            boot = getattr(self.platform, 'boot_time', lambda: None)()
+            fresh = PAGER.get('absent') or (boot is not None and now - boot < PAGER_BOOT_SECONDS)
+            PAGER['seen'] = now if fresh else now - settle
+            if fresh:
+                self.log({'byond_pager': 'running; waiting %d s for it to sign in' % settle})
+        return now - PAGER['seen'] >= settle
+
+    def byond_pager_path(self):
+        if self.config.get('byond_pager'):
+            return Path(self.config['byond_pager'])
+        tool = self.config.get('daemon') or self.config['compiler']
+        return Path(tool).parent / 'byond.exe'
+
+    def start_byond_pager(self, now):
+        """Start the pager, at most once per byond_pager_retry_seconds across this process."""
+        launched = PAGER.get('launched')
+        if launched is not None and now - launched < self.config['byond_pager_retry_seconds']:
+            return
+        PAGER['launched'] = now
+        path = self.byond_pager_path()
+        starter = getattr(self.platform, 'start_byond_pager', None)
+        if starter is None:
+            return
+        if not path.is_file():
+            self.log({'byond_pager': 'not found', 'path': str(path)})
+            return
+        try:
+            starter(path)
+        except (OSError, ValueError) as error:
+            self.log({'byond_pager': 'could not start', 'path': str(path), 'error': str(error)[:200]})
+            return
+        self.log({'byond_pager': 'started', 'path': str(path)})
+
+    def wait_for_byond(self, timeout=None):
+        """Wait (starting the pager if needed) until BYOND has signed in, or timeout seconds pass."""
+        timeout = self.config['byond_pager_wait_seconds'] if timeout is None else timeout
+        deadline = self.platform.now() + timeout
+        while not self.byond_signed_in():
+            if self.platform.now() >= deadline:
+                return False
+            self.platform.sleep(5)
+        return True
 
     def start_cold(self, reason):
         """Start a cold server from its last save through the ordinary start action."""
@@ -1125,7 +1205,16 @@ class Host:
             return 30
         try:
             accepted = self.request('start')
-        except Refused as refusal:  # BYOND signed out, a broken save, ...: try again later
+        except SignedOut as refusal:
+            # The pager is starting or signing in (after a reboot it often comes up after this
+            # service): keep the world due and try again soon, without a new crash grace.
+            if record.get('last_refusal') != str(refusal):
+                self.log({'watchdog': kind, 'detail': detail, 'start_refused': str(refusal)})
+            record['last_refusal'] = str(refusal)
+            self.write_json(self.watchdog_file, record)
+            self.down_since = now - self.config['crash_grace_seconds']
+            return 15
+        except Refused as refusal:  # a broken save, a task that is not Ready, ...: try again later
             record['last_refusal'] = str(refusal)
             self.write_json(self.watchdog_file, record)
             self.log({'watchdog': kind, 'detail': detail, 'start_refused': str(refusal)})
@@ -1435,6 +1524,15 @@ def group_hosts(paths):
     return hosts, supervisors
 
 
+def start_pager_first(hosts):
+    """serve runs at logon: start the BYOND pager before any world needs it (after a reboot the
+    watchdog would otherwise only find it missing once a world's crash grace has passed)."""
+    for host in hosts:
+        if host.config['start_requires_byond_pager']:
+            return host.byond_signed_in()
+    return None
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--config', action='append', default=[],
@@ -1477,6 +1575,7 @@ def main(argv=None):
         return 0
     if args.action == 'serve':
         from doorman import Doorman
+        start_pager_first(hosts)
         try:
             Doorman(hosts, host.platform, supervisors=supervisors).run()
         except (OSError, ValueError) as error:
@@ -1484,6 +1583,8 @@ def main(argv=None):
             return 2
         return 0
     try:
+        if args.action == 'start' and not host.platform.listening(host.config['port']):
+            host.wait_for_byond()  # a start right after a reboot: let the pager start and sign in first
         if args.action == 'status':
             result = host.status()
             if host.config.get('group_config'):  # a region: the bot also shows its peers

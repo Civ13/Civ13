@@ -642,7 +642,7 @@ class InventoryHoverName(unittest.TestCase):
         captures=[]
         ctx=type('Ctx',(),{})()
         ctx.retired=False;ctx.owner=m.C;ctx.body=m.H
-        ctx.capture=lambda:captures.append('capture') or 'snapshot'
+        ctx.capture=lambda *args:captures.append('capture') or 'snapshot'
         ctx.decision_snapshot=lambda target,S,operation:0
         m.C.los_context=ctx
         return (lambda user,target,operation:projected(ctx,user,target,operation)),captures
@@ -1026,7 +1026,7 @@ class BlockingTreeSurface(unittest.TestCase):
             code=code.replace('var/datum/los_snapshot/S = new','var/datum/los_snapshot/S = new_snapshot()')
             code=re.sub(r'(var/datum/los_cell/\w+) = new',r'\1 = new_cell()',code)
             code=re.sub(r'for \(var/(c[xy]) = (.*), \1 <= (.*), \1\+\+\)',r'for (var/\1 in inclusive_range(\2, \3))',code)
-            f=adapter.project(head+'\n'+code,'/datum/los_context/proc/capture','self, presentation=False',env)
+            f=adapter.project(head+'\n'+code,'/datum/los_context/proc/capture','self, presentation=False, focus=None',env)
             return f(context,presentation)
         return N(S=snapshot,env=env,target=target,cell=cell,context=context,
                  capture=capture,
@@ -1222,7 +1222,9 @@ class BlockingTreeSurface(unittest.TestCase):
         self.assertIn('decision_snapshot(T, S, "visual_tree")',presenter)
         self.assertIn('root_tree_family(A) && A.opacity ? "visual_tree" : "visual"',masks)
         self.assertIn('I.appearance_flags &= ~TILE_BOUND',presenter)
-        self.assertIn('var/datum/los_snapshot/S = capture()',fragment(CORE.read_text(),'/datum/los_context/proc/decision('))
+        decision_text=fragment(CORE.read_text(),'/datum/los_context/proc/decision(')
+        self.assertIn('return decision_snapshot(target, capture(), "visual_tree")',decision_text)
+        self.assertIn('return decision_snapshot(target, capture(FALSE, focus), operation)',decision_text)
 
 
 # Native-composition fallback source contracts (engine boundaries injected).

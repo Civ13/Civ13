@@ -130,6 +130,7 @@ def write_save(saves, marker=MARKER, levels=2, intent=None):
 
 class GaiaHostTests(unittest.TestCase):
     def setUp(self):
+        gaia_host.PAGER.clear()  # the pager record is shared by every host in one process
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.repo = self.root / 'repo'
@@ -987,6 +988,100 @@ class WatchdogTests(unittest.TestCase):
         woken = self.host.thaw('launcher wake')
         self.assertTrue(woken.get('cold_start'), woken)
         self.assertFalse(self.host.cold_file.exists())
+
+    def pager_machine(self, running):
+        machine = self.machine
+        machine.pager, machine.pagers_started, machine.boot = running, [], None
+        machine.byond_pager_running = lambda: machine.pager
+        machine.start_byond_pager = lambda path: machine.pagers_started.append(str(path))
+        machine.boot_time = lambda: machine.boot
+        pager = self.root / 'BYOND' / 'bin' / 'byond.exe'
+        pager.parent.mkdir(parents=True)
+        pager.write_bytes(b'')
+        self.config['byond_pager'] = str(pager)
+        return pager
+
+    def test_after_a_reboot_the_watchdog_starts_the_pager_and_waits_for_it_to_sign_in(self):
+        # 2026-11-08: Gaia came back down after a reboot because the host ran before the
+        # pager had signed in, and the watchdog only tried again five minutes later.
+        self.host.watch_step(None)
+        pager = self.pager_machine(False)
+        self.machine.up = False
+        self.host.watch_step(None)
+        self.machine.clock += 120
+        self.assertEqual(self.host.watch_step(None), (None, 15))
+        self.assertEqual(self.machine.pagers_started, [str(pager)])
+        self.assertIn('not signed in yet', json.loads(self.host.watchdog_file.read_text())['last_refusal'])
+        self.assertEqual(self.starts(), [])
+        self.machine.clock += 15
+        self.assertEqual(self.host.watch_step(None), (None, 15), 'retried at once, without a new crash grace')
+        self.assertEqual(len(self.machine.pagers_started), 1, 'the pager is started at most every two minutes')
+        self.machine.clock += 120
+        self.host.watch_step(None)
+        self.assertEqual(len(self.machine.pagers_started), 2, 'a pager that never came up is started again')
+        self.machine.pager = True
+        self.machine.clock += 15
+        self.host.watch_step(None)
+        self.assertEqual(self.starts(), [], 'a pager that has just started may still be signing in')
+        self.machine.clock += 45
+        self.host.watch_step(None)
+        self.assertEqual(len(self.starts()), 1)
+        self.assertEqual(json.loads(self.host.watchdog_file.read_text())['restarts'], [self.machine.clock])
+        self.assertEqual(len([entry for entry in self.logged if 'start_refused' in entry]), 1,
+                         'the same refusal is logged once, not every pass')
+
+    def test_serve_starts_the_pager_before_any_world(self):
+        pager = self.pager_machine(False)
+        quiet = gaia_host.Host(dict(self.config, start_requires_byond_pager=False), self.machine)
+        self.assertFalse(gaia_host.start_pager_first([quiet, self.host]))
+        self.assertEqual(self.machine.pagers_started, [str(pager)])
+        self.assertIsNone(gaia_host.start_pager_first([quiet]))
+
+    def test_a_pager_already_up_when_the_host_starts_has_signed_in(self):
+        self.pager_machine(True)
+        self.machine.clock = 10000.0
+        self.assertTrue(self.host.byond_signed_in())
+        gaia_host.PAGER.clear()
+        self.machine.boot = self.machine.clock - 60
+        self.assertFalse(self.host.byond_signed_in(), 'right after boot the pager may still be signing in')
+        self.machine.clock += 45
+        self.assertTrue(self.host.byond_signed_in())
+        self.assertEqual(self.machine.pagers_started, [])
+
+    def test_a_manual_start_waits_for_the_pager_to_sign_in(self):
+        self.pager_machine(False)
+        self.machine.up = False
+        def sleep(seconds):
+            self.machine.clock += seconds
+            if self.machine.clock >= 20:
+                self.machine.pager = True
+        self.machine.sleep = sleep
+        self.assertTrue(self.host.wait_for_byond())
+        self.assertEqual(self.machine.clock, 65)
+        self.assertEqual(len(self.machine.pagers_started), 1)
+        gaia_host.PAGER.clear()
+        self.machine.pager = False
+        self.machine.sleep = lambda seconds: setattr(self.machine, 'clock', self.machine.clock + seconds)
+        self.assertFalse(self.host.wait_for_byond(timeout=30))
+        with self.assertRaises(gaia_host.SignedOut):
+            self.host.request('start')
+
+    def test_a_missing_pager_is_reported_and_the_world_can_still_start_without_the_requirement(self):
+        self.pager_machine(False)
+        self.config['byond_pager'] = str(self.root / 'nowhere' / 'byond.exe')
+        self.assertFalse(self.host.byond_signed_in())
+        self.assertEqual(self.machine.pagers_started, [])
+        self.assertIn({'byond_pager': 'not found', 'path': self.config['byond_pager'], 'time': 0}, 
+                      [dict(entry, time=0) for entry in self.logged])
+        self.config['start_requires_byond_pager'] = False
+        self.assertTrue(self.host.byond_signed_in())
+
+    def test_the_pager_path_defaults_beside_the_daemon_or_compiler(self):
+        self.assertEqual(self.host.byond_pager_path(), Path('byond.exe'))
+        self.config['compiler'] = 'C:/BYOND/bin/dm.exe'
+        self.assertEqual(self.host.byond_pager_path(), Path('C:/BYOND/bin/byond.exe'))
+        self.config['daemon'] = 'D:/BYOND/bin/dd.exe'
+        self.assertEqual(self.host.byond_pager_path(), Path('D:/BYOND/bin/byond.exe'))
 
     def test_a_refused_start_is_tried_again_later(self):
         self.host.watch_step(None)

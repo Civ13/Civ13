@@ -38,6 +38,7 @@ Code: `code/modules/agent_control/`. Client, MCP server and Ollama autopilot:
   | `characters` | `character_spawn`, `character_list`, `character_observe`, `character_act`, `character_queue`, `character_release` |
   | `visits` | `visit_status`, `visit_order`, `visit_start` |
   | `ooc` | the `ooc` character action (with `characters`) |
+  | `bug_report` | the `bug_report` character action (with `characters`) |
   | `*` | everything |
 
 - **Audit.** Every mutating action is written to the admin log as
@@ -161,11 +162,22 @@ like a player's line, and in a region group to the other regions. It fails with
 `ooc_closed` while OOC is muted. The autopilot never uses it; send it by hand, for
 example `python tools/agent-control/civ13_agent.py call character_act
 '{"character": "<ref>", "do": "ooc", "text": "OOC test from Ada"}'`.
+`bug_report` (`title` up to 80 characters and `what` up to 2000, both
+required; `steps` and `expected` optional; needs the `bug_report` scope too)
+files an in-game bug report as "<character name> (AI)", with the character's
+round details and location, exactly like a player's Help > Report bug. It waits
+in Admin > Bug Reports for an admin to approve or reject; nothing reaches GitHub
+without that. The same limits apply (3 waiting per agent, 5 minutes apart, 50 in
+all) and a refused report fails with `bug_report_refused` and the reason. The
+autopilot never uses it; send it by hand, for example
+`python tools/agent-control/civ13_agent.py call character_act '{"character":
+"<ref>", "do": "bug_report", "title": "Test report from Ada", "what": "Testing
+the bug report queue."}'`.
 
 A direct `character_act` that is still cooling down fails with `cooldown` and
 the ticks to wait. Cooldowns are the character's movement delay, the mob's own
 click cooldowns (`next_move`, `next_click`) and one second between `say`,
-`emote` or `ooc`.
+`emote`, `ooc` or `bug_report`.
 
 `character_queue` takes a plan of up to 32 `actions` (64 pending per
 character), each shaped like `character_act` arguments, plus

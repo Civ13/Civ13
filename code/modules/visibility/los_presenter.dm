@@ -256,6 +256,48 @@
 	dirty = FALSE
 	return TRUE
 
+// Re-decide only these atoms against a fresh capture: transparent movers,
+// which block nothing, so no other atom's verdict can have changed. Same
+// region and rules as refresh(); FALSE asks for the full refresh instead.
+/datum/los_presenter/proc/refresh_targets(datum/los_snapshot/S, list/targets)
+	if(retired || dirty || !last_policy || !owner || owner.los_presenter != src || !context || owner.los_context != context || !context.eligible())
+		return FALSE
+	if(!S || S.policy != context.policy_key())
+		return FALSE
+	var/min_x = context.body.x - S.radius_x - 2
+	var/max_x = context.body.x + S.radius_x + 2
+	var/min_y = context.body.y - S.radius_y - 2
+	var/max_y = context.body.y + S.radius_y + 2
+	context.begin_snapshot_pass(S)
+	for(var/atom/movable/A in targets)
+		if(A.opacity)
+			context.end_snapshot_pass()
+			return FALSE
+		var/turf/T = A.loc
+		var/inside = owns_atom(A) && isturf(T) && T.z == S.eye_z && T.x >= min_x && T.x <= max_x && T.y >= min_y && T.y <= max_y
+		var/image/old = images[A]
+		if(inside && context.decision_snapshot(A, S, "visual") == LOS_DENY)
+			var/image/mask = hidden_image(A)
+			images[A] = mask
+			owned_images[mask] = TRUE
+			owner.images |= mask
+			visible_targets -= A
+			continue
+		if(old)
+			owner.images -= old
+			owned_images -= old
+			images -= A
+		if(inside)
+			visible_targets[A] = TRUE
+		else
+			visible_targets -= A
+	context.end_snapshot_pass()
+	if(S.policy != context.policy_key() || S.revision != context.revision)
+		invalidate()
+		dirty = TRUE
+		return FALSE
+	return TRUE
+
 /datum/los_presenter/proc/clear_images()
 	if(owner)
 		owner.images -= owned_images

@@ -14,12 +14,17 @@
 //   the owners may leave parcels for a guest party. Each party collects what
 //   is addressed to it at that port.
 //
+// - Boarding raids: a party can force a docking at a station that does not
+//   welcome it, but only while some of its owners are online (the train raid
+//   rule). The crossing takes 30 seconds and the owners are warned.
+//
 // Visitors keep every other party check (thrusters, pods, decks, sectors and
 // consoles stay the owners'). Nothing here is a world.time stamp.
 // ============================================================
 
 #define ORBIT_DOCKING_AGE 8
 #define ORBIT_DOCKING_DELAY 50
+#define ORBIT_DOCKING_FORCE_DELAY 300
 #define ORBIT_DOCKING_GUESTS 10
 #define ORBIT_DOCKING_PARCELS 20
 
@@ -100,6 +105,8 @@ var/global/list/orbit_docking_ports = list()
 	var/party = party_train_party_of(user)
 	var/is_owner = party == owner()
 	var/list/options = list("Ferry to another station")
+	if (length(ferry_choices(party, TRUE)))
+		options += "Force a docking"
 	if (welcomes(party))
 		options += "Leave a parcel"
 	if (length(parcels(party)))
@@ -113,6 +120,8 @@ var/global/list/orbit_docking_ports = list()
 	switch (choice)
 		if ("Ferry to another station")
 			ferry_prompt(user)
+		if ("Force a docking")
+			ferry_prompt(user, TRUE)
 		if ("Leave a parcel")
 			leave_parcel_prompt(user)
 		if ("Collect parcels")
@@ -164,6 +173,10 @@ var/global/list/orbit_docking_ports = list()
 	guests += party
 	return TRUE
 
+// TRUE while some of this station's owners are online to defend it.
+/obj/structure/docking_port/proc/crew_aboard()
+	return party_members_online(owner())
+
 // Parties with a docking port on their station.
 /proc/orbit_docking_parties()
 	var/list/parties = list()
@@ -173,9 +186,20 @@ var/global/list/orbit_docking_ports = list()
 			parties |= owner
 	return parties
 
-// Where a party member can ferry to from here, as label = turf.
-/obj/structure/docking_port/proc/ferry_choices(party)
+// Where a party member can ferry to from here, as label = turf. With
+// forced, the stations they could board by force instead: ports that do not
+// welcome them while some of their owners are online.
+/obj/structure/docking_port/proc/ferry_choices(party, forced = FALSE)
 	var/list/choices = list()
+	if (forced)
+		for (var/obj/structure/docking_port/P in orbit_docking_ports)
+			if (P == src || QDELETED(P) || !isturf(P.loc))
+				continue
+			var/target = P.owner()
+			if (!target || target == party || target == owner() || P.welcomes(party) || !P.crew_aboard())
+				continue
+			choices["Board [party_train_party_name(target)]"] = get_turf(P)
+		return choices
 	var/home_listed = FALSE
 	for (var/obj/structure/docking_port/P in orbit_docking_ports)
 		if (P == src || QDELETED(P) || !isturf(P.loc) || P.owner() == owner() || !P.welcomes(party))
@@ -194,39 +218,52 @@ var/global/list/orbit_docking_ports = list()
 			choices["Home: your station"] = get_turf(H)
 	return choices
 
-/obj/structure/docking_port/proc/ferry_prompt(mob/living/human/user)
+/obj/structure/docking_port/proc/ferry_prompt(mob/living/human/user, forced = FALSE)
 	var/party = party_train_party_of(user)
-	var/list/choices = ferry_choices(party)
+	var/list/choices = ferry_choices(party, forced)
 	if (!choices.len)
-		to_chat(user, SPAN_WARNING("No other station welcomes [party_train_party_name(party)]."))
+		to_chat(user, SPAN_WARNING(forced ? "No station you could board has its crew aboard." : "No other station welcomes [party_train_party_name(party)]."))
 		return
-	var/pick = input(user, "Ferry to which station?", "Docking port") as null|anything in choices
+	var/pick = input(user, forced ? "Board which station by force?" : "Ferry to which station?", "Docking port") as null|anything in choices
 	if (!pick || QDELETED(src) || !in_range(src, user))
 		return
-	var/reason = ferry(user, pick)
+	var/reason = ferry(user, pick, forced)
 	if (reason)
 		to_chat(user, SPAN_WARNING(reason))
 
 // Ferries user to the choice labelled pick. Returns null once they crossed,
 // or why they did not.
-/obj/structure/docking_port/proc/ferry(mob/living/human/user, pick)
-	to_chat(user, SPAN_NOTICE("You strap into the ferry collar and push off..."))
-	if (!do_after(user, ORBIT_DOCKING_DELAY, src) || QDELETED(src))
+/obj/structure/docking_port/proc/ferry(mob/living/human/user, pick, forced = FALSE)
+	var/extra = 0
+	if (forced)
+		var/list/targets = ferry_choices(party_train_party_of(user), TRUE)
+		var/turf/T = targets[pick]
+		var/target = T ? orbit_station_party(T.z) : null
+		var/obj/structure/docking_port/P = T ? (locate(/obj/structure/docking_port) in T) : null
+		extra = orbit_point_defence_delay(P)
+		if (extra)
+			to_chat(user, SPAN_DANGER("Their point-defence fire rakes the collar; this will take longer."))
+		if (target)
+			satellite_raid_alert(target, "Raiders from [party_train_party_name(party_train_party_of(user))] are forcing your docking port!")
+		to_chat(user, SPAN_WARNING("You strap into the ferry collar and start cutting through their docking clamps..."))
+	else
+		to_chat(user, SPAN_NOTICE("You strap into the ferry collar and push off..."))
+	if (!do_after(user, forced ? ORBIT_DOCKING_FORCE_DELAY + extra : ORBIT_DOCKING_DELAY, src) || QDELETED(src))
 		return "The ferry was called off."
-	return cross(user, pick)
+	return cross(user, pick, forced)
 
 // Moves user to the choice labelled pick, checked again now.
-/obj/structure/docking_port/proc/cross(mob/living/human/user, pick)
+/obj/structure/docking_port/proc/cross(mob/living/human/user, pick, forced = FALSE)
 	var/party = party_train_party_of(user)
-	var/list/choices = ferry_choices(party)
+	var/list/choices = ferry_choices(party, forced)
 	var/turf/target = choices[pick]
 	if (!target)
-		return "That station no longer welcomes you."
+		return forced ? "That station's crew has left; you cannot board it now." : "That station no longer welcomes you."
 	var/turf/landing = orbit_freight_beside(target) || target
 	user.visible_message(SPAN_NOTICE("[user] ferries away from \the [src]."))
 	user.forceMove(landing)
-	user.visible_message(SPAN_NOTICE("[user] arrives by ferry."))
-	log_game("Docking port: [key_name(user)] of [party] ferried to [landing.x],[landing.y],[landing.z] ([pick]).")
+	user.visible_message(forced ? SPAN_DANGER("[user] bursts in through the docking collar!") : SPAN_NOTICE("[user] arrives by ferry."))
+	log_game("Docking port: [key_name(user)] of [party] [forced ? "forced a docking" : "ferried"] to [landing.x],[landing.y],[landing.z] ([pick]).")
 	return null
 
 // ---------------------------------------------------------------- parcels
@@ -295,5 +332,6 @@ var/global/list/orbit_docking_ports = list()
 
 #undef ORBIT_DOCKING_AGE
 #undef ORBIT_DOCKING_DELAY
+#undef ORBIT_DOCKING_FORCE_DELAY
 #undef ORBIT_DOCKING_GUESTS
 #undef ORBIT_DOCKING_PARCELS

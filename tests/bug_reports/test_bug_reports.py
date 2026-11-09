@@ -81,7 +81,7 @@ class BugReportSafety(unittest.TestCase):
 
     def test_player_text_is_escaped_in_the_panel(self):
         panel = body(read(QUEUE), 'proc/panel_html()', 'proc/show_panel(')
-        for field in ('R.title', 'R.what', 'R.steps', 'R.expected', 'R.ckey'):
+        for field in ('R.title', 'R.what', 'R.steps', 'R.expected', 'R.reporter'):
             self.assertIn(f'html_encode({field})', panel)
         self.assertNotRegex(panel, r'\[R\.(what|steps|expected|title)\]')
 
@@ -111,6 +111,40 @@ class BugReportSafety(unittest.TestCase):
         self.assertIn('"https://api.github.com/repos/[repo]/issues"', post)
         self.assertIn('status == 201', post)
         self.assertIn('R.status_code = L["status_code"]', read('code/datums/http.dm'))
+
+
+class AgentBugReports(unittest.TestCase):
+    def action(self):
+        chars = read('code/modules/agent_control/agent_characters.dm')
+        return chars, body(chars, 'if ("bug_report")', 'if ("click")')
+
+    def test_action_and_scope_are_listed(self):
+        chars, _ = self.action()
+        listed = body(chars, '/proc/agent_character_actions()', '\n\n')
+        self.assertIn('"bug_report"', listed)
+        self.assertIn('"ooc", "bug_report")', read('code/modules/agent_control/agent_control.dm'))
+
+    def test_scope_and_limits_come_before_the_queue(self):
+        _, action = self.action()
+        add = action.index('bug_reports.add_from(')
+        self.assertLess(action.index('if (!A.has_scope("bug_report"))'), add)
+        self.assertLess(action.index('bug_reports.refusal_for(key)'), add)
+        self.assertIn('"[M.real_name] (AI)"', action)
+        # It only queues the report: approval stays with an admin.
+        for forbidden in ('approve(', 'post_issue(', 'finish('):
+            self.assertNotIn(forbidden, action)
+
+    def test_queued_steps_check_their_text(self):
+        chars, _ = self.action()
+        self.assertIn('if (action == "bug_report")\n\t\tagent_text_arg(step, "title", 80)', chars)
+
+    def test_reporter_name_reaches_issue_and_panel(self):
+        queue = read(QUEUE)
+        self.assertIn('bug_report_issue_body(R.reporter,', queue)
+        self.assertIn('reporter = istext(L["reporter"])', queue)
+        players = body(queue, '/datum/bug_report_queue/proc/refusal(', '/datum/bug_report_queue/proc/refusal_for(')
+        self.assertIn('MUTE_ADMINHELP', players)
+        self.assertIn('return refusal_for(C.ckey)', players)
 
 
 if __name__ == '__main__':

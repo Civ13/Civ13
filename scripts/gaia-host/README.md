@@ -112,8 +112,10 @@ on purpose stays down.
 - **Crash.** When the port of such a world stays closed for
   `crash_grace_seconds` (120) and it is not asleep or cold, the watchdog runs
   the ordinary `start`, which loads the last completed save (and pulls and
-  compiles first if master moved). A start that is refused (BYOND signed out,
-  a broken save) is tried again every five minutes. With less than
+  compiles first if master moved). A start refused because BYOND has not
+  signed in yet is tried again every 15 seconds (the host starts the pager,
+  see below); one refused for another reason (a broken save, a task that is
+  not Ready) is tried again every five minutes. With less than
   `cold_start_min_free_mb` free it becomes cold instead and starts on its next
   wake.
 - **Hang.** When a world that answered in this watch stops answering for
@@ -165,8 +167,14 @@ but the host is online. On Windows, `start` (and so a
 cold start) also refuses while the BYOND pager (byond.exe) is not running in the
 same logon session, since `-public` needs the host's BYOND account signed in
 (`start_requires_byond_pager`, on by default); the launcher tells the player the
-host is not signed in. Put the BYOND pager in the Startup folder with "remember
-me" so it signs in at logon. Run `serve` from a scheduled task
+host is still signing in. The host starts the pager itself when it is missing
+(`byond_pager`, default `byond.exe` beside the daemon or compiler), at most once
+every `byond_pager_retry_seconds` (120), and counts a pager it saw start, or one
+first seen within ten minutes of boot, as signed in after
+`byond_pager_settle_seconds` (45). A command-line `start` (`start.bat`) waits up to
+`byond_pager_wait_seconds` (300) for that before it starts the worlds. Tick
+"remember me" in the pager once so it signs in by itself; otherwise sign in there
+by hand and the waiting starts carry on. Run `serve` from a scheduled task
 that starts at boot so the launcher can see and wake the instance.
 
 The launcher lists asleep servers from this cache and offers "Wake and join":
