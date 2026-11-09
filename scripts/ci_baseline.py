@@ -36,6 +36,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',),
+        'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
+            'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/research_tree/research_faction.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/game/mob/living/carbon/carbon.dm',
+            'code/game/mob/living/carbon/human/death.dm')},
     'research_coverage': {'files': ('tests/research_coverage/test_coverage.py',),
         'paths': ('tests/research_coverage/', 'scripts/atlas/research_coverage.py'),
         'shared_paths': ('code/modules/research_tree/', 'config/crafting/',

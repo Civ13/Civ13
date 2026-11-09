@@ -14,7 +14,7 @@ var/global/list/basic_crafting_recipes = list(
 	return map && istext(node_id) && get_research_node(node_id) && map.is_node_done(faction, node_id)
 
 /proc/crafting_node_allowed(mob/living/human/H, node_id)
-	return istype(H) && crafting_node_world_allowed(H.civilization, node_id)
+	return istype(H) && crafting_node_world_allowed(H.civilization, node_id) && (!map.recipe_knowledge_enabled() || H.knows_recipe_node(node_id))
 
 // Unknown outputs fail closed. Acquisition and generic chemistry do not call this.
 /proc/crafting_recipe_allowed(mob/living/human/H, result_path_string)
