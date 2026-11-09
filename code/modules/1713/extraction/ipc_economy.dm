@@ -1,7 +1,7 @@
 // Offline economic projections reuse the production conservation journal.
 // The adapter must be explicitly wired; constructing it does not enable IPC.
 /datum/extraction_trade_policy
-	var/version = "civ13.trade-policy.v1"
+	var/version = "civ13.trade-policy.v2"
 	proc/catalog()
 		return list(
 			"/obj/item/extraction_salvage" = list("category" = "salvage", "value" = 10),
@@ -18,14 +18,18 @@
 			"/obj/item/stack/material/wood" = list("category" = "materials", "quantity" = TRUE),
 			"/obj/item/stack/material/cloth" = list("category" = "materials", "quantity" = TRUE),
 			"/obj/item/stack/material/rope" = list("category" = "materials", "quantity" = TRUE),
-			"/obj/item/stack/material/steel" = list("category" = "materials", "quantity" = TRUE))
+			"/obj/item/stack/material/steel" = list("category" = "materials", "quantity" = TRUE),
+			"/obj/item/stack/material/kevlar" = list("category" = "materials", "quantity" = TRUE),
+			"/obj/item/stack/medical/bruise_pack/bint" = list("category" = "medical", "quantity" = TRUE),
+			"/obj/item/stack/medical/splint" = list("category" = "medical", "quantity" = TRUE))
 	proc/traders()
 		// Initial tuning only. No adapter enables these services implicitly.
-		var/list/all = list("salvage", "weapons", "ammunition", "armor", "tools", "materials")
+		var/list/all = list("salvage", "weapons", "ammunition", "armor", "tools", "materials", "medical")
 		return list(
 			"legacy" = list("categories" = all, "minimum_condition" = 0, "rate_bps" = 10000),
 			"armorer" = list("categories" = list("weapons", "ammunition", "armor"), "minimum_condition" = 0.5, "rate_bps" = 10000),
 			"quartermaster" = list("categories" = list("armor", "tools", "materials"), "minimum_condition" = 0.5, "rate_bps" = 10000),
+			"medic" = list("categories" = list("medical"), "minimum_condition" = 0, "rate_bps" = 10000),
 			"salvager" = list("categories" = list("salvage", "tools", "materials"), "minimum_condition" = 0.25, "rate_bps" = 10000),
 			"fence" = list("categories" = all, "minimum_condition" = 0, "rate_bps" = 2000))
 	proc/condition(list/node)

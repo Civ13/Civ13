@@ -36,6 +36,7 @@ var/global/extraction_identity_sequence = 0
 	if (path in list(/obj/item/stack/material/glass, /obj/item/stack/cable_coil)) return TRUE
 	if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint)) return TRUE
 	if (path == /obj/item/extraction_wheel_crate) return TRUE
+	if (path in extraction_currency_notes()) return TRUE
 	if (path == /obj/item/extraction_generator_kit) return TRUE
 	if (path in list(/obj/item/stack/material/copper, /obj/item/stack/material/gold)) return TRUE
 	if (path in list(/obj/item/stack/material/wood, /obj/item/stack/material/woodplank, /obj/item/stack/material/iron, /obj/item/stack/material/steel, /obj/item/stack/material/cloth, /obj/item/stack/material/woolcloth, /obj/item/stack/material/rope, /obj/item/stack/material/leather, /obj/item/stack/material/kevlar, /obj/item/stack/material/cotton, /obj/item/stack/material/flax, /obj/item/stack/material/rettedfabric)) return TRUE
@@ -229,6 +230,8 @@ var/global/extraction_identity_sequence = 0
 		if (path in list(/obj/item/stack/medical/bruise_pack/bint, /obj/item/stack/medical/splint))
 			var/obj/item/stack/medical/prototype = path
 			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > initial(prototype.max_amount)) return FALSE
+		if (path in extraction_currency_notes())
+			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > 500) return FALSE
 		if (path == /obj/item/stack/cable_coil)
 			if (!isnum(scalars["amount"]) || round(scalars["amount"]) != scalars["amount"] || scalars["amount"] < 1 || scalars["amount"] > 50 || !(scalars["cable_color"] in cable_colors)) return FALSE
 		if (ispath(path, /obj/item/stack/material))

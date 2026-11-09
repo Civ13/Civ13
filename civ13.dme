@@ -1537,6 +1537,7 @@
 #include "code\modules\1713\extraction\hub_maps.dm"
 #include "code\modules\1713\extraction\safehouse_hub.dm"
 #include "code\modules\1713\extraction\progression.dm"
+#include "code\modules\1713\extraction\currency_traders.dm"
 #include "code\modules\1713\extraction\groups.dm"
 #include "code\modules\1713\extraction\vehicle_transfer.dm"
 #include "code\modules\1713\extraction\vehicle_codec.dm"
