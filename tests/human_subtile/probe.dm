@@ -341,6 +341,26 @@ var/human_subtile_fixture_phase = "initializing"
 	J.set_human_subtile(TRUE)
 	J.SelfMove(get_step(J, EAST), EAST, world.time + 4)
 	human_subtile_fixture_assert(J.x == 12 && far.Adjacent(J), "clicked_target_reach_after_anchor_cross")
+	// Held Alt+direction slide: a whole tile's distance on the admitted interval
+	// from an offset (crossing the alignment), then a release stops it early.
+	human_subtile_fixture_phase = "headless held fine slide"
+	var/mob/living/human/subtile_fixture/S = human_subtile_fixture_actor(2, 12)
+	S.set_human_subtile(TRUE)
+	human_subtile_fixture_place(S, 6, 0)
+	human_subtile_fixture_assert(S.human_subtile_remaining_fraction(EAST) == 26 / 32 && S.human_subtile_remaining_fraction(WEST) == 6 / 32 && S.human_subtile_remaining_fraction(NORTH) == 1, "remaining_fraction_from_offset")
+	S.movement_fine = TRUE
+	S.movement_eastwest = EAST
+	var/slide_start = world.time
+	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
+	human_subtile_fixture_assert(S.x == 3 && S.step_x == 6 && !S.step_y && world.time - slide_start <= 4, "held_fine_slides_a_tile_from_offset")
+	human_subtile_fixture_assert(S.human_subtile_fine_released_at != world.time, "held_fine_not_released_while_held")
+	spawn(2)
+		S.movement_eastwest = null
+	slide_start = world.time
+	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
+	var/slid = (S.x - 3) * 32 + S.step_x - 6
+	human_subtile_fixture_assert(slid > 0 && slid < 32 && S.human_subtile_fine_released_at == world.time && world.time - slide_start < 4, "held_fine_stops_on_release")
+	S.movement_fine = FALSE
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
