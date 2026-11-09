@@ -30,8 +30,10 @@
 
 		if (do_after(user, 40, T))
 			if (T)
+				var/cleaned = reagents.has_reagent("water", TRUE) || reagents.has_reagent("cleaner", TRUE)
 				T.clean(src, user)
-			to_chat(user, "<span class='notice'>You have finished mopping!</span>")
+				if (cleaned)
+					to_chat(user, "<span class='notice'>You have finished mopping!</span>")
 
 
 /obj/effect/attackby(obj/item/I, mob/user)
