@@ -18,6 +18,8 @@ CONTROLS = {
               'if (T_density && !height_passes_over(T.opacity ? 3 : 1))', 'if (T_density)', 'did not clear the lower wall'),
     'margin': ('code/modules/projectiles/projectile_heights.dm',
                ' - PROJECTILE_MUZZLE_STANDING - ', ' - ', 'passed over cover'),
+    'npc': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
+            '\t\t\tif (los_terrain_ray_blocked(src, L)) continue\n', '', 'NPC picked a target behind the ridge'),
 }
 
 

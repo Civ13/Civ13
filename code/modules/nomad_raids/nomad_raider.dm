@@ -77,7 +77,7 @@
 		return FALSE
 	// Recheck here, including delayed peeks and direct Shoot callers. Visibility
 	// at target acquisition does not authorize firing after someone takes cover.
-	if (!(target in view(aggro_vision_range, src)) || get_dist(src, target) > 12 || check_friendly_fire(target))
+	if (!(target in view(aggro_vision_range, src)) || get_dist(src, target) > 12 || los_terrain_ray_blocked(src, target) || check_friendly_fire(target))
 		return FALSE
 	if (world.time < last_fire + firedelay || world.time < gun.next_fire_time)
 		return FALSE

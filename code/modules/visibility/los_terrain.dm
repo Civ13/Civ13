@@ -254,6 +254,34 @@ var/global/los_eye_offsets_paused = FALSE
 		return null
 	return list(F, tile_x, tile_y)
 
+// One-target terrain test for NPC sight, without a field or cache: TRUE when
+// ground under the straight line from the viewer's eye to the target's top
+// rises above it. One sample per tile along the longer axis; the viewer's
+// neighbours (always seen, as in the sweep) and the target's tile are skipped.
+// About a dozen height reads; levels without heights return at once.
+/proc/los_terrain_ray_blocked(atom/viewer, atom/target)
+	if (!viewer || !target || !map || !map.terrain_height_file)
+		return FALSE
+	var/turf/A = get_turf(viewer)
+	var/turf/B = get_turf(target)
+	if (!A || !B || A.z != B.z)
+		return FALSE
+	var/dx = B.x - A.x
+	var/dy = B.y - A.y
+	var/steps = max(abs(dx), abs(dy))
+	if (steps < 3)
+		return FALSE
+	var/datum/terrain_heights/H = map.terrain_heights()
+	if (!H || !H.rows_by_z["[A.z]"])
+		return FALSE
+	var/eye = H.at(A.x, A.y, A.z) + (ismob(viewer) ? los_eye_level(viewer) : LOS_EYE_STANDING)
+	var/rise = H.at(B.x, B.y, B.z) + los_target_top(target) - eye
+	for (var/n in 2 to steps - 1)
+		var/t = n / steps
+		if (H.at(A.x + round(dx * t + 0.5), A.y + round(dy * t + 0.5), A.z) > eye + rise * t + LOS_TERRAIN_EPSILON)
+			return TRUE
+	return FALSE
+
 // Grading changed a tile's level: drop every cached answer (grading is rare)
 // and refresh the viewers around it.
 /proc/los_terrain_heights_changed(turf/T)

@@ -6,6 +6,8 @@
 	var/turf/start = get_turf(source)
 	var/turf/end = get_turf(target)
 	if(!start || !end) return FALSE
+	// Hills hide what is behind a ridge (los_terrain.dm).
+	if(los_terrain_ray_blocked(source, target)) return FALSE
 	
 	var/list/turfs = getline2(start, end, FALSE)
 	for(var/turf/T in turfs)
@@ -316,6 +318,9 @@
 				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng)) continue
 				if (L in friends) continue
 				if (map.ID == MAP_VOYAGE) continue
+
+			// Not seen behind a ridge (los_terrain.dm).
+			if (los_terrain_ray_blocked(src, L)) continue
 
 			stance = HOSTILE_STANCE_ATTACK
 			T = L
