@@ -423,12 +423,12 @@
         {
           "owner": "",
           "declaration": "/obj/structure/train_part/edge/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
-          "sha256_body": "83467b3254314cd353a95cc7febda26ce659e2146b4343d47d23b5bc9d25843e"
+          "sha256_body": "b7a40b05c93b5c9758372a6244350f54e8c34097130074c32917732fdc92a21a"
         },
         {
           "owner": "",
           "declaration": "/obj/structure/train_part/edge/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)",
-          "sha256_body": "58423707fd664b0f338f01018d333897f13b1f0fc38e976418e389e3749dd781"
+          "sha256_body": "ba3d2ba3048e3f9d2c138935f7e2180d48ded8c9c458eb9fea19f173f0dcb233"
         }
       ]
     },

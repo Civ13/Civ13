@@ -216,13 +216,75 @@ var/global/platform_probe_runtime_error = FALSE
 	// Every kind builds.
 	var/kinds_ok = TRUE
 	var/x = 2
-	for (var/kind in list("sleeper", "dining", "storage"))
+	for (var/kind in list("sleeper", "dining", "storage", "flak"))
 		for (var/y in 2 to 6)
 			platform_track(x + 1, y, NORTH)
 		if (!platform_car(kind, x + 1, 6, NORTH))
 			kinds_ok = FALSE
 		x += 3
 	platform_check("kinds/all_assemble", kinds_ok)
+
+
+/proc/platform_warfare_run()
+	// Railway gun car on its own line at x = 20, heading north.
+	for (var/y in 2 to 12)
+		platform_track(20, y, NORTH)
+	var/obj/structure/trains/platform/gun_front = platform_car("railgun", 20, 10, NORTH)
+	var/list/gun_segs = platform_segments(gun_front)
+	var/obj/structure/cannon/modern/railway/G = locate() in platform_turf(20, 9)
+	var/obj/structure/railway_gun_brace/B = locate() in platform_turf(19, 10)
+	platform_check("railgun/fitted", G && B && gun_segs.len == TRAIN_CAR_LENGTH)
+	platform_check("railgun/needs_brace", G && findtext(G.fire_problem(), "Brace"))
+	for (var/obj/structure/trains/platform/P in gun_segs)
+		P.last_moved = world.time
+	platform_check("railgun/no_brace_while_moving", B && B.set_braced(TRUE))
+	for (var/obj/structure/trains/platform/P in gun_segs)
+		P.last_moved = -1000
+	platform_check("railgun/braces", B && !B.set_braced(TRUE) && gun_front.braced && G && !G.fire_problem())
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(20, 11))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	L.connected = gun_front
+	platform_check("railgun/braced_blocks_train", platform_step(L, 1) == 0 && L.loc == platform_turf(20, 11))
+	B.set_braced(FALSE)
+	platform_check("railgun/unbraced_moves", platform_step(L, 1) == 1 && gun_front.loc == platform_turf(20, 11) && (G.loc == platform_turf(20, 10)))
+
+	// Explosions wreck a car, which stops the train until welded.
+	var/obj/structure/trains/platform/P2 = gun_segs[2]
+	P2.ex_act(1)
+	platform_check("damage/armored_reduced", P2.health == 1500 - 180 && !P2.wrecked)
+	for (var/i in 1 to 9)
+		P2.ex_act(1)
+	platform_check("damage/wrecked", P2.wrecked && !QDELETED(P2) && P2.deck_parts && P2.deck_parts.len)
+	platform_check("damage/wreck_blocks_train", platform_step(L, 1) == 0)
+	P2.repair_by(1500)
+	platform_check("damage/welded", !P2.wrecked && P2.health == 1500)
+
+	// Armor plate stops bullets from outside but lets the crew fire out.
+	for (var/y in 2 to 8)
+		platform_track(26, y, NORTH)
+	var/obj/structure/trains/platform/arm = platform_car("armored", 26, 8, NORTH)
+	var/obj/structure/train_part/edge/plate = null
+	for (var/obj/structure/train_part/edge/E in arm.deck_parts)
+		if (E.style == "armor_door" && E.side == TRAIN_LEFT)
+			plate = E
+	var/obj/item/projectile/bullet = new(platform_turf(25, 8))
+	bullet.starting = platform_turf(22, 8)
+	platform_check("armor/stops_incoming", plate && !plate.CanPass(bullet, platform_turf(25, 8)))
+	bullet.starting = platform_turf(25, 8)
+	platform_check("armor/crew_fires_out", plate && plate.CanPass(bullet, platform_turf(24, 8)) && plate.CheckExit(bullet, platform_turf(24, 8)))
+	var/guns = 0
+	for (var/turf/T in platform_car_tiles(platform_segments(arm)))
+		for (var/obj/item/weapon/gun/projectile/automatic/stationary/S in T)
+			guns++
+	platform_check("armor/machine_guns", guns == 4)
+	qdel(bullet)
+
+	// The armored locomotive survives a direct hit.
+	var/obj/structure/trains/locomotive/coal/armored/AL = new(platform_turf(30, 24))
+	AL.ex_act(1)
+	platform_check("armored_loco/survives", !QDELETED(AL) && AL.health == 2700 && !AL.disabled)
 
 /world/New()
 	OpenPort("none")
@@ -234,6 +296,7 @@ var/global/platform_probe_runtime_error = FALSE
 	GLOB.destroyed_event = new
 	try
 		platform_probe_run()
+		platform_warfare_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

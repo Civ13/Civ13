@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from prepare_native import isolated_startup  # noqa: E402
 
 PREFIX = '.train_platforms_ci'
-EXPECTED_CHECKS = 36
+EXPECTED_CHECKS = 50
 
 
 def replace_once(source, old, new):

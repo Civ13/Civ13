@@ -883,12 +883,14 @@ var/global/list/node_grid_col_cache = null
         "/obj/structure/telecom/terminal" = "assembly_line",
         "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
-		// --- field_artillery (5) ---
+		// --- field_artillery (7) ---
 		"/obj/item/stack/ammopart/casing/artillery" = "field_artillery",
 		"/obj/item/stack/ammopart/casing/tank" = "field_artillery",
 		"/obj/item/weapon/siegeladder/metal" = "field_artillery",
 		"/obj/structure/barricade/antitank" = "field_artillery",
 		"/obj/structure/cannon/modern" = "field_artillery",
+		"/obj/structure/train_car_kit/railgun" = "field_artillery",
+		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
 		"/obj/item/weapon/beartrap" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
@@ -1261,6 +1263,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
 		"/obj/item/weapon/gun_sling" = "gunsmithing",
 		"/obj/item/weapon/grenade/smokebomb/marker/red" = "automatic_weapons",
+		"/obj/structure/train_car_kit/armored" = "automatic_weapons",
+		"/obj/structure/train_car_kit/flak" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/green" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/yellow" = "automatic_weapons",
 		"/obj/item/weapon/grenade/smokebomb/marker/purple" = "automatic_weapons",
