@@ -554,6 +554,14 @@ map_storage
 		list/saving_candidate_structure
 		var/saving_z = 0
 		var/last_error = null
+		// The last_error a failed save export set. A save failure leaves the
+		// world as it was, so it must not hold character recovery the way a
+		// failed load does (player_restoration_blocked).
+		var/last_export_error = null
+		// Wandering animals whose atomic capture overran its tick budget, by
+		// "\ref[]" (never the atom itself). Later saves keep them on the
+		// ordinary turf path so one heavy animal cannot fail every save.
+		var/list/moving_save_demoted = list()
 		// Admin VV diagnostic snapshots only. Never retain live objects here.
 		var/list/last_save_reference_failure
 		var/consecutive_save_failures = 0
@@ -569,7 +577,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
-	if(key in list("moving_save_roots", "moving_save_chunk")) return TRUE
+	if(key in list("moving_save_roots", "moving_save_chunk", "moving_save_demoted", "last_export_error")) return TRUE
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	if(key == "human_save_roots") return TRUE
 #endif
@@ -1124,6 +1132,10 @@ var/global/datum/persistence_admission_identity
 		if(!map_storage.run_world_operation("save", operation))
 			throw EXCEPTION("Save_World did not complete")
 		log_startup_progress("	Saved the map in [stop_watch(watch)]s.")
+		// A completed save supersedes an earlier failed export.
+		if(map_storage.last_export_error && map_storage.last_error == map_storage.last_export_error)
+			map_storage.last_error = null
+		map_storage.last_export_error = null
 	catch(var/exception/e)
 		var/cleanup_ok = TRUE
 		if(debug_policy)
@@ -1131,6 +1143,7 @@ var/global/datum/persistence_admission_identity
 		else
 			map_storage.cleanup_world_operation()
 		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		map_storage.last_export_error = map_storage.last_error
 		var/released = operation.finish(FALSE)
 		if(debug_policy) debug_policy.finish_failure(operation, e, cleanup_ok, released)
 		world.log << "World-save export failed: [map_storage.last_error]"

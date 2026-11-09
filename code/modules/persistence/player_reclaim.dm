@@ -152,7 +152,8 @@ var/global/list/persistence_player_claims = list()
 	// The import has restored the world before this phase begins. Its operation
 	// still owns admission while player callbacks run; no new save/load may enter.
 	var/final_import = persistence_active_operation && persistence_active_operation.current(src, "load") && persistence_active_operation.restoring_players
-	return (persistence_save_in_progress && !final_import) || persistence_restart.startup_hold || last_error
+	// A failed save export leaves every body where it was; only load errors hold recovery.
+	return (persistence_save_in_progress && !final_import) || persistence_restart.startup_hold || (last_error && last_error != last_export_error)
 
 /map_storage/proc/finish_player_restoration()
 	if(player_restoration_blocked())
