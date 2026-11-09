@@ -239,6 +239,6 @@ var/list/human_subtile_crawl_changes = list()
 	F.movement_eastwest = EAST
 	human_subtile_crawl_action(F, "scramble", EAST)
 	F.movement_eastwest = null
-	human_subtile_crawl_assert(F.x == 9 && F.step_x == 10 && F.human_subtile_offset_owned && !F.human_subtile_transaction, "crawl_held_slides_from_offset")
+	human_subtile_crawl_assert(F.x == 9 && F.step_x == 10 && F.human_subtile_offset_owned && !F.human_subtile_transaction, "crawl_held_slides_from_offset [F.x] [F.step_x] [F.human_subtile_offset_owned] [F.human_subtile_transaction] [F.fixture_pulses]")
 	qdel(F)
 	return TRUE
