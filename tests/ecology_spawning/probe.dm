@@ -222,6 +222,17 @@ var/eco_runtime_error = FALSE
 	D.stance = HOSTILE_STANCE_IDLE
 	var/mob/living/simple_animal/hostile/human/skeleton/K = new(locate(6, 6, 1))
 	eco_check(!ecology_animal_resting(K), "human NPCs never rest")
+	ecology_world_unwatched = TRUE
+	eco_check(ecology_animal_frozen(D), "an animal waits while nobody is connected")
+	eco_check(ecology_animal_frozen(K), "human NPCs wait while nobody is connected")
+	D.stance = HOSTILE_STANCE_ATTACK
+	eco_check(ecology_animal_frozen(D), "a fighting animal stops attacking while nobody is connected")
+	D.stance = HOSTILE_STANCE_IDLE
+	D.stat = DEAD
+	eco_check(!ecology_animal_frozen(D), "a dead animal keeps rotting while nobody is connected")
+	D.stat = CONSCIOUS
+	ecology_world_unwatched = FALSE
+	eco_check(!ecology_animal_frozen(D), "animals run again once someone connects")
 	qdel(K)
 	qdel(D)
 

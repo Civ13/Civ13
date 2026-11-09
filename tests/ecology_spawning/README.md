@@ -13,7 +13,7 @@ python3 tests/ecology_spawning/run_linux.py . tests/ecology_spawning/perf_probe.
 
 Production sources run in the shared constructor fixture with ordinary game startup disabled. A probe deer subtype skips AI start-up but registers in the real `deer_count` and living lists. The probe calls `cycle()` directly instead of waiting on the 60-second loop.
 
-`probe.dm` checks the habitat filter (biome, indoor, roofed, occupied, water), ground classes, 8x8 cells, the warm-up, herds up to the target and none above it, dead and tamed animals not counting, busy player cells receiving nothing, unknown heatmap coverage never counting as quiet, stop releasing the heatmap, runtime-only state, the default species table and type matching, habitat-sized targets and the map cap, which map spawners ecology replaces, and when distant animals rest.
+`probe.dm` checks the habitat filter (biome, indoor, roofed, occupied, water), ground classes, 8x8 cells, the warm-up, herds up to the target and none above it, dead and tamed animals not counting, busy player cells receiving nothing, unknown heatmap coverage never counting as quiet, stop releasing the heatmap, runtime-only state, animals waiting while nobody is connected, the default species table and type matching, habitat-sized targets and the map cap, which map spawners ecology replaces, and when distant animals rest.
 
 `perf_probe.dm` is not a pass/fail test; it prints the mob process cost per second for 100-900 animals with and without resting. Results are in `docs/ecology-spawning.md`.
 

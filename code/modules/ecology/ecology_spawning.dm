@@ -536,6 +536,10 @@ var/global/list/ecology_species_table = null
 #define ECOLOGY_REST_EVERY 4
 var/global/list/ecology_observer_turfs = list()
 var/global/ecology_rest_phase = 0
+// TRUE while nobody is connected (no client, not even in the lobby) and no
+// agent character plays: living animals hold still, do not get hungry and do
+// not attack until someone joins, and saves have nothing moving to capture.
+var/global/ecology_world_unwatched = FALSE
 
 // Once per full pass over the living mobs (a fire can resume a snapshot).
 /proc/ecology_advance_rest_phase()
@@ -555,6 +559,14 @@ var/global/ecology_rest_phase = 0
 		if (T)
 			turfs |= T
 	ecology_observer_turfs = turfs
+	ecology_world_unwatched = !length(clients) && !length(agent_characters)
+
+// Val (2026-11-09): with no players connected, animals should not move,
+// starve or attack. Their whole Life() waits, including NPC humans, so a
+// raider cannot attack an empty settlement either. Dead animals keep running,
+// so carcasses still rot away.
+/proc/ecology_animal_frozen(mob/living/simple_animal/A)
+	return ecology_world_unwatched && istype(A) && !A.client && A.stat != DEAD
 
 /proc/ecology_animal_resting(mob/living/simple_animal/A)
 	if (!istype(A) || A.client || A.stat == DEAD || istype(A, /mob/living/simple_animal/hostile/human))
