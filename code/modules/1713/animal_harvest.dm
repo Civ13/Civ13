@@ -97,9 +97,11 @@
 	// Persist only the completed claim; an interrupted wait must not lock a save.
 	var/harvested = FALSE
 	var/tmp/harvesting = FALSE
+	// Hunting skill bonus of whoever is butchering; set only during harvest_products.
+	var/tmp/harvest_bonus = 0
 
 /mob/living/simple_animal/persistence_runtime_var(key)
-	if (key == "harvesting")
+	if (key == "harvesting" || key == "harvest_bonus")
 		return TRUE
 	return ..()
 
@@ -124,10 +126,13 @@
 	// Claim before constructing anything. This proc does not yield after claiming.
 	harvested = TRUE
 	user.visible_message(SPAN_NOTICE("[user] [skin ? "skins and butchers" : "butchers"] [src]."))
+	harvest_bonus = harvest_skill_user_bonus(user, "hunting")
 	harvest_products(site, skin)
+	harvest_bonus = 0
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/H = user
 		H.adaptStat("medical", butcher_yield()/3)
+		H.adaptStat("hunting", butcher_yield()/2)
 	crush()
 	qdel(src)
 	return TRUE
@@ -172,12 +177,16 @@
 	var/zombie = istype(src, /mob/living/simple_animal/hostile/human/zombie)
 	var/meat_type = poisonous ? /obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog : (crab ? /obj/item/weapon/reagent_containers/food/snacks/rawcrab : /obj/item/weapon/reagent_containers/food/snacks/meat)
 	// Pig legs and chicken carcasses retain their existing multi-portion processing.
+	// A skilled hunter cuts more food from the same carcass.
+	var/portions = harvest_skill_amount(poisonous ? 1 : ((pig || chicken) ? 1 : size), poisonous ? 0 : harvest_bonus)
 	if (pig)
-		new /obj/item/weapon/pigleg(site)
+		for (var/i = 1, i <= portions, i++)
+			new /obj/item/weapon/pigleg(site)
 	else if (chicken)
-		new /obj/item/weapon/chicken_carcass(site)
+		for (var/i = 1, i <= portions, i++)
+			new /obj/item/weapon/chicken_carcass(site)
 	else
-		for (var/i = 1, i <= (poisonous ? 1 : size), i++)
+		for (var/i = 1, i <= portions, i++)
 			var/obj/item/weapon/reagent_containers/food/snacks/F = harvest_food(meat_type, site)
 			if (zombie)
 				F.name = "rotten zombie meat"
@@ -205,7 +214,8 @@
 		if (size >= 3)
 			new /obj/item/stack/sinew(site, min(4, max(1, size-2)))
 		if (has_fat)
-			for (var/i = 1, i <= min(2, max(0, size-2+fat_extra-fat_penalty)), i++)
+			var/fat_portions = harvest_skill_amount(min(2, max(0, size-2+fat_extra-fat_penalty)), harvest_bonus)
+			for (var/i = 1, i <= fat_portions, i++)
 				harvest_food(/obj/item/weapon/reagent_containers/food/snacks/animalfat, site)
 	else if (chicken)
 		harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal, site)

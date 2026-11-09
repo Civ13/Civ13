@@ -112,6 +112,7 @@
 
 /mob/living/human/proc/adaptStat(statname, multiplier = 1)
 	statname = lowertext(statname)
+	ensure_late_stats()
 	if (!stats.Find(statname))
 		return
 
@@ -149,7 +150,7 @@
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 
-	else if (statname == "throwing")
+	else if (list("throwing", "hunting").Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/200, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/200, increase_multiple))
 

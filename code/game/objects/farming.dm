@@ -1084,13 +1084,14 @@
 			return "Clear the plot before growing a tree here."
 	return null
 
-/obj/structure/farming/plant/proc/spawn_seeds()
+// bonus is the harvester's farming skill bonus (see harvest_skills.dm).
+/obj/structure/farming/plant/proc/spawn_seeds(bonus = 0)
 	if (istype(src, /obj/structure/farming/plant/herbs))
 		return
 	var/seedpath = "/obj/item/stack/farming/seeds/[plant]"
-	new seedpath(loc, 2)
+	new seedpath(loc, harvest_skill_amount(2, bonus))
 
-/obj/structure/farming/plant/proc/spawn_produce()
+/obj/structure/farming/plant/proc/spawn_produce(bonus = 0)
 	var/fruitpath
 	var/obj/item/I
 	if (stack <> "product_name") // Routine to spawn produces when in stack
@@ -1099,17 +1100,26 @@
 		I.radiation = radiation/2
 		if (plant_nutrition >= 80)
 			I.amount *= rand(1, 3) // If the soil is fed, randomly increase production from 1 to 3
+		if (bonus > 0)
+			var/obj/item/stack/S = I
+			var/total = harvest_skill_amount(S.amount, bonus)
+			S.amount = S.max_amount ? min(total, S.max_amount) : total
+			S.update_strings()
+			if (total > S.amount)
+				var/obj/item/stack/extra = new fruitpath(loc, total - S.amount)
+				extra.radiation = radiation/2
 	else
 		if (condiment <> "product_name") // Routine to spawn produces when condiment
 			fruitpath = "/obj/item/weapon/reagent_containers/food/condiment/[condiment]"
 		else // Routine to spawn produces when fruit itself
 			fruitpath = "/obj/item/weapon/reagent_containers/food/snacks/grown/[plant]"
-		I = new fruitpath(loc)
-		I.radiation = radiation/2
+		var/count = 1
 		if (plant_nutrition >= 80) // If the soil is fed, randomly increase production from 1 to 3
-			for(var/l = 1, l <= rand(0, 2) && l > 0, l++) // If 0, no extra crops. Up to 2 extras, 3 counting with the main produce
-				I = new fruitpath(loc)
-				I.radiation = radiation/2
+			count += rand(0, 2) // If 0, no extra crops. Up to 2 extras, 3 counting with the main produce
+		count = harvest_skill_amount(count, bonus)
+		for (var/l = 1, l <= count, l++)
+			I = new fruitpath(loc)
+			I.radiation = radiation/2
 
 /*
 /////// Plant life processing code...
@@ -1209,9 +1219,14 @@
 			to_chat(user, SPAN_WARNING("You uproot the [name]."))
 			qdel(src)
 		else if (readyHarvest()) // harvest
-			spawn_seeds()
-			spawn_produce()
+			// A skilled farmer saves more seed and gathers more crop.
+			var/bonus = harvest_skill_user_bonus(user, "farming")
+			spawn_seeds(bonus)
+			spawn_produce(bonus)
 			to_chat(user, SPAN_NOTICE("You [harvest_verb] the [name]."))
+			if (ishuman(user))
+				var/mob/living/human/H = user
+				H.adaptStat("farming", 1)
 			qdel(src)
 		else // destroy
 			to_chat(user, SPAN_WARNING("You uproot the dead [name]."))
