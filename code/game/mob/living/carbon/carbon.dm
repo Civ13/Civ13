@@ -10,6 +10,7 @@
 /mob/living/human/on_runtime_spawn()
 	..()
 	voice_pitch = rand(70,140)
+	initialize_recipe_knowledge()
 
 /mob/living/human/Life()
 	..()

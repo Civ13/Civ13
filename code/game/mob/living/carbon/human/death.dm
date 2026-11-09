@@ -49,6 +49,7 @@
 	water_overlay = FALSE
 	update_fire(1)
 	if (stat == DEAD) return
+	forget_recipe_knowledge()
 	region_home_death(src)
 	if (driver && driver_vehicle)
 		driver_vehicle.driver_died(src) // frees the seat so someone else can drive
