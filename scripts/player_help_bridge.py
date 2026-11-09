@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd92e8ffa2452ec1fe55bc314d00ec6a75eb88570'
+WIKI_REVIEWED_REVISION = 'c6120453b7bcc356870c6295c1e0caf31fad739b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -89,7 +89,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('52f18d58defc3e346041a4519805249f3882d11453162d80008198327add1785', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('d5fa7ea8e6bdddf5cc1a7fe89be384050e3a7672c554ac14d2f3c087bce42d78', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('55148c4894a79c600192d8eb72768fa1b1e6efe530e22187174fbd72ba26f6ca', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('d1e120e469a8ba315953efc59d4168464f88fd5f4a1bc3a986d6266225b59a2b', 'resource extraction gathering oil petroleum well fracturing'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('6929f1b1b1d4bc9a888921e3a633c065a89f56dd8d96a5916b2398665e1c947b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('44eefb4c238a55b45d66e8d6c26e845a3c66a289657b9d5294f7d3f4376b17fe', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('9317ddd20e74ba0e1cea9826001848eedc322fdc2f451dc88c2d12987b3e5e98', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('34eab0b53c5236573656f60f827394895d9b577fc4783881d6ff4042ad5eecbb', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -122,7 +122,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('13e138b2c82d92cb69d88958f0ab85b2c00a4f9afd29a84329033e8193ed15e4', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('3314144be4f96cadddaa5ae8310119303a236afb56a68d1bfe1bb493c17378da', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
