@@ -8,7 +8,7 @@
 	maxy = 12
 	maxz = 1
 	fps = 20
-	turf = /turf/floor/plating/terrain_height_probe
+	turf = /turf/floor/rocky/terrain_height_probe
 	area = /area
 
 /world/OpenPort(port)
@@ -22,8 +22,9 @@
 /client/New()
 	del(src)
 
-/turf/floor/plating/terrain_height_probe
-/turf/floor/plating/terrain_height_probe/other
+/turf/floor/rocky/terrain_height_probe
+/turf/floor/rocky/terrain_height_probe/other
+/turf/floor/plating/terrain_height_probe_built
 
 /obj/map_metadata/terrain_height_probe
 	terrain_height_file = "tests/terrain_height/fixture.txt"
@@ -110,9 +111,21 @@ var/terrain_height_probe_checks = 0
 	terrain_shading_applied = TRUE
 	var/turf/flat = locate(2, 2, 1)
 	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in flat.vis_contents), "flat_ground_left_alone")
-	slope.ChangeTurf(/turf/floor/plating/terrain_height_probe/other)
+	slope.ChangeTurf(/turf/floor/rocky/terrain_height_probe/other)
 	slope = locate(6, 9, 1)
 	terrain_height_probe_assert(!terrain_shading_applied || (locate(/obj/effect/terrain_shade) in slope.vis_contents), "changeturf_keeps_shading")
+
+	// Built floors are laid level: no slope cost onto, off or across them, and no shading.
+	var/turf/built = locate(7, 9, 1)
+	built.ChangeTurf(/turf/floor/plating/terrain_height_probe_built)
+	built = locate(7, 9, 1)
+	terrain_height_probe_assert(built.terrain_smoothed() && !slope.terrain_smoothed(), "built_vs_natural")
+	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), built, 2.85) == 0 && terrain_slope_delay(built, locate(8, 9, 1), 2.85) == 0, "built_floor_no_slope_cost")
+	terrain_height_probe_assert(terrain_slope_delay(locate(8, 9, 1), locate(9, 9, 1), 2.85) == 1, "natural_ground_keeps_cost")
+	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in built.vis_contents), "built_floor_unshaded")
+	built.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
+	built = locate(7, 9, 1)
+	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in built.vis_contents, "removed_floor_shaded_again")
 
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"

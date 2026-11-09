@@ -42,6 +42,12 @@ buckled). For the level difference between the two tiles, capped at 4:
 Held movement rounds each step up to whole server ticks (0.4 ds), so on a walk
 one level up is about 22% slower and one level down about 22% faster.
 
+Built ground is laid level: a step onto, off or across a built floor (any
+`/turf/floor` except grass, dirt, snow, beach, rocky, gravel, mined floor,
+trench and lava) or a built wall has no slope cost, and those turfs are not
+shaded (`terrain_smoothed()`). Building or removing a floor updates the
+shading through `ChangeTurf`.
+
 Smooth (sub-tile) steps go through the same code, so they pay the same cost.
 NPC and animal movement do not use terrain height yet.
 
