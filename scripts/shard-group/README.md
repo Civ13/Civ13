@@ -163,6 +163,10 @@ only; `relay_bind` (`0.0.0.0`) and `relay_capture` (false) are optional. Setup
 writes `relay`, `relay_control` and `gate` into each region's
 `shard_region.json` and the group token into `config/relay-token.txt`; the host
 service starts `relay.py` with the other helpers.
+The relay reads the game ports when it starts, so `setup --region ID` also sends
+a running relay every port of the group (control `add_port`, reported as
+`relay_ports`; `null` when no relay answered); a region added later is routed
+without restarting the relay or dropping relayed players.
 
 - A player joins the gate directly, so it sees their real address. If the
   coordinator says their character lives elsewhere, the gate wakes that region,
