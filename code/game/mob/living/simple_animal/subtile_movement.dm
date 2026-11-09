@@ -95,7 +95,8 @@
 // Return first physical progress synchronously, then finish within that interval.
 // No AI, path search, RNG, client FPS changes or queued intents inside the worker.
 /mob/living/simple_animal/proc/ai_step(turf/destination, interval, pulse_only = FALSE, list/receipt = null, datum/intent_owner = null)
-	if (npc_subtile_transaction || world.time < npc_subtile_until || !npc_subtile_intent_valid(intent_owner))
+	// Nobody connected: no new step from any worker (#4197).
+	if (npc_subtile_transaction || world.time < npc_subtile_until || !npc_subtile_intent_valid(intent_owner) || ecology_animal_frozen(src))
 		return FALSE
 	var/direction = get_dir(src, destination)
 	if (!npc_subtile_enabled || !npc_subtile_ready() || !(direction in alldirs) || destination != get_step(src, direction) || !isnum(interval) || interval < world.tick_lag || interval > 100)
@@ -402,6 +403,9 @@
 
 // Species producers retain their native commands until explicitly opted in.
 /mob/living/simple_animal/proc/npc_subtile_species_walk(mode, atom/target = null, lag = 0, direction = 0, distance_limit = 0)
+	if (ecology_animal_frozen(src))
+		walk(src, 0)
+		return FALSE
 	if (!npc_subtile_species_enabled || !npc_subtile_enabled)
 		if (!npc_subtile_species_legacy_ready())
 			return FALSE

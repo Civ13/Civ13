@@ -34,7 +34,10 @@
 				mob_list -= M
 				unregister_living_mob(M)
 				continue
-			if (!ecology_animal_frozen(M) && !ecology_animal_resting(M))
+			if (ecology_animal_frozen(M))
+				var/mob/living/simple_animal/frozen = M
+				frozen.ecology_hold_still()
+			else if (!ecology_animal_resting(M))
 				M.Life()
 			if (!(M == null))
 				if (world.time - M.last_movement > 7)
