@@ -75,6 +75,11 @@ default behaviour is:
 		if (map && map.check_caribbean_block(AM, get_step(get_turf(AM), dir)))
 			return
 
+	// Decide now: the free-movement pulse that caused the bump is gone by spawn.
+	var/swap_vetoed = FALSE
+	if (ishuman(src) && isliving(AM))
+		var/mob/living/human/swapper = src
+		swap_vetoed = !swapper.human_subtile_swap_allowed(AM)
 	spawn(0)
 		if ((!( yes ) || now_pushing) || !loc)
 			return
@@ -101,7 +106,7 @@ default behaviour is:
 				now_pushing = FALSE
 				return
 
-			if (can_swap_with(tmob)) // mutual brohugs all around!
+			if (!swap_vetoed && can_swap_with(tmob)) // mutual brohugs all around!
 				if (ordinary_human_animal_swap(tmob))
 					now_pushing = FALSE
 					return
@@ -217,10 +222,6 @@ default behaviour is:
 		return FALSE
 	if (!tmob.canmove || !canmove)
 		return FALSE
-	if (ishuman(src))
-		var/mob/living/human/swapper = src
-		if (!swapper.human_subtile_swap_allowed(tmob))
-			return FALSE
 
 	if (swap_density_check(src, tmob))
 		return FALSE

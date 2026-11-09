@@ -29,7 +29,7 @@ class OrdinaryAnimalSwapTests(unittest.TestCase):
                 self.assertNotIn('subtile', self.helper)
 
     def test_veto_precedes_both_legacy_legs_and_clears_guard(self):
-        block = self.bump.split('if (can_swap_with(tmob))', 1)[1]
+        block = self.bump.split('if (!swap_vetoed && can_swap_with(tmob))', 1)[1]
         expected = '\n\t\t\t\tif (ordinary_human_animal_swap(tmob))\n\t\t\t\t\tnow_pushing = FALSE\n\t\t\t\t\treturn\n'
         self.assertTrue(block.startswith(' // mutual brohugs all around!'+expected))
         self.assertLess(block.index('ordinary_human_animal_swap(tmob)'), block.index('swap_exact_positions(tmob)'))
@@ -63,7 +63,7 @@ class OrdinaryAnimalSwapTests(unittest.TestCase):
         for part in ('a_intent != I_HELP', 'restrained()', 'other.restrained()',
                      'H.throwing', 'A.throwing', 'H.status_flags & LEAPING', 'A.status_flags & LEAPING'):
             self.assertIn(part, self.helper)
-        self.assertLess(self.bump.index('if (status_flags & LEAPING)'), self.bump.index('if (can_swap_with(tmob))'))
+        self.assertLess(self.bump.index('if (status_flags & LEAPING)'), self.bump.index('if (!swap_vetoed && can_swap_with(tmob))'))
 
     def test_existing_non_swap_and_generic_push_remain(self):
         self.assertIn('if (!can_move_mob(tmob, FALSE, FALSE))', self.bump)
