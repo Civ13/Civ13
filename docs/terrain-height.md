@@ -46,6 +46,14 @@ buckled). For the level difference between the two tiles, capped at 4:
 Held movement rounds each step up to whole server ticks (0.4 ds), so on a walk
 one level up is about 22% slower and one level down about 22% faster.
 
+Steep steps (3 or more levels in one tile, `TERRAIN_STEEP_LEVELS`) are felt as
+well as paid for. `terrain_climb_effects` runs for humans after the slope
+cost: scrambling up spends 0.5 stamina per level (half of that onto tamped
+earth, scaled by the share of a tile moved, never below 0), and either
+direction prints a short notice, at most one per 10 seconds per player.
+`terrain_step_levels(from, to)` is the shared signed, capped level change
+that both procs use; it is 0 across built ground or without a height file.
+
 Built ground is laid level: a step onto, off or across a built floor (any
 `/turf/floor` except grass, dirt, snow, beach, rocky, gravel, mined floor,
 trench and lava) or a built wall has no slope cost, and those turfs are not

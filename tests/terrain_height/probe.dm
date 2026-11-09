@@ -43,6 +43,9 @@ var/terrain_height_probe_checks = 0
 	if (!ok)
 		throw EXCEPTION(label)
 
+/mob/living/human/terrain_height_probe_climber/New()
+	return
+
 /proc/terrain_height_probe_close(a, b)
 	return abs(a - b) < 0.0001
 
@@ -73,6 +76,22 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 7, 1), locate(10, 6, 1), 2.85), -0.7125), "downhill_share_cap")
 	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 6, 1), locate(10, 7, 1), 2.85), 4), "uphill_level_cap")
 	terrain_height_probe_assert(terrain_slope_delay(locate(10, 7, 1), locate(10, 6, 1), 0) == 0, "no_negative_delay")
+	// Steep steps: signed capped level change; climbing spends stamina, with one chat message per window.
+	terrain_height_probe_assert(terrain_step_levels(locate(10, 6, 1), locate(10, 7, 1)) == 4 && terrain_step_levels(locate(10, 7, 1), locate(10, 6, 1)) == -4, "step_levels_capped")
+	terrain_height_probe_assert(terrain_step_levels(locate(5, 9, 1), locate(6, 9, 1)) == 1, "step_levels_one")
+	var/mob/living/human/terrain_height_probe_climber/C = new(locate(10, 6, 1))
+	C.stats["stamina"][1] = 50
+	terrain_height_probe_assert(terrain_climb_effects(C, locate(5, 9, 1), locate(6, 9, 1)) == 0 && C.stats["stamina"][1] == 50 && C.next_slope_message == -1, "gentle_step_no_effects")
+	terrain_height_probe_assert(terrain_climb_effects(C, locate(10, 6, 1), locate(10, 7, 1)) == 4 && terrain_height_probe_close(C.stats["stamina"][1], 48), "steep_climb_spends_stamina")
+	var/first_message = C.next_slope_message
+	terrain_height_probe_assert(first_message == world.time + 100, "steep_climb_messages")
+	terrain_climb_effects(C, locate(10, 6, 1), locate(10, 7, 1), 0.0625)
+	terrain_height_probe_assert(terrain_height_probe_close(C.stats["stamina"][1], 47.875) && C.next_slope_message == first_message, "nudge_scaled_and_message_throttled")
+	terrain_height_probe_assert(terrain_climb_effects(C, locate(10, 7, 1), locate(10, 6, 1)) == -4 && terrain_height_probe_close(C.stats["stamina"][1], 47.875), "steep_descent_free")
+	C.stats["stamina"][1] = 0
+	terrain_climb_effects(C, locate(10, 6, 1), locate(10, 7, 1))
+	terrain_height_probe_assert(C.stats["stamina"][1] == 0, "no_negative_stamina")
+	qdel(C)
 
 	// Malformed files load flat instead of half-loaded.
 	terrain_height_probe_rejects(null, "null")

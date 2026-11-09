@@ -13,6 +13,15 @@
 #define TERRAIN_MAX_LEVEL_STEP 4
 // Share of the uphill delay paid when stepping onto packed ground (tamped earth).
 #define TERRAIN_PACKED_UPHILL_SHARE 0.5
+// A step of this many levels or more is steep: it tires the climber and is
+// described in chat.
+#define TERRAIN_STEEP_LEVELS 3
+// Stamina spent per level climbed on a steep step.
+#define TERRAIN_CLIMB_STAMINA 0.5
+// Deciseconds between two steep-slope messages to the same mob.
+#define TERRAIN_SLOPE_MESSAGE_DELAY 100
+
+/mob/var/next_slope_message = -1
 
 /obj/map_metadata
 	// Project-relative height file, for example "maps/heights/nomads_gaia.txt".
@@ -196,14 +205,39 @@
 /turf/wall/rockwall/terrain_smoothed()
 	return terrain_floor_covered()
 
-// Extra move delay (negative when it saves time) for one step between two
-// neighbouring turfs, given the step's delay before this term.
-/proc/terrain_slope_delay(turf/origin, turf/destination, step_delay)
+// Signed level change of one step between two neighbouring turfs, capped at
+// TERRAIN_MAX_LEVEL_STEP either way; 0 across built ground or without heights.
+/proc/terrain_step_levels(turf/origin, turf/destination)
 	if (!origin || !destination || origin.z != destination.z || !map || !map.terrain_height_file)
 		return 0
 	if (origin.terrain_smoothed() || destination.terrain_smoothed())
 		return 0
-	var/levels = clamp(terrain_height_at(destination) - terrain_height_at(origin), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
+	return clamp(terrain_height_at(destination) - terrain_height_at(origin), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
+
+// Humans feel a steep step: scrambling up spends stamina (half of it on packed
+// ground) and either direction is described in chat, at most once per
+// TERRAIN_SLOPE_MESSAGE_DELAY. distance_fraction is the share of a tile moved.
+/proc/terrain_climb_effects(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)
+	var/levels = terrain_step_levels(origin, destination)
+	if (abs(levels) < TERRAIN_STEEP_LEVELS)
+		return 0
+	if (levels > 0 && H.stats["stamina"][1] > 0)
+		var/cost = levels * TERRAIN_CLIMB_STAMINA * distance_fraction
+		if (destination.terrain_packed())
+			cost *= TERRAIN_PACKED_UPHILL_SHARE
+		H.stats["stamina"][1] = max(0, H.stats["stamina"][1] - cost)
+	if (world.time >= H.next_slope_message)
+		H.next_slope_message = world.time + TERRAIN_SLOPE_MESSAGE_DELAY
+		if (levels > 0)
+			to_chat(H, SPAN_NOTICE("You scramble up the steep slope."))
+		else
+			to_chat(H, SPAN_NOTICE("You pick your way down the steep slope."))
+	return levels
+
+// Extra move delay (negative when it saves time) for one step between two
+// neighbouring turfs, given the step's delay before this term.
+/proc/terrain_slope_delay(turf/origin, turf/destination, step_delay)
+	var/levels = terrain_step_levels(origin, destination)
 	if (levels > 0)
 		return levels * TERRAIN_UPHILL_DELAY * (destination.terrain_packed() ? TERRAIN_PACKED_UPHILL_SHARE : 1)
 	if (levels < 0)

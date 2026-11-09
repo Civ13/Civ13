@@ -194,6 +194,14 @@ class Wiring(unittest.TestCase):
         # After the intent costs, so the downhill cap sees the whole step delay.
         self.assertLess(MOVEMENT.index('if ("proning")'), hook.start())
 
+    def test_client_move_applies_climb_effects_to_humans(self):
+        self.assertIn('\t\t\tif (mob_is_human)\n\t\t\t\tterrain_climb_effects(H, mob_loc, n, distance_fraction)\n', MOVEMENT)
+        self.assertIn('#define TERRAIN_STEEP_LEVELS 3', MODULE)
+        self.assertIn('/proc/terrain_climb_effects(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)', MODULE)
+        self.assertIn('var/levels = terrain_step_levels(origin, destination)', MODULE)
+        self.assertIn('You scramble up the steep slope.', MODULE)
+        self.assertIn('You pick your way down the steep slope.', MODULE)
+
     def test_parser_matches_tool_format(self):
         self.assertIn(f'"{tool.HEADER.split()[0]}"', MODULE)
         self.assertIn('regex(@"[^0-9a-f]")', MODULE)
