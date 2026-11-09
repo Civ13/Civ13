@@ -127,6 +127,40 @@ var/terrain_height_probe_checks = 0
 	built = locate(7, 9, 1)
 	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in built.vis_contents, "removed_floor_shaded_again")
 
+	// Road tamping: only bare dirt can be packed; tamped earth is level, unshaded and never muddy.
+	var/turf/road = locate(7, 9, 1)
+	terrain_height_probe_assert(road_tamping_problem(road), "tamping_needs_dirt")
+	road.ChangeTurf(/turf/floor/grass)
+	road = locate(7, 9, 1)
+	terrain_height_probe_assert(findtext(road_tamping_problem(road), "grass"), "tamping_grass_hint")
+	road.ChangeTurf(/turf/floor/dirt)
+	road = locate(7, 9, 1)
+	terrain_height_probe_assert(!road_tamping_problem(road) && !road.terrain_smoothed(), "dirt_can_be_tamped")
+	road.weather_snow = 1
+	terrain_height_probe_assert(road_tamping_problem(road), "tamping_needs_clear_snow")
+	road.weather_snow = 0
+	road.ChangeTurf(/turf/floor/tamped_earth)
+	road = locate(7, 9, 1)
+	var/turf/floor/tamped_earth/tamped = road
+	terrain_height_probe_assert(istype(tamped) && tamped.terrain_smoothed() && !tamped.may_become_muddy, "tamped_earth_level_and_firm")
+	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), road, 2.85) == 0 && terrain_slope_delay(road, locate(8, 9, 1), 2.85) == 0, "tamped_earth_no_slope_cost")
+	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in road.vis_contents), "tamped_earth_unshaded")
+	terrain_height_probe_assert(road_tamping_problem(road), "tamped_earth_not_retamped")
+	road.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
+
+	// Floor and road covers laid on natural ground level it; cover walls do not.
+	var/turf/covered = locate(8, 9, 1)
+	var/obj/covers/wood/floor_cover = new(covered)
+	floor_cover.updateturf()
+	terrain_height_probe_assert(covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 0, "floor_cover_no_slope_cost")
+	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in covered.vis_contents), "floor_cover_unshaded")
+	qdel(floor_cover)
+	terrain_height_probe_assert(!covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 1, "removed_cover_slope_back")
+	terrain_height_probe_assert(locate(/obj/effect/terrain_shade) in covered.vis_contents, "removed_cover_shaded_again")
+	var/obj/covers/wood_wall/wall_cover = new(covered)
+	terrain_height_probe_assert(!covered.terrain_smoothed(), "cover_wall_not_a_floor")
+	qdel(wall_cover)
+
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
 	map = broken

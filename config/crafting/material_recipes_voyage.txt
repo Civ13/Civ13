@@ -94,6 +94,7 @@ RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,11,100,0,1,
 
 RECIPE: /material/stone/,stone pillar,/obj/structure/mine_support/stone,2,130,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/material/pickaxe/stone,6,50,0,1,tools,0,0,0,8,null
+RECIPE: /material/stone/,stone rammer,/obj/item/weapon/stone_rammer,6,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,6,35,0,1,tools,0,0,0,8,stone
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,stone

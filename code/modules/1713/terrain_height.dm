@@ -107,46 +107,54 @@
 	var/datum/terrain_heights/H = map.terrain_heights()
 	return H ? H.at(T.x, T.y, T.z) : 0
 
-// Built ground (wood, stone, tiles, roads, decks, built walls) is laid level:
-// it has no slope cost and no shading. Natural ground keeps the hill.
+// Built ground (wood, stone, tiles, roads, decks, built walls, tamped earth)
+// is laid level: it has no slope cost and no shading. Natural ground keeps the
+// hill unless a player-built floor or road cover lies on it.
 /turf/proc/terrain_smoothed()
+	return terrain_floor_covered()
+
+// Floor and road covers (not cover walls) are built level over the slope.
+/turf/proc/terrain_floor_covered()
+	for (var/obj/covers/CV in src)
+		if (!CV.wall && !QDELETED(CV))
+			return TRUE
 	return FALSE
 
 /turf/floor/terrain_smoothed()
 	return TRUE
 
 /turf/floor/grass/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/dirt/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/winter/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/beach/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/rocky/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/gravel/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/mining/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/trench/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/floor/lava/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 /turf/wall/terrain_smoothed()
 	return TRUE
 
 /turf/wall/rockwall/terrain_smoothed()
-	return FALSE
+	return terrain_floor_covered()
 
 // Extra move delay (negative when it saves time) for one step between two
 // neighbouring turfs, given the step's delay before this term.
@@ -248,6 +256,21 @@ var/global/terrain_shading_applied = FALSE
 	var/key = H ? H.shade_key(x, y, z) : null
 	if (key && key != "cccc")
 		vis_contents += terrain_shade_object(key)
+
+// A floor cover laid or removed after the shading was placed changes whether
+// its tile is shaded. Covers call updateturf() shortly after they are placed.
+/obj/covers/updateturf()
+	. = ..()
+	var/turf/T = get_turf(src)
+	if (T && !wall && terrain_shading_applied)
+		T.terrain_shade_refresh()
+
+/obj/covers/Destroy()
+	var/turf/T = get_turf(src)
+	var/floor_cover = !wall
+	. = ..()
+	if (T && floor_cover && terrain_shading_applied)
+		T.terrain_shade_refresh()
 
 /proc/terrain_shading_apply()
 	var/datum/terrain_heights/H = map ? map.terrain_heights() : null
