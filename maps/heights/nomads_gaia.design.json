@@ -1,0 +1,240 @@
+{
+ "_comment": "Gaia (z 2) height design for scripts/terrain_heights.py design. Game coordinates: x east, y north, from 1. Rules not listed here come from DESIGN_DEFAULTS in the tool.",
+ "seed": 13,
+ "ridges": [
+  {
+   "_comment": "south-west continent spine, cliffs facing the southern sea",
+   "points": [
+    [
+     35,
+     95
+    ],
+    [
+     55,
+     120
+    ],
+    [
+     80,
+     135
+    ],
+    [
+     110,
+     130
+    ]
+   ],
+   "height": 7,
+   "width": 2,
+   "steep_side": "right"
+  },
+  {
+   "_comment": "north-west coast ridge above the river mouths",
+   "points": [
+    [
+     60,
+     300
+    ],
+    [
+     85,
+     310
+    ],
+    [
+     105,
+     322
+    ]
+   ],
+   "height": 6,
+   "width": 1,
+   "steep_side": "left"
+  },
+  {
+   "_comment": "north-east continent, ridge between the inland lake and the north coast",
+   "points": [
+    [
+     300,
+     250
+    ],
+    [
+     322,
+     236
+    ],
+    [
+     348,
+     232
+    ]
+   ],
+   "height": 6,
+   "width": 2,
+   "steep_side": "left"
+  },
+  {
+   "_comment": "desert escarpment splitting the south-east desert, cliff on the south-west",
+   "points": [
+    [
+     445,
+     72
+    ],
+    [
+     470,
+     95
+    ],
+    [
+     496,
+     108
+    ]
+   ],
+   "height": 7,
+   "width": 1,
+   "steep_side": "right"
+  },
+  {
+   "_comment": "southern ice-cap foothill ridge",
+   "points": [
+    [
+     300,
+     52
+    ],
+    [
+     340,
+     60
+    ],
+    [
+     380,
+     52
+    ]
+   ],
+   "height": 6,
+   "width": 2,
+   "steep_side": "left"
+  }
+ ],
+ "passes": [
+  {
+   "_comment": "north end of the western range: a long gentle climb",
+   "x1": 118,
+   "y1": 312,
+   "x2": 170,
+   "y2": 332
+  },
+  {
+   "_comment": "south end of the western range",
+   "x1": 118,
+   "y1": 234,
+   "x2": 170,
+   "y2": 250
+  },
+  {
+   "_comment": "inland approach to the central-western range",
+   "x1": 166,
+   "y1": 90,
+   "x2": 200,
+   "y2": 160
+  },
+  {
+   "_comment": "north-east range, east side",
+   "x1": 466,
+   "y1": 180,
+   "x2": 500,
+   "y2": 240
+  }
+ ],
+ "scarps": [
+  {
+   "_comment": "western range: cliff above the lake",
+   "x1": 100,
+   "y1": 255,
+   "x2": 120,
+   "y2": 300,
+   "grade": 4
+  },
+  {
+   "_comment": "volcano island: steep everywhere",
+   "x1": 380,
+   "y1": 215,
+   "x2": 470,
+   "y2": 300,
+   "grade": 4
+  },
+  {
+   "_comment": "central-western range: west face",
+   "x1": 110,
+   "y1": 95,
+   "x2": 135,
+   "y2": 160,
+   "grade": 3
+  }
+ ],
+ "craters": [
+  {
+   "_comment": "lake north-east of the volcano",
+   "x1": 382,
+   "y1": 238,
+   "x2": 415,
+   "y2": 272
+  }
+ ],
+ "flat": [
+  {
+   "_comment": "landmark",
+   "x1": 179,
+   "y1": 295,
+   "x2": 183,
+   "y2": 299
+  },
+  {
+   "_comment": "landmark",
+   "x1": 447,
+   "y1": 288,
+   "x2": 451,
+   "y2": 292
+  },
+  {
+   "_comment": "landmark",
+   "x1": 316,
+   "y1": 236,
+   "x2": 320,
+   "y2": 240
+  },
+  {
+   "_comment": "landmark",
+   "x1": 357,
+   "y1": 189,
+   "x2": 361,
+   "y2": 193
+  },
+  {
+   "_comment": "landmark",
+   "x1": 388,
+   "y1": 124,
+   "x2": 392,
+   "y2": 128
+  },
+  {
+   "_comment": "landmark",
+   "x1": 156,
+   "y1": 88,
+   "x2": 160,
+   "y2": 92
+  },
+  {
+   "_comment": "landmark",
+   "x1": 41,
+   "y1": 86,
+   "x2": 45,
+   "y2": 90
+  },
+  {
+   "_comment": "landmark",
+   "x1": 330,
+   "y1": 66,
+   "x2": 334,
+   "y2": 70
+  },
+  {
+   "_comment": "landmark",
+   "x1": 404,
+   "y1": 43,
+   "x2": 408,
+   "y2": 47
+  }
+ ]
+}

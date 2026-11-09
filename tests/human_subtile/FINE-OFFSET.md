@@ -4,8 +4,12 @@ Plain direction keys slide freely by default: `startmoving*` and the
 movementMachine pass `FINE_STEP_FREE`, which `client.Move` turns into a held
 slide (below) when the body can slide (`human_subtile_fine_ready` and no trench
 edge ahead, `human_subtile_trench_near`), and into an ordinary tile step
-otherwise (pulling, driving, confusion, trench edges, smooth movement off,
-non-humans). The body stops where the key is released, with no tile snapping.
+otherwise (driving, trench edges, linked or posture states, non-humans). The
+body stops where the key is released, with no tile snapping. There is no player
+toggle back to tile walking. Pulling slides too: `human_subtile_pull_follow`
+steps the pulled object onto the uncovered neighbouring tile nearest the body
+whenever a gap opens, so it trails round turns. Confusion picks a random
+cardinal direction for 40% of slide steps instead of forcing a tile step.
 
 A blocked slide tries Graal-style sliding before it stops
 (`human_subtile_slide_attempts`): a diagonal runs along a wall on whichever axis
