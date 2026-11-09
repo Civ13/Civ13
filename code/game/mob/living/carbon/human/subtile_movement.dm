@@ -630,7 +630,8 @@
 // pixels toward the body, keeping a small gap (PULL_ROPE_GAP), up to
 // PULL_ROPE_STEP px per pulse. It moves with native collision, so it snags on
 // corners, walls, bodies and objects, sliding along an edge when only one axis
-// is blocked. Once the body gets PULL_ROPE_BREAK px away, the pull ends.
+// is blocked. Once the body gets PULL_ROPE_BREAK px away from a caught thing
+// (twice that from one still sliding), the pull ends.
 #define PULL_ROPE_GAP 2
 #define PULL_ROPE_STEP 4
 #define PULL_ROPE_BREAK 16
@@ -644,31 +645,58 @@
 	var/cy = y * 32 + step_y + bound_y + bound_height / 2
 	var/mx = M.x * 32 + M.step_x + 16
 	var/my = M.y * 32 + M.step_y + 16
-	var/gap_x = abs(cx - mx) - (bound_width + 32) / 2
-	var/gap_y = abs(cy - my) - (bound_height + 32) / 2
-	var/dx = (gap_x > PULL_ROPE_GAP) ? min(PULL_ROPE_STEP, gap_x - PULL_ROPE_GAP) * ((cx > mx) ? 1 : -1) : 0
-	var/dy = (gap_y > PULL_ROPE_GAP) ? min(PULL_ROPE_STEP, gap_y - PULL_ROPE_GAP) * ((cy > my) ? 1 : -1) : 0
+	var/ux = cx - mx
+	var/uy = cy - my
+	var/half_x = (bound_width + 32) / 2
+	var/half_y = (bound_height + 32) / 2
+	var/gap_x = abs(ux) - half_x
+	var/gap_y = abs(uy) - half_y
+	// The rope runs centre to centre, so a body moving past or round the
+	// pulled thing tugs it along the line between them on both axes at once,
+	// instead of waiting until the body has cleared it on one axis and then
+	// catching up in a rush.
+	var/rope = sqrt(ux * ux + uy * uy)
+	var/rest = min(half_x, half_y) + PULL_ROPE_GAP
+	var/dx = 0
+	var/dy = 0
+	if (rope > rest)
+		var/pull = min(PULL_ROPE_STEP, rope - rest)
+		dx = round(ux * pull / rope, 1)
+		dy = round(uy * pull / rope, 1)
+		// Never closer than the gap: once side by side, it only follows along.
+		if (abs(ux - dx) - half_x < PULL_ROPE_GAP && abs(uy - dy) - half_y < PULL_ROPE_GAP)
+			if (gap_x >= gap_y)
+				dx = max(0, gap_x - PULL_ROPE_GAP) * ((ux > 0) ? 1 : -1)
+			else
+				dy = max(0, gap_y - PULL_ROPE_GAP) * ((uy > 0) ? 1 : -1)
 	// While dragged along one axis, it also eases into line behind the body,
 	// so it follows through doorways instead of catching on the frame.
-	if (dx && !dy && cy != my)
-		dy = min(2, abs(cy - my)) * ((cy > my) ? 1 : -1)
-	else if (dy && !dx && cx != mx)
-		dx = min(2, abs(cx - mx)) * ((cx > mx) ? 1 : -1)
+	if (dx && abs(dy) < 2 && uy && gap_x > PULL_ROPE_GAP)
+		dy = min(2, abs(uy)) * ((uy > 0) ? 1 : -1)
+	else if (dy && abs(dx) < 2 && ux && gap_y > PULL_ROPE_GAP)
+		dx = min(2, abs(ux)) * ((ux > 0) ? 1 : -1)
 	var/moved = FALSE
 	if (dx || dy)
 		if (glide_size > 0)
 			M.glide_size = glide_size
 		moved = human_subtile_pull_shift(M, dx, dy)
 		// Blocked on one axis: slide along the other (a wall, a door frame).
+		// It slides at the full rope pace toward the body's line, so it works
+		// round a wall end instead of creeping while the body walks away.
 		if (!moved && dx && dy)
-			moved = human_subtile_pull_shift(M, dx, 0) || human_subtile_pull_shift(M, 0, dy)
+			var/slide_x = max(abs(dx), min(PULL_ROPE_STEP, abs(ux))) * ((dx > 0) ? 1 : -1)
+			var/slide_y = max(abs(dy), min(PULL_ROPE_STEP, abs(uy))) * ((dy > 0) ? 1 : -1)
+			moved = human_subtile_pull_shift(M, slide_x, 0) || human_subtile_pull_shift(M, 0, slide_y)
 		// Caught on a corner within 12px of the body's line: slip toward it,
 		// up to 4px. Further off the line it stays caught.
 		if (!moved && dx && !dy && cy != my && abs(cy - my) <= 12)
 			moved = human_subtile_pull_shift(M, 0, min(PULL_ROPE_STEP, abs(cy - my)) * ((cy > my) ? 1 : -1))
 		else if (!moved && dy && !dx && cx != mx && abs(cx - mx) <= 12)
 			moved = human_subtile_pull_shift(M, min(PULL_ROPE_STEP, abs(cx - mx)) * ((cx > mx) ? 1 : -1), 0)
-	if (pulling == M && bounds_dist(src, M) > PULL_ROPE_BREAK)
+	// It breaks once it is caught that far behind, or at any rate twice that
+	// far (sliding along a wall while the body walks away from it).
+	var/slack = (pulling == M) ? bounds_dist(src, M) : 0
+	if (slack > PULL_ROPE_BREAK * 2 || (slack > PULL_ROPE_BREAK && !moved))
 		to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
 		stop_pulling()
 	return moved
@@ -696,7 +724,10 @@
 		return FALSE
 	var/before_x = M.x * 32 + M.step_x
 	var/before_y = M.y * 32 + M.step_y
-	var/direction = ((dx > 0) ? EAST : (dx < 0) ? WEST : 0) | ((dy > 0) ? NORTH : (dy < 0) ? SOUTH : 0)
+	// Always a cardinal direction: movable/Move splits a diagonal into two
+	// whole-tile step() calls, which made pulled things lurch a tile at a time.
+	// The native move still takes both pixel offsets at once.
+	var/direction = (abs(dx) >= abs(dy)) ? ((dx > 0) ? EAST : WEST) : ((dy > 0) ? NORTH : SOUTH)
 	var/old_dir = M.dir
 	M.Move(destination, direction, sx, sy)
 	// Objects keep facing; dragged bodies turn as ordinary pulls do.
@@ -1227,3 +1258,4 @@
 // A pulled body owns the pixel offset the rope gave it.
 /mob/living/human/pulled_offset_claim()
 	human_subtile_offset_owned = !!(step_x || step_y)
+
