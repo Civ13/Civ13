@@ -241,8 +241,8 @@ class StoneMoldTests(unittest.TestCase):
         recheck=pour.index('if (!can_receive_pour(ML, user))',prompt)
         self.assertLess(prompt,pour.index('ML.pouring = FALSE'))
         self.assertLess(recheck,pour.index('amt_to_transfer = min(input, max_capacity - capacity, ML.capacity)'))
-        self.assertLess(pour.index('amt_to_transfer = min(input,'),pour.index('src.capacity += amt_to_transfer'))
-        self.assertIn('if (ML.capacity <= 0)',pour)
+        self.assertLess(pour.index('amt_to_transfer = min(input,'),pour.index('\tcapacity += amt_to_transfer'))
+        self.assertIn('ML.capacity = max(ML.capacity - amt_to_transfer, 0)',pour)
         self.assertNotIn('ML.capacity <= 1',pour)
         native=read('tests/stone_molds/casting.dm')
         for label in ('repeated pour during an open prompt is refused','pour rechecks reach after the prompt'):
