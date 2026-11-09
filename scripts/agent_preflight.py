@@ -133,7 +133,8 @@ def suites(args):
         names = [n for n, data in selection['suites'].items() if data['selected']]
     head = git('rev-parse', 'HEAD')
     base = git('merge-base', args.base, 'HEAD', check=False) or head
-    environment = dict(os.environ, LOS_EVENT_BASE=base, LOS_EVENT_HEAD=head)
+    # PYTHONUTF8: Windows defaults text I/O to cp1252; every suite reads UTF-8.
+    environment = dict(os.environ, LOS_EVENT_BASE=base, LOS_EVENT_HEAD=head, PYTHONUTF8='1')
     failed = []
     with tempfile.TemporaryDirectory() as folder:
         for name in names:

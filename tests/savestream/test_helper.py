@@ -277,7 +277,8 @@ class ShippedBinariesTest(unittest.TestCase):
     def test_sources_match_the_shipped_build(self):
         import hashlib
         for name, digest in self.manifest()["sources"].items():
-            data = (self.ROOT / "tools/savestream/src" / name).read_bytes()
+            # Sources are text: a Windows CRLF checkout hashes as LF.
+            data = (self.ROOT / "tools/savestream/src" / name).read_bytes().replace(b"\r\n", b"\n")
             self.assertEqual(hashlib.sha256(data).hexdigest(), digest,
                              f"{name} changed: rebuild with build.sh windows, re-ship the root binaries and update shipped.json")
 

@@ -80,7 +80,7 @@ class NoOpRefresh(unittest.TestCase):
             self.assertIn(field+'.Cut()',P.fragment(TREE,'/datum/root_tree_presenter/proc/release_owned_scene('))
 
     def commit_tail(self,old_invalidation=False):
-        source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text()
+        source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')
         tail=proc[proc.index('\t// Check against last values'):]
         tail='\n'.join(line for line in tail.splitlines() if not line.strip().startswith('#'))+'\n'
@@ -129,7 +129,7 @@ class ViewerPublication(unittest.TestCase):
         for changed,opacity,refresh in [(body,False,False),(body,True,True),(None,False,True)]:
             body.opacity=opacity;f(r,changed,False,refresh)
         self.assertEqual(len(calls),3)
-        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
+        lifecycle=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text(encoding='utf-8')
         capture=P.fragment(lifecycle,'/client/proc/reconcile_geometric_los(')
         failed=capture[capture.index('if(!S)'):capture.index('var/published = TRUE')]
         self.assertIn('root_tree_presenter.invalidate()',failed)
@@ -181,8 +181,8 @@ class PendingLightPublication(unittest.TestCase):
         changed(bare)
         self.assertFalse(own.owner.los_dirty)
         self.assertFalse(foreign.owner.los_dirty)
-        light=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text()
-        corner=(ROOT/'code/modules/lighting/lighting_corner.dm').read_text()
+        light=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
+        corner=(ROOT/'code/modules/lighting/lighting_corner.dm').read_text(encoding='utf-8')
         self.assertIn('root_tree_light_changed(T)',corner)
         self.assertNotIn('root_tree_invalidate(T)',corner)
         self.assertIn('root_tree_light_changed(loc)',light)
@@ -200,7 +200,7 @@ class PendingLightPublication(unittest.TestCase):
 
 
 
-STRIKE_SOURCE = (ROOT/'code/game/mob/animations.dm').read_text()
+STRIKE_SOURCE = (ROOT/'code/game/mob/animations.dm').read_text(encoding='utf-8')
 
 class ResourceStrikes(unittest.TestCase):
     """Execute the new ownership/LOS gate and cleanup; not a pixel renderer."""
@@ -380,7 +380,7 @@ class ResourceStrikes(unittest.TestCase):
         self.assertNotIn('work_images', audit)
         self.assertIn('if(presenter_images[I])', audit)
         self.assertIn('"client-owned foreground image"', audit)
-        animation = (ROOT/'code/game/mob/animations.dm').read_text()
+        animation = (ROOT/'code/game/mob/animations.dm').read_text(encoding='utf-8')
         show = P.fragment(animation, '/datum/resource_work_animation/proc/show_strike(')
         self.assertLess(show.index('strike_appearance = strike.appearance'), show.index('P.resource_strike(src)'))
         self.assertIn('if (P && P.scene_active && root_tree_family(target))', show)
@@ -447,17 +447,17 @@ class ResourceStrikes(unittest.TestCase):
             invalid(presenter, axe)
             self.assertTrue(presenter.owner.los_dirty)
         self.assertEqual(calls, [])
-        atom_source = (ROOT/'code/game/atoms.dm').read_text()
+        atom_source = (ROOT/'code/game/atoms.dm').read_text(encoding='utf-8')
         self.assertNotIn('los_invalidate', P.fragment(atom_source, '/atom/Entered('))
-        inventory = (ROOT/'code/game/mob/living/carbon/human/inventory.dm').read_text()
+        inventory = (ROOT/'code/game/mob/living/carbon/human/inventory.dm').read_text(encoding='utf-8')
         equip = P.fragment(inventory, '/mob/living/human/equip_to_slot(')
         self.assertIn('!W.forceMove(src)', equip)
         self.assertNotIn('prepare_resource_work_animation', inventory)
-        icons = (ROOT/'code/game/mob/living/carbon/human/update_icons.dm').read_text()
+        icons = (ROOT/'code/game/mob/living/carbon/human/update_icons.dm').read_text(encoding='utf-8')
         for hand in ('r', 'l'):
             held = P.fragment(icons, '/mob/living/human/update_inv_'+hand+'_hand(')
             self.assertIn('layer = layer+0.02', held)
-        progress = (ROOT/'code/datums/progressbar.dm').read_text()
+        progress = (ROOT/'code/datums/progressbar.dm').read_text(encoding='utf-8')
         self.assertIn('bar.plane = HUD_PLANE', progress)
 
 
@@ -510,7 +510,7 @@ class ViewReset(unittest.TestCase):
 
         env.update(client=client, self=body, loc=body.loc, EYE_PERSPECTIVE=0,
                    MOB_PERSPECTIVE=1, root_tree_invalidate=invalidate_view)
-        source = P.fragment((ROOT/'code/game/mob/mob.dm').read_text(), '/mob/proc/reset_view(')
+        source = P.fragment((ROOT/'code/game/mob/mob.dm').read_text(encoding='utf-8'), '/mob/proc/reset_view(')
         source = mutate(source)
         source = '\n'.join(line for line in source.splitlines()
                            if not line.strip().startswith('#')) + '\n'
@@ -519,12 +519,12 @@ class ViewReset(unittest.TestCase):
         # The human override forwards to this parent. UI refresh FALSE skips
         # its independent HUD callback; camera decisions remain production code.
         env['reset_view'] = lambda A=None, refresh=True: reset(A)
-        eye = compile_proc((ROOT/'code/datums/datum.dm').read_text(), '/atom/proc/check_eye(', 'user', env)
+        eye = compile_proc((ROOT/'code/datums/datum.dm').read_text(encoding='utf-8'), '/atom/proc/check_eye(', 'user', env)
         stack = N(check_eye=eye)
         env.update(using_object=stack, laddervision=None, sight=0,
                    global_hud=N(**{key: None for key in ['blurry', 'druggy', 'vimpaired', 'darkMask', 'nvg', 'thermal']}),
                    update_equipment_vision=lambda: None, species=N(handle_vision=lambda src: None))
-        vision_source = (ROOT/'code/game/mob/living/carbon/human/human_life.dm').read_text().replace('if (', 'if(')
+        vision_source = (ROOT/'code/game/mob/living/carbon/human/human_life.dm').read_text(encoding='utf-8').replace('if (', 'if(')
         vision = compile_proc(vision_source, '/mob/living/human/handle_vision(', '', env)
         writes.clear()
         return N(env=env, body=body, client=client, trees=trees, images=images,

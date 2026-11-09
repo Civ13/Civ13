@@ -20,6 +20,11 @@ def build_helper(out_dir: Path | None = None) -> Path:
     """Compile the 64-bit helper with the host C compiler."""
     cc = shutil.which(os.environ.get("CC", "cc")) or shutil.which("gcc")
     if not cc:
+        # A Windows host usually has no C compiler; exercise the shipped
+        # 64-bit helper at the repository root (the one Gaia runs) instead.
+        shipped = ROOT / "savestream_helper.exe"
+        if os.name == "nt" and shipped.is_file():
+            return shipped
         raise RuntimeError("no C compiler available")
     out_dir = out_dir or Path(tempfile.mkdtemp(prefix="savestream-"))
     exe = out_dir / "savestream_helper"

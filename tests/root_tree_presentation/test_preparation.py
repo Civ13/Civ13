@@ -45,7 +45,7 @@ class Preparation(unittest.TestCase):
                         source='/proc/control_guard()\n\t'+condition+'\n\t\treturn FALSE\n\treturn TRUE\n'
                         return projection.compile_proc(source,'/proc/control_guard(','context, T, S',env)(c,t,object())
                     self.assertFalse(admitted(original));self.assertTrue(admitted('if(FALSE)'))
-                metadata=json.loads((out/'source-manifest.json').read_text());metadata['renderer_control']=None
+                metadata=json.loads((out/'source-manifest.json').read_text(encoding='utf-8'));metadata['renderer_control']=None
                 (out/'source-manifest.json').write_text(json.dumps(metadata))
                 with self.assertRaises(prepare.provenance.Invalid):prepare.provenance.validate_stage(out,support.HEAD)
 
@@ -61,13 +61,13 @@ class Preparation(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp, patch('subprocess.Popen',side_effect=AssertionError('No process')), \
              patch.object(prepare.provenance,'revision',side_effect=lambda requested:support.snapshot(prepare.provenance)):
             out=Path(temp)/'fresh';manifest=prepare.prepare(out,support.HEAD)
-            self.assertEqual(json.loads((out/'source-manifest.json').read_text()),manifest)
+            self.assertEqual(json.loads((out/'source-manifest.json').read_text(encoding='utf-8')),manifest)
             _,files=prepare.provenance.plan(support.HEAD)
             for path,entry in manifest['files'].items():
                 target=out/path
                 self.assertEqual(target.read_bytes(),files[path])
                 self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(),entry['sha256'])
-            light=(out/'production-light-update.dm').read_text()
+            light=(out/'production-light-update.dm').read_text(encoding='utf-8')
             self.assertIn('/atom/movable/lighting_overlay/proc/update_overlay()',light)
             self.assertIn('/obj/screen/plane_master/light_mask/backdrop(',light)
             self.assertIn('/turf/proc/needs_fullbright_coverage()',light)
@@ -76,7 +76,7 @@ class Preparation(unittest.TestCase):
             with self.assertRaises(FileExistsError):prepare.prepare(out,support.HEAD)
 
     def test_fixture_contains_separate_native_controls_and_no_production_startup(self):
-        source=(Path(__file__).with_name('fixture.dm')).read_text()
+        source=(Path(__file__).with_name('fixture.dm')).read_text(encoding='utf-8')
         for phase in range(1,10):self.assertIn('phase == '+str(phase),source)
         self.assertIn('No game startup, live state or credentials',source)
         self.assertIn('opacity = TRUE',source)
@@ -104,7 +104,7 @@ class Preparation(unittest.TestCase):
             self.assertIn('"'+name+'"',source)
 
     def test_actual_publisher_never_deletes_or_appends_an_existing_ack(self):
-        source=Path(__file__).with_name('fixture.dm').read_text();env=projection.environment();files={};failures=[]
+        source=Path(__file__).with_name('fixture.dm').read_text(encoding='utf-8');env=projection.environment();files={};failures=[]
         def write(data,path):files[path]=files.get(path,'')+data+'\n';return True
         env.update(fixture_failed=False,islist=lambda x:isinstance(x,dict),fexists=lambda path:path in files,
                    json_encode=json.dumps,text2file=write,fixture_fail=lambda why:failures.append(why) or False)
@@ -117,7 +117,7 @@ class Preparation(unittest.TestCase):
         env['fixture_failed']=True;self.assertFalse(publish(9,{'phase':9}));self.assertNotIn('phase-9.ready.json',files)
 
     def test_fixture_loopback_guest_and_explicit_exact_session_admission(self):
-        source=Path(__file__).with_name('fixture.dm').read_text();env=projection.environment()
+        source=Path(__file__).with_name('fixture.dm').read_text(encoding='utf-8');env=projection.environment()
         env.update(fixture_authorized_session=False,fixture_authorized_identity='fixtureuser',copytext=lambda x,a,b:x[a-1:b-1])
         allowed=projection.compile_proc(source,'/proc/fixture_client_allowed(','C',env)
         guest=N(key='Guest-123',ckey='guest123',address='127.0.0.1')

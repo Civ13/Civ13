@@ -101,7 +101,7 @@ class Gate(unittest.TestCase):
         with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
     def test_missing_or_wrong_head_compile_receipt_rejected(self):
         (self.root/'run.binding.json').unlink()
-        path=self.root/'compile.receipt.json';receipt=json.loads(path.read_text());receipt['head']='c'*40;path.write_text(json.dumps(receipt))
+        path=self.root/'compile.receipt.json';receipt=json.loads(path.read_text(encoding='utf-8'));receipt['head']='c'*40;path.write_text(json.dumps(receipt))
         with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
         path.unlink()
         with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
@@ -120,7 +120,7 @@ class Gate(unittest.TestCase):
         receipt['input_binding']['files']['fixture.dm']['sha256']='c'*64;path.write_text(json.dumps(receipt))
         with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.validate_compile(self.root,HEAD)
         path.write_bytes(original);receipt=json.loads(original)
-        audit_path=self.root/'compile-supervisor.json';audit=json.loads(audit_path.read_text())
+        audit_path=self.root/'compile-supervisor.json';audit=json.loads(audit_path.read_text(encoding='utf-8'))
         audit['phases'][0]['cleanup']['all_retained_exited']=False;raw=json.dumps(audit).encode();audit_path.write_bytes(raw)
         receipt['supervisor_sha256']=protocol.digest(raw);path.write_text(json.dumps(receipt))
         with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.validate_compile(self.root,HEAD)
@@ -189,7 +189,7 @@ class Gate(unittest.TestCase):
             with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
 
     def test_wrong_failure_or_missing_runtime_diagnostic_is_not_expected_control(self):
-        self.failure_stage('runtime');path=self.root/'fixture.failed.json';failure=json.loads(path.read_text())
+        self.failure_stage('runtime');path=self.root/'fixture.failed.json';failure=json.loads(path.read_text(encoding='utf-8'))
         for change in ({'run':'foreign'},{'reason':'root_admission'},{'status':'ready'}):
             path.write_text(json.dumps({**failure,**change}))
             with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
