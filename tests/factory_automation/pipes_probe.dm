@@ -298,7 +298,10 @@ var/pipe_runtime_error = FALSE
 
 // A washing machine receives a cycle's water from a connected pipe network.
 /proc/pipe_washing_machine_checks()
-	var/obj/machinery/washing_machine/W = new(locate(4, 12, 1))
+	var/obj/machinery/washing_machine/mapped = new(locate(6, 12, 1))
+	pipe_check(mapped.reserve_wash_water() && !mapped.fluid_demand_tier(), "a mapped washing machine keeps its own supply and stays off pipe networks")
+	qdel(mapped)
+	var/obj/machinery/washing_machine/piped/W = new(locate(4, 12, 1))
 	pipe_check(!W.reserve_wash_water() && !W.water_stored, "a disconnected washing machine cannot reserve water")
 	var/list/pipes = pipe_line(3, 5, 11)
 	var/obj/structure/fluid_tank/T = new(locate(2, 11, 1))
@@ -394,7 +397,7 @@ var/pipe_runtime_error = FALSE
 		if (get_recipe_node_req(path) == "factories")
 			gated++
 	pipe_check(gated == 5, "pipes, valves, pumps, tanks and intakes unlock with Factories")
-	pipe_check(get_recipe_node_req("/obj/structure/water_tap") == "factories" && get_recipe_node_req("/obj/structure/shower/piped") == "factories", "taps and piped showers unlock with Factories")
+	pipe_check(get_recipe_node_req("/obj/structure/water_tap") == "factories" && get_recipe_node_req("/obj/structure/shower/piped") == "factories" && get_recipe_node_req("/obj/machinery/washing_machine/piped") == "factories", "taps, piped showers and piped washing machines unlock with Factories")
 	var/list/states = icon_states('icons/obj/machines/pipes.dmi')
 	pipe_check(("intact" in states) && ("manifold" in states) && ("compressor" in states) && ("inlet" in states) && ("air" in icon_states('icons/obj/barrel.dmi')), "the parts reuse existing sprites")
 	var/list/found = list()
