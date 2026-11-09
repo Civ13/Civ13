@@ -158,7 +158,7 @@
 
 // The hangar deck, one level under the surface. Stern to bow: engine room,
 // fuel bunker (with the bunker filling point), crew quarters, hangar,
-// magazine, forward compartment (sick bay and CIC), each behind a bulkhead
+// magazine with two bomb racks, forward compartment (sick bay and CIC), each behind a bulkhead
 // with one blast door on the centreline. Two 4x4 elevator floors sit on the
 // port side of the hangar, under the flight deck elevators, each with its
 // lever on the tile aft of it.
@@ -168,7 +168,7 @@
 	L.allowed = list(/turf/wall/rockwall, /turf/floor/beach/water/deep)
 	var/wall = ".HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH."
 	var/room = ".HeeeeBffBqqqBaaaaaaaaaaaaaaaaBmmBccccH."
-	var/lift = ".HeeeeBffBqqqBEEEEaaaaaaaaEEEEBmmBccccH."
+	var/lift = ".HeeeeBffBqqqBEEEEaaaaaaaaEEEEBmRBccccH."
 	var/lever = ".HeeeeBTfBqqqBEEEEVaaaaaaVEEEEBmmBccccH."
 	var/doors = ".Heeee1ff2qqq3EEEEaaLaaaaaEEEE4mm5ccccH."
 	L.rows = list(wall, lift, lever, lift, doors, room, room, room, wall)
@@ -190,6 +190,7 @@
 		"E" = list("turf" = /turf/floor/sub_deck/carrier/hangar/elevator),
 		"V" = list("turf" = /turf/floor/sub_deck/carrier/hangar, "spawn" = list(/obj/structure/vessel_lever/elevator)),
 		"T" = list("turf" = /turf/floor/sub_deck/carrier/bunker, "spawn" = list(/obj/structure/vessel_bunker)),
+		"R" = list("turf" = /turf/floor/sub_deck/carrier/magazine, "spawn" = list(/obj/structure/shellrack/bombs)),
 	)
 	return L
 
