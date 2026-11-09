@@ -40,7 +40,7 @@
 	if(count % 3 != 0)
 		dat += "</tr>"
 	dat += "</table></body></html>"
-	usr << browse(dat, "window=admin_sticker_view;size=500x600")
+	show_browse(usr, dat, "window=admin_sticker_view;size=500x600")
 	log_admin("[key_name(usr)] viewed [target_ckey]'s sticker collection.")
 	message_admins("[key_name(usr)] viewed [target_ckey]'s sticker collection.", key_name(usr))
 

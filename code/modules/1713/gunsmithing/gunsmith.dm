@@ -278,7 +278,7 @@ function pickAppearance(a) {
 		dat += "<p><a href='?src=\ref[src];action=close'>Close</a></p>"
 
 	dat += "</body></html>"
-	H << browse(dat, "window=gunsmith;size=500x600")
+	show_browse(H, dat, "window=gunsmith;size=500x600")
 
 /obj/structure/gunbench/proc/show_rechamber_ui(mob/user)
 	if (!rechambering_gun)
@@ -353,7 +353,7 @@ function pickAppearance(a) {
 		dat += "<a href='?src=\ref[src];action=do_rechamber&cal=[c]'>[c]</a><br>"
 	dat += "<br><a href='?src=\ref[src];action=cancel_rechamber'>Cancel</a>"
 	dat += "</body></html>"
-	user << browse(dat, "window=gunsmith_rechamber;size=400x400")
+	show_browse(user, dat, "window=gunsmith_rechamber;size=400x400")
 
 /obj/structure/gunbench/proc/do_rechamber(var/obj/item/weapon/gun/projectile/P, var/choice, var/mob/living/human/H)
 	to_chat(H, "You start converting \the [P] into [choice]...")
@@ -430,18 +430,18 @@ function pickAppearance(a) {
 		var/choice = href_list["cal"]
 		if (!choice || choice == "(none available)")
 			return
-		H << browse(null, "window=gunsmith_rechamber")
+		show_browse(H, null, "window=gunsmith_rechamber")
 		do_rechamber(rechambering_gun, choice, H)
 		return
 
 	if (href_list["action"] == "cancel_rechamber")
 		rechambering_gun = null
-		H << browse(null, "window=gunsmith_rechamber")
+		show_browse(H, null, "window=gunsmith_rechamber")
 		return
 
 	// Gun creation flow
 	if (href_list["action"] == "close")
-		H << browse(null, "window=gunsmith")
+		show_browse(H, null, "window=gunsmith")
 		return
 
 	if (href_list["action"] == "cancel")
@@ -450,7 +450,7 @@ function pickAppearance(a) {
 			current_gun = null
 		using_wood = 0
 		using_steel = 0
-		H << browse(null, "window=gunsmith")
+		show_browse(H, null, "window=gunsmith")
 		to_chat(H, "Canceled gun crafting.")
 		return
 
@@ -795,7 +795,7 @@ function pickAppearance(a) {
 			var/obj/item/weapon/gun/projectile/custom/NEWGUN = current_gun
 			NEWGUN.loc = get_turf(src)
 			current_gun = null
-			H << browse(null, "window=gunsmith")
+			show_browse(H, null, "window=gunsmith")
 			to_chat(H, "You finish crafting the [NEWGUN.name]!")
 			return
 		return

@@ -119,7 +119,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return
 	if (href_list["action"] == "reset")
 		reset_conversation(C)
-		C << browse(null, "window=player_help")
+		show_browse(C, null, "window=player_help")
 		C << "AI gameplay help conversation cleared. Ask for help to start a new conversation."
 	else if (href_list["action"] == "followup")
 		if (!available() || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.len)
@@ -529,7 +529,7 @@ var/global/datum/player_help_service/player_help_service = new
 				else
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
-				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
+				show_browse(C, render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))

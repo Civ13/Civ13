@@ -305,7 +305,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 /datum/bug_report_queue/proc/show_panel(mob/user)
 	if (!user || !check_rights(R_ADMIN, TRUE, user))
 		return
-	user << browse(panel_html(), "window=bugreports;size=720x640")
+	show_browse(user, panel_html(), "window=bugreports;size=720x640")
 
 /datum/bug_report_queue/Topic(href, href_list)
 	var/mode = href_list["bugreport"]

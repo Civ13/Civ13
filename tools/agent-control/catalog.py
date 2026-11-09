@@ -18,7 +18,10 @@ VALUE = {
     ),
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report"]
+WINDOW = {"type": "string", "description": "topic/close_window: a window name from character_observe windows"}
+LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
+LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
@@ -59,10 +62,11 @@ ACTIONS = {
     "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
     "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}, "stay": {"type": "boolean", "description": "With job: start at the target instead of the job's spawn point."}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
-    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, its action queue with results since queue_since, prompts the game raised that no step answered, and sounds it heard. With since_rev (the rev of the last observe) nearby lists only rows that appeared or changed, plus nearby_removed refs. wait_s holds the call until something is new.", _schema({
+    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, its action queue with results since queue_since, prompts the game raised that no step answered, menu windows it was shown (text and numbered links), and sounds it heard. With since_rev (the rev of the last observe) nearby lists only rows that appeared or changed, plus nearby_removed refs. wait_s holds the call until something is new.", _schema({
         "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"},
         "since_rev": {"type": "integer", "description": "rev from the previous observe: return only nearby changes"},
         "prompt_since": {"type": "integer", "description": "prompts after this id (last_prompt)"},
+        "window_since": {"type": "integer", "description": "menu windows shown or refreshed after this id (last_window)"},
         "sound_since": {"type": "integer", "description": "sounds after this id (last_sound)"},
         "footsteps": {"type": "boolean", "description": "include footstep sounds (default false)"},
         "wait_s": {"type": "number", "minimum": 0, "maximum": 60, "description": "wait up to this many seconds for a new message, queue result (queue_since), prompt (prompt_since), sound (sound_since) or nearby change (since_rev)"},
@@ -74,7 +78,7 @@ ACTIONS = {
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) or throw (the held item at target); board, disembark, drag, verb and throw only through character_queue. While driving a boat, move steers it one tile.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows) or close_window; board, disembark, drag, verb, throw and topic only through character_queue. While driving a boat, move steers it one tile.", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -90,6 +94,9 @@ ACTIONS = {
         "onto": ONTO,
         "name": VERB,
         "expect_name": EXPECT_NAME,
+        "window": WINDOW,
+        "link": LINK,
+        "label": LINK_LABEL,
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -111,6 +118,9 @@ ACTIONS = {
                 "onto": ONTO,
                 "name": VERB,
                 "expect_name": EXPECT_NAME,
+        "window": WINDOW,
+        "link": LINK,
+        "label": LINK_LABEL,
                 "repeat": {"type": "integer", "minimum": 1, "maximum": 30, "description": "run this step up to this many times (each when its cooldown allows); a blocked move or a failure stops it"},
                 "until": UNTIL,
             },

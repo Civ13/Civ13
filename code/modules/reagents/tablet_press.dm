@@ -202,7 +202,7 @@
 		dat += "<a href='?src=\ref[src];eject=1'>Eject beaker (retains buffer)</a>"
 	else
 		dat += "Insert a glass beaker for loading or recovery."
-	user << browse(dat, "window=tablet_press;size=500x240")
+	show_browse(user, dat, "window=tablet_press;size=500x240")
 
 // Never dispatch a crafted href to chem_master/Topic's free pill/bottle paths.
 /obj/structure/chem_master/tablet_press/Topic(href, href_list)

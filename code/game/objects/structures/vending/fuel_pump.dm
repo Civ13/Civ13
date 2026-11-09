@@ -114,7 +114,7 @@
 <a href='?src=\ref[src];action=finish_yes'>Yes</a>
 <a href='?src=\ref[src];action=finish_no'>No</a>
 </body></html>"}
-			user << browse(dat, "window=fuelpump_confirm;size=350x200")
+			show_browse(user, dat, "window=fuelpump_confirm;size=350x200")
 			return
 		else
 			to_chat(user, "You lock the pump, finishing the transaction.")
@@ -142,7 +142,7 @@
 <a href='?src=\ref[src];action=buy_yes'>Yes</a>
 <a href='?src=\ref[src];action=buy_no'>No</a>
 </body></html>"}
-			user << browse(dat, "window=fuelpump_buy;size=350x200")
+			show_browse(user, dat, "window=fuelpump_buy;size=350x200")
 			return
 		else
 			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount. This pump has [vol] units of [fueltype] inside.</span>")
@@ -242,7 +242,7 @@ function changePrice() {
 <p><a href='?src=\ref[src];action=change_price_direct'>Change Price</a></p>
 <p><a href='?src=\ref[src];action=close_manage'>Close</a></p>
 </body></html>"}
-	user << browse(dat, "window=fuelpump_manage;size=350x300")
+	show_browse(user, dat, "window=fuelpump_manage;size=350x300")
 
 /obj/structure/fuelpump/Topic(href, href_list)
 	if (!usr || !usr.client)
@@ -253,7 +253,7 @@ function changePrice() {
 
 	// Purchase confirmation
 	if (href_list["action"] == "buy_yes")
-		user << browse(null, "window=fuelpump_buy")
+		show_browse(user, null, "window=fuelpump_buy")
 		var/obj/item/stack/money/MN = null
 		if (istype(user.l_hand, /obj/item/stack/money))
 			MN = user.l_hand
@@ -279,23 +279,23 @@ function changePrice() {
 			return
 
 	if (href_list["action"] == "buy_no")
-		user << browse(null, "window=fuelpump_buy")
+		show_browse(user, null, "window=fuelpump_buy")
 		return
 
 	// Finish confirmation
 	if (href_list["action"] == "finish_yes")
-		user << browse(null, "window=fuelpump_confirm")
+		show_browse(user, null, "window=fuelpump_confirm")
 		unlocked = 0
 		unlockedvol = 0
 		return
 
 	if (href_list["action"] == "finish_no")
-		user << browse(null, "window=fuelpump_confirm")
+		show_browse(user, null, "window=fuelpump_confirm")
 		return
 
 	// Management
 	if (href_list["action"] == "close_manage")
-		user << browse(null, "window=fuelpump_manage")
+		show_browse(user, null, "window=fuelpump_manage")
 		return
 
 	if (href_list["action"] == "change_name_direct")
@@ -339,7 +339,7 @@ function changePrice() {
 <a href='?src=\ref[src];action=set_fuel&fuel=petroleum'>Petroleum</a><br>
 <br><a href='?src=\ref[src];action=close_manage'>Cancel</a>
 </body></html>"}
-		user << browse(dat, "window=fuelpump_fuel;size=300x300")
+		show_browse(user, dat, "window=fuelpump_fuel;size=300x300")
 		return
 
 	if (href_list["action"] == "set_fuel")
@@ -347,7 +347,7 @@ function changePrice() {
 		if (fuel && vol <= 0)
 			fueltype = fuel
 			updatedesc()
-		user << browse(null, "window=fuelpump_fuel")
+		show_browse(user, null, "window=fuelpump_fuel")
 		show_manage_ui(user)
 		return
 

@@ -1,0 +1,23 @@
+# Agent player parity
+
+Goal: an agent character (Ada and other autopilot players, see
+[agent control](agent-control.md)) can do everything a player can. This page
+tracks what a player reaches through the client that the agent control layer
+does not, and which change closes each gap. Update it when a gap closes or a
+new player-facing input appears.
+
+Already covered: walking, clicks with intent, modifiers and body zone,
+crafting from stacks, equip and take, examine, drop, swap hand, resist, verbs
+(right-click menu and verb panels), throwing, say, emote, OOC, bug reports,
+`WWinput` prompts (`choose`), boats and routes, sounds and change lists.
+
+| # | Gap | Player input | Status |
+| --- | --- | --- | --- |
+| 1 | Menu windows | HTML windows and their links (research, trade posts, suppliers, faction and recruitment desks, books, telephones) | Closed: `windows` in observe, `topic` and `close_window` actions |
+| 2 | Typed prompts | Raw `input()`/`alert()` (stack split amounts, names, paper, frequencies, money) answer nothing for a clientless character | Open: move player-facing prompts onto `WWinput` |
+| 3 | HUD-only toggles | Run/walk/sneak/prone, dodge/parry, tactic, kick/jump/bite, fixed facing, gun aim modes, equip to a chosen slot | Open |
+| 4 | Movement parity | `move` calls `Move()` directly: no hill climbing cost, no riding animals or wheelchairs, grabs and pulls skip the client path | Open |
+| 5 | Vehicles beyond boats | Cars and carts (wheel, gears), trains, aircraft (climb/descend), drones, turret controls | Open |
+| 6 | Observation | Contents of crates and closets, terrain height, light level | Open |
+| 7 | TGUI and NanoUI screens | Crafting atlas, chemistry machines and similar | Open |
+| 8 | Region travel | Gates require a BYOND key; an agent body cannot travel and its agent cannot follow | Open: needs a design decision |

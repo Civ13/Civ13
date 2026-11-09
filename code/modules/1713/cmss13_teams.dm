@@ -222,7 +222,7 @@
 	if (!page)
 		to_chat(viewer, "<span class='warning'>You do not lead a squad, faction or company, and you are not in a fire team.</span>")
 		return FALSE
-	viewer << browse(page, "window=roster;size=560x480")
+	show_browse(viewer, page, "window=roster;size=560x480")
 	return TRUE
 
 /datum/roster_view/Topic(href, list/href_list)

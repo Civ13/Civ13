@@ -81,7 +81,7 @@ var/global/last_persistence_save_vote_time = 0
 		return H && H == active_request && H.manager == src && H.generation == generation && H.state == "pending"
 	proc/close_ui()
 		for (var/client/C in voting.Copy())
-			if (C) C << browse(null, "window=vote")
+			if (C) show_browse(C, null, "window=vote")
 	proc/cancel_request(datum/vote_handle/H)
 		if (!is_current(H)) return FALSE
 		H.state = "cancelled"
@@ -115,7 +115,7 @@ var/global/last_persistence_save_vote_time = 0
 		active_request.completion = completion.Copy()
 		time_remaining = round(duration / 10)
 		for (var/client/C in clients)
-			if (C) C << browse(interface(C), "window=vote;size=500x800")
+			if (C) show_browse(C, interface(C), "window=vote;size=500x800")
 		return active_request
 	var/initiator = null
 	var/started_time = null
@@ -173,7 +173,7 @@ var/global/last_persistence_save_vote_time = 0
 			else
 				for (var/client/C in voting.Copy())
 					if (C)
-						C << browse(vote.interface(C),"window=vote")
+						show_browse(C, vote.interface(C),"window=vote")
 
 	proc/autogamemode()
 		if (!map.gamemode_vote)
@@ -576,7 +576,7 @@ var/global/last_persistence_save_vote_time = 0
 
 			for (var/client/C in clients)
 				if (C)
-					C << browse(interface(C), "window=vote;size=500x800")
+					show_browse(C, interface(C), "window=vote;size=500x800")
 
 			return TRUE
 		return FALSE
@@ -668,7 +668,7 @@ var/global/last_persistence_save_vote_time = 0
 		switch(href_list["vote"])
 			if ("close")
 				voting -= usr.client
-				usr << browse(null, "window=vote")
+				show_browse(usr, null, "window=vote")
 				return
 			if ("cancel")
 				if (usr.client.holder)
@@ -727,4 +727,4 @@ var/global/last_persistence_save_vote_time = 0
 	set name = "Vote"
 
 	if (vote)
-		src << browse(vote.interface(client),"window=vote;size=500x800")
+		show_browse(src, vote.interface(client),"window=vote;size=500x800")

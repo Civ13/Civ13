@@ -24,7 +24,7 @@
 			</body>
 			</html>
 			"}
-	usr << browse(os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	show_browse(usr, os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
 /obj/structure/computer/interact(var/mob/m)
 	if (user && user != m && user.client && get_dist(src, user) <= 1)
 		return

@@ -213,7 +213,7 @@
 	// renderer without importing the full game's NanoUI implementation.
 	if (hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot))
 		return
-	recipient << browse(legacy_snapshot,"window=memory;size=625x650")
+	show_browse(recipient, legacy_snapshot,"window=memory;size=625x650")
 
 /datum/mind/proc/edit_memory()
 	if (!ticker)
@@ -226,7 +226,7 @@
 	out += "<hr>"
 	out += "</table><hr>"
 
-	usr << browse(out, "window=edit_memory[src]")
+	show_browse(usr, out, "window=edit_memory[src]")
 
 /datum/mind/Topic(href, href_list)
 	if (!check_rights(R_ADMIN))	return

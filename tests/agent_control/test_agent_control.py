@@ -2562,5 +2562,58 @@ class BoatTravelTests(unittest.TestCase):
         self.assertIn("fuel 0/125", boats.describe(observation))
 
 
+class WindowTests(unittest.TestCase):
+    """Menu windows (code/modules/agent_control/agent_windows.dm) and the autopilot's topic steps."""
+
+    # Files that keep "<< browse(" on purpose, each pinned by its own contract test:
+    # agents craft with the craft action and the atlas, NanoUI and the wiki are client-only screens;
+    # datum/browser serves TDM barracks boards; paper reading is pinned by tests/paper_documents.
+    BROWSE_EXEMPT = {
+        "code/datums/browser.dm", "code/game/mob/crafting_atlas.dm", "code/game/objects/items/stacks/stack.dm",
+        "code/modules/client/client_verbs.dm", "code/modules/nano/_nanoui.dm", "code/modules/paperwork/view.dm",
+        "code/game/mob/living/carbon/human/subtile_movement.dm",
+    }
+
+    def test_player_windows_go_through_show_browse(self):
+        # Every gameplay browse() is recorded for agent characters; admin panels are client-only.
+        raw = []
+        for path in (ROOT / "code").rglob("*.dm"):
+            rel = path.relative_to(ROOT).as_posix()
+            if rel.startswith("code/modules/admin/") or rel.endswith("agent_windows.dm") or rel in self.BROWSE_EXEMPT:
+                continue
+            for number, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                if re.search(r"<<\s*browse\(", line):
+                    raw.append(f"{rel}:{number}")
+        self.assertEqual(raw, [], "use show_browse(target, html, options) so agent characters see the window")
+
+    def test_topic_only_follows_shown_links(self):
+        source = dm_source("agent_windows.dm")
+        self.assertIn('agent_queue_only("topic", from_queue)', source)
+        self.assertIn('C.windows[window]', source)
+        self.assertIn('istype(D, /datum/admins)', source)
+        self.assertIn('agent_protected_target(D)', source)
+        self.assertNotIn('"href" = L["href"]', source.split("proc/window_rows")[1].split("proc/")[0])
+
+    def test_parse_topic_steps(self):
+        refs = ["[0x1]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "topic", "window": "trade", "link": "2"}', refs), {"do": "topic", "window": "trade", "link": 2})
+        self.assertEqual(autopilot.parse_decision('{"do": "topic", "window": "trade", "label": "Buy bread"}', refs), {"do": "topic", "window": "trade", "label": "Buy bread"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "window": "trade"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "link": 1}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "window": "trade", "link": 0}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "close_window", "window": "trade"}', refs), {"do": "close_window", "window": "trade"})
+
+    def test_summary_shows_newest_windows(self):
+        observation = {"self": {"name": "Ada"}, "windows": [
+            {"id": 1, "window": "old", "title": "Old", "text": "x", "links": []},
+            {"id": 2, "window": "research", "title": "Research", "text": "Points:   12\n\nTopics", "links": [{"link": 1, "label": "Agriculture"}]},
+            {"id": 3, "window": "trade", "title": "Trade post", "text": "", "links": [{"link": 1, "label": "Buy bread"}, {"link": 2, "label": "Sell"}]},
+        ]}
+        text, _ = autopilot.summarize(observation)
+        self.assertNotIn('WINDOW "old"', text)
+        self.assertIn('WINDOW "research" (Research): Points: 12 Topics', text)
+        self.assertIn("buttons: 1. Buy bread; 2. Sell", text)
+
+
 if __name__ == "__main__":
     unittest.main()

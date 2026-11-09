@@ -521,7 +521,7 @@
 
 	examine(mob/user)
 		get_updated_img()
-		user << browse(img_flattened,"window=popup;size=630x630")
+		show_browse(user, img_flattened,"window=popup;size=630x630")
 
 	attack_hand(mob/user)
 		examine(user)

@@ -392,7 +392,7 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
 	dat += "<BR><A href='?src=\ref[user];mach_close=inventory'>Close</A>"
 
-	user << browse(dat, "window=inventory;size=340x540")
+	show_browse(user, dat, "window=inventory;size=340x540")
 	onclose(user, "inventory")
 	return
 
@@ -433,7 +433,7 @@ var/list/coefflist = list()
 	if (href_list["mach_close"])
 		var/t1 = text("window=[]", href_list["mach_close"])
 		unset_using_object()
-		src << browse(null, t1)
+		show_browse(src, null, t1)
 
 	if (href_list["item"])
 		handle_strip(href_list["item"],usr)

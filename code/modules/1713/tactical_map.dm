@@ -163,7 +163,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 	var/width = base[2] * scale
 	var/height = base[3] * scale
 	viewers[H] = key
-	H << browse(page_html(H, key, base, scale), "window=[TACMAP_WINDOW];size=[min(980, max(width, 560) + 60)]x[min(980, height + 200)]")
+	show_browse(H, page_html(H, key, base, scale), "window=[TACMAP_WINDOW];size=[min(980, max(width, 560) + 60)]x[min(980, height + 200)]")
 	onclose(H, TACMAP_WINDOW, src)
 	start()
 
@@ -190,7 +190,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 		if (!key || H.stat != CONSCIOUS)
 			viewers -= H
 			if (H && H.client)
-				H << browse(null, "window=[TACMAP_WINDOW]")
+				show_browse(H, null, "window=[TACMAP_WINDOW]")
 			continue
 		if (key != viewers[H])
 			open(H)

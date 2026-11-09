@@ -190,7 +190,7 @@
 	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];manage=close'\">Close</button></div>"
 	dat += "</body></html>"
 
-	user << browse(dat, "window=vendor_management;size=500x550")
+	show_browse(user, dat, "window=vendor_management;size=500x550")
 
 /** Internal procedure to deliver the selected product after successful payment and update the vendor status. */
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)

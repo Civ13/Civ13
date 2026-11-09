@@ -257,7 +257,7 @@
 
 		max_distance = angle
 
-		m << browse({"
+		show_browse(m, {"
 
 		<br>
 		<html>

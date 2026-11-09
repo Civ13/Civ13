@@ -828,7 +828,7 @@
 			loaded_pill_bottle.loc = loc
 			loaded_pill_bottle = null
 	else if (href_list["close"])
-		usr << browse(null, "window=chemmaster")
+		show_browse(usr, null, "window=chemmaster")
 		usr.unset_using_object()
 		return
 
@@ -851,7 +851,7 @@
 					dat += "<TITLE>Pill Maker</TITLE>Chemical infos:<BR><BR>Name:<BR>[href_list["name"]]<BR><BR>Description:<BR>[href_list["desc"]]<BR><BR><BR><A href='?src=\ref[src];main=1'>(Back)</A>"
 			else
 				dat += "<TITLE>Condimaster 3000</TITLE>Condiment infos:<BR><BR>Name:<BR>[href_list["name"]]<BR><BR>Description:<BR>[href_list["desc"]]<BR><BR><BR><A href='?src=\ref[src];main=1'>(Back)</A>"
-			usr << browse(dat, "window=chem_master;size=575x400")
+			show_browse(usr, dat, "window=chem_master;size=575x400")
 			return
 
 		else if (href_list["add"])
@@ -951,14 +951,14 @@
 			for (var/i = TRUE to MAX_PILL_SPRITE)
 				dat += "<tr><td><a href=\"?src=\ref[src]&pill_sprite=[i]\"><img src=\"pill[i].png\" /></a></td></tr>"
 			dat += "</table>"
-			usr << browse(dat, "window=chem_master")
+			show_browse(usr, dat, "window=chem_master")
 			return
 		else if (href_list["change_bottle"])
 			var/dat = "<table>"
 			for (var/sprite in BOTTLE_SPRITES)
 				dat += "<tr><td><a href=\"?src=\ref[src]&bottle_sprite=[sprite]\"><img src=\"[sprite].png\" /></a></td></tr>"
 			dat += "</table>"
-			usr << browse(dat, "window=chem_master")
+			show_browse(usr, dat, "window=chem_master")
 			return
 		else if (href_list["pill_sprite"])
 			pillsprite = href_list["pill_sprite"]
@@ -1025,9 +1025,9 @@
 		else
 			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle (50 units max)</A>"
 	if (!condi)
-		user << browse("<TITLE>Pill Maker</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
+		show_browse(user, "<TITLE>Pill Maker</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	else
-		user << browse("<TITLE>Pill Maker</TITLE>Condimaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
+		show_browse(user, "<TITLE>Pill Maker</TITLE>Condimaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	onclose(user, "chem_master")
 	return
 

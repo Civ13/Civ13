@@ -154,7 +154,7 @@
 	)
 	var/obj/map_metadata/campaign/MC = map
 	if (!lobby_join_validation)
-		src << browse(null, "window=latechoices")
+		show_browse(src, null, "window=latechoices")
 
 	var/list/dat = list("<center>")
 	var/list/join_jobs = list()

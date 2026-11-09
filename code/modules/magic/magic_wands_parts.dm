@@ -282,7 +282,7 @@
 		var/telescopic_btn = (len == WAND_LENGTH_TELESCOPIC) ? "<b>Telescopic</b>" : "<a href='?src=\ref[src];length_telescopic=1'>Telescopic</a>"
 		var/assembly_button = (wood_part && core_part) ? "<center><a href='?src=\ref[src];assemble=1'><big><b>Assemble Wand</b></big></a></center>" : "<center><span style='color:#888'>Place both a chassis and a core, then assemble the wand.</span></center>"
 
-		m << browse({"
+		show_browse(m, {"
 
 		<br>
 		<html>

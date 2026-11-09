@@ -38,7 +38,7 @@
 		qdel(W)
 	else
 		if (istype(W, /obj/item/weapon/pen))
-			usr << browse("", "window=[name]") //Closes the dialog)
+			show_browse(usr, "", "window=[name]") //Closes the dialog)
 		if (pages.len)
 			var/obj/P = pages[page]
 			P.attackby(W, user)
@@ -121,7 +121,7 @@
 		if (isnull(paper_html))
 			return
 		dat += paper_html
-		user << browse(dat, "window=[name]")
+		show_browse(user, dat, "window=[name]")
 
 /obj/item/weapon/paper_bundle/attack_self(mob/user as mob)
 	show_content(user)

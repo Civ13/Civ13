@@ -833,7 +833,7 @@ var/global/list/space_survey_maps = list()
 	return jointext(out, "\n")
 
 /obj/structure/survey_console/proc/show_ui(mob/user, message = null)
-	user << browse(ui_html(message), "window=survey_console;size=560x680")
+	show_browse(user, ui_html(message), "window=survey_console;size=560x680")
 
 /obj/structure/survey_console/proc/ui_html(message = null)
 	var/list/html = list("<html><head><title>Mission console</title><style>a{color:#8cc8ff;margin-right:4px}a:hover{color:#fff}</style></head><body style='background:#1b1b1b;color:#ddd;font-family:monospace'>")
