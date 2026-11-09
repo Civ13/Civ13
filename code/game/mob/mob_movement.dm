@@ -395,7 +395,7 @@
 				n = get_step(free_actor, direct)
 				ordinal = FALSE
 			free_actor.human_subtile_initialize_default(direct)
-			if (free_actor.human_subtile_fine_ready(direct) && !free_actor.human_subtile_trench_near(direct))
+			if (free_actor.human_subtile_fine_ready(direct) && (free_actor.human_subtile_climb_ready() || !free_actor.human_subtile_trench_near(direct)))
 				fine_step = FINE_STEP_HELD
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob

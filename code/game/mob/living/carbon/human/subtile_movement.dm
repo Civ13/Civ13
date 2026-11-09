@@ -23,6 +23,8 @@
 	var/tmp/human_subtile_pull_trail_for
 	// Set by before_save when an offset capsule would be rejected on load.
 	var/tmp/human_subtile_save_aligned = FALSE
+	// Set while a free-movement trench climb waits out its delay.
+	var/tmp/human_subtile_climbing = FALSE
 	var/list/human_subtile_position
 	// Absent in historical capsules. Only validated new captures may use 1.
 	var/human_subtile_restore_schema = 0
@@ -198,7 +200,7 @@
 /mob/living/human/proc/human_subtile_ready(direction)
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked() && !human_subtile_trench_crossing(direction)
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
 
 // Climbing into or out of a trench (or onto a bridge or frame over one) waits
 // inside turf Enter/Exit. A sleeping Enter/Exit fails the native pixel Move at
@@ -240,6 +242,165 @@
 			if (front && front.trench_climb_level() != level)
 				return TRUE
 	return FALSE
+
+// Free-movement trench climbs. A body walks freely up to the edge and climbs
+// from wherever it stands, keeping its sideways offset when the tiles beyond
+// allow it. Pulling a living body or being grabbed keeps the tile path.
+/mob/living/human/proc/human_subtile_climb_ready()
+	return human_subtile_enabled && !human_subtile_climbing && !human_subtile_transaction && human_subtile_shape() && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked() && !driver && !buckled && !subtile_pull_ownership.owners[src] && (!pulling || (isturf(pulling.loc) && !isliving(pulling))) && (!grabbed_by || !grabbed_by.len) && mob_size > MOB_SMALL && ((!step_x && !step_y) || human_subtile_offset_owned)
+
+// The turfs a 32x32 body covers at tile (tx, ty) with offset (sx, sy).
+/mob/living/human/proc/human_subtile_cover(tx, ty, sx, sy)
+	. = list()
+	for (var/cx in tx to (sx ? tx + 1 : tx))
+		for (var/cy in ty to (sy ? ty + 1 : ty))
+			var/turf/T = locate(cx, cy, z)
+			if (T)
+				. += T
+
+// Whether moving the body by (dx, dy) pixels would reach a tile at another
+// climb level, or leave a trench turf for one, where turf Enter/Exit waits.
+// The climb starts at the first overlap, both into and out of a trench.
+/mob/living/human/proc/human_subtile_pulse_climbs(dx, dy)
+	if (!isturf(loc))
+		return FALSE
+	var/tx = x
+	var/ty = y
+	var/sx = step_x + dx
+	var/sy = step_y + dy
+	while (sx < 0)
+		tx--
+		sx += 32
+	while (sx >= 32)
+		tx++
+		sx -= 32
+	while (sy < 0)
+		ty--
+		sy += 32
+	while (sy >= 32)
+		ty++
+		sy -= 32
+	var/turf/oldloc = loc
+	var/turf/newloc = locate(tx, ty, z)
+	if (!newloc)
+		return FALSE
+	var/list/before = human_subtile_cover(x, y, step_x, step_y)
+	var/list/after = human_subtile_cover(tx, ty, sx, sy)
+	var/old_level = oldloc.trench_climb_level()
+	var/new_level = newloc.trench_climb_level()
+	for (var/turf/T in after - before)
+		if (T.trench_climb_level() != old_level)
+			return TRUE
+	for (var/turf/T in before - after)
+		if (istype(T, /turf/floor/trench) && T.trench_climb_level() != new_level)
+			return TRUE
+	return FALSE
+
+// The cardinal part of a step that would climb, vertical first, or 0.
+/mob/living/human/proc/human_subtile_climb_direction(direction)
+	for (var/part in list(direction & (NORTH | SOUTH), direction & (EAST | WEST)))
+		if (!part)
+			continue
+		var/dx = (part == EAST) ? 2 : (part == WEST) ? -2 : 0
+		var/dy = (part == NORTH) ? 2 : (part == SOUTH) ? -2 : 0
+		if (human_subtile_pulse_climbs(dx, dy))
+			return part
+	return 0
+
+// Whether the body could stand at (tx, ty) with offset (sx, sy) after a climb.
+/mob/living/human/proc/human_subtile_climb_open(tx, ty, sx, sy)
+	var/list/cover = human_subtile_cover(tx, ty, sx, sy)
+	if (cover.len != (sx ? 2 : 1) * (sy ? 2 : 1))
+		return FALSE
+	var/level = null
+	for (var/turf/T in cover)
+		if (!human_subtile_slide_open(T))
+			return FALSE
+		if (isnull(level))
+			level = T.trench_climb_level()
+		else if (T.trench_climb_level() != level)
+			return FALSE
+		if (map && map.check_caribbean_block(src, T))
+			return FALSE
+		for (var/mob/living/M in T)
+			if (M != src && M.density && !swap_passable(M))
+				return FALSE
+	return TRUE
+
+// Where a climb lands: the next row (or column) along the climb, keeping the
+// sideways offset when the tiles there allow it, else the nearer open tile.
+/mob/living/human/proc/human_subtile_climb_target(direction)
+	var/vertical = direction & (NORTH | SOUTH)
+	var/tx = x
+	var/ty = y
+	var/sx = step_x
+	var/sy = step_y
+	switch (direction)
+		if (NORTH)
+			ty++
+			sy = 0
+		if (SOUTH)
+			ty = sy ? ty : ty - 1
+			sy = 0
+		if (EAST)
+			tx++
+			sx = 0
+		if (WEST)
+			tx = sx ? tx : tx - 1
+			sx = 0
+	var/side = vertical ? sx : sy
+	if (human_subtile_climb_open(tx, ty, sx, sy))
+		return list(tx, ty, sx, sy)
+	if (!side)
+		return null
+	// Prefer the tile the body overlaps most.
+	var/list/choices = (side < 16) ? list(0, 1) : list(1, 0)
+	for (var/shift in choices)
+		var/cx = vertical ? tx + shift : tx
+		var/cy = vertical ? ty : ty + shift
+		if (human_subtile_climb_open(cx, cy, vertical ? 0 : sx, vertical ? sy : 0))
+			return list(cx, cy, vertical ? 0 : sx, vertical ? sy : 0)
+	return null
+
+/mob/living/human/proc/human_subtile_trench_climb(direction)
+	var/list/target = human_subtile_climb_target(direction)
+	if (!target)
+		return FALSE
+	var/turf/origin = loc
+	var/turf/destination = locate(target[1], target[2], z)
+	var/from_level = origin.trench_climb_level()
+	var/to_level = destination.trench_climb_level()
+	if (from_level == to_level)
+		return FALSE
+	var/down = to_level > from_level
+	var/action = "exit a trench"
+	if (down)
+		action = istype(origin, /turf/floor/trench) ? "climb down" : "enter a trench"
+	else if (locate(/obj/covers/repairedfloor) in destination)
+		action = "climb on a bridge"
+	else if (locate(/obj/structure/vehicleparts/frame) in destination)
+		action = "climb on a frame"
+	var/turf/floor/trench/edge = istype(destination, /turf/floor/trench) ? destination : origin
+	if (istype(edge) && world.time > edge.message_cooldown + 30)
+		visible_message(SPAN_NOTICE("[src] starts to [action]."))
+		edge.message_cooldown = world.time
+	dir = direction
+	var/start_x = step_x
+	var/start_y = step_y
+	human_subtile_climbing = TRUE
+	var/climbed = do_after(src, down ? 5 : 20, destination, needhand = FALSE)
+	human_subtile_climbing = FALSE
+	if (!climbed || loc != origin || step_x != start_x || step_y != start_y || !human_subtile_climb_ready())
+		return FALSE
+	if (!human_subtile_climb_open(target[1], target[2], target[3], target[4]))
+		return FALSE
+	var/atom/movable/pulled = pulling
+	if (!trench_climb_place_offset(src, destination, target[3], target[4]))
+		return FALSE
+	if (pulled && pulling == pulled && !isliving(pulled))
+		pulled.forceMove(destination)
+	living_movement_completed()
+	return TRUE
 
 // Free and fine input never take ownership of a link. Pulling slides too:
 // living/Move drags the pulled object onto each tile the body clears.
@@ -525,8 +686,19 @@
 /mob/living/human/SelfMove(turf/n, direct, deadline = null, fine_step = FALSE)
 	if (isnull(deadline))
 		return ..()
+	if (human_subtile_climbing)
+		return FALSE
 	if (fine_step && !human_subtile_fine_ready(direct))
 		return FALSE
+	// At a trench edge a free step climbs from wherever the body stands.
+	// Pulling a living body or being grabbed settles on the tile and takes the
+	// tile path's climb instead.
+	var/climb_direction = human_subtile_climb_direction(direct)
+	if (climb_direction && human_subtile_authority(client) && !human_subtile_transaction)
+		if (human_subtile_climb_ready())
+			return human_subtile_trench_climb(climb_direction)
+		trench_climb_align(src)
+		return Move(get_step(src, direct), direct)
 	if (!fine_step && human_subtile_pull_ready(direct))
 		return human_subtile_pull_travel(n, direct, deadline)
 	if (!human_subtile_eligible(direct) || !human_subtile_authority(client) || human_subtile_transaction || n != get_step(src, direct) || !isnum(deadline) || deadline < world.time || deadline >= INFINITY)
@@ -661,6 +833,9 @@
 		// Free and held slides try the pulse straight on first. When it is blocked
 		// outright they slide: a diagonal runs along the wall on whichever axis is
 		// free, and a straight move slips sideways around a corner into an opening.
+		// At a trench edge the slide stops; the next input climbs from here.
+		if (!paid_posture && !legacy_posture && actor.human_subtile_climb_direction(direction))
+			break
 		var/list/attempts = list(list(main_dx, main_dy))
 		if (fine_step == FINE_STEP_HELD)
 			// Passing through someone, ease sideways to keep a little distance.
@@ -695,6 +870,11 @@
 			if (!destination)
 				stop = TRUE
 				break
+			// A climb between trench levels waits in turf Enter/Exit, which would
+			// fail a native pixel pulse. The slide stops at the edge instead and
+			// the next input climbs (human_subtile_trench_climb).
+			if (!paid_posture && !legacy_posture && actor.human_subtile_pulse_climbs(dx, dy))
+				continue
 			var/datum/human_subtile_pulse/P = new
 			attempted = TRUE
 			P.actor = actor

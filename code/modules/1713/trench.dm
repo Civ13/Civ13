@@ -208,6 +208,16 @@ var/list/global/floor_cache = list()
 	trench_climb_align(L)
 	. = L.forceMove(destination)
 
+// A free-movement climb lands at an offset on its tile, keeping the body's
+// sideways position (human_subtile_trench_climb picks a spot that fits).
+/proc/trench_climb_place_offset(mob/living/human/H, turf/destination, sx, sy)
+	if (!H.forceMove(destination))
+		return FALSE
+	H.step_x = sx
+	H.step_y = sy
+	H.human_subtile_offset_owned = !!(sx || sy)
+	return TRUE
+
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)
 	if(locate(/obj/structure/vehicleparts/frame) in contents)
 		return ..()
@@ -218,6 +228,12 @@ var/list/global/floor_cache = list()
 			return 0
 	if (isliving(O) && !ishuman(O))
 		return ..()
+	// No climb between tiles at the same level (along a trench, or between
+	// ground and a bridge), so a smooth step crosses without snapping.
+	if (isliving(O) && isturf(oldloc))
+		var/turf/from_turf = oldloc
+		if (from_turf.trench_climb_level() == trench_climb_level())
+			return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)
@@ -278,6 +294,10 @@ var/list/global/floor_cache = list()
 		return ..()
 	if (isliving(O) && !ishuman(O))
 		return ..()
+	if (isliving(O) && isturf(newloc))
+		var/turf/next_turf = newloc
+		if (next_turf.trench_climb_level() == trench_climb_level())
+			return ..()
 	if(isliving(O))
 		var/mob/living/L = O
 		if (L.mob_size <= MOB_SMALL)

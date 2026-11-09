@@ -8,6 +8,14 @@ edge. Smooth steps now leave a change of trench level (bare trench versus
 ground, bridge or frame) to the tile path, the exit check skips the climber,
 and every finished climb places the body squarely on its tile.
 
+Free movement now climbs from between tiles. A body walks freely up to the
+first overlap with a tile at another level and the next input climbs there,
+keeping its sideways offset when the tiles beyond allow it (otherwise it lands
+on the nearer open tile). Climbing in takes 0.5 s and climbing out 2 s, as on
+the tile path. Ground and bridges share a level, so walking onto a bridge is
+smooth. Pulling a living body or being grabbed still settles on the tile and
+takes the tile path's climb.
+
 - `test_source.py`: offline source checks (`python3 -m unittest discover -s tests/trench_climb -p 'test_*.py'`).
 - `probe.dm` and `run.py`: a full-source native probe with real humans and
   trench turfs. It needs the pinned compiler:
