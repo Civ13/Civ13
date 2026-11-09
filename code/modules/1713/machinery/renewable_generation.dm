@@ -85,3 +85,30 @@
 		if (3) return 0.9
 		if (4) return 1
 	return 0
+
+// A dynamo on the bank can draw from an adjacent flowing water tile.
+/obj/structure/civ_generator/waterwheel
+	name = "waterwheel generator"
+	desc = "A waterwheel and dynamo. Place it beside flowing water and connect it to a cable."
+	icon = 'icons/obj/renewable_power.dmi'
+	icon_state = "waterwheel"
+	min_age = 5
+
+/obj/structure/civ_generator/waterwheel/rated_output()
+	if (!isturf(loc) || istype(loc, /turf/floor/beach/water))
+		return 0
+	for (var/direction in list(NORTH, SOUTH, EAST, WEST))
+		if (river_current_direction(get_step(src, direction)))
+			return 12
+	return 0
+
+/obj/structure/civ_generator/waterwheel/update_icon()
+	icon_state = (enabled && output_power > 0) ? "waterwheel_on" : "waterwheel"
+
+/obj/structure/civ_generator/waterwheel/settle_generation()
+	..()
+	update_icon()
+
+/obj/structure/civ_generator/waterwheel/stop_generation()
+	..()
+	update_icon()

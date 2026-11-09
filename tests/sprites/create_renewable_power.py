@@ -74,6 +74,19 @@ def solar_panel():
     return im
 
 
+def waterwheel(angle):
+    """Wooden paddles on a framed wheel, coupled to a small dynamo."""
+    im = Image.new('RGBA', (SIZE, SIZE))
+    d = ImageDraw.Draw(im)
+    d.line([(5, 30), (9, 15), (23, 15), (27, 30)], fill='#624228', width=2)
+    d.ellipse((5, 3, 27, 25), outline='#53371f', width=3)
+    d.ellipse((7, 5, 25, 23), outline='#b48854', width=1)
+    rotor(d, (16, 14), 8, 10, angle, '#c69a60', '#694727')
+    d.ellipse((13, 11, 19, 17), fill='#6c6d68', outline='#313633')
+    d.rectangle((22, 22, 30, 28), fill='#525b54', outline='#252d28')
+    return im
+
+
 def main():
     states = [
         ('wind_charger', [wind_charger(0)]),
@@ -81,6 +94,8 @@ def main():
         ('wind_turbine', [wind_turbine(-90)]),
         ('wind_turbine_on', [wind_turbine(-90 + a) for a in (0, 30, 60, 90)]),
         ('solar_panel', [solar_panel()]),
+        ('waterwheel', [waterwheel(0)]),
+        ('waterwheel_on', [waterwheel(a) for a in (0, 15, 30, 45)]),
     ]
     frames = [frame for _, group in states for frame in group]
     sheet = Image.new('RGBA', (SIZE * len(frames), SIZE))

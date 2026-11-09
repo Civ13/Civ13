@@ -36,6 +36,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'river_flow': {'files': ('tests/river_flow/test_generation.py',),
+        'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
+        'shared_paths': ('code/modules/1713/river_flow.dm',
+                         'code/processes/river_current.dm',
+                         'code/modules/1713/machinery/renewable_generation.dm')},
     # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
     'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
         'paths': ('tests/gameplay_audit/',), 'shared_paths': (

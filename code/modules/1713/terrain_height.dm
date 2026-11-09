@@ -29,7 +29,7 @@
 	var/tmp/datum/terrain_heights/terrain_heights_cache = null
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if (key == "terrain_height_file" || key == "terrain_heights_cache")
+	if (key == "terrain_height_file" || key == "terrain_heights_cache" || key == "river_flow_cache" || key == "river_flow_loaded")
 		return TRUE
 	return ..(key)
 
