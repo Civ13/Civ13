@@ -134,8 +134,7 @@
 		for (var/F in fuels)
 			if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, fuelconsumption) && done == FALSE)
 				fueltank.reagents.remove_reagent(F, fuelconsumption)
-				//add pollution to global meter
-				//change_global_pollution(fuelconsumption)
+				pollution_emit(src, fuelconsumption * 0.05, 2)
 				done = TRUE
 		if (broken)
 			on = FALSE

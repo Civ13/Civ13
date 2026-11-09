@@ -21,6 +21,8 @@
 	var/datum/lighting_corner/old_corner_nw = corner_nw
 	var/old_radiation = radiation
 	var/old_terrain_grade = terrain_grade
+	var/old_pollution = pollution
+	var/old_pollution_index = pollution_index
 	var/turf/W
 	if(nomads_event && ispath(path, /turf/floor/lava))
 		W = new path(src, null, nomads_event)
@@ -30,6 +32,9 @@
 	W.levelupdate()
 	// Graded ground stays at its height when the turf on it changes.
 	W.terrain_grade = old_terrain_grade
+	// Ground pollution stays too (ploughing or flooring does not clean it).
+	if (old_pollution || old_pollution_index)
+		W.pollution_take_over(old_pollution, old_pollution_index)
 	. =  W
 //end of else
 	lighting_overlay = old_lighting_overlay
