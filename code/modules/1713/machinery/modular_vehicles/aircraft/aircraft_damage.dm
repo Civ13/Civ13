@@ -15,6 +15,9 @@
 #define AIRCRAFT_HULL_FAILURE 150      // accumulated hit damage that breaks the airframe
 #define AIRCRAFT_ENGINE_HIT_CHANCE 30  // a nose hit's chance of stopping the engine
 #define AIRCRAFT_WELD_REPAIR 50
+// Airframe damage a rough landing on open ground adds; a plane already shaken
+// to half its hull strength lands rough on a broken landing gear instead.
+#define AIRCRAFT_ROUGH_LANDING_DAMAGE 25
 
 /obj/structure/vehicleparts/axis/aircraft
 	var/airframe_damage = 0
@@ -125,9 +128,32 @@
 	if (landing_gear_broken())
 		to_chat(user, SPAN_WARNING("The landing gear is broken. Weld any part of the airframe to fix it."))
 
+// Down on open ground without a runway: the plane lands, but the rough ground
+// strains the airframe and drags it to a stop. One already badly shaken lands
+// on a broken landing gear, which a weld mends.
+/obj/structure/vehicleparts/axis/aircraft/proc/rough_landing(down)
+	if (!aircraft_shift(down))
+		return FALSE
+	set_flight_state(AIRCRAFT_GROUND)
+	var/worn = airframe_damage >= AIRCRAFT_HULL_FAILURE / 2
+	airframe_damage = min(airframe_damage + AIRCRAFT_ROUGH_LANDING_DAMAGE, AIRCRAFT_HULL_FAILURE - 1)
+	currentspeed = 0
+	moving = FALSE
+	if (worn)
+		for (var/obj/structure/vehicleparts/movement/W in wheels)
+			W.broken = TRUE
+			W.update_icon()
+		visible_message(SPAN_DANGER("\The [src] slams down on the rough ground and its landing gear buckles!"))
+		pilot_message(SPAN_WARNING("The landing gear is broken. Weld any part of the airframe to fix it."))
+	else
+		visible_message(SPAN_WARNING("\The [src] bounces down on the rough ground and lurches to a stop."))
+		pilot_message(SPAN_WARNING("A rough landing: the airframe took a beating. Weld it to repair it."))
+	return TRUE
+
 #undef AIRCRAFT_HIT_CHANCE_LOW
 #undef AIRCRAFT_HIT_CHANCE_CRUISE
 #undef AIRCRAFT_AA_DAMAGE
 #undef AIRCRAFT_HULL_FAILURE
 #undef AIRCRAFT_ENGINE_HIT_CHANCE
 #undef AIRCRAFT_WELD_REPAIR
+#undef AIRCRAFT_ROUGH_LANDING_DAMAGE

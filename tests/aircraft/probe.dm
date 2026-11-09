@@ -328,8 +328,40 @@ var/aircraft_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/frame/F in A.frames())
 		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
 			qdel(R)
+	aircraft_check(A.rough_ground_below(1) && !A.runway_share(1), "with no runway below, dry open ground is fit to land on")
+	A.currentspeed = A.speeds
+	aircraft_check(!A.descend(M) && A.airborne() && !A.force_landing_until, "a fast descent over open ground is refused without arming a crash landing")
 	A.currentspeed = A.landing_gear
-	aircraft_check(!A.descend(M) && A.airborne() && A.force_landing_until > world.time, "descending with no runway below asks for confirmation")
+	A.airframe_damage = 0
+	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over open ground lands without a runway")
+	aircraft_check(A.airframe_damage == 25 && A.currentspeed == 0 && !A.moving && !A.landing_gear_broken() && E.on, "a rough landing strains the airframe and stops the plane, but keeps the gear and engine")
+	A.airframe_damage = 80
+	aircraft_reset_north(A)
+	aircraft_roll(A, A.takeoff_roll)
+	aircraft_check(A.airborne(), "the shaken aircraft takes off again")
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		for (var/obj/covers/roads/modern/runway/R in locate(F.x, F.y, 1))
+			qdel(R)
+	A.currentspeed = A.landing_gear
+	aircraft_check(A.descend(M) && !A.airborne() && A.landing_gear_broken() && A.airframe_damage < 150, "a badly shaken airframe lands rough on a broken landing gear")
+	A.airframe_damage = 0
+
+	// Water is no place to set down: that still needs a forced crash landing.
+	aircraft_repair(A)
+	aircraft_reset_north(A)
+	aircraft_roll(A, A.takeoff_roll)
+	aircraft_check(A.airborne(), "the aircraft takes off a sixth time")
+	var/list/flooded = list()
+	for (var/obj/structure/vehicleparts/frame/F in A.frames())
+		var/turf/G = locate(F.x, F.y, 1)
+		for (var/obj/covers/roads/modern/runway/R in G)
+			qdel(R)
+		flooded |= G
+	for (var/turf/G in flooded)
+		new /turf/floor/beach/water(G)
+	A.currentspeed = A.landing_gear
+	aircraft_check(!A.rough_ground_below(1), "water below is not ground to land on")
+	aircraft_check(!A.descend(M) && A.airborne() && A.force_landing_until > world.time, "descending over water asks for confirmation")
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1), "a second Descend forces a crash landing")
 	aircraft_check(aircraft_visuals_gone(A, list()), "a crashed aircraft drops its shadow and ground view")
 
@@ -337,7 +369,7 @@ var/aircraft_runtime_error = FALSE
 	aircraft_repair(A)
 	aircraft_reset_north(A)
 	aircraft_roll(A, A.takeoff_roll)
-	aircraft_check(A.airborne(), "the aircraft takes off a sixth time")
+	aircraft_check(A.airborne(), "the aircraft takes off a seventh time")
 	var/obj/structure/vehicleparts/frame/under = A.corners[2]
 	var/obj/structure/aircraft_probe_wall/ground_wall = new(locate(under.x, under.y, 1))
 	var/list/offset = A.clear_footprint_offset(1)
