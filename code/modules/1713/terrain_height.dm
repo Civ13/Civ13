@@ -28,8 +28,10 @@
 	should_save = FALSE
 	var/maxx = 0
 	var/maxy = 0
-	// "z" -> list of row strings, north row first.
+	// "z" -> list of row strings, north row first, with player grading applied.
 	var/list/rows_by_z = list()
+	// "z" -> the same rows as loaded from the file, before any grading.
+	var/list/base_rows_by_z = list()
 	var/error = null
 
 /datum/terrain_heights/proc/at(x, y, z)
@@ -83,9 +85,39 @@
 				return H
 			rows += row
 		H.rows_by_z["[z]"] = rows
+		H.base_rows_by_z["[z]"] = rows.Copy()
 	if (!H.rows_by_z.len)
 		H.error = "no z levels"
 	return H
+
+// The file's level for a tile, ignoring grading.
+/datum/terrain_heights/proc/base_at(x, y, z)
+	var/list/rows = base_rows_by_z["[z]"]
+	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
+		return 0
+	var/code = text2ascii(rows[maxy - y + 1], x)
+	return code >= 97 ? code - 87 : code - 48
+
+// Sets a graded tile's level and updates the corner lights around it.
+/datum/terrain_heights/proc/set_level(x, y, z, level)
+	var/list/rows = rows_by_z["[z]"]
+	if (!rows || x < 1 || x > maxx || y < 1 || y > maxy)
+		return FALSE
+	level = clamp(round(level), 0, 15)
+	var/r = maxy - y + 1
+	var/row = rows[r]
+	rows[r] = copytext(row, 1, x) + ascii2text(level < 10 ? 48 + level : 87 + level) + copytext(row, x + 1)
+	var/list/lights = light_rows_by_z["[z]"]
+	if (lights)
+		// A tile moves the 4 corners around it; each light reads corners one step away.
+		for (var/cy in max(0, r - 3) to min(maxy, r + 2))
+			var/list/chars = list()
+			for (var/cx in max(0, x - 3) to min(maxx, x + 2))
+				chars += light_char(rows, cy, cx)
+			var/first = max(0, x - 3) + 1
+			var/old = lights[cy + 1]
+			lights[cy + 1] = copytext(old, 1, first) + jointext(chars, "") + copytext(old, first + chars.len)
+	return TRUE
 
 /proc/terrain_height_row_valid(row)
 	var/static/regex/bad = regex(@"[^0-9a-f]")
@@ -244,6 +276,23 @@ var/global/terrain_shading_applied = FALSE
 		CHECK_TICK
 	light_rows_by_z[key] = out
 	return out
+
+// One corner light, computed alone; matches light_rows() exactly.
+/datum/terrain_heights/proc/corner_level(list/rows, cy, cx)
+	cy = clamp(cy, 0, maxy)
+	cx = clamp(cx, 0, maxx)
+	return (level_rc(rows, cy, cx) + level_rc(rows, cy + 1, cx) + level_rc(rows, cy, cx + 1) + level_rc(rows, cy + 1, cx + 1)) / 4
+
+/datum/terrain_heights/proc/light_char(list/rows, cy, cx)
+	var/static/light_x = -1 / sqrt(3.44)
+	var/static/light_y = -1 / sqrt(3.44)
+	var/static/light_z = 1.2 / sqrt(3.44)
+	var/gx = (corner_level(rows, cy, min(cx + 1, maxx)) - corner_level(rows, cy, max(cx - 1, 0))) / 2
+	var/gy = (corner_level(rows, min(cy + 1, maxy), cx) - corner_level(rows, max(cy - 1, 0), cx)) / 2
+	var/nx = -gx * TERRAIN_RELIEF
+	var/ny = -gy * TERRAIN_RELIEF
+	var/intensity = (nx * light_x + ny * light_y + light_z) / sqrt(nx * nx + ny * ny + 1) - light_z
+	return ascii2text(99 + clamp(floor(intensity / TERRAIN_LIGHT_STEP + 0.5), -2, 2))
 
 // Sprite key for a tile: corner lights nw, ne, sw, se; "cccc" means flat.
 /datum/terrain_heights/proc/shade_key(x, y, z)

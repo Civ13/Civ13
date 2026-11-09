@@ -164,6 +164,53 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(!covered.terrain_smoothed(), "cover_wall_not_a_floor")
 	qdel(wall_cover)
 
+	// Grading: one level at a time, at most two from the map's height, saved with the turf.
+	var/turf/graded = locate(7, 9, 1)
+	graded.ChangeTurf(/turf/floor/dirt)
+	graded = locate(7, 9, 1)
+	terrain_height_probe_assert(!terrain_grade_problem(graded, -1) && !terrain_grade_problem(graded, 1), "dirt_can_be_graded")
+	terrain_height_probe_assert(terrain_grade_problem(locate(6, 9, 1), -1), "rock_cannot_be_graded")
+	var/turf/flat_dirt = locate(5, 3, 1)
+	flat_dirt.ChangeTurf(/turf/floor/dirt)
+	flat_dirt = locate(5, 3, 1)
+	terrain_height_probe_assert(findtext(terrain_grade_problem(flat_dirt, -1), "as low"), "grade_floor_is_zero")
+	graded.terrain_grade = -1
+	graded.terrain_grade_apply()
+	terrain_height_probe_assert(terrain_height_at(graded) == 5 && fixture.base_at(7, 9, 1) == 6, "cut_lowers_one_level")
+	terrain_height_probe_assert(terrain_slope_delay(graded, locate(8, 9, 1), 2.85) == 2, "cut_steepens_next_step")
+	graded.terrain_grade = -2
+	graded.terrain_grade_apply()
+	terrain_height_probe_assert(terrain_height_at(graded) == 4, "cut_twice")
+	terrain_height_probe_assert(findtext(terrain_grade_problem(graded, -1), "any lower"), "cut_limit_two_levels")
+	terrain_height_probe_assert(!terrain_grade_problem(graded, 1), "can_fill_back")
+	// Patched lights match a full recompute of the graded rows.
+	var/list/patched = fixture.light_rows(1).Copy()
+	fixture.light_rows_by_z -= "1"
+	terrain_height_probe_assert(jointext(patched, "|") == jointext(fixture.light_rows(1), "|"), "graded_lights_match_full_pass")
+	var/obj/effect/terrain_shade/graded_shade = locate() in graded.vis_contents
+	terrain_height_probe_assert((graded_shade ? graded_shade.icon_state : "cccc") == fixture.shade_key(7, 9, 1), "graded_tile_reshaded")
+	// The grade survives turf changes and is saved only when set.
+	graded.ChangeTurf(/turf/floor/tamped_earth)
+	graded = locate(7, 9, 1)
+	terrain_height_probe_assert(graded.terrain_grade == -2 && terrain_height_at(graded) == 4, "grade_kept_on_changeturf")
+	terrain_height_probe_assert("terrain_grade" in graded.get_saved_vars(), "grade_saved")
+	terrain_height_probe_assert(!("terrain_grade" in flat_dirt.get_saved_vars()), "ungraded_not_saved")
+	// A load re-applies the saved grade over a fresh height file.
+	fixture.set_level(7, 9, 1, fixture.base_at(7, 9, 1))
+	terrain_height_probe_assert(terrain_height_at(graded) == 6, "reset_to_file_height")
+	graded.after_load()
+	terrain_height_probe_assert(terrain_height_at(graded) == 4, "load_reapplies_grade")
+	// Water nearby and built covers block grading.
+	var/turf/shore = locate(3, 3, 1)
+	shore.ChangeTurf(/turf/floor/dirt)
+	shore = locate(3, 3, 1)
+	var/turf/water = locate(4, 3, 1)
+	water.ChangeTurf(/turf/floor/beach/water)
+	terrain_height_probe_assert(findtext(terrain_grade_problem(shore, 1), "water"), "no_grading_by_water")
+	graded.terrain_grade = 0
+	graded.terrain_grade_apply()
+	terrain_height_probe_assert(terrain_height_at(graded) == 6, "grade_undone")
+
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
 	map = broken
