@@ -34,7 +34,8 @@ def digest_file(path):
     path = Path(path)
     if path.stat().st_size > 1024 * 1024:
         raise ValueError("source input exceeds bound: " + path.name)
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    # A Windows checkout may carry CRLF; the pins are over the LF text.
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def load_module(name, path):
