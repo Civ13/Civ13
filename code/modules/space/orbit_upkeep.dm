@@ -98,6 +98,7 @@
 	if (!orbit_world() || !isnum(seconds) || seconds <= 0)
 		return FALSE
 	orbit_wear_step(seconds)
+	orbit_asteroid_step(seconds, roll)
 	for (var/party in orbit_station_parties())
 		var/before = orbit_station_altitude(party)
 		var/after = max(ORBIT_ALTITUDE_MIN, before - ORBIT_DECAY_PER_SECOND * seconds)
