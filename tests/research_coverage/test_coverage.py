@@ -40,15 +40,28 @@ class Coverage(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Unknown research nodes'):
             research_contract(source, canon)
 
-    def test_only_confirmed_basics(self):
-        _, _, basics, _, _ = research_contract(files(), canon)
-        self.assertEqual(basics, {'/obj/item/stack/material/rope', '/obj/item/stack/material/stonebrick', '/obj/structure/researchdesk'})
-        for path in basics:
+    def test_no_free_basics_only_research_essentials(self):
+        _, mappings, basics, _, _ = research_contract(files(), canon)
+        self.assertEqual(basics, set())
+        self.assertEqual(mappings['/obj/item/stack/material/rope'], 'basic_tools')
+        self.assertEqual(mappings['/obj/item/stack/material/stonebrick'], 'brickmaking')
+        self.assertEqual(mappings['/obj/structure/researchdesk'], 'basic_tools')
+        for path in ('/obj/structure/research_bench', '/obj/structure/researchdesk', '/obj/item/weapon/clay/mold/axehead', '/obj/item/stack/cable_coil/red'):
             row = record(output=canon(path))
             annotate_research([row], files(), canon)
-            self.assertEqual(row['research_status'], 'basic')
+            self.assertEqual(row['research_status'], 'gated')
+            self.assertTrue(row.get('manual_free'), path)
+        rope = record(output=canon('/obj/item/stack/material/rope'))
+        annotate_research([rope], files(), canon)
+        self.assertEqual((rope['research_status'], rope['research_nodes'], rope.get('manual_free')), ('gated', ['basic_tools'], None))
         with self.assertRaises(ValueError):
             annotate_research([record(output='/obj/structure/researchdesk/unreviewed')], files(), canon)
+
+    def test_runtime_exempts_only_research_essentials_from_manuals(self):
+        gate = files()[GATE_SOURCE]
+        self.assertIn('var/global/list/basic_crafting_recipes = list()', gate)
+        self.assertIn('if (is_research_essential_recipe(result_path_string))\n\t\treturn crafting_node_world_allowed(H.civilization, node_id)', gate)
+        self.assertIn('ispath(path, N.prototype_type)', gate)
 
     def test_chemistry_and_acquisition_are_excluded_not_free_crafts(self):
         for kind in ('Chemistry', 'Acquisition / processing'):
@@ -109,7 +122,7 @@ class Coverage(unittest.TestCase):
     def test_runtime_gate_and_material_wait_recheck(self):
         source = files()[GATE_SOURCE]
         self.assertIn('get_research_node(node_id) && map.is_node_done(faction, node_id)', source)
-        self.assertIn('return crafting_node_allowed(H, get_recipe_node_req(result_path_string))', source)
+        self.assertIn('return crafting_node_allowed(H, node_id)', source)
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
         self.assertIn('if (!crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)
         self.assertIn('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)

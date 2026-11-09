@@ -293,6 +293,8 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	return "Needs the [N.name] manual"
 
 /proc/crafting_recipe_manual_hint(mob/viewer, result_path)
+	if (is_research_essential_recipe(result_path))
+		return ""
 	return crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
 
 /mob/living/human/proc/refresh_recipe_knowledge_menus()
@@ -312,6 +314,9 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 /datum/crafting_atlas_presenter/tgui/manual_hint(mob/viewer, list/recipe)
 	// Route metadata explicitly excludes reactions/acquisition and true basics.
 	if (recipe["research_status"] != "gated")
+		return ""
+	// Research benches, desks and node prototypes never need a manual.
+	if (recipe["manual_free"])
 		return ""
 	var/list/nodes = recipe["research_nodes"]
 	var/list/hints = list()

@@ -60,7 +60,9 @@ var/knowledge_failures = 0
 		knowledge_check(node_id && future_id, "real node registry supplies era boundaries")
 		var/mob/living/human/knowledge_fixture/H = new(locate(2,2,1))
 		knowledge_check(H.recipe_knowledge_initialized && !H.known_recipe_nodes.len, "new enabled body starts empty")
-		knowledge_check(!crafting_node_allowed(H, node_id) && crafting_recipe_allowed(H, "/obj/item/stack/material/rope"), "unknown node blocked while confirmed basics remain open")
+		knowledge_check(!crafting_node_allowed(H, node_id) && !crafting_recipe_allowed(H, "/obj/item/stack/material/rope") && !crafting_recipe_allowed(H, "/obj/item/stack/material/stonebrick"), "unknown node blocked and rope/stone bricks need manuals")
+		knowledge_check(crafting_recipe_allowed(H, "/obj/structure/research_bench") && crafting_recipe_allowed(H, "/obj/item/weapon/clay/mold/axehead") && crafting_recipe_manual_hint(H, "/obj/structure/research_bench") == "", "research bench and era prototypes need no manual")
+		knowledge_check(!crafting_recipe_allowed(H, "/obj/item/weapon/telephone/mobile") && is_research_essential_recipe("/obj/item/weapon/telephone/mobile") && is_research_essential_recipe("/obj/item/stack/cable_coil/red"), "prototype still needs the world's research")
 		map.persistence = FALSE
 		knowledge_check(crafting_node_allowed(H, node_id), "round maps bypass personal knowledge")
 		map.persistence = TRUE
@@ -150,6 +152,10 @@ var/knowledge_failures = 0
 	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "reaction and acquisition exclusions ignore output gate")
 	recipe["research_status"] = "basic"
 	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "basic route has no manual hint")
+	recipe["research_status"] = "gated"
+	recipe["manual_free"] = TRUE
+	knowledge_check(!crafting_atlas_tgui_presenter.manual_hint(unknown, recipe), "research essential route has no manual hint")
+	recipe -= "manual_free"
 	map.recipe_books = FALSE
 	knowledge_check(!crafting_node_manual_hint(unknown, node_id), "disabled maps have no personal hint")
 	map.recipe_books = TRUE

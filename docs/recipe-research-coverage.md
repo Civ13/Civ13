@@ -6,7 +6,7 @@ The implementation base is `dc938f7429530ee4c117edc34da1110900084fa0`.
 The grouped atlas still contains 3,418 distinct recipes. The original output-only
 count was 2,700 mapped and 718 unmapped; it did not canonicalize material stack
 aliases or inspect explicit factory, foundry and armor recipe requirements.
-The new coverage is route-based: 3,112 gated, 11 basic and 295 excluded records.
+The new coverage is route-based: 3,126 gated (53 of them manual-free research essentials), 0 basic and 295 excluded records.
 There are 114 research nodes, including two new chemical-cell nodes.
 
 The generator now fails on any non-basic crafting route without a valid node.
@@ -15,20 +15,20 @@ The generator now fails on any non-basic crafting route without a valid node.
 variants retain the same semantic research metadata. Maximum recipe eras are
 expiry bounds, never evidence of an unlock era.
 
-## Confirmed basics and exclusions
+## Free recipes and exclusions
 
-Only these exact outputs are exempt: ordinary rope, stone bricks, research desk.
-Subtypes do not inherit the exemption. The old Basic Tools mapping on ordinary
-rope has been removed. Factory-produced bricks still require the factory route's
-Assembly Line node. Paid yarn can still be laid into basic rope, while producing
-its prepared intermediates requires Basic Tools. Map/mode, tool, stock and expiry
-conditions remain in force even for basics.
+No crafted output is fully ungated (Val, 2026-11-09). Rope requires Basic Tools,
+stone bricks require Brickmaking and the legacy research desk requires Basic
+Tools, as for every other route. Map/mode, tool, stock and expiry conditions
+also apply.
 
-Stone/early tools, fire, shelter, research bench and trail marker are NOT silently
-exempted. They retain nodes and are proposed onboarding basics for review. In
-particular, a new character in the later knowledge phase needs a starter manual
-to make a research bench; that phase's flag must not be activated before onboarding
-is approved and available.
+On worlds with personal recipe knowledge, only the recipes needed to reach the
+next research level skip the manual: the research bench, the legacy research
+desk, and every prototype a research node consumes (including the subtypes the
+bench accepts, such as any clay mold or cable coil colour). They still need the
+world's research for their own node. `is_research_essential_recipe()` derives the
+prototype list from the registered nodes, and the atlas marks these routes
+`manual_free`.
 
 The 295 exclusions are the 152 generic chemistry reactions, 139 curated
 acquisition records, three corpse-hide harvesting records historically classified
@@ -44,8 +44,8 @@ are crafting and are gated. No generic mixing, mining or butchering check is add
   the unchanged faction/era ceiling.
 - `crafting_node_allowed(H, node_id)` is the shared actor hook for later personal
   knowledge. Unknown nodes fail closed.
-- `crafting_recipe_allowed(H, result_path_string)` admits exact basics or resolves
-  the output node. Unknown outputs fail closed.
+- `crafting_recipe_allowed(H, result_path_string)` admits test-only basics, lets
+  research essentials skip personal knowledge, or resolves the output node. Unknown outputs fail closed.
 
 Material crafting checks admission and rechecks after waiting. The same hook is
 used by anvil choices and casts, assembly benches and direct part/ammunition
@@ -63,8 +63,7 @@ not a claim that every autonomous tick has a character identity.
 ## Era and round-map audit
 
 Existing recipe minimum/maximum eras, material costs and station requirements are
-unchanged. Existing output-node mappings are unchanged except confirmed basic
-rope. New mappings use the actual output type, recipe category, source minimum era
+unchanged. Existing output-node mappings are unchanged. New mappings use the actual output type, recipe category, source minimum era
 and production route, not display-name substring matching at runtime.
 
 - Stone-era tool heads and manual wood processing use Basic Tools/Stone Arms.
