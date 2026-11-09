@@ -322,3 +322,42 @@ var/global/list/civ_tv_receivers = list()
 
 #undef CIV_TV_CAMERA_LIMIT
 #undef CIV_TV_VIEWER_LIMIT
+
+// Normal UI interruptions retire views before a same-tick toggle can resume them.
+/obj/structure/telecom/tv/interrupt_node_reception()
+	stop_all_watching()
+	return ..()
+
+/obj/structure/telecom/station/tv/interrupt_node_reception()
+	stop_video()
+	return ..()
+
+/obj/structure/telecom/tv/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) stop_all_watching()
+
+/obj/structure/telecom/tv/forceMove(atom/destination, var/special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) stop_all_watching()
+
+/obj/structure/telecom/station/tv/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) stop_video()
+
+/obj/structure/telecom/station/tv/forceMove(atom/destination, var/special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) stop_video()
+
+/obj/item/tv_camera/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) civ_tick_tv_views()
+
+/obj/item/tv_camera/forceMove(atom/destination, var/special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous) civ_tick_tv_views()

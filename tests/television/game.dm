@@ -109,10 +109,17 @@ var/tv_failures = 0
 		tv_check(R.check_eye(student) == -1 && !R.tv_watchers.len && !student.using_object, "viewer movement cuts feed")
 		student.forceMove(locate(4,4,1))
 		R.start_watching(student, S)
+		R.interrupt_node_reception()
+		tv_check(!R.tv_watchers.len, "receiver UI interruption retires view before toggle")
+		R.start_watching(student, S)
 		R.enabled = FALSE
 		civ_tick_tv_views()
 		tv_check(!R.tv_watchers.len, "receiver power switch cuts feed")
 		R.enabled = TRUE
+		R.start_watching(student, S)
+		S.interrupt_node_reception()
+		tv_check(!S.video_camera && !R.tv_watchers.len, "desk UI interruption retires feed before toggle")
+		S.start_video(K)
 		R.start_watching(student, S)
 		S.enabled = FALSE
 		civ_tick_tv_views()

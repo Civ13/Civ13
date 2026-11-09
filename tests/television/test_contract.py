@@ -53,6 +53,13 @@ class TelevisionContracts(unittest.TestCase):
         self.assertIn('H.reset_view(S.video_eye)', SOURCE)
         self.assertIn('civ_tick_television()', TELECOM)
 
+    def test_ui_and_equipment_movement_interrupt_synchronously(self):
+        for kind, stop in (('tv', 'stop_all_watching()'), ('station/tv', 'stop_video()')):
+            owner = '/obj/structure/telecom/' + kind
+            for signature in ('/interrupt_node_reception()', '/Move()', '/forceMove(atom/destination, var/special_event)'):
+                self.assertIn(stop, procedure(owner + signature))
+        self.assertIn('civ_tick_tv_views()', procedure('/obj/item/tv_camera/forceMove(atom/destination, var/special_event)'))
+
     def test_saved_camera_and_network_but_no_viewer_references(self):
         for field in ('network_id', 'frequency', 'enabled', 'camera_health', 'battery_charge', 'tv_network_id'):
             self.assertRegex(SOURCE, r'var/' + field + r'\s*=')
