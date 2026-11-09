@@ -18,6 +18,12 @@ CONTROLS = {
               'if (T_density && !height_passes_over(T.opacity ? 3 : 1))', 'if (T_density)', 'did not clear the lower wall'),
     'margin': ('code/modules/projectiles/projectile_heights.dm',
                ' - PROJECTILE_MUZZLE_STANDING - ', ' - ', 'passed over cover'),
+    'drop': ('code/modules/projectiles/projectile_heights.dm',
+             '\tdrop_rate = 0.0153', '\tdrop_rate = 0', 'did not fall short'),
+    'span': ('code/modules/projectiles/projectile_heights.dm',
+             'height_span = abs(', 'height_span = 0 * abs(', 'Cliff pistol shot'),
+    'holdover': ('code/modules/projectiles/projectile_heights.dm',
+                 'return clamp(p_y, 1, 32) / 32 *', 'return 16 / 32 *', 'Shot up the slope hit the hillside'),
     'npc': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
             '\t\t\tif (los_terrain_ray_blocked(src, L)) continue\n', '', 'NPC picked a target behind the ridge'),
 }
