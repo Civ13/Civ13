@@ -59,7 +59,18 @@ NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_ad
 SAVESTREAM_OFFLINE_TESTS = frozenset({'tests/savestream/test_helper.py', 'tests/savestream/helper_client.py'})
 # The native round trip needs gcc-multilib and BYOND; it is run by hand, not admitted to CI.
 SAVESTREAM_MANUAL_NATIVE = frozenset({'tests/savestream/run_native.py', 'tests/savestream/roundtrip/fixture.dm'})
-AGENT_CONTROL_OFFLINE_TESTS = frozenset({'tests/agent_control/test_agent_control.py'})
+AGENT_CONTROL_OFFLINE_TESTS = frozenset({
+    'tests/agent_control/test_agent_control.py',
+    'tests/agent_control/test_perception_replay.py',
+    'tests/agent_control/test_visibility.py',
+})
+# Explicitly opt-in source-bound fixture; do not admit its native runner to CI.
+AGENT_CONTROL_MANUAL_NATIVE = frozenset({
+    'tests/agent_control/visibility/prepare.py',
+    'tests/agent_control/visibility/run.py',
+    'tests/agent_control/visibility/adapters.dm',
+    'tests/agent_control/visibility/probe.dm',
+})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
 LOCAL_CI_OFFLINE_TESTS = frozenset({'tests/local_ci/test_local_ci.py'})
 FARMERS_ALMANAC_OFFLINE_TESTS = frozenset({'tests/farmers_almanac/test_farmers_almanac.py'})
@@ -471,7 +482,7 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/savestream/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered savestream executable test requires explicit CI review')
-        if path in AGENT_CONTROL_OFFLINE_TESTS:
+        if path in AGENT_CONTROL_OFFLINE_TESTS or path in AGENT_CONTROL_MANUAL_NATIVE:
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
             continue
