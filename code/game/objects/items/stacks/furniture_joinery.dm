@@ -95,7 +95,7 @@ var/global/list/furniture_joinery_specs
 	if (istype(stock, /obj/item/stack/material/wood) && (stock:onfire || stock:splitting_in_progress))
 		return FALSE
 	var/node = get_recipe_node_req("[recipe.result_type]")
-	if (!map || (node && !map.is_node_done(actor.civilization, node)))
+	if (!map || (node && !crafting_node_allowed(actor, node)))
 		return FALSE
 	if (recipe.one_per_turf && (locate(recipe.result_type) in site))
 		return FALSE

@@ -51,6 +51,12 @@ SUITES = {
             'code/modules/persistence/player_reclaim.dm',
             'code/game/mob/living/carbon/carbon.dm',
             'code/game/mob/living/carbon/human/death.dm')},
+    'research_coverage': {'files': ('tests/research_coverage/test_coverage.py',),
+        'paths': ('tests/research_coverage/', 'scripts/atlas/research_coverage.py'),
+        'shared_paths': ('code/modules/research_tree/', 'config/crafting/',
+                         'scripts/build-crafting-atlas.py', 'scripts/atlas/',
+                         'UI/crafting-atlas.json', 'code/game/objects/items/stacks/stack.dm',
+                         'code/game/objects/items/stacks/civ_recipes.dm')},
     # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
     'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
         'paths': ('tests/gameplay_audit/',), 'shared_paths': (

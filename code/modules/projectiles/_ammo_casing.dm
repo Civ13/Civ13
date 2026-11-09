@@ -233,6 +233,7 @@
 	if(istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/flint")) return
 			new/obj/item/ammo_casing/arrow/flint(user.loc)
 			qdel(F)
 			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
@@ -242,20 +243,28 @@
 	if(istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/stone")) return
 			new/obj/item/ammo_casing/arrow/stone(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/flint))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/flint")) return
 			new/obj/item/ammo_casing/arrow/flint(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/copper))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/copper")) return
 			new/obj/item/ammo_casing/arrow/copper(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/iron))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/iron")) return
 			new/obj/item/ammo_casing/arrow/iron(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/bronze))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/bronze")) return
 			new/obj/item/ammo_casing/arrow/bronze(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/steel))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/steel")) return
 			new/obj/item/ammo_casing/arrow/steel(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/vial))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/vial")) return
 			new/obj/item/ammo_casing/arrow/vial(user.loc)
 		else
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/gods")) return
 			new/obj/item/ammo_casing/arrow/gods(user.loc)
 		AH.amount--
 		if (AH.amount<1)
@@ -275,6 +284,7 @@
 	if(istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/flint")) return
 			new/obj/item/ammo_casing/bolt/flint(user.loc)
 			qdel(F)
 			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
@@ -284,20 +294,28 @@
 	if(istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
 		if(istype(W, /obj/item/stack/arrowhead/stone))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/stone")) return
 			new/obj/item/ammo_casing/bolt/stone(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/flint))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/flint")) return
 			new/obj/item/ammo_casing/bolt/flint(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/copper))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/copper")) return
 			new/obj/item/ammo_casing/bolt/copper(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/iron))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/iron")) return
 			new/obj/item/ammo_casing/bolt/iron(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/bronze))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/bronze")) return
 			new/obj/item/ammo_casing/bolt/bronze(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/steel))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/steel")) return
 			new/obj/item/ammo_casing/bolt/steel(user.loc)
 		else if(istype(W, /obj/item/stack/arrowhead/vial))
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/vial")) return
 			new/obj/item/ammo_casing/bolt/vial(user.loc)
 		else
+			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/gods")) return
 			new/obj/item/ammo_casing/bolt/gods(user.loc)
 		AH.amount--
 		if (AH.amount<1)

@@ -34,7 +34,10 @@ def main(argv=None):
     parser.add_argument('--byond-bin', required=True, help='directory with DreamMaker and DreamDaemon (pinned build)')
     parser.add_argument('--timeout', type=int, default=120)
     parser.add_argument('--compile-only', action='store_true')
+    parser.add_argument('--trusted', action='store_true', help='Requires explicit isolated-runtime authorization')
     args = parser.parse_args(argv)
+    if not args.compile_only and not args.trusted:
+        parser.error('Native execution requires explicit --trusted authorization; use --compile-only otherwise')
     bin_dir = Path(args.byond_bin)
     compiler = bin_dir / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = bin_dir / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -83,7 +86,7 @@ def main(argv=None):
         for extension in ('.dmb', '.rsc'):
             shutil.copy(ROOT / (prefix + extension), temporary / ('probe' + extension))
         shutil.copytree(ROOT / 'config', temporary / 'config')
-        argv_daemon = [str(daemon), 'probe.dmb', '0', '-invisible', '-close', '-params',
+        argv_daemon = [str(daemon), 'probe.dmb', '0', '-invisible', '-close', '-trusted', '-params',
                        'tested_commit=' + commit, '-log', 'runtime.log']
         try:
             subprocess.run(argv_daemon, cwd=temporary, timeout=args.timeout, env=byond_env(bin_dir))

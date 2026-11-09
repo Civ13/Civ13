@@ -16,7 +16,7 @@ var/global/list/civ_generators = list()
 /proc/civ_generation_can_build(mob/living/human/H, result_type)
 	if (!(ispath(result_type, /obj/structure/civ_generator) || ispath(result_type, /obj/structure/reactor_fuel_processor)))
 		return TRUE
-	return H && H.stat == CONSCIOUS && civ_generation_era(result_type) && H.getStat("crafting") >= 105 && map.is_node_done(H.civilization, get_recipe_node_req("[result_type]"))
+	return H && H.stat == CONSCIOUS && civ_generation_era(result_type) && H.getStat("crafting") >= 105 && crafting_node_allowed(H, get_recipe_node_req("[result_type]"))
 
 /obj/structure/civ_generator
 	name = "electrical generator"

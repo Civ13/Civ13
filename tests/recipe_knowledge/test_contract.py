@@ -16,6 +16,11 @@ class KnowledgeContract(unittest.TestCase):
         self.assertIn('return persistence && recipe_books', self.source)
         self.assertNotIn('recipe_books', read('code/modules/persistence/durable_contract.dm'))
         self.assertNotRegex(read('code/game/objects/map_metadata/nomads/nomads_gaia.dm'), r'(?m)^\s*recipe_books\s*=\s*TRUE')
+    def test_central_gate_adds_knowledge_without_hiding_menu_rows(self):
+        gate = proc(read('code/modules/research_tree/recipe_gates.dm'), '/proc/crafting_node_allowed')
+        self.assertIn('crafting_node_world_allowed(H.civilization, node_id)', gate)
+        self.assertIn('!map.recipe_knowledge_enabled() || H.knows_recipe_node(node_id)', gate)
+        self.assertNotIn('knows_recipe_node', read('code/game/objects/items/stacks/civ_recipes.dm'))
     def test_saved_fields_and_restore_validation(self):
         self.assertIn('var/list/known_recipe_nodes = null', self.source)
         self.assertIn('var/recipe_knowledge_initialized = FALSE', self.source)
@@ -56,7 +61,7 @@ class KnowledgeContract(unittest.TestCase):
             self.assertIn(token, fixture)
         runner = read('tests/recipe_knowledge/run.py')
         self.assertIn("'0', '-invisible', '-close'", runner)
-        self.assertNotIn("'-trusted'", runner)
+        self.assertIn("if args.trusted:", runner)
         self.assertIn("'0 errors, 0 warnings'", runner)
 if __name__ == '__main__':
     unittest.main()

@@ -41,6 +41,7 @@
 		H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		var/obj/item/weapon/flint/F = W
 		if (!F.sharpened)
+			if (!crafting_recipe_allowed(H, "/obj/item/weapon/flint/sharpened")) return
 			to_chat(H, "<span class='warning'>You hit the rock with \the [W].</span>")
 			playsound(src,'sound/effects/chop.ogg',100,1)
 			if (prob(20))
