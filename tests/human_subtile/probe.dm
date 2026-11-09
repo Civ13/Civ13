@@ -398,7 +398,9 @@ var/human_subtile_fixture_phase = "initializing"
 	PF.pulling = pull_crate
 	pull_crate.pulledby = PF
 	human_subtile_fixture_place(PF, 10, 0)
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_follows_round_a_turn")
+	var/pull_followed = PF.human_subtile_pull_follow()
+	var/turf/pull_target = locate(16, 5, 1)
+	human_subtile_fixture_assert(pull_followed && pull_crate.loc == locate(16, 5, 1), "pull_follows_round_a_turn [pull_followed] [(pull_target in PF.locs)] [PF.locs.len] [pull_target.density] [pull_crate.anchored] [step(pull_crate, EAST)] [pull_crate.x]")
 	human_subtile_fixture_assert(!PF.human_subtile_pull_follow() && pull_crate.loc == locate(16, 5, 1), "pull_waits_while_touching")
 	PF.pulling = null
 	pull_crate.pulledby = null
