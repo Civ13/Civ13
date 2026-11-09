@@ -87,6 +87,83 @@ class BronzeRetrievalTests(unittest.TestCase):
         self.assertNotIn('MCC.current_material = "bronze"', prompt)
         self.assertNotIn('CURRENT GAMEPLAY CODE (bronze availability', prompt)
 
+    def answer(self, question, num_ctx, history=None):
+        """Captured prompts and the result at a configured context size (#4195)."""
+        calls = []
+        def transport(*args):
+            calls.append(args[1])
+            return {'message': {'content': 'offline fixture response'}}
+        with tempfile.TemporaryDirectory() as temporary:
+            worker = bridge.Bridge(Path(temporary), {'enabled': True, 'model': 'test',
+                'endpoint': 'http://unused.invalid', 'timeout_seconds': 1, 'num_ctx': num_ctx},
+                self.corpus, transport)
+            try:
+                request = {'id': 'bronze', 'account': 'a' * 32, 'question': question,
+                           'game_context': {'map': 'Nomads', 'civilizations': True, 'era_ordinal': 0}}
+                if history is not None:
+                    request['conversation'] = history
+                result = worker.answer(request)
+            finally:
+                worker.close()
+        return result, calls
+
+    def test_long_history_keeps_the_complete_record(self):
+        record = bridge.bronze_knowledge(ROOT)[0]['text']
+        history = {'version': 1, 'turns': [
+            {'question': 'What can I build first?', 'answer': 'A' * 2800},
+            {'question': 'Where do I find copper?', 'answer': 'B' * 900}]}
+        for num_ctx in (8192, 16384, 32768):
+            with self.subTest(num_ctx=num_ctx):
+                result, calls = self.answer('How do I make bronze?', num_ctx, history)
+                self.assertEqual(result['status'], 'ok')
+                self.assertNotIn('evidence', result)
+                self.assertEqual(len(calls), 1)
+                system = calls[0]['messages'][0]['content']
+                self.assertIn(record, system)
+                self.assertIn('ANVIL use gates', system)
+                self.assertEqual(calls[0]['messages'][-1]['content'], 'How do I make bronze?')
+
+    def test_history_is_dropped_oldest_first_before_the_record_is_cut(self):
+        record = bridge.bronze_knowledge(ROOT)[0]['text']
+        history = {'version': 1, 'turns': [
+            # Escaped emoji fill the transport envelope inside the history byte cap.
+            {'question': 'Oldest question?', 'answer': '\U0001f600' * 500},
+            {'question': 'Middle question?', 'answer': '\U0001f600' * 400},
+            {'question': 'Newest question?', 'answer': 'Newest answer.'}]}
+        result, calls = self.answer('How do I make bronze?', 8192, history)
+        self.assertEqual(result['status'], 'ok')
+        messages = calls[0]['messages']
+        self.assertIn(record, messages[0]['content'])
+        contents = [message['content'] for message in messages]
+        self.assertNotIn('Oldest question?', contents)
+        self.assertEqual(contents[-3:], ['Newest question?', 'Newest answer.', 'How do I make bronze?'])
+
+    def test_low_context_reports_insufficient_evidence_without_a_partial_record(self):
+        for history in (None, {'version': 1, 'turns': [
+                {'question': 'Where do I find copper?', 'answer': 'B' * 900}]}):
+            with self.subTest(history=history is not None):
+                result, calls = self.answer('How do I make bronze?', 4096, history)
+                self.assertEqual(calls, [])
+                self.assertEqual((result['status'], result['evidence']), ('ok', 'insufficient'))
+                self.assertIn('bronze production and research', result['answer'])
+                self.assertIn('Crafting Atlas', result['answer'])
+                self.assertEqual(result['render_protocol'], 1)
+                self.assertEqual('conversation_protocol' in result, history is not None)
+
+    def test_small_evidence_cap_reports_insufficient_evidence(self):
+        calls = []
+        with tempfile.TemporaryDirectory() as temporary:
+            worker = bridge.Bridge(Path(temporary), {'enabled': True, 'model': 'test',
+                'endpoint': 'http://unused.invalid', 'timeout_seconds': 1, 'evidence_chars': 4000},
+                self.corpus, lambda *args: calls.append(args))
+            try:
+                result = worker.answer({'id': 'bronze', 'account': 'a' * 32,
+                                        'question': 'How do I make bronze?'})
+            finally:
+                worker.close()
+        self.assertEqual(calls, [])
+        self.assertEqual(result.get('evidence'), 'insufficient')
+
     def test_unrelated_map_catalog_is_not_selected_for_nomads(self):
         wrong = {'topic': 'bronze production availability unlock research',
                  'source': 'recipe', 'catalog': 'Material / battle_ships',

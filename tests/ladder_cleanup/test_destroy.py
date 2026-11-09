@@ -78,6 +78,93 @@ class LadderViewTests(unittest.TestCase):
         self.assertIsNone(actor.laddervision)
 
 
+CLICK_SOURCE = ROOT / 'code/_onclick/click.dm'
+
+
+def click_stop_block(source):
+    """Return the ClickOn ladder-stop branch, projected as its own procedure."""
+    matches = list(re.finditer(r'(?m)^(\t+)if \(istype\(A, /obj/structure/multiz/ladder/ww2\)\).*\n'
+                               r'(?:\1\t.*\n)+', source))
+    if len(matches) != 1:
+        raise AssertionError('Expected exactly one ladder stop click branch')
+    depth = len(matches[0][1])
+    lines = [line[depth - 1:] for line in matches[0][0].splitlines()]
+    body = '\n'.join(lines)
+    body = re.sub(r'istype\(A, (/[\w/]+)\)', r'istype(A, "\1")', body)
+
+    def interpolate(match):
+        template = match[1]
+        expressions = re.findall(r'\[([^\]]+)\]', template)
+        text = re.sub(r'\[[^\]]+\]', '{}', template)
+        return 'visible_message(fmt(' + ', '.join([repr(text)] + expressions) + '))'
+    return re.sub(r'visible_message\("((?:[^"\\]|\\.)*)"\)', interpolate, body)
+
+
+class LadderStopClickTests(unittest.TestCase):
+    """The stop message names the direction that was being viewed (#4196)."""
+
+    def setUp(self):
+        self.direction = production_direction()
+
+    def project(self, body):
+        return project('/click(A)\n' + body + '\n', '/click', 'src, A',
+                       dict(istype=lambda value, kind=None: kind is None and isinstance(value, Viewer)
+                            or kind == '/obj/structure/multiz/ladder/ww2',
+                            fmt=lambda text, *values: text.format(*values)))
+
+    def stop(self, body, istop):
+        viewer = Viewer(Ladder(), self.direction)
+        viewer.laddervision.istop = istop
+        self.project(body)(viewer, object())
+        return viewer
+
+    def test_both_directions_are_named_after_stopping(self):
+        body = click_stop_block(CLICK_SOURCE.read_text(encoding='utf-8'))
+        for istop, direction in ((True, 'up'), (False, 'down')):
+            with self.subTest(direction=direction):
+                viewer = self.stop(body, istop)
+                self.assertIsNone(viewer.laddervision)
+                self.assertEqual(viewer.messages, [
+                    f"<span class = 'notice'>{viewer} stops looking {direction} the ladder.</span>"])
+
+    def test_mutation_reading_direction_after_clearing_loses_it(self):
+        body = click_stop_block(CLICK_SOURCE.read_text(encoding='utf-8'))
+        lines = body.splitlines()
+        capture = next(index for index, line in enumerate(lines) if 'laddervision_direction()' in line)
+        clear = next(index for index, line in enumerate(lines) if 'update_laddervision(null)' in line)
+        self.assertLess(capture, clear)
+        lines[capture], lines[clear] = lines[clear], lines[capture]
+        viewer = self.stop('\n'.join(lines), True)
+        self.assertIn('stops looking  the ladder', viewer.messages[0])
+
+
+def production_direction():
+    """Project the production helper so the test cannot drift from it."""
+    body = extract(SOURCE.read_text(encoding='utf-8'), '/mob/living/human/proc/laddervision_direction')
+    body = re.sub(r'(?<![\w.])laddervision\b', 'src.laddervision', body)
+    body = re.sub(r'var/obj/structure/multiz/ladder', 'var/ladder', body)
+    return project('/direction()\n' + body + '\n', '/direction', 'src', {})
+
+
+class Viewer:
+    def __init__(self, ladder, direction):
+        self.laddervision = ladder
+        self.direction = direction
+        self.messages = []
+
+    def __str__(self):
+        return 'Viewer'
+
+    def laddervision_direction(self):
+        return self.direction(self)
+
+    def update_laddervision(self, ladder):
+        self.laddervision = ladder
+
+    def visible_message(self, message):
+        self.messages.append(message)
+
+
 class Human:
     pass
 

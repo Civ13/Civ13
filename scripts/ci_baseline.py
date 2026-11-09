@@ -982,6 +982,11 @@ SUITES = {
             'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
             'code/game/mob/groups/factions.dm', 'code/predefines.dm',
             'tests/save_movement/source_adapter.py')},
+    # Status tab "Last save" wiring; native round trip via the berry_load fixture.
+    'last_save_status': {'files': ('tests/last_save_status/test_last_save.py',),
+        'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
+        'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
+            'code/modules/persistence/saving.dm', 'civ13.dme')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
