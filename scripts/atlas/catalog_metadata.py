@@ -66,7 +66,7 @@ def annotate_eras(records, nodes, splitargs):
             eras.add(3)
             recipe['maximum_era'] = 4
             evidence.append('Assembly minimum era')
-        minimum = re.search(r'Minimum era (?:Modern|1903) \(ordinal (\d+)\)', recipe['conditions'])
+        minimum = re.search(r'Minimum era (?:Modern|1903|1969) \(ordinal (\d+)\)', recipe['conditions'])
         if minimum:
             eras = {max(int(minimum[1]), max(eras, default=0))}
             evidence.append('Construction minimum era')

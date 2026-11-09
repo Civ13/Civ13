@@ -523,7 +523,6 @@ RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,n
 
 //*****************| ELECTRONICS FURNITURE |***************************
 
-RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,none,160,0,0,8,null
 
 //**************************************************************
 //*********************| WOOLCLOTH |****************************
@@ -2861,3 +2860,7 @@ RECIPE: /material/steel/,black bar stool,/obj/item/weapon/barstool/black,3,90,0,
 RECIPE: /material/steel/,white bar stool,/obj/item/weapon/barstool/white,3,90,0,1,furniture,0,0,0,8,null
 RECIPE: /material/steel/,brown bar stool,/obj/item/weapon/barstool/brown,3,90,0,1,furniture,0,0,0,8,null
 RECIPE: /material/steel/,grey bar stool,/obj/item/weapon/barstool/grey,3,90,0,1,furniture,0,0,0,8,null
+
+RECIPE: /material/electronics/,studio television camera,/obj/item/tv_camera,4,100,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,street television camera,/obj/item/tv_camera/street,4,100,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,television helmet camera,/obj/item/tv_camera/helmet,4,100,1,1,none,160,0,0,8,null

@@ -392,7 +392,7 @@ RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,n
 
 //*****************| ELECTRONICS FURNITURE |***************************
 
-RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,television,/obj/structure/telecom/tv,3,80,1,1,none,160,0,0,8,null
 
 //**************************************************************
 //*********************| WOOLCLOTH |****************************

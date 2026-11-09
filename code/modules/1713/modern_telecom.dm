@@ -4,6 +4,7 @@
 // _map_metadata.dm:set_ordinal_age() maps 2013 (Modern) to ordinal 8.
 #define CIV_TELECOM_MODERN_AGE 8
 #define CIV_TELECOM_RADIO_AGE 5
+#define CIV_TELECOM_TV_AGE 7
 #define CIV_BROADCAST_CYCLE 6000
 var/global/list/civ_telecom_devices = list()
 var/global/civ_telecom_cursor = 1
@@ -12,6 +13,8 @@ var/global/civ_telecom_cursor = 1
 	return world.time
 
 /proc/civ_telecom_required_age(result_type)
+	if (ispath(result_type, /obj/structure/telecom/tv) || ispath(result_type, /obj/structure/telecom/station/tv) || ispath(result_type, /obj/item/tv_camera))
+		return CIV_TELECOM_TV_AGE
 	if (result_type == /obj/structure/telecom || result_type == /obj/structure/telecom/station || result_type == /obj/structure/telecom/antenna)
 		return CIV_TELECOM_RADIO_AGE
 	return CIV_TELECOM_MODERN_AGE
@@ -20,6 +23,8 @@ var/global/civ_telecom_cursor = 1
 	return map && map.ordinal_age >= civ_telecom_required_age(result_type)
 
 /proc/civ_telecom_crafting_skill(result_type)
+	if (ispath(result_type, /obj/item/tv_camera))
+		return 160
 	if (ispath(result_type, /obj/item/weapon/telephone/landline))
 		return 100
 	if (ispath(result_type, /obj/structure/telecom/tv) || ispath(result_type, /obj/structure/telecom/station/tv) || ispath(result_type, /obj/structure/telecom/terminal))
@@ -170,12 +175,17 @@ var/global/civ_telecom_cursor = 1
 	return istype(H) && H.broadcast_online() && H.stat == CONSCIOUS && !H.sleeping && !H.choked_by && !H.is_muzzled() && H.z == z && get_dist(H, src) <= 1 && (!H.client || !(H.client.prefs.muted & MUTE_IC))
 
 /obj/structure/telecom/station/attack_hand(mob/living/human/H)
-	if (television)
-		return ..()
 	if (!can_present(H) || !H.can_use_hands())
 		return
-	var/choice = input(H, "Station controls", name) in list("Equipment", "Present live", "Stop presenting", "Station name", "Faction tag", "Teach recipe node", "Cancel recipe lesson", "Cancel")
+	var/list/controls = list("Equipment", "Present live", "Stop presenting", "Station name", "Faction tag", "Teach recipe node", "Cancel recipe lesson", "Cancel")
+	if (television) controls += list("Video feed", "Stop video")
+	var/choice = input(H, "Station controls", name) in controls
 	if (!can_present(H) || !H.can_use_hands())
+		return
+	if (television && (choice == "Video feed" || choice == "Stop video"))
+		var/obj/structure/telecom/station/tv/T = src
+		if (choice == "Stop video") T.stop_video()
+		else T.prompt_video(H)
 		return
 	if (choice == "Teach recipe node")
 		return prompt_node_lesson(H)
@@ -212,7 +222,7 @@ var/global/civ_telecom_cursor = 1
 	return transmit_live(M, text, speaking)
 
 /obj/structure/telecom/station/proc/transmit_live(mob/living/human/H, message, datum/language/speaking)
-	if (television || H != presenter || !can_present(H) || say_disabled || !operational() || !has_antenna() || world.time < next_live_broadcast)
+	if (H != presenter || !can_present(H) || say_disabled || !operational() || !has_antenna() || world.time < next_live_broadcast)
 		return 0
 	message = sanitize(apply_dictionary_replacements(html_decode(strip_html_properly(message))), 200)
 	if (!length(message))
@@ -223,7 +233,7 @@ var/global/civ_telecom_cursor = 1
 	civ_relay_log_line("STATION", "[key_name(H)] at [label] ([frequency]): [message]")
 	var/list/delivered = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)
-		if (R.type != /obj/structure/telecom || R.frequency != frequency || R.z != z || get_dist(R, src) > 60 || !R.operational())
+		if (!node_receiver_available(R))
 			continue
 		for (var/mob/living/human/listener in view(3, R))
 			if (delivered.len >= 32)
@@ -233,7 +243,7 @@ var/global/civ_telecom_cursor = 1
 			delivered |= listener
 			var/heard = speaking && !listener.say_understands(H, speaking) ? speaking.scramble(message, listener) : message
 			listener.hear_station_line("\[[label]\] [voice]: [heard]")
-	civ_relay_outbound(frequency, H, "\[[label]\] [voice]: [message]")
+	if (!television) civ_relay_outbound(frequency, H, "\[[label]\] [voice]: [message]")
 	return delivered.len
 
 /mob/living/human/proc/hear_station_line(message)
@@ -241,6 +251,7 @@ var/global/civ_telecom_cursor = 1
 
 /obj/structure/telecom/station/tv
 	name = "television program desk"
+	station_name = "Television"
 	television = TRUE
 	powerneeded = 30
 
@@ -259,7 +270,7 @@ var/global/civ_telecom_cursor = 1
 
 /obj/structure/telecom/station/examine(mob/user)
 	. = ..()
-	to_chat(user, "Educational schedule repeats every ten running-server minutes: crafting 1:00-1:59 (Fall/Winter), farming 3:00-3:59 (Spring/Summer), medical 5:00-5:59 (all seasons). Fixed/no-cycle maps use all courses in every season. Radio from 1903; television from 2013. Six unique lessons per course, once per character.")
+	to_chat(user, "Educational schedule repeats every ten running-server minutes: crafting 1:00-1:59 (Fall/Winter), farming 3:00-3:59 (Spring/Summer), medical 5:00-5:59 (all seasons). Fixed/no-cycle maps use all courses in every season. Radio from 1903; television from 1969. Six unique lessons per course, once per character.")
 
 /obj/structure/telecom/station/proc/transmit_lesson()
 	if (presenter && (!enabled || !can_present(presenter)))
@@ -358,6 +369,7 @@ var/global/civ_telecom_cursor = 1
 	civ_check_landlines()
 	civ_relay_tick()
 	civ_tick_node_lessons()
+	civ_tick_television()
 	var/checks = min(16, civ_telecom_devices.len)
 	while (checks-- > 0 && civ_telecom_devices.len)
 		if (civ_telecom_cursor > civ_telecom_devices.len)
