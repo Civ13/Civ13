@@ -77,6 +77,14 @@ var/submarine_runtime_error = FALSE
 	submarine_check(submarine_turf(1, 1, 1).type == /turf/wall/rockwall, "the map corner under land stays rock")
 	submarine_check(sea_layer_build(2, 1) == 0, "a second pass changes nothing")
 
+	// After a save load the pass waits for the world to settle first.
+	sea_layer_ready_at = 0
+	submarine_check(!sea_layer_settled() && sea_layer_ready_at == world.time, "the pass waits once the world is first seen ready")
+	sea_layer_ready_at = world.time - 30 SECONDS
+	submarine_check(!sea_layer_settled(), "the pass still waits half a minute after the world is ready")
+	sea_layer_ready_at = world.time - 61 SECONDS
+	submarine_check(sea_layer_settled(), "the pass starts a minute after the world is ready")
+
 	// Nobody walks or swims into the sea layer.
 	var/mob/living/submarine_probe/swimmer = new(locate(26, 3, 1))
 	var/turf/sea = locate(15, 15, 1)

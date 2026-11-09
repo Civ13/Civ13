@@ -17,11 +17,13 @@
 		recipe_ci_food_expect(!recipe_ci_food_recipe(material_path,path,faction) && !civ_telecom_can_build(H,path), "telecom [path] requires its research node")
 		var/list/entry = map.ensure_node_entry(faction,get_recipe_node_req("[path]"))
 		entry[RNODE_ENTRY_STATUS] = RNODE_DONE
-		map.ordinal_age = 7
-		recipe_ci_food_expect(!recipe_ci_food_recipe(material_path,path,faction) && !civ_telecom_can_build(H,path), "telecom [path] cannot construct before Modern")
-		map.ordinal_age = 8
+		map.ordinal_age = civ_telecom_required_age(path) - 1
+		recipe_ci_food_expect(!recipe_ci_food_recipe(material_path,path,faction) && !civ_telecom_can_build(H,path), "telecom [path] cannot construct before its era")
+		map.ordinal_age = civ_telecom_required_age(path)
 		var/datum/stack_recipe/R = recipe_ci_food_recipe(material_path,path,faction)
-		recipe_ci_food_expect(R && R.req_amount == costs[i] && civ_telecom_can_build(H,path), "Modern completed-node paid recipe [path]")
+		recipe_ci_food_expect(R && R.req_amount == costs[i] && civ_telecom_can_build(H,path), "Era-appropriate completed-node paid recipe [path]")
+		map.ordinal_age = 8
+		recipe_ci_food_expect(recipe_ci_food_recipe(material_path,path,faction) && civ_telecom_can_build(H,path), "telecom remains available in later eras")
 		H.stats["crafting"] = list(civ_telecom_crafting_skill(path)-1,160)
 		recipe_ci_food_expect(!civ_telecom_can_build(H,path), "telecom [path] enforces native crafting skill")
 		H.stats["crafting"] = list(160,160)
