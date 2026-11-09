@@ -1,6 +1,8 @@
 # Walkable platform cars
 
-Code: `code/modules/1713/train_platforms.dm`. Sprites: `icons/obj/vehicles/train_platforms.dmi`.
+Code: `code/modules/1713/train_platforms.dm` and, for wartime cars,
+`code/modules/1713/train_warfare.dm`. Sprites: `icons/obj/vehicles/train_platforms.dmi`
+and `icons/obj/vehicles/railway_gun.dmi`.
 Tests: `tests/train_platforms` (source contracts plus a native fixture).
 
 ## Shape
@@ -14,9 +16,11 @@ on the centre tile and on a deck tile either side of the track.
 When a segment moves it carries everything standing on its three tiles (people,
 furniture, crates, guns) to the matching tiles of its new position, and turns
 furniture with it on a curve. Track, cables, flora, floor covers, effects and
-other trains are never picked up. A segment moves before the cars behind it,
-so nothing is carried twice; `train_platform_carried` guards the overlapping
-tiles of a tight curve.
+other trains are never picked up. Before the first platform segment of a train
+moves, `train_platform_plan_from()` assigns every load on every segment's tiles
+to that segment (a side tile that is another wagon's centre belongs to that
+wagon), so on a tight curve, where one car's new tiles are another's old ones,
+cargo never changes cars or moves twice.
 
 ## Parts
 
@@ -25,7 +29,8 @@ objects owned by a segment. They have `should_save = FALSE` and are rebuilt by
 `apply_layout()` on spawn and in `after_load()`, from the segment's saved
 `car_kind`, `seg_index` and `open_doors` bit field. Edges are `ON_BORDER`
 objects, so they block walking across one tile edge only. Civilian walls do not
-stop bullets.
+stop bullets; armor plate stops bullets fired from outside the car but lets the
+crew fire out (`train_part/edge/stops_projectile()`).
 
 Car kinds are defined in `train_car_layout()`: per segment, the fittings put
 down when a furnished kit is assembled and the edges (side, which edge, style).
@@ -37,6 +42,9 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | sleeper | sleeper car | assembly_line | three compartments a side, bed and sliding door each |
 | dining | dining car | assembly_line | stove, sink, fridge, counter, two booths |
 | storage | storage car | assembly_line | cabinets and large crates behind compartment doors |
+| railgun | railway gun car | field_artillery | railway gun on the centre, outrigger lever, shell rack |
+| armored | armored wagon | automatic_weapons | armor plate with firing doors, four machine guns |
+| flak | flak car | automatic_weapons | low armor, two autocannons, ammunition crates |
 
 ## Kits, assembly and dismantling
 
@@ -59,3 +67,22 @@ another train, and when the leading wagon would drive onto another train's
 deck. People beside the track are not hit by a deck; they end up standing on it.
 Platform segments then move with `persistence_set_loc()` rather than turf
 entry, so their own walls never block them.
+
+Wrecked and braced cars also stop their train (see below).
+
+## Wartime cars
+
+Explosions damage platform segments (`ex_act`, 450/220/80 by severity, 40% on
+armored layouts). A segment at zero health is wrecked: it shows a wreck overlay
+and its train cannot move. A welding tool repairs 300 health per pass and the
+car is back on the rails at half health.
+
+The railway gun (`/obj/structure/cannon/modern/railway`) only fires while its car
+is braced. The outrigger lever braces every segment of the car once it has stood
+still for `TRAIN_BRACE_SETTLE`; a braced car blocks the train until the lever is
+raised again.
+
+The armored locomotive (`/obj/structure/trains/locomotive/coal/armored`, field
+artillery research) ignores bullets and loses health to explosions instead of
+being destroyed. At zero health its boiler is holed and it will not start until
+welded back above half health.

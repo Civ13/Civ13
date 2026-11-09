@@ -2553,6 +2553,10 @@ RECIPE: /material/iron/,passenger coach kit,/obj/structure/train_car_kit/coach,1
 RECIPE: /material/steel/,sleeper car kit,/obj/structure/train_car_kit/sleeper,20,350,1,1,trains,140,0,0,8,null
 RECIPE: /material/steel/,dining car kit,/obj/structure/train_car_kit/dining,20,350,1,1,trains,140,0,0,8,null
 RECIPE: /material/steel/,storage car kit,/obj/structure/train_car_kit/storage,18,350,1,1,trains,140,0,0,8,null
+RECIPE: /material/steel/,armored locomotive,/obj/structure/trains/locomotive/coal/armored,30,300,1,1,trains,101,109,0,8,null
+RECIPE: /material/steel/,railway gun car kit,/obj/structure/train_car_kit/railgun,60,600,1,1,trains,101,109,0,8,null
+RECIPE: /material/steel/,armored wagon kit,/obj/structure/train_car_kit/armored,40,400,1,1,trains,101,125,0,8,null
+RECIPE: /material/steel/,flak car kit,/obj/structure/train_car_kit/flak,45,450,1,1,trains,101,125,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************
 

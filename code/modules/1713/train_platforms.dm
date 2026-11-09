@@ -13,13 +13,38 @@
 #define TRAIN_LEFT -1
 #define TRAIN_RIGHT 1
 
-// Atoms carried during the current train step, so curves never move one twice.
-var/global/list/train_platform_carried = list()
-var/global/train_platform_carried_time = -1
+// The load of every platform segment in the train taking the current step,
+// planned before any of them moves so that a tight curve, where one car's
+// new tiles are another's old ones, never hands cargo from car to car.
+// segment -> list(atom -> slot 1..3).
+var/global/list/train_platform_plan = list()
+var/global/train_platform_plan_time = -1
 
-/proc/train_platform_reset_carried()
-	train_platform_carried = list()
-	train_platform_carried_time = world.time
+/proc/train_platform_reset_plan()
+	train_platform_plan = list()
+	train_platform_plan_time = world.time
+
+/proc/train_platform_plan_from(obj/structure/trains/platform/first)
+	var/list/claimed = list()
+	var/obj/structure/trains/car = first
+	var/list/seen = list()
+	while (istype(car, /obj/structure/trains/platform) && !(car in seen))
+		seen += car
+		var/list/cargo = list()
+		var/list/tiles = train_platform_tiles(car.loc, car.dir)
+		for (var/i in list(2, 1, 3))
+			var/turf/T = tiles[i]
+			if (!T)
+				continue
+			// A side tile that is another wagon's centre belongs to that wagon.
+			if (i != 2 && train_centre_of_other(T, car))
+				continue
+			for (var/atom/movable/AM in T)
+				if (AM.loc == T && !claimed[AM] && train_platform_carries(AM))
+					cargo[AM] = i
+					claimed[AM] = TRUE
+		train_platform_plan[car] = cargo
+		car = car.connected
 
 // The car kinds. Each segment entry lists fittings (left, centre, right) put
 // down when a furnished kit is assembled, and edges: list(side, edge, style)
@@ -77,6 +102,35 @@ var/global/train_platform_carried_time = -1
 				list("edges" = walls + compartment, "fit" = list(/obj/structure/closet/cabinet, null, /obj/structure/closet/cabinet)),
 				list("edges" = walls + compartment, "fit" = list(/obj/structure/closet/crate/large, null, /obj/structure/closet/crate/large)),
 				list("edges" = walls + compartment + back_end, "fit" = list(/obj/structure/closet/cabinet, null, /obj/structure/closet/cabinet))))
+		// Wartime cars (train_warfare.dm).
+		var/list/armor_sides = list(list(TRAIN_LEFT, "out", "armor"), list(TRAIN_RIGHT, "out", "armor"))
+		var/list/armor_doors = list(list(TRAIN_LEFT, "out", "armor_door"), list(TRAIN_RIGHT, "out", "armor_door"),
+			list(TRAIN_LEFT, "front", "armor"), list(0, "front", "armor_door"), list(TRAIN_RIGHT, "front", "armor"))
+		var/list/armor_back = list(list(TRAIN_LEFT, "back", "armor"), list(0, "back", "armor_door"), list(TRAIN_RIGHT, "back", "armor"))
+		layouts["railgun"] = list(
+			"name" = "railway gun car", "desc" = "A heavy steel car carrying a long-range gun on a turntable. Brace the car before firing.",
+			"center" = "steel", "side" = "steel", "armored" = TRUE,
+			"segments" = list(
+				list("edges" = rails, "fit" = list(/obj/structure/railway_gun_brace, null, /obj/structure/shellrack)),
+				list("edges" = rails, "fit" = list(null, /obj/structure/cannon/modern/railway, null)),
+				list("edges" = rails),
+				list("edges" = rails)))
+		layouts["armored"] = list(
+			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires machine guns through the slits.",
+			"center" = "steel", "side" = "steel", "armored" = TRUE,
+			"segments" = list(
+				list("edges" = armor_doors),
+				list("edges" = armor_sides, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim)),
+				list("edges" = armor_sides),
+				list("edges" = armor_sides + armor_back, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim))))
+		layouts["flak"] = list(
+			"name" = "flak car", "desc" = "An open car mounting autocannons that reach aircraft at cruising height.",
+			"center" = "steel", "side" = "steel", "armored" = TRUE,
+			"segments" = list(
+				list("edges" = rails),
+				list("edges" = rails, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/autocannon, null, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon)),
+				list("edges" = rails),
+				list("edges" = rails, "fit" = list(/obj/structure/closet/crate, null, /obj/structure/closet/crate))))
 	return layouts[kind]
 
 // The three tiles of a segment at T facing heading: left, centre, right.
@@ -84,6 +138,12 @@ var/global/train_platform_carried_time = -1
 	if (!T)
 		return list(null, null, null)
 	return list(get_step(T, turn(heading, 90)), T, get_step(T, turn(heading, -90)))
+
+/proc/train_centre_of_other(turf/T, obj/structure/trains/self)
+	for (var/obj/structure/trains/TR in T)
+		if (TR != self)
+			return TRUE
+	return FALSE
 
 // What a moving deck carries along: people and objects standing on it, but not
 // track, cables, flora, floor covers or the train's own parts.
@@ -117,6 +177,9 @@ var/global/train_platform_carried_time = -1
 	var/car_id = ""
 	var/seg_index = 1
 	var/open_doors = 0 // bit per edge index (1-based) of this segment's layout
+	var/braced = FALSE // railway gun car outriggers down (train_warfare.dm)
+	var/wrecked = FALSE // knocked off the track by explosions until welded back
+	var/tmp/last_moved = -1000
 	var/tmp/list/deck_parts = null
 
 /obj/structure/trains/platform/on_runtime_spawn()
@@ -157,9 +220,12 @@ var/global/train_platform_carried_time = -1
 	var/list/L = layout()
 	if (!L)
 		return
-	name = L["name"]
+	name = wrecked ? "wrecked [L["name"]]" : L["name"]
 	desc = L["desc"]
 	icon_state = "deck_center_[L["center"]]"
+	overlays.Cut()
+	if (wrecked)
+		overlays += image(icon, "wreck", layer = layer + 0.01)
 	clear_parts()
 	deck_parts = list()
 	for (var/side in list(TRAIN_LEFT, TRAIN_RIGHT))
@@ -216,26 +282,23 @@ var/global/train_platform_carried_time = -1
 /obj/structure/trains/platform/Move(var/turf/newloc, var/fdir = dir)
 	if (moving_train || !isturf(loc) || !isturf(newloc))
 		return FALSE
-	if (train_platform_carried_time != world.time)
-		train_platform_reset_carried()
+	if (train_platform_plan_time != world.time)
+		train_platform_reset_plan()
 	check_connections()
 	var/turf/oldloc = loc
 	var/newdir = heading_for(newloc, fdir)
 	var/list/old_tiles = train_platform_tiles(oldloc, dir)
 	var/list/new_tiles = train_platform_tiles(newloc, newdir)
 	// Carry the deck's load before followers move into these tiles.
-	var/list/cargo = list()
-	for (var/i in 1 to 3)
-		var/turf/T = old_tiles[i]
-		if (!T || !new_tiles[i])
-			continue
-		for (var/atom/movable/AM in T)
-			if (AM.loc == T && !(AM in train_platform_carried) && train_platform_carries(AM))
-				cargo[AM] = i
+	if (!(src in train_platform_plan))
+		train_platform_plan_from(src)
+	var/list/cargo = train_platform_plan[src]
+	train_platform_plan -= src
 	moving_train = TRUE
 	if (!persistence_set_loc(newloc))
 		moving_train = FALSE
 		return FALSE
+	last_moved = world.time
 	var/turning = 0
 	if (newdir == turn(dir, 90))
 		turning = 90
@@ -243,8 +306,7 @@ var/global/train_platform_carried_time = -1
 		turning = -90
 	dir = newdir
 	for (var/atom/movable/AM in cargo)
-		if (AM.persistence_set_loc(new_tiles[cargo[AM]]))
-			train_platform_carried += AM
+		if (AM.loc == old_tiles[cargo[AM]] && new_tiles[cargo[AM]] && AM.persistence_set_loc(new_tiles[cargo[AM]]))
 			// Furniture turns with the car round a curve.
 			if (turning && isobj(AM))
 				AM.set_dir(turn(AM.dir, turning))
@@ -272,10 +334,19 @@ var/global/train_platform_carried_time = -1
 /obj/structure/trains/platform/examine(mob/user)
 	..()
 	to_chat(user, "This is section [seg_index] of [TRAIN_CAR_LENGTH]. A crowbar takes an empty, uncoupled car apart into a kit.")
+	if (wrecked)
+		to_chat(user, SPAN_WARNING("It has been blown off the rails. Weld it back together before the train can move."))
+	else if (health < initial(health))
+		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
+	if (braced)
+		to_chat(user, "Its outriggers are down: the car is braced and cannot move.")
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/crowbar))
 		dismantle_car(user)
+		return
+	if (istype(W, /obj/item/weapon/weldingtool))
+		weld_repair(user)
 		return
 	return ..()
 
@@ -416,15 +487,26 @@ var/global/train_platform_carried_time = -1
 	switch (style)
 		if ("window")
 			name = "[S.name] window"
-		if ("door", "inner_door")
+		if ("door", "inner_door", "armor_door")
 			name = "[S.name] door"
+		if ("armor")
+			name = "[S.name] armor plate"
 		if ("rail")
 			name = "[S.name] railing"
 		else
 			name = "[S.name] wall"
 
 /obj/structure/train_part/edge/proc/is_door()
-	return style == "door" || style == "inner_door"
+	return style == "door" || style == "inner_door" || style == "armor_door"
+
+/obj/structure/train_part/edge/proc/is_armor()
+	return style == "armor" || style == "armor_door"
+
+// Armor stops projectiles fired from outside the car; the crew shoots out.
+/obj/structure/train_part/edge/proc/stops_projectile(obj/item/projectile/P)
+	if (!is_armor() || !P || !P.starting)
+		return FALSE
+	return (get_dir(loc, P.starting) & dir) != 0
 
 /obj/structure/train_part/edge/proc/set_open(state)
 	if (!is_door())
@@ -450,7 +532,7 @@ var/global/train_platform_carried_time = -1
 	if (!density || !mover)
 		return TRUE
 	if (istype(mover, /obj/item/projectile))
-		return TRUE
+		return !stops_projectile(mover)
 	if (istype(mover) && mover.checkpass(PASSTABLE) && style == "rail")
 		return TRUE
 	return get_dir(loc, target) != dir
@@ -459,7 +541,7 @@ var/global/train_platform_carried_time = -1
 	if (!density || !O)
 		return TRUE
 	if (istype(O, /obj/item/projectile))
-		return TRUE
+		return !stops_projectile(O)
 	if (istype(O) && O.checkpass(PASSTABLE) && style == "rail")
 		return TRUE
 	return (isnull(exit_direction) ? get_dir(O.loc, target) : exit_direction) != dir
@@ -489,7 +571,7 @@ var/global/train_platform_carried_time = -1
 
 // Null when the step is clear, else the blocking atom.
 /proc/train_consist_obstacle(obj/structure/trains/head, turf/target, heading)
-	train_platform_reset_carried()
+	train_platform_reset_plan()
 	var/list/cars = train_consist_list(head)
 	var/has_platform = FALSE
 	for (var/obj/structure/trains/car in cars)
@@ -504,6 +586,9 @@ var/global/train_platform_carried_time = -1
 				return P
 	if (!has_platform)
 		return null
+	for (var/obj/structure/trains/platform/P in cars)
+		if (P.wrecked || P.braced)
+			return P
 	var/turf/next_loc = target
 	var/next_dir = heading
 	for (var/obj/structure/trains/car in cars)

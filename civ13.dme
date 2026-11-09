@@ -897,6 +897,7 @@
 #include "code\modules\1713\practice_rooms.dm"
 #include "code\modules\1713\track_laying.dm"
 #include "code\modules\1713\train_platforms.dm"
+#include "code\modules\1713\train_warfare.dm"
 #include "code\modules\1713\trains.dm"
 #include "code\modules\1713\trench.dm"
 #include "code\modules\1713\vending.dm"
