@@ -68,6 +68,7 @@ var/pipe_runtime_error = FALSE
 		pipe_refinery_checks()
 		pipe_save_checks()
 		pipe_plumbing_checks()
+		pipe_washing_machine_checks()
 		pipe_habitat_checks()
 		pipe_barrel_checks()
 		pipe_catalog_checks()
@@ -295,6 +296,35 @@ var/pipe_runtime_error = FALSE
 			qdel(O)
 	fluid_mark_dirty()
 
+// A washing machine receives a cycle's water from a connected pipe network.
+/proc/pipe_washing_machine_checks()
+	var/obj/machinery/washing_machine/mapped = new(locate(6, 12, 1))
+	pipe_check(mapped.reserve_wash_water() && !mapped.fluid_demand_tier(), "a mapped washing machine keeps its own supply and stays off pipe networks")
+	qdel(mapped)
+	var/obj/machinery/washing_machine/piped/W = new(locate(4, 12, 1))
+	pipe_check(!W.reserve_wash_water() && !W.water_stored, "a disconnected washing machine cannot reserve water")
+	var/list/pipes = pipe_line(3, 5, 11)
+	var/obj/structure/fluid_tank/T = new(locate(2, 11, 1))
+	var/obj/structure/fluid_pump/P = new(locate(5, 10, 1))
+	var/list/power = pipe_power(P, 5, 9)
+	T.reagents.add_reagent("water", 40)
+	T.reagents.add_reagent("cholera", 10)
+	factory_fluids_step()
+	pipe_check(!W.reserve_wash_water() && !W.water_stored, "an unpowered pipe network supplies no wash water")
+	P.on = TRUE
+	for (var/i in 1 to 6)
+		factory_fluids_step()
+	pipe_check(W.water_stored == 20 && !W.fluid_demand("cholera"), "a powered network supplies only water up to one wash")
+	pipe_check(W.reserve_wash_water() && !W.water_stored && !W.reserve_wash_water(), "a wash consumes one full supply only once")
+	W.water_stored = 20
+	for (var/obj/O in pipes)
+		qdel(O)
+	pipe_check(!W.reserve_wash_water() && W.water_stored == 20, "disconnecting the pipe prevents a wash even with stored water")
+	for (var/obj/O in list(W, T, P) + power)
+		if (!QDELETED(O))
+			qdel(O)
+	fluid_mark_dirty()
+
 // Water recycler (source) -> electrolyser (sink), as between two habitat modules.
 /proc/pipe_habitat_checks()
 	var/list/pipes = pipe_line(3, 6, 8)
@@ -367,7 +397,7 @@ var/pipe_runtime_error = FALSE
 		if (get_recipe_node_req(path) == "factories")
 			gated++
 	pipe_check(gated == 5, "pipes, valves, pumps, tanks and intakes unlock with Factories")
-	pipe_check(get_recipe_node_req("/obj/structure/water_tap") == "factories" && get_recipe_node_req("/obj/structure/shower/piped") == "factories", "taps and piped showers unlock with Factories")
+	pipe_check(get_recipe_node_req("/obj/structure/water_tap") == "factories" && get_recipe_node_req("/obj/structure/shower/piped") == "factories" && get_recipe_node_req("/obj/machinery/washing_machine/piped") == "factories", "taps, piped showers and piped washing machines unlock with Factories")
 	var/list/states = icon_states('icons/obj/machines/pipes.dmi')
 	pipe_check(("intact" in states) && ("manifold" in states) && ("compressor" in states) && ("inlet" in states) && ("air" in icon_states('icons/obj/barrel.dmi')), "the parts reuse existing sprites")
 	var/list/found = list()
