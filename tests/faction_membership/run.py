@@ -24,7 +24,7 @@ RESEARCH = 'code/modules/research_tree/research_faction.dm'
 CONTROLS = {
     'cooldown': (MEMBERSHIP, '\tif (faction_rejoin_blocked(faction))\n', '\tif (FALSE)\n'),
     'privileges': (MEMBERSHIP, '\tclear_faction_privileges()\n\tcivilization = faction\n', '\tcivilization = faction\n'),
-    'leader_flag': (MEMBERSHIP, '\treturn is_faction_leader(H, faction)\n', '\treturn H.leader || is_faction_leader(H, faction)\n'),
+    'leader_flag': (MEMBERSHIP, '\tif (perm == FACTION_PERM_MANAGEMENT || perm == FACTION_PERM_RECRUITMENT)\n\t\treturn FALSE\n', '\tif (H.leader)\n\t\treturn TRUE\n'),
     'switch': (MEMBERSHIP, '\tif (civilization && civilization != "none" && !allow_switch)\n', '\tif (FALSE)\n'),
 }
 

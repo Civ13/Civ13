@@ -84,6 +84,15 @@ var/global/list/probe_failures = list()
 	check(map.can_manage_faction_permissions(L, "Alpha"), "leader manages permissions")
 	check(!map.can_manage_faction_permissions(R, "Alpha"), "recruiter cannot manage permissions")
 	check(!map.can_manage_faction_permissions(S, "Alpha"), "old-save leader flag cannot manage permissions")
+	// Permission Management covers Announcements and Titles, never Recruitment or itself.
+	var/mob/living/human/P = make_human("Pat", "Alpha", list(1,0,0,0))
+	check(map.can_manage_faction_permissions(P, "Alpha"), "permission manager opens the menu")
+	check(map.can_manage_faction_permissions(P, "Alpha", 2) && map.can_manage_faction_permissions(P, "Alpha", 3), "permission manager manages announcements and titles")
+	check(!map.can_manage_faction_permissions(P, "Alpha", 1), "permission manager cannot hand out Permission Management")
+	check(!map.can_manage_faction_permissions(P, "Alpha", 4), "permission manager cannot appoint recruiters")
+	check(!map.can_manage_faction_permissions(P, "Beta", 2), "permission manager only acts in their own faction")
+	check(map.can_manage_faction_permissions(L, "Alpha", 4), "leader appoints recruiters")
+	check(!map.can_manage_faction_permissions(S, "Alpha", 2), "old-save leader flag manages nothing")
 	R.stat = DEAD
 	check(!map.can_recruit_for_faction(R, "Alpha"), "dead recruiter cannot recruit")
 	R.stat = 0

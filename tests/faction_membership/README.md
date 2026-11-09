@@ -5,8 +5,10 @@ holds the shared rules:
 
 - `can_recruit_for_faction`: the stored leader, or a current member holding
   the Recruitment permission, may recruit for their own faction.
-- `can_manage_faction_permissions`: only the stored leader. A mob's `leader`
-  flag is not trusted, because granting Recruitment used to set it.
+- `can_manage_faction_permissions`: the stored leader manages every
+  permission; a member holding Permission Management may manage only
+  Announcements and Giving Titles. A mob's `leader` flag is not trusted,
+  because granting Recruitment used to set it.
 - `faction_enrollment_block` / `enroll_in_faction`: the one join transition.
   It refuses the dead, current members, the 24-hour rejoin cooldown and (unless
   the caller allows a consenting switch) members of another faction, then
