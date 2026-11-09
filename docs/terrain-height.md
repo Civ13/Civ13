@@ -201,6 +201,29 @@ wall without moving is unmasked until the next refresh or the 1-second audit,
 and `view()`-based checks for that viewer reach past walls (clicks on hidden
 atoms still act on their tile).
 
+### Gunfire
+
+Bullets follow the same heights (`code/modules/projectiles/projectile_heights.dm`).
+When a shot is first moved, `height_plan` draws a straight line from the
+muzzle (the firer's ground plus 1.4 standing, 0.4 lying or prone) to the aim
+point (the target's ground plus the same heights for a mob, or the firer's
+muzzle height above a clicked tile). For every tile it enters, `height_enter`
+compares the line with the ground:
+
+- Ground above the line stops the shot there: a ridge between shooter and
+  target takes the bullet, and a shot fired downhill that misses lands in the
+  ground beyond the target.
+- Under the open sky, people, cover, walls and trees are passed over only when
+  the line is above their top (the `los_target_top` values) by at least a
+  standing body's height. A level shot over flat ground never is, so cover and
+  bystanders work there as before; height advantage is what takes them away.
+- Over a roofed tile the line either passes above the roof (ground plus 3) and
+  skips the tile with everything under it, or keeps the ordinary rules.
+
+Shrapnel, shells, aircraft guns and redirected shots keep the flat rules. The
+work is two height lookups and a square root per tile, about 0.008 ms against
+0.001 ms without heights, and maps without a height file skip it entirely.
+
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.
 
@@ -211,6 +234,10 @@ with its level; use it again to hide the labels.
 - `python3 tests/los_terrain/run.py --byond-bin <dir>` (native: line of sight
   over hills on Gaia's heights against a Python reference, sweep cost, and
   cache clearing on grading).
+- `python3 tests/gunfire_heights/run.py --byond-bin <dir>` (native: real
+  projectiles on a 16x6 hill world: ridge, hilltop over a wall, roof, people
+  below the line, uphill to a crest, flat-ground controls and cost;
+  `--negative-control ridge|cover|margin` must fail).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).
