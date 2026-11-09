@@ -318,6 +318,7 @@
 	out["max_health"] = M.maxHealth
 	out["dir"] = dir2text(M.dir)
 	out["intent"] = M.a_intent
+	out["stance"] = agent_stance_row(M) // HUD toggles: movement mode, defense, tactic, secondary attack, aim
 	out["busy"] = M.may_do_after ? FALSE : TRUE
 	out["active_hand"] = M.hand ? "left" : "right"
 	out["left_hand"] = agent_encode(M.l_hand)
@@ -473,6 +474,8 @@
 				var/list/near_verbs = agent_verb_names(AM, 8)
 				if (near_verbs.len)
 					row["verbs"] = near_verbs
+			if (istype(AM, /obj/item/weapon/storage) && get_dist(M, AM) <= 1)
+				row["contents"] = agent_container_contents(AM) // what opening it shows; click an item ref to take it
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
@@ -547,7 +550,7 @@
 		if (message["id"] > since)
 			heard += list(message)
 	var/queue_since = text2num("[req["queue_since"]]") || 0
-	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]") : null
+	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]", "height" = terrain_height_at(here), "light" = round(here.get_lumcount(), 0.01)) : null
 	if (istype(here, /turf/floor/dirt/underground))
 		var/turf/floor/dirt/underground/U = here
 		var/area/HA = get_area(U)
@@ -596,7 +599,7 @@
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
@@ -698,7 +701,7 @@
 			return list("report" = R.id, "title" = R.title, "self" = character_state(C))
 		if ("click")
 			var/atom/target = agent_resolve_target(req["target"])
-			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)))
+			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)) && !agent_click_reaches_container(M, target))
 				agent_fail("out_of_view", "the target is not visible to this character")
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
@@ -756,6 +759,11 @@
 			if (!ishuman(M))
 				agent_fail("bad_type", "only humans can equip items")
 			var/mob/living/human/H = M
+			if (!isnull(req["slot"]))
+				agent_equip_slot(H, I, req["slot"]) // a chosen slot, as dragging onto it does
+				C.next_action = world.time + 2
+				detail = "[I] to [req["slot"]]"
+				return list("done" = action, "self" = character_state(C))
 			H.quick_equip()
 			C.next_action = world.time + 2
 			if (I.loc == M && (I == M.l_hand || I == M.r_hand))
@@ -813,6 +821,8 @@
 			detail = agent_window_topic(C, req, from_queue)
 		if ("close_window")
 			detail = agent_window_close(C, req)
+		if ("stance")
+			detail = agent_stance(C, req)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -970,6 +980,8 @@
 		agent_text_arg(step, "item", 64)
 	if (action in list("topic", "close_window"))
 		agent_text_arg(step, "window", 64)
+	if (action == "stance" && isnull(step["move"]) && isnull(step["defense"]) && isnull(step["tactic"]) && isnull(step["secondary"]) && isnull(step["face_lock"]) && isnull(step["aim"]))
+		agent_fail("bad_args", "stance takes move, defense, tactic, secondary, face_lock or aim")
 	if (action == "topic" && isnull(step["link"]) && isnull(step["label"]))
 		agent_fail("bad_args", "topic needs link (a number) or label")
 	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))
@@ -999,7 +1011,7 @@
 			else
 				agent_fail("bad_args", "until takes message, holding or amount")
 		out["until"] = kept_until
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

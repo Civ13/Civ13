@@ -228,6 +228,18 @@ the character `took`, so the agent can repeat the step with `choose`.
 volume. Footsteps are left out unless `footsteps` is true. A deafened
 character hears nothing.
 
+<a id="stance"></a>`stance` sets what players change with HUD buttons: `move` (`run`, `walk`,
+`sneak`, `crawl`), `defense` (`dodge`, `parry`), `tactic` (`charge`, `aim`,
+`rush`, `defend`), `secondary` (the middle-click attack: `kick`, `jump`,
+`bite`), `face_lock` and `aim` (gun aim mode), any of them in one step; the
+character's `stance` reports them. `equip` takes an optional `slot` (`back`,
+`belt`, `head`, `suit`, `uniform`, `shoes`, `gloves`, `mask`, `eyes`,
+`shoulder`, `id`, `l_ear`, `r_ear`, `l_store`, `r_store`, `s_store`), as
+dragging the item onto that inventory slot does. A storage container next to
+the character lists its `contents` (refs and names, as opening it shows), and
+`click` reaches an item inside a container that is next to the character or
+carried by it. `here` reports the tile's terrain `height` and `light` (0-1).
+
 <a id="windows"></a>Menu windows (research, trade posts, suppliers, faction and recruitment
 desks, books and other HTML windows a player sees) are listed under `windows`
 (shown or refreshed after `window_since`, newest id in `last_window`; the six

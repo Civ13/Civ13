@@ -2652,5 +2652,33 @@ class PromptTests(unittest.TestCase):
         self.assertIn("if (!M.client)", source)
 
 
+class StanceTests(unittest.TestCase):
+    """HUD toggles, equip slots and container contents (code/modules/agent_control/agent_stance.dm)."""
+
+    def test_parse_stance_and_slot_steps(self):
+        refs = ["[0x1]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "stance", "move": "Crawl", "aim": true}', refs), {"do": "stance", "move": "crawl", "aim": True})
+        self.assertEqual(autopilot.parse_decision('{"do": "stance", "defense": "parry", "tactic": "defend"}', refs), {"do": "stance", "defense": "parry", "tactic": "defend"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "stance", "move": "fly"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "stance"}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "equip", "slot": "back"}', refs), {"do": "equip", "slot": "back"})
+        self.assertEqual(autopilot.parse_decision('{"do": "equip", "slot": "wings"}', refs), {"do": "equip"})
+
+    def test_summary_lists_container_contents_as_targets(self):
+        observation = {"self": {"name": "Ada", "ref": "[0x1]", "stance": {"move": "walk", "defense": "dodge"}}, "nearby": [
+            {"ref": "[0x2]", "name": "backpack", "dx": 1, "dy": 0, "item": True, "contents": [{"ref": "[0x3]", "name": "coin"}]},
+        ]}
+        text, refs = autopilot.summarize(observation)
+        self.assertEqual(refs, ["[0x1]", "[0x2]", "[0x3]"])
+        self.assertIn("2. coin (inside backpack", text)
+        self.assertIn("Stance: move walk, defense dodge", text)
+
+    def test_stance_slots_match_the_game(self):
+        source = (ROOT / "code/modules/persistence/region_travel.dm").read_text(encoding="utf-8")
+        listed = re.search(r"region_travel_slots = list\(([^)]*)\)", source).group(1)
+        slots = [name for name in re.findall(r'"(\w+)" =', listed) if name not in ("l_hand", "r_hand")]
+        self.assertEqual(sorted(slots), sorted(autopilot.EQUIP_SLOTS))
+
+
 if __name__ == "__main__":
     unittest.main()
