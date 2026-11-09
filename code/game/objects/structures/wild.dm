@@ -1321,9 +1321,11 @@ var/list/seed_list_jungle
 	else
 		..()
 
-/obj/structure/wild/jungle/MouseDrop_T(var/mob/living/human/user as mob)
+/obj/structure/wild/jungle/MouseDrop_T(atom/dropping, mob/living/human/user)
+	if (dropping != user)
+		return
 	if (istype(user, /mob/living/human))
-		if (stored_unit)
+		if (stored_unit || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 			return
 		if (user.restrained() || user.stat || user.weakened || user.stunned || user.paralysis)
 			return
@@ -1331,16 +1333,35 @@ var/list/seed_list_jungle
 			return
 		var/mob/living/human/H = user
 		if (H.faction_text == "VIETNAMESE")
+			var/datum/save_identity = persistence_admission_identity
 			to_chat(user, SPAN_NOTICE("You start hiding in \the [src]..."))
 			if (do_after(user,100,src))
-				to_chat(user, SPAN_NOTICE("You finish hiding in \the [src]."))
-				stored_unit = user
-				if (user.client)
-					user.client.perspective = EYE_PERSPECTIVE
-					user.client.eye = src
-				user.forceMove(src)
+				finish_hiding(H, save_identity)
 	else
 		..()
+
+/obj/structure/wild/jungle/proc/finish_hiding(mob/living/human/H, datum/save_identity)
+	if (QDELETED(src) || QDELETED(H) || stored_unit || !isturf(loc) || !isturf(H.loc) || !H.Adjacent(src))
+		return FALSE
+	if (H.restrained() || H.stat || H.weakened || H.stunned || H.paralysis || H.faction_text != "VIETNAMESE")
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_identity != persistence_admission_identity)
+		return FALSE
+	stored_unit = H
+	if (!H.forceMove(src) || QDELETED(src) || QDELETED(H) || H.loc != src || stored_unit != H)
+		if (!QDELETED(src) && stored_unit == H)
+			stored_unit = null
+		return FALSE
+	if (H.client)
+		H.client.perspective = EYE_PERSPECTIVE
+		H.client.eye = src
+	to_chat(H, SPAN_NOTICE("You finish hiding in \the [src]."))
+	return TRUE
+
+/obj/structure/wild/jungle/Destroy()
+	if (stored_unit)
+		release_stored()
+	return ..()
 
 /obj/structure/wild/attack_hand(mob/user as mob)
 	if (stored_unit)
@@ -1351,12 +1372,14 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/proc/release_stored()
 	if (stored_unit)
-		if (stored_unit.client)
-			stored_unit.client.eye = stored_unit.client.mob
-			stored_unit.client.perspective = MOB_PERSPECTIVE
-			stored_unit.forceMove(get_turf(src))
-			stored_unit = null
-			return
+		var/mob/living/human/occupant = stored_unit
+		stored_unit = null
+		if (occupant.client && occupant.client.eye == src)
+			occupant.client.eye = occupant.client.mob
+			occupant.client.perspective = MOB_PERSPECTIVE
+		var/turf/T = get_turf(src)
+		if (occupant.loc == src && T)
+			occupant.forceMove(T)
 
 /obj/structure/wild/bamboo
 	name = "bamboo"

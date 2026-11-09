@@ -811,6 +811,8 @@ SUITES = {
         'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
         'docs/ecology-activity-heatmap-prototype.md',
         'code/modules/persistence/functions.dm')},
+    'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
+        'tests/jungle_hiding/',)},
     'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
         'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
