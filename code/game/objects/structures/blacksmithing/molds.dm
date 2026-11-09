@@ -14,6 +14,9 @@
 	var/craftable_classes = null
 	// Stone variants retain the existing casting/prototype type contracts.
 	var/stone_mold = FALSE
+	// Set while a pour prompt is open on this mold (as source or target), so a
+	// lagged double-click cannot open a second prompt that pays from stale values.
+	var/tmp/pouring = FALSE
 
 /obj/item/weapon/clay/mold/update_icon()
 	..()
@@ -34,6 +37,24 @@
 				to_chat(user, "Has <b>[contents_materials[i]]</b> unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it.")
 	if (max_capacity > 0)
 		to_chat(user, "Has a maximum capacity of <b>[max_capacity]</b> units.")
+// TRUE when ML can pour into src right now: both fired, same or no target metal,
+// free space, metal in the source, and both still within the user's reach.
+/obj/item/weapon/clay/mold/proc/can_receive_pour(obj/item/weapon/clay/mold/ML, mob/user)
+	if (QDELETED(src) || QDELETED(ML) || QDELETED(user) || ML == src)
+		return FALSE
+	if (!fired || !ML.fired || ML.capacity <= 0 || !ML.current_material || capacity >= max_capacity)
+		return FALSE
+	if (current_material && current_material != ML.current_material)
+		return FALSE
+	if (user.incapacitated())
+		return FALSE
+	var/turf/user_turf = get_turf(user)
+	for (var/obj/item/weapon/clay/mold/M in list(src, ML))
+		var/turf/mold_turf = get_turf(M)
+		if (!user_turf || !mold_turf || mold_turf.z != user_turf.z || get_dist(user_turf, mold_turf) > 1)
+			return FALSE
+	return TRUE
+
 /obj/item/weapon/clay/mold/attackby(obj/item/I as obj, mob/user as mob)
 	if (!fired)
 		to_chat(user, "<span class='warning'>[src] is unfired!</span>")
@@ -43,21 +64,32 @@
 		if (!ML.fired)
 			to_chat(user, "<span class='warning'>[ML] is unfired!</span>")
 			return
-		if (ML.fired && ML.capacity > 0 && (src.capacity < src.max_capacity) && (src.current_material == ML.current_material || !src.current_material))
+		if (ML.pouring || pouring)
+			to_chat(user, "<span class='warning'>Finish the pour that is already in progress first.</span>")
+			return
+		if (can_receive_pour(ML, user))
 			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
+			pouring = TRUE
+			ML.pouring = TRUE
 			var/input = input(user, "Transfer", "How much of the [ML.current_material] do you want to transfer? Free capacity: [amt_to_transfer]", amt_to_transfer) as num
-			if (!isnum(input))
+			pouring = FALSE
+			ML.pouring = FALSE
+			if (!isnum(input) || input <= 0)
 				return
-			else if (input <= 0)
+			// The prompt sleeps, so both molds may have changed or moved meanwhile.
+			// Re-check and recompute from current values before moving any metal.
+			if (!can_receive_pour(ML, user))
+				to_chat(user, "<span class='warning'>You can no longer pour from [ML] into \the [src].</span>")
 				return
-			else if (input > amt_to_transfer)
-				input = amt_to_transfer
-			amt_to_transfer = input
-			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of [ML.current_material] into the molten [ML.current_material] into \the [src].")
-			src.capacity += amt_to_transfer
+			amt_to_transfer = min(input, max_capacity - capacity, ML.capacity)
+			if (amt_to_transfer <= 0)
+				return
+			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of molten [ML.current_material] into \the [src].")
 			src.current_material = ML.current_material
+			src.capacity += amt_to_transfer
 			ML.capacity -= amt_to_transfer
-			if (ML.capacity <= 1)
+			if (ML.capacity <= 0)
+				ML.capacity = 0
 				ML.current_material = null
 			ML.update_icon()
 			src.update_icon()
@@ -71,6 +103,8 @@
 				return
 			var/max_free_cap = max_capacity-current_cap
 			var/obj/item/stack/O = I
+			if (QDELETED(O) || O.amount <= 0)
+				return
 			var/cap_to_add = min(max_free_cap, O.amount)
 			if (istype(O, /obj/item/stack/ore/gold))
 				if (contents_materials.len == 0)
