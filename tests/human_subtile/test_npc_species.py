@@ -148,9 +148,18 @@ class SpeciesContracts(unittest.TestCase):
         source = (ROOT / 'code/game/mob/living/simple_animal/subtile_movement.dm').read_text(encoding='utf-8')
         self.assertIn('var/npc_subtile_species_enabled = FALSE', source)
         self.assertIn('"npc_subtile_species_enabled"', source)
+        # Only the near-player auto admission turns species walks on, and it
+        # marks them runtime so the switch is never saved.
         for path in (ROOT / 'code').rglob('*.dm'):
+            if path.relative_to(ROOT).as_posix() == 'code/game/mob/living/simple_animal/subtile_movement.dm':
+                continue
             self.assertNotIn('npc_subtile_species_enabled = TRUE',
                              path.read_text(encoding='utf-8', errors='replace'), str(path))
+        auto = source[source.index('/mob/living/simple_animal/proc/npc_subtile_auto_admit()'):]
+        auto = auto[:auto.index('\n/mob/living/simple_animal/proc/npc_subtile_pulse_px()')]
+        self.assertIn('if (npc_subtile_watched())', auto)
+        self.assertIn('npc_subtile_species_enabled = TRUE', auto)
+        self.assertIn('if ((key == "npc_subtile_enabled" || key == "npc_subtile_species_enabled") && npc_subtile_auto_owned)', source)
 
 
     def test_continuous_fallback_source_executes_ownership_contract(self):

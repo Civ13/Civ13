@@ -26,9 +26,21 @@
 	// Experimental collision bridge; the normal 32x32 admission guard stays in force.
 	var/tmp/npc_subtile_large_exit_enabled = FALSE
 	var/tmp/datum/npc_subtile_large_frame/npc_subtile_large_frame
+	// Free movement near players: animals that did not opt in move freely only
+	// while a player is close enough to see them, in 8px pulses (a quarter of
+	// the cost of 2px ones). Out of sight they take ordinary tile steps.
+	var/npc_subtile_auto = TRUE
+	var/tmp/npc_subtile_auto_owned = FALSE
+	var/tmp/npc_subtile_watch_checked = -INFINITY
+	var/tmp/npc_subtile_watch_cached = FALSE
 
 /mob/living/simple_animal/proc/npc_subtile_snapshot()
 	return list("x" = x, "y" = y, "z" = z, "sx" = step_x, "sy" = step_y)
+
+// Fast check that this body still stands at its own trusted snapshot S
+// (built by npc_subtile_snapshot), without allocating a new one.
+/mob/living/simple_animal/proc/npc_subtile_at(list/S)
+	return islist(S) && S["x"] == x && S["y"] == y && S["z"] == z && S["sx"] == step_x && S["sy"] == step_y
 
 /mob/living/simple_animal/proc/npc_subtile_shape()
 	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x == round(step_x) && step_y == round(step_y) && step_x >= 0 && step_x < 32 && step_y >= 0 && step_y < 32
@@ -79,6 +91,40 @@
 		npc_subtile_release_glide()
 	return TRUE
 
+// Whether a player is within view range on this level, cached for 2 seconds.
+/mob/living/simple_animal/proc/npc_subtile_watched()
+	if (world.time < npc_subtile_watch_checked + 20)
+		return npc_subtile_watch_cached
+	npc_subtile_watch_checked = world.time
+	npc_subtile_watch_cached = FALSE
+	var/turf/here = get_turf(src)
+	if (here)
+		for (var/client/C in clients)
+			var/turf/there = get_turf(C.mob)
+			if (there && there.z == here.z && get_dist(here, there) <= 12)
+				npc_subtile_watch_cached = TRUE
+				break
+	return npc_subtile_watch_cached
+
+// Turns free movement on for a watched animal, and back off once nobody is
+// near and it stands aligned on a tile with nothing in flight.
+/mob/living/simple_animal/proc/npc_subtile_auto_admit()
+	if (!npc_subtile_auto || client || (npc_subtile_enabled && !npc_subtile_auto_owned))
+		return
+	if (npc_subtile_watched())
+		if (!npc_subtile_enabled && !step_x && !step_y && !npc_subtile_transaction && !npc_subtile_pulse)
+			npc_subtile_enabled = TRUE
+			npc_subtile_species_enabled = TRUE
+			npc_subtile_auto_owned = TRUE
+		return
+	if (npc_subtile_auto_owned && !npc_subtile_transaction && !npc_subtile_pulse && !step_x && !step_y && set_npc_subtile(FALSE))
+		npc_subtile_species_enabled = FALSE
+		npc_subtile_auto_owned = FALSE
+
+// Explicit opt-ins (vendors) keep 2px pulses; watched wildlife uses 8px.
+/mob/living/simple_animal/proc/npc_subtile_pulse_px()
+	return npc_subtile_auto_owned ? 8 : 2
+
 /mob/living/simple_animal/proc/npc_subtile_release_glide()
 	if (npc_subtile_glide_owned)
 		if (glide_size == npc_subtile_applied_glide)
@@ -98,6 +144,7 @@
 	// Nobody connected: no new step from any worker (#4197).
 	if (npc_subtile_transaction || world.time < npc_subtile_until || !npc_subtile_intent_valid(intent_owner) || ecology_animal_frozen(src))
 		return FALSE
+	npc_subtile_auto_admit()
 	var/direction = get_dir(src, destination)
 	if (!npc_subtile_enabled || !npc_subtile_ready() || !(direction in alldirs) || destination != get_step(src, direction) || !isnum(interval) || interval < world.tick_lag || interval > 100)
 		if (pulse_only)
@@ -123,6 +170,7 @@
 	T.stance = stance
 	T.remaining_x = (direction & EAST) ? 32 - step_x : (direction & WEST) ? (step_x ? step_x : 32) : 0
 	T.remaining_y = (direction & NORTH) ? 32 - step_y : (direction & SOUTH) ? (step_y ? step_y : 32) : 0
+	T.pulse_px = npc_subtile_pulse_px()
 	npc_subtile_transaction = T
 	// Capture this admission before Move callbacks can change actor ownership.
 	if (!isnull(receipt))
@@ -406,6 +454,7 @@
 	if (ecology_animal_frozen(src))
 		walk(src, 0)
 		return FALSE
+	npc_subtile_auto_admit()
 	if (!npc_subtile_species_enabled || !npc_subtile_enabled)
 		if (!npc_subtile_species_legacy_ready())
 			return FALSE
@@ -1061,6 +1110,7 @@
 	var/list/before
 	var/armed = TRUE
 	var/restoring = FALSE
+	var/checked = FALSE
 	var/engine_return
 
 // Exists only across a consumed, native large-animal Move. Never saved.
@@ -1179,6 +1229,7 @@
 	var/stance
 	var/remaining_x
 	var/remaining_y
+	var/pulse_px = 2
 	var/distance = 0
 	var/cancelled = FALSE
 	var/completed = FALSE
@@ -1195,15 +1246,15 @@
 	return arrived
 
 /datum/npc_subtile_transaction/proc/valid()
-	return !cancelled && actor && !isDeleted(actor) && actor.npc_subtile_transaction == src && actor.npc_subtile_enabled && actor.npc_subtile_ready() && actor.npc_subtile_intent_valid(intent_owner) && !persistence_save_in_progress && world.time <= end_time + world.tick_lag && actor.move_gen == generation && actor.target_obj == target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && human_subtile_same(expected, actor.npc_subtile_snapshot())
+	return !cancelled && actor && !isDeleted(actor) && actor.npc_subtile_transaction == src && actor.npc_subtile_enabled && actor.npc_subtile_ready() && actor.npc_subtile_intent_valid(intent_owner) && !persistence_save_in_progress && world.time <= end_time + world.tick_lag && actor.move_gen == generation && actor.target_obj == target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && actor.npc_subtile_at(expected)
 
 /datum/npc_subtile_transaction/proc/advance()
 	if (actor && !isDeleted(actor) && actor.npc_subtile_pending_intent)
 		actor.npc_subtile_prune_pending_fast()
 	if (!valid() || (!remaining_x && !remaining_y))
 		return FALSE
-	var/dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
-	var/dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
+	var/dx = (direction & EAST) ? min(pulse_px, remaining_x) : (direction & WEST) ? -min(pulse_px, remaining_x) : 0
+	var/dy = (direction & NORTH) ? min(pulse_px, remaining_y) : (direction & SOUTH) ? -min(pulse_px, remaining_y) : 0
 	var/sx = actor.step_x + dx
 	var/sy = actor.step_y + dy
 	var/tx = actor.x
@@ -1241,6 +1292,7 @@
 	P.sx = sx
 	P.sy = sy
 	P.before = expected
+	P.checked = TRUE
 	actor.npc_subtile_pulse = P
 	attempted = TRUE
 	actor.Move(destination, direction)
@@ -1270,10 +1322,11 @@
 
 /datum/npc_subtile_transaction/proc/perform_rest(continue_pulses)
 	try
-		for (var/i = 2, i <= 16, i++)
+		var/pulses = 32 / pulse_px
+		for (var/i = 2, i <= pulses, i++)
 			if (!continue_pulses || (!remaining_x && !remaining_y))
 				break
-			var/due = start_time + (i - 1) * (end_time - start_time) / 16
+			var/due = start_time + (i - 1) * (end_time - start_time) / pulses
 			// Within half a tick counts as due: float tick sums must not add a tick.
 			if (due > world.time + world.tick_lag / 2)
 				sleep(due - world.time)
@@ -1304,7 +1357,7 @@
 	catch (var/exception/npc_finish_error)
 		if (!finish_error)
 			finish_error = npc_finish_error
-	if (reached && !finish_error && actor && !isDeleted(actor) && !actor.npc_subtile_transaction && actor.npc_subtile_enabled && actor.npc_subtile_ready() && actor.npc_subtile_intent_valid(intent_owner) && !persistence_save_in_progress && actor.move_gen == generation && actor.target_obj == target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && human_subtile_same(expected, actor.npc_subtile_snapshot()))
+	if (reached && !finish_error && actor && !isDeleted(actor) && !actor.npc_subtile_transaction && actor.npc_subtile_enabled && actor.npc_subtile_ready() && actor.npc_subtile_intent_valid(intent_owner) && !persistence_save_in_progress && actor.move_gen == generation && actor.target_obj == target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && actor.npc_subtile_at(expected))
 		arrived = TRUE
 	actor = null
 	target = null
@@ -1323,9 +1376,10 @@
 
 /mob/living/simple_animal/proc/npc_subtile_take_pulse(turf/destination, direction)
 	var/datum/npc_subtile_pulse/P = npc_subtile_pulse
-	if (!P || !P.armed || P.actor != src || P.destination != destination || P.direction != direction || !human_subtile_same(P.before, npc_subtile_snapshot()))
+	if (!P || !P.armed || P.actor != src || P.destination != destination || P.direction != direction || !npc_subtile_at(P.before))
 		return null
-	if (!P.restoring && (!npc_subtile_transaction || !npc_subtile_transaction.valid()))
+	// advance() validated the transaction just before this same native Move.
+	if (!P.restoring && (!npc_subtile_transaction || (!P.checked && !npc_subtile_transaction.valid())))
 		return null
 	P.armed = FALSE
 	return P
@@ -1339,6 +1393,9 @@
 	// Targets, path caches and their control state belong to this AI run.
 	// following_mob is durable; see persistence_level_link_var above.
 	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step"))
+		return TRUE
+	// Free movement switched on near players is not a saved opt-in.
+	if ((key == "npc_subtile_enabled" || key == "npc_subtile_species_enabled") && npc_subtile_auto_owned)
 		return TRUE
 	if (key == "glide_size" && (npc_subtile_glide_owned || npc_subtile_import_owned || npc_subtile_position))
 		return TRUE
