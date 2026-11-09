@@ -217,6 +217,10 @@ default behaviour is:
 		return FALSE
 	if (!tmob.canmove || !canmove)
 		return FALSE
+	if (ishuman(src))
+		var/mob/living/human/swapper = src
+		if (!swapper.human_subtile_swap_allowed(tmob))
+			return FALSE
 
 	if (swap_density_check(src, tmob))
 		return FALSE

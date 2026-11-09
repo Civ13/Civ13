@@ -93,6 +93,8 @@
 	var/invalid = FALSE
 	var/restoring = FALSE
 	var/engine_return
+	// A sideways try after the straight pulse was blocked.
+	var/slide = FALSE
 
 /datum/human_subtile_transaction
 	should_save = FALSE
@@ -475,6 +477,22 @@
 		M.glide_size = glide_size * ((get_dir(M, target) & (get_dir(M, target) - 1)) ? ROOT2_FAST : 1)
 	return step(M, get_dir(M, target))
 
+// Free movement swaps places only when walking straight into someone head-on,
+// as in a corridor. Grazing them, moving diagonally or sliding round them
+// just blocks, so bodies never jump past each other.
+/mob/living/human/proc/human_subtile_swap_allowed(mob/living/other)
+	var/datum/human_subtile_pulse/P = human_subtile_pulse
+	if (!P || !human_subtile_transaction || !human_subtile_transaction.fine_step)
+		return TRUE
+	var/direction = P.direction
+	if (P.slide || (direction & (direction - 1)))
+		return FALSE
+	var/dx = (other.x * 32 + other.step_x) - (x * 32 + step_x)
+	var/dy = (other.y * 32 + other.step_y) - (y * 32 + step_y)
+	if (direction & (EAST | WEST))
+		return abs(dy) <= 12 && ((direction & EAST) ? dx > 0 : dx < 0)
+	return abs(dx) <= 12 && ((direction & NORTH) ? dy > 0 : dy < 0)
+
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
 	var/remaining_x = (direction & EAST) ? 32 - step_x : (direction & WEST) ? (step_x ? step_x : 32) : 0
@@ -625,7 +643,9 @@
 			attempts += actor.human_subtile_slide_attempts(direction)
 		var/moved_pulse = FALSE
 		var/stop = FALSE
+		var/attempt_index = 0
 		for (var/list/attempt in attempts)
+			attempt_index++
 			var/dx = attempt[1]
 			var/dy = attempt[2]
 			var/tx = actor.x
@@ -655,6 +675,7 @@
 			P.direction = direction
 			P.sx = sx
 			P.sy = sy
+			P.slide = attempt_index > 1
 			P.before = expected
 			actor.human_subtile_pulse = P
 			// Actual human -> living -> movable chain. The third living flag is intact.
