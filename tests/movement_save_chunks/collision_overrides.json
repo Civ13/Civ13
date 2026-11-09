@@ -548,6 +548,16 @@
       ]
     },
     {
+      "path": "code/modules/naval/slipway.dm",
+      "declarations": [
+        {
+          "owner": "/datum/slipway_design",
+          "declaration": "parent_type = /datum/piece_plan",
+          "sha256_body": "bf33436d994b298f35a2d5d155e05a8e2f3cbaf49ab2a786c194928eb2b8cb15"
+        }
+      ]
+    },
+    {
       "path": "code/modules/paperwork/authoring.dm",
       "declarations": [
         {

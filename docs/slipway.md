@@ -1,6 +1,7 @@
 # Slipway shipbuilding
 
-Code: `code/modules/naval/slipway.dm`, on top of the turf-built vessels in
+Code: `code/modules/naval/slipway.dm` (plans shared with cars and planes:
+[piece-projects.md](piece-projects.md)), on top of the turf-built vessels in
 `code/modules/naval/vessel.dm`. Test: `tests/naval_carrier/slipway_probe.dm`
 (run with `tests/resource_extraction/run.ps1 -Probe tests/naval_carrier/slipway_probe.dm`).
 
