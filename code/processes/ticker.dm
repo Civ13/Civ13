@@ -38,6 +38,7 @@
 
 	ticker.process()
 	ecology_autostart_check()
+	terrain_shading_check()
 	flora_autostart_check()
 	willow_seed_check()
 

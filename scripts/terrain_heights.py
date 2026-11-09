@@ -9,8 +9,9 @@ more z-levels. The game reads it when a map sets terrain_height_file.
   to-png    write a greyscale PNG of a height file, one pixel per tile
   from-png  turn a painted greyscale PNG back into a height file
   check     validate a height file against a .dmm's size
+  bake-shading  write the slope shading sprites (icons/turf/terrain_shade.dmi)
 
-Needs numpy; PNG commands also need Pillow.
+Needs numpy and Pillow.
 """
 import argparse
 import re
@@ -88,14 +89,6 @@ def distance_from(np, mask):
     return dist
 
 
-def blur(np, a, radius):
-    """Repeated 3x3 box blur, edges clamped."""
-    for _ in range(radius):
-        p = np.pad(a, 1, mode='edge')
-        a = sum(p[dy:dy + a.shape[0], dx:dx + a.shape[1]] for dy in range(3) for dx in range(3)) / 9.0
-    return a
-
-
 def limit_steps(np, levels, fixed):
     """Lower tiles until no neighbour pair differs by more than MAX_NEIGHBOUR_STEP."""
     while True:
@@ -107,19 +100,30 @@ def limit_steps(np, levels, fixed):
         levels = cap
 
 
+def octave(np, rng, shape, scale, amplitude):
+    """Smooth noise: a coarse random grid scaled up with bicubic filtering."""
+    from PIL import Image
+    h, w = shape
+    gh, gw = h // scale + 3, w // scale + 3
+    grid = Image.fromarray(rng.standard_normal((gh, gw)).astype(np.float32))
+    return np.array(grid.resize((gw * scale, gh * scale), Image.BICUBIC))[:h, :w] * amplitude
+
+
 def generate(np, rows, seed):
+    """Rounded hills on gently rising land: water 0, beaches at most 1."""
     cls = np.array([[classify(t) for t in row] for row in rows])
     water = cls == 0
     rock = cls == 3
     rng = np.random.default_rng(seed)
-    inland = np.minimum(distance_from(np, water), 16) if water.any() else np.full(cls.shape, 8)
-    height = inland * 0.5
-    height = height + blur(np, rng.standard_normal(cls.shape), 6) * 14
-    height = height + blur(np, rock.astype(float), 3) * 8
-    height = blur(np, height, 2)
+    noise = (octave(np, rng, cls.shape, 28, 1.0) + octave(np, rng, cls.shape, 14, 0.5)
+             + octave(np, rng, cls.shape, 7, 0.22))
+    inland = np.minimum(distance_from(np, water), 12) / 12.0 if water.any() else np.ones(cls.shape)
+    ridge = np.clip(1 - distance_from(np, rock) / 6.0, 0, 1) if rock.any() else np.zeros(cls.shape)
+    hills = np.clip(noise - 0.25, 0, None)
+    height = hills * 9 * np.minimum(inland * 2, 1) + inland * 1.5 + ridge * 3
     height[water] = 0
     height[cls == 1] = np.minimum(height[cls == 1], 1)
-    levels = np.clip(np.round(height / 1.6), 0, MAX_LEVEL).astype(int)
+    levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
     levels[water] = 0
     return limit_steps(np, levels, water)
 
@@ -163,6 +167,74 @@ def read_heights(path):
     if not levels:
         raise ValueError('no z levels')
     return maxx, maxy, levels
+
+
+# Slope shading. The game computes a light level (-2..2) at every tile corner
+# from the heights (terrain_height.dm, terrain_corner_light), and each tile
+# shows the sprite for its four corner levels, blended across the tile, so
+# neighbouring tiles join without seams. Keep the two in step.
+LIGHT = (-1.0, -1.0, 1.2)        # from the north-west, above
+RELIEF = 1.6                     # vertical exaggeration of one level
+LIGHT_STEP = 0.22                # intensity per light level
+SHADE_KEYS = 'abcde'             # light level -2..2
+DARK_ALPHA = 0.30
+LIGHT_ALPHA = 0.24
+LIGHT_COLOUR = (255, 247, 224)
+
+
+def corner_lights(np, levels):
+    """Light level -2..2 at each corner of a north-first level grid, shape (h + 1, w + 1)."""
+    p = np.pad(np.asarray(levels, dtype=float), 1, mode='edge')
+    corners = (p[:-1, :-1] + p[1:, :-1] + p[:-1, 1:] + p[1:, 1:]) / 4
+    q = np.pad(corners, 1, mode='edge')
+    gx = (q[1:-1, 2:] - q[1:-1, :-2]) / 2
+    gy = (q[2:, 1:-1] - q[:-2, 1:-1]) / 2
+    length = (LIGHT[0] ** 2 + LIGHT[1] ** 2 + LIGHT[2] ** 2) ** 0.5
+    lx, ly, lz = (c / length for c in LIGHT)
+    nx, ny = -gx * RELIEF, -gy * RELIEF
+    intensity = (nx * lx + ny * ly + lz) / np.sqrt(nx * nx + ny * ny + 1) - lz
+    return np.clip(np.floor(intensity / LIGHT_STEP + 0.5), -2, 2).astype(int)
+
+
+def shade_pixels(np, key, size=32):
+    """RGBA pixels for one shading state: key = light levels at nw, ne, sw, se."""
+    nw, ne, sw, se = (SHADE_KEYS.index(c) - 2 for c in key)
+    t = (np.arange(size) + 0.5) / size
+    tx, ty = t[None, :], t[:, None]
+    v = (nw * (1 - tx) * (1 - ty) + ne * tx * (1 - ty) + sw * (1 - tx) * ty + se * tx * ty) / 2
+    out = np.zeros((size, size, 4), dtype=np.uint8)
+    dark = v < 0
+    out[dark, 3] = np.round(-v[dark] * DARK_ALPHA * 255)
+    light = v > 0
+    out[light, :3] = LIGHT_COLOUR
+    out[light, 3] = np.round(v[light] * LIGHT_ALPHA * 255)
+    return out
+
+
+def shade_states():
+    keys = [a + b + c + d for a in SHADE_KEYS for b in SHADE_KEYS for c in SHADE_KEYS for d in SHADE_KEYS]
+    return [k for k in keys if k != 'cccc']
+
+
+def cmd_bake_shading(args):
+    np = load_numpy()
+    from PIL import Image
+    from PIL.PngImagePlugin import PngInfo
+    states = shade_states()
+    cols = 25
+    rows = -(-len(states) // cols)
+    sheet = np.zeros((rows * 32, cols * 32, 4), dtype=np.uint8)
+    for i, key in enumerate(states):
+        y, x = divmod(i, cols)
+        sheet[y * 32:(y + 1) * 32, x * 32:(x + 1) * 32] = shade_pixels(np, key)
+    lines = ['# BEGIN DMI', 'version = 4.0', '\twidth = 32', '\theight = 32']
+    for key in states:
+        lines += [f'state = "{key}"', '\tdirs = 1', '\tframes = 1']
+    lines.append('# END DMI')
+    info = PngInfo()
+    info.add_text('Description', '\n'.join(lines) + '\n', zip=True)
+    Image.fromarray(sheet, 'RGBA').save(args.out, format='PNG', pnginfo=info, optimize=True)
+    print(f'wrote {args.out}: {len(states)} states')
 
 
 def cmd_generate(args):
@@ -242,6 +314,9 @@ def main(argv=None):
     c.add_argument('--heights', required=True)
     c.add_argument('--map')
     c.set_defaults(func=cmd_check)
+    b = sub.add_parser('bake-shading')
+    b.add_argument('--out', default='icons/turf/terrain_shade.dmi')
+    b.set_defaults(func=cmd_bake_shading)
     args = parser.parse_args(argv)
     args.func(args)
 

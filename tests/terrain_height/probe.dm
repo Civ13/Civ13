@@ -23,6 +23,7 @@
 	del(src)
 
 /turf/floor/plating/terrain_height_probe
+/turf/floor/plating/terrain_height_probe/other
 
 /obj/map_metadata/terrain_height_probe
 	terrain_height_file = "tests/terrain_height/fixture.txt"
@@ -85,6 +86,33 @@ var/terrain_height_probe_checks = 0
 	var/datum/terrain_heights/ok = terrain_heights_parse("civ13-terrain-heights 1[CR]\nsize 2 2[CR]\nz 1[CR]\n1f[CR]\n00[CR]\n", 2, 2, 1)
 	terrain_height_probe_assert(!ok.error && ok.at(2, 2, 1) == 15 && ok.at(1, 2, 1) == 1 && ok.at(1, 1, 1) == 0, "crlf_accepted")
 	terrain_height_probe_assert(ok.at(3, 1, 1) == 0 && ok.at(1, 1, 2) == 0, "outside_reads_zero")
+
+	// Slope shading: corner lights are dumped for tests/terrain_height/run.py to
+	// compare with scripts/terrain_heights.py corner_lights().
+	var/datum/terrain_heights/fixture = map.terrain_heights()
+	var/list/lights = fixture.light_rows(1)
+	terrain_height_probe_assert(lights.len == 13 && length(lights[1]) == 13, "light_grid_size")
+	text2file(jointext(lights, "\n"), "lights.txt")
+	terrain_height_probe_assert(fixture.shade_key(1, 1, 1) == "cccc", "flat_tile_unshaded")
+	var/turf/slope = locate(6, 9, 1)
+	var/slope_key = fixture.shade_key(6, 9, 1)
+	terrain_height_probe_assert(slope_key && slope_key != "cccc", "slope_tile_shaded")
+	slope.terrain_shade_refresh()
+	var/obj/effect/terrain_shade/shade = locate() in slope.vis_contents
+	terrain_height_probe_assert(shade && shade.icon_state == slope_key && shade.mouse_opacity == 0, "slope_tile_shows_sprite")
+	terrain_height_probe_assert(shade == terrain_shade_object(slope_key), "sprites_are_shared")
+	slope.terrain_shade_refresh()
+	var/shades = 0
+	for (var/obj/effect/terrain_shade/S in slope.vis_contents)
+		shades++
+	terrain_height_probe_assert(shades == 1, "refresh_does_not_stack")
+	terrain_height_probe_assert(terrain_shading_apply() > 0, "apply_places_shading")
+	terrain_shading_applied = TRUE
+	var/turf/flat = locate(2, 2, 1)
+	terrain_height_probe_assert(!(locate(/obj/effect/terrain_shade) in flat.vis_contents), "flat_ground_left_alone")
+	slope.ChangeTurf(/turf/floor/plating/terrain_height_probe/other)
+	slope = locate(6, 9, 1)
+	terrain_height_probe_assert(!terrain_shading_applied || (locate(/obj/effect/terrain_shade) in slope.vis_contents), "changeturf_keeps_shading")
 
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
