@@ -108,6 +108,8 @@
 				if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/stew))
 					to_chat(H, "<span class = 'warning'>This won't fit in the pot.</span>")
 					return
+				var/list/boiling_recipes = BOIL_MAP
+				if (boiling_recipes[I.type] && !crafting_node_allowed(H, "pottery_storage")) return
 				H.remove_from_mob(I)
 				I.loc = src
 				visible_message("<span class = 'notice'>[H] puts [I] in the pot.</span>")

@@ -33,6 +33,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', required=True, help='directory with DreamMaker and DreamDaemon (pinned build)')
     parser.add_argument('--timeout', type=int, default=120)
+    parser.add_argument('--compile-only', action='store_true', help='Compile fixture without launching DreamDaemon')
+    parser.add_argument('--trusted', action='store_true', help='Only with maintainer authorization for isolated fixture file IO')
     args = parser.parse_args(argv)
     bin_dir = Path(args.byond_bin)
     compiler = bin_dir / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
@@ -69,11 +71,16 @@ def main(argv=None):
         if compile_run.returncode != 0 or '0 errors, 0 warnings' not in output or pin not in output:
             print('FAIL: pinned full-source fixture compile failed')
             return 1
+        if args.compile_only:
+            print('Fixture compile only; native assertions not run')
+            return 0
         for extension in ('.dmb', '.rsc'):
             shutil.copy(ROOT / (prefix + extension), temporary / ('probe' + extension))
         shutil.copytree(ROOT / 'config', temporary / 'config')
         argv_daemon = [str(daemon), 'probe.dmb', '0', '-invisible', '-close', '-params',
                        'tested_commit=' + commit, '-log', 'runtime.log']
+        if args.trusted:
+            argv_daemon.append('-trusted')
         try:
             subprocess.run(argv_daemon, cwd=temporary, timeout=args.timeout, env=byond_env(bin_dir))
         except subprocess.TimeoutExpired:
@@ -94,6 +101,12 @@ def main(argv=None):
         print('%d checks passed, %s failures' % (checks, result.get('failures')))
         return 1 if bad else 0
     finally:
+        evidence = ROOT / '.ci' / prefix.lstrip('.')
+        evidence.mkdir(parents=True, exist_ok=True)
+        for name in ('compile.log', 'runtime.log', 'result.json'):
+            if (temporary / name).exists():
+                shutil.copy(temporary / name, evidence / name)
+        print('Fixture evidence:', evidence)
         for path in generated:
             if path.exists():
                 path.unlink()

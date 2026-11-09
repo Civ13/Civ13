@@ -20,6 +20,7 @@
 	tie_rope_bundle(usr)
 
 /obj/item/stack/material/hemp/proc/tie_rope_bundle(mob/user)
+	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
 	if (!rope_worker_ready(user, src) || !rope_held(user, src) || amount < 2)
 		return FALSE
 	var/turf/T = get_turf(user)
@@ -82,6 +83,7 @@
 	return TRUE
 
 /obj/item/hemp_rope_bundle/proc/ret(mob/user, turf/floor/beach/water/W)
+	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
 	if (working || !valid_stage() || stage != 0 || !rope_worker_ready(user, src) || !istype(W) || loc != W || W.salty || W.radiation > 0)
 		return FALSE
 	working = TRUE
@@ -93,7 +95,7 @@
 	if (retting_epoch != epoch)
 		return FALSE
 	working = FALSE
-	if (!completed || !rope_worker_ready(user, src) || admission != persistence_admission_identity || loc != W || W.salty || W.radiation > 0 || stage != 0)
+	if (!completed || !crafting_node_allowed(user, "basic_tools") || !rope_worker_ready(user, src) || admission != persistence_admission_identity || loc != W || W.salty || W.radiation > 0 || stage != 0)
 		return FALSE
 	stage = 1
 	to_chat(user, SPAN_NOTICE("The hemp is retted. Recover it for drying and dressing at a hemp dressing bench."))
@@ -127,6 +129,7 @@
 	return dress(user)
 
 /obj/structure/hemp_dressing_bench/proc/dress(mob/user)
+	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
 	var/obj/item/hemp_rope_bundle/B = locate() in contents
 	if (working || !B || B.working || !B.valid_stage() || B.stage < 1 || !isturf(loc) || !anchored || !rope_worker_ready(user, src))
 		return FALSE
@@ -135,7 +138,7 @@
 	var/turf/site = loc
 	var/datum/admission = persistence_admission_identity
 	var/completed = user.rope_making_wait(100, src)
-	if (!completed || !rope_worker_ready(user, src) || admission != persistence_admission_identity || loc != site || !anchored || !B || QDELETED(B) || B.loc != src || B.stage != old_stage)
+	if (!completed || !crafting_node_allowed(user, "basic_tools") || !rope_worker_ready(user, src) || admission != persistence_admission_identity || loc != site || !anchored || !B || QDELETED(B) || B.loc != src || B.stage != old_stage)
 		working = FALSE
 		return FALSE
 	B.stage++
@@ -191,6 +194,7 @@
 		spin(user, target)
 
 /obj/item/rope_spindle/proc/spin(mob/user, obj/item/stack/F)
+	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
 	var/product
 	if (F && F.type == /obj/item/stack/dressed_hemp)
 		product = /obj/item/stack/rope_yarn/hemp
@@ -203,7 +207,7 @@
 	spinning = TRUE
 	var/datum/admission = persistence_admission_identity
 	var/completed = user.rope_making_wait(50, F)
-	if (!completed || !rope_worker_ready(user, src) || admission != persistence_admission_identity || !rope_held(user, src) || !rope_held(user, F) || QDELETED(F) || F.amount < 1)
+	if (!completed || !crafting_node_allowed(user, "basic_tools") || !rope_worker_ready(user, src) || admission != persistence_admission_identity || !rope_held(user, src) || !rope_held(user, F) || QDELETED(F) || F.amount < 1)
 		spinning = FALSE
 		return FALSE
 	var/turf/T = get_turf(user)
