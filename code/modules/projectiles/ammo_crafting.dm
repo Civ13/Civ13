@@ -684,9 +684,17 @@
 		return
 
 /obj/item/stack/ammopart/casing/tank/attack_self(mob/user)
+	// Each shell asks a question that sleeps; a lagged repeat click must not
+	// start a second round of shells from the same casings.
+	if (crafting_shells)
+		return
 	if (gunpowder >= gunpowder_max && bulletn >= amount)
+		crafting_shells = TRUE
 		for(var/i=1;i<=amount;i++)
 			var/calibt = WWinput(user, "Which type of shell do you want to craft?", "Shell Crafting", "HE", list("HE", "AP", "APCR"))
+			if (QDELETED(src) || loc != user)
+				crafting_shells = FALSE
+				return
 			switch (calibt)
 				if ("HE")
 					var/obj/item/cannon_ball/shell/tank/TS = new/obj/item/cannon_ball/shell/tank(get_turf(user))
@@ -716,6 +724,7 @@
 					TS.name = "[caliber]mm [calibt] shell"
 					TS.update_icon()
 
+		crafting_shells = FALSE
 		to_chat(user, "You produce [caliber]mm shells.")
 		qdel(src)
 		return
@@ -725,3 +734,6 @@
 // Spends n items from a stack used on an ammo part; FALSE if it is short now.
 /proc/ammo_part_stack_use(obj/item/stack/S, n)
 	return istype(S) && S.use(n)
+
+/obj/item/stack/ammopart/casing/tank
+	var/tmp/crafting_shells = FALSE

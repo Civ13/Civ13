@@ -141,5 +141,20 @@ class RepeatClickPayment(unittest.TestCase):
         self.assert_order(vendor, 'var/atom/drop_loc = W.loc', 'What price do you want to set',
                           'if (QDELETED(W) || W.loc != drop_loc)', 'product_records.Add(product)')
 
+    def test_mines_shells_and_printing_press(self):
+        grenades = read('code/game/objects/items/weapons/grenades/grenade.dm')
+        self.assertEqual(grenades.count('if (!QDELETED(src) && loc == user)'), 3)
+        for declaration in ('/obj/item/weapon/grenade/secondary_attack_self',
+                            '/obj/item/weapon/grenade/antitank/n75/secondary_attack_self',
+                            '/obj/item/weapon/grenade/antitank/type99/secondary_attack_self'):
+            with self.subTest(declaration=declaration):
+                body = proc('code/game/objects/items/weapons/grenades/grenade.dm', declaration)
+                self.assert_order(body, 'if (do_after(user,', 'if (!QDELETED(src) && loc == user)', 'BT = new', 'qdel(src)')
+        shells = proc('code/modules/projectiles/ammo_crafting.dm', '/obj/item/stack/ammopart/casing/tank/attack_self')
+        self.assert_order(shells, 'if (crafting_shells)', 'crafting_shells = TRUE', 'Which type of shell',
+                          'if (QDELETED(src) || loc != user)', 'new/obj/item/cannon_ball/shell/tank', 'crafting_shells = FALSE\n\t\tto_chat', 'qdel(src)')
+        press = proc('code/modules/1713/production.dm', '/obj/structure/printingpress/attackby')
+        self.assert_order(press, 'Add to original or copy?', 'if (input == "Cancel" || QDELETED(W) || W.loc != user)', 'base += W')
+
 if __name__ == '__main__':
     unittest.main()
