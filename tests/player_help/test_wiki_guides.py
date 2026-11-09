@@ -138,21 +138,21 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '7319bb8a0fc5f22833ff19fe292175a76f83e81e')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'fd655fa52a8c342651e53f220d362426c6af35a6')
         cases = {
             'Chemistry': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892',
                           'chemistry reaction bench',
                           'The installed mixture stays inert, avoiding competing automatic reactions.',
                           'How do I use a laboratory reaction bench?'),
-            'Medical': ('e2508dd0a9146a1978618d4de4a0f1ef57ab9e79791e4d00bc7d9e6d543944b8',
+            'Medical': ('c908cf58111fef5ab8b0d55567be2c94b0f692e88eda269c29a54a535f5d3a03',
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('2ab598407a49337d05f700c3b9cbc7b3636334ee82bdde4949dffc1e4e58576d',
+            'Construction': ('42feaf01ea2344b3d2fb50ac3f878836fd96664aa16462b22ba56452cc389e24',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('51c1624333ef8b81a09ad16c3252d7e33483a3dafd2c96f78e74ce174378807a',
+            'Trains': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),
