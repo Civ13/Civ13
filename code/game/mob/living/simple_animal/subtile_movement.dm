@@ -1340,7 +1340,7 @@
 		return TRUE
 	if (key == "npc_subtile_large_exit_enabled" || key == "npc_subtile_large_frame")
 		return TRUE
-	if ((key == "step_x" || key == "step_y") && (npc_subtile_import_owned || npc_subtile_position))
+	if ((key == "step_x" || key == "step_y") && (npc_subtile_import_owned || npc_subtile_position || npc_subtile_offset_owned))
 		return TRUE
 	return (key in list("npc_subtile_enabled", "npc_subtile_transaction", "npc_subtile_pulse", "npc_subtile_offset_owned", "npc_subtile_import_owned", "npc_subtile_until", "npc_subtile_glide_owned", "npc_subtile_previous_glide", "npc_subtile_applied_glide", "npc_subtile_pursuit_enabled", "npc_subtile_pursuit", "npc_subtile_follow_enabled", "npc_subtile_follow", "npc_subtile_flee_enabled", "npc_subtile_flee", "npc_subtile_flee_ticket", "npc_subtile_species_enabled", "npc_subtile_pet_enabled", "npc_subtile_pet_walk", "npc_subtile_recovery_enabled", "npc_subtile_recovery", "npc_subtile_pending_intent", "npc_subtile_wild_walk")) || ..()
 
@@ -1357,11 +1357,21 @@
 	if (npc_subtile_transaction)
 		npc_subtile_transaction.cancelled = TRUE
 	if (npc_subtile_offset_owned && (step_x || step_y))
+		// A pulled, pulling or buckled animal saves tile-only, never failing the save.
 		if (!npc_subtile_shape() || pulling || pulledby || buckled)
-			throw EXCEPTION("Unsupported NPC sub-tile save geometry")
-		npc_subtile_position = npc_subtile_snapshot()
+			npc_subtile_position = null
+		else
+			npc_subtile_position = npc_subtile_snapshot()
 	else
 		npc_subtile_position = null
+
+/mob/living/simple_animal/proc/npc_subtile_restore_aligned()
+	step_x = 0
+	step_y = 0
+	npc_subtile_position = null
+	npc_subtile_import_owned = FALSE
+	npc_subtile_offset_owned = FALSE
+	living_movement_completed()
 
 /mob/living/simple_animal/after_load()
 	. = ..()
@@ -1370,14 +1380,18 @@
 	var/list/S = npc_subtile_position
 	if (!human_subtile_same(S, S) || !npc_subtile_shape() || pulling || pulledby || buckled || x != S["x"] || y != S["y"] || z != S["z"] || S["sx"] < 0 || S["sx"] >= 32 || S["sy"] < 0 || S["sy"] >= 32)
 		throw EXCEPTION("Malformed NPC sub-tile position")
+	// Bodies may share tiles and overlap now, so a blocked offset never fails
+	// the load: the animal restores on its saved tile, aligned, like a human.
 	for (var/tx = x, tx <= x + (S["sx"] > 0), tx++)
 		for (var/ty = y, ty <= y + (S["sy"] > 0), ty++)
 			var/turf/T = locate(tx, ty, z)
 			if (!T || T.density || T.vehicle_transforming)
-				throw EXCEPTION("NPC sub-tile destination rejected")
+				npc_subtile_restore_aligned()
+				return .
 			for (var/atom/movable/A in T)
-				if (A != src && !A.CanPass(src, T, 1.5, FALSE))
-					throw EXCEPTION("NPC sub-tile destination occupied")
+				if (A != src && !ismob(A) && !A.CanPass(src, T, 1.5, FALSE))
+					npc_subtile_restore_aligned()
+					return .
 	var/datum/npc_subtile_pulse/P = new
 	P.actor = src
 	P.destination = loc
@@ -1394,7 +1408,9 @@
 		throw npc_restore_error
 	npc_subtile_pulse = null
 	if (P.armed || !human_subtile_same(S, npc_subtile_snapshot()))
-		throw EXCEPTION("Native NPC sub-tile restoration failed")
+		// Native collision refused the offset (another body overlaps it).
+		npc_subtile_restore_aligned()
+		return .
 	npc_subtile_offset_owned = TRUE
 	npc_subtile_import_owned = FALSE
 	living_movement_completed()
