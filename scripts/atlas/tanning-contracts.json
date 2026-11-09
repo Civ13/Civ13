@@ -2,7 +2,7 @@
   "reviewed_commit": "ed820f3c38aa311df96b28a05487a034f57ed524",
   "sources": {
     "code/game/objects/items/stacks/sheets/leather.dm": "1a09bbcd538ffbc5012d30398eb7b79de910364b006e111df4eea17588775762",
-    "code/modules/1713/animal_harvest.dm": "3628fa0ff31663fbb5320c96defcbd42adbafa9ae3d60a1343c545b747ca64f4",
+    "code/modules/1713/animal_harvest.dm": "0a5408c4b723c0230463f4ac9249d746add4793e0cec4eeff153ba5db8d21814",
     "code/modules/materials/material_sheets.dm": "a56b65bf73e59bb86b1e8e64087c8011239b71f7084f40dedb251a0927e6a5e4",
     "code/game/objects/structures/converters.dm": "87b498bd7c0d0807ddc6ab811044168a25d0f0b21b6d08ecb1542dc20f712694",
     "code/modules/materials/materials.dm": "a8a1299070a58fcd5010115f763b381f9d5018c54489213d5d4d921aad190e8a"
