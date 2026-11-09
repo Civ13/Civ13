@@ -144,8 +144,7 @@ above the sight line (`code/modules/visibility/los_terrain.dm`). Ridges hide
 what lies behind them, the top of a plateau above eye level is hidden from
 below, and a player on high ground sees further down the far slope. Hidden
 tiles are drawn black by the geometric visibility presenter and refuse hover
-and examine, like tiles behind a wall. It only ever hides more than before:
-walls still block sight from any height.
+and examine, like tiles behind a wall.
 
 - The eye is 1.5 levels above the ground standing and 0.5 lying, resting or
   prone. A target shows when its top does: bare ground 0.25 above its level,
@@ -167,8 +166,32 @@ walls still block sight from any height.
 
 A fresh answer for a 19x19 field costs about 2.3 ms on the pinned DreamDaemon
 (`tests/los_terrain/run.py`); cached lookups are a list read. NPC sight and
-gunfire do not use heights yet, and nobody sees over a wall from high ground
-yet: the game hides everything behind an opaque wall regardless of height.
+gunfire do not use heights yet.
+
+### Seeing over walls and trees
+
+From high ground a viewer sees over lower blockers. Each blocker cell gets an
+absolute top (its ground plus 3 for walls, doors and other opaque things, 5 for
+trees), and a blocker that the 2D rule says is in the way is skipped when the
+sight line from the eye to the target's top passes above it, measured at the
+blocker's centre (`los_height_clears`). Inside roofed areas (`AREA_INSIDE`)
+nothing is seen over walls: a roofed target or blocker keeps the flat rule.
+Ground right behind a wall stays hidden; the further behind it, the more shows.
+
+BYOND hides everything behind an opaque atom for the client whatever our
+geometry says, so this needs the `SEE_TURFS|SEE_OBJS|SEE_MOBS` sight flags
+(`mob.los_height_sight`). A viewer gets them only while its last published
+snapshot has a blocker whose top is below the eye (`see_over`), and only
+after that publication has masked every atom it cannot see. Every path that
+leaves the presentation unpublished (retired context, failed capture or
+publish, world reconstruction, ineligible body) drops them first.
+`handle_vision` keeps them across its sight reset, and they are left out of the
+presentation policy key. Because `viewers()` follows these flags,
+`visible_message` checks the height rule (`los_height_message_hidden`) for such
+a viewer. Remaining exposure while the flags are on: an atom created behind a
+wall without moving is unmasked until the next refresh or the 1-second audit,
+and `view()`-based checks for that viewer reach past walls (clicks on hidden
+atoms still act on their tile).
 
 Admins can use **Debug > Show Terrain Heights** to label every tile in view
 with its level; use it again to hide the labels.

@@ -266,3 +266,97 @@ var/global/los_eye_offsets_paused = FALSE
 	if (!S || !S.terrain || !target)
 		return TRUE
 	return S.terrain.visible(target.x - S.terrain_tile_x, target.y - S.terrain_tile_y, los_target_top(target))
+
+// Seeing over lower blockers from high ground.
+//
+// A wall, door or tree on a hill blocks a sight line only while its top is
+// above the line at that point. Inside a building (a roofed area) nothing is
+// seen over walls, and a roofed blocker blocks from any height.
+//
+// BYOND hides everything behind an opaque atom for the client, whatever our
+// geometry says, so a viewer who could see over something gets the SEE_TURFS,
+// SEE_OBJS and SEE_MOBS sight flags while it is true, after its presentation
+// has masked everything it cannot see. The flags are dropped again before any
+// failed or withdrawn presentation, so the mask is never missing while they
+// are on. Visible messages check the same rule for such a viewer.
+#define LOS_HEIGHT_SIGHT (SEE_TURFS|SEE_OBJS|SEE_MOBS)
+
+/mob/var/tmp/los_height_sight = 0
+
+// TRUE inside a roofed area (area location AREA_INSIDE, which is 0; areas.dm
+// is compiled after this file).
+/proc/los_turf_roofed(turf/T)
+	var/area/A = T ? T.loc : null
+	return A && A.location == 0
+
+// Absolute top of a blocker standing on T, height levels tall; null when it
+// blocks from any height (roofed, or outside the terrain answer).
+/proc/los_blocker_top(datum/los_snapshot/S, turf/T, height)
+	if (!S || !S.terrain || !T || los_turf_roofed(T))
+		return null
+	var/i = T.x - S.terrain_tile_x
+	var/j = T.y - S.terrain_tile_y
+	var/datum/los_terrain_field/F = S.terrain
+	if (abs(i) > F.radius || abs(j) > F.radius)
+		return null
+	return F.ground[F.index(i, j)] + height
+
+/proc/los_snapshot_see_over(datum/los_snapshot/S)
+	S.see_over = FALSE
+	if (!S.terrain)
+		return
+	for (var/datum/los_cell/B in S.blockers)
+		if (!isnull(B.top) && B.top < S.eye_top)
+			S.see_over = TRUE
+			return
+
+// The target's absolute top for seeing over blockers, or null when the rule
+// does not apply (flat ground, nothing low enough, or the target is indoors).
+/proc/los_height_query_top(datum/los_snapshot/S, atom/target)
+	if (!S || !S.see_over || !target)
+		return null
+	var/turf/T = get_turf(target)
+	if (!T || los_turf_roofed(T))
+		return null
+	var/top = los_blocker_top(S, T, los_target_top(target))
+	return top
+
+// TRUE when the sight line from the eye to the query target passes over the
+// blocker B, measured at the blocker's centre.
+/proc/los_height_clears(datum/los_snapshot/S, datum/los_cell/B, tx, ty)
+	if (isnull(S.query_top) || isnull(B.top))
+		return FALSE
+	var/length2 = tx * tx + ty * ty
+	if (!length2)
+		return FALSE
+	var/t = clamp((B.cell_x * tx + B.cell_y * ty) / length2, 0, 1)
+	return B.top < S.eye_top + (S.query_top - S.eye_top) * t - LOS_TERRAIN_EPSILON
+
+// Called after a full publication: grant or drop the sight flags.
+/proc/los_height_sight_update(mob/M, datum/los_snapshot/S)
+	if (!M)
+		return
+	if (S && S.see_over)
+		if (M.los_height_sight != LOS_HEIGHT_SIGHT)
+			M.los_height_sight = LOS_HEIGHT_SIGHT
+			M.sight |= LOS_HEIGHT_SIGHT
+	else
+		los_height_sight_revoke(M)
+
+// Drops the flags, keeping any that equipment provides.
+/proc/los_height_sight_revoke(mob/M)
+	if (!M || !M.los_height_sight)
+		return
+	var/keep = 0
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		keep = H.equipment_vision_flags
+	M.sight &= ~(M.los_height_sight & ~keep)
+	M.los_height_sight = 0
+
+// A viewer who only sees past walls through height still gets visible
+// messages only for what the height rule shows it.
+/proc/los_height_message_hidden(mob/M, atom/source)
+	if (!M || !M.los_height_sight || !source || !M.client)
+		return FALSE
+	return !los_read_allowed(M, source, "observe")

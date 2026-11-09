@@ -429,7 +429,9 @@
 					O.show_message( message, TRUE, blind_message, 2)
 		else if (ismob(I))
 			var/mob/M = I
-			if (M.see_invisible >= invisibility) // Cannot view the invisible
+			// A viewer seeing past walls from high ground sees only what the
+			// height rule shows it (los_terrain.dm).
+			if (M.see_invisible >= invisibility && !los_height_message_hidden(M, src)) // Cannot view the invisible
 				M.show_message( message, TRUE, blind_message, 2)
 			else if (blind_message)
 				M.show_message(blind_message, 2)

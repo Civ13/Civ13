@@ -93,6 +93,7 @@
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_enabled || !ishuman(mob))
 		if(los_context)
 			los_context.retire()
+		los_height_sight_revoke(mob)
 		return
 	if(los_context && (los_context.body != mob || los_context.retired))
 		los_context.retire()
@@ -109,6 +110,7 @@
 		if(root_tree_presenter)
 			root_tree_presenter.invalidate()
 		los_dirty = TRUE
+		los_height_sight_revoke(mob)
 		return
 	var/key = V.presentation_key()
 	if(!key || !mob.hud_used)
@@ -118,6 +120,7 @@
 			root_tree_presenter.retire()
 		if(los_presenter)
 			los_presenter.retire()
+		los_height_sight_revoke(mob)
 		los_last_policy = null
 		los_dirty = TRUE
 		return
@@ -148,6 +151,7 @@
 			root_tree_presenter.invalidate()
 		if(los_presenter)
 			los_presenter.invalidate()
+		los_height_sight_revoke(mob)
 		los_dirty = TRUE
 		return
 	if(audit_only && V.audit_scene_unchanged(S))
@@ -159,6 +163,7 @@
 	if(los_presenter && !los_presenter.refresh(S))
 		published = FALSE
 	if(!published)
+		los_height_sight_revoke(mob)
 		los_dirty = TRUE
 		return
 	los_last_error = null
@@ -170,6 +175,9 @@
 	var/stepped = V.movement_turf != los_published_turf || V.movement_bucket != los_published_bucket
 	los_published_turf = V.movement_turf
 	los_published_bucket = V.movement_bucket
+	// Every atom the viewer cannot see is masked now; only then may BYOND send
+	// what lies behind walls it can see over.
+	los_height_sight_update(mob, S)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	// The recorded scene lets an unchanged audit skip the presenter refresh.

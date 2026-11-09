@@ -798,6 +798,8 @@
 	H.update_sight()
 	H.sight |= get_vision_flags(H)
 	H.sight |= H.equipment_vision_flags
+	// Seeing over walls from high ground (los_terrain.dm) survives the reset.
+	H.sight |= H.los_height_sight
 
 	if (H.stat == DEAD)
 		return TRUE

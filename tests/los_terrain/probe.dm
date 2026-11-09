@@ -17,16 +17,20 @@ var/global/invalidated = 0
 	return FALSE
 /proc/los_invalidate(atom/A, possible = FALSE)
 	invalidated++
-/datum/los_snapshot
-	var/datum/los_terrain_field/terrain
-	var/terrain_tile_x = 0
-	var/terrain_tile_y = 0
 /mob
 	var/resting = FALSE
 	var/lying = FALSE
 	var/prone = FALSE
 /proc/ishuman(A)
-	return istype(A, /mob)
+	return istype(A, /mob/living/human)
+/mob/living/human
+	var/equipment_vision_flags = 0
+/area
+	var/location = 1
+/proc/get_turf(atom/A)
+	return isturf(A) ? A : get_turf(A.loc)
+/proc/los_read_allowed(mob/M, atom/A, operation)
+	return TRUE
 
 /world
 	maxx = 500
@@ -85,6 +89,59 @@ var/global/invalidated = 0
 	// Grading (terrain_heights/set_level) clears the cache and refreshes viewers.
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
-	text2file(json_encode(list("fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared)), "result.json")
+	text2file(json_encode(list("fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases())), "result.json")
 	world.log << "LOS_TERRAIN DONE"
 	shutdown()
+
+// Seeing over lower blockers: an eye on a 6-level hill looks east over flat
+// ground at height 0. Returns "name=blocked" for each case.
+/proc/los_see_over_snapshot(eye_ground, blocker_height)
+	var/datum/los_terrain_field/F = new
+	F.radius = 9
+	F.side = 19
+	F.ground = new /list(F.side * F.side)
+	F.required = new /list(F.side * F.side)
+	for (var/n = 1 to F.ground.len)
+		F.ground[n] = 0
+	F.ground[F.index(0, 0)] = eye_ground
+	F.eye = eye_ground + LOS_EYE_STANDING
+	var/datum/los_snapshot/S = new
+	S.terrain = F
+	S.eye_top = F.eye
+	S.radius_x = 9
+	S.radius_y = 9
+	var/datum/los_cell/B = new
+	B.tile_x = 3
+	B.tile_y = 0
+	B.cell_x = 3
+	B.cell_y = 0
+	B.owners = 1
+	B.top = F.ground[F.index(3, 0)] + blocker_height
+	S.blockers += B
+	for (var/datum/los_cell/C in S.blockers)
+		if (!isnull(C.top) && C.top < S.eye_top)
+			S.see_over = TRUE
+	S.index_blockers()
+	return S
+
+/proc/los_see_over_query(datum/los_snapshot/S, x, top)
+	S.query_top = S.see_over && !isnull(top) ? top : null
+	. = S.blocks_target(x, 0, x, 0, FALSE)
+	S.query_top = null
+
+/proc/los_see_over_cases()
+	var/list/out = list()
+	var/datum/los_snapshot/S = los_see_over_snapshot(6, 3)
+	out["hill_far_ground"] = los_see_over_query(S, 8, LOS_GROUND_TOP)
+	out["hill_close_behind_wall"] = los_see_over_query(S, 4, LOS_GROUND_TOP)
+	out["hill_person_two_behind_wall"] = los_see_over_query(S, 5, 1.5)
+	out["hill_indoors"] = los_see_over_query(S, 8, null)
+	S.query_top = LOS_GROUND_TOP
+	out["hill_line_clears"] = los_height_clears(S, S.blockers[1], 8, 0)
+	S.query_top = null
+	S = los_see_over_snapshot(6, 5)
+	out["hill_tree"] = los_see_over_query(S, 8, LOS_GROUND_TOP)
+	S = los_see_over_snapshot(0, 3)
+	out["flat_wall"] = los_see_over_query(S, 8, LOS_GROUND_TOP)
+	out["flat_see_over"] = S.see_over
+	return out
