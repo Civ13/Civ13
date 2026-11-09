@@ -36,6 +36,14 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'book_distribution': {'files': ('tests/book_distribution/test_contract.py',),
+        'paths': ('tests/book_distribution/',), 'shared_paths': (
+            'code/modules/research_tree/book_distribution.dm',
+            'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/1713/production.dm',
+            'code/modules/persistence/region_travel.dm',
+            'code/game/objects/structures/vending/specialist_traders.dm')},
+
     'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',),
         'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
             'code/modules/research_tree/character_knowledge.dm',
@@ -49,6 +57,16 @@ SUITES = {
                          'scripts/build-crafting-atlas.py', 'scripts/atlas/',
                          'UI/crafting-atlas.json', 'code/game/objects/items/stacks/stack.dm',
                          'code/game/objects/items/stacks/civ_recipes.dm')},
+    'navigation_tablet': {'files': ('tests/navigation_tablet/test_alt_click.py',),
+        'paths': ('tests/navigation_tablet/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'code/_onclick/click.dm')},
+    'cane_stance': {'files': ('tests/cane_stance/test_cane_stance.py',),
+        'paths': ('tests/cane_stance/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
+    'extinguisher': {'files': ('tests/extinguisher/test_initial_water.py',),
+        'paths': ('tests/extinguisher/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'config/crafting/material_recipes_global.txt')},
     # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
     'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
         'paths': ('tests/gameplay_audit/',), 'shared_paths': (

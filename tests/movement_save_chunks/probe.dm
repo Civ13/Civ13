@@ -38,6 +38,12 @@ var/frontier_delete_attempted = FALSE
 		..()
 	before_save()
 		if(armed && world.params["scenario"] == "yield") sleep(1)
+		// A slow capture that stays inside one tick: spend more than the 40%
+		// tick share without sleeping, like the Gaia buffalo (2026-11-09).
+		var/datum/moving_save_capture/overrun_chunk = map_storage.moving_save_chunk
+		if(armed && world.params["scenario"] == "overrun" && overrun_chunk && overrun_chunk.root == src)
+			var/spin = ""
+			while(world.tick_usage - overrun_chunk.start_usage <= 45) spin = md5("[spin]")
 		if(armed && world.params["scenario"] == "depth")
 			var/list/deep = list()
 			for(var/i = 1, i <= 70, i++) deep = list(deep)
@@ -302,6 +308,8 @@ var/peak_capture_tick_usage = 0
 				var/list/chunk_list = F["[map_storage.entry_path(F, found_ref)]/payload"]
 				if(legacy_list["kind"] != "list" || chunk_list["kind"] != "list" || legacy_list["ref"] != chunk_list["ref"])
 					throw EXCEPTION("Legacy/chunk shared list alias was split")
+			if(world.params["scenario"] == "overrun")
+				if(!map_storage.moving_save_demoted["\ref[subject]"]) throw EXCEPTION("OVERRUN: slow root was not moved to the turf path")
 			if(!fexists("map_saves/save_complete.txt")) throw EXCEPTION("completed marker missing")
 		world.log << "CHUNK_PROFILE roster=[peak_roster] nodes=[peak_nodes] edges=[peak_edges] logical_bytes=[peak_logical_bytes] paths=[peak_paths] entry_pins=[peak_entry_pins] list_pins=[peak_list_pins] capture_tick_usage=[peak_capture_tick_usage]"
 		text2file("PASS", "result.txt")
