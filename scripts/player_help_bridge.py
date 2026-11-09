@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '2c4303df5be7e21ec9f49c4fdcd6465ad69d8327'
+WIKI_REVIEWED_REVISION = 'abf61bb675befe6449ae025b65b01815e9e79317'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
@@ -98,7 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('6929f1b1b1d4bc9a888921e3a633c065a89f56dd8d96a5916b2398665e1c947b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('44eefb4c238a55b45d66e8d6c26e845a3c66a289657b9d5294f7d3f4376b17fe', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('6520439f47c073fe363f76daa162523457cd5627a4c1afe99c04a7ed1690b3fc', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('4698fc02e76f6d49d00ecb4b05ddff9cb12ca71a4c1bba67fc6100e53d48aecc', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -121,7 +121,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('a0e1bb3e593b3e301dbaa2d470aa61d6a221ec120155f81d81e3bae6170a49d5', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('ebb9208680b9bad5df2a0be91c7d9a0f5891879a238aeac837de36c605febcc4', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fadee870fd64b48811211d6d498016817100f4878d2ab17e2b92f39ade30de50', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
