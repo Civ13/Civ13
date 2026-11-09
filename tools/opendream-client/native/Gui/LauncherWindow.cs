@@ -287,6 +287,9 @@ internal sealed partial class LauncherWindow : Form {
             var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             settings.Click += (_, _) => ShowHostSettings();
             groupButtons.Controls.Add(settings);
+            var hubNames = new Button { Text = "Hub names", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            hubNames.Click += (_, _) => ShowHubNames();
+            groupButtons.Controls.Add(hubNames);
         }
         layout.Controls.Add(groupButtons);
         layout.SetColumnSpan(groupButtons, 2);
@@ -832,19 +835,31 @@ internal sealed partial class LauncherWindow : Form {
 
     // The host's own config files in the group's overlays (HostSettingsDialog); not tied to a running action.
     private void ShowHostSettings() {
-        if (host?.Control is not { Group: { } group } control) return;
+        if (host?.Control is not { } control || OverlayLocations() is not { } locations) return;
+        using var dialog = new HostSettingsDialog(control, locations);
+        dialog.ShowDialog(this);
+    }
+
+    // The name each region shows on the BYOND hub (SERVER_NAME in its overlay), as its own window.
+    private void ShowHubNames() {
+        if (host?.Control is not { } control || OverlayLocations() is not { } locations) return;
+        using var dialog = new HubNamesDialog(control, locations);
+        dialog.ShowDialog(this);
+    }
+
+    private IReadOnlyList<HostSettings.Location>? OverlayLocations() {
+        if (host?.Control is not { Group: { } group }) return null;
         IReadOnlyList<HostSettings.Location> locations;
         try { locations = HostSettings.Locations(group); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) {
             HostLine("Could not read the overlays from " + group.Config + ": " + e.Message);
-            return;
+            return null;
         }
         if (locations.Count == 0) {
             HostLine("The group config names no overlay folder. Add \"overlay\" (for every region) or a region's \"overlay\" to " + group.Config + " first.");
-            return;
+            return null;
         }
-        using var dialog = new HostSettingsDialog(control, locations);
-        dialog.ShowDialog(this);
+        return locations;
     }
 
     private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +

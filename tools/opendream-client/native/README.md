@@ -246,6 +246,17 @@ it to the regions. The game reads the token only when an admin approves an in-ga
 report, so a running world uses it at once. `HostSettings.cs` holds the file rules and is covered by
 `tests/LocalHostingTests.cs`.
 
+**Hub names** (next to Host settings) sets the name each world shows in bold on the
+BYOND hub and in the game window's title, the `SERVER_NAME` setting. It has one box for
+the shared overlay (when the group config names one) and one per region overlay, and
+shows each region's current name from its merged `config/config.txt`. It changes only
+the `SERVER_NAME` line of that overlay's `config.local.txt`; an empty box removes the
+line, so the region follows the shared name, then the repository's ("Civilization 13").
+Quotes, backslashes and `< >` are refused. **Name each region after itself** fills every
+region box with "<shared name> - <region>". **Save and apply to every region** saves the
+changed names and runs `config-apply` for the group; a running world shows its new name
+from its next restart or handover.
+
 ### Civilizationbot tab and Updates
 
 When `bot` is present the window adds a **Civilizationbot** tab. It drives the

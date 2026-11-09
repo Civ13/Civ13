@@ -231,6 +231,25 @@ static class LocalHostingTests {
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");
         Reject(() => HostSettings.Save(places[1], "config/transfer-token.txt", "x"), "a file setup writes");
         Reject(() => HostSettings.Save(places[1], "../outside.txt", "x"), "a path outside the overlay");
+        // Hub names: only the SERVER_NAME line of config.local.txt changes; an empty name removes it.
+        Require(HostSettings.WithServerName("WEBHOOK_KEY k\n#SERVER_NAME\nserver_name Old\n", " Civ13 - Gaia ") == "WEBHOOK_KEY k\nSERVER_NAME Civ13 - Gaia\n", "hub name replaces old lines in place");
+        Require(HostSettings.WithServerName("WEBHOOK_KEY k", "Civ13") == "WEBHOOK_KEY k\nSERVER_NAME Civ13\n", "hub name is appended");
+        Require(HostSettings.WithServerName("# keep me\nSERVER_NAME Old\nWEBHOOK_KEY k\n#SERVER_NAME\n", "") == "# keep me\nWEBHOOK_KEY k\n", "an empty hub name removes its lines");
+        Require(HostSettings.WithServerName("SERVER_NAME Old\n", " ") == "", "removing the only line leaves an empty file");
+        Require(HostSettings.Problem(HostSettings.LocalConfig, HostSettings.WithServerName("", "Civ13 Gaia (EU) #1")) == null, "the hub name line is a valid setting");
+        foreach (var bad in new[] { "Val's world", "say \"hi\"", "a\\b", "<b>x</b>", "#hidden", "tab\there", new string('x', HostSettings.ServerNameLength + 1) })
+            Require(HostSettings.ServerNameProblem(bad) != null, "bad hub name accepted: " + bad);
+        Reject(() => HostSettings.WithServerName("", "Val's"), "a hub name with a quote saved");
+        Require(HostSettings.SettingValue("SERVER_NAME A\n#SERVER_NAME B\n# SERVER_NAME C\nserver_name  D \n", HostSettings.ServerName) == "D"
+            && HostSettings.SettingValue("#SERVER_NAME A\n", HostSettings.ServerName) == null, "setting value as the game reads it");
+        File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { root = Path.Combine(dir, "regions"), regions = new object[] { new { id = "gaia" } } }));
+        Require(HostSettings.RegionServerName(host.Control!.Group!, "mars") == null, "a region not set up has no hub name");
+        Directory.CreateDirectory(Path.Combine(dir, "regions", "gaia", "config"));
+        File.WriteAllText(Path.Combine(dir, "regions", "gaia", "config", "config.txt"), "#SERVER_NAME x\n");
+        Require(HostSettings.RegionServerName(host.Control!.Group!, "gaia") == HostSettings.DefaultServerName, "no active line falls back to the game default");
+        File.WriteAllText(Path.Combine(dir, "regions", "gaia", "config", "config.txt"), "SERVER_NAME Civilization 13\nSERVER_NAME Civ13 Gaia\n");
+        Require(HostSettings.RegionServerName(host.Control!.Group!, "gaia") == "Civ13 Gaia", "the merged region config's hub name");
+        try { HostSettings.RegionServerName(host.Control!.Group!, "../gaia"); throw new Exception("bad region id accepted for a hub name"); } catch (ArgumentException) { assertions++; }
         Require(LocalHosting.GroupStep(host.Control!, "config-apply", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "config-apply", "--region", "gaia" }), "config-apply argv");
         var applied = LocalHosting.ParseGroup("config-apply", 0, "{\"done\": {\"gaia\": {\"copied\": [\"config/config.local.txt\"], \"running\": true}, \"mars\": {\"copied\": [], \"running\": false}}, \"refused\": {\"moon\": \"the region is not set up\"}, \"ok\": true}");
         Require(applied is { Ok: true, Busy: false } && applied.Message == "gaia: 1 file written (running: used from its next restart). mars: already current. Refused: moon: the region is not set up.",
