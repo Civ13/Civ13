@@ -73,8 +73,8 @@ show nothing. The 624 sprites in `icons/turf/terrain_shade.dmi` are made by
 `scripts/terrain_heights.py bake-shading`; the tool's `corner_lights` and the
 game's `light_rows` use the same maths, and the native test compares them.
 
-The sprites are shared objects in the turf's `vis_contents`, on layer 2.005
-(above the ground, below decals and objects), with `mouse_opacity = 0`, so
+The sprites are shared objects in the turf's `vis_contents`, on layer 2.035
+(above the ground, floor decals and fallen snow, below objects), with `mouse_opacity = 0`, so
 they are never clicked and never saved. The ticker places them once per round
 (`terrain_shading_check`), and `ChangeTurf` puts them back on replaced turfs,
 including turfs rebuilt by a save load.
@@ -158,6 +158,14 @@ and examine, like tiles behind a wall.
   prone. A target shows when its top does: bare ground 0.25 above its level,
   items 0.5, dense objects 1, people 1.5 (0.5 lying), walls 3 and trees 5. So
   a person's head or a tree shows over a crest before the ground under it.
+- Ground counts half its height for sight (`LOS_TERRAIN_RELIEF` 0.5) and a
+  target still shows when its top is within 0.5 of the sight line
+  (`LOS_TERRAIN_ALLOWANCE`). Height levels are steep for movement, so at full
+  weight gentle slopes and small rises hid about a third of a Gaia view; now
+  about a tenth is hidden, mostly behind ridges, cliffs and plateau edges. A
+  3-level rise hides the ground just behind it but not a person; an 8-level
+  ridge hides both. NPC sight uses the same rule; gunfire and seeing over walls
+  use the real heights.
 - The answer for one eye position is a ring sweep outward from the eye: each
   cell's sight-line floor comes from the two cells of the previous ring that
   the ray passes between, interpolated (like XDraw), so a whole view costs one

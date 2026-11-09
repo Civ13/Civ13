@@ -215,6 +215,16 @@ class Wiring(unittest.TestCase):
         self.assertIn('mouse_opacity = 0', MODULE)
         self.assertIn('should_save = FALSE', MODULE)
 
+    def test_shading_draws_over_fallen_snow(self):
+        # Fallen snow is an opaque overlay on dirt and grass; shading under it
+        # left snowy hills flat all winter.
+        snow = (ROOT / 'code/modules/1713/snowfall_ground.dm').read_text(encoding='utf-8')
+        snow_layer = float(re.search(r'icon_state = "snow", layer = ([0-9.]+)\)', snow).group(1))
+        shade_layer = float(re.search(r'#define TERRAIN_SHADE_LAYER ([0-9.]+)', MODULE).group(1))
+        self.assertGreater(shade_layer, snow_layer)
+        self.assertLess(shade_layer, 2.04)  # winter's decal copies stay on top
+        self.assertIn('layer = TERRAIN_SHADE_LAYER', MODULE)
+
     def test_heights_are_not_saved(self):
         self.assertIn('var/tmp/datum/terrain_heights/terrain_heights_cache', MODULE)
         self.assertIn('key == "terrain_height_file" || key == "terrain_heights_cache"', MODULE)

@@ -20,6 +20,15 @@
 #define LOS_EYE_OFFSET_QUANTUM 16
 // Bare ground counts as seen when this far above it is.
 #define LOS_GROUND_TOP 0.25
+// Share of the ground's rise that blocks sight. Height levels are steep for
+// movement (a 3-level step is a scramble), so at full weight every gentle slope
+// and small rise hid most of the view; at half weight only real ridges, cliffs
+// and plateau edges cast shadows. Eye height and target tops are not scaled.
+#define LOS_TERRAIN_RELIEF 0.5
+// A target still shows when its top is at most this far below the sight line
+// (in sight units, after LOS_TERRAIN_RELIEF), so the crest of a rise and what
+// stands just past it show; ground well behind a ridge stays hidden.
+#define LOS_TERRAIN_ALLOWANCE 0.5
 // Hidden ground with at most this many hidden neighbours is shown (despeckle).
 #define LOS_SPECKLE_NEIGHBOURS 2
 // Terrain answers kept for recent eye positions.
@@ -82,12 +91,14 @@ var/global/los_eye_offsets_paused = FALSE
 	should_save = FALSE
 	var/radius = 0
 	var/side = 0
+	// Absolute eye height in levels (for seeing over walls and trees).
 	var/eye = 0
 	// TRUE when every ground cell in the view equals the eye's ground.
 	var/flat = FALSE
 	// Flat lists, index (i + radius) * side + (j + radius) + 1 for the cell
-	// (i, j) relative to the eye tile: ground height and the lowest top height
-	// a target there needs to be seen (null = always seen).
+	// (i, j) relative to the eye tile: ground height in levels and the sight
+	// line's floor there in sight units (ground counts LOS_TERRAIN_RELIEF of
+	// its height; null = always seen).
 	var/list/ground
 	var/list/required
 
@@ -104,7 +115,7 @@ var/global/los_eye_offsets_paused = FALSE
 	var/need = required[n]
 	if (isnull(need))
 		return TRUE
-	return ground[n] + top >= need - LOS_TERRAIN_EPSILON
+	return ground[n] * LOS_TERRAIN_RELIEF + top + LOS_TERRAIN_ALLOWANCE >= need - LOS_TERRAIN_EPSILON
 
 // Fills the field for an eye at the tile (x, y, z) shifted by (fx, fy) tiles,
 // each within half a tile. Returns FALSE for flat ground.
@@ -134,13 +145,15 @@ var/global/los_eye_offsets_paused = FALSE
 			if (g != base)
 				flat = FALSE
 			ground[n] = g
-			floor_h[n] = g
+			floor_h[n] = g * LOS_TERRAIN_RELIEF
 			n++
 	if (flat)
 		ground = null
 		required = null
 		return FALSE
 	eye = base + eye_level
+	// The sweep works in sight units: ground scaled by LOS_TERRAIN_RELIEF.
+	var/sight_eye = base * LOS_TERRAIN_RELIEF + eye_level
 	// One pass over rings 2..radius (rings 0 and 1 are always seen). Inlined:
 	// a proc call per cell doubled the cost of a fresh field.
 	var/list/hidden_flag = new /list(side * side)
@@ -194,13 +207,13 @@ var/global/los_eye_offsets_paused = FALSE
 				var/row = j - s + radius + 1
 				a = floor_h[(clamp(lo, -km, km) + radius) * side + row]
 				b = floor_h[(clamp(lo + 1, -km, km) + radius) * side + row]
-			var/need = eye + (a + (b - a) * (cross - lo) - eye) * d / dp
+			var/need = sight_eye + (a + (b - a) * (cross - lo) - sight_eye) * d / dp
 			n = (i + radius) * side + j + radius + 1
 			required[n] = need
-			var/g = ground[n]
+			var/g = floor_h[n]
 			if (need > g)
 				floor_h[n] = need
-				if (g + LOS_GROUND_TOP < need - LOS_TERRAIN_EPSILON)
+				if (g + LOS_GROUND_TOP + LOS_TERRAIN_ALLOWANCE < need - LOS_TERRAIN_EPSILON)
 					hidden_flag[n] = TRUE
 					hidden += n
 	// A small dip one level below its rim hides at grazing angles and leaves
@@ -220,7 +233,7 @@ var/global/los_eye_offsets_paused = FALSE
 		if (count - 1 <= LOS_SPECKLE_NEIGHBOURS)
 			clear += h
 	for (var/h in clear)
-		required[h] = ground[h]
+		required[h] = ground[h] * LOS_TERRAIN_RELIEF
 	return TRUE
 
 // The shared terrain answer for a body's eye, or null when the body's level
@@ -256,7 +269,7 @@ var/global/los_eye_offsets_paused = FALSE
 
 // One-target terrain test for NPC sight, without a field or cache: TRUE when
 // ground under the straight line from the viewer's eye to the target's top
-// rises above it. One sample per tile along the longer axis; the viewer's
+// rises above it, with the same relief and allowance as the sweep. One sample per tile along the longer axis; the viewer's
 // neighbours (always seen, as in the sweep) and the target's tile are skipped.
 // About a dozen height reads; levels without heights return at once.
 /proc/los_terrain_ray_blocked(atom/viewer, atom/target)
@@ -274,11 +287,11 @@ var/global/los_eye_offsets_paused = FALSE
 	var/datum/terrain_heights/H = map.terrain_heights()
 	if (!H || !H.rows_by_z["[A.z]"])
 		return FALSE
-	var/eye = H.at(A.x, A.y, A.z) + (ismob(viewer) ? los_eye_level(viewer) : LOS_EYE_STANDING)
-	var/rise = H.at(B.x, B.y, B.z) + los_target_top(target) - eye
+	var/eye = H.at(A.x, A.y, A.z) * LOS_TERRAIN_RELIEF + (ismob(viewer) ? los_eye_level(viewer) : LOS_EYE_STANDING)
+	var/rise = H.at(B.x, B.y, B.z) * LOS_TERRAIN_RELIEF + los_target_top(target) + LOS_TERRAIN_ALLOWANCE - eye
 	for (var/n in 2 to steps - 1)
 		var/t = n / steps
-		if (H.at(A.x + round(dx * t + 0.5), A.y + round(dy * t + 0.5), A.z) > eye + rise * t + LOS_TERRAIN_EPSILON)
+		if (H.at(A.x + round(dx * t + 0.5), A.y + round(dy * t + 0.5), A.z) * LOS_TERRAIN_RELIEF > eye + rise * t + LOS_TERRAIN_EPSILON)
 			return TRUE
 	return FALSE
 

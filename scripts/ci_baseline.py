@@ -1018,8 +1018,20 @@ SUITES = {
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
     # Handcuff placement races and per-human chew cooldown (#4229, #4230).
+    # Faction recruitment authority and the shared enrollment transition (#4237).
+    'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
+        'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/living/carbon/give.dm'),
+        'shared_paths': ('code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
+            'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+    # Spray bottle acceptance, feedback and reagent logging (#4269, #4270).
+    'spray': {'files': ('tests/spray/test_source.py',),
+        'paths': ('tests/spray/', 'code/modules/reagents/reagent_containers/spray.dm')},
+    # Trap disarm recheck and punji animal capture/release (#4248, #4249).
+    'traps': {'files': ('tests/traps/test_source.py',),
+        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

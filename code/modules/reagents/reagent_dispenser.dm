@@ -39,12 +39,12 @@
 			..()
 		else if (istype(W, /obj/item/weapon/key))
 			var/obj/item/weapon/key/K = W
-			if (W.code != custom_code)
+			if (custom_code != 0 && K.code != custom_code)
 				to_chat(user, "This key does not match this lock!")
 				return
 			if (custom_code == 0 && K.code != 0)
 				var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
-				if (choice == "No")
+				if (choice != "Yes" || QDELETED(src) || QDELETED(K) || custom_code != 0 || K.loc != user || !user.Adjacent(src))
 					return
 				else
 					locked = TRUE
