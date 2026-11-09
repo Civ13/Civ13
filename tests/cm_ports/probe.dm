@@ -65,6 +65,7 @@ var/probe_runtime_error = FALSE
 	eighth_batch_checks()
 	ninth_batch_checks()
 	tenth_batch_checks()
+	eleventh_batch_checks()
 
 /proc/blurb_checks()
 	map.title = "Probe Valley"
@@ -987,3 +988,67 @@ var/probe_runtime_error = FALSE
 	var/plain_view = jointext(body.death_time_lines(bystander), "|")
 	probe_check(findtext(doc_view, "died about 5 minutes ago") && findtext(doc_view, "defibrillator") || findtext(doc_view, "too late"), "medics see the time and whether a revive could work: [doc_view]")
 	probe_check(findtext(plain_view, "died about 5 minutes ago") && !findtext(plain_view, "defibrillator") && !findtext(plain_view, "too late"), "others see only the time: [plain_view]")
+
+/proc/eleventh_batch_checks()
+	// Helmet cameras
+	probe_check("helmet_camera" in icon_states('icons/obj/cmss13_ports.dmi'), "the helmet camera has a sprite")
+	var/mob/living/human/scout = probe_human(5, 26, "Camera Scout")
+	probe_check(!scout.fit_helmet_camera(), "a camera needs headgear")
+	scout.equip_to_slot_or_del(new /obj/item/clothing/head/helmet(scout), slot_head)
+	probe_check(scout.fit_helmet_camera() && scout.has_helmet_camera(), "a camera clips onto a helmet")
+	probe_check(!scout.fit_helmet_camera(), "a helmet takes one camera")
+
+	// Overwatch
+	map.civilizations = FALSE
+	scout.faction_text = "Red"
+	var/mob/living/human/lt = probe_human(5, 27, "Overwatch Officer")
+	lt.faction_text = "Red"
+	var/datum/job/OJ = new
+	OJ.is_officer = TRUE
+	lt.original_job = OJ
+	var/mob/living/human/grunt = probe_human(6, 27, "Plain Rifleman")
+	grunt.faction_text = "Red"
+	grunt.original_job = new /datum/job
+	var/mob/living/human/enemy = probe_human(7, 27, "Enemy Scout")
+	enemy.faction_text = "Blue"
+	enemy.equip_to_slot_or_del(new /obj/item/clothing/head/helmet(enemy), slot_head)
+	enemy.fit_helmet_camera()
+	probe_check(can_use_overwatch(lt) && !can_use_overwatch(grunt), "only leaders use overwatch")
+	var/list/feeds = overwatch_feeds(lt)
+	probe_check((scout in feeds) && !(enemy in feeds) && !(grunt in feeds), "overwatch lists only your own people with cameras")
+	var/obj/item/overwatch_laptop/L = new(lt)
+	lt.put_in_hands(L)
+	probe_check(L.loc == lt && L.start_watching(lt, scout) && lt.using_object == L && L.check_eye(lt) == 0, "an officer watches a helmet camera")
+	probe_check(!L.start_watching(lt, enemy), "enemy cameras can't be watched")
+	lt.forceMove(locate(5, 28, 1))
+	probe_check(L.check_eye(lt) < 0 && !L.watcher && lt.using_object != L, "moving cuts the feed")
+	lt.forceMove(locate(5, 27, 1))
+	L.start_watching(lt, scout)
+	var/obj/item/clothing/head/HC = scout.head
+	HC.helmet_camera_fitted = FALSE
+	probe_check(L.check_eye(lt) < 0 && !L.watching, "a removed camera cuts the feed")
+	HC.helmet_camera_fitted = TRUE
+
+	// Assistant gunner
+	var/obj/item/weapon/gun/projectile/automatic/stationary/MG = new(locate(25, 12, 1))
+	var/mob/living/human/gunner = probe_human(25, 11, "MG Gunner")
+	gunner.faction_text = "Red"
+	MG.used_by_mob = gunner
+	var/solo_heat = MG.heat_per_shot()
+	var/mob/living/human/far = probe_human(28, 12, "Far Rifleman")
+	far.faction_text = "Red"
+	probe_check(solo_heat == 2 && !MG.mg_assistant(gunner), "a lone gunner heats the barrel at the normal rate")
+	var/mob/living/human/foe = probe_human(26, 12, "Foe Next To Gun")
+	foe.faction_text = "Blue"
+	probe_check(!MG.mg_assistant(gunner), "an enemy beside the gun is no assistant")
+	var/mob/living/human/feeder = probe_human(24, 12, "MG Feeder")
+	feeder.faction_text = "Red"
+	probe_check(MG.mg_assistant(gunner) == feeder && MG.heat_per_shot() == solo_heat / 2, "an assistant halves barrel heat")
+	feeder.lying = TRUE
+	probe_check(!MG.mg_assistant(gunner), "a downed assistant can't feed the gun")
+	feeder.lying = FALSE
+	map.civilizations = TRUE
+	gunner.faction_text = null
+	feeder.faction_text = null
+	probe_check(MG.mg_assistant(gunner) == feeder, "two people with no faction can crew a gun together")
+	MG.used_by_mob = null

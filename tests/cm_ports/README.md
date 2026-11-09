@@ -65,3 +65,8 @@ The tenth batch checks ghost death notices (text, follow link, who gets one),
 last words (empty, length, kept for the roll of the fallen, the round-end
 lines) and the time since death on a body (rounding, the medic-only revive
 hint).
+
+The eleventh batch checks helmet cameras (headgear needed, one per helmet), who
+may use the overwatch laptop and whose cameras it lists (own side only), the
+feed being cut when the viewer moves or the camera comes off, and the assistant
+gunner (friendly, adjacent and standing; halves mounted-gun barrel heat).
