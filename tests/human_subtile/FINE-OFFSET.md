@@ -1,34 +1,42 @@
 # Modifier-held precision movement
 
-Hold Alt and press an arrow (either macro mode) or WASD (hotkey mode) for a
-2-pixel physical step. Alt+numpad diagonal direction keys issue diagonal steps.
-Release the chord to stop repeating; unmodified directions keep the existing
-alignment movement. There is no directional HUD movement button in this skin.
-Alt+L remains LOOC. Smooth movement must be enabled (including default activation).
+Hold Alt and press an arrow (either macro mode) or WASD (hotkey mode) to move
+by offset instead of by tile. Alt+numpad diagonal direction keys move diagonally.
+Unmodified directions keep the existing alignment movement. Alt+L remains LOOC.
+Smooth movement must be enabled (including default activation).
 
-Each native `+REP` chord sends one fresh input, not a server-held modifier latch
-or worker. It releases ordinary held-axis requests through the existing key-up lifecycle
-(including drone/turret stop hooks) before entering `client.Move`.
-No input state persists across release, focus loss, logout, body transfer or save.
-Actual DreamSeeker macro/repeat/focus delivery still needs connected-client QA;
-this source-level design does not establish that UI evidence.
+A press (`ALT+key` -> `.fine-offset-start`) nudges 2 pixels at once. If the chord
+is still held after `FINE_OFFSET_GLIDE_DELAY` (0.1 s), the movementMachine slides
+the body at the ordinary walking/running pace: each held step covers one tile's
+distance from wherever the body is, in sixteen 2px pulses on the same admitted
+interval and held-key chaining as ordinary smooth walking, without stopping at
+alignments. Releasing the chord (`ALT+key+UP` -> `.fine-offset-stop`, or the plain
+key-up if Alt was let go first) clears the held axis; the running step sees it
+before its next pulse, stops, and the unused part of its interval is not kept
+as a cooldown. Precision input therefore no longer depends on OS key repeat
+(about 0.5 s initial delay) or a tick-floored 2px step (about half walking speed).
+
+The held axes are the same `movement_northsouth`/`movement_eastwest` used by
+ordinary held keys, plus `mob.movement_fine`. Ordinary direction presses and
+logout clear `movement_fine`, and key-up uses the existing stop verbs (including
+drone/turret stop hooks), so release, logout and body handoff end a slide exactly
+as they end held walking.
 
 The existing client admission, native one-use pulse authority, collision chain,
-offset normalization, persistence capsule and completion hooks remain authoritative.
-Fine steps stop after 2 pixels on each moving axis, including across tile borders
-(e.g. west from offset 0 becomes offset 30 in the western tile). No `pixel_x/y`
+offset normalization and completion hooks remain authoritative. No `pixel_x/y`
 visual displacement or forced placement is used. Blockage does not refund costs.
 Pulling, linked states, posture movement, driving, confusion and unowned legacy
 offsets refuse precision input rather than falling back to a tile move.
 
-Nutrition, water, stamina and run warming cost 1/16 of a tile input. The existing
-speed/terrain/trait/diagonal delay is scaled by 1/16 with a minimum server tick;
-precision cannot move faster than ordinary input. Precision does not accelerate
-run velocity. Ordinary-input arithmetic is unchanged. Fine positioning does not
-perform tile stomps, avoiding rapid boundary-oscillation attacks. Completion still
-updates vision/UI/chat anchors and movement appearance and notifies nearby animals
-once per successful fine input; it does not grant silence. Existing native
-per-pulse collision/movement effects retain their current behavior.
+A nudge costs 1/16 of a tile input (nutrition, water, stamina, run warming) and
+its delay is scaled by 1/16 with a minimum server tick. A held slide costs one
+ordinary tile input per step. Precision does not accelerate run velocity and does
+not perform tile stomps, avoiding rapid boundary-oscillation attacks.
+
+An ordinary (unmodified) step from an interrupted offset travels only to the next
+alignment. Its delay is scaled to that share of a tile and its pulses are spread
+over the shorter interval, so it moves at the ordinary pace instead of covering
+the distance at once and then waiting out a whole tile's cooldown.
 
 ## Dependency and verification
 

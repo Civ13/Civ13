@@ -279,7 +279,7 @@ def validate_receipt(row, suite, control, head):
         if any(r.get('client') != 0 or r.get('effects') != 1 or r.get('bumps', 0) < 3 for r in rows):
             raise ValueError('Mining integration observations failed')
     else:
-        if row.get('head') != head or row.get('checks') != 44 or row.get('error') is not None:
+        if row.get('head') != head or row.get('checks') != 48 or row.get('error') is not None:
             raise ValueError('Human fixture failed/wrong source')
         rows = row.get('rows')
         if not isinstance(rows, list) or len(rows) != 1 or rows[0].get('scene') != 'normal':

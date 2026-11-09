@@ -447,7 +447,7 @@
 	var/mob_loc = mob.loc
 	var/mob/input_actor = mob
 	var/subtile_deadline = null
-	var/distance_fraction = fine_step ? (2 / 32) : 1
+	var/distance_fraction = (fine_step == FINE_STEP_NUDGE) ? (2 / 32) : 1
 
 
 	// prevent passing the invisible wall: now supports diagonals :agony:
@@ -880,12 +880,18 @@
 			else
 				if (mob_is_human && (H.human_subtile_eligible(direct) || H.human_subtile_pull_ready(direct)))
 					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
-					if (fine_step)
+					if (fine_step == FINE_STEP_NUDGE)
 						subtile_deadline = world.time + max(world.tick_lag, (subtile_deadline - world.time) * distance_fraction)
 						// Reserve before callbacks: repeat input/failure cannot refund it.
 						move_delay = subtile_deadline
-						. = H.SelfMove(n, direct, subtile_deadline, TRUE)
+						. = H.SelfMove(n, direct, subtile_deadline, FINE_STEP_NUDGE)
 					else
+						// A step from an interrupted offset only travels to the next
+						// alignment, so it costs that share of a tile, not a whole one.
+						if (!fine_step && !H.human_subtile_pull_ready(direct))
+							var/remaining_fraction = H.human_subtile_remaining_fraction(direct)
+							if (remaining_fraction < 1)
+								subtile_deadline = world.time + max(world.tick_lag, (subtile_deadline - world.time) * remaining_fraction)
 						// Continue a held key from the previous step's deadline, not
 						// from the tick this Move happened to run in. Held steps keep
 						// the pace players had before chaining (see human_subtile_held_pace).
@@ -894,7 +900,16 @@
 							if (held_deadline > world.time)
 								subtile_deadline = held_deadline
 								H.human_subtile_chain_start = subtile_chain_time
-						. = H.SelfMove(n, direct, subtile_deadline)
+						if (fine_step)
+							// Held precision slides one tile's distance at the ordinary
+							// pace. Releasing the chord stops it, and the unused part
+							// of the interval is not charged as a cooldown.
+							move_delay = subtile_deadline
+							. = H.SelfMove(n, direct, subtile_deadline, FINE_STEP_HELD)
+							if (H.human_subtile_fine_released_at == world.time)
+								subtile_deadline = world.time
+						else
+							. = H.SelfMove(n, direct, subtile_deadline)
 						H.human_subtile_chain_start = null
 				else if (!fine_step)
 					. = mob.SelfMove(n, direct)
@@ -1106,11 +1121,23 @@
 // loop-based movement magic
 /mob/var/movement_eastwest = null
 /mob/var/movement_northsouth = null
+// The held axes came from Alt+direction: slide by offset instead of by tile.
+/mob/var/tmp/movement_fine = FALSE
+// A held Alt+direction starts sliding at this time; a quick tap only nudges.
+/client/var/tmp/fine_offset_glide_at = 0
+
+/mob/proc/held_movement_direction()
+	return (movement_northsouth || 0) | (movement_eastwest || 0)
+
+// The fine_step value the movementMachine passes for this mob's held keys.
+/mob/proc/held_fine_step()
+	return movement_fine ? FINE_STEP_HELD : FALSE
 
 // when a client changes mobs or logs out they stop moving
 /mob/Logout()
 	movement_eastwest = null
 	movement_northsouth = null
+	movement_fine = FALSE
 	..()
 
 /client/verb/startmovingup()
@@ -1118,6 +1145,7 @@
 	set instant = TRUE
 	if (mob)
 		mob.movement_northsouth = NORTH
+		mob.movement_fine = FALSE
 		try
 			Move(get_step(mob, NORTH), NORTH)
 		catch (var/E)
@@ -1152,6 +1180,7 @@
 	set instant = TRUE
 	if (mob)
 		mob.movement_northsouth = SOUTH
+		mob.movement_fine = FALSE
 		try
 			Move(get_step(mob, SOUTH), SOUTH)
 		catch (var/E)
@@ -1184,6 +1213,7 @@
 	set instant = TRUE
 	if (mob)
 		mob.movement_eastwest = EAST
+		mob.movement_fine = FALSE
 		try
 			Move(get_step(mob, EAST), EAST)
 		catch (var/E)
@@ -1218,6 +1248,7 @@
 	set instant = TRUE
 	if (mob)
 		mob.movement_eastwest = WEST
+		mob.movement_fine = FALSE
 		try
 			Move(get_step(mob, WEST), WEST)
 		catch (var/E)
@@ -1320,19 +1351,48 @@
 			sleep(world.tick_lag)
 	#endif
 
-// Stateless modifier chords: no server-held Alt latch or repeat worker survives
-// key release, focus loss, logout or a body handoff. Each repeat is a fresh input.
-/client/verb/fine_offset_step(direction as num)
-	set name = ".fine-offset-step"
+// Alt+direction: a press nudges 2 pixels at once; holding the chord past
+// FINE_OFFSET_GLIDE_DELAY slides by offset at the ordinary walking or running
+// pace (movementMachine), and releasing it stops within one 2px pulse. The
+// held axes use the same key-up lifecycle as ordinary movement, so release,
+// logout and body handoff clear them exactly as they clear held walking.
+/client/verb/fine_offset_start(direction as num)
+	set name = ".fine-offset-start"
 	set hidden = TRUE
 	set instant = TRUE
 	if (!mob || !(direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)))
 		return FALSE
-	// Release through the ordinary lifecycle, including drone/turret stop hooks.
-	// Raw axis clearing would prevent the later key-up from stopping controls
-	// when precision input is refused for a linked body.
-	stopmovingup()
-	stopmovingdown()
-	stopmovingright()
-	stopmovingleft()
-	return Move(get_step(mob, direction), direction, !!(direction & (direction - 1)), TRUE)
+	// Release ordinary held axes through their lifecycle, including drone/turret
+	// stop hooks, before they become precision axes.
+	if (!mob.movement_fine || !mob.held_movement_direction())
+		stopmovingup()
+		stopmovingdown()
+		stopmovingright()
+		stopmovingleft()
+		// Adding a second axis to a running slide keeps it sliding.
+		fine_offset_glide_at = world.time + FINE_OFFSET_GLIDE_DELAY
+	if (direction & (NORTH | SOUTH))
+		mob.movement_northsouth = direction & (NORTH | SOUTH)
+	if (direction & (EAST | WEST))
+		mob.movement_eastwest = direction & (EAST | WEST)
+	mob.movement_fine = TRUE
+	var/held = mob.held_movement_direction()
+	return Move(get_step(mob, held), held, !!(held & (held - 1)), FINE_STEP_NUDGE)
+
+/client/verb/fine_offset_stop(direction as num)
+	set name = ".fine-offset-stop"
+	set hidden = TRUE
+	set instant = TRUE
+	if (!mob)
+		return FALSE
+	if (direction & NORTH)
+		stopmovingup()
+	if (direction & SOUTH)
+		stopmovingdown()
+	if (direction & EAST)
+		stopmovingright()
+	if (direction & WEST)
+		stopmovingleft()
+	if (!mob.held_movement_direction())
+		mob.movement_fine = FALSE
+	return TRUE

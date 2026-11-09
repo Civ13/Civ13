@@ -108,7 +108,7 @@ class Sources(unittest.TestCase):
     def test_travel_times_a_chained_step_from_the_previous_deadline(self):
         body = proc_body(SUBTILE, '/mob/living/human/proc/human_subtile_travel(')
         self.assertIn('T.start_time = human_subtile_chain_start', body)
-        self.assertIn('!legacy_posture && !paid_posture && !fine_step', body)
+        self.assertIn('!legacy_posture && !paid_posture && fine_step != FINE_STEP_NUDGE', body)
         self.assertIn('human_subtile_update_visuals(deadline - T.start_time', body)
         self.assertIn('"human_subtile_chain_start"', SUBTILE)
 

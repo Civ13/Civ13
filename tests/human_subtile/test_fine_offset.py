@@ -53,7 +53,7 @@ class FineOffsetContracts(unittest.TestCase):
         validate_tile_restore(MODULE)
 
     def test_costs_cooldown_and_no_stomp_acceleration(self):
-        self.assertIn('var/distance_fraction = fine_step ? (2 / 32) : 1', MOVE)
+        self.assertIn('var/distance_fraction = (fine_step == FINE_STEP_NUDGE) ? (2 / 32) : 1', MOVE)
         for cost in ('0.005', '0.002', '0.004', '0.0015'):
             for resource in ('nutrition', 'water'):
                 self.assertIn(f'H.{resource} -= {cost} * distance_fraction', MOVE)
@@ -66,28 +66,35 @@ class FineOffsetContracts(unittest.TestCase):
             for tick in (.1, .5, 1):
                 self.assertGreaterEqual(16 * max(tick, duration / 16), duration)
 
-    def test_chords_live_in_macro_sets_not_menu_and_have_no_latch(self):
+    def test_chords_press_nudge_and_release_stop(self):
         for name, expected in (('macro', 8), ('hotkeymode', 12)):
             section = SKIN.split(f'macro "{name}"', 1)[1]
             section = re.split(r'\n(?:macro|menu|window) ', section, 1)[0]
-            self.assertEqual(section.count('command = ".fine-offset-step '), expected)
+            starts = re.findall(r'name = "ALT\+(\w+)"\n\t\tcommand = "\.fine-offset-start (\d+)"', section)
+            stops = re.findall(r'name = "ALT\+(\w+)\+UP"\n\t\tcommand = "\.fine-offset-stop (\d+)"', section)
+            self.assertEqual(len(starts), expected)
+            self.assertEqual(sorted(starts), sorted(stops))
+            # Key repeat no longer drives precision movement; held keys do.
+            self.assertNotIn('fine-offset-step', section)
         menu = SKIN.split('menu "menu"', 1)[1].split('window ', 1)[0]
-        self.assertNotIn('fine-offset-step', menu)
+        self.assertNotIn('fine-offset', menu)
         self.assertIn('name = "ALT+L"\n\t\tcommand = "looc"', SKIN)
-        command = MOVE.split('/client/verb/fine_offset_step', 1)[1]
-        for release in ('stopmovingup()', 'stopmovingdown()', 'stopmovingright()', 'stopmovingleft()'):
-            self.assertIn(release, command)
-        self.assertNotIn('mob.movement_northsouth = null', command)
-        self.assertNotIn('mob.movement_eastwest = null', command)
+        command = MOVE.split('/client/verb/fine_offset_start', 1)[1].split('/client/verb/', 1)[0]
+        self.assertIn('mob.movement_fine = TRUE', command)
+        self.assertIn('FINE_STEP_NUDGE)', command)
         self.assertNotIn('spawn', command)
         self.assertNotIn('sleep', command)
         self.assertNotRegex(MODULE + MOVE, r'var/[^\n]*alt_held')
 
     def test_precision_release_preserves_control_stop_lifecycle(self):
-        command = MOVE.split('/client/verb/fine_offset_step', 1)[1]
-        release_calls = re.findall(r'^\t(stopmoving(?:up|down|right|left))\(\)$', command, re.M)
+        start = MOVE.split('/client/verb/fine_offset_start', 1)[1].split('/client/verb/', 1)[0]
+        release_calls = re.findall(r'^\t\t(stopmoving(?:up|down|right|left))\(\)$', start, re.M)
         self.assertEqual(release_calls, ['stopmovingup', 'stopmovingdown', 'stopmovingright', 'stopmovingleft'])
-        self.assertLess(command.index('stopmovingleft()'), command.index('return Move('))
+        self.assertLess(start.index('stopmovingleft()'), start.index('return Move('))
+        stop = MOVE.split('/client/verb/fine_offset_stop', 1)[1]
+        for name in ('stopmovingup()', 'stopmovingdown()', 'stopmovingright()', 'stopmovingleft()'):
+            self.assertIn(name, stop)
+        self.assertIn('mob.movement_fine = FALSE', stop)
         for name, axis, direction in (
             ('stopmovingup', 'northsouth', 'NORTH'),
             ('stopmovingdown', 'northsouth', 'SOUTH'),
@@ -99,6 +106,42 @@ class FineOffsetContracts(unittest.TestCase):
             self.assertIn('RC.stop_move_drone()', release)
             if axis == 'eastwest':
                 self.assertIn('C.stop_rotation()', release)
+        # Ordinary direction keys and logout leave precision mode.
+        for name in ('startmovingup', 'startmovingdown', 'startmovingright', 'startmovingleft'):
+            body = MOVE.split(f'/client/verb/{name}()', 1)[1].split('/client/verb/', 1)[0]
+            self.assertIn('mob.movement_fine = FALSE', body)
+        self.assertIn('movement_fine = FALSE\n\t..()', MOVE.split('/mob/Logout()', 1)[1])
+
+    def test_held_slide_runs_at_the_ordinary_pace_and_stops_on_release(self):
+        machine = (ROOT / 'code/movementMachine.dm').read_text()
+        self.assertIn('M.client.Move(get_step(M, movedir), movedir, diag, M.held_fine_step())', machine)
+        self.assertIn('(!M.movement_fine || world.time >= M.client.fine_offset_glide_at)', machine)
+        self.assertIn('return movement_fine ? FINE_STEP_HELD : FALSE', MOVE)
+        # A held slide covers a whole tile's distance in 16 pulses on the
+        # ordinary interval, exactly like walking, and is not tick-floored.
+        self.assertIn('remaining_x = (direction & (EAST | WEST)) ? 32 : 0', MODULE)
+        self.assertIn('remaining_y = (direction & (NORTH | SOUTH)) ? 32 : 0', MODULE)
+        self.assertIn('. = H.SelfMove(n, direct, subtile_deadline, FINE_STEP_HELD)', MOVE)
+        self.assertIn("fine_step != FINE_STEP_NUDGE && isnum(human_subtile_chain_start)", MODULE)
+        self.assertIn('(fine_step == FINE_STEP_NUDGE) ? 2 : 32', MODULE)
+        # Release is seen before the next pulse and refunds the unused interval.
+        self.assertIn('if (fine_step == FINE_STEP_HELD && (!actor.movement_fine || actor.held_movement_direction() != direction))', MODULE)
+        self.assertIn('actor.human_subtile_fine_released_at = world.time', MODULE)
+        self.assertIn('if (H.human_subtile_fine_released_at == world.time)\n\t\t\t\t\t\t\t\tsubtile_deadline = world.time', MOVE)
+        # Speed model at TICKLAG 0.4 with an unloaded walk (2.85 ds per tile):
+        # the old repeat-driven nudges were floored to one 2px pulse per tick.
+        tick, walk = 0.4, 1.9 * 1.5
+        old_px_per_ds = 2 / max(tick, walk * 2 / 32)
+        new_px_per_ds = 32 / walk
+        self.assertLess(old_px_per_ds, 5.1)
+        self.assertGreater(new_px_per_ds, 2 * old_px_per_ds)
+
+    def test_partial_step_from_an_offset_costs_its_share(self):
+        self.assertIn('var/remaining_fraction = H.human_subtile_remaining_fraction(direct)', MOVE)
+        self.assertIn('(subtile_deadline - world.time) * remaining_fraction', MOVE)
+        body = MODULE.split('/mob/living/human/proc/human_subtile_remaining_fraction(direction)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('return max(remaining_x, remaining_y) / 32', body)
+        self.assertIn('var/due = start_time + (i - 1) * duration / pulse_count', MODULE)
 
     def test_owned_position_save_and_completion_are_reused(self):
         self.assertIn('human_subtile_offset_owned = TRUE', MODULE)

@@ -77,7 +77,7 @@ var/movementMachine/movementMachine = null
 
 
 /movementMachine/proc/held_movement_ready(var/mob/M)
-	return M && M.client && (M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay
+	return M && M.client && (M.movement_eastwest || M.movement_northsouth) && M.client.canmove && !M.client.moving && world.time >= M.client.move_delay && (!M.movement_fine || world.time >= M.client.fine_offset_glide_at)
 
 /movementMachine/proc/begin_held_movement(var/mob/M)
 	var/diag = FALSE
@@ -106,7 +106,7 @@ var/movementMachine/movementMachine = null
 	if (M && M.client)
 		var/started = world.time
 		M.client.movement_busy = TRUE
-		M.client.Move(get_step(M, movedir), movedir, diag)
+		M.client.Move(get_step(M, movedir), movedir, diag, M.held_fine_step())
 		// remove this client from movementMachine_clients until it needs to be in it again. This makes the amount of loops to be done the absolute minimum
 		movementMachine_clients -= M.client
 		do_movement_continued(M, started)

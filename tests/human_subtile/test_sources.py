@@ -63,7 +63,7 @@ class SourceContracts(unittest.TestCase):
                 self.assertLessEqual(actual[-1], math.ceil(duration / tick) * tick)
                 self.assertEqual(16 * 2, 32)
         source = read(MODULE)
-        self.assertIn("start_time + (i - 1) * duration / 16", source)
+        self.assertIn("start_time + (i - 1) * duration / pulse_count", source)
         self.assertIn("sleep(due - world.time)", source)
         self.assertNotIn("sleep(duration / 8)", source)
 
