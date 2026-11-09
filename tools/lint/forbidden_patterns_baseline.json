@@ -242,7 +242,7 @@
       "code/modules/1713/apparel_imperial.dm": 2,
       "code/modules/1713/automated_sifting.dm": 1,
       "code/modules/1713/battlereport_variables.dm": 1,
-      "code/modules/1713/betting.dm": 2,
+      "code/modules/1713/betting.dm": 3,
       "code/modules/1713/complex_animal/dog.dm": 2,
       "code/modules/1713/complex_production.dm": 8,
       "code/modules/1713/computers/computers.dm": 1,
