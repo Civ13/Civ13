@@ -85,9 +85,9 @@ def instrument_human(source):
         '\t\t\tcombined_handoffs++\n'
         '\t\treturn TRUE', 'second attempt capture')
     return replace_once(source,
-        '\t\tif (actor.human_subtile_save_request)\n\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
-        '\t\tif (actor == combined_actor && combined_capsule && persistence_save_in_progress && persistence_active_operation && persistence_active_operation.debug_recovery && persistence_active_operation.debug_recovery.attempt == 2) combined_pulses_after++\n'
-        '\t\tif (actor.human_subtile_save_request)\n\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
+        '\t\t\tif (actor.human_subtile_save_request)\n\t\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
+        '\t\t\tif (actor == combined_actor && combined_capsule && persistence_save_in_progress && persistence_active_operation && persistence_active_operation.debug_recovery && persistence_active_operation.debug_recovery.attempt == 2) combined_pulses_after++\n'
+        '\t\t\tif (actor.human_subtile_save_request)\n\t\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
         'post capture continuation')
 
 
