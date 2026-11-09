@@ -218,8 +218,8 @@ over walls from high ground; `view()` still decides walls for them.
 Bullets follow the same heights (`code/modules/projectiles/projectile_heights.dm`).
 When a shot is first moved, `height_plan` draws a straight line from the
 muzzle (the firer's ground plus 1.4 standing, 0.4 lying or prone) to the aim
-point (the target's ground plus the same heights for a mob, or the firer's
-muzzle height above a clicked tile). For every tile it enters, `height_enter`
+point (the target's ground plus the clicked height on a mob, see Bullet drop,
+or the firer's muzzle height above a clicked tile). For every tile it enters, `height_enter`
 compares the line with the ground:
 
 - Ground above the line stops the shot there: a ridge between shooter and
@@ -231,6 +231,31 @@ compares the line with the ground:
   bystanders work there as before; height advantage is what takes them away.
 - Over a roofed tile the line either passes above the roof (ground plus 3) and
   skips the tile with everything under it, or keeps the ordinary rules.
+
+#### Bullet drop
+
+The line is really an arc: `height_at(d)` adds `drop_rate * d * (zero - d)`,
+so the shot rises a little above the aim line, crosses it again at the
+weapon's zero range and falls below it beyond. Zero and rate by class:
+
+| Class | Zero (tiles) | Drop at twice the zero |
+| --- | --- | --- |
+| Rifle (default) | 12 | 1.5 levels at 24 tiles |
+| Pistol | 7 | 1.5 levels at 14 tiles |
+| Shotgun pellets, musket balls | 6 | 1.5 levels at 12 tiles |
+| Musket pistol balls | 5 | 1.25 levels at 10 tiles |
+| Arrows and bolts | 5 | 1.5 levels at 10 tiles |
+
+The aim height comes from where the target was clicked (`p_y`): the bottom
+of a standing mob's sprite is its feet, the top 0.85 of its height, and the
+default mid-body. A mob lying down is aimed at 0.25 wherever it is clicked.
+Holding over (clicking higher) reaches past the zero; a shot held too high
+passes over the aimed-at mob (`height_misses`). A tile has depth, so across
+the target's tile the arc covers half its slope either side of its centre
+(`height_span`): when the ground takes the arc inside a tile, what stands
+there can still be hit first, and a steep shot down from high ground
+forgives more drop than a flat one. Drop applies only where the shot has a
+height plan, so maps without a height file keep straight shots.
 
 Shrapnel, shells, aircraft guns and redirected shots keep the flat rules. The
 work is two height lookups and a square root per tile, about 0.008 ms against
@@ -247,9 +272,10 @@ with its level; use it again to hide the labels.
   over hills on Gaia's heights against a Python reference, sweep cost, cache
   clearing on grading, and NPC sight rays against a reference and the sweep).
 - `python3 tests/gunfire_heights/run.py --byond-bin <dir>` (native: real
-  projectiles on a 16x6 hill world: ridge, hilltop over a wall, roof, people
-  below the line, uphill to a crest, flat-ground controls and cost;
-  NPC sight over the ridge; `--negative-control ridge|cover|margin|npc` must fail).
+  projectiles on a 16x8 hill world: ridge, hilltop over a wall, roof, people
+  below the line, uphill to a crest, bullet drop with and without hold-over,
+  a cliff shot forgiving drop, flat-ground controls and cost;
+  NPC sight over the ridge; `--negative-control ridge|cover|margin|npc|drop|span|holdover` must fail).
 - `python3 tests/terrain_height/run.py --byond-bin <dir>` (native: the game's
   parser, lookup, slope cost and shading on a 12x12 fixture world, and the
   game's corner lights against the tool's).

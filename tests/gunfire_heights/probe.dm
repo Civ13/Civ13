@@ -1,9 +1,9 @@
-// Offline gunfire-on-hills fixture: production projectile code on a 16x6
+// Offline gunfire-on-hills fixture: production projectile code on a 16x8
 // plating world with a height file written by the probe. No maps, normal
 // startup, clients or saves. Each row is one case; shots run west to east.
 /world
 	maxx = 16
-	maxy = 6
+	maxy = 8
 	maxz = 1
 	turf = /turf/floor/plating
 
@@ -15,6 +15,10 @@
 
 /area/gunfire_heights_roofed
 	location = AREA_INSIDE
+
+// Target stand-in: the production human type without the heavy constructor.
+/mob/living/human/gunfire_heights_target/New()
+	return
 
 /proc/gunfire_heights_assert(condition, message)
 	if (!condition)
@@ -49,10 +53,10 @@
 	sleep(1)
 	var/result = "FAIL: probe did not finish"
 	try
-		// North row first: y=6 crest, 5 people below, 4 roof, 3 wall, 2 flat, 1 ridge.
-		var/list/rows = list("0012344400000000", "8882100000000000", "8882100000000000",
+		// North row first: y=8 cliff, 7 flat range, 6 crest, 5 people below, 4 roof, 3 wall, 2 flat, 1 ridge.
+		var/list/rows = list("f000000000000000", "0000000000000000", "0012344400000000", "8882100000000000", "8882100000000000",
 			"8882100000000000", "0000000000000000", "0000040000000000")
-		text2file("civ13-terrain-heights 1\nsize 16 6\nz 1\n[jointext(rows, "\n")]\n", "gunfire_heights.txt")
+		text2file("civ13-terrain-heights 1\nsize 16 8\nz 1\n[jointext(rows, "\n")]\n", "gunfire_heights.txt")
 		new /obj/map_metadata/gunfire_heights_fixture
 		gunfire_heights_assert(terrain_height_at(locate(6, 1, 1)) == 4, "Height file not loaded")
 		var/mob/living/shooter = new /mob/living(locate(1, 1, 1))
@@ -101,11 +105,53 @@
 		gunfire_heights_assert(B.handleTurf(locate(3, 5, 1)) && B.handleTurf(locate(4, 5, 1)) && bystander.health == 100 && !QDELETED(B), "Shot hit a person far below its line")
 
 		// 6. Shooting up a hillside at someone on the crest clears the slope.
-		var/mob/living/crest = new /mob/living(locate(8, 6, 1))
-		stop = gunfire_heights_fly(gunfire_heights_round(shooter, 2, 8, 6, crest), 2, 7, 6)
+		var/mob/living/human/gunfire_heights_target/crest = new(locate(8, 6, 1))
+		var/obj/item/projectile/U = gunfire_heights_round(shooter, 2, 8, 6, crest)
+		U.p_y = 32 // aim at the part showing over the brow
+		U.height_plan(U.starting)
+		stop = gunfire_heights_fly(U, 2, 7, 6)
 		gunfire_heights_assert(!stop, "Shot up the slope hit the hillside at x=[stop]")
 
-		// 7. NPC sight: the ridge hides a target from cover/peek checks and
+		// 7. Bullet drop: a pistol aimed mid-body falls short at 13 tiles on flat
+		// ground; held over (clicked at the top of the sprite) it arrives.
+		var/mob/living/human/gunfire_heights_target/far = new(locate(14, 7, 1))
+		var/obj/item/projectile/bullet/pistol/D = new(locate(1, 7, 1))
+		D.firer = shooter
+		D.starting = locate(1, 7, 1)
+		D.original = far
+		D.penetrating = -1
+		D.height_plan(D.starting)
+		stop = gunfire_heights_fly(D, 1, 14, 7)
+		gunfire_heights_assert(stop && stop <= 14 && !D.height_line, "Pistol shot at mid-body did not fall short at 13 tiles")
+		notes += "pistol at 13 tiles aimed mid-body lands at x=[stop]"
+		D = new(locate(1, 7, 1))
+		D.firer = shooter
+		D.starting = locate(1, 7, 1)
+		D.original = far
+		D.penetrating = -1
+		D.p_y = 32
+		D.height_plan(D.starting)
+		stop = gunfire_heights_fly(D, 1, 13, 7)
+		gunfire_heights_assert(!stop, "Held-over pistol shot fell short at x=[stop]")
+		gunfire_heights_assert(D.height_enter(locate(14, 7, 1)) == PROJECTILE_HEIGHT_CLEAR && !D.height_buries && !D.height_misses(far), "Held-over pistol shot did not reach the target")
+		// A rifle aimed mid-body still reaches the same target.
+		var/obj/item/projectile/RF = gunfire_heights_round(shooter, 1, 14, 7, far)
+		gunfire_heights_assert(!gunfire_heights_fly(RF, 1, 13, 7) && RF.height_enter(locate(14, 7, 1)) == PROJECTILE_HEIGHT_CLEAR && !RF.height_buries, "Rifle shot fell short at 14 tiles")
+		// The same mid-body pistol shot that fell short at 13 tiles lands from a
+		// 15-level cliff: the steep arc covers more height across the target's tile.
+		var/mob/living/human/gunfire_heights_target/below = new(locate(14, 8, 1))
+		var/obj/item/projectile/bullet/pistol/C13 = new(locate(1, 8, 1))
+		C13.firer = shooter
+		C13.starting = locate(1, 8, 1)
+		C13.original = below
+		C13.penetrating = -1
+		C13.height_plan(C13.starting)
+		stop = gunfire_heights_fly(C13, 1, 13, 8)
+		gunfire_heights_assert(!stop, "Cliff pistol shot stopped at x=[stop]")
+		gunfire_heights_assert(C13.height_enter(locate(14, 8, 1)) == PROJECTILE_HEIGHT_CLEAR && !C13.height_misses(below), "Cliff pistol shot did not reach the target")
+		notes += "13-tile pistol: flat lands short, from the cliff reaches"
+
+		// 8. NPC sight: the ridge hides a target from cover/peek checks and
 		// from target finding; on flat ground the same pair is seen.
 		gunfire_heights_assert(!ai_check_los(locate(2, 1, 1), locate(10, 1, 1)), "NPC saw through the ridge")
 		gunfire_heights_assert(ai_check_los(locate(2, 2, 1), locate(7, 2, 1)), "NPC lost sight on flat ground")
@@ -121,7 +167,7 @@
 		gunfire_heights_assert(W.FindTarget() == prey, "NPC did not find a target on flat ground")
 		notes += "NPC sight blocked by the ridge"
 
-		// 8. Cost of the height work per tile.
+		// 9. Cost of the height work per tile.
 		var/obj/item/projectile/C = gunfire_heights_round(shooter, 2, 10, 3)
 		var/turf/T = locate(5, 3, 1)
 		var/start = world.timeofday

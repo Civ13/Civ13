@@ -594,6 +594,9 @@
 			var/mob/living/L = AM
 			if (L != original && height_passes_over(los_target_top(L)))
 				continue
+			// Bullet drop: aimed too high for the range, or held over too far.
+			if (L == original && height_misses(L))
+				continue
 			if ((!L.lying || T == get_turf(original) || execution))
 				var/obj/item/weapon/grab/G = locate() in L
 				if (G && G.state >= GRAB_NECK && G.affecting.stat < UNCONSCIOUS)
@@ -735,6 +738,10 @@
 			on_impact(T)
 			S.initiate(loc)
 			return FALSE
+
+	// The arc reached the ground inside this tile (projectile_heights.dm).
+	if (passthrough && height_buries)
+		passthrough = FALSE
 
 	//the bullet passes through the turf
 	if (passthrough)
