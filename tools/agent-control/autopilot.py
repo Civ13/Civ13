@@ -76,7 +76,8 @@ MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
            "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water",
-           "topic", "close_window", "stance")
+           "topic", "close_window", "stance", "drive")
+DRIVE_CONTROLS = ("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
@@ -221,6 +222,11 @@ How to play:
 - Stance: {"do": "stance", "move": run|walk|sneak|crawl, "defense": dodge|parry, "tactic": charge|aim|rush|defend,
   "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
   Run to travel, walk to save stamina, sneak or crawl to hide, parry with a weapon, dodge without one.
+- Vehicles: sit in a driver's seat (drag yourself onto it) to drive a car, tank or aircraft. {"do": "drive", "control":
+  gear_up|gear_down|forward|reverse|turn_left|turn_right|climb|descend} presses the seat's button: gear_up starts the engine,
+  then shifts up; gear_down shifts down and stops; climb and descend fly an aircraft once it has taken off at full gear.
+  Holding turret or drone controls, "move" turns the turret (east/west, "hold": deciseconds) or changes its range
+  (north/south), or flies the drone. {"do": "use", "alternate": true} presses the secondary-use key of the held item.
 - Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
@@ -305,6 +311,22 @@ def summarize(observation, note="", ignored=(), muted=()):
     stance = self_state.get("stance") or {}
     if stance:
         lines.append("Stance: " + ", ".join(f"{key} {value}" for key, value in stance.items()))
+    driving = self_state.get("driving") or {}
+    if driving:
+        line = (f"Driving {driving.get('name')}: engine {driving.get('engine')}, gear {driving.get('gear')}/{driving.get('gears')}, "
+                f"{'reverse' if driving.get('reverse') else 'forward'}, heading {driving.get('dir')}")
+        if driving.get("fuel") is not None:
+            line += f", fuel {driving.get('fuel')}"
+        if driving.get("flight"):
+            line += f", flight {driving.get('flight')} at height {driving.get('altitude')}"
+        if driving.get("key_ok") is False:
+            line += ", NO KEY (you need this vehicle's key)"
+        lines.append(line + ".")
+    for remote in (self_state.get("remote_controls") or [])[:2]:
+        if remote.get("control") == "turret":
+            lines.append(f"Turret controls: {remote.get('name')} azimuth {remote.get('azimuth')}, range {remote.get('distance')}.")
+        elif remote.get("control") == "drone":
+            lines.append(f"Drone controller: {remote.get('name', 'no drone')}, {'active' if remote.get('active') else 'inactive (use it to activate)'}.")
     if self_state.get("verbs"):
         lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
     if self_state.get("item_verbs"):
@@ -1021,6 +1043,19 @@ def parse_decision(text, refs):
         if direction not in DIRS:
             return None
         args["dir"] = direction
+        if action == "move" and data.get("hold") is not None:
+            try:
+                args["hold"] = max(1, min(50, _decision_int(data.get("hold"))))
+            except (TypeError, ValueError):
+                return None
+    elif action == "drive":
+        control = str(data.get("control", "")).strip().lower()
+        if control not in DRIVE_CONTROLS:
+            return None
+        args["control"] = control
+    elif action == "use":
+        if data.get("alternate") is True:
+            args["alternate"] = True
     elif action in ("say", "emote"):
         text_value = str(data.get("text", "")).strip()
         if not text_value:

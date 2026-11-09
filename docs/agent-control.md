@@ -335,6 +335,31 @@ as strings of `n`/`s`/`e`/`w` moves), the `launch` tile (last dry tile), the
 tile each, and the raft recipe. A boat leg starts on the launch tile and
 includes the shallows on either side, so a raft built there can take it.
 
+### Cars, tanks, aircraft, turrets and drones
+
+Modular vehicles are driven from a driver's seat
+(`code/modules/agent_control/agent_vehicles.dm`). `drag` the character onto the
+seat to sit in it; the steering wheel goes into the active hand.
+
+- `drive` (`control`) presses a driver's seat HUD button: `gear_up` (starts the
+  engine, then shifts up), `gear_down` (shifts down, stops, then turns the
+  engine off), `forward`, `reverse`, `turn_left`, `turn_right`, and for
+  aircraft `climb` and `descend`. A keyed vehicle needs its key carried.
+  Climbing on the ground fails with the takeoff hint a player reads.
+- `move` presses that arrow key, as `/client/verb/startmoving*` does: with the
+  wheel in hand, east and west turn, and north and south pick forward or
+  reverse while stopped. Held turret controls change range (north, south) or
+  turn the turret (east, west) for `hold` deciseconds (default 5); the
+  opposite key stops a turn. An active drone controller flies the drone. A
+  seated character or one flying a drone does not walk.
+- `use` with `alternate` presses the secondary-use key of the held item
+  (gear down, the turret's weapon switch, a drone's special).
+
+`character_state` adds `driving` (gear, gears, reverse, moving, heading,
+engine, fuel, `key_ok`, and `flight`, `altitude` and `target_altitude` for
+aircraft) and `remote_controls` for held turret and drone controls. Trains and
+locomotives are clicked like any other machine.
+
 ## Nomad visits
 
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):

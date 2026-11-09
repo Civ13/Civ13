@@ -22,7 +22,8 @@ WINDOW = {"type": "string", "description": "topic/close_window: a window name fr
 SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder"], "description": "equip: the slot to put the held item in"}
 LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
 LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance"]
+DRIVE_CONTROL = {"type": "string", "enum": ["forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend"], "description": "drive: the driver's seat HUD button to press"}
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
@@ -79,7 +80,7 @@ ACTIONS = {
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, or stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim); equip takes an optional slot; board, disembark, drag, verb, throw and topic only through character_queue. While driving a boat, move steers it one tile.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim), or drive (driver's seat HUD: control forward, reverse, turn_left, turn_right, gear_up, gear_down, climb, descend); use with alternate presses the secondary-use key; equip takes an optional slot; board, disembark, drag, verb, throw and topic only through character_queue. While driving a boat, move steers it one tile; in a car, tank or aircraft seat, or holding turret or drone controls, move presses that arrow key (east/west turn, north/south pick forward/reverse while stopped or change turret range).", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -105,6 +106,9 @@ ACTIONS = {
         "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
         "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
         "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
+        "control": DRIVE_CONTROL,
+        "alternate": {"type": "boolean", "description": "use: the Activate Secondary Object key (gear down, switch turret weapon, drone special)"},
+        "hold": {"type": "integer", "minimum": 1, "maximum": 50, "description": "move: deciseconds an arrow key stays down for held turret controls and drones (default 5)"},
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -136,6 +140,9 @@ ACTIONS = {
         "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
         "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
         "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
+        "control": DRIVE_CONTROL,
+        "alternate": {"type": "boolean", "description": "use: the Activate Secondary Object key (gear down, switch turret weapon, drone special)"},
+        "hold": {"type": "integer", "minimum": 1, "maximum": 50, "description": "move: deciseconds an arrow key stays down for held turret controls and drones (default 5)"},
                 "repeat": {"type": "integer", "minimum": 1, "maximum": 30, "description": "run this step up to this many times (each when its cooldown allows); a blocked move or a failure stops it"},
                 "until": UNTIL,
             },

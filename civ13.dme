@@ -1161,6 +1161,7 @@
 #include "code\modules\agent_control\agent_movement.dm"
 #include "code\modules\agent_control\agent_prompts.dm"
 #include "code\modules\agent_control\agent_stance.dm"
+#include "code\modules\agent_control\agent_vehicles.dm"
 #include "code\modules\agent_control\agent_boats.dm"
 #include "code\modules\agent_control\agent_verbs.dm"
 #include "code\modules\agent_control\agent_view.dm"

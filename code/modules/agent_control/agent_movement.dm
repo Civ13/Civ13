@@ -64,10 +64,18 @@
 
 // One step for an agent character: the player's rules, timing and costs.
 // Returns the move's result row; crawling sleeps, so it runs only from the queue.
-/datum/agent_control/proc/agent_walk_step(datum/agent_identity/A, datum/agent_character/C, d, from_queue)
+/datum/agent_control/proc/agent_walk_step(datum/agent_identity/A, datum/agent_character/C, d, from_queue, hold = 5)
 	var/mob/living/M = C.body
 	var/turf/old = get_turf(M)
 	var/turf/n = get_step(M, d)
+	// The arrow keys also steer a held wheel, turret controls or drone (agent_vehicles.dm).
+	var/list/keys = null
+	if (M.stat == CONSCIOUS && agent_holds_arrow_controls(M))
+		keys = agent_arrow_keys(M, d, hold)
+		// A seat or an active drone keeps the body still (living/Move refuses both).
+		if (M.using_drone || M.buckled && !istype(M.buckled, /obj/structure/bed/chair/wheelchair))
+			C.next_action = world.time + 2
+			return list("moved" = FALSE, "controls" = keys, "self" = character_state(C))
 	if (M.stat != CONSCIOUS || !M.canmove)
 		agent_fail("cannot_move", "the character cannot move right now")
 	if (M.buckled)
@@ -152,7 +160,9 @@
 	C.next_action = world.time + max(1, delay)
 	M.last_movement = world.time
 	game_log("AGENT", "[A.name] moved [M] ([agent_ref(M)]) [dir2text(d)] [moved ? "moved" : "blocked"] from [old.x],[old.y],[old.z]")
-	return list("moved" = moved ? TRUE : FALSE, "self" = character_state(C))
+	. = list("moved" = moved ? TRUE : FALSE, "self" = character_state(C))
+	if (length(keys))
+		.["controls"] = keys
 
 // Food, water, stamina and warmth a step costs, by movement mode, plus hills.
 /proc/agent_walk_costs(mob/living/human/H, turf/old, turf/n)
