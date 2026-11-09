@@ -334,7 +334,7 @@ class InventoryHoverName(unittest.TestCase):
                 invisibility=0,x=1,y=1,z=1,deleted=False,gcDestroyed=False,gc_destroyed=False)
             defaults.update(values);return Node(**defaults)
         body=atom('/mob/living/human',see_invisible=25,HUDneed={},HUDinventory=[],slots={},s_active=None)
-        C=Node(mob=body,screen=[],view=7,eye=body,mouse_screen_x=1,mouse_screen_y=1,mouse_screen_pixel_x=0,mouse_screen_pixel_y=0)
+        C=Node(mob=body,prefs=None,screen=[],view=7,eye=body,mouse_screen_x=1,mouse_screen_y=1,mouse_screen_pixel_x=0,mouse_screen_pixel_y=0)
         body.client=C;body.get_equipped_item=lambda slot:body.slots.get(slot)
         W=atom('/obj/screen/hover_name',parentmob=body,hover_target=None,hover_origin=None,
                hover_inventory=False,hover_screen_loc=None,hover_storage=None,maptext='',
@@ -403,7 +403,7 @@ class InventoryHoverName(unittest.TestCase):
             f=method(source,sig,args,fields);setattr(W,name,lambda *a,_f=f:_f(W,*a))
         f=method(source,'/obj/screen/hover_name/Destroy','',fields);W.destroy=lambda _f=f:_f(W)
         for name,args in [('hover_name_widget',''),('update_hover_name','target'),('clear_hover_name','')]:
-            f=method(source,'/client/proc/'+name,args,['mob','hover_name_widget'])
+            f=method(source,'/client/proc/'+name,args,['mob','hover_name_widget','prefs'])
             setattr(C,name,lambda *a,_f=f:_f(C,*a))
         env.update(optional_set=lambda w,t:w.set_target(t) if w else None,optional_clear=lambda w:w.clear_target() if w else None)
         callbacks=(root/'code/modules/client/client_procs.dm').read_text()

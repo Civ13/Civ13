@@ -56,6 +56,7 @@
 	return "40x13"
 /datum/hover_test_prefs
 	var/hover_text_scale = 1
+	var/hover_text_enabled = TRUE
 
 /proc/check_weakref_save()
 	var/mob/living/human/H = new(locate(2,2,1))

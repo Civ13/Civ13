@@ -70,6 +70,7 @@
 /datum/preferences
 	var/hud_scale = 1
 	var/hover_text_scale = 1
+	var/hover_text_enabled = TRUE
 /datum/hover_client
 	var/mob/mob
 	var/datum/preferences/prefs
@@ -168,6 +169,14 @@
 	var/asked = length(C.measured)
 	check(findtext(L.maptext, "font-size:11px;") && L.maptext_width == 54 && L.maptext_height == 18, "label back to 11px")
 	check(asked == 4, "a measured label and size is not measured again")
+	// Toggle Hover Text: while off the pointer draws nothing; on again it does.
+	C.clear_hover_name()
+	C.prefs.hover_text_enabled = FALSE
+	C.MouseEntered(B, null, "map", "")
+	check(!L.maptext && !L.hover_target && !L.hover_text && !length(L.underlays), "hover text off draws no panel")
+	C.prefs.hover_text_enabled = TRUE
+	C.MouseEntered(B, null, "map", "")
+	check(findtext(L.maptext, "rifle") && length(L.underlays) == 2, "hover text back on")
 	// A width far beyond the estimate is not the text's width: keep the estimate.
 	C.measure_answer = "374x13"
 	B.name = "pistol"
