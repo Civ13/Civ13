@@ -17,6 +17,8 @@
 	var/tmp/client/human_subtile_visual_owner
 	// Start of a held-key continuation: the previous step's deadline.
 	var/tmp/human_subtile_chain_start
+	// world.time a held precision slide stopped because its chord was released.
+	var/tmp/human_subtile_fine_released_at
 	// Set by before_save when an offset capsule would be rejected on load.
 	var/tmp/human_subtile_save_aligned = FALSE
 	var/list/human_subtile_position
@@ -357,6 +359,12 @@
 		delay *= ROOT2_FAST
 	return now + delay
 
+// Share of a whole tile left before each moving axis reaches its alignment.
+/mob/living/human/proc/human_subtile_remaining_fraction(direction)
+	var/remaining_x = (direction & EAST) ? 32 - step_x : (direction & WEST) ? (step_x ? step_x : 32) : 0
+	var/remaining_y = (direction & NORTH) ? 32 - step_y : (direction & SOUTH) ? (step_y ? step_y : 32) : 0
+	return max(remaining_x, remaining_y) / 32
+
 /mob/living/human/SelfMove(turf/n, direct, deadline = null, fine_step = FALSE)
 	if (isnull(deadline))
 		return ..()
@@ -377,7 +385,7 @@
 	T.start_time = world.time
 	// A held-key continuation keeps the previous step's exact cadence, so the
 	// pulses and glide run on without a pause at the tile centre.
-	if (!legacy_posture && !paid_posture && !fine_step && isnum(human_subtile_chain_start) && human_subtile_chain_start <= world.time && world.time - human_subtile_chain_start < world.tick_lag && deadline > human_subtile_chain_start)
+	if (!legacy_posture && !paid_posture && fine_step != FINE_STEP_NUDGE && isnum(human_subtile_chain_start) && human_subtile_chain_start <= world.time && world.time - human_subtile_chain_start < world.tick_lag && deadline > human_subtile_chain_start)
 		T.start_time = human_subtile_chain_start
 	human_subtile_chain_start = null
 	T.end_time = deadline
@@ -388,7 +396,7 @@
 	T.initial_prone = prone
 	T.initial_lying = lying
 	if (!legacy_posture && !paid_posture)
-		human_subtile_update_visuals(deadline - T.start_time, direct, client, fine_step ? 2 : 32)
+		human_subtile_update_visuals(deadline - T.start_time, direct, client, (fine_step == FINE_STEP_NUDGE) ? 2 : 32)
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
@@ -444,16 +452,23 @@
 	// uses native collision. A reverse input can therefore escape a 2px offset.
 	var/remaining_x = (direction & EAST) ? 32 - actor.step_x : (direction & WEST) ? (actor.step_x ? actor.step_x : 32) : 0
 	var/remaining_y = (direction & NORTH) ? 32 - actor.step_y : (direction & SOUTH) ? (actor.step_y ? actor.step_y : 32) : 0
-	if (fine_step)
+	if (fine_step == FINE_STEP_NUDGE)
 		remaining_x = (direction & (EAST | WEST)) ? 2 : 0
 		remaining_y = (direction & (NORTH | SOUTH)) ? 2 : 0
-	var/pulse_count = paid_posture ? ceil(max(remaining_x, remaining_y) / 2) : 16
+	else if (fine_step)
+		// A held precision slide covers one tile's distance from wherever the
+		// body is, crossing alignments, until its chord is released.
+		remaining_x = (direction & (EAST | WEST)) ? 32 : 0
+		remaining_y = (direction & (NORTH | SOUTH)) ? 32 : 0
+	// Pulses spread over the interval by the distance this step really covers,
+	// so a short step from an offset moves at the ordinary pace.
+	var/pulse_count = max(1, ceil(max(remaining_x, remaining_y) / 2))
 	if (paid_posture)
 		actor.human_subtile_update_visuals(duration, direction, owner, max(remaining_x, remaining_y))
 	for (var/i = 1, i <= 16, i++)
 		if (!remaining_x && !remaining_y)
 			break
-		var/due = start_time + (i - 1) * duration / 16
+		var/due = start_time + (i - 1) * duration / pulse_count
 		if (paid_posture)
 			due = start_time + i * duration / pulse_count
 			// Observe cancellation every tick, including injury-lengthened waits.
@@ -462,6 +477,9 @@
 		else if (due > world.time)
 			sleep(due - world.time)
 		if (!valid(direction))
+			break
+		if (fine_step == FINE_STEP_HELD && (!actor.movement_fine || actor.held_movement_direction() != direction))
+			actor.human_subtile_fine_released_at = world.time
 			break
 		var/dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
 		var/dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
@@ -583,7 +601,7 @@
 	if (key == "step_x" || key == "step_y") return TRUE
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start")) || ..()
+	return (key in list("human_subtile_save_aligned", "human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner", "human_subtile_chain_start", "human_subtile_fine_released_at")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)

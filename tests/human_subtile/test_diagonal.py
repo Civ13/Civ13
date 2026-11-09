@@ -16,7 +16,8 @@ class DiagonalContracts(unittest.TestCase):
         self.assertIn('(direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0', source)
         self.assertIn('(direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0', source)
         self.assertIn('i <= 16', source)
-        self.assertIn('start_time + (i - 1) * duration / 16', source)
+        self.assertIn('start_time + (i - 1) * duration / pulse_count', source)
+        self.assertIn('var/pulse_count = max(1, ceil(max(remaining_x, remaining_y) / 2))', source)
 
     def test_default_waits_for_geometry_ownership_and_setter(self):
         source = MODULE.read_text()

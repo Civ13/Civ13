@@ -139,29 +139,53 @@ macro "macro"
 		command = "ChangeHUD"
 
 	elem
-		name = "ALT+North+REP"
-		command = ".fine-offset-step 1"
+		name = "ALT+North"
+		command = ".fine-offset-start 1"
 	elem
-		name = "ALT+South+REP"
-		command = ".fine-offset-step 2"
+		name = "ALT+North+UP"
+		command = ".fine-offset-stop 1"
 	elem
-		name = "ALT+East+REP"
-		command = ".fine-offset-step 4"
+		name = "ALT+South"
+		command = ".fine-offset-start 2"
 	elem
-		name = "ALT+West+REP"
-		command = ".fine-offset-step 8"
+		name = "ALT+South+UP"
+		command = ".fine-offset-stop 2"
 	elem
-		name = "ALT+Northeast+REP"
-		command = ".fine-offset-step 5"
+		name = "ALT+East"
+		command = ".fine-offset-start 4"
 	elem
-		name = "ALT+Northwest+REP"
-		command = ".fine-offset-step 9"
+		name = "ALT+East+UP"
+		command = ".fine-offset-stop 4"
 	elem
-		name = "ALT+Southeast+REP"
-		command = ".fine-offset-step 6"
+		name = "ALT+West"
+		command = ".fine-offset-start 8"
 	elem
-		name = "ALT+Southwest+REP"
-		command = ".fine-offset-step 10"
+		name = "ALT+West+UP"
+		command = ".fine-offset-stop 8"
+	elem
+		name = "ALT+Northeast"
+		command = ".fine-offset-start 5"
+	elem
+		name = "ALT+Northeast+UP"
+		command = ".fine-offset-stop 5"
+	elem
+		name = "ALT+Northwest"
+		command = ".fine-offset-start 9"
+	elem
+		name = "ALT+Northwest+UP"
+		command = ".fine-offset-stop 9"
+	elem
+		name = "ALT+Southeast"
+		command = ".fine-offset-start 6"
+	elem
+		name = "ALT+Southeast+UP"
+		command = ".fine-offset-stop 6"
+	elem
+		name = "ALT+Southwest"
+		command = ".fine-offset-start 10"
+	elem
+		name = "ALT+Southwest+UP"
+		command = ".fine-offset-stop 10"
 	elem "action_prone_1"
 		name = ""
 		command = "m-intent-prone"
@@ -485,41 +509,77 @@ macro "hotkeymode"
 		command = "ChangeHUD"
 
 	elem
-		name = "ALT+North+REP"
-		command = ".fine-offset-step 1"
+		name = "ALT+North"
+		command = ".fine-offset-start 1"
 	elem
-		name = "ALT+South+REP"
-		command = ".fine-offset-step 2"
+		name = "ALT+North+UP"
+		command = ".fine-offset-stop 1"
 	elem
-		name = "ALT+East+REP"
-		command = ".fine-offset-step 4"
+		name = "ALT+South"
+		command = ".fine-offset-start 2"
 	elem
-		name = "ALT+West+REP"
-		command = ".fine-offset-step 8"
+		name = "ALT+South+UP"
+		command = ".fine-offset-stop 2"
 	elem
-		name = "ALT+Northeast+REP"
-		command = ".fine-offset-step 5"
+		name = "ALT+East"
+		command = ".fine-offset-start 4"
 	elem
-		name = "ALT+Northwest+REP"
-		command = ".fine-offset-step 9"
+		name = "ALT+East+UP"
+		command = ".fine-offset-stop 4"
 	elem
-		name = "ALT+Southeast+REP"
-		command = ".fine-offset-step 6"
+		name = "ALT+West"
+		command = ".fine-offset-start 8"
 	elem
-		name = "ALT+Southwest+REP"
-		command = ".fine-offset-step 10"
+		name = "ALT+West+UP"
+		command = ".fine-offset-stop 8"
 	elem
-		name = "ALT+W+REP"
-		command = ".fine-offset-step 1"
+		name = "ALT+Northeast"
+		command = ".fine-offset-start 5"
 	elem
-		name = "ALT+S+REP"
-		command = ".fine-offset-step 2"
+		name = "ALT+Northeast+UP"
+		command = ".fine-offset-stop 5"
 	elem
-		name = "ALT+D+REP"
-		command = ".fine-offset-step 4"
+		name = "ALT+Northwest"
+		command = ".fine-offset-start 9"
 	elem
-		name = "ALT+A+REP"
-		command = ".fine-offset-step 8"
+		name = "ALT+Northwest+UP"
+		command = ".fine-offset-stop 9"
+	elem
+		name = "ALT+Southeast"
+		command = ".fine-offset-start 6"
+	elem
+		name = "ALT+Southeast+UP"
+		command = ".fine-offset-stop 6"
+	elem
+		name = "ALT+Southwest"
+		command = ".fine-offset-start 10"
+	elem
+		name = "ALT+Southwest+UP"
+		command = ".fine-offset-stop 10"
+	elem
+		name = "ALT+W"
+		command = ".fine-offset-start 1"
+	elem
+		name = "ALT+W+UP"
+		command = ".fine-offset-stop 1"
+	elem
+		name = "ALT+S"
+		command = ".fine-offset-start 2"
+	elem
+		name = "ALT+S+UP"
+		command = ".fine-offset-stop 2"
+	elem
+		name = "ALT+D"
+		command = ".fine-offset-start 4"
+	elem
+		name = "ALT+D+UP"
+		command = ".fine-offset-stop 4"
+	elem
+		name = "ALT+A"
+		command = ".fine-offset-start 8"
+	elem
+		name = "ALT+A+UP"
+		command = ".fine-offset-stop 8"
 	elem "action_prone_1"
 		name = ","
 		command = "m-intent-prone"
