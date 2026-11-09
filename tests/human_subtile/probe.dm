@@ -445,6 +445,16 @@ var/human_subtile_fixture_phase = "initializing"
 	SA.human_subtile_pulse = null
 	SA.human_subtile_transaction = null
 	human_subtile_fixture_assert(!swap_graze && swap_head_on && !swap_diagonal && !swap_slide, "free_swap_only_head_on")
+	// Mobs that could swap walk through each other and may share a tile.
+	SA.a_intent = I_HELP
+	SB.a_intent = I_HELP
+	var/pass_help = SB.Cross(SA) && SB.CanPass(SA, SA.loc, TRUE, FALSE)
+	SA.a_intent = I_HARM
+	var/pass_harm = SB.Cross(SA) || SB.CanPass(SA, SA.loc, TRUE, FALSE)
+	SA.a_intent = I_HELP
+	var/turf/pass_target = SB.loc
+	var/pass_moved = SA.Move(pass_target, get_dir(SA, pass_target))
+	human_subtile_fixture_assert(pass_help && !pass_harm && pass_moved && SA.loc == pass_target && SB.loc == pass_target, "help_intent_walks_through")
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
