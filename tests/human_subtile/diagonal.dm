@@ -29,7 +29,9 @@ var/human_subtile_diagonal_checks = 0
 			last_x = next_x
 			last_y = next_y
 		human_subtile_diagonal_assert(world.time <= start + 4 + world.tick_lag && H.fixture_human_completions == 1 && H.fixture_living_completions == 1 && !H.human_subtile_transaction && !H.human_subtile_pulse, "diagonal_interval_hooks_cleanup")
-		human_subtile_diagonal_assert(abs(H.glide_size - 4 * ROOT2_FAST) < 0.001 && H.human_subtile_glide_owned, "diagonal_interpolation_matches_physical_interval")
+		// A fresh start glides HUMAN_SUBTILE_GLIDE_BUFFER_MIN..MAX px short (client glide buffer).
+		var/fresh_glide = (32 - clamp(32 * world.tick_lag / 4, HUMAN_SUBTILE_GLIDE_BUFFER_MIN, HUMAN_SUBTILE_GLIDE_BUFFER_MAX)) * world.tick_lag / 4
+		human_subtile_diagonal_assert(abs(H.glide_size - fresh_glide * ROOT2_FAST) < 0.001 && H.human_subtile_glide_owned, "diagonal_interpolation_matches_physical_interval")
 		human_subtile_fixture_rows += list(list("scene" = "diagonal_[direction]", "rows" = H.fixture_rows))
 		qdel(H)
 
