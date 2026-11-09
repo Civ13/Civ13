@@ -158,6 +158,9 @@ var/global/list/persistence_player_claims = list()
 /map_storage/proc/finish_player_restoration()
 	if(player_restoration_blocked())
 		return FALSE
+	// Metadata and all body fields are restored before the migration snapshot.
+	for(var/mob/living/human/H in human_mob_list)
+		if(H.persistence_restored) H.migrate_recipe_knowledge()
 	persistence_player_restore_ready = TRUE
 	for(var/client/C in clients)
 		var/mob/new_player/waiting = C.mob
