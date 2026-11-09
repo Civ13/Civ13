@@ -71,7 +71,7 @@ var/ld_runtime_error = FALSE
 	H.dirtyness = 80
 	H.fleas = TRUE
 	ld_check(H.hand_wash(M) == S, "hand washing uses the soap in the other hand")
-	ld_check(!H.dirtyness && !H.fleas && H.dirt_resist == 50 && H.dirt_resist_left == 1800, "soap cleans and leaves a 50% finish")
+	ld_check(!H.dirtyness && !H.fleas && H.dirt_resist == 50 && H.dirt_resist_left == 3600, "soap cleans and leaves a 50% finish")
 	ld_check(S.used == 2, "a laundry wash spends two uses of the bar")
 	var/obj/item/clothing/plain = new /obj/item/clothing/under(T)
 	M.other_hand = null
@@ -92,7 +92,7 @@ var/ld_runtime_error = FALSE
 	W.washing += B
 	W.state = 4
 	W.complete_wash()
-	ld_check(A.dirt_resist == 75 && B.dirt_resist_left == 3600, "the cycle leaves a detergent finish on every garment")
+	ld_check(A.dirt_resist == 75 && B.dirt_resist_left == 7200, "the cycle leaves a detergent finish on every garment")
 	ld_check(!W.detergent_ticks && !W.detergent_resist && isnull(W.detergent_name), "the dose is spent by the cycle")
 	var/obj/item/clothing/E = new /obj/item/clothing/under(W)
 	W.washing = list(E)
