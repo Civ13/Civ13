@@ -72,6 +72,70 @@ def project_interleaving(source, persistence, events):
     return mixture == original
 
 
+def campfire_timer_contract(oven):
+    """Source checks for #4217/#4218: one fire generation owns cooking and loops."""
+    loop = oven.split('/obj/structure/oven/proc/fire_loop()', 1)[1].split('\n/obj/', 1)[0]
+    assert 'var/epoch = fire_epoch' in loop
+    assert loop.index('var/epoch = fire_epoch') < loop.index('spawn (cooking_time)') < loop.index('if (!on || epoch != fire_epoch)') < loop.index('process()')
+    assert 'key == "fire_epoch" || ..()' in oven
+    for proc, recur in (('keep_fire_on', 'spawn(600)'), ('keep_sound_on', 'spawn(50)')):
+        body = oven.split('/obj/structure/oven/fireplace/proc/' + proc + '(epoch)', 1)[1].split('\n/obj/', 1)[0]
+        assert 'epoch != fire_epoch' in body, proc
+        assert body.index('epoch != fire_epoch') < body.index(recur), proc
+        assert proc + '(epoch)' in body.split(recur, 1)[1], proc
+    hand = oven.split('/obj/structure/oven/fireplace/attack_hand', 1)[1].split('\n/obj/', 1)[0]
+    light, extinguish = hand.split('else if (on)', 1)
+    assert 'var/epoch = ++fire_epoch' in light and 'keep_fire_on(epoch)' in light and 'keep_sound_on(epoch)' in light
+    assert 'fire_epoch++' in extinguish
+
+
+def project_campfire(oven, events):
+    """Projects light/extinguish/tick events through the source guards; returns (cooks, fire_chains)."""
+    loop = oven.split('/obj/structure/oven/proc/fire_loop()', 1)[1].split('\n/obj/', 1)[0]
+    fire = oven.split('/obj/structure/oven/fireplace/proc/keep_fire_on(', 1)[1].split('\n/obj/', 1)[0]
+    hand = oven.split('/obj/structure/oven/fireplace/attack_hand', 1)[1].split('\n/obj/', 1)[0]
+    light_body, out_body = hand.split('else if (on)', 1)
+    cook_guard = 'epoch != fire_epoch' in loop
+    chain_guard = 'epoch != fire_epoch' in fire
+    state = {'on': False, 'epoch': 0}
+    timers = []  # (due, kind, epoch)
+    now, cooks = 0, 0
+    for event in events:
+        if event == 'light':
+            state['on'] = True
+            if '++fire_epoch' in light_body:
+                state['epoch'] += 1
+            timers.append((now, 'fire', state['epoch']))
+        elif event == 'extinguish':
+            state['on'] = False
+            if 'fire_epoch++' in out_body:
+                state['epoch'] += 1
+        elif isinstance(event, int):
+            end = now + event
+            while True:
+                due = [t for t in timers if t[0] <= end]
+                if not due:
+                    break
+                t = min(due)
+                timers.remove(t)
+                now, kind, epoch = t
+                if kind == 'fire':
+                    if chain_guard and epoch != state['epoch']:
+                        continue
+                    if state['on']:
+                        timers.append((now + 300, 'cook', state['epoch']))
+                        timers.append((now + 600, 'fire', epoch))
+                elif kind == 'cook':
+                    if cook_guard and (not state['on'] or epoch != state['epoch']):
+                        continue
+                    cooks += 1
+            now = end
+        else:
+            raise AssertionError(event)
+    chains = len([t for t in timers if t[1] == 'fire'])
+    return cooks, chains
+
+
 class StoneBoilingSource(unittest.TestCase):
     def setUp(self):
         self.source = SOURCE.read_text(encoding="utf-8")
@@ -139,6 +203,25 @@ class StoneBoilingSource(unittest.TestCase):
         transfer = holder.split('/proc/trans_to_holder(', 1)[1].split('/proc/trans_to(', 1)[0]
         self.assertIn('target.add_reagent(current.id, amount_to_transfer * multiplier, current.get_data(), safety = TRUE)', transfer)
         self.assertIn('remove_reagent(current.id, amount_to_transfer, TRUE)', transfer)
+
+    def test_campfire_fire_generation_contract(self):
+        campfire_timer_contract(self.oven)
+
+    def test_extinguished_campfire_does_not_cook(self):
+        # #4217: food must not cook after the fire is put out.
+        self.assertEqual(project_campfire(self.oven, ['light', 100, 'extinguish', 700]), (0, 0))
+        unguarded = self.oven.replace('if (!on || epoch != fire_epoch)', 'if (FALSE)', 1)
+        self.assertEqual(project_campfire(unguarded, ['light', 100, 'extinguish', 700])[0], 1)
+
+    def test_relit_campfire_keeps_one_fire_chain(self):
+        # #4218: relighting before the old 600-tick timer fires leaves one chain.
+        cooks, chains = project_campfire(self.oven, ['light', 100, 'extinguish', 'light', 650])
+        self.assertEqual(chains, 1)
+        self.assertEqual(cooks, 1)
+        unguarded = self.oven.replace('if (QDELETED(src) || epoch != fire_epoch)\n\t\treturn // A newer', 'if (QDELETED(src))\n\t\treturn // A newer', 1)
+        self.assertEqual(project_campfire(unguarded, ['light', 100, 'extinguish', 'light', 650])[1], 2)
+        with self.assertRaises(AssertionError):
+            campfire_timer_contract(unguarded)
 
     def test_actual_recipe_and_unlock_chain(self):
         recipes = (ROOT / "config/crafting/material_recipes_global.txt").read_text(encoding="utf-8")

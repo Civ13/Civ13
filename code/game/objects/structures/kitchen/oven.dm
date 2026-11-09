@@ -15,6 +15,10 @@
 	var/consume_itself = FALSE
 	var/looping = FALSE //for campfires
 	var/cooking_time = 50
+	var/tmp/fire_epoch = 0 // Changes on every light/extinguish so stale cooking and loop callbacks stop.
+
+/obj/structure/oven/persistence_runtime_var(key)
+	return key == "fire_epoch" || ..()
 
 /obj/structure/oven/update_icon()
 	if (on)
@@ -148,9 +152,12 @@
 			set_light(2)
 		else
 			set_light(2)
+		var/epoch = fire_epoch
 		spawn (cooking_time)
 			if (QDELETED(src))
 				return
+			if (!on || epoch != fire_epoch)
+				return // Extinguished or relit since this cooking cycle started.
 			if (!looping)
 				on = FALSE
 				set_light(0)
@@ -297,23 +304,23 @@
 /obj/structure/oven/fireplace/persistence_runtime_var(key)
 	return key == "stone_boil_busy" || key == "stone_boil_epoch" || key == "stone_upgrade_busy" || ..()
 
-/obj/structure/oven/fireplace/proc/keep_sound_on()
-	if (QDELETED(src))
+/obj/structure/oven/fireplace/proc/keep_sound_on(epoch)
+	if (QDELETED(src) || epoch != fire_epoch)
 		return
 	if (on && looping && fuel > 0)
 		playsound(get_turf(src), "sound/effects/fireplace-[rand(1, 6)].ogg", 75, TRUE, -1)
 		spawn(50) // 6 seconds
-			keep_sound_on()
+			keep_sound_on(epoch)
 
-/obj/structure/oven/fireplace/proc/keep_fire_on()
-	if (QDELETED(src))
-		return
+/obj/structure/oven/fireplace/proc/keep_fire_on(epoch)
+	if (QDELETED(src) || epoch != fire_epoch)
+		return // A newer lighting owns the fire loop.
 	if (on && looping && fuel > 0)
 		set_light(5)
 		update_icon()
 		fire_loop()
 		spawn(600) // 1 minute
-			keep_fire_on()
+			keep_fire_on(epoch)
 	else
 		on = FALSE
 		set_light(0)
@@ -324,11 +331,13 @@
 	if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
-		keep_fire_on()
-		keep_sound_on()
+		var/epoch = ++fire_epoch
+		keep_fire_on(epoch)
+		keep_sound_on(epoch)
 	else if (on)
 		H.visible_message(SPAN_NOTICE("[H] extinguishes \the [name]."), SPAN_NOTICE("You extinguish \the [name]."))
 		on = FALSE
+		fire_epoch++ // Cancels pending cooking, boiling and both loops.
 		set_light(0)
 		update_icon()
 	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
