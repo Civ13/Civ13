@@ -913,10 +913,15 @@
 		var/current_usage = world.tick_usage
 		var/usage_delta = current_usage - start_usage
 		var/elapsed_ds = (world.timeofday - start_clock + 864000) % 864000
-		// The capture must stay inside one tick (tick_delta) and below the
-		// overrun line (90%). Its own share was 10%, which a busy region's
+		// The capture must stay inside one tick (tick_delta, elapsed_ds) and
+		// within its own 40% share. Its share was 10%, which a busy region's
 		// ordinary animals overran on every save (Gaia/Rail Yard, 2026-11-08).
-		if(++work > 8192 || tick_delta || usage_delta > 40 || current_usage >= 90 || elapsed_ds > 1)
+		// There is no total-usage line: nothing in a chunk sleeps
+		// (save_work_check only calls check() here), so a capture admitted on a
+		// busy tick can only run that tick over, never yield. A 90% line failed
+		// whole saves when admission at 76% left a 14%-cost elk too little room
+		// (Gaia, 2026-11-09).
+		if(++work > 8192 || tick_delta || usage_delta > 40 || elapsed_ds > 1)
 			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: root=[root ? root.type : "null"] work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
