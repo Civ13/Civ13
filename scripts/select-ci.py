@@ -73,6 +73,14 @@ AGENT_CONTROL_MANUAL_NATIVE = frozenset({
     'tests/agent_control/visibility/adapters.dm',
     'tests/agent_control/visibility/probe.dm',
 })
+# Player-parity probes (docs/agent-player-parity.md), run by hand with
+# tests/ecology_spawning/run_linux.py; never auto-run on addition.
+AGENT_PARITY_MANUAL_NATIVE = frozenset({
+    'tests/agent_control/windows_probe.dm',
+    'tests/agent_control/prompts_probe.dm',
+    'tests/agent_control/stance_probe.dm',
+    'tests/agent_control/move_probe.dm',
+})
 # Included only by the existing opt-in observe fixture; never auto-run on addition.
 AGENT_OBSERVE_MANUAL_NATIVE = frozenset({'tests/agent_observe/action_contract_probe.dm'})
 AGENT_CI_DIGEST_OFFLINE_TESTS = frozenset({'tests/agent_ci_digest/test_ci_digest.py'})
@@ -486,7 +494,7 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/savestream/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered savestream executable test requires explicit CI review')
-        if path in AGENT_CONTROL_OFFLINE_TESTS or path in AGENT_CONTROL_MANUAL_NATIVE or path in AGENT_OBSERVE_MANUAL_NATIVE:
+        if path in AGENT_CONTROL_OFFLINE_TESTS or path in AGENT_CONTROL_MANUAL_NATIVE or path in AGENT_OBSERVE_MANUAL_NATIVE or path in AGENT_PARITY_MANUAL_NATIVE:
             continue
         if path in AGENT_CI_DIGEST_OFFLINE_TESTS:
             continue
