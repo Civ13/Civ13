@@ -72,6 +72,22 @@ class TrenchClimb(unittest.TestCase):
         self.assertIn("direction & (NORTH | SOUTH)", crossing)
         self.assertIn("direction & (EAST | WEST)", crossing)
 
+    def test_free_movement_climbs_from_between_tiles(self):
+        ready = proc_body(self.subtile, "/mob/living/human/proc/human_subtile_ready(direction)")
+        self.assertIn("(!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())", ready)
+        self_move = proc_body(self.subtile, "/mob/living/human/SelfMove(turf/n, direct, deadline = null, fine_step = FALSE)")
+        self.assertIn("return human_subtile_trench_climb(climb_direction)", self_move)
+        perform = proc_body(self.subtile, "/datum/human_subtile_transaction/proc/perform(direction)")
+        # A pixel pulse never reaches a sleeping trench Enter/Exit.
+        self.assertIn("actor.human_subtile_climb_direction(direction)", perform)
+        self.assertIn("actor.human_subtile_pulse_climbs(dx, dy)", perform)
+        climb = proc_body(self.subtile, "/mob/living/human/proc/human_subtile_trench_climb(direction)")
+        self.assertIn("do_after(src, down ? 5 : 20, destination, needhand = FALSE)", climb)
+
+    def test_same_level_moves_do_not_climb(self):
+        self.assertIn("if (from_turf.trench_climb_level() == trench_climb_level())\n\t\t\treturn ..()", self.enter)
+        self.assertIn("if (next_turf.trench_climb_level() == trench_climb_level())\n\t\t\treturn ..()", self.exit)
+
 
 if __name__ == "__main__":
     unittest.main()

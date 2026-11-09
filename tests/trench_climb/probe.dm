@@ -81,7 +81,7 @@ var/trench_climb_probe_checks = 0
 
 	// Leaving a trench from the tile centre takes the tile path and its climb.
 	var/mob/living/human/trench_climb_probe/A = trench_climb_probe_actor(3, 5)
-	trench_climb_probe_assert(!A.human_subtile_eligible(NORTH) && !A.human_subtile_eligible(NORTHEAST), "climb_out_uses_tile_path")
+	trench_climb_probe_assert(A.human_subtile_eligible(NORTH) && A.human_subtile_climb_direction(NORTH) == NORTH && A.human_subtile_climb_direction(NORTHEAST) == NORTH && !A.human_subtile_climb_direction(EAST), "aligned_edge_climbs_freely")
 	trench_climb_probe_assert(A.human_subtile_eligible(EAST), "walking_along_trench_stays_smooth")
 	A.dir = NORTH
 	A.SelfMove(get_step(A, NORTH), NORTH)
@@ -90,7 +90,7 @@ var/trench_climb_probe_checks = 0
 
 	// Climbing in from the ground also takes the tile path.
 	var/mob/living/human/trench_climb_probe/D = trench_climb_probe_actor(4, 6)
-	trench_climb_probe_assert(!D.human_subtile_eligible(SOUTH) && D.human_subtile_eligible(EAST), "climb_in_uses_tile_path")
+	trench_climb_probe_assert(D.human_subtile_climb_direction(SOUTH) == SOUTH && !D.human_subtile_climb_direction(EAST), "climb_in_edge_found")
 	D.dir = SOUTH
 	D.SelfMove(get_step(D, SOUTH), SOUTH)
 	sleep(10)
@@ -100,6 +100,46 @@ var/trench_climb_probe_checks = 0
 	var/mob/living/human/trench_climb_probe/C = trench_climb_probe_actor(8, 5)
 	C.SelfMove(get_step(C, EAST), EAST, world.time + 4)
 	trench_climb_probe_assert(trench_climb_probe_at(C, 9, 5), "smooth_walk_along_trench")
+
+	// Free movement climbs from between tiles: a second trench along row 9.
+	for (var/tx in 2 to 10)
+		new /turf/floor/trench(locate(tx, 9, 1))
+	new /obj/covers/repairedfloor(locate(8, 9, 1))
+
+	// Climbing out keeps the sideways offset and takes the exit's time.
+	var/mob/living/human/trench_climb_probe/F = trench_climb_probe_actor(3, 9)
+	F.step_x = 10
+	F.human_subtile_offset_owned = TRUE
+	F.movement_northsouth = NORTH
+	var/climb_start = world.time
+	F.SelfMove(get_step(F, NORTH), NORTH, world.time + 4, FINE_STEP_HELD)
+	trench_climb_probe_assert(F.x == 3 && F.y == 10 && F.step_x == 10 && !F.step_y && F.human_subtile_offset_owned && world.time - climb_start >= 20, "free_climb_out_keeps_offset")
+
+	// Walking in from an offset stops at the edge, then climbs straight down.
+	var/mob/living/human/trench_climb_probe/G = trench_climb_probe_actor(6, 11)
+	G.step_x = 6
+	G.human_subtile_offset_owned = TRUE
+	G.movement_northsouth = SOUTH
+	G.SelfMove(get_step(G, SOUTH), SOUTH, world.time + 4, FINE_STEP_HELD)
+	trench_climb_probe_assert(G.x == 6 && G.y == 10 && G.step_x == 6 && !G.step_y, "free_walk_stops_at_trench_edge")
+	climb_start = world.time
+	G.SelfMove(get_step(G, SOUTH), SOUTH, world.time + 4, FINE_STEP_HELD)
+	trench_climb_probe_assert(G.x == 6 && G.y == 9 && G.step_x == 6 && !G.step_y && world.time - climb_start >= 5, "free_climb_in_keeps_offset")
+
+	// Straddling the trench's end, the climb lands on the trench tile.
+	var/mob/living/human/trench_climb_probe/H = trench_climb_probe_actor(10, 10)
+	H.step_x = 6
+	H.human_subtile_offset_owned = TRUE
+	H.movement_northsouth = SOUTH
+	H.SelfMove(get_step(H, SOUTH), SOUTH, world.time + 4, FINE_STEP_HELD)
+	trench_climb_probe_assert(H.x == 10 && H.y == 9 && !H.step_x && !H.step_y, "climb_settles_on_open_tile")
+
+	// Ground and a bridge share a level: walking on is smooth, with no climb.
+	var/mob/living/human/trench_climb_probe/B = trench_climb_probe_actor(8, 10)
+	B.movement_northsouth = SOUTH
+	climb_start = world.time
+	B.SelfMove(get_step(B, SOUTH), SOUTH, world.time + 4, FINE_STEP_HELD)
+	trench_climb_probe_assert(B.x == 8 && B.y == 9 && !B.step_x && !B.step_y && world.time - climb_start <= 4, "bridge_walk_stays_smooth")
 
 
 /world/New()

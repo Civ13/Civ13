@@ -151,7 +151,7 @@ class FineOffsetContracts(unittest.TestCase):
             self.assertIn(f'Move(get_step(mob, {d}), {d}, FALSE, mob.held_fine_step())', MOVE)
         body = MOVE.split('/client/Move(', 1)[1].split('if (ishuman(mob))\n\t\tvar/mob/living/human/subtile_input_actor', 1)[0]
         self.assertIn('if (fine_step == FINE_STEP_FREE)\n\t\tfine_step = FALSE', body)
-        self.assertIn('human_subtile_fine_ready(direct) && !free_actor.human_subtile_trench_near(direct)', body)
+        self.assertIn('human_subtile_fine_ready(direct) && (free_actor.human_subtile_climb_ready() || !free_actor.human_subtile_trench_near(direct))', body)
         self.assertIn('fine_step = FINE_STEP_HELD', body)
 
     def test_blocked_slides_slip_round_corners_and_along_walls(self):
