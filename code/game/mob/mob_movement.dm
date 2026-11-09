@@ -749,6 +749,9 @@
 				if (mob_is_human)
 					H.nutrition -= 0.0015 * distance_fraction
 					H.water -= 0.0015 * distance_fraction
+		// Hills: climbing costs time, going downhill saves a little (terrain_height.dm).
+		if (mob_is_living && !mob.buckled && isturf(mob_loc) && isturf(n))
+			move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
