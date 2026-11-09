@@ -228,4 +228,4 @@
 	dat += "<br><a href='?src=\ref[src];subcom_refresh' class='btn'>REFRESH</a>"
 	dat += "</body></html>"
 
-	usr << browse(dat, "window=subcom13_panel;size=650x800")
+	show_browse(usr, dat, "window=subcom13_panel;size=650x800")

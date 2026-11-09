@@ -158,7 +158,7 @@
 	if (!istype(user) || !user.Adjacent(src))
 		return
 	icon_state = "terminal_on"
-	user << browse(report_html(), "window=factory_monitor;size=620x520")
+	show_browse(user, report_html(), "window=factory_monitor;size=620x520")
 	spawn(50)
 		if (!QDELETED(src))
 			icon_state = "terminal"

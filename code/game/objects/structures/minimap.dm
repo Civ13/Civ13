@@ -15,7 +15,7 @@
 		if (I.color)
 			overlay_icon.Blend(I.color, ICON_MULTIPLY)
 		flat.Blend(overlay_icon, ICON_OVERLAY, I.pixel_x + 1, I.pixel_y + 1)
-	user << browse(flat, "window=popup;size=630x630")
+	show_browse(user, flat, "window=popup;size=630x630")
 
 /obj/structure/sign/map/attackby(obj/item/I as obj, mob/user as mob)
 	if (istype(I, /obj/item/weapon/pen))
@@ -136,7 +136,7 @@
 	var/icon/flat = new /icon('icons/minimaps.dmi', "minimap")
 	var/icon/player_icon = new /icon(playerloc.icon, playerloc.icon_state)
 	flat.Blend(player_icon, ICON_OVERLAY, playerloc.pixel_x + 1, playerloc.pixel_y + 1)
-	user << browse(flat, "window=popup;size=630x630")
+	show_browse(user, flat, "window=popup;size=630x630")
 
 /obj/item/weapon/map/update_icon()
 	..()
@@ -163,7 +163,7 @@
 	update_icon()
 	if (img)
 		var/icon/flat = new /icon(img.icon, img.icon_state)
-		user << browse(flat, "window=popup;size=630x630")
+		show_browse(user, flat, "window=popup;size=630x630")
 
 /obj/item/weapon/map_tdm/attack_self(mob/user)
 	update_icon()
@@ -204,7 +204,7 @@
 /obj/structure/sign/map_board/examine(mob/living/human/user)
 	if (img)
 		var/icon/flat = new /icon(img.icon, img.icon_state)
-		user << browse(flat, "window=popup;size=630x630")
+		show_browse(user, flat, "window=popup;size=630x630")
 	if (map.ID == MAP_OPERATION_FALCON)
 		var/friendly_fob = FALSE
 		var/dat = "<h1>FOB COORDINATES</h1>"
@@ -214,7 +214,7 @@
 					friendly_fob = TRUE
 					dat += "<b>[F.name]:</b> ([F.x];[F.y])<br>"
 		if (friendly_fob)
-			user << browse(dat, "window=FOB Coordinates")
+			show_browse(user, dat, "window=FOB Coordinates")
 
 /obj/structure/sign/map_board/attack_hand(mob/user)
 	examine(user)

@@ -192,7 +192,7 @@ var/global/FREQM = rand(101,120)
 		style = "Radio Transmitter"
 	if (m)
 		if (check_power() == FALSE && powerneeded > 0)
-			m << browse({"
+			show_browse(m, {"
 
 			<br>
 			<html>
@@ -223,7 +223,7 @@ var/global/FREQM = rand(101,120)
 		else
 
 			if (receiver && transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -254,7 +254,7 @@ var/global/FREQM = rand(101,120)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 			else if (receiver && !transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -284,7 +284,7 @@ var/global/FREQM = rand(101,120)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 			else if (!receiver && transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -683,7 +683,7 @@ var/global/FREQM = rand(101,120)
 /obj/item/weapon/radio/proc/do_html(var/mob/m)
 	var/style = "PORTABLE RADIO"
 	if (m)
-		m << browse({"
+		show_browse(m, {"
 
 		<br>
 		<html>

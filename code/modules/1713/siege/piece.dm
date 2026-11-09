@@ -330,7 +330,7 @@
 	if (using_cannon)
 		to_chat(src, "You stopped using [using_cannon.name].")
 		using_cannon.clear_aiming_line(src)
-		src << browse(null, "window=artillery_window")
+		show_browse(src, null, "window=artillery_window")
 		using_cannon.user = null
 		using_cannon = null
 
@@ -922,7 +922,7 @@
 
 		max_distance = maxrange
 
-		m << browse({"
+		show_browse(m, {"
 
 		<br>
 		<html>

@@ -75,7 +75,8 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water")
+           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water",
+           "topic", "close_window")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
@@ -83,6 +84,9 @@ INTENTS = ("help", "disarm", "grab", "harm")
 MAX_NEARBY = 24
 MAX_TERRAIN = 10
 MAX_PLAN = 3
+MAX_WINDOWS = 2  # newest menu windows shown to the model
+MAX_WINDOW_LINKS = 24
+MAX_WINDOW_TEXT = 400
 UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
@@ -166,6 +170,9 @@ Verbs: {"do": "verb", "name": "<verb>"} uses anything a player has in the right-
 ("Your verbs", e.g. Rest, Sleep, Check Pulse, Give with "onto": a person, Point To with "onto"), a held or worn item's verbs
 ("Item verbs": add "target": 0), or a thing next to you marked (verbs: ...) with "target": its number. "text" is the argument
 for verbs that take words. {"do": "throw", "target": n} throws what you hold at a target (a spear at prey, a rock).
+Windows: menus the game opens (research, trade posts, suppliers, faction and recruitment desks, books) are listed as
+WINDOW lines with numbered buttons. {"do": "topic", "window": "<name>", "link": number} presses one, as a player clicks it;
+{"do": "close_window", "window": "<name>"} closes it. Click the object again to reopen its window.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -326,11 +333,27 @@ def summarize(observation, note="", ignored=(), muted=()):
     heard = senses.heard_lines(news.get("sounds") or [])
     if heard:
         lines.append("Sounds you heard: " + "; ".join(heard) + ".")
+    lines.extend(window_lines(observation))
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
         lines.extend("  " + text for text in texts)
     return "\n".join(lines), refs
+
+
+def window_lines(observation):
+    """Menu windows the game showed the character (research, trade, suppliers, books), newest last."""
+    windows = [w for w in observation.get("windows") or [] if isinstance(w, dict)][-MAX_WINDOWS:]
+    lines = []
+    for window in windows:
+        text = " ".join(str(window.get("text") or "").split())
+        if len(text) > MAX_WINDOW_TEXT:
+            text = text[:MAX_WINDOW_TEXT] + "..."
+        lines.append(f"WINDOW \"{window.get('window')}\" ({window.get('title')}): {text or 'no text'}")
+        links = [link for link in window.get("links") or [] if isinstance(link, dict)][:MAX_WINDOW_LINKS]
+        if links:
+            lines.append("  buttons: " + "; ".join(f"{link.get('link')}. {link.get('label')}" for link in links))
+    return lines
 
 
 def _verb_mark(row):
@@ -931,6 +954,27 @@ def parse_decision(text, refs):
             return None
         return out
     if action == "disembark":
+        return args
+    if action in ("topic", "close_window"):
+        window = str(data.get("window", "")).strip()
+        if not window:
+            return None
+        args["window"] = window[:64]
+        if action == "close_window":
+            return args
+        if data.get("link") is not None:
+            try:
+                args["link"] = _decision_int(data.get("link"))
+            except (TypeError, ValueError):
+                return None
+            if args["link"] < 1:
+                return None
+        elif str(data.get("label", "")).strip():
+            args["label"] = str(data["label"]).strip()[:80]
+        else:
+            return None
+        if str(data.get("choose", "")).strip():
+            args["choose"] = str(data["choose"]).strip()[:64]
         return args
     if action in ("build", "roof"):
         direction = str(data.get("dir", "")).lower()

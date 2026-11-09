@@ -456,7 +456,7 @@
 				map.sales_registry -= list(LL)
 
 	if (client)
-		src << browse(null, "window=memory")
+		show_browse(src, null, "window=memory")
 		client.movement_busy = FALSE
 
 	//Handle species-specific deaths.

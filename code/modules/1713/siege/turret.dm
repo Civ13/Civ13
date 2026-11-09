@@ -146,7 +146,7 @@
 	if (using_turret)
 		using_turret.clear_aiming_line(src)
 		to_chat(src, SPAN_NOTICE("You have stopped using the [using_turret.name]."))
-		src << browse(null, "window=artillery_window")
+		show_browse(src, null, "window=artillery_window")
 		using_turret = null
 
 /obj/structure/turret/proc/place_user(var/mob/living/M)
@@ -371,7 +371,7 @@
 			weapon_name = C.name
 			if(C.loaded.len >= 1)
 				loaded = C.loaded[1].name
-	m << browse({"
+	show_browse(m, {"
 
 	<br>
 	<html>

@@ -113,7 +113,7 @@
 	// Fixed presentation hook keeps isolated base-book fixtures independent.
 	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
 		return
-	user << browse(legacy_snapshot, "window=[name]")
+	show_browse(user, legacy_snapshot, "window=[name]")
 	onclose(user, "[name]")
 
 /obj/item/weapon/book/verb/rename()

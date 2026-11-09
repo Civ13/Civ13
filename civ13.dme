@@ -1162,6 +1162,7 @@
 #include "code\modules\agent_control\agent_verbs.dm"
 #include "code\modules\agent_control\agent_view.dm"
 #include "code\modules\agent_control\agent_visits.dm"
+#include "code\modules\agent_control\agent_windows.dm"
 #include "code\modules\bug_reports\bug_report_format.dm"
 #include "code\modules\bug_reports\bug_reports.dm"
 #include "code\modules\chat\chat.dm"

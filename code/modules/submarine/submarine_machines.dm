@@ -40,7 +40,7 @@
 		if(!can_use(M))
 			stale += M
 			window_open -= M
-			M << browse(null, "window=sub_control")
+			show_browse(M, null, "window=sub_control")
 			continue
 		send_ui(M)
 	open_users -= stale
@@ -84,7 +84,7 @@
 
 /obj/structure/machinery/sub_control/interact(mob/user)
 	if(!can_use(user))
-		user << browse(null, "window=sub_control")
+		show_browse(user, null, "window=sub_control")
 		open_users -= user
 		window_open -= user
 		return
@@ -114,7 +114,7 @@
 	dat += get_ui_content()
 
 	dat += "</body></html>"
-	user << browse(dat, "window=sub_control;size=[window_size]")
+	show_browse(user, dat, "window=sub_control;size=[window_size]")
 
 /obj/structure/machinery/sub_control/proc/vessel_name_header()
 	return "[my_sub ? my_sub.vessel_name : "NO LINK"] - SYSTEMS INTERFACE"
@@ -123,7 +123,7 @@
 	if(href_list["close_console"])
 		open_users -= usr
 		window_open -= usr
-		usr << browse(null, "window=sub_control")
+		show_browse(usr, null, "window=sub_control")
 		return 1
 	if(href_list["close"])
 		open_users -= usr

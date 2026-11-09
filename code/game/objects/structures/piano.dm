@@ -316,13 +316,13 @@
 		else
 			dat += "<A href='?src=\ref[src];help=2'>Show Help</A><BR>"
 	dat += "</BODY></HTML>"
-	user << browse(dat, "window=piano;size=700x300")
+	show_browse(user, dat, "window=piano;size=700x300")
 	onclose(user, "piano")
 
 /obj/structure/piano/Topic(href, href_list)
 
 	if (!in_range(src, usr) || !anchored || !usr.canmove || usr.restrained())
-		usr << browse(null, "window=piano;size=700x300")
+		show_browse(usr, null, "window=piano;size=700x300")
 		onclose(usr, "piano")
 		return
 

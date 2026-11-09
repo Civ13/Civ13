@@ -92,4 +92,4 @@ var/global/list/codebook_words = list("Alpha", "Bravo", "Charlie", "Delta", "Ech
 	set category = "IC"
 	if (!emote_panel || emote_panel.owner != src)
 		emote_panel = new(src)
-	src << browse(emote_panel.html(), "window=emote_panel;size=460x380")
+	show_browse(src, emote_panel.html(), "window=emote_panel;size=460x380")

@@ -111,7 +111,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		qdel(I)
 		i++
 	dat += {"</body></html>"}
-	H << browse(dat, "window=pepelsibirsk_trader;size=540x500")
+	show_browse(H, dat, "window=pepelsibirsk_trader;size=540x500")
 
 /mob/living/simple_animal/pepelsibirsk_trader/Topic(href, href_list)
 	if (!usr || !usr.client)

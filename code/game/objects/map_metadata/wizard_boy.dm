@@ -725,7 +725,7 @@ var/wizard_style = {"
 </body>
 </html>
 "}
-		owner << browse(html, "window=wizard_sorting;size=600x800;can_close=0;can_resize=0")
+		show_browse(owner, html, "window=wizard_sorting;size=600x800;can_close=0;can_resize=0")
 
 	Topic(href, href_list[])
 		if (usr.client != owner)
@@ -739,7 +739,7 @@ var/wizard_style = {"
 		else if (action == "random")
 			result = pick("Mustardweasel", "Mintysnek", "Rubywyrm", "Slatepie")
 			done = TRUE
-			owner << browse(null, "window=wizard_sorting")
+			show_browse(owner, null, "window=wizard_sorting")
 		else if (action == "answer")
 			var/idx = text2num(href_list["index"])
 			if (current_question_keys && idx >= 1 && idx <= current_question_keys.len)
@@ -760,7 +760,7 @@ var/wizard_style = {"
 							winning_house = h
 					result = winning_house
 					done = TRUE
-					owner << browse(null, "window=wizard_sorting")
+					show_browse(owner, null, "window=wizard_sorting")
 				else
 					show_window()
 

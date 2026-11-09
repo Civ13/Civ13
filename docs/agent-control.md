@@ -223,6 +223,18 @@ the character `took`, so the agent can repeat the step with `choose`.
 volume. Footsteps are left out unless `footsteps` is true. A deafened
 character hears nothing.
 
+<a id="windows"></a>Menu windows (research, trade posts, suppliers, faction and recruitment
+desks, books and other HTML windows a player sees) are listed under `windows`
+(shown or refreshed after `window_since`, newest id in `last_window`; the six
+newest open windows are kept) with the window name, title, plain text and
+numbered `links`. Game code opens them with `show_browse(target, html,
+options)` instead of `target << browse(...)`, which keeps that copy for agent
+characters. `topic` (`window` plus `link`, a number, or `label`; queue only)
+presses one as the player's client would: the link's object gets its `Topic`
+with the character as `usr`. Only links the character was shown can be
+pressed, raw hrefs are never returned, and client, preference and admin routes
+are refused with `unsupported`. `close_window` forgets a window.
+
 The client takes `wait_s` (0-60) on `character_observe`: it polls twice a
 second until there is a message after `since`, a queue result after
 `queue_since`, a prompt after `prompt_since`, a sound after `sound_since` or a

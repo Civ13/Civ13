@@ -310,7 +310,7 @@
 	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];close'\">Close</button></div>"
 	dat += "</body></html>"
 
-	H << browse(dat, "window=supplystall;size=500x500")
+	show_browse(H, dat, "window=supplystall;size=500x500")
 
 /obj/structure/supplier/Topic(href, href_list)
 	if (!usr || !usr.client)

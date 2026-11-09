@@ -46,10 +46,10 @@
 	return "<html><head><title>Menu</title></head><body style='font-family:Verdana;font-size:12px;background:#1b1b1b;color:#ddd;margin:8px'>[note][jointext(rows, "")]</body></html>"
 
 /datum/escape_menu/proc/show()
-	owner << browse(html(), "window=escape_menu;size=300x560;can_resize=0")
+	show_browse(owner, html(), "window=escape_menu;size=300x560;can_resize=0")
 
 /datum/escape_menu/proc/hide()
-	owner << browse(null, "window=escape_menu")
+	show_browse(owner, null, "window=escape_menu")
 
 /datum/escape_menu/Topic(href, list/href_list)
 	if (!owner || usr != owner.mob)

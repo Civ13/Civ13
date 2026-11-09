@@ -589,22 +589,25 @@
 			heard_sounds += list(sound_row)
 	out["sounds"] = heard_sounds
 	out["last_sound"] = C.sound_serial
+	// Menu windows the character was shown (docs/agent-control.md#windows).
+	out["windows"] = C.window_rows(text2num("[req["window_since"]]") || 0)
+	out["last_window"] = C.window_serial
 	return out
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
 			ready = max(ready, world.time + 2)
-	if (action in list("click", "use", "craft", "verb", "throw"))
+	if (action in list("click", "use", "craft", "verb", "throw", "topic"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote", "ooc", "bug_report"))
 		ready = max(ready, next_speech)
@@ -806,6 +809,10 @@
 			detail = agent_run_verb(C, req, from_queue)
 		if ("throw")
 			detail = agent_throw(C, req, from_queue)
+		if ("topic")
+			detail = agent_window_topic(C, req, from_queue)
+		if ("close_window")
+			detail = agent_window_close(C, req)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -961,6 +968,10 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
+	if (action in list("topic", "close_window"))
+		agent_text_arg(step, "window", 64)
+	if (action == "topic" && isnull(step["link"]) && isnull(step["label"]))
+		agent_fail("bad_args", "topic needs link (a number) or label")
 	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))
 		agent_fail("bad_args", "intent must be help, disarm, grab or harm")
 	if (!isnull(step["choose"]))
@@ -988,7 +999,7 @@
 			else
 				agent_fail("bad_args", "until takes message, holding or amount")
 		out["until"] = kept_until
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

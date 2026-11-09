@@ -91,7 +91,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 		to_chat(H, SPAN_WARNING("You're too far away!"))
 		return
 	if (href_list["close"])
-		H << browse(null, "window=npc_vendor")
+		show_browse(H, null, "window=npc_vendor")
 		return
 
 // ============================================================
@@ -141,7 +141,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 <div style="font-weight:bold;margin-bottom:8px;">Smuggler's Package - $500</div>
 <a class="btn btn-sm" href="byond://?src=\ref[src];buy_shipment=1">Buy Shipment</a>
 </div>"}
-	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x400")
+	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x400")
 
 /mob/living/simple_animal/npc_vendor/smuggler/Topic(href, href_list)
 	..()
@@ -334,7 +334,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 [sell_html]
 <h3 style="color:#cc0000;margin:12px 0 8px 0;">Buy Weapons</h3>
 [weapons_html]"}
-	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x600")
+	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x600")
 
 /mob/living/simple_animal/npc_vendor/biker/Topic(href, href_list)
 	if (..())
@@ -542,7 +542,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 
 	var/content = {"<div class="message">What do you need, jefe?</div>
 [products_html]"}
-	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x500")
+	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x500")
 
 /mob/living/simple_animal/npc_vendor/cartel/Topic(href, href_list)
 	if (..())
@@ -693,7 +693,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 
 	var/content = {"<div class="message">What do you need?</div>
 [products_html]"}
-	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x600")
+	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x600")
 
 /mob/living/simple_animal/npc_vendor/walter/Topic(href, href_list)
 	if (..())
@@ -821,7 +821,7 @@ h2 { color: #cc0000; border-bottom: 2px solid #cc0000; padding-bottom: 8px; marg
 <div style="font-size:12px;color:#999999;">I can't tamper with evidence that fast.</div>
 </div>"}
 
-	H << browse(build_shop_html(content, H), "window=npc_vendor;size=500x450")
+	show_browse(H, build_shop_html(content, H), "window=npc_vendor;size=500x450")
 
 /mob/living/simple_animal/npc_vendor/fed/Topic(href, href_list)
 	if (..())

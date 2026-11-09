@@ -376,7 +376,7 @@ var/global/list/specialist_trader_sell_floor = null
 		rows += "<i>Nothing for sale in this age.</i><br>"
 	if (istype(T, /datum/specialist_trader/jeweller))
 		rows += "<hr>Hit the post with copper, silver or gold coins to change them (5% fee).<br>"
-	H << browse(jointext(rows, ""), "window=specialist_trader;size=520x480")
+	show_browse(H, jointext(rows, ""), "window=specialist_trader;size=520x480")
 
 /obj/structure/specialist_trader/Topic(href, href_list)
 	..()

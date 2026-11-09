@@ -1145,7 +1145,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		to_chat(user, "<span class='notice'>Index: #[S.index]</span>")
 		to_chat(user, "<span class='notice'>Rarity: <font color='[S.rarity_color()]'>[S.rarity_name()]</font></span>")
 		to_chat(user, "<span class='notice'>Category: [S.category] | Era: [S.age]</span>")
-		user << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=400x650")
+		show_browse(user, "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=400x650")
 
 /obj/item/sticker_pile
 	name = "pile of stickers"

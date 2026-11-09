@@ -176,13 +176,13 @@
 		else
 			dat += "<A href='?src=\ref[src];help=2'>Show Help</A><BR>"
 	dat += "</BODY></HTML>"
-	user << browse(dat, "window=trombone;size=700x300")
+	show_browse(user, dat, "window=trombone;size=700x300")
 	onclose(user, "trombone")
 
 /obj/item/trombone/Topic(href, href_list)
 
 	if (!in_range(src, usr) || !isliving(usr) || !usr.canmove || usr.restrained())
-		usr << browse(null, "window=trombone;size=700x300")
+		show_browse(usr, null, "window=trombone;size=700x300")
 		onclose(usr, "trombone")
 		return
 
