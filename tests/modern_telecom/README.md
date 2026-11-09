@@ -9,7 +9,9 @@ generated source copy is replaced for deterministic schedule boundaries. A test
 actor supplies an online-state adapter and native species/reagent containers;
 award logic, stats and whole-world persistence execute production code.
 
-Checks cover Modern gating, cycling-season eligibility, fixed/no-cycle evergreen
+Checks cover 1903 radio versus Modern TV/build gating, live presenter identity,
+range, power, antenna, deaf audience, rate and 32-listener limits, station
+identity save restoration and transient session exclusion, as well as, cycling-season eligibility, fixed/no-cycle evergreen
 compatibility, starts/ends/reruns, exact native reward range, cap, offline and
 reconnect rejection, durable lesson credits and save restoration. These checks
 also cover real powered receiver delivery, frequency filtering, phone calls and

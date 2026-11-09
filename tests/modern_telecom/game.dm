@@ -30,6 +30,12 @@ var/telecom_failures = 0
 /mob/living/human/telecom_fixture/hear_relayed_radio(message, verbage, datum/remote_speaker/speaker, obj/destination)
 	relayed_heard++
 	relayed_last = "[speaker.real_name]@[speaker.region]/[speaker.relay]: [message]"
+/mob/living/human/telecom_fixture
+	var/station_heard = 0
+	var/station_last = ""
+/mob/living/human/telecom_fixture/hear_station_line(message)
+	station_heard++
+	station_last = message
 /proc/telecom_check(condition, label)
 	if (!condition)
 		telecom_failures++
@@ -75,10 +81,10 @@ var/telecom_failures = 0
 		C.connections |= R
 		var/mob/living/human/telecom_fixture/listener = new(locate(4,4,1))
 		telecom_fixture_time = 3000
-		map.ordinal_age = 7
+		map.ordinal_age = 4
 		S.transmit_lesson()
-		telecom_check(!S.program_line && !listener.broadcast_lessons.len, "real station emission rejects pre-Modern")
-		map.ordinal_age = 8
+		telecom_check(!S.program_line && !listener.broadcast_lessons.len, "real station emission rejects pre-1903")
+		map.ordinal_age = 5
 		S.next_broadcast = 0
 		R.frequency = 201
 		S.transmit_lesson()
@@ -92,6 +98,49 @@ var/telecom_failures = 0
 		S.next_broadcast = 0
 		S.transmit_lesson()
 		telecom_check(listener.broadcast_lessons.len == 1, "powered matching station and receiver award real lesson")
+		telecom_check(civ_telecom_era_allowed(/obj/structure/telecom) && !civ_telecom_era_allowed(/obj/structure/telecom/tv) && !civ_telecom_era_allowed(/obj/structure/telecom/station/tv), "1903 radio does not unlock TV")
+		listener.station_heard = 0
+		var/mob/living/human/telecom_fixture/presenter = new(locate(3,3,1))
+		S.presenter = presenter
+		S.station_name = "Test station"
+		S.faction_tag = "Roleplay"
+		telecom_check(S.transmit_live(presenter, "Hello listeners", null) >= 1 && listener.station_heard == 1 && findtext(listener.station_last, "Test station"), "live station delivers named speech")
+		telecom_check(!S.transmit_live(presenter, "Too fast", null) && listener.station_heard == 1, "live station rate limit")
+		S.next_live_broadcast = 0
+		R.frequency = 201
+		S.transmit_live(presenter, "Wrong channel", null)
+		telecom_check(listener.station_heard == 1, "live frequency mismatch")
+		R.frequency = 200
+		S.next_live_broadcast = 0
+		E.on = FALSE
+		telecom_check(!S.transmit_live(presenter, "No power", null), "live power loss")
+		E.on = TRUE
+		presenter.loc = locate(8,3,1)
+		telecom_check(!S.transmit_live(presenter, "Away", null), "presenter must stay at desk")
+		presenter.loc = locate(3,3,1)
+		presenter.stat = UNCONSCIOUS
+		telecom_check(!S.transmit_live(presenter, "Asleep", null), "presenter consciousness")
+		presenter.stat = CONSCIOUS
+		S.next_live_broadcast = 0
+		listener.ear_deaf = 1
+		S.transmit_live(presenter, "Deaf listener", null)
+		telecom_check(listener.station_heard == 1, "deaf audience excluded")
+		listener.ear_deaf = 0
+		S.next_live_broadcast = 0
+		antenna.anchored = FALSE
+		telecom_check(!S.transmit_live(presenter, "No antenna", null), "live antenna required")
+		antenna.anchored = TRUE
+		var/list/crowd = list()
+		for (var/i = 1, i <= 35, i++)
+			crowd += new /mob/living/human/telecom_fixture(locate(4,4,1))
+		telecom_check(S.transmit_live(presenter, "Bounded audience", null) == 32, "live audience cap is 32")
+		for (var/mob/living/human/member in crowd)
+			qdel(member)
+		S.presenter = null
+		telecom_check(!S.transmit_live(presenter, "Off air", null), "explicit stop presenting")
+		telecom_check(S.persistence_runtime_var("presenter") && S.persistence_runtime_var("next_live_broadcast"), "live identity and rate clock never saved")
+		qdel(presenter)
+		map.ordinal_age = 8
 		qdel(listener)
 		var/obj/item/weapon/telephone/landline/P = new(locate(3,3,1))
 		var/obj/item/weapon/telephone/landline/Q = new(locate(4,3,1))
@@ -224,8 +273,10 @@ var/telecom_failures = 0
 		human_mob_list |= far_listener
 		var/obj/item/weapon/radio/handset = new(far_listener)
 		handset.freq = 150
+		R.frequency = 150
 		var/list/envelope = list("key" = "village", "frequency" = 150, "name" = "Bea", "message" = "hello alpha", "language" = "-", "verb" = "says", "relay" = "south mast", "condition" = 90, "source" = "beta", "ckey" = "bea")
 		telecom_check(civ_relay_receive(envelope) && far_listener.relayed_heard == 1 && far_listener.relayed_last == "Bea@Beta Land/south mast: hello alpha", "arrival on the key is heard through a receiver on the frequency")
+		telecom_check(far_listener.station_heard == 1 && findtext(far_listener.station_last, "hello alpha"), "regional arrival reaches powered tuned broadcast receiver")
 		envelope["frequency"] = 151
 		telecom_check(!civ_relay_receive(envelope) || far_listener.relayed_heard == 1, "wrong frequency is not heard")
 		envelope["frequency"] = 150
@@ -253,8 +304,8 @@ var/telecom_failures = 0
 		var/mob/living/human/telecom_fixture/H = new(locate(2,2,1))
 		H.stats["crafting"] = list(100,100)
 		telecom_fixture_time = 600
-		map.ordinal_age = 7
-		telecom_check(!civ_broadcast_slot("crafting",600) && !H.learn_broadcast("crafting",1) && !H.broadcast_lessons.len, "pre-Modern emission and award rejected")
+		map.ordinal_age = 4
+		telecom_check(!civ_broadcast_slot("crafting",600) && !H.learn_broadcast("crafting",1) && !H.broadcast_lessons.len, "pre-1903 emission and award rejected")
 		map.ordinal_age = 8
 		season = "SPRING"
 		var/decay_before = abandonment_season_changes
@@ -292,6 +343,8 @@ var/telecom_failures = 0
 		telecom_check(map_storage.Save_World() && map_storage.validate_world_save(), "native learner and equipment save")
 		map_storage.ClearMap()
 		telecom_check(map_storage.Load_World(), "native learner reload")
+		S = locate(/obj/structure/telecom/station) in locate(3,3,1)
+		telecom_check(S && S.station_name == "Test station" && S.faction_tag == "Roleplay" && !S.presenter && !S.next_live_broadcast, "station identity saves, live session does not")
 		H = locate(/mob/living/human/telecom_fixture) in locate(2,2,1)
 		telecom_fixture_time = 600
 		telecom_check(H && H.broadcast_lessons.len == 8 && !H.learn_broadcast("crafting",1), "restart preserves credits and rejects rerun")
