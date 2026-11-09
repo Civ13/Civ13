@@ -75,7 +75,7 @@ var/global/list/civ_tv_receivers = list()
 
 /obj/item/tv_camera/proc/can_configure(mob/living/human/H)
 	var/turf/T = get_turf(src)
-	return T && istype(H) && H.stat == CONSCIOUS && H.can_use_hands() && H.z == T.z && get_dist(H, src) <= 1
+	return T && istype(H) && (loc == H || isturf(loc)) && H.stat == CONSCIOUS && H.can_use_hands() && H.z == T.z && get_dist(H, src) <= 1
 
 /obj/item/tv_camera/attack_self(mob/living/human/H)
 	if (!can_configure(H)) return
@@ -192,7 +192,7 @@ var/global/list/civ_tv_receivers = list()
 		to_chat(H, "No powered cameras paired to this station are in range.")
 		return
 	var/choice = input(H, "Put a paired camera on air", name) as null|anything in options
-	if (choice && can_present(H)) start_video(options[choice])
+	if (choice && can_present(H) && H.can_use_hands()) start_video(options[choice])
 
 /obj/structure/telecom/station/tv/proc/start_video(obj/item/tv_camera/C)
 	if (!operational() || !has_antenna() || !camera_available(C)) return FALSE

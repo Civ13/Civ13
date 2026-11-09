@@ -40,6 +40,8 @@ class TelevisionContracts(unittest.TestCase):
         for condition in ('C.network_id == tv_network_id', 'C.frequency == frequency', 'T.z == z', 'get_dist(src, T) <= 60', 'C.operational()'):
             self.assertIn(condition, available)
         self.assertNotRegex(SOURCE, r'network_id\s*=\s*input')
+        self.assertIn('(loc == H || isturf(loc))', procedure('/obj/item/tv_camera/proc/can_configure(mob/living/human/H)'))
+        self.assertIn('choice && can_present(H) && H.can_use_hands()', SOURCE)
 
     def test_feed_cuts_and_view_ownership(self):
         feed = procedure('/obj/structure/telecom/tv/proc/feed_ok(mob/living/human/H)')
