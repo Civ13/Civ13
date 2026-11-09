@@ -65,7 +65,7 @@
 			to_chat(user, "<span class='warning'>[ML] is unfired!</span>")
 			return
 		if (ML.pouring || pouring)
-			to_chat(user, "<span class='warning'>Finish the pour that is already in progress first.</span>")
+			to_chat(user, "<span class='warning'>Finish the current pour first.</span>")
 			return
 		if (can_receive_pour(ML, user))
 			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
@@ -76,23 +76,18 @@
 			ML.pouring = FALSE
 			if (!isnum(input) || input <= 0)
 				return
-			// The prompt sleeps, so both molds may have changed or moved meanwhile.
-			// Re-check and recompute from current values before moving any metal.
 			if (!can_receive_pour(ML, user))
-				to_chat(user, "<span class='warning'>You can no longer pour from [ML] into \the [src].</span>")
+				to_chat(user, "<span class='warning'>You can't pour that now.</span>")
 				return
 			amt_to_transfer = min(input, max_capacity - capacity, ML.capacity)
-			if (amt_to_transfer <= 0)
-				return
-			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of molten [ML.current_material] into \the [src].")
-			src.current_material = ML.current_material
-			src.capacity += amt_to_transfer
-			ML.capacity -= amt_to_transfer
-			if (ML.capacity <= 0)
-				ML.capacity = 0
+			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of [ML.current_material] into \the [src].")
+			current_material = ML.current_material
+			capacity += amt_to_transfer
+			ML.capacity = max(ML.capacity - amt_to_transfer, 0)
+			if (!ML.capacity)
 				ML.current_material = null
 			ML.update_icon()
-			src.update_icon()
+			update_icon()
 	else if (istype(I, /obj/item/stack/ore) || istype(I, /obj/item/stack/material))
 		if (istype(src, /obj/item/weapon/clay/mold/clayjug) || istype(src, /obj/item/weapon/clay/mold/claypot))
 			var/current_cap = 0
@@ -103,8 +98,6 @@
 				return
 			var/max_free_cap = max_capacity-current_cap
 			var/obj/item/stack/O = I
-			if (QDELETED(O) || O.amount <= 0)
-				return
 			var/cap_to_add = min(max_free_cap, O.amount)
 			if (istype(O, /obj/item/stack/ore/gold))
 				if (contents_materials.len == 0)
