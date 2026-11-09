@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd92e8ffa2452ec1fe55bc314d00ec6a75eb88570'
+WIKI_REVIEWED_REVISION = 'e529d432fba239a311bd7994698db229c53e089e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -89,7 +89,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('52f18d58defc3e346041a4519805249f3882d11453162d80008198327add1785', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('d5fa7ea8e6bdddf5cc1a7fe89be384050e3a7672c554ac14d2f3c087bce42d78', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('55148c4894a79c600192d8eb72768fa1b1e6efe530e22187174fbd72ba26f6ca', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('d1e120e469a8ba315953efc59d4168464f88fd5f4a1bc3a986d6266225b59a2b', 'resource extraction gathering oil petroleum well fracturing'),
@@ -122,7 +122,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('13e138b2c82d92cb69d88958f0ab85b2c00a4f9afd29a84329033e8193ed15e4', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('3314144be4f96cadddaa5ae8310119303a236afb56a68d1bfe1bb493c17378da', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
