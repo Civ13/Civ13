@@ -113,13 +113,16 @@
 		return
 	if (npc_subtile_watched())
 		if (!npc_subtile_enabled && !step_x && !step_y && !npc_subtile_transaction && !npc_subtile_pulse)
-			npc_subtile_enabled = TRUE
-			npc_subtile_species_enabled = TRUE
-			npc_subtile_auto_owned = TRUE
+			npc_subtile_take_auto_admission()
 		return
 	if (npc_subtile_auto_owned && !npc_subtile_transaction && !npc_subtile_pulse && !step_x && !step_y && set_npc_subtile(FALSE))
 		npc_subtile_species_enabled = FALSE
 		npc_subtile_auto_owned = FALSE
+
+/mob/living/simple_animal/proc/npc_subtile_take_auto_admission()
+	npc_subtile_enabled = TRUE
+	npc_subtile_species_enabled = TRUE
+	npc_subtile_auto_owned = TRUE
 
 // Explicit opt-ins (vendors) keep 2px pulses; watched wildlife uses 8px.
 /mob/living/simple_animal/proc/npc_subtile_pulse_px()
@@ -1403,7 +1406,7 @@
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (npc_subtile_import_owned || npc_subtile_position || npc_subtile_offset_owned))
 		return TRUE
-	return (key in list("npc_subtile_enabled", "npc_subtile_transaction", "npc_subtile_pulse", "npc_subtile_offset_owned", "npc_subtile_import_owned", "npc_subtile_until", "npc_subtile_glide_owned", "npc_subtile_previous_glide", "npc_subtile_applied_glide", "npc_subtile_pursuit_enabled", "npc_subtile_pursuit", "npc_subtile_follow_enabled", "npc_subtile_follow", "npc_subtile_flee_enabled", "npc_subtile_flee", "npc_subtile_flee_ticket", "npc_subtile_species_enabled", "npc_subtile_pet_enabled", "npc_subtile_pet_walk", "npc_subtile_recovery_enabled", "npc_subtile_recovery", "npc_subtile_pending_intent", "npc_subtile_wild_walk")) || ..()
+	return (key in list("npc_subtile_enabled", "npc_subtile_transaction", "npc_subtile_pulse", "npc_subtile_offset_owned", "npc_subtile_import_owned", "npc_subtile_until", "npc_subtile_glide_owned", "npc_subtile_previous_glide", "npc_subtile_applied_glide", "npc_subtile_pursuit_enabled", "npc_subtile_pursuit", "npc_subtile_follow_enabled", "npc_subtile_follow", "npc_subtile_flee_enabled", "npc_subtile_flee", "npc_subtile_flee_ticket", "npc_subtile_species_enabled", "npc_subtile_pet_enabled", "npc_subtile_pet_walk", "npc_subtile_recovery_enabled", "npc_subtile_recovery", "npc_subtile_pending_intent", "npc_subtile_wild_walk", "npc_subtile_auto_owned", "npc_subtile_watch_checked", "npc_subtile_watch_cached")) || ..()
 
 /mob/living/simple_animal/proc/npc_subtile_prepare_import(savefile/F)
 	npc_subtile_import_owned = ("npc_subtile_position" in F.dir)
@@ -1475,6 +1478,11 @@
 		return .
 	npc_subtile_offset_owned = TRUE
 	npc_subtile_import_owned = FALSE
+	// Automatic admission is runtime-only and needs an aligned tile, so a restored
+	// offset would leave wildlife unable to move again (#4207). It already owns
+	// that offset, so restore the automatic admission with it.
+	if (npc_subtile_auto && !npc_subtile_enabled && !client)
+		npc_subtile_take_auto_admission()
 	living_movement_completed()
 
 // A pulled animal owns the pixel offset the pulling rope gave it.
