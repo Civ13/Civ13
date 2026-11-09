@@ -321,7 +321,7 @@ class TileMotion(unittest.TestCase):
 
     def test_scheduled_identity_ignores_offsets_but_fresh_read_policy_does_not(self):
         body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,see_in_dark=2,
-               dir=2,resting=False,lying=False,prone=False,pulling=None)
+               dir=2,resting=False,lying=False,prone=False,pulling=None,los_height_sight=0)
         owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         presentation=self.render_key(body,owner,True);physical=self.render_key(body,owner,False)
         body.step_x=3;body.step_y=2
@@ -719,7 +719,7 @@ class DistanceCamera(unittest.TestCase):
 
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
-            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
+            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None,los_height_sight=0)
         owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         key=motion.render_key(body,owner,True);owner.pixel_x=96
         self.assertNotEqual(motion.render_key(body,owner,True),key)
@@ -738,7 +738,7 @@ class DistanceCamera(unittest.TestCase):
         m=self.camera(96,source=mutant)
         self.assertEqual(m.decision(m.target(110,100),m.capture(True)),0)
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
-            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
+            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None,los_height_sight=0)
         owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         mutant=CORE.replace('|[owner.pixel_x],[owner.pixel_y]','')
         key=motion.render_key(body,owner,True,mutant);owner.pixel_x=96
@@ -782,7 +782,7 @@ class DistanceCamera(unittest.TestCase):
 
     def test_animation_lease_expiry_changes_policy_and_each_call_precedes_animate(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
-            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
+            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None,los_height_sight=0)
         m=self.camera(96);m.C.perspective=0;m.prepare(0,0,2);m.C.pixel_x=0
         active=motion.render_key(body,m.C,True,time=3)
         expired=motion.render_key(body,m.C,True,time=4)

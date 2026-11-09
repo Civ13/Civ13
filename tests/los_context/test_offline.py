@@ -214,7 +214,11 @@ def projected_geometry(source=None):
     env.update(los_eye_quantized=lambda step: math.floor(step / 16 + 0.5) * 16,
                los_eye_bucket=lambda body: f'{math.floor(body.step_x / 16 + 0.5) * 16},{math.floor(body.step_y / 16 + 0.5) * 16}',
                los_terrain_for=lambda body, radius: None,
-               los_terrain_target_visible=lambda S, target: True)
+               los_terrain_target_visible=lambda S, target: True,
+               # No terrain, so no blocker heights and no seeing over blockers.
+               los_target_top=lambda atom: 0, los_blocker_top=lambda S, T, height: None,
+               los_snapshot_see_over=lambda S: None, los_height_query_top=lambda S, target: None,
+               los_height_clears=lambda S, B, tx, ty: False)
     return env
 
 

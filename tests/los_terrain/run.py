@@ -17,6 +17,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 HEIGHTS = ROOT / 'maps/heights/nomads_gaia.txt'
+GEOMETRY = ['/proc/los_axis_separates(', '/proc/los_hull_axis_separates(', '/proc/los_footprint_hits_cell(',
+            '/proc/los_target_blocked(', '/datum/los_snapshot/proc/index_blockers(', '/datum/los_snapshot/proc/blocks_target(']
+SEE_OVER = {'hill_far_ground': 0, 'hill_close_behind_wall': 1, 'hill_person_two_behind_wall': 0, 'hill_indoors': 1,
+            'hill_line_clears': 1, 'hill_tree': 1, 'flat_wall': 1, 'flat_see_over': 0}
 PINNED = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
@@ -93,9 +97,13 @@ def main():
     parser = ''.join(fragment(terrain, name) for name in
                      ['/datum/terrain_heights\n', '/proc/terrain_heights_parse(', '/proc/terrain_height_row_valid('])
     parser = '\n'.join(l for l in parser.split('\n') if 'base_rows_by_z' not in l)
+    # The 2D blocker geometry the height rule plugs into.
+    core = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
+    geometry = ''.join(fragment(core, name) for name in GEOMETRY)
+    geometry += fragment(core, '/datum/los_cell\n') + fragment(core, '/datum/los_snapshot\n')
     with tempfile.TemporaryDirectory() as work:
         work = Path(work)
-        (work / 'parser.dm').write_text(parser, encoding='utf-8')
+        (work / 'parser.dm').write_text(parser + geometry, encoding='utf-8')
         (work / 'los_terrain.dm').write_text((ROOT / 'code/modules/visibility/los_terrain.dm').read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'probe.dm').write_text((Path(__file__).parent / 'probe.dm').read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'heights.txt').write_text(HEIGHTS.read_text(encoding='utf-8'), encoding='utf-8')
@@ -130,6 +138,11 @@ def main():
     per = result['build_ds'] * 100 / max(1, result['builds'])
     print(f"sweep: {result['builds']} fresh fields (radius 9) in {result['build_ds'] / 10:.1f} s, {per:.2f} ms each; "
           f"20000 cached lookups in {result['cached_ds'] / 10:.1f} s; {hidden_total} hidden cells compared")
+    for name, want in SEE_OVER.items():
+        if result['see_over'].get(name) != want:
+            bad += 1
+            print('MISMATCH see-over', name, result['see_over'].get(name), 'want', want)
+    print('see-over cases:', ', '.join(f'{k}={v}' for k, v in result['see_over'].items()))
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')

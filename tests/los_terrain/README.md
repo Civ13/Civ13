@@ -8,8 +8,11 @@ eye and the target rises above (see docs/terrain-height.md#line-of-sight).
 runs it on Gaia's height file for 300 random eyes (step offsets, standing and
 lying, view radii 4 to 12) and compares every hidden ground cell with an
 independent Python restatement of the sweep. It also prints the cost of a fresh
-sweep and of cached lookups, and checks that a height change clears the cache
-and refreshes viewers.
+sweep and of cached lookups, checks that a height change clears the cache and
+refreshes viewers, and runs the extracted 2D blocker query with heights: from
+a hill, ground well behind a lower wall shows, ground right behind it and
+anything behind a tree stays hidden, and indoors or on flat ground nothing is
+seen over the wall.
 
 ```
 source /root/byond-516.1688/byond/bin/byondsetup   # or pass --byond-bin

@@ -138,6 +138,9 @@ var/global/list/los_active_contexts
 	var/tile_y
 	var/atom/surface_owner
 	var/owners = 0
+	// Absolute top height on maps with hills (los_terrain.dm); null blocks
+	// from any height.
+	var/top
 
 /datum/los_tree_bounds
 	should_save = FALSE
@@ -192,6 +195,12 @@ var/global/list/los_active_contexts
 	var/datum/los_terrain_field/terrain
 	var/terrain_tile_x = 0
 	var/terrain_tile_y = 0
+	// TRUE when some blocker's top is below the eye, so height can matter;
+	// the eye's absolute height; the current query target's top (null: no
+	// seeing over blockers for this query).
+	var/see_over = FALSE
+	var/eye_top = 0
+	var/query_top
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. The grid is derived once per fresh capture, never shared.
@@ -297,11 +306,11 @@ var/global/list/los_active_contexts
 /datum/los_snapshot/proc/blocks_target(tx, ty, target_tile_x, target_tile_y, opaque_target)
 	if(!blocker_grid)
 		for(var/datum/los_cell/B in blockers)
-			if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+			if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target) && !los_height_clears(src, B, tx, ty))
 				return TRUE
 		return FALSE
 	for(var/datum/los_cell/B in loose_blockers)
-		if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+		if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target) && !los_height_clears(src, B, tx, ty))
 			return TRUE
 	var/half_size = opaque_target ? 0 : 0.25
 	var/x_major = abs(tx) >= abs(ty)
@@ -350,7 +359,7 @@ var/global/list/los_active_contexts
 		var/base = (ku - u_min) * u_stride - v_min * stride + 1
 		for(var/kv = kv_low, kv <= kv_high, kv++)
 			var/datum/los_cell/B = blocker_grid[base + kv * stride]
-			if(B && los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+			if(B && los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target) && !los_height_clears(src, B, tx, ty))
 				return TRUE
 	return FALSE
 
@@ -554,6 +563,8 @@ var/global/list/los_active_contexts
 
 /datum/los_context/proc/retire()
 	retired = TRUE
+	// Without a presentation nothing masks what the height flags would send.
+	los_height_sight_revoke(body)
 	if (owner && owner.los_presenter)
 		owner.los_presenter.retire()
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
@@ -659,7 +670,7 @@ var/global/list/los_active_contexts
 		return null
 	// Presentation follows the eye in half-tile steps; reads use the exact offset.
 	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
@@ -758,6 +769,7 @@ var/global/list/los_active_contexts
 	var/list/terrain = los_terrain_for(body, max(S.radius_x, S.radius_y) + 2)
 	if (terrain)
 		S.terrain = terrain[1]
+		S.eye_top = S.terrain.eye
 		S.terrain_tile_x = terrain[2]
 		S.terrain_tile_y = terrain[3]
 	// One extra tile covers fractional blockers and edge geometry. Ordinary
@@ -778,9 +790,12 @@ var/global/list/los_active_contexts
 				continue
 			var/owner_count = 0
 			var/atom/cell_owner = null
+			// Tallest opaque owner on this tile, in levels above its ground.
+			var/cell_height = 0
 			if (T.opacity)
 				cell_owner = T
 				owner_count++
+				cell_height = los_target_top(T)
 			for (var/atom/A in T)
 				if (A.opacity && A != body)
 					if (ismovable(A))
@@ -795,10 +810,13 @@ var/global/list/los_active_contexts
 							moving_blocker.cell_y = cy - S.eye_y + AM.step_y / 32
 							moving_blocker.surface_owner = AM
 							moving_blocker.owners = 1
+							if (terrain)
+								moving_blocker.top = los_blocker_top(S, T, los_target_top(AM))
 							S.blockers += moving_blocker
 							continue
 					cell_owner = A
 					owner_count++
+					cell_height = max(cell_height, los_target_top(A))
 			// Empty ground allocates no los_cell; moving blockers stay separate.
 			if (owner_count)
 				var/datum/los_cell/B = new
@@ -808,9 +826,12 @@ var/global/list/los_active_contexts
 				B.cell_y = cy - S.eye_y
 				B.surface_owner = cell_owner
 				B.owners = owner_count
+				if (terrain)
+					B.top = los_blocker_top(S, T, cell_height)
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
 		return null
+	los_snapshot_see_over(S)
 	S.index_blockers()
 	return S
 
@@ -857,12 +878,20 @@ var/global/list/los_active_contexts
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
+	// From high ground a target can show over lower blockers (los_terrain.dm).
+	var/query_top = los_height_query_top(S, target)
+	if (query_top)
+		footprint_key += "|h[query_top]"
 	if (tree_presentation)
 		footprint_key += "|tree-surface-\ref[target]"
 	var/cached = S.clear_footprints[footprint_key]
 	if (!isnull(cached))
 		return cached
-	if (outside_view || S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+	S.query_top = query_top
+	var/blocked = outside_view || S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity)
+	// Neighbour checks below keep the flat rule.
+	S.query_top = null
+	if (blocked)
 		// Only tree presentation may admit an exposed blocker edge. Terrain,
 		// entities and fresh hover/examine retain their existing decisions.
 		if (tree_presentation && S.tree_surface_visible(target, tx, ty, target_tile_x, target_tile_y))

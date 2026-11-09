@@ -19,7 +19,10 @@ PROCS = ['/proc/los_axis_separates(', '/proc/los_hull_axis_separates(', '/proc/l
          '/proc/los_target_blocked(', '/proc/los_bucket_index(', '/proc/los_bucket_lower(', '/proc/los_bucket_upper(',
          '/datum/los_snapshot/proc/index_blockers(', '/datum/los_snapshot/proc/ensure_blocker_bins(',
          '/datum/los_snapshot/proc/blocks_target(']
-TYPES = '''/datum/los_cell
+# Blocker heights (los_terrain.dm) are absent here: nothing is seen over.
+TYPES = '''/proc/los_height_clears(S, B, tx, ty)
+\treturn FALSE
+/datum/los_cell
 \tvar/cell_x
 \tvar/cell_y
 \tvar/tile_x
