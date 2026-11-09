@@ -260,6 +260,13 @@ object with kill-on-close ends a launcher-started bot if the launcher exits any
 other way. A bot started outside the launcher is shown but left running on close.
 The console `H` option still starts the bot detached.
 
+The same actions run without the window as `Civ13.exe --bot status|check-update|start|stop|restart|update`
+(add `--root <folder>` for another launcher data folder). `start` asks Windows to create the supervisor
+(CIM `Win32_Process.Create`), so the bot keeps running after the command exits and outside any job object
+of the caller; it waits up to 30 seconds for `control.php status` to report it running. `stop` waits up to
+90 seconds for it to save and close, and `restart` starts again only after the stop finished.
+`tests/BotCommandTests.cs` covers the parsing and each action's control.php sequence with a scripted fake.
+
 ### Player help tab
 
 When `control.group` is set the window adds a **Player help** tab for the

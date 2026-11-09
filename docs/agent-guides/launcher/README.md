@@ -11,6 +11,11 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-09: --bot command line -->
+Val asked (2026-11-09) that the bot be manageable through the launcher without its window, so a remote
+helper can restart it. `Civ13.exe --bot ACTION` (BotCommand.cs) reuses LocalBot.Control; only start
+differs from the window: CIM Win32_Process.Create detaches the supervisor, paths passed through env vars.
+
 <!-- 2026-11-09: Start-menu entry -->
 Val asked (2026-11-09) that agents can open the launcher later. The window keeps a per-user Start-menu
 entry "Civ13 Launcher" (StartMenuShortcut.cs) pointing at the running Civ13.exe, rewritten only when
