@@ -115,7 +115,7 @@ class NativeRunnerTests(unittest.TestCase):
                 controls = iter([None, *native.HOOKS])
                 def injected(command, work, role, deadline):
                     if role == 'compile':
-                        return 'DM compiler version 516.1681\n0 errors, 0 warnings\n' + ('runtime error' if bad_role == role else '')
+                        return 'DM compiler version ' + native.VERSION + '\n0 errors, 0 warnings\n' + ('runtime error' if bad_role == role else '')
                     self.assertIn('-trusted', command)
                     self.assertNotIn('-safe', command)
                     self.assertNotIn('-port', command)

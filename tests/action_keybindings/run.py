@@ -83,7 +83,11 @@ def main():
                          artifacts=[stage / 'probe.dmb', stage / 'probe.rsc'], state_directory=stage)
     log = (stage / 'runtime.log').read_text(errors='replace')
     print(log)
-    if re.search(r'World opened on network port|Logging in|Logged in as', log, re.I):
+    # Linux DreamDaemon binds a loopback port (-ip 127.0.0.1) before world/New; the
+    # probe closes it at once. Any hub login, or a port left open, breaks the contract.
+    opened = re.search(r'World opened on network port', log, re.I)
+    closed = re.search(r'World no longer opened to new users', log, re.I)
+    if re.search(r'Logging in|Logged in as', log, re.I) or (opened and not (os.name != 'nt' and closed and 'address 127.0.0.1' in log)):
         raise RuntimeError('Fixture startup violated the no-network contract')
     expected = 'FAIL action keybindings: conflict rejected' if args.conflict_control else 'PASS action keybindings:'
     if runtime.returncode or expected not in log or (not args.conflict_control and re.search(r'FAIL|runtime error', log, re.I)):

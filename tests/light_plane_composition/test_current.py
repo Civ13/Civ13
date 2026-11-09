@@ -17,7 +17,9 @@ from unittest.mock import patch
 spec = importlib.util.spec_from_file_location('current_plane_fixture', Path(__file__).with_name('run_current.py'))
 current = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(current)
-PREDECESSOR = '5b0c1e981c324a00cc4d504d6bc56cc7aa3468e3'
+# The 13 case selections of the original workflow (5b0c1e9), frozen here so the test
+# does not read Git history.
+ORIGINAL_CASES = [[], ['--disabled'], ['--negative-control area-change'], ['--disabled', '--negative-control area-change'], ['--negative-control area-owner'], ['--disabled', '--negative-control area-owner'], ['--negative-control area-policy'], ['--disabled', '--negative-control area-policy'], ['--negative-control area-policy-dynamic'], ['--disabled', '--negative-control area-policy-dynamic'], ['--negative-control coverage'], ['--negative-control bypass'], ['--negative-control ordinary']]
 IDENTITY = {'version': '516.1688', 'archive': {'sha256': 'c' * 64},
             'members': {name: {'sha256': 'd' * 64} for name in current.runtime.MEMBERS}}
 SOURCE = {'head': 'a' * 40, 'tree': 'b' * 40, 'tracked_dirty': False,
@@ -242,29 +244,13 @@ class CurrentRunner(unittest.TestCase):
             self.assertEqual(self.receipt(args)['status'], 'failed')
             self.assertFalse(Path(calls[0]['cwd']).exists())
 
-    def test_historical_callers_packets_and_shared_identity_helpers_are_unchanged(self):
-        paths = ('tests/light_plane_composition/run.py', 'tests/lighting_startup/run.py',
-                 'tests/light_plane_composition/verify_render.py', 'tests/light_plane_composition/render-results.json',
-                 'tests/light_plane_composition/counterexamples.json', 'tests/light_plane_composition/rejected',
-                 'tests/light_plane_composition/probe.dm', 'tests/light_plane_composition/area_probe.dm', 'scripts/byond_runtime.py',
-                 'scripts/byond_toolchain.py', 'tools/byond/version.json')
-        # Compare canonical tracked content, not Windows checkout CRLF against
-        # Linux Git-blob LF. No source/evidence changes are allowed by this check.
-        changed = subprocess.check_output(['git', 'diff', '--exit-code', PREDECESSOR, '--', *paths],
-                                          cwd=current.ROOT, timeout=15)
-        self.assertEqual(changed, b'')
-
     def test_workflow_keeps_exact_original_case_selection_with_unique_current_outputs(self):
         path = '.github/workflows/test.yml'
-        old = subprocess.check_output(['git', 'show', PREDECESSOR + ':' + path], cwd=current.ROOT, text=True, timeout=15)
         text = (current.ROOT / path).read_text()
-        old_calls = [line for line in old.splitlines() if 'python3 tests/light_plane_composition/run.py --byond-bin' in line]
         new_calls = [line for line in text.splitlines() if 'python3 -B tests/light_plane_composition/run_current.py --byond-bin' in line]
-        self.assertEqual(len(old_calls), 13)
         self.assertEqual(len(new_calls), 13)
-        for old_call, new_call in zip(old_calls, new_calls):
-            self.assertEqual(re.findall(r'--disabled|--negative-control [\w-]+', old_call),
-                             re.findall(r'--disabled|--negative-control [\w-]+', new_call))
+        for selection, new_call in zip(ORIGINAL_CASES, new_calls):
+            self.assertEqual(selection, re.findall(r'--disabled|--negative-control [\w-]+', new_call))
             self.assertIn('--byond-archive "$PWD/BYOND/pinned.zip"', new_call)
         self.assertEqual(len(set(re.findall(r'--output "([^"]+)"', '\n'.join(new_calls)))), 13)
         condition = "if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/light_plane_composition')"

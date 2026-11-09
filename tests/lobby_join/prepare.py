@@ -55,7 +55,14 @@ def stage(output):
     # Keep the actual verb metadata unadapted. These checks inspect native
     # metadata only; no connected client or actual command dispatch is claimed.
     (output / "control.dm").write_text(fixture + "\n" + adapted + "\n" + unsafe_round + "\n" + unsafe_role + "\n" + visibility_verbs(source) + "\n" + client_route(source) + "\n", encoding="utf-8")
-    (output / "control.dme").write_text('#include "control.dm"\n', encoding="utf-8")
+    # Collaborators the handler gained after this fixture was written: the
+    # character/recovery admission hold (always admits here) and QDELETED.
+    adapters = ('#define QDELETED(X) (!(X) || (X).gc_destroyed)\n'
+                '/datum/mock_map_storage/proc/allow_new_character(mob/new_player/player)\n\treturn TRUE\n'
+                'var/datum/mock_map_storage/map_storage = new\n'
+                '/datum/var/gc_destroyed\n')
+    (output / "adapters.dm").write_text(adapters, encoding="utf-8")
+    (output / "control.dme").write_text('#include "adapters.dm"\n#include "control.dm"\n', encoding="utf-8")
     manifest = {
         "schema": 1,
         "purpose": "isolated production Join ownership and prompt-control fixture",

@@ -23,7 +23,9 @@ class SourceTests(unittest.TestCase):
             self.assertIn('mob.movement_eastwest == WEST', source)
             self.assertEqual(source.count('RC.stop_move_drone()'), 2)
             self.assertIn('spawn(0.1)\n\t\trotate()', source)
-        self.assertTrue(evidence['unchanged_movement_outside_release'])
+        self.assertEqual(evidence['release_additions'], 2)
+        with self.assertRaises(ValueError):
+            runner.release_additions((Path(__file__).with_name('baseline') / 'mob_movement.dm.txt').read_text(encoding='utf-8'))
 
     def test_proc_extraction_refuses_missing_or_duplicate_headers(self):
         for source in ('/other()\n\treturn\n', '/one()\n\treturn\n/one()\n\treturn\n'):

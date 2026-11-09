@@ -24,7 +24,7 @@ class CIAdmission(unittest.TestCase):
             self.assertEqual(len(list((work/'config/names').glob('*.txt'))), 146)
             self.assertFalse((work/'config/config.txt').exists())
             self.assertFalse((work/'map_saves').exists())
-            self.assertIn('var/global/datum/global_init/init = null', (work/'world.dm').read_text(encoding='utf-8'))
+            self.assertNotIn('global_init_last.dm', (work/'probe.dme').read_text(encoding='utf-8'))
             if log == 'compile.log':
                 if mutate:
                     (work/'config/names/first_male.txt').write_bytes(b'changed during compile')

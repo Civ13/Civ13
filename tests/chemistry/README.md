@@ -17,7 +17,7 @@ The negative control restores the wrong propylene feedstock in a generated
 recipe copy and requires the probe to detect it. Production files are untouched.
 The portable runner also accepts the Windows BYOND bin directory when invoked
 with a verified absolute Python interpreter path. Each runtime is bounded to
-45 seconds and uses temporary storage. The Windows runner also closes to new
+240 seconds (full global initialization alone takes about a minute) and uses temporary storage. The Windows runner also closes to new
 clients using its platform-specific launch flags.
 
 For local client evidence, use the portable runner with `--visual --port 18329`

@@ -1,11 +1,14 @@
 """Actual production plane modes; screenshots remain separate native evidence."""
 import argparse
+import json
 import importlib.util
 import os
 from pathlib import Path
 import re
 import shutil
 import tempfile
+
+PINNED_BYOND = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 ROOT = Path(__file__).resolve().parents[2]
 PLANE = "code/_onclick/hud/plane_master.dm"
@@ -49,7 +52,8 @@ def prepare(control=None, enabled=True):
             "build_overlay.dm": production_proc("code/modules/lighting/lighting_turf.dm", "/turf/proc/lighting_build_overlay("),
             "area_probe.dm": (Path(__file__).parent / "area_probe.dm").read_text(),
             "probe.dm": (Path(__file__).parent / "probe.dm").read_text(),
-            "probe.dme": '#define LIGHTING_COMPOSITION_V2 ' + str(int(enabled)) + '\n#include "probe.dm"\n#include "production.dm"\n#include "coverage.dm"\n#include "area_change.dm"\n#include "build_overlay.dm"\n#include "area_probe.dm"\n'}
+            "adapters.dm": (Path(__file__).parent / "adapters.dm").read_text(),
+            "probe.dme": '#define LIGHTING_COMPOSITION_V2 ' + str(int(enabled)) + '\n#include "probe.dm"\n#include "adapters.dm"\n#include "production.dm"\n#include "coverage.dm"\n#include "area_change.dm"\n#include "build_overlay.dm"\n#include "area_probe.dm"\n'}
 
 
 def main():
@@ -74,7 +78,7 @@ def main():
         flags = 0x8 if os.name == "nt" else 0
         result = runner.run_logged([str(compiler), "probe.dme"], out, "compile.log", 60, flags)
         print(result.stdout, result.stderr)
-        if result.stdout.count("DM compiler version 516.1681") != 1 or re.search(r"invalid file|file not found|cannot open", result.stdout, re.I) or result.returncode or not re.search(r"^probe.dmb - 0 errors, 0 warnings \(.+\)$", result.stdout, re.M):
+        if result.stdout.count("DM compiler version " + PINNED_BYOND) != 1 or re.search(r"invalid file|file not found|cannot open", result.stdout, re.I) or result.returncode or not re.search(r"^probe.dmb - 0 errors, 0 warnings \(.+\)$", result.stdout, re.M):
             raise RuntimeError("Plane fixture compilation failed")
         cmd = [str(daemon), "probe.dmb", "-trusted", "-close", "-log", "runtime.log"]
         result = runner.run_logged(cmd, out, "daemon.log", 20, flags)

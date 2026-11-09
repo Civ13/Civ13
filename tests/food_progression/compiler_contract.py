@@ -1,8 +1,10 @@
-"""Compiler admission for the historical and current food fixtures."""
+"""Compiler admission for the food fixtures: the canonical compiler pin only."""
+import json
+from pathlib import Path
 import re
 
-VERSIONS = ('516.1681', '516.1688')
-HISTORICAL_VERSION = '516.1681'
+PINNED_VERSION = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+VERSIONS = (PINNED_VERSION,)
 
 
 def compiler_is_clean(returncode, text, expected):

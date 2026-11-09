@@ -50,7 +50,7 @@ def load_manifest():
 
 
 def standard_args(runner, extra, scratch):
-    """Fill the arguments most runners share: a fresh output or evidence folder, the pinned archive."""
+    """Fill the arguments most runners share: a fresh output or evidence folder, the pinned archive, rust_g."""
     text = (ROOT / runner).read_text(encoding='utf-8', errors='replace')
     args = []
     for flag in ('--output', '--evidence-dir'):
@@ -61,6 +61,10 @@ def standard_args(runner, extra, scratch):
     archive = os.environ.get('BYOND_ARCHIVE')
     if archive and '--byond-archive' not in extra and "'--byond-archive'" in text:
         args += ['--byond-archive', archive]
+    # Runners that call rust_g on Linux take the pinned i686 librust_g.so.
+    rust_g = os.environ.get('RUST_G')
+    if rust_g and '--rust-g' not in extra and re.search(r"add_argument\(\s*['\"]--rust-g['\"]", text):
+        args += ['--rust-g', rust_g]
     return args
 
 

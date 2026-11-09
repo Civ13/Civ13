@@ -1,7 +1,7 @@
 // Actual asset getter/register/send, Create Faction route and NanoUI HTML.
 // Only world/actor startup and the final browse boundary are adapted.
 var/global/faction_ui_registrations = 0
-var/global/datum/nanoui/faction_assets_probe/faction_ui_last
+var/global/datum/nanoui/tgui/faction_assets_probe/faction_ui_last
 var/global/list/faction_ui_checks = list()
 var/global/list/faction_ui_failures = list()
 
@@ -32,10 +32,13 @@ var/global/list/faction_ui_failures = list()
 /mob/living/human/faction_assets_probe/New()
 	return
 
-/datum/nanoui/faction_assets_probe
+// The creation window is a tgui window; its classic (legacy) renderer is the
+// NanoUI page whose assets this probe checks.
+/datum/nanoui/tgui/faction_assets_probe
+	legacy_renderer = TRUE
 	var/captured_html
 
-/datum/nanoui/faction_assets_probe/open()
+/datum/nanoui/tgui/faction_assets_probe/open()
 	// No client, browse, winset or manager registration is simulated here.
 	// Constructor, asset lookup, draft data and get_html remain production.
 	faction_ui_last = src

@@ -5,6 +5,7 @@
 
 # Transient runtime datums: built with arguments by live code and never
 # reachable from a saved atom.
+/datum/ecology_species
 /datum/timedevent
 /datum/category_group/player_setup_category/general_preferences
 /datum/category_group/player_setup_category/global_preferences
@@ -28,7 +29,9 @@
 /datum/durable_timer_queue
 /datum/durable_nomads_event
 /datum/level_segment_reader
+/datum/level_segment_reader/stream
 /datum/level_segment_writer
+/datum/level_segment_writer/stream
 /datum/extraction_insurance_returns
 /datum/extraction_mail_store
 /datum/extraction_npc_journal

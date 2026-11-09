@@ -8,14 +8,17 @@ from evidence import validate_compile
 from prepare import AXIS, CONE, CONTROLS, HUMAN, ROOT, WHEELS, prepare, transform_sources
 from run import validate_native
 
+PIN = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+BUILD = int(PIN.split('.')[1])
+
 
 class EvidenceTests(unittest.TestCase):
     def test_exact_compiler_banner_and_clean_summary(self):
-        good = 'DM compiler version 516.1681\nprobe.dmb - 0 errors, 0 warnings\n'
+        good = f'DM compiler version {PIN}\nprobe.dmb - 0 errors, 0 warnings\n'
         validate_compile(0, good)
-        for bad in (good.replace('516.1681', '516.16810'),
+        for bad in (good.replace(PIN, PIN + '0'), good.replace(PIN, '516.1681'),
                     good.replace('DM compiler', 'prefix DM compiler'),
-                    good + 'DM compiler version 516.1681\n',
+                    good + f'DM compiler version {PIN}\n',
                     good.replace('0 errors, 0 warnings', '0 errors, 0 warnings EXTRA'),
                     good + 'interface/skin.dmf: invalid file\n', good + 'out of memory\n',
                     good + 'CRASH\n', good + 'access violation\n'):
@@ -23,7 +26,7 @@ class EvidenceTests(unittest.TestCase):
                 validate_compile(0, bad)
 
     def test_native_oracle_requires_exact_intended_control(self):
-        receipt = {'byond_version': 516, 'byond_build': 1681, 'port': 0, 'checks': 44, 'save_roundtrip': 1, 'phases': ['forced', 'vehicle', 'seats', 'save']}
+        receipt = {'byond_version': 516, 'byond_build': BUILD, 'port': 0, 'checks': 44, 'save_roundtrip': 1, 'phases': ['forced', 'vehicle', 'seats', 'save']}
         validate_native(0, '', 'PASS: cone refresh', receipt, None)
         for control, (label, _) in CONTROLS.items():
             phases = [] if control == 'forced-move' else ['forced', 'vehicle'] if control == 'seat-facing' else ['forced']
@@ -34,7 +37,7 @@ class EvidenceTests(unittest.TestCase):
         for diagnostics in ('Unexpected runtime error', 'invalid file', 'out of memory'):
             with self.assertRaises(RuntimeError):
                 validate_native(0, diagnostics, 'PASS: cone refresh', receipt, None)
-        for field, value in (('byond_build', 1682), ('port', 1234), ('checks', 0), ('save_roundtrip', 0)):
+        for field, value in (('byond_build', BUILD + 1), ('byond_build', 1681), ('port', 1234), ('checks', 0), ('save_roundtrip', 0)):
             with self.assertRaises(RuntimeError):
                 validate_native(0, '', 'PASS: cone refresh', dict(receipt, **{field: value}), None)
 

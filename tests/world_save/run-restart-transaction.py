@@ -9,6 +9,20 @@ import subprocess
 import tempfile
 
 
+ADAPTERS = """/proc/get_turf(atom/A)
+	return isturf(A) ? A : (A ? get_turf(A.loc) : null)
+/proc/isobserver(A)
+	return FALSE
+/mob/var/next_click = 0
+/map_storage/var/handover_candidate = FALSE
+/proc/tdm_battle_active()
+	return FALSE
+/datum/fixture_tdm_battle/proc/before_reboot()
+	return
+var/datum/fixture_tdm_battle/tdm_battle = null
+"""
+
+
 def prepare(root, output, control=None):
     relative = 'code/modules/persistence/restart_transaction.dm'
     source = (root / relative).read_text(encoding='utf-8')
@@ -46,7 +60,11 @@ def prepare(root, output, control=None):
     macro = re.findall(r'^#define islist\(A\) .+$', (root / 'code/_macros.dm').read_text(encoding='utf-8'), re.M)
     if len(macro) != 1:
         raise RuntimeError('Production list macro changed')
-    (output / 'probe.dme').write_text(macro[0] + '\n#define SPAN_DANGER(text) text\n#include "probe.dm"\n#include "metadata.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#define sleep(delay) restart_sleep_adapter(delay)\n#include "reboot.dm"\n', encoding='utf-8')
+    # Collaborators the transaction and reboot code gained later: per-level save
+    # freezing (no clients are on any level here), staged-build handover (not a
+    # handover restart) and TDM battle worlds (not one).
+    (output / 'adapters.dm').write_text(ADAPTERS, encoding='utf-8', newline='\n')
+    (output / 'probe.dme').write_text(macro[0] + '\n#define SPAN_DANGER(text) text\n#include "probe.dm"\n#include "adapters.dm"\n#include "metadata.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#define sleep(delay) restart_sleep_adapter(delay)\n#include "reboot.dm"\n', encoding='utf-8')
     return {'negative_control': control, 'production_hashes': {
         name: hashlib.sha256((root / name).read_bytes()).hexdigest()
         for name in (relative, 'code/world.dm', 'code/_macros.dm', 'code/modules/persistence/loading.dm')},

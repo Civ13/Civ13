@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import uuid
 
-from compiler_contract import HISTORICAL_VERSION, VERSIONS, compiler_is_clean
+from compiler_contract import PINNED_VERSION, VERSIONS, compiler_is_clean
 
 # Rack waits total 555 deciseconds before export/load overhead. Keep the
 # daemon allowance inside the outer watchdog's 180-second total budget.
@@ -19,7 +19,7 @@ RACK_RUNTIME_TIMEOUT_SECONDS = 75
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
-    parser.add_argument('--expected-byond-version', choices=VERSIONS, default=HISTORICAL_VERSION)
+    parser.add_argument('--expected-byond-version', choices=VERSIONS, default=PINNED_VERSION)
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')

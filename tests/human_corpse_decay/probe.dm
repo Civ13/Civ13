@@ -179,7 +179,7 @@ var/corpse_assertions = 0
 		H.s_active = viewed_bag
 		corpse_expire(H)
 		corpse_assert(corpse_storage_closed && viewed_bag.loc == T, "active storage view closed before body cleanup")
-		corpse_assert(!H && I.loc == T && bag.loc == T && child.loc == bag && attachment.loc == child, "actual nested roots dropped before retirement")
+		corpse_assert((!H || H.gcDestroyed) && I.loc == T && bag.loc == T && child.loc == bag && attachment.loc == child, "actual nested roots dropped before retirement")
 		corpse_assert(corpse_hook_slots_clear && corpse_hook_calls == 1 && I.drop_count == 1 && bag.drop_count == 1 && !child.drop_count && !attachment.drop_count, "slots cleared and roots released exactly once")
 		corpse_assert(I.stable_id == "issued-node-123" && I.found_in_raid && I.insured && child.stable_id == "issued-node-123", "identity and raid metadata preserved")
 		var/obj/structure/religious/remains/decaying/B = locate() in T
@@ -204,7 +204,7 @@ var/corpse_assertions = 0
 		H.stat = DEAD
 		H.do_rotting()
 		corpse_expire(H)
-		corpse_assert(!H && uniform.loc == T && uniform.drop_count == 1 && corpse_hook_slots_clear, "native uniform cascade clears worn slots")
+		corpse_assert((!H || H.gcDestroyed) && uniform.loc == T && uniform.drop_count == 1 && corpse_hook_slots_clear, "native uniform cascade clears worn slots")
 		for (var/obj/item/corpse_ci/gear in equipment)
 			corpse_assert(gear.loc == T && gear.drop_count == 1 && !gear.gcDestroyed, "cascade root drops exactly once")
 			qdel(gear)
@@ -298,7 +298,7 @@ var/corpse_assertions = 0
 		H.do_rotting()
 		var/obj/item/corpse_ci/reentrant_drop/reentrant = new(H)
 		corpse_expire(H)
-		corpse_assert(!H && reentrant.loc == T && reentrant.drop_count == 1, "reentrant native callback does not duplicate gear")
+		corpse_assert((!H || H.gcDestroyed) && reentrant.loc == T && reentrant.drop_count == 1, "reentrant native callback does not duplicate gear")
 		qdel(reentrant)
 		corpse_clear_bones()
 		var/mob/living/human/corpse/map_body = new(T)
@@ -307,7 +307,7 @@ var/corpse_assertions = 0
 			sleep(1)
 		corpse_assert(map_body.stat == DEAD && map_body.corpse_decay_record, "native map corpse registers")
 		corpse_expire(map_body)
-		corpse_assert(!map_body && locate(/obj/structure/religious/remains/decaying) in T, "native map corpse becomes bones")
+		corpse_assert((!map_body || map_body.gcDestroyed) && locate(/obj/structure/religious/remains/decaying) in T, "native map corpse becomes bones")
 		corpse_clear_bones()
 		H = new(T)
 		H.stat = DEAD
@@ -333,7 +333,7 @@ var/corpse_assertions = 0
 		corpse_assert(!H.gcDestroyed, "seasonal body has no hour deadline")
 		abandonment_season_changes += 2
 		R.check(world.time)
-		corpse_assert(!H, "four-season corpse retirement")
+		corpse_assert(!H || H.gcDestroyed, "four-season corpse retirement")
 		B = locate() in T
 		corpse_assert(B && !B.corpse_decay_seasons, "seasonal bones fresh phase")
 		corpse_expire(B)
@@ -425,7 +425,7 @@ var/corpse_assertions = 0
 		H.do_rotting()
 		corpse_expire(H)
 		var/mob/living/simple_animal/hostile/human/zombie/Z = locate() in T
-		corpse_assert(!H && Z && !locate(/obj/structure/religious/remains/decaying) in T, "headed zombie-map corpse reanimates")
+		corpse_assert((!H || H.gcDestroyed) && Z && !locate(/obj/structure/religious/remains/decaying) in T, "headed zombie-map corpse reanimates")
 		qdel(Z)
 		M.is_zombie = FALSE
 		for (var/state = 1, state <= 6, state++)
@@ -446,7 +446,9 @@ var/corpse_assertions = 0
 			corpse_assert(!corpse_decay_candidates.len, "all swapped candidates visited")
 			for (var/id in G.destroyed)
 				var/datum/D = locate(id)
-				if (D) D.gcDestroyed = world.time - 301
+				// A reference id can be reused by a live datum (even this process); age only
+				// datums that were actually queued for deletion.
+				if (D && D.gcDestroyed) D.gcDestroyed = world.time - 301
 				G.destroyed[id] = world.time - 301
 			while (G.destroyed.len)
 				G.fire()

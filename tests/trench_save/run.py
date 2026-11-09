@@ -9,14 +9,15 @@ import subprocess
 import tempfile
 import uuid
 
+PINNED_BYOND = json.loads((Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
+
 
 def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', choices=('filling', 'digging'))
-    # Historical callers remain strict 1681. Current-target admission is explicit
-    # and cannot relabel the old receipts or silently accept a future engine.
-    parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1681')
+    # Compile checks follow the canonical compiler pin and never accept another engine.
+    parser.add_argument('--expected-byond-version', choices=(PINNED_BYOND,), default=PINNED_BYOND)
     parser.add_argument('--compile-only', action='store_true')
     return parser
 

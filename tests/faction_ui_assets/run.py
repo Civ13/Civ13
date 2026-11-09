@@ -43,8 +43,8 @@ def sources(omit_registration=False):
     assets = replace_once(assets, '/datum/asset/nanoui/register()\n',
                           '/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n')
     creation = replace_once((ROOT / CREATION).read_text(encoding='utf-8'),
-                            'ui = new(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)',
-                            'ui = new /datum/nanoui/faction_assets_probe(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)')
+                            'ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)',
+                            'ui = new /datum/nanoui/tgui/faction_assets_probe(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)')
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
     replacements = [('code/world.dm', '_world.dm'), ('code/controllers/mc/globals.dm', '_globals.dm'),
                     (ASSETS, '_assets.dm'), (CREATION, '_creation.dm')]

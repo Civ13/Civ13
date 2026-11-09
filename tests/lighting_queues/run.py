@@ -28,7 +28,8 @@ def main():
         probe=(root/'tests/lighting_queues/probe.dm').read_text()
         if a.negative_control == 'skip': probe=probe.replace('if(active_process.current_list[i])','if(active_process.current_list[i] && world.params["retain_check"])')
         (out/'probe.dm').write_text(probe)
-        (out/'probe.dme').write_text('#include "probe.dm"\n#include "overlays.dm"\n#include "sources.dm"\n')
+        # Production's absolute tick ceiling (code/processes/___defines.dm), used by the overlay queue.
+        (out/'probe.dme').write_text('#define PROCESS_TICK_CEILING max(40, min(80, 95 - world.map_cpu))\n#include "probe.dm"\n#include "overlays.dm"\n#include "sources.dm"\n')
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         dm = a.byond_bin/('dm.exe' if os.name == 'nt' else 'DreamMaker')
         dd = a.byond_bin/('dd.exe' if os.name == 'nt' else 'DreamDaemon')

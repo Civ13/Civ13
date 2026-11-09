@@ -45,23 +45,15 @@ class EngineSelectionTests(unittest.TestCase):
         return dict(version=version, initial_port=43210, closed_port=0, reopen=0,
                     cases=[{'case': c, 'passed': 1} for c in native.case_names()])
 
-    def test_default_remains_strict_1681(self):
+    def test_default_follows_the_pin_strictly(self):
+        build = native.VERSION.split('.')[1]
         fixture = native.prepare(self.source)['fixture.dm']
-        self.assertIn('byond_build != 1681', fixture)
-        self.assertIn('"version" = "516.1681"', fixture)
-        native.verify(self.result_for('516.1681'), LOG)
-
-    def test_1688_is_selected_explicitly_and_bound_together(self):
-        fixture = native.prepare(self.source, version='516.1688')['fixture.dm']
-        self.assertIn('byond_build != 1688', fixture)
-        self.assertIn('"version" = "516.1688"', fixture)
+        self.assertIn('byond_build != ' + build, fixture)
+        self.assertIn('"version" = "' + native.VERSION + '"', fixture)
         self.assertNotIn('@', fixture)
-        native.verify(self.result_for('516.1688'), LOG, version='516.1688')
+        native.verify(self.result_for(native.VERSION), LOG)
         with self.assertRaises(ValueError):
-            native.verify(self.result_for('516.1688'), LOG)
-        with self.assertRaises(ValueError):
-            native.verify(self.result_for('516.1681'), LOG, version='516.1688')
-
+            native.verify(self.result_for('516.1'), LOG)
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,7 +20,8 @@ DIAGNOSTICS = r"runtime error|Bad ref|Bad loc|Cannot read null|Infinite loop sus
 def prepare(repo, mode, negative=False, bulk_order_control=False, inactive_corner_control=False):
     def read(path):
         if mode == "baseline":
-            return subprocess.check_output(["git", "show", BASELINE + ":" + path], cwd=repo, text=True)
+            # Frozen copy of the file at BASELINE, so the runner never reads Git history.
+            return (Path(__file__).with_name("baseline") / (Path(path).name + ".txt")).read_text()
         return (repo/path).read_text()
     originals = {path: read(path) for path in (SYSTEM, CORNER, OVERLAY, TURF)}
     # Daylight application procs follow the startup barrier and need the

@@ -142,6 +142,9 @@ var/list/timer_fires = list()
 	probe_in_delayed = FALSE
 /proc/probe_timer_armed(obj/map_metadata/M, delay)
 	timer_arms += list(list("owner"="\ref[M]", "time"=world.time, "original_delay"=delay))
+// The 60-minute recurring loop fires after the 210-ds cadence adapter.
+/proc/probe_loop_delay(delay)
+	return delay == 36000 ? 210 : delay
 /proc/probe_timer_fired(obj/map_metadata/M)
 	if(M != map || M.vars["season_retired"]) return
 	timer_fires += list(list("owner"="\ref[M]", "time"=world.time))
@@ -236,7 +239,7 @@ var/list/timer_fires = list()
 	if(timer_arms.len != 1 || !map.vars["season_loop_scheduled"]) failures++
 	else
 		var/list/armed = timer_arms[1]
-		if(armed["time"] != start_time || armed["original_delay"] != 18000) failures++
+		if(armed["time"] != start_time || armed["original_delay"] != 36000) failures++
 	sleep(212)
 	if(timer_fires.len != 1 || timer_arms.len != 2 || clock != start_clock) failures++
 	else

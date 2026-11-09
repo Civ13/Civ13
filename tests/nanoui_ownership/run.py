@@ -31,7 +31,9 @@ with tempfile.TemporaryDirectory(prefix='civ13-nanoui-ownership-') as directory:
     temp = Path(directory)
     (temp/'production.dm').write_text(source)
     (temp/'probe.dm').write_text(probe)
-    (temp/'probe.dme').write_text('#include "probe.dm"\n#include "production.dm"\n')
+    # close() now tells paper authoring sessions the window closed; none exist here.
+    (temp/'adapters.dm').write_text('/proc/paper_authoring_notify(datum/source, reason, exempt = null)\n\treturn\n')
+    (temp/'probe.dme').write_text('#include "probe.dm"\n#include "production.dm"\n' + ('' if a.baseline else '#include "adapters.dm"\n'))
     win = os.name == 'nt'
     compiler = a.byond_bin / ('dm.exe' if win else 'DreamMaker')
     daemon = a.byond_bin / ('dd.exe' if win else 'DreamDaemon')
