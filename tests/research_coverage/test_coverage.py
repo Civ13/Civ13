@@ -77,6 +77,13 @@ class Coverage(unittest.TestCase):
         self.assertEqual(row['research_status'], 'gated')
         self.assertEqual(row['research_nodes'], ['assembly_line'])
 
+    def test_foundry_requires_output_mapping_as_well_as_station_node(self):
+        row = record(kind='Foundry casting')
+        annotate_research([row], files(), canon)
+        self.assertEqual(row['research_nodes'], ['iron_tools', 'machined_tools'])
+        with self.assertRaisesRegex(ValueError, 'lack valid research'):
+            annotate_research([record(kind='Foundry casting', output='/obj/item/unreviewed_cast')], files(), canon)
+
     def test_material_mapping_uses_raw_output_not_label(self):
         row = record(kind='Material / global', output='/material/rope', raw='RECIPE: /material/iron/,rope,/obj/item/weapon/saw,1,20,0,1,none,0,0,0,8,null')
         annotate_research([row], files(), canon)
