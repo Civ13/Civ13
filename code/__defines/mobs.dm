@@ -65,9 +65,11 @@
 #define HYGIENE_LEVEL_NORMAL 200
 #define HYGIENE_LEVEL_DIRTY 75
 #define HYGIENE_FACTOR 0.025
-// Alt+direction precision movement (client/Move fine_step values).
-// A press nudges 2 pixels; a key still held after the glide delay slides at
-// ordinary walking/running speed until it is released.
+// Free movement (client/Move fine_step values). Plain direction keys slide at
+// the ordinary walking/running pace and stop where they are released.
+// Alt+direction nudges 2 pixels, then slides if held past the glide delay.
 #define FINE_STEP_NUDGE 1
 #define FINE_STEP_HELD 2
+// Plain held keys: a held slide when the body can slide, else a tile step.
+#define FINE_STEP_FREE 3
 #define FINE_OFFSET_GLIDE_DELAY 1

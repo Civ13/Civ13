@@ -383,6 +383,15 @@
 
 	if (!mob)
 		return // Moved here to avoid nullrefs below
+	// Plain held keys slide freely when this body can; otherwise they take the
+	// ordinary tile path (pulling, driving, confusion, trench edges, legacy mode).
+	if (fine_step == FINE_STEP_FREE)
+		fine_step = FALSE
+		if (ishuman(mob))
+			var/mob/living/human/free_actor = mob
+			free_actor.human_subtile_initialize_default(direct)
+			if (free_actor.human_subtile_fine_ready(direct) && !free_actor.human_subtile_trench_near(direct))
+				fine_step = FINE_STEP_HELD
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
 		subtile_input_actor.prune_destroyed_grab_list()
@@ -720,7 +729,7 @@
 
 		switch(mob.m_intent)
 			if ("run")
-				if (!fine_step)
+				if (fine_step != FINE_STEP_NUDGE)
 					mob.velocity = min(mob.velocity+1, 15)
 				mob.velocity_lastdir = direct
 				move_delay += mob.get_run_delay() + standing_on_snow
@@ -924,7 +933,7 @@
 			// Fine positioning is not a tile stomp: tiny boundary oscillations must
 			// not multiply attacks by the shorter precision-input cooldown.
 			// wall stomping is bad
-			if ((!fine_step) && t1 && !t1.density && !locate_dense_type(t1.contents, /obj/structure))
+			if ((fine_step != FINE_STEP_NUDGE) && t1 && !t1.density && !locate_dense_type(t1.contents, /obj/structure))
 
 				//Step on nerds in our way
 				if (mob_is_human)
@@ -1131,7 +1140,9 @@
 
 // The fine_step value the movementMachine passes for this mob's held keys.
 /mob/proc/held_fine_step()
-	return movement_fine ? FINE_STEP_HELD : FALSE
+	if (movement_fine)
+		return FINE_STEP_HELD
+	return ishuman(src) ? FINE_STEP_FREE : FALSE
 
 // when a client changes mobs or logs out they stop moving
 /mob/Logout()
@@ -1147,7 +1158,7 @@
 		mob.movement_northsouth = NORTH
 		mob.movement_fine = FALSE
 		try
-			Move(get_step(mob, NORTH), NORTH)
+			Move(get_step(mob, NORTH), NORTH, FALSE, mob.held_fine_step())
 		catch (var/E)
 			pass(E)
 		if (istype(mob, /mob/living/human))
@@ -1182,7 +1193,7 @@
 		mob.movement_northsouth = SOUTH
 		mob.movement_fine = FALSE
 		try
-			Move(get_step(mob, SOUTH), SOUTH)
+			Move(get_step(mob, SOUTH), SOUTH, FALSE, mob.held_fine_step())
 		catch (var/E)
 			pass(E)
 		if (istype(mob, /mob/living/human))
@@ -1215,7 +1226,7 @@
 		mob.movement_eastwest = EAST
 		mob.movement_fine = FALSE
 		try
-			Move(get_step(mob, EAST), EAST)
+			Move(get_step(mob, EAST), EAST, FALSE, mob.held_fine_step())
 		catch (var/E)
 			pass(E)
 		if (istype(mob, /mob/living/human))
@@ -1250,7 +1261,7 @@
 		mob.movement_eastwest = WEST
 		mob.movement_fine = FALSE
 		try
-			Move(get_step(mob, WEST), WEST)
+			Move(get_step(mob, WEST), WEST, FALSE, mob.held_fine_step())
 		catch (var/E)
 			pass(E)
 		if (istype(mob, /mob/living/human))

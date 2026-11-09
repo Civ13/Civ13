@@ -361,6 +361,33 @@ var/human_subtile_fixture_phase = "initializing"
 	var/slid = (S.x - 3) * 32 + S.step_x - 6
 	human_subtile_fixture_assert(slid > 0 && slid < 32 && S.human_subtile_fine_released_at == world.time && world.time - slide_start < 4, "held_fine_stops_on_release")
 	S.movement_fine = FALSE
+	// Graal-style sliding: a straight slide clipping a corner slips sideways
+	// into the opening ahead, and a diagonal into a wall runs along it.
+	human_subtile_fixture_phase = "headless corner slide"
+	var/turf/corner = locate(3, 11, 1)
+	corner.density = TRUE
+	var/mob/living/human/subtile_fixture/K = human_subtile_fixture_actor(2, 10)
+	K.set_human_subtile(TRUE)
+	human_subtile_fixture_place(K, 6, 0)
+	K.movement_northsouth = NORTH
+	K.SelfMove(get_step(K, NORTH), NORTH, world.time + 4, FINE_STEP_HELD)
+	human_subtile_fixture_assert(K.step_x == 0 && K.x == 2 && (K.y - 10) * 32 + K.step_y == 26, "corner_slide_into_opening")
+	K.movement_northsouth = null
+	corner.density = FALSE
+	human_subtile_fixture_phase = "headless wall slide"
+	var/list/wall = list(locate(6, 11, 1), locate(7, 11, 1), locate(8, 11, 1))
+	for (var/turf/W in wall)
+		W.density = TRUE
+	var/mob/living/human/subtile_fixture/D2 = human_subtile_fixture_actor(6, 10)
+	D2.set_human_subtile(TRUE)
+	D2.movement_northsouth = NORTH
+	D2.movement_eastwest = EAST
+	D2.SelfMove(get_step(D2, NORTHEAST), NORTHEAST, world.time + 4, FINE_STEP_HELD)
+	human_subtile_fixture_assert(D2.y == 10 && !D2.step_y && (D2.x - 6) * 32 + D2.step_x == 32, "diagonal_wall_slide")
+	D2.movement_northsouth = null
+	D2.movement_eastwest = null
+	for (var/turf/W in wall)
+		W.density = FALSE
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 
