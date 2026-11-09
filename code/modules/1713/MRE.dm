@@ -47,6 +47,7 @@
 	name = "German MRE: Sauerkraut"
 	desc = "A pickled cabbage MRE."
 	nutriment_desc = list("pickled cabbage" = 1)
+	non_vegetarian = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/british
 	name = "British MRE: Canned Meat"
@@ -62,6 +63,7 @@
 	name = "Soviet MRE: Cabbage"
 	desc = "A cabbage MRE."
 	nutriment_desc = list("overcooked cabbage" = 1)
+	non_vegetarian = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/italian
 	name = "Italian MRE: Spaghetti"
@@ -102,6 +104,7 @@
 	name = "Russian MRE: Potatoes"
 	desc = "A package of precooked potatoes."
 	nutriment_desc = list("potatoes" = 1,)
+	non_vegetarian = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/idf
 	name = "IDF MRE: Whitefish"
@@ -112,6 +115,7 @@
 	name = "Russian MRE: Combat rations"
 	desc = "A package of potatoes, canned meat, canned veggies and some tea."
 	nutriment_desc = list("potatoes" = 1, "canned meat" = 2, "canned vegetables" = 2,"tea" = 2)
+	non_vegetarian = TRUE
 
 /obj/item/weapon/reagent_containers/food/snacks/MRE/generic/space
 	name = "Ration pack"
