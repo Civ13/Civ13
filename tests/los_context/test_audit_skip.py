@@ -280,6 +280,15 @@ class LifecycleContracts(unittest.TestCase):
         self.assertNotIn('refresh(', skipped)
         self.assertNotIn('images', skipped)
 
+    def test_a_stepping_viewer_skips_recording_until_it_stops(self):
+        # Recording scans range(view + 6) appearances. A viewer that stepped a
+        # tile since its last publication refreshes again next step, so it
+        # clears the scene instead; a stationary publication still records.
+        reconcile = fragment(LIFECYCLE.read_text(), '/client/proc/reconcile_geometric_los(')
+        self.assertIn('var/stepped = V.movement_turf != los_published_turf\n\tlos_published_turf = V.movement_turf', reconcile)
+        self.assertIn('if(stepped)\n\t\tV.clear_audit_scene()\n\telse\n\t\tV.record_audit_scene(S)', reconcile)
+        self.assertLess(reconcile.index('V.movement_turf = get_turf(mob)'), reconcile.index('var/stepped'))
+
     def test_presenters_and_mutations_clear_the_recorded_scene(self):
         core = CORE.read_text()
         self.assertIn('clear_audit_scene()', fragment(core, '/datum/los_context/proc/retire('))
