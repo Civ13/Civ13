@@ -71,7 +71,7 @@
 					M.visible_message(SPAN_DANGER("[M] struggle to free themselves from the barbed wire!"))
 					playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
 					var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-					if (affecting.take_damage(4, 0, TRUE, TRUE))
+					if (affecting && affecting.take_damage(4, 0, TRUE, TRUE))
 						H.UpdateDamageIcon()
 					H.updatehealth()
 					return FALSE
