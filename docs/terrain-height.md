@@ -3,7 +3,8 @@
 Optional per-tile hill levels for a map's ground. A step uphill costs extra
 move delay, a step downhill saves a little, and slopes are shaded so players
 can see them. It is off unless a map names a height file; every tile then
-reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`.
+reads height 0. Gaia's surface (z 2) uses `maps/heights/nomads_gaia.txt`, designed from its terrain by the tool's
+`design` command with `maps/heights/nomads_gaia.design.json`.
 
 This is separate from [geographic elevation](elevation.md) (metres per
 rectangle, used for climate). Native z-levels still model caves, floors and
@@ -76,9 +77,27 @@ game for the first two). Re-bake after changing the alphas.
 `scripts/terrain_heights.py`:
 
 - `generate --map maps/nomads/nomads_gaia.dmm --z 2 --out maps/heights/nomads_gaia.txt [--seed N]`
-  builds heights from the turfs: water 0, beaches at most 1, rounded hills from
-  smooth seeded noise on land that rises gently inland, and ridges near rock
-  walls, with neighbouring tiles never more than 2 levels apart.
+  builds gentle heights from the turfs: water 0, beaches at most 1, rounded
+  hills from smooth seeded noise on land that rises gently inland, and ridges
+  near rock walls, with neighbouring tiles never more than 2 levels apart.
+- `design --map maps/nomads/nomads_gaia.dmm --z 2 --spec maps/heights/nomads_gaia.design.json --out maps/heights/nomads_gaia.txt`
+  builds heights that read the terrain, and is how Gaia's file is made. Rock
+  walls, bare rock floors and lava are highland plateaus (level 8 at the edge,
+  rising to 13, lava at 15). The land around a highland climbs steeply (3
+  levels per tile) where the range is within 12 tiles of the sea and gently
+  (1 per tile) inland. The coast is a low plain with rolling hills behind it;
+  rocky shores that are already 4 or higher stay up as sea cliffs, and sandy
+  beaches stay at most 1. Narrow arms of the sea are rivers: their valleys are
+  low, but a bank that is already high stays as a gorge wall. Desert lakes get
+  crater rims (level 4-5 right at the water), other lakes get gentle basins.
+  Marshes stay flat. The JSON spec adds hand-placed features in game
+  coordinates: `ridges` (a polyline, `height`, `width`, a steep and a gentle
+  side), `passes` (rectangles where highland approaches are gentle), `scarps`
+  (steep, with an optional `grade`), `craters` (lakes that get rims) and
+  `flat` rectangles (optionally with a `height`; Gaia flattens the ground
+  around its spawn landmarks). Any tuning value in `DESIGN_DEFAULTS` can be
+  overridden in the spec. Walkable neighbours never differ by more than 4
+  levels, the most the game counts for one step.
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
   pixel per tile, level x 17) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
