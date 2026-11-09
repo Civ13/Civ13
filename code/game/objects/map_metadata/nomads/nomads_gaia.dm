@@ -7,6 +7,8 @@
 	research_active = TRUE
 	building_levels = 1
 	building_level_standing = TRUE
+	// The rock under Gaia's deep ocean (level 1) opens to the sea for submarines.
+	sea_layer_surface_z = 2
 
 
 // Gaia's authored outdoors are on level 2; level 1 is underground. Do not use
