@@ -7,8 +7,9 @@ metadata. To enable it in an already running world, the operator integration
 must call `activate_recipe_books()` instead of assigning the flag directly.
 Activation itself is outside this PR's authorization.
 
-With the flag enabled, non-basic crafting needs both faction/era research and
-personal knowledge of the node. The explicit basic recipes remain open. Read a
+With the flag enabled, crafting needs both faction/era research and personal
+knowledge of the node. Only research essentials (the research bench, legacy
+research desk and node prototypes) skip the personal check. Read a
 node manual for one minute to learn it. Reading leaves the book intact and
 repeated reading does not duplicate knowledge. Books cannot bypass research.
 The book's subject is a text ID, not a reference to a research datum.

@@ -482,7 +482,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/wooden_wedge" = "basic_tools",
 		"/obj/item/weapon/stone_rammer" = "basic_tools",
 		"/obj/structure/component_workbench" = "basic_tools",
+		"/obj/item/stack/material/rope" = "basic_tools",
 		"/obj/structure/research_bench" = "basic_tools",
+		"/obj/structure/researchdesk" = "basic_tools",
 		// bronze_weapons
 		"/obj/item/clothing/head/helmet/anax" = "bronze_weapons",
 		"/obj/item/clothing/head/helmet/asterix" = "bronze_weapons",

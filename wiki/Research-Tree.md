@@ -370,8 +370,8 @@ Its own standalone tab, reachable once Basic Agriculture (in the Main tree) is r
 
 ## Crafting coverage (phase 0)
 
-Non-basic hand and station crafting now requires a research node. Ordinary rope,
-stone bricks and the research desk are the explicit free outputs; existing tools,
+Hand and station crafting requires a research node; no crafted output is free.
+Rope needs Basic Toolmaking and stone bricks need Brickmaking. Existing tools,
 materials, map modes and era limits still apply. Generic chemical reactions,
 gathering, mining and butchering remain open.
 

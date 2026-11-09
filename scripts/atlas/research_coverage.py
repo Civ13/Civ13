@@ -18,6 +18,18 @@ def research_contract(files, canon):
     return nodes, mappings, basics, canonical, {canon(path) for path in basics}
 
 
+def research_essentials(files):
+    """Outputs that skip personal manuals: research structures and prototypes."""
+    source = files[NODE_SOURCE]
+    prototypes = set(re.findall(r'RESEARCH_MODE_PROTOTYPE,[^\n]*?(/obj/[\w/]+)\)\)', source))
+    return prototypes | {'/obj/structure/research_bench', '/obj/structure/researchdesk'}
+
+
+def is_research_essential(path, essentials):
+    # Subtypes count, matching the research bench's istype() prototype check.
+    return any(path == base or path.startswith(base + '/') for base in essentials)
+
+
 def annotate_research(records, files, canon):
     nodes, mappings, basics, canonical, basic_ids = research_contract(files, canon)
     missing = []
@@ -71,5 +83,12 @@ def annotate_research(records, files, canon):
         if not basic and (not required or any(node not in nodes for node in required)):
             missing.append(f"{recipe['id']}: {kind}: {recipe['name']} ({path}:{recipe['line']})")
         recipe.update(research_status='basic' if basic else 'gated', research_nodes=required)
+    essentials = research_essentials(files)
+    for recipe in records:
+        outputs = [x['id'] for x in recipe['outputs']]
+        if recipe.get('kind', '').startswith('Material /'):
+            outputs = [recipe['raw'].split('RECIPE: ', 1)[1].split(',')[2].strip()]
+        if recipe.get('research_status') == 'gated' and outputs and all(is_research_essential(value, essentials) for value in outputs):
+            recipe['manual_free'] = True
     if missing:
         raise ValueError('Non-basic crafting recipes lack valid research nodes:\n' + '\n'.join(missing))

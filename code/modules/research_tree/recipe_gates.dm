@@ -1,10 +1,6 @@
-// Explicit free outputs. Subtypes are NOT automatically exempt. Other proposed
-// basics (tools, shelter, fire, research bench, trail marker) remain node-gated.
-var/global/list/basic_crafting_recipes = list(
-	"/obj/item/stack/material/rope",
-	"/obj/item/stack/material/stonebrick",
-	"/obj/structure/researchdesk",
-)
+// Explicit fully ungated outputs. Empty by design (Val, 2026-11-09): every
+// crafted output needs research. Tests may add a synthetic output here.
+var/global/list/basic_crafting_recipes = list()
 
 /proc/is_basic_crafting_recipe(result_path_string)
 	return istext(result_path_string) && (result_path_string in basic_crafting_recipes)
@@ -22,4 +18,23 @@ var/global/list/basic_crafting_recipes = list(
 		return FALSE
 	if (is_basic_crafting_recipe(result_path_string))
 		return TRUE
-	return crafting_node_allowed(H, get_recipe_node_req(result_path_string))
+	var/node_id = get_recipe_node_req(result_path_string)
+	// Research essentials still need the world's research, never a manual.
+	if (is_research_essential_recipe(result_path_string))
+		return crafting_node_world_allowed(H.civilization, node_id)
+	return crafting_node_allowed(H, node_id)
+
+// The only recipes that skip personal manuals are the ones needed to reach the
+// next research level: the research bench, the legacy research desk and every
+// node's prototype item (any subtype the bench would accept).
+/proc/is_research_essential_recipe(result_path_string)
+	var/path = istext(result_path_string) ? text2path(result_path_string) : result_path_string
+	if (!ispath(path))
+		return FALSE
+	if (ispath(path, /obj/structure/research_bench) || ispath(path, /obj/structure/researchdesk))
+		return TRUE
+	for (var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if (N && N.prototype_type && ispath(path, N.prototype_type))
+			return TRUE
+	return FALSE
