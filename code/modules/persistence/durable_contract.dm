@@ -9,7 +9,7 @@
 		"nullable_text" = list("current_winner", "current_loser"),
 		"nullable_scalar" = list("last_win_condition"),
 		"alist" = list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"),
-		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid", "faction_renames"),
+		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid", "faction_renames", "faction_recruitment"),
 		// These are offsets, never imported as raw old-runtime clock values.
 		"world_time_deadline" = list("next_win"),
 		"world_time_origin" = list("artillery_last"),
@@ -26,8 +26,9 @@
 	return list("climate" = "text", "weather" = "number", "weather_intensity" = "number", "capturable" = "flag", "artillery_integrity" = "artillery_integrity", "has_gravity" = "flag", "no_air" = "nullable_number")
 
 // Field versions are independent of topology and the round generation. Writers
-// before #3560 have exactly v1's 131 fields; #3560 wrote 132 without a marker.
-// Only that known addition has a default. Never infer arbitrary missing fields.
+// before #3560 have exactly v1's 131 fields; #3560 wrote 132 without a marker
+// (v2, later also declared). v3 adds faction_recruitment and is always declared.
+// Only those known additions have defaults. Never infer arbitrary missing fields.
 /proc/durable_metadata_map_read_schema(list/state)
 	if(!islist(state) || !(state["schema"] in list(1, 2)))
 		throw EXCEPTION("Unsupported durable map schema envelope")
@@ -35,11 +36,12 @@
 	var/version = state["map_fields_version"]
 	if(!("map_fields_version" in state))
 		version = islist(fields) && !("faction_renames" in fields) ? 1 : 2
-	if(!(version in list(1, 2))) throw EXCEPTION("Unsupported durable map field version")
+	if(!(version in list(1, 2, 3))) throw EXCEPTION("Unsupported durable map field version")
 	var/list/schema = durable_metadata_map_schema()
 	// A future inventory change needs its own reviewed version/default policy.
-	if(schema.len != 132 || schema["faction_renames"] != "list")
+	if(schema.len != 133 || schema["faction_renames"] != "list" || schema["faction_recruitment"] != "list")
 		throw EXCEPTION("Unversioned durable map schema change")
+	if(version <= 2) schema -= "faction_recruitment"
 	if(version == 1) schema -= "faction_renames"
 	return schema
 
@@ -50,6 +52,7 @@
 	durable_metadata_validate_fields(fields, schema)
 	var/list/result = fields.Copy()
 	if(!("faction_renames" in schema)) result["faction_renames"] = list()
+	if(!("faction_recruitment" in schema)) result["faction_recruitment"] = list()
 	return result
 
 /proc/durable_metadata_scalar_valid(value, kind)

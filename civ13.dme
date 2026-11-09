@@ -208,6 +208,7 @@
 #include "code\game\mob\groups\companies.dm"
 #include "code\game\mob\groups\faction_creation.dm"
 #include "code\game\mob\groups\faction_membership.dm"
+#include "code\game\mob\groups\faction_recruitment.dm"
 #include "code\game\mob\groups\faction_rename.dm"
 #include "code\game\mob\groups\faction_symbol.dm"
 #include "code\game\mob\groups\factions.dm"

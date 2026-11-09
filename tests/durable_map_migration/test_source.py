@@ -11,11 +11,15 @@ HERE = Path(__file__).resolve().parent
 class MapSchemaMigration(unittest.TestCase):
     def test_exact_historical_and_current_inventories(self):
         old = json.loads((HERE/'map-schema-v1.json').read_text())
-        new = json.loads((HERE/'map-schema-v2.json').read_text())
+        mid = json.loads((HERE/'map-schema-v2.json').read_text())
+        new = json.loads((HERE/'map-schema-v3.json').read_text())
         self.assertEqual(len(old), 131)
-        self.assertEqual(len(new), 132)
-        self.assertEqual(set(new)-set(old), {'faction_renames'})
-        self.assertEqual({k:v for k,v in new.items() if k!='faction_renames'}, old)
+        self.assertEqual(len(mid), 132)
+        self.assertEqual(len(new), 133)
+        self.assertEqual(set(mid)-set(old), {'faction_renames'})
+        self.assertEqual({k:v for k,v in mid.items() if k!='faction_renames'}, old)
+        self.assertEqual(set(new)-set(mid), {'faction_recruitment'})
+        self.assertEqual({k:v for k,v in new.items() if k!='faction_recruitment'}, mid)
         source = (ROOT/'code/modules/persistence/durable_contract.dm').read_text(encoding='utf-8')
         body = source.split('/proc/durable_metadata_map_schema()',1)[1].split('/proc/durable_metadata_area_schema()',1)[0]
         actual = {key:kind for kind,keys in re.findall(r'"([a-z_]+)" = list\(([^\n]+)\)',body)
@@ -25,10 +29,12 @@ class MapSchemaMigration(unittest.TestCase):
     def test_default_matches_source_and_is_only_added_after_validation(self):
         source = (ROOT/'code/game/mob/groups/faction_creation.dm').read_text(encoding='utf-8')
         self.assertIn('var/list/faction_renames = list()',source)
+        recruitment = (ROOT/'code/game/mob/groups/faction_recruitment.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/map_metadata/var/list/faction_recruitment = list()',recruitment)
         contract=(ROOT/'code/modules/persistence/durable_contract.dm').read_text(encoding='utf-8')
         body=contract.split('/proc/durable_metadata_default_map_fields(',1)[1].split('\n/proc/',1)[0]
         self.assertLess(body.index('durable_metadata_validate_fields(fields, schema)'),body.index('fields.Copy()'))
-        self.assertEqual(re.findall(r'result\["(\w+)"\] = list\(\)',body),['faction_renames'])
+        self.assertEqual(re.findall(r'result\["(\w+)"\] = list\(\)',body),['faction_renames','faction_recruitment'])
         self.assertNotIn('state[',body)
 
     def test_encoded_preflight_keeps_exact_inventory_and_root_types(self):
@@ -43,7 +49,7 @@ class MapSchemaMigration(unittest.TestCase):
 
     def test_writer_versions_fields_independently_and_restorer_normalizes(self):
         source=(ROOT/'code/modules/persistence/durable_world.dm').read_text(encoding='utf-8')
-        self.assertIn('"schema" = 2, "map_fields_version" = 2',source)
+        self.assertIn('"schema" = 2, "map_fields_version" = 3',source)
         self.assertIn('if("map_fields_version" in state) keys += "map_fields_version"',source)
         restore=source.split('/map_storage/proc/restore_durable_world()',1)[1]
         self.assertLess(restore.index('durable_metadata_default_map_fields(fields, durable_state)'),

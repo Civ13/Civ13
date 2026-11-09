@@ -53,18 +53,22 @@ var/migration_checks = 0
 		times_of_day = list("Morning")
 		var/list/current = durable_metadata_map_schema()
 		var/list/frozen_old = json_decode(file2text("map-schema-v1.json"))
-		var/list/frozen_new = json_decode(file2text("map-schema-v2.json"))
-		migration_assert(current.len == 132 && frozen_old.len == 131 && frozen_new.len == 132, "exact schema sizes")
+		var/list/frozen_mid = json_decode(file2text("map-schema-v2.json"))
+		var/list/frozen_new = json_decode(file2text("map-schema-v3.json"))
+		migration_assert(current.len == 133 && frozen_old.len == 131 && frozen_mid.len == 132 && frozen_new.len == 133, "exact schema sizes")
 		for(var/key in current)
 			migration_assert(current[key] == frozen_new[key], "current frozen schema differs: [key]")
 		for(var/key in frozen_old)
-			migration_assert(current[key] == frozen_old[key] && key != "faction_renames", "legacy frozen schema differs: [key]")
+			migration_assert(current[key] == frozen_old[key] && key != "faction_renames" && key != "faction_recruitment", "legacy frozen schema differs: [key]")
+		for(var/key in frozen_mid)
+			migration_assert(current[key] == frozen_mid[key] && key != "faction_recruitment", "v2 frozen schema differs: [key]")
 		var/list/new_state = migration_capture()
-		migration_assert(new_state["map_fields_version"] == 2, "new writer declares field schema version")
+		migration_assert(new_state["map_fields_version"] == 3, "new writer declares field schema version")
 		var/list/old_state = migration_copy(new_state)
 		old_state -= "map_fields_version"
 		var/list/old_fields = old_state["fields"]
 		old_fields -= "faction_renames"
+		old_fields -= "faction_recruitment"
 		migration_assert(old_fields.len == 131, "fixture matches exact old inventory")
 		// These are synthetic files, not copies of the production generation.
 		var/original = json_encode(list("version" = 2, "generation" = "round-v2:fixture", "world_state" = old_state))
@@ -85,9 +89,11 @@ var/migration_checks = 0
 			if(topology_version == 1) state -= "topology"
 			var/before = json_encode(state)
 			map.faction_renames = list("stale" = "must not survive")
+			map.faction_recruitment = list("stale" = "must not survive")
 			migration_assert(map_storage.validate_durable_world(state, envelope["generation"]), "old schema validates")
 			map_storage.restore_durable_world()
 			migration_assert(islist(map.faction_renames) && !map.faction_renames.len && map.faction_renames != first_default, "legacy restores fresh empty mapping")
+			migration_assert(islist(map.faction_recruitment) && !map.faction_recruitment.len, "legacy restores empty recruitment state")
 			first_default = map.faction_renames
 			migration_assert(before == json_encode(state), "successful migration must not rewrite input")
 		var/list/versioned_old = migration_copy(old_state)
@@ -96,18 +102,33 @@ var/migration_checks = 0
 		map_storage.restore_durable_world()
 		migration_assert(!map.faction_renames.len && map.faction_renames != first_default, "explicit old version restores a fresh default")
 		var/list/roundtrip = migration_capture()
-		migration_assert(roundtrip["map_fields_version"] == 2 && length(roundtrip["fields"]) == 132, "legacy roundtrip writes current inventory")
+		migration_assert(roundtrip["map_fields_version"] == 3 && length(roundtrip["fields"]) == 133, "legacy roundtrip writes current inventory")
 		text2file(json_encode(roundtrip), "roundtrip.json")
 		migration_assert(map_storage.validate_durable_world(json_decode(file2text("roundtrip.json")), "round-v2:fixture"), "current disk metadata roundtrip validates")
 		map_storage.restore_durable_world()
 		map.faction_renames = list("New faction" = list("Old faction", 7, 1234))
+		map.faction_recruitment = list("schema" = 1, "seq" = 4, "policies" = list("New faction" = list("mode" = "manual", "open" = 0, "language" = "", "skills" = list("farming" = 3), "nonmatch" = "review", "revision" = 2)), "applications" = list(), "audit" = list())
 		var/list/with_rename = migration_capture()
 		var/list/unversioned_current = migration_copy(with_rename)
 		unversioned_current -= "map_fields_version"
+		var/list/unversioned_fields = unversioned_current["fields"]
+		unversioned_fields -= "faction_recruitment"
 		migration_assert(map_storage.validate_durable_world(unversioned_current, "round-v2:fixture"), "unversioned #3560 inventory validates")
 		map_storage.restore_durable_world()
 		var/list/renamed = map.faction_renames["New faction"]
 		migration_assert(renamed && renamed[1] == "Old faction" && renamed[2] == 7, "present rename data is preserved")
+		migration_assert(!map.faction_recruitment.len, "v2 inventory restores empty recruitment state")
+		var/list/declared_v2 = migration_copy(unversioned_current)
+		declared_v2["map_fields_version"] = 2
+		migration_assert(map_storage.validate_durable_world(declared_v2, "round-v2:fixture"), "declared v2 inventory validates")
+		map_storage.restore_durable_world()
+		migration_assert(!map.faction_recruitment.len, "declared v2 restores empty recruitment state")
+		text2file(json_encode(with_rename), "with-recruitment.json")
+		migration_assert(map_storage.validate_durable_world(json_decode(file2text("with-recruitment.json")), "round-v2:fixture"), "current recruitment state validates from disk")
+		map_storage.restore_durable_world()
+		var/list/policies = map.faction_recruitment["policies"]
+		var/list/policy = policies["New faction"]
+		migration_assert(map.faction_recruitment["seq"] == 4 && policy && policy["revision"] == 2 && policy["skills"]["farming"] == 3, "recruitment state survives a disk round trip")
 		for(var/key in frozen_old)
 			var/list/bad = migration_copy(old_state)
 			var/list/fields = bad["fields"]
@@ -128,11 +149,11 @@ var/migration_checks = 0
 			nodes[fields[key]] = frozen_new[key] in list("list", "alist") ? list("kind" = "value", "value" = 5) : list("kind" = "list", "keys" = list(), "values" = list())
 			migration_reject(bad, "wrong typed field [key]")
 			if(migration_checks % 16 == 0) sleep(0)
-		for(var/version in list(0, 3, -1, 1.5, "2", null))
+		for(var/version in list(0, 4, -1, 1.5, "2", null))
 			var/list/bad = migration_copy(new_state)
 			bad["map_fields_version"] = version
 			migration_reject(bad, "unknown or malformed field version")
-		for(var/corruption in list("extra", "substitute", "bad-index", "extra-envelope", "future-envelope", "wrong-profile", "v1-with-new-field"))
+		for(var/corruption in list("extra", "substitute", "bad-index", "extra-envelope", "future-envelope", "wrong-profile", "v1-with-new-field", "v2-with-new-field"))
 			var/list/bad = migration_copy(new_state)
 			var/list/fields = bad["fields"]
 			if(corruption == "extra") fields["unexpected"] = fields["age"]
@@ -144,6 +165,7 @@ var/migration_checks = 0
 			if(corruption == "future-envelope") bad["schema"] = 3
 			if(corruption == "wrong-profile") bad["map_type"] = "/obj/map_metadata/nomads/europe"
 			if(corruption == "v1-with-new-field") bad["map_fields_version"] = 1
+			if(corruption == "v2-with-new-field") bad["map_fields_version"] = 2
 			migration_reject(bad, corruption)
 		migration_assert(file2text("original-round.json") == original_bytes && file2text("candidate-round.json") == original_bytes, "original and candidate bytes preserved")
 		migration_assert(file2text("original-save_complete.txt") == marker_bytes && file2text("original-restart_intent.json") == intent_bytes, "generation and transaction identity preserved")
