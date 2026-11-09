@@ -410,6 +410,19 @@ var/human_subtile_fixture_phase = "initializing"
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
+	// Swapping places keeps each body's exact position: the swapped body takes
+	// the other's pixel offset instead of carrying its own into a wall.
+	human_subtile_fixture_phase = "headless exact swap"
+	var/mob/living/human/subtile_fixture/SA = human_subtile_fixture_actor(13, 12)
+	var/mob/living/human/subtile_fixture/SB = human_subtile_fixture_actor(14, 12)
+	SA.set_human_subtile(TRUE)
+	SB.set_human_subtile(TRUE)
+	human_subtile_fixture_place(SB, 0, 16)
+	var/turf/swap_wall = locate(13, 13, 1)
+	swap_wall.density = TRUE
+	SA.swap_exact_positions(SB)
+	human_subtile_fixture_assert(SA.loc == locate(14, 12, 1) && SA.step_x == 0 && SA.step_y == 16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
+	swap_wall.density = FALSE
 	human_subtile_fixture_phase = "headless complete"
 	return TRUE
 

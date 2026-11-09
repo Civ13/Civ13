@@ -118,9 +118,7 @@ default behaviour is:
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
 					else
-						var/turf/oldloc = loc
-						forceMove(tmob.loc)
-						tmob.forceMove(oldloc)
+						swap_exact_positions(tmob)
 						now_pushing = FALSE
 				else if (istype(src, /mob/living/simple_animal/horse))
 					var/mob/living/simple_animal/horse/HR = src
@@ -128,9 +126,7 @@ default behaviour is:
 						var/t = get_dir(HR, tmob)
 						step(tmob, t)
 				else
-					var/turf/oldloc = loc
-					forceMove(tmob.loc)
-					tmob.forceMove(oldloc)
+					swap_exact_positions(tmob)
 					now_pushing = FALSE
 					return
 
@@ -168,6 +164,34 @@ default behaviour is:
 				now_pushing = FALSE
 			return
 	return
+
+// Swap two mobs' exact positions, pixel offsets included. Free movement
+// leaves bodies between tiles; swapping only loc kept each body's own offset
+// and could push it into a wall next to the other's tile.
+/mob/living/proc/swap_exact_positions(var/mob/living/tmob)
+	var/turf/my_loc = loc
+	var/my_sx = step_x
+	var/my_sy = step_y
+	var/turf/their_loc = tmob.loc
+	var/their_sx = tmob.step_x
+	var/their_sy = tmob.step_y
+	if (my_loc != their_loc)
+		forceMove(their_loc)
+		tmob.forceMove(my_loc)
+	var/same_shape = bound_x == tmob.bound_x && bound_y == tmob.bound_y && bound_width == tmob.bound_width && bound_height == tmob.bound_height
+	if (loc == their_loc)
+		step_x = same_shape ? their_sx : 0
+		step_y = same_shape ? their_sy : 0
+		swap_exact_offset_owner(src)
+	if (tmob.loc == my_loc)
+		tmob.step_x = same_shape ? my_sx : 0
+		tmob.step_y = same_shape ? my_sy : 0
+		swap_exact_offset_owner(tmob)
+
+/proc/swap_exact_offset_owner(var/mob/living/M)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
 
 /proc/swap_density_check(var/mob/swapper, var/mob/swapee)
 	var/turf/T = get_turf(swapper)
