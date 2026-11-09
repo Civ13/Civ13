@@ -46,4 +46,15 @@ The probe's map metadata answers `is_node_done()` from a global toggle, so the r
 - **Chart:** heading, telegraph, fuel, hops left, the map edge or rock ahead with the distance, and the last refusal.
 - **Saves:** the helm records the ship's state before a save; with the vessel datum deleted and the decks left on the map, the helm rebuilds the ship where it was with its fuel, the decks and controller are its again (222 tiles, hangar at 113 with sea-level air), a stopped ship does not sail by itself, a second load builds no second ship, and the rebuilt ship hops and restores the sea, rock and every tile on removal.
 
-Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, launch and recovery lights (fit-out phase) and how the decks look on screen.
+## Phase 4: damage control (`damage_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/damage_probe.dm
+```
+
+- **Craters:** a blast (`ex_act`) craters a flight deck or island tile instead of tearing it out; a crater is no runway until it is welded shut; craters ride hops and come back with the ship.
+- **Steel:** light, medium and heavy blasts take 100, 300 and 600 off a hull wall, the heavy one breaching it so the compartment takes water, and 25, 75 and 150 off a bulkhead, buckling its seals; the turfs stay hull and bulkhead. A blast on the hangar deck starts a deck fire and leaves the deck.
+- **Listing:** ten ticks of a breach fill the engine room short of flooded; a flooded compartment caps the telegraph at half ahead and ringing full gives half; a second one leaves slow ahead and slows the ship; pumping one out eases the list; the chart reports the flooding.
+- **Sinking:** three flooded compartments sink her: the vessel and its controller leave the registries, the decks give way to sea, rock and sky, the sailor from the hangar deck comes up into the water, the deckhand and the crate are in the water where the deck was, the plane and the wheel go down with the ship, and five pieces of wreckage float where she sank.
+
+Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), launch and recovery lights (fit-out phase) and how the decks look on screen.
