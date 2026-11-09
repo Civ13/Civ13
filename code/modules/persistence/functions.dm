@@ -190,6 +190,8 @@ var/global/list/epoch_default_research = list(0, 25, 50, 80, 105, 120, 145, 175,
 // Nonzero only while the loader constructs a saved atom whose owner fields
 // are not decoded yet. Orphan cleanup in constructors must wait for them.
 var/global/persistence_saved_atom_construction = 0
+// Latest completed save: generation and persistence_save_stamp() (last_save_status.dm).
+var/global/list/persistence_last_save = null
 
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
 // Omit only known process-local state, on export and historical import, without
@@ -1323,6 +1325,16 @@ var/global/datum/persistence_admission_identity
 	var/phase = ticker ? ticker.current_state : GAME_STATE_PREGAME
 	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = phase, "elapsed" = phase == GAME_STATE_PREGAME ? 0 : elapsed, "roundstart_time" = phase == GAME_STATE_PREGAME ? 0 : roundstart_time, "elevation" = map.elevation_snapshot())
 
+// When the save finished, for the Status tab's "Last save" line. timeofday is
+// precise but wraps daily; realtime counts the days (wall_clock_elapsed).
+/proc/persistence_save_stamp()
+	return list("utc" = time2text(world.timeofday, "YYYY-MM-DD hh:mm", 0), "timeofday" = world.timeofday, "realtime" = world.realtime)
+
+/proc/valid_persistence_save_stamp(list/stamp)
+	if(!islist(stamp) || stamp.len != 3 || !istext(stamp["utc"]) || length(stamp["utc"]) != 16) return FALSE
+	if(!isnum(stamp["timeofday"]) || stamp["timeofday"] < 0 || stamp["timeofday"] > 864000) return FALSE
+	return isnum(stamp["realtime"]) && stamp["realtime"] > 0
+
 // Transfer storage hooks (tools/transfer_storage). The game build overrides
 // these in transfer_bridge.dm; isolated fixtures keep these inert stubs.
 /map_storage/proc/transfer_capture(generation)
@@ -1366,10 +1378,12 @@ var/global/datum/persistence_admission_identity
 	var/has_level_links = islist(state) && ("level_links" in state)
 	var/has_debug_recovery = islist(state) && ("debug_recovery" in state)
 	var/has_transfer = islist(state) && ("transfer" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_saved_at = islist(state) && ("saved_at" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
 	if(has_transfer && !valid_transfer_capture(state["transfer"])) throw EXCEPTION("Invalid transfer capture")
+	if(has_saved_at && !valid_persistence_save_stamp(state["saved_at"])) throw EXCEPTION("Invalid save time")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])
