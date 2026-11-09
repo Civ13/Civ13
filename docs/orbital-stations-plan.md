@@ -57,6 +57,7 @@ what the code does so far and the rules later steps must keep.
 | 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
 | 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
 | 16 | Zero-g manufacturing: microgravity lab in a sealed, cabled module grows semiconductors, protein crystals and gems | `code/modules/space/orbit_lab.dm` |
+| 20 | Orbital refinery: electric furnace in a sealed, cabled module smelts asteroid iron into steel (2:1) and copper, silver and gold ore into ingots, no fuel, belt ports | `code/modules/space/orbit_refinery.dm` |
 | 12c | Methane-oxygen fuel: methane and methalox chemistry, methalox plant (ice plus CO2 from Martian air or a module's air), reusable booster wears half as much on methalox, one fuel per tank | `code/modules/space/methalox.dm`, `lander.dm`, `orbit_reusable.dm` |
 
 ## Next
@@ -433,6 +434,18 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   - protein crystals: 5 bruise packs -> 5 advanced bruise packs;
   - gem crystals: 20 coal -> 1 rough diamond.
 - Changing programme resets the batch in progress, not the feedstock.
+
+## Orbital refinery
+
+- **Orbital refinery** (35 electronics, Orbital Flight), a subtype of the
+  microgravity lab, so it has the same rules: orbit only, sealed module,
+  cabled (30), players online. It takes no fuel.
+- Ore up to 100 of each kind (exact stack types). One batch per 10 work
+  ticks smelts up to 4 outputs of the first kind with enough ore: iron
+  2 -> 1 steel sheet; copper, silver and gold 1 -> 1 ingot.
+- Belts and arms feed it ore and take its metal (`factory_accepts`,
+  `factory_insert`, `factory_offer`). Ice is refused: ice melters and
+  electrolysers already take it.
 
 ## Tests
 

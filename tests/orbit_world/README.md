@@ -160,6 +160,11 @@ refusals (outside a module, uncabled, breached), loading and refusing
 feedstock, one batch per thirty steps for each programme, and no work while
 nobody is online.
 
+Then the orbital refinery (`code/modules/space/orbit_refinery.dm`): the same
+refusals, iron and gold ore loaded by hand and by belt, ice and coal
+refused, iron smelted two lumps to a steel sheet, gold one to one, belts
+taking its metal, and a lone lump of iron waiting for another.
+
 Then station defences (`code/modules/space/orbit_defences.dm`): armour
 plates soaking strikes, a turret shooting them down, the hull holed once the
 plates are gone, and turrets slowing a forced docking.
