@@ -126,7 +126,7 @@ class FineOffsetContracts(unittest.TestCase):
         self.assertIn('remaining_y = (direction & (NORTH | SOUTH)) ? 32 : 0', MODULE)
         self.assertIn('. = H.SelfMove(n, direct, subtile_deadline, FINE_STEP_HELD)', MOVE)
         self.assertIn("fine_step != FINE_STEP_NUDGE && isnum(human_subtile_chain_start)", MODULE)
-        self.assertIn('(fine_step == FINE_STEP_NUDGE) ? 2 : 32', MODULE)
+        self.assertIn('(fine_step == FINE_STEP_NUDGE) ? 2 : human_subtile_glide_distance(deadline, deadline - T.start_time)', MODULE)
         # Release is seen before the next pulse and refunds the unused interval.
         self.assertIn('if (fine_step == FINE_STEP_HELD && actor.held_movement_direction() != direction)', MODULE)
         self.assertIn('actor.human_subtile_fine_released_at = world.time', MODULE)

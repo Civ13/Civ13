@@ -17,6 +17,8 @@
 	var/tmp/client/human_subtile_visual_owner
 	// Start of a held-key continuation: the previous step's deadline.
 	var/tmp/human_subtile_chain_start
+	// Deadline of the last step whose glide was set (see human_subtile_glide_distance).
+	var/tmp/human_subtile_glide_deadline
 	// world.time a held precision slide stopped because its chord was released.
 	var/tmp/human_subtile_fine_released_at
 	var/tmp/list/human_subtile_pull_trail
@@ -82,6 +84,30 @@
 				owner.human_subtile_previous_glide = owner.glide_size
 		owner.glide_size = glide_size
 		owner.human_subtile_applied_glide = owner.glide_size
+
+// Client glide buffer for free movement.
+//
+// The client glides a moving atom toward each new position at glide_size
+// pixels per server tick, carrying any unfinished glide into the next update
+// (BYOND 516 client behaviour; a lag over one tile speeds the glide up and over
+// two tiles jumps). A step's sixteen 2px pulses land on 0.4 ds ticks unevenly
+// (2px one tick, 4px the next), so a glide that exactly matches the pace runs
+// dry every few ticks at many walking paces and the sprite and camera pause for
+// a frame. Late packets on a jittery connection do the same.
+//
+// Starting a fresh movement with a slightly slower glide leaves the client a
+// few pixels of unfinished glide. Chained steps then glide at the exact pace,
+// so the buffer neither grows nor drains until the body stops, where it eases
+// out. Only the drawn position trails; collision, pulses and pace are unchanged.
+
+// Distance the client should glide for a 32px step ending at deadline.
+/mob/living/human/proc/human_subtile_glide_distance(deadline, duration, distance = 32)
+	var/fresh = !isnum(human_subtile_glide_deadline) || world.time > human_subtile_glide_deadline + world.tick_lag
+	human_subtile_glide_deadline = deadline
+	if (!fresh || duration < 2 * world.tick_lag)
+		return distance
+	var/per_tick = distance * world.tick_lag / duration
+	return distance - clamp(per_tick, HUMAN_SUBTILE_GLIDE_BUFFER_MIN, HUMAN_SUBTILE_GLIDE_BUFFER_MAX)
 
 /datum/human_subtile_pulse
 	should_save = FALSE
@@ -738,7 +764,7 @@
 	T.initial_prone = prone
 	T.initial_lying = lying
 	if (!legacy_posture && !paid_posture)
-		human_subtile_update_visuals(deadline - T.start_time, direct, client, (fine_step == FINE_STEP_NUDGE) ? 2 : 32)
+		human_subtile_update_visuals(deadline - T.start_time, direct, client, (fine_step == FINE_STEP_NUDGE) ? 2 : human_subtile_glide_distance(deadline, deadline - T.start_time))
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
