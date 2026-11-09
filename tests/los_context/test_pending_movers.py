@@ -203,5 +203,13 @@ class Wiring(unittest.TestCase):
         self.assertIn('los_pending_movers = null', reconcile)
 
 
+    def test_explosion_particles_stay_transparent_movers(self):
+        # Opaque particles walking every tick made every nearby viewer rebuild
+        # its whole view per step: 732 s of CPU in one live TDM blast.
+        particles = (ROOT / 'code/game/objects/effects/explosion_particles.dm').read_text(encoding='utf-8')
+        declaration = fragment(particles, '/obj/effect/expl_particles')
+        self.assertIn('opacity = FALSE', declaration)
+        self.assertNotIn('opacity = TRUE', declaration)
+
 if __name__ == '__main__':
     unittest.main()
