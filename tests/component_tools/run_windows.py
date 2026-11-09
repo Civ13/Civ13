@@ -56,7 +56,7 @@ def main():
         if args.negative_control == 'armor-consumption':
             armor = generator.replace_once(armor, '\t\t\tS.use(cost[1])', '\t\t\tS.can_use(cost[1])')
         else:
-            armor = generator.replace_once(armor, 'map.is_node_done(H.civilization, R["node"])', 'TRUE')
+            armor = generator.replace_once(armor, 'crafting_node_allowed(H, R["node"])', 'TRUE')
         (build / 'armor.dm').write_text(armor, encoding='utf-8')
         dme = generator.replace_once(dme, '#include "code\\game\\objects\\structures\\blacksmithing\\armor_workbench.dm"', f'#include "{build.as_posix()}/armor.dm"')
     dme = re.sub(r'^#include ".*\.(dmf|dmm)"\s*$', '', dme, flags=re.M)
