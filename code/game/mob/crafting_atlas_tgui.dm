@@ -321,3 +321,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 			if (hint)
 				hints += hint
 	return jointext(hints, "; ")
+
+/proc/crafting_recipe_manual_suffix(mob/viewer, result_path)
+	var/hint = crafting_recipe_manual_hint(viewer, result_path)
+	return hint ? " - [hint]" : ""

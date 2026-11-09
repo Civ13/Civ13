@@ -237,7 +237,9 @@ must fail. These contracts do not prove a particular BYOND client rendering.
 
 On persistent maps that opt into recipe manuals, a recipe can be researched by
 its faction but still unknown to your character. Locked stack-menu recipes stay
-visible in grey with **Needs the X manual**, without a craft link. The in-game
+visible in grey with **Needs the X manual**, without a craft link. Anvil, workbench and fabricator recipe prompts append the same manual name
+while preserving their normal recipe choices. Native choice lists cannot grey
+individual options; actual crafting still checks knowledge on the server. The in-game
 Atlas shows the same personal requirement while keeping ingredients, variants
 and gathering instructions available to inspect. The public web atlas cannot
 know your character's learned recipes.

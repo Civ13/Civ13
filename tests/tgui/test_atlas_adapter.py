@@ -42,6 +42,20 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertIn('continue',menu[lock:menu.index('if (can_build)',lock)])
   self.assertIn('html_encode(manual_hint)',menu)
 
+ def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
+  anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
+  labels=[line for line in anvil.splitlines() if 'newlist += "[anvil_recipes[i][1]] - ' in line]
+  self.assertEqual(len(labels),10)
+  self.assertTrue(all('crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")' in line for line in labels))
+  workbench=(ROOT/'code/game/objects/structures/blacksmithing/component_workbench.dm').read_text()
+  for marker in ('choices[label] = recipe_name', 'choices[selected_label]', 'select_recipe(H, choice)'):
+   self.assertIn(marker,workbench)
+  dedicated=(ROOT/'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm').read_text()
+  self.assertIn('crafting_node_manual_hint(H, "machined_tools")',dedicated)
+  factory=(ROOT/'code/modules/1713/factory_fabricators.dm').read_text()
+  for marker in ('crafting_node_manual_hint(H, R.node)', 'labels[label] = recipe_choice', 'labels[selected_label]'):
+   self.assertIn(marker,factory)
+
  def test_existing_catalog_matching_and_real_classic_renderers_remain_unchanged(self):
   fixture=json.loads((ROOT/'tests/tgui/fixtures/atlas-legacy-contract.json').read_text())
   for name,digest in fixture['procs'].items():
