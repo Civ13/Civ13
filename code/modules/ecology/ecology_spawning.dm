@@ -568,6 +568,23 @@ var/global/ecology_world_unwatched = FALSE
 /proc/ecology_animal_frozen(mob/living/simple_animal/A)
 	return ecology_world_unwatched && istype(A) && !A.client && A.stat != DEAD
 
+// Skipping Life() alone leaves walkers that are already running: native
+// walk()/walk_to() commands, and the subtile follow, flee, pet, pursuit and
+// wild-walk workers, which move on their own sleeps (#4197). The mob process
+// calls this every second for each frozen animal instead of Life(), so a
+// walker started late (a spawned AI branch, a pending intent dispatched when
+// a pulse ends) stops within a second too. An in-flight pulse finishes its
+// own tile through the normal transaction; ai_step() then refuses the next
+// one. Nothing is stored to resume: once someone connects, Life() runs again
+// and the AI picks fresh movement as usual.
+/mob/living/simple_animal/proc/ecology_hold_still()
+	if (npc_subtile_follow || npc_subtile_flee || npc_subtile_pet_walk || npc_subtile_wild_walk || npc_subtile_pursuit || npc_subtile_pending_intent)
+		npc_subtile_pending_intent = null
+		npc_subtile_stop_pursuit()
+		npc_subtile_stop_continuous_walk()
+	else
+		walk(src, 0)
+
 /proc/ecology_animal_resting(mob/living/simple_animal/A)
 	if (!istype(A) || A.client || A.stat == DEAD || istype(A, /mob/living/simple_animal/hostile/human))
 		return FALSE
