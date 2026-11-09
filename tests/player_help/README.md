@@ -133,8 +133,14 @@ and availability are one ranked evidence record so an ingot query cannot retriev
 manufacturing while losing its research gates. Exact source markers and bounded
 file/excerpt sizes fail closed on drift. Source hashes cover kiln, molds, oven,
 anvil and research/crafting gates. Controls remove the new evidence and reject
-other-map recipe contamination. Passing retrieval does not establish a model's
-answer quality, live faction unlocks or a deployed worker.
+other-map recipe contamination. Bronze and toxin records are priority records
+(#4195): a matching question sends the whole record or none of it. Optional
+evidence shrinks first, then the oldest history pairs; when the bare record still
+cannot fit (for example `num_ctx` 4096), the worker answers with an explicit
+`evidence: insufficient` reply and makes no model call. Captured-prompt cases cover
+long history at 8192/16384/32768, low context and a small `evidence_chars` cap.
+Passing retrieval does not establish a model's answer quality, live faction
+unlocks or a deployed worker.
 
 Animal injury evidence (2026-10-30): `test_animal_attack.py` checks the direct
 simple-animal combat path's audit-log parity and pre-hit visibility/actual damage
