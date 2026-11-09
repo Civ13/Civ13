@@ -17,6 +17,8 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	var/hud_scale = 1
 	// Size of the hover name text under the mouse, separate from hud_scale.
 	var/hover_text_scale = 1
+	// FALSE hides the hover name panel under the mouse (OOC > Toggle Hover Text).
+	var/hover_text_enabled = TRUE
 	// Entries "style~key~ax~ox~ay~oy~size~locked"; ax is "D" when the tile
 	// keeps its default position.
 	var/list/hud_layout = list()
@@ -762,6 +764,17 @@ var/global/list/hud_icon_px_cache = list()
 	prefs.hover_text_scale = hud_scale_choices[choice]
 	prefs.save_preferences()
 	to_chat(src, SPAN_NOTICE("Hover text size set to [choice]."))
+
+/client/verb/toggle_hover_text()
+	set name = "Toggle Hover Text"
+	set category = "OOC"
+	set desc = "Show or hide the name under your mouse."
+
+	prefs.hover_text_enabled = !prefs.hover_text_enabled
+	prefs.save_preferences()
+	if (!prefs.hover_text_enabled)
+		clear_hover_name()
+	to_chat(src, SPAN_NOTICE("Hover text [prefs.hover_text_enabled ? "shown" : "hidden"]. Use <b>Toggle Hover Text</b> again to [prefs.hover_text_enabled ? "hide" : "show"] it."))
 
 /client/verb/reset_hud_layout()
 	set name = "Reset HUD Layout"

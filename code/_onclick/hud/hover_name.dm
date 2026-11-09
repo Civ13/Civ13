@@ -338,6 +338,10 @@
 
 /client/proc/update_hover_name(atom/target)
 	var/obj/screen/hover_name/label = hover_name_widget()
+	// OOC > Toggle Hover Text turns the panel off (the verb clears it); while
+	// off nothing is drawn or checked.
+	if (prefs && !prefs.hover_text_enabled)
+		return
 	label?.set_target(target)
 
 /client/proc/clear_hover_name()
