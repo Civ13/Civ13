@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'trumpet_notes': {'files': ('tests/trumpet_notes/test_notes.py',),
+        'paths': ('tests/trumpet_notes/',), 'shared_paths': (
+            'code/game/objects/items/devices/trombone.dm', 'sound/trombone/')},
     'microscope_integrity': {'files': ('tests/microscope_integrity/test_integrity.py',),
         'paths': ('tests/microscope_integrity/',), 'shared_paths': (
             'code/modules/1713/forensics.dm', 'code/_helpers/mobs.dm')},
