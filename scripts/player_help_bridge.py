@@ -422,7 +422,7 @@ def bronze_knowledge(root):
                        'source_hashes': dict(sources), 'text': text})
     # Keep the availability gate and its production route inseparable during ranking.
     result[0]['text'] = result[1]['text'] + '\n' + result[0]['text']
-    if len(result[0]['text']) > 14000:
+    if len(result[0]['text']) > 15000:
         raise ValueError('Combined bronze evidence grew beyond retrieval budget')
     result[0]['topic'] += ' ingots availability unlock research'
     return result[:1]

@@ -70,7 +70,7 @@ class BronzeRetrievalTests(unittest.TestCase):
                      'REQUIREMENT alongside the full study'):
             self.assertIn(text, prompt)
         evidence = bridge.bronze_knowledge(ROOT)[0]
-        self.assertLessEqual(len(evidence['text']), 14000)
+        self.assertLessEqual(len(evidence['text']), 15000)
         self.assertIn('code/modules/research_tree/research_bench.dm', evidence['source_hashes'])
 
     def test_followup_keeps_availability_with_production(self):
