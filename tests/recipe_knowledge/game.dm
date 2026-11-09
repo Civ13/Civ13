@@ -100,6 +100,12 @@ var/knowledge_failures = 0
 		for (var/obj/item/weapon/book/node_book/copy in locate(6,2,1))
 			if (copy.node_id == future_id) book_count++
 		knowledge_check(book_count == 1 && !map.complete_node("Fixture", future_id), "one first manual and duplicate completion refused")
+		H.civilization = "Fixture"
+		knowledge_check(H.learn_recipe_node(future_id) && crafting_node_allowed(H, future_id), "completed faction research allows learning and crafting")
+		map.ordinal_age = 6
+		H.civilization = "Other faction"
+		knowledge_check(H.knows_recipe_node(future_id) && !crafting_node_allowed(H, future_id), "changing factions retains knowledge but not another faction's ceiling")
+		H.civilization = "none"
 		knowledge_check(map_storage.Save_World() && map_storage.validate_world_save(), "native body and book durable save")
 		map_storage.ClearMap()
 		knowledge_check(map_storage.Load_World(), "native durable reload")
