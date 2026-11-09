@@ -73,8 +73,8 @@ show nothing. The 624 sprites in `icons/turf/terrain_shade.dmi` are made by
 `scripts/terrain_heights.py bake-shading`; the tool's `corner_lights` and the
 game's `light_rows` use the same maths, and the native test compares them.
 
-The sprites are shared objects in the turf's `vis_contents`, on layer 2.005
-(above the ground, below decals and objects), with `mouse_opacity = 0`, so
+The sprites are shared objects in the turf's `vis_contents`, on layer 2.035
+(above the ground, floor decals and fallen snow, below objects), with `mouse_opacity = 0`, so
 they are never clicked and never saved. The ticker places them once per round
 (`terrain_shading_check`), and `ChangeTurf` puts them back on replaced turfs,
 including turfs rebuilt by a save load.
