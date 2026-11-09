@@ -17,6 +17,14 @@ class NodeLessons(unittest.TestCase):
   self.assertIn('node_lesson_listeners.Remove(listener)',tick)
   self.assertNotIn('node_lesson_listeners[listener] =',tick)
   self.assertLess(tick.index('stop_node_lesson(FALSE)'),tick.index('listener.learn_recipe_node'))
+ def test_explicit_controls_interrupt_between_ticks(self):
+  telecom=(ROOT/'code/modules/1713/modern_telecom.dm').read_text()
+  self.assertIn('if (choice == "Stop presenting")\n\t\tstop_presenting(H)',telecom)
+  self.assertIn('if (choice == "Power")\n\t\tinterrupt_node_reception()',telecom)
+  self.assertIn('if (new_frequency != frequency)\n\t\t\t\tinterrupt_node_reception()',telecom)
+  stop=self.s.split('/obj/structure/telecom/station/proc/stop_presenting')[1].split('/obj/structure/telecom/proc/interrupt_node_reception')[0]
+  self.assertLess(stop.index('stop_node_lesson()'),stop.index('presenter = null'))
+  self.assertIn('S.node_lesson_listeners.Remove(listener)',self.s)
  def test_state_is_transient(self):
   telecom=(ROOT/'code/modules/1713/modern_telecom.dm').read_text()
   for key in ('node_lesson_id','node_lesson_teacher','node_lesson_listeners','node_lesson_progress','node_lesson_last_tick','node_lesson_cooldown_until'):
