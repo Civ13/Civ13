@@ -213,6 +213,10 @@ var/global/list/sub_blast_doors = list()
 					var/flow = min(neighbor.water_depth * 0.1, 3)
 					other_side.add_water(flow)
 
+	// A vessel lists and sinks on what its compartments hold.
+	if(vessel)
+		vessel.damage_tick()
+
 // ---- Compartment Air ----
 
 // One air step for every compartment. Water takes up room (the air pocket

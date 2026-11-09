@@ -15,7 +15,8 @@
 /process/submarine/fire()
 	if(global.subcom_map)
 		global.subcom_map.process_tick()
-	for(var/datum/flooding_controller/F in flooding_controllers)
+	// A copy: a sinking vessel takes its controller out of the list mid-tick.
+	for(var/datum/flooding_controller/F in flooding_controllers.Copy())
 		F.process_tick()
 	// Process physical submarine machinery (bilge pumps, scrubbers, etc.)
 	for(var/obj/structure/machinery/sub_physical/M in sub_physical_machines.Copy())

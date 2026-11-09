@@ -19,9 +19,56 @@
 	icon_state = "plating"
 	// The deck is a runway; the island deck above is not.
 	var/runway = TRUE
+	// A blast tears the plating open: no runway until it is welded shut.
+	var/cratered = FALSE
 
 /turf/floor/plating/carrier_deck/aircraft_runway()
-	return runway
+	return runway && !cratered
+
+// Deck plating is never torn out of the ship: a blast craters it.
+/turf/floor/plating/carrier_deck/ex_act(severity)
+	switch(severity)
+		if (1)
+			crater()
+		if (2)
+			if (prob(60))
+				crater()
+		if (3)
+			if (prob(15))
+				crater()
+
+/turf/floor/plating/carrier_deck/proc/crater(quiet = FALSE)
+	if (cratered)
+		return
+	cratered = TRUE
+	name = "cratered [initial(name)]"
+	overlays += image(icon = 'icons/turf/damage_overlays.dmi', icon_state = pick("damaged1", "damaged2", "damaged3"))
+	if (!quiet)
+		visible_message(SPAN_DANGER("The deck plating buckles and tears open!"))
+
+/turf/floor/plating/carrier_deck/proc/repair_crater()
+	if (!cratered)
+		return
+	cratered = FALSE
+	name = initial(name)
+	overlays.Cut()
+
+/turf/floor/plating/carrier_deck/attackby(obj/item/weapon/W, mob/user)
+	if (istype(W, /obj/item/weapon/weldingtool) && cratered)
+		to_chat(user, SPAN_NOTICE("You begin welding new plating over the crater..."))
+		if (do_after(user, 100, src) && cratered)
+			repair_crater()
+			to_chat(user, SPAN_NOTICE("The deck is whole again."))
+		return
+	..()
+
+// Craters ride a hop with the deck.
+/turf/floor/plating/carrier_deck/vessel_capture()
+	return list("cratered" = cratered)
+
+/turf/floor/plating/carrier_deck/vessel_restore(list/state)
+	if (state["cratered"])
+		crater(TRUE)
 
 /turf/floor/plating/carrier_deck/aircraft_deck()
 	return runway

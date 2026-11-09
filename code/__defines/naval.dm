@@ -18,6 +18,9 @@
 #define VESSEL_FUEL_CAPACITY 1000
 // How far the chart looks ahead of the bow.
 #define VESSEL_CHART_RANGE 12
+// Flooded compartments (average water at or over the deck's flooded mark)
+// that sink a vessel; each one before that takes a telegraph step off her.
+#define VESSEL_SINK_COMPARTMENTS 3
 
 // Carrier compartments on the hangar deck, bow to stern.
 #define CARRIER_COMP_FORWARD "carrier_forward"

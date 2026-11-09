@@ -58,6 +58,10 @@ var/global/list/naval_vessels = list()
 	// Fuel oil in the bunkers; every hop burns VESSEL_FUEL_PER_STEP per step.
 	var/fuel = 0
 	var/fuel_capacity = VESSEL_FUEL_CAPACITY
+	// Flooding lists the ship: each flooded compartment takes a telegraph
+	// step off her (recomputed every second by damage_tick()).
+	var/max_speed = VESSEL_SPEED_FULL
+	var/sunk = FALSE
 	var/hop_timer = 0
 	var/last_hop_ms = 0        // Wall time the last relocation took, for the probe.
 	var/last_refusal = ""
@@ -375,7 +379,7 @@ var/global/list/naval_vessels = list()
 		hop_timer = 0
 
 /datum/vessel/proc/set_speed(new_speed)
-	speed = clamp(new_speed, VESSEL_SPEED_STOP, VESSEL_SPEED_FULL)
+	speed = clamp(new_speed, VESSEL_SPEED_STOP, max_speed)
 	if (speed > 0 && !anchored)
 		start_sailing()
 
@@ -430,6 +434,100 @@ var/global/list/naval_vessels = list()
 	var/ny = round(cy - (box_h() - 1) / 2)
 	dir = old_dir
 	return relocate(nx, ny, heading)
+
+// ---- Damage control ----
+
+// The compartments the decks below the waterline are divided into.
+/datum/vessel/proc/compartments()
+	. = list()
+	if (!flooding)
+		return
+	for (var/cid in flooding.compartment_turfs)
+		if (cid)
+			. += cid
+
+/datum/vessel/proc/flooded_compartments()
+	. = 0
+	for (var/cid in compartments())
+		if (flooding.is_compartment_flooded(cid))
+			.++
+
+/datum/vessel/proc/sink_threshold()
+	return VESSEL_SINK_COMPARTMENTS
+
+// Called every second by the ship's flooding controller: the list grows
+// with each flooded compartment, and at the threshold the ship goes down.
+/datum/vessel/proc/damage_tick()
+	if (!placed || sunk)
+		return
+	var/flooded = flooded_compartments()
+	var/cap = max(VESSEL_SPEED_STOP, VESSEL_SPEED_FULL - flooded)
+	if (cap != max_speed)
+		var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
+		max_speed = cap
+		if (flooded)
+			crew_message(SPAN_WARNING("<b>The ship lists</b> with [flooded] compartment\s flooded: [speeds[cap + 1]] is all she will make."))
+		else
+			crew_message(SPAN_NOTICE("The ship rides level again."))
+		if (speed > max_speed)
+			speed = max_speed
+			if (speed <= 0)
+				stop_sailing()
+	if (flooded >= sink_threshold())
+		sink()
+
+// The ship goes down. Fittings (anchored structures) and vehicles are lost
+// with her; crew and loose cargo on the lower decks come up to the surface
+// water above them, those on the upper decks fall to it, and those on the
+// surface deck find themselves swimming where the deck was. Wreckage floats
+// where she sank; the sea, rock and sky come back as for remove().
+/datum/vessel/proc/sink()
+	if (sunk || !placed)
+		return
+	sunk = TRUE
+	crew_message(SPAN_DANGER("<b>Abandon ship!</b> [capitalize(name)] is going down!"))
+	stop_sailing()
+	var/list/surface = list()
+	var/list/swimmers = list()
+	for (var/turf/T in cells())
+		if (T.z == base_z)
+			surface += T
+		var/turf/above = T.z == base_z ? T : locate(T.x, T.y, base_z)
+		for (var/atom/movable/M in T)
+			if (M.loc != T || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+				continue
+			if (istype(M, /obj/structure/vehicleparts) || istype(M, /obj/effect/pseudovehicle))
+				// The controls sit inside a frame: take them down with it.
+				if (istype(M, /obj/structure/vehicleparts/frame))
+					var/obj/structure/vehicleparts/frame/F = M
+					if (F.axis && !QDELETED(F.axis))
+						qdel(F.axis)
+				qdel(M)
+				continue
+			if (istype(M, /obj/structure))
+				var/obj/structure/S = M
+				if (S.anchored || S.not_movable)
+					qdel(S)
+					continue
+			if (isliving(M))
+				swimmers += M
+			if (above && above != T)
+				M.forceMove(above)
+	remove()
+	var/wreckage = 0
+	for (var/turf/T in shuffle(surface))
+		if (wreckage >= 5)
+			break
+		if (istype(T, /turf/floor/beach/water))
+			var/obj/structure/barricade/debris/D = new(T)
+			D.name = "wreckage of the [name]"
+			D.desc = "Splintered decking and twisted plating, all that floats of \the [name]."
+			D.density = FALSE
+			wreckage++
+	for (var/mob/living/M in swimmers)
+		if (M.client)
+			to_chat(M, SPAN_DANGER("The sea closes over the decks and you are in the water."))
+	qdel(src)
 
 // Takes fuel oil into the bunkers; returns how much was taken.
 /datum/vessel/proc/bunker(amount)
@@ -488,6 +586,10 @@ var/global/list/naval_vessels = list()
 	lines += "Bunkers: [fuel] of [fuel_capacity] units of fuel oil, [hops_of_fuel()] hop\s at [speed > 0 ? speeds[speed + 1] : "slow ahead"]."
 	var/ahead = ahead_text()
 	lines += ahead ? "Ahead: [ahead]." : "Ahead: open sea for [VESSEL_CHART_RANGE] tiles."
+	var/list/comps = compartments()
+	if (comps.len)
+		var/flooded = flooded_compartments()
+		lines += "Damage control: [flooded] of [comps.len] compartments flooded[flooded ? ", the ship lists and [speeds[max_speed + 1]] is all she will make; [sink_threshold()] flooded sinks her" : ""]."
 	if (last_refusal)
 		lines += "Last refusal: [last_refusal]."
 	return jointext(lines, "<br>")

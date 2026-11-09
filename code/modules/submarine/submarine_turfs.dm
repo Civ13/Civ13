@@ -543,3 +543,46 @@
 /turf/floor/sub_deck/aft_torpedo
 	name = "aft torpedo room floor"
 	compartment_id = SUB_COMP_AFT_TORPEDO
+
+// ============================================================
+// Explosions and projectiles
+// ============================================================
+// Hull, bulkhead and deck turfs are never torn out as turfs: a shell or a
+// round damages the steel, breaches it or sets the deck alight, and the
+// crew's damage control deals with the rest.
+
+/turf/wall/sub_hull/ex_act(severity)
+	switch(severity)
+		if(1)
+			apply_breach_damage(600)
+		if(2)
+			apply_breach_damage(300)
+		if(3)
+			apply_breach_damage(100)
+
+/turf/wall/sub_hull/bullet_act(var/obj/item/projectile/Proj)
+	apply_breach_damage(min(Proj.get_structure_damage(), 100))
+
+/turf/wall/sub_bulkhead/ex_act(severity)
+	switch(severity)
+		if(1)
+			take_bulkhead_damage(150)
+		if(2)
+			take_bulkhead_damage(75)
+		if(3)
+			take_bulkhead_damage(25)
+
+/turf/wall/sub_bulkhead/bullet_act(var/obj/item/projectile/Proj)
+	take_bulkhead_damage(min(Proj.get_structure_damage(), 50))
+
+// A blast on the deck starts a fire; the plating itself stays.
+/turf/floor/sub_deck/ex_act(severity)
+	switch(severity)
+		if(1)
+			ignite_deck_fire(rand(30, 50), rand(800, 1000))
+		if(2)
+			if(prob(60))
+				ignite_deck_fire(rand(20, 40), rand(600, 900))
+		if(3)
+			if(prob(20))
+				ignite_deck_fire(rand(10, 20), 600)
