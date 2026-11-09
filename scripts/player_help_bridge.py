@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c17ae1a7d7b2607ea8c5e3536dc76dd5a2ad5b3f'
+WIKI_REVIEWED_REVISION = 'd0f0f59d1a64134ec11c25f0760e9bdfffa202dd'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('85da7e695bdbdc0e267d48aecea6a89f219d7b342d1084b7ee72c7a6d379e3ff', 'character skills traits languages'),
@@ -121,8 +121,8 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('d72eb47f8b36d1efd784f587dbbf3e5671f5a023bdde961b5a5931f3e5a30636', 'gaia persistent persistence map world'),
-    'maps/Nomads_Maps.md': ('fadee870fd64b48811211d6d498016817100f4878d2ab17e2b92f39ade30de50', 'nomads maps map terrain biome biomes'),
+    'maps/Gaia.md': ('a921fede313bffd1445f1970fe0c35f149c82ddf2d060db4c27fbf421cc0c8e0', 'gaia persistent persistence map world'),
+    'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('41d99c89a83fa3209092b52a6db07a7cecba75d876f19ae05c1d5fee86b9a52f', 'guides overview list of guides index'),
