@@ -816,6 +816,10 @@ SUITES = {
         'tests/jungle_hiding/',)},
     'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
         'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
+    'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (
+        'tests/pollution/', 'code/modules/ecology/pollution.dm', 'code/processes/pollution.dm',
+        'code/modules/reagents/reagent_pollution.dm',
+        'icons/effects/pollution.dmi')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Shared transport/persistence files retain their existing all-suite fallback.
