@@ -212,8 +212,17 @@ class Wiring(unittest.TestCase):
         self.assertIn('\tterrain_shading_check()\n', ticker)
         changing = (ROOT / 'code/game/turfs/turf_changing.dm').read_text(encoding='utf-8')
         self.assertIn('\tif (terrain_shading_applied)\n\t\tW.terrain_shade_refresh()\n\treturn W\n', changing)
-        self.assertIn('mouse_opacity = 0', MODULE)
-        self.assertIn('should_save = FALSE', MODULE)
+        self.assertIn('I.mouse_opacity = 0', MODULE)
+        # Floor icon rebuilds clear overlays; the shading must go back on.
+        floor_icon = (ROOT / 'code/game/turfs/floor_icon.dm').read_text(encoding='utf-8')
+        self.assertIn('\tsnowfall_ground_icon()\n\tterrain_shade_icon()\n', floor_icon)
+
+    def test_shading_is_an_overlay_not_vis_contents(self):
+        # Turf vis_contents shading was held by the server but never drawn by
+        # the real client, so live hills looked flat.
+        self.assertNotIn('vis_contents', MODULE.split('// Slope shading', 1)[1].split('/proc/terrain_shading_apply', 1)[0].replace('turf vis_contents never reached', ''))
+        self.assertIn('I.plane = FLOOR_PLANE', MODULE)
+        self.assertIn('overlays += shade', MODULE)
 
     def test_shading_draws_over_fallen_snow(self):
         # Fallen snow is an opaque overlay on dirt and grass; shading under it
@@ -223,7 +232,7 @@ class Wiring(unittest.TestCase):
         shade_layer = float(re.search(r'#define TERRAIN_SHADE_LAYER ([0-9.]+)', MODULE).group(1))
         self.assertGreater(shade_layer, snow_layer)
         self.assertLess(shade_layer, 2.04)  # winter's decal copies stay on top
-        self.assertIn('layer = TERRAIN_SHADE_LAYER', MODULE)
+        self.assertIn('layer = TERRAIN_SHADE_LAYER)', MODULE)
 
     def test_heights_are_not_saved(self):
         self.assertIn('var/tmp/datum/terrain_heights/terrain_heights_cache', MODULE)
