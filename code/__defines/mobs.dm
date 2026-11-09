@@ -73,3 +73,9 @@
 // Plain held keys: a held slide when the body can slide, else a tile step.
 #define FINE_STEP_FREE 3
 #define FINE_OFFSET_GLIDE_DELAY 1
+// Fresh free movement glides its first step this many pixels short (one tick
+// of travel, within these bounds), so the client keeps a small glide buffer.
+// It hides uneven per-tick pulses and small network jitter (see
+// human_subtile_glide_distance). Later chained steps glide at the exact pace.
+#define HUMAN_SUBTILE_GLIDE_BUFFER_MIN 6
+#define HUMAN_SUBTILE_GLIDE_BUFFER_MAX 8
