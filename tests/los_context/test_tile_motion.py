@@ -31,6 +31,7 @@ class TileMotion(unittest.TestCase):
             typed_iter=lambda values,kind:values,ishuman=lambda a:getattr(a,'human',False),
             ismob=lambda a:getattr(a,'mob',False),get_turf=lambda a:a if isinstance(a,Tile) else a.loc,
             los_presentation_exempt=lambda a:False,ismovable=lambda a:not isinstance(a,Tile),
+            los_eye_bucket=lambda a:f'{(a.step_x+8)//16*16},{(a.step_y+8)//16*16}',
             los_invalidate=lambda a,possible=False,viewer_refresh=False:(events.append((a,possible)) or Contexts(contexts[:2])))
         before=A.project(source,'/proc/los_invalidate_movement','A',env)
         near=A.project(source,'/proc/los_movement_affects_context','V, old_turf, new_turf',env)
@@ -40,7 +41,7 @@ class TileMotion(unittest.TestCase):
         actor=N(human=True,mob=True,opacity=False,loc=tile,x=3,y=1,z=1,step_x=0,step_y=0)
         owner=N(los_dirty=False,captures=0,root_tree_presenter=None,los_presenter=None,noted=[])
         owner.los_note_mover=lambda m:owner.noted.append(m)
-        context=N(body=actor,owner=owner,retired=False,movement_turf=tile,viewport_radii=lambda:P.DMList([7,7]))
+        context=N(body=actor,owner=owner,retired=False,movement_turf=tile,movement_bucket='0,0',viewport_radii=lambda:P.DMList([7,7]))
         actor.client=owner;owner.los_context=context
         geometry=P.projected_geometry()
         blocked=P.project(CORE,'/proc/los_target_blocked(',geometry)
@@ -68,10 +69,20 @@ class TileMotion(unittest.TestCase):
 
     def test_offset_pulses_and_failed_moves_do_not_force_capture(self):
         s=self.scene()
-        for offset in [2,4,8,12,16,24,30,-2,-8,0]:
+        # Pulses inside one half-tile eye step change nothing.
+        for offset in [1,2,5,7,0,-2,-7,3]:
             s.before(s.actor);s.actor.step_x=offset;s.after(s.actor)
         self.assertEqual(s.events,[])
         self.assertEqual([c.captures for c in s.clients],[0,0,0,0])
+
+    def test_half_tile_eye_steps_refresh_only_the_moving_viewer(self):
+        s=self.scene()
+        for offset in [2,4,6,12,13,20,28,30]:
+            s.before(s.actor);s.actor.step_x=offset;s.after(s.actor)
+        # Buckets 0 -> 16 -> 32: two eye steps per tile, no neighbour refresh.
+        self.assertEqual(s.events,[])
+        self.assertEqual([c.captures for c in s.clients],[2,0,0,0])
+        self.assertEqual(s.context.movement_bucket,'32,0')
 
     def test_dirty_unchanged_turf_recovers_before_return_without_neighbor_refresh(self):
         s=self.scene();old=s.actor.loc
@@ -82,12 +93,12 @@ class TileMotion(unittest.TestCase):
         self.assertIs(s.context.movement_turf,old)
         self.assertEqual(s.events,[])
         # Once settled, subsequent transparent offset pulses remain cheap.
-        s.actor.step_x=4;s.after(s.actor)
+        s.actor.step_x=3;s.after(s.actor)
         self.assertEqual(s.owner.captures,1)
         self.assertEqual(len(s.events),0)
 
     def test_owner_recovery_omission_reproduces_skipped_recovery(self):
-        token='if(H.client.los_dirty && !H.client.reconcile_geometric_los())'
+        token='if((H.client.los_dirty || eye_moved) && !H.client.reconcile_geometric_los())'
         self.assertEqual(LIFE.count(token),1)
         s=self.scene(LIFE.replace(token,'if(FALSE)',1));s.owner.los_dirty=True
         s.after(s.actor)
@@ -100,10 +111,11 @@ class TileMotion(unittest.TestCase):
             other=s.clients[1];body=other.los_context.body
             vars(body).update(human=True,mob=True,opacity=False,loc=Tile(1),
                 step_x=0,step_y=0,client=other)
-            vars(other.los_context).update(retired=False,movement_turf=body.loc)
+            vars(other.los_context).update(retired=False,movement_turf=body.loc,movement_bucket='0,0')
             s.owner.los_dirty=True
+            # 1px pulses stay inside one half-tile eye step.
             for actor in [s.actor,body]*3:
-                actor.step_x+=2;s.after(actor)
+                actor.step_x+=1;s.after(actor)
             return s
         s=exercise(LIFE)
         self.assertEqual([c.captures for c in s.clients],[1,0,0,0])
@@ -294,7 +306,8 @@ class TileMotion(unittest.TestCase):
         self.assertIsNotNone(branch)
         offset_key=branch[1] if anchored else branch[2]
         template=re.search(r'\treturn "([^\n]*)"',policy)[1]
-        names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time))
+        names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time),
+                   los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}')
         def expression(code):
             if code=='config ? config.disable_fov : 1':return 1
             if ' ? ' in code:
@@ -311,9 +324,13 @@ class TileMotion(unittest.TestCase):
                dir=2,resting=False,lying=False,prone=False,pulling=None)
         owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         presentation=self.render_key(body,owner,True);physical=self.render_key(body,owner,False)
-        body.step_x=12;body.step_y=-4
+        body.step_x=3;body.step_y=2
+        # Inside one half-tile eye step the scheduled identity holds.
         self.assertEqual(self.render_key(body,owner,True),presentation)
         self.assertNotEqual(self.render_key(body,owner,False),physical)
+        body.step_x=12
+        self.assertNotEqual(self.render_key(body,owner,True),presentation)
+        body.step_x=0;body.step_y=0
         body.x+=1
         self.assertNotEqual(self.render_key(body,owner,True),presentation)
         self.assertIn('return policy_key(TRUE)',P.fragment(CORE,'/datum/los_context/proc/presentation_key('))
@@ -326,8 +343,8 @@ class TileMotion(unittest.TestCase):
         read=P.fragment(CORE,'/datum/los_context/proc/decision(')
         self.assertIn('capture(presentation = FALSE, atom/focus = null)',capture)
         self.assertIn('if (focus && !presentation && focus.z == S.eye_z)',capture)
-        self.assertIn('if (!presentation)\n\t\tS.eye_x += body.step_x / 32',capture)
-        self.assertIn('S.eye_y += body.step_y / 32',capture)
+        self.assertIn('if (presentation)\n\t\tS.eye_x = body.x + los_eye_quantized(body.step_x) / 32',capture)
+        self.assertIn('else\n\t\tS.eye_x = body.x + body.step_x / 32\n\t\tS.eye_y = body.y + body.step_y / 32',capture)
         self.assertIn('(!S.presentation || !ishuman(target))',decision)
         self.assertIn('capture(FALSE, focus)',read)
         self.assertIn('S.policy != policy_key()',decision)
