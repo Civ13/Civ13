@@ -229,6 +229,8 @@ default behaviour is:
 	return can_swap_consent(tmob)
 
 /mob/living/Cross(atom/movable/O)
+	if (riding_pair(O))
+		return TRUE
 	if (isliving(O))
 		var/mob/living/L = O
 		if (L.swap_passable(src))
@@ -236,6 +238,8 @@ default behaviour is:
 	return ..()
 
 /mob/living/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
+	if (riding_pair(mover))
+		return TRUE
 	if (isliving(mover))
 		var/mob/living/L = mover
 		if (L.swap_passable(src))

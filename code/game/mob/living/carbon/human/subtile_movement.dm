@@ -200,7 +200,7 @@
 /mob/living/human/proc/human_subtile_ready(direction)
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_ride_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
 
 // Climbing into or out of a trench (or onto a bridge or frame over one) waits
 // inside turf Enter/Exit. A sleeping Enter/Exit fails the native pixel Move at
@@ -418,6 +418,19 @@
 // object behind each tile crossing, and menus only record their source window.
 /mob/living/human/proc/human_subtile_unlinked()
 	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) && !using_cannon && !football
+
+// A rider moves freely too: its mount follows every pulse
+// (human_subtile_mount_follow). Saves and crawls still treat riding as linked,
+// so this asks human_subtile_unlinked() with only the ride itself set aside.
+/mob/living/human/proc/human_subtile_ride_unlinked()
+	if (!riding || !riding_mob)
+		return human_subtile_unlinked()
+	var/mount = riding_mob
+	riding = FALSE
+	riding_mob = null
+	. = human_subtile_unlinked()
+	riding = TRUE
+	riding_mob = mount
 
 // Identifies a still-valid passive recipe view. It no longer gates movement:
 // admission follows human_subtile_unlinked() above for every using_object.
@@ -650,7 +663,7 @@
 	var/cx = x * 32 + step_x
 	var/cy = y * 32 + step_y
 	for (var/mob/living/L in obounds(src, 2))
-		if (L == src || !L.density || !swap_passable(L))
+		if (L == src || L == riding_mob || !L.density || !swap_passable(L))
 			continue
 		var/lx = L.x * 32 + L.step_x
 		var/ly = L.y * 32 + L.step_y
