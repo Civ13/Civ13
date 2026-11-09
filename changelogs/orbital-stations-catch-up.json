@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "orbital-stations-catch-up",
+  "commit": "e33909558057be256a552d37348f5daf39aabb98",
+  "heading": "",
+  "entries": [
+    "Satellites: launch weather, comms, navigation and survey satellites from a launch pad, read them at a ground station, and find your way with a GPS receiver.",
+    "Docking ports let other parties visit your space station, by invitation or open to everyone, and carry parcels between stations.",
+    "The microgravity lab grows electronics, advanced bruise packs and rough diamonds aboard a sealed, powered space station module.",
+    "Ground stations belong to the party that first launches a satellite to them; rivals can break in to take one over or cut a satellite's link.",
+    "A satellite whose link was cut can be reacquired by its owners at their ground station."
+  ],
+  "skip": ""
+}
