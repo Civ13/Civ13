@@ -1961,6 +1961,7 @@ RECIPE: /material/steel/,automobile workshop,/obj/structure/car_workshop,30,230,
 RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
+RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 

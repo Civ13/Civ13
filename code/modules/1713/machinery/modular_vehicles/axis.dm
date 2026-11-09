@@ -430,7 +430,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
-				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_elevator_lever))
+				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 					if (istype(M, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/other = M
 						if (other.axis != src)
@@ -762,7 +762,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					else
 						todestroy += O
 			for(var/obj/OM in todestroy)
-				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard) && !istype(OM, /obj/structure/multiz) && !istype(OM, /obj/structure/vessel_elevator_lever))
+				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard) && !istype(OM, /obj/structure/multiz) && !istype(OM, /obj/structure/vessel_lever))
 					turn_destroy |= OM
 	transforming_vehicle = TRUE
 	transform_tiles = turn_turfs
@@ -815,7 +815,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 					for (var/atom/movable/M in matrix_current_locs[loc2textv][2])
 						if (QDELETED(M) || M.loc != matrix_current_locs[loc2textv][1])
 							continue
-						if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_elevator_lever))
+						if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M,/obj/covers) && !istype(M,/obj/structure/cable) && !istype(M,/obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 							if (istype(M, /obj/structure/turret/course))
 								var/obj/structure/turret/course/C = M
 								C.turn_to_dir(tdir)

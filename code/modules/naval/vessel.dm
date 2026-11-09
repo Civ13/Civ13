@@ -62,6 +62,7 @@ var/global/list/naval_vessels = list()
 	// step off her (recomputed every second by damage_tick()).
 	var/max_speed = VESSEL_SPEED_FULL
 	var/sunk = FALSE
+	var/deck_lights_on = TRUE
 	var/hop_timer = 0
 	var/last_hop_ms = 0        // Wall time the last relocation took, for the probe.
 	var/last_refusal = ""
@@ -435,6 +436,14 @@ var/global/list/naval_vessels = list()
 	dir = old_dir
 	return relocate(nx, ny, heading)
 
+// Switches every deck light aboard.
+/datum/vessel/proc/set_deck_lights(state)
+	deck_lights_on = state
+	for (var/turf/T in cells())
+		for (var/obj/structure/lamp/lamp_small/alwayson/deck/L in T)
+			L.lit = state
+			L.do_light()
+
 // ---- Damage control ----
 
 // The compartments the decks below the waterline are divided into.
@@ -600,7 +609,7 @@ var/global/list/naval_vessels = list()
 // telegraph and fuel, and what lay under each cell. The decks themselves are
 // saved as turfs; the helm keeps this text and rebuilds the datum on load.
 /datum/vessel/proc/save_state()
-	var/list/state = list("type" = "[type]", "ox" = ox, "oy" = oy, "base_z" = base_z, "dir" = dir, "speed" = speed, "anchored" = anchored, "fuel" = fuel)
+	var/list/state = list("type" = "[type]", "ox" = ox, "oy" = oy, "base_z" = base_z, "dir" = dir, "speed" = speed, "anchored" = anchored, "fuel" = fuel, "deck_lights" = deck_lights_on)
 	var/list/decks = list()
 	for (var/datum/vessel_level/L in levels)
 		var/list/originals = list()
@@ -629,6 +638,8 @@ var/global/list/naval_vessels = list()
 	V.speed = state["speed"]
 	V.anchored = state["anchored"]
 	V.fuel = state["fuel"]
+	if (!isnull(state["deck_lights"]))
+		V.deck_lights_on = state["deck_lights"]
 	var/list/decks = state["decks"]
 	for (var/datum/vessel_level/L in V.levels)
 		L.z = V.base_z + L.dz

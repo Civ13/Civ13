@@ -57,4 +57,19 @@ The probe's map metadata answers `is_node_done()` from a global toggle, so the r
 - **Listing:** ten ticks of a breach fill the engine room short of flooded; a flooded compartment caps the telegraph at half ahead and ringing full gives half; a second one leaves slow ahead and slows the ship; pumping one out eases the list; the chart reports the flooding.
 - **Sinking:** three flooded compartments sink her: the vessel and its controller leave the registries, the decks give way to sea, rock and sky, the sailor from the hangar deck comes up into the water, the deckhand and the crate are in the water where the deck was, the plane and the wheel go down with the ship, and five pieces of wreckage float where she sank.
 
-Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), launch and recovery lights (fit-out phase) and how the decks look on screen.
+## Phase 5: the fit-out (`fitout_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/fitout_probe.dm
+```
+
+The carrier lies bow south so the light plane, built facing south, faces the bow from the catapult track.
+
+- **Layout:** twelve catapult track tiles at the bow with their lever beside them; a gun tub at each corner of the deck that is no runway and that the crash barrier keeps planes off; sixteen lit deck lights along the deck edges; the radar set and two searchlights on the island either side of the wheel; the elevator levers still on both decks.
+- **Deck lights:** the wheel switches them off and on and the saved state records the switch.
+- **Catapult:** an empty catapult, a plane with a wheel off the track, a cold engine and a plane pointed across the deck are each refused with the reason and the plane stays put; a fuelled plane on the track is thrown into the air above the bow at full speed with no deck roll, and the track is clear and ready again.
+- **Radar:** the plane in the air shows as an aircraft; a second carrier shows as a stopped vessel with its heading and a ship's rudder axis as a ship, three contacts in all; the other carrier's radar sees this one and leaves herself out; a scrapped ship drops off the screen.
+- **Recipes:** shoring kits are gated on Submarines and the shipyard office on Naval Aviation.
+- **Sinking:** scuttling the other carrier takes her fittings and leaves this ship's; when this ship sinks her lights, radar, searchlights and levers go down with her.
+
+Not covered: a real client using the helm menu, the levers or the office, the hop timer firing from the timer subsystem, a full world save and load with the deck turfs written and read by the persistence code, projectile hits on the hull (`bullet_act` is wired but not probed), the searchlights' beams and how the decks look on screen.
