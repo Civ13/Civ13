@@ -71,6 +71,20 @@ Tuning: `RELIEF`, `LIGHT_STEP`, `DARK_ALPHA` and `LIGHT_ALPHA` at the top of the
 shading section of the tool (and `TERRAIN_RELIEF`/`TERRAIN_LIGHT_STEP` in the
 game for the first two). Re-bake after changing the alphas.
 
+## Tamped earth and floor covers
+
+Built ground is level: `/turf/floor` subtypes other than natural ground,
+built walls, and any floor or road cover (`/obj/covers` that is not a cover
+wall) on a natural tile. `terrain_smoothed()` covers all three, so these tiles
+have no slope cost and no shading. Covers refresh their tile's shading when
+they are laid (`updateturf`) and removed (`Destroy`).
+
+The stone rammer (`code/modules/1713/road_tamping.dm`, crafted from 2 stone
+with no research) packs bare dirt into `/turf/floor/tamped_earth` in about
+3 seconds (faster with strength). Grass must be cleared with a shovel first,
+and snow, covers or crops block it. Tamped earth never turns to mud, and a
+shovel breaks it back into plain dirt.
+
 ## Tools
 
 `scripts/terrain_heights.py`:

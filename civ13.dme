@@ -887,6 +887,7 @@
 #include "code\modules\1713\rail_network.dm"
 #include "code\modules\1713\research.dm"
 #include "code\modules\1713\researchcost.dm"
+#include "code\modules\1713\road_tamping.dm"
 #include "code\modules\1713\round_facts.dm"
 #include "code\modules\1713\roundstart_etc.dm"
 #include "code\modules\1713\signs_portraits_propaganda.dm"
