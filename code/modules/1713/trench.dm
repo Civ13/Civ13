@@ -143,10 +143,7 @@ var/list/global/floor_cache = list()
 		if (!C) return 								//Item's been destroyed while washing
 		if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
 
-		CL.clean_blood()
-		CL.radiation = 0
-		CL.dirtyness = 0
-		CL.fleas = FALSE
+		CL.hand_wash(user)
 		user.visible_message( \
 			"<span class='notice'>[user] washes \a [C] using \the [src].</span>", \
 			"<span class='notice'>You wash \a [C] using \the [src].</span>")

@@ -859,6 +859,7 @@
 #include "code\modules\1713\hydroponics.dm"
 #include "code\modules\1713\language_book.dm"
 #include "code\modules\1713\lantern.dm"
+#include "code\modules\1713\laundry.dm"
 #include "code\modules\1713\leader_orders.dm"
 #include "code\modules\1713\light_fuel.dm"
 #include "code\modules\1713\liminal\liminal_round.dm"

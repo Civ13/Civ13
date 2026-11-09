@@ -97,12 +97,7 @@
 	var/fleas_found = FALSE
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C)
-			if (C.blood_DNA)
-				C.dirtyness += 0.02
-			else
-				C.dirtyness += 0.015
-			if (C.dirtyness > 100)
-				C.dirtyness = 100
+			C.gain_dirt(C.blood_DNA ? 0.02 : 0.015)
 			if (C.dirtyness > 90)
 				C.fleas = TRUE
 				fleas_found = TRUE
