@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'f9d9383fb6a4af75d65d3ad92d519600d02a4ae2'
+WIKI_REVIEWED_REVISION = 'd92e8ffa2452ec1fe55bc314d00ec6a75eb88570'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -81,11 +81,12 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('aa33b8d0baf799a2705fd6e525069ca5b7b53c4aa85a23614c42a4da81d2bd29', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('e86e23c41d65e90d983e1e6f90abcb49c91e04f4b15cb3c25ca52dbccecda74f', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('f0c8d252e8aac853b25eb6977633baf8c2e405df309cb3d1c2d0a40649bf9777', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('51122e7eed5799b35279e3d32e49b45147d4349342b8a61730b00f859f5671d5', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('51bbdb510e76a957b74ce2e13288d9a32132bcf95aaaa77bd050238f2de85f04', 'hygiene clean washing soap'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('5c866b474dcc4ed571b379be1c6ef3aa4b686d4188ae22e1181ba172c954defb', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('52f18d58defc3e346041a4519805249f3882d11453162d80008198327add1785', 'ranching livestock animal breeding'),
@@ -125,7 +126,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('41d99c89a83fa3209092b52a6db07a7cecba75d876f19ae05c1d5fee86b9a52f', 'guides overview list of guides index'),
+    'guides_overview.md': ('ac74a17cdd97ef96b915af49464dd137d3528176845af07b408f8aedb46e2c62', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
