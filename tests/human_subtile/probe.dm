@@ -411,6 +411,10 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/rope_first = PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.step_x == 4 && !pull_crate.step_y
 	PF.human_subtile_pull_follow()
 	human_subtile_fixture_assert(rope_first && pull_crate.x == 15 && pull_crate.step_x == 6 && !PF.human_subtile_pull_follow() && PF.pulling == pull_crate, "pull_rope_trails_in_pixels")
+	// Moving up past it (here: it sits half a tile lower), the rope tugs it along at once rather than waiting
+	// until the body has cleared it and then catching up a whole tile.
+	pull_crate.Move(locate(15, 5, 1), SOUTH, 6, 16)
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.y == 5 && pull_crate.step_x == 6 && pull_crate.step_y == 18, "pull_rope_tugs_sideways")
 	// Pulling straight into a wall snags: no free axis or corner to slide round.
 	var/turf/rope_wall = locate(17, 10, 1)
 	rope_wall.density = TRUE
