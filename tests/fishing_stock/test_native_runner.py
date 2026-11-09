@@ -38,6 +38,8 @@ def receipt(work):
                 failed_cases=failed)
 
 
+# The native runner only accepts an explicit Linux BYOND 516.1688 profile.
+@unittest.skipIf(sys.platform == 'win32', 'fishing native runner is Linux-only')
 class RunnerTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
