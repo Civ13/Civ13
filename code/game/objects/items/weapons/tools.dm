@@ -60,7 +60,8 @@
 	var/max_range = 1
 	New()
 		..()
-		reagents.add_reagent("water",30)
+		if (!istype(src, /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty))
+			reagents.add_reagent("water",30)
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
 	..()
