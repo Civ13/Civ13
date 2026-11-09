@@ -85,8 +85,8 @@ class BronzeRetrievalTests(unittest.TestCase):
         self.assertLessEqual(len(evidence), 14000)
         for text in ('both molds to be fired, within reach', 'not already pouring',
                      'same metal or be empty', 'rechecked against current capacity',
-                     'amt_to_transfer = min(input,', 'src.capacity += amt_to_transfer',
-                     'ML.capacity -= amt_to_transfer', 'map.is_node_done(research_faction, node_req)'):
+                     'amt_to_transfer = min(input,', 'capacity += amt_to_transfer',
+                     'ML.capacity = max(ML.capacity - amt_to_transfer, 0)', 'map.is_node_done(research_faction, node_req)'):
             self.assertIn(text, evidence)
 
     def test_removing_new_evidence_reproduces_missing_production(self):
