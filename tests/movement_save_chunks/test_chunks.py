@@ -222,8 +222,21 @@ class ProductionBoundaryTests(unittest.TestCase):
         result = subprocess.run(['bash', '-c', 'unset LD_LIBRARY_PATH MANPATH; set -eu; ' + assignment + '; ' + man_assignment + '; MANPATH="/test/man:$MANPATH"; test "$MANPATH" = /test/man:; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_capture_budget_overrun_demotes_root_and_does_not_hold_recovery(self):
+        # Gaia/Rail Yard 2026-11-08: one animal's budget overrun failed every
+        # save, and each failed export held character recovery.
+        self.assertIn('if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE', SAVING)
+        roster = SAVING[SAVING.index('/map_storage/proc/prepare_moving_save_roster()'):]
+        roster = roster[:roster.index('/map_storage/proc/', 10)] if '/map_storage/proc/' in roster[10:] else roster
+        self.assertLess(roster.index('if(moving_save_demoted[identity])'), roster.index('moving_save_roots[identity] = list('))
+        self.assertIn('root=[root ? root.type : "null"]', SAVING)
+        self.assertIn('map_storage.last_export_error = map_storage.last_error', FUNCTIONS)
+        self.assertIn('"moving_save_demoted", "last_export_error"', FUNCTIONS)
+        reclaim = (ROOT / 'code/modules/persistence/player_reclaim.dm').read_text()
+        self.assertIn('(last_error && last_error != last_export_error)', reclaim)
+
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1', SAVING)
+        self.assertIn('work > 8192 || tick_delta || usage_delta > 40 || current_usage >= 90 || elapsed_ds > 1', SAVING)
         for field in ('work=[work]', 'tick_delta=[tick_delta]', 'usage_delta=[usage_delta]', 'total_usage=[current_usage]', 'elapsed_ds=[elapsed_ds]'):
             self.assertIn(field, SAVING)
 

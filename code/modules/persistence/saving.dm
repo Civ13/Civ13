@@ -756,6 +756,9 @@
 			save_work_check()
 			continue // No IDs or bindings allocated: unsupported stationary roots keep the legacy path.
 		var/identity = "\ref[A]"
+		if(moving_save_demoted[identity])
+			save_work_check()
+			continue // Overran its capture budget in an earlier save: keep the legacy path.
 		moving_save_roots[identity] = list("atom" = A, "identity" = identity, "z" = A.z, "origin" = null, "ref" = 0)
 		save_work_check()
 
@@ -910,8 +913,11 @@
 		var/current_usage = world.tick_usage
 		var/usage_delta = current_usage - start_usage
 		var/elapsed_ds = (world.timeofday - start_clock + 864000) % 864000
-		if(++work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1)
-			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
+		// The capture must stay inside one tick (tick_delta) and below the
+		// overrun line (90%). Its own share was 10%, which a busy region's
+		// ordinary animals overran on every save (Gaia/Rail Yard, 2026-11-08).
+		if(++work > 8192 || tick_delta || usage_delta > 40 || current_usage >= 90 || elapsed_ds > 1)
+			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: root=[root ? root.type : "null"] work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
 		if(reserved_bytes > 1048576) throw EXCEPTION("Moving save chunk exceeds its byte reservation")
@@ -1114,6 +1120,9 @@
 		moving_save_chunk = null
 		// IDs, durable bindings and list aliases may already be reserved. Abort
 		// the entire candidate: ordinary operation cleanup owns their release.
+		// Keep this animal on the ordinary turf path from the next save on, so
+		// the same root cannot refuse every later save.
+		if(findtext("[error]", "capture budget")) moving_save_demoted[record["identity"]] = TRUE
 		throw error
 	moving_save_chunk = null
 	record["origin"] = origin
