@@ -4,6 +4,7 @@ The native probe (run.py) covers the game's parser, lookup and slope cost.
 """
 from pathlib import Path
 import importlib.util
+import json
 import re
 import tempfile
 import unittest
@@ -57,6 +58,26 @@ class Generator(unittest.TestCase):
                 for nx, ny in ((x + 1, y), (x, y + 1)):
                     if nx < 10 and ny < 6:
                         self.assertLessEqual(abs(rows[y][x] - rows[ny][nx]), tool.MAX_NEIGHBOUR_STEP)
+
+    def test_design_reads_the_terrain(self):
+        spec = self.tmp / 'spec.json'
+        spec.write_text(json.dumps({'ridges': [{'points': [[5, 1], [5, 6]], 'height': 5, 'steep_side': 'left'}],
+                                    'flat': [{'x1': 7, 'y1': 3, 'x2': 7, 'y2': 4, 'height': 2}]}), encoding='utf-8')
+        out = self.tmp / 'design.txt'
+        tool.main(['design', '--map', str(self.tmp / 'tiny.dmm'), '--z', '1', '--out', str(out), '--spec', str(spec)])
+        maxx, maxy, levels = tool.read_heights(out)
+        rows = levels[1]
+        self.assertTrue(all(row[0] == row[1] == 0 for row in rows), 'water stays at 0')
+        self.assertTrue(all(row[2] <= 1 for row in rows), 'beach stays at most 1')
+        self.assertTrue(all(row[8] >= tool.DESIGN_DEFAULTS['highland_base'] for row in rows), 'rock walls are highland')
+        self.assertTrue(all(row[4] >= 4 for row in rows), 'the ridge spine is raised')
+        self.assertEqual({rows[maxy - 3][6], rows[maxy - 4][6]}, {2}, 'flat rectangles are honoured')
+        for y in range(maxy):
+            for x in range(2, 8):
+                for nx, ny in ((x + 1, y), (x, y + 1)):
+                    if nx < 8 and ny < maxy:
+                        self.assertLessEqual(abs(rows[y][x] - rows[ny][nx]), tool.DESIGN_MAX_STEP)
+        self.assertEqual(out.read_text(), out.read_text())
 
     def test_seeded_and_deterministic(self):
         self.assertEqual(self.generate(5).read_text(), self.generate(5).read_text())
@@ -120,6 +141,27 @@ class Shading(unittest.TestCase):
         tool.main(['check', '--heights', str(ROOT / 'maps/heights/nomads_gaia.txt'), '--map', str(ROOT / 'maps/nomads/nomads_gaia.dmm')])
         gaia = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_gaia.dm').read_text(encoding='utf-8')
         self.assertIn('terrain_height_file = "maps/heights/nomads_gaia.txt"', gaia)
+
+    def test_gaia_heights_are_designed(self):
+        """Gaia's file comes from the design command: steep grades, but never more than the game counts."""
+        maxx, maxy, levels = tool.read_heights(ROOT / 'maps/heights/nomads_gaia.txt')
+        _, _, turfs = tool.read_dmm(ROOT / 'maps/nomads/nomads_gaia.dmm')
+        rows, turf_rows = levels[2], turfs[2]
+        self.assertTrue(json.loads((ROOT / 'maps/heights/nomads_gaia.design.json').read_text(encoding='utf-8'))['ridges'])
+        walkable = [[not (t.startswith('/turf/wall') or 'water' in t) for t in row] for row in turf_rows]
+        steps = [0] * (tool.MAX_LEVEL + 1)
+        for y in range(maxy):
+            for x in range(maxx):
+                if 'water' in turf_rows[y][x]:
+                    self.assertEqual(rows[y][x], 0, f'water at {x + 1},{maxy - y} must be 0')
+                if not walkable[y][x]:
+                    continue
+                for nx, ny in ((x + 1, y), (x, y + 1)):
+                    if nx < maxx and ny < maxy and walkable[ny][nx]:
+                        steps[abs(rows[y][x] - rows[ny][nx])] += 1
+        self.assertEqual(sum(steps[tool.DESIGN_MAX_STEP + 1:]), 0, 'no walkable step is steeper than the game counts')
+        self.assertGreater(steps[3] + steps[4], 2000, 'Gaia has real steep grades')
+        self.assertGreaterEqual(max(v for row in rows for v in row), 13, 'highlands reach the upper levels')
 
 
 class Wiring(unittest.TestCase):

@@ -6,6 +6,9 @@ more z-levels. The game reads it when a map sets terrain_height_file.
 
   generate  build heights for a .dmm level from its turfs (water low, land
             rising inland, ridges near rock walls, seeded noise)
+  design    build heights that read the terrain: highland plateaus with steep
+            or gentle approaches, sea cliffs, river gorges, crater lakes and
+            hand-placed ridges, passes and scarps from a JSON spec
   to-png    write a greyscale PNG of a height file, one pixel per tile
   from-png  turn a painted greyscale PNG back into a height file
   check     validate a height file against a .dmm's size
@@ -72,29 +75,36 @@ def classify(turf):
 
 
 def distance_from(np, mask):
-    """4-neighbour BFS distance (in tiles) from True cells; large where none."""
-    h, w = mask.shape
-    dist = np.full((h, w), 10 ** 6, dtype=np.int64)
-    queue = deque()
-    for y, x in zip(*np.nonzero(mask)):
-        dist[y, x] = 0
-        queue.append((y, x))
-    while queue:
-        y, x = queue.popleft()
-        d = dist[y, x] + 1
-        for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
-            if 0 <= ny < h and 0 <= nx < w and dist[ny, nx] > d:
-                dist[ny, nx] = d
-                queue.append((ny, nx))
+    """4-neighbour distance (in tiles) from True cells; large where none.
+
+    Grows the mask one ring at a time with array shifts, which is fast even on a
+    500x350 map."""
+    mask = np.asarray(mask, dtype=bool)
+    dist = np.where(mask, 0, 10 ** 6).astype(np.int64)
+    if not mask.any():
+        return dist
+    reached = mask.copy()
+    d = 0
+    while not reached.all():
+        d += 1
+        grown = reached.copy()
+        grown[1:, :] |= reached[:-1, :]
+        grown[:-1, :] |= reached[1:, :]
+        grown[:, 1:] |= reached[:, :-1]
+        grown[:, :-1] |= reached[:, 1:]
+        if np.array_equal(grown, reached):
+            break
+        dist[grown & ~reached] = d
+        reached = grown
     return dist
 
 
-def limit_steps(np, levels, fixed):
-    """Lower tiles until no neighbour pair differs by more than MAX_NEIGHBOUR_STEP."""
+def limit_steps(np, levels, fixed, step=MAX_NEIGHBOUR_STEP):
+    """Lower tiles until no neighbour pair differs by more than step levels."""
     while True:
         p = np.pad(levels, 1, mode='edge')
         lowest = np.minimum.reduce([p[:-2, 1:-1], p[2:, 1:-1], p[1:-1, :-2], p[1:-1, 2:]])
-        cap = np.where(fixed, levels, np.minimum(levels, lowest + MAX_NEIGHBOUR_STEP))
+        cap = np.where(fixed, levels, np.minimum(levels, lowest + step))
         if np.array_equal(cap, levels):
             return levels
         levels = cap
@@ -126,6 +136,217 @@ def generate(np, rows, seed):
     levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
     levels[water] = 0
     return limit_steps(np, levels, water)
+
+
+# Designed heights. Unlike generate, this reads the terrain: rock walls and
+# bare rock floors are highland plateaus, the land around them climbs steeply
+# where the range meets the sea and gently inland, rocky coasts and river
+# banks that are already high become cliffs, desert lakes get crater rims, and
+# a JSON spec adds ridges, passes (gentle), scarps (steep) and flat rectangles.
+# Rectangles and points in the spec use game coordinates (x east, y north,
+# both from 1). Walkable neighbours never differ by more than DESIGN_MAX_STEP,
+# which is also the most the game counts for one step.
+DESIGN_MAX_STEP = 4
+DESIGN_DEFAULTS = {
+    'seed': 13,
+    'coast_rise': 0.5,          # levels per tile walking inland from the shore
+    'plain_max': 3,             # the coastal plain stops rising here
+    'hill_amplitude': 5,        # rolling hills on top of the plain
+    'beach_width': 2,           # sand this close to the sea is beach (at most 1)
+    'highland_base': 8,         # height at the edge of a highland
+    'highland_rise': 0.5,       # per tile inside the highland
+    'highland_max': 13,
+    'steep_grade': 3,           # levels per tile on a steep approach
+    'gentle_grade': 1,
+    'coastal_range_width': 12,  # highland approaches this close to the sea are steep
+    'cliff_height': 4,          # hills at least this high keep their height at the shore
+    'crater_rim': 5,
+    'ridges': [], 'passes': [], 'scarps': [], 'craters': [], 'flat': [],
+}
+
+
+def label_components(np, mask):
+    """4-connected components of a mask: (labels from 1, count)."""
+    h, w = mask.shape
+    labels = np.zeros((h, w), dtype=np.int32)
+    count = 0
+    for sy, sx in zip(*np.nonzero(mask)):
+        if labels[sy, sx]:
+            continue
+        count += 1
+        labels[sy, sx] = count
+        queue = deque([(sy, sx)])
+        while queue:
+            y, x = queue.popleft()
+            for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+                if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not labels[ny, nx]:
+                    labels[ny, nx] = count
+                    queue.append((ny, nx))
+    return labels, count
+
+
+def box_blur(np, values, radius):
+    """Mean over a (2r+1)-square window, edges clamped."""
+    p = np.pad(values.astype(float), radius, mode='edge')
+    out = np.zeros_like(values, dtype=float)
+    size = 2 * radius + 1
+    for dy in range(size):
+        for dx in range(size):
+            out += p[dy:dy + values.shape[0], dx:dx + values.shape[1]]
+    return out / (size * size)
+
+
+def rect_mask(np, shape, rect, maxy):
+    """Mask for a spec rectangle {x1, y1, x2, y2} in game coordinates."""
+    mask = np.zeros(shape, dtype=bool)
+    x1, x2 = sorted((rect['x1'], rect['x2']))
+    y1, y2 = sorted((rect['y1'], rect['y2']))
+    mask[maxy - y2:maxy - y1 + 1, x1 - 1:x2] = True
+    return mask
+
+
+def polyline_distance(np, shape, points, maxy, reach):
+    """Distance from every tile within reach of a polyline, and the side (sign) it is on.
+
+    Returns (distance, side) arrays; side is +1 on the left of the drawing direction,
+    -1 on the right, as seen on the map (north up)."""
+    h, w = shape
+    distance = np.full(shape, float(reach + 1))
+    side = np.zeros(shape, dtype=float)
+    ys, xs = np.mgrid[0:h, 0:w]
+    for (ax, ay), (bx, by) in zip(points, points[1:]):
+        ax, bx = ax - 1, bx - 1
+        ay, by = maxy - ay, maxy - by
+        vx, vy = bx - ax, by - ay
+        length2 = vx * vx + vy * vy or 1
+        x1, x2 = max(0, min(ax, bx) - reach), min(w, max(ax, bx) + reach + 1)
+        y1, y2 = max(0, min(ay, by) - reach), min(h, max(ay, by) + reach + 1)
+        px, py = xs[y1:y2, x1:x2], ys[y1:y2, x1:x2]
+        t = np.clip(((px - ax) * vx + (py - ay) * vy) / length2, 0, 1)
+        d = np.hypot(px - ax - t * vx, py - ay - t * vy)
+        cross = vx * (py - ay) - vy * (px - ax)
+        window = distance[y1:y2, x1:x2]
+        closer = d < window
+        window[closer] = d[closer]
+        side[y1:y2, x1:x2][closer] = np.sign(-cross[closer])
+    return distance, side
+
+
+def design(np, rows, spec):
+    """Designed heights for one level; see the comment above DESIGN_MAX_STEP."""
+    cfg = dict(DESIGN_DEFAULTS)
+    cfg.update(spec)
+    h, w = len(rows), len(rows[0])
+    maxy = h
+    turf = np.array(rows)
+    rock = np.array([[t.startswith('/turf/wall') or 'rockwall' in t for t in row] for row in rows])
+    water = np.array([['water' in t for t in row] for row in rows])
+    lava = np.array([['lava' in t and 'dry_lava' not in t for t in row] for row in rows])
+    bare = np.array([['underground' in t or 'rocky' in t or 'dry_lava' in t for t in row] for row in rows])
+    sand = np.array([['sand' in t or 'beach' in t for t in row] for row in rows]) & ~water
+    dust = np.array([['dust' in t for t in row] for row in rows])
+    highland = (rock | bare | lava) & ~water
+    land = ~water & ~highland
+    rng = np.random.default_rng(cfg['seed'])
+
+    d_water = distance_from(np, water) if water.any() else np.full((h, w), 10 ** 6)
+    labels, count = label_components(np, water)
+    sea = np.zeros((h, w), dtype=bool)
+    if count:
+        sizes = np.bincount(labels.ravel())[1:]
+        sea = labels == int(np.argmax(sizes)) + 1
+    lakes = water & ~sea
+    d_sea = distance_from(np, sea) if sea.any() else np.full((h, w), 10 ** 6)
+    beach = sand & (d_sea <= cfg['beach_width'])
+    desert = (sand | dust) & ~beach
+
+    # Coastal plain and rolling hills.
+    plain = np.minimum(d_water * cfg['coast_rise'], cfg['plain_max'])
+    noise = (octave(np, rng, (h, w), 28, 1.0) + octave(np, rng, (h, w), 14, 0.5)
+             + octave(np, rng, (h, w), 7, 0.22))
+    hills = np.clip(noise - 0.1, 0, None) * cfg['hill_amplitude'] * np.clip((d_water - 1) / 2.0, 0, 1)
+    height = plain + hills
+    # Rocky shores already higher than cliff_height stay up: sea cliffs. Beaches stay low.
+    cliffs = ~sand & (d_water <= 2) & (hills + cfg['plain_max'] >= cfg['cliff_height'])
+    height = np.where(cliffs, np.maximum(height, hills + cfg['plain_max']), height)
+    height[desert] = (plain + hills * 0.6)[desert]
+
+    # Highlands: plateaus rising from their edge; lava is the summit.
+    if highland.any():
+        d_inside = distance_from(np, ~highland)
+        plateau = (cfg['highland_base'] + np.clip(d_inside - 1, 0, 8) * cfg['highland_rise']
+                   + octave(np, rng, (h, w), 9, 1.2) * np.clip((d_inside - 2) / 3.0, 0, 1))
+        if lava.any():
+            plateau = np.maximum(plateau, MAX_LEVEL - distance_from(np, lava) * 0.5)
+        plateau = np.minimum(plateau, cfg['highland_max'])
+        height[highland] = plateau[highland]
+        height[lava] = MAX_LEVEL
+        # Approaches: steep where the range meets the sea or a scarp rectangle says so,
+        # gentle inland and through passes. The grade field is blurred so zones blend.
+        d_high = distance_from(np, highland)
+        grade = np.where(d_sea <= cfg['coastal_range_width'], cfg['steep_grade'], cfg['gentle_grade']).astype(float)
+        for rect in cfg['passes']:
+            grade[rect_mask(np, (h, w), rect, maxy)] = rect.get('grade', cfg['gentle_grade'])
+        for rect in cfg['scarps']:
+            grade[rect_mask(np, (h, w), rect, maxy)] = rect.get('grade', cfg['steep_grade'])
+        grade = box_blur(np, grade, 3)
+        approach = cfg['highland_base'] - d_high * grade
+        height = np.where(land, np.maximum(height, approach), height)
+
+    # Ridges from the spec: a spine height falling off at a steep grade on one
+    # side (left or right of the drawing direction) and a gentle one on the other.
+    for ridge in cfg['ridges']:
+        reach = int(ridge['height'] / cfg['gentle_grade']) + 1
+        distance, side = polyline_distance(np, (h, w), ridge['points'], maxy, reach)
+        steep_side = 1 if ridge.get('steep_side', 'left') == 'left' else -1
+        grade = np.where(side == steep_side, ridge.get('steep_grade', cfg['steep_grade']),
+                         ridge.get('gentle_grade', cfg['gentle_grade']))
+        crest = np.clip(distance - ridge.get('width', 1) / 2.0, 0, None)
+        height = np.where(land, np.maximum(height, ridge['height'] - crest * grade), height)
+
+    # Lakes: crater rims in the desert (or when the spec names them), basins elsewhere.
+    if lakes.any():
+        lake_labels, lake_count = label_components(np, lakes)
+        for i in range(1, lake_count + 1):
+            lake = lake_labels == i
+            d_lake = distance_from(np, lake)
+            near = land & (d_lake <= 6)
+            ys, xs = np.nonzero(lake)
+            centre = (int(xs.mean()) + 1, maxy - int(ys.mean()))
+            crater = desert[near].mean() > 0.5 if near.any() else False
+            crater = crater or any(rect_mask(np, (h, w), r, maxy)[lake].any() for r in cfg['craters'])
+            if crater:
+                rim = np.where(d_lake <= 2, cfg['crater_rim'] - 1 + (d_lake == 2),
+                               cfg['crater_rim'] - (d_lake - 2) * cfg['gentle_grade'])
+                height = np.where(near, np.maximum(height, rim), height)
+            else:
+                height = np.where(land & (d_lake <= 3), np.minimum(height, d_lake), height)
+
+    # Rivers (narrow arms of the sea) cut valleys; a bank that is already high stays
+    # as a gorge wall, so one side of the river can be a cliff.
+    if sea.any():
+        d_land = distance_from(np, ~water)
+        river = sea & (d_land <= 2)
+        if river.any():
+            d_river = distance_from(np, river)
+            valley = land & (d_river <= 3) & (height < cfg['cliff_height'])
+            height = np.where(valley, np.minimum(height, d_river), height)
+
+    # Marshes (land speckled with swamp or flooded water) stay low and flat.
+    marsh_water = np.array([['swamp' in t or 'flooded' in t for t in row] for row in rows]) & water
+    if marsh_water.any():
+        marsh = land & (distance_from(np, marsh_water) <= 2)
+        height = np.where(marsh, np.minimum(height, 1), height)
+
+    for rect in cfg['flat']:
+        mask = rect_mask(np, (h, w), rect, maxy) & ~water
+        if mask.any():
+            height[mask] = rect['height'] if 'height' in rect else np.median(height[mask])
+
+    height[beach] = np.minimum(height[beach], 1)
+    levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
+    levels[water] = 0
+    return limit_steps(np, levels, water, DESIGN_MAX_STEP)
 
 
 def write_heights(path, maxx, maxy, levels_by_z):
@@ -249,6 +470,20 @@ def cmd_generate(args):
     print(f'wrote {args.out}: {maxx}x{maxy}, z {", ".join(map(str, sorted(out)))}')
 
 
+def cmd_design(args):
+    import json
+    np = load_numpy()
+    maxx, maxy, levels = read_dmm(args.map)
+    spec = json.loads(Path(args.spec).read_text(encoding='utf-8')) if args.spec else {}
+    out = {}
+    for z in args.z:
+        if z not in levels:
+            sys.exit(f'{args.map} has no z {z}')
+        out[z] = design(np, levels[z], spec).tolist()
+    write_heights(args.out, maxx, maxy, out)
+    print(f'wrote {args.out}: {maxx}x{maxy}, z {", ".join(map(str, sorted(out)))}')
+
+
 def cmd_to_png(args):
     from PIL import Image
     maxx, maxy, levels = read_heights(args.heights)
@@ -300,6 +535,12 @@ def main(argv=None):
     g.add_argument('--out', required=True)
     g.add_argument('--seed', type=int, default=13)
     g.set_defaults(func=cmd_generate)
+    d = sub.add_parser('design')
+    d.add_argument('--map', required=True)
+    d.add_argument('--z', type=int, action='append', required=True)
+    d.add_argument('--out', required=True)
+    d.add_argument('--spec', help='JSON with ridges, passes, scarps, craters, flat and tuning values')
+    d.set_defaults(func=cmd_design)
     t = sub.add_parser('to-png')
     t.add_argument('--heights', required=True)
     t.add_argument('--z', type=int, required=True)
