@@ -127,10 +127,18 @@
 			return
 		to_chat(user, SPAN_NOTICE("You start dismantling \the [src]..."))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 50, 1)
-		if(do_after(user, 30))
+		if(do_after(user, 30, src))
+			if (QDELETED(src) || QDELETED(user) || !Adjacent(user) || bee_count)
+				return
 			user.visible_message(SPAN_NOTICE("\The [user] dismantles \the [src]."), SPAN_NOTICE("You dismantle \the [src]."))
 			for (var/i=1, i<=6, i++)
 				new /obj/item/stack/material/wood(loc)
+			for (var/i=1, i<=frames, i++)
+				if (honeycombs >= 100)
+					new /obj/item/honey_frame/filled(loc)
+					honeycombs -= 100
+				else
+					new /obj/item/honey_frame(loc)
 			qdel(src)
 		return
 
@@ -143,7 +151,9 @@
 			to_chat(user, SPAN_NOTICE("The bees won't let you take the honeycombs out like this, smoke them first."))
 			return
 		user.visible_message(SPAN_NOTICE("\The [user] starts taking the honeycombs out of \the [src]."), SPAN_NOTICE("You start taking the honeycombs out of \the [src]..."))
-		while (honeycombs >= 100 && do_after(user, 30))
+		while (honeycombs >= 100 && frames > 0 && do_after(user, 30, src))
+			if (QDELETED(src) || QDELETED(user) || !Adjacent(user) || closed || (!smoked && bee_count) || frames <= 0 || honeycombs < 100)
+				return
 			new /obj/item/honey_frame/filled(loc)
 			honeycombs -= 100
 			--frames
