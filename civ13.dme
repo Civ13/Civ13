@@ -212,6 +212,7 @@
 #include "code\game\mob\groups\faction_rename.dm"
 #include "code\game\mob\groups\faction_symbol.dm"
 #include "code\game\mob\groups\factions.dm"
+#include "code\game\mob\groups\recruitment_station.dm"
 #include "code\game\mob\groups\religions.dm"
 #include "code\game\mob\language\earth.dm"
 #include "code\game\mob\language\language.dm"
