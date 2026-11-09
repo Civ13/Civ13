@@ -185,3 +185,24 @@ describe('Crafting Atlas navigation', () => {
     expect(props.act).not.toHaveBeenCalled();
   });
 });
+
+
+describe('Crafting Atlas personal manuals', () => {
+  it('keeps locked recipes inspectable and refreshes on learning, reopening and reader changes', () => {
+    const locked = { ...recipe, manual_hint: 'Needs the Woodworking manual' };
+    const props = ui({ detail: locked });
+    const view = render(<CraftingAtlas {...props} />);
+    expect(screen.getByRole('status').textContent).toBe('Needs the Woodworking manual');
+    fireEvent.click(screen.getByText('Log'));
+    expect(sent(props)).toEqual({ route: 'resource', resource: '/material/wood' });
+    view.rerender(<CraftingAtlas {...ui({ detail: recipe })} />);
+    expect(screen.queryByRole('status')).toBeNull();
+    view.rerender(<CraftingAtlas {...ui({ detail: locked })} />);
+    expect(screen.getByRole('status')).toBeTruthy();
+    view.rerender(<CraftingAtlas {...ui({ mode: 'page', entries: [locked] })} />);
+    expect(screen.getByRole('status')).toBeTruthy();
+    fireEvent.click(screen.getByText('Return to dependency atlas'));
+    view.rerender(<CraftingAtlas {...ui({ detail: recipe })} />);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+});

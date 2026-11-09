@@ -30,7 +30,7 @@ function Recipe({ ui, recipe, graph }: { ui: ScreenProps; recipe: Data; graph: b
   const chooseVariant = (id: string) => navigate(ui, graph
     ? { route: 'open', query: text(ui.data.query), era: String(ui.data.era ?? ''), processor: String(ui.data.processor ?? ''), recipe: id }
     : { route: 'page', query: text(ui.data.query), page: Number(ui.data.page), recipe: id });
-  return <Section title={text(recipe.name)}>
+  return <Section title={<span style={recipe.manual_hint ? { color: "#aaa" } : undefined}>{text(recipe.name)}</span>}>
     {familyVariants.length > 1 && <p><label>Recipe variant <select aria-label="Recipe variant" disabled={!ui.interactive} value={String(recipe.id)} onChange={event => chooseVariant(event.target.value)}>
       {familyVariants.map(variant => <option key={String(variant.id)} value={String(variant.id)}>{text(variant.label)}</option>)}
     </select></label></p>}
@@ -40,6 +40,7 @@ function Recipe({ ui, recipe, graph }: { ui: ScreenProps; recipe: Data; graph: b
     </select></label></p>}
     {variants.length > 0 && <p>Equivalent recipe definitions in alternative catalogs. Map and faction gates still apply.</p>}
     <p>{text(recipe.kind)}</p>
+    {!!recipe.manual_hint && <p role="status" style={{ color: "#aaa" }}>{text(recipe.manual_hint)}</p>}
     <div className="atlas-dependency" aria-label="Recipe dependency">
       <div><h3>Inputs</h3><ul>{list(recipe.inputs).map((resource, i) => <li key={i}><Resource ui={ui} resource={resource} /></li>)}</ul></div>
       <div><h3>Transformation</h3><p>{text(recipe.kind)}</p></div>
@@ -104,7 +105,7 @@ export function CraftingAtlas(ui: ScreenProps) {
       <Section title="Results">
         {resources.length > 0 && <><h3>Resources</h3><ul>{resources.map(resource => <li key={String(resource.id)} data-result-type="resource"><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(resource.id) })}>{text(resource.name)}</Button><br /><small>Resource: {text(resource.id)}</small></li>)}</ul></>}
         {Number(data.resource_count) > 150 && <p>First 150 resource matches shown. Refine your search to find more.</p>}
-        <h3>Recipes</h3><ul>{recipes.map(recipe => <li key={String(recipe.family_id ?? recipe.id)} data-result-type="recipe"><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })}>{text(recipe.name)}</Button><br /><small>{Number(recipe.variant_count) > 1 ? text(recipe.variant_count) + ' recipe variants / ' : 'Recipe: '}{text(recipe.era_label)}</small></li>)}</ul>
+        <h3>Recipes</h3><ul>{recipes.map(recipe => <li key={String(recipe.family_id ?? recipe.id)} data-result-type="recipe" style={recipe.manual_hint ? { color: "#aaa" } : undefined}><Button disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })}>{text(recipe.name)}</Button><br /><small>{Number(recipe.variant_count) > 1 ? text(recipe.variant_count) + ' recipe variants / ' : 'Recipe: '}{text(recipe.era_label)}</small>{!!recipe.manual_hint && <p>{text(recipe.manual_hint)}</p>}</li>)}</ul>
         {Number(data.family_count ?? data.recipe_count) > 150 && <p>First 150 recipe families shown. Refine filters to find more.</p>}
       </Section>
       <div>{data.detail ? <Recipe ui={ui} recipe={data.detail} graph /> : <NoticeBox>{Number(data.resource_count) > 0 ? 'No matching recipes. Select a Resource result to view acquisition routes and related recipes.' : 'No matching recipes or resources. Clear filters or search for an ingredient.'}</NoticeBox>}</div>

@@ -10,6 +10,17 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 /datum/crafting_atlas_presenter/proc/navigate(datum/crafting_atlas_reference/reference, mob/viewer, payload, state)
 	return FALSE
 
+// Optional per-reader knowledge presentation. Never write it into cached catalog rows.
+/datum/crafting_atlas_presenter/proc/manual_hint(mob/viewer, list/recipe)
+	return ""
+
+/datum/crafting_atlas_reference/proc/manual_hint(mob/viewer, list/recipe)
+	return crafting_atlas_presenter ? crafting_atlas_presenter.manual_hint(viewer, recipe) : ""
+
+/datum/crafting_atlas_reference/proc/manual_hint_html(mob/viewer, list/recipe)
+	var/hint = manual_hint(viewer, recipe)
+	return hint ? "<p style='color:#aaa'>[html_encode(hint)]</p>" : ""
+
 /client
 	var/atlas_last_request = -100
 
@@ -203,6 +214,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 			outputs += resource_html(viewer, product)
 		body += jointext(outputs, "; ")
 		body += "</p><p>[html_encode("[recipe["conditions"]]")]</p>"
+		body += manual_hint_html(viewer, recipe)
 		body += variant_html(group, matches, recipe["id"], query, page = page)
 		body += source_html(recipe)
 		body += "<hr>"
@@ -254,6 +266,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 			selected_matches = matches
 		if (matched <= 150)
 			index += "<p data-result-type='recipe'><a href='?src=\ref[src];atlas_open=1;atlas_recipe=[url_encode("[choice["id"]]")];atlas_query=[url_encode(query)];atlas_era=[url_encode(era)];atlas_processor=[url_encode(processor)]'>[html_encode("[recipe["name"]]")]</a><br><small>Recipe: [html_encode("[recipe["era_label"]]")]</small></p>"
+			index += manual_hint_html(viewer, choice)
 	var/list/era_names = list("0: Stone Age", "1: Bronze Age", "2: Middle Ages", "3: Imperial Age", "4: Industrial Age", "5: Early Modern Age", "6: WW2", "7: Cold War", "8: Modern Age", "9: Digital Age")
 	var/query_html = replacetext(html_encode(query), "'", "&#39;")
 	var/controls = "<form action='byond://?' method='get'><input type='hidden' name='src' value='\ref[src]'><input type='hidden' name='atlas_open' value='1'><input name='atlas_query' maxlength='64' value='[query_html]' aria-label='Search'><select name='atlas_era' aria-label='Unlock era'><option value=''>All unlock eras</option>"
@@ -269,6 +282,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 		for (var/list/product in selected["outputs"])
 			outputs += "<p>[resource_html(viewer, product)]</p>"
 		diagram = "<h3>[html_encode("[selected["name"]]")]</h3><table class='dependency' width='100%'><tr><th>Inputs</th><th></th><th>Transformation</th><th></th><th>Outputs</th></tr><tr><td bgcolor='#254a35'>[jointext(inputs, "")]</td><td>&rarr;</td><td bgcolor='#254366'>[html_encode("[selected["kind"]]")]</td><td>&rarr;</td><td bgcolor='#5b4824'>[jointext(outputs, "")]</td></tr></table><p>Unlock era: [html_encode("[selected["era_label"]]")]. [html_encode("[selected["era_basis"]]")]</p><p>[html_encode("[selected["conditions"]]")]</p>"
+		diagram = manual_hint_html(viewer, selected) + diagram
 		diagram = variant_html(selected_group, selected_matches, selected["id"], query, era, processor) + diagram + source_html(selected)
 	return "<html><head><title>Crafting Atlas</title><style>body{background:#17202b;color:#eee;font-family:Verdana;font-size:13px}a{color:#9ed2ff}td{padding:8px;vertical-align:top}input,select{margin:4px}small{color:#c4d2e2}</style></head><body><h2>Crafting Atlas</h2>[controls]<p>[matched] matching recipes, sorted by unlock era. [resource_matches.len] matching resources. Search a resource name or identifier for Resource results; filters apply to recipes. Research tiers can be ahead of map era; unknown and multiple-era records remain explicit. Map, faction, skills and other conditions still apply.</p><table width='100%'><tr><td width='26%'>[jointext(index, "")][matched > 150 ? "<p>First 150 recipe matches shown. Refine filters to find more.</p>" : ""]</td><td>[diagram]</td></tr></table><p><a href='?src=\ref[src];atlas_open=1'>Reset atlas</a> | <a href='?src=\ref[src];atlas_page=1'>Legacy paginated list</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Full web atlas</a></p></body></html>"
 
