@@ -1141,7 +1141,8 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'civ13.dme')},
     # Offline only: reviewed guard projection, catalog generation, inert Help imports.
     # Shared crafting/Atlas files keep the conservative all-suite fallback.
-    'furniture_joinery': {'files': ('tests/furniture_joinery/test_table_climb.py',
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_grille_construction.py',
+                                   'tests/furniture_joinery/test_table_climb.py',
                                   'tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
