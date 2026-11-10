@@ -53,6 +53,14 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_outhouse_occupancy_suite_is_bounded_and_selected(self):
+        name = 'outhouse_occupancy'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/outhouse_occupancy/test_occupancy.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_mood_sleep_registration_is_explicit_and_preserves_prior_impact(self):
         suite = ci.SUITES['mood_sleep']
         self.assertEqual(suite['files'], ('tests/mood_sleep/test_mood_sleep.py',))
