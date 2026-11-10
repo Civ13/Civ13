@@ -141,8 +141,13 @@ turning that physical permission into universal language comprehension.
    Stamps are done: see [stamps](paperwork-stamps.md). The old
    commented-out recording failed because it put an image `\ref` in saved
    HTML, which a browse window cannot load and a save cannot keep.
-3. Integrate faithful copying, filing and envelope/clipboard/bundle access,
-   respecting era constraints and existing government/warrant programs.
+3. Faithful copying (printing press, faction mailbox) keeps written sections,
+   stamps and blanks. The writing service now admits a page in a held open
+   envelope and the open page of a held bundle (also in a held folder), pinned
+   like clipboards; filing cabinets list papers by name and can read them in
+   place (route "filing"); sealed envelopes redraw their wax seal after a
+   reload. See [containers](paperwork-containers.md). Language-aware telegrams
+   and government/warrant subtypes remain separate work.
 4. Deliberate study is implemented in `code/modules/paperwork/study.dm`. A
    human holding a page uses Study Writing on the first section in a language
    they cannot read. After a still `do_after` of two seconds per point (one

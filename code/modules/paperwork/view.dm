@@ -17,6 +17,8 @@
 		return istype(owner, /obj/item/weapon/folder) && owner.loc == reader && !reader.stat && !reader.restrained()
 	if (route == "noticeboard")
 		return istype(owner, /obj/structure/noticeboard) && owner.Adjacent(reader)
+	if (route == "filing")
+		return istype(owner, /obj/structure/filingcabinet) && owner.Adjacent(reader) && !reader.stat && !reader.restrained()
 	if (route == "bundle")
 		var/obj/item/weapon/paper_bundle/B = owner
 		if (!istype(B) || !islist(B.pages) || !isnum(B.page) || B.page != round(B.page) || B.page < 1 || B.page > B.pages.len || B.pages[B.page] != P)

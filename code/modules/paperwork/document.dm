@@ -236,7 +236,30 @@ var/global/paper_document_sequence = 0
 	var/obj/item/container = paper.loc
 	if (istype(container, /obj/item/weapon/clipboard) || istype(container, /obj/item/weapon/folder))
 		return !container.gc_destroyed && container.loc == actor
+	// A page in a held, open envelope, or the open page of a held bundle
+	// (also one in a held folder). Closed envelopes and other pages refuse.
+	if (paper_document_envelope_open(container))
+		return container.loc == actor
+	if (paper_document_bundle_page(container, paper))
+		if (paper_document_held_folder(container.loc))
+			return container.loc.loc == actor
+		return container.loc == actor
 	return FALSE
+
+/proc/paper_document_envelope_open(atom/container)
+	if (!istype(container, /obj/item/weapon/storage/envelope) || container.gc_destroyed)
+		return FALSE
+	var/obj/item/weapon/storage/envelope/E = container
+	return E.opened
+
+/proc/paper_document_bundle_page(atom/container, obj/item/weapon/paper/P)
+	if (!istype(container, /obj/item/weapon/paper_bundle) || container.gc_destroyed)
+		return FALSE
+	var/obj/item/weapon/paper_bundle/B = container
+	return islist(B.pages) && isnum(B.page) && B.page == round(B.page) && B.page >= 1 && B.page <= B.pages.len && B.pages[B.page] == P
+
+/proc/paper_document_held_folder(atom/container)
+	return istype(container, /obj/item/weapon/folder) && !container.gc_destroyed
 
 /datum/paper_document_service/proc/can_mutate(mob/actor, obj/item/weapon/pen/pen)
 	return has_access(actor, TRUE) && istype(pen) && !pen.gc_destroyed && actor.get_active_hand() == pen && pen.loc == actor

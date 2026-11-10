@@ -172,9 +172,18 @@ class Authoring(unittest.TestCase):
    self.assertIsNone(self.session.snapshot(self.actor))
   self.setUp();self.paper.loc=self.actor.loc;self.start();self.paper.near=False
   self.assertFalse(self.write());self.assertIsNone(self.session.snapshot(self.actor))
-  for kind in ('envelope','bundle','noticeboard'):
-   self.setUp();container=copies.views.Container(kind,self.actor);container.opened=True;container.pages=[self.paper]
-   self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  # Held open envelopes and the open page of a held bundle are writable and
+  # pinned like clipboards; moving the container away ends the session.
+  for kind in ('envelope','bundle'):
+   self.setUp();container=copies.views.Container(kind,self.actor);container.opened=True;container.pages=[self.paper];container.page=1
+   self.paper.loc=container;self.start();self.assertTrue(self.write())
+   container.loc=copies.Turf();self.assertFalse(self.write());self.assertIsNone(self.session.snapshot(self.actor))
+  self.setUp();container=copies.views.Container('envelope',self.actor);container.opened=False
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  self.setUp();other=self.Paper(self.actor);container=copies.views.Container('bundle',self.actor);container.pages=[other,self.paper];container.page=1
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  self.setUp();container=copies.views.Container('noticeboard',self.actor)
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
  def test_subtypes_malformed_oversized_legacy_and_records_refuse_without_repair(self):
   for change in ('subtype','legacy','cycle','deep','capacity','record'):
    self.setUp()
