@@ -14,7 +14,7 @@ class NativePacketTests(unittest.TestCase):
     def test_positive_and_named_controls_prepare_without_native(self):
         production = ROOT / "code/modules/persistence/functions.dm"
         original = production.read_bytes()
-        for control in (None, "year-helper", "year-load", "year-order"):
+        for control in (None, "year-helper", "year-load", "year-order", "year-book"):
             with self.subTest(control=control):
                 command = [sys.executable, str(RUNNER), "--prepare-only", "--persistence-year"]
                 if control:
@@ -50,6 +50,8 @@ class NativePacketTests(unittest.TestCase):
                         self.assertIn("if (TRUE)\n\t\treturn", source)
                     elif control == "year-load":
                         self.assertNotIn("map.apply_persistence_age_floor()", source)
+                    elif control == "year-book":
+                        self.assertNotIn("map.reconcile_book_research_restore()", source)
                     else:
                         self.assertIn("map.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()", source)
 

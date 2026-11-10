@@ -661,7 +661,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/persistence-year"
           export TMPDIR="$RUNNER_TEMP/persistence-year"
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year
-          for control in year-helper year-load year-order; do
+          for control in year-helper year-load year-order year-book; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year --negative-control "$control"
           done
       - name: Retain native persistence date evidence

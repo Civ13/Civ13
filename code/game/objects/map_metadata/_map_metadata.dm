@@ -185,6 +185,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	var/hasnukes = FALSE
 	//autoresearch
 	var/autoresearch = FALSE //if autoresearch is active
+	var/tmp/autoresearch_pending = FALSE // non-durable profiles have one outstanding sleeper
 	var/autoresearch_mult = 0.03 // the amount research goes up per minute. Can be edited by admins.
 	var/resourceresearch = FALSE
 
@@ -463,8 +464,12 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/autoresearch_proc()
 	if (autoresearch && default_research < LEGACY_RESEARCH_MAX)
 		if(durable_schedule("autoresearch", 600)) return
+		if(autoresearch_pending) return
+		autoresearch_pending = TRUE
 		spawn(600) //1 minute = 0.03 points (by default)
-			autoresearch_step()
+			autoresearch_pending = FALSE
+			if(autoresearch && default_research < LEGACY_RESEARCH_MAX)
+				autoresearch_step()
 
 /obj/map_metadata/proc/autoresearch_step()
 	default_research += autoresearch_mult
@@ -1327,7 +1332,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 
 /obj/map_metadata/persistence_runtime_var(var/key)
 	if(key == "nomads_event_busy" || key == "nomads_active_event" || key == "nomads_recovery_required") return TRUE
-	if (key in list("construction_last_season", "elevation_default_metres", "elevation_regions", "elevation_regions_text", "elevation_profile_cache", "season_duration_minutes", "season_cycle", "weather_timing", "weather_transitions", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
+	if (key in list("construction_last_season", "elevation_default_metres", "elevation_regions", "elevation_regions_text", "elevation_profile_cache", "season_duration_minutes", "season_cycle", "weather_timing", "weather_transitions", "durable_callbacks", "research_clock_offset", "autoresearch_pending", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)
 
