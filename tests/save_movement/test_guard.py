@@ -721,6 +721,40 @@ class GuardTests(unittest.TestCase):
         self.assertIsNone(f.env['persistence_active_operation'])
 
 
+class OperatingTableOccupancyTests(unittest.TestCase):
+    def test_lying_patient_is_detected_even_after_a_standing_person(self):
+        source = read('code/game/objects/structures/optable.dm')
+        env = {'typed_iter': lambda values, kind: [m for m in values if m.human]}
+        check = project(source, '/obj/structure/optable/proc/check_victim', 'src', env, True)
+        standing = NS(human=True, lying=False)
+        patient = NS(human=True, lying=True)
+        table = NS(loc=[standing, patient], victim=None)
+        self.assertTrue(check(table))
+        self.assertIsNone(table.victim)
+        table.loc.remove(patient)
+        self.assertFalse(check(table))
+        self.assertIsNone(table.victim)
+        table.loc.clear()
+        self.assertFalse(check(table))
+
+    def test_table_occupancy_guard_uses_refreshed_patient(self):
+        source = read('code/game/objects/structures/optable.dm')
+        env = {'typed_iter': lambda values, kind: [m for m in values if m.human],
+               'get_turf': lambda obj: obj.loc, 'to_chat': lambda *args: None, 'usr': None}
+        check = project(source, '/obj/structure/optable/proc/check_victim', 'src', env, True)
+        table = NS(loc=[], victim=None)
+        env['check_victim'] = lambda: check(table)
+        # The guard uses the detection result without retaining a patient pointer.
+        guard = project(source, '/obj/structure/optable/proc/check_table', 'src, patient', env, True)
+        patient = NS(human=True, lying=True, loc=table.loc, buckled=False)
+        table.loc.append(patient)
+        self.assertFalse(guard(table, patient))
+        table.loc.clear()
+        self.assertTrue(guard(table, patient))
+        patient.buckled = True
+        self.assertFalse(guard(table, patient))
+
+
 class SourcePathTests(unittest.TestCase):
     def test_finite_remaining_relationship_paths_have_source_ownership_evidence(self):
         carbon = read('code/game/mob/living/carbon/carbon.dm')
