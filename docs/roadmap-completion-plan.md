@@ -49,7 +49,7 @@ The page lags master. These should be refreshed when the page is next edited
 | A train home for your party | Dagger four-level home map (#3193), train crafting re-enabled (#3532), Hauler raid target (#3734), party safehouse template (#3728), Train Raid round mode with docked shuttles, crew-only rooms, recall, lift balloons and lives (#3744) | A shuttle that stays the party's between rounds (instanced saves), fuel and boarding passes, survival rules in the safe rooms, real-client acceptance | Agent (persistence), Val's hands (acceptance) |
 | Geographic layers and elevation | Layer/elevation foundation (#3301), opt-in lapse rate and local snow (#3616), generated maps carry their relief (#3726) | Natural shipped maps opting in; real-client snow and temperature check | Val's hands |
 | Snow shaped by local weather | Ground snow, shovelling, Gaia probe (#3300, #3593, #3595) | Real-client visual and footstep check | Val's hands (#3594) |
-| Persistent world editing and map authoring | Editing (#3304); offline save-to-map core for synthetic JSON (#3303) | Native `.sav` extraction, map metadata, playable-map validation, mapper guide | Agent |
+| Persistent world editing and map authoring | Editing (#3304); offline save-to-map core for synthetic JSON (#3303); native save export with map metadata and compile check | Export a real server save and start a fresh round on it | Val's hands |
 | Safe persistence and transfer foundations | SQLite store, region agent, coordinator and DM save/load bridge (#3642, #3645), trade post (#3655), two-region pilot (#3659), region groups on one host (#3694), character travel with a fast journal (#3715, #3720), one home world per player with mainland start and bed rule (#3740) | Real-client acceptance on a live group; groups spanning hosts | Val's hands |
 | Desktop launcher and connection core | Launcher, companion transport, read-only manager menu (#3325, #3335, #3536, #3538) | Safe Linux process ownership; compile, new game, resume, shutdown, update, restart flows; real process observations and log sources; GUI shard view | Agent (source), Val's hands (live host) |
 | Procedural worlds | Surface, oceanic and cavern generators (#3331, #3338, #3617), playable region maps (#3697), region elevation and climate (#3726), barren worlds for space settlement (#3752) | Long-round native playability and save preservation | Val's hands |
@@ -104,8 +104,8 @@ Val's suggested order is used, skipping work another thread owns:
    regression.
 4. **Ecology-driven spawning**: wire population and habitat sources into the
    heatmap behind a config flag, with visibility checks and lifecycle adapters.
-5. **Save-to-map export**: native save extraction into the canonical JSON the
-   converter already accepts, map metadata, and a compile check on the result.
+5. **Save-to-map export**: done (native extraction, map metadata, compile
+   check); a real-save export and a fresh round on it remain for Val.
 6. **Geography and procedural worlds**: elevation temperature coupling, then the
    cavern generator profile.
 7. **Smoother saves**: smaller batches and interruption recovery.
