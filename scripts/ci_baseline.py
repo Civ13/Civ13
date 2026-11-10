@@ -36,6 +36,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'smokables': {'files': ('tests/smokables/test_burn_state.py',),
+        'paths': ('tests/smokables/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cigs_lighters.dm',
+            'tests/save_movement/source_adapter.py')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py',),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm',
