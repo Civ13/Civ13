@@ -129,6 +129,8 @@
 			return list("vend", "cancelpurchase", "remove_money", "togglevoice")
 		if ("research_bench.tmpl")
 			return list("assign", "queue", "clear_queue", "write_book", "write_notes", "claim", "appoint_director", "dismiss_director", "set_director_title", "appoint_researcher", "dismiss_researcher")
+		if ("recruitment_station.tmpl")
+			return list("designate", "unbind", "apply", "withdraw", "confirm", "approve", "reject", "revoke", "set_mode", "set_open", "set_language", "set_skill", "set_nonmatch", "refresh")
 		if ("faction_symbol.tmpl")
 			return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "save")
 		if ("faction_creation.tmpl")
