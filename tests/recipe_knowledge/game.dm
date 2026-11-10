@@ -254,6 +254,7 @@ var/knowledge_failures = 0
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
 // ripping pages out and putting them back, parchment and writing supplies.
 /proc/check_book_pages(mob/living/human/scholar, mob/living/human/novice, obj/item/weapon/book/journal)
+	check_monk_book_copy()
 	knowledge_check(crafting_recipe_allowed(novice, "/obj/item/weapon/pen/pencil") && crafting_recipe_allowed(novice, "/obj/item/weapon/paper") && crafting_recipe_allowed(novice, "/obj/item/weapon/book") && !crafting_recipe_allowed(novice, "/obj/item/weapon/pen"), "pencil, paper and blank book are free; the pen is not")
 	var/obj/item/weapon/book/diary = new(locate(6,6,1))
 	diary.dat = "Old entry."
@@ -290,6 +291,37 @@ var/knowledge_failures = 0
 	qdel(tired)
 	diary.page_busy = TRUE
 	knowledge_check(!("page_busy" in diary.get_saved_vars()), "a book's busy lock is never saved")
+
+// The monk's older copy action consumes its input; it must not destroy a
+// founder's book or silently produce an ordinary book without its chapters.
+/proc/check_monk_book_copy()
+	var/turf/site = locate(6,6,1)
+	var/mob/living/human/knowledge_fixture/monk = new(site)
+	monk.religious_clergy = "Monks"
+	var/obj/item/weapon/book/master = create_stone_age_master_book(site)
+	var/obj/item/weapon/book/blank = new(site)
+	var/obj/item/weapon/book/ordinary = new(site)
+	ordinary.add_written_page("First page")
+	ordinary.add_written_page("Second page")
+	knowledge_check(blank.monk_copy_blank() && ordinary.monk_copy_source_allowed(), "a blank book and ordinary journal admit monk copying")
+	knowledge_check(!master.monk_copy_blank() && !master.monk_copy_source_allowed(), "the authorless founder book is neither blank nor an ordinary copy source")
+	ordinary.attackby(master, monk)
+	knowledge_check(!QDELETED(master) && master.has_research_chapter("basic_tools"), "monk copying refuses to consume the founder's book")
+	master.attackby(blank, monk)
+	knowledge_check(!QDELETED(blank) && !blank.research_chapter_list().len && master.has_research_chapter("basic_tools"), "monk copying refuses a chapterless copy and keeps both books")
+	var/obj/item/weapon/book/unfinished = new(site)
+	unfinished.add_research_work("basic_tools", 1)
+	knowledge_check(!unfinished.monk_copy_blank() && !unfinished.monk_copy_source_allowed(), "unfinished research is protected in either copy direction")
+	var/obj/item/weapon/book/node_book/manual = create_node_book(site, "basic_tools")
+	var/obj/item/weapon/book/node_compendium/collection = new(site)
+	collection.node_ids = list("basic_tools")
+	knowledge_check(!manual.monk_copy_source_allowed() && !collection.monk_copy_source_allowed(), "recipe manuals and compendiums cannot be copied as ordinary books")
+	manual.attackby(blank, monk)
+	collection.attackby(blank, monk)
+	knowledge_check(!QDELETED(blank) && manual.node_id == "basic_tools" && ("basic_tools" in collection.node_ids), "manual copy attempts leave the blank and knowledge intact")
+	knowledge_check(!ordinary.monk_copy_blank(), "an authorless journal with writing is not a blank input")
+	blank.page_busy = TRUE
+	knowledge_check(!blank.monk_copy_blank() && !blank.monk_copy_source_allowed(), "a book under a timed page action is not copied or consumed")
 
 // No clock (Val, 2026-11-10): book research starts at 5000 B.C. with no WW2
 // floor and no auto-research; only a finished capstone moves the era.

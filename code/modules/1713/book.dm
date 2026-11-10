@@ -16,6 +16,15 @@
 	var/const/deffont = "Verdana"
 	var/const/signfont = "Times New Roman"
 	flags = FALSE
+
+// Monk copying consumes its blank input and only copies ordinary writing.
+// Research chapters and unfinished research use the bench copying workflow.
+/obj/item/weapon/book/proc/monk_copy_source_allowed()
+	return !page_busy && !istype(src, /obj/item/weapon/book/node_book) && !istype(src, /obj/item/weapon/book/node_compendium) && !length(research_chapters) && !length(research_progress)
+
+/obj/item/weapon/book/proc/monk_copy_blank()
+	return !unique && !page_busy && !author && !title && !dat && !length(written_pages) && !length(research_chapters) && !length(research_progress) && !store && !length(contents)
+
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
 	if (dat)
 		user.examinate(src)
@@ -26,14 +35,24 @@
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
-		if (!B.author && user.religious_clergy == "Monks")
+		if (user.religious_clergy == "Monks")
+			if (!B.monk_copy_blank())
+				to_chat(user, SPAN_WARNING("Use a blank book to make a copy; [B] would be consumed."))
+				return
+			if (!monk_copy_source_allowed())
+				to_chat(user, SPAN_WARNING("[src] is busy or contains research that cannot be copied this way."))
+				return
 			to_chat(user, "You start copying \the [src]...")
 			if (do_after(user, 200, src))
+				if (QDELETED(src) || !user.Adjacent(src) || user.religious_clergy != "Monks" || !recipe_held(user, B) || !B.monk_copy_blank() || !monk_copy_source_allowed())
+					return
 				to_chat(user, "You finish copying \the [src].")
 				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 					var/obj/item/weapon/book/NC = src
 					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
 					NB.dat = NC.dat
+					if (islist(NC.written_pages))
+						NB.written_pages = NC.written_pages.Copy()
 					NB.due_date = NC.due_date
 					NB.author = NC.author
 					NB.unique = NC.unique
