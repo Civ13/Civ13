@@ -29,7 +29,8 @@ where the source declares one, matches every searched word, lists recipes whose
 name matches first, limits material recipes to the reader's own map catalog
 unless **Include other maps** is ticked, and marks recipes that still need
 research or have been retired by the current era. A resource page lists the
-recipes that make and use exactly that resource. See
+recipes that make and use exactly that resource, with its description, basic
+facts, first recipe and, for a workstation, the recipes made there. See
 [the reader notes](tgui/crafting-atlas.md#reader-view).
 
 ## Recipe families and variants

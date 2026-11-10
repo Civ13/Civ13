@@ -147,6 +147,33 @@ describe('Crafting Atlas navigation', () => {
     // The unedited catalog text stays available.
     expect(view.container.querySelector('.atlas-technical')!.textContent).toContain('Legacy research I/M/M');
   });
+  it('presents an item page as a small wiki entry with facts, its recipe, its workstation role and a wiki link', () => {
+    const props = ui({ query: '', detail: { ...recipe, station: 'iron anvil', station_id: '/obj/structure/anvil' }, guidance: { id: '/obj/structure/anvil', name: 'iron anvil', heading: 'How to obtain', routes: [],
+      kind: 'Structure', desc: 'A heavy iron anvil &amp; work tool.', stats: [{ label: 'Size', value: 'Large' }, { label: 'Armor', value: 'melee 5' }],
+      made_by_count: 2, used_in_count: 1, made_here_count: 244, made_by: [], used_in: [], made_here: [{ id: 'r9', name: 'Sword blade', era_label: '1: Bronze Age', needs: '2 x iron' }] } });
+    render(<CraftingAtlas {...props} />);
+    const page = screen.getByRole('article', { name: 'Resource' });
+    expect(within(page).getByRole('heading', { level: 2 }).textContent).toBe('iron anvil');
+    expect(page.textContent).toContain('A heavy iron anvil & work tool.');
+    expect(within(page).getByText('Structure')).toBeTruthy();
+    expect(within(page).getByText('Workstation')).toBeTruthy();
+    expect(within(page).getByText('Large').previousElementSibling?.textContent).toBe('Size');
+    expect(page.textContent).toContain('The first of its 2 recipes is shown below');
+    expect(within(page).getByRole('link', { name: 'Search the wiki for iron anvil' }).getAttribute('href')).toBe('https://civ13.github.io/civ13-wiki/?search=iron%20anvil');
+    // The item comes first, then how to make it.
+    const cards = screen.getAllByRole('article');
+    expect(cards.map(card => card.getAttribute('aria-label'))).toEqual(['Resource', 'Recipe']);
+    expect(screen.getByRole('heading', { name: 'Made here (244)' })).toBeTruthy();
+    fireEvent.click(within(cards[1]).getByRole('button', { name: 'Made at: iron anvil' }));
+    expect(sent(props)).toEqual({ route: 'resource', resource: '/obj/structure/anvil' });
+  });
+  it('says plainly when nothing makes an item', () => {
+    render(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { id: '/material/iron', name: 'iron', heading: 'How to obtain', routes: [], kind: 'Material', made_by_count: 0, used_in_count: 3, made_by: [], used_in: [] } })} />);
+    const page = screen.getByRole('article', { name: 'Resource' });
+    expect(page.textContent).toContain('No recipe makes this and no gathering route is recorded.');
+    expect(within(page).queryByText('Craftable')).toBeNull();
+    expect(within(page).getByText('Used in 3 recipes')).toBeTruthy();
+  });
   it('clears stale detail, guidance, symbols and draft state on a new empty response', () => {
     const props = ui({ guidance: { name: 'Old', heading: 'How to obtain', routes: [] } });
     const view = render(<CraftingAtlas {...props} />);
