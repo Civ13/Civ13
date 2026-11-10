@@ -1,0 +1,736 @@
+#define RESTART_COUNTER_PATH "data/round_counter.txt"
+#define MAX_TOPIC_LEN 100
+#define TOPIC_BANNED 1
+/*
+	The initialization of the game happens roughly like this:
+
+	1. All global variables are initialized; the global_init instance is created last.
+	2. The map is initialized, and map objects are created.
+	3. world/New() runs, creating the process scheduler (and the old master controller) and spawning their setup.
+	4. processScheduler/setup() runs, creating all the processes. game_controller/setup() runs, calling initialize() on all movable atoms in the world.
+	5. The gameticker is created.
+
+*/
+// The global_init instance is declared in code/global_init_last.dm, the last
+// file in civ13.dme, so every global it fills already holds its initial value.
+var/global/list/approved_list = list()
+var/global/list/whitelist_list = list()
+// Unavailable is distinct from a successfully published authoritative empty set.
+var/global/approved_list_ready = FALSE
+var/global/whitelist_list_ready = FALSE
+var/global/list/faction_list_blue = list()
+var/global/list/faction_list_red = list()
+var/global/list/faction_list_organizer = list()
+var/global/disable_campaign_whitelist = FALSE
+var/global/list/player_faction_list = list()
+var/global/list/craftlist_lists = list("global" = list())
+var/global/list/dictionary_list = list()
+
+#define DIRECT_OUTPUT(A, B) A << B
+#define SEND_TEXT(target, text) DIRECT_OUTPUT(target, text)
+/*
+	Pre-map initialization stuff should go here.
+*/
+/datum/global_init/New()
+	return
+	generate_gameid()
+
+	makeDatumRefLists()
+	load_configuration()
+
+	initialize_chemical_reagents()
+	initialize_chemical_reactions()
+
+	qdel(src) //we're done
+
+/datum/global_init/Destroy()
+	..()
+	return TRUE
+
+/var/game_id = null
+/proc/generate_gameid()
+	if (game_id != null)
+		return
+	game_id = ""
+
+	var/list/c = list("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+	var/l = c.len
+
+	var/t = world.timeofday
+	for (var/_ = TRUE to 4)
+		game_id = "[c[(t % l) + 1]][game_id]"
+		t = round(t / l)
+	game_id = "-[game_id]"
+	t = round(world.realtime / (10 * 60 * 60 * 24))
+	for (var/_ = TRUE to 3)
+		game_id = "[c[(t % l) + 1]][game_id]"
+		t = round(t / l)
+
+var/world_is_open = TRUE
+
+/world
+	mob = /mob/new_player
+	// Compiled maps type every cell. The default only fills a plane added at
+	// runtime (building_levels.dm, dug_underground.dm), so it is the empty
+	// open-air cell those levels start from, not dirt that is replaced again.
+	turf = /turf/sky/building
+	area = /area/caribbean
+	view = 7
+	cache_lifespan = FALSE	//stops player uploaded stuff from being kept in the rsc past the current session
+
+#define RECOMMENDED_VERSION 516
+/world/proc/unused_gameplay_packet_startup()
+	initialize_persistence_zones()
+	map_storage.record_compiled_dimensions()
+	// Detect before any startup yield, ticker setup or admission can run.
+	persistence_restart.detect_startup()
+
+	if (map && istype(map,/obj/map_metadata/nomads/persistence_beta))
+		loop_checks = FALSE
+	config.post_load()
+	// The outside save validator (save_validator.dm) checks a copied save and ends:
+	// nothing past this point (hub, scheduler, round, relays) may start.
+	if (persistence_validate_only_requested())
+		persistence_validate_only = TRUE
+		world.visibility = FALSE
+		persistence_run_validate_only()
+		return
+	// A standby world stays off the hub until a handover opens the region's port.
+	if (persistence_restart.standby)
+		world.visibility = FALSE
+
+	if (config && config.server_name != null && config.server_suffix && world.port > 0)
+		// dumb and hardcoded but I don't care~
+		config.server_name += " #[(world.port % 1000) / 100]"
+
+	world.SetConfig("APP/admin", ckey("Taislin"), "role=root")
+
+	// The compiled map's floors were placed with icon updates deferred (floor.dm).
+	floor_icon_updates_deferred = FALSE
+	var/floor_icons_started = world.timeofday
+	var/floor_icons = refresh_deferred_floor_icons()
+	world.log << "Floor icons: [floor_icons] floors refreshed once in [round((world.timeofday - floor_icons_started) / 10, 0.1)] s."
+
+	callHook("startup")
+	//Emergency Fix
+//	load_mods()
+	//end-emergency fix
+
+	lobby_titlecard = new /datum/titlecard()
+	lobby_titlecard.set_pregame_html()
+	
+	update_status()
+
+
+
+	// This is kinda important. Set up details of what the hell things are made of.
+	populate_material_list()
+	// Build the shared research-tree node registry (faction-agnostic).
+	build_research_tree()
+	processScheduler = new
+	// SStimer: addtimer() callbacks such as full-auto fire.
+	Master.start_timer_loop()
+
+	var/datum/persistence_area_startup/area_startup = new
+	persistence_area_startup_token = area_startup
+	var/game_ready_hook = text2path("/proc/game_ready_startup_event")
+	var/datum/startup_context = game_ready_hook ? call(game_ready_hook)("begin", area_startup) : null
+	spawn(1)
+		var/scheduler_ready = FALSE
+		try
+			processScheduler.deferSetupFor (/process/ticker)
+			scheduler_ready = processScheduler.setup()
+			setup_everything(area_startup)
+		catch(var/exception/E)
+			if(game_ready_hook) call(game_ready_hook)("initialization_failed", startup_context)
+			area_startup.close()
+			throw E
+		area_startup.close()
+		world_setup_finished = TRUE
+		if(game_ready_hook) call(game_ready_hook)("initialization_complete", startup_context, scheduler_ready == TRUE)
+//		master_controller.setup()
+#ifdef UNIT_TEST
+		initialize_unit_tests()
+#endif
+
+	spawn (2)
+
+		// removed the 'sleep_offline' = TRUE here, it interferes with serverswap - kachnov
+		#ifdef UNIT_TEST
+			log_unit_test("Unit Tests Enabled.  This will destroy the world when testing is complete.")
+			load_unit_test_changes()
+		#endif
+
+		world.log = file("data/logs/runtime/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-runtime.txt")
+		world.log << "STARTED RUNTIME LOGGING"
+
+		attack_log = file("data/logs/attack/[time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)")]-attack.log")
+		attack_log << "STARTED ATTACK LOGGING"
+
+		//logs
+		var/date_string = time2text(world.realtime, "YYYY/MM-Month/DD-Day")
+		href_logfile = file("data/logs/[date_string]-hrefs.htm")
+		diary = file("data/logs/[date_string].log")
+		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
+		if (byond_version < RECOMMENDED_VERSION)
+			diary << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND."
+
+	spawn(3000)		//so we aren't adding to the round-start lag
+		if (config.ToRban)
+			ToRban_autoupdate()
+
+#undef RECOMMENDED_VERSION
+
+	return
+
+var/world_topic_spam_protect_ip = "0.0.0.0"
+var/world_topic_spam_protect_time = world.timeofday
+
+// todo: add aspect to this
+/world/proc/replace_custom_hub_text(T)
+
+	if (!ticker)
+		return ""
+
+	// numerical constants
+	T = replacetext(T, "{CLIENTS}", clients.len) // # of clients
+	T = replacetext(T, "{PLAYERS}", player_list.len) // # of mobs w/ clients
+	T = replacetext(T, "{MOBS}", mob_list.len) // # of mobs
+	T = replacetext(T, "{LIVING}", living_mob_list.len) // # of /mob/living
+	T = replacetext(T, "{HUMAN}", human_mob_list) // # of humans
+	T = replacetext(T, "{HUMAN_CLIENTS}", human_clients_mob_list) // # of humans w/clients
+	T = replacetext(T, "{DEAD}", dead_mob_list.len) // # of dead mobs
+	T = replacetext(T, "{OBSERVERS}", observer_mob_list.len) // # of observers w/clients
+	T = replacetext(T, "{ROUNDTIME}", roundduration2text())
+	// UPPERCASE constants
+	T = replacetextEx(T, "{TIMEOFDAY}", uppertext(time_of_day))
+	T = replacetextEx(T, "{SEASON}", uppertext(season))
+	T = replacetextEx(T, "{MAP}", uppertext(map.title)) // name of the map
+	// Capitalized constants - no change
+	T = replacetextEx(T, "{Timeofday}", time_of_day)
+	T = replacetextEx(T, "{Season}", season)
+	T = replacetextEx(T, "{Map}", map.title) // name of the map
+	// lowercase constants
+	T = replacetextEx(T, "{timeofday}", lowertext(time_of_day))
+	T = replacetextEx(T, "{season}", lowertext(season))
+	T = replacetextEx(T, "{map}", lowertext(map.title)) // name of the map
+
+	return T
+
+/world/Topic(T, addr, master, key)
+// Пока без тгс
+//	TGS_TOPIC	//redirect to server tools if necessary
+
+	var/static/list/bannedsourceaddrs = list()
+
+	var/static/list/lasttimeaddr = list()
+	var/static/list/topic_handlers = TopicHandlers()
+
+	if (persistence_validate_only)
+		return
+
+	//LEAVE THIS COOLDOWN HANDLING IN PLACE, OR SO HELP ME I WILL MAKE YOU SUFFER
+	if (bannedsourceaddrs[addr])
+		return
+
+	var/list/filtering_whitelist = config.topic_filtering_whitelist
+	var/host = splittext_char(addr, ":")
+	if(!(host[1] in filtering_whitelist)) // Supports the configured positional host list and associative keys.
+		if(length_char(T) >= MAX_TOPIC_LEN)
+			/*log_admin_private("*/
+			diary << "TOPIC: [addr] banned from topic calls for a round for too long status message"
+			bannedsourceaddrs[addr] = TOPIC_BANNED
+			return
+
+		if(lasttimeaddr[addr])
+			var/lasttime = lasttimeaddr[addr]
+			if(world.time < lasttime)
+				/*log_admin_private("*/
+				diary << "TOPIC: [addr] banned from topic calls for a round for too frequent messages"
+				bannedsourceaddrs[addr] = TOPIC_BANNED
+				return
+
+		lasttimeaddr[addr] = world.time + 1200 //2 секунды
+
+	var/list/input = params2list(T)
+	// Lifecycle credentials never enter generic Topic logging or dispatch.
+	if("nomads_lifecycle" in input)
+		return nomads_lifecycle.handle(input, addr)
+	if("agent_control" in input)
+		return agent_control.handle(input, addr)
+	var/datum/world_topic/handler
+	for(var/I in topic_handlers)
+		if(I in input)
+			handler = topic_handlers[I]
+			break
+
+	if((!handler || initial(handler.log)) && config) //&& CONFIG_GET(flag/log_world_topic))
+		diary << "TOPIC: \"[T]\", from:[addr], master:[master], key:[key]"
+
+	if(!handler)
+		return
+
+	handler = new handler()
+	return handler.TryRun(input)
+
+
+/world/Reboot(var/reason, recovery_generation)
+	if(recovery_generation)
+		if(!persistence_restart.busy || persistence_restart.startup_hold || recovery_generation != persistence_restart.expected_generation || trim(file2text("map_saves/save_complete.txt")) != recovery_generation)
+			return FALSE
+#ifndef OPENDREAM
+		// Parent reboot performs native shutdown/relogin. Do not stop the
+		// scheduler here: a returned/rejected restart must leave it running.
+		return ..(reason)
+#else
+		return FALSE
+#endif
+	if(persistence_restart.busy || persistence_restart.startup_hold)
+		message_admins("Reboot blocked by save/restart recovery; inspect the recovery transaction first.")
+		return FALSE
+	#ifdef OPENDREAM
+	if (!opendream_control_request("restart"))
+		log_debug("OpenDream restart rejected: no available local supervisor.")
+	return
+	#endif
+
+	/* Wait for serverswap to do its magic
+	 * this was 50 but now it's 70 to let the entire JOJO meme play even when the server restarts quickly
+	 * because sometimes it takes 1 second to restart other times 30 seconds :thinking: - Kachnov */
+	spawn (150)
+		if(persistence_restart.busy || persistence_restart.startup_hold) return
+
+		var/sleeptime = 0
+		// A TDM battle world sends everyone back to its barracks instead, then
+		// waits for the next voted map to finish compiling (tdm_barracks/battle.dm).
+		if(tdm_battle_active())
+			tdm_battle.before_reboot()
+		else
+			to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
+
+		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
+		// sleep(0) yields too. A transaction can acquire ownership while the
+		// ordinary reboot callback is asleep; check at the shutdown boundary.
+		if(persistence_restart.busy || persistence_restart.startup_hold) return
+		if (processScheduler) // just in case
+			processScheduler.stop() // will be started again after the serverswap occurs
+		..(reason)
+
+#define COLOR_LIGHT_SEPIA "#D4C6B8"
+
+/proc/log_world(text)
+	SEND_TEXT(world.log, text)
+
+/hook/startup/proc/loadMOTD()
+	world.load_motd()
+	return TRUE
+
+/world/proc/load_motd()
+	join_motd = file2text("config/motd.txt")
+
+/proc/load_configuration()
+	config = new /datum/configuration()
+	config.load("config/config.txt", "config")
+
+// Escape literal listing text and attributes without BYOND's URL auto-detection.
+/proc/hub_status_text(value)
+	var/text = "[value]"
+	text = replacetext(text, "&", "&amp;")
+	text = replacetext(text, "<", "&lt;")
+	text = replacetext(text, ">", "&gt;")
+	text = replacetext(text, "\"", "&quot;")
+	text = replacetext(text, "'", "&#39;")
+	return text
+
+// Only absolute HTTP(S) links with a conservative ASCII URL alphabet belong here.
+/proc/hub_status_link(url, label, open_new_window = FALSE)
+	if (!istext(url))
+		return ""
+	var/authority_start
+	if (copytext(url, 1, 9) == "https://")
+		authority_start = 9
+	else if (copytext(url, 1, 8) == "http://")
+		authority_start = 8
+	else
+		return ""
+	var/authority_end = length(url) + 1
+	for (var/delimiter in list("/", "?", "#"))
+		var/delimiter_position = findtext(url, delimiter, authority_start)
+		if (delimiter_position && delimiter_position < authority_end)
+			authority_end = delimiter_position
+	if (authority_start == authority_end)
+		return ""
+	for (var/i = 1, i <= length(url), i++)
+		var/character = lowertext(copytext(url, i, i + 1))
+		if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789-._~:/?#@!$&()*+,;=%", character))
+			return ""
+		if (i >= authority_start && i < authority_end)
+			if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789.-:", character))
+				return ""
+	var/target = ""
+	if (open_new_window)
+		target = " target=\"_blank\" rel=\"noopener noreferrer\""
+	return "<a href=\"[hub_status_text(url)]\"[target]>[hub_status_text(label)]</a>"
+
+// Only fixed public labels leave this snapshot. Never include error strings,
+// file paths, coordinates, sessions, operation IDs or diagnostic payloads.
+/proc/player_status_observation()
+	var/datum/persistence_world_operation/P = persistence_active_operation
+	var/recovery_hold = persistence_load_recovery_required
+	if(map_storage && (map_storage.dimension_recovery_required || map_storage.dimension_budget_hold)) recovery_hold = TRUE
+	if(persistence_startup_recovery_status == "unresolved" && !(P && P.kind == "load")) recovery_hold = TRUE
+	if(persistence_restart && ((persistence_restart.diagnostic_phase == "failed" && (persistence_restart.startup_hold || persistence_save_in_progress)) || (persistence_restart.diagnostic_phase == "readiness_unconfirmed" && !persistence_player_restore_ready))) recovery_hold = TRUE
+	return list(
+		"recovery_hold" = !!recovery_hold,
+		"kind" = P ? P.kind : null,
+		"phase" = P ? P.diagnostic_phase : null,
+		"startup_pending" = persistence_startup_recovery_status == "pending",
+		"restart_hold" = persistence_restart ? !!persistence_restart.startup_hold : FALSE,
+		"restart_busy" = persistence_restart ? !!persistence_restart.busy : FALSE,
+		"restart_phase" = persistence_restart ? persistence_restart.diagnostic_phase : null,
+		"standby" = persistence_restart ? !!persistence_restart.standby : FALSE,
+		"moving" = !!world_moving,
+		"persistence_busy" = !!persistence_save_in_progress,
+		"lifecycle_busy" = nomads_lifecycle ? !!nomads_lifecycle.busy : FALSE,
+		"maintenance_pending" = nomads_lifecycle ? !!nomads_lifecycle.maintenance_operation : FALSE,
+		"ticker_known" = !!ticker,
+		"map_known" = !!map,
+		"round_state" = ticker ? ticker.current_state : null,
+		"players_can_join" = ticker ? !!ticker.players_can_join : FALSE,
+		"entry_status" = !GLOB ? "unknown" : (GLOB.enter_allowed ? "open" : "locked"),
+		"character_unconfirmed" = !!(map && map_storage && persistence_bed_return_enabled() && (!persistence_player_restore_ready || map_storage.player_restoration_blocked()))
+	)
+
+/proc/player_world_activity(list/state)
+	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["moving"]) return "The world is moving to the updated server."
+	if(state["standby"]) return "Standby server is waiting for the world to move over."
+	if(state["kind"] == "save")
+		if(state["phase"] == "admitted") return "Preparing a world save."
+		if(state["phase"] == "candidate_validation") return "Validating the world save."
+		if(state["phase"] == "write_marker") return "Finishing the world save."
+		return "Saving the world."
+	if(state["kind"] == "load")
+		if(state["phase"] == "preflight" || state["phase"] == "allocate_levels") return "Validating and preparing the saved world."
+		if(state["phase"] == "metadata") return "Restoring world state."
+		if(state["phase"] == "players") return "Restoring player readiness."
+		return "Loading the saved world."
+	if(state["startup_pending"] || state["restart_hold"]) return "Preparing world recovery."
+	if(state["restart_busy"])
+		if(state["restart_phase"] == "notice") return "Maintenance is scheduled."
+		if(state["restart_phase"] == "post_save_validation" || state["restart_phase"] == "final_validation") return "Validating the saved world."
+		if(state["restart_phase"] == "intent_publication") return "Preparing the saved world for restart."
+		if(state["restart_phase"] == "shutdown") return "Server shutdown is in progress."
+		return "World maintenance is in progress."
+	if(state["lifecycle_busy"]) return "Preparing a save and shutdown."
+	if(state["maintenance_pending"]) return "Maintenance requested, shutdown is not yet confirmed."
+	if(state["persistence_busy"]) return "World work is in progress."
+	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting."
+	return "Server is running."
+
+/proc/player_join_status(list/state)
+	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["moving"] || state["standby"]) return "The world is moving to the updated server - reconnect in a few minutes."
+	if(state["kind"] == "load") return "World is loading - please wait before joining."
+	if(state["kind"] == "save") return "World is saving - joining may be delayed."
+	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."
+	if(state["restart_busy"]) return "Maintenance may affect joining - please wait."
+	if(state["persistence_busy"] || state["lifecycle_busy"]) return "World work is in progress - joining may be delayed."
+	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting - please wait."
+	if(state["round_state"] < GAME_STATE_PLAYING) return "Round has not started - please wait."
+	if(state["round_state"] != GAME_STATE_PLAYING) return "Round has finished - wait for the next round."
+	if(!state["players_can_join"]) return "Joining is temporarily unavailable."
+	if(state["entry_status"] == "unknown") return "Joining status is unavailable."
+	if(state["entry_status"] == "locked") return "Joining is locked by an administrator."
+	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
+	return "Round is open - account, character and role checks still apply."
+
+/world/proc/update_status()
+
+	if (world.port == config.testing_port)
+		visibility = FALSE
+
+	var/s = ""
+
+	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
+	if (!server_title)
+		server_title = hub_status_text(customserver_name())
+	s += "<center><b>[server_title]</b></center><br>"
+
+	var/list/community_links = list()
+	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
+	var/website_link = hub_status_link(config.websiteurl, "Website")
+	if (discord_link)
+		community_links += discord_link
+	if (website_link)
+		community_links += website_link
+	if (community_links.len)
+		s += "[jointext(community_links, " | ")]<br>"
+
+	if (config.hub_banner_url)
+		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
+	if (map)
+		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
+	var/list/player_status = player_status_observation()
+	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
+	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
+
+	// we can't execute code in config settings, so this is a workaround.
+	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
+	if (map)
+		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
+	if (config.hub_body)
+		s += config.hub_body
+
+	status = s
+
+/proc/get_packaged_server_status_data()
+	. = ""
+	. += "<b>Server Status</b>: Online"
+	var/list/player_status = player_status_observation()
+	. += ";"
+	. += "<b>Address</b>: byond://[world.internet_address]:[world.port]"
+	. += ";"
+	. += "<b>Map</b>: [map ? map.title : "???"]"
+	. += ";"
+	. += "<b>Gamemode</b>: [map ? map.gamemode : "???"]"
+	. += ";"
+	. += "<b>Players</b>: [clients.len]" // turns out the bot only considers itself a player sometimes? its weird. Maybe it was fixed, not sure - Kachnov
+	if (config.useapprovedlist)
+		. += ";"
+		. += "<b>Approved only</b>: Enabled"
+	. += ";"
+	. += "realtime=[num2text(world.realtime, 20)]"
+	. += ";"
+	. += "world.address=[world.address]"
+	. += ";"
+	. += "round_timer=[roundduration2text()]"
+	. += ";"
+	if (map)
+		. += "map=[map.title]"
+		. += ";"
+		. += "epoch=[map.age]"
+		. += ";"
+		. += "season=[get_season()]"
+		. += ";"
+	. += "ckey_list=[list2params(clients)]"
+	. += ";"
+	. += "allow_vote_restart=[config.allow_vote_restart?"1":"0"]"
+	. += ";"
+	// Append new fields after the legacy positional record used by existing bots.
+	. += "<b>World activity</b>: [player_world_activity(player_status)];"
+	. += "<b>Joining</b>: [player_join_status(player_status)];"
+
+
+/proc/start_serverdata_loop()
+	var/last_player_status
+	spawn while (1)
+		var/list/player_status = player_status_observation()
+		var/current_player_status = "[player_world_activity(player_status)]|[player_join_status(player_status)]"
+		if(current_player_status != last_player_status)
+			world.update_status()
+			last_player_status = current_player_status
+		var/F = file("serverdata.txt")
+		if (fexists("serverdata.txt"))
+			fdel(F)
+		F << get_packaged_server_status_data()
+		sleep (100)
+
+var/global/nextsave = 0
+var/global/persistence_reboot_scheduled = FALSE
+// Automatic saves never run during active play (Val, 2026-11-05). They wait
+// until no one but the host is online; admins can still save by hand, and
+// players can vote for a save (see persistence_save_vote_block_reason()).
+var/global/persistence_played_since_save = FALSE
+var/global/persistence_empty_since = 0
+var/global/persistence_reboot_due = FALSE
+#define PERSISTENCE_EMPTY_SAVE_DELAY 3000 // 5 minutes empty before the catch-up save
+
+// Clients other than the host (config/host.txt or the hosting key).
+/proc/persistence_active_players()
+	var/host = fexists("config/host.txt") ? ckey(file2text("config/host.txt")) : null
+	var/count = 0
+	for (var/client/C in clients)
+		if (C.ckey && C.ckey != host && C.key != world.host)
+			count++
+	return count
+
+/proc/start_persistence_loop()
+	if (! config.skip_persistence_saving)
+		spawn(300)
+			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
+				// First save is one full interval after the round starts, not at round start.
+				if (!nextsave)
+					nextsave = world.realtime + 216000
+				if (persistence_active_players())
+					// Hold every automatic save while people are playing.
+					persistence_played_since_save = TRUE
+					persistence_empty_since = 0
+				else
+					// The empty timer restarts while any save runs. Pulling the
+					// schedule in during a save started a second save as soon as
+					// it finished, and a failed one was retried every loop.
+					if (!persistence_empty_since || persistence_save_active())
+						persistence_empty_since = world.realtime
+					// Save the session soon after the last player leaves.
+					if (!persistence_save_active() && persistence_played_since_save && world.realtime - persistence_empty_since >= PERSISTENCE_EMPTY_SAVE_DELAY)
+						nextsave = min(nextsave, world.realtime)
+					// Only the host can be online here; warn from the actual schedule.
+					var/save_in = round((nextsave - world.realtime) / 10)
+					if (save_in > 0 && save_in <= 120)
+						to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
+					if (nextsave <= world.realtime && !persistence_save_active())
+						nextsave = world.realtime + 216000
+						spawn(0)
+							ticker.savemap()
+				// BYOND never returns freed memory to the OS, so a world that runs for days
+				// eventually hits the process memory ceiling and crashes. Once a day, save the
+				// map and reboot; setup_everything() restores the save on startup.
+				// The world.time check keeps a freshly restarted server from rebooting again
+				// within the same clock hour. Like the periodic save, it waits for an empty server.
+				if (config.persistence_reboot_hour >= 0 && !persistence_reboot_scheduled)
+					if (text2num(time2text(world.realtime,"hh")) == config.persistence_reboot_hour && world.time > 36000)
+						persistence_reboot_due = TRUE
+					if (persistence_reboot_due && !persistence_active_players())
+						persistence_reboot_scheduled = TRUE
+						spawn(0)
+							persistence_maintenance_reboot()
+			start_persistence_loop()
+
+/proc/persistence_maintenance_reboot()
+	to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart for scheduled maintenance in 5 minutes.</b></font>")
+	sleep(2400)
+	to_chat(world, "<font color='yellow' size=4><b>Attention - Saving and restarting in 1 minute. The world will resume from this save after the restart.</b></font>")
+	sleep(600)
+	nextsave = world.realtime + 216000 // suppress the periodic save around the reboot
+	if (ticker && ticker.savemap(null, null, TRUE) && fexists("map_saves/save_complete.txt"))
+		to_chat(world, "<font color='yellow' size=4><b>Save complete. Rebooting - you can reconnect in a minute or two.</b></font>")
+		sleep(100)
+		world.Reboot("Scheduled persistence maintenance reboot.")
+	else
+		// Deliberately NOT clearing persistence_reboot_scheduled: the loop
+		// re-checks every 30s, so clearing it would re-announce "restarting in
+		// 5 minutes" and re-attempt a full save for the rest of the hour. The
+		// flag resets on the next successful reboot; until then admins decide.
+		message_admins("Scheduled maintenance reboot aborted: the map save did not complete. The server keeps running, but memory will not be reclaimed until it is manually saved and rebooted.")
+
+/proc/start_messaging_loop()
+	spawn while (1)
+		var/F = file("SQL/discord2ooc.txt")
+		if (fexists(F))
+			var/list/messages_read = splittext(file2text(F), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					// Discord text is untrusted: escape it like in-game OOC (45/1024 chars; the length defines load after world.dm).
+					var/dsender = sanitize(copytext_char(tempmsg[1], 1, 46), 0)
+					var/dtext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
+					if (!dsender || !dtext)
+						continue
+					discord_ooc_show(dsender, dtext)
+					// The bot writes this file for one world only; that world hands the line on (region_ooc.dm).
+					region_ooc_outbound_discord(dsender, dtext)
+					//to_chat(world, "<span class = 'ping'><small>["\["]DISCORD["\]"]</small></span> <span class='deadsay'><b>[tempmsg[1]]</b>:</span> [tempmsg[2]]")
+			fdel(F)
+			to_chat(F, "")
+
+		var/G = file("SQL/discord2admin.txt")
+		if (fexists(G))
+			var/list/messages_read = splittext(file2text(G), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+
+					for (var/client/C in admins)
+						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
+							to_chat(C, "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>")
+					log_discord_asay(msg)
+			fdel(G)
+			to_chat(G, "")
+
+		var/H = file("SQL/discord2dm.txt")
+		if (fexists(H))
+			var/list/messages_read = splittext(file2text(H), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 3)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					for(var/client/C in clients)
+						if (C.ckey == temp_ckey)
+							cmd_admin_pm_fromdiscord(C, tempmsg[3], tempmsg[1])
+			fdel(H)
+			to_chat(H, "")
+
+		var/I = file("SQL/discord2ban.txt")
+		if (fexists(I))
+			var/list/messages_read = splittext(file2text(I), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 4)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					//ckey to ban, duration, ban reason, who banned
+					if (quickBan_discord(temp_ckey, tempmsg[3], tempmsg[4], tempmsg[1]) == "successful.")
+						discord_admin_ban(tempmsg[1],temp_ckey,tempmsg[3],tempmsg[4])
+			fdel(I)
+			to_chat(I, "")
+		var/J = file("SQL/discord2unban.txt")
+		if (fexists(J))
+			var/list/messages_read = splittext(file2text(J), "\n")
+			for(var/msg in messages_read)
+				var/list/tempmsg = splittext(msg, ":::")
+				if (tempmsg.len == 2)
+					var/temp_ckey = lowertext(tempmsg[2])
+					temp_ckey = replacetext(temp_ckey," ", "")
+					temp_ckey = replacetext(temp_ckey,"_", "")
+					discord_admin_unban(tempmsg[1],temp_ckey)
+			fdel(J)
+			to_chat(J, "")
+		sleep (100)
+
+/proc/start_serverswap_loop()
+	spawn while (1)
+
+		try
+
+			// make sure processScheduler is running when the world starts up
+			if (!processScheduler.isRunning)
+				processScheduler.start()
+				message_admins("The process scheduler has been started. There are [processes.get_num_processes()] active processes.")
+				log_admin("processScheduler.start() was called at start_serverswap_loop().")
+
+			// some sanity for the processScheduler
+			if (processScheduler.last_process != -1 && world.time - processScheduler.last_process >= processScheduler.scheduler_sleep_interval*300)
+				processScheduler.start()
+
+
+			// make sure movementMachine is running when the world starts up
+			if (!movementMachine)
+				movementMachine = new
+				movementMachine.start()
+				message_admins("The movement scheduler has been started.")
+				log_admin("movementMachine.start() was called at start_serverswap_loop().")
+
+			// some sanity for the movementMachine
+			if (movementMachine.last_run != -1 && world.time - movementMachine.last_run >= movementMachine.interval*300)
+				movementMachine.start()
+
+		catch(var/exception/e)
+			log_debug("Exception in serverswap loop: [e.name]/[e.desc]")
+
+		sleep(10)
+
+/world/proc/on_tickrate_change()
+	SStimer.reset_buckets()
+
+/world/proc/change_fps(new_value = 20)
+	if(new_value <= 0)
+		CRASH("change_fps() called with [new_value] new_value.")
+	if(fps == new_value)
+		return //No change required.
+
+	fps = new_value
+	on_tickrate_change()
