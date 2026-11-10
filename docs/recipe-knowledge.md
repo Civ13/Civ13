@@ -60,6 +60,25 @@ decision. With it on:
   Research essentials need the node's groundwork instead of a manual.
 - No first-node manual is produced and enabling the flag grants nothing to
   existing bodies.
+- Older research checks outside crafting (trenches, irrigation, kilns,
+  gunsmithing, slipways, workshops, the tablet press, safehouse upgrades,
+  specialist traders, factory fabricators) go through `research_node_known(H,
+  node)`, which is the character's knowledge in book mode and faction research
+  otherwise.
+
+### Scholarship skills (phase 2)
+
+`scholarship.dm` adds per-character discipline levels (0-100), saved on the
+body as `scholarship` and cleared on death: Basic Mathematics, Engineering,
+Natural Science, Medicine, Agriculture and Military Science. Each node has a
+discipline (`node_discipline()`: category default plus
+`scholar_node_disciplines` overrides) and needs `era_tier * 12` in it plus
+half that in Basic Mathematics before anyone can progress it at a bench.
+Skill above the requirement speeds research up to double. Each bench tick
+gives the researcher `SCHOLAR_RESEARCH_GAIN` and each studied chapter
+`SCHOLAR_STUDY_GAIN`, reduced for work far below their level; half also goes
+to Basic Mathematics. Studying needs no skill. The `Check scholarship` verb
+lists the levels and the bench shows each node's requirement.
 
 ## Verification
 

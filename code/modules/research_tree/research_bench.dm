@@ -484,6 +484,8 @@ var/global/list/research_benches = list()
 						var/datum/research_node/RN = get_research_node(req)
 						missing += RN ? RN.name : req
 				detail = missing.len ? "Requires: [jointext(missing, ", ")]" : "Requires an earlier era"
+		if (book_mode && status != RNODE_DONE)
+			detail = "[detail]. [H.scholar_requirement_text(node_id)]"
 		var/mode_text = "Passive study"
 		if (N.mode == RESEARCH_MODE_PROTOTYPE)
 			mode_text = "Prototype"

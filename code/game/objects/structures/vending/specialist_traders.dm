@@ -206,7 +206,7 @@ var/global/list/specialist_trader_sell_floor = null
 	var/node = get_recipe_node_req("[entry[1]]")
 	if (!node)
 		return TRUE
-	return map.is_node_done(H ? H.civilization : null, node)
+	return research_node_known(H, node)
 
 // Better terms from the buyer's party's safe house contacts desk: 5% a level
 // on what dealers pay, and 5% a level off what they charge.

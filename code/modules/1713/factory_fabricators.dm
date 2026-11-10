@@ -215,6 +215,11 @@ var/global/list/factory_active_fabricators = list()
 		to_chat(H, SPAN_WARNING("Fix \the [src] in place with a wrench first."))
 		return
 	var/list/choices = available_recipes(H.civilization)
+	if (map && map.book_research_enabled())
+		for (var/recipe_choice in choices.Copy())
+			var/datum/factory_recipe/KR = factory_get_recipes()[recipe_choice]
+			if (KR && !research_node_known(H, KR.node))
+				choices -= recipe_choice
 	if (!choices.len)
 		to_chat(H, SPAN_WARNING("Your faction has not researched any recipe this fabricator can make."))
 		return
