@@ -44,6 +44,7 @@ var/global/body_runtime_error = FALSE
 	if(!islist(value)) return TRUE
 	var/list/V = value
 	switch(V["kind"])
+		if("body_local_icon") return V.len == 2 && isnum(V["ref"]) && V["ref"] >= 1
 		if("body_species") return V.len == 2 && V["name"] == "Human"
 		if("body_empty_filters") return V.len == 1
 		if("value") return !islist(V["value"])
@@ -143,6 +144,10 @@ var/global/body_runtime_error = FALSE
 	if(arm)
 		arm.brute_dam = 17
 		arm.createwound(CUT, 17)
+	var/custom_icon_pixel = null
+	if(arm && arm.mob_icon)
+		arm.mob_icon.DrawBox("#13a5c7", 1, 1, 1, 1)
+		custom_icon_pixel = arm.mob_icon.GetPixel(1, 1)
 	var/obj/item/extraction_salvage/cargo = new(H)
 	cargo.name = "Body fixture carried item"
 	body_check("real_human_has_organs_and_wound", arm && arm.wounds.len && H.organs.len && H.dna && cargo.loc == H)
@@ -162,12 +167,23 @@ var/global/body_runtime_error = FALSE
 		var/list/root = dangling["entries"][dangling["root"]]
 		root["organs"] = G.to_wire(list("kind" = "list", "ref" = 999999))
 	body_check("dangling_reference_rejected", !body_document_closed(dangling, TRUE))
+	if(arm && arm.mob_icon) arm.mob_icon.DrawBox("#c7a513", 1, 1, 1, 1)
 	var/obj/effect/train_body_quarantine/Q = G.restore_local_capture(human_text)
 	body_check("owned_body_quarantined", Q && Q.body && Q.body.loc == Q && !Q.body.client && !Q.loc)
 	var/mob/living/human/restored = Q ? Q.body : null
 	body_check("species_registry_identity_roundtrip", restored && restored.species == canonical)
 	var/obj/item/organ/external/restored_arm = restored ? restored.get_organ("l_arm") : null
 	body_check("injury_roundtrip", restored_arm && restored_arm.brute_dam == 17 && restored_arm.wounds.len)
+	body_check("custom_organ_icon_snapshot_roundtrip", restored_arm && restored_arm.mob_icon && custom_icon_pixel && restored_arm.mob_icon.GetPixel(1, 1) == custom_icon_pixel && arm.mob_icon.GetPixel(1, 1) != custom_icon_pixel)
+	var/datum/save_export_frame/wrong_icon_frame = new
+	wrong_icon_frame.source = cargo
+	wrong_icon_frame.current_field = "icon"
+	var/wrong_icon_rejected = FALSE
+	try
+		G.capture_organ_icon(arm.mob_icon, wrong_icon_frame)
+	catch(var/exception/E)
+		wrong_icon_rejected = findtext("[E]", "Unsupported native icon field")
+	body_check("nonorgan_icon_field_rejected", wrong_icon_rejected)
 	var/obj/item/organ/external/head/restored_head = restored ? restored.get_organ("head") : null
 	var/obj/item/stack/teeth/human/restored_teeth = restored_head ? locate(/obj/item/stack/teeth/human) in restored_head : null
 	body_check("human_teeth_count_roundtrip", source_teeth && restored_teeth && source_teeth.amount == 23 && restored_teeth.amount == 23)

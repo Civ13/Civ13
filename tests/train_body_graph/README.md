@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 30-check probe constructs real production owned/injured humans with organs,
+The 32-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -93,3 +93,14 @@ compiled default limb name; limb paths, keys, membership and extra fields still
 reject. Rejections include field paths (never character values). Two further
 checks cover canonical metadata after actual human construction and refusal of
 a changed descriptor. The native rerun remains pending.
+
+84bf08 reached 19/30 checks without runtime errors; human/corpse next rejected
+external-organ mob_icon. Source audit: organ_icon.dm composes colors and custom
+art into mob_icon then assigns icon=mob_icon. Rather than drop or regenerate
+custom pixels, the local adapter now clones only these exact organ renderer
+icons into same-instance pins. Maximum 64 icons, 128x128 dimensions and 64 states
+per icon; native cloning preserves directions/animation frames without flattening.
+This does not establish a compressed-size/frame-count bound or remote portable
+asset representation. A new assertion changes a source pixel after capture and
+requires the restored custom pixel to retain its snapshot value; another rejects
+non-organ icon authority. Both are pending native execution.

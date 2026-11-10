@@ -17,6 +17,9 @@
 	var/tmp/datum/species/human/species_baseline
 	var/tmp/metadata_checks = 0
 	var/tmp/metadata_error = null
+	var/tmp/list/local_icon_sources = list()
+	var/tmp/list/local_icon_copies = list()
+	var/tmp/list/restored_icon_copies = list()
 
 /map_storage/train_body_graph/proc/admitted_type(path)
 	if(path == /mob/living/human || ispath(path, /mob/living/simple_animal)) return TRUE
@@ -133,7 +136,30 @@
 	metadata_error = null
 	return metadata_equal(S, species_baseline)
 
+// Native icon copies are process-local capabilities, never resource payloads.
+// Keep states/directions/frames/custom pixels intact; do not flatten to pixels.
+// Existing renderer can share mob_icon and icon, so retain those aliases.
+/map_storage/train_body_graph/proc/capture_organ_icon(icon/I, datum/save_export_frame/frame)
+	if(!frame || !istype(frame.source, /obj/item/organ/external) || !(frame.current_field in list("mob_icon", "icon")))
+		throw EXCEPTION("Unsupported native icon field from [body_source_context()]")
+	var/obj/item/organ/external/O = frame.source
+	if(I != O.mob_icon) throw EXCEPTION("Native icon differs from organ renderer icon")
+	if(I.Width() < 1 || I.Height() < 1 || I.Width() > 128 || I.Height() > 128 || length(icon_states(I)) > 64)
+		throw EXCEPTION("Organ icon exceeds local copy bounds")
+	var/ref = local_icon_sources.Find(I)
+	if(!ref)
+		if(local_icon_copies.len >= 64) throw EXCEPTION("Too many local organ icons")
+		local_icon_sources += I
+		local_icon_copies += icon(I)
+		ref = local_icon_copies.len
+	return list("kind" = "body_local_icon", "ref" = ref)
+
 /map_storage/train_body_graph/decode_saved_value(savefile/F, list/value)
+	if(islist(value) && value["kind"] == "body_local_icon")
+		var/ref = value["ref"]
+		if(value.len != 2 || !body_ref(ref, local_icon_copies.len)) throw EXCEPTION("Invalid local icon reference")
+		if(!restored_icon_copies["[ref]"]) restored_icon_copies["[ref]"] = icon(local_icon_copies[ref])
+		return restored_icon_copies["[ref]"]
 	if(islist(value) && value["kind"] == "body_species")
 		if(value.len != 2 || value["name"] != "Human" || !local_species || all_species["Human"] != local_species)
 			throw EXCEPTION("Canonical local species changed")
@@ -152,6 +178,7 @@
 			local_species = value
 		return list("kind" = "body_species", "name" = "Human")
 	var/datum/save_export_frame/frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	if(istype(value, /icon)) return capture_organ_icon(value, frame)
 	if(frame && frame.current_field == "filters" && istype(frame.source, /atom))
 		var/atom/owner = frame.source
 		if(length(owner.filters) || length(value)) throw EXCEPTION("Nonempty native filters are not supported")
@@ -209,6 +236,9 @@
 	local_snapshot = null
 	local_restore_used = FALSE
 	local_species = null
+	local_icon_sources = list()
+	local_icon_copies = list()
+	restored_icon_copies = list()
 	clear_bookkeeping()
 	body_members = list()
 	wire_edges = 0
@@ -301,6 +331,8 @@
 	if(!islist(value)) return
 	var/list/V = value
 	switch(V["kind"])
+		if("body_local_icon")
+			if(V.len != 2 || !body_ref(V["ref"], local_icon_copies.len)) throw EXCEPTION("Invalid local icon reference")
 		if("body_species")
 			if(V.len != 2 || V["name"] != "Human" || !local_species || all_species["Human"] != local_species) throw EXCEPTION("Invalid local species reference")
 		if("body_empty_filters")
@@ -355,6 +387,7 @@
 			var/value = read_wire(fields[field])
 			if(islist(value))
 				var/list/envelope = value
+				if(envelope["kind"] == "body_local_icon" && (!(field in list("mob_icon", "icon")) || !ispath(path, /obj/item/organ/external))) throw EXCEPTION("Local icon outside organ renderer")
 				if(envelope["kind"] == "body_empty_filters" && (field != "filters" || !ispath(path, /atom))) throw EXCEPTION("Empty filter marker outside atom.filters")
 			if(field == "content")
 				if(!ispath(path, /atom/movable)) throw EXCEPTION("Nonmovable body container")

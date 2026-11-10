@@ -26,6 +26,14 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_icons_are_local_bounded_organ_copies(self):
+        self.assertIn('I != O.mob_icon', SOURCE)
+        self.assertIn('local_icon_copies += icon(I)', SOURCE)
+        self.assertIn('local_icon_copies.len >= 64', SOURCE)
+        self.assertIn('I.Width() > 128', SOURCE)
+        self.assertIn('length(icon_states(I)) > 64', SOURCE)
+        self.assertIn('Local icon outside organ renderer', SOURCE)
+        self.assertNotIn('path == /icon', SOURCE)
     def test_limb_descriptor_exception_remains_exact(self):
         self.assertIn('row["descriptor"] != initial(path:name)', SOURCE)
         self.assertIn('field != "path" && field != "descriptor"', SOURCE)
