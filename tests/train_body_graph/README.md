@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 19-check probe constructs real production owned/injured humans with organs,
+The 22-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -67,3 +67,12 @@ No client attachment, account registration, after_load, restore_finished or
 source deletion occurs. Failed construction queues only adapter-created objects
 for deletion. Constructor side effects and asynchronous deletion are NOT yet
 proven fully reversible; this is not a crash-safe remote transfer primitive.
+
+Native run 0f7e6f reached all 19 prior assertions with no runtime errors but
+failed 11: human teeth and sheep transform were explicitly unsupported. Narrow
+follow-up admits exact human teeth using production full-state export and exact
+native /matrix using six numeric finite coefficients bounded to +/-1,000,000.
+Matrix preflight requires exactly type+a..f. The new 22-check fixture adds
+teeth-count and six-component transform roundtrip plus numeric bound controls.
+These new native assertions are pending; prior failures are not superseded by
+source test passes.

@@ -26,6 +26,12 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_matrix_is_exact_and_bounded(self):
+        self.assertIn('A.type == /matrix', SOURCE)
+        self.assertIn('abs(value) <= 1000000', SOURCE)
+        self.assertIn('fields.len != 7', SOURCE)
+        self.assertIn('path == /obj/item/stack/teeth/human', SOURCE)
+        self.assertNotIn('ispath(path, /matrix)', SOURCE)
     def test_native_fixture_uses_production_body_catalogs(self):
         probe = (ROOT / 'tests/train_body_graph/probe.dm').read_text()
         for setup in ('makeDatumRefLists()', 'initialize_chemical_reagents()', 'initialize_chemical_reactions()', 'populate_material_list()'):

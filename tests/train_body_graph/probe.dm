@@ -120,6 +120,9 @@ var/global/body_runtime_error = FALSE
 	H.persistence_owner_ckey = "trainbodyfixture"
 	// Let real constructor icon/blood callbacks settle before snapshotting.
 	sleep(20)
+	var/obj/item/organ/external/head/source_head = H.get_organ("head")
+	var/obj/item/stack/teeth/human/source_teeth = source_head ? locate(/obj/item/stack/teeth/human) in source_head : null
+	if(source_teeth) source_teeth.amount = 23
 	var/obj/item/organ/external/arm = H.get_organ("l_arm")
 	if(arm)
 		arm.brute_dam = 17
@@ -148,13 +151,21 @@ var/global/body_runtime_error = FALSE
 	var/mob/living/human/restored = Q ? Q.body : null
 	var/obj/item/organ/external/restored_arm = restored ? restored.get_organ("l_arm") : null
 	body_check("injury_roundtrip", restored_arm && restored_arm.brute_dam == 17 && restored_arm.wounds.len)
+	var/obj/item/organ/external/head/restored_head = restored ? restored.get_organ("head") : null
+	var/obj/item/stack/teeth/human/restored_teeth = restored_head ? locate(/obj/item/stack/teeth/human) in restored_head : null
+	body_check("human_teeth_count_roundtrip", source_teeth && restored_teeth && source_teeth.amount == 23 && restored_teeth.amount == 23)
 	body_check("local_capture_one_shot", !G.restore_local_capture(human_text))
 	body_check("source_injury_inventory_unchanged", arm && arm.brute_dam == 17 && arm.wounds.len && cargo.loc == H)
 	var/mob/living/simple_animal/sheep/S = new(locate(5, 5, 1))
+	S.transform = matrix(1.25, 0.125, 3, -0.25, 0.75, -4)
 	var/animal_text = G.capture_body(S)
 	body_capture_errors["animal"] = G.body_error
 	body_check("real_sheep_capture", istext(animal_text))
 	body_check("animal_wire_closed", istext(animal_text) && body_document_closed(json_decode(animal_text)))
+	var/obj/effect/train_body_quarantine/animal_Q = G.restore_local_capture(animal_text)
+	var/matrix/restored_transform = animal_Q && animal_Q.body ? animal_Q.body.transform : null
+	body_check("six_matrix_coefficients_roundtrip", restored_transform && restored_transform.a == 1.25 && restored_transform.b == 0.125 && restored_transform.c == 3 && restored_transform.d == -0.25 && restored_transform.e == 0.75 && restored_transform.f == -4)
+	body_check("matrix_components_bounded_numeric", !G.matrix_component_valid(1000001) && !G.matrix_component_valid("1") && G.matrix_component_valid(-0.25))
 	H.stat = DEAD
 	var/corpse_text = G.capture_body(H)
 	body_capture_errors["corpse"] = G.body_error

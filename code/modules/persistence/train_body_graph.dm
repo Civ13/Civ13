@@ -17,6 +17,7 @@
 /map_storage/train_body_graph/proc/admitted_type(path)
 	if(path == /mob/living/human || ispath(path, /mob/living/simple_animal)) return TRUE
 	if(ispath(path, /obj/item/organ)) return TRUE
+	if(path == /obj/item/stack/teeth/human || path == /matrix) return TRUE
 	if(ispath(path, /datum/wound) || ispath(path, /datum/reagent) || path == /datum/reagents || path == /datum/dna || ispath(path, /datum/species) || path == /datum/corpse_decay_record) return TRUE
 	var/datum/extraction_equipment_codec/equipment = new
 	return equipment.supported(path)
@@ -36,12 +37,34 @@
 
 /map_storage/train_body_graph/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE, datum/human_request = null)
 	save_work_check()
+	if(A && A.type == /matrix) return capture_matrix(F, A)
 	if(traversal && (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))) return 0
 	if(!A || !admitted_type(A.type)) throw EXCEPTION("Unsupported body graph type: [A ? A.type : null] from [body_source_context()]")
 	if(istype(A, /atom/movable) && !body_members[A])
 		throw EXCEPTION("Body graph references an external movable")
 	if(!A.should_save) throw EXCEPTION("Body graph contains an unsaved datum")
 	return ..()
+
+// Native transforms have exactly six coefficients. No generic native vars or
+// arbitrary datum subtype admission; aliases retain production entry identity.
+/map_storage/train_body_graph/proc/matrix_component_valid(value)
+	return isnum(value) && value == value && abs(value) <= 1000000
+
+/map_storage/train_body_graph/proc/capture_matrix(savefile/F, matrix/M)
+	var/existing = saving_references[M]
+	if(existing && saving_reference_pins[existing] == M) return existing
+	var/list/components = list("a" = M.a, "b" = M.b, "c" = M.c, "d" = M.d, "e" = M.e, "f" = M.f)
+	for(var/field in components)
+		if(!matrix_component_valid(components[field])) throw EXCEPTION("Unsupported matrix coefficient")
+	var/ref = saving_reference_pins.len + 1
+	saving_reference_pins += M
+	saving_references[M] = ref
+	save_work_check()
+	var/path = entry_path(F, ref)
+	F["[path]/type"] << /matrix
+	for(var/field in components)
+		F["[path]/[field]"] << components[field]
+	return ref
 
 /map_storage/train_body_graph/encode_saved_value(savefile/F, value)
 	save_work_check()
@@ -221,9 +244,14 @@
 	var/list/entry_types = list()
 	for(var/i = 1, i <= entries.len, i++)
 		var/list/fields = entries[i]
-		if(!islist(fields) || !fields["type"] || !fields["name"]) throw EXCEPTION("Missing body entry identity")
+		if(!islist(fields) || !fields["type"]) throw EXCEPTION("Missing body entry identity")
 		var/path = read_wire(fields["type"])
 		if(!admitted_type(path)) throw EXCEPTION("Unsupported captured body type")
+		if(path == /matrix)
+			if(fields.len != 7) throw EXCEPTION("Invalid matrix field count")
+			for(var/coefficient in list("a", "b", "c", "d", "e", "f"))
+				if(!fields[coefficient] || !matrix_component_valid(read_wire(fields[coefficient]))) throw EXCEPTION("Invalid matrix component")
+		else if(!fields["name"]) throw EXCEPTION("Missing captured name")
 		entry_types += path
 		var/list/edges = list()
 		graph["e[i]"] = edges
