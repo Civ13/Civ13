@@ -2850,6 +2850,7 @@ RECIPE: /material/glass/,small telescope,/obj/item/weapon/attachment/scope/adjus
 RECIPE: /material/wood/soft/,shamisen,/obj/item/shamisen,10,135,0,1,entertainment & other,50,0,0,8,null
 RECIPE: /material/wood/soft/,pencil,/obj/item/weapon/pen/pencil,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null

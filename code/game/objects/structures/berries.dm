@@ -24,41 +24,36 @@
 
 /obj/structure/wild/berrybush/attack_hand(mob/user as mob)
 	if (user.a_intent == I_GRAB && ishuman(user) && berries > 0)
-		var/mob/living/human/H = user
-		to_chat(H, "You start foraging for some berries...")
-		if (do_after(user, 80, src))
-			if (src && berries >= 1)
-				to_chat(H, "You collect some berries.")
-				new btype(get_turf(src))
-				berries--
-				berryproc()
-			else
-				to_chat(user, "There are no berries to harvest here.")
-		else
-			to_chat(user, "You stop foraging.")
+		harvest_berries(user, FALSE)
 	else
 		..()
 /obj/structure/wild/berrybush/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	var/mob/living/human/H = user
 	if(istype(W, /obj/item/weapon/berriesgatherer))
 		if (ishuman(user) && berries > 0)
-			//var/mob/living/human/H = user
-			to_chat(H, "You start gathering some berries...")
-			if (do_after(user, 80, src))
-				if (src && berries >= 1)
-					new btype(get_turf(src))
-					new btype(get_turf(src))
-					/*if(rand(100) <= 10)
-						var/obj/item/stack/berryseeds/BS = new /obj/item/stack/berryseeds(get_turf(src))
-						BS.bushtype = src*/
-					berries--
-					berryproc()
-				else
-					to_chat(user, "There are no berries to harvest here.")
-			else
-				to_chat(user, "You stop gathering berries.")
+			harvest_berries(user, TRUE)
 	else
 		..()
+
+/obj/structure/wild/berrybush/proc/harvest_berries(mob/user, gathering)
+	if (gathering)
+		to_chat(user, "You start gathering some berries...")
+	else
+		to_chat(user, "You start foraging for some berries...")
+	if (do_after(user, 80, src))
+		if (src && berries >= 1)
+			if (!gathering)
+				to_chat(user, "You collect some berries.")
+			new btype(get_turf(src))
+			if (gathering)
+				new btype(get_turf(src))
+			berries--
+			berryproc()
+		else
+			to_chat(user, "There are no berries to harvest here.")
+	else if (gathering)
+		to_chat(user, "You stop gathering berries.")
+	else
+		to_chat(user, "You stop foraging.")
 
 /obj/structure/wild/berrybush/tinto
 	name = "tinto berry bush"

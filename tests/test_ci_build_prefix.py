@@ -420,7 +420,7 @@ class BuildPrefixTests(unittest.TestCase):
             # Receipt provenance is rooted at the scripts' location. Use their
             # unchanged bytes in a real test-only repository, never the caller's
             # latest commit, which may legitimately contain only documentation.
-            for name in ('select-ci.py', 'ci_baseline.py', 'byond_toolchain.py'):
+            for name in ('select-ci.py', 'ci_baseline.py', 'ci_skill_prose.py', 'byond_toolchain.py'):
                 (root / 'scripts' / name).write_bytes((ROOT / 'scripts' / name).read_bytes())
             def git(*args):
                 return subprocess.check_output(['git', '-c', 'user.name=CI receipt fixture',

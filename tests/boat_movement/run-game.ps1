@@ -35,6 +35,10 @@ function Assert-NativeLogs {
 }
 try {
     $source = Get-Content -Raw -LiteralPath (Join-Path $repo 'civ13.dme')
+    # The probe's coordinates target the 155x225x2 Nomads map; Gaia exceeds its resource bounds.
+    $mapBlock = [regex]'(?s)// BEGIN_SELECTED_MAP\r?\n.*?// END_SELECTED_MAP'
+    if (!$mapBlock.IsMatch($source)) { throw 'civ13.dme has no selected-map block' }
+    $source = $mapBlock.Replace($source, "// BEGIN_SELECTED_MAP`n#include `"maps\nomads\nomads.dmm`"`n// END_SELECTED_MAP", 1)
     [IO.File]::WriteAllText($sourcePath,$source + "`n#include `"tests/boat_movement/game_probe.dm`"`n")
     $build = & (Join-Path $ByondBin $compiler) -max_errors 0 $sourcePath 2>&1
     $build | Tee-Object -FilePath (Join-Path $temp 'compile.log')

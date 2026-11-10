@@ -38,6 +38,44 @@ Equivalent CLI (explicit confirmation, local operator only):
 python scripts/shard-group/shard_group.py --config GROUP.json fresh-world --region REGION --confirm-region REGION
 ```
 
+
+## Phase 2: the whole linked group
+
+A connected region group (regions with transfer ports, such as Gaia and its
+regions) cannot use the single-region reset, because travellers in flight and
+account homes live in the transfer stores. The group fresh world resets the
+whole group at once:
+
+```
+python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world --confirm-group GROUP
+```
+
+1. Use **Save and stop** on every region first. Any running, sleeping,
+   staging or busy region refuses the whole reset, and nothing changes.
+2. The command takes every region's action lock and writes
+   `<root>/fresh-world-group.json`. While that file exists the supervisor does
+   not start transfer agents or the coordinator. It then stops the agents and
+   the coordinator, and refuses (removing the journal, moving nothing) if any
+   of them keeps running.
+3. Each region gets its own `fresh-world-pending.json`, so its host refuses
+   start, wake and the watchdog during the moves.
+4. It renames into `<root>/fresh-world-archives/<operation>/`: each region's
+   `map_saves`, `map_backups`, `map_rollback` and `transfers.sqlite` (with its
+   `-wal`/`-shm` files) under the region id, and the group's
+   `coordinator.sqlite`. Nothing is deleted. Each region gets an empty
+   `map_saves`.
+5. Only after every move succeeds are the pending files and the group journal
+   removed. Every region is then asked to start. The supervisor starts new
+   agents and a new coordinator, which create empty stores and enrol every
+   region.
+
+All characters (their saved bodies), buildings, factions, travellers in flight
+and account home worlds are reset. Accounts in `data/player_saves`, bans and
+settings remain. Separate extraction/vehicle/safehouse storage is still
+refused. If it is interrupted, both journals stay in place; recover by hand as
+for one region, for every region in the manifest plus the coordinator store,
+then remove the group journal.
+
 ### Interrupted operations and restoration
 
 `fresh-world-pending.json` is a process-interruption interlock. Atomic journal replacement is not a

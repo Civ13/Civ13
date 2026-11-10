@@ -134,8 +134,22 @@ The launch wipe is an operator step, not code: turn on `recipe_books` and
 `book_research` for the Persistence maps, then use **Fresh world** for each
 region (see `docs/launcher-fresh-world.md`). That archives the world saves,
 which hold every saved body, so all characters start over. Fresh world refuses
-regions with transfer links, so a connected region group needs a coordinated
-reset that the tool does not do yet.
+regions with transfer links; a connected region group such as Gaia's uses
+`shard_group.py group-fresh-world --confirm-group GROUP` instead, which also
+archives the transfer stores and account homes.
+
+### Scholar tools (profession 1)
+
+`scholar_tools.dm` makes writing tools part of the scholar's trade. A bench
+only progresses while the researcher holds a writing tool, and the tool's rate
+multiplies the scholar's own research rate: writing slate and chalk or pencil
+1.0, crayon 0.5, quill or pen 1.25, expensive pen 1.5 (`scholar_tool_rate`).
+Writing a chapter from memory and copying between two books need a pencil or
+pen in hand (the slate can't write into books), and the time is
+`BOOK_WRITE_TIME(tier)` divided by the pen's rate (`scholar_write_time`). The
+writing slate is a Stone Age item made from 2 stone; like the pencil it is a
+book-research writing supply, free from 5000 B.C. Before the Industrial Age
+the plain ink pen is named a quill, matching its feather sprite.
 
 ## Verification
 
