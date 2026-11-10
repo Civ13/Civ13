@@ -200,6 +200,25 @@ books and taking commissions need no new code: books are ordinary items that
 change hands through normal trade, and a commission is a chapter written from
 memory or copied at a bench.
 
+### Apprentices (profession 6)
+
+The IC verb **Take an apprentice** offers an apprenticeship to a player next
+to the master; the apprentice must accept, and a master has at most three.
+The link is `scholar_master` on the apprentice's body (the master's
+`ckey:real_name`), saved with the body, validated on load and cleared on death
+or with **Leave apprenticeship**. At a research bench, a researcher whose
+master stands within 2 tiles gains twice the usual skill, and the
+researcher's own apprentices within 2 tiles gain half the usual research skill
+by watching (`apprentice_research_gain`). The link does not travel between
+regions.
+
+### Titles (profession 7)
+
+Examining a living character in book research shows their highest discipline
+as a title (`scholar_title`): Apprentice from level 12, Scholar from 40 and
+Master from 75, for example "Scholar of Medicine", so players can find and hire
+scholars. Characters below 12 in every discipline show no title.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
