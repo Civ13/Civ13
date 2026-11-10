@@ -248,8 +248,52 @@ var/knowledge_failures = 0
 	qdel(again)
 	check_book_clock(journal)
 	check_book_fabricator()
+	check_book_material_visibility()
 	check_scholarship_travel(scholar)
 	map.book_research = FALSE
+
+// Use real global rows and the public material menu entry point. Personal
+// knowledge can precede a capstone, while recipe expiry remains a separate gate.
+/proc/knowledge_has_material_recipe(list/entries, result_type)
+	for (var/entry in entries)
+		if (istype(entry, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/group = entry
+			if (knowledge_has_material_recipe(group.recipes, result_type))
+				return TRUE
+		else if (istype(entry, /datum/stack_recipe))
+			var/datum/stack_recipe/R = entry
+			if (R.result_type == result_type)
+				return TRUE
+	return FALSE
+
+/proc/check_book_material_visibility()
+	var/list/old_rows = craftlist_lists["global"]
+	var/old_age = map.ordinal_age
+	var/old_civilizations = map.civilizations
+	craftlist_lists["global"] = list()
+	for (var/line in file2list("config/crafting/material_recipes_global.txt", "\n"))
+		if (findtext(line, "RECIPE: ") && !findtext(line, "//"))
+			craftlist_lists["global"] += list(splittext(replacetext(line, "RECIPE: ", ""), ","))
+	map.ordinal_age = 0
+	map.civilizations = FALSE
+	var/mob/living/human/knowledge_fixture/reader = new(locate(5,7,1))
+	reader.civilization = "none"
+	var/material/stone/stone = new
+	var/path = /obj/covers/stone_wall
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path) && !crafting_recipe_allowed(reader, "[path]"), "unknown future Stone Masonry stays hidden and blocked")
+	reader.learn_recipe_node("primitive_construction")
+	reader.learn_recipe_node("stone_masonry")
+	knowledge_check(crafting_recipe_allowed(reader, "[path]") && knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "learned Stone Masonry appears before the world advances")
+	map.civilizations = TRUE
+	knowledge_check(knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "civilization menu also uses personal knowledge")
+	map.book_research = FALSE
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "legacy menu still requires faction or era research")
+	map.book_research = TRUE
+	map.ordinal_age = 3
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "learned recipe still expires after its last permitted age")
+	map.ordinal_age = old_age
+	map.civilizations = old_civilizations
+	craftlist_lists["global"] = old_rows
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
 // ripping pages out and putting them back, parchment and writing supplies.

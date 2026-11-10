@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MEDICAL = (ROOT / "code/game/objects/items/stacks/medical.dm").read_text(encoding="utf-8")
 ORGAN = (ROOT / "code/modules/organs/organ_external.dm").read_text(encoding="utf-8")
 SURGERY = (ROOT / "code/modules/surgery/other.dm").read_text(encoding="utf-8")
+LIMB_SURGERY = (ROOT / "code/modules/surgery/limb_reattach.dm").read_text(encoding="utf-8")
 HANDBOOK = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text(encoding="utf-8")
 HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf-8")
 DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
@@ -62,6 +63,22 @@ def medical_stack_icons(sources):
 
 
 class MedicalCare(unittest.TestCase):
+    def test_reattachment_checks_identity_and_slot_before_and_after_wait(self):
+        limb = block(LIMB_SURGERY, "/datum/surgery_step/limb")
+        attach = block(LIMB_SURGERY, "/datum/surgery_step/limb/attach")
+        self.assertIn("target.get_organ(target_zone)", limb)
+        self.assertRegex(limb, r"if \(affected\)\s+return FALSE")
+        self.assertIn("return !isnull(organ_data)", limb)
+        admission = attach.split("\tcan_use(", 1)[1].split("\tbegin_step(", 1)[0]
+        completion = attach.split("\tend_step(", 1)[1].split("\tfail_step(", 1)[0]
+        self.assertIn("if (!..())", admission)
+        self.assertIn("E.limb_name != target_zone", admission)
+        self.assertIn("return SURGERY_FAILURE", admission)
+        self.assertIn("return FALSE", admission)
+        self.assertIn("return TRUE", admission)
+        self.assertIn("if (can_use(user, target, target_zone, tool) != TRUE)", completion)
+        self.assertLess(completion.index("if (can_use("), completion.index("E.replaced(target)"))
+
     def test_severed_artery_is_repairable(self):
         step = block(SURGERY, "/datum/surgery_step/fix_vein")
         can_use = step[step.index("can_use("):step.index("begin_step(")]

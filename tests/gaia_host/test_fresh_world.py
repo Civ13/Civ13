@@ -163,3 +163,117 @@ class FreshWorldTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+group_fresh = shard_group.group_fresh_world
+
+
+class GroupFreshWorldTests(unittest.TestCase):
+    """The group-wide fresh world for connected regions (Val, 2026-11-10)."""
+    setUp_base = fixture.ShardGroupTests.setUp
+    tearDown = fixture.ShardGroupTests.tearDown
+    write_group = fixture.ShardGroupTests.write_group
+
+    def setUp(self):
+        self.setUp_base()
+        for i, region in enumerate(self.group['regions']):
+            region['transfer_port'] = 47000 + i
+        self.loaded = self.write_group()
+        self.pairs = shard_group.hosts(self.loaded, None, self.machine)
+        self.coordinator = [4242]
+        self.machine.listener_pids = lambda port: [port + 10000] if port in self.machine.up else []
+        root = Path(self.loaded['root'])
+        root.mkdir(parents=True, exist_ok=True)
+        (root / 'coordinator.sqlite').write_bytes(b'homes')
+        for region, host in self.pairs:
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+            (host.repo / '.git').write_text('gitdir: test')
+            (host.repo / 'region.dmb').write_bytes(b'fixture')
+            (host.repo / 'config').mkdir(exist_ok=True)
+            (host.repo / 'config/transfer_agent.json').write_text('{}')
+            (host.state_dir / 'transfers.sqlite').write_bytes(b'transits')
+            (host.state_dir / 'transfers.sqlite-wal').write_bytes(b'wal')
+            for name in fresh.WORLD_PATHS:
+                (host.repo / name).mkdir()
+                (host.repo / name / 'fixture').write_text(region['id'] + name)
+            self.machine.up.add(host.config['transfer_port'])  # agents run
+
+    def terminate(self, pid):
+        if pid in self.coordinator:
+            self.coordinator.remove(pid)
+        self.machine.up.discard(pid - 10000)
+
+    def run_reset(self, confirmation='europe'):
+        with mock.patch.object(shard_group.RegionHost, 'request', autospec=True,
+                               side_effect=lambda host, action: {'accepted': True, 'action': action}) as start:
+            result = group_fresh.request(self.loaded, self.pairs, confirmation,
+                                         lambda group: self.coordinator[0] if self.coordinator else None, self.terminate)
+        return result, start
+
+    def test_group_reset_archives_worlds_and_transfer_state_then_starts_every_region(self):
+        accounts = self.pairs[0][1].repo / 'data/player_saves'
+        accounts.mkdir(parents=True); (accounts / 'val.sav').write_bytes(b'account')
+        result, start = self.run_reset()
+        archive = Path(result['archive'])
+        self.assertEqual(sorted(result['accepted']), ['deep', 'gaia'])
+        self.assertEqual([call.args[1] for call in start.call_args_list], ['start', 'start'])
+        self.assertEqual((archive / 'coordinator.sqlite').read_bytes(), b'homes')
+        self.assertFalse((Path(self.loaded['root']) / 'coordinator.sqlite').exists())
+        for region, host in self.pairs:
+            for name in fresh.WORLD_PATHS:
+                self.assertEqual((archive / region['id'] / name / 'fixture').read_text(), region['id'] + name)
+            self.assertEqual(list((host.repo / 'map_saves').iterdir()), [])
+            self.assertEqual((archive / region['id'] / 'transfers.sqlite').read_bytes(), b'transits')
+            self.assertTrue((archive / region['id'] / 'transfers.sqlite-wal').exists())
+            self.assertFalse((host.state_dir / 'transfers.sqlite').exists())
+            self.assertFalse(fresh.pending(host).exists())
+            self.assertFalse(host.lock.exists())
+            self.assertFalse(self.machine.listening(host.config['transfer_port']))
+        self.assertEqual(accounts.joinpath('val.sav').read_bytes(), b'account')
+        self.assertFalse(group_fresh.paused(self.loaded))
+        self.assertEqual(json.loads((archive / 'manifest.json').read_text())['phase'], 'archived')
+
+    def test_group_reset_needs_exact_group_confirmation(self):
+        with self.assertRaisesRegex(shard_group.Refused, 'confirm-group'):
+            self.run_reset('gaia')
+        self.assertTrue((self.pairs[0][1].repo / 'map_saves/fixture').exists())
+
+    def test_group_reset_refuses_a_running_region_and_changes_nothing(self):
+        self.machine.up.add(self.pairs[1][1].config['port'])
+        with self.assertRaisesRegex(shard_group.Refused, 'stop'):
+            self.run_reset()
+        for region, host in self.pairs:
+            self.assertTrue((host.repo / 'map_saves/fixture').exists())
+            self.assertFalse(host.lock.exists())
+        self.assertEqual(self.coordinator, [4242])  # helpers untouched
+        self.assertFalse(group_fresh.paused(self.loaded))
+
+    def test_group_reset_refuses_when_a_helper_will_not_stop(self):
+        with self.assertRaisesRegex(shard_group.Refused, 'did not stop'):
+            with mock.patch.object(shard_group.RegionHost, 'request'):
+                group_fresh.request(self.loaded, self.pairs, 'europe', lambda group: 4242, lambda pid: None)
+        self.assertFalse(group_fresh.paused(self.loaded))
+        self.assertTrue((self.pairs[0][1].repo / 'map_saves/fixture').exists())
+
+    def test_interrupted_group_reset_holds_regions_and_helpers(self):
+        rename = group_fresh.os.rename
+        def fail_deep(source, dest):
+            if 'deep' in str(source) and source.name == 'map_backups':
+                raise OSError('fixture interrupted')
+            rename(source, dest)
+        with mock.patch.object(group_fresh.os, 'rename', side_effect=fail_deep):
+            with self.assertRaises(OSError):
+                self.run_reset()
+        self.assertTrue(group_fresh.paused(self.loaded))
+        for _region, host in self.pairs:
+            self.assertTrue(fresh.pending(host).exists())
+            self.assertFalse(host.lock.exists())
+            with self.assertRaisesRegex(shard_group.Refused, 'recovery'):
+                host.request('start')
+        self.assertEqual(shard_group.supervise(self.loaded, start=lambda *a: 1).get('paused'), 'group fresh world')
+        with self.assertRaisesRegex(shard_group.Refused, 'recovery'):
+            self.run_reset()
+
+    def test_single_region_fresh_world_points_linked_groups_here(self):
+        with self.assertRaisesRegex(shard_group.Refused, 'group fresh world'):
+            fresh.request(self.pairs[0][1], 'gaia')

@@ -340,11 +340,8 @@ var/global/list/regrowing_stump_list = list()
 	var/turf/T = S.loc
 	if (!ecology_outdoor_climate(T) || (locate(/obj/roof) in T))
 		return null
-	for (var/atom/movable/AM in T)
-		if (AM == S)
-			continue
-		if (AM.density || istype(AM, /mob/living) || istype(AM, /obj/structure) || istype(AM, /obj/covers))
-			return null
+	if (ecology_site_blocked(T, S))
+		return null
 	if (ecology_visible_to_players(T, FLORA_VIEW_MARGIN))
 		return null
 	var/path = ispath(S.regrow_type, /obj/structure/wild) ? S.regrow_type : /obj/structure/wild/tree/live_tree
