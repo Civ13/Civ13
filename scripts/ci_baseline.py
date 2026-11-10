@@ -1218,6 +1218,9 @@ SUITES = {
     # Trap disarm recheck and punji animal capture/release (#4248, #4249).
     'traps': {'files': ('tests/traps/test_source.py',),
         'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
+    # Railing dismantling stops if the railing was fastened during the wait (#4413).
+    'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
+        'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
