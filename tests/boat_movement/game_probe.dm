@@ -48,6 +48,11 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	return ..(O)
 /datum/boat_game_probe/New()
 	spawn(200)
+		// Large selected maps (Gaia) can still be initializing the ticker here.
+		var/waited = 0
+		while((!map || !ticker) && waited < 600)
+			sleep(10)
+			waited += 10
 		run_tests()
 /datum/boat_game_probe/proc/check(condition, label)
 	if(condition)
