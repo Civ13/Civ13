@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
+        'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
+                  'docs/firearm-migration-inventory.md')},
     'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
         'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
