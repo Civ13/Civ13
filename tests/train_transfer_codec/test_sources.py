@@ -67,7 +67,8 @@ class CodecContracts(unittest.TestCase):
     def test_baseline_admission_is_exact_and_preserves_unknown_rejection(self):
         baseline = S.split('/proc/train_transfer_structure_baseline', 1)[1].split('/proc/train_transfer_structure_state(', 1)[0]
         self.assertIn('islist(value) && !length(value)', baseline)
-        self.assertIn('value == 2 && value == initial(A.animate_movement)', baseline)
+        self.assertIn('isnum(value) && value == 2', baseline)
+        self.assertIn('animate_movement = 2', (ROOT / 'code/game/objects/objs.dm').read_text())
         self.assertIn('M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0', baseline)
         self.assertIn('!length(A.filters)', baseline)
         self.assertIn('B.overlays[i] != expected[i]', baseline)

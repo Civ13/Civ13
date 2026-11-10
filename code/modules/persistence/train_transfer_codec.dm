@@ -67,7 +67,10 @@
 		if("paths", "climbers", "vis_contents", "vis_locs", "underlays")
 			return islist(value) && !length(value)
 		if("animate_movement")
-			return value == 2 && value == initial(A.animate_movement)
+			// /obj declares animate_movement = 2 (objects/objs.dm). Native
+			// initial() does not report that effective inherited value here.
+			// Exact supported structures reconstruct with 2; other modes refuse.
+			return isnum(value) && value == 2
 		if("override")
 			return isnum(value) && value == 0
 		if("transform")

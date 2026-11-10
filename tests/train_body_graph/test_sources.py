@@ -26,6 +26,12 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_native_fixture_uses_production_body_catalogs(self):
+        probe = (ROOT / 'tests/train_body_graph/probe.dm').read_text()
+        for setup in ('makeDatumRefLists()', 'initialize_chemical_reagents()', 'initialize_chemical_reactions()', 'populate_material_list()'):
+            self.assertIn(setup, probe)
+        self.assertLess(probe.index('\t\tbody_fixture_catalogs()'), probe.index('\t\tbody_capture_probe()'))
+        self.assertNotIn('/mob/living/human/New()', probe)
     def test_bounded_and_no_world_save(self):
         for guard in ('world.time != capture_tick', 'TRAIN_BODY_NODES', 'TRAIN_BODY_EDGES', 'TRAIN_BODY_BYTES', 'persistence_save_active()'):
             self.assertIn(guard, SOURCE)

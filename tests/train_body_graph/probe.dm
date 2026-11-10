@@ -90,10 +90,28 @@ var/global/body_runtime_error = FALSE
 			value = envelope["value"]
 		if(value == expected) return TRUE
 	return FALSE
+// isolated_startup suppresses global_init/New; restore only production data
+// catalogs needed by real body constructors, not services/world startup.
+/proc/body_fixture_catalogs()
+	config = new
+	config.webhook_can_fire = FALSE
+	config.ToRban = FALSE
+	movementMachine = new
+	var/process/garbage/garbage = new
+	garbage.setup()
+	makeDatumRefLists()
+	initialize_chemical_reagents()
+	initialize_chemical_reactions()
+	populate_material_list()
+	if(!all_species["Human"] || !all_languages.len || !male_body_builds["Default"] || !female_body_builds["Default"] || !chemical_reagents_list["blood"])
+		throw EXCEPTION("Production body fixture catalogs unavailable")
+
 /proc/body_capture_probe()
 	var/map_storage/train_body_graph/G = new
 	var/mob/living/human/H = new(locate(3, 3, 1))
 	H.persistence_owner_ckey = "trainbodyfixture"
+	// Let real constructor icon/blood callbacks settle before snapshotting.
+	sleep(20)
 	var/obj/item/organ/external/arm = H.get_organ("l_arm")
 	if(arm)
 		arm.brute_dam = 17
@@ -156,6 +174,7 @@ var/global/body_runtime_error = FALSE
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	GLOB.destroyed_event = new
 	try
+		body_fixture_catalogs()
 		body_capture_probe()
 	catch(var/exception/E)
 		body_runtime_error = TRUE
