@@ -37,10 +37,15 @@
 		if (!issmall(H))
 			return FALSE
 		meat_type = H.species.meat_type
-		icon_state = "spikebloody"
+	else if (istype(victim, /mob/living/simple_animal))
+		var/mob/living/simple_animal/A = victim
+		if (!issmall(A) || !A.meat_type)
+			return FALSE
+		meat_type = A.meat_type
 	else
 		return FALSE
 
+	icon_state = "spikebloody"
 	victim_name = victim.name
 	occupied = TRUE
 	meat = 5
@@ -51,9 +56,9 @@
 		return
 	meat--
 	new meat_type(get_turf(src))
-	if (meat > 1)
+	if (meat > 0)
 		to_chat(user, "You remove some meat from \the [victim_name].")
-	else if (meat == TRUE)
+	else
 		to_chat(user, "You remove the last piece of meat from \the [victim_name]!")
 		icon_state = "spike"
 		occupied = FALSE
