@@ -44,6 +44,8 @@ var/global/body_runtime_error = FALSE
 	if(!islist(value)) return TRUE
 	var/list/V = value
 	switch(V["kind"])
+		if("body_species") return V.len == 2 && V["name"] == "Human"
+		if("body_empty_filters") return V.len == 1
 		if("value") return !islist(V["value"])
 		if("entry") return body_ref_valid(V["ref"], entries)
 		if("list") return body_ref_valid(V["ref"], lists)
@@ -116,6 +118,14 @@ var/global/body_runtime_error = FALSE
 
 /proc/body_capture_probe()
 	var/map_storage/train_body_graph/G = new
+	var/datum/species/human/canonical = all_species["Human"]
+	body_check("canonical_species_definition_admitted", G.canonical_species_valid(canonical))
+	var/datum/species/human/noncanonical = new
+	body_check("noncanonical_species_rejected", !G.canonical_species_valid(noncanonical))
+	var/old_brute_mod = canonical.brute_mod
+	canonical.brute_mod = old_brute_mod + 0.5
+	body_check("mutated_species_rejected", !G.canonical_species_valid(canonical))
+	canonical.brute_mod = old_brute_mod
 	var/mob/living/human/H = new(locate(3, 3, 1))
 	H.persistence_owner_ckey = "trainbodyfixture"
 	// Let real constructor icon/blood callbacks settle before snapshotting.
@@ -149,6 +159,7 @@ var/global/body_runtime_error = FALSE
 	var/obj/effect/train_body_quarantine/Q = G.restore_local_capture(human_text)
 	body_check("owned_body_quarantined", Q && Q.body && Q.body.loc == Q && !Q.body.client && !Q.loc)
 	var/mob/living/human/restored = Q ? Q.body : null
+	body_check("species_registry_identity_roundtrip", restored && restored.species == canonical)
 	var/obj/item/organ/external/restored_arm = restored ? restored.get_organ("l_arm") : null
 	body_check("injury_roundtrip", restored_arm && restored_arm.brute_dam == 17 && restored_arm.wounds.len)
 	var/obj/item/organ/external/head/restored_head = restored ? restored.get_organ("head") : null
@@ -166,6 +177,11 @@ var/global/body_runtime_error = FALSE
 	var/matrix/restored_transform = animal_Q && animal_Q.body ? animal_Q.body.transform : null
 	body_check("six_matrix_coefficients_roundtrip", restored_transform && restored_transform.a == 1.25 && restored_transform.b == 0.125 && restored_transform.c == 3 && restored_transform.d == -0.25 && restored_transform.e == 0.75 && restored_transform.f == -4)
 	body_check("matrix_components_bounded_numeric", !G.matrix_component_valid(1000001) && !G.matrix_component_valid("1") && G.matrix_component_valid(-0.25))
+	body_check("empty_filters_roundtrip", animal_Q && animal_Q.body && !length(animal_Q.body.filters))
+	S.filters = list(filter(type = "blur", size = 1))
+	var/filtered_text = G.capture_body(S)
+	body_check("custom_filters_rejected", !filtered_text && findtext(G.body_error, "Nonempty native filters"))
+	S.filters = list()
 	H.stat = DEAD
 	var/corpse_text = G.capture_body(H)
 	body_capture_errors["corpse"] = G.body_error

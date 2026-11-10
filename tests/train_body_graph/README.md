@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 22-check probe constructs real production owned/injured humans with organs,
+The 28-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -76,3 +76,12 @@ Matrix preflight requires exactly type+a..f. The new 22-check fixture adds
 teeth-count and six-component transform roundtrip plus numeric bound controls.
 These new native assertions are pending; prior failures are not superseded by
 source test passes.
+
+Next narrow follow-up after a509263 (9/22, runtime_error=0): canonical Human
+species is referenced locally by exact all_species identity after comparison
+against its audited data-only constructor baseline (registry race index checked
+separately). Noncanonical or modified definitions reject. No HUD or arbitrary
+species graph is cloned. Exact empty atom.filters uses an explicit marker and
+reconstructs an empty list; custom/nonempty filters reject. Six new native checks
+cover canonical/noncanonical/mutated definitions, registry identity and empty/
+custom filters. Remote registry/version compatibility remains unsupported.

@@ -13,12 +13,15 @@
 	var/body_error = null
 	var/tmp/local_snapshot = null
 	var/tmp/local_restore_used = FALSE
+	var/tmp/datum/species/human/local_species
+	var/tmp/datum/species/human/species_baseline
+	var/tmp/metadata_checks = 0
 
 /map_storage/train_body_graph/proc/admitted_type(path)
 	if(path == /mob/living/human || ispath(path, /mob/living/simple_animal)) return TRUE
 	if(ispath(path, /obj/item/organ)) return TRUE
 	if(path == /obj/item/stack/teeth/human || path == /matrix) return TRUE
-	if(ispath(path, /datum/wound) || ispath(path, /datum/reagent) || path == /datum/reagents || path == /datum/dna || ispath(path, /datum/species) || path == /datum/corpse_decay_record) return TRUE
+	if(ispath(path, /datum/wound) || ispath(path, /datum/reagent) || path == /datum/reagents || path == /datum/dna || path == /datum/corpse_decay_record) return TRUE
 	var/datum/extraction_equipment_codec/equipment = new
 	return equipment.supported(path)
 
@@ -66,9 +69,64 @@
 		F["[path]/[field]"] << components[field]
 	return ref
 
+// Canonical metadata is a local registry dependency, never a cloned HUD graph.
+// Only the audited Human constructor (data-only HUD and unarmed prototypes) is
+// used for a baseline. Arbitrary species subclasses cannot select constructors.
+/map_storage/train_body_graph/proc/metadata_equal(a, b, depth = 0)
+	metadata_checks++
+	if(depth > 16 || metadata_checks > 8192) return FALSE
+	if(islist(a) || islist(b))
+		if(!islist(a) || !islist(b)) return FALSE
+		var/list/A = a
+		var/list/B = b
+		if(A.len != B.len) return FALSE
+		for(var/i = 1, i <= A.len, i++)
+			if(!metadata_equal(A[i], B[i], depth + 1)) return FALSE
+			if(!isnum(A[i]) && !isnull(A[i]))
+				if(!metadata_equal(A[A[i]], B[B[i]], depth + 1)) return FALSE
+		return TRUE
+	if(istype(a, /datum) || istype(b, /datum))
+		var/datum/A = a
+		var/datum/B = b
+		if(!istype(A) || !istype(B) || A.type != B.type) return FALSE
+		if(A.type != /datum/species/human && A.type != /datum/hud_data && !istype(A, /datum/unarmed_attack)) return FALSE
+		for(var/field in A.vars)
+			if(field == "vars" || (A.type == /datum/species/human && field == "race_key")) continue
+			if(!metadata_equal(A.vars[field], B.vars[field], depth + 1)) return FALSE
+		return TRUE
+	return a == b
+
+/map_storage/train_body_graph/proc/canonical_species_valid(datum/species/S)
+	if(!S || S.type != /datum/species/human || all_species["Human"] != S) return FALSE
+	var/list/species_types = typesof(/datum/species) - /datum/species
+	if(S.race_key != species_types.Find(/datum/species/human)) return FALSE
+	if(!species_baseline) species_baseline = new /datum/species/human
+	metadata_checks = 0
+	return metadata_equal(S, species_baseline)
+
+/map_storage/train_body_graph/decode_saved_value(savefile/F, list/value)
+	if(islist(value) && value["kind"] == "body_species")
+		if(value.len != 2 || value["name"] != "Human" || !local_species || all_species["Human"] != local_species)
+			throw EXCEPTION("Canonical local species changed")
+		return local_species
+	if(islist(value) && value["kind"] == "body_empty_filters")
+		if(value.len != 1) throw EXCEPTION("Malformed empty filter marker")
+		return list()
+	return ..()
+
 /map_storage/train_body_graph/encode_saved_value(savefile/F, value)
 	save_work_check()
 	wire_edges++
+	if(istype(value, /datum/species))
+		if(local_species != value)
+			if(!canonical_species_valid(value)) throw EXCEPTION("Noncanonical or modified species definition")
+			local_species = value
+		return list("kind" = "body_species", "name" = "Human")
+	var/datum/save_export_frame/frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	if(frame && frame.current_field == "filters" && istype(frame.source, /atom))
+		var/atom/owner = frame.source
+		if(length(owner.filters) || length(value)) throw EXCEPTION("Nonempty native filters are not supported")
+		return list("kind" = "body_empty_filters")
 	if(isturf(value) || isarea(value) || istype(value, /obj/map_metadata) || istype(value, /client))
 		throw EXCEPTION("Body graph references external world/session state")
 	if(!isnull(value) && !isnum(value) && !istext(value) && !ispath(value) && !islist(value) && !istype(value, /datum))
@@ -121,6 +179,7 @@
 	body_error = null
 	local_snapshot = null
 	local_restore_used = FALSE
+	local_species = null
 	clear_bookkeeping()
 	body_members = list()
 	wire_edges = 0
@@ -161,6 +220,7 @@
 				lists += list(list("rows" = rows))
 		var/text = json_encode(list("schema" = "train-body-1", "root" = root, "entries" = entries, "lists" = lists))
 		save_work_check()
+		if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Species changed during capture")
 		if(length(text) > TRAIN_BODY_BYTES) throw EXCEPTION("Body payload exceeds byte budget")
 		capture_tick = null
 		local_snapshot = text
@@ -212,6 +272,10 @@
 	if(!islist(value)) return
 	var/list/V = value
 	switch(V["kind"])
+		if("body_species")
+			if(V.len != 2 || V["name"] != "Human" || !local_species || all_species["Human"] != local_species) throw EXCEPTION("Invalid local species reference")
+		if("body_empty_filters")
+			if(V.len != 1) throw EXCEPTION("Invalid empty filter marker")
 		if("value")
 			if(islist(V["value"]) || istype(V["value"], /datum)) throw EXCEPTION("Invalid scalar envelope")
 		if("entry")
@@ -229,6 +293,7 @@
 /map_storage/train_body_graph/proc/local_restore_preflight(text)
 	if(!istext(text) || !istext(local_snapshot) || text != local_snapshot || length(text) > TRAIN_BODY_BYTES || local_restore_used)
 		throw EXCEPTION("Restore requires this adapter's unconsumed exact local capture")
+	if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Local species changed before restore")
 	var/list/doc = json_decode(text)
 	var/list/entries = doc["entries"]
 	var/list/lists = doc["lists"]
@@ -259,6 +324,9 @@
 		for(var/field in fields)
 			if(!istext(field) || field in list("loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey", "verbs")) throw EXCEPTION("Forbidden body field")
 			var/value = read_wire(fields[field])
+			if(islist(value))
+				var/list/envelope = value
+				if(envelope["kind"] == "body_empty_filters" && (field != "filters" || !ispath(path, /atom))) throw EXCEPTION("Empty filter marker outside atom.filters")
 			if(field == "content")
 				if(!ispath(path, /atom/movable)) throw EXCEPTION("Nonmovable body container")
 				for(var/ref_text in saved_content_refs(value, 3))

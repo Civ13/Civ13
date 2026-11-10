@@ -26,6 +26,12 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_registry_and_filters_are_narrow(self):
+        self.assertIn('S.type != /datum/species/human', SOURCE)
+        self.assertIn('all_species["Human"] != S', SOURCE)
+        self.assertIn('metadata_equal(S, species_baseline)', SOURCE)
+        self.assertIn('length(owner.filters) || length(value)', SOURCE)
+        self.assertIn('Empty filter marker outside atom.filters', SOURCE)
     def test_matrix_is_exact_and_bounded(self):
         self.assertIn('A.type == /matrix', SOURCE)
         self.assertIn('abs(value) <= 1000000', SOURCE)
