@@ -500,6 +500,9 @@ SUITES = {
         'paths': ('tests/held_movement/',), 'shared_paths': (
             'code/movementMachine.dm', 'code/game/mob/mob_movement.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm')},
+    'zombie_spawn_selection': {'files': ('tests/zombie_spawn_selection/test_selection.py',),
+        'paths': ('tests/zombie_spawn_selection/',), 'shared_paths': (
+            'code/game/objects/effects/spawner.dm', 'tests/save_movement/source_adapter.py')},
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
