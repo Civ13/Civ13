@@ -278,10 +278,10 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("return brute_dam + burn_dam", damage)
         mend = block(ORGAN, "/obj/item/organ/external/proc/mend_fracture()")
         self.assertIn("perma_injury = 0", mend)
-        # Minor internal organ damage never heals, so only bruised organs hurt.
+        # Recovering internal damage tapers to zero rather than a fixed pain spike.
         pain = block(PAIN, "/mob/living/human/proc/handle_pain()")
-        self.assertIn("if(I.is_bruised() && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
-        self.assertIn("if(I.is_bruised() && prob(2))", pain)
+        self.assertIn("if(I.damage > 0 && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
+        self.assertIn("if(I.damage > 0 && prob(2))", pain)
         self.assertNotIn("I.damage > 2", pain)
 
     def test_every_medical_stack_has_a_sprite(self):
