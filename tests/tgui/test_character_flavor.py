@@ -13,6 +13,9 @@ class CharacterFlavorContract(unittest.TestCase):
  def test_exact_original_topic_and_visibility_gate_are_preserved(self):
   original=(ROOT/'tests/tgui/fixtures/flavor-legacy-topic.dm.txt').read_text(encoding='utf-8').rstrip('\n')
   current='/mob/Topic(href, href_list)\n'+proc(MOB,'/mob/Topic(href, href_list)')
+  # #4308 routed classic windows through show_browse(); map it back to the frozen preimage.
+  self.assertEqual(current.count('\t\tshow_browse(src, null, t1)'),1)
+  current=current.replace('\t\tshow_browse(src, null, t1)','\t\tsrc << browse(null, t1)')
   start=current.index('\t\t\tvar/legacy_snapshot = ');end=current.index('\n',current.index('\t\t\t\tonclose(usr, window_name)',start))
   old='\t\t\tusr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\\n", "<BR>")), "window=[window_name];size=500x200")\n\t\t\tonclose(usr, window_name)'
   self.assertEqual((current[:start]+old+current[end:]).rstrip('\n'),original)
@@ -20,7 +23,7 @@ class CharacterFlavorContract(unittest.TestCase):
   self.assertIn('!hascall(src, "present_character_flavor_ui") || !call(src, "present_character_flavor_ui")(usr, legacy_snapshot)',current)
  def test_editor_cancel_and_preview_face_filter_are_not_reimplemented(self):
   editor=proc(MOB,'/mob/proc/update_flavor_text()')
-  self.assertIn('sanitize(input(usr,',editor);self.assertIn('extra = FALSE)',editor)
+  self.assertIn('sanitize(player_input(usr,',editor);self.assertIn('"message", null, TRUE)',editor);self.assertIn('extra = FALSE)',editor)
   self.assertIn('if (msg != null)\n\t\tflavor_text = msg',editor)
   self.assertNotIn('flavor_change',SOURCE);self.assertNotIn('flavor_text =',SOURCE)
   human=(ROOT/'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')

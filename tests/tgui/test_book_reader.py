@@ -77,7 +77,7 @@ class BookReaderContract(unittest.TestCase):
  def test_original_reader_contract_and_classic_window_retained(self):
   legacy=(ROOT/'tests/tgui/fixtures/book-legacy-show.dm.txt').read_text()
   self.assertIn('istype(user, /mob/living/human) || isghost(user) && !forceshow',legacy)
-  self.assertIn('user << browse(legacy_snapshot, "window=[name]")',SHOW)
+  self.assertIn('show_browse(user, legacy_snapshot, "window=[name]")',SHOW)
   self.assertIn('onclose(user, "[name]")',SHOW)
   writer=body(BOOK,'/obj/item/weapon/book/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob)')
   self.assertIn('color=[P ? P.colour : "black"]',writer)
