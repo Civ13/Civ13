@@ -401,6 +401,13 @@ class Platform:
         except (OSError, AttributeError, ValueError):
             return None
 
+    def free_disk_mb(self, path):
+        """Free space on the drive holding path, in MB, or None if unknown."""
+        try:
+            return shutil.disk_usage(path).free // (1024 * 1024)
+        except (OSError, ValueError):
+            return None
+
     def connections(self, port):
         """Remote addresses with an established connection to the port."""
         return [row[1] for row in self.tcp_rows() if row[0] == port and row[2] == 'ESTABLISHED']

@@ -45,7 +45,8 @@ See [group.example.json](group.example.json). Required keys: `group`,
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
-`save_timeout_seconds`, `start_timeout_seconds` and `backups_kept`.
+`save_timeout_seconds`, `start_timeout_seconds`, `backups_kept` and `min_free_disk_mb`
+(default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off).
 
 In game, every region polls its peers once a minute and players see the group
 with the OOC verb **Regions**, with join links for regions that are up.
@@ -333,7 +334,8 @@ standby and cancels the freeze (`handover_cancel`); the old world carries on and
 the staged build stays ready for another try. A frozen world whose host never
 comes back releases itself after an hour. Regions take turns
 (`<root>/.staging/handover.lock`) because the machine must hold both worlds:
-`handover` is refused while less than `cold_start_min_free_mb` is free, while
+`handover` is refused while less than `cold_start_min_free_mb` of memory or
+`min_free_disk_mb` of disk is free (a full disk once failed a Gaia handover midway), while
 the region is asleep, cold or stopped (those get the staged build on their next
 wake or start), or when it already runs the staged revision. The standby logs to
 `logs/world.standby.log` until the region's next plain start. `status` shows the

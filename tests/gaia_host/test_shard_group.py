@@ -86,10 +86,14 @@ class FakeMachine:
         return self.clock
 
     free_mb = None
+    free_disk = None
     pids_by_port = {}
 
     def free_memory_mb(self):
         return self.free_mb
+
+    def free_disk_mb(self, path):
+        return self.free_disk
 
     def server_pid(self, port):
         return self.pids_by_port.get(port) if port in self.up else None
@@ -1703,6 +1707,17 @@ class HandoverTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'MB free'):
             host.request('handover')
         self.machine.free_mb = None
+        # 2026-11-09: a full drive failed Gaia's handover at "copying the staged build".
+        self.machine.free_disk = 33
+        with self.assertRaisesRegex(shard_group.Refused, 'MB free on the disk'):
+            host.request('handover')
+        with self.assertRaisesRegex(shard_group.Refused, 'MB free on the disk'):
+            host.request_stage()
+        host.config['min_free_disk_mb'] = 0  # 0 turns the check off
+        self.assertTrue(host.request_stage()['accepted'])
+        host.stage_lock.unlink()
+        host.config['min_free_disk_mb'] = shard_group.DEFAULT_MIN_FREE_DISK_MB
+        self.machine.free_disk = None
         self.machine.pids = {100}
         host.write_json(host.freeze_file, {'pid': 100, 'frozen_at': 0})
         with self.assertRaisesRegex(shard_group.Refused, 'asleep'):
