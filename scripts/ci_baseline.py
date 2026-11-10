@@ -468,7 +468,7 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
-    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
