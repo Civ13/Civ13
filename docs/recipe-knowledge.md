@@ -121,6 +121,22 @@ capstone's prototype (`book_research_node_finished`). The mode shows as
 each node's `cost_ticks`; writing and study time and writing stamina grow
 with `era_tier` (`BOOK_WRITE_TIME`, `BOOK_STUDY_TIME`, `BOOK_WRITE_STAMINA`).
 
+### Starting a book research world (phase 6)
+
+At startup in `PERSISTENCE` mode with book research on,
+`start_book_research_world()` sets the world to 5000 B.C. with no ages done
+and auto-research off. A restored save then replaces this with its own era,
+so only a fresh world starts in the Stone Age. A faction founder receives the
+Stone Age master book (every era-0 chapter, `stone_age_node_ids()`) and a
+pencil; the chapters still have to be studied.
+
+The launch wipe is an operator step, not code: turn on `recipe_books` and
+`book_research` for the Persistence maps, then use **Fresh world** for each
+region (see `docs/launcher-fresh-world.md`). That archives the world saves,
+which hold every saved body, so all characters start over. Fresh world refuses
+regions with transfer links, so a connected region group needs a coordinated
+reset that the tool does not do yet.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

@@ -1404,6 +1404,7 @@
 #include "code\modules\research_tree\research_book.dm"
 #include "code\modules\research_tree\character_knowledge.dm"
 #include "code\modules\research_tree\book_distribution.dm"
+#include "code\modules\research_tree\book_launch.dm"
 #include "code\modules\research_tree\book_pages.dm"
 #include "code\modules\research_tree\book_research.dm"
 #include "code\modules\research_tree\node_broadcast.dm"
