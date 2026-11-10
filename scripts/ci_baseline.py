@@ -148,6 +148,9 @@ SUITES = {
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
             'tests/save_movement/source_adapter.py')},
+    'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
+        'paths': ('tests/projectile_location/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
