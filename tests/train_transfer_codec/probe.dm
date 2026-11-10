@@ -23,12 +23,36 @@ var/global/train_codec_runtime_error = FALSE
 /proc/train_codec_check(label, passed)
 	train_codec_checks += list(list("label" = label, "passed" = !!passed))
 	if(!passed) train_codec_failed += label
+// Diagnostic only: never broadens production admission or skips failed checks.
+/proc/train_codec_diagnose(obj/structure/A)
+	var/list/fields = train_transfer_structure_fields(A.type)
+	var/list/ignored = list("train_transfer_id", "train_transfer_journey", "train_transfer_digest", "loc", "locs", "pixloc", "contents", "x", "y", "z")
+	world.log << "CODEC DIAG type=[A.type] buckled=[!!A.buckled_mob] fields=[fields ? fields.len : 0]"
+	for(var/key in A.get_saved_vars())
+		if(!(key in fields) && !(key in ignored))
+			var/value = A.vars[key]
+			world.log << "CODEC DIAG unprojected key=[key] value=[value] list=[islist(value)] datum=[istype(value, /datum)]"
+	var/list/raw = list()
+	for(var/key in fields)
+		if(!(key in A.vars))
+			world.log << "CODEC DIAG absent key=[key]"
+			continue
+		var/value = A.vars[key]
+		if(key in list("material", "padding_material"))
+			var/material/M = value
+			raw[key] = istype(M) ? M.name : null
+			world.log << "CODEC DIAG material key=[key] canonical=[istype(M) && get_material_by_name(M.name) == M]"
+		else
+			raw[key] = value
+		world.log << "CODEC DIAG field=[key] value=[raw[key]] null=[isnull(raw[key])] num=[isnum(raw[key])] text=[istext(raw[key])]"
+	world.log << "CODEC DIAG raw_valid=[train_transfer_structure_state_valid(A.type, raw)] raw_count=[raw.len]"
 /proc/train_codec_probe()
 	var/obj/structure/closet/crate/C = new(locate(3, 3, 1))
 	C.name = "Journey cargo"
 	C.health = 731
 	C.locked = TRUE
 	C.custom_code = 1793
+	train_codec_diagnose(C)
 	var/list/state = train_transfer_structure_state(C)
 	train_codec_check("crate_capture", islist(state))
 	var/list/wire_state = islist(state) ? json_decode(json_encode(state)) : null
@@ -51,6 +75,7 @@ var/global/train_codec_runtime_error = FALSE
 	train_codec_check("crate_subtype_refused", !train_transfer_structure_fields(/obj/structure/closet/crate/large))
 	var/obj/structure/bed/B = new(locate(2, 2, 1))
 	B.persistence_bed_owner_ckey = "trainfixture"
+	train_codec_diagnose(B)
 	var/list/bed_state = train_transfer_structure_state(B)
 	train_codec_check("bed_owner_and_material", islist(bed_state) && bed_state["persistence_bed_owner_ckey"] == "trainfixture" && bed_state["material"] == B.material.name)
 	var/list/bad_material = islist(bed_state) ? bed_state.Copy() : list()

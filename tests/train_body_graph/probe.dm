@@ -141,7 +141,7 @@ var/global/body_runtime_error = FALSE
 	try
 		G.encode_saved_value(new /savefile, locate(1, 1, 1))
 	catch(var/exception/E)
-		external_ref_rejected = TRUE
+		external_ref_rejected = !!findtext("[E]", "external world/session state")
 	body_check("external_turf_reference_rejected", external_ref_rejected)
 	H.stat = CONSCIOUS
 	H.persistence_owner_ckey = null
