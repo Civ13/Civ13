@@ -1014,8 +1014,8 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
         'tests/jungle_hiding/',)},
-    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
-        'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
+    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py', 'tests/flora_regrowth/test_site_occupancy.py'), 'paths': (
+        'tests/flora_regrowth/', 'tests/ecology_spawning/', 'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm')},
     'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (
         'tests/pollution/', 'code/modules/ecology/pollution.dm', 'code/processes/pollution.dm',
         'code/modules/reagents/reagent_pollution.dm',
