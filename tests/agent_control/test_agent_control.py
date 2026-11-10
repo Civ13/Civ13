@@ -11,6 +11,7 @@ import struct
 import sys
 import threading
 import unittest
+from unittest import mock
 import urllib.parse
 from pathlib import Path
 
@@ -2803,6 +2804,50 @@ class ScreenTests(unittest.TestCase):
         self.assertIn('"drive", "screen")', characters)
         self.assertIn("detail = agent_screen(C, req, from_queue)", characters)
         self.assertIn('out["screens"] = agent_screen_rows(C.body)', characters)
+
+
+class TravelTests(unittest.TestCase):
+    """agent_travel.dm lets an agent's own character walk through a region gate and be picked up on the other side."""
+
+    def test_gate_accepts_agent_bodies(self):
+        gate = (ROOT / "code/modules/persistence/region_travel.dm").read_text(encoding="utf-8")
+        self.assertIn("!user.client && !agent_travel_account(user)", gate)
+        self.assertIn("H.persistence_owner_ckey = agent_travel_account(H)", gate)
+        self.assertIn("agent_note_departure(H, destination, destination_name())", gate)
+        reclaim = (ROOT / "code/modules/persistence/player_reclaim.dm").read_text(encoding="utf-8")
+        self.assertIn("is_account_key(account) || is_agent_account(account)", reclaim)
+
+    def test_only_agent_characters_get_an_agent_account(self):
+        travel = dm_source("agent_travel.dm")
+        self.assertIn("if (!C || !C.owner_agent || C.handover_ckey)", travel)
+        self.assertIn('return length(name) ? "agent@[name]" : null', travel)
+
+    def test_character_list_adopts_and_reports_departures(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn("adopt_travellers(A)", characters)
+        self.assertIn('"departed" = agent_departure_rows(A.name)', characters)
+        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
+        self.assertIn("code\\modules\\agent_control\\agent_travel.dm", dme)
+
+    def test_autopilot_follows_to_the_destination(self):
+        class Client:
+            def __init__(self, replies):
+                self.replies = list(replies)
+            def request(self, action, **kw):
+                return self.replies.pop(0)
+        here = Client([{"ok": True, "result": {"departed": [{"ref": "old", "name": "Ada", "destination_name": "Europe", "address": "civ13.com:1740"}]}}])
+        there = Client([{"ok": True, "result": {"characters": []}},
+                        {"ok": True, "result": {"characters": [{"name": "Ada", "kind": "spawned", "ref": "new"}]}}])
+        made = []
+        def make(host, port):
+            made.append((host, port))
+            return there
+        with mock.patch("builtins.print"):
+            result = autopilot.follow_departure(here, "old", None, wait_s=60, sleep=lambda s: None, clock=lambda: 0, make_client=make)
+        self.assertEqual(made, [("civ13.com", "1740")])
+        self.assertEqual(result, (there, "new"))
+        gone = Client([{"ok": True, "result": {"departed": []}}])
+        self.assertIsNone(autopilot.follow_departure(gone, "old", None, make_client=make))
 
 
 if __name__ == "__main__":

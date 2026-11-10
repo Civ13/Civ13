@@ -44,7 +44,7 @@ class AccountKeys(unittest.TestCase):
         env['ACCOUNT_TICKET_MIN_LENGTH'], env['ACCOUNT_TICKET_MAX_LENGTH'] = 32, 128
         # Fake boundary for the existing player_reclaim.dm helper: guest ckeys.
         env['persistence_guest_account'] = lambda account: bool(isinstance(account, str) and re.fullmatch(r'guestw?\d+', account))
-        for name, args in (('is_discord_id', 'id'), ('is_account_key', 'account'), ('persistence_owner_valid', 'account')):
+        for name, args in (('is_discord_id', 'id'), ('is_account_key', 'account'), ('is_agent_account', 'account'), ('persistence_owner_valid', 'account')):
             env[name] = adapter.project(RECLAIM_PROJECTED, '/proc/' + name, args, env)
         for name, args in (('account_discord_id', 'C'), ('account_key', 'C'), ('account_ticket_from_topic', 'topic')):
             env[name] = adapter.project(PROJECTED, '/proc/' + name, args, env)
@@ -62,9 +62,9 @@ class AccountKeys(unittest.TestCase):
 
     def test_save_owner_accepts_ckeys_and_account_keys_only(self):
         owner = self.env['persistence_owner_valid']
-        for good in ('alice', 'd:' + DISCORD):
+        for good in ('alice', 'd:' + DISCORD, 'agent@ada'):
             self.assertTrue(owner(good), good)
-        for bad in ('', None, 'Alice', 'guest123', 'guestw42', 'd:12', 'd:' + DISCORD + ' '):
+        for bad in ('', None, 'Alice', 'guest123', 'guestw42', 'd:12', 'd:' + DISCORD + ' ', 'agent@', 'agent@Ada', 'agent@a-b', 'agent@' + 'a' * 27):
             with self.subTest(bad=bad):
                 self.assertFalse(owner(bad))
 

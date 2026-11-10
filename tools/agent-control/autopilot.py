@@ -231,6 +231,8 @@ How to play:
 - Machine screens: clicking a research bench, chemical dispenser, vending machine or faction desk opens a SCREEN with its data
   and actions. {"do": "screen", "screen": 1, "act": <one of its actions>, "value": <an id or number from its data>} presses
   that button; {"do": "screen", "screen": 1, "close": true} closes it. Walking away closes it too.
+- Other lands: a trail to distant lands (region gate) leads to another region. Click it next to you with
+  "choose": "Travel" to go there with what you wear and carry; you continue in that land.
 - Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
@@ -2064,6 +2066,7 @@ def main(argv=None):
     parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
     parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
     parser.add_argument("--pause-file", default="", help="stop safely when this operator-controlled file exists; remove it and restart to resume")
+    parser.add_argument("--no-follow", dest="follow", action="store_false", help="stop when the character travels to another region instead of following her there")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
     if args.steps is None:
@@ -2076,7 +2079,11 @@ def main(argv=None):
         parser.error(str(exc))
     args.think = defaults.get("think") is True
     token = os.environ.get(defaults.get("auth_token_env") or "CIV13_OLLAMA_TOKEN")
-    client = senses.SensesClient(RetryingClient(QueueClient(AgentClient.from_env(correlated=True), args.pause_file)))
+    base = AgentClient.from_env(correlated=True)
+    client = senses.SensesClient(RetryingClient(QueueClient(base, args.pause_file)))
+    # Following a character to another region uses the same agent name and token there.
+    args.make_client = lambda host, port: senses.SensesClient(RetryingClient(QueueClient(
+        AgentClient(base.agent, base.token, host, int(port), base.timeout, correlated=True), args.pause_file)))
 
     if args.watch:
         return watch(client, args)
@@ -2307,6 +2314,51 @@ def operator_paused(args):
     return bool(path and os.path.exists(path))
 
 
+FOLLOW_WAIT_S = 600  # a trip settles at the destination within a few minutes
+FOLLOW_POLL_S = 10
+
+
+def follow_departure(client, character, args, wait_s=FOLLOW_WAIT_S, sleep=time.sleep, clock=time.monotonic, make_client=None):
+    """When the character left through a region gate, connect to the destination and find her there.
+
+    Returns (client, character ref) at the destination, or None. The destination's agent-control
+    config needs this agent's line with the same name and token.
+    """
+    try:
+        listing = client.request("character_list")
+    except Exception as exc:  # the world may be saving; the caller reports the failed observe
+        print(f"  could not check for a departure: {exc}", file=sys.stderr)
+        return None
+    departed = [row for row in ((listing.get("result") or {}).get("departed") or []) if isinstance(row, dict) and row.get("ref") == character]
+    if not departed:
+        return None
+    row = departed[-1]
+    address = str(row.get("address") or "")
+    host, _, port = address.rpartition(":")
+    if not host or not port.isdigit():
+        print(f"  {row.get('name')} left for {row.get('destination_name')}, but its address is unknown; cannot follow")
+        return None
+    print(f"  {row.get('name')} travelled to {row.get('destination_name')} ({address}); following")
+    if make_client is None:
+        print("  no way to connect to another region from here; cannot follow")
+        return None
+    there = make_client(host, port)
+    deadline = clock() + wait_s
+    while True:
+        try:
+            found = there.request("character_list")
+        except Exception as exc:
+            found = {"ok": False, "error": str(exc)}
+        for other in ((found.get("result") or {}).get("characters") or []) if found.get("ok") else []:
+            if isinstance(other, dict) and other.get("name") == row.get("name") and other.get("kind") == "spawned":
+                print(f"  found {other.get('name')} in {row.get('destination_name')} as {other.get('ref')}")
+                return there, other["ref"]
+        if clock() >= deadline:
+            print(f"  {row.get('name')} did not arrive in {row.get('destination_name')} within {int(wait_s)} s")
+            return None
+        sleep(FOLLOW_POLL_S)
+
+
 def run(client, args, character, token):
     return _run(client, args, character, token, ModelWorker())
 
@@ -2430,6 +2482,16 @@ def _run(client, args, character, token, model_pool):
             print(f"time limit reached after {step - 1} steps")
             break
         reply = client.request("character_observe", {"character": character, "since": since})
+        if not reply.get("ok"):
+            # She may have walked through a region gate: follow her there.
+            followed = follow_departure(client, character, args, make_client=getattr(args, "make_client", None)) if getattr(args, "follow", True) else None
+            if followed:
+                client, character = followed
+                since = queue_since = 0
+                if memory is not None:
+                    memory.event("travelled to another land")
+                    memory.save()
+                reply = client.request("character_observe", {"character": character, "since": since})
         if not reply.get("ok"):
             print(f"observe failed: {reply.get('error')} {reply.get('detail', '')}", file=sys.stderr)
             return 1

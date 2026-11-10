@@ -291,6 +291,7 @@
 
 /datum/agent_control/proc/act_character_list(datum/agent_identity/A, list/req)
 	prune_characters()
+	adopt_travellers(A) // characters that arrived from another region (agent_travel.dm)
 	var/list/out = list()
 	for (var/mob/living/M in agent_characters)
 		var/datum/agent_character/C = agent_characters[M]
@@ -308,7 +309,8 @@
 		out += list(row)
 	last_watch[A.name] = world.time
 	audit_read(A, "character_list")
-	return list("characters" = out, "allow_handover" = allow_handover)
+	// Characters that left through a region gate, and where to follow them.
+	return list("characters" = out, "allow_handover" = allow_handover, "departed" = agent_departure_rows(A.name))
 
 /datum/agent_control/proc/character_state(datum/agent_character/C)
 	var/mob/living/M = C.body
