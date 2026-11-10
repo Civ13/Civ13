@@ -64,6 +64,12 @@ default behaviour is:
 	return TRUE
 
 /mob/living/Bump(atom/movable/AM, yes)
+	// A shove stops at a body or obstacle, never starting a delayed push/swap.
+	if (ishuman(src))
+		var/mob/living/human/shoved = src
+		if (istype(shoved.human_subtile_transaction, /datum/human_subtile_transaction/shove))
+			return
+
 
 	// no more pushing people past caribbean blocks - Kachnov
 	if (istype(AM, /obj/structure/closet))
@@ -237,6 +243,10 @@ default behaviour is:
 // Whenever two mobs could swap places, they walk through each other instead
 // and may share a tile: the same consent as a swap, without moving anyone.
 /mob/living/proc/swap_passable(var/mob/living/tmob)
+	if (ishuman(src))
+		var/mob/living/human/shoved = src
+		if (istype(shoved.human_subtile_transaction, /datum/human_subtile_transaction/shove))
+			return FALSE
 	if (!istype(tmob) || tmob == src || throwing || tmob.throwing)
 		return FALSE
 	if ((status_flags & LEAPING) || ordinary_human_animal_swap(tmob))

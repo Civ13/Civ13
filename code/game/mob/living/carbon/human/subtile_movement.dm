@@ -1170,7 +1170,7 @@
 	return P
 
 /mob/living/human/persistence_runtime_var(key)
-	if (key == "human_subtile_pull_enabled")
+	if (key == "next_deliberate_shove" || key == "shove_recovery_until" || key == "human_subtile_pull_enabled")
 		return TRUE
 	// Tile-only persistence treats native sub-tile movement as transient.
 	// Pixel offsets are unrelated artwork and continue through normal saving.
@@ -1370,3 +1370,55 @@
 	prefs.tap_step = !prefs.tap_step
 	prefs.save_preferences()
 	to_chat(src, SPAN_NOTICE("Tap to step [prefs.tap_step ? "on: a quick tap moves you one tile, and holding a key still slides freely" : "off: you stop exactly where you let go of the key"]."))
+
+// External separation owns the same native pulse gateway as walking but does
+// not borrow client input authority. Bounded, non-sleeping 2px sweeps preserve
+// offsets, Enter/Exit collision, persistence admission and map grace barriers.
+/datum/human_subtile_transaction/shove/valid(direction)
+	return !cancelled && actor && !isDeleted(actor) && actor.human_subtile_transaction == src && actor.shove_body_ready() && !persistence_save_in_progress && human_subtile_same(expected, actor.human_subtile_snapshot())
+
+/datum/human_subtile_transaction/shove/perform(direction)
+	if (!(direction in list(NORTH, SOUTH, EAST, WEST)))
+		return FALSE
+	for (var/i = 1, i <= 16, i++)
+		if (!valid(direction))
+			break
+		var/dx = direction == EAST ? 2 : direction == WEST ? -2 : 0
+		var/dy = direction == NORTH ? 2 : direction == SOUTH ? -2 : 0
+		if (actor.human_subtile_pulse_climbs(dx, dy))
+			break
+		var/list/ll = actor.human_subtile_ll()
+		var/px = ll[1] * 32 + ll[3] + dx
+		var/py = ll[2] * 32 + ll[4] + dy
+		var/tx = round(px / 32)
+		var/ty = round(py / 32)
+		var/sx = px - tx * 32
+		var/sy = py - ty * 32
+		var/turf/destination = locate(tx, ty, actor.z)
+		if (!destination || !persistence_movement_allowed(actor, destination))
+			break
+		var/blocked = FALSE
+		for (var/turf/front in actor.human_subtile_cover(tx, ty, sx, sy))
+			if (map && map.check_caribbean_block(actor, front))
+				blocked = TRUE
+		if (blocked)
+			break
+		var/datum/human_subtile_pulse/P = new
+		P.actor = actor
+		P.destination = destination
+		P.direction = direction
+		P.sx = sx
+		P.sy = sy
+		P.before = expected
+		actor.human_subtile_pulse = P
+		actor.Move(destination, direction)
+		if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)
+			break
+		actor.human_subtile_pulse = null
+		var/list/after = actor.human_subtile_snapshot()
+		var/actual_x = (after["x"] - expected["x"]) * 32 + after["sx"] - expected["sx"]
+		var/actual_y = (after["y"] - expected["y"]) * 32 + after["sy"] - expected["sy"]
+		expected = after
+		if (P.invalid || after["z"] != P.before["z"] || actual_x != dx || actual_y != dy)
+			break
+	return total_distance > 0
