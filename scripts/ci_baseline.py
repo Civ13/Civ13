@@ -1097,6 +1097,10 @@ SUITES = {
                                 'tests/fishing_stock/test_native_runner.py',
                                 'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Read-only Examine navigation source contracts; no DM runtime is launched.
+    'atlas_examine': {'files': ('tests/test_atlas_examine.py',), 'paths': (
+        'tests/test_atlas_examine.py', 'code/game/mob/crafting_atlas_examine.dm'),
+        'shared_paths': ('code/game/mob/mob.dm', 'code/game/mob/crafting_atlas.dm', 'civ13.dme')},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.

@@ -258,3 +258,23 @@ material costs. Open Atlas views refresh after learning; reopen a station prompt
 to refresh its choices. Death clears personal recipe knowledge. Maps without
 manuals enabled keep their existing rules. Chemistry reactions and gathering are
 not locked by a manual merely because the same output has a crafting recipe.
+
+## Examine shortcuts (existing entries)
+
+The player Examine action (including shift-click) appends **View in Crafting
+Atlas** when the examined entity has an exact catalog entry. It opens the same
+modern interface or classic fallback as the Atlas verb. The usual visibility
+and blindness gates still apply; the shortcut appears after examination even
+for types with custom examine output. It is private to the examining player.
+
+Material stacks use their actual material identity rather than guessing from
+the default stack subtype. Non-material entities whose name differs from their initial name, and
+unindexed types, have no shortcut. There is no parent-type fallback: an unindexed animal must not
+silently become a different species' page. Existing catalog omissions remain;
+this phase does not add every animal, tile or item to the catalog.
+
+Links contain a catalog identity, not a live target reference or its contents.
+Opening the reference does not grant research or learned recipe knowledge.
+No saved fields or persistence migration are introduced. Offline coverage in
+`tests/test_atlas_examine.py` checks source wiring and catalog identities, not
+native execution, client rendering or click delivery.
