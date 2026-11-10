@@ -27,7 +27,8 @@
 /obj/item/weapon/lipstick/random
 	name = "lipstick"
 
-/obj/item/weapon/lipstick/random/New()
+/obj/item/weapon/lipstick/random/on_runtime_spawn()
+	..()
 	colour = pick("red","purple","jade","black")
 	name = "[colour] lipstick"
 
