@@ -293,6 +293,15 @@ describe('Crafting Atlas navigation', () => {
 });
 
 describe('Crafting Atlas requirement notes', () => {
+  it('shows one row for a recipe that comes in several materials', () => {
+    const page = { id: '/obj/item/hatchet', name: 'hatchet', heading: 'How to obtain', routes: [], kind: 'Tool or weapon', made_by_count: 2, used_in_count: 0, used_in: [],
+      made_by: [{ id: 'r1', name: 'Toolsmith hatchet', era_label: '0: Stone Age', needs: '3 x bronze', variant_count: 4, ways: 'bronze, copper, iron, steel' }, { id: 'r9', name: 'Workbench Hatchet', era_label: '0: Stone Age', needs: '1 x hatchet head', variant_count: 1 }] };
+    const props = ui({ query: '', detail: { ...recipe, id: 'r1' }, guidance: page });
+    render(<CraftingAtlas {...props} />);
+    const rows = within(screen.getByRole('navigation', { name: 'Results' })).getAllByRole('button');
+    expect(rows.map(row => row.textContent)).toEqual(['Toolsmith hatchetStone Age - 4 versions: bronze, copper, iron, steel', 'Workbench HatchetStone Age - 1 x hatchet head']);
+    expect(rows[0].getAttribute('aria-current')).toBe('true');
+  });
   it('says where a reaction runs and links the reaction bench', () => {
     const chemistry = { ...recipe, kind: 'Chemistry', conditions: 'Catalysts: []; inhibitors: []; additional can_happen/process callbacks may apply.' };
     const view = render(<CraftingAtlas {...ui({ detail: chemistry })} />);
