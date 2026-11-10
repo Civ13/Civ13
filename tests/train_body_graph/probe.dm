@@ -130,6 +130,12 @@ var/global/body_runtime_error = FALSE
 	H.persistence_owner_ckey = "trainbodyfixture"
 	// Let real constructor icon/blood callbacks settle before snapshotting.
 	sleep(20)
+	body_check("post_constructor_species_admitted", G.canonical_species_valid(canonical))
+	var/list/head_row = canonical.has_limbs["head"]
+	var/original_descriptor = head_row["descriptor"]
+	head_row["descriptor"] = "modified descriptor"
+	body_check("modified_limb_descriptor_rejected", !G.canonical_species_valid(canonical) && findtext(G.metadata_error, "has_limbs"))
+	head_row["descriptor"] = original_descriptor
 	var/obj/item/organ/external/head/source_head = H.get_organ("head")
 	var/obj/item/stack/teeth/human/source_teeth = source_head ? locate(/obj/item/stack/teeth/human) in source_head : null
 	if(source_teeth) source_teeth.amount = 23

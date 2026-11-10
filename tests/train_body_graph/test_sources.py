@@ -26,6 +26,11 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_limb_descriptor_exception_remains_exact(self):
+        self.assertIn('row["descriptor"] != initial(path:name)', SOURCE)
+        self.assertIn('field != "path" && field != "descriptor"', SOURCE)
+        self.assertIn('row["path"] != base["path"]', SOURCE)
+        self.assertIn('metadata_mismatch("[context].[i].descriptor")', SOURCE)
     def test_registry_and_filters_are_narrow(self):
         self.assertIn('S.type != /datum/species/human', SOURCE)
         self.assertIn('all_species["Human"] != S', SOURCE)

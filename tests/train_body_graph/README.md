@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 28-check probe constructs real production owned/injured humans with organs,
+The 30-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -85,3 +85,11 @@ species graph is cloned. Exact empty atom.filters uses an explicit marker and
 reconstructs an empty list; custom/nonempty filters reject. Six new native checks
 cover canonical/noncanonical/mutated definitions, registry identity and empty/
 custom filters. Remote registry/version compatibility remains unsupported.
+
+Source audit following dbe531 (17/28, no runtime errors): production
+`species.create_organs` adds `has_limbs[tag].descriptor = O.name`. The registry
+comparison now admits only that derived field when it exactly equals the
+compiled default limb name; limb paths, keys, membership and extra fields still
+reject. Rejections include field paths (never character values). Two further
+checks cover canonical metadata after actual human construction and refusal of
+a changed descriptor. The native rerun remains pending.

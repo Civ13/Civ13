@@ -16,6 +16,7 @@
 	var/tmp/datum/species/human/local_species
 	var/tmp/datum/species/human/species_baseline
 	var/tmp/metadata_checks = 0
+	var/tmp/metadata_error = null
 
 /map_storage/train_body_graph/proc/admitted_type(path)
 	if(path == /mob/living/human || ispath(path, /mob/living/simple_animal)) return TRUE
@@ -72,29 +73,56 @@
 // Canonical metadata is a local registry dependency, never a cloned HUD graph.
 // Only the audited Human constructor (data-only HUD and unarmed prototypes) is
 // used for a baseline. Arbitrary species subclasses cannot select constructors.
-/map_storage/train_body_graph/proc/metadata_equal(a, b, depth = 0)
+/map_storage/train_body_graph/proc/metadata_mismatch(context)
+	if(!metadata_error) metadata_error = context
+	return FALSE
+
+// create_organs() fills only descriptor with the instantiated limb's default
+// name (species.dm:715). Accept that exact derived addition, not arbitrary
+// modified limb paths, names, membership or extra data.
+/map_storage/train_body_graph/proc/species_limbs_equal(list/A, list/B, context)
+	if(!islist(A) || !islist(B) || A.len != B.len) return metadata_mismatch(context)
+	for(var/i = 1, i <= A.len, i++)
+		if(A[i] != B[i]) return metadata_mismatch("[context].keys")
+		var/list/row = A[A[i]]
+		var/list/base = B[B[i]]
+		if(!islist(row) || !islist(base) || row["path"] != base["path"]) return metadata_mismatch("[context].[i].path")
+		var/path = base["path"]
+		if(!ispath(path, /obj/item/organ/external)) return metadata_mismatch("[context].[i].path")
+		if(row.len < 1 || row.len > 2) return metadata_mismatch("[context].[i].fields")
+		for(var/field in row)
+			if(field != "path" && field != "descriptor") return metadata_mismatch("[context].[i].fields")
+		if("descriptor" in row)
+			if(row["descriptor"] != initial(path:name)) return metadata_mismatch("[context].[i].descriptor")
+	return TRUE
+
+/map_storage/train_body_graph/proc/metadata_equal(a, b, depth = 0, context = "species")
 	metadata_checks++
-	if(depth > 16 || metadata_checks > 8192) return FALSE
+	if(depth > 16 || metadata_checks > 8192) return metadata_mismatch("[context].budget")
 	if(islist(a) || islist(b))
-		if(!islist(a) || !islist(b)) return FALSE
+		if(!islist(a) || !islist(b)) return metadata_mismatch(context)
 		var/list/A = a
 		var/list/B = b
-		if(A.len != B.len) return FALSE
+		if(A.len != B.len) return metadata_mismatch("[context].length")
 		for(var/i = 1, i <= A.len, i++)
-			if(!metadata_equal(A[i], B[i], depth + 1)) return FALSE
+			if(!metadata_equal(A[i], B[i], depth + 1, "[context].[i].key")) return FALSE
 			if(!isnum(A[i]) && !isnull(A[i]))
-				if(!metadata_equal(A[A[i]], B[B[i]], depth + 1)) return FALSE
+				if(!metadata_equal(A[A[i]], B[B[i]], depth + 1, "[context].[i].value")) return FALSE
 		return TRUE
 	if(istype(a, /datum) || istype(b, /datum))
 		var/datum/A = a
 		var/datum/B = b
-		if(!istype(A) || !istype(B) || A.type != B.type) return FALSE
-		if(A.type != /datum/species/human && A.type != /datum/hud_data && !istype(A, /datum/unarmed_attack)) return FALSE
+		if(!istype(A) || !istype(B) || A.type != B.type) return metadata_mismatch("[context].type")
+		if(A.type != /datum/species/human && A.type != /datum/hud_data && !istype(A, /datum/unarmed_attack)) return metadata_mismatch("[context].unsupported")
 		for(var/field in A.vars)
 			if(field == "vars" || (A.type == /datum/species/human && field == "race_key")) continue
-			if(!metadata_equal(A.vars[field], B.vars[field], depth + 1)) return FALSE
+			if(A.type == /datum/species/human && field == "has_limbs")
+				if(!species_limbs_equal(A.vars[field], B.vars[field], "[context].has_limbs")) return FALSE
+				continue
+			if(!metadata_equal(A.vars[field], B.vars[field], depth + 1, "[context].[field]")) return FALSE
 		return TRUE
-	return a == b
+	if(a != b) return metadata_mismatch(context)
+	return TRUE
 
 /map_storage/train_body_graph/proc/canonical_species_valid(datum/species/S)
 	if(!S || S.type != /datum/species/human || all_species["Human"] != S) return FALSE
@@ -102,6 +130,7 @@
 	if(S.race_key != species_types.Find(/datum/species/human)) return FALSE
 	if(!species_baseline) species_baseline = new /datum/species/human
 	metadata_checks = 0
+	metadata_error = null
 	return metadata_equal(S, species_baseline)
 
 /map_storage/train_body_graph/decode_saved_value(savefile/F, list/value)
@@ -119,7 +148,7 @@
 	wire_edges++
 	if(istype(value, /datum/species))
 		if(local_species != value)
-			if(!canonical_species_valid(value)) throw EXCEPTION("Noncanonical or modified species definition")
+			if(!canonical_species_valid(value)) throw EXCEPTION("Noncanonical or modified species definition at [metadata_error]")
 			local_species = value
 		return list("kind" = "body_species", "name" = "Human")
 	var/datum/save_export_frame/frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
@@ -220,7 +249,7 @@
 				lists += list(list("rows" = rows))
 		var/text = json_encode(list("schema" = "train-body-1", "root" = root, "entries" = entries, "lists" = lists))
 		save_work_check()
-		if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Species changed during capture")
+		if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Species changed during capture at [metadata_error]")
 		if(length(text) > TRAIN_BODY_BYTES) throw EXCEPTION("Body payload exceeds byte budget")
 		capture_tick = null
 		local_snapshot = text
@@ -293,7 +322,7 @@
 /map_storage/train_body_graph/proc/local_restore_preflight(text)
 	if(!istext(text) || !istext(local_snapshot) || text != local_snapshot || length(text) > TRAIN_BODY_BYTES || local_restore_used)
 		throw EXCEPTION("Restore requires this adapter's unconsumed exact local capture")
-	if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Local species changed before restore")
+	if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Local species changed before restore at [metadata_error]")
 	var/list/doc = json_decode(text)
 	var/list/entries = doc["entries"]
 	var/list/lists = doc["lists"]
