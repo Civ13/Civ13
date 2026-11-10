@@ -229,16 +229,10 @@
 		user.visible_message("<span class='danger'>\The [user] shatters [src] into [target]!</span>")
 
 	if (reagents && reagents.total_volume > 0)
-		spawn (1) // wait until after our explosion, if we have one
-			user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
-			reagents.splash(target, reagents.total_volume)
-			
+		user.visible_message("<span class='notice'>The contents of \the [src] splash all over [target]!</span>")
+		reagents.splash(target, reagents.total_volume)
 	else
 		user.visible_message("<span class='notice'>The clay of \the [src] shatters all over [target]!</span>")
-	shatter(loc, target)
-	
-// call shatter when you want it to become a broken_bottle
-	//Finally, shatter the bottle. This kills (qdel) the bottle.
 
 	var/obj/item/weapon/clayshards/B = shatter(target.loc, target)
 	user.put_in_active_hand(B)
