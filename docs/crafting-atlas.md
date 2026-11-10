@@ -24,6 +24,14 @@ filters do not hide matching Resource results. Resource results are independentl
 limited to 150; recipe families retain the in-game 150 and website 250 limits.
 Empty or whitespace-only input browses recipes without listing every resource.
 
+The in-game window (not the website) also shows each resource's in-game name
+where the source declares one, matches every searched word, lists recipes whose
+name matches first, limits material recipes to the reader's own map catalog
+unless **Include other maps** is ticked, and marks recipes that still need
+research or have been retired by the current era. A resource page lists the
+recipes that make and use exactly that resource. See
+[the reader notes](tgui/crafting-atlas.md#reader-view).
+
 ## Recipe families and variants
 
 The website diagram and modern in-game diagram consolidate related recipes in

@@ -8,6 +8,7 @@ from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
 from atlas.research_coverage import annotate_research
+from atlas.titles import display_titles
 
 
 def catalog_text(game):
@@ -64,6 +65,7 @@ def label(s):
         return 'cloth bedroll'
     # This item type's DM name is sand; the similarly named glass material is distinct.
     if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
+    if s.rstrip('/') == '/material/proc/generate_recipes_civs':return 'any hard material'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
@@ -219,7 +221,8 @@ for p,raw in files.items():
         args=splitargs(s[start:i-1])
         if len(args)>=3 and args[0].startswith('"') and args[1].startswith('/'):
             prior=s[:m.start()];decls=re.findall(r'^(/[^\s(]+)',prior,re.M);owner=decls[-1] if decls else 'runtime material'
-            add(args[0].strip('"'),'Native stack',[(owner,args[2])],[(args[1],1)],p,prior.count('\n')+1,'Receiver/context dependent; named constructor arguments retained in source.',s[m.start():i])
+            # "[display_name] fork": any sufficiently hard material, named by the material at runtime.
+            add(re.sub(r'^\[display_name\] ','',args[0].strip('"')),'Native stack',[(owner,'1' if args[2]=='TRUE' else args[2])],[(args[1],1)],p,prior.count('\n')+1,'Receiver/context dependent; named constructor arguments retained in source.',s[m.start():i])
     for m in re.finditer(r'(/obj/[\w/]+)\s*=\s*(/obj/[\w/]+)',s):
         if p.endswith('/pot.dm'):
             add('Boil '+label(m[1]),'Cooking',[(m[1],1)],[ (m[2],1)],p,s[:m.start()].count('\n')+1,'Boiling water and pot/stove conditions apply.',m[0])
@@ -404,8 +407,13 @@ data['recipes']=records
 data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
+resource_titles=display_titles(files,{x:(material_stack(x) if x.startswith('/material/') else x) for x in resource_ids if x not in sprite_variants},resource_names)
+def game_resource(x):
+    entry=dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{})
+    if x in resource_titles:entry['title']=resource_titles[x]
+    return entry
 if options.catalog_only:
-    game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+    game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
     game_text=catalog_text(game)
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
@@ -441,7 +449,7 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
-game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
 game_text=catalog_text(game)
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)

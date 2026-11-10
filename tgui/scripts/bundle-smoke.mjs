@@ -117,6 +117,12 @@ const click = text => {
   assert.ok(el, `Missing control ${text}`);
   el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
 };
+// Atlas result rows carry a name and a caption in one control.
+const clickRow = text => {
+  const el = [...w.document.querySelectorAll('button.atlas-row')].find(el => el.querySelector('strong')?.textContent === text);
+  assert.ok(el, `Missing atlas row ${text}`);
+  el.dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+};
 try {
   w.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
   await settle(); assert.equal(messages[0]?.type, 'ready');
@@ -186,14 +192,14 @@ try {
   await update('crafting_atlas.tmpl', atlasFixture);
   assert.equal(w.document.querySelectorAll('[data-result-type="resource"]').length, 1);
   assert.equal(w.document.querySelectorAll('[data-result-type="recipe"]').length, 1);
-  assert.ok(w.document.body.textContent.includes('Input ore (2)'));
+  assert.ok(w.document.body.textContent.includes('Input ore(2)'));
   assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
   assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
-  click('Indexed ore');
+  clickRow('Indexed ore');
   assert.equal(messages.at(-1).type, 'act/atlas_navigate');
   assert.equal(messages.at(-1).payload.atlas_navigate, JSON.stringify({ route: 'resource', resource: '/material/ore' }));
   await update('crafting_atlas.tmpl', atlasFixture, 1);
-  const atlasBefore = messages.length; click('Indexed ore'); assert.equal(messages.length, atlasBefore);
+  const atlasBefore = messages.length; clickRow('Indexed ore'); assert.equal(messages.length, atlasBefore);
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
   assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
   assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);

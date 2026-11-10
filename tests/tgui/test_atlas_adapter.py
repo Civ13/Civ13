@@ -5,9 +5,11 @@ ROOT=Path(__file__).resolve().parents[2]
 CORE=(ROOT/'code/game/mob/crafting_atlas.dm').read_text()
 ADAPTER=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
 OPEN=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/open(',1)[1].split('/datum/nanoui/tgui/crafting_atlas\n',1)[0]
-NAV=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/navigate(',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/recipe_data(',1)[0]
+NAV=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/navigate(',1)[1].split('/client\n\tvar/list/atlas_icon_cache',1)[0]
 STATE=ADAPTER.split('/datum/topic_state/crafting_atlas/can_use_topic',1)[1].split('/datum/crafting_atlas_presenter/tgui/navigate',1)[0]
 MODEL=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/model(',1)[1]
+def part(name,until):
+ return ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/'+name+'(',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/'+until+'(',1)[0]
 def proc(content,name):
  marker='/datum/crafting_atlas_reference/proc/'+name+'('
  body=content[content.index(marker):];end=re.search(r'\n/[^\n]+',body)
@@ -108,7 +110,7 @@ class AtlasAdapterContract(unittest.TestCase):
   def valid(payload):
    if not isinstance(payload,dict) or len(payload)>6 or payload.get('route') not in keys:return False
    return all(key in keys[payload['route']] and isinstance(value,(str,int,float)) for key,value in payload.items())
-  for payload in ({'route':'open','query':'wood','era':'multiple','processor':'sawmill','recipe':'r2'},{'route':'page','page':10000,'query':''},{'route':'resource','resource':'/material/wood'},{'route':'reset'}):
+  for payload in ({'route':'open','query':'wood','era':'multiple','processor':'sawmill','recipe':'r2','scope':'all'},{'route':'page','page':10000,'query':''},{'route':'resource','resource':'/material/wood','recipe':'r2','scope':''},{'route':'reset'}):
    self.assertTrue(valid(payload))
   for payload in ({'route':'craft'},{'route':'reset','href':'?admin=1'},{'route':'resource','resource':{}},{'route':'open','query':[]},{'route':'resource','query':'carry filters'}):
    self.assertFalse(valid(payload))
@@ -118,17 +120,21 @@ class AtlasAdapterContract(unittest.TestCase):
  def test_resource_route_resets_filters_and_every_navigation_uses_existing_show(self):
   resource=NAV.split('if (route == "resource")',1)[1].split('else if (route == "reset")',1)[0]
   self.assertIn('reference.resource_exists(resource_id)',resource)
-  self.assertIn('reference.show(viewer, resource_id, 1, resource_id)',resource)
+  self.assertIn('reference.show(viewer, resource_id, 1, resource_id, recipe_id = copytext("[params["recipe"]]", 1, 32))',resource)
   self.assertNotIn('era =',resource)
+  self.assertNotIn('params["query"]',resource)
   self.assertIn('legacy = TRUE',NAV)
   self.assertIn('return FALSE',NAV)
   self.assertNotIn('update_uis',NAV)
   self.assertNotRegex(NAV,r'\binput\(|\bnew\s+/obj|\.Topic\(|\bcall\(')
 
  def test_server_model_keeps_bounds_selection_recipe_filters_and_resource_independence(self):
-  for marker in ('copytext("[query]", 1, 65)','max(1, min(10000, round(page)))','shown >= 12','matched > first + 11','resource_rows.len >= 150','matched <= 150','reference.matching_variants','reference.variant_record','processor && recipe["processor"] != processor','era == "unknown"','era == "multiple"','!(text2num(era) in eras)','!selected || choice["id"] == recipe_id'):
+  for marker in ('copytext("[query]", 1, 65)','max(1, min(10000, round(page)))','shown >= 12','matched > first + 11','resource_rows.len >= 150','index.len >= 150 && family != selected_family','reference.matching_variants','reference.variant_record','processor && recipe["processor"] != processor','!era_allows(recipe, era)','choice["id"] == recipe_id'):
    self.assertIn(marker,MODEL)
-  self.assertLess(MODEL.index('reference.matching_resources(query)'),MODEL.index('processor && recipe["processor"] != processor'))
+  eras=part('era_allows','resource_model')
+  for marker in ('era == "unknown"','era == "multiple"','!(text2num(era) in eras)'):
+   self.assertIn(marker,eras)
+  self.assertLess(MODEL.index('search_resources(reference, words)'),MODEL.index('processor && recipe["processor"] != processor'))
   guidance=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/guidance_data',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/model',1)[0]
   self.assertIn('entries.len >= 12',guidance)
   self.assertIn('findtext("[resource_id]", "/turf/") == 1',guidance)
@@ -167,25 +173,110 @@ class AtlasFamilyContract(unittest.TestCase):
   self.assertNotRegex(ADAPTER,r'new /obj|new typepath|text2path|parent_type')
 
  def test_grouping_is_after_each_recipe_filter_and_before_family_bound(self):
-  self.assertLess(MODEL.index('reference.matching_variants(recipe, query)'),MODEL.index('var/family = recipe["family_id"]'))
-  for guard in ('processor && recipe["processor"] != processor','era == "unknown"','era == "multiple"','!(text2num(era) in eras)'):
+  self.assertLess(MODEL.index('search_variants(reference, recipe, words)'),MODEL.index('var/family = recipe["family_id"]'))
+  for guard in ('processor && recipe["processor"] != processor','!era_allows(recipe, era)','matches = catalog_matches(matches, catalog, scope)'):
    self.assertLess(MODEL.index(guard),MODEL.index('var/family = recipe["family_id"]'))
-  self.assertIn('if (!islist(row))\n\t\t\tmatched++',MODEL)
-  self.assertIn('if (matched <= 150)\n\t\t\t\tindex += list(row)',MODEL)
+  self.assertIn('if (!islist(members))\n\t\t\tmatched++',MODEL)
+  self.assertIn('if (index.len >= 150 && family != selected_family)\n\t\t\tcontinue',MODEL)
   self.assertIn('data["recipe_count"] = recipe_matches',MODEL)
   self.assertIn('data["family_count"] = matched',MODEL)
   self.assertIn('members += list(list("group" = recipe, "matches" = matches))',MODEL)
-  self.assertIn('if (!selected || choice["id"] == recipe_id)',MODEL)
   self.assertIn('row["id"] = choice["id"]',MODEL)
   self.assertIn('family_members[selected_family]',MODEL)
-  self.assertIn('recipe_data(reference, viewer, selected_group, selected_matches, selected)',MODEL)
+  self.assertIn('recipe_data(reference, viewer, selected_group, selected_matches, selected, catalog, known)',MODEL)
 
  def test_family_selector_retains_canonical_choices_and_selected_detail(self):
   options=ADAPTER.split('/datum/crafting_atlas_presenter/tgui/proc/family_variants(',1)[1].split('/datum/crafting_atlas_presenter/tgui/proc/model(',1)[0]
-  for marker in ('var/list/matches = member["matches"]','variant["id"] == recipe_id','chosen = variant','group["outputs"]','product["quantity"]','product["name"]','group["inputs"]','ingredient["quantity"]','ingredient["name"]','chosen["kind"]','group["era_label"]','chosen["line"]','"id" = chosen["id"]','html_encode(label)'):
+  for marker in ('var/list/matches = member["matches"]','variant["id"] == recipe_id','chosen = variant','amounts(reference, group["outputs"])','amounts(reference, group["inputs"])','chosen["kind"]','group["era_label"]','chosen["line"]','"id" = chosen["id"]','html_encode(label)'):
    self.assertIn(marker,options)
   self.assertNotIn('family_',NAV)
   self.assertIn('members.len > 1',MODEL)
+  amounts=part('amounts','row_data')
+  for marker in ('resource["quantity"]','display_name(reference, resource["id"], resource["name"])'):
+   self.assertIn(marker,amounts)
   # Core IDs, classic HTML, search and action admission remain unchanged, covered above.
+
+class AtlasReaderViewContract(unittest.TestCase):
+ def test_scope_is_a_two_value_window_setting_and_reset_clears_it(self):
+  self.assertIn('ui.scope = params["scope"] == "all" ? "all" : ""',NAV)
+  self.assertLess(NAV.index('!(key in keys)'),NAV.index('ui.scope = params["scope"]'))
+  self.assertIn('ui.scope = ""\n\t\treference.show(viewer)',NAV)
+  self.assertIn('model(arglist(arguments + ui.scope))',ADAPTER)
+  self.assertNotRegex(NAV,r'show\([^\n]*scope')
+
+ def test_atlas_and_crafting_share_one_catalog_key(self):
+  recipes=(ROOT/'code/game/objects/items/stacks/civ_recipes.dm').read_text()
+  key=recipes.split('/proc/crafting_catalog_key(',1)[1].split('\n/',1)[0]
+  for marker in ('faction_text','pygmy','map.override_global_recipes'):
+   self.assertIn(marker,key)
+  crafting=recipes.split('/material/proc/get_recipes_civs(',1)[1].split('\n/',1)[0]
+  self.assertIn('crafting_catalog_key(',crafting)
+  self.assertNotIn('override_global_recipes',crafting)
+  self.assertIn('var/catalog = crafting_catalog_key(viewer)',MODEL)
+
+ def test_other_map_catalogs_are_hidden_until_requested_and_counted(self):
+  scope=part('catalog_matches','has_local')
+  for marker in ('findtext(kind, "Material / ") != 1','kind == "Material / [catalog]"','if (scope == "all")\n\t\treturn local + other','return local'):
+   self.assertIn(marker,scope)
+  self.assertIn('hidden++',MODEL)
+  self.assertIn('data["hidden_count"] = hidden',MODEL)
+  self.assertLess(MODEL.index('hidden++'),MODEL.index('recipe_matches++'))
+
+ def test_word_search_is_bounded_and_every_word_must_match_one_variant(self):
+  words=part('search_words','search_variants')
+  self.assertIn('words.len < 6',words)
+  self.assertIn('reference.search_text(query)',words)
+  variants=part('search_variants','all_words')
+  self.assertIn('reference.matching_variants(recipe, words.len ? words[1] : "")',variants)
+  self.assertIn('if (variant in also)',variants)
+  resources=part('search_resources','amounts')
+  self.assertIn('if (!words.len)\n\t\treturn exact',resources)
+  self.assertIn('return exact + other',resources)
+  self.assertIn('var/list/order = exact + named + other',MODEL)
+
+ def test_resource_page_lists_exact_makers_and_users_within_bounds(self):
+  page=part('resource_model','model')
+  for marker in ('product["id"] == resource_id','ingredient["id"] == resource_id','makes && ++made <= 60','uses && ++used <= 60','data["query"] = ""','guidance["made_by_count"] = made','guidance["used_in_count"] = used'):
+   self.assertIn(marker,page)
+  self.assertNotIn('search_',page)
+  self.assertIn('return resource_model(reference, viewer, data, resource_id, recipe_id, catalog, scope, known)',MODEL)
+
+ def test_research_status_is_display_only_and_reuses_crafting_admission(self):
+  research=part('research_data','research_state')
+  for marker in ('recipe["research_status"] != "gated"','crafting_node_allowed(H, node_id)','crafting_node_world_allowed(H.civilization, node_id)','map.book_research_enabled()','known[key] = state','get_research_node(node_id)'):
+   self.assertIn(marker,research)
+  self.assertNotRegex(research,r'learn_|\.research|civilization\s*=')
+  self.assertIn('recipe_age_allowed(recipe["maximum_era"])',part('retired','catalog_matches'))
+
+ def test_previews_are_sent_once_per_reader(self):
+  view=part('resource_view','research_data')
+  for marker in ('reader.atlas_icon_cache[id]','if (!islist(cached))','reference.resource_info(viewer, resource)','reader.atlas_icon_cache[id] = cached'):
+   self.assertIn(marker,view)
+  self.assertLess(view.index('if (!islist(cached))'),view.index('reference.resource_info(viewer, resource)'))
+
+class AtlasTitleContract(unittest.TestCase):
+ def test_titles_use_declared_names_and_never_replace_reviewed_names(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.titles import display_titles
+  files={'a.dm':'/obj/item/pelt\n\tname = "animal pelt"\n/obj/item/pelt/bear/brown\n\tname = "brown bear pelt"\n/obj/item/pelt/bear/black\n\ticon_state = "black"\n/obj/item/stack/material/wood\n\tname = "wooden plank"\n/obj/item/fork\n\tname = "[display_name] fork"\n','b.txt':'/obj/item/ignored\n\tname = "ignored"\n'}
+  types={'/obj/item/pelt/bear/brown':'/obj/item/pelt/bear/brown','/obj/item/pelt/bear/black':'/obj/item/pelt/bear/black','/material/wood':'/obj/item/stack/material/wood','/obj/item/fork':'/obj/item/fork','water':'water','/obj/item/pelt':'/obj/item/pelt','/obj/item/ignored':'/obj/item/ignored'}
+  names={'/obj/item/pelt/bear/brown':'brown','/obj/item/pelt/bear/black':'black','/material/wood':'wood','/obj/item/fork':'fork','water':'water','/obj/item/pelt':'reviewed pelt','/obj/item/ignored':'ignored'}
+  self.assertEqual(display_titles(files,types,names),{'/obj/item/pelt/bear/brown':'brown bear pelt','/obj/item/pelt/bear/black':'animal pelt (black)'})
+
+ def test_generated_catalog_titles_are_presentation_only(self):
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  resources=catalog['resources']
+  titled={key:value for key,value in resources.items() if 'title' in value}
+  self.assertGreater(len(titled),1000)
+  self.assertEqual(resources['/obj/item/clothing/suit/storage/coat/fur']['title'],'fur coat')
+  self.assertNotIn('title',resources['/material/wood'])
+  for key,value in titled.items():
+   self.assertTrue(value['name'] and value['title'] and '[' not in value['title'],key)
+  for recipe in catalog['recipes']:
+   for item in recipe['inputs']+recipe['outputs']:
+    self.assertNotIn('title',item)
+    self.assertNotIn('[',item['name'],recipe['name'])
+    self.assertNotEqual(item['name'],'generate recipes civs',recipe['name'])
 
 if __name__=='__main__':unittest.main()
