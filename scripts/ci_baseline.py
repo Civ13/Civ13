@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
+        'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
+                  'code/game/objects/items/clothing/under/accessories/storage.dm',
+                  'code/modules/1713/jobs/japanese.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
         'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
                   'docs/firearm-migration-inventory.md')},
