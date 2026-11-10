@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'closet_key_assignment': {'files': ('tests/closet_key_assignment/test_assignment.py',), 'paths': (
+        'tests/closet_key_assignment/', 'code/game/objects/structures/crates_lockers/closets.dm'), 'shared_paths': (
+        'tests/save_movement/source_adapter.py',)},
     'sign_icons': {'files': ('tests/sign_icons/test_sign_icons.py',), 'paths': (
         'tests/sign_icons/', 'code/game/objects/structures/signs.dm',
         'icons/obj/decals.dmi', 'icons/obj/decals_wide.dmi')},

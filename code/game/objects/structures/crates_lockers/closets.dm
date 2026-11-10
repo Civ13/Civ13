@@ -219,7 +219,7 @@
 			var/obj/item/weapon/key/K = W
 			if (custom_code == 0 && K.code != 0)
 				var/choice = WWinput(user, "Are you sure you want to assign this key to \the [src]?", "Lock", "No", list("Yes","No"))
-				if (choice == "No")
+				if (choice != "Yes" || QDELETED(src) || QDELETED(user) || QDELETED(K) || opened || custom_code != 0 || K.code == 0 || K.loc != user || !user.Adjacent(src))
 					return
 				else
 					locked = TRUE
