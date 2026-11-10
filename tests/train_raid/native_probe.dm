@@ -1,8 +1,9 @@
 // Headless Train Raid round-flow probe. Test-only: native_probe.py appends it
 // to a temporary copy of civ13.dme with maps/EFT/train_raid.dmm selected. The
 // production mode code runs unchanged; the probe drives a round through
-// boarding, departure, recall, a lift balloon, a bed claim, a death with
-// lives, and the line collapse, and records what happened.
+// boarding, departure, recall with fuel, a boarding pass and a lift balloon,
+// a bed claim, a death with lives, the line collapse with the shuttle hold
+// saved, and the saved shuttle coming back, and records what happened.
 var/global/datum/train_raid_probe/train_raid_probe = new
 
 /mob/living/human/train_raid_probe_actor
@@ -125,6 +126,13 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		for (var/obj/item/train_raid_balloon/B in H.get_contents()) balloons++
 		require(balloons == 2, "balloons issued: [balloons]")
 		pass("raider_kit")
+		require(west.party == "ckey:probewest" && west.fuel == 6 && !west.generation && west.clearance == 2, "west shuttle not taken: [west.party] fuel [west.fuel] gen [west.generation]")
+		var/obj/item/train_raid_pass/starter
+		for (var/turf/T in west.store_turfs())
+			starter = locate(/obj/item/train_raid_pass) in T
+			if (starter) break
+		require(starter && starter.tier == 3, "starter boarding pass missing from the stores")
+		pass("new_shuttle")
 		// The crew door opens for its crew and rattles for anyone else.
 		var/obj/structure/simple_door/train_raid_crew/door
 		for (var/obj/structure/simple_door/train_raid_crew/D in world)
@@ -162,8 +170,12 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		H.forceMove(hauler_turf)
 		require(!west.recall(H), "recall accepted during cooldown")
 		west.next_recall = 0
+		west.fuel = 1
+		require(!west.recall(H) && west.fuel == 1 && west.state == "away", "recall accepted without fuel")
+		require(west.load_at_helm(H, new /obj/item/train_raid_fuel(H)) && west.fuel == 3, "fuel cell not loaded: [west.fuel]")
 		require(west.recall(H), "recall refused after cooldown")
-		require(west.state == "inbound", "west not inbound")
+		require(west.state == "inbound" && west.fuel == 1, "west not inbound or fuel not burned: [west.fuel]")
+		require(!west.recall(H) && west.fuel == 1, "second recall charged fuel")
 		west.state_until = world.time
 		west.tick()
 		require(west.state == "docked" && bridges_of("west", FALSE) == 36, "west did not dock on arrival")
@@ -179,6 +191,10 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		var/before = count_of(west.store_turfs())
 		H.forceMove(get_step(hauler_turf, NORTH))
 		require(H.Adjacent(crate) && H.may_do_after && !H.incapacitated(), "raider cannot act on the crate")
+		balloon.afterattack(crate, H, TRUE)
+		require(!QDELETED(balloon) && !west.aboard(crate), "balloon lifted coach cargo without a boarding pass")
+		require(west.load_at_helm(H, starter) && west.clearance == 3 && QDELETED(starter), "boarding pass not loaded")
+		pass("boarding_pass")
 		balloon.afterattack(crate, H, TRUE)
 		require(QDELETED(balloon), "balloon not consumed")
 		require(west.aboard(crate) && kit.loc == crate, "crate not delivered to west stores (at [crate.loc])")
@@ -212,13 +228,43 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		var/mob/living/human/left = spawn_raider("east", "probe_left")
 		left.forceMove(get_step(hauler_turf, SOUTH))
 		var/obj/item/stray = new /obj/item/weapon/storage/eft/medical(hauler_turf)
+		var/obj/structure/closet/crate/kept_crate = new(pick(west.store_turfs()))
+		new /obj/item/stack/material/iron(kept_crate, 10)
 		M.round_deadline = world.time - 1
 		M.tick()
 		require(M.game_over && ticker.finished, "collapse did not end the round")
 		require(left.stat == DEAD, "raider left on the Hauler survived the collapse")
 		require(QDELETED(stray), "stray Hauler item survived the collapse")
-		require(!QDELETED(kit) && kit.loc == crate, "secured item lost at collapse")
 		pass("line_collapse")
+		mark("saved_shuttle")
+		var/list/saved = train_raid_shuttle_load("ckey:probewest")
+		require(islist(saved) && saved["generation"] == 1 && saved["rounds"] == 1 && saved["fuel"] >= 1, "west shuttle not saved: [json_encode(saved)]")
+		var/list/shipments = saved["shipments"]
+		var/crates = 0
+		for (var/text in shipments)
+			var/list/shipment = party_freight_shipment(text)
+			if (shipment && shipment["crate"]) crates++
+		require(crates >= 1 && QDELETED(kept_crate), "crate in the stores not in the saved hold: [shipments.len] loads")
+		var/list/kept_before = list()
+		for (var/turf/T in west.store_turfs())
+			for (var/obj/O in T) kept_before[O] = TRUE
+		var/datum/train_raid_crew/fresh = new("west", M)
+		M.crews["west"] = fresh
+		var/mob/living/human/returning = spawn_raider("west", "probe_west")
+		require(fresh.party == "ckey:probewest" && fresh.generation == 1 && fresh.fuel == saved["fuel"], "saved shuttle not restored: [fresh.party] gen [fresh.generation] fuel [fresh.fuel]")
+		var/restored = 0
+		var/restored_crates = 0
+		for (var/turf/T in fresh.store_turfs())
+			for (var/obj/O in T)
+				if (kept_before[O]) continue
+				restored++
+				if (istype(O, /obj/structure/closet/crate)) restored_crates++
+		require(restored >= shipments.len && restored_crates >= 1, "restored [restored] objects / [restored_crates] crates for [shipments.len] loads")
+		require(returning.train_raid_crew == "west", "returning captain not bound")
+		text2file("{not json", train_raid_shuttle_path("probebroken", 0))
+		require(isnull(train_raid_shuttle_load("ckey:probebroken")), "damaged save loaded")
+		require(islist(train_raid_shuttle_load("ckey:probenew")), "new party has no starter shuttle")
+		pass("shuttle_saved_and_restored", list("loads" = shipments.len, "fuel" = saved["fuel"], "balloons" = saved["balloons"], "passes" = saved["passes"], "restored" = restored))
 	catch (var/exception/e)
 		failure = "[e.name] ([e.file]:[e.line])"
 		failed_phase = phase
