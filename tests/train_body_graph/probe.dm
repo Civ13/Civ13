@@ -181,8 +181,8 @@ var/global/body_runtime_error = FALSE
 	var/wrong_icon_rejected = FALSE
 	try
 		G.capture_organ_icon(arm.mob_icon, wrong_icon_frame)
-	catch(var/exception/E)
-		wrong_icon_rejected = findtext("[E]", "Unsupported native icon field")
+	catch(var/exception/icon_error)
+		wrong_icon_rejected = findtext("[icon_error]", "Unsupported native icon field")
 	body_check("nonorgan_icon_field_rejected", wrong_icon_rejected)
 	var/obj/item/organ/external/head/restored_head = restored ? restored.get_organ("head") : null
 	var/obj/item/stack/teeth/human/restored_teeth = restored_head ? locate(/obj/item/stack/teeth/human) in restored_head : null
