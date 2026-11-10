@@ -1131,9 +1131,9 @@ SUITES = {
             'code/game/objects/items/weapons/storage/storage.dm',
             'code/game/objects/items/weapons/storage/bags.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
-    # Widescreen 21x15 view, square fallback preference and HUD edge anchoring.
-    'widescreen_view': {'files': ('tests/widescreen_view/test_widescreen.py',),
-        'paths': ('tests/widescreen_view/', 'code/game/mob/mob_view.dm', 'code/game/mob/new_player/lobby_image.dm',
+    # Widescreen 21x15 view, square fallback preference, HUD edge anchoring and the side panel.
+    'widescreen_view': {'files': ('tests/widescreen_view/test_widescreen.py', 'tests/widescreen_view/test_side_panel.py'),
+        'paths': ('tests/widescreen_view/', 'interface/info/info.html', 'code/game/mob/mob_view.dm', 'code/game/mob/new_player/lobby_image.dm',
             'code/_onclick/hud/movable_screen_objects.dm', 'code/modules/nano/interaction/default.dm'),
         'shared_paths': ('code/__defines/__game.dm', 'code/_onclick/hud/hud_layout.dm', 'code/game/mob/login.dm',
             'code/game/mob/living/carbon/human/human.dm', 'code/game/mob/living/carbon/human/human_helpers.dm',
