@@ -255,6 +255,7 @@
 	. = ..()
 	if (client)
 		ensure_field_hud()
+		recruitment_login_notices()
 
 /mob/observer/ghost/verb/toggle_observer_hud()
 	set name = "Toggle Observer HUD"

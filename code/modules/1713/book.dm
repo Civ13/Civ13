@@ -65,10 +65,10 @@
 		if (unique)
 			to_chat(user, "Looks like you can't modify it.")
 			return
-		var/choice = input("What would you like to change?") in list("Title", "Contents", "Author", "Cancel")
+		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", list("Title", "Contents", "Author", "Cancel"), FALSE)
 		switch(choice)
 			if ("Title")
-				var/newtitle = reject_bad_text(sanitizeSafe(input("Write a new title:")))
+				var/newtitle = reject_bad_text(sanitizeSafe(player_input(usr, "Write a new title:", null, null, "text", null, FALSE)))
 				if (!newtitle)
 					to_chat(usr, "The title is invalid.")
 					return
@@ -76,7 +76,7 @@
 					name = newtitle
 					title = newtitle
 			if ("Contents")
-				var/content = sanitize(input("Write your book's contents:") as message|null, MAX_BOOK_MESSAGE_LEN)
+				var/content = sanitize(player_input(usr, "Write your book's contents:", null, null, "message", null, TRUE), MAX_BOOK_MESSAGE_LEN)
 				if (!content)
 					to_chat(usr, "The content is invalid.")
 					return
@@ -84,7 +84,7 @@
 					var/t = parsepencode(content, W, user)
 					dat += t
 			if ("Author")
-				var/newauthor = sanitize(input(usr, "Write the author's name:"))
+				var/newauthor = sanitize(player_input(usr, "Write the author's name:", null, null, "text", null, FALSE))
 				if (!newauthor)
 					to_chat(usr, "The name is invalid.")
 					return
@@ -113,7 +113,7 @@
 	// Fixed presentation hook keeps isolated base-book fixtures independent.
 	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
 		return
-	user << browse(legacy_snapshot, "window=[name]")
+	show_browse(user, legacy_snapshot, "window=[name]")
 	onclose(user, "[name]")
 
 /obj/item/weapon/book/verb/rename()
@@ -122,7 +122,7 @@
 	set src in usr
 	playsound(src,'sound/effects/pen.ogg',40,1)
 
-	var/n_name = sanitizeSafe(input(usr, "What would you like to label the book?", "Book Labelling", null)  as text, MAX_NAME_LEN)
+	var/n_name = sanitizeSafe(player_input(usr, "What would you like to label the book?", "Book Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 
 	// We check loc one level up, so we can rename in clipboards and such. See also: /obj/item/weapon/photo/rename()
 	if ((loc == usr || loc.loc && loc.loc == usr) && usr.stat == FALSE && n_name)

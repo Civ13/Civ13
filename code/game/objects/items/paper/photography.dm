@@ -62,7 +62,7 @@ var/global/photo_count = 0
 
 /obj/item/weapon/photo/attackby(obj/item/weapon/P as obj, mob/user as mob)
 	if(istype(P, /obj/item/weapon/pen))
-		var/txt = sanitize(input(user, "What would you like to write on the back?", "Photo Writing", null)  as text, 128)
+		var/txt = sanitize(player_input(user, "What would you like to write on the back?", "Photo Writing", null, "text", null, FALSE), 128)
 		if(loc == user && user.stat == 0)
 			scribble = txt
 	..()
@@ -130,7 +130,7 @@ var/global/photo_count = 0
 	set category = null
 	set src in usr
 
-	var/n_name = sanitizeSafe(input(usr, "What would you like to label the photo?", "Photo Labelling", null)  as text, MAX_NAME_LEN)
+	var/n_name = sanitizeSafe(player_input(usr, "What would you like to label the photo?", "Photo Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 	//loc.loc check is for making possible renaming photos in clipboards
 	name = n_name
 	if (( (loc == usr || (loc.loc && loc.loc == usr)) && usr.stat == FALSE))
@@ -223,7 +223,7 @@ var/global/photo_count = 0
 /obj/item/camera/verb/change_size()
 	set name = "Set Photo Focus"
 	set category = null
-	var/nsize = input("Photo Size","Pick a size of resulting photo.") as null|anything in list(1,3,5,7)
+	var/nsize = player_input(usr, "Photo Size", "Pick a size of resulting photo.", null, "anything", list(1,3,5,7), TRUE)
 	if(nsize)
 		size = nsize
 		to_chat(usr, "<span class='notice'>Camera will now take [size]x[size] photos.</span>")

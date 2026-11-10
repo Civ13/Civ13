@@ -317,4 +317,4 @@
 	"}
 
 	spawn (1)
-		src << browse(data, "window=latechoices;size=600x640;can_close=1")
+		show_browse(src, data, "window=latechoices;size=600x640;can_close=1")

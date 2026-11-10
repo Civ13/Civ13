@@ -12,7 +12,7 @@
 /obj/structure/telecom/terminal/attack_hand(mob/living/human/H)
 	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
-	var/choice = input(H, "Local network terminal", name) in list("Send", "Power", "Cancel")
+	var/choice = player_input(H, "Local network terminal", name, null, "anything", list("Send", "Power", "Cancel"), FALSE)
 	if (!H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || get_dist(H, src) > 1)
 		return
 	if (choice == "Power")
@@ -20,7 +20,7 @@
 		if (!enabled && powersource)
 			powersource.update_power(-powerneeded, 1, src)
 	if (choice == "Send")
-		var/message = input(H, "Message to connected terminals (200 characters)", name) as text|null
+		var/message = player_input(H, "Message to connected terminals (200 characters)", name, null, "text", null, TRUE)
 		if (H && H.stat == CONSCIOUS && H.can_use_hands() && H.z == z && get_dist(H, src) <= 1)
 			to_chat(H, "Delivered to [send_network_message(sanitize(message, 200))] terminals.")
 

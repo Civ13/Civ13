@@ -145,6 +145,9 @@ var/list/gamemode_cache = list()
 	var/daynight_client_tint = FALSE
 	var/seasons_on = TRUE
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
+	var/recruitment_expiry_days = 7 // Faction recruitment applications and approved offers (faction_recruitment.dm).
+	var/recruitment_queue_limit = 50 // Pending applications per faction.
+	var/recruitment_cooldown_minutes = 5 // Between one player's applications.
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
 	var/persistence_memory_limit_mb = 0 // world saves/loads switch to segmented low-memory levels when projected memory passes this; 0 disables.
@@ -205,6 +208,12 @@ var/list/gamemode_cache = list()
 					var/minutes = text2num(value)
 					if (isnum(minutes) && minutes >= 1 && minutes <= 1440 && "[minutes]" == trim(value))
 						season_duration_minutes = minutes
+
+				if ("recruitment_expiry_days", "recruitment_queue_limit", "recruitment_cooldown_minutes")
+					var/number = text2num(value)
+					var/list/bounds = list("recruitment_expiry_days" = list(1, 60), "recruitment_queue_limit" = list(1, 500), "recruitment_cooldown_minutes" = list(0, 1440))
+					if (isnum(number) && number == round(number) && number >= bounds[name][1] && number <= bounds[name][2] && "[number]" == trim(value))
+						vars[name] = number
 
 				if ("allowed_gamemodes")
 					allowedgamemodes = value

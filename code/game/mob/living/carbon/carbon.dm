@@ -10,6 +10,7 @@
 /mob/living/human/on_runtime_spawn()
 	..()
 	voice_pitch = rand(70,140)
+	initialize_recipe_knowledge()
 
 /mob/living/human/Life()
 	..()
@@ -461,7 +462,7 @@
 	<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>
 	<BR><A href='?src=\ref[user];mach_close=inventory'>Close</A>
 	<BR>"}
-	user << browse(dat, "window=inventory;size=325x500")
+	show_browse(user, dat, "window=inventory;size=325x500")
 	onclose(user, "inventory")
 	return
 

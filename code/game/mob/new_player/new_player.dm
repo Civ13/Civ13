@@ -55,13 +55,13 @@ var/global/redirect_all_players = null
 				C << link(redirect_all_players)
 	spawn(20)
 		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
-			src << browse("<script>window.location.href='https://civ13.github.io/civ13-wiki/gamemodes/The_Art_of_the_Deal';</script>","window=wiki;size=820x650")
+			show_browse(src, "<script>window.location.href='https://civ13.github.io/civ13-wiki/gamemodes/The_Art_of_the_Deal';</script>","window=wiki;size=820x650")
 		if (map && map.ID == MAP_GULAG13)
-			src << browse("<script>window.location.href='https://civ13.github.io/civ13-wiki/maps/Gulag_13';</script>","window=wiki;size=820x650")
+			show_browse(src, "<script>window.location.href='https://civ13.github.io/civ13-wiki/maps/Gulag_13';</script>","window=wiki;size=820x650")
 		if (map && map.ID == MAP_PEPELSIBIRSK)
-			src << browse("<script>window.location.href='https://civ13.github.io/civ13-wiki/maps/Pepelsibirsk';</script>","window=wiki;size=820x650")
+			show_browse(src, "<script>window.location.href='https://civ13.github.io/civ13-wiki/maps/Pepelsibirsk';</script>","window=wiki;size=820x650")
 		if (map && map.ID == MAP_WIZARD_BOY)
-			src << browse("<script>window.location.href='https://civ13.github.io/civ13-wiki/gamemodes/wizard_boy_quickstart';</script>","window=wiki;size=820x650")
+			show_browse(src, "<script>window.location.href='https://civ13.github.io/civ13-wiki/gamemodes/wizard_boy_quickstart';</script>","window=wiki;size=820x650")
 /mob/new_player/Destroy()
 	new_player_mob_list -= src
 	..()
@@ -158,15 +158,15 @@ var/global/redirect_all_players = null
 
 	output += "</div>"
 
-	client << browse(null, "window=playersetup;")
-	client << browse(replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=280x[height];can_close=0;can_resize=0")
+	show_browse(client, null, "window=playersetup;")
+	show_browse(client, replacetext(output_stylized, "PLACEHOLDER", output), "window=playersetup;size=280x[height];can_close=0;can_resize=0")
 	return
 
 /mob/new_player/Stat()
 // Commented out as it is not working as intended and bugs out the Status tab in the Statpanel.
 	/*if(ticker)
 		if(ticker.current_state == GAME_STATE_PLAYING)
-			src << browse(null, "window=playerlist")
+			show_browse(src, null, "window=playerlist")
 			return
 
 		if((ticker.current_state == GAME_STATE_PREGAME))// && going)
@@ -227,7 +227,7 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["refresh"])
-		src << browse(null, "window=playersetup") //closes the player setup window)
+		show_browse(src, null, "window=playersetup") //closes the player setup window)
 		new_player_panel_proc()
 
 	if (href_list["observe"])
@@ -437,7 +437,7 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/lobby_join_confirmation(message, selected_job)
 	if (!lobby_join_admission_current())
 		return "No"
-	var/result = input(src, message) in list("Yes", "No")
+	var/result = player_input(src, message, null, null, "anything", list("Yes", "No"), FALSE)
 	if (!lobby_join_admission_current() || result != "Yes" || !lobby_join_job_available(selected_job))
 		return "No"
 	return "Yes"
@@ -1500,7 +1500,7 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/LateChoices()
 
 	if (!lobby_join_validation)
-		src << browse(null, "window=latechoices")
+		show_browse(src, null, "window=latechoices")
 
 	var/list/dat = list("<center>")
 	var/list/join_jobs = list()
@@ -1725,8 +1725,8 @@ var/global/redirect_all_players = null
 	return FALSE
 
 /mob/new_player/proc/close_spawn_windows()
-	src << browse(null, "window=latechoices") //closes late choices window)
-	src << browse(null, "window=playersetup") //closes the player setup window)
+	show_browse(src, null, "window=latechoices") //closes late choices window)
+	show_browse(src, null, "window=playersetup") //closes the player setup window)
 	#ifdef OPENDREAM
 	client?.unload_pregame()
 	#endif

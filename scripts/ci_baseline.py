@@ -41,6 +41,97 @@ SUITES = {
         'shared_paths': ('code/modules/1713/river_flow.dm',
                          'code/processes/river_current.dm',
                          'code/modules/1713/machinery/renewable_generation.dm')},
+    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
+        'paths': ('tests/cleaning_rag/',), 'shared_paths': (
+            'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'tests/save_movement/source_adapter.py')},
+    'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
+        'paths': ('tests/lipstick_application/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
+            'tests/save_movement/source_adapter.py')},
+    'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
+        'paths': ('tests/centre_tile/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/subtile_movement.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/living.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/modules/1713/trench.dm')},
+    'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
+        'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
+            'code/game/objects/buckling.dm',
+            'code/game/objects/structures/transports.dm')},
+    'paint_buckets': {'files': ('tests/paint_buckets/test_colors.py',),
+        'paths': ('tests/paint_buckets/',), 'shared_paths': (
+            'code/game/objects/items/weapons/paint.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Other.dm',
+            'tests/save_movement/source_adapter.py')},
+    'sledgehammer': {'files': ('tests/sledgehammer/test_two_hands.py',),
+        'paths': ('tests/sledgehammer/',), 'shared_paths': (
+            'code/game/objects/items/weapons/sledgehammer.dm', 'tests/save_movement/source_adapter.py')},
+    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py',),
+        'paths': ('tests/serving_tray/',), 'shared_paths': (
+            'code/game/objects/items/weapons/trays.dm', 'tests/save_movement/source_adapter.py')},
+    'mop_cleaning': {'files': ('tests/mop_cleaning/test_completion.py',),
+        'paths': ('tests/mop_cleaning/',), 'shared_paths': (
+            'code/game/objects/items/weapons/mop.dm', 'code/game/turfs/turf.dm', 'tests/save_movement/source_adapter.py')},
+    'extinguisher_cabinet': {'files': ('tests/extinguisher_cabinet/test_alt_click.py',),
+        'paths': ('tests/extinguisher_cabinet/',), 'shared_paths': (
+            'code/modules/1713/closets.dm', 'tests/save_movement/source_adapter.py')},
+    'ration_diets': {'files': ('tests/ration_diets/test_ration_diets.py',),
+        'paths': ('tests/ration_diets/',), 'shared_paths': (
+            'code/modules/1713/MRE.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm')},
+    'newspaper_reading': {'files': ('tests/newspaper_reading/test_reading.py',),
+        'paths': ('tests/newspaper_reading/',), 'shared_paths': (
+            'code/modules/1713/newspaper.dm', 'tests/save_movement/source_adapter.py')},
+    'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
+        'paths': ('tests/football_tackle/',), 'shared_paths': (
+            'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
+    'trumpet_notes': {'files': ('tests/trumpet_notes/test_notes.py',),
+        'paths': ('tests/trumpet_notes/',), 'shared_paths': (
+            'code/game/objects/items/devices/trombone.dm', 'sound/trombone/')},
+    'microscope_integrity': {'files': ('tests/microscope_integrity/test_integrity.py',),
+        'paths': ('tests/microscope_integrity/',), 'shared_paths': (
+            'code/modules/1713/forensics.dm', 'code/_helpers/mobs.dm')},
+    'book_distribution': {'files': ('tests/book_distribution/test_contract.py',),
+        'paths': ('tests/book_distribution/',), 'shared_paths': (
+            'code/modules/research_tree/book_distribution.dm',
+            'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/1713/production.dm',
+            'code/modules/persistence/region_travel.dm',
+            'code/game/objects/structures/vending/specialist_traders.dm')},
+    'television': {'files': ('tests/television/test_contract.py',),
+        'paths': ('tests/television/',), 'shared_paths': (
+            'code/modules/1713/television.dm', 'code/modules/1713/modern_telecom.dm',
+            'code/modules/1713/cmss13_overwatch.dm',
+            'code/modules/research_tree/node_broadcast.dm')},
+    'node_broadcast': {'files': ('tests/node_broadcast/test_contract.py',),
+        'paths': ('tests/node_broadcast/',), 'shared_paths': (
+            'code/modules/research_tree/node_broadcast.dm',
+            'code/modules/1713/modern_telecom.dm')},
+    'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',),
+        'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
+            'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/research_tree/research_faction.dm',
+            'code/modules/persistence/player_reclaim.dm',
+            'code/game/mob/living/carbon/carbon.dm',
+            'code/game/mob/living/carbon/human/death.dm')},
+    'research_coverage': {'files': ('tests/research_coverage/test_coverage.py',),
+        'paths': ('tests/research_coverage/', 'scripts/atlas/research_coverage.py'),
+        'shared_paths': ('code/modules/research_tree/', 'config/crafting/',
+                         'scripts/build-crafting-atlas.py', 'scripts/atlas/',
+                         'UI/crafting-atlas.json', 'code/game/objects/items/stacks/stack.dm',
+                         'code/game/objects/items/stacks/civ_recipes.dm')},
+    'navigation_tablet': {'files': ('tests/navigation_tablet/test_alt_click.py',),
+        'paths': ('tests/navigation_tablet/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'code/_onclick/click.dm')},
+    'cane_stance': {'files': ('tests/cane_stance/test_cane_stance.py',),
+        'paths': ('tests/cane_stance/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
+    'extinguisher': {'files': ('tests/extinguisher/test_initial_water.py',),
+        'paths': ('tests/extinguisher/',), 'shared_paths': (
+            'code/game/objects/items/weapons/tools.dm', 'config/crafting/material_recipes_global.txt')},
     # 2026-11-07 gameplay audit: source checks plus run.py's extracted-proc probe text.
     'gameplay_audit': {'files': ('tests/gameplay_audit/test_source.py',),
         'paths': ('tests/gameplay_audit/',), 'shared_paths': (
@@ -907,6 +998,10 @@ SUITES = {
                                   'tests/stone_kiln/test_source.py'), 'paths': (
         'tests/stone_boiling/', 'tests/stone_kiln/',
         'code/modules/persistence/functions.dm')},
+    'lipstick_restore': {'files': ('tests/lipstick_restore/test_restore.py',),
+        'paths': ('tests/lipstick_restore/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cosmetics.dm',
+            'code/modules/persistence/restore_contract.dm', 'tests/save_movement/source_adapter.py')},
     'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/functions.dm')},
     # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
@@ -1002,6 +1097,13 @@ SUITES = {
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
     # Handcuff placement races and per-human chew cooldown (#4229, #4230).
+    # Faction recruitment applications, offers and their durable field (#4237).
+    'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
+        'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
+        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
+            'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
+            'civ13.dme')},
     # Faction recruitment authority and the shared enrollment transition (#4237).
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
@@ -1010,6 +1112,13 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+    # Spray bottle acceptance, feedback and reagent logging (#4269, #4270).
+    'spray': {'files': ('tests/spray/test_source.py',),
+        'paths': ('tests/spray/', 'code/modules/reagents/reagent_containers/spray.dm')},
+    # Snow barricade completion keeps its own direction (#4290).
+    'snow_barricade': {'files': ('tests/snow_barricade/test_source.py',),
+        'paths': ('tests/snow_barricade/', 'code/modules/1713/barriers/snow_walls.dm'),
+        'shared_paths': ('code/modules/1713/barriers/sandbag.dm',)},
     # Trap disarm recheck and punji animal capture/release (#4248, #4249).
     'traps': {'files': ('tests/traps/test_source.py',),
         'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},

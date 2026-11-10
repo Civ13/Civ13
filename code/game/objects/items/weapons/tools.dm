@@ -60,7 +60,8 @@
 	var/max_range = 1
 	New()
 		..()
-		reagents.add_reagent("water",30)
+		if (!istype(src, /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty))
+			reagents.add_reagent("water",30)
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
 	..()
@@ -734,7 +735,9 @@ Shinobi's unfinished welder stuff - siro*/
 	else
 		. = ..()
 
-/obj/item/weapon/compass/modern/AltClick()
+/obj/item/weapon/compass/modern/AltClick(mob/user)
+	if (!istype(user, /mob/living) || user.incapacitated() || (loc != user && (!isturf(loc) || !user.Adjacent(src))))
+		return
 	..()
 	turn_on()
 
@@ -766,7 +769,7 @@ Shinobi's unfinished welder stuff - siro*/
 /obj/item/weapon/compass/modern/tacmap/examine(mob/user)
 	if (img)
 		var/icon/flat = new /icon(img.icon, img.icon_state)
-		user << browse(flat, "window=popup;size=630x630")
+		show_browse(user, flat, "window=popup;size=630x630")
 
 //////////////////////////////////////////LOCKPICK/////////////////////////////////////////////////////////////////////////////
 /obj/item/weapon/lockpick

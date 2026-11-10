@@ -150,6 +150,8 @@ var/global/list/faction_rename_text_vars = list("faction", "tgtcmp")
 				O.desc = replacetext(O.desc, old_name, new_name)
 	// Party trains (party_train.dm) belong to the faction, not its old name.
 	party_train_rename_faction(old_name, new_name)
+	// Recruitment policy, applications and audit (faction_recruitment.dm).
+	recruitment_rename_faction(old_name, new_name)
 	return TRUE
 
 /mob/living/human/proc/rename_own_faction()
@@ -169,7 +171,7 @@ var/global/list/faction_rename_text_vars = list("faction", "tgtcmp")
 		to_chat(src, SPAN_WARNING(reason))
 		return
 
-	var/newname = input(src, "Choose a new name for [old_name]. For the next [FACTION_RENAME_NOTICE_SEASONS] seasons, anyone examining your faction will also see its old name.", "Rename Faction", old_name) as text|null
+	var/newname = player_input(src, "Choose a new name for [old_name]. For the next [FACTION_RENAME_NOTICE_SEASONS] seasons, anyone examining your faction will also see its old name.", "Rename Faction", old_name, "text", null, TRUE)
 	if (!newname)
 		return
 	// Same rule as founding (faction_creation.dm): the name becomes an assoc

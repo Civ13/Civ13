@@ -309,6 +309,10 @@
 			subtile_pulse.engine_return = .
 			if (!subtile_actor || isDeleted(subtile_actor))
 				return .
+			// Stand on the tile under the body's centre (a load restore checks
+			// the exact native placement first and files it afterwards).
+			if (!subtile_pulse.restoring)
+				subtile_actor.human_subtile_anchor()
 			if (!subtile_pulse.restoring && subtile_actor.human_subtile_transaction)
 				var/dx = (x - subtile_pulse.before["x"]) * 32 + step_x - subtile_pulse.before["sx"]
 				var/dy = (y - subtile_pulse.before["y"]) * 32 + step_y - subtile_pulse.before["sy"]
@@ -317,6 +321,9 @@
 					subtile_actor.human_subtile_offset_owned = TRUE
 		else
 			. = ..()
+			// A pulled body slid by the rope stands on its centre tile too.
+			if (subtile_actor && !isDeleted(subtile_actor))
+				subtile_actor.human_subtile_anchor()
 		if (direct != olddir)
 			dir = olddir
 			set_dir(direct)
@@ -330,9 +337,9 @@
 		if (H.riding == TRUE && !isnull(H.riding_mob))
 			if (H.pulling)
 				H.stop_pulling()
-			H.riding_mob.forceMove(H.loc)
+			if (!H.human_subtile_mount_follow())
+				H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
-			H.human_subtile_mount_follow()
 	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 

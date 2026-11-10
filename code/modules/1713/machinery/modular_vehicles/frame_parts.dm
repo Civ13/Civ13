@@ -288,7 +288,7 @@ var/global/list/vehicle_walls = list( \
 		if (choice1 == "Cancel")
 			return
 		else
-			choice2 = input(H, "How thick should the armor be? 1 steel = 10mm. 0 to 200mm.") as num
+			choice2 = player_input(H, "How thick should the armor be? 1 steel = 10mm. 0 to 200mm.", null, null, "num", null, FALSE)
 			if (!isnum(choice2))
 				return
 			else if (choice2 <= 0)

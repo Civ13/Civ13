@@ -37,7 +37,7 @@
 	var/obj/item/stack/money/coins = W
 	// Let the player choose how much to melt: consuming the whole stack on a
 	// single click turns a misclick with a full purse into forge confetti.
-	var/count = input(user, "How many coins do you want to melt down? (You are holding [coins.amount])", "Resource Forge", coins.amount) as num|null
+	var/count = player_input(user, "How many coins do you want to melt down? (You are holding [coins.amount])", "Resource Forge", coins.amount, "num", null, TRUE)
 	if (!count || count <= 0)
 		return
 	// Re-validate after the input pause: the stack may have been spent,

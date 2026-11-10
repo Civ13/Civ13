@@ -95,7 +95,7 @@
 					options["Explosives"] = list(/obj/structure/closet/crate/ww2/vietnam/us_explosives)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_engineering)
 					options["AP mines"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ap_mines)
-					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
 					if(src && choice)
 						things_to_spawn = options[choice]
 						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
@@ -117,7 +117,7 @@
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
 					options["Supply Crate"] = list(/obj/structure/supply_crate/faction1)
-					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
 					if(src && choice)
 						things_to_spawn = options[choice]
 						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
@@ -139,7 +139,7 @@
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/airdrops/engineering)
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
 					options["Supply Crate"] = list(/obj/structure/supply_crate/faction2)
-					var/choice = input(user,"What type of supply drop?") as null|anything in options
+					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
 					if(src && choice)
 						things_to_spawn = options[choice]
 						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")

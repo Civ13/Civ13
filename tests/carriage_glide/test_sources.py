@@ -44,12 +44,15 @@ class Sources(unittest.TestCase):
         for before,after in mutations:
             with self.subTest(before=before),self.assertRaises((AssertionError,ValueError)):contracts(self.s.replace(before,after),self.h,self.p)
     def test_original_force_moves_and_callbacks_stay_in_parent(self):
+        # Every vehicle leases its riders' glide around the original moves.
         body=proc(self.s,'/obj/structure/vehicle/proc/do_move')
         self.assertEqual(body.count('forceMove(get_step(src, m_dir))'),3)
-        sub=proc(self.s,'/obj/structure/vehicle/carriage/do_move')
-        self.assertEqual(sub.count('\t\t. = ..()'),1)
-        self.assertNotIn('forceMove(',sub)
-        self.assertIn('lease.release()\n\t\tthrow E',sub)
+        self.assertLess(body.index('claim_ride_glides(m_dir, interval)'),body.index('forceMove(get_step(src, m_dir))'))
+        self.assertIn('lease.release()\n\t\tthrow E',body)
+        self.assertNotIn('/obj/structure/vehicle/carriage/do_move(',self.s)
+        claim=proc(self.s,'/obj/structure/vehicle/proc/claim_ride_glides')
+        self.assertNotIn('forceMove(',claim)
+        self.assertIn('release_stale_ride_glides()',proc(self.s,'/obj/structure/vehicle/proc/safety_check'))
     def test_interval_is_captured_before_real_step_and_used_by_carriage_wait(self):
         body=proc(self.s,'/obj/structure/vehicle/proc/movementloop')
         self.assertLess(body.index('interval = vehicle_m_delay + 1'),body.index('do_move(driver.dir, interval)'))
@@ -121,6 +124,26 @@ class Sources(unittest.TestCase):
         s=s.replace('\t\t// Other vehicles retain their original scheduling behavior.\n','')
         s=s.replace('spawn(istype(src, /obj/structure/vehicle/carriage) ? interval : vehicle_m_delay + 1)','spawn(vehicle_m_delay+1)')
         s=s.replace('\t// The existing scheduled wake finishes the previous visual leg, including stops.\n\t// A repeated start while that wake is pending must not snap its glide.\n\tif (!movement_processes)\n\t\trelease_carriage_glides()\n','')
+        # Riders settle squarely on the vehicle and are never run into by it
+        # (motorcycle fix); every vehicle leases its riders' glide.
+        self.assertEqual(s.count('M.settle_on_tile()\n'),6)
+        s=re.sub(r'(?m)^\t+M\.settle_on_tile\(\)\n','',s)
+        own='\t\t// A rider\'s body can reach into the tile ahead; never hit our own.\n\t\tif (L == driver || (L in ontop))\n\t\t\tcontinue\n'
+        self.assertEqual(s.count(own),1)
+        s=s.replace(own,'')
+        stale='\trelease_stale_ride_glides()\n'
+        self.assertEqual(s.count(stale),1)
+        s=s.replace(stale,'')
+        leased=('\t// Riders and cargo glide with the vehicle for this leg (see the leases below).\n'
+            '\tvar/datum/carriage_glide_lease/lease = claim_ride_glides(m_dir, interval)\n\ttry\n')
+        self.assertEqual(s.count(leased),1)
+        start=s.index(leased);end=s.index('\treturn\n',start)
+        body=s[start+len(leased):end]
+        tail='\tcatch (var/exception/E)\n\t\tlease.release()\n\t\tthrow E\n\tfor (var/atom/movable/A in lease.members)\n\t\tA.carriage_glide_step = null\n'
+        self.assertTrue(body.endswith(tail))
+        body=body[:-len(tail)]
+        body=re.sub(r'(?m)^\t','',body)
+        s=s[:start]+body+s[end:]
         b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'f2200e39b805dc99746b8622ec7ae985d4edac46')
     def test_ci_is_explicit_source_only_and_preserves_mixed_file_fallback(self):
         s=(ROOT/'scripts/ci_baseline.py').read_text()

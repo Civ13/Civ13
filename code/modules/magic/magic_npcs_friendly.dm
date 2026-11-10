@@ -213,7 +213,7 @@
 	if (world.time < heal_cooldown)
 		src.say("Grak! Too soon, too soon! Come back when the poultice has set, yes?")
 		return
-	var/choice = alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", "Yes please!", "No thanks.")
+	var/choice = player_alert(user, "\"Need healing, does yous?\" the goblin rasps, eyeing your wounds.", "Goblin Healer", list("Yes please!", "No thanks."))
 	if (choice == "Yes please!")
 		if (!H || !src || src.stat || get_dist(H, src) > 1)
 			return
@@ -1023,7 +1023,7 @@ h2 { color: #ffd700; border-bottom: 2px solid #5a3a1a; padding-bottom: 8px; marg
 	H << browse_rsc(icon('icons/obj/magic_items.dmi', "ditch_weed"), "shop_item3.png")
 	H << browse_rsc(icon('icons/obj/magic_items.dmi', "tesco_bag"), "shop_item4.png")
 	H << browse_rsc(icon('icons/obj/magic_items.dmi', "car_battery"), "shop_item5.png")
-	H << browse(dat, "window=leaky_sheep;size=520x420")
+	show_browse(H, dat, "window=leaky_sheep;size=520x420")
 
 /mob/living/simple_animal/wizard/big_brenda/Topic(href, href_list)
 	if (!usr || !usr.client)

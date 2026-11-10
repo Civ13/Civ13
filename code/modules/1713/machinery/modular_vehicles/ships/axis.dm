@@ -312,7 +312,7 @@
 		if (F.axis && F.axis != src)
 			return
 		found_base=TRUE
-		var/customname = input(H, "What do you want to name this ship?") as text
+		var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
 		if (!customname || customname == "")
 			name = "[H]'s ship"
 		else
@@ -328,7 +328,7 @@
 		for(var/obj/structure/vehicleparts/frame/F in locate(x+1,y-1,z))
 			if (F.axis && F.axis != src)
 				return
-			var/customname = input(H, "What do you want to name this ship?") as text
+			var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
 			if (!customname || customname == "")
 				name = "[H]'s ship"
 			else

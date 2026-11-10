@@ -50,7 +50,7 @@
 				icon_state = "snow_wall_66%"
 			if (progress >= 3)
 				icon_state = "snow_wall"
-				new/obj/structure/window/barrier/snowwall(loc, dir)
+				new/obj/structure/window/barrier/snowwall(loc, user, dir)
 				qdel(src)
 			visible_message("<span class='danger'>[user] adds snow onto \the [src].</span>")
 			qdel(O)

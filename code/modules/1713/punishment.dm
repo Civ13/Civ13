@@ -476,7 +476,7 @@
 
 /obj/structure/pillory/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/pen) && hanging)
-		var/newtext = input("What do you want to write on the sign? (Up to 30 characters)","Sign", "") as text
+		var/newtext = player_input(usr, "What do you want to write on the sign? (Up to 30 characters)", "Sign", "", "text", null, FALSE)
 		if (newtext == null || newtext == "")
 			newtext = "There is nothing on the sign."
 			desc = newtext

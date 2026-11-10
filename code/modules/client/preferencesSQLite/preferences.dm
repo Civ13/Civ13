@@ -124,7 +124,7 @@ var/list/preferences_datums = list()
 		dat += line
 
 	dat += "</body></html>"
-	user << browse(dat, "window=preferences;size=800x800")
+	show_browse(user, dat, "window=preferences;size=800x800")
 
 
 

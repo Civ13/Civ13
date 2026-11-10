@@ -98,19 +98,19 @@
 
 	dat += "<br><br><a href='byond://?src=\ref[src];close=sticker_album' class='btn'>Close</a>"
 	dat += "</body></html>"
-	user << browse(dat, "window=sticker_album;size=650x550")
+	show_browse(user, dat, "window=sticker_album;size=650x550")
 
 /obj/item/sticker_album/Topic(href, href_list)
 	. = ..()
 	if(href_list["close"])
 		var/window_id = href_list["close"]
-		usr << browse(null, "window=[window_id]")
+		show_browse(usr, null, "window=[window_id]")
 		return TRUE
 	if(href_list["open_card"]) // Handle the new 'open_card' link
 		var/card_index = href_list["open_card"]
 		if(card_index)
 			// Open the card details in a new browser window, just like examining a sticker
-			usr << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[card_index]'></iframe></body></html>", "window=sticker_card_[card_index];size=400x650")
+			show_browse(usr, "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[card_index]'></iframe></body></html>", "window=sticker_card_[card_index];size=400x650")
 			return TRUE
 GLOBAL_LIST_EMPTY(sticker_collections)
 
@@ -201,6 +201,6 @@ GLOBAL_LIST_EMPTY(sticker_collections)
 				dat += "<b>#[S.index]</b> ???</span> "
 		dat += "<br><br><a href='byond://?src=\ref[src];close=[M.ckey]_album' class='btn'>Close</a>"
 		dat += "</body></html>"
-		user << browse(dat, "window=[M.ckey]_album;size=550x500")
+		show_browse(user, dat, "window=[M.ckey]_album;size=550x500")
 		return
 	..()

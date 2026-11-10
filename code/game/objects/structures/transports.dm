@@ -58,13 +58,21 @@
 	return
 
 /obj/structure/vehicle/proc/do_move(var/m_dir = null, interval = null)
-	for (var/mob/living/ML in ontop)
-		ML.forceMove(get_step(src, m_dir))
-	for (var/obj/O in ontop_o)
-		O.forceMove(get_step(src, m_dir))
-		O.dir = dir
-	forceMove(get_step(src, m_dir))
-	update_icon()
+	// Riders and cargo glide with the vehicle for this leg (see the leases below).
+	var/datum/carriage_glide_lease/lease = claim_ride_glides(m_dir, interval)
+	try
+		for (var/mob/living/ML in ontop)
+			ML.forceMove(get_step(src, m_dir))
+		for (var/obj/O in ontop_o)
+			O.forceMove(get_step(src, m_dir))
+			O.dir = dir
+		forceMove(get_step(src, m_dir))
+		update_icon()
+	catch (var/exception/E)
+		lease.release()
+		throw E
+	for (var/atom/movable/A in lease.members)
+		A.carriage_glide_step = null
 	return
 
 /obj/structure/vehicle/update_icon()
@@ -83,6 +91,7 @@
 /obj/structure/vehicle/proc/safety_check()
 	if (!src)
 		return
+	release_stale_ride_glides()
 	if (driver)
 		if (!(driver in range(2,src)))
 			driver.release_carriage_glide()
@@ -149,6 +158,7 @@
 				user.visible_message(SPAN_NOTICE("[M] sucessfully climbs onto \the [src]."), SPAN_NOTICE("You sucessfully climb onto \the [src]."))
 				M.plane = GAME_PLANE
 				M.forceMove(get_turf(src))
+				M.settle_on_tile()
 				if (!driver)
 					if (wheeled)
 						if (M.put_in_active_hand(dwheel) == FALSE)
@@ -582,6 +592,7 @@
 					user.visible_message(SPAN_NOTICE("[M] climbs onto \the [src]."), SPAN_NOTICE("You climb onto \the [src]."))
 					M.plane = GAME_PLANE
 					M.forceMove(get_turf(src))
+					M.settle_on_tile()
 					if (!driver)
 						if (wheeled)
 							if (M.put_in_active_hand(dwheel) == FALSE)
@@ -943,6 +954,9 @@
 			blocked = 1
 			visible_message("<span class='warning'>\The [src] hits \the [CV]!</span>","<span class='warning'>You hit \the [CV]!</span>")
 	for (var/mob/living/L in T)
+		// A rider's body can reach into the tile ahead; never hit our own.
+		if (L == driver || (L in ontop))
+			continue
 		if (ishuman(L))
 			var/mob/living/human/HH = L
 			HH.adjustBruteLoss(rand(7,16)*axis.currentspeed)
@@ -1232,6 +1246,7 @@
 						to_chat(M, "Your hands are full!")
 						return
 				M.forceMove(get_turf(src))
+				M.settle_on_tile()
 				M.driver = TRUE
 				M.driver_vehicle = src
 				driver = M
@@ -1278,6 +1293,7 @@
 				buckled_animal_propulsion += 1
 				updatepassdir()
 				M.forceMove(get_turf(src))
+				M.settle_on_tile()
 				return
 	else if(istype(A, /mob/living/simple_animal/horse) && (buckled_animal_propulsion < max_animal_propulsion)) //Attaching a pulling animal?
 		var/mob/living/simple_animal/horse/M = A
@@ -1299,6 +1315,7 @@
 				buckled_animal_propulsion += 2
 				updatepassdir()
 				M.forceMove(get_turf(src))
+				M.settle_on_tile()
 				return
 	else if((current_cargo < total_cargo) && (!(A in ontop) || !(A in ontop_o))) //Placing a cargo object or human passenger?
 		var/seat = null
@@ -1415,6 +1432,7 @@
 			else if(istype(A, /mob/living))
 				var/mob/living/M = A
 				M.forceMove(get_turf(src))
+				M.settle_on_tile()
 			visible_message("<div class='notice'>[user] sucessfully places [A] over the carriage...</div>")
 			switch(seat)
 				if(1)
@@ -2112,7 +2130,7 @@
 
 /datum/carriage_glide_lease
 	should_save = FALSE
-	var/obj/structure/vehicle/carriage/carriage
+	var/obj/structure/vehicle/carriage // the leasing vehicle, of any kind
 	var/list/members = list()
 
 /datum/carriage_glide_lease/Destroy()
@@ -2120,7 +2138,7 @@
 	return ..()
 
 /datum/carriage_glide_lease/proc/release()
-	var/obj/structure/vehicle/carriage/C = carriage
+	var/obj/structure/vehicle/C = carriage
 	carriage = null // Retire before callbacks; an old listener never owns a new leg.
 	if (C && C.carriage_glide == src)
 		C.carriage_glide = null
@@ -2175,14 +2193,17 @@
 	GLOB.moved_event.register(A, src, /datum/carriage_glide_lease/proc/moved)
 	GLOB.destroyed_event.register(A, src, /datum/carriage_glide_lease/proc/destroyed)
 
-/obj/structure/vehicle/carriage
+// Every vehicle (carriages, motorcycles, boats, rafts, mops) leases one glide
+// to itself, its riders and its cargo for each leg, so a rider never keeps a
+// walking glide and drifts off the seat while the vehicle moves.
+/obj/structure/vehicle
 	var/tmp/datum/carriage_glide_lease/carriage_glide
 
-/obj/structure/vehicle/carriage/proc/release_carriage_glides()
+/obj/structure/vehicle/proc/release_carriage_glides()
 	if (carriage_glide)
 		carriage_glide.release()
 
-/obj/structure/vehicle/carriage/do_move(m_dir, interval)
+/obj/structure/vehicle/proc/claim_ride_glides(m_dir, interval)
 	if (isnull(interval))
 		interval = vehicle_m_delay + 1
 	release_carriage_glides()
@@ -2196,16 +2217,9 @@
 			lease.claim(M, interval, m_dir, destination)
 		for (var/obj/O in ontop_o)
 			lease.claim(O, interval, m_dir, destination)
-	try
-		. = ..()
-	catch (var/exception/E)
-		lease.release()
-		throw E
-	for (var/atom/movable/A in lease.members)
-		A.carriage_glide_step = null
+	return lease
 
-/obj/structure/vehicle/carriage/safety_check()
-	. = ..()
+/obj/structure/vehicle/proc/release_stale_ride_glides()
 	var/datum/carriage_glide_lease/lease = carriage_glide
 	if (lease)
 		for (var/atom/movable/A in lease.members.Copy())
@@ -2214,6 +2228,6 @@
 	if (!movement_processes)
 		release_carriage_glides()
 
-/obj/structure/vehicle/carriage/persistence_runtime_var(key)
+/obj/structure/vehicle/persistence_runtime_var(key)
 	return key == "carriage_glide" || ..()
 

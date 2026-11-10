@@ -68,6 +68,13 @@ var/global/list/region_travel_carry_types = list(
 // family, or null when it cannot travel.
 /proc/region_travel_item_kind(obj/item/I)
 	if(!istype(I)) return null
+	if(istype(I, /obj/item/weapon/book/node_compendium))
+		var/obj/item/weapon/book/node_compendium/C = I
+		var/kind = "compendium:[json_encode(C.node_ids)]"
+		return !length(C.contents) && recipe_compendium_wire_ids(kind) ? kind : null
+	if(istype(I, /obj/item/weapon/book/node_book))
+		var/obj/item/weapon/book/node_book/B = I
+		return valid_recipe_node_id(B.node_id) && !length(B.contents) ? "node:[B.node_id]" : null
 	if(istype(I, /obj/item/stack))
 		var/kind = transfer_trade_kind(I)
 		if(kind) return "stack:[kind]"
@@ -165,6 +172,8 @@ var/global/list/region_travel_carry_types = list(
 		var/kind = region_travel_item_kind(I)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
+		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:")
+			carried += list(list(slot_name, kind, 1))
 		else if(copytext(kind, 1, 6) == "ammo:")
 			carried += list(list(slot_name, kind, region_travel_ammo_count(I)))
 		else
@@ -173,6 +182,18 @@ var/global/list/region_travel_carry_types = list(
 	var/list/P = list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
 		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried)
+	// Version 2 requires knowledge-aware peers. A legacy decoder rejects it
+	// rather than accepting a body while silently dropping its knowledge.
+	if(recipe_knowledge_initialized || length(known_recipe_nodes) || (map && map.recipe_knowledge_enabled()))
+		P["v"] = 2
+		P["known_recipe_nodes"] = clean_recipe_node_ids(known_recipe_nodes)
+		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
+	for(var/list/entry in carried)
+		if(copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")
+			P["v"] = 2
+	if(P["v"] == 2 && !("known_recipe_nodes" in P))
+		P["known_recipe_nodes"] = list()
+		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
 	// Wounds travel as overall damage, so a trip never heals (raid exits let
 	// hurt raiders leave; other gates still ask for full health).
 	var/brute = clamp(round(getBruteLoss()), 0, 200)
@@ -200,7 +221,11 @@ var/global/list/region_travel_carry_types = list(
 		P = json_decode(payload)
 	catch
 		return null
-	if(!islist(P) || P["v"] != 1 || P["kind"] != "character") return null
+	if(!islist(P) || !(P["v"] in list(1, 2)) || P["kind"] != "character") return null
+	if(P["v"] == 2)
+		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
+	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
+		return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
 	if(!istext(P["name"]) || !length(P["name"]) || length(P["name"]) > MAX_NAME_LEN) return null
@@ -225,6 +250,7 @@ var/global/list/region_travel_carry_types = list(
 		if(!istext(stat) || length(stat) > 32 || !islist(pair) || pair.len != 2 || !isnum(pair[1]) || !isnum(pair[2]) || pair[1] < 0 || pair[2] < 0 || pair[1] > 1000 || pair[2] > 1000) return null
 	for(var/list/entry in P["items"])
 		if(!islist(entry) || entry.len != 3 || !(entry[1] in region_travel_slots) || !istext(entry[2]) || !isnum(entry[3])) return null
+		if(P["v"] == 1 && (copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")) return null
 		if(!region_travel_item_path(entry[2], entry[3])) return null
 	if(!isnull(P["party"]) && !party_train_valid_party(P["party"])) return null
 	// A solo party is only ever its own player's.
@@ -233,8 +259,22 @@ var/global/list/region_travel_carry_types = list(
 	if(!space_flight_payload_ok(P)) return null
 	return P
 
+// Strict travel admission never silently drops IDs that a destination cannot
+// understand. The existing payload byte bound also limits total wire size.
+/proc/region_travel_knowledge_valid(value)
+	if(!islist(value) || length(value) > length(research_nodes)) return FALSE
+	var/list/seen = list()
+	for(var/id in value)
+		if(!valid_recipe_node_id(id) || (id in seen) || !isnull(value[id])) return FALSE
+		seen += id
+	return TRUE
+
 // The path an item entry rebuilds, or null when it is not allowed.
 /proc/region_travel_item_path(kind, amount)
+	if(copytext(kind, 1, 12) == "compendium:")
+		return amount == 1 && recipe_compendium_wire_ids(kind) ? /obj/item/weapon/book/node_compendium : null
+	if(copytext(kind, 1, 6) == "node:")
+		return amount == 1 && valid_recipe_node_id(copytext(kind, 6)) ? /obj/item/weapon/book/node_book : null
 	if(copytext(kind, 1, 7) == "stack:")
 		var/good = copytext(kind, 7)
 		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good] || region_travel_stack_goods[good]
@@ -327,6 +367,10 @@ var/global/list/region_travel_carry_types = list(
 	var/mob/living/human/H = new /mob/living/human(T)
 	// Keeps nomads_spawn from rolling a new identity half a second from now.
 	H.persistence_restored = TRUE
+	// Do not relearn through the destination research ceiling: ownership of
+	// knowledge survives travel, while crafting still checks that ceiling.
+	H.known_recipe_nodes = P["v"] == 2 ? P["known_recipe_nodes"].Copy() : list()
+	H.recipe_knowledge_initialized = P["v"] == 2 ? P["recipe_knowledge_initialized"] : FALSE
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])
@@ -350,7 +394,14 @@ var/global/list/region_travel_carry_types = list(
 	for(var/list/entry in P["items"])
 		var/path = region_travel_item_path(entry[2], entry[3])
 		var/obj/item/I = ispath(path, /obj/item/stack) ? new path(T, entry[3]) : new path(T)
-		if(istype(I, /obj/item/ammo_magazine))
+		if(istype(I, /obj/item/weapon/book/node_compendium))
+			var/obj/item/weapon/book/node_compendium/C = I
+			C.node_ids = recipe_compendium_wire_ids(entry[2])
+		else if(istype(I, /obj/item/weapon/book/node_book))
+			var/obj/item/weapon/book/node_book/B = I
+			B.node_id = copytext(entry[2], 6)
+			B.refresh_node_title()
+		else if(istype(I, /obj/item/ammo_magazine))
 			region_travel_fill_magazine(I, entry[3])
 		else if(istype(I, /obj/item/weapon/gun/projectile))
 			region_travel_unload_gun(I)
@@ -371,6 +422,9 @@ var/global/list/region_travel_carry_types = list(
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
 	H.regenerate_icons()
+	// Legacy arrivals snapshot once after destination faction restoration, not
+	// on a later login or after the research clock has advanced.
+	H.finish_character_knowledge_restoration()
 	return H
 
 // A rebuilt magazine holds exactly the rounds that travelled.
@@ -530,7 +584,7 @@ var/global/list/region_travel_carry_types = list(
 	if(istext(items))
 		to_chat(H, SPAN_WARNING(items))
 		return
-	if(alert(H, "Travel to [destination_name()]? You leave this land with what you wear and carry, and continue there.", "Travel", "Travel", "Stay") != "Travel")
+	if(player_alert(H, "Travel to [destination_name()]? You leave this land with what you wear and carry, and continue there.", "Travel", list("Travel", "Stay")) != "Travel")
 		return
 	// The prompt slept: check everything again.
 	reason = travel_refusal(H)

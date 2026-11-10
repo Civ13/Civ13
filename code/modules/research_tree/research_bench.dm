@@ -804,7 +804,7 @@ var/global/list/research_benches = list()
 	// Let the player choose how much to melt, same as the resource forge:
 	// consuming the whole stack on one click turns a misclick into a wasted
 	// purse.
-	var/count = input(user, "How many coins do you want to feed the bench? (You are holding [coins.amount])", "Research Bench", coins.amount) as num|null
+	var/count = player_input(user, "How many coins do you want to feed the bench? (You are holding [coins.amount])", "Research Bench", coins.amount, "num", null, TRUE)
 	if (!count || count <= 0)
 		return
 	// Re-validate after the input pause: the stack may have been spent,

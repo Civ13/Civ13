@@ -36,6 +36,13 @@ ROUND_END_COUNTDOWN 90
 ## calendars keep their explicit timing; already pending saved timers keep their remainder.
 SEASON_DURATION_MINUTES 60
 
+## Faction recruitment stations: days before an application or approved offer
+## expires (1-60), pending applications per faction (1-500) and minutes between
+## one player's applications (0-1440).
+RECRUITMENT_EXPIRY_DAYS 7
+RECRUITMENT_QUEUE_LIMIT 50
+RECRUITMENT_COOLDOWN_MINUTES 5
+
 ## log OOC channel
 LOG_OOC
 

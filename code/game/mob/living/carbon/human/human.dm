@@ -392,7 +392,7 @@ var/list/coefflist = list()
 	dat += "<BR><A href='?src=\ref[user];refresh=1'>Refresh</A>"
 	dat += "<BR><A href='?src=\ref[user];mach_close=inventory'>Close</A>"
 
-	user << browse(dat, "window=inventory;size=340x540")
+	show_browse(user, dat, "window=inventory;size=340x540")
 	onclose(user, "inventory")
 	return
 
@@ -433,7 +433,7 @@ var/list/coefflist = list()
 	if (href_list["mach_close"])
 		var/t1 = text("window=[]", href_list["mach_close"])
 		unset_using_object()
-		src << browse(null, t1)
+		show_browse(src, null, t1)
 
 	if (href_list["item"])
 		handle_strip(href_list["item"],usr)
@@ -628,7 +628,7 @@ var/list/coefflist = list()
 	set name = "sim"
 	set background = TRUE
 
-	var/damage = input("Wound damage","Wound damage") as num
+	var/damage = player_input(usr, "Wound damage", "Wound damage", null, "num", null, FALSE)
 
 	var/germs = FALSE
 	var/tdamage = FALSE
@@ -811,7 +811,7 @@ var/list/coefflist = list()
 		to_chat(src, "<span class='warning'>You cannot reach the floor.</span>")
 		return
 
-	var/direction = input(src,"Which way?","Tile selection") as anything in list("Here","North","South","East","West")
+	var/direction = player_input(src, "Which way?", "Tile selection", null, "anything", list("Here","North","South","East","West"), FALSE)
 	if (direction != "Here")
 		T = get_step(T,text2dir(direction))
 	if (!istype(T))
@@ -827,7 +827,7 @@ var/list/coefflist = list()
 
 	var/max_length = bloody_hands * 30 //tweeter style
 
-	var/message = sanitize(input("Write a message. It cannot be longer than [max_length] characters.","Blood writing", ""))
+	var/message = sanitize(player_input(usr, "Write a message. It cannot be longer than [max_length] characters.", "Blood writing", "", "text", null, FALSE))
 
 	if (message)
 		var/used_blood_amount = round(length(message) / 30, TRUE)
@@ -1012,7 +1012,7 @@ var/list/coefflist = list()
 		var/obj/item/organ/external/current_limb = organs_by_name[limb]
 		if (current_limb && current_limb.dislocated == 2)
 			limbs |= limb
-	var/choice = input(usr,"Which joint do you wish to relocate?") as null|anything in limbs
+	var/choice = player_input(usr, "Which joint do you wish to relocate?", null, null, "anything", limbs, TRUE)
 
 	if (!choice)
 		return

@@ -15,7 +15,7 @@
 	return STATUS_CLOSE
 
 /mob/proc/shared_nano_interaction()
-	if (stat || !client)
+	if (stat || !nano_viewer_present(src)) // a player, or an agent character's body (agent_screens.dm)
 		return STATUS_CLOSE						// no updates, close the interface
 	else if (incapacitated())
 		return STATUS_UPDATE					// update only (orange visibility)

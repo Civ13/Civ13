@@ -28,7 +28,7 @@ service. Delivery is limited to 32 terminals and 32 unique nearby listeners.
 Place an antenna adjacent to a radio or television program desk, connect power,
 choose a frequency and prepare a course with at least 100 raw skill. Powered
 receivers of the matching medium and frequency receive broadcasts within 60
-tiles on the same level. Educational broadcasts require Modern at both emission
+tiles on the same level. Radio broadcasts require 1903 and television requires 1969 at both emission
 and receipt. Six original lessons air ten seconds apart during a one-minute
 window in a ten-minute running-server schedule. At most 32 nearby characters
 receive each lesson.
@@ -106,3 +106,10 @@ recipes, Modern visibility, completed-node gates and current crafting thresholds
 Research completion is an injected fixture precondition; actual player research
 and menu interaction have not been exercised by a client.
 Local fixtures do not prove public-server performance or human UI acceptance.
+
+## Television follow-up
+
+The 1969 television controls, paired cameras, transient views and legacy set
+retirement are documented in [Television stations](television-stations.md).
+Earlier native verification above is historical and does not verify these new
+camera controls or their save/reload behavior.

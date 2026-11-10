@@ -27,7 +27,8 @@
 /obj/item/weapon/lipstick/random
 	name = "lipstick"
 
-/obj/item/weapon/lipstick/random/New()
+/obj/item/weapon/lipstick/random/on_runtime_spawn()
+	..()
 	colour = pick("red","purple","jade","black")
 	name = "[colour] lipstick"
 
@@ -59,6 +60,11 @@
 			user.visible_message("<span class='warning'>[user] begins to do [H]'s lips with \the [src].</span>", \
 								 "<span class='notice'>You begin to apply \the [src].</span>")
 			if (do_after(user, 20, H) && do_after(H, 20, src))	//user needs to keep their active hand, H does not.
+				if (QDELETED(src) || QDELETED(user) || QDELETED(H) || user.incapacitated() || user.get_active_hand() != src || !open || !user.Adjacent(H))
+					return
+				if (H.lip_style)
+					to_chat(user, "<span class='notice'>You need to wipe off the old lipstick first!</span>")
+					return
 				user.visible_message("<span class='notice'>[user] does [H]'s lips with \the [src].</span>", \
 									 "<span class='notice'>You apply \the [src].</span>")
 				H.lip_style = colour

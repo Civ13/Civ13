@@ -123,14 +123,30 @@
 	return FALSE
 
 // Free movement while riding: the mount keeps the rider's exact spot and
-// glide on every pulse (movable/Move moves it onto the rider's tile first).
+// glide on every pulse. The rider is filed under its centre tile; the mount
+// keeps BYOND's own lower-left filing of the same spot, as its own movement
+// expects offsets of 0-31.
 /mob/living/human/proc/human_subtile_mount_follow()
 	var/mob/living/M = riding_mob
-	if (!istype(M) || isDeleted(M) || M.loc != loc)
+	if (!istype(M) || isDeleted(M) || !isturf(loc))
 		return FALSE
 	var/same_shape = M.bound_x == bound_x && M.bound_y == bound_y && M.bound_width == bound_width && M.bound_height == bound_height
-	M.step_x = same_shape ? step_x : 0
-	M.step_y = same_shape ? step_y : 0
+	var/turf/T = loc
+	var/sx = 0
+	var/sy = 0
+	if (same_shape)
+		var/list/ll = human_subtile_ll()
+		T = locate(ll[1], ll[2], z)
+		sx = ll[3]
+		sy = ll[4]
+	if (!T)
+		return FALSE
+	if (M.loc != T)
+		M.forceMove(T)
+		if (M.loc != T)
+			return FALSE
+	M.step_x = sx
+	M.step_y = sy
 	M.glide_size = glide_size
 	if (istype(M, /mob/living/simple_animal))
 		var/mob/living/simple_animal/A = M

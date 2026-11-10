@@ -161,6 +161,13 @@ var/human_subtile_fixture_deer_watched = FALSE
 	H.after_load()
 	human_subtile_fixture_reset(H)
 
+// Walks a body to an absolute pixel column on its row, as free pulses do,
+// without the restore path (which refuses a body that is pulling).
+/proc/human_subtile_fixture_glide(mob/living/human/subtile_fixture/H, px)
+	if (H.x != round(px / 32))
+		H.loc = locate(round(px / 32), H.y, H.z)
+	H.step_x = px % 32
+
 /proc/human_subtile_fixture_headless()
 	human_subtile_fixture_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned_native_engine")
 	human_subtile_fixture_phase = "headless normal"
@@ -347,7 +354,9 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/obj/item/far = new(locate(13, 2, 1))
 	for (var/offset in list(0, 4, 28))
 		human_subtile_fixture_place(J, offset, 0)
-		human_subtile_fixture_assert(near.Adjacent(J) && !far.Adjacent(J), "clicked_target_reach_at_[offset]")
+		// Past halfway the body stands on the next tile (human_subtile_anchor),
+		// so it reaches one tile further.
+		human_subtile_fixture_assert(near.Adjacent(J) && !far.Adjacent(J) == (offset < 16), "clicked_target_reach_at_[offset]")
 		human_subtile_fixture_assert(!!J.Adjacent(far) == !!offset, "reverse_adjacency_has_overlap_semantics_[offset]")
 	J.set_human_subtile(TRUE)
 	J.SelfMove(get_step(J, EAST), EAST, world.time + 4)
@@ -431,9 +440,10 @@ var/human_subtile_fixture_deer_watched = FALSE
 	PF.human_subtile_pull_follow()
 	human_subtile_fixture_assert(rope_first && pull_crate.x == 15 && pull_crate.step_x == 6 && !PF.human_subtile_pull_follow() && PF.pulling == pull_crate, "pull_rope_trails_in_pixels")
 	// Moving up past it (here: it sits half a tile lower), the rope tugs it along at once rather than waiting
-	// until the body has cleared it and then catching up a whole tile.
+	// until the body has cleared it and then catching up a whole tile, but only
+	// 1px a pulse while beside the body, so it drops back behind.
 	pull_crate.Move(locate(15, 5, 1), SOUTH, 6, 16)
-	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.y == 5 && pull_crate.step_x == 6 && pull_crate.step_y == 18, "pull_rope_tugs_sideways")
+	human_subtile_fixture_assert(PF.human_subtile_pull_follow() && pull_crate.x == 15 && pull_crate.y == 5 && pull_crate.step_x == 6 && pull_crate.step_y == 17, "pull_rope_tugs_sideways")
 	// Pulling straight into a wall snags: no free axis or corner to slide round.
 	var/turf/rope_wall = locate(17, 10, 1)
 	rope_wall.density = TRUE
@@ -451,6 +461,32 @@ var/human_subtile_fixture_deer_watched = FALSE
 	PF.pulling = null
 	pull_crate.pulledby = null
 	qdel(pull_crate)
+	// Walking east with the crate beside it (south), the crate falls in behind
+	// the body within a few tiles instead of riding alongside.
+	human_subtile_fixture_phase = "headless pull falls in behind"
+	var/mob/living/human/subtile_fixture/PB = human_subtile_fixture_actor(8, 4)
+	PB.set_human_subtile(TRUE)
+	var/obj/structure/side_crate = new(locate(8, 3, 1))
+	side_crate.anchored = FALSE
+	side_crate.density = TRUE
+	var/body_px = 8 * 32
+	var/behind = FALSE
+	for (var/pulse in 1 to 112)
+		body_px += 2
+		human_subtile_fixture_glide(PB, body_px)
+		PB.pulling = side_crate
+		side_crate.pulledby = PB
+		PB.human_subtile_pull_follow()
+		if (PB.pulling != side_crate)
+			break
+		var/crate_px = side_crate.x * 32 + side_crate.step_x
+		if (side_crate.y == 4 && !side_crate.step_y && crate_px <= body_px - 32)
+			behind = TRUE
+			break
+	human_subtile_fixture_assert(behind && PB.pulling == side_crate && body_px <= 12 * 32, "pull_falls_in_behind")
+	PB.pulling = null
+	side_crate.pulledby = null
+	qdel(side_crate)
 	// Swapping places keeps each body's exact position: the swapped body takes
 	// the other's pixel offset instead of carrying its own into a wall.
 	human_subtile_fixture_phase = "headless exact swap"
@@ -462,7 +498,8 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/turf/swap_wall = locate(13, 13, 1)
 	swap_wall.density = TRUE
 	SA.swap_exact_positions(SB)
-	human_subtile_fixture_assert(SA.loc == locate(14, 12, 1) && SA.step_x == 0 && SA.step_y == 16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
+	// At 16px north the body stands on the tile above (human_subtile_anchor).
+	human_subtile_fixture_assert(SA.loc == locate(14, 13, 1) && SA.step_x == 0 && SA.step_y == -16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
 	swap_wall.density = FALSE
 	// Free movement swaps only head-on: grazing, diagonal and sliding bumps block.
 	var/datum/human_subtile_transaction/swap_tx = new
@@ -474,6 +511,10 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/swap_graze = SA.human_subtile_swap_allowed(SB)
 	SA.human_subtile_pulse = null
 	SA.human_subtile_transaction = null
+	// Back onto row 12, level with SB (the swap left SA filed on row 13).
+	SA.loc = locate(14, 12, 1)
+	SA.step_x = 0
+	SA.step_y = 0
 	human_subtile_fixture_place(SA, 0, 0)
 	SA.human_subtile_transaction = swap_tx
 	SA.human_subtile_pulse = swap_pulse

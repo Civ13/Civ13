@@ -386,6 +386,19 @@ class SelectionTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
                     selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_agent_parity_probes_remain_manual_only(self):
+        paths = {'tests/agent_control/windows_probe.dm', 'tests/agent_control/prompts_probe.dm',
+                 'tests/agent_control/stance_probe.dm', 'tests/agent_control/move_probe.dm',
+                 'tests/agent_control/vehicle_probe.dm', 'tests/agent_control/screens_probe.dm'}
+        self.assertEqual(selection.AGENT_PARITY_MANUAL_NATIVE, paths)
+        self.assertFalse(paths & selection.AGENT_CONTROL_OFFLINE_TESTS)
+        for path in paths:
+            with self.subTest(path=path), patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+                with patch.object(selection, 'AGENT_PARITY_MANUAL_NATIVE', frozenset()):
+                    with self.assertRaisesRegex(RuntimeError, 'Unregistered agent-control'):
+                        selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_agent_visibility_native_fixture_remains_manual_only(self):
         paths = {'tests/agent_control/visibility/prepare.py',
                  'tests/agent_control/visibility/run.py',

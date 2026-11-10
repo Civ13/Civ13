@@ -7,6 +7,7 @@ from atlas.rope_making import add_rope_making
 from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
+from atlas.research_coverage import annotate_research
 
 
 def catalog_text(game):
@@ -108,9 +109,10 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             modern=typepath.startswith('/obj/structure/exercise/modern')
             conditions+=f' Native crafting skill {105 if modern else 30}; completed research or existing faction baseline required at construction.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
-        if typepath.startswith('/obj/structure/telecom') or typepath == '/obj/item/weapon/telephone/landline':
-            skill=100 if typepath.endswith('/landline') else 160 if typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
-            conditions+=f' Minimum era Modern (ordinal 8); native crafting skill {skill}; completed research node required at construction.'
+        if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':
+            skill=100 if typepath.endswith('/landline') else 160 if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv','/obj/structure/telecom/terminal') else 105
+            era='1903 (ordinal 5)' if typepath in ('/obj/structure/telecom','/obj/structure/telecom/station','/obj/structure/telecom/antenna') else '1969 (ordinal 7)' if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv') else 'Modern (ordinal 8)'
+            conditions+=f' Minimum era {era}; native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
     if any(i['id'] == '/material/cloth' for i in inputs):
         conditions += ' Woolcloth sheets also accepted.'
@@ -309,7 +311,7 @@ elif dedicated:
     issues.append(dict(file=dedicated_path,line=1,reason='Toolsmith recipe table changed; inspect atlas extraction',raw='toolsmith_recipes'))
 foundry_line=dedicated.find('/obj/structure/component_workbench/toolsmith/foundry')
 foundry_age=re.search(r'#define FOUNDRY_MIN_AGE (\d+)',dedicated)
-if foundry_line>=0 and foundry_age and toolsmith_rows and metals and 'is_node_done(H.civilization, "machined_tools")' in dedicated:
+if foundry_line>=0 and foundry_age and toolsmith_rows and metals and 'crafting_node_allowed(H, "machined_tools")' in dedicated:
     for name,result,metal,max_age in toolsmith_rows:
         if int(max_age)<int(foundry_age[1]):continue
         for sheet,metal_name in re.findall(r'(/obj/item/stack/material/\w+) = "(\w+)"',metals[1]):
@@ -394,6 +396,7 @@ for route in tanning_routes + rope_routes + woodworking_routes:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 add_tablet_press(files, add, records)
+annotate_research(records, files, canon)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)
 annotate_families(records, files)

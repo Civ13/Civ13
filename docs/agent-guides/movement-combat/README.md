@@ -13,6 +13,18 @@ actor/client pixel offsets and physical step/glide ownership out of those effect
 See [resource work images](../../resource-work-animation.md) for admission,
 lifecycle cleanup and the offline-versus-native verification boundary.
 
+<!-- 2026-11-10: free-moving humans stand on their centre tile -->
+BYOND files a pixel-moving atom under the tile holding its bounding box's
+lower-left corner, and every native Move files it there again. After each native
+human Move, `human_subtile_anchor()` re-files the body under the tile beneath
+its centre, so `loc`, `x/y` and `get_turf()` switch tiles halfway across in every
+direction and `step_x/step_y` run -16 to 15. Loc assignment fires no turf events;
+Enter/Exit/Entered/Exited and `locs` follow overlap as before. Code that walks to
+the next alignment or lists covered tiles uses `human_subtile_ll()` (offsets
+0-31). Mounts and swapped non-humans keep lower-left filing
+(`subtile_refile_lower_left`). `tests/centre_tile/run.py` is the native probe.
+Animals still use lower-left filing.
+
 Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts

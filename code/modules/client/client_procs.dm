@@ -270,7 +270,7 @@
 
 	spawn (1)
 		if (!istype(mob, /mob/new_player))
-			usr << browse(null, "window=playersetup;")
+			show_browse(usr, null, "window=playersetup;")
 
 		if (istype(mob, /mob/living/human))
 			human_clients_mob_list |= mob

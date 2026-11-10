@@ -33,7 +33,7 @@
 	var/mob/living/human/H = M	  ///////////////////////////////////// /Let's have this ready for later.
 
 
-	if (!(user.targeted_organ == ("eyes" || "head"))) //////////////hitting anything else other than the eyes
+	if (user.targeted_organ != "eyes" && user.targeted_organ != "head")
 		if (prob(33))
 			add_blood(H)
 			var/turf/location = H.loc

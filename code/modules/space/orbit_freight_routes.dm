@@ -82,7 +82,7 @@ var/global/list/orbit_freight_dispatchers = list()
 			var/list/loads = list()
 			for (var/n in 1 to LANDER_CARGO_MAX)
 				loads += "[n]"
-			var/pick = input(user, "Launch each freighter once its hold carries how many items?", capitalize(name), "[load]") as null|anything in loads
+			var/pick = player_input(user, "Launch each freighter once its hold carries how many items?", capitalize(name), "[load]", "anything", loads, TRUE)
 			if (!pick || QDELETED(src) || !in_range(src, user) || (party && party != mine))
 				return
 			set_route(user, text2num(pick))

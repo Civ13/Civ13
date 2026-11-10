@@ -15,7 +15,12 @@
 	flammable = TRUE
 	flags = FALSE
 /obj/item/weapon/newspaper/attack_self(mob/user as mob)
-	return ..(user)
+	if (!src.scribble)
+		to_chat(user, SPAN_NOTICE("There is no writing on the newspaper."))
+		return TRUE
+	to_chat(user, SPAN_NOTICE("Written on the newspaper:"))
+	to_chat(user, html_encode(html_decode(src.scribble)))
+	return TRUE
 
 
 /obj/item/weapon/newspaper/Topic(href, href_list)
@@ -55,8 +60,7 @@ obj/item/weapon/newspaper/attackby(obj/item/weapon/W as obj, mob/user as mob)
 		if (scribble_page == curr_page)
 			to_chat(user, "<span class = 'notice'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</span>")
 		else
-			var/s = sanitize(input(user, "Write something", "Newspaper", ""))
-			s = sanitize(s)
+			var/s = sanitize(player_input(user, "Write something", "Newspaper", "", "text", null, FALSE))
 			if (!s)
 				return
 			if (!in_range(src, usr) && loc != usr)

@@ -236,7 +236,7 @@
 				var/custom_new_eyes = WWinput(src, "Choose the eye color:","Character Customization","Randomize",possible_e_list)
 				if (custom_new_eyes == "Randomize")
 					possible_e_list -= "Randomize"
-				var/custom_s_tone = input(src, "Choose the skin tone ([abs(possible_s_range[1])] to [abs(possible_s_range[2])]):","Character Customization") as num
+				var/custom_s_tone = player_input(src, "Choose the skin tone ([abs(possible_s_range[1])] to [abs(possible_s_range[2])]):", "Character Customization", null, "num", null, FALSE)
 				if (custom_s_tone > abs(possible_s_range[2]))
 					custom_s_tone = abs(possible_s_range[2])
 				else if (s_tone < abs(possible_s_range[1]))

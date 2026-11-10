@@ -81,7 +81,7 @@ var/global/pregameHTML = null
 /client/proc/load_pregame()
 	#ifdef OPENDREAM
 	if (!pregameHTML || !src) return
-	src << browse(pregameHTML, "window=pregameBrowser")
+	show_browse(src, pregameHTML, "window=pregameBrowser")
 	winshow(src, "pregameBrowser", TRUE)
 
 	if (isnewplayer(src.mob))
@@ -89,5 +89,5 @@ var/global/pregameHTML = null
 		new_player.pregameBrowserLoaded = TRUE
 	#endif
 /client/proc/unload_pregame()
-	src << browse("", "window=pregameBrowser")
+	show_browse(src, "", "window=pregameBrowser")
 	winshow(src, "pregameBrowser", FALSE)

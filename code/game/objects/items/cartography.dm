@@ -237,7 +237,7 @@
 
 /obj/item/weapon/cartography_map/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/weapon/pen))
-		var/title = input(user, "What should this map be called?", "Title the map", name) as text|null
+		var/title = player_input(user, "What should this map be called?", "Title the map", name, "text", null, TRUE)
 		title = sanitize(title, MAX_NAME_LEN)
 		if (!title || QDELETED(src) || !user.Adjacent(src))
 			return
@@ -252,7 +252,7 @@
 	if (!chart_valid())
 		to_chat(user, SPAN_NOTICE("The map is still blank. Stop somewhere with a view and use it in hand to sketch."))
 		return
-	user << browse(map_html(get_turf(user)), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190)]")
+	show_browse(user, map_html(get_turf(user)), "window=cartography_map;size=[min(900, chart_cols * map_scale() + 60)]x[min(900, chart_rows * map_scale() + 190)]")
 
 /obj/item/weapon/cartography_map/proc/map_scale()
 	return clamp(round(640 / max(chart_cols, chart_rows)), 2, 8)

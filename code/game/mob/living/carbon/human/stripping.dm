@@ -4,7 +4,7 @@
 		return
 
 	if (user.incapacitated()  || !user.Adjacent(src))
-		user << browse(null, text("window=mob[name]"))
+		show_browse(user, null, text("window=mob[name]"))
 		return
 
 	var/obj/item/target_slot = get_equipped_item(text2num(slot_to_strip))

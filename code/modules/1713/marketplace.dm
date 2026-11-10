@@ -121,7 +121,7 @@
 	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];close'\">Close</button></div>"
 	dat += "</body></html>"
 
-	user << browse(dat, "window=stockmarket;size=550x600")
+	show_browse(user, dat, "window=stockmarket;size=550x600")
 
 // Links name a company by its position in custom_company_nr (companies are
 // only ever appended), so quotes, & or = in a name cannot break them.
@@ -273,7 +273,7 @@
 			if (i[2] > 0)
 				body += "<b>[i[1] ? i[1] : "Estate of a dead shareholder (for sale)"]</b> owns [i[2]]%.<br>"
 		body += "<br></body></html>"
-		H << browse(body, "window=stockmembers;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
+		show_browse(H, body, "window=stockmembers;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=250x450")
 		return
 
 	// Manage company - distribute profits

@@ -111,3 +111,10 @@ if(Datum.is_processing) {\
 /datum/controller/subsystem/processing/##X
 
 #define log_qdel(X) log_debug(X)
+
+// Master.Loop() contention back-off: at most this many skipped ticks in a row,
+// each sleeping at most this many sleep_delta steps, before the MC runs anyway.
+// 2 + 4 + 8 + 8 = 22 ticks worst case, well inside the failsafe's first
+// DEFCON warning (40 ticks).
+#define MC_CONTENDED_SKIP_LIMIT 4
+#define MC_CONTENDED_SLEEP_CAP 8

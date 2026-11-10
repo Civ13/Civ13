@@ -20,7 +20,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 BEGIN, END = "// BEGIN_SELECTED_MAP", "// END_SELECTED_MAP"
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
-REQUIRED_CHECKS = ("carry_kinds", "refusals", "payload_roundtrip", "rebuild")
+REQUIRED_CHECKS = ("carry_kinds", "refusals", "payload_roundtrip", "rebuild", "recipe_knowledge")
 
 
 def generate(prefix):

@@ -1126,7 +1126,7 @@
 			var/image/flag_symbol = image("icon" = 'icons/obj/decals.dmi', "icon_state" = "e_skull0")
 			overlays += flag_symbol
 
-	var/flag_name = input(usr, "Name the flag:") as text|null
+	var/flag_name = player_input(usr, "Name the flag:", null, null, "text", null, TRUE)
 	if (flag_name == "" || flag_name == null)
 		name = "flag"
 	else

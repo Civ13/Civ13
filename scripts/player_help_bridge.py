@@ -70,13 +70,13 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '087ef9ab5418f2a1b5f82439f7fb00ff1d5e9b2c'
+WIKI_REVIEWED_REVISION = 'beba86001fcb117e023a87b46419eb8f8a3914da'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('28b002e1c7ce02bf5e49fff0ac596c77b499cd5f32cf12661d320866e9b684f7', 'combat fight fighting intent aim shoot melee grenade cover'),
-    'guides/Guide_to_Communications.md': ('6f38a398304e6adf2447ca28c2b152f0b516bb00ba7b0fc4fd7ee0531bd96461', 'communications radio transmit'),
+    'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('42feaf01ea2344b3d2fb50ac3f878836fd96664aa16462b22ba56452cc389e24', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('39b33a6848d7489d0ef835e003eff0932f85e182791ba335023ab44af50944c7', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
@@ -107,7 +107,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('c262543f0c96676504e047ee3db9f0b185db948245dfb869122af90c71a02121', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('9b51aa3d30e1affbcc0e8c2ec6ca0cbaa91eb28ae15cbe8d999d533e737e94fa', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
@@ -122,7 +122,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
-    'maps/Gaia.md': ('3314144be4f96cadddaa5ae8310119303a236afb56a68d1bfe1bb493c17378da', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('9e6bb91e441c142eb60b5b93364a20d66ec3613e060a90987fa94785230246ca', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),

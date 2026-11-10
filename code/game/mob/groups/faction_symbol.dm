@@ -408,7 +408,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	if (href_list["set_tool"])
 		map.faction_symbol_tool[faction] = href_list["set_tool"]
 	else if (href_list["pick_color"])
-		var/newcolor = input(owner, "Choose the active paint color:", "Faction Symbol", map.faction_symbol_color[faction] || "#000000") as color
+		var/newcolor = player_input(owner, "Choose the active paint color:", "Faction Symbol", map.faction_symbol_color[faction] || "#000000", "color", null, FALSE)
 		if (newcolor)
 			map.faction_symbol_color[faction] = newcolor
 	else if (href_list["paint"])

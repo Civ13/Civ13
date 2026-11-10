@@ -17,6 +17,7 @@
 	if (!can_buckle || !istype(M) || (M.loc != loc) || M.buckled || M.pinned.len || (buckle_require_restraints && !M.restrained()))
 		return FALSE
 
+	M.settle_on_tile()
 	M.buckled = src
 	M.facing_dir = null
 	M.set_dir(buckle_dir ? buckle_dir : dir)
@@ -28,6 +29,22 @@
 		BR.used = TRUE
 		BR.check_use(M)
 	return TRUE
+
+// Free movement leaves a body at a pixel offset on its tile, and that offset
+// keeps across loc changes. Anything that seats a mob (chairs, beds, vehicles)
+// settles it squarely on its tile, or it sits beside the seat and, being
+// counted on the next tile east or north, gets run into by its own vehicle.
+/mob/living/proc/settle_on_tile()
+	if (!step_x && !step_y)
+		return
+	step_x = 0
+	step_y = 0
+	if (ishuman(src))
+		var/mob/living/human/H = src
+		H.human_subtile_offset_owned = FALSE
+	else if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/A = src
+		A.npc_subtile_offset_owned = FALSE
 
 /obj/proc/unbuckle_mob()
 	if (buckled_mob && buckled_mob.buckled == src)

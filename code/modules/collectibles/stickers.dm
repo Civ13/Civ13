@@ -1145,7 +1145,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		to_chat(user, "<span class='notice'>Index: #[S.index]</span>")
 		to_chat(user, "<span class='notice'>Rarity: <font color='[S.rarity_color()]'>[S.rarity_name()]</font></span>")
 		to_chat(user, "<span class='notice'>Category: [S.category] | Era: [S.age]</span>")
-		user << browse("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=400x650")
+		show_browse(user, "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src='https://civ13.com/card/[S.index]'></iframe></body></html>", "window=sticker_card;size=400x650")
 
 /obj/item/sticker_pile
 	name = "pile of stickers"
@@ -1264,7 +1264,7 @@ GLOBAL_LIST_EMPTY(sticker_registry)
 		return
 	if(ismob(M) && M.ckey && user.ckey != M.ckey)
 		user.visible_message("<span class='notice'>[user] offers \the [src] to [M].</span>")
-		var/response = alert(M, "[user] wants to give you \a [name]. Accept?", "Sticker Trade", "Accept", "Decline")
+		var/response = player_alert(M, "[user] wants to give you \a [name]. Accept?", "Sticker Trade", list("Accept", "Decline"))
 		if(response == "Accept" && isturf(user.loc) && isturf(M.loc) && get_dist(user, M) <= 1)
 			if(!istype(src) || qdeleted(src) || src.loc != user)
 				return

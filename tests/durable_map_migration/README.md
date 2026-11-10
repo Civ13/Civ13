@@ -1,22 +1,26 @@
 # Durable map field compatibility
 
 The recovery fix accepts the exact legacy 131-field inventory and defaults only
-the newly introduced `faction_renames` to a fresh empty mapping. It validates
+the newly introduced `faction_renames` to a fresh empty mapping. Field version 3
+adds `faction_recruitment` (faction recruitment stations, #4237); v1 and v2
+saves, declared or unversioned, restore it as a fresh empty list, and a v3
+save must carry it. It validates
 the complete encoded inventory and graph types before admission, then supplies
 the default in a copy of decoded metadata during restoration. Original metadata,
 generation markers and restart intents are not rewritten. Existing 132-field
-unversioned saves keep their rename data. New captures declare
-`map_fields_version: 2`, independently of round/topology schema versions.
+unversioned saves keep their rename data. Captures declare their field version
+independently of round/topology schema versions.
 
 Unversioned saves are classified by the known field addition; an old save and an
 unversioned new save missing exactly that field cannot be distinguished. Explicit
-version 2 requires all 132 fields. Unknown field versions, unrelated missing or
+version 2 requires its 132 fields and version 3 all 133. New captures declare
+`map_fields_version: 3`. Unknown field versions, unrelated missing or
 extra fields, malformed roots and invalid scalar types remain rejected.
 
 Run `python tests/durable_map_migration/run.py --byond-bin <current-pin-bin>`.
 The 4x4x1 fixture compiles complete production sources with startup disabled and
 uses the real graph encoder, field validator, capture and metadata restoration.
-Frozen old/new inventories are checked without Git history. The legacy fixture
+Frozen v1/v2/v3 inventories are checked without Git history. The legacy fixture
 matches `4010a8199b8669b7531e3b0b0c693dd71adc6750` exactly. Synthetic metadata
 files exercise validation/restoration, a current metadata disk round trip,
 every required-field omission, every wrong root kind, unknown fields/versions,

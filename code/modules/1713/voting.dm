@@ -178,12 +178,12 @@
 			person_role = choose_officer
 			vote_options = list("Yes","No")
 		else
-			var/inpt = input(user, "What do you want the vote to be on? (Leave blank to cancel)", "Electoral System", "") as text
+			var/inpt = player_input(user, "What do you want the vote to be on? (Leave blank to cancel)", "Electoral System", "", "text", null, FALSE)
 			if (!inpt || inpt == "" || in_election)
 				return
 			if (in_election)
 				return
-			var/inpt2 = input(user, "What options should the vote have? Separate them with ';'. (example: 'Yes;No') (Leave blank to cancel)", "Electoral System", "") as text
+			var/inpt2 = player_input(user, "What options should the vote have? Separate them with ';'. (example: 'Yes;No') (Leave blank to cancel)", "Electoral System", "", "text", null, FALSE)
 			if (!inpt || inpt == "" || in_election)
 				return
 			var/inpt2_parsed = splittext(inpt2,";")

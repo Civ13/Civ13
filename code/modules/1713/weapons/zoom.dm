@@ -330,7 +330,7 @@ Parts of code courtesy of Super3222
 
 		looking = FALSE
 
-		var/input = input(user, "Set the zoom amount.", "Zoom" , "") as num
+		var/input = player_input(user, "Set the zoom amount.", "Zoom", "", "num", null, FALSE)
 		if (input == zoom_amt)
 			return
 

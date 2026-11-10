@@ -248,33 +248,31 @@
 // Each tile corner gets a light level from -2 (shadow) to 2 (lit), from the
 // heights around it, lit from the north-west. A tile shows the sprite for its
 // four corner levels, blended across the tile, so neighbours join smoothly.
-// Sprites are shared objects in turf vis_contents, never clickable, never saved.
-// They sit above the ground, its decals and fallen snow (layer 2.03, which is
-// opaque and would hide the hills all winter) and below objects; the copies of
-// decals that winter lifts above the snow (2.04) stay on top.
+// Sprites are shared images in the turf's own overlays, on the turf's plane:
+// turf vis_contents never reached the screen in the real client, so the hills
+// were flat in play. Overlays are never clickable and never saved (the turf
+// allowlist holds only icon_state and name). They sit above the ground, its
+// decals and fallen snow (layer 2.03, which is opaque and would hide the hills
+// all winter) and below objects; the copies of decals that winter lifts above
+// the snow (2.04) stay on top. Floor icon rebuilds put them back.
 #define TERRAIN_LIGHT_STEP 0.22
 #define TERRAIN_RELIEF 1.6
 #define TERRAIN_SHADE_LAYER 2.035
 
-var/global/list/terrain_shade_objects = list()
+var/global/list/terrain_shade_images = list()
 // TRUE once the map's shading has been placed this round.
 var/global/terrain_shading_applied = FALSE
 
-/obj/effect/terrain_shade
-	icon = 'icons/turf/terrain_shade.dmi'
-	layer = TERRAIN_SHADE_LAYER
-	mouse_opacity = 0
-	anchored = TRUE
-	vis_flags = VIS_INHERIT_PLANE
-	should_save = FALSE
+/turf/var/tmp/image/terrain_shade_overlay = null
 
-/proc/terrain_shade_object(key)
-	var/obj/effect/terrain_shade/S = terrain_shade_objects[key]
-	if (!S)
-		S = new
-		S.icon_state = key
-		terrain_shade_objects[key] = S
-	return S
+/proc/terrain_shade_image(key)
+	var/image/I = terrain_shade_images[key]
+	if (!I)
+		I = image('icons/turf/terrain_shade.dmi', icon_state = key, layer = TERRAIN_SHADE_LAYER)
+		I.plane = FLOOR_PLANE
+		I.mouse_opacity = 0
+		terrain_shade_images[key] = I
+	return I
 
 // "z" -> list of (maxy + 1) strings of (maxx + 1) light chars a-e, north first.
 /datum/terrain_heights/var/list/light_rows_by_z = list()
@@ -341,14 +339,26 @@ var/global/terrain_shading_applied = FALSE
 	return copytext(lights[row], x, x + 2) + copytext(lights[row + 1], x, x + 2)
 
 /turf/proc/terrain_shade_refresh()
-	for (var/obj/effect/terrain_shade/old in vis_contents)
-		vis_contents -= old
-	if (!map || !map.terrain_height_file || istype(src, /turf/floor/beach/water) || terrain_smoothed())
-		return
-	var/datum/terrain_heights/H = map.terrain_heights()
-	var/key = H ? H.shade_key(x, y, z) : null
-	if (key && key != "cccc")
-		vis_contents += terrain_shade_object(key)
+	var/image/shade = null
+	if (map && map.terrain_height_file && !istype(src, /turf/floor/beach/water) && !terrain_smoothed())
+		var/datum/terrain_heights/H = map.terrain_heights()
+		var/key = H ? H.shade_key(x, y, z) : null
+		if (key && key != "cccc")
+			shade = terrain_shade_image(key)
+	terrain_shade_set(shade)
+
+/turf/proc/terrain_shade_set(image/shade)
+	if (terrain_shade_overlay)
+		overlays -= terrain_shade_overlay
+	terrain_shade_overlay = shade
+	if (shade)
+		overlays += shade
+
+// Floor icon rebuilds clear every overlay; this puts the shading back.
+/turf/proc/terrain_shade_icon()
+	if (terrain_shade_overlay)
+		overlays -= terrain_shade_overlay
+		overlays += terrain_shade_overlay
 
 // A floor cover laid or removed after the shading was placed changes whether
 // its tile is shaded. Covers call updateturf() shortly after they are placed.
@@ -380,7 +390,7 @@ var/global/terrain_shading_applied = FALSE
 					continue
 				var/key = H.shade_key(x, y, z)
 				if (key != "cccc")
-					T.vis_contents += terrain_shade_object(key)
+					T.terrain_shade_set(terrain_shade_image(key))
 					count++
 			CHECK_TICK
 	return count

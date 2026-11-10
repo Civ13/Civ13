@@ -68,7 +68,7 @@
 	src << browse_rsc('interface/fonts/Alegreya-Italic.ttf', "Alegreya-Italic.ttf")
 	src << browse_rsc('interface/fonts/Alegreya-BoldItalic.ttf', "Alegreya-BoldItalic.ttf")
 	src << browse_rsc('interface/fonts/Alegreya-Black.ttf', "Alegreya-Black.ttf")
-	src << browse('interface/info/info.html', "window=browser_info")
+	show_browse(src, 'interface/info/info.html', "window=browser_info")
 
 /client/proc/add_stat(name, value = "")
 	statpanel_data += list(list("name" = name, "value" = value))

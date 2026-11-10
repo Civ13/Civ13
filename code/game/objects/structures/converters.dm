@@ -24,6 +24,7 @@
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
 		if(istype(M, input) || (input1 && istype(M, input1)))
+			if (!crafting_recipe_allowed(user, "[output]")) return
 			if(M.amount >= inputamount)
 				M.amount -= inputamount
 				if(M.amount <= 0)
@@ -55,7 +56,7 @@
 	/*else
 		to_chat(user, "<span class='alert'> You empty the [name]. </span>")
 		for(var/i=0,i<=inputamount,i++)
-			new input(src.loc)
+			new player_input(usr, src.loc, null, null, "text", null, FALSE)
 		icon_state = idlesprite
 		if(overlayed)
 			remove_overlay(M)
@@ -111,7 +112,7 @@
 
 /obj/structure/converter/tanning/attackby(obj/item/W, mob/living/user)
 	if (istype(W, /obj/item/stack/material/wethide))
-		if (QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
+		if (!crafting_node_allowed(user, "resource_processing") || QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
 			return TRUE
 		var/obj/item/stack/material/wethide/hide = W
 		if (hide.amount < 1 || hide.amount > hide.max_amount)
@@ -124,7 +125,7 @@
 			return TRUE
 		if (QDELETED(src) || QDELETED(hide))
 			return TRUE
-		if (QDELETED(user) || loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
+		if (QDELETED(user) || !crafting_node_allowed(user, "resource_processing") || loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
 			if (hide.loc == src)
 				if (!QDELETED(user))
 					user.put_in_hands(hide) // Normal inventory API falls back to a safe turf.

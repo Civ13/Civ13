@@ -18,7 +18,12 @@ VALUE = {
     ),
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report"]
+WINDOW = {"type": "string", "description": "topic/close_window: a window name from character_observe windows"}
+SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder"], "description": "equip: the slot to put the held item in"}
+LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
+LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
+DRIVE_CONTROL = {"type": "string", "enum": ["forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend"], "description": "drive: the driver's seat HUD button to press"}
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
@@ -59,10 +64,11 @@ ACTIONS = {
     "delete_atom": ("spawn", "Delete an object or a mob without a connected player.", _schema({"target": TARGET}, ["target"])),
     "character_spawn": ("characters", "Create a character this agent controls (no ckey needed). With job, it joins like a late joiner: that job's clothes, kit and spawn point.", _schema({"target": TARGET, "type": {"type": "string"}, "name": {"type": "string"}, "job": {"type": "string", "description": 'A late-join job title on this map, e.g. "Nomad".'}, "stay": {"type": "boolean", "description": "With job: start at the target instead of the job's spawn point."}}, ["target"])),
     "character_list": ("characters", "Characters this agent may control, including player handovers.", _schema()),
-    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, its action queue with results since queue_since, prompts the game raised that no step answered, and sounds it heard. With since_rev (the rev of the last observe) nearby lists only rows that appeared or changed, plus nearby_removed refs. wait_s holds the call until something is new.", _schema({
+    "character_observe": ("characters", "What a character sees, its own state, messages it heard since an id, its action queue with results since queue_since, prompts the game raised that no step answered, menu windows it was shown (text and numbered links), and sounds it heard. With since_rev (the rev of the last observe) nearby lists only rows that appeared or changed, plus nearby_removed refs. wait_s holds the call until something is new.", _schema({
         "character": CHARACTER, "radius": {"type": "integer", "minimum": 1, "maximum": 7}, "since": {"type": "integer"}, "queue_since": {"type": "integer"},
         "since_rev": {"type": "integer", "description": "rev from the previous observe: return only nearby changes"},
         "prompt_since": {"type": "integer", "description": "prompts after this id (last_prompt)"},
+        "window_since": {"type": "integer", "description": "menu windows shown or refreshed after this id (last_window)"},
         "sound_since": {"type": "integer", "description": "sounds after this id (last_sound)"},
         "footsteps": {"type": "boolean", "description": "include footstep sounds (default false)"},
         "wait_s": {"type": "number", "minimum": 0, "maximum": 60, "description": "wait up to this many seconds for a new message, queue result (queue_since), prompt (prompt_since), sound (sound_since) or nearby change (since_rev)"},
@@ -74,7 +80,7 @@ ACTIONS = {
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) or throw (the held item at target); board, disembark, drag, verb and throw only through character_queue. While driving a boat, move steers it one tile.", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim), or drive (driver's seat HUD: control forward, reverse, turn_left, turn_right, gear_up, gear_down, climb, descend); use with alternate presses the secondary-use key; screen presses an action of an open machine screen (character_observe screens) or closes it; equip takes an optional slot; board, disembark, drag, verb, throw, topic and screen (except close) only through character_queue. While driving a boat, move steers it one tile; in a car, tank or aircraft seat, or holding turret or drone controls, move presses that arrow key (east/west turn, north/south pick forward/reverse while stopped or change turret range).", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -90,6 +96,23 @@ ACTIONS = {
         "onto": ONTO,
         "name": VERB,
         "expect_name": EXPECT_NAME,
+        "window": WINDOW,
+        "link": LINK,
+        "label": LINK_LABEL,
+        "slot": SLOT,
+        "move": {"type": "string", "enum": ["run", "walk", "sneak", "crawl"], "description": "stance: movement mode"},
+        "defense": {"type": "string", "enum": ["dodge", "parry"], "description": "stance"},
+        "tactic": {"type": "string", "enum": ["charge", "aim", "rush", "defend"], "description": "stance"},
+        "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
+        "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
+        "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
+        "control": DRIVE_CONTROL,
+        "screen": {"type": "string", "description": "screen: a number or title from character_observe screens"},
+        "act": {"type": "string", "description": "screen: one of that screen's actions"},
+        "value": {"type": "string", "description": "screen: the action's value, e.g. an id or amount from the screen's data (default 1)"},
+        "close": {"type": "boolean", "description": "screen: close it instead"},
+        "alternate": {"type": "boolean", "description": "use: the Activate Secondary Object key (gear down, switch turret weapon, drone special)"},
+        "hold": {"type": "integer", "minimum": 1, "maximum": 50, "description": "move: deciseconds an arrow key stays down for held turret controls and drones (default 5)"},
     }, ["character", "do"])),
     "character_queue": ("characters", "Queue up to 32 actions (64 pending) that the server runs in order, each when its cooldown allows; results appear in character_observe.", _schema({
         "character": CHARACTER,
@@ -111,6 +134,23 @@ ACTIONS = {
                 "onto": ONTO,
                 "name": VERB,
                 "expect_name": EXPECT_NAME,
+        "window": WINDOW,
+        "link": LINK,
+        "label": LINK_LABEL,
+        "slot": SLOT,
+        "move": {"type": "string", "enum": ["run", "walk", "sneak", "crawl"], "description": "stance: movement mode"},
+        "defense": {"type": "string", "enum": ["dodge", "parry"], "description": "stance"},
+        "tactic": {"type": "string", "enum": ["charge", "aim", "rush", "defend"], "description": "stance"},
+        "secondary": {"type": "string", "enum": ["kick", "jump", "bite"], "description": "stance: the middle-click attack"},
+        "face_lock": {"type": "boolean", "description": "stance: keep facing one way while moving"},
+        "aim": {"type": "boolean", "description": "stance: gun aim mode (hold fire on a target)"},
+        "control": DRIVE_CONTROL,
+        "screen": {"type": "string", "description": "screen: a number or title from character_observe screens"},
+        "act": {"type": "string", "description": "screen: one of that screen's actions"},
+        "value": {"type": "string", "description": "screen: the action's value, e.g. an id or amount from the screen's data (default 1)"},
+        "close": {"type": "boolean", "description": "screen: close it instead"},
+        "alternate": {"type": "boolean", "description": "use: the Activate Secondary Object key (gear down, switch turret weapon, drone special)"},
+        "hold": {"type": "integer", "minimum": 1, "maximum": 50, "description": "move: deciseconds an arrow key stays down for held turret controls and drones (default 5)"},
                 "repeat": {"type": "integer", "minimum": 1, "maximum": 30, "description": "run this step up to this many times (each when its cooldown allows); a blocked move or a failure stops it"},
                 "until": UNTIL,
             },

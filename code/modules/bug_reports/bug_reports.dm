@@ -305,7 +305,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 /datum/bug_report_queue/proc/show_panel(mob/user)
 	if (!user || !check_rights(R_ADMIN, TRUE, user))
 		return
-	user << browse(panel_html(), "window=bugreports;size=720x640")
+	show_browse(user, panel_html(), "window=bugreports;size=720x640")
 
 /datum/bug_report_queue/Topic(href, href_list)
 	var/mode = href_list["bugreport"]
@@ -325,10 +325,10 @@ var/global/datum/bug_report_queue/bug_reports = new
 		if ("approve", "edit")
 			var/title = R.title
 			if (mode == "edit")
-				title = input(usr, "Issue title (\[In-game] is added in front).", "Bug report #[R.id]", R.title) as text|null
+				title = player_input(usr, "Issue title (\[In-game] is added in front).", "Bug report #[R.id]", R.title, "text", null, TRUE)
 				if (isnull(title))
 					return
-			var/note = input(usr, "Optional note for the developers (shown on the issue).", "Bug report #[R.id]") as message|null
+			var/note = player_input(usr, "Optional note for the developers (shown on the issue).", "Bug report #[R.id]", null, "message", null, TRUE)
 			if (isnull(note))
 				return
 			// The prompts wait; check again that it is still ours to approve.
@@ -338,7 +338,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 				R.title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
 			approve(R, admin_ckey, R.title, note)
 		if ("reject")
-			var/reason = input(usr, "Reason sent to the player (optional).", "Reject bug report #[R.id]") as text|null
+			var/reason = player_input(usr, "Reason sent to the player (optional).", "Reject bug report #[R.id]", null, "text", null, TRUE)
 			if (isnull(reason))
 				return
 			if (!check_rights(R_ADMIN, TRUE, usr) || reports["[R.id]"] != R)
@@ -354,17 +354,17 @@ var/global/datum/bug_report_queue/bug_reports = new
 	if (why)
 		to_chat(src, "<span class='warning'>[why]</span>")
 		return
-	var/title = input(src, "Short summary of the bug (one line).", "Report bug") as text|null
+	var/title = player_input(src, "Short summary of the bug (one line).", "Report bug", null, "text", null, TRUE)
 	title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
 	if (!length(title))
 		return
-	var/what = input(src, "What happened?", "Report bug: [title]") as message|null
+	var/what = player_input(src, "What happened?", "Report bug: [title]", null, "message", null, TRUE)
 	if (isnull(what))
 		return
-	var/steps = input(src, "How can it be made to happen again? Leave empty if you do not know.", "Report bug: [title]") as message|null
+	var/steps = player_input(src, "How can it be made to happen again? Leave empty if you do not know.", "Report bug: [title]", null, "message", null, TRUE)
 	if (isnull(steps))
 		return
-	var/expected = input(src, "What should have happened instead?", "Report bug: [title]") as message|null
+	var/expected = player_input(src, "What should have happened instead?", "Report bug: [title]", null, "message", null, TRUE)
 	if (isnull(expected))
 		return
 	if (!length(bug_report_clean(what)))

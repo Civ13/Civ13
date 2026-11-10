@@ -152,7 +152,7 @@
 	dat += "</table>"
 	dat += "</form>"
 	dat += "</body></html>"
-	user << browse(dat, "window=football_jersey;size=420x550")
+	show_browse(user, dat, "window=football_jersey;size=420x550")
 
 /obj/item/clothing/under/football/custom/Topic(href, href_list)
 	if (!usr || !usr.client)
@@ -190,7 +190,7 @@
 	if (shirt_color && shorts_color)
 		uncolored = FALSE
 		apply_overlays()
-		user << browse(null, "window=football_jersey")
+		show_browse(user, null, "window=football_jersey")
 	else
 		to_chat(user, "<span class='notice'>You must set at least the shirt and shorts colors.</span>")
 		show_jersey_ui(user)
@@ -435,7 +435,7 @@ function startTeam(uniform_type) {
 <button class="btn" onclick="document.getElementById('team_name').value=prompt('Enter team name:');startTeam('goalkeeper')" style="display:block;width:100%;margin:4px 0;">Start with Goalkeeper</button>
 <button class="btn" onclick='submitAction("cancel")' style="display:block;width:100%;margin:8px 0;">Cancel</button>"}
 	dat += "</body></html>"
-	user << browse(dat, "window=team_creator;size=400x400")
+	show_browse(user, dat, "window=team_creator;size=400x400")
 
 /obj/structure/submitter/Topic(href, href_list)
 	if (!usr || !usr.client)
@@ -457,7 +457,7 @@ function startTeam(uniform_type) {
 	if (!action)
 		return
 	if (action == "cancel")
-		mob << browse(null, "window=team_creator")
+		show_browse(mob, null, "window=team_creator")
 		return
 	if (action == "start")
 		var/name = href_list["name"]
@@ -483,14 +483,14 @@ function startTeam(uniform_type) {
 				var/obj/map_metadata/football/FM = map
 				FM.teams += list("[T["name"]]" = T)
 				var/dat2 = {"<html><head>[common_browser_style]</head><body><h2>Success!</h2><p>You successfully added the team <b>[T["name"]]</b>! It is now selectable.</p><button class='btn' onclick=\"window.location='byond://?src=\ref[src];action=close_success'\">OK</button></body></html>"}
-				mob << browse(dat2, "window=team_creator;size=400x200")
+				show_browse(mob, dat2, "window=team_creator;size=400x200")
 				FM.save_teams()
 				pending -= pending[mob.ckey]
 			else
 				var/dat2 = {"<html><head>[common_browser_style]</head><body><h2>Kit Submitted</h2><p>You can now continue editing this team by submitting the remaining kits.</p><button class='btn' onclick=\"window.location='byond://?src=\ref[src];action=continue_edit'\">OK</button></body></html>"}
-				mob << browse(dat2, "window=team_creator;size=400x200")
+				show_browse(mob, dat2, "window=team_creator;size=400x200")
 		else
-			mob << browse(null, "window=team_creator")
+			show_browse(mob, null, "window=team_creator")
 			show_team_ui(mob, CU)
 		return
 	if (mob.ckey in pending)
@@ -529,16 +529,16 @@ function startTeam(uniform_type) {
 			var/obj/map_metadata/football/FM = map
 			FM.teams += list("[T["name"]]" = T)
 			var/dat2 = {"<html><head>[common_browser_style]</head><body><h2>Success!</h2><p>You successfully added the team <b>[T["name"]]</b>! It is now selectable.</p><button class='btn' onclick=\"window.location='byond://?src=\ref[src];action=close_success'\">OK</button></body></html>"}
-			mob << browse(dat2, "window=team_creator;size=400x200")
+			show_browse(mob, dat2, "window=team_creator;size=400x200")
 			FM.save_teams()
 			pending -= pending[mob.ckey]
 			return
 		else
 			var/dat2 = {"<html><head>[common_browser_style]</head><body><h2>Kit Submitted</h2><p>You can now continue editing this team by submitting the remaining kits.</p><button class='btn' onclick=\"window.location='byond://?src=\ref[src];action=continue_edit'\">OK</button></body></html>"}
-			mob << browse(dat2, "window=team_creator;size=400x200")
+			show_browse(mob, dat2, "window=team_creator;size=400x200")
 			return
 	if (action == "close_success" || action == "continue_edit")
-		mob << browse(null, "window=team_creator")
+		show_browse(mob, null, "window=team_creator")
 
 /////////////////GOALPOSTS/////////////////
 

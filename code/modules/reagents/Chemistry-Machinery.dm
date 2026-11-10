@@ -828,7 +828,7 @@
 			loaded_pill_bottle.loc = loc
 			loaded_pill_bottle = null
 	else if (href_list["close"])
-		usr << browse(null, "window=chemmaster")
+		show_browse(usr, null, "window=chemmaster")
 		usr.unset_using_object()
 		return
 
@@ -851,7 +851,7 @@
 					dat += "<TITLE>Pill Maker</TITLE>Chemical infos:<BR><BR>Name:<BR>[href_list["name"]]<BR><BR>Description:<BR>[href_list["desc"]]<BR><BR><BR><A href='?src=\ref[src];main=1'>(Back)</A>"
 			else
 				dat += "<TITLE>Condimaster 3000</TITLE>Condiment infos:<BR><BR>Name:<BR>[href_list["name"]]<BR><BR>Description:<BR>[href_list["desc"]]<BR><BR><BR><A href='?src=\ref[src];main=1'>(Back)</A>"
-			usr << browse(dat, "window=chem_master;size=575x400")
+			show_browse(usr, dat, "window=chem_master;size=575x400")
 			return
 
 		else if (href_list["add"])
@@ -864,7 +864,7 @@
 		else if (href_list["addcustom"])
 
 			var/id = href_list["addcustom"]
-			useramount = input("Select the amount to transfer.", 30, useramount) as num
+			useramount = player_input(usr, "Select the amount to transfer.", 30, useramount, "num", null, FALSE)
 			useramount = Clamp(useramount, FALSE, 200)
 			Topic(null, list("amount" = "[useramount]", "add" = "[id]"))
 
@@ -882,7 +882,7 @@
 		else if (href_list["removecustom"])
 
 			var/id = href_list["removecustom"]
-			useramount = input("Select the amount to transfer.", 30, useramount) as num
+			useramount = player_input(usr, "Select the amount to transfer.", 30, useramount, "num", null, FALSE)
 			useramount = Clamp(useramount, FALSE, 200)
 			Topic(null, list("amount" = "[useramount]", "remove" = "[id]"))
 
@@ -905,7 +905,7 @@
 				return
 
 			if (href_list["createpill_multiple"])
-				count = input("Select the number of pills to make.", "Max [max_pill_count]", pillamount) as num
+				count = player_input(usr, "Select the number of pills to make.", "Max [max_pill_count]", pillamount, "num", null, FALSE)
 				count = Clamp(count, TRUE, max_pill_count)
 
 			if (reagents.total_volume/count < 1) //Sanity checking.
@@ -914,7 +914,7 @@
 			var/amount_per_pill = reagents.total_volume/count
 			if (amount_per_pill > 60) amount_per_pill = 60
 
-			var/name = sanitizeSafe(input(usr,"Name:","Name your pill!","[reagents.get_master_reagent_name()] ([amount_per_pill] units)"), MAX_NAME_LEN)
+			var/name = sanitizeSafe(player_input(usr, "Name:", "Name your pill!", "[reagents.get_master_reagent_name()] ([amount_per_pill] units)", "text", null, FALSE), MAX_NAME_LEN)
 
 			if (reagents.total_volume/count < 1) //Sanity checking.
 				return
@@ -933,7 +933,7 @@
 
 		else if (href_list["createbottle"])
 			if (!condi)
-				var/name = sanitizeSafe(input(usr,"Name:","Name your bottle!",reagents.get_master_reagent_name()), MAX_NAME_LEN)
+				var/name = sanitizeSafe(player_input(usr, "Name:", "Name your bottle!", reagents.get_master_reagent_name(), "text", null, FALSE), MAX_NAME_LEN)
 				var/obj/item/weapon/reagent_containers/glass/bottle/P = new/obj/item/weapon/reagent_containers/glass/bottle(get_turf(src))
 				if (!name) name = reagents.get_master_reagent_name()
 				P.name = "[name] bottle"
@@ -951,14 +951,14 @@
 			for (var/i = TRUE to MAX_PILL_SPRITE)
 				dat += "<tr><td><a href=\"?src=\ref[src]&pill_sprite=[i]\"><img src=\"pill[i].png\" /></a></td></tr>"
 			dat += "</table>"
-			usr << browse(dat, "window=chem_master")
+			show_browse(usr, dat, "window=chem_master")
 			return
 		else if (href_list["change_bottle"])
 			var/dat = "<table>"
 			for (var/sprite in BOTTLE_SPRITES)
 				dat += "<tr><td><a href=\"?src=\ref[src]&bottle_sprite=[sprite]\"><img src=\"[sprite].png\" /></a></td></tr>"
 			dat += "</table>"
-			usr << browse(dat, "window=chem_master")
+			show_browse(usr, dat, "window=chem_master")
 			return
 		else if (href_list["pill_sprite"])
 			pillsprite = href_list["pill_sprite"]
@@ -1025,9 +1025,9 @@
 		else
 			dat += "<A href='?src=\ref[src];createbottle=1'>Create bottle (50 units max)</A>"
 	if (!condi)
-		user << browse("<TITLE>Pill Maker</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
+		show_browse(user, "<TITLE>Pill Maker</TITLE>Chemmaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	else
-		user << browse("<TITLE>Pill Maker</TITLE>Condimaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
+		show_browse(user, "<TITLE>Pill Maker</TITLE>Condimaster menu:<BR><BR>[dat]", "window=chem_master;size=575x400")
 	onclose(user, "chem_master")
 	return
 

@@ -82,7 +82,7 @@ Get the ultimate area of `A`, similarly to [get_turf].
 #define to_world(message)								to_chat_wrapper(world, message)
 #define to_world_log(message)							world.log << message
 #define sound_to(target, sound)							 target << sound
-#define show_browser(target, browser_content, browser_name) target << browse(browser_content, browser_name)
+#define show_browser(target, browser_content, browser_name) show_browse(target, browser_content, browser_name)
 #define send_rsc(target, rsc_content, rsc_name)			 target << browse_rsc(rsc_content, rsc_name)
 
 #define CanInteract(user, state) (CanUseTopic(user, state) == STATUS_INTERACTIVE)

@@ -208,11 +208,13 @@ var/list/global/floor_cache = list()
 // A free-movement climb lands at an offset on its tile, keeping the body's
 // sideways position (human_subtile_trench_climb picks a spot that fits).
 /proc/trench_climb_place_offset(mob/living/human/H, turf/destination, sx, sy)
-	if (!H.forceMove(destination))
+	// A body whose centre is already past the edge is filed under destination.
+	if (H.loc != destination && !H.forceMove(destination))
 		return FALSE
 	H.step_x = sx
 	H.step_y = sy
-	H.human_subtile_offset_owned = !!(sx || sy)
+	H.human_subtile_anchor()
+	H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
 	return TRUE
 
 /turf/floor/trench/Enter(atom/movable/O, atom/oldloc)

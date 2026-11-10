@@ -100,7 +100,7 @@
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
 					to_chat(user, "There is nothing that you can craft of this type.")
@@ -109,13 +109,13 @@
 				if (choice2 == "Cancel")
 					return
 				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]])
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								P.amount -= anvil_recipes[parsed_choice2[1]][6]
 								if (P.amount <= 0)
 									qdel(P)
@@ -152,7 +152,7 @@
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes
 					to_chat(user, "There is nothing that you can craft of this type.")
@@ -161,13 +161,13 @@
 				if (choice2 == "Cancel")
 					return
 				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]])
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][6])
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								P.amount -= anvil_recipes[parsed_choice2[1]][6]
 								if (P.amount <= 0)
 									qdel(P)
@@ -196,7 +196,7 @@
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
 					to_chat(user, "There is nothing that you can craft of this type.")
@@ -205,13 +205,13 @@
 				if (choice2 == "Cancel")
 					return
 				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]])
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								P.amount -= anvil_recipes[parsed_choice2[1]][5]
 								if (P.amount <= 0)
 									qdel(P)
@@ -251,7 +251,7 @@
 				for(var/i in anvil_recipes)
 					if (anvil_recipes[i])
 						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel"
+							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 							valid_recipes = TRUE // At least one valid recipe found
 				if (!valid_recipes) // No valid recipes found
 					to_chat(user, "There is nothing that you can craft of this type.")
@@ -260,13 +260,13 @@
 				if (choice2 == "Cancel")
 					return
 				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]])
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+					if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][5])
+							if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								P.amount -= anvil_recipes[parsed_choice2[1]][5]
 								if (P.amount <= 0)
 									qdel(P)
@@ -293,7 +293,7 @@
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][8] > 0)
-						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar"
+						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
 				to_chat(user, "There is nothing that you can craft of this type.")
@@ -302,13 +302,13 @@
 			if (choice2 == "Cancel")
 				return
 			var/list/parsed_choice2 = splittext(choice2," - ")
-			if (anvil_recipes[parsed_choice2[1]])
-				if (P.amount >= anvil_recipes[parsed_choice2[1]][8])
+			if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+				if (P.amount >= anvil_recipes[parsed_choice2[1]][8] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 					in_use = TRUE
 					update_icon()
 					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][8],src,can_move=FALSE))
-						if (P.amount >= anvil_recipes[parsed_choice2[1]][8])
+						if (P.amount >= anvil_recipes[parsed_choice2[1]][8] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							P.amount -= anvil_recipes[parsed_choice2[1]][8]
 							if (P.amount <= 0)
 								qdel(P)
@@ -337,7 +337,7 @@
 			for(var/i in anvil_recipes)
 				if (anvil_recipes[i])
 					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][7] > 0)
-						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze"
+						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 						valid_recipes = TRUE // At least one valid recipe found
 			if (!valid_recipes) // No valid recipes found
 				to_chat(user, "There is nothing that you can craft of this type.")
@@ -346,13 +346,13 @@
 			if (choice2 == "Cancel")
 				return
 			var/list/parsed_choice2 = splittext(choice2," - ")
-			if (anvil_recipes[parsed_choice2[1]])
-				if (P.amount >= anvil_recipes[parsed_choice2[1]][7])
+			if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+				if (P.amount >= anvil_recipes[parsed_choice2[1]][7] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 					in_use = TRUE
 					update_icon()
 					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][7],src,can_move=FALSE))
-						if (P.amount >= anvil_recipes[parsed_choice2[1]][7])
+						if (P.amount >= anvil_recipes[parsed_choice2[1]][7] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							P.amount -= anvil_recipes[parsed_choice2[1]][7]
 							if (P.amount <= 0)
 								qdel(P)
@@ -485,12 +485,12 @@
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
 								if (anvil_recipes[i][2] == "knives" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
 							return
 						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]])
+						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							if (ML.current_material == "bronze")
 								mat = anvil_recipes[parsed_choice2[1]][7]
 							if (ML.current_material == "copper")
@@ -507,12 +507,12 @@
 								mat = anvil_recipes[parsed_choice2[1]][6]
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat)
+							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat)
+									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 										ML.capacity -= mat
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
@@ -550,12 +550,12 @@
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
 								if (anvil_recipes[i][2] == "axes" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
 							return
 						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]])
+						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							if (ML.current_material == "bronze")
 								mat = anvil_recipes[parsed_choice2[1]][7]
 							if (ML.current_material == "copper")
@@ -572,12 +572,12 @@
 								mat = anvil_recipes[parsed_choice2[1]][6]
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat)
+							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat)
+									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 										ML.capacity -= mat
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
@@ -620,7 +620,7 @@
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
 								if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 									valid_recipes = TRUE // At least one valid recipe found
 						if (!valid_recipes) // No valid recipes found
 							to_chat(user, "There is nothing that you can craft of this type.")
@@ -629,7 +629,7 @@
 						if (choice2 == "Cancel")
 							return
 						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]])
+						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							if (ML.current_material == "bronze")
 								mat = anvil_recipes[parsed_choice2[1]][7]
 							if (ML.current_material == "copper")
@@ -638,12 +638,12 @@
 								mat = anvil_recipes[parsed_choice2[1]][6]
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat)
+							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat)
+									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 										ML.capacity -= mat
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
@@ -659,11 +659,12 @@
 								update_icon()
 								return
 					if ("spearheads")
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/spearhead")) return
 						to_chat(user, "You begin crafting the [ML.current_material] spearheads...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-							if (ML && ML.capacity)
+							if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/weapon/material/part/spearhead"))
 								var/tamt = Floor(ML.capacity/3)
 								if (tamt >= 1)
 									ML.capacity = 0
@@ -680,11 +681,12 @@
 						return
 
 					if ("pickaxes")
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/pickaxe")) return
 						to_chat(user, "You begin crafting the [ML.current_material] pickaxe heads...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-							if (ML && ML.capacity)
+							if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/weapon/material/part/pickaxe"))
 								var/tamt = Floor(ML.capacity/3)
 								if (tamt >= 1)
 									ML.capacity = 0
@@ -700,11 +702,12 @@
 						update_icon()
 						return
 					if ("shovels")
+						if (!crafting_recipe_allowed(H, "/obj/item/weapon/material/part/shovel")) return
 						to_chat(user, "You begin crafting the [ML.current_material] shovel head...")
 						in_use = TRUE
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-							if (ML && ML.capacity)
+							if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/weapon/material/part/shovel"))
 								var/tamt = Floor(ML.capacity/2)
 								if (tamt >= 1)
 									ML.capacity = 0
@@ -720,12 +723,13 @@
 						update_icon()
 						return
 					if ("arrowheads")
+						if (!crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]")) return
 						if (ML.current_material in list("copper", "bronze", "iron", "steel"))
 							to_chat(user, "You begin crafting the [ML.current_material] arrowheads...")
 							in_use = TRUE
 							update_icon()
 							if (do_after(user,10*ML.capacity,src,can_move=FALSE))
-								if (ML && ML.capacity)
+								if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/stack/arrowhead/[ML.current_material]"))
 									var/tamt = ML.capacity
 									ML.capacity = 0
 									switch(ML.current_material)
@@ -773,12 +777,12 @@
 								if (ML.current_material == "steel")
 									mat = anvil_recipes[i][5]
 								if (anvil_recipes[i][2] == "keys" && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && mat > 0)
-									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]"
+									newlist += "[anvil_recipes[i][1]] - [mat] [ML.current_material]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
 						var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
 						if (choice2 == "Cancel")
 							return
 						var/list/parsed_choice2 = splittext(choice2," - ")
-						if (anvil_recipes[parsed_choice2[1]])
+						if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 							if (ML.current_material == "bronze")
 								mat = anvil_recipes[parsed_choice2[1]][7]
 							if (ML.current_material == "copper")
@@ -795,12 +799,12 @@
 								mat = anvil_recipes[parsed_choice2[1]][6]
 							if (ML.current_material == "steel")
 								mat = anvil_recipes[parsed_choice2[1]][5]
-							if (ML.capacity >= mat)
+							if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 								to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 								in_use = TRUE
 								update_icon()
 								if (do_after(user,10*mat,src,can_move=FALSE))
-									if (ML.capacity >= mat)
+									if (ML.capacity >= mat && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 										ML.capacity -= mat
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]

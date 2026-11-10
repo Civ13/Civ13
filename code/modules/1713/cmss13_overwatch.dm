@@ -51,11 +51,15 @@
 	..()
 	if (helmet_camera_fitted)
 		verbs |= /obj/item/clothing/head/proc/remove_helmet_camera
+	if (locate(/obj/item/tv_camera/helmet) in contents)
+		verbs |= /obj/item/clothing/head/proc/remove_tv_camera
 
 /obj/item/clothing/head/examine(mob/user)
 	. = ..()
 	if (helmet_camera_fitted)
 		to_chat(user, "<span class='notice'>A helmet camera is clipped to it.</span>")
+	for (var/obj/item/tv_camera/helmet/C in contents)
+		to_chat(user, SPAN_NOTICE("A visible television camera is clipped to it. [C.enabled ? "Its red power light is on." : "It is switched off."]"))
 
 /mob/living/human/proc/has_helmet_camera()
 	var/obj/item/clothing/head/H = head
@@ -111,7 +115,7 @@
 	var/list/names = list()
 	for (var/mob/living/human/H in feeds)
 		names["[H.real_name] ([get_area(H)])"] = H
-	var/choice = input(user, "Whose helmet camera do you want to watch?", "Overwatch") as null|anything in names
+	var/choice = player_input(user, "Whose helmet camera do you want to watch?", "Overwatch", null, "anything", names, TRUE)
 	if (!choice || loc != user)
 		return
 	start_watching(user, names[choice])

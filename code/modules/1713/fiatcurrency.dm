@@ -96,7 +96,7 @@ var/global/datum/currency_list/fiat = new()
 /** Prompts the user for an amount to print and converts stored cloth into new fiat currency banknotes. */
 /obj/structure/money_printer/proc/print_money(user)
 	var/nm
-	var/num = input(user, "How much money do you want to print?","Printing", nm) as num
+	var/num = player_input(user, "How much money do you want to print?", "Printing", nm, "num", null, FALSE)
 	num = round(num)
 	if (num <= 0)
 		return
@@ -164,7 +164,7 @@ var/global/datum/currency_list/fiat = new()
 			to_chat(user, "You withdraw the real money backing this printer.")
 		return
 	else if (choice == "Change Exchange Rate")
-		var/new_rate = input(user, "What should the exchange rate be? This determines how much real money value (e.g. silver coins) is dispensed per 1 banknote inserted into this printer.", "Exchange Rate", exchange_rate) as num
+		var/new_rate = player_input(user, "What should the exchange rate be? This determines how much real money value (e.g. silver coins) is dispensed per 1 banknote inserted into this printer.", "Exchange Rate", exchange_rate, "num", null, FALSE)
 		if (new_rate >= 0)
 			exchange_rate = new_rate
 			to_chat(user, "The exchange rate is now set to [exchange_rate].")
@@ -176,7 +176,7 @@ var/global/datum/currency_list/fiat = new()
 		display_ui(user)
 	else
 		var/cd
-		var/currency_code = sanitize(input(user, "Input the ID for your currency. You can use any text.","Currency Creation", cd) as text)
+		var/currency_code = sanitize(player_input(user, "Input the ID for your currency. You can use any text.", "Currency Creation", cd, "text", null, FALSE))
 		if (!currency_code || currency_code == "")
 			return
 		var/currency_exists = 0
@@ -209,13 +209,13 @@ var/global/datum/currency_list/fiat = new()
 				)
 
 				var/currencyname
-				var/currency_name = sanitize(input(user, "Please provide the name of your currency.","Currency Creation", currencyname) as text)
+				var/currency_name = sanitize(player_input(user, "Please provide the name of your currency.", "Currency Creation", currencyname, "text", null, FALSE))
 
 				var/currencysingular
-				var/currency_singular = sanitize(input(user, "Please provide the singular form of your currency's name (e.g. 'dollar', 'pound', 'peso', or 'ruble').","Currency Creation", currencysingular) as text)
+				var/currency_singular = sanitize(player_input(user, "Please provide the singular form of your currency's name (e.g. 'dollar', 'pound', 'peso', or 'ruble').", "Currency Creation", currencysingular, "text", null, FALSE))
 
 				var/currencydesc
-				var/currency_desc = sanitize(input(user, "Please provide your currency's description (without a period at the end).","Currency Creation", currencydesc) as text)
+				var/currency_desc = sanitize(player_input(user, "Please provide your currency's description (without a period at the end).", "Currency Creation", currencydesc, "text", null, FALSE))
 
 				var/list/display = list()
 				for (var/list/i in currency_icons)

@@ -23,7 +23,7 @@ var/global/datum/player_help_service/player_help_service = new
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
-	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, mood category, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	return player_input(src, "Ask a gameplay question. Your question and gameplay condition (health, mood category, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help", null, "text", null, TRUE)
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"
@@ -119,7 +119,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return
 	if (href_list["action"] == "reset")
 		reset_conversation(C)
-		C << browse(null, "window=player_help")
+		show_browse(C, null, "window=player_help")
 		C << "AI gameplay help conversation cleared. Ask for help to start a new conversation."
 	else if (href_list["action"] == "followup")
 		if (!available() || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.len)
@@ -529,7 +529,7 @@ var/global/datum/player_help_service/player_help_service = new
 				else
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
-				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
+				show_browse(C, render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))

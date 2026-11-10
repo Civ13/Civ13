@@ -236,7 +236,42 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('(last_error && last_error != last_export_error)', reclaim)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || usage_delta > 40 || elapsed_ds > 1', SAVING)
+        self.assertIn('work > 8192 || tick_delta || elapsed_ds > 1', SAVING)
+
+    def test_capture_rechecks_closure_and_declines_to_ordinary_path(self):
+        # Gaia 2026-11-09: an animal admitted at save start later referenced
+        # another movable, and its chunk threw "uncaptured external movable".
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        recheck = root.index('if(!moving_save_root_closed(A))')
+        self.assertLess(root.index('changed containment, level or identity'), recheck)
+        self.assertLess(recheck, root.index('var/savefile/staged = new'))
+        self.assertLess(recheck, root.index('moving_save_chunk = chunk'))
+        self.assertIn('moving_save_roots -= record["identity"]\n\t\treturn 0', root)
+        self.assertIn('if(findtext("[error]", "uncaptured external movable")) moving_save_demoted[record["identity"]] = TRUE', root)
+        closed = SAVING.split('/map_storage/proc/moving_save_root_closed(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('preflight.timed = FALSE', closed)
+        self.assertIn('return preflight.accept(A)', closed)
+        build = SAVING.split('/map_storage/proc/BuildVarDirectory', 1)[1]
+        self.assertIn('var/moving_ref = capture_moving_save_root(savefile, root)\n\t\t\tif(moving_ref) return moving_ref', build)
+        drain = SAVING.split('/map_storage/proc/drain_moving_save_roster', 1)[1]
+        self.assertIn('for(var/identity in moving_save_roots.Copy())', drain)
+        self.assertIn('ref = capture_moving_save_root(F, record)\n\t\t\t// Declined', drain)
+        self.assertIn('if(!ref) continue', drain)
+        self.assertIn('late-reference', (ROOT / 'tests/movement_save_chunks/correctness.py').read_text(encoding='utf-8'))
+
+    def test_tick_share_overrun_keeps_capture_and_demotes_root(self):
+        # Gaia 2026-11-09 (round cIh-c7qU): an ordinary buffalo hit usage_delta
+        # 40.06 on 624 work units and the throw failed the whole save. Tick
+        # usage is wall-clock cost, not a consistency failure: keep the
+        # snapshot and move the root to the turf path for later saves.
+        capture = SAVING.split('/datum/moving_save_capture\n', 1)[1].split('proc/reserve_bytes', 1)[0]
+        self.assertIn('if(usage_delta > 40) overrun_usage = max(overrun_usage, usage_delta)', capture)
+        throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
+        self.assertNotIn('usage_delta', throw_line)
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage)')
+        self.assertLess(detach, root.index('moving_save_demoted[record["identity"]] = TRUE', detach))
+        self.assertLess(root.index('if(chunk.overrun_usage)'), root.index('record["ref"] = ref'))
 
     def test_busy_tick_admission_does_not_fail_capture(self):
         # Gaia 2026-11-09: an elk admitted at 76% usage cost 13.7% and hit the

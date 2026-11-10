@@ -43,7 +43,7 @@
 		to_chat(user, SPAN_NOTICE("You put [W] into \the [src]."))
 		update_icon()
 	else if (istype(W, /obj/item/weapon/pen))
-		var/n_name = sanitizeSafe(input(usr, "What would you like to label the folder?", "Folder Labelling", null)  as text, MAX_NAME_LEN)
+		var/n_name = sanitizeSafe(player_input(usr, "What would you like to label the folder?", "Folder Labelling", null, "text", null, FALSE), MAX_NAME_LEN)
 		if ((loc == usr && usr.stat == FALSE))
 			name = "folder[(n_name ? text("- '[n_name]'") : null)]"
 	return
@@ -57,7 +57,7 @@
 		dat += "<A href='?src=\ref[src];remove=\ref[Ph]'>Remove</A> <A href='?src=\ref[src];rename=\ref[Ph]'>Rename</A> - <A href='?src=\ref[src];look=\ref[Ph]'>[Ph.name]</A><BR>"
 	for (var/obj/item/weapon/paper_bundle/Pb in src)
 		dat += "<A href='?src=\ref[src];remove=\ref[Pb]'>Remove</A> <A href='?src=\ref[src];rename=\ref[Pb]'>Rename</A> - <A href='?src=\ref[src];browse=\ref[Pb]'>[Pb.name]</A><BR>"
-	user << browse(dat, "window=folder")
+	show_browse(user, dat, "window=folder")
 	onclose(user, "folder")
 	add_fingerprint(usr)
 	return

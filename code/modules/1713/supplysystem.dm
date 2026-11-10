@@ -99,7 +99,7 @@
 				display += "Cancel"
 
 	else
-		import_tax_rate = input(user, "Set the import tax rate: (0%-100%)") as num
+		import_tax_rate = player_input(user, "Set the import tax rate: (0%-100%)", null, null, "num", null, FALSE)
 		import_tax_rate = Clamp(import_tax_rate, 0, 100)
 		to_chat(user, "Setting import tax to [import_tax_rate]%")
 		change_import_tax(import_tax_rate)
@@ -548,7 +548,7 @@
 			to_chat(H, "Only the merchants have access to the international shipping companies. Negotiate with one.")
 			return
 		else
-			var/set_export_tax = input(H, "Set the export tax rate: (0%-100%)") as num
+			var/set_export_tax = player_input(H, "Set the export tax rate: (0%-100%)", null, null, "num", null, FALSE)
 			set_export_tax = Clamp(set_export_tax, 0, 100)
 			to_chat(H, "Setting export tax to [set_export_tax]%")
 			change_export_tax(set_export_tax)

@@ -318,6 +318,7 @@
 	out["max_health"] = M.maxHealth
 	out["dir"] = dir2text(M.dir)
 	out["intent"] = M.a_intent
+	out["stance"] = agent_stance_row(M) // HUD toggles: movement mode, defense, tactic, secondary attack, aim
 	out["busy"] = M.may_do_after ? FALSE : TRUE
 	out["active_hand"] = M.hand ? "left" : "right"
 	out["left_hand"] = agent_encode(M.l_hand)
@@ -328,6 +329,12 @@
 	if (istype(held_stack) && held_stack.recipes)
 		out["craftable"] = agent_stack_recipes(held_stack, TRUE)
 	out["can_move"] = M.canmove && !M.restrained() && !M.buckled && M.stat == CONSCIOUS
+	var/list/driving = agent_driving_row(M) // the driver's seat HUD: gear, direction, engine, height
+	if (driving)
+		out["driving"] = driving
+	var/list/remotes = agent_remote_rows(M)
+	if (remotes.len)
+		out["remote_controls"] = remotes
 	var/obj/structure/vehicle/riding = agent_vehicle_of(M)
 	if (riding)
 		out["vehicle"] = agent_vehicle_row(riding, M)
@@ -473,6 +480,8 @@
 				var/list/near_verbs = agent_verb_names(AM, 8)
 				if (near_verbs.len)
 					row["verbs"] = near_verbs
+			if (istype(AM, /obj/item/weapon/storage) && get_dist(M, AM) <= 1)
+				row["contents"] = agent_container_contents(AM) // what opening it shows; click an item ref to take it
 			if (istype(AM, /obj/roof))
 				var/obj/roof/R = AM
 				row["supported"] = R.is_supported() ? TRUE : FALSE // the same rule collapse_check uses
@@ -547,7 +556,7 @@
 		if (message["id"] > since)
 			heard += list(message)
 	var/queue_since = text2num("[req["queue_since"]]") || 0
-	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]") : null
+	var/list/here_row = here ? list("turf" = here.name, "type" = "[here.type]", "height" = terrain_height_at(here), "light" = round(here.get_lumcount(), 0.01)) : null
 	if (istype(here, /turf/floor/dirt/underground))
 		var/turf/floor/dirt/underground/U = here
 		var/area/HA = get_area(U)
@@ -589,22 +598,27 @@
 			heard_sounds += list(sound_row)
 	out["sounds"] = heard_sounds
 	out["last_sound"] = C.sound_serial
+	// Menu windows the character was shown (docs/agent-control.md#windows).
+	out["windows"] = C.window_rows(text2num("[req["window_since"]]") || 0)
+	out["last_window"] = C.window_serial
+	// Machine screens (NanoUI and tgui) the character has open (docs/agent-control.md#screens).
+	out["screens"] = agent_screen_rows(C.body)
 	return out
 
 // Actions a character can take, directly or from its queue.
 /proc/agent_character_actions()
-	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report")
+	return list("move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen")
 
 // Ticks until the character may take this action: the agent pacing plus the
 // mob's own click cooldown (next_move/next_click) and a speech spacing.
 /datum/agent_character/proc/wait_for(action)
 	var/ready = world.time
-	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw"))
+	if (action in list("move", "click", "use", "craft", "equip", "take", "drop", "board", "disembark", "drag", "verb", "throw", "topic", "drive", "screen"))
 		ready = max(ready, next_action)
 		// Timed work (do_after) in progress: acting now would cancel it.
 		if (!body.may_do_after)
 			ready = max(ready, world.time + 2)
-	if (action in list("click", "use", "craft", "verb", "throw"))
+	if (action in list("click", "use", "craft", "verb", "throw", "topic", "screen"))
 		ready = max(ready, body.next_move, body.next_click + 1)
 	if (action in list("say", "emote", "ooc", "bug_report"))
 		ready = max(ready, next_speech)
@@ -647,15 +661,9 @@
 				var/mob/living/human/driving = M
 				if (driving.driver && driving.driver_vehicle)
 					return agent_drive_step(A, C, driving.driver_vehicle, d)
-			if (M.stat != CONSCIOUS || !M.canmove || M.restrained() || M.buckled)
-				agent_fail("cannot_move", "the character cannot move right now")
-			var/turf/old = get_turf(M)
-			M.Move(get_step(M, d), d)
-			var/moved = get_turf(M) != old
-			C.next_action = world.time + max(1, M.movement_delay())
-			detail = "[dir2text(d)] [moved ? "moved" : "blocked"] from [old.x],[old.y],[old.z]"
-			game_log("AGENT", "[A.name] moved [M] ([agent_ref(M)]) [detail]")
-			return list("moved" = moved ? TRUE : FALSE, "self" = character_state(C))
+			// The player's movement rules, timing and costs (agent_movement.dm).
+			// hold: ticks an arrow key stays down for held turret and drone controls.
+			return agent_walk_step(A, C, d, from_queue, clamp(round(text2num("[req["hold"]]") || 5), 1, 50))
 		if ("face")
 			var/d = agent_dir(req["dir"])
 			M.set_dir(d)
@@ -695,7 +703,7 @@
 			return list("report" = R.id, "title" = R.title, "self" = character_state(C))
 		if ("click")
 			var/atom/target = agent_resolve_target(req["target"])
-			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)))
+			if (!isatom(target) || !(target in view(7, M)) && !(target in M.contents) && !(get_turf(target) in view(7, M)) && !agent_click_reaches_container(M, target))
 				agent_fail("out_of_view", "the target is not visible to this character")
 			var/params = ""
 			if (req["modifier"] in list("shift", "ctrl", "alt", "middle"))
@@ -716,13 +724,21 @@
 			if (!I)
 				agent_fail("empty_hand", "nothing in the active hand")
 			C.next_action = world.time + 2
-			detail = "[I]"
+			// alternate: the Activate Secondary Object key (gear down, switch weapon, drone special).
+			var/secondary = req["alternate"] == TRUE || req["alternate"] == 1
+			detail = secondary ? "[I] (secondary)" : "[I]"
 			if (from_queue)
-				I.attack_self(M)
+				if (secondary)
+					I.secondary_attack_self(M)
+				else
+					I.attack_self(M)
 			else
 				spawn(0)
 					usr = M
-					I.attack_self(M)
+					if (secondary)
+						I.secondary_attack_self(M)
+					else
+						I.attack_self(M)
 		if ("craft")
 			var/obj/item/stack/S = M.get_active_hand()
 			if (istype(S))
@@ -753,6 +769,11 @@
 			if (!ishuman(M))
 				agent_fail("bad_type", "only humans can equip items")
 			var/mob/living/human/H = M
+			if (!isnull(req["slot"]))
+				agent_equip_slot(H, I, req["slot"]) // a chosen slot, as dragging onto it does
+				C.next_action = world.time + 2
+				detail = "[I] to [req["slot"]]"
+				return list("done" = action, "self" = character_state(C))
 			H.quick_equip()
 			C.next_action = world.time + 2
 			if (I.loc == M && (I == M.l_hand || I == M.r_hand))
@@ -806,6 +827,16 @@
 			detail = agent_run_verb(C, req, from_queue)
 		if ("throw")
 			detail = agent_throw(C, req, from_queue)
+		if ("topic")
+			detail = agent_window_topic(C, req, from_queue)
+		if ("close_window")
+			detail = agent_window_close(C, req)
+		if ("stance")
+			detail = agent_stance(C, req)
+		if ("drive")
+			detail = agent_drive(C, req)
+		if ("screen")
+			detail = agent_screen(C, req, from_queue)
 		else
 			agent_fail("bad_args", "do must be one of [jointext(agent_character_actions(), ", ")]")
 	log_admin("AGENT [A.name]: character_act [action] as [M] ([agent_ref(M)]) [detail]")
@@ -961,6 +992,18 @@
 		agent_text_arg(step, "recipe", 128)
 	if (action == "take")
 		agent_text_arg(step, "item", 64)
+	if (action in list("topic", "close_window"))
+		agent_text_arg(step, "window", 64)
+	if (action == "stance" && isnull(step["move"]) && isnull(step["defense"]) && isnull(step["tactic"]) && isnull(step["secondary"]) && isnull(step["face_lock"]) && isnull(step["aim"]))
+		agent_fail("bad_args", "stance takes move, defense, tactic, secondary, face_lock or aim")
+	if (action == "drive" && !(lowertext("[step["control"]]") in list("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")))
+		agent_fail("bad_args", "drive control must be forward, reverse, turn_left, turn_right, gear_up, gear_down, climb or descend")
+	if (action == "screen" && isnull(step["screen"]))
+		agent_fail("bad_args", "screen needs screen (a number or title from character_observe screens)")
+	if (action == "screen" && step["close"] != TRUE && step["close"] != 1)
+		agent_text_arg(step, "act", 32)
+	if (action == "topic" && isnull(step["link"]) && isnull(step["label"]))
+		agent_fail("bad_args", "topic needs link (a number) or label")
 	if (action == "intent" && !(step["intent"] in list(I_HELP, I_DISARM, I_GRAB, I_HARM)))
 		agent_fail("bad_args", "intent must be help, disarm, grab or harm")
 	if (!isnull(step["choose"]))
@@ -988,7 +1031,7 @@
 			else
 				agent_fail("bad_args", "until takes message, holding or amount")
 		out["until"] = kept_until
-	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name"))
+	for (var/key in list("dir", "text", "target", "onto", "modifier", "intent", "recipe", "amount", "item", "choose", "zone", "name", "expect_name", "window", "link", "label", "move", "defense", "tactic", "secondary", "face_lock", "aim", "slot"))
 		if (!isnull(step[key]))
 			out[key] = step[key]
 	return out

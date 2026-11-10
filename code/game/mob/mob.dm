@@ -35,7 +35,7 @@
 	..()
 
 	if (!isnewplayer(src) && !istype(src, /mob/dview) && src.client)
-		src.client << browse(null, "window=playersetup;")
+		show_browse(src.client, null, "window=playersetup;")
 
 	spawn (10)
 		if (client)
@@ -386,7 +386,7 @@
 	set src in usr
 	if (usr != src)
 		to_chat(usr, "No.")
-	var/msg = sanitize(input(usr,"Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.","Flavor Text",html_decode(flavor_text)) as message|null, extra = FALSE)
+	var/msg = sanitize(player_input(usr, "Set the flavor text in your 'examine' verb. Can also be used for OOC notes about your character.", "Flavor Text", html_decode(flavor_text), "message", null, TRUE), extra = FALSE)
 
 	if (msg != null)
 		flavor_text = msg
@@ -403,7 +403,7 @@
 /*
 /mob/verb/help()
 	set name = "Help"
-	src << browse('html/help.html', "window=help")
+	show_browse(src, 'html/help.html', "window=help")
 	return
 */
 
@@ -419,7 +419,7 @@
 		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
-	src << browse(null, "window=memory")
+	show_browse(src, null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
 	stop_ambience(src)
@@ -512,14 +512,14 @@
 	if (href_list["mach_close"])
 		var/t1 = text("window=[href_list["mach_close"]]")
 		unset_using_object()
-		src << browse(null, t1)
+		show_browse(src, null, t1)
 
 	if (href_list["flavor_more"])
 		if (src in view(usr))
 			var/window_name = "flavor[ckey(name)]"
 			var/legacy_snapshot = text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>"))
 			if (!hascall(src, "present_character_flavor_ui") || !call(src, "present_character_flavor_ui")(usr, legacy_snapshot))
-				usr << browse(legacy_snapshot, "window=[window_name];size=500x200")
+				show_browse(usr, legacy_snapshot, "window=[window_name];size=500x200")
 				onclose(usr, window_name)
 	if (href_list["flavor_change"])
 		update_flavor_text()
@@ -977,7 +977,7 @@ mob/proc/yank_out_object()
 			to_chat(U, "[src] has nothing stuck in their wounds that is large enough to remove.")
 		return
 
-	var/obj/item/weapon/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
+	var/obj/item/weapon/selection = player_input(usr, "What do you want to yank out?", "Embedded objects", null, "anything", valid_objects, FALSE)
 
 	if (self)
 		to_chat(src, SPAN_WARNING("You attempt to get a good grip on [selection] in your body."))

@@ -28,7 +28,7 @@
 	client << browse_rsc('interface/fonts/Grand9K_Pixel.ttf', "Grand9K_Pixel.ttf")
 	
 	// No longer sending individual CSS/JS as they are inlined for reliability
-	client << browse('interface/chat/chat.html', "window=browser_chat")
+	show_browse(client, 'interface/chat/chat.html', "window=browser_chat")
 	// world.log << "DEBUG: Chat loading for [client.ckey]"
 
 /datum/chat/proc/on_ready()

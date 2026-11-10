@@ -82,12 +82,21 @@
 	return TRUE
 
 /obj/structure/component_workbench/proc/recipe_prompt(mob/living/human/H)
-	var/choice = input(H, "Recipe (changing returns stored items)", name, selected_tool) as null|anything in tool_recipes()
+	var/list/choices = list()
+	var/default_label = selected_tool
+	for (var/recipe_name in tool_recipes())
+		var/hint = recipe_manual_hint(H, recipe_name)
+		var/label = hint ? "[recipe_name] - [hint]" : recipe_name
+		choices[label] = recipe_name
+		if (recipe_name == selected_tool) default_label = label
+	var/selected_label = player_input(H, "Recipe (changing returns stored items)", name, default_label, "anything", choices, TRUE)
+	var/choice = selected_label ? choices[selected_label] : null
 	if (choice && select_recipe(H, choice)) to_chat(H, "[src] is now set to [selected_tool].")
 
 // No sleeping operations in this commit. Exact references must still be staged.
 /obj/structure/component_workbench/proc/finish_assembly(mob/living/human/H, obj/item/weapon/material/part/P, obj/item/weapon/material/handle/B, choice)
 	if (!busy || cancelled || assembler != H || !can_use(H) || selected_tool != choice || !valid_component(P) || !valid_component(B) || P.loc != src || B.loc != src || P.result != tool_recipes()[choice] || !accepts_head(P)) return
+	if (!crafting_recipe_allowed(H, "[P.result]")) return
 	var/obj/item/weapon/material/M = new P.result(get_turf(src), P.material.name)
 	M.record_tool_components(P, B)
 	qdel(P)
@@ -99,7 +108,7 @@
 	if (busy || !can_use(H)) return
 	var/obj/item/weapon/material/part/P = find_head()
 	var/obj/item/weapon/material/handle/B = find_handle()
-	if (!P || !B || contents.len != 2) return
+	if (!P || !B || contents.len != 2 || !crafting_recipe_allowed(H, "[P.result]")) return
 	var/choice = selected_tool
 	busy = TRUE
 	cancelled = FALSE
@@ -116,7 +125,7 @@
 	var/list/options = list("Status", "Retrieve / cancel")
 	if (!busy) options += "Select recipe"
 	if (!busy && find_head() && find_handle()) options += "Assemble"
-	var/action = input(H, "[selected_tool]: one matching usable head and one usable handle. [busy ? "Assembly in progress" : "Idle"].", name) as null|anything in options
+	var/action = player_input(H, "[selected_tool]: one matching usable head and one usable handle. [busy ? "Assembly in progress" : "Idle"].", name, null, "anything", options, TRUE)
 	if (!can_use(H)) return
 	switch (action)
 		if ("Retrieve / cancel") retrieve(H)
@@ -130,3 +139,7 @@
 	assembler = null
 	for (var/obj/item/I in contents.Copy()) I.forceMove(get_turf(src))
 	return ..()
+
+/obj/structure/component_workbench/proc/recipe_manual_hint(mob/living/human/H, choice)
+	var/list/recipes = tool_recipes()
+	return crafting_recipe_manual_hint(H, "[recipes[choice]]")

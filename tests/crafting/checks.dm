@@ -210,6 +210,25 @@ var/recipe_ci_files = 0
 	var/mob/living/human/recipe_ci/H = new(T)
 	var/obj/item/stack/recipe_ci_input/S = new(T)
 	var/datum/stack_recipe/R = new("CI fixture", /obj/item/stack/recipe_ci_output, 2, 3, 9)
+	// Real admission must reject an unregistered result without spending stock.
+	S.produce_recipe(R, 1, H)
+	if (S.amount != 10 || (locate(/obj/item/stack/recipe_ci_output) in T))
+		recipe_ci_fail("research gate", "unmapped output consumed stock or produced an item")
+	H.civilization = "phase0_gate_ci"
+	map.faction_baseline_era[H.civilization] = 0
+	map.ordinal_age = 0
+	recipe_node_requirements["/obj/item/stack/recipe_ci_output"] = "iron_tools"
+	S.produce_recipe(R, 1, H)
+	if (S.amount != 10 || (locate(/obj/item/stack/recipe_ci_output) in T))
+		recipe_ci_fail("research gate", "locked output consumed stock or produced an item")
+	// No output is free: era 0 admits rope and research structures through Basic
+	// Tools, while stone bricks wait for Brickmaking (era 2).
+	if (!crafting_recipe_allowed(H, "/obj/item/stack/material/rope") || !crafting_recipe_allowed(H, "/obj/structure/research_bench") || !crafting_recipe_allowed(H, "/obj/structure/researchdesk"))
+		recipe_ci_fail("research gate", "era-0 research output was locked")
+	if (basic_crafting_recipes.len || crafting_recipe_allowed(H, "/obj/item/stack/material/stonebrick") || get_recipe_node_req("/obj/item/stack/material/rope") != "basic_tools" || crafting_recipe_allowed(H, "/obj/structure/researchdesk/unreviewed") || crafting_node_allowed(H, "unknown_node"))
+		recipe_ci_fail("research gate", "free output, unknown subtype or unknown node was implicitly admitted")
+	var/list/gate_entry = map.ensure_node_entry(H.civilization, "iron_tools")
+	gate_entry[RNODE_ENTRY_STATUS] = RNODE_DONE
 	S.produce_recipe(R, 1, H)
 	var/obj/item/stack/recipe_ci_output/O = locate() in T
 	if (!O || O.amount != 3 || S.amount != 8)
@@ -226,6 +245,9 @@ var/recipe_ci_files = 0
 	S.produce_recipe(R, 1, H)
 	if (S.amount != 8)
 		recipe_ci_fail("craft fixture", "occupied turf was accepted")
+	recipe_node_requirements.Remove("/obj/item/stack/recipe_ci_output")
+	map.faction_research.Remove(H.civilization)
+	map.faction_baseline_era.Remove(H.civilization)
 
 // Check the food route with an unresearched Stone Age faction, separately from
 // the catalog's all-nodes-DONE fixture. This does not simulate resource gathering.

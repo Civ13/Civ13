@@ -75,15 +75,15 @@
 					can_buy = TRUE
 
 			if (!ordertype && can_buy)
-				var/choice = alert(user, "Do you want to add a buying order for [W]?", "Stall Management", "Yes", "No")
+				var/choice = player_alert(user, "Do you want to add a buying order for [W]?", "Stall Management", list("Yes", "No"))
 				if (choice == "Yes")
 					var/price_unit_label = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
-					var/choice2 = input(user,"What price per unit, in [price_unit_label]?", "Stall Management", 1) as num
+					var/choice2 = player_input(user, "What price per unit, in [price_unit_label]?", "Stall Management", 1, "num", null, FALSE)
 					if (choice2 <= 0)
 						return
 					if (choice2 > 100000)
 						choice2 = 100000
-					var/choice3 = input(user,"How many units do you want to buy?", "Stall Management", 1) as num
+					var/choice3 = player_input(user, "How many units do you want to buy?", "Stall Management", 1, "num", null, FALSE)
 					if (choice3 <= 0)
 						return
 					orderprice = choice2
@@ -127,18 +127,18 @@
 			qdel(W)
 			return
 		else if (!ordertype)
-			var/choice = alert(user, "Do you want to add a buying order for [W]?", "Stall Management", "Yes", "No")
+			var/choice = player_alert(user, "Do you want to add a buying order for [W]?", "Stall Management", list("Yes", "No"))
 			if (choice == "No")
 				return
 			else
 				var/price_unit_label = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
-				var/choice2 = input(user,"What price per unit, in [price_unit_label]? This stall will keep accepting orders until it runs out of money.", "Stall Management", orderprice) as num
+				var/choice2 = player_input(user, "What price per unit, in [price_unit_label]? This stall will keep accepting orders until it runs out of money.", "Stall Management", orderprice, "num", null, FALSE)
 				if (choice2 < 0)
 					choice2 = 0
 				else if (choice2 > 100000)
 					choice2 = 100000
 				orderprice = choice2
-				var/choice3 = input(user,"How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin) as num
+				var/choice3 = player_input(user, "How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin, "num", null, FALSE)
 				if (choice3 < 0)
 					choice3 = 0
 				else if (moneyin < orderamount*choice3)
@@ -310,7 +310,7 @@
 	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];close'\">Close</button></div>"
 	dat += "</body></html>"
 
-	H << browse(dat, "window=supplystall;size=500x500")
+	show_browse(H, dat, "window=supplystall;size=500x500")
 
 /obj/structure/supplier/Topic(href, href_list)
 	if (!usr || !usr.client)

@@ -286,7 +286,7 @@
 			src.locktype = "KEYPAD"
 			src.lockicon = "icons/obj/doors/locks.dmi"
 			src.lockstate = "keypad_door_overlay"
-			var/input_code = input(user, "Input a code, only the first four characters will be used.","Keypad Code", keycode) as text
+			var/input_code = player_input(user, "Input a code, only the first four characters will be used.", "Keypad Code", keycode, "text", null, FALSE)
 			keycode = sanitizeName(input_code, 4, TRUE)
 			to_chat(user, "<span class='notice'> Code set to: " + keycode + "!</span>")
 			update_lock_overlay()
@@ -300,7 +300,7 @@
 				update_lock_overlay()
 				playsound(src, 'sound/effects/insert.ogg', 30)
 			else //It is closed
-				var/input_query = input(user, "Input the Passcode.","Keypad Code", keycode) as text//Get input
+				var/input_query = player_input(user, "Input the Passcode.", "Keypad Code", keycode, "text", null, FALSE)//Get input
 				var/answer = sanitizeName(input_query, 4, TRUE)
 				if(answer == keycode)//if it matches, unlock, open, and overlay
 					locked = 0

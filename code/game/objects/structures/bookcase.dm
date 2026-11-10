@@ -147,7 +147,7 @@
 		O.loc = src
 		update_icon()
 	else if (istype(O, /obj/item/weapon/pen))
-		var/newname = sanitizeSafe(input("What would you like to title this bookshelf?"), MAX_NAME_LEN)
+		var/newname = sanitizeSafe(player_input(usr, "What would you like to title this bookshelf?", null, null, "text", null, FALSE), MAX_NAME_LEN)
 		if (!newname)
 			return
 		else

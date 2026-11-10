@@ -31,9 +31,9 @@
 	set desc = "Name this telegraph."
 
 	set src in view(1)
-	var/yn = input(usr, "Name this telegraph?") in list("Yes", "No")
+	var/yn = player_input(usr, "Name this telegraph?", null, null, "anything", list("Yes", "No"), FALSE)
 	if (yn == "Yes")
-		var/_name = input(usr, "What name?") as text
+		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 		name = sanitize(_name, 20)
 	return
 
@@ -54,7 +54,7 @@
 	return
 
 /obj/structure/telegraph/attack_hand(var/mob/user as mob)
-	var/message = input(usr, "Write a word. Up to 10 characters, no spaces, symbols or numbers.") as text
+	var/message = player_input(usr, "Write a word. Up to 10 characters, no spaces, symbols or numbers.", null, null, "text", null, FALSE)
 	message = sanitize(message, 10)
 	message = convertmsg(message)
 	if (message && message != "")
@@ -280,7 +280,7 @@
 	if (input1 == "Cancel")
 		return
 	else if (input1 == "Add")
-		var/input3 = input(usr, "What phrase? Maximum 100 characters.") as text
+		var/input3 = player_input(usr, "What phrase? Maximum 100 characters.", null, null, "text", null, FALSE)
 		if (input3 == "")
 			return
 		else

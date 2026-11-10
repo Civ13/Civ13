@@ -189,7 +189,7 @@
 		if (zero_amount() || amount <= 1) // Prevents Alt-clicking if the amount is 0 or 1
 			return
 		var/max = amount
-		var/stackmaterial = round(input(user,"How many to take out of the stack? (Maximum  [max])") as null|num)
+		var/stackmaterial = round(player_input(user, "How many to take out of the stack? (Maximum  [max])", null, null, "num", null, TRUE))
 		max = amount
 		stackmaterial = min(max, stackmaterial)
 		if(stackmaterial == null || stackmaterial <= 0)
@@ -276,6 +276,10 @@
 					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
 				else
 					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
+			var/manual_hint = crafting_recipe_manual_hint(user, "[R.result_type]")
+			if (manual_hint)
+				t1 += "<span style='color:#aaa'>[title] - [html_encode(manual_hint)]</span>"
+				continue
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
@@ -317,6 +321,9 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/mob/living/human/H = user
+	if (!crafting_recipe_allowed(H, "[recipe.result_type]"))
+		to_chat(user, SPAN_WARNING("This recipe requires its research node."))
+		return
 	var/datum/cloth_recipe_payment/cloth_payment
 	if (is_cloth_sheet(src))
 		cloth_payment = new(src, H, recipe, quantity)
@@ -461,10 +468,10 @@
 				to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
 				return
 	if (findtext(recipe.title, "custom") && findtext(recipe.title, "sign"))
-		customname = input(user, "Choose a name for this sign:") as text|null
+		customname = player_input(user, "Choose a name for this sign:", null, null, "text", null, TRUE)
 		if (customname == null)
 			customname = "Sign"
-		customdesc = input(user, "Choose a description for this sign:") as text|null
+		customdesc = player_input(user, "Choose a description for this sign:", null, null, "text", null, TRUE)
 		if (customdesc == null)
 			customdesc = "An empty sign."
 	else if (findtext(recipe.title, "castle gate control"))
@@ -476,19 +483,19 @@
 			to_chat(user, "<span class = 'danger'>You cannot build a control so close to another one!</span>")
 			return
 	else if (findtext(recipe.title, "signpost"))
-		var/indesc = input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "") as text|null
+		var/indesc = player_input(user, "Add a West sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
 		if (indesc != null && indesc != "")
 			customdesc = "<b>West:</b> [indesc]"
 		indesc = null
-		indesc = input(user, "Add a North sign? Leave empty to not add one.", "Signpost", "") as text|null
+		indesc = player_input(user, "Add a North sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>North:</b> [indesc]"
 		indesc = null
-		indesc = input(user, "Add a East sign? Leave empty to not add one.", "Signpost", "") as text|null
+		indesc = player_input(user, "Add a East sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>East:</b> [indesc]"
 		indesc = null
-		indesc = input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "") as text|null
+		indesc = player_input(user, "Add a South sign? Leave empty to not add one.", "Signpost", "", "text", null, TRUE)
 		if (indesc != null && indesc != "")
 			customdesc += "<br><b>South:</b> [indesc]"
 
@@ -544,7 +551,7 @@
 			return // should never happen
 
 		if (key)
-			var/keyname = input(user, "Choose a name for the door:") as text|null
+			var/keyname = player_input(user, "Choose a name for the door:", null, null, "text", null, TRUE)
 			if (keyname == null)
 				keyname = "Locked"
 			if (findtext(recipe.title, "iron door"))
@@ -557,7 +564,7 @@
 			build_override_door.custom_code = key.code
 
 	else if (findtext(recipe.title, "tin can"))
-		customname = input(user, "Choose a brand for this can:", "Tin Can Brand" , "")
+		customname = player_input(user, "Choose a brand for this can:", "Tin Can Brand", "", "text", null, FALSE)
 		if (customname == "" || customname == null)
 			customname = ""
 		customcolor1 = WWinput(user, "Choose a main color:", "Tin Can Main Color" , "#000000", "color")
@@ -569,7 +576,7 @@
 			customcolor2 = "#FFFFFF"
 
 	else if (findtext(recipe.title, "cigarette pack"))
-		customname = input(user, "Choose a name for this pack:", "Cigarette Pack Name" , "cigarette pack")
+		customname = player_input(user, "Choose a name for this pack:", "Cigarette Pack Name", "cigarette pack", "text", null, FALSE)
 		if (customname == "" || customname == null)
 			customname = "cigarette pack"
 		customcolor = WWinput(user, "Choose a color:", "Cigarette Pack Color" , "#000000", "color")
@@ -577,8 +584,8 @@
 			return
 
 	else if (recipe.result_type == /obj/structure/religious/statue)
-		customname = input("What name to give to the statue?", "Statue", "[recipe.use_material] statue") as text
-		customdesc = input("What description to add to the statue?", "Statue", "A [recipe.use_material] statue.") as text
+		customname = player_input(usr, "What name to give to the statue?", "Statue", "[recipe.use_material] statue", "text", null, FALSE)
+		customdesc = player_input(usr, "What description to add to the statue?", "Statue", "A [recipe.use_material] statue.", "text", null, FALSE)
 
 	else if (recipe.result_type == /obj/structure/research_bench)
 		if (!H || !H.civilization || H.civilization == "none")
@@ -616,7 +623,7 @@
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
 			return
-		customname = input(user, "Choose a name for this vehicle:", "Vehicle Name" , "motorcycle")
+		customname = player_input(user, "Choose a name for this vehicle:", "Vehicle Name", "motorcycle", "text", null, FALSE)
 		if (customname == "" || customname == null)
 			customname = "motorcycle"
 		customcolor = WWinput(user, "Choose a color:", "Vehicle Color" , "#FFFFFF", "color")
@@ -644,7 +651,7 @@
 		clist += "Cancel"
 		customvar = WWinput(user, "Which company will own this [recipe.title]?","[recipe.title]","Cancel",clist)
 
-		customname = input(user, "Choose a name for this pump:", "Fuel Pump Name" , "fuel pump")
+		customname = player_input(user, "Choose a name for this pump:", "Fuel Pump Name", "fuel pump", "text", null, FALSE)
 		if (customname == "" || customname == null)
 			customname = "fuel pump"
 		customcolor = WWinput(user, "Fuel Pump - Choose a color:", "Fuel Pump Color" , "#FFFFFF", "color")
@@ -668,7 +675,7 @@
 		if (H.getStatCoeff("philosophy") < 2.4 || H.religion == "none" || (H.religious_leader == FALSE && H.religious_leader != "Clerics"))
 			to_chat(H, "<span class = 'danger'>You can't make a holy book.</span>")
 			return
-		customname = input(user, "Choose a title for the holy book:", "Holy Book Name" , "[H.religion]'s Holy Book")
+		customname = player_input(user, "Choose a title for the holy book:", "Holy Book Name", "[H.religion]'s Holy Book", "text", null, FALSE)
 
 	else if (findtext(recipe.title, "farmer's almanac"))
 		if (H.getStatCoeff("farming") < GET_MIN_STAT_COEFF(STAT_HIGH))
@@ -922,15 +929,15 @@
 				qdelHandReturn(H.r_hand, H)
 
 	if (findtext(recipe.title, "gravestone"))
-		customname = input(user, "Choose a name to inscribe on this gravestone:") as text|null
+		customname = player_input(user, "Choose a name to inscribe on this gravestone:", null, null, "text", null, TRUE)
 		if (customname == "" || customname == null)
 			customname = "gravestone"
-		customdesc = input(user, "Choose an epitaph to inscribe on this gravestone:") as text|null
+		customdesc = player_input(user, "Choose an epitaph to inscribe on this gravestone:", null, null, "text", null, TRUE)
 		if (customdesc == "" || customdesc == null)
 			customdesc = "A gravestone made with polished stone."
 
 	else if (findtext(recipe.title, "market stall") || findtext(recipe.title, "vending machine"))
-		customname = input(user, "Choose a name for this [recipe.title]:") as text|null
+		customname = player_input(user, "Choose a name for this [recipe.title]:", null, null, "text", null, TRUE)
 		if (customname == "" || customname == null)
 			customname = recipe.title
 		var/list/clist = list()
@@ -947,7 +954,7 @@
 		if (customvar == "Cancel")
 			return
 	else if (findtext(recipe.title, "supply stall"))
-		customname = input(user, "Choose a name for this [recipe.title]:") as text|null
+		customname = player_input(user, "Choose a name for this [recipe.title]:", null, null, "text", null, TRUE)
 		if (customname == "" || customname == null)
 			customname = recipe.title
 		var/list/clist = list()
@@ -1676,9 +1683,9 @@
 			to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
 			return
 		else
-			var/keycode = input(user, "Choose a code for the key(From 1000 to 9999):") as num
+			var/keycode = player_input(user, "Choose a code for the key(From 1000 to 9999):", null, null, "num", null, FALSE)
 			keycode = Clamp(keycode, 1000, 9999)
-			var/keyname = input(user, "Choose a name for the key:") as text|null
+			var/keyname = player_input(user, "Choose a name for the key:", null, null, "text", null, TRUE)
 			if (keyname == null)
 				keyname = "Key"
 			build_override_key = new /obj/item/weapon/key/civ
@@ -1731,7 +1738,7 @@
 		buildtime = round(buildtime)
 
 		to_chat(user, "<span class='notice'>Building [recipe.title] ...</span>")
-		if (!do_after(user, buildtime))
+		if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
 			if (H.key in handReturnMap)
 				var/atom/O
 				var/datum/A
@@ -1804,7 +1811,7 @@
 			qdel(P)
 	var/inpt = 50
 	if (recipe.result_type == /obj/structure/cannon/modern/tank)
-		inpt = input(user,"Choose the gun's caliber: (50mm-150mm, cost 40 steel per 75mm)") as num
+		inpt = player_input(user, "Choose the gun's caliber: (50mm-150mm, cost 40 steel per 75mm)", null, null, "num", null, FALSE)
 		if (!isnum(inpt))
 			return
 		if (inpt < 50)
@@ -1813,7 +1820,7 @@
 			inpt = 150
 		required = 40*(inpt/75)
 	else if (recipe.result_type == /obj/item/stack/ammopart/casing/tank)
-		inpt = input(user,"Choose the casing's caliber: (50mm-150mm, cost 2 copper per 75mm)") as num
+		inpt = player_input(user, "Choose the casing's caliber: (50mm-150mm, cost 2 copper per 75mm)", null, null, "num", null, FALSE)
 		if (!isnum(inpt))
 			return
 		if (inpt < 50)

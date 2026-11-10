@@ -208,12 +208,12 @@ var/global/list/valid_coordinates = list()
 			if (input1 == "Cancel")
 				return
 			else
-				var/inputx = input(src, "Choose the X coordinate:") as num
+				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
 				if (inputx < 0)
 					inputx = 1
-				var/inputy = input(src, "Choose the Y coordinate:") as num
+				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
 				if (inputy < 0)
@@ -249,12 +249,12 @@ var/global/list/valid_coordinates = list()
 			if (input1 == "Cancel")
 				return
 			else
-				var/inputx = input(src, "Choose the X coordinate:") as num
+				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
 				if (inputx < 0)
 					inputx = 1
-				var/inputy = input(src, "Choose the Y coordinate:") as num
+				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
 				if (inputy < 0)

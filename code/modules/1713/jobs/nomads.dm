@@ -853,7 +853,7 @@
 						if (input_msg == "No")
 							return
 						else
-							var/input_name = input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)","Custom Name", name) as text
+							var/input_name = player_input(src, "Choose the new name: (Max 15 characters, please keep it language appropriate)", "Custom Name", name, "text", null, FALSE)
 							input_name = sanitizeName(input_name, 15, FALSE)
 							if (input_name && input_name != "" && input_name != null)
 								name = input_name

@@ -60,7 +60,8 @@ var/human_subtile_diagonal_checks = 0
 	C.fixture_cancel_after = 1
 	human_subtile_fixture_reset(C)
 	C.SelfMove(get_step(C, NORTHWEST), NORTHWEST, world.time + 4)
-	human_subtile_diagonal_assert(C.x == 7 && C.y == 8 && C.step_x == 30 && C.step_y == 2 && C.fixture_pulses == 1 && !C.human_subtile_transaction && !C.human_subtile_pulse, "diagonal_cancel_retains_physical_position")
+	// 2px west of (8, 8) is still mostly on (8, 8) (human_subtile_anchor).
+	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && C.step_x == -2 && C.step_y == 2 && C.fixture_pulses == 1 && !C.human_subtile_transaction && !C.human_subtile_pulse, "diagonal_cancel_retains_physical_position")
 	human_subtile_diagonal_assert(!C.set_human_subtile(FALSE), "offset_optout_refused_without_snapping")
 	C.fixture_authorized = TRUE
 	C.fixture_cancel_after = 0

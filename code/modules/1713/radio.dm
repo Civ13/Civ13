@@ -147,7 +147,7 @@ var/global/FREQM = rand(101,120)
 			return
 
 		else
-			var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
+			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
 			if (!input)
 				return
 			freq = sanitize_integer(input, min=150, max=300, default=150)
@@ -178,9 +178,9 @@ var/global/FREQM = rand(101,120)
 	set desc = "Name this radio."
 
 	set src in view(1)
-	var/yn = input(usr, "Name this radio?") in list("Yes", "No")
+	var/yn = player_input(usr, "Name this radio?", null, null, "anything", list("Yes", "No"), FALSE)
 	if (yn == "Yes")
-		var/_name = input(usr, "What name?") as text
+		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 		name = sanitize(_name, 20)
 	return
 
@@ -192,7 +192,7 @@ var/global/FREQM = rand(101,120)
 		style = "Radio Transmitter"
 	if (m)
 		if (check_power() == FALSE && powerneeded > 0)
-			m << browse({"
+			show_browse(m, {"
 
 			<br>
 			<html>
@@ -223,7 +223,7 @@ var/global/FREQM = rand(101,120)
 		else
 
 			if (receiver && transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -254,7 +254,7 @@ var/global/FREQM = rand(101,120)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 			else if (receiver && !transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -284,7 +284,7 @@ var/global/FREQM = rand(101,120)
 				<br>
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 			else if (!receiver && transmitter)
-				m << browse({"
+				show_browse(m, {"
 
 				<br>
 				<html>
@@ -645,7 +645,7 @@ var/global/FREQM = rand(101,120)
 			do_html(user)
 			return
 		else
-			var/input = input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)") as num
+			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
 			if (!input)
 				return
 			freq = sanitize_integer(input, min=150, max=300, default=150)
@@ -674,16 +674,16 @@ var/global/FREQM = rand(101,120)
 	set desc = "Name this radio."
 
 	set src in view(1)
-	var/yn = input(usr, "Name this radio?") in list("Yes", "No")
+	var/yn = player_input(usr, "Name this radio?", null, null, "anything", list("Yes", "No"), FALSE)
 	if (yn == "Yes")
-		var/_name = input(usr, "What name?") as text
+		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
 		name = sanitize(_name, 20)
 	return
 
 /obj/item/weapon/radio/proc/do_html(var/mob/m)
 	var/style = "PORTABLE RADIO"
 	if (m)
-		m << browse({"
+		show_browse(m, {"
 
 		<br>
 		<html>

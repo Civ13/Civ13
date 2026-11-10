@@ -8,7 +8,7 @@ Production sources run in the shared resource-extraction constructor fixture wit
 
 The probe covers `code/modules/1713/machinery/modular_vehicles/ships/sea_layer.dm` and `submarine.dm`:
 
-- **Sea layer:** rock under open ocean becomes open sea; rock under land, a one-tile shell under the coast and the rock around an old tunnel stay; a second pass changes nothing.
+- **Sea layer:** rock under open ocean becomes open sea; rock under land, a one-tile shell under the coast and the rock around an old tunnel stay; a second pass changes nothing; the pass waits a minute after the world is ready (so it does not stack on the end of a save load) and yields in bounded batches.
 - **No swimming down:** a mob cannot enter open sea unless a hull frame covers the tile, so crew cannot leave a submerged boat.
 - **Build:** a submarine builds fifteen roofed steel hull frames with open hatches amidships, a ship wheel, the ballast and periscope station, a diesel engine and a tank, and joins the ship registry.
 - **Dive and surface:** a moving boat must stop first; a stopped boat over open sea dives with its crew, cargo and machinery; it cannot dive beside the coast or surface under anything floating; surfacing brings everyone back.

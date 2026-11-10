@@ -116,7 +116,7 @@ var/global/list/nomad_reputation // ckey = list("score", "at", "trades", "tribut
 		if (score)
 			lines += "[ckey]: [score] ([nomad_rep_standing(score)])"
 	to_chat(src, SPAN_NOTICE(lines.len ? "Nomad reputation:<br>[jointext(lines, "<br>")]" : "No player has a nomad reputation."))
-	var/who = input(src, "Clear a player's reputation? Enter their ckey, or leave blank.", "Nomad reputation") as null|text
+	var/who = player_input(src, "Clear a player's reputation? Enter their ckey, or leave blank.", "Nomad reputation", null, "text", null, TRUE)
 	who = ckey(who)
 	if (who && nomad_reputation[who])
 		nomad_reputation -= who

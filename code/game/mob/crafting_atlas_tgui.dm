@@ -130,7 +130,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	if (islist(group["variants"]))
 		for (var/list/variant in matches)
 			variants += list(list("id" = variant["id"], "kind" = html_encode("[variant["kind"]]"), "line" = variant["line"]))
-	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants)
+	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants)
 
 /datum/crafting_atlas_presenter/tgui/proc/guidance_data(datum/crafting_atlas_reference/reference, resource_id)
 	var/list/all_routes = reference.catalog["acquisition"]
@@ -248,11 +248,18 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		var/list/row = family_rows[family]
 		if (!islist(row))
 			matched++
-			row = list("id" = choice["id"], "family_id" = family, "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "variant_count" = 0)
+			row = list("id" = choice["id"], "family_id" = family, "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "variant_count" = 0, "manual_hint" = html_encode(manual_hint(viewer, choice)))
 			family_rows[family] = row
 			family_members[family] = list()
 			if (matched <= 150)
 				index += list(row)
+		// Families may contain both basic/known and unknown variants. Only grey
+		// the whole family if every matching route needs a personal manual.
+		var/choice_hint = html_encode(manual_hint(viewer, choice))
+		if (!choice_hint)
+			row["manual_hint"] = ""
+		else if (row["manual_hint"] && row["manual_hint"] != choice_hint)
+			row["manual_hint"] = "Needs a manual; select a variant for details"
 		row["variant_count"]++
 		if (row["era_label"] != html_encode("[recipe["era_label"]]"))
 			row["era_label"] = "Multiple unlock eras"
@@ -274,3 +281,52 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 			detail["family_variants"] = family_variants(members, selected["id"])
 		data["detail"] = detail
 	return data
+
+// Hints describe personal knowledge, never replace server-side crafting admission.
+/proc/crafting_node_manual_hint(mob/viewer, node_id)
+	if (!map || !map.recipe_knowledge_enabled() || !ishuman(viewer) || !node_id)
+		return ""
+	var/mob/living/human/H = viewer
+	var/datum/research_node/N = get_research_node(node_id)
+	if (!N || H.knows_recipe_node(node_id))
+		return ""
+	return "Needs the [N.name] manual"
+
+/proc/crafting_recipe_manual_hint(mob/viewer, result_path)
+	if (is_research_essential_recipe(result_path))
+		return ""
+	return crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
+
+/mob/living/human/proc/refresh_recipe_knowledge_menus()
+	if (!client)
+		return
+	var/datum/nanoui/tgui/crafting_atlas/ui = GLOB.nanomanager.get_open_ui(src, crafting_atlas_reference, "crafting_atlas")
+	if (istype(ui) && ui.user == src && islist(ui.render_arguments))
+		var/list/arguments = list(crafting_atlas_reference, src) + ui.render_arguments
+		if (ui.legacy_renderer)
+			crafting_atlas_tgui_presenter.open(arglist(arguments))
+		else
+			ui.push_data(crafting_atlas_tgui_presenter.model(arglist(arguments)), TRUE)
+	var/obj/item/stack/stack = using_object
+	if (istype(stack) && stack.loc == src && item_is_in_hands(stack))
+		stack.list_recipes(src)
+
+/datum/crafting_atlas_presenter/tgui/manual_hint(mob/viewer, list/recipe)
+	// Route metadata explicitly excludes reactions/acquisition and true basics.
+	if (recipe["research_status"] != "gated")
+		return ""
+	// Research benches, desks and node prototypes never need a manual.
+	if (recipe["manual_free"])
+		return ""
+	var/list/nodes = recipe["research_nodes"]
+	var/list/hints = list()
+	if (islist(nodes))
+		for (var/node_id in nodes)
+			var/hint = crafting_node_manual_hint(viewer, node_id)
+			if (hint)
+				hints += hint
+	return jointext(hints, "; ")
+
+/proc/crafting_recipe_manual_suffix(mob/viewer, result_path)
+	var/hint = crafting_recipe_manual_hint(viewer, result_path)
+	return hint ? " - [hint]" : ""

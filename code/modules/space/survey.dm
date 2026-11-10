@@ -374,7 +374,7 @@ var/global/list/space_survey_maps = list()
 	if (!choices.len)
 		to_chat(user, SPAN_WARNING("There is no other surveyed world within reach yet."))
 		return
-	var/label = input(user, "Which world should the probe fly to?", "Launch rail") as null|anything in choices
+	var/label = player_input(user, "Which world should the probe fly to?", "Launch rail", null, "anything", choices, TRUE)
 	if (!label || !in_range(src, user) || user.incapacitated())
 		return
 	if (set_destination(choices[label]))
@@ -396,13 +396,13 @@ var/global/list/space_survey_maps = list()
 	if (!M)
 		to_chat(user, SPAN_WARNING("There is no survey map of the destination to aim at."))
 		return
-	var/x = input(user, "Landing cell, west to east (1-[M.width]). Cancel to clear the aim.", "Aim the probe") as null|num
+	var/x = player_input(user, "Landing cell, west to east (1-[M.width]). Cancel to clear the aim.", "Aim the probe", null, "num", null, TRUE)
 	if (isnull(x))
 		target_x = null
 		target_y = null
 		to_chat(user, SPAN_NOTICE("The probe will land anywhere flat."))
 		return
-	var/y = input(user, "Landing cell, south to north (1-[M.height]).", "Aim the probe") as null|num
+	var/y = player_input(user, "Landing cell, south to north (1-[M.height]).", "Aim the probe", null, "num", null, TRUE)
 	if (isnull(y) || !in_range(src, user))
 		return
 	x = round(x)
@@ -833,7 +833,7 @@ var/global/list/space_survey_maps = list()
 	return jointext(out, "\n")
 
 /obj/structure/survey_console/proc/show_ui(mob/user, message = null)
-	user << browse(ui_html(message), "window=survey_console;size=560x680")
+	show_browse(user, ui_html(message), "window=survey_console;size=560x680")
 
 /obj/structure/survey_console/proc/ui_html(message = null)
 	var/list/html = list("<html><head><title>Mission console</title><style>a{color:#8cc8ff;margin-right:4px}a:hover{color:#fff}</style></head><body style='background:#1b1b1b;color:#ddd;font-family:monospace'>")

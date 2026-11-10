@@ -213,7 +213,12 @@ everything changed), with `nearby_removed` refs and a `nearby_unchanged`
 count. When the baseline is gone (another observe ran in between) the full
 list comes back without `changes_since`.
 
-<a id="prompts"></a>A prompt (`WWinput`) the game raises for a character that its step did not
+<a id="prompts"></a>Game prompts reach agent characters through `WWinput` and through
+`player_input`/`player_alert`, which gameplay code uses instead of raw `input()`
+and `alert()` (amounts, names, text, colours and picks from a list). A player
+sees the same prompt as before; an agent character answers it from its step's
+`choose` (a number for amounts, the text itself, `#rrggbb` for colours, or the
+option or button name, matched without case). A prompt the step did not
 answer with `choose` is listed under `prompts` (after `prompt_since`, newest id
 in `last_prompt`) with its text, the `choices` (or the input `kind`) and what
 the character `took`, so the agent can repeat the step with `choose`.
@@ -222,6 +227,40 @@ the character `took`, so the agent can repeat the step with `choose`.
 `sound_since`, newest id in `last_sound`) with the sound's name, `dx`/`dy` and
 volume. Footsteps are left out unless `footsteps` is true. A deafened
 character hears nothing.
+
+<a id="movement"></a>`move` follows the rules a player's step follows in `/client/Move`
+(`code/modules/agent_control/agent_movement.dm`): the grace-period wall, a level
+being saved, nooses, crouching, being held while restrained, and being pinned
+refuse it. While prone or lying the step is a crawl, which runs only from
+`character_queue`. A wheelchair rolls. The step's cooldown is the movement mode's
+delay (run, walk, sneak) plus ground (snow, mud, flood, the floor's own delay),
+hills, drowsiness, a deployed sarissa, pulling and speed traits, and it costs
+food, water, stamina and warmth the same way. A runner out of stamina drops to
+walking. Riding a mount moves at the mount's pace.
+
+<a id="stance"></a>`stance` sets what players change with HUD buttons: `move` (`run`, `walk`,
+`sneak`, `crawl`), `defense` (`dodge`, `parry`), `tactic` (`charge`, `aim`,
+`rush`, `defend`), `secondary` (the middle-click attack: `kick`, `jump`,
+`bite`), `face_lock` and `aim` (gun aim mode), any of them in one step; the
+character's `stance` reports them. `equip` takes an optional `slot` (`back`,
+`belt`, `head`, `suit`, `uniform`, `shoes`, `gloves`, `mask`, `eyes`,
+`shoulder`, `id`, `l_ear`, `r_ear`, `l_store`, `r_store`, `s_store`), as
+dragging the item onto that inventory slot does. A storage container next to
+the character lists its `contents` (refs and names, as opening it shows), and
+`click` reaches an item inside a container that is next to the character or
+carried by it. `here` reports the tile's terrain `height` and `light` (0-1).
+
+<a id="windows"></a>Menu windows (research, trade posts, suppliers, faction and recruitment
+desks, books and other HTML windows a player sees) are listed under `windows`
+(shown or refreshed after `window_since`, newest id in `last_window`; the six
+newest open windows are kept) with the window name, title, plain text and
+numbered `links`. Game code opens them with `show_browse(target, html,
+options)` instead of `target << browse(...)`, which keeps that copy for agent
+characters. `topic` (`window` plus `link`, a number, or `label`; queue only)
+presses one as the player's client would: the link's object gets its `Topic`
+with the character as `usr`. Only links the character was shown can be
+pressed, raw hrefs are never returned, and client, preference and admin routes
+are refused with `unsupported`. `close_window` forgets a window.
 
 The client takes `wait_s` (0-60) on `character_observe`: it polls twice a
 second until there is a message after `since`, a queue result after
@@ -295,6 +334,55 @@ as strings of `n`/`s`/`e`/`w` moves), the `launch` tile (last dry tile), the
 `landing` tile, up to five free `boats` near the launch with a `board_from`
 tile each, and the raft recipe. A boat leg starts on the launch tile and
 includes the shallows on either side, so a raft built there can take it.
+
+### Cars, tanks, aircraft, turrets and drones
+
+Modular vehicles are driven from a driver's seat
+(`code/modules/agent_control/agent_vehicles.dm`). `drag` the character onto the
+seat to sit in it; the steering wheel goes into the active hand.
+
+- `drive` (`control`) presses a driver's seat HUD button: `gear_up` (starts the
+  engine, then shifts up), `gear_down` (shifts down, stops, then turns the
+  engine off), `forward`, `reverse`, `turn_left`, `turn_right`, and for
+  aircraft `climb` and `descend`. A keyed vehicle needs its key carried.
+  Climbing on the ground fails with the takeoff hint a player reads.
+- `move` presses that arrow key, as `/client/verb/startmoving*` does: with the
+  wheel in hand, east and west turn, and north and south pick forward or
+  reverse while stopped. Held turret controls change range (north, south) or
+  turn the turret (east, west) for `hold` deciseconds (default 5); the
+  opposite key stops a turn. An active drone controller flies the drone. A
+  seated character or one flying a drone does not walk.
+- `use` with `alternate` presses the secondary-use key of the held item
+  (gear down, the turret's weapon switch, a drone's special).
+
+`character_state` adds `driving` (gear, gears, reverse, moving, heading,
+engine, fuel, `key_ok`, and `flight`, `altitude` and `target_altitude` for
+aircraft) and `remote_controls` for held turret and drone controls. Trains and
+locomotives are clicked like any other machine.
+
+<a id="screens"></a>
+
+### Machine screens (NanoUI and tgui)
+
+Research benches, chemical dispensers, vending machines, faction creation and
+symbol desks, appearance changers and recruitment stations open a NanoUI or
+tgui screen when clicked (`code/modules/agent_control/agent_screens.dm`). For an
+agent character's body the screen stays open without a browser window, under
+the same status rules as a player's: it closes when the character walks away.
+
+- `character_observe` lists `screens`: number, title, template, `status`
+  (`interactive`, `view_only`, `disabled`), the machine's `ref`, the `actions`
+  the screen accepts and its `data` as JSON (cut at 4000 characters, with
+  `data_truncated`).
+- `screen` (`screen`: number or title, `act`: one of its actions, `value`:
+  default 1) presses that button and reaches the machine's Topic after the
+  same status and owner checks. Paint actions also take `x`, `y`, `cells` and
+  `stroke_continue`. A press may prompt (answer with `choose`), so it runs only
+  from `character_queue`. `close` (true) closes the screen directly.
+
+Reader screens with their own topic states (books, notes, faction and religion
+lists, photos, the crafting atlas, the paper editor) still need a connected
+client.
 
 ## Nomad visits
 

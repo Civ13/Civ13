@@ -63,7 +63,7 @@
 	if (primary_cloth && !is_cloth_sheet(stock)) return FALSE
 	if (recipe.one_per_turf && (locate(recipe.result_type) in site)) return FALSE
 	var/node = get_recipe_node_req("[recipe.result_type]")
-	if (node && (!map || !map.is_node_done(actor.civilization, node))) return FALSE
+	if (node && !crafting_node_allowed(actor, node)) return FALSE
 	var/paid = 0
 	for (var/obj/item/stack/C in secondary)
 		if (!stack_matches_recipe_material(C, secondary_type) || C.loc != actor || !actor.item_is_in_hands(C) || !C.can_use(secondary[C])) return FALSE

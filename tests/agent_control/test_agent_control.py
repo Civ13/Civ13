@@ -2562,5 +2562,248 @@ class BoatTravelTests(unittest.TestCase):
         self.assertIn("fuel 0/125", boats.describe(observation))
 
 
+class WindowTests(unittest.TestCase):
+    """Menu windows (code/modules/agent_control/agent_windows.dm) and the autopilot's topic steps."""
+
+    # Files that keep "<< browse(" on purpose, each pinned by its own contract test:
+    # agents craft with the craft action and the atlas, NanoUI and the wiki are client-only screens;
+    # datum/browser serves TDM barracks boards; paper reading is pinned by tests/paper_documents.
+    BROWSE_EXEMPT = {
+        "code/datums/browser.dm", "code/game/mob/crafting_atlas.dm", "code/game/objects/items/stacks/stack.dm",
+        "code/modules/client/client_verbs.dm", "code/modules/nano/_nanoui.dm", "code/modules/paperwork/view.dm",
+        "code/game/mob/living/carbon/human/subtile_movement.dm",
+    }
+
+    def test_player_windows_go_through_show_browse(self):
+        # Every gameplay browse() is recorded for agent characters; admin panels are client-only.
+        raw = []
+        for path in (ROOT / "code").rglob("*.dm"):
+            rel = path.relative_to(ROOT).as_posix()
+            if rel.startswith("code/modules/admin/") or rel.endswith("agent_windows.dm") or rel in self.BROWSE_EXEMPT:
+                continue
+            for number, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                if re.search(r"<<\s*browse\(", line):
+                    raw.append(f"{rel}:{number}")
+        self.assertEqual(raw, [], "use show_browse(target, html, options) so agent characters see the window")
+
+    def test_topic_only_follows_shown_links(self):
+        source = dm_source("agent_windows.dm")
+        self.assertIn('agent_queue_only("topic", from_queue)', source)
+        self.assertIn('C.windows[window]', source)
+        self.assertIn('istype(D, /datum/admins)', source)
+        self.assertIn('agent_protected_target(D)', source)
+        self.assertNotIn('"href" = L["href"]', source.split("proc/window_rows")[1].split("proc/")[0])
+
+    def test_parse_topic_steps(self):
+        refs = ["[0x1]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "topic", "window": "trade", "link": "2"}', refs), {"do": "topic", "window": "trade", "link": 2})
+        self.assertEqual(autopilot.parse_decision('{"do": "topic", "window": "trade", "label": "Buy bread"}', refs), {"do": "topic", "window": "trade", "label": "Buy bread"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "window": "trade"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "link": 1}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "topic", "window": "trade", "link": 0}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "close_window", "window": "trade"}', refs), {"do": "close_window", "window": "trade"})
+
+    def test_summary_shows_newest_windows(self):
+        observation = {"self": {"name": "Ada"}, "windows": [
+            {"id": 1, "window": "old", "title": "Old", "text": "x", "links": []},
+            {"id": 2, "window": "research", "title": "Research", "text": "Points:   12\n\nTopics", "links": [{"link": 1, "label": "Agriculture"}]},
+            {"id": 3, "window": "trade", "title": "Trade post", "text": "", "links": [{"link": 1, "label": "Buy bread"}, {"link": 2, "label": "Sell"}]},
+        ]}
+        text, _ = autopilot.summarize(observation)
+        self.assertNotIn('WINDOW "old"', text)
+        self.assertIn('WINDOW "research" (Research): Points: 12 Topics', text)
+        self.assertIn("buttons: 1. Buy bread; 2. Sell", text)
+
+
+class PromptTests(unittest.TestCase):
+    """Typed prompts (code/modules/agent_control/agent_prompts.dm): gameplay uses player_input/player_alert."""
+
+    # Raw input() left on purpose: WWinput wraps it, admin-only tools, odd four-argument
+    # calls (officer, mob), and prompts pinned byte-for-byte by their own contract tests
+    # (tests/telephone_recipients, tests/stone_molds, tests/crafting_ui_contracts, paper).
+    RAW_INPUT_ALLOWED = {
+        "code/_helpers/WWinput.dm": 11, "code/game/mob/mob.dm": 1, "code/game/objects/items/paper/paper.dm": 1,
+        "code/game/objects/structures/blacksmithing/molds.dm": 1, "code/modules/1713/officer.dm": 2,
+        "code/modules/1713/telephone.dm": 5, "code/modules/collectibles/stickers_admin.dm": 11,
+        "code/modules/gameplay_bridge/bridge.dm": 1, "code/modules/nomad_raids/nomad_admin.dm": 5,
+    }
+
+    def test_gameplay_prompts_go_through_player_input(self):
+        call = re.compile(r"(?<![\w.])input\(")
+        found = {}
+        for path in (ROOT / "code").rglob("*.dm"):
+            rel = path.relative_to(ROOT).as_posix()
+            if re.match(r"code/modules/(admin|client|agent_control)/", rel):
+                continue
+            count = 0
+            for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+                code = line.split("//")[0]
+                if not code.lstrip().startswith("*"):
+                    count += len(call.findall(code))
+            if count:
+                found[rel] = count
+        extra = {path: n for path, n in found.items() if n > self.RAW_INPUT_ALLOWED.get(path, 0)}
+        self.assertEqual(extra, {}, "use player_input()/player_alert() so agent characters can answer with choose")
+
+    def test_agent_answers_respect_the_prompt(self):
+        source = dm_source("agent_prompts.dm")
+        self.assertIn("if (pending_choice && world.time > pending_choice_until)", source)
+        self.assertIn('if (kind == "anything" && !(default in choices))', source)
+        self.assertIn("if (!M.client)", source)
+
+
+class StanceTests(unittest.TestCase):
+    """HUD toggles, equip slots and container contents (code/modules/agent_control/agent_stance.dm)."""
+
+    def test_parse_stance_and_slot_steps(self):
+        refs = ["[0x1]"]
+        self.assertEqual(autopilot.parse_decision('{"do": "stance", "move": "Crawl", "aim": true}', refs), {"do": "stance", "move": "crawl", "aim": True})
+        self.assertEqual(autopilot.parse_decision('{"do": "stance", "defense": "parry", "tactic": "defend"}', refs), {"do": "stance", "defense": "parry", "tactic": "defend"})
+        self.assertIsNone(autopilot.parse_decision('{"do": "stance", "move": "fly"}', refs))
+        self.assertIsNone(autopilot.parse_decision('{"do": "stance"}', refs))
+        self.assertEqual(autopilot.parse_decision('{"do": "equip", "slot": "back"}', refs), {"do": "equip", "slot": "back"})
+        self.assertEqual(autopilot.parse_decision('{"do": "equip", "slot": "wings"}', refs), {"do": "equip"})
+
+    def test_summary_lists_container_contents_as_targets(self):
+        observation = {"self": {"name": "Ada", "ref": "[0x1]", "stance": {"move": "walk", "defense": "dodge"}}, "nearby": [
+            {"ref": "[0x2]", "name": "backpack", "dx": 1, "dy": 0, "item": True, "contents": [{"ref": "[0x3]", "name": "coin"}]},
+        ]}
+        text, refs = autopilot.summarize(observation)
+        self.assertEqual(refs, ["[0x1]", "[0x2]", "[0x3]"])
+        self.assertIn("2. coin (inside backpack", text)
+        self.assertIn("Stance: move walk, defense dodge", text)
+
+    def test_stance_slots_match_the_game(self):
+        source = (ROOT / "code/modules/persistence/region_travel.dm").read_text(encoding="utf-8")
+        listed = re.search(r"region_travel_slots = list\(([^)]*)\)", source).group(1)
+        slots = [name for name in re.findall(r'"(\w+)" =', listed) if name not in ("l_hand", "r_hand")]
+        self.assertEqual(sorted(slots), sorted(autopilot.EQUIP_SLOTS))
+
+
+class MovementParityTests(unittest.TestCase):
+    """agent_movement.dm mirrors /client/Move; these are the client lines it copies."""
+
+    CLIENT_RULES = (
+        'if (map && map.check_caribbean_block(mob, mob.loc))',
+        'if (N.hanging == mob)',
+        'if (mob.prone && istype(n, /turf))',
+        'if (mob.lying && istype(n, /turf))',
+        'if (H.crouching)',
+        'if (mob.pinned.len)',
+        'move_delay += mob.get_run_delay() + standing_on_snow',
+        'move_delay += mob.get_walk_delay() + standing_on_snow',
+        'move_delay += mob.get_stealth_delay() + standing_on_snow',
+        'H.nutrition -= 0.005 * distance_fraction',
+        'H.nutrition -= 0.002 * distance_fraction',
+        'H.nutrition -= 0.004 * distance_fraction',
+        'H.nutrition -= 0.0015 * distance_fraction',
+        'move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)',
+        'terrain_climb_effects(H, mob_loc, n, distance_fraction)',
+        'if (mob.drowsyness > 0)\n\t\t\tmove_delay += 3',
+        'move_delay += 1.25',
+        'move_delay += 0.75',
+        't_movement_speed_multiplier *= 0.85',
+        't_movement_speed_multiplier *= 1.15',
+        't_movement_speed_multiplier *= 0.9',
+        'move_delay = 0.5',
+        'standing_on_snow = 1.75',
+        'standing_on_snow = rand(2,3)',
+    )
+
+    def test_client_rules_still_match(self):
+        client = (ROOT / "code/game/mob/mob_movement.dm").read_text(encoding="utf-8")
+        for rule in self.CLIENT_RULES:
+            self.assertIn(rule, client, "client movement changed: update agent_movement.dm to match, then this list")
+
+    def test_agent_move_uses_the_mirror(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn("return agent_walk_step(A, C, d, from_queue, ", characters)
+        movement = dm_source("agent_movement.dm")
+        for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
+                       "terrain_climb_effects(H, old, n, 1)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
+                       "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015"):
+            self.assertIn(anchor, movement)
+
+
+class VehicleParityTests(unittest.TestCase):
+    """agent_vehicles.dm presses the driver's seat HUD and the arrow-key extras; these are the client lines."""
+
+    HUD_RULES = (
+        ("code/_onclick/hud/hud_vehicles.dm", 'D.wheel.turndir(H, "left")'),
+        ("code/_onclick/hud/hud_vehicles.dm", 'D.wheel.turndir(H, "right")'),
+        ("code/_onclick/hud/hud_vehicles.dm", "D.wheel.attack_self(H)"),
+        ("code/_onclick/hud/hud_vehicles.dm", "D.wheel.secondary_attack_self(H)"),
+        ("code/_onclick/hud/hud_vehicles.dm", "this_axis.reverse = TRUE"),
+        ("code/_onclick/hud/hud_aircraft.dm", "A.climb(parentmob)"),
+        ("code/_onclick/hud/hud_aircraft.dm", "A.descend(parentmob)"),
+        ("code/game/mob/mob_movement.dm", "MW.control.axis.reverse && MW.control.axis.currentspeed == 0 && !MW.control.axis.moving"),
+        ("code/game/mob/mob_movement.dm", 'MW.turndir(mob,"right")'),
+        ("code/game/mob/mob_movement.dm", "C.increase_distance(1)"),
+        ("code/game/mob/mob_movement.dm", "C.increase_distance(-1)"),
+        ("code/game/mob/mob_movement.dm", "C.start_rotation(1)"),
+        ("code/game/mob/mob_movement.dm", "RC.start_move_drone(EAST)"),
+        ("code/game/mob/mob_movement.dm", "RC.stop_move_drone()"),
+        ("code/game/mob/living/living.dm", "if (using_drone)\n\t\treturn FALSE"),
+        ("code/game/mob/mob.dm", "W.secondary_attack_self(src)"),
+    )
+
+    def test_client_rules_still_match(self):
+        for path, rule in self.HUD_RULES:
+            with self.subTest(path=path, rule=rule):
+                self.assertIn(rule, (ROOT / path).read_text(encoding="utf-8"), "vehicle controls changed: update agent_vehicles.dm, then this list")
+
+    def test_drive_action_is_wired(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('"stance", "drive", ', characters)
+        self.assertIn("detail = agent_drive(C, req)", characters)
+        self.assertIn('out["driving"] = driving', characters)
+        self.assertIn("I.secondary_attack_self(M)", characters)
+        movement = dm_source("agent_movement.dm")
+        self.assertIn("keys = agent_arrow_keys(M, d, hold)", movement)
+        vehicles = dm_source("agent_vehicles.dm")
+        for anchor in ("D.wheel.turndir(H,", "D.wheel.attack_self(H)", "D.wheel.secondary_attack_self(H)", "P.climb(H)", "P.descend(H)",
+                       "MW.turndir(H, \"right\")", "TC.increase_distance(1)", "TC.start_rotation(turn)", "TC.stop_rotation()",
+                       "RC.start_move_drone(d)", "RC.stop_move_drone()"):
+            self.assertIn(anchor, vehicles)
+
+
+class ScreenTests(unittest.TestCase):
+    """agent_screens.dm keeps NanoUI and tgui screens open for agent bodies and presses their buttons."""
+
+    def test_open_is_hooked_for_both_renderers(self):
+        screens = dm_source("agent_screens.dm")
+        self.assertIn("/datum/nanoui/open()\n\tif (agent_screen_viewer(user))", screens)
+        self.assertIn("/datum/nanoui/tgui/open()\n\tif (agent_screen_viewer(user))", screens)
+        self.assertIn("GLOB.nanomanager.ui_opened(src)", screens)
+        self.assertIn("return allowed_actions()", screens)
+        dme = (ROOT / "civ13.dme").read_text(encoding="utf-8")
+        self.assertLess(dme.index("code\\modules\\nano\\tgui.dm"), dme.index("code\\modules\\agent_control\\agent_screens.dm"),
+                        "the open() overrides must compile after the NanoUI and tgui definitions")
+
+    def test_topic_mirrors_the_nanoui_checks(self):
+        base = (ROOT / "code/modules/nano/_nanoui.dm").read_text(encoding="utf-8")
+        for rule in ("if (status != STATUS_INTERACTIVE || user != usr)", "if (consume_topic(href, href_list))",
+                     "if ((src_object && src_object.Topic(href, href_list, state)) || map_update)"):
+            self.assertIn(rule, base, "NanoUI Topic changed: update agent_topic in agent_screens.dm")
+        screens = dm_source("agent_screens.dm")
+        self.assertIn("if (status != STATUS_INTERACTIVE || user != usr)", screens)
+        self.assertIn("src_object.Topic(href, params, state)", screens)
+        tgui = (ROOT / "code/modules/nano/tgui.dm").read_text(encoding="utf-8")
+        self.assertIn('for (var/key in list("x", "y", "cells", "stroke_continue"))', screens)
+        self.assertIn('keys += list("x", "y")', tgui)
+        self.assertIn('keys += list("cells", "stroke_continue")', tgui)
+
+    def test_gameplay_states_admit_agent_bodies(self):
+        self.assertIn("if (stat || !nano_viewer_present(src))", (ROOT / "code/modules/nano/interaction/base.dm").read_text(encoding="utf-8"))
+        recruitment = (ROOT / "code/game/mob/groups/recruitment_station.dm").read_text(encoding="utf-8")
+        self.assertEqual(recruitment.count("nano_viewer_present("), 3)
+
+    def test_screen_action_is_wired(self):
+        characters = dm_source("agent_characters.dm")
+        self.assertIn('"drive", "screen")', characters)
+        self.assertIn("detail = agent_screen(C, req, from_queue)", characters)
+        self.assertIn('out["screens"] = agent_screen_rows(C.body)', characters)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -128,15 +128,15 @@
 			continue
 		if (i[3] == "/obj/structure/researchdesk/chad" && !(map && map.chad_mode_plus))
 			continue
-		// A recipe mapped to a research node gates on that node being DONE for
-		// the faction; otherwise it keeps the legacy research-threshold check.
+		// Only explicitly basic recipes bypass node research. Unmapped recipes
+		// fail closed instead of falling through to legacy thresholds.
 		// Era gating (i[12]) applies in both cases.
 		var/node_req = get_recipe_node_req(i[3])
 		if (!civ_generation_era(text2path(i[3])))
 			continue
 		if (i[3] == "/obj/structure/chem_master/tablet_press/constructed" && !tablet_press_year_allowed())
 			continue
-		if (!exercise_recipe_era(text2path(i[3])) || (civ_telecom_crafting_skill(text2path(i[3])) && !civ_telecom_era_allowed()))
+		if (!exercise_recipe_era(text2path(i[3])) || (civ_telecom_crafting_skill(text2path(i[3])) && !civ_telecom_era_allowed(text2path(i[3]))))
 			continue
 		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > LATEST_ORDINAL_AGE))
 			continue
@@ -149,7 +149,7 @@
 		if (node_req && map)
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else
-			research_allowed = (current_res[1]>=text2num(i[9]) && current_res[2]>=text2num(i[10]) && current_res[3]>=text2num(i[11]))
+			research_allowed = is_basic_crafting_recipe(i[3])
 		var/material_allowed = i[1] == "[type]/"
 		if (type == /material/woolcloth && i[1] == "/material/cloth/" && !native_textile_rows[jointext(i.Copy(2), ",")])
 			material_allowed = TRUE

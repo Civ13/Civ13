@@ -523,7 +523,6 @@ RECIPE: /material/electronics/,tape recorder,/obj/item/tape_recorder,4,100,0,1,n
 
 //*****************| ELECTRONICS FURNITURE |***************************
 
-RECIPE: /material/electronics/,television,/obj/structure/TV/television,3,80,1,1,none,160,0,0,8,null
 
 //**************************************************************
 //*********************| WOOLCLOTH |****************************
@@ -2199,6 +2198,7 @@ RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,econ
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,recruitment station,/obj/structure/recruitment_station,10,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
@@ -2862,3 +2862,7 @@ RECIPE: /material/steel/,black bar stool,/obj/item/weapon/barstool/black,3,90,0,
 RECIPE: /material/steel/,white bar stool,/obj/item/weapon/barstool/white,3,90,0,1,furniture,0,0,0,8,null
 RECIPE: /material/steel/,brown bar stool,/obj/item/weapon/barstool/brown,3,90,0,1,furniture,0,0,0,8,null
 RECIPE: /material/steel/,grey bar stool,/obj/item/weapon/barstool/grey,3,90,0,1,furniture,0,0,0,8,null
+
+RECIPE: /material/electronics/,studio television camera,/obj/item/tv_camera,4,100,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,street television camera,/obj/item/tv_camera/street,4,100,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,television helmet camera,/obj/item/tv_camera/helmet,4,100,1,1,none,160,0,0,8,null

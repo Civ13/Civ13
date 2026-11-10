@@ -145,7 +145,7 @@ var/global/list/farmers_almanac_seed_cache = null
 		to_chat(user, SPAN_WARNING("You can't make out where you are to consult \the [src]."))
 		return
 	user.visible_message("<span class='notice'>[user] leafs through [src].</span>", "<span class='notice'>You leaf through [src].</span>")
-	user << browse(almanac_text(A, get_temp(user)), "window=farmers_almanac;size=520x640")
+	show_browse(user, almanac_text(A, get_temp(user)), "window=farmers_almanac;size=520x640")
 
 /obj/item/weapon/farmers_almanac/proc/almanac_text(area/A, local_temp)
 	var/climate = A.climate

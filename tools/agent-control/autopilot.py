@@ -75,14 +75,22 @@ TOOL_WORDS = ("sharpened", "axe", "hatchet", "knife", "spear", "pickaxe", "sword
 MAX_APPROACH = 14
 WATER_WORDS = ("water", "river", "lake", "pond", "puddle", "sea", "ocean", "stream", "well")
 ACTIONS = ("go", "flee", "explore", "move", "face", "say", "emote", "click", "use", "craft", "build", "roof", "equip", "take", "examine", "drop", "swap_hand", "intent", "wait",
-           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water")
+           "blueprint", "build_next", "leather_next", "travel", "board", "disembark", "verb", "throw", "boil_water",
+           "topic", "close_window", "stance", "drive", "screen")
+DRIVE_CONTROLS = ("forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend")
 # Plan-only keys the autopilot uses itself; the game's action queue never sees them.
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
+EQUIP_SLOTS = ("back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder")
 MAX_NEARBY = 24
 MAX_TERRAIN = 10
 MAX_PLAN = 3
+MAX_CONTENTS = 8  # items listed inside each nearby container
+MAX_WINDOWS = 2  # newest menu windows shown to the model
+MAX_SCREEN_DATA = 600  # characters of a machine screen's data shown to the model
+MAX_WINDOW_LINKS = 24
+MAX_WINDOW_TEXT = 400
 UNCONSCIOUS_POLL = 10  # seconds between checks while the character is out cold
 FOOD_WORDS = ("meat", "steak", "berr", "fruit", "apple", "fish", "bread", "mushroom", "egg", "potato", "carrot", "corn", "nut", "organ", "offal", "stew", "soup")
 FUEL_WORDS = ("plank", "log", "stick", "branch", "leaf", "leaves", "dung", "charcoal", "coal", "wood chips")
@@ -145,7 +153,8 @@ Other steps are {"do": one of go|move|face|say|emote|click|use|craft|equip|exami
  "dir": north|south|east|west (move/face), "text": "..." (say/emote, short),
  "target": a number from the lists (go/click/examine; 0 is yourself), "recipe": a name from "You can craft" (craft),
  "intent": help|disarm|grab|harm, "ticks": 1-50 (wait, tenths of a second),
- "choose": "<option>" (click/use: the answer when it opens a menu)}.
+ "choose": "<answer>" (click/use/verb/topic: the answer when the game asks, an option from a menu, a number or a
+ name or line of text; an unanswered question shows under PROMPTS, so repeat the step with choose)}.
 Recipe book: {"do": "recipe", "item": "<thing>"} answers what that thing needs and how to get each part, from the game's own
 recipes. It takes no game time; use it before working towards something you have not made before.
 Blueprints: {"do": "blueprint", "name": "hut"|"house"} plans a whole building on a clear spot next to you ("none" drops
@@ -166,6 +175,9 @@ Verbs: {"do": "verb", "name": "<verb>"} uses anything a player has in the right-
 ("Your verbs", e.g. Rest, Sleep, Check Pulse, Give with "onto": a person, Point To with "onto"), a held or worn item's verbs
 ("Item verbs": add "target": 0), or a thing next to you marked (verbs: ...) with "target": its number. "text" is the argument
 for verbs that take words. {"do": "throw", "target": n} throws what you hold at a target (a spear at prey, a rock).
+Windows: menus the game opens (research, trade posts, suppliers, faction and recruitment desks, books) are listed as
+WINDOW lines with numbered buttons. {"do": "topic", "window": "<name>", "link": number} presses one, as a player clicks it;
+{"do": "close_window", "window": "<name>"} closes it. Click the object again to reopen its window.
 After your steps run you see what changed. If nothing changed, do something different.
 
 How to play:
@@ -206,7 +218,20 @@ How to play:
 - Help people in need: when a HELP line names someone hurt, offer help with a short "say" and treat them with your bandages
   (unconscious people cannot answer: just treat them). Never treat someone who is attacking you.
 - When a player talks to you, answer first with a short in-character "say", then carry on. Greet people you meet and cooperate.
-- Hold an item and {"do": "equip"} to wear it or put it on your belt or back. "use" uses the held item by itself.
+- Hold an item and {"do": "equip"} to wear it or put it on your belt or back; add "slot": back|belt|head|suit|uniform|shoes|
+  gloves|mask|eyes|shoulder|l_store|r_store|s_store to put it in that slot.
+- Stance: {"do": "stance", "move": run|walk|sneak|crawl, "defense": dodge|parry, "tactic": charge|aim|rush|defend,
+  "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
+  Run to travel, walk to save stamina, sneak or crawl to hide, parry with a weapon, dodge without one.
+- Vehicles: sit in a driver's seat (drag yourself onto it) to drive a car, tank or aircraft. {"do": "drive", "control":
+  gear_up|gear_down|forward|reverse|turn_left|turn_right|climb|descend} presses the seat's button: gear_up starts the engine,
+  then shifts up; gear_down shifts down and stops; climb and descend fly an aircraft once it has taken off at full gear.
+  Holding turret or drone controls, "move" turns the turret (east/west, "hold": deciseconds) or changes its range
+  (north/south), or flies the drone. {"do": "use", "alternate": true} presses the secondary-use key of the held item.
+- Machine screens: clicking a research bench, chemical dispenser, vending machine or faction desk opens a SCREEN with its data
+  and actions. {"do": "screen", "screen": 1, "act": <one of its actions>, "value": <an id or number from its data>} presses
+  that button; {"do": "screen", "screen": 1, "close": true} closes it. Walking away closes it too.
+- Containers next to you list what is inside them; click an item inside with an empty hand to take it. "use" uses the held item by itself.
 - Clicking a loose item next to you with an empty hand picks it up; clicking with an item uses it on the target. swap_hand changes the active hand.
 - Work towards a camp: tools, a shelter, a campfire, food. Talk to other players and cooperate.
 - Items in or next to other players' buildings, fences, workshops or camps belong to them: never take or break them. Gather from the wild instead.
@@ -287,6 +312,25 @@ def summarize(observation, note="", ignored=(), muted=()):
         lines.append(f"ILLNESS: {sick.get('type')}, {sick.get('stage', 'ill')}" + (", treatment running" if _float(sick.get("remedy"), 0) >= 3 else ", NOT being treated") + ".")
     if needs:
         lines.insert(0, "NEEDS: you are " + "; you are ".join(needs) + ".")
+    stance = self_state.get("stance") or {}
+    if stance:
+        lines.append("Stance: " + ", ".join(f"{key} {value}" for key, value in stance.items()))
+    driving = self_state.get("driving") or {}
+    if driving:
+        line = (f"Driving {driving.get('name')}: engine {driving.get('engine')}, gear {driving.get('gear')}/{driving.get('gears')}, "
+                f"{'reverse' if driving.get('reverse') else 'forward'}, heading {driving.get('dir')}")
+        if driving.get("fuel") is not None:
+            line += f", fuel {driving.get('fuel')}"
+        if driving.get("flight"):
+            line += f", flight {driving.get('flight')} at height {driving.get('altitude')}"
+        if driving.get("key_ok") is False:
+            line += ", NO KEY (you need this vehicle's key)"
+        lines.append(line + ".")
+    for remote in (self_state.get("remote_controls") or [])[:2]:
+        if remote.get("control") == "turret":
+            lines.append(f"Turret controls: {remote.get('name')} azimuth {remote.get('azimuth')}, range {remote.get('distance')}.")
+        elif remote.get("control") == "drone":
+            lines.append(f"Drone controller: {remote.get('name', 'no drone')}, {'active' if remote.get('active') else 'inactive (use it to activate)'}.")
     if self_state.get("verbs"):
         lines.append("Your verbs: " + ", ".join(map(str, self_state["verbs"][:60])))
     if self_state.get("item_verbs"):
@@ -302,6 +346,9 @@ def summarize(observation, note="", ignored=(), muted=()):
         refs.append(row.get("ref"))
         kind = " (predator: dangerous)" if is_predator(row) else " (dead)" if row.get("mob") and row.get("stat") == 2 else " (animal)" if str(row.get("type", "")).startswith("/mob/living/simple_animal") else " (person)" if row.get("mob") else ""
         lines.append(f"  {len(refs) - 1}. {row.get('name')} dx={row.get('dx')} dy={row.get('dy')}{kind}{_hurt_mark(row)}{_branch_mark(row)}{' (unclean)' if row.get('sickness') else ''}{_fire_mark(row)}{_verb_mark(row)}")
+        for inside in [item for item in row.get("contents") or [] if isinstance(item, dict)][:MAX_CONTENTS]:
+            refs.append(inside.get("ref"))
+            lines.append(f"     {len(refs) - 1}. {inside.get('name')} (inside {row.get('name')}; click it with an empty hand to take it)")
     if not nearby:
         lines.append("  nothing")
     if skipped:
@@ -326,11 +373,42 @@ def summarize(observation, note="", ignored=(), muted=()):
     heard = senses.heard_lines(news.get("sounds") or [])
     if heard:
         lines.append("Sounds you heard: " + "; ".join(heard) + ".")
+    lines.extend(window_lines(observation))
+    lines.extend(screen_lines(observation))
     texts = relevant_messages(observation.get("messages", []), self_state.get("name"), muted=muted)
     if texts:
         lines.append("Recent messages:")
         lines.extend("  " + text for text in texts)
     return "\n".join(lines), refs
+
+
+def window_lines(observation):
+    """Menu windows the game showed the character (research, trade, suppliers, books), newest last."""
+    windows = [w for w in observation.get("windows") or [] if isinstance(w, dict)][-MAX_WINDOWS:]
+    lines = []
+    for window in windows:
+        text = " ".join(str(window.get("text") or "").split())
+        if len(text) > MAX_WINDOW_TEXT:
+            text = text[:MAX_WINDOW_TEXT] + "..."
+        lines.append(f"WINDOW \"{window.get('window')}\" ({window.get('title')}): {text or 'no text'}")
+        links = [link for link in window.get("links") or [] if isinstance(link, dict)][:MAX_WINDOW_LINKS]
+        if links:
+            lines.append("  buttons: " + "; ".join(f"{link.get('link')}. {link.get('label')}" for link in links))
+    return lines
+
+
+def screen_lines(observation):
+    """Machine screens (research bench, dispensers, vending, faction desks) the character has open."""
+    lines = []
+    for screen in [s for s in observation.get("screens") or [] if isinstance(s, dict)][-MAX_WINDOWS:]:
+        data = " ".join(str(screen.get("data") or "").split())
+        if len(data) > MAX_SCREEN_DATA:
+            data = data[:MAX_SCREEN_DATA] + "..."
+        lines.append(f"SCREEN {screen.get('screen')} ({screen.get('title')}, {screen.get('status')}): {data or 'no data'}")
+        actions = [str(action) for action in screen.get("actions") or []][:16]
+        if actions:
+            lines.append("  actions: " + ", ".join(actions))
+    return lines
 
 
 def _verb_mark(row):
@@ -932,6 +1010,57 @@ def parse_decision(text, refs):
         return out
     if action == "disembark":
         return args
+    if action == "stance":
+        allowed = {"move": ("run", "walk", "sneak", "crawl"), "defense": ("dodge", "parry"),
+                   "tactic": ("charge", "aim", "rush", "defend"), "secondary": ("kick", "jump", "bite")}
+        for key, values in allowed.items():
+            value = str(data.get(key, "")).strip().lower()
+            if value:
+                if value not in values:
+                    return None
+                args[key] = value
+        for key in ("face_lock", "aim"):
+            if isinstance(data.get(key), bool):
+                args[key] = data[key]
+        return args if len(args) > 1 else None
+    if action == "screen":
+        screen = str(data.get("screen", "")).strip()
+        if not screen:
+            return None
+        args["screen"] = screen[:64]
+        if data.get("close") is True:
+            args["close"] = True
+            return args
+        act = str(data.get("act", "")).strip()
+        if not act:
+            return None
+        args["act"] = act[:32]
+        if data.get("value") is not None:
+            args["value"] = str(data["value"])[:64]
+        if str(data.get("choose", "")).strip():
+            args["choose"] = str(data["choose"]).strip()[:64]
+        return args
+    if action in ("topic", "close_window"):
+        window = str(data.get("window", "")).strip()
+        if not window:
+            return None
+        args["window"] = window[:64]
+        if action == "close_window":
+            return args
+        if data.get("link") is not None:
+            try:
+                args["link"] = _decision_int(data.get("link"))
+            except (TypeError, ValueError):
+                return None
+            if args["link"] < 1:
+                return None
+        elif str(data.get("label", "")).strip():
+            args["label"] = str(data["label"]).strip()[:80]
+        else:
+            return None
+        if str(data.get("choose", "")).strip():
+            args["choose"] = str(data["choose"]).strip()[:64]
+        return args
     if action in ("build", "roof"):
         direction = str(data.get("dir", "")).lower()
         if direction not in ("north", "south", "east", "west"):
@@ -950,6 +1079,19 @@ def parse_decision(text, refs):
         if direction not in DIRS:
             return None
         args["dir"] = direction
+        if action == "move" and data.get("hold") is not None:
+            try:
+                args["hold"] = max(1, min(50, _decision_int(data.get("hold"))))
+            except (TypeError, ValueError):
+                return None
+    elif action == "drive":
+        control = str(data.get("control", "")).strip().lower()
+        if control not in DRIVE_CONTROLS:
+            return None
+        args["control"] = control
+    elif action == "use":
+        if data.get("alternate") is True:
+            args["alternate"] = True
     elif action in ("say", "emote"):
         text_value = str(data.get("text", "")).strip()
         if not text_value:
@@ -1016,6 +1158,8 @@ def parse_decision(text, refs):
         material = str(data.get("material", "")).strip()
         if material:
             args["material"] = material[:64]
+    elif action == "equip" and str(data.get("slot", "")).strip().lower() in EQUIP_SLOTS:
+        args["slot"] = str(data["slot"]).strip().lower()
     elif action == "intent":
         intent = str(data.get("intent", "")).lower()
         if intent not in INTENTS:

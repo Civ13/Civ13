@@ -91,7 +91,7 @@
 			user.unEquip(W)
 			var/atom/drop_loc = W.loc
 			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
-			var/inputp = input(user, "What price do you want to set for \the [W]?", "Product Price") as num
+			var/inputp = player_input(user, "What price do you want to set for \the [W]?", "Product Price", null, "num", null, FALSE)
 			// The prompt sleeps with the item on the floor; stock it only if it is
 			// still there, not after someone picked it up or it was stocked already.
 			if (QDELETED(W) || W.loc != drop_loc)
@@ -190,7 +190,7 @@
 	dat += "<div class='section'><button class='btn' onclick=\"window.location='byond://?src=\ref[src];manage=close'\">Close</button></div>"
 	dat += "</body></html>"
 
-	user << browse(dat, "window=vendor_management;size=500x550")
+	show_browse(user, dat, "window=vendor_management;size=500x550")
 
 /** Internal procedure to deliver the selected product after successful payment and update the vendor status. */
 /obj/structure/vending/sales/vend(datum/data/vending_product/R, mob/user, var/p_amount=1)
@@ -316,7 +316,7 @@
 
 				var/inp = 1
 				if (R.amount > 1)
-					inp = input(usr, "How many do you want to buy? (1 to [R.amount])",1) as num
+					inp = player_input(usr, "How many do you want to buy? (1 to [R.amount])", 1, null, "num", null, FALSE)
 					inp = round(inp)
 					if (inp>R.amount)
 						inp = R.amount
