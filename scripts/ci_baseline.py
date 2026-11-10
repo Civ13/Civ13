@@ -36,6 +36,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'statue_appearance': {'files': ('tests/statue_appearance/test_statue_appearance.py',), 'paths': (
+        'tests/statue_appearance/', 'code/game/objects/structures/religious.dm')},
     'weightlifter': {'files': ('tests/weightlifter/test_weightlifter.py',), 'paths': (
         'tests/weightlifter/', 'code/game/objects/structures/fitness.dm')},
     'practice_dummy_armor': {'files': ('tests/practice_dummy_armor/test_armor.py',), 'paths': (
