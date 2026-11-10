@@ -1294,7 +1294,8 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'barbwire_crossing': {'files': ('tests/barbwire_crossing/test_crossing.py',),
         'paths': ('tests/barbwire_crossing/', 'code/modules/1713/barbwire.dm'),
-        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},    'hay': {'files': ('tests/hay/test_hay.py',),
+        'paths': ('tests/hay/', 'code/modules/1713/hay.dm', 'icons/obj/hay.dmi')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
