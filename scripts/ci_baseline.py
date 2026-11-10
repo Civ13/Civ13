@@ -18,6 +18,11 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 ZERO_BASE = '0' * 40
 
+_skill_spec = importlib.util.spec_from_file_location('ci_skill_prose', Path(__file__).with_name('ci_skill_prose.py'))
+_skill_module = importlib.util.module_from_spec(_skill_spec)
+_skill_spec.loader.exec_module(_skill_module)
+skill_prose = _skill_module.skill_prose
+
 
 def comparison_module():
     # Ordinary standalone baseline consumers do not need checkout preparation.
@@ -1225,7 +1230,7 @@ SUITES = {
     'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
 }
-CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
+CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
 TIMEOUT = 30  # per reviewed suite; enclosing job also has a wall-clock limit
 
@@ -1274,14 +1279,6 @@ def provenance(head, base):
     return dict(head=actual, base=resolved_base, requested_base=base,
                 run_id=os.environ.get('GITHUB_RUN_ID'),
                 run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'))
-
-
-def skill_prose(path):
-    parts = path.split('/')
-    return (len(parts) >= 4 and parts[:2] == ['.agents', 'skills']
-            and all(part not in ('', '.', '..') for part in parts)
-            and (parts[-1] == 'SKILL.md'
-                 or ('references' in parts[3:-1] and parts[-1].endswith('.md'))))
 
 
 def documentation(path):
