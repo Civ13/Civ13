@@ -127,6 +127,17 @@
 // Personal knowledge rules in book mode
 // ------------------------------------------------------------
 
+// Whether H may use something gated on node_id. With book research on it is
+// the character's own knowledge; otherwise the faction or era research as
+// before (faction is used when there is no character).
+/proc/research_node_known(mob/H, node_id, faction = null)
+	if (!map)
+		return FALSE
+	var/mob/living/human/HU = ishuman(H) ? H : null
+	if (map.book_research_enabled())
+		return HU && HU.knows_recipe_node(node_id)
+	return map.is_node_done(HU ? HU.civilization : faction, node_id)
+
 /mob/living/human/proc/knows_research_prereqs(node_id)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N)
@@ -146,7 +157,7 @@
 		return FALSE
 	if (get_dist(src, B) > BOOK_RESEARCH_REACH || !isturf(loc) || loc.z != B.z)
 		return FALSE
-	return knows_research_prereqs(node_id)
+	return knows_research_prereqs(node_id) && meets_scholar_requirement(node_id)
 
 // ------------------------------------------------------------
 // Bench behaviour in book mode
@@ -165,14 +176,20 @@
 	var/datum/research_node/N = get_research_node(assigned_node)
 	if (!N || N.mode == RESEARCH_MODE_BOOK || tier < N.min_bench_tier || B.has_research_chapter(assigned_node))
 		return
+	// The most skilled scholar at the bench sets the pace.
 	var/mob/living/human/researcher = null
+	var/best_rate = 0
 	for (var/mob/living/human/H in range(BOOK_RESEARCH_REACH, src))
-		if (H.can_research_node_at(src, assigned_node))
+		if (!H.can_research_node_at(src, assigned_node))
+			continue
+		var/rate = H.scholar_research_rate(assigned_node)
+		if (rate > best_rate)
 			researcher = H
-			break
+			best_rate = rate
 	if (!researcher)
 		return
-	if (B.add_research_work(assigned_node, base_tick_rate))
+	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN)
+	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate, 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
 	book_refresh_ui()
@@ -239,6 +256,9 @@
 		return
 	if (!user.knows_research_prereqs(assigned_node))
 		to_chat(user, SPAN_WARNING("You don't know enough to work on <b>[N.name]</b> yet."))
+		return
+	if (!user.meets_scholar_requirement(assigned_node))
+		to_chat(user, SPAN_WARNING("You aren't skilled enough to work on <b>[N.name]</b>. [user.scholar_requirement_text(assigned_node)]."))
 		return
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
 		if (tier < N.min_bench_tier)
@@ -322,6 +342,7 @@
 	if (!do_after(H, time, src) || QDELETED(src) || !has_research_chapter(node_id) || !H.Adjacent(src) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
+		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. The book can be used again."))
 		return TRUE
 	return FALSE
@@ -364,6 +385,8 @@
 		text += " It also needs a working [pname ? pname : "prototype"] fed to the bench[B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
+	if (!H.meets_scholar_requirement(assigned_node))
+		text += " [H.scholar_requirement_text(assigned_node)]; you aren't skilled enough yet."
 	data["assigned_status_text"] = text
 
 /obj/structure/research_bench/proc/book_examine(mob/user)

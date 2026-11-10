@@ -383,7 +383,7 @@ var/list/global/floor_cache = list()
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
-		if (map && !map.is_node_done(istype(HU) ? HU.civilization : null, "field_defenses"))
+		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
 			return
 		var/obj/item/weapon/material/shovel/trench/S = C
@@ -411,7 +411,7 @@ var/list/global/floor_cache = list()
 /turf/floor/beach/sand/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
-		if (map && !map.is_node_done(istype(HU) ? HU.civilization : null, "field_defenses"))
+		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
 			return
 		var/obj/item/weapon/material/shovel/trench/S = C
@@ -437,7 +437,7 @@ var/list/global/floor_cache = list()
 /turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
 	if (istype(C, /obj/item/weapon/material/shovel) && user.a_intent == I_HARM)
 		var/mob/living/human/HU = user
-		if (map && !map.is_node_done(istype(HU) ? HU.civilization : null, "field_defenses"))
+		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
 			return
 		var/obj/item/weapon/material/shovel/trench/S = C

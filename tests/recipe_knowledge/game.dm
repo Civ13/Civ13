@@ -134,6 +134,8 @@ var/knowledge_failures = 0
 		var/obj/structure/research_bench/knowledge_fixture/open_bench = locate() in locate(7,6,1)
 		var/obj/item/weapon/book/journal = open_bench ? locate(/obj/item/weapon/book) in open_bench.contents : null
 		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
+		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
+		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
 	catch (var/exception/e)
 		knowledge_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
@@ -193,7 +195,19 @@ var/knowledge_failures = 0
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without someone who knows the groundwork")
 	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
 	bench.analysis_tick()
+	knowledge_check(!journal.research_ticks("iron_tools") && node_discipline("iron_tools") == "engineering" && node_scholar_requirement("iron_tools") == 24, "no progress without the discipline's skill")
+	scholar.scholarship = list("engineering" = 24, "mathematics" = 12)
+	bench.analysis_tick()
 	knowledge_check(journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
+	knowledge_check(scholar.scholar_level("engineering") > 24 && scholar.scholar_level("mathematics") > 12, "researching raises the discipline and mathematics")
+	scholar.scholarship["engineering"] = 74
+	knowledge_check(scholar.scholar_research_rate("iron_tools") == 2 && scholar.scholar_research_rate("basic_tools") == 2, "skill well above the requirement doubles the pace")
+	var/before = scholar.scholar_level("engineering")
+	scholar.gain_scholarship("basic_tools", 1)
+	knowledge_check(scholar.scholar_level("engineering") - before < 0.2, "old low-tier work teaches little")
+	var/list/cleaned = clean_scholarship(list("engineering" = 150, "bogus" = 5, "medicine" = "x"))
+	knowledge_check(cleaned.len == 1 && cleaned["engineering"] == 100, "restored scholarship is validated and capped")
+	knowledge_check(research_node_known(scholar, "basic_tools") && !research_node_known(scholar, "field_defenses"), "older research checks follow personal knowledge")
 	var/datum/research_node/N = get_research_node("iron_tools")
 	knowledge_check(journal.add_research_work("iron_tools", N.cost_ticks) && journal.has_research_chapter("iron_tools") && !journal.research_ticks("iron_tools"), "finished work becomes a chapter")
 	knowledge_check(!scholar.knows_recipe_node("iron_tools") && !crafting_node_allowed(scholar, "iron_tools"), "finishing research teaches no one")

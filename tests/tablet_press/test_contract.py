@@ -80,7 +80,9 @@ class Project:
                             persistence_load_recovery_required=False)
         self.map = Record(age='1844', research=True)
         self.map.is_node_done = lambda _faction, _node: self.map.research
-        self.globals |= dict(map=self.map, istext=lambda x: isinstance(x, str),
+        # research_node_known(): personal knowledge in book research, else faction research.
+        self.research_node_known = lambda _user, _node, _faction=None: self.map.research
+        self.globals |= dict(map=self.map, research_node_known=self.research_node_known, istext=lambda x: isinstance(x, str),
                              isnull=lambda x: x is None,
                              islist=lambda x: isinstance(x, DMList),
                              list=lambda *items: DMList(*items),
@@ -670,7 +672,7 @@ class MutationControls(unittest.TestCase):
     def test_source_mutations_are_detected(self):
         mutations = [
             ('date', 'year > 1843', 'year >= 1843', 'date'),
-            ('research', 'map.is_node_done(user.civilization, "pharmacology")', 'TRUE', 'research'),
+            ('research', 'research_node_known(user, "pharmacology")', 'TRUE', 'research'),
             ('debit', 'R.volume = after_volumes[R]', 'R.volume = R.volume', 'positive'),
             ('credit', 'target.buffer.total_volume = sum_volume(target_after)',
              'target.buffer.total_volume = 0', 'positive'),

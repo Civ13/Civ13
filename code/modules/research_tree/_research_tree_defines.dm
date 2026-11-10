@@ -62,3 +62,10 @@
 // eras in which a normal round's factions research the specialist trees.
 // On those worlds a faction's specialist nodes up to this era count as done.
 #define PERSISTENT_SPECIALIST_BASELINE_ERA 6
+
+// Scholarship skills (scholarship.dm): level needed per era tier, the cap,
+// and the skill gained per bench tick worked and per chapter studied.
+#define SCHOLAR_LEVEL_PER_TIER 12
+#define SCHOLAR_MAX_LEVEL 100
+#define SCHOLAR_RESEARCH_GAIN 0.02 // per bench tick the researcher works
+#define SCHOLAR_STUDY_GAIN 1       // per chapter studied

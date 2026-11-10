@@ -50,7 +50,7 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/proc/missing_research(mob/living/human/H)
 	. = list()
 	for (var/node_id in required_nodes())
-		if (!H || !map || !map.is_node_done(H.civilization, node_id))
+		if (!H || !map || !research_node_known(H, node_id))
 			var/datum/research_node/N = get_research_node(node_id)
 			. += N ? N.name : node_id
 

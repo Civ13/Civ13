@@ -303,7 +303,7 @@ var/global/list/safehouse_recipe_types = null
 		return FALSE
 	if (map && H)
 		var/node = get_recipe_node_req("[output]")
-		if (node && !map.is_node_done(H.civilization, node))
+		if (node && !research_node_known(H, node))
 			return FALSE
 	return TRUE
 
