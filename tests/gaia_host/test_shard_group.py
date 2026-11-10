@@ -19,6 +19,29 @@ REVISION = 'c' * 40
 DME = 'line\r\n// BEGIN_SELECTED_MAP\r\n#include "maps\\nomads\\nomads_gaia.dmm"\r\n// END_SELECTED_MAP\r\ntail\r\n'
 
 
+class RegionViewTopicTests(unittest.TestCase):
+    def test_fragmented_reply_and_request(self):
+        connection = mock.MagicMock()
+        connection.recv.side_effect = [b'\x00', b'\x83\x00', b'\x09\x06', b'{"a":', b'1}\x00']
+        with mock.patch.object(shard_group.socket, 'create_connection') as connect:
+            connect.return_value.__enter__.return_value = connection
+            self.assertEqual({'a': 1}, shard_group.region_view(1716, timeout=3))
+        connect.assert_called_once_with(('127.0.0.1', 1716), timeout=3)
+        query = b'shard_region=1&format=json&peers=1'
+        connection.sendall.assert_called_once_with(b'\x00\x83\x00\x28' + b'\0' * 5 + query + b'\0')
+
+    def test_malformed_and_truncated_replies_return_none(self):
+        cases = ([b'\x00\x84\x00\x01\x06'], [b'\x00\x83\x00\x01\x05'],
+                 [b'\x00\x83\x00\x03\x06', b''], [b'\x00\x83\x00\x03\x06{\x00'])
+        for parts in cases:
+            with self.subTest(parts=parts):
+                connection = mock.MagicMock()
+                connection.recv.side_effect = parts
+                with mock.patch.object(shard_group.socket, 'create_connection') as connect:
+                    connect.return_value.__enter__.return_value = connection
+                    self.assertIsNone(shard_group.region_view(1716))
+
+
 class FakeMachine:
     def __init__(self):
         self.calls = []
