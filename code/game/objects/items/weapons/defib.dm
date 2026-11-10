@@ -371,6 +371,12 @@
 	if(!do_after(user, chargetime, H))
 		return
 
+	error = can_defib(H)
+	if(error)
+		make_announcement(error, "warning")
+		playsound(get_turf(src), 'sound/machines/defib_failed.ogg', 50, 0)
+		return
+
 	//deduct charge here, in case the base unit was EMPed or something during the delay time
 	if(!checked_use(chargecost))
 		make_announcement("buzzes, \"Insufficient charge.\"", "warning")
