@@ -57,7 +57,9 @@ def _generate(config,traversal):
         raise Rejection("BACKEND_ECOTONE","requested bands must be a contiguous climatic sequence")
     if traversal not in {"forward","reverse"}:raise ValueError("traversal")
     is_ports=config['schema']=='civ13-generation-config/2'
-    algorithm=PORTS_ALGORITHM_VERSION if is_ports else ALGORITHM_VERSION
+    from .river_graph import GRAPH_ALGORITHM_VERSION,is_graph_layout
+    is_graph=is_ports and is_graph_layout(config['surface_layout'])
+    algorithm=GRAPH_ALGORITHM_VERSION if is_graph else PORTS_ALGORITHM_VERSION if is_ports else ALGORITHM_VERSION
     profile_version='SURFACE-offline/2' if is_ports else PROFILE_VERSION
     cfg_hash=canonical_hash(config);seed=config["seed"]
     def draw(stage,x=0,y=0,slot=0):
@@ -94,7 +96,9 @@ def _generate(config,traversal):
     area=w*h;water_cfg=config["water"]
     ridge_paths=[];reserved=set();route_records=[];junctions=[];route_stats=[]
     if is_ports:
-        from .hydrology_ports import build,HydroReject
+        from .hydrology_ports import HydroReject
+        if is_graph:from .river_graph import build
+        else:from .hydrology_ports import build
         try:hydro=build(config,draw,choose,field,points,at,wet)
         except HydroReject as e:raise Rejection(e.code,e.detail) from e
         sea=hydro['sea'];lakes=hydro['lakes'];lake_sets=hydro['lake_sets'];rivers=hydro['rivers'];ports=hydro['ports']

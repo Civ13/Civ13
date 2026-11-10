@@ -3,10 +3,12 @@
 This experimental tool makes new map data and a static `.dmm` layout for Civ13.
 It runs locally with Python and does not start the game or change installed maps.
 The current SURFACE backend supports configurable coast/edge-port sides and
-spans, a confluence, a lake, connected mountain ranges, climate regions,
-vegetation and abstract start/resource routes. It does not yet produce a verified
+spans, a confluence, a lake, declared river graphs with several networks,
+connected mountain ranges, climate regions, vegetation and abstract start/resource routes. It does not yet produce a verified
 playable native round. A separate OCEANIC backend now generates islands with
-inland fresh lakes and connected navigable salt sea; see the profile section below.
+inland fresh lakes (optionally draining to the sea by a river) and connected
+navigable salt sea, and the cavern backend can run underground streams between
+spring pools; see the profile sections below.
 
 ## Prerequisites
 
@@ -275,7 +277,7 @@ reject. Inlets cannot occupy the solid sea-coast side. `outlet.kind: SEA`
 requires positive sea coverage on the same side. `EDGE` requires
 `sea_side: NONE` and `water.sea_pct: [0,0]`. The implemented graph family has one
 connected network, one confluence and one through-lake: set both network and
-lake count intervals to `[1,1]`. Arbitrary river graphs are not implemented.
+lake count intervals to `[1,1]`. For any other topology use a river graph layout.
 
 `junction_pct` and `lake_pct` give interior anchor percentages. The
 `climate_axis` is a nonzero integer vector with components -4..4, combined with
@@ -283,6 +285,41 @@ a smooth 2D field. Zero vectors, unsupported fields and conflicting controls
 reject. Geometry and playability invariants cannot be disabled by configuration.
 IR grid row zero is south; the writer reverses rows for DMM and adds one to x/y.
 Native z-levels are layer IDs, not geographic elevation.
+
+### River graph layouts
+
+A schema-2 `surface_layout` that has a `segments` list is a declared river graph
+instead of the fixed family. Start from the example (64 x 80 by default; add
+`--width 155 --height 225` for reference size):
+
+```sh
+python3 -m tools.procedural_maps preset --river-graph --seed graph-0 --out data/procedural_maps/graph.json
+python3 -m tools.procedural_maps generate --config data/procedural_maps/graph.json --out data/procedural_maps/graph-map
+```
+
+`tools/procedural_maps/examples/surface-river-graph.json` is the same layout at
+155 x 225. Its keys are exactly `sea_side`, `inlets`, `outlets`, `junctions`,
+`lakes`, `segments` and `climate_axis`:
+
+| Key | Contents |
+| --- | --- |
+| `inlets` | 1..8 edge sources `{id, side, span}`, never on the sea side. |
+| `outlets` | 1..4 `{id, kind, side, span}`. `SEA` lies on `sea_side`; `EDGE` leaves through any other side. |
+| `junctions` | 0..8 confluences `{id, at_pct}`; each takes 2..8 rivers and sends one on. |
+| `lakes` | 0..12 `{id, at_pct, terminal}`. A through lake (`false`) has one outflow; a terminal lake (`true`) is an endorheic basin. |
+| `segments` | 1..32 directed `{from, to}` channels: from an inlet, junction or through lake to a junction, lake or outlet. |
+
+Node IDs are unique ASCII strings of 1..40 characters. Each river is named
+`river-<from>`. Every inlet, junction and through lake has exactly one outgoing
+segment; every junction, lake and outlet is fed, an outlet by exactly one river.
+Cycles reject. The graph may hold several separate networks: `river_networks`
+must contain their count and `lake_count` the number of lakes, and lake area is
+zero exactly when there are no lakes. `sea_side: NONE` needs `sea_pct [0,0]`;
+any other sea side needs a positive minimum. Anchors are 15..85 percent and
+keep 12 percentage points apart. Lakes share the sampled lake area and keep two
+dry cells from other water; each segment is one bounded A* channel with the
+same width, separator, port-span and junction-zone rules as the fixed family.
+Generated IR is v2 with algorithm `surface-offline/0.3.0`.
 
 Legacy schema 1 and `--legacy` preserve the earlier north-inlet/south-coast
 surface algorithm and golden hashes. Legacy oceanic schema 1 rejects explicitly.
@@ -304,8 +341,17 @@ The cavern backend works on the UNDERGROUND plane (native z1):
   them, so every usable floor tile is connected.
 - Spring pools are fresh, terminal lakes grown into solid rock beside a chamber.
   They can never cut the floor apart. The water and lake intervals in the config
-  bound their total area. Underground rivers and wetlands are rejected before
-  generation (`BACKEND_RIVERS`, `BACKEND_WATER`).
+  bound their total area. Wetlands are rejected before generation (`BACKEND_WATER`).
+- Underground streams: `river_networks` picks how many spring pools send a
+  one-tile stream through solid rock to a new terminal sink pool. Streams follow
+  chamber walls where they can, never cross floor and touch no other water, so
+  floor connectivity is unchanged. Sinks and streams use the lake and water
+  coverage left above the spring pools; with no room left they are skipped, or
+  `WATER_BUDGET` rejects when the minimum is positive. Asking for more streams
+  than pools rejects (`TOPOLOGY_BUDGET`); a pool with no rock room is skipped,
+  and `STREAM_ROUTE` rejects when fewer than the minimum fit. Streams are
+  closed pool-to-pool networks, so they need no map-edge port. The preset asks
+  for 0..2 streams.
 - Fungus pillars (`FUNGUS`) only go where all eight neighbours are open floor and
   no other pillar touches them, so they never block a passage, route or exit.
 - About one chamber in four gets a surface exit, paired with the same tile on an
@@ -350,12 +396,20 @@ each island and four ocean edge ports are declared automatically.
 | `climate_axis` | Nonzero integer vector with components -4..4 for the interior climate gradient. |
 
 Existing water, mountain, vegetation, resource and start controls still apply.
-This slice requires `river_networks: [0,0]` and `swamp_pct: [0,0]`; positive
-requests reject before generation. `lake_count` must equal the island-count
-interval. Each island has exactly one positive-area **terminal inland lake**,
-wholly surrounded by dry land. It has no inferred flow or invented spring.
-Island lake-to-sea rivers need a new explicit endpoint grammar and are deferred;
-they must not borrow the SURFACE rule requiring map-edge river inlets.
+This slice requires `swamp_pct: [0,0]`. `lake_count` must equal the
+island-count interval. Each island has exactly one positive-area inland lake,
+surrounded by dry land except for its own outflow river.
+
+Island rivers are optional. Without `ocean_layout.lake_rivers` the config needs
+`river_networks: [0,0]` and every lake is a terminal basin. With
+`lake_rivers: [lo,hi]` (0 <= lo <= hi <= the minimum island count),
+`river_networks` must equal the same interval and `river_width_tiles` stays
+within 1..3. That many islands, picked by seed, get one river from their lake
+to the open sea. The endpoint grammar is LAKE -> SEA on one island; it has no
+map-edge inlet and does not borrow the SURFACE port rule. The lake becomes a
+through lake, the river stays on its island, and the IR records the realized
+count as `ocean_policy.lake_rivers`. Use `preset --profile OCEANIC --lake-rivers`
+or `tools/procedural_maps/examples/oceanic-lake-rivers.json`.
 
 Start count must cover the maximum island count. Starts rotate between islands,
 respect cardinal spacing and retain tree-free witnesses to fresh-water banks,
@@ -469,10 +523,11 @@ common-human nutrition. FOOD/WOOD/STONE remain abstract reachable labels in IR
 and sidecars, and the bundle emitter adds no playable native supply objects;
 the separate `playable` command above does.
 
-Full hydraulic bed/head/capacity simulation, arbitrary river graphs, naturalistic
+Full hydraulic bed/head/capacity simulation, naturalistic
 channel curvature, minimum ecotone width, native actor/resource behavior,
-runtime climate beyond the elevation lapse rate, persistence, native cavern fungus and exit types,
-and underground rivers remain future work. The prototype cannot approve production host capacity or a live
+runtime climate beyond the elevation lapse rate, persistence, native cavern
+fungus and exit types, and underground rivers that cross cave floor or reach the
+map edge remain future work. The prototype cannot approve production host capacity or a live
 map replacement. It never opens or overwrites saved player worlds.
 
 ## Tests and contributions
