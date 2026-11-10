@@ -198,7 +198,7 @@
 		if (rate > best_rate)
 			researcher = H
 			best_rate = rate
-	if (!researcher)
+	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN)
 	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate * library_rate(assigned_node) * use_research_supply(assigned_node), 0.1)))
@@ -444,13 +444,15 @@
 	text += " Supplies for [scholar_disciplines[discipline]] ([scholar_supply_text(discipline)]): [supply]/[SCHOLAR_SUPPLY_CAP][supply < 1 ? ", so research runs at half speed" : ""]."
 	if (!research_lit())
 		text += " It is too dark to research here; bring a candle or lamp."
+	if (node_needs_instrument(assigned_node))
+		text += " It needs [scholar_instrument_text(discipline)] at the bench[has_research_instrument(assigned_node, H) ? " (present)" : ", which is missing"]."
 	var/list/shelved = library_chapters(assigned_node)
 	if (shelved.len)
 		text += " Library: [shelved.len] related chapter\s shelved nearby, research [round((library_rate(assigned_node) - 1) * 100)]% faster."
 	data["assigned_status_text"] = text
 
 /obj/structure/research_bench/proc/book_examine(mob/user)
-	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Researchers need a pencil, pen or writing slate in hand, and better tools work faster. Bookcases within 3 tiles holding related chapters speed research up. Research needs light, and supplies for its discipline used on the bench keep it at full speed. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
+	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Researchers need a pencil, pen or writing slate in hand, and better tools work faster. Bookcases within 3 tiles holding related chapters speed research up. Research needs light, and supplies for its discipline used on the bench keep it at full speed. From the Imperial Age, a subject needs its discipline's instrument on or next to the bench. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
 	to_chat(user, "It is tier [tier][tier < era_max_tier() ? " (upgrade progress: [tier_progress]/[BENCH_TIER_UPGRADE_COST(tier)])" : ""].")
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B)
