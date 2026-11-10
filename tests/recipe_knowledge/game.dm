@@ -258,6 +258,8 @@ var/knowledge_failures = 0
 	check_scholar_tools(scholar, novice)
 	check_scholar_workplaces(scholar, novice)
 	check_scholar_supplies(scholar)
+	check_scholar_instruments(scholar)
+	check_scholar_tutoring()
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -335,6 +337,43 @@ var/knowledge_failures = 0
 	knowledge_check(bench.research_lit(), "a lit bench can research")
 	qdel(sheet)
 	qdel(bench)
+
+// Instruments (Val, 2026-11-10): from the Imperial Age a node needs its
+// discipline's instrument at the bench.
+/proc/check_scholar_instruments(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	knowledge_check(!node_needs_instrument("iron_tools") && bench.has_research_instrument("iron_tools"), "earlier ages need no instrument")
+	var/advanced = null
+	for (var/node_id in research_nodes)
+		if (node_needs_instrument(node_id) && node_discipline(node_id) == "engineering")
+			advanced = node_id
+			break
+	knowledge_check(advanced && !bench.has_research_instrument(advanced, scholar), "advanced engineering needs an instrument")
+	var/obj/item/weapon/drafting_set/drafting = new(locate(3,2,1))
+	knowledge_check(bench.has_research_instrument(advanced), "a drafting set next to the bench serves engineering")
+	drafting.loc = locate(6,6,1)
+	knowledge_check(!bench.has_research_instrument(advanced), "an instrument away from the bench doesn't count")
+	var/obj/item/weapon/abacus/abacus = new(locate(2,2,1))
+	knowledge_check(!bench.has_research_instrument(advanced), "another discipline's instrument doesn't count")
+	knowledge_check(is_scholar_instrument(abacus, "mathematics") && is_scholar_instrument(new /obj/item/weapon/surgery/scalpel(locate(6,6,1)), "medicine") && scholar_instrument_types("natural_science").len == 2, "each discipline has its instrument")
+	knowledge_check(get_recipe_node_req("/obj/item/weapon/abacus") == "early_economy" && get_recipe_node_req("/obj/item/weapon/drafting_set") == "iron_tools", "instruments are made before they are needed")
+	qdel(drafting)
+	qdel(abacus)
+	qdel(bench)
+
+// Tutoring (Val, 2026-11-10): someone who knows a chapter, beside a student,
+// speeds the study and raises the student's skill more.
+/proc/check_scholar_tutoring()
+	var/mob/living/human/knowledge_fixture/teacher = new(locate(2,5,1))
+	var/mob/living/human/knowledge_fixture/student = new(locate(3,5,1))
+	teacher.learn_recipe_node("basic_tools")
+	knowledge_check(student.find_tutor("basic_tools") == teacher && !student.find_tutor("primitive_construction") && !teacher.find_tutor("basic_tools"), "a tutor must know the chapter")
+	knowledge_check(teacher.still_tutoring(student, "basic_tools"), "a tutor beside the student is teaching")
+	teacher.loc = locate(6,2,1)
+	knowledge_check(!student.find_tutor("basic_tools") && !teacher.still_tutoring(student, "basic_tools"), "a tutor who walks away stops teaching")
+	knowledge_check(SCHOLAR_TUTOR_RATE > 1 && SCHOLAR_TUTOR_GAIN_MULT > 1, "tutoring speeds study and raises skill more")
+	qdel(teacher)
+	qdel(student)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.

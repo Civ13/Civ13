@@ -175,6 +175,29 @@ produce for Agriculture, and ammunition or ammunition parts for Military
 Science. Samples and prototypes are checked first, so an item that is both
 still counts as a sample.
 
+### Instruments (profession 4)
+
+From the Imperial Age (`SCHOLAR_INSTRUMENT_TIER` 3), a node needs its
+discipline's instrument on or next to the bench, or in a researcher's hands
+(`has_research_instrument`), or the bench makes no progress. Instruments:
+abacus (new, 3 soft wood, Trade & Coinage) for Basic Mathematics, drafting set
+(new, 2 iron, Iron Tools) for Engineering, a beaker or glass jar for Natural
+Science, a scalpel for Medicine, a plough for Agriculture and a map for
+Military Science. Every instrument is made from a node below tier 3, so none
+is locked behind the research it enables. The abacus and drafting set sprites
+are in `icons/obj/scholar_tools.dmi`.
+
+### Tutoring (profession 5)
+
+When someone studies a chapter, a player or agent character beside them who
+already knows that node tutors them (`find_tutor`): the study takes
+`1 / SCHOLAR_TUTOR_RATE` (two thirds) of the time and, if the tutor is still
+beside the student at the end (`still_tutoring`), the student gains three
+times the usual study skill and the tutor gains the usual amount. Selling
+books and taking commissions need no new code: books are ordinary items that
+change hands through normal trade, and a commission is a chapter written from
+memory or copied at a bench.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

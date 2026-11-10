@@ -77,3 +77,9 @@
 #define SCHOLAR_UNSUPPLIED_RATE 0.5
 // A bench stores at most this many supply points per discipline.
 #define SCHOLAR_SUPPLY_CAP 200
+// Nodes from this era tier on need their discipline's instrument at the bench.
+#define SCHOLAR_INSTRUMENT_TIER 3
+// A tutor beside a student speeds study by this factor.
+#define SCHOLAR_TUTOR_RATE 1.5
+// A tutored student gains this many times the usual study skill.
+#define SCHOLAR_TUTOR_GAIN_MULT 3

@@ -249,3 +249,102 @@
 /obj/structure/research_bench/proc/research_lit()
 	var/turf/T = get_turf(src)
 	return T && T.get_lumcount() >= SCHOLAR_MIN_LIGHT
+
+// ------------------------------------------------------------
+// Instruments
+// ------------------------------------------------------------
+
+// From the Imperial Age (SCHOLAR_INSTRUMENT_TIER) a node needs its
+// discipline's instrument at the bench: on the bench's tile or next to it, or
+// in a researcher's hands. Most are made by other professions.
+
+/obj/item/weapon/abacus
+	name = "abacus"
+	desc = "A wooden frame of beads on rods for reckoning sums. Advanced Basic Mathematics research needs one at the bench."
+	icon = 'icons/obj/scholar_tools.dmi'
+	icon_state = "abacus"
+	item_state = "paper"
+	w_class = ITEM_SIZE_NORMAL
+	force = 4
+	throwforce = 4
+
+/obj/item/weapon/drafting_set
+	name = "drafting set"
+	desc = "A set square, dividers and a drawing board for technical drawings. Advanced Engineering research needs one at the bench."
+	icon = 'icons/obj/scholar_tools.dmi'
+	icon_state = "drafting_set"
+	item_state = "paper"
+	w_class = ITEM_SIZE_SMALL
+	force = 3
+	throwforce = 3
+
+// Item types that serve as each discipline's instrument.
+/proc/scholar_instrument_types(discipline)
+	switch (discipline)
+		if ("mathematics")
+			return list(/obj/item/weapon/abacus)
+		if ("engineering")
+			return list(/obj/item/weapon/drafting_set)
+		if ("natural_science")
+			return list(/obj/item/weapon/reagent_containers/glass/beaker, /obj/item/glass_jar)
+		if ("medicine")
+			return list(/obj/item/weapon/surgery/scalpel)
+		if ("agriculture")
+			return list(/obj/item/weapon/plough)
+		if ("military")
+			return list(/obj/item/weapon/cartography_map)
+	return list()
+
+/proc/scholar_instrument_text(discipline)
+	switch (discipline)
+		if ("mathematics")
+			return "an abacus"
+		if ("engineering")
+			return "a drafting set"
+		if ("natural_science")
+			return "glassware (a beaker or glass jar)"
+		if ("medicine")
+			return "a scalpel"
+		if ("agriculture")
+			return "a plough"
+		if ("military")
+			return "a map"
+	return "nothing"
+
+/proc/node_needs_instrument(node_id)
+	var/datum/research_node/N = get_research_node(node_id)
+	return N && N.era_tier >= SCHOLAR_INSTRUMENT_TIER
+
+/proc/is_scholar_instrument(obj/item/I, discipline)
+	for (var/path in scholar_instrument_types(discipline))
+		if (istype(I, path))
+			return TRUE
+	return FALSE
+
+// Whether node_id's instrument is at the bench (or held by researcher).
+/obj/structure/research_bench/proc/has_research_instrument(node_id, mob/living/human/researcher = null)
+	if (!node_needs_instrument(node_id))
+		return TRUE
+	var/discipline = node_discipline(node_id)
+	for (var/obj/item/I in range(1, src))
+		if (is_scholar_instrument(I, discipline))
+			return TRUE
+	if (istype(researcher) && (is_scholar_instrument(researcher.l_hand, discipline) || is_scholar_instrument(researcher.r_hand, discipline)))
+		return TRUE
+	return FALSE
+
+// ------------------------------------------------------------
+// Tutoring
+// ------------------------------------------------------------
+
+// Someone next to student who knows node_id and can teach it right now.
+/mob/living/human/proc/find_tutor(node_id)
+	for (var/mob/living/human/T in range(1, src))
+		if (T == src || T.stat != CONSCIOUS || T.incapacitated() || !T.research_presence())
+			continue
+		if (T.knows_recipe_node(node_id))
+			return T
+	return null
+
+/mob/living/human/proc/still_tutoring(mob/living/human/student, node_id)
+	return student && !QDELETED(src) && stat == CONSCIOUS && !incapacitated() && get_dist(src, student) <= 1 && knows_recipe_node(node_id)
