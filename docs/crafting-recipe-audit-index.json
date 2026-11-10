@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 227,
     "material_recipes_carib.txt": 1283,
     "material_recipes_crustacean.txt": 1336,
-    "material_recipes_global.txt": 1775,
+    "material_recipes_global.txt": 1776,
     "material_recipes_gorilla.txt": 1297,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1278,
@@ -40,7 +40,7 @@
     "foot wear": 146,
     "fortifications": 81,
     "fuel tanks": 49,
-    "furniture": 401,
+    "furniture": 402,
     "gas masks": 24,
     "gloves": 42,
     "glowsticks": 4,
@@ -120,6 +120,6 @@
   ],
   "reviewed_follow_on_families": 14,
   "reviewed_legacy_bedroll_rows": 11,
-  "current_furniture_candidates": 567,
+  "current_furniture_candidates": 568,
   "reviewed_legacy_canopy_rows": 12
 }

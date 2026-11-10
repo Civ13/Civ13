@@ -2341,6 +2341,7 @@ RECIPE: /material/wood/soft/,wood pole,/obj/structure/barricade/wood_pole,2,50,1
 RECIPE: /material/wood/soft/,bed,/obj/structure/bed/wood,4,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/soft/,writing desk,/obj/structure/writing_desk,6,120,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/soft/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,practice dummy,/obj/structure/practice_dummy,8,120,1,1,furniture,18,0,0,8,null
