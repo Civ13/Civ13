@@ -208,7 +208,11 @@ var/knowledge_failures = 0
 	knowledge_check(open_disciplines.len == scholar_disciplines.len && !node_scholar_requirement("early_cells"), "every discipline, Natural Science included, has nodes a beginner can research")
 	scholar.scholarship = list("engineering" = 24, "mathematics" = 12)
 	bench.analysis_tick()
-	knowledge_check(journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
+	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without a writing tool in hand")
+	var/obj/item/weapon/pen/pencil/research_pencil = new(locate(7,7,1))
+	scholar.put_in_r_hand(research_pencil)
+	bench.analysis_tick()
+	knowledge_check(scholar.r_hand == research_pencil && journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
 	knowledge_check(scholar.scholar_level("engineering") > 24 && scholar.scholar_level("mathematics") > 12, "researching raises the discipline and mathematics")
 	scholar.scholarship["engineering"] = 74
 	knowledge_check(scholar.scholar_research_rate("iron_tools") == 2 && scholar.scholar_research_rate("basic_tools") == 2, "skill well above the requirement doubles the pace")
@@ -249,7 +253,31 @@ var/knowledge_failures = 0
 	check_book_clock(journal)
 	check_book_fabricator()
 	check_scholarship_travel(scholar)
+	check_scholar_tools(scholar, novice)
 	map.book_research = FALSE
+
+// Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
+// better tools are faster; the writing slate is a Stone Age research tool.
+/proc/check_scholar_tools(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/item/weapon/writing_slate/slate = new(locate(6,6,1))
+	var/obj/item/weapon/pen/pencil/pencil = new(locate(6,6,1))
+	var/obj/item/weapon/pen/quill = new(locate(6,6,1))
+	var/obj/item/weapon/pen/fancy/fancy = new(locate(6,6,1))
+	knowledge_check(scholar_tool_rate(slate) == 1 && scholar_tool_rate(pencil) == 1 && scholar_tool_rate(quill) == 1.25 && scholar_tool_rate(fancy) == 1.5 && !scholar_tool_rate(new /obj/item/weapon/paper(locate(6,6,1))), "writing tools rank slate and pencil, then quill, then the expensive pen")
+	knowledge_check(!scholar_pen_rate(slate) && scholar_pen_rate(quill) == 1.25, "a slate helps research but can't write into books")
+	knowledge_check(scholar_write_time(2, fancy) < scholar_write_time(2, quill) && scholar_write_time(2, quill) < scholar_write_time(2, pencil) && scholar_write_time(2, pencil) == BOOK_WRITE_TIME(2), "better pens write chapters faster")
+	knowledge_check(crafting_recipe_allowed(novice, "/obj/item/weapon/writing_slate"), "anyone can make a writing slate from 5000 B.C.")
+	knowledge_check(map.ordinal_age >= 4 || quill.name == "quill", "the plain pen is a quill before the Industrial Age")
+	novice.put_in_l_hand(slate)
+	knowledge_check(novice.research_tool_rate() == 1 && !novice.held_writing_pen(), "a slate in hand counts for research but not for writing")
+	novice.put_in_r_hand(fancy)
+	knowledge_check(novice.research_tool_rate() == 1.5 && novice.held_writing_pen() == fancy, "the best tool in hand sets the pace")
+	novice.drop_from_inventory(slate)
+	novice.drop_from_inventory(fancy)
+	qdel(slate)
+	qdel(pencil)
+	qdel(quill)
+	qdel(fancy)
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
 // ripping pages out and putting them back, parchment and writing supplies.
