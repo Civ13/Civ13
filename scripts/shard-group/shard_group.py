@@ -54,6 +54,7 @@ from gaia_host import Host, Platform, Refused  # noqa: E402
 sys.path.insert(0, str(HERE))
 import fresh_world  # noqa: E402
 import group_fresh_world  # noqa: E402
+from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
@@ -97,7 +98,6 @@ KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHE
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
-MAP_BLOCK = re.compile(r'// BEGIN_SELECTED_MAP\r?\n.*?// END_SELECTED_MAP', re.S)
 RESERVED_PORTS = (1714,)  # live Gaia
 MAX_REGIONS = 16
 
@@ -332,11 +332,7 @@ def directory(group):
 
 
 def selected_map_dme(dme_text, include):
-    if not MAP_BLOCK.search(dme_text):
-        raise RuntimeError('civ13.dme has no selected-map block')
-    newline = '\r\n' if '\r\n' in dme_text else '\n'
-    block = '// BEGIN_SELECTED_MAP' + newline + '#include "' + include + '"' + newline + '// END_SELECTED_MAP'
-    return MAP_BLOCK.sub(lambda _: block, dme_text, count=1)
+    return select_map_block(dme_text, include, 'civ13.dme')
 
 
 TRANSFER_TOOLS = Path(__file__).resolve().parents[2] / 'tools' / 'transfer_storage'
