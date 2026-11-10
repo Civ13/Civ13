@@ -114,6 +114,9 @@
 // north-south water, turning the way the stream runs.
 /obj/structure/civ_generator/waterwheel/update_icon()
 	var/direction = isturf(loc) ? river_current_direction(loc) : 0
+	// Diagonal currents show the face-on wheel turning east or west.
+	if (direction & (EAST|WEST))
+		direction &= (EAST|WEST)
 	if (direction)
 		set_dir(direction)
 	icon_state = (enabled && output_power > 0) ? "waterwheel_on" : "waterwheel"

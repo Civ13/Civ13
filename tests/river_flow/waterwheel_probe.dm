@@ -98,3 +98,31 @@ var/ww_runtime_error = FALSE
 	ww_check(still.rated_output() == 0, "a wheel in still water is rated 0")
 	var/obj/structure/civ_generator/waterwheel/bank = new path(locate(19, 22, 1))
 	ww_check(bank.rated_output() == 0, "a wheel on land is rated 0")
+	ww_sidecar_checks()
+
+// Parse a sidecar with a diagonal code and let the current carry an item.
+/proc/ww_sidecar_checks()
+	var/text = "civ13-river-flow 1\nsize 40 40\nz 1\n"
+	for (var/y = 40, y >= 1, y--)
+		var/row = ""
+		for (var/x = 1, x <= 40, x++)
+			row += (x == 5 && y == 5) ? "b" : (x == 6 && y == 4) ? "c" : "."
+		text += row + "\n"
+	var/datum/river_flow/F = river_flow_read(text)
+	ww_check(F && F.z_level == 1, "a sidecar with diagonal codes parses")
+	ww_check(isnull(river_flow_read(replacetext(text, "b", "x"))), "an unknown code rejects the sidecar")
+	if (!F)
+		return
+	map.river_flow_cache = F
+	var/turf/A = locate(5, 5, 1)
+	A = A.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/turf/B = locate(6, 4, 1)
+	B = B.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	ww_check(river_current_direction(A) == SOUTHEAST && river_current_direction(B) == SOUTHWEST, "diagonal codes map to diagonal directions")
+	var/obj/item/stack/material/wood/log = new(A)
+	var/turf/floor/beach/water/W = A
+	river_moved.Cut()
+	W.river_current_step()
+	ww_check(log.loc == B, "the current carries an item diagonally downstream")
+	var/obj/structure/civ_generator/waterwheel/diag = new /obj/structure/civ_generator/waterwheel(B)
+	ww_check(diag.dir == WEST, "a south-west current shows the wheel turning west")

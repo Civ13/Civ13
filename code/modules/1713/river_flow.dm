@@ -24,7 +24,7 @@
 		return null
 	var/datum/river_flow/F = new
 	F.z_level = z
-	var/static/regex/bad = regex(@"[^.nesw]")
+	var/static/regex/bad = regex(@"[^.neswabcd]")
 	for (var/i = 1, i <= world.maxy, i++)
 		var/row = lines[i + 3]
 		if (length(row) != world.maxx || bad.Find(row))
@@ -58,6 +58,10 @@
 		if ("e") return EAST
 		if ("s") return SOUTH
 		if ("w") return WEST
+		if ("a") return NORTHEAST
+		if ("b") return SOUTHEAST
+		if ("c") return SOUTHWEST
+		if ("d") return NORTHWEST
 	return 0
 
 var/global/list/river_active_water = list()
