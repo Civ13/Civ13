@@ -258,6 +258,7 @@ var/knowledge_failures = 0
 	check_scholar_tools(scholar, novice)
 	check_scholar_workplaces(scholar, novice)
 	check_scholar_supplies(scholar)
+	check_scholar_instruments(scholar)
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -334,6 +335,29 @@ var/knowledge_failures = 0
 	knowledge_check(scholar_supply_value(sheet, "mathematics") == 5 && scholar_supply_value(new /obj/item/stack/farming/seeds(locate(2,3,1)), "agriculture") > 0 && !scholar_supply_value(sheet, "medicine"), "each discipline has its own supplies")
 	knowledge_check(bench.research_lit(), "a lit bench can research")
 	qdel(sheet)
+	qdel(bench)
+
+// Instruments (Val, 2026-11-10): from the Imperial Age a node needs its
+// discipline's instrument at the bench.
+/proc/check_scholar_instruments(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	knowledge_check(!node_needs_instrument("iron_tools") && bench.has_research_instrument("iron_tools"), "earlier ages need no instrument")
+	var/advanced = null
+	for (var/node_id in research_nodes)
+		if (node_needs_instrument(node_id) && node_discipline(node_id) == "engineering")
+			advanced = node_id
+			break
+	knowledge_check(advanced && !bench.has_research_instrument(advanced, scholar), "advanced engineering needs an instrument")
+	var/obj/item/weapon/drafting_set/drafting = new(locate(3,2,1))
+	knowledge_check(bench.has_research_instrument(advanced), "a drafting set next to the bench serves engineering")
+	drafting.loc = locate(6,6,1)
+	knowledge_check(!bench.has_research_instrument(advanced), "an instrument away from the bench doesn't count")
+	var/obj/item/weapon/abacus/abacus = new(locate(2,2,1))
+	knowledge_check(!bench.has_research_instrument(advanced), "another discipline's instrument doesn't count")
+	knowledge_check(is_scholar_instrument(abacus, "mathematics") && is_scholar_instrument(new /obj/item/weapon/surgery/scalpel(locate(6,6,1)), "medicine") && scholar_instrument_types("natural_science").len == 2, "each discipline has its instrument")
+	knowledge_check(get_recipe_node_req("/obj/item/weapon/abacus") == "early_economy" && get_recipe_node_req("/obj/item/weapon/drafting_set") == "iron_tools", "instruments are made before they are needed")
+	qdel(drafting)
+	qdel(abacus)
 	qdel(bench)
 
 // Use real global rows and the public material menu entry point. Personal

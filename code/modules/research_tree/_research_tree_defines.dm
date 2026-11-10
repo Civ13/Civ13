@@ -77,3 +77,5 @@
 #define SCHOLAR_UNSUPPLIED_RATE 0.5
 // A bench stores at most this many supply points per discipline.
 #define SCHOLAR_SUPPLY_CAP 200
+// Nodes from this era tier on need their discipline's instrument at the bench.
+#define SCHOLAR_INSTRUMENT_TIER 3

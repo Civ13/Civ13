@@ -175,6 +175,18 @@ produce for Agriculture, and ammunition or ammunition parts for Military
 Science. Samples and prototypes are checked first, so an item that is both
 still counts as a sample.
 
+### Instruments (profession 4)
+
+From the Imperial Age (`SCHOLAR_INSTRUMENT_TIER` 3), a node needs its
+discipline's instrument on or next to the bench, or in a researcher's hands
+(`has_research_instrument`), or the bench makes no progress. Instruments:
+abacus (new, 3 soft wood, Trade & Coinage) for Basic Mathematics, drafting set
+(new, 2 iron, Iron Tools) for Engineering, a beaker or glass jar for Natural
+Science, a scalpel for Medicine, a plough for Agriculture and a map for
+Military Science. Every instrument is made from a node below tier 3, so none
+is locked behind the research it enables. The abacus and drafting set sprites
+are in `icons/obj/scholar_tools.dmi`.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
