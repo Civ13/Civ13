@@ -136,8 +136,9 @@ turning that physical permission into universal language comprehension.
 1. Connect all server read/fallback paths and legacy editing transactions, then
    add TGUI authoring and preview with format help and cancellation. No canonical
    original may reach a reader who lacks section knowledge.
-2. Add stable form targets and language-bearing labels/answers, subtype hooks
-   and templates. Stamps are done: see [stamps](paperwork-stamps.md). The old
+2. Subtype hooks and templates remain. Form fields are done, with stable
+   targets and language-tagged labels and answers: see [forms](paperwork-forms.md).
+   Stamps are done: see [stamps](paperwork-stamps.md). The old
    commented-out recording failed because it put an image `\ref` in saved
    HTML, which a browse window cannot load and a save cannot keep.
 3. Integrate faithful copying, filing and envelope/clipboard/bundle access,

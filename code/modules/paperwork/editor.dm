@@ -13,11 +13,19 @@
 	var/operation = request["operation"]
 	if (operation == "refresh" || operation == "cancel")
 		return paper_document_keys(request, list("operation", "lease")) ? request : null
-	if (operation != "append" || !paper_document_keys(request, list("operation", "lease", "document_id", "revision", "language_id", "kind", "value")))
+	if (operation != "append")
+		return null
+	// Only a field answer names a target blank.
+	var/list/expected = list("operation", "lease", "document_id", "revision", "language_id", "kind", "value")
+	if (request["kind"] == "field_answer")
+		expected = list("operation", "lease", "document_id", "revision", "language_id", "kind", "value", "target")
+	if (!paper_document_keys(request, expected))
+		return null
+	if (request["kind"] == "field_answer" && (!istext(request["target"]) || !length(request["target"]) || length(request["target"]) > 64))
 		return null
 	if ((!isnull(request["document_id"]) && (!istext(request["document_id"]) || length(request["document_id"]) != 32)) || !isnum(request["revision"]) || request["revision"] < 0 || request["revision"] > 1048575 || request["revision"] != round(request["revision"]))
 		return null
-	if (!istext(request["language_id"]) || length(request["language_id"]) > 64 || !(request["kind"] in list("body", "title", "signature")) || !istext(request["value"]) || length(request["value"]) > MAX_PAPER_MESSAGE_LEN)
+	if (!istext(request["language_id"]) || length(request["language_id"]) > 64 || !(request["kind"] in list("body", "title", "signature", "field_label", "field_answer")) || !istext(request["value"]) || length(request["value"]) > MAX_PAPER_MESSAGE_LEN)
 		return null
 	return request
 
@@ -162,7 +170,8 @@
 		if (!paper_editor_modern_supported(editor_data()))
 			use_legacy_renderer()
 			return TRUE
-		last_result = editor_session.append(user, editor_session.writing_pen, request["document_id"], request["revision"], request["language_id"], request["kind"], request["value"], request["lease"]) ? "saved" : "rejected"
+		var/answer_target = request["kind"] == "field_answer" ? request["target"] : null
+		last_result = editor_session.append(user, editor_session.writing_pen, request["document_id"], request["revision"], request["language_id"], request["kind"], request["value"], request["lease"], answer_target) ? "saved" : "rejected"
 	// Refresh is read-only and may recover an old lease after a lost reply.
 	// Its real actor/session/pen/custody guard above remains authoritative.
 	if (!editor_closed)
