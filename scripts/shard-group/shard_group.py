@@ -50,10 +50,12 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
+sys.path.insert(0, str(HERE))
+import fresh_world  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover', 'epoch')
+                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -479,6 +481,8 @@ class RegionHost(Host):
         return report
 
     def work(self, action, operation):
+        if action == 'fresh-world':
+            return fresh_world.work(self, operation)
         if action == 'stage':
             return self.stage_work(operation)
         return super().work(action, operation)
@@ -645,12 +649,29 @@ class RegionHost(Host):
         return True
 
     def request(self, action):
+        if fresh_world.pending(self).exists():
+            raise Refused('interrupted fresh-world archive: manual recovery required before any host action')
         # Checked before the lock: taking it would create the folder setup needs empty.
         if action in ('start', 'restart', 'update', 'handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
+
+    def watch_step(self, idle_since):
+        if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
+            return None, 30
+        return super().watch_step(idle_since)
+
+    def thaw(self, *args, **kwargs):
+        if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
+            raise Refused('fresh-world archive blocks wake until it finishes or is recovered')
+        return super().thaw(*args, **kwargs)
+
+    def do_start(self, operation):
+        if fresh_world.pending(self).exists():
+            raise Refused('interrupted fresh-world archive: manual recovery required')
+        return super().do_start(operation)
 
     def precheck(self, action):
         # start compiles a missing or stale build itself (Host.do_refresh), so a
@@ -2112,6 +2133,7 @@ def main(argv=None):
     parser.add_argument('--config', required=True)
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
+    parser.add_argument('--confirm-region', help='fresh-world: type the exact selected region id')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
     parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
@@ -2129,6 +2151,13 @@ def main(argv=None):
     if not args.action:
         parser.error('an action is required')
     try:
+        if args.action == 'fresh-world':
+            if not args.region or args.confirm_region != args.region:
+                raise Refused('fresh-world requires one --region and matching --confirm-region')
+            selected = list(hosts(group, args.region))
+            result = {'accepted': {h.config['region']: fresh_world.request(h, args.confirm_region) for _, h in selected}}
+            print(json.dumps(result))
+            return 0
         if args.action in ('setup', 'update'):
             fetch_remote(group)
         if args.action == 'setup':

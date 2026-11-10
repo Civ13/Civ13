@@ -191,7 +191,7 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -201,16 +201,19 @@ public static class LocalHosting {
     // shard_group.py for every region of the group, or one (a region id as shard_group.py names it);
     // again only the action name and that id come from the caller.
     // epoch: the ordinal to advance the whole group to ("epoch" only, never with a region; every region follows the mainland).
-    public static ProcessStartInfo GroupStep(HostControl control, string action, string? region = null, int? epoch = null) {
+    public static ProcessStartInfo GroupStep(HostControl control, string action, string? region = null, int? epoch = null, string? confirmRegion = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
         if (region != null && !RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
         if ((action == "epoch") != (epoch != null) || (action == "epoch" && region != null) || epoch is < 0 || epoch >= EpochNames.Length)
             throw new ArgumentException("epoch takes one epoch for the whole group.", nameof(epoch));
+        if (action == "fresh-world" ? region == null || confirmRegion != region : confirmRegion != null)
+            throw new ArgumentException("Fresh world requires an exact selected-region confirmation.", nameof(confirmRegion));
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(group.ShardScript)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", group.ShardScript, "--config", group.Config, action }) step.ArgumentList.Add(argument);
         if (region != null) { step.ArgumentList.Add("--region"); step.ArgumentList.Add(region); }
+        if (confirmRegion != null) { step.ArgumentList.Add("--confirm-region"); step.ArgumentList.Add(confirmRegion); }
         if (epoch is { } ordinal) { step.ArgumentList.Add("--epoch"); step.ArgumentList.Add(ordinal.ToString(CultureInfo.InvariantCulture)); }
         return step;
     }
@@ -269,8 +272,8 @@ public static class LocalHosting {
     // deploy.bat's exit code when a region did not save and is still running (the others stay stopped).
     public const int DeployUnsaved = 3;
 
-    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null, string? region = null, int? epoch = null) {
-        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action, region, epoch));
+    public static ControlAnswer RunGroup(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null, string? region = null, int? epoch = null, string? confirmRegion = null) {
+        var (exit, output) = (run ?? RunCaptured)(GroupStep(control, action, region, epoch, confirmRegion));
         return ParseGroup(action, exit, output);
     }
 
@@ -415,6 +418,7 @@ public static class LocalHosting {
             }
             var message = action switch {
                 "force-restart" => "Force-restarting (no save) and starting from the last completed save:",
+                "fresh-world" => "Archiving the old world and starting the installed build fresh:",
                 "start" => "Starting",
                 "stop" => "Saving, then stopping",
                 "restart" => "Saving, then restarting",
@@ -537,6 +541,8 @@ public static class LocalHosting {
             var text = $"Last action: {last} ({phase})";
             if (Str(operation, "error") is { Length: > 0 } failed) text += ": " + failed;
             parts.Add(text + ".");
+            if (Str(operation, "archive") is { Length: > 0 } archive) parts.Add("Recovery archive: " + archive + ".");
+            if (Str(operation, "validation") is { Length: > 0 } validation) parts.Add(validation + ".");
         }
         var line = string.Join(" ", parts);
         // A region host (Civ13 scripts/shard-group) also lists every region of its group.
