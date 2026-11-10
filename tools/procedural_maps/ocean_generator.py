@@ -95,6 +95,48 @@ def _generate(config,traversal):
         wet=grow(eligible,center,target,priority,'lake-'+str(i));lake_sets.append(wet)
         name='island-lake-'+str(i);lakes.append(dict(id=name,terminal_basin=True,outflow=''))
         for p in wet:at(p).update(terrain='WATER',water='LAKE',salinity='FRESH',body=name,depth_cm=200,soil='SILT')
+    # Optional lake-to-sea rivers: the endpoint grammar is LAKE -> SEA on one
+    # island, with no map-edge inlet. Each river leaves its island lake as one
+    # bounded A* channel through that island's dry land.
+    rivers=[];river_stats=[];river_width=0
+    if 'lake_rivers' in layout:
+        river_count=choose('lake-river-count',layout['lake_rivers'])
+        if river_count:river_width=choose('lake-river-width',water['river_width_tiles'])
+        offsets=[(dx,dy) for dx in range(-(river_width//2),river_width-river_width//2) for dy in range(-(river_width//2),river_width-river_width//2)]
+        for i in sorted(sorted(range(count),key=lambda i:(draw('lake-river-island',slot=i),i))[:river_count]):
+            island=islands[i];lake=lake_sets[i];name='island-lake-'+str(i);rid='island-river-'+str(i)
+            other_water={p for p in all_points if at(p)['water']=='LAKE' and p not in lake}
+            def valid(p,island=island,lake=lake,other_water=other_water):
+                if p not in island or at(p)['water']!='NONE':return False
+                for dx,dy in offsets:
+                    q=(p[0]+dx,p[1]+dy)
+                    if q in lake or q in sea:continue
+                    if q not in island or at(q)['water']!='NONE' or any(t in other_water or t not in island and t not in sea for t in neighbors(q,w,h)):return False
+                return True
+            starts=sorted(q for p in lake for q in neighbors(p,w,h) if q not in lake and valid(q))
+            goals={q for q in island if valid(q) and any(t in sea for t in neighbors(q,w,h))}
+            if not starts or not goals:raise Rejection('OCEAN_RIVER','island '+str(i)+' has no clear lake bank or river mouth')
+            frontier=[(shore_distance[p]*100,0,p) for p in starts];heapq.heapify(frontier);cost={p:0 for p in starts};parent={};end=None;expanded=0
+            while frontier:
+                _,g,p=heapq.heappop(frontier)
+                if g!=cost[p]:continue
+                expanded+=1
+                if p in goals:end=p;break
+                for q in neighbors(p,w,h):
+                    if not valid(q):continue
+                    ng=g+100+draw('lake-river-cost-'+str(i),*q)%40
+                    if ng<cost.get(q,10**30):cost[q]=ng;parent[q]=p;heapq.heappush(frontier,(ng+shore_distance[q]*100,ng,q))
+            if end is None:raise Rejection('OCEAN_RIVER','island '+str(i)+' lake cannot reach the sea')
+            path=[end]
+            while path[-1] in parent:path.append(parent[path[-1]])
+            path.reverse()
+            footprint={(p[0]+dx,p[1]+dy) for p in path for dx,dy in offsets}&island
+            footprint={p for p in footprint if at(p)['water']=='NONE'}
+            for p in footprint:at(p).update(terrain='WATER',water='RIVER',salinity='FRESH',body=rid,depth_cm=30,soil='SILT')
+            island-=footprint
+            lakes[i].update(terminal_basin=False,outflow=rid)
+            rivers.append(dict(id=rid,path=[[x,y,'SURFACE'] for x,y in path],source=dict(kind='LAKE',target=name),sink=dict(kind='SEA',target='ocean')))
+            river_stats.append(dict(river=rid,expanded_cells=expanded,centerline_cells=len(path),footprint_cells=len(footprint)))
     dry={p for p in points if at(p)['water']=='NONE'}
     range_count=choose('range-count',config['mountains']['range_count']);ridges=[];mountains=set()
     island_order=sorted(range(count),key=lambda i:(draw('range-island',slot=i),i))
@@ -133,7 +175,7 @@ def _generate(config,traversal):
     for p in dry:
         if shore_distance[p]<=layout['coast_width_tiles'] and at(p)['terrain']=='PLAIN':at(p).update(terrain='BEACH',soil='SAND')
     walk={p for p in dry if not at(p)['blocked']};max_route=config['starts']['max_route_tiles']
-    banks={p for p in walk if any(at(q)['water']=='LAKE' for q in neighbors(p,w,h))}
+    banks={p for p in walk if any(at(q)['water'] in {'LAKE','RIVER'} for q in neighbors(p,w,h))}
     coasts={p for p in walk if any(q in sea for q in neighbors(p,w,h))}
     fresh_distance,fresh_parent=distances(banks,walk,w,h);coast_distance,coast_parent=distances(coasts,walk,w,h)
     candidates={p for p in walk if fresh_distance.get(p,area)<=max_route and coast_distance.get(p,area)<=max_route and len(neighbors(p,w,h))==4 and all(q in walk for q in neighbors(p,w,h))}
@@ -176,22 +218,26 @@ def _generate(config,traversal):
     ports=[dict(id='ocean-'+side,at=[x,y,'SURFACE'],side=side,role='OCEAN',body='ocean') for side,x,y in [('W',0,h//2),('E',w-1,h//2),('S',w//2,0),('N',w//2,h-1)]]
     doc=dict(schema=OCEAN_VERSION,seed=seed,algorithm_version=ALGORITHM_VERSION,content_version=CONTENT_VERSION,profile_version=PROFILE_VERSION,
              profile='OCEANIC',active_layer='SURFACE',width=w,height=h,layers={'SURFACE':dict(native_z=2,cells=grid),'UNDERGROUND':dict(native_z=1,cells=underground)},
-             ports=ports,rivers=[],lakes=lakes,starts=[[x,y,'SURFACE'] for x,y in starts],portals=[],
+             ports=ports,rivers=rivers,lakes=lakes,starts=[[x,y,'SURFACE'] for x,y in starts],portals=[],
              ocean_policy=dict(island_count=count,island_min_area=layout['island_min_area'],island_gap_tiles=layout['island_gap_tiles'],
-                               start_min_spacing=config['starts']['min_spacing_tiles'],coast_route_max=max_route),
+                               start_min_spacing=config['starts']['min_spacing_tiles'],coast_route_max=max_route,
+                               **({'lake_rivers':len(rivers)} if 'lake_rivers' in layout else {})),
              policy=dict(mountain_min_area=config['mountains']['range_min_area'],mountain_max_components=max(1,range_count),max_moisture_step=25,max_temperature_step=10,
                          max_resource_distance=max_route,max_water_distance=max_route,ship_radius=layout['ship_radius'],ocean_ports_min=4,land_components_min=count,
-                         start_count=len(starts),river_half_width=1,max_path_uphill_m=0))
+                         start_count=len(starts),river_half_width=max(1,2*(river_width//2)),max_path_uphill_m=0))
     reasons=validate(doc);counts=Counter(at(p)['water'] for p in points)
-    for actual,bounds,label in [(area-counts['NONE'],water['coverage_pct'],'total'),(counts['SEA'],water['sea_pct'],'sea'),(counts['LAKE'],water['lake_area_pct'],'lake')]:
+    for actual,bounds,label in [(area-counts['NONE'],water['coverage_pct'],'total'),(counts['SEA'],water['sea_pct'],'sea'),(counts['LAKE'],water['lake_area_pct'],'lake'),(len(rivers),water['river_networks'],'river network')]:
+        if label=='river network':
+            if not bounds[0]<=actual<=bounds[1]:reasons.append(dict(code='CONFIG_REALIZED_WATER',detail='river networks outside configured interval'))
+            continue
         if actual*100+100<bounds[0]*area or actual*100>bounds[1]*area+100:reasons.append(dict(code='CONFIG_REALIZED_WATER',detail=label+' outside configured coverage'))
     if reasons:raise Rejection('INVARIANT_REJECTED',json.dumps(reasons,sort_keys=True))
     manifest=seed_manifest(config,ALGORITHM_VERSION,CONTENT_VERSION,PROFILE_VERSION)
     manifest.update(status='GENERATED_VALID_OFFLINE_IR',generation_result=dict(ir_sha256=canonical_hash(doc),validation_errors=[],native_acceptance='NOT_RUN'),
-                    generated_topology=dict(islands=count,lakes=count,ranges=range_count,river_networks=0,ship_radius=layout['ship_radius']),
+                    generated_topology=dict(islands=count,lakes=count,ranges=range_count,river_networks=len(rivers),ship_radius=layout['ship_radius']),
                     abstract_routes=routes,reserved_route_cells=[list(p) for p in sorted(reserved)],ridge_skeletons=ridges,
                     realized_water_cells=dict(sorted(counts.items())),eligible_vegetation_sites=len(eligible),selected_vegetation_density_pct=vegetation,
-                    bounded_growth=growth_stats,cave_layer='UNGENERATED_BLOCKED_RESERVE',reference_matching='NOT_EVALUATED')
+                    bounded_growth=growth_stats,**({'lake_river_routes':river_stats} if 'lake_rivers' in layout else {}),cave_layer='UNGENERATED_BLOCKED_RESERVE',reference_matching='NOT_EVALUATED')
     return doc,manifest
 
 

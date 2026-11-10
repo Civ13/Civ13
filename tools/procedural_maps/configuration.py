@@ -159,7 +159,8 @@ def _validate_config(d):
         if errors:return errors
         def bad(detail):return [{'code':'CONFIG_OCEAN_LAYOUT','detail':detail}]
         if d['profile']!='OCEANIC':return bad('schema 3 is the oceanic island family only')
-        if type(layout) is not dict or set(layout)!={'island_count','island_min_area','island_gap_tiles','ship_radius','coast_width_tiles','climate_axis'}:return bad('ocean layout keys')
+        base_keys={'island_count','island_min_area','island_gap_tiles','ship_radius','coast_width_tiles','climate_axis'}
+        if type(layout) is not dict or set(layout) not in (base_keys,base_keys|{'lake_rivers'}):return bad('ocean layout keys')
         count=layout['island_count']
         if type(count) is not list or len(count)!=2 or any(type(v) is not int for v in count) or not 2<=count[0]<=count[1]<=6:return bad('island count interval 2..6')
         for key,lo,hi in [('island_min_area',32,8192),('island_gap_tiles',4,24),('ship_radius',1,3),('coast_width_tiles',1,4)]:
@@ -168,7 +169,14 @@ def _validate_config(d):
         if type(axis) is not list or len(axis)!=2 or any(type(v) is not int or not -4<=v<=4 for v in axis) or axis==[0,0]:return bad('nonzero climate axis -4..4')
         if layout['island_gap_tiles']<2*layout['ship_radius']+2:return bad('island gap must fit ship diameter plus two shore cells')
         water=d['water'];starts=d['starts'];mount=d['mountains']
-        if water['river_networks']!=[0,0] or water['swamp_pct']!=[0,0]:return bad('island rivers and swamps are not implemented; require zero')
+        if water['swamp_pct']!=[0,0]:return bad('island swamps are not implemented; require zero')
+        if 'lake_rivers' not in layout:
+            if water['river_networks']!=[0,0]:return bad('island rivers need ocean_layout lake_rivers; otherwise require river_networks [0,0]')
+        else:
+            rivers=layout['lake_rivers']
+            if type(rivers) is not list or len(rivers)!=2 or any(type(v) is not int for v in rivers) or not 0<=rivers[0]<=rivers[1]<=count[0]:return bad('lake_rivers interval 0..minimum island count')
+            if water['river_networks']!=rivers:return bad('river_networks must equal lake_rivers: each river is one island lake draining to the sea')
+            if rivers[1] and water['river_width_tiles'][1]>3:return bad('island lake rivers are 1..3 tiles wide')
         if water['lake_count']!=count or water['lake_area_pct'][0]<1:return bad('one positive inland terminal lake per island; lake count interval must equal island count')
         if starts['count']<count[1]:return bad('at least one start per island for every candidate')
         if mount['range_count'][1]>count[0]:return bad('at most one range per island in this slice')
@@ -187,6 +195,10 @@ def _validate_config(d):
     def exact(v,keys):return type(v) is dict and set(v)==set(keys)
     def ints(v,n,lo,hi):return type(v) is list and len(v)==n and all(type(i) is int and lo<=i<=hi for i in v)
     if d["profile"]!="SURFACE":return bad("config v2 currently supports SURFACE only")
+    from .river_graph import is_graph_layout,validate_layout
+    if is_graph_layout(layout):
+        problem=validate_layout(d)
+        return bad(problem) if problem else []
     if not exact(layout,{"sea_side","inlets","outlet","junction_pct","lake_pct","climate_axis"}):return bad("layout keys")
     if layout["sea_side"] not in {"N","S","E","W","NONE"}:return bad("sea side")
     if type(layout["inlets"]) is not list or not 2<=len(layout["inlets"])<=3:return bad("2..3 inlet ports required")
@@ -220,8 +232,10 @@ def validate_config(d):
     except (TypeError,KeyError,ValueError) as e:return [{"code":"CONFIG_SCHEMA","detail":"malformed versioned configuration: "+str(e)}]
 
 
-def oceanic_preset(seed='ocean-0',width=64,height=80):
-    """Versioned archipelago family; old v1 ocean configs remain unimplemented."""
+def oceanic_preset(seed='ocean-0',width=64,height=80,*,lake_rivers=False):
+    """Versioned archipelago family; old v1 ocean configs remain unimplemented.
+
+    lake_rivers=True lets one or two island lakes drain to the sea by a river."""
     d=preset('OCEANIC',seed);d.update(schema=OCEAN_CONFIG_VERSION,preset='CUSTOM')
     d['dimensions'].update(width=width,height=height)
     d['biome_mix_pct']={'COAST':40,'TEMPERATE':60}
@@ -231,6 +245,9 @@ def oceanic_preset(seed='ocean-0',width=64,height=80):
     d['mountains'].update(range_count=[0,1],range_min_area=16,range_width_tiles=[2,4])
     d['ocean_layout']=dict(island_count=[2,3],island_min_area=64,island_gap_tiles=6,
                            ship_radius=1,coast_width_tiles=2,climate_axis=[1,1])
+    if lake_rivers:
+        d['ocean_layout']['lake_rivers']=[1,2]
+        d['water'].update(river_networks=[1,2],river_width_tiles=[1,2])
     return d
 
 

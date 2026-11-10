@@ -1,4 +1,5 @@
 import copy
+import os
 import hashlib
 import json
 from pathlib import Path
@@ -65,7 +66,7 @@ class PublicCLITests(unittest.TestCase):
             p.write_text('/turf/changed\n')
             with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):read_pinned('source.dm',pin,tmp)
     def test_source_audit_does_not_require_reference_image(self):
-        r=audit();self.assertEqual('NOT_SUPPLIED',r['reference']['status']);self.assertEqual(18,r['levels']['2']['joinlateciv_count'])
+        r=audit(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']);self.assertEqual('NOT_SUPPLIED',r['reference']['status']);self.assertEqual(18,r['levels']['2']['joinlateciv_count'])
     def test_manifest_wrong_config_seed_rejected(self):
         r=generate(port_surface_preset('ports-0',64,80));m=copy.deepcopy(r['manifest']);m['configuration']['seed']='different'
         with self.assertRaisesRegex(ValueError,'CONFIG_BINDING_MISMATCH'):check_manifest(r['document'],m)
