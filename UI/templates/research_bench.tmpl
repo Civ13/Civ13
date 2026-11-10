@@ -5,6 +5,23 @@
 <div id='rt-root'>
 <div id='rt-parchment'>
 
+{{if data.book_mode}}
+<div class='item'>
+	<div class='itemLabel'>Bench tier:</div>
+	<div class='itemContent'>{{:data.bench_tier}} / {{:data.max_tier}}
+		{{if data.tier_upgrade_cost}} (upgrade progress: {{:data.tier_progress}}/{{:data.tier_upgrade_cost}} silver in coins fed){{/if}}
+	</div>
+	<div class='itemLabel'>Book on the bench:</div>
+	<div class='itemContent'>
+		{{if data.book_name}}{{:data.book_name}} {{:helper.link('Take the book', 'circle-minus', {'take_book' : 1})}}
+		{{else}}<span class='rt-locked'>None. Place a book on the bench; research done here is written into it.</span>{{/if}}
+	</div>
+	{{if data.book_chapters && data.book_chapters.length}}
+	<div class='itemLabel'>Finished chapters:</div>
+	<div class='itemContent'>{{for data.book_chapters}}<span class='rt-recipe-tag'>{{:value}}</span> {{/for}}</div>
+	{{/if}}
+</div>
+{{else}}
 <div class='item'>
 	<div class='itemLabel'>Bench tier:</div>
 	<div class='itemContent'>{{:data.bench_tier}} / {{:data.max_tier}}
@@ -27,6 +44,7 @@
 	<div class='item rt-locked'>This bench belongs to another faction. You can only observe it.</div>
 	{{/if}}
 </div>
+{{/if}}
 
 {{if data.owns_bench && (data.is_leader || data.is_director)}}
 <h2>Research staff</h2>
@@ -53,7 +71,11 @@
 <h2>Currently researching: {{:data.assigned_name}}</h2>
 <div class='item'>
 	{{if data.assigned_done}}
+	{{if data.book_mode}}
+	<div class='itemContent rt-done'>The chapter is finished. Study it from the book to learn it.</div>
+	{{else}}
 	<div class='itemContent rt-done'>Completed! Open any completed tech below to write research notes or a book on it.</div>
+	{{/if}}
 	{{else}}
 	<div class='itemContent rt-progress'>{{:data.assigned_status_text}}</div>
 	{{/if}}

@@ -116,6 +116,7 @@ var/knowledge_failures = 0
 		H.civilization = "Other faction"
 		knowledge_check(H.knows_recipe_node(future_id) && !crafting_node_allowed(H, future_id), "changing factions retains knowledge but not another faction's ceiling")
 		H.civilization = "none"
+		check_book_research()
 		knowledge_check(map_storage.Save_World() && map_storage.validate_world_save(), "native body and book durable save")
 		map_storage.ClearMap()
 		knowledge_check(map_storage.Load_World(), "native durable reload")
@@ -130,6 +131,9 @@ var/knowledge_failures = 0
 		knowledge_check(compendium && compendium.node_ids.len == 2 && istext(compendium.node_ids[1]) && ("basic_tools" in compendium.node_ids), "compendium text IDs survive production world reload")
 		knowledge_check(cache && cache.restock_remaining == 12345, "cache cooldown survives production world reload")
 		knowledge_check(!("recipe_books" in durable_metadata_map_schema()), "opt-in configuration does not expand durable map metadata")
+		var/obj/structure/research_bench/knowledge_fixture/open_bench = locate() in locate(7,6,1)
+		var/obj/item/weapon/book/journal = open_bench ? locate(/obj/item/weapon/book) in open_bench.contents : null
+		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
 	catch (var/exception/e)
 		knowledge_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
@@ -167,3 +171,38 @@ var/knowledge_failures = 0
 	materials.produce_recipe(stale, 1, unknown)
 	knowledge_check(materials.amount == 10 && unknown.loc.contents.len == before, "stale direct recipe consumes nothing and creates nothing")
 	qdel(materials)
+
+/mob/living/human/knowledge_fixture/research_presence()
+	return TRUE
+
+// Book research (Val, 2026-11-10): an unowned bench writes research into the
+// book placed on it, and nobody learns a node until they study the chapter.
+/proc/check_book_research()
+	map.book_research = TRUE
+	var/mob/living/human/knowledge_fixture/scholar = new(locate(7,7,1))
+	scholar.civilization = "none"
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(7,6,1))
+	bench.tier = 1
+	var/obj/item/weapon/book/journal = new(locate(7,7,1))
+	journal.dat = "Day one."
+	bench.book_place(journal, scholar)
+	knowledge_check(bench.placed_book() == journal && !bench.faction, "any book can be placed on an unowned bench")
+	bench.try_assign_node(scholar, "iron_tools")
+	knowledge_check(bench.assigned_node == "iron_tools", "a factionless character can set the subject")
+	bench.analysis_tick()
+	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without someone who knows the groundwork")
+	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
+	bench.analysis_tick()
+	knowledge_check(journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
+	var/datum/research_node/N = get_research_node("iron_tools")
+	knowledge_check(journal.add_research_work("iron_tools", N.cost_ticks) && journal.has_research_chapter("iron_tools") && !journal.research_ticks("iron_tools"), "finished work becomes a chapter")
+	knowledge_check(!scholar.knows_recipe_node("iron_tools") && !crafting_node_allowed(scholar, "iron_tools"), "finishing research teaches no one")
+	var/mob/living/human/knowledge_fixture/novice = new(locate(6,7,1))
+	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
+	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
+	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
+	var/obj/item/weapon/book/other = new(locate(7,7,1))
+	bench.book_place(other, scholar)
+	knowledge_check(bench.placed_book() == journal, "one book per bench")
+	qdel(other)
+	map.book_research = FALSE

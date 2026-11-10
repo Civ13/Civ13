@@ -37,6 +37,30 @@ Old version-1 arrivals remain accepted; unsupported versions and unknown node
 IDs are refused rather than silently lost. Knowledge-carrying travel requires
 upgraded peers. The existing payload size and item count limits still apply.
 
+## Book research (Persistence redesign, phase 1)
+
+`code/modules/research_tree/book_research.dm` adds a second opt-in map flag,
+`book_research`, on top of `recipe_books` (`book_research_enabled()` needs both
+and `persistence`). It is off on every map; turning it on is a maintainer
+decision. With it on:
+
+- Research benches belong to nobody. Faction claiming, staff roles, the queue
+  and the bench cap are skipped; anyone can set a bench's subject.
+- Research is written into the book placed on the bench (one ordinary,
+  non-`unique` book; Alt-click or the UI takes it back). The book keeps
+  `research_progress` (`node=ticks=prototype;...`) and `research_chapters`
+  (`node;...`) as text, so progress travels with the book and survives saves.
+- A bench only progresses while someone within one tile knows every
+  prerequisite of the subject (a connected player or an agent character).
+  Prototypes and samples go into the book's progress the same way.
+- Finishing a node writes a chapter and teaches no one. A capstone still moves
+  the world era the first time anyone finishes it. Anyone who knows the
+  groundwork studies the chapter from the book (`BOOK_STUDY_TIME(era_tier)`).
+- Crafting needs the character's own knowledge only: no faction or era grants.
+  Research essentials need the node's groundwork instead of a manual.
+- No first-node manual is produced and enabling the flag grants nothing to
+  existing bodies.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
