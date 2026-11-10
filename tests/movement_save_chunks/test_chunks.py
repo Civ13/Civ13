@@ -238,11 +238,26 @@ class ProductionBoundaryTests(unittest.TestCase):
     def test_capture_budget_diagnostics_keep_original_limits(self):
         self.assertIn('work > 8192 || tick_delta || elapsed_ds > 1', SAVING)
 
+    def test_capture_without_headroom_declines_instead_of_failing_the_save(self):
+        # Gaia 2026-11-09: at time dilation 128% the one-tick wait never found
+        # headroom, so every save and handover threw after level 1.
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertNotIn('no tick headroom after bounded wait', root)
+        wait = root.index('sleep(world.tick_lag)')
+        flag = root.index('\t\tif(world.tick_usage >= 80)\n\t\t\tno_headroom = TRUE')
+        identity = root.index('changed containment, level or identity')
+        decline = root.index('if(no_headroom || !moving_save_root_closed(A))')
+        self.assertLess(wait, flag)
+        self.assertLess(root.index('require_export_frame(parent_frame)'), flag)
+        self.assertLess(flag, identity)
+        self.assertLess(identity, decline)
+        self.assertLess(decline, root.index('var/savefile/staged = new'))
+
     def test_capture_rechecks_closure_and_declines_to_ordinary_path(self):
         # Gaia 2026-11-09: an animal admitted at save start later referenced
         # another movable, and its chunk threw "uncaptured external movable".
         root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        recheck = root.index('if(!moving_save_root_closed(A))')
+        recheck = root.index('if(no_headroom || !moving_save_root_closed(A))')
         self.assertLess(root.index('changed containment, level or identity'), recheck)
         self.assertLess(recheck, root.index('var/savefile/staged = new'))
         self.assertLess(recheck, root.index('moving_save_chunk = chunk'))

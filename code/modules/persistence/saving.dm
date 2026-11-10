@@ -1123,6 +1123,7 @@
 	// Reserve tick headroom before allocating a stage or any root identities.
 	// This wait is bounded; it never occurs inside the synchronous capture.
 	var/datum/save_export_frame/parent_frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	var/no_headroom = FALSE
 	if(world.tick_usage >= 80)
 		sleep(world.tick_lag)
 		if(parent_frame)
@@ -1131,8 +1132,12 @@
 				throw EXCEPTION("Moving save caller changed while awaiting capture headroom")
 		else if(saving_export_stack.len)
 			throw EXCEPTION("Moving save caller appeared while awaiting capture headroom")
+		// A saturated world can stay above the threshold after the bounded wait.
+		// Failing the whole save for one animal blocked every Gaia save and
+		// handover (2026-11-09, time dilation 128%), so the animal is declined
+		// to the ordinary path below once its identity is rechecked.
 		if(world.tick_usage >= 80)
-			throw EXCEPTION("Moving save capture has no tick headroom after bounded wait")
+			no_headroom = TRUE
 	if(!A || record["atom"] != A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
 		throw EXCEPTION("Admitted moving save root changed containment, level or identity")
 	// Admission ran when the save began; a level can take minutes to reach
@@ -1140,7 +1145,7 @@
 	// (a target, a herd mate, a held item), the chunk cannot capture it.
 	// Repeat the side-effect-free closure walk and hand the animal back to
 	// the ordinary path instead (Gaia, 2026-11-09). Nothing is allocated yet.
-	if(!moving_save_root_closed(A))
+	if(no_headroom || !moving_save_root_closed(A))
 		moving_save_roots -= record["identity"]
 		return 0
 	var/turf/origin = A.loc

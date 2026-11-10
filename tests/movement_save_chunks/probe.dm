@@ -255,11 +255,12 @@ var/peak_capture_tick_usage = 0
 		if(world.params["scenario"] == "frontier-delete")
 			world.log << "FRONTIER_DELETE: attempted=[frontier_delete_attempted] refused=[refused]"
 			if(!frontier_delete_attempted) throw EXCEPTION("FRONTIER_DELETE: deletion was not exercised")
-		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "sweep-container", "sweep-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "legacy-cross-z", "sweep-container", "sweep-cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(fixture_is_headroom())
 			if(headroom_waits != 1) throw EXCEPTION("HEADROOM: expected exactly one injected wait")
-			if(world.params["scenario"] == "headroom-nonprogress" && !findtext(refusal_text, "no tick headroom after bounded wait")) throw EXCEPTION("HEADROOM: nonprogress refused for wrong reason")
+			// No headroom after the bounded wait declines the root to the ordinary path; the save completes.
+			if(world.params["scenario"] == "headroom-nonprogress" && map_storage.moving_save_roots.len) throw EXCEPTION("HEADROOM: nonprogress root stayed on the roster")
 			if(world.params["scenario"] == "headroom-parent-closed" && !findtext(refusal_text, "Save export frame is no longer valid")) throw EXCEPTION("HEADROOM: closed caller was not revalidated")
 			if(world.params["scenario"] == "headroom-parent-replaced" && !findtext(refusal_text, "Save export frame is no longer valid") && !findtext(refusal_text, "Save export turf was replaced")) throw EXCEPTION("HEADROOM: replaced caller was not revalidated")
 			if(world.params["scenario"] in list("headroom-delete", "headroom-container", "headroom-cross-z"))
