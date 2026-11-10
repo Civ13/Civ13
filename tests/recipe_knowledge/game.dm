@@ -12,6 +12,8 @@ var/knowledge_failures = 0
 	return port == "none" ? ..() : FALSE
 /obj/map_metadata/knowledge_fixture
 	recipe_books = TRUE
+	// Earlier phases run without book research; check_book_research turns it on.
+	book_research = FALSE
 /obj/map_metadata/knowledge_fixture/New()
 	return
 /mob/living/human/knowledge_fixture/New()

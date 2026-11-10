@@ -13,7 +13,9 @@
 //   research_progress = "node_c=40=0;node_d=12=1"  node=ticks=prototype
 // ============================================================
 
-/obj/map_metadata/var/book_research = FALSE
+// On for Persistence since the research relaunch (Val, 2026-11-10); the launch
+// needs a fresh world, since restored characters would know nothing.
+/obj/map_metadata/var/book_research = TRUE
 
 /obj/map_metadata/proc/book_research_enabled()
 	return recipe_knowledge_enabled() && book_research
