@@ -41,11 +41,21 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
-    'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
-        'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
+    'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
+        'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
             'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
             'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+    'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
+        'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
+        'shared_paths': ('scripts/fixture_global_initialization.py',) + tuple(f'tests/{name}/run.py' for name in (
+            'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
+            'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+    # Offline mocked runner contracts; the native irrigation workflow remains opt-in.
+    'irrigation_ci_runner': {'files': ('tests/irrigation_persistence/test_ci_runner.py',),
+        'paths': ('tests/irrigation_persistence/', 'tests/trench_save/', 'code/world.dm',
+                  '.github/workflows/test.yml', 'scripts/fixture_compiler_output.py',
+                  'scripts/fixture_global_initialization.py')},
     'closet_key_assignment': {'files': ('tests/closet_key_assignment/test_assignment.py',), 'paths': (
         'tests/closet_key_assignment/', 'code/game/objects/structures/crates_lockers/closets.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -354,6 +364,7 @@ SUITES = {
         'paths': ('tests/gun_icon_states/', 'code/_helpers/sprite_states.dm'),
         'shared_paths': (
             'scripts/fixture_compiler_output.py',
+            'scripts/fixture_global_initialization.py',
             'code/game/mob/living/carbon/human/update_icons.dm',
             'code/modules/projectiles/gun.dm',
             'code/modules/projectiles/guns/projectile.dm',
