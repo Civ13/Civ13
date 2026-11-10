@@ -39,6 +39,10 @@
 /obj/structure/curtain/proc/toggle()
 	los_invalidate(src, TRUE)
 	opacity = !opacity
+	if (isturf(loc))
+		var/turf/T = loc
+		T.recalc_atom_opacity()
+		T.reconsider_lights()
 	if (opacity)
 		icon_state = "closed"
 		for(var/obj/roof/R in range(1,src))
