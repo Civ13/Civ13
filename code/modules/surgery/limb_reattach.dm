@@ -22,12 +22,25 @@
 	min_duration = 50
 	max_duration = 70
 
+	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+		if (!..())
+			return FALSE
+		var/obj/item/organ/external/E = tool
+		if (!istype(E) || E.limb_name != target_zone)
+			to_chat(user, "<span class='warning'>That limb does not match the selected body part.</span>")
+			return SURGERY_FAILURE
+		return TRUE
+
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/E = tool
 		user.visible_message("[user] starts attaching [E.name] to [target]'s [E.amputation_point].", \
 		"You start attaching [E.name] to [target]'s [E.amputation_point].")
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+		// Another action may have filled the slot while the operation was in progress.
+		if (can_use(user, target, target_zone, tool) != TRUE)
+			to_chat(user, "<span class='warning'>The limb can no longer be attached there.</span>")
+			return
 		var/obj/item/organ/external/E = tool
 		user.visible_message("<span class='notice'>[user] has attached [target]'s [E.name] to the [E.amputation_point].</span>",	\
 		"<span class='notice'>You have attached [target]'s [E.name] to the [E.amputation_point].</span>")

@@ -154,16 +154,14 @@
 		climbers -= user
 		return
 
-	// Move the user to the appropriate turf based on whether the table is flipped
-	if(flipped)
-		if (get_turf(user) == get_turf(src))
-			user.forceMove(get_step(src, dir)) // move user to dir turf of table.
-		else
-			user.forceMove(get_turf(src)) // move user to turf of flipped table.
-	else
-		user.forceMove(get_turf(src)) // Climb onto it normally if it is not flipped.
+	// A flipped table is crossed in two steps; an upright table is climbed onto.
+	var/turf/climb_destination = get_turf(src)
+	if (flipped && get_turf(user) == climb_destination)
+		climb_destination = get_step(src, dir)
+	var/turf/climb_origin = get_turf(user)
+	user.forceMove(climb_destination)
 
-	if (get_turf(user) == T)
+	if (climb_destination && climb_origin != climb_destination && get_turf(user) == climb_destination)
 		user.visible_message(SPAN_WARNING("[user] climbs [climb_desc] \the [src]!"), SPAN_WARNING("You climb [climb_desc] \the [src]!"))
 		if (istype(src, /obj/structure/table/glass))
 			var/obj/structure/table/glass/G = src

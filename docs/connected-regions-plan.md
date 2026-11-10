@@ -48,10 +48,12 @@ the existing travel path so goods and characters move exactly as now:
    and the region config lists `links` as `{"side": "E", "to": "moon2"}`. A
    generated map knows its neighbours at build time, so no admin approval is
    needed for these; they are part of the world.
-2. **Rail links.** A station on each colony, joined by a train that travels as a
-   party train does today but between two colonies instead of to the yard. The
-   generator places a station plot near the linked edge; players build the
-   track and office, so the line is something they earn.
+2. **Rail links.** See the [physical inter-region train plan](interregion-trains-plan.md)
+   for Val's 2026-11-10 direction: explore by path, establish an outpost and
+   station, then move physical consists through registered map-edge routes
+   via the train-only Rail Yard. The existing stationary party-train interior
+   is not this transport. Group custody, save recovery and complete arrival
+   clearance are prerequisites, not a destination-menu-only change.
 3. **Player-built links** stay as they are: trail markers and launch pads need
    an admin's approval.
 

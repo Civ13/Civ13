@@ -65,5 +65,24 @@ class KnowledgeContract(unittest.TestCase):
         self.assertIn("'0', '-invisible', '-close'", runner)
         self.assertIn("if args.trusted:", runner)
         self.assertIn("'0 errors, 0 warnings'", runner)
+    def test_monk_copy_guards_both_books_before_and_after_wait(self):
+        source = read('code/modules/1713/book.dm')
+        target_guard = proc(source, '/obj/item/weapon/book/proc/monk_copy_blank')
+        source_guard = proc(source, '/obj/item/weapon/book/proc/monk_copy_source_allowed')
+        for field in ('research_chapters', 'research_progress'):
+            self.assertIn(field, target_guard)
+            self.assertIn(field, source_guard)
+        for book_type in ('/obj/item/weapon/book/node_book', '/obj/item/weapon/book/node_compendium'):
+            self.assertIn(book_type, source_guard)
+        for field in ('author', 'dat', 'written_pages', 'page_busy', 'contents'):
+            self.assertIn(field, target_guard)
+        action = proc(source, '/obj/item/weapon/book/attackby')
+        before, after = action.split('if (do_after(user, 200, src))', 1)
+        for guard in ('B.monk_copy_blank()', 'monk_copy_source_allowed()'):
+            self.assertIn(guard, before)
+            self.assertIn(guard, after)
+            self.assertLess(after.index(guard), after.index('qdel(B)'))
+        self.assertIn('recipe_held(user, B)', after)
+        self.assertIn('NB.written_pages = NC.written_pages.Copy()', after)
 if __name__ == '__main__':
     unittest.main()

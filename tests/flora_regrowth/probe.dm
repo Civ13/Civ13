@@ -197,13 +197,19 @@ var/flora_runtime_error = FALSE
 	flora_check(!QDELETED(S) && (locate(/obj/structure/wild/tree_stump/regrowing) in T), "stumps do not regrow in winter")
 	season = "SUMMER"
 	var/obj/structure/blocker = new /obj/structure(T)
-	blocker.density = TRUE
+	blocker.density = FALSE
 	F.regrow_stumps()
-	flora_check(!QDELETED(S), "a stump under something built does not regrow")
+	flora_check(!QDELETED(S), "a stump under a non-dense structure does not regrow")
 	qdel(blocker)
+	var/list/items = list()
+	for (var/i = 1, i <= 33, i++)
+		var/obj/item/created = new(T)
+		items += created
 	F.regrow_stumps()
 	var/obj/structure/wild/tree/live_tree/pine/back = locate() in T
-	flora_check(QDELETED(S) && back && !(locate(/obj/structure/wild/tree_stump) in T), "the stump grows back into a pine")
+	flora_check(QDELETED(S) && back && !(locate(/obj/structure/wild/tree_stump) in T), "the stump ignores itself and regrows despite harmless items")
+	for (var/obj/item/I in items)
+		qdel(I)
 	flora_check(!(S in regrowing_stump_list), "the regrown stump leaves the registry")
 	flora_check(F.trees_regrown == 1, "regrown trees are counted")
 	var/obj/structure/wild/palm/palm = new(T2)
