@@ -127,26 +127,19 @@
 				type_roll = "wolf"
 			else
 				type_roll = "she-wolf"
-		switch(src.t_climate)
-			if("brown")
-				if(type_roll == "wolf")
-					B = new/mob/living/simple_animal/hostile/wolf(loc)
-				else
-					B = new/mob/living/simple_animal/hostile/wolf/female(loc)
-
-			if("polar")
-				if(type_roll == "wolf")
-					B = new/mob/living/simple_animal/hostile/wolf/white(loc)
-				else
-					B = new/mob/living/simple_animal/hostile/wolf/white/female(loc)
-		if(!is_cub) // default spawn if their climates were not matched in the previous switch
+		if(!is_cub)
 			if(type_roll == "wolf")
 				src.males--
-				B = new/mob/living/simple_animal/hostile/wolf(loc)
+				if(src.t_climate == "white")
+					B = new /mob/living/simple_animal/hostile/wolf/white(loc)
+				else
+					B = new /mob/living/simple_animal/hostile/wolf(loc)
 			else
 				src.females--
-				B = new/mob/living/simple_animal/hostile/wolf/female(loc)
-
+				if(src.t_climate == "white")
+					B = new /mob/living/simple_animal/hostile/wolf/white/female(loc)
+				else
+					B = new /mob/living/simple_animal/hostile/wolf/female(loc)
 		else
 			process_cub(is_cub, B, loc) // spawns a cub setting it's src.cub var to 1
 			src.cubs--
