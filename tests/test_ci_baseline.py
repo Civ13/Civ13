@@ -871,6 +871,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_tablet_shared_inputs_survive_other_ownership_without_changing_fallback(self):
         inputs = ['code/game/objects/items/stacks/stack.dm',
                   'code/game/objects/items/stacks/civ_recipes.dm',
+                  'code/modules/persistence/functions.dm',
                   'code/modules/research_tree/research_node.dm',
                   'code/modules/reagents/laboratory.dm']
         inputs += [path.relative_to(ROOT).as_posix()
@@ -914,6 +915,7 @@ class BaselinePolicyTests(unittest.TestCase):
             sources = ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
                        'tools/byond/version.json', *suite['files'],
                        'code/modules/reagents/tablet_press.dm',
+                       'code/modules/persistence/functions.dm',
                        'code/game/objects/items/stacks/stack.dm',
                        'code/game/objects/items/stacks/civ_recipes.dm',
                        'code/modules/research_tree/research_node.dm',

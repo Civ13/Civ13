@@ -17,7 +17,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from source_adapter import ROOT, SOURCE, block, compile_body
+from source_adapter import ROOT, SOURCE, block, compile_body, install_persistence_admission
 
 spec=importlib.util.spec_from_file_location('woodwork_atlas',ROOT/'scripts/atlas/woodworking.py')
 atlas=importlib.util.module_from_spec(spec)
@@ -87,6 +87,8 @@ class Fixture:
                       construct=construct,qdel=lambda obj:setattr(obj,'deleted',True),parent_new=lambda:None,
                       round=round,
                       do_after=lambda *args:self.wait_hook(),SPAN_NOTICE=lambda value:value,to_chat=lambda *args:None)
+        install_persistence_admission(self.env)
+        self.namespaces.append(self.env)
         for name,args in [('woodwork_tool_material','tool'),('woodwork_legacy_nonwood','tool'),('woodwork_knife','tool'),('woodwork_shaping_tool','tool, workpiece'),('woodwork_wooden_hammer','tool'),('woodwork_wedge','tool'),('woodwork_flattening_tool','tool')]:
             func,ns=compile_body(text,'/proc/'+name+'(',args,self.env)
             self.env[name]=func
@@ -135,6 +137,21 @@ class Fixture:
 
 
 class WoodworkingContracts(unittest.TestCase):
+    def test_persistence_admission_rejects_busy_recovery_and_crossed_operation(self):
+        f = Fixture()
+        identity = f.env['persistence_admission_identity']
+        changed = f.env['persistence_admission_changed']
+        self.assertFalse(changed(identity))
+        for name, value in [('persistence_save_in_progress', True),
+                            ('persistence_active_operation', object()),
+                            ('persistence_load_recovery_required', True),
+                            ('persistence_admission_identity', object())]:
+            with self.subTest(name=name):
+                original = f.env[name]
+                f.set_global(name, value)
+                self.assertTrue(changed(identity))
+                f.set_global(name, original)
+        self.assertFalse(changed(identity))
     def test_each_production_action_pays_exactly_once_and_exhausts_inputs(self):
         for mode,spec in SPECS.items():
             with self.subTest(mode=mode):

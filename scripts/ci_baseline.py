@@ -877,6 +877,7 @@ SUITES = {
     'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
         'paths': ('tests/tablet_press/',),
         'shared_paths': ('code/modules/reagents/tablet_press.dm',
+            'code/modules/persistence/functions.dm',
             'code/game/objects/items/stacks/stack.dm',
             'code/game/objects/items/stacks/civ_recipes.dm',
             'code/modules/research_tree/research_node.dm',

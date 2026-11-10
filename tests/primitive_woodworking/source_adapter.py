@@ -33,6 +33,20 @@ def expr(value, fields=()):
     return value
 
 
+def install_persistence_admission(env):
+    """Project the production predicates into the same mutable fixture globals."""
+    text = (ROOT/'code/modules/persistence/functions.dm').read_text()
+    declarations = []
+    for name, arguments in [('persistence_admission_blocked', ''),
+                            ('persistence_admission_changed', 'identity')]:
+        body = block(text, '/proc/'+name+'(').splitlines()[1:]
+        statements = [line.strip() for line in body if line.strip() and not line.strip().startswith('//')]
+        if len(statements) != 1 or not statements[0].startswith('return '):
+            raise AssertionError('Unreviewed persistence predicate: '+name)
+        declarations.append('def '+name+'('+arguments+'):\n    return '+expr(statements[0][7:]))
+    exec(compile('\n'.join(declarations), '<production persistence predicates>', 'exec'), env)
+
+
 def compile_body(text, signature, args, env, fields=()):
     lines=['def projected('+args+'):']
     for raw in block(text,signature).splitlines()[1:]:

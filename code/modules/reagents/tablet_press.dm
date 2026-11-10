@@ -300,7 +300,7 @@
 /datum/tablet_transfer/proc/valid()
 	if (committed || !machine || machine.tablet_action != src || !machine.can_operate(actor) || get_turf(machine) != site || !isturf(machine.loc))
 		return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)
+	if (persistence_admission_changed(save_epoch))
 		return FALSE
 	if (!source.valid() || !target.valid() || source.buffer == target.buffer || machine.beaker != vessel)
 		return FALSE
@@ -509,7 +509,7 @@
 		return FALSE
 	if (!recipe || recipe.result_type != /obj/structure/chem_master/tablet_press/constructed || recipe.req_amount != 20 || !tablet_press_build_allowed(actor, recipe.result_type))
 		return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)
+	if (persistence_admission_changed(save_epoch))
 		return FALSE
 	if (!site || get_turf(actor) != site || stock.loc != source_loc || !stock.crafting_stack_accessible(actor) || stock.material != stock_material || !istype(stock_material, /material/electronics))
 		return FALSE

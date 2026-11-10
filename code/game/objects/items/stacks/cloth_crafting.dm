@@ -58,7 +58,7 @@
 
 /datum/cloth_recipe_payment/proc/valid()
 	if (QDELETED(actor) || QDELETED(stock) || actor.incapacitated() || primary_cost <= 0) return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity) return FALSE
+	if (persistence_admission_changed(save_epoch)) return FALSE
 	if (stock.loc != stock_loc || !stock.crafting_stack_accessible(actor) || get_turf(actor) != site || !stock.can_use(primary_cost)) return FALSE
 	if (primary_cloth && !is_cloth_sheet(stock)) return FALSE
 	if (recipe.one_per_turf && (locate(recipe.result_type) in site)) return FALSE
