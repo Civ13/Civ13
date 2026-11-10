@@ -59,6 +59,7 @@ FLINT_MINING_MANUAL_NATIVE = frozenset({'tests/flint_mining/run.py', 'tests/flin
 RESEARCH_STAFF_OFFLINE_TESTS = frozenset({'tests/research_staff/test_research_staff.py'})
 MAP_TOOLS_OFFLINE_TESTS = frozenset({'tests/map_tools/test_map_tools.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
+ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS = frozenset({'tests/zombie_spawn_selection/test_selection.py'})
 HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
@@ -480,6 +481,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered sweep-loop executable test requires explicit CI review')
+        if path in ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/zombie_spawn_selection/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered zombie-spawn-selection executable test requires explicit CI review')
         if path in HELD_MOVEMENT_OFFLINE_TESTS:
             continue
         if path.startswith('tests/held_movement/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
