@@ -53,11 +53,12 @@ from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 sys.path.insert(0, str(HERE))
 import fresh_world  # noqa: E402
+import group_fresh_world  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world')
+                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -2033,6 +2034,11 @@ def supervise(group, start=detach):
         started['save_validation_error'] = str(error)[:300]
     if not group['transfers']:
         return started
+    # A group fresh world stops the helpers and moves their stores; they stay down
+    # until it has finished (or been recovered by hand).
+    if group_fresh_world.paused(group):
+        started['paused'] = 'group fresh world'
+        return started
     # Helpers that run old code are restarted, but never in the middle of an action.
     refresh = not group_busy(group)
     for region in group['regions']:
@@ -2130,6 +2136,7 @@ def main(argv=None):
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
     parser.add_argument('--confirm-region', help='fresh-world: type the exact selected region id')
+    parser.add_argument('--confirm-group', help='group-fresh-world: type the exact group id')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
     parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
@@ -2155,6 +2162,11 @@ def main(argv=None):
             # The launcher reads the same {"accepted": ..., "ok": true} answer as start (LocalHosting.ParseGroup).
             result = {'accepted': {region['id']: fresh_world.request(host, args.confirm_region)
                                    for region, host in hosts(group, args.region)}, 'refused': {}}
+        elif args.action == 'group-fresh-world':
+            if args.region:
+                raise Refused('the group fresh world acts on every region; leave out --region')
+            result = group_fresh_world.request(group, hosts(group), args.confirm_group, coordinator_pid,
+                                               Platform().terminate)
         elif args.action == 'setup':
             result = setup(group, region_id=args.region)
         elif args.action == 'enrol':

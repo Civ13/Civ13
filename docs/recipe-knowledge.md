@@ -134,8 +134,9 @@ The launch wipe is an operator step, not code: turn on `recipe_books` and
 `book_research` for the Persistence maps, then use **Fresh world** for each
 region (see `docs/launcher-fresh-world.md`). That archives the world saves,
 which hold every saved body, so all characters start over. Fresh world refuses
-regions with transfer links, so a connected region group needs a coordinated
-reset that the tool does not do yet.
+regions with transfer links; a connected region group such as Gaia's uses
+`shard_group.py group-fresh-world --confirm-group GROUP` instead, which also
+archives the transfer stores and account homes.
 
 ## Verification
 
