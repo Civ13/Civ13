@@ -1224,6 +1224,9 @@ SUITES = {
     # Railing dismantling stops if the railing was fastened during the wait (#4413).
     'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
+    'berry_harvest': {'files': ('tests/berry_harvest/test_harvest.py',),
+        'paths': ('tests/berry_harvest/', 'code/game/objects/structures/berries.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
