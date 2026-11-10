@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
+        'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
+                  'docs/firearm-migration-inventory.md')},
     'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
         'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
