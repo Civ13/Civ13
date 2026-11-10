@@ -75,9 +75,6 @@
 		npc_subtile_species_walk("away", M, 3, 0, 3)
 		return
 	if (prob(10))
-		if (origin)
-			var/obj/structure/sink/S = origin
-			S.mosquito_count--
 		qdel(src)
 		return
 
@@ -85,9 +82,6 @@
 	if (istype(O, /obj/item/weapon/swatter/modern))
 		if (prob(75))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			if (origin)
-				var/obj/structure/sink/S = origin
-				S.mosquito_count--
 			qdel(src)
 			return
 		else
@@ -96,9 +90,6 @@
 	else if (istype(O, /obj/item/weapon/swatter))
 		if (prob(30))
 			visible_message("[user] swats \the [src] with \the [O]!")
-			if (origin)
-				var/obj/structure/sink/S = origin
-				S.mosquito_count--
 			qdel(src)
 			return
 		else
