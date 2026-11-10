@@ -27,10 +27,17 @@
 	if(saving_reference_pins.len + saving_list_pins.len > TRAIN_BODY_NODES || wire_edges > TRAIN_BODY_EDGES)
 		throw EXCEPTION("Body graph budget exceeded")
 
+// Diagnostic paths/field names only: never character names, values or ckeys.
+/map_storage/train_body_graph/proc/body_source_context()
+	if(!saving_export_stack.len) return "root"
+	var/datum/save_export_frame/frame = saving_export_stack[saving_export_stack.len]
+	if(!frame || !frame.source) return "unknown"
+	return "[frame.source.type].[frame.current_field]"
+
 /map_storage/train_body_graph/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE, datum/human_request = null)
 	save_work_check()
 	if(traversal && (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))) return 0
-	if(!A || !admitted_type(A.type)) throw EXCEPTION("Unsupported body graph type")
+	if(!A || !admitted_type(A.type)) throw EXCEPTION("Unsupported body graph type: [A ? A.type : null] from [body_source_context()]")
 	if(istype(A, /atom/movable) && !body_members[A])
 		throw EXCEPTION("Body graph references an external movable")
 	if(!A.should_save) throw EXCEPTION("Body graph contains an unsaved datum")
@@ -42,7 +49,7 @@
 	if(isturf(value) || isarea(value) || istype(value, /obj/map_metadata) || istype(value, /client))
 		throw EXCEPTION("Body graph references external world/session state")
 	if(!isnull(value) && !isnum(value) && !istext(value) && !ispath(value) && !islist(value) && !istype(value, /datum))
-		throw EXCEPTION("Body graph contains a nonportable resource")
+		throw EXCEPTION("Body graph contains a nonportable resource from [body_source_context()]")
 	if(islist(value))
 		var/list/L = value
 		if(L.len > TRAIN_BODY_EDGES) throw EXCEPTION("Body graph list exceeds budget")
@@ -64,7 +71,7 @@
 		if(queue.len > TRAIN_BODY_NODES) throw EXCEPTION("Body containment exceeds budget")
 		var/atom/movable/A = queue[i]
 		if(body_members[A]) throw EXCEPTION("Body containment repeats an atom")
-		if(!admitted_type(A.type) || !A.should_save) throw EXCEPTION("Unsupported body inventory")
+		if(!admitted_type(A.type) || !A.should_save) throw EXCEPTION("Unsupported body inventory: [A.type] in [A.loc ? A.loc.type : null]; should_save=[A.should_save]")
 		body_members[A] = TRUE
 		for(var/atom/movable/child in A.contents)
 			// Lighting overlays are deliberately runtime-only in world saves.

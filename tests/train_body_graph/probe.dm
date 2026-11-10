@@ -92,6 +92,13 @@ var/global/body_runtime_error = FALSE
 	return FALSE
 // isolated_startup suppresses global_init/New; restore only production data
 // catalogs needed by real body constructors, not services/world startup.
+// Same isolated metadata fixture pattern as human_corpse_decay: real metadata
+// fields, no production map timers. Human nomads_spawn callback remains intact.
+/obj/map_metadata/train_body_fixture
+	ID = "TRAIN_BODY_FIXTURE"
+/obj/map_metadata/train_body_fixture/New()
+	map = src
+
 /proc/body_fixture_catalogs()
 	config = new
 	config.webhook_can_fire = FALSE
@@ -103,6 +110,7 @@ var/global/body_runtime_error = FALSE
 	initialize_chemical_reagents()
 	initialize_chemical_reactions()
 	populate_material_list()
+	new /obj/map_metadata/train_body_fixture
 	if(!all_species["Human"] || !all_languages.len || !male_body_builds["Default"] || !female_body_builds["Default"] || !chemical_reagents_list["blood"])
 		throw EXCEPTION("Production body fixture catalogs unavailable")
 
