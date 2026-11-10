@@ -325,11 +325,12 @@
 		return
 	if (choices[pick] == "read")
 		return ..()
-	study_research_chapter(H, choices[pick])
+	study_research_source(H, src, choices[pick])
 
-/obj/item/weapon/book/proc/study_research_chapter(mob/living/human/H, node_id)
+// Study a chapter from a book or a loose torn-out chapter page.
+/proc/study_research_source(mob/living/human/H, obj/item/source, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
-	if (!N || !has_research_chapter(node_id))
+	if (!N || !source || !source.holds_research_chapter(node_id))
 		return FALSE
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know <b>[N.name]</b>."))
@@ -339,11 +340,11 @@
 		return FALSE
 	var/time = BOOK_STUDY_TIME(N.era_tier)
 	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name]. This takes about [round(time / 600, 0.5)] minute\s."))
-	if (!do_after(H, time, src) || QDELETED(src) || !has_research_chapter(node_id) || !H.Adjacent(src) || H.incapacitated())
+	if (!do_after(H, time, source) || QDELETED(source) || !source.holds_research_chapter(node_id) || !H.Adjacent(source) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
 		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
-		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. The book can be used again."))
+		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		return TRUE
 	return FALSE
 

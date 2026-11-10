@@ -146,7 +146,12 @@
 		// is_node_done handles a null/"none" faction fine (baseline-era grants
 		// don't depend on faction), so factionless players get their era's
 		// baseline nodes here instead of falling back to legacy thresholds.
-		if (node_req && map)
+		if (node_req && map && map.book_research_enabled())
+			// Book research: rows follow the world era; the craft itself checks
+			// the character's own knowledge (crafting_recipe_allowed).
+			var/datum/research_node/RN = get_research_node(node_req)
+			research_allowed = is_book_research_writing_supply(i[3]) || (RN && RN.era_tier <= map.ordinal_age)
+		else if (node_req && map)
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else
 			research_allowed = is_basic_crafting_recipe(i[3])

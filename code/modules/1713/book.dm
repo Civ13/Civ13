@@ -61,12 +61,21 @@
 					NB.k_level = NC.k_level = 0
 					NB.styleb = NC.styleb = "scroll"
 					qdel(B)
+	if (istype(W, /obj/item/weapon/paper) && can_hold_research() && ishuman(user))
+		reinsert_page(user, W)
+		return
 	if (istype(W, /obj/item/weapon/pen))
 		if (unique)
 			to_chat(user, "Looks like you can't modify it.")
 			return
-		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", list("Title", "Contents", "Author", "Cancel"), FALSE)
+		var/list/pen_choices = list("Title", "Contents", "Author")
+		if (map && map.book_research_enabled() && can_hold_research())
+			pen_choices += "Research chapter"
+		pen_choices += "Cancel"
+		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", pen_choices, FALSE)
 		switch(choice)
+			if ("Research chapter")
+				write_research_chapter(user, W)
 			if ("Title")
 				var/newtitle = reject_bad_text(sanitizeSafe(player_input(usr, "Write a new title:", null, null, "text", null, FALSE)))
 				if (!newtitle)
@@ -82,7 +91,7 @@
 					return
 				else
 					var/t = parsepencode(content, W, user)
-					dat += t
+					add_written_page(t)
 			if ("Author")
 				var/newauthor = sanitize(player_input(usr, "Write the author's name:", null, null, "text", null, FALSE))
 				if (!newauthor)

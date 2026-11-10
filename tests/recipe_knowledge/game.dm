@@ -136,6 +136,11 @@ var/knowledge_failures = 0
 		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
+		var/obj/item/weapon/book/reloaded_diary
+		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
+			if (candidate.has_research_chapter("basic_tools"))
+				reloaded_diary = candidate
+		knowledge_check(reloaded_diary && reloaded_diary.page_list().len == 2 && findtext(reloaded_diary.dat, "New entry."), "pages and written chapters survive reload")
 	catch (var/exception/e)
 		knowledge_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
@@ -215,8 +220,37 @@ var/knowledge_failures = 0
 	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
+	check_book_pages(scholar, novice, journal)
 	var/obj/item/weapon/book/other = new(locate(7,7,1))
 	bench.book_place(other, scholar)
 	knowledge_check(bench.placed_book() == journal, "one book per bench")
 	qdel(other)
 	map.book_research = FALSE
+
+// Books from memory (Val, 2026-11-10): pages, chapters written from memory,
+// ripping pages out and putting them back, parchment and writing supplies.
+/proc/check_book_pages(mob/living/human/scholar, mob/living/human/novice, obj/item/weapon/book/journal)
+	knowledge_check(crafting_recipe_allowed(novice, "/obj/item/weapon/pen/pencil") && crafting_recipe_allowed(novice, "/obj/item/weapon/paper") && crafting_recipe_allowed(novice, "/obj/item/weapon/book") && !crafting_recipe_allowed(novice, "/obj/item/weapon/pen"), "pencil, paper and blank book are free; the pen is not")
+	var/obj/item/weapon/book/diary = new(locate(6,6,1))
+	diary.dat = "Old entry."
+	knowledge_check(diary.add_written_page("New entry.") && diary.page_list().len == 2 && findtext(diary.dat, "Old entry.") && findtext(diary.dat, "New entry."), "a book is written as pages, older text first")
+	var/obj/item/weapon/paper/torn = diary.tear_out_page(1, locate(6,6,1))
+	knowledge_check(torn && torn.info == "Old entry." && diary.page_list().len == 1 && !findtext(diary.dat, "Old entry."), "a ripped-out page takes its writing with it")
+	knowledge_check(diary.bind_loose_page(torn) && diary.page_list().len == 2, "a loose page can be bound back in")
+	qdel(torn)
+	var/obj/item/weapon/paper/parchment/sheet = new(locate(6,6,1))
+	knowledge_check(blank_writing_sheet(sheet), "parchment works as a blank sheet")
+	scholar.stats["stamina"][1] = 100
+	knowledge_check(diary.commit_written_chapter(scholar, "basic_tools", sheet) && diary.has_research_chapter("basic_tools") && QDELETED(sheet) && scholar.stats["stamina"][1] == 100 - BOOK_WRITE_STAMINA(0), "writing a known node uses a sheet and stamina")
+	var/obj/item/weapon/paper/spare = new(locate(6,6,1))
+	knowledge_check(!diary.commit_written_chapter(novice, "basic_tools", spare) && !diary.commit_written_chapter(scholar, "iron_smithing", spare), "only known, unwritten nodes can be written")
+	scholar.stats["stamina"][1] = 1
+	var/obj/item/weapon/book/tired = new(locate(6,6,1))
+	knowledge_check(!tired.commit_written_chapter(scholar, "basic_tools", spare) && !QDELETED(spare), "too tired to write")
+	scholar.stats["stamina"][1] = 100
+	var/obj/item/weapon/paper/research_page/page = journal.tear_out_page("iron_tools", locate(6,6,1))
+	knowledge_check(istype(page) && page.node_id == "iron_tools" && !journal.has_research_chapter("iron_tools") && page.holds_research_chapter("iron_tools"), "a ripped-out chapter becomes a studyable page")
+	knowledge_check(journal.bind_loose_page(page) && journal.has_research_chapter("iron_tools"), "a torn chapter can be bound back in")
+	qdel(page)
+	qdel(spare)
+	qdel(tired)
