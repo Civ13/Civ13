@@ -10,6 +10,10 @@
 /obj/map_metadata/proc/apply_persistence_age_floor()
 	if (!persistence)
 		return
+	// Book research climbs from 5000 B.C. by players alone: no floor, no clock.
+	if (book_research_enabled())
+		autoresearch = FALSE
+		return
 	if (age != "5000 B.C." && age != "313 B.C.")
 		if (!istext(age))
 			return

@@ -529,6 +529,10 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	check_events()
 	if (nomads)
 		sync_autoresearch_baselines()
+		// With book research the era moves only when a capstone is finished
+		// (book_research_node_finished), never by faction research points.
+		if (book_research_enabled())
+			return
 		if (!age1_done)
 			var/count = 0
 			for(var/i = 1, i <= custom_faction_nr.len, i++)
