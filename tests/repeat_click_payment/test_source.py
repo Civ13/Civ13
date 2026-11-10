@@ -7,6 +7,7 @@ The mould pour itself has a native case in tests/stone_molds/casting.dm.
 """
 from pathlib import Path
 import importlib.util
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,6 +25,20 @@ def proc(path, declaration):
 
 
 class RepeatClickPayment(unittest.TestCase):
+    def test_slot_machine_jackpot_distinguishes_symbol_from_payout_weight(self):
+        source = read('code/game/objects/structures/slotmachine.dm')
+        body = proc('code/game/objects/structures/slotmachine.dm', '/obj/machinery/slotmachine/proc/check_win')
+        weights = dict((name, int(weight)) for name, weight in re.findall(r'"(\w+)"\s*=\s*(\d+)',
+                       re.search(r'var/weights = list\(([^\n]+)\)', source).group(1)))
+        self.assertIn('var/weight = weights[slots["1"]]', body)
+        condition = re.search(r'if \(([^\n]+)\) //Case of jackpot', body).group(1)
+        self.assertIn('prize = jackpot\n\t\t\tjackpot = 0', body)
+        operand = re.fullmatch(r'(weight|slots\["1"\]) == "Seven"', condition).group(1)
+        def is_jackpot(symbol):
+            return (weights[symbol] if operand == 'weight' else symbol) == 'Seven'
+        self.assertTrue(is_jackpot('Seven'))
+        self.assertFalse(is_jackpot('Diamond'))
+
     def assert_order(self, body, *tokens):
         last = -1
         for token in tokens:
