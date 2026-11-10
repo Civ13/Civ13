@@ -1,3 +1,4 @@
+#include "component_ownership.dm"
 // Test-only overlay loaded by run-game.ps1; excluded from the production dme.
 // Uses real hulls, masts, passengers, forceMove callbacks and boat procedures.
 // ChangeTurf initialization can call Entered(null) on this checkout. This adapter
@@ -47,6 +48,11 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	return ..(O)
 /datum/boat_game_probe/New()
 	spawn(200)
+		// Large selected maps (Gaia) can still be initializing the ticker here.
+		var/waited = 0
+		while((!map || !ticker) && waited < 600)
+			sleep(10)
+			waited += 10
 		run_tests()
 /datum/boat_game_probe/proc/check(condition, label)
 	if(condition)
@@ -274,7 +280,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	var/obj/item/weapon/grenade/frag/vehicle_probe/armed = new(locate(81,44,1))
 	owned += armed
 	armed.det_time = 30
-	armed.active = TRUE
+	// activate() now ignores an already-active grenade, so let it set active itself.
 	armed.activate()
 	blast_points.Cut()
 	check(!(armed in A.transporting),"external primed grenade starts outside tank")
@@ -325,6 +331,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 			save_result()
 			del(world)
 			return
+		test_component_ownership()
 		// A built, unlinked ship frame (and the walls on it) cannot be pulled away.
 		var/obj/structure/vehicleparts/frame/ship/steel/loose = new(locate(50,40,1))
 		var/mob/living/human/puller = new(locate(51,40,1))

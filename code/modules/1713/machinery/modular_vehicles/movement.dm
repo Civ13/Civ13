@@ -157,9 +157,14 @@
 
 	Destroy()
 		if (axis)
-			axis.wheels -= src
-		if (connected)
+			while (src in axis.wheels)
+				axis.wheels -= src
+			while (src in axis.masts)
+				axis.masts -= src
+		if (connected && connected.mwheel == src)
 			connected.mwheel = null
+		axis = null
+		connected = null
 		..()
 
 
