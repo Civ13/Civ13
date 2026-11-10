@@ -252,8 +252,18 @@ var/knowledge_failures = 0
 	knowledge_check(diary.add_written_page("New entry.") && diary.page_list().len == 2 && findtext(diary.dat, "Old entry.") && findtext(diary.dat, "New entry."), "a book is written as pages, older text first")
 	var/obj/item/weapon/paper/torn = diary.tear_out_page(1, locate(6,6,1))
 	knowledge_check(torn && torn.info == "Old entry." && diary.page_list().len == 1 && !findtext(diary.dat, "Old entry."), "a ripped-out page takes its writing with it")
-	knowledge_check(diary.bind_loose_page(torn) && diary.page_list().len == 2, "a loose page can be bound back in")
+	knowledge_check(bindable_loose_page(torn) && diary.bind_loose_page(torn) && diary.page_list().len == 2, "a loose page can be bound back in")
 	qdel(torn)
+	var/obj/item/weapon/paper/stamped_doc = new(locate(6,6,1))
+	stamped_doc.info = "Decree."
+	stamped_doc.stamps = "<br><i>Stamped.</i>"
+	var/obj/item/weapon/paper/recorded_doc = new(locate(6,6,1))
+	recorded_doc.info = "Ledger."
+	recorded_doc.document_record = list("sections" = list())
+	knowledge_check(!bindable_loose_page(stamped_doc) && !bindable_loose_page(recorded_doc), "stamped sheets and documents can't be bound")
+	knowledge_check(!diary.reinsert_page(scholar, stamped_doc) && !QDELETED(stamped_doc) && stamped_doc.stamps && diary.page_list().len == 2, "refusing to bind a document keeps it intact")
+	qdel(stamped_doc)
+	qdel(recorded_doc)
 	var/obj/item/weapon/paper/parchment/sheet = new(locate(6,6,1))
 	knowledge_check(blank_writing_sheet(sheet), "parchment works as a blank sheet")
 	scholar.stats["stamina"][1] = 100

@@ -240,6 +240,14 @@ var/global/list/book_research_writing_supplies = list(
 	P.update_icon()
 	return P
 
+// Only a plain written sheet (or a torn chapter) can be bound: its text is all
+// it has. Documents, stamped or formatted sheets keep their own record and stay
+// loose, since binding would delete the original.
+/proc/bindable_loose_page(obj/item/weapon/paper/P)
+	if (istype(P, /obj/item/weapon/paper/research_page))
+		return TRUE
+	return istype(P) && (P.type == /obj/item/weapon/paper || P.type == /obj/item/weapon/paper/parchment) && isnull(P.document_record) && !P.rigged && !P.fields && !length(P.stamps) && !length(P.stamped) && !length(P.ico) && !length(P.contents)
+
 // Adds a loose sheet back as a page or chapter. The caller deletes the sheet.
 /obj/item/weapon/book/proc/bind_loose_page(obj/item/weapon/paper/P)
 	var/obj/item/weapon/paper/research_page/R = istype(P, /obj/item/weapon/paper/research_page) ? P : null
@@ -257,11 +265,14 @@ var/global/list/book_research_writing_supplies = list(
 	if (!R && !length(P.info))
 		to_chat(H, SPAN_WARNING("There is nothing written on [P]."))
 		return FALSE
+	if (!bindable_loose_page(P))
+		to_chat(H, SPAN_WARNING("[P] is a document with marks of its own; binding it would lose them."))
+		return FALSE
 	to_chat(H, SPAN_NOTICE("You begin binding [P] into [src]."))
 	page_busy = TRUE
 	var/done = do_after(H, BOOK_REINSERT_TIME, src)
 	page_busy = FALSE
-	if (!done || QDELETED(src) || QDELETED(P) || !recipe_held(H, P))
+	if (!done || QDELETED(src) || QDELETED(P) || !recipe_held(H, P) || !bindable_loose_page(P))
 		return FALSE
 	if (!bind_loose_page(P))
 		return FALSE
