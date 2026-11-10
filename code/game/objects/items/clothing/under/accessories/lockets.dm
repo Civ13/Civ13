@@ -15,14 +15,11 @@
 	if (!base_icon)
 		base_icon = icon_state
 
-	if (!("[base_icon]_open" in icon_states(icon)))
-		to_chat(user, "\The [src] doesn't seem to open.")
-		return
-
 	open = !open
 	to_chat(user, "You flip \the [src] [open?"open":"closed"].")
 	if (open)
-		icon_state = "[base_icon]_open"
+		if ("[base_icon]_open" in icon_states(icon))
+			icon_state = "[base_icon]_open"
 		if (held)
 			to_chat(user, "\The [held] falls out!")
 			held.loc = get_turf(user)
