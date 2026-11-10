@@ -42,6 +42,9 @@ var/list/tape_roll_applications = list()
 
 /obj/item/tape/New()
 	..()
+	initialize_hazard_overlays()
+
+/proc/initialize_hazard_overlays()
 	if(!hazard_overlays)
 		hazard_overlays = list()
 		hazard_overlays["[NORTH]"]	= new/image('icons/effects/warning_stripes.dmi', icon_state = "N")
@@ -210,6 +213,7 @@ var/list/tape_roll_applications = list()
 		to_chat(user, "<span class='notice'>You finish placing \the [src].</span>")
 
 	if (isfloor(A))
+		initialize_hazard_overlays()
 		var/turf/F = A
 		var/direction = user.loc == F ? user.dir : turn(user.dir, 180)
 		var/icon/hazard_overlay = hazard_overlays["[direction]"]
