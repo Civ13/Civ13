@@ -20,8 +20,8 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 BEGIN, END = "// BEGIN_SELECTED_MAP", "// END_SELECTED_MAP"
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
-REQUIRED_CHECKS = ("map_objects", "raider_kit", "crew_door", "departure", "recall_cycle", "lift_balloon",
-                   "lives_and_beds", "line_collapse")
+REQUIRED_CHECKS = ("map_objects", "raider_kit", "new_shuttle", "crew_door", "departure", "recall_cycle",
+                   "boarding_pass", "lift_balloon", "lives_and_beds", "line_collapse", "shuttle_saved_and_restored")
 
 
 def generate(prefix):

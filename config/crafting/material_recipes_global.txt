@@ -2003,6 +2003,7 @@ RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_ba
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,production,115,0,0,8,null
+RECIPE: /material/steel/,offshore drilling rig,/obj/structure/oilwell/offshore,45,400,1,1,production,120,0,0,8,null
 
 RECIPE: /material/steel/,steam engine,/obj/structure/engine/external/steam,15,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,production,95,0,0,8,null
