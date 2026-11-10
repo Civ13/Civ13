@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
+        'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Offline fixture composition only; this suite does not launch BYOND.
     'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
         'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
