@@ -48,18 +48,20 @@
 /proc/train_route_network(obj/structure/region_gate/railway_station/S)
 	var/list/pending = list()
 	var/list/seen = list()
+	// seen marks a turf when it is queued, so the queue never rescans itself.
 	for(var/turf/T in range(2, S))
-		if(rail_at(T))
-			pending |= T
+		if(rail_at(T) && !seen[T])
+			seen[T] = TRUE
+			pending += T
 	var/index = 1
 	while(index <= pending.len)
 		if(pending.len > 50000) return null
 		var/turf/T = pending[index++]
-		if(seen[T]) continue
-		seen[T] = TRUE
 		for(var/d in cardinal)
 			var/turf/N = get_step(T, d)
-			if(N && !seen[N] && rail_at(N)) pending |= N
+			if(N && !seen[N] && rail_at(N))
+				seen[N] = TRUE
+				pending += N
 	return seen
 
 /proc/train_route_inward(turf/T)
