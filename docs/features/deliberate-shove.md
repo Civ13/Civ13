@@ -48,3 +48,24 @@ fixture/client test for:
   larger targets, disabled smooth movement, and unchanged animal behavior.
 
 No live-server or in-game result is claimed by this draft.
+
+## Validation recorded 2026-11-10
+
+At implementation commit `eb56ba9b69f87473fe131c70d717117257dd4577`:
+
+- Full-game BYOND 516.1688 compile: 0 errors, 0 warnings.
+- Shove offline suite: 17 passed. CI policy: 239 passed.
+- Full offline preflight initially passed 175/176 suites. Its LOS suite used
+  pre-commit event context; rerunning with committed exact base/head passed
+  all 147 LOS tests. The failed first result is not presented as a full green run.
+- Local draft-event selection selected `tests/shove` and the game build.
+- Exact-source native fixture compiled: 0 errors, 0 warnings.
+- **Native runtime blocked, not passed:** the existing Windows owned-process
+  containment detected DreamDaemon's startup loopback listener and terminated
+  the owned job before fixture assertions. No gameplay assertion or visual
+  acceptance ran. Cleanup verified all retained processes exited with no
+  unexpected process or cleanup error. The containment was not weakened.
+
+The 46 checks in the native runner are expected coverage, not observed passes.
+This PR remains draft pending an approved environment where that fixture can
+run within its containment rules and client-level acceptance can be completed.
