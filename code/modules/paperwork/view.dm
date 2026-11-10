@@ -151,6 +151,8 @@
 	if (!data)
 		return null
 	var/body = paper_document_view_body(data, src)
+	// Stamp images are sent only to a reader this route already admitted.
+	paper_stamp_send_assets(reader, src)
 	return "<HTML><HEAD><TITLE>" + paper_document_view_title(name) + "</TITLE></HEAD><BODY style=\"background:#FFFFFF;color:#000000\">" + body + "</BODY></HTML>"
 
 /obj/item/weapon/paper/proc/show_document(mob/reader, forceshow = FALSE, route = "paper", atom/owner = null)

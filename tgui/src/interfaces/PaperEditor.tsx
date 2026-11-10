@@ -58,6 +58,11 @@ function legacyFace(value: string | null, current: Face): Face {
 function legacyInk(value: string | null, current: string): string {
   try { return value ? ink(value.trim().replace(/^["']|["']$/g, '')) : current; } catch { return current; }
 }
+// A stamp impression keeps its stamp's name as alt text; show it as words.
+export function stampLabel(alt: string | null): string {
+  const name = cleanText(alt ?? '').trim().slice(0, 64);
+  return name ? `[stamp: ${name}]` : '[stamp]';
+}
 export function legacyPieces(html: string): PaperPiece[] {
   if (!html) return [];
   if (typeof DOMParser !== 'function') throw new Error('Unsupported legacy paper');
@@ -85,7 +90,7 @@ export function legacyPieces(html: string): PaperPiece[] {
     const element = node as Element, tag = element.tagName.toUpperCase();
     if (LEGACY_SKIP.has(tag)) return;
     if (tag === 'BR') { push({ br: true, ...style }); return; }
-    if (tag === 'IMG') { push({ text: '[stamp]', ...style, italic: true }); return; }
+    if (tag === 'IMG') { push({ text: stampLabel(element.getAttribute('alt')), ...style, italic: true }); return; }
     const next = { ...style };
     if (tag === 'B' || tag === 'STRONG' || /^H[1-6]$/.test(tag)) next.bold = true;
     if (tag === 'I' || tag === 'EM') next.italic = true;

@@ -41,8 +41,17 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/subtile_movement.dm',
+                         'code/game/mob/living/living.dm', 'tests/save_movement/source_adapter.py')},
     'stethoscope_examination': {'files': ('tests/stethoscope/test_examination.py',),
         'paths': ('tests/stethoscope/', 'code/game/objects/items/clothing/under/accessories/stethoscope.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
+        'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
+                  'code/game/objects/items/clothing/under/accessories/storage.dm',
+                  'code/modules/1713/jobs/japanese.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
         'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
@@ -779,7 +788,8 @@ SUITES = {
                                   'tests/paper_documents/test_authoring.py',
                                   'tests/paper_documents/test_lifecycle.py',
                                   'tests/paper_documents/test_editor.py',
-                                  'tests/paper_documents/test_study.py'),
+                                  'tests/paper_documents/test_study.py',
+                                  'tests/paper_documents/test_stamps.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
@@ -1068,6 +1078,8 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
         'tests/jungle_hiding/',)},
+    'foraging': {'files': ('tests/foraging/test_contract.py',), 'paths': (
+        'tests/foraging/', 'code/modules/ecology/foraging.dm', 'docs/foraging.md')},
     'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py', 'tests/flora_regrowth/test_site_occupancy.py'), 'paths': (
         'tests/flora_regrowth/', 'tests/ecology_spawning/', 'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm')},
     'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (

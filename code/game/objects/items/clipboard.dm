@@ -66,6 +66,10 @@
 		toppaper.attackby(W, usr)
 		update_icon()
 
+	else if (istype(toppaper) && istype(W, /obj/item/weapon/stamp))
+		toppaper.attackby(W, user)
+		update_icon()
+
 	return
 
 /obj/item/weapon/clipboard/attack_self(mob/user as mob)

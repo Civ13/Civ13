@@ -298,6 +298,10 @@
 					to_chat(M, SPAN_WARNING("I can't manage to shove myself."))
 					return FALSE
 
+				// Chest and untargeted Disarm make space; aimed disarms retain their
+				// existing weapon/grip handling below. Do not randomize this choice.
+				if (M.targeted_organ == "chest" || M.targeted_organ == "random")
+					return try_deliberate_shove(M)
 				M.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Disarmed [name] ([ckey])</font>"))
 				append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been disarmed by [M.name] ([M.ckey])</font>"))
 
@@ -498,3 +502,79 @@
 		spawn(10)
 			check_pressure(user, target_zone)
 			return
+// Deliberate human-to-human separation. Aimed Disarm and martial arts retain
+// their existing dispatch. These deadlines are transient, never save data.
+/mob/living/human
+	var/tmp/next_deliberate_shove = 0
+	var/tmp/shove_recovery_until = 0
+
+/mob/living/human/proc/shove_body_ready()
+	for (var/obj/structure/noose/N in loc)
+		if (N.hanging == src)
+			return FALSE
+	return human_subtile_enabled && human_subtile_shape() && !stat && !lying && !prone && !anchored && !driver && !transforming && !throwing && !(status_flags & LEAPING) && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && !other_mobs && !subtile_pull_ownership.owners[src]
+
+/mob/living/human/proc/try_deliberate_shove(mob/living/human/user)
+	if (!user || user == src || user.stat || !user.canmove || user.lying || user.prone || user.restrained() || user.buckled || !isturf(user.loc) || !isturf(loc) || z != user.z || !Adjacent(user))
+		return FALSE
+	if (user.pacifist || user.next_deliberate_shove > world.time)
+		return FALSE
+	if (shove_recovery_until > world.time)
+		to_chat(user, SPAN_WARNING("[src] is already recovering from a shove."))
+		return FALSE
+	if (user.stats["stamina"][1] < 10)
+		to_chat(user, SPAN_WARNING("You need to catch your breath!"))
+		return FALSE
+	user.next_deliberate_shove = world.time + 20
+	user.setClickCooldown(20)
+	user.stats["stamina"][1] = max(0, user.stats["stamina"][1] - 10)
+	user.do_attack_animation(src)
+	// Freeing a grip is the whole action, not a free disarm plus displacement.
+	if (break_all_grabs(user))
+		playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+		return TRUE
+	if (human_subtile_pulse || istype(human_subtile_transaction, /datum/human_subtile_transaction/shove) || !shove_body_ready() || mob_size > user.mob_size)
+		to_chat(user, SPAN_WARNING("You cannot shove [src] back from this position."))
+		return FALSE
+	var/dx = (x - user.x) * 32 + step_x - user.step_x
+	var/dy = (y - user.y) * 32 + step_y - user.step_y
+	if (!dx && !dy)
+		return FALSE
+	// A cardinal shove cannot cut a diagonal corner or travel sqrt(2) tiles.
+	var/direction = abs(dx) >= abs(dy) ? (dx > 0 ? EAST : WEST) : (dy > 0 ? NORTH : SOUTH)
+	var/turf/destination = get_step(src, direction)
+	if (!destination || !persistence_movement_allowed(src, destination) || persistence_save_in_progress)
+		return FALSE
+	// Cancel a sleeping walk at its last exact position, never an in-flight pulse.
+	if (human_subtile_transaction)
+		human_subtile_transaction.cancelled = TRUE
+		human_subtile_transaction.release_visuals()
+		human_subtile_transaction.finish()
+	if (isDeleted(src) || !user || isDeleted(user) || user.stat || !user.canmove || user.restrained() || !Adjacent(user) || z != user.z || !shove_body_ready() || human_subtile_transaction || human_subtile_pulse)
+		return FALSE
+	var/datum/human_subtile_transaction/shove/T = new
+	T.actor = src
+	T.expected = human_subtile_snapshot()
+	human_subtile_transaction = T
+	var/moved = FALSE
+	try
+		moved = T.perform(direction)
+	catch (var/exception/shove_error)
+		T.finish()
+		throw shove_error
+	T.finish()
+	if (isDeleted(src) || !user || isDeleted(user))
+		return FALSE
+	if (!moved)
+		to_chat(user, SPAN_WARNING("There is no room to shove [src] back."))
+		return FALSE
+	// Brief action stagger only after displacement. No knockdown, wall damage,
+	// item drop or movement stun; the target can immediately retreat.
+	shove_recovery_until = world.time + 30
+	setClickCooldown(4)
+	user.append_attack_log("\[[time_stamp()]\] Shoved [name] ([ckey])")
+	append_attack_log("\[[time_stamp()]\] Shoved by [user.name] ([user.ckey])")
+	msg_admin_attack("[key_name(user)] shoved [key_name(src)]", key_name(user), key_name(src))
+	user.visible_message(SPAN_DANGER("[user] shoves [src] back!"), SPAN_DANGER("You shove [src] back!"))
+	playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+	return TRUE

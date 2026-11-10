@@ -1535,10 +1535,25 @@
 	start_extraction()
 
 /obj/structure/oilwell/proc/start_extraction()
-	if (base && base.loc == loc && work_barrel && work_barrel.loc == src && !extracting_now)
+	if (has_source() && work_barrel && work_barrel.loc == src && !extracting_now)
 		extracting_now = TRUE
 		extraction_due = world.time + 1200
 		extract()
+
+// The petroleum source this well draws from: the colocated spring here, a
+// seabed oil field for offshore rigs (offshore_rig.dm).
+/obj/structure/oilwell/proc/has_source()
+	return base && base.loc == loc
+
+// One due batch into the work barrel.
+/obj/structure/oilwell/proc/pump_batch()
+	if (base.counter > 0)
+		work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
+		base.counter--
+		base.update_icon()
+	if (base.counter < 1 && base.timeout < world.time)
+		base.timeout = world.time + 600
+		base.refill()
 
 /obj/structure/oilwell/proc/stop_extraction()
 	extracting_now = FALSE
@@ -1547,7 +1562,7 @@
 /obj/structure/oilwell/proc/extract()
 	if (!extracting_now || extraction_pending)
 		return
-	if (!isturf(loc) || !base || base.loc != loc || !work_barrel || work_barrel.loc != src || !work_barrel.reagents || work_barrel.reagents.get_free_space() <= 0)
+	if (!isturf(loc) || !has_source() || !work_barrel || work_barrel.loc != src || !work_barrel.reagents || work_barrel.reagents.get_free_space() <= 0)
 		if (base && base.loc != loc)
 			base = null
 		if (work_barrel && work_barrel.loc != src)
@@ -1555,13 +1570,7 @@
 		stop_extraction()
 		return
 	if (world.time >= extraction_due)
-		if (base.counter > 0)
-			work_barrel.reagents.add_reagent("petroleum", min(work_barrel.reagents.get_free_space(), 10))
-			base.counter--
-			base.update_icon()
-		if (base.counter < 1 && base.timeout < world.time)
-			base.timeout = world.time + 600
-			base.refill()
+		pump_batch()
 		extraction_due = world.time + 1200
 		if (work_barrel.reagents.get_free_space() <= 0)
 			stop_extraction()
