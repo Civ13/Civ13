@@ -9,9 +9,9 @@ import unittest
 import prepare
 
 UNCHANGED = {
-    'proc/reproduction()': 'b9e0107c31c99574e51ee33f19bca51e10e917524b1d30a05305e465478bcb61',
-    'proc/Ticker()': '796152a1b051572c30d1a93a0690c65d74d2733044528d99a75f501d0c8e81bf',
-    'proc/wolf_out()': 'b1b657feb98490a827f220f1e391e4b7631ee2e5ecbfae54426582c6c757c340',
+    'proc/reproduction()': '3ebc53fa5e870cf9a7c2d5173146ba03de352244d49a98072b3d1ca3ee8e5daf',
+    'proc/Ticker()': '60335a115d4cd848c01965a71fc30e23d910fedf243caad8a9678fcd7f7c2ce6',
+    'proc/wolf_out()': '8b58ac0e35eeca63f31fb07fc5f4fd8ccdeecb6b4747a38e1e3e7c1a424175b7',
     'proc/aggro()': '82e07a30f7352458e631a51637c92106600b3ea41b5d84ee7403a6859569b3fd',
     'proc/process_cub(': '19e57285e3c08d75c7a9f3b6c0039ad891b76ffa5e2bcd35bef1c5f32f2c3d64',
     'proc/set_cavetype()': '0d33759d5daab35f8aa7498f209d72a09b392d5ac450e56e82f8cb156e774ecd',
@@ -52,6 +52,18 @@ class SourceTests(unittest.TestCase):
         for suffix, expected in UNCHANGED.items():
             with self.subTest(suffix=suffix):
                 self.assertEqual(hashlib.sha256(prepare.method(source, suffix).encode()).hexdigest(), expected)
+
+    def test_white_caves_select_one_matching_adult_per_sex(self):
+        source = prepare.read(prepare.SOURCE)
+        climate = prepare.method(source, 'proc/set_cavetype()')
+        out = prepare.method(source, 'proc/wolf_out()')
+        self.assertIn('src.t_climate = "white"', climate)
+        self.assertEqual(out.count('if(src.t_climate == "white")'), 2)
+        self.assertIn('new /mob/living/simple_animal/hostile/wolf/white(loc)', out)
+        self.assertIn('new /mob/living/simple_animal/hostile/wolf/white/female(loc)', out)
+        self.assertEqual(out.count('src.males--'), 1)
+        self.assertEqual(out.count('src.females--'), 1)
+        self.assertNotIn('switch(src.t_climate)', out)
 
     def test_full_initialization_still_delegates_to_randomizing_parent(self):
         source = prepare.read(prepare.SOURCE)
