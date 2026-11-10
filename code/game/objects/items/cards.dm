@@ -117,7 +117,8 @@
 	//players -= usr
 
 	var/mob/living/M = WWinput(usr, "Who do you wish to deal a card?", "Deael a Card", WWinput_first_choice(players), WWinput_list_or_null(players))
-	if (!usr || !src || !M) return
+	if (QDELETED(usr) || QDELETED(src) || QDELETED(M)) return
+	if (usr.stat || !Adjacent(usr) || M.stat || !(M in viewers(3, usr)) || !cards.len) return
 
 	deal_at(usr, M)
 
