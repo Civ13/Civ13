@@ -1,6 +1,14 @@
 // Fixed-art sofa dispatch; real stock, padding and generic recovery procedures.
 /proc/recipe_ci_sofa_materials()
 	map.ordinal_age = 2
+	// Parent construction calculates material force, but prison stools retain
+	// their subtype's zero-force setting. Ordinary stools still use material.
+	var/obj/item/weapon/stool/prison/prison_stool = new(locate(2,1,1))
+	var/obj/item/weapon/stool/wood/wood_stool = new(locate(2,1,1))
+	joinery_ci_expect(prison_stool.material && prison_stool.force == 0, "prison stool retains zero force after construction")
+	joinery_ci_expect(wood_stool.material && wood_stool.force == round(wood_stool.material.get_blunt_damage() * 0.4) && wood_stool.force > 0, "ordinary wood stool retains material-based force")
+	qdel(prison_stool)
+	qdel(wood_stool)
 	var/mob/living/human/handle_ci/H = new(locate(2,1,1))
 	H.civilization = "recipe_ci"
 	for (var/path in list(/obj/structure/bed/sofa, /obj/structure/bed/sofa/left, /obj/structure/bed/sofa/right, /obj/structure/bed/chair/sofa, /obj/structure/bed/chair/sofa/left, /obj/structure/bed/chair/sofa/right))

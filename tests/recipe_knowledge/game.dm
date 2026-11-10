@@ -208,7 +208,12 @@ var/knowledge_failures = 0
 	knowledge_check(open_disciplines.len == scholar_disciplines.len && !node_scholar_requirement("early_cells"), "every discipline, Natural Science included, has nodes a beginner can research")
 	scholar.scholarship = list("engineering" = 24, "mathematics" = 12)
 	bench.analysis_tick()
-	knowledge_check(journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
+	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without a writing tool in hand")
+	var/obj/item/weapon/pen/pencil/research_pencil = new(locate(7,7,1))
+	scholar.put_in_r_hand(research_pencil)
+	bench.research_supplies = "engineering=5"
+	bench.analysis_tick()
+	knowledge_check(scholar.r_hand == research_pencil && journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
 	knowledge_check(scholar.scholar_level("engineering") > 24 && scholar.scholar_level("mathematics") > 12, "researching raises the discipline and mathematics")
 	scholar.scholarship["engineering"] = 74
 	knowledge_check(scholar.scholar_research_rate("iron_tools") == 2 && scholar.scholar_research_rate("basic_tools") == 2, "skill well above the requirement doubles the pace")
@@ -248,12 +253,136 @@ var/knowledge_failures = 0
 	qdel(again)
 	check_book_clock(journal)
 	check_book_fabricator()
+	check_book_material_visibility()
 	check_scholarship_travel(scholar)
+	check_scholar_tools(scholar, novice)
+	check_scholar_workplaces(scholar, novice)
+	check_scholar_supplies(scholar)
 	map.book_research = FALSE
+
+// Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
+// better tools are faster; the writing slate is a Stone Age research tool.
+/proc/check_scholar_tools(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/item/weapon/writing_slate/slate = new(locate(6,6,1))
+	var/obj/item/weapon/pen/pencil/pencil = new(locate(6,6,1))
+	var/obj/item/weapon/pen/quill = new(locate(6,6,1))
+	var/obj/item/weapon/pen/fancy/fancy = new(locate(6,6,1))
+	knowledge_check(scholar_tool_rate(slate) == 1 && scholar_tool_rate(pencil) == 1 && scholar_tool_rate(quill) == 1.25 && scholar_tool_rate(fancy) == 1.5 && !scholar_tool_rate(new /obj/item/weapon/paper(locate(6,6,1))), "writing tools rank slate and pencil, then quill, then the expensive pen")
+	knowledge_check(!scholar_pen_rate(slate) && scholar_pen_rate(quill) == 1.25, "a slate helps research but can't write into books")
+	knowledge_check(scholar_write_time(2, fancy) < scholar_write_time(2, quill) && scholar_write_time(2, quill) < scholar_write_time(2, pencil) && scholar_write_time(2, pencil) == BOOK_WRITE_TIME(2), "better pens write chapters faster")
+	knowledge_check(crafting_recipe_allowed(novice, "/obj/item/weapon/writing_slate"), "anyone can make a writing slate from 5000 B.C.")
+	knowledge_check(map.ordinal_age >= 4 || quill.name == "quill", "the plain pen is a quill before the Industrial Age")
+	novice.put_in_l_hand(slate)
+	knowledge_check(novice.research_tool_rate() == 1 && !novice.held_writing_pen(), "a slate in hand counts for research but not for writing")
+	novice.put_in_r_hand(fancy)
+	knowledge_check(novice.research_tool_rate() == 1.5 && novice.held_writing_pen() == fancy, "the best tool in hand sets the pace")
+	novice.drop_from_inventory(slate)
+	novice.drop_from_inventory(fancy)
+	qdel(slate)
+	qdel(pencil)
+	qdel(quill)
+	qdel(fancy)
+
+// Workplaces (Val, 2026-11-10): a writing desk speeds studying and writing;
+// related chapters shelved near a bench (a library) speed research.
+/proc/check_scholar_workplaces(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/structure/writing_desk/desk = new(locate(5,7,1))
+	desk.anchored = FALSE
+	var/plain_study = novice.scholar_study_time(2)
+	var/obj/item/weapon/pen/pencil/pencil = new(locate(6,6,1))
+	var/plain_write = scholar_write_time(2, pencil, novice)
+	knowledge_check(!novice.at_writing_desk() && plain_study == BOOK_STUDY_TIME(2) && plain_write == BOOK_WRITE_TIME(2), "an unfastened desk gives no bonus")
+	desk.anchored = TRUE
+	knowledge_check(novice.at_writing_desk() && novice.scholar_study_time(2) < plain_study && scholar_write_time(2, pencil, novice) < plain_write, "studying and writing beside a writing desk are faster")
+	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	var/obj/structure/bookcase/near = new(locate(3,2,1))
+	var/obj/structure/bookcase/far = new(locate(8,8,1))
+	knowledge_check(bench.library_rate("iron_tools") == 1, "no library, no bonus")
+	var/obj/item/weapon/book/far_book = new(far)
+	far_book.add_research_chapter("basic_tools")
+	var/obj/item/weapon/book/near_book = new(near)
+	near_book.add_research_chapter("early_cells")
+	knowledge_check(node_discipline("early_cells") != node_discipline("iron_tools") && !bench.library_chapters("iron_tools").len, "far bookcases and unrelated chapters don't count")
+	near_book.add_research_chapter("basic_tools")
+	near_book.add_research_chapter("iron_tools")
+	var/list/shelved = bench.library_chapters("iron_tools")
+	knowledge_check(shelved.len == 1 && ("basic_tools" in shelved) && bench.library_rate("iron_tools") == 1.1, "a related chapter shelved nearby speeds research")
+	qdel(desk)
+	qdel(pencil)
+	qdel(near)
+	qdel(far)
+	qdel(bench)
+
+// Consumables (Val, 2026-11-10): research uses supplies for its discipline,
+// running at half speed without them, and needs light.
+/proc/check_scholar_supplies(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	bench.research_supplies = "engineering=5;bogus=3;medicine=x;agriculture=999"
+	var/list/supplies = bench.supply_map()
+	knowledge_check(supplies.len == 2 && supplies["engineering"] == 5 && supplies["agriculture"] == SCHOLAR_SUPPLY_CAP, "saved supplies are validated and capped")
+	bench.research_supplies = ""
+	bench.assigned_node = "iron_tools"
+	var/obj/item/stack/material/woodplank/planks = new(locate(2,3,1))
+	planks.amount = 10
+	var/obj/item/weapon/paper/sheet = new(locate(2,3,1))
+	knowledge_check(!bench.feed_research_supply(sheet, scholar) && !QDELETED(sheet), "supplies must suit the subject's discipline")
+	knowledge_check(bench.feed_research_supply(planks, scholar) && bench.supply_points("engineering") == 20, "wood feeds engineering research")
+	knowledge_check(bench.use_research_supply("iron_tools") == 1 && bench.supply_points("engineering") == 19, "each research tick uses a supply")
+	bench.research_supplies = ""
+	knowledge_check(bench.use_research_supply("iron_tools") == SCHOLAR_UNSUPPLIED_RATE, "without supplies research runs at half speed")
+	knowledge_check(scholar_supply_value(sheet, "mathematics") == 5 && scholar_supply_value(new /obj/item/stack/farming/seeds(locate(2,3,1)), "agriculture") > 0 && !scholar_supply_value(sheet, "medicine"), "each discipline has its own supplies")
+	knowledge_check(bench.research_lit(), "a lit bench can research")
+	qdel(sheet)
+	qdel(bench)
+
+// Use real global rows and the public material menu entry point. Personal
+// knowledge can precede a capstone, while recipe expiry remains a separate gate.
+/proc/knowledge_has_material_recipe(list/entries, result_type)
+	for (var/entry in entries)
+		if (istype(entry, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/group = entry
+			if (knowledge_has_material_recipe(group.recipes, result_type))
+				return TRUE
+		else if (istype(entry, /datum/stack_recipe))
+			var/datum/stack_recipe/R = entry
+			if (R.result_type == result_type)
+				return TRUE
+	return FALSE
+
+/proc/check_book_material_visibility()
+	var/list/old_rows = craftlist_lists["global"]
+	var/old_age = map.ordinal_age
+	var/old_civilizations = map.civilizations
+	craftlist_lists["global"] = list()
+	for (var/line in file2list("config/crafting/material_recipes_global.txt", "\n"))
+		if (findtext(line, "RECIPE: ") && !findtext(line, "//"))
+			craftlist_lists["global"] += list(splittext(replacetext(line, "RECIPE: ", ""), ","))
+	map.ordinal_age = 0
+	map.civilizations = FALSE
+	var/mob/living/human/knowledge_fixture/reader = new(locate(5,7,1))
+	reader.civilization = "none"
+	var/material/stone/stone = new
+	var/path = /obj/covers/stone_wall
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path) && !crafting_recipe_allowed(reader, "[path]"), "unknown future Stone Masonry stays hidden and blocked")
+	reader.learn_recipe_node("primitive_construction")
+	reader.learn_recipe_node("stone_masonry")
+	knowledge_check(crafting_recipe_allowed(reader, "[path]") && knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "learned Stone Masonry appears before the world advances")
+	map.civilizations = TRUE
+	knowledge_check(knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "civilization menu also uses personal knowledge")
+	map.book_research = FALSE
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "legacy menu still requires faction or era research")
+	map.book_research = TRUE
+	map.ordinal_age = 3
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "learned recipe still expires after its last permitted age")
+	map.ordinal_age = old_age
+	map.civilizations = old_civilizations
+	craftlist_lists["global"] = old_rows
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
 // ripping pages out and putting them back, parchment and writing supplies.
 /proc/check_book_pages(mob/living/human/scholar, mob/living/human/novice, obj/item/weapon/book/journal)
+	check_monk_book_copy()
 	knowledge_check(crafting_recipe_allowed(novice, "/obj/item/weapon/pen/pencil") && crafting_recipe_allowed(novice, "/obj/item/weapon/paper") && crafting_recipe_allowed(novice, "/obj/item/weapon/book") && !crafting_recipe_allowed(novice, "/obj/item/weapon/pen"), "pencil, paper and blank book are free; the pen is not")
 	var/obj/item/weapon/book/diary = new(locate(6,6,1))
 	diary.dat = "Old entry."
@@ -290,6 +419,37 @@ var/knowledge_failures = 0
 	qdel(tired)
 	diary.page_busy = TRUE
 	knowledge_check(!("page_busy" in diary.get_saved_vars()), "a book's busy lock is never saved")
+
+// The monk's older copy action consumes its input; it must not destroy a
+// founder's book or silently produce an ordinary book without its chapters.
+/proc/check_monk_book_copy()
+	var/turf/site = locate(6,6,1)
+	var/mob/living/human/knowledge_fixture/monk = new(site)
+	monk.religious_clergy = "Monks"
+	var/obj/item/weapon/book/master = create_stone_age_master_book(site)
+	var/obj/item/weapon/book/blank = new(site)
+	var/obj/item/weapon/book/ordinary = new(site)
+	ordinary.add_written_page("First page")
+	ordinary.add_written_page("Second page")
+	knowledge_check(blank.monk_copy_blank() && ordinary.monk_copy_source_allowed(), "a blank book and ordinary journal admit monk copying")
+	knowledge_check(!master.monk_copy_blank() && !master.monk_copy_source_allowed(), "the authorless founder book is neither blank nor an ordinary copy source")
+	ordinary.attackby(master, monk)
+	knowledge_check(!QDELETED(master) && master.has_research_chapter("basic_tools"), "monk copying refuses to consume the founder's book")
+	master.attackby(blank, monk)
+	knowledge_check(!QDELETED(blank) && !blank.research_chapter_list().len && master.has_research_chapter("basic_tools"), "monk copying refuses a chapterless copy and keeps both books")
+	var/obj/item/weapon/book/unfinished = new(site)
+	unfinished.add_research_work("basic_tools", 1)
+	knowledge_check(!unfinished.monk_copy_blank() && !unfinished.monk_copy_source_allowed(), "unfinished research is protected in either copy direction")
+	var/obj/item/weapon/book/node_book/manual = create_node_book(site, "basic_tools")
+	var/obj/item/weapon/book/node_compendium/collection = new(site)
+	collection.node_ids = list("basic_tools")
+	knowledge_check(!manual.monk_copy_source_allowed() && !collection.monk_copy_source_allowed(), "recipe manuals and compendiums cannot be copied as ordinary books")
+	manual.attackby(blank, monk)
+	collection.attackby(blank, monk)
+	knowledge_check(!QDELETED(blank) && manual.node_id == "basic_tools" && ("basic_tools" in collection.node_ids), "manual copy attempts leave the blank and knowledge intact")
+	knowledge_check(!ordinary.monk_copy_blank(), "an authorless journal with writing is not a blank input")
+	blank.page_busy = TRUE
+	knowledge_check(!blank.monk_copy_blank() && !blank.monk_copy_source_allowed(), "a book under a timed page action is not copied or consumed")
 
 // No clock (Val, 2026-11-10): book research starts at 5000 B.C. with no WW2
 // floor and no auto-research; only a finished capstone moves the era.

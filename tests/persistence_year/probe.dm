@@ -133,6 +133,36 @@ var/persistence_year_imports = 0
 				durable_world_check(file2text("map_saves/round.json") == header && file2text("map_saves/map.txt") == metadata && file2text("map_saves/save_complete.txt") == marker, "load rewrote saved generation")
 				durable_world_check(!persistence_save_in_progress && !persistence_active_operation && !map_storage.durable_import && !map_storage.durable_state, "date import retained operation or graph")
 
+// Exercise both the durable and positional formats through the real load path.
+/proc/persistence_year_book_restore()
+	persistence_year_reset("1903", 3)
+	map.recipe_books = FALSE
+	map.book_research = FALSE
+	map.gamemode = "Persistent (Auto-Research)"
+	map.autoresearch = FALSE
+	if(map.durable_callbacks) map.durable_callbacks.cancel("autoresearch")
+	durable_world_check(map_storage.Save_World(), "paused auto save failed")
+	durable_world_check(ticker.loadmap(), "paused auto import failed")
+	persistence_year_imports++
+	durable_world_check(!map.autoresearch, "intentional auto pause was restarted")
+	// Turning book mode on after an older auto-mode save must record the new
+	// mode in a subsequent save, even though the old metadata had the old label.
+	map.recipe_books = TRUE
+	map.book_research = TRUE
+	durable_world_check(ticker.loadmap(), "book mode import failed")
+	persistence_year_imports++
+	durable_world_check(!map.autoresearch && map.gamemode == "Persistent (Book Research)", "book mode was not recorded")
+	durable_world_check(map_storage.Save_World(), "book mode save failed")
+	map.book_research = FALSE
+	durable_world_check(ticker.loadmap(), "book-to-auto import failed")
+	persistence_year_imports++
+	durable_world_check(map.autoresearch && map.gamemode == "Persistent (Auto-Research)" && (map.uses_durable_metadata() ? map.durable_pending("autoresearch") : map.autoresearch_pending), "book-to-auto clock did not resume")
+	durable_world_check(ticker.loadmap(), "repeated book-to-auto import failed")
+	persistence_year_imports++
+	durable_world_check(map.autoresearch && (map.uses_durable_metadata() ? map.durable_pending("autoresearch") : map.autoresearch_pending), "repeated import lost the clock")
+	map.recipe_books = FALSE
+	map.book_research = FALSE
+
 /world/New()
 	world.OpenPort("none")
 	try
@@ -161,9 +191,11 @@ var/persistence_year_imports = 0
 		persistence_year_direct()
 		persistence_year_activation()
 		persistence_year_disk(2)
+		persistence_year_book_restore()
 		map = new /obj/map_metadata/nomads/gaia/persistence_year_legacy(locate(1,1,1))
 		durable_world_check(!map.uses_durable_metadata(), "legacy fixture unexpectedly durable")
 		persistence_year_disk(1)
+		persistence_year_book_restore()
 		durable_world_check(!durable_probe_failed && world.port == 0, "native diagnostics or port state invalid")
 		text2file(json_encode(list("done" = TRUE, "checks" = durable_probe_checks, "imports" = persistence_year_imports)), "metadata-result.json")
 	catch(var/exception/E)

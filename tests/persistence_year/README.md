@@ -34,12 +34,12 @@ separate existing modes and are not newly enabled or otherwise reconfigured.
 Native acceptance uses the existing full-source durable-world runner:
 
 ```
-python3 tests/world_save/run-durable-world.py --persistence-year --byond-bin <516.1681-bin>
+python3 tests/world_save/run-durable-world.py --persistence-year --byond-bin <516.1688-bin>
 ```
 
 The guarded public CI build job executes this case and `--negative-control`
-`year-helper`, `year-load`, and `year-order` independently. They respectively
-disable the helper, omit the post-import call and move it before durable restore.
+`year-helper`, `year-load`, `year-order`, and `year-book` independently. The
+first three disable the helper, omit the post-import call and move it before durable restore.
 Controls must fail at `earlier date not raised` or `saved date floor lost` after
 clean native compilation; engine errors, timeouts and unrelated assertions fail
 acceptance. Generated sources, hashes, logs and receipts are retained for 7 days
@@ -47,13 +47,21 @@ in the exact-head `persistence-year-<SHA>` artifact, including failed attempts.
 
 The fixture compiles actual production helper/admin/save/load procedures using
 existing startup adapters. It extracts the configured startup activation block
-before autoload dispatch, invokes the actual admin toggle, and performs 24 actual
-`ticker.loadmap()` imports (12 disk generations, each loaded twice). These cover
+before autoload dispatch, invokes the actual admin toggle, and performs 32 actual
+`ticker.loadmap()` imports. The original 24 imports cover
 1903/1943/2023 and persistence on/off in both v2 durable and v1 positional saves.
 V2 checks restore faction data and shared aliases after clearing live progress;
 node records are created/read through production research APIs and preserve
 status, paid ticks and submitted-prototype state. The positive case requires
-exactly 333 assertions and 24 imports, not only a success marker.
+exactly 353 assertions and 32 imports, not only a success marker. The additional
+imports cover paused auto-research, a save first restored with book research on,
+and repeated restores after switching book research off, in both formats. They
+check that the clock remains scheduled after repeated imports and intentional
+pauses stay paused. The `year-book` negative control omits the reconciliation call and must
+fail at `book mode was not recorded`.
+Older book-mode saves that were previously labelled as auto-research cannot be
+distinguished from intentionally paused auto-research saves, so loading them
+does not automatically restart the clock.
 v1 lacks those durable fields, so checks their live preservation while restoring
 the available date/tier/default-research header. The v1 fixture is a Gaia child
 outside the existing durable-profile allowlist; production admission is intact.
@@ -66,7 +74,7 @@ the existing runner's native-port and OS zero-listener census handshake. Maps,
 SQL, normal world/global startup and external hooks remain disabled. This is an
 8x8x2 inert-turf fixture, not a live map, fresh-process recovery, or connected
 client acceptance. Local `--prepare-only --persistence-year` stages packets with
-no native execution; the offline packet test checks all three mutation anchors.
+no native execution; the offline packet test checks all four mutation anchors.
 
 An isolated connected-client Persistence interaction remains separate graphical
 verification. Reproduce by enabling

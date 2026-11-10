@@ -57,6 +57,9 @@ def _routes(store, radio):
         # Orbital strikes: a station fires at one named region (orbit_artillery.dm).
         '/strike/send': lambda body: {'id': radio.strike_send(body.get('envelope'))},
         '/strike/inbox': lambda body: {'envelopes': radio.strike_inbox()},
+        '/train/lookup': lambda body: store.lookup_train(body['id']),
+        '/train/pending': lambda body: {'trains': store.pending_train_admissions()},
+        '/train/prepare': lambda body: store.prepare_train(body['transfer_id'], body['manifest_hash'], body['reservation']),
         '/status': lambda body: store.status(),
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
