@@ -321,10 +321,12 @@
 	update_throw_launch(advanced)
 	var/list/flight_token = throw_flight_token
 	if (throwing)
-		for (var/atom/movable/A in get_turf(src))
+		var/turf/here = get_turf(src)
+		for (var/atom/movable/A in here)
 			if (A == src) continue
 			if (istype(A,/mob/living))
 				if (A:lying) continue
+				if (A.loc != here && !throw_reaches_body(A, here)) continue
 				if (A == throw_launch_source) continue
 				if (A == thrower)
 					if (locate(/obj/structure/window/barrier) in get_turf(src))
@@ -340,6 +342,22 @@
 					throw_impact(A,speed)
 					if (throw_flight_token != flight_token)
 						return
+
+// A turf's contents include every body overlapping it, however slightly. A
+// thrown thing flies through the middle of the tile and is about half a tile
+// across, so a body filed under a neighbouring tile is hit only when it reaches
+// at least a quarter tile in (where it is drawn). Launch clearance still keeps
+// the thrower's own body out of its first hops (update_throw_launch).
+/atom/movable/proc/throw_reaches_body(mob/living/L, turf/T)
+	if (!isturf(L.loc))
+		return FALSE
+	var/size = world.icon_size
+	var/cx = T.x * size + size / 2
+	var/cy = T.y * size + size / 2
+	var/reach = size / 4
+	var/bx = L.x * size + L.step_x + L.bound_x
+	var/by = L.y * size + L.step_y + L.bound_y
+	return bx < cx + reach && bx + L.bound_width > cx - reach && by < cy + reach && by + L.bound_height > cy - reach
 
 /atom/movable/proc/throw_at(atom/target, _range, _speed, _thrower)
 	. = TRUE

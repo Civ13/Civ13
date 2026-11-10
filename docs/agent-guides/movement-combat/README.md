@@ -25,6 +25,13 @@ the next alignment or lists covered tiles uses `human_subtile_ll()` (offsets
 (`subtile_refile_lower_left`). `tests/centre_tile/run.py` is the native probe.
 Animals still use lower-left filing.
 
+A turf's `contents` hold every body overlapping it, however slightly. Shots fly
+from the shooter's body centre to the target's (`setup_points`; plot_vector
+space puts a tile's centre at x * 32 and rounds to the nearest tile), and a body
+filed under another tile is hit only where the line crosses its box
+(`body_in_line`), once per shot (`bodies_passed`). Thrown things hit such a body
+only when it reaches a quarter tile in (`throw_reaches_body`).
+
 Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts

@@ -37,6 +37,38 @@
 
 var/centre_tile_probe_checks = 0
 
+// A shot that records the bodies it reaches. Stops on its first hit unless
+// set to pass through.
+/obj/item/projectile/bullet/centre_tile_probe
+	var/list/hits = list()
+	var/pass_bodies = FALSE
+
+/obj/item/projectile/bullet/centre_tile_probe/attack_mob(mob/living/target_mob, distance, miss_modifier = 0)
+	hits += target_mob
+	return !pass_bodies
+
+/obj/item/centre_tile_probe_rock
+	var/list/hits = list()
+
+/obj/item/centre_tile_probe_rock/throw_impact(atom/hit_atom, speed)
+	if (isliving(hit_atom))
+		hits += hit_atom
+
+// Fire a probe shot from the shooter's body at an atom and fly it out.
+/proc/centre_tile_probe_shoot(mob/living/human/shooter, atom/target, pass_bodies = FALSE)
+	var/obj/item/projectile/bullet/centre_tile_probe/P = new(shooter.loc)
+	P.firer = shooter
+	P.starting = shooter.loc
+	P.original = target
+	P.def_zone = "chest"
+	P.pass_bodies = pass_bodies
+	var/list/hits = P.hits
+	for (var/i in 1 to 24)
+		if (QDELETED(P) || !P.loc)
+			break
+		P.process()
+	return hits
+
 /proc/centre_tile_probe_assert(ok, label)
 	centre_tile_probe_checks++
 	if (!ok)
@@ -145,6 +177,52 @@ var/centre_tile_probe_checks = 0
 	S.SelfMove(get_step(S, EAST), EAST, world.time + 4, FINE_STEP_HELD)
 	S.movement_eastwest = null
 	centre_tile_probe_assert(S.x == 3 && S.y == 10 && !S.step_x && !S.step_y, "held_slide_reaches_next_tile")
+	qdel(S)
+
+	// Shots fly from the shooter's body and hit a body wherever it is drawn,
+	// even one filed under the neighbouring row.
+	var/mob/living/human/centre_tile_probe/gunner = centre_tile_probe_actor(2, 14)
+	gunner.step_y = 10
+	var/mob/living/human/centre_tile_probe/straddler = centre_tile_probe_actor(6, 15)
+	straddler.step_y = -14
+	var/list/hits = centre_tile_probe_shoot(gunner, locate(12, 14, 1))
+	centre_tile_probe_assert(hits.len == 1 && hits[1] == straddler, "shot_hits_body_reaching_into_its_row")
+	// The same body only 4px into the row is clear of the line.
+	straddler.step_y = -4
+	hits = centre_tile_probe_shoot(gunner, locate(12, 14, 1))
+	centre_tile_probe_assert(!hits.len, "shot_misses_body_clear_of_line")
+	// A body half across two tiles of the line is tried once, not per tile.
+	var/mob/living/human/centre_tile_probe/between = centre_tile_probe_actor(9, 14)
+	between.step_x = -16
+	hits = centre_tile_probe_shoot(gunner, locate(12, 14, 1), TRUE)
+	centre_tile_probe_assert(hits.len == 1 && hits[1] == between, "straddling_body_tried_once")
+	qdel(between)
+	// Aimed straight at a body between tiles, the shot reaches it.
+	gunner.step_y = 0
+	straddler.step_y = 12
+	hits = centre_tile_probe_shoot(gunner, straddler)
+	centre_tile_probe_assert(hits.len == 1 && hits[1] == straddler, "shot_reaches_aimed_straddler")
+	// The shooter's own body never stops its shot, even half across a tile.
+	gunner.step_x = 14
+	straddler.step_y = 0
+	hits = centre_tile_probe_shoot(gunner, straddler, TRUE)
+	centre_tile_probe_assert(!(gunner in hits) && (straddler in hits), "own_shot_never_hits_shooter")
+	qdel(gunner)
+	qdel(straddler)
+
+	// A thrown thing hits a body reaching a quarter tile into its path.
+	var/mob/living/human/centre_tile_probe/pitcher = centre_tile_probe_actor(2, 10)
+	var/mob/living/human/centre_tile_probe/catcher = centre_tile_probe_actor(6, 11)
+	var/obj/item/centre_tile_probe_rock/rock = new(locate(6, 10, 1))
+	rock.throwing = TRUE
+	rock.thrower = pitcher
+	catcher.step_y = -12
+	rock.hit_check(1)
+	centre_tile_probe_assert(rock.hits.len == 1 && rock.hits[1] == catcher, "throw_hits_body_reaching_into_path")
+	rock.hits.Cut()
+	catcher.step_y = -4
+	rock.hit_check(1)
+	centre_tile_probe_assert(!rock.hits.len, "throw_misses_body_at_path_edge")
 
 /world/New()
 	OpenPort("none")
