@@ -438,3 +438,33 @@
 		if (A != researcher && A.stat == CONSCIOUS && A.research_presence() && A.is_apprentice_of(researcher))
 			A.gain_scholarship(node_id, SCHOLAR_RESEARCH_GAIN / 2)
 	return researcher.master_nearby() ? SCHOLAR_APPRENTICE_GAIN_MULT : 1
+
+// ------------------------------------------------------------
+// Titles
+// ------------------------------------------------------------
+
+// "Scholar of Engineering" from the character's highest discipline, or null.
+/mob/living/human/proc/scholar_title()
+	var/best = null
+	var/best_level = 0
+	for (var/discipline in scholar_disciplines)
+		var/level = scholar_level(discipline)
+		if (level > best_level)
+			best = discipline
+			best_level = level
+	if (!best || best_level < SCHOLAR_TITLE_APPRENTICE)
+		return null
+	var/rank = "Apprentice"
+	if (best_level >= SCHOLAR_TITLE_MASTER)
+		rank = "Master"
+	else if (best_level >= SCHOLAR_TITLE_SCHOLAR)
+		rank = "Scholar"
+	return "[rank] of [scholar_disciplines[best]]"
+
+/mob/living/human/examine(mob/user)
+	. = ..()
+	if (!map || !map.book_research_enabled() || stat == DEAD)
+		return
+	var/title = scholar_title()
+	if (title)
+		to_chat(user, SPAN_NOTICE("[src] is known as [copytext(title, 1, 2) == "A" ? "an" : "a"] [title]."))

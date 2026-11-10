@@ -88,3 +88,7 @@
 #define SCHOLAR_MAX_APPRENTICES 3
 #define SCHOLAR_APPRENTICE_REACH 2
 #define SCHOLAR_APPRENTICE_GAIN_MULT 2
+// Scholar titles shown on examine, by highest discipline level.
+#define SCHOLAR_TITLE_APPRENTICE 12
+#define SCHOLAR_TITLE_SCHOLAR 40
+#define SCHOLAR_TITLE_MASTER 75

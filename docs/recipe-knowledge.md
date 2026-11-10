@@ -212,6 +212,13 @@ researcher's own apprentices within 2 tiles gain half the usual research skill
 by watching (`apprentice_research_gain`). The link does not travel between
 regions.
 
+### Titles (profession 7)
+
+Examining a living character in book research shows their highest discipline
+as a title (`scholar_title`): Apprentice from level 12, Scholar from 40 and
+Master from 75, for example "Scholar of Medicine", so players can find and hire
+scholars. Characters below 12 in every discipline show no title.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
