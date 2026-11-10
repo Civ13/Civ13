@@ -32,6 +32,7 @@
 	name = "bible"
 	desc = "To be applied to the head repeatedly."
 	icon_state ="bible"
+	max_w_class = ITEM_SIZE_NORMAL
 
 /obj/item/weapon/storage/bible/booze/New()
 	..()
