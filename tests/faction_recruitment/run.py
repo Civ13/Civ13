@@ -7,9 +7,9 @@ temporary fixture. DreamDaemon runs it with -safe on port 0 (no clients) and
 the probe writes result.txt.
 """
 import argparse
+import importlib.util
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -17,6 +17,11 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+
+_spec = importlib.util.spec_from_file_location('fixture_source_projection', ROOT / 'scripts/fixture_source_projection.py')
+_projection = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_projection)
+proc_text = _projection.proc_text
 RECRUITMENT = 'code/game/mob/groups/faction_recruitment.dm'
 MEMBERSHIP = 'code/game/mob/groups/faction_membership.dm'
 FACTIONS = 'code/game/mob/groups/factions.dm'
@@ -36,20 +41,7 @@ CONTROLS = {
 
 def read(path, control=None):
     text = (ROOT / path).read_text(encoding='utf-8').replace('\r\n', '\n')
-    if control:
-        target, old, new = CONTROLS[control]
-        if target == path:
-            if text.count(old) != 1:
-                raise RuntimeError(f'Control target missing or ambiguous: {control}')
-            text = text.replace(old, new, 1)
-    return text
-
-
-def proc_text(source, signature):
-    start = source.index(signature)
-    body = source.index('\n', start) + 1
-    end = re.compile(r'^\S', re.M).search(source, body)
-    return source[start:end.start() if end else len(source)]
+    return _projection.apply_control(text, path, control, CONTROLS)
 
 
 def build(directory, control):

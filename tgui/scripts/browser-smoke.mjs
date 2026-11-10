@@ -60,12 +60,13 @@ try {
   assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'resource', resource: '/material/ore' }) } });
   const search = page.getByRole('searchbox', { name: 'Search', exact: true });
   await search.fill('draft');
-  const beforeCancel = await page.evaluate(() => window.sent.length);
-  await page.getByRole('button', { name: 'Cancel filter edits', exact: true }).click();
-  assert.equal(await search.inputValue(), 'ore');
-  assert.equal(await page.evaluate(() => window.sent.length), beforeCancel);
+  const beforeSearch = await page.evaluate(() => window.sent.length);
+  // Typing alone sends nothing; a second request inside the server's one-second window waits its turn.
+  assert.equal(await page.evaluate(() => window.sent.length), beforeSearch);
   await search.fill('new query');
-  await page.getByRole('button', { name: 'Filter', exact: true }).click();
+  await page.getByRole('button', { name: 'Search', exact: true }).click();
+  assert.equal(await page.evaluate(() => window.sent.length), beforeSearch);
+  await page.waitForFunction(count => window.sent.length > count, beforeSearch);
   assert.deepEqual(await page.evaluate(() => window.sent.at(-1)), { type: 'act/atlas_navigate', payload: { atlas_navigate: JSON.stringify({ route: 'open', query: 'new query', era: '', processor: '' }) } });
   await update('crafting_atlas.tmpl', atlas, 1);
   await page.getByRole('searchbox').waitFor();

@@ -53,6 +53,14 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_outhouse_occupancy_suite_is_bounded_and_selected(self):
+        name = 'outhouse_occupancy'
+        suite = ci.SUITES[name]
+        self.assertEqual(suite['files'], ('tests/outhouse_occupancy/test_occupancy.py',))
+        for path in suite['files'] + suite['paths'] + suite['shared_paths']:
+            self.assertIn(name, self.selected([path]))
+        self.assertNotIn(name, self.selected(['README.md']))
+
     def test_mood_sleep_registration_is_explicit_and_preserves_prior_impact(self):
         suite = ci.SUITES['mood_sleep']
         self.assertEqual(suite['files'], ('tests/mood_sleep/test_mood_sleep.py',))
@@ -232,7 +240,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_door_intents_suite_is_bounded_and_not_silently_omitted(self):
         name = 'door_intents'
         suite = ci.SUITES[name]
-        self.assertEqual(suite['files'], ('tests/door_intents/test_door_intents.py',))
+        self.assertEqual(suite['files'], ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
@@ -1181,7 +1189,7 @@ class BaselinePolicyTests(unittest.TestCase):
         # including water-treatment consumers and the cutting-board threshold.
         for shared in ('code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm'):
             self.assertEqual(self.selected([shared]), set(ci.SUITES))
-        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_grille_construction.py', 'tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_bedroll_occupancy.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py', 'tests/furniture_joinery/test_glass_cotton.py'))
+        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_grille_construction.py', 'tests/furniture_joinery/test_table_climb.py', 'tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_bedroll_occupancy.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py', 'tests/furniture_joinery/test_glass_cotton.py'))
         for path in ('code/game/objects/items/stacks/stack.dm', 'scripts/build-crafting-atlas.py',
                      'config/crafting/material_recipes_global.txt'):
             self.assertEqual(self.selected([path]), set(ci.SUITES))
@@ -1381,6 +1389,8 @@ class BaselinePolicyTests(unittest.TestCase):
             with self.subTest(path=path):
                 expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'hub_status'}
                 if path == 'code/world.dm':
+                    # The mocked irrigation runner checks global round initialization here.
+                    expected.add('irrigation_ci_runner')
                     expected.add('dictionary')
                     expected.add('character_return_preparation')
                     expected.add('access_lists')

@@ -161,6 +161,17 @@ var/datum/map_stub/map = new
 /obj/structure/lamp/lamp_big/alwayson
 /obj/structure/lamp/lamp_small/alwayson
 /obj/structure/billboard
+/obj/structure/multiz
+/obj/structure/vessel_lever
+// Production movement hooks the sliced axis source now calls.
+var/global/list/rover_trailers = list()
+/proc/rover_trailers_follow(obj/structure/vehicleparts/axis/A)
+/proc/persistence_movement_allowed(atom/movable/mover, atom/destination)
+	return TRUE
+/atom/movable/proc/persistence_set_loc(atom/destination)
+	loc = destination
+	return TRUE
+/mob/proc/update_vision_cone()
 /mob/living
 	var/obj/using_object
 /mob/living/proc/crush()

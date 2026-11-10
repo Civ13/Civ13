@@ -208,7 +208,9 @@
 			open = FALSE
 			density = TRUE
 			icon_state = icon_state_closed
-			store_mobs()
+			stored_units = 0
+			for (var/mob/living/M in src)
+				stored_units += M.mob_size
 			stored_units += store_mobs(stored_units)
 	if (cistern && open)
 		if (!contents.len)
@@ -250,6 +252,7 @@
 			M.client.eye = M.client.mob
 			M.client.perspective = MOB_PERSPECTIVE
 			M.crap_inside = FALSE
+	stored_units = 0
 
 /obj/structure/toilet/outhouse/male
 	name = "outhouse"

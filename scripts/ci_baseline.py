@@ -41,11 +41,36 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
-    'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
-        'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
+    # Offline fixture composition only; this suite does not launch BYOND.
+    'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+            tuple(f'tests/{name}/run.py' for name in (
+                'faction_membership', 'faction_recruitment', 'research_persistence')),
+        'shared_paths': (
+            'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
+            'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm',
+            'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
+    'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
+        'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
+        'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
             'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
             'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+    'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
+        'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
+        'shared_paths': ('scripts/fixture_global_initialization.py',) + tuple(f'tests/{name}/run.py' for name in (
+            'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
+            'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+    # Offline mocked runner contracts; the native irrigation workflow remains opt-in.
+    'irrigation_ci_runner': {'files': ('tests/irrigation_persistence/test_ci_runner.py',),
+        'paths': ('tests/irrigation_persistence/', 'tests/trench_save/', 'code/world.dm',
+                  '.github/workflows/test.yml', 'scripts/fixture_compiler_output.py',
+                  'scripts/fixture_global_initialization.py')},
     'closet_key_assignment': {'files': ('tests/closet_key_assignment/test_assignment.py',), 'paths': (
         'tests/closet_key_assignment/', 'code/game/objects/structures/crates_lockers/closets.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -216,6 +241,12 @@ SUITES = {
                          'code/modules/1713/factory_chemistry.dm',
                          'code/modules/1713/factory_pipes.dm',
                          'tests/save_movement/source_adapter.py')},
+    # Production movement teardown projected with inert registries; no native world.
+    'vehicle_component_teardown': {'files': ('tests/boat_movement/test_component_ownership.py',),
+        'paths': ('tests/boat_movement/',), 'shared_paths': (
+            'code/modules/1713/machinery/modular_vehicles/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/ships/movement.dm',
+            'tests/save_movement/source_adapter.py')},
     # Explosion remains above the ground: production wiring and map level audit.
     'vehicle_hull_damage': {'files': ('tests/vehicle_hull_damage/test_contract.py',),
         'paths': ('tests/vehicle_hull_damage/',), 'shared_paths': (
@@ -354,6 +385,7 @@ SUITES = {
         'paths': ('tests/gun_icon_states/', 'code/_helpers/sprite_states.dm'),
         'shared_paths': (
             'scripts/fixture_compiler_output.py',
+            'scripts/fixture_global_initialization.py',
             'code/game/mob/living/carbon/human/update_icons.dm',
             'code/modules/projectiles/gun.dm',
             'code/modules/projectiles/guns/projectile.dm',
@@ -451,7 +483,7 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
-    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
@@ -1014,8 +1046,8 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
         'tests/jungle_hiding/',)},
-    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py',), 'paths': (
-        'tests/flora_regrowth/', 'code/modules/ecology/flora_regrowth.dm')},
+    'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py', 'tests/flora_regrowth/test_site_occupancy.py'), 'paths': (
+        'tests/flora_regrowth/', 'tests/ecology_spawning/', 'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm')},
     'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (
         'tests/pollution/', 'code/modules/ecology/pollution.dm', 'code/processes/pollution.dm',
         'code/modules/reagents/reagent_pollution.dm',
@@ -1110,6 +1142,7 @@ SUITES = {
     # Offline only: reviewed guard projection, catalog generation, inert Help imports.
     # Shared crafting/Atlas files keep the conservative all-suite fallback.
     'furniture_joinery': {'files': ('tests/furniture_joinery/test_grille_construction.py',
+                                   'tests/furniture_joinery/test_table_climb.py',
                                   'tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
@@ -1205,7 +1238,7 @@ SUITES = {
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
         'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
-        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
             'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
             'civ13.dme')},
@@ -1213,7 +1246,7 @@ SUITES = {
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/living/carbon/give.dm'),
-        'shared_paths': ('code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
@@ -1232,6 +1265,9 @@ SUITES = {
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
     'berry_harvest': {'files': ('tests/berry_harvest/test_harvest.py',),
         'paths': ('tests/berry_harvest/', 'code/game/objects/structures/berries.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'barbwire_crossing': {'files': ('tests/barbwire_crossing/test_crossing.py',),
+        'paths': ('tests/barbwire_crossing/', 'code/modules/1713/barbwire.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',

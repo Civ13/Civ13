@@ -83,8 +83,8 @@ class FurnaceManual(unittest.TestCase):
         self.assertIs(stone.loc, actor)
 
     def test_negative_controls_detect_retained_or_rejected_fuel(self):
-        no_delete = SOURCE.replace('\n\tqdel(I)\n\treturn\n\n/obj/structure/furnace/attackby',
-                                   '\n\treturn\n\n/obj/structure/furnace/attackby', 1)
+        no_delete = SOURCE.replace('\n\tqdel(I)\n\treturn\n\n/obj/structure/furnace/proc/handle_structure_tool',
+                                   '\n\treturn\n\n/obj/structure/furnace/proc/handle_structure_tool', 1)
         self.assertNotEqual(no_delete, SOURCE)
         _, _, item = transact('/obj/item/stack/material/wood', source=no_delete)
         self.assertFalse(item.gcDestroyed)
@@ -95,6 +95,70 @@ class FurnaceManual(unittest.TestCase):
         self.assertEqual(furnace.fuel, 2)
         self.assertEqual(actor.removed, [])
         self.assertFalse(item.gcDestroyed)
+
+
+class ToolProjection(projection.Projection):
+    def expression(self, text, receiver, local):
+        # Supply deterministic wait and parent adapters without emulating DM scheduling.
+        return super().expression(text.replace('do_after(H,50,src)', 'wait()'), receiver, local)
+
+
+def tool_action(handler, kind, completed, anchored=True, source=SOURCE):
+    # Parent fallback is an injected observation; all other logic comes from source.
+    # The scalar projector cannot parse DM type paths with a trailing slash.
+    p = ToolProjection(source.replace('..()', 'parent()').replace('/obj/item/stack/)', '/obj/item/stack)'))
+    events = []
+    furnace = projection.Record(anchored=anchored, gcDestroyed=False, loc='floor', I_HELP='help')
+    furnace.wait = lambda: events.append('wait') or completed
+    furnace.empty = lambda: events.append('empty:' + handler)
+    furnace.parent = lambda: events.append('parent')
+    furnace.handle_structure_tool = lambda item, actor: p.run(
+        '/obj/structure/furnace/proc/handle_structure_tool', furnace, I=item, H=actor)
+    actor = projection.Record(type='/mob/living/human', a_intent='help')
+    item = projection.Record(type=kind, loc=actor, basematerials=projection.Record(len=0))
+    p.run(handler, furnace, I=item, H=actor)
+    return furnace, events
+
+
+class FurnaceToolActions(unittest.TestCase):
+    handlers = ('/obj/structure/furnace/attackby',
+                '/obj/structure/furnace/blast_furnace/attackby',
+                '/obj/structure/furnace/kiln/attackby')
+    wrench = '/obj/item/weapon/wrench'
+    hammer = '/obj/item/weapon/hammer'
+
+    def test_success_and_interruption_preserve_each_handler(self):
+        for handler in self.handlers:
+            for tool in (self.wrench, self.hammer):
+                for completed in (False, True):
+                    for anchored in (False, True):
+                        with self.subTest(handler=handler, tool=tool, completed=completed, anchored=anchored):
+                            furnace, events = tool_action(handler, tool, completed, anchored)
+                            expected = ['wait']
+                            if completed and tool == self.hammer:
+                                expected.append('empty:' + handler)
+                            if not completed and handler == self.handlers[0]:
+                                expected.append('parent')
+                            self.assertEqual(events, expected)
+                            self.assertEqual(furnace.anchored, not anchored if completed and tool == self.wrench else anchored)
+                            self.assertEqual(furnace.gcDestroyed, completed and tool == self.hammer)
+
+    def test_non_tool_does_not_wait_and_continues_to_parent(self):
+        furnace, events = tool_action(self.handlers[0], '/obj/item/other', True)
+        self.assertEqual(events, ['parent'])
+        self.assertFalse(furnace.gcDestroyed)
+
+    def test_negative_controls_detect_interrupted_return_and_missing_empty(self):
+        broken = SOURCE.replace('\n\treturn FALSE\n\n/obj/structure/furnace/attackby',
+                                '\n\treturn TRUE\n\n/obj/structure/furnace/attackby', 1)
+        self.assertNotEqual(broken, SOURCE)
+        _, events = tool_action(self.handlers[0], self.wrench, False, source=broken)
+        self.assertNotEqual(events, ['wait', 'parent'])
+        broken = SOURCE.replace('\n\t\t\t\tempty()\n\t\t\t\tqdel(src)',
+                                '\n\t\t\t\tqdel(src)', 1)
+        self.assertNotEqual(broken, SOURCE)
+        _, events = tool_action(self.handlers[1], self.hammer, True, source=broken)
+        self.assertNotIn('empty:' + self.handlers[1], events)
 
 
 if __name__ == '__main__':
