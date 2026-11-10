@@ -85,7 +85,9 @@
 		var/target_text = trans_dest? "\the [trans_dest]" : "\the [user.loc]"
 		user.visible_message("<span class='danger'>\The [user] begins to wring out [src] over [target_text].</span>", "<span class='notice'>You begin to wring out [src] over [target_text].</span>")
 
-		if (do_after(user, reagents.total_volume*5, progress = FALSE)) //50 for a fully soaked rag
+		if (do_after(user, reagents.total_volume*5, trans_dest, progress = FALSE)) //50 for a fully soaked rag
+			if (trans_dest && (QDELETED(trans_dest) || !user.Adjacent(trans_dest) || !trans_dest.is_open_container()))
+				return
 			if (trans_dest)
 				reagents.trans_to(trans_dest, reagents.total_volume)
 			else
@@ -100,13 +102,17 @@
 		user.visible_message("\The [user] starts to wipe down [A] with [src]!")
 		reagents.splash(A, TRUE) //get a small amount of liquid on the thing we're wiping.
 		update_name()
-		if (do_after(user,30, progress = FALSE))
+		if (do_after(user,30, A, progress = FALSE))
+			if (QDELETED(A) || !user.Adjacent(A))
+				return
 			user.visible_message("\The [user] finishes wiping off the [A]!")
 			A.clean_blood()
 
 /obj/item/weapon/reagent_containers/glass/rag/attack(atom/target as obj|turf|area, mob/user as mob , flag)
 	if (isliving(target))
-		if (do_after(user, 20, get_turf(user)))
+		if (do_after(user, 20, target))
+			if (QDELETED(target) || !user.Adjacent(target))
+				return
 			var/mob/living/M = target
 			if (on_fire)
 				user.visible_message("<span class='danger'>\The [user] hits [target] with [src]!</span>",)

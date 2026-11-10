@@ -36,6 +36,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
+        'paths': ('tests/cleaning_rag/',), 'shared_paths': (
+            'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
