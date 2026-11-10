@@ -10,6 +10,9 @@ var/global/list/basic_crafting_recipes = list()
 	return map && istext(node_id) && get_research_node(node_id) && map.is_node_done(faction, node_id)
 
 /proc/crafting_node_allowed(mob/living/human/H, node_id)
+	// Book research: only what the character knows. No faction or era grants.
+	if (istype(H) && map && map.book_research_enabled())
+		return istext(node_id) && get_research_node(node_id) && H.knows_recipe_node(node_id)
 	return istype(H) && crafting_node_world_allowed(H.civilization, node_id) && (!map.recipe_knowledge_enabled() || H.knows_recipe_node(node_id))
 
 // Unknown outputs fail closed. Acquisition and generic chemistry do not call this.
@@ -19,6 +22,10 @@ var/global/list/basic_crafting_recipes = list()
 	if (is_basic_crafting_recipe(result_path_string))
 		return TRUE
 	var/node_id = get_recipe_node_req(result_path_string)
+	// Book research: anyone who knows the groundwork may build what the next
+	// step of research needs, without a manual for it.
+	if (map && map.book_research_enabled() && is_research_essential_recipe(result_path_string))
+		return istext(node_id) && get_research_node(node_id) && (H.knows_recipe_node(node_id) || H.knows_research_prereqs(node_id))
 	// Research essentials still need the world's research, never a manual.
 	if (is_research_essential_recipe(result_path_string))
 		return crafting_node_world_allowed(H.civilization, node_id)

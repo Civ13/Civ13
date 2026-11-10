@@ -53,6 +53,9 @@ var/global/list/research_benches = list()
 
 // Called by /process/research_tree once per analysis interval.
 /obj/structure/research_bench/proc/analysis_tick()
+	if (book_mode())
+		book_analysis_tick()
+		return
 	if (!faction || !map)
 		return
 	// If the current subject is finished (or empty), roll on to the next node
@@ -103,6 +106,8 @@ var/global/list/research_benches = list()
 // right now (tier + prereq/status). Permission to actually pick it is a
 // separate check (can_manage_faction_research).
 /obj/structure/research_bench/proc/can_assign_node(node_id)
+	if (book_mode())
+		return book_can_assign_node(node_id)
 	if (!map || !faction || faction == "none")
 		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
@@ -113,6 +118,9 @@ var/global/list/research_benches = list()
 
 /obj/structure/research_bench/proc/try_assign_node(mob/living/human/H, node_id)
 	if (!map)
+		return
+	if (book_mode())
+		book_try_assign_node(H, node_id)
 		return
 	if (!map.can_manage_faction_research(H, faction))
 		to_chat(H, SPAN_WARNING("Only your faction's Leader, [map.get_director_title(faction)], or a Researcher may change what this bench studies."))
@@ -140,7 +148,7 @@ var/global/list/research_benches = list()
 // waits on ones that aren't assignable yet (locked prereqs / tier) rather than
 // discarding them, so a researcher can queue ahead of prerequisites.
 /obj/structure/research_bench/proc/try_advance_queue()
-	if (!faction || !map)
+	if (!faction || !map || book_mode())
 		return
 	if (assigned_node && !map.is_node_done(faction, assigned_node))
 		return
@@ -160,7 +168,7 @@ var/global/list/research_benches = list()
 	set_queue(q)
 
 /obj/structure/research_bench/proc/try_queue_node(mob/living/human/H, node_id)
-	if (!map || !map.can_manage_faction_research(H, faction))
+	if (!map || book_mode() || !map.can_manage_faction_research(H, faction))
 		to_chat(H, SPAN_WARNING("Only your faction's research staff may queue research here."))
 		return
 	var/datum/research_node/N = get_research_node(node_id)
@@ -191,6 +199,8 @@ var/global/list/research_benches = list()
 // Claiming an abandoned bench: only if its owning faction no longer has any
 // living members, and the claimer's faction is under its own bench cap.
 /obj/structure/research_bench/proc/try_claim(mob/living/human/H)
+	if (book_mode())
+		return // book-mode benches belong to nobody
 	if (!map || !H.civilization || H.civilization == "none")
 		to_chat(H, SPAN_WARNING("You must belong to a faction to claim a research bench."))
 		return
@@ -339,6 +349,10 @@ var/global/list/research_benches = list()
 	data["tier_progress"] = tier_progress
 	data["tier_upgrade_cost"] = tier < emax ? BENCH_TIER_UPGRADE_COST(tier) : 0
 	data["bench_faction"] = faction
+	var/book_mode = book_mode()
+	data["book_mode"] = book_mode
+	if (book_mode)
+		book_ui_data(H, data)
 
 	var/viewer_faction = H.civilization
 	data["viewer_faction"] = viewer_faction
@@ -353,7 +367,7 @@ var/global/list/research_benches = list()
 	var/is_leader = map && map.is_faction_leader(H, faction)
 	var/is_director = map && map.is_research_director(H, faction)
 	var/can_manage = map && map.can_manage_faction_research(H, faction)
-	data["owns_bench"] = owns_bench
+	data["owns_bench"] = owns_bench && !book_mode
 	data["can_manage"] = can_manage
 	data["is_leader"] = is_leader
 	data["is_director"] = is_director
@@ -374,7 +388,7 @@ var/global/list/research_benches = list()
 	data["can_claim"] = has_faction && !owns_bench && map && !faction_is_extant(faction) && \
 		map.count_faction_benches(viewer_faction) < map.get_bench_cap(viewer_faction)
 
-	if (assigned_node)
+	if (assigned_node && !book_mode)
 		var/datum/research_node/AN = get_research_node(assigned_node)
 		if (AN)
 			data["assigned_name"] = AN.name
@@ -431,7 +445,7 @@ var/global/list/research_benches = list()
 		// node_status()/is_node_done() handle a "none"/null faction fine on
 		// their own (baseline-era grants don't depend on faction), so every
 		// viewer -- factionless included -- sees their era's freebies as Done.
-		var/status = map.node_status(viewer_faction, node_id)
+		var/status = book_mode ? book_node_status(H, node_id) : map.node_status(viewer_faction, node_id)
 		var/status_text
 		var/status_class
 		var/detail
@@ -442,12 +456,19 @@ var/global/list/research_benches = list()
 				status_class = "linkOn"
 				progress_percent = 100
 				var/list/entry = map.get_node_entry(viewer_faction, node_id)
-				detail = (entry && entry[RNODE_ENTRY_TICKS] > 0) ? "Completed" : "Baseline (free at this era)"
+				if (book_mode)
+					status_text = "Known"
+					detail = "You know this"
+				else
+					detail = (entry && entry[RNODE_ENTRY_TICKS] > 0) ? "Completed" : "Baseline (free at this era)"
 			if (RNODE_IN_PROGRESS)
 				status_text = "In Progress"
 				status_class = "linkOff"
 				var/list/entry = map.get_node_entry(viewer_faction, node_id)
 				var/ticks = entry ? entry[RNODE_ENTRY_TICKS] : 0
+				if (book_mode)
+					var/obj/item/weapon/book/PB = placed_book()
+					ticks = PB ? PB.research_ticks(node_id) : 0
 				progress_percent = round((ticks / N.cost_ticks) * 100)
 				detail = "[progress_percent]% ([ticks]/[N.cost_ticks])"
 			if (RNODE_AVAILABLE)
@@ -459,7 +480,7 @@ var/global/list/research_benches = list()
 				status_class = "disabled"
 				var/list/missing = list()
 				for (var/req in N.prereqs)
-					if (!map.is_node_done(viewer_faction, req))
+					if (book_mode ? !H.knows_recipe_node(req) : !map.is_node_done(viewer_faction, req))
 						var/datum/research_node/RN = get_research_node(req)
 						missing += RN ? RN.name : req
 				detail = missing.len ? "Requires: [jointext(missing, ", ")]" : "Requires an earlier era"
@@ -494,20 +515,20 @@ var/global/list/research_benches = list()
 			"status_class" = status_class,
 			"detail" = detail,
 			"progress_percent" = progress_percent,
-			"assignable" = can_manage && can_assign_node(node_id),
+			"assignable" = (book_mode || can_manage) && can_assign_node(node_id),
 			// Research staff of the OWNING faction can document any DONE node from
 			// its detail popup. can_manage already implies the viewer is in this
 			// bench's faction, so status (computed for viewer_faction) == the
 			// bench faction's status. Books work on any mode; notes need a
 			// tick-accumulating subject (every mode except the unused BOOK mode).
-			"can_write_book" = can_manage && status == RNODE_DONE,
-			"can_write_notes" = can_manage && status == RNODE_DONE && N.mode != RESEARCH_MODE_BOOK,
+			"can_write_book" = !book_mode && can_manage && status == RNODE_DONE,
+			"can_write_notes" = !book_mode && can_manage && status == RNODE_DONE && N.mode != RESEARCH_MODE_BOOK,
 			// Name of the item a PROTOTYPE node needs built, so the modal can tell
 			// the researcher what to make instead of leaving them guessing.
 			"prototype_name" = (N.mode == RESEARCH_MODE_PROTOTYPE) ? N.prototype_display_name() : null,
 			// Queueable: staff can line up any not-done node that isn't the current
 			// subject (the queue handler rejects duplicates / already-queued).
-			"queueable" = can_manage && status != RNODE_DONE && node_id != assigned_node))
+			"queueable" = !book_mode && can_manage && status != RNODE_DONE && node_id != assigned_node))
 	data["trees"] = trees
 
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
@@ -534,9 +555,16 @@ var/global/list/research_benches = list()
 	var/mob/living/human/H = usr
 	if (H.stat) // no acting on the bench while dead or unconscious
 		return
-	if (!H.civilization || H.civilization == "none")
-		return
 	if (!(in_range(src, usr) && istype(loc, /turf)) && !usr.contents.Find(src))
+		return
+	if (book_mode())
+		if (href_list["assign"])
+			try_assign_node(H, href_list["assign"])
+		else if (href_list["take_book"])
+			book_take(H)
+		GLOB.nanomanager.update_uis(src)
+		return
+	if (!H.civilization || H.civilization == "none")
 		return
 	if (href_list["assign"])
 		try_assign_node(H, href_list["assign"])
@@ -620,6 +648,9 @@ var/global/list/research_benches = list()
 	if (!istype(W) || !ishuman(user))
 		return
 	if (!map)
+		return
+	if (book_mode())
+		book_attackby(W, user)
 		return
 	// You can only interact with a bench your own faction owns.
 	if (!user.civilization || user.civilization == "none" || user.civilization != faction)
@@ -762,7 +793,7 @@ var/global/list/research_benches = list()
 		return
 	if (QDELETED(src) || QDELETED(W) || QDELETED(user) || !map)
 		return
-	if (!faction || faction == "none" || faction != owning_faction || user.civilization != faction)
+	if (!book_mode() && (!faction || faction == "none" || faction != owning_faction || user.civilization != faction))
 		return
 	if (user.a_intent != I_HARM || user.get_active_hand() != W || !in_range(src, user))
 		return
@@ -837,6 +868,9 @@ var/global/list/research_benches = list()
 
 /obj/structure/research_bench/examine(mob/user, distance = -1)
 	..()
+	if (book_mode())
+		book_examine(user)
+		return
 	to_chat(user, "Use Help intent to submit research samples, including tools. Use Harm intent with a wrench to fasten or unfasten the bench, or with a hammer to dismantle it. Only members of the owning faction can maintain it.")
 	if (tier >= MAX_BENCH_TIER)
 		to_chat(user, "It is tier [tier] (maximum).")

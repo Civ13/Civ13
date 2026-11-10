@@ -49,7 +49,7 @@ def istype(item, path='/obj/item'):
 FIELDS = ('assigned_node', 'faction', 'tier', 'studied_samples', 'not_movable',
           'not_disassemblable', 'powersource', 'anchored', 'contents', 'loc')
 METHODS = ('maintain_bench', 'is_upgrade_coin', 'try_feed_coins', 'try_advance_queue',
-           'anchor_changed')
+           'anchor_changed', 'book_mode', 'book_attackby')
 
 
 def project(source, path, args, env, fields=FIELDS):
@@ -157,6 +157,9 @@ class Case:
         self.bench.try_feed_coins = lambda *_: self.events.append(('coins',))
         self.bench.try_advance_queue = lambda: self.events.append(('queue',))
         self.bench.anchor_changed = lambda: self.events.append(('anchor',))
+        # Book research (opt-in, off here) has its own fixture in tests/recipe_knowledge.
+        self.bench.book_mode = lambda: False
+        self.bench.book_attackby = lambda *_: self.events.append(('book',))
 
     def wait(self, user, delay, target):
         self.events.append(('wait', delay))
