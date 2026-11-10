@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'b8e9e04d0b4ea22bc6939f4f75ef977e34f4bdfa'
+WIKI_REVIEWED_REVISION = 'affa1cd66bfa00631370c41d4c0515e6f765624c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -89,7 +89,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('4a28f61e9133aec8e6a92849139ade14bd676fd39c9b00cf3fbee09efde0313e', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('d5fa7ea8e6bdddf5cc1a7fe89be384050e3a7672c554ac14d2f3c087bce42d78', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('1d8f90452d6a2a0e0a6ddb6ccd929d5d74c6660a38f9f9f00789c53eca0c9b89', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('bfc45cbce8e90ee22f91dbf80d44aed5e5e8666eecca75f3111ffc499dbba027', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
@@ -119,7 +119,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('5c93997d1bde5fb28568256756cafdd09c9b1ad1fe643a44d2f7d65bb9979c74', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Paperwork.md': ('7eb57d56e7a8ab8ea9c281a348193566af6a5efc3fd9cf9b56f60b6d7998daee', 'paper paperwork writing write pen book sign signature stamp'),
+    'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9604d25e78fc9a72dd1ad644b30ee162720ba54f03102a034fca4c022e26c3d3', 'miscellaneous crafting misc items'),
