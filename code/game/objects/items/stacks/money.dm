@@ -868,6 +868,8 @@
 	return ..()
 
 /obj/item/stack/money/septim/update_icon()
+	if(amount == 1)
+		icon_state = "septim"
 	if(amount == 2)
 		icon_state = "septim_2"
 	if(amount == 3)
