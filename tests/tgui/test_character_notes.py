@@ -97,7 +97,7 @@ class NotesOwnership(unittest.TestCase):
   current='/datum/mind/proc/show_memory(mob/recipient)\n'+body(mind,'/datum/mind/proc/show_memory(mob/recipient)')
   current=current.replace('\tvar/discovery_snapshot = discoveries_html()\n\toutput += discovery_snapshot','\toutput += discoveries_html()')
   old_tail='\trecipient << browse(replacetext(memory_stylized, "PLACEHOLDER", output),"window=memory;size=625x650")'
-  start=current.index('\tvar/legacy_snapshot = ');end=current.index('\n',current.index('\trecipient << browse(legacy_snapshot',start))
+  start=current.index('\tvar/legacy_snapshot = ');end=current.index('\n',current.index('\tshow_browse(recipient, legacy_snapshot',start))
   current=current[:start]+old_tail+current[end:]
   # The fixture excludes only blank lines separating top-level procs.
   self.assertEqual(current.rstrip('\n'),(ROOT/'tests/tgui/fixtures/notes-legacy-proc.dm.txt').read_text().rstrip('\n'))

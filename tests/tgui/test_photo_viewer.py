@@ -15,7 +15,7 @@ class PhotoViewerContract(unittest.TestCase):
   for path in ('code/game/objects/items/paper/folder.dm','code/game/objects/items/clipboard.dm'):
    text=(ROOT/path).read_text();self.assertIn('P.show(usr)',text);self.assertIn('P.loc == src',text)
   attack=DM.split('/obj/item/weapon/photo/attackby(',1)[1].split('/obj/item/weapon/photo/examine(',1)[0]
-  self.assertIn('sanitize(input(user,',attack);self.assertIn('as text, 128)',attack)
+  self.assertIn('sanitize(player_input(user,',attack);self.assertIn('"text", null, FALSE), 128)',attack)
   self.assertIn('if(loc == user && user.stat == 0)',attack)
   self.assertNotRegex(SHOW,r'generate_image|captureimage|createpicture|put_in|set_using_object|\bnew\s+/obj')
 
