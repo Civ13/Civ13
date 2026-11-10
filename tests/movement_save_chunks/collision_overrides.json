@@ -128,6 +128,21 @@
       ]
     },
     {
+      "path": "code/game/objects/items/weapons/traps.dm",
+      "declarations": [
+        {
+          "owner": "/obj/item/weapon/beartrap",
+          "declaration": "parent_type = /obj/item/weapon/trap_lifecycle",
+          "sha256_body": "e9abe4eb79bbb0cefc7d3712a7fc7f49b601274320fc7858f54f764752930c9a"
+        },
+        {
+          "owner": "/obj/item/weapon/punji_sticks",
+          "declaration": "parent_type = /obj/item/weapon/trap_lifecycle",
+          "sha256_body": "e9abe4eb79bbb0cefc7d3712a7fc7f49b601274320fc7858f54f764752930c9a"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/structures/appliances.dm",
       "declarations": [
         {
