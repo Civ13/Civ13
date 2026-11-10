@@ -122,7 +122,7 @@ var/global/list/book_research_writing_supplies = list(
 	if (H.stats["stamina"][1] < cost)
 		to_chat(H, SPAN_WARNING("You are too tired to write a chapter now."))
 		return FALSE
-	var/time = scholar_write_time(N.era_tier, P)
+	var/time = scholar_write_time(N.era_tier, P, H)
 	to_chat(H, SPAN_NOTICE("You begin writing the chapter on [N.name] into [src]. This takes about [round(time / 600, 0.5)] minute\s."))
 	page_busy = TRUE
 	var/done = do_after(H, time, src)
