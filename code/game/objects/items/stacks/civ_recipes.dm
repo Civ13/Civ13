@@ -62,7 +62,7 @@
 					current_res = map.civb_research
 			if (user.s_tone <= -175 && map.ID == MAP_NOMADS_AFRICA)
 				faction = "pygmy"
-			generate_recipes_civs(current_res, faction, user ? user.civilization : null)
+			generate_recipes_civs(current_res, faction, user ? user.civilization : null, user)
 		else
 			var/list/current_res = list(0,0,0)
 			if (map)
@@ -92,7 +92,7 @@
 					current_res = map.custom_civs[user.civilization]
 			if (map && map.override_global_recipes != "global")
 				faction = map.override_global_recipes
-			generate_recipes_civs(current_res, faction, user ? user.civilization : null)
+			generate_recipes_civs(current_res, faction, user ? user.civilization : null, user)
 	return recipes
 
 // Field 12 of a recipe row is the last age it can be crafted in. Rows at
@@ -103,7 +103,7 @@
 		return FALSE
 	return max_age >= RECIPE_OPEN_ENDED_AGE || map.ordinal_age <= max_age
 
-/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global", research_faction = null)
+/material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global", research_faction = null, mob/living/human/user = null)
 
 	recipes = list()
 	if (processing_only)
@@ -147,10 +147,11 @@
 		// don't depend on faction), so factionless players get their era's
 		// baseline nodes here instead of falling back to legacy thresholds.
 		if (node_req && map && map.book_research_enabled())
-			// Book research: rows follow the world era; the craft itself checks
-			// the character's own knowledge (crafting_recipe_allowed).
+			// Show current-era rows, plus anything this character can already
+			// craft from personal knowledge or the research-essential rules.
+			// The craft itself still rechecks permission at the point of use.
 			var/datum/research_node/RN = get_research_node(node_req)
-			research_allowed = is_book_research_writing_supply(i[3]) || (RN && RN.era_tier <= map.ordinal_age)
+			research_allowed = is_book_research_writing_supply(i[3]) || (RN && RN.era_tier <= map.ordinal_age) || (user && crafting_recipe_allowed(user, i[3]))
 		else if (node_req && map)
 			research_allowed = map.is_node_done(research_faction, node_req)
 		else
