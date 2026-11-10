@@ -27,6 +27,7 @@
 	layer = MOB_LAYER - 0.06 // Why 0.06? To prevent beds from clipping above east-facing barriers (3.95).
 	var/used = FALSE
 	var/running = FALSE //to prevent exploits of unbuckling/bucking etc
+	var/use_cycle = 0 // invalidates checks scheduled for an earlier occupant
 	can_buckle = TRUE
 	buckle_dir = SOUTH
 	buckle_lying = TRUE
@@ -76,12 +77,16 @@
 /obj/structure/bed/bedroll/proc/check_use(var/mob/living/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
 		running = TRUE
+		use_cycle += 1
+		var/current_cycle = use_cycle
 		update_icon()
 		spawn(300)
-		if ((H in src.loc) && buckled_mob == H && used == TRUE && running == TRUE)
+		if (current_cycle == use_cycle)
 			running = FALSE
 			check_use(H)
 	else
+		use_cycle += 1
+		running = FALSE
 		used = FALSE
 		update_icon()
 		return
