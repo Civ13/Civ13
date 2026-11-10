@@ -69,11 +69,14 @@
 	// Wax remains in legacy two-second units for save compatibility.
 	wax = max(0, wax - configured_seconds / 2)
 	if (wax <= 0)
-		new/obj/item/trash/candle(loc)
+		create_candle_remains()
 		if (istype(loc, /mob))
 			dropped()
 		qdel(src)
 	update_icon()
+
+/obj/item/weapon/flame/candle/proc/create_candle_remains()
+	new/obj/item/trash/candle(loc)
 
 /obj/item/weapon/flame/candle/attack_self(mob/user as mob)
 	if (lit)
@@ -97,20 +100,8 @@
 	else i = 3
 	icon_state = "candle[i][lit ? "_lit" : ""]_lard"
 
-/obj/item/weapon/flame/candle/lard/process()
-	return process_interval(2)
-
-/obj/item/weapon/flame/candle/lard/process_interval(configured_seconds = 2)
-	if (!lit)
-		return
-	// Wax remains in legacy two-second units for save compatibility.
-	wax = max(0, wax - configured_seconds / 2)
-	if (wax <= 0)
-		new/obj/item/trash/candle/lard(loc)
-		if (istype(loc, /mob))
-			dropped()
-		qdel(src)
-	update_icon()
+/obj/item/weapon/flame/candle/lard/create_candle_remains()
+	new/obj/item/trash/candle/lard(loc)
 
 /obj/item/weapon/flame/candle/lard/on
 	New()
