@@ -36,6 +36,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
+        'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
+        'shared_paths': tuple(f'tests/{name}/run.py' for name in (
+            'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
+            'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
     'closet_key_assignment': {'files': ('tests/closet_key_assignment/test_assignment.py',), 'paths': (
         'tests/closet_key_assignment/', 'code/game/objects/structures/crates_lockers/closets.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -331,6 +336,7 @@ SUITES = {
     'gun_icon_states': {'files': ('tests/gun_icon_states/test_gun_icon_states.py',),
         'paths': ('tests/gun_icon_states/', 'code/_helpers/sprite_states.dm'),
         'shared_paths': (
+            'scripts/fixture_compiler_output.py',
             'code/game/mob/living/carbon/human/update_icons.dm',
             'code/modules/projectiles/gun.dm',
             'code/modules/projectiles/guns/projectile.dm',

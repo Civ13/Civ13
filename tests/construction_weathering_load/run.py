@@ -5,6 +5,7 @@ disabled, builds a synthetic 6x4x1 world, then runs Save_World, ClearMap and
 Load_World in temporary storage. Prints the evidence directory.
 """
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -22,10 +23,11 @@ CONTROLS = {
 }
 
 
-def compiler_matches(text, returncode, version):
-    return (returncode == 0 and
-            re.search(r'^DM compiler version ' + re.escape(version) + r'\b', text, re.MULTILINE) is not None and
-            re.search(r'\b0 errors,\s*0 warnings\b', text) is not None)
+_compiler_spec = importlib.util.spec_from_file_location(
+    'fixture_compiler_output', Path(__file__).resolve().parents[2] / 'scripts/fixture_compiler_output.py')
+_compiler_output = importlib.util.module_from_spec(_compiler_spec)
+_compiler_spec.loader.exec_module(_compiler_output)
+compiler_matches = _compiler_output.compiler_matches
 
 
 def main():
