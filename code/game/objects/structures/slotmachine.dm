@@ -101,7 +101,7 @@
 		var/weight = weights[slots["1"]]
 		var/prize = bet * weight
 
-		if (weight == "Seven") //Case of jackpot hitting, prize is equal to total jackpot
+		if (slots["1"] == "Seven") //Case of jackpot hitting, prize is equal to total jackpot
 			prize = jackpot
 			jackpot = 0
 			src.visible_message("<b>[name]</b> states, \" JACKPOT!!! Congratulations!\"")
