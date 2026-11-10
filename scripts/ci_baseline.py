@@ -41,6 +41,18 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Offline fixture composition only; this suite does not launch BYOND.
+    'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+            tuple(f'tests/{name}/run.py' for name in (
+                'faction_membership', 'faction_recruitment', 'research_persistence')),
+        'shared_paths': (
+            'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
+            'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm',
+            'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
@@ -1222,7 +1234,7 @@ SUITES = {
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
         'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
-        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
             'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
             'civ13.dme')},
@@ -1230,7 +1242,7 @@ SUITES = {
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/living/carbon/give.dm'),
-        'shared_paths': ('code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
