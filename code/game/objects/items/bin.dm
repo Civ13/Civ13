@@ -67,8 +67,8 @@
 	i.loc = src
 	visible_message("<font color='yellow'><big>A [i] arrived in \the [src]!</big></span>")
 	papers.Add(i)
-	update_icon()
 	amount++
+	update_icon()
 
 /obj/item/weapon/paper_bin/attackby(obj/item/weapon/paper/i as obj, mob/user as mob)
 	if (!istype(i))
@@ -78,8 +78,8 @@
 	i.loc = src
 	to_chat(user, SPAN_NOTICE("You put [i] into \the [src]"))
 	papers.Add(i)
-	update_icon()
 	amount++
+	update_icon()
 
 
 /obj/item/weapon/paper_bin/examine(mob/user)
