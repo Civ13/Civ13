@@ -129,11 +129,17 @@ class ProjectionTest(unittest.TestCase):
     def test_unknown_static_type_rejects_unless_preview(self):
         entries = {1: turf(1, "/turf/floor/wood", [2]), 2: turf(2, "/obj/structure/not_in_source"), 3: turf(3, "/turf/floor/wood")}
         cells = {(1, 1): {"ref": 1, "zone": "a"}, (2, 1): {"ref": 3, "zone": "a"}}
+        report = export.Report()
         with self.assertRaisesRegex(CoreError, "unsupported_static"):
-            self.project(entries, cells)
+            export.project(level(entries, cells), meta(), self.profile, CATALOG, False, report)
+        # The rejection names the type so the operator can fix it.
+        self.assertEqual(report.groups["unsupported_static", "type:/obj/structure/not_in_source"], 1)
+        self.assertEqual(report.counts["saved_objects"], 1)
         _, report, status = self.project(entries, cells, preview=True)
         self.assertEqual(status, "incomplete_preview")
-        self.assertNotIn("not_in_source", json.dumps(report.render(status)))
+        entries[2] = turf(2, "/obj/structure/" + "x" * 300)
+        _, report, _ = self.project(entries, cells, preview=True)
+        self.assertEqual(report.groups["unsupported_static", "unknown_static_type"], 1)
 
     def test_unknown_terrain_and_missing_topology_reject(self):
         entries = {1: turf(1, "/turf/unknown"), 2: turf(2, "/turf/floor/wood")}
