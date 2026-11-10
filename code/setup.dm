@@ -139,6 +139,7 @@
 	if (config.allowedgamemodes == "PERSISTENCE")
 		map.persistence = TRUE
 		map.apply_persistence_age_floor()
+		map.start_book_research_world()
 		map.research_active = FALSE
 		if (!map.autoresearch && !map.book_research_enabled())
 			map.autoresearch = TRUE

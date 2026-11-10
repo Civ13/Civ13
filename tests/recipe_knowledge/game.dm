@@ -277,6 +277,9 @@ var/knowledge_failures = 0
 	var/old_age = map.age
 	var/old_ordinal = map.ordinal_age
 	var/old_auto = map.autoresearch
+	var/list/old_flags = list()
+	for (var/i = 1, i <= 9, i++)
+		old_flags += map.vars["age[i]_done"]
 	map.age = "5000 B.C."
 	map.ordinal_age = 0
 	map.autoresearch = TRUE
@@ -287,6 +290,24 @@ var/knowledge_failures = 0
 	knowledge_check(map.ordinal_age == 0 && !journal.has_research_chapter("bronze_working"), "a capstone needs its prototype before it is finished")
 	journal.add_research_work("bronze_working", 0, TRUE)
 	knowledge_check(journal.has_research_chapter("bronze_working") && map.ordinal_age == 1 && map.age == "313 B.C.", "finishing a capstone moves the era")
+	map.age = "1969"
+	map.ordinal_age = 7
+	map.age1_done = TRUE
+	map.autoresearch = TRUE
+	knowledge_check(map.start_book_research_world() && map.age == "5000 B.C." && !map.ordinal_age && !map.age1_done && !map.autoresearch, "a fresh book research world starts in the Stone Age")
+	var/list/stone = stone_age_node_ids()
+	var/stone_ok = stone.len >= 5 && ("basic_tools" in stone)
+	for (var/node_id in stone)
+		var/datum/research_node/SN = get_research_node(node_id)
+		if (SN.era_tier > 0)
+			stone_ok = FALSE
+	knowledge_check(stone_ok, "the Stone Age set holds only era-0 nodes")
+	var/mob/living/human/knowledge_fixture/founder = new(locate(5,5,1))
+	var/obj/item/weapon/book/master = founder.receive_founding_books()
+	knowledge_check(master && master.loc == founder && master.research_chapter_list().len == stone.len && (locate(/obj/item/weapon/pen/pencil) in founder.contents), "a founder gets the Stone Age master book and a pencil")
+	knowledge_check(!founder.knows_recipe_node("basic_tools") && founder.can_learn_recipe_node("basic_tools"), "the master book's chapters still have to be studied")
 	map.age = old_age
 	map.ordinal_age = old_ordinal
 	map.autoresearch = old_auto
+	for (var/i = 1, i <= 9, i++)
+		map.vars["age[i]_done"] = old_flags[i]
