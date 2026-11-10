@@ -65,7 +65,7 @@ def label(s):
         return 'cloth bedroll'
     # This item type's DM name is sand; the similarly named glass material is distinct.
     if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
-    if s.rstrip('/') == '/material/proc/generate_recipes_civs':return 'any hard material'
+    if s == 'category:hard_material':return 'any hard material'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
@@ -221,6 +221,12 @@ for p,raw in files.items():
         args=splitargs(s[start:i-1])
         if len(args)>=3 and args[0].startswith('"') and args[1].startswith('/'):
             prior=s[:m.start()];decls=re.findall(r'^(/[^\s(]+)',prior,re.M);owner=decls[-1] if decls else 'runtime material'
+            # A receiver proc is not a material type. Keep polymorphic input
+            # requirements symbolic instead of exporting an invalid DM typepath.
+            if owner == '/material/proc/generate_recipes_civs':
+                owner = 'category:hard_material'
+            elif '/proc/' in owner or '/verb/' in owner:
+                raise ValueError(f'Dynamic stack receiver requires explicit input mapping: {p}: {owner}')
             # "[display_name] fork": any sufficiently hard material, named by the material at runtime.
             add(re.sub(r'^\[display_name\] ','',args[0].strip('"')),'Native stack',[(owner,'1' if args[2]=='TRUE' else args[2])],[(args[1],1)],p,prior.count('\n')+1,'Receiver/context dependent; named constructor arguments retained in source.',s[m.start():i])
     for m in re.finditer(r'(/obj/[\w/]+)\s*=\s*(/obj/[\w/]+)',s):
@@ -409,6 +415,8 @@ resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']}
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 resource_titles=display_titles(files,{x:(material_stack(x) if x.startswith('/material/') else x) for x in resource_ids if x not in sprite_variants},resource_names)
 def game_resource(x):
+    if x.startswith('category:'):
+        return dict(name=resource_names[x],type='',label='Abstract input category; not a spawnable item',category=True)
     entry=dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{})
     if x in resource_titles:entry['title']=resource_titles[x]
     return entry

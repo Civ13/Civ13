@@ -1,5 +1,6 @@
 """Current-source freshness and new-recipe negative control, no game startup."""
 import json
+import importlib.util
 from pathlib import Path
 import subprocess
 import sys
@@ -19,6 +20,20 @@ class AtlasTests(unittest.TestCase):
             subprocess.run(command+['--game-catalog',str(output)],check=True,capture_output=True)
             self.assertFalse(unused_output.exists(), 'Catalog-only builds must not create website output directories')
             before=json.loads(output.read_text())
+            # Receiver proc names must not become fake material/entity pages.
+            native = [r for r in before['recipes'] if r['kind'] == 'Native stack']
+            self.assertEqual(len(native), 2)
+            self.assertEqual({r['outputs'][0]['id'] for r in native}, {
+                '/obj/item/weapon/material/kitchen/utensil/fork',
+                '/obj/item/weapon/material/kitchen/utensil/spoon'})
+            for recipe in native:
+                self.assertEqual(recipe['inputs'][0]['id'], 'category:hard_material')
+                self.assertEqual(recipe['inputs'][0]['name'], 'any hard material')
+            category = before['resources']['category:hard_material']
+            self.assertTrue(category['category'])
+            self.assertEqual(category['type'], '')
+            self.assertFalse(any('/proc/' in key or '/verb/' in key for key in before['resources']))
+
             bench=next(r for r in before['recipes'] if r['name']=='Workbench Pickaxe')
             self.assertEqual({x['id'] for x in bench['inputs']},{'/obj/item/weapon/material/part/pickaxe','/obj/item/weapon/material/handle'})
             self.assertEqual(bench['outputs'][0]['id'],'/obj/item/weapon/material/pickaxe')
@@ -89,6 +104,19 @@ class AtlasTests(unittest.TestCase):
             finally:
                 source.write_bytes(original)
 
+    def test_unmapped_proc_receiver_fails_closed(self):
+        source = ROOT/'code/game/objects/items/stacks/civ_recipes.dm'
+        original = source.read_bytes()
+        try:
+            source.write_bytes(original.replace(b'/material/proc/generate_recipes_civs(',
+                                               b'/material/proc/unmapped_receiver('))
+            run = subprocess.run([sys.executable, str(ROOT/'scripts/build-crafting-atlas.py'),
+                                  '--catalog-only'], capture_output=True, text=True)
+            self.assertNotEqual(run.returncode, 0)
+            self.assertIn('Dynamic stack receiver requires explicit input mapping', run.stderr)
+        finally:
+            source.write_bytes(original)
+
     def test_procedural_source_change_requires_review(self):
         source=ROOT/'code/modules/1713/gunsmithing/blackpowder_assembly.dm'
         original=source.read_bytes()
@@ -100,5 +128,25 @@ class AtlasTests(unittest.TestCase):
         finally:
             source.write_bytes(original)
 
-if __name__=='__main__':
+
+
+spec = importlib.util.spec_from_file_location('atlas_coverage', ROOT/'scripts/atlas/coverage.py')
+coverage = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(coverage)
+
+
+class CoverageTests(unittest.TestCase):
+    def test_routes_producers_and_categories_are_distinct(self):
+        data = dict(resources={'/obj/item/a': {}, '/turf/floor/b': {}, 'unknown': {},
+                               'category:hard_material': {'category': True}},
+                    recipes=[{'outputs': [{'id': '/obj/item/a'}]}],
+                    acquisition={'/turf/floor/b': [{'name': 'Gather'}, {'name': 'Dig'}]})
+        result = coverage.report(data)
+        self.assertEqual(result['resources_without_producer_or_acquisition_annotation'], ['unknown'])
+        self.assertEqual(result['acquisition_routes'], 2)
+        self.assertEqual(result['resource_families'], {'obj/item': 1, 'symbolic': 2, 'turf/floor': 1})
+        self.assertIn('not prove', result['limitation'])
+
+
+if __name__ == '__main__':
     unittest.main()
