@@ -955,7 +955,7 @@ obj/structure/religious/monument
 		spawn(1)
 			if (name == "statue")
 				name = "[statue_material] statue"
-				update_icon()
+			update_icon()
 
 /obj/structure/religious/statue/update_icon()
 	..()
