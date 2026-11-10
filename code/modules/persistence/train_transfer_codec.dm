@@ -6,6 +6,10 @@
 #define TRAIN_TRANSFER_CRATE_ITEMS 60
 
 /atom/movable/var/train_transfer_id = null
+// Stable train identity is distinct from a particular trip. A stale replay may
+// only remove roots still carrying its exact journey tag.
+/atom/movable/var/train_transfer_journey = null
+/atom/movable/var/train_transfer_digest = null
 /obj/structure/trains/var/train_transfer_built = FALSE
 
 /proc/train_transfer_path(text)
@@ -46,7 +50,8 @@
 	if(!head.train_transfer_id)
 		head.train_transfer_id = md5("[source]-[world.realtime]-[rand(1, 1000000000)]-\ref[head]")
 	var/id = head.train_transfer_id
-	var/list/M = list("kind" = "train", "version" = 1, "id" = id, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
+	var/journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
+	var/list/M = list("kind" = "train", "version" = 1, "id" = id, "journey" = journey, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
 	var/list/accounts = M["accounts"]
@@ -108,7 +113,12 @@
 				loads += A
 				entities += list(E)
 	if(!train_transfer_decode(json_encode(M))) return list("error" = "The train manifest is unsupported or too large.")
-	for(var/atom/movable/A in cars + loads) A.train_transfer_id = id
+	var/digest = md5(json_encode(M))
+	for(var/atom/movable/A in cars + loads)
+		A.train_transfer_id = id
+		A.train_transfer_journey = journey
+		A.train_transfer_digest = digest
+	for(var/obj/structure/trains/C in cars) C.train_transfer_built = FALSE
 	return list("manifest" = M, "cars" = cars, "loads" = loads)
 
 /proc/train_transfer_decode(text)
@@ -119,7 +129,7 @@
 	catch
 		return null
 	if(!islist(M) || M["kind"] != "train" || M["version"] != 1 || !train_transfer_string(M["id"]) || !party_train_valid_party(M["party"])) return null
-	for(var/key in list("source", "destination", "station"))
+	for(var/key in list("journey", "source", "destination", "station"))
 		if(!train_transfer_string(M[key])) return null
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
@@ -179,12 +189,25 @@
 /proc/train_transfer_build(list/M, list/centres, heading = null)
 	M = train_transfer_decode(json_encode(M))
 	if(!M || !islist(centres) || centres.len != length(M["segments"])) return null
+	// Digest is a local idempotency witness, not a network authentication proof.
+	var/digest = md5(json_encode(M))
 	var/found_partial = FALSE
-	for(var/obj/structure/trains/existing in world)
-		if(existing.train_transfer_id == M["id"])
-			if(existing.train_transfer_built) return existing
-			found_partial = TRUE
+	var/obj/structure/trains/completed_head = null
+	for(var/atom/movable/existing in world)
+		if(existing.train_transfer_id != M["id"]) continue
+		if(existing.train_transfer_journey != M["journey"] || existing.train_transfer_digest != digest) return null
+		found_partial = TRUE
+		if(istype(existing, /obj/structure/trains))
+			var/obj/structure/trains/car = existing
+			if(car.train_transfer_built)
+				if(completed_head) return null
+				completed_head = car
+	if(completed_head) return completed_head
 	if(found_partial) return null
+	// region_travel_build can clear another body's account ownership. Refuse
+	// that conflict before constructing anything, rather than trying to undo it.
+	for(var/mob/living/human/existing_body in human_mob_list)
+		if(!QDELETED(existing_body) && existing_body.persistence_owner_ckey in M["accounts"]) return null
 	var/list/first_segment = M["segments"][1]
 	if(isnull(heading)) heading = first_segment["dir"]
 	if(!(heading in cardinal)) return null
@@ -208,6 +231,8 @@
 		var/obj/structure/trains/car = new path(T)
 		built += car
 		car.train_transfer_id = M["id"]
+		car.train_transfer_journey = M["journey"]
+		car.train_transfer_digest = digest
 		car.dir = heading
 		car.health = S["health"]
 		car.on = FALSE
@@ -253,6 +278,8 @@
 			return null
 		built += A
 		A.train_transfer_id = M["id"]
+		A.train_transfer_journey = M["journey"]
+		A.train_transfer_digest = digest
 		A.dir = turn(E["dir"], rotation)
 		A.anchored = E["anchored"]
 	var/obj/structure/trains/head = cars[1]
@@ -260,8 +287,8 @@
 	return head
 
 // Caller may invoke only after ledger grants source deletion/replay custody.
-/proc/train_transfer_remove(id)
-	if(!train_transfer_string(id)) return FALSE
+/proc/train_transfer_remove(id, journey)
+	if(!train_transfer_string(id) || !train_transfer_string(journey)) return FALSE
 	for(var/atom/movable/A in world)
-		if(A.train_transfer_id == id) qdel(A)
+		if(A.train_transfer_id == id && A.train_transfer_journey == journey) qdel(A)
 	return TRUE

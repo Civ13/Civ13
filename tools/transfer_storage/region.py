@@ -569,12 +569,14 @@ class RegionStore:
                 'SELECT transfer_id, direction, phase, manifest FROM active'):
             train = _train_payload(json.loads(manifest).get('items', []))
             if train and train['id'] == train_id:
-                matches.append({'transfer_id': tid, 'direction': direction, 'phase': phase})
+                matches.append({'transfer_id': tid, 'direction': direction, 'phase': phase,
+                                'journey': train['journey'],
+                                'manifest_hash': hashlib.sha256(manifest.encode('utf-8')).hexdigest()})
         replay = []
         for effect, kind, payloads in self.db.execute('SELECT effect_id, kind, payloads FROM journal ORDER BY seq'):
             train = _train_payload(json.loads(payloads))
             if train and train['id'] == train_id:
-                replay.append({'effect_id': effect, 'kind': kind})
+                replay.append({'effect_id': effect, 'kind': kind, 'journey': train['journey']})
         return {'active': matches, 'replay': replay}
 
     def pending_train_admissions(self):

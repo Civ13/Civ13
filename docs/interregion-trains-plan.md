@@ -202,7 +202,11 @@ Remaining dependencies before a playable departure:
 - Atomic grouped account-home custody, not only region-local overlap checks.
 - Real Rail Yard entry/exit endpoints (the existing yard uses stationary berths,
   not completed railway offices) and cross-region faction identity.
-- Durable geometric reservation and runtime/save replay integration.
+- Durable geometric reservation and runtime/save replay integration. Station
+  advertisements and local edge connectivity are not proof of the continuous
+  cross-region railway Val described on 2026-10-24. Full routes need topology
+  revision checks at every intermediate region, stale/unavailable-region
+  invalidation and revalidation before departure.
 - Full body/state preservation and the native/multi-client acceptance matrix.
 
 No deployment, live save change or automatic restart is part of this draft.

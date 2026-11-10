@@ -33,5 +33,27 @@ class CodecContracts(unittest.TestCase):
         self.assertIn('C.type != /obj/structure/closet/crate', S)
         self.assertIn('if(accounts.len != owners.len) return null', S)
 
+    def test_removal_is_scoped_to_the_exact_journey(self):
+        removal = S.split('/proc/train_transfer_remove', 1)[1]
+        self.assertTrue(removal.startswith('(id, journey)'))
+        self.assertIn('!train_transfer_string(journey)', removal)
+        self.assertIn('A.train_transfer_id == id && A.train_transfer_journey == journey', removal)
+        self.assertNotIn('if(A.train_transfer_id == id) qdel(A)', removal)
+
+    def test_build_requires_journey_digest_and_refuses_old_account_bodies(self):
+        build = S.split('/proc/train_transfer_build', 1)[1].split('/proc/train_transfer_remove', 1)[0]
+        guard = 'existing.train_transfer_journey != M["journey"] || existing.train_transfer_digest != digest'
+        self.assertIn(guard, build)
+        self.assertLess(build.index(guard), build.index('if(completed_head) return completed_head'))
+        self.assertLess(build.index('existing_body.persistence_owner_ckey in M["accounts"]'), build.index('new path(T)'))
+        self.assertIn('car.train_transfer_journey = M["journey"]', build)
+        self.assertIn('A.train_transfer_digest = digest', build)
+
+    def test_capture_marks_the_validated_journey_on_all_roots(self):
+        capture = S.split('/proc/train_transfer_capture', 1)[1].split('/proc/train_transfer_decode', 1)[0]
+        self.assertIn('"journey" = journey', capture)
+        self.assertLess(capture.index('if(!train_transfer_decode'), capture.index('A.train_transfer_journey = journey'))
+        self.assertIn('C.train_transfer_built = FALSE', capture)
+
 if __name__ == '__main__':
     unittest.main()
