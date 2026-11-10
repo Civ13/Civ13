@@ -348,3 +348,93 @@
 
 /mob/living/human/proc/still_tutoring(mob/living/human/student, node_id)
 	return student && !QDELETED(src) && stat == CONSCIOUS && !incapacitated() && get_dist(src, student) <= 1 && knows_recipe_node(node_id)
+
+// ------------------------------------------------------------
+// Apprentices
+// ------------------------------------------------------------
+
+// The master's identity, saved on the apprentice's body. It names a character,
+// not an account, and ends when either of them dies.
+/mob/living/human/var/scholar_master = null
+
+/mob/living/human/proc/scholar_identity()
+	return "[ckey ? ckey : "npc"]:[real_name]"
+
+/mob/living/human/proc/is_apprentice_of(mob/living/human/master)
+	return istype(master) && master != src && istext(scholar_master) && scholar_master == master.scholar_identity()
+
+/mob/living/human/proc/scholar_apprentice_count()
+	var/count = 0
+	for (var/mob/living/human/H in human_mob_list)
+		if (H.stat != DEAD && H.is_apprentice_of(src))
+			count++
+	return count
+
+// Whether this character's master stands close by.
+/mob/living/human/proc/master_nearby()
+	if (!istext(scholar_master))
+		return FALSE
+	for (var/mob/living/human/M in range(SCHOLAR_APPRENTICE_REACH, src))
+		if (M.stat != DEAD && is_apprentice_of(M))
+			return TRUE
+	return FALSE
+
+// Binds apprentice to master once both agree. Returns a problem or null.
+/mob/living/human/proc/scholar_apprentice_problem(mob/living/human/apprentice)
+	if (!istype(apprentice) || apprentice == src || apprentice.stat != CONSCIOUS || stat != CONSCIOUS)
+		return "They can't become your apprentice now."
+	if (get_dist(src, apprentice) > 1)
+		return "Stand next to them first."
+	if (apprentice.is_apprentice_of(src))
+		return "[apprentice] is already your apprentice."
+	if (is_apprentice_of(apprentice))
+		return "[apprentice] is your own master."
+	if (scholar_apprentice_count() >= SCHOLAR_MAX_APPRENTICES)
+		return "You already have [SCHOLAR_MAX_APPRENTICES] apprentices."
+	return null
+
+/mob/living/human/verb/take_apprentice()
+	set name = "Take an apprentice"
+	set category = "IC"
+	if (!map || !map.book_research_enabled())
+		to_chat(src, SPAN_WARNING("Scholars don't take apprentices here."))
+		return
+	var/list/choices = list()
+	for (var/mob/living/human/H in range(1, src))
+		if (H != src && H.stat == CONSCIOUS && H.client)
+			choices["[H]"] = H
+	if (!choices.len)
+		to_chat(src, SPAN_WARNING("Stand next to the person you want to teach."))
+		return
+	var/pick = player_input(src, "Who will you take as your apprentice?", "Take an apprentice", null, "anything", choices, TRUE)
+	var/mob/living/human/apprentice = choices[pick]
+	var/problem = scholar_apprentice_problem(apprentice)
+	if (problem)
+		to_chat(src, SPAN_WARNING(problem))
+		return
+	var/answer = player_input(apprentice, "[src] offers to take you as their apprentice. You will learn faster while researching beside them. Accept?", "Apprenticeship", "No", "anything", list("Yes", "No"), TRUE)
+	// Both prompts sleep; recheck everything.
+	problem = scholar_apprentice_problem(apprentice)
+	if (answer != "Yes" || problem)
+		to_chat(src, SPAN_WARNING(problem ? problem : "[apprentice] declines."))
+		return
+	apprentice.scholar_master = scholar_identity()
+	to_chat(src, SPAN_NOTICE("[apprentice] is now your apprentice."))
+	to_chat(apprentice, SPAN_NOTICE("You are now [src]'s apprentice. Research beside them to learn faster."))
+
+/mob/living/human/verb/leave_apprenticeship()
+	set name = "Leave apprenticeship"
+	set category = "IC"
+	if (!istext(scholar_master))
+		to_chat(src, SPAN_WARNING("You aren't anyone's apprentice."))
+		return
+	scholar_master = null
+	to_chat(src, SPAN_NOTICE("You are no longer an apprentice."))
+
+// Research at a bench: the researcher's apprentices nearby learn by watching,
+// and a researcher working beside their own master learns faster.
+/obj/structure/research_bench/proc/apprentice_research_gain(mob/living/human/researcher, node_id)
+	for (var/mob/living/human/A in range(SCHOLAR_APPRENTICE_REACH, src))
+		if (A != researcher && A.stat == CONSCIOUS && A.research_presence() && A.is_apprentice_of(researcher))
+			A.gain_scholarship(node_id, SCHOLAR_RESEARCH_GAIN / 2)
+	return researcher.master_nearby() ? SCHOLAR_APPRENTICE_GAIN_MULT : 1

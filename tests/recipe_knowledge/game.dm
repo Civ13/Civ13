@@ -262,6 +262,7 @@ var/knowledge_failures = 0
 	check_scholar_supplies(scholar)
 	check_scholar_instruments(scholar)
 	check_scholar_tutoring()
+	check_scholar_apprentices()
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -376,6 +377,29 @@ var/knowledge_failures = 0
 	knowledge_check(SCHOLAR_TUTOR_RATE > 1 && SCHOLAR_TUTOR_GAIN_MULT > 1, "tutoring speeds study and raises skill more")
 	qdel(teacher)
 	qdel(student)
+
+// Apprentices (Val, 2026-11-10): an apprentice learns faster researching
+// beside their master, and learns by watching the master research.
+/proc/check_scholar_apprentices()
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	var/mob/living/human/knowledge_fixture/master = new(locate(2,3,1))
+	var/mob/living/human/knowledge_fixture/apprentice = new(locate(3,3,1))
+	master.real_name = "Master Scholar"
+	apprentice.real_name = "Young Scholar"
+	knowledge_check(!master.scholar_apprentice_problem(apprentice) && master.scholar_apprentice_problem(master), "a master can take someone else beside them")
+	apprentice.scholar_master = master.scholar_identity()
+	knowledge_check(apprentice.is_apprentice_of(master) && !master.is_apprentice_of(apprentice) && master.scholar_apprentice_count() == 1, "the apprenticeship is recorded on the apprentice")
+	knowledge_check(master.scholar_apprentice_problem(apprentice) && apprentice.scholar_apprentice_problem(master), "no double or reversed apprenticeship")
+	knowledge_check(apprentice.master_nearby() && bench.apprentice_research_gain(apprentice, "basic_tools") == SCHOLAR_APPRENTICE_GAIN_MULT, "an apprentice researching beside their master learns faster")
+	var/before = apprentice.scholar_level("engineering")
+	knowledge_check(bench.apprentice_research_gain(master, "basic_tools") == 1 && apprentice.scholar_level("engineering") > before, "an apprentice learns by watching their master research")
+	master.loc = locate(8,8,1)
+	knowledge_check(!apprentice.master_nearby() && bench.apprentice_research_gain(apprentice, "basic_tools") == 1, "no bonus with the master away")
+	apprentice.forget_recipe_knowledge()
+	knowledge_check(!apprentice.scholar_master && !apprentice.is_apprentice_of(master), "death ends the apprenticeship")
+	qdel(master)
+	qdel(apprentice)
+	qdel(bench)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.
