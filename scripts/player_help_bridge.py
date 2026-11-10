@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '5724331c72235fc88b98a1cdfccee0f3ce376635'
+WIKI_REVIEWED_REVISION = '24419cc3d229f0a95fa4acfad2642bc012ce2129'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -87,7 +87,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('5c866b474dcc4ed571b379be1c6ef3aa4b686d4188ae22e1181ba172c954defb', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
-    'guides/Guide_to_Power.md': ('da942fbac61fa4e74ddebe7e1b33b4fc173796622cebe98d17d4606657484c0f', 'power battery batteries electricity generator'),
+    'guides/Guide_to_Power.md': ('bd72f0a774fdd047966c4be2cb8ee6fee1acd807443471815e9fdca131e040b7', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('d5fa7ea8e6bdddf5cc1a7fe89be384050e3a7672c554ac14d2f3c087bce42d78', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('6929f1b1b1d4bc9a888921e3a633c065a89f56dd8d96a5916b2398665e1c947b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('44eefb4c238a55b45d66e8d6c26e845a3c66a289657b9d5294f7d3f4376b17fe', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('7f12dc929f03597f48a20d206378fd170f81308fe5e9ac9812cd23f9e98942f0', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('150468d8b37c152e0a1ab4dbd7148e6124502e8961cd8ab368536d99dabf2394', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('8c6b063004ea9cb950a32ae4b130820ca53f3d01682863442726d3b7477bb1ba', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Boats.md': ('3413a17f48359f41d3132ccfd9836a54633cb99f8a4b7477da71d742f840d3d0', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
