@@ -63,6 +63,9 @@
 		if(D.type == /matrix) continue
 		var/list/fields = D.get_saved_vars()
 		for(var/field in fields)
+			if(!(field in D.vars))
+				note("[D.type].[field]", "saved field not present")
+				continue
 			if(D.persistence_runtime_var(field) || field in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")) continue
 			if(field == "filters" && istype(D, /atom))
 				var/atom/A = D
