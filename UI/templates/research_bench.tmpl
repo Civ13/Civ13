@@ -11,15 +11,23 @@
 	<div class='itemContent'>{{:data.bench_tier}} / {{:data.max_tier}}
 		{{if data.tier_upgrade_cost}} (upgrade progress: {{:data.tier_progress}}/{{:data.tier_upgrade_cost}} silver in coins fed){{/if}}
 	</div>
-	<div class='itemLabel'>Book on the bench:</div>
+	<div class='itemLabel'>Books on the bench:</div>
 	<div class='itemContent'>
-		{{if data.book_name}}{{:data.book_name}} {{:helper.link('Take the book', 'circle-minus', {'take_book' : 1})}}
+		{{if data.books && data.books.length}}
+		{{for data.books :book}}
+		<div class='item'>{{:book.name}}{{if book.is_target}} <span class='rt-done'>(research is written here)</span>{{/if}}
+			{{:helper.link('Take', 'circle-minus', {'take_book' : book.idx})}}
+			{{if book.chapters.length}}<br>{{for book.chapters}}<span class='rt-recipe-tag'>{{:value}}</span> {{/for}}{{/if}}
+		</div>
+		{{/for}}
 		{{else}}<span class='rt-locked'>None. Place a book on the bench; research done here is written into it.</span>{{/if}}
+		{{if data.book_room && data.books && data.books.length}}<div class='item rt-locked'>There's room for one more book to copy chapters between them.</div>{{/if}}
 	</div>
-	{{if data.book_chapters && data.book_chapters.length}}
-	<div class='itemLabel'>Finished chapters:</div>
-	<div class='itemContent'>{{for data.book_chapters}}<span class='rt-recipe-tag'>{{:value}}</span> {{/for}}</div>
-	{{/if}}
+	<div class='itemContent'>
+		{{if data.can_study}}{{:helper.link('Study a chapter', 'pencil', {'study_shelf' : 1})}}{{/if}}
+		{{if data.can_copy}}{{:helper.link('Copy a chapter', 'circle-plus', {'copy_chapter' : 1})}}{{/if}}
+		{{if data.can_swap}}{{:helper.link('Write research into the other book', 'person', {'swap_books' : 1})}}{{/if}}
+	</div>
 </div>
 {{else}}
 <div class='item'>
