@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'beba86001fcb117e023a87b46419eb8f8a3914da'
+WIKI_REVIEWED_REVISION = '5724331c72235fc88b98a1cdfccee0f3ce376635'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('44e4dc7f6bf10d723cd0d9cb07585c1c5abb89573229780e569b99249afe7bf7', 'character skills traits languages'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('81a11db4d6d78516698ae852da2d345201dda80cc17f75317bea378dfc576bd8', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('6929f1b1b1d4bc9a888921e3a633c065a89f56dd8d96a5916b2398665e1c947b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('44eefb4c238a55b45d66e8d6c26e845a3c66a289657b9d5294f7d3f4376b17fe', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('3be664421d958acaaacd3d543da352f23aa957094be1ce3c5d02bba971547b34', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('7f12dc929f03597f48a20d206378fd170f81308fe5e9ac9812cd23f9e98942f0', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
