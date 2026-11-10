@@ -73,7 +73,8 @@ var/trench_climb_probe_checks = 0
 	E.human_subtile_position = list("x" = 7, "y" = 5, "z" = 1, "sx" = 0, "sy" = 30)
 	E.human_subtile_import_owned = TRUE
 	E.after_load()
-	trench_climb_probe_assert(E.y == 5 && E.step_y == 30 && E.human_subtile_eligible(NORTH), "edge_offset_fixture")
+	// Its centre is past the edge, so it stands on the ground tile (6) at -2px.
+	trench_climb_probe_assert(E.y * 32 + E.step_y == 5 * 32 + 30 && E.y == 6 && E.human_subtile_eligible(NORTH), "edge_offset_fixture")
 	E.dir = NORTH
 	E.SelfMove(get_step(E, NORTH), NORTH, world.time + 4)
 	sleep(25)

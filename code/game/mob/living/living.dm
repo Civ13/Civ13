@@ -199,7 +199,30 @@ default behaviour is:
 /proc/swap_exact_offset_owner(var/mob/living/M)
 	if (ishuman(M))
 		var/mob/living/human/H = M
+		H.human_subtile_anchor()
 		H.human_subtile_offset_owned = !!(H.step_x || H.step_y)
+	else
+		subtile_refile_lower_left(M)
+
+// File a movable under the tile holding its lower-left corner, as a native
+// move would, keeping its pixel position. Offsets copied from a body filed
+// under its centre tile can be negative; other movers expect 0-31.
+/proc/subtile_refile_lower_left(atom/movable/M)
+	if (!M || !isturf(M.loc) || !isnum(M.step_x) || !isnum(M.step_y))
+		return FALSE
+	if (M.step_x >= 0 && M.step_x < 32 && M.step_y >= 0 && M.step_y < 32)
+		return FALSE
+	var/px = M.x * 32 + M.step_x
+	var/py = M.y * 32 + M.step_y
+	var/tx = round(px / 32)
+	var/ty = round(py / 32)
+	var/turf/T = locate(tx, ty, M.z)
+	if (!T)
+		return FALSE
+	M.loc = T
+	M.step_x = px - tx * 32
+	M.step_y = py - ty * 32
+	return TRUE
 
 /proc/swap_density_check(var/mob/swapper, var/mob/swapee)
 	var/turf/T = get_turf(swapper)

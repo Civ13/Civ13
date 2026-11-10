@@ -44,6 +44,14 @@ SUITES = {
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
             'tests/save_movement/source_adapter.py')},
+    'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
+        'paths': ('tests/centre_tile/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/subtile_movement.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/living.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/modules/1713/trench.dm')},
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
         'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
             'code/game/objects/buckling.dm',

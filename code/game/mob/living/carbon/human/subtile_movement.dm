@@ -217,8 +217,58 @@
 	var/map_storage/storage = operation ? operation.storage : null
 	return operation && storage && operation.current(storage, "save") && !persistence_load_recovery_required && !storage.dimension_recovery_required && !storage.dimension_budget_hold && !persistence_restart.startup_hold && ((!persistence_restart.busy && !operation.restart_transaction) || (persistence_restart.busy && operation.restart_transaction == persistence_restart))
 
+// A free-moving body stands on the tile under its centre. BYOND itself files
+// a moving atom under the tile holding its bounding box's lower-left corner, so
+// walking east or north kept the old tile for the whole 32px while walking west
+// or south switched after 2px. After each native move the body is filed again
+// under its centre tile (human_subtile_anchor), with an offset of -16 to 15px.
+// Assigning loc directly fires no Enter/Exit/Entered/Exited and leaves the
+// body's pixel position, collision and covered turfs (locs) exactly as they
+// were; turf events still follow what the body overlaps. The next native move
+// files it by its corner again, so this runs after every one.
 /mob/living/human/proc/human_subtile_shape()
-	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= 0 && step_x < 32 && step_y >= 0 && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
+	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= -16 && step_x < 32 && step_y >= -16 && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
+
+// File the body under the tile beneath its centre. Returns TRUE if it moved.
+/mob/living/human/proc/human_subtile_anchor()
+	if (!isturf(loc) || bound_x || bound_y || bound_width != 32 || bound_height != 32 || !isnum(step_x) || !isnum(step_y))
+		return FALSE
+	var/px = x * 32 + step_x
+	var/py = y * 32 + step_y
+	// round() with one argument is floor.
+	var/cx = round((px + 16) / 32)
+	var/cy = round((py + 16) / 32)
+	if (cx == x && cy == y)
+		return FALSE
+	var/turf/T = locate(cx, cy, z)
+	if (!T)
+		return FALSE
+	loc = T
+	step_x = px - cx * 32
+	step_y = py - cy * 32
+	return TRUE
+
+// The body's position as BYOND's own lower-left filing: list(tile x, tile y,
+// offset x, offset y) with offsets 0-31. Pixel arithmetic that walks to the
+// next alignment or lists covered tiles uses this form.
+/mob/living/human/proc/human_subtile_ll()
+	var/tx = x
+	var/ty = y
+	var/sx = step_x
+	var/sy = step_y
+	while (sx < 0)
+		tx--
+		sx += 32
+	while (sx >= 32)
+		tx++
+		sx -= 32
+	while (sy < 0)
+		ty--
+		sy += 32
+	while (sy >= 32)
+		ty++
+		sy -= 32
+	return list(tx, ty, sx, sy)
 
 /mob/living/human/proc/human_subtile_eligible(direction)
 	return human_subtile_enabled && human_subtile_ready(direction)
@@ -290,10 +340,11 @@
 /mob/living/human/proc/human_subtile_pulse_climbs(dx, dy)
 	if (!isturf(loc))
 		return FALSE
-	var/tx = x
-	var/ty = y
-	var/sx = step_x + dx
-	var/sy = step_y + dy
+	var/list/ll = human_subtile_ll()
+	var/tx = ll[1]
+	var/ty = ll[2]
+	var/sx = ll[3] + dx
+	var/sy = ll[4] + dy
 	while (sx < 0)
 		tx--
 		sx += 32
@@ -306,11 +357,11 @@
 	while (sy >= 32)
 		ty++
 		sy -= 32
-	var/turf/oldloc = loc
+	var/turf/oldloc = locate(ll[1], ll[2], z)
 	var/turf/newloc = locate(tx, ty, z)
-	if (!newloc)
+	if (!oldloc || !newloc)
 		return FALSE
-	var/list/before = human_subtile_cover(x, y, step_x, step_y)
+	var/list/before = human_subtile_cover(ll[1], ll[2], ll[3], ll[4])
 	var/list/after = human_subtile_cover(tx, ty, sx, sy)
 	var/old_level = oldloc.trench_climb_level()
 	var/new_level = newloc.trench_climb_level()
@@ -357,10 +408,11 @@
 // sideways offset when the tiles there allow it, else the nearer open tile.
 /mob/living/human/proc/human_subtile_climb_target(direction)
 	var/vertical = direction & (NORTH | SOUTH)
-	var/tx = x
-	var/ty = y
-	var/sx = step_x
-	var/sy = step_y
+	var/list/ll = human_subtile_ll()
+	var/tx = ll[1]
+	var/ty = ll[2]
+	var/sx = ll[3]
+	var/sy = ll[4]
 	switch (direction)
 		if (NORTH)
 			ty++
@@ -392,7 +444,10 @@
 	var/list/target = human_subtile_climb_target(direction)
 	if (!target)
 		return FALSE
-	var/turf/origin = loc
+	var/list/ll = human_subtile_ll()
+	var/turf/origin = locate(ll[1], ll[2], z)
+	if (!origin)
+		return FALSE
 	var/turf/destination = locate(target[1], target[2], z)
 	var/from_level = origin.trench_climb_level()
 	var/to_level = destination.trench_climb_level()
@@ -411,12 +466,11 @@
 		visible_message(SPAN_NOTICE("[src] starts to [action]."))
 		edge.message_cooldown = world.time
 	dir = direction
-	var/start_x = step_x
-	var/start_y = step_y
+	var/list/start = human_subtile_snapshot()
 	human_subtile_climbing = TRUE
 	var/climbed = do_after(src, down ? 5 : 20, destination, needhand = FALSE)
 	human_subtile_climbing = FALSE
-	if (!climbed || loc != origin || step_x != start_x || step_y != start_y || !human_subtile_climb_ready())
+	if (!climbed || !human_subtile_same(start, human_subtile_snapshot()) || !human_subtile_climb_ready())
 		return FALSE
 	if (!human_subtile_climb_open(target[1], target[2], target[3], target[4]))
 		return FALSE
@@ -601,12 +655,15 @@
 		. += list(list(0, (direction & NORTH) ? 2 : -2))
 		return .
 	var/vertical = direction & (NORTH | SOUTH)
-	var/offset = vertical ? step_x : step_y
+	var/list/ll = human_subtile_ll()
+	var/offset = vertical ? ll[3] : ll[4]
 	if (!offset || !isturf(loc))
 		return .
 	// With an offset along the travel axis, east/north fronts sit a tile further on.
-	var/turf/base = loc
-	if (((direction & EAST) && step_x) || ((direction & NORTH) && step_y))
+	var/turf/base = locate(ll[1], ll[2], z)
+	if (!base)
+		return .
+	if (((direction & EAST) && ll[3]) || ((direction & NORTH) && ll[4]))
 		base = get_step(base, direction)
 	var/turf/near_side = get_step(base, direction)
 	var/turf/far_side = near_side ? get_step(near_side, vertical ? EAST : NORTH) : null
@@ -803,8 +860,11 @@
 
 // Share of a whole tile left before each moving axis reaches its alignment.
 /mob/living/human/proc/human_subtile_remaining_fraction(direction)
-	var/remaining_x = (direction & EAST) ? 32 - step_x : (direction & WEST) ? (step_x ? step_x : 32) : 0
-	var/remaining_y = (direction & NORTH) ? 32 - step_y : (direction & SOUTH) ? (step_y ? step_y : 32) : 0
+	var/list/ll = human_subtile_ll()
+	var/lx = ll[3]
+	var/ly = ll[4]
+	var/remaining_x = (direction & EAST) ? 32 - lx : (direction & WEST) ? (lx ? lx : 32) : 0
+	var/remaining_y = (direction & NORTH) ? 32 - ly : (direction & SOUTH) ? (ly ? ly : 32) : 0
 	return max(remaining_x, remaining_y) / 32
 
 /mob/living/human/SelfMove(turf/n, direct, deadline = null, fine_step = FALSE)
@@ -903,8 +963,9 @@
 	// At an interrupted offset, stop each moving axis at its next alignment.
 	// This consumes the same admitted costs/cooldown, and every pixel still
 	// uses native collision. A reverse input can therefore escape a 2px offset.
-	var/remaining_x = (direction & EAST) ? 32 - actor.step_x : (direction & WEST) ? (actor.step_x ? actor.step_x : 32) : 0
-	var/remaining_y = (direction & NORTH) ? 32 - actor.step_y : (direction & SOUTH) ? (actor.step_y ? actor.step_y : 32) : 0
+	var/list/start_ll = actor.human_subtile_ll()
+	var/remaining_x = (direction & EAST) ? 32 - start_ll[3] : (direction & WEST) ? (start_ll[3] ? start_ll[3] : 32) : 0
+	var/remaining_y = (direction & NORTH) ? 32 - start_ll[4] : (direction & SOUTH) ? (start_ll[4] ? start_ll[4] : 32) : 0
 	if (fine_step == FINE_STEP_NUDGE)
 		remaining_x = (direction & (EAST | WEST)) ? 2 : 0
 		remaining_y = (direction & (NORTH | SOUTH)) ? 2 : 0
@@ -941,29 +1002,34 @@
 			tap_finishing = TRUE
 			// Before the first pulse the tap still owes the whole tile.
 			if (((direction & (EAST | WEST)) && remaining_x < 32) || ((direction & (NORTH | SOUTH)) && remaining_y < 32))
+				var/list/tap_ll = actor.human_subtile_ll()
 				if (direction & EAST)
-					remaining_x = min(remaining_x, actor.step_x ? 32 - actor.step_x : 0)
+					remaining_x = min(remaining_x, tap_ll[3] ? 32 - tap_ll[3] : 0)
 				else if (direction & WEST)
-					remaining_x = min(remaining_x, actor.step_x)
+					remaining_x = min(remaining_x, tap_ll[3])
 				if (direction & NORTH)
-					remaining_y = min(remaining_y, actor.step_y ? 32 - actor.step_y : 0)
+					remaining_y = min(remaining_y, tap_ll[4] ? 32 - tap_ll[4] : 0)
 				else if (direction & SOUTH)
-					remaining_y = min(remaining_y, actor.step_y)
+					remaining_y = min(remaining_y, tap_ll[4])
 			if (!remaining_x && !remaining_y)
 				actor.human_subtile_fine_released_at = world.time
 				break
 		var/main_dx = (direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0
 		var/main_dy = (direction & NORTH) ? min(2, remaining_y) : (direction & SOUTH) ? -min(2, remaining_y) : 0
 		// Admission rules for grace walls and hanging apply to every fresh pulse.
+		// The fronts are the tiles this pulse would newly overlap, wherever
+		// the body is filed (see human_subtile_anchor).
 		var/grace_blocked = FALSE
-		var/list/front_directions = list(direction)
-		if (direction & (direction - 1))
-			front_directions += direction & (NORTH | SOUTH)
-			front_directions += direction & (EAST | WEST)
-		for (var/front_direction in front_directions)
-			var/turf/front = get_step(actor, front_direction)
-			if (map && front && map.check_caribbean_block(actor, front))
-				grace_blocked = TRUE
+		if (map)
+			var/list/now_ll = actor.human_subtile_ll()
+			var/next_x = now_ll[1] * 32 + now_ll[3] + main_dx
+			var/next_y = now_ll[2] * 32 + now_ll[4] + main_dy
+			var/next_tx = round(next_x / 32)
+			var/next_ty = round(next_y / 32)
+			var/list/fronts = actor.human_subtile_cover(next_tx, next_ty, next_x - next_tx * 32, next_y - next_ty * 32) - actor.human_subtile_cover(now_ll[1], now_ll[2], now_ll[3], now_ll[4])
+			for (var/turf/front in fronts)
+				if (map.check_caribbean_block(actor, front))
+					grace_blocked = TRUE
 		if (grace_blocked)
 			break
 		var/hanging = FALSE
@@ -1277,6 +1343,7 @@
 		human_subtile_pulse = null
 		if (P.invalid || !human_subtile_same(S, human_subtile_snapshot()))
 			throw EXCEPTION("Native sub-tile placement did not reach saved position")
+		human_subtile_anchor()
 	human_subtile_offset_owned = TRUE
 	human_subtile_import_owned = FALSE
 	living_movement_completed()

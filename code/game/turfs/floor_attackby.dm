@@ -726,10 +726,13 @@
 	var/turf/floor/dirt/underground/T = A
 	return T.start_pickaxe_mining(src, P, TRUE)
 
+// A free-moving body stands on the tile under its centre and may bump a wall
+// with its edge, so the wall need only be within a tile (get_dir follows pixel
+// positions and can point past it).
 /turf/proc/start_pickaxe_mining(mob/living/human/H, obj/item/P, from_bump = FALSE)
 	if (!istype(H) || !istype(src, /turf/floor/dirt/underground) || !is_mineable || mining_in_progress || pickaxe_mining_owner || H.pickaxe_mining_action || !H.may_do_after || !H.pickaxe_mining_ready() || !H.canClick())
 		return FALSE
-	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
+	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || get_dist(H, src) > 1 || !Adjacent(H))
 		return FALSE
 	if (!isnum(P:usespeed) || P:usespeed <= 0 || H.getStatCoeff("strength") <= 0)
 		return FALSE

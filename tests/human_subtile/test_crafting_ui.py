@@ -96,6 +96,10 @@ def restore_crafting_projection(path, source):
             # Laundry: washing clothes in water shares the hand_wash proc (tests/laundry).
             ('\t\t\tCL.hand_wash(user)\n',
              '\t\t\tCL.clean_blood()\n\t\t\tCL.radiation = 0\n\t\t\tCL.dirtyness = 0\n\t\t\tCL.fleas = FALSE\n'),
+            # Centre-tile filing (tests/centre_tile): bump mining accepts any wall within a tile.
+            ('// A free-moving body stands on the tile under its centre and may bump a wall\n// with its edge, so the wall need only be within a tile (get_dir follows pixel\n// positions and can point past it).\n/turf/proc/start_pickaxe_mining(',
+             '/turf/proc/start_pickaxe_mining('),
+            ('z != H.z || get_dist(H, src) > 1 || !Adjacent(H))', 'z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))'),
             # Explosion remains: no tunnel down from a turf above the ground.
             ('\t\t\tif (turf_is_above_ground(get_turf(user)))\n\t\t\t\tto_chat(user, SPAN_NOTICE("You can\'t dig a tunnel here, there is no earth below."))\n\t\t\t\treturn\n', ''),
         )

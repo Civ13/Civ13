@@ -59,6 +59,10 @@ class IdentityTrace:
         self.mover.human_subtile_pulse = N() if smooth else None
         self.mover.human_subtile_transaction = N(total_distance=0)
         self.mover.set_dir = lambda direction: setattr(self.mover, 'dir', direction)
+        # Centre-tile filing is a native loc assignment (no Entered); this
+        # fixture's native seam lands whole tiles or a 2px offset, both
+        # already filed under the body's centre.
+        self.mover.human_subtile_anchor = lambda: self.record('anchor')
         self.mover.human_subtile_take_pulse = lambda *_: N(
             sx=2 if native == 'offset' else 0, sy=0, restoring=False,
             before=dict(x=self.mover.x, y=self.mover.y,

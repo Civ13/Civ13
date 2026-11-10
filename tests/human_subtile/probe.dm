@@ -354,7 +354,9 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/obj/item/far = new(locate(13, 2, 1))
 	for (var/offset in list(0, 4, 28))
 		human_subtile_fixture_place(J, offset, 0)
-		human_subtile_fixture_assert(near.Adjacent(J) && !far.Adjacent(J), "clicked_target_reach_at_[offset]")
+		// Past halfway the body stands on the next tile (human_subtile_anchor),
+		// so it reaches one tile further.
+		human_subtile_fixture_assert(near.Adjacent(J) && !far.Adjacent(J) == (offset < 16), "clicked_target_reach_at_[offset]")
 		human_subtile_fixture_assert(!!J.Adjacent(far) == !!offset, "reverse_adjacency_has_overlap_semantics_[offset]")
 	J.set_human_subtile(TRUE)
 	J.SelfMove(get_step(J, EAST), EAST, world.time + 4)
@@ -496,7 +498,8 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/turf/swap_wall = locate(13, 13, 1)
 	swap_wall.density = TRUE
 	SA.swap_exact_positions(SB)
-	human_subtile_fixture_assert(SA.loc == locate(14, 12, 1) && SA.step_x == 0 && SA.step_y == 16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
+	// At 16px north the body stands on the tile above (human_subtile_anchor).
+	human_subtile_fixture_assert(SA.loc == locate(14, 13, 1) && SA.step_x == 0 && SA.step_y == -16 && SB.loc == locate(13, 12, 1) && !SB.step_x && !SB.step_y && SA.human_subtile_offset_owned && !SB.human_subtile_offset_owned, "swap_keeps_exact_positions")
 	swap_wall.density = FALSE
 	// Free movement swaps only head-on: grazing, diagonal and sliding bumps block.
 	var/datum/human_subtile_transaction/swap_tx = new
@@ -508,6 +511,10 @@ var/human_subtile_fixture_deer_watched = FALSE
 	var/swap_graze = SA.human_subtile_swap_allowed(SB)
 	SA.human_subtile_pulse = null
 	SA.human_subtile_transaction = null
+	// Back onto row 12, level with SB (the swap left SA filed on row 13).
+	SA.loc = locate(14, 12, 1)
+	SA.step_x = 0
+	SA.step_y = 0
 	human_subtile_fixture_place(SA, 0, 0)
 	SA.human_subtile_transaction = swap_tx
 	SA.human_subtile_pulse = swap_pulse
