@@ -22,7 +22,7 @@ obj/structure/bell_stand
 		to_chat(H, "You have to wait at least 10 seconds.")
 	return
 
-/obj/structure/bell_stand
+/obj/structure/bell_stand/church
 	name = "church bell"
 	desc = "A church bell. It looks like it could be <b>extremely</b> loud."
 
