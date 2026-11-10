@@ -1,5 +1,7 @@
-// Personal recipe knowledge is opt-in configuration, never durable map state.
-/obj/map_metadata/var/recipe_books = FALSE
+// Personal recipe knowledge is configuration, never durable map state. It only
+// applies on Persistence (recipe_knowledge_enabled needs persistence), and is
+// on there since the research relaunch (Val, 2026-11-10).
+/obj/map_metadata/var/recipe_books = TRUE
 
 /obj/map_metadata/proc/recipe_knowledge_enabled()
 	return persistence && recipe_books

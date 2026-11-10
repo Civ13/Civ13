@@ -1,11 +1,13 @@
 # Personal recipe manuals (issue #4239, phase 1)
 
-This feature is inactive by default. A Persistence map may opt in with the
-`recipe_books` configuration flag; no shipped map is enabled by this change.
-Round maps retain their faction/era rules. The flag is not saved as mutable map
-metadata. To enable it in an already running world, the operator integration
-must call `activate_recipe_books()` instead of assigning the flag directly.
-Activation itself is outside this PR's authorization.
+On Persistence, `recipe_books` and `book_research` are on by default since the
+research relaunch (Val, 2026-11-10). Both only apply when the round is
+Persistence (`recipe_knowledge_enabled()` needs `persistence`), so round maps
+keep their faction/era rules. Turning them on needs a fresh world: a restored
+save keeps its characters, who would then know nothing. Launch is
+**Fresh world (all regions)** in the launcher on the same update. Neither flag
+is saved as mutable map metadata. `activate_recipe_books()` remains the
+integration point for switching recipe books on in an already running world.
 
 With the flag enabled, crafting needs both faction/era research and personal
 knowledge of the node. Only research essentials (the research bench, legacy
