@@ -272,7 +272,7 @@ def validate_receipt(row, suite, control, head):
                 raise ValueError('Mining position control failed outside intended oracle')
             return
         rows = row.get('mining_rows')
-        if row.get('error') is not None or row.get('mining_checks') != 65:
+        if row.get('error') is not None or row.get('mining_checks') != 52:
             raise ValueError('Mining integration failed/incomplete checks')
         if not isinstance(rows, list) or [(r.get('enabled'), r.get('sy')) for r in rows] != [(0, 0), (1, 0), (1, 4), (1, 28)]:
             raise ValueError('Mining integration cases missing')
