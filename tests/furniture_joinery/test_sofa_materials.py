@@ -77,6 +77,30 @@ def recovery_environment(outputs):
 
 
 class SofaMaterials(unittest.TestCase):
+    def test_prison_stool_constructor_retains_zero_force(self):
+        source = (ROOT / 'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text()
+        base = block(source, '/obj/item/weapon/stool/New(')
+        assignment = next(line for line in base.splitlines() if 'force = round(' in line)
+        parent, _ = compile_body('/fixture\n' + assignment, '/fixture', 'self',
+                                 {'round': round}, ('force', 'material'))
+        subtype = block(source, '/obj/item/weapon/stool/prison/New(')
+        subtype = subtype.replace('..(newloc, new_material, new_padding_material)', '..()')
+        subtype = subtype.replace('initial(force)', 'initial_force')
+
+        def construct(body):
+            stool = NS(force=0, material=NS(get_blunt_damage=lambda: 18))
+            run, _ = compile_body(body, '/obj/item/weapon/stool/prison/New(', 'self',
+                                  {'parent_new': lambda: parent(stool), 'initial_force': 0}, ('force',))
+            run(stool)
+            return stool.force
+
+        ordinary = NS(force=10, material=NS(get_blunt_damage=lambda: 18))
+        parent(ordinary)
+        self.assertEqual(ordinary.force, 7)
+        self.assertEqual(construct(subtype), 0)
+        # Omission control: the parent assignment alone reproduces the bug.
+        self.assertEqual(construct(subtype.replace('\n\tforce = initial_force', '')), 7)
+
     def test_padding_recovery_pays_exact_identity_or_keeps_unrecoverable_padding(self):
         for source, signature in ((BED, '/obj/structure/bed/proc/remove_padding('),
                 ((ROOT / 'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text(),
