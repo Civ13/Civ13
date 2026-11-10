@@ -46,6 +46,7 @@
 			overlays += image(icon, "bodybag_label")
 		else
 			name = "body bag"
+			overlays -= image(icon, "bodybag_label")
 		return
 	else if (istype(W, /obj/item/weapon/wirecutters))
 		to_chat(user, "You cut the tag off the bodybag.")
