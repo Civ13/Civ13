@@ -36,6 +36,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'clay_melee': {'files': ('tests/clay_melee/test_shatter.py',), 'paths': (
+        'tests/clay_melee/', 'code/game/objects/items/clay_items.dm', 'tests/save_movement/source_adapter.py')},
     'glass_jar': {'files': ('tests/glass_jar/test_capture.py',), 'paths': (
         'tests/glass_jar/', 'code/game/objects/items/glassjar.dm', 'tests/save_movement/source_adapter.py')},
     'bodybag_label': {'files': ('tests/bodybag/test_label.py',), 'paths': (

@@ -91,7 +91,6 @@
       "code/game/objects/effects/step_triggers.dm": 1,
       "code/game/objects/farming.dm": 1,
       "code/game/objects/items/bodybag.dm": 1,
-      "code/game/objects/items/clay_items.dm": 1,
       "code/game/objects/items/clothing/under/accessories/armband.dm": 1,
       "code/game/objects/items/devices/drone.dm": 5,
       "code/game/objects/items/devices/flashlight.dm": 1,
