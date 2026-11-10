@@ -69,3 +69,11 @@
 #define SCHOLAR_MAX_LEVEL 100
 #define SCHOLAR_RESEARCH_GAIN 0.02 // per bench tick the researcher works
 #define SCHOLAR_STUDY_GAIN 1       // per chapter studied
+
+// Scholar research supplies and light (scholar_tools.dm).
+// Research needs light: a bench in the dark makes no progress.
+#define SCHOLAR_MIN_LIGHT 0.3
+// Without supplies for its discipline, research runs at this fraction.
+#define SCHOLAR_UNSUPPLIED_RATE 0.5
+// A bench stores at most this many supply points per discipline.
+#define SCHOLAR_SUPPLY_CAP 200

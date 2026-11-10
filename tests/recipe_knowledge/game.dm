@@ -211,6 +211,7 @@ var/knowledge_failures = 0
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without a writing tool in hand")
 	var/obj/item/weapon/pen/pencil/research_pencil = new(locate(7,7,1))
 	scholar.put_in_r_hand(research_pencil)
+	bench.research_supplies = "engineering=5"
 	bench.analysis_tick()
 	knowledge_check(scholar.r_hand == research_pencil && journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
 	knowledge_check(scholar.scholar_level("engineering") > 24 && scholar.scholar_level("mathematics") > 12, "researching raises the discipline and mathematics")
@@ -256,6 +257,7 @@ var/knowledge_failures = 0
 	check_scholarship_travel(scholar)
 	check_scholar_tools(scholar, novice)
 	check_scholar_workplaces(scholar, novice)
+	check_scholar_supplies(scholar)
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -310,6 +312,28 @@ var/knowledge_failures = 0
 	qdel(pencil)
 	qdel(near)
 	qdel(far)
+	qdel(bench)
+
+// Consumables (Val, 2026-11-10): research uses supplies for its discipline,
+// running at half speed without them, and needs light.
+/proc/check_scholar_supplies(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	bench.research_supplies = "engineering=5;bogus=3;medicine=x;agriculture=999"
+	var/list/supplies = bench.supply_map()
+	knowledge_check(supplies.len == 2 && supplies["engineering"] == 5 && supplies["agriculture"] == SCHOLAR_SUPPLY_CAP, "saved supplies are validated and capped")
+	bench.research_supplies = ""
+	bench.assigned_node = "iron_tools"
+	var/obj/item/stack/material/woodplank/planks = new(locate(2,3,1))
+	planks.amount = 10
+	var/obj/item/weapon/paper/sheet = new(locate(2,3,1))
+	knowledge_check(!bench.feed_research_supply(sheet, scholar) && !QDELETED(sheet), "supplies must suit the subject's discipline")
+	knowledge_check(bench.feed_research_supply(planks, scholar) && bench.supply_points("engineering") == 20, "wood feeds engineering research")
+	knowledge_check(bench.use_research_supply("iron_tools") == 1 && bench.supply_points("engineering") == 19, "each research tick uses a supply")
+	bench.research_supplies = ""
+	knowledge_check(bench.use_research_supply("iron_tools") == SCHOLAR_UNSUPPLIED_RATE, "without supplies research runs at half speed")
+	knowledge_check(scholar_supply_value(sheet, "mathematics") == 5 && scholar_supply_value(new /obj/item/stack/farming/seeds(locate(2,3,1)), "agriculture") > 0 && !scholar_supply_value(sheet, "medicine"), "each discipline has its own supplies")
+	knowledge_check(bench.research_lit(), "a lit bench can research")
+	qdel(sheet)
 	qdel(bench)
 
 // Use real global rows and the public material menu entry point. Personal
