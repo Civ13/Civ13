@@ -9,6 +9,7 @@ from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
 from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
+from atlas.facts import resource_facts
 
 
 def catalog_text(game):
@@ -408,10 +409,11 @@ data['limitations'].append('Unlock eras use explicit minimum gates or mapped res
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 resource_titles=display_titles(files,{x:(material_stack(x) if x.startswith('/material/') else x) for x in resource_ids if x not in sprite_variants},resource_names)
+resource_details=resource_facts(files,{x:(sprite_variants[x].get('type',x) if x in sprite_variants else material_stack(x) if x.startswith('/material/') else x) for x in resource_ids})
 def game_resource(x):
     entry=dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{})
     if x in resource_titles:entry['title']=resource_titles[x]
-    return entry
+    return entry|resource_details[x]
 if options.catalog_only:
     game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
     game_text=catalog_text(game)

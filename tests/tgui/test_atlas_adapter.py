@@ -254,6 +254,64 @@ class AtlasReaderViewContract(unittest.TestCase):
    self.assertIn(marker,view)
   self.assertLess(view.index('if (!islist(cached))'),view.index('reference.resource_info(viewer, resource)'))
 
+class AtlasItemPageContract(unittest.TestCase):
+ def test_item_page_carries_bounded_encoded_facts_and_opens_on_its_recipe(self):
+  facts=part('facts_data','display_name')
+  for marker in ('html_encode("[resource["kind"]]")','html_encode("[resource["desc"]]")','stat.len == 2 && rows.len < 16','html_encode("[stat[1]]")','html_encode("[stat[2]]")'):
+   self.assertIn(marker,facts)
+  self.assertIn('+ facts_data(reference, resource_id)',part('guidance_data','family_variants'))
+  page=part('resource_model','model')
+  for marker in ('if (makes && !first)','if (!selected && first)\n\t\tselected = first','hosts && ++hosted <= 60','guidance["made_here_count"] = hosted'):
+   self.assertIn(marker,page)
+
+ def test_workstation_links_are_presentation_only_and_need_a_real_resource(self):
+  station=part('station_of','facts_data')
+  self.assertIn('var/station = recipe["station"]',station)
+  self.assertIn('kind_stations["[recipe["kind"]]"]',station)
+  self.assertIn('reference.resource_exists(station) ? station : ""',station)
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  table=ADAPTER.split('var/static/list/kind_stations = list(',1)[1].split(')\n',1)[0]
+  pairs=re.findall(r'"([^"]+)" = "([^"]+)"',table)
+  self.assertEqual(len(pairs),8)
+  kinds={recipe['kind'] for recipe in catalog['recipes']}
+  for kind,station in pairs:
+   self.assertIn(kind,kinds)
+   self.assertIn(station,catalog['resources'],station)
+  self.assertNotRegex(ADAPTER,r'recipe\["station"\]\s*=[^=]')
+
+class AtlasFactsContract(unittest.TestCase):
+ def test_facts_read_literals_inherit_and_never_guess_runtime_values(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/obj/item/clothing/suit/coat\n\tname = "coat"\n\tdesc = "A warm coat." // note\n\tw_class = ITEM_SIZE_NORMAL\n\tslot_flags = SLOT_OCLOTHING\n\tbody_parts_covered = UPPER_TORSO|ARMS\n\tarmor = list(melee = 10, arrow = 0, gun = FALSE)\n\tforce = 7\n'
+   '/obj/item/clothing/suit/coat/fur\n\tdesc = "A fur coat. It has 0 holes in it."\n/obj/item/clothing/suit/coat/odd\n\tdesc = "Made of [material]."\n\tw_class = max(1, 2)\n'
+   '/obj/item/weapon/club\n\tdesc = "A \\"big\\" club // not a comment."\n\tforce = 12\n\tthrowforce = 0\n\tsharp = TRUE\n\tproc/unused()\n\t\tforce = 99\n'
+   '/obj/item/weapon/club/proc/swing()\n\tforce = 50\n/obj/item/weapon/material/sword\n\tforce = 30\n\tedge = TRUE\n'
+   '/datum/reagent/water\n\tid = "water"\n\tdescription = "Wet."\n\ttaste_description = "water"\n/mob/living/simple_animal/goat\n\tmaxHealth = 40\n'}
+  types={'/coat':'/obj/item/clothing/suit/coat','/fur':'/obj/item/clothing/suit/coat/fur','/odd':'/obj/item/clothing/suit/coat/odd','/club':'/obj/item/weapon/club','/sword':'/obj/item/weapon/material/sword','water':'water','mystery':'mystery','/goat':'/mob/living/simple_animal/goat'}
+  facts=resource_facts(files,types)
+  self.assertEqual(facts['/coat'],{'kind':'Clothing','desc':'A warm coat.','stats':[['Size','Normal'],['Worn on','over clothing'],['Covers','chest, arms'],['Armor','melee 10']]})
+  self.assertEqual(facts['/fur']['desc'],'A fur coat.')
+  self.assertEqual(facts['/fur']['stats'],facts['/coat']['stats'])
+  self.assertNotIn('desc',facts['/odd'])
+  self.assertNotIn('Size',dict(facts['/odd']['stats']))
+  self.assertEqual(facts['/club'],{'kind':'Item','desc':'A "big" club // not a comment.','stats':[['Melee damage','12'],['Blade','sharp']]})
+  self.assertEqual(facts['/sword'],{'kind':'Tool or weapon','stats':[['Blade','edged']]})
+  self.assertEqual(facts['water'],{'kind':'Chemical','desc':'Wet.','stats':[['Taste','water']]})
+  self.assertEqual(facts['mystery'],{'kind':'Chemical'})
+  self.assertEqual(facts['/goat'],{'kind':'Animal','stats':[['Health','40']]})
+
+ def test_generated_catalog_describes_most_resources(self):
+  resources=json.loads((ROOT/'UI/crafting-atlas.json').read_text())['resources']
+  self.assertTrue(all(value.get('kind') for value in resources.values()))
+  self.assertGreater(sum('desc' in value for value in resources.values()),len(resources)*0.85)
+  for key,value in resources.items():
+   self.assertNotRegex(value.get('desc',''),r'[\[\]<>\\]',key)
+   self.assertLessEqual(len(value.get('stats',[])),16,key)
+   for row in value.get('stats',[]):
+    self.assertTrue(len(row)==2 and all(isinstance(cell,str) and cell for cell in row),key)
+
 class AtlasTitleContract(unittest.TestCase):
  def test_titles_use_declared_names_and_never_replace_reviewed_names(self):
   import sys

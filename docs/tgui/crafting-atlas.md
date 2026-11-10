@@ -26,6 +26,15 @@ original HTML renderer.
   status line counts what is hidden.
 - Resource pages list the recipes that make and use exactly that resource
   (60 rows each), in place of a text search for its type path.
+- Item pages work as a small wiki entry: the item's kind, its examine text and
+  declared basics (size, where it is worn, what it covers, armor, damage,
+  caliber, nutrition, stack size), then how to obtain it, its first recipe
+  shown without a second click, and a wiki search link. Facts come from
+  `scripts/atlas/facts.py`, which reads literal declarations only and leaves
+  out anything computed at runtime. Rows are capped at 16.
+- Workstations: a recipe card links to where it is made, and a workstation's
+  page lists the recipes made there (60 rows). The kind-to-station table in the
+  adapter is presentation only; the catalog's `station` field is unchanged.
 - Research: gated recipes name their research and show whether the reader still
   needs it, using the crafting admission helpers. This is display only;
   crafting keeps its own checks. Recipes past their last era show as retired.
