@@ -190,8 +190,14 @@ var/global/list/region_travel_carry_types = list(
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
 	for(var/list/entry in carried)
 		if(copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")
-			P["v"] = 2
-	if(P["v"] == 2 && !("known_recipe_nodes" in P))
+			P["v"] = max(P["v"], 2)
+	// Version 3 adds scholarship (scholarship.dm). A peer without it refuses
+	// the trip rather than taking the body and dropping the skill.
+	var/list/learned = clean_scholarship(scholarship)
+	if(learned.len)
+		P["v"] = 3
+		P["scholarship"] = learned
+	if(P["v"] >= 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
 	// Wounds travel as overall damage, so a trip never heals (raid exits let
@@ -221,10 +227,14 @@ var/global/list/region_travel_carry_types = list(
 		P = json_decode(payload)
 	catch
 		return null
-	if(!islist(P) || !(P["v"] in list(1, 2)) || P["kind"] != "character") return null
-	if(P["v"] == 2)
+	if(!islist(P) || !(P["v"] in list(1, 2, 3)) || P["kind"] != "character") return null
+	if(P["v"] >= 2)
 		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
 	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
+		return null
+	if(P["v"] == 3)
+		if(!region_travel_scholarship_valid(P["scholarship"])) return null
+	else if("scholarship" in P)
 		return null
 	var/owner = P["owner"]
 	if(!persistence_owner_valid(owner) || length(owner) > 32) return null
@@ -267,6 +277,15 @@ var/global/list/region_travel_carry_types = list(
 	for(var/id in value)
 		if(!valid_recipe_node_id(id) || (id in seen) || !isnull(value[id])) return FALSE
 		seen += id
+	return TRUE
+
+// Scholarship travels exactly: known disciplines with levels in 0-100 only.
+/proc/region_travel_scholarship_valid(value)
+	if(!islist(value) || !length(value)) return FALSE
+	var/list/clean = clean_scholarship(value)
+	if(clean.len != length(value)) return FALSE
+	for(var/discipline in value)
+		if(value[discipline] != clean[discipline]) return FALSE
 	return TRUE
 
 // The path an item entry rebuilds, or null when it is not allowed.
@@ -369,8 +388,9 @@ var/global/list/region_travel_carry_types = list(
 	H.persistence_restored = TRUE
 	// Do not relearn through the destination research ceiling: ownership of
 	// knowledge survives travel, while crafting still checks that ceiling.
-	H.known_recipe_nodes = P["v"] == 2 ? P["known_recipe_nodes"].Copy() : list()
-	H.recipe_knowledge_initialized = P["v"] == 2 ? P["recipe_knowledge_initialized"] : FALSE
+	H.known_recipe_nodes = P["v"] >= 2 ? P["known_recipe_nodes"].Copy() : list()
+	H.recipe_knowledge_initialized = P["v"] >= 2 ? P["recipe_knowledge_initialized"] : FALSE
+	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])

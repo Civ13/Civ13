@@ -154,6 +154,15 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(reader.recipe_knowledge_initialized && reader.known_recipe_nodes.len == 2 && ("basic_tools" in reader.known_recipe_nodes), "travel lost character knowledge")
 		var/obj/item/weapon/book/node_book/rebuilt_manual = reader.l_hand
 		require(istype(rebuilt_manual) && rebuilt_manual.node_id == "basic_tools", "travel lost manual ID")
+		H.persistence_owner_ckey = "carryprobescholar"
+		H.scholarship = list("engineering" = 30.5, "mathematics" = 15)
+		var/list/scholar_payload = region_travel_decode(H.region_travel_payload(list()))
+		require(scholar_payload && scholar_payload["v"] == 3, "scholarship payload not version 3")
+		var/mob/living/human/scholar = region_travel_build(scholar_payload, D)
+		require(scholar.scholar_level("engineering") == 30.5 && scholar.scholar_level("mathematics") == 15 && scholar.known_recipe_nodes.len == 2, "travel lost scholarship")
+		scholar_payload["scholarship"] = list("engineering" = 500)
+		require(!region_travel_decode(json_encode(scholar_payload)), "out-of-range scholarship accepted")
+		H.scholarship = null
 		book_payload["v"] = 99
 		require(!region_travel_decode(json_encode(book_payload)), "future payload accepted")
 		book_payload["v"] = 1

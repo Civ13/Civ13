@@ -21,6 +21,15 @@
 	var/list/written_pages = null // page texts, oldest first; dat mirrors them
 	var/tmp/page_busy = FALSE
 
+// page_busy guards one timed action in this process. A save taken during it
+// must not carry the lock, and an older save that did is cleared on load.
+/obj/item/weapon/book/persistence_runtime_var(key)
+	return key == "page_busy" || ..(key)
+
+/obj/item/weapon/book/after_load()
+	. = ..()
+	page_busy = FALSE
+
 // Older books keep one block of text; it becomes the first page.
 /obj/item/weapon/book/proc/page_list()
 	if (!islist(written_pages))
