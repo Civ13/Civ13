@@ -13,6 +13,7 @@
 	var/body_error = null
 	var/tmp/local_snapshot = null
 	var/tmp/local_restore_used = FALSE
+	var/tmp/datum/body_build/local_body_build
 	var/tmp/datum/species/human/local_species
 	var/tmp/datum/species/human/species_baseline
 	var/tmp/metadata_checks = 0
@@ -25,6 +26,7 @@
 	if(path == /mob/living/human || ispath(path, /mob/living/simple_animal)) return TRUE
 	if(ispath(path, /obj/item/organ)) return TRUE
 	if(path == /obj/item/stack/teeth/human || path == /matrix) return TRUE
+	if(path == /datum/reagents/metabolism || path == /datum/surgery_status) return TRUE
 	if(ispath(path, /datum/wound) || ispath(path, /datum/reagent) || path == /datum/reagents || path == /datum/dna || path == /datum/corpse_decay_record) return TRUE
 	var/datum/extraction_equipment_codec/equipment = new
 	return equipment.supported(path)
@@ -50,6 +52,13 @@
 	if(istype(A, /atom/movable) && !body_members[A])
 		throw EXCEPTION("Body graph references an external movable")
 	if(!A.should_save) throw EXCEPTION("Body graph contains an unsaved datum")
+	if(A.type == /datum/surgery_status)
+		var/datum/surgery_status/surgery = A
+		if(!islist(surgery.in_progress) || surgery.in_progress.len) throw EXCEPTION("Active or malformed surgery cannot transfer")
+	if(A.type == /datum/reagents/metabolism)
+		var/datum/reagents/metabolism/metabolism = A
+		if(!metabolism.parent || !body_members[metabolism.parent] || metabolism.my_atom != metabolism.parent || !(metabolism.metabolism_class in list(CHEM_TOUCH, CHEM_INGEST, CHEM_BLOOD)))
+			throw EXCEPTION("Metabolism holder/class leaves body profile")
 	return ..()
 
 // Native transforms have exactly six coefficients. No generic native vars or
@@ -136,6 +145,20 @@
 	metadata_error = null
 	return metadata_equal(S, species_baseline)
 
+// Body-build definitions have no constructor-written fields. Only exact local
+// registry identity with all declared values still at compiled defaults is valid.
+/map_storage/train_body_graph/proc/canonical_body_build_valid(datum/body_build/B)
+	if(!istype(B)) return FALSE
+	var/list/catalog
+	if(B.gender == MALE) catalog = male_body_builds
+	else if(B.gender == FEMALE) catalog = female_body_builds
+	else return FALSE
+	if(catalog[B.name] != B) return FALSE
+	for(var/field in B.vars)
+		if(field == "vars") continue
+		if(B.vars[field] != initial(B.vars[field])) return FALSE
+	return TRUE
+
 // Native icon copies are process-local capabilities, never resource payloads.
 // Keep states/directions/frames/custom pixels intact; do not flatten to pixels.
 // atom.icon may be a native resource while mob_icon is an /icon object. Keep
@@ -160,6 +183,10 @@
 	return list("kind" = "body_local_icon", "ref" = ref)
 
 /map_storage/train_body_graph/decode_saved_value(savefile/F, list/value)
+	if(islist(value) && value["kind"] == "body_build")
+		if(value.len != 3 || !local_body_build || value["name"] != local_body_build.name || value["gender"] != local_body_build.gender || !canonical_body_build_valid(local_body_build))
+			throw EXCEPTION("Canonical local body-build changed")
+		return local_body_build
 	if(islist(value) && value["kind"] == "body_local_icon")
 		var/ref = value["ref"]
 		if(value.len != 2 || !body_ref(ref, local_icon_copies.len)) throw EXCEPTION("Invalid local icon reference")
@@ -177,6 +204,10 @@
 /map_storage/train_body_graph/encode_saved_value(savefile/F, value)
 	save_work_check()
 	wire_edges++
+	if(istype(value, /datum/body_build))
+		if(!canonical_body_build_valid(value) || (local_body_build && local_body_build != value)) throw EXCEPTION("Noncanonical or modified body-build definition")
+		local_body_build = value
+		return list("kind" = "body_build", "name" = local_body_build.name, "gender" = local_body_build.gender)
 	if(istype(value, /datum/species))
 		if(local_species != value)
 			if(!canonical_species_valid(value)) throw EXCEPTION("Noncanonical or modified species definition at [metadata_error]")
@@ -243,6 +274,7 @@
 	local_snapshot = null
 	local_restore_used = FALSE
 	local_species = null
+	local_body_build = null
 	local_icon_sources = list()
 	local_icon_copies = list()
 	restored_icon_copies = list()
@@ -286,6 +318,7 @@
 				lists += list(list("rows" = rows))
 		var/text = json_encode(list("schema" = "train-body-1", "root" = root, "entries" = entries, "lists" = lists))
 		save_work_check()
+		if(local_body_build && !canonical_body_build_valid(local_body_build)) throw EXCEPTION("Body-build changed during capture")
 		if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Species changed during capture at [metadata_error]")
 		if(length(text) > TRAIN_BODY_BYTES) throw EXCEPTION("Body payload exceeds byte budget")
 		capture_tick = null
@@ -338,6 +371,8 @@
 	if(!islist(value)) return
 	var/list/V = value
 	switch(V["kind"])
+		if("body_build")
+			if(V.len != 3 || !local_body_build || V["name"] != local_body_build.name || V["gender"] != local_body_build.gender || !canonical_body_build_valid(local_body_build)) throw EXCEPTION("Invalid local body-build reference")
 		if("body_local_icon")
 			if(V.len != 2 || !body_ref(V["ref"], local_icon_copies.len)) throw EXCEPTION("Invalid local icon reference")
 		if("body_species")
@@ -361,6 +396,7 @@
 /map_storage/train_body_graph/proc/local_restore_preflight(text)
 	if(!istext(text) || !istext(local_snapshot) || text != local_snapshot || length(text) > TRAIN_BODY_BYTES || local_restore_used)
 		throw EXCEPTION("Restore requires this adapter's unconsumed exact local capture")
+	if(local_body_build && !canonical_body_build_valid(local_body_build)) throw EXCEPTION("Local body-build changed before restore")
 	if(local_species && !canonical_species_valid(local_species)) throw EXCEPTION("Local species changed before restore at [metadata_error]")
 	var/list/doc = json_decode(text)
 	var/list/entries = doc["entries"]

@@ -9,6 +9,8 @@
 	var/map_storage/train_body_graph/codec
 /datum/body_fixture_diagnostic/proc/note(context, category)
 	if(findings.len < 32) findings |= "[context]: [category]"
+/datum/body_fixture_diagnostic/proc/native_flags(value)
+	return "isfile=[isfile(value)],isicon=[isicon(value)],istext=[istext(value)],isnum=[isnum(value)],ispath=[ispath(value)],islist=[islist(value)],isdatum=[istype(value, /datum)]"
 /datum/body_fixture_diagnostic/proc/inspect_value(value, context, depth = 0)
 	edges++
 	if(edges > 8192 || depth > 16)
@@ -28,6 +30,9 @@
 			if(istext(key)) inspect_value(L[key], context, depth + 1)
 			else if(!isnull(key) && !isnum(key)) note(context, "nontext associative values not inspected")
 		return
+	if(istype(value, /datum/body_build))
+		if(!codec.canonical_body_build_valid(value)) note(context, "noncanonical body-build")
+		return
 	if(istype(value, /datum/species))
 		if(!codec.canonical_species_valid(value)) note(context, "noncanonical species")
 		return
@@ -45,7 +50,7 @@
 				return
 			queue += D
 		return
-	note(context, isicon(value) ? "native icon resource" : "native nonportable value")
+	note(context, "native value flags: [native_flags(value)]")
 /datum/body_fixture_diagnostic/proc/inspect_body(mob/living/body)
 	codec = new
 	owned = list(body)
@@ -121,6 +126,7 @@ var/global/body_runtime_error = FALSE
 	if(!islist(value)) return TRUE
 	var/list/V = value
 	switch(V["kind"])
+		if("body_build") return V.len == 3 && istext(V["name"]) && istext(V["gender"])
 		if("body_local_icon") return V.len == 2 && isnum(V["ref"]) && V["ref"] >= 1
 		if("body_species") return V.len == 2 && V["name"] == "Human"
 		if("body_empty_filters") return V.len == 1
@@ -214,6 +220,21 @@ var/global/body_runtime_error = FALSE
 	head_row["descriptor"] = "modified descriptor"
 	body_check("modified_limb_descriptor_rejected", !G.canonical_species_valid(canonical) && findtext(G.metadata_error, "has_limbs"))
 	head_row["descriptor"] = original_descriptor
+	body_check("canonical_body_build_admitted", G.canonical_body_build_valid(H.body_build))
+	var/datum/body_build/body_build = H.body_build
+	var/old_nohair = body_build.nohair
+	body_build.nohair = !old_nohair
+	body_check("mutated_body_build_rejected", !G.canonical_body_build_valid(body_build))
+	body_build.nohair = old_nohair
+	body_check("exact_metabolism_and_surgery_admitted", G.admitted_type(/datum/reagents/metabolism) && G.admitted_type(/datum/surgery_status))
+	var/datum/surgery_status/active_surgery = new
+	active_surgery.in_progress += "fixture operation"
+	var/active_surgery_refused = FALSE
+	try
+		G.BuildVarDirectory(new /savefile, active_surgery)
+	catch(var/exception/surgery_error)
+		active_surgery_refused = findtext("[surgery_error]", "Active or malformed surgery")
+	body_check("active_surgery_refused", active_surgery_refused)
 	var/obj/item/organ/external/head/source_head = H.get_organ("head")
 	var/obj/item/stack/teeth/human/source_teeth = source_head ? locate(/obj/item/stack/teeth/human) in source_head : null
 	if(source_teeth) source_teeth.amount = 23
@@ -235,6 +256,8 @@ var/global/body_runtime_error = FALSE
 	body_check("real_human_has_organs_and_wound", arm && arm.wounds.len && H.organs.len && H.dna && cargo.loc == H)
 	var/datum/body_fixture_diagnostic/diagnostic = new
 	body_diagnostics["human"] = diagnostic.inspect_body(H)
+	// Yield BEFORE capture only; capture itself must still stay in one tick.
+	sleep(1)
 	var/human_text = G.capture_body(H)
 	body_capture_errors["human"] = G.body_error
 	body_check("owned_injured_human_capture", istext(human_text))
@@ -277,6 +300,7 @@ var/global/body_runtime_error = FALSE
 	body_check("source_injury_inventory_unchanged", arm && arm.brute_dam == 17 && arm.wounds.len && cargo.loc == H)
 	var/mob/living/simple_animal/sheep/S = new(locate(5, 5, 1))
 	S.transform = matrix(1.25, 0.125, 3, -0.25, 0.75, -4)
+	sleep(1)
 	var/animal_text = G.capture_body(S)
 	body_capture_errors["animal"] = G.body_error
 	body_check("real_sheep_capture", istext(animal_text))
@@ -287,10 +311,12 @@ var/global/body_runtime_error = FALSE
 	body_check("matrix_components_bounded_numeric", !G.matrix_component_valid(1000001) && !G.matrix_component_valid("1") && G.matrix_component_valid(-0.25))
 	body_check("empty_filters_roundtrip", animal_Q && animal_Q.body && !length(animal_Q.body.filters))
 	S.filters = list(filter(type = "blur", size = 1))
+	sleep(1)
 	var/filtered_text = G.capture_body(S)
 	body_check("custom_filters_rejected", !filtered_text && findtext(G.body_error, "Nonempty native filters"))
 	S.filters = list()
 	H.stat = DEAD
+	sleep(1)
 	var/corpse_text = G.capture_body(H)
 	body_capture_errors["corpse"] = G.body_error
 	body_check("real_human_corpse_capture", istext(corpse_text))

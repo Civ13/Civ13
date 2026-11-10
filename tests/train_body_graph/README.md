@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 33-check probe constructs real production owned/injured humans with organs,
+The 37-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -111,3 +111,39 @@ separate local snapshot pins when distinct; no packet-supplied filename or
 arbitrary file can select an icon. A new native assertion deliberately gives
 the two fields different custom pixels and requires both to survive. Native
 execution of this follow-up is pending.
+
+## Coherent portable-profile boundary (design, not implemented transport)
+
+The durable body graph and renderer must be separate explicit profiles:
+
+* **Durable state:** organs, wounds, DNA, metabolism/reagent holders and inactive
+  surgery status belong in the identity-preserving entry graph. Exact
+  `/datum/reagents/metabolism` must name an enrolled human as both parent and
+  holder and use an admitted metabolism class. `/datum/surgery_status` with a
+  nonempty `in_progress` is rejected rather than dropping an active operation.
+* **Canonical definitions:** species and body-build catalogs are definitions,
+  not player-owned graphs. Local references require exact registry identity and
+  mutation checks. Body-build variables must equal compiled defaults. Remote
+  use would require a static schema/version and content fingerprint covering
+  every gameplay field and referenced asset, not matching names alone.
+* **Renderer:** `hud_list`, `overlays_standing`, `stand_icon`, atom icon and
+  overlay collections are distinct native classes. They may contain custom
+  appearances; do not blanket-exclude them as caches. No generic `/image`, icon,
+  resource or native collection constructor is admitted. Local organ icon pins
+  remain experimental and do not establish remote asset authority.
+* **Future renderer acceptance:** inventory each exact owner/field and native
+  class, separate constructor-regenerated defaults from custom data, then use
+  versioned asset IDs plus bounded states/directions/frames/transform/filter
+  parameters. Prove regeneration equals the source or reject custom state that
+  the schema cannot preserve. Never use caller filenames or ImportText.
+* **Destination:** after shape validation, build under quarantine, restore
+  durable state before any appearance callbacks, and verify lifecycle and
+  ownership before publication. Current local snapshots deliberately do not
+  finalize or publish a character. This design does not relax that hold.
+
+fbf064 remained a failed native result (16/33, runtime_error=0). The next fixture
+has 37 assertions: it yields only before each snapshot to establish a fresh
+budget, while in-capture tick-crossing still rejects. Diagnostics report native
+isfile/isicon/istext/isnum/ispath/islist/isdatum flags without resource names or
+player values. Metabolism/surgery/body-build admission is narrow; renderer
+failures remain failures until a proper representation is accepted.

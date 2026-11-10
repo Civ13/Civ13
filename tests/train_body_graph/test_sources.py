@@ -26,6 +26,13 @@ class BodyCaptureGuards(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
+    def test_durable_profiles_are_narrow(self):
+        self.assertIn('path == /datum/reagents/metabolism || path == /datum/surgery_status', SOURCE)
+        self.assertIn('surgery.in_progress.len', SOURCE)
+        self.assertIn('metabolism.my_atom != metabolism.parent', SOURCE)
+        self.assertIn('catalog[B.name] != B', SOURCE)
+        self.assertIn('B.vars[field] != initial(B.vars[field])', SOURCE)
+        self.assertNotIn('ispath(path, /datum/body_build)', SOURCE)
     def test_icons_are_local_bounded_organ_copies(self):
         self.assertIn('value != O.mob_icon', SOURCE)
         self.assertIn('value != O.icon', SOURCE)
