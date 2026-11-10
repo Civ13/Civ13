@@ -21,11 +21,15 @@
 	if (locate(/obj/structure/grille, usr.loc))
 		for (var/obj/structure/grille/G in usr.loc)
 			if (G.destroyed)
-				G.health = 10
+				if (!use(1))
+					return TRUE
+				G.health = initial(G.health)
 				G.density = TRUE
 				G.destroyed = FALSE
-				G.icon_state = "grille"
-				use(1)
+				if (istype(G, /obj/structure/grille/broken))
+					G.icon_state = "grille"
+				else
+					G.icon_state = initial(G.icon_state)
 			else
 				return TRUE
 
@@ -36,6 +40,10 @@
 		to_chat(usr, "<span class='notice'>Assembling grille...</span>")
 		in_use = TRUE
 		if (!do_after(usr, 10))
+			in_use = FALSE
+			return
+		if (locate(/obj/structure/grille) in usr.loc)
+			to_chat(usr, "<span class='warning'>There is already a grille here.</span>")
 			in_use = FALSE
 			return
 		var/obj/structure/grille/F = new /obj/structure/grille/ ( usr.loc )

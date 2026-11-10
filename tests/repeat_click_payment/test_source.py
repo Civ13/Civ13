@@ -9,6 +9,7 @@ from pathlib import Path
 import importlib.util
 import re
 import unittest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 _spec = importlib.util.spec_from_file_location('repeat_click_adapter', ROOT/'tests/save_movement/source_adapter.py')
@@ -25,6 +26,57 @@ def proc(path, declaration):
 
 
 class RepeatClickPayment(unittest.TestCase):
+    def test_grille_repair_requires_payment_and_restores_subtype_defaults(self):
+        body = proc('code/game/objects/items/stacks/rods.dm', '/obj/item/stack/rods/attack_self')
+        branch = body[body.index('\t\tfor (var/obj/structure/grille/G in usr.loc)'):
+                      body.index('\n\telse if (!in_use)')]
+
+        def run(branch_source, available, destroyed, initial_health=10, initial_icon='grille',
+                broken_type=False, details=False):
+            grilles = [SimpleNamespace(destroyed=value, health=0, density=False, icon_state='broken',
+                                       initial_health=initial_health, initial_icon=initial_icon,
+                                       broken_type=broken_type)
+                       for value in destroyed]
+            stock = [available]
+
+            def use(amount):
+                if stock[0] < amount:
+                    return False
+                stock[0] -= amount
+                return True
+
+            env = {'usr': SimpleNamespace(loc=grilles), 'use': use,
+                   'typed_iter': lambda values, _type: values}
+            normalized = '\n'.join(line[1:] if line.startswith('\t') else line
+                                   for line in branch_source.splitlines())
+            # Model BYOND's type/default-value lookups at the engine boundary.
+            normalized = normalized.replace('initial(G.health)', 'G.initial_health')
+            normalized = normalized.replace('initial(G.icon_state)', 'G.initial_icon')
+            normalized = normalized.replace('istype(G, /obj/structure/grille/broken)', 'G.broken_type')
+            projection = '/proc/grille_repair_projection()\n' + normalized + '\n'
+            adapter.project(projection, '/proc/grille_repair_projection', '', env)()
+            if details:
+                return stock[0], [(g.health, g.density, g.destroyed, g.icon_state) for g in grilles]
+            return stock[0], [not grille.destroyed for grille in grilles]
+
+        self.assertEqual(run(branch, 1, [True, True]), (0, [True, False]))
+        self.assertEqual(run(branch, 0, [True, True]), (0, [False, False]))
+        self.assertEqual(run(branch, 2, [True, True]), (0, [True, True]))
+        self.assertEqual(run(branch, 1, [False, True]), (1, [True, False]))
+        fence = read('code/modules/1713/structures.dm').split('/obj/structure/grille/fence\n', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('health = 16', fence)
+        self.assertIn('icon_state = "fence"', fence)
+        self.assertEqual(run(branch, 1, [True], initial_health=16, initial_icon='fence', details=True),
+                         (0, [(16, True, False, 'fence')]))
+        self.assertEqual(run(branch, 1, [True], initial_icon='grille-b', broken_type=True, details=True),
+                         (0, [(10, True, False, 'grille')]))
+        # Recreate the former ordering as a negative control: payment failure
+        # did not stop the loop, so one rod could restore two broken grilles.
+        old = branch.replace('\t\t\t\tif (!use(1))\n\t\t\t\t\treturn TRUE\n', '')
+        old = old.replace('\n\t\t\telse\n\t\t\t\treturn TRUE',
+                          '\n\t\t\t\tuse(1)\n\t\t\telse\n\t\t\t\treturn TRUE')
+        self.assertEqual(run(old, 1, [True, True]), (0, [True, True]))
+
     def test_slot_machine_jackpot_distinguishes_symbol_from_payout_weight(self):
         source = read('code/game/objects/structures/slotmachine.dm')
         body = proc('code/game/objects/structures/slotmachine.dm', '/obj/machinery/slotmachine/proc/check_win')
