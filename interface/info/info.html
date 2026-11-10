@@ -64,48 +64,30 @@
             border-bottom: 1px solid;
         }
 
-        #tabs {
+        #top {
             background-color: #271a0c;
-            display: flex;
             border-bottom: 1px solid #1a1108;
-            overflow-x: auto;
+            padding: 6px 8px 0 8px;
             flex-shrink: 0;
-            scrollbar-face-color: #a68b7d;
-            scrollbar-shadow-color: #271a0c;
-            scrollbar-highlight-color: #e1e1d7;
-            scrollbar-3dlight-color: #a68b7d;
-            scrollbar-darkshadow-color: #000000;
-            scrollbar-track-color: #392611;
-            scrollbar-arrow-color: #271a0c;
         }
 
-        /* Modern scrollbar for Chromium-based BYOND */
-        #tabs::-webkit-scrollbar {
-            width: 12px;
+        #tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
         }
-
-        #tabs::-webkit-scrollbar-track {
-            background: #392611;
-        }
-
-        #tabs::-webkit-scrollbar-thumb {
-            background: #a68b7d;
-            border: 2px solid #392611;
-            border-radius: 4px;
-        }
-
-        #tabs::-webkit-scrollbar-thumb:hover {
-            background: #bda294;
-        }
-
 
         .tab {
-            padding: 6px 12px;
+            padding: 3px 7px 4px;
             cursor: pointer;
             user-select: none;
-            font-size: 15px;
+            font-size: 13px;
             white-space: nowrap;
-            border-right: 1px solid #1a1108;
+            border: 1px solid #1a1108;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            background-color: #2f200f;
+            color: #cfc7b4;
         }
 
         .tab:hover {
@@ -115,12 +97,38 @@
         .tab.active {
             background-color: #392611;
             color: #ff8040;
+            border-color: #5a3d1c;
+            position: relative;
+            top: 1px;
+        }
+
+        #searchrow {
+            padding: 6px 8px;
+            background-color: #392611;
+            border-bottom: 1px solid #2a1c0d;
+            flex-shrink: 0;
+        }
+
+        #search {
+            box-sizing: border-box;
+            width: 100%;
+            background: #1f1509;
+            border: 1px solid #5a3d1c;
+            border-radius: 4px;
+            color: #e1e1d7;
+            padding: 4px 8px;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        #search::placeholder {
+            color: #8a7766;
         }
 
         #content {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 8px;
+            padding: 4px 8px 8px;
             scrollbar-face-color: #a68b7d;
             scrollbar-shadow-color: #271a0c;
             scrollbar-highlight-color: #e1e1d7;
@@ -132,7 +140,7 @@
 
         /* Modern scrollbar for Chromium-based BYOND */
         #content::-webkit-scrollbar {
-            width: 12px;
+            width: 10px;
         }
 
         #content::-webkit-scrollbar-track {
@@ -155,38 +163,87 @@
         }
 
         table.stat-table td {
-            padding: 2px 4px;
+            padding: 3px 4px;
             vertical-align: top;
+            border-bottom: 1px solid #43301a;
         }
 
         table.stat-table td.stat-name {
-            width: 40%;
+            width: 38%;
             white-space: nowrap;
+            color: #cfc7b4;
         }
 
         table.stat-table td.stat-value {
-            width: 60%;
             word-break: break-word;
         }
 
+        table.stat-table tr.empty-stat td {
+            height: 6px;
+            border: none;
+        }
+
+        details.verb-group {
+            margin-top: 6px;
+        }
+
+        details.verb-group > summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+            color: #e8b27a;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 2px;
+            border-bottom: 1px solid #5a3d1c;
+        }
+
+        details.verb-group > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.verb-group > summary::before {
+            content: "\25BE";
+            display: inline-block;
+            width: 14px;
+            color: #a68b7d;
+        }
+
+        details.verb-group:not([open]) > summary::before {
+            content: "\25B8";
+        }
+
         .verb-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 4px;
+            padding: 6px 0 2px;
+        }
+
+        .verb-list.chips {
+            grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
         }
 
         .verb-button {
-            background: #271a0c;
+            background: #2b1d0e;
             border: 1px solid #1a1108;
             color: #e1e1d7;
             padding: 4px 8px;
             border-radius: 3px;
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.1s;
             text-decoration: none;
-            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chips .verb-button {
+            text-align: center;
+            text-transform: capitalize;
+            padding: 3px 4px;
         }
 
         .verb-button:hover {
@@ -197,31 +254,26 @@
 
         .verb-button:active {
             background: #1a1108;
-            transform: translateY(1px);
         }
 
-        .verb-category-header {
-            background: #1a1108;
-            color: #ff8040;
-            padding: 4px 8px;
-            font-size: 14px;
-            font-weight: bold;
-            border-bottom: 1px solid #ff8040;
-            margin-top: 10px;
+        .verb-button.danger {
+            color: #e08a7a;
         }
 
-        .verb-category-header:first-child {
-            margin-top: 0;
-        }
-
-        table.stat-table tr.empty-stat td {
-            height: 10px;
+        .no-match {
+            padding: 12px 4px;
+            color: #a68b7d;
         }
     </style>
 </head>
 
 <body>
-    <div id="tabs"></div>
+    <div id="top">
+        <div id="tabs"></div>
+    </div>
+    <div id="searchrow">
+        <input id="search" type="text" placeholder="Find a command..." autocomplete="off" />
+    </div>
     <div id="content">
         <div id="stats-container">
             <div style="padding: 20px; text-align: center;">
@@ -233,10 +285,63 @@
 
     <script>
         let currentTab = "Status";
+        let lastTabs = [];
         let lastTabsJSON = "";
+        let lastVerbs = [];
         let lastVerbsJSON = "";
         let lastStatsJSON = "";
         let lastActiveTab = "";
+        // Groups the player folded away stay folded while the panel is open.
+        const collapsedGroups = new Set(["AI players", "Diagnostics"]);
+
+        // Tabs always appear in this order; tabs not listed follow alphabetically.
+        const TAB_ORDER = ["Status", "IC", "Emote", "Crafting", "Faction", "Character", "OOC", "Help!", "Lobby", "Ghost", "Server", "Admin"];
+
+        // Display-only labels. The button still runs the verb by its own name.
+        const LABELS = {
+            "ChangeHUD": "HUD Style",
+            "Change Scale": "Zoom (icon size)",
+            "Character Preferences Setup": "Character Setup",
+            "LLM gameplay consent / STOP": "AI player consent",
+            "Stop LLM gameplay bridge": "Stop AI player",
+            "Toggle hotkey buttons": "Hotkey Buttons",
+            "Toggle Hover Text": "Hover Text",
+            "Toggle Tap To Step": "Tap To Step",
+            "See MOTD": "Message of the Day",
+            "Fit Viewport": "Fit Game Window"
+        };
+
+        // Sections per tab, in display order. A verb not listed here is never
+        // hidden: it goes to "Other" (or, on tabs without sections, the panel
+        // groups by the verb's own category as before).
+        const GROUPS = {
+            "OOC": [
+                ["Chat", ["OOC", "LOOC", "Who", "Ping", "Clear Chat", "Reload Chat"]],
+                ["Game", ["Character Preferences Setup", "Game Menu", "Regions", "Observe", "Vote", "See MOTD"]],
+                ["Screen & HUD", ["HUD Scale", "Edit HUD Layout", "Reset HUD Layout", "ChangeHUD", "Change Scale", "Fit Viewport", "Hover Text Size", "Toggle Hover Text", "Change Cursor"]],
+                ["Controls", ["Keybindings", "Toggle hotkey buttons", "Toggle Tap To Step"]],
+                ["AI players", ["LLM gameplay consent / STOP", "Stop LLM gameplay bridge"]],
+                ["Diagnostics", ["Visibility Diagnostics"]]
+            ],
+            "Faction": [
+                ["Faction", ["Check Faction List", "Create Faction", "Become Faction Leader", "Transfer Faction Leadership", "Recruitment Applications", "Abandon Faction"]],
+                ["Religion", ["Check Religion List", "Create Religion", "Join the Clergy", "Abandon Religion"]],
+                ["Company", ["Create Company", "Transfer Company Stock"]]
+            ],
+            "IC": [
+                ["Talk", ["Say", "Whisper", "Me", "Emotes"]],
+                ["Body", ["Rest", "Sleep", "Wake Up", "Resist", "Pull Punches", "Toggle Gun Mode", "Succumb", "Respawn"]],
+                ["Look & check", ["Examine", "Interact", "Show Held Item", "Check Diet", "Skill Progress", "Check Known Languages", "Check Default Language", "Check Intent Behavior"]],
+                ["Notes & knowledge", ["Notes", "Add Note", "Crafting Atlas", "Teach recipe group", "Write recipe manual"]],
+                ["Group", ["Become Friends", "Issue Order", "Rally Point", "Roster"]]
+            ]
+        };
+
+        // Verbs that cannot be undone are drawn in red.
+        const DANGER = new Set(["Abandon Faction", "Abandon Religion", "Succumb", "Respawn"]);
+
+        // Short one-word actions are drawn as a compact grid.
+        const CHIP_TABS = new Set(["Emote"]);
 
         function receiveStats(dataString) {
             if (!dataString) {
@@ -261,7 +366,7 @@
             // Only render tabs if they changed or active tab changed
             const tabsJSON = JSON.stringify(data.tabs);
             if (tabsJSON !== lastTabsJSON || currentTab !== lastActiveTab) {
-                renderTabs(data.tabs);
+                renderTabs(data.tabs || []);
                 lastTabsJSON = tabsJSON;
                 lastActiveTab = currentTab;
             }
@@ -276,52 +381,114 @@
             // Only render verbs if they changed
             const verbsJSON = JSON.stringify(data.verbs);
             if (verbsJSON !== lastVerbsJSON) {
-                renderVerbs(data.verbs);
+                lastVerbs = data.verbs || [];
+                renderVerbs();
                 lastVerbsJSON = verbsJSON;
             }
         }
 
-        function renderVerbs(verbs) {
-            const container = document.getElementById("verbs-container");
-            container.innerHTML = "";
+        function verbLabel(verb) {
+            return LABELS[verb.name] || verb.name;
+        }
 
-            // Group verbs by category
+        function makeButton(verb) {
+            const button = document.createElement("a");
+            button.className = "verb-button" + (DANGER.has(verb.name) ? " danger" : "");
+            button.innerText = verbLabel(verb);
+            button.title = verb.name;
+            button.href = `byond://?action=execute_verb&verb=${encodeURIComponent(verb.command)}`;
+            return button;
+        }
+
+        // Splits the tab's verbs into [title, verbs] sections.
+        function verbSections(verbs) {
+            const sections = [];
+            const used = new Set();
+            const byName = new Map(verbs.map((v) => [v.name, v]));
+            (GROUPS[currentTab] || []).forEach(([title, names]) => {
+                const list = names.filter((n) => byName.has(n)).map((n) => byName.get(n));
+                list.forEach((v) => used.add(v.name));
+                if (list.length) sections.push([title, list]);
+            });
+            const rest = verbs.filter((v) => !used.has(v.name));
+            if (!rest.length) return sections;
+            if (sections.length) {
+                sections.push(["Other", rest]);
+                return sections;
+            }
+            // No sections for this tab: group by the verbs' own categories
+            // (the Admin tab merges several), unnamed when there is only one.
             const grouped = {};
-            verbs.forEach((v) => {
+            rest.forEach((v) => {
                 if (!grouped[v.category]) grouped[v.category] = [];
                 grouped[v.category].push(v);
             });
-
             const categories = Object.keys(grouped).sort();
-
             categories.forEach((cat) => {
-                if (categories.length > 1 || currentTab === "Admin") {
-                    const header = document.createElement("div");
-                    header.className = "verb-category-header";
-                    header.innerText = cat;
-                    container.appendChild(header);
+                const title = categories.length > 1 || currentTab === "Admin" ? cat : "";
+                sections.push([title, grouped[cat]]);
+            });
+            return sections;
+        }
+
+        function renderVerbs() {
+            const container = document.getElementById("verbs-container");
+            container.innerHTML = "";
+            // Tabs without commands (Status) do not need the search box.
+            document.getElementById("searchrow").style.display = lastVerbs.length ? "" : "none";
+            const query = document.getElementById("search").value.trim().toLowerCase();
+            let verbs = lastVerbs.slice().sort((a, b) => verbLabel(a).localeCompare(verbLabel(b)));
+            if (query) {
+                verbs = verbs.filter((v) => (v.name + " " + verbLabel(v)).toLowerCase().includes(query));
+                if (!verbs.length) {
+                    const none = document.createElement("div");
+                    none.className = "no-match";
+                    none.innerText = "No command here matches.";
+                    container.appendChild(none);
+                    return;
                 }
+            }
 
+            verbSections(verbs).forEach(([title, list]) => {
+                let host = container;
+                if (title) {
+                    const group = document.createElement("details");
+                    group.className = "verb-group";
+                    group.open = !!query || !collapsedGroups.has(title);
+                    const summary = document.createElement("summary");
+                    summary.innerText = title;
+                    group.appendChild(summary);
+                    // Recorded on click, before the browser flips the group, so a
+                    // refresh arriving straight after keeps the player's choice.
+                    summary.addEventListener("click", () => {
+                        if (query) return;
+                        if (group.open) collapsedGroups.add(title);
+                        else collapsedGroups.delete(title);
+                    });
+                    container.appendChild(group);
+                    host = group;
+                }
                 const verbList = document.createElement("div");
-                verbList.className = "verb-list";
-
-                grouped[cat].forEach((verb) => {
-                    const button = document.createElement("a");
-                    button.className = "verb-button";
-                    button.innerText = verb.name;
-                    button.href = `byond://?action=execute_verb&verb=${encodeURIComponent(verb.command)}`;
-                    verbList.appendChild(button);
-                });
-
-                container.appendChild(verbList);
+                verbList.className = "verb-list" + (CHIP_TABS.has(currentTab) ? " chips" : "");
+                list.forEach((verb) => verbList.appendChild(makeButton(verb)));
+                host.appendChild(verbList);
             });
         }
 
+        function orderedTabs(tabs) {
+            const rank = (t) => {
+                const i = TAB_ORDER.indexOf(t);
+                return i < 0 ? TAB_ORDER.length : i;
+            };
+            return tabs.slice().sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+        }
+
         function renderTabs(tabs) {
+            lastTabs = tabs;
             const tabsDiv = document.getElementById("tabs");
             tabsDiv.innerHTML = "";
 
-            tabs.forEach((tab) => {
+            orderedTabs(tabs).forEach((tab) => {
                 const tabEl = document.createElement("div");
                 tabEl.className = "tab";
                 if (tab === currentTab) {
@@ -376,6 +543,20 @@
             window.location.href = `byond://?action=statpanel_tab&tab=${encodeURIComponent(newTab)}`;
         }
 
+        const search = document.getElementById("search");
+        search.addEventListener("input", renderVerbs);
+        search.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                search.value = "";
+                renderVerbs();
+                window.location.href = "byond://?action=refocus_map";
+            } else if (e.key === "Enter") {
+                // Enter runs the command when the search leaves exactly one.
+                const buttons = document.querySelectorAll("#verbs-container .verb-button");
+                if (buttons.length === 1) window.location.href = buttons[0].href;
+            }
+        });
+
         window.receiveStats = receiveStats;
 
         // Signal ready to server
@@ -386,8 +567,9 @@
         // forces focus back to the game after clicking something on the statpanel
         document.addEventListener("click", (e) => {
             // Ignore if we clicked an interactive element that handles its own Topic call or input
-            // Also ignore anchor links so byond:// hrefs can navigate without being overridden
-            if (e.target.closest("input, textarea, a")) return;
+            // Also ignore anchor links so byond:// hrefs can navigate without being overridden,
+            // and group headers so folding a section does not steal focus mid-click.
+            if (e.target.closest("input, textarea, a, summary")) return;
 
             window.location.href = "byond://?action=refocus_map";
         });
