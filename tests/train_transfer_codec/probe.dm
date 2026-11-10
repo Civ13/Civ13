@@ -31,7 +31,8 @@ var/global/train_codec_runtime_error = FALSE
 	for(var/key in A.get_saved_vars())
 		if(!(key in fields) && !(key in ignored))
 			var/value = A.vars[key]
-			world.log << "CODEC DIAG unprojected key=[key] value=[value] list=[islist(value)] datum=[istype(value, /datum)]"
+			world.log << "CODEC DIAG unprojected key=[key] value=[value] list=[islist(value)] datum=[istype(value, /datum)] length=[length(value)] baseline=[train_transfer_structure_baseline(A, key)]"
+			if(key == "animate_movement") world.log << "CODEC DIAG animation initial=[initial(A.animate_movement)] current=[A.animate_movement]"
 	var/list/raw = list()
 	for(var/key in fields)
 		if(!(key in A.vars))
