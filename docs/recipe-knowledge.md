@@ -100,6 +100,15 @@ a page. With book research on:
   (`book_research_writing_supplies`); the pen stays on Papermaking. Material
   menus show rows up to the world era and the craft checks knowledge.
 
+### Two books on a bench (phase 4)
+
+A bench holds up to two books (`BENCH_MAX_BOOKS`). Research is written into
+the first; "Write research into the other book" swaps them. With two books,
+"Copy a chapter" copies any chapter one has and the other lacks, with a blank
+sheet, the same stamina and time as writing, and no knowledge of the node.
+"Study a chapter" studies from a shelved book without picking it up, and each
+book has its own Take button (Alt-click takes the last one).
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

@@ -223,8 +223,23 @@ var/knowledge_failures = 0
 	check_book_pages(scholar, novice, journal)
 	var/obj/item/weapon/book/other = new(locate(7,7,1))
 	bench.book_place(other, scholar)
-	knowledge_check(bench.placed_book() == journal, "one book per bench")
+	var/obj/item/weapon/book/third = new(locate(7,7,1))
+	bench.book_place(third, scholar)
+	knowledge_check(bench.placed_books().len == 2 && bench.placed_book() == journal && third.loc != bench, "up to two books per bench; research goes into the first")
+	var/obj/item/weapon/paper/copy_sheet = new(locate(7,7,1))
+	novice.stats["stamina"][1] = 100
+	knowledge_check(!novice.knows_recipe_node("iron_tools") && bench.copy_chapter_commit(novice, journal, other, "iron_tools", copy_sheet) && other.has_research_chapter("iron_tools") && QDELETED(copy_sheet), "a scribe copies a chapter between the two books without knowing it")
+	var/obj/item/weapon/paper/again = new(locate(7,7,1))
+	knowledge_check(!bench.copy_chapter_commit(novice, journal, other, "iron_tools", again), "a chapter the other book has can't be copied again")
+	bench.book_swap(scholar)
+	knowledge_check(bench.placed_book() == other, "the other book can become the research book")
+	bench.book_swap(scholar)
+	knowledge_check(bench.placed_book() == journal, "swapping back restores the first book")
+	bench.book_take(scholar, 2)
+	knowledge_check(other.loc != bench && bench.placed_books().len == 1, "a chosen book can be taken off the bench")
 	qdel(other)
+	qdel(third)
+	qdel(again)
 	map.book_research = FALSE
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
