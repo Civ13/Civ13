@@ -24,8 +24,12 @@
 			to_chat(user, "[A] doesn't fit into \the [src].")
 			return
 		var/mob/L = A
+		if (L.buckled || L.pinned.len)
+			to_chat(user, SPAN_WARNING("You need to free [L] before putting it in the jar."))
+			return
+		if (!L.forceMove(src))
+			return
 		user.visible_message("<span class='notice'>[user] scoops [L] into \the [src].</span>", "<span class='notice'>You scoop [L] into \the [src].</span>")
-		L.forceMove(src)
 		contains = 2
 		update_icon()
 		return
