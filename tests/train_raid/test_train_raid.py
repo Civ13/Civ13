@@ -25,6 +25,7 @@ import build  # noqa: E402
 MAP = ROOT / "maps/EFT/train_raid.dmm"
 LAYOUT = ROOT / "maps/EFT/train_raid.layout.json"
 MODE = ROOT / "code/game/objects/map_metadata/train_raid.dm"
+SHUTTLE = ROOT / "code/game/objects/map_metadata/train_raid_shuttle.dm"
 DME = ROOT / "civ13.dme"
 DEFINES = ROOT / "code/__defines/maps.dm"
 DEFINITION = re.compile(r'^"([a-zA-Z]{2})" = \((.*)\)$')
@@ -233,9 +234,12 @@ class TrainRaidSourceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.mode = MODE.read_text(encoding="utf-8")
+        cls.shuttle = SHUTTLE.read_text(encoding="utf-8")
 
     def test_wired_into_build(self):
-        self.assertIn('#include "code\\game\\objects\\map_metadata\\train_raid.dm"', DME.read_text(encoding="utf-8"))
+        dme = DME.read_text(encoding="utf-8")
+        self.assertIn('#include "code\\game\\objects\\map_metadata\\train_raid.dm"\n'
+                      '#include "code\\game\\objects\\map_metadata\\train_raid_shuttle.dm"', dme)
         self.assertIn('#define MAP_TRAIN_RAID "TRAIN_RAID"', DEFINES.read_text(encoding="utf-8"))
 
     def test_mode_contract(self):
@@ -257,13 +261,45 @@ class TrainRaidSourceTests(unittest.TestCase):
 
     def test_loot_tables_reference_existing_types(self):
         sources = "\n".join(path.read_text(encoding="utf-8") for path in (
-            ROOT / "code/game/objects/effects/spawners/loot.dm", ROOT / "code/game/objects/random.dm", MODE))
+            ROOT / "code/game/objects/effects/spawners/loot.dm", ROOT / "code/game/objects/random.dm", MODE, SHUTTLE))
         for match in re.finditer(r"return list\(([^\n]*)\)", self.mode):
             for entry in match.group(1).split(","):
                 entry = entry.strip()
                 if entry == "null" or not entry.startswith("/"):
                     continue
                 self.assertRegex(sources, re.escape(entry) + r"(\s|\n|$|/)", entry)
+
+    def test_saved_shuttle_contract(self):
+        for needle in ("var/recall_fuel = 2", "if (!C.party) C.take_command(H, key)", "fuel -= mode.recall_fuel",
+                       "!C.cleared_for(load)", "var/saved = C.save_shuttle()", "C.load_at_helm(H, W)"):
+            self.assertIn(needle, self.mode)
+        for needle in ('var/global/train_raid_shuttle_root = "data/train_raid_shuttles/"',
+                       "#define TRAIN_RAID_START_FUEL 6", "#define TRAIN_RAID_OPEN_TIER 2",
+                       "proc/train_raid_shuttle_commit(party, list/R)", "proc/take_command(",
+                       "proc/save_shuttle()", "party_freight_pack(root, party, null)", "/obj/item/train_raid_pass/vault"):
+            self.assertIn(needle, self.shuttle)
+        # The fuel check and the spend share one step: nothing sleeps between them.
+        recall = self.mode[self.mode.index("/datum/train_raid_crew/proc/recall("):]
+        recall = recall[:recall.index("\n/datum/")]
+        check = recall.index("if (fuel < mode.recall_fuel)")
+        spend = recall.index("fuel -= mode.recall_fuel")
+        self.assertLess(check, spend)
+        for blocking in ("sleep(", "spawn(", "do_after(", "WWinput(", "input("):
+            self.assertNotIn(blocking, recall)
+
+    def test_area_tiers_match_sections(self):
+        layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+        for section in layout["sections"]:
+            block = re.search(r"^/area/train_raid/hauler/" + section["id"] + r"\n((?:\t.*\n)*)", self.mode, re.M)
+            self.assertIsNotNone(block, section["id"])
+            tier = re.search(r"raid_tier = (\d+)", block.group(1))
+            self.assertEqual(int(tier.group(1)) if tier else 1, section["tier"], section["id"])
+
+    def test_pass_tiers_cover_forward_sections(self):
+        layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+        forward = sorted(s["tier"] for s in layout["sections"] if s["tier"] > 2)
+        passes = sorted(int(t) for t in re.findall(r"^/obj/item/train_raid_pass/\w+\n\ttier = (\d+)", self.shuttle, re.M))
+        self.assertEqual(forward, passes)
 
 
 if __name__ == "__main__":
