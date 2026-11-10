@@ -255,6 +255,11 @@
 /datum/proc/persistence_restore_finished()
 	return
 
+// Normal world recovery retains its historical unowned-NPC healing policy.
+// Transactional body adapters may opt out without changing world saves.
+/map_storage/proc/rejuvenate_unowned_human_on_load()
+	return TRUE
+
 /map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
 	try
 		TICK_CHECK
@@ -450,7 +455,7 @@
 		if (ishuman(object))
 			var/mob/living/human/H = object
 			// A saved corpse must stay dead; do not replay death hooks on import.
-			if (H.stat != DEAD && !H.persistence_owner_ckey)
+			if (H.stat != DEAD && !H.persistence_owner_ckey && rejuvenate_unowned_human_on_load())
 				H.rejuvenate()
 			if (!H.name && savefile["name"])
 				H.name = savefile["name"]

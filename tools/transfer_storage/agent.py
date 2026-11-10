@@ -57,6 +57,9 @@ def _routes(store, radio):
         # Orbital strikes: a station fires at one named region (orbit_artillery.dm).
         '/strike/send': lambda body: {'id': radio.strike_send(body.get('envelope'))},
         '/strike/inbox': lambda body: {'envelopes': radio.strike_inbox()},
+        '/train/reserve': lambda body: store.reserve_train(body),
+        '/train/lease': lambda body: store.train_lease_status(body['journey']),
+        '/train/cancel': lambda body: store.cancel_train_lease(body['journey']),
         '/train/lookup': lambda body: store.lookup_train(body['id']),
         '/train/pending': lambda body: {'trains': store.pending_train_admissions()},
         '/train/prepare': lambda body: store.prepare_train(body['transfer_id'], body['manifest_hash'], body['reservation']),
@@ -64,7 +67,7 @@ def _routes(store, radio):
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
         '/escrow': lambda body: dict(zip(('transfer_id', 'effect_id'), store.begin_escrow(
-            body['peer'], body['payloads'], _fast(body)))),
+            body['peer'], body['payloads'], _fast(body), body.get('train_lease')))),
         '/import': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_import(body['transfer_id'], _fast(body)))),
         '/return': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_return(body['transfer_id'], _fast(body)))),
         '/abort': lambda body: store.abort(body['transfer_id']) or {},
@@ -75,7 +78,7 @@ def _routes(store, radio):
                                                  body.get('body') in (True, 1)),
         '/accounts': lambda body: store.account_requests(),
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
-                                                 body.get('reset') in (True, 1), body.get('mainland')),
+                                                 body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions')),
     }
 
 

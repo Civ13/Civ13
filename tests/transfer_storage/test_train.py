@@ -19,6 +19,32 @@ def manifest(identity='alpha-train1'):
             'accounts': ['alice']}
 
 
+def install_fixture_lease(store):
+    """Unit isolation: a fake coordinator grants schema-valid test payloads.
+
+    End-to-end actual coordinator leasing is tested in test_train_custody.
+    """
+    original = store.begin_escrow
+    def begin(peer, payloads, fast=False, train_lease=None):
+        from tools.transfer_storage.train_lease import lease_binding
+        try:
+            train = validate(payloads[0]) if len(payloads) == 1 else None
+        except (ValueError, TypeError):
+            train = None
+        if train and train_lease is None:
+            try:
+                status = store.reserve_train(lease_binding(train))
+                epoch = store._meta('homes_epoch') or 'test-epoch'
+                store.apply_homes(epoch, int(store._meta('homes_rev')), [], [], train_decisions=[
+                    dict(status, state='granted', token='a' * 64, epoch=epoch)])
+                train_lease = 'a' * 64
+            except ValueError as exc:
+                raise TransferError(str(exc)) from exc
+        return original(peer, payloads, fast, train_lease)
+    store.begin_escrow = begin
+
+
+
 class TrainTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -26,6 +52,7 @@ class TrainTests(unittest.TestCase):
         self.b = RegionStore(str(Path(self.tmp.name) / 'b.db'), 'beta', 'earth')
         self.a.enroll('beta', OUT)
         self.b.enroll('alpha', IN)
+        install_fixture_lease(self.a)
 
     def tearDown(self):
         self.a.close()
@@ -35,7 +62,7 @@ class TrainTests(unittest.TestCase):
     def start(self):
         payload = json.dumps(manifest())
         tid, effect = self.a.begin_escrow('beta', [payload], fast=True)
-        self.b.receive(self.a.outbox()[0])
+        self.b.receive(dict(self.a.outbox()[0], train_custody_epoch='test-epoch'))
         return tid, effect, payload
 
     def admit(self, tid):
@@ -49,13 +76,13 @@ class TrainTests(unittest.TestCase):
         with self.assertRaises(TransferError):
             self.b.begin_import(tid, fast=True)
         self.admit(tid)
-        self.a.receive(self.b.outbox()[0])
-        self.b.receive(self.a.outbox()[0])
+        self.a.receive(dict(self.b.outbox()[0], train_custody_epoch='test-epoch'))
+        self.b.receive(dict(self.a.outbox()[0], train_custody_epoch='test-epoch'))
         imported, data = self.b.begin_import(tid, fast=True)
         self.assertEqual([payload], data)
         self.assertEqual([payload], self.b.replay()[0]['payloads'])
-        self.a.receive(self.b.outbox()[0])
-        reply = self.b.receive(self.a.outbox()[0])
+        self.a.receive(dict(self.b.outbox()[0], train_custody_epoch='test-epoch'))
+        reply = self.b.receive(dict(self.a.outbox()[0], train_custody_epoch='test-epoch'))
         self.a.receive(reply)
         self.assertEqual([], self.a.status()['active'])
         self.assertEqual([], self.b.status()['active'])
@@ -64,8 +91,8 @@ class TrainTests(unittest.TestCase):
     def test_pending_abort_returns_manifest(self):
         tid, _, payload = self.start()
         self.a.abort(tid)
-        self.b.receive(self.a.outbox()[0])
-        self.a.receive(self.b.outbox()[0])
+        self.b.receive(dict(self.a.outbox()[0], train_custody_epoch='test-epoch'))
+        self.a.receive(dict(self.b.outbox()[0], train_custody_epoch='test-epoch'))
         _, restored = self.a.begin_return(tid, fast=True)
         self.assertEqual([payload], restored)
         self.assertEqual([], self.b.pending_train_admissions())
@@ -81,7 +108,7 @@ class TrainTests(unittest.TestCase):
         self.assertEqual({'prepared': True}, self.b.prepare_train(tid, pending['manifest_hash'], 'entry-strip-1'))
         with self.assertRaises(TransferError):
             self.b.prepare_train(tid, pending['manifest_hash'], 'other-strip')
-        self.b.receive(self.a.outbox()[0]) # duplicate escrow does not regress admission
+        self.b.receive(dict(self.a.outbox()[0], train_custody_epoch='test-epoch')) # duplicate escrow does not regress admission
         self.assertEqual('PREPARE', self.b.outbox()[0]['step'])
 
     def test_reject_bad_schema_membership_graph_and_bounds(self):
@@ -123,11 +150,12 @@ class TrainTests(unittest.TestCase):
         c = RegionStore(str(Path(self.tmp.name) / 'c.db'), 'gamma', 'earth')
         try:
             c.enroll('beta', OUT)
+            install_fixture_lease(c)
             self.b.enroll('gamma', IN)
             m = manifest('gamma-train'); m['source'] = 'gamma'
             c.begin_escrow('beta', [json.dumps(m)], fast=True)
             with self.assertRaises(TransferError):
-                self.b.receive(c.outbox()[0])
+                self.b.receive(dict(c.outbox()[0], train_custody_epoch='test-epoch'))
         finally:
             c.close()
 
@@ -177,6 +205,22 @@ class TrainTests(unittest.TestCase):
         bad = manifest(); bad['entities'][0]['slot'] = 1
         with self.assertRaises(ValueError):
             validate(json.dumps(bad))
+
+    def test_structure_state_is_bounded_and_complete(self):
+        from tools.transfer_storage.train import BASE_STATE, CRATE_STATE, TEXT_STATE
+        m = manifest()
+        state = {k: '' if k in TEXT_STATE else 0 for k in BASE_STATE | CRATE_STATE}
+        cargo = dict(m['entities'][0], id='crate', kind='crate',
+                     payload={'type': '/obj/structure/closet/crate', 'items': [], 'state': state})
+        m['entities'].append(cargo)
+        validate(json.dumps(m))
+        for key, value in (('health', 1000001), ('name', 'x' * 2049), ('extra', 1)):
+            bad = copy.deepcopy(m); bad['entities'][1]['payload']['state'][key] = value
+            with self.assertRaises(ValueError):
+                validate(json.dumps(bad))
+        del state['locked']
+        with self.assertRaises(ValueError):
+            validate(json.dumps(m))
 
     def test_64_segments_accepted_65_refused(self):
         m = manifest(); example = m['segments'][0]

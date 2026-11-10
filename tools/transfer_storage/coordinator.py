@@ -1,7 +1,9 @@
 """Small coordinator: a region directory, envelope relay and home-world ledger.
 
-It holds no custody and no transfer phase. Losing its file only pauses
-transfers until the directory is enrolled again.
+Ordinary item transfers retain custody in the region ledgers. Physical-train
+transfers additionally require this coordinator's durable grouped-account lease
+and decision. Losing its file holds in-flight trains for reviewed recovery;
+re-enrolling the directory does not recreate train commit authority.
 
 The home ledger says which region each account may play in. With a mainland
 region, a new account and a player whose character died start there, and
@@ -11,6 +13,7 @@ sends every agent the ledger rows it has not seen. Losing the file starts a
 new ledger epoch: agents drop their copies and homes are claimed again.
 """
 import secrets
+import os
 import argparse
 import json
 import sqlite3
@@ -35,7 +38,12 @@ def call(url, token, path, body=None, timeout=5):
         return json.loads(e.read() or b'{}')
 
 
-class Coordinator:
+if __package__ in (None, ''):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from tools.transfer_storage.train_custody import TrainCustody
+
+
+class Coordinator(TrainCustody):
     def __init__(self, path, group, mainland=None):
         self.group = group
         self.mainland = mainland
@@ -53,6 +61,9 @@ class Coordinator:
             store TEXT NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(store, id))''')
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('rev', '0')")
+
+        self.init_train_custody()
+        self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('recovery', 'unreconciled')")
 
     def close(self):
         self.db.close()
@@ -82,7 +93,11 @@ class Coordinator:
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
+        if self._ledger('recovery') != 'ready':
+            return
         ckey, op, region = request['ckey'], request['op'], request['region']
+        if not self.train_request_allowed(request):
+            return
         home = self.home(ckey)
         if op == 'arrive' and region == source:
             # A recorded trip delivered the character here; custody already decided.
@@ -114,11 +129,22 @@ class Coordinator:
                 continue  # down: its requests and rows wait for a later pass
             if answer.get('ok'):
                 asked[name] = answer['result']
+        if self._ledger('recovery') != 'ready':
+            if self._ledger('recovery') == 'quarantined' or not regions or set(asked) != set(regions):
+                return 0
+            # A replacement coordinator must not discard surviving train custody
+            # or let a third world create a second body from an empty home map.
+            if any(a.get('train_history') and a.get('epoch') != epoch for a in asked.values()):
+                self.db.execute("UPDATE ledger SET value = 'quarantined' WHERE key = 'recovery'")
+                return 0
+            self.db.execute("UPDATE ledger SET value = 'ready' WHERE key = 'recovery'")
         # Each region's requests in the order it made them (a refused trip's
         # depart then arrive must not swap). Across regions only claims wait
         # for everything else, so an arrival or a living body beats a new start.
         self.db.execute('BEGIN IMMEDIATE')
         try:
+            lease_decisions = {name: [self.decide_train_lease(name, r) for r in a.get('train_requests', [])]
+                               for name, a in asked.items()}
             queue = []
             for name, a in asked.items():
                 store, ids = str(a.get('store') or ''), [r['id'] for r in a.get('requests', [])]
@@ -144,7 +170,8 @@ class Coordinator:
                 'SELECT ckey, region FROM home WHERE rev > ? ORDER BY rev', (since,))]
             try:
                 call(url, token, '/homes', {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
-                                            'mainland': self.mainland,
+                                            'mainland': self.mainland, 'train_locks': self.train_locks(),
+                                            'train_decisions': lease_decisions.get(name, []),
                                             'done': [r['id'] for r in answer.get('requests', [])]})
             except (OSError, ValueError):
                 # Its requests stay queued; deciding them again changes nothing.
@@ -204,7 +231,16 @@ class Coordinator:
                 target = regions.get(envelope.get('recipient'))
                 if target is None or envelope.get('group') != self.group:
                     continue
-                result = call(target[0], target[1], '/receive', {'envelope': envelope})
+                if envelope.get('sender') != name:
+                    continue
+                try:
+                    is_train = self.train_envelope(name, envelope)
+                except ValueError:
+                    continue  # unresolved custody stays in the durable outbox
+                forwarded = dict(envelope)
+                if is_train:
+                    forwarded['train_custody_epoch'] = self._ledger('epoch')
+                result = call(target[0], target[1], '/receive', {'envelope': forwarded})
                 if result.get('ok'):
                     delivered += 1
                     reply = result['result'].get('reply')

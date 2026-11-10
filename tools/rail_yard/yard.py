@@ -94,7 +94,7 @@ def berth_origin(n, columns):
     return ROAD + 1 + column * (BERTH_WIDTH + ROAD), ARRIVAL_HEIGHT + 1 + row * BERTH_HEIGHT
 
 
-def layout(berths, columns):
+def layout(berths, columns, physical_routes=False):
     if not 1 <= columns <= 8:
         raise ValueError('columns must be 1 to 8')
     if berths < 1:
@@ -134,7 +134,39 @@ def layout(berths, columns):
         # Running line behind the train.
         for dx in range(1, BERTH_WIDTH - 1):
             cells[(ox + dx, oy + 2 + len(TRAIN), 2)] = tile(RAIL, GROUND)
+    if physical_routes:
+        add_physical_routes(cells, width, height, berths, columns)
     return cells, width, height
+
+
+def add_physical_routes(cells, width, height, berths, columns):
+    """Add straight edge-to-edge lanes in unused north gaps, preserving homes.
+
+    The original running line touches a carriage wall and cannot carry a
+    three-wide moving car. The empty row immediately north has three-wide
+    clearance without moving any berth, wall, furniture or old rail. Each
+    lane serves one row of berths. No switch or turn is required at arrival.
+    This function edits a newly generated layout only, never a live map.
+    """
+    rows = math.ceil(berths / columns)
+    plain = {tile(GROUND), tile(CONCRETE)}
+    traversable = plain | {tile(RAIL, GROUND)}
+    additions = {}
+    for row in range(rows):
+        _, oy = berth_origin(row * columns + 1, columns)
+        y = oy + 3 + len(TRAIN)
+        if not 1 < y < height:
+            raise ValueError('physical route lacks north/south deck clearance')
+        for x in range(1, width + 1):
+            at = (x, y, 2)
+            if cells[at] not in plain:
+                raise ValueError('physical route would replace an existing object at %r' % (at,))
+            for side in (-1, 1):
+                if cells[(x, y + side, 2)] not in traversable:
+                    raise ValueError('physical route deck is obstructed at %r' % ((x, y + side, 2),))
+            additions[at] = tile(RAIL, GROUND)
+    # Validate everything before changing a single cell.
+    cells.update(additions)
 
 
 def write_text(cells, width, height):
@@ -170,13 +202,14 @@ def main(argv=None):
     parser.add_argument('--berths', type=int, default=96, help='party berths (default 96)')
     parser.add_argument('--columns', type=int, default=4, help='berth columns (default 4)')
     parser.add_argument('--out', required=True, help='output .dmm')
+    parser.add_argument('--physical-routes', action='store_true', help='add three-wide, edge-connected physical-train corridors; new maps only')
     args = parser.parse_args(argv)
     out = Path(args.out)
     if out.suffix.lower() != '.dmm':
         parser.error('--out must end in .dmm')
     verify_types(Path(__file__).resolve().parents[2])
     try:
-        cells, width, height = layout(args.berths, args.columns)
+        cells, width, height = layout(args.berths, args.columns, physical_routes=args.physical_routes)
     except ValueError as error:
         parser.error(str(error))
     out.parent.mkdir(parents=True, exist_ok=True)

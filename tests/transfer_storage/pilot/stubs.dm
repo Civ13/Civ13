@@ -105,3 +105,10 @@ var/global/pilot_save_active = FALSE
 /obj/item/stack/material/gold
 /obj/item/stack/material/steel
 	max_amount = 2000
+
+// This isolated goods pilot has no physical trains or station escrow.
+/proc/train_escrow_saved()
+	return
+
+/proc/train_arrival_saved()
+	return

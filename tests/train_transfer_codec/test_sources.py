@@ -12,7 +12,9 @@ class CodecContracts(unittest.TestCase):
         self.assertIn('car in cars || cars.len >= TRAIN_TRANSFER_SEGMENTS', capture)
 
     def test_bounded_explicit_codecs(self):
-        self.assertNotIn('.vars[', S)
+        apply = S.split('/proc/train_transfer_apply_structure_state', 1)[1].split('// API result', 1)[0]
+        self.assertIn('for(var/key in train_transfer_structure_fields(A.type))', apply)
+        self.assertIn('!train_transfer_structure_state_valid(A.type, state)', apply)
         self.assertIn('party_freight_entry_valid(E["payload"])', S)
         self.assertIn('region_travel_decode(E["payload"])', S)
         self.assertIn('length(text) > TRAIN_TRANSFER_TEXT', S)
