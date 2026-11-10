@@ -204,6 +204,11 @@ SUITES = {
                          'code/modules/1713/factory_pipes.dm',
                          'tests/save_movement/source_adapter.py')},
     # Explosion remains above the ground: production wiring and map level audit.
+    'vehicle_hull_damage': {'files': ('tests/vehicle_hull_damage/test_contract.py',),
+        'paths': ('tests/vehicle_hull_damage/',), 'shared_paths': (
+            'code/game/objects/items/weapons/grenades/grenade.dm',
+            'code/game/objects/items/devices/drone.dm')},
+    # Explosion remains above the ground: production wiring and map level audit.
     'explosion_remains': {'files': ('tests/explosion_remains/test_explosion_remains.py',),
         'paths': ('tests/explosion_remains/',), 'shared_paths': (
             'code/modules/multiz/explosion_remains.dm', 'code/game/turfs/floor.dm',
