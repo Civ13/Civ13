@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'cremator_tray': {'files': ('tests/cremator_tray/test_retraction.py',), 'paths': (
+        'tests/cremator_tray/', 'code/game/objects/structures/morgue.dm'), 'shared_paths': (
+        'tests/save_movement/source_adapter.py',)},
     'iv_drip_interaction': {'files': ('tests/iv_drip_interaction/test_drag.py',), 'paths': (
         'tests/iv_drip_interaction/', 'code/game/objects/structures/iv_drip.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},

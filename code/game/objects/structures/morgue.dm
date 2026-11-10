@@ -236,8 +236,8 @@
 			if (!( A.anchored ))
 				A.forceMove(src)
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
-		src.connected = null
 		qdel(connected)
+		src.connected = null
 	else if (src.locked == FALSE)
 		playsound(src.loc, 'sound/items/Deconstruct.ogg', 50, TRUE)
 		src.connected = new /obj/structure/c_tray(src.loc)
