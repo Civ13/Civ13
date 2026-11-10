@@ -1000,7 +1000,10 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertFalse(suite.get('always', False))
         for path in ('tests/grinder/test_transaction.py', 'tests/grinder/historical-grinder.dm'):
             with self.subTest(path=path):
-                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'grinder'})
+                expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'grinder'}
+                if path == 'tests/grinder/test_transaction.py':
+                    expected.add('furnace_manual')  # Its projection imports this adapter.
+                self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
         for path in suite['shared_paths']:
             with self.subTest(path=path):
@@ -1011,6 +1014,16 @@ class BaselinePolicyTests(unittest.TestCase):
         imports = {node.names[0].name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import)}
         self.assertEqual(imports, {'ast', 'heapq', 'math', 're', 'unittest'})
         self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}, {'pathlib'})
+
+    def test_furnace_manual_registration_preserves_shared_source_fallback(self):
+        suite = ci.SUITES['furnace_manual']
+        self.assertEqual(suite['files'], ('tests/furnace_manual/test_transaction.py',))
+        self.assertEqual(self.selected(['tests/furnace_manual/test_transaction.py']),
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'furnace_manual'})
+        source = 'code/game/objects/structures/blacksmithing/refining.dm'
+        self.assertIn(source, suite['shared_paths'])
+        self.assertEqual(self.selected([source]), set(ci.SUITES))
+        self.assertIn('Unmapped impact: ' + source, ci.impact([source])['fallback_reasons'])
 
     def test_failing_grinder_child_fails_selected_baseline_and_aggregate(self):
         # Stage exact reviewed inputs; never mutate production or launch DM.

@@ -963,6 +963,10 @@ SUITES = {
                                 'always': True, 'paths': ()},
     # Stdlib-only scalar/callback projections; no native runner or subprocesses.
     # Shared chemistry/stack sources retain their conservative all-suite fallback.
+    'furnace_manual': {'files': ('tests/furnace_manual/test_transaction.py',),
+        'paths': ('tests/furnace_manual/',), 'shared_paths': (
+            'tests/grinder/test_transaction.py',
+            'code/game/objects/structures/blacksmithing/refining.dm')},
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
         'paths': ('tests/grinder/',), 'shared_paths': (
             'code/modules/reagents/Chemistry-Machinery.dm',
