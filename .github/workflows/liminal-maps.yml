@@ -4,6 +4,7 @@ on:
     branches: [master, codex/liminal-design]
     paths:
       - tools/liminal_maps/**
+      - tools/procedural_maps/io.py
       - tests/liminal_maps/**
       - docs/liminal/**
       - .github/workflows/liminal-maps.yml
@@ -11,6 +12,7 @@ on:
     branches: [master]
     paths:
       - tools/liminal_maps/**
+      - tools/procedural_maps/io.py
       - tests/liminal_maps/**
       - .github/workflows/liminal-maps.yml
 permissions:

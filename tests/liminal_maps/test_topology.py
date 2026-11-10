@@ -38,7 +38,24 @@ class IndoorTests(unittest.TestCase):
         for node in ast.parse(text).body:
             if isinstance(node,ast.FunctionDef) and node.name in proof['copied_function_sha256']:
                 self.assertEqual(proof['copied_function_sha256'][node.name],hashlib.sha256(ast.get_source_segment(text,node).encode()).hexdigest())
-        self.assertEqual(proof['reused_io_sha256'],hashlib.sha256((package/'io.py').read_bytes()).hexdigest())
+        self.assertEqual(proof['reused_io_sha256'],hashlib.sha256((ROOT/proof['reused_io_source_path']).read_bytes()).hexdigest())
+        from tools.liminal_maps import io as liminal_io
+        from tools.procedural_maps import io as procedural_io
+        for name in ('read_json','new_output','json_text'):
+            self.assertIs(getattr(liminal_io,name),getattr(procedural_io,name))
+
+    def test_shared_io_rejects_invalid_input_and_existing_output(self):
+        from tools.liminal_maps.io import read_json,new_output
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as path:
+            folder=Path(path);source=folder/'input.json'
+            for text in ('{"a":1,"a":2}','{"a":NaN}'):
+                source.write_text(text,encoding='utf-8')
+                with self.assertRaises(ValueError):read_json(source)
+            with self.assertRaises(ValueError):read_json(folder/'world.sav')
+            with self.assertRaises(ValueError):new_output(source)
+            with patch.object(Path,'is_symlink',return_value=True):
+                with self.assertRaisesRegex(ValueError,'symlink'):new_output(folder/'new')
     def test_manifest_version_binding_after_rehashed_file(self):
         with tempfile.TemporaryDirectory() as path:
             folder=Path(path);write_bundle(folder,self.result)
