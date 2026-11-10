@@ -22,6 +22,7 @@
 				if (M.stat == DEAD || (M.status_flags&FAKEDEATH))
 					sound_strength = "cannot hear"
 					sound = "anything"
+					heartrate = "is asystolic." // A dead (or feigning) patient still reads asystolic anywhere.
 				else
 					switch(body_part)
 						if ("chest")

@@ -46,7 +46,12 @@ class StethoscopeExaminationTests(unittest.TestCase):
         self.assertIn('\t\t\t\t\t\tif ("chest")\n'
                       '\t\t\t\t\t\t\theartrate = "is asystolic."', self.source)
         self.assertIn('[heartrate ? " [M] [heartrate]" : ""]', self.source)
-        self.assertEqual(self.source.count('heartrate = "is asystolic."'), 2)
+        self.assertEqual(self.source.count('heartrate = "is asystolic."'), 3)
+
+    def test_dead_patient_still_reports_asystole(self):
+        dead = self.source.index('if (M.stat == DEAD || (M.status_flags&FAKEDEATH))')
+        living = self.source.index('\t\t\t\telse\n', dead)
+        self.assertIn('heartrate = "is asystolic."', self.source[dead:living])
 
 
 if __name__ == '__main__':
