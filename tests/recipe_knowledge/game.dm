@@ -263,6 +263,7 @@ var/knowledge_failures = 0
 	check_scholar_instruments(scholar)
 	check_scholar_tutoring()
 	check_scholar_apprentices()
+	check_scholar_titles()
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -400,6 +401,19 @@ var/knowledge_failures = 0
 	qdel(master)
 	qdel(apprentice)
 	qdel(bench)
+
+// Titles (Val, 2026-11-10): examine shows the highest discipline as a title.
+/proc/check_scholar_titles()
+	var/mob/living/human/knowledge_fixture/H = new(locate(4,4,1))
+	H.scholarship = list("engineering" = 5)
+	knowledge_check(!H.scholar_title(), "beginners have no title")
+	H.scholarship = list("engineering" = 20, "medicine" = 12)
+	knowledge_check(H.scholar_title() == "Apprentice of Engineering", "the highest discipline names the title")
+	H.scholarship = list("engineering" = 20, "medicine" = 50)
+	knowledge_check(H.scholar_title() == "Scholar of Medicine", "a skilled character is a Scholar")
+	H.scholarship = list("mathematics" = 80)
+	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
+	qdel(H)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.
