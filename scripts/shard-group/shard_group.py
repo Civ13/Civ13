@@ -67,6 +67,7 @@ STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
+DEFAULT_MIN_FREE_DISK_MB = 2048  # stage and handover refuse below this much free disk (min_free_disk_mb)
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
 ADOPT_PATHS = ('SQL', 'data/player_saves', 'data/player_notes.sav', 'data/memo.sav', 'data/memo2.sav',
@@ -215,6 +216,11 @@ def load_group(path):
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # stage and handover refuse while the region's drive has less than this free: a handover
+    # copies the build, writes a whole save and backs it up, and a full drive fails it midway.
+    group.setdefault('min_free_disk_mb', DEFAULT_MIN_FREE_DISK_MB)
+    if type(group['min_free_disk_mb']) is not int or group['min_free_disk_mb'] < 0:
+        raise ValueError('min_free_disk_mb must be a whole number of MB, 0 or more')
     # Linux: run each region's DreamDaemon in its own systemd scope ("user" or "system"),
     # so every world has its own cgroup for memory accounting and can be stopped alone.
     group.setdefault('systemd_scope', '')
@@ -299,7 +305,8 @@ def region_config(group, region):
             'compiler': group['compiler'], 'daemon': group['daemon'], 'git': group['git'],
             'state_dir': str(path / 'data' / 'shard-host'), 'public': bool(public),
             'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
-            'backups_kept': group['backups_kept'], 'group_config': group['_path'], 'region': region['id'],
+            'backups_kept': group['backups_kept'], 'min_free_disk_mb': group['min_free_disk_mb'],
+            'group_config': group['_path'], 'region': region['id'],
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             'systemd_scope': group.get('systemd_scope', ''),
@@ -493,6 +500,7 @@ class RegionHost(Host):
     def request_stage(self):
         if not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
+        self.check_disk('staging checks out and compiles a whole build')
         self.state_dir.mkdir(parents=True, exist_ok=True)
         try:
             if self.platform.now() - self.stage_lock.stat().st_mtime > STAGE_LOCK_HOURS * 3600:
@@ -711,6 +719,16 @@ class RegionHost(Host):
         if free is not None and free < self.config['cold_start_min_free_mb']:
             raise Refused('only %d MB free; a standby world needs %d MB to load beside the running one'
                           % (free, self.config['cold_start_min_free_mb']))
+        self.check_disk('a handover copies the build and writes and backs up a whole save')
+
+    def check_disk(self, why):
+        """Refuse while the region's drive is nearly full (min_free_disk_mb, 0 turns it off)."""
+        need = self.config.get('min_free_disk_mb', DEFAULT_MIN_FREE_DISK_MB)
+        measure = getattr(self.platform, 'free_disk_mb', None)
+        free = measure(str(self.repo.parent)) if need and measure else None
+        if free is not None and free < need:
+            raise Refused('only %d MB free on the disk; %s, so it needs %d MB (min_free_disk_mb)'
+                          % (free, why, need))
 
     def do_handover(self, operation):
         group = load_group(self.config['group_config'])
