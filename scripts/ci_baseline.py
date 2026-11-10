@@ -41,6 +41,27 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Offline fixture composition only; this suite does not launch BYOND.
+    'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+            tuple(f'tests/{name}/run.py' for name in (
+                'faction_membership', 'faction_recruitment', 'research_persistence')),
+        'shared_paths': (
+            'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
+            'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm',
+            'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
+    'paper_bin_appearance': {'files': ('tests/paper_bin_appearance/test_appearance.py',),
+        'paths': ('tests/paper_bin_appearance/', 'code/game/objects/items/bin.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'ashtray_spill': {'files': ('tests/ashtray_spill/test_spill.py',),
+        'paths': ('tests/ashtray_spill/', 'code/game/objects/items/weapons/material/ashtray.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
+        'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
@@ -127,6 +148,9 @@ SUITES = {
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
             'tests/save_movement/source_adapter.py')},
+    'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
+        'paths': ('tests/projectile_location/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -468,7 +492,7 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
-    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
@@ -485,6 +509,9 @@ SUITES = {
         'paths': ('tests/held_movement/',), 'shared_paths': (
             'code/movementMachine.dm', 'code/game/mob/mob_movement.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm')},
+    'zombie_spawn_selection': {'files': ('tests/zombie_spawn_selection/test_selection.py',),
+        'paths': ('tests/zombie_spawn_selection/',), 'shared_paths': (
+            'code/game/objects/effects/spawner.dm', 'tests/save_movement/source_adapter.py')},
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
@@ -1126,7 +1153,8 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'civ13.dme')},
     # Offline only: reviewed guard projection, catalog generation, inert Help imports.
     # Shared crafting/Atlas files keep the conservative all-suite fallback.
-    'furniture_joinery': {'files': ('tests/furniture_joinery/test_table_climb.py',
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_grille_construction.py',
+                                   'tests/furniture_joinery/test_table_climb.py',
                                   'tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
@@ -1164,7 +1192,8 @@ SUITES = {
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
-        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm'),
+        'code/modules/surgery/other.dm', 'code/modules/surgery/limb_reattach.dm',
+        'code/modules/1713/doctor_handbook.dm'),
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
@@ -1222,7 +1251,7 @@ SUITES = {
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
         'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
-        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
             'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
             'civ13.dme')},
@@ -1230,7 +1259,7 @@ SUITES = {
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/living/carbon/give.dm'),
-        'shared_paths': ('code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},

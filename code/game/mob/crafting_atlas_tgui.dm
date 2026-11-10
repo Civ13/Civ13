@@ -28,7 +28,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		ui.use_on_close_logic(FALSE)
 	ui.render_arguments = list(query, page, resource_id, legacy, era, processor, recipe_id)
 	if (!ui.legacy_renderer)
-		ui.set_initial_data(model(reference, viewer, query, page, resource_id, legacy, era, processor, recipe_id))
+		ui.set_initial_data(model(reference, viewer, query, page, resource_id, legacy, era, processor, recipe_id, ui.scope))
 	ui.open()
 	return TRUE
 
@@ -36,6 +36,8 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 // generation, ready/snapshot/ack and parent Topic checks still run first.
 /datum/nanoui/tgui/crafting_atlas
 	var/list/render_arguments
+	// "" lists the recipes of the reader's own map; "all" adds every other map's list.
+	var/scope = ""
 
 /datum/nanoui/tgui/crafting_atlas/allowed_actions()
 	return list("atlas_navigate")
@@ -92,11 +94,11 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/list/keys
 	switch (route)
 		if ("open")
-			keys = list("route", "query", "era", "processor", "recipe")
+			keys = list("route", "query", "era", "processor", "recipe", "scope")
 		if ("page")
 			keys = list("route", "query", "page", "recipe")
 		if ("resource")
-			keys = list("route", "resource")
+			keys = list("route", "resource", "recipe", "scope")
 		if ("reset")
 			keys = list("route")
 		else
@@ -104,12 +106,17 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	for (var/key in params)
 		if (!istext(key) || !(key in keys) || (!istext(params[key]) && !isnum(params[key])))
 			return FALSE
+	// Scope is a view preference of this window, never a recipe permission.
+	if ("scope" in params)
+		ui.scope = params["scope"] == "all" ? "all" : ""
 	if (route == "resource")
 		var/resource_id = copytext("[params["resource"]]", 1, 257)
 		if (reference.resource_exists(resource_id))
 			// Preserve direct-resource routing: reset all prior recipe filters.
-			reference.show(viewer, resource_id, 1, resource_id)
+			// A recipe picked on the resource page stays on that page.
+			reference.show(viewer, resource_id, 1, resource_id, recipe_id = copytext("[params["recipe"]]", 1, 32))
 	else if (route == "reset")
+		ui.scope = ""
 		reference.show(viewer)
 	else if (route == "page")
 		reference.show(viewer, params["query"], text2num("[params["page"]]"), legacy = TRUE, recipe_id = copytext("[params["recipe"]]", 1, 32))
@@ -119,24 +126,215 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	// Do not broadcast one reader's query to every viewer of the global catalog.
 	return FALSE
 
-/datum/crafting_atlas_presenter/tgui/proc/recipe_data(datum/crafting_atlas_reference/reference, mob/viewer, list/group, list/matches, list/recipe)
+// Each reader keeps the preview filenames already sent to them, so browsing
+// does not rebuild and resend the same sprites on every navigation.
+/client
+	var/list/atlas_icon_cache
+
+/datum/crafting_atlas_presenter/tgui
+	var/list/resource_search
+	// Where each bench-made recipe kind is worked. Presentation only: the
+	// catalog's own station field keeps its research and filter meaning.
+	var/static/list/kind_stations = list(
+		"Anvil" = "/obj/structure/anvil",
+		"Toolsmith" = "/obj/structure/component_workbench/toolsmith",
+		"Foundry casting" = "/obj/structure/component_workbench/toolsmith/foundry",
+		"Fletching" = "/obj/structure/component_workbench/fletching",
+		"Tool assembly" = "/obj/structure/component_workbench",
+		"Armor assembly" = "/obj/structure/component_workbench/armor",
+		"Weapon assembly" = "/obj/structure/component_workbench/weapon",
+		"Factory fabricator" = "/obj/structure/factory_fabricator")
+
+/datum/crafting_atlas_presenter/tgui/proc/station_of(datum/crafting_atlas_reference/reference, list/recipe)
+	var/station = recipe["station"]
+	if (!station)
+		station = kind_stations["[recipe["kind"]]"]
+	return station && reference.resource_exists(station) ? station : ""
+
+// What the game says about the thing itself: examine text and declared basics.
+/datum/crafting_atlas_presenter/tgui/proc/facts_data(datum/crafting_atlas_reference/reference, resource_id)
+	var/list/facts = list("kind" = "", "desc" = "", "stats" = list())
+	var/list/resource = reference.resources[resource_id]
+	if (!islist(resource))
+		return facts
+	facts["kind"] = html_encode("[resource["kind"]]")
+	facts["desc"] = html_encode("[resource["desc"]]")
+	var/list/rows = list()
+	if (islist(resource["stats"]))
+		for (var/list/stat in resource["stats"])
+			if (stat.len == 2 && rows.len < 16)
+				rows += list(list("label" = html_encode("[stat[1]]"), "value" = html_encode("[stat[2]]")))
+	facts["stats"] = rows
+	return facts
+
+// The in-game name where the catalog has one; canonical IDs never change.
+/datum/crafting_atlas_presenter/tgui/proc/display_name(datum/crafting_atlas_reference/reference, id, fallback)
+	var/list/resource = reference.resources[id]
+	if (islist(resource))
+		if (resource["title"])
+			return "[resource["title"]]"
+		if (resource["name"])
+			return "[resource["name"]]"
+	return "[fallback ? fallback : id]"
+
+/datum/crafting_atlas_presenter/tgui/proc/resource_view(datum/crafting_atlas_reference/reference, mob/viewer, list/resource)
+	var/id = resource["id"]
+	var/client/reader = viewer.client
+	var/list/cached = reader && islist(reader.atlas_icon_cache) ? reader.atlas_icon_cache[id] : null
+	if (!islist(cached))
+		var/list/info = reference.resource_info(viewer, resource)
+		cached = list(info["image"], info["preview"])
+		if (reader)
+			if (!islist(reader.atlas_icon_cache))
+				reader.atlas_icon_cache = list()
+			reader.atlas_icon_cache[id] = cached
+	return list("id" = id, "name" = html_encode(display_name(reference, id, resource["name"])), "quantity" = html_encode("[resource["quantity"]]"), "image" = cached[1], "preview" = cached[2])
+
+// Research the reader still lacks. Mirrors crafting_recipe_allowed for display
+// only; crafting itself keeps its own server-side checks.
+/datum/crafting_atlas_presenter/tgui/proc/research_data(mob/viewer, list/recipe, list/known)
+	var/list/rows = list()
+	var/list/nodes = recipe["research_nodes"]
+	if (recipe["research_status"] != "gated" || !islist(nodes))
+		return rows
+	var/mob/living/human/H = viewer
+	for (var/node_id in nodes)
+		var/datum/research_node/N = get_research_node(node_id)
+		var/state = ""
+		if (istype(H) && map && N)
+			var/key = "[recipe["manual_free"] ? "free" : "node"]:[node_id]"
+			state = known[key]
+			if (!state)
+				var/done
+				if (!recipe["manual_free"])
+					done = crafting_node_allowed(H, node_id)
+				else if (map.book_research_enabled())
+					done = H.knows_recipe_node(node_id) || H.knows_research_prereqs(node_id)
+				else
+					done = crafting_node_world_allowed(H.civilization, node_id)
+				state = done ? "done" : "needed"
+				known[key] = state
+		rows += list(list("id" = node_id, "name" = html_encode(N ? N.name : replacetext("[node_id]", "_", " ")), "state" = state))
+	return rows
+
+/datum/crafting_atlas_presenter/tgui/proc/research_state(mob/viewer, list/recipe, list/known)
+	var/state = ""
+	for (var/list/row in research_data(viewer, recipe, known))
+		if (row["state"] == "needed")
+			return "needed"
+		if (row["state"] == "done")
+			state = "done"
+	return state
+
+/datum/crafting_atlas_presenter/tgui/proc/retired(list/recipe)
+	return map && isnum(recipe["maximum_era"]) && !recipe_age_allowed(recipe["maximum_era"])
+
+// Material recipes come in one list per map family. Keep the reader's own list
+// first; other maps' copies are only shown on request.
+/datum/crafting_atlas_presenter/tgui/proc/catalog_matches(list/matches, catalog, scope)
+	var/list/local = list()
+	var/list/other = list()
+	for (var/list/variant in matches)
+		var/kind = "[variant["kind"]]"
+		if (findtext(kind, "Material / ") != 1 || kind == "Material / [catalog]")
+			local += list(variant)
+		else
+			other += list(variant)
+	if (scope == "all")
+		return local + other
+	return local
+
+/datum/crafting_atlas_presenter/tgui/proc/has_local(list/matches, catalog)
+	if (!matches.len)
+		return FALSE
+	var/list/first = matches[1]
+	var/kind = "[first["kind"]]"
+	return findtext(kind, "Material / ") != 1 || kind == "Material / [catalog]"
+
+/datum/crafting_atlas_presenter/tgui/proc/search_words(datum/crafting_atlas_reference/reference, query)
+	var/list/words = list()
+	for (var/word in splittext(reference.search_text(query), " "))
+		if (word && words.len < 6)
+			words += word
+	return words
+
+// Every word must match the same variant; one word keeps the original matching.
+/datum/crafting_atlas_presenter/tgui/proc/search_variants(datum/crafting_atlas_reference/reference, list/recipe, list/words)
+	var/list/matches = reference.matching_variants(recipe, words.len ? words[1] : "")
+	for (var/i in 2 to words.len)
+		if (!matches.len)
+			break
+		var/list/also = reference.matching_variants(recipe, words[i])
+		var/list/both = list()
+		for (var/list/variant in matches)
+			if (variant in also)
+				both += list(variant)
+		matches = both
+	return matches
+
+/datum/crafting_atlas_presenter/tgui/proc/all_words(text, list/words)
+	for (var/word in words)
+		if (!findtext(text, word))
+			return FALSE
+	return TRUE
+
+/datum/crafting_atlas_presenter/tgui/proc/search_resources(datum/crafting_atlas_reference/reference, list/words)
+	var/list/exact = list()
+	var/list/other = list()
+	if (!words.len)
+		return exact
+	if (!islist(resource_search))
+		resource_search = list()
+		for (var/id in reference.resources)
+			var/list/resource = reference.resources[id]
+			if (islist(resource))
+				resource_search[id] = reference.search_text("[resource["title"]] [resource["name"]] [id]")
+	var/phrase = jointext(words, " ")
+	for (var/id in resource_search)
+		if (!all_words(resource_search[id], words))
+			continue
+		if (reference.search_text(display_name(reference, id)) == phrase)
+			exact += id
+		else
+			other += id
+	return exact + other
+
+/datum/crafting_atlas_presenter/tgui/proc/amounts(datum/crafting_atlas_reference/reference, list/resources)
+	var/list/parts = list()
+	for (var/list/resource in resources)
+		// Gathering routes carry notes such as "conditional" instead of a count.
+		var/quantity = "[resource["quantity"]]"
+		var/name = display_name(reference, resource["id"], resource["name"])
+		parts += isnum(text2num(quantity)) ? "[quantity] x [name]" : name
+	return jointext(parts, ", ")
+
+/datum/crafting_atlas_presenter/tgui/proc/row_data(datum/crafting_atlas_reference/reference, mob/viewer, list/recipe, list/choice, catalog, list/matches, list/known)
+	var/list/row = list("id" = choice["id"], "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "kind" = html_encode("[choice["kind"]]"), "variant_count" = 1, "manual_hint" = html_encode(manual_hint(viewer, choice)), "research" = research_state(viewer, recipe, known), "retired" = retired(recipe), "elsewhere" = !has_local(matches, catalog), "image" = "", "makes" = "", "needs" = html_encode(amounts(reference, recipe["inputs"])))
+	var/list/outputs = recipe["outputs"]
+	if (islist(outputs) && outputs.len)
+		var/list/product = resource_view(reference, viewer, outputs[1])
+		row["image"] = product["image"]
+		row["makes"] = html_encode(amounts(reference, outputs))
+	return row
+
+/datum/crafting_atlas_presenter/tgui/proc/recipe_data(datum/crafting_atlas_reference/reference, mob/viewer, list/group, list/matches, list/recipe, catalog, list/known)
 	var/list/inputs = list()
 	var/list/outputs = list()
 	for (var/list/ingredient in recipe["inputs"])
-		inputs += list(reference.resource_info(viewer, ingredient))
+		inputs += list(resource_view(reference, viewer, ingredient))
 	for (var/list/product in recipe["outputs"])
-		outputs += list(reference.resource_info(viewer, product))
+		outputs += list(resource_view(reference, viewer, product))
 	var/list/variants = list()
 	if (islist(group["variants"]))
 		for (var/list/variant in matches)
 			variants += list(list("id" = variant["id"], "kind" = html_encode("[variant["kind"]]"), "line" = variant["line"]))
-	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants)
+	var/station_id = station_of(reference, group)
+	var/station = station_id ? display_name(reference, station_id, recipe["processor_name"]) : ""
+	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants, "research" = research_data(viewer, recipe, known), "retired" = retired(recipe), "maximum_era" = recipe["maximum_era"], "station" = html_encode(station), "station_id" = station_id, "elsewhere" = !has_local(matches, catalog))
 
-/datum/crafting_atlas_presenter/tgui/proc/guidance_data(datum/crafting_atlas_reference/reference, resource_id)
+/datum/crafting_atlas_presenter/tgui/proc/guidance_data(datum/crafting_atlas_reference/reference, mob/viewer, resource_id)
 	var/list/all_routes = reference.catalog["acquisition"]
 	var/list/routes = islist(all_routes) ? all_routes[resource_id] : null
-	var/list/resource = reference.resources[resource_id]
-	var/name = islist(resource) && resource["name"] ? resource["name"] : resource_id
 	var/list/entries = list()
 	if (islist(routes))
 		for (var/list/route in routes)
@@ -149,21 +347,25 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 					value = jointext(value, "; ")
 				if (value)
 					details += list(list("label" = key, "value" = html_encode("[value]")))
+			var/list/steps = list()
+			if (islist(route["steps"]))
+				for (var/step in route["steps"])
+					steps += html_encode("[step]")
 			var/list/related = list()
 			for (var/field in list("inputs", "outputs"))
 				var/list/identities = route[field]
 				if (!islist(identities))
 					continue
 				for (var/id in identities)
-					var/list/info = reference.resources[id]
-					var/label = islist(info) && info["name"] ? info["name"] : id
-					related += list(list("id" = id, "name" = html_encode("[label]"), "heading" = field == "inputs" ? "Needs" : "Can provide (conditional)"))
-			entries += list(list("name" = html_encode("[route["name"]]"), "details" = details, "related" = related, "file" = route["file"], "line" = route["line"], "revision" = route["audit_commit"]))
-	return list("name" = html_encode("[name]"), "heading" = findtext("[resource_id]", "/turf/") == 1 ? "Gathering from" : "How to obtain", "routes" = entries, "more" = islist(routes) && routes.len > 12)
+					var/list/view = resource_view(reference, viewer, list("id" = id, "name" = id, "quantity" = ""))
+					related += list(list("id" = id, "name" = view["name"], "image" = view["image"], "heading" = field == "inputs" ? "Needs" : "Can provide (conditional)"))
+			entries += list(list("name" = html_encode("[route["name"]]"), "details" = details, "steps" = steps, "related" = related, "file" = route["file"], "line" = route["line"], "revision" = route["audit_commit"]))
+	var/list/view = resource_view(reference, viewer, list("id" = resource_id, "name" = resource_id, "quantity" = ""))
+	return list("id" = resource_id, "name" = view["name"], "image" = view["image"], "heading" = findtext("[resource_id]", "/turf/") == 1 ? "Gathering from" : "How to obtain", "routes" = entries, "more" = islist(routes) && routes.len > 12, "made_by" = list(), "used_in" = list(), "made_here" = list(), "made_by_count" = 0, "used_in_count" = 0, "made_here_count" = 0) + facts_data(reference, resource_id)
 
 // Family metadata is generated from reviewed public recipe/output identities.
 // Navigation still selects only canonical recipe IDs, never family IDs.
-/datum/crafting_atlas_presenter/tgui/proc/family_variants(list/members, recipe_id)
+/datum/crafting_atlas_presenter/tgui/proc/family_variants(datum/crafting_atlas_reference/reference, mob/viewer, list/members, recipe_id, catalog, list/known)
 	var/list/options = list()
 	for (var/list/member in members)
 		var/list/group = member["group"]
@@ -172,23 +374,97 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		for (var/list/variant in matches)
 			if (variant["id"] == recipe_id)
 				chosen = variant
-		var/list/products = list()
-		for (var/list/product in group["outputs"])
-			products += "[product["quantity"]] x [product["name"]]"
-		var/list/ingredients = list()
-		for (var/list/ingredient in group["inputs"])
-			ingredients += "[ingredient["quantity"]] x [ingredient["name"]]"
-		var/label = "[jointext(products, ", ")] / needs [jointext(ingredients, ", ")] / [chosen["kind"]] / [group["era_label"]] (line [chosen["line"]])"
-		options += list(list("id" = chosen["id"], "label" = html_encode(label)))
+		var/label = "[amounts(reference, group["inputs"])] makes [amounts(reference, group["outputs"])]"
+		options += list(list("id" = chosen["id"], "label" = html_encode(label), "needs" = html_encode(amounts(reference, group["inputs"])), "makes" = html_encode(amounts(reference, group["outputs"])), "kind" = html_encode("[chosen["kind"]]"), "era_label" = html_encode("[group["era_label"]]"), "line" = chosen["line"], "research" = research_state(viewer, group, known), "elsewhere" = !has_local(matches, catalog)))
 	return options
 
-/datum/crafting_atlas_presenter/tgui/proc/model(datum/crafting_atlas_reference/reference, mob/viewer, query = "", page = 1, resource_id = "", legacy = FALSE, era = "", processor = "", recipe_id = "")
+/datum/crafting_atlas_presenter/tgui/proc/era_allows(list/recipe, era)
+	var/list/eras = recipe["unlock_eras"]
+	if (era == "unknown")
+		if (islist(eras) && eras.len)
+			return FALSE
+	else if (era == "multiple")
+		if (!islist(eras) || eras.len < 2)
+			return FALSE
+	else if (era && (!islist(eras) || !isnum(text2num(era)) || !(text2num(era) in eras)))
+		return FALSE
+	return TRUE
+
+// A resource page lists the recipes that make and use exactly that resource,
+// instead of a text search for its type path.
+/datum/crafting_atlas_presenter/tgui/proc/resource_model(datum/crafting_atlas_reference/reference, mob/viewer, list/data, resource_id, recipe_id, catalog, scope, list/known)
+	var/list/guidance = guidance_data(reference, viewer, resource_id)
+	var/list/made_by = list()
+	var/list/used_in = list()
+	var/list/made_here = list()
+	var/made = 0
+	var/used = 0
+	var/hosted = 0
+	var/list/first
+	var/list/first_group
+	var/list/first_matches
+	var/hidden = 0
+	var/list/selected
+	var/list/selected_group
+	var/list/selected_matches
+	for (var/list/recipe in reference.recipes)
+		var/makes = FALSE
+		var/uses = FALSE
+		for (var/list/product in recipe["outputs"])
+			if (product["id"] == resource_id)
+				makes = TRUE
+		for (var/list/ingredient in recipe["inputs"])
+			if (ingredient["id"] == resource_id)
+				uses = TRUE
+		var/hosts = station_of(reference, recipe) == resource_id
+		if (!makes && !uses && !hosts)
+			continue
+		var/list/matches = catalog_matches(reference.matching_variants(recipe, ""), catalog, scope)
+		if (!matches.len)
+			hidden++
+			continue
+		var/list/choice = reference.variant_record(recipe, matches, recipe_id)
+		if (choice["id"] == recipe_id)
+			selected = choice
+			selected_group = recipe
+			selected_matches = matches
+		if (makes && ++made <= 60)
+			made_by += list(row_data(reference, viewer, recipe, choice, catalog, matches, known))
+		if (uses && ++used <= 60)
+			used_in += list(row_data(reference, viewer, recipe, choice, catalog, matches, known))
+		if (hosts && ++hosted <= 60)
+			made_here += list(row_data(reference, viewer, recipe, choice, catalog, matches, known))
+		// An item page opens on how to make the item, without a second click.
+		if (makes && !first)
+			first = choice
+			first_group = recipe
+			first_matches = matches
+	guidance["made_by"] = made_by
+	guidance["used_in"] = used_in
+	guidance["made_by_count"] = made
+	guidance["used_in_count"] = used
+	guidance["made_here"] = made_here
+	guidance["made_here_count"] = hosted
+	data["guidance"] = guidance
+	data["query"] = ""
+	data["hidden_count"] = hidden
+	if (!selected && first)
+		selected = first
+		selected_group = first_group
+		selected_matches = first_matches
+	if (selected)
+		data["detail"] = recipe_data(reference, viewer, selected_group, selected_matches, selected, catalog, known)
+	return data
+
+/datum/crafting_atlas_presenter/tgui/proc/model(datum/crafting_atlas_reference/reference, mob/viewer, query = "", page = 1, resource_id = "", legacy = FALSE, era = "", processor = "", recipe_id = "", scope = "")
 	query = copytext("[query]", 1, 65)
 	page = max(1, min(10000, round(page)))
-	var/list/data = list("query" = html_encode(query), "page" = page, "mode" = legacy ? "page" : "graph", "era" = era, "processor" = processor, "recipes" = list(), "resources" = list(), "entries" = list(), "detail" = null, "guidance" = null, "recipe_count" = 0, "resource_count" = 0, "previous" = FALSE, "next" = FALSE)
-	if (resource_id)
-		data["guidance"] = guidance_data(reference, resource_id)
+	var/catalog = crafting_catalog_key(viewer)
+	var/list/known = list()
+	var/list/data = list("query" = html_encode(query), "page" = page, "mode" = legacy ? "page" : "graph", "era" = era, "processor" = processor, "scope" = scope, "map_era" = map ? map.ordinal_age : null, "recipes" = list(), "resources" = list(), "entries" = list(), "detail" = null, "guidance" = null, "recipe_count" = 0, "resource_count" = 0, "hidden_count" = 0, "previous" = FALSE, "next" = FALSE)
 	if (legacy)
+		if (resource_id)
+			data["guidance"] = guidance_data(reference, viewer, resource_id)
 		var/first = (page - 1) * 12 + 1
 		var/matched = 0
 		var/shown = 0
@@ -202,83 +478,121 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 				continue
 			shown++
 			var/list/recipe = reference.variant_record(group, matches, recipe_id)
-			entries += list(recipe_data(reference, viewer, group, matches, recipe))
+			entries += list(recipe_data(reference, viewer, group, matches, recipe, catalog, known))
 		data["entries"] = entries
 		data["recipe_count"] = matched
 		data["previous"] = page > 1
 		data["next"] = matched > first + 11
 		return data
-	var/list/resource_matches = reference.matching_resources(query)
+	if (resource_id)
+		return resource_model(reference, viewer, data, resource_id, recipe_id, catalog, scope, known)
+	var/list/words = search_words(reference, query)
+	var/list/resource_matches = search_resources(reference, words)
 	var/list/resource_rows = list()
 	for (var/id in resource_matches)
 		if (resource_rows.len >= 150)
 			break
-		var/list/resource = reference.resources[id]
-		var/name = resource["name"] ? resource["name"] : id
-		resource_rows += list(list("id" = id, "name" = html_encode("[name]")))
+		var/list/view = resource_view(reference, viewer, list("id" = id, "name" = id, "quantity" = ""))
+		resource_rows += list(list("id" = id, "name" = view["name"], "image" = view["image"]))
 	data["resources"] = resource_rows
 	data["resource_count"] = resource_matches.len
-	var/list/index = list()
-	var/list/selected
-	var/list/selected_group
-	var/list/selected_matches
-	var/selected_family
-	var/list/family_rows = list()
+	// Recipes whose own name matches come first, then ingredient and note matches.
+	var/phrase = jointext(words, " ")
+	var/list/exact = list()
+	var/list/named = list()
+	var/list/other = list()
 	var/list/family_members = list()
+	var/selected_family
 	var/matched = 0
 	var/recipe_matches = 0
+	var/hidden = 0
 	for (var/list/recipe in reference.recipes)
-		var/list/matches = reference.matching_variants(recipe, query)
+		var/list/matches = search_variants(reference, recipe, words)
 		if (!matches.len)
 			continue
 		if (processor && recipe["processor"] != processor)
 			continue
-		var/list/eras = recipe["unlock_eras"]
-		if (era == "unknown")
-			if (islist(eras) && eras.len)
-				continue
-		else if (era == "multiple")
-			if (!islist(eras) || eras.len < 2)
-				continue
-		else if (era && (!islist(eras) || !isnum(text2num(era)) || !(text2num(era) in eras)))
+		if (!era_allows(recipe, era))
+			continue
+		matches = catalog_matches(matches, catalog, scope)
+		if (!matches.len)
+			hidden++
 			continue
 		recipe_matches++
-		var/list/choice = reference.variant_record(recipe, matches, recipe_id)
 		var/family = recipe["family_id"] ? recipe["family_id"] : "recipe_[recipe["id"]]"
-		var/list/row = family_rows[family]
-		if (!islist(row))
-			matched++
-			row = list("id" = choice["id"], "family_id" = family, "name" = html_encode("[recipe["name"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "variant_count" = 0, "manual_hint" = html_encode(manual_hint(viewer, choice)))
-			family_rows[family] = row
-			family_members[family] = list()
-			if (matched <= 150)
-				index += list(row)
-		// Families may contain both basic/known and unknown variants. Only grey
-		// the whole family if every matching route needs a personal manual.
-		var/choice_hint = html_encode(manual_hint(viewer, choice))
-		if (!choice_hint)
-			row["manual_hint"] = ""
-		else if (row["manual_hint"] && row["manual_hint"] != choice_hint)
-			row["manual_hint"] = "Needs a manual; select a variant for details"
-		row["variant_count"]++
-		if (row["era_label"] != html_encode("[recipe["era_label"]]"))
-			row["era_label"] = "Multiple unlock eras"
 		var/list/members = family_members[family]
+		if (!islist(members))
+			matched++
+			members = list()
+			family_members[family] = members
+			var/recipe_name = reference.search_text("[recipe["name"]]")
+			if (words.len && recipe_name == phrase)
+				exact += family
+			else if (words.len && all_words(recipe_name, words))
+				named += family
+			else
+				other += family
 		members += list(list("group" = recipe, "matches" = matches))
-		if (!selected || choice["id"] == recipe_id)
-			selected = choice
-			selected_group = recipe
-			selected_matches = matches
-			selected_family = family
-			row["id"] = choice["id"]
+		for (var/list/variant in matches)
+			if (recipe_id && variant["id"] == recipe_id)
+				selected_family = family
+	var/list/order = exact + named + other
+	if (!selected_family && order.len)
+		selected_family = order[1]
+	var/list/index = list()
+	for (var/family in order)
+		// The index is bounded; a selected recipe past the bound stays listed.
+		if (index.len >= 150 && family != selected_family)
+			continue
+		var/list/members = family_members[family]
+		var/list/row
+		for (var/list/member in members)
+			var/list/group = member["group"]
+			var/list/matches = member["matches"]
+			var/list/choice = reference.variant_record(group, matches, recipe_id)
+			var/list/entry = row_data(reference, viewer, group, choice, catalog, matches, known)
+			if (!row)
+				row = entry
+				row["family_id"] = family
+				row["variant_count"] = 0
+			else
+				// Families may mix researched and unresearched routes. Grey the
+				// family only when every matching route is out of reach.
+				if (!entry["manual_hint"])
+					row["manual_hint"] = ""
+				else if (row["manual_hint"] && row["manual_hint"] != entry["manual_hint"])
+					row["manual_hint"] = "Needs a manual; select a variant for details"
+				if (row["research"] == "needed")
+					row["research"] = entry["research"]
+				if (!entry["retired"])
+					row["retired"] = FALSE
+				if (!entry["elsewhere"])
+					row["elsewhere"] = FALSE
+				if (row["era_label"] != entry["era_label"])
+					row["era_label"] = "Multiple unlock eras"
+				if (row["needs"] != entry["needs"])
+					row["needs"] = ""
+			row["variant_count"]++
+			if (choice["id"] == recipe_id)
+				row["id"] = choice["id"]
+		index += list(row)
 	data["recipes"] = index
 	data["recipe_count"] = recipe_matches
 	data["family_count"] = matched
-	if (selected)
-		var/list/detail = recipe_data(reference, viewer, selected_group, selected_matches, selected)
+	data["hidden_count"] = hidden
+	if (selected_family)
 		var/list/members = family_members[selected_family]
+		var/list/chosen_member = members[1]
+		for (var/list/member in members)
+			for (var/list/variant in member["matches"])
+				if (recipe_id && variant["id"] == recipe_id)
+					chosen_member = member
+		var/list/selected_group = chosen_member["group"]
+		var/list/selected_matches = chosen_member["matches"]
+		var/list/selected = reference.variant_record(selected_group, selected_matches, recipe_id)
+		var/list/detail = recipe_data(reference, viewer, selected_group, selected_matches, selected, catalog, known)
 		if (members.len > 1)
-			detail["family_variants"] = family_variants(members, selected["id"])
+			detail["family_variants"] = family_variants(reference, viewer, members, selected["id"], catalog, known)
 		data["detail"] = detail
 	return data
 
@@ -306,7 +620,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		if (ui.legacy_renderer)
 			crafting_atlas_tgui_presenter.open(arglist(arguments))
 		else
-			ui.push_data(crafting_atlas_tgui_presenter.model(arglist(arguments)), TRUE)
+			ui.push_data(crafting_atlas_tgui_presenter.model(arglist(arguments + ui.scope)), TRUE)
 	var/obj/item/stack/stack = using_object
 	if (istype(stack) && stack.loc == src && item_is_in_hands(stack))
 		stack.list_recipes(src)
