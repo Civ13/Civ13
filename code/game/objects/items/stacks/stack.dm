@@ -365,6 +365,10 @@
 	if (workshop_refusal)
 		to_chat(user, SPAN_WARNING(workshop_refusal))
 		return
+	var/waterwheel_refusal = waterwheel_build_refusal(user, recipe.result_type)
+	if (waterwheel_refusal)
+		to_chat(user, SPAN_WARNING(waterwheel_refusal))
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
@@ -1756,6 +1760,11 @@
 		if (late_workshop_refusal)
 			to_chat(user, SPAN_WARNING(late_workshop_refusal))
 			return
+		// The builder may have turned or moved during the wait.
+		var/late_waterwheel_refusal = waterwheel_build_refusal(user, recipe.result_type)
+		if (late_waterwheel_refusal)
+			to_chat(user, SPAN_WARNING(late_waterwheel_refusal))
+			return
 		if (press_construction && !press_construction.valid())
 			return
 		if (H && !joinery && !carving && !cloth_payment)
@@ -1893,6 +1902,12 @@
 			O = new recipe.result_type(user.loc)
 		if (offer_stone_hatchet)
 			offer_crafted_axe_to_active_hand(user, O)
+
+		if (istype(O, /obj/structure/civ_generator/waterwheel))
+			var/obj/structure/civ_generator/waterwheel/WW = O
+			if (!WW.persistence_set_loc(waterwheel_build_target(user))) return FALSE
+			WW.update_icon()
+			return
 
 		if (building_floor_recipe)
 			var/obj/covers/floor = O

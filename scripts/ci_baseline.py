@@ -40,6 +40,14 @@ SUITES = {
         'paths': ('tests/smokables/',), 'shared_paths': (
             'code/game/objects/items/weapons/cigs_lighters.dm',
             'tests/save_movement/source_adapter.py')},
+    'river_flow': {'files': ('tests/river_flow/test_generation.py',),
+        'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
+        'shared_paths': ('code/modules/1713/river_flow.dm',
+                         'code/processes/river_current.dm',
+                         'code/modules/1713/machinery/renewable_generation.dm',
+                         'scripts/terrain_heights.py', 'maps/heights/',
+                         'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_europe.dmm',
+                         'maps/nomads/nomads_jungle.dmm', 'maps/nomads/nomads_asia.dmm')},
     'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
             'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
