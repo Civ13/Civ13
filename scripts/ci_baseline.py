@@ -977,6 +977,10 @@ SUITES = {
                                   'tests/stone_kiln/test_source.py'), 'paths': (
         'tests/stone_boiling/', 'tests/stone_kiln/',
         'code/modules/persistence/functions.dm')},
+    'lipstick_restore': {'files': ('tests/lipstick_restore/test_restore.py',),
+        'paths': ('tests/lipstick_restore/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cosmetics.dm',
+            'code/modules/persistence/restore_contract.dm', 'tests/save_movement/source_adapter.py')},
     'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/functions.dm')},
     # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
