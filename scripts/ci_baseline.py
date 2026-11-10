@@ -211,6 +211,12 @@ SUITES = {
                          'code/modules/1713/factory_chemistry.dm',
                          'code/modules/1713/factory_pipes.dm',
                          'tests/save_movement/source_adapter.py')},
+    # Production movement teardown projected with inert registries; no native world.
+    'vehicle_component_teardown': {'files': ('tests/boat_movement/test_component_ownership.py',),
+        'paths': ('tests/boat_movement/',), 'shared_paths': (
+            'code/modules/1713/machinery/modular_vehicles/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/ships/movement.dm',
+            'tests/save_movement/source_adapter.py')},
     # Explosion remains above the ground: production wiring and map level audit.
     'vehicle_hull_damage': {'files': ('tests/vehicle_hull_damage/test_contract.py',),
         'paths': ('tests/vehicle_hull_damage/',), 'shared_paths': (

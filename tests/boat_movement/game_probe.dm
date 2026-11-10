@@ -1,3 +1,4 @@
+#include "component_ownership.dm"
 // Test-only overlay loaded by run-game.ps1; excluded from the production dme.
 // Uses real hulls, masts, passengers, forceMove callbacks and boat procedures.
 // ChangeTurf initialization can call Entered(null) on this checkout. This adapter
@@ -325,6 +326,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 			save_result()
 			del(world)
 			return
+		test_component_ownership()
 		// A built, unlinked ship frame (and the walls on it) cannot be pulled away.
 		var/obj/structure/vehicleparts/frame/ship/steel/loose = new(locate(50,40,1))
 		var/mob/living/human/puller = new(locate(51,40,1))
