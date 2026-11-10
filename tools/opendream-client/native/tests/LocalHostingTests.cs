@@ -157,6 +157,11 @@ static class LocalHostingTests {
         host = LocalHosting.Load(launcher)!;
         Require(host.Control?.Group is { } grouped && grouped.Config == groupConfig && grouped.ShardScript == shard && grouped.Deploy == deploy && grouped.RestartHost == restartHost,
             "control.group not read");
+        Require(LocalHosting.GroupStep(host.Control!, "fresh-world", "gaia", null, "gaia").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "fresh-world", "--region", "gaia", "--confirm-region", "gaia" }), "fresh world explicit region confirmation argv");
+        foreach (var (selected, confirmation) in new (string?, string?)[] { (null, null), ("gaia", null), ("gaia", "deep"), ("gaia", "GAIA") })
+            try { LocalHosting.GroupStep(host.Control!, "fresh-world", selected, null, confirmation); throw new Exception("unsafe fresh world accepted"); } catch (ArgumentException) { assertions++; }
+        try { LocalHosting.GroupStep(host.Control!, "start", "gaia", null, "gaia"); throw new Exception("confirmation on ordinary start accepted"); } catch (ArgumentException) { assertions++; }
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));

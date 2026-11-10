@@ -105,6 +105,7 @@ SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', '
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                                     'tests/gaia_host/test_fresh_world.py',
                                      'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
                                      'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})

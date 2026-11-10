@@ -428,3 +428,9 @@ The launcher's **Player help** tab shows this status for every region and has St
 Run only one supervisor per region: a bridge started some other way still holds
 the region's lock, so the host service leaves it alone, but it is not restarted
 when it exits and ignores the stop file until it is ended.
+
+## Fresh world (unlinked regions)
+
+The launcher offers a recoverable, exact-region-confirmed fresh-world action for
+stopped unlinked regions. Connected transfers and separate extraction persistence
+are refused. See [scope, recovery and coordinated-reset plan](../../docs/launcher-fresh-world.md).
