@@ -36,6 +36,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
+        'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
+            'code/game/objects/buckling.dm',
+            'code/game/objects/structures/transports.dm')},
     'paint_buckets': {'files': ('tests/paint_buckets/test_colors.py',),
         'paths': ('tests/paint_buckets/',), 'shared_paths': (
             'code/game/objects/items/weapons/paint.dm',
