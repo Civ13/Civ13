@@ -316,7 +316,7 @@ SUITES = {
         'paths': ('tests/tdm_map_vote/',), 'shared_paths': ('code/processes/mapswap.dm',)},
     # Windows scheduled-task host control with a fake machine; no BYOND runtime.
     'gaia_host': {'files': ('tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
-                                     'tests/gaia_host/test_fresh_world.py',
+                           'tests/gaia_host/test_fresh_world.py',
                            'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
                            'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'),
         'paths': ('tests/gaia_host/', 'scripts/gaia-host/', 'scripts/shard-group/', 'scripts/windows/host/'),

@@ -1,4 +1,5 @@
 """Offline fixture-only fresh-world transaction tests; never start a real server."""
+import io
 import json
 from pathlib import Path
 import sys
@@ -137,6 +138,27 @@ class FreshWorldTests(unittest.TestCase):
         with mock.patch.object(host, 'do_start') as start: host.work('fresh-world', result['operation'])
         start.assert_not_called()
         self.assertTrue((host.repo / 'map_saves/fixture').exists())
+
+    def test_fresh_cli_answer_is_ok_for_the_launcher(self):
+        # LocalHosting.ParseGroup treats an answer without "ok" as "the group script gave no answer".
+        host = self.host()
+        out = io.StringIO()
+        with mock.patch.object(shard_group, 'hosts', return_value=[({'id': 'gaia'}, host)]), mock.patch('sys.stdout', out):
+            code = shard_group.main(['--config', str(self.path), 'fresh-world', '--region', 'gaia', '--confirm-region', 'gaia'])
+        answer = json.loads(out.getvalue())
+        self.assertEqual(0, code)
+        self.assertIs(True, answer['ok'])
+        self.assertEqual(['gaia'], list(answer['accepted']))
+        self.assertEqual('fresh-world', answer['accepted']['gaia']['action'])
+
+    def test_fresh_cli_mismatched_confirmation_refused(self):
+        self.write_group()
+        out = io.StringIO()
+        with mock.patch('sys.stdout', out):
+            code = shard_group.main(['--config', str(self.path), 'fresh-world', '--region', 'gaia', '--confirm-region', 'deep'])
+        self.assertEqual(1, code)
+        self.assertIs(False, json.loads(out.getvalue())['ok'])
+        self.assertEqual(self.machine.detached, [])
 
 
 if __name__ == '__main__':

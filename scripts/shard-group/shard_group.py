@@ -2151,16 +2151,15 @@ def main(argv=None):
     if not args.action:
         parser.error('an action is required')
     try:
+        if args.action in ('setup', 'update'):
+            fetch_remote(group)
         if args.action == 'fresh-world':
             if not args.region or args.confirm_region != args.region:
                 raise Refused('fresh-world requires one --region and matching --confirm-region')
-            selected = list(hosts(group, args.region))
-            result = {'accepted': {h.config['region']: fresh_world.request(h, args.confirm_region) for _, h in selected}}
-            print(json.dumps(result))
-            return 0
-        if args.action in ('setup', 'update'):
-            fetch_remote(group)
-        if args.action == 'setup':
+            # The launcher reads the same {"accepted": ..., "ok": true} answer as start (LocalHosting.ParseGroup).
+            result = {'accepted': {region['id']: fresh_world.request(host, args.confirm_region)
+                                   for region, host in hosts(group, args.region)}, 'refused': {}}
+        elif args.action == 'setup':
             result = setup(group, region_id=args.region)
         elif args.action == 'enrol':
             if not args.region:

@@ -76,6 +76,7 @@ def request(host, confirmation):
         raise Refused('another action is still running')
     try:
         check(host)
+        host.state_file.unlink(missing_ok=True)  # as Host.request: no fields left over from the previous action
         host.record(action='fresh-world', operation=operation, phase='accepted', error=None, archive=None, validation=None)
         host.platform.detach([host.config['python'], '-I', '-B', str(host.script), '--config',
                               host.config['_path'], '--worker', 'fresh-world', operation])
