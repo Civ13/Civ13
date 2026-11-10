@@ -1097,6 +1097,10 @@ SUITES = {
                                 'tests/fishing_stock/test_native_runner.py',
                                 'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Source-only candidate inventory fixtures; no compiler or native execution.
+    'atlas_entity_inventory': {'files': ('tests/atlas_entity_inventory/test_inventory.py',), 'paths': (
+        'tests/atlas_entity_inventory/', 'scripts/atlas/entity_inventory.py'),
+        'shared_paths': ('scripts/atlas/facts.py', 'scripts/atlas/families.py')},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
