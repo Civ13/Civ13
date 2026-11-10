@@ -36,6 +36,9 @@
 	//If the user is holding dummy armor, equips the dummy(not target) with it and increases it's health.
 	if (istype(W, /obj/item/weapon/dummy_armor))
 		if(src.humanoid)
+			if (icon_state == "target_dummy_armor")
+				to_chat(user, "<span class='notice'>This dummy is already armored.</span>")
+				return
 			visible_message("<span class='notice'>[user] put [W] on \the [src]!</span>","<span class='notice'>You put [W] on \the [src]!</span>")
 			src.icon_state = icon_state + "_armor"
 			src.health += 200
