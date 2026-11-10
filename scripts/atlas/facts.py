@@ -11,7 +11,8 @@ HEADER = re.compile(r'^(/[\w/]+)[ \t]*(?://.*)?$')
 VALUE = re.compile(r'^\t(?:var/(?:[a-z_]+/)*)?(\w+)[ \t]*=[ \t]*(.+)$')
 WANTED = {'name', 'desc', 'description', 'taste_description', 'id', 'w_class', 'slot_flags', 'force', 'throwforce',
           'sharp', 'edge', 'armor', 'caliber', 'nutriment_amt', 'storage_slots', 'max_storage_space', 'max_amount',
-          'slowdown', 'health', 'maxHealth', 'body_parts_covered'}
+          'slowdown', 'health', 'maxHealth', 'body_parts_covered', 'hardness', 'weight', 'default_material',
+          'force_divisor', 'thrown_force_divisor', 'unwielded_force_divisor'}
 SIZES = {'ITEM_SIZE_TINY': 'Tiny', 'ITEM_SIZE_SMALL': 'Small', 'ITEM_SIZE_NORMAL': 'Normal', 'ITEM_SIZE_LARGE': 'Large',
          'ITEM_SIZE_HUGE': 'Huge', 'ITEM_SIZE_GARGANTUAN': 'Gargantuan', '1': 'Tiny', '2': 'Small', '3': 'Normal',
          '4': 'Large', '5': 'Huge', '6': 'Gargantuan'}
@@ -28,7 +29,8 @@ KINDS = (('/obj/item/weapon/reagent_containers/food/drinks', 'Drink'), ('/obj/it
          ('/obj/item/stack/medical', 'Medical supply'), ('/obj/item/stack/farming/seeds', 'Seeds'),
          ('/obj/item/stack/material', 'Material'), ('/obj/item/stack/ore', 'Ore'), ('/obj/item/stack', 'Stackable item'),
          ('/obj/item/weapon/material', 'Tool or weapon'), ('/obj/item/weapon/reagent_containers', 'Container'),
-         ('/obj/item/weapon/storage', 'Storage'), ('/obj/item', 'Item'), ('/obj/structure', 'Structure'),
+         ('/obj/item/weapon/storage', 'Storage'), ('/obj/item', 'Item'), ('/obj/structure/wild', 'Natural feature'),
+         ('/obj/structure/oil_spring', 'Natural feature'), ('/obj/structure', 'Structure'),
          ('/obj/covers', 'Floor or wall'), ('/mob', 'Animal'), ('/turf', 'Terrain'))
 
 
@@ -61,6 +63,8 @@ def declared(files):
             header = HEADER.match(line)
             if header:
                 current = None if re.search(r'/(proc|verb)(/|$)', header[1]) else types.setdefault(header[1], {})
+            elif line[:2] == '//':
+                continue  # a commented-out line does not end the block
             elif line[:1] not in ('\t', ' ', ''):
                 current = None
             elif current is not None:
@@ -95,7 +99,7 @@ def prose(value):
 
 def number(value):
     try:
-        result = float(value)
+        result = float({'TRUE': 1, 'FALSE': 0}.get(value, value))
     except (TypeError, ValueError):
         return None
     return int(result) if result == int(result) else round(result, 2)
@@ -116,7 +120,52 @@ def kind(resource, typepath):
     return next((label for prefix, label in KINDS if typepath.startswith(prefix)), 'Item')
 
 
-def stats(types, typepath):
+def material_damage(types, typepath, materials):
+    """Damage rows for a material tool: the game derives them from what it is made of.
+
+    Mirrors /obj/item/weapon/material/update_force() at normal crafting quality:
+    a blade uses the material's hardness, anything else its weight, and DM's
+    one-argument round() rounds down.
+    """
+    def get(name):
+        return inherited(types, typepath, name)
+    kinds = {prose(values.get('name')): path for path, values in sorted(types.items(), reverse=True)
+             if path.startswith('/material/') and prose(values.get('name'))}
+    default = prose(get('default_material'))
+    names = [name for name in dict.fromkeys(materials or [default]) if name in kinds]
+    divisor, thrown = number(get('force_divisor')), number(get('thrown_force_divisor'))
+    if not names or divisor is None or thrown is None:
+        return []
+    bladed = any(get(name) in ('TRUE', '1') for name in ('sharp', 'edge'))
+    twohanded = typepath.startswith('/obj/item/weapon/material/twohanded')
+    unwielded = number(get('unwielded_force_divisor')) if twohanded else None
+    if twohanded and unwielded is None:
+        return []
+    melee, throws = [], []
+    for name in names:
+        hardness = number(inherited(types, kinds[name], 'hardness'))
+        weight = number(inherited(types, kinds[name], 'weight'))
+        if hardness is None or weight is None:
+            return []
+        force = int((hardness if bladed else weight) * divisor)
+        if twohanded:
+            one_hand = int(force * unwielded)
+            melee.append((name, f'{one_hand} in one hand, {force} in two'))
+            throws.append((name, str(int(one_hand * thrown))))
+        else:
+            melee.append((name, str(force)))
+            throws.append((name, str(int(weight * thrown))))
+
+    def shown(values):
+        values = [(name, value) for name, value in values if not value.startswith('0')]
+        return '; '.join(f'{name} {value}' for name, value in values[:8])
+    rows = [[label, shown(values)] for label, values in (('Melee damage', melee), ('Thrown damage', throws)) if shown(values)]
+    if rows and not twohanded:
+        rows.append(['Quality', 'well-made pieces hit harder, up to double'])
+    return rows
+
+
+def stats(types, typepath, materials=None):
     rows = []
 
     def get(name):
@@ -134,12 +183,14 @@ def stats(types, typepath):
         shown = ', '.join(f'{key} {amount}' for key, amount in parts if amount)
         if shown:
             rows.append(['Armor', shown])
-    # Material tools take their damage from what they are made of.
+    # Material tools take their damage from what they are made of; see material_damage().
     if item and not typepath.startswith(('/obj/item/weapon/material', '/obj/item/clothing')):
         for name, label in (('force', 'Melee damage'), ('throwforce', 'Thrown damage')):
             amount = number(get(name))
             if amount and amount > 0:
                 rows.append([label, str(amount)])
+    if typepath.startswith('/obj/item/weapon/material'):
+        rows += material_damage(types, typepath, materials)
     if item:
         edges = [label for name, label in (('sharp', 'sharp'), ('edge', 'edged')) if get(name) in ('TRUE', '1')]
         if edges:
@@ -169,9 +220,51 @@ def stats(types, typepath):
     return rows
 
 
-def resource_facts(files, resource_types):
-    """Return {resource id: {'kind', 'desc'?, 'stats'?}} for {resource id: DM type or reagent id}."""
+HOLDER = re.compile(r'^(/obj/(?:item|structure)[\w/]*?)(/New\(.*\))?[ \t]*(?://.*)?$')
+ADDED = re.compile(r'\breagents\.add_reagent\("(\w+)"')
+LISTED = re.compile(r'"(\w+)"[ \t]*=[ \t]*\d')
+
+
+def reagent_holders(files):
+    """{reagent id: [item types that start with it inside]} from New() bodies and reagent-list declarations."""
+    holders = {}
+    for path in sorted(files):
+        if not path.endswith('.dm'):
+            continue
+        current = None
+        constructor = False
+        for line in files[path].split('\n'):
+            line = line.rstrip('\r')
+            header = HOLDER.match(line)
+            nested = re.match(r'\t(?:(?:proc|verb)/)?(\w+)\(.*\)[ \t]*(?://.*)?$', line)
+            if header:
+                current, constructor = header[1], bool(header[2])
+            elif line[:2] == '//':
+                continue
+            elif line[:1] not in ('\t', ' ', ''):
+                current = None
+            elif current and nested:
+                constructor = nested[1] == 'New'  # New() written inside the type block
+            elif current:
+                found = ADDED.findall(line) if constructor else \
+                    LISTED.findall(line) if re.match(r'\t(?:var/)?(?:list/)?\w*reagents\w*[ \t]*=[ \t]*list\(', line) else []
+                for reagent in found:
+                    holders.setdefault(reagent, set()).add(current)
+    return {reagent: sorted(found) for reagent, found in holders.items()}
+
+
+def resource_facts(files, resource_types, made_from=None):
+    """Return {resource id: {'kind', 'desc'?, 'stats'?, 'found_in'?}} for {resource id: DM type or reagent id}.
+
+    made_from maps a resource id to the material names its recipes use, so a
+    material tool lists its damage for each of them.
+    """
     types = declared(files)
+    holders = reagent_holders(files)
+    parents = {}
+    for typepath in types:
+        parents[typepath.rsplit('/', 1)[0]] = parents.get(typepath.rsplit('/', 1)[0], 0) + 1
+    listed = {typepath: resource for resource, typepath in sorted(resource_types.items(), reverse=True)}
     reagents = {}
     for typepath, values in types.items():
         if typepath.startswith('/datum/reagent') and prose(values.get('id')):
@@ -181,12 +274,19 @@ def resource_facts(files, resource_types):
         entry = {'kind': kind(resource, typepath)}
         if typepath.startswith('/'):
             text = prose(inherited(types, typepath, 'desc'))
-            rows = stats(types, typepath)
+            rows = stats(types, typepath, (made_from or {}).get(resource))
         else:
             reagent = reagents.get(typepath, '')
             text = prose(inherited(types, reagent, 'description')) if reagent else ''
             taste = prose(inherited(types, reagent, 'taste_description')) if reagent else ''
             rows = [['Taste', taste]] if taste else []
+            # Items in the catalog come first so the reader can open them.
+            inside = sorted(holders.get(typepath, ()), key=lambda found: (found not in listed, found.count('/'), found))
+            inside = [[listed.get(found, found), prose(inherited(types, found, 'name'))] for found in inside]
+            # A broad parent type ("snack") is a category, not a thing to go and find.
+            inside = [pair for pair in inside if pair[0] in resource_types or (pair[1] and parents.get(pair[0], 0) < 10)][:8]
+            if inside:
+                entry['found_in'] = inside
         if text:
             entry['desc'] = text
         if rows:
