@@ -97,7 +97,7 @@ def main():
         shutil.copytree(ROOT / 'config/names', evidence / 'config/names')
         (evidence / 'config/config.txt').write_text('# Offline train body capture fixture\n', encoding='utf-8')
         daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-        runtime = subprocess.run([str(daemon), PREFIX + '.dmb', '-invisible', '-close', '-trusted',
+        runtime = subprocess.run([str(daemon), PREFIX + '.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted',
                                   '-params', 'tested_commit=' + head, '-log', 'runtime.log'],
                                  cwd=evidence, capture_output=True, timeout=120, creationflags=flags)
         (evidence / 'daemon.log').write_bytes(runtime.stdout + runtime.stderr)

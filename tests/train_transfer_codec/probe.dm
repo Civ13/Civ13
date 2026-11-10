@@ -81,6 +81,40 @@ var/global/train_codec_runtime_error = FALSE
 	var/list/bad_material = islist(bed_state) ? bed_state.Copy() : list()
 	bad_material["material"] = "not-a-real-material"
 	train_codec_check("unknown_material_refused", !train_transfer_structure_state_valid(B.type, bad_material))
+/proc/train_codec_baseline_probe()
+	var/obj/structure/closet/crate/C = new(locate(4, 4, 1))
+	for(var/key in list("paths", "climbers"))
+		var/list/values = C.vars[key]
+		values += "custom"
+		train_codec_check("active_[key]_refused", !train_transfer_structure_state(C))
+		values.Cut()
+	var/obj/structure/closet/crate/other = new(locate(5, 5, 1))
+	C.vis_contents += other
+	train_codec_check("vis_contents_refused", !train_transfer_structure_state(C))
+	train_codec_check("vis_locs_refused", !train_transfer_structure_state(other))
+	C.vis_contents.Cut()
+	C.underlays += image(C.icon, "custom")
+	train_codec_check("underlays_refused", !train_transfer_structure_state(C))
+	C.underlays.Cut()
+	C.animate_movement = 1
+	train_codec_check("animation_refused", !train_transfer_structure_state(C))
+	C.animate_movement = 2
+	C.vars["override"] = 1
+	train_codec_check("override_refused", !train_transfer_structure_state(C))
+	C.vars["override"] = 0
+	C.transform = matrix(2, 0, 0, 0, 1, 0)
+	train_codec_check("transform_refused", !train_transfer_structure_state(C))
+	C.transform = matrix()
+	C.filters += filter(type="blur", size=1)
+	train_codec_check("filters_refused", !train_transfer_structure_state(C))
+	C.filters = null
+	C.overlays += image(C.icon, "custom")
+	train_codec_check("crate_overlay_refused", !train_transfer_structure_state(C))
+	C.overlays.Cut()
+	train_codec_check("baseline_restored_admitted", islist(train_transfer_structure_state(C)))
+	var/obj/structure/bed/B = new(locate(7, 7, 1))
+	B.overlays += image(B.icon, "custom")
+	train_codec_check("custom_bed_overlay_refused", !train_transfer_structure_state(B))
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -91,6 +125,7 @@ var/global/train_codec_runtime_error = FALSE
 	GLOB.destroyed_event = new
 	try
 		train_codec_probe()
+		train_codec_baseline_probe()
 	catch(var/exception/E)
 		train_codec_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

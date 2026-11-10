@@ -59,6 +59,43 @@
 			return FALSE
 	return TRUE
 
+// Re-created constructor defaults are not transferable custom state. Admit
+// only exact inert values; unknown fields and any active relationship refuse.
+/proc/train_transfer_structure_baseline(obj/structure/A, key)
+	var/value = A.vars[key]
+	switch(key)
+		if("paths", "climbers", "vis_contents", "vis_locs", "underlays")
+			return islist(value) && !length(value)
+		if("animate_movement")
+			return value == 2 && value == initial(A.animate_movement)
+		if("override")
+			return isnum(value) && value == 0
+		if("transform")
+			var/matrix/M = value
+			return istype(M) && M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0
+		if("filters")
+			return !length(A.filters)
+		if("overlays")
+			if(A.type != /obj/structure/bed) return !length(A.overlays)
+			// Only the base bed's production update_icon projection is audited.
+			// Chairs use distinct renderers and remain fail-closed if nonempty.
+			var/obj/structure/bed/B = A
+			if(!istype(B.material, /material)) return FALSE
+			var/list/expected = list()
+			var/image/base = image('icons/obj/bed_chair.dmi', B.base_icon)
+			if(B.applies_material_colour) base.color = B.material.icon_colour
+			expected += base.appearance
+			if(B.padding_material)
+				if(!istype(B.padding_material, /material)) return FALSE
+				var/image/padding = image(B.icon, "[B.base_icon]_padding")
+				padding.color = B.padding_material.icon_colour
+				expected += padding.appearance
+			if(B.overlays.len != expected.len) return FALSE
+			for(var/i = 1, i <= expected.len, i++)
+				if(B.overlays[i] != expected[i]) return FALSE
+			return TRUE
+	return FALSE
+
 /proc/train_transfer_structure_state(obj/structure/A)
 	if(!A || QDELETED(A) || A.buckled_mob) return null
 	var/list/fields = train_transfer_structure_fields(A.type)
@@ -68,7 +105,7 @@
 		if(C.breakout) return null
 	var/list/ignored = list("train_transfer_id", "train_transfer_journey", "train_transfer_digest", "loc", "locs", "pixloc", "contents", "x", "y", "z")
 	for(var/key in A.get_saved_vars())
-		if(!(key in fields) && !(key in ignored)) return null
+		if(!(key in fields) && !(key in ignored) && !train_transfer_structure_baseline(A, key)) return null
 	var/list/state = list()
 	for(var/key in fields)
 		if(!(key in A.vars)) return null

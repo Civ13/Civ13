@@ -37,7 +37,9 @@ var/global/train_escrow_hold_reason = null
 	if(!islist(R) || R.len != 5 || R["version"] != 1 || !istext(R["payload"]) || !istext(R["journey"]) || !(R["heading"] in cardinal) || !islist(R["centres"])) return null
 	var/list/M = train_transfer_decode(R["payload"])
 	if(!M || M["journey"] != R["journey"] || length(R["centres"]) != length(M["segments"])) return null
-	for(var/list/position in R["centres"])
+	for(var/entry in R["centres"])
+		if(!islist(entry)) return null
+		var/list/position = entry
 		if(position.len != 3) return null
 		for(var/value in position)
 			if(!isnum(value) || value < 1 || value != round(value) || value > 65535) return null

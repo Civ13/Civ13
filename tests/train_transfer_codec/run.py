@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from prepare_native import isolated_startup  # noqa: E402
 
 PREFIX = '.train_transfer_codec_ci'
-EXPECTED_CHECKS = 10
+EXPECTED_CHECKS = 22
 
 
 def replace_once(source, old, new):
@@ -94,7 +94,7 @@ def main():
         shutil.copytree(ROOT / 'config/names', evidence / 'config/names')
         (evidence / 'config/config.txt').write_text('# Offline train codec fixture\n', encoding='utf-8')
         daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-        runtime = subprocess.run([str(daemon), PREFIX + '.dmb', '-invisible', '-close', '-trusted',
+        runtime = subprocess.run([str(daemon), PREFIX + '.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted',
                                   '-params', 'tested_commit=' + head, '-log', 'runtime.log'],
                                  cwd=evidence, capture_output=True, timeout=120, creationflags=flags)
         (evidence / 'daemon.log').write_bytes(runtime.stdout + runtime.stderr)
