@@ -1548,6 +1548,7 @@
 #include "interface\skin.dmf"
 #include "code\modules\1713\animal_harvest.dm"
 #include "code\modules\1713\harvest_skills.dm"
+#include "code\modules\1713\hay.dm"
 #include "code\modules\1713\flint_mining.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\flax_processing.dm"
