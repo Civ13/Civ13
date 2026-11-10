@@ -1,11 +1,13 @@
 # Personal recipe manuals (issue #4239, phase 1)
 
-This feature is inactive by default. A Persistence map may opt in with the
-`recipe_books` configuration flag; no shipped map is enabled by this change.
-Round maps retain their faction/era rules. The flag is not saved as mutable map
-metadata. To enable it in an already running world, the operator integration
-must call `activate_recipe_books()` instead of assigning the flag directly.
-Activation itself is outside this PR's authorization.
+On Persistence, `recipe_books` and `book_research` are on by default since the
+research relaunch (Val, 2026-11-10). Both only apply when the round is
+Persistence (`recipe_knowledge_enabled()` needs `persistence`), so round maps
+keep their faction/era rules. Turning them on needs a fresh world: a restored
+save keeps its characters, who would then know nothing. Launch is
+**Fresh world (all regions)** in the launcher on the same update. Neither flag
+is saved as mutable map metadata. `activate_recipe_books()` remains the
+integration point for switching recipe books on in an already running world.
 
 With the flag enabled, crafting needs both faction/era research and personal
 knowledge of the node. Only research essentials (the research bench, legacy
@@ -160,6 +162,62 @@ studying, writing and copying by 1.25x for anyone beside a fastened one
 node's groundwork or in its discipline, in books on bookcases within 3 tiles
 (`library_chapters`), and researches 10% faster per chapter, up to 50%
 (`library_rate`). The bench status line shows the library bonus.
+
+### Research supplies and light (profession 3)
+
+A bench makes no progress in the dark (turf light below 0.3,
+`research_lit`). Each research tick uses one supply point for the subject's
+discipline; with none, research runs at half speed (`use_research_supply`).
+Using a supply on the bench stores points, up to 200 per discipline, saved on
+the bench as `research_supplies` text (`discipline=points;...`, validated on
+read). Supplies by discipline (`scholar_supply_value`): blank paper or
+parchment for Basic Mathematics, material stacks for Engineering, ore or glass
+for Natural Science, medical stacks or grown herbs for Medicine, seeds or
+produce for Agriculture, and ammunition or ammunition parts for Military
+Science. Samples and prototypes are checked first, so an item that is both
+still counts as a sample.
+
+### Instruments (profession 4)
+
+From the Imperial Age (`SCHOLAR_INSTRUMENT_TIER` 3), a node needs its
+discipline's instrument on or next to the bench, or in a researcher's hands
+(`has_research_instrument`), or the bench makes no progress. Instruments:
+abacus (new, 3 soft wood, Trade & Coinage) for Basic Mathematics, drafting set
+(new, 2 iron, Iron Tools) for Engineering, a beaker or glass jar for Natural
+Science, a scalpel for Medicine, a plough for Agriculture and a map for
+Military Science. Every instrument is made from a node below tier 3, so none
+is locked behind the research it enables. The abacus and drafting set sprites
+are in `icons/obj/scholar_tools.dmi`.
+
+### Tutoring (profession 5)
+
+When someone studies a chapter, a player or agent character beside them who
+already knows that node tutors them (`find_tutor`): the study takes
+`1 / SCHOLAR_TUTOR_RATE` (two thirds) of the time and, if the tutor is still
+beside the student at the end (`still_tutoring`), the student gains three
+times the usual study skill and the tutor gains the usual amount. Selling
+books and taking commissions need no new code: books are ordinary items that
+change hands through normal trade, and a commission is a chapter written from
+memory or copied at a bench.
+
+### Apprentices (profession 6)
+
+The IC verb **Take an apprentice** offers an apprenticeship to a player next
+to the master; the apprentice must accept, and a master has at most three.
+The link is `scholar_master` on the apprentice's body (the master's
+`ckey:real_name`), saved with the body, validated on load and cleared on death
+or with **Leave apprenticeship**. At a research bench, a researcher whose
+master stands within 2 tiles gains twice the usual skill, and the
+researcher's own apprentices within 2 tiles gain half the usual research skill
+by watching (`apprentice_research_gain`). The link does not travel between
+regions.
+
+### Titles (profession 7)
+
+Examining a living character in book research shows their highest discipline
+as a title (`scholar_title`): Apprentice from level 12, Scholar from 40 and
+Master from 75, for example "Scholar of Medicine", so players can find and hire
+scholars. Characters below 12 in every discipline show no title.
 
 ## Verification
 

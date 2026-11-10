@@ -69,3 +69,26 @@
 #define SCHOLAR_MAX_LEVEL 100
 #define SCHOLAR_RESEARCH_GAIN 0.02 // per bench tick the researcher works
 #define SCHOLAR_STUDY_GAIN 1       // per chapter studied
+
+// Scholar research supplies and light (scholar_tools.dm).
+// Research needs light: a bench in the dark makes no progress.
+#define SCHOLAR_MIN_LIGHT 0.3
+// Without supplies for its discipline, research runs at this fraction.
+#define SCHOLAR_UNSUPPLIED_RATE 0.5
+// A bench stores at most this many supply points per discipline.
+#define SCHOLAR_SUPPLY_CAP 200
+// Nodes from this era tier on need their discipline's instrument at the bench.
+#define SCHOLAR_INSTRUMENT_TIER 3
+// A tutor beside a student speeds study by this factor.
+#define SCHOLAR_TUTOR_RATE 1.5
+// A tutored student gains this many times the usual study skill.
+#define SCHOLAR_TUTOR_GAIN_MULT 3
+// Apprentices (scholar_tools.dm): how many a master may take, how close they
+// must be, and how much faster an apprentice learns beside their master.
+#define SCHOLAR_MAX_APPRENTICES 3
+#define SCHOLAR_APPRENTICE_REACH 2
+#define SCHOLAR_APPRENTICE_GAIN_MULT 2
+// Scholar titles shown on examine, by highest discipline level.
+#define SCHOLAR_TITLE_APPRENTICE 12
+#define SCHOLAR_TITLE_SCHOLAR 40
+#define SCHOLAR_TITLE_MASTER 75

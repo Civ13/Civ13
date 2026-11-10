@@ -85,7 +85,7 @@ function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
 }
 function RecipeRow({ ui, row, selected, onPick }: { ui: ScreenProps; row: Data; selected: boolean; onPick: () => void }) {
   const dim = !!row.manual_hint || !!row.retired || !!row.elsewhere;
-  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + ' recipe variants' : text(row.needs);
+  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + (row.ways ? ' versions: ' + text(row.ways) : ' recipe variants') : text(row.needs);
   return <li data-result-type="recipe" className={selected ? 'atlas-selected' : undefined}>
     <button type="button" className={'atlas-row' + (dim ? ' atlas-dim' : '')} disabled={!ui.interactive} aria-current={selected ? 'true' : undefined} onClick={onPick}>
       <Sprite image={row.image} />

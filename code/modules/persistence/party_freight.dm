@@ -419,7 +419,7 @@ var/global/list/safehouse_depots = list()
 // Boarding stays the default answer, so an agent-driven character still boards.
 /obj/structure/region_gate/railway_station/proc/freight_menu(mob/living/human/H)
 	var/list/names = party_freight_names(freight, party)
-	var/list/options = list("Plan physical train route (preview)" = "route", "Board the train" = "board", "Load what you hold" = "hand", "Load a crate next to the office" = "crate")
+	var/list/options = list("Board the train" = "board", "Load what you hold" = "hand", "Load a crate next to the office" = "crate", "Plan physical train route (preview)" = "route")
 	if(names.len)
 		options["Unload a shipment"] = "recall"
 	var/choice = WWinput(H, "The train carries [names.len]/[PARTY_FREIGHT_TRAIN] shipments[names.len ? ": [english_list(names)]" : ""].", name, "Board the train", options + list("Cancel"))
