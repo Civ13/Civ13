@@ -51,6 +51,19 @@ class CodecContracts(unittest.TestCase):
         self.assertIn('car.train_transfer_journey = M["journey"]', build)
         self.assertIn('A.train_transfer_digest = digest', build)
 
+    def test_recapture_preserves_preleased_journey_and_rejects_malformed_input(self):
+        capture = S.split('/proc/train_transfer_capture', 1)[1].split('/proc/train_transfer_decode', 1)[0]
+        self.assertTrue(capture.startswith('(obj/structure/trains/head, party, source, destination, station, journey = null)'))
+        guard = 'if(!isnull(journey) && !train_transfer_string(journey))'
+        self.assertLess(capture.index(guard), capture.index('head.train_transfer_id ='))
+        self.assertIn('if(isnull(journey))\n\t\tjourney = md5(', capture)
+        self.assertIn('copytext(journey, i, i + 1)', capture)
+        self.assertIn('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.:@-', capture)
+        self.assertNotIn('var/journey =', capture)
+        self.assertEqual(1, capture.count('journey = md5('))
+        self.assertIn('"journey" = journey', capture)
+        self.assertIn('A.train_transfer_journey = journey', capture)
+
     def test_capture_marks_the_validated_journey_on_all_roots(self):
         capture = S.split('/proc/train_transfer_capture', 1)[1].split('/proc/train_transfer_decode', 1)[0]
         self.assertIn('"journey" = journey', capture)

@@ -37,7 +37,7 @@ var/global/train_arrival_hold_reason = null
 // Keys are coordinates rather than turf refs so overlap survives save/reload.
 /proc/train_arrival_footprint(list/R)
 	var/list/result = list()
-	var/side_x = R["heading"] in list(NORTH, SOUTH) ? 1 : 0
+	var/side_x = (R["heading"] in list(NORTH, SOUTH)) ? 1 : 0
 	var/side_y = side_x ? 0 : 1
 	for(var/list/P in R["centres"])
 		for(var/side = -1, side <= 1, side++)

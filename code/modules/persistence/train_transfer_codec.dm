@@ -96,7 +96,12 @@
 	return TRUE
 
 // API result: error, or manifest plus live cars/loads for a caller-owned freeze.
-/proc/train_transfer_capture(obj/structure/trains/head, party, source, destination, station)
+/proc/train_transfer_capture(obj/structure/trains/head, party, source, destination, station, journey = null)
+	// Final recapture must retain the journey already bound by the prelease.
+	if(!isnull(journey) && !train_transfer_string(journey)) return list("error" = "Invalid train journey identity.")
+	if(!isnull(journey))
+		for(var/i = 1, i <= length(journey), i++)
+			if(!findtext("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.:@-", copytext(journey, i, i + 1))) return list("error" = "Invalid train journey identity.")
 	if(!istype(head) || !party_train_valid_party(party)) return list("error" = "No valid train owner.")
 	var/list/cars = list()
 	var/obj/structure/trains/car = head
@@ -115,7 +120,8 @@
 	if(!head.train_transfer_id)
 		head.train_transfer_id = md5("[source]-[world.realtime]-[rand(1, 1000000000)]-\ref[head]")
 	var/id = head.train_transfer_id
-	var/journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
+	if(isnull(journey))
+		journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
 	var/list/M = list("kind" = "train", "version" = 1, "id" = id, "journey" = journey, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
