@@ -334,20 +334,23 @@
 	if (!client)
 		return
 
-	var/view_dist = client.view + 5 // + reserve so that when moving the load is not visible [translated]
+	var/list/view_size = getviewsize(client.view)
+	var/half_w = round(view_size[1] / 2)
+	var/half_h = round(view_size[2] / 2)
+	var/view_dist = max(half_w, half_h) + 5 // + reserve so that when moving the load is not visible [translated]
 
 	var/view_x_offset = 0
 	var/view_y_offset = 0
 
 	if(client.pixel_x > 0)
-		view_x_offset = client.view
+		view_x_offset = half_w
 	else if(client.pixel_x < 0)
-		view_x_offset = -client.view
+		view_x_offset = -half_w
 
 	if(client.pixel_y > 0)
-		view_y_offset = client.view
+		view_y_offset = half_h
 	else if(client.pixel_y < 0)
-		view_y_offset = -client.view
+		view_y_offset = -half_h
 
 	var/view_loc = locate(x + view_x_offset, y + view_y_offset, z)
 
@@ -383,20 +386,23 @@
 	if (!client)
 		return
 
-	var/view_dist = client.view + 5 // + reserve so that when moving the load is not visible [translated]
+	var/list/view_size = getviewsize(client.view)
+	var/half_w = round(view_size[1] / 2)
+	var/half_h = round(view_size[2] / 2)
+	var/view_dist = max(half_w, half_h) + 5 // + reserve so that when moving the load is not visible [translated]
 
 	var/view_x_offset = 0
 	var/view_y_offset = 0
 
 	if(client.pixel_x > 0)
-		view_x_offset = client.view
+		view_x_offset = half_w
 	else if(client.pixel_x < 0)
-		view_x_offset = -client.view
+		view_x_offset = -half_w
 
 	if(client.pixel_y > 0)
-		view_y_offset = client.view
+		view_y_offset = half_h
 	else if(client.pixel_y < 0)
-		view_y_offset = -client.view
+		view_y_offset = -half_h
 
 	var/view_loc = locate(x + view_x_offset, y + view_y_offset, z)
 

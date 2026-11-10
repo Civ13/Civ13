@@ -545,10 +545,10 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Change View Range"
 	set desc = "switches between 1x and custom views"
 
-	if (view == WORLD_VIEW)
+	if (view == default_view())
 		view = input("Select view range:", "Change View Range", 7) in list(1,2,3,4,5,6,7,8,9,10,11,12,13,14,24,36,64,128,256)
 	else
-		view = WORLD_VIEW
+		view = default_view()
 
 	log_admin("[key_name(usr)] changed their view range to [view].")
 	//message_admins("\blue [key_name_admin(usr)] changed their view range to [view].", key_name_admin(usr))	//why? removed by order of XSI

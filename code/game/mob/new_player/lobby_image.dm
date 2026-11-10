@@ -5,7 +5,7 @@
 	desc = ""
 	icon = 'icons/lobby/civ13.dmi'
 	icon_state = "civ13"
-	screen_loc = "WEST,SOUTH"
+	screen_loc = "CENTER-7,CENTER-7" // 480x480 picture, centred on the widescreen view
 	plane = HUD_PLANE
 	layer = 21 // Ensure it is above the black cover objects
 	var/list/stored_img = list()

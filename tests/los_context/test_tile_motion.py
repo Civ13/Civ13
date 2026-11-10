@@ -796,7 +796,7 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(broken.V.viewport_radii()[1],7)  # Old endpoint-only gap.
         look=P.fragment(self.HUMAN,'/mob/living/human/proc/look_into_distance(')
         self.assertEqual(look.count('los_prepare_camera_pan('),3)
-        self.assertLess(look.index('var/old_camera_view = user.client.view'),look.index('user.client.view +='))
+        self.assertLess(look.index('var/old_camera_view = user.client.view'),look.index('user.client.widen_view('))
         for line in look.splitlines():
             if 'animate(user.client,' in line:
                 previous=look[:look.index(line)].rstrip().splitlines()[-1]

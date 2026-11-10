@@ -462,6 +462,10 @@ var/global/list/hud_icon_px_cache = list()
 	var/list/V = getviewsize(client.view)
 	var/view_w = V[1] * 32
 	var/view_h = V[2] * 32
+	var/list/design = getviewsize(HUD_DESIGN_VIEW)
+	var/design_w = design[1] * 32
+	var/design_h = design[2] * 32
+	fit_fullscreen_overlays(V)
 	// Default inventory and control tiles above 100% are reflowed together so
 	// they never cover each other; entries are list(tile, x, y, w, h) at 100%.
 	var/list/flow = list()
@@ -487,7 +491,9 @@ var/global/list/hud_icon_px_cache = list()
 					D = list(F[3], ox, F[5], oy)
 					custom = TRUE
 		if (!custom)
-			D = hud_infer_anchor(D, view_w, view_h)
+			// Default positions are written for the 15x15 design grid; anchor them
+			// there so the right-hand column and bar follow the edge of a wider view.
+			D = hud_infer_anchor(D, design_w, design_h)
 			if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))
 				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4], foot[1], foot[2]))
 		S.hud_size = size
@@ -514,6 +520,27 @@ var/global/list/hud_icon_px_cache = list()
 		open_storage.orient2hud(src)
 	if (client.hud_edit_mode)
 		hud_edit_tint()
+
+// Full-screen overlays (damage, blindness, gas mask, field of vision) are
+// 480x480 icons drawn for a 15x15 view. Centre them and scale them up evenly so
+// they still cover a wider view; the rows past the top and bottom are clipped.
+/mob/living/human/proc/fit_fullscreen_overlays(list/V)
+	var/k = max(V[1], V[2]) / 15
+	for (var/name in list("damageoverlay", "fov", "gasmask"))
+		var/obj/screen/S = HUDtech[name]
+		if (!istype(S))
+			continue
+		S.screen_loc = "CENTER-7,CENTER-7"
+		if (k == 1)
+			S.transform = null
+			continue
+		// A transform scales about the centre of the object's own icon; the
+		// 480px picture can be an underlay of a 32px object, so move its centre
+		// back to the middle of the screen.
+		var/list/px = S.hud_icon_px()
+		var/shift_x = (240 - px[1] / 2) * (1 - k)
+		var/shift_y = (240 - px[2] / 2) * (1 - k)
+		S.transform = matrix(k, 0, shift_x, 0, k, shift_y)
 
 /mob/proc/hud_storage_shift(x0, y0, w, h)
 	return list(0, 0)

@@ -182,7 +182,7 @@ var/list/global_huds = list(
 		return
 
 	if (!client) return
-	if (client.view != WORLD_VIEW)
+	if (client.view != client.default_view())
 		return
 
 //	hud_used.hidden_inventory_update()
@@ -197,7 +197,7 @@ var/list/global_huds = list(
 		return
 	if (!client)
 		return
-	if (client.view != WORLD_VIEW)
+	if (client.view != client.default_view())
 		return
 
 	update_action_buttons()

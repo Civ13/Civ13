@@ -108,7 +108,7 @@ class HudLayoutWiring(unittest.TestCase):
 
     def test_large_scales_reflow_only_default_tiles(self):
         body = proc_body(read(LAYOUT), '/mob/living/human/proc/apply_hud_layout()')
-        self.assertIn('D = hud_infer_anchor(D, view_w, view_h)', body)
+        self.assertIn('D = hud_infer_anchor(D, design_w, design_h)', body)
         self.assertIn('if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))', body)
         self.assertLess(body.index('if (!custom)'), body.index('flow += list('))
         self.assertIn('if (flow.len)\n\t\thud_reflow(flow, g, view_w, view_h)', body)

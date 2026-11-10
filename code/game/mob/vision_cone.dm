@@ -130,7 +130,7 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 /*
 			//Optional items can be made invisible too. Uncomment this part if you wish to items to be invisible.
 			var/obj/item/O
-			for (O in cone(src, OPPOSITE_DIR(dir), oview(src)))
+			for (O in cone(src, OPPOSITE_DIR(dir), oview(10, src)))
 				if (!O.anchored && !(O in range(1,src)))
 					I = image("split", O)
 					I.override = TRUE
