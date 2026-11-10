@@ -334,6 +334,15 @@ var/global/list/ecology_species_table = null
 		return null
 	return A.climate
 
+// A regrowing stump can ignore itself; all other occupants use the same rules.
+/proc/ecology_site_blocked(turf/T, atom/movable/ignored = null)
+	for (var/atom/movable/AM in T)
+		if (AM == ignored)
+			continue
+		if (AM.density || istype(AM, /mob/living) || istype(AM, /obj/structure) || istype(AM, /obj/covers))
+			return TRUE
+	return FALSE
+
 /proc/ecology_habitat_error(turf/T, list/biomes, grounds = ECO_GRASS | ECO_DIRT)
 	if (!T || !(ecology_ground(T) & grounds))
 		return "ground"
@@ -344,9 +353,8 @@ var/global/list/ecology_species_table = null
 		return "roofed"
 	if (T.contents.len > 32)
 		return "occupied"
-	for (var/atom/movable/AM in T)
-		if (AM.density || istype(AM, /mob/living) || istype(AM, /obj/structure) || istype(AM, /obj/covers))
-			return "occupied"
+	if (ecology_site_blocked(T))
+		return "occupied"
 	return null
 
 // Samples a few turfs in every 8x8 cell of every level. Areas rarely change,
