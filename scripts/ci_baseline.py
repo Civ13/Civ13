@@ -1037,6 +1037,7 @@ SUITES = {
     'furniture_joinery': {'files': ('tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
+                                  'tests/furniture_joinery/test_bedroll_occupancy.py',
                                   'tests/furniture_joinery/test_document_drawers.py',
                                   'tests/furniture_joinery/test_sofa_materials.py',
                                   'tests/furniture_joinery/test_canopy.py',

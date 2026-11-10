@@ -27,4 +27,4 @@
 	return key == "item_icons" || ..()
 
 /obj/structure/bed/bedroll/persistence_runtime_var(key)
-	return key == "cover_overlay" || ..()
+	return key == "cover_overlay" || key == "use_cycle" || ..()
