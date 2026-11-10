@@ -97,11 +97,32 @@ class RepeatClickPayment(unittest.TestCase):
                 self.assertEqual(body.count('if (do_after('), body.count('&& pay_for_build(W, H, '))
 
     def test_plastic_pot_plants_fill_one_pot(self):
-        source = read('code/game/objects/structures/plant_pots.dm')
+        path = 'code/game/objects/structures/plant_pots.dm'
+        body = proc(path, '/obj/structure/plant_pot/proc/finish_plastic_plant')
         guard = 'if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))'
-        self.assertEqual(source.count(guard), 2)
-        for chunk in source.split('What type of plastic plant?')[1:]:
-            self.assert_order(chunk, guard, 'qdel(S)', 'qdel(src)')
+        self.assert_order(body, 'WWinput(', 'S.filled_type = /obj/item/stack/material/plastic',
+                          guard, 'qdel(S)', 'return', 'qdel(src)')
+        self.assertNotIn('Cancel', body)
+        for subtype in ('clay/light', 'medium_planter/clay/yellow'):
+            with self.subTest(subtype=subtype):
+                handler = proc(path, f'/obj/structure/plant_pot/{subtype}/attackby')
+                plastic = handler[handler.index('if (istype(W, /obj/item/stack/material/plastic))'):]
+                filled = f'new /obj/structure/plant_pot/{subtype}/filled(loc)'
+                self.assert_order(plastic, 'if (filled_type || filled)', 'do_after(user, 15, src)',
+                                  filled, 'finish_plastic_plant(W, user, S)', 'return')
+
+    def test_plastic_pot_choices_keep_their_appearances(self):
+        body = proc('code/game/objects/structures/plant_pots.dm',
+                    '/obj/structure/plant_pot/proc/finish_plastic_plant')
+        cases = (
+            ('Plastic Tree', 'plastic1', "A pot with a plastic, it won't fool anybody but it looks nice."),
+            ('Plastic Pine Tree', 'plastic2', "A pot with a plastic pine tree, it won't fool anybody but it looks nice."),
+            ('Plastic Palm Tree', 'plastic3', "A pot with a plastic palm tree, it won't fool anybody but it looks nice."),
+            ('Plastic Leaf Plant', 'plastic4', "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."),
+        )
+        for name, suffix, description in cases:
+            with self.subTest(name=name):
+                self.assertIn(f'if (choice == "{name}")\n\t\tS.icon_state = "[planttype]{suffix}"\n\t\tS.desc = "{description}"', body)
 
     def test_computer_payments_recheck(self):
         source = read('code/modules/1713/computers/programs.dm')

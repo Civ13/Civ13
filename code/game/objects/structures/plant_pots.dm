@@ -17,6 +17,34 @@
 	var/filled_type = null
 	var/filled = FALSE
 
+/obj/structure/plant_pot/proc/finish_plastic_plant(obj/item/W, mob/user, obj/structure/plant_pot/S)
+	var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
+	if (choice == "Plastic Tree")
+		S.icon_state = "[planttype]plastic1"
+		S.desc = "A pot with a plastic, it won't fool anybody but it looks nice."
+
+	if (choice == "Plastic Pine Tree")
+		S.icon_state = "[planttype]plastic2"
+		S.desc = "A pot with a plastic pine tree, it won't fool anybody but it looks nice."
+
+	if (choice == "Plastic Palm Tree")
+		S.icon_state = "[planttype]plastic3"
+		S.desc = "A pot with a plastic palm tree, it won't fool anybody but it looks nice."
+
+	if (choice == "Plastic Leaf Plant")
+		S.icon_state = "[planttype]plastic4"
+		S.desc = "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."
+
+	S.filled_type = /obj/item/stack/material/plastic
+	// The plant menu sleeps: a lagged repeat click can answer after the
+	// first one already filled this pot, so keep only one filled pot.
+	var/obj/item/stack/material/plastic/P = W
+	if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))
+		qdel(S)
+		return
+	qdel(src)
+	return
+
 /* Clay Plant-Pots*/
 
 /obj/structure/plant_pot/clay/light
@@ -195,31 +223,7 @@
 		if (do_after(user, 15, src))
 			to_chat(user, "You finish moulding the plastic.")
 			var/obj/structure/plant_pot/clay/light/filled/S = new /obj/structure/plant_pot/clay/light/filled(loc)
-			var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
-			if (choice == "Plastic Tree")
-				S.icon_state = "[planttype]plastic1"
-				S.desc = "A pot with a plastic, it won't fool anybody but it looks nice."
-
-			if (choice == "Plastic Pine Tree")
-				S.icon_state = "[planttype]plastic2"
-				S.desc = "A pot with a plastic pine tree, it won't fool anybody but it looks nice."
-
-			if (choice == "Plastic Palm Tree")
-				S.icon_state = "[planttype]plastic3"
-				S.desc = "A pot with a plastic palm tree, it won't fool anybody but it looks nice."
-
-			if (choice == "Plastic Leaf Plant")
-				S.icon_state = "[planttype]plastic4"
-				S.desc = "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."
-
-			S.filled_type = /obj/item/stack/material/plastic
-			// The plant menu sleeps: a lagged repeat click can answer after the
-			// first one already filled this pot, so keep only one filled pot.
-			var/obj/item/stack/material/plastic/P = W
-			if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))
-				qdel(S)
-				return
-			qdel(src)
+			finish_plastic_plant(W, user, S)
 			return
 	..()
 
@@ -423,31 +427,7 @@
 		if (do_after(user, 15, src))
 			to_chat(user, "You finish moulding the plastic.")
 			var/obj/structure/plant_pot/medium_planter/clay/yellow/filled/S = new /obj/structure/plant_pot/medium_planter/clay/yellow/filled(loc)
-			var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
-			if (choice == "Plastic Tree")
-				S.icon_state = "[planttype]plastic1"
-				S.desc = "A pot with a plastic, it won't fool anybody but it looks nice."
-
-			else if (choice == "Plastic Pine Tree")
-				S.icon_state = "[planttype]plastic2"
-				S.desc = "A pot with a plastic pine tree, it won't fool anybody but it looks nice."
-
-			else if (choice == "Plastic Palm Tree")
-				S.icon_state = "[planttype]plastic3"
-				S.desc = "A pot with a plastic palm tree, it won't fool anybody but it looks nice."
-
-			else if (choice == "Plastic Leaf Plant")
-				S.icon_state = "[planttype]plastic4"
-				S.desc = "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."
-
-			S.filled_type = /obj/item/stack/material/plastic
-			// The plant menu sleeps: a lagged repeat click can answer after the
-			// first one already filled this pot, so keep only one filled pot.
-			var/obj/item/stack/material/plastic/P = W
-			if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))
-				qdel(S)
-				return
-			qdel(src)
+			finish_plastic_plant(W, user, S)
 			return
 	..()
 
