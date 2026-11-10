@@ -1078,6 +1078,8 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
         'tests/jungle_hiding/',)},
+    'foraging': {'files': ('tests/foraging/test_contract.py',), 'paths': (
+        'tests/foraging/', 'code/modules/ecology/foraging.dm', 'docs/foraging.md')},
     'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py', 'tests/flora_regrowth/test_site_occupancy.py'), 'paths': (
         'tests/flora_regrowth/', 'tests/ecology_spawning/', 'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm')},
     'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (
