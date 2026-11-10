@@ -212,7 +212,9 @@ class OutputTest(unittest.TestCase):
 
     def test_source_catalog_includes_nested_declarations(self):
         catalog = export.source_types()
-        for path in ("/turf/floor/wood", "/obj/structure/bed/chair", "/area/caribbean/nomads", "/obj/map_metadata"):
+        # religions.dm declares altars without a leading slash (seen on a real Gaia save).
+        for path in ("/turf/floor/wood", "/obj/structure/bed/chair", "/area/caribbean/nomads", "/obj/map_metadata",
+                     "/obj/structure/altar/wood", "/obj/structure/altar/stone/material/obsidian"):
             self.assertIn(path, catalog)
         self.assertNotIn("/obj/structure/not_in_source", catalog)
 
