@@ -564,10 +564,7 @@
 			open = FALSE
 			to_chat(user, "<span class='notice'>You close \the [src].</span>")
 			icon_state = "derringer"
-			if (loaded.len)
-				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-				loaded -= AC //Remove casing from loaded list.
-				chambered = AC
+			feed_first_loaded_casing()
 		else
 			open = TRUE
 			to_chat(user, "<span class='notice'>You break open \the [src].</span>")
@@ -594,10 +591,7 @@
 
 /obj/item/weapon/gun/projectile/revolver/derringer/handle_post_fire()
 	..()
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
+	feed_first_loaded_casing()
 	if (blackpowder)
 		spawn (1)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))

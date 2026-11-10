@@ -251,6 +251,14 @@ SUITES = {
             'code/game/mob/living/carbon/human/human.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
             'maps/nomads/nomads_gaia.dmm', 'tests/save_movement/source_adapter.py')},
+    # Chamber transfer projection and action-specific ordering; offline only.
+    'gun_chamber': {'files': ('tests/gun_chamber/test_chamber.py',),
+        'paths': ('tests/gun_chamber/',), 'shared_paths': (
+            'code/modules/1713/weapons/guns/_gun.dm',
+            'code/modules/1713/weapons/guns/shotguns.dm',
+            'code/modules/1713/weapons/guns/lever_action.dm',
+            'code/modules/1713/weapons/guns/revolvers.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete raider firing/reload source projections with fake engine boundaries.
     # Keep production paths shared so existing conservative selection is preserved.
     'nomad_raider_combat': {'files': ('tests/nomad_raids/test_combat.py',),

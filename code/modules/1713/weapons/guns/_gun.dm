@@ -38,6 +38,18 @@
 	var/blackpowder = FALSE
 	secondary_action = TRUE
 
+/obj/item/weapon/gun/projectile/proc/eject_chambered_casing()
+	if (chambered)
+		chambered.loc = get_turf(src)
+		chambered.randomrotation()
+		chambered = null
+
+/obj/item/weapon/gun/projectile/proc/feed_first_loaded_casing()
+	if (loaded.len)
+		var/obj/item/ammo_casing/AC = loaded[1]
+		loaded -= AC
+		chambered = AC
+
 /obj/item/weapon/gun/projectile/secondary_attack_self(mob/living/human/user)
 	if (gun_safety)
 		if (safetyon)

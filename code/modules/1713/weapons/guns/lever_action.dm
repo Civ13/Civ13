@@ -95,15 +95,9 @@
 	else
 		M.visible_message("<span class='warning'>[M] cycles the [src], ejecting an unused casing!</span>","<span class='warning'>You cycle the [src], ejecting an unused casing!</span>")
 
-	if (chambered)//We have a shell in the chamber
-		chambered.loc = get_turf(src)//Eject casing
-		chambered.randomrotation()
-		chambered = null
+	eject_chambered_casing()
 
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
+	feed_first_loaded_casing()
 
 	update_icon()
 /*

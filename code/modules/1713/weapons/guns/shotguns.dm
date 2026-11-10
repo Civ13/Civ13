@@ -47,15 +47,9 @@
 /obj/item/weapon/gun/projectile/shotgun/pump/proc/pump(mob/M as mob)
 	playsound(M, 'sound/weapons/guns/interact/shotgun_pump.ogg', 60, TRUE)
 
-	if (chambered)//We have a shell in the chamber
-		chambered.loc = get_turf(src)//Eject casing
-		chambered.randomrotation()
-		chambered = null
+	eject_chambered_casing()
 
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
+	feed_first_loaded_casing()
 
 	update_icon()
 
@@ -97,10 +91,7 @@
 			open = FALSE
 			to_chat(user, "<span class='notice'>You close \the [src].</span>")
 			icon_state = "doublebarreled"
-			if (loaded.len)
-				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-				loaded -= AC //Remove casing from loaded list.
-				chambered = AC
+			feed_first_loaded_casing()
 		else
 			open = TRUE
 			to_chat(user, "<span class='notice'>You break open \the [src].</span>")
@@ -127,10 +118,7 @@
 
 /obj/item/weapon/gun/projectile/shotgun/coachgun/handle_post_fire()
 	..()
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
+	feed_first_loaded_casing()
 	if (blackpowder)
 		spawn (1)
 			new/obj/effect/effect/smoke/chem(get_step(src, dir))
@@ -205,10 +193,7 @@
 			open = FALSE
 			to_chat(user, "<span class='notice'>You put the cylinder back into \the [src].</span>")
 			icon_state = "mts225"
-			if (loaded.len)
-				var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-				loaded -= AC //Remove casing from loaded list.
-				chambered = AC
+			feed_first_loaded_casing()
 		else
 			open = TRUE
 			to_chat(user, "<span class='notice'>You release the cylinder of \the [src].</span>")
@@ -235,7 +220,4 @@
 
 /obj/item/weapon/gun/projectile/shotgun/mts225/handle_post_fire()
 	..()
-	if (loaded.len)
-		var/obj/item/ammo_casing/AC = loaded[1] //load next casing.
-		loaded -= AC //Remove casing from loaded list.
-		chambered = AC
+	feed_first_loaded_casing()
