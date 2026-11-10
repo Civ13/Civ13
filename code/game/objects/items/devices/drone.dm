@@ -258,56 +258,7 @@
 	for(var/obj/structure/vehicleparts/frame/F in range(1,src))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 3, 3)
-		var/penloc = F.CheckPenLoc(T)
-		switch(penloc)
-			if ("left")
-				if (F.w_left[5] > 0)
-					F.w_left[5] -= heavy_armor_penetration
-					visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big></span>"))
-			if ("right")
-				if (F.w_right[5] > 0)
-					F.w_right[5] -= heavy_armor_penetration
-					visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big></span>"))
-			if ("front")
-				if (F.w_front[5] > 0)
-					F.w_front[5] -= heavy_armor_penetration
-					visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big></span>"))
-			if ("back")
-				if (F.w_back[5] > 0)
-					F.w_back[5] -= heavy_armor_penetration
-					visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big></span>"))
-			if ("frontleft")
-				if (F.w_left[5] > 0 && F.w_front[5] > 0)
-					if (F.w_left[4] > F.w_front[4] && F.w_left[5]>0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big></span>"))
-					else
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big></span>"))
-			if ("frontright")
-				if (F.w_right[5] > 0 && F.w_front[5] > 0)
-					if (F.w_right[4] > F.w_front[4] && F.w_right[5]>0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big></span>"))
-					else
-						F.w_front[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The front hull gets damaged!</big></span>"))
-			if ("backleft")
-				if (F.w_left[5] > 0 && F.w_back[5] > 0)
-					if (F.w_left[4] > F.w_back[4] && F.w_left[5]>0)
-						F.w_left[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The left hull gets damaged!</big></span>"))
-					else
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big></span>"))
-			if ("backright")
-				if (F.w_right[5] > 0 && F.w_back[5] > 0)
-					if (F.w_right[4] > F.w_back[4] && F.w_right[5]>0)
-						F.w_right[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The right hull gets damaged!</big></span>"))
-					else
-						F.w_back[5] -= heavy_armor_penetration
-						visible_message(SPAN_DANGER("<big>The rear hull gets damaged!</big></span>"))
+		explosion_damage_hull_panel(F, T, src, heavy_armor_penetration)
 		F.try_destroy()
 		for(var/obj/structure/vehicleparts/movement/MV in F)
 			MV.broken = TRUE
