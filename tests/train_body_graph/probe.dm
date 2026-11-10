@@ -25,7 +25,8 @@
 		for(var/i = 1, i <= L.len, i++)
 			var/key = L[i]
 			inspect_value(key, context, depth + 1)
-			if(!isnull(key) && !isnum(key)) inspect_value(L[key], context, depth + 1)
+			if(istext(key)) inspect_value(L[key], context, depth + 1)
+			else if(!isnull(key) && !isnum(key)) note(context, "nontext associative values not inspected")
 		return
 	if(istype(value, /datum/species))
 		if(!codec.canonical_species_valid(value)) note(context, "noncanonical species")
