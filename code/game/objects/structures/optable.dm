@@ -61,11 +61,10 @@
 	return
 
 /obj/structure/optable/proc/check_victim()
-	if (locate(/mob/living/human, loc))
-		var/mob/living/human/M = locate(/mob/living/human, loc)
+	for (var/mob/living/human/M in loc)
 		if (M.lying)
 			return TRUE
-	victim = null
+	src.victim = null
 	return FALSE
 
 /obj/structure/optable/process()
@@ -112,8 +111,7 @@
 			return
 
 /obj/structure/optable/proc/check_table(mob/living/human/patient as mob)
-	check_victim()
-	if (victim && get_turf(victim) == get_turf(src) && victim.lying)
+	if (check_victim())
 		to_chat(usr, "<span class='warning'>\The [src] is already occupied!</span>")
 		return FALSE
 	if (patient.buckled)
