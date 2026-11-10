@@ -635,6 +635,7 @@
 #define PULL_ROPE_GAP 2
 #define PULL_ROPE_STEP 4
 #define PULL_ROPE_BREAK 16
+#define PULL_ROPE_LAG 1
 /mob/living/human/proc/human_subtile_pull_follow()
 	var/atom/movable/M = pulling
 	if (!M || !isturf(M.loc) || M.anchored || M.z != z)
@@ -663,12 +664,20 @@
 		var/pull = min(PULL_ROPE_STEP, rope - rest)
 		dx = round(ux * pull / rope, 1)
 		dy = round(uy * pull / rope, 1)
-		// Never closer than the gap: once side by side, it only follows along.
+		// Never closer than the gap: once side by side, it only follows along,
+		// and at most PULL_ROPE_LAG px per pulse while it still overlaps the
+		// body along that axis. A body pulse covers more than that, so the thing
+		// drops back until it clears the body and then swings in behind it,
+		// instead of riding alongside for as long as the body keeps walking.
 		if (abs(ux - dx) - half_x < PULL_ROPE_GAP && abs(uy - dy) - half_y < PULL_ROPE_GAP)
 			if (gap_x >= gap_y)
 				dx = max(0, gap_x - PULL_ROPE_GAP) * ((ux > 0) ? 1 : -1)
+				if (gap_y < 0)
+					dy = clamp(dy, -PULL_ROPE_LAG, PULL_ROPE_LAG)
 			else
 				dy = max(0, gap_y - PULL_ROPE_GAP) * ((uy > 0) ? 1 : -1)
+				if (gap_x < 0)
+					dx = clamp(dx, -PULL_ROPE_LAG, PULL_ROPE_LAG)
 	// While dragged along one axis, it also eases into line behind the body,
 	// so it follows through doorways instead of catching on the frame.
 	if (dx && abs(dy) < 2 && uy && gap_x > PULL_ROPE_GAP)
@@ -754,6 +763,7 @@
 #undef PULL_ROPE_GAP
 #undef PULL_ROPE_STEP
 #undef PULL_ROPE_BREAK
+#undef PULL_ROPE_LAG
 
 // Walking through someone (help intent), drift 2px per pulse away from them,
 // or to your right when dead centre, until at least 2px apart. Walls still
