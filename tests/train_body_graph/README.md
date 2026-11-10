@@ -48,7 +48,7 @@ The adapter is included explicitly in the fixture, not the production DME.
 Native execution additionally requires `--allow-native-execution` and parent
 authorization; do not infer authorization from fixture availability.
 
-The 32-check probe constructs real production owned/injured humans with organs,
+The 33-check probe constructs real production owned/injured humans with organs,
 wounds and carried inventory, a sheep and a dead human. It asserts successful
 capture, encoded injury/inventory/death values, bounded entry/list reference
 closure, missing-field/dangling-ref refusal, external turf refusal and source
@@ -104,3 +104,10 @@ This does not establish a compressed-size/frame-count bound or remote portable
 asset representation. A new assertion changes a source pixel after capture and
 requires the restored custom pixel to retain its snapshot value; another rejects
 non-organ icon authority. Both are pending native execution.
+
+6eb9 (20/32, runtime_error=0) exposed the native distinction: organ.icon is a
+resource while mob_icon is an /icon datum. Both exact current fields now receive
+separate local snapshot pins when distinct; no packet-supplied filename or
+arbitrary file can select an icon. A new native assertion deliberately gives
+the two fields different custom pixels and requires both to survive. Native
+execution of this follow-up is pending.

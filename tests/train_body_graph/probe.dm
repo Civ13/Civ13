@@ -1,3 +1,75 @@
+// Diagnostic-only inventory. Never produces an accepted snapshot or follows
+// unknown/external datums. Report schema paths/categories, not player values.
+/datum/body_fixture_diagnostic
+	var/list/findings = list()
+	var/list/owned = list()
+	var/list/queue = list()
+	var/list/lists_seen = list()
+	var/edges = 0
+	var/map_storage/train_body_graph/codec
+/datum/body_fixture_diagnostic/proc/note(context, category)
+	if(findings.len < 32) findings |= "[context]: [category]"
+/datum/body_fixture_diagnostic/proc/inspect_value(value, context, depth = 0)
+	edges++
+	if(edges > 8192 || depth > 16)
+		note("diagnostic", "budget exceeded")
+		return
+	if(isnull(value) || isnum(value) || istext(value) || ispath(value)) return
+	if(islist(value))
+		if(lists_seen.Find(value)) return
+		lists_seen += list(value)
+		var/list/L = value
+		if(L.len > 1024)
+			note(context, "list exceeds diagnostic bound")
+			return
+		for(var/i = 1, i <= L.len, i++)
+			var/key = L[i]
+			inspect_value(key, context, depth + 1)
+			if(!isnull(key) && !isnum(key)) inspect_value(L[key], context, depth + 1)
+		return
+	if(istype(value, /datum/species))
+		if(!codec.canonical_species_valid(value)) note(context, "noncanonical species")
+		return
+	if(istype(value, /datum))
+		var/datum/D = value
+		if(!codec.admitted_type(D.type))
+			note(context, "unsupported [D.type]")
+			return
+		if(istype(D, /atom/movable) && !(D in owned))
+			note(context, "external movable [D.type]")
+			return
+		if(!(D in queue))
+			if(queue.len >= 512)
+				note("diagnostic", "node budget exceeded")
+				return
+			queue += D
+		return
+	note(context, isicon(value) ? "native icon resource" : "native nonportable value")
+/datum/body_fixture_diagnostic/proc/run(mob/living/body)
+	codec = new
+	owned = list(body)
+	for(var/i = 1, i <= owned.len && i <= 512, i++)
+		var/atom/movable/A = owned[i]
+		for(var/atom/movable/child in A.contents)
+			if(owned.len >= 512) break
+			if(!(child in owned)) owned += child
+	queue = owned.Copy()
+	for(var/i = 1, i <= queue.len && i <= 512 && edges <= 8192, i++)
+		var/datum/D = queue[i]
+		if(!codec.admitted_type(D.type))
+			note("[D.type]", "unsupported contained type")
+			continue
+		if(D.type == /matrix) continue
+		var/list/fields = D.get_saved_vars()
+		for(var/field in fields)
+			if(D.persistence_runtime_var(field) || field in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")) continue
+			if(field == "filters" && istype(D, /atom))
+				var/atom/A = D
+				if(!length(A.filters)) continue
+			if(istype(D, /obj/item/organ/external) && field in list("mob_icon", "icon") && isicon(D.vars[field])) continue
+			inspect_value(D.vars[field], "[D.type].[field]")
+	return findings
+
 // Full production bodies; no replacement constructors/get_saved_vars hooks.
 // No restoration, account login, world save, listeners or network clients.
 /world
@@ -16,6 +88,7 @@
 var/global/list/body_checks = list()
 var/global/list/body_failed = list()
 var/global/list/body_capture_errors = list()
+var/global/list/body_diagnostics = list()
 var/global/body_runtime_error = FALSE
 /world/Error(exception/E)
 	body_runtime_error = TRUE
@@ -145,12 +218,19 @@ var/global/body_runtime_error = FALSE
 		arm.brute_dam = 17
 		arm.createwound(CUT, 17)
 	var/custom_icon_pixel = null
+	var/custom_atom_icon_pixel = null
 	if(arm && arm.mob_icon)
 		arm.mob_icon.DrawBox("#13a5c7", 1, 1, 1, 1)
 		custom_icon_pixel = arm.mob_icon.GetPixel(1, 1)
+		var/icon/independent_atom_icon = icon(arm.icon)
+		independent_atom_icon.DrawBox("#2468ac", 1, 1, 1, 1)
+		arm.icon = independent_atom_icon
+		custom_atom_icon_pixel = independent_atom_icon.GetPixel(1, 1)
 	var/obj/item/extraction_salvage/cargo = new(H)
 	cargo.name = "Body fixture carried item"
 	body_check("real_human_has_organs_and_wound", arm && arm.wounds.len && H.organs.len && H.dna && cargo.loc == H)
+	var/datum/body_fixture_diagnostic/diagnostic = new
+	body_diagnostics["human"] = diagnostic.run(H)
 	var/human_text = G.capture_body(H)
 	body_capture_errors["human"] = G.body_error
 	body_check("owned_injured_human_capture", istext(human_text))
@@ -175,6 +255,8 @@ var/global/body_runtime_error = FALSE
 	var/obj/item/organ/external/restored_arm = restored ? restored.get_organ("l_arm") : null
 	body_check("injury_roundtrip", restored_arm && restored_arm.brute_dam == 17 && restored_arm.wounds.len)
 	body_check("custom_organ_icon_snapshot_roundtrip", restored_arm && restored_arm.mob_icon && custom_icon_pixel && restored_arm.mob_icon.GetPixel(1, 1) == custom_icon_pixel && arm.mob_icon.GetPixel(1, 1) != custom_icon_pixel)
+	var/icon/restored_atom_icon = restored_arm ? icon(restored_arm.icon) : null
+	body_check("distinct_organ_icon_resource_roundtrip", restored_atom_icon && custom_atom_icon_pixel && restored_atom_icon.GetPixel(1, 1) == custom_atom_icon_pixel && custom_atom_icon_pixel != custom_icon_pixel)
 	var/datum/save_export_frame/wrong_icon_frame = new
 	wrong_icon_frame.source = cargo
 	wrong_icon_frame.current_field = "icon"
@@ -236,6 +318,6 @@ var/global/body_runtime_error = FALSE
 	catch(var/exception/E)
 		body_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
-	text2file(json_encode(list("commit" = world.params["tested_commit"], "check_count" = body_checks.len, "failed_labels" = body_failed, "runtime_error" = body_runtime_error, "capture_errors" = body_capture_errors, "checks" = body_checks)), "result.json")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "check_count" = body_checks.len, "failed_labels" = body_failed, "runtime_error" = body_runtime_error, "capture_errors" = body_capture_errors, "diagnostics" = body_diagnostics, "checks" = body_checks)), "result.json")
 	world.log << "COMPLETE train body capture fixture"
 	del(world)

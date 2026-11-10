@@ -138,19 +138,24 @@
 
 // Native icon copies are process-local capabilities, never resource payloads.
 // Keep states/directions/frames/custom pixels intact; do not flatten to pixels.
-// Existing renderer can share mob_icon and icon, so retain those aliases.
-/map_storage/train_body_graph/proc/capture_organ_icon(icon/I, datum/save_export_frame/frame)
+// atom.icon may be a native resource while mob_icon is an /icon object. Keep
+// their distinct captured values, rather than assume assignment retained alias.
+/map_storage/train_body_graph/proc/capture_organ_icon(value, datum/save_export_frame/frame)
 	if(!frame || !istype(frame.source, /obj/item/organ/external) || !(frame.current_field in list("mob_icon", "icon")))
 		throw EXCEPTION("Unsupported native icon field from [body_source_context()]")
 	var/obj/item/organ/external/O = frame.source
-	if(I != O.mob_icon) throw EXCEPTION("Native icon differs from organ renderer icon")
-	if(I.Width() < 1 || I.Height() < 1 || I.Width() > 128 || I.Height() > 128 || length(icon_states(I)) > 64)
-		throw EXCEPTION("Organ icon exceeds local copy bounds")
-	var/ref = local_icon_sources.Find(I)
+	if(!isicon(value) || istext(value)) throw EXCEPTION("Not a native organ icon resource")
+	if(frame.current_field == "mob_icon" && value != O.mob_icon) throw EXCEPTION("Native icon differs from organ mob_icon")
+	if(frame.current_field == "icon" && value != O.icon) throw EXCEPTION("Native icon differs from organ icon")
+	var/ref = local_icon_sources.Find(value)
 	if(!ref)
 		if(local_icon_copies.len >= 64) throw EXCEPTION("Too many local organ icons")
-		local_icon_sources += I
-		local_icon_copies += icon(I)
+		// Input is the current native field, never a filename from the packet.
+		var/icon/I = icon(value)
+		if(I.Width() < 1 || I.Height() < 1 || I.Width() > 128 || I.Height() > 128 || length(icon_states(I)) > 64)
+			throw EXCEPTION("Organ icon exceeds local copy bounds")
+		local_icon_sources += value
+		local_icon_copies += I
 		ref = local_icon_copies.len
 	return list("kind" = "body_local_icon", "ref" = ref)
 
@@ -179,6 +184,8 @@
 		return list("kind" = "body_species", "name" = "Human")
 	var/datum/save_export_frame/frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
 	if(istype(value, /icon)) return capture_organ_icon(value, frame)
+	if(frame && istype(frame.source, /obj/item/organ/external) && frame.current_field == "icon" && isicon(value))
+		return capture_organ_icon(value, frame)
 	if(frame && frame.current_field == "filters" && istype(frame.source, /atom))
 		var/atom/owner = frame.source
 		if(length(owner.filters) || length(value)) throw EXCEPTION("Nonempty native filters are not supported")

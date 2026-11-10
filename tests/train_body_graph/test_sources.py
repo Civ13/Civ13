@@ -27,8 +27,11 @@ class BodyCaptureGuards(unittest.TestCase):
         self.assertIn('/map_storage/proc/rejuvenate_unowned_human_on_load()\n\treturn TRUE', loading)
         self.assertIn('!H.persistence_owner_ckey && rejuvenate_unowned_human_on_load()', loading)
     def test_icons_are_local_bounded_organ_copies(self):
-        self.assertIn('I != O.mob_icon', SOURCE)
-        self.assertIn('local_icon_copies += icon(I)', SOURCE)
+        self.assertIn('value != O.mob_icon', SOURCE)
+        self.assertIn('value != O.icon', SOURCE)
+        self.assertIn('!isicon(value) || istext(value)', SOURCE)
+        self.assertIn('var/icon/I = icon(value)', SOURCE)
+        self.assertIn('local_icon_copies += I', SOURCE)
         self.assertIn('local_icon_copies.len >= 64', SOURCE)
         self.assertIn('I.Width() > 128', SOURCE)
         self.assertIn('length(icon_states(I)) > 64', SOURCE)
