@@ -332,3 +332,19 @@
 	if (istype(researcher) && (is_scholar_instrument(researcher.l_hand, discipline) || is_scholar_instrument(researcher.r_hand, discipline)))
 		return TRUE
 	return FALSE
+
+// ------------------------------------------------------------
+// Tutoring
+// ------------------------------------------------------------
+
+// Someone next to student who knows node_id and can teach it right now.
+/mob/living/human/proc/find_tutor(node_id)
+	for (var/mob/living/human/T in range(1, src))
+		if (T == src || T.stat != CONSCIOUS || T.incapacitated() || !T.research_presence())
+			continue
+		if (T.knows_recipe_node(node_id))
+			return T
+	return null
+
+/mob/living/human/proc/still_tutoring(mob/living/human/student, node_id)
+	return student && !QDELETED(src) && stat == CONSCIOUS && !incapacitated() && get_dist(src, student) <= 1 && knows_recipe_node(node_id)

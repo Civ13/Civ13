@@ -259,6 +259,7 @@ var/knowledge_failures = 0
 	check_scholar_workplaces(scholar, novice)
 	check_scholar_supplies(scholar)
 	check_scholar_instruments(scholar)
+	check_scholar_tutoring()
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -359,6 +360,20 @@ var/knowledge_failures = 0
 	qdel(drafting)
 	qdel(abacus)
 	qdel(bench)
+
+// Tutoring (Val, 2026-11-10): someone who knows a chapter, beside a student,
+// speeds the study and raises the student's skill more.
+/proc/check_scholar_tutoring()
+	var/mob/living/human/knowledge_fixture/teacher = new(locate(2,5,1))
+	var/mob/living/human/knowledge_fixture/student = new(locate(3,5,1))
+	teacher.learn_recipe_node("basic_tools")
+	knowledge_check(student.find_tutor("basic_tools") == teacher && !student.find_tutor("primitive_construction") && !teacher.find_tutor("basic_tools"), "a tutor must know the chapter")
+	knowledge_check(teacher.still_tutoring(student, "basic_tools"), "a tutor beside the student is teaching")
+	teacher.loc = locate(6,2,1)
+	knowledge_check(!student.find_tutor("basic_tools") && !teacher.still_tutoring(student, "basic_tools"), "a tutor who walks away stops teaching")
+	knowledge_check(SCHOLAR_TUTOR_RATE > 1 && SCHOLAR_TUTOR_GAIN_MULT > 1, "tutoring speeds study and raises skill more")
+	qdel(teacher)
+	qdel(student)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.

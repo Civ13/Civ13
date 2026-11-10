@@ -187,6 +187,17 @@ Military Science. Every instrument is made from a node below tier 3, so none
 is locked behind the research it enables. The abacus and drafting set sprites
 are in `icons/obj/scholar_tools.dmi`.
 
+### Tutoring (profession 5)
+
+When someone studies a chapter, a player or agent character beside them who
+already knows that node tutors them (`find_tutor`): the study takes
+`1 / SCHOLAR_TUTOR_RATE` (two thirds) of the time and, if the tutor is still
+beside the student at the end (`still_tutoring`), the student gains three
+times the usual study skill and the tutor gains the usual amount. Selling
+books and taking commissions need no new code: books are ordinary items that
+change hands through normal trade, and a commission is a chapter written from
+memory or copied at a bench.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

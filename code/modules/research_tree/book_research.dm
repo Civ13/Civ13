@@ -378,14 +378,24 @@
 		to_chat(H, SPAN_WARNING("You need to understand this chapter's groundwork first."))
 		return FALSE
 	var/time = H.scholar_study_time(N.era_tier)
-	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name]. This takes about [round(time / 600, 0.5)] minute\s."))
+	// A tutor who knows the chapter, standing beside the student, speeds it up.
+	var/mob/living/human/tutor = H.find_tutor(node_id)
+	if (tutor)
+		time = round(time / SCHOLAR_TUTOR_RATE)
+		to_chat(tutor, SPAN_NOTICE("You help [H] through the chapter on [N.name]."))
+	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name][tutor ? " with [tutor]'s help" : ""]. This takes about [round(time / 600, 0.5)] minute\s."))
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
 	var/atom/start_loc = source.loc
 	// A book on a bench must still be there: taking it away ends the study.
 	if (!do_after(H, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
-		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+		if (tutor && tutor.still_tutoring(H, node_id))
+			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN * SCHOLAR_TUTOR_GAIN_MULT)
+			tutor.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+			to_chat(tutor, SPAN_NOTICE("[H] has learned [N.name] from you."))
+		else
+			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		return TRUE
 	return FALSE
