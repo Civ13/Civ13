@@ -280,7 +280,7 @@ var/global/datum/boat_game_probe/boat_game_probe = new
 	var/obj/item/weapon/grenade/frag/vehicle_probe/armed = new(locate(81,44,1))
 	owned += armed
 	armed.det_time = 30
-	armed.active = TRUE
+	// activate() now ignores an already-active grenade, so let it set active itself.
 	armed.activate()
 	blast_points.Cut()
 	check(!(armed in A.transporting),"external primed grenade starts outside tank")
