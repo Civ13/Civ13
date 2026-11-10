@@ -22,6 +22,10 @@ var/global/list/basic_crafting_recipes = list()
 	if (is_basic_crafting_recipe(result_path_string))
 		return TRUE
 	var/node_id = get_recipe_node_req(result_path_string)
+	// Book research: the pencil, paper and blank book are free from the start,
+	// so research can begin at all.
+	if (is_book_research_writing_supply(result_path_string))
+		return TRUE
 	// Book research: anyone who knows the groundwork may build what the next
 	// step of research needs, without a manual for it.
 	if (map && map.book_research_enabled() && is_research_essential_recipe(result_path_string))

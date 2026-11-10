@@ -776,7 +776,7 @@ class AcquisitionProjection(Projection):
         self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(
             r'"(/obj/[^"\n]+)" = "([a-z_]+)"', research)), text2num=int,
             material_prefix='/material/electronics/',
-            map=Record(ordinal_age=5,is_node_done=lambda faction,node: node=='electricity'),
+            map=Record(ordinal_age=5,is_node_done=lambda faction,node: node=='electricity',book_research_enabled=lambda: False),
             is_basic_crafting_recipe=lambda value: value in ('/obj/item/stack/material/rope','/obj/item/stack/material/stonebrick','/obj/structure/researchdesk'),
             crafting_recipe_allowed=lambda actor,path: bool(actor and self.globals['map'].is_node_done(actor.civilization,self.globals['recipe_node_requirements'][path])),
             get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
@@ -804,7 +804,7 @@ class AcquisitionProjection(Projection):
         return product
 
     def menu(self, row, done=True, age=5, legacy=0):
-        self.globals['map'] = Record(ordinal_age=age, is_node_done=lambda _faction, node: done and node == 'electricity')
+        self.globals['map'] = Record(ordinal_age=age, is_node_done=lambda _faction, node: done and node == 'electricity', book_research_enabled=lambda: False)
         return self.run('/datum/acquisition/proc/menu', Record(type='/material/electronics'), i=DmRow(row),
                         research_faction='fixture', current_res=DmRow([legacy, legacy, legacy]))
 

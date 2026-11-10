@@ -80,6 +80,26 @@ gives the researcher `SCHOLAR_RESEARCH_GAIN` and each studied chapter
 to Basic Mathematics. Studying needs no skill. The `Check scholarship` verb
 lists the levels and the bench shows each node's requirement.
 
+### Books from memory (phase 3)
+
+`book_pages.dm` keeps a book's writing as pages (`written_pages`; `dat` mirrors
+them and older one-block books become page one). Pen or pencil "Contents" adds
+a page. With book research on:
+
+- The same pen menu offers "Research chapter": pick a node you know that the
+  book lacks, hold a blank sheet of paper or parchment, and spend
+  `BOOK_WRITE_STAMINA(tier)` stamina over `BOOK_WRITE_TIME(tier)` (two minutes
+  for the Stone Age). Writing gives a little scholarship.
+- "Rip out a page" (any non-unique book) takes a page or chapter out in two
+  seconds. A page becomes a written sheet; a chapter becomes a
+  `research_page` that can be studied on its own. Using either on a book binds
+  it back in over 30 seconds.
+- Parchment (`/obj/item/weapon/paper/parchment`) is cut from a dried hide with a
+  sharp tool, four sheets per hide, and works like paper.
+- The pencil, paper and blank book are craftable by anyone from 5000 B.C.
+  (`book_research_writing_supplies`); the pen stays on Papermaking. Material
+  menus show rows up to the world era and the craft checks knowledge.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
