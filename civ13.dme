@@ -813,6 +813,7 @@
 #include "code\modules\1713\factory_monitor.dm"
 #include "code\modules\1713\factory_pipes.dm"
 #include "code\modules\1713\factory_plumbing.dm"
+#include "code\modules\1713\offshore_rig.dm"
 #include "code\modules\1713\piece_projects.dm"
 #include "code\modules\1713\piped_barrel.dm"
 #include "code\modules\1713\factory_vessel.dm"

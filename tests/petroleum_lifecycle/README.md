@@ -31,3 +31,15 @@ manual removals or automation requests expose the remaining barrels; destruction
 returns every contained barrel to the turf. No replacement barrel or reagent is
 created. An unrelated floor barrel is only selected by explicit floor loading.
 These entry/turf fixtures do not establish full-world or live-save acceptance.
+
+## Offshore drilling rigs
+
+`tests/petroleum_lifecycle/offshore_probe.dm` runs through the same launcher
+(`-Probe tests/petroleum_lifecycle/offshore_probe.dm`; on Linux
+`python3 tests/ecology_spawning/run_linux.py . tests/petroleum_lifecycle/offshore_probe.dm`).
+It pins the seabed field model to independently computed values (richness per
+eight-tile square, about one square in three), checks that only deep saltwater
+holds offshore oil, the build refusals (no deck, dry seabed, second rig), a
+thirty-unit cycle on a rich field, save/load relinking, unloading, a rig over
+dry seabed pumping nothing, and barrel return on destruction. It does not
+establish graphical or live-save acceptance.

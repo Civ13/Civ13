@@ -983,7 +983,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/pharaoh2" = "classical_dress",
 		"/obj/item/clothing/under/sari/blue" = "classical_dress",
 		"/obj/item/clothing/under/sari/red" = "classical_dress",
-		// --- combustion (16) ---
+		// --- combustion (17) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25" = "combustion",
@@ -997,6 +997,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fuelpump/star" = "combustion",
 		"/obj/structure/oil_deposits" = "combustion",
 		"/obj/structure/oilwell" = "combustion",
+		"/obj/structure/oilwell/offshore" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
 		// The bakelizer turns crude petroleum into plastic, so it belongs with the
