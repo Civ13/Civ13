@@ -568,7 +568,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
-	fullh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/japanese/G1 = new/obj/item/weapon/key/japanese(null)
 	KC.attackby(G1,H)
@@ -1098,7 +1097,6 @@
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
-	fullh.attackby(new/obj/item/weapon/material/sword/katana, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
 	if (H.f_style != "Shaved" && H.f_style != "Short Facial Hair" && H.f_style != "Goatee")
@@ -1595,7 +1593,7 @@
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
-	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
+	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana(null)
 	uniform.attackby(fullh, H)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
