@@ -36,6 +36,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'bodybag_label': {'files': ('tests/bodybag/test_label.py',), 'paths': (
+        'tests/bodybag/', 'code/game/objects/items/bodybag.dm', 'tests/save_movement/source_adapter.py')},
     'card_dealing': {'files': ('tests/card_dealing/test_prompt.py',),
         'paths': ('tests/card_dealing/',), 'shared_paths': (
             'code/game/objects/items/cards.dm', 'tests/save_movement/source_adapter.py')},
