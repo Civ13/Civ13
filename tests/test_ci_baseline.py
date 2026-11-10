@@ -1381,6 +1381,8 @@ class BaselinePolicyTests(unittest.TestCase):
             with self.subTest(path=path):
                 expected = {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'hub_status'}
                 if path == 'code/world.dm':
+                    # The mocked irrigation runner checks global round initialization here.
+                    expected.add('irrigation_ci_runner')
                     expected.add('dictionary')
                     expected.add('character_return_preparation')
                     expected.add('access_lists')
