@@ -27,11 +27,24 @@
 	..()
 	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil || /obj/item/weapon/pen/crayon))
 		icon_state = "pennew" // from feather to modern black-point plastic pen.
+	name_as_quill()
 
 /obj/item/weapon/pen/update_icon()
 	..()
 	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil || /obj/item/weapon/pen/crayon))
 		icon_state = "pennew" // from feather to modern black-point plastic pen.
+	name_as_quill()
+
+// Before the Industrial Age the plain ink pen is drawn as a feather: call it a quill.
+/obj/item/weapon/pen/proc/name_as_quill()
+	if (!map || !(type in list(/obj/item/weapon/pen, /obj/item/weapon/pen/blue, /obj/item/weapon/pen/red)))
+		return
+	if (map.ordinal_age < 4)
+		name = "quill"
+		desc = "A feather quill for writing in [colour == COLOR_BLACK ? "black" : (colour == COLOR_BLUE ? "blue" : "red")] ink."
+	else if (name == "quill")
+		name = initial(name)
+		desc = initial(desc)
 
 /obj/item/weapon/pen/pencil
 	name = "pencil"

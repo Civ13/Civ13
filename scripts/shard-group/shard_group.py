@@ -49,11 +49,16 @@ import time
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
+from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
+sys.path.insert(0, str(HERE))
+import fresh_world  # noqa: E402
+import group_fresh_world  # noqa: E402
+from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover', 'epoch')
+                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -93,7 +98,6 @@ KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHE
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
-MAP_BLOCK = re.compile(r'// BEGIN_SELECTED_MAP\r?\n.*?// END_SELECTED_MAP', re.S)
 RESERVED_PORTS = (1714,)  # live Gaia
 MAX_REGIONS = 16
 
@@ -328,11 +332,7 @@ def directory(group):
 
 
 def selected_map_dme(dme_text, include):
-    if not MAP_BLOCK.search(dme_text):
-        raise RuntimeError('civ13.dme has no selected-map block')
-    newline = '\r\n' if '\r\n' in dme_text else '\n'
-    block = '// BEGIN_SELECTED_MAP' + newline + '#include "' + include + '"' + newline + '// END_SELECTED_MAP'
-    return MAP_BLOCK.sub(lambda _: block, dme_text, count=1)
+    return select_map_block(dme_text, include, 'civ13.dme')
 
 
 TRANSFER_TOOLS = Path(__file__).resolve().parents[2] / 'tools' / 'transfer_storage'
@@ -479,6 +479,8 @@ class RegionHost(Host):
         return report
 
     def work(self, action, operation):
+        if action == 'fresh-world':
+            return fresh_world.work(self, operation)
         if action == 'stage':
             return self.stage_work(operation)
         return super().work(action, operation)
@@ -645,12 +647,29 @@ class RegionHost(Host):
         return True
 
     def request(self, action):
+        if fresh_world.pending(self).exists():
+            raise Refused('interrupted fresh-world archive: manual recovery required before any host action')
         # Checked before the lock: taking it would create the folder setup needs empty.
         if action in ('start', 'restart', 'update', 'handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
+
+    def watch_step(self, idle_since):
+        if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
+            return None, 30
+        return super().watch_step(idle_since)
+
+    def thaw(self, *args, **kwargs):
+        if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
+            raise Refused('fresh-world archive blocks wake until it finishes or is recovered')
+        return super().thaw(*args, **kwargs)
+
+    def do_start(self, operation):
+        if fresh_world.pending(self).exists():
+            raise Refused('interrupted fresh-world archive: manual recovery required')
+        return super().do_start(operation)
 
     def precheck(self, action):
         # start compiles a missing or stale build itself (Host.do_refresh), so a
@@ -1531,10 +1550,9 @@ def hosts(group, only=None, platform=None):
 
 def region_view(port, timeout=10):
     """Ask a running region what it is and how it sees its peers (shard_region topic)."""
-    payload = b'\0' * 5 + b'shard_region=1&format=json&peers=1' + b'\0'
     try:
         with socket.create_connection(('127.0.0.1', port), timeout=timeout) as connection:
-            connection.sendall(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
+            connection.sendall(frame_query(b'shard_region=1&format=json&peers=1'))
             data = b''
             while len(data) < 4 or len(data) < 4 + struct.unpack('>H', data[2:4])[0]:
                 part = connection.recv(65536)
@@ -2016,6 +2034,11 @@ def supervise(group, start=detach):
         started['save_validation_error'] = str(error)[:300]
     if not group['transfers']:
         return started
+    # A group fresh world stops the helpers and moves their stores; they stay down
+    # until it has finished (or been recovered by hand).
+    if group_fresh_world.paused(group):
+        started['paused'] = 'group fresh world'
+        return started
     # Helpers that run old code are restarted, but never in the middle of an action.
     refresh = not group_busy(group)
     for region in group['regions']:
@@ -2112,6 +2135,8 @@ def main(argv=None):
     parser.add_argument('--config', required=True)
     parser.add_argument('action', nargs='?', choices=GROUP_ACTIONS)
     parser.add_argument('--region')
+    parser.add_argument('--confirm-region', help='fresh-world: type the exact selected region id')
+    parser.add_argument('--confirm-group', help='group-fresh-world: type the exact group id')
     parser.add_argument('--from', dest='source', help='adopt: the stopped standalone server folder')
     parser.add_argument('--epoch', help='epoch: the epoch to advance to, by name (2026) or index (0-9)')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
@@ -2131,7 +2156,18 @@ def main(argv=None):
     try:
         if args.action in ('setup', 'update'):
             fetch_remote(group)
-        if args.action == 'setup':
+        if args.action == 'fresh-world':
+            if not args.region or args.confirm_region != args.region:
+                raise Refused('fresh-world requires one --region and matching --confirm-region')
+            # The launcher reads the same {"accepted": ..., "ok": true} answer as start (LocalHosting.ParseGroup).
+            result = {'accepted': {region['id']: fresh_world.request(host, args.confirm_region)
+                                   for region, host in hosts(group, args.region)}, 'refused': {}}
+        elif args.action == 'group-fresh-world':
+            if args.region:
+                raise Refused('the group fresh world acts on every region; leave out --region')
+            result = group_fresh_world.request(group, hosts(group), args.confirm_group, coordinator_pid,
+                                               Platform().terminate)
+        elif args.action == 'setup':
             result = setup(group, region_id=args.region)
         elif args.action == 'enrol':
             if not args.region:

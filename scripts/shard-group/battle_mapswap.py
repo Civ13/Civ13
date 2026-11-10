@@ -23,8 +23,10 @@ import sys
 import time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from shard_map_selection import select_map_block  # noqa: E402
+
 MAP_ID = re.compile(r'^[A-Za-z0-9_]{1,64}$')
-MAP_BLOCK = re.compile(r'// BEGIN_SELECTED_MAP\r?\n.*?// END_SELECTED_MAP', re.S)
 DMB_SLOTS = ('region.dmb', 'region.b.dmb')
 BUILD_SECONDS = 1800
 
@@ -43,11 +45,7 @@ def find_map(maps_dir, map_id):
 
 
 def select_map(dme_text, include):
-    if not MAP_BLOCK.search(dme_text):
-        raise RuntimeError('region.dme has no selected-map block')
-    newline = '\r\n' if '\r\n' in dme_text else '\n'
-    block = '// BEGIN_SELECTED_MAP' + newline + '#include "' + include + '"' + newline + '// END_SELECTED_MAP'
-    return MAP_BLOCK.sub(lambda _: block, dme_text, count=1)
+    return select_map_block(dme_text, include, 'region.dme')
 
 
 def live_slot(region_path):

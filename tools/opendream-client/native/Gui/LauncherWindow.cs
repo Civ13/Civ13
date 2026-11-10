@@ -284,6 +284,10 @@ internal sealed partial class LauncherWindow : Form {
             epoch.Click += async (_, _) => await AdvanceEpoch();
             hostActions.Add(epoch);
             groupButtons.Controls.Add(epoch);
+            var groupFresh = new Button { Text = "Fresh world (all regions)…", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            groupFresh.Click += async (_, _) => await GroupFreshWorld();
+            hostActions.Add(groupFresh);
+            groupButtons.Controls.Add(groupFresh);
             var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             settings.Click += (_, _) => ShowHostSettings();
             groupButtons.Controls.Add(settings);
@@ -338,7 +342,7 @@ internal sealed partial class LauncherWindow : Form {
         string Chosen() => regions[Math.Max(0, picker.SelectedIndex)].Id;
         foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"),
                 ("Build update", "stage"), ("Save, update and restart", "deploy"), ("Sleep now", "freeze"), ("Wake", "thaw"), ("Apply host settings", "config-apply"), ("Set up", "setup"),
-                ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
+                ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock"), ("Fresh world…", "fresh-world") }) {
             var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             button.Click += async (_, _) => await GroupAction(action, text, Chosen());
             hostActions.Add(button);
@@ -764,6 +768,7 @@ internal sealed partial class LauncherWindow : Form {
                 "and players keep playing on the old world (held only while their own level saves) until the new one has loaded the save.",
             _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
+        if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
         if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
@@ -791,6 +796,88 @@ internal sealed partial class LauncherWindow : Form {
             if (!answer.Busy) await RefreshHostState();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine(label + " failed: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    private async Task FreshWorld(string region) {
+        if (host?.Control is not { Group: not null } control) return;
+        using var dialog = new Form { Text = "Start a fresh world: " + region, FormBorderStyle = FormBorderStyle.FixedDialog,
+            MinimizeBox = false, MaximizeBox = false, StartPosition = FormStartPosition.CenterParent,
+            AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = "Use Save and stop first. This archives this region's map save, backups and rollback, " +
+            "then starts its existing build on a fresh map. Buildings, factions, local player-built transits, saved bodies and their inventory " +
+            "are removed from the active world. Account preferences/notes, bans, settings, reputation and raid cooldowns remain. " +
+            "Linked transfer groups and separate extraction/vehicle storage are refused: their shared transits need a coordinated reset. " +
+            "Nothing is permanently deleted; recovery is manual from the archive reported in the host log. " +
+            "Type the exact region id to confirm: " + region,
+            MaximumSize = new Size(480, 0), AutoSize = true });
+        var confirmation = new TextBox { Width = 300 };
+        var go = new Button { Text = "Archive world and start fresh", DialogResult = DialogResult.OK, AutoSize = true, Enabled = false };
+        confirmation.TextChanged += (_, _) => go.Enabled = confirmation.Text == region;
+        layout.Controls.Add(confirmation);
+        layout.Controls.Add(go);
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        layout.Controls.Add(cancel);
+        dialog.Controls.Add(layout);
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != region) return;
+        SetHostBusy(true);
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunGroup(control, "fresh-world", null, region, null, region));
+            HostLine(answer.Message);
+            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
+            if (!answer.Busy) await RefreshHostState();
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            HostLine("Fresh world refused: " + e.Message);
+            SetHostBusy(false);
+        }
+    }
+
+    // The group id from the group config ("group"), which the group fresh world must be confirmed with.
+    private static string? GroupId(HostGroup group) {
+        try {
+            using var document = JsonDocument.Parse(File.ReadAllText(group.Config));
+            return document.RootElement.TryGetProperty("group", out var id) && id.ValueKind == JsonValueKind.String ? id.GetString() : null;
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) {
+            return null;
+        }
+    }
+
+    // Fresh world for every region of a linked group at once (shard_group.py group-fresh-world).
+    private async Task GroupFreshWorld() {
+        if (host?.Control is not { Group: { } group } control) return;
+        var id = GroupId(group);
+        if (id == null) { HostLine("Fresh world (all regions) refused: the group config has no group id."); return; }
+        using var dialog = new Form { Text = "Start a fresh world in every region", FormBorderStyle = FormBorderStyle.FixedDialog,
+            MinimizeBox = false, MaximizeBox = false, StartPosition = FormStartPosition.CenterParent,
+            AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { Text = "Use Save and stop on every region first. This stops the travel agents and coordinator, archives every " +
+            "region's map save, backups, rollback and travel store plus the group's coordinator store, then starts every region on a fresh map. " +
+            "Every character, building and faction, travellers in flight and account home worlds are reset. Accounts, bans and settings remain. " +
+            "Nothing is permanently deleted; recovery is manual from the archive under the group folder. " +
+            "Type the exact group id to confirm: " + id,
+            MaximumSize = new Size(480, 0), AutoSize = true });
+        var confirmation = new TextBox { Width = 300 };
+        var go = new Button { Text = "Archive every region and start fresh", DialogResult = DialogResult.OK, AutoSize = true, Enabled = false };
+        confirmation.TextChanged += (_, _) => go.Enabled = confirmation.Text == id;
+        layout.Controls.Add(confirmation);
+        layout.Controls.Add(go);
+        var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
+        layout.Controls.Add(cancel);
+        dialog.Controls.Add(layout);
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != id) return;
+        SetHostBusy(true);
+        try {
+            var answer = await Task.Run(() => LocalHosting.RunGroup(control, "group-fresh-world", null, null, null, null, id));
+            HostLine(answer.Message);
+            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
+            if (!answer.Busy) await RefreshHostState();
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException or ArgumentException) {
+            HostLine("Fresh world (all regions) refused: " + e.Message);
             SetHostBusy(false);
         }
     }

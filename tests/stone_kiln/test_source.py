@@ -14,7 +14,7 @@ MATERIAL = ROOT / 'code/modules/materials/material_sheets.dm'
 def guard_contract(source, oven):
     valid = source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]
     upgrade = source.split('/proc/upgrade_to_stone_kiln(', 1)[1].split('\n/obj/', 1)[0]
-    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'map.is_node_done(H.civilization, "basic_furniture")', 'S.type != /obj/item/stack/material/stone', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
+    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'research_node_known(H, "basic_furniture")', 'S.type != /obj/item/stack/material/stone', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
         assert guard in valid, guard
     for required in ('stone_upgrade_busy = TRUE', 'do_after(H, 150, src)', 'stone_kiln_upgrade_valid(S, H, site, epoch, save_identity)', 'S.can_use(10)', 'stone_before = S.amount', 'S.use(10)', 'S.amount != stone_before - 10', 'K.fuel = fuel', 'fuel = 0', 'K.wood_residue = account', 'wood_residue = null', 'qdel(src)'):
         assert required in upgrade, required
@@ -37,9 +37,9 @@ def metallurgy_contract(source):
     loading = source.split('/campfire/attackby(', 1)[1].split('\n/obj/', 1)[0]
     firing = source.split('/campfire/attack_hand(', 1)[1]
     assert 'istype(I, /obj/item/weapon/clay/mold)' in loading
-    assert 'map.is_node_done(H.civilization, "bronze_working")' in loading
+    assert 'research_node_known(H, "bronze_working")' in loading
     assert 'for (var/obj/item/weapon/clay/mold/M in contents)' in firing
-    assert 'map.is_node_done(H.civilization, "bronze_working")' in firing
+    assert 'research_node_known(H, "bronze_working")' in firing
 
 
 def project_filled_vessel_route(source, *, filled, flammable, intent, glass=False, liquid_fuel=False, holder_owned=True, holder_empty=True):
@@ -132,10 +132,10 @@ class KilnSourceTests(unittest.TestCase):
 
     def test_primitive_upgrade_does_not_unlock_kiln_metallurgy(self):
         admission = self.source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]
-        self.assertIn('map.is_node_done(H.civilization, "basic_furniture")', admission)
+        self.assertIn('research_node_known(H, "basic_furniture")', admission)
         self.assertNotIn('"bronze_working"', admission)
         metallurgy_contract(self.source)
-        gate = 'map.is_node_done(H.civilization, "bronze_working")'
+        gate = 'research_node_known(H, "bronze_working")'
         self.assertEqual(self.source.count(gate), 2)
         for index, mutation in enumerate((self.source.replace(gate, 'TRUE', 1), 'TRUE'.join(self.source.rsplit(gate, 1))), 1):
             with self.subTest(missing_gate=index), self.assertRaises(AssertionError):

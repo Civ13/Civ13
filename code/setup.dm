@@ -139,15 +139,16 @@
 	if (config.allowedgamemodes == "PERSISTENCE")
 		map.persistence = TRUE
 		map.apply_persistence_age_floor()
+		map.start_book_research_world()
 		map.research_active = FALSE
-		if (!map.autoresearch)
+		if (!map.autoresearch && !map.book_research_enabled())
 			map.autoresearch = TRUE
 			spawn(100)
 				map.autoresearch_proc()
 		map.autoresearch_mult = 0.006
 		if (map.default_research < 19)
 			map.default_research = 19
-		map.gamemode = "Persistent (Auto-Research)"
+		map.gamemode = map.book_research_enabled() ? "Persistent (Book Research)" : "Persistent (Auto-Research)"
 		config.allow_vote_restart = FALSE
 		to_chat(world, "<big><b>The current round has been set as a Persistent Round.</b></big>")
 

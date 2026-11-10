@@ -16,6 +16,10 @@ var/global/list/stool_cache = list() //haha stool
 /obj/item/weapon/stool/prison
 	force = 0
 
+/obj/item/weapon/stool/prison/New(var/newloc, var/new_material, var/new_padding_material)
+	..(newloc, new_material, new_padding_material)
+	force = initial(force)
+
 /obj/item/weapon/stool/wood
 	material = "wood"
 	icon_state = "stool_wood"

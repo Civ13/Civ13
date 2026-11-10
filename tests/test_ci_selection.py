@@ -71,7 +71,7 @@ class SelectionTests(unittest.TestCase):
 
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
-                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
+                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml', 'scripts/ci_skill_prose.py',
                      'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
                      'scripts/nomads-lifecycle/agent_debug.py',
                      'scripts/nomads-lifecycle/variable_observability.py',
@@ -279,9 +279,10 @@ class SelectionTests(unittest.TestCase):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_door_intents_offline_admission_is_exact(self):
-        path = 'tests/door_intents/test_door_intents.py'
-        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
-            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        for path in ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'):
+            with self.subTest(path=path):
+                with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+                    self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
         other = 'tests/door_intents/new_native_probe.dm'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered door-intent'):
@@ -331,6 +332,24 @@ class SelectionTests(unittest.TestCase):
         other = 'tests/sweep_loops/new_native_probe.dm'
         with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered sweep-loop'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_projectile_location_offline_admission_is_exact(self):
+        path = 'tests/projectile_location/test_location.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/projectile_location/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered projectile-location'):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
+    def test_zombie_spawn_selection_offline_admission_is_exact(self):
+        path = 'tests/zombie_spawn_selection/test_selection.py'
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+        other = 'tests/zombie_spawn_selection/new_native_probe.dm'
+        with patch.object(selection.subprocess, 'check_output', return_value=(other + '\0').encode()):
+            with self.assertRaisesRegex(RuntimeError, 'Unregistered zombie-spawn-selection'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_nomads_adoption_offline_admission_is_exact(self):
@@ -487,7 +506,7 @@ class SelectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'repo'
             (root / 'scripts').mkdir(parents=True)
-            for name in ('select-ci.py', 'ci_baseline.py', 'byond_toolchain.py'):
+            for name in ('select-ci.py', 'ci_baseline.py', 'ci_skill_prose.py', 'byond_toolchain.py'):
                 (root / 'scripts' / name).write_bytes((source / 'scripts' / name).read_bytes())
             def git(*args):
                 return subprocess.check_output(['git', '-c', 'user.name=CI fixture',

@@ -34,6 +34,37 @@ def proc_body(text, path):
 
 
 class LightFuelTests(unittest.TestCase):
+    def test_military_lens_cycles_keep_both_sprite_families_and_effect_order(self):
+        text = source(LANTERN)
+        base = '/obj/item/flashlight/militarylight'
+        for subtype, prefix in (('', 'militarylight'), ('/alt', 'militarylightalt')):
+            body = proc_body(text, base + subtype + '/secondary_attack_self')
+            self.assertEqual(body.strip(),
+                'return cycle_lens(user, "{0}_on_red", "{0}_on_green", "{0}_on")'.format(prefix))
+
+        body = proc_body(text, base + '/proc/cycle_lens')
+        self.assertRegex(body, r'^\s*\tlens \+=1\n\tif \(lens > 3\)\n\t\tlens = 1\n\n\tswitch \(lens\)')
+        cases = re.findall(r'(?ms)^\t\tif \(([123])\)\n(.*?)(?=^\t\tif \(|\Z)', body)
+        self.assertEqual([number for number, _ in cases], ['1', '2', '3'])
+        expected = {
+            '1': ('1.5', '2.5', '#ad2005', 'red_state', 'red', ('message', 'icon')),
+            '2': ('1.5', '2.5', '#17ad2a', 'green_state', 'green', ('icon', 'message')),
+            '3': ('5', '5', '#fcffd6', 'clear_state', 'remove', ('message', 'icon')),
+        }
+        for number, case in cases:
+            light_range, brightness, color, sprite, message, order = expected[number]
+            self.assertIn('light_range = ' + light_range + '\n', case)
+            self.assertIn('brightness_on = ' + brightness + '\n', case)
+            self.assertIn('light_color = "' + color + '"\n', case)
+            self.assertIn('on_state = ' + sprite + '\n', case)
+            self.assertIn('lens = ' + number + '\n', case)
+            self.assertIn(message, case)
+            events = tuple('message' if line.strip().startswith('to_chat(') else 'icon'
+                           for line in case.splitlines()
+                           if line.strip().startswith(('to_chat(', 'update_icon(')))
+            self.assertEqual(events, order)
+            self.assertTrue(case.rstrip().endswith('return'))
+
     def test_electric_flashlights_are_finite_and_take_batteries(self):
         text = source(LANTERN)
         for path in ('/obj/item/flashlight/flashlight', '/obj/item/flashlight/modern',

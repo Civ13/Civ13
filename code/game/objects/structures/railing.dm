@@ -180,6 +180,9 @@
 	if (istype(W, /obj/item/weapon/hammer) && !anchored)
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		if (do_after(user, 20, src))
+			// Another player may fasten or dismantle the railing during the wait.
+			if (QDELETED(src) || anchored)
+				return
 			user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>", "<span class='notice'>You dismantle \the [src].</span>")
 			if (flammable == TRUE)
 				new /obj/item/stack/material/wood(get_turf(usr))

@@ -24,82 +24,92 @@
 		icon_state = base_state
 		set_light(0)
 
+// Manual bloomery and blast-furnace stacks share the same payment and credits.
+/obj/structure/furnace/proc/accept_manual_stack(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/stack/material/wood))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], smelting it.")
+
+	else if (istype(I, /obj/item/stack/material/bamboo))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/weapon/branch))
+		record_wood_fuel(I, I.amount+0.5)
+		fuel += I.amount+0.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/material/leaf))
+		record_wood_fuel(I, I.amount+0.5)
+		fuel += I.amount+0.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/dung))
+		record_wood_fuel(I, I.amount+1)
+		fuel += I.amount+1
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/charcoal))
+		record_wood_fuel(I, I.amount*2.5)
+		fuel += I.amount*2.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/coal))
+		record_wood_fuel(I, I.amount*3)
+		fuel += I.amount*3
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/material/woodplank))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/iron))
+		iron += I.amount
+		to_chat(H, "You place \the [I] in \the [src].")
+
+	else
+		to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
+		return
+
+	H.remove_from_mob(I)
+	I.loc = src
+	visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
+	qdel(I)
+	return
+
+/obj/structure/furnace/proc/handle_structure_tool(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
+		if (istype(I, /obj/item/weapon/wrench))
+			visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
+				anchored = !anchored
+				return TRUE
+		else if (istype(I, /obj/item/weapon/hammer))
+			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
+			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+			if (do_after(H,50,src))
+				visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
+				empty()
+				qdel(src)
+				return TRUE
+
+	return FALSE
+
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !I.loc)
 		return
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
-					return
-			else if (istype(I, /obj/item/weapon/hammer))
-				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
-					empty()
-					qdel(src)
-					return
-
+		if (handle_structure_tool(I, H))
+			return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/iron))
-				iron += I.amount
-				to_chat(H, "You place \the [I] in \the [src].")
-
-			else
-				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
-				return
-
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
-			qdel(I)
+			accept_manual_stack(I, H)
 			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
@@ -198,75 +208,10 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
-					return
-			else if (istype(I, /obj/item/weapon/hammer))
-				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
-					empty()
-					qdel(src)
-					return
-
+		if (handle_structure_tool(I, H))
+			return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			if (istype(I, /obj/item/stack/ore/iron))
-				iron += I.amount
-				to_chat(H, "You place \the [I] in \the [src].")
-			else
-				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
-				return
-
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
-			qdel(I)
+			accept_manual_stack(I, H)
 			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
@@ -311,23 +256,8 @@
 	if (!istype(H))
 		return
 	if (H.a_intent == I_HELP)
-		if (istype(I, /obj/item/weapon/wrench) || (istype(I, /obj/item/weapon/hammer)))
-			if (istype(I, /obj/item/weapon/wrench))
-				visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
-					return
-			else if (istype(I, /obj/item/weapon/hammer))
-				visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(H,50,src))
-					visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
-					empty()
-					qdel(src)
-					return
-
+		if (handle_structure_tool(I, H))
+			return
 		if (istype(I, /obj/item/stack/))
 			if (istype(I, /obj/item/stack/material/wood))
 				record_wood_fuel(I, I.amount)
