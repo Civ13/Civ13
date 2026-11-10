@@ -455,6 +455,36 @@ class DoormanTests(base.GaiaHostTests):
         self.assertFalse(doorman.is_http(first))
 
 
+class TopicClientTests(unittest.TestCase):
+    def test_framing_boundaries(self):
+        from byond_topic import frame_query
+        self.assertEqual(request('?status=1'), frame_query(b'?status=1'))
+        self.assertEqual(b'\x00\x83\xff\xff', frame_query(b'x' * 65529)[:4])
+        with self.assertRaises(struct.error):
+            frame_query(b'x' * 65530)
+
+    def test_fragmented_reply_preserves_request_and_timeout(self):
+        connection = mock.MagicMock()
+        connection.recv.side_effect = [b'\x00', b'\x83\x00', b'\x04', b'\x06', b'o', b'k\x00']
+        with mock.patch.object(doorman.socket, 'create_connection') as connect:
+            connect.return_value.__enter__.return_value = connection
+            self.assertEqual('ok', doorman.topic(1714, '?status=1', timeout=2))
+        connect.assert_called_once_with(('127.0.0.1', 1714), timeout=2)
+        connection.sendall.assert_called_once_with(request('?status=1'))
+
+    def test_malformed_and_truncated_replies_keep_errors(self):
+        for parts, message in (([b'\x00\x84\x00\x00'], 'invalid Topic reply'),
+                               ([b'\x00\x83\x00\x01', b'\x05'], 'Topic reply is not text'),
+                               ([b'\x00\x83', b''], 'connection closed early')):
+            with self.subTest(message=message):
+                connection = mock.MagicMock()
+                connection.recv.side_effect = parts
+                with mock.patch.object(doorman.socket, 'create_connection') as connect:
+                    connect.return_value.__enter__.return_value = connection
+                    with self.assertRaisesRegex(RuntimeError, message):
+                        doorman.topic(1714, 'status=1')
+
+
 # The inherited GaiaHostTests cases already run in test_gaia_host.
 for name in [name for name in dir(base.GaiaHostTests) if name.startswith('test_')]:
     if name not in DoormanTests.__dict__:

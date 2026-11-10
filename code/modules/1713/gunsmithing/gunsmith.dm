@@ -67,11 +67,11 @@
 	if (!map)
 		return 4
 	var/faction = istype(H) ? H.civilization : null
-	if (map.is_node_done(faction, "automatic_weapons"))
+	if (research_node_known(H, "automatic_weapons", faction))
 		return 7
-	if (map.is_node_done(faction, "selfloading_firearms"))
+	if (research_node_known(H, "selfloading_firearms", faction))
 		return 6
-	if (map.is_node_done(faction, "cartridge_ammo"))
+	if (research_node_known(H, "cartridge_ammo", faction))
 		return 5
 	return 4
 

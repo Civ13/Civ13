@@ -19,6 +19,40 @@
 	else
 		icon_state = "[base_icon]_anvil"
 
+/obj/structure/anvil/proc/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name)
+	var/list/newlist = list("Cancel")
+	var/valid_recipes = FALSE // Tracking if any valid recipes are found
+	for(var/i in anvil_recipes)
+		if (anvil_recipes[i])
+			if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][material_index] > 0)
+				newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][material_index]] [material_name]" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
+				valid_recipes = TRUE // At least one valid recipe found
+	if (!valid_recipes) // No valid recipes found
+		to_chat(user, "There is nothing that you can craft of this type.")
+		return
+	var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
+	if (choice2 == "Cancel")
+		return
+	var/list/parsed_choice2 = splittext(choice2," - ")
+	if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+		if (P.amount >= anvil_recipes[parsed_choice2[1]][material_index] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+			to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
+			in_use = TRUE
+			update_icon()
+			if (do_after(user,10*anvil_recipes[parsed_choice2[1]][material_index],src,can_move=FALSE))
+				if (P.amount >= anvil_recipes[parsed_choice2[1]][material_index] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
+					P.amount -= anvil_recipes[parsed_choice2[1]][material_index]
+					if (P.amount <= 0)
+						qdel(P)
+					to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
+					var/rtype = anvil_recipes[parsed_choice2[1]][9]
+					new rtype (loc,material_name)
+				in_use = FALSE
+			else
+				in_use = FALSE
+			update_icon()
+			return
+
 /obj/structure/anvil/attackby(obj/item/P as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	if (istype(P,/obj/item/weapon/wrench))
@@ -95,38 +129,7 @@
 					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
-				var/list/newlist = list("Cancel")
-				var/valid_recipes = FALSE // Tracking if any valid recipes are found
-				for(var/i in anvil_recipes)
-					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-							valid_recipes = TRUE // At least one valid recipe found
-				if (!valid_recipes) // No valid recipes found
-					to_chat(user, "There is nothing that you can craft of this type.")
-					return
-				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-				if (choice2 == "Cancel")
-					return
-				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-						in_use = TRUE
-						update_icon()
-						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								P.amount -= anvil_recipes[parsed_choice2[1]][6]
-								if (P.amount <= 0)
-									qdel(P)
-								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-								var/rtype = anvil_recipes[parsed_choice2[1]][9]
-								new rtype (loc,"iron")
-							in_use = FALSE
-						else
-							in_use = FALSE
-						update_icon()
-						return
+				return forge_stack_recipe(P, user, H, choice, 6, "iron")
 			else
 				if (map.ordinal_age <= 1)
 					optlist = list("cancel","shields","helmets","armor")
@@ -147,38 +150,7 @@
 					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
-				var/list/newlist = list("Cancel")
-				var/valid_recipes = FALSE // Tracking if any valid recipes are found
-				for(var/i in anvil_recipes)
-					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][6] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][6]] iron" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-							valid_recipes = TRUE // At least one valid recipe found
-				if (!valid_recipes) // No valid recipes
-					to_chat(user, "There is nothing that you can craft of this type.")
-					return 
-				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-				if (choice2 == "Cancel")
-					return
-				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-						in_use = TRUE
-						update_icon()
-						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][6],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][6] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								P.amount -= anvil_recipes[parsed_choice2[1]][6]
-								if (P.amount <= 0)
-									qdel(P)
-								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-								var/rtype = anvil_recipes[parsed_choice2[1]][9]
-								new rtype (loc,"iron")
-							in_use = FALSE
-						else
-							in_use = FALSE
-						update_icon()
-						return
+				return forge_stack_recipe(P, user, H, choice, 6, "iron")
 /////////STEEL//////////
 		else if (istype(P, /obj/item/stack/material/steel))
 			var/list/optlist = list("cancel")
@@ -191,38 +163,7 @@
 					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
-				var/list/newlist = list("Cancel")
-				var/valid_recipes = FALSE // Tracking if any valid recipes are found
-				for(var/i in anvil_recipes)
-					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-							valid_recipes = TRUE // At least one valid recipe found
-				if (!valid_recipes) // No valid recipes found
-					to_chat(user, "There is nothing that you can craft of this type.")
-					return 
-				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-				if (choice2 == "Cancel")
-					return
-				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-						in_use = TRUE
-						update_icon()
-						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								P.amount -= anvil_recipes[parsed_choice2[1]][5]
-								if (P.amount <= 0)
-									qdel(P)
-								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-								var/rtype = anvil_recipes[parsed_choice2[1]][9]
-								new rtype (loc,"steel")
-							in_use = FALSE
-						else
-							in_use = FALSE
-						update_icon()
-						return
+				return forge_stack_recipe(P, user, H, choice, 5, "steel")
 			else
 				if (map.ordinal_age == 2)
 					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
@@ -246,39 +187,7 @@
 					return forge_blackpowder_part(P, H)
 				if (choice == "cancel")
 					return
-				var/list/newlist = list("Cancel")
-				var/valid_recipes = FALSE // Tracking if any valid recipes are found
-				for(var/i in anvil_recipes)
-					if (anvil_recipes[i])
-						if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][5] > 0)
-							newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][5]] steel" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-							valid_recipes = TRUE // At least one valid recipe found
-				if (!valid_recipes) // No valid recipes found
-					to_chat(user, "There is nothing that you can craft of this type.")
-					return
-				var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-				if (choice2 == "Cancel")
-					return
-				var/list/parsed_choice2 = splittext(choice2," - ")
-				if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-						to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-						in_use = TRUE
-						update_icon()
-						if (do_after(user,10*anvil_recipes[parsed_choice2[1]][5],src,can_move=FALSE))
-							if (P.amount >= anvil_recipes[parsed_choice2[1]][5] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-								P.amount -= anvil_recipes[parsed_choice2[1]][5]
-								if (P.amount <= 0)
-									qdel(P)
-								to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-								var/rtype = anvil_recipes[parsed_choice2[1]][9]
-								new rtype (loc,"steel")
-
-							in_use = FALSE
-						else
-							in_use = FALSE
-						update_icon()
-						return
+				return forge_stack_recipe(P, user, H, choice, 5, "steel")
 ///////////////KEVLAR//////////////
 		else if (istype(P, /obj/item/stack/material/kevlar))
 			var/list/optlist = list("cancel")
@@ -288,39 +197,7 @@
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")
 				return
-			var/list/newlist = list("Cancel")
-			var/valid_recipes = FALSE // Tracking if any valid recipes are found
-			for(var/i in anvil_recipes)
-				if (anvil_recipes[i])
-					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][8] > 0)
-						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][8]] kevlar" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-						valid_recipes = TRUE // At least one valid recipe found
-			if (!valid_recipes) // No valid recipes found
-				to_chat(user, "There is nothing that you can craft of this type.")
-				return 
-			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-			if (choice2 == "Cancel")
-				return
-			var/list/parsed_choice2 = splittext(choice2," - ")
-			if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-				if (P.amount >= anvil_recipes[parsed_choice2[1]][8] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-					in_use = TRUE
-					update_icon()
-					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][8],src,can_move=FALSE))
-						if (P.amount >= anvil_recipes[parsed_choice2[1]][8] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							P.amount -= anvil_recipes[parsed_choice2[1]][8]
-							if (P.amount <= 0)
-								qdel(P)
-							to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-							var/rtype = anvil_recipes[parsed_choice2[1]][9]
-							new rtype (loc,"kevlar")
-
-						in_use = FALSE
-					else
-						in_use = FALSE
-					update_icon()
-					return
+			return forge_stack_recipe(P, user, H, choice, 8, "kevlar")
 /////////BRONZE//////////
 		else if (istype(P, /obj/item/stack/material/bronze))
 			var/list/optlist = list("cancel")
@@ -332,39 +209,7 @@
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")
 				return
-			var/list/newlist = list("Cancel")
-			var/valid_recipes = FALSE // Tracking if any valid recipes are found
-			for(var/i in anvil_recipes)
-				if (anvil_recipes[i])
-					if (anvil_recipes[i][2] == choice && map.ordinal_age >= anvil_recipes[i][3] && recipe_age_allowed(anvil_recipes[i][4]) && anvil_recipes[i][7] > 0)
-						newlist += "[anvil_recipes[i][1]] - [anvil_recipes[i][7]] bronze" + crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")
-						valid_recipes = TRUE // At least one valid recipe found
-			if (!valid_recipes) // No valid recipes found
-				to_chat(user, "There is nothing that you can craft of this type.")
-				return 
-			var/choice2 = WWinput(H, "What do you want to craft?", "Anvil", "Cancel", newlist)
-			if (choice2 == "Cancel")
-				return
-			var/list/parsed_choice2 = splittext(choice2," - ")
-			if (anvil_recipes[parsed_choice2[1]] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-				if (P.amount >= anvil_recipes[parsed_choice2[1]][7] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-					to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
-					in_use = TRUE
-					update_icon()
-					if (do_after(user,10*anvil_recipes[parsed_choice2[1]][7],src,can_move=FALSE))
-						if (P.amount >= anvil_recipes[parsed_choice2[1]][7] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
-							P.amount -= anvil_recipes[parsed_choice2[1]][7]
-							if (P.amount <= 0)
-								qdel(P)
-							to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
-							var/rtype = anvil_recipes[parsed_choice2[1]][9]
-							new rtype (loc,"bronze")
-
-						in_use = FALSE
-					else
-						in_use = FALSE
-					update_icon()
-					return
+			return forge_stack_recipe(P, user, H, choice, 7, "bronze")
 		else if (istype(P, /obj/item/weapon/clay/mold))
 			var/obj/item/weapon/clay/mold/ML = P
 			if (!ML.fired)

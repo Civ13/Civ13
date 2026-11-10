@@ -9,6 +9,7 @@ from pathlib import Path
 import importlib.util
 import re
 import unittest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 _spec = importlib.util.spec_from_file_location('repeat_click_adapter', ROOT/'tests/save_movement/source_adapter.py')
@@ -25,6 +26,57 @@ def proc(path, declaration):
 
 
 class RepeatClickPayment(unittest.TestCase):
+    def test_grille_repair_requires_payment_and_restores_subtype_defaults(self):
+        body = proc('code/game/objects/items/stacks/rods.dm', '/obj/item/stack/rods/attack_self')
+        branch = body[body.index('\t\tfor (var/obj/structure/grille/G in usr.loc)'):
+                      body.index('\n\telse if (!in_use)')]
+
+        def run(branch_source, available, destroyed, initial_health=10, initial_icon='grille',
+                broken_type=False, details=False):
+            grilles = [SimpleNamespace(destroyed=value, health=0, density=False, icon_state='broken',
+                                       initial_health=initial_health, initial_icon=initial_icon,
+                                       broken_type=broken_type)
+                       for value in destroyed]
+            stock = [available]
+
+            def use(amount):
+                if stock[0] < amount:
+                    return False
+                stock[0] -= amount
+                return True
+
+            env = {'usr': SimpleNamespace(loc=grilles), 'use': use,
+                   'typed_iter': lambda values, _type: values}
+            normalized = '\n'.join(line[1:] if line.startswith('\t') else line
+                                   for line in branch_source.splitlines())
+            # Model BYOND's type/default-value lookups at the engine boundary.
+            normalized = normalized.replace('initial(G.health)', 'G.initial_health')
+            normalized = normalized.replace('initial(G.icon_state)', 'G.initial_icon')
+            normalized = normalized.replace('istype(G, /obj/structure/grille/broken)', 'G.broken_type')
+            projection = '/proc/grille_repair_projection()\n' + normalized + '\n'
+            adapter.project(projection, '/proc/grille_repair_projection', '', env)()
+            if details:
+                return stock[0], [(g.health, g.density, g.destroyed, g.icon_state) for g in grilles]
+            return stock[0], [not grille.destroyed for grille in grilles]
+
+        self.assertEqual(run(branch, 1, [True, True]), (0, [True, False]))
+        self.assertEqual(run(branch, 0, [True, True]), (0, [False, False]))
+        self.assertEqual(run(branch, 2, [True, True]), (0, [True, True]))
+        self.assertEqual(run(branch, 1, [False, True]), (1, [True, False]))
+        fence = read('code/modules/1713/structures.dm').split('/obj/structure/grille/fence\n', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('health = 16', fence)
+        self.assertIn('icon_state = "fence"', fence)
+        self.assertEqual(run(branch, 1, [True], initial_health=16, initial_icon='fence', details=True),
+                         (0, [(16, True, False, 'fence')]))
+        self.assertEqual(run(branch, 1, [True], initial_icon='grille-b', broken_type=True, details=True),
+                         (0, [(10, True, False, 'grille')]))
+        # Recreate the former ordering as a negative control: payment failure
+        # did not stop the loop, so one rod could restore two broken grilles.
+        old = branch.replace('\t\t\t\tif (!use(1))\n\t\t\t\t\treturn TRUE\n', '')
+        old = old.replace('\n\t\t\telse\n\t\t\t\treturn TRUE',
+                          '\n\t\t\t\tuse(1)\n\t\t\telse\n\t\t\t\treturn TRUE')
+        self.assertEqual(run(old, 1, [True, True]), (0, [True, True]))
+
     def test_slot_machine_jackpot_distinguishes_symbol_from_payout_weight(self):
         source = read('code/game/objects/structures/slotmachine.dm')
         body = proc('code/game/objects/structures/slotmachine.dm', '/obj/machinery/slotmachine/proc/check_win')
@@ -97,11 +149,32 @@ class RepeatClickPayment(unittest.TestCase):
                 self.assertEqual(body.count('if (do_after('), body.count('&& pay_for_build(W, H, '))
 
     def test_plastic_pot_plants_fill_one_pot(self):
-        source = read('code/game/objects/structures/plant_pots.dm')
+        path = 'code/game/objects/structures/plant_pots.dm'
+        body = proc(path, '/obj/structure/plant_pot/proc/finish_plastic_plant')
         guard = 'if (QDELETED(src) || QDELETED(P) || P.loc != user || !P.use(1))'
-        self.assertEqual(source.count(guard), 2)
-        for chunk in source.split('What type of plastic plant?')[1:]:
-            self.assert_order(chunk, guard, 'qdel(S)', 'qdel(src)')
+        self.assert_order(body, 'WWinput(', 'S.filled_type = /obj/item/stack/material/plastic',
+                          guard, 'qdel(S)', 'return', 'qdel(src)')
+        self.assertNotIn('Cancel', body)
+        for subtype in ('clay/light', 'medium_planter/clay/yellow'):
+            with self.subTest(subtype=subtype):
+                handler = proc(path, f'/obj/structure/plant_pot/{subtype}/attackby')
+                plastic = handler[handler.index('if (istype(W, /obj/item/stack/material/plastic))'):]
+                filled = f'new /obj/structure/plant_pot/{subtype}/filled(loc)'
+                self.assert_order(plastic, 'if (filled_type || filled)', 'do_after(user, 15, src)',
+                                  filled, 'finish_plastic_plant(W, user, S)', 'return')
+
+    def test_plastic_pot_choices_keep_their_appearances(self):
+        body = proc('code/game/objects/structures/plant_pots.dm',
+                    '/obj/structure/plant_pot/proc/finish_plastic_plant')
+        cases = (
+            ('Plastic Tree', 'plastic1', "A pot with a plastic, it won't fool anybody but it looks nice."),
+            ('Plastic Pine Tree', 'plastic2', "A pot with a plastic pine tree, it won't fool anybody but it looks nice."),
+            ('Plastic Palm Tree', 'plastic3', "A pot with a plastic palm tree, it won't fool anybody but it looks nice."),
+            ('Plastic Leaf Plant', 'plastic4', "A pot with a plastic leaf plant, it won't fool anybody but it looks nice."),
+        )
+        for name, suffix, description in cases:
+            with self.subTest(name=name):
+                self.assertIn(f'if (choice == "{name}")\n\t\tS.icon_state = "[planttype]{suffix}"\n\t\tS.desc = "{description}"', body)
 
     def test_computer_payments_recheck(self):
         source = read('code/modules/1713/computers/programs.dm')

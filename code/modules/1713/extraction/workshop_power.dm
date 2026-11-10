@@ -20,7 +20,7 @@
 		var/obj/map_metadata/extraction_survival/M = map
 		var/datum/extraction_session/S = H?.extraction_session
 		var/turf/T = get_turf(src)
-		return istype(M) && S && T && M.owned(H) && !S.transitioning && !extraction_secure_stored && !extraction_insurance_token && S.profile["state"] == "home" && S.profile["level"] >= 2 && H.Adjacent(src) && S.house && T.z == S.house.z && get_dist(T, S.house) <= 4 && map.is_node_done(H.civilization, "electricity")
+		return istype(M) && S && T && M.owned(H) && !S.transitioning && !extraction_secure_stored && !extraction_insurance_token && S.profile["state"] == "home" && S.profile["level"] >= 2 && H.Adjacent(src) && S.house && T.z == S.house.z && get_dist(T, S.house) <= 4 && research_node_known(H, "electricity")
 	proc/snapshot_installation()
 		if (!tank()) return FALSE
 		if (engine)

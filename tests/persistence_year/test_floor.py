@@ -40,6 +40,8 @@ def translate(source):
     """
     vocabulary = {
         "if (!persistence)": "if not ctx.persistence:",
+        "if (book_research_enabled())": "if ctx.book_research:",
+        "autoresearch = FALSE": "ctx.autoresearch = False",
         'if (age != "5000 B.C." && age != "313 B.C.")':
             'if ctx.age != "5000 B.C." and ctx.age != "313 B.C.":',
         "if (!istext(age))": "if not isinstance(ctx.age, str):",
@@ -78,12 +80,41 @@ def translate(source):
     return namespace["execute"]
 
 
-def state(age, ordinal=0, persistence=True):
+def state(age, ordinal=0, persistence=True, book_research=False):
     return SimpleNamespace(age=age, ordinal_age=ordinal, persistence=persistence,
+                           book_research=book_research, autoresearch=True,
                            default_research=181.25, custom_civs={"A": [40, 50, 60]},
                            faction_research={"A": ["bronze"]},
                            faction_baseline_era={"A": 1},
                            **{f"age{i}_done": i <= ordinal for i in range(1, 9)})
+
+
+def translate_book_restore(source):
+    """Run the actual restore branch structure with a fake scheduler."""
+    vocabulary = {
+        'if (!persistence || perschadplus || resourceresearch)':
+            'if not ctx.persistence or ctx.perschadplus or ctx.resourceresearch:',
+        'return': 'return',
+        'if (book_research_enabled())': 'if ctx.book_research:',
+        'gamemode = "Persistent (Book Research)"': 'ctx.gamemode = "Persistent (Book Research)"',
+        'else if (gamemode == "Persistent (Book Research)")':
+            'elif ctx.gamemode == "Persistent (Book Research)":',
+        'gamemode = "Persistent (Auto-Research)"': 'ctx.gamemode = "Persistent (Auto-Research)"',
+        'autoresearch = TRUE': 'ctx.autoresearch = True',
+        'autoresearch_proc()': 'ctx.scheduled += 1',
+    }
+    lines = ['def execute(ctx):']
+    for raw in proc(source, '/obj/map_metadata/proc/reconcile_book_research_restore()').splitlines():
+        instruction = raw.strip()
+        if not instruction or instruction.startswith('//'):
+            continue
+        if instruction not in vocabulary:
+            raise ValueError(f'Unsupported restore instruction {instruction}')
+        depth = len(raw) - len(raw.lstrip('\t'))
+        lines.append('    ' * depth + vocabulary[instruction])
+    namespace = {}
+    exec(compile('\n'.join(lines), '<restricted restore translation>', 'exec'), namespace)
+    return namespace['execute']
 
 
 def wiring(mode, setup, load):
@@ -108,6 +139,35 @@ class FloorTests(unittest.TestCase):
     def setUp(self):
         self.source = read(LOAD)
         self.apply = translate(self.source)
+
+    def test_book_restore_resumes_only_identified_transitions(self):
+        restore = translate_book_restore(self.source)
+        def context(label='Persistent (Book Research)', book=False, **changes):
+            values = dict(persistence=True, perschadplus=False, resourceresearch=False,
+                          book_research=book, gamemode=label, autoresearch=False, scheduled=0)
+            values.update(changes)
+            return SimpleNamespace(**values)
+        moved = context()
+        restore(moved)
+        self.assertEqual((moved.gamemode, moved.autoresearch, moved.scheduled),
+                         ('Persistent (Auto-Research)', True, 1))
+        restore(moved)
+        self.assertEqual(moved.scheduled, 1)
+        for ctx in (context(label='Persistent (Auto-Research)'),
+                    context(persistence=False), context(perschadplus=True),
+                    context(resourceresearch=True)):
+            before = deepcopy(vars(ctx))
+            restore(ctx)
+            self.assertEqual(vars(ctx), before)
+        active = context(label='Persistent (Auto-Research)', book=True)
+        restore(active)
+        self.assertEqual((active.gamemode, active.autoresearch, active.scheduled),
+                         ('Persistent (Book Research)', False, 0))
+
+    def test_book_restore_is_after_metadata_and_timer_import(self):
+        body = uncomment(proc(self.source, '/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent, datum/startup_ready)'))
+        self.assertLess(body.index('storage.restore_durable_world()'), body.index('map.reconcile_book_research_restore()'))
+        self.assertLess(body.index('map.reconcile_book_research_restore()'), body.index('map.apply_persistence_age_floor()'))
 
     def test_earlier_epochs_and_numeric_years(self):
         for age in ("5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1942"):
@@ -137,6 +197,16 @@ class FloorTests(unittest.TestCase):
         before = deepcopy(vars(ctx))
         self.apply(ctx)
         self.assertEqual(vars(ctx), before)
+
+    def test_book_research_has_no_floor_and_no_clock(self):
+        for age in ("5000 B.C.", "313 B.C.", "1873"):
+            with self.subTest(age=age):
+                ctx = state(age, book_research=True)
+                before = deepcopy(vars(ctx))
+                self.apply(ctx)
+                self.assertFalse(ctx.autoresearch)
+                before["autoresearch"] = False
+                self.assertEqual(vars(ctx), before)
 
     def test_unrelated_modes_do_not_change_even_earlier_dates(self):
         for age in ("5000 B.C.", "1903", "1943", "2023"):

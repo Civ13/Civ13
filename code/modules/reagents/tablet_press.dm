@@ -8,7 +8,7 @@
 /proc/tablet_press_build_allowed(mob/living/human/user, result_path)
 	if (result_path != /obj/structure/chem_master/tablet_press/constructed)
 		return TRUE
-	return user && tablet_press_year_allowed() && map.is_node_done(user.civilization, "pharmacology")
+	return user && tablet_press_year_allowed() && research_node_known(user, "pharmacology")
 
 /proc/tablet_press_finite(value)
 	return isnum(value) && value == value && value - value == 0
@@ -174,7 +174,7 @@
 		return FALSE
 	if (!get_turf(src) || !get_turf(user) || user.z != z || get_dist(src, user) > 1)
 		return FALSE
-	return map.is_node_done(user.civilization, "pharmacology")
+	return research_node_known(user, "pharmacology")
 
 /obj/structure/chem_master/tablet_press/attackby(obj/item/W, mob/living/human/user)
 	if (tablet_action)

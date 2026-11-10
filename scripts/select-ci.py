@@ -7,6 +7,11 @@ from pathlib import Path, PurePosixPath
 import importlib.util
 import subprocess
 
+_skill_spec = importlib.util.spec_from_file_location('ci_skill_prose', Path(__file__).with_name('ci_skill_prose.py'))
+_skill_module = importlib.util.module_from_spec(_skill_spec)
+_skill_spec.loader.exec_module(_skill_module)
+skill_prose = _skill_module.skill_prose
+
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
 CI_BASES = {'master', 'help-markdown-byond-html'}
 ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
@@ -46,13 +51,16 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
-DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py',
+                                        'tests/door_intents/test_jail_keys.py'})
 FLINT_MINING_OFFLINE_TESTS = frozenset({'tests/flint_mining/test_flint_mining.py'})
 # The extracted-proc probe needs BYOND; it is run by hand, not admitted to CI.
 FLINT_MINING_MANUAL_NATIVE = frozenset({'tests/flint_mining/run.py', 'tests/flint_mining/probe.dm'})
 RESEARCH_STAFF_OFFLINE_TESTS = frozenset({'tests/research_staff/test_research_staff.py'})
 MAP_TOOLS_OFFLINE_TESTS = frozenset({'tests/map_tools/test_map_tools.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
+PROJECTILE_LOCATION_OFFLINE_TESTS = frozenset({'tests/projectile_location/test_location.py'})
+ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS = frozenset({'tests/zombie_spawn_selection/test_selection.py'})
 HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
@@ -105,6 +113,7 @@ SAFEHOUSE_MAP_OFFLINE_TESTS = frozenset({'tests/safehouse_map/test_layout.py', '
                                          'tests/safehouse_map/validate_map.py', 'tests/safehouse_map/compile_map.py',
                                          'tests/safehouse_map/preview.py'})
 GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests/gaia_host/test_shard_group.py',
+                                     'tests/gaia_host/test_fresh_world.py',
                                      'tests/gaia_host/test_doorman.py', 'tests/gaia_host/test_wait_group.py',
                                      'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
@@ -294,14 +303,6 @@ def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
-def skill_prose(path):
-    parts = path.split('/')
-    return (len(parts) >= 4 and parts[:2] == ['.agents', 'skills']
-            and all(part not in ('', '.', '..') for part in parts)
-            and (parts[-1] == 'SKILL.md'
-                 or ('references' in parts[3:-1] and parts[-1].endswith('.md'))))
-
-
 def needs_game(paths):
     # Compilation depends on shared includes. Unknown paths compile, but do
     # not implicitly authorize running existing regression suites.
@@ -383,7 +384,7 @@ def select_mcp(base, head, event):
     except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
         raise RuntimeError('MCP selection could not compare base and head') from exc
     return any(path.startswith('tools/mcp/') or path in {
-        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py',
+        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'scripts/ci_skill_prose.py', 'tests/test_ci_selection.py',
         'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
         'scripts/nomads-lifecycle/agent_debug.py',
         'scripts/nomads-lifecycle/variable_observability.py',
@@ -479,8 +480,16 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered medical-care executable test requires explicit CI review')
         if path in SWEEP_LOOPS_OFFLINE_TESTS:
             continue
+        if path in PROJECTILE_LOCATION_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/projectile_location/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered projectile-location executable test requires explicit CI review')
         if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered sweep-loop executable test requires explicit CI review')
+        if path in ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/zombie_spawn_selection/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered zombie-spawn-selection executable test requires explicit CI review')
         if path in HELD_MOVEMENT_OFFLINE_TESTS:
             continue
         if path.startswith('tests/held_movement/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

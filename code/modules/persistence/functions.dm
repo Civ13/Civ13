@@ -5,10 +5,26 @@
 ///PERSISTENCE STUFF/////////////
 /////////////////////////////////
 
+/obj/map_metadata/proc/reconcile_book_research_restore()
+	if (!persistence || perschadplus || resourceresearch)
+		return
+	// The saved label identifies a book-mode generation. Other disabled clocks
+	// may be intentional and must not be restarted from the flag alone.
+	if (book_research_enabled())
+		gamemode = "Persistent (Book Research)"
+	else if (gamemode == "Persistent (Book Research)")
+		gamemode = "Persistent (Auto-Research)"
+		autoresearch = TRUE
+		autoresearch_proc()
+
 // age is the displayed epoch/date, not ordinal_age's technology tier. Only
 // recognized BC epochs and canonical numeric years can be ordered here.
 /obj/map_metadata/proc/apply_persistence_age_floor()
 	if (!persistence)
+		return
+	// Book research climbs from 5000 B.C. by players alone: no floor, no clock.
+	if (book_research_enabled())
+		autoresearch = FALSE
 		return
 	if (age != "5000 B.C." && age != "313 B.C.")
 		if (!istext(age))
@@ -1268,6 +1284,7 @@ var/global/datum/persistence_admission_identity
 		if(storage.load_map_metadata() != TRUE)
 			throw EXCEPTION("World metadata restoration rejected")
 		storage.restore_durable_world()
+		map.reconcile_book_research_restore()
 		// Apply the date floor after both legacy and durable metadata restoration.
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)

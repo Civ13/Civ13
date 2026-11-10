@@ -113,7 +113,7 @@ build requests and manual CI runs. Unforced feature pushes skip it. Other existi
 regression suites remain opt-in, including game runtime, atlas, resource
 inventory, comment collector and changelog tests. The independent MCP workflow
 also runs on ordinary master PRs and master pushes when files under `tools/mcp/`,
-its workflow, selector, checkout helper, the three fixed runtime-reader modules,
+its workflow, selector and shared skill-prose classifier, checkout helper, the three fixed runtime-reader modules,
 their focused tests, or the six exact persistence files that supply recovery
 status and phase contracts change. This intentionally runs MCP tests for any
 edit to those six files; it does not select other game files. It runs on

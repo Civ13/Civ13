@@ -65,9 +65,16 @@ var/eco_runtime_error = FALSE
 	A = get_area(T)
 	A.location = AREA_OUTSIDE
 	var/obj/structure/S = new /obj/structure(T)
-	S.density = TRUE
-	eco_check(ecology_habitat_error(T, deer_biomes) == "occupied", "an occupied tile is refused")
+	S.density = FALSE
+	eco_check(ecology_habitat_error(T, deer_biomes) == "occupied", "a non-dense structure is refused")
 	qdel(S)
+	var/list/items = list()
+	for (var/i = 1, i <= 33, i++)
+		var/obj/item/created = new(T)
+		items += created
+	eco_check(ecology_habitat_error(T, deer_biomes) == "occupied", "the wildlife contents cap still refuses harmless items")
+	for (var/obj/item/I in items)
+		qdel(I)
 	A.location = AREA_INSIDE
 	eco_check(ecology_habitat_error(T, deer_biomes) == "habitat", "an indoor area is refused")
 	A.location = AREA_OUTSIDE

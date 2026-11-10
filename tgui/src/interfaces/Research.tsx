@@ -65,18 +65,27 @@ export function Research(ui: ScreenProps) {
     return () => document.removeEventListener('keydown', close);
   }, []);
   return <>
-    <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier}</p>
+    {data.book_mode ? <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier}</p>
+      {!!data.tier_upgrade_cost && <p>Upgrade progress: {data.tier_progress}/{data.tier_upgrade_cost} silver in coins fed</p>}
+      <h3>Books on the bench</h3>
+      {list(data.books).length ? list(data.books).map(book => <div key={String(book.idx)} className="item">
+        {text(book.name)}{!!book.is_target && <em> (research is written here)</em>} <Action ui={ui} action="take_book" value={Number(book.idx)}>Take</Action>
+        {!!list(book.chapters).length && <div>{list(book.chapters).map((name, i) => <span className="tag" key={i}>{text(name)}</span>)}</div>}
+      </div>) : <NoticeBox>None. Place a book on the bench; research done here is written into it.</NoticeBox>}
+      {!!data.book_room && !!list(data.books).length && <p>There's room for one more book to copy chapters between them.</p>}
+      <div>{!!data.can_study && <Action ui={ui} action="study_shelf">Study a chapter</Action>}{!!data.can_copy && <Action ui={ui} action="copy_chapter">Copy a chapter</Action>}{!!data.can_swap && <Action ui={ui} action="swap_books">Write research into the other book</Action>}</div>
+    </Section> : <Section title="Research bench"><p>Bench tier: {data.bench_tier} / {data.max_tier}</p>
       {!!data.tier_upgrade_cost && <p>Upgrade progress: {data.tier_progress}/{data.tier_upgrade_cost} silver in coins fed</p>}
       {!!data.era_capped && <NoticeBox>Capped at tier {data.era_max_tier} until your civilization reaches the next era.</NoticeBox>}
       <p>Owned by: {text(data.bench_faction) || 'Unclaimed'}</p>
       {!!data.has_faction && <><p>Viewing as: {text(data.viewer_role)} of the {text(data.viewer_faction)}</p><p>Your faction's benches: {data.viewer_bench_count} / {data.viewer_cap}</p></>}
       {data.can_claim ? <Action ui={ui} action="claim">Claim this bench for your faction</Action> : !!data.bench_faction && !data.owns_bench && <NoticeBox>This bench belongs to another faction. You can only observe it.</NoticeBox>}
-    </Section>
+    </Section>}
     {!!data.owns_bench && (!!data.is_leader || !!data.is_director) && <Section title="Research staff">
       {!!data.is_leader && <>{data.has_director ? <><Action ui={ui} action="appoint_director">Reassign {text(data.director_title)}</Action><Action ui={ui} action="set_director_title">Rename role</Action><Action ui={ui} action="dismiss_director">Dismiss {text(data.director_title)}</Action></> : <Action ui={ui} action="appoint_director">Appoint a Research Director</Action>}</>}
       <Action ui={ui} action="appoint_researcher">Appoint a Researcher</Action><Action ui={ui} action="dismiss_researcher">Dismiss a Researcher</Action>
     </Section>}
-    {!!data.assigned_name && <Section title={`Currently researching: ${text(data.assigned_name)}`}>{data.assigned_done ? 'Completed! Open any completed tech below to write research notes or a book on it.' : text(data.assigned_status_text)}</Section>}
+    {!!data.assigned_name && <Section title={`Currently researching: ${text(data.assigned_name)}`}>{data.assigned_done ? (data.book_mode ? 'The chapter is finished. Study it from the book to learn it.' : 'Completed! Open any completed tech below to write research notes or a book on it.') : text(data.assigned_status_text)}</Section>}
     {!!list(data.queue_names).length && <Section title="Queued next">{list(data.queue_names).map((name, i) => <span className="tag" key={i}>{text(name)}</span>)}{!!data.can_queue && <Action ui={ui} action="clear_queue">Clear queue</Action>}</Section>}
     <Section title="Research trees"><div role="tablist">{trees.map(item => <Button key={item.idx} selected={item === tree} onClick={() => setActive(Number(item.idx))}>{text(item.tree_name)}</Button>)}</div>
       <label>Find technology <input value={query} onChange={event => setQuery(event.target.value)} /></label>

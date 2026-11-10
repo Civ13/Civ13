@@ -39,7 +39,7 @@ DESCRIPTION = re.compile(r'local-ci v1 sha256=([0-9a-f]{64})')
 RECEIPT_BLOCK = re.compile(r'```json\n(.*?)\n```', re.S)
 # Changes here can alter what the gate or the selector does, so they always run hosted.
 CONTROL_PATHS = ('.github/', 'scripts/select-ci.py', 'scripts/ci_baseline.py',
-                 'scripts/ci_checkout_refs.py', 'scripts/local_ci.py',
+                 'scripts/ci_skill_prose.py', 'scripts/ci_checkout_refs.py', 'scripts/local_ci.py',
                  'scripts/byond_toolchain.py', 'tools/byond/', 'tools/ci/')
 GAME_SUFFIXES = {'.dm', '.dme', '.dmm', '.dmi', '.rsc'}
 WAIVER_PREFIX = 'skip-ci:'

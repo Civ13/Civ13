@@ -138,19 +138,7 @@ var/no_loop_o = FALSE
 	return TRUE
 
 /obj/map_metadata/omaha/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_two_sided_grace_wall(H, T)
 
 /////////////////MICROMAHA///////////
 /obj/map_metadata/omaha/micromaha
@@ -162,4 +150,3 @@ var/no_loop_o = FALSE
 	faction_distribution_coeffs = list(GERMAN = 0.4, AMERICAN = 0.6)
 	mission_start_message = "<font size=4>All factions have <b>4 minutes</b> to prepare before the ceasefire ends!<br>The Germans will win if they hold out for <b>25 minutes</b>. The Americans will win if they manage to capture the <b>rear bunkers</b>.</font>"
 	grace_wall_timer = 2400
-

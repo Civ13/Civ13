@@ -28,7 +28,13 @@
 	return valid_recipe_node_id(node_id) && stat != DEAD && (recipe_knowledge_exempt() || (islist(known_recipe_nodes) && (node_id in known_recipe_nodes)))
 
 /mob/living/human/proc/can_learn_recipe_node(node_id)
-	return stat == CONSCIOUS && valid_recipe_node_id(node_id) && map && map.recipe_knowledge_enabled() && map.is_node_done(civilization, node_id)
+	if (stat != CONSCIOUS || !valid_recipe_node_id(node_id) || !map || !map.recipe_knowledge_enabled())
+		return FALSE
+	// Book research: a written chapter is the source; the reader only needs
+	// the node's groundwork, not any faction's or the world's research.
+	if (map.book_research_enabled())
+		return knows_research_prereqs(node_id)
+	return map.is_node_done(civilization, node_id)
 
 /mob/living/human/proc/learn_recipe_node(node_id)
 	if (!can_learn_recipe_node(node_id))
@@ -53,7 +59,7 @@
 	if (!map || !map.recipe_knowledge_enabled() || recipe_knowledge_initialized)
 		return FALSE
 	known_recipe_nodes = list()
-	if (stat != DEAD)
+	if (stat != DEAD && !map.book_research_enabled())
 		for (var/node_id in research_nodes)
 			if (valid_recipe_node_id(node_id) && map.is_node_done(civilization, node_id))
 				known_recipe_nodes += node_id
@@ -132,7 +138,7 @@
 		to_chat(H, SPAN_NOTICE("You have learned the recipes in [src]. The manual can be used again."))
 
 /obj/map_metadata/proc/produce_first_node_book(faction, node_id)
-	if (!recipe_knowledge_enabled())
+	if (!recipe_knowledge_enabled() || book_research_enabled())
 		return
 	// Exactly one copy per transition to DONE, not one per member or callback.
 	for (var/obj/structure/research_bench/B in research_benches)

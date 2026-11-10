@@ -7,6 +7,7 @@ a restart's fresh map controller rolls one before the save is read), then runs
 ClearMap and Load_World in temporary storage. Prints the evidence directory.
 """
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -26,10 +27,17 @@ CONTROLS = {
 }
 
 
-def compiler_matches(text, returncode, version):
-    return (returncode == 0 and
-            re.search(r'^DM compiler version ' + re.escape(version) + r'\b', text, re.MULTILINE) is not None and
-            re.search(r'\b0 errors,\s*0 warnings\b', text) is not None)
+_compiler_spec = importlib.util.spec_from_file_location(
+    'fixture_compiler_output', Path(__file__).resolve().parents[2] / 'scripts/fixture_compiler_output.py')
+_compiler_output = importlib.util.module_from_spec(_compiler_spec)
+_compiler_spec.loader.exec_module(_compiler_output)
+compiler_matches = _compiler_output.compiler_matches
+
+_global_spec = importlib.util.spec_from_file_location(
+    'fixture_global_initialization', Path(__file__).resolve().parents[2] / 'scripts/fixture_global_initialization.py')
+_global_initialization = importlib.util.module_from_spec(_global_spec)
+_global_spec.loader.exec_module(_global_initialization)
+isolate_global_initialization = _global_initialization.isolate_global_initialization
 
 
 def main():
@@ -53,10 +61,7 @@ def main():
         world = world.replace('/datum/global_init/New()\n', '/datum/global_init/New()\n\treturn\n', 1)
         generated['_world.dm'].write_text(world, encoding='utf-8')
         globals_source = (root / 'code/controllers/mc/globals.dm').read_text(encoding='utf-8')
-        marker = '/datum/controller/global_vars/New()\n'
-        if globals_source.count(marker) != 1:
-            raise RuntimeError('Global isolation marker changed')
-        generated['_globals.dm'].write_text(globals_source.replace(marker, marker + '\treturn\n'), encoding='utf-8')
+        generated['_globals.dm'].write_text(isolate_global_initialization(globals_source), encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         replacements = [('code\\world.dm', '_world.dm'), ('code\\controllers\\mc\\globals.dm', '_globals.dm')]
         if args.negative_control:

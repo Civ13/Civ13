@@ -16,6 +16,15 @@
 	var/const/deffont = "Verdana"
 	var/const/signfont = "Times New Roman"
 	flags = FALSE
+
+// Monk copying consumes its blank input and only copies ordinary writing.
+// Research chapters and unfinished research use the bench copying workflow.
+/obj/item/weapon/book/proc/monk_copy_source_allowed()
+	return !page_busy && !istype(src, /obj/item/weapon/book/node_book) && !istype(src, /obj/item/weapon/book/node_compendium) && !length(research_chapters) && !length(research_progress)
+
+/obj/item/weapon/book/proc/monk_copy_blank()
+	return !unique && !page_busy && !author && !title && !dat && !length(written_pages) && !length(research_chapters) && !length(research_progress) && !store && !length(contents)
+
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
 	if (dat)
 		user.examinate(src)
@@ -26,14 +35,24 @@
 /obj/item/weapon/book/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 	if (istype(W, /obj/item/weapon/book))
 		var/obj/item/weapon/book/B = W
-		if (!B.author && user.religious_clergy == "Monks")
+		if (user.religious_clergy == "Monks")
+			if (!B.monk_copy_blank())
+				to_chat(user, SPAN_WARNING("Use a blank book to make a copy; [B] would be consumed."))
+				return
+			if (!monk_copy_source_allowed())
+				to_chat(user, SPAN_WARNING("[src] is busy or contains research that cannot be copied this way."))
+				return
 			to_chat(user, "You start copying \the [src]...")
 			if (do_after(user, 200, src))
+				if (QDELETED(src) || !user.Adjacent(src) || user.religious_clergy != "Monks" || !recipe_held(user, B) || !B.monk_copy_blank() || !monk_copy_source_allowed())
+					return
 				to_chat(user, "You finish copying \the [src].")
 				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 					var/obj/item/weapon/book/NC = src
 					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))
 					NB.dat = NC.dat
+					if (islist(NC.written_pages))
+						NB.written_pages = NC.written_pages.Copy()
 					NB.due_date = NC.due_date
 					NB.author = NC.author
 					NB.unique = NC.unique
@@ -61,12 +80,21 @@
 					NB.k_level = NC.k_level = 0
 					NB.styleb = NC.styleb = "scroll"
 					qdel(B)
+	if (istype(W, /obj/item/weapon/paper) && can_hold_research() && ishuman(user))
+		reinsert_page(user, W)
+		return
 	if (istype(W, /obj/item/weapon/pen))
 		if (unique)
 			to_chat(user, "Looks like you can't modify it.")
 			return
-		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", list("Title", "Contents", "Author", "Cancel"), FALSE)
+		var/list/pen_choices = list("Title", "Contents", "Author")
+		if (map && map.book_research_enabled() && can_hold_research())
+			pen_choices += "Research chapter"
+		pen_choices += "Cancel"
+		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", pen_choices, FALSE)
 		switch(choice)
+			if ("Research chapter")
+				write_research_chapter(user, W)
 			if ("Title")
 				var/newtitle = reject_bad_text(sanitizeSafe(player_input(usr, "Write a new title:", null, null, "text", null, FALSE)))
 				if (!newtitle)
@@ -82,7 +110,7 @@
 					return
 				else
 					var/t = parsepencode(content, W, user)
-					dat += t
+					add_written_page(t)
 			if ("Author")
 				var/newauthor = sanitize(player_input(usr, "Write the author's name:", null, null, "text", null, FALSE))
 				if (!newauthor)
