@@ -130,3 +130,122 @@
 /obj/structure/research_bench/proc/library_rate(node_id)
 	var/list/relevant = library_chapters(node_id)
 	return 1 + min(LIBRARY_MAX_BONUS, relevant.len * LIBRARY_CHAPTER_BONUS)
+
+// ------------------------------------------------------------
+// Consumables and light
+// ------------------------------------------------------------
+
+// Supplies fed to the bench, per discipline (saved as text: "discipline=points;...").
+/obj/structure/research_bench/var/research_supplies = ""
+
+/obj/structure/research_bench/proc/supply_map()
+	var/list/out = list()
+	for (var/entry in splittext(research_supplies, ";"))
+		var/list/parts = splittext(entry, "=")
+		if (parts.len != 2 || !(parts[1] in scholar_disciplines))
+			continue
+		var/points = text2num(parts[2])
+		if (isnum(points) && points > 0)
+			out[parts[1]] = min(SCHOLAR_SUPPLY_CAP, round(points))
+	return out
+
+/obj/structure/research_bench/proc/set_supply_map(list/supplies)
+	var/list/parts = list()
+	for (var/discipline in supplies)
+		if (supplies[discipline] > 0)
+			parts += "[discipline]=[supplies[discipline]]"
+	research_supplies = jointext(parts, ";")
+
+/obj/structure/research_bench/proc/supply_points(discipline)
+	var/list/supplies = supply_map()
+	return supplies[discipline] || 0
+
+// Supply points one unit of I is worth to research in discipline (0 if none).
+/proc/scholar_supply_value(obj/item/I, discipline)
+	switch (discipline)
+		if ("mathematics")
+			if (istype(I, /obj/item/weapon/paper) && blank_writing_sheet(I))
+				return 5
+		if ("engineering")
+			if (istype(I, /obj/item/stack/material))
+				return 2
+		if ("natural_science")
+			if (istype(I, /obj/item/stack/ore))
+				return 3
+			if (istype(I, /obj/item/stack/material/glass))
+				return 2
+		if ("medicine")
+			if (istype(I, /obj/item/stack/medical))
+				return 3
+			if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown))
+				return 2
+		if ("agriculture")
+			if (istype(I, /obj/item/stack/farming/seeds))
+				return 2
+			if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown))
+				return 2
+		if ("military")
+			if (istype(I, /obj/item/ammo_casing))
+				return 3
+			if (istype(I, /obj/item/stack/ammopart))
+				return 2
+	return 0
+
+// What feeds research in each discipline, for examine and the bench screen.
+/proc/scholar_supply_text(discipline)
+	switch (discipline)
+		if ("mathematics")
+			return "blank paper or parchment"
+		if ("engineering")
+			return "wood, stone or metal"
+		if ("natural_science")
+			return "ore or glass"
+		if ("medicine")
+			return "bandages, medicine or herbs"
+		if ("agriculture")
+			return "seeds or produce"
+		if ("military")
+			return "ammunition or ammunition parts"
+	return "nothing"
+
+// Feeds W into the bench's supplies for the subject's discipline. TRUE if used.
+/obj/structure/research_bench/proc/feed_research_supply(obj/item/W, mob/living/human/user)
+	if (!assigned_node)
+		return FALSE
+	var/discipline = node_discipline(assigned_node)
+	var/value = scholar_supply_value(W, discipline)
+	if (value <= 0)
+		return FALSE
+	var/list/supplies = supply_map()
+	var/have = supplies[discipline] || 0
+	if (have >= SCHOLAR_SUPPLY_CAP)
+		to_chat(user, SPAN_WARNING("The bench already holds all the [scholar_disciplines[discipline]] supplies it can."))
+		return TRUE
+	var/units = 1
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		units = clamp(ceil((SCHOLAR_SUPPLY_CAP - have) / value), 1, S.amount)
+		S.use(units)
+	else
+		if (W.loc == user)
+			user.remove_from_mob(W)
+		qdel(W)
+	supplies[discipline] = min(SCHOLAR_SUPPLY_CAP, have + units * value)
+	set_supply_map(supplies)
+	to_chat(user, SPAN_NOTICE("You set out supplies for [scholar_disciplines[discipline]] research ([supplies[discipline]]/[SCHOLAR_SUPPLY_CAP])."))
+	book_refresh_ui()
+	return TRUE
+
+// Uses one supply point for node_id's discipline; the rate this tick runs at.
+/obj/structure/research_bench/proc/use_research_supply(node_id)
+	var/discipline = node_discipline(node_id)
+	var/list/supplies = supply_map()
+	if ((supplies[discipline] || 0) < 1)
+		return SCHOLAR_UNSUPPLIED_RATE
+	supplies[discipline] -= 1
+	set_supply_map(supplies)
+	return 1
+
+/obj/structure/research_bench/proc/research_lit()
+	var/turf/T = get_turf(src)
+	return T && T.get_lumcount() >= SCHOLAR_MIN_LIGHT
