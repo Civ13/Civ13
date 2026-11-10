@@ -53,6 +53,9 @@ SUITES = {
             'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
             'code/modules/research_tree/_research_tree_defines.dm',
             'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
+    'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
+        'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
@@ -480,7 +483,7 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
-    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',

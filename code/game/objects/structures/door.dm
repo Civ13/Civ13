@@ -358,18 +358,18 @@
 	opacity = FALSE
 	breachable = FALSE
 
-/obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/simple_door/key_door/custom/jail/proc/jail_key_interact(obj/item/weapon/W, mob/user)
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
 			locked = !locked
 			if (locked == 1)
 				visible_message("<span class = 'notice'>[user] locks the door.</span>")
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
+				return TRUE
 			else if (locked == 0)
 				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
+				return TRUE
 		if (W.code != custom_code)
 			to_chat(user, "This key does not match this lock!")
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
@@ -379,13 +379,19 @@
 				if (locked == 1)
 					visible_message("<span class = 'notice'>[user] locks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
+					return TRUE
 				else if (locked == 0)
 					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
 					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
+					return TRUE
 		if (W.code != custom_code)
 			to_chat(user, "None of the keys match this lock!")
+	return FALSE
+
+/obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
+		if (jail_key_interact(W, user))
+			return
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")
 	else if (istype(W,/obj/item/weapon/wrench) || istype(W,/obj/item/weapon/hammer))//if it is a wrench
@@ -425,33 +431,9 @@
 	return TRUE // for key_doors
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/key))
-		if (W.code == custom_code)
-			locked = !locked
-			if (locked == 1)
-				visible_message("<span class = 'notice'>[user] locks the door.</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-			else if (locked == 0)
-				visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-		if (W.code != custom_code)
-			to_chat(user, "This key does not match this lock!")
-	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
-		for (var/obj/item/weapon/key/KK in W.contents)
-			if (KK.code == custom_code)
-				locked = !locked
-				if (locked == 1)
-					visible_message("<span class = 'notice'>[user] locks the door.</span>")
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
-				else if (locked == 0)
-					visible_message("<span class = 'notice'>[user] unlocks the door.</span>")
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
-		if (W.code != custom_code)
-			to_chat(user, "None of the keys match this lock!")
+	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
+		if (jail_key_interact(W, user))
+			return
 	else if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")
 	else if (istype(W,/obj/item/weapon/weldingtool))//if it is a welding tool
