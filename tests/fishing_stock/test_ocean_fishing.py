@@ -31,6 +31,14 @@ class OceanFishing(unittest.TestCase):
         self.assertIn('if (!H.on_boat_deck())', self.cast)
         self.assertIn('iscovered()', self.cast)
 
+    def test_driving_a_land_vehicle_does_not_count_as_a_boat(self):
+        deck = proc(self.text, '/mob/living/human/proc/on_boat_deck()')
+        self.assertNotRegex(deck, r'if \(driver_vehicle\)\s*\n\s*return TRUE')
+        self.assertIn('istype(driver_vehicle, /obj/structure/vehicle/boat)', deck)
+        self.assertIn('istype(driver_vehicle, /obj/structure/vehicle/raft)', deck)
+        self.assertIn('/obj/structure/vehicleparts/frame', deck)
+        self.assertIn('/obj/structure/vehicleparts/axis', deck)
+
     def test_stock_is_rechecked_and_taken_only_after_the_wait(self):
         wait = self.cast.index('do_after(H,')
         self.assertLess(self.cast.index('ocean_fish_available(src) <= 0'), wait)
