@@ -1180,7 +1180,8 @@ SUITES = {
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
-        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm'),
+        'code/modules/surgery/other.dm', 'code/modules/surgery/limb_reattach.dm',
+        'code/modules/1713/doctor_handbook.dm'),
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
