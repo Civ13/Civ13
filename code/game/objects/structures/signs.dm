@@ -25,6 +25,7 @@
 		var/obj/item/sign/S = new(loc)
 		S.name = name
 		S.desc = desc
+		S.icon = icon
 		S.icon_state = icon_state
 		//var/icon/I = icon('icons/obj/decals.dmi', icon_state)
 		//S.icon = I.Scale(24, 24)
@@ -57,6 +58,7 @@
 				else return
 			S.name = name
 			S.desc = desc
+			S.icon = icon
 			S.icon_state = sign_state
 			to_chat(user, "You fasten \the [S] with your [tool].")
 			qdel(src)
