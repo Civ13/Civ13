@@ -38,6 +38,10 @@
 		if (!do_after(usr, 10))
 			in_use = FALSE
 			return
+		if (locate(/obj/structure/grille) in usr.loc)
+			to_chat(usr, "<span class='warning'>There is already a grille here.</span>")
+			in_use = FALSE
+			return
 		var/obj/structure/grille/F = new /obj/structure/grille/ ( usr.loc )
 		to_chat(usr, "<span class='notice'>You assemble a grille</span>")
 		in_use = FALSE
