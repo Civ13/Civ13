@@ -21,11 +21,15 @@
 	if (locate(/obj/structure/grille, usr.loc))
 		for (var/obj/structure/grille/G in usr.loc)
 			if (G.destroyed)
-				G.health = 10
+				if (!use(1))
+					return TRUE
+				G.health = initial(G.health)
 				G.density = TRUE
 				G.destroyed = FALSE
-				G.icon_state = "grille"
-				use(1)
+				if (istype(G, /obj/structure/grille/broken))
+					G.icon_state = "grille"
+				else
+					G.icon_state = initial(G.icon_state)
 			else
 				return TRUE
 
