@@ -51,7 +51,8 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
-DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py',
+                                        'tests/door_intents/test_jail_keys.py'})
 FLINT_MINING_OFFLINE_TESTS = frozenset({'tests/flint_mining/test_flint_mining.py'})
 # The extracted-proc probe needs BYOND; it is run by hand, not admitted to CI.
 FLINT_MINING_MANUAL_NATIVE = frozenset({'tests/flint_mining/run.py', 'tests/flint_mining/probe.dm'})
