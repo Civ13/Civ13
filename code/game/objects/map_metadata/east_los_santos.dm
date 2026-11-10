@@ -232,19 +232,7 @@
 	return TRUE
 
 /obj/map_metadata/east_los_santos/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_two_sided_grace_wall(H, T)
 
 /obj/map_metadata/east_los_santos/proc/rewards()
 	for (var/mob/living/human/H in player_list)

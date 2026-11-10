@@ -638,6 +638,22 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/check_events()
 	return TRUE
 
+// Opt-in helper for maps with fixed faction-specific side walls.
+/obj/map_metadata/proc/check_two_sided_grace_wall(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
+			if (H.faction_text == faction1)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
+			if (H.faction_text == faction2)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE
+
 /obj/map_metadata/proc/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))
 		return FALSE
