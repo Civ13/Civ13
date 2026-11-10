@@ -45,7 +45,7 @@
 			queue += D
 		return
 	note(context, isicon(value) ? "native icon resource" : "native nonportable value")
-/datum/body_fixture_diagnostic/proc/run(mob/living/body)
+/datum/body_fixture_diagnostic/proc/inspect_body(mob/living/body)
 	codec = new
 	owned = list(body)
 	for(var/i = 1, i <= owned.len && i <= 512, i++)
@@ -230,7 +230,7 @@ var/global/body_runtime_error = FALSE
 	cargo.name = "Body fixture carried item"
 	body_check("real_human_has_organs_and_wound", arm && arm.wounds.len && H.organs.len && H.dna && cargo.loc == H)
 	var/datum/body_fixture_diagnostic/diagnostic = new
-	body_diagnostics["human"] = diagnostic.run(H)
+	body_diagnostics["human"] = diagnostic.inspect_body(H)
 	var/human_text = G.capture_body(H)
 	body_capture_errors["human"] = G.body_error
 	body_check("owned_injured_human_capture", istext(human_text))
