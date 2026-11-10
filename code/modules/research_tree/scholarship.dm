@@ -133,12 +133,16 @@ var/global/list/scholar_entry_tiers = null
 /mob/living/human/persistence_import_fields(list/saved_fields)
 	. = ..()
 	scholarship = clean_scholarship(scholarship)
+	if (!istext(scholar_master) || length(scholar_master) > 200)
+		scholar_master = null
 	if (stat == DEAD)
 		scholarship = list()
+		scholar_master = null
 
 /mob/living/human/forget_recipe_knowledge()
 	..()
 	scholarship = list()
+	scholar_master = null
 
 /mob/living/human/proc/scholar_requirement_text(node_id)
 	var/req = node_scholar_requirement(node_id)
