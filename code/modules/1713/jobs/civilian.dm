@@ -2,6 +2,15 @@
 /datum/job/civilian
 	faction = "Human"
 
+// Call from the existing gender branch so job-specific clothing and headwear
+// retain their original order. Each entry has equal probability.
+/datum/job/civilian/proc/equip_random_colonial_uniform(var/mob/living/human/H, var/female_styles)
+	var/static/list/male_uniforms = list(/obj/item/clothing/under/civ1, /obj/item/clothing/under/civ2, /obj/item/clothing/under/civ3, /obj/item/clothing/under/civ5, /obj/item/clothing/under/civ6)
+	var/static/list/female_uniforms = list(/obj/item/clothing/under/civf1, /obj/item/clothing/under/civf2, /obj/item/clothing/under/civf3)
+	var/list/uniforms = female_styles ? female_uniforms : male_uniforms
+	var/uniform_type = uniforms[rand(1, uniforms.len)]
+	H.equip_to_slot_or_del(new uniform_type(H), slot_w_uniform)
+
 /datum/job/civilian/give_random_name(var/mob/living/human/H)
 	if (is_civilizations || is_nomad)
 		H.name = H.species.get_random_name(H.gender)
@@ -78,25 +87,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
@@ -155,25 +148,9 @@
 	if (!H)	return FALSE
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 	
 	H.add_note("Role", " You are a <b>[title]</b>, the leader of this colony's funds.")
 	H.add_note("Command", " You answer directly to the Colonial Administration. Bank Tellers are your subordinates. The bank is property of Central Administration and YOU are the trusted manager.")
@@ -201,25 +178,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	if (map.ordinal_age <= 4)
@@ -373,25 +334,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
@@ -435,25 +380,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
@@ -537,25 +466,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/material/pickaxe(H), slot_belt)
@@ -596,25 +509,9 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
@@ -658,17 +555,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 //clothes
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 
 	//head
 		var/randhead = rand(1,5)
@@ -683,13 +570,7 @@
 		else if (randhead == 5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -735,17 +616,7 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 //clothes
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 
 	//head
 		var/randhead = rand(1,5)
@@ -760,13 +631,7 @@
 		else if (randhead == 5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -809,17 +674,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 
 	//head
 		var/randhead = rand(1,5)
@@ -834,13 +689,7 @@
 		else if (randhead == 5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -885,17 +734,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 
 	//head
 		var/randhead = rand(1,5)
@@ -910,13 +749,7 @@
 		else if (randhead == 5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -963,17 +796,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
 	if (H.gender == "male")
-		var/randcloth = rand(1,5)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ3(H), slot_w_uniform)
-		else if (randcloth == 4)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ5(H), slot_w_uniform)
-		else if (randcloth == 5)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ6(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, FALSE)
 
 	//head
 		var/randhead = rand(1,5)
@@ -988,13 +811,7 @@
 		else if (randhead == 5)
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -1137,13 +954,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
@@ -1247,13 +1058,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	H.equip_to_slot_or_del(new/obj/item/stack/money/real/twenty(H), slot_l_store)
@@ -1448,13 +1253,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
@@ -1508,13 +1307,7 @@
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/civ4(H), slot_w_uniform)
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/blackvest(H), slot_wear_suit)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 //head
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/top_hat(H), slot_head)
@@ -1609,13 +1402,7 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(H), slot_w_uniform)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 	give_random_name(H)
 	H.s_tone = rand(-32,-24)
@@ -1667,13 +1454,7 @@
 		else if (randcloth == 3)
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial1(H), slot_w_uniform)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
 
 	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
@@ -1739,13 +1520,7 @@
 		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -1814,13 +1589,7 @@
 		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -1867,13 +1636,7 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -1923,13 +1686,7 @@
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
@@ -1994,13 +1751,7 @@
 		else if (prob(5))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/sombrero(H), slot_head)
 	else
-		var/randcloth = rand(1,3)
-		if (randcloth == 1)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf1(H), slot_w_uniform)
-		else if (randcloth == 2)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf2(H), slot_w_uniform)
-		else if (randcloth == 3)
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/civf3(H), slot_w_uniform)
+		equip_random_colonial_uniform(H, TRUE)
 
 	//head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/kerchief(H), slot_head)
