@@ -44,7 +44,7 @@ LEVEL_FILE = re.compile(r"^(\d{1,2})(?:\.part(\d{1,6})|\.stream)?\.sav$")
 GENERATION_FILES = ("map.txt", "round.json", "save_complete.txt")
 MAX_INPUT_FILE = 2 << 30
 MAX_CELLS = 4_000_000
-REPORT_GROUPS = 128
+REPORT_GROUPS = 512
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
@@ -368,8 +368,8 @@ def spawn_markers(meta, profile, report):
     return markers
 
 
-def project(levels, meta, profile, catalog, preview):
-    report = Report()
+def project(levels, meta, profile, catalog, preview, report=None):
+    report = report if report is not None else Report()
     maxx, maxy, maxz = meta["dims"]
     zones = meta["zones"]
     grid = {}
@@ -415,8 +415,10 @@ def project(levels, meta, profile, catalog, preview):
                             report.add("excluded_by_policy", path.split("/")[2] if path.count("/") >= 2 else "object")
                             continue
                         if path not in catalog:
+                            # A well-formed type path missing from this checkout's source:
+                            # name it, so the operator can add it to the profile or source.
                             report.counts["unsupported_objects"] += 1
-                            report.add("unsupported_static", "unknown_static_type")
+                            report.add("unsupported_static", "type:" + path if len(path) <= 200 else "unknown_static_type")
                             unsupported += 1
                             continue
                         if child.get("content"):
@@ -655,6 +657,14 @@ carried over. See report.txt for what was reset or left out.
 """
 
 
+def report_text(export_id, rendered):
+    text = [f"Save-to-map export {export_id}: {rendered['status']}", f"Compilation: {rendered['compile_status']}",
+            "Playable: unverified until a fresh round is started", ""]
+    text += [f"{name}: {value}" for name, value in rendered["counters"].items()]
+    text += [""] + [f"{row['reason']}: {row['category']} ({row['count']})" for row in rendered["groups"]]
+    return ("\n".join(text) + "\n").encode()
+
+
 def build_package(save_dir, export_id, title, output, byond_bin, *, preview=False, compile=False, timeout=3600):
     require(EXPORT_ID.match(export_id or ""), "invalid_export_id")
     require(type(title) is str and 0 < len(title) <= 64 and all(ch.isprintable() for ch in title), "invalid_title")
@@ -670,18 +680,21 @@ def build_package(save_dir, export_id, title, output, byond_bin, *, preview=Fals
         meta = round_metadata(level)
         levels = read_levels(level, byond_bin, meta, timeout)
         status = "rejected"
+        report = Report()
         try:
-            grid, report, status = project(levels, meta, profile, catalog, preview)
+            grid, report, status = project(levels, meta, profile, catalog, preview, report)
         except CoreError as error:
-            report = Report()
+            # Keep the counts gathered so far: they say what to fix.
             report.add("rejected", str(error))
             grid = None
     _, after = inventory(save_dir)
     require(after == files, "input_changed_during_export")
     output.mkdir(mode=0o700)
     if grid is None:
-        exclusive_write(output / "report.json", json_bytes(report.render("rejected")))
-        return report.render("rejected")
+        rendered = report.render("rejected")
+        exclusive_write(output / "report.json", json_bytes(rendered))
+        exclusive_write(output / "report.txt", report_text(export_id, rendered))
+        return rendered
     height_file = terrain_height_file(meta["map_type"])
     metadata_type, map_id, metadata = metadata_source(export_id, title, profile, meta, height_file)
     dmm = render_dmm(meta["dims"], grid, metadata_type)
@@ -698,11 +711,7 @@ def build_package(save_dir, export_id, title, output, byond_bin, *, preview=Fals
     rendered = report.render(status, compile_status)
     rendered["counters"]["terrain_height_file"] = 1 if height_file else 0
     exclusive_write(output / "report.json", json_bytes(rendered))
-    text = [f"Save-to-map export {export_id}: {status}", f"Compilation: {compile_status}",
-            "Playable: unverified until a fresh round is started", ""]
-    text += [f"{name}: {value}" for name, value in rendered["counters"].items()]
-    text += [""] + [f"{row['reason']}: {row['category']} ({row['count']})" for row in rendered["groups"]]
-    exclusive_write(output / "report.txt", ("\n".join(text) + "\n").encode())
+    exclusive_write(output / "report.txt", report_text(export_id, rendered))
     manifest = {
         "schema_version": SCHEMA, "profile_id": "native-static-v1", "source_commit": git_head(),
         "export_id": export_id, "map_id": map_id, "metadata_type": metadata_type,
@@ -731,6 +740,12 @@ def main(argv=None):
     except (CoreError, OSError, subprocess.TimeoutExpired, json.JSONDecodeError, UnicodeError) as error:
         reason = str(error) if isinstance(error, CoreError) else type(error).__name__
         print(json.dumps({"status": "rejected", "reason": reason}), file=sys.stderr)
+        return 2
+    if report["status"] == "rejected":
+        reasons = [row["category"] for row in report["groups"] if row["reason"] == "rejected"]
+        unsupported = [row["category"][5:] for row in report["groups"] if row["category"].startswith("type:")]
+        print(json.dumps({"status": "rejected", "reason": reasons[0] if reasons else "rejected",
+                          "unsupported_types": unsupported[:20]}), file=sys.stderr)
         return 2
     print(json.dumps({"status": report["status"], "compile_status": report["compile_status"]}))
     ok = report["status"] == "complete" and report["compile_status"] in ("passed", "not_run")

@@ -169,7 +169,10 @@ Steps:
    `compile.json`.
 
 Exit codes: 0 complete (and compiled when asked), 1 incomplete preview or
-failed compile, 2 rejected (reason code on stderr, no map written).
+failed compile, 2 rejected (reason code on stderr, no map written). A rejected
+export still writes `report.json`/`report.txt` with the counts gathered so far,
+and names each unsupported object type (`type:/obj/...`), which this checkout's
+source does not declare; stderr lists them too.
 
 Not carried over: players, inventories, contents of containers, research,
 factions, economy, timers, vehicles, machine/network state, custom names and
