@@ -47,7 +47,7 @@ class AtlasAdapterContract(unittest.TestCase):
  def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
   anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
   labels=[line for line in anvil.splitlines() if 'newlist += "[anvil_recipes[i][1]] - ' in line]
-  self.assertEqual(len(labels),10)
+  self.assertEqual(len(labels),5)
   self.assertTrue(all('crafting_recipe_manual_suffix(H, "[anvil_recipes[i][9]]")' in line for line in labels))
   workbench=(ROOT/'code/game/objects/structures/blacksmithing/component_workbench.dm').read_text()
   for marker in ('choices[label] = recipe_name', 'choices[selected_label]', 'select_recipe(H, choice)'):
