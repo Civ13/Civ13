@@ -65,7 +65,7 @@ var/global/list/ocean_fish_stock = list()
 /mob/living/human/var/tmp/ocean_fishing = FALSE
 
 /mob/living/human/proc/on_boat_deck()
-	if (driver_vehicle)
+	if (istype(driver_vehicle, /obj/structure/vehicle/boat) || istype(driver_vehicle, /obj/structure/vehicle/raft))
 		return TRUE
 	var/turf/T = get_turf(src)
 	if (!istype(T, /turf/floor/beach/water))
