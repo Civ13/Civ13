@@ -82,7 +82,7 @@ var/global/list/party_train_requirements = list(
 	density = TRUE
 	// Delivered materials live only in the office, so vehicles and blasts must not delete it.
 	crushable = FALSE
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;freight"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;freight;train_station_id"
 	// The party building (and then owning) the train here.
 	var/party = null
 	// Material kind = amount delivered so far.

@@ -1,6 +1,6 @@
 # Physical trains between player-established regions
 
-Status: design proposal, not implemented or deployed. Source review: master
+Status: partial implementation in draft; physical departures are disabled. Source review: master
 `0301cd5f7ad8b348116d05771f1fbba8bce9f27e`, 2026-11-10.
 
 Stopping rule: document the physical-train requirements, dependency-ordered
@@ -181,9 +181,29 @@ not just that the destination reported success. Add negative controls which
 omit a tombstone, double-apply a message, shorten a reservation or mutate a rider
 mid-capture and confirm the test detects the resulting violation.
 
-## Evidence for this draft
+## Implemented draft scope and remaining gaps
 
-Source inspection establishes the gaps above. No manifest codec, physical
-cross-region transfer, native acceptance or performance result is implemented
-or claimed here. Compilation/gameplay tests are not applicable to this docs-only
-change. Subsequent phases must report their own exact-head evidence.
+The draft now contains executable route planning, station discovery and bounded
+arrival geometry, a bounded consist codec, and transfer-agent admission/journal
+support for a train envelope. The station menu calls the route option a preview.
+`train_transfer_departure_problem()` deliberately refuses departure: no live
+edge hook deletes or transfers a train yet. This is not the completed feature.
+
+The codec rejects unsupported bodies and loads rather than silently dropping
+them. NPCs, animals, corpses, injured/seated riders and arbitrary furnishings are
+not supported. Existing character encoding also does not prove comprehensive
+preservation of every healthy character state. Construction and replay helpers
+are prepared code, not accepted native round trips.
+
+Remaining dependencies before a playable departure:
+
+- Immutable, persisted source escrow covering all passenger/cargo mutations
+  during asynchronous requests, including unknown-response reconciliation.
+- Atomic grouped account-home custody, not only region-local overlap checks.
+- Real Rail Yard entry/exit endpoints (the existing yard uses stationary berths,
+  not completed railway offices) and cross-region faction identity.
+- Durable geometric reservation and runtime/save replay integration.
+- Full body/state preservation and the native/multi-client acceptance matrix.
+
+No deployment, live save change or automatic restart is part of this draft.
+Verification results are recorded on the PR for each published revision.
