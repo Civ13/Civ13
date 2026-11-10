@@ -225,6 +225,14 @@ For a TDM group (Barracks and battle regions) it also shows what the battle is
 doing: forming, in progress, over (map vote), sending players back, or building
 the next map (`battle_phase` in `shard_group.py status`).
 
+### Fresh world (all regions)
+
+The All regions row's **Fresh world (all regions)…** resets a linked region
+group at once (`shard_group.py group-fresh-world`). Save and stop every region
+first, then type the group id from the group config to confirm. It archives every
+region's world saves and travel store plus the coordinator store, then starts
+every region fresh; see `docs/launcher-fresh-world.md`.
+
 ### Host settings
 
 With `control.group` set, the Host server tab's group row adds **Host settings**.

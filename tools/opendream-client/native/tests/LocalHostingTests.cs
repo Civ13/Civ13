@@ -162,6 +162,11 @@ static class LocalHostingTests {
         foreach (var (selected, confirmation) in new (string?, string?)[] { (null, null), ("gaia", null), ("gaia", "deep"), ("gaia", "GAIA") })
             try { LocalHosting.GroupStep(host.Control!, "fresh-world", selected, null, confirmation); throw new Exception("unsafe fresh world accepted"); } catch (ArgumentException) { assertions++; }
         try { LocalHosting.GroupStep(host.Control!, "start", "gaia", null, "gaia"); throw new Exception("confirmation on ordinary start accepted"); } catch (ArgumentException) { assertions++; }
+        Require(LocalHosting.GroupStep(host.Control!, "group-fresh-world", null, null, null, "earth").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "group-fresh-world", "--confirm-group", "earth" }), "group fresh world confirmation argv");
+        foreach (var (selected, confirmation) in new (string?, string?)[] { (null, null), ("gaia", "earth"), (null, "-x"), (null, "EARTH") })
+            try { LocalHosting.GroupStep(host.Control!, "group-fresh-world", selected, null, null, confirmation); throw new Exception("unsafe group fresh world accepted"); } catch (ArgumentException) { assertions++; }
+        try { LocalHosting.GroupStep(host.Control!, "stop", null, null, null, "earth"); throw new Exception("group confirmation on ordinary stop accepted"); } catch (ArgumentException) { assertions++; }
         var groupStep = LocalHosting.GroupStep(host.Control!, "stop");
         Require(groupStep.FileName == python && groupStep.CreateNoWindow && !groupStep.UseShellExecute && groupStep.RedirectStandardInput &&
             groupStep.ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "stop" }), "group argv changed: " + string.Join(" ", groupStep.ArgumentList));
