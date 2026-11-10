@@ -50,7 +50,7 @@ def branch_fixture(*, introduce_core=False):
                 target = origin/name; target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text(text, encoding='utf-8', newline='\n')
         write(initial)
-        for name in ('ci_checkout_refs.py','ci_baseline.py','select-ci.py','byond_toolchain.py'):
+        for name in ('ci_checkout_refs.py','ci_baseline.py','select-ci.py','ci_skill_prose.py','byond_toolchain.py'):
             target=origin/'scripts'/name; target.parent.mkdir(exist_ok=True)
             shutil.copyfile(ROOT/'scripts'/name,target)
         target=origin/'tools/byond/version.json'; target.parent.mkdir(parents=True)

@@ -146,7 +146,7 @@ class ScopeTests(unittest.TestCase):
 
     def test_control_paths_run_hosted(self):
         for path in ('.github/workflows/test.yml', 'scripts/local_ci.py', 'tools/ci/local_attesters.json',
-                     'scripts/select-ci.py', 'tools/byond/version.json'):
+                     'scripts/select-ci.py', 'scripts/ci_skill_prose.py', 'tools/byond/version.json'):
             with self.subTest(path=path):
                 selection = plan(paths=[path])
                 self.assertFalse(decide(selection, *published(receipt(selection)))['skip'])

@@ -7,6 +7,11 @@ from pathlib import Path, PurePosixPath
 import importlib.util
 import subprocess
 
+_skill_spec = importlib.util.spec_from_file_location('ci_skill_prose', Path(__file__).with_name('ci_skill_prose.py'))
+_skill_module = importlib.util.module_from_spec(_skill_spec)
+_skill_spec.loader.exec_module(_skill_module)
+skill_prose = _skill_module.skill_prose
+
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
 CI_BASES = {'master', 'help-markdown-byond-html'}
 ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
@@ -295,14 +300,6 @@ def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
-def skill_prose(path):
-    parts = path.split('/')
-    return (len(parts) >= 4 and parts[:2] == ['.agents', 'skills']
-            and all(part not in ('', '.', '..') for part in parts)
-            and (parts[-1] == 'SKILL.md'
-                 or ('references' in parts[3:-1] and parts[-1].endswith('.md'))))
-
-
 def needs_game(paths):
     # Compilation depends on shared includes. Unknown paths compile, but do
     # not implicitly authorize running existing regression suites.
@@ -384,7 +381,7 @@ def select_mcp(base, head, event):
     except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
         raise RuntimeError('MCP selection could not compare base and head') from exc
     return any(path.startswith('tools/mcp/') or path in {
-        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py',
+        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'scripts/ci_skill_prose.py', 'tests/test_ci_selection.py',
         'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
         'scripts/nomads-lifecycle/agent_debug.py',
         'scripts/nomads-lifecycle/variable_observability.py',

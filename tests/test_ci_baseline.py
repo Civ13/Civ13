@@ -569,7 +569,7 @@ class BaselinePolicyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             suite = ci.SUITES[suite_name]
-            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+            for relative in ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
                              'tools/byond/version.json', *suite['files'], *suite['shared_paths']):
                 destination = root/relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
@@ -805,7 +805,7 @@ class BaselinePolicyTests(unittest.TestCase):
         suite_name = 'character_traits'
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+            for relative in ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
                              'tools/byond/version.json', *ci.SUITES[suite_name]['files'],
                              *ci.SUITES[suite_name]['shared_paths']):
                 destination = root / relative
@@ -913,7 +913,7 @@ class BaselinePolicyTests(unittest.TestCase):
         # production inputs. Only unrelated mandatory children use inert adapters.
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            sources = ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+            sources = ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
                        'tools/byond/version.json', *suite['files'],
                        'code/modules/reagents/tablet_press.dm',
                        'code/modules/persistence/functions.dm',
@@ -1032,7 +1032,7 @@ class BaselinePolicyTests(unittest.TestCase):
         # running this policy test inside its own selected baseline fixture.
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+            for relative in ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
                              'tools/byond/version.json', *ci.SUITES['grinder']['files'],
                              'tests/grinder/historical-grinder.dm',
                              'code/modules/reagents/Chemistry-Machinery.dm',
@@ -1293,6 +1293,34 @@ class BaselinePolicyTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertFalse(ci.documentation(path))
                 self.assertEqual(self.selected(['.agents/skills/civ13/SKILL.md',path]),set(ci.SUITES))
+
+    def test_shared_skill_prose_contract_across_consumers(self):
+        spec = importlib.util.spec_from_file_location('skill_compile_policy', ROOT / 'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(selection)
+        cases = {
+            '.agents/skills/a/SKILL.md': True,
+            '.agents/skills/a/references/nested/note.md': True,
+            '.agents/skills/a/references/note.MD': False,
+            '.agents/skills/a//SKILL.md': False,
+            '.agents/skills/a/./SKILL.md': False,
+            '.agents/skills/a/../SKILL.md': False,
+            '.agents/skills/a/templates/note.md': False,
+            '.agents/skills/a/references/run.py': False,
+        }
+        for path, expected in cases.items():
+            with self.subTest(path=path):
+                self.assertEqual(selection.skill_prose(path), expected)
+                self.assertEqual(ci.skill_prose(path), expected)
+                self.assertEqual(selection.needs_game([path]), not expected)
+                self.assertEqual(self.selected([path]),
+                                 {'policy', 'bootstrap', 'progress', 'movement_save_inventory'}
+                                 if expected else set(ci.SUITES))
+
+        helper = 'scripts/ci_skill_prose.py'
+        self.assertTrue(selection.needs_game([helper]))
+        self.assertEqual(self.selected([helper]), set(ci.SUITES))
+        self.assertIn('CI policy/dependency changed: ' + helper, ci.impact([helper])['fallback_reasons'])
 
     def test_docs_scripts_and_config_cannot_evade_unknown_impact_fallback(self):
         for path in ('docs/helper.py', 'docs/tool.sh', 'docs/helper.js', 'docs/helper.ps1',
