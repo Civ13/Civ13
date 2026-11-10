@@ -30,6 +30,8 @@ import threading
 import time
 import urllib.parse
 
+from byond_topic import frame_query
+
 SCHEMA = 1
 MAX_REQUEST = 512
 REQUEST_TIMEOUT = 3
@@ -104,9 +106,9 @@ def http_reply(value):
 
 def topic(port, query, timeout=5):
     """Send one Topic to 127.0.0.1:port and return its text reply."""
-    payload = b'\0' * 5 + query.encode('ascii') + b'\0'
+    query_bytes = query.encode('ascii')
     with socket.create_connection(('127.0.0.1', port), timeout=timeout) as connection:
-        connection.sendall(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
+        connection.sendall(frame_query(query_bytes))
         header = _read(connection, 4)
         if header[:2] != b'\x00\x83':
             raise RuntimeError('invalid Topic reply')

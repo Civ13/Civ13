@@ -49,6 +49,7 @@ import time
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
+from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
@@ -1531,10 +1532,9 @@ def hosts(group, only=None, platform=None):
 
 def region_view(port, timeout=10):
     """Ask a running region what it is and how it sees its peers (shard_region topic)."""
-    payload = b'\0' * 5 + b'shard_region=1&format=json&peers=1' + b'\0'
     try:
         with socket.create_connection(('127.0.0.1', port), timeout=timeout) as connection:
-            connection.sendall(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
+            connection.sendall(frame_query(b'shard_region=1&format=json&peers=1'))
             data = b''
             while len(data) < 4 or len(data) < 4 + struct.unpack('>H', data[2:4])[0]:
                 part = connection.recv(65536)
