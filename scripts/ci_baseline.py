@@ -56,6 +56,9 @@ SUITES = {
     'gong_fastening': {'files': ('tests/gong_fastening/test_fastening.py',), 'paths': (
         'tests/gong_fastening/', 'code/game/objects/structures/gong.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
+    'curtain_lighting': {'files': ('tests/curtain_lighting/test_curtain_lighting.py',), 'paths': (
+        'tests/curtain_lighting/', 'code/game/objects/structures/curtains.dm'), 'shared_paths': (
+        'tests/save_movement/source_adapter.py',)},
     'kitchen_spike': {'files': ('tests/kitchen_spike/test_kitchen_spike.py',), 'paths': (
         'tests/kitchen_spike/', 'code/game/objects/structures/kitchen_spike.dm')},
     'statue_appearance': {'files': ('tests/statue_appearance/test_statue_appearance.py',), 'paths': (
