@@ -34,30 +34,21 @@
 		var/mob/M = AM
 		if (ishuman(M))
 			var/mob/living/human/H = M
+			var/damage = 15
+			var/cut_description = "deeply cut"
 			if (prob(33))
-				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
-				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting && affecting.take_damage(5, 0, TRUE, TRUE))
-					H.UpdateDamageIcon()
-				H.updatehealth()
-				if (affecting)
-					to_chat(M, SPAN_DANGER("Your [affecting.name] gets slightly cut by \the [src]!"))
+				damage = 5
+				cut_description = "slightly cut"
 			else if (prob(33))
-				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
-				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting && affecting.take_damage(10, 0, TRUE, TRUE))
-					H.UpdateDamageIcon()
-				H.updatehealth()
-				if (affecting)
-					to_chat(M, SPAN_DANGER("Your [affecting.name] gets cut by \the [src]!"))
-			else
-				playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
-				var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
-				if (affecting && affecting.take_damage(15, 0, TRUE, TRUE))
-					H.UpdateDamageIcon()
-				H.updatehealth()
-				if (affecting)
-					to_chat(M, SPAN_DANGER("Your [affecting.name] gets deeply cut by \the [src]!"))
+				damage = 10
+				cut_description = "cut"
+			playsound(loc, pick('sound/effects/barbwire1.ogg','sound/effects/barbwire2.ogg','sound/effects/barbwire3.ogg'), 50, TRUE)
+			var/obj/item/organ/external/affecting = H.get_organ(pick("l_foot", "r_foot", "l_leg", "r_leg"))
+			if (affecting && affecting.take_damage(damage, 0, TRUE, TRUE))
+				H.UpdateDamageIcon()
+			H.updatehealth()
+			if (affecting)
+				to_chat(M, SPAN_DANGER("Your [affecting.name] gets [cut_description] by \the [src]!"))
 	return ..()
 
 // Disabled until a fix is found (the issue is that; Building a barbed wire on your src makes you get stuck in it too.)

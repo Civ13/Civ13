@@ -1232,6 +1232,9 @@ SUITES = {
     'berry_harvest': {'files': ('tests/berry_harvest/test_harvest.py',),
         'paths': ('tests/berry_harvest/', 'code/game/objects/structures/berries.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'barbwire_crossing': {'files': ('tests/barbwire_crossing/test_crossing.py',),
+        'paths': ('tests/barbwire_crossing/', 'code/modules/1713/barbwire.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
