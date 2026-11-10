@@ -45,7 +45,7 @@
 	expected_legacy_json = json_encode(legacy)
 	context_owner = paper.loc
 	context_parent = null
-	if (istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder))
+	if (istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder) || istype(context_owner, /obj/item/weapon/storage/envelope) || istype(context_owner, /obj/item/weapon/paper_bundle))
 		context_parent = context_owner.loc
 	return TRUE
 
@@ -59,7 +59,7 @@
 /datum/paper_document_authoring/has_access(mob/actor, writing = FALSE)
 	if (session_closed || !paper || paper.loc != context_owner)
 		return FALSE
-	if ((istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder)) && context_owner.loc != context_parent)
+	if ((istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder) || istype(context_owner, /obj/item/weapon/storage/envelope) || istype(context_owner, /obj/item/weapon/paper_bundle)) && context_owner.loc != context_parent)
 		return FALSE
 	return ..(actor, writing)
 

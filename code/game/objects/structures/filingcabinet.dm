@@ -63,15 +63,30 @@
 		return
 
 	user.set_using_object(src)
-	var/dat = "<center><table>"
+	// Filed by name, so a drawer reads like an index. Papers can be read in place.
+	var/list/by_name = list()
 	for (var/obj/item/P in src)
-		dat += "<tr><td><a href='?src=\ref[src];retrieve=\ref[P]'>[P.name]</a></td></tr>"
+		by_name += P
+	by_name = sortAtom(by_name)
+	var/dat = "<center><table>"
+	for (var/obj/item/P in by_name)
+		dat += "<tr><td><a href='?src=\ref[src];retrieve=\ref[P]'>[P.name]</a></td>"
+		if (istype(P, /obj/item/weapon/paper))
+			dat += "<td><a href='?src=\ref[src];read=\ref[P]'>Read</a></td>"
+		dat += "</tr>"
 	dat += "</table></center>"
 	show_browse(user, "<html><head><title>[name]</title></head><body>[dat]</body></html>", "window=filingcabinet;size=350x300")
 
 	return
 
 /obj/structure/filingcabinet/Topic(href, href_list)
+	if (!usr || usr.stat || usr.restrained() || !Adjacent(usr))
+		return
+	if (href_list["read"])
+		var/obj/item/weapon/paper/R = locate(href_list["read"])
+		if (istype(R) && R.loc == src)
+			R.show_document(usr, FALSE, "filing", src)
+		return
 	if (href_list["retrieve"])
 		show_browse(usr, "", "window=filingcabinet") // Close the menu)
 
