@@ -73,7 +73,7 @@ class Frame(Record):
 
 class Project:
     def __init__(self, source=SOURCE):
-        self.source = source + '\n' + STACK_SOURCE
+        self.source = source + '\n' + STACK_SOURCE + '\n' + (ROOT/'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
         self.globals = dict(persistence_admission_identity=0,
                             persistence_save_in_progress=False,
                             persistence_active_operation=None,
@@ -104,6 +104,10 @@ class Project:
             '/proc/tablet_press_build_allowed', Record(), user=user, result_path=result_path)
         self.globals['tablet_press_finite'] = lambda value: self.run(
             '/proc/tablet_press_finite', Record(), value=value)
+        self.globals['persistence_admission_blocked'] = lambda: self.run(
+            '/proc/persistence_admission_blocked', Record())
+        self.globals['persistence_admission_changed'] = lambda identity: self.run(
+            '/proc/persistence_admission_changed', Record(), identity=identity)
 
     @staticmethod
     def number(value):
@@ -643,7 +647,7 @@ class TabletAcquisitionTests(unittest.TestCase):
         self.assertGreaterEqual(stack.count('press_construction.valid()'), 3)
         self.assertLess(stack.rindex('press_construction.valid()'),
                         stack.index('if (use(required, (joinery || carving) ? null : H))'))
-        self.assertIn('save_epoch != persistence_admission_identity', SOURCE)
+        self.assertIn('persistence_admission_changed(save_epoch)', SOURCE)
         self.assertIn('stock.amount != amount', SOURCE)
         self.assertIn('stock.material != stock_material', SOURCE)
         self.assertIn('stock.crafting_stack_accessible(actor)', SOURCE)
@@ -673,7 +677,7 @@ class MutationControls(unittest.TestCase):
             ('rollback', 'source.restore()', 'target.restore()', 'rollback'),
             ('acceptance', 'accepted["amount"] != amount', 'FALSE', 'source'),
             ('owner', 'machine.tablet_action != src', 'FALSE', 'owner'),
-            ('epoch', 'save_epoch != persistence_admission_identity', 'FALSE', 'epoch'),
+            ('epoch', 'persistence_admission_changed(save_epoch)', 'FALSE', 'epoch'),
             ('metadata', 'if (!R || !tablet_metadata_equal(R.data, data.value))',
              'if (!R)', 'metadata'),
             ('metadata_null', 'return isnull(left) && isnull(right)',

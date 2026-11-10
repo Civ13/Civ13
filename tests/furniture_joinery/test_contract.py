@@ -16,7 +16,7 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT/'tests/primitive_woodworking'))
-from source_adapter import block, expr, compile_body
+from source_adapter import block, expr, compile_body, install_persistence_admission
 
 TEXT = (ROOT/'code/game/objects/items/stacks/furniture_joinery.dm').read_text()
 SPECS = json.loads((ROOT/'config/crafting/furniture_joinery.json').read_text())
@@ -78,6 +78,7 @@ class Fixture:
                  furniture_joinery_equipped=lambda a,i:i is not None and not i.deleted and i.loc is a and i.equipped and (i.health is None or i.health>0) if hasattr(i,'health') else i is not None and not i.deleted and i.loc is a and i.equipped,
                  furniture_joinery_available=lambda a,i:i is not None and not i.deleted and ((i.loc is a and i.equipped and (i.health is None or i.health>0)) or i.loc is self.site),
                  furniture_joinery_tool=lambda i,r,m:i is not None and not i.deleted)
+        install_persistence_admission(env)
         exec(compile(project_guard(), '<production joinery guard>', 'exec'),env)
         self.valid=lambda:env['valid'](self)
         self.env=env

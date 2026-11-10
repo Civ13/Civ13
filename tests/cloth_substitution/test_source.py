@@ -95,7 +95,7 @@ class ClothTests(unittest.TestCase):
         self.assertLess(s.index('if (use(required,'),s.index('cloth_payment.consume_secondary()'))
         self.assertLess(s.index('cloth_payment.consume_secondary()'),s.index('O = new recipe.result_type'))
         p=read(PAYMENT)
-        for required in ('secondary_cost = quantity * extra_cloth', 'save_epoch != persistence_admission_identity',
+        for required in ('secondary_cost = quantity * extra_cloth', 'persistence_admission_changed(save_epoch)',
                          'stock.loc != stock_loc', 'C.loc != actor', '!actor.item_is_in_hands(C)',
                          '!C.can_use(secondary[C])', 'return paid == secondary_cost', 'C.use(secondary[C])'):
             self.assertIn(required,p)

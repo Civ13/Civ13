@@ -82,7 +82,7 @@ var/global/list/furniture_joinery_specs
 /datum/furniture_joinery_action/proc/valid()
 	if (!spec || QDELETED(actor) || QDELETED(stock) || actor.incapacitated())
 		return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)
+	if (persistence_admission_changed(save_epoch))
 		return FALSE
 	if (actor.woodwork_owner || stock.woodwork_owner || stock.loc != stock_loc || !stock.crafting_stack_accessible(actor) || get_turf(actor) != site)
 		return FALSE

@@ -754,6 +754,13 @@ var/global/persistence_startup_recovery_status
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
 
+/proc/persistence_admission_blocked()
+	return persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required
+
+// Call after a wait as well as before committing: a completed operation changes the identity.
+/proc/persistence_admission_changed(datum/identity)
+	return persistence_admission_blocked() || identity != persistence_admission_identity
+
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
 
