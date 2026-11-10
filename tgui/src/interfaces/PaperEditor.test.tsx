@@ -10,7 +10,7 @@ vi.mock('./BookReader', async () => {
   const actual = await vi.importActual<any>('./BookReader');
   return { ...actual, BookReader: ({ data }: any) => <actual.BookPage runs={actual.bookRuns(data)} /> };
 });
-import { PaperEditor, paperEditorModel, paperEditParams, paperBookData, legacyPieces, sectionPieces } from './PaperEditor';
+import { PaperEditor, paperEditorModel, paperEditParams, paperBookData, legacyPieces, sectionPieces, stampLabel } from './PaperEditor';
 import { bookRuns } from './BookReader';
 import type { Data, ScreenProps } from '../types';
 const EN = 'civ13:english:v1', RU = 'civ13:russian:v1';
@@ -210,4 +210,13 @@ it('renders written titles bold and keeps body text regular', () => {
   expect(title.slice(1).map(p=>`${p.text}${p.bold?'!':''}`)).toEqual(['Heading !','x!',' y!']);
   const body=sectionPieces({ text: 'plain', kind: 'body', ink: '#000000', tool: 'pen' });
   expect(body[1]).toEqual({ text: 'plain', ink: '#000000', face: 'verdana', bold: false, italic: false });
+});
+
+it('names a legacy stamp impression from its alt text, as inert text', () => {
+  expect(stampLabel('APPROVED ink stamp')).toBe('[stamp: APPROVED ink stamp]');
+  expect(stampLabel(null)).toBe('[stamp]');
+  expect(stampLabel('   ')).toBe('[stamp]');
+  expect(stampLabel('x'.repeat(200))).toBe(`[stamp: ${'x'.repeat(64)}]`);
+  const pieces = legacyPieces('Orders<img src="paperstamp_stamp-approved.png" alt="APPROVED ink stamp" onerror=alert(1)>');
+  expect(pieces.map(p => p.text).join('')).toBe('Orders[stamp: APPROVED ink stamp]');
 });
