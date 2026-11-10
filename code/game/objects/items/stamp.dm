@@ -97,10 +97,10 @@
 
 /obj/item/weapon/stamp/mail/berlin
 	name = "berlin seal stamp"
-	icon_state = "steal-berlin"
+	icon_state = "seal-berlin"
 
 /obj/item/weapon/stamp/mail/berlin/censored
-	icon_state = "seal-berlin-cens"
+	icon_state = "seal-berlin-cen"
 
 /obj/item/weapon/stamp/mail/admin
 	name = "civ13 admin seal"

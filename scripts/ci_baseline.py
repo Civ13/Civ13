@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'stamp_icons': {'files': ('tests/stamp_icons/test_berlin.py',),
+        'paths': ('tests/stamp_icons/',), 'shared_paths': (
+            'code/game/objects/items/stamp.dm', 'icons/obj/bureaucracy.dmi')},
     'tape_markings': {'files': ('tests/tape_markings/test_overlays.py',),
         'paths': ('tests/tape_markings/',), 'shared_paths': (
             'code/game/objects/items/weapons/policetape.dm',
