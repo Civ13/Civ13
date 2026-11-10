@@ -16,9 +16,12 @@
 ///////////////////////////////////////////////////////
 */
 
-/material/proc/get_recipes_civs(var/mob/living/human/user=null, var/forced=FALSE)
+// The material recipe catalog (config/crafting/material_recipes_<key>.txt) this
+// character crafts from. The Crafting Atlas uses the same answer to show the
+// recipes of the current map first.
+/proc/crafting_catalog_key(var/mob/living/human/user)
 	var/faction = "global"
-	if (user)
+	if (istype(user))
 		if (user.faction_text in global.craftlist_lists)
 			faction = user.faction_text
 
@@ -34,6 +37,17 @@
 			faction = "crustacean"
 		else if (user.wolfman && ("wolf" in global.craftlist_lists))
 			faction = "wolf"
+	if (map && map.civilizations)
+		if (istype(user) && user.s_tone <= -175 && map.ID == MAP_NOMADS_AFRICA)
+			faction = "pygmy"
+	else if (map && map.override_global_recipes != "global")
+		faction = map.override_global_recipes
+	return faction
+
+/material/proc/get_recipes_civs(var/mob/living/human/user=null, var/forced=FALSE)
+	var/faction = "global"
+	if (user)
+		faction = crafting_catalog_key(user)
 		if (map && map.civilizations)
 			var/civ = user.original_job_title
 			var/list/current_res = list(0,0,0)
@@ -60,8 +74,6 @@
 					current_res = map.civa_research
 				else if (civ == "Blugoslavian Civilian")
 					current_res = map.civb_research
-			if (user.s_tone <= -175 && map.ID == MAP_NOMADS_AFRICA)
-				faction = "pygmy"
 			generate_recipes_civs(current_res, faction, user ? user.civilization : null)
 		else
 			var/list/current_res = list(0,0,0)
@@ -90,8 +102,6 @@
 							current_res = list(240,240,240)
 				else
 					current_res = map.custom_civs[user.civilization]
-			if (map && map.override_global_recipes != "global")
-				faction = map.override_global_recipes
 			generate_recipes_civs(current_res, faction, user ? user.civilization : null)
 	return recipes
 
