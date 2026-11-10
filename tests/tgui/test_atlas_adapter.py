@@ -312,6 +312,74 @@ class AtlasFactsContract(unittest.TestCase):
    for row in value.get('stats',[]):
     self.assertTrue(len(row)==2 and all(isinstance(cell,str) and cell for cell in row),key)
 
+ def test_material_tools_list_damage_for_each_material_they_are_made_from(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/material\n\tvar/name\n// a commented line does not end the block\n\tvar/hardness = 60 // edge\n\tvar/weight = 20\n/material/steel\n\tname = "steel"\n/material/iron\n\tname = "iron"\n\thardness = 55\n\tweight = 22\n'
+   '/obj/item/weapon/material\n\tvar/force_divisor = 0.5\n\tvar/thrown_force_divisor = 0.5\n\tvar/default_material = "steel"\n'
+   '/obj/item/weapon/material/sword\n\tsharp = TRUE\n\tforce_divisor = 0.7\n/obj/item/weapon/material/club\n\tthrown_force_divisor = TRUE\n/obj/item/weapon/material/spoon\n\tforce_divisor = 0\n\tthrown_force_divisor = 0\n'
+   '/obj/item/weapon/material/odd\n\tforce_divisor = BASE * 2\n/obj/item/weapon/material/twohanded\n\tvar/unwielded_force_divisor = 0.25\n/obj/item/weapon/material/twohanded/axe\n\tedge = TRUE\n\tforce_divisor = 0.8\n'}
+  types={key:'/obj/item/weapon/material/'+key for key in ('sword','club','spoon','odd','twohanded/axe')}
+  facts=resource_facts(files,types,{'sword':['iron','steel','iron','unknown']})
+  # Blades use hardness, blunt tools use weight, and DM's one-argument round() rounds down: 55 * 0.7 = 38.5 -> 38.
+  self.assertEqual(facts['sword']['stats'],[['Melee damage','iron 38; steel 42'],['Thrown damage','iron 11; steel 10'],['Quality','well-made pieces hit harder, up to double'],['Blade','sharp']])
+  self.assertEqual(facts['club']['stats'],[['Melee damage','steel 10'],['Thrown damage','steel 20'],['Quality','well-made pieces hit harder, up to double']])
+  self.assertNotIn('stats',facts['spoon'])
+  self.assertNotIn('stats',facts['odd'])
+  self.assertEqual(facts['twohanded/axe']['stats'],[['Melee damage','steel 12 in one hand, 48 in two'],['Thrown damage','steel 6'],['Blade','edged']])
+
+ def test_liquids_list_the_items_that_already_hold_them(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/obj/item/comb\n\tname = "honeycomb"\n\tNew()\n\t\t..()\n\t\treagents.add_reagent("honey", 5)\n\tproc/eat()\n\t\treagents.add_reagent("wax", 1)\n'
+   '/obj/item/jar\n\tname = "jar"\n/obj/item/jar/New()\n\t..()\n\treagents.add_reagent("honey", 10)\n/obj/item/jar/attackby(obj/item/W)\n\treagents.add_reagent("mead", 10)\n'
+   '/obj/item/odd\n\tname = "[x] pot"\n\tlist_reagents = list("honey" = 3)\n/obj/item/sack\n\tname = "sack"\n\tstarting_reagents = list("flour" = 30)\n/mob/bee/New()\n\treagents.add_reagent("honey", 1)\n'}
+  facts=resource_facts(files,{'honey':'honey','flour':'flour','wax':'wax','mead':'mead','/obj/item/jar':'/obj/item/jar'})
+  self.assertEqual(facts['honey']['found_in'],[['/obj/item/jar','jar'],['/obj/item/comb','honeycomb']])
+  self.assertEqual(facts['flour']['found_in'],[['/obj/item/sack','sack']])
+  self.assertNotIn('found_in',facts['wax'])
+  self.assertNotIn('found_in',facts['mead'])
+
+ def test_generated_catalog_fills_the_three_item_page_gaps(self):
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  resources=catalog['resources']; routes=catalog['acquisition']
+  # Where raw materials come from.
+  for key in ('/material/copper','/material/tin','/material/clay','/material/marble','/material/bearpelt/brown','grapejuice','ethanol','/material/leaf'):
+   self.assertTrue(routes.get(key),key)
+  self.assertEqual(resources['honey']['found_in'],[['/obj/item/weapon/reagent_containers/food/snacks/honeycomb','honeycomb']])
+  self.assertEqual(resources['/obj/structure/wild/tree']['kind'],'Natural feature')
+  made={product['id'] for recipe in catalog['recipes'] for product in recipe['outputs']}
+  craftable=[key for key,value in resources.items() if value['type'].startswith('/obj/item') and key not in made and key not in routes]
+  self.assertLessEqual(len(craftable),6,craftable)
+  # Damage on material tools.
+  hatchet=dict(resources['/obj/item/weapon/material/hatchet']['stats'])
+  self.assertEqual(hatchet['Melee damage'],'bronze 23; copper 21; iron 27; steel 30')
+  self.assertEqual(hatchet['Thrown damage'],'bronze 12; copper 10; iron 16; steel 15')
+  tools=[value for value in resources.values() if value['type'].startswith('/obj/item/weapon/material')]
+  self.assertGreater(sum('Melee damage' in dict(value.get('stats',[])) for value in tools),len(tools)*0.9)
+  # Where reactions run. The catalog station field keeps its research meaning.
+  chemistry=[recipe for recipe in catalog['recipes'] if recipe['kind']=='Chemistry']
+  sites={recipe['name']:recipe.get('site') for recipe in chemistry}
+  self.assertEqual({name for name,site in sites.items() if site=='bench_only'},{'Gelatin foam','Lyocell fibre','Rayon fibre'})
+  self.assertEqual({name for name,site in sites.items() if site=='bench_heated'},{'Polypropylene'})
+  self.assertGreater(sum(site=='bench' for site in sites.values()),25)
+  self.assertGreater(sum(site is None for site in sites.values()),100)
+  self.assertFalse([recipe['name'] for recipe in chemistry if recipe.get('station')])
+  self.assertFalse([recipe['name'] for recipe in catalog['recipes'] if recipe.get('site') and recipe['kind']!='Chemistry'])
+  self.assertIn('/obj/structure/reaction_bench',resources)
+
+ def test_adapter_links_reactions_and_liquid_holders(self):
+  source=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
+  self.assertIn('if (!station && recipe["site"])\n\t\tstation = "/obj/structure/reaction_bench"',source)
+  self.assertIn('"site" = html_encode("[group["site"]]")',source)
+  self.assertIn('if (reference.resource_exists(holder[1]))',source)
+  self.assertIn('return list("found_in" = found_in, "id" = resource_id',source)
+  screen=(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
+  for text in ("optional ? 'Also at: ' : 'Made at: '",'bench_heated:','Found in:',"'Natural feature':"):
+   self.assertIn(text,screen)
+
 class AtlasTitleContract(unittest.TestCase):
  def test_titles_use_declared_names_and_never_replace_reviewed_names(self):
   import sys
