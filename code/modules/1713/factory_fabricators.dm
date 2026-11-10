@@ -119,9 +119,9 @@ var/global/list/factory_active_fabricators = list()
 /obj/structure/factory_fabricator/printer/update_icon()
 	icon_state = base_state
 
-/obj/structure/factory_fabricator/printer/available_recipes(faction)
+/obj/structure/factory_fabricator/printer/available_recipes(faction, mob/living/human/user = null)
 	var/list/result = list()
-	for (var/name in ..())
+	for (var/name in ..(faction, user))
 		var/datum/factory_recipe/R = factory_recipes[name]
 		if (R.tier == FACTORY_PRINTER_TIER)
 			result += name
@@ -181,14 +181,18 @@ var/global/list/factory_active_fabricators = list()
 /obj/structure/factory_fabricator/proc/cycle_time(datum/factory_recipe/R)
 	return max(FACTORY_FAB_STEP, round(R.time * work_speed))
 
-// Recipes this fabricator can run for a person of faction.
-/obj/structure/factory_fabricator/proc/available_recipes(faction)
+// Recipes this fabricator can run for a person of faction. With book research
+// on, user's own knowledge decides instead of the faction's research.
+/obj/structure/factory_fabricator/proc/available_recipes(faction, mob/living/human/user = null)
 	var/list/result = list()
 	for (var/name in factory_get_recipes())
 		var/datum/factory_recipe/R = factory_recipes[name]
 		if (R.tier > tier)
 			continue
-		if (map && !map.is_node_done(faction, R.node))
+		if (map && map.book_research_enabled())
+			if (!research_node_known(user, R.node))
+				continue
+		else if (map && !map.is_node_done(faction, R.node))
 			continue
 		result += name
 	return result
@@ -214,14 +218,9 @@ var/global/list/factory_active_fabricators = list()
 	if (!anchored)
 		to_chat(H, SPAN_WARNING("Fix \the [src] in place with a wrench first."))
 		return
-	var/list/choices = available_recipes(H.civilization)
-	if (map && map.book_research_enabled())
-		for (var/recipe_choice in choices.Copy())
-			var/datum/factory_recipe/KR = factory_get_recipes()[recipe_choice]
-			if (KR && !research_node_known(H, KR.node))
-				choices -= recipe_choice
+	var/list/choices = available_recipes(H.civilization, H)
 	if (!choices.len)
-		to_chat(H, SPAN_WARNING("Your faction has not researched any recipe this fabricator can make."))
+		to_chat(H, SPAN_WARNING(map && map.book_research_enabled() ? "You don't know any recipe this fabricator can make." : "Your faction has not researched any recipe this fabricator can make."))
 		return
 	choices += "(clear recipe)"
 	var/list/labels = list()

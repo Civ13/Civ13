@@ -166,6 +166,16 @@
 /obj/structure/research_bench/proc/book_mode()
 	return map && map.book_research_enabled()
 
+// Up to two books sit on a bench (Val, 2026-11-10). The first one is where
+// research is written; Swap books changes which.
+#define BENCH_MAX_BOOKS 2
+
+/obj/structure/research_bench/proc/placed_books()
+	var/list/books = list()
+	for (var/obj/item/weapon/book/B in contents)
+		books += B
+	return books
+
 /obj/structure/research_bench/proc/placed_book()
 	return locate(/obj/item/weapon/book) in contents
 
@@ -218,20 +228,45 @@
 	if (!B.can_hold_research())
 		to_chat(user, SPAN_WARNING("Research can't be written into [B]."))
 		return
-	if (placed_book())
-		to_chat(user, SPAN_WARNING("There is already a book on the bench."))
+	var/list/books = placed_books()
+	if (books.len >= BENCH_MAX_BOOKS)
+		to_chat(user, SPAN_WARNING("There's no room for another book on the bench."))
 		return
 	user.remove_from_mob(B)
 	B.forceMove(src)
-	if (assigned_node && B.has_research_chapter(assigned_node))
-		assigned_node = null
-	to_chat(user, SPAN_NOTICE("You place [B] on the bench. Research done here will be written into it."))
+	if (!books.len)
+		studied_samples = null // samples counted toward the previous research book
+		if (assigned_node && B.has_research_chapter(assigned_node))
+			assigned_node = null
+	if (books.len)
+		to_chat(user, SPAN_NOTICE("You place [B] beside [books[1]]. Chapters can be copied between the two."))
+	else
+		to_chat(user, SPAN_NOTICE("You place [B] on the bench. Research done here will be written into it."))
 	book_refresh_ui()
 
-/obj/structure/research_bench/proc/book_take(mob/living/human/user)
-	var/obj/item/weapon/book/B = placed_book()
-	if (!B || !in_range(src, user) || user.incapacitated())
+// The research book becomes the other one.
+/obj/structure/research_bench/proc/book_swap(mob/living/human/user)
+	var/list/books = placed_books()
+	if (books.len < 2 || !in_range(src, user) || user.incapacitated())
 		return
+	var/obj/item/weapon/book/first = books[1]
+	first.loc = null
+	first.forceMove(src)
+	studied_samples = null // samples counted toward the other book
+	if (assigned_node && placed_book()?.has_research_chapter(assigned_node))
+		assigned_node = null
+	to_chat(user, SPAN_NOTICE("Research here will now be written into [placed_book()]."))
+	book_refresh_ui()
+
+/obj/structure/research_bench/proc/book_take(mob/living/human/user, index = 0)
+	var/list/books = placed_books()
+	if (!books.len || !in_range(src, user) || user.incapacitated())
+		return
+	if (!isnum(index) || index < 1 || index > books.len)
+		index = books.len
+	var/obj/item/weapon/book/B = books[index]
+	if (index == 1)
+		studied_samples = null // the research book leaves with its samples' credit
 	B.forceMove(get_turf(src))
 	user.put_in_hands(B)
 	to_chat(user, SPAN_NOTICE("You take [B] from the bench. Its research goes with it."))
@@ -340,7 +375,10 @@
 		return FALSE
 	var/time = BOOK_STUDY_TIME(N.era_tier)
 	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name]. This takes about [round(time / 600, 0.5)] minute\s."))
-	if (!do_after(H, time, source) || QDELETED(source) || !source.holds_research_chapter(node_id) || !H.Adjacent(source) || H.incapacitated())
+	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
+	var/atom/start_loc = source.loc
+	// A book on a bench must still be there: taking it away ends the study.
+	if (!do_after(H, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
 		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
@@ -366,12 +404,19 @@
 
 /obj/structure/research_bench/proc/book_ui_data(mob/living/human/H, list/data)
 	var/obj/item/weapon/book/B = placed_book()
-	data["book_name"] = B ? "[B]" : null
-	var/list/chapter_names = list()
-	if (B)
-		for (var/node_id in B.research_chapter_list())
-			chapter_names += get_research_node(node_id).name
-	data["book_chapters"] = chapter_names
+	var/list/books = placed_books()
+	var/list/book_rows = list()
+	for (var/i = 1, i <= books.len, i++)
+		var/obj/item/weapon/book/row_book = books[i]
+		var/list/names = list()
+		for (var/node_id in row_book.research_chapter_list())
+			names += get_research_node(node_id).name
+		book_rows += list(list("name" = "[row_book]", "idx" = i, "is_target" = i == 1, "chapters" = names))
+	data["books"] = book_rows
+	data["book_room"] = books.len < BENCH_MAX_BOOKS
+	data["can_swap"] = books.len >= 2
+	data["can_copy"] = books.len >= 2
+	data["can_study"] = books.len >= 1
 	var/datum/research_node/AN = assigned_node ? get_research_node(assigned_node) : null
 	if (!AN)
 		return
@@ -411,3 +456,88 @@
 /obj/structure/research_bench/proc/book_refresh_ui()
 	if (GLOB.nanomanager)
 		GLOB.nanomanager.update_uis(src)
+
+// ------------------------------------------------------------
+// Two books on a bench: copying and studying shelved chapters
+// ------------------------------------------------------------
+
+// Copy a chapter from one book on the bench into the other. The scribe
+// needs no knowledge of it, only a blank sheet and stamina.
+/obj/structure/research_bench/proc/book_copy_chapter(mob/living/human/H)
+	var/list/books = placed_books()
+	if (books.len < 2)
+		to_chat(H, SPAN_WARNING("Place two books on the bench to copy between them."))
+		return FALSE
+	var/obj/item/weapon/book/A = books[1]
+	var/obj/item/weapon/book/B = books[2]
+	var/list/choices = list()
+	for (var/node_id in A.research_chapter_list())
+		if (!B.has_research_chapter(node_id))
+			choices["[get_research_node(node_id).name]: [A] to [B]"] = list(A, B, node_id)
+	for (var/node_id in B.research_chapter_list())
+		if (!A.has_research_chapter(node_id))
+			choices["[get_research_node(node_id).name]: [B] to [A]"] = list(B, A, node_id)
+	if (!choices.len)
+		to_chat(H, SPAN_WARNING("Neither book has a chapter the other lacks."))
+		return FALSE
+	var/pick = player_input(H, "Which chapter will you copy?", "Copy a chapter", null, "anything", choices, TRUE)
+	if (!pick || !(pick in choices))
+		return FALSE
+	var/list/job = choices[pick]
+	var/obj/item/weapon/book/source = job[1]
+	var/obj/item/weapon/book/dest = job[2]
+	var/node_id = job[3]
+	var/datum/research_node/N = get_research_node(node_id)
+	var/obj/item/weapon/paper/sheet = locate() in list(H.l_hand, H.r_hand)
+	if (!blank_writing_sheet(sheet))
+		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to copy onto."))
+		return FALSE
+	if (H.stats["stamina"][1] < BOOK_WRITE_STAMINA(N.era_tier))
+		to_chat(H, SPAN_WARNING("You are too tired to copy a chapter now."))
+		return FALSE
+	if (dest.page_busy)
+		to_chat(H, SPAN_WARNING("Someone is already working on [dest]."))
+		return FALSE
+	var/time = BOOK_WRITE_TIME(N.era_tier)
+	to_chat(H, SPAN_NOTICE("You begin copying the chapter on [N.name] into [dest]. This takes about [round(time / 600, 0.5)] minute\s."))
+	dest.page_busy = TRUE
+	var/done = do_after(H, time, src)
+	dest.page_busy = FALSE
+	if (!done || QDELETED(src) || source.loc != src || dest.loc != src || !recipe_held(H, sheet))
+		return FALSE
+	if (!copy_chapter_commit(H, source, dest, node_id, sheet))
+		to_chat(H, SPAN_WARNING("You couldn't finish the copy."))
+		return FALSE
+	to_chat(H, SPAN_NOTICE("You finish copying the chapter on <b>[N.name]</b> into [dest]."))
+	book_refresh_ui()
+	return TRUE
+
+/obj/structure/research_bench/proc/copy_chapter_commit(mob/living/human/H, obj/item/weapon/book/source, obj/item/weapon/book/dest, node_id, obj/item/weapon/paper/sheet)
+	var/datum/research_node/N = get_research_node(node_id)
+	if (!N || !source.has_research_chapter(node_id) || dest.has_research_chapter(node_id) || !blank_writing_sheet(sheet))
+		return FALSE
+	var/cost = BOOK_WRITE_STAMINA(N.era_tier)
+	if (H.stats["stamina"][1] < cost)
+		return FALSE
+	H.stats["stamina"][1] -= cost
+	if (sheet.loc == H)
+		H.remove_from_mob(sheet)
+	qdel(sheet)
+	return dest.add_research_chapter(node_id)
+
+// Study any chapter from the books on the bench without picking them up.
+/obj/structure/research_bench/proc/book_study_shelf(mob/living/human/H)
+	var/list/choices = list()
+	for (var/obj/item/weapon/book/B in placed_books())
+		for (var/node_id in B.research_chapter_list())
+			var/label = get_research_node(node_id).name
+			if (!(label in choices))
+				choices[label] = list(B, node_id)
+	if (!choices.len)
+		to_chat(H, SPAN_WARNING("The books on the bench hold no chapters."))
+		return FALSE
+	var/pick = player_input(H, "Which chapter will you study?", "Study", null, "anything", choices, TRUE)
+	if (!pick || !(pick in choices))
+		return FALSE
+	var/list/job = choices[pick]
+	return study_research_source(H, job[1], job[2])

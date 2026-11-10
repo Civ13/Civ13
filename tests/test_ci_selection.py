@@ -71,7 +71,7 @@ class SelectionTests(unittest.TestCase):
 
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
-                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
+                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml', 'scripts/ci_skill_prose.py',
                      'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
                      'scripts/nomads-lifecycle/agent_debug.py',
                      'scripts/nomads-lifecycle/variable_observability.py',
@@ -487,7 +487,7 @@ class SelectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'repo'
             (root / 'scripts').mkdir(parents=True)
-            for name in ('select-ci.py', 'ci_baseline.py', 'byond_toolchain.py'):
+            for name in ('select-ci.py', 'ci_baseline.py', 'ci_skill_prose.py', 'byond_toolchain.py'):
                 (root / 'scripts' / name).write_bytes((source / 'scripts' / name).read_bytes())
             def git(*args):
                 return subprocess.check_output(['git', '-c', 'user.name=CI fixture',

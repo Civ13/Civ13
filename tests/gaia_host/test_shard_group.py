@@ -4,6 +4,7 @@ import io
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -14,9 +15,43 @@ sys.path.insert(0, str(ROOT / 'scripts/gaia-host'))
 SPEC = importlib.util.spec_from_file_location('shard_group', ROOT / 'scripts/shard-group/shard_group.py')
 shard_group = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(shard_group)
+BATTLE_SPEC = importlib.util.spec_from_file_location('battle_mapswap', ROOT / 'scripts/shard-group/battle_mapswap.py')
+battle_mapswap = importlib.util.module_from_spec(BATTLE_SPEC)
+BATTLE_SPEC.loader.exec_module(battle_mapswap)
 
 REVISION = 'c' * 40
 DME = 'line\r\n// BEGIN_SELECTED_MAP\r\n#include "maps\\nomads\\nomads_gaia.dmm"\r\n// END_SELECTED_MAP\r\ntail\r\n'
+
+
+class SelectedMapTests(unittest.TestCase):
+    def test_both_entrypoints_preserve_block_and_line_endings(self):
+        for transform in (shard_group.selected_map_dme, battle_mapswap.select_map):
+            for newline in ('\n', '\r\n'):
+                with self.subTest(transform=transform.__name__, newline=repr(newline)):
+                    old = newline.join(('prefix', '// BEGIN_SELECTED_MAP', '#include "old.dmm"',
+                                        '// END_SELECTED_MAP', '#include "outside.dmm"',
+                                        '// BEGIN_SELECTED_MAP', '#include "second.dmm"',
+                                        '// END_SELECTED_MAP', 'tail'))
+                    expected = old.replace('#include "old.dmm"', '#include "new.dmm"', 1)
+                    self.assertEqual(expected, transform(old, 'new.dmm'))
+
+    def test_missing_block_keeps_each_entrypoint_error(self):
+        for transform, message in ((shard_group.selected_map_dme, 'civ13.dme has no selected-map block'),
+                                   (battle_mapswap.select_map, 'region.dme has no selected-map block')):
+            with self.subTest(transform=transform.__name__):
+                with self.assertRaises(RuntimeError) as raised:
+                    transform('no block', 'new.dmm')
+                self.assertEqual(message, str(raised.exception))
+
+    def test_scripts_import_helper_when_launched_outside_checkout(self):
+        with tempfile.TemporaryDirectory() as cwd:
+            for name, args, expected in (('shard_group.py', ['--help'], 0),
+                                         ('battle_mapswap.py', [], 2)):
+                with self.subTest(script=name):
+                    result = subprocess.run([sys.executable, str(ROOT / 'scripts/shard-group' / name), *args],
+                                            cwd=cwd, capture_output=True, text=True, timeout=30)
+                    self.assertEqual(expected, result.returncode, result.stderr)
+                    self.assertIn('usage:', result.stdout.lower())
 
 
 class RegionViewTopicTests(unittest.TestCase):

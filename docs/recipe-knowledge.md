@@ -100,6 +100,44 @@ a page. With book research on:
   (`book_research_writing_supplies`); the pen stays on Papermaking. Material
   menus show rows up to the world era and the craft checks knowledge.
 
+### Two books on a bench (phase 4)
+
+A bench holds up to two books (`BENCH_MAX_BOOKS`). Research is written into
+the first; "Write research into the other book" swaps them. With two books,
+"Copy a chapter" copies any chapter one has and the other lacks, with a blank
+sheet, the same stamina and time as writing, and no knowledge of the node.
+"Study a chapter" studies from a shelved book without picking it up, and each
+book has its own Take button (Alt-click takes the last one).
+
+### No clock (phase 5)
+
+With book research on, a Persistence world has no 1943 date floor and no
+auto-research: `apply_persistence_age_floor()` turns `autoresearch` off and
+returns, so a world can start at 5000 B.C. and stay there. The legacy era
+steps in the map tick (faction research point totals) are skipped as well.
+The era only moves when someone finishes a capstone chapter, which needs the
+capstone's prototype (`book_research_node_finished`). The mode shows as
+"Persistent (Book Research)". Research time already grows with tier through
+each node's `cost_ticks`; writing and study time and writing stamina grow
+with `era_tier` (`BOOK_WRITE_TIME`, `BOOK_STUDY_TIME`, `BOOK_WRITE_STAMINA`).
+
+### Starting a book research world (phase 6)
+
+At startup in `PERSISTENCE` mode with book research on,
+`start_book_research_world()` sets the world to 5000 B.C. with no ages done
+and auto-research off. A restored save then replaces this with its own era,
+so only a fresh world starts in the Stone Age. A faction founder receives the
+Stone Age master book (every era-0 chapter, `stone_age_node_ids()`) and a
+pencil; the chapters still have to be studied.
+
+The launch wipe is an operator step, not code: turn on `recipe_books` and
+`book_research` for the Persistence maps, then use **Fresh world** for each
+region (see `docs/launcher-fresh-world.md`). That archives the world saves,
+which hold every saved body, so all characters start over. Fresh world refuses
+regions with transfer links; a connected region group such as Gaia's uses
+`shard_group.py group-fresh-world --confirm-group GROUP` instead, which also
+archives the transfer stores and account homes.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

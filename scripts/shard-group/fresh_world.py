@@ -31,14 +31,16 @@ def safe_tree(path):
             safe_tree(child)
 
 
-def check(host):
+def check(host, linked=False):
+    """Refuse unless the region is stopped and safe to archive. linked=True is the
+    group-wide reset (group_fresh_world.py), which archives the transfer stores too."""
     if pending(host).exists():
         raise Refused('an interrupted fresh-world archive needs manual recovery; see fresh-world-pending.json')
     group = json.loads(Path(host.config['group_config']).read_text(encoding='utf-8'))
-    if any(r.get('transfer_port') is not None for r in group['regions']):
-        raise Refused('connected regions require a coordinated transit/transfer reset; fresh world is refused')
-    if (host.repo / 'config/transfer_agent.json').exists() or (host.state_dir / 'transfers.sqlite').exists():
-        raise Refused('transfer state exists; a coordinated reset is required')
+    if not linked and any(r.get('transfer_port') is not None for r in group['regions']):
+        raise Refused('connected regions require a coordinated transit/transfer reset; use the group fresh world')
+    if not linked and ((host.repo / 'config/transfer_agent.json').exists() or (host.state_dir / 'transfers.sqlite').exists()):
+        raise Refused('transfer state exists; use the group fresh world')
     if any((host.repo / 'data' / name).exists() for name in SEPARATE_DOMAINS):
         raise Refused('separate extraction/vehicle persistence exists; a coordinated reset is required')
     if not (host.repo / '.git').exists() or not (host.repo / host.live_dmb_name()).is_file():
