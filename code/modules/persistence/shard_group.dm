@@ -167,6 +167,7 @@ var/global/datum/shard_group/shard_group = new
 	// Other regions follow the mainland's epoch (follow_mainland_epoch).
 	if(map)
 		.["ordinal_age"] = map.ordinal_age
+	.["train_stations"] = train_route_advertisements()
 	// Stations ask before sending a new party (party_train.dm).
 	if(kind == "RAILYARD")
 		.["free_berths"] = party_train_free_berths()
@@ -206,6 +207,7 @@ var/global/datum/shard_group/shard_group = new
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
+	peer["train_stations"] = train_route_clean_advertisements(reply["train_stations"])
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	if(id == mainland)
 		follow_mainland_epoch(reply["ordinal_age"])

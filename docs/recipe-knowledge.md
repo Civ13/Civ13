@@ -151,6 +151,30 @@ writing slate is a Stone Age item made from 2 stone; like the pencil it is a
 book-research writing supply, free from 5000 B.C. Before the Industrial Age
 the plain ink pen is named a quill, matching its feather sprite.
 
+### Writing desk and library (profession 2)
+
+The writing desk (6 soft wood, Basic Furniture, unused `good_desk` art) speeds
+studying, writing and copying by 1.25x for anyone beside a fastened one
+(`scholar_desk_rate`, `scholar_study_time`, the `writer` argument of
+`scholar_write_time`). A research bench counts distinct chapters on the
+node's groundwork or in its discipline, in books on bookcases within 3 tiles
+(`library_chapters`), and researches 10% faster per chapter, up to 50%
+(`library_rate`). The bench status line shows the library bonus.
+
+### Research supplies and light (profession 3)
+
+A bench makes no progress in the dark (turf light below 0.3,
+`research_lit`). Each research tick uses one supply point for the subject's
+discipline; with none, research runs at half speed (`use_research_supply`).
+Using a supply on the bench stores points, up to 200 per discipline, saved on
+the bench as `research_supplies` text (`discipline=points;...`, validated on
+read). Supplies by discipline (`scholar_supply_value`): blank paper or
+parchment for Basic Mathematics, material stacks for Engineering, ore or glass
+for Natural Science, medical stacks or grown herbs for Medicine, seeds or
+produce for Agriculture, and ammunition or ammunition parts for Military
+Science. Samples and prototypes are checked first, so an item that is both
+still counts as a sample.
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is

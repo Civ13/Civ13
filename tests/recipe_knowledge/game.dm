@@ -211,6 +211,7 @@ var/knowledge_failures = 0
 	knowledge_check(!journal.research_ticks("iron_tools"), "no progress without a writing tool in hand")
 	var/obj/item/weapon/pen/pencil/research_pencil = new(locate(7,7,1))
 	scholar.put_in_r_hand(research_pencil)
+	bench.research_supplies = "engineering=5"
 	bench.analysis_tick()
 	knowledge_check(scholar.r_hand == research_pencil && journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
 	knowledge_check(scholar.scholar_level("engineering") > 24 && scholar.scholar_level("mathematics") > 12, "researching raises the discipline and mathematics")
@@ -255,6 +256,8 @@ var/knowledge_failures = 0
 	check_book_material_visibility()
 	check_scholarship_travel(scholar)
 	check_scholar_tools(scholar, novice)
+	check_scholar_workplaces(scholar, novice)
+	check_scholar_supplies(scholar)
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -279,6 +282,59 @@ var/knowledge_failures = 0
 	qdel(pencil)
 	qdel(quill)
 	qdel(fancy)
+
+// Workplaces (Val, 2026-11-10): a writing desk speeds studying and writing;
+// related chapters shelved near a bench (a library) speed research.
+/proc/check_scholar_workplaces(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/structure/writing_desk/desk = new(locate(5,7,1))
+	desk.anchored = FALSE
+	var/plain_study = novice.scholar_study_time(2)
+	var/obj/item/weapon/pen/pencil/pencil = new(locate(6,6,1))
+	var/plain_write = scholar_write_time(2, pencil, novice)
+	knowledge_check(!novice.at_writing_desk() && plain_study == BOOK_STUDY_TIME(2) && plain_write == BOOK_WRITE_TIME(2), "an unfastened desk gives no bonus")
+	desk.anchored = TRUE
+	knowledge_check(novice.at_writing_desk() && novice.scholar_study_time(2) < plain_study && scholar_write_time(2, pencil, novice) < plain_write, "studying and writing beside a writing desk are faster")
+	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	var/obj/structure/bookcase/near = new(locate(3,2,1))
+	var/obj/structure/bookcase/far = new(locate(8,8,1))
+	knowledge_check(bench.library_rate("iron_tools") == 1, "no library, no bonus")
+	var/obj/item/weapon/book/far_book = new(far)
+	far_book.add_research_chapter("basic_tools")
+	var/obj/item/weapon/book/near_book = new(near)
+	near_book.add_research_chapter("early_cells")
+	knowledge_check(node_discipline("early_cells") != node_discipline("iron_tools") && !bench.library_chapters("iron_tools").len, "far bookcases and unrelated chapters don't count")
+	near_book.add_research_chapter("basic_tools")
+	near_book.add_research_chapter("iron_tools")
+	var/list/shelved = bench.library_chapters("iron_tools")
+	knowledge_check(shelved.len == 1 && ("basic_tools" in shelved) && bench.library_rate("iron_tools") == 1.1, "a related chapter shelved nearby speeds research")
+	qdel(desk)
+	qdel(pencil)
+	qdel(near)
+	qdel(far)
+	qdel(bench)
+
+// Consumables (Val, 2026-11-10): research uses supplies for its discipline,
+// running at half speed without them, and needs light.
+/proc/check_scholar_supplies(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	bench.research_supplies = "engineering=5;bogus=3;medicine=x;agriculture=999"
+	var/list/supplies = bench.supply_map()
+	knowledge_check(supplies.len == 2 && supplies["engineering"] == 5 && supplies["agriculture"] == SCHOLAR_SUPPLY_CAP, "saved supplies are validated and capped")
+	bench.research_supplies = ""
+	bench.assigned_node = "iron_tools"
+	var/obj/item/stack/material/woodplank/planks = new(locate(2,3,1))
+	planks.amount = 10
+	var/obj/item/weapon/paper/sheet = new(locate(2,3,1))
+	knowledge_check(!bench.feed_research_supply(sheet, scholar) && !QDELETED(sheet), "supplies must suit the subject's discipline")
+	knowledge_check(bench.feed_research_supply(planks, scholar) && bench.supply_points("engineering") == 20, "wood feeds engineering research")
+	knowledge_check(bench.use_research_supply("iron_tools") == 1 && bench.supply_points("engineering") == 19, "each research tick uses a supply")
+	bench.research_supplies = ""
+	knowledge_check(bench.use_research_supply("iron_tools") == SCHOLAR_UNSUPPLIED_RATE, "without supplies research runs at half speed")
+	knowledge_check(scholar_supply_value(sheet, "mathematics") == 5 && scholar_supply_value(new /obj/item/stack/farming/seeds(locate(2,3,1)), "agriculture") > 0 && !scholar_supply_value(sheet, "medicine"), "each discipline has its own supplies")
+	knowledge_check(bench.research_lit(), "a lit bench can research")
+	qdel(sheet)
+	qdel(bench)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.

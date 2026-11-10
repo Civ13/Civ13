@@ -2415,6 +2415,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/pen/pencil" = "papermaking",
 		"/obj/item/weapon/pen/fancy" = "papermaking",
 		"/obj/item/weapon/writing_slate" = "basic_tools",
+		"/obj/structure/writing_desk" = "basic_furniture",
 		"/obj/item/weapon/haircomb" = "hygiene",
 		"/obj/item/weapon/lipstick/black" = "haberdashery",
 		"/obj/item/weapon/lipstick/purple" = "haberdashery",
