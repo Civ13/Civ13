@@ -36,6 +36,7 @@ from core import CoreError, checked_path, dm_literal, exclusive_write, json_byte
 from savestream_reader import Opaque, StreamError, StreamFile, TypePath  # noqa: E402
 
 SCHEMA = 1
+TYPE_ROOT = re.compile(r"^(?:atom|area|turf|obj|mob|datum|client|image)(?:/|\s|\(|$)")
 TYPE_PATH = re.compile(r"^(/[A-Za-z_][A-Za-z0-9_]*)+$")
 IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 EXPORT_ID = re.compile(r"^[a-z][a-z0-9_]{1,39}$")
@@ -71,6 +72,10 @@ def source_types(root=ROOT):
                 match = re.match(r"^(/?[A-Za-z_][A-Za-z0-9_/]*)\s*(?://.*)?$", stripped)
                 if depth == 0:
                     stack = []
+                    # DM also accepts top-level type paths without the leading slash.
+                    if TYPE_ROOT.match(line):
+                        line = "/" + line
+                        stripped = "/" + stripped
                     if line.startswith("/"):
                         head = re.match(r"^(/[A-Za-z_][A-Za-z0-9_/]*?)(?:/(?:proc|verb|var)\b|\(|\s|$)", line)
                         if head:
