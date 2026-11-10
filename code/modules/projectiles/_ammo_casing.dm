@@ -229,49 +229,52 @@
 
 //Arrowheads
 
-/obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W, /obj/item/weapon/flint))
+// Return FALSE only when research rejects an otherwise valid attachment.
+/obj/item/ammo_casing/proc/attach_arrowhead(obj/item/W, mob/user, shaft_path)
+	if (istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/flint")) return
-			new/obj/item/ammo_casing/arrow/flint(user.loc)
+			var/result = "[shaft_path]/flint"
+			if (!crafting_recipe_allowed(user, result)) return FALSE
+			var/result_type = text2path(result)
+			new result_type(user.loc)
 			qdel(F)
 			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-			to_chat(user, "<span class = 'notice'>You attach the [F] to the [src]</span>")
+			to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
 			qdel(src)
 
-	if(istype(W, /obj/item/stack/arrowhead))
+	if (istype(W, /obj/item/stack/arrowhead))
 		var/obj/item/stack/arrowhead/AH = W
-		if(istype(W, /obj/item/stack/arrowhead/stone))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/stone")) return
-			new/obj/item/ammo_casing/arrow/stone(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/flint))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/flint")) return
-			new/obj/item/ammo_casing/arrow/flint(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/copper))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/copper")) return
-			new/obj/item/ammo_casing/arrow/copper(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/iron))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/iron")) return
-			new/obj/item/ammo_casing/arrow/iron(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/bronze))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/bronze")) return
-			new/obj/item/ammo_casing/arrow/bronze(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/steel))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/steel")) return
-			new/obj/item/ammo_casing/arrow/steel(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/vial))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/vial")) return
-			new/obj/item/ammo_casing/arrow/vial(user.loc)
-		else
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/arrow/gods")) return
-			new/obj/item/ammo_casing/arrow/gods(user.loc)
+		var/material = "gods"
+		if (istype(W, /obj/item/stack/arrowhead/stone))
+			material = "stone"
+		else if (istype(W, /obj/item/stack/arrowhead/flint))
+			material = "flint"
+		else if (istype(W, /obj/item/stack/arrowhead/copper))
+			material = "copper"
+		else if (istype(W, /obj/item/stack/arrowhead/iron))
+			material = "iron"
+		else if (istype(W, /obj/item/stack/arrowhead/bronze))
+			material = "bronze"
+		else if (istype(W, /obj/item/stack/arrowhead/steel))
+			material = "steel"
+		else if (istype(W, /obj/item/stack/arrowhead/vial))
+			material = "vial"
+		var/result = "[shaft_path]/[material]"
+		if (!crafting_recipe_allowed(user, result)) return FALSE
+		var/result_type = text2path(result)
+		new result_type(user.loc)
 		AH.amount--
 		if (AH.amount<1)
 			qdel(AH)
 		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
 		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
 		qdel(src)
+	return TRUE
+
+/obj/item/ammo_casing/arrow/attackby(obj/item/W as obj, mob/user as mob)
+	if (!attach_arrowhead(W, user, "/obj/item/ammo_casing/arrow"))
+		return
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		return //do nothing if not reagent container
 	else
@@ -281,48 +284,8 @@
 	..()
 
 /obj/item/ammo_casing/bolt/attackby(obj/item/W as obj, mob/user as mob)
-	if(istype(W, /obj/item/weapon/flint))
-		var/obj/item/weapon/flint/F = W
-		if (F.sharpened)
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/flint")) return
-			new/obj/item/ammo_casing/bolt/flint(user.loc)
-			qdel(F)
-			playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-			to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
-			qdel(src)
-
-	if(istype(W, /obj/item/stack/arrowhead))
-		var/obj/item/stack/arrowhead/AH = W
-		if(istype(W, /obj/item/stack/arrowhead/stone))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/stone")) return
-			new/obj/item/ammo_casing/bolt/stone(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/flint))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/flint")) return
-			new/obj/item/ammo_casing/bolt/flint(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/copper))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/copper")) return
-			new/obj/item/ammo_casing/bolt/copper(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/iron))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/iron")) return
-			new/obj/item/ammo_casing/bolt/iron(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/bronze))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/bronze")) return
-			new/obj/item/ammo_casing/bolt/bronze(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/steel))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/steel")) return
-			new/obj/item/ammo_casing/bolt/steel(user.loc)
-		else if(istype(W, /obj/item/stack/arrowhead/vial))
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/vial")) return
-			new/obj/item/ammo_casing/bolt/vial(user.loc)
-		else
-			if (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/bolt/gods")) return
-			new/obj/item/ammo_casing/bolt/gods(user.loc)
-		AH.amount--
-		if (AH.amount<1)
-			qdel(AH)
-		playsound(loc, 'sound/machines/click.ogg', 25, TRUE)
-		to_chat(user, "<span class = 'notice'>You attach the [W] to the [src]</span>")
-		qdel(src)
+	if (!attach_arrowhead(W, user, "/obj/item/ammo_casing/bolt"))
+		return
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		return //do nothing if not reagent container
 	else
@@ -330,7 +293,6 @@
 			to_chat(user, "<span class = 'notice'>You dip the [W] into the [src]</span>")
 			W.reagents.trans_to_obj(src, volume - src.reagents)
 	..()
-
 
 /obj/item/stack/arrowhead
 	name = "god's finger"

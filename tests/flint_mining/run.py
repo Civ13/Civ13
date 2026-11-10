@@ -33,6 +33,42 @@ def block(source, start):
     return source[index:index + len(start) + (end.start() if end else len(source))]
 
 
+def fletching_checks(ammo):
+    """Check the shared fletching contract without launching the game."""
+    failures = []
+    helper = block(ammo, '/obj/item/ammo_casing/proc/attach_arrowhead(')
+    if not helper.rstrip().endswith('\treturn TRUE'):
+        failures.append('non-denied interactions must continue through the caller')
+    flint = helper[:helper.index('\n\tif (istype(W, /obj/item/stack/arrowhead))')]
+    stack = helper[len(flint):]
+    if not re.search(r'if \(F\.sharpened\)\n\t\t\tvar/result = "\[shaft_path\]/flint"\n\t\t\tif \(!crafting_recipe_allowed\(user, result\)\) return FALSE\n\t\t\tvar/result_type = text2path\(result\)\n\t\t\tnew result_type\(user.loc\)\n\t\t\tqdel\(F\)', flint):
+        failures.append('sharpened flint must be gated before output and consumption')
+    if '\n\t\t\tqdel(src)' not in flint or '\n\t\tqdel(src)' in flint:
+        failures.append('unsharpened flint must not delete the shaft')
+    mappings = re.findall(r'istype\(W, /obj/item/stack/arrowhead/(\w+)\)\)\n\t\t\tmaterial = "(\w+)"', stack)
+    expected = [(name, name) for name in ('stone', 'flint', 'copper', 'iron', 'bronze', 'steel', 'vial')]
+    if mappings != expected or 'var/material = "gods"' not in stack:
+        failures.append('arrowhead material mapping or default changed')
+    steps = ('var/result = "[shaft_path]/[material]"',
+             'if (!crafting_recipe_allowed(user, result)) return FALSE',
+             'var/result_type = text2path(result)', 'new result_type(user.loc)',
+             'AH.amount--', 'if (AH.amount<1)', 'qdel(AH)', 'qdel(src)')
+    positions = [stack.find(step) for step in steps]
+    if -1 in positions or positions != sorted(positions):
+        failures.append('stack research, output and consumption order changed')
+    for kind in ('arrow', 'bolt'):
+        caller = block(ammo, f'/obj/item/ammo_casing/{kind}/attackby(')
+        if f'if (!attach_arrowhead(W, user, "/obj/item/ammo_casing/{kind}"))\n\t\treturn' not in caller:
+            failures.append(f'{kind} must stop on denied attachment')
+        for material in ('gods', 'stone', 'flint', 'copper', 'iron', 'bronze', 'steel', 'vial'):
+            if f'/obj/item/ammo_casing/{kind}/{material}\n' not in ammo:
+                failures.append(f'missing {kind}/{material} output type')
+        if ('if (istype(W, /obj/item/weapon/reagent_containers))' not in caller
+                or not caller.rstrip().endswith('..()')):
+            failures.append(f'{kind} must retain reagent and parent dispatch')
+    return failures
+
+
 def source_checks():
     failures = []
     flint = read(FLINT)
@@ -64,16 +100,9 @@ def source_checks():
     knap = block(flint, '/obj/item/weapon/flint/attackby(')
     if 'return' not in knap or not knap.rstrip().endswith('..()'):
         failures.append('flint attackby must fall back to the whetstone repair behavior')
-    ammo = read('code/modules/projectiles/_ammo_casing.dm')
-    for kind in ('arrow', 'bolt'):
-        if f'istype(W, /obj/item/stack/arrowhead/flint))\n\t\t\tif (!crafting_recipe_allowed(user, "/obj/item/ammo_casing/{kind}/flint")) return\n\t\t\tnew/obj/item/ammo_casing/{kind}/flint(user.loc)' not in ammo:
-            failures.append(f'flint arrowheads must make flint {kind}s, not god\'s finger {kind}s')
+    failures.extend(fletching_checks(read('code/modules/projectiles/_ammo_casing.dm')))
     if '/obj/item/stack/arrowhead/flint = "flint"' not in read('code/game/objects/structures/blacksmithing/dedicated_workbenches.dm'):
         failures.append('the fletching bench must accept knapped flint arrowheads')
-    bolt = block(ammo, '/obj/item/ammo_casing/bolt/attackby(')
-    unsharp = bolt[:bolt.index('if(istype(W, /obj/item/stack/arrowhead))')]
-    if '\t\t\tqdel(src)' not in unsharp or '\n\t\tqdel(src)' in unsharp:
-        failures.append('an unsharpened flint must not delete the bolt')
     spade = '/obj/item/weapon/material/shovel/spade/wood'
     research = read('code/modules/research_tree/research_node.dm')
     if f'"{spade}" = "basic_tools"' not in research:
