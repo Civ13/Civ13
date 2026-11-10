@@ -44,10 +44,15 @@
 		var/pix_Y = text2num(screen_loc_Y[2]) - 16
 		screen_loc = "[screen_loc_X[1]]:[pix_X],[screen_loc_Y[1]]:[pix_Y]"
 
+/obj/screen/movable/proc/screen_half(axis)
+	var/list/V = getviewsize(usr.client.view)
+	return round(V[axis] / 2)
+
 /obj/screen/movable/proc/encode_screen_X(X)
-	if (X > usr.client.view+1)
-		. = "EAST-[usr.client.view*2 + 1-X]"
-	else if (X < usr.client.view+1)
+	var/half = screen_half(1)
+	if (X > half+1)
+		. = "EAST-[half*2 + 1-X]"
+	else if (X < half+1)
 		. = "WEST+[X-1]"
 	else
 		. = "CENTER"
@@ -58,19 +63,20 @@
 		var/num = text2num(copytext(X,6)) //Trim EAST-
 		if (!num)
 			num = FALSE
-		. = usr.client.view*2 + 1 - num
+		. = screen_half(1)*2 + 1 - num
 	else if (findtext(X,"WEST+"))
 		var/num = text2num(copytext(X,6)) //Trim WEST+
 		if (!num)
 			num = FALSE
 		. = num+1
 	else if (findtext(X,"CENTER"))
-		. = usr.client.view+1
+		. = screen_half(1)+1
 
 /obj/screen/movable/proc/encode_screen_Y(Y)
-	if (Y > usr.client.view+1)
-		. = "NORTH-[usr.client.view*2 + 1-Y]"
-	else if (Y < usr.client.view+1)
+	var/half = screen_half(2)
+	if (Y > half+1)
+		. = "NORTH-[half*2 + 1-Y]"
+	else if (Y < half+1)
 		. = "SOUTH+[Y-1]"
 	else
 		. = "CENTER"
@@ -80,14 +86,14 @@
 		var/num = text2num(copytext(Y,7)) //Trim NORTH-
 		if (!num)
 			num = FALSE
-		. = usr.client.view*2 + 1 - num
+		. = screen_half(2)*2 + 1 - num
 	else if (findtext(Y,"SOUTH+"))
 		var/num = text2num(copytext(Y,7)) //Time SOUTH+
 		if (!num)
 			num = FALSE
 		. = num+1
 	else if (findtext(Y,"CENTER"))
-		. = usr.client.view+1
+		. = screen_half(2)+1
 
 //Debug procs
 /client/proc/test_snap_UI()

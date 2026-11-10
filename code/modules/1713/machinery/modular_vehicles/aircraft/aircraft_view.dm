@@ -6,9 +6,9 @@
 // record, so a save never captures them.
 
 // How many tiles of ground around the airframe's centre the open air shows in
-// full, and how far beyond that a fainter ring reaches. The client view is 15
-// tiles wide and the pilot sits inside the footprint, so the ring covers the
-// whole screen with a soft edge instead of a black cut-off.
+// full, and how far beyond that a fainter ring reaches. The client view is 21x15
+// tiles and the pilot sits inside the footprint, so the ring reaches the screen
+// edges with a soft edge instead of a black cut-off.
 #define AIRCRAFT_GROUND_VIEW_RANGE 7
 #define AIRCRAFT_GROUND_VIEW_FAR 10
 // The haze matrices: the far ring keeps the same tint at less than half the

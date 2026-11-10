@@ -158,6 +158,18 @@ var/list/_client_preferences_by_type
 	enabled_description = "Yes"
 	disabled_description = "No"
 
+// Off by default, so every player starts on the widescreen view.
+/datum/client_preference/square_view
+	description = "Square game view (small monitors)"
+	key = "SQUARE_VIEW"
+	enabled_by_default = FALSE
+	enabled_description = "Yes"
+	disabled_description = "No"
+
+/datum/client_preference/square_view/toggled(var/mob/preference_mob, var/enabled)
+	if (preference_mob && preference_mob.client)
+		preference_mob.client.apply_default_view()
+
 // The soft drop shadow is a full-viewport filter redrawn every client frame.
 // Turning it off is the cheapest graphics saving for slower computers.
 /datum/client_preference/ambient_occlusion

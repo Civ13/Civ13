@@ -1256,7 +1256,7 @@ var/list/coefflist = list()
 					_x = -look_amount
 			if(look_amount > world.view && user && user.client)//So we can still see the player at the edge of the screen if the zoom amount is greater than the world view //Copied from zoom.dm
 				var/view_offset = round((look_amount - world.view)/2, TRUE)
-				user.client.view += view_offset
+				user.client.widen_view(view_offset)
 				switch(user.dir)
 					if (NORTH)
 						_y -= view_offset
@@ -1283,7 +1283,7 @@ var/list/coefflist = list()
 		animate(user.client, pixel_x = 0, pixel_y = 0, time = 2, easing = SINE_EASING)
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0
-		user.client.view = world.view
+		user.client.view = user.client.default_view()
 		look_amount = initial(look_amount)
 		handle_ui_visibility()
 		user.dizzycheck = FALSE

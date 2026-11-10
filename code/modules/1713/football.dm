@@ -50,9 +50,9 @@
 	var/turf/tgt = null
 	if(src.client && src.client.mouse_screen_x && src.client.mouse_screen_y)
 		var/atom/eye = src.client.eye
-		var/view_radius = isnum(src.client.view) ? src.client.view : 7 // 7 is standard for 15x15 view
-		var/tgt_x = eye.x + (src.client.mouse_screen_x - (view_radius + 1))
-		var/tgt_y = eye.y + (src.client.mouse_screen_y - (view_radius + 1))
+		var/list/view_size = getviewsize(src.client.view)
+		var/tgt_x = eye.x + (src.client.mouse_screen_x - (round(view_size[1] / 2) + 1))
+		var/tgt_y = eye.y + (src.client.mouse_screen_y - (round(view_size[2] / 2) + 1))
 		tgt = locate(tgt_x, tgt_y, eye.z)
 
 	if (tgt && FB)

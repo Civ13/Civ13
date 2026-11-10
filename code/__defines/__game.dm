@@ -35,7 +35,13 @@
 #define MAX_BOOK_MESSAGE_LEN 9216
 #define MAX_NAME_LEN 45
 
-#define WORLD_VIEW "15x15"
+// The game view. Widescreen is the default; the "Square game view" preference
+// falls back to SQUARE_VIEW. world.view stays a numeric radius of 7, so range
+// checks (hearing, NPC sight, view(world.view)) are unchanged.
+#define WORLD_VIEW "21x15"
+#define SQUARE_VIEW "15x15"
+// The HUD's default positions are laid out on this grid and anchored from it.
+#define HUD_DESIGN_VIEW "15x15"
 
 // Client animation target, independent of the world's simulation tick rate.
 #define DEFAULT_CLIENT_FPS 100
