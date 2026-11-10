@@ -18,14 +18,15 @@ PROCS = {
         '/obj/structure/gallows/process', '/obj/structure/gallows/process_interval', '/obj/structure/gallows/proc/fire'],
     'code/game/objects/items/weapons/candle.dm': [
         '/obj/item/weapon/flame/candle/process', '/obj/item/weapon/flame/candle/process_interval',
-        '/obj/item/weapon/flame/candle/lard/process', '/obj/item/weapon/flame/candle/lard/process_interval'],
+        '/obj/item/weapon/flame/candle/proc/create_candle_remains',
+        '/obj/item/weapon/flame/candle/lard/create_candle_remains'],
     'code/game/objects/items/weapons/cigs_lighters.dm': [
         '/obj/item/weapon/flame/match/process', '/obj/item/weapon/flame/match/process_interval'],
     'code/game/objects/items/devices/flashlight.dm': [
         '/obj/item/flashlight/flare/process', '/obj/item/flashlight/flare/process_interval'],
 }
 
-def run(byond, control):
+def run(byond, control, compile_only=False):
     production = []
     for file, paths in PROCS.items():
         source = (ROOT / file).read_text()
@@ -64,6 +65,9 @@ def run(byond, control):
         print(compile_result.stdout)
         if compile_result.returncode or PINNED_BYOND not in compile_result.stdout or '0 errors, 0 warnings' not in compile_result.stdout:
             raise RuntimeError('Compilation failed')
+        if compile_only:
+            print('Production projection compiled; runtime assertions not run')
+            return
         try:
             result = subprocess.run([str(byond / ('dd.exe' if windows else 'DreamDaemon')), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'], cwd=temp, capture_output=True, text=True, timeout=90)
         except subprocess.TimeoutExpired:
@@ -90,5 +94,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', choices=['units', 'legacy', 'fuel', 'probability', 'damage', 'dispatch'])
+    parser.add_argument('--compile-only', action='store_true', help='compile the fixture without launching DreamDaemon')
     args = parser.parse_args()
-    run(args.byond_bin.resolve(), args.negative_control)
+    if args.compile_only and args.negative_control:
+        parser.error('--compile-only cannot verify a negative control')
+    run(args.byond_bin.resolve(), args.negative_control, args.compile_only)
