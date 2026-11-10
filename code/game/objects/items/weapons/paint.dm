@@ -16,6 +16,7 @@ var/global/list/cached_icons = list()
 	volume = 60
 	flags = OPENCONTAINER
 	var/paint_type = "red"
+	var/paint_color = "#FE191A"
 
 // Over-ridden by attack_turf() in parent which does a better job of this old-code.
 /*
@@ -31,15 +32,7 @@ var/global/list/cached_icons = list()
 		if (paint_type && length(paint_type) > 0)
 			name = paint_type + " " + name
 		..()
-		reagents.add_reagent("water", volume*3/5)
-		reagents.add_reagent("plasticide", volume/5)
-		if (paint_type == "white") //why don't white crayons exist
-			reagents.add_reagent("aluminum", volume/5)
-		else if (paint_type == "black")
-			reagents.add_reagent("carbon", volume/5)
-		else
-			reagents.add_reagent("crayon_dust_[paint_type]", volume/5)
-		reagents.handle_reactions()
+		reagents.add_reagent("paint", volume, paint_color)
 
 	red
 		icon_state = "paint_red"
@@ -48,24 +41,30 @@ var/global/list/cached_icons = list()
 	yellow
 		icon_state = "paint_yellow"
 		paint_type = "yellow"
+		paint_color = "#FDFE7D"
 
 	green
 		icon_state = "paint_green"
 		paint_type = "green"
+		paint_color = "#18A31A"
 
 	blue
 		icon_state = "paint_blue"
 		paint_type = "blue"
+		paint_color = "#247CFF"
 
 	purple
 		icon_state = "paint_violet"
 		paint_type = "purple"
+		paint_color = "#CC0099"
 
 	black
 		icon_state = "paint_black"
 		paint_type = "black"
+		paint_color = "#000000"
 
 	white
 		icon_state = "paint_white"
 		paint_type = "white"
+		paint_color = "#FFFFFF"
 
