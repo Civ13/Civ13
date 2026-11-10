@@ -24,6 +24,62 @@
 		icon_state = base_state
 		set_light(0)
 
+// Manual bloomery and blast-furnace stacks share the same payment and credits.
+/obj/structure/furnace/proc/accept_manual_stack(var/obj/item/I, var/mob/living/human/H)
+	if (istype(I, /obj/item/stack/material/wood))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], smelting it.")
+
+	else if (istype(I, /obj/item/stack/material/bamboo))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/weapon/branch))
+		record_wood_fuel(I, I.amount+0.5)
+		fuel += I.amount+0.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/material/leaf))
+		record_wood_fuel(I, I.amount+0.5)
+		fuel += I.amount+0.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/dung))
+		record_wood_fuel(I, I.amount+1)
+		fuel += I.amount+1
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/charcoal))
+		record_wood_fuel(I, I.amount*2.5)
+		fuel += I.amount*2.5
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/coal))
+		record_wood_fuel(I, I.amount*3)
+		fuel += I.amount*3
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/material/woodplank))
+		record_wood_fuel(I, I.amount)
+		fuel += I.amount
+		to_chat(H, "You place \the [I] in \the [src], refueling it.")
+
+	else if (istype(I, /obj/item/stack/ore/iron))
+		iron += I.amount
+		to_chat(H, "You place \the [I] in \the [src].")
+
+	else
+		to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
+		return
+
+	H.remove_from_mob(I)
+	I.loc = src
+	visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
+	qdel(I)
+	return
+
 /obj/structure/furnace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !I.loc)
 		return
@@ -48,58 +104,7 @@
 					return
 
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/iron))
-				iron += I.amount
-				to_chat(H, "You place \the [I] in \the [src].")
-
-			else
-				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
-				return
-
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
-			qdel(I)
+			accept_manual_stack(I, H)
 			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
@@ -216,57 +221,7 @@
 					return
 
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-			if (istype(I, /obj/item/stack/ore/iron))
-				iron += I.amount
-				to_chat(H, "You place \the [I] in \the [src].")
-			else
-				to_chat(H, "<span class = 'warning'>You can't smelt this.</span>")
-				return
-
-			H.remove_from_mob(I)
-			I.loc = src
-			visible_message("<span class = 'notice'>[H] puts [I] in \the [name].</span>")
-			qdel(I)
+			accept_manual_stack(I, H)
 			return
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
