@@ -140,7 +140,7 @@ var/knowledge_failures = 0
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))
 				reloaded_diary = candidate
-		knowledge_check(reloaded_diary && reloaded_diary.page_list().len == 2 && findtext(reloaded_diary.dat, "New entry."), "pages and written chapters survive reload")
+		knowledge_check(reloaded_diary && reloaded_diary.page_list().len == 2 && findtext(reloaded_diary.dat, "New entry.") && !reloaded_diary.page_busy, "pages and written chapters survive reload, without a busy lock")
 	catch (var/exception/e)
 		knowledge_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
@@ -201,6 +201,11 @@ var/knowledge_failures = 0
 	knowledge_check(scholar.can_learn_recipe_node("basic_tools") && scholar.learn_recipe_node("basic_tools"), "a root node can be learned without faction research")
 	bench.analysis_tick()
 	knowledge_check(!journal.research_ticks("iron_tools") && node_discipline("iron_tools") == "engineering" && node_scholar_requirement("iron_tools") == 24, "no progress without the discipline's skill")
+	var/list/open_disciplines = list()
+	for (var/node_id in research_nodes)
+		if (!node_scholar_requirement(node_id))
+			open_disciplines |= node_discipline(node_id)
+	knowledge_check(open_disciplines.len == scholar_disciplines.len && !node_scholar_requirement("early_cells"), "every discipline, Natural Science included, has nodes a beginner can research")
 	scholar.scholarship = list("engineering" = 24, "mathematics" = 12)
 	bench.analysis_tick()
 	knowledge_check(journal.research_ticks("iron_tools") == bench.base_tick_rate, "research is written into the book")
@@ -231,8 +236,9 @@ var/knowledge_failures = 0
 	knowledge_check(!novice.knows_recipe_node("iron_tools") && bench.copy_chapter_commit(novice, journal, other, "iron_tools", copy_sheet) && other.has_research_chapter("iron_tools") && QDELETED(copy_sheet), "a scribe copies a chapter between the two books without knowing it")
 	var/obj/item/weapon/paper/again = new(locate(7,7,1))
 	knowledge_check(!bench.copy_chapter_commit(novice, journal, other, "iron_tools", again), "a chapter the other book has can't be copied again")
+	bench.studied_samples = list(/obj/item/weapon/paper)
 	bench.book_swap(scholar)
-	knowledge_check(bench.placed_book() == other, "the other book can become the research book")
+	knowledge_check(bench.placed_book() == other && !bench.studied_samples, "the other book can become the research book, with no sample credit carried over")
 	bench.book_swap(scholar)
 	knowledge_check(bench.placed_book() == journal, "swapping back restores the first book")
 	bench.book_take(scholar, 2)
@@ -241,6 +247,8 @@ var/knowledge_failures = 0
 	qdel(third)
 	qdel(again)
 	check_book_clock(journal)
+	check_book_fabricator()
+	check_scholarship_travel(scholar)
 	map.book_research = FALSE
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
@@ -280,6 +288,8 @@ var/knowledge_failures = 0
 	qdel(page)
 	qdel(spare)
 	qdel(tired)
+	diary.page_busy = TRUE
+	knowledge_check(!("page_busy" in diary.get_saved_vars()), "a book's busy lock is never saved")
 
 // No clock (Val, 2026-11-10): book research starts at 5000 B.C. with no WW2
 // floor and no auto-research; only a finished capstone moves the era.
@@ -321,3 +331,36 @@ var/knowledge_failures = 0
 	map.autoresearch = old_auto
 	for (var/i = 1, i <= 9, i++)
 		map.vars["age[i]_done"] = old_flags[i]
+
+// With book research a fabricator lists what its user knows, even when the
+// faction never researched it (review finding, 2026-11-10).
+/proc/check_book_fabricator()
+	var/datum/factory_recipe/R = null
+	var/list/recipes = factory_get_recipes()
+	for (var/name in recipes)
+		var/datum/factory_recipe/candidate = recipes[name]
+		if (candidate.tier == 1 && valid_recipe_node_id(candidate.node))
+			R = candidate
+			break
+	var/obj/structure/factory_fabricator/F = new(locate(2,6,1))
+	F.tier = 3
+	var/mob/living/human/knowledge_fixture/worker = new(locate(2,7,1))
+	worker.civilization = "none"
+	var/before = R && !(R.name in F.available_recipes("none", worker))
+	worker.known_recipe_nodes = list(R ? R.node : "basic_tools")
+	knowledge_check(before && (R.name in F.available_recipes("none", worker)), "a fabricator lists recipes its user has learned")
+	qdel(F)
+	qdel(worker)
+
+// Region travel carries scholarship (review finding, 2026-11-10).
+/proc/check_scholarship_travel(mob/living/human/scholar)
+	var/old_owner = scholar.persistence_owner_ckey
+	scholar.persistence_owner_ckey = "fixturescholar"
+	var/list/P = region_travel_decode(scholar.region_travel_payload(list()))
+	scholar.persistence_owner_ckey = old_owner
+	knowledge_check(P && P["v"] == 3 && region_travel_scholarship_valid(P["scholarship"]), "a scholar travels with version 3 and their scholarship")
+	knowledge_check(P && P["scholarship"]["engineering"] == scholar.scholar_level("engineering") && P["scholarship"]["mathematics"] == scholar.scholar_level("mathematics"), "the payload carries each discipline's level")
+	knowledge_check(!region_travel_scholarship_valid(list("bogus" = 5)) && !region_travel_scholarship_valid(list("engineering" = 500)) && !region_travel_scholarship_valid(list()), "travelling scholarship is validated")
+	if (P)
+		P["v"] = 2
+		knowledge_check(!region_travel_decode(json_encode(P)), "an older payload version can't smuggle scholarship")

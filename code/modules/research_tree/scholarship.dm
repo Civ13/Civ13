@@ -59,9 +59,32 @@ var/global/list/scholar_node_disciplines = list(
 			return "military"
 	return "engineering"
 
+// The earliest era tier holding a node of each discipline. A discipline's
+// first nodes need no skill, so every discipline can be started from scratch
+// (Natural Science begins at era 1, not era 0).
+var/global/list/scholar_entry_tiers = null
+
+/proc/scholar_entry_tier(discipline)
+	if (!scholar_entry_tiers)
+		var/list/tiers = list()
+		for (var/node_id in research_nodes)
+			var/datum/research_node/N = research_nodes[node_id]
+			var/d = node_discipline(node_id)
+			var/t = max(0, N.era_tier)
+			if (isnull(tiers[d]) || t < tiers[d])
+				tiers[d] = t
+		if (!tiers.len)
+			return 0
+		scholar_entry_tiers = tiers
+	var/tier = scholar_entry_tiers[discipline]
+	return isnum(tier) ? tier : 0
+
 /proc/node_scholar_requirement(node_id)
 	var/datum/research_node/N = get_research_node(node_id)
-	return N ? min(SCHOLAR_MAX_LEVEL, max(0, N.era_tier) * SCHOLAR_LEVEL_PER_TIER) : 0
+	if (!N)
+		return 0
+	var/steps = max(0, N.era_tier - scholar_entry_tier(node_discipline(node_id)))
+	return min(SCHOLAR_MAX_LEVEL, steps * SCHOLAR_LEVEL_PER_TIER)
 
 /mob/living/human
 	var/list/scholarship = null // discipline => level (0-100)

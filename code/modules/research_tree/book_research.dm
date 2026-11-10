@@ -234,8 +234,10 @@
 		return
 	user.remove_from_mob(B)
 	B.forceMove(src)
-	if (!books.len && assigned_node && B.has_research_chapter(assigned_node))
-		assigned_node = null
+	if (!books.len)
+		studied_samples = null // samples counted toward the previous research book
+		if (assigned_node && B.has_research_chapter(assigned_node))
+			assigned_node = null
 	if (books.len)
 		to_chat(user, SPAN_NOTICE("You place [B] beside [books[1]]. Chapters can be copied between the two."))
 	else
@@ -250,6 +252,7 @@
 	var/obj/item/weapon/book/first = books[1]
 	first.loc = null
 	first.forceMove(src)
+	studied_samples = null // samples counted toward the other book
 	if (assigned_node && placed_book()?.has_research_chapter(assigned_node))
 		assigned_node = null
 	to_chat(user, SPAN_NOTICE("Research here will now be written into [placed_book()]."))
@@ -262,6 +265,8 @@
 	if (!isnum(index) || index < 1 || index > books.len)
 		index = books.len
 	var/obj/item/weapon/book/B = books[index]
+	if (index == 1)
+		studied_samples = null // the research book leaves with its samples' credit
 	B.forceMove(get_turf(src))
 	user.put_in_hands(B)
 	to_chat(user, SPAN_NOTICE("You take [B] from the bench. Its research goes with it."))
@@ -371,7 +376,9 @@
 	var/time = BOOK_STUDY_TIME(N.era_tier)
 	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name]. This takes about [round(time / 600, 0.5)] minute\s."))
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
-	if (!do_after(H, time, anchor) || QDELETED(source) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
+	var/atom/start_loc = source.loc
+	// A book on a bench must still be there: taking it away ends the study.
+	if (!do_after(H, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
 		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
