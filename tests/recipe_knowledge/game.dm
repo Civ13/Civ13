@@ -240,6 +240,7 @@ var/knowledge_failures = 0
 	qdel(other)
 	qdel(third)
 	qdel(again)
+	check_book_clock(journal)
 	map.book_research = FALSE
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
@@ -269,3 +270,23 @@ var/knowledge_failures = 0
 	qdel(page)
 	qdel(spare)
 	qdel(tired)
+
+// No clock (Val, 2026-11-10): book research starts at 5000 B.C. with no WW2
+// floor and no auto-research; only a finished capstone moves the era.
+/proc/check_book_clock(obj/item/weapon/book/journal)
+	var/old_age = map.age
+	var/old_ordinal = map.ordinal_age
+	var/old_auto = map.autoresearch
+	map.age = "5000 B.C."
+	map.ordinal_age = 0
+	map.autoresearch = TRUE
+	map.apply_persistence_age_floor()
+	knowledge_check(map.age == "5000 B.C." && map.ordinal_age == 0 && !map.autoresearch, "book research has no 1943 floor and no auto-research")
+	var/datum/research_node/cap = get_research_node("bronze_working")
+	journal.add_research_work("bronze_working", cap.cost_ticks)
+	knowledge_check(map.ordinal_age == 0 && !journal.has_research_chapter("bronze_working"), "a capstone needs its prototype before it is finished")
+	journal.add_research_work("bronze_working", 0, TRUE)
+	knowledge_check(journal.has_research_chapter("bronze_working") && map.ordinal_age == 1 && map.age == "313 B.C.", "finishing a capstone moves the era")
+	map.age = old_age
+	map.ordinal_age = old_ordinal
+	map.autoresearch = old_auto

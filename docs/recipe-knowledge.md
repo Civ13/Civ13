@@ -109,6 +109,18 @@ sheet, the same stamina and time as writing, and no knowledge of the node.
 "Study a chapter" studies from a shelved book without picking it up, and each
 book has its own Take button (Alt-click takes the last one).
 
+### No clock (phase 5)
+
+With book research on, a Persistence world has no 1943 date floor and no
+auto-research: `apply_persistence_age_floor()` turns `autoresearch` off and
+returns, so a world can start at 5000 B.C. and stay there. The legacy era
+steps in the map tick (faction research point totals) are skipped as well.
+The era only moves when someone finishes a capstone chapter, which needs the
+capstone's prototype (`book_research_node_finished`). The mode shows as
+"Persistent (Book Research)". Research time already grows with tier through
+each node's `cost_ticks`; writing and study time and writing stamina grow
+with `era_tier` (`BOOK_WRITE_TIME`, `BOOK_STUDY_TIME`, `BOOK_WRITE_STAMINA`).
+
 ## Verification
 
 `tests/recipe_knowledge/test_contract.py` checks source wiring offline and is
