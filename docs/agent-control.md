@@ -384,6 +384,26 @@ Reader screens with their own topic states (books, notes, faction and religion
 lists, photos, the crafting atlas, the paper editor) still need a connected
 client.
 
+<a id="travel"></a>
+
+### Region travel
+
+An agent's own character walks through a region gate like a player: `use` on
+the gate (from `character_queue`) asks the travel prompt, answered with
+`choose` "Travel" (`code/modules/agent_control/agent_travel.dm`). The body travels
+under the account `agent@` + the agent name as a ckey, which no BYOND key can
+match. Opted-in player characters travel only with their player.
+
+- The departing world records the trip; `character_list` returns it under
+  `departed` (agent, name, old ref, destination, destination name, address).
+- At the destination, `character_list` takes bodies of that account back as the
+  agent's characters (an arrival, or a body a reload restored), up to its limit.
+- The destination's `config/agent-control.txt` needs the same agent line (name
+  and token); otherwise the agent cannot sign in there.
+- `autopilot.py` follows by default: when the character is gone it reads
+  `departed`, connects to the destination address and keeps playing there.
+  `--no-follow` turns this off.
+
 ## Nomad visits
 
 The `visits` scope lets an agent coordinate a [nomad visit](nomad-raids.md):

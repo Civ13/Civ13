@@ -35,9 +35,16 @@ var/global/list/persistence_player_claims = list()
 	return istext(account) && copytext(account, 1, 3) == "d:" && is_discord_id(copytext(account, 3))
 
 // A durable character owner: a non-guest ckey (legacy) or an account key.
+// An agent character's account, "agent@" + the agent's name as a ckey. No BYOND
+// ckey holds "@", so it never names a player (agent_travel.dm).
+/proc/is_agent_account(account)
+	if(!istext(account) || length(account) < 7 || length(account) > 32 || copytext(account, 1, 7) != "agent@") return FALSE
+	var/name = copytext(account, 7)
+	return ckey(name) == name
+
 /proc/persistence_owner_valid(account)
 	if(!istext(account) || !length(account)) return FALSE
-	if(is_account_key(account)) return TRUE
+	if(is_account_key(account) || is_agent_account(account)) return TRUE
 	return ckey(account) == account && !persistence_guest_account(account)
 
 /mob/living/human/proc/record_persistence_owner()

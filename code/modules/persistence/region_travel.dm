@@ -564,13 +564,14 @@ var/global/list/region_travel_carry_types = list(
 	to_chat(user, SPAN_NOTICE(reason ? reason : "It leads to [destination_name()]. Use it to travel there with what you wear and carry."))
 
 /obj/structure/region_gate/attack_hand(mob/living/human/user)
-	if(!istype(user) || !user.client) return ..()
+	if(!istype(user) || !user.client && !agent_travel_account(user)) return ..()
 	travel(user)
 
 /obj/structure/region_gate/proc/travel_refusal(mob/living/human/H)
 	var/reason = closed_reason()
 	if(reason) return reason
-	if(!H.client || IsGuestKey(H.client.key)) return "Only players with a BYOND account can travel."
+	// An agent's own character travels under its agent account (agent_travel.dm).
+	if(H.client ? IsGuestKey(H.client.key) : !agent_travel_account(H)) return "Only players with a BYOND account can travel."
 	if(H.stat != CONSCIOUS || H.restrained() || H.buckled || H.pulling || !Adjacent(H)) return "You can't set off right now."
 	if(H.health < H.maxHealth) return "You are too hurt to make the journey."
 	return null
@@ -605,7 +606,10 @@ var/global/list/region_travel_carry_types = list(
 		if(reason)
 			to_chat(H, SPAN_WARNING(reason))
 			return
-	H.record_persistence_owner()
+	if(H.client)
+		H.record_persistence_owner()
+	else
+		H.persistence_owner_ckey = agent_travel_account(H)
 	var/result = depart(H)
 	if(result != "departed")
 		to_chat(H, SPAN_WARNING(result))
@@ -659,6 +663,9 @@ var/global/list/region_travel_carry_types = list(
 		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
 		shard_group.send_player_soon(C, destination)
 	var/account = H.persistence_owner_ckey
+	// Tells the agent where its character went, so it can follow (agent_travel.dm).
+	if(!C)
+		agent_note_departure(H, destination, destination_name())
 	qdel(H)
 	shard_group.request_save_soon()
 	spawn(0)
