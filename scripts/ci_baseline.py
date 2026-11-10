@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'iv_drip_interaction': {'files': ('tests/iv_drip_interaction/test_drag.py',), 'paths': (
+        'tests/iv_drip_interaction/', 'code/game/objects/structures/iv_drip.dm'), 'shared_paths': (
+        'tests/save_movement/source_adapter.py',)},
     'gong_fastening': {'files': ('tests/gong_fastening/test_fastening.py',), 'paths': (
         'tests/gong_fastening/', 'code/game/objects/structures/gong.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},

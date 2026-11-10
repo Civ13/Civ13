@@ -44,6 +44,8 @@
 
 /obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)
 	..()
+	if (!in_range(src, usr))
+		return
 
 	if (attached)
 		visible_message("[attached] is detached from \the [src].")
@@ -51,7 +53,7 @@
 		update_icon()
 		return
 
-	if (in_range(src, usr) && ishuman(over_object) && get_dist(over_object, src) <= 1)
+	if (ishuman(over_object) && get_dist(over_object, src) <= 1)
 		visible_message("[usr] attaches \the [src] to \the [over_object].")
 		attached = over_object
 		update_icon()
