@@ -237,65 +237,75 @@
 		return
 	if (!src || amount <= 0)
 		user << browse(null, "window=stack")
+		return
 	user.set_using_object(src) //for correct work of onclose
-	var/list/recipe_list = recipes
-	if (recipe_list && recipes_sublist && recipe_list[recipes_sublist] && istype(recipe_list[recipes_sublist], /datum/stack_recipe_list))
-		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
-		recipe_list = srl.recipes
-	var/t1 = text("<HTML style='line-height: 1.8;'><HEAD>[common_browser_style]<title>Crafting</title></HEAD><body bgcolor='#392611' style='border-color: #392611;'><br><tt><center><strong><font color='white' size='4'>[]</font><br><font color='white' size='3'>Amount Left: []</strong></font><br><br><font color='white' size='2'>", src, amount)
-	t1 += "<a href='?src=\ref[crafting_atlas_reference];atlas_open=1'>Crafting Atlas: ingredients, products and unlock eras</a><br>"
-	for (var/i=1;i<=recipe_list.len;i++)
-		var/E = recipe_list[i]
-		if (isnull(E))
-			t1 += "<hr>"
-			continue
-
-		if (i>1 && !isnull(recipe_list[i-1]))
-			t1+="<br>"
-
+	// Flatten only the display, never the source recipe lists. Every action keeps
+	// its original category and index for Topic and produce_recipe validation.
+	var/list/rows = list()
+	var/categories = "<option value=''>All categories</option>"
+	for (var/i=1;i<=recipes.len;i++)
+		var/E = recipes[i]
 		if (istype(E, /datum/stack_recipe_list))
 			var/datum/stack_recipe_list/srl = E
-			t1 += "<a href='?src=\ref[src];sublist=[i]'>[srl.title]</a>"
+			var/selected = (recipes_sublist == i) ? " selected" : ""
+			categories += "<option value='[i]'[selected]>[html_encode(srl.title)]</option>"
+			for (var/j=1;j<=srl.recipes.len;j++)
+				if (istype(srl.recipes[j], /datum/stack_recipe))
+					rows += list(list("recipe" = srl.recipes[j], "sublist" = i, "index" = j, "category" = srl.title))
+		else if (istype(E, /datum/stack_recipe))
+			rows += list(list("recipe" = E, "sublist" = "", "index" = i, "category" = "General"))
 
-		if (istype(E, /datum/stack_recipe))
-			var/datum/stack_recipe/R = E
-			var/max_multiplier = round(amount / R.req_amount)
-			var/title
-			var/can_build = TRUE
-			can_build = can_build && (max_multiplier>0)
-			if (R.res_amount>1)
-				title+= "[R.res_amount]x [R.title]\s"
+	var/t1 = "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>[common_browser_style]<title>Crafting</title><style>body{background:#392611;color:#eee;font:14px Arial;margin:12px}a{color:#f5d99b}.craft-toolbar{background:#2a2118;padding:10px;margin-bottom:8px}input{width:65%}input,select,button{font:inherit;margin:3px;padding:4px}.craft-row{padding:8px 4px;border-bottom:1px solid #725635}.craft-meta{font-size:12px;color:#ccc;margin-top:4px}.craft-status{color:#ddd}.craft-details{margin:6px 0;padding:6px;background:#2a2118}.craft-batch{display:inline-block}h2{margin:0 0 6px}#craft-empty{padding:12px}</style></head><body data-stack='\ref[src]'>"
+	t1 += "<h2>[html_encode("[src]")]</h2><p>Amount Left: [amount]. <a href='?src=\ref[crafting_atlas_reference];atlas_open=1'>Crafting Atlas</a></p>"
+	t1 += "<div class='craft-toolbar'><label for='craft-search'>Find a recipe across categories</label><br><input id='craft-search' type='text' maxlength='64' placeholder='Search recipes...'><button id='craft-clear' type='button'>Clear</button><br><label for='craft-category'>Browse: </label><select id='craft-category'>[categories]</select><span id='craft-count'></span></div>"
+	t1 += "<noscript>Search and batch controls require JavaScript. Single-item crafting links and recipe details are listed below.</noscript>"
+	var/row_number = 0
+	for (var/list/row in rows)
+		row_number++
+		var/datum/stack_recipe/R = row["recipe"]
+		var/sublist = row["sublist"]
+		var/index = row["index"]
+		var/category = row["category"]
+		var/max_multiplier = round(amount / R.req_amount)
+		var/title = R.res_amount > 1 ? "[R.res_amount]x [R.title]\s" : R.title
+		var/cost = "[R.req_amount] [singular_name]\s"
+		var/details = ""
+		var/list/joint_spec = furniture_joinery_spec(R)
+		if (stone_mold_type(R.result_type))
+			details += "Chisel and hammer/mallet equipped or at your feet; no firing needed. "
+		if (joint_spec)
+			if (joint_spec["component_cost"])
+				cost += " + [joint_spec["component_cost"]] wooden dowel set(s)"
+				details += "Chisel and hammer/mallet equipped or at your feet. "
 			else
-				title+= "[R.title]"
-			title+= " ([R.req_amount] [singular_name]\s)"
-			var/list/joint_spec = furniture_joinery_spec(R)
-			if (stone_mold_type(R.result_type))
-				title += "; chisel and hammer/mallet equipped or at your feet; no firing needed"
-			if (joint_spec)
-				if (joint_spec["component_cost"])
-					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
-				else
-					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
-			var/manual_hint = crafting_recipe_manual_hint(user, "[R.result_type]")
-			if (manual_hint)
-				t1 += "<span style='color:#aaa'>[title] - [html_encode(manual_hint)]</span>"
-				continue
-			if (can_build)
-				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
-			else
-				t1 += text("<strike><font style='background: #2A2A2A;border-color: #392611;'>[]</font></strike>", title)
-				continue
+				details += "Sharpened flint or a sharp knife harder than the plank equipped or at your feet. "
+		var/manual_hint = crafting_recipe_manual_hint(user, "[R.result_type]")
+		var/search_text = html_encode("[R.title] [category]")
+		t1 += "<div class='craft-row' data-search='[search_text]' data-category='[sublist]'>"
+		var/action = "byond://?src=\ref[src];sublist=[sublist];make=[index]"
+		if (manual_hint)
+			t1 += "<strong>[html_encode(title)]</strong><div class='craft-status'>[html_encode(manual_hint)]</div>"
+		else if (max_multiplier < 1)
+			t1 += "<strong>[html_encode(title)]</strong><div class='craft-status'>Not enough material</div>"
+		else
+			t1 += "<a href='[action];multiplier=1'>[html_encode(title)]</a>"
 			if (R.max_res_amount>1 && max_multiplier>1)
 				max_multiplier = min(max_multiplier, round(R.max_res_amount/R.res_amount))
-				t1 += " |"
+				t1 += " <span class='craft-batch'><label for='craft-quantity-[row_number]'>Quantity: </label><select id='craft-quantity-[row_number]'><option value='[action];multiplier=1'>[R.res_amount]</option>"
 				var/list/multipliers = list(5,10,25)
 				for (var/n in multipliers)
 					if (max_multiplier>=n)
-						t1 += " <A href='?src=\ref[src];make=[i];multiplier=[n]'>[n*R.res_amount]x</A>"
-				if (!(max_multiplier in multipliers))
-					t1 += " <A href='?src=\ref[src];make=[i];multiplier=[max_multiplier]'>[max_multiplier*R.res_amount]x</A>"
-
-	t1 += "</TT></body></HTML>"
+						t1 += "<option value='[action];multiplier=[n]'>[n*R.res_amount]</option>"
+				if (max_multiplier>1 && !(max_multiplier in multipliers))
+					t1 += "<option value='[action];multiplier=[max_multiplier]'>[max_multiplier*R.res_amount] (max)</option>"
+				t1 += "</select><button type='button' data-craft-quantity='craft-quantity-[row_number]'>Craft</button></span>"
+		t1 += "<div class='craft-meta'>[html_encode(category)] | Cost: [html_encode(cost)]</div>"
+		if (details)
+			// Visible without scripts; the client collapses it only after binding.
+			t1 += "<button type='button' data-craft-details='craft-details-[row_number]' aria-expanded='true'>Tool details</button><div class='craft-details' id='craft-details-[row_number]'>[html_encode(details)]</div>"
+		t1 += "</div>"
+	t1 += "<p id='craft-empty' style='display:none'>No matching recipes. Try another name or clear the search.</p><script src='stack_crafting.js'></script></body></html>"
+	user << browse_rsc('code/js/stack_crafting.js', "stack_crafting.js")
 	user << browse(t1, "window=stack")
 	onclose(user, "stack")
 	return

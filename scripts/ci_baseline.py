@@ -1138,6 +1138,9 @@ SUITES = {
             'code/game/objects/items/weapons/storage/bags.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
     # Widescreen 21x15 view, square fallback preference, HUD edge anchoring and the side panel.
+    'held_crafting_menu': {'files': ('tests/held_crafting_menu/test_menu.py',),
+        'paths': ('tests/held_crafting_menu/', 'code/js/stack_crafting.js'),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm',)},
     'widescreen_view': {'files': ('tests/widescreen_view/test_widescreen.py', 'tests/widescreen_view/test_side_panel.py'),
         'paths': ('tests/widescreen_view/', 'interface/info/info.html', 'code/game/mob/mob_view.dm', 'code/game/mob/new_player/lobby_image.dm',
             'code/_onclick/hud/movable_screen_objects.dm', 'code/modules/nano/interaction/default.dm'),
