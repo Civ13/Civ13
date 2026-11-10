@@ -36,6 +36,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'paint_buckets': {'files': ('tests/paint_buckets/test_colors.py',),
+        'paths': ('tests/paint_buckets/',), 'shared_paths': (
+            'code/game/objects/items/weapons/paint.dm',
+            'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Other.dm',
+            'tests/save_movement/source_adapter.py')},
     'sledgehammer': {'files': ('tests/sledgehammer/test_two_hands.py',),
         'paths': ('tests/sledgehammer/',), 'shared_paths': (
             'code/game/objects/items/weapons/sledgehammer.dm', 'tests/save_movement/source_adapter.py')},
