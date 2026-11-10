@@ -5,9 +5,13 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/modules/ecology/foraging.dm').read_text()
 
 class ForagingContract(unittest.TestCase):
-    def test_default_off(self):
+    def test_on_for_persistence_and_opt_in_elsewhere(self):
         self.assertIn('/obj/map_metadata/var/foraging_enabled = FALSE', SOURCE)
         self.assertNotIn('foraging_enabled = TRUE', SOURCE)
+        self.assertIn('return foraging_enabled || persistence', SOURCE)
+        # Every gate goes through the one availability rule.
+        self.assertNotIn('map.foraging_enabled', SOURCE)
+        self.assertEqual(SOURCE.count('map.foraging_active()'), 3)
     def test_sparse_and_saved(self):
         self.assertIn('saved |= "remaining"', SOURCE)
         self.assertIn('for (var/obj/foraging_cell/C in anchor)', SOURCE)

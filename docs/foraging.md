@@ -8,14 +8,13 @@ assets. Civ13's existing bushes, wild crops, trees, mining, sifting and hunting
 remain the primary resource systems. Foraging must not become a source of free
 high-tier materials or a way around research.
 
-This draft implements a **disabled-by-default prototype**, not a finished PZ
-search-mode replica. No map is opted in. No live server, save, launcher or client
-configuration is changed. Merge, activation and live testing are separate steps.
+This is phase one, not a finished PZ search-mode replica. It is on for
+Persistence worlds and off elsewhere unless a map opts in.
 
 ## Phase 1: bounded search and shared scarcity (this draft)
 
-- `Forage nearby (experimental)` in Crafting searches the tile under the player.
-  A map author can opt in through `foraging_enabled`; initial false everywhere.
+- `Forage nearby` in Crafting searches the tile under the player.
+  It is on wherever Persistence is on (Val, 2026-11-10). Other maps opt in through `foraging_enabled`, which is false by default.
 - Search takes 30 uninterrupted seconds. Existing `do_after` cancels movement,
   active-hand changes and incapacity and prevents repeated actions. Revalidate
   connection, map policy, exact turf, habitat and persistence epoch on completion.

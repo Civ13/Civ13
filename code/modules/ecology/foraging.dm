@@ -1,9 +1,13 @@
-// Original active-search prototype. No map enables this experimental feature.
+// Original active-search phase one. Persistence worlds have it on; other maps opt in.
 #define FORAGING_CELL_SIZE 8
 #define FORAGING_CELL_STOCK 4
 #define FORAGING_CONTENT_LIMIT 64
 
 /obj/map_metadata/var/foraging_enabled = FALSE
+
+// Persistence worlds forage (Val, 2026-11-10); round maps opt in with foraging_enabled.
+/obj/map_metadata/proc/foraging_active()
+	return foraging_enabled || persistence
 
 // Sparse, ordinary saved roots, not a global cache or mutable turf variable.
 // No automatic regeneration in phase one: changing terrain or relogging cannot
@@ -80,10 +84,10 @@
 	return !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && expected_identity == persistence_admission_identity
 
 /mob/living/human/verb/forage_nearby()
-	set name = "Forage nearby (experimental)"
+	set name = "Forage nearby"
 	set category = "Crafting"
-	if (!map || !map.foraging_enabled)
-		to_chat(src, SPAN_WARNING("Experimental foraging is not enabled on this map."))
+	if (!map || !map.foraging_active())
+		to_chat(src, SPAN_WARNING("Foraging is not available on this map."))
 		return
 	var/turf/T = loc
 	if (!isturf(loc) || !client || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T))
@@ -103,7 +107,7 @@
 	// No skill bonuses/XP until the finite-stock economy is tested in play.
 	if (!do_after(src, 300, T))
 		return
-	if (!src || !client || !map || !map.foraging_enabled || loc != T || T.sifting_identity != terrain_identity || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T) || !foraging_persistence_ready(epoch))
+	if (!src || !client || !map || !map.foraging_active() || loc != T || T.sifting_identity != terrain_identity || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T) || !foraging_persistence_ready(epoch))
 		return
 	if (!foraging_commit(T, epoch))
 		to_chat(src, SPAN_NOTICE("Nothing remains to collect here."))
@@ -113,7 +117,7 @@
 // No input, sleeps or result previews between validation and debit. Every result
 // costs one shared unit. Concurrent completions recheck the current stock here.
 /proc/foraging_commit(turf/T, expected_identity)
-	if (!map || !map.foraging_enabled || !foraging_site(T) || !foraging_persistence_ready(expected_identity))
+	if (!map || !map.foraging_active() || !foraging_site(T) || !foraging_persistence_ready(expected_identity))
 		return FALSE
 	var/turf/anchor = foraging_anchor(T)
 	var/record = foraging_record(anchor)
