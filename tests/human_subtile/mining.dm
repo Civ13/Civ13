@@ -103,7 +103,7 @@ var/list/human_subtile_mining_rows = list()
 		H.next_move = -1
 		human_subtile_mining_move(H, EAST, C)
 		M = H.pickaxe_mining_action
-		human_subtile_mining_assert(M && M.sy == test_case["sy"], "mining_second_snapshot")
+		human_subtile_mining_assert(M && M.origin.y * 32 + M.sy == 11 * 32 + test_case["sy"], "mining_second_snapshot")
 		sleep(world.tick_lag)
 		if (H.human_subtile_enabled)
 			H.fixture_cancel_after = H.fixture_pulses + 1
