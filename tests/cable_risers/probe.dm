@@ -96,6 +96,28 @@ var/global/riser_failures = 0
 		R3 = riser_secure(/obj/item/connector/riser, 3, 3, 3)
 		riser_check("top riser replaced: lamp powered", L.draw_cable_power() ? 1 : 0, 1)
 
+		// World reload: only saved state survives. riser_links are runtime
+		// only, so drop them and the built totals, then run after_load in
+		// several orders: the joined grid must not depend on which level
+		// loads first.
+		var/list/reload_cables = list(bottom, middle, top)
+		var/list/reload_orders = list(list(R1, R2, R3), list(R3, R2, R1), list(R2, R3, R1))
+		var/order_index = 0
+		for (var/list/order in reload_orders)
+			order_index++
+			for (var/obj/structure/cable/C in reload_cables)
+				C.riser_links = null
+				C.rebuild_time = -1
+				C.rebuild_engines = null
+				C.component_id = 0
+				C.component_size = 0
+			riser_check("reload [order_index]: lamp unpowered before risers load", L.draw_cable_power() ? 1 : 0, 0)
+			for (var/obj/item/connector/riser/next in order)
+				next.after_load()
+			riser_check("reload [order_index]: lamp powered across levels", L.draw_cable_power() ? 1 : 0, 1)
+			riser_check("reload [order_index]: one component", top.component_size, 3)
+			riser_check("reload [order_index]: middle linked both ways", middle.riser_links ? middle.riser_links.len : 0, 2)
+
 		// Bus tie: two cables on one tile, only the switch joins them.
 		var/obj/structure/cable/run_a = riser_cable(1, 1, 1)
 		var/obj/structure/cable/run_b = riser_cable(1, 1, 1)
