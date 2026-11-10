@@ -276,6 +276,9 @@
 	secondary_action = TRUE
 
 /obj/item/flashlight/militarylight/secondary_attack_self(mob/living/human/user)
+	return cycle_lens(user, "militarylight_on_red", "militarylight_on_green", "militarylight_on")
+
+/obj/item/flashlight/militarylight/proc/cycle_lens(mob/living/human/user, red_state, green_state, clear_state)
 
 	lens +=1
 	if (lens > 3)
@@ -286,7 +289,7 @@
 			light_range = 1.5
 			brightness_on = 2.5
 			light_color = "#ad2005"
-			on_state = "militarylight_on_red"
+			on_state = red_state
 			lens = 1
 			to_chat(user, "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>")
 			update_icon()
@@ -295,7 +298,7 @@
 			light_range = 1.5
 			brightness_on = 2.5
 			light_color = "#17ad2a"
-			on_state ="militarylight_on_green"
+			on_state = green_state
 			lens = 2
 			update_icon()
 			to_chat(user, "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>")
@@ -304,7 +307,7 @@
 			light_range = 5
 			brightness_on = 5
 			light_color = "#fcffd6"
-			on_state ="militarylight_on"
+			on_state = clear_state
 			lens = 3
 			to_chat(user, "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>")
 			update_icon()
@@ -317,39 +320,7 @@
 	off_state = "militarylightalt_off"
 
 /obj/item/flashlight/militarylight/alt/secondary_attack_self(mob/living/human/user)
-
-	lens +=1
-	if (lens > 3)
-		lens = 1
-
-	switch (lens)
-		if (1)
-			light_range = 1.5
-			brightness_on = 2.5
-			light_color = "#ad2005"
-			on_state = "militarylightalt_on_red"
-			lens = 1
-			to_chat(user, "<span class='notice'>You put on a <b><font color =#960000>red</font color></b> lens on your flashlight.</span>")
-			update_icon()
-			return
-		if (2)
-			light_range = 1.5
-			brightness_on = 2.5
-			light_color = "#17ad2a"
-			on_state ="militarylightalt_on_green"
-			lens = 2
-			update_icon()
-			to_chat(user, "<span class='notice'>You put on a <b><font color=#006400>green</font color></b> lens on your flashlight.</span>")
-			return
-		if (3)
-			light_range = 5
-			brightness_on = 5
-			light_color = "#fcffd6"
-			on_state ="militarylightalt_on"
-			lens = 3
-			to_chat(user, "<span class='notice'>You <b>remove</b> the lens from your flashlight.</span>")
-			update_icon()
-			return
+	return cycle_lens(user, "militarylightalt_on_red", "militarylightalt_on_green", "militarylightalt_on")
 
 
 /obj/item/flashlight/japflashlight

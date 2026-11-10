@@ -529,7 +529,7 @@
 			return
 	else if (input == "Irrigation Channel")
 		var/mob/living/human/HU = user
-		if (map && !map.is_node_done(istype(HU) ? HU.civilization : null, "irrigation"))
+		if (map && !research_node_known(HU, "irrigation"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Irrigation yet."))
 			return
 		user.visible_message("<span class='notice'>[user] starts to dig an irrigation channel.</span>", "<span class='notice'>You start to dig an irrigation channel.</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")

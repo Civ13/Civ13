@@ -413,6 +413,11 @@ var/list/mutate_on_tick = null
 
 /obj/map_metadata/proc/uses_durable_metadata()
 	return FALSE
+// Book research and the auto-research clock live outside these fixtures.
+/obj/map_metadata/proc/book_research_enabled()
+	return FALSE
+/obj/map_metadata/proc/autoresearch_proc()
+	return
 /datum/persistence_world_operation/var/datum/persistence_zone_restore/zone_restore
 /datum/persistence_zone_restore
 	var/clearing_old_world = FALSE

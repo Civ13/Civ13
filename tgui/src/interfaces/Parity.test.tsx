@@ -77,6 +77,20 @@ describe('research parity', () => {
     expect(screen.getByText('Second tech')).toBeTruthy();
     expect(screen.queryByText('First tech')).toBeNull();
   });
+  it('shows bench books with take, study, copy and swap controls in book mode', () => {
+    const ui: ScreenProps = { template: 'research_bench.tmpl', interactive: true, act: vi.fn(), data: { book_mode: 1, trees: [],
+      books: [{ idx: 1, name: 'Journal', is_target: 1, chapters: ['Basic Toolmaking'] }, { idx: 2, name: 'Copybook', is_target: 0, chapters: [] }],
+      can_study: 1, can_copy: 1, can_swap: 1 } };
+    render(<Research {...ui} />);
+    expect(screen.queryByText(/Owned by/)).toBeNull();
+    expect(screen.getByText('Basic Toolmaking')).toBeTruthy();
+    fireEvent.click(screen.getAllByText('Take')[1]);
+    expect(ui.act).toHaveBeenCalledWith('take_book', { take_book: 2 });
+    for (const [label, action] of [['Study a chapter', 'study_shelf'], ['Copy a chapter', 'copy_chapter'], ['Write research into the other book', 'swap_books']]) {
+      fireEvent.click(screen.getByText(label));
+      expect(ui.act).toHaveBeenCalledWith(action, { [action]: 1 });
+    }
+  });
 });
 
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';

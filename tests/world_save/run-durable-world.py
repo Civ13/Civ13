@@ -110,7 +110,7 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore', 'year-helper', 'year-load', 'year-order'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore', 'year-helper', 'year-load', 'year-order', 'year-book'))
     args = parser.parse_args()
     if args.zone_topology:
         if not args.prepare_only:
@@ -238,6 +238,7 @@ def main():
                 'year-helper': ('if (!persistence)\n', 'if (TRUE)\n'),
                 'year-load': ('\t\tmap.apply_persistence_age_floor()\n', ''),
                 'year-order': ('\t\tstorage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()\n'),
+                'year-book': ('\t\tmap.reconcile_book_research_restore()\n', ''),
             }[args.negative_control]
             if text.count(before) != 1:
                 raise RuntimeError('Date control anchor changed')
@@ -501,11 +502,11 @@ def main():
             print(json.dumps(receipt, indent=2))
             return
         if args.persistence_year:
-            expected_date_failure = {'year-helper': 'earlier date not raised', 'year-load': 'saved date floor lost', 'year-order': 'saved date floor lost'}
+            expected_date_failure = {'year-helper': 'earlier date not raised', 'year-load': 'saved date floor lost', 'year-order': 'saved date floor lost', 'year-book': 'book mode was not recorded'}
             if args.negative_control:
                 if result.get('done') or result.get('error') != expected_date_failure[args.negative_control]:
                     raise RuntimeError('Date control did not reach its named assertion: ' + str(result))
-            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 333:
+            elif not result.get('done') or result.get('imports') != 32 or result.get('checks') != 353:
                 raise RuntimeError('Native date/import coverage incomplete: ' + str(result))
             receipt['result'] = result
             receipt['expected_failure_caught'] = bool(args.negative_control)

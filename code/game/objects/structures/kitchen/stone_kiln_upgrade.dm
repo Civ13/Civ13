@@ -4,7 +4,7 @@
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || persistence_admission_identity != save_identity)
 		return FALSE
-	if (!map || !map.is_node_done(H.civilization, "basic_furniture") || H.stat != CONSCIOUS || H.incapacitated() || !H.Adjacent(src) || H.get_active_hand() != S || S.loc != H || !H.canUnEquip(S) || S.amount < 10)
+	if (!map || !research_node_known(H, "basic_furniture") || H.stat != CONSCIOUS || H.incapacitated() || !H.Adjacent(src) || H.get_active_hand() != S || S.loc != H || !H.canUnEquip(S) || S.amount < 10)
 		return FALSE
 	if (loc != site || !isturf(site) || on || stone_boil_busy || stone_boil_epoch != epoch || contents.len || parts)
 		return FALSE
@@ -116,7 +116,7 @@
 		if (filled_flammable_vessel && !deliberate_burn)
 			return filled_vessel_hint(H)
 		return TRUE
-	if (istype(I, /obj/item/weapon/clay/mold) && (!map || !map.is_node_done(H.civilization, "bronze_working")))
+	if (istype(I, /obj/item/weapon/clay/mold) && (!map || !research_node_known(H, "bronze_working")))
 		to_chat(H, SPAN_NOTICE("Research Bronze Working before using this kiln for metallurgy."))
 		return TRUE
 	if (!deliberate_burn && istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
@@ -190,7 +190,7 @@
 	if (!istype(H) || on || stone_kiln_cycle || stone_refuel_busy || fuel < 2 || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 		return
 	for (var/obj/item/weapon/clay/mold/M in contents)
-		if (!map || !map.is_node_done(H.civilization, "bronze_working"))
+		if (!map || !research_node_known(H, "bronze_working"))
 			to_chat(H, SPAN_NOTICE("Research Bronze Working before using this kiln for metallurgy."))
 			return
 	var/obj/item/weapon/reagent_containers/glass/small_pot/P

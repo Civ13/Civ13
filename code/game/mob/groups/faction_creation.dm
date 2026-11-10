@@ -207,6 +207,7 @@
 
 	owner.make_commander()
 	owner.make_title_changer()
+	owner.receive_founding_books()
 	owner.grant_faction_symbol_editor()
 	to_chat(owner, "<big>You are now the leader of the <b>[newname]</b> faction.</big>")
 	GLOB.nanomanager.close_user_uis(owner, src)

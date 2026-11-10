@@ -172,7 +172,7 @@ var/global/list/slipway_designs = null
 		return "The slipway must stand on the ground."
 	if (design)
 		return "A [design] is already on the berth."
-	if (H && (!map || !map.is_node_done(H.civilization, D.node)))
+	if (H && (!map || !research_node_known(H, D.node)))
 		var/datum/research_node/N = get_research_node(D.node)
 		return "The [D.name] needs [N ? N.name : D.node] research."
 	var/datum/vessel/V = prototype(D)
