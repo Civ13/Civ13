@@ -20,7 +20,7 @@ FIELDS = ('throw_launch_source', 'throw_launch_dx', 'throw_launch_dy', 'throw_la
           'thrower', 'throwing', 'dx', 'dy', 'x', 'y', 'z', 'original_target', 'allow_spin',
           'speed', 'range', 'throw_source', 'last_throw_source', 'dist_x', 'dist_y',
           'dist_travelled', 'a', 'error', 'throwmode', 'throw_flight_token',
-          'forceMove', 'forceMove_nondenseturf')
+          'forceMove', 'forceMove_nondenseturf', 'throw_reaches_body')
 
 
 class Turf:
@@ -81,6 +81,12 @@ class Atom:
     def y(self):
         return math.floor(self.py / 32)
 
+    # Lower-left filing with a whole-tile box, as the model files every atom.
+    step_x = property(lambda self: self.px - self.x * 32)
+    step_y = property(lambda self: self.py - self.y * 32)
+    bound_x = bound_y = 0
+    bound_width = bound_height = 32
+
     @property
     def loc(self):
         return None if self.detached else self.container or self.world.tile(self.x, self.y, self.z)
@@ -134,7 +140,8 @@ def project(declaration, args, world, source=MOVABLE):
                typed_iter=lambda where, kind: list(where),
                isliving=lambda a: a.kind in ('human', 'living'),
                isobj=lambda a: a.kind in ('item', 'structure', 'barrier'),
-               istype=lambda a: a.kind == 'barrier', has_barrier=lambda t: any(a.kind == 'barrier' for a in t))
+               istype=lambda a: a.kind == 'barrier', has_barrier=lambda t: any(a.kind == 'barrier' for a in t),
+               world=type('WorldVars', (), {'icon_size': 32})())
     previous = ADAPTER.FIELDS
     ADAPTER.FIELDS = previous + FIELDS
     try:
@@ -149,14 +156,14 @@ def bind(atom, source=MOVABLE):
                        ('throw_at', 'src, target, _range, _speed, _thrower'),
                        ('forceMove', 'src, destination, special_event=None, throw_hop_token=None'),
                        ('forceMove_nondenseturf', 'src, destination, special_event=None, throw_hop_token=None'),
-                       ('finished_throwing', 'src')):
+                       ('finished_throwing', 'src'), ('throw_reaches_body', 'src, L, T')):
         declaration = '/atom/movable/proc/' + name
         fn = project(declaration, args, atom.world, source)
         setattr(atom, name, lambda *values, fn=fn, **keywords: fn(atom, *values, **keywords))
     return atom
 
 
-def launch(world, direction='N', source_position=(96, 98), *, thrower_kind='human', item_kind='item', source=MOVABLE):
+def launch(world, direction='N', source_position=(96, 110), *, thrower_kind='human', item_kind='item', source=MOVABLE):
     actor = Atom(world, *source_position, kind=thrower_kind)
     item = bind(Atom(world, actor.x * 32, actor.y * 32, kind=item_kind), source)
     dx, dy = DIRS[direction]
@@ -312,7 +319,7 @@ class LaunchTests(unittest.TestCase):
     def test_first_hop_only_control_loses_second_diagonal_overlap(self):
         control = MOVABLE.replace('if (A == throw_launch_source) continue',
                                   'if (A == throw_launch_source && dist_travelled == 0) continue')
-        actor, item = launch(World(), 'NE', (98, 98), source=control)
+        actor, item = launch(World(), 'NE', (106, 106), source=control)
         hop(item, 1, 0)
         item.dist_travelled = 1
         hop(item, 0, 1)

@@ -115,6 +115,30 @@ return_location()
 	offset_x *= world.icon_size
 	offset_y *= world.icon_size
 
+// A straight line between two exact pixel points in plot space (a tile's centre
+// is x * icon_size; return_location() rounds to the nearest tile), such as the
+// centre of the shooter's body and the centre of the target's.
+/datum/plot_vector/proc/setup_points(turf/S, turf/T, sx, sy, tx, ty, angle_offset = 0)
+	source = S
+	target = T
+	if (!istype(source) || !istype(target))
+		return
+	loc_x = sx
+	loc_y = sy
+	loc_z = source.z
+	var/dx = tx - sx
+	var/dy = ty - sy
+	if (dx == 0 && dy == 0)
+		return
+	angle = Atan2(dx, dy) + angle_offset
+	if (angle_offset)
+		dx = cos(angle)
+		dy = sin(angle)
+	// One whole tile along the major axis per step, the exact ratio on the other.
+	var/steps = max(abs(dx), abs(dy))
+	offset_x = dx / steps * world.icon_size
+	offset_y = dy / steps * world.icon_size
+
 /datum/plot_vector/proc/increment()
 	loc_x += offset_x
 	loc_y += offset_y
@@ -149,3 +173,49 @@ return_turf()
 
 /datum/vector_loc/proc/return_turf()
 	return loc
+
+// Centre of an atom's body (its bounding box) in plot_vector space, where a
+// tile's centre is x * icon_size, or of its turf when it is inside something.
+/proc/body_pixel_x(atom/A)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return 0
+	if (ismovable(A) && A.loc == T)
+		var/atom/movable/M = A
+		return M.x * world.icon_size + M.step_x + M.bound_x + (M.bound_width - world.icon_size) / 2
+	return T.x * world.icon_size
+
+/proc/body_pixel_y(atom/A)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return 0
+	if (ismovable(A) && A.loc == T)
+		var/atom/movable/M = A
+		return M.y * world.icon_size + M.step_y + M.bound_y + (M.bound_height - world.icon_size) / 2
+	return T.y * world.icon_size
+
+// Whether the segment (x0, y0)-(x1, y1) passes through the box [bx0, bx1) x
+// [by0, by1) (Liang-Barsky clipping).
+/proc/segment_crosses_box(x0, y0, x1, y1, bx0, by0, bx1, by1)
+	var/t0 = 0
+	var/t1 = 1
+	var/dx = x1 - x0
+	var/dy = y1 - y0
+	var/list/edges = list(list(-dx, x0 - bx0), list(dx, bx1 - x0), list(-dy, y0 - by0), list(dy, by1 - y0))
+	for (var/list/edge in edges)
+		var/p = edge[1]
+		var/q = edge[2]
+		if (!p)
+			if (q < 0)
+				return FALSE
+			continue
+		var/r = q / p
+		if (p < 0)
+			if (r > t1)
+				return FALSE
+			t0 = max(t0, r)
+		else
+			if (r < t0)
+				return FALSE
+			t1 = min(t1, r)
+	return t0 < t1

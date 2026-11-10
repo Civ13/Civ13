@@ -17,6 +17,9 @@ RIDING = (ROOT / 'code/game/mob/living/simple_animal/riding.dm').read_text(encod
 LIVING = (ROOT / 'code/game/mob/living/living.dm').read_text(encoding='utf-8')
 TRENCH = (ROOT / 'code/modules/1713/trench.dm').read_text(encoding='utf-8')
 PROBE = (ROOT / 'tests/centre_tile/probe.dm').read_text(encoding='utf-8')
+PROJECTILE = (ROOT / 'code/modules/projectiles/projectile.dm').read_text(encoding='utf-8')
+MOVABLE = (ROOT / 'code/game/atoms_movable.dm').read_text(encoding='utf-8')
+VECTOR = (ROOT / 'code/_helpers/vector.dm').read_text(encoding='utf-8')
 
 
 def proc(text, name):
@@ -81,3 +84,27 @@ class CentreTileSources(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+    def test_shots_hit_bodies_where_drawn(self):
+        handle = proc(PROJECTILE, '/obj/item/projectile/proc/handleTurf(')
+        # Turf contents hold every overlapping body; one filed elsewhere is hit
+        # only where the line crosses its box, and only once per shot.
+        self.assertIn('if (L.loc != T && !body_in_line(L, T))', handle)
+        self.assertLess(handle.index('body_in_line(L, T)'), handle.index('bodies_passed += L'))
+        line = proc(PROJECTILE, '/obj/item/projectile/proc/body_in_line(')
+        self.assertIn('segment_crosses_box(', line)
+        self.assertIn('round(cx / world.icon_size, 1)', line)
+        setup = proc(PROJECTILE, '/obj/item/projectile/proc/setup_trajectory(')
+        self.assertIn('trajectory.setup_points(starting_loc, target_turf, body_pixel_x(firer)', setup)
+        # plot_vector files a point under the nearest tile centre (x * 32).
+        self.assertIn('round(loc_x / world.icon_size, TRUE)', VECTOR)
+        self.assertIn('(M.bound_width - world.icon_size) / 2', proc(VECTOR, '/proc/body_pixel_x('))
+
+    def test_throws_hit_bodies_reaching_a_quarter_tile_in(self):
+        check = proc(MOVABLE, '/atom/movable/proc/hit_check(')
+        self.assertIn('if (A.loc != here && !throw_reaches_body(A, here)) continue', check)
+        self.assertIn('var/reach = size / 4', proc(MOVABLE, '/atom/movable/proc/throw_reaches_body('))
+        for label in ('shot_hits_body_reaching_into_its_row', 'shot_misses_body_clear_of_line',
+                      'straddling_body_tried_once', 'throw_hits_body_reaching_into_path',
+                      'throw_misses_body_at_path_edge'):
+            self.assertIn(label, PROBE)

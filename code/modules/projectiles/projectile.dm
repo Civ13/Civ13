@@ -24,6 +24,9 @@
 	var/atom/original							// the target clicked (not necessarily where the projectile is headed). Should probably be renamed to 'target' or something.
 	var/turf/starting							// the projectile's starting turf
 	var/list/permutated = list()				// we've passed through these atoms, don't try to hit them again
+	// Bodies this shot has already reached, so one straddling two tiles is
+	// only ever tried once.
+	var/tmp/list/bodies_passed = list()
 
 	var/blockedhit = FALSE						// If blocked by shield/armor/etc
 
@@ -596,6 +599,12 @@
 
 		if (isliving(AM) && AM != firer && !is_firer_mount(AM))
 			var/mob/living/L = AM
+			// A body filed under another tile is only reached where it is drawn.
+			if (L.loc != T && !body_in_line(L, T))
+				continue
+			if (L in bodies_passed)
+				continue
+			bodies_passed += L
 			if (L != original && height_passes_over(los_target_top(L)))
 				continue
 			// Bullet drop: aimed too high for the range, or held over too far.
@@ -858,6 +867,27 @@
 		else if (!bumped && loc)
 			tracer_effect()
 		#endif
+// A turf's contents include every body overlapping it, however slightly. One
+// filed under a neighbouring tile is hit only where this shot's line crosses
+// its box inside T: a shot hits a body where it is drawn.
+/obj/item/projectile/proc/body_in_line(mob/living/L, turf/T)
+	if (!trajectory || !istype(T) || !isturf(L.loc) || (!trajectory.offset_x && !trajectory.offset_y))
+		return TRUE
+	// The point plotted for T is one step behind the trajectory (process()
+	// increments it before handling the current tile); T owns half a step
+	// either side of it.
+	var/cx = trajectory.loc_x - trajectory.offset_x
+	var/cy = trajectory.loc_y - trajectory.offset_y
+	if (round(cx / world.icon_size, 1) != T.x || round(cy / world.icon_size, 1) != T.y)
+		return TRUE
+	var/hx = trajectory.offset_x / 2
+	var/hy = trajectory.offset_y / 2
+	var/size = world.icon_size
+	// The body's box in plot space (a tile's centre is x * icon_size).
+	var/bx = L.x * size + L.step_x + L.bound_x - size / 2
+	var/by = L.y * size + L.step_y + L.bound_y - size / 2
+	return segment_crosses_box(cx - hx, cy - hy, cx + hx, cy + hy, bx, by, bx + L.bound_width, by + L.bound_height)
+
 // A rider's own shots leave from the mount's tile; the mount must not catch them.
 /obj/item/projectile/proc/is_firer_mount(var/atom/movable/AM)
 	if (!ishuman(firer))
@@ -880,7 +910,13 @@
 /obj/item/projectile/proc/setup_trajectory(var/turf/starting_loc)
 	// plot the initial trajectory
 	trajectory = new()
-	trajectory.setup(starting_loc, original, pixel_x, pixel_y, dispersion)
+	// Fly from the middle of the shooter's body to the middle of the target,
+	// wherever they stand between tiles.
+	var/turf/target_turf = get_turf(original)
+	if (firer && get_turf(firer) == starting_loc && target_turf && target_turf.z == starting_loc.z)
+		trajectory.setup_points(starting_loc, target_turf, body_pixel_x(firer) + pixel_x, body_pixel_y(firer) + pixel_y, body_pixel_x(original), body_pixel_y(original), dispersion)
+	else
+		trajectory.setup(starting_loc, original, pixel_x, pixel_y, dispersion)
 
 	// generate this now since all visual effects the projectile makes can use it
 	effect_transform = new()
