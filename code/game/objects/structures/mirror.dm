@@ -105,6 +105,8 @@
 	if (istype(H, /obj/item/weapon/hammer) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
 		if (direction)
+			if (!can_fasten(user, H))
+				return
 			var/obj/structure/mirror/S = new(user.loc)
 			switch(direction)
 				if ("North")
@@ -119,3 +121,10 @@
 			to_chat(user, "You fasten \the [S] with your [H].")
 			qdel(src)
 	else ..()
+
+/obj/item/mirror/proc/can_fasten(mob/user, obj/item/H)
+	if (QDELETED(src) || QDELETED(user) || QDELETED(H) || user.stat || user.incapacitated())
+		return FALSE
+	if (!isturf(user.loc) || !Adjacent(user) || H.loc != user || user.get_active_hand() != H)
+		return FALSE
+	return TRUE

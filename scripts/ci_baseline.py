@@ -36,6 +36,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'mirror_fastening': {'files': ('tests/mirror_fastening/test_prompt.py',), 'paths': (
+        'tests/mirror_fastening/', 'code/game/objects/structures/mirror.dm'), 'shared_paths': (
+        'tests/save_movement/source_adapter.py',)},
     'linen_bin': {'files': ('tests/linen_bin/test_appearance.py',), 'paths': (
         'tests/linen_bin/', 'code/game/objects/structures/bedsheet_bin.dm')},
     'bell_stand': {'files': ('tests/bell_stand/test_names.py',), 'paths': (
