@@ -20,6 +20,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if (istype(A, /obj/item/weapon/flame))
 		var/obj/item/weapon/flame/F = A
 		return (F.lit)
+	if (istype(A, /obj/item/flashlight/torch) || istype(A, /obj/item/flashlight/flare))
+		var/obj/item/flashlight/F = A
+		return F.on
 	return FALSE
 
 ///////////
@@ -150,13 +153,13 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		qdel(src)
 	else
 		new /obj/effect/decal/cleanable/ash(T)
+		lit = FALSE
+		icon_state = icon_off
+		item_state = icon_off
 		if (ismob(loc))
 			var/mob/living/M = loc
 			if (!nomessage)
 				to_chat(M, "<span class='notice'>Your [name] goes out, and you empty the ash.</span>")
-			lit = FALSE
-			icon_state = icon_off
-			item_state = icon_off
 			M.update_inv_wear_mask(0)
 			M.update_inv_l_hand(0)
 			M.update_inv_r_hand(1)
@@ -164,7 +167,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
-	if (isflamesource(W) ||istype(W, /obj/item/flashlight))
+	if (isflamesource(W))
 		var/text = matchmes
 		if (istype(W, /obj/item/weapon/flame/match))
 			text = matchmes
@@ -430,8 +433,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
 			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	else if (istype(W, /obj/item/flashlight))
-		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
@@ -477,8 +478,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
 			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	else if (istype(W, /obj/item/flashlight))
-		light("<span class='notice'>[user] lights their [name] with the [W].</span>")
 	user.update_inv_wear_mask(0)
 	user.update_inv_l_hand(0)
 	user.update_inv_r_hand(1)
