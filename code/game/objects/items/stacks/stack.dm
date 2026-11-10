@@ -1899,6 +1899,7 @@
 		if (istype(O, /obj/structure/civ_generator/waterwheel))
 			var/obj/structure/civ_generator/waterwheel/WW = O
 			if (!WW.persistence_set_loc(waterwheel_build_target(user))) return FALSE
+			WW.update_icon()
 			return
 
 		if (building_floor_recipe)

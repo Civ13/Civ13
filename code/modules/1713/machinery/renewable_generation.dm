@@ -106,7 +106,16 @@
 	if (isturf(loc) && !river_current_direction(loc))
 		to_chat(user, "The water here is still, so the wheel cannot turn.")
 
+/obj/structure/civ_generator/waterwheel/New()
+	..()
+	update_icon()
+
+// The icon faces the current: face-on across east-west water, edge-on in
+// north-south water, turning the way the stream runs.
 /obj/structure/civ_generator/waterwheel/update_icon()
+	var/direction = isturf(loc) ? river_current_direction(loc) : 0
+	if (direction)
+		set_dir(direction)
 	icon_state = (enabled && output_power > 0) ? "waterwheel_on" : "waterwheel"
 
 /obj/structure/civ_generator/waterwheel/settle_generation()

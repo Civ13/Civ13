@@ -92,13 +92,7 @@ def waterwheel(angle, frame=0):
     d.ellipse((5, 2, 27, 24), outline='#53371f', width=3)
     d.ellipse((7, 4, 25, 22), outline='#b48854', width=1)
     rotor(d, hub, 8, 9, angle, '#c69a60', '#694727')
-    # Submerged part: fade and cool the wood so the water reads through it.
-    px = wheel.load()
-    for y in range(23, SIZE):
-        for x in range(SIZE):
-            r, g, b, a = px[x, y]
-            if a:
-                px[x, y] = ((r + 40) // 3, (g + 90) // 3, (b + 120) // 3, a * 2 // 5)
+    submerge(wheel)
     im = Image.new('RGBA', (SIZE, SIZE))
     d = ImageDraw.Draw(im)
     # Timber trestles either side carry the axle.
@@ -117,6 +111,65 @@ def waterwheel(angle, frame=0):
     return im
 
 
+def submerge(im, top=23):
+    """Fade and cool pixels below the waterline so the water reads through."""
+    px = im.load()
+    for y in range(top, SIZE):
+        for x in range(SIZE):
+            r, g, b, a = px[x, y]
+            if a:
+                px[x, y] = ((r + 40) // 3, (g + 90) // 3, (b + 120) // 3, a * 2 // 5)
+
+
+def waterwheel_edge(angle, frame=0):
+    """The same wheel seen edge-on in a north-south river.
+
+    The axle crosses the stream from bank to bank; paddles pass as bars and
+    the near ones (lit) travel down the screen as angle grows, with the water.
+    """
+    wheel = Image.new('RGBA', (SIZE, SIZE))
+    d = ImageDraw.Draw(wheel)
+    for back in (True, False):
+        for i in range(8):
+            t = math.radians(angle + i * 45)
+            if (math.cos(t) < 0) != back:
+                continue
+            y = round(13 + 11 * math.sin(t))
+            fill, edge = ('#7f5a33', '#3f2a17') if back else ('#d0a46a', '#4f3520')
+            d.rectangle((11, y - 1, 21, y + 1), fill=fill, outline=edge)
+        if back:
+            # Side rims seen edge-on, between the far and near paddles.
+            for x in (12, 20):
+                d.line([(x, 2), (x, 24)], fill='#53371f', width=2)
+    submerge(wheel)
+    im = Image.new('RGBA', (SIZE, SIZE))
+    d = ImageDraw.Draw(im)
+    # Trestles stand on each bank; the axle spans the channel.
+    for x in (3, 29):
+        d.line([(x, 25), (x, 11)], fill='#3f2a17', width=3)
+        d.line([(x, 25), (x, 11)], fill='#7a5531')
+    d.line([(2, 13), (30, 13)], fill='#3a3a36', width=2)
+    im.alpha_composite(wheel)
+    d = ImageDraw.Draw(im)
+    d.rectangle((14, 11, 18, 15), fill='#6c6d68', outline='#313633')
+    for i, x in enumerate(range(9 + frame % 2, 23, 3)):
+        y = 22 + ((i + frame) % 3 == 0)
+        d.point((x, y), fill='#e8f3f4')
+        d.point((x + 1, y), fill='#bcd8dc')
+    return im
+
+
+def waterwheel_dirs(angle, frame=0):
+    """DMI dir order south, north, east, west; the icon faces the current.
+
+    Face-on frames turn clockwise, so their bottom paddles run west; east is
+    the mirror. North-flowing water runs the edge-on wheel backwards.
+    """
+    face = waterwheel(angle, frame)
+    return [waterwheel_edge(angle, frame), waterwheel_edge(-angle, frame),
+            face.transpose(Image.FLIP_LEFT_RIGHT), face]
+
+
 def main():
     states = [
         ('wind_charger', [wind_charger(0)]),
@@ -124,16 +177,19 @@ def main():
         ('wind_turbine', [wind_turbine(-90)]),
         ('wind_turbine_on', [wind_turbine(-90 + a) for a in (0, 30, 60, 90)]),
         ('solar_panel', [solar_panel()]),
-        ('waterwheel', [waterwheel(0)]),
-        ('waterwheel_on', [waterwheel(i * 11.25, i) for i in range(4)]),
+        ('waterwheel', [waterwheel_dirs(0)]),
+        ('waterwheel_on', [waterwheel_dirs(i * 11.25, i) for i in range(4)]),
     ]
-    frames = [frame for _, group in states for frame in group]
+    # A group entry is one frame, or a list of four dir images for that frame.
+    frames = [img for _, group in states for frame in group
+              for img in (frame if isinstance(frame, list) else [frame])]
     sheet = Image.new('RGBA', (SIZE * len(frames), SIZE))
     for i, frame in enumerate(frames):
         sheet.paste(frame, (i * SIZE, 0))
     text = '# BEGIN DMI\nversion = 4.0\n\twidth = 32\n\theight = 32\n'
     for name, group in states:
-        text += f'state = "{name}"\n\tdirs = 1\n\tframes = {len(group)}\n'
+        dirs = 4 if isinstance(group[0], list) else 1
+        text += f'state = "{name}"\n\tdirs = {dirs}\n\tframes = {len(group)}\n'
         if len(group) > 1:
             text += '\tdelay = ' + ','.join(['1'] * len(group)) + '\n'
     text += '# END DMI\n'
