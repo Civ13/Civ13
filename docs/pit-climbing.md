@@ -43,9 +43,10 @@ Acceptance checklist:
 - Mapped tunnels, old save exits and ordinary constructed ladders remain usable.
 
 Current conservative limitations: falls refuse a structurally blocked landing and
-linked bodies (pulling, pulled or buckled). These cases require a group-aware
-movement design; living occupants alone do not block falls. Transfers align sub-tile
-offsets using the existing trench-climbing helper. This draft does not silently split a pull pair. The new covering
+buckled bodies. A pull link does not bridge a pit: the faller stops pulling and
+whoever was pulling it lets go, so only the creature on the pit falls. Living
+occupants alone do not block falls. Transfers align sub-tile offsets using the
+existing trench-climbing helper. The new covering
 interaction applies to dug holes, not mechanical bear traps or existing punji
 items (which already have their own deployment/disguise behavior).
 

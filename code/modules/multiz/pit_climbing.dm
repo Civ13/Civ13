@@ -66,11 +66,16 @@
 	// Crossed follows existing traps' collision semantics. Never call the ladder
 	// parent, which would perform a second cross-level move for items.
 	var/mob/living/L = A
-	if (!istype(L) || !isturf(L.loc) || L.z != z || L.anchored || L.buckled || L.pulling || L.pulledby || persistence_save_in_progress)
+	if (!istype(L) || !isturf(L.loc) || L.z != z || L.anchored || L.buckled || persistence_save_in_progress)
 		return
 	var/turf/T = landing()
 	if (!T || !persistence_movement_allowed(A, T))
 		return
+	// A pull link must not bridge the pit: the faller lets go and is let go.
+	if (L.pulledby)
+		L.pulledby.stop_pulling()
+	if (L.pulling)
+		L.stop_pulling()
 	if (trench_climb_place(L, T))
 		leaf_covered = FALSE
 		update_icon()

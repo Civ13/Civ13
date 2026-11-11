@@ -72,5 +72,16 @@ class PitClimbing(unittest.TestCase):
         self.assertIn('persistence_movement_allowed(A, T)', source)
         self.assertIn('if (trench_climb_place(L, T))', source)
 
+    def test_pull_links_break_instead_of_bridging_the_pit(self):
+        source = proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Crossed(atom/movable/A)')
+        guard = source.split('return', 1)[0]
+        self.assertNotIn('L.pulling', guard)
+        self.assertNotIn('L.pulledby', guard)
+        self.assertIn('L.buckled', guard)
+        release = source.index('L.pulledby.stop_pulling()')
+        self.assertLess(source.index('persistence_movement_allowed(A, T)'), release)
+        self.assertLess(release, source.index('if (trench_climb_place(L, T))'))
+        self.assertIn('L.stop_pulling()', source)
+
 if __name__ == '__main__':
     unittest.main()
