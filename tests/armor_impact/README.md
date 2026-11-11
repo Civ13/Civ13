@@ -13,9 +13,19 @@ production game with normal startup disabled and checks, on a 6x4x1 world:
 - AP and HP profiles apply once from the round's base values, so repeated
   `checktype()` calls do not compound, switching profiles starts from the base,
   and a casing's name gets one (AP)/(HP) suffix.
+- Profiles are bounded: AP adds at most 40 armor penetration and one layer of
+  cover passage, HP has none. A matchup matrix (pistol, intermediate, full
+  rifle and 12.7mm rounds against gun armor 0 to 200) checks that HP beats
+  normal beats AP on unprotected targets, AP beats normal against some armor,
+  and no residual exceeds the round's own damage. It is written to
+  `ammo_matrix.json` in the evidence directory.
+- A round the armor stops does no damage and applies no stun, shrapnel or
+  instant-kill roll (60 eye shots into a gun-300 helmet), but still wears the
+  armor. An unprotected hit applies the round's stun, and shrapnel lodges in
+  the organ that was hit, not the chest.
 
 Negative controls restore one old behavior each and must fail:
-`--negative-control amplify`, `compound` and `negative-wear`.
+`--negative-control amplify`, `compound`, `negative-wear`, `unbounded-ap`,
+`stopped-effects` and `stopped-embed`.
 
-Part of issue #4443 phase 1. Secondary effects (stun, knockdown, embedding)
-still apply after armor as before; see `docs/firearm-armor-impact.md`.
+Part of issue #4443 phases 1 and 4; see `docs/firearm-armor-impact.md`.

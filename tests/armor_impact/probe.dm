@@ -1,4 +1,5 @@
-// Armor against projectiles and AP/HP round profiles on a synthetic 6x4x1 world.
+// Armor against projectiles, bounded AP/HP round profiles and the single impact
+// result on a synthetic 6x4x1 world.
 /obj/map_metadata/armor_fixture/New()
 	return
 /obj/item/clothing/head/helmet/armor_fixture
@@ -72,10 +73,11 @@
 	ap.checktype()
 	ap.checktype()
 	armor_check(ap.damage == ap_damage && ap.armor_penetration == ap_pen && ap.penetrating == ap_through, "repeated AP checktype does not compound ([ap.damage]/[ap.armor_penetration] vs [ap_damage]/[ap_pen])")
-	armor_check(abs(ap_damage - base_damage * 0.7) < 0.01 && abs(ap_pen - base_pen * 3) < 0.01, "AP profile matches the authored multipliers")
+	armor_check(abs(ap_damage - base_damage * 0.7) < 0.01 && abs(ap_pen - min(base_pen * 1.5, base_pen + 40)) < 0.01, "AP profile is the bounded one ([ap_damage]/[ap_pen] from [base_damage]/[base_pen])")
+	armor_check(ap_through == normal.penetrating + 1, "AP passes exactly one more layer of cover ([ap_through] vs [normal.penetrating])")
 	ap.btype = "HP"
 	ap.checktype()
-	armor_check(abs(ap.damage - base_damage * 1.3) < 0.01 && abs(ap.armor_penetration - base_pen / 3) < 0.01 && ap.penetrating == 0, "switching to HP starts from the base values")
+	armor_check(abs(ap.damage - base_damage * 1.3) < 0.01 && abs(ap.armor_penetration - base_pen * 0.5) < 0.01 && ap.penetrating == 0, "switching to HP starts from the base values")
 	ap.btype = "normal"
 	ap.checktype()
 	armor_check(ap.damage == base_damage && ap.armor_penetration == base_pen && ap.penetrating == normal.penetrating, "switching back to normal restores the base values")
@@ -113,5 +115,96 @@
 	H.damage_armor("head", -5)
 	armor_check(helmet.health == worn, "negative wear is ignored")
 
-	text2file("PASS: armor never adds damage or heals, and round profiles apply once", "armor_result.txt")
+	// Matchup matrix: pistol, intermediate and full rifle rounds in each
+	// profile against each protection tier, through the same residual rule
+	// bullet_act uses.
+	var/list/matrix = list()
+	var/list/round_types = list(
+		"9x19mm pistol" = /obj/item/projectile/bullet/pistol/a9x19,
+		"7.62x39mm intermediate" = /obj/item/projectile/bullet/rifle/a762x39,
+		"7.62x51mm full rifle" = /obj/item/projectile/bullet/rifle/a762x51,
+		"12.7mm heavy" = /obj/item/projectile/bullet/rifle/a127)
+	var/list/armor_values = list(0, 10, 30, 50, 70, 90, 130, 200)
+	for (var/round_name in round_types)
+		var/round_type = round_types[round_name]
+		var/list/by_profile = list()
+		var/list/stats = list()
+		for (var/profile_id in list("normal", "AP", "HP"))
+			var/obj/item/projectile/R = new round_type(locate(1,1,1))
+			var/start_pen = R.armor_penetration
+			var/start_through = R.penetrating
+			R.btype = profile_id
+			R.checktype()
+			stats[profile_id] = list("damage" = R.damage, "armor_penetration" = R.armor_penetration, "cover_passage" = R.penetrating)
+			armor_check(R.armor_penetration <= start_pen + 40, "[round_name] [profile_id] gains at most one tier of penetration ([R.armor_penetration] from [start_pen])")
+			armor_check(R.penetrating <= start_through + 1, "[round_name] [profile_id] passes at most one more layer of cover")
+			var/list/row = list()
+			for (var/armor_value in armor_values)
+				var/residual = projectile_armor_residual(R.damage, R.armor_penetration, armor_value)
+				armor_check(residual >= 0 && residual <= R.damage, "[round_name] [profile_id] vs [armor_value] stays within its own damage")
+				row["[armor_value]"] = round(residual, 0.1)
+			by_profile[profile_id] = row
+			qdel(R)
+		var/list/normal_row = by_profile["normal"]
+		var/list/ap_row = by_profile["AP"]
+		var/list/hp_row = by_profile["HP"]
+		armor_check(hp_row["0"] > normal_row["0"] && normal_row["0"] > ap_row["0"], "[round_name]: HP beats normal beats AP on unprotected targets")
+		var/ap_wins = FALSE
+		var/hp_loses = FALSE
+		for (var/armor_value in armor_values)
+			if (ap_row["[armor_value]"] > normal_row["[armor_value]"])
+				ap_wins = TRUE
+			if (armor_value > 0 && hp_row["[armor_value]"] < normal_row["[armor_value]"])
+				hp_loses = TRUE
+		armor_check(ap_wins, "[round_name]: AP beats normal against some armor")
+		armor_check(hp_loses, "[round_name]: HP loses to normal against some armor")
+		matrix[round_name] = list("profiles" = stats, "residual" = by_profile)
+	text2file(json_encode(list("armor" = armor_values, "rounds" = matrix)), "ammo_matrix.json")
+
+	// Secondary effects follow the impact: a round the armor stopped does no
+	// wound, stun, embedding or instant kill.
+	var/mob/living/human/stopped_target = new(locate(4,2,1))
+	var/obj/item/clothing/head/helmet/armor_fixture/heavy = new(locate(4,2,1))
+	heavy.armor = list(melee = 0, arrow = 0, gun = 300, energy = 0, bomb = 0, bio = 0, rad = 0)
+	heavy.health = 10000
+	stopped_target.equip_to_slot_or_del(heavy, slot_head)
+	armor_check(stopped_target.head == heavy, "second fixture human wears the heavy helmet")
+	for (var/i in 1 to 60)
+		var/obj/item/projectile/bullet/rifle/a762x39/hit = new(locate(1,2,1))
+		hit.KD_chance = 0
+		hit.stun = 3
+		hit.embed = TRUE
+		stopped_target.bullet_act(hit, "eyes")
+	var/shrapnel = 0
+	for (var/obj/item/organ/external/E in stopped_target.organs)
+		for (var/obj/item/weapon/material/shard/shrapnel/S in E)
+			shrapnel++
+	armor_check(stopped_target.getBruteLoss() == 0, "stopped rounds do no damage ([stopped_target.getBruteLoss()])")
+	armor_check(!stopped_target.stunned, "stopped rounds do not stun ([stopped_target.stunned])")
+	armor_check(!shrapnel, "stopped rounds do not embed shrapnel ([shrapnel])")
+	armor_check(stopped_target.getBrainLoss() == 0, "stopped rounds to the eyes never reach the brain ([stopped_target.getBrainLoss()])")
+	armor_check(heavy.health < 10000, "stopped rounds still wear the armor")
+
+	// The same rider on an unprotected target does apply, and shrapnel lodges
+	// in the organ that was hit.
+	var/mob/living/human/open_target = new(locate(5,2,1))
+	var/obj/item/projectile/bullet/rifle/a762x39/open_hit = new(locate(1,2,1))
+	open_hit.KD_chance = 0
+	open_hit.stun = 3
+	open_hit.embed = FALSE
+	open_target.bullet_act(open_hit, "l_leg")
+	armor_check(open_target.stunned, "an unprotected hit applies the round's stun")
+	armor_check(open_target.getBruteLoss() > 0, "an unprotected hit wounds")
+	var/obj/item/organ/external/leg = open_target.get_organ("l_leg")
+	var/obj/item/organ/external/chest = open_target.get_organ("chest")
+	for (var/i in 1 to 20)
+		var/obj/item/projectile/bullet/rifle/a762x39/leg_hit = new(locate(1,2,1))
+		leg_hit.KD_chance = 0
+		leg_hit.damage = 1
+		leg_hit.embed = TRUE
+		open_target.bullet_act(leg_hit, "l_leg")
+	armor_check(locate(/obj/item/weapon/material/shard/shrapnel) in leg, "shrapnel lodges in the leg that was hit")
+	armor_check(!(locate(/obj/item/weapon/material/shard/shrapnel) in chest), "shrapnel from leg hits does not appear in the chest")
+
+	text2file("PASS: armor never adds damage or heals, round profiles are bounded and apply once, and stopped rounds have no secondary effects", "armor_result.txt")
 	del(world)

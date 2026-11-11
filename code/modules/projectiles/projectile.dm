@@ -100,9 +100,9 @@
 	..()
 	damage *=global_damage_modifier
 
-// The AP/HP profile is applied once, from the values the round had before
-// any profile, so calling checktype again (crafting, loading, a restored
-// round) never compounds the multipliers.
+// The AP/HP profile (ammo_profiles.dm) is applied once, from the values the
+// round had before any profile, so calling checktype again (crafting, loading,
+// a restored round) never compounds it.
 /obj/item/projectile/var/applied_btype = "normal"
 /obj/item/projectile/var/base_damage = null
 /obj/item/projectile/var/base_penetrating = null
@@ -120,19 +120,12 @@
 		penetrating = base_penetrating
 		armor_penetration = base_armor_penetration
 	applied_btype = btype
-	if (btype == "AP")
-		damage *= 0.70
-		if (penetrating == 0)
-			penetrating += 1
-		penetrating *= 2
-		armor_penetration *= 3
-	else if (btype == "HP")
-		damage *= 1.3
-		penetrating = 0
-		armor_penetration /= 3
+	var/datum/ammo_profile/profile = ammo_profile(btype)
+	profile.apply(src)
 
 /obj/item/projectile/Destroy()
 	projectile_list -= src
+	impact_result = null
 	walk(src, 0)
 	..()
 

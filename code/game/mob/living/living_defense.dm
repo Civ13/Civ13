@@ -89,21 +89,22 @@
 	if(P.taser_effect)
 		stun_effect_act(P.stun, P.agony, def_zone, P)
 
-	//Armor
-	var/armor = getarmor(def_zone, P.check_armor)
+	// One impact result: armor, residual damage, wear and whether armor
+	// stopped the round all come from the same resolution.
+	var/datum/projectile_impact/impact = P.impact_on(src, def_zone)
 	var/proj_sharp = is_sharp(P)
 	var/proj_edge = P.edge
-	if ((proj_sharp || proj_edge) && armor)
+	if ((proj_sharp || proj_edge) && impact.armor)
 		proj_sharp = FALSE
 		proj_edge = FALSE
-	//Bullet
-	var/damage = projectile_armor_residual(P.damage, P.armor_penetration, armor)
-	if (armor > 0 && damage <= 0)
+	var/damage = impact.damage
+	if (impact.stopped)
 		playsound(src, "ric_sound", 50, TRUE, -2)
 	// Armor wears by the share of the hit it absorbed, never negatively.
 	if (ishuman(src))
-		H.damage_armor(def_zone, (P.damage - damage) * 0.01)
-	if (ishuman(src))
+		H.damage_armor(def_zone, impact.wear)
+	// A round the armor stopped cannot reach the brain.
+	if (ishuman(src) && !impact.stopped)
 		var/instadeath = 0
 		if (def_zone == "eyes")
 			instadeath = 10
@@ -119,7 +120,8 @@
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, FALSE, P, sharp=proj_sharp, edge=proj_edge)
 
-	P.on_hit(src, 0, def_zone)
+	// Stun, weaken and agony riders need the round to get through.
+	P.on_hit(src, impact.stopped ? 2 : 0, def_zone)
 
 //Handles the effects of "stun" weapons
 /mob/living/proc/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone, var/used_weapon=null)
