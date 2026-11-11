@@ -163,10 +163,14 @@
 		var/sparse_turf = sparse_kind ? sparse_baseline_turf(sparse_kind, A) : null
 		var/area/sparse_area = sparse_turf ? sparse_baseline_area(A, sparse_turf) : null
 		var/sparse_cells = 0
+		var/sparse_zone = null
 		if(sparse_turf)
 			savefile["/sparse/kind"] << sparse_kind
 			savefile["/sparse/turf"] << sparse_turf
-			savefile["/sparse/zone"] << (zone_export_state && sparse_area ? capture_zone_descriptor(sparse_area) : null)
+			sparse_zone = zone_export_state && sparse_area ? capture_zone_descriptor(sparse_area) : null
+			savefile["/sparse/zone"] << sparse_zone
+		// Read by name: fixtures compile this file without zone_topology.dm.
+		var/list/sparse_anchors = sparse_zone && ("zone_export_anchors" in vars) ? vars["zone_export_anchors"] : null
 		if(stream_writer)
 			saving_segments = new stream_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget())
 		else
@@ -179,6 +183,9 @@
 				var/turf/T = locate(x, y, A)
 				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
 					if(turf_grid) turf_grid += sparse_turf
+					// A zone with no saved turf (an untouched sky level) still
+					// needs an anchor cell, or its area row is never written.
+					if(sparse_anchors && !sparse_anchors[sparse_zone]) sparse_anchors[sparse_zone] = list("x" = T.x, "y" = T.y, "z" = T.z)
 					continue // Regenerated on load; yields once per row below.
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
