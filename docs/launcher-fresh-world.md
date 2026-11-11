@@ -50,8 +50,10 @@ whole group at once:
 python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world --confirm-group GROUP
 ```
 
-1. Use **Save and stop** on every region first. Any running, sleeping,
-   staging or busy region refuses the whole reset, and nothing changes.
+1. Use **Save and stop** on every region first. A cold region (saved and
+   evicted, its process gone) counts as stopped; its `cold.json` and
+   `running.json` go into the archive with its world. Any running, sleeping
+   (frozen), staging or busy region refuses the whole reset, and nothing changes.
 2. The command takes every region's action lock and writes
    `<root>/fresh-world-group.json`. While that file exists the supervisor does
    not start transfer agents or the coordinator. It then stops the agents and

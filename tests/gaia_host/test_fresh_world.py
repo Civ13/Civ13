@@ -250,6 +250,34 @@ class GroupFreshWorldTests(unittest.TestCase):
         moved = json.loads((Path(result['archive']) / 'manifest.json').read_text())['moved']
         self.assertIn('gaia/data/vehicle_key_service', moved)
 
+    def test_group_reset_accepts_cold_regions_and_archives_their_wake_records(self):
+        """Val's 2026-11-11 wipe: every region but Gaia was cold (evicted after saving)."""
+        host = self.pairs[1][1]
+        host.write_json(host.cold_file, {'frozen_at': 1, 'pid': 777, 'evicted': 'installing the staged build'})
+        host.write_json(host.running_file, {'since': 1})
+        result, start = self.run_reset()
+        archive = Path(result['archive']) / self.pairs[1][0]['id']
+        self.assertEqual(json.loads((archive / 'cold.json').read_text())['pid'], 777)
+        self.assertTrue((archive / 'running.json').exists())
+        self.assertFalse(host.cold_file.exists())
+        self.assertFalse(host.running_file.exists())
+        self.assertEqual(sorted(result['accepted']), ['deep', 'gaia'])
+
+    def test_group_reset_refuses_a_cold_record_whose_process_lives(self):
+        host = self.pairs[1][1]
+        host.write_json(host.cold_file, {'frozen_at': 1, 'pid': 778})
+        with mock.patch.object(type(self.machine), 'alive', lambda machine, pid: pid == 778):
+            with self.assertRaisesRegex(shard_group.Refused, 'not explicitly stopped'):
+                self.run_reset()
+        self.assertTrue(host.cold_file.exists())
+        self.assertTrue((host.repo / 'map_saves/fixture').exists())
+
+    def test_group_reset_still_refuses_a_running_marker_without_a_cold_record(self):
+        host = self.pairs[1][1]
+        host.write_json(host.running_file, {'since': 1})
+        with self.assertRaisesRegex(shard_group.Refused, 'not explicitly stopped'):
+            self.run_reset()
+
     def test_group_reset_refuses_a_linked_separate_store_and_changes_nothing(self):
         host = self.pairs[0][1]
         (host.repo / 'data').mkdir(exist_ok=True)
