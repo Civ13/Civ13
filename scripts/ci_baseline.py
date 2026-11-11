@@ -630,6 +630,17 @@ SUITES = {
             'code/game/objects/items.dm', 'code/modules/1713/apparel_imperial.dm',
             'interface/skin.dmf', 'scripts/select-ci.py', 'tests/save_movement/source_adapter.py')},
 
+    # Source-projected prefilled belt constructors and storage admission.
+    'prefilled_belts': {'files': ('tests/prefilled_belts/test_prefilled_belts.py',),
+        'paths': ('tests/prefilled_belts/',), 'shared_paths': (
+            'code/game/objects/items/weapons/storage/belt.dm',
+            'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/items/weapons/material/thrown.dm',
+            'code/game/objects/items/pen.dm', 'code/game/objects/items/paper/photography.dm',
+            'code/game/objects/items/clipboard.dm', 'code/modules/reagents/reagent_containers/spray.dm',
+            'code/modules/1713/telephone.dm', 'code/__defines/inventory_sizes.dm',
+            'tests/save_movement/source_adapter.py', 'scripts/select-ci.py')},
+
     # Source-projected storage-session and legacy import contracts; no BYOND run.
     'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
         'paths': ('tests/storage_runtime/',), 'shared_paths': (

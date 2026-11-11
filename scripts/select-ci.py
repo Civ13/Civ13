@@ -39,6 +39,7 @@ RESOURCE_WORK_OFFLINE_TESTS = frozenset({'tests/test_resource_work_animation.py'
 
 # This exact storage regression is a stdlib-only source projection, not a native fixture.
 STORAGE_RUNTIME_OFFLINE_TESTS = frozenset({'tests/storage_runtime/test_storage_runtime.py'})
+PREFILLED_BELTS_OFFLINE_TESTS = frozenset({'tests/prefilled_belts/test_prefilled_belts.py'})
 
 # This exact pouch HUD test is an offline source projection.
 POUCH_HUD_OFFLINE_TESTS = frozenset({'tests/pouch_hud/test_pouch_hud.py'})
@@ -524,7 +525,7 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/stone_brazier/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered stone-brazier executable test requires explicit CI review')
-        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS or path in POUCH_HUD_OFFLINE_TESTS:
+        if path in SOURCE_PREPARATION_ONLY_TESTS or path in PLAYER_HELP_OFFLINE_TESTS or path in RESOURCE_WORK_OFFLINE_TESTS or path in STORAGE_RUNTIME_OFFLINE_TESTS or path in POUCH_HUD_OFFLINE_TESTS or path in PREFILLED_BELTS_OFFLINE_TESTS:
             continue
         if path in AXE_ACTIVE_HAND_OFFLINE_TESTS:
             continue
