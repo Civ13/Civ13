@@ -247,7 +247,7 @@
 		H.put_in_hands(new/obj/item/weapon/flame/match(H))
 		currcap--
 		return
-	else if (currcap <= 0)
+	else if (currcap <= 0 && (src == H.l_hand || src == H.r_hand))
 		to_chat(H, "<span class='notice'>The matchbox is empty!</span>")
 		currcap = 0
 		return
