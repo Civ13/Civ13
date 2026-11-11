@@ -1,0 +1,2 @@
+#define SMOOTH 4
+#include "camtest.dm"
