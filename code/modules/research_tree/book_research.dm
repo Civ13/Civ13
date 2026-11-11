@@ -150,7 +150,8 @@
 	return TRUE
 
 // Someone at the bench who can push this node forward right now.
-// A connected player, or an agent-controlled character (hired help later).
+// A connected player, or an agent-controlled character. Hired research
+// assistants (research_assistants.dm) answer this for themselves.
 /mob/living/human/proc/research_presence()
 	return client || agent_character_for(src)
 
@@ -203,6 +204,7 @@
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * apprentice_research_gain(researcher, assigned_node))
+	researcher.paid_for_research_tick()
 	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate * library_rate(assigned_node) * use_research_supply(assigned_node), 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
