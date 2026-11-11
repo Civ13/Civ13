@@ -1153,11 +1153,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
-		// --- factories (27) ---
+		// --- factories (28) ---
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
 		"/obj/item/factory_belt_assembly" = "factories",
 		"/obj/structure/closet/crate/factory_bin" = "factories",
+		"/obj/structure/tanning_drum" = "factories",
 		"/obj/structure/factory_drive" = "factories",
 		"/obj/structure/factory_arm" = "factories",
 		"/obj/item/camera/earlymodern" = "factories",
