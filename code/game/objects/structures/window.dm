@@ -769,6 +769,8 @@
 					new/obj/structure/window/classic/redsandstonefull(get_turf(src))
 				else if (istype(src, /obj/structure/window_frame/sumerian))
 					new/obj/structure/window/classic/sumerian(get_turf(src))
+				else if (istype(src, /obj/structure/window_frame/abashiri))
+					new/obj/structure/window/classic/abashiri(get_turf(src))
 				else
 					new/obj/structure/window/classic(get_turf(src))
 				visible_message("<span class = 'notice'>[user] adds glass to the window frame.</span>")
@@ -1102,9 +1104,10 @@
 	return
 
 /obj/structure/window/classic/metal/shatter(var/display_message = TRUE)
-	var/myturf = get_turf(src)
-	spawn (1)
-		new/obj/structure/window_frame/metal(myturf)
+	if (!glassed)
+		var/myturf = get_turf(src)
+		spawn (1)
+			new/obj/structure/window_frame/metal(myturf)
 	..(display_message)
 
 /obj/structure/window/New(Loc, constructed=0)
