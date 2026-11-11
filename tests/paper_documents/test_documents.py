@@ -226,4 +226,34 @@ class Documents(unittest.TestCase):
   bad=SOURCE.replace('return has_access(actor, TRUE)','sleep(1)\n\treturn has_access(actor, TRUE)')
   with self.assertRaises(AssertionError):project(bad,'/datum/paper_document_service/proc/can_mutate','self,actor,pen',self.env,True)
 
+class EnvelopeAppearance(unittest.TestCase):
+ def test_insertion_and_removal_preserve_icon_rules(self):
+  from types import SimpleNamespace
+  adapter_spec=importlib.util.spec_from_file_location('envelope_source_adapter',ROOT/'tests/primitive_woodworking/source_adapter.py')
+  adapter=importlib.util.module_from_spec(adapter_spec);adapter_spec.loader.exec_module(adapter)
+  source=(ROOT/'code/game/objects/structures/mail.dm').read_text(encoding='utf-8')
+  source=re.sub(r'\bif\(', 'if (', source)
+  base='/obj/item/weapon/storage/envelope'
+  helper,_=adapter.compile_body(source,base+'/proc/refresh_envelope_contents_icon(',
+   'self,clear_when_empty=False',dict(locate=lambda path:path),('knifed','icon_state','contents'))
+  paper='/obj/item/weapon/paper';photo='/obj/item/weapon/photo'
+  for removal in (False,True):
+   declaration=base+('/remove_from_storage(' if removal else '/handle_item_insertion(')
+   for knifed in (False,True):
+    for has_paper in (False,True):
+     for has_photo in (False,True):
+      for initial in ('envelope_closed','sentinel'):
+       with self.subTest(removal=removal,knifed=knifed,paper=has_paper,photo=has_photo,initial=initial):
+        envelope=SimpleNamespace(knifed=knifed,icon_state=initial,
+                                 contents={path for path,present in ((paper,has_paper),(photo,has_photo)) if present})
+        parent_calls=[]
+        env=dict(parent_new=lambda:parent_calls.append(envelope.icon_state),
+                 refresh_envelope_contents_icon=lambda clear=False:helper(envelope,clear))
+        action,_=adapter.compile_body(source,declaration,'self,W,prevent_warning',env)
+        self.assertTrue(action(envelope,None,False));self.assertEqual(parent_calls,[initial])
+        expected=('envelope_knifed' if knifed else 'envelope_letter_photo' if has_paper and has_photo
+                  else 'envelope_letter' if has_paper else 'envelope_photo' if has_photo
+                  else 'envelope_empty' if removal else initial)
+        self.assertEqual(envelope.icon_state,expected)
+
 if __name__=='__main__':unittest.main()
