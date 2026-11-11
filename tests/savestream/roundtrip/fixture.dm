@@ -188,6 +188,15 @@
 	values["/entries/0/3/scalars"] = list("kind" = "scalars", "length" = 3, "keys" = list("a", 2, "\improper c"), "values" = list(1.#INF, null, "x"))
 	values["/entries/0/3/precise"] = 1234567.875
 	values["/entries/0/3/quoted"] = "tab\tquote\" back\\ end"
+	// One top-level subtree whose savefile text passes 2^24 characters
+	// (Gaia's /lists): a length embedded with "[]" rendered as 1.8e+07, which
+	// the helper refused ("bad length"), failing live saves. Savefile strings
+	// stop at 65535 characters, so the size comes from many nodes.
+	var/chunk = "0123456789abcdef"
+	while(length(chunk) < 60000) chunk += chunk
+	chunk = copytext(chunk, 1, 60001)
+	for(var/i = 1 to 300)
+		values["/lists/[i]/chunk"] = "[i]:[chunk]"
 	var/savefile/scratch = new
 	var/list/native = list()
 	for(var/path in values)
