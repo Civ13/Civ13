@@ -593,6 +593,21 @@
             display: none;
         }
 
+        /* Connection notices show on every tab. */
+        .message.connection-notice.filtered {
+            display: block;
+        }
+
+        .connection-lost {
+            color: #ff3737;
+            font-weight: bold;
+        }
+
+        .connection-restored {
+            color: #5fd35f;
+            font-weight: bold;
+        }
+
         #chat-settings {
             display: none;
             position: absolute;
@@ -1040,6 +1055,7 @@
         function receiveMessage(data, skip_purify = false) {
             try {
                 if (!data) return;
+                heardFromServer();
 
                 // Handle the skip_purify flag if it was passed as part of a string (e.g., "message;1")
                 // but also respect the second argument if BYOND passed it correctly.
@@ -1120,6 +1136,75 @@
             followingTail = true;
             scrollToTail();
         }
+
+        /**
+         * Connection watchdog. Once the chat is ready the server starts it;
+         * every tick the page pings the server, which answers with chatPong.
+         * Any reply or message clears the outstanding ping. When the oldest
+         * unanswered ping is older than the timeout the chat says the
+         * connection was lost, and says so again once replies resume. Age is
+         * measured from the ping itself, so a throttled timer in a hidden
+         * window cannot raise a false alarm.
+         */
+        let heartbeatTimer = null;
+        let heartbeatTimeoutMs = 20000;
+        let pingSentAt = 0;
+        let pingSeq = 0;
+        let connectionLost = false;
+
+        function chatSendPing(seq) {
+            window.location.href = 'byond://?chat_ping=' + seq;
+        }
+
+        function connectionNotice(className, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message connection-notice';
+            const span = document.createElement('span');
+            span.className = 'warning ' + className;
+            span.textContent = text;
+            messageDiv.appendChild(span);
+            noteMessageType(messageDiv, 'warning');
+            messagesContainer.appendChild(messageDiv);
+            trimType('warning');
+            scrollToTail();
+        }
+
+        function heardFromServer() {
+            pingSentAt = 0;
+            if (!connectionLost) return;
+            connectionLost = false;
+            connectionNotice('connection-restored', 'Connection restored: the server is answering again.');
+        }
+
+        function heartbeatTick() {
+            const now = Date.now();
+            if (pingSentAt && !connectionLost && now - pingSentAt >= heartbeatTimeoutMs) {
+                connectionLost = true;
+                connectionNotice('connection-lost', 'Connection lost: the server has not answered for '
+                    + Math.round((now - pingSentAt) / 1000) + ' seconds. The server may have stopped or your'
+                    + ' connection died. If this does not clear, reconnect.');
+            }
+            if (!pingSentAt) pingSentAt = now;
+            // Re-sent every tick while unanswered, in case one was dropped.
+            try {
+                window.chatSendPing(++pingSeq);
+            } catch (e) {
+                console.warn('Chat: ping failed', e);
+            }
+        }
+
+        function startHeartbeat(intervalMs, timeoutMs) {
+            const interval = Number(intervalMs) > 0 ? Number(intervalMs) : 5000;
+            heartbeatTimeoutMs = Number(timeoutMs) > 0 ? Number(timeoutMs) : 20000;
+            if (heartbeatTimer) clearInterval(heartbeatTimer);
+            pingSentAt = 0;
+            connectionLost = false;
+            heartbeatTimer = setInterval(heartbeatTick, interval);
+        }
+
+        window.chatSendPing = chatSendPing;
+        window.chatPong = heardFromServer;
+        window.startChatHeartbeat = startHeartbeat;
 
         // Expose to global scope for BYOND
         window.receiveMessage = receiveMessage;
