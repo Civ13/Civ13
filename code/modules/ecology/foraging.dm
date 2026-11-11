@@ -86,33 +86,45 @@
 /mob/living/human/verb/forage_nearby()
 	set name = "Forage nearby"
 	set category = "Crafting"
+	forage()
+
+// Seams for the native probe; production keeps the real client and do_after.
+/mob/living/human/proc/foraging_connected()
+	return client != null
+
+/mob/living/human/proc/foraging_wait(delay, turf/T)
+	// Existing do_after owns repeated-action, movement, hand and incapacity guards.
+	return do_after(src, delay, T)
+
+// One search of the tile underfoot. Returns TRUE only when a unit was found.
+/mob/living/human/proc/forage()
 	if (!map || !map.foraging_active())
 		to_chat(src, SPAN_WARNING("Foraging is not available on this map."))
-		return
+		return FALSE
 	var/turf/T = loc
-	if (!isturf(loc) || !client || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T))
+	if (!isturf(loc) || !foraging_connected() || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T))
 		to_chat(src, SPAN_WARNING("Search on open outdoor grass, dirt or sand, away from structures and roofs."))
-		return
+		return FALSE
 	if (!foraging_available(T))
 		to_chat(src, SPAN_NOTICE("This patch has already been picked clean."))
-		return
+		return FALSE
 	if (!T.sifting_identity)
 		T.sifting_identity = new /datum
 	var/datum/terrain_identity = T.sifting_identity
 	var/epoch = persistence_admission_identity
 	if (!foraging_persistence_ready(epoch))
-		return
+		return FALSE
 	to_chat(src, SPAN_NOTICE("You begin searching the ground. Moving or changing your held item cancels the search."))
-	// Existing do_after owns repeated-action, movement, hand and incapacity guards.
 	// No skill bonuses/XP until the finite-stock economy is tested in play.
-	if (!do_after(src, 300, T))
-		return
-	if (!src || !client || !map || !map.foraging_active() || loc != T || T.sifting_identity != terrain_identity || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T) || !foraging_persistence_ready(epoch))
-		return
+	if (!foraging_wait(300, T))
+		return FALSE
+	if (QDELETED(src) || !foraging_connected() || !map || !map.foraging_active() || loc != T || T.sifting_identity != terrain_identity || incapacitated(INCAPACITATION_DEFAULT) || !foraging_site(T) || !foraging_persistence_ready(epoch))
+		return FALSE
 	if (!foraging_commit(T, epoch))
 		to_chat(src, SPAN_NOTICE("Nothing remains to collect here."))
-	else
-		to_chat(src, SPAN_NOTICE("You uncover a small useful material at your feet."))
+		return FALSE
+	to_chat(src, SPAN_NOTICE("You uncover a small useful material at your feet."))
+	return TRUE
 
 // No input, sleeps or result previews between validation and debit. Every result
 // costs one shared unit. Concurrent completions recheck the current stock here.

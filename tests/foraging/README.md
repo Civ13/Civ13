@@ -18,6 +18,9 @@ before executing it.** It binds no public port. No native execution is claimed
 by the offline suite or by this checked-in probe.
 
 Probe covers disabled default, shared and neighboring patches, finite depletion,
-terrain replacement, field export, malformed stock and persistence fences. It
-is not a full save/load roundtrip or a test of client UI and timed cancellation.
+terrain replacement, field export, malformed and duplicate stock, persistence
+fences, a production disk round trip of spent and exhausted records, and the
+production search with cancel, disconnect, save/load, roof, terrain and
+last-unit races staged during the wait. CI runs it in the isolated resource
+extraction step. It does not drive a real client wait bar.
 See docs/foraging.md for the mandatory activation matrix and follow-on phases.
