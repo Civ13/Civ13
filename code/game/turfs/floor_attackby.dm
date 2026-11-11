@@ -12,18 +12,27 @@
 	return do_after(user, 30, src)
 #endif
 
+// Sharpened flint and any sharp knife cut grass fibres the same way.
+/turf/floor/grass/proc/grass_cutting_blade(obj/item/tool)
+	if (QDELETED(tool))
+		return FALSE
+	if (istype(tool, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = tool
+		return F.sharpened
+	return istype(tool, /obj/item/weapon/material/kitchen/utensil/knife) && tool.sharp
+
 /turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
 	// An agent-controlled character has no client but is driven like a player.
 	return user && (user.client || agent_character_for(user))
 
 #ifdef CIV13_GAMEPLAY_BRIDGE
-/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool, datum/gameplay_action_lease/gameplay_context = null)
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/tool, datum/gameplay_action_lease/gameplay_context = null)
 #else
-/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/tool)
 #endif
 	if (!user || !user.may_do_after)
 		return
-	if (has_snow_cover() || busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
+	if (has_snow_cover() || busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !grass_cutting_blade(tool) || get_dist(user, src) > 1)
 		return
 #ifdef CIV13_GAMEPLAY_BRIDGE
 	if (!isnull(gameplay_context))
@@ -42,7 +51,7 @@
 	var/completed = grass_cutting_wait(user)
 #endif
 	busy = FALSE
-	if (has_snow_cover() || !completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
+	if (has_snow_cover() || !completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !grass_cutting_blade(tool) || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
 		return
 	change_the_turf()
 	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
@@ -123,6 +132,10 @@
 			var/turf/floor/grass/G = src
 			G.gather_grass_cuttings(user, F)
 			return TRUE
+	if (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/material/kitchen/utensil/knife) && C.sharp)
+		var/turf/floor/grass/G = src
+		G.gather_grass_cuttings(user, C)
+		return TRUE
 
 	if (istype(src, /turf/floor/beach/water))
 		var/turf/floor/beach/water/WT = src
