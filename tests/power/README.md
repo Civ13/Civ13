@@ -88,3 +88,14 @@ wait at least two seconds after a change for real consumer callbacks to settle.
 The query adapter accepts only loopback requests with the per-run nonce and a
 fixed action list. Client actions require a local debug admin. Never connect it
 to production. Close the owned PID and Dream Seeker when capture is finished.
+
+## Straight-neighbor refactor contracts
+
+`python3 tests/power/test_neighbor_linking.py` is an offline source-contract
+suite plus a small set-union model. It does not execute DM. It checks axis order,
+symmetric idempotent edges, caller delegation and preserved placement ordering.
+`link_straight_neighbors` deliberately excludes same-tile junctions and does not
+rebuild supply. Coil placement still secures junctions before rebuilding; machine
+attachment retains its historical repeated first-side connection feedback without
+an extra rebuild. Native placement, crossing and powered-machine acceptance must
+still be checked separately.
