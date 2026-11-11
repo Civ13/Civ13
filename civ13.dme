@@ -1244,6 +1244,7 @@
 #include "code\modules\multiz\movement.dm"
 #include "code\modules\multiz\open_space.dm"
 #include "code\modules\multiz\structures.dm"
+#include "code\modules\multiz\pit_climbing.dm"
 #include "code\modules\nano\_JSON.dm"
 #include "code\modules\nano\_nanoui.dm"
 #include "code\modules\nano\tgui.dm"

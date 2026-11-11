@@ -55,6 +55,14 @@ def restore_crafting_projection(path, source):
              'below.\n\tif (!holder || !check_rights(R_ADMIN, 0, mob) || (address && address != "127.0.0.1" && address != "::1"))'),
         )
     elif path == FLOOR:
+        # Dug pits: invert only the two exact tunnel construction changes.
+        for current, previous in (
+            ('\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop/pit(locate(user.x, user.y, user.z+1))\n',
+             '\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))\n\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)\n'),
+            ('\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)\n',
+             '\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)\n\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))\n'),
+        ):
+            source = replace_reviewed_once(source, current, previous)
         # Mining balance is a separately checked production change. Invert only
         # this exact body so the original crafting reference remains frozen.
         # Includes the independent flint nodule roll (tests/flint_mining).

@@ -41,6 +41,7 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
     'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/subtile_movement.dm',
