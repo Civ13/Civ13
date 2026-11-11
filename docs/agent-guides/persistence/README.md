@@ -97,6 +97,17 @@ text read against the wire read). Timing: `bash tools/savestream/bench/run_level
 (formats 3/4/5) and bench modes `read_text`/`read_wire`/`compare_text` on a real
 stream. Benchmarks run on save copies only.
 
+<!-- 2026-11-11: savefile directory walks are quadratic -->
+Never walk a large savefile directory (`for(x in S.dir)`, `S.dir.Copy()`): the
+cost grows with the square of its size (40,000 children 9 s, 200,000 325 s),
+while `S.dir.len`, keyed reads and `ExportText` stay fast. A split stream
+subtree (`put_savefile_text`) is therefore cut from its exported text. A live
+Gaia level froze for 14 minutes on one `/lists` subtree this way. `ExportText`
+also cuts a string at 65,535 characters, so longer text reaches the stream
+natively (`persistence_stream_text_unsafe`). Each stream save logs
+"Stream level N: ... largest ... starting with ..." to show oversized segments;
+segments rotate between tiles, roster members and swept mobs.
+
 <!-- 2026-11-04: default allowlist fields -->
 Allowlisted types (turfs, wild plants, plain objects; `persistence_field_allowlist()`)
 omit `map_storage_saved_vars` scalars equal to `initial()`, and `Load_Entry`
