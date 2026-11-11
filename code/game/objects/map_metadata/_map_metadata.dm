@@ -34,6 +34,9 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	invisibility = 0
 	var/ID = null // MUST be text, or aspects will break
 	var/no_winner = "Neither side has captured the other side's base."
+	var/capture_objective_name = null // shared capture countdown: objective name, or null for "<defender> base"
+	var/capture_verb = "have" // shared capture countdown: "The <army> have captured..."
+	var/capture_notice_in_font = FALSE // shared capture countdown: older maps wrap the notice span in the font tag
 	var/title = null
 	var/description = ""
 	var/lobby_icon = ""
@@ -723,67 +726,72 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 
 /obj/map_metadata/proc/update_win_condition()
 
-	if (world.time >= next_win && next_win != -1)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = ""
-		if (!map.civilizations)
-			message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		else
-			message = "The round has ended!"
-		if (current_winner && current_loser)
-			message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-		win_condition_spam_check = TRUE
+	if (capture_countdown_elapsed())
 		return FALSE
 	if (!nomads && !is_singlefaction && map.ID != MAP_NOMADS_PERSISTENCE_BETA && map.ID != MAP_NATIONSRP_COLDWAR_CMP)
-		// German major
-		if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + short_win_time(roundend_condition_sides[2][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-		// German minor
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[2][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + long_win_time(roundend_condition_sides[2][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-		// Soviet major
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + short_win_time(roundend_condition_sides[1][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-		// Soviet minor
-		else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-			if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-				if (last_win_condition != win_condition.hash)
-					current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] have captured the [roundend_condition_def2name(roundend_condition_sides[1][1])] base! They will win in {time} minute{s}."
-					next_win = world.time + long_win_time(roundend_condition_sides[1][1])
-					announce_current_win_condition()
-					current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-					current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-		else
-			if (current_win_condition != no_winner && current_winner && current_loser)
-				to_chat(world, "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>")
-				current_winner = null
-				current_loser = null
-			next_win = -1
-			current_win_condition = no_winner
-			win_condition.hash = 0
-		last_win_condition = win_condition.hash
+		update_capture_state()
 		return TRUE
+
+// Shared objective-capture countdown. Maps that keep the standard two-side
+// capture rules call capture_countdown_elapsed() and update_capture_state()
+// from their update_win_condition() and keep their own deadline and battle
+// report around them. The capture_* vars only change the announcement text.
+
+// Ends the round once a held objective's countdown runs out. Returns TRUE when
+// update_win_condition() must stop and return FALSE.
+/obj/map_metadata/proc/capture_countdown_elapsed()
+	if (world.time < next_win || next_win == -1)
+		return FALSE
+	if (win_condition_spam_check)
+		return TRUE
+	ticker.finished = TRUE
+	var/message = ""
+	if (!map.civilizations)
+		message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
+	else
+		message = "The round has ended!"
+	if (current_winner && current_loser)
+		message = "The battle is over! The [current_winner] was victorious over the [current_loser][battle_name ? " in the [battle_name]" : ""]!"
+	if (capture_notice_in_font)
+		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+	else
+		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
+	win_condition_spam_check = TRUE
+	return TRUE
+
+// Starts, keeps or cancels the capture countdown. Side 1 taking side 2's base
+// is checked first, then side 2 taking side 1's; a 1.33 majority uses the short
+// timer and a 1.01 majority the long one.
+/obj/map_metadata/proc/update_capture_state()
+	if (!capture_branch(1, 2, 1.33, FALSE) && !capture_branch(1, 2, 1.01, TRUE) && !capture_branch(2, 1, 1.33, FALSE) && !capture_branch(2, 1, 1.01, TRUE))
+		if (current_win_condition != no_winner && current_winner && current_loser)
+			if (capture_objective_name)
+				to_chat(world, "<font size = 3>The [current_winner] has lost control of the [capture_objective_name]!</font>")
+			else
+				to_chat(world, "<font size = 3>The [current_winner] has lost control of the [army2name(current_loser)] base!</font>")
+			current_winner = null
+			current_loser = null
+		next_win = -1
+		current_win_condition = no_winner
+		win_condition.hash = 0
+	last_win_condition = win_condition.hash
+
+// One step of the capture chain. Returns TRUE when the attackers hold the
+// defenders' base by the threshold, which ends the chain even if the defenders
+// also hold the attackers' base (then nothing changes this tick).
+/obj/map_metadata/proc/capture_branch(attacker, defender, threshold, long_timer)
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[defender]]), roundend_condition_sides[attacker], roundend_condition_sides[defender], threshold, TRUE))
+		return FALSE
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[attacker]]), roundend_condition_sides[defender], roundend_condition_sides[attacker], threshold))
+		if (last_win_condition != win_condition.hash)
+			var/defender_flag = roundend_condition_sides[defender][1]
+			var/objective = capture_objective_name ? capture_objective_name : "[roundend_condition_def2name(defender_flag)] base"
+			current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[attacker][1])] [capture_verb] captured the [objective]! They will win in {time} minute{s}."
+			next_win = world.time + (long_timer ? long_win_time(defender_flag) : short_win_time(defender_flag))
+			announce_current_win_condition()
+			current_winner = roundend_condition_def2army(roundend_condition_sides[attacker][1])
+			current_loser = roundend_condition_def2army(roundend_condition_sides[defender][1])
+	return TRUE
 
 /obj/map_metadata/proc/has_occupied_base(side)
 
