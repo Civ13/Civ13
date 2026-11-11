@@ -317,6 +317,53 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		WWalert(src, "Admin rejuvenation is disabled.", "Admin Rejuvenation")
 
 
+// Clears an illness without healing injuries or reviving the dead, so admins
+// can stop an outbreak without the side effects of Rejuvenate. Bodies are
+// cleared too: a body that died sick could otherwise keep infecting people.
+/mob/living/human/proc/admin_cure_disease()
+	if (!disease && disease_type == "none")
+		return FALSE
+	clear_disease()
+	if (stat != DEAD)
+		bodytemperature = species ? species.body_temperature : 310.055
+	return TRUE
+
+/client/proc/cmd_admin_cure_disease(mob/living/human/H as mob in human_mob_list)
+	set category = "Special"
+	set name = "Cure Disease"
+	set desc = "Cure this person's illness without healing or reviving them."
+	if (!check_rights(R_REJUVINATE))
+		return
+	if (!istype(H))
+		return
+	var/old_type = H.disease_type
+	if (!H.admin_cure_disease())
+		to_chat(src, SPAN_NOTICE("[H] is not ill."))
+		return
+	if (H.stat != DEAD)
+		to_chat(H, SPAN_NOTICE("You feel much better. Your illness is gone."))
+	log_and_message_admins("cured [key_name(H)] of [old_type].")
+
+/client/proc/cmd_admin_cure_all_diseases()
+	set category = "Special"
+	set name = "Cure All Diseases"
+	set desc = "Cure every living person and body of their illness, without healing or reviving anyone."
+	if (!check_rights(R_REJUVINATE))
+		return
+	if (WWinput(src, "Cure every person and body in the world of their illness?", "Cure All Diseases", "No", list("Yes", "No")) != "Yes")
+		return
+	var/living = 0
+	var/bodies = 0
+	for (var/mob/living/human/H in human_mob_list)
+		if (!H.admin_cure_disease())
+			continue
+		if (H.stat == DEAD)
+			bodies++
+		else
+			living++
+			to_chat(H, SPAN_NOTICE("You feel much better. Your illness is gone."))
+	log_and_message_admins("cured all diseases: [living] living, [bodies] bodies.")
+
 /client/proc/cmd_admin_create_centcom_report()
 	set category = "Special"
 	set name = "Create Command Report"
