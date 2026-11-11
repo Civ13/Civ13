@@ -1296,6 +1296,12 @@ SUITES = {
     'snow_barricade': {'files': ('tests/snow_barricade/test_source.py',),
         'paths': ('tests/snow_barricade/', 'code/modules/1713/barriers/snow_walls.dm'),
         'shared_paths': ('code/modules/1713/barriers/sandbag.dm',)},
+    # Restraint escape dispatch and item identity across the wait.
+    'legcuff_escape': {'files': ('tests/legcuff_escape/test_cooldown.py',),
+        'paths': ('tests/legcuff_escape/', 'code/game/mob/living/carbon/resist.dm',
+                  'code/game/mob/living/living.dm', 'code/_onclick/click.dm',
+                  'code/game/objects/items/weapons/legcuffs.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Trap disarm recheck and punji animal capture/release (#4248, #4249).
     'traps': {'files': ('tests/traps/test_source.py',),
         'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
