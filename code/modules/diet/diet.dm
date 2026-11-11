@@ -376,9 +376,17 @@ var/global/list/diet_validated_category_cache
 	if (stat == DEAD)
 		return
 	diet_ensure()
+	// Sleeping through Sleep keeps reserves as they were, like hunger; any other
+	// sleep or unconsciousness uses them up ten times more slowly and never builds
+	// the narrow-diet warning.
+	if (inducedSSD)
+		return
+	var/decay = stat == UNCONSCIOUS ? DIET_DECAY * 0.1 : DIET_DECAY
 	for (var/group in diet_groups)
-		diet_reserves[group] = max(0, diet_reserves[group] - diet_reserves[group] * DIET_DECAY)
-	diet_enjoyment = max(0, diet_enjoyment - diet_enjoyment * DIET_DECAY)
+		diet_reserves[group] = max(0, diet_reserves[group] - diet_reserves[group] * decay)
+	diet_enjoyment = max(0, diet_enjoyment - diet_enjoyment * decay)
+	if (stat == UNCONSCIOUS)
+		return
 	if (diet_adequate_groups() <= 2)
 		diet_imbalance_ticks = min(DIET_FATIGUE_TICKS * 2, diet_imbalance_ticks + 1)
 		if (diet_imbalance_ticks == DIET_WARN_TICKS)

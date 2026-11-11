@@ -249,6 +249,23 @@
 			drift.handle_diet()
 		diet_assert(drift.diet_adequate_groups() == 4 && drift.diet_imbalance_ticks == 0, "a missed meal does not cause imbalance")
 
+		// Sleeping keeps reserves (Sleep) or uses them ten times more slowly, and never builds imbalance.
+		var/mob/living/human/sleeper = diet_subject(site, 80)
+		sleeper.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		sleeper.inducedSSD = TRUE
+		for (var/i in 1 to 100)
+			sleeper.handle_diet()
+		diet_assert(sleeper.diet_reserves["carbohydrate"] == 120 && sleeper.diet_imbalance_ticks == 0, "Sleep keeps diet reserves and imbalance as they were")
+		sleeper.inducedSSD = FALSE
+		sleeper.stat = UNCONSCIOUS
+		for (var/i in 1 to 100)
+			sleeper.handle_diet()
+		var/slept = sleeper.diet_reserves["carbohydrate"]
+		diet_assert(slept < 120 && slept > 120 * (1 - DIET_DECAY * 0.1 * 100) - 0.01 && sleeper.diet_imbalance_ticks == 0, "other sleep decays slowly without imbalance")
+		sleeper.stat = CONSCIOUS
+		sleeper.handle_diet()
+		diet_assert(sleeper.diet_imbalance_ticks == 1, "waking resumes the imbalance count")
+
 		// A brief dip below adequate is silent both ways; recovery is announced only after a warning.
 		var/mob/living/human/diet_tester/dip = diet_subject(site, 80)
 		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)

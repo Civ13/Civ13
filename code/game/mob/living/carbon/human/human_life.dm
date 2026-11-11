@@ -224,26 +224,19 @@
 			nutrition -= 0
 			water -= 0
 
-		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+		// Asleep or unconscious, in a bed or not: a full stomach lasts about 35 hours.
+		// This used to be the full awake rate unless buckled to a bed, ten times the
+		// idle awake rate, so a sleeping body went hungry faster than a resting one.
+		else if (stat == UNCONSCIOUS)
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
-		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
-		else
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
+		else if (stat == CONSCIOUS && (map.heat_wave || map.ID == MAP_NOMADS_DESERT)) // about 77 minutes of food, 26 of water while active
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+			water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
@@ -588,7 +581,7 @@
 
 	if (bodytemperature < species.cold_level_1) //260.15 is 310.15 - 50, the temperature where you start to feel effects.
 		if (nutrition >= 2 && !inducedSSD) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
-			nutrition -= 0.10
+			nutrition -= stat == UNCONSCIOUS ? 0.01 : 0.10 // a sleeping body burns far less
 		bodytemperature += 0.1
 	else if (bodytemperature > species.heat_level_1) //360.15 is 310.15 + 50, the temperature where you start to feel effects.
 		bodytemperature -= 0.1
