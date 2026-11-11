@@ -907,3 +907,17 @@ this integration is accepted. Prepared integration runners explicitly bind
 listener before world/New, then the fixture closes it and refuses reopening;
 this is not a zero-initial-listener guarantee. Verify the actual startup bind
 and post-startup closure before interpreting native test results.
+
+### Retired player ownership
+
+`python tests/world_save/run-retired-owner.py --byond-bin <pinned-bin>` runs
+a headless full-source fixture with adapted startup and human construction.
+Production `ClearMap`, human destruction, `qdel`, and ownership preparation
+remain intact. It retains an old owned body across ClearMap and checks that
+a replacement owner is accepted while live duplicate, malformed, and unretired
+null-loc ownership still fail closed. A legacy-only retirement marker is also
+covered. `--negative-control` removes only the three retirement guards from a
+generated source copy and requires the original duplicate-owner failure.
+Runtime files stay in a fresh temporary directory; no production saves, clients,
+normal server startup, or graphics are used. This is not full-map or GC stability
+evidence.
