@@ -1434,6 +1434,7 @@
 #include "code\modules\research_tree\book_pages.dm"
 #include "code\modules\research_tree\book_printing.dm"
 #include "code\modules\research_tree\book_research.dm"
+#include "code\modules\research_tree\book_interface.dm"
 #include "code\modules\research_tree\node_broadcast.dm"
 #include "code\modules\research_tree\research_faction.dm"
 #include "code\modules\research_tree\research_forge.dm"
