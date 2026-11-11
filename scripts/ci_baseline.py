@@ -307,6 +307,9 @@ SUITES = {
         'paths': ('tests/cane_stance/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_organs.dm',
             'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
+    'wrestling_actions': {'files': ('tests/wrestling_actions/test_actions.py',),
+        'paths': ('tests/wrestling_actions/',), 'shared_paths': (
+            'code/modules/1713/martial_arts/wrestling.dm',)},
     'extinguisher': {'files': ('tests/extinguisher/test_initial_water.py',),
         'paths': ('tests/extinguisher/',), 'shared_paths': (
             'code/game/objects/items/weapons/tools.dm', 'config/crafting/material_recipes_global.txt')},
