@@ -516,6 +516,11 @@
 /obj/structure/research_bench/proc/book_examine(mob/user)
 	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Researchers need a pencil, pen or writing slate in hand, and better tools work faster. Bookcases within 3 tiles holding related chapters speed research up. Research needs light, and supplies for its discipline used on the bench keep it at full speed. From the Imperial Age, a subject needs its discipline's instrument on or next to the bench. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
 	to_chat(user, "It is tier [tier][tier < era_max_tier() ? " (upgrade progress: [tier_progress]/[BENCH_TIER_UPGRADE_COST(tier)])" : ""].")
+	if (tier < MAX_BENCH_TIER)
+		if (tier >= era_max_tier())
+			to_chat(user, "That is the highest tier the current era allows. Finishing the next era's discovery (such as Bronze Working) lets benches be upgraded again.")
+		else
+			to_chat(user, "Use copper, silver or gold coins on it to raise its tier.")
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B)
 		to_chat(user, "There is no book on it.")
