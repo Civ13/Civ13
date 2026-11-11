@@ -46,6 +46,12 @@ var/global/persistence_load_recovery_required = FALSE
 	return probe_account
 /mob/living/human/proc/practice_level(skill)
 	return levels[skill] ? levels[skill] : 0
+/mob/living/human/proc/make_commander()
+	return
+/mob/living/human/proc/make_title_changer()
+	return
+/mob/living/human/proc/grant_faction_symbol_editor()
+	return
 /mob/living/human/proc/remove_commander()
 	return
 /mob/living/human/proc/remove_title_changer()

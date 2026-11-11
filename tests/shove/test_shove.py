@@ -192,7 +192,7 @@ def body_ready(changes=None, *, leased=False, hanging=False):
     for name in ('stat', 'lying', 'prone', 'anchored', 'driver', 'transforming',
                  'throwing', 'status_flags', 'pulling', 'other_mobs'):
         setattr(body, name, 0)
-    body.human_subtile_enabled = True
+    body.shove_free_movement_ready = lambda: True
     body.pinned = None
     body.loc = []
     body.human_subtile_shape = lambda: True
@@ -209,7 +209,7 @@ def body_ready(changes=None, *, leased=False, hanging=False):
         adapter.FIELDS += ('loc', 'human_subtile_shape', 'stat', 'lying', 'prone',
                           'anchored', 'driver', 'transforming', 'throwing',
                           'status_flags', 'pinned', 'human_subtile_unlinked', 'pulling',
-                          'human_subtile_enabled', 'other_mobs')
+                          'shove_free_movement_ready', 'other_mobs')
         action = adapter.project(HUMAN.read_text(encoding='utf-8'),
             '/mob/living/human/proc/shove_body_ready', 'src', env, method=True)
     finally:
@@ -226,7 +226,7 @@ class ShoveBodyReadiness(unittest.TestCase):
                      'transforming', 'throwing', 'pulling', 'other_mobs'):
             with self.subTest(field=name):
                 self.assertFalse(body_ready({name: 1}))
-        self.assertFalse(body_ready({'human_subtile_enabled': False}))
+        self.assertFalse(body_ready({'shove_free_movement_ready': lambda: False}))
         self.assertFalse(body_ready({'status_flags': 16}))
         self.assertFalse(body_ready({'pinned': SimpleNamespace(len=1)}))
         self.assertFalse(body_ready({'human_subtile_shape': lambda: False}))
@@ -238,6 +238,43 @@ class ShoveBodyReadiness(unittest.TestCase):
         result, user, events = admission(same=True)
         self.assertFalse(result)
         self.assertFalse(events)
+
+def free_movement_ready(enabled, pending, step_x=0, step_y=0, owned=False):
+    body = SimpleNamespace(human_subtile_enabled=enabled, human_subtile_default_pending=pending,
+        step_x=step_x, step_y=step_y, human_subtile_offset_owned=owned)
+    fields = adapter.FIELDS
+    try:
+        adapter.FIELDS += ('human_subtile_enabled', 'human_subtile_default_pending',
+                          'step_x', 'step_y', 'human_subtile_offset_owned')
+        action = adapter.project(HUMAN.read_text(encoding='utf-8'),
+            '/mob/living/human/proc/shove_free_movement_ready', 'src', {}, method=True)
+    finally:
+        adapter.FIELDS = fields
+    return action(body)
+
+
+class ShoveUnwalkedTargets(unittest.TestCase):
+    """Regression: a target that had not walked yet could never be shoved."""
+
+    def test_enabled_body_is_ready(self):
+        self.assertTrue(free_movement_ready(True, False))
+
+    def test_unwalked_default_body_is_ready(self):
+        self.assertTrue(free_movement_ready(False, True))
+        self.assertTrue(free_movement_ready(False, True, 6, 0, owned=True))
+
+    def test_unowned_offset_or_switched_off_body_is_not_ready(self):
+        self.assertFalse(free_movement_ready(False, True, 6, 0))
+        self.assertFalse(free_movement_ready(False, False))
+
+    def test_shove_adopts_default_profile_before_claiming_the_body(self):
+        body = adapter.extract(HUMAN.read_text(encoding='utf-8'), DECL)
+        adopt = body.index('if (!human_subtile_enabled && !set_human_subtile(TRUE))')
+        recheck = body.index('|| human_subtile_transaction || human_subtile_pulse)')
+        claim = body.index('var/datum/human_subtile_transaction/shove/T = new')
+        self.assertLess(recheck, adopt)
+        self.assertLess(adopt, claim)
+
 
 if __name__ == '__main__':
     unittest.main()

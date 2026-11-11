@@ -41,6 +41,66 @@ def dmi_states(path):
     return size, re.findall(r'state = "([^"]*)"\n((?:\t[^\n]*\n)*)', text)
 
 
+def dmi_pixels(path):
+    """-> (sheet width, rows of RGBA tuples) for an 8-bit RGBA or palette PNG."""
+    data = Path(path).read_bytes()
+    pos, idat, palette, alpha = 8, b'', b'', b''
+    while pos < len(data):
+        length, kind = struct.unpack('>I4s', data[pos:pos + 8])
+        body = data[pos + 8:pos + 8 + length]
+        if kind == b'IHDR':
+            width, height, bits, colour = struct.unpack('>IIBB', body[:10])
+        elif kind == b'PLTE':
+            palette = body
+        elif kind == b'tRNS':
+            alpha = body
+        elif kind == b'IDAT':
+            idat += body
+        pos += length + 12
+    assert bits == 8 and colour in (2, 3, 6), (bits, colour)
+    bpp = {2: 3, 3: 1, 6: 4}[colour]
+    raw = zlib.decompress(idat)
+    stride = width * bpp
+    rows, prev = [], bytes(stride)
+    for y in range(height):
+        kind = raw[y * (stride + 1)]
+        line = bytearray(raw[y * (stride + 1) + 1:(y + 1) * (stride + 1)])
+        for i in range(stride):
+            a = line[i - bpp] if i >= bpp else 0
+            b = prev[i]
+            c = prev[i - bpp] if i >= bpp else 0
+            if kind == 1:
+                line[i] = (line[i] + a) & 255
+            elif kind == 2:
+                line[i] = (line[i] + b) & 255
+            elif kind == 3:
+                line[i] = (line[i] + (a + b) // 2) & 255
+            elif kind == 4:
+                pa, pb, pc = abs(b - c), abs(a - c), abs(a + b - 2 * c)
+                line[i] = (line[i] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        prev = bytes(line)
+        if colour == 6:
+            rows.append([tuple(line[x * 4:x * 4 + 4]) for x in range(width)])
+        elif colour == 2:
+            rows.append([tuple(line[x * 3:x * 3 + 3]) + (255,) for x in range(width)])
+        else:
+            rows.append([tuple(palette[v * 3:v * 3 + 3]) + (alpha[v] if v < len(alpha) else 255,) for v in line])
+    return width, rows
+
+
+def state_frame(path, wanted):
+    """The first frame of one icon state as 32 rows of RGBA tuples."""
+    (w, h), states = dmi_states(path)
+    width, rows = dmi_pixels(path)
+    index = 0
+    for name, meta in states:
+        if name == wanted:
+            x, y = (index % (width // w)) * w, (index // (width // w)) * h
+            return [row[x:x + w] for row in rows[y:y + h]]
+        index += int(re.search(r'dirs = (\d+)', meta)[1]) * int(re.search(r'frames = (\d+)', meta)[1])
+    raise AssertionError(wanted)
+
+
 def style_block():
     source = read('code/datums/hud.dm')
     start = source.index('/datum/hud/human/consolestyle')
@@ -113,6 +173,21 @@ class ConsoleStyleIcons(unittest.TestCase):
         self.assertEqual(size, new_size)
         # Names, order, directions, frame counts and delays all carry over.
         self.assertEqual(old, new)
+
+    def test_mood_faces_keep_their_own_colours(self):
+        # The yellow face has dull shading pixels; redrawing them as cream line
+        # art left white dots around the eyes, mouth and jaw.
+        for level in range(1, 6):
+            old = state_frame(SCREEN / '1713Style.dmi', f'mood{level}')
+            new = state_frame(SCREEN / 'ConsoleStyle.dmi', f'mood{level}')
+            face = 0
+            for y in range(4, 28):
+                for x in range(4, 28):
+                    pixel = new[y][x]
+                    if pixel[3] == 255 and max(pixel[:3]) > 90:
+                        self.assertEqual(pixel, old[y][x], (level, x, y))
+                        face += 1
+            self.assertGreater(face, 200, level)
 
     def test_doll_and_zone_copies_keep_their_states(self):
         for source, copy in (('healthdoll.dmi', 'healthdoll_console.dmi'), ('zone_sel.dmi', 'zone_sel_console.dmi')):
