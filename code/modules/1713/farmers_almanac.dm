@@ -91,6 +91,9 @@ var/global/list/farmers_almanac_seed_cache = null
 	var/plant_path = entry[4]
 	if (inside && (ispath(plant_path, /obj/structure/farming/plant/mushroom) || ispath(plant_path, /obj/structure/farming/plant/mushroompsy)))
 		return TRUE
+	// Cave wheat grows in any climate and season, but only out of the sun.
+	if (ispath(plant_path, /obj/structure/farming/plant/cave_wheat))
+		return inside
 	var/list/biomes = entry[2]
 	var/list/seasons = entry[3]
 	if (!(climate in biomes))

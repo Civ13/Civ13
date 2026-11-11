@@ -363,6 +363,16 @@
       ]
     },
     {
+      "path": "code/modules/1713/cave_wheat.dm",
+      "declarations": [
+        {
+          "owner": "/obj/item/weapon/reagent_containers/food/snacks/grown/cave_wheat",
+          "declaration": "parent_type = /obj/item/weapon/reagent_containers/food/snacks/grown/wheat",
+          "sha256_body": "277f93ceb6d62955025602c1b2a207968f7bc65c4cebeefd36724fa688960bba"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/extraction/container_keys.dm",
       "declarations": [
         {

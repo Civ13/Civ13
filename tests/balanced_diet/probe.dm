@@ -269,8 +269,9 @@
 		drift.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
 		for (var/i in 1 to 1400)
 			drift.handle_diet()
-		diet_assert(drift.diet_imbalance_ticks >= 1350 && drift.diet_recovery_factor() == 1, "penalties stay off by default")
-		diet_penalties_enabled = TRUE
+		diet_assert(diet_penalties_enabled && !map.diet_penalties, "penalties are on globally but gated per map")
+		diet_assert(drift.diet_imbalance_ticks >= 1350 && drift.diet_recovery_factor() == 1, "penalties stay off on maps without the diet gate")
+		map.diet_penalties = TRUE
 		diet_assert(drift.diet_recovery_factor() == 0.75, "enabled fatigue is mild")
 		drift.nutrition = -10
 		diet_assert(drift.diet_recovery_factor() == 1, "fatigue never stacks with starvation")
@@ -282,7 +283,7 @@
 		for (var/i in 1 to 30)
 			drift.handle_diet()
 		diet_assert(drift.diet_recovery_factor() == 1, "balanced meals restore normal recovery")
-		diet_penalties_enabled = FALSE
+		map.diet_penalties = FALSE
 		var/status = drift.diet_status_text()
 		diet_assert(findtext(status, "Energy capacity:") && findtext(status, "Carbohydrate:"), "status explains reserves and capacity")
 
