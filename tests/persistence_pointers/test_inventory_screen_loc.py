@@ -28,8 +28,10 @@ class InventoryScreenLoc(unittest.TestCase):
         mob = NS()
         mob.HUDinventory = slots
         mob.equipped = {}
+        mob.scaled = []
         env = dict(HUDinventory=slots, src=mob, typed_iter=lambda values, kind: values,
-                   get_equipped_item=lambda slot: mob.equipped.get(slot))
+                   get_equipped_item=lambda slot: mob.equipped.get(slot),
+                   hud_scale_item=lambda item, slot: mob.scaled.append((item, slot)))
         return mob, env
 
     def test_missing_hud_slot_has_no_screen_position(self):
@@ -49,6 +51,8 @@ class InventoryScreenLoc(unittest.TestCase):
         sync()
         self.assertEqual(hat.screen_loc, 'WEST+1:8,4:11')
         self.assertIsNone(boots.screen_loc)
+        # Each realigned item is also resized to its slot's HUD scale.
+        self.assertEqual(mob.scaled, [(hat, head), (boots, shoes)])
 
     def test_update_hud_syncs_before_showing_contents(self):
         hud = extract(source(HUD), '/mob/living/human/update_hud')
