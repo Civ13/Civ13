@@ -9,6 +9,7 @@ import re
 import struct
 import zlib
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -179,6 +180,17 @@ class DressmakingTests(unittest.TestCase):
             bad = SOURCE.replace('wait_for_dressmaking(user, ' + timing + ')', 'wait_for_dressmaking(user, 999)')
             with self.assertRaises(ValueError):
                 atlas.add_dressmaking({PATH: bad}, add, records)
+
+    def test_only_native_fixture_enters_introduced_ci_suites(self):
+        spec = importlib.util.spec_from_file_location('dress_selection', ROOT / 'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(selection)
+        added = b'tests/dressmaking/test_source.py\0tests/dressmaking/check_sprites.py\0tests/crafting/dressmaking.dm\0'
+        with patch.object(selection.subprocess, 'check_output', return_value=added):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), ['tests/crafting'])
+        with patch.object(selection.subprocess, 'check_output', return_value=b'tests/dressmaking/unreviewed.dm\0'):
+            with self.assertRaises(RuntimeError):
+                selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
     def test_every_reused_state_has_item_and_four_worn_directions(self):
         cut = adapter.extract(SOURCE, '/proc/dressmaking_cut')
