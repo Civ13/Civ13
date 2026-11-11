@@ -246,6 +246,79 @@ var/foraging_runtime_error = FALSE
 			var/path = foraging_roll(meadow, "anything")
 			counts["[path]"] = (counts["[path]"] || 0) + 1
 		foraging_check(counts["[/obj/item/stack/material/stone]"] > 60 && counts["[/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom]"] > 30, "open search spreads across categories")
+
+		// Phase 5: lazy renewal on the durable active-server clock.
+		round_start_time = 0
+		round_elapsed_offset = 100000
+		var/t0 = foraging_clock()
+		var/turf/grove = locate(35, 3, 1) // cell anchored at 33,1
+		foraging_check(foraging_commit(grove, persistence_admission_identity, "stone"), "first find at full stock")
+		var/obj/foraging_cell/R = foraging_record(foraging_anchor(grove))
+		foraging_check(R.remaining == 3 && R.renew_from == t0, "spending from full starts the renewal clock")
+		round_elapsed_offset = 100000 + FORAGING_RENEW_TIME - 10
+		foraging_check(foraging_available(grove) == 3, "nothing grows back before a full period")
+		round_elapsed_offset = 100000 + FORAGING_RENEW_TIME
+		foraging_check(foraging_available(grove) == 4 && R.remaining == 3, "one unit back after a period, read without writing")
+		foraging_check(foraging_commit(grove, persistence_admission_identity, "stone") && R.remaining == 3 && R.renew_from == foraging_clock(), "search settles renewal then spends")
+		for (var/i in 1 to 3)
+			foraging_commit(grove, persistence_admission_identity, "stone")
+		foraging_check(R.remaining == 0 && !foraging_commit(grove, persistence_admission_identity, "stone"), "patch exhausted again")
+		var/stamp = R.renew_from
+		round_elapsed_offset = stamp + 2 * FORAGING_RENEW_TIME + 5
+		foraging_check(foraging_available(grove) == 2, "two periods give two units")
+		round_elapsed_offset = stamp + 40 * FORAGING_RENEW_TIME
+		foraging_check(foraging_available(grove) == 4, "renewal caps at full stock")
+		foraging_check(foraging_commit(grove, persistence_admission_identity, "stone") && R.remaining == 3 && R.renew_from == foraging_clock(), "full patch after a long wait restarts from now, no banked units")
+		// Downtime: the saved clock comes back where it stopped, so a reload grants nothing.
+		var/before_clock = round_elapsed_offset
+		map_storage.clear_bookkeeping()
+		fdel("foraging-renew.sav")
+		F = new("foraging-renew.sav")
+		F["/format_version"] << 2
+		cell_id = map_storage.BuildVarDirectory(F, R, 1)
+		F.Flush()
+		F = null
+		var/turf/grove_anchor = foraging_anchor(grove)
+		var/saved_stamp = R.renew_from
+		qdel(R)
+		F = new("foraging-renew.sav")
+		map_storage.clear_bookkeeping()
+		R = map_storage.Load_Entry(F, cell_id, starting_loc = grove_anchor)
+		F = null
+		map_storage.clear_bookkeeping()
+		round_elapsed_offset = before_clock
+		foraging_check(istype(R) && R.remaining == 3 && R.renew_from == saved_stamp && foraging_available(grove) == 3, "renewal stamp survives a disk round trip; downtime grants nothing")
+		// A clock behind the stamp (legacy save without its round clock) restamps, never grants.
+		round_elapsed_offset = 50
+		foraging_check(foraging_available(grove) == 3, "clock behind stamp grants nothing")
+		foraging_check(foraging_commit(grove, persistence_admission_identity, "stone") && R.remaining == 2 && R.renew_from == foraging_clock(), "clock behind stamp restamps on the next search")
+		// A record saved before renewal existed starts its clock when first looked at.
+		R.remaining = 0
+		R.renew_from = null
+		round_elapsed_offset = 9000
+		foraging_check(foraging_available(grove) == 0 && R.renew_from == foraging_clock(), "legacy exhausted record starts its clock on first look")
+		persistence_save_in_progress = TRUE
+		R.renew_from = null
+		foraging_check(foraging_available(grove) == 0 && isnull(R.renew_from), "no stamping while a save runs")
+		persistence_save_in_progress = FALSE
+		R.renew_from = "soon"
+		foraging_check(!foraging_record(grove_anchor) && foraging_available(grove) == 0, "malformed renewal stamp fails closed")
+		R.renew_from = -5
+		foraging_check(!foraging_record(grove_anchor), "negative renewal stamp fails closed")
+		R.renew_from = null
+		foraging_check("renew_from" in R.get_saved_vars(), "renewal stamp exported")
+		// Terrain and season changes leave the stock alone.
+		R.remaining = 1
+		R.renew_from = foraging_clock()
+		grove = grove.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+		season = "WINTER"
+		foraging_check(foraging_available(grove) == 1, "ground and season changes do not refill")
+		season = "SPRING"
+		// Phase 6 cost note: one look touches only two turfs. Logged, not asserted.
+		var/started = world.timeofday
+		for (var/i in 1 to 20000)
+			foraging_available(locate(1 + (i % 40), 1 + round(i / 40) % 40, 1))
+		world.log << "COST: 20000 patch looks took [(world.timeofday - started) / 10] s"
 	catch(var/exception/e)
 		foraging_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = foraging_failures, "runtime_error" = foraging_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
