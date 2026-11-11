@@ -28,6 +28,7 @@
 		//SOUND STUFF//
 		///////////////
 	var/ambience_playing = null
+	var/rain_sound_volume = 0 // volume of the looping rain sound on this client, 0 when silent
 	var/played			= FALSE
 
 		////////////

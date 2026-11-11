@@ -105,8 +105,14 @@
 	if(offer_notes_reading(user, "Study a chapter")) return
 	var/mob/living/human/H = user
 	if(!recipe_book_actor_valid(H) || !H.Adjacent(src)) return
-	var/id = player_input(H, "Study which chapter?", "Compendium", null, "anything", node_ids, TRUE)
-	if(!id || !(id in node_ids) || !H.can_learn_recipe_node(id) || H.knows_recipe_node(id)) return
+	var/list/choices = chapter_reading_choices(H, node_ids, "Not yet researched")
+	var/pick = player_input(H, "Study which chapter?", "Compendium", null, "anything", choices, TRUE)
+	if(!pick || !(pick in choices)) return
+	var/id = choices[pick]
+	if(H.knows_recipe_node(id))
+		to_chat(H, SPAN_NOTICE("You already know that chapter."))
+		return
+	if(!(id in node_ids) || !H.can_learn_recipe_node(id) || H.knows_recipe_node(id)) return
 	if(do_after(H, 600, src) && src && !gcDestroyed && H.Adjacent(src) && recipe_book_actor_valid(H) && (id in node_ids))
 		H.learn_recipe_node(id)
 

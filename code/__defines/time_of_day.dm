@@ -74,9 +74,7 @@ var/TOD_loop_started = FALSE
 	if (game_hour > 780)
 		game_hour -= 720
 	var/hr = Floor(game_hour/60)
-	var/min = game_hour-hr
-	if (min >= 60)
-		min -= 60
+	var/min = game_hour - hr * 60
 	var/ampm = "AM"
 	switch(time_of_day)
 		if ("Early Morning") //03-07
@@ -105,7 +103,7 @@ var/TOD_loop_started = FALSE
 				ampm = "PM"
 			else
 				ampm = "AM"
-			if (hr>=12)
+			if (hr>12)
 				hr -= 12
 	var/str_min = "[min]"
 	var/str_hr = "[hr]"
