@@ -367,6 +367,8 @@ static class LocalHostingTests {
         Require(LocalHosting.ParseControl("unlock", 1, "{\"ok\": false, \"refused\": \"the server is running\"}").Message == "Refused: the server is running", "unlock refusal");
         var groupUnlock = LocalHosting.ParseGroup("force-unlock", 0, "{\"done\": {\"gaia\": {\"removed\": [], \"save_refused\": \"level 2 of the save is missing\"}}, \"refused\": {}, \"ok\": true}");
         Require(groupUnlock is { Ok: true } && groupUnlock.Message == "gaia: no lock files. The save still does not load: level 2 of the save is missing.", "group unlock: " + groupUnlock.Message);
+        var stageUnlock = LocalHosting.ParseGroup("unlock", 0, "{\"done\": {\"desert\": {\"removed\": [], \"save\": \"g\", \"stage_cleared\": true}}, \"refused\": {}, \"ok\": true}");
+        Require(stageUnlock is { Ok: true } && stageUnlock.Message == "desert: no lock files. The save is ready to load. Cleared an old failed update build message.", "unlock stage clear: " + stageUnlock.Message);
         Require(LocalHosting.GroupStep(host.Control!, "unlock", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "unlock", "--region", "gaia" }), "one-region unlock argv");
         var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
         Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);
