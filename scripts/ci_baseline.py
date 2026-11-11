@@ -380,6 +380,11 @@ SUITES = {
             'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
+    # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
+        'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
+            'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
