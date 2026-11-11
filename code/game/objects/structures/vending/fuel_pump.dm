@@ -241,6 +241,17 @@ function changePrice() {
 </body></html>"}
 	show_browse(user, dat, "window=fuelpump_manage;size=350x300")
 
+/obj/structure/fuelpump/proc/update_management_price(mob/user, custp)
+	if (!isnum(custp))
+		return
+	if (custp < 0)
+		custp = 0
+	else if (custp > 50)
+		custp = 50
+	price = custp
+	updatedesc()
+	show_manage_ui(user)
+
 /obj/structure/fuelpump/Topic(href, href_list)
 	if (!usr || !usr.client)
 		return
@@ -353,28 +364,12 @@ function changePrice() {
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custp = player_input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):", null, null, "num", null, TRUE)
-		if (!isnum(custp))
-			return
-		if (custp < 0)
-			custp = 0
-		else if (custp > 50)
-			custp = 50
-		price = custp
-		updatedesc()
-		show_manage_ui(user)
+		update_management_price(user, custp)
 		return
 
 	if (href_list["action"] == "change_price")
 		var/custp = text2num(href_list["price"])
-		if (!isnum(custp))
-			return
-		if (custp < 0)
-			custp = 0
-		else if (custp > 50)
-			custp = 50
-		price = custp
-		updatedesc()
-		show_manage_ui(user)
+		update_management_price(user, custp)
 		return
 
 	show_manage_ui(user)
