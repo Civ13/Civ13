@@ -558,8 +558,13 @@ map_storage
 		list/saved_turfs = list()
 		list/saving_lists = alist()
 		list/saving_reference_pins = list()
+		// Field references reserved past the export depth bound (saving.dm).
+		list/saving_deferred_entries = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
+		// Entries whose fields wait past the import depth bound (loading.dm).
+		list/loading_deferred_entries = list()
+		loading_entry_depth = 0
 		// Stream level saves (level_stream.dm) hand each scratch segment to the
 		// helper as savefile text. While a segment is open this maps the
 		// absolute path of each node whose value does not survive that text
@@ -695,10 +700,13 @@ map_storage
 	saving_slice_start = world.tick_usage
 	saving_references = alist()
 	existing_references = alist()
+	loading_deferred_entries = list()
+	loading_entry_depth = 0
 	found_types = list()
 	all_loaded = list()
 	saving_lists = alist()
 	saving_reference_pins = list()
+	saving_deferred_entries = list()
 	saving_list_pins = list()
 	loaded_lists = list()
 	saved_turfs = list()

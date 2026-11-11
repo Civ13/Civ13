@@ -164,6 +164,18 @@ var/global/roundtrip_capture_failure = FALSE
 			escaped.name = "q\"uo\\te \[b\] \n nl \t tab \u00e9 {\"brace\"}"
 			escaped.number = -0.125
 			escaped.items = list("big" = 16777216, "small" = 1e-07, "inf" = 1.#INF, "file" = 'icons/turf/floors.dmi', /obj/item/test = "path key", "empty" = "", "nested" = list(list("x")))
+		// A 300-link field chain is far past Dream Daemon's call stack when
+		// exported depth-first (Gaia's power cable lines, 2026-11-10).
+		var/obj/item/test/deep = new(locate(4,1,1))
+		deep.number = 444
+		var/datum/test/link = new
+		deep.reference = link
+		for(var/i = 1, i <= 300, i++)
+			link.value = i
+			if(i < 300)
+				link.next = new /datum/test
+				link = link.next
+		link.backlink = deep
 		check(map_storage.Save_World(), "export failed")
 		if(!world.params["large"]) check_round_metadata()
 		check(!map_storage.saving_reference_pins.len && !map_storage.saving_list_pins.len, "save pins retained after completion")
@@ -189,6 +201,15 @@ var/global/roundtrip_capture_failure = FALSE
 		stray.ChangeTurf(/turf/test/edge, FALSE, FALSE)
 		map_storage.ClearMap()
 		check(map_storage.Load_World(), "import failed")
+		deep = null
+		for(var/obj/item/test/candidate in locate(4,1,1))
+			if(candidate.number == 444) deep = candidate
+		check(deep && deep.reference, "deep reference chain owner lost")
+		link = deep.reference
+		for(var/i = 1, i <= 300, i++)
+			check(link && link.value == i, "deep reference chain broke at link [i]")
+			if(i < 300) link = link.next
+		check(!link.next && link.backlink == deep, "deep reference chain tail changed")
 		var/savefile/sparse_level = new("map_saves/2.sav")
 		check(sparse_level["/sparse/kind"] == "fixture" && sparse_level["/sparse/turf"] == /turf/test && sparse_level["/sparse/cells"] == 2, "sparse level header or cell count differs")
 		sparse_level = null
