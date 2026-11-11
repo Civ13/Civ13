@@ -3,6 +3,7 @@ var/list/admin_verbs_default = list(
 	/datum/admins/proc/show_player_panel,	//shows an interface for individual players, with various links (links require additional flags,
 	/client/proc/player_panel,
 	/client/proc/deadmin_self,			//destroys our own admin datum so we can play as a regular player,
+	/client/proc/cmd_admin_say,			//talk in the admin chat with every online admin,
 	/client/proc/hide_verbs,			//hides all our adminverbs,
 	/client/proc/hide_most_verbs,		//hides all our hideable adminverbs,
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,

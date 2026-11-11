@@ -383,9 +383,15 @@
 	return list("sent_to" = clients.len)
 
 /datum/agent_control/proc/act_asay(datum/agent_identity/A, list/req)
-	var/message = html_encode(agent_text_arg(req, "text"))
-	audit(A, "asay", message)
-	return list("sent_to" = admins.len)
+	var/message = sanitize(agent_text_arg(req, "text"))
+	if (!message)
+		agent_fail("bad_args", "text is empty")
+	audit(A, "asay", message, FALSE)
+	var/name = "AGENT [A.name]"
+	var/shown = admin_say_show(html_encode(name), message)
+	discord_asay_log(name, message)
+	region_asay_outbound(name, "agent", message)
+	return list("sent_to" = shown)
 
 /datum/agent_control/proc/act_kick(datum/agent_identity/A, list/req)
 	var/client/C = agent_resolve_target("client:[req["ckey"]]")

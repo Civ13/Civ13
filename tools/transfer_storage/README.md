@@ -214,6 +214,14 @@ it to Discord, so CivilizationBot sees it once; receiving regions show it
 tagged with the source region, unless OOC is globally muted there or the
 speaker holds an OOC ban in that region's ban list.
 
+Admin chat (ASAY, `code/modules/persistence/region_asay.dm`) has its own ring
+too: the world posts each line to `/asay/send` and polls `/asay/inbox`, and
+the radio pass carries the lines in the `asay` list. It never uses the OOC
+ring, so an agent or world without admin chat support drops the line instead
+of showing it to players. Receiving worlds show it only to their admins; a
+line from a region without a webhook is posted to the Discord admin channel
+by the mainland.
+
 Orbital strikes (`code/modules/space/orbit_artillery.dm`) ride a third ring.
 A station's battery posts one to `/strike/send` naming the region it fires
 on; the coordinator's radio pass carries it in the `strikes` list and hands it

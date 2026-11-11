@@ -50,10 +50,14 @@ def _routes(store, radio):
         '/radio/outbox': lambda body: radio.outbox(),
         '/radio/deliver': lambda body: {'queued': radio.deliver(body.get('envelopes', []), body.get('heartbeats')),
                                         'ooc': radio.deliver_ooc(body.get('ooc', [])),
-                                        'strikes': radio.deliver_strikes(body.get('strikes', []))},
+                                        'strikes': radio.deliver_strikes(body.get('strikes', [])),
+                                        'asay': radio.deliver_asay(body.get('asay', []))},
         # Group-wide OOC chat rides the radio agent; no relay station needed.
         '/ooc/send': lambda body: {'id': radio.ooc_send(body.get('envelope'))},
         '/ooc/inbox': lambda body: {'envelopes': radio.ooc_inbox()},
+        # Group-wide admin chat: its own ring, never shown as OOC (region_asay.dm).
+        '/asay/send': lambda body: {'id': radio.asay_send(body.get('envelope'))},
+        '/asay/inbox': lambda body: {'envelopes': radio.asay_inbox()},
         # Orbital strikes: a station fires at one named region (orbit_artillery.dm).
         '/strike/send': lambda body: {'id': radio.strike_send(body.get('envelope'))},
         '/strike/inbox': lambda body: {'envelopes': radio.strike_inbox()},
