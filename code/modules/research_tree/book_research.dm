@@ -13,7 +13,9 @@
 //   research_progress = "node_c=40=0;node_d=12=1"  node=ticks=prototype
 // ============================================================
 
-/obj/map_metadata/var/book_research = FALSE
+// On for Persistence since the research relaunch (Val, 2026-11-10); the launch
+// needs a fresh world, since restored characters would know nothing.
+/obj/map_metadata/var/book_research = TRUE
 
 /obj/map_metadata/proc/book_research_enabled()
 	return recipe_knowledge_enabled() && book_research
@@ -157,7 +159,7 @@
 		return FALSE
 	if (get_dist(src, B) > BOOK_RESEARCH_REACH || !isturf(loc) || loc.z != B.z)
 		return FALSE
-	return knows_research_prereqs(node_id) && meets_scholar_requirement(node_id)
+	return research_tool_rate() > 0 && knows_research_prereqs(node_id) && meets_scholar_requirement(node_id)
 
 // ------------------------------------------------------------
 // Bench behaviour in book mode
@@ -186,20 +188,22 @@
 	var/datum/research_node/N = get_research_node(assigned_node)
 	if (!N || N.mode == RESEARCH_MODE_BOOK || tier < N.min_bench_tier || B.has_research_chapter(assigned_node))
 		return
-	// The most skilled scholar at the bench sets the pace.
+	if (!research_lit())
+		return
+	// The most skilled scholar at the bench, with the best tool, sets the pace.
 	var/mob/living/human/researcher = null
 	var/best_rate = 0
 	for (var/mob/living/human/H in range(BOOK_RESEARCH_REACH, src))
 		if (!H.can_research_node_at(src, assigned_node))
 			continue
-		var/rate = H.scholar_research_rate(assigned_node)
+		var/rate = H.scholar_research_rate(assigned_node) * H.research_tool_rate()
 		if (rate > best_rate)
 			researcher = H
 			best_rate = rate
-	if (!researcher)
+	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
-	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN)
-	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate, 0.1)))
+	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * apprentice_research_gain(researcher, assigned_node))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate * library_rate(assigned_node) * use_research_supply(assigned_node), 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
 	book_refresh_ui()
@@ -324,7 +328,9 @@
 		qdel(W)
 		book_refresh_ui()
 		return
-	to_chat(user, SPAN_WARNING("That doesn't help with <b>[N.name]</b>."))
+	if (feed_research_supply(W, user))
+		return
+	to_chat(user, SPAN_WARNING("That doesn't help with <b>[N.name]</b>. [scholar_disciplines[node_discipline(assigned_node)]] research uses [scholar_supply_text(node_discipline(assigned_node))]."))
 
 // Viewer-relative node status for the bench UI: what the viewer knows, plus
 // what the book on the bench holds.
@@ -373,15 +379,25 @@
 	if (!H.knows_research_prereqs(node_id))
 		to_chat(H, SPAN_WARNING("You need to understand this chapter's groundwork first."))
 		return FALSE
-	var/time = BOOK_STUDY_TIME(N.era_tier)
-	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name]. This takes about [round(time / 600, 0.5)] minute\s."))
+	var/time = H.scholar_study_time(N.era_tier)
+	// A tutor who knows the chapter, standing beside the student, speeds it up.
+	var/mob/living/human/tutor = H.find_tutor(node_id)
+	if (tutor)
+		time = round(time / SCHOLAR_TUTOR_RATE)
+		to_chat(tutor, SPAN_NOTICE("You help [H] through the chapter on [N.name]."))
+	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name][tutor ? " with [tutor]'s help" : ""]. This takes about [round(time / 600, 0.5)] minute\s."))
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
 	var/atom/start_loc = source.loc
 	// A book on a bench must still be there: taking it away ends the study.
 	if (!do_after(H, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
-		H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+		if (tutor && tutor.still_tutoring(H, node_id))
+			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN * SCHOLAR_TUTOR_GAIN_MULT)
+			tutor.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
+			to_chat(tutor, SPAN_NOTICE("[H] has learned [N.name] from you."))
+		else
+			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		return TRUE
 	return FALSE
@@ -425,7 +441,7 @@
 		data["assigned_done"] = TRUE
 		return
 	var/ticks = B ? B.research_ticks(assigned_node) : 0
-	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stands at the bench."
+	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stands at the bench with a pencil, pen or writing slate in hand."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
 		var/pname = AN.prototype_display_name()
 		text += " It also needs a working [pname ? pname : "prototype"] fed to the bench[B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
@@ -433,10 +449,22 @@
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))
 		text += " [H.scholar_requirement_text(assigned_node)]; you aren't skilled enough yet."
+	if (H.research_tool_rate() <= 0)
+		text += " You need a pencil, pen or writing slate in hand to work on it."
+	var/discipline = node_discipline(assigned_node)
+	var/supply = supply_points(discipline)
+	text += " Supplies for [scholar_disciplines[discipline]] ([scholar_supply_text(discipline)]): [supply]/[SCHOLAR_SUPPLY_CAP][supply < 1 ? ", so research runs at half speed" : ""]."
+	if (!research_lit())
+		text += " It is too dark to research here; bring a candle or lamp."
+	if (node_needs_instrument(assigned_node))
+		text += " It needs [scholar_instrument_text(discipline)] at the bench[has_research_instrument(assigned_node, H) ? " (present)" : ", which is missing"]."
+	var/list/shelved = library_chapters(assigned_node)
+	if (shelved.len)
+		text += " Library: [shelved.len] related chapter\s shelved nearby, research [round((library_rate(assigned_node) - 1) * 100)]% faster."
 	data["assigned_status_text"] = text
 
 /obj/structure/research_bench/proc/book_examine(mob/user)
-	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
+	to_chat(user, "Anyone can use this bench. Place a book on it and choose a subject; research done here is written into that book. Researchers need a pencil, pen or writing slate in hand, and better tools work faster. Bookcases within 3 tiles holding related chapters speed research up. Research needs light, and supplies for its discipline used on the bench keep it at full speed. From the Imperial Age, a subject needs its discipline's instrument on or next to the bench. Use Harm intent with a wrench to fasten or unfasten it, or with a hammer to dismantle it.")
 	to_chat(user, "It is tier [tier][tier < era_max_tier() ? " (upgrade progress: [tier_progress]/[BENCH_TIER_UPGRADE_COST(tier)])" : ""].")
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B)
@@ -492,18 +520,22 @@
 	if (!blank_writing_sheet(sheet))
 		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to copy onto."))
 		return FALSE
+	var/obj/item/weapon/pen/pen = H.held_writing_pen()
+	if (!pen)
+		to_chat(H, SPAN_WARNING("Hold a pencil or pen in your other hand to copy with."))
+		return FALSE
 	if (H.stats["stamina"][1] < BOOK_WRITE_STAMINA(N.era_tier))
 		to_chat(H, SPAN_WARNING("You are too tired to copy a chapter now."))
 		return FALSE
 	if (dest.page_busy)
 		to_chat(H, SPAN_WARNING("Someone is already working on [dest]."))
 		return FALSE
-	var/time = BOOK_WRITE_TIME(N.era_tier)
+	var/time = scholar_write_time(N.era_tier, pen, H)
 	to_chat(H, SPAN_NOTICE("You begin copying the chapter on [N.name] into [dest]. This takes about [round(time / 600, 0.5)] minute\s."))
 	dest.page_busy = TRUE
 	var/done = do_after(H, time, src)
 	dest.page_busy = FALSE
-	if (!done || QDELETED(src) || source.loc != src || dest.loc != src || !recipe_held(H, sheet))
+	if (!done || QDELETED(src) || source.loc != src || dest.loc != src || !recipe_held(H, sheet) || !recipe_held(H, pen))
 		return FALSE
 	if (!copy_chapter_commit(H, source, dest, node_id, sheet))
 		to_chat(H, SPAN_WARNING("You couldn't finish the copy."))

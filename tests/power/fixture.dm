@@ -15,6 +15,9 @@ world
 	return
 /proc/to_chat(mob/user, message)
 	return
+/obj/structure
+	var/smart_off = FALSE
+	var/smart_hub_id = null
 /obj/structure/engine
 	var/list/connections = list()
 	var/currentspeed = 0
@@ -97,6 +100,13 @@ var/failures = 0
 	check("radio repeated poll", R.check_power(), TRUE)
 	check("lamp repeated poll", P.check_power(), TRUE)
 	check("normal demand stays constant", C.currentflow, 7)
+	P.smart_hub_id = "fixture-hub"
+	P.smart_off = TRUE
+	check("smart cut refuses draw", P.check_power(), FALSE)
+	check("smart cut releases reservation", C.currentflow, 5)
+	P.smart_off = FALSE
+	check("smart restore permits draw", P.check_power(), TRUE)
+	check("smart restore reserves once", C.currentflow, 7)
 	E.on = FALSE
 	A.power_off(10)
 	check("radio loses source", R.check_power(), FALSE)

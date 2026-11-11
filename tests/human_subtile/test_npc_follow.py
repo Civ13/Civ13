@@ -20,6 +20,87 @@ def evaluate(expression, context):
     return bool(eval(expression, {'__builtins__': {}}, context))
 
 
+# Frozen pre-change follow block. This restricted Python projection compares the
+# source flow; it does not execute DM or prove native scheduling or movement.
+FOLLOW_BASELINE = '''\
+if (following_mob)
+\tstop_automated_movement = TRUE
+\tif (get_dist(src, following_mob) > 2)
+\t\tturns_since_move++
+\t\tif (turns_since_move >= move_to_delay)
+\t\t\tif (get_dist(src, following_mob) > 1)
+\t\t\t\tif (npc_subtile_follow_enabled && npc_subtile_enabled)
+\t\t\t\t\tnpc_subtile_start_follow(following_mob)
+\t\t\t\telse if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))
+\t\t\t\t\twalk_to(src, following_mob, 1, 6)
+\t\t\t\tturns_since_move = FALSE
+\tif (get_dist(src, following_mob) > 6)
+\t\tnpc_set_following(null)
+\t\tstop_automated_movement = FALSE
+'''
+
+
+def follow_block(source):
+    life = section(source, '/mob/living/simple_animal/Life()\n', '// AI and Movement logic')
+    return life[life.index('\tif (following_mob)'):].rstrip().replace('\t', '    ')
+
+
+def project_follow(block, distance, turns, mode, callback_distance=None):
+    """Execute only the explicitly recognized follow statements as Python."""
+    translations = {
+        'if (following_mob)': 'if following_mob:',
+        'stop_automated_movement = TRUE': 'stop_automated_movement = True',
+        'if (get_dist(src, following_mob) > 2)': 'if get_dist(src, following_mob) > 2:',
+        'if (get_dist(src, following_mob) > 1)': 'if get_dist(src, following_mob) > 1:',
+        'turns_since_move++': 'turns_since_move += 1',
+        'if (turns_since_move >= move_to_delay)': 'if turns_since_move >= move_to_delay:',
+        'if (npc_subtile_follow_enabled && npc_subtile_enabled)':
+            'if npc_subtile_follow_enabled and npc_subtile_enabled:',
+        'npc_subtile_start_follow(following_mob)': 'npc_subtile_start_follow(following_mob)',
+        'else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))':
+            'elif npc_subtile_enabled or npc_subtile_continuous_legacy_ready("follow"):',
+        'walk_to(src, following_mob, 1, 6)': 'walk_to(src, following_mob, 1, 6)',
+        'turns_since_move = FALSE': 'turns_since_move = False',
+        'if (get_dist(src, following_mob) > 6)': 'if get_dist(src, following_mob) > 6:',
+        # Used only by the cached-distance negative control.
+        'if (initial_dist > 6)': 'if initial_dist > 6:',
+        'npc_set_following(null)': 'npc_set_following(None)',
+        'stop_automated_movement = FALSE': 'stop_automated_movement = False',
+    }
+    projected = []
+    for line in block.replace('\t', '    ').splitlines():
+        statement = line.strip()
+        if not statement or statement.startswith('//'):
+            continue
+        if statement not in translations:
+            raise AssertionError(f'Unrecognized follow statement: {statement}')
+        projected.append(' ' * (len(line) - len(line.lstrip())) + translations[statement])
+    code = '\n'.join(projected)
+    code = '\n'.join(line[4:] for line in code.splitlines()) if code.startswith('    ') else code
+
+    target = object()
+    state = {'distance': distance, 'calls': []}
+    ctx = {'__builtins__': {}, 'src': object(), 'following_mob': target,
+           'turns_since_move': turns, 'move_to_delay': 2,
+           'stop_automated_movement': False, 'initial_dist': distance,
+           'npc_subtile_follow_enabled': mode == 'staged',
+           'npc_subtile_enabled': mode in ('staged', 'legacy_subtile')}
+    ctx['get_dist'] = lambda actor, followed: state['distance']
+    ctx['npc_subtile_continuous_legacy_ready'] = lambda kind: mode == 'legacy'
+
+    def move(kind):
+        state['calls'].append(kind)
+        if callback_distance is not None:
+            state['distance'] = callback_distance
+
+    ctx['npc_subtile_start_follow'] = lambda followed: move('staged')
+    ctx['walk_to'] = lambda actor, followed, distance, interval: move('legacy')
+    ctx['npc_set_following'] = lambda followed: ctx.update(following_mob=followed)
+    exec(code, ctx)
+    return (ctx['turns_since_move'], ctx['following_mob'] is None,
+            ctx['stop_automated_movement'], tuple(state['calls']))
+
+
 class FollowContracts(unittest.TestCase):
     def setUp(self):
         self.source = SOURCE.read_text(encoding='utf-8')
@@ -111,6 +192,25 @@ class FollowContracts(unittest.TestCase):
         self.assertIn('actor.npc_subtile_settle_axis(src, interval)\n\t\t\tbreak', loop)
         self.assertIn('sleep(deadline - world.time)', loop)
         self.assertNotIn('sleep(6)', loop)
+
+    def test_follow_life_projection_matches_pre_change_and_rejects_mutants(self):
+        current = follow_block(ANIMAL.read_text(encoding='utf-8'))
+        self.assertEqual(current.count('get_dist(src, following_mob)'), 2)
+        scenarios = [(distance, turns, mode, after)
+                     for distance in (0, 1, 2, 3, 6, 7)
+                     for turns in (0, 1)
+                     for mode in ('staged', 'legacy', 'legacy_subtile', 'disabled')
+                     for after in (None, 1, 7)]
+        def outputs(block):
+            return [project_follow(block, *case) for case in scenarios]
+
+        expected = outputs(FOLLOW_BASELINE)
+        self.assertEqual(outputs(current), expected)
+        missing_gate = current.replace('get_dist(src, following_mob) > 2',
+                                       'get_dist(src, following_mob) > 1', 1)
+        cached_detach = current.replace('get_dist(src, following_mob) > 6', 'initial_dist > 6', 1)
+        self.assertNotEqual(outputs(missing_gate), expected)
+        self.assertNotEqual(outputs(cached_detach), expected)
 
     def test_stage_is_default_off(self):
         self.assertIn('var/npc_subtile_follow_enabled = FALSE', self.source)

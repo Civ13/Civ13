@@ -1,0 +1,2 @@
+// Standalone save-to-map level reader; never include game code here.
+#include "extract.dm"

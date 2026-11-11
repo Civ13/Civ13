@@ -934,14 +934,21 @@
 	for(var/turf/T in range(max_range,src))
 		var/invalid = FALSE
 		if (istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground) || istype (T, /turf/floor/beach/water))
-			invalid = TRUE
+			continue
 		for(var/obj/structure/OB in T)
 			invalid = TRUE
+			break
+		if (invalid)
+			continue
 		for(var/obj/covers/OB in T)
 			invalid = TRUE
+			break
+		if (invalid)
+			continue
 		for(var/mob/living/human/OB in view(4,T))
 			if (OB.stat != DEAD)
 				invalid = TRUE
+				break
 		if (!invalid)
 			emptyTurfs += T
 	if (emptyTurfs.len)

@@ -2003,6 +2003,7 @@ RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_ba
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null
 RECIPE: /material/steel/,biofuel refinery,/obj/structure/refinery/biofuel,18,200,1,1,production,115,0,0,8,null
+RECIPE: /material/steel/,offshore drilling rig,/obj/structure/oilwell/offshore,45,400,1,1,production,120,0,0,8,null
 
 RECIPE: /material/steel/,steam engine,/obj/structure/engine/external/steam,15,250,1,1,production,95,0,0,8,null
 RECIPE: /material/steel/,conveyor belt,/obj/item/conveyor_construct,5,250,1,1,production,95,0,0,8,null
@@ -2194,6 +2195,7 @@ RECIPE: /material/wood/soft/,gunsmithing bench,/obj/structure/gunbench,13,180,1,
 RECIPE: /material/wood/soft/,ethanol distillery,/obj/structure/distillery,15,180,1,1,economy & production,45,0,0,8,null
 RECIPE: /material/wood/soft/,large saw mill,/obj/structure/sawmill/large,100,60,1,1,economy & production,45,0,0,8,null
 RECIPE: /material/wood/soft/,powered saw mill,/obj/structure/sawmill/powered,200,60,1,1,economy & production,100,0,0,8,null
+RECIPE: /material/steel/,tanning drum,/obj/structure/tanning_drum,10,200,1,1,economy & production,95,0,0,8,null
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
@@ -2341,6 +2343,7 @@ RECIPE: /material/wood/soft/,wood pole,/obj/structure/barricade/wood_pole,2,50,1
 RECIPE: /material/wood/soft/,bed,/obj/structure/bed/wood,4,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
+RECIPE: /material/wood/soft/,writing desk,/obj/structure/writing_desk,6,120,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,chair,/obj/structure/bed/chair/wood,4,50,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/soft/,wood chest,/obj/structure/closet/crate/chest,7,75,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/,practice dummy,/obj/structure/practice_dummy,8,120,1,1,furniture,18,0,0,8,null
@@ -2850,6 +2853,9 @@ RECIPE: /material/glass/,small telescope,/obj/item/weapon/attachment/scope/adjus
 RECIPE: /material/wood/soft/,shamisen,/obj/item/shamisen,10,135,0,1,entertainment & other,50,0,0,8,null
 RECIPE: /material/wood/soft/,pencil,/obj/item/weapon/pen/pencil,1,40,0,1,paper & printing,19,0,0,8,null
 RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & printing,19,0,0,8,null
+RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,abacus,/obj/item/weapon/abacus,3,80,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/iron/,drafting set,/obj/item/weapon/drafting_set,2,100,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null

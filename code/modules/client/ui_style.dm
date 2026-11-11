@@ -1,4 +1,5 @@
 /var/list/all_ui_styles = list(
+	"ConsoleStyle",
 	"1713Style",
 	"NewStyle",
 	"LiteWebStyle",

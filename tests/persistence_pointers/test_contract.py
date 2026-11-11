@@ -189,7 +189,9 @@ class PointerContracts(unittest.TestCase):
         mutated = source.replace(' || key == "npc_subtile_large_frame"', '', 1)
         self.assertNotEqual(source, mutated)
         self.assertFalse(hooks({NPC: mutated})['/mob/living/simple_animal']('npc_subtile_large_frame'))
-        saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
+        saving_source = read('code/modules/persistence/saving.dm')
+        # BuildVarDirectory admits and reserves an entry; export_saved_entry writes its fields.
+        saving = extract(saving_source, '/map_storage/proc/BuildVarDirectory') + extract(saving_source, '/map_storage/proc/export_saved_entry')
         def require_export_guard(body):
             self.assertRegex(body, r'if\(!A.should_save\)\s+return 0')
             self.assertLess(body.index('if(!A.should_save)'), body.index('A.get_saved_vars()'))

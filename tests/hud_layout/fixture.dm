@@ -205,6 +205,18 @@ var/list/default_hud_tiles = list(
 	for (var/g in list(1.25, 1.5, 1.75, 2))
 		var/err = check_reflow(g)
 		check(!err, "reflow: [err]")
+	// ConsoleStyle names each tile's edge in its own loc.
+	check(loc_text(hud_parse_screen_loc("CENTER-3,SOUTH+1:2")) == "CENTER|-112|SOUTH|34", "console upper row: [loc_text(hud_parse_screen_loc("CENTER-3,SOUTH+1:2"))]")
+	check(loc_text(hud_parse_screen_loc("CENTER:16,SOUTH+1:17")) == "CENTER|0|SOUTH|49", "hand button strip: [loc_text(hud_parse_screen_loc("CENTER:16,SOUTH+1:17"))]")
+	check(loc_text(hud_parse_screen_loc("EAST-3:16,SOUTH:2")) == "EAST|-112|SOUTH|2", "action corner: [loc_text(hud_parse_screen_loc("EAST-3:16,SOUTH:2"))]")
+	check(loc_text(hud_parse_screen_loc("WEST+2:2,SOUTH+3:2")) == "WEST|66|SOUTH|98", "clothing corner: [loc_text(hud_parse_screen_loc("WEST+2:2,SOUTH+3:2"))]")
+	check(hud_axis_text("CENTER", -112) == "CENTER:-96" && hud_axis_text("SOUTH", 34) == "SOUTH:34", "anchored text round trip")
+	// Groups keep their places above 100% until scaling pushes two of them together.
+	var/list/apart = list(list(null, 224, 2, 32, 32), list(null, 256, 2, 32, 32), list(null, 542, 2, 32, 32))
+	check(!hud_flow_collides(apart, list(list(196, 2.5), list(236, 2.5), list(534, 2.5)), 1.25), "neighbours scaled about one anchor still touch, not overlap")
+	check(hud_flow_collides(apart, list(list(196, 2.5), list(236, 2.5), list(260, 2.5)), 1.25), "a far tile scaled into the group collides")
+	var/list/stacked = list(list(null, 320, 34, 32, 32), list(null, 336, 34, 32, 32))
+	check(!hud_flow_collides(stacked, list(list(340, 42.5), list(360, 42.5)), 1.25), "tiles that share space at 100% may keep sharing it")
 	// Storage windows: stay put at 100%, rise clear of an enlarged HUD, follow a drag, stay on screen.
 	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1, 480, 480, null, list(list(150, 40, 32)))) == "0|0", "storage stays at 100%")
 	check(loc_text(hud_storage_shift_for(144, 48, 256, 32, 1.5, 480, 480, null, list(list(150, 40, 48)))) == "0|2", "storage rises above HUD: [loc_text(hud_storage_shift_for(144, 48, 256, 32, 1.5, 480, 480, null, list(list(150, 40, 48))))]")
@@ -215,5 +227,5 @@ var/list/default_hud_tiles = list(
 		world.log << "FAIL hud layout: [jointext(hud_failures, "; ")]"
 		del(world)
 		return
-	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load, inferred anchors, reflow without overlap at 125-200%, storage window placement"
+	world.log << "PASS hud layout: screen_loc parsing, anchor text, scale matrices, item scale ownership, mouse params, per-style entries, production text save/load, inferred anchors, named anchors, scaled collision check, reflow without overlap at 125-200%, storage window placement"
 	del(world)

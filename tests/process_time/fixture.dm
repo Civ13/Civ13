@@ -5,6 +5,7 @@
 #define PROCESS_KILL 26
 var/list/processing_objects = list()
 var/list/probabilities = list()
+var/last_candle_remains_type
 /proc/test_probability(percent)
     probabilities += percent
     return 0
@@ -54,6 +55,9 @@ var/list/probabilities = list()
         on = 0
         lit = 0
 /obj/item/trash/candle/lard
+/obj/item/trash/candle/New()
+    ..()
+    last_candle_remains_type = type
 /mob/living/proc/IgniteMob()
     return
 /mob/living
@@ -95,6 +99,7 @@ var/list/probabilities = list()
     check(L.process_interval(12) == 77, "legacy return propagation")
     for (var/path in list(/obj/item/weapon/flame/candle, /obj/item/weapon/flame/candle/lard))
         var/obj/item/C = new path
+        last_candle_remains_type = null
         C.process()
         check(C.wax == 9, "direct candle balance")
         C.process_interval(1)
@@ -102,10 +107,13 @@ var/list/probabilities = list()
         C.lit = 0
         C.process_interval(4)
         check(C.wax == 8.5, "unlit candle consumption")
+        check(isnull(last_candle_remains_type), "no remains before candle expiry")
         C.lit = 1
         C.wax = 0.25
         C.process_interval(1)
         check(C.expired == 1 && C.wax == 0, "fractional candle expiry")
+        var/expected_remains = path == /obj/item/weapon/flame/candle/lard ? /obj/item/trash/candle/lard : /obj/item/trash/candle
+        check(last_candle_remains_type == expected_remains, "candle expiry retains variant remains")
     var/obj/item/weapon/flame/match/M = new
     M.process()
     check(M.smoketime == 4, "direct match balance")

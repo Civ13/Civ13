@@ -22,4 +22,4 @@
 		playsound(loc, 'sound/effects/gavel.ogg', 90, 1)
 		user.visible_message("<span class='warning'>[user] strikes \the [src] with \the [I].</span>")
 	else
-		return
+		return ..()

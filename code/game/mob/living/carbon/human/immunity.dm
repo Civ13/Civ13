@@ -8,8 +8,8 @@
 #define IMMUNITY_FULL 100
 // While resistance stays at or above this, a new infection never takes hold.
 #define IMMUNITY_PROTECTS 50
-// Untreated, resistance reaches 100 after about 33 minutes, well after a
-// severe illness kills (20 minutes), so medicine is still needed.
+// Untreated, resistance reaches 100 after about 33 minutes of active play.
+// A continuous medicine course is much faster (normally three minutes).
 #define IMMUNITY_GAIN_UNTREATED 0.05
 // While medicine supports the body, resistance reaches 100 in about 11
 // minutes even if courses keep being interrupted.

@@ -15351,6 +15351,1617 @@
       "map_notes": "Wizard Boy mapped base grinder and camp catalog unchanged; no new Carib, camp or species recipe. Existing steam engine plus two lit heatsources is a source-backed 30-capacity option, not a native or full-map guarantee.",
       "era": "Electricity node era tier 5, minimum bench tier 4, Steam Power prerequisite and cable prototype; maximum recipe era 8. No new calendar-year/minimum-era gate.",
       "status": "Source-reviewed candidate; offline acquisition checks passed; native construction, inventory, power network and save/load unverified"
+    },
+    {
+      "name": "Melt metal in a kiln",
+      "file": "code/game/objects/structures/blacksmithing/refining.dm",
+      "line": 330,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/copper",
+        "/obj/item/stack/ore/tin",
+        "/material/iron",
+        "/material/steel"
+      ],
+      "outputs": [
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_copper",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_bronze",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_iron",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_steel"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot"
+      ],
+      "steps": [
+        "Put ore or metal into a fired clay blacksmith pot or jug: copper ore for copper, copper and tin ore together for bronze, iron for iron, steel for steel.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds the molten metal.",
+        "Pour it into a fired mold and take the mold to an anvil."
+      ],
+      "conditions": "The pot must be fired and hold nothing molten already. Bronze uses equal units of copper and tin.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt copper ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 128,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/copper"
+      ],
+      "outputs": [
+        "/material/copper"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put copper ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt tin ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 141,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/tin"
+      ],
+      "outputs": [
+        "/material/tin"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put tin ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt zinc ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 167,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/zinc"
+      ],
+      "outputs": [
+        "/material/zinc"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put zinc ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt gold ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 102,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/gold"
+      ],
+      "outputs": [
+        "/material/gold"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put gold ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt silver ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 115,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/silver"
+      ],
+      "outputs": [
+        "/material/silver"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put silver ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smelt lead ore into ingots",
+      "file": "code/game/objects/structures/blacksmithing/molds.dm",
+      "line": 154,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/lead"
+      ],
+      "outputs": [
+        "/material/lead"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/item/weapon/clay/mold",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Put lead ore into a fired clay blacksmith pot or jug. Use only this ore, because copper mixed with tin or zinc makes an alloy.",
+        "Fuel a kiln with wood or coal, put the filled pot inside and turn the kiln on. When it finishes, the pot holds molten metal.",
+        "Use the pot on a fired ingot mold to pour the metal, then use the filled mold on an anvil to cast the ingots."
+      ],
+      "conditions": "Pot, jug and molds must be fired first. One unit of ore gives one ingot. The kiln needs more than one unit of fuel.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Smith sponge iron into wrought iron",
+      "file": "code/game/objects/structures/blacksmithing/blacksmithing.dm",
+      "line": 110,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/ore/iron_sponge"
+      ],
+      "outputs": [
+        "/material/iron"
+      ],
+      "tools": [
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Smelt iron ore in a bloomery to get sponge iron.",
+        "Use the sponge iron on an anvil and wait while it is worked. One unit of sponge iron gives one unit of iron."
+      ],
+      "conditions": "The whole stack is worked at once and must stay the same size until the work finishes.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mold dirt and water into clay",
+      "file": "code/modules/1713/barriers/sandbag.dm",
+      "line": 248,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/turf/floor/dirt",
+        "water"
+      ],
+      "outputs": [
+        "/material/clay"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Dig a pile of dirt out of a dirt tile with a shovel.",
+        "Use a container holding at least 10 units of water on the dirt pile. Each pile gives two clay lumps."
+      ],
+      "conditions": "Uses 10 units of water and the whole dirt pile.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine sandstone",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 1010,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/material/sandstone"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine underground rock with a pickaxe in sandy rock or beneath a desert. Each mined tile gives 16 to 24 sandstone."
+      ],
+      "conditions": "Finite terrain. Only sandy underground rock or rock below a desert area gives sandstone.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine marble",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 1020,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/material/marble"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine underground rock with a pickaxe. About one tile in five gives 16 to 24 marble blocks instead of plain stone."
+      ],
+      "conditions": "Finite terrain; a random result of mining, checked after ores and sandstone.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cut obsidian",
+      "file": "code/modules/1713/ores.dm",
+      "line": 241,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/material/obsidian"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe",
+        "/obj/item/weapon/chisel",
+        "/obj/item/weapon/hammer"
+      ],
+      "steps": [
+        "Mine underground rock beneath a jungle with a pickaxe. About one tile in five gives raw obsidian.",
+        "Hold a hammer in one hand and use a chisel on the raw obsidian to cut it. Each raw piece gives one cut obsidian."
+      ],
+      "conditions": "Raw obsidian is found only below jungle areas.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Raw obsidian is found from the Bronze Age to the Imperial Age (map ages 1 to 3).",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mine uranium ore",
+      "file": "code/game/turfs/floor_attackby.dm",
+      "line": 962,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/uranium"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine mineable underground rock with a pickaxe. A small share of tiles gives one unit of uranium ore."
+      ],
+      "conditions": "Finite terrain and a rare random result.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "Found only from map age 8 onward.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a black bear for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 240,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/bearpelt/black"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a black bear.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 6."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a brown bear for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 248,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/bearpelt/brown"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a brown bear.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 6."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a polar bear for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 244,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/bearpelt/white"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a polar bear.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 6."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a wolf for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 254,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/wolfpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a wolf.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 4."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a white wolf for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 252,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/whitewolfpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a white wolf.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 4."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a fox for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 264,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/foxpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a fox.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin an arctic fox for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 262,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/whitefoxpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill an arctic fox.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a cat for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 266,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/catpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a cat.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 2."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a monkey for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 256,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/monkeypelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a monkey.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a gorilla for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 258,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/gorillapelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a gorilla.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3, or 6 from a gigantopithecus."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a panther for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 268,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/pantherpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a panther (not a jaguar).",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a lion or a sabertooth for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 270,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/lionpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a lion or a sabertooth.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3 from a lion, 6 from a sabertooth."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin an alligator for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 274,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/gatorpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill an alligator.",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 3."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Skin a dinosaur for its pelt",
+      "file": "code/modules/1713/animal_harvest.dm",
+      "line": 276,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/simple_animal"
+      ],
+      "outputs": [
+        "/material/lizardpelt"
+      ],
+      "tools": [
+        "Held sharp tool"
+      ],
+      "steps": [
+        "Kill a dinosaur (compsognathus, velociraptor, pachycephalosaurus or tyrannosaurus).",
+        "With Grab intent, use a held sharp tool on the dead animal and stay next to it until skinning and butchering finishes.",
+        "Collect the pelt along with the meat. Yield: 1 to 10 by size."
+      ],
+      "conditions": "Grab intent skins for the fur pelt; other intents butcher for plain raw hide instead. A corpse can be harvested only once.",
+      "map_notes": "The animal must live on the selected map.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Chop down a leafy tree",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 482,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/structure/wild/tree/live_tree"
+      ],
+      "outputs": [
+        "/material/leaf"
+      ],
+      "tools": [
+        "hatchet"
+      ],
+      "steps": [
+        "Chop down a living tree that still has leaves. It drops three leaves along with its wood."
+      ],
+      "conditions": "Trees without leaves, such as in winter, drop only wood.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Chop down a palm tree",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 649,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/structure/wild/palm"
+      ],
+      "outputs": [
+        "/material/leaf/palm"
+      ],
+      "tools": [
+        "hatchet"
+      ],
+      "steps": [
+        "Chop down a palm tree. It drops three palm leaves along with its wood."
+      ],
+      "conditions": "Palms grow only on maps with suitable terrain.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Rip clothing into rags",
+      "file": "code/game/objects/items/clothing/clothing.dm",
+      "line": 29,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/clothing"
+      ],
+      "outputs": [
+        "/material/rags"
+      ],
+      "tools": [],
+      "steps": [
+        "Hold a piece of rippable clothing and use its secondary action. After ten seconds it tears into rags.",
+        "Clothing that wears out completely also leaves a rag behind."
+      ],
+      "conditions": "Only clothing marked as rippable works. The clothing is destroyed.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Twist textile lint into retted fabric",
+      "file": "code/modules/1713/flax_processing.dm",
+      "line": 230,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/textile_lint"
+      ],
+      "outputs": [
+        "/material/rettedfabric"
+      ],
+      "tools": [],
+      "steps": [
+        "Hold at least two pieces of textile lint and use them in your hand. Two lint make one retted fabric."
+      ],
+      "conditions": "Uses two lint per fabric.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Comb flax for tow",
+      "file": "code/modules/1713/flax_processing.dm",
+      "line": 159,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/rotten_flax"
+      ],
+      "outputs": [
+        "/obj/item/stack/flax_tow"
+      ],
+      "tools": [
+        "flax comb"
+      ],
+      "steps": [
+        "Load up to ten rotted flax into a flax comb and work it by hand.",
+        "The first pass leaves straw. The second pass leaves flax tow, one per unit of flax."
+      ],
+      "conditions": "Each pass is a ten second action at the comb.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Soak raw kevlar",
+      "file": "code/game/objects/structures/converters.dm",
+      "line": 224,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/material/rawkevlar"
+      ],
+      "outputs": [
+        "/material/preparedkevlar"
+      ],
+      "tools": [
+        "industrial acidic bath"
+      ],
+      "steps": [
+        "Put raw kevlar into an industrial acidic bath and wait for it to soak. One raw kevlar gives one prepared kevlar."
+      ],
+      "conditions": "Soaking takes time; the bath works one batch at a time.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cast tool and weapon heads",
+      "file": "code/game/objects/structures/blacksmithing/blacksmithing.dm",
+      "line": 540,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_copper",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_bronze",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_iron",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_steel"
+      ],
+      "outputs": [
+        "/obj/item/weapon/material/part/pickaxe",
+        "/obj/item/weapon/material/part/shovel",
+        "/obj/item/weapon/material/part/spearhead"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Melt metal in a fired clay blacksmith pot in a kiln.",
+        "Pour it into a fired pickaxe, shovel or spearhead mold, then use the filled mold on an anvil to cast the head.",
+        "Fit the head to a handle to finish the tool."
+      ],
+      "conditions": "The head is made of whatever metal was in the mold. Each of these molds holds 3 units.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cast arrowheads",
+      "file": "code/game/objects/structures/blacksmithing/blacksmithing.dm",
+      "line": 582,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_copper",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_bronze",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_iron",
+        "/obj/item/weapon/clay/mold/claypot/fired#molten_steel"
+      ],
+      "outputs": [
+        "/obj/item/stack/arrowhead/copper",
+        "/obj/item/stack/arrowhead/bronze",
+        "/obj/item/stack/arrowhead/iron",
+        "/obj/item/stack/arrowhead/steel"
+      ],
+      "tools": [
+        "/obj/structure/furnace/kiln",
+        "/obj/item/weapon/clay/mold/claypot",
+        "/obj/structure/anvil"
+      ],
+      "steps": [
+        "Melt copper, bronze, iron or steel in a fired clay blacksmith pot in a kiln.",
+        "Pour it into a fired arrowhead mold, then use the filled mold on an anvil to cast arrowheads of that metal."
+      ],
+      "conditions": "The arrowhead mold holds up to 50 units.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mix flour and water into dough",
+      "file": "code/modules/reagents/reagent_containers/food/condiment.dm",
+      "line": 240,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "flour",
+        "water"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/dough"
+      ],
+      "tools": [],
+      "steps": [
+        "Hold a flour sack in one hand and a container of water in the other.",
+        "Use the flour sack. 5 units of flour and 5 units of water make one dough."
+      ],
+      "conditions": "Needs at least 5 units of each.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Roll dough flat",
+      "file": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "line": 1920,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/dough"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough"
+      ],
+      "tools": [
+        "rolling pin"
+      ],
+      "steps": [
+        "Use a rolling pin on a piece of dough."
+      ],
+      "conditions": "Uses the whole dough.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cut dough into spaghetti",
+      "file": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "line": 1923,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/dough"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/spaghetti"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "Use a sharp tool on a piece of dough. It makes two or three portions of spaghetti."
+      ],
+      "conditions": "Uses the whole dough.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cut spaghetti into noodles",
+      "file": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "line": 875,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/spaghetti"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/noodles"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "Use a sharp tool on spaghetti. It makes one or two portions of noodles."
+      ],
+      "conditions": "",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cut a potato into sticks",
+      "file": "code/modules/reagents/reagent_containers/food/snacks.dm",
+      "line": 2146,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/potato"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawsticks"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "Use a kitchen knife on a potato."
+      ],
+      "conditions": "",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Take yeast from a starter jar",
+      "file": "code/modules/1713/production.dm",
+      "line": 1213,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/starterjar"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/condiment/enzyme"
+      ],
+      "tools": [
+        "starter jar"
+      ],
+      "steps": [
+        "Keep a fermenting starter jar until yeast has grown in it.",
+        "Use the jar in your hand to take out a portion of yeast."
+      ],
+      "conditions": "The jar grows more yeast over time, up to five portions.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher human",
+      "file": "code/game/mob/living/carbon/human/human_defense.dm",
+      "line": 74,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/human"
+      ],
+      "outputs": [
+        "/material/humanpelt"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "With Harm intent, use a knife or other sharp tool on a dead human and wait for the butchering to finish."
+      ],
+      "conditions": "The body must be dead. Butchering takes about two minutes and also leaves meat and bone.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher orc or goblin",
+      "file": "code/game/mob/living/carbon/human/human_defense.dm",
+      "line": 56,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/human"
+      ],
+      "outputs": [
+        "/material/orcpelt"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "With Harm intent, use a knife or other sharp tool on a dead orc or goblin and wait for the butchering to finish."
+      ],
+      "conditions": "The body must be dead. Butchering takes about two minutes and also leaves meat and bone.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Butcher ant or crab person",
+      "file": "code/game/mob/living/carbon/human/human_defense.dm",
+      "line": 65,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/mob/living/human"
+      ],
+      "outputs": [
+        "/material/chitin"
+      ],
+      "tools": [
+        "knife"
+      ],
+      "steps": [
+        "With Harm intent, use a knife or other sharp tool on a dead ant or crab person and wait for the butchering to finish."
+      ],
+      "conditions": "The body must be dead. Butchering takes about two minutes and also leaves meat and bone.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Refine petroleum into plastic",
+      "file": "code/modules/1713/modern_items.dm",
+      "line": 715,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/material/plastic"
+      ],
+      "tools": [
+        "bakelizer"
+      ],
+      "steps": [
+        "Fill the plastic refining machine with petroleum, power it and switch it on.",
+        "Every minute it turns 5 units of petroleum into one plastic sheet. Use Remove Plastic on the machine to collect the sheets."
+      ],
+      "conditions": "Needs power and at least 5 units of petroleum per sheet.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Dry tobacco leaves",
+      "file": "code/modules/materials/material_sheets.dm",
+      "line": 547,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/material/tobacco_green"
+      ],
+      "outputs": [
+        "/material/tobacco"
+      ],
+      "tools": [
+        "drying rack"
+      ],
+      "steps": [
+        "Harvest fresh tobacco leaves from a tobacco plant.",
+        "Hang them on a drying rack and wait for them to dry."
+      ],
+      "conditions": "Drying takes time and the rack holds a limited number of items.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Knap flint arrowheads",
+      "file": "code/modules/1713/flint_mining.dm",
+      "line": 152,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/flint"
+      ],
+      "outputs": [
+        "/obj/item/stack/arrowhead/flint"
+      ],
+      "tools": [
+        "hammerstone"
+      ],
+      "steps": [
+        "Strike a piece of flint with a hammerstone and choose Three arrowheads.",
+        "A good strike gives three flint arrowheads. About one strike in four fails."
+      ],
+      "conditions": "A six second action; the flint is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Ret flax in water",
+      "file": "code/modules/1713/flax_processing.dm",
+      "line": 72,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/material/flax"
+      ],
+      "outputs": [
+        "/obj/item/stack/rotten_flax"
+      ],
+      "tools": [],
+      "steps": [
+        "Tie harvested flax into a bundle and put the bundle in water.",
+        "Work the bundle by hand through three soaking stages. It leaves two portions of rotted flax in the water."
+      ],
+      "conditions": "Each soaking stage is a ten second action; the bundle must stay in suitable water.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Comb flax for lint",
+      "file": "code/modules/1713/flax_processing.dm",
+      "line": 161,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/rotten_flax"
+      ],
+      "outputs": [
+        "/obj/item/stack/textile_lint"
+      ],
+      "tools": [
+        "flax comb"
+      ],
+      "steps": [
+        "Load up to ten rotted flax into a flax comb and work it by hand three times.",
+        "The first pass leaves straw, the second flax tow and the third textile lint, one per unit of flax."
+      ],
+      "conditions": "Each pass is a ten second action at the comb.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "React acid and gasoline into raw kevlar",
+      "file": "code/modules/reagents/Chemistry-Recipes.dm",
+      "line": 984,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "sacid",
+        "gasoline"
+      ],
+      "outputs": [
+        "/material/rawkevlar"
+      ],
+      "tools": [],
+      "steps": [
+        "Mix 5 units of sulphuric acid with 5 units of gasoline in a container. The reaction leaves raw kevlar on the ground beside it."
+      ],
+      "conditions": "One raw kevlar per reaction.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press bunch of grapes into grape juice",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 117,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/grapes"
+      ],
+      "outputs": [
+        "grapejuice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the bunch of grapes and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press cinchona plant into quinine",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 128,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona"
+      ],
+      "outputs": [
+        "quinine"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the cinchona plant and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 10 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press bunch of olives into olive oil",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 139,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/olives"
+      ],
+      "outputs": [
+        "olive_oil"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the bunch of olives and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 6 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press juniper berry into juniper juice",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 150,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/juniper"
+      ],
+      "outputs": [
+        "juniper_juice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the juniper berry and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 6 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press animal fat into lard",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 161,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/animalfat"
+      ],
+      "outputs": [
+        "lard"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the animal fat and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 10 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Crush potato in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 172,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/potato"
+      ],
+      "outputs": [
+        "potato"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the potato and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Crush agave in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 184,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/agave"
+      ],
+      "outputs": [
+        "agave"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the agave and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 10 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press sapote fruit into sapote juice",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 195,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapote"
+      ],
+      "outputs": [
+        "sapotejuice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the sapote fruit and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 4 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press apple into apple juice",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 206,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/apple"
+      ],
+      "outputs": [
+        "applejuice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the apple and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 10 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press sapodilla into sapodilla juice",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 217,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla"
+      ],
+      "outputs": [
+        "sapodillajuice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the sapodilla and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 10 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Grind raw cod in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 228,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod"
+      ],
+      "outputs": [
+        "fish"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the raw cod and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Grind raw fish in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 239,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/rawfish"
+      ],
+      "outputs": [
+        "fish"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the raw fish and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Thresh rice stalk in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 250,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/rice"
+      ],
+      "outputs": [
+        "rice"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the rice stalk and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Grind green coffee in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 261,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/coffee"
+      ],
+      "outputs": [
+        "coffee"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the green coffee and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 15 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Put cotton in a container",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 272,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/material/cotton"
+      ],
+      "outputs": [
+        "cotton"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the cotton and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives one unit for each piece of the pile."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press corn into corn oil",
+      "file": "code/modules/reagents/reagent_containers/glass.dm",
+      "line": 289,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/corn"
+      ],
+      "outputs": [
+        "cornoil"
+      ],
+      "tools": [
+        "/obj/item/weapon/reagent_containers/glass/bucket"
+      ],
+      "steps": [
+        "Hold the corn and use it on an open bucket, barrel, bottle or other glass container. It is crushed into the container and gives 5 units."
+      ],
+      "conditions": "The container must be open and have room for the whole amount. The ingredient is used up.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Distil alcoholic drinks into ethanol",
+      "file": "code/modules/reagents/Chemistry-Machinery.dm",
+      "line": 1132,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "beer"
+      ],
+      "outputs": [
+        "ethanol"
+      ],
+      "tools": [
+        "/obj/structure/distillery"
+      ],
+      "steps": [
+        "Put an empty bucket, bottle or other glass container on an alcohol distiller as its collector.",
+        "Pour beer, wine or any other alcoholic drink into the distiller.",
+        "Turn the distiller on and wait. The collector fills with pure ethanol; stronger drinks give more."
+      ],
+      "conditions": "Needs an empty collector with free space. Starting the distiller needs normal medical skill and pouring into it needs medium-high medical skill.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Dig out cave rock for dirt",
+      "file": "code/modules/1713/underground_excavation.dm",
+      "line": 46,
+      "source_commit": "f404a9953ecf94071452d094b2c01f45ae499567",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/barrier",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Underground, use a shovel on a soft cave rock wall to dig it out; it gives two dirt piles and opens the tile like mining.",
+        "Use a shovel on cave-in rubble to clear it for one dirt pile. The opened floor can still be scooped for more dirt."
+      ],
+      "conditions": "About 30 seconds per rock tile and 12 per rubble tile, faster with strength and a better shovel. Sandy rock also gives a sand pile. Frozen rock needs a pickaxe. Mined tunnels can cave in without supports.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Tunnel shaft spoil",
+      "file": "code/modules/1713/underground_excavation.dm",
+      "line": 39,
+      "source_commit": "f404a9953ecf94071452d094b2c01f45ae499567",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/barrier"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Use a shovel in hand and choose Tunnel to dig a shaft down to the level below, or up from it.",
+        "When the shaft is finished, its earth is left as two dirt piles at your feet."
+      ],
+      "conditions": "The tunnel needs diggable ground with earth below; the usual tunnel rules and times apply.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],
   "mechanism_overview": [

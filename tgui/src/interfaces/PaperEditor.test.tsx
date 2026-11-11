@@ -10,7 +10,7 @@ vi.mock('./BookReader', async () => {
   const actual = await vi.importActual<any>('./BookReader');
   return { ...actual, BookReader: ({ data }: any) => <actual.BookPage runs={actual.bookRuns(data)} /> };
 });
-import { PaperEditor, paperEditorModel, paperEditParams, paperBookData, legacyPieces, sectionPieces } from './PaperEditor';
+import { PaperEditor, paperEditorModel, paperEditParams, paperBookData, legacyPieces, sectionPieces, stampLabel, formPieces, openFields } from './PaperEditor';
 import { bookRuns } from './BookReader';
 import type { Data, ScreenProps } from '../types';
 const EN = 'civ13:english:v1', RU = 'civ13:russian:v1';
@@ -210,4 +210,46 @@ it('renders written titles bold and keeps body text regular', () => {
   expect(title.slice(1).map(p=>`${p.text}${p.bold?'!':''}`)).toEqual(['Heading !','x!',' y!']);
   const body=sectionPieces({ text: 'plain', kind: 'body', ink: '#000000', tool: 'pen' });
   expect(body[1]).toEqual({ text: 'plain', ink: '#000000', face: 'verdana', bold: false, italic: false });
+});
+
+it('names a legacy stamp impression from its alt text, as inert text', () => {
+  expect(stampLabel('APPROVED ink stamp')).toBe('[stamp: APPROVED ink stamp]');
+  expect(stampLabel(null)).toBe('[stamp]');
+  expect(stampLabel('   ')).toBe('[stamp]');
+  expect(stampLabel('x'.repeat(200))).toBe(`[stamp: ${'x'.repeat(64)}]`);
+  const pieces = legacyPieces('Orders<img src="paperstamp_stamp-approved.png" alt="APPROVED ink stamp" onerror=alert(1)>');
+  expect(pieces.map(p => p.text).join('')).toBe('Orders[stamp: APPROVED ink stamp]');
+});
+
+function formData(answered: boolean): Data {
+  const base = committed(data());
+  const sections: Data[] = [{ id: 'section-1', kind: 'field_label', language_id: EN, text: 'Name', ink: '#000000', tool: 'pen' },
+    { id: 'section-2', kind: 'field_label', language_id: EN, text: 'Rank', ink: '#000000', tool: 'pen' }];
+  if (answered) sections.push({ id: 'section-3', kind: 'field_answer', language_id: EN, text: 'Ada', ink: '#0000ff', tool: 'pen', target: 'section-1' });
+  return { ...base, view: { ...base.view, sections } };
+}
+it('draws answers on their blank line and lists only open blanks', () => {
+  const model = paperEditorModel(formData(true));
+  expect(formPieces(model.runs).map(p => p.br ? '|' : p.text).join('')).toBe('|Name: Ada|Rank: __________');
+  expect(openFields(model.runs)).toEqual([{ id: 'section-2', text: 'Rank' }]);
+  expect(paperEditParams(model, 'append', EN, 'field_answer', 'Major', 'section-2')).toEqual({ paper_edit: JSON.stringify({ operation: 'append', lease: model.lease, document_id: model.document_id, revision: 1, language_id: EN, kind: 'field_answer', value: 'Major', target: 'section-2' }) });
+  expect(JSON.parse(paperEditParams(model, 'append', EN, 'body', 'x', 'section-2').paper_edit as string)).not.toHaveProperty('target');
+});
+it('rejects answers with no target, unknown targets or targets on other kinds', () => {
+  const bad = formData(true);
+  const sections = bad.view.sections as Data[];
+  for (const change of [(s: Data[]) => { delete s[2].target; }, (s: Data[]) => { s[2].target = 'nowhere'; }, (s: Data[]) => { s[0].target = 'section-1'; }]) {
+    const copy = structuredClone(bad); change(copy.view.sections as Data[]);
+    expect(() => paperEditorModel(copy)).toThrow();
+  }
+  expect(sections.length).toBe(3);
+});
+it('fills the chosen blank from the editor form', () => {
+  const ui = props(formData(false));
+  render(<PaperEditor {...ui} />);
+  fireEvent.change(screen.getByLabelText('Writing section'), { target: { value: 'field_answer' } });
+  fireEvent.change(screen.getByLabelText('Blank to fill'), { target: { value: 'section-2' } });
+  fireEvent.change(screen.getByLabelText('Writing text'), { target: { value: 'Major' } });
+  fireEvent.click(screen.getByText('Write'));
+  expect(sent(ui)).toMatchObject({ kind: 'field_answer', target: 'section-2', value: 'Major' });
 });

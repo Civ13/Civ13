@@ -293,12 +293,49 @@ describe('Crafting Atlas navigation', () => {
 });
 
 describe('Crafting Atlas requirement notes', () => {
+  it('shows one row for a recipe that comes in several materials', () => {
+    const page = { id: '/obj/item/hatchet', name: 'hatchet', heading: 'How to obtain', routes: [], kind: 'Tool or weapon', made_by_count: 2, used_in_count: 0, used_in: [],
+      made_by: [{ id: 'r1', name: 'Toolsmith hatchet', era_label: '0: Stone Age', needs: '3 x bronze', variant_count: 4, ways: 'bronze, copper, iron, steel' }, { id: 'r9', name: 'Workbench Hatchet', era_label: '0: Stone Age', needs: '1 x hatchet head', variant_count: 1 }] };
+    const props = ui({ query: '', detail: { ...recipe, id: 'r1' }, guidance: page });
+    render(<CraftingAtlas {...props} />);
+    const rows = within(screen.getByRole('navigation', { name: 'Results' })).getAllByRole('button');
+    expect(rows.map(row => row.textContent)).toEqual(['Toolsmith hatchetStone Age - 4 versions: bronze, copper, iron, steel', 'Workbench HatchetStone Age - 1 x hatchet head']);
+    expect(rows[0].getAttribute('aria-current')).toBe('true');
+  });
+  it('says where a reaction runs and links the reaction bench', () => {
+    const chemistry = { ...recipe, kind: 'Chemistry', conditions: 'Catalysts: []; inhibitors: []; additional can_happen/process callbacks may apply.' };
+    const view = render(<CraftingAtlas {...ui({ detail: chemistry })} />);
+    expect(screen.getByText(/Mix the reagents in one open container, such as a bucket or beaker/)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /laboratory reaction bench/ })).toBeNull();
+    view.rerender(<CraftingAtlas {...ui({ detail: { ...chemistry, site: 'bench', station: 'laboratory reaction bench', station_id: '/obj/structure/reaction_bench' } })} />);
+    expect(screen.getByRole('button', { name: 'Also at: laboratory reaction bench' })).toBeTruthy();
+    expect(screen.getByText(/can also run it on demand/)).toBeTruthy();
+    const props = ui({ detail: { ...chemistry, site: 'bench_heated', station: 'laboratory reaction bench', station_id: '/obj/structure/reaction_bench' } });
+    view.rerender(<CraftingAtlas {...props} />);
+    expect(screen.getByText(/heated with a laboratory burner/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Made at: laboratory reaction bench' }));
+    expect(sent(props).resource).toBe('/obj/structure/reaction_bench');
+  });
+  it('tells the reader where uncrafted things come from', () => {
+    const page = { id: 'honey', name: 'honey', heading: 'How to obtain', routes: [], kind: 'Chemical', made_by_count: 0, used_in_count: 1, made_by: [], used_in: [] };
+    const props = ui({ query: '', detail: null, guidance: { ...page, found_in: [{ id: '/obj/item/honeycomb', name: 'honeycomb', image: '' }, { id: '', name: 'blood pack', image: '' }] } });
+    const view = render(<CraftingAtlas {...props} />);
+    expect(screen.getByText('No recipe makes this. It comes inside the items below.')).toBeTruthy();
+    expect(screen.getByText('blood pack').tagName).toBe('SPAN');
+    fireEvent.click(screen.getByRole('button', { name: /honeycomb/ }));
+    expect(sent(props).resource).toBe('/obj/item/honeycomb');
+    view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/mob/living/simple_animal/sheep', name: 'sheep', kind: 'Animal' } })} />);
+    expect(screen.getByText(/A living creature, not something you craft/)).toBeTruthy();
+    view.rerender(<CraftingAtlas {...ui({ query: '', detail: null, guidance: { ...page, id: '/turf/floor/grass', name: 'grass', kind: 'Terrain', heading: 'Gathering from' } })} />);
+    expect(screen.getByText(/Part of the landscape/)).toBeTruthy();
+  });
   it('lifts time and placement out of generated bookkeeping and keeps real notes', () => {
     expect(notes('Legacy research I/M/M: 0/0/0; maximum era ordinal 8; time 80 deciseconds; category none; one per turf 0; floor 1; supplied material null. Research-node and map gates also apply. Explicit research node: weaving.'))
       .toEqual({ facts: ['Takes about 8 s'], rest: '' });
     expect(notes('Catalysts: []; inhibitors: []; additional can_happen/process callbacks may apply.')).toEqual({ facts: [], rest: '' });
     expect(notes('Boiling water and pot/stove conditions apply. Explicit research node: pottery_storage.').rest).toBe('Boiling water and pot/stove conditions apply.');
-    expect(notes('Catalysts: [(&#39;water&#39;, &#39;1&#39;)]; inhibitors: []; additional can_happen/process callbacks may apply.').rest).toContain("Catalysts: [('water', '1')]");
+    expect(notes('Catalysts: [(&#39;enzyme&#39;, &#39;5&#39;)]; inhibitors: [(&#39;phosphorus&#39;, &#39;1&#39;)]; additional can_happen/process callbacks may apply.'))
+      .toEqual({ facts: ['Needs 5 enzyme in the container as a catalyst. It is not used up', 'Does not react while the container holds 1 phosphorus'], rest: '' });
     expect(notes(undefined)).toEqual({ facts: [], rest: '' });
   });
 });

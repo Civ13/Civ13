@@ -57,5 +57,6 @@ bold in both the editor and the classic reader. Saved, refreshed, rejected,
 pending and unconfirmed states use distinct notices; a full paper says so. The
 Close button sends the existing cancel operation.
 
-Study, forms/templates, field answers, stamp repair and filing remain separate
-work.
+The Section choice also offers "Blank to fill in" (a field label, at most 128
+characters) and "Fill in a blank" (pick an open blank, then write its answer);
+see [forms](paperwork-forms.md). Templates and filing remain separate work.

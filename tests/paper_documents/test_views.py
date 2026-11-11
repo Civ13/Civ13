@@ -54,6 +54,9 @@ def environment(source=SOURCE):
  env['findtext']=lambda text,needle:text.find(needle)+1
  vm.ALLOWED|={'findtext','paper_document_section_pencode'}
  env['paper_document_section_pencode']=vm.project(adapted.replace('\\[','[').replace('\\]',']').replace('[/','[\\x2f'),'/proc/paper_document_section_pencode','text',env)
+ vm.ALLOWED|={'paper_document_view_run','paper_document_view_answer'}
+ env['paper_document_view_run']=vm.project(adapted,'/proc/paper_document_view_run','section,P',env)
+ env['paper_document_view_answer']=vm.project(adapted,'/proc/paper_document_view_answer','sections,id,P',env)
  renderer=vm.project(adapted,'/proc/paper_document_view_body','data,P',env)
  env['paper_document_view_title']=vm.project(adapted,'/proc/paper_document_view_title','value',env)
  return env,Base,Reader,langs,renderer
@@ -78,7 +81,7 @@ class Views(unittest.TestCase):
    self.assertTrue(service.append(self.actor,self.pen,record['document_id'],record['revision'],RU,kind,'UNKNOWN_'+kind.upper()+'_CANARY'))
   record=self.paper.document_record
   for kind in ('field_label','field_answer'):
-   record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='UNKNOWN_'+kind.upper()+'_CANARY',ink='white',tool='pen'))
+   record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='UNKNOWN_'+kind.upper()+'_CANARY',ink='white',tool='pen',**(dict(target='field_label') if kind=='field_answer' else {})))
   self.assertTrue(self.env['paper_document_record_valid'](record))
   self.actor.languages=[self.langs[EN]]
  def test_every_route_redacts_all_unknown_text_in_complete_data_and_html(self):
@@ -203,7 +206,7 @@ class Views(unittest.TestCase):
   for section in self.paper.document_record['sections']:section['text']='[b]&lt;x&gt;'
   result=self.render(self.context('paper').project(self.actor),self.paper)
   self.assertIn('<b>&amp;lt;x&amp;gt;</i></b>',result)
-  self.assertIn('else\n\t\t\ttext = paper_document_section_pencode(text)',SOURCE)
+  self.assertIn('else\n\t\ttext = paper_document_section_pencode(text)',SOURCE)
  def test_crayon_signature_retains_combined_bold_italic_and_ink(self):
   legacy_signature='<font face="Times New Roman"><i>Old &amp; unchanged</i></font>'
   self.paper.info=legacy_signature;self.pen.kind='crayon';self.pen.signature='Crayon & <Literal Signature>'

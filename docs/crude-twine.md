@@ -4,4 +4,4 @@ Use sharpened flint on a grass tile to gather two grass cuttings. The action tak
 
 Use a sharpened flint head on a sharpened stick with one twine binding in your inventory or on the ground beneath you. Assembly takes ten seconds. The resulting flint axe has 25% of the normal maximum durability. Sinew and rope remain stronger alternatives. Crude twine does not substitute for general-purpose rope recipes.
 
-Cuttings and twine reuse the rope DMI state with green and straw colouring. Hay processing is not implemented by this change.
+Cuttings and twine reuse the rope DMI state with green and straw colouring. Spread spare cuttings on the ground to dry them into hay; see [Hay](hay.md).

@@ -51,13 +51,16 @@ WELL_SMELL_OFFLINE_TESTS = frozenset({'tests/well_smell/test_well_smell.py'})
 
 # Exact template/source-only suite runs in the reviewed bounded offline baseline.
 SHOWCASE_ROOMS_OFFLINE_TESTS = frozenset({'tests/showcase_rooms/test_templates.py'})
-DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py'})
+DOOR_INTENTS_OFFLINE_TESTS = frozenset({'tests/door_intents/test_door_intents.py',
+                                        'tests/door_intents/test_jail_keys.py'})
 FLINT_MINING_OFFLINE_TESTS = frozenset({'tests/flint_mining/test_flint_mining.py'})
 # The extracted-proc probe needs BYOND; it is run by hand, not admitted to CI.
 FLINT_MINING_MANUAL_NATIVE = frozenset({'tests/flint_mining/run.py', 'tests/flint_mining/probe.dm'})
 RESEARCH_STAFF_OFFLINE_TESTS = frozenset({'tests/research_staff/test_research_staff.py'})
 MAP_TOOLS_OFFLINE_TESTS = frozenset({'tests/map_tools/test_map_tools.py'})
 SWEEP_LOOPS_OFFLINE_TESTS = frozenset({'tests/sweep_loops/test_sweep_loops.py'})
+PROJECTILE_LOCATION_OFFLINE_TESTS = frozenset({'tests/projectile_location/test_location.py'})
+ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS = frozenset({'tests/zombie_spawn_selection/test_selection.py'})
 HELD_MOVEMENT_OFFLINE_TESTS = frozenset({'tests/held_movement/test_held_movement.py'})
 INVENTORY_DRAG_OFFLINE_TESTS = frozenset({'tests/inventory_drag/test_inventory_drag.py'})
 NOMADS_ADOPTION_OFFLINE_TESTS = frozenset({'tests/nomads_adoption/test_nomads_adoption.py'})
@@ -477,8 +480,16 @@ def introduced_tests(base, head, event):
             raise RuntimeError('Unregistered medical-care executable test requires explicit CI review')
         if path in SWEEP_LOOPS_OFFLINE_TESTS:
             continue
+        if path in PROJECTILE_LOCATION_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/projectile_location/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered projectile-location executable test requires explicit CI review')
         if path.startswith('tests/sweep_loops/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered sweep-loop executable test requires explicit CI review')
+        if path in ZOMBIE_SPAWN_SELECTION_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/zombie_spawn_selection/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered zombie-spawn-selection executable test requires explicit CI review')
         if path in HELD_MOVEMENT_OFFLINE_TESTS:
             continue
         if path.startswith('tests/held_movement/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:

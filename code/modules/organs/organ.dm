@@ -376,3 +376,20 @@ var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herb
 
 /obj/item/organ/is_usable()
 	return ..() && !is_broken()
+
+// Slow natural recovery for living, attached internal organs. Called after
+// subtype processing so brain/heart overrides cannot skip it. No offline catch-up.
+/obj/item/organ/proc/recover_internal_damage()
+	if (!owner || loc != owner || !(src in owner.internal_organs) || owner.stat == DEAD || owner.inducedSSD)
+		return
+	if (damage <= 0 || damage >= max_damage || (status & (ORGAN_DEAD | ORGAN_CUT_AWAY)) || rejecting)
+		return
+	// Active infection and dangerous cold need stabilizing before tissue repairs.
+	if (germ_level >= INFECTION_LEVEL_ONE || owner.bodytemperature < 170)
+		return
+	if (owner.getOxyLoss() >= owner.maxHealth / 2 || owner.get_effective_blood_volume() < BLOOD_VOLUME_SAFE)
+		return
+	var/recovery = is_broken() ? 0.005 : 0.01
+	if (owner.lying)
+		recovery *= 2
+	damage = max(0, damage - recovery * config.organ_regeneration_multiplier)

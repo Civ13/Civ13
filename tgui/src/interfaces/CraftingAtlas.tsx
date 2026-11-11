@@ -28,6 +28,14 @@ const methods: Record<string, [string, string]> = {
   'Factory fabricator': ['Fabricator', 'Load the materials into a powered assembly fabricator.'],
   'Acquisition / processing': ['Gathering', 'Gathered or processed in the world rather than crafted from a menu.'],
 };
+// Where a reaction runs. Most happen in any container; the bench offers some and is the only place for a few.
+const reactionHints: Record<string, string> = {
+  '': 'Mix the reagents in one open container, such as a bucket or beaker. They react on their own.',
+  bench: 'Mix the reagents in one open container and they react on their own. A laboratory reaction bench can also run it on demand in its secured beaker.',
+  bench_only: 'Reacts only in the secured beaker of a laboratory reaction bench, or in a powered factory reaction vessel. Use the bench and pick the reaction.',
+  bench_heated: 'Reacts only in the secured beaker of a laboratory reaction bench heated with a laboratory burner, or in a powered factory reaction vessel.',
+};
+const reagentList = (found: string) => Array.from(found.matchAll(/\('(\w+)', '([\d.]+)'\)/g)).map(match => match[2] + ' ' + match[1].replace(/_/g, ' ')).join(' and ');
 const method = (kind: unknown) => { const name = text(kind); return methods[name.split(' / ')[0]] ?? methods[name] ?? [name, '']; };
 const catalogName = (kind: unknown) => { const parts = text(kind).split(' / '); return parts[0] === 'Material' && parts[1] ? parts[1].replace(/_/g, ' ') : ''; };
 // Generated bookkeeping that the layout already shows as research, time and era.
@@ -37,6 +45,12 @@ export function notes(conditions: unknown) {
   const time = /\btime (\d+) deciseconds\b/.exec(rest);
   if (time && Number(time[1]) > 0) facts.push('Takes about ' + Number(time[1]) / 10 + ' s');
   if (/\bone per turf 1\b/.test(rest)) facts.push('One per tile');
+  const reaction = /Catalysts: \[(.*?)\]; inhibitors: \[(.*?)\]; additional can_happen\/process callbacks may apply\.\s*/.exec(rest);
+  if (reaction) {
+    if (reagentList(reaction[1])) facts.push('Needs ' + reagentList(reaction[1]) + ' in the container as a catalyst. It is not used up');
+    if (reagentList(reaction[2])) facts.push('Does not react while the container holds ' + reagentList(reaction[2]));
+    rest = rest.replace(reaction[0], '');
+  }
   rest = rest.replace(/Legacy research I\/M\/M: [^.]*?supplied material [^.;]*\.\s*/, '').replace(/Research-node and map gates also apply\.\s*/, '')
     .replace(/\s*Explicit research node: [\w, ]+\./g, '').replace(/Receiver\/context dependent; named constructor arguments retained in source\.\s*/, '')
     .replace(/Catalysts: \[\]; inhibitors: \[\]; additional can_happen\/process callbacks may apply\.\s*/, '').trim();
@@ -71,7 +85,7 @@ function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
 }
 function RecipeRow({ ui, row, selected, onPick }: { ui: ScreenProps; row: Data; selected: boolean; onPick: () => void }) {
   const dim = !!row.manual_hint || !!row.retired || !!row.elsewhere;
-  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + ' recipe variants' : text(row.needs);
+  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + (row.ways ? ' versions: ' + text(row.ways) : ' recipe variants') : text(row.needs);
   return <li data-result-type="recipe" className={selected ? 'atlas-selected' : undefined}>
     <button type="button" className={'atlas-row' + (dim ? ' atlas-dim' : '')} disabled={!ui.interactive} aria-current={selected ? 'true' : undefined} onClick={onPick}>
       <Sprite image={row.image} />
@@ -87,7 +101,10 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
   const variants = list(recipe.variants);
   const familyVariants = list(recipe.family_variants);
   const research = list(recipe.research);
-  const [how, hint] = method(recipe.kind);
+  const site = text(recipe.site);
+  const [how, base] = method(recipe.kind);
+  const hint = text(recipe.kind) === 'Chemistry' ? reactionHints[site] ?? base : base;
+  const optional = site === 'bench';
   const { facts, rest } = notes(recipe.conditions);
   const until = Number(recipe.maximum_era);
   return <article className="atlas-card" aria-label="Recipe">
@@ -95,7 +112,7 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{text(recipe.name)}</h2>
     <p className="atlas-chips">
       <span className="atlas-chip">{eraName(recipe.era_label) || 'Era varies'}</span>
-      {recipe.station_id ? <button type="button" className="atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>Made at: {text(recipe.station)}</button>
+      {recipe.station_id ? <button type="button" className="atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{text(recipe.station)}</button>
         : <span className="atlas-chip">{text(recipe.station) || how}</span>}
       {catalogName(recipe.kind) && !!recipe.elsewhere && <span className="atlas-chip atlas-warn">Other maps only: {catalogName(recipe.kind)}</span>}
       {!!recipe.retired && <span className="atlas-chip atlas-warn">Retired in the current era</span>}
@@ -129,9 +146,16 @@ function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; c
     </details>
   </article>;
 }
+// Things nobody crafts: say where they are instead of "no recipe".
+const worldNotes: Record<string, string> = {
+  'Animal': 'A living creature, not something you craft. Look for it in the wild on maps where it lives, or keep and breed a herd.',
+  'Terrain': 'Part of the landscape, not something you craft. Look for this ground on the map.',
+  'Natural feature': 'Grows or lies in the wild, not something you craft. Look for it on the map.',
+};
 const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Conditions', era: 'Era', map_notes: 'Map notes', status: 'Review status' };
 function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
-  const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0;
+  const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0, inside = list(guidance.found_in);
+  const world = worldNotes[text(guidance.kind)];
   return <article className="atlas-card" aria-label="Resource">
     <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
     {!!guidance.kind && <p className="atlas-chips"><span className="atlas-chip">{text(guidance.kind)}</span>
@@ -142,7 +166,11 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
     {stats.length > 0 && <dl className="atlas-stats">{stats.map((stat, i) => <div key={i}><dt>{text(stat.label)}</dt><dd>{text(stat.value)}</dd></div>)}</dl>}
     <h3 className="atlas-section">{text(guidance.heading)} {text(guidance.name)}</h3>
     {!routes.length && <p>{made > 0 ? 'Crafted. ' + (made === 1 ? 'Its recipe is shown below.' : 'The first of its ' + made + ' recipes is shown below, and the rest are listed under Made by.')
-      : 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.'}</p>}
+      : inside.length ? 'No recipe makes this. It comes inside the items below.'
+      : world ?? 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.'}</p>}
+    {inside.length > 0 && <div className="atlas-related"><span>Found in:</span>{inside.map((entry, i) => entry.id
+      ? <Resource key={i} ui={ui} resource={{ ...entry, quantity: '' }} />
+      : <span key={i} className="atlas-chip">{text(entry.name)}</span>)}</div>}
     {routes.map((route, i) => {
       const steps = list(route.steps), said = steps.map(step => text(step)).join(' ');
       // Some routes repeat their steps as the condition; say it once.
