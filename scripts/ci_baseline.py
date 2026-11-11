@@ -416,6 +416,11 @@ SUITES = {
         'paths': ('tests/human_life_forms/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Vision-organ short-circuit and side-effect order with fake engine types.
+    'human_vision_organ': {'files': ('tests/human_vision_organ/test_vision_organ.py',),
+        'paths': ('tests/human_vision_organ/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'tests/save_movement/source_adapter.py')},
     # Narrow-cone direction equivalence against fake engine geometry.
     'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
         'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
