@@ -1323,6 +1323,9 @@ SUITES = {
     # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
     'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
         'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},
+    # Prefilled belts hold and accept their initial contents (#4544, #4545, #4546).
+    'belt_contents': {'files': ('tests/belt_contents/test_source.py',),
+        'paths': ('tests/belt_contents/', 'code/game/objects/items/weapons/storage/belt.dm')},
     # Railing dismantling stops if the railing was fastened during the wait (#4413).
     'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
