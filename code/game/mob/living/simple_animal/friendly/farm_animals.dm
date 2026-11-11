@@ -70,7 +70,7 @@
 	attacktext = "kicked"
 	health = 50
 	maxHealth = 50
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
@@ -427,7 +427,7 @@
 	health = 60
 	maxHealth = 60
 	var/piglet = FALSE
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
@@ -603,7 +603,7 @@
 	health = 60
 	maxHealth = 60
 	var/piglet = FALSE
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0
@@ -729,7 +729,7 @@
 	melee_damage_lower = 2
 	melee_damage_upper = 6
 	stop_automated_movement_when_pulled = 1
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
 	herbivore = 1
@@ -869,7 +869,7 @@
 	melee_damage_lower = 2
 	melee_damage_upper = 6
 	stop_automated_movement_when_pulled = 1
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	mob_size = MOB_MEDIUM
 	var/lamb = FALSE
 	herbivore = 1
