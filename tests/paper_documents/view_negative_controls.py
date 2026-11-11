@@ -13,7 +13,7 @@ CONTROLS={
  'read-context-write':('writing || !paper','FALSE || !paper','test_every_reader_context_is_incapable_of_mutation'),
  'client-session':('reader.client != control_client','FALSE','test_request_rejects_reconnected_transferred_or_foreign_controller'),
  'container-membership':('P.loc != owner','FALSE','test_membership_container_movement_and_actual_page_identity_rechecked'),
- 'selected-page':('B.pages[B.page] != P','FALSE','test_membership_container_movement_and_actual_page_identity_rechecked'),
+ 'selected-page':('B.pages[B.page] == P','TRUE','test_membership_container_movement_and_actual_page_identity_rechecked'),
  'board-distance':('istype(owner, /obj/structure/noticeboard) && owner.Adjacent(reader)','istype(owner, /obj/structure/noticeboard) && TRUE','test_membership_container_movement_and_actual_page_identity_rechecked'),
  'literal-new-text':('var/text = html_encode(section["text"])','var/text = section["text"]','test_known_new_ink_signature_and_literal_markup_render_without_reinterpretation'),
  'error-fallback':('if (result && !result["error"])','if (result)','test_stale_or_malformed_classified_records_never_fall_back_to_raw_cache'),
@@ -26,14 +26,15 @@ CONTROLS={
 def run():
  rows=[];original=tests.environment
  for name,(before,after,target) in CONTROLS.items():
-  # The legacy write adapter repeats this page check. Mutate only the reader
-  # boundary in paper_document_route_access, retaining the causal assertion.
-  scope=tests.vm.body(tests.SOURCE,'/proc/paper_document_route_access') if name=='selected-page' else tests.SOURCE
+  # Mutate the production shared helper and project that changed body so this
+  # control exercises the reader through its real dependency.
+  scope=tests.vm.body(tests.vm.SOURCE,'/proc/paper_document_bundle_page') if name=='selected-page' else tests.SOURCE
   assert scope.count(before)==1,(name,'source anchor drift')
   changed=scope.replace(before,after)
-  source=tests.SOURCE.replace(scope,changed,1) if scope!=tests.SOURCE else changed
+  source=tests.SOURCE if name=='selected-page' else changed
+  bundle_source=tests.vm.SOURCE.replace(scope,changed,1) if name=='selected-page' else tests.vm.SOURCE
   stream=io.StringIO()
-  with patch.object(tests,'environment',lambda:original(source)):
+  with patch.object(tests,'environment',lambda:original(source,bundle_source)):
    result=unittest.TextTestRunner(stream=stream).run(unittest.TestSuite([tests.Views(target)]))
   assert len(result.failures)>=1 and not result.errors,(name,stream.getvalue())
   rows.append(dict(control=name,tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),
