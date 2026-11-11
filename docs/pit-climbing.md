@@ -13,7 +13,10 @@ Camouflage is visual, not server-enforced invisibility or an anti-metagaming rul
 To escape, stand below the opening, face a cardinal direction toward a clear
 solid rim and use **IC > Climb Up**, with at least one hand free. The same verb
 climbs a neighboring solid wall to a supported upper ledge when there is open air
-over the character. It waits three seconds and rechecks the actor, terrain,
+over the character. With grab intent and an empty active hand, clicking that
+wall or rim does the same climb: it runs the verb's own proc, so the checks are
+identical, and a click that could not climb falls through to the normal hand
+action. It waits three seconds and rechecks the actor, terrain,
 direction, occupancy, map grace restriction and save movement barrier. It does
 not create levels, pass through a ceiling or wall, levitate, carry another person,
 or permit climbing while restrained, lying down or buckled.

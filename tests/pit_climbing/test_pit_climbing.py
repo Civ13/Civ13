@@ -27,10 +27,21 @@ class PitClimbing(unittest.TestCase):
         for guard in ('T.density', '/turf/floor/dirt/underground', '/turf/floor/beach/water', '/turf/floor/lava', 'A.density || isliving(A)', 'C.wall || C.incomplete', '!building_open_turf(T)', '/tunneltop/pit'):
             self.assertIn(guard, source)
     def test_climb_revalidates_geometry_after_wait(self):
-        source = proc('/mob/living/human/verb/climb_up_ledge()')
+        self.assertIn('climb_ledge(dir)', proc('/mob/living/human/verb/climb_up_ledge()'))
+        source = proc('/mob/living/human/proc/climb_ledge(direction)')
         self.assertLess(source.index('do_after'), source.index('ledge_climb_destination(src, direction) != destination'))
         self.assertLess(source.index('ledge_climb_destination(src, direction) != destination'), source.index('trench_climb_place(src, destination)'))
         self.assertIn('get_turf(src) != start || dir != direction', source)
+    def test_grab_click_reuses_climb_up(self):
+        source = proc('/mob/living/human/proc/grab_climb_ledge(atom/A)')
+        self.assertIn('a_intent != I_GRAB || get_active_hand()', source)
+        self.assertIn('get_step(here, direction) != target', source)
+        self.assertLess(source.index('if (!ledge_climb_destination(src, direction))'), source.index('climb_ledge(direction)'))
+        self.assertNotIn('trench_climb_place', source)
+        self.assertNotIn('do_after', source)
+        click = (ROOT / 'code/_onclick/other_mobs.dm').read_text()
+        unarmed = click.split('/mob/living/human/UnarmedAttack(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(unarmed.index('grab_climb_ledge(A)'), unarmed.index('A.attack_hand('))
     def test_occupied_pits_still_work_and_transfers_align(self):
         self.assertIn('ledge_landing_clear(T, TRUE) ? T : null', SOURCE)
         self.assertIn('if (allow_occupants && isliving(A))', SOURCE)
