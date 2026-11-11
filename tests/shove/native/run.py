@@ -66,13 +66,13 @@ def main():
     base.require(result.returncode == 0 and not legacy.DIAGNOSTICS.search(diagnostics), 'Runtime diagnostic/exit failure')
     base.require(receipt['head'] == manifest['head'] and receipt['port'] == 0 and
                  (receipt['byond_version'], receipt['byond_build']) == (516, 1688), 'Wrong source/engine or open port')
-    base.require(receipt['error'] is None and receipt['shove_checks'] == 46, 'Incomplete/failed shove assertions')
+    base.require(receipt['error'] is None and receipt['shove_checks'] == 48, 'Incomplete/failed shove assertions')
     base.require((work / 'result.txt').read_text().strip() == 'PASS', 'No PASS marker')
     base.require((work / 'port-closed.txt').read_text().strip() == 'closed', 'No closed-port witness')
     legacy.inspect_logs(work)
     (out / 'accepted.json').write_text(json.dumps({'head': manifest['head'], 'checks': receipt['shove_checks'],
         'artifacts': artifacts, 'scope': 'headless real-helper/pulse probe; no visual or live-server acceptance'}, indent=2))
-    print('PASS 46 shove checks at ' + manifest['head'])
+    print('PASS 48 shove checks at ' + manifest['head'])
 
 
 if __name__ == '__main__':
