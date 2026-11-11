@@ -3,6 +3,13 @@
 	return
 /obj/item/weapon/gun/wait_for_configuration(mob/living/human/H, delay)
 	return TRUE
+/obj/item/weapon/gun_component/salvage_wait(mob/living/human/H)
+	return TRUE
+/proc/parts_steel_at(turf/T)
+	var/n = 0
+	for(var/obj/item/stack/material/steel/S in T)
+		if(!QDELETED(S)) n += S.amount
+	return n
 /proc/parts_check(condition, message)
 	if(!condition)
 		text2file("FAIL: [message]", "parts_result.txt")
@@ -122,6 +129,51 @@
 	parts_check(abs(G.ergonomics - base_ergo * 0.75) < 0.001, "reapplying parts does not compound")
 	parts_hold(H, stock)
 	parts_check(G.firearm_install(stock, H) && abs(G.ergonomics - base_ergo) < 0.001, "stock restores handling")
+
+	// Parts panel: state, block reasons, swap preview and its actions.
+	var/html = G.firearm_panel_html(H)
+	parts_check(findtext(html, "Ready to fire") && findtext(html, "Cartridge: 7.62x39mm") && findtext(html, "firearm_action=remove;slot=feed"), "the panel shows a ready 7.62 rifle with remove links")
+	parts_check(G.firearm_panel_act(H, list("firearm_action" = "remove", "slot" = "feed")) && !G.firearm_part_ids["feed"], "the panel removes the magazine well")
+	var/obj/item/weapon/gun_component/panel_feed = locate(/obj/item/weapon/gun_component) in H
+	parts_check(istype(panel_feed) && panel_feed.component_id == "ak/feed/762x39", "the removed well is carried")
+	var/obj/item/weapon/gun_component/spare545 = new /obj/item/weapon/gun_component/ak_feed_545(H)
+	html = G.firearm_panel_html(H)
+	parts_check(findtext(html, "Cannot fire: it has no feed") && findtext(html, "AK magazine well (5.45x39mm)"), "the panel shows the block and the carried parts")
+	var/list/bad_preview = G.firearm_fit_preview(spare545)
+	var/list/good_preview = G.firearm_fit_preview(panel_feed)
+	parts_check(bad_preview["fire_block"] == "its barrel and magazine well are for different cartridges" && isnull(bad_preview["caliber"]), "previewing a 5.45 well on a 7.62 barrel shows it would not fire")
+	parts_check(!good_preview["fire_block"] && good_preview["caliber"] == "a762x39" && !G.firearm_part_ids["feed"], "previewing the 7.62 well shows it fires and changes nothing")
+	var/list/stock_preview = G.firearm_fit_preview(new /obj/item/weapon/gun_component/ak_furniture_folding(H))
+	parts_check(abs(stock_preview["handling"] - 0.95) < 0.001 && G.firearm_part_ids["furniture"] == "ak/furniture/fixed", "previewing a folding stock shows its handling without swapping")
+	for(var/obj/item/weapon/gun_component/folding in H)
+		if(folding.component_id == "ak/furniture/folding") qdel(folding)
+	var/obj/item/weapon/gun_component/floor_part = new /obj/item/weapon/gun_component/ak_feed_762(locate(2,2,1))
+	parts_check(!G.firearm_panel_act(H, list("firearm_action" = "fit", "part" = "\ref[floor_part]")) && !G.firearm_part_ids["feed"], "the panel refuses a part the user does not carry")
+	qdel(floor_part)
+	parts_check(!G.firearm_panel_act(H, list("firearm_action" = "remove", "slot" = "magic")), "the panel refuses an unknown slot")
+	parts_hold(H, panel_feed)
+	parts_check(findtext(G.firearm_panel_html(H), "firearm_action=fit;part=\ref[panel_feed]"), "the panel offers Fit for the part in the active hand")
+	parts_check(G.firearm_panel_act(H, list("firearm_action" = "fit", "part" = "\ref[panel_feed]")) && G.firearm_part_ids["feed"] == "ak/feed/762x39" && !G.firearm_fire_block(), "the panel fits the well back")
+
+	// Salvage at the bench: about half the materials, scaled by condition.
+	parts_hold(H, spare545)
+	var/list/yield = firearm_salvage_yield(spare545)
+	parts_check(yield[/obj/item/stack/material/steel] == 1 && yield.len == 1, "a full 5.45 well salvages for 1 steel")
+	var/obj/item/weapon/gun_component/barrel_scrap = new /obj/item/weapon/gun_component/ak_barrel_545(H)
+	parts_check(firearm_salvage_yield(barrel_scrap)[/obj/item/stack/material/steel] == 2, "a full barrel salvages for 2 of its 3 steel")
+	barrel_scrap.condition = 0.1
+	parts_check(!firearm_salvage_yield(barrel_scrap).len && findtext(firearm_salvage_preview(barrel_scrap), "returns nothing usable"), "a worn-out barrel salvages for nothing and says so")
+	qdel(barrel_scrap)
+	parts_check(findtext(firearm_salvage_preview(spare545), "Salvaging destroys AK magazine well (5.45x39mm) (100%) and returns 1 steel"), "the salvage preview names the part and the return ([firearm_salvage_preview(spare545)])")
+	parts_check(G.firearm_panel_act(H, list("firearm_action" = "salvage", "part" = "\ref[spare545]")) && !QDELETED(spare545), "asking to salvage only shows the preview")
+	bench.anchored = FALSE
+	parts_check(!firearm_salvage(spare545, H) && !QDELETED(spare545), "salvage needs a firearm bench")
+	bench.anchored = TRUE
+	var/steel_before = parts_steel_at(H.loc)
+	parts_check(G.firearm_panel_act(H, list("firearm_action" = "salvage_confirm", "part" = "\ref[spare545]")) && QDELETED(spare545), "confirming salvage destroys the part")
+	parts_check(parts_steel_at(H.loc) == steel_before + 1, "salvage drops the steel ([parts_steel_at(H.loc)] vs [steel_before])")
+	for(var/obj/item/stack/material/steel/S in H.loc)
+		qdel(S)
 
 	// Barrel wear blocks firing and travels with the part.
 	for(var/i in 1 to 1000)

@@ -142,12 +142,34 @@ spawns with 6.5x50mm rounds; it used to inherit 7.62x54mmR loose rounds from
 the base bolt-action rifle. Both families' recipes match the Mauser ones (bare
 `mosin/receiver` and `arisaka38/receiver`, Cartridge Firearms, tier 1).
 
-Every modular gun gets the "Remove Rifle Part" verb from `/obj/item/weapon/gun/New()`
+Every modular gun gets the "Rifle Parts" verb from `/obj/item/weapon/gun/New()`
 when it has a family, so fixed designs never show it.
 
-Not yet: destructive salvage, the remaining families (Enfield, Springfield and
-other bolt-action rifles, pistols, revolvers, shotguns, machine guns and other
-rifles).
+### Parts panel and salvage (phase 6)
+
+The "Rifle Parts" verb opens a panel (`firearm_panel_html`) listing whether the
+gun fires or why not, its cartridge, handling and accepted magazines or clips,
+each slot's part and condition with where it can be worked (by hand or at a
+firearm bench) and a Remove link, and every loose part the user carries. A
+carried part of the same family shows a preview of the gun with that part in
+its slot: handling before and after, cartridge, and whether it would fire.
+The preview runs the pure `firearm_assembly_block`, `firearm_assembly_handling`
+and `firearm_assembly_caliber` procs on copies of the part lists, so it never
+changes the gun. Fit is offered for the part in the active hand. Each link is
+only a request: `firearm_panel_act` checks the user holds the gun, the part is
+carried by the user and the slot is real, and remove and fit then run their
+usual checks.
+
+Salvage destroys a loose part at a firearm bench and returns its factory recipe
+inputs x condition x 0.5, rounded to the nearest unit (a full AK barrel, 3
+steel, returns 2; a worn-out one returns nothing). It is a separate action from
+removal: the panel's Salvage link first shows "Salvaging destroys X (N%) and
+returns ..." with a Confirm link, and hitting the bench with a part asks the
+same question. A part with no recipe returns nothing. Salvage never returns
+more than the part cost.
+
+Not yet: the remaining families (Enfield, Springfield and other bolt-action
+rifles, pistols, revolvers, shotguns, machine guns and other rifles).
 
 ## Ammunition and armor
 

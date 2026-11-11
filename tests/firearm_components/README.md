@@ -36,9 +36,17 @@ human:
   rounds, builds the 6.5 preset and converts to 7.7x58 with Type 99 clips;
   Mosin parts are refused on it; bare Mosin and Arisaka receivers build into
   working rifles; a restored rifle keeps the strip verb after load.
+- the parts panel shows a ready rifle with remove links, removes and refits the
+  magazine well, shows the block reason and carried parts, previews a 5.45
+  well (would not fire), the 7.62 well (fires) and a folding stock (x0.95
+  handling) without changing the gun, and refuses parts the user does not
+  carry and unknown slots;
+- salvage returns 1 steel for a full magazine well, 2 for a full barrel and
+  nothing for a worn-out one, previews the loss, only previews on the first
+  request, needs a firearm bench and drops the steel on confirm.
 
 Negative controls must fail: `--negative-control no-conversion-check`,
-`compound-handling` and `eager-preset`.
+`compound-handling`, `eager-preset`, `free-salvage` and `preview-mutates`.
 
 Code: `code/modules/1713/gunsmithing/firearm_components.dm`. Contract:
 `docs/firearm-component-contract.md`.
