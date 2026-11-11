@@ -273,7 +273,11 @@
 		return
 	forage(focus)
 
+// A full document: the 516 browser shows a bare fragment as plain text.
 /mob/living/human/proc/foraging_panel_html(turf/T)
+	return "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>[common_browser_style]<title>Foraging</title></head><body>[foraging_panel_body(T)]</body></html>"
+
+/mob/living/human/proc/foraging_panel_body(turf/T)
 	var/list/rows = list("<h3>Foraging</h3>")
 	if (!isturf(T) || !foraging_site(T))
 		rows += "<p>Stand on open outdoor grass, dirt or sand, away from structures and roofs.</p>"

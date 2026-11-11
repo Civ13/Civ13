@@ -223,6 +223,9 @@ var/foraging_runtime_error = FALSE
 		var/html = U.foraging_panel_html(meadow)
 		text2file(html, "panel.html") // evidence for review renders
 		foraging_check(findtext(html, "almost bare") && findtext(html, "forage_focus=seeds") && findtext(html, "Temperate grass"), "panel shows habitat, abundance and focus links")
+		foraging_check(findtext(html, "<!DOCTYPE html>") == 1 && findtext(html, "<body>") && findtext(html, "</html>"), "panel is a full HTML document, not a fragment shown as plain text")
+		var/badspot = U.foraging_panel_html(null)
+		foraging_check(findtext(badspot, "<!DOCTYPE html>") == 1 && findtext(badspot, "Stand on open outdoor"), "invalid-spot panel is also a full HTML document")
 		foraging_check(U.forage("stone") && findtext(U.foraging_panel_html(meadow), "picked clean") && !findtext(U.foraging_panel_html(meadow), "forage_focus="), "empty patch panel offers no search")
 		foraging_check(!U.forage("nonsense"), "unknown focus refused")
 		season = "WINTER"
