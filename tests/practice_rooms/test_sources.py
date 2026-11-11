@@ -45,6 +45,23 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertIn('practice=1', lobby)
         self.assertIn('practice_rooms.enter(src)', lobby)
 
+    def test_ways_out_are_easy_to_find(self):
+        rooms = read('code/modules/1713/practice_rooms.dm')
+        # Chat link on the welcome line and on every step, handled by the session.
+        self.assertIn('practice_leave=1', rooms)
+        self.assertIn('if (href_list["practice_leave"] && body && usr == body)', rooms)
+        self.assertIn('[leave_link()]', rooms[rooms.index('/datum/practice_session/proc/show_step()'):])
+        # The exit marker can be clicked at any step.
+        marker = rooms[rooms.index('/obj/effect/practice_marker/exit/Click()'):]
+        self.assertIn('H.practice.leave()', marker)
+        # Esc menu entry, only for a practice body.
+        menu = read('code/modules/client/escape_menu.dm')
+        self.assertIn('L["leave_practice"]', menu)
+        self.assertIn('if ("leave_practice")', menu)
+        # Side panel shows the verbs first on the IC tab, not under "Other".
+        panel = read('interface/info/info.html')
+        self.assertIn('"IC": [\n                ["Practice", ["Leave Practice Room", "Practice Instructions"]]', panel)
+
     def test_fixture_prepares(self):
         generated = run.sources()
         self.assertIn('#include "tests/practice_rooms/probe.dm"', generated['.practice_rooms_ci.dme'])

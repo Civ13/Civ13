@@ -15,6 +15,9 @@
 /datum/escape_menu/proc/entries()
 	var/list/L = list()
 	L["resume"] = list("Resume", "Close this menu.")
+	var/mob/living/human/practice/P = owner.mob
+	if (istype(P) && P.practice && !P.practice.ending)
+		L["leave_practice"] = list("Leave practice room", "Return to the lobby. Your real character is not affected.")
 	L["fullscreen"] = list(owner.fullscreen ? "Leave fullscreen" : "Fullscreen", "Also on F11.")
 	L["fit"] = list("Fit viewport", "Resize the map to fill the window.")
 	L["settings"] = list("Character and settings", "Character setup and game preferences.")
@@ -27,7 +30,7 @@
 	if (shard_group && shard_group.enabled)
 		L["regions"] = list("Regions", "See the other worlds in this group and how to travel.")
 	var/mob/living/human/H = owner.mob
-	if (escape_menu_persistent() && istype(H) && H.stat != DEAD && !H.sleeping)
+	if (escape_menu_persistent() && istype(H) && !istype(H, /mob/living/human/practice) && H.stat != DEAD && !H.sleeping)
 		L["sleep"] = list("Sleep in this bed", "Assigns the bed you stand on as your return point.")
 	L["disconnect"] = list("Disconnect", "Close the game.")
 	return L
@@ -82,6 +85,10 @@
 			owner.report_bug()
 		if ("regions")
 			owner.view_regions()
+		if ("leave_practice")
+			var/mob/living/human/practice/P = owner.mob
+			if (istype(P) && P.practice)
+				P.practice.leave()
 		if ("sleep")
 			var/mob/living/human/H = owner.mob
 			if (istype(H))
