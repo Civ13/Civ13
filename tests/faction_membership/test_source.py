@@ -57,6 +57,60 @@ class FactionMembershipSource(unittest.TestCase):
         self.assertNotIn('user.leader', MARKET)
         self.assertEqual(MARKET.count('map.is_faction_leader(H, H.civilization)'), 2)
 
+    def test_shared_record_keeps_identity_and_legacy_fallback(self):
+        source = run.read(run.MEMBERSHIP)
+        record = run.proc_text(source, '/obj/map_metadata/proc/faction_leader_record(')
+        self.assertIn('islist(civ_data) && civ_data.len >= 4', record)
+        leader = run.proc_text(run.read(run.RESEARCH), '/obj/map_metadata/proc/is_faction_leader(')
+        self.assertIn('faction_leader_record(faction)', leader)
+        self.assertIn('return civ_data[4] == H', leader)
+        self.assertIn('return H.leader', leader)
+
+    def test_death_and_leaving_share_exact_identity_cleanup(self):
+        source = run.read(run.MEMBERSHIP)
+        clear = run.proc_text(source, '/obj/map_metadata/proc/clear_faction_leader(')
+        self.assertIn('civ_data[4] != H', clear)
+        self.assertNotIn('real_name', clear)
+        death = run.proc_text((ROOT / 'code/modules/1713/battlereport_variables.dm').read_text(), '/mob/living/human/death()')
+        leaving = run.proc_text(run.read(run.FACTIONS), '/mob/living/human/proc/faction_leaving_proc()')
+        for body in (death, leaving):
+            self.assertIn('map.clear_faction_leader(src, civilization)', body)
+            self.assertNotIn('real_name', body)
+        self.assertIn('original_job_title == "Nomad"', death)
+
+    def test_transition_rechecks_before_any_write_without_yielding(self):
+        change = run.proc_text(run.read(run.MEMBERSHIP), '/obj/map_metadata/proc/change_faction_leader(')
+        before = change.split('civ_data[4] = next')[0]
+        for rule in ('civ_data[4] != previous', 'next.civilization != faction', 'next.stat == DEAD',
+                     'next == previous', 'previous.stat == DEAD', 'is_faction_leader(previous, faction)'):
+            self.assertIn(rule, before)
+        for action in ('next.leader = TRUE', 'previous.leader = FALSE', 'next.grant_faction_symbol_editor()', 'previous.remove_faction_symbol_editor()'):
+            self.assertIn(action, change)
+        self.assertNotIn('WWinput', change)
+        self.assertNotIn('sleep(', change)
+        self.assertNotIn('clear_faction_privileges()', change)
+
+    def test_modal_flows_revalidate_and_claim_uses_same_transition(self):
+        factions = run.read(run.FACTIONS)
+        transfer = run.proc_text(factions, '/mob/living/human/proc/transfer_faction()')
+        after = transfer.split('WWinput(', 1)[1]
+        for rule in ('!istype(choice)', 'choice in closemobs', 'map != faction_map', 'choice in range(4, loc)',
+                     'change_faction_leader(faction, src, choice)'):
+            self.assertIn(rule, after)
+        self.assertNotIn('real_name', transfer)
+        abandon = run.proc_text(factions, '/mob/living/human/proc/abandon_faction()')
+        self.assertIn('confirmation != "Leave" || U.civilization != faction', abandon)
+        claim = run.proc_text(factions, '/mob/living/human/proc/become_leader()')
+        self.assertIn('map.change_faction_leader(U.civilization, null, U)', claim)
+
+    def test_native_probe_covers_identity_and_stale_dialog_cases(self):
+        probe = (ROOT / 'tests/faction_membership/probe.dm').read_text()
+        for label in ('duplicate name is not the leader', 'same-name departure preserves leader',
+                      'self-transfer cannot demote the leader', 'cancel is not a successor',
+                      'leader changing during prompt invalidates transfer',
+                      'restored reference wins over stale false flag', 'legacy no-record leader fallback preserved'):
+            self.assertIn(label, probe)
+
 
 if __name__ == '__main__':
     unittest.main()
