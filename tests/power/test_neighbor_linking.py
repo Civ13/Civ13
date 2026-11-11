@@ -59,5 +59,30 @@ class NeighborLinking(unittest.TestCase):
         self.assertLess(self.machine.index('powersource.connections += src'), self.machine.index('link_straight_neighbors'))
         self.assertIn('return C', self.placement)
 
+class AccountingFixturePreparation(unittest.TestCase):
+    def test_accounting_boundary_excludes_crafting_not_power(self):
+        source = CABLE.read_text()
+        start = source.index('/obj/structure/cable/proc/get_connections()')
+        end = source.index('/obj/item/stack/material/plastic/proc/make_insulated_cable(', start)
+        selected = source[start:end]
+        for proc in ('rebuild_supply(', 'draw_cable_power(', 'power_on(', 'power_off(', 'forceMove('):
+            self.assertIn(proc, selected)
+        self.assertNotIn('/obj/item/stack/material/plastic', selected)
+        runner = (ROOT / 'scripts/test-power.ps1').read_text()
+        self.assertIn('$source.Substring($start, $end - $start)', runner)
+        self.assertIn("throw 'Production network end boundary not found.'", runner)
+
+    def test_real_smart_predicates_and_cut_restore_assertions(self):
+        source = (ROOT / 'code/modules/1713/smart_home.dm').read_text()
+        start = source.index('/obj/proc/smart_power_cut()')
+        end = source.index('/obj/structure/proc/smart_kind()', start)
+        self.assertIn('return smart_off && smart_hub_id', source[start:end])
+        runner = (ROOT / 'scripts/test-power.ps1').read_text()
+        self.assertIn('$smartSource.Substring($smartStart, $smartEnd - $smartStart)', runner)
+        fixture = (ROOT / 'tests/power/fixture.dm').read_text()
+        for label in ('smart cut refuses draw', 'smart cut releases reservation',
+                      'smart restore permits draw', 'smart restore reserves once'):
+            self.assertIn('check("' + label, fixture)
+
 if __name__ == '__main__':
     unittest.main()

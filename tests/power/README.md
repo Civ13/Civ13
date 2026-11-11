@@ -99,3 +99,9 @@ rebuild supply. Coil placement still secures junctions before rebuilding; machin
 attachment retains its historical repeated first-side connection feedback without
 an extra rebuild. Native placement, crossing and powered-machine acceptance must
 still be checked separately.
+
+The accounting runner extracts only the network section, ending before plastic
+cable crafting. It imports the actual smart-power predicates from smart_home.dm
+and checks that a paired switched-off lamp releases demand and can reserve again
+when restored. This avoids compiling unrelated crafting inventory handlers into
+the minimal accounting world; no accounting procedure or assertion is omitted.
