@@ -38,15 +38,16 @@ apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::http
 apt_sources=()
 apt_packages=(python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386)
 # The runner image's Azure mirror can go dark for hours: its update then hangs
-# or "succeeds" with every index ignored. Retry once with non-Azure public
-# mirrors, given to APT as command options only. The list lives in the runner
+# or "succeeds" with every index ignored. Canonical's own hosts failed DNS from
+# runners in the same outage (2026-11-11), so retry once with the kernel.org
+# mirror, given to APT as command options only. The list lives in the runner
 # temp dir and a missing parts directory makes APT read only that list.
 use_fallback_mirrors() {
     echo 'Ubuntu mirror failed; retrying with public non-Azure mirrors.' >&2
     local codename mirror suite list="${RUNNER_TEMP:-$PWD}/civ13-apt-fallback.list"
     codename="$(. /etc/os-release && printf '%s' "$VERSION_CODENAME")"
     : > "$list"
-    for mirror in http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu; do
+    for mirror in http://mirrors.edge.kernel.org/ubuntu; do
         for suite in "$codename" "$codename-updates" "$codename-security"; do
             printf 'deb [arch=amd64,i386] %s %s main universe\n' "$mirror" "$suite" >> "$list"
         done

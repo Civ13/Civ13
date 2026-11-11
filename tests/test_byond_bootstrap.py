@@ -119,7 +119,9 @@ exit 0
 
     def test_fallback_list_uses_non_azure_mirrors_with_i386(self):
         source = SCRIPT.read_text()
-        self.assertIn('http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu', source)
+        self.assertIn('for mirror in http://mirrors.edge.kernel.org/ubuntu; do', source)
+        # Canonical hosts failed DNS from runners in the same outage.
+        self.assertNotIn('archive.ubuntu.com', source)
         self.assertIn("deb [arch=amd64,i386] %s %s main universe", source)
         self.assertNotIn('azure', source.split('use_fallback_mirrors() {')[1].split('\n}')[0].lower().replace('non-azure', ''))
 

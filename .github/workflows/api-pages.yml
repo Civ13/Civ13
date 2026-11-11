@@ -77,7 +77,7 @@ jobs:
             list="$RUNNER_TEMP/civ13-apt-fallback.list"
             codename="$(. /etc/os-release && printf '%s' "$VERSION_CODENAME")"
             : > "$list"
-            for mirror in http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu; do
+            for mirror in http://mirrors.edge.kernel.org/ubuntu; do
               for suite in "$codename" "$codename-updates" "$codename-security"; do
                 printf 'deb [arch=amd64,i386] %s %s main universe\n' "$mirror" "$suite" >> "$list"
               done
