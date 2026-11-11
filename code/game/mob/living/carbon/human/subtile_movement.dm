@@ -27,6 +27,10 @@
 	var/tmp/human_subtile_save_aligned = FALSE
 	// Set while a free-movement trench climb waits out its delay.
 	var/tmp/human_subtile_climbing = FALSE
+	// Draw lag of the pulses sent this tick (see human_subtile_smooth_pulse).
+	var/tmp/human_subtile_smooth_time
+	var/tmp/human_subtile_smooth_x = 0
+	var/tmp/human_subtile_smooth_y = 0
 	var/list/human_subtile_position
 	// Absent in historical capsules. Only validated new captures may use 1.
 	var/human_subtile_restore_schema = 0
@@ -108,6 +112,38 @@
 		return distance
 	var/per_tick = distance * world.tick_lag / duration
 	return distance - clamp(per_tick, HUMAN_SUBTILE_GLIDE_BUFFER_MIN, HUMAN_SUBTILE_GLIDE_BUFFER_MAX)
+
+// Client smoothing for free movement pulses.
+//
+// In BYOND's legacy movement mode the client never glides an atom that has a
+// step_x/step_y offset (webclient Glide logic; checked in Dream Seeker 516.1688
+// with tests/human_subtile/glide_probe). Free movement always has an offset, so
+// the body and the camera were drawn at the server's raw tick rate in 2-4px
+// jumps however high client.fps was set. Each pulse therefore starts the body
+// (pixel_w/pixel_z) and its own camera (client pixel_w/pixel_z) back where they
+// were drawn and animates them forward, which the client interpolates at its own
+// frame rate. Collision, pulses and pace are unchanged; only drawing trails.
+/mob/living/human/proc/human_subtile_smooth_pulse(dx, dy, spacing)
+	if ((!dx && !dy) || abs(dx) > HUMAN_SUBTILE_SMOOTH_MAX || abs(dy) > HUMAN_SUBTILE_SMOOTH_MAX)
+		return
+	// Pulses landing in the same tick reach the client as one move.
+	if (human_subtile_smooth_time == world.time)
+		human_subtile_smooth_x += dx
+		human_subtile_smooth_y += dy
+	else
+		human_subtile_smooth_x = dx
+		human_subtile_smooth_y = dy
+	human_subtile_smooth_time = world.time
+	var/time = max(world.tick_lag, spacing)
+	pixel_w = -human_subtile_smooth_x
+	pixel_z = -human_subtile_smooth_y
+	// Parallel, so attack bumps, jitter and lying transforms keep running.
+	animate(src, pixel_w = 0, pixel_z = 0, time = time, flags = ANIMATION_PARALLEL)
+	var/client/C = client
+	if (C && C.eye == src && !shakecamera)
+		C.pixel_w = -human_subtile_smooth_x
+		C.pixel_z = -human_subtile_smooth_y
+		animate(C, pixel_w = 0, pixel_z = 0, time = time, flags = ANIMATION_PARALLEL)
 
 /datum/human_subtile_pulse
 	should_save = FALSE
@@ -1111,6 +1147,7 @@
 			var/actual_y = (after["y"] - expected["y"]) * 32 + after["sy"] - expected["sy"]
 			observations += list(list("at" = world.time, "due" = due, "engine_return" = P.engine_return, "dx" = actual_x, "dy" = actual_y, "x" = actor.x, "y" = actor.y, "sx" = actor.step_x, "sy" = actor.step_y))
 			expected = after
+			actor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)
 			if (actor.human_subtile_save_request)
 				actor.human_subtile_save_request.acknowledge(actor, src)
 			if (total_distance > 0)

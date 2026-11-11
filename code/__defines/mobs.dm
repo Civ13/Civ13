@@ -79,3 +79,5 @@
 // human_subtile_glide_distance). Later chained steps glide at the exact pace.
 #define HUMAN_SUBTILE_GLIDE_BUFFER_MIN 6
 #define HUMAN_SUBTILE_GLIDE_BUFFER_MAX 8
+// Largest per-tick pulse move that is drawn smoothly; bigger moves are jumps.
+#define HUMAN_SUBTILE_SMOOTH_MAX 8
