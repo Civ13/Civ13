@@ -8,10 +8,9 @@ assets. Civ13's existing bushes, wild crops, trees, mining, sifting and hunting
 remain the primary resource systems. Foraging must not become a source of free
 high-tier materials or a way around research.
 
-This is phase one, not a finished PZ search-mode replica. It is on for
-Persistence worlds and off elsewhere unless a map opts in.
+It is on for Persistence worlds and off elsewhere unless a map opts in.
 
-## Phase 1: bounded search and shared scarcity (this draft)
+## Phase 1: bounded search and shared scarcity
 
 - `Forage nearby` in Crafting searches the tile under the player.
   It is on wherever Persistence is on (Val, 2026-11-10). Other maps opt in through `foraging_enabled`, which is false by default.
@@ -19,9 +18,9 @@ Persistence worlds and off elsewhere unless a map opts in.
   active-hand changes and incapacity and prevents repeated actions. Revalidate
   connection, map policy, exact turf, habitat and persistence epoch on completion.
 - Open grass/dirt yield one stone or small wood piece; ordinary beach/desert sand
-  yield one stone. Caves, snow, farmland, water, roofs, dense/structured/covered
-  tiles and invalid outdoor climates are excluded. Food identification and rare
-  loot are deliberately absent until researched and balanced.
+  yield one stone (phase 4 widened this, see below). Caves, snow, farmland,
+  water, roofs, dense/structured/covered tiles and invalid outdoor climates are
+  excluded.
 - A fixed 8x8 coordinate patch shares four units across all players and categories.
   A successful completion spends one before rolling. No preview, XP, bonus yield,
   individual player cache or automatic regeneration. Traversing a boundary accesses
@@ -38,9 +37,8 @@ Persistence worlds and off elsewhere unless a map opts in.
 - Save/load/recovery admission fences prevent an in-progress search crossing a
   generation boundary. No action datum or actor reference is stored in the save.
 
-The verb currently remains visible when disabled and explains that fact. A later
-UI integration should hide it or offer a discoverable search toggle without
-adding more permanent HUD clutter. No client overlays or new art are included.
+The verb remains visible when disabled and explains that fact. No client
+overlays or new art are included.
 
 ## Phase 2: storage and economy acceptance
 
@@ -67,18 +65,45 @@ describe a fixed coordinate on one level.
 Not covered natively: the real client wait bar, and a full-world save/load
 through the save operation (the record is an ordinary saved `/obj`).
 
+## Phase 3: search panel
+
+`Forage nearby` opens a small window instead of starting a search straight away.
+It shows the habitat (climate, ground, season), how much the 8x8 patch has left
+in words (untouched, plenty left, some left, almost bare, picked clean), the
+expected search time, and one button per focus: Anything, Stones, Sticks, Wild
+seeds, Mushrooms. Foci this ground cannot give are greyed out, and an empty
+patch offers no button. The hidden `Forage For` verb (`forage-for seeds`) is the
+classic fallback and macro target. Nothing is created per tick, no HUD element
+is added and nothing about other players' searches is shown beyond the shared
+patch stock. Find indicators were left out: they would need per-client images
+and give little over the panel.
+
+## Phase 4: biome, season and skill
+
+Each focus is a small table in `foraging.dm`; every find is one item from an
+existing gathering path and still costs exactly one shared unit.
+
+| Focus | Ground | Climate and season | Find |
+| --- | --- | --- | --- |
+| Stones | grass, dirt, beach, desert sand | any | 1 stone |
+| Sticks | grass, dirt | not desert | 1 small wood piece |
+| Wild seeds | grass, dirt | the crop's own biomes; not winter | 1 seed of a wild crop (wheat, oat, barley, rice, turnip, potato, beans, flax, cotton, parsley, celery) |
+| Mushrooms | grass, dirt | the mushroom crop's biomes; not winter or dry season | 1 bunch of edible mushrooms |
+
+Anything picks a category weighted 3:3:2:2 among those the tile offers. The seed
+list is a subset of the wild crops flora regrowth already plants, so no research
+gate is bypassed. Berries are never found: they keep their own smell-based
+identification. Psilocybin mushrooms, herbs and ores are excluded.
+
+Farming skill shortens a search (30 s divided by the farming coefficient, capped
+at 1.5) and darkness lengthens it by half; the time is clamped to 20-45 s. A
+find gives one point of farming practice. Skill never changes the amount.
+
 ## Next phases and acceptance gates
 
 1. **Storage and economy.** Done; see Phase 2 above.
-2. **Player search UX.** A modern search panel and classic fallback with current
-   habitat, coarse abundance and cancel state; optional player-only find indicators,
-   focus categories and controller/key binding. Indicators must not leak others'
-   discoveries, create shared objects every tick or bypass movement interruption.
-3. **Biome/season tables.** Data-driven weighted categories using current ecology
-   ground/climate and actual seasons. Expand to safe existing food/material paths
-   only after auditing their acquisition and research gates. Identification of risky
-   food, lighting/weather perception and farming skill affect search quality/speed,
-   not extra unaccounted stock. No broad copy of another game's loot tables.
+2. **Player search UX.** Done; see Phase 3 above.
+3. **Biome/season tables.** Done; see Phase 4 above.
 4. **Renewal.** Add durable lazy deadlines, explicit time policy and caps. Test clock
    changes, downtime and restart before enabling recovery. Never regenerate on login,
    world.time reset, changing ground/category, or re-creating an index. Preserve
