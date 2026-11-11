@@ -139,17 +139,45 @@
 	set name = "Climb Up"
 	set category = "IC"
 	set desc = "Face a wall or the rim of a dug hole and climb to the floor above. Keep a hand free."
-	var/direction = dir
+	climb_ledge(dir)
+
+// Shared by the Climb Up verb and an empty-handed grab-intent click on the wall
+// or rim, so both take the same checks, wait and placement.
+/mob/living/human/proc/climb_ledge(direction)
 	var/turf/start = get_turf(src)
 	var/turf/destination = ledge_climb_destination(src, direction)
 	if (!destination)
 		to_chat(src, SPAN_WARNING("You need a free hand, an opening overhead and a clear, solid ledge in front of you."))
-		return
+		return FALSE
+	if (dir != direction)
+		set_dir(direction)
 	visible_message(SPAN_NOTICE("[src] starts climbing toward the ledge above."))
 	if (!do_after(src, 30, start))
-		return
+		return FALSE
 	// Re-resolve terrain and actor admission after the interruptible wait.
 	if (get_turf(src) != start || dir != direction || ledge_climb_destination(src, direction) != destination)
-		return
+		return FALSE
 	if (trench_climb_place(src, destination))
 		visible_message(SPAN_NOTICE("[src] climbs onto the ledge."))
+		return TRUE
+	return FALSE
+
+// Grab intent with an empty hand on a wall or hole rim next to you climbs it,
+// exactly as Climb Up would. Returns TRUE only when it took over the click;
+// otherwise the click falls through to the normal attack_hand().
+/mob/living/human/proc/grab_climb_ledge(atom/A)
+	if (a_intent != I_GRAB || get_active_hand())
+		return FALSE
+	var/turf/target = get_turf(A)
+	if (!target || (A != target && !istype(A, /obj/covers)))
+		return FALSE
+	var/turf/here = get_turf(src)
+	if (!here || target.z != here.z)
+		return FALSE
+	var/direction = get_dir(here, target)
+	if (!(direction in list(NORTH, SOUTH, EAST, WEST)) || get_step(here, direction) != target)
+		return FALSE
+	if (!ledge_climb_destination(src, direction))
+		return FALSE
+	climb_ledge(direction)
+	return TRUE
