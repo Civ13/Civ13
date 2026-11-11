@@ -33,7 +33,9 @@ obj/structure/boiling_oil/proc/splash()
 	timer = 0
 	icon_state = "oil_pot3"
 	spawn(18)
-		icon_state = "oil_pot0"
+		// A refill during the pour already shows the heating pot; keep it.
+		if (timer == 0)
+			icon_state = "oil_pot0"
 	spawn(8)
 		if (direction == SOUTH)
 			for (var/mob/living/LS1 in locate(x-1,y-1,z))
