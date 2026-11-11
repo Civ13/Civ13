@@ -1,5 +1,5 @@
-// Modular firearm components (issue #4443: AK family from phase 2, AR family
-// and the AK-100 series from phase 5).
+// Modular firearm components (issue #4443: AK family from phase 2; AR family,
+// AK-100 series and Mauser bolt-action family from phase 5).
 // Contract: docs/firearm-component-contract.md. Installed parts are data on the
 // gun (component id + condition per slot), so a gun costs no extra objects
 // until a part is removed. Removed parts are /obj/item/weapon/gun_component
@@ -21,7 +21,8 @@
 	var/desc
 	var/icon_state
 	var/caliber = null        // barrel and feed parts
-	var/list/good_mags = null // feed parts: magazines the gun accepts
+	var/list/good_mags = null // feed parts: magazines or clips the gun accepts
+	var/ammo_type = null      // feed parts: the loose round a box of ammo must hold
 	var/ergonomics = 1        // furniture handling factor
 
 /datum/firearm_component/New(list/data)
@@ -45,6 +46,9 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	var/list/ak74_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak74/ak74m)
 	var/list/ak101_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
 	var/list/stanag_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15)
+	var/list/mauser792_clips = list(/obj/item/ammo_magazine/gewehr98)
+	var/list/mauser765_clips = list(/obj/item/ammo_magazine/gewehr71)
+	var/list/mauser7x57_clips = list(/obj/item/ammo_magazine/mauser1893)
 	for (var/list/data in list(
 		list("id" = "ak/action", "family" = "ak", "slot" = FIREARM_SLOT_ACTION, "name" = "AK bolt carrier group",
 			"desc" = "The bolt and carrier of an AK-pattern rifle. Fits any AK receiver.", "icon_state" = "Dual Selective Fire"),
@@ -74,6 +78,25 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"desc" = "A fixed AR rifle stock and handguard.", "icon_state" = "Steel Stock", "ergonomics" = 1),
 		list("id" = "ar/furniture/collapsible", "family" = "ar", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AR collapsible stock",
 			"desc" = "A collapsible AR carbine stock and handguard. Slightly less steady than a fixed stock.", "icon_state" = "Folding Stock", "ergonomics" = 0.95),
+		list("id" = "mauser/action", "family" = "mauser", "slot" = FIREARM_SLOT_ACTION, "name" = "Mauser bolt",
+			"desc" = "The bolt of a Mauser-pattern rifle. Fits any Mauser receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "mauser/barrel/792x57", "family" = "mauser", "slot" = FIREARM_SLOT_BARREL, "name" = "Mauser barrel (7.92x57mm)",
+			"desc" = "A 7.92x57mm barrel for a Mauser-pattern rifle. Pair it with a 7.92x57mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a792x57"),
+		list("id" = "mauser/barrel/765x53", "family" = "mauser", "slot" = FIREARM_SLOT_BARREL, "name" = "Mauser barrel (7.65x53mm)",
+			"desc" = "A 7.65x53mm barrel for a Mauser-pattern rifle. Pair it with a 7.65x53mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a765x53"),
+		list("id" = "mauser/barrel/7x57", "family" = "mauser", "slot" = FIREARM_SLOT_BARREL, "name" = "Mauser barrel (7x57mm)",
+			"desc" = "A 7x57mm barrel for a Mauser-pattern rifle. Pair it with a 7x57mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a7x57"),
+		list("id" = "mauser/feed/792x57", "family" = "mauser", "slot" = FIREARM_SLOT_FEED, "name" = "Mauser magazine (7.92x57mm)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes Gewehr 98 stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a792x57", "good_mags" = mauser792_clips, "ammo_type" = /obj/item/ammo_casing/a792x57),
+		list("id" = "mauser/feed/765x53", "family" = "mauser", "slot" = FIREARM_SLOT_FEED, "name" = "Mauser magazine (7.65x53mm)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes 7.65x53mm stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a765x53", "good_mags" = mauser765_clips, "ammo_type" = /obj/item/ammo_casing/a765x53),
+		list("id" = "mauser/feed/7x57", "family" = "mauser", "slot" = FIREARM_SLOT_FEED, "name" = "Mauser magazine (7x57mm)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes 7x57mm stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a7x57", "good_mags" = mauser7x57_clips, "ammo_type" = /obj/item/ammo_casing/a7x57),
+		list("id" = "mauser/furniture/stock", "family" = "mauser", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Mauser stock",
+			"desc" = "A wooden Mauser rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -86,13 +109,18 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"ak100_762" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/762x39", FIREARM_SLOT_FEED = "ak/feed/762x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
 		"ar_rifle" = list(FIREARM_SLOT_ACTION = "ar/action", FIREARM_SLOT_BARREL = "ar/barrel/556x45", FIREARM_SLOT_FEED = "ar/feed/556x45", FIREARM_SLOT_FURNITURE = "ar/furniture/fixed"),
 		"ar_carbine" = list(FIREARM_SLOT_ACTION = "ar/action", FIREARM_SLOT_BARREL = "ar/barrel/556x45", FIREARM_SLOT_FEED = "ar/feed/556x45", FIREARM_SLOT_FURNITURE = "ar/furniture/collapsible"),
+		"mauser_792" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/792x57", FIREARM_SLOT_FEED = "mauser/feed/792x57", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
+		"mauser_765" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/765x53", FIREARM_SLOT_FEED = "mauser/feed/765x53", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
+		"mauser_7x57" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/7x57", FIREARM_SLOT_FEED = "mauser/feed/7x57", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
+		"mauser_receiver" = list(),
 	)
 
-var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR")
-var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm")
+var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser")
+var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
+	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -129,6 +157,19 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_preset = "ar_rifle"
 /obj/item/weapon/gun/projectile/submachinegun/c7/c8
 	firearm_preset = "ar_carbine"
+/obj/item/weapon/gun/projectile/boltaction/gewehr98
+	firearm_family = "mauser"
+	firearm_preset = "mauser_792"
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903
+	firearm_preset = "mauser_765"
+/obj/item/weapon/gun/projectile/boltaction/mauser1890
+	firearm_family = "mauser"
+	firearm_preset = "mauser_765"
+/obj/item/weapon/gun/projectile/boltaction/mauser1893
+	firearm_family = "mauser"
+	firearm_preset = "mauser_7x57"
+/obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o
+	firearm_preset = "mauser_765"
 
 // Factory output: the bare core. It names itself from its barrel once fitted.
 /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver
@@ -143,6 +184,13 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	desc = "A bare AR-pattern receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
 	magazine_type = null
 	firearm_preset = "ar_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver
+	name = "Mauser receiver"
+	desc = "A bare Mauser-pattern receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "mauser_receiver"
 	firearm_named_by_parts = TRUE
 
 /obj/item/weapon/gun
@@ -202,9 +250,11 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	var/datum/firearm_component/furniture = firearm_component_def(firearm_part_ids[FIREARM_SLOT_FURNITURE])
 	if (barrel && feed && barrel.caliber == feed.caliber)
 		G.caliber = barrel.caliber
-		G.good_mags = feed.good_mags.Copy()
-	else if (feed)
-		G.good_mags = feed.good_mags.Copy()
+	if (feed)
+		if (feed.good_mags)
+			G.good_mags = feed.good_mags.Copy()
+		if (feed.ammo_type)
+			G.ammo_type = feed.ammo_type
 	if (firearm_named_by_parts)
 		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
@@ -375,6 +425,27 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	set src in usr
 	firearm_strip_menu(usr)
 
+/obj/item/weapon/gun/projectile/boltaction/gewehr98/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1890/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
+/obj/item/weapon/gun/projectile/boltaction/mauser1893/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
 /obj/item/weapon/gun_component
 	name = "rifle part"
 	desc = "A modular rifle part."
@@ -440,5 +511,21 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	component_id = "ar/furniture/fixed"
 /obj/item/weapon/gun_component/ar_furniture_collapsible
 	component_id = "ar/furniture/collapsible"
+/obj/item/weapon/gun_component/mauser_action
+	component_id = "mauser/action"
+/obj/item/weapon/gun_component/mauser_barrel_792
+	component_id = "mauser/barrel/792x57"
+/obj/item/weapon/gun_component/mauser_barrel_765
+	component_id = "mauser/barrel/765x53"
+/obj/item/weapon/gun_component/mauser_barrel_7x57
+	component_id = "mauser/barrel/7x57"
+/obj/item/weapon/gun_component/mauser_feed_792
+	component_id = "mauser/feed/792x57"
+/obj/item/weapon/gun_component/mauser_feed_765
+	component_id = "mauser/feed/765x53"
+/obj/item/weapon/gun_component/mauser_feed_7x57
+	component_id = "mauser/feed/7x57"
+/obj/item/weapon/gun_component/mauser_furniture_stock
+	component_id = "mauser/furniture/stock"
 
 #undef FIREARM_BARREL_LIFE
