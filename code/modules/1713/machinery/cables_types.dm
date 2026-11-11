@@ -246,28 +246,8 @@
 	C.d2 = dirn
 	C.tiledir = currdir
 	C.add_fingerprint(user)
-	var/opdir1 = 0
-	var/opdir2 = 0
-	if (C.tiledir == "horizontal")
-		opdir1 = 4
-		opdir2 = 8
-	else if  (C.tiledir == "vertical")
-		opdir1 = 1
-		opdir2 = 2
 	C.update_icon()
-
-	if (opdir1 != 0 && opdir2 != 0)
-		for(var/obj/structure/cable/NCOO in get_turf(get_step(C,opdir1)))
-			if ((NCOO.tiledir == C.tiledir) && NCOO != C)
-				NCOO.connections |= C
-				C.connections |= NCOO
-				to_chat(user, "You connect the two cables.")
-
-		for(var/obj/structure/cable/NCOC in get_turf(get_step(C,opdir2)))
-			if ((NCOC.tiledir == C.tiledir) && NCOC != C)
-				NCOC.connections |= C
-				C.connections |= NCOC
-				to_chat(user, "You connect the two cables.")
+	C.link_straight_neighbors(user)
 	// Crossing directions join only through a secured connector.
 	for (var/obj/item/connector/junction in T)
 		if (junction.anchored)

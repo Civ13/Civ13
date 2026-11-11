@@ -11,6 +11,7 @@
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/packaging_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/meter_probe.dm
 ./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/plating_probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/factory_automation/tanning_probe.dm
 ```
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. See `docs/factory-automation-design.md` for the plan this phase belongs to.
@@ -124,3 +125,11 @@ Offering a bottler's container before it is full fails two checks; letting the p
 - Catalog: the bath unlocks with Electricity, has a global recipe and reuses existing sprites.
 
 Fixture checks do not establish graphical interaction, a full disk save and reload, or live balance.
+
+`tanning_probe.dm` (industrial leather) checks:
+
+- Catalog: the tanning drum unlocks with Factories (a steam-era node), the global catalogue builds it from steel, and its three sprite states exist.
+- Hopper: up to thirty hides of any stage and twenty pieces of bark, from arms or by hand; other items and an unfastened drum are refused; the rest of a stack stays behind.
+- Liquids: pipes fill up to a hundred water and a hundred tannin and nothing else.
+- Work: nothing without power, and it says why; a powered drum soaks one bark in ten water for ten tannin when it runs low, tans a dry hide for five tannin in two powered seconds, washes and tans a pelt for five water and five tannin, merges leather on its tile and offers it to an arm; without water an unwashed hide waits.
+- Saving: hoppers are saved and progress is not; load drops unknown entries, clamps the hoppers and resumes; removing the drum returns its hides and bark as loaded.
