@@ -54,6 +54,22 @@ var/global/round_start_announced = FALSE
 		return FALSE
 	return announce_round_start_once(TRUE)
 
+// World save notices for Discord (Val, 2026-11-11): "started" when a save
+// begins, then "completed" or "failed". started is the save's world.timeofday
+// start; seconds is its wall time, as in the "World save: total took" log line.
+// Delivery is asynchronous and never delays or fails the save itself.
+/proc/webhook_send_world_save(event, shutdown = FALSE, started = null)
+	if(!webhook_enabled()) return
+	var/list/query = list("event" = event, "round" = istext(game_id) ? game_id : "", "shutdown" = shutdown ? TRUE : FALSE)
+	if(isnum(started))
+		var/elapsed = world.timeofday - started
+		if(elapsed < 0) elapsed += 864000 // midnight wrap
+		query["seconds"] = round(elapsed / 10, 0.1)
+	try
+		webhook_send("world_save", query)
+	catch
+		world.log << "World save notice could not be queued."
+
 /proc/webhook_send_login(ckey, ip = "", cid = "")
     var/list/query = list("ckey" = ckey, "ip" = ip, "cid" = cid)
     webhook_send("login", query)

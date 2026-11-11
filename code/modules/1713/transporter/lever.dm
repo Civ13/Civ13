@@ -12,6 +12,7 @@
 
 	var/position = "docked" // Where the transport is
 	var/next_activation = -1;
+	var/trip_id = 0 // Each departure invalidates callbacks left by an earlier trip.
 
 /obj/structure/transport_lever/proc/cancel_save_transfer(previous_position)
 	position = previous_position
@@ -25,11 +26,13 @@
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
 	if (persistence_save_active()) return FALSE
 	if (world.time < next_activation)
-		next_activation = world.time + 5 SECONDS
+		// A rejected press keeps the existing deadline.
 		visible_message("This Landing Craft isn't ready to depart yet.</span>")
 		
 	else
 		next_activation = world.time + 40 SECONDS //to give it time to reach the destination
+		trip_id++
+		var/this_trip = trip_id
 		for (var/mob/M in range(14, src))
 			M.playsound_local(get_turf(M), depart_sound, 100 - get_dist(M, src))
 
@@ -44,6 +47,7 @@
 				icon_state = none_state // Reset lever
 			spawn (200)
 				if (gcDestroyed || gc_destroyed) return FALSE
+				if (trip_id != this_trip) return FALSE
 				if (persistence_save_active()) return cancel_save_transfer("docked")
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
@@ -51,10 +55,11 @@
 					else if (M.z == 2)
 						if (!M.persistence_set_z(1)) return cancel_save_transfer("docked")
 				for (var/obj/O in range(5, src))
-					if (O.z == 1)
-						if (!O.persistence_set_z(2)) return cancel_save_transfer("docked")
-					else if (O.z == 2)
-						if (!O.persistence_set_z(1)) return cancel_save_transfer("docked")
+					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
+						if (O.z == 1)
+							if (!O.persistence_set_z(2)) return cancel_save_transfer("docked")
+						else if (O.z == 2)
+							if (!O.persistence_set_z(1)) return cancel_save_transfer("docked")
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
@@ -62,6 +67,7 @@
 						T.density = FALSE
 				spawn (400)
 					if (gcDestroyed || gc_destroyed) return FALSE
+					if (trip_id != this_trip) return FALSE
 					if (persistence_save_active()) return cancel_save_transfer(position)
 					if (z == 1)
 						visible_message("The Landing Craft is returning!</span>")
@@ -97,6 +103,7 @@
 				icon_state = none_state
 			spawn (200)
 				if (gcDestroyed || gc_destroyed) return FALSE
+				if (trip_id != this_trip) return FALSE
 				if (persistence_save_active()) return cancel_save_transfer("launched")
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
@@ -116,6 +123,7 @@
 						T.density = FALSE
 				spawn (400)
 					if (gcDestroyed || gc_destroyed) return FALSE
+					if (trip_id != this_trip) return FALSE
 					if (persistence_save_active()) return cancel_save_transfer(position)
 					if (z == 1)
 						visible_message("The Landing Craft is returning!</span>")
