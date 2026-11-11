@@ -43,7 +43,8 @@
 			E.process()
 
 			if (!lying && !buckled && world.time - l_move_time < 15)
-			//Moving around with fractured ribs won't do you any good
+			//Moving around with fractured ribs won't do you any good.
+			//is_broken() is FALSE for a splinted break, so a splint stops this.
 				if (E.is_broken() && E.internal_organs && E.internal_organs.len && prob(15))
 					var/obj/item/organ/I = pick(E.internal_organs)
 					custom_pain("You feel broken bones moving in your [E.name]!", 55)
@@ -87,7 +88,7 @@
 		var/obj/item/organ/external/E = organs_by_name[limb_tag]
 		if (!E || (E.status & (ORGAN_MUTATED|ORGAN_DEAD)) || E.is_stump()) //should just be !E.is_usable() here but dislocation screws that up.
 			stance_damage += 2 // let it fail even if just foot&leg
-		else if (E.is_broken() || !E.is_usable())
+		else if (E.is_broken() || (!E.is_usable() && !(E.status & ORGAN_SPLINTED))) // a splint holds a break or dislocation still
 			stance_damage += 1
 		else if (E.is_dislocated())
 			stance_damage += 0.5
