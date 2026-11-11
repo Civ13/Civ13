@@ -95,11 +95,24 @@ var/bee_runtime_error = FALSE
 	var/mob/living/human/bee_probe/move_user = new(moved_turf)
 	spawn(0) moved.attackby(tool, move_user)
 
+	var/turf/frame_turf = locate(2, 5, 1)
+	var/obj/item/honey_frame/filled/frame = new(frame_turf)
+	var/obj/item/weapon/material/kitchen/utensil/knife/knife = new(frame_turf)
+	var/mob/living/human/bee_probe/cutter = new(frame_turf)
+	spawn(0) frame.attackby(knife, cutter)
+
+	var/turf/frame_move_turf = locate(6, 5, 1)
+	var/turf/frame_destination = locate(12, 5, 1)
+	var/obj/item/honey_frame/filled/moved_frame = new(frame_move_turf)
+	var/mob/living/human/bee_probe/frame_move_user = new(frame_move_turf)
+	spawn(0) moved_frame.attackby(knife, frame_move_user)
+
 	sleep(5)
 	colony.attackby(jar, dismantler)
 	lid.closed = TRUE
 	smoke.smoked = 0
 	moved.loc = locate(15, 2, 1)
+	moved_frame.loc = frame_destination
 	sleep(40)
 
 	bee_check(race.frames == 0 && race.honeycombs == 0 && bee_count_items(race_turf, /obj/item/honey_frame/filled) == 1, "two harvesters receive one frame and never overdraw the hive")
@@ -109,3 +122,6 @@ var/bee_runtime_error = FALSE
 	bee_check(lid.frames == 1 && lid.honeycombs == 100 && bee_count_items(lid_turf, /obj/item/honey_frame) == 0, "closing the lid during harvest prevents output")
 	bee_check(smoke.frames == 1 && smoke.honeycombs == 100 && bee_count_items(smoke_turf, /obj/item/honey_frame) == 0, "smoke expiring during harvest prevents output")
 	bee_check(!QDELETED(moved) && bee_count_items(moved_turf, /obj/item/stack/material/wood) == 0, "moving the target during dismantling cancels the wait")
+	sleep(60)
+	bee_check(QDELETED(frame) && bee_count_items(frame_turf, /obj/item/honey_frame) == 1 && bee_count_items(frame_turf, /obj/item/weapon/reagent_containers/food/snacks/honeycomb) == 1, "cutting a stationary frame returns one empty frame and honeycomb")
+	bee_check(!QDELETED(moved_frame) && bee_count_items(frame_destination, /obj/item/honey_frame/filled) == 1 && bee_count_items(frame_destination, /obj/item/weapon/reagent_containers/food/snacks/honeycomb) == 0, "moving a frame during cutting cancels output")
