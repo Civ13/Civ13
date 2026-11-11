@@ -41,6 +41,13 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'dressmaking': {'files': ('tests/dressmaking/test_source.py',),
+        'paths': ('tests/dressmaking/', 'tests/crafting/dressmaking.dm', 'code/modules/1713/dressmaking.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',
+                         'code/game/mob/living/carbon/human/update_icons.dm',
+                         'config/crafting/material_recipes_global.txt',
+                         'code/modules/research_tree/research_node.dm',
+                         'scripts/check-recipes.py')},
     'atgm_retrieve': {'files': ('tests/atgm_retrieve/test_retrieve.py',),
         'paths': ('tests/atgm_retrieve/', 'code/modules/1713/weapons/guns/mg/stationary/mg.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

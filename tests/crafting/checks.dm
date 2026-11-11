@@ -147,6 +147,7 @@ var/recipe_ci_files = 0
 	recipe_ci_furniture_joinery()
 	recipe_ci_stone_molds()
 	recipe_ci_cloth_substitution()
+	recipe_ci_dressmaking()
 	// Negative fixtures must prove errors, without suppressing real catalog failures.
 	var/list/catalog_errors = recipe_ci_errors.Copy()
 	recipe_ci_errors = list()

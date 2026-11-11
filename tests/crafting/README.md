@@ -222,3 +222,14 @@ workshop refund provenance, custom entry save/load, Extraction equipment codec,
 medical gates and existing helmet conversions. Use `--cloth-only` for a bounded
 run with all faction catalogs; the ordinary runner includes the same checks.
 See `docs/cloth-substitution.md` for the supported mixing rules and evidence limits.
+
+## Custom dressmaking
+
+`dressmaking.dm` checks the paid four-sheet cloth/wool project, each existing
+cut/panel asset, opaque color validation, cut-before-sew transitions, cancellation
+and late hand/save/incapacitation changes, then custom disk-entry round trips of
+cut work and a finished dress with an accessory and blood. Work waits and actor
+physiology/HUD are bounded adapters; production payment, stage changes and
+inventory transfer run unchanged. This does not exercise client dialogs or the
+preview browser. See `docs/custom-dressmaking.md` and `tests/dressmaking` for
+related offline source execution and sprite checks.
