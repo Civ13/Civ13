@@ -819,6 +819,7 @@
 #include "code\modules\1713\piece_projects.dm"
 #include "code\modules\1713\piped_barrel.dm"
 #include "code\modules\1713\factory_vessel.dm"
+#include "code\modules\1713\factory_tanning.dm"
 #include "code\modules\1713\factory_packaging.dm"
 #include "code\modules\1713\factory_meter.dm"
 #include "code\modules\1713\electroplating.dm"

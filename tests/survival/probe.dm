@@ -30,7 +30,7 @@ var/survival_runtime_error = FALSE
 #else
 		survival_regressions()
 		survival_assert(!survival_runtime_error, "runtime error invalidated assertions")
-		text2file("PASS: severe terminal windows, oral medicines, interrupted courses, herbal stock, renewable recipe, exemptions and transmission", "survival-result.txt")
+		text2file("PASS: severe natural recovery, oral medicines, interrupted courses, herbal stock, renewable recipe, exemptions and transmission", "survival-result.txt")
 #endif
 	catch(var/exception/error)
 		text2file("FAIL: [error]", "survival-result.txt")
@@ -67,7 +67,15 @@ var/survival_runtime_error = FALSE
 				survival_assert(H.weakened > 0, "[kind]: critical phase")
 			survival_assert(H.stat != DEAD && H.getToxLoss() == 0 && H.getBrainLoss() == 0, "[kind]: premature lethal damage")
 		survival_tick(H)
-		survival_assert(H.stat == DEAD && H.disease_progression == 1200, "[kind]: untreated terminal deadline")
+		survival_assert(H.stat != DEAD && H.disease_progression == 1200, "[kind]: no arbitrary terminal deadline")
+		for(var/tick in 1201 to 2000)
+			survival_tick(H)
+		survival_assert(!H.disease && H.stat != DEAD && H.getToxLoss() == 0 && H.getBrainLoss() == 0, "[kind]: untreated natural recovery")
+		H.disease = TRUE
+		H.disease_type = kind
+		H.halloss = 200
+		H.clear_disease()
+		survival_assert(H.halloss == 200, "[kind]: cure preserves unrelated pain")
 		qdel(H)
 		H = survival_patient(kind)
 		text2file("[kind]: medicine", "progress.txt")
@@ -102,7 +110,7 @@ var/survival_runtime_error = FALSE
 		H.nutrition = 500
 		H.bodytemperature = H.species.body_temperature
 		H.Life()
-	survival_assert(!H.disease && H.stat != DEAD, "critical illness remains treatable through actual Life before terminal deadline")
+	survival_assert(!H.disease && H.stat != DEAD, "critical illness remains treatable through actual Life during severe phase")
 	qdel(H)
 	H = survival_patient("plague")
 	H.ingested.add_reagent("penicillin", 0.5)

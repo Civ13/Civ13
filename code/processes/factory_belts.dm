@@ -29,6 +29,7 @@
 	factory_fast_belts_step()
 	factory_arms_step()
 	factory_mills_step()
+	factory_tanning_drums_step()
 	factory_fabricators_step()
 	factory_fluids_tick()
 

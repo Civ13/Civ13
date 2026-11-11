@@ -19,6 +19,12 @@ var/global/list/probe_failures = list()
 	var/stat = 0
 	var/title_verbs = TRUE
 
+/mob/living/human/proc/make_commander()
+	return
+/mob/living/human/proc/make_title_changer()
+	return
+/mob/living/human/proc/grant_faction_symbol_editor()
+	return
 /mob/living/human/proc/remove_commander()
 	return
 /mob/living/human/proc/remove_title_changer()
@@ -128,3 +134,41 @@ var/global/list/probe_failures = list()
 	D.stat = DEAD
 	check(!D.enroll_in_faction("Alpha"), "dead character cannot enroll")
 	check(D.civilization == "none", "dead character stays factionless")
+
+	// Identity, not display name or a stale flag, controls stored leadership.
+	var/mob/living/human/twin = make_human("Lea", "Alpha", list(0,0,0,0))
+	twin.leader = TRUE
+	check(!map.is_faction_leader(twin, "Alpha"), "duplicate name is not the leader")
+	check(!map.clear_faction_leader(twin, "Alpha"), "nonleader death cleanup cannot clear same-name leader")
+	check(!map.change_faction_leader("Alpha", twin, R), "same-name member cannot transfer leadership")
+	check(twin.faction_leaving_proc(), "same-name member can leave")
+	check(map.custom_civs["Alpha"][4] == L, "same-name departure preserves leader")
+	check(!map.change_faction_leader("Alpha", L, L), "self-transfer cannot demote the leader")
+	check(!map.change_faction_leader("Alpha", L, null), "cancel is not a successor")
+	check(!map.change_faction_leader("Alpha", L, B), "outsider cannot become successor")
+	R.stat = DEAD
+	check(!map.change_faction_leader("Alpha", L, R), "dead successor rejected")
+	R.stat = 0
+	L.stat = DEAD
+	check(!map.change_faction_leader("Alpha", L, R), "dead leader cannot transfer")
+	L.stat = 0
+	L.civilization = "Beta"
+	check(!map.change_faction_leader("Alpha", L, R), "leader changing membership during prompt invalidates transfer")
+	L.civilization = "Alpha"
+	map.custom_civs["Alpha"][4] = M
+	check(!map.change_faction_leader("Alpha", L, R), "leader changing during prompt invalidates transfer")
+	map.custom_civs["Alpha"][4] = L
+	check(map.change_faction_leader("Alpha", L, R), "actual leader transfers to member")
+	check(map.is_faction_leader(R, "Alpha") && R.leader && R.faction_perms[1] == 1 && R.faction_perms[4] == 1, "successor receives leadership powers")
+	check(!L.leader && L.faction_perms[1] == 0 && L.faction_perms[4] == 0, "outgoing leader loses powers")
+	check(!map.clear_faction_leader(L, "Alpha"), "former leader death preserves successor")
+	check(map.clear_faction_leader(R, "Alpha"), "actual leader death cleanup clears record")
+	check(map.change_faction_leader("Alpha", null, L), "living member claims vacancy")
+	check(!map.change_faction_leader("Alpha", null, R), "vacancy claim cannot override leader")
+	map.custom_civs["Alpha"] = list(0,0,0,L,0)
+	L.leader = FALSE
+	check(map.is_faction_leader(L, "Alpha"), "restored reference wins over stale false flag")
+	map.custom_civs["Alpha"] = null
+	L.leader = TRUE
+	check(map.is_faction_leader(L, "Alpha"), "legacy no-record leader fallback preserved")
+	check(!map.change_faction_leader("Alpha", L, R), "legacy flag cannot create stored record")

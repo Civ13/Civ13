@@ -8,6 +8,16 @@ STATE=DM.split('/datum/topic_state/photo_viewer/can_use_topic',1)[1].split('/obj
 UPDATE=DM.split('/datum/nanoui/tgui/photo_viewer/update',1)[1].split('/datum/topic_state/photo_viewer\n',1)[0]
 
 class PhotoViewerContract(unittest.TestCase):
+ def test_rename_waits_for_post_prompt_possession_and_consciousness(self):
+  rename=DM.split('/obj/item/weapon/photo/verb/rename()',1)[1].split('/**************',1)[0]
+  # The only name write must be inside the post-input eligibility guard.
+  def assert_guarded_writes(source):
+   self.assertEqual(re.findall(r'^(\t+)name\s*=.*$',source,re.M),['\t\t'])
+  assert_guarded_writes(rename)
+  with self.assertRaises(AssertionError):
+   assert_guarded_writes(rename.replace('\tif (( (loc == usr', '\tname = n_name\n\tif (( (loc == usr', 1))
+  self.assertRegex(rename,r'if \(\( \(loc == usr \|\| \(loc\.loc && loc\.loc == usr\)\) && usr\.stat == FALSE\)\)\n\t\tname = "\[\(n_name \? text\("\[n_name\]"\) : "photo"\)\]"')
+
  def test_entrypoint_permissions_and_image_capture_handlers_are_not_replaced(self):
   examine=DM.split('/obj/item/weapon/photo/examine(',1)[1].split('/obj/item/weapon/photo/proc/show(',1)[0]
   for marker in ('if(!img)','if(distance <= 1)','show(user)','to_chat(user, desc)','It is too far away.'):

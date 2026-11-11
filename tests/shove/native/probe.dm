@@ -77,3 +77,12 @@ var/shove_fixture_checks = 0
 	shove_check(!T.try_deliberate_shove(U) && T.x == 4, "shove_larger_body")
 	shove_dispose(T)
 	shove_dispose(U)
+	// A freshly spawned body that never walked still waits for its first input
+	// to switch free movement on; it must be shoveable all the same.
+	var/mob/living/human/subtile_fixture/fresh = human_subtile_fixture_actor(8, 7)
+	fresh.stats["stamina"][1] = 100
+	var/mob/living/human/subtile_fixture/shover = shove_actor(7, 7)
+	shove_check(!fresh.human_subtile_enabled && fresh.human_subtile_default_pending, "shove_fresh_body_unwalked")
+	shove_check(fresh.try_deliberate_shove(shover) && fresh.x == 9 && !fresh.step_x && fresh.human_subtile_enabled && !fresh.human_subtile_transaction, "shove_fresh_body_moves")
+	shove_dispose(fresh)
+	shove_dispose(shover)

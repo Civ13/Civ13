@@ -5,7 +5,7 @@ interpreter. The runner compiles production sources with normal world startup
 disabled, runs bounded assertions in temporary storage, and removes its unique
 generated source/build files. No production saves or server restart is used.
 
-The probe tests all four untreated terminal deadlines, appropriate oral
+The probe tests all four untreated natural recoveries (2000 active calls), no terminal deadline, preservation of unrelated pain, appropriate oral
 medicine, wrong medicine, interrupted and restarted courses, three oral herbs
 with planting stock reserved, minimum herb harvest, renewable acetone and
 penicillin recipes, immunity/disconnect/godmode exemptions and transmission.

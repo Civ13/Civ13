@@ -231,13 +231,16 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-				health -= plating_wear(10)
-			else
-				health -= plating_wear(1)
+			apply_block_wear(damage_source)
 			check_health()
 			return TRUE
 	return FALSE
+
+/obj/item/weapon/shield/proc/apply_block_wear(atom/damage_source)
+	if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		health -= plating_wear(10)
+	else
+		health -= plating_wear(1)
 
 /obj/item/weapon/shield/proc/get_block_chance(mob/user, var/damage, atom/damage_source = null, mob/attacker = null)
 	return base_block_chance
@@ -407,24 +410,13 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05
-/obj/item/weapon/shield/tes13/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
-	if (user.incapacitated())
-		return FALSE
-
-	//block as long as they are not directly behind us
-	var/bad_arc = reverse_direction(user.dir) //arc of directions from which we cannot block
-	if (check_shield_arc(user, bad_arc, damage_source, attacker))
-		if (prob(get_block_chance(user, damage, damage_source, attacker)))
-			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-				health -= plating_wear(2)
-			else
-				health -= plating_wear(1)
-			if (istype(damage_source, /obj/item/weapon/material/tes13/mace))
-				src.health -= plating_wear(10)
-			check_health()
-			return TRUE
-	return FALSE
+/obj/item/weapon/shield/tes13/apply_block_wear(atom/damage_source)
+	if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		health -= plating_wear(2)
+	else
+		health -= plating_wear(1)
+	if (istype(damage_source, /obj/item/weapon/material/tes13/mace))
+		health -= plating_wear(10)
 /obj/item/weapon/shield/tes13/stormcloak
 	name = "stormcloak shield"
 	icon_state = "stormcloak"
