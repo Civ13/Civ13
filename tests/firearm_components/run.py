@@ -25,6 +25,9 @@ CONTROLS = {
                           '\tconfiguration_base_ergonomics = configuration_base_ergonomics * handling\n', 'FAIL:'),
     'eager-preset': ('\tif (islist(firearm_part_ids) && islist(firearm_part_condition))\n\t\treturn TRUE\n',
                      '\tif (FALSE)\n\t\treturn TRUE\n', 'FAIL:'),
+    'free-salvage': ('\t\tvar/amount = round(R.inputs[input_type] / R.output_amount * P.condition * FIREARM_SALVAGE_RETURN, 1)\n',
+                     '\t\tvar/amount = R.inputs[input_type]\n', 'FAIL:'),
+    'preview-mutates': ('\tvar/list/ids = firearm_part_ids.Copy()\n', '\tvar/list/ids = firearm_part_ids\n', 'FAIL:'),
 }
 
 

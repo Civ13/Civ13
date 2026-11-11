@@ -295,17 +295,26 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 /obj/item/weapon/gun/proc/firearm_fire_block()
 	if (!firearm_parts_ready())
 		return null
+	return firearm_assembly_block(firearm_part_ids, firearm_part_condition)
+
+// Why a set of parts (slot -> id, slot -> condition) cannot fire, or null. Pure,
+// so the parts panel can preview a swap without touching the gun.
+/proc/firearm_assembly_block(list/ids, list/conditions)
 	for (var/slot in firearm_required_slots)
-		var/datum/firearm_component/C = firearm_part(slot)
-		if (!C)
+		if (!firearm_component_def(ids[slot]))
 			return "it has no [slot]"
-	var/datum/firearm_component/barrel = firearm_part(FIREARM_SLOT_BARREL)
-	var/datum/firearm_component/feed = firearm_part(FIREARM_SLOT_FEED)
+	var/datum/firearm_component/barrel = firearm_component_def(ids[FIREARM_SLOT_BARREL])
+	var/datum/firearm_component/feed = firearm_component_def(ids[FIREARM_SLOT_FEED])
 	if (barrel.caliber != feed.caliber)
 		return "its barrel and magazine well are for different cartridges"
-	if (firearm_part_condition[FIREARM_SLOT_BARREL] <= 0)
+	if (conditions[FIREARM_SLOT_BARREL] <= 0)
 		return "its barrel is worn out"
 	return null
+
+// Handling factor of a set of parts: the stock's, or x0.75 with none.
+/proc/firearm_assembly_handling(list/ids)
+	var/datum/firearm_component/furniture = firearm_component_def(ids[FIREARM_SLOT_FURNITURE])
+	return furniture ? furniture.ergonomics : 0.75
 
 // Derives caliber, magazines and handling from the installed parts.
 /obj/item/weapon/gun/proc/firearm_apply_parts()
@@ -315,7 +324,6 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	initialize_configuration()
 	var/datum/firearm_component/barrel = firearm_component_def(firearm_part_ids[FIREARM_SLOT_BARREL])
 	var/datum/firearm_component/feed = firearm_component_def(firearm_part_ids[FIREARM_SLOT_FEED])
-	var/datum/firearm_component/furniture = firearm_component_def(firearm_part_ids[FIREARM_SLOT_FURNITURE])
 	if (barrel && feed && barrel.caliber == feed.caliber)
 		G.caliber = barrel.caliber
 	if (feed)
@@ -327,7 +335,7 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
 	// compiled value, so reapplying (or loading a save) never compounds.
-	var/handling = furniture ? furniture.ergonomics : 0.75
+	var/handling = firearm_assembly_handling(firearm_part_ids)
 	configuration_base_ergonomics = initial(ergonomics) * handling
 	recompute_configuration()
 
@@ -444,20 +452,6 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 		return
 	return ..()
 
-/obj/item/weapon/gun/proc/firearm_strip_menu(mob/living/human/H)
-	if (!istype(H) || !firearm_parts_ready())
-		return
-	var/list/choices = list("Cancel")
-	for (var/slot in firearm_slot_order)
-		var/datum/firearm_component/C = firearm_part(slot)
-		if (C)
-			choices["[C.name] ([slot])"] = slot
-	var/choice = WWinput(H, "Remove which part?", "Rifle parts", "Cancel", choices)
-	if (choice == "Cancel" || !(choice in choices))
-		return
-	if (!firearm_remove(choices[choice], H))
-		to_chat(H, SPAN_WARNING("You can't remove that now. Unload and hold the rifle[firearm_slot_needs_bench(choices[choice]) ? " next to a firearm bench" : ""]."))
-
 // Every modular gun gets the strip verb; fixed designs never see it.
 /obj/item/weapon/gun/New()
 	..()
@@ -465,11 +459,224 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 		verbs += /obj/item/weapon/gun/proc/remove_rifle_part
 
 /obj/item/weapon/gun/proc/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine and stock come off by hand; the action and barrel need a firearm bench."
+	set name = "Rifle Parts"
+	set desc = "Inspect, remove, fit and salvage parts. Unload first; magazine and stock come off by hand, the action and barrel need a firearm bench."
 	set category = null
 	set src in usr
-	firearm_strip_menu(usr)
+	firearm_panel(usr)
+
+// Parts panel (phase 6): what is installed, what blocks firing, what the parts
+// you carry would change, and remove, fit and salvage actions.
+
+// Cartridge a set of parts chambers, or null when barrel and feed disagree.
+/proc/firearm_assembly_caliber(list/ids)
+	var/datum/firearm_component/barrel = firearm_component_def(ids[FIREARM_SLOT_BARREL])
+	var/datum/firearm_component/feed = firearm_component_def(ids[FIREARM_SLOT_FEED])
+	if (!barrel || !feed || barrel.caliber != feed.caliber)
+		return null
+	return barrel.caliber
+
+/proc/firearm_caliber_text(caliber)
+	if (!caliber)
+		return "none"
+	var/label = firearm_caliber_labels[caliber]
+	return label ? label : caliber
+
+// What this gun would be with P in P's slot (replacing any part there), without
+// touching the gun: list(fire_block, handling, caliber).
+/obj/item/weapon/gun/proc/firearm_fit_preview(obj/item/weapon/gun_component/P)
+	var/datum/firearm_component/C = firearm_component_def(P.component_id)
+	if (!C || !firearm_parts_ready())
+		return null
+	var/list/ids = firearm_part_ids.Copy()
+	var/list/conditions = firearm_part_condition.Copy()
+	ids[C.slot] = C.id
+	conditions[C.slot] = P.condition
+	return list("fire_block" = firearm_assembly_block(ids, conditions), "handling" = firearm_assembly_handling(ids), "caliber" = firearm_assembly_caliber(ids))
+
+/obj/item/weapon/gun/proc/firearm_carried_parts(mob/living/human/H)
+	var/list/parts = list()
+	for (var/obj/item/weapon/gun_component/P in H)
+		if (!QDELETED(P) && !P.component_busy)
+			parts += P
+	return parts
+
+/obj/item/weapon/gun/proc/firearm_panel_html(mob/living/human/H, obj/item/weapon/gun_component/pending_salvage = null)
+	if (!firearm_parts_ready())
+		return null
+	var/list/out = list("<html><head><title>[name] parts</title></head><body>")
+	out += "<b>[name]</b><br>"
+	var/block = firearm_fire_block()
+	out += block ? "<font color='red'>Cannot fire: [block].</font><br>" : "<font color='green'>Ready to fire.</font><br>"
+	out += "Cartridge: [firearm_caliber_text(firearm_assembly_caliber(firearm_part_ids))]. Handling: [round(firearm_assembly_handling(firearm_part_ids) * 100)]%.<br>"
+	var/datum/firearm_component/feed = firearm_part(FIREARM_SLOT_FEED)
+	if (feed && feed.good_mags && feed.good_mags.len)
+		var/list/mags = list()
+		for (var/mag_type in feed.good_mags)
+			var/obj/item/M = mag_type
+			mags += initial(M.name)
+		out += "Takes: [jointext(mags, ", ")].<br>"
+	if (!configuration_unloaded())
+		out += "<i>Unload it before working on the parts.</i><br>"
+	out += "<hr><b>Installed</b><br>"
+	for (var/slot in firearm_slot_order)
+		var/datum/firearm_component/C = firearm_part(slot)
+		var/where = firearm_slot_needs_bench(slot) ? "firearm bench" : "by hand"
+		if (C)
+			out += "[capitalize(slot)]: [C.name] ([round(firearm_part_condition[slot] * 100)]%), [where] <a href='?src=\ref[src];firearm_action=remove;slot=[slot]'>Remove</a><br>"
+		else
+			out += "[capitalize(slot)]: <b>missing</b>[slot in firearm_required_slots ? "" : " (optional)"], [where]<br>"
+	out += "<hr><b>Parts you carry</b><br>"
+	var/list/parts = firearm_carried_parts(H)
+	if (!parts.len)
+		out += "None.<br>"
+	var/bench = configuration_bench(H)
+	for (var/obj/item/weapon/gun_component/P in parts)
+		out += "[P.name] ([round(P.condition * 100)]%): "
+		var/fit_block = firearm_install_block(P)
+		var/datum/firearm_component/C = firearm_component_def(P.component_id)
+		if (C && C.family == firearm_family)
+			var/list/preview = firearm_fit_preview(P)
+			out += "with it, handling [round(firearm_assembly_handling(firearm_part_ids) * 100)]% to [round(preview["handling"] * 100)]%, cartridge [firearm_caliber_text(preview["caliber"])], [preview["fire_block"] ? "cannot fire: [preview["fire_block"]]" : "fires"]. "
+		if (fit_block)
+			out += "<i>Can't fit: [fit_block].</i> "
+		else if (H.get_active_hand() == P)
+			out += "<a href='?src=\ref[src];firearm_action=fit;part=\ref[P]'>Fit</a> "
+		else
+			out += "<i>Hold it in your active hand to fit it.</i> "
+		if (bench)
+			out += "<a href='?src=\ref[src];firearm_action=salvage;part=\ref[P]'>Salvage</a>"
+		else
+			out += "<i>Salvage at a firearm bench.</i>"
+		out += "<br>"
+		if (P == pending_salvage)
+			out += "<font color='red'>[firearm_salvage_preview(P)]</font> <a href='?src=\ref[src];firearm_action=salvage_confirm;part=\ref[P]'>Confirm salvage</a> <a href='?src=\ref[src];firearm_action=refresh'>Cancel</a><br>"
+	out += "</body></html>"
+	return jointext(out, "")
+
+/obj/item/weapon/gun/proc/firearm_panel(mob/living/human/H, obj/item/weapon/gun_component/pending_salvage = null)
+	if (!istype(H))
+		return
+	var/html = firearm_panel_html(H, pending_salvage)
+	if (html)
+		show_browse(H, html, "window=firearm_parts;size=560x480")
+
+// Panel links. Every action re-checks access itself; the link is only a request.
+/obj/item/weapon/gun/proc/firearm_panel_act(mob/living/human/H, list/href_list)
+	if (!istype(H) || H.stat || !firearm_parts_ready() || !configuration_actor(H))
+		return FALSE
+	var/action = href_list["firearm_action"]
+	var/obj/item/weapon/gun_component/P = null
+	if (href_list["part"])
+		P = locate(href_list["part"])
+		if (!istype(P) || P.loc != H || QDELETED(P))
+			return FALSE
+	switch (action)
+		if ("remove")
+			var/slot = href_list["slot"]
+			if (!(slot in firearm_slot_order))
+				return FALSE
+			if (!firearm_remove(slot, H))
+				to_chat(H, SPAN_WARNING("You can't remove that now. Unload and hold [name][firearm_slot_needs_bench(slot) ? " next to a firearm bench" : ""]."))
+				return FALSE
+		if ("fit")
+			if (!P || !firearm_install(P, H))
+				return FALSE
+		if ("salvage")
+			if (!P)
+				return FALSE
+			firearm_panel(H, P)
+			return TRUE
+		if ("salvage_confirm")
+			if (!P || !firearm_salvage(P, H))
+				return FALSE
+		if ("refresh")
+		else
+			return FALSE
+	firearm_panel(H)
+	return TRUE
+
+/obj/item/weapon/gun/Topic(href, href_list)
+	if (!href_list["firearm_action"])
+		return ..()
+	firearm_panel_act(usr, href_list)
+	return TRUE
+
+// Salvage: about half the factory materials back, scaled by the part's
+// condition, rounded to the nearest unit. The part is destroyed.
+#define FIREARM_SALVAGE_RETURN 0.5
+
+/proc/firearm_component_recipe(id)
+	for (var/recipe_name in factory_get_recipes())
+		var/datum/factory_recipe/R = factory_recipes[recipe_name]
+		if (!ispath(R.output_type, /obj/item/weapon/gun_component))
+			continue
+		var/obj/item/weapon/gun_component/T = R.output_type
+		if (initial(T.component_id) == id)
+			return R
+	return null
+
+// Material type -> amount salvaging P would return (may be empty).
+/proc/firearm_salvage_yield(obj/item/weapon/gun_component/P)
+	var/list/yield = list()
+	var/datum/factory_recipe/R = firearm_component_recipe(P.component_id)
+	if (!R)
+		return yield
+	for (var/input_type in R.inputs)
+		var/amount = round(R.inputs[input_type] / R.output_amount * P.condition * FIREARM_SALVAGE_RETURN, 1)
+		if (amount > 0)
+			yield[input_type] = amount
+	return yield
+
+/proc/firearm_salvage_preview(obj/item/weapon/gun_component/P)
+	var/list/yield = firearm_salvage_yield(P)
+	var/list/returned = list()
+	for (var/input_type in yield)
+		var/obj/item/I = input_type
+		returned += "[yield[input_type]] [initial(I.name)]"
+	return "Salvaging destroys [P.name] ([round(P.condition * 100)]%) and returns [returned.len ? jointext(returned, ", ") : "nothing usable"]."
+
+/obj/item/weapon/gun_component/proc/salvage_bench(mob/living/human/H)
+	for (var/obj/structure/repair/gun/B in range(1, H))
+		if (!QDELETED(B) && isturf(B.loc) && B.anchored)
+			return B
+	return null
+
+/obj/item/weapon/gun_component/proc/salvage_wait(mob/living/human/H)
+	return do_after(H, 30, salvage_bench(H))
+
+// Destroys P at a firearm bench and drops its salvage. The caller has already
+// shown firearm_salvage_preview and had it confirmed.
+/proc/firearm_salvage(obj/item/weapon/gun_component/P, mob/living/human/H)
+	if (!istype(P) || !istype(H) || QDELETED(P) || P.component_busy || P.loc != H || !P.salvage_bench(H))
+		if (istype(H)) to_chat(H, SPAN_WARNING("Carry the part to a firearm bench to salvage it."))
+		return FALSE
+	P.component_busy = TRUE
+	var/complete = P.salvage_wait(H)
+	if (!complete || QDELETED(P) || P.loc != H || !P.salvage_bench(H) || !H.unEquip(P))
+		if (!QDELETED(P)) P.component_busy = FALSE
+		return FALSE
+	var/list/yield = firearm_salvage_yield(P)
+	var/part_name = P.name
+	P.component_busy = FALSE
+	P.component_consumed = TRUE
+	qdel(P)
+	for (var/input_type in yield)
+		new input_type(H.loc, yield[input_type])
+	to_chat(H, SPAN_NOTICE("You salvage [part_name][yield.len ? "" : ", but nothing usable is left"]."))
+	return TRUE
+
+#undef FIREARM_SALVAGE_RETURN
+
+// Hitting the firearm bench with a loose part offers to salvage it, showing
+// what it destroys and returns first.
+/proc/firearm_offer_salvage(obj/item/weapon/gun_component/P, mob/living/human/H)
+	if (!istype(P) || !istype(H))
+		return FALSE
+	var/choice = WWinput(H, firearm_salvage_preview(P), "Salvage rifle part", "Cancel", list("Salvage", "Cancel"))
+	if (choice != "Salvage")
+		return FALSE
+	return firearm_salvage(P, H)
 
 /obj/item/weapon/gun_component
 	name = "rifle part"
