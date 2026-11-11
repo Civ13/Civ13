@@ -8,6 +8,10 @@ the production ES5 script executes against a small DOM/storage adapter. Tests
 cover cross-category search, case and multiword matching, category browsing,
 no results, Escape/Clear, non-crafting Enter, refresh state, repeated detail
 toggles, explicit batch submission and unavailable session storage.
+The "Only what I can make" tick box hides rows the server marked as not
+makeable now (manual, material, skill, carving/joinery tools, tablet press,
+cloth), combines with search, and reports the choice to the stateless
+`held_crafting_filter` receiver, which saves it in player preferences.
 
 The menu renders the already-authorized material catalog. Search does not add
 recipes, bypass manual/research checks, or turn tool interactions (such as

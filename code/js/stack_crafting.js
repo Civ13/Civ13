@@ -8,12 +8,15 @@
     var rows = document.querySelectorAll('.craft-row');
     var count = document.getElementById('craft-count');
     var empty = document.getElementById('craft-empty');
+    // Optional so older windows without the tick box keep working.
+    var makeable = document.getElementById('craft-makeable');
     var key = 'held-crafting:' + document.body.getAttribute('data-stack');
     var entries = [];
     var i;
     for (i = 0; i < rows.length; i++) {
         entries.push({node: rows[i], text: rows[i].getAttribute('data-search').toLowerCase(),
-            category: rows[i].getAttribute('data-category')});
+            category: rows[i].getAttribute('data-category'),
+            makeable: rows[i].getAttribute('data-makeable') === '1'});
     }
     // Best effort per-window state across stock refreshes. Never stored on the
     // shared material datum; unavailable storage must not disable the menu.
@@ -30,7 +33,8 @@
         if (query) category.value = '';
         for (var n = 0; n < entries.length; n++) {
             var entry = entries[n];
-            var matches = !category.value || entry.category === category.value;
+            var matches = (!category.value || entry.category === category.value) &&
+                (!makeable || !makeable.checked || entry.makeable);
             for (var w = 0; w < words.length && matches; w++) {
                 matches = entry.text.indexOf(words[w]) !== -1;
             }
@@ -60,6 +64,14 @@
         search.value = '';
         filter();
     };
+    if (makeable) {
+        // The server remembers the choice per player; this request never crafts.
+        makeable.onclick = function () {
+            filter();
+            var pref = makeable.getAttribute('data-pref');
+            if (pref) window.location.href = pref + (makeable.checked ? '1' : '0');
+        };
+    }
     document.getElementById('craft-clear').onclick = function () {
         search.value = '';
         category.value = '';
