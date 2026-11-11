@@ -66,6 +66,8 @@ SUITES = {
     'admin_send_mob': {'files': ('tests/admin_send_mob/test_send_mob.py',),
         'paths': ('tests/admin_send_mob/', 'code/modules/admin/verbs/adminjump.dm'),
         'shared_paths': ('code/_helpers/areas.dm', 'tests/save_movement/source_adapter.py')},
+    'boiling_oil_splash': {'files': ('tests/boiling_oil/test_splash_icon.py',),
+        'paths': ('tests/boiling_oil/', 'code/modules/1713/siege/boiling_oil.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
