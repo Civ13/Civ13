@@ -68,10 +68,9 @@
 		if(!E.can_feel_pain())
 			continue
 		var/dam = E.get_damage()
-		// Internal organs only hurt once bruised; minor scarring below that
-		// never heals on its own and would otherwise nag forever at full health.
+		// Pain follows remaining living tissue damage, including recovering bruises.
 		for(var/obj/item/organ/I in E.internal_organs)
-			if(I.is_bruised() && !(I.status & ORGAN_DEAD))
+			if(I.damage > 0 && !(I.status & ORGAN_DEAD))
 				dam += I.damage
 		// make the choice of the organ depend on damage,
 		// but also sometimes use one of the less damaged ones
@@ -103,9 +102,10 @@
 	// Damage to internal organs hurts a lot.
 	for(var/obj/item/organ/I in internal_organs)
 		if((I.status & ORGAN_DEAD)) continue
-		if(I.is_bruised() && prob(2))
+		if(I.damage > 0 && prob(2))
 			var/obj/item/organ/external/parent = get_organ(I.parent_organ)
-			src.custom_pain("You feel a sharp pain in your [parent.name]", 50, affecting = parent)
+			if(parent)
+				src.custom_pain("You feel an ache in your [parent.name].", min(50, I.damage), affecting = parent)
 
 	if(prob(2))
 		switch(getToxLoss())

@@ -26,6 +26,27 @@ original HTML renderer.
   status line counts what is hidden.
 - Resource pages list the recipes that make and use exactly that resource
   (60 rows each), in place of a text search for its type path.
+- Item pages work as a small wiki entry: the item's kind, its examine text and
+  declared basics (size, where it is worn, what it covers, armor, damage,
+  caliber, nutrition, stack size), then how to obtain it, its first recipe
+  shown without a second click, and a wiki search link. Facts come from
+  `scripts/atlas/facts.py`, which reads literal declarations only and leaves
+  out anything computed at runtime. Rows are capped at 16.
+- Workstations: a recipe card links to where it is made, and a workstation's
+  page lists the recipes made there (60 rows). The kind-to-station table in the
+  adapter is presentation only; the catalog's `station` field is unchanged.
+- Material tools list melee and thrown damage for each material their recipes
+  use. `facts.py` mirrors `update_force()` at normal crafting quality: blades
+  use the material's hardness, other tools its weight, rounded down.
+- Reactions say where they run. The generator tags Chemistry recipes with
+  `site`: `bench` when the laboratory reaction bench offers them, `bench_only`
+  or `bench_heated` when `can_happen` requires `controlled_reaction_site`.
+  The card links the bench ("Also at" when any container works too).
+- Uncrafted things say where they come from: curated routes in
+  `scripts/atlas/resource-sources.json` (smelting, mining, skinning, pressing),
+  a "Found in" list of items that start with a liquid inside (`found_in`, read
+  from `New()` bodies and reagent-list declarations), and a plain note for
+  animals, terrain and natural features.
 - Research: gated recipes name their research and show whether the reader still
   needs it, using the crafting admission helpers. This is display only;
   crafting keeps its own checks. Recipes past their last era show as retired.

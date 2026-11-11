@@ -78,7 +78,7 @@ def render(doc,path):
             x,y,_=port['at'];rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['PORT'])
     labels=['TEMPERATE','LUSH','STEPPE','ARID','DESERT']+(['COAST'] if ocean else [])+['RIVER','LAKE','SEA','SWAMP','MOUNTAIN','HILL','BEACH','TREE','START','RESOURCE']
     if cavern:
-        labels=['CAVE_FLOOR','ROCK','LAKE','TREE','START','RESOURCE','EXIT']
+        labels=['CAVE_FLOOR','ROCK']+(['RIVER'] if doc['rivers'] else [])+['LAKE','TREE','START','RESOURCE','EXIT']
         for portal in doc['portals']:
             x,y,_=portal['a'];rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['EXIT'])
     for i,label in enumerate(labels):

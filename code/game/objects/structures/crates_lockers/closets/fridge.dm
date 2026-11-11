@@ -23,11 +23,17 @@
 			return
 		visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+		var/was_anchored = anchored
 		if (do_after(user,50,src))
+			if (powersource || anchored != was_anchored)
+				return
 			visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 			anchored = !anchored
-			return
+		return
 	if (istype(W, /obj/item/stack/cable_coil))
+		if (!anchored)
+			to_chat(user, "<span class='notice'>Secure the [src] with a wrench first.</span>")
+			return
 		if (powersource)
 			to_chat(user, "There's already a cable connected here! Split it further from the [src].")
 			return

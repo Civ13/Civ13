@@ -28,6 +28,14 @@ const methods: Record<string, [string, string]> = {
   'Factory fabricator': ['Fabricator', 'Load the materials into a powered assembly fabricator.'],
   'Acquisition / processing': ['Gathering', 'Gathered or processed in the world rather than crafted from a menu.'],
 };
+// Where a reaction runs. Most happen in any container; the bench offers some and is the only place for a few.
+const reactionHints: Record<string, string> = {
+  '': 'Mix the reagents in one open container, such as a bucket or beaker. They react on their own.',
+  bench: 'Mix the reagents in one open container and they react on their own. A laboratory reaction bench can also run it on demand in its secured beaker.',
+  bench_only: 'Reacts only in the secured beaker of a laboratory reaction bench, or in a powered factory reaction vessel. Use the bench and pick the reaction.',
+  bench_heated: 'Reacts only in the secured beaker of a laboratory reaction bench heated with a laboratory burner, or in a powered factory reaction vessel.',
+};
+const reagentList = (found: string) => Array.from(found.matchAll(/\('(\w+)', '([\d.]+)'\)/g)).map(match => match[2] + ' ' + match[1].replace(/_/g, ' ')).join(' and ');
 const method = (kind: unknown) => { const name = text(kind); return methods[name.split(' / ')[0]] ?? methods[name] ?? [name, '']; };
 const catalogName = (kind: unknown) => { const parts = text(kind).split(' / '); return parts[0] === 'Material' && parts[1] ? parts[1].replace(/_/g, ' ') : ''; };
 // Generated bookkeeping that the layout already shows as research, time and era.
@@ -37,6 +45,12 @@ export function notes(conditions: unknown) {
   const time = /\btime (\d+) deciseconds\b/.exec(rest);
   if (time && Number(time[1]) > 0) facts.push('Takes about ' + Number(time[1]) / 10 + ' s');
   if (/\bone per turf 1\b/.test(rest)) facts.push('One per tile');
+  const reaction = /Catalysts: \[(.*?)\]; inhibitors: \[(.*?)\]; additional can_happen\/process callbacks may apply\.\s*/.exec(rest);
+  if (reaction) {
+    if (reagentList(reaction[1])) facts.push('Needs ' + reagentList(reaction[1]) + ' in the container as a catalyst. It is not used up');
+    if (reagentList(reaction[2])) facts.push('Does not react while the container holds ' + reagentList(reaction[2]));
+    rest = rest.replace(reaction[0], '');
+  }
   rest = rest.replace(/Legacy research I\/M\/M: [^.]*?supplied material [^.;]*\.\s*/, '').replace(/Research-node and map gates also apply\.\s*/, '')
     .replace(/\s*Explicit research node: [\w, ]+\./g, '').replace(/Receiver\/context dependent; named constructor arguments retained in source\.\s*/, '')
     .replace(/Catalysts: \[\]; inhibitors: \[\]; additional can_happen\/process callbacks may apply\.\s*/, '').trim();
@@ -71,7 +85,7 @@ function Resource({ ui, resource }: { ui: ScreenProps; resource: Data }) {
 }
 function RecipeRow({ ui, row, selected, onPick }: { ui: ScreenProps; row: Data; selected: boolean; onPick: () => void }) {
   const dim = !!row.manual_hint || !!row.retired || !!row.elsewhere;
-  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + ' recipe variants' : text(row.needs);
+  const variants = Number(row.variant_count) > 1 ? text(row.variant_count) + (row.ways ? ' versions: ' + text(row.ways) : ' recipe variants') : text(row.needs);
   return <li data-result-type="recipe" className={selected ? 'atlas-selected' : undefined}>
     <button type="button" className={'atlas-row' + (dim ? ' atlas-dim' : '')} disabled={!ui.interactive} aria-current={selected ? 'true' : undefined} onClick={onPick}>
       <Sprite image={row.image} />
@@ -83,18 +97,23 @@ function RecipeRow({ ui, row, selected, onPick }: { ui: ScreenProps; row: Data; 
     </button>
   </li>;
 }
-function Recipe({ ui, recipe, choose }: { ui: ScreenProps; recipe: Data; choose: (id: string) => void }) {
+function Recipe({ ui, recipe, choose, lead }: { ui: ScreenProps; recipe: Data; choose: (id: string) => void; lead?: string }) {
   const variants = list(recipe.variants);
   const familyVariants = list(recipe.family_variants);
   const research = list(recipe.research);
-  const [how, hint] = method(recipe.kind);
+  const site = text(recipe.site);
+  const [how, base] = method(recipe.kind);
+  const hint = text(recipe.kind) === 'Chemistry' ? reactionHints[site] ?? base : base;
+  const optional = site === 'bench';
   const { facts, rest } = notes(recipe.conditions);
   const until = Number(recipe.maximum_era);
   return <article className="atlas-card" aria-label="Recipe">
+    {!!lead && <p className="atlas-eyebrow">{lead}</p>}
     <h2 style={recipe.manual_hint ? { color: '#aaa' } : undefined}>{text(recipe.name)}</h2>
     <p className="atlas-chips">
       <span className="atlas-chip">{eraName(recipe.era_label) || 'Era varies'}</span>
-      <span className="atlas-chip">{text(recipe.station) || how}</span>
+      {recipe.station_id ? <button type="button" className="atlas-chip atlas-chip-link" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(recipe.station_id) })}>{optional ? 'Also at: ' : 'Made at: '}{text(recipe.station)}</button>
+        : <span className="atlas-chip">{text(recipe.station) || how}</span>}
       {catalogName(recipe.kind) && !!recipe.elsewhere && <span className="atlas-chip atlas-warn">Other maps only: {catalogName(recipe.kind)}</span>}
       {!!recipe.retired && <span className="atlas-chip atlas-warn">Retired in the current era</span>}
     </p>
@@ -127,12 +146,31 @@ function Recipe({ ui, recipe, choose }: { ui: ScreenProps; recipe: Data; choose:
     </details>
   </article>;
 }
+// Things nobody crafts: say where they are instead of "no recipe".
+const worldNotes: Record<string, string> = {
+  'Animal': 'A living creature, not something you craft. Look for it in the wild on maps where it lives, or keep and breed a herd.',
+  'Terrain': 'Part of the landscape, not something you craft. Look for this ground on the map.',
+  'Natural feature': 'Grows or lies in the wild, not something you craft. Look for it on the map.',
+};
 const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Conditions', era: 'Era', map_notes: 'Map notes', status: 'Review status' };
 function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
-  const routes = list(guidance.routes);
+  const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0, inside = list(guidance.found_in);
+  const world = worldNotes[text(guidance.kind)];
   return <article className="atlas-card" aria-label="Resource">
-    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.heading) + ' ' + text(guidance.name)}</span></h2>
-    {!routes.length && <NoticeBox>No gathering instructions are recorded for this resource. Recipes that make it are listed on the left.</NoticeBox>}
+    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
+    {!!guidance.kind && <p className="atlas-chips"><span className="atlas-chip">{text(guidance.kind)}</span>
+      {made > 0 && <span className="atlas-chip">Craftable</span>}
+      {Number(guidance.used_in_count) > 0 && <span className="atlas-chip">Used in {text(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</span>}
+      {Number(guidance.made_here_count) > 0 && <span className="atlas-chip">Workstation</span>}</p>}
+    {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
+    {stats.length > 0 && <dl className="atlas-stats">{stats.map((stat, i) => <div key={i}><dt>{text(stat.label)}</dt><dd>{text(stat.value)}</dd></div>)}</dl>}
+    <h3 className="atlas-section">{text(guidance.heading)} {text(guidance.name)}</h3>
+    {!routes.length && <p>{made > 0 ? 'Crafted. ' + (made === 1 ? 'Its recipe is shown below.' : 'The first of its ' + made + ' recipes is shown below, and the rest are listed under Made by.')
+      : inside.length ? 'No recipe makes this. It comes inside the items below.'
+      : world ?? 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.'}</p>}
+    {inside.length > 0 && <div className="atlas-related"><span>Found in:</span>{inside.map((entry, i) => entry.id
+      ? <Resource key={i} ui={ui} resource={{ ...entry, quantity: '' }} />
+      : <span key={i} className="atlas-chip">{text(entry.name)}</span>)}</div>}
     {routes.map((route, i) => {
       const steps = list(route.steps), said = steps.map(step => text(step)).join(' ');
       // Some routes repeat their steps as the condition; say it once.
@@ -154,6 +192,7 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
       </section>;
     })}
     {!!guidance.more && <p>More routes are available in the full web atlas.</p>}
+    <p className="atlas-wiki"><a href={'https://civ13.github.io/civ13-wiki/?search=' + encodeURIComponent(text(guidance.name))} target="_blank" rel="noreferrer">Search the wiki for {text(guidance.name)}</a></p>
   </article>;
 }
 export function CraftingAtlas(ui: ScreenProps) {
@@ -176,7 +215,7 @@ export function CraftingAtlas(ui: ScreenProps) {
     : guidance ? { route: 'resource', resource: String(guidance.id), recipe: id }
       : { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: id });
   const counts = !graph ? text(data.recipe_count) + ' matching recipes. Page ' + text(data.page) + '.'
-    : guidance ? text(guidance.made_by_count ?? 0) + (Number(guidance.made_by_count) === 1 ? ' recipe makes this, ' : ' recipes make this, ') + text(guidance.used_in_count ?? 0) + (Number(guidance.used_in_count) === 1 ? ' uses it.' : ' use it.')
+    : guidance ? text(guidance.made_by_count ?? 0) + (Number(guidance.made_by_count) === 1 ? ' recipe makes this, ' : ' recipes make this, ') + text(guidance.used_in_count ?? 0) + (Number(guidance.used_in_count) === 1 ? ' uses it' : ' use it') + (Number(guidance.made_here_count) > 0 ? ', ' + text(guidance.made_here_count) + ' made here.' : '.')
       : text(families) + (families === 1 ? ' recipe' : ' recipes') + (Number(data.recipe_count) > families ? ' (' + text(data.recipe_count) + ' with variants)' : '') + ', ' + text(data.resource_count) + (Number(data.resource_count) === 1 ? ' resource.' : ' resources.');
   const related = (title: string, rows: any[], total: unknown) => rows.length > 0 && <>
     <h3>{title} ({text(total)})</h3>
@@ -214,7 +253,8 @@ export function CraftingAtlas(ui: ScreenProps) {
         {guidance ? <>
           {related('Made by', list(guidance.made_by), guidance.made_by_count)}
           {related('Used in', list(guidance.used_in), guidance.used_in_count)}
-          {!list(guidance.made_by).length && !list(guidance.used_in).length && <p>No recipes on this map make or use it.</p>}
+          {related('Made here', list(guidance.made_here), guidance.made_here_count)}
+          {!list(guidance.made_by).length && !list(guidance.used_in).length && !list(guidance.made_here).length && <p>No recipes on this map make or use it.</p>}
         </> : <>
           {resources.length > 0 && <><h3>Resources ({text(data.resource_count)})</h3><ul>{resources.slice(0, allResources ? resources.length : 4).map(resource => <li key={String(resource.id)} data-result-type="resource">
             <button type="button" className="atlas-row" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(resource.id) })}>
@@ -229,8 +269,8 @@ export function CraftingAtlas(ui: ScreenProps) {
         </>}
       </nav>
       <div className="atlas-detail">
-        {data.detail && <Recipe ui={ui} recipe={data.detail} choose={chooseVariant} />}
         {guidance && <Guidance ui={ui} guidance={guidance} />}
+        {data.detail && <Recipe ui={ui} recipe={data.detail} choose={chooseVariant} lead={guidance ? 'Recipe' : undefined} />}
         {!data.detail && !guidance && <NoticeBox>{Number(data.resource_count) > 0 ? 'No matching recipes. Select a Resource result to view acquisition routes and related recipes.' : hidden > 0 ? 'No matching recipes on this map. Tick "Include other maps" to see ' + hidden + ' from other maps.' : 'No matching recipes or resources. Clear filters or search for an ingredient.'}</NoticeBox>}
         <p className="atlas-footnote">The atlas is a reference. Skills, tools, your map and faction still decide what you can craft.</p>
       </div>

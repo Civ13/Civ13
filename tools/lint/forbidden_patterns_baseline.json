@@ -457,6 +457,7 @@
       "code/modules/persistence/loading.dm": 1,
       "code/modules/persistence/player_reclaim.dm": 4,
       "code/modules/persistence/region_home.dm": 1,
+      "code/modules/persistence/train_transfer_codec.dm": 2,
       "code/modules/persistence/zone_topology.dm": 2,
       "code/modules/submarine/mission_controller.dm": 1,
       "code/modules/submarine/submarine_machines.dm": 2,

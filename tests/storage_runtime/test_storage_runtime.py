@@ -73,6 +73,73 @@ def install_storage(source=STORAGE):
         setattr(FakeBag,name,fn)
 
 class StorageRuntime(unittest.TestCase):
+    def test_booze_bible_accepts_its_removed_beer_without_bypassing_storage_limits(self):
+        bible = (ROOT/'code/game/objects/items/weapons/storage/bible.dm').read_text(encoding='utf8')
+        bottle = (ROOT/'code/modules/reagents/reagent_containers/food/drinks/bottle.dm').read_text(encoding='utf8')
+        sizes = (ROOT/'code/__defines/inventory_sizes.dm').read_text(encoding='utf8')
+        constants = {name: int(value) for name,value in re.findall(
+            r'(?m)^#define (ITEM_SIZE_\w+)\s+(\d+)\s*$', sizes)}
+
+        def inherited(source, paths, field, initial=None):
+            value = initial
+            for path in paths:
+                match = re.search(r'(?m)^'+re.escape(path)+r'\s*\n((?:\t[^\n]*\n|\s*\n)*)', source)
+                self.assertIsNotNone(match, path)
+                assignment = re.search(r'(?m)^\t(?:var/)?'+field+r'\s*=\s*(\w+)', match[1])
+                if assignment:
+                    token = assignment[1]
+                    value = constants[token] if token in constants else int(token)
+            return value
+
+        bible_type = '/obj/item/weapon/storage/bible'
+        beer_type = '/obj/item/weapon/reagent_containers/food/drinks/bottle'
+        beer_size = inherited(bottle, (beer_type, beer_type+'/small', beer_type+'/small/beer'), 'w_class')
+        bible_size = inherited(bible, (bible_type,), 'w_class')
+        normal_limit = inherited(bible, (bible_type,), 'max_w_class')
+        booze_limit = inherited(bible, (bible_type, bible_type+'/booze'), 'max_w_class')
+        capacity = inherited(STORAGE, ('/obj/item/weapon/storage',), 'max_storage_space')
+        created = body(bible, bible_type+'/booze/New').count('new '+beer_type+'/small/beer(src)')
+        self.assertEqual(created, 2)
+
+        class Contents(list):
+            @property
+            def len(self): return len(self)
+        class StoredItem:
+            def __init__(self, size):
+                self.w_class=size; self.storage_cost=None; self.anchored=False
+            type = 'item'
+        class StorageType: pass
+        A.FIELDS += ('storage_cost','w_class','max_w_class','max_storage_space','can_hold','cant_hold')
+        StoredItem.get_storage_cost = A.project(STORAGE, '/obj/item/proc/get_storage_cost', 'src',
+                                                dict(constants), method=True)
+        class Bag:
+            def __init__(self, limit, items):
+                self.loc=None; self.storage_slots=None; self.contents=Contents(items)
+                self.can_hold=Contents(); self.cant_hold=Contents()
+                self.max_w_class=limit; self.max_storage_space=capacity; self.w_class=bible_size
+
+        # Project the complete real admission proc; the fake engine supplies only type checks
+        # and messages. The path literal is an engine type, represented by StorageType here.
+        admission = body(STORAGE, '/obj/item/weapon/storage/proc/can_be_inserted')
+        admission = admission.replace('/obj/item/weapon/storage)', 'StorageType)')
+        source = '/fixture(W, stop_messages)\n'+admission+'\n'
+        env = {'usr':None, 'StorageType':StorageType, 'typed_iter':lambda xs,kind:xs,
+               'istype':lambda item,kind=StoredItem:isinstance(item,kind),
+               'to_chat':lambda *args:None}
+        accept = A.project(source, '/fixture', 'src,W,stop_messages', env, method=True)
+        removed, remaining = StoredItem(beer_size), StoredItem(beer_size)
+        booze = Bag(booze_limit, [remaining])
+        self.assertTrue(accept(booze, removed, True))
+        prior, changed = re.subn(r'(?m)(^/obj/item/weapon/storage/bible/booze\n(?:\t[^\n]*\n)*?)\tmax_w_class\s*=\s*ITEM_SIZE_NORMAL\s*\n', r'\1', bible, count=1)
+        self.assertEqual(changed, 1)
+        prior_limit = inherited(prior, (bible_type, bible_type+'/booze'), 'max_w_class')
+        self.assertFalse(accept(Bag(prior_limit, [remaining]), removed, True))
+        self.assertFalse(accept(Bag(normal_limit, []), removed, True))
+        self.assertTrue(accept(Bag(normal_limit, []), StoredItem(constants['ITEM_SIZE_SMALL']), True))
+        self.assertFalse(accept(booze, StoredItem(constants['ITEM_SIZE_LARGE']), True))
+        booze.contents.append(removed)
+        self.assertFalse(accept(booze, StoredItem(constants['ITEM_SIZE_SMALL']), True))
+
     def test_legacy_null_control_breaks_reopen_but_guard_preserves_constructor(self):
         self.assertIn('if (src.vars[key] != initial(src.vars[key])',PERSISTENCE)
         self.assertRegex(PERSISTENCE,r'/obj/screen\s+should_save = FALSE')

@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MEDICAL = (ROOT / "code/game/objects/items/stacks/medical.dm").read_text(encoding="utf-8")
 ORGAN = (ROOT / "code/modules/organs/organ_external.dm").read_text(encoding="utf-8")
 SURGERY = (ROOT / "code/modules/surgery/other.dm").read_text(encoding="utf-8")
+LIMB_SURGERY = (ROOT / "code/modules/surgery/limb_reattach.dm").read_text(encoding="utf-8")
 HANDBOOK = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text(encoding="utf-8")
 HEART = (ROOT / "code/modules/organs/internal/heart.dm").read_text(encoding="utf-8")
 DEFINES = (ROOT / "code/predefines.dm").read_text(encoding="utf-8")
@@ -62,6 +63,22 @@ def medical_stack_icons(sources):
 
 
 class MedicalCare(unittest.TestCase):
+    def test_reattachment_checks_identity_and_slot_before_and_after_wait(self):
+        limb = block(LIMB_SURGERY, "/datum/surgery_step/limb")
+        attach = block(LIMB_SURGERY, "/datum/surgery_step/limb/attach")
+        self.assertIn("target.get_organ(target_zone)", limb)
+        self.assertRegex(limb, r"if \(affected\)\s+return FALSE")
+        self.assertIn("return !isnull(organ_data)", limb)
+        admission = attach.split("\tcan_use(", 1)[1].split("\tbegin_step(", 1)[0]
+        completion = attach.split("\tend_step(", 1)[1].split("\tfail_step(", 1)[0]
+        self.assertIn("if (!..())", admission)
+        self.assertIn("E.limb_name != target_zone", admission)
+        self.assertIn("return SURGERY_FAILURE", admission)
+        self.assertIn("return FALSE", admission)
+        self.assertIn("return TRUE", admission)
+        self.assertIn("if (can_use(user, target, target_zone, tool) != TRUE)", completion)
+        self.assertLess(completion.index("if (can_use("), completion.index("E.replaced(target)"))
+
     def test_severed_artery_is_repairable(self):
         step = block(SURGERY, "/datum/surgery_step/fix_vein")
         can_use = step[step.index("can_use("):step.index("begin_step(")]
@@ -261,11 +278,35 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("return brute_dam + burn_dam", damage)
         mend = block(ORGAN, "/obj/item/organ/external/proc/mend_fracture()")
         self.assertIn("perma_injury = 0", mend)
-        # Minor internal organ damage never heals, so only bruised organs hurt.
+        # Recovering internal damage tapers to zero rather than a fixed pain spike.
         pain = block(PAIN, "/mob/living/human/proc/handle_pain()")
-        self.assertIn("if(I.is_bruised() && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
-        self.assertIn("if(I.is_bruised() && prob(2))", pain)
+        self.assertIn("if(I.damage > 0 && !(I.status & ORGAN_DEAD))\n\t\t\t\tdam += I.damage", pain)
+        self.assertIn("if(I.damage > 0 && prob(2))", pain)
         self.assertNotIn("I.damage > 2", pain)
+
+    def test_residual_pain_decays_to_zero(self):
+        # Production subtracts a bounded amount, including fractional tails.
+        self.assertIn("halloss = max(0, halloss - 3)", LIFE)
+        self.assertIn("halloss = max(0, halloss - 1)", LIFE)
+        self.assertNotIn("if (halloss >= 3)", LIFE)
+        self.assertNotIn("if (halloss >= 1)", LIFE)
+        for rate in (1, 3):
+            for initial in (0, 0.1, 0.5, 1, 2, 2.9, 12, 200):
+                pain = initial
+                after_one = max(0, pain - rate)
+                self.assertGreaterEqual(after_one, 0)
+                self.assertLessEqual(initial - after_one, rate)
+                if initial == 200:
+                    self.assertGreater(after_one, 0)  # not an instant cure
+                for _ in range(201):
+                    pain = max(0, pain - rate)
+                self.assertEqual(pain, 0)
+
+    def test_handbook_does_not_overstate_absence_of_hidden_damage(self):
+        handbook = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text()
+        self.assertIn("e.damage >= e.min_bruised_damage", handbook)
+        self.assertIn("No obvious internal organ injury detected. Minor damage may not be apparent.", handbook)
+        self.assertNotIn("* No organ damage.", handbook)
 
     def test_every_medical_stack_has_a_sprite(self):
         # BYOND draws its ERROR icon when an icon_state is missing from the DMI.

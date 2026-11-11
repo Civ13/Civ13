@@ -15,6 +15,7 @@ var/distribution_mutation = null
 	return port == "none" ? ..() : FALSE
 /obj/map_metadata/distribution_fixture
 	recipe_books = TRUE
+	book_research = FALSE
 /obj/map_metadata/distribution_fixture/New()
 	return
 /mob/living/human/distribution_fixture/New()

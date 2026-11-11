@@ -175,7 +175,7 @@
 				icount++
 
 		if (!icount)
-			user.show_message("<span class='notice'>* No organ damage.</span>")
+			user.show_message("<span class='notice'>* No obvious internal organ injury detected. Minor damage may not be apparent.</span>")
 
 		if (unsplinted_limbs.len >= 1)
 			var/string = "[G.His] "

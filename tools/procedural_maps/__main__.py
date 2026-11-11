@@ -6,6 +6,7 @@ import sys
 from .bundle import write_bundle,verify_bundle
 from .configuration import preset,port_surface_preset,oceanic_preset,barren_surface_preset,validate_config
 from .io import read_json,new_output,json_text
+from .river_graph import river_graph_preset
 from .source_audit import audit
 from .generator import generate
 from .validator import validate
@@ -18,6 +19,8 @@ def main(argv=None):
     p.add_argument('--profile',choices=['SURFACE','OCEANIC','UNDERGROUND_CAVERN'],default='SURFACE')
     p.add_argument('--legacy',action='store_true');p.add_argument('--coast',choices=['N','S','E','W'])
     p.add_argument('--barren',action='store_true',help='SURFACE only: dry, cold, bare variant for playable --skin barren')
+    p.add_argument('--river-graph',action='store_true',help='SURFACE only: declared two-network river graph (south coast)')
+    p.add_argument('--lake-rivers',action='store_true',help='OCEANIC only: some island lakes drain to the sea by a river')
     p.add_argument('--seed',default='ports-0');p.add_argument('--width',type=int,default=64);p.add_argument('--height',type=int,default=80)
     p.add_argument('--out',required=True,type=Path)
     p=commands.add_parser('generate',help='one candidate, with DMM and sidecar; rejects explicitly')
@@ -51,9 +54,12 @@ def main(argv=None):
         if a.command=='preset':
             if a.profile!='SURFACE' and a.coast is not None:raise ValueError('--coast is a SURFACE-only control')
             if a.barren and (a.profile!='SURFACE' or a.legacy):raise ValueError('--barren is a non-legacy SURFACE-only control')
+            if a.river_graph and (a.profile!='SURFACE' or a.legacy or a.barren or a.coast not in (None,'S')):raise ValueError('--river-graph is a non-legacy south-coast SURFACE control')
+            if a.lake_rivers and (a.profile!='OCEANIC' or a.legacy):raise ValueError('--lake-rivers is a non-legacy OCEANIC-only control')
             c=port_surface_preset(a.seed,a.width,a.height,sea_side=a.coast or 'S') if a.profile=='SURFACE' and not a.legacy else preset(a.profile,a.seed)
             if a.barren:c=barren_surface_preset(a.seed,a.width,a.height,sea_side=a.coast or 'S')
-            if a.profile=='OCEANIC' and not a.legacy:c=oceanic_preset(a.seed,a.width,a.height)
+            if a.river_graph:c=river_graph_preset(a.seed,a.width,a.height)
+            if a.profile=='OCEANIC' and not a.legacy:c=oceanic_preset(a.seed,a.width,a.height,lake_rivers=a.lake_rivers)
             if a.profile!='SURFACE' or a.legacy:c['dimensions'].update(width=a.width,height=a.height)
             errors=validate_config(c)
             if errors:print(json_text(dict(accepted=False,errors=errors)));return 1

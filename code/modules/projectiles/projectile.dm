@@ -817,7 +817,8 @@
 		trajectory.increment()	// increment the current location
 
 		// just before we enter nullspace
-		if (!trajectory.return_location(location))
+		var/datum/vector_loc/next_location = trajectory.return_location(location)
+		if (!next_location)
 			for (var/atom/movable/AM in loc)
 				do_bullet_act(AM)
 			do_bullet_act(loc)
@@ -825,7 +826,8 @@
 			qdel(src)
 			return
 
-		location = trajectory.return_location(location)		// update the locally stored location data
+		location = next_location		// update the locally stored location data
+		next_location = null
 
 		if (!location)
 			qdel(src)	// if it's left the world... kill it

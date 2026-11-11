@@ -85,7 +85,13 @@ unbound target and tampered-row cases, plus export/import mutation controls.
 
 ## Decisions and remaining work
 
-Cross-level power networks are still not implemented.
+Cross-level power networks use cable risers
+(`code/modules/1713/machinery/cable_risers.dm`, #3902), not the link codec.
+A secured riser joins the cables on its tile to the cables under a secured
+riser at the same x and y on the level above or below. The join lives in each
+cable's runtime `riser_links`, which is never saved; each riser's `after_load`
+rebuilds it from positions, so a riser pair saves as two ordinary single-level
+objects and reloads in any level order (`tests/cable_risers`).
 
 The policy for known transient fields is explicit omission before encoding and
 before legacy decoding. There is no catch-and-drop fallback for unknown
@@ -95,5 +101,6 @@ Native acceptance remains separate: run the isolated full-game frog/cross-level
 save/import regression only with authorization for that runner, temporary saves
 and its external-effect adapters. Offline checks and compilation do not prove
 native save/load behavior or a deployed fix. The link fixture above is native
-evidence for the codec only, not for the full game. Vertical power connections
-can now build on the cross-level link codec.
+evidence for the codec only, not for the full game. Vertical power stays
+position-based; use the codec only if a future power object must keep a
+pointer to an object on another level.

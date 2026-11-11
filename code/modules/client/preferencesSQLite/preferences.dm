@@ -12,8 +12,10 @@ var/list/preferences_datums = list()
 
 	//game-preferences
 	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
-	var/UI_style = "1713Style"
-	var/UI_file = 'icons/mob/screen/1713Style.dmi'
+	// Only a value that differs from its default is saved, so players who never
+	// picked a HUD style follow these defaults and a picked style stays picked.
+	var/UI_style = "ConsoleStyle"
+	var/UI_file = 'icons/mob/screen/ConsoleStyle.dmi'
 	var/UI_useborder = FALSE
 	var/UI_style_color = "#FFFFFF"
 	var/UI_style_alpha = 255

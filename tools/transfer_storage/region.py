@@ -15,6 +15,7 @@ import hashlib
 import secrets
 import json
 import sqlite3
+from tools.transfer_storage.train import validate as validate_train
 
 SCHEMA_VERSION = 1
 
@@ -28,6 +29,7 @@ COMMIT_DECIDED = 'CommitDecided'   # irreversible; COMMIT in outbox
 ABORT_DECIDED = 'AbortDecided'     # before commit only; ABORT in outbox
 RETURNING = 'Returning'            # tombstone received; return applied or due
 # Destination phases (direction IN).
+TRAIN_ADMISSION = 'TrainAdmission' # destination must reserve the entire footprint
 PREPARED = 'Prepared'              # PREPARE in outbox
 COMMIT_RECEIVED = 'CommitReceived' # import may run
 IMPORTED = 'Imported'              # credit confirmed, IMPORTED in outbox
@@ -74,17 +76,30 @@ def payload_kinds(manifest):
 
 
 # Payload kinds the world can find and remove again after a reload: a character
-# by its owner, an uncrewed freighter's flight by its saved id.
-FAST_KINDS = ('character', 'freight')
+# by its owner, an uncrewed freighter's flight or train by its saved id.
+FAST_KINDS = ('character', 'freight', 'train')
 
 
 def _require_characters(payloads):
-    """Only character or freight payloads can be journaled, one kind per
+    """Only character, freight or validated train payloads can be journaled, one kind per
     transfer: the world can find and remove those again, but not an arbitrary
     stack of goods."""
     kinds = payload_kinds(json.dumps({'items': payloads})) if payloads else []
     if len(kinds) != 1 or kinds[0] not in FAST_KINDS:
-        raise TransferError('only character or freight payloads can travel fast')
+        raise TransferError('only character, freight or train payloads can travel fast')
+    _train_payload(payloads)
+
+
+def _train_payload(payloads):
+    kinds = payload_kinds(json.dumps({'items': payloads}))
+    if 'train' not in kinds:
+        return None
+    if kinds != ['train'] or len(payloads) != 1:
+        raise TransferError('a train must be one indivisible manifest')
+    try:
+        return validate_train(payloads[0])
+    except ValueError as exc:
+        raise TransferError(str(exc)) from exc
 
 
 class RegionStore:
@@ -162,6 +177,10 @@ class RegionStore:
         db.execute("INSERT OR IGNORE INTO meta VALUES ('store_id', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
+        # A durable admission witness; reservations must survive world reloads.
+        db.execute('''CREATE TABLE IF NOT EXISTS train_admission(
+            transfer_id TEXT PRIMARY KEY, manifest_hash TEXT NOT NULL,
+            reservation TEXT NOT NULL)''')
 
     def _meta(self, key):
         return self.db.execute('SELECT value FROM meta WHERE key = ?', (key,)).fetchone()[0]
@@ -200,7 +219,7 @@ class RegionStore:
     def _settle(self, direction, peer, seq, tid):
         self.db.execute('UPDATE fence SET settled_seq = ? WHERE direction = ? AND peer = ?', (seq, direction, peer))
         self.db.execute('DELETE FROM outbox WHERE direction = ? AND peer = ?', (direction, peer))
-        for table in ('active', 'escrow', 'effect'):
+        for table in ('active', 'escrow', 'effect', 'train_admission'):
             self.db.execute('DELETE FROM %s WHERE transfer_id = ?' % table, (tid,))
 
     # -- enrollment -----------------------------------------------------
@@ -219,15 +238,27 @@ class RegionStore:
 
         Returns (transfer_id, effect_id). DM removes the items only after this
         returns, and lists effect_id in the next world save. With fast, the
-        removal is journaled and the escrow is sent at once (characters and freight only).
+        removal is journaled and the escrow is sent at once (characters, freight and validated trains only).
         """
         if not payloads or any(type(p) is not str for p in payloads):
             raise TransferError('escrow needs a non-empty list of serialized items')
+        train = _train_payload(payloads)
+        if train and (train['source'] != self.region or train['destination'] != peer):
+            raise TransferError('train route does not match escrow channel')
         if fast:
             _require_characters(payloads)
         with self._tx():
             self._require_open()
             epoch, settled = self._fence(OUT, peer)
+            if train:
+                for (stored,) in self.db.execute('SELECT manifest FROM active'):
+                    other = _train_payload(json.loads(stored).get('items', []))
+                    if other and (other['id'] == train['id'] or set(other['accounts']) & set(train['accounts'])):
+                        raise TransferError('train or passenger already has an active transfer')
+                for owner in train['accounts']:
+                    home = self.home_of(owner)
+                    if home is not None and home != self.region:
+                        raise TransferError('passenger belongs to another region')
             if self._active(OUT, peer):
                 raise TransferError('a transfer to %s is already in flight' % peer)
             if self.db.execute('SELECT 1 FROM outbox WHERE direction = ? AND peer = ?', (OUT, peer)).fetchone():
@@ -248,7 +279,7 @@ class RegionStore:
         """Destination: record the tentative credit, before DM creates the items.
 
         Returns (effect_id, payloads). With fast, the credit is journaled and the
-        receipt is sent at once (characters and freight only).
+        receipt is sent at once (characters, freight and validated trains only).
         """
         with self._tx():
             self._require_open()
@@ -462,9 +493,19 @@ class RegionStore:
             # status() or the world cannot read.
             if not isinstance(items, list) or not items or any(type(p) is not str for p in items):
                 raise TransferError('manifest needs a non-empty list of serialized items')
+            train = _train_payload(items)
+            if train and (train['source'] != peer or train['destination'] != self.region):
+                raise TransferError('train route does not match incoming channel')
+            if train:
+                for (stored,) in self.db.execute('SELECT manifest FROM active'):
+                    other = _train_payload(json.loads(stored).get('items', []))
+                    if other and (other['id'] == train['id'] or set(other['accounts']) & set(train['accounts'])):
+                        raise TransferError('train or passenger already has an active transfer')
             self.db.execute('INSERT INTO active VALUES (?, ?, ?, ?, ?, ?)',
-                            (IN, peer, seq, tid, json.dumps(manifest, sort_keys=True), PREPARED))
-            self._send(IN, peer, 'PREPARE', {'transfer_id': tid, 'seq': seq})
+                            (IN, peer, seq, tid, json.dumps(manifest, sort_keys=True),
+                             TRAIN_ADMISSION if payload_kinds(json.dumps(manifest)) == ['train'] else PREPARED))
+            if payload_kinds(json.dumps(manifest)) != ['train']:
+                self._send(IN, peer, 'PREPARE', {'transfer_id': tid, 'seq': seq})
             return
         a_seq, a_tid, _, phase = active
         if a_tid != tid:
@@ -472,7 +513,7 @@ class RegionStore:
         if step == 'COMMIT' and phase == PREPARED:
             self._set_phase(tid, COMMIT_RECEIVED)
             self.db.execute('DELETE FROM outbox WHERE direction = ? AND peer = ?', (IN, peer))
-        elif step == 'ABORT' and phase == PREPARED:
+        elif step == 'ABORT' and phase in (PREPARED, TRAIN_ADMISSION):
             self._set_phase(tid, DESTINATION_ABORTED)
             self._send(IN, peer, 'TOMBSTONE', {'transfer_id': tid, 'seq': seq})
         elif step == 'FINALIZE' and phase in (IMPORTED, DESTINATION_ABORTED):
@@ -516,6 +557,71 @@ class RegionStore:
             pass  # crossed with our ABORT; the ABORT in the outbox answers it
         elif step == 'IMPORTED' and phase != COMMIT_DECIDED:
             raise TransferError('import evidence without a commit decision')
+
+    def lookup_train(self, train_id):
+        """Find active custody and retained replay evidence after an unknown reply.
+
+        No match does not authorize reuse after old journals have been retired;
+        the caller must reconcile against its durable world effect list.
+        """
+        matches = []
+        for tid, direction, phase, manifest in self.db.execute(
+                'SELECT transfer_id, direction, phase, manifest FROM active'):
+            train = _train_payload(json.loads(manifest).get('items', []))
+            if train and train['id'] == train_id:
+                matches.append({'transfer_id': tid, 'direction': direction, 'phase': phase,
+                                'journey': train['journey'],
+                                'manifest_hash': hashlib.sha256(manifest.encode('utf-8')).hexdigest()})
+        replay = []
+        for effect, kind, payloads in self.db.execute('SELECT effect_id, kind, payloads FROM journal ORDER BY seq'):
+            train = _train_payload(json.loads(payloads))
+            if train and train['id'] == train_id:
+                replay.append({'effect_id': effect, 'kind': kind, 'journey': train['journey']})
+        return {'active': matches, 'replay': replay}
+
+    def pending_train_admissions(self):
+        """Uncommitted manifests awaiting the world's durable track reservation.
+
+        The world must recheck station permission, route generation, complete
+        geometry and body/cargo codec before admitting. A timeout is not an
+        admission and does not expire a reservation after commit.
+        """
+        return [{'transfer_id': tid, 'peer': peer, 'payloads': json.loads(manifest)['items'],
+                 'manifest_hash': hashlib.sha256(manifest.encode('utf-8')).hexdigest()}
+                for tid, peer, manifest in self.db.execute(
+                    'SELECT transfer_id, peer, manifest FROM active WHERE direction = ? AND phase = ?',
+                    (IN, TRAIN_ADMISSION))]
+
+    def prepare_train(self, tid, manifest_hash, reservation):
+        """Acknowledge an exact manifest only after DM durably reserved its track.
+
+        Repeated acknowledgements must match the original witness. This is a
+        permissioned loopback operation, not a player-supplied reservation.
+        """
+        if not isinstance(reservation, str) or not 1 <= len(reservation) <= 200:
+            raise TransferError('train admission needs a bounded reservation id')
+        with self._tx():
+            self._require_open()
+            row = self._active_by_id(tid)
+            if row is None or row[0] != IN or row[4] not in (TRAIN_ADMISSION, PREPARED, COMMIT_RECEIVED, IMPORTED):
+                raise TransferError('train is not awaiting destination admission')
+            if payload_kinds(row[3]) != ['train']:
+                raise TransferError('admission requires a train manifest')
+            expected = hashlib.sha256(row[3].encode('utf-8')).hexdigest()
+            if manifest_hash != expected:
+                raise TransferError('train manifest changed')
+            prior = self.db.execute('SELECT manifest_hash, reservation FROM train_admission WHERE transfer_id = ?',
+                                    (tid,)).fetchone()
+            if prior:
+                if prior != (manifest_hash, reservation):
+                    raise TransferError('train already has another reservation')
+                return {'prepared': True}
+            if row[4] != TRAIN_ADMISSION:
+                raise TransferError('train admission witness is missing')
+            self.db.execute('INSERT INTO train_admission VALUES (?, ?, ?)', (tid, manifest_hash, reservation))
+            self._set_phase(tid, PREPARED)
+            self._send(IN, row[1], 'PREPARE', {'transfer_id': tid, 'seq': row[2]})
+            return {'prepared': True}
 
     # -- home worlds --------------------------------------------------------
 
