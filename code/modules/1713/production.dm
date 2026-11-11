@@ -1732,6 +1732,14 @@
 	if(istype(W, /obj/item/weapon/book/node_compendium))
 		to_chat(user, SPAN_WARNING("Print individual manuals before binding them into a compendium."))
 		return
+	if (istype(W, /obj/item/weapon/paper_bin) && map && map.book_research_enabled())
+		return load_paper_bin(W, user)
+	if (blank_writing_sheet(W) && W.loc == user && map && map.book_research_enabled())
+		var/use = WWinput(user, "Load this sheet as printing paper for books, or as a document copy?", "Printing Press", "Cancel", list("Printing paper", "Document copy", "Cancel"))
+		if (use == "Printing paper")
+			return load_printing_sheet(W, user)
+		if (use != "Document copy")
+			return
 	if (istype(W, /obj/item/weapon/paper))
 		return insert_copy_paper(W, user)
 	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))
@@ -1820,6 +1828,8 @@
 		else
 			if (istype(base[1], /obj/item/weapon/paper))
 				return copy_paper_document(H)
+			if (press_prints_whole_book(base[1]))
+				return print_whole_book(H)
 			var/spawntimer = 90
 			if (istype(base[1], /obj/item/weapon/book))
 				spawntimer = 250
