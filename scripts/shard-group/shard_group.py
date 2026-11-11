@@ -1597,8 +1597,13 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         if not refresh or read_record(root / 'coordinator.json').get('code') == code:
             return False
         (terminate or Platform().terminate)(pid)
-    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group'],
+    database = root / 'coordinator.sqlite'
+    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland']]
+    if not database.exists():
+        # A new group, or one a group Fresh world just cleared. The coordinator
+        # still quarantines if any agent reports an earlier epoch or train custody.
+        argv.append('--bootstrap-new-group')
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]

@@ -1,16 +1,19 @@
 """Small coordinator: a region directory, envelope relay and home-world ledger.
 
-It holds no custody and no transfer phase. Losing its file only pauses
-transfers until the directory is enrolled again.
+Ordinary item transfers retain custody in the region ledgers. Physical-train
+transfers additionally require this coordinator's durable grouped-account lease
+and decision. Losing its file holds in-flight trains for reviewed recovery;
+re-enrolling the directory does not recreate train commit authority.
 
 The home ledger says which region each account may play in. With a mainland
 region, a new account and a player whose character died start there, and
 reach the other regions only by travel; without one, the first claim wins. Regions queue
 account requests in their agents; each pass decides them in a fixed order and
-sends every agent the ledger rows it has not seen. Losing the file starts a
-new ledger epoch: agents drop their copies and homes are claimed again.
+sends every agent the ledger rows it has not seen. The database is durable authority: after loss, restore it rather than
+resetting homes. Explicit bootstrap is only for a genuinely new group.
 """
 import secrets
+import os
 import argparse
 import json
 import sqlite3
@@ -35,8 +38,13 @@ def call(url, token, path, body=None, timeout=5):
         return json.loads(e.read() or b'{}')
 
 
-class Coordinator:
-    def __init__(self, path, group, mainland=None):
+if __package__ in (None, ''):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from tools.transfer_storage.train_custody import TrainCustody
+
+
+class Coordinator(TrainCustody):
+    def __init__(self, path, group, mainland=None, bootstrap_new_group=False):
         self.group = group
         self.mainland = mainland
         self.db = sqlite3.connect(path, isolation_level=None)
@@ -54,19 +62,51 @@ class Coordinator:
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('rev', '0')")
 
+        # A database written before recovery tracking existed is the group's
+        # original authority, even if it never decided a home (rev 0).
+        legacy = self.db.execute("SELECT 1 FROM ledger WHERE key = 'recovery'").fetchone() is None and bool(self.regions())
+        self.init_train_custody()
+        self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('recovery', 'unreconciled')")
+        # Migrate established databases from their persisted directory, never
+        # infer the old group from peers enrolled into a replacement database.
+        established = legacy or self._ledger('recovery') == 'ready' or int(self._ledger('rev')) > 0
+        roster = sorted(self.regions()) if established else []
+        self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('roster', ?)", (json.dumps(roster),))
+        self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('bootstrap', '0')")
+        if bootstrap_new_group:
+            self.db.execute("UPDATE ledger SET value = '1' WHERE key = 'bootstrap'")
+
     def close(self):
         self.db.close()
 
     def enroll(self, region, url, token):
         if not url.startswith('http://127.0.0.1:'):
             raise ValueError('the pilot coordinator only reaches loopback agents')
-        self.db.execute('INSERT OR REPLACE INTO region VALUES (?, ?, ?)', (region, url, token))
+        self.db.execute('BEGIN IMMEDIATE')
+        try:
+            old = self.regions().get(region)
+            roster = json.loads(self._ledger('roster'))
+            self.db.execute('INSERT OR REPLACE INTO region VALUES (?, ?, ?)', (region, url, token))
+            if roster and old != (url, token):
+                roster = sorted(set(roster) | {region})
+                self.db.execute("UPDATE ledger SET value = ? WHERE key = 'roster'", (json.dumps(roster),))
+                if self._ledger('recovery') != 'quarantined':
+                    self.db.execute("UPDATE ledger SET value = 'unreconciled' WHERE key = 'recovery'")
+            self.db.execute('COMMIT')
+        except Exception:
+            self.db.execute('ROLLBACK')
+            raise
 
     def regions(self):
         return {r: (u, t) for r, u, t in self.db.execute('SELECT region, url, token FROM region ORDER BY region')}
 
     def _ledger(self, key):
         return self.db.execute('SELECT value FROM ledger WHERE key = ?', (key,)).fetchone()[0]
+
+    def recovery_status(self):
+        return {'state': self._ledger('recovery'),
+                'roster': json.loads(self._ledger('roster')),
+                'bootstrap_requested': self._ledger('bootstrap') == '1'}
 
     def home(self, ckey):
         row = self.db.execute('SELECT region FROM home WHERE ckey = ?', (ckey,)).fetchone()
@@ -82,7 +122,11 @@ class Coordinator:
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
+        if self._ledger('recovery') != 'ready':
+            return
         ckey, op, region = request['ckey'], request['op'], request['region']
+        if not self.train_request_allowed(request):
+            return
         home = self.home(ckey)
         if op == 'arrive' and region == source:
             # A recorded trip delivered the character here; custody already decided.
@@ -114,11 +158,41 @@ class Coordinator:
                 continue  # down: its requests and rows wait for a later pass
             if answer.get('ok'):
                 asked[name] = answer['result']
+        roster = json.loads(self._ledger('roster'))
+        if roster and set(roster) != set(regions):
+            self.db.execute("UPDATE ledger SET value = 'quarantined' WHERE key = 'recovery'")
+        if self._ledger('recovery') != 'ready':
+            if self._ledger('recovery') == 'quarantined' or not regions or set(asked) != set(regions):
+                return 0
+            # A replacement coordinator must not discard surviving train custody
+            # or let a third world create a second body from an empty home map.
+            if any(a.get('train_history') and a.get('epoch') != epoch for a in asked.values()):
+                self.db.execute("UPDATE ledger SET value = 'quarantined' WHERE key = 'recovery'")
+                return 0
+            if not roster:
+                if self._ledger('bootstrap') != '1':
+                    return 0
+                # The flag is an operator assertion that no omitted peers exist.
+                # Any known previous epoch/history disproves clean bootstrap.
+                if any(a.get('epoch') or a.get('train_history') for a in asked.values()):
+                    self.db.execute("UPDATE ledger SET value = 'quarantined' WHERE key = 'recovery'")
+                    return 0
+            self.db.execute('BEGIN IMMEDIATE')
+            try:
+                if not roster:
+                    self.db.execute("UPDATE ledger SET value = ? WHERE key = 'roster'", (json.dumps(sorted(regions)),))
+                self.db.execute("UPDATE ledger SET value = 'ready' WHERE key = 'recovery'")
+                self.db.execute('COMMIT')
+            except Exception:
+                self.db.execute('ROLLBACK')
+                raise
         # Each region's requests in the order it made them (a refused trip's
         # depart then arrive must not swap). Across regions only claims wait
         # for everything else, so an arrival or a living body beats a new start.
         self.db.execute('BEGIN IMMEDIATE')
         try:
+            lease_decisions = {name: [self.decide_train_lease(name, r) for r in a.get('train_requests', [])]
+                               for name, a in asked.items()}
             queue = []
             for name, a in asked.items():
                 store, ids = str(a.get('store') or ''), [r['id'] for r in a.get('requests', [])]
@@ -144,7 +218,8 @@ class Coordinator:
                 'SELECT ckey, region FROM home WHERE rev > ? ORDER BY rev', (since,))]
             try:
                 call(url, token, '/homes', {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
-                                            'mainland': self.mainland,
+                                            'mainland': self.mainland, 'train_locks': self.train_locks(),
+                                            'train_decisions': lease_decisions.get(name, []),
                                             'done': [r['id'] for r in answer.get('requests', [])]})
             except (OSError, ValueError):
                 # Its requests stay queued; deciding them again changes nothing.
@@ -204,7 +279,16 @@ class Coordinator:
                 target = regions.get(envelope.get('recipient'))
                 if target is None or envelope.get('group') != self.group:
                     continue
-                result = call(target[0], target[1], '/receive', {'envelope': envelope})
+                if envelope.get('sender') != name:
+                    continue
+                try:
+                    is_train = self.train_envelope(name, envelope)
+                except ValueError:
+                    continue  # unresolved custody stays in the durable outbox
+                forwarded = dict(envelope)
+                if is_train:
+                    forwarded['train_custody_epoch'] = self._ledger('epoch')
+                result = call(target[0], target[1], '/receive', {'envelope': forwarded})
                 if result.get('ok'):
                     delivered += 1
                     reply = result['result'].get('reply')
@@ -222,6 +306,8 @@ def main(argv=None):
     parser.add_argument('--mainland', help='region where new and dead characters start')
     parser.add_argument('--interval', type=float, default=5.0, help='seconds between relay passes')
     parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
+    parser.add_argument('--bootstrap-new-group', action='store_true',
+                        help='explicitly assert a new group with no previous peers, epochs or custody; never use for recovery')
     parser.add_argument('--once', action='store_true', help='relay one pass and exit')
     args = parser.parse_args(argv)
     enrollments = []
@@ -231,7 +317,7 @@ def main(argv=None):
             parser.error('--region takes NAME=URL=TOKEN_FILE, got %r' % item)
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
-    coordinator = Coordinator(args.db, args.group, args.mainland)
+    coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group)
     try:
         for name, url, token in enrollments:
             coordinator.enroll(name, url, token)
@@ -244,6 +330,9 @@ def main(argv=None):
                 try:
                     coordinator.relay_once()
                     coordinator.homes_once()
+                    if coordinator.recovery_status()['state'] != 'ready':
+                        print('Home authority held: restore the original coordinator database. '
+                              '--bootstrap-new-group is only for a genuinely new, clean group.', file=sys.stderr)
                 except (OSError, ValueError) as e:
                     # An agent is down or answered garbage: its outbox waits for the next pass.
                     print('relay pass failed: %s' % e, file=sys.stderr)

@@ -127,11 +127,19 @@ character lives, with a join link.
   ledger rows it has not seen (`/homes`). An agent that misses a pass catches
   up on the next; a request decided but not acknowledged is never decided
   again.
-- Losing `coordinator.sqlite` starts a new ledger epoch: agents drop their
-  copies and accounts claim their homes again. A region holding a living
-  character of an unhomed account claims custody of it (`body` on the claim),
-  so that character stays where it is; other accounts start on the mainland.
-  Journal replays after a reload record nothing: the ledger already saw them.
+- Keep `coordinator.sqlite` and its durable peer roster backed up: losing it
+  does **not** authorize a new home ledger. Restore the original database.
+  An empty replacement stays unreconciled even if every currently enrolled
+  peer replies: omitted/offline old peers might still hold bodies or trains.
+- Only for a genuinely new group, the operator must explicitly supply
+  `--bootstrap-new-group`. Every enrolled peer must answer without a previous
+  epoch or train history. This is an assertion that no omitted previous peers
+  exist, not a discovery guarantee. Never use it to recover a lost database.
+- Established databases migrate their existing persisted directory. Adding or
+  changing enrollment extends the durable roster and waits for reconciliation
+  with every member; it never silently forgets an offline region. A directory
+  inconsistent with its roster is quarantined. Restore authority rather than
+  deleting records to clear the hold.
 - A trip, departure or death note keeps retrying (backing off to every five
   minutes) until the agent has it.
 - A world's agent unreachable means no character can start there (the player
@@ -252,3 +260,25 @@ seeded runs of random transfers, saves, lost save reports, crashes, aborts, and
 dropped or duplicated messages. After every step it checks that no item is live
 in two worlds. At the end it checks that every item survives exactly once and
 no transfer is stuck.
+
+### Physical train payload budget
+
+The remote v1 train manifest remains limited to 200,000 UTF-8 bytes for the
+entire serialized envelope, including all escaped passenger payload strings.
+The experimental local body graph's 600,000-character budget is not a remote
+transport allowance. Its `train-body-1` schema is not accepted as a v1 character.
+Future integration must version and validate that schema and measure the final
+encoded whole manifest before source staging/removal. Oversized or unsupported
+captures must leave source passengers and cargo intact, not truncate or split
+custody. These limits have not been increased.
+
+For a shard group run by `scripts/shard-group/shard_group.py` (the launcher),
+`ensure_coordinator` adds `--bootstrap-new-group` only when `coordinator.sqlite`
+does not exist: a brand-new group, or one a group Fresh world just cleared (it
+moves every agent store and the coordinator database aside together). The
+coordinator still refuses that bootstrap and quarantines if any agent reports a
+previous epoch or train history, so a database lost while the agents kept their
+state is held, never re-bootstrapped. Normal starts with the database omit the
+flag. If a group is quarantined, stop and restore the original coordinator
+database; do not clear agent state to force bootstrap. A database written before
+recovery tracking adopts its enrolled directory even if it never decided a home.

@@ -16,6 +16,7 @@ import secrets
 import json
 import sqlite3
 from tools.transfer_storage.train import validate as validate_train
+from tools.transfer_storage.train_lease import TrainLeaseQueue
 
 SCHEMA_VERSION = 1
 
@@ -102,7 +103,7 @@ def _train_payload(payloads):
         raise TransferError(str(exc)) from exc
 
 
-class RegionStore:
+class RegionStore(TrainLeaseQueue):
     def __init__(self, path, region_id, group_id):
         self.region = region_id
         self.group = group_id
@@ -177,6 +178,20 @@ class RegionStore:
         db.execute("INSERT OR IGNORE INTO meta VALUES ('store_id', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
+        self.init_train_leases()
+        db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
+        db.execute('CREATE TABLE IF NOT EXISTS train_home_wait(ckey TEXT PRIMARY KEY, target TEXT NOT NULL, epoch TEXT NOT NULL)')
+        db.execute('CREATE TABLE IF NOT EXISTS train_custody_witness(transfer_id TEXT PRIMARY KEY, epoch TEXT NOT NULL)')
+        columns = {r[1] for r in db.execute('PRAGMA table_info(account_request)')}
+        for column, sql in (('homes_epoch', "TEXT NOT NULL DEFAULT ''"), ('home_rev', 'INTEGER NOT NULL DEFAULT 0')):
+            if column not in columns:
+                db.execute('ALTER TABLE account_request ADD COLUMN ' + column + ' ' + sql)
+
+        if any(_train_payload(json.loads(m).get('items', [])) for (m,) in db.execute('SELECT manifest FROM active')) or any(
+                _train_payload(json.loads(p)) for (p,) in db.execute('SELECT payloads FROM journal')) or db.execute(
+                'SELECT 1 FROM train_home_wait LIMIT 1').fetchone():
+            self._set_meta('train_history', '1')
         # A durable admission witness; reservations must survive world reloads.
         db.execute('''CREATE TABLE IF NOT EXISTS train_admission(
             transfer_id TEXT PRIMARY KEY, manifest_hash TEXT NOT NULL,
@@ -212,14 +227,32 @@ class RegionStore:
         self.db.execute('UPDATE active SET phase = ? WHERE transfer_id = ?', (phase, tid))
 
     def _send(self, direction, peer, step, body):
+        row = self._active_by_id(body.get('transfer_id'))
+        if row:
+            payloads = json.loads(row[3]).get('items', [])
+            if _train_payload(payloads):
+                train = _train_payload(payloads)
+                lease = self.db.execute('SELECT token FROM train_lease WHERE journey=?', (train['journey'],)).fetchone()
+                body = dict(body, train_manifest=payloads[0])
+                if lease:
+                    body['train_lease'] = lease[0]
         body = dict(body, step=step, group=self.group, sender=self.region, recipient=peer)
         self.db.execute('INSERT OR REPLACE INTO outbox VALUES (?, ?, ?, ?)',
                         (direction, peer, step, json.dumps(body, sort_keys=True)))
 
     def _settle(self, direction, peer, seq, tid):
+        row = self._active_by_id(tid)
+        train = _train_payload(json.loads(row[3]).get('items', [])) if row else None
+        witness = self.db.execute('SELECT epoch FROM train_custody_witness WHERE transfer_id = ?', (tid,)).fetchone()
+        if train and direction == OUT:
+            self.db.execute("UPDATE train_lease SET state='settled' WHERE journey=?", (train['journey'],))
+        if train and witness and (direction == OUT or row[4] == IMPORTED):
+            target = peer if direction == OUT and row[4] == COMMIT_DECIDED else self.region
+            for owner in train['accounts']:
+                self.db.execute('INSERT OR REPLACE INTO train_home_wait VALUES (?,?,?)', (owner, target, witness[0]))
         self.db.execute('UPDATE fence SET settled_seq = ? WHERE direction = ? AND peer = ?', (seq, direction, peer))
         self.db.execute('DELETE FROM outbox WHERE direction = ? AND peer = ?', (direction, peer))
-        for table in ('active', 'escrow', 'effect', 'train_admission'):
+        for table in ('active', 'escrow', 'effect', 'train_admission', 'train_custody_witness'):
             self.db.execute('DELETE FROM %s WHERE transfer_id = ?' % table, (tid,))
 
     # -- enrollment -----------------------------------------------------
@@ -233,7 +266,7 @@ class RegionStore:
 
     # -- world effects (called by DM before it changes the world) --------
 
-    def begin_escrow(self, peer, payloads, fast=False):
+    def begin_escrow(self, peer, payloads, fast=False, train_lease=None):
         """Source: record the tentative removal of items, before DM removes them.
 
         Returns (transfer_id, effect_id). DM removes the items only after this
@@ -251,6 +284,11 @@ class RegionStore:
             self._require_open()
             epoch, settled = self._fence(OUT, peer)
             if train:
+                try:
+                    self.require_train_lease(train, train_lease)
+                except ValueError as exc:
+                    raise TransferError(str(exc)) from exc
+                self._set_meta('train_history', '1')
                 for (stored,) in self.db.execute('SELECT manifest FROM active'):
                     other = _train_payload(json.loads(stored).get('items', []))
                     if other and (other['id'] == train['id'] or set(other['accounts']) & set(train['accounts'])):
@@ -265,6 +303,8 @@ class RegionStore:
                 raise TransferError('the previous transfer to %s is not acknowledged yet' % peer)
             seq = settled + 1
             tid = transfer_id(self.group, self.region, peer, epoch, seq)
+            if train:
+                self.db.execute("UPDATE train_lease SET state='sealed',transfer_id=? WHERE journey=?", (tid, train['journey']))
             manifest = json.dumps({'epoch': epoch, 'seq': seq, 'items': payloads}, sort_keys=True)
             self.db.execute('INSERT INTO active VALUES (?, ?, ?, ?, ?, ?)', (OUT, peer, seq, tid, manifest, REQUESTED))
             for idx, payload in enumerate(payloads):
@@ -460,6 +500,22 @@ class RegionStore:
             raise TransferError('envelope is for another group or region')
         with self._tx():
             self._require_open()
+            row = self._active_by_id(tid)
+            if 'train_manifest' in envelope:
+                actual = envelope.get('manifest', {}).get('items', []) if step == 'ESCROW' else (
+                    json.loads(row[3]).get('items', []) if row else None)
+                if actual is not None and actual != [envelope['train_manifest']]:
+                    raise TransferError('train envelope marker changed')
+            items = [envelope['train_manifest']] if 'train_manifest' in envelope else envelope.get('manifest', {}).get('items', []) if step == 'ESCROW' else (
+                json.loads(row[3]).get('items', []) if row else [])
+            if _train_payload(items):
+                epoch = envelope.get('train_custody_epoch')
+                if not isinstance(epoch, str) or not epoch:
+                    raise TransferError('train needs coordinator custody witness')
+                prior = self.db.execute('SELECT epoch FROM train_custody_witness WHERE transfer_id = ?', (tid,)).fetchone()
+                if prior and prior[0] != epoch:
+                    raise TransferError('train coordinator epoch changed; recovery required')
+                self.db.execute('INSERT OR IGNORE INTO train_custody_witness VALUES (?,?)', (tid, epoch))
             if step in ('ESCROW', 'COMMIT', 'ABORT', 'FINALIZE'):
                 return self._receive_as_destination(step, peer, tid, seq, envelope)
             elif step in ('PREPARE', 'IMPORTED', 'TOMBSTONE', 'ACK'):
@@ -497,6 +553,7 @@ class RegionStore:
             if train and (train['source'] != peer or train['destination'] != self.region):
                 raise TransferError('train route does not match incoming channel')
             if train:
+                self._set_meta('train_history', '1')
                 for (stored,) in self.db.execute('SELECT manifest FROM active'):
                     other = _train_payload(json.loads(stored).get('items', []))
                     if other and (other['id'] == train['id'] or set(other['accounts']) & set(train['accounts'])):
@@ -577,7 +634,9 @@ class RegionStore:
             train = _train_payload(json.loads(payloads))
             if train and train['id'] == train_id:
                 replay.append({'effect_id': effect, 'kind': kind, 'journey': train['journey']})
-        return {'active': matches, 'replay': replay}
+        leases = [self.train_lease_status(journey) for journey, request in self.db.execute('SELECT journey,request FROM train_lease')
+                  if json.loads(request)['id'] == train_id]
+        return {'active': matches, 'replay': replay, 'leases': leases}
 
     def pending_train_admissions(self):
         """Uncommitted manifests awaiting the world's durable track reservation.
@@ -644,6 +703,18 @@ class RegionStore:
         if op == 'depart' and (not isinstance(region, str) or not region or region == self.region):
             raise TransferError('depart needs another region')
         with self._tx():
+            locked = self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone() or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()
+            for (request,) in self.db.execute("SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
+                if ckey in json.loads(request)['accounts']:
+                    locked = True
+            for (manifest,) in self.db.execute('SELECT manifest FROM active'):
+                train = _train_payload(json.loads(manifest).get('items', []))
+                if train and ckey in train['accounts']:
+                    locked = True
+            if locked:
+                if op == 'claim':
+                    return {'verdict': 'PENDING', 'home': self.home_of(ckey)}
+                raise TransferError('account is leased to a physical train')
             queued = [o for (o,) in self.db.execute('SELECT op FROM account_request WHERE ckey = ?', (ckey,))]
             home = self.home_of(ckey)
             if op == 'claim':
@@ -659,7 +730,8 @@ class RegionStore:
                     return {'verdict': 'ELSEWHERE', 'home': mainland}
                 if op in queued or 'claim' in queued:
                     return {'verdict': 'PENDING', 'home': home}
-            self.db.execute('INSERT INTO account_request(ckey, op, region) VALUES (?, ?, ?)', (ckey, op, target))
+            self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev) VALUES (?, ?, ?, ?, ?)',
+                            (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev'))))
         return {'verdict': 'PENDING', 'home': home}
 
     def home_of(self, ckey):
@@ -668,17 +740,19 @@ class RegionStore:
 
     def account_requests(self):
         """For the coordinator: queued requests and how current our ledger copy is."""
-        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region'), r)) for r in self.db.execute(
-                    'SELECT id, ckey, op, region FROM account_request ORDER BY id')],
+        return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev'), r)) for r in self.db.execute(
+                    'SELECT id, ckey, op, region, homes_epoch, home_rev FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
-                'store': self._meta('store_id')}
+                'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests()}
 
-    def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None):
+    def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
             raise TransferError('bad home ledger version')
         with self._tx():
+            if epoch == self._meta('homes_epoch') and rev < int(self._meta('homes_rev')):
+                raise TransferError('stale home ledger snapshot')
             if reset or epoch != self._meta('homes_epoch'):
                 self.db.execute('DELETE FROM home')
             for row in rows:
@@ -691,6 +765,16 @@ class RegionStore:
                     self.db.execute('INSERT OR REPLACE INTO home VALUES (?, ?)', (ckey, str(region)))
             for request_id in done:
                 self.db.execute('DELETE FROM account_request WHERE id = ?', (int(request_id),))
+            if train_decisions is not None:
+                self.apply_train_lease_decisions(epoch, train_decisions)
+            if train_locks is not None:
+                if not isinstance(train_locks, list) or not all(account_key_valid(k) for k in train_locks):
+                    raise TransferError('invalid train lock snapshot')
+                self.db.execute('DELETE FROM train_home_lock')
+                self.db.executemany('INSERT OR IGNORE INTO train_home_lock VALUES (?)', [(k,) for k in train_locks])
+            for owner, target, expected_epoch in list(self.db.execute('SELECT ckey,target,epoch FROM train_home_wait')):
+                if expected_epoch == epoch and self.home_of(owner) == target and train_locks is not None and owner not in train_locks:
+                    self.db.execute('DELETE FROM train_home_wait WHERE ckey = ?', (owner,))
             self._set_meta('homes_epoch', epoch)
             self._set_meta('homes_rev', rev)
             self._set_meta('mainland', mainland if isinstance(mainland, str) else '')

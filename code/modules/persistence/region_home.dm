@@ -62,6 +62,9 @@
 	if(!region_home_enabled()) return TRUE
 	if(!lobby || !lobby.client) return FALSE
 	var/client/C = lobby.client
+	if(train_escrow_account_held(C.ckey))
+		to_chat(lobby, SPAN_WARNING("Your train is held in safe transfer escrow. Wait for its destination or recovery before joining."))
+		return FALSE
 	// Guests own no durable character and cannot travel.
 	if(IsGuestKey(C.key)) return TRUE
 	var/deadline = world.time + REGION_HOME_WAIT
