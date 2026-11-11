@@ -972,8 +972,8 @@ window "outputwindow"
 		saved-params = ""
 	elem "input"
 		type = INPUT
-		pos = 2,460
-		size = 496x20
+		pos = 0,460
+		size = 480x20
 		anchor1 = 0,100
 		anchor2 = 100,100
 		font-family = "Book Antiqua"
