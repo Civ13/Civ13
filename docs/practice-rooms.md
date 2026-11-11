@@ -4,9 +4,12 @@ A lobby link, **Practice Room**, puts a player in a private 12 x 12 room with a
 throwaway "Trainee" body. Nine steps appear in chat one at a time: walk to a
 marker, pick up a knife, swap hands, wear a straw hat, open a door, hit a
 practice dummy on Harm intent, bandage a small cut, eat a bread slice and walk
-onto the exit. Finishing, dying, disconnecting or the **Leave Practice Room**
-verb returns the player to the lobby. **Practice Instructions** repeats the
-current step.
+onto the exit. Finishing, dying or disconnecting returns the player to the
+lobby. To leave early: the "click here to leave" link on the welcome line and
+every step, **Leave practice room** in the Esc menu, clicking the blue exit
+marker (asks first unless it is the last step), or the **Leave Practice Room**
+verb, which heads the IC tab's Practice group with **Practice Instructions**
+(repeats the current step).
 
 Design reference: CM-SS13's tutorial rooms (`code/datums/tutorial/`, AGPL-3.0).
 This is a reimplementation; no CM code or art is copied.
