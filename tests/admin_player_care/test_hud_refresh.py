@@ -417,7 +417,7 @@ class AppearanceAndCallers(unittest.TestCase):
             ('code/game/mob/living/carbon/human/human_organs.dm', '/mob/living/human/proc/update_eyes('),
             ('code/modules/organs/organ_external.dm', '/obj/item/organ/external/proc/droplimb('),
             ('code/game/mob/living/living.dm', '/mob/living/proc/rejuvenate('),
-            ('code/game/objects/items/weapons/defib.dm', '/obj/item/weapon/shockpaddles/proc/make_alive('),
+            ('code/game/mob/living/carbon/human/resuscitation.dm', '/mob/living/human/proc/restart_from_death('),
             ('code/game/mob/mob.dm', '/mob/proc/update_canmove('),
             ('code/game/mob/observer/ghost/ghost.dm', '/mob/observer/ghost/verb/reenter_corpse('),
         )

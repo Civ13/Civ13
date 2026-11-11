@@ -40,6 +40,9 @@
 	else
 		switch(M.a_intent)
 			if (I_HELP)
+				if (H != src && istype(H) && stat == DEAD && !on_fire)
+					try_cpr_revival(H)
+					return TRUE
 				if (H != src && istype(H) && health < config.health_threshold_crit && health > config.health_threshold_dead && !on_fire)
 					if (!H.check_has_mouth())
 						to_chat(H, SPAN_WARNING("You don't have a mouth, you cannot perform CPR!"))
