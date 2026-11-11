@@ -1032,17 +1032,20 @@ var/global/datum/persistence_admission_identity
 	if(kind == "save") last_variable_failure = null
 #endif
 	var/success = FALSE
+	if(kind == "save") notify_world_save("started", operation)
 	try
 		if(kind == "save") success = save_world_contents(operation)
 		else success = load_world_contents(operation)
 	catch(var/exception/e)
 		if(kind == "save") record_save_outcome(FALSE)
+		if(kind == "save") notify_world_save("finished", operation, FALSE)
 		if(owns_operation)
 			cleanup_world_operation()
 			if(operation.finish(FALSE) && kind == "save")
 				report_save_child_capture_failure(operation)
 		throw e
 	if(kind == "save") record_save_outcome(success)
+	if(kind == "save") notify_world_save("finished", operation, success)
 	if(owns_operation)
 		if(!success) cleanup_world_operation()
 		operation.finish(success)
@@ -1059,6 +1062,26 @@ var/global/datum/persistence_admission_identity
 	catch
 		// Notification failure must never replace the original export exception.
 		world.log << "Save capture diagnostic delivery unavailable."
+
+// Discord save notices (webhooks.dm). Probe builds may omit the webhook module,
+// so resolve it at runtime; a missing or failing sink never touches the save.
+// The outcome notice carries the wall time since the matching start notice.
+var/global/world_save_notice_started = null
+/proc/notify_world_save(event, datum/persistence_world_operation/operation, success = FALSE)
+	var/shutdown = operation && operation.shutdown_save
+	var/started = world_save_notice_started
+	if(event == "started")
+		world_save_notice_started = world.timeofday
+		started = null
+	else
+		world_save_notice_started = null
+		event = success ? "completed" : "failed"
+	var/hook = text2path("/proc/webhook_send_world_save")
+	if(!hook) return
+	try
+		call(hook)(event, shutdown, started)
+	catch
+		world.log << "World save notice unavailable."
 
 // Count only admitted backend attempts, including direct Save_World calls.
 // Keep notifications bounded and use the existing log/admin destinations.
