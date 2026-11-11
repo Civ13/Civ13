@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'cavity_surgery': {'files': ('tests/cavity_surgery/test_cavity.py',),
+        'paths': ('tests/cavity_surgery/', 'code/modules/surgery/implant.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'double_holster_draw': {'files': ('tests/double_holster/test_draw.py',),
         'paths': ('tests/double_holster/', 'code/game/objects/items/clothing/under/accessories/holster.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
