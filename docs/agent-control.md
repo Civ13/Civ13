@@ -69,6 +69,12 @@ cancellation and operator pause.
 tools (Advanced ProcCall and View Variables). Grant them only to agents you
 would trust with host rights.
 
+`players` lists each connected player's ckey, mob, stat, health and area. An
+ill human also gets `illness`: `type`, `severe`, `stage` (`mild`, `early`,
+`worsening` or `critical`), `progression`, `course` (treatment out of 180),
+`treated` and `resistance` (0-100). Admins see the same list in game with
+**Special > Check Illnesses**.
+
 ## Protocol
 
 Send a Topic request to the world port:

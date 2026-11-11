@@ -115,7 +115,7 @@
 		label = "Known"
 	else if (holder)
 		state = groundwork ? "study" : "study_locked"
-		label = groundwork ? "Chapter ready to study" : "Chapter here, needs groundwork"
+		label = groundwork ? (H.study_fraction(node_id) > 0 ? "Chapter here, [H.study_percent(node_id)]% read" : "Chapter ready to study") : "Chapter here, needs groundwork"
 	else if (ticks > 0)
 		state = "progress"
 		label = "[percent]% written"
@@ -153,7 +153,8 @@
 		needs += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
 	out["research_needs"] = needs
 	var/desk = cache["desk_rate"]
-	out["study_minutes"] = ui_minutes(BOOK_STUDY_TIME(N.era_tier) / desk)
+	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk))
+	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
 	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1)
 	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * 100) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
@@ -471,13 +472,14 @@
 			"era_name" = ordinal_age_name(N.era_tier),
 			"discipline" = scholar_disciplines[node_discipline(node_id)],
 			"groundwork" = node_groundwork_rows(H, N),
-			"study_minutes" = ui_minutes(BOOK_STUDY_TIME(N.era_tier) / desk),
+			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk)),
+			"read_percent" = state == "study" ? H.study_percent(node_id) : 0,
 			"recipe_names" = get_node_recipe_names(node_id))
 		if (state == "study")
 			tutor_cache = H.find_tutor(node_id)
 			if (tutor_cache)
 				row["tutor"] = "[tutor_cache.name]"
-				row["study_minutes"] = ui_minutes(BOOK_STUDY_TIME(N.era_tier) / desk / SCHOLAR_TUTOR_RATE)
+				row["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk / SCHOLAR_TUTOR_RATE))
 		chapters += list(row)
 	data["chapters"] = chapters
 	var/list/unfinished = list()

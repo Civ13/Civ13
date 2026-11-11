@@ -215,7 +215,7 @@ export function Research(ui: ScreenProps) {
       {book ? <>
         <p><StateBadge node={detail} long /></p>
         <div className="rs-actions">
-          {!!detail.can_study && <Action ui={ui} action="study" value={detail.id}>Study this chapter (about {minutes(detail.study_minutes)})</Action>}
+          {!!detail.can_study && <Action ui={ui} action="study" value={detail.id}>{Number(detail.read_percent) > 0 ? `Continue this chapter (${detail.read_percent}% read, about ${minutes(detail.study_minutes)} left)` : `Study this chapter (about ${minutes(detail.study_minutes)})`}</Action>}
           {!!detail.assignable && String(detail.id) !== assignedId && <Action ui={ui} action="assign" value={detail.id}>Research this here</Action>}
           {String(detail.id) === assignedId && !data.assigned?.done && <Action ui={ui} action="stop_research">Stop researching</Action>}
           {!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to queue</Action>}

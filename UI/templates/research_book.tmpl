@@ -17,7 +17,7 @@
 	<div class='itemContent'>
 		<b>{{:chapter.name}}</b> - {{:chapter.era_name}} - {{:chapter.discipline}}
 		{{if chapter.state === "known"}}<span class='rt-done'> (known)</span>
-		{{else chapter.state === "study"}} {{:helper.link('Study (about ' + chapter.study_minutes + ' min)', 'pencil', {'study' : chapter.id})}}
+		{{else chapter.state === "study"}} {{:helper.link(chapter.read_percent > 0 ? 'Continue (' + chapter.read_percent + '% read, about ' + chapter.study_minutes + ' min left)' : 'Study (about ' + chapter.study_minutes + ' min)', 'pencil', {'study' : chapter.id})}}
 		{{else}}<span class='rt-locked'> (needs groundwork)</span>{{/if}}
 		{{if data.held}} {{:helper.link('Tear out', 'trash', {'rip' : chapter.id})}}{{/if}}
 		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}

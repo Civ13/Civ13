@@ -39,6 +39,11 @@
 			if (istype(M, /mob/living))
 				var/mob/living/L = M
 				row["health"] = L.health
+			if (ishuman(M))
+				var/mob/living/human/H = M
+				var/list/illness = H.illness_summary()
+				if (illness)
+					row["illness"] = illness
 			var/area/area = get_area(M)
 			if (area)
 				row["area"] = area.name

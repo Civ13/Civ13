@@ -1443,6 +1443,7 @@
 #include "code\modules\research_tree\scholar_practice.dm"
 #include "code\modules\research_tree\scholar_tools.dm"
 #include "code\modules\research_tree\scholarship.dm"
+#include "code\modules\research_tree\study_progress.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
 #include "code\modules\space\barren_world.dm"
 #include "code\modules\space\habitat_ledger.dm"

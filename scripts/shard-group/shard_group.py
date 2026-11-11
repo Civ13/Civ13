@@ -471,7 +471,7 @@ class RegionHost(Host):
     def status(self):
         report = super().status()
         stage = self.read_json(self.stage_file)
-        if stage:
+        if stage and not self.stage_failure_superseded(stage):
             report['stage'] = dict(stage, pending=self.update_pending())
         report['build'] = self.live_dmb_name()
         if self.lock.exists() and (self.read_state() or {}).get('action') == 'handover':
@@ -499,6 +499,34 @@ class RegionHost(Host):
         state = self.read_json(self.stage_file) or {}
         state.update(values, updated=int(self.platform.now()))
         self.write_json(self.stage_file, state)
+
+    def stage_failure_superseded(self, stage):
+        """A failed stage is out of date once the region has a newer, intact build.
+
+        stage.json is only written by a stage, so without this a failure (such as the
+        compile.lock sharing violation fixed in #4701) stayed on the region's status line
+        through every later update, kill and unlock, as if something still held its files.
+        """
+        if stage.get('phase') != 'failed' or self.stage_lock.exists() or not self.built_revision():
+            return False
+        try:
+            return self.build_file().stat().st_mtime_ns > self.stage_file.stat().st_mtime_ns
+        except OSError:
+            return False
+
+    def clear_failed_stage(self):
+        """Forget a failed stage record unless a stage is running; True when one was removed."""
+        stage = self.read_json(self.stage_file)
+        if not stage or stage.get('phase') != 'failed' or self.stage_lock.exists():
+            return False
+        self.stage_file.unlink(missing_ok=True)
+        return True
+
+    def unlock(self, force=False):
+        answer = super().unlock(force)
+        if self.clear_failed_stage():
+            answer['stage_cleared'] = True
+        return answer
 
     def request_stage(self):
         if not (self.repo / '.git').exists():

@@ -94,6 +94,11 @@ obj/structure/religious/monument
 			top.icon_state = null
 		update_icon()
 
+/obj/structure/religious/monument/proc/initialize_top(top_state, top_layer)
+	top = image(icon='icons/obj/statue.dmi', icon_state = top_state, layer=top_layer)
+	top.pixel_y = 32
+	update_icon()
+
 /obj/structure/religious/monument/obelisk
 	name = "monumental sandstone obelisk"
 	desc = "A large sandstone obelisk."
@@ -101,9 +106,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "obelisk_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("obelisk_top", 3.2)
 
 	update_icon()
 		..()
@@ -117,9 +120,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "megalith_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("megalith_top", 3.2)
 
 	update_icon()
 		..()
@@ -133,9 +134,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "monumental_pillar_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("monumental_pillar_top", 3.2)
 
 	update_icon()
 		..()
@@ -148,9 +147,7 @@ obj/structure/religious/monument
 	icon_state = "crucero_bottom"
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "crucero_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("crucero_top", 3.2)
 
 	update_icon()
 		..()
@@ -164,9 +161,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "venus_top", layer= 6.0)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("venus_top", 6.0)
 
 	update_icon()
 		..()
@@ -188,9 +183,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "communist_santa_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("communist_santa_top", 3.2)
 
 	update_icon()
 		..()
@@ -207,9 +200,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top(null, 3.2)
 
 	update_icon()
 		..()
@@ -223,9 +214,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "cthulu_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("cthulu_top", 3.2)
 
 	update_icon()
 		..()
@@ -239,9 +228,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "moloch_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("moloch_top", 3.2)
 
 	update_icon()
 		..()
@@ -255,9 +242,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "outsider_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("outsider_top", 3.2)
 
 	update_icon()
 		..()
@@ -271,9 +256,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "sauron_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("sauron_top", 3.2)
 
 	update_icon()
 		..()
@@ -287,9 +270,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "reverse_sauron_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("reverse_sauron_top", 3.2)
 
 	update_icon()
 		..()
@@ -316,9 +297,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top(null, 3.2)
 
 	update_icon()
 		..()
@@ -332,9 +311,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "quangshi_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("quangshi_top", 3.2)
 
 	update_icon()
 		..()
@@ -349,9 +326,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top(null, 3.2)
 
 	update_icon()
 		..()
@@ -366,9 +341,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "saint_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("saint_top", 3.2)
 
 	update_icon()
 		..()
@@ -383,9 +356,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = null, layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top(null, 3.2)
 
 	update_icon()
 		..()
@@ -400,9 +371,7 @@ obj/structure/religious/monument
 
 	New()
 		..()
-		top = image(icon='icons/obj/statue.dmi', icon_state = "great_ape_top", layer=3.2)
-		top.pixel_y = 32
-		update_icon()
+		initialize_top("great_ape_top", 3.2)
 
 	update_icon()
 		..()
