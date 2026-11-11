@@ -68,6 +68,31 @@ def procedure(signature,env,hammer=False):
     return namespace['action']
 
 
+class HammockSwayContracts(unittest.TestCase):
+    def action(self):
+        return compile_body(BED, '/obj/structure/bed/hammock/proc/fire()', 'self', {},
+                            fields=('buckled_mob', 'pixel_y', 'icon_state', 'swing_direction'))[0]
+
+    def test_occupied_hammock_swings_both_ways_with_its_occupant(self):
+        occupant = NS(pixel_y=0)
+        hammock = NS(pixel_y=0, swing_direction=1, buckled_mob=occupant, icon_state='')
+        action = self.action()
+        for expected in (1, 0, -1, 0, 1):
+            action(hammock)
+            self.assertEqual((hammock.pixel_y, occupant.pixel_y), (expected, expected))
+            self.assertEqual(hammock.icon_state, 'hammockf_static')
+
+    def test_empty_hammock_recenters_and_restarts_sway(self):
+        action = self.action()
+        for offset in (-1, 1):
+            hammock = NS(pixel_y=offset, swing_direction=-offset, buckled_mob=None, icon_state='')
+            action(hammock)
+            self.assertEqual((hammock.pixel_y, hammock.icon_state), (0, 'hammockf'))
+            hammock.buckled_mob = NS(pixel_y=0)
+            action(hammock)
+            self.assertEqual((hammock.pixel_y, hammock.buckled_mob.pixel_y), (1, 1))
+
+
 class Bedding:
     def __init__(self):
         self.objects=[]
