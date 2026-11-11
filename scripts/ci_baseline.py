@@ -222,6 +222,9 @@ SUITES = {
         'paths': ('tests/mimic_treasure/',), 'shared_paths': (
             'code/modules/1713/crates.dm',
             'code/game/mob/living/simple_animal/hostile/mimic.dm')},
+    'lava_animal_remains': {'files': ('tests/lava_animal_remains/test_callback.py',),
+        'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
+            'code/modules/1713/natural_disasters.dm',)},
     'river_flow': {'files': ('tests/river_flow/test_generation.py',),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm',
