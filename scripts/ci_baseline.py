@@ -252,6 +252,12 @@ SUITES = {
             'code/game/mob/living/living.dm',
             'code/game/turfs/floor_attackby.dm',
             'code/modules/1713/trench.dm')},
+    'tree_trunk_collision': {'files': ('tests/tree_trunk_collision/test_sources.py',),
+        'paths': ('tests/tree_trunk_collision/',), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',
+            'code/game/turfs/turf.dm',
+            'code/game/objects/farming.dm',
+            'code/modules/ecology/willow_trees.dm')},
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
         'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
             'code/game/objects/buckling.dm',

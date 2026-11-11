@@ -1,0 +1,2 @@
+#define MODE PIXEL_MOVEMENT_MODE
+#include "glidetest.dm"

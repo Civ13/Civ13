@@ -1,0 +1,2 @@
+#define MODE LEGACY_MOVEMENT_MODE
+#include "glidetest.dm"
