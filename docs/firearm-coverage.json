@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 411,
-  "modern": 310,
+  "types": 412,
+  "modern": 311,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -17,14 +17,14 @@
    "machine_gun_mounted": 32,
    "pistol": 38,
    "revolver": 27,
-   "rifle_bolt": 48,
+   "rifle_bolt": 49,
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 37
+  "migrated": 47
  },
  "modern_calibers": [
   "12gauge",
@@ -1770,8 +1770,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98a",
@@ -1783,8 +1783,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k",
@@ -1796,8 +1796,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/chinese",
@@ -1809,8 +1809,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/karabiner98k/sniper",
@@ -1822,8 +1822,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/mauser1903",
@@ -1835,8 +1835,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr71",
    "ammo_type": "/obj/item/ammo_casing/a765x53",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver",
+   "name": "Mauser receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a792x57",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/gewehr98",
+   "ammo_type": null,
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/lebel",
@@ -1900,8 +1913,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr71",
    "ammo_type": "/obj/item/ammo_casing/a765x53",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mauser1893",
@@ -1913,8 +1926,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/mauser1893",
    "ammo_type": "/obj/item/ammo_casing/a7x57",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o",
@@ -1926,8 +1939,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr71",
    "ammo_type": "/obj/item/ammo_casing/a765x53",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mosin",

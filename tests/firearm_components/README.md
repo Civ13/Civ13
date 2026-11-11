@@ -1,4 +1,4 @@
-# Modular rifle parts (AK and AR families)
+# Modular rifle parts (AK, AR and Mauser families)
 
 `python3 tests/firearm_components/run.py --byond-bin <BYOND bin>` compiles the
 production game with normal startup disabled and, on a 6x4x1 world with a real
@@ -26,6 +26,11 @@ human:
 - the AK-102 and AK-105 build 5.56 and 5.45 AK presets;
 - a bare AR receiver built from factory parts fires as "AR rifle (5.56x45mm)",
   and an AK receiver can be built as "AK rifle (5.56x45mm)".
+- a Kar98k builds the 7.92 Mauser preset (Gewehr 98 clips), is rebarrelled
+  to 7.65x53mm at a bench and then loads a 7.65x53 round and takes 7.65 clips;
+  AK parts are refused; an M1893 builds the 7x57 preset; a bare Mauser receiver
+  holds no rounds and builds into "Mauser rifle (7x57mm)". Mauser recipes are
+  gated by Cartridge Firearms, AK and AR ones by Automatic Weapons.
 
 Negative controls must fail: `--negative-control no-conversion-check`,
 `compound-handling` and `eager-preset`.

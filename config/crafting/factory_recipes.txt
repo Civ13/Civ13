@@ -38,6 +38,16 @@ FACTORY: AR barrel 5.56x45mm|/obj/item/weapon/gun_component/ar_barrel_556|1|/obj
 FACTORY: AR magazine well 5.56x45mm|/obj/item/weapon/gun_component/ar_feed_556|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
 FACTORY: AR fixed stock|/obj/item/weapon/gun_component/ar_furniture_fixed|1|/obj/item/stack/material/plastic=2|40|1|automatic_weapons
 FACTORY: AR collapsible stock|/obj/item/weapon/gun_component/ar_furniture_collapsible|1|/obj/item/stack/material/plastic=2|60|1|automatic_weapons
+// Mauser bolt-action rifle parts (issue #4443 phase 5). Gated by Cartridge Firearms.
+FACTORY: Mauser receiver|/obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Mauser bolt|/obj/item/weapon/gun_component/mauser_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Mauser barrel 7.92x57mm|/obj/item/weapon/gun_component/mauser_barrel_792|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser barrel 7.65x53mm|/obj/item/weapon/gun_component/mauser_barrel_765|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser barrel 7x57mm|/obj/item/weapon/gun_component/mauser_barrel_7x57|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser magazine 7.92x57mm|/obj/item/weapon/gun_component/mauser_feed_792|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser magazine 7.65x53mm|/obj/item/weapon/gun_component/mauser_feed_765|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser magazine 7x57mm|/obj/item/weapon/gun_component/mauser_feed_7x57|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser stock|/obj/item/weapon/gun_component/mauser_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

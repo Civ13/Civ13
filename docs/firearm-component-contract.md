@@ -118,7 +118,21 @@ magazine well (2 steel, 60, tier 1), AR fixed and collapsible stocks (2 plastic,
 40 and 60, tier 1), plus the AK 5.56x45mm barrel and magazine well. A bare
 receiver names itself "AR rifle (5.56x45mm)" once a barrel is fitted.
 
-Not yet: destructive salvage, the remaining families (bolt-action rifles,
+The **Mauser family** (`mauser`) is the first bolt-action family: Gewehr 98,
+Karabiner 98a and 98k (including the Chinese and sniper versions), Mauser
+M1890, M1893, M1893 (Ottoman) and M1903. Its feed part is the fixed internal
+magazine and clip guide, so it sets the stripper clips the rifle takes and the
+loose round an ammo box must hold (`ammo_type`) instead of detachable
+magazines. Barrels and magazines come in 7.92x57mm, 7.65x53mm and 7x57mm, so a
+Kar98k can be rebarrelled to 7.65x53mm at a bench. One wooden stock (x1) fits
+every Mauser, so existing rifles keep their handling.
+
+Mauser recipes are gated by **Cartridge Firearms** at tier 1: receiver
+(`gewehr98/receiver`, 4 steel, 120), bolt (2 steel, 90), each barrel (3 steel,
+100), each magazine (1 steel, 50) and stock (3 wood, 40). A bare receiver names
+itself "Mauser rifle (caliber)" once a barrel is fitted.
+
+Not yet: destructive salvage, the remaining families (other bolt-action rifles,
 pistols, revolvers, shotguns, machine guns and other rifles).
 
 ## Ammunition and armor
