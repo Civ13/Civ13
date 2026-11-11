@@ -1438,6 +1438,9 @@ SUITES = {
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
+    # Status tab Playing/Observing/Lobby counted from connected clients.
+    'player_count_status': {'files': ('tests/player_count_status/test_player_count.py',),
+        'paths': ('tests/player_count_status/',), 'shared_paths': ('code/game/mob/mob.dm',)},
     # Handcuff placement races and per-human chew cooldown (#4229, #4230).
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
