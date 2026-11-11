@@ -83,5 +83,38 @@ class PitClimbing(unittest.TestCase):
         self.assertLess(release, source.index('if (trench_climb_place(L, T))'))
         self.assertIn('L.stop_pulling()', source)
 
+LADDER = (ROOT / 'code/modules/multiz/hole_ladder.dm').read_text(encoding='utf-8-sig')
+
+def ladder_proc(name):
+    return LADDER.split(name + '\n', 1)[1].split('\n/', 1)[0]
+
+class HoleLadder(unittest.TestCase):
+    def test_ladder_is_a_stone_age_wood_recipe(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
+        self.assertIn('RECIPE: /material/wood/,wooden ladder,/obj/item/weapon/hole_ladder,4,60,0,1,tools,0,0,0,8,null', recipes)
+        self.assertIn('"/obj/item/weapon/hole_ladder" = "basic_tools"', (ROOT / 'code/modules/research_tree/research_node.dm').read_text())
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertLess(dme.index('multiz\\pit_climbing.dm'), dme.index('multiz\\hole_ladder.dm'))
+    def test_fitted_ladder_stops_falls_and_is_saved(self):
+        crossed = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Crossed(atom/movable/A)')
+        self.assertLess(crossed.index('if (has_ladder)'), crossed.index('return ..()'))
+        self.assertIn('. |= list("has_ladder")', LADDER)
+    def test_fitting_rechecks_after_wait_and_pays_once(self):
+        fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user)')
+        wait = fit.index('do_after')
+        self.assertLess(wait, fit.index('QDELETED(ladder) || has_ladder'))
+        self.assertLess(fit.index('QDELETED(ladder) || has_ladder'), fit.index('qdel(ladder)'))
+        self.assertEqual(fit.count('qdel(ladder)'), 1)
+        self.assertIn('locate(/obj/structure/multiz) in T', fit)
+    def test_climbs_use_aligned_placement_and_movement_admission(self):
+        for name in ('/obj/structure/multiz/ladder/ww2/tunneltop/pit/attack_hand(mob/user)', '/obj/structure/multiz/ladder/up/hole_ladder/attack_hand(mob/user)'):
+            source = ladder_proc(name)
+            self.assertLess(source.index('do_after'), source.index('persistence_movement_allowed(user, T)'))
+            self.assertIn('trench_climb_place(user, T)', source)
+        self.assertNotIn('.forceMove(', LADDER)
+    def test_lower_ladder_is_removed_with_the_hole(self):
+        self.assertIn('qdel(L)', ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Destroy()'))
+        self.assertIn('ladder_list -= src', LADDER)
+
 if __name__ == '__main__':
     unittest.main()
