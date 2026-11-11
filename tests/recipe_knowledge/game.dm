@@ -258,6 +258,7 @@ var/knowledge_failures = 0
 	check_chapter_sorting(scholar, novice)
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
+	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && plank_making_allowed(novice), "anyone can make planks without Basic Toolmaking")
 	check_book_pages(scholar, novice, journal)
 	var/obj/item/weapon/book/other = new(locate(7,7,1))
 	bench.book_place(other, scholar)

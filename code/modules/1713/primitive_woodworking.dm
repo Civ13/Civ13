@@ -117,7 +117,7 @@
 /proc/woodwork_begin(obj/item/stack/material/source, mob/living/human/user, obj/item/tool, mode)
 	if (!istype(user) || QDELETED(source) || QDELETED(user) || QDELETED(tool) || source.woodwork_owner || user.woodwork_owner || tool.woodwork_owner)
 		return FALSE
-	if (!crafting_node_allowed_or_warn(user, "basic_tools"))
+	if (!plank_making_allowed_or_warn(user))
 		return FALSE
 	var/datum/primitive_woodwork_action/action = new(source, user, tool, mode)
 	if (!action.valid())
@@ -172,7 +172,7 @@
 	save_epoch = persistence_admission_identity
 
 /datum/primitive_woodwork_action/proc/valid()
-	if (!crafting_node_allowed(user, "basic_tools")) return FALSE
+	if (!plank_making_allowed(user)) return FALSE
 	if (committed || !spec || QDELETED(source) || QDELETED(user) || QDELETED(tool))
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)

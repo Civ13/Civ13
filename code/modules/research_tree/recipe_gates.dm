@@ -37,6 +37,20 @@ var/global/list/basic_crafting_recipes = list()
 			to_chat(H, SPAN_WARNING("You don't know how to do this yet. It needs <b>[N.name]</b>."))
 	return FALSE
 
+// Planks: on a book research world anyone may turn logs into planks (with an
+// axe or saw, or by hand with flint, wedge and mallet), because the free
+// writing supplies and the research bench are made from planks (Val,
+// 2026-11-11). Elsewhere planks still need Basic Toolmaking.
+/proc/plank_making_allowed(mob/living/human/H)
+	if (istype(H) && map && map.book_research_enabled())
+		return TRUE
+	return crafting_node_allowed(H, "basic_tools")
+
+/proc/plank_making_allowed_or_warn(mob/living/human/H)
+	if (istype(H) && map && map.book_research_enabled())
+		return TRUE
+	return crafting_node_allowed_or_warn(H, "basic_tools")
+
 // Unknown outputs fail closed. Acquisition and generic chemistry do not call this.
 /proc/crafting_recipe_allowed(mob/living/human/H, result_path_string)
 	if (!istype(H))
