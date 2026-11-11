@@ -870,7 +870,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (21) ---
+		// --- basic_tools (22) ---
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/rope_spindle" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
@@ -902,6 +902,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/swatter/modern" = "basic_tools",
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
+		"/obj/structure/fish_pen" = "basic_tools",
 		// --- brickmaking (10) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
