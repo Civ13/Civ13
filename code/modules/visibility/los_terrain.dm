@@ -43,27 +43,86 @@ var/global/datum/terrain_heights/los_terrain_cache_source = null
 // each tick used): presentation refreshes are the main sight cost in battles.
 #define LOS_EYE_OFFSET_PAUSE_CPU 85
 #define LOS_EYE_OFFSET_RESUME_CPU 60
+// The CPU reading; tests/los_terrain/run.py defines it to a probe variable.
+#ifndef LOS_EYE_CPU
+#define LOS_EYE_CPU world.cpu
+#endif
 var/global/los_eye_offsets_paused = FALSE
 
 /proc/los_eye_offsets_allowed()
 	if (los_eye_offsets_paused)
-		if (world.cpu < LOS_EYE_OFFSET_RESUME_CPU)
+		if (LOS_EYE_CPU < LOS_EYE_OFFSET_RESUME_CPU)
 			los_eye_offsets_paused = FALSE
-	else if (world.cpu > LOS_EYE_OFFSET_PAUSE_CPU)
+	else if (LOS_EYE_CPU > LOS_EYE_OFFSET_PAUSE_CPU)
 		los_eye_offsets_paused = TRUE
 	return !los_eye_offsets_paused
 
-// Quantized eye offset in pixels (0, 16 or 32) for one step offset; 0 (the
-// tile centre) while eye steps are paused.
+// Quantized eye offset in pixels (-16, 0 or 16 inside the tile) for one step
+// offset.
 /proc/los_eye_quantized(step)
-	if (!los_eye_offsets_allowed())
-		return 0
 	return round(step / LOS_EYE_OFFSET_QUANTUM + 0.5) * LOS_EYE_OFFSET_QUANTUM
+
+// The presented eye offset moves only when the body does. world.cpu chooses
+// the eye of a body that has just moved (tile centre while busy, half-tile
+// steps otherwise), but a body standing still keeps the eye it had. The CPU
+// share swings across the pause thresholds many times a second on a busy
+// server; reading it on every refresh moved a still viewer's eye between the
+// tile centre and its offset, redrawing hills and walls at random.
+/proc/los_eye_context(mob/M)
+	if (!M || !M.client)
+		return null
+	var/datum/los_context/V = M.client.los_context
+	if (!V || V.retired || V.body != M)
+		return null
+	return V
+
+/proc/los_eye_x(mob/M)
+	var/datum/los_context/V = los_eye_context(M)
+	if (V)
+		V.settle_eye()
+		return V.eye_qx
+	if (!M || !los_eye_offsets_allowed())
+		return 0
+	return los_eye_quantized(M.step_x)
+
+/proc/los_eye_y(mob/M)
+	var/datum/los_context/V = los_eye_context(M)
+	if (V)
+		V.settle_eye()
+		return V.eye_qy
+	if (!M || !los_eye_offsets_allowed())
+		return 0
+	return los_eye_quantized(M.step_y)
+
+// Presented eye offset (pixels) and the body position it was chosen at.
+/datum/los_context/var/eye_qx = 0
+/datum/los_context/var/eye_qy = 0
+/datum/los_context/var/atom/eye_loc
+/datum/los_context/var/eye_step_x = 0
+/datum/los_context/var/eye_step_y = 0
+
+/datum/los_context/proc/settle_eye()
+	if (!body)
+		return
+	var/atom/where = body.loc
+	if (where == eye_loc && body.step_x == eye_step_x && body.step_y == eye_step_y)
+		return
+	if (los_eye_offsets_allowed())
+		eye_qx = los_eye_quantized(body.step_x)
+		eye_qy = los_eye_quantized(body.step_y)
+	else if (where != eye_loc)
+		// Busy: a new tile starts at its centre; a step inside the same tile
+		// keeps the current eye until the server has room again.
+		eye_qx = 0
+		eye_qy = 0
+	eye_loc = where
+	eye_step_x = body.step_x
+	eye_step_y = body.step_y
 
 /proc/los_eye_bucket(mob/M)
 	if (!M)
 		return null
-	return "[los_eye_quantized(M.step_x)],[los_eye_quantized(M.step_y)]"
+	return "[los_eye_x(M)],[los_eye_y(M)]"
 
 /proc/los_eye_level(mob/M)
 	if (!M)
@@ -248,8 +307,8 @@ var/global/los_eye_offsets_paused = FALSE
 		los_terrain_cache = list()
 		los_terrain_cache_source = H
 	// The eye tile is the tile centre nearest the eye; the rest is (fx, fy).
-	var/qx = los_eye_quantized(body.step_x)
-	var/qy = los_eye_quantized(body.step_y)
+	var/qx = los_eye_x(body)
+	var/qy = los_eye_y(body)
 	var/tile_x = body.x + round(qx / 32 + 0.5)
 	var/tile_y = body.y + round(qy / 32 + 0.5)
 	var/fx = body.x + qx / 32 - tile_x
