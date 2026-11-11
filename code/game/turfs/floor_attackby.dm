@@ -1193,8 +1193,7 @@
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TB.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (locate(/obj/structure/multiz) in TB))
 					return // another digger finished this entrance during the wait
-				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
-				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
+				new/obj/structure/multiz/ladder/ww2/tunneltop/pit(locate(user.x, user.y, user.z+1))
 				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
 				if (ishuman(user))
 					var/mob/living/human/H = user
@@ -1216,8 +1215,7 @@
 				var/turf/below = locate(user.x, user.y, user.z-1)
 				if (!TO.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (below && (locate(/obj/structure/multiz) in below)))
 					return // another digger finished this entrance during the wait
-				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
-				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+				new/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)
 				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
 				if (istype(BL, /turf/floor/dirt/underground))
 					BL.ChangeTurf(/turf/floor/dirt)
