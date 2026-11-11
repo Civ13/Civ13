@@ -218,6 +218,10 @@ SUITES = {
         'paths': ('tests/smokables/',), 'shared_paths': (
             'code/game/objects/items/weapons/cigs_lighters.dm',
             'tests/save_movement/source_adapter.py')},
+    'mimic_treasure': {'files': ('tests/mimic_treasure/test_initialization.py',),
+        'paths': ('tests/mimic_treasure/',), 'shared_paths': (
+            'code/modules/1713/crates.dm',
+            'code/game/mob/living/simple_animal/hostile/mimic.dm')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py',),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm',
