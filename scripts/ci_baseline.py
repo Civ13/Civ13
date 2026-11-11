@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'shield_block': {'files': ('tests/shield_block/test_block.py',),
+        'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/subtile_movement.dm',
