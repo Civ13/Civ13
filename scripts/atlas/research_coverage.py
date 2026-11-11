@@ -72,7 +72,10 @@ def annotate_research(records, files, canon):
                 node = mappings.get(recipe.get('station'))
                 required = [node] if node else []
         elif kind == 'Leather tanning':
-            required = ['basic_tools'] if path == 'code/modules/materials/material_sheets.dm' else ['resource_processing']
+            # In game every hide stage checks Basic Toolmaking (hide_research_allowed);
+            # cutting a dry hide into parchment checks no knowledge at all.
+            basic = path == 'code/modules/research_tree/book_pages.dm'
+            required = [] if basic else ['basic_tools']
         elif kind == 'Manual woodworking':
             required = ['basic_tools']
         elif kind == 'Flintlock assembly':

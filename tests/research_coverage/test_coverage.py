@@ -79,7 +79,11 @@ class Coverage(unittest.TestCase):
         self.assertEqual(row['research_status'], 'excluded')
         row = record(kind='Leather tanning', output='/material/leather', path='code/game/objects/items/stacks/sheets/leather.dm')
         annotate_research([row], files(), canon)
-        self.assertEqual(row['research_nodes'], ['resource_processing'])
+        # Matches the game: hide_research_allowed() checks Basic Toolmaking.
+        self.assertEqual(row['research_nodes'], ['basic_tools'])
+        row = record(kind='Leather tanning', output='/obj/item/weapon/paper/parchment', path='code/modules/research_tree/book_pages.dm')
+        annotate_research([row], files(), canon)
+        self.assertEqual((row['research_status'], row['research_nodes']), ('basic', []))
         row = record(kind='Flintlock preparation', output='/obj/item/weapon/flint/sharpened')
         annotate_research([row], files(), canon)
         self.assertEqual(row['research_nodes'], ['stone_arms'])
