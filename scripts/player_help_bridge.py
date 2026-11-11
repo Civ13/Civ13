@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '43bbdb234d7f6af203273624db80900bc367ba77'
+WIKI_REVIEWED_REVISION = '344385269d80f027bf4ddd505ea8b2062841f3b8'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -96,7 +96,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('b224684387f36c60a5893b662075cf53968c2bb63ba1f4559956cb19c58a252f', 'survival winter cold warm freezing hypothermia shelter debris'),
     'guides/Guide_to_Tanks.md': ('9357b74b19d1f4b29e314595263ee08bc7f3267b596719867d9347bd6ededb08', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('8c1351a687fa247024a13bc9e119ae0732691bc3cfad32de313026918bfd0178', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('3dadc2ec9bc22e0149f7dd2c384171090893c48979f1230888c5ee96232ba142', 'hotkeys hotkey keys keyboard controls key press'),
@@ -118,12 +118,12 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('69e358703ba9b33724e4b16d0c4efa67184552d6b8d7de5435001a13bdf79c65', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('ccb14cf392363366d02e68e40c9c494e0a9d04d6d755fe6c37459b8d9f749fb2', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('9f99062c2efc41ff0005bea9d59eadaa470fd928b21370bbdb21dd970ca57fd6', 'first day new character start starting survive survival research book study chapter food water shelter'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('9233f3980f8fdf4042908f727f10441e41b95bf47c9502bcb9ff0d3c3181c1ac', 'miscellaneous crafting misc items'),
+    'Miscellaneous_Crafting.md': ('a40c9b08bafdea3b20809dd8a1218a083748917661351c216f0b43973104b807', 'miscellaneous crafting misc items'),
     'maps/Gaia.md': ('98b9ca52e9938ed205950271f71a018fbac094d413f0cfbecc1d52b97280e858', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
