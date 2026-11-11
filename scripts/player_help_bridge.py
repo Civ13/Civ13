@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '62f4a31ebe4893dae45eb02673c71e6e7f8da43c'
+WIKI_REVIEWED_REVISION = 'db3a0fc93a58d2615df32c653bab0f579876c77c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -81,7 +81,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('d5a1fbbeaa111ee98b463b16f2171b6dfb812d45924fc242f5e1a4b1499f2947', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('74a72aed647696ceb0097b50cc38b5943a2f5dcd90b0a05c763604ddb5eff36c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('fa5bbd567d04a52d712111c4fa29ae80ab7bff42500e4a43a2e513764c4f52a7', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('f1fecec4400e161650510705c6db642e597aff89a2dd8cb312f2c4b86a9e6e9e', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
@@ -96,7 +96,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('b224684387f36c60a5893b662075cf53968c2bb63ba1f4559956cb19c58a252f', 'survival winter cold warm freezing hypothermia shelter debris'),
     'guides/Guide_to_Tanks.md': ('9357b74b19d1f4b29e314595263ee08bc7f3267b596719867d9347bd6ededb08', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('438957484db284902e92efef0b5571349c425039a3db679d4cb340dd3ca201c6', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('8c1351a687fa247024a13bc9e119ae0732691bc3cfad32de313026918bfd0178', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('026043fbfe1bacc3a8f6351403a26c2990e9ccb3388fbced8ee72a955a526b9e', 'new player beginner start first round basics'),
     'Hotkeys.md': ('225097ea0cdd67263226245695c41dc7385254434dba7132984746c7212ea26e', 'hotkeys hotkey keys keyboard controls key press'),
