@@ -126,6 +126,10 @@
 	taste_description = "mud"
 	metabolism = REM
 
+// Swallowed germs roll once in /mob/living/human/proc/swallow_germs().
+/datum/reagent/toxin/cholera/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	return
+
 /datum/reagent/toxin/cholera/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
 		var/mob/living/human/H = M
@@ -145,6 +149,10 @@
 	taste_description = "body odour"
 	metabolism = REM
 
+// Swallowed germs roll once in /mob/living/human/proc/swallow_germs().
+/datum/reagent/toxin/typhus/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	return
+
 /datum/reagent/toxin/typhus/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
 		var/mob/living/human/H = M
@@ -163,6 +171,10 @@
 	strength = 100
 	taste_description = "death"
 	metabolism = REM
+
+// Swallowed germs roll once in /mob/living/human/proc/swallow_germs().
+/datum/reagent/toxin/plague/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	return
 
 /datum/reagent/toxin/plague/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
