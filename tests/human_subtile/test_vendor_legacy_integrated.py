@@ -119,7 +119,8 @@ class VendorAndLegacy(unittest.TestCase):
         self.assertIn('if (npc.npc_subtile_pulse)', seam)
         self.assertIn('if (npc.npc_subtile_large_exit_enabled)', seam)
         self.assertIn('else\n\t\t\t\t. = ..(newloc, direct, P.sx, P.sy)', seam)
-        self.assertIn('if (npc.npc_subtile_offset_owned && (step_x || step_y))\n\t\t\treturn FALSE', seam)
+        # A pulled animal stays draggable (tests/animal_pull/probe.dm).
+        self.assertIn('if (npc.npc_subtile_offset_owned && (step_x || step_y) && !npc.pulledby)\n\t\t\treturn FALSE', seam)
         self.assertNotIn('return FALSE\n\tvar/datum/human_subtile', seam)
         atoms = (ROOT / 'code/game/atoms.dm').read_text(encoding='utf-8')
         uncross = section(atoms, '/obj/Uncross(atom/movable/mover, atom/newloc)\n',
