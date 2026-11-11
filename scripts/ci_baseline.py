@@ -41,6 +41,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'fishing_cage_restore': {'files': ('tests/fishing_cage/test_restore.py',),
+        'paths': ('tests/fishing_cage/', 'code/game/objects/structures/sea.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',
+                         'code/modules/persistence/functions.dm',
+                         'code/modules/persistence/loading.dm',
+                         'code/modules/persistence/restore_contract.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
