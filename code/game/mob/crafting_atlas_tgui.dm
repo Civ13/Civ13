@@ -156,10 +156,12 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 
 // What the game says about the thing itself: examine text and declared basics.
 /datum/crafting_atlas_presenter/tgui/proc/facts_data(datum/crafting_atlas_reference/reference, resource_id)
-	var/list/facts = list("kind" = "", "desc" = "", "stats" = list())
+	var/list/facts = list("kind" = "", "desc" = "", "stats" = list(), "entity" = FALSE)
 	var/list/resource = reference.resources[resource_id]
 	if (!islist(resource))
 		return facts
+	// Reference entry: a named type no recipe mentions. Static declarations only.
+	facts["entity"] = resource["entity"] ? TRUE : FALSE
 	facts["kind"] = html_encode("[resource["kind"]]")
 	facts["desc"] = html_encode("[resource["desc"]]")
 	var/list/rows = list()
