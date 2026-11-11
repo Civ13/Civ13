@@ -543,7 +543,8 @@ bullet_act
 	return protection
 
 /mob/living/human/proc/damage_armor(var/obj/item/organ/external/def_zone, var/dmg = 0)
-	if (!dmg || !def_zone) return FALSE
+	// Being hit never repairs armor.
+	if (!(dmg > 0) || !def_zone) return FALSE
 	var/list/protective_gear = list(head, wear_mask, wear_suit, w_uniform, gloves, shoes)
 	var/obj/item/organ/external/affecting = get_organ(def_zone)
 	if (!affecting)

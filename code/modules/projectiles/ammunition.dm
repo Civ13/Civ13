@@ -33,8 +33,10 @@
 	register_abandoned_item()
 
 /obj/item/ammo_casing/proc/checktype()
-	BB.btype = btype
-	BB.checktype()
+	if (BB)
+		BB.btype = btype
+		BB.checktype()
+	name = replacetext(replacetext(name, " (AP)", ""), " (HP)", "")
 	if (btype == "AP")
 		name = "[name] (AP)"
 	else if (btype == "HP")
