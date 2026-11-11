@@ -14,8 +14,18 @@
 		"buckle" = list("Buckle / unbuckle", "try_to_buckle", list(), list("B")),
 		"equip" = list("Quick equip", "quick-equip", list("CTRL+E"), list("E", "CTRL+E")),
 		"holster" = list("Holster", "holster", list(), list("H", "CTRL+H")),
-		"attack" = list("Attack in facing direction", "attack-direction", list(), list("L", "CTRL+L")))
+		"attack" = list("Attack in facing direction", "attack-direction", list(), list("L", "CTRL+L")),
+		"storage" = list("Open worn storage (cycle)", "open-worn-storage", list("CTRL+I"), list("I", "CTRL+I")),
+		"storage_back" = list("Open backpack / back storage", "open-back-storage", list("CTRL+P"), list("P", "CTRL+P")),
+		"storage_belt" = list("Open belt storage", "open-belt-storage", list("CTRL+K"), list("K", "CTRL+K")),
+		"storage_clothing" = list("Open harness / webbing / pockets", "open-clothing-storage", list("CTRL+SHIFT+I"), list("SHIFT+I", "CTRL+SHIFT+I")))
 	return catalog
+
+// Actions added after players had already saved bindings. Their defaults give
+// way to any key a player saved for another action, so an older saved layout
+// (for example prone on K) is kept instead of failing validation and resetting.
+/proc/action_keybinding_yielding()
+	return list("storage", "storage_back", "storage_belt", "storage_clothing")
 
 /proc/action_keybinding_modes()
 	return list("macro", "hotkeymode")
@@ -81,6 +91,21 @@
 		if (key != "NONE" && !(key in action_keybinding_candidates(mode)))
 			return null
 		bindings[slot] = key == "NONE" ? list() : list(key)
+	var/list/claimed = list()
+	for (var/slot in seen)
+		var/list/slot_parts = splittext(slot, "/")
+		for (var/key in bindings[slot])
+			claimed += "[slot_parts[1]]/[key]"
+	for (var/mode in action_keybinding_modes())
+		for (var/action in action_keybinding_yielding())
+			var/slot = "[mode]/[action]"
+			if (slot in seen)
+				continue
+			var/list/kept = list()
+			for (var/key in bindings[slot])
+				if (!("[mode]/[key]" in claimed))
+					kept += key
+			bindings[slot] = kept
 	for (var/mode in action_keybinding_modes())
 		var/list/used = action_keybinding_reserved(mode)
 		for (var/action in action_keybinding_catalog())

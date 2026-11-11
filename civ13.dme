@@ -280,6 +280,7 @@
 #include "code\game\mob\living\carbon\human\unarmed_attack.dm"
 #include "code\game\mob\living\carbon\human\update_icons.dm"
 #include "code\game\mob\living\carbon\human\whisper.dm"
+#include "code\game\mob\living\carbon\human\worn_storage.dm"
 #include "code\game\mob\living\carbon\human\emotes\emote.dm"
 #include "code\game\mob\living\carbon\human\emotes\verbs.dm"
 #include "code\game\mob\living\carbon\human\species\primary.dm"
