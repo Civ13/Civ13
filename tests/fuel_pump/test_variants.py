@@ -75,5 +75,66 @@ class PremadePumpTests(unittest.TestCase):
         self.assertIn('/premade/yamaha\n\tbrand = "Yamaha Gas"\n\ticon_state = "oilpump1"\n\tcustomcolor = "#7F0000"', SOURCE)
 
 
+class ManagementPriceTests(unittest.TestCase):
+    def test_both_price_actions_preserve_validation_and_unlock_behavior(self):
+        declaration = '/obj/structure/fuelpump/Topic(href, href_list)\n'
+        self.assertEqual(SOURCE.count(declaration), 1)
+        topic = SOURCE.split(declaration, 1)[1]
+        helper = projection('/obj/structure/fuelpump/proc/update_management_price',
+                            'pump, user, custp, updatedesc, show_manage_ui',
+                            {'isnum': lambda value: isinstance(value, (int, float))})
+
+        for action in ('change_price_direct', 'change_price'):
+            marker = '\tif (href_list["action"] == "' + action + '")\n'
+            self.assertEqual(topic.count(marker), 1)
+            branch = topic.split(marker, 1)[1].split('\n\tif (href_list["action"]', 1)[0]
+            if action == 'change_price':
+                branch = branch.split('\n\tshow_manage_ui(user)', 1)[0]
+            branch = '\n'.join(line[1:] if line.startswith('\t') else line
+                               for line in branch.splitlines())
+            branch = branch.replace('if (unlocked)', 'if (pump.unlocked)')
+            run = adapter.project('/proc/projected()\n' + branch + '\n', '/proc/projected',
+                                  'pump, user, href_list, player_input, text2num, update_management_price, to_chat', {})
+            for unlocked in (False, True):
+                for value, expected in ((None, None), (-1, 0), (0, 0), (12.5, 12.5), (50, 50), (51, 50)):
+                    with self.subTest(action=action, unlocked=unlocked, value=value):
+                        pump = SimpleNamespace(unlocked=unlocked, price=7)
+                        user = object()
+                        events = []
+
+                        def updatedesc():
+                            events.append(('description', pump.price))
+
+                        def show_manage_ui(actor):
+                            events.append(('ui', actor, pump.price))
+
+                        def update(actor, amount):
+                            events.append(('update', actor, amount))
+                            helper(pump, actor, amount, updatedesc, show_manage_ui)
+
+                        def prompt(*args):
+                            events.append(('prompt', args[0]))
+                            return value
+
+                        def convert(raw):
+                            events.append(('convert', raw))
+                            return value
+
+                        def notify(actor, message):
+                            events.append(('notice', actor))
+
+                        run(pump, user, {'price': 'input'}, prompt, convert, update, notify)
+                        if action == 'change_price_direct' and unlocked:
+                            self.assertEqual(pump.price, 7)
+                            self.assertEqual(events, [('notice', user)])
+                            continue
+                        first = ('prompt', user) if action == 'change_price_direct' else ('convert', 'input')
+                        wanted = [first, ('update', user, value)]
+                        if expected is not None:
+                            wanted.extend((('description', expected), ('ui', user, expected)))
+                        self.assertEqual(events, wanted)
+                        self.assertEqual(pump.price, 7 if expected is None else expected)
+
+
 if __name__ == '__main__':
     unittest.main()
