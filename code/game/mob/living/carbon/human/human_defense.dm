@@ -254,7 +254,7 @@ bullet_act
 	if (!has_organ(def_zone))
 		return PROJECTILE_FORCE_MISS //if they don't have the organ in question then the projectile just passes by.
 
-	var/obj/item/organ/external/organ = get_organ()
+	var/obj/item/organ/external/organ = get_organ(def_zone)
 
 	//Shields
 	var/shield_check = check_shields(P.damage*5, P, null, def_zone, "the [P.name]")
@@ -419,10 +419,10 @@ bullet_act
 			if (client)
 				shake_camera(src, rand(2,3), rand(2,3))
 			emote("painscream")
-	//Shrapnel
-	if (P.can_embed())
-		var/armor = getarmor_organ(organ, "gun")
-		if (prob(20 + max(P.damage - armor, 10)))
+	//Shrapnel: only a round that got through the armor can embed.
+	var/datum/projectile_impact/impact = P.impact_on(src, def_zone)
+	if (P.can_embed() && organ && !impact.stopped)
+		if (prob(20 + max(impact.damage, 10)))
 			var/obj/item/weapon/material/shard/shrapnel/SP = new()
 			SP.name = (P.name != "shrapnel")? "[P.name] shrapnel" : "shrapnel"
 			SP.desc = "[SP.desc] It looks like it was fired from [P.shot_from]."

@@ -1,4 +1,4 @@
-"""Armor against projectiles and AP/HP round profiles.
+"""Armor against projectiles, bounded AP/HP round profiles and the impact result.
 
 Compiles the production game with normal startup disabled and checks, on a
 synthetic 6x4x1 world, that armor never raises projectile damage or heals from
@@ -26,6 +26,12 @@ CONTROLS = {
     'negative-wear': ('code/game/mob/living/carbon/human/human_defense.dm',
                       '\tif (!(dmg > 0) || !def_zone) return FALSE',
                       '\tif (!dmg || !def_zone) return FALSE', 'FAIL:'),
+    'unbounded-ap': ('code/modules/projectiles/ammo_profiles.dm',
+                     '\tarmor_penetration_bonus_cap = 40\n', '\tarmor_penetration_bonus_cap = 1000\n', 'FAIL:'),
+    'stopped-effects': ('code/game/mob/living/living_defense.dm',
+                        '\tP.on_hit(src, impact.stopped ? 2 : 0, def_zone)\n', '\tP.on_hit(src, 0, def_zone)\n', 'FAIL:'),
+    'stopped-embed': ('code/game/mob/living/carbon/human/human_defense.dm',
+                      '\tif (P.can_embed() && organ && !impact.stopped)\n', '\tif (P.can_embed() && organ)\n', 'FAIL:'),
 }
 
 
@@ -101,6 +107,9 @@ def main():
         print(log, flush=True)
         result = (output / 'armor_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
+        matrix = output / 'ammo_matrix.json'
+        if matrix.exists():
+            print(matrix.read_text(encoding='utf-8'), flush=True)
         expected = CONTROLS[args.negative_control][3] if args.negative_control else 'PASS:'
         if runtime.returncode or not result.startswith(expected) or any(x in log.lower() for x in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError('Armor impact probe failed')
