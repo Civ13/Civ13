@@ -1185,6 +1185,7 @@
 #include "code\modules\agent_control\agent_windows.dm"
 #include "code\modules\bug_reports\bug_report_format.dm"
 #include "code\modules\bug_reports\bug_reports.dm"
+#include "code\modules\bug_reports\bug_report_screenshot.dm"
 #include "code\modules\chat\chat.dm"
 #include "code\modules\client\asset_cache.dm"
 #include "code\modules\client\client_defines.dm"

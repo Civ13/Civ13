@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 FORMAT = 'code/modules/bug_reports/bug_report_format.dm'
 QUEUE = 'code/modules/bug_reports/bug_reports.dm'
+SHOT = 'code/modules/bug_reports/bug_report_screenshot.dm'
 
 
 def read(path):
@@ -111,6 +112,67 @@ class BugReportSafety(unittest.TestCase):
         self.assertIn('"https://api.github.com/repos/[repo]/issues"', post)
         self.assertIn('status == 201', post)
         self.assertIn('R.status_code = L["status_code"]', read('code/datums/http.dm'))
+
+
+class BugReportScreenshots(unittest.TestCase):
+    def test_compiled_after_the_queue(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('#include "code\\modules\\bug_reports\\bug_reports.dm"'),
+                        dme.index('#include "code\\modules\\bug_reports\\bug_report_screenshot.dm"'))
+
+    def test_picture_is_taken_before_the_prompts_and_the_player_chooses(self):
+        verb = body(read(QUEUE), '/client/verb/report_bug()', '/client/proc/bug_reports_panel()')
+        self.assertLess(verb.index('shot.start(mob, src)'), verb.index('player_input('))
+        self.assertIn('"Attach picture", "No picture") == "Attach picture"', verb)
+        self.assertLess(verb.index('picture = shot.result()'), verb.rindex('bug_reports.refusal(src)'))
+        self.assertIn('bug_reports.add(src, title, what, steps, expected, picture)', verb)
+
+    def test_admin_chooses_whether_the_public_issue_gets_it(self):
+        queue = read(QUEUE)
+        topic = body(queue, '/datum/bug_report_queue/Topic(', '/client/verb/report_bug()')
+        self.assertLess(topic.index('"Attach screenshot", "Leave it out") == "Attach screenshot"'), topic.index('approve(R, admin_ckey, R.title, note, attach)'))
+        approve = body(queue, '/datum/bug_report_queue/proc/approve(', '/datum/bug_report_queue/proc/post_issue(')
+        self.assertIn('attach = FALSE', approve.split('\n', 1)[0])
+        self.assertLess(approve.index('R.state = "filing"'), approve.index('upload_screenshot('))
+        self.assertIn('else if (attach && bug_report_screenshot_exists(R.screenshot))', approve)
+
+    def test_picture_files_are_cleaned_up(self):
+        queue = read(QUEUE)
+        self.assertIn('bug_report_forget_screenshot(R.screenshot)', body(queue, 'proc/reject(', 'proc/panel_html('))
+        self.assertIn('if (shot != "server")', body(queue, 'proc/finish(', 'proc/reject('))
+        self.assertIn('screenshot = bug_report_screenshot_exists(L["screenshot"])', queue)
+
+    def test_draws_only_what_the_player_sees(self):
+        render = body(read(SHOT), '/proc/bug_report_render_view(', '/proc/bug_report_draw(')
+        self.assertIn('view("[w + 4]x[h + 4]", eye)', render)
+        self.assertIn('A.invisibility > see', render)
+        self.assertIn('CHECK_TICK', render)
+
+    def test_upload_uses_its_own_token_and_repository(self):
+        shot = read(SHOT)
+        upload = body(shot, 'proc/upload_screenshot(', '#undef')
+        self.assertIn('bug_report_token_from_lines(file2list("config/config.txt"), "bug_report_screenshot_token")', upload)
+        self.assertIn('config.bug_report_screenshot_repo', upload)
+        self.assertIn('RUSTG_HTTP_METHOD_PUT, "https://api.github.com/repos/[repo]/contents/[name]"', upload)
+        self.assertIn('bug_report_screenshot_url_valid(url)', upload)
+        for block in re.findall(r'(?m)^/datum/[^\n(]*\n((?:\tvar/[^\n]*\n)+)', shot):
+            self.assertNotRegex(block, r'(?i)token', 'no datum var holds the token')
+        for line in shot.splitlines():
+            if re.search(r'log_admin|message_admins|to_chat|world\.log|bug_report_notify', line):
+                self.assertNotIn('[token]', line)
+        conf = read('code/datums/configuration.dm')
+        self.assertIn('if ("bug_report_screenshot_token")\n\t\t\t\t\tcontinue', conf)
+        self.assertNotRegex(read('config/config.txt'), r'(?m)^BUG_REPORT_SCREENSHOT_TOKEN ')
+
+    def test_issue_shows_only_a_checked_address(self):
+        issue = body(read(FORMAT), '/proc/bug_report_issue_body(', '/proc/bug_report_repo_valid(')
+        self.assertIn('if (bug_report_screenshot_url_valid(screenshot))', issue)
+        self.assertIn('https://raw.githubusercontent.com/', read(FORMAT))
+
+    def test_panel_shows_the_picture(self):
+        queue = read(QUEUE)
+        self.assertIn("<img src='bugreport_[R.id].png'", body(queue, 'proc/panel_html()', 'proc/show_panel('))
+        self.assertIn('browse_rsc(file(bug_report_screenshot_path(R.screenshot)), "bugreport_[R.id].png")', body(queue, 'proc/show_panel(', 'Topic('))
 
 
 class AgentBugReports(unittest.TestCase):
