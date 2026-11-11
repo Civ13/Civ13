@@ -472,6 +472,7 @@
 #include "code\game\objects\items\stacks\furniture_joinery.dm"
 #include "code\game\objects\items\stacks\rods.dm"
 #include "code\game\objects\items\stacks\stack.dm"
+#include "code\game\objects\items\stacks\stack_makeable.dm"
 #include "code\game\objects\items\stacks\sheets\leather.dm"
 #include "code\game\objects\items\weapons\candle.dm"
 #include "code\game\objects\items\weapons\cigs_lighters.dm"

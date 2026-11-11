@@ -6,10 +6,12 @@ function element(attrs = {}) {
     return {value: '', style: {}, attrs, textContent: '',
         getAttribute(k) { return this.attrs[k]; }, setAttribute(k,v) { this.attrs[k] = v; }, focus() { this.focused = true; }};
 }
-function fixture(saved, unavailable = false) {
-    const elements = Object.fromEntries(['craft-search','craft-category','craft-count','craft-empty','craft-clear','detail','quantity'].map(k => [k, element()]));
-    const rows = [element({'data-search':'Wooden door Furniture', 'data-category':'2'}),
-        element({'data-search':'Iron door Structures', 'data-category':'4'}),
+function fixture(saved, unavailable = false, makeableBox = null) {
+    const ids = ['craft-search','craft-category','craft-count','craft-empty','craft-clear','detail','quantity'];
+    const elements = Object.fromEntries(ids.map(k => [k, element()]));
+    if (makeableBox) elements['craft-makeable'] = makeableBox;
+    const rows = [element({'data-search':'Wooden door Furniture', 'data-category':'2', 'data-makeable':'1'}),
+        element({'data-search':'Iron door Structures', 'data-category':'4', 'data-makeable':'0'}),
         element({'data-search':'Planks General', 'data-category':''})];
     const details = [element({'data-craft-details':'detail'})];
     const batches = [element({'data-craft-quantity':'quantity'})];
@@ -55,4 +57,23 @@ e.quantity.value = 'byond://?src=stack1;sublist=4;make=17;multiplier=10';
 assert.equal(f.window.location.href, '');
 f.batches[0].onclick(); assert.equal(f.window.location.href, e.quantity.value);
 assert.equal(fixture(null, true).elements['craft-count'].textContent, ' 3 of 3 recipes');
-console.log('PASS: cross-category search, categories, multiword/case matching, no matches, escape/clear/enter, refresh, details, explicit batch action, unavailable storage');
+// Only what I can make: starts from the remembered choice, hides rows not
+// marked makeable, combines with search, and reports the choice without crafting.
+const box = element({'data-pref':'byond://?src=filter;makeable_only='});
+box.checked = true;
+const m = fixture(null, false, box);
+assert.equal(m.elements['craft-count'].textContent, ' 1 of 3 recipes');
+assert.equal(m.rows[0].style.display, ''); assert.equal(m.rows[1].style.display, 'none');
+assert.equal(m.rows[2].style.display, 'none');
+assert.equal(m.window.location.href, '');
+m.elements['craft-search'].value = 'iron'; m.elements['craft-search'].oninput();
+assert.equal(m.elements['craft-empty'].style.display, '');
+box.checked = false; box.onclick();
+assert.equal(m.elements['craft-count'].textContent, ' 1 of 3 recipes');
+assert.equal(m.rows[1].style.display, '');
+assert.equal(m.window.location.href, 'byond://?src=filter;makeable_only=0');
+m.elements['craft-search'].value = ''; m.elements['craft-search'].oninput();
+box.checked = true; box.onclick();
+assert.equal(m.elements['craft-count'].textContent, ' 1 of 3 recipes');
+assert.equal(m.window.location.href, 'byond://?src=filter;makeable_only=1');
+console.log('PASS: only-makeable filter, remembered choice, cross-category search, categories, multiword/case matching, no matches, escape/clear/enter, refresh, details, explicit batch action, unavailable storage');

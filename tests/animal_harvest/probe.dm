@@ -129,7 +129,7 @@ var/global/harvest_duplicate_result = null
 			harvest_assert(yield_count >= 3 ? tendons && tendons.amount == min(4, max(1, yield_count-2)) : !tendons, "Sinew quantity incorrect")
 			qdel(C)
 			harvest_clear(site)
-		var/list/species = list(/mob/living/simple_animal/pig_gilt, /mob/living/simple_animal/chicken, /mob/living/simple_animal/crab, /mob/living/simple_animal/frog/poisonous, /mob/living/simple_animal/hostile/human/zombie, /mob/living/simple_animal/deer, /mob/living/simple_animal/hostile/wolf/white, /mob/living/simple_animal/hostile/gorilla/gigantopithecus)
+		var/list/species = list(/mob/living/simple_animal/pig_gilt, /mob/living/simple_animal/chicken, /mob/living/simple_animal/crab, /mob/living/simple_animal/frog/poisonous, /mob/living/simple_animal/hostile/human/zombie, /mob/living/simple_animal/deer, /mob/living/simple_animal/hostile/wolf/white, /mob/living/simple_animal/hostile/gorilla/gigantopithecus, /mob/living/simple_animal/penguin, /mob/living/simple_animal/turkey_m, /mob/living/simple_animal/crow, /mob/living/simple_animal/hostile/groundsloth)
 		for (var/path in species)
 			var/mob/living/simple_animal/A = new path(site)
 			A.radiation = 8
@@ -142,6 +142,14 @@ var/global/harvest_duplicate_result = null
 				harvest_assert(harvest_count(site, /obj/item/weapon/chicken_carcass) == 1 && harvest_count(site, /obj/item/stack/sinew) == 0, "Chicken anatomy incorrect")
 			if (istype(A, /mob/living/simple_animal/crab) || istype(A, /mob/living/simple_animal/frog/poisonous) || istype(A, /mob/living/simple_animal/hostile/human/zombie))
 				harvest_assert(!harvest_count(site, /obj/item/stack/sinew) && !harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/meat/offal), "False mammal anatomy")
+			if (istype(A, /mob/living/simple_animal/penguin) || istype(A, /mob/living/simple_animal/turkey_m))
+				var/obj/item/stack/sinew/bird_sinew = locate() in site
+				harvest_assert(bird_sinew && bird_sinew.amount == min(4, max(1, A.butcher_yield()-2)) && !harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/meat/offal), "Large bird sinew incorrect: [path]")
+				harvest_assert(harvest_count(site, /obj/item/stack/material/bone) == 1, "Large bird bones missing: [path]")
+			if (istype(A, /mob/living/simple_animal/crow))
+				harvest_assert(!harvest_count(site, /obj/item/stack/sinew) && !harvest_count(site, /obj/item/stack/material/bone), "Small bird yielded sinew or bone")
+			if (istype(A, /mob/living/simple_animal/hostile/groundsloth))
+				harvest_assert(harvest_count(site, /obj/item/stack/sinew) == 1 && harvest_count(site, /obj/item/stack/material/bone) == 1, "Ground sloth mammal products missing")
 			if (istype(A, /mob/living/simple_animal/hostile/wolf/white))
 				harvest_assert(harvest_count(site, /obj/item/stack/material/pelt/wolfpelt/white) == 1, "White wolf pelt unreachable")
 			for (var/obj/item/weapon/reagent_containers/food/snacks/F in site)
