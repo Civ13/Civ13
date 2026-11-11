@@ -1155,6 +1155,7 @@
 #include "code\modules\admin\verbs\mentorhelp.dm"
 #include "code\modules\admin\verbs\modifyvariables.dm"
 #include "code\modules\admin\verbs\OOC.dm"
+#include "code\modules\admin\verbs\player_map.dm"
 #include "code\modules\admin\verbs\playsound.dm"
 #include "code\modules\admin\verbs\quickBan.dm"
 #include "code\modules\admin\verbs\random_verbs.dm"

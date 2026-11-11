@@ -627,6 +627,12 @@ SUITES = {
     'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
         'paths': ('tests/tactical_map/',), 'shared_paths': (
             'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
+    # Admin player map wiring, staff guards and the client script run in Node
+    # (skipped without it); native_probe.py is developer evidence only.
+    'admin_player_map': {'files': ('tests/admin_player_map/test_admin_player_map.py',),
+        'paths': ('tests/admin_player_map/',), 'shared_paths': (
+            'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
+            'code/modules/admin/admin_verbs.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
         'paths': ('tests/research_bench/',), 'shared_paths': (
