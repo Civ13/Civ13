@@ -28,6 +28,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_campaign_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
+	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
