@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3164747cf4dba0ea634d9384e0f5cdd49ee89129'
+WIKI_REVIEWED_REVISION = '62f4a31ebe4893dae45eb02673c71e6e7f8da43c'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -80,7 +80,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('d5a1fbbeaa111ee98b463b16f2171b6dfb812d45924fc242f5e1a4b1499f2947', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('2329db4cef7a6eb43676aecd8626945bf1a64c319b59390d7ae593ba7b7a7fe3', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
+    'guides/Guide_to_Factory_Automation.md': ('74a72aed647696ceb0097b50cc38b5943a2f5dcd90b0a05c763604ddb5eff36c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('fa5bbd567d04a52d712111c4fa29ae80ab7bff42500e4a43a2e513764c4f52a7', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('438957484db284902e92efef0b5571349c425039a3db679d4cb340dd3ca201c6', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('026043fbfe1bacc3a8f6351403a26c2990e9ccb3388fbced8ee72a955a526b9e', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('150468d8b37c152e0a1ab4dbd7148e6124502e8961cd8ab368536d99dabf2394', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('225097ea0cdd67263226245695c41dc7385254434dba7132984746c7212ea26e', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -122,7 +122,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('41225f918493fd3dc22f503cfea573dddff15bc66a5613cd0fbb2d4836877a1e', 'miscellaneous crafting misc items'),
+    'Miscellaneous_Crafting.md': ('6e55a127f710c716143b34c8b3f067d264ac9c317e934822cd33b2c42b9c8c43', 'miscellaneous crafting misc items'),
     'maps/Gaia.md': ('9e6bb91e441c142eb60b5b93364a20d66ec3613e060a90987fa94785230246ca', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
