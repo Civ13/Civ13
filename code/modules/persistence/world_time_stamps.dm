@@ -30,7 +30,6 @@ var/global/list/persistence_world_time_stamps = list(
 	"timeofdeath" = list(/mob),
 	"last_special" = list(/mob/living),
 	"next_weather_scan" = list(/mob/living),
-	"next_weather_sound" = list(/mob/living),
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"frostbitten" = list(/mob/living/human),
