@@ -66,7 +66,7 @@ def add_tanning(files, add, records, variants):
               HARVEST, '/mob/living/simple_animal/proc/harvest_skin_yield()',
               ('Use a held sharp tool on harm or grab intent and finish harvesting adjacent to the corpse.',
                'One adult turkey gives one raw hide and its normal meat; chicks give no hide.',
-               'Turkeys do not yield mammalian organs, bones, sinew or fat. One claim per corpse.'), ['Held sharp tool'])
+               'Turkeys also yield bone and sinew, but no mammalian organs or fat. One claim per corpse.'), ['Held sharp tool'])
     pelts = sorted(set(re.findall(r'new (/obj/item/stack/material/pelt[^\s(]*)\(site,', files[HARVEST])))
     for source in [STACK+'rawhide', STACK+'pelt', *pelts]:
         name = pelt_label(source, files)

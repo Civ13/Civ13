@@ -14464,7 +14464,7 @@
         "Place a dead eligible mammal corpse on a turf. Use a sharp held tool and choose butcher.",
         "Remain adjacent until harvesting finishes. Collect meat, organs, bones, sinew and untanned raw hides according to species and size."
       ],
-      "conditions": "Only harvest_mammal-listed species; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe. Raw hides yield min(6, max(1, butcher_yield() - 2)); finished leather requires scraping, washing, rack drying and tannin.",
+      "conditions": "Organs need harvest_mammal-listed species; bone and sinew also come from large reptiles and penguins, turkeys, geese and pelicans; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe. Raw hides yield min(6, max(1, butcher_yield() - 2)); finished leather requires scraping, washing, rack drying and tannin.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
