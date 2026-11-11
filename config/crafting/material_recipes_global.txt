@@ -2858,6 +2858,11 @@ RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & pr
 RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,abacus,/obj/item/weapon/abacus,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,drafting set,/obj/item/weapon/drafting_set,2,100,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,model kit,/obj/item/weapon/scholar_practice/model_kit,3,80,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,specimen box,/obj/item/weapon/scholar_practice/specimen_box,2,60,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bones,2,60,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,seed tray,/obj/item/weapon/scholar_practice/seed_tray,2,60,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,war game board,/obj/item/weapon/scholar_practice/war_game,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null

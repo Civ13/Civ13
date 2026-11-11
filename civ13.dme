@@ -1438,6 +1438,7 @@
 #include "code\modules\research_tree\research_faction.dm"
 #include "code\modules\research_tree\research_forge.dm"
 #include "code\modules\research_tree\research_node.dm"
+#include "code\modules\research_tree\scholar_practice.dm"
 #include "code\modules\research_tree\scholar_tools.dm"
 #include "code\modules\research_tree\scholarship.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
