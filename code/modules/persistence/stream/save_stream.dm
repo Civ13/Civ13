@@ -115,15 +115,48 @@
 	if(batch_bytes >= batch_limit) return flush()
 	return TRUE
 
+// Largest savefile text sent as one T token. DM numbers are 32-bit floats,
+// exact only up to 2^24: past that, length() rounds and the declared length
+// misses the bytes sent by a few, so the helper refuses the batch ("truncated
+// token", Gaia's /lists, 2026-11-11). Half the bound leaves room for the base.
+#define SAVE_STREAM_TEXT_LIMIT 8388608
+
 // Converter path: one node's BYOND savefile text (savefile.ExportText(base)).
+// Text at or past SAVE_STREAM_TEXT_LIMIT is refused: use put_savefile_text().
 /datum/save_stream/proc/put_text(base, text)
 	if(mode != "write") CRASH("save stream is not writing")
+	if(length(text) >= SAVE_STREAM_TEXT_LIMIT)
+		last_error = "savefile text of [base] is too long for one token ([num2text(length(text), 12)] bytes)"
+		return FALSE
 	var/body = "[base]|[text]"
 	var/token = "T[num2text(length(body), 12)]:[body]"
 	batch += token
 	batch_bytes += length(token)
 	records++
 	if(batch_bytes >= batch_limit) return flush()
+	return TRUE
+
+// Sends the subtree of S at path as savefile text, split into its children
+// (and the node's own value, sent natively) wherever one piece would pass
+// SAVE_STREAM_TEXT_LIMIT. Leaves S.cd at "/"; text_pieces counts the T tokens sent.
+/datum/save_stream/var/text_pieces = 0
+/datum/save_stream/proc/put_savefile_text(savefile/S, path, max_text = SAVE_STREAM_TEXT_LIMIT)
+	var/text = S.ExportText(path)
+	S.cd = "/"
+	if(length(text) < max_text)
+		text_pieces++
+		return put_text(path, text)
+	text = null
+	S.cd = path
+	var/list/children = S.dir.Copy()
+	var/value = S[path]
+	S.cd = "/"
+	if(!children.len)
+		last_error = "savefile text of [path] is too long for one token and has no children"
+		return FALSE
+	if(!isnull(value) && !put(path, value)) return FALSE
+	for(var/child in children)
+		if(!put_savefile_text(S, "[path]/[child]", max_text)) return FALSE
 	return TRUE
 
 // Hands the batch to the helper. Writes are pipelined: an error in one batch
