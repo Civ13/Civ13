@@ -1229,6 +1229,8 @@ class ShardGroupTests(unittest.TestCase):
         self.machine.run = run
         answer = shard_group.group_check_update(group, platform=self.machine)
         self.assertEqual((2, True, None), (answer['behind'], answer['can_update'], answer['reason']))
+        self.assertEqual(old, answer['current'], 'the furthest-behind region names the current build, not an updated one')
+        self.assertNotEqual(answer['current'], answer['available'])
         self.assertEqual(('up to date', 2), (answer['regions']['gaia']['reason'], answer['regions']['deep']['behind']))
         self.assertEqual(1, sum(1 for call, _ in self.machine.calls if call[1:2] == ['fetch']), 'one fetch for the group')
         self.machine.up = {1721}
@@ -1512,6 +1514,50 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
         self.assertEqual(self.machine.clock, 10)
         self.assertFalse(lock.exists())
+
+    def test_an_empty_compile_lock_is_a_claim_in_progress_not_stale(self):
+        group, host = self.built()
+        lock = self.base / 'regions' / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True)
+        lock.write_text('')  # another region created it and has not written its pid yet
+        seen = []
+        real_sleep = self.machine.sleep
+        def sleep(seconds):
+            seen.append(lock.exists())
+            real_sleep(seconds)
+            if self.machine.clock >= 20:
+                lock.write_text('77')  # its pid lands; that compile then finishes
+                self.machine.pids = set()
+        self.machine.sleep = sleep
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
+        self.assertEqual(seen[:2], [True, True], 'the fresh empty lock was waited on, not deleted')
+        self.assertFalse(lock.exists())
+
+    def test_an_empty_compile_lock_left_behind_is_cleared_after_a_minute(self):
+        group, host = self.built()
+        lock = self.base / 'regions' / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True)
+        lock.write_text('')
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
+        self.assertEqual(self.machine.clock, 60)
+
+    def test_a_compile_lock_windows_will_not_delete_is_waited_on(self):
+        group, host = self.built()
+        lock = self.base / 'regions' / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True)
+        lock.write_text('77')  # a dead holder, but the file is still open somewhere
+        real_unlink, refusals = Path.unlink, []
+        def unlink(path, missing_ok=False):
+            if path == lock and len(refusals) < 2:
+                refusals.append(path)
+                raise PermissionError(32, 'The process cannot access the file because it is being used by another process')
+            return real_unlink(path, missing_ok=missing_ok)
+        with mock.patch.object(Path, 'unlink', unlink):
+            host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready', host.read_json(host.stage_file))
+        self.assertEqual(len(refusals), 2)
 
     def test_a_cold_region_gets_the_staged_build_before_its_next_wake(self):
         group, host = self.built()

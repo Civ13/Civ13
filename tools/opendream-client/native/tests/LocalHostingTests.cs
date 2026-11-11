@@ -35,6 +35,10 @@ static class LocalHostingTests {
             && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
         using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
             Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
+        using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
+            Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
+        using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
+            Require(LocalHosting.RegionDetails(up.RootElement) == ", port 1714", "stale refusal on a running region: " + LocalHosting.RegionDetails(up.RootElement));
         foreach (var invalid in new[] { "http://192.168.1.8:8443", "https://8.8.8.8:8443", "https://localhost:8443",
                 "https://192.168.1.8:8443/path", "https://user@192.168.1.8:8443", "https://192.168.1.8:8443/?token=secret" })
             Reject(() => LocalHosting.MobileAddress(invalid), "unsafe mobile address");

@@ -565,18 +565,39 @@ class RegionHost(Host):
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
+        empty_since = None
         while True:
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 break
+            except PermissionError:
+                # Windows: the lock is being deleted by its holder right now.
+                if self.platform.now() > deadline:
+                    raise RuntimeError('another region kept the %s slot busy too long' % what)
+                self.platform.sleep(1)
+                continue
             except FileExistsError:
-                try:
-                    holder = int(lock.read_text(encoding='utf-8').strip() or 0)
-                except (OSError, ValueError):
-                    holder = 0
-                if not holder or not self.platform.alive(holder):
-                    lock.unlink(missing_ok=True)
-                    continue
+                holder = self.slot_holder(lock)
+                if holder is None:
+                    continue  # released while we looked
+                if holder:
+                    empty_since = None
+                    stale = not self.platform.alive(holder)
+                else:
+                    # The holder writes its pid just after creating the file (and Windows
+                    # refuses reading a file another process has open), so an empty lock
+                    # is only stale once it stays empty longer than a claim takes.
+                    if empty_since is None:
+                        empty_since = self.platform.now()
+                    stale = self.platform.now() - empty_since >= self.SLOT_CLAIM_SECONDS
+                if stale:
+                    try:
+                        lock.unlink(missing_ok=True)
+                        continue
+                    except PermissionError:
+                        # Windows: another region has it open (it is creating or
+                        # releasing it right now), so it is not stale after all.
+                        pass
                 if self.platform.now() > deadline:
                     raise RuntimeError('another region kept the %s slot busy too long' % what)
                 record(phase='waiting for another region\'s %s' % what)
@@ -586,7 +607,24 @@ class RegionHost(Host):
         try:
             yield
         finally:
-            lock.unlink(missing_ok=True)
+            for _ in range(10):
+                try:
+                    lock.unlink(missing_ok=True)
+                    break
+                except PermissionError:  # Windows: another region is reading it
+                    self.platform.sleep(1)
+
+    SLOT_CLAIM_SECONDS = 60
+
+    def slot_holder(self, lock):
+        """The pid written in a group slot lock: 0 when it is empty or unreadable,
+        None when it is gone."""
+        try:
+            return int(lock.read_text(encoding='utf-8').strip() or 0)
+        except FileNotFoundError:
+            return None
+        except (OSError, ValueError):
+            return 0
 
     def stage_work(self, operation):
         try:
@@ -878,9 +916,7 @@ class RegionHost(Host):
         self.mark_running()
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
-        watchdog = self.read_json(self.watchdog_file)
-        if watchdog and watchdog.pop('gave_up', None):
-            self.write_json(self.watchdog_file, watchdog)
+        self.clear_watchdog_holds()
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
         self.record_build(revision, spare)
         self.record(phase='checking out', revision=revision)
@@ -1657,10 +1693,12 @@ def group_check_update(group, only=None, platform=None):
     for region, host in hosts(group, only, platform):
         host.config['_group'] = group
         regions[region['id']] = host.check_update()
-    first = next(iter(regions.values()))
-    behind = max(answer['behind'] for answer in regions.values())
+    # The furthest-behind region is the group's line, so "current" is that region's
+    # build: a region already updated must not show as "x -> x" beside its count.
+    worst = max(regions.values(), key=lambda answer: answer['behind'])
+    behind = worst['behind']
     reasons = sorted({answer['reason'] for answer in regions.values() if answer['reason'] and answer['behind']})
-    return {'component': 'server', 'current': first['current'], 'available': first['available'], 'behind': behind,
+    return {'component': 'server', 'current': worst['current'], 'available': worst['available'], 'behind': behind,
             'can_update': bool(behind) and not reasons, 'reason': None if behind and not reasons else ('; '.join(reasons) or 'up to date'),
             'regions': regions}
 
