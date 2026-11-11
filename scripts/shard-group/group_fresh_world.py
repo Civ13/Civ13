@@ -9,7 +9,9 @@ journal exists), stops the agents and the coordinator, and moves, never deletes:
 - each region's transfers.sqlite (in-flight travellers and account homes);
 - the group's coordinator.sqlite (account homes and decided transfers);
 - each region's separate extraction/vehicle-key/safehouse stores under data/
-  (fresh_world.SEPARATE_DOMAINS), which belong to the archived world.
+  (fresh_world.SEPARATE_DOMAINS), which belong to the archived world;
+- a cold region's cold.json and running.json (saved and evicted: nothing runs, so
+  Save and stop refuses it; fresh_world.cold_stopped).
 
 into <root>/fresh-world-archives/<operation>/. Each region's own fresh-world-pending.json
 is written first, so its host refuses start, wake and the watchdog until every move
@@ -114,6 +116,8 @@ def request(group, pairs, confirmation, coordinator_pid, terminate):
             moves = [host.repo / name for name in fresh_world.WORLD_PATHS if (host.repo / name).exists()]
             moves += store_files(host.state_dir / 'transfers.sqlite')
             moves += [host.repo / 'data' / name for name in fresh_world.SEPARATE_DOMAINS if (host.repo / 'data' / name).exists()]
+            if fresh_world.cold_stopped(host):  # a cold region's wake records belong to the old world
+                moves += [marker for marker in (host.cold_file, host.running_file) if marker.exists()]
             for source in moves:
                 fresh_world.safe_tree(source)
                 relative = 'data/' + source.name if source.parent == host.repo / 'data' else source.name
