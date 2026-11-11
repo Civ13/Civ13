@@ -505,12 +505,14 @@ public static class LocalHosting {
 
     private static string Short(string text) => text.Length > 200 ? text[..200] : text;
 
-    // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason}
+    // {"removed": [names], "forced", "server_running", "save": generation | "save_refused": reason,
+    //  "stage_cleared": a failed update build record was forgotten (shard_group.py RegionHost.unlock)}
     public static string DescribeUnlock(JsonElement json) {
         var removed = json.TryGetProperty("removed", out var list) && list.ValueKind == JsonValueKind.Array ? list.GetArrayLength() : 0;
         var text = removed == 0 ? "no lock files." : $"removed {removed} lock file{(removed == 1 ? "" : "s")}.";
         if (Str(json, "save_refused") is { Length: > 0 } refusal) text += " The save still does not load: " + refusal + ".";
         else if (json.TryGetProperty("save", out _)) text += " The save is ready to load.";
+        if (Bool(json, "stage_cleared")) text += " Cleared an old failed update build message.";
         return text;
     }
 

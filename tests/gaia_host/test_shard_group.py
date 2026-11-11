@@ -1486,6 +1486,26 @@ class StagedBuildTests(unittest.TestCase):
         self.assertIn('compile failed', stage['error'])
         self.assertFalse(host.update_pending())
 
+    def test_a_failed_stage_stops_showing_once_a_newer_build_runs(self):
+        # Desert kept "update build failed: [WinError 32] ... compile.lock" on its status
+        # line for a day after the race was fixed, through updates, kills and unlocks.
+        group, host = self.built()
+        host.write_json(host.stage_file, {'phase': 'failed', 'error': "[WinError 32] ... 'compile.lock'", 'updated': 1})
+        old = host.build_file().stat().st_mtime_ns
+        os.utime(host.stage_file, ns=(old + 10**9, old + 10**9))
+        self.assertEqual('failed', host.status()['stage']['phase'], 'a failure after the build still shows')
+        os.utime(host.build_file(), ns=(old + 2 * 10**9, old + 2 * 10**9))
+        self.assertNotIn('stage', host.status(), 'a newer build supersedes it')
+        host.stage_lock.write_text('busy')
+        self.assertIn('stage', host.status(), 'never hidden while a stage runs')
+        self.assertFalse(host.clear_failed_stage())
+        host.stage_lock.unlink()
+        # unlock clears it even without a newer build.
+        os.utime(host.stage_file, ns=(old + 3 * 10**9, old + 3 * 10**9))
+        self.assertTrue(host.unlock()['stage_cleared'])
+        self.assertFalse(host.stage_file.exists())
+        self.assertNotIn('stage_cleared', host.unlock())
+
     def test_an_older_staged_build_is_never_installed(self):
         group, host = self.built()
         host.work('stage', host.request_stage()['operation'])
