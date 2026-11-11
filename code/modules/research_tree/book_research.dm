@@ -380,7 +380,12 @@
 	for (var/i = 1, i <= groups.len, i++)
 		var/list/group = groups[i]
 		for (var/name in group)
-			choices["[labels[i]]: [name]"] = group[name]
+			var/node_id = group[name]
+			// A chapter the reader stopped part-way through says how far they got.
+			if (i == 1 && H && H.study_fraction(node_id) > 0)
+				choices["Continue: [name] ([H.study_percent(node_id)]% read)"] = node_id
+			else
+				choices["[labels[i]]: [name]"] = node_id
 	return choices
 
 // One line per non-empty group, for examining a book.
@@ -436,11 +441,12 @@
 	if (tutor)
 		time = round(time / SCHOLAR_TUTOR_RATE)
 		to_chat(tutor, SPAN_NOTICE("You help [H] through the chapter on [N.name]."))
-	to_chat(H, SPAN_NOTICE("You begin studying the chapter on [N.name][tutor ? " with [tutor]'s help" : ""]. This takes about [round(time / 600, 0.5)] minute\s."))
+	H.begin_study_message(node_id, time, "the chapter on [N.name]", tutor ? " with [tutor]'s help" : "")
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
 	var/atom/start_loc = source.loc
 	// A book on a bench must still be there: taking it away ends the study.
-	if (!do_after(H, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
+	// Stopping early keeps the part already read (study_progress.dm).
+	if (!H.timed_study(node_id, time, anchor) || QDELETED(source) || (source.loc != start_loc && source.loc != H) || !source.holds_research_chapter(node_id) || !H.Adjacent(anchor) || H.incapacitated())
 		return FALSE
 	if (H.learn_recipe_node(node_id))
 		if (tutor && tutor.still_tutoring(H, node_id))

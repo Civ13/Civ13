@@ -186,7 +186,7 @@
 		</div>
 
 		{{if node.can_study}}
-		<div class='rt-modal-row'>{{:helper.link('Study this chapter (about ' + node.study_minutes + ' min)', 'pencil', { "study" : node.id })}}</div>
+		<div class='rt-modal-row'>{{:helper.link(node.read_percent > 0 ? 'Continue this chapter (' + node.read_percent + '% read, about ' + node.study_minutes + ' min left)' : 'Study this chapter (about ' + node.study_minutes + ' min)', 'pencil', { "study" : node.id })}}</div>
 		{{/if}}
 		{{if node.assignable}}
 		<div class='rt-modal-row'>{{:helper.link(data.book_mode ? 'Research this here' : 'Assign this bench', 'circle-arrow-s', { "assign" : node.id })}}</div>

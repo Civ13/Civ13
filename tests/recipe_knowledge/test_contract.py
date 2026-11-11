@@ -46,7 +46,7 @@ class KnowledgeContract(unittest.TestCase):
         self.assertNotIn('migrate_recipe_knowledge', proc(self.source, '/mob/living/human/proc/knows_recipe_node'))
     def test_timed_reusable_book_rechecks_ceiling_and_identity(self):
         book = proc(self.source, '/obj/item/weapon/book/node_book/attack_self')
-        for token in ('do_after(H, 600, src)', 'node_id != reading_node', 'H.Adjacent(src)', 'H.incapacitated()', 'H.learn_recipe_node(reading_node)'):
+        for token in ('H.timed_study(reading_node, 600, src)', 'node_id != reading_node', 'H.Adjacent(src)', 'H.incapacitated()', 'H.learn_recipe_node(reading_node)'):
             self.assertIn(token, book)
         self.assertNotIn('qdel(', book)
         learn = proc(self.source, '/mob/living/human/proc/learn_recipe_node')
