@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'atgm_retrieve': {'files': ('tests/atgm_retrieve/test_retrieve.py',),
+        'paths': ('tests/atgm_retrieve/', 'code/modules/1713/weapons/guns/mg/stationary/mg.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'dumpster_rummage': {'files': ('tests/dumpster_rummage/test_rummage.py',),
         'paths': ('tests/dumpster_rummage/', 'code/game/objects/structures/crates_lockers/crates.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

@@ -700,28 +700,37 @@
 	icon_state = "foldable_atgm"
 	base_icon = "foldable_atgm"
 	var/path = /obj/item/weapon/foldable/atgm
+	var/retrieving = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/AltClick(mob/living/human/user)
-	if(!ishuman(user))
+	if(!can_retrieve(user))
 		return
 	retrieve()
+
+// Alt-click bypasses the verb's range limit, so retrieval checks reach itself.
+/obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/proc/can_retrieve(mob/user)
+	return ishuman(user) && !QDELETED(src) && !user.incapacitated() && user.Adjacent(src)
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/verb/retrieve()
 	set category = null
 	set name = "Retrieve"
 	set src in range(1)
+	if (retrieving || !can_retrieve(usr))
+		return
 	if (usr.l_hand && usr.r_hand)
 		to_chat(usr, SPAN_WARNING("You need to have a hand free to do this."))
 		return
 	usr.face_atom(src)
 	visible_message(SPAN_WARNING("[usr] starts to get the [src] from the ground."))
-	if (do_after(usr, 30, get_turf(usr)))
+	retrieving = TRUE
+	if (do_after(usr, 30, get_turf(usr)) && can_retrieve(usr))
 		for (var/obj/item/ammo_casing/rocket/I in rockets)
 			I.loc = get_turf(src)
 			rockets -= I
 		qdel(src)
 		usr.put_in_any_hand_if_possible(new path, prioritize_active_hand = TRUE)
 		visible_message(SPAN_WARNING("[usr] retrieves the [src] from the ground."))
+	retrieving = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/atgm/foldable/kornet
 	name = "9K135 Kornet"
