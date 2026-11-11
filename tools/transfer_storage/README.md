@@ -275,7 +275,11 @@ custody. These limits have not been increased.
 For a shard group run by `scripts/shard-group/shard_group.py` (the launcher),
 `ensure_coordinator` adds `--bootstrap-new-group` only when `coordinator.sqlite`
 does not exist: a brand-new group, or one a group Fresh world just cleared (it
-moves every agent store and the coordinator database aside together). The
+moves every agent store and the coordinator database aside together). It also
+adds it for a database that never accepted any group (empty roster, rev 0, no
+homes, recovery never ready), which an unflagged start on a cleared group leaves
+behind; without it every join waits on "Checking which land your character
+belongs to". The
 coordinator still refuses that bootstrap and quarantines if any agent reports a
 previous epoch or train history, so a database lost while the agents kept their
 state is held, never re-bootstrapped. Normal starts with the database omit the

@@ -41,6 +41,7 @@ import re
 import secrets
 import shutil
 import socket
+import sqlite3
 import struct
 import subprocess
 import sys
@@ -1583,6 +1584,31 @@ def coordinator_pid(group):
     return pid if process_alive(pid) else None
 
 
+def coordinator_never_established(database):
+    """True when coordinator.sqlite exists but its coordinator never accepted any
+    group: no roster, no decided home, recovery never ready, no bootstrap asked.
+
+    Such a database holds no authority (nothing was ever decided), so asserting a
+    clean bootstrap for it is the same as for a missing file. This happens when a
+    coordinator without the flag starts first on a group Fresh world just cleared
+    and creates the empty store; without this, every later start keeps the group
+    held and no account can join. The coordinator still quarantines if any agent
+    reports an earlier epoch or train history."""
+    try:
+        db = sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)
+    except sqlite3.Error:
+        return False
+    try:
+        ledger = dict(db.execute('SELECT key, value FROM ledger'))
+        homes = db.execute('SELECT count(*) FROM home').fetchone()[0]
+    except sqlite3.Error:
+        return False
+    finally:
+        db.close()
+    return (ledger.get('recovery') == 'unreconciled' and ledger.get('roster') == '[]' and ledger.get('rev') == '0'
+            and ledger.get('bootstrap') == '0' and homes == 0)
+
+
 def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     """Start the group's relay between region agents unless it already runs.
 
@@ -1600,7 +1626,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland']]
-    if not database.exists():
+    if not database.exists() or coordinator_never_established(database):
         # A new group, or one a group Fresh world just cleared. The coordinator
         # still quarantines if any agent reports an earlier epoch or train custody.
         argv.append('--bootstrap-new-group')
