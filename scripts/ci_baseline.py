@@ -100,7 +100,8 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm', 'code/game/objects/items/devices/flashlight.dm',
                   'code/game/objects/items/weapons/cigs_lighters.dm', 'code/modules/1713/telephone.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'config/crafting/',
-                         'code/modules/research_tree/research_node.dm')},
+                         'code/modules/research_tree/research_node.dm',
+            'code/modules/research_tree/book_pages.dm')},
     'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
         'paths': ('tests/cave_dismantling/', 'code/game/objects/structures/animalspawner/animal_spawner.dm',
                   'code/game/objects/structures/animalspawner/bearcave.dm',
@@ -818,7 +819,8 @@ SUITES = {
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
             'code/game/objects/items/weapons/material/kitchen.dm',
             'config/crafting/material_recipes_global.txt',
-            'code/modules/research_tree/research_node.dm')},
+            'code/modules/research_tree/research_node.dm',
+            'code/modules/research_tree/book_pages.dm')},
 
     # Stdlib-only startup loader projection with inert file/log boundaries.
     # Existing startup/source-adapter coverage is retained additively.
@@ -1192,7 +1194,8 @@ SUITES = {
             'code/game/objects/items/stacks/sheets/leather.dm',
             'code/modules/materials/material_sheets.dm', 'code/modules/materials/materials.dm',
             'code/game/objects/structures/converters.dm',
-            'code/modules/research_tree/research_node.dm')},
+            'code/modules/research_tree/research_node.dm',
+            'code/modules/research_tree/book_pages.dm')},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},

@@ -32,16 +32,16 @@ class LocalWslTests(unittest.TestCase):
                 return real_run(['git', '-C', str(source), *arguments], env=env,
                                 check=True, capture_output=True, text=True).stdout.strip()
 
-            for name in ('scripts/build-crafting-atlas.py', 'scripts/atlas/catalog_metadata.py',
-                         'scripts/atlas/tanning.py', 'scripts/atlas/variants.py',
-                         'scripts/atlas/rope_making.py', 'scripts/atlas/woodworking.py',
-                         'scripts/atlas/families.py', 'scripts/atlas/research_coverage.py',
-                         'scripts/atlas/titles.py', 'scripts/atlas/facts.py',
-                         'scripts/atlas/woodworking-contract.json',
+            # Stage the whole atlas package so new atlas modules do not break
+            # this fixture; the listed game inputs are the catalog's sources.
+            atlas = sorted(str(path.relative_to(root)) for path in (root / 'scripts/atlas').rglob('*')
+                           if path.is_file() and '__pycache__' not in path.parts)
+            for name in (*atlas, 'scripts/build-crafting-atlas.py',
                          'config/crafting/furniture_joinery.json',
                          'code/modules/1713/rope_making.dm',
                          'code/modules/1713/primitive_woodworking.dm',
                          'code/modules/research_tree/research_node.dm',
+                         'code/modules/research_tree/book_pages.dm',
                          'scripts/atlas/tanning-contracts.json',
                          'code/modules/1713/production.dm',
                          'code/game/objects/items/stacks/sheets/leather.dm',
