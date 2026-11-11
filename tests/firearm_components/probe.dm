@@ -133,9 +133,33 @@
 	parts_check(G.firearm_install(worn, H) && G.firearm_part_condition["barrel"] == 0, "reinstalling a worn barrel does not repair it")
 	G.firearm_part_condition["barrel"] = 0.5
 
-	// Save/load: converted rifle, untouched legacy-shaped rifle, loose parts.
+	// Factory route: every part and the bare receiver are fabricator outputs,
+	// and a receiver built from them fires.
+	factory_load_recipes()
+	parts_check(!factory_recipe_errors.len, "factory recipes load cleanly ([jointext(factory_recipe_errors, "; ")])")
+	var/list/made = list()
+	for(var/recipe_name in factory_recipes)
+		var/datum/factory_recipe/R = factory_recipes[recipe_name]
+		if(ispath(R.output_type, /obj/item/weapon/gun_component) || ispath(R.output_type, /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver))
+			parts_check(R.node == "automatic_weapons", "[recipe_name] is gated by Automatic Weapons")
+			made += R.output_type
+	for(var/path in typesof(/obj/item/weapon/gun_component) - /obj/item/weapon/gun_component)
+		parts_check(path in made, "a fabricator makes [path]")
+	parts_check(/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver in made, "a fabricator makes the AK receiver")
+	var/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver/R = new(locate(2,2,1))
 	H.drop_from_inventory(G)
 	G.forceMove(locate(1,1,1))
+	H.put_in_inactive_hand(R)
+	parts_check(!R.ammo_magazine && R.firearm_fire_block() == "it has no action" && R.name == "AK receiver", "a bare receiver cannot fire ([R.firearm_fire_block()])")
+	for(var/part_type in list(/obj/item/weapon/gun_component/ak_action, /obj/item/weapon/gun_component/ak_barrel_762, /obj/item/weapon/gun_component/ak_feed_762, /obj/item/weapon/gun_component/ak_furniture_fixed))
+		var/obj/item/weapon/gun_component/part = new part_type(locate(2,2,1))
+		parts_hold(H, part)
+		parts_check(R.firearm_install(part, H), "receiver takes [part_type]")
+	parts_check(!R.firearm_fire_block() && R.caliber == "a762x39" && R.name == "AK rifle (7.62x39mm)", "a receiver built from factory parts fires as a 7.62 rifle ([R.name])")
+	H.drop_from_inventory(R)
+	qdel(R)
+
+	// Save/load: converted rifle, untouched legacy-shaped rifle, loose parts.
 	H.drop_from_inventory(H.get_active_hand())
 	qdel(H)
 	qdel(bench)

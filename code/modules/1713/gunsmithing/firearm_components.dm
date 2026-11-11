@@ -65,6 +65,8 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"akms" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/762x39", FIREARM_SLOT_FEED = "ak/feed/762x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
 		"ak74" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/545x39", FIREARM_SLOT_FEED = "ak/feed/545x39", FIREARM_SLOT_FURNITURE = "ak/furniture/fixed"),
 		"aks74" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/545x39", FIREARM_SLOT_FEED = "ak/feed/545x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
+		// A factory-made receiver starts empty and is built up from parts.
+		"ak_receiver" = list(),
 	)
 
 /proc/firearm_component_def(id)
@@ -82,9 +84,18 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	firearm_preset = "aks74"
 
+// Factory output: the bare core. It names itself from its barrel once fitted.
+/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver
+	name = "AK receiver"
+	desc = "A bare AK-pattern receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	magazine_type = null
+	firearm_preset = "ak_receiver"
+	firearm_named_by_parts = TRUE
+
 /obj/item/weapon/gun
 	var/firearm_family = null
 	var/firearm_preset = null
+	var/firearm_named_by_parts = FALSE
 	// Saved state, null until first used: slot -> component id and slot -> condition (0..1).
 	var/list/firearm_part_ids = null
 	var/list/firearm_part_condition = null
@@ -141,6 +152,8 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		G.good_mags = feed.good_mags.Copy()
 	else if (feed)
 		G.good_mags = feed.good_mags.Copy()
+	if (firearm_named_by_parts)
+		name = barrel ? "AK rifle ([barrel.caliber == "a762x39" ? "7.62x39mm" : "5.45x39mm"])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
 	// compiled value, so reapplying (or loading a save) never compounds.
 	var/handling = furniture ? furniture.ergonomics : 0.75

@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 409,
-  "modern": 308,
+  "types": 410,
+  "modern": 309,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -21,10 +21,10 @@
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
-   "submachine_gun": 89
+   "submachine_gun": 90
   },
   "modern_calibers": 62,
-  "migrated": 11
+  "migrated": 12
  },
  "modern_calibers": [
   "12gauge",
@@ -4481,6 +4481,19 @@
    "load_method": 4,
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak74",
+   "ammo_type": null,
+   "family": "ak",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver",
+   "name": "AK receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a545x39",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
    "ammo_type": null,
    "family": "ak",
    "migration": "modular"

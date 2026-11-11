@@ -73,7 +73,27 @@ manifest):
   reapplying or loading never compounds.
 - Unknown saved ids stay recorded and block firing rather than being deleted.
 
-Not yet: factory recipes for parts (phase 3), destructive salvage, other families.
+### Factory route (phase 3)
+
+`config/crafting/factory_recipes.txt` makes every AK part and a bare **AK
+receiver** (`/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver`, empty
+preset) in fabricators, all gated by **Automatic Weapons**:
+
+| Recipe | Inputs | Time | Tier |
+| --- | --- | --- | --- |
+| AK receiver | 6 steel | 150 | 2 |
+| AK bolt carrier group | 3 steel | 120 | 2 |
+| AK barrel 7.62x39mm / 5.45x39mm | 3 steel | 100 | 2 |
+| AK magazine well 7.62x39mm / 5.45x39mm | 2 steel | 60 | 1 |
+| AK fixed stock | 2 wood | 40 | 1 |
+| AK folding stock | 2 steel | 60 | 1 |
+
+A full rifle costs 14 steel (plus 2 wood or 2 more steel) and a firearm bench to
+fit the internals. The receiver names itself "AK rifle (caliber)" once a barrel
+is fitted. Fabricators keep their existing input buffering, power pauses and
+exactly-once consumption (`tests/factory_automation/fabricators_probe.dm`).
+
+Not yet: destructive salvage, other families.
 
 ## Ammunition and armor
 

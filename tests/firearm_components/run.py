@@ -89,7 +89,7 @@ def main():
             raise RuntimeError('Pinned production-source compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
-        for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():
+        for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines() + ['config/crafting/factory_recipes.txt']:
             destination = output / rel
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(root / rel, destination)
