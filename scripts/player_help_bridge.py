@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'db3a0fc93a58d2615df32c653bab0f579876c77c'
+WIKI_REVIEWED_REVISION = '9d0471c1a60ace59e7ba9d03fc1c87c24e3415b6'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -118,7 +118,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('5c93997d1bde5fb28568256756cafdd09c9b1ad1fe643a44d2f7d65bb9979c74', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('44487b8b513dcbc7bbadcf63cf073839add860faa19b1e411f2bd84b71eddb4a', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
