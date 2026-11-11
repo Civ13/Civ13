@@ -39,6 +39,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_emote" = list(/mob/living/human),
 	"next_look_at" = list(/mob/living/human),
 	"barracks_course_start" = list(/mob/living/human),
+	"revival_clock" = list(/mob/living/human),
 	"last_revive_notification" = list(/mob/observer/ghost),
 	"last_use" = list(/obj/structure/barracks/kit_locker),
 	"last_build" = list(/obj/structure/barracks/vehicle_bay),

@@ -49,6 +49,7 @@
 	water_overlay = FALSE
 	update_fire(1)
 	if (stat == DEAD) return
+	note_revival_window() // before the dead forget what they knew
 	forget_recipe_knowledge()
 	recruitment_life_id = null // a death ends every recruitment application of this life
 	region_home_death(src)

@@ -260,22 +260,9 @@
 	return null
 
 /obj/item/weapon/shockpaddles/proc/can_revive(mob/living/human/H) //This is checked right before attempting to revive
-	var/obj/item/organ/brain/brain = H.internal_organs_by_name["brain"]
-	if(H.species.has_organ["brain"] && (!brain || brain.damage >= 60 || brain.defib_timer <= 0 ))
-		return "buzzes, \"Resuscitation failed - Excessive neural degeneration. Further attempts futile.\""
-
-	H.updatehealth()
-
-	if(H.health + H.getOxyLoss() <= config.health_threshold_dead || !H.can_defib)
-		return "buzzes, \"Resuscitation failed - Severe tissue damage makes recovery of patient impossible via defibrillator. Further attempts futile.\""
-
-	var/bad_vital_organ = check_vital_organs(H)
-	if(bad_vital_organ)
-		return bad_vital_organ
-
-	//this needs to be last since if any of the 'other conditions are met their messages take precedence
-	/*if(!H.client &!H.teleop)
-		return "buzzes, \"Resuscitation failed - Mental interface error. Further attempts may be successful.\""*/
+	var/reason = H.resuscitation_blocker()
+	if(reason)
+		return "buzzes, \"Resuscitation failed. [reason]\""
 	return null
 /obj/item/weapon/shockpaddles/proc/check_contact(mob/living/human/H)
 	if(!combat)
@@ -283,19 +270,6 @@
 			if((cloth.body_parts_covered & UPPER_TORSO) && (cloth.item_flags & THICKMATERIAL))
 				return FALSE
 	return TRUE
-
-/obj/item/weapon/shockpaddles/proc/check_vital_organs(mob/living/human/H)
-	for(var/organ_tag in H.species.has_organ)
-		var/obj/item/organ/O = H.species.has_organ[organ_tag]
-		var/name = initial(O.name)
-		var/vital = initial(O.vital) //check for vital organs
-		if(vital)
-			O = H.internal_organs_by_name[organ_tag]
-			if(!O)
-				return "buzzes, \"Resuscitation failed - Patient is missing vital organ ([name]). Further attempts futile.\""
-			if(O.damage > O.max_damage)
-				return "buzzes, \"Resuscitation failed - Excessive damage to vital organ ([name]). Further attempts futile.\""
-	return null
 
 /obj/item/weapon/shockpaddles/proc/check_blood_level(mob/living/human/H)
 	if(!H.species.has_organ["heart"])
@@ -404,8 +378,7 @@
 
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
-	H.resuscitate()
-	make_alive(H)
+	make_alive(H, user)
 
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
 
@@ -448,42 +421,8 @@
 
 	admin_attack_log(user, H, "Electrocuted using \a [src]", "Was electrocuted with \a [src]", "used \a [src] to electrocute")
 
-/obj/item/weapon/shockpaddles/proc/make_alive(mob/living/human/M) //This revives the mob
-	M.switch_from_dead_to_living_mob_list()
-	M.timeofdeath = 0
-	M.stat = UNCONSCIOUS //Life() can bring them back to consciousness if it needs to.
-	M.regenerate_appearance()
-
-	M.emote("gasp")
-	M.Weaken(rand(10,25))
-	M.never_set_faction_huds = TRUE
-	M.updatehealth()
-	apply_brain_damage(M)
-
-/obj/item/weapon/shockpaddles/proc/apply_brain_damage(mob/living/human/H)
-	if(!H.species.has_organ["brain"])
-		return //no brain
-
-	var/obj/item/organ/brain/brain = H.internal_organs_by_name["brain"]
-	if(!brain)
-		return //no brain
-
-	// If the brain'd `defib_timer` var gets below this number, brain damage will happen at a linear rate.
-	// This is measures in `Life()` ticks. E.g. 10 minute defib timer = 6000 world.time units = 3000 `Life()` ticks.
-	var/brain_damage_timer = ((config.defib_timer MINUTES) / 2) - ((config.defib_braindamage_timer MINUTES) / 2)
-
-	if(brain.defib_timer > brain_damage_timer)
-		return // They got revived before brain damage got a chance to set in.
-
-	// As the brain decays, this will be between 0 and 1, with 1 being the most fresh.
-	var/brain_death_scale = brain.defib_timer / brain_damage_timer
-
-	// This is backwards from what you might expect, since 1 = fresh and 0 = rip.
-	var/damage_calc = LERP(brain.max_damage, H.getBrainLoss(), brain_death_scale)
-
-	// A bit of sanity.
-	var/brain_damage = between(H.getBrainLoss(), damage_calc, brain.max_damage)
-	H.setBrainLoss(brain_damage)
+/obj/item/weapon/shockpaddles/proc/make_alive(mob/living/human/M, mob/user) //This revives the mob
+	return M.restart_from_death(user)
 
 /obj/item/weapon/shockpaddles/proc/make_announcement(var/message, var/msg_class)
 	audible_message("<b>\The [src]</b> [message]", "\The [src] vibrates slightly.")

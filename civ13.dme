@@ -270,6 +270,7 @@
 #include "code\game\mob\living\carbon\human\MedicalSideEffects.dm"
 #include "code\game\mob\living\carbon\human\nomads_adoption.dm"
 #include "code\game\mob\living\carbon\human\nomads_spawn.dm"
+#include "code\game\mob\living\carbon\human\resuscitation.dm"
 #include "code\game\mob\living\carbon\human\say.dm"
 #include "code\game\mob\living\carbon\human\screaming.dm"
 #include "code\game\mob\living\carbon\human\shit_piss.dm"
