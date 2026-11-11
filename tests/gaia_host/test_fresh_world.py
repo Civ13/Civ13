@@ -233,6 +233,33 @@ class GroupFreshWorldTests(unittest.TestCase):
         self.assertFalse(group_fresh.paused(self.loaded))
         self.assertEqual(json.loads((archive / 'manifest.json').read_text())['phase'], 'archived')
 
+    def test_group_reset_archives_separate_extraction_and_vehicle_key_stores(self):
+        """Val's 2026-11-11 Persistence wipe was refused by Gaia's data/vehicle_key_service."""
+        host = self.pairs[0][1]
+        keys = host.repo / 'data/vehicle_key_service/ac52'
+        keys.mkdir(parents=True); (keys / '0.commit').write_text('key')
+        (host.repo / 'data/extraction_accounts').mkdir()
+        (host.repo / 'data/player_saves').mkdir()
+        result, _start = self.run_reset()
+        archive = Path(result['archive']) / self.pairs[0][0]['id'] / 'data'
+        self.assertEqual((archive / 'vehicle_key_service/ac52/0.commit').read_text(), 'key')
+        self.assertTrue((archive / 'extraction_accounts').is_dir())
+        self.assertFalse((host.repo / 'data/vehicle_key_service').exists())
+        self.assertFalse((host.repo / 'data/extraction_accounts').exists())
+        self.assertTrue((host.repo / 'data/player_saves').is_dir())  # accounts stay
+        moved = json.loads((Path(result['archive']) / 'manifest.json').read_text())['moved']
+        self.assertIn('gaia/data/vehicle_key_service', moved)
+
+    def test_group_reset_refuses_a_linked_separate_store_and_changes_nothing(self):
+        host = self.pairs[0][1]
+        (host.repo / 'data').mkdir(exist_ok=True)
+        elsewhere = Path(self.loaded['root']) / 'elsewhere'; elsewhere.mkdir()
+        (host.repo / 'data/vehicle_key_service').symlink_to(elsewhere, target_is_directory=True)
+        with self.assertRaisesRegex(shard_group.Refused, 'linked'):
+            self.run_reset()
+        self.assertTrue((host.repo / 'map_saves/fixture').exists())
+        self.assertFalse(group_fresh.paused(self.loaded))
+
     def test_group_reset_needs_exact_group_confirmation(self):
         with self.assertRaisesRegex(shard_group.Refused, 'confirm-group'):
             self.run_reset('gaia')
