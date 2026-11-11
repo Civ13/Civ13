@@ -24,6 +24,7 @@
 			"path" = "[path]",
 			"name" = initial(G.name),
 			"gun_type" = initial(G.gun_type),
+			"firearm_family" = initial(G.firearm_family),
 		)
 		if(ispath(path, /obj/item/weapon/gun/projectile))
 			var/obj/item/weapon/gun/projectile/P = path

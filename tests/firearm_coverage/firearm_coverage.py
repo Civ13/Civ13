@@ -72,8 +72,10 @@ def build(rows):
             'max_shells': row.get('max_shells'),
             'magazine_type': row.get('magazine_type'),
             'ammo_type': row.get('ammo_type'),
-            # Phase 5 fills these per family; phase 0 only names the gap.
-            'migration': 'pending',
+            # "modular" once the type's family has component definitions
+            # (code/modules/1713/gunsmithing/firearm_components.dm).
+            'family': row.get('firearm_family'),
+            'migration': 'modular' if row.get('firearm_family') else 'pending',
         }
         if (row.get('name') or '').lower() in ABSTRACT_NAMES:
             entry['review'] = 'abstract-looking name; confirm whether players can obtain it'

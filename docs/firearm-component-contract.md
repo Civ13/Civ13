@@ -50,6 +50,31 @@ family and the component IDs it is built from, and the gun keeps its typepath.
 - No sequence of assemble/disassemble/salvage/repair creates material, resets
   wear or yields more than its inputs.
 
+## Pilot: AK family (phase 2)
+
+`code/modules/1713/gunsmithing/firearm_components.dm` implements the contract
+for the AKM and AK-74 lines (11 types, `migration: modular` in the coverage
+manifest):
+
+| Slot | Parts | Work |
+| --- | --- | --- |
+| action | `ak/action` | firearm bench |
+| barrel | `ak/barrel/762x39`, `ak/barrel/545x39` | firearm bench |
+| feed | `ak/feed/762x39`, `ak/feed/545x39` (magazine lists) | by hand |
+| furniture | `ak/furniture/fixed` (handling x1), `ak/furniture/folding` (x0.95) | by hand |
+
+- Installed parts are data on the gun (`firearm_part_ids`, `firearm_part_condition`),
+  built lazily from the type's preset. A removed part is a `/obj/item/weapon/gun_component`.
+- Action, barrel and feed are required. A barrel and feed of different calibers
+  block firing; a matching pair sets the gun's caliber and magazines (the
+  7.62/5.45 conversion set). No stock handles at x0.75 but still fires.
+- The barrel loses 1/1000 per shot and blocks firing at 0; condition travels
+  with the part. Handling derives from the type's compiled ergonomics, so
+  reapplying or loading never compounds.
+- Unknown saved ids stay recorded and block firing rather than being deleted.
+
+Not yet: factory recipes for parts (phase 3), destructive salvage, other families.
+
 ## Ammunition and armor
 
 Phase 1 (#4565) made armor monotonic and nonnegative and AP/HP idempotent
