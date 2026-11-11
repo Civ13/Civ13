@@ -208,6 +208,62 @@ class RepeatClickPayment(unittest.TestCase):
                           'var/studied = do_after(', 'studying = FALSE', 'if (studied)')
         self.assertIn('var/tmp/studying = FALSE', shelf)
 
+    def test_bookcase_research_credits_and_rejections(self):
+        source = read('code/game/objects/structures/bookcase.dm')
+        attack = adapter.extract(source, '/obj/structure/bookcase/attackby')
+        start = attack.index('\t\t\tif (user.civilization != null')
+        end = attack.index('\n\t\t\tuser.adaptStat', start)
+        body = '\n'.join(line[2:] if line.startswith('\t\t') else line
+                         for line in attack[start:end].splitlines())
+        fixture = '/fixture/credit()\n' + body + '\n\treturn TRUE\n'
+
+        class DMList:
+            def __init__(self, values):
+                self.values = list(values)
+
+            def __getitem__(self, index):
+                return self.values[index - 1]
+
+            def __setitem__(self, index, value):
+                self.values[index - 1] = value
+
+        old_fields = adapter.FIELDS
+        try:
+            adapter.FIELDS += ('sum_i', 'sum_m', 'sum_h', 'anti_abuse', 'credit_named_faction_research')
+            for faction in 'abcdef':
+                for reject in (None, 1, 2):
+                    with self.subTest(faction=faction, rejected_call=reject):
+                        custom = DMList([10, 20, 30])
+                        named = {letter: DMList([100, 200, 300]) for letter in 'abcdef'}
+                        world_map = SimpleNamespace(custom_civs={faction: custom},
+                                                    **{f'civ{key}_research': value for key, value in named.items()})
+                        calls = []
+                        messages = []
+                        shelf = SimpleNamespace(sum_i=1, sum_m=2, sum_h=3)
+                        def anti_abuse(*args):
+                            calls.append(args[1:])
+                            return len(calls) == reject
+                        shelf.anti_abuse = anti_abuse
+                        env = {'map': world_map, 'to_chat': lambda *args: messages.append(args),
+                               **{f'civname_{letter}': letter for letter in 'abcdef'}}
+                        helper = adapter.project(source, '/obj/structure/bookcase/proc/credit_named_faction_research',
+                                                 'src, user, research', env.copy(), method=True)
+                        shelf.credit_named_faction_research = lambda user, research: helper(shelf, user, research)
+                        credit = adapter.project(fixture, '/fixture/credit', 'src, user', env.copy(), method=True)
+                        result = credit(shelf, SimpleNamespace(civilization=faction))
+                        self.assertEqual(result, None if reject else True)
+                        self.assertEqual(custom.values, [10, 20, 30] if reject == 1 else [11, 22, 33])
+                        self.assertEqual(named[faction].values, [101, 202, 303] if reject is None else [100, 200, 300])
+                        self.assertTrue(all(named[key].values == [100, 200, 300] for key in named if key != faction))
+                        self.assertEqual(calls[0], (10, 20, 30, 1, 2, 3))
+                        if reject != 1:
+                            self.assertEqual(calls[1], (100, 200, 300, 1, 2, 3))
+                        self.assertEqual((shelf.sum_i, shelf.sum_m, shelf.sum_h),
+                                         (None, None, None) if reject else (1, 2, 3))
+                        self.assertFalse(messages)
+        finally:
+            adapter.FIELDS = old_fields
+
     def test_roulette_brick_wall_and_trench(self):
         roulette = proc('code/game/objects/structures/roulette_table.dm', '/obj/structure/roulette/attackby')
         self.assert_order(roulette, 'Where do you want to place your bet?', 'if (betchoice && !spinning && can_bet)',
