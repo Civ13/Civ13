@@ -121,23 +121,16 @@
 
 /obj/item/weapon/storage/envelope/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	..()
-	if(knifed)
-		icon_state = "envelope_knifed"
-	else
-		if(locate(/obj/item/weapon/paper) in contents)
-			if(!locate(/obj/item/weapon/photo) in contents)
-				icon_state = "envelope_letter"
-			if(locate(/obj/item/weapon/photo) in contents)
-				icon_state = "envelope_letter_photo"
-		if(locate(/obj/item/weapon/photo) in contents)
-			if(!locate(/obj/item/weapon/paper) in contents)
-				icon_state = "envelope_photo"
-			if(locate(/obj/item/weapon/paper) in contents)
-				icon_state = "envelope_letter_photo"
+	refresh_envelope_contents_icon()
 	return TRUE
 
 /obj/item/weapon/storage/envelope/remove_from_storage(obj/item/W as obj, prevent_warning = FALSE)
 	..()
+	// Unlike insertion, removing the last document resets the empty icon.
+	refresh_envelope_contents_icon(TRUE)
+	return TRUE
+
+/obj/item/weapon/storage/envelope/proc/refresh_envelope_contents_icon(clear_when_empty = FALSE)
 	if(knifed)
 		icon_state = "envelope_knifed"
 	else
@@ -151,13 +144,13 @@
 				icon_state = "envelope_photo"
 			if(locate(/obj/item/weapon/paper) in contents)
 				icon_state = "envelope_letter_photo"
-		if(!locate(/obj/item/weapon/paper) in contents)
-			if(!locate(/obj/item/weapon/photo) in contents)
-				icon_state = "envelope_empty"
-		if(!locate(/obj/item/weapon/photo) in contents)
+		if(clear_when_empty)
 			if(!locate(/obj/item/weapon/paper) in contents)
-				icon_state = "envelope_empty"
-	return TRUE
+				if(!locate(/obj/item/weapon/photo) in contents)
+					icon_state = "envelope_empty"
+			if(!locate(/obj/item/weapon/photo) in contents)
+				if(!locate(/obj/item/weapon/paper) in contents)
+					icon_state = "envelope_empty"
 
 /obj/item/weapon/storage/envelope/attack_self(mob/user as mob)
 	if(opened && !knifed)
@@ -252,4 +245,3 @@
 		to_chat(usr, "<span class='warning'>The envelope is closed! Use a knife to open it.</span>")
 		return TRUE
 	return..()
- 
