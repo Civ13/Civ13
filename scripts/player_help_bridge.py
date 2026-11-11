@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '344385269d80f027bf4ddd505ea8b2062841f3b8'
+WIKI_REVIEWED_REVISION = 'e6aa801daf85324b5808b5b7dc7407fd871a4c03'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -85,7 +85,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('94381af116a366af7e1622576a0339994f593975822d81f4e22e81b41f30f523', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('9a1486d01dec31bda68611d413989ae9b8469aa87a33876c5933724c853ab5f5', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('4a28f61e9133aec8e6a92849139ade14bd676fd39c9b00cf3fbee09efde0313e', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -118,7 +118,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('ccb14cf392363366d02e68e40c9c494e0a9d04d6d755fe6c37459b8d9f749fb2', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('4db02bf54bd222b61630f354e10799baaab3aaa6e2543bd47186f46c3f26e7e2', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('9f99062c2efc41ff0005bea9d59eadaa470fd928b21370bbdb21dd970ca57fd6', 'first day new character start starting survive survival research book study chapter food water shelter'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
