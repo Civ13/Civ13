@@ -21,13 +21,30 @@
 #define DIET_DISH_BONUS 0.25
 #define DIET_DISH_POINTS 30 // nutrition per unit of nutriment
 
-// Penalties stay off until availability across supported maps and seasons is shown.
-var/global/diet_penalties_enabled = FALSE
+// Global switch for the mild fatigue penalty. It applies only on maps that set
+// diet_penalties (the Nomads maps, where every nutrient group has a renewable
+// route in every season, including cave wheat underground; docs/balanced-diet.md).
+var/global/diet_penalties_enabled = TRUE
+
+/obj/map_metadata
+	var/diet_penalties = FALSE
+
+/obj/map_metadata/nomads
+	diet_penalties = TRUE
+
+// Author policy: the map gate comes from code on load, not from a saved copy.
+/obj/map_metadata/persistence_runtime_var(var/key)
+	if (key == "diet_penalties")
+		return TRUE
+	return ..(key)
+
+/proc/diet_penalties_active()
+	return diet_penalties_enabled && map && map.diet_penalties
 
 var/global/list/diet_groups = list("carbohydrate", "protein", "fat", "vitamins")
 
 var/global/list/diet_group_sources = list(
-	"carbohydrate" = "bread, grain, potatoes, corn or honey",
+	"carbohydrate" = "bread, grain (cave wheat grows underground), potatoes, corn or honey",
 	"protein" = "meat, eggs, beans or mushrooms",
 	"fat" = "meat, eggs, cheese, coconut or cooking oil",
 	"vitamins" = "vegetables, fruit, berries, turnips or mushrooms")
@@ -287,7 +304,7 @@ var/global/list/diet_validated_category_cache
 
 // Mild fatigue only after prolonged imbalance, only when enabled, never on top of starvation.
 /mob/living/human/proc/diet_recovery_factor()
-	if (diet_penalties_enabled && diet_imbalance_ticks >= DIET_FATIGUE_TICKS && nutrition > 0)
+	if (diet_penalties_active() && diet_imbalance_ticks >= DIET_FATIGUE_TICKS && nutrition > 0)
 		return DIET_FATIGUE_FACTOR
 	return 1
 
@@ -366,7 +383,7 @@ var/global/list/diet_validated_category_cache
 		diet_imbalance_ticks = min(DIET_FATIGUE_TICKS * 2, diet_imbalance_ticks + 1)
 		if (diet_imbalance_ticks == DIET_WARN_TICKS)
 			diet_notify("<span class='warning'>Your meals have been narrow lately. A more varied diet would restore your energy; use Check Diet in the IC tab.</span>")
-		else if (diet_imbalance_ticks == DIET_FATIGUE_TICKS && diet_penalties_enabled)
+		else if (diet_imbalance_ticks == DIET_FATIGUE_TICKS && diet_penalties_active())
 			diet_notify("<span class='warning'>Your narrow diet leaves you tired; your stamina recovers more slowly until you eat more varied food.</span>")
 	else if (diet_imbalance_ticks)
 		// Announce recovery only when the narrow-diet warning was actually in effect,
@@ -404,10 +421,10 @@ var/global/list/diet_validated_category_cache
 	lines += "Energy capacity: [diet_stamina_cap()] (base [base], diet +[round(bonus * 100)]%). Available: [round(stats["stamina"][1])]."
 	if (diet_enjoyment >= DIET_ENJOY_CAP / 3)
 		lines += "You have been enjoying your food, which adds to your energy."
-	if (diet_imbalance_ticks >= DIET_FATIGUE_TICKS && diet_penalties_enabled && nutrition > 0)
+	if (diet_imbalance_ticks >= DIET_FATIGUE_TICKS && diet_penalties_active() && nutrition > 0)
 		lines += "<span class='warning'>Your narrow diet is slowing your stamina recovery.</span>"
 	else if (diet_imbalance_ticks >= DIET_WARN_TICKS)
-		lines += "<span class='warning'>Your diet has been narrow for a while[diet_penalties_enabled ? "; if it continues your stamina will recover more slowly" : ""].</span>"
+		lines += "<span class='warning'>Your diet has been narrow for a while[diet_penalties_active() ? "; if it continues your stamina will recover more slowly" : ""].</span>"
 	for (var/group in low)
 		lines += "For more [group], eat [diet_group_sources[group]]."
 	if (!low.len)

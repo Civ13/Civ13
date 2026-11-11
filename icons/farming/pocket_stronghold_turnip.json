@@ -18,7 +18,7 @@
       "git_blob": "75637b3f98cf4d8e12d37fa1b3ec6054b0b69a2a"
     }
   },
-  "changes": "Extracted turnip and plump_helmet states, repacked and renamed. Growth stages 2 and 4 reused to fit six Civ13 preharvest stages. No pixel editing.",
+  "changes": "Extracted turnip, plump_helmet and cave_wheat states, repacked and renamed. Growth stages 2 and 4 reused to fit six Civ13 preharvest stages. No pixel editing.",
   "derived_assets": {
     "pocket_stronghold_turnip.dmi": {
       "sha256": "9fc2e83a693a5451036aad1722a8255dae961d89032fff31863bff7d1eefaea2",
@@ -48,6 +48,21 @@
         "plump_helmet-grow4": "fecb5118267fae7e82af61cfe5a9fdbf99a415661d1fe77cc0f6ed20c6d0855e",
         "plump_helmet-grow5": "0a0ef885b856a1e14487dd1929c12b98aeccd6d66d8211ca3013cfbe9a7a397f",
         "plump_helmet-grow6": "0a0ef885b856a1e14487dd1929c12b98aeccd6d66d8211ca3013cfbe9a7a397f"
+      }
+    },
+    "pocket_stronghold_cave_wheat.dmi": {
+      "sha256": "81e171e19badb33c2097d7a2f7c292d73dcb637bdb9e0c43ec8c821f6135ac6b",
+      "rgba_states": {
+        "cave_wheat-seeds": "c7c0eae2fd0deb4fbe4cc8e2cfeb5d8a290c515d1ac10ad162d34e241b99eaae",
+        "cave_wheat-grow1": "daa9583470e5ed8503c9d39ecbe438048a79643d47fc81a50f7578ac8cfb4c26",
+        "cave_wheat-grow2": "ed633045588b5cc32461e19612f8380261e763c82e88f5ecb600c103e3db2613",
+        "cave_wheat-grow3": "ed633045588b5cc32461e19612f8380261e763c82e88f5ecb600c103e3db2613",
+        "cave_wheat-grow4": "ebe1cde5b846d96b2510cabd4ff9de7d2e38f14f5026b1bd49255c83d74c1f89",
+        "cave_wheat-grow5": "debc4972bc52833c07db43948bc369f11c4c8cc356b5147f8ee34ccb5ca16264",
+        "cave_wheat-grow6": "debc4972bc52833c07db43948bc369f11c4c8cc356b5147f8ee34ccb5ca16264",
+        "cave_wheat-harvest": "3beeacf46549e3e1bd2ac15477fbcaddbcb7475abf3b973c988daaca7bf166d7",
+        "cave_wheat-dead": "81ee347b9b6a842e39cbd576ae98577141244c19a180af80e1dc5b0d26f0b29a",
+        "cave_wheat": "1f34daebdbc2134d1aaee375a6e658e526fc5cf13091d014221a38a51d3a230f"
       }
     }
   }
