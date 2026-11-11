@@ -431,6 +431,10 @@ SUITES = {
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    'human_thermal_clothing': {'files': ('tests/human_thermal_clothing/test_thermal_clothing.py',),
+        'paths': ('tests/human_thermal_clothing/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'tests/save_movement/source_adapter.py')},
     # Narrow-cone direction equivalence against fake engine geometry.
     'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
         'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
