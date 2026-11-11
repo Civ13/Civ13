@@ -39,6 +39,8 @@
 	. += "<big><b>Preferences</b></big><br><br>"
 	. += "<table>"
 	. += "<tr><td>Client FPS target: </td><td><b>[pref.client_fps]</b></td><td><a href='?src=\ref[src];client_fps=1'>Change</a></td></tr>"
+	if (pref.client)
+		. += "<tr><td>New-player tutorial: </td><td><b>[pref.client.tutorial_status_text()]</b></td><td><a href='?src=\ref[src];reset_tutorial=1'>Reset progress</a></td></tr>"
 	var/mob/pref_mob = preference_mob()
 	for (var/cp in get_client_preferences())
 		var/datum/client_preference/client_pref = cp
@@ -68,6 +70,11 @@
 		pref.client_fps = target
 		user.client.apply_client_fps_preference()
 		pref.save_preferences()
+		return TOPIC_REFRESH
+	if (href_list["reset_tutorial"])
+		if (!user || !user.client || user != pref_mob || user.client.prefs != pref || !CanUseTopic(user))
+			return TOPIC_NOACTION
+		user.client.reset_tutorial()
 		return TOPIC_REFRESH
 	if (href_list["toggle_on"])
 		. = pref_mob.set_preference(href_list["toggle_on"], TRUE)

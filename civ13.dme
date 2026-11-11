@@ -1191,6 +1191,7 @@
 #include "code\modules\client\interface.dm"
 #include "code\modules\client\movement.dm"
 #include "code\modules\client\ping.dm"
+#include "code\modules\client\player_tutorial.dm"
 #include "code\modules\client\sound.dm"
 #include "code\modules\client\ui_style.dm"
 #include "code\modules\client\preferencesSQLite\preferences.dm"
