@@ -779,6 +779,12 @@ default behaviour is:
 		resist_grab()
 		if (!weakened)
 			process_resist()
+		else
+			resist_knockdown()
+
+// Resist while knocked down; humans push themselves back up (self_help.dm).
+/mob/living/proc/resist_knockdown()
+	return FALSE
 
 /mob/living/proc/process_resist()
 	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
