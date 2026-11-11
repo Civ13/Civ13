@@ -255,9 +255,9 @@
 		else if (istype(E, /datum/stack_recipe))
 			rows += list(list("recipe" = E, "sublist" = "", "index" = i, "category" = "General"))
 
-	var/t1 = "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>[common_browser_style]<title>Crafting</title><style>body{background:#392611;color:#eee;font:14px Arial;margin:12px}a{color:#f5d99b}.craft-toolbar{background:#2a2118;padding:10px;margin-bottom:8px}input{width:65%}input,select,button{font:inherit;margin:3px;padding:4px}.craft-row{padding:8px 4px;border-bottom:1px solid #725635}.craft-meta{font-size:12px;color:#ccc;margin-top:4px}.craft-status{color:#ddd}.craft-details{margin:6px 0;padding:6px;background:#2a2118}.craft-batch{display:inline-block}h2{margin:0 0 6px}#craft-empty{padding:12px}</style></head><body data-stack='\ref[src]'>"
+	var/t1 = "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>[common_browser_style]<title>Crafting</title><style>body{background:#392611;color:#eee;font:14px Arial;margin:12px}a{color:#f5d99b}.craft-toolbar{background:#2a2118;padding:10px;margin-bottom:8px}input{width:65%}input,select,button{font:inherit;margin:3px;padding:4px}.craft-row{padding:8px 4px;border-bottom:1px solid #725635}.craft-meta{font-size:12px;color:#ccc;margin-top:4px}.craft-status{color:#ddd}.craft-details{margin:6px 0;padding:6px;background:#2a2118}.craft-batch{display:inline-block}h2{margin:0 0 6px}#craft-empty{padding:12px}#craft-makeable{width:auto}</style></head><body data-stack='\ref[src]'>"
 	t1 += "<h2>[html_encode("[src]")]</h2><p>Amount Left: [amount]. <a href='?src=\ref[crafting_atlas_reference];atlas_open=1'>Crafting Atlas</a></p>"
-	t1 += "<div class='craft-toolbar'><label for='craft-search'>Find a recipe across categories</label><br><input id='craft-search' type='text' maxlength='64' placeholder='Search recipes...'><button id='craft-clear' type='button'>Clear</button><br><label for='craft-category'>Browse: </label><select id='craft-category'>[categories]</select><span id='craft-count'></span></div>"
+	t1 += "<div class='craft-toolbar'><label for='craft-search'>Find a recipe across categories</label><br><input id='craft-search' type='text' maxlength='64' placeholder='Search recipes...'><button id='craft-clear' type='button'>Clear</button><br><label for='craft-category'>Browse: </label><select id='craft-category'>[categories]</select><span id='craft-count'></span><br><label><input id='craft-makeable' type='checkbox' data-pref='byond://?src=\ref[held_crafting_filter];makeable_only='[user.craft_makeable_only() ? " checked" : ""]> Only what I can make</label></div>"
 	t1 += "<noscript>Search and batch controls require JavaScript. Single-item crafting links and recipe details are listed below.</noscript>"
 	var/row_number = 0
 	for (var/list/row in rows)
@@ -280,8 +280,9 @@
 			else
 				details += "Sharpened flint or a sharp knife harder than the plank equipped or at your feet. "
 		var/manual_hint = crafting_recipe_manual_hint(user, "[R.result_type]")
+		var/makeable = recipe_makeable_now(user, R)
 		var/search_text = html_encode("[R.title] [category]")
-		t1 += "<div class='craft-row' data-search='[search_text]' data-category='[sublist]'>"
+		t1 += "<div class='craft-row' data-search='[search_text]' data-category='[sublist]' data-makeable='[makeable ? 1 : 0]'>"
 		var/action = "byond://?src=\ref[src];sublist=[sublist];make=[index]"
 		if (manual_hint)
 			t1 += "<strong>[html_encode(title)]</strong><div class='craft-status'>[html_encode(manual_hint)]</div>"
@@ -299,12 +300,14 @@
 				if (max_multiplier>1 && !(max_multiplier in multipliers))
 					t1 += "<option value='[action];multiplier=[max_multiplier]'>[max_multiplier*R.res_amount] (max)</option>"
 				t1 += "</select><button type='button' data-craft-quantity='craft-quantity-[row_number]'>Craft</button></span>"
+			if (!makeable)
+				t1 += "<div class='craft-status'>Missing a tool, skill or second material</div>"
 		t1 += "<div class='craft-meta'>[html_encode(category)] | Cost: [html_encode(cost)]</div>"
 		if (details)
 			// Visible without scripts; the client collapses it only after binding.
 			t1 += "<button type='button' data-craft-details='craft-details-[row_number]' aria-expanded='true'>Tool details</button><div class='craft-details' id='craft-details-[row_number]'>[html_encode(details)]</div>"
 		t1 += "</div>"
-	t1 += "<p id='craft-empty' style='display:none'>No matching recipes. Try another name or clear the search.</p><script src='stack_crafting.js'></script></body></html>"
+	t1 += "<p id='craft-empty' style='display:none'>No matching recipes. Try another name, clear the search or untick Only what I can make.</p><script src='stack_crafting.js'></script></body></html>"
 	user << browse_rsc('code/js/stack_crafting.js', "stack_crafting.js")
 	user << browse(t1, "window=stack")
 	onclose(user, "stack")
