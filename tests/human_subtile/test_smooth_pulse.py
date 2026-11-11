@@ -81,7 +81,11 @@ def frame_steps(track, skip=20):
 
 class SmoothPulseContracts(unittest.TestCase):
     def test_called_for_every_accepted_pulse(self):
-        self.assertIn('actor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)', MODULE)
+        self.assertIn('if (HUMAN_SUBTILE_SMOOTH_DRAW)\n\t\t\t\tactor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)', MODULE)
+
+    def test_switched_off_until_checked_in_the_real_client(self):
+        # Live Gaia drew the body offset without the camera offset (2026-11-11).
+        self.assertIn('#define HUMAN_SUBTILE_SMOOTH_DRAW 0', DEFINES)
 
     def test_parallel_animation_body_and_own_camera(self):
         body = proc_body('human_subtile_smooth_pulse')
