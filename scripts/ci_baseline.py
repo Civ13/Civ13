@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'barricade_projectile': {'files': ('tests/barricade_projectile/test_canpass.py',),
+        'paths': ('tests/barricade_projectile/', 'code/game/objects/structures/barricades.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'wood_ash_collection': {'files': ('tests/wood_ash_collection/test_collection.py',),
         'paths': ('tests/wood_ash_collection/', 'code/game/objects/items/misc.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

@@ -162,7 +162,6 @@
 	if (istype(mover, /obj/item/projectile))
 		var/obj/item/projectile/P = mover
 		var/hitchance = protection_chance - (P.penetrating*4)
-		P.on_impact(loc)
 		if(get_turf(target) == loc)
 			return prob(100 - hitchance)
 		else

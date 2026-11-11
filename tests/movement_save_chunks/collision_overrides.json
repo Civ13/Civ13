@@ -158,7 +158,7 @@
         {
           "owner": "",
           "declaration": "/obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.",
-          "sha256_body": "f44e469ee8173e38aa3ac9480b5a1f30c1e03ff4fdef8413373ad5171422ce31"
+          "sha256_body": "79f3b80af83e75384718639b82f45e23a2ceea4a1b82135e239304223e3297b1"
         }
       ]
     },
