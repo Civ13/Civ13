@@ -464,6 +464,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/material/hairlesshide" = "basic_tools",
 		"/obj/item/stack/material/leather" = "basic_tools",
 		"/obj/item/stack/material/wethide" = "basic_tools",
+		"/obj/item/weapon/hole_ladder" = "basic_tools",
 		"/obj/item/hemp_rope_bundle" = "basic_tools",
 		"/obj/item/stack/bark" = "basic_tools",
 		"/obj/item/stack/dressed_hemp" = "basic_tools",
