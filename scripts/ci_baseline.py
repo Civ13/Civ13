@@ -313,6 +313,9 @@ SUITES = {
     'wrestling_actions': {'files': ('tests/wrestling_actions/test_actions.py',),
         'paths': ('tests/wrestling_actions/',), 'shared_paths': (
             'code/modules/1713/martial_arts/wrestling.dm',)},
+    'radio_frequency': {'files': ('tests/radio_frequency/test_frequency.py',),
+        'paths': ('tests/radio_frequency/',), 'shared_paths': (
+            'code/modules/1713/radio.dm', 'tests/save_movement/source_adapter.py')},
     'extinguisher': {'files': ('tests/extinguisher/test_initial_water.py',),
         'paths': ('tests/extinguisher/',), 'shared_paths': (
             'code/game/objects/items/weapons/tools.dm', 'config/crafting/material_recipes_global.txt')},

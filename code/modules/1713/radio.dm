@@ -34,32 +34,13 @@ var/global/FREQP = rand(81,100)
 var/global/FREQM = rand(101,120)
 
 /obj/item/weapon/radio/proc/check_freq(var/obj/original)
-	if (!original)
-		return
-	var/obj/item/weapon/radio/R = null
-	var/obj/structure/radio/SR = null
-	if (istype(original, /obj/item/weapon/radio))
-		R = original
-	else if (istype(original, /obj/structure/radio))
-		SR = original
-	else
-		return FALSE
-	if (SR)
-		if (multifreq)
-			if (SR.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (SR.freq == src.freq)
-				return TRUE
-	else if (R)
-		if (multifreq)
-			if (R.freq in src.multifreqlist)
-				return TRUE
-		else
-			if (R.freq == src.freq)
-				return TRUE
-	return FALSE
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+
 /obj/structure/radio/proc/check_freq(var/obj/original)
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+
+// Local transmitters match their own channels against the receiver's frequency.
+/proc/radio_transmitter_frequency_matches(var/obj/original, source_freq, source_multifreq, list/source_multifreqlist)
 	if (!original)
 		return
 	var/obj/item/weapon/radio/R = null
@@ -71,18 +52,18 @@ var/global/FREQM = rand(101,120)
 	else
 		return FALSE
 	if (SR)
-		if (multifreq)
-			if (SR.freq in src.multifreqlist)
+		if (source_multifreq)
+			if (SR.freq in source_multifreqlist)
 				return TRUE
 		else
-			if (SR.freq == src.freq)
+			if (SR.freq == source_freq)
 				return TRUE
 	else if (R)
-		if (multifreq)
-			if (R.freq in src.multifreqlist)
+		if (source_multifreq)
+			if (R.freq in source_multifreqlist)
 				return TRUE
 		else
-			if (R.freq == src.freq)
+			if (R.freq == source_freq)
 				return TRUE
 	return FALSE
 
