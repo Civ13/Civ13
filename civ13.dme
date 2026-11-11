@@ -859,6 +859,7 @@
 #include "code\modules\1713\cutting_board.dm"
 #include "code\modules\1713\crates.dm"
 #include "code\modules\1713\custom_apparel.dm"
+#include "code\modules\1713\dressmaking.dm"
 #include "code\modules\1713\doctor_handbook.dm"
 #include "code\modules\1713\elevation_climate.dm"
 #include "code\modules\1713\equip_box.dm"
