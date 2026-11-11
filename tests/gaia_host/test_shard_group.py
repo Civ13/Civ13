@@ -495,6 +495,13 @@ class ShardGroupTests(unittest.TestCase):
         self.assertIn('deep=http://127.0.0.1:47202=%s' % (config / 'transfer-token.txt'), started[0])
         self.assertEqual('gaia', started[0][started[0].index('--mainland') + 1])
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
+        # Only a group without a coordinator database asserts a clean bootstrap.
+        self.assertIn('--bootstrap-new-group', started[0])
+        (self.base / 'regions' / 'coordinator.pid').unlink()
+        (self.base / 'regions' / 'coordinator.sqlite').write_bytes(b'')
+        self.assertTrue(shard_group.ensure_coordinator(group, start))
+        self.assertNotIn('--bootstrap-new-group', started[1])
+        (self.base / 'regions' / 'coordinator.sqlite').unlink()
         platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][1]))
         self.assertEqual(['gaia'], platform.config['peers'])
         self.group['persistent'] = False

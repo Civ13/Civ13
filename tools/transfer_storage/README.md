@@ -272,11 +272,13 @@ encoded whole manifest before source staging/removal. Oversized or unsupported
 captures must leave source passengers and cargo intact, not truncate or split
 custody. These limits have not been increased.
 
-For a new shard group created by `scripts/shard-group/shard_group.py`, setup/start
-intentionally do not infer bootstrap from a missing coordinator database. Before
-normal start, with all configured loopback agents running and no previous group
-state, run the coordinator command matching that group configuration with
-`--bootstrap-new-group --once` added (same database, group and enrollments).
-Confirm `recovery_status()` is ready. Normal subsequent starts omit the flag.
-If an agent reports an old epoch or history, stop and restore the original
-coordinator database; do not clear agent state to force bootstrap.
+For a shard group run by `scripts/shard-group/shard_group.py` (the launcher),
+`ensure_coordinator` adds `--bootstrap-new-group` only when `coordinator.sqlite`
+does not exist: a brand-new group, or one a group Fresh world just cleared (it
+moves every agent store and the coordinator database aside together). The
+coordinator still refuses that bootstrap and quarantines if any agent reports a
+previous epoch or train history, so a database lost while the agents kept their
+state is held, never re-bootstrapped. Normal starts with the database omit the
+flag. If a group is quarantined, stop and restore the original coordinator
+database; do not clear agent state to force bootstrap. A database written before
+recovery tracking adopts its enrolled directory even if it never decided a home.

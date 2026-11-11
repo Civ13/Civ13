@@ -76,6 +76,15 @@ class BodyCaptureGuards(unittest.TestCase):
         self.assertIn('primitive_appearance_fields_roundtrip', probe)
         self.assertNotIn('.appearance', probe)
         self.assertNotIn('body_head_samples_equal', SOURCE)
+    def test_atomic_capture_omits_only_renderer_output(self):
+        saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        self.assertIn('if(!moving_save_chunk && !export_atomic)', saving)
+        self.assertIn('if(export_atomic && export_omits_field(A, v))', saving)
+        self.assertIn('\texport_atomic = TRUE', SOURCE)
+        self.assertIn('field == "overlays" && istype(A, /obj/item/organ/external)', SOURCE)
+        self.assertIn('list("hud_list", "overlays_standing", "stand_icon", "overlays", "icon")', SOURCE)
+        probe = (ROOT / 'tests/train_body_graph/probe.dm').read_text()
+        self.assertIn('renderer_output_omitted', probe)
     def test_bounded_and_no_world_save(self):
         for guard in ('world.time != capture_tick', 'TRAIN_BODY_NODES', 'TRAIN_BODY_EDGES', 'TRAIN_BODY_BYTES', 'persistence_save_active()'):
             self.assertIn(guard, SOURCE)

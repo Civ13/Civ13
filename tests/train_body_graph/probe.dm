@@ -176,6 +176,16 @@ var/global/body_runtime_error = FALSE
 			value = envelope["value"]
 		if(value == expected) return TRUE
 	return FALSE
+// Renderer output is rebuilt from saved inputs and must not be exported.
+/proc/body_export_omits(list/doc, type_name, list/omitted)
+	if(!islist(doc)) return FALSE
+	var/found = FALSE
+	for(var/list/fields in doc["entries"])
+		if(body_wire_value(fields["type"]) != type_name) continue
+		found = TRUE
+		for(var/field in omitted)
+			if(fields[field]) return FALSE
+	return found
 // isolated_startup suppresses global_init/New; restore only production data
 // catalogs needed by real body constructors, not services/world startup.
 // Same isolated metadata fixture pattern as human_corpse_decay: real metadata
@@ -264,6 +274,7 @@ var/global/body_runtime_error = FALSE
 	var/list/human_doc = istext(human_text) ? json_decode(human_text) : null
 	body_check("human_wire_closed", body_document_closed(human_doc, TRUE))
 	body_check("exported_arm_damage_and_inventory", arm && body_export_has(human_doc, "[arm.type]", "brute_dam", 17) && body_export_has(human_doc, "[cargo.type]", "name", cargo.name))
+	body_check("renderer_output_omitted", body_export_omits(human_doc, "[H.type]", list("hud_list", "overlays_standing", "stand_icon", "overlays", "icon")) && body_export_omits(human_doc, "[source_head.type]", list("overlays")))
 	var/list/missing = istext(human_text) ? json_decode(human_text) : list()
 	if(missing["entries"])
 		var/list/root = missing["entries"][missing["root"]]
@@ -276,6 +287,7 @@ var/global/body_runtime_error = FALSE
 	body_check("dangling_reference_rejected", !body_document_closed(dangling, TRUE))
 	if(arm && arm.mob_icon) arm.mob_icon.DrawBox("#c7a513", 1, 1, 1, 1)
 	var/obj/effect/train_body_quarantine/Q = G.restore_local_capture(human_text)
+	body_capture_errors["human_restore"] = G.body_error
 	body_check("owned_body_quarantined", Q && Q.body && Q.body.loc == Q && !Q.body.client && !Q.loc)
 	var/mob/living/human/restored = Q ? Q.body : null
 	body_check("species_registry_identity_roundtrip", restored && restored.species == canonical)
@@ -326,6 +338,7 @@ var/global/body_runtime_error = FALSE
 	body_check("corpse_wire_closed", istext(corpse_text) && body_document_closed(json_decode(corpse_text), TRUE))
 	body_check("exported_dead_state", istext(corpse_text) && body_export_has(json_decode(corpse_text), "[H.type]", "stat", DEAD))
 	var/obj/effect/train_body_quarantine/dead_Q = G.restore_local_capture(corpse_text)
+	body_capture_errors["corpse_restore"] = G.body_error
 	body_check("corpse_roundtrip_stays_dead", dead_Q && dead_Q.body && dead_Q.body.stat == DEAD)
 	var/external_ref_rejected = FALSE
 	try

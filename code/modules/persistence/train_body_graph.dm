@@ -9,6 +9,7 @@
 /map_storage/train_body_graph
 	var/list/body_members = list()
 	var/capture_tick = null
+	export_atomic = TRUE
 	var/wire_edges = 0
 	var/body_error = null
 	var/tmp/local_snapshot = null
@@ -33,9 +34,15 @@
 
 /map_storage/train_body_graph/save_work_check()
 	if(!isnull(capture_tick) && world.time != capture_tick)
-		throw EXCEPTION("Body capture crossed a tick; source must remain unchanged")
+		throw EXCEPTION("Body capture crossed a tick at [body_source_context()]; source must remain unchanged")
 	if(saving_reference_pins.len + saving_list_pins.len > TRAIN_BODY_NODES || wire_edges > TRAIN_BODY_EDGES)
 		throw EXCEPTION("Body graph budget exceeded")
+
+// Renderer output that production update procs rebuild from saved inputs.
+/map_storage/train_body_graph/export_omits_field(datum/A, field)
+	if(field == "overlays" && istype(A, /obj/item/organ/external)) return TRUE
+	if(ishuman(A) && (field in list("hud_list", "overlays_standing", "stand_icon", "overlays", "icon"))) return TRUE
+	return FALSE
 
 // Diagnostic paths/field names only: never character names, values or ckeys.
 /map_storage/train_body_graph/proc/body_source_context()
@@ -421,7 +428,7 @@
 			if(fields.len != 7) throw EXCEPTION("Invalid matrix field count")
 			for(var/coefficient in list("a", "b", "c", "d", "e", "f"))
 				if(!fields[coefficient] || !matrix_component_valid(read_wire(fields[coefficient]))) throw EXCEPTION("Invalid matrix component")
-		else if(!fields["name"]) throw EXCEPTION("Missing captured name")
+		else if(ispath(path, /atom) && !fields["name"]) throw EXCEPTION("Missing captured name")
 		entry_types += path
 		var/list/edges = list()
 		graph["e[i]"] = edges

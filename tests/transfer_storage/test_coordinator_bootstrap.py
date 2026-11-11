@@ -79,6 +79,16 @@ class BootstrapTests(unittest.TestCase):
         self.reopen()
         self.assertEqual(['alpha'], self.c.recovery_status()['roster'])
 
+    def test_legacy_database_without_decisions_retains_directory(self):
+        # A pre-recovery database that never decided a home (rev 0) is still
+        # the original authority: it adopts its directory and becomes ready.
+        self.enroll('alpha', 1); self.enroll('beta', 2)
+        self.c.db.execute("DELETE FROM ledger WHERE key IN ('recovery','roster','bootstrap')")
+        self.reopen()
+        self.assertEqual(['alpha', 'beta'], self.c.recovery_status()['roster'])
+        self.c.homes_once()
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+
     def test_directory_loss_with_existing_roster_quarantines(self):
         self.enroll('alpha', 1); self.enroll('beta', 2)
         self.reopen(True); self.c.homes_once()

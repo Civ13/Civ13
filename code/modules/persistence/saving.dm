@@ -12,6 +12,13 @@
 // One frame costs about five Dream Daemon calls; the stack ends near 400.
 #define PERSISTENCE_EXPORT_DEFER_DEPTH 24
 
+// Set by bounded exporters whose capture must finish within one tick.
+/map_storage/var/tmp/export_atomic = FALSE
+
+// Atomic exporters may omit renderer output their restore rebuilds.
+/map_storage/proc/export_omits_field(datum/A, field)
+	return FALSE
+
 /map_storage/proc/save_work_check()
 	if(moving_save_chunk)
 		moving_save_chunk.check()
@@ -496,6 +503,8 @@
 			if(isnull(cached_runtime))
 				if(A.persistence_runtime_var(v))
 					continue
+			if(export_atomic && export_omits_field(A, v))
+				continue
 			switch(v)
 				if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
 					continue
@@ -629,7 +638,8 @@
 			F["/lists/[id]/length"] << snapshot.len
 			for(var/i = 1, i <= snapshot.len, i++)
 				save_work_check()
-				if(!moving_save_chunk)
+				// Atomic exporters (train bodies) must not yield mid-capture.
+				if(!moving_save_chunk && !export_atomic)
 					TICK_CHECK
 				var/key = snapshot[i]
 				var/encoded_key

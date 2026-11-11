@@ -1,4 +1,23 @@
-# Train body graph: failed acceptance, isolated research
+# Train body graph: local quarantine roundtrip
+
+Current evidence (2026-11-11): full fixture 43/43, runtime_error=0, BYOND
+516.1688, 0 errors/0 warnings. Two fixes closed the 13 human/corpse failures:
+
+- The list encoder yielded with `TICK_CHECK` mid-capture, so the human capture
+  crossed a tick. Atomic exporters set `export_atomic` and never yield; the
+  graph is bounded by TRAIN_BODY_NODES/EDGES instead.
+- Renderer output is not captured: external organ `overlays` and human
+  `hud_list`, `overlays_standing`, `stand_icon`, `overlays` and `icon`
+  (`export_omits_field`). Production update procs rebuild them from the saved
+  inputs (hair, eye colour, skin, organ `mob_icon`); the head rebuild controls
+  below sample that. `renderer_output_omitted` checks the export. The restored
+  quarantine body keeps constructor renderer state until finalization calls
+  update_body/regenerate_icons.
+
+Plain datums (wounds, reagents, DNA) have no `name` field; only atoms must
+carry one. Departure/source deletion remain disabled.
+
+## Historical baseline
 
 Recovered baseline tree `56d0868ba2dfae99f6d72283893fabfa479d5a61`
 (local recovery commit `3d9785e`) matches the previously staged native tree.
@@ -11,8 +30,8 @@ This is not a finished transport codec. Departure/source deletion remain disable
 ## Fresh field-level experiment
 
 This is new implementation, not recovery of lost renderer commit cf1e89bab.
-The fixture now expects 42 checks: the original 37 plus five new assertions.
-No native compile or runtime has yet validated this fresh snapshot.
+The fixture expects 43 checks: the original 37, five renderer assertions and
+`renderer_output_omitted`.
 
 Prior art: `tests/world_save/README.md` excludes composite appearance because
 its unsupported null restores can reset separately restored transform/color/

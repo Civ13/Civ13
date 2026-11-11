@@ -62,11 +62,14 @@ class Coordinator(TrainCustody):
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('rev', '0')")
 
+        # A database written before recovery tracking existed is the group's
+        # original authority, even if it never decided a home (rev 0).
+        legacy = self.db.execute("SELECT 1 FROM ledger WHERE key = 'recovery'").fetchone() is None and bool(self.regions())
         self.init_train_custody()
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('recovery', 'unreconciled')")
         # Migrate established databases from their persisted directory, never
         # infer the old group from peers enrolled into a replacement database.
-        established = self._ledger('recovery') == 'ready' or int(self._ledger('rev')) > 0
+        established = legacy or self._ledger('recovery') == 'ready' or int(self._ledger('rev')) > 0
         roster = sorted(self.regions()) if established else []
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('roster', ?)", (json.dumps(roster),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('bootstrap', '0')")
