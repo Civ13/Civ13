@@ -82,7 +82,7 @@
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		if(..())
 			var/obj/item/organ/external/affected = target.get_organ(target_zone)
-			return affected && !affected.cavity && affected.open == FALSE
+			return affected && affected.cavity
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -176,7 +176,7 @@
 
 			find_prob +=50
 			var/mob/living/human/H = user
-			if (prob(find_prob)*H.getStatCoeff("medical"))
+			if (prob(find_prob * H.getStatCoeff("medical")))
 				user.visible_message("<span class = 'notice'>[user] takes something out of incision on [target]'s [affected.name] with \the [tool].</span>", \
 				"<span class = 'notice'>You take [obj] out of incision on [target]'s [affected.name]s with \the [tool].</span>" )
 				affected.implants -= obj
