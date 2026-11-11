@@ -60,6 +60,18 @@
 /mob/living/proc/getarmor(var/def_zone, var/type)
 	return FALSE
 
+// Damage a projectile still deals through armor. Armor absorbs the share
+// armor/penetration of the hit and stops it at or above the round's
+// penetration. It never raises damage above the round's own.
+/proc/projectile_armor_residual(damage, penetration, armor)
+	if (damage <= 0)
+		return 0
+	if (armor <= 0)
+		return damage
+	if (penetration <= 0 || armor >= penetration)
+		return 0
+	return damage * (1 - armor / penetration)
+
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
 	var/mob/living/human/H = src
@@ -85,16 +97,12 @@
 		proj_sharp = FALSE
 		proj_edge = FALSE
 	//Bullet
-	var/penetration = P.armor_penetration
-	var/damage = P.damage
-	
-	if(armor > 0)
-		if(armor < penetration)
-			damage *= (penetration / armor)
-		else
-			playsound(src, "ric_sound", 50, TRUE, -2)
-			damage = 0
-	H.damage_armor(def_zone, (P.damage - damage) * 0.01)
+	var/damage = projectile_armor_residual(P.damage, P.armor_penetration, armor)
+	if (armor > 0 && damage <= 0)
+		playsound(src, "ric_sound", 50, TRUE, -2)
+	// Armor wears by the share of the hit it absorbed, never negatively.
+	if (ishuman(src))
+		H.damage_armor(def_zone, (P.damage - damage) * 0.01)
 	if (ishuman(src))
 		var/instadeath = 0
 		if (def_zone == "eyes")
