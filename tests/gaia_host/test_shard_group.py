@@ -502,6 +502,24 @@ class ShardGroupTests(unittest.TestCase):
         self.assertTrue(shard_group.ensure_coordinator(group, start))
         self.assertNotIn('--bootstrap-new-group', started[1])
         (self.base / 'regions' / 'coordinator.sqlite').unlink()
+        # A store an unflagged coordinator created on the cleared group decided
+        # nothing, so the next start still asserts the bootstrap (else every join
+        # waits on a held directory). Any decided state keeps the flag off.
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage.coordinator import Coordinator
+        database = self.base / 'regions' / 'coordinator.sqlite'
+        Coordinator(str(database), 'earth', 'gaia').close()
+        (self.base / 'regions' / 'coordinator.pid').unlink()
+        self.assertTrue(shard_group.ensure_coordinator(group, start))
+        self.assertIn('--bootstrap-new-group', started[2])
+        coordinator = Coordinator(str(database), 'earth', 'gaia')
+        coordinator._set_home('someone', 'gaia')
+        coordinator.close()
+        (self.base / 'regions' / 'coordinator.pid').unlink()
+        self.assertTrue(shard_group.ensure_coordinator(group, start))
+        self.assertNotIn('--bootstrap-new-group', started[3])
+        for path in database.parent.glob('coordinator.sqlite*'):
+            path.unlink()
         platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][1]))
         self.assertEqual(['gaia'], platform.config['peers'])
         self.group['persistent'] = False
