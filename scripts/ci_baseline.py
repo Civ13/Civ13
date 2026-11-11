@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'gaia_weather': {'files': ('tests/gaia_weather/test_frequency.py',),
+        'paths': ('tests/gaia_weather/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/modules/1713/weather_policy.dm', 'code/modules/1713/weather.dm',
+            'code/__defines/weather.dm', 'tests/weather_policy/test_policy.py')},
     'atgm_retrieve': {'files': ('tests/atgm_retrieve/test_retrieve.py',),
         'paths': ('tests/atgm_retrieve/', 'code/modules/1713/weapons/guns/mg/stationary/mg.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
