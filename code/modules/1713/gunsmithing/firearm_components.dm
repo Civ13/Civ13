@@ -1,5 +1,6 @@
 // Modular firearm components (issue #4443: AK family from phase 2; AR family,
-// AK-100 series and Mauser bolt-action family from phase 5).
+// AK-100 series and the Mauser, Mosin and Arisaka bolt-action families from
+// phase 5).
 // Contract: docs/firearm-component-contract.md. Installed parts are data on the
 // gun (component id + condition per slot), so a gun costs no extra objects
 // until a part is removed. Removed parts are /obj/item/weapon/gun_component
@@ -49,6 +50,9 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	var/list/mauser792_clips = list(/obj/item/ammo_magazine/gewehr98)
 	var/list/mauser765_clips = list(/obj/item/ammo_magazine/gewehr71)
 	var/list/mauser7x57_clips = list(/obj/item/ammo_magazine/mauser1893)
+	var/list/mosin_clips = list(/obj/item/ammo_magazine/mosin)
+	var/list/arisaka65_clips = list(/obj/item/ammo_magazine/arisaka)
+	var/list/arisaka77_clips = list(/obj/item/ammo_magazine/arisaka99)
 	for (var/list/data in list(
 		list("id" = "ak/action", "family" = "ak", "slot" = FIREARM_SLOT_ACTION, "name" = "AK bolt carrier group",
 			"desc" = "The bolt and carrier of an AK-pattern rifle. Fits any AK receiver.", "icon_state" = "Dual Selective Fire"),
@@ -97,6 +101,29 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"caliber" = "a7x57", "good_mags" = mauser7x57_clips, "ammo_type" = /obj/item/ammo_casing/a7x57),
 		list("id" = "mauser/furniture/stock", "family" = "mauser", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Mauser stock",
 			"desc" = "A wooden Mauser rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "mosin/action", "family" = "mosin", "slot" = FIREARM_SLOT_ACTION, "name" = "Mosin bolt",
+			"desc" = "The bolt of a Mosin-Nagant rifle. Fits any Mosin receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "mosin/barrel/762x54", "family" = "mosin", "slot" = FIREARM_SLOT_BARREL, "name" = "Mosin barrel (7.62x54mmR)",
+			"desc" = "A 7.62x54mmR barrel for a Mosin-Nagant rifle.", "icon_state" = "Long Rifle Barrel", "caliber" = "a762x54"),
+		list("id" = "mosin/feed/762x54", "family" = "mosin", "slot" = FIREARM_SLOT_FEED, "name" = "Mosin magazine (7.62x54mmR)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes Mosin stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a762x54", "good_mags" = mosin_clips, "ammo_type" = /obj/item/ammo_casing/a762x54),
+		list("id" = "mosin/furniture/stock", "family" = "mosin", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Mosin stock",
+			"desc" = "A wooden Mosin-Nagant rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "arisaka/action", "family" = "arisaka", "slot" = FIREARM_SLOT_ACTION, "name" = "Arisaka bolt",
+			"desc" = "The bolt of an Arisaka rifle. Fits any Arisaka receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "arisaka/barrel/65x50", "family" = "arisaka", "slot" = FIREARM_SLOT_BARREL, "name" = "Arisaka barrel (6.5x50mm)",
+			"desc" = "A 6.5x50mm barrel for an Arisaka rifle. Pair it with a 6.5x50mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a65x50"),
+		list("id" = "arisaka/barrel/77x58", "family" = "arisaka", "slot" = FIREARM_SLOT_BARREL, "name" = "Arisaka barrel (7.7x58mm)",
+			"desc" = "A 7.7x58mm barrel for an Arisaka rifle. Pair it with a 7.7x58mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a77x58"),
+		list("id" = "arisaka/feed/65x50", "family" = "arisaka", "slot" = FIREARM_SLOT_FEED, "name" = "Arisaka magazine (6.5x50mm)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes 6.5x50mm Arisaka clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a65x50", "good_mags" = arisaka65_clips, "ammo_type" = /obj/item/ammo_casing/a65x50),
+		list("id" = "arisaka/feed/77x58", "family" = "arisaka", "slot" = FIREARM_SLOT_FEED, "name" = "Arisaka magazine (7.7x58mm)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes Type 99 clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a77x58", "good_mags" = arisaka77_clips, "ammo_type" = /obj/item/ammo_casing/a77x58),
+		list("id" = "arisaka/furniture/stock", "family" = "arisaka", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Arisaka stock",
+			"desc" = "A wooden Arisaka rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -112,15 +139,21 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"mauser_792" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/792x57", FIREARM_SLOT_FEED = "mauser/feed/792x57", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
 		"mauser_765" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/765x53", FIREARM_SLOT_FEED = "mauser/feed/765x53", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
 		"mauser_7x57" = list(FIREARM_SLOT_ACTION = "mauser/action", FIREARM_SLOT_BARREL = "mauser/barrel/7x57", FIREARM_SLOT_FEED = "mauser/feed/7x57", FIREARM_SLOT_FURNITURE = "mauser/furniture/stock"),
+		"mosin" = list(FIREARM_SLOT_ACTION = "mosin/action", FIREARM_SLOT_BARREL = "mosin/barrel/762x54", FIREARM_SLOT_FEED = "mosin/feed/762x54", FIREARM_SLOT_FURNITURE = "mosin/furniture/stock"),
+		"arisaka_65" = list(FIREARM_SLOT_ACTION = "arisaka/action", FIREARM_SLOT_BARREL = "arisaka/barrel/65x50", FIREARM_SLOT_FEED = "arisaka/feed/65x50", FIREARM_SLOT_FURNITURE = "arisaka/furniture/stock"),
+		"arisaka_77" = list(FIREARM_SLOT_ACTION = "arisaka/action", FIREARM_SLOT_BARREL = "arisaka/barrel/77x58", FIREARM_SLOT_FEED = "arisaka/feed/77x58", FIREARM_SLOT_FURNITURE = "arisaka/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
 		"mauser_receiver" = list(),
+		"mosin_receiver" = list(),
+		"arisaka_receiver" = list(),
 	)
 
-var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser")
+var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka")
 var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
-	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm")
+	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
+	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -170,6 +203,27 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_preset = "mauser_7x57"
 /obj/item/weapon/gun/projectile/boltaction/mauser1893/mauser1893o
 	firearm_preset = "mauser_765"
+/obj/item/weapon/gun/projectile/boltaction/mosin
+	firearm_family = "mosin"
+	firearm_preset = "mosin"
+// The sawn-off Obrez keeps its own weight, size and damage, so it stays fixed.
+/obj/item/weapon/gun/projectile/boltaction/mosin/obrez
+	firearm_family = null
+	firearm_preset = null
+/obj/item/weapon/gun/projectile/boltaction/arisaka30
+	firearm_family = "arisaka"
+	firearm_preset = "arisaka_65"
+/obj/item/weapon/gun/projectile/boltaction/arisaka35
+	firearm_family = "arisaka"
+	firearm_preset = "arisaka_65"
+// The Type 38 used to inherit 7.62x54mmR loose rounds from the base rifle.
+/obj/item/weapon/gun/projectile/boltaction/arisaka38
+	firearm_family = "arisaka"
+	firearm_preset = "arisaka_65"
+	ammo_type = /obj/item/ammo_casing/a65x50
+/obj/item/weapon/gun/projectile/boltaction/arisaka99
+	firearm_family = "arisaka"
+	firearm_preset = "arisaka_77"
 
 // Factory output: the bare core. It names itself from its barrel once fitted.
 /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver
@@ -184,6 +238,20 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	desc = "A bare AR-pattern receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
 	magazine_type = null
 	firearm_preset = "ar_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/mosin/receiver
+	name = "Mosin receiver"
+	desc = "A bare Mosin-Nagant receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "mosin_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/arisaka38/receiver
+	name = "Arisaka receiver"
+	desc = "A bare Arisaka receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "arisaka_receiver"
 	firearm_named_by_parts = TRUE
 
 /obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver
@@ -390,58 +458,15 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	if (!firearm_remove(choices[choice], H))
 		to_chat(H, SPAN_WARNING("You can't remove that now. Unload and hold the rifle[firearm_slot_needs_bench(choices[choice]) ? " next to a firearm bench" : ""]."))
 
-/obj/item/weapon/gun/projectile/submachinegun/ak47/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
+// Every modular gun gets the strip verb; fixed designs never see it.
+/obj/item/weapon/gun/New()
+	..()
+	if (firearm_family)
+		verbs += /obj/item/weapon/gun/proc/remove_rifle_part
 
-/obj/item/weapon/gun/projectile/submachinegun/ak74/verb/remove_rifle_part()
+/obj/item/weapon/gun/proc/remove_rifle_part()
 	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/submachinegun/ak101/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/submachinegun/m16/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/submachinegun/c7/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/boltaction/gewehr98/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/boltaction/mauser1890/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
-	set category = null
-	set src in usr
-	firearm_strip_menu(usr)
-
-/obj/item/weapon/gun/projectile/boltaction/mauser1893/verb/remove_rifle_part()
-	set name = "Remove Rifle Part"
-	set desc = "Unload first. Magazine and stock come off by hand; the bolt and barrel need a firearm bench."
+	set desc = "Unload first. Magazine and stock come off by hand; the action and barrel need a firearm bench."
 	set category = null
 	set src in usr
 	firearm_strip_menu(usr)
@@ -527,5 +552,25 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	component_id = "mauser/feed/7x57"
 /obj/item/weapon/gun_component/mauser_furniture_stock
 	component_id = "mauser/furniture/stock"
+/obj/item/weapon/gun_component/mosin_action
+	component_id = "mosin/action"
+/obj/item/weapon/gun_component/mosin_barrel_762
+	component_id = "mosin/barrel/762x54"
+/obj/item/weapon/gun_component/mosin_feed_762
+	component_id = "mosin/feed/762x54"
+/obj/item/weapon/gun_component/mosin_furniture_stock
+	component_id = "mosin/furniture/stock"
+/obj/item/weapon/gun_component/arisaka_action
+	component_id = "arisaka/action"
+/obj/item/weapon/gun_component/arisaka_barrel_65
+	component_id = "arisaka/barrel/65x50"
+/obj/item/weapon/gun_component/arisaka_barrel_77
+	component_id = "arisaka/barrel/77x58"
+/obj/item/weapon/gun_component/arisaka_feed_65
+	component_id = "arisaka/feed/65x50"
+/obj/item/weapon/gun_component/arisaka_feed_77
+	component_id = "arisaka/feed/77x58"
+/obj/item/weapon/gun_component/arisaka_furniture_stock
+	component_id = "arisaka/furniture/stock"
 
 #undef FIREARM_BARREL_LIFE

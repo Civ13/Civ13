@@ -132,8 +132,22 @@ Mauser recipes are gated by **Cartridge Firearms** at tier 1: receiver
 100), each magazine (1 steel, 50) and stock (3 wood, 40). A bare receiver names
 itself "Mauser rifle (caliber)" once a barrel is fitted.
 
-Not yet: destructive salvage, the remaining families (other bolt-action rifles,
-pistols, revolvers, shotguns, machine guns and other rifles).
+The **Mosin family** (`mosin`: Mosin M1891, 91/30 and its sniper version,
+7.62x54mmR) and the **Arisaka family** (`arisaka`: Types 30, 35, 38, 97 sniper
+and 99 with its sniper and bayonet versions) follow the Mauser pattern. Arisaka
+barrels and magazines come in 6.5x50mm and 7.7x58mm, so a Type 38 can take Type
+99 clips after a bench conversion. The sawn-off Obrez keeps its own weight,
+size and damage and stays fixed, as does the training Arisaka. The Type 38 now
+spawns with 6.5x50mm rounds; it used to inherit 7.62x54mmR loose rounds from
+the base bolt-action rifle. Both families' recipes match the Mauser ones (bare
+`mosin/receiver` and `arisaka38/receiver`, Cartridge Firearms, tier 1).
+
+Every modular gun gets the "Remove Rifle Part" verb from `/obj/item/weapon/gun/New()`
+when it has a family, so fixed designs never show it.
+
+Not yet: destructive salvage, the remaining families (Enfield, Springfield and
+other bolt-action rifles, pistols, revolvers, shotguns, machine guns and other
+rifles).
 
 ## Ammunition and armor
 

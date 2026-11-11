@@ -1,4 +1,4 @@
-# Modular rifle parts (AK, AR and Mauser families)
+# Modular rifle parts (AK, AR, Mauser, Mosin and Arisaka families)
 
 `python3 tests/firearm_components/run.py --byond-bin <BYOND bin>` compiles the
 production game with normal startup disabled and, on a 6x4x1 world with a real
@@ -31,6 +31,11 @@ human:
   AK parts are refused; an M1893 builds the 7x57 preset; a bare Mauser receiver
   holds no rounds and builds into "Mauser rifle (7x57mm)". Mauser recipes are
   gated by Cartridge Firearms, AK and AR ones by Automatic Weapons.
+- a Mosin 91/30 builds the Mosin preset and has the strip verb, while the
+  Obrez and a pistol stay fixed without it; an Arisaka Type 38 spawns 6.5x50
+  rounds, builds the 6.5 preset and converts to 7.7x58 with Type 99 clips;
+  Mosin parts are refused on it; bare Mosin and Arisaka receivers build into
+  working rifles; a restored rifle keeps the strip verb after load.
 
 Negative controls must fail: `--negative-control no-conversion-check`,
 `compound-handling` and `eager-preset`.

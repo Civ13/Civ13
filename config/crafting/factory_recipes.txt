@@ -48,6 +48,19 @@ FACTORY: Mauser magazine 7.92x57mm|/obj/item/weapon/gun_component/mauser_feed_79
 FACTORY: Mauser magazine 7.65x53mm|/obj/item/weapon/gun_component/mauser_feed_765|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
 FACTORY: Mauser magazine 7x57mm|/obj/item/weapon/gun_component/mauser_feed_7x57|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
 FACTORY: Mauser stock|/obj/item/weapon/gun_component/mauser_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+// Mosin and Arisaka bolt-action rifle parts (issue #4443 phase 5). Gated by Cartridge Firearms.
+FACTORY: Mosin receiver|/obj/item/weapon/gun/projectile/boltaction/mosin/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Mosin bolt|/obj/item/weapon/gun_component/mosin_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Mosin barrel 7.62x54mmR|/obj/item/weapon/gun_component/mosin_barrel_762|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mosin magazine 7.62x54mmR|/obj/item/weapon/gun_component/mosin_feed_762|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mosin stock|/obj/item/weapon/gun_component/mosin_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Arisaka receiver|/obj/item/weapon/gun/projectile/boltaction/arisaka38/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Arisaka bolt|/obj/item/weapon/gun_component/arisaka_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Arisaka barrel 6.5x50mm|/obj/item/weapon/gun_component/arisaka_barrel_65|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Arisaka barrel 7.7x58mm|/obj/item/weapon/gun_component/arisaka_barrel_77|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Arisaka magazine 6.5x50mm|/obj/item/weapon/gun_component/arisaka_feed_65|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Arisaka magazine 7.7x58mm|/obj/item/weapon/gun_component/arisaka_feed_77|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Arisaka stock|/obj/item/weapon/gun_component/arisaka_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

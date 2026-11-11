@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 412,
-  "modern": 311,
+  "types": 414,
+  "modern": 313,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -17,14 +17,14 @@
    "machine_gun_mounted": 32,
    "pistol": 38,
    "revolver": 27,
-   "rifle_bolt": 49,
+   "rifle_bolt": 51,
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 47
+  "migrated": 59
  },
  "modern_calibers": [
   "12gauge",
@@ -1575,8 +1575,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka",
    "ammo_type": "/obj/item/ammo_casing/a65x50",
-   "family": null,
-   "migration": "pending"
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka35",
@@ -1588,8 +1588,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka",
    "ammo_type": "/obj/item/ammo_casing/a65x50",
-   "family": null,
-   "migration": "pending"
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka38",
@@ -1600,9 +1600,22 @@
    "load_method": 3,
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka",
-   "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "ammo_type": "/obj/item/ammo_casing/a65x50",
+   "family": "arisaka",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka38/receiver",
+   "name": "Arisaka receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a65x50",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/arisaka",
+   "ammo_type": null,
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka38/sniper",
@@ -1613,9 +1626,9 @@
    "load_method": 3,
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka",
-   "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "ammo_type": "/obj/item/ammo_casing/a65x50",
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka99",
@@ -1627,8 +1640,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka99",
    "ammo_type": "/obj/item/ammo_casing/a77x58",
-   "family": null,
-   "migration": "pending"
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka99/bayonet",
@@ -1640,8 +1653,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka99",
    "ammo_type": "/obj/item/ammo_casing/a77x58",
-   "family": null,
-   "migration": "pending"
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka99/sniper",
@@ -1653,8 +1666,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/arisaka99",
    "ammo_type": "/obj/item/ammo_casing/a77x58",
-   "family": null,
-   "migration": "pending"
+   "family": "arisaka",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/arisaka99_training",
@@ -1952,8 +1965,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "mosin",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mosin/m30",
@@ -1965,8 +1978,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "mosin",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper",
@@ -1978,8 +1991,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "mosin",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mosin/obrez",
@@ -1993,6 +2006,19 @@
    "ammo_type": "/obj/item/ammo_casing/a762x54",
    "family": null,
    "migration": "pending"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/mosin/receiver",
+   "name": "Mosin receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a762x54",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/mosin",
+   "ammo_type": null,
+   "family": "mosin",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/murata",
