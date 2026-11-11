@@ -116,6 +116,10 @@ exit 0
                     self.assertNotIn('/etc/apt/', command)
                     self.assertNotIn('--allow-unauthenticated', command)
                 self.assertIn('public non-Azure mirrors', result.stderr)
+                installs = [c for c in commands if ' install ' in c]
+                # Only the fallback install may step back to the lagging mirror's versions.
+                self.assertEqual(['--allow-downgrades' in c for c in installs],
+                                 ['SourceList=' in c for c in installs])
 
     def test_fallback_list_uses_non_azure_mirrors_with_i386(self):
         source = SCRIPT.read_text()

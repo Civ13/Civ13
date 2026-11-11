@@ -36,6 +36,7 @@ sudo timeout -k 5 30 dpkg --add-architecture i386
 # options keep APT's authentication; no host config is written.
 apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
 apt_sources=()
+apt_install_extra=()
 apt_packages=(python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386)
 # The runner image's Azure mirror can go dark for hours: its update then hangs
 # or "succeeds" with every index ignored. Canonical's own hosts failed DNS from
@@ -52,11 +53,15 @@ use_fallback_mirrors() {
             printf 'deb [arch=amd64,i386] %s %s main universe\n' "$mirror" "$suite" >> "$list"
         done
     done
+    # The fallback mirror can lag the image, and i386 libraries must match
+    # their amd64 versions exactly, so this throwaway runner may step back to
+    # the mirror's signed versions of the same release.
     apt_sources=(-o "Dir::Etc::SourceList=$list" -o "Dir::Etc::SourceParts=$list.d")
+    apt_install_extra=(--allow-downgrades)
     sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" "${apt_sources[@]}" update
 }
 install_packages() {
-    sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" "${apt_sources[@]}" install -y --no-install-recommends "${apt_packages[@]}"
+    sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" "${apt_sources[@]}" install -y --no-install-recommends "${apt_install_extra[@]}" "${apt_packages[@]}"
 }
 if ! sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update; then
     use_fallback_mirrors

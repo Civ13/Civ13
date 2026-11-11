@@ -84,7 +84,7 @@ jobs:
             done
             sources=(-o "Dir::Etc::SourceList=$list" -o "Dir::Etc::SourceParts=$list.d")
             sudo timeout -k 5 180 apt-get "${acquire[@]}" "${sources[@]}" update
-            sudo timeout -k 5 180 apt-get "${acquire[@]}" "${sources[@]}" install -y "${packages[@]}"
+            sudo timeout -k 5 180 apt-get "${acquire[@]}" "${sources[@]}" install -y --allow-downgrades "${packages[@]}"
           fi
           mkdir "$RUNNER_TEMP/api-byond"
           mkdir -p .ci/api-pages
