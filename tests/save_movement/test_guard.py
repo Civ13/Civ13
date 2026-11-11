@@ -756,6 +756,14 @@ class OperatingTableOccupancyTests(unittest.TestCase):
 
 
 class SourcePathTests(unittest.TestCase):
+    def test_russian_charge_keeps_its_placed_overlay_after_parent_initialization(self):
+        source = read('code/game/objects/items/weapons/explosives.dm')
+        parent = extract(source, '/obj/item/weapon/plastique/New')
+        russian = extract(source, '/obj/item/weapon/plastique/russian/New')
+        self.assertIn('image_overlay = image(icon, "plastic-explosive2")', parent)
+        self.assertLess(russian.index('..()'),
+                        russian.index('image_overlay = image(icon, "russian_charge_placed")'))
+
     def test_finite_remaining_relationship_paths_have_source_ownership_evidence(self):
         carbon = read('code/game/mob/living/carbon/carbon.dm')
         relay = extract(carbon, '/mob/living/human/relaymove')

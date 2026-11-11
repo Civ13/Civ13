@@ -110,5 +110,5 @@
 	icon_state = "russian_charge"
 
 /obj/item/weapon/plastique/russian/New()
-	image_overlay = image(icon, "russian_charge_placed")
 	..()
+	image_overlay = image(icon, "russian_charge_placed")
