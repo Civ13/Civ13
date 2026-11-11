@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '43bbdb234d7f6af203273624db80900bc367ba77'
+WIKI_REVIEWED_REVISION = '53014007807818fc3c8f318954bef9377c4e61fd'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -96,7 +96,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Survival.md': ('b224684387f36c60a5893b662075cf53968c2bb63ba1f4559956cb19c58a252f', 'survival winter cold warm freezing hypothermia shelter debris'),
     'guides/Guide_to_Tanks.md': ('9357b74b19d1f4b29e314595263ee08bc7f3267b596719867d9347bd6ededb08', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
-    'guides/Guide_to_Trenches.md': ('8c1351a687fa247024a13bc9e119ae0732691bc3cfad32de313026918bfd0178', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('3dadc2ec9bc22e0149f7dd2c384171090893c48979f1230888c5ee96232ba142', 'hotkeys hotkey keys keyboard controls key press'),
