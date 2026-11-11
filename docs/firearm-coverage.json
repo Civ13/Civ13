@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 410,
-  "modern": 309,
+  "types": 411,
+  "modern": 310,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -21,10 +21,10 @@
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
-   "submachine_gun": 90
+   "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 12
+  "migrated": 37
  },
  "modern_calibers": [
   "12gauge",
@@ -4287,8 +4287,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak101",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak101/ak102",
@@ -4300,8 +4300,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak101",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103",
@@ -4313,8 +4313,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103/ak104",
@@ -4326,8 +4326,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak101/ak105",
@@ -4339,8 +4339,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak74",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak47",
@@ -4586,8 +4586,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/c7/arid",
@@ -4599,8 +4599,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/c7/c8",
@@ -4612,8 +4612,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/c7/grenade_launcher",
@@ -4625,8 +4625,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/c7/winter",
@@ -4638,8 +4638,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ermaemp",
@@ -4807,8 +4807,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/ar15",
@@ -4820,8 +4820,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/commando",
@@ -4833,8 +4833,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4",
@@ -4846,8 +4846,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws",
@@ -4859,8 +4859,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att",
@@ -4872,8 +4872,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/fbi",
@@ -4885,8 +4885,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/fallout",
@@ -4898,8 +4898,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle",
@@ -4924,8 +4924,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/att",
@@ -4937,8 +4937,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2/grenade_launcher",
@@ -4950,8 +4950,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4",
@@ -4963,8 +4963,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/att",
@@ -4976,8 +4976,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a4/grenade_launcher",
@@ -4989,8 +4989,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/receiver",
+   "name": "AR receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a556x45",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m2carbine",

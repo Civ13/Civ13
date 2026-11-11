@@ -1,4 +1,4 @@
-# Modular rifle parts (AK pilot)
+# Modular rifle parts (AK and AR families)
 
 `python3 tests/firearm_components/run.py --byond-bin <BYOND bin>` compiles the
 production game with normal startup disabled and, on a 6x4x1 world with a real
@@ -20,6 +20,12 @@ human:
 - the real factory recipe list makes every part type and the bare receiver,
   all gated by Automatic Weapons, and a receiver built from fresh parts fires
   as a 7.62 rifle named "AK rifle (7.62x39mm)".
+- an M4 builds the AR carbine preset (collapsible stock, x0.95 handling) and
+  takes M16 and AR-15 magazines; its magazine well comes off by hand and AK
+  parts are refused as a different family; the Service Rifle stays fixed;
+- the AK-102 and AK-105 build 5.56 and 5.45 AK presets;
+- a bare AR receiver built from factory parts fires as "AR rifle (5.56x45mm)",
+  and an AK receiver can be built as "AK rifle (5.56x45mm)".
 
 Negative controls must fail: `--negative-control no-conversion-check`,
 `compound-handling` and `eager-preset`.

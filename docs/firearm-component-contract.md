@@ -93,7 +93,33 @@ fit the internals. The receiver names itself "AK rifle (caliber)" once a barrel
 is fitted. Fabricators keep their existing input buffering, power pauses and
 exactly-once consumption (`tests/factory_automation/fabricators_probe.dm`).
 
-Not yet: destructive salvage, other families.
+### Family expansion (phase 5)
+
+The AK family adds `ak/barrel/556x45` and `ak/feed/556x45` (AK-101 magazines)
+and covers the AK-100 series: AK-101/102 (5.56x45mm), AK-103/104 (7.62x39mm)
+and AK-105 (5.45x39mm), all with the folding stock. An AK receiver can now be
+built in any of the three calibers.
+
+The **AR family** (`ar`) covers the M16 line (M16A1, AR-15, M16A2, M16A4 and
+their variants), the XM177E2/M4/M4 MWS carbines and the C7/C8. The Service
+Rifle takes its own magazines and stays a fixed design.
+
+| Slot | Parts | Work |
+| --- | --- | --- |
+| action | `ar/action` | firearm bench |
+| barrel | `ar/barrel/556x45` | firearm bench |
+| feed | `ar/feed/556x45` (M16 and AR-15 magazines) | by hand |
+| furniture | `ar/furniture/fixed` (x1, rifles), `ar/furniture/collapsible` (x0.95, carbines) | by hand |
+
+Parts of one family never fit the other. Factory recipes, also gated by
+Automatic Weapons: AR receiver (`m16/receiver`, 5 steel, 150, tier 2), AR bolt
+carrier group (3 steel, 120, tier 2), AR barrel (3 steel, 100, tier 2), AR
+magazine well (2 steel, 60, tier 1), AR fixed and collapsible stocks (2 plastic,
+40 and 60, tier 1), plus the AK 5.56x45mm barrel and magazine well. A bare
+receiver names itself "AR rifle (5.56x45mm)" once a barrel is fitted.
+
+Not yet: destructive salvage, the remaining families (bolt-action rifles,
+pistols, revolvers, shotguns, machine guns and other rifles).
 
 ## Ammunition and armor
 

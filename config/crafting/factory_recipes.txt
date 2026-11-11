@@ -29,6 +29,15 @@ FACTORY: AK magazine well 7.62x39mm|/obj/item/weapon/gun_component/ak_feed_762|1
 FACTORY: AK magazine well 5.45x39mm|/obj/item/weapon/gun_component/ak_feed_545|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
 FACTORY: AK fixed stock|/obj/item/weapon/gun_component/ak_furniture_fixed|1|/obj/item/stack/material/wood=2|40|1|automatic_weapons
 FACTORY: AK folding stock|/obj/item/weapon/gun_component/ak_furniture_folding|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK barrel 5.56x45mm|/obj/item/weapon/gun_component/ak_barrel_556|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK magazine well 5.56x45mm|/obj/item/weapon/gun_component/ak_feed_556|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+// AR rifle parts (issue #4443 phase 5). Stocks are plastic; fit internals at a firearm bench.
+FACTORY: AR receiver|/obj/item/weapon/gun/projectile/submachinegun/m16/receiver|1|/obj/item/stack/material/steel=5|150|2|automatic_weapons
+FACTORY: AR bolt carrier group|/obj/item/weapon/gun_component/ar_action|1|/obj/item/stack/material/steel=3|120|2|automatic_weapons
+FACTORY: AR barrel 5.56x45mm|/obj/item/weapon/gun_component/ar_barrel_556|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AR magazine well 5.56x45mm|/obj/item/weapon/gun_component/ar_feed_556|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AR fixed stock|/obj/item/weapon/gun_component/ar_furniture_fixed|1|/obj/item/stack/material/plastic=2|40|1|automatic_weapons
+FACTORY: AR collapsible stock|/obj/item/weapon/gun_component/ar_furniture_collapsible|1|/obj/item/stack/material/plastic=2|60|1|automatic_weapons
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

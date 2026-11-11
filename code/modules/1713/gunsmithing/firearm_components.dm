@@ -1,4 +1,5 @@
-// Modular firearm components (issue #4443 phase 2 pilot: the AK family).
+// Modular firearm components (issue #4443: AK family from phase 2, AR family
+// and the AK-100 series from phase 5).
 // Contract: docs/firearm-component-contract.md. Installed parts are data on the
 // gun (component id + condition per slot), so a gun costs no extra objects
 // until a part is removed. Removed parts are /obj/item/weapon/gun_component
@@ -42,6 +43,8 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	firearm_component_defs = list()
 	var/list/ak47_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
 	var/list/ak74_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak74/ak74m)
+	var/list/ak101_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
+	var/list/stanag_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15)
 	for (var/list/data in list(
 		list("id" = "ak/action", "family" = "ak", "slot" = FIREARM_SLOT_ACTION, "name" = "AK bolt carrier group",
 			"desc" = "The bolt and carrier of an AK-pattern rifle. Fits any AK receiver.", "icon_state" = "Dual Selective Fire"),
@@ -53,10 +56,24 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"desc" = "Takes AKM and RPK magazines.", "icon_state" = "External Magazine_unloaded", "caliber" = "a762x39", "good_mags" = ak47_mags),
 		list("id" = "ak/feed/545x39", "family" = "ak", "slot" = FIREARM_SLOT_FEED, "name" = "AK magazine well (5.45x39mm)",
 			"desc" = "Takes AK-74 and RPK-74 magazines.", "icon_state" = "External Magazine_unloaded", "caliber" = "a545x39", "good_mags" = ak74_mags),
+		list("id" = "ak/barrel/556x45", "family" = "ak", "slot" = FIREARM_SLOT_BARREL, "name" = "AK barrel (5.56x45mm)",
+			"desc" = "A 5.56x45mm barrel for an AK-pattern rifle. Pair it with a 5.56x45mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a556x45"),
+		list("id" = "ak/feed/556x45", "family" = "ak", "slot" = FIREARM_SLOT_FEED, "name" = "AK magazine well (5.56x45mm)",
+			"desc" = "Takes AK-101 magazines.", "icon_state" = "External Magazine_unloaded", "caliber" = "a556x45", "good_mags" = ak101_mags),
 		list("id" = "ak/furniture/fixed", "family" = "ak", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AK fixed stock",
 			"desc" = "A fixed AK stock and handguard.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 		list("id" = "ak/furniture/folding", "family" = "ak", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AK folding stock",
 			"desc" = "A folding AK stock and handguard. Slightly less steady than a fixed stock.", "icon_state" = "Folding Stock", "ergonomics" = 0.95),
+		list("id" = "ar/action", "family" = "ar", "slot" = FIREARM_SLOT_ACTION, "name" = "AR bolt carrier group",
+			"desc" = "The bolt and carrier of an AR-pattern rifle. Fits any AR receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "ar/barrel/556x45", "family" = "ar", "slot" = FIREARM_SLOT_BARREL, "name" = "AR barrel (5.56x45mm)",
+			"desc" = "A 5.56x45mm barrel for an AR-pattern rifle. Pair it with an AR magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a556x45"),
+		list("id" = "ar/feed/556x45", "family" = "ar", "slot" = FIREARM_SLOT_FEED, "name" = "AR magazine well (5.56x45mm)",
+			"desc" = "Takes M16 and AR-15 magazines.", "icon_state" = "External Magazine_unloaded", "caliber" = "a556x45", "good_mags" = stanag_mags),
+		list("id" = "ar/furniture/fixed", "family" = "ar", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AR fixed stock",
+			"desc" = "A fixed AR rifle stock and handguard.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "ar/furniture/collapsible", "family" = "ar", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AR collapsible stock",
+			"desc" = "A collapsible AR carbine stock and handguard. Slightly less steady than a fixed stock.", "icon_state" = "Folding Stock", "ergonomics" = 0.95),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -65,9 +82,17 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"akms" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/762x39", FIREARM_SLOT_FEED = "ak/feed/762x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
 		"ak74" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/545x39", FIREARM_SLOT_FEED = "ak/feed/545x39", FIREARM_SLOT_FURNITURE = "ak/furniture/fixed"),
 		"aks74" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/545x39", FIREARM_SLOT_FEED = "ak/feed/545x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
+		"ak100_556" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/556x45", FIREARM_SLOT_FEED = "ak/feed/556x45", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
+		"ak100_762" = list(FIREARM_SLOT_ACTION = "ak/action", FIREARM_SLOT_BARREL = "ak/barrel/762x39", FIREARM_SLOT_FEED = "ak/feed/762x39", FIREARM_SLOT_FURNITURE = "ak/furniture/folding"),
+		"ar_rifle" = list(FIREARM_SLOT_ACTION = "ar/action", FIREARM_SLOT_BARREL = "ar/barrel/556x45", FIREARM_SLOT_FEED = "ar/feed/556x45", FIREARM_SLOT_FURNITURE = "ar/furniture/fixed"),
+		"ar_carbine" = list(FIREARM_SLOT_ACTION = "ar/action", FIREARM_SLOT_BARREL = "ar/barrel/556x45", FIREARM_SLOT_FEED = "ar/feed/556x45", FIREARM_SLOT_FURNITURE = "ar/furniture/collapsible"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
+		"ar_receiver" = list(),
 	)
+
+var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR")
+var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -83,6 +108,27 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	firearm_preset = "ak74"
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74
 	firearm_preset = "aks74"
+/obj/item/weapon/gun/projectile/submachinegun/ak101
+	firearm_family = "ak"
+	firearm_preset = "ak100_556"
+/obj/item/weapon/gun/projectile/submachinegun/ak101/ak103
+	firearm_preset = "ak100_762"
+/obj/item/weapon/gun/projectile/submachinegun/ak101/ak105
+	firearm_preset = "aks74"
+/obj/item/weapon/gun/projectile/submachinegun/m16
+	firearm_family = "ar"
+	firearm_preset = "ar_rifle"
+/obj/item/weapon/gun/projectile/submachinegun/m16/commando
+	firearm_preset = "ar_carbine"
+// The Service Rifle takes its own magazines, so it stays a fixed design.
+/obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle
+	firearm_family = null
+	firearm_preset = null
+/obj/item/weapon/gun/projectile/submachinegun/c7
+	firearm_family = "ar"
+	firearm_preset = "ar_rifle"
+/obj/item/weapon/gun/projectile/submachinegun/c7/c8
+	firearm_preset = "ar_carbine"
 
 // Factory output: the bare core. It names itself from its barrel once fitted.
 /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver
@@ -90,6 +136,13 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	desc = "A bare AK-pattern receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
 	magazine_type = null
 	firearm_preset = "ak_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/receiver
+	name = "AR receiver"
+	desc = "A bare AR-pattern receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	magazine_type = null
+	firearm_preset = "ar_receiver"
 	firearm_named_by_parts = TRUE
 
 /obj/item/weapon/gun
@@ -153,7 +206,7 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	else if (feed)
 		G.good_mags = feed.good_mags.Copy()
 	if (firearm_named_by_parts)
-		name = barrel ? "AK rifle ([barrel.caliber == "a762x39" ? "7.62x39mm" : "5.45x39mm"])" : initial(name)
+		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
 	// compiled value, so reapplying (or loading a save) never compounds.
 	var/handling = furniture ? furniture.ergonomics : 0.75
@@ -301,6 +354,27 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	set src in usr
 	firearm_strip_menu(usr)
 
+/obj/item/weapon/gun/projectile/submachinegun/ak101/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
+/obj/item/weapon/gun/projectile/submachinegun/m16/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
+/obj/item/weapon/gun/projectile/submachinegun/c7/verb/remove_rifle_part()
+	set name = "Remove Rifle Part"
+	set desc = "Unload first. Magazine well and stock come off by hand; the bolt carrier and barrel need a firearm bench."
+	set category = null
+	set src in usr
+	firearm_strip_menu(usr)
+
 /obj/item/weapon/gun_component
 	name = "rifle part"
 	desc = "A modular rifle part."
@@ -352,5 +426,19 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	component_id = "ak/furniture/fixed"
 /obj/item/weapon/gun_component/ak_furniture_folding
 	component_id = "ak/furniture/folding"
+/obj/item/weapon/gun_component/ak_barrel_556
+	component_id = "ak/barrel/556x45"
+/obj/item/weapon/gun_component/ak_feed_556
+	component_id = "ak/feed/556x45"
+/obj/item/weapon/gun_component/ar_action
+	component_id = "ar/action"
+/obj/item/weapon/gun_component/ar_barrel_556
+	component_id = "ar/barrel/556x45"
+/obj/item/weapon/gun_component/ar_feed_556
+	component_id = "ar/feed/556x45"
+/obj/item/weapon/gun_component/ar_furniture_fixed
+	component_id = "ar/furniture/fixed"
+/obj/item/weapon/gun_component/ar_furniture_collapsible
+	component_id = "ar/furniture/collapsible"
 
 #undef FIREARM_BARREL_LIFE
