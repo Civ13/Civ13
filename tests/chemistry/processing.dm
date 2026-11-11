@@ -115,6 +115,7 @@ var/processing_error = FALSE
 #endif
 
 /proc/processing_guard_checks()
+	processing_retired_collector_checks()
 	var/obj/structure/reaction_bench/bench = processing_new_bench(TRUE)
 	processing_add(bench, "ethylene", 2)
 	processing_add(bench, "titaniumchloride", 10)
@@ -183,4 +184,22 @@ var/processing_error = FALSE
 	stock.amount = 9
 	stock.produce_recipe(bench_recipe, 1, builder)
 	chemistry_assert(stock.amount == 9 && !(locate(/obj/structure/reaction_bench) in T), "Insufficient glass accepted")
+	return TRUE
+
+// ClearMap can retire a beaker before its containing bench. The bench still
+// owns a reference while the beaker's Destroy has cleared its reagent holder.
+/proc/processing_retired_collector_checks()
+	var/obj/structure/reaction_bench/bench = processing_new_bench()
+	var/obj/item/weapon/reagent_containers/glass/beaker = bench.collector
+	qdel(beaker)
+	chemistry_assert(beaker && (beaker.gcDestroyed || beaker.gc_destroyed) && !beaker.reagents, "Retired beaker fixture did not retain a cleared holder")
+	chemistry_assert(!bench.remove_beaker(), "Retired beaker was returned to play")
+	chemistry_assert(!bench.collector && !bench.heated_until && !beaker.loc, "Retired beaker kept ownership or was moved")
+	qdel(bench)
+	bench = processing_new_bench()
+	beaker = bench.collector
+	qdel(beaker)
+	qdel(bench)
+	chemistry_assert(bench.gcDestroyed || bench.gc_destroyed, "Bench teardown failed after collector retirement")
+	chemistry_assert(!beaker.loc, "Bench teardown moved its retired collector")
 	return TRUE
