@@ -8,6 +8,10 @@
 // variables (in params format) that you want saved along with the map file.
 // Experimental duty-cycle policy, not an equivalent-budget optimization.
 // Native copies, hooks and writes remain nonpreemptible.
+// Export frames deep before a field reference is deferred (BuildVarDirectory).
+// One frame costs about five Dream Daemon calls; the stack ends near 400.
+#define PERSISTENCE_EXPORT_DEFER_DEPTH 24
+
 /map_storage/proc/save_work_check()
 	if(moving_save_chunk)
 		moving_save_chunk.check()
@@ -178,6 +182,8 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
+		// Nothing reserved on this level may be left unwritten.
+		drain_deferred_save_entries()
 		// A stream level's candidate check reads this summary of the pinned
 		// objects instead of walking the published file back (loading.dm).
 		if(stream_writer && !debug_policy && !candidate_readback_required()) record_candidate_level_structure(A, sparse_turf, sparse_area)
@@ -348,6 +354,18 @@
 		saving_world_movables[A] = list("atom" = A, "z" = saving_z, "ref" = ref)
 		bind_level_link(A, ref)
 	if(durable_export && istype(A, /atom/movable)) durable_export.bind_entry(A, saving_z, ref, src)
+	// A field reference past PERSISTENCE_EXPORT_DEFER_DEPTH keeps its reserved
+	// entry number but is exported after this top-level entry finishes, so long
+	// reference chains (animal targets, owners, followers) cannot exhaust Dream
+	// Daemon's ~400-call stack. Contents traversal stays depth-first.
+	if(!traversal && !human_request && !moving_save_chunk && saving_export_stack.len >= PERSISTENCE_EXPORT_DEFER_DEPTH && !(persistence_active_operation && persistence_active_operation.debug_recovery))
+		saving_deferred_entries += list(list(A, savefile, ref, identity))
+		return ref
+	. = export_saved_entry(savefile, A, contents, ref, identity, human_request)
+	if(!saving_export_stack.len && saving_deferred_entries.len) drain_deferred_save_entries()
+
+// Writes one reserved entry: its type, contents, fields and content list.
+/map_storage/proc/export_saved_entry(savefile/savefile, datum/A, contents, ref, identity, datum/human_request)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
 	frame.file = savefile
@@ -517,6 +535,19 @@
 		completed_request.serialized = TRUE
 #endif
 	return ref
+
+// Exports the entries deferred by BuildVarDirectory, newest first. Each runs
+// from an empty export stack; the ones it defers in turn join the queue.
+/map_storage/proc/drain_deferred_save_entries()
+	while(saving_deferred_entries.len)
+		var/list/entry = saving_deferred_entries[saving_deferred_entries.len]
+		saving_deferred_entries.len--
+		var/datum/A = entry[1]
+		var/ref = entry[3]
+		if(!A || saving_reference_pins[ref] != A || saving_references[entry[4]] != ref)
+			throw EXCEPTION("Deferred save entry changed before export")
+		export_saved_entry(entry[2], A, 1, ref, entry[4], null)
+		save_work_check()
 
 // Typed envelopes preserve literal marker strings and associative/nested lists.
 // Lists are indexed separately so aliases and cycles survive a round trip.

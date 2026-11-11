@@ -119,6 +119,7 @@ var/knowledge_failures = 0
 		knowledge_check(H.knows_recipe_node(future_id) && !crafting_node_allowed(H, future_id), "changing factions retains knowledge but not another faction's ceiling")
 		H.civilization = "none"
 		check_book_research()
+		check_agent_book_ceiling()
 		knowledge_check(map_storage.Save_World() && map_storage.validate_world_save(), "native body and book durable save")
 		map_storage.ClearMap()
 		knowledge_check(map_storage.Load_World(), "native durable reload")
@@ -149,6 +150,30 @@ var/knowledge_failures = 0
 	var/list/params = params2list(world.params)
 	text2file(json_encode(list("failures" = knowledge_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
+
+// Agent characters skip personal knowledge but not the world's research.
+/proc/check_agent_book_ceiling()
+	var/old_book = map.book_research
+	map.book_research = TRUE
+	var/current_id
+	var/future_id
+	for (var/id in research_nodes)
+		var/datum/research_node/N = research_nodes[id]
+		if (N.tree != "Main" || N.mode == RESEARCH_MODE_BOOK || !valid_recipe_node_id(id))
+			continue
+		if (!current_id && N.era_tier <= map.ordinal_age)
+			current_id = id
+		if (!future_id && N.era_tier > map.ordinal_age)
+			future_id = id
+	var/mob/living/human/knowledge_fixture/agent = new(locate(9,9,1))
+	agent.civilization = "none"
+	agent_characters[agent] = "fixture"
+	knowledge_check(map.book_research_enabled() && agent.recipe_knowledge_exempt() && current_id && future_id, "agent fixture is exempt with nodes on both sides of the era")
+	knowledge_check(crafting_node_allowed(agent, current_id), "an agent crafts the current era without studying")
+	knowledge_check(!crafting_node_allowed(agent, future_id), "an agent cannot craft a later era on a book research world")
+	agent_characters -= agent
+	qdel(agent)
+	map.book_research = old_book
 
 // Call the production action directly, as a saved/stale craft href would.
 /obj/item/stack/manual_menu_fixture/New()
