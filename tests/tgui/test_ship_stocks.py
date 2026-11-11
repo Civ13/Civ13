@@ -11,6 +11,35 @@ STATE = SOURCE.split('/datum/topic_state/ship_stocks/can_use_topic', 1)[1].split
 
 
 class ShipStocksContract(unittest.TestCase):
+    def test_large_barrel_water_tally_counts_only_water_reagents(self):
+        food = BOOK.split('\tproc/tally_food()\n', 1)[1].split('\tproc/tally_weapons()', 1)[0]
+        barrel = food.split('for(var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)', 1)[1]
+        match = re.search(r'if \(istype\((\w+), /datum/reagent/water\)\)\s+tally\["water"\] \+= (\w+)\.volume', barrel)
+        self.assertIsNotNone(match)
+        tested, added = match.groups()
+        # Project the production type test and volume source for mixed barrels.
+        reagents = [('water', 40), ('beer', 60), ('water', 15)]
+        total = sum(volume for kind, volume in reagents
+                    if (kind if tested == 'R' else 'largebarrel') == 'water' and added == 'R')
+        self.assertEqual(total, 55)
+
+    def test_treasury_counts_loose_money_once_per_turf(self):
+        treasury = BOOK.split('\tproc/tally_treasure()\n', 1)[1].split('\tproc/tally_materials()', 1)[0]
+        chest = re.search(r'(?m)^(\t+)for\(var/obj/structure/closet/crate/chest/treasury/ship/S in sel_turf\)', treasury)
+        loose = re.search(r'(?m)^(\t+)for\(var/obj/item/stack/money/M1 in (\w+(?:\.loc)?)\)', treasury)
+        self.assertIsNotNone(chest)
+        self.assertIsNotNone(loose)
+        self.assertIn('for(var/obj/item/stack/money/M in S)\n\t\t\t\t\ttally += M.value*M.amount', treasury)
+        self.assertIn('tally += M1.value*M1.amount', treasury)
+        self.assertIn(loose.group(2), ('sel_turf', 'S.loc'))
+        # Project loop nesting: chest contents count individually, loose coins
+        # count once per turf, including turfs with no chest.
+        for chest_values in ([], [7], [7, 11]):
+            with self.subTest(chests=len(chest_values)):
+                loose_repetitions = len(chest_values) if len(loose.group(1)) > len(chest.group(1)) else 1
+                actual = sum(chest_values) + loose_repetitions * (3 * 5)
+                self.assertEqual(actual, sum(chest_values) + 15)
+
     def test_new_snapshot_requires_local_human_interaction_before_any_tally(self):
         tally = OPEN.index('tally_materials()')
         self.assertLess(OPEN.index('!ishuman(user) || !user.client'), tally)
