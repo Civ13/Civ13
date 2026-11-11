@@ -425,6 +425,8 @@ SUITES = {
     'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
         'paths': ('tests/mood_sleep/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',)},
+    'dream_lifecycle': {'files': ('tests/dream_lifecycle/test_dream_lifecycle.py',),
+        'paths': ('tests/dream_lifecycle/', 'code/modules/flufftext/Dreaming.dm')},
     # Human form priority and reset-callback projections; no native world.
     'human_life_forms': {'files': ('tests/human_life_forms/test_forms.py',),
         'paths': ('tests/human_life_forms/',), 'shared_paths': (
