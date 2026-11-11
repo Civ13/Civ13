@@ -298,6 +298,7 @@ class StagingContracts(unittest.TestCase):
         self.assertIn('combined_capsule = position.Copy()', result)
         self.assertIn('combined_pulses_after++', result)
         handoff = ('\t\t\texpected = after\n'
+                   '\t\t\tactor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)\n'
                    '\t\t\tif (actor.human_subtile_save_request)\n'
                    '\t\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)')
         self.assertEqual(source.count(handoff), 1)
