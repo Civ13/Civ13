@@ -33,10 +33,39 @@ echo "Setting up the system for BYOND compilation."
 sudo timeout -k 5 30 dpkg --add-architecture i386
 # Install dependencies only; never upgrade the hosted image.
 # Retry stalled transfers inside the existing phase deadlines. These command-local
-# options retain APT's configured sources and authentication; no host config write.
+# options keep APT's authentication; no host config is written.
 apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
-sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update
-sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" install -y --no-install-recommends python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+apt_sources=()
+apt_packages=(python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386)
+# The runner image's Azure mirror can go dark for hours: its update then hangs
+# or "succeeds" with every index ignored. Retry once with non-Azure public
+# mirrors, given to APT as command options only. The list lives in the runner
+# temp dir and a missing parts directory makes APT read only that list.
+use_fallback_mirrors() {
+    echo 'Ubuntu mirror failed; retrying with public non-Azure mirrors.' >&2
+    local codename mirror suite list="${RUNNER_TEMP:-$PWD}/civ13-apt-fallback.list"
+    codename="$(. /etc/os-release && printf '%s' "$VERSION_CODENAME")"
+    : > "$list"
+    for mirror in http://archive.ubuntu.com/ubuntu http://mirrors.edge.kernel.org/ubuntu; do
+        for suite in "$codename" "$codename-updates" "$codename-security"; do
+            printf 'deb [arch=amd64,i386] %s %s main universe\n' "$mirror" "$suite" >> "$list"
+        done
+    done
+    apt_sources=(-o "Dir::Etc::SourceList=$list" -o "Dir::Etc::SourceParts=$list.d")
+    sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" "${apt_sources[@]}" update
+}
+install_packages() {
+    sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" "${apt_sources[@]}" install -y --no-install-recommends "${apt_packages[@]}"
+}
+if ! sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update; then
+    use_fallback_mirrors
+fi
+if install_packages; then :; else
+    apt_status=$?
+    [ "${#apt_sources[@]}" -eq 0 ] || exit "$apt_status"
+    use_fallback_mirrors
+    install_packages
+fi
 
 # END package setup
 
