@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'game_clock': {'files': ('tests/game_clock/test_clock.py',),
+        'paths': ('tests/game_clock/', 'code/__defines/time_of_day.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
