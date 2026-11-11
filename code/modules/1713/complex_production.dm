@@ -30,8 +30,14 @@
 			G  = user.l_hand
 		else
 			G  = user.r_hand
+		if (!G.is_open_container())
+			to_chat(user, SPAN_WARNING("Take the lid off \the [G] first."))
+			return
 		if (G.reagents.get_reagent_amount("fat_oil") >= 5)
 			if(do_after(user, 90))
+				// The lid, the container or the oil may have changed during the wait.
+				if (!G.is_open_container() || (G != user.l_hand && G != user.r_hand) || G.reagents.get_reagent_amount("fat_oil") < 5)
+					return
 				user.visible_message(SPAN_NOTICE("[user.name] pours the [src.name] into the [G.name], mixing it."), SPAN_NOTICE("You pour the [src.name] into \the [G.name], mixing it."))
 				G.reagents.remove_reagent("fat_oil", 5)
 				new/obj/item/weapon/reagent_containers/food/snacks/pemmican(user.loc)
