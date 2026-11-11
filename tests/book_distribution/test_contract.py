@@ -75,5 +75,18 @@ class DistributionContract(unittest.TestCase):
         kind = proc(travel, "/proc/region_travel_item_kind")
         self.assertIn("!C.dat", kind)
         self.assertIn("!B.dat", kind)
+    def test_press_prints_whole_books_for_paper(self):
+        press = proc(read("code/modules/1713/production.dm"), "/obj/structure/printingpress/attackby")
+        self.assertLess(press.index("print_recipe_manual"), press.index("load_printing_sheet"))
+        self.assertLess(press.index("load_printing_sheet"), press.index("insert_copy_paper"))
+        self.assertIn("press_prints_whole_book(base[1])", read("code/modules/1713/production.dm"))
+        printing = read("code/modules/research_tree/book_printing.dm")
+        finish = proc(printing, "/obj/structure/printingpress/proc/finish_whole_book_print")
+        self.assertIn("whole_book_print_problem(original, stock)", finish)
+        self.assertIn("printing_sheets -= chapters.len", finish)
+        self.assertNotIn("research_progress", finish)
+        problem = proc(printing, "/obj/structure/printingpress/proc/whole_book_print_problem")
+        self.assertIn("stock.monk_copy_blank()", problem)
+        self.assertIn("printing_sheets < needed", problem)
 if __name__ == "__main__":
     unittest.main()

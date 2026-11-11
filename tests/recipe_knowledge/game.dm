@@ -291,6 +291,7 @@ var/knowledge_failures = 0
 	check_scholar_tutoring()
 	check_scholar_apprentices()
 	check_scholar_titles()
+	check_book_printing(scholar)
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -441,6 +442,47 @@ var/knowledge_failures = 0
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
 	qdel(H)
+
+// Printing (Val, 2026-11-10): a press prints a whole book, pages and
+// chapters, into a blank book, using one sheet of printing paper per chapter.
+/proc/check_book_printing(mob/living/human/scholar)
+	var/obj/structure/printingpress/press = new(locate(3,3,1))
+	var/obj/item/weapon/book/original = new(locate(3,3,1))
+	original.title = "Field notes"
+	original.add_written_page("Notes on the river.")
+	original.add_research_chapter("basic_tools")
+	original.add_research_chapter("iron_tools")
+	original.add_research_work("bronze_working", 5)
+	var/obj/item/weapon/book/stock = new(locate(3,3,1))
+	var/obj/item/weapon/book/used = new(locate(3,3,1))
+	used.add_written_page("Already written.")
+	press.base = list(original)
+	press.copy = list(used)
+	knowledge_check(press.whole_book_print_problem(original, used) == "The copy must be a blank book." && !press.finish_whole_book_print(), "the press prints only into a blank book")
+	press.copy = list(stock)
+	knowledge_check(findtext(press.whole_book_print_problem(original, stock), "needs 2 sheets") && !press.finish_whole_book_print() && !QDELETED(stock), "printing needs one sheet per chapter")
+	var/obj/item/weapon/paper/sheet = new(locate(3,3,1))
+	scholar.put_in_l_hand(sheet)
+	knowledge_check(press.load_printing_sheet(sheet, scholar) && press.printing_sheets == 1 && QDELETED(sheet), "a blank sheet loads as printing paper")
+	var/obj/item/weapon/paper/written = new(locate(3,3,1))
+	written.info = "A letter."
+	scholar.put_in_l_hand(written)
+	knowledge_check(!press.load_printing_sheet(written, scholar) && press.printing_sheets == 1, "written paper isn't printing paper")
+	scholar.drop_from_inventory(written)
+	qdel(written)
+	var/obj/item/weapon/paper_bin/bin = new(locate(3,3,1))
+	bin.amount = 3
+	knowledge_check(press.load_paper_bin(bin, scholar) && press.printing_sheets == 4 && bin.amount == 0, "a paper bin empties its blank sheets into the press")
+	var/obj/item/weapon/book/printed = press.finish_whole_book_print()
+	knowledge_check(istype(printed) && printed.has_research_chapter("basic_tools") && printed.has_research_chapter("iron_tools") && printed.title == "Field notes", "the printed book carries every chapter and the title")
+	var/list/printed_pages = printed ? printed.page_list() : list()
+	knowledge_check(printed_pages.len == 1 && printed_pages[1] == "Notes on the river." && printed && !printed.research_ticks("bronze_working"), "pages are printed, unfinished research is not")
+	knowledge_check(press.printing_sheets == 2 && QDELETED(stock) && original.has_research_chapter("iron_tools") && original.research_ticks("bronze_working") && !press.base.len && !press.copy.len, "printing uses the sheets and the blank book, and the original keeps everything")
+	knowledge_check(!press_prints_whole_book(new /obj/item/weapon/book/holybook(locate(3,3,1))), "holy books keep their own press copying")
+	qdel(printed)
+	qdel(original)
+	qdel(used)
+	qdel(press)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.
