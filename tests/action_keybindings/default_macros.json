@@ -68,7 +68,8 @@
     {"id": "", "key": "CTRL+I", "command": "open-worn-storage", "disabled": false},
     {"id": "", "key": "CTRL+P", "command": "open-back-storage", "disabled": false},
     {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
-    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false}
+    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false},
+    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false}
   ],
   "hotkeymode": [
     {"id": "", "key": "Return", "command": ".winset \\\"input.focus=true\\\"", "disabled": false},
@@ -192,6 +193,7 @@
     {"id": "", "key": "K", "command": "open-belt-storage", "disabled": false},
     {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
     {"id": "", "key": "SHIFT+I", "command": "open-clothing-storage", "disabled": false},
-    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false}
+    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false},
+    {"id": "", "key": "CTRL+B", "command": "Resist", "disabled": false}
   ]
 }

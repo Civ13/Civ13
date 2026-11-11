@@ -57,6 +57,7 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 \tCtrl+4 = Harm-intent\n \
 \tCtrl+i / Ctrl+p / Ctrl+k = Open worn storage / backpack / belt\n \
 \tCtrl+Shift+i = Open harness, webbing or pockets\n \
+\tCtrl+B = Resist (break grabs, cuffs, buckles, put out fire)\n \
 \t5-9 = Quick-cast wand spells\n \
 \tDEL = Pull\n \
 \tINS = Cycle-intents-right\n \
