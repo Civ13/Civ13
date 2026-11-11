@@ -18,7 +18,7 @@
 		return PROCESS_TICK_CHECK_RETURNED_EARLY
 	processing_batch = TRUE
 	if (!current_list)
-		var/batch_size = min(lighting_update_overlays.len, lighting_update_overlays.len > 1000 ? 2000 : 1000)
+		var/batch_size = min(lighting_update_overlays.len, 2000)
 		current_list = lighting_update_overlays.Copy(1, batch_size + 1)
 		lighting_update_overlays.Cut(1, batch_size + 1)
 		batch_index = 1
