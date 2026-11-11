@@ -16,6 +16,7 @@
 /obj/map_metadata/flora_probe/New()
 	return
 /mob/living/human/flora_probe/New()
+	icon_update = FALSE // no species: skip body overlays when held items change
 	return
 var/flora_failures = 0
 var/flora_runtime_error = FALSE
@@ -220,6 +221,20 @@ var/flora_runtime_error = FALSE
 	S2.health = 0
 	S2.try_destroy()
 	flora_check(!(locate(/obj/structure/wild/tree_stump) in T2), "chopping a stump clears it without another stump")
+	var/turf/T3 = locate(20, 30, 1)
+	var/obj/structure/wild/tree_stump/regrowing/S3 = new(T3)
+	S3.health = 0
+	S3.try_destroy()
+	var/obj/item/stack/material/wood/stump_logs = locate() in T3
+	flora_check(stump_logs && stump_logs.amount == 2, "clearing a stump gives two logs from its roots")
+	if (stump_logs)
+		qdel(stump_logs)
+	var/obj/structure/wild/tree_stump/mapped = new(T3)
+	var/obj/item/stack/material/wood/dug = mapped.drop_stump_wood()
+	flora_check(dug && dug.amount == 2 && !mapped.drop_stump_wood(), "a mapped stump gives its root wood once")
+	if (dug)
+		qdel(dug)
+	qdel(mapped)
 	map.stump_regrowth_minutes = 240
 	qdel(back)
 
