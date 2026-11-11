@@ -52,15 +52,18 @@ var/global/list/controlled_reactions_by_id = null
 	return TRUE
 
 /obj/structure/reaction_bench/proc/remove_beaker()
-	if(!collector)
-		return null
 	var/obj/item/weapon/reagent_containers/glass/B = collector
+	collector = null
+	heated_until = 0
+	// ClearMap may retire the contents before their containing bench. Such a
+	// beaker has no reagent holder and must not be moved back into the world.
+	if(!B || B.gcDestroyed || B.gc_destroyed)
+		return null
 	if(!collector_was_inert)
 		B.flags &= ~NOREACT
 	B.loc = get_turf(src)
-	collector = null
-	heated_until = 0
-	B.reagents.handle_reactions()
+	if(B.reagents)
+		B.reagents.handle_reactions()
 	return B
 
 /obj/structure/reaction_bench/proc/add_solution(obj/item/weapon/reagent_containers/glass/B, amount)
