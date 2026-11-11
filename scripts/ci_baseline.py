@@ -197,7 +197,7 @@ SUITES = {
         'tests/clay_melee/', 'code/game/objects/items/clay_items.dm', 'tests/save_movement/source_adapter.py')},
     'magic_weapon_contact': {'files': ('tests/magic_weapon_contact/test_contact.py',), 'paths': (
         'tests/magic_weapon_contact/', 'code/_onclick/item_attack.dm',
-        'code/modules/magic/magic_weapons.dm', 'code/game/mob/living/living_defense.dm',
+        'code/modules/magic/magic_weapons.dm', 'code/game/objects/items/weapons/swords_axes_etc.dm', 'code/game/mob/living/living_defense.dm',
         'code/game/mob/living/carbon/carbon_defense.dm', 'code/game/mob/living/carbon/human/human_defense.dm',
         'code/game/mob/living/simple_animal/simple_animal.dm', 'code/game/mob/living/simple_animal/hostile/zombie.dm')},
     'glass_jar': {'files': ('tests/glass_jar/test_capture.py',), 'paths': (
