@@ -208,6 +208,10 @@
 	center_of_mass = list("x"=16, "y"=14)
 	raw = TRUE
 	rotten_icon_state = "rotraw_crabmeat"
+	// Roasted art adapted from Pocket Stronghold 13; see the DMI's LICENSE.md.
+	roasted_icon = 'icons/obj/food/pocket_stronghold_food.dmi'
+	roasted_icon_state = "crab_meat_roasted"
+	roasted_rotten_icon_state = "food_ruined"
 	rots = TRUE
 	non_vegetarian = TRUE
 	satisfaction = -10
