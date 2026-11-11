@@ -60,7 +60,7 @@ class Documents(unittest.TestCase):
  def test_every_text_kind_is_projected_without_unknown_originals(self):
   record=self.initialize()
   for index,kind in enumerate(['body','title','field_label','field_answer','signature']):
-   record['sections'].append(dict(id=str(index),lineage=str(index)*32,version=1,kind=kind,language_id=RU,text='PRIVATE_CANARY_'+kind,ink='#ffffff',tool='pen'))
+   record['sections'].append(dict(id=str(index),lineage=str(index)*32,version=1,kind=kind,language_id=RU,text='PRIVATE_CANARY_'+kind,ink='#ffffff',tool='pen',**(dict(target='2') if kind=='field_answer' else {})))
   visible=self.service.project(self.actor);encoded=json.dumps(visible)
   self.assertNotIn('PRIVATE_CANARY',encoded);self.assertEqual(len(visible['sections']),5)
   self.assertTrue(all(s['text']=='[Unintelligible writing]' for s in visible['sections']))

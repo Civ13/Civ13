@@ -31,6 +31,27 @@ def assert_authority_and_target(test, source):
     test.assertNotRegex(after, r'\b(sleep|spawn|WWinput|WWalert|input|do_after)\s*\(')
 
 
+def assert_hygiene_overlay_allocation(test, body):
+    # A fresh composite is still published every awake tick. Individual
+    # overlays should only be allocated on the branches that display them.
+    composite = 'var/image/img_nasties = image(\'icons/effects/effects.dmi\', "nothing")'
+    smell = 'var/image/smell = image(\'icons/effects/effects.dmi\', "smell")'
+    fleas = 'var/image/fleas = image(\'icons/effects/effects.dmi\', "lice_overlay")'
+    for declaration in (composite, smell, fleas):
+        test.assertEqual(body.count(declaration), 1)
+    test.assertIn('\tif (sleeping)\n\t\treturn\n', body)
+    test.assertLess(body.index(composite), body.index('\tswitch(hygiene)'))
+    test.assertIn('\t\tif(0 to HYGIENE_LEVEL_DIRTY)\n\t\t\t' + smell +
+                  '\n\t\t\timg_nasties.overlays += smell\n', body)
+    test.assertIn('\tif (fleas_found)\n\t\t' + fleas +
+                  '\n\t\timg_nasties.overlays += fleas\n', body)
+    test.assertIn('overlays_standing[27] = img_nasties', body)
+    test.assertLess(body.index('img_nasties.overlays += smell'),
+                    body.index('img_nasties.overlays += fleas'))
+    test.assertLess(body.index('img_nasties.overlays += fleas'),
+                    body.index('overlays_standing[27] = img_nasties'))
+
+
 class PlayerCareSourceContracts(unittest.TestCase):
     def test_only_admin_group_registers_human_context_actions(self):
         source = (ROOT / 'code/modules/admin/admin_verbs.dm').read_text()
@@ -82,6 +103,18 @@ class PlayerCareSourceContracts(unittest.TestCase):
         body = command(COMMANDS[0])
         self.assertLess(body.index('H.overlays_standing[27] = null'), body.index('H.update_icons()'))
         self.assertNotIn('H.handle_hygiene()', body)
+
+    def test_hygiene_overlay_allocation_is_guarded_and_preserves_order(self):
+        hygiene = proc('code/game/mob/living/carbon/human/human_needs.dm',
+                       '/mob/living/human/proc/handle_hygiene()')
+        assert_hygiene_overlay_allocation(self, hygiene)
+        for mutation in (
+            hygiene.replace('if(0 to HYGIENE_LEVEL_DIRTY)', 'if(HYGIENE_LEVEL_NORMAL to INFINITY)'),
+            hygiene.replace('if (fleas_found)', 'if (!fleas_found)'),
+            hygiene.replace('overlays_standing[27] = img_nasties', 'overlays_standing[27] = null'),
+        ):
+            with self.assertRaises(AssertionError):
+                assert_hygiene_overlay_allocation(self, mutation)
 
     def test_mood_restores_baseline_preserves_boost_and_refreshes_modifier(self):
         body = command(COMMANDS[1])

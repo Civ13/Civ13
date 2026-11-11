@@ -18,6 +18,8 @@ var/global/list/train_raid_loot_pads = list()
 	name = "Train Raid"
 	dynamic_lighting = FALSE
 	luminosity = TRUE
+	// Section tier: lift balloons need a boarding pass above TRAIN_RAID_OPEN_TIER.
+	var/raid_tier = 1
 
 /area/train_raid/void
 	name = "Outside the station"
@@ -38,15 +40,19 @@ var/global/list/train_raid_loot_pads = list()
 	name = "Hauler flatcars"
 
 /area/train_raid/hauler/boxcars
+	raid_tier = 2
 	name = "Hauler boxcars"
 
 /area/train_raid/hauler/coaches
+	raid_tier = 3
 	name = "Hauler crew coaches"
 
 /area/train_raid/hauler/vault
+	raid_tier = 4
 	name = "Hauler vault car"
 
 /area/train_raid/hauler/locomotive
+	raid_tier = 5
 	name = "Hauler locomotive"
 
 /area/train_raid/shuttle
@@ -110,6 +116,7 @@ var/global/list/train_raid_loot_pads = list()
 	var/docking_window = 2 MINUTES
 	var/recall_cooldown = 5 MINUTES
 	var/lives_per_raider = 3
+	var/recall_fuel = 2 // fuel units one recall burns (train_raid_shuttle.dm)
 	var/tmp/round_started = 0
 	var/tmp/round_deadline = 0
 	var/tmp/game_over = FALSE
@@ -193,6 +200,8 @@ var/global/list/train_raid_loot_pads = list()
 	var/key = raider_key(H)
 	if (!key) return FALSE
 	if (isnull(C.lives[key])) C.lives[key] = lives_per_raider
+	// The crew's first raider brings their saved shuttle for this round.
+	if (!C.party) C.take_command(H, key)
 	var/turf/T = C.lives_of(key) > 0 ? C.bed_turf(key) : null
 	if (T)
 		var/location = "TrainRaidBed_[crew_id]_[key]"
@@ -237,6 +246,11 @@ var/global/list/train_raid_loot_pads = list()
 		var/value = C.secured_value()
 		var/aboard = C.members_aboard().len
 		lines += "[C.title] shuttle: [value] secured value, [aboard] raider[aboard == 1 ? "" : "s"] aboard, [lost.len ? "" : "nobody "]lost on the Hauler."
+	// What the shuttles secured stays theirs for the next round.
+	for (var/id in crews)
+		var/datum/train_raid_crew/C = crews[id]
+		var/saved = C.save_shuttle()
+		if (saved) lines += saved
 	to_chat(world, "<big><b>Round over.</b></big>")
 	for (var/line in lines)
 		to_chat(world, "<big>[line]</big>")
@@ -253,6 +267,14 @@ var/global/list/train_raid_loot_pads = list()
 	var/next_recall = 0
 	var/list/lives = list()
 	var/list/beds = list()
+	// Saved shuttle (train_raid_shuttle.dm): whose it is, loaded fuel and the
+	// highest section tier a boarding pass has cleared this round.
+	var/party
+	var/captain
+	var/fuel = 0
+	var/clearance = 2
+	var/generation = 0
+	var/save_blocked = FALSE
 
 /datum/train_raid_crew/New(crew_id, obj/map_metadata/train_raid/M)
 	..()
@@ -335,9 +357,15 @@ var/global/list/train_raid_loot_pads = list()
 	if (!mode.on_hauler(H))
 		to_chat(H, "The beacon only reaches the shuttle from the Hauler or the station.")
 		return FALSE
+	// Fuel is checked and burned in this same step, so a recall is never free
+	// and never paid twice.
+	if (fuel < mode.recall_fuel)
+		to_chat(H, "The shuttle has [fuel] fuel and a trip back burns [mode.recall_fuel]. Load fuel at its helm.")
+		return FALSE
+	fuel -= mode.recall_fuel
 	state = TRAIN_RAID_INBOUND
 	state_until = world.time + mode.recall_travel
-	announce("[H.real_name] has recalled the shuttle. It arrives in [round(mode.recall_travel / (1 MINUTE))] minute(s) and stays for [round(mode.docking_window / (1 MINUTE))].")
+	announce("[H.real_name] has recalled the shuttle. It arrives in [round(mode.recall_travel / (1 MINUTE))] minute(s) and stays for [round(mode.docking_window / (1 MINUTE))]. Fuel left: [fuel].")
 	return TRUE
 
 /datum/train_raid_crew/proc/depart_now(mob/living/human/H)
@@ -432,7 +460,7 @@ var/global/list/train_raid_loot_pads = list()
 	H.equip_to_slot_or_del(new /obj/item/train_raid_balloon(H), slot_r_store)
 	if (H.back) new /obj/item/train_raid_balloon(H.back)
 	give_random_name(H)
-	H.add_note("Role", "Raid the Hauler with your crew. Lift balloons send one item or crate to your shuttle's stores; your shuttle beacon recalls the shuttle from the Hauler. Click a bed to claim it as your respawn point. Everything left on the Hauler is lost when the line collapses.")
+	H.add_note("Role", "Raid the Hauler with your crew. Lift balloons send one item or crate to your shuttle's stores; the coaches, vault car and locomotive need a boarding pass loaded at the helm first. Your shuttle beacon recalls the shuttle from the Hauler and burns fuel; load fuel cells or coal at the helm. Click a bed to claim it as your respawn point. Everything left on the Hauler is lost when the line collapses; what is aboard the shuttle stays your crew captain's for the next round.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
@@ -539,8 +567,19 @@ var/global/list/train_raid_loot_pads = list()
 		return
 	var/list/options = list("Cancel")
 	if (C.state == TRAIN_RAID_DOCKED) options.Insert(1, "Depart now")
-	var/choice = WWinput(H, "[C.status_text()] Lives left: [C.lives_of(M.raider_key(H))]. Line collapse in [M.remaining_text()].", "[C.title] shuttle helm", "Cancel", options)
+	var/choice = WWinput(H, "[C.status_text()] [C.shuttle_text()] Lives left: [C.lives_of(M.raider_key(H))]. Line collapse in [M.remaining_text()].", "[C.title] shuttle helm", "Cancel", options)
 	if (choice == "Depart now" && Adjacent(H) && H.stat == CONSCIOUS) C.depart_now(H)
+
+/obj/structure/train_raid_helm/attackby(obj/item/W, mob/user)
+	var/mob/living/human/H = user
+	var/obj/map_metadata/train_raid/M = map
+	if (!istype(H) || !istype(M) || !Adjacent(H) || H.stat != CONSCIOUS) return
+	var/datum/train_raid_crew/C = M.crew(crew)
+	if (!C) return
+	if (H.train_raid_crew != crew)
+		to_chat(H, "These controls answer only to the [C.title] crew.")
+		return
+	C.load_at_helm(H, W)
 
 /obj/structure/train_raid_helm/ex_act(severity)
 	return
@@ -655,10 +694,10 @@ var/global/list/train_raid_loot_pads = list()
 
 /obj/effect/train_raid_loot/proc/tables()
 	switch (tier)
-		if (1) return list(null, null, /obj/effect/spawner/lootdrop/melee, /obj/effect/spawner/lootdrop/accessories, /obj/random/medical/bandage, /obj/random/melee)
-		if (2) return list(null, null, /obj/effect/spawner/lootdrop/ammo/industrial, /obj/effect/spawner/lootdrop/armor/industrial, /obj/random/medical/drugs, /obj/effect/spawner/lootdrop/melee, /obj/random/medical/bandage)
-		if (3) return list(null, /obj/effect/spawner/lootdrop/guns/industrial, /obj/effect/spawner/lootdrop/ammo/industrial, /obj/random/magazine/western_random, /obj/item/weapon/storage/eft/medical, /obj/item/train_raid_balloon, /obj/random/armor)
-		if (4) return list(null, /obj/effect/spawner/lootdrop/guns, /obj/effect/spawner/lootdrop/armor, /obj/effect/spawner/lootdrop/explosives, /obj/random/gun/western_random, /obj/random/accessories, /obj/item/train_raid_balloon)
+		if (1) return list(null, null, /obj/effect/spawner/lootdrop/melee, /obj/effect/spawner/lootdrop/accessories, /obj/random/medical/bandage, /obj/random/melee, /obj/item/train_raid_fuel)
+		if (2) return list(null, null, /obj/effect/spawner/lootdrop/ammo/industrial, /obj/effect/spawner/lootdrop/armor/industrial, /obj/random/medical/drugs, /obj/effect/spawner/lootdrop/melee, /obj/random/medical/bandage, /obj/item/train_raid_fuel, /obj/item/train_raid_pass/coaches)
+		if (3) return list(null, /obj/effect/spawner/lootdrop/guns/industrial, /obj/effect/spawner/lootdrop/ammo/industrial, /obj/random/magazine/western_random, /obj/item/weapon/storage/eft/medical, /obj/item/train_raid_balloon, /obj/random/armor, /obj/item/train_raid_pass/vault)
+		if (4) return list(null, /obj/effect/spawner/lootdrop/guns, /obj/effect/spawner/lootdrop/armor, /obj/effect/spawner/lootdrop/explosives, /obj/random/gun/western_random, /obj/random/accessories, /obj/item/train_raid_balloon, /obj/item/train_raid_pass/locomotive)
 	return list(/obj/effect/spawner/lootdrop/guns, /obj/effect/spawner/lootdrop/armor, /obj/effect/spawner/lootdrop/explosives, /obj/random/gun/ak_modern, /obj/random/magazine/western_random, /obj/item/train_raid_balloon, /obj/item/train_raid_balloon)
 
 /obj/effect/train_raid_loot/proc/roll_loot()
@@ -703,13 +742,17 @@ var/global/list/train_raid_loot_pads = list()
 	if (!M.on_hauler(load))
 		to_chat(H, "The balloon only lifts loads from the Hauler or the station.")
 		return
+	if (!C.cleared_for(load))
+		var/area/AR = get_area(load)
+		to_chat(H, "The [AR.name] needs a boarding pass before its cargo can be lifted. Load one at your shuttle's helm.")
+		return
 	var/list/stores = C.store_turfs()
 	if (!stores.len)
 		to_chat(H, "Your shuttle has no stores to receive the load.")
 		return
 	H.visible_message(SPAN_NOTICE("[H] rigs a lift balloon to [load]."), SPAN_NOTICE("You rig the balloon to [load]. Hold on for ten seconds while it fills."))
 	if (!do_after(H, 10 SECONDS, load, FALSE, can_move = FALSE)) return
-	if (QDELETED(load) || !isturf(load.loc) || !M.on_hauler(load) || M.game_over || !H.Adjacent(load)) return
+	if (QDELETED(load) || !isturf(load.loc) || !M.on_hauler(load) || !C.cleared_for(load) || M.game_over || !H.Adjacent(load)) return
 	var/turf/T = pick(stores)
 	load.forceMove(T)
 	H.visible_message(SPAN_NOTICE("The balloon lifts [load] away toward the [C.title] shuttle."), SPAN_NOTICE("The balloon carries [load] to your shuttle's stores."))

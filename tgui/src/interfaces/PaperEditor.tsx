@@ -4,9 +4,9 @@ import { BookReader, BookPage, bookRuns, type Face } from './BookReader';
 import { text } from './common';
 import type { Data, Params, ScreenProps } from '../types';
 
-type Kind = 'body' | 'title' | 'signature';
+type Kind = 'body' | 'title' | 'signature' | 'field_label' | 'field_answer';
 type Tool = 'pen' | 'crayon';
-type Run = { text: string; kind: string; ink: string; tool?: Tool };
+type Run = { text: string; kind: string; ink: string; tool?: Tool; id?: string; target?: string };
 // Unencoded display pieces; paperBookData encodes them for the Book parser.
 export type PaperPiece = { text?: string; br?: true; ink: string; face: Face; bold: boolean; italic: boolean };
 export type PaperEditorModel = {
@@ -58,6 +58,11 @@ function legacyFace(value: string | null, current: Face): Face {
 function legacyInk(value: string | null, current: string): string {
   try { return value ? ink(value.trim().replace(/^["']|["']$/g, '')) : current; } catch { return current; }
 }
+// A stamp impression keeps its stamp's name as alt text; show it as words.
+export function stampLabel(alt: string | null): string {
+  const name = cleanText(alt ?? '').trim().slice(0, 64);
+  return name ? `[stamp: ${name}]` : '[stamp]';
+}
 export function legacyPieces(html: string): PaperPiece[] {
   if (!html) return [];
   if (typeof DOMParser !== 'function') throw new Error('Unsupported legacy paper');
@@ -85,7 +90,7 @@ export function legacyPieces(html: string): PaperPiece[] {
     const element = node as Element, tag = element.tagName.toUpperCase();
     if (LEGACY_SKIP.has(tag)) return;
     if (tag === 'BR') { push({ br: true, ...style }); return; }
-    if (tag === 'IMG') { push({ text: '[stamp]', ...style, italic: true }); return; }
+    if (tag === 'IMG') { push({ text: stampLabel(element.getAttribute('alt')), ...style, italic: true }); return; }
     const next = { ...style };
     if (tag === 'B' || tag === 'STRONG' || /^H[1-6]$/.test(tag)) next.bold = true;
     if (tag === 'I' || tag === 'EM') next.italic = true;
@@ -150,31 +155,54 @@ export function paperEditorModel(data: Data): PaperEditorModel {
   let units = 0;
   const ids = new Set<string>();
   const runs = view.sections.map(section => {
-    keys(section, ['id','kind','language_id','text','ink','tool']);
+    keys(section, section.kind === 'field_answer' ? ['id','kind','language_id','text','ink','tool','target'] : ['id','kind','language_id','text','ink','tool']);
+    if (section.kind === 'field_answer' && (typeof section.target !== 'string' || !ids.has(section.target))) throw new Error('Unsupported paper section');
     if (typeof section.id !== 'string' || !section.id.length || section.id.length > 64 || ids.has(section.id) || !language(section.language_id) || !['body','title','signature','field_label','field_answer'].includes(section.kind) || !['pen','crayon'].includes(section.tool) || typeof section.text !== 'string' || (units += section.text.length) > 6144) throw new Error('Unsupported paper section');
     ids.add(section.id);
-    return { text: section.text, kind: section.kind, ink: ink(section.ink), tool: section.tool as Tool };
+    return { text: section.text, kind: section.kind, ink: ink(section.ink), tool: section.tool as Tool, id: section.id, ...(section.kind === 'field_answer' ? { target: section.target } : {}) };
   });
   return { lease: data.lease, document_id: data.document_id, revision: data.revision, free_space: data.free_space,
     languages, default_language_id: data.default_language_id, name: text(view.legacy_name), legacy: legacyPieces(view.legacy_body_html), runs,
     draft_ink: ink(data.draft_ink), draft_tool: data.draft_tool as Tool, draft_signature: cleanText(data.draft_signature), response_serial: data.response_serial, result: data.result };
 }
 const encode = (value: string) => value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+const BLANK = '__________';
+// A field label is drawn as "Label: answer" (or a blank line) on one line;
+// answers are shown with their label instead of in writing order.
+export function formPieces(runs: Run[]): PaperPiece[] {
+  const answers = new Map<string, Run>();
+  for (const run of runs) if (run.kind === 'field_answer' && run.target && !answers.has(run.target)) answers.set(run.target, run);
+  return runs.flatMap(run => {
+    if (run.kind === 'field_answer' && run.target && runs.some(other => other.kind === 'field_label' && other.id === run.target)) return [];
+    const pieces = sectionPieces(run);
+    if (run.kind !== 'field_label') return pieces;
+    const answer = run.id ? answers.get(run.id) : undefined;
+    const style = { ink: run.ink, face: pieces[0].face, bold: false, italic: false };
+    if (!answer) return [...pieces, { text: ': ' + BLANK, ...style }];
+    return [...pieces, { text: ': ', ...style }, ...sectionPieces(answer).filter(piece => !piece.br)];
+  });
+}
+// Open blanks: labels with no answer yet, in the order they were written.
+export function openFields(runs: Run[]): { id: string; text: string }[] {
+  const answered = new Set(runs.filter(run => run.kind === 'field_answer').map(run => run.target));
+  return runs.filter(run => run.kind === 'field_label' && run.id && !answered.has(run.id)).map(run => ({ id: run.id as string, text: run.text }));
+}
 export function paperBookData(runs: Run[], legacy: PaperPiece[] = []): Data {
-  const pieces = [...legacy, ...runs.flatMap(sectionPieces)];
+  const pieces = [...legacy, ...formPieces(runs)];
   if (!legacy.length && pieces[0]?.br) pieces.shift();
   return { runs: pieces.map(piece => piece.br
     ? { br: true, face: piece.face, ink: piece.ink, bold: piece.bold, italic: piece.italic }
     : { text: encode(piece.text ?? ''), face: piece.face, ink: piece.ink, bold: piece.bold, italic: piece.italic }) };
 }
-export function paperEditParams(model: PaperEditorModel, operation: 'append' | 'refresh' | 'cancel', languageId = '', kind: Kind = 'body', value = ''): Params {
+export function paperEditParams(model: PaperEditorModel, operation: 'append' | 'refresh' | 'cancel', languageId = '', kind: Kind = 'body', value = '', target = ''): Params {
   const request: Record<string, unknown> = { operation, lease: model.lease };
   if (operation === 'append') Object.assign(request, { document_id: model.document_id, revision: model.revision, language_id: languageId, kind, value });
+  if (operation === 'append' && kind === 'field_answer') request.target = target;
   const params = { paper_edit: JSON.stringify(request) };
   if (JSON.stringify(params).length > 8192) throw new Error('Paper request exceeds transport limit');
   return params;
 }
-const DRAFT_LIMIT = 3072;
+const DRAFT_LIMIT = 3072, LABEL_LIMIT = 128;
 // Toolbar insertions wrap the current textarea selection; nothing is sent.
 const TOOLS: { label: string; title: string; before: string; after?: string }[] = [
   { label: 'B', title: 'Bold', before: '[b]', after: '[/b]' },
@@ -185,7 +213,9 @@ const TOOLS: { label: string; title: string; before: string; after?: string }[] 
 ];
 export function PaperEditorForm({ model, act, interactive, template }: { model: PaperEditorModel } & Pick<ScreenProps,'act'|'interactive'|'template'>) {
   const [languageId, setLanguage] = useState(model.default_language_id ?? model.languages[0].id);
-  const [kind, setKind] = useState<Kind>('body'), [draft, setDraft] = useState('');
+  const [kind, setKind] = useState<Kind>('body'), [draft, setDraft] = useState(''), [target, setTarget] = useState('');
+  const blanks = openFields(model.runs);
+  const fieldTarget = blanks.some(blank => blank.id === target) ? target : blanks[0]?.id ?? '';
   const [pending, setPending] = useState(false), [uncertain, setUncertain] = useState(false), [notice, setNotice] = useState('');
   const serial = useRef(model.response_serial), submittedLease = useRef<string | null>(null), submittedKind = useRef<Kind | null>(null);
   const textarea = useRef<HTMLTextAreaElement>(null), cursor = useRef<[number, number] | null>(null);
@@ -213,7 +243,7 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
   }, [draft]);
   const send = (operation: 'append' | 'refresh' | 'cancel') => {
     try {
-      const params = paperEditParams(model, operation, languageId, kind, kind === 'signature' ? '' : draft);
+      const params = paperEditParams(model, operation, languageId, kind, kind === 'signature' ? '' : draft, fieldTarget);
       if (operation === 'append') { submittedLease.current = model.lease; submittedKind.current = kind; }
       setPending(true); setNotice(''); act('paper_edit', params);
     } catch { setNotice('This text cannot fit in one submission.'); }
@@ -229,13 +259,18 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
   };
   const editable = interactive && !pending && !uncertain;
   const signing = kind === 'signature', full = model.free_space <= 0;
-  const remaining = model.free_space - (signing ? 0 : draft.length), tooLong = !signing && remaining < 0;
+  const remaining = model.free_space - (signing ? 0 : draft.length), labelTooLong = kind === 'field_label' && draft.length > LABEL_LIMIT;
+  const tooLong = !signing && remaining < 0, noBlank = kind === 'field_answer' && !fieldTarget;
   let previewRuns: ReturnType<typeof bookRuns> = [];
   let invalidDraft = false;
   try {
-    previewRuns = bookRuns(paperBookData([{ text: signing ? (model.draft_signature || 'Signature from the held pen') : draft, kind, ink: model.draft_ink, tool: model.draft_tool }]));
+    const draftRun: Run = { text: signing ? (model.draft_signature || 'Signature from the held pen') : draft, kind, ink: model.draft_ink, tool: model.draft_tool, id: 'draft' };
+    const label = blanks.find(blank => blank.id === fieldTarget);
+    previewRuns = bookRuns(paperBookData(kind === 'field_answer' && label
+      ? [{ text: label.text, kind: 'field_label', ink: '#000000', id: label.id }, { ...draftRun, target: label.id }]
+      : [draftRun]));
   } catch { invalidDraft = true; }
-  const canWrite = editable && !invalidDraft && !full && (signing || (!!draft.length && !tooLong));
+  const canWrite = editable && !invalidDraft && !full && !labelTooLong && !noBlank && (signing || (!!draft.length && !tooLong));
   const blank = !model.runs.length && !model.legacy.length;
   return <Section><div className="paper-editor"><h2>{model.name}</h2>
     <section aria-label="Document">
@@ -249,14 +284,18 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
         </select></label>
         <label>Section <select aria-label="Writing section" value={kind} disabled={!editable} onChange={event => setKind(event.currentTarget.value as Kind)}>
           <option value="body">Body</option><option value="title">Written title</option><option value="signature">Signature</option>
+          <option value="field_label">Blank to fill in</option><option value="field_answer" disabled={!blanks.length}>Fill in a blank</option>
         </select></label>
+        {kind === 'field_answer' && <label>Blank <select aria-label="Blank to fill" value={fieldTarget} disabled={!editable || !blanks.length} onChange={event => setTarget(event.currentTarget.value)}>
+          {blanks.map(blank => <option key={blank.id} value={blank.id}>{blank.text.slice(0, 64)}</option>)}
+        </select></label>}
       </div>
       {!signing && <>
         <div className="paper-tools" role="toolbar" aria-label="Formatting">
           {TOOLS.map(tool => <button key={tool.label} type="button" title={tool.title} aria-label={tool.title} disabled={!editable} onClick={() => insert(tool.before, tool.after)}>{tool.label}</button>)}
         </div>
         <label>Text <textarea ref={textarea} aria-label="Writing text" rows={6} value={draft} maxLength={DRAFT_LIMIT} disabled={!editable}
-          placeholder={kind === 'title' ? 'Write a title for this document' : 'Write on the paper'}
+          placeholder={kind === 'title' ? 'Write a title for this document' : kind === 'field_label' ? 'Name the blank, for example Name or Date of birth' : kind === 'field_answer' ? 'Write the answer for this blank' : 'Write on the paper'}
           onChange={event => setDraft(event.currentTarget.value)}
           onKeyDown={event => { if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && canWrite) { event.preventDefault(); send('append'); } }} /></label>
         <p className="paper-hint">Press Enter for a new line and Ctrl+Enter to write. [b]bold[/b] and [i]italic[/i] are shown as formatting; [sign], [date] and [time] are filled in when written.</p>
@@ -268,6 +307,8 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
         <BookPage runs={previewRuns} />
       </section>}
       {tooLong && <NoticeBox danger>This text exceeds the remaining space.</NoticeBox>}
+      {labelTooLong && <NoticeBox danger>{`A blank's name can be at most ${LABEL_LIMIT} characters.`}</NoticeBox>}
+      {noBlank && <NoticeBox info>There is no empty blank on this paper to fill in.</NoticeBox>}
       {invalidDraft && <NoticeBox danger>Some characters cannot be previewed. Edit the text before writing.</NoticeBox>}
       {pending && <NoticeBox info>Sending to the paper...</NoticeBox>}
       {notice === 'Writing saved.' && <NoticeBox success>{notice}</NoticeBox>}

@@ -16919,6 +16919,49 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Dig out cave rock for dirt",
+      "file": "code/modules/1713/underground_excavation.dm",
+      "line": 46,
+      "source_commit": "f404a9953ecf94071452d094b2c01f45ae499567",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/barrier",
+        "/obj/item/stack/ore/glass"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Underground, use a shovel on a soft cave rock wall to dig it out; it gives two dirt piles and opens the tile like mining.",
+        "Use a shovel on cave-in rubble to clear it for one dirt pile. The opened floor can still be scooped for more dirt."
+      ],
+      "conditions": "About 30 seconds per rock tile and 12 per rubble tile, faster with strength and a better shovel. Sandy rock also gives a sand pile. Frozen rock needs a pickaxe. Mined tunnels can cave in without supports.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Tunnel shaft spoil",
+      "file": "code/modules/1713/underground_excavation.dm",
+      "line": 39,
+      "source_commit": "f404a9953ecf94071452d094b2c01f45ae499567",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/weapon/barrier"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/shovel"
+      ],
+      "steps": [
+        "Use a shovel in hand and choose Tunnel to dig a shaft down to the level below, or up from it.",
+        "When the shaft is finished, its earth is left as two dirt piles at your feet."
+      ],
+      "conditions": "The tunnel needs diggable ground with earth below; the usual tunnel rules and times apply.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     }
   ],
   "mechanism_overview": [

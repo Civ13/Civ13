@@ -231,6 +231,26 @@ var/global/list/hud_scale_choices = list("50%" = 0.5, "75%" = 0.75, "100%" = 1, 
 	S.hud_oy = y
 	S.screen_loc = "[hud_axis_text(S.hud_ax, S.hud_ox)],[hud_axis_text(S.hud_ay, S.hud_oy)]"
 
+// TRUE when scaling by g makes two tiles overlap that sit apart at 100%.
+// flow: list(tile, x, y, w, h) at 100%; scaled: list(x, y) of the same tiles at g.
+// Tiles that already share space at 100% (a button drawn in one corner of its
+// icon, the swap bar over the equip button) are meant to.
+/proc/hud_flow_collides(list/flow, list/scaled, g)
+	for (var/i = 1 to flow.len - 1)
+		var/list/A = flow[i]
+		var/list/As = scaled[i]
+		for (var/j = i + 1 to flow.len)
+			var/list/B = flow[j]
+			var/list/Bs = scaled[j]
+			if (As[1] + A[4] * g - 0.5 <= Bs[1] || Bs[1] + B[4] * g - 0.5 <= As[1])
+				continue
+			if (As[2] + A[5] * g - 0.5 <= Bs[2] || Bs[2] + B[5] * g - 0.5 <= As[2])
+				continue
+			if (A[2] + A[4] > B[2] && B[2] + B[4] > A[2] && A[3] + A[5] > B[3] && B[3] + B[5] > A[3])
+				continue
+			return TRUE
+	return FALSE
+
 // Above 100% the default HUD no longer fits a standard view. The right-hand
 // status column stacks up the right edge, wrapping leftward when too tall;
 // every other column of tiles drops into the lowest free spot from the left,
@@ -469,6 +489,10 @@ var/global/list/hud_icon_px_cache = list()
 	// Default inventory and control tiles above 100% are reflowed together so
 	// they never cover each other; entries are list(tile, x, y, w, h) at 100%.
 	var/list/flow = list()
+	// Where each flow tile lands when it only scales toward its own edge.
+	var/list/scaled = list()
+	var/datum/hud/style = global.HUDdatums[defaultHUD]
+	var/anchored = style && style.anchored_layout
 	for (var/obj/screen/S in hud_layout_elements())
 		if (!S.hud_default_loc)
 			S.hud_default_loc = S.screen_loc
@@ -493,9 +517,12 @@ var/global/list/hud_icon_px_cache = list()
 		if (!custom)
 			// Default positions are written for the 15x15 design grid; anchor them
 			// there so the right-hand column and bar follow the edge of a wider view.
-			D = hud_infer_anchor(D, design_w, design_h)
+			// An anchored style names each tile's edge itself.
+			if (!anchored)
+				D = hud_infer_anchor(D, design_w, design_h)
 			if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))
 				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4], foot[1], foot[2]))
+				scaled += list(list(hud_anchor_origin(D[1], view_w) + D[2] * g, hud_anchor_origin(D[3], view_h) + D[4] * g))
 		S.hud_size = size
 		S.hud_ax = D[1]
 		S.hud_ay = D[3]
@@ -511,6 +538,9 @@ var/global/list/hud_icon_px_cache = list()
 		S.transform = hud_scale_matrix(g * size, px[1], px[2])
 		hud_pixel_scale(S, g * size)
 		S.hud_rescaled(g * size)
+	// An anchored style keeps its groups while they still fit side by side.
+	if (anchored && !hud_flow_collides(flow, scaled, g))
+		flow = list()
 	if (flow.len)
 		hud_reflow(flow, g, view_w, view_h)
 	sync_inventory_screen_locs()

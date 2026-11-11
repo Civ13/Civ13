@@ -76,8 +76,6 @@
 		hygiene = HYGIENE_LEVEL_CLEAN
 	if (hygiene < 0)
 		hygiene = 0
-	var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
-	var/image/smell = image('icons/effects/effects.dmi', "smell")//This is a hack, there has got to be a safer way to do this but I don't know it at the moment.
 	var/image/img_nasties = image('icons/effects/effects.dmi', "nothing")
 	switch(hygiene)
 		if(HYGIENE_LEVEL_NORMAL to INFINITY)
@@ -86,6 +84,7 @@
 //			overlays_standing[27] = null
 			adjust_mood(-(0.01), "being dirty")
 		if(0 to HYGIENE_LEVEL_DIRTY)
+			var/image/smell = image('icons/effects/effects.dmi', "smell")
 			img_nasties.overlays += smell
 			adjust_mood(-(0.02), "being dirty")
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
@@ -102,6 +101,7 @@
 				C.fleas = TRUE
 				fleas_found = TRUE
 	if (fleas_found)
+		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 		img_nasties.overlays += fleas
 		adjust_mood(-(0.02), "fleas")
 		if ((prob(0.2) || (prob(0.5) && find_trait("Weak Immune System"))) && !disease && !inducedSSD)

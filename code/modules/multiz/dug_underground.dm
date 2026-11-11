@@ -266,6 +266,7 @@
 	new /obj/structure/multiz/ladder/ww2/tunneltop(here)
 	new /obj/structure/multiz/ladder/ww2/tunnelbottom(below)
 	user.visible_message(SPAN_DANGER("[user] finishes digging the tunnel entrance."), SPAN_DANGER("You break through into the rock below."))
+	excavation_shaft_spoil(user)
 	dug_underground_finish(user)
 	return TRUE
 
@@ -300,6 +301,7 @@
 	new /obj/structure/multiz/ladder/ww2/tunneltop(above)
 	new /obj/structure/multiz/ladder/ww2/tunnelbottom(here)
 	user.visible_message(SPAN_DANGER("[user] finishes digging up!"), SPAN_NOTICE("You finish digging up."))
+	excavation_shaft_spoil(user)
 	dug_underground_finish(user)
 	return TRUE
 

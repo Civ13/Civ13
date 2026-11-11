@@ -7,6 +7,7 @@
 
 	prime()
 		..()
+		playsound(src.loc, 'sound/effects/bang.ogg', 50, 1, 30)
 		for(var/obj/structure/closet/L in hear(7, get_turf(src)))
 			if(locate(/mob/living/human/, L))
 				for(var/mob/living/human/M in L)
@@ -23,8 +24,6 @@
 
 	proc/bang(var/turf/T , var/mob/living/human/M)					// Added a new proc called 'bang' that takes a location and a person to be banged.
 		to_chat(M, "<span class='danger'>BANG!</span>")					// Called during the loop that bangs people in lockers/containers and when banging)
-		playsound(src.loc, 'sound/effects/bang.ogg', 50, 1, 30)		// people in normal view.  Could theroetically be called during other explosions.
-																	// -- Polymorph
 
 //Checking for protections
 		var/eye_safety = 0

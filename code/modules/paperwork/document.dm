@@ -81,8 +81,13 @@
 			return FALSE
 	return TRUE
 
+// A field answer also names the field label it fills ("target").
 /proc/paper_document_section_valid(list/section)
-	if (!paper_document_keys(section, list("id", "lineage", "version", "kind", "language_id", "text", "ink", "tool")))
+	if (!paper_document_keys(section, list("id", "lineage", "version", "kind", "language_id", "text", "ink", "tool")) && !paper_document_keys(section, list("id", "lineage", "version", "kind", "language_id", "text", "ink", "tool", "target")))
+		return FALSE
+	if ((length(section) == 9) != (section["kind"] == "field_answer"))
+		return FALSE
+	if (section["kind"] == "field_answer" && (!istext(section["target"]) || !length(section["target"]) || length(section["target"]) > 64))
 		return FALSE
 	if (!istext(section["id"]) || !length(section["id"]) || length(section["id"]) > 64 || !istext(section["lineage"]) || length(section["lineage"]) != 32)
 		return FALSE
@@ -111,16 +116,38 @@
 	if (!budget.valid)
 		return FALSE
 	var/list/ids = list()
+	var/list/labels = list()
+	var/list/answered = list()
 	var/units = 0
 	for (var/index = 1, index <= sections.len, index++)
 		var/list/section = sections[index]
 		if (!paper_document_section_valid(section) || (section["id"] in ids))
 			return FALSE
+		// Each answer fills one earlier field label, and each label once.
+		if (section["kind"] == "field_answer")
+			if (!(section["target"] in labels) || (section["target"] in answered))
+				return FALSE
+			answered += section["target"]
+		if (section["kind"] == "field_label")
+			labels += section["id"]
 		ids += section["id"]
 		units += length(section["text"])
 		if (units > MAX_PAPER_MESSAGE_LEN)
 			return FALSE
 	return TRUE
+
+// TRUE when target names a field label in this record that has no answer yet.
+/proc/paper_document_field_open(list/record, target)
+	if (!istext(target) || !paper_document_record_valid(record))
+		return FALSE
+	var/list/sections = record["sections"]
+	var/found = FALSE
+	for (var/list/section in sections)
+		if (section["kind"] == "field_label" && section["id"] == target)
+			found = TRUE
+		if (section["kind"] == "field_answer" && section["target"] == target)
+			return FALSE
+	return found
 
 var/global/paper_document_sequence = 0
 /proc/paper_document_mint_id(obj/item/weapon/paper/P)
@@ -209,7 +236,30 @@ var/global/paper_document_sequence = 0
 	var/obj/item/container = paper.loc
 	if (istype(container, /obj/item/weapon/clipboard) || istype(container, /obj/item/weapon/folder))
 		return !container.gc_destroyed && container.loc == actor
+	// A page in a held, open envelope, or the open page of a held bundle
+	// (also one in a held folder). Closed envelopes and other pages refuse.
+	if (paper_document_envelope_open(container))
+		return container.loc == actor
+	if (paper_document_bundle_page(container, paper))
+		if (paper_document_held_folder(container.loc))
+			return container.loc.loc == actor
+		return container.loc == actor
 	return FALSE
+
+/proc/paper_document_envelope_open(atom/container)
+	if (!istype(container, /obj/item/weapon/storage/envelope) || container.gc_destroyed)
+		return FALSE
+	var/obj/item/weapon/storage/envelope/E = container
+	return E.opened
+
+/proc/paper_document_bundle_page(atom/container, obj/item/weapon/paper/P)
+	if (!istype(container, /obj/item/weapon/paper_bundle) || container.gc_destroyed)
+		return FALSE
+	var/obj/item/weapon/paper_bundle/B = container
+	return islist(B.pages) && isnum(B.page) && B.page == round(B.page) && B.page >= 1 && B.page <= B.pages.len && B.pages[B.page] == P
+
+/proc/paper_document_held_folder(atom/container)
+	return istype(container, /obj/item/weapon/folder) && !container.gc_destroyed
 
 /datum/paper_document_service/proc/can_mutate(mob/actor, obj/item/weapon/pen/pen)
 	return has_access(actor, TRUE) && istype(pen) && !pen.gc_destroyed && actor.get_active_hand() == pen && pen.loc == actor
@@ -279,7 +329,11 @@ var/global/paper_document_sequence = 0
 	var/list/sections = current["sections"]
 	for (var/list/section in sections)
 		var/understood = full_legacy && paper_knows_written_language(reader, section["language_id"])
-		visible += list(list("id" = section["id"], "kind" = section["kind"], "language_id" = section["language_id"], "text" = understood ? section["text"] : "\[Unintelligible writing\]", "ink" = section["ink"], "tool" = section["tool"]))
+		var/list/entry = list("id" = section["id"], "kind" = section["kind"], "language_id" = section["language_id"], "text" = understood ? section["text"] : "\[Unintelligible writing\]", "ink" = section["ink"], "tool" = section["tool"])
+		// Which blank an answer fills is layout, not text, and is never redacted.
+		if (section["kind"] == "field_answer")
+			entry["target"] = section["target"]
+		visible += list(entry)
 	return list("revision" = current["revision"], "legacy_policy" = "legacy_unclassified", "legacy_name" = paper.name, "legacy_body_html" = "[legacy_body][paper.stamps]", "sections" = visible)
 
 // Internal canonical copy only; future item-copy code must give the physical

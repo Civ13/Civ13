@@ -71,7 +71,9 @@ def validate(d: object) -> list[dict]:
         require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION} and d["profile"] in PROFILES, "schema/profile")
         if ocean:
             require(d['profile']=='OCEANIC','ocean schema profile')
-            exact(d['ocean_policy'],{'island_count','island_min_area','island_gap_tiles','start_min_spacing','coast_route_max'},'ocean policy')
+            ocean_keys={'island_count','island_min_area','island_gap_tiles','start_min_spacing','coast_route_max'}
+            require(type(d['ocean_policy']) is dict and set(d['ocean_policy']) in (ocean_keys,ocean_keys|{'lake_rivers'}),'ocean policy')
+            require(integer(d['ocean_policy'].get('lake_rivers',0),0,6),'ocean lake river count')
             require(integer(d['ocean_policy']['island_count'],2,6) and integer(d['ocean_policy']['island_min_area'],32,8192) and integer(d['ocean_policy']['island_gap_tiles'],4,24),'ocean policy bounds')
             require(integer(d['ocean_policy']['start_min_spacing'],3,64) and integer(d['ocean_policy']['coast_route_max'],8,256),'ocean start policy bounds')
         for k in ("seed", "algorithm_version", "content_version", "profile_version"):
@@ -323,7 +325,11 @@ def validate(d: object) -> list[dict]:
         while todo:
             for other in adjacency[todo.pop()]:
                 if other not in seen: seen.add(other); todo.append(other)
-        if not any(rivers[r][k]["kind"]=="EDGE" for r in seen for k in ["source","sink"]):
+        # Island lake-to-sea rivers and cavern pool-to-pool streams are closed
+        # networks with their own endpoint grammar; surface networks need an edge port.
+        closed=(ocean and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="SEA" for r in seen)) or \
+               (d["profile"]=="UNDERGROUND_CAVERN" and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="LAKE" for r in seen))
+        if not closed and not any(rivers[r][k]["kind"]=="EDGE" for r in seen for k in ["source","sink"]):
             err("RIVER_NO_EDGE", "river network requires explicit map edge port")
         if not trace(rid,set()): err("RIVER_CYCLE", "drainage has cycle or missing outlet")
 
