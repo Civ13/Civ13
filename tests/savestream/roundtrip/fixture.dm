@@ -153,7 +153,7 @@
 // compile; keep the two in step.
 /proc/text_unsafe(value, depth = 0)
 	if(isnull(value) || ispath(value)) return FALSE
-	if(istext(value)) return length("[value]") != length(value)
+	if(istext(value)) return length("[value]") != length(value) || length(value) >= 65535
 	if(isnum(value)) return value != value || value == 1.#INF || value == -1.#INF
 	if(!islist(value)) return TRUE
 	var/list/L = value
@@ -197,6 +197,8 @@
 	chunk = copytext(chunk, 1, 60001)
 	for(var/i = 1 to 300)
 		values["/lists/[i]/chunk"] = "[i]:[chunk]"
+	// ExportText cuts a string at 65,535 characters: longer text goes natively.
+	values["/lists/301/long"] = "long:[chunk][chunk]"
 	var/savefile/scratch = new
 	var/list/native = list()
 	for(var/path in values)
@@ -216,7 +218,10 @@
 		if(!S.put_savefile_text(scratch, "/[key]"))
 			return list("put_savefile_text /[key]: [S.last_error]")
 	// /lists passed SAVE_STREAM_TEXT_LIMIT and went as its children.
-	if(S.text_pieces < 300) mismatches += "text:oversized subtree not split ([S.text_pieces] pieces)"
+	// It is cut from the exported text, about 1 MiB a piece, never by walking
+	// the scratch file's directory.
+	if(S.text_pieces < 12 || S.text_pieces > 60) mismatches += "text:oversized subtree not split ([S.text_pieces] pieces)"
+	if(S.directory_splits) mismatches += "text:oversized subtree split by directory ([S.directory_splits])"
 	for(var/path in native)
 		if(!S.put(path, native[path]))
 			return list("native put [path]: [S.last_error]")
@@ -233,6 +238,58 @@
 	if(native.len < 6) mismatches += "text:native paths [native.len]"
 	S.close()
 	mismatches += run_text_length_sweep()
+	mismatches += run_text_split_shapes()
+	return mismatches
+
+// A split subtree with many small children (the live case: hundreds of
+// thousands of lists in one segment), a node value of its own, awkward text
+// and one child too long for a token. Walking the scratch directory instead
+// took minutes at this scale and froze live Gaia (2026-11-11).
+/proc/run_text_split_shapes()
+	var/list/mismatches = list()
+	var/savefile/scratch = new
+	var/count = 20000
+	var/list/expect = list()
+	scratch["/lists"] << "own value"
+	expect["/lists"] = "own value"
+	for(var/i = 1 to count)
+		scratch["/lists/[i]/length"] << 2
+		scratch["/lists/[i]/1"] << "value [i]"
+		scratch["/lists/[i]/2"] << i
+	expect["/lists/1/1"] = "value 1"
+	expect["/lists/[count]/2"] = count
+	expect["/lists/[count / 2]/1"] = "value [count / 2]"
+	scratch["/lists/7/1"] << "two\nlines\n\tand = a tab"
+	expect["/lists/7/1"] = "two\nlines\n\tand = a tab"
+	// Value format 2: an all-scalar list is a single node.
+	scratch["/lists/[count + 1]"] << list("a", "b\nc", 3)
+	expect["/lists/[count + 1]"] = list("a", "b\nc", 3)
+	// One child past the piece limit used below: sent again on its own.
+	var/chunk = "0123456789abcdef"
+	while(length(chunk) < 30000) chunk += chunk
+	for(var/i = 1 to 8)
+		scratch["/lists/9/[i]"] << "[i]:[chunk]"
+	expect["/lists/9/8"] = "8:[chunk]"
+	expect["/lists/9/length"] = 2
+	var/datum/save_stream/S = new
+	if(!S.open_write("shapes.stream"))
+		return list("shapes open_write: [S.last_error]")
+	if(!S.put_savefile_text(scratch, "/lists", 262144))
+		S.abort()
+		return list("shapes put_savefile_text: [S.last_error]")
+	if(S.directory_splits) mismatches += "shapes:split by directory ([S.directory_splits])"
+	if(S.text_pieces < 4 || S.text_pieces > 200) mismatches += "shapes:[S.text_pieces] pieces"
+	var/list/summary = S.finish()
+	if(!summary || !summary["published"])
+		return mismatches + "shapes finish: [S.last_error]"
+	if(summary["nodes"] != 1 + count * 3 + 1 + 6) mismatches += "shapes:nodes [summary["nodes"]]"
+	if(!S.open_read("shapes.stream"))
+		return mismatches + "shapes open_read: [S.last_error]"
+	for(var/path in expect)
+		var/value = S.get(path)
+		if(!S.found || !same(expect[path], value)) mismatches += "shapes:[path]"
+	S.close()
+	fdel("shapes.stream")
 	return mismatches
 
 // DM numbers are 32-bit floats: past 2^24, length() rounds to a multiple of

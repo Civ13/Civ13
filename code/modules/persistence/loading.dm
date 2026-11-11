@@ -2200,10 +2200,11 @@ var/global/persistence_memory_probe_error
 	current.Flush()
 	current = null
 
-// Only between turfs: every entry's fields stay inside the segment that
-// allocated its ID, so the ID ranges in the table are exact.
+// Only between turfs, roster members and swept mobs: every entry's fields
+// stay inside the segment that allocated its ID, so the ID ranges in the
+// table are exact. A deferred entry holds an ID it has not written yet.
 /datum/level_segment_writer/proc/rotate_if_full()
-	if(owner.saving_export_stack.len || owner.moving_save_chunk) return
+	if(owner.saving_export_stack.len || owner.moving_save_chunk || owner.saving_deferred_entries.len) return
 	if(owner.saving_reference_pins.len + owner.saving_list_pins.len - start_nodes < budget) return
 	open_next()
 	// Let the released tree's memory be reused before the next segment grows.
