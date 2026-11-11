@@ -160,3 +160,45 @@ var/global/list/scholar_entry_tiers = null
 	for (var/discipline in scholar_disciplines)
 		lines += "[scholar_disciplines[discipline]]: [round(scholar_level(discipline))]"
 	to_chat(src, jointext(lines, "<br>"))
+
+// ------------------------------------------------------------
+// Scholarship tab
+// ------------------------------------------------------------
+
+// The latest era a character can research in discipline, mirroring
+// node_scholar_requirement(): each tier past the discipline's first needs
+// SCHOLAR_LEVEL_PER_TIER more levels (capped at the maximum), plus Basic
+// Mathematics at half that.
+/mob/living/human/proc/scholar_research_reach(discipline)
+	var/entry = scholar_entry_tier(discipline)
+	var/level = scholar_level(discipline)
+	var/math = scholar_level("mathematics")
+	var/reach = entry
+	for (var/tier = entry + 1, tier <= 9, tier++)
+		var/req = min(SCHOLAR_MAX_LEVEL, (tier - entry) * SCHOLAR_LEVEL_PER_TIER)
+		if (level < req || math < req / 2)
+			break
+		reach = tier
+	return reach
+
+// Rows for the Scholarship tab: list(label, value) pairs.
+/mob/living/human/proc/scholarship_panel_rows()
+	var/list/rows = list()
+	rows[++rows.len] = list("<h3>Scholarship</h3>", "")
+	for (var/discipline in scholar_disciplines)
+		rows[++rows.len] = list("<b>[scholar_disciplines[discipline]]:</b>", "[round(scholar_level(discipline))] / [SCHOLAR_MAX_LEVEL], research up to the [ordinal_age_name(scholar_research_reach(discipline))]")
+	var/title = scholar_title()
+	rows[++rows.len] = list("<b>Title:</b>", title ? title : "None yet (reach [SCHOLAR_TITLE_APPRENTICE] in a discipline)")
+	if (istext(scholar_master))
+		var/split = findtext(scholar_master, ":")
+		rows[++rows.len] = list("<b>Master:</b>", split ? copytext(scholar_master, split + 1) : scholar_master)
+	var/apprentices = scholar_apprentice_count()
+	if (apprentices)
+		rows[++rows.len] = list("<b>Apprentices:</b>", "[apprentices] / [SCHOLAR_MAX_APPRENTICES]")
+	return rows
+
+/mob/living/human/Stat()
+	. = ..()
+	if (. && client && client.status_tabs && map && map.book_research_enabled() && client.add_stat_tab("Scholarship"))
+		for (var/list/row in scholarship_panel_rows())
+			client.add_stat(row[1], row[2])

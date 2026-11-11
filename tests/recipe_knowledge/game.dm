@@ -291,6 +291,7 @@ var/knowledge_failures = 0
 	check_scholar_tutoring()
 	check_scholar_apprentices()
 	check_scholar_titles()
+	check_scholarship_panel()
 	check_book_printing(scholar)
 	map.book_research = FALSE
 
@@ -441,6 +442,24 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_title() == "Scholar of Medicine", "a skilled character is a Scholar")
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
+	qdel(H)
+
+// Scholarship tab (Val, 2026-11-10): each discipline's level and the latest
+// era it can research, plus title, master and apprentices.
+/proc/check_scholarship_panel()
+	var/mob/living/human/knowledge_fixture/H = new(locate(4,5,1))
+	H.scholarship = list("engineering" = 30, "mathematics" = 6)
+	knowledge_check(H.scholar_research_reach("engineering") == scholar_entry_tier("engineering") + 1, "Basic Mathematics at half the level caps how far a discipline reaches")
+	H.scholarship["mathematics"] = 30
+	knowledge_check(H.scholar_research_reach("engineering") == scholar_entry_tier("engineering") + 2 && H.scholar_research_reach("mathematics") == scholar_entry_tier("mathematics") + 2, "each 12 levels reach one more era")
+	H.scholarship = list("medicine" = 100, "mathematics" = 60)
+	knowledge_check(H.scholar_research_reach("medicine") == 9, "reach stops at the last era")
+	H.scholar_master = "someone:Ada Lovelace"
+	var/list/rows = H.scholarship_panel_rows()
+	var/text = ""
+	for (var/list/row in rows)
+		text += "[row[1]] [row[2]]|"
+	knowledge_check(rows.len == scholar_disciplines.len + 3 && findtext(text, "Medicine:</b> 100 / 100, research up to the Digital Age") && findtext(text, "Master of Medicine") && findtext(text, "Master:</b> Ada Lovelace"), "the Scholarship tab lists levels, reach, title and master")
 	qdel(H)
 
 // Printing (Val, 2026-11-10): a press prints a whole book, pages and
