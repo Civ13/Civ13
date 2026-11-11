@@ -1162,7 +1162,8 @@
 			var/actual_y = (after["y"] - expected["y"]) * 32 + after["sy"] - expected["sy"]
 			observations += list(list("at" = world.time, "due" = due, "engine_return" = P.engine_return, "dx" = actual_x, "dy" = actual_y, "x" = actor.x, "y" = actor.y, "sx" = actor.step_x, "sy" = actor.step_y))
 			expected = after
-			actor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)
+			if (HUMAN_SUBTILE_SMOOTH_DRAW)
+				actor.human_subtile_smooth_pulse(actual_x, actual_y, duration / pulse_count)
 			if (actor.human_subtile_save_request)
 				actor.human_subtile_save_request.acknowledge(actor, src)
 			if (total_distance > 0)

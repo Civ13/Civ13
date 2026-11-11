@@ -81,3 +81,7 @@
 #define HUMAN_SUBTILE_GLIDE_BUFFER_MAX 8
 // Largest drawn lag free movement smooths out; anything bigger is drawn as a jump.
 #define HUMAN_SUBTILE_SMOOTH_MAX 12
+// Off: on live Gaia (2026-11-11) the body's offset was drawn but the camera's
+// was not, so the body swung up to 12px around the screen centre while walking.
+// Turn back on only after a Dream Seeker check in the real game.
+#define HUMAN_SUBTILE_SMOOTH_DRAW 0
