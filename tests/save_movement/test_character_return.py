@@ -146,6 +146,7 @@ class ReturnFixture:
         self.lobby = NS(client=self.client, spawning=False, close_spawn_windows=lambda: None)
         self.client.mob = self.lobby
         self.registered['account'] = DMList([self.body])
+        self.held, self.nearby = [], []
         self.env = dict(world=self.world, map=NS(uses_durable_metadata=lambda: self.enabled),
                         persistence_player_claims=self.claims,
                         persistence_restored_bodies=self.registered,
@@ -165,7 +166,10 @@ class ReturnFixture:
                         locate=lambda x, y, z: next((t for t in (self.home, self.zone, self.bed_turf)
                                                    if (t.x, t.y, t.z) == (x, y, z)), None),
                         qdel=self.deleted.append, EXCEPTION=RuntimeError,
-                        SPAN_WARNING=lambda text: text, to_chat=lambda actor, text: self.messages.append(text))
+                        SPAN_WARNING=lambda text: text, to_chat=lambda actor, text: self.messages.append(text),
+                        log_game=self.held.append, message_admins=lambda text: None, key_name=lambda actor: 'key',
+                        orange=lambda radius, center: DMList(self.nearby), get_dist=lambda a, b: max(abs(a.x - b.x), abs(a.y - b.y)),
+                        PERSISTENCE_RETURN_SEARCH_RANGE=7)
         self.env['persistence_bed_return_enabled'] = self.proc('/proc/persistence_bed_return_enabled', '')
         self.env['persistence_sleep_transfer_blocked'] = lambda: self.blocked
         self.env['persistence_character_turf_safe'] = self.proc('/proc/persistence_character_turf_safe', 'T, H')
@@ -184,6 +188,8 @@ class ReturnFixture:
                         'return_player_eligible': 'H, account', 'finish_character_return': 'H'}.get(name)
             function = self.proc('/map_storage/proc/' + name, 'src' + (', ' + argument if argument else ''), True)
             setattr(self.store, name, MethodType(function, self.store))
+        # The admin reason text is DM string formatting outside this boundary.
+        self.store.note_character_return_hold = lambda lobby: self.held.append('Join held for ' + lobby.client.ckey)
         self.env['map_storage'] = self.store
         self.body.enter_saved_bed_sleep = MethodType(self.proc('/mob/living/human/proc/enter_saved_bed_sleep', 'src', True), self.body)
 
@@ -198,7 +204,8 @@ class ReturnFixture:
                   'local_character_bodies', 'character_return_turf', 'character_recovery_unready',
                   'character_return_pending', 'reclaim_saved_player', 'find_restored_player',
                   'return_player_eligible', 'finish_character_return', 'restored_bodies_destroyed',
-                  'dimension_recovery_required', 'dimension_budget_hold', 'persistence_bed_owner_ckey')
+                  'dimension_recovery_required', 'dimension_budget_hold', 'persistence_bed_owner_ckey',
+                  'note_character_return_hold')
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
 
@@ -360,6 +367,27 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertTrue(f.body.inducedSSD)
         self.assertIs(f.registered['account'][1], f.body)
         self.assertTrue(f.messages)
+
+    def test_unsafe_own_tile_returns_to_nearest_safe_floor(self):
+        # Live Gaia 2026-11-11: a restored body whose own tile failed the safety
+        # check (an animal on it) held its account's Join with no way out.
+        f = ReturnFixture()
+        f.world.remove(f.bed)
+        f.home.append(NS(kind='/mob/living/simple_animal/cat', density=False))
+        far, near = Turf((6, 2, 1)), Turf((4, 2, 1))
+        water = Turf((3, 3, 1), kind='/turf/floor/beach/water')
+        f.nearby.extend([far, water, near])
+        self.assertTrue(f.store.allow_new_character(f.lobby) is False)
+        self.assertIs(f.client.mob, f.body)
+        self.assertIs(f.body.loc, near)
+        f2 = ReturnFixture()
+        f2.world.remove(f2.bed)
+        f2.home.append(NS(kind='/mob/living/simple_animal/cat', density=False))
+        f2.nearby.append(Turf((4, 2, 1), kind='/turf/floor/lava'))
+        self.assertFalse(f2.store.allow_new_character(f2.lobby))
+        self.assertIs(f2.client.mob, f2.lobby)
+        self.assertIs(f2.body.loc, f2.home)
+        self.assertEqual(['Join held for account'], f2.held)
 
     def test_refused_move_preserves_claim_and_retry_succeeds(self):
         f = ReturnFixture()

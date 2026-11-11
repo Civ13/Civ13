@@ -5,6 +5,9 @@
 // Scalar ownership avoids a spatial reference from a character to another level.
 /obj/structure/bed/var/persistence_bed_owner_ckey
 
+// Tiles around a restored body searched for a safe return when its own is unsafe.
+#define PERSISTENCE_RETURN_SEARCH_RANGE 7
+
 /proc/persistence_character_turf_safe(turf/T, mob/living/human/H)
 	if(!istype(T, /turf/floor) || T.density || is_protected_sleep_location(T)) return FALSE
 	if(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/lava)) return FALSE
@@ -83,7 +86,20 @@
 	if(H.inducedSSD)
 		fallback = locate(H.lastx, H.lasty, H.lastz)
 		if(persistence_character_turf_safe(fallback, H)) return fallback
-	return null
+	// The body's own tile can fail only for a while or for a harmless reason (an
+	// animal or another body on it, shallow water, a crate pushed onto it): take
+	// the nearest safe floor close by instead of holding the account's Join.
+	var/turf/origin = get_turf(H)
+	if(!origin || is_protected_sleep_location(origin)) return null
+	var/turf/nearest
+	var/nearest_distance
+	for(var/turf/T in orange(PERSISTENCE_RETURN_SEARCH_RANGE, origin))
+		var/distance = get_dist(origin, T)
+		if(nearest && distance >= nearest_distance) continue
+		if(!persistence_character_turf_safe(T, H)) continue
+		nearest = T
+		nearest_distance = distance
+	return nearest
 
 /map_storage/proc/prepare_character_return(mob/living/human/H)
 	if(!persistence_bed_return_enabled()) return TRUE
@@ -156,8 +172,32 @@
 	if(!lobby.client || lobby.client.mob != lobby) return FALSE
 	if(character_return_pending(lobby.client.ckey))
 		to_chat(lobby, SPAN_WARNING("Your existing character or world recovery is not ready. No new character was created. Retry Join after recovery; ask an administrator if the hold persists."))
+		note_character_return_hold(lobby)
 		return FALSE
 	return TRUE
+
+/map_storage/proc/note_character_return_hold(mob/new_player/lobby)
+	var/reason = character_return_hold_reason(lobby.ckey)
+	log_game("Join held for [lobby.ckey]: [reason]")
+	message_admins("Join held for [key_name(lobby)]: [reason]")
+
+// Why character_return_pending holds this account, for the log and admins.
+/map_storage/proc/character_return_hold_reason(account)
+	if(character_recovery_unready()) return "world recovery is not ready"
+	if(persistence_active_operation) return "a save or load is running"
+	if(persistence_player_claims[account]) return "another lobby is claiming this character"
+	var/list/bodies = local_character_bodies(account)
+	var/list/registered = persistence_restored_bodies[account]
+	if(bodies.len != 1) return "[bodies.len] owned bodies"
+	var/mob/living/human/H = bodies[1]
+	if(registered && registered.len && (registered.len != 1 || registered[1] != H)) return "restored registration does not match the owned body [H.real_name]"
+	var/where = H.loc ? "[H.loc.type]" : "nowhere"
+	var/turf/T = get_turf(H)
+	if(T) where += " at [T.x],[T.y],[T.z]"
+	if(H.client || H.key) return "[H.real_name] is controlled by [H.key ? H.key : "another client"] ([where])"
+	if(!isturf(H.loc) || H.riding || H.driver || H.driver_vehicle || H.riding_mob) return "[H.real_name] is inside or riding something ([where])"
+	if(!character_return_turf(H)) return "[H.real_name] has no safe tile within [PERSISTENCE_RETURN_SEARCH_RANGE] ([where])"
+	return "[H.real_name] could not be handed back ([where])"
 
 /map_storage/proc/return_player_eligible(mob/living/human/H, account)
 	var/list/registered = persistence_restored_bodies[account]
