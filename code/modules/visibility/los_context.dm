@@ -757,8 +757,8 @@ var/global/list/los_active_contexts
 	// sub-tile step refreshes it at most twice per tile. Information reads
 	// capture the exact physical offset rather than borrowing a visual lease.
 	if (presentation)
-		S.eye_x = body.x + los_eye_quantized(body.step_x) / 32
-		S.eye_y = body.y + los_eye_quantized(body.step_y) / 32
+		S.eye_x = body.x + los_eye_x(body) / 32
+		S.eye_y = body.y + los_eye_y(body) / 32
 	else
 		S.eye_x = body.x + body.step_x / 32
 		S.eye_y = body.y + body.step_y / 32

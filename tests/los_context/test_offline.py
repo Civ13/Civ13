@@ -212,6 +212,8 @@ def projected_geometry(source=None):
     # eye quantization as in DM, and no terrain answer, as on a flat map.
     import math
     env.update(los_eye_quantized=lambda step: math.floor(step / 16 + 0.5) * 16,
+               los_eye_x=lambda body: math.floor(body.step_x / 16 + 0.5) * 16,
+               los_eye_y=lambda body: math.floor(body.step_y / 16 + 0.5) * 16,
                los_eye_bucket=lambda body: f'{math.floor(body.step_x / 16 + 0.5) * 16},{math.floor(body.step_y / 16 + 0.5) * 16}',
                los_terrain_for=lambda body, radius: None,
                los_terrain_target_visible=lambda S, target: True,

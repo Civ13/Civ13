@@ -184,7 +184,8 @@ and examine, like tiles behind a wall.
 - The eye follows the player's pixel offset in half-tile steps, both for this
   and for walls and trees, so a walker's view refreshes twice per tile instead
   of once. These extra steps pause while `world.cpu` is above 85 and resume
-  below 60. Hover and examine use the exact offset.
+  below 60, and only for a player who moves: a player standing still keeps
+  the same eye whatever the server load. Hover and examine use the exact offset.
 
 A fresh answer for a 19x19 field costs about 2.3 ms on the pinned DreamDaemon
 (`tests/los_terrain/run.py`); cached lookups are a list read. NPC sight and
