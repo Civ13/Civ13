@@ -6,6 +6,7 @@
 // been washed and 5 tannin to tan it. When tannin runs low it soaks one piece
 // of bark in 10 water for 10 tannin, as a person does by hand. Leather is left
 // on the drum's tile, where an arm can take it. Sprite: tools/sprites/build_tanning_drum.py.
+// Synthetic leather, from fabricators, is defined at the end of this file.
 
 #define TANNING_DRUM_HIDES 30 // hide pieces the hopper holds
 #define TANNING_DRUM_BARK 20 // pieces of bark the hopper holds
@@ -344,6 +345,27 @@ var/global/list/factory_active_tanning_drums = list()
 
 /obj/structure/tanning_drum/factory_take(obj/item/I, atom/destination)
 	return factory_take_tile_output(src, I, destination)
+
+// Plastic-coated cloth from a factory fabricator (Synthetic Fabrics). It is
+// leather as far as crafting goes, so it opens the same leather recipes; only
+// its name and black vinyl sprite differ, and it never stacks with tanned
+// leather. Sprite: tools/sprites/build_synthetic_leather.py.
+/obj/item/stack/material/leather/synthetic
+	name = "synthetic leather"
+	desc = "Cloth coated in plastic to look and wear like leather. It crafts everything leather does."
+	icon = 'icons/obj/synthetic_leather.dmi'
+	icon_state = "sheet-synthleather"
+	value = 2
+
+/obj/item/stack/material/leather/synthetic/update_icon()
+	..()
+	icon_state = replacetext(icon_state, "sheet-leather", "sheet-synthleather")
+
+/obj/item/stack/material/leather/synthetic/update_strings()
+	..()
+	singular_name = "synthetic leather sheet"
+	name = amount > 1 ? "synthetic leather sheets" : "synthetic leather sheet"
+	desc = "Cloth coated in plastic to look and wear like leather. It crafts everything leather does."
 
 #undef TANNING_DRUM_HIDES
 #undef TANNING_DRUM_BARK

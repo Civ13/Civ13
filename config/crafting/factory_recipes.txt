@@ -20,6 +20,7 @@ FACTORY: screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/iro
 FACTORY: claw hammer|/obj/item/weapon/hammer/modern|1|/obj/item/stack/material/iron=3|50|1|assembly_line
 FACTORY: wirecutters|/obj/item/weapon/wirecutters|1|/obj/item/stack/material/steel=4|60|1|assembly_line
 FACTORY: ammo belt|/obj/item/ammo_magazine/emptybelt|1|/obj/item/stack/material/copper=7|100|2|automation
+FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing
 FACTORY: printed dice|/obj/item/weapon/dice/d20|2|/obj/item/stack/material/plastic=1|20|4|additive_manufacturing
