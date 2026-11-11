@@ -1,65 +1,51 @@
-"""Offline projection of the SSD and sleeping-bed branch; not a BYOND runtime test."""
+"""Offline projection of the Sleep (induced SSD) and asleep/unconscious hunger branches; not a BYOND runtime test."""
 import importlib.util
 from itertools import product
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-HERE = Path(__file__).parent
 SPEC = importlib.util.spec_from_file_location('ssd_hunger_adapter', ROOT / 'tests/save_movement/source_adapter.py')
 ADAPTER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ADAPTER)
-TYPE = '/obj/structure/bed'
-OLD = 'stat == UNCONSCIOUS && !inducedSSD'
-NEW = 'stat == UNCONSCIOUS'
+ASLEEP = 'else if (stat == UNCONSCIOUS)'
 
 
 def production():
     source = (ROOT / 'code/game/mob/living/carbon/human/human_life.dm').read_text(encoding='utf-8')
     start = source.index('\t\tif (inducedSSD) //if sleeping in SSD mode')
-    end = source.index('\n\t\telse if (map.heat_wave', start)
+    end = source.index('\n\t\telse if (stat == CONSCIOUS', start)
     return source[start:end].rstrip() + '\n'
 
 
+def branch_lines(fragment):
+    lines = [line.strip().split('//', 1)[0].rstrip() for line in fragment.splitlines()]
+    return [line for line in lines if line.startswith(('if (', 'else if ('))]
+
+
 def project(fragment):
-    first = [line.strip().split('//', 1)[0].rstrip() for line in fragment.splitlines()
-             if line.strip().startswith('if (inducedSSD)')]
-    second = [line.strip().split('//', 1)[0].rstrip() for line in fragment.splitlines()
-              if line.strip().startswith('else if (istype(buckled,')]
-    assert len(first) == len(second) == 1
-    source = '/check()\n\t' + first[0] + '\n\t\treturn 1\n\t' + second[0].replace(TYPE, 'BED') + '\n\t\treturn 2\n\treturn 3\n'
-    return ADAPTER.project(source, '/check', 'inducedSSD, buckled, stat, istype, BED, UNCONSCIOUS', {})
+    first, second = branch_lines(fragment)
+    source = '/check()\n\t' + first + '\n\t\treturn 1\n\t' + second + '\n\t\treturn 2\n\treturn 3\n'
+    return ADAPTER.project(source, '/check', 'inducedSSD, buckled, stat, UNCONSCIOUS', {})
 
 
-def run(proc, ssd, buckle, stat):
-    events = []
-    def istype(value, kind):
-        events.append(('istype', value, kind))
-        return value == kind
-    result = proc(ssd, buckle, stat, istype, 'bed', 1)
-    return result, events
+class SleepHungerChecks(unittest.TestCase):
+    def test_branch_order(self):
+        self.assertEqual(branch_lines(production()), ['if (inducedSSD)', ASLEEP])
 
-
-class SSDHungerChecks(unittest.TestCase):
-    def test_only_redundant_check_changes(self):
-        before = (HERE / 'before.dm.txt').read_text(encoding='utf-8')
-        self.assertEqual(before.count(OLD), 1)
-        self.assertEqual(production(), before.replace(OLD, NEW))
-
-    def test_branches_and_type_call_order(self):
-        before = (HERE / 'before.dm.txt').read_text(encoding='utf-8')
-        current = production()
-        original, candidate = project(before), project(current)
-        mutant = project(current.replace(NEW, 'stat != UNCONSCIOUS'))
-        differences = 0
+    def test_any_sleep_uses_the_slow_rate(self):
+        proc = project(production())
         for ssd, buckle, stat in product((False, True), (None, 'other', 'bed'), (0, 1, 2)):
-            expected = run(original, ssd, buckle, stat)
-            self.assertEqual(run(candidate, ssd, buckle, stat), expected)
-            differences += run(mutant, ssd, buckle, stat) != expected
-        self.assertEqual(run(candidate, True, 'bed', 1), (1, []))
-        self.assertEqual(run(candidate, False, 'bed', 1), (2, [('istype', 'bed', 'bed')]))
-        self.assertEqual(run(candidate, False, 'bed', 0), (3, [('istype', 'bed', 'bed')]))
-        self.assertGreater(differences, 0, 'the inverted-stat negative control must be detected')
+            expected = 1 if ssd else (2 if stat == 1 else 3)
+            self.assertEqual(proc(ssd, buckle, stat, 1), expected, (ssd, buckle, stat))
+        # Negative control: the old bed-only condition leaves floor sleepers on the awake rate.
+        old = project(production().replace(ASLEEP, 'else if (buckled == "bed" && stat == UNCONSCIOUS)'))
+        self.assertEqual(old(False, None, 1, 1), 3)
+        self.assertEqual(old(False, 'bed', 1, 1), 2)
+
+    def test_slow_rate_is_a_tenth_of_idle(self):
+        fragment = production()
+        self.assertEqual(fragment.count('((0.01) * HUNGER_THIRST_MULTIPLIER'), 2)
 
 
 if __name__ == '__main__':

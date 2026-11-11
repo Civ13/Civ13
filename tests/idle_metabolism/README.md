@@ -5,8 +5,9 @@ Conscious connected players consume 10% of their ordinary food/water rate after
 input, combat cooldowns, training and `do_after`/`do_mob` keep normal rates.
 Timed actions count independently, including overlapping unrestricted actions;
 finishing/cancelling one starts a new 60-second grace period. No world scan or
-per-mob timer is added. NPC/disconnected, unconscious, bed sleep, induced SSD and
-trait rules retain their existing rates. Hot-weather/desert thirst is still
+per-mob timer is added. NPC/disconnected, induced SSD and trait rules retain
+their existing rates; any other sleep or unconsciousness, in a bed or not, uses
+the slow sleep rate. Hot-weather/desert thirst is still
 proportionally higher while idle. This applies only where Life already enables
 hunger and thirst; it does not change survival-mode selection.
 
@@ -37,6 +38,6 @@ checks the complete game; new-suite CI runs this positive case and three control
 
 Per Life call, unmodified ordinary food/water loss is 0.0864 each, compared with
 0.00864 once idle. Hot-weather water loss is 0.224 active / 0.0224 idle. These
-are production arithmetic, not measured elapsed starvation times. Bed sleep
-remains 0.0032 each and induced SSD remains zero. Runtime activity clocks/counts
+are production arithmetic, not measured elapsed starvation times. Asleep or
+unconscious (bed or floor, any weather) is 0.0032 each and induced SSD remains zero. Runtime activity clocks/counts
 are explicitly excluded on save export and import while forwarding parent rules.
