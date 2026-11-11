@@ -174,7 +174,7 @@
 		healing_stage += 0.5
 	else
 		healing_stage = 0
-	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))
+	if (healing_stage >= 30) // Other buckle types reset the counter immediately above.
 		if (istype(buckled, /obj/structure/medicalbed))
 			rejuvenate()
 			to_chat(src, "You feel much better.")
