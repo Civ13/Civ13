@@ -55,6 +55,25 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/tilepos = "under"
 	var/tiledir = "horizontal"
 
+// Straight neighbors only. Same-tile crossings belong to secured connectors.
+// Do not rebuild supply here: placement must finish junctions first.
+/obj/structure/cable/proc/link_straight_neighbors(mob/user, notify_second = TRUE)
+	var/list/directions
+	if (tiledir == "horizontal")
+		directions = list(EAST, WEST)
+	else if (tiledir == "vertical")
+		directions = list(NORTH, SOUTH)
+	else
+		return
+	for (var/i = 1, i <= directions.len, i++)
+		for (var/obj/structure/cable/neighbor in get_turf(get_step(src, directions[i])))
+			if (neighbor == src || neighbor.tiledir != tiledir)
+				continue
+			neighbor.connections |= src
+			connections |= neighbor
+			if (user && (i == 1 || notify_second))
+				to_chat(user, "You connect the two cables.")
+
 /obj/structure/cable/verb/hiding()
 	set category = null
 	set name = "Under/Over tiles"

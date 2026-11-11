@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'cable_neighbors': {'files': ('tests/power/test_neighbor_linking.py',),
+        'paths': ('tests/power/test_neighbor_linking.py', 'tests/power/fixture.dm', 'scripts/test-power.ps1'),
+        'shared_paths': ('code/modules/1713/smart_home.dm', 'code/modules/1713/machinery/cables.dm',
+                         'code/modules/1713/machinery/cables_types.dm',
+                         'code/game/objects/structures.dm')},
     'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
         'paths': ('tests/cave_dismantling/', 'code/game/objects/structures/animalspawner/animal_spawner.dm',
                   'code/game/objects/structures/animalspawner/bearcave.dm',

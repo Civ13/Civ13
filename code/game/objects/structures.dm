@@ -366,29 +366,8 @@
 	if (!powersource)
 		return
 	powersource.connections += src
-	var/opdir1 = 0
-	var/opdir2 = 0
-	if (powersource.tiledir == "horizontal")
-		opdir1 = 4
-		opdir2 = 8
-	else if  (powersource.tiledir == "vertical")
-		opdir1 = 1
-		opdir2 = 2
 	powersource.update_icon()
-
-	if (opdir1 != 0 && opdir2 != 0)
-		for(var/obj/structure/cable/NCOO in get_turf(get_step(powersource,opdir1)))
-			if ((NCOO.tiledir == powersource.tiledir) && NCOO != powersource)
-				if (!(powersource in NCOO.connections) && !list_cmp(powersource.connections, NCOO.connections))
-					NCOO.connections += powersource
-				if (!(NCOO in powersource.connections) && !list_cmp(powersource.connections, NCOO.connections))
-					powersource.connections += NCOO
-				to_chat(user, "You connect the two cables.")
-
-		for(var/obj/structure/cable/NCOC in get_turf(get_step(powersource,opdir2)))
-			if ((NCOC.tiledir == powersource.tiledir) && NCOC != powersource)
-				if (!(powersource in NCOC.connections) && !list_cmp(powersource.connections, NCOC.connections))
-					NCOC.connections += powersource
-				if (!(NCOC in powersource.connections) && !list_cmp(powersource.connections, NCOC.connections))
-					powersource.connections += NCOC
+	// place_turf already links these edges; this idempotent pass retains the
+	// machine attachment feedback without rebuilding supply a second time.
+	powersource.link_straight_neighbors(user, FALSE)
 	to_chat(user, SPAN_NOTICE("You connect the cable to \the [src]."))
