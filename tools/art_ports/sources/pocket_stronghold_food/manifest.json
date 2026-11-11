@@ -1,0 +1,36 @@
+{
+  "repository": "Valgorithms/Pocket-Stronghold-13",
+  "revision": "2bfb1906a9a68f58c5e5da25383f83dd495bf138",
+  "source_path": "dwarfs/icons/items/food.dmi",
+  "source_file": {
+    "sha256": "fd67307790e24d335288386cb04897f3d7054d8d3a94034245e920d06f662ec6",
+    "git_blob": "18b50f34d912c2254a909abee6773bae83983880"
+  },
+  "license": "CC-BY-SA-3.0",
+  "license_evidence": "https://github.com/Valgorithms/Pocket-Stronghold-13/blob/2bfb1906a9a68f58c5e5da25383f83dd495bf138/README.md#license",
+  "target": "icons/obj/food/pocket_stronghold_food.dmi",
+  "changes": "Three states extracted into their own DMI with upstream names. Pixels, size and transparency unchanged.",
+  "states": [
+    {
+      "state": "intestines",
+      "source_state": "intestines",
+      "introduced_by": "LEEROY-2, commit 140cef6",
+      "civ13_use": "animal intestines",
+      "rgba_sha256": "bd9391890b43c5a7062d8ef978b449e54b292a3339b35932d3077aa58cb1c9e0"
+    },
+    {
+      "state": "crab_meat_roasted",
+      "source_state": "crab_meat_roasted",
+      "introduced_by": "ArtofWASD2, commit b9e5431 (#33)",
+      "civ13_use": "roasted crab meat",
+      "rgba_sha256": "4a701e1b53e07f42ece89d4d740096c10018620c12f44eb63a5995e7c15994ab"
+    },
+    {
+      "state": "food_ruined",
+      "source_state": "food_ruined",
+      "introduced_by": "LEEROY-2, commit b59b2a0",
+      "civ13_use": "rotten roasted crab meat",
+      "rgba_sha256": "7276faed3e6f3c72301f102bd347c6b912f8768f1924c93d101cba936d1658ac"
+    }
+  ]
+}

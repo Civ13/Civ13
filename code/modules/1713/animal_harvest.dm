@@ -36,10 +36,12 @@
 	icon_state = "brain"
 	rotten_icon_state = "brain-x"
 
+// Art adapted from Pocket Stronghold 13; see the DMI's LICENSE.md.
 /obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines
 	name = "animal intestines"
-	icon_state = "innards"
-	rotten_icon_state = "innards"
+	icon = 'icons/obj/food/pocket_stronghold_food.dmi'
+	icon_state = "intestines"
+	rotten_icon_state = "intestines"
 
 // One bounded stack per carcass. No registration, processing loop or timer.
 /obj/item/stack/sinew
