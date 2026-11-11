@@ -182,6 +182,8 @@
 	return locate(/obj/item/weapon/book) in contents
 
 /obj/structure/research_bench/proc/book_analysis_tick()
+	if (book_advance_queue())
+		book_refresh_ui()
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		return
@@ -400,6 +402,10 @@
 	if (!istype(H) || !map || !map.book_research_enabled() || !can_hold_research())
 		return ..()
 	var/list/chapters = research_chapter_list()
+	// Players get the book window; characters without a client keep the menu.
+	if (H.client && (chapters.len || length(research_progress_map())))
+		ui_interact(H)
+		return
 	if (!chapters.len)
 		return ..()
 	var/list/choices = list()
@@ -472,17 +478,30 @@
 	var/obj/item/weapon/book/B = placed_book()
 	var/list/books = placed_books()
 	var/list/book_rows = list()
+	var/any_chapter = FALSE
+	var/any_copy = FALSE
 	for (var/i = 1, i <= books.len, i++)
-		var/obj/item/weapon/book/row_book = books[i]
-		var/list/names = list()
-		for (var/node_id in row_book.research_chapter_list())
-			names += get_research_node(node_id).name
-		book_rows += list(list("name" = "[row_book]", "idx" = i, "is_target" = i == 1, "chapters" = names))
+		var/list/row = book_row_ui(H, books, i)
+		var/list/row_chapters = row["chapters"]
+		if (row_chapters.len)
+			any_chapter = TRUE
+		if (row["copy_missing"])
+			any_copy = TRUE
+		book_rows += list(row)
 	data["books"] = book_rows
 	data["book_room"] = books.len < BENCH_MAX_BOOKS
 	data["can_swap"] = books.len >= 2
-	data["can_copy"] = books.len >= 2
-	data["can_study"] = books.len >= 1
+	data["can_copy"] = any_copy
+	data["can_study"] = any_chapter
+	data["viewer"] = book_viewer_ui(H)
+	data["lit"] = research_lit() ? 1 : 0
+	data["assigned"] = book_assigned_ui(H)
+	var/list/queue_rows = list()
+	for (var/qid in queue_list())
+		var/datum/research_node/QN = get_research_node(qid)
+		if (QN)
+			queue_rows += list(list("id" = qid, "name" = QN.name))
+	data["queue"] = queue_rows
 	var/datum/research_node/AN = assigned_node ? get_research_node(assigned_node) : null
 	if (!AN)
 		return
@@ -567,17 +586,20 @@
 	if (!pick || !(pick in choices))
 		return FALSE
 	var/list/job = choices[pick]
-	var/obj/item/weapon/book/source = job[1]
-	var/obj/item/weapon/book/dest = job[2]
-	var/node_id = job[3]
+	return book_copy_job(H, job[1], job[2], job[3])
+
+// One timed copy of node_id from source into dest, both lying on this bench.
+/obj/structure/research_bench/proc/book_copy_job(mob/living/human/H, obj/item/weapon/book/source, obj/item/weapon/book/dest, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
-	var/obj/item/weapon/paper/sheet = locate() in list(H.l_hand, H.r_hand)
-	if (!blank_writing_sheet(sheet))
-		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to copy onto."))
+	if (!N || !istype(source) || !istype(dest) || source.loc != src || dest.loc != src || !source.has_research_chapter(node_id) || dest.has_research_chapter(node_id))
 		return FALSE
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	if (!pen)
-		to_chat(H, SPAN_WARNING("Hold a pencil or pen in your other hand to copy with."))
+		to_chat(H, SPAN_WARNING("Hold a pencil or pen to copy with."))
+		return FALSE
+	var/obj/item/weapon/paper/sheet = H.ready_blank_sheet()
+	if (!blank_writing_sheet(sheet))
+		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to copy onto."))
 		return FALSE
 	if (H.stats["stamina"][1] < BOOK_WRITE_STAMINA(N.era_tier))
 		to_chat(H, SPAN_WARNING("You are too tired to copy a chapter now."))

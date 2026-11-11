@@ -1,0 +1,49 @@
+<!--
+	Classic interface for a book that holds research chapters
+	See: code/modules/research_tree/book_interface.dm
+-->
+<div id='rt-root'>
+<div id='rt-parchment'>
+
+<h2>{{:data.name}}</h2>
+<div class='item'>
+	{{if data.author}}<div class='itemContent'>By {{:data.author}}</div>{{/if}}
+	{{if data.has_text}}<div class='itemContent'>{{:helper.link('Read the written pages', 'copy', {'read' : 1})}}</div>{{/if}}
+</div>
+
+<h2>Chapters</h2>
+{{for data.chapters :chapter:ci}}
+<div class='item'>
+	<div class='itemContent'>
+		<b>{{:chapter.name}}</b> - {{:chapter.era_name}} - {{:chapter.discipline}}
+		{{if chapter.state === "known"}}<span class='rt-done'> (known)</span>
+		{{else chapter.state === "study"}} {{:helper.link('Study (about ' + chapter.study_minutes + ' min)', 'pencil', {'study' : chapter.id})}}
+		{{else}}<span class='rt-locked'> (needs groundwork)</span>{{/if}}
+		{{if data.held}} {{:helper.link('Tear out', 'trash', {'rip' : chapter.id})}}{{/if}}
+		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}
+	</div>
+</div>
+{{empty}}
+<div class='item rt-locked'>No finished chapters yet.</div>
+{{/for}}
+
+{{if data.unfinished && data.unfinished.length}}
+<h2>Unfinished research</h2>
+{{for data.unfinished :item:ui}}
+<div class='item'><span class='rt-progress'>{{:item.name}}: {{:item.percent}}% ({{:item.ticks}}/{{:item.cost}})</span></div>
+{{/for}}
+<div class='item rt-locked'>Place the book on a research bench and choose the subject to carry on.</div>
+{{/if}}
+
+<h2>Write a chapter from memory</h2>
+<div class='item rt-locked'>Put the book down beside you and Alt-click it, with a pencil or pen in one hand. A blank sheet is taken from your other hand or your bags. You hold {{:data.viewer.pen ? data.viewer.pen : "no pencil or pen"}} and carry {{:data.viewer.sheets}} blank sheet(s).</div>
+{{for data.writable :row:wi}}
+<div class='item'>
+	<div class='itemContent'><b>{{:row.name}}</b> - about {{:row.write_minutes}} min, {{:row.stamina}} stamina {{:helper.link('Write', 'pencil', {'write' : row.id})}}</div>
+</div>
+{{empty}}
+<div class='item rt-locked'>Everything you know is already in this book.</div>
+{{/for}}
+
+</div>
+</div>
