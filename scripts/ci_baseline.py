@@ -88,6 +88,10 @@ SUITES = {
     'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
         'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
                   'docs/firearm-migration-inventory.md')},
+    # Gun coverage manifest (issue #4443); run.py regenerates it with BYOND.
+    'firearm_coverage': {'files': ('tests/firearm_coverage/test_coverage.py',),
+        'paths': ('tests/firearm_coverage/', 'docs/firearm-coverage.json', 'code/modules/projectiles/',
+                  'code/modules/1713/weapons/', 'code/modules/1713/gunsmithing/')},
     'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
         'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
