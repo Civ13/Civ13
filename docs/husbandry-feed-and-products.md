@@ -67,6 +67,24 @@ Animals of medium size and larger leave dung when they eat.
   cattle, and bison cows are milked through the same `try_milk()` as cows.
 - `tests/animal_registry/test_feeding_contract.py` covers all three.
 
+## Feeding sets the product rate
+
+Code: `code/modules/1713/husbandry_feeding.dm`. Milk and eggs use the same
+hunger thresholds animals already use to look for food:
+
+| Hunger | State | Milk per refill | Egg cycles that lay |
+| --- | --- | --- | --- |
+| 500 or more | Well fed | Full | Every one |
+| 180 to 499 | Hungry, looking for food | Half | About half |
+| Under 180 | Starving | None | None |
+
+Udders are `/datum/reagents/udder`, which scales each milk refill; milking
+itself is unchanged. Each 120-tick laying cycle rolls once, so a hungry hen
+lays about half as often and a starving one stops. A herd left to graze bare
+dirt therefore dries up, and grain, hay or seed feeding keeps it producing.
+`tests/husbandry_feeding/probe.dm` checks the rates for cows, goats, bison and
+hens.
+
 ## Open balance questions
 
 These are left for the maintainer. They change how farming feels, not just
@@ -74,7 +92,6 @@ correctness:
 
 - Grazing turns grass into dirt with no regrowth cost to the herd owner beyond
   moving animals; whether pastures need managing depends on grass regrowth.
-- Milk and egg rates do not depend on how well fed the animal is.
 - Hunger only reaches 0 after about half an hour, so feed is cheap compared with
   what the animals produce.
 
