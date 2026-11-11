@@ -52,6 +52,12 @@ SUITES = {
         'shared_paths': ('code/modules/1713/smart_home.dm', 'code/modules/1713/machinery/cables.dm',
                          'code/modules/1713/machinery/cables_types.dm',
                          'code/game/objects/structures.dm')},
+    'light_fuel': {'files': ('tests/test_light_fuel.py',),
+        'paths': ('tests/test_light_fuel.py', 'code/modules/1713/lantern.dm',
+                  'code/modules/1713/light_fuel.dm', 'code/game/objects/items/devices/flashlight.dm',
+                  'code/game/objects/items/weapons/cigs_lighters.dm', 'code/modules/1713/telephone.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'config/crafting/',
+                         'code/modules/research_tree/research_node.dm')},
     'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
         'paths': ('tests/cave_dismantling/', 'code/game/objects/structures/animalspawner/animal_spawner.dm',
                   'code/game/objects/structures/animalspawner/bearcave.dm',
@@ -1184,6 +1190,10 @@ SUITES = {
     'atlas_examine': {'files': ('tests/test_atlas_examine.py',), 'paths': (
         'tests/test_atlas_examine.py', 'code/game/mob/crafting_atlas_examine.dm'),
         'shared_paths': ('code/game/mob/mob.dm', 'code/game/mob/crafting_atlas.dm', 'civ13.dme')},
+    # Source-only candidate inventory fixtures; no compiler or native execution.
+    'atlas_entity_inventory': {'files': ('tests/atlas_entity_inventory/test_inventory.py',), 'paths': (
+        'tests/atlas_entity_inventory/', 'scripts/atlas/entity_inventory.py'),
+        'shared_paths': ('scripts/atlas/facts.py', 'scripts/atlas/families.py')},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
