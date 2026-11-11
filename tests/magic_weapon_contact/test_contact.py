@@ -11,6 +11,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 ITEM = 'code/_onclick/item_attack.dm'
 MAGIC = 'code/modules/magic/magic_weapons.dm'
+MELEE = 'code/game/objects/items/weapons/swords_axes_etc.dm'
 HUMAN = 'code/game/mob/living/carbon/human/human_defense.dm'
 CARBON = 'code/game/mob/living/carbon/carbon_defense.dm'
 LIVING = 'code/game/mob/living/living_defense.dm'
@@ -48,6 +49,19 @@ def resistance_contact(body, weapon, branch_indent):
 
 
 class MagicWeaponContact(unittest.TestCase):
+    def test_melee_weakening_requires_contact(self):
+        attack = proc(MELEE, '/obj/item/weapon/melee/attack')
+        self.assertNotIn('Weaken(', attack)
+        hook = proc(MELEE, '/obj/item/weapon/melee/on_weapon_contact')
+        self.assertRegex(hook, r'if \(weakens && prob\(weaken_chance\)\)\s*\n\t\t\w+\.Weaken\(weakens\)')
+
+    def test_sandman_cooldown_starts_only_on_contact(self):
+        source = (ROOT / MELEE).read_text(encoding='utf-8-sig')
+        self.assertNotRegex(source, re.compile(r'^/obj/item/weapon/melee/nightbaton/sandman/attack\(', re.M))
+        hook = proc(MELEE, '/obj/item/weapon/melee/nightbaton/sandman/on_weapon_contact')
+        self.assertRegex(hook, r'if\s*\(!cooldown\)\s*\n\t\t\w+\.SetWeakened\(50\)\s*\n\t\t(?:src\.)?cooldown = TRUE\s*\n\t\tspawn\(100\)\s*\n\t\t\t(?:src\.)?cooldown = FALSE')
+        self.assertIn('..()', hook)
+
     def test_magic_effects_are_only_in_contact_hook(self):
         source = (ROOT / MAGIC).read_text(encoding='utf-8-sig')
         self.assertNotRegex(source, re.compile(r'^/obj/item/weapon/material/sword/magic/attack\(', re.M))
