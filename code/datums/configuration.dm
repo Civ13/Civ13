@@ -173,6 +173,7 @@ var/list/gamemode_cache = list()
 	// In-game bug reports (code/modules/bug_reports). The token is deliberately not kept here.
 	var/bug_report_github_repo = "Civ13/Civ13"
 	var/bug_report_github_labels = "bug"
+	var/bug_report_screenshot_repo = "" // owner/name that holds uploaded screenshots; empty keeps them on the server
 	
 	var/topic_filtering_whitelist = list("127.0.0.1")
 
@@ -537,8 +538,12 @@ var/list/gamemode_cache = list()
 					config.bug_report_github_repo = value
 				if ("bug_report_github_labels")
 					config.bug_report_github_labels = value ? value : ""
+				if ("bug_report_screenshot_repo")
+					config.bug_report_screenshot_repo = value ? value : ""
 				if ("bug_report_github_token")
 					continue // read from the file only while filing an issue, so it never sits in a variable
+				if ("bug_report_screenshot_token")
+					continue // the same, while uploading a screenshot
 				
 
 				if("error_cooldown")

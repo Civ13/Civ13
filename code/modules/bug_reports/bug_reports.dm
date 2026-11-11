@@ -3,7 +3,8 @@
 // approves or rejects it in Admin > Bug Reports. An approved report becomes a GitHub
 // issue through the API when the server has BUG_REPORT_GITHUB_TOKEN set; without a
 // token the admin gets a prefilled new-issue page to submit with their own account.
-// The queue survives restarts in data/bug_reports/queue.json.
+// The queue survives restarts in data/bug_reports/queue.json. A picture of the reporter's
+// screen comes with each player report (bug_report_screenshot.dm).
 //
 // The token is never kept in a variable: it is read from config/config.txt only while an
 // issue is being filed, so View Variables and saves never see it.
@@ -28,10 +29,13 @@ var/global/datum/bug_report_queue/bug_reports = new
 	var/filed_at // UTC text
 	var/state = "pending" // pending, filing, failed
 	var/last_error
+	var/screenshot // file name in data/bug_reports/screens, or null
+	var/screenshot_url // the uploaded copy, so a retry does not upload it again
 
 /datum/bug_report/proc/to_list()
 	return list("id" = id, "ckey" = ckey, "reporter" = reporter, "title" = title, "what" = what, "steps" = steps, "expected" = expected,
-		"context" = context, "filed_at" = filed_at, "state" = state == "filing" ? "pending" : state, "last_error" = last_error)
+		"context" = context, "filed_at" = filed_at, "state" = state == "filing" ? "pending" : state, "last_error" = last_error,
+		"screenshot" = screenshot, "screenshot_url" = screenshot_url)
 
 /datum/bug_report/proc/from_list(list/L)
 	if (!islist(L) || !isnum(L["id"]) || !istext(L["ckey"]) || !istext(L["title"]))
@@ -47,6 +51,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 	filed_at = istext(L["filed_at"]) ? L["filed_at"] : ""
 	state = L["state"] == "failed" ? "failed" : "pending"
 	last_error = istext(L["last_error"]) ? L["last_error"] : null
+	screenshot = bug_report_screenshot_exists(L["screenshot"]) ? L["screenshot"] : null
+	screenshot_url = bug_report_screenshot_url_valid(L["screenshot_url"]) ? L["screenshot_url"] : null
 	return TRUE
 
 /datum/bug_report_queue
@@ -136,11 +142,12 @@ var/global/datum/bug_report_queue/bug_reports = new
 	L["Reported at"] = "[time2text(world.realtime, "YYYY-MM-DD hh:mm")] (server time)"
 	return L
 
-/datum/bug_report_queue/proc/add(client/C, title, what, steps, expected)
-	return add_from(C.ckey, C.ckey, key_name(C), C.mob, C, title, what, steps, expected)
+/datum/bug_report_queue/proc/add(client/C, title, what, steps, expected, icon/picture)
+	return add_from(C.ckey, C.ckey, key_name(C), C.mob, C, title, what, steps, expected, picture)
 
-// key and reporter as on /datum/bug_report; who is the admin log's name for them.
-/datum/bug_report_queue/proc/add_from(key, reporter, who, mob/M, client/C, title, what, steps, expected)
+// key and reporter as on /datum/bug_report; who is the admin log's name for them. picture is
+// the reporter's screen (bug_report_capture), or null.
+/datum/bug_report_queue/proc/add_from(key, reporter, who, mob/M, client/C, title, what, steps, expected, icon/picture)
 	ensure_loaded()
 	var/datum/bug_report/R = new
 	R.id = next_id++
@@ -152,6 +159,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	R.expected = bug_report_clean(expected)
 	R.context = context_for(M, C)
 	R.filed_at = time2text(world.realtime, "YYYY-MM-DD hh:mm")
+	R.screenshot = bug_report_save_screenshot(R.id, picture)
 	reports["[R.id]"] = R
 	last_report_at[key] = world.time
 	save()
@@ -170,8 +178,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 /datum/bug_report_queue/proc/github_repo()
 	return config && bug_report_repo_valid(config.bug_report_github_repo) ? config.bug_report_github_repo : null
 
-/datum/bug_report_queue/proc/issue_text(datum/bug_report/R, title, admin_note)
-	return list(bug_report_issue_title(title ? title : R.title), bug_report_issue_body(R.reporter, R.what, R.steps, R.expected, R.context, admin_note))
+/datum/bug_report_queue/proc/issue_text(datum/bug_report/R, title, admin_note, screenshot)
+	return list(bug_report_issue_title(title ? title : R.title), bug_report_issue_body(R.reporter, R.what, R.steps, R.expected, R.context, admin_note, screenshot))
 
 // Read only while filing; see the note at the top of this file.
 /datum/bug_report_queue/proc/read_token()
@@ -182,7 +190,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 /datum/bug_report_queue/proc/token_configured()
 	return !!read_token()
 
-/datum/bug_report_queue/proc/approve(datum/bug_report/R, admin_ckey, title, admin_note)
+// attach: put the reporter's screenshot on the issue (uploaded to BUG_REPORT_SCREENSHOT_REPO).
+/datum/bug_report_queue/proc/approve(datum/bug_report/R, admin_ckey, title, admin_note, attach = FALSE)
 	set waitfor = FALSE
 	if (!R || R.state == "filing")
 		return
@@ -190,7 +199,17 @@ var/global/datum/bug_report_queue/bug_reports = new
 	if (!repo)
 		bug_report_notify(admin_ckey, "<span class='warning'>Bug reports: BUG_REPORT_GITHUB_REPO is not set to owner/name in the server config.</span>")
 		return
-	var/list/text = issue_text(R, title, admin_note)
+	R.state = "filing"
+	var/shot = null
+	if (attach && R.screenshot_url)
+		shot = R.screenshot_url
+	else if (attach && bug_report_screenshot_exists(R.screenshot))
+		var/list/why = list(null)
+		R.screenshot_url = upload_screenshot(R, why)
+		shot = R.screenshot_url ? R.screenshot_url : "server"
+		if (!R.screenshot_url)
+			bug_report_notify(admin_ckey, "<span class='warning'>Bug report #[R.id]: the screenshot was not uploaded ([html_encode(why[1])]); the issue says an admin has it.</span>")
+	var/list/text = issue_text(R, title, admin_note, shot)
 	var/list/labels = bug_report_labels(config.bug_report_github_labels)
 	var/token = read_token()
 	if (!token)
@@ -199,9 +218,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 		var/client/A = directory[admin_ckey]
 		if (A && url)
 			A << link(url)
-		finish(R, admin_ckey, null, "opened as a prefilled GitHub form (the server has no GitHub token)")
+		finish(R, admin_ckey, null, "opened as a prefilled GitHub form (the server has no GitHub token)", shot)
 		return
-	R.state = "filing"
 	R.last_error = null
 	var/list/result = post_issue(repo, token, text[1], text[2], labels)
 	token = null
@@ -209,7 +227,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 		// A label the token may not create: file it without labels.
 		result = post_issue(repo, read_token(), text[1], text[2], list())
 	if (result["url"])
-		finish(R, admin_ckey, result["url"], "filed as [result["url"]]")
+		finish(R, admin_ckey, result["url"], "filed as [result["url"]]", shot)
 		return
 	R.state = "failed"
 	R.last_error = result["error"]
@@ -222,13 +240,24 @@ var/global/datum/bug_report_queue/bug_reports = new
 	var/list/payload = list("title" = title, "body" = body)
 	if (labels.len)
 		payload["labels"] = labels
+	var/list/result = github_request(RUSTG_HTTP_METHOD_POST, "https://api.github.com/repos/[repo]/issues", token, payload)
+	var/list/answer = result["answer"]
+	var/status = result["status"]
+	if (status == 201 && islist(answer) && istext(answer["html_url"]) && findtext(answer["html_url"], "https://github.com/") == 1)
+		return list("url" = answer["html_url"], "status" = status)
+	return list("status" = status, "error" = result["error"])
+
+// One GitHub API call. list("status" = HTTP status or 0, "answer" = decoded JSON or null,
+// "error" = text for anything but a 2xx answer).
+/proc/github_request(method, url, token, list/payload)
 	var/datum/http_request/H = new
-	H.prepare(RUSTG_HTTP_METHOD_POST, "https://api.github.com/repos/[repo]/issues", json_encode(payload), list(
+	H.prepare(method, url, json_encode(payload), list(
 		"Authorization" = "Bearer [token]",
 		"Accept" = "application/vnd.github+json",
 		"X-GitHub-Api-Version" = "2022-11-28",
 		"User-Agent" = "Civ13-bug-reports",
 		"Content-Type" = "application/json"))
+	token = null
 	try
 		H.begin_async()
 	catch
@@ -248,13 +277,16 @@ var/global/datum/bug_report_queue/bug_reports = new
 	catch
 		answer = null
 	var/status = response.status_code
-	if (status == 201 && islist(answer) && istext(answer["html_url"]) && findtext(answer["html_url"], "https://github.com/") == 1)
-		return list("url" = answer["html_url"], "status" = status)
+	if (status >= 200 && status < 300)
+		return list("status" = status, "answer" = answer)
 	var/message = islist(answer) && istext(answer["message"]) ? copytext(answer["message"], 1, 200) : "no message"
-	return list("status" = status, "error" = "GitHub answered [status]: [message]")
+	return list("status" = status, "answer" = answer, "error" = "GitHub answered [status]: [message]")
 
-/datum/bug_report_queue/proc/finish(datum/bug_report/R, admin_ckey, url, outcome)
+// shot as in issue_text: "server" keeps the picture file for the developers to ask for.
+/datum/bug_report_queue/proc/finish(datum/bug_report/R, admin_ckey, url, outcome, shot)
 	reports -= "[R.id]"
+	if (shot != "server")
+		bug_report_forget_screenshot(R.screenshot)
 	filed++
 	save()
 	log_admin("Bug report #[R.id] ([R.title]) approved by [admin_ckey]: [outcome]")
@@ -265,6 +297,7 @@ var/global/datum/bug_report_queue/bug_reports = new
 	if (!R || R.state == "filing")
 		return
 	reports -= "[R.id]"
+	bug_report_forget_screenshot(R.screenshot)
 	rejected++
 	save()
 	reason = bug_report_clean(reason, 300, FALSE)
@@ -294,6 +327,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 		for (var/label in R.context)
 			details += "[html_encode(label)]: [html_encode("[R.context[label]]")]"
 		H += "<small>[jointext(details, " | ")]</small><br>"
+		if (bug_report_screenshot_exists(R.screenshot))
+			H += "<a href='?src=\ref[src];bugreport=picture;id=[R.id]'><img src='bugreport_[R.id].png' width='336' title='What the reporter saw (click for full size)'></a><br>"
 		if (R.state != "filing")
 			H += "<a href='?src=\ref[src];bugreport=approve;id=[R.id]'>Approve</a> | "
 			H += "<a href='?src=\ref[src];bugreport=edit;id=[R.id]'>Edit title and approve</a> | "
@@ -305,6 +340,10 @@ var/global/datum/bug_report_queue/bug_reports = new
 /datum/bug_report_queue/proc/show_panel(mob/user)
 	if (!user || !check_rights(R_ADMIN, TRUE, user))
 		return
+	for (var/id in reports)
+		var/datum/bug_report/R = reports[id]
+		if (bug_report_screenshot_exists(R.screenshot))
+			user << browse_rsc(file(bug_report_screenshot_path(R.screenshot)), "bugreport_[R.id].png")
 	show_browse(user, panel_html(), "window=bugreports;size=720x640")
 
 /datum/bug_report_queue/Topic(href, href_list)
@@ -322,6 +361,11 @@ var/global/datum/bug_report_queue/bug_reports = new
 		return
 	var/admin_ckey = usr.ckey
 	switch (mode)
+		if ("picture")
+			if (bug_report_screenshot_exists(R.screenshot))
+				usr << browse_rsc(file(bug_report_screenshot_path(R.screenshot)), "bugreport_[R.id].png")
+				show_browse(usr, "<html><head><title>Bug report #[R.id]: screenshot</title></head><body style='margin:0;background:#000'><img src='bugreport_[R.id].png'></body></html>", "window=bugreportpicture;size=700x520")
+			return
 		if ("approve", "edit")
 			var/title = R.title
 			if (mode == "edit")
@@ -331,12 +375,16 @@ var/global/datum/bug_report_queue/bug_reports = new
 			var/note = player_input(usr, "Optional note for the developers (shown on the issue).", "Bug report #[R.id]", null, "message", null, TRUE)
 			if (isnull(note))
 				return
+			var/attach = FALSE
+			if (bug_report_screenshot_exists(R.screenshot))
+				// The issue is public: the admin decides whether the picture goes on it.
+				attach = alert(usr, "Put the reporter's screenshot on the GitHub issue? The issue is public.", "Bug report #[R.id]", "Attach screenshot", "Leave it out") == "Attach screenshot"
 			// The prompts wait; check again that it is still ours to approve.
 			if (!check_rights(R_ADMIN, TRUE, usr) || reports["[R.id]"] != R || R.state == "filing")
 				return
 			if (mode == "edit")
 				R.title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
-			approve(R, admin_ckey, R.title, note)
+			approve(R, admin_ckey, R.title, note, attach)
 		if ("reject")
 			var/reason = player_input(usr, "Reason sent to the player (optional).", "Reject bug report #[R.id]", null, "text", null, TRUE)
 			if (isnull(reason))
@@ -354,6 +402,9 @@ var/global/datum/bug_report_queue/bug_reports = new
 	if (why)
 		to_chat(src, "<span class='warning'>[why]</span>")
 		return
+	// The screen as it is now, drawn while the player types.
+	var/datum/bug_report_capture/shot = new
+	shot.start(mob, src)
 	var/title = player_input(src, "Short summary of the bug (one line).", "Report bug", null, "text", null, TRUE)
 	title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
 	if (!length(title))
@@ -370,12 +421,15 @@ var/global/datum/bug_report_queue/bug_reports = new
 	if (!length(bug_report_clean(what)))
 		to_chat(src, "<span class='warning'>Please describe what happened.</span>")
 		return
+	var/icon/picture = null
+	if (alert(src, "Attach the picture of your screen from when you opened this report? Admins see it first; if they file the bug on GitHub it can be shown there publicly.", "Report bug: [title]", "Attach picture", "No picture") == "Attach picture")
+		picture = shot.result()
 	why = bug_reports.refusal(src) // the prompts wait
 	if (why)
 		to_chat(src, "<span class='warning'>[why]</span>")
 		return
-	var/datum/bug_report/R = bug_reports.add(src, title, what, steps, expected)
-	to_chat(src, "<span class='notice'>Bug report #[R.id] sent. An admin will review it; your BYOND key, the map, round and your location are attached. You will hear back here if you are online.</span>")
+	var/datum/bug_report/R = bug_reports.add(src, title, what, steps, expected, picture)
+	to_chat(src, "<span class='notice'>Bug report #[R.id] sent. An admin will review it; your BYOND key, the map, round and your location[R.screenshot ? " and a picture of your screen" : ""] are attached. You will hear back here if you are online.</span>")
 
 /client/proc/bug_reports_panel()
 	set category = "Admin"

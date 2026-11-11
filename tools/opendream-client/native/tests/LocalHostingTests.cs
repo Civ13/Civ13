@@ -240,6 +240,14 @@ static class LocalHostingTests {
         Require(HostSettings.RestoreSecrets("WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN (hidden)\n", withToken)
             == "WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n", "saving puts the hidden token back");
         Require(HostSettings.RestoreSecrets("WEBHOOK_KEY k\n", withToken) == "WEBHOOK_KEY k\n", "deleting the hidden line removes the token");
+        var bothTokens = "BUG_REPORT_GITHUB_TOKEN github_pat_issues\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nbug_report_screenshot_token github_pat_pictures\n";
+        var shownBoth = HostSettings.HideSecrets(bothTokens);
+        Require(shownBoth == "BUG_REPORT_GITHUB_TOKEN (hidden)\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nBUG_REPORT_SCREENSHOT_TOKEN (hidden)\n"
+            && !shownBoth.Contains("github_pat_"), "the screenshot token is hidden too");
+        Require(HostSettings.RestoreSecrets(shownBoth, bothTokens) == bothTokens, "each hidden token gets its own value back");
+        Require(HostSettings.WithSetting(bothTokens, HostSettings.ScreenshotToken, "github_pat_new")
+            == "BUG_REPORT_GITHUB_TOKEN github_pat_issues\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nBUG_REPORT_SCREENSHOT_TOKEN github_pat_new\n",
+            "setting the screenshot token leaves the issue token alone");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
         Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");

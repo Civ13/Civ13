@@ -73,7 +73,7 @@ public static class HostSettings {
     public static string Describe(string relative) => relative switch {
         LocalConfig => "Only the lines this host changes in the repository's config/config.txt. \"KEY value\" sets a setting, " +
             "\"#KEY\" turns it off, other lines starting with # are comments. Everything else follows master. " +
-            "Secrets such as WEBHOOK_KEY and BUG_REPORT_GITHUB_TOKEN belong here, never in the repository.",
+            "Secrets such as WEBHOOK_KEY, BUG_REPORT_GITHUB_TOKEN and BUG_REPORT_SCREENSHOT_TOKEN belong here, never in the repository.",
         "config/host.txt" => "The BYOND key of the host (read when a player logs in).",
         "config/config.txt" => "A whole copy of config.txt (the old way): it hides master's new settings. " +
             "Run config-migrate.bat once to turn it into config.local.txt.",
@@ -81,6 +81,9 @@ public static class HostSettings {
     };
 
     public const string BugReportToken = "BUG_REPORT_GITHUB_TOKEN";
+    // Uploads bug report screenshots to BUG_REPORT_SCREENSHOT_REPO (code/modules/bug_reports/bug_report_screenshot.dm).
+    public const string ScreenshotToken = "BUG_REPORT_SCREENSHOT_TOKEN";
+    public static readonly string[] SecretSettings = [BugReportToken, ScreenshotToken];
     private static readonly Regex TokenText = new("^[A-Za-z0-9_]{20,255}$");
 
     // A GitHub token as the game accepts it (code/modules/bug_reports/bug_report_format.dm).
@@ -168,22 +171,28 @@ public static class HostSettings {
         return SettingValue(File.ReadAllText(path), ServerName) is { Length: > 0 } name ? name : DefaultServerName;
     }
 
-    // The editor never shows the token: its line reads "BUG_REPORT_GITHUB_TOKEN (hidden)".
+    // The editor never shows a token: its line reads "BUG_REPORT_GITHUB_TOKEN (hidden)".
     public const string Hidden = "(hidden)";
 
     public static string HideSecrets(string text) => string.Join("\n", text.Replace("\r\n", "\n").Split('\n').Select(line =>
-        IsSecretLine(line) ? BugReportToken + " " + Hidden : line));
+        SecretName(line) is { } name ? name + " " + Hidden : line));
 
     // The shown text with each hidden line given back its value from actual (the file as read or set).
     public static string RestoreSecrets(string shown, string actual) {
-        var secret = actual.Replace("\r\n", "\n").Split('\n').FirstOrDefault(IsSecretLine);
-        return string.Join("\n", shown.Replace("\r\n", "\n").Split('\n').Select(line =>
-            secret != null && line.Trim().Equals(BugReportToken + " " + Hidden, StringComparison.OrdinalIgnoreCase) ? secret : line));
+        var secrets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var line in actual.Replace("\r\n", "\n").Split('\n'))
+            if (SecretName(line) is { } name && !secrets.ContainsKey(name)) secrets[name] = line;
+        return string.Join("\n", shown.Replace("\r\n", "\n").Split('\n').Select(line => {
+            var parts = line.Trim().Split(' ', 2);
+            return parts.Length == 2 && parts[1].Trim() == Hidden && secrets.TryGetValue(parts[0], out var secret) ? secret : line;
+        }));
     }
 
-    private static bool IsSecretLine(string line) {
+    // The secret setting a "KEY value" line sets (as SecretSettings spells it), or null.
+    private static string? SecretName(string line) {
         var parts = line.Trim().Split(' ', 2);
-        return parts.Length == 2 && parts[0].Equals(BugReportToken, StringComparison.OrdinalIgnoreCase) && parts[1].Trim() != Hidden;
+        if (parts.Length != 2 || parts[1].Trim() == Hidden) return null;
+        return SecretSettings.FirstOrDefault(name => parts[0].Equals(name, StringComparison.OrdinalIgnoreCase));
     }
 
     // Why the text cannot be saved, or null. config.local.txt follows shard_group.py merge_config.
