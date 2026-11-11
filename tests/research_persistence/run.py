@@ -25,6 +25,7 @@ FACTION = 'code/modules/research_tree/research_faction.dm'
 DEFINES = 'code/modules/research_tree/_research_tree_defines.dm'
 NODE = 'code/modules/research_tree/research_node.dm'
 METADATA = 'code/game/objects/map_metadata/_map_metadata.dm'
+MEMBERSHIP = 'code/game/mob/groups/faction_membership.dm'
 
 # Each control breaks one fix; the probe must then fail.
 CONTROLS = {
@@ -47,12 +48,13 @@ def node_datum(source):
 
 def build(directory, control):
     metadata = read(METADATA, control)
+    (directory / 'leader_record.dm').write_text(proc_text(read(MEMBERSHIP, control), '/obj/map_metadata/proc/faction_leader_record('), encoding='utf-8')
     (directory / 'defines.dm').write_text(read(DEFINES, control), encoding='utf-8')
     (directory / 'faction.dm').write_text(read(FACTION, control), encoding='utf-8')
     (directory / 'node.dm').write_text('var/global/list/research_nodes = list()\n' + node_datum(read(NODE, control)), encoding='utf-8')
     (directory / 'legacy.dm').write_text(proc_text(metadata, '/obj/map_metadata/proc/set_ordinal_age()') + '\n' + proc_text(metadata, '/obj/map_metadata/proc/legacy_age_advance('), encoding='utf-8')
     shutil.copy(HERE / 'probe.dm', directory / 'probe.dm')
-    (directory / 'fixture.dme').write_text(''.join(f'#include "{name}"\n' for name in ('defines.dm', 'probe.dm', 'node.dm', 'faction.dm', 'legacy.dm')), encoding='utf-8')
+    (directory / 'fixture.dme').write_text(''.join(f'#include "{name}"\n' for name in ('defines.dm', 'probe.dm', 'node.dm', 'faction.dm', 'legacy.dm', 'leader_record.dm')), encoding='utf-8')
 
 
 def main():

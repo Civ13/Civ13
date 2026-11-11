@@ -1,6 +1,7 @@
 """Offline checks for the research persistence probe; no compiler or server."""
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -17,6 +18,14 @@ class ResearchPersistenceSource(unittest.TestCase):
         metadata = run.read(run.METADATA, None)
         self.assertIn('return TRUE', run.proc_text(metadata, '/obj/map_metadata/proc/legacy_age_advance('))
         self.assertIn('/proc/get_research_node(', run.node_datum(run.read(run.NODE, None)))
+
+    def test_fixture_includes_production_leader_record_dependency(self):
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            run.build(directory, None)
+            self.assertEqual((directory / 'leader_record.dm').read_text(),
+                             run.proc_text(run.read(run.MEMBERSHIP, None), '/obj/map_metadata/proc/faction_leader_record('))
+            self.assertIn('#include "leader_record.dm"', (directory / 'fixture.dme').read_text())
 
     def test_tick_syncs_baselines_and_every_legacy_step_is_guarded(self):
         metadata = (ROOT / run.METADATA).read_text(encoding='utf-8')

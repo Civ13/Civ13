@@ -650,7 +650,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			// let the GC handle the deletion of the wound
 
 		// Internal wounds get worse over time. Low temperatures (cryo) stop them.
-		if (W.internal && owner.bodytemperature >= 170)
+		if (W.internal && W.damage > 0 && owner.bodytemperature >= 170)
 			var/adrenaline = owner.reagents.get_reagent_amount("adrenaline")
 			if (!(W.can_autoheal() || (adrenaline)))	//adrenaline stops internal wounds from growing bigger with time, unless it is so small that it is already healing
 				W.open_wound(0.1 * wound_update_accuracy)
@@ -659,7 +659,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 				blooddrop *= 0.3
 			owner.vessel.remove_reagent("blood", wound_update_accuracy * blooddrop) //line should possibly be moved to handle_blood, so all the bleeding stuff is in one place.
 			if (prob(1 * wound_update_accuracy))
-				owner.custom_pain("You feel a stabbing pain in your [name]!",60)
+				owner.custom_pain("You feel a stabbing pain in your [name]!", min(60, W.damage))
 
 		// slow healing
 		var/heal_amt = FALSE

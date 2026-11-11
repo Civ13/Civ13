@@ -512,7 +512,13 @@
 	for (var/obj/structure/noose/N in loc)
 		if (N.hanging == src)
 			return FALSE
-	return human_subtile_enabled && human_subtile_shape() && !stat && !lying && !prone && !anchored && !driver && !transforming && !throwing && !(status_flags & LEAPING) && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && !other_mobs && !subtile_pull_ownership.owners[src]
+	return shove_free_movement_ready() && human_subtile_shape() && !stat && !lying && !prone && !anchored && !driver && !transforming && !throwing && !(status_flags & LEAPING) && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && !other_mobs && !subtile_pull_ownership.owners[src]
+
+// A body nobody has walked yet (fresh spawn, idle player, NPC) still waits
+// for its first input to switch on free movement. It can be shoved too: the
+// shove adopts the default profile first, exactly as that first step would.
+/mob/living/human/proc/shove_free_movement_ready()
+	return human_subtile_enabled || (human_subtile_default_pending && ((!step_x && !step_y) || human_subtile_offset_owned))
 
 /mob/living/human/proc/try_deliberate_shove(mob/living/human/user)
 	if (!user || user == src || user.stat || !user.canmove || user.lying || user.prone || user.restrained() || user.buckled || !isturf(user.loc) || !isturf(loc) || z != user.z || !Adjacent(user))
@@ -551,6 +557,8 @@
 		human_subtile_transaction.release_visuals()
 		human_subtile_transaction.finish()
 	if (isDeleted(src) || !user || isDeleted(user) || user.stat || !user.canmove || user.restrained() || !Adjacent(user) || z != user.z || !shove_body_ready() || human_subtile_transaction || human_subtile_pulse)
+		return FALSE
+	if (!human_subtile_enabled && !set_human_subtile(TRUE))
 		return FALSE
 	var/datum/human_subtile_transaction/shove/T = new
 	T.actor = src

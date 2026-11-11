@@ -9,10 +9,8 @@
 	return disease && (disease_type in list("plague", "typhus", "malaria", "cholera"))
 
 /mob/living/human/proc/clear_disease()
-	// A cure ends the illness ache too: drop any pain it piled up back to the
-	// illness ceiling, and normal recovery (1-3 a second) clears the rest.
-	if (disease && is_severe_disease())
-		halloss = min(halloss, SEVERE_DISEASE_PAIN_CRITICAL)
+	// Pain is shared with injuries and other causes. Stop adding illness pain;
+	// normal recovery clears the remainder without erasing unrelated trauma.
 	disease = FALSE
 	disease_type = "none"
 	disease_progression = 0
@@ -38,17 +36,15 @@
 		disease_course = 0 // An interrupted course must be restarted.
 		disease_progression = min(1200, disease_progression + 1)
 		if (disease_progression == 1)
-			to_chat(src, SPAN_WARNING("You feel seriously ill. Seek medicine now; your body cannot fight this off alone in time."))
+			to_chat(src, SPAN_WARNING("You feel seriously ill. Medicine will shorten the illness; rest and protect yourself while you recover."))
 		if (disease_progression == 180)
-			to_chat(src, SPAN_WARNING("Your illness is worsening. You feel weak and feverish. Complete a medicine course before it becomes fatal."))
+			to_chat(src, SPAN_WARNING("Your illness is worsening. You feel weak and feverish. Complete a medicine course to recover sooner."))
 		if (disease_progression == 900)
-			to_chat(src, SPAN_DANGER("Your illness is critical! You need continuous treatment immediately."))
-		if (disease_progression >= 1200)
-			to_chat(src, SPAN_DANGER("The untreated illness overwhelms your body."))
-			death()
-			return
+			to_chat(src, SPAN_DANGER("Your illness is severe! Rest and seek continuous treatment."))
 	// Symptoms remain meaningful during treatment, but never cause a random
-	// early lethal toxin/brain spike. Other injuries/starvation still matter.
+	// early lethal toxin/brain spike or timer death. Existing immunity clears
+	// untreated disease after about 2000 active ticks. Other injuries, oxygen
+	// loss, starvation and infections remain dangerous independently.
 	if (disease_progression >= 180)
 		set_mood(max(0, mood - 0.1), "being sick")
 		apply_effect(3, DROWSY, FALSE)

@@ -502,10 +502,8 @@
 		return
 	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent
-		var/limbcheck = user.targeted_organ
-		if (limbcheck == "random")
-			limbcheck = pick("l_arm","r_arm","l_hand","r_hand")
-		if((limbcheck in list("l_hand","r_hand","l_arm","r_arm")) || user.werewolf)
+		var/limbcheck = bite_target_zone(user)
+		if(limbcheck)
 			var/obj/item/organ/external/affecting = target.get_organ(limbcheck)
 			if(!affecting)
 				to_chat(user, SPAN_NOTICE("[src] is missing that body part."))
@@ -535,11 +533,38 @@
 							target.visible_message("<span class='danger'>[target] drops \the [target.r_hand]!</span>")
 							target.drop_r_hand()
 		else
-			to_chat(user, SPAN_NOTICE("You cannot bite that part of the body, it's too far away!"))
+			to_chat(user, SPAN_NOTICE("[src] has no arm or hand you can reach to bite!"))
 			return FALSE
 
 		user.setClickCooldown(25)
 		return TRUE
+
+// Standing people bite an arm or hand. An aimed arm or hand is bitten as aimed;
+// any other aim (the default chest, head, legs) bites an arm or hand instead
+// of refusing, on the same side for a leg or foot. Werewolves bite anywhere.
+/atom/proc/bite_target_zone(mob/living/human/user)
+	var/zone = user.targeted_organ
+	if (zone == "random")
+		zone = pick("l_arm","r_arm","l_hand","r_hand")
+	if (user.werewolf || (zone in list("l_hand","r_hand","l_arm","r_arm")))
+		return zone
+	var/list/candidates
+	if (zone in list("l_leg","l_foot"))
+		candidates = list("l_hand","l_arm")
+	else if (zone in list("r_leg","r_foot"))
+		candidates = list("r_hand","r_arm")
+	else
+		candidates = list("l_arm","r_arm","l_hand","r_hand")
+	if (ishuman(src))
+		var/mob/living/human/target = src
+		for (var/candidate in candidates.Copy())
+			if (!target.get_organ(candidate))
+				candidates -= candidate
+		if (!candidates.len)
+			for (var/fallback in list("l_arm","r_arm","l_hand","r_hand"))
+				if (target.get_organ(fallback))
+					candidates += fallback
+	return candidates.len ? pick(candidates) : null
 
 //Jumping
 /atom/proc/jump_act(atom/target, mob/living/human/user)

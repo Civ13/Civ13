@@ -248,6 +248,11 @@ def convert(name, im, keep=False):
         fill = set(BROWN)
     fill_lum = sum(lum(c) for c in fill) / len(fill)
     top = max([lum(px[p]) for p in rest if px[p] not in fill and sat(px[p]) < 50] + [fill_lum + 40])
+    # A coloured picture (the mood face) keeps its own dull shading pixels;
+    # line art drawn in greys, even under a red cross, is redrawn in cream.
+    art = [px[p] for p in rest if px[p] not in fill]
+    if not tint and sum(1 for c in art if sat(c) >= 50) > len(art) * 0.8:
+        keep = True
     out = Image.new('RGBA', im.size, (0, 0, 0, 0))
     plate(out, bb, edge=tint or EDGE, fill=dark(tint) if tint else PLATE, thick=2 if tint else 1)
     op = out.load()
