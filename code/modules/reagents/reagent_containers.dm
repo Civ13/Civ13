@@ -240,27 +240,6 @@
 		target.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>"))
 		user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Fed [name] by [target.name] ([target.ckey]). Reagents: [contained]</font>"))
 		msg_admin_attack("[key_name(user)] fed [key_name(target)] with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", key_name(user), key_name(target))
-	if (ishuman(target)) //only humans now have diseases
-		var/mob/living/human/HH = target
-		var/dmod = 1
-		var/prob_disease
-		if (HH.find_trait("Weak Immune System"))
-			dmod = 2
-		if (HH.find_trait("Strong Immune System"))
-			dmod = 0.2
-		if (reagents.has_reagent("cholera"))
-			prob_disease = reagents.get_reagent_amount("cholera")
-			if (prob(min(prob_disease*25*dmod,100)))
-				if (HH.disease == 0)
-					HH.disease_progression = 0
-					HH.disease_type ="cholera"
-					HH.disease = 1
-		if (reagents.has_reagent("plague"))
-			prob_disease = reagents.get_reagent_amount("plague")
-			if (prob(min(prob_disease*25*dmod,100)))
-				HH.disease_progression = 0
-				HH.disease_type ="plague"
-				HH.disease = 1
 	reagents.trans_to_mob(target, issmall(target) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
 	target.bladder += amount_per_transfer_from_this/2
 	feed_sound(user)
