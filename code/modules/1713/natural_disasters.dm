@@ -158,8 +158,10 @@
 		HR.icon_state = "remains"
 		qdel(H)
 /turf/floor/lava/proc/lava_animal_remains(mob/living/L)
-	if(L) qdel(L)
-	new/obj/effect/decal/cleanable/ash(src)
+	if(L && istype(L.loc, /turf/floor/lava))
+		var/turf/floor/lava/current_lava = L.loc
+		qdel(L)
+		new/obj/effect/decal/cleanable/ash(current_lava)
 /turf/wall/rockwall/lavaspawner/proc/start_lava_flow(datum/durable_nomads_event/event = null)
 
 	for(var/turf/T in range(1,src))
