@@ -101,7 +101,7 @@
 /datum/save_stream/proc/put(path, value)
 	if(mode != "write") CRASH("save stream is not writing")
 	encoded_macros = FALSE
-	var/token = "W[length(path)]:[path]" + encode(value)
+	var/token = "W[num2text(length(path), 12)]:[path]" + encode(value)
 	batch_bytes += length(token)
 	records++
 	if(encoded_macros)
@@ -119,7 +119,7 @@
 /datum/save_stream/proc/put_text(base, text)
 	if(mode != "write") CRASH("save stream is not writing")
 	var/body = "[base]|[text]"
-	var/token = "T[length(body)]:[body]"
+	var/token = "T[num2text(length(body), 12)]:[body]"
 	batch += token
 	batch_bytes += length(token)
 	records++
@@ -316,15 +316,15 @@
 	if(isnull(value)) return "N"
 	if(isnum(value)) return "F[num2text(value, 9)];"
 	if(istext(value))
-		if(length("[value]") == length(value)) return "S[length(value)]:[value]"
+		if(length("[value]") == length(value)) return "S[num2text(length(value), 12)]:[value]"
 		encoded_macros = TRUE
-		return "S[length(value)]:" + value
+		return "S[num2text(length(value), 12)]:" + value
 	if(ispath(value))
 		var/path_text = "[value]"
-		return "P[length(path_text)]:[path_text]"
+		return "P[num2text(length(path_text), 12)]:[path_text]"
 	if(islist(value))
 		var/list/L = value
-		var/list/parts = list("L[L.len];")
+		var/list/parts = list("L[num2text(L.len, 12)];")
 		var/had_macros = encoded_macros
 		encoded_macros = FALSE
 		for(var/i = 1, i <= L.len, i++)
@@ -352,7 +352,7 @@
 			var/template = value_templates ? value_templates[value] : null
 			if(!template) return cached
 			var/copy_name = "savestream_value_[++value_files]_[world.timeofday].sav"
-			if(fcopy(template, copy_name)) return "Y[length(copy_name)]:[copy_name]"
+			if(fcopy(template, copy_name)) return "Y[num2text(length(copy_name), 12)]:[copy_name]"
 	if(!scratch) scratch = new /savefile()
 	scratch["v"] << value
 	var/text = scratch.ExportText("v")
@@ -365,12 +365,12 @@
 		var/savefile/value_file = new(file_name)
 		value_file["v"] << value
 		del(value_file)
-		var/file_token = "Y[length(file_name)]:[file_name]"
+		var/file_token = "Y[num2text(length(file_name), 12)]:[file_name]"
 		if(reusable) remember_value_token(value, file_token, file_name)
 		return file_token
 	if(copytext(text, 1, 5) == ". = ") text = copytext(text, 5)
 	while(length(text) && copytext(text, length(text)) == "\n") text = copytext(text, 1, length(text))
-	var/text_token = "X[length(text)]:[text]"
+	var/text_token = "X[num2text(length(text), 12)]:[text]"
 	if(reusable) remember_value_token(value, text_token)
 	return text_token
 
