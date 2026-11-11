@@ -291,6 +291,7 @@ var/knowledge_failures = 0
 	check_scholar_tutoring()
 	check_scholar_apprentices()
 	check_scholar_titles()
+	check_scholar_practice()
 	check_scholarship_panel()
 	check_book_printing(scholar)
 	map.book_research = FALSE
@@ -442,6 +443,39 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_title() == "Scholar of Medicine", "a skilled character is a Scholar")
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
+	qdel(H)
+
+// Practice (Val, 2026-11-11): practice tools train a discipline a little per
+// session, more with an instrument or beside a master, never past the cap.
+/proc/check_scholar_practice()
+	var/mob/living/human/knowledge_fixture/H = new(locate(4,3,1))
+	H.stats["stamina"][1] = 100
+	H.scholarship = list()
+	var/list/tools = list(
+		new /obj/item/weapon/writing_slate(H.loc), new /obj/item/weapon/abacus(H.loc),
+		new /obj/item/weapon/scholar_practice/model_kit(H.loc), new /obj/item/weapon/scholar_practice/specimen_box(H.loc),
+		new /obj/item/weapon/scholar_practice/study_bones(H.loc), new /obj/item/weapon/scholar_practice/seed_tray(H.loc),
+		new /obj/item/weapon/scholar_practice/war_game(H.loc))
+	var/list/trained = list()
+	for (var/obj/item/I in tools)
+		trained |= scholar_practice_discipline(I)
+	knowledge_check(trained.len == scholar_disciplines.len, "every discipline has a practice tool")
+	for (var/path in list("/obj/item/weapon/scholar_practice/model_kit", "/obj/item/weapon/scholar_practice/specimen_box", "/obj/item/weapon/scholar_practice/study_bones", "/obj/item/weapon/scholar_practice/seed_tray", "/obj/item/weapon/scholar_practice/war_game"))
+		knowledge_check(get_recipe_node_req(path) == "basic_tools", "[path] is made from the Stone Age")
+	knowledge_check(!H.scholar_practice_problem("mathematics"), "a rested character in the light can practise")
+	var/gained = H.scholar_practice_commit("mathematics", scholar_practice_tool_rate(tools[1]))
+	knowledge_check(gained == SCHOLAR_PRACTICE_GAIN && H.scholar_level("mathematics") == SCHOLAR_PRACTICE_GAIN, "a slate session teaches Basic Mathematics")
+	knowledge_check(H.stats["stamina"][1] == 100 - SCHOLAR_PRACTICE_STAMINA, "practice costs stamina")
+	knowledge_check(H.scholar_level("engineering") == 0, "practice trains only its own discipline")
+	knowledge_check(scholar_practice_tool_rate(tools[2]) > scholar_practice_tool_rate(tools[1]), "an abacus teaches more than a slate")
+	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP - 2)
+	knowledge_check(H.scholar_practice_gain("medicine") < SCHOLAR_PRACTICE_GAIN, "practice teaches less near its cap")
+	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP)
+	knowledge_check(H.scholar_practice_problem("medicine") && !H.scholar_practice_commit("medicine") && H.scholar_level("medicine") == SCHOLAR_PRACTICE_CAP, "practice stops at its cap")
+	H.stats["stamina"][1] = SCHOLAR_PRACTICE_STAMINA - 1
+	knowledge_check(H.scholar_practice_problem("agriculture") && !H.scholar_practice_commit("agriculture"), "a tired character can't practise")
+	for (var/obj/item/I in tools)
+		qdel(I)
 	qdel(H)
 
 // Scholarship tab (Val, 2026-11-10): each discipline's level and the latest

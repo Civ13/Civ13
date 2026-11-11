@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'landing_craft': {'files': ('tests/landing_craft/test_lever.py',),
+        'paths': ('tests/landing_craft/', 'code/modules/1713/transporter/lever.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'dressmaking': {'files': ('tests/dressmaking/test_source.py',),
         'paths': ('tests/dressmaking/', 'tests/crafting/dressmaking.dm', 'code/modules/1713/dressmaking.dm',
                   'scripts/atlas/dressmaking.py'),

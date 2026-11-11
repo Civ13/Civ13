@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3815f705bfaf75ef2c519fb96e3ac210c6962697'
+WIKI_REVIEWED_REVISION = '0d5c167289ba3e59cd4fc356a5f475d6010e874b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('3dadc2ec9bc22e0149f7dd2c384171090893c48979f1230888c5ee96232ba142', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('512e26c2ec469aec84c698fab9219787d5f08a61520b45e64a4bb1009c328832', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),
@@ -118,7 +118,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('4943df0f180bc2b39abb207a339bcde6de3444f16f580e59225d9a1b5a63d7ef', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('4d7730c0284f39c75e2081771a128c0a03db7c86b3fad6496e2240ccc1945dbe', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('15c5851579542942de8d7faf56e6938df66b24f1723af7c0737b3ffe81e79cf5', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('9f99062c2efc41ff0005bea9d59eadaa470fd928b21370bbdb21dd970ca57fd6', 'first day new character start starting survive survival research book study chapter food water shelter'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
