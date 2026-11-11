@@ -199,7 +199,9 @@
 /obj/item/honey_frame/filled/attackby(var/obj/item/I, var/mob/user)
 	if (istype(I, /obj/item/weapon/material/kitchen/utensil/knife/))
 		user.visible_message(SPAN_NOTICE("\The [user] starts taking the honeycombs out of \the [src]."), SPAN_NOTICE("You start taking the honeycombs out of \the [src]..."))
-		if(!do_after(user, 90))
+		if(!do_after(user, 90, src))
+			return
+		if (QDELETED(src) || QDELETED(user) || !Adjacent(user))
 			return
 		to_chat(user, SPAN_NOTICE("You take all filled honeycombs out."))
 		new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(loc)

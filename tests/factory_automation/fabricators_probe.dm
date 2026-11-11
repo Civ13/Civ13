@@ -86,7 +86,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 36 && !factory_recipe_errors.len, "the curated factory recipe list loads thirty-six recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 38 && !factory_recipe_errors.len, "the curated factory recipe list loads thirty-eight recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -96,7 +96,17 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 36, "the real list reloads")
+	machine_check(factory_get_recipes().len == 38, "the real list reloads")
+	var/datum/factory_recipe/SL = factory_get_recipes()["synthetic leather"]
+	machine_check(SL && SL.output_type == /obj/item/stack/material/leather/synthetic && SL.output_amount == 2 && SL.inputs[/obj/item/stack/material/cloth] == 1 && SL.inputs[/obj/item/stack/material/plastic] == 1 && SL.tier == 1 && SL.node == "synthetics", "synthetic leather is two sheets from one cloth and one plastic, with Synthetic Fabrics")
+	var/obj/item/stack/material/leather/synthetic/fake = new(locate(16, 16, 1), 2, FALSE)
+	var/obj/item/stack/material/leather/real = new(locate(16, 16, 1), 2, FALSE)
+	machine_check(fake.material && fake.material == real.material && fake.default_type == "leather" && fake.name == "synthetic leather sheets" && fake.icon_state == "sheet-synthleather" && (fake.icon_state in icon_states(fake.icon)) && !factory_stack_matches(fake, real), "synthetic leather crafts as leather but keeps its own name, sprite and stack")
+	fake.amount = 40
+	fake.update_icon()
+	machine_check(fake.icon_state == "sheet-synthleather_3" && (fake.icon_state in icon_states(fake.icon)), "a big synthetic leather stack shows its big-stack sprite")
+	qdel(fake)
+	qdel(real)
 	var/list/node_map = recipe_node_requirements
 	var/list/tiers = list("/obj/structure/factory_arm/stack" = "digital_computing", "/obj/structure/factory_fabricator" = "assembly_line", "/obj/structure/factory_fabricator/automated" = "automation", "/obj/structure/factory_fabricator/computerized" = "digital_computing", "/obj/structure/factory_fabricator/printer" = "additive_manufacturing")
 	var/node_ok = TRUE
@@ -118,8 +128,8 @@ var/machine_runtime_error = FALSE
 	machine_done("probe_civ", "automation")
 	machine_done("probe_civ", "digital_computing")
 	var/list/basic = F.available_recipes("probe_civ")
-	machine_check(basic.len == 15 && ("barbwire" in basic) && ("bronze" in basic) && ("wrench" in basic) && !("ammo belt" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
-	machine_check(C.available_recipes("probe_civ").len == 18, "a tier 3 fabricator lists every researched non-printing recipe")
+	machine_check(basic.len == 16 && ("brass" in basic) && ("barbwire" in basic) && ("bronze" in basic) && ("wrench" in basic) && !("ammo belt" in basic) && !("electronic circuits" in basic), "a tier 1 fabricator lists only tier 1 recipes")
+	machine_check(C.available_recipes("probe_civ").len == 19, "a tier 3 fabricator lists every researched non-printing recipe")
 	machine_printer_checks()
 	machine_check(!F.set_recipe("no such recipe") && !F.recipe_name, "unknown recipes are refused")
 	var/obj/item/stack/material/iron/iron = new(locate(1, 2, 1), 10, FALSE)
