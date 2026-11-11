@@ -197,7 +197,7 @@ var/global/list/book_research_writing_supplies = list(
 	set category = null
 	set src in usr
 	var/mob/living/human/H = usr
-	if (!istype(H) || H.incapacitated() || !can_hold_research() || page_busy)
+	if (!istype(H) || H.incapacitated() || !can_hold_notes() || page_busy)
 		return
 	var/list/choices = list()
 	var/list/pages = page_list()
@@ -266,10 +266,10 @@ var/global/list/book_research_writing_supplies = list(
 	return add_written_page(P.info)
 
 /obj/item/weapon/book/proc/reinsert_page(mob/living/human/H, obj/item/weapon/paper/P)
-	if (!can_hold_research() || page_busy)
+	if (!can_hold_notes() || page_busy)
 		return FALSE
 	var/obj/item/weapon/paper/research_page/R = istype(P, /obj/item/weapon/paper/research_page) ? P : null
-	if (R && (!valid_recipe_node_id(R.node_id) || has_research_chapter(R.node_id)))
+	if (R && (!can_hold_research() || !valid_recipe_node_id(R.node_id) || has_research_chapter(R.node_id)))
 		to_chat(H, SPAN_WARNING("That chapter can't go back into [src]."))
 		return FALSE
 	if (!R && !length(P.info))

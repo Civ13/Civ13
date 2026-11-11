@@ -58,5 +58,22 @@ class DistributionContract(unittest.TestCase):
         for name in ("basic_tools", "primitive_construction", "pottery_storage"):
             self.assertIn(f"list(/obj/item/weapon/book/node_book/{name}, 1, 0, 9, 2, 3)", s)
         self.assertIn("!map.recipe_knowledge_enabled()", s)
+    def test_manuals_take_notes_but_not_chapters(self):
+        book = read("code/modules/1713/book.dm")
+        attack = proc(book, "/obj/item/weapon/book/attackby")
+        self.assertIn("if (!can_hold_notes())", attack)
+        self.assertIn("can_hold_notes() && ishuman(user)", attack)
+        self.assertNotIn("if (unique)\n\t\t\tto_chat", attack)
+        knowledge = read("code/modules/research_tree/character_knowledge.dm")
+        self.assertIn("return TRUE", proc(knowledge, "/obj/item/weapon/book/node_book/can_hold_notes"))
+        self.assertIn("return TRUE", proc(self.source, "/obj/item/weapon/book/node_compendium/can_hold_notes"))
+        self.assertIn("offer_notes_reading(user,", proc(knowledge, "/obj/item/weapon/book/node_book/attack_self"))
+        self.assertIn("offer_notes_reading(user,", proc(self.source, "/obj/item/weapon/book/node_compendium/attack_self"))
+        pages = read("code/modules/research_tree/book_pages.dm")
+        self.assertIn("!can_hold_research()", proc(pages, "/obj/item/weapon/book/proc/reinsert_page"))
+        travel = read("code/modules/persistence/region_travel.dm")
+        kind = proc(travel, "/proc/region_travel_item_kind")
+        self.assertIn("!C.dat", kind)
+        self.assertIn("!B.dat", kind)
 if __name__ == "__main__":
     unittest.main()

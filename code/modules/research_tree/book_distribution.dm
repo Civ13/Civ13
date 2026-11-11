@@ -98,7 +98,11 @@
 	node_ids = clean_recipe_node_ids(node_ids)
 	if(node_ids.len > RECIPE_COMPENDIUM_MAX) node_ids.Cut(RECIPE_COMPENDIUM_MAX + 1)
 
+/obj/item/weapon/book/node_compendium/can_hold_notes()
+	return TRUE
+
 /obj/item/weapon/book/node_compendium/attack_self(mob/user)
+	if(offer_notes_reading(user, "Study a chapter")) return
 	var/mob/living/human/H = user
 	if(!recipe_book_actor_valid(H) || !H.Adjacent(src)) return
 	var/id = player_input(H, "Study which chapter?", "Compendium", null, "anything", node_ids, TRUE)
@@ -115,6 +119,8 @@
 		if(!do_after(H, 100, src) || !src || gcDestroyed || !other || other.gcDestroyed || node_id != first || other.node_id != second || !recipe_book_actor_valid(H) || !H.Adjacent(src) || !recipe_held(H, other)) return
 		var/obj/item/weapon/book/node_compendium/C = new(get_turf(H))
 		C.node_ids = list(first, second)
+		C.take_notes_from(src)
+		C.take_notes_from(other)
 		H.remove_from_mob(other)
 		if(loc == H) H.remove_from_mob(src)
 		qdel(other)
@@ -130,8 +136,18 @@
 	if(!valid_recipe_node_id(id) || (id in node_ids) || node_ids.len >= RECIPE_COMPENDIUM_MAX || !recipe_book_actor_valid(H) || !H.Adjacent(src) || !recipe_held(H, B)) return
 	if(!do_after(H, 100, src) || !src || gcDestroyed || !B || B.gcDestroyed || B.node_id != id || (id in node_ids) || node_ids.len >= RECIPE_COMPENDIUM_MAX || !recipe_book_actor_valid(H) || !H.Adjacent(src) || !recipe_held(H, B)) return
 	node_ids += id
+	take_notes_from(B)
 	H.remove_from_mob(B)
 	qdel(B)
+
+// Binding manuals together keeps the notes written in them.
+/obj/item/weapon/book/proc/take_notes_from(obj/item/weapon/book/other)
+	if(!other || other == src)
+		return
+	for(var/page in other.page_list())
+		add_written_page(page)
+	if(!author && other.author)
+		author = other.author
 
 // No automatic placement. Map authors explicitly place these cache structures.
 // One book is generated on demand per cooldown, never in a background loop.
