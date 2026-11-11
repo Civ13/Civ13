@@ -121,6 +121,7 @@
 
 		if (O.force <= resistance)
 			to_chat(user, SPAN_DANGER("This weapon is ineffective, it does no damage."))
+			O.on_weapon_contact(src, user)
 			return 2
 
 		var/damage = O.force
@@ -129,6 +130,7 @@
 
 		adjustBruteLoss(damage)
 		limb_hit(hit_zone)
+		O.on_weapon_contact(src, user)
 	return FALSE
 
 

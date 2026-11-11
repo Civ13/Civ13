@@ -157,7 +157,7 @@
 	var/blocked = run_armor_check(hit_zone, "melee", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
-
+	I.on_weapon_contact(src, user)
 	return blocked
 
 //returns FALSE if the effects failed to apply for some reason, TRUE otherwise.
