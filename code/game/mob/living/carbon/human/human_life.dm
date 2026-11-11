@@ -103,7 +103,7 @@
 		handle_animalistic("Crab")
 	else if (droid)
 		handle_animalistic("Droid")
-	else if (!gorillaman && !werewolf && !orc && !goblin && !ant && !lizard && !wolfman && !crab && !droid && body_build.name != "Default")
+	else if (body_build.name != "Default") // The preceding branches already tested every form flag.
 		handle_animalistic("Default")
 //	if (prone)
 //		lying = 1
