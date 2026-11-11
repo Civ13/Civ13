@@ -22,6 +22,19 @@ class EscrowContracts(unittest.TestCase):
     def test_coordinate_elements_are_not_silently_skipped(self):
         self.assertIn('for(var/entry in R["centres"])', S)
         self.assertIn('if(!islist(entry)) return null', S)
+    def test_malformed_container_is_not_empty_escrow(self):
+        validator = S.split('/obj/structure/region_gate/proc/train_escrow_container_valid()')[1].split('/proc/train_escrow_saved()')[0]
+        self.assertIn('islist(train_escrow_records)', validator)
+        self.assertIn('train_escrow_records.len <= TRAIN_ESCROW_LIMIT', validator)
+        self.assertIn('train_escrow_hold_reason =', validator)
+        saved = S.split('/proc/train_escrow_saved()')[1].split('/proc/train_escrow_account_held')[0]
+        held = S.split('/proc/train_escrow_account_held')[1].split('// A caller')[0]
+        self.assertLess(saved.index('train_escrow_container_valid()'), saved.index('for(var/text'))
+        self.assertLess(held.index('train_escrow_container_valid()'), held.index('for(var/text'))
+        self.assertIn('if(!S.train_escrow_container_valid()) return TRUE', held)
+        capture = S.split('/obj/structure/region_gate/proc/train_escrow_record_capture')[1]
+        self.assertIn('train_escrow_hold_reason || QDELETED(src)', capture)
+        self.assertIn('if(!train_escrow_container_valid()', capture)
     def test_source_stage_stays_gated(self):
         self.assertIn('Whole-train staging awaits the accepted body codec', S)
         self.assertNotIn('begin_escrow(', S)

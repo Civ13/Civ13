@@ -167,7 +167,8 @@
 	if(!frame || !istype(frame.source, /obj/item/organ/external) || !(frame.current_field in list("mob_icon", "icon")))
 		throw EXCEPTION("Unsupported native icon field from [body_source_context()]")
 	var/obj/item/organ/external/O = frame.source
-	if(!isicon(value) || istext(value)) throw EXCEPTION("Not a native organ icon resource")
+	var/bound_atom_resource = frame.current_field == "icon" && isfile(value) && value == O.icon
+	if((!isicon(value) && !bound_atom_resource) || istext(value)) throw EXCEPTION("Not a native organ icon resource")
 	if(frame.current_field == "mob_icon" && value != O.mob_icon) throw EXCEPTION("Native icon differs from organ mob_icon")
 	if(frame.current_field == "icon" && value != O.icon) throw EXCEPTION("Native icon differs from organ icon")
 	var/ref = local_icon_sources.Find(value)
@@ -215,7 +216,7 @@
 		return list("kind" = "body_species", "name" = "Human")
 	var/datum/save_export_frame/frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
 	if(istype(value, /icon)) return capture_organ_icon(value, frame)
-	if(frame && istype(frame.source, /obj/item/organ/external) && frame.current_field == "icon" && isicon(value))
+	if(frame && istype(frame.source, /obj/item/organ/external) && frame.current_field == "icon" && (isicon(value) || isfile(value)))
 		return capture_organ_icon(value, frame)
 	if(frame && frame.current_field == "filters" && istype(frame.source, /atom))
 		var/atom/owner = frame.source

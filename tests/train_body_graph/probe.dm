@@ -300,6 +300,8 @@ var/global/body_runtime_error = FALSE
 	body_check("source_injury_inventory_unchanged", arm && arm.brute_dam == 17 && arm.wounds.len && cargo.loc == H)
 	var/mob/living/simple_animal/sheep/S = new(locate(5, 5, 1))
 	S.transform = matrix(1.25, 0.125, 3, -0.25, 0.75, -4)
+	S.color = "#7293ab"
+	S.alpha = 173
 	sleep(1)
 	var/animal_text = G.capture_body(S)
 	body_capture_errors["animal"] = G.body_error
@@ -308,6 +310,7 @@ var/global/body_runtime_error = FALSE
 	var/obj/effect/train_body_quarantine/animal_Q = G.restore_local_capture(animal_text)
 	var/matrix/restored_transform = animal_Q && animal_Q.body ? animal_Q.body.transform : null
 	body_check("six_matrix_coefficients_roundtrip", restored_transform && restored_transform.a == 1.25 && restored_transform.b == 0.125 && restored_transform.c == 3 && restored_transform.d == -0.25 && restored_transform.e == 0.75 && restored_transform.f == -4)
+	body_check("primitive_appearance_fields_roundtrip", animal_Q && animal_Q.body && animal_Q.body.color == "#7293ab" && animal_Q.body.alpha == 173 && S.color == "#7293ab" && S.alpha == 173)
 	body_check("matrix_components_bounded_numeric", !G.matrix_component_valid(1000001) && !G.matrix_component_valid("1") && G.matrix_component_valid(-0.25))
 	body_check("empty_filters_roundtrip", animal_Q && animal_Q.body && !length(animal_Q.body.filters))
 	S.filters = list(filter(type = "blur", size = 1))
@@ -334,6 +337,54 @@ var/global/body_runtime_error = FALSE
 	H.persistence_owner_ckey = null
 	body_check("unowned_human_not_healed_policy", !G.rejuvenate_unowned_human_on_load())
 	body_check("no_capture_removed_sources", H && S && cargo && cargo.loc == H)
+// Narrow sampled renderer experiment, NOT a portable equivalence/admission
+// predicate. Compare known head-art states and cardinal directions at frame 1;
+// animations, nested overlays, HUD and arbitrary resource metadata remain out.
+/proc/body_head_samples_equal(icon/A, icon/B)
+	if(!isicon(A) || !isicon(B)) return FALSE
+	var/list/states_a = icon_states(A)
+	var/list/states_b = icon_states(B)
+	if(!states_a.len || states_a.len > 4 || states_a.len != states_b.len) return FALSE
+	for(var/i = 1, i <= states_a.len, i++)
+		if(states_a[i] != states_b[i]) return FALSE
+		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+			var/icon/left = icon(A, states_a[i], direction, 1)
+			var/icon/right = icon(B, states_b[i], direction, 1)
+			if(left.Width() < 1 || left.Height() < 1 || left.Width() > 64 || left.Height() > 64 || left.Width() != right.Width() || left.Height() != right.Height()) return FALSE
+			for(var/x = 1, x <= left.Width(), x++)
+				for(var/y = 1, y <= left.Height(), y++)
+					if(left.GetPixel(x, y) != right.GetPixel(x, y)) return FALSE
+	return TRUE
+
+/proc/body_head_reconstruction_probe()
+	// A separate disposable actor: never rewrite capture sources to make them fit.
+	var/mob/living/human/R = new(locate(8, 8, 1))
+	sleep(20)
+	R.h_style = null
+	R.f_style = null
+	R.lip_style = null
+	var/obj/item/organ/external/head/head = R.get_organ("head")
+	var/obj/item/organ/eyes/eyes = R.internal_organs_by_name["eyes"]
+	if(!head || !eyes) throw EXCEPTION("Head renderer fixture lacks production organs")
+	eyes.eye_colour = list(240, 0, 0)
+	head.update_icon()
+	var/icon/baseline = icon(head.mob_icon)
+	head.update_icon()
+	var/canonical_matches = body_head_samples_equal(baseline, head.mob_icon)
+	body_check("head_field_rebuild_samples_equal", canonical_matches)
+	eyes.eye_colour = list(0, 240, 0)
+	head.update_icon()
+	body_check("head_eye_colour_causal_control", canonical_matches && !body_head_samples_equal(baseline, head.mob_icon))
+	// Establish equality again before testing a custom pixel. This prevents a
+	// pre-existing rebuild mismatch from falsely satisfying the negative control.
+	eyes.eye_colour = list(240, 0, 0)
+	head.update_icon()
+	var/rebuilt_matches = body_head_samples_equal(baseline, head.mob_icon)
+	var/icon/custom = icon(head.mob_icon)
+	custom.DrawBox("#ff00ff", 1, 1, 1, 1)
+	body_check("head_custom_pixel_causal_control", rebuilt_matches && !body_head_samples_equal(baseline, custom))
+	body_check("head_sample_null_refused", !body_head_samples_equal(null, baseline))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -345,6 +396,7 @@ var/global/body_runtime_error = FALSE
 	try
 		body_fixture_catalogs()
 		body_capture_probe()
+		body_head_reconstruction_probe()
 	catch(var/exception/E)
 		body_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

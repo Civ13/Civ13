@@ -35,7 +35,7 @@ class HomeTests(unittest.TestCase):
         self.stores[name].close()
 
     def new_coordinator(self, file='coordinator.sqlite'):
-        c = Coordinator(os.path.join(self.tmp.name, file), 'g')
+        c = Coordinator(os.path.join(self.tmp.name, file), 'g', bootstrap_new_group=True)
         for name in self.stores:
             c.enroll(name, self.urls[name], TOKENS[name])
         return c
@@ -105,24 +105,18 @@ class HomeTests(unittest.TestCase):
 
     def test_a_lost_ledger_keeps_a_living_character_where_it_is(self):
         self.coordinator.close()
-        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'm1.sqlite'), 'g', 'alpha')
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'm1.sqlite'), 'g', 'alpha', bootstrap_new_group=True)
         for name in self.stores:
             self.coordinator.enroll(name, self.urls[name], TOKENS[name])
         self.ask('alpha', 'val', 'depart', 'beta')
         self.ask('beta', 'val', 'arrive')
         self.coordinator.homes_once()
         self.assertEqual({'val': 'beta'}, self.coordinator.homes())
-        # coordinator.sqlite is lost: every agent drops its copy.
+        # A replacement must not clear surviving agent homes.
         self.coordinator.close()
-        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'm2.sqlite'), 'g', 'alpha')
-        for name in self.stores:
-            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
-        self.coordinator.homes_once()
-        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'), 'without a body here it is a new start')
-        self.assertEqual('PENDING', self.ask('beta', 'val', body_here=True))
-        self.assertEqual('PENDING', self.ask('alpha', 'val'))
-        self.coordinator.homes_once()
-        self.assertEqual({'val': 'beta'}, self.coordinator.homes(), 'the living body beats a fresh claim')
+        self.coordinator = self.new_coordinator('replacement.sqlite')
+        self.assertEqual(0, self.coordinator.homes_once())
+        self.assertEqual({}, self.coordinator.homes())
         self.assertEqual('HOME', self.ask('beta', 'val'))
         self.assertEqual('ELSEWHERE', self.ask('alpha', 'val'))
 
@@ -177,11 +171,10 @@ class HomeTests(unittest.TestCase):
         self.coordinator.close()
         self.coordinator = self.new_coordinator('fresh.sqlite')
         self.coordinator.homes_once()
-        # Every agent dropped the old copy; the next claim decides again.
-        self.assertEqual('PENDING', self.ask('beta', 'val'))
-        self.coordinator.homes_once()
-        self.assertEqual('HOME', self.ask('beta', 'val'))
-        self.assertEqual('ELSEWHERE', self.ask('alpha', 'val'))
+        self.assertEqual('quarantined', self.coordinator.recovery_status()['state'])
+        self.assertEqual('ELSEWHERE', self.ask('beta', 'val'))
+        self.assertEqual(0, self.coordinator.homes_once())
+        self.assertEqual('HOME', self.ask('alpha', 'val'))
 
     def test_a_lost_acknowledgement_never_replays_an_old_request(self):
         self.ask('alpha', 'val')
@@ -204,7 +197,7 @@ class HomeTests(unittest.TestCase):
 
     def test_mainland_is_where_everyone_starts_and_returns_after_death(self):
         self.coordinator.close()
-        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'main.sqlite'), 'g', 'alpha')
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'main.sqlite'), 'g', 'alpha', bootstrap_new_group=True)
         for name in self.stores:
             self.coordinator.enroll(name, self.urls[name], TOKENS[name])
         self.coordinator.homes_once()  # agents learn the mainland
@@ -232,7 +225,7 @@ class HomeTests(unittest.TestCase):
     def test_a_raid_death_sends_the_home_back_where_the_raider_came_from(self):
         # region_raid.dm: a raid world notes a death as a depart to the origin.
         self.coordinator.close()
-        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'main.sqlite'), 'g', 'alpha')
+        self.coordinator = Coordinator(os.path.join(self.tmp.name, 'main.sqlite'), 'g', 'alpha', bootstrap_new_group=True)
         for name in self.stores:
             self.coordinator.enroll(name, self.urls[name], TOKENS[name])
         self.coordinator.homes_once()

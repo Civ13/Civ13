@@ -1,149 +1,91 @@
-# Train body graph capture boundary
+# Train body graph: failed acceptance, isolated research
 
-`python3 -m unittest discover -s tests/train_body_graph -v` checks source guards only.
-No native capture or restore execution has been verified.
-Local exact-capture quarantine restoration is now implemented but unproven. This is **not** a
-lossless transport codec, and must not enable departure or source deletion.
+Recovered baseline tree `56d0868ba2dfae99f6d72283893fabfa479d5a61`
+(local recovery commit `3d9785e`) matches the previously staged native tree.
+Prior exact-tree evidence: BYOND 516.1688 compile 0 errors/0 warnings;
+24/37 checks passed, 13 failed, runtime_error=0. Sheep local quarantine,
+matrix/filter and durable-profile controls passed. Human/corpse failed,
+including head.overlays unsupported and occasional same-tick refusal.
+This is not a finished transport codec. Departure/source deletion remain disabled.
 
-The capture adapter uses the real production `BuildVarDirectory` and its
-`before_save_context`/`get_saved_vars` hooks, not an empty projection. It writes
-an in-memory v3 savefile then explicit JSON tags for native values, entries and
-cyclic list references. Native resources, external world references, unsaved
-inventory, budget overruns and tick-crossing are rejected rather than omitted.
-Production hooks may update corpse age and align runtime sub-tile state; this
-is not a side-effect-free snapshot. Call only under an authorized frozen source
-transaction, and retain the source when capture fails.
+## Fresh field-level experiment
 
-## Remaining mandatory integration work
+This is new implementation, not recovery of lost renderer commit cf1e89bab.
+The fixture now expects 42 checks: the original 37 plus five new assertions.
+No native compile or runtime has yet validated this fresh snapshot.
 
-* Establish admitted **exact** body/item/datums and fields using representative
-  production human, NPC, corpse, wound, severed limb, nested inventory and
-  reagent fixtures. Family admission here is for capture, never constructor
-  authorization. Supported equipment does not imply every variant captures.
-* Identify native resources and external/shared datum references in those
-  real bodies; reject unsupported bodies or add reviewed portable projections.
-* Split the production `Load_Entry` unowned-human rejuvenation policy from body
-  transfer. The default-TRUE `rejuvenate_unowned_human_on_load` hook is now overridden FALSE in this adapter; ordinary world-save behavior is unchanged.
-* Validate every field and typed path, reference range and reachability,
-  containment ownership and cycles **before** any restore constructor runs.
-  There is deliberately no remote restore entrypoint. `restore_local_capture` accepts only this same instance’s exact unconsumed capture and cannot import a remote packet.
-* Reuse guarded production `Load_Entry` only inside an isolated destination
-  quarantine; audit all constructors, `after_load`, `persistence_import_fields`,
-  `persistence_restore_finished`, corpse registry and reagent ownership hooks.
-* Keep account registration/client attachment outside decoding and behind
-  authoritative transaction ownership. Retain journaled source custody until
-  destination quarantine and player-home claim commit are durable.
-* Prove round-trip injuries, organs, DNA, reagent volume, aliases, inventory,
-  death state and age; test crash/retry/rollback without duplication or healing.
+Prior art: `tests/world_save/README.md` excludes composite appearance because
+its unsupported null restores can reset separately restored transform/color/
+alpha. `docs/saved-player-reclaim.md` rebuilds HUD at Login; that does not prove
+HUD portability. Accordingly no composite-appearance equality is used here.
 
-This adapter does not claim those acceptance tests passed. No live server,
-client, character record, or world save is modified by the source tests.
+The existing admitted sheep roundtrip now carries non-default color and alpha,
+with its existing six-coefficient transform assertion. A separate disposable
+human tests production head.update_icon from durable eye-color inputs. Bounded
+comparison samples every pixel of up to four icon states and the four cardinal
+directions at frame 1, up to 64x64. Repeat reconstruction must match. Causal
+controls change eye color and a custom pixel, each gated on baseline equality;
+null input must reject. Capture sources are never rebuilt to fit the profile.
 
-## Full-source native fixture (execution pending)
+These sampled comparisons are **not admission/equivalence predicates**. They
+cannot establish animation-frame preservation, native metadata, diagonal
+variants, nested head overlays, general clothing, global-cache independence,
+HUD rebuilding or remote asset authority. The helper lives only in the fixture.
+No codec fields are omitted or admitted, no arbitrary icon filenames imported,
+and same-tick/closed-world/source-retention guards remain unchanged.
 
+## Validation and execution
+
+`python3 -m unittest discover -s tests/train_body_graph -v` runs source guards.
 `python3 tests/train_body_graph/run.py --prepare-only --evidence-dir <fresh>`
-prepares the real production code with isolated startup and no map includes.
-The adapter is included explicitly in the fixture, not the production DME.
-`--byond-bin <516.1688 bin> --compile-only` compiles without launching a daemon.
-Native execution additionally requires `--allow-native-execution` and parent
-authorization; do not infer authorization from fixture availability.
+prepares isolated production sources without starting a daemon.
+`--byond-bin <516.1688 bin> --compile-only` compiles only. Native execution
+requires `--allow-native-execution` and the parent's exact-snapshot coordination.
+The fixture closes its port and adds the adapter explicitly, not to production DME.
+Keep failed labels and diagnostics; subset success is not overall acceptance.
 
-The 37-check probe constructs real production owned/injured humans with organs,
-wounds and carried inventory, a sheep and a dead human. It asserts successful
-capture, encoded injury/inventory/death values, bounded entry/list reference
-closure, missing-field/dangling-ref refusal, external turf refusal and source
-retention. Capture failures are retained in `result.json.capture_errors` and
-fail the suite. These are acceptance assertions, **not passed results**.
-The fixture-only wire inspector performs no constructors from input. Four additional checks exercise local quarantine roundtrip, injury preservation, one-shot consumption and dead-state preservation. These remain unrun.
+## Local quarantine, not transport
 
-## Local quarantine boundary
+The real production exporter captures an in-memory v3 graph. Local restore
+requires the same adapter's exact one-shot receipt and validates references,
+rooted containment and reachability before construction. Return bodies stay in
+a detached holder. No clients, account registration, after_load,
+restore_finished, source deletion or destination publication occur. Constructor
+side effects/queued cleanup are not proven transactional. Local species/build
+references and bounded organ icon copies are not remote import authority.
+Production save hooks can update corpse age/subtile state; capture is not
+side-effect-free and must run under authorized source custody.
 
-The local restore preflight validates encoded types and references, unique rooted
-movable containment and graph reachability before calling production Load_Entry.
-Admission is the exact locally pinned capture, not a static remote schema. The
-receipt is consumed before construction; mismatch, replay and foreign adapter
-inputs are rejected. A detached non-saving holder contains the returned body.
-No client attachment, account registration, after_load, restore_finished or
-source deletion occurs. Failed construction queues only adapter-created objects
-for deletion. Constructor side effects and asynchronous deletion are NOT yet
-proven fully reversible; this is not a crash-safe remote transfer primitive.
+## Historical failures
 
-Native run 0f7e6f reached all 19 prior assertions with no runtime errors but
-failed 11: human teeth and sheep transform were explicitly unsupported. Narrow
-follow-up admits exact human teeth using production full-state export and exact
-native /matrix using six numeric finite coefficients bounded to +/-1,000,000.
-Matrix preflight requires exactly type+a..f. The new 22-check fixture adds
-teeth-count and six-component transform roundtrip plus numeric bound controls.
-These new native assertions are pending; prior failures are not superseded by
-source test passes.
+0f7e6f 8/19 (teeth/matrix); a509263 9/22 (species/filter);
+dbe531 17/28 (limb metadata); 84bf08 19/30 (mob_icon);
+6eb9 20/32 (native atom.icon); fbf064 16/33 (renderer/tick);
+44531 24/37 (durable-profile controls). All listed runtime_error=0,
+none a full acceptance pass. Local icon bounds do not establish compressed
+size or frame-count limits. Preserve original evidence independently.
 
-Next narrow follow-up after a509263 (9/22, runtime_error=0): canonical Human
-species is referenced locally by exact all_species identity after comparison
-against its audited data-only constructor baseline (registry race index checked
-separately). Noncanonical or modified definitions reject. No HUD or arbitrary
-species graph is cloned. Exact empty atom.filters uses an explicit marker and
-reconstructs an empty list; custom/nonempty filters reject. Six new native checks
-cover canonical/noncanonical/mutated definitions, registry identity and empty/
-custom filters. Remote registry/version compatibility remains unsupported.
+## Renderer profile source map (audit, not permission to omit fields)
 
-Source audit following dbe531 (17/28, no runtime errors): production
-`species.create_organs` adds `has_limbs[tag].descriptor = O.name`. The registry
-comparison now admits only that derived field when it exactly equals the
-compiled default limb name; limb paths, keys, membership and extra fields still
-reject. Rejections include field paths (never character values). Two further
-checks cover canonical metadata after actual human construction and refusal of
-a changed descriptor. The native rerun remains pending.
+| Owner / fields | Production writer / rebuild entrypoint | Profile treatment |
+| --- | --- | --- |
+| Human `hud_list` faction images | `human.dm` constructor creates BASE_FACTION, FACTION_TO_ENEMIES, SQUAD_FACTION images bound to src; `human_life.dm:handle_hud_list()` and `human_hud.dm` update faction presentation/viewer images | Viewer-local rendering, but not universally proven reconstructible: `never_set_faction_huds` gates rebuilding, and destination faction resolution must precede it. Recreate only recognized slots after validating their expected source shape; reject extra/custom images. No current omission. |
+| Human `stand_icon` | `update_icons.dm:update_body()` creates blank icon; `reload_cached_icons()` blends organs, species/DNA/color/limb state using global icon cache | Normally derived. Forced rebuild must bypass cache and compare full source appearance before declaring omission safe. Custom pixels must be explicitly preserved or reject. |
+| Human `overlays_standing` | `regenerate_icons(FALSE)` calls damage/mutation/hair, inventory, cuffs, fire, surgery and bandage layer builders | Slot-specific derived images with nested appearances. Audit every layer and its input first; unknown extra slots/images or custom mutations reject. Do not serialize arbitrary `/image` graphs. |
+| Human `icon`, native `overlays`, posture transform | `update_icons()` clears overlays, assigns stand_icon, copies standing-layer images and applies `update_posture_transform()` | Derived only if `icon_update`, transformation/posture state and known slots match. Direct custom atom appearance changes are not proven recoverable and cannot be ignored. |
+| External organ `mob_icon`, `icon` | `organ_icon.dm:update_icon()/get_icon()` rebuild species base art, skin, DNA gender, dead tint and body-build suffix. Head override adds eye/lip/hair/facial art. Atom `icon` is a native file handle even when mob_icon is /icon | Current local pins preserve exact pixels/state instead of dropping custom changes. 44531 confirms `isfile=1,isicon=0` on atom.icon. Only the current exact external-organ field is eligible for native clone; no string filename/import. Remote asset authority absent. |
+| External organ/head `overlays` | `compile_icon()` rebuilds nested limb overlays; head `update_icon()` clears and rebuilds eyes/lips/hair/facial overlays from owner data | Usually renderer output, but severed limbs/custom overlays and nested contents need explicit equivalence checks. No blanket resource exemption or exclusion. |
 
-84bf08 reached 19/30 checks without runtime errors; human/corpse next rejected
-external-organ mob_icon. Source audit: organ_icon.dm composes colors and custom
-art into mob_icon then assigns icon=mob_icon. Rather than drop or regenerate
-custom pixels, the local adapter now clones only these exact organ renderer
-icons into same-instance pins. Maximum 64 icons, 128x128 dimensions and 64 states
-per icon; native cloning preserves directions/animation frames without flattening.
-This does not establish a compressed-size/frame-count bound or remote portable
-asset representation. A new assertion changes a source pixel after capture and
-requires the restored custom pixel to retain its snapshot value; another rejects
-non-organ icon authority. Both are pending native execution.
+Important finalization ordering: existing human `after_load()` methods restore
+languages, actions, faction/adoption state and corpse lists/age. Corpse restore
+calls `update_icons()` but there is no universal post-field `regenerate_icons`
+contract established by this audit. `region_travel.dm` explicitly calls
+update_hair/update_body/regenerate_icons for its different, lossy transfer path;
+that is evidence of a rebuild entrypoint, not proof it preserves this graph.
 
-6eb9 (20/32, runtime_error=0) exposed the native distinction: organ.icon is a
-resource while mob_icon is an /icon datum. Both exact current fields now receive
-separate local snapshot pins when distinct; no packet-supplied filename or
-arbitrary file can select an icon. A new native assertion deliberately gives
-the two fields different custom pixels and requires both to survive. Native
-execution of this follow-up is pending.
-
-## Coherent portable-profile boundary (design, not implemented transport)
-
-The durable body graph and renderer must be separate explicit profiles:
-
-* **Durable state:** organs, wounds, DNA, metabolism/reagent holders and inactive
-  surgery status belong in the identity-preserving entry graph. Exact
-  `/datum/reagents/metabolism` must name an enrolled human as both parent and
-  holder and use an admitted metabolism class. `/datum/surgery_status` with a
-  nonempty `in_progress` is rejected rather than dropping an active operation.
-* **Canonical definitions:** species and body-build catalogs are definitions,
-  not player-owned graphs. Local references require exact registry identity and
-  mutation checks. Body-build variables must equal compiled defaults. Remote
-  use would require a static schema/version and content fingerprint covering
-  every gameplay field and referenced asset, not matching names alone.
-* **Renderer:** `hud_list`, `overlays_standing`, `stand_icon`, atom icon and
-  overlay collections are distinct native classes. They may contain custom
-  appearances; do not blanket-exclude them as caches. No generic `/image`, icon,
-  resource or native collection constructor is admitted. Local organ icon pins
-  remain experimental and do not establish remote asset authority.
-* **Future renderer acceptance:** inventory each exact owner/field and native
-  class, separate constructor-regenerated defaults from custom data, then use
-  versioned asset IDs plus bounded states/directions/frames/transform/filter
-  parameters. Prove regeneration equals the source or reject custom state that
-  the schema cannot preserve. Never use caller filenames or ImportText.
-* **Destination:** after shape validation, build under quarantine, restore
-  durable state before any appearance callbacks, and verify lifecycle and
-  ownership before publication. Current local snapshots deliberately do not
-  finalize or publish a character. This design does not relax that hold.
-
-fbf064 remained a failed native result (16/33, runtime_error=0). The next fixture
-has 37 assertions: it yields only before each snapshot to establish a fresh
-budget, while in-capture tick-crossing still rejects. Diagnostics report native
-isfile/isicon/istext/isnum/ispath/islist/isdatum flags without resource names or
-player values. Metabolism/surgery/body-build admission is narrow; renderer
-failures remain failures until a proper representation is accepted.
+A portable renderer profile therefore needs (1) immutable versioned source
+assets; (2) approved durable render inputs; (3) quarantined forced regeneration
+without client publication; (4) complete slot/state/direction/frame/transform
+comparison; (5) rejection of unsupported custom appearance; and (6) finalization
+under committed destination custody. This audit implements none of those
+missing equivalence guarantees and does not broaden local pinning.

@@ -46,6 +46,25 @@ def install_fixture_lease(store):
 
 
 class TrainTests(unittest.TestCase):
+    def test_local_body_budget_is_not_remote_transport_budget(self):
+        m = manifest()
+        m['entities'][0]['payload'] = json.dumps({'kind': 'character', 'owner': 'alice',
+                                                'party': m['party'], 'body': 'x' * 600000})
+        with self.assertRaises(ValueError):
+            validate(json.dumps(m))
+        m = manifest()
+        m['entities'][0]['payload'] = json.dumps({'kind': 'train-body-1', 'owner': 'alice', 'party': m['party']})
+        with self.assertRaises(ValueError):
+            validate(json.dumps(m))
+        m = manifest()
+        m['entities'][0]['payload'] = json.dumps({'kind': 'character', 'owner': 'alice',
+                                                'party': m['party'], 'body': '界' * 70000}, ensure_ascii=False)
+        encoded = json.dumps(m, ensure_ascii=False)
+        self.assertLess(len(encoded), 200000)
+        self.assertGreater(len(encoded.encode('utf-8')), 200000)
+        with self.assertRaises(ValueError):
+            validate(encoded)
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.a = RegionStore(str(Path(self.tmp.name) / 'a.db'), 'alpha', 'earth')

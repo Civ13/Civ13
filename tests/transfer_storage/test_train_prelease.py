@@ -18,7 +18,7 @@ class TrainPreleaseTests(unittest.TestCase):
         self.a = RegionStore(str(Path(self.tmp.name) / 'a.db'), 'alpha', 'earth')
         self.b = RegionStore(str(Path(self.tmp.name) / 'b.db'), 'beta', 'earth')
         self.a.enroll('beta', OUT); self.b.enroll('alpha', IN)
-        self.c = Coordinator(str(Path(self.tmp.name) / 'c.db'), 'earth')
+        self.c = Coordinator(str(Path(self.tmp.name) / 'c.db'), 'earth', bootstrap_new_group=True)
         self.c._set_home('alice', 'alpha')
         self.c.enroll('alpha', 'http://127.0.0.1:1', 'a' * 40)
         self.c.enroll('beta', 'http://127.0.0.1:2', 'b' * 40)

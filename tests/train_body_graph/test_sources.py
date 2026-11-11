@@ -36,7 +36,8 @@ class BodyCaptureGuards(unittest.TestCase):
     def test_icons_are_local_bounded_organ_copies(self):
         self.assertIn('value != O.mob_icon', SOURCE)
         self.assertIn('value != O.icon', SOURCE)
-        self.assertIn('!isicon(value) || istext(value)', SOURCE)
+        self.assertIn('frame.current_field == "icon" && isfile(value) && value == O.icon', SOURCE)
+        self.assertIn('(!isicon(value) && !bound_atom_resource) || istext(value)', SOURCE)
         self.assertIn('var/icon/I = icon(value)', SOURCE)
         self.assertIn('local_icon_copies += I', SOURCE)
         self.assertIn('local_icon_copies.len >= 64', SOURCE)
@@ -67,6 +68,14 @@ class BodyCaptureGuards(unittest.TestCase):
             self.assertIn(setup, probe)
         self.assertLess(probe.index('\t\tbody_fixture_catalogs()'), probe.index('\t\tbody_capture_probe()'))
         self.assertNotIn('/mob/living/human/New()', probe)
+    def test_fresh_renderer_probe_uses_fields_not_composite(self):
+        probe = (ROOT / 'tests/train_body_graph/probe.dm').read_text()
+        self.assertIn('body_head_reconstruction_probe()', probe)
+        self.assertIn('head.update_icon()', probe)
+        self.assertIn('rebuilt_matches && !body_head_samples_equal', probe)
+        self.assertIn('primitive_appearance_fields_roundtrip', probe)
+        self.assertNotIn('.appearance', probe)
+        self.assertNotIn('body_head_samples_equal', SOURCE)
     def test_bounded_and_no_world_save(self):
         for guard in ('world.time != capture_tick', 'TRAIN_BODY_NODES', 'TRAIN_BODY_EDGES', 'TRAIN_BODY_BYTES', 'persistence_save_active()'):
             self.assertIn(guard, SOURCE)

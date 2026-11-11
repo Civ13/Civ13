@@ -48,18 +48,30 @@ var/global/train_escrow_hold_reason = null
 // Called synchronously after the save-complete marker, before the agent HTTP
 // acknowledgement can yield. Staging is forbidden during saves, so this set
 // is exactly the set of records the completed world capture could include.
+// Validate the container before iteration: a null/malformed container must
+// never appear to be an empty, released escrow during save or admission.
+/obj/structure/region_gate/proc/train_escrow_container_valid()
+	if(islist(train_escrow_records) && train_escrow_records.len <= TRAIN_ESCROW_LIMIT) return TRUE
+	train_escrow_hold_reason = "A train escrow has an invalid record list; account admission remains held."
+	return FALSE
+
 /proc/train_escrow_saved()
 	for(var/obj/structure/region_gate/S in region_gates)
 		if(QDELETED(S)) continue
 		S.train_escrow_durable = list()
+		if(!S.train_escrow_container_valid()) continue
 		for(var/text in S.train_escrow_records)
 			var/list/R = train_escrow_decode(text)
-			if(R) S.train_escrow_durable[R["journey"]] = text
+			if(R)
+				S.train_escrow_durable[R["journey"]] = text
+			else
+				train_escrow_hold_reason = "A train escrow is unreadable; account admission remains held."
 
 /proc/train_escrow_account_held(account)
 	if(train_escrow_hold_reason) return TRUE
 	if(!istext(account)) return FALSE
 	for(var/obj/structure/region_gate/S in region_gates)
+		if(!S.train_escrow_container_valid()) return TRUE
 		for(var/text in S.train_escrow_records)
 			var/list/R = train_escrow_decode(text)
 			if(!R)
@@ -89,7 +101,8 @@ var/global/train_escrow_hold_reason = null
 // Once the integration gate above is replaced, this helper records an already
 // validated synchronous capture. It is intentionally not called by a verb.
 /obj/structure/region_gate/proc/train_escrow_record_capture(list/capture)
-	if(persistence_save_active() || !islist(capture) || length(train_escrow_records) >= TRAIN_ESCROW_LIMIT) return FALSE
+	if(train_escrow_hold_reason || QDELETED(src) || !isturf(loc) || !should_save || persistence_save_active() || !islist(capture)) return FALSE
+	if(!train_escrow_container_valid() || length(train_escrow_records) >= TRAIN_ESCROW_LIMIT) return FALSE
 	var/list/M = capture["manifest"]
 	var/list/cars = capture["cars"]
 	var/list/loads = capture["loads"]
