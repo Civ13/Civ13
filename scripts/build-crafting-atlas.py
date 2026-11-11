@@ -10,6 +10,7 @@ from atlas.families import annotate_families
 from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
 from atlas.facts import resource_facts
+from atlas.entities import entity_resources
 
 
 def catalog_text(game):
@@ -436,8 +437,12 @@ def game_resource(x):
     entry=dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{})
     if x in resource_titles:entry['title']=resource_titles[x]
     return entry|resource_details[x]
+def game_catalog():
+    """Recipe resources first, then a reference entry for every other named player-facing type."""
+    resources={x:game_resource(x) for x in resource_ids}
+    return dict(acquisition=acquisition,recipes=game_recipes(records),resources=resources|entity_resources(files,resources))
 if options.catalog_only:
-    game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
+    game=game_catalog()
     game_text=catalog_text(game)
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
@@ -473,7 +478,7 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
-game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
+game=game_catalog()
 game_text=catalog_text(game)
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)

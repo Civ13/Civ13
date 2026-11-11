@@ -147,6 +147,20 @@ class CoverageTests(unittest.TestCase):
         self.assertEqual(result['resource_families'], {'obj/item': 1, 'symbolic': 2, 'turf/floor': 1})
         self.assertIn('not prove', result['limitation'])
 
+    def test_reference_entries_are_counted_apart_from_recipe_gaps(self):
+        data = dict(resources={'/obj/item/a': {'desc': 'A.', 'stats': [['Size', 'Small']]}, 'unknown': {},
+                               '/obj/item/hat': {'entity': True, 'kind': 'Clothing', 'desc': 'A hat.'},
+                               '/turf/floor/moss': {'entity': True, 'kind': 'Terrain'},
+                               'category:hard_material': {'category': True}},
+                    recipes=[{'outputs': [{'id': '/obj/item/a'}]}], acquisition={})
+        result = coverage.report(data)
+        self.assertEqual(result['resources'], 3)
+        self.assertEqual(result['resources_without_producer_or_acquisition_annotation'], ['unknown'])
+        self.assertEqual(result['reference'] | {'note': ''}, {
+            'pages': 4, 'reference_only_entries': 2, 'reference_only_by_kind': {'Clothing': 1, 'Terrain': 1},
+            'pages_with_description': 2, 'pages_with_stats': 1, 'pages_with_recipe_or_route': 1,
+            'examine_linkable_types': 3, 'note': ''})
+
 
 if __name__ == '__main__':
     unittest.main()
