@@ -82,6 +82,14 @@ def restore_crafting_projection(path, source):
              '/turf/floor/dirt/underground/collapse_check()\n\tspawn(50)\n\t\tvar/area/A = get_area(src)\n\t\tif (A.location == AREA_INSIDE)\n\t\t\t//check for supports\n\t\t\tvar/supportfound = FALSE\n\t\t\tvar/supportcount = 0\n\n\t\t\tfor (var/obj/structure/mine_support/RS in range(2))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/wall/W in range(1))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/TT in range(1))\n\t\t\t\tvar/area/AA = get_area(TT)\n\t\t\t\tif (AA.location == AREA_OUTSIDE)\n\t\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))\n\t\t\t\tsupportcount++\n\t\t\tif (supportcount >= 3 && !supportfound)\n\t\t\t\tsupportfound = TRUE'),
             # Gameplay audit: the major cave-in centres on the dug tile, not usr.
             ('\t\t\t\t\tfor (var/turf/floor/UT in range(1, src))', '\t\t\t\t\tfor (var/turf/floor/UT in range (1))'),
+            # Any sharp knife cuts grass tiles like sharpened flint (tests/animal_harvest).
+            ('// Sharpened flint and any sharp knife cut grass fibres the same way.\n/turf/floor/grass/proc/grass_cutting_blade(obj/item/tool)\n\tif (QDELETED(tool))\n\t\treturn FALSE\n\tif (istype(tool, /obj/item/weapon/flint))\n\t\tvar/obj/item/weapon/flint/F = tool\n\t\treturn F.sharpened\n\treturn istype(tool, /obj/item/weapon/material/kitchen/utensil/knife) && tool.sharp\n\n', ''),
+            ('gather_grass_cuttings(mob/user, obj/item/tool', 'gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool'),
+            ('QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !grass_cutting_blade(tool) || get_dist(user, src) > 1)\n',
+             'QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)\n'),
+            ('QDELETED(tool) || tool.loc != user || !grass_cutting_blade(tool) || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))',
+             'QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))'),
+            ('\tif (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/material/kitchen/utensil/knife) && C.sharp)\n\t\tvar/turf/floor/grass/G = src\n\t\tG.gather_grass_cuttings(user, C)\n\t\treturn TRUE\n', ''),
             # #3685: agent-controlled characters count as connected grass cutters.
             ('\t// An agent-controlled character has no client but is driven like a player.\n\treturn user && (user.client || agent_character_for(user))\n',
              '\treturn user && user.client\n'),

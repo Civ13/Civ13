@@ -8,10 +8,10 @@ var/list/dreams = list(
 
 	spawn(0)
 		for (var/i = rand(1,4),i > 0, i--)
+			if (!sleeping || stat == DEAD || !client)
+				break
 			to_chat(src, "<span class = 'notice'><i>... [pick(dreams)] ...</i></span>")
 			sleep(rand(40,70))
-			if (paralysis <= 0)
-				dreaming = FALSE
 		dreaming = FALSE
 
 /mob/living/human/proc/handle_dreams()

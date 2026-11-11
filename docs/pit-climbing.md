@@ -13,7 +13,13 @@ Camouflage is visual, not server-enforced invisibility or an anti-metagaming rul
 To escape, stand below the opening, face a cardinal direction toward a clear
 solid rim and use **IC > Climb Up**, with at least one hand free. The same verb
 climbs a neighboring solid wall to a supported upper ledge when there is open air
-over the character. It waits three seconds and rechecks the actor, terrain,
+over the character. With grab intent and an empty active hand, clicking that
+wall or rim does the same climb: it runs the verb's own proc, so the checks are
+identical, and a click that could not climb falls through to the normal hand
+action. A diagonal facing (common after free movement) tries both of its
+cardinal halves. A refusal names its cause: a missing free hand, a pull, a
+solid ceiling when not right under the opening, something blocking the
+opening, no wall ahead, or unclear footing on that side above. It waits three seconds and rechecks the actor, terrain,
 direction, occupancy, map grace restriction and save movement barrier. It does
 not create levels, pass through a ceiling or wall, levitate, carry another person,
 or permit climbing while restrained, lying down or buckled.
@@ -25,7 +31,10 @@ uses its logical level mapping, including the appended underground level.
 
 ## Validation boundaries
 
-`tests/pit_climbing/test_pit_climbing.py` checks source contracts and the reused
+`tests/pit_climbing/run_native.py --byond-bin <dir>` runs a native two-level
+probe: a body under a dug hole climbs out on all four sides, splits a diagonal
+facing, and gets the named reason for a blocked landing, a solid ceiling and
+full hands. `tests/pit_climbing/test_pit_climbing.py` checks source contracts and the reused
 DMI icon state, not executed DM behavior. The full game must compile with the
 pinned compiler. Native collision, connected-client controls and saved-state
 round trips still need an isolated acceptance run before claiming gameplay works.

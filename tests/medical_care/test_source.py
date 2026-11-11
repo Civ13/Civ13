@@ -162,7 +162,7 @@ class MedicalCare(unittest.TestCase):
     def test_tourniquet_stops_limb_bleeding_and_times_out(self):
         bleed = HEART[HEART.index("//Bleeding out"):]
         loop = bleed.index("for(var/obj/item/organ/external/temp in owner.organs)")
-        skip = bleed.index("if(temp.is_tourniqueted())", loop)
+        skip = bleed.index("if(tourniquet_grade == TOURNIQUET_FULL)", loop)
         self.assertLess(skip, bleed.index("temp.status & ORGAN_BLEEDING", loop))
         self.assertLess(skip, bleed.index("temp.status & ORGAN_ARTERY_CUT", loop))
         self.assertIn("temp.has_bandaged_wound()", bleed)
@@ -182,11 +182,15 @@ class MedicalCare(unittest.TestCase):
     def test_bandage_roll_applies_and_loosens_tourniquet(self):
         self.assertIn("return try_tourniquet(H, affecting, user)",
                       block(MEDICAL, "/obj/item/stack/medical/bruise_pack/pre_treat"))
-        tq = block(MEDICAL, "/obj/item/stack/medical/bruise_pack/proc/try_tourniquet")
-        for term in ("affecting.remove_tourniquet()", "affecting.apply_tourniquet()",
-                     "affecting.can_take_tourniquet()", "affecting.is_tourniqueted()", "use(1)"):
+        self.assertIn("return stack_tourniquet(H, affecting, user, src, 30)",
+                      block(MEDICAL, "/obj/item/stack/medical/bruise_pack/proc/try_tourniquet"))
+        tq = block(MEDICAL, "/proc/stack_tourniquet")
+        for term in ("affecting.remove_tourniquet()", "affecting.can_take_tourniquet()",
+                     "ORGAN_ARTERY_CUT", "tourniquet_grade() == TOURNIQUET_FULL"):
             self.assertIn(term, tq)
-        self.assertLess(tq.index("do_mob(user, H, 30)"), tq.index("affecting.apply_tourniquet()"))
+        tie = block(MEDICAL, "/proc/tie_stack_tourniquet")
+        self.assertIn("binding.use(1)", tie)
+        self.assertLess(tie.index("do_mob(user, H, tie_time)"), tie.index("affecting.apply_tourniquet(lasts)"))
         self.assertIn("affected.remove_tourniquet()", block(SURGERY, "/datum/surgery_step/fix_vein"))
 
     def test_splinted_fracture_heals_over_time(self):
@@ -274,7 +278,7 @@ class MedicalCare(unittest.TestCase):
     def test_healed_body_has_no_phantom_pain(self):
         # A mended bone stops counting its fracture damage as pain.
         damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
-        self.assertLess(damage.index("if (!(status & ORGAN_BROKEN))"), damage.index("return max(brute_dam + burn_dam - perma_injury"))
+        self.assertLess(damage.index("if (!(status & ORGAN_BROKEN) || is_held_still())"), damage.index("return max(brute_dam + burn_dam - perma_injury"))
         self.assertIn("return brute_dam + burn_dam", damage)
         mend = block(ORGAN, "/obj/item/organ/external/proc/mend_fracture()")
         self.assertIn("perma_injury = 0", mend)
@@ -323,6 +327,23 @@ class MedicalCare(unittest.TestCase):
                     states[icon] = dmi_states(icon)
                 self.assertIn(state, states[icon], f"{path} uses missing state {state!r} in {icon}")
         self.assertEqual(resolved["/obj/item/stack/medical/bruise_pack"], ("icons/obj/surgery.dmi", "gauze"))
+
+    def test_splinted_break_is_safe_to_move_on(self):
+        organs = (ROOT / "code/game/mob/living/carbon/human/human_organs.dm").read_text(encoding="utf-8")
+        movement = (ROOT / "code/game/mob/living/carbon/human/human_movement.dm").read_text(encoding="utf-8")
+        # A splinted bone does not count as broken for movement damage or stance.
+        self.assertIn("((status & ORGAN_BROKEN) && !is_held_still())", block(ORGAN, "/obj/item/organ/external/is_broken()"))
+        self.assertIn("return (status & ORGAN_SPLINTED) || hand_braced()", block(ORGAN, "/obj/item/organ/external/proc/is_held_still()"))
+        jostle = organs.split("l_move_time < 15", 1)[1].split("var/limbs_count", 1)[0]
+        self.assertIn("if (E.is_broken() && E.internal_organs", jostle)
+        self.assertNotIn("ORGAN_BROKEN", jostle)
+        self.assertIn("E.is_broken() || (!E.is_usable() && !(E.status & ORGAN_SPLINTED))", organs)
+        # The fracture's lasting pain floor stops once the bone is splinted.
+        damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
+        self.assertIn("if (!(status & ORGAN_BROKEN) || is_held_still())\n\t\treturn brute_dam + burn_dam", damage)
+        # Splinted ribs slow you less than loose ones.
+        self.assertIn("(E.status & ORGAN_BROKEN) && !E.is_held_still() && E.brute_dam > E.min_broken_damage", movement)
+        self.assertIn("tally += 1 // splinted or held ribs", movement)
 
 if __name__ == "__main__":
     unittest.main()

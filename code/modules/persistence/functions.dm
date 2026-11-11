@@ -1153,6 +1153,7 @@ var/global/datum/persistence_admission_identity
 	if(persistence_restart && persistence_restart.standby && persistence_restart.startup_hold)
 		world.log << "World save refused: this standby world has not loaded the save yet."
 		return FALSE
+	map_storage.wait_for_durable_world_settle()
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
 	operation.shutdown_save = shutdown || !!transaction
@@ -1200,6 +1201,20 @@ var/global/datum/persistence_admission_identity
 	// Read through vars: persistence fixtures compile without world.dm.
 	if("persistence_played_since_save" in global.vars) global.vars["persistence_played_since_save"] = FALSE
 	return 1
+
+// A save started during a passing world transition (the time-of-day lighting
+// sweep, a season change, a weather sweep) waits up to ten minutes for it to
+// finish instead of failing at capture. Stuck effects never settle, so the
+// capture still refuses those.
+/map_storage/proc/wait_for_durable_world_settle()
+	// Called by name: persistence fixtures compile without the durable modules.
+	if(!map || !hascall(map, "uses_durable_metadata") || !call(map, "uses_durable_metadata")()) return TRUE
+	if(!hascall(src, "durable_world_transition") || !hascall(map, "durable_nomads_transients_active")) return TRUE
+	var/until = world.time + 6000
+	while(call(src, "durable_world_transition")(call(map, "durable_nomads_transients_active")()))
+		if(call(src, "durable_world_effects_stuck")() || world.time >= until) return FALSE
+		sleep(10)
+	return TRUE
 
 /map_storage
 	var/tmp/datum/persistence_restore_policy/restore_policy

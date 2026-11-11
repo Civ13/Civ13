@@ -262,7 +262,15 @@
 			I.name = replacetext(I.name, "raw ", "")
 			I.desc = replacetext(I.desc, "raw", "roasted")
 			I.name = "roasted [I.name]"
-			I.color = "#E59400"
+			var/obj/item/weapon/reagent_containers/food/roast_art = I
+			if (istype(roast_art) && roast_art.roasted_icon_state && !roast_art.rotten)
+				if (roast_art.roasted_icon)
+					roast_art.icon = roast_art.roasted_icon
+				roast_art.icon_state = roast_art.roasted_icon_state
+				if (roast_art.roasted_rotten_icon_state)
+					roast_art.rotten_icon_state = roast_art.roasted_rotten_icon_state
+			else
+				I.color = "#E59400"
 			I.reagents.multiply_reagent("nutriment", 5)
 			I.reagents.multiply_reagent("protein", 3)
 			I.reagents.del_reagent("food_poisoning")

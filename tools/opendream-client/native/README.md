@@ -251,7 +251,10 @@ token (Issues: Read and write) and puts `BUG_REPORT_GITHUB_TOKEN` into the shown
 folder's `config.local.txt`, replacing an older token line; the editor shows that line as
 `BUG_REPORT_GITHUB_TOKEN (hidden)` and saving keeps the real value. Save and apply then sends
 it to the regions. The game reads the token only when an admin approves an in-game bug
-report, so a running world uses it at once. `HostSettings.cs` holds the file rules and is covered by
+report, so a running world uses it at once. **Screenshot token...** does the same for
+`BUG_REPORT_SCREENSHOT_TOKEN`, a second fine-grained token with Contents: Read and write on
+only the public repository named in `BUG_REPORT_SCREENSHOT_REPO`; with both set, a screenshot an
+admin attaches to an approved report is uploaded there and shown on the issue. It is hidden the same way. `HostSettings.cs` holds the file rules and is covered by
 `tests/LocalHostingTests.cs`.
 
 **Hub names** (next to Host settings) sets the name each world shows in bold on the

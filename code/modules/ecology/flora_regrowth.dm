@@ -114,7 +114,7 @@ var/global/list/regrowing_stump_list = list()
 /////// Stumps that grow back
 
 /obj/structure/wild/tree_stump/regrowing
-	desc = "What is left of a felled tree. Given time it may grow back; dig it out with a shovel to keep the land clear."
+	desc = "What is left of a felled tree. Given time it may grow back; dig it out with a shovel to keep the land clear and get some wood from its roots."
 	var/regrow_type = /obj/structure/wild/tree/live_tree
 
 /obj/structure/wild/tree_stump/regrowing/New()
@@ -140,18 +140,6 @@ var/global/list/regrowing_stump_list = list()
 /obj/structure/wild/tree_stump/regrowing/Del()
 	regrowing_stump_list -= src
 	..()
-
-/obj/structure/wild/tree_stump/regrowing/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/material/shovel))
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
-		if (do_after(user, 50, src))
-			if (QDELETED(src))
-				return TRUE
-			user.visible_message(SPAN_NOTICE("[user] digs out \the [src]."), SPAN_NOTICE("You dig out \the [src]."))
-			qdel(src)
-		return TRUE
-	return ..()
 
 // The tree a felled tree grows back as, or null when it should not regrow.
 /proc/flora_regrow_type(obj/structure/wild/W)

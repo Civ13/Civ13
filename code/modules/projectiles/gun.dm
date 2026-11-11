@@ -287,6 +287,10 @@
 	if (!force)
 		if (!special_check(user))
 			return
+		var/firearm_block = firearm_fire_block()
+		if (firearm_block)
+			to_chat(user, SPAN_WARNING("[src] can't fire: [firearm_block]."))
+			return
 
 		if (world.time < next_fire_time)
 			if (world.time % 3) //to prevent spam
@@ -331,6 +335,8 @@
 				playsound(loc, 'sound/weapons/guns/interact/GarandUnload.ogg', 100, TRUE)
 		health_check(user)
 		health -= 0.2
+		if (firearm_family)
+			firearm_wear()
 
 		if (istype(projectile, /obj/item/projectile))
 			var/obj/item/projectile/P = projectile

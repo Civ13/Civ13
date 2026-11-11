@@ -11,6 +11,11 @@
 /mob/living/human/rack_transfer_tester/hide_worker_connected()
 	return TRUE
 
+// Stands in for a character who knows Basic Tools; this probe covers
+// rack transfer, not research.
+/mob/living/human/rack_transfer_tester/hide_research_allowed(warn = FALSE)
+	return TRUE
+
 // Explicit historical wrapper adapter: reproduce #3286's discarded return
 // without requiring the production human to retain the defect fixed by #3322.
 /mob/living/human/rack_transfer_tester/legacy_return/drop_from_inventory(var/obj/item/W, var/atom/Target = null)

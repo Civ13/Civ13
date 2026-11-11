@@ -151,7 +151,11 @@ const worldNotes: Record<string, string> = {
   'Animal': 'A living creature, not something you craft. Look for it in the wild on maps where it lives, or keep and breed a herd.',
   'Terrain': 'Part of the landscape, not something you craft. Look for this ground on the map.',
   'Natural feature': 'Grows or lies in the wild, not something you craft. Look for it on the map.',
+  'Hostile person': 'A hostile non-player character, not something you craft. Met only on maps and events that place them.',
+  'Wall': 'Part of a building or the landscape, not something you craft from a menu.',
 };
+// Reference entries describe a type of thing; they never report what is in the world right now.
+const referenceNote = 'Reference entry. No recipe makes or uses this and no gathering route is recorded. It may be placed on some maps, sold, issued to a role or built another way. A page here does not mean it exists on the current map.';
 const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Conditions', era: 'Era', map_notes: 'Map notes', status: 'Review status' };
 function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
   const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0, inside = list(guidance.found_in);
@@ -160,6 +164,7 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
     <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
     {!!guidance.kind && <p className="atlas-chips"><span className="atlas-chip">{text(guidance.kind)}</span>
       {made > 0 && <span className="atlas-chip">Craftable</span>}
+      {!!guidance.entity && <span className="atlas-chip">Reference</span>}
       {Number(guidance.used_in_count) > 0 && <span className="atlas-chip">Used in {text(guidance.used_in_count)} {Number(guidance.used_in_count) === 1 ? 'recipe' : 'recipes'}</span>}
       {Number(guidance.made_here_count) > 0 && <span className="atlas-chip">Workstation</span>}</p>}
     {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
@@ -167,7 +172,7 @@ function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
     <h3 className="atlas-section">{text(guidance.heading)} {text(guidance.name)}</h3>
     {!routes.length && <p>{made > 0 ? 'Crafted. ' + (made === 1 ? 'Its recipe is shown below.' : 'The first of its ' + made + ' recipes is shown below, and the rest are listed under Made by.')
       : inside.length ? 'No recipe makes this. It comes inside the items below.'
-      : world ?? 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.'}</p>}
+      : world ?? (guidance.entity ? referenceNote : 'No recipe makes this and no gathering route is recorded. It is gathered, hunted, mined, traded for or found in the world.')}</p>}
     {inside.length > 0 && <div className="atlas-related"><span>Found in:</span>{inside.map((entry, i) => entry.id
       ? <Resource key={i} ui={ui} resource={{ ...entry, quantity: '' }} />
       : <span key={i} className="atlas-chip">{text(entry.name)}</span>)}</div>}

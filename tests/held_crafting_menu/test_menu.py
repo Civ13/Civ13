@@ -37,6 +37,21 @@ class HeldCraftingMenu(unittest.TestCase):
         self.assertIn('html_encode(details)', MENU)
         self.assertIn('Not enough material', MENU)
 
+    def test_makeable_filter_marks_rows_and_never_crafts(self):
+        self.assertIn('var/makeable = recipe_makeable_now(user, R)', MENU)
+        self.assertIn("data-makeable='[makeable ? 1 : 0]'", MENU)
+        self.assertIn("id='craft-makeable' type='checkbox'", MENU)
+        self.assertIn('user.craft_makeable_only()', MENU)
+        helper = (ROOT / 'code/game/objects/items/stacks/stack_makeable.dm').read_text()
+        check = helper.split('/obj/item/stack/proc/recipe_makeable_now(', 1)[1].split('/mob/proc/', 1)[0]
+        # The filter reads state only; produce_recipe still owns admission.
+        for action in ('produce_recipe(', '.use(', 'new R.result_type', 'consume', 'to_chat('):
+            self.assertNotIn(action, check)
+        for gate in ('crafting_recipe_manual_hint(', 'crafting_recipe_allowed(', 'amount < R.req_amount',
+                     'carving.valid()', 'joinery.valid()', 'press.valid()', 'payment.valid()'):
+            self.assertIn(gate, check)
+        self.assertIn('"craft_makeable_only"', (ROOT / 'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm').read_text())
+
     def test_read_only_presentation_and_escaped_text(self):
         for action in ('produce_recipe(', 'use(', 'new R.result_type', 'recipes.Cut(', 'recipes.Remove('):
             self.assertNotIn(action, MENU)

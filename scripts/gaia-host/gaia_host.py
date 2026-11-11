@@ -1024,6 +1024,9 @@ class Host:
             answer['save'] = check_save(self.repo / 'map_saves') or 'empty'
         except Refused as refusal:
             answer['save_refused'] = str(refusal)
+        else:
+            # The save loads now, so a watchdog refusal (such as its lock files) is out of date.
+            self.clear_watchdog_holds(keys=('last_refusal',))
         return answer
 
     def force_restart(self, lock_wait_seconds=180):
@@ -1131,6 +1134,13 @@ class Host:
         self.listening_since = None
         self.last_answer = None
         self.last_busy = False
+
+    def clear_watchdog_holds(self, keys=('gave_up', 'last_refusal', 'cold')):
+        """Forget why the watchdog last stopped short: the world runs again (watch it
+        again), or the lock files it refused are gone. The crash history is kept."""
+        watchdog = self.read_json(self.watchdog_file)
+        if watchdog and any([watchdog.pop(key, None) is not None for key in keys]):
+            self.write_json(self.watchdog_file, watchdog)
 
     def mark_running(self):
         self.stop_marker.unlink(missing_ok=True)  # left from an earlier in-game stop
@@ -1328,9 +1338,7 @@ class Host:
                 raise RuntimeError('the server did not open its port in time')
             self.platform.sleep(2)
         self.mark_running()
-        watchdog = self.read_json(self.watchdog_file)
-        if watchdog and watchdog.pop('gave_up', None):  # running again: watch it again
-            self.write_json(self.watchdog_file, watchdog)
+        self.clear_watchdog_holds()
         self.record(phase='started')
 
     def start_task(self):

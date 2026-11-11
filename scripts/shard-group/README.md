@@ -433,4 +433,4 @@ when it exits and ignores the stop file until it is ended.
 
 The launcher offers a recoverable, exact-region-confirmed fresh-world action for
 stopped unlinked regions. Connected transfers and separate extraction persistence
-are refused. See [scope, recovery and coordinated-reset plan](../../docs/launcher-fresh-world.md).
+are refused there; the group fresh world archives them for every region. See [scope, recovery and coordinated-reset plan](../../docs/launcher-fresh-world.md).

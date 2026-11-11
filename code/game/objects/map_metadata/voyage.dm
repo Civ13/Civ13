@@ -645,8 +645,8 @@
 			for(var/obj/structure/closet/crate/chest/treasury/ship/S in sel_turf)
 				for(var/obj/item/stack/money/M in S)
 					tally += M.value*M.amount
-				for(var/obj/item/stack/money/M1 in S.loc)
-					tally += M1.value*M1.amount
+			for(var/obj/item/stack/money/M1 in sel_turf)
+				tally += M1.value*M1.amount
 		return tally
 
 	proc/tally_materials()
@@ -683,7 +683,7 @@
 						tally["water"] += R.volume
 			for(var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)
 				for (var/datum/reagent/R in L.reagents.reagent_list)
-					if (istype(L, /datum/reagent/water))
+					if (istype(R, /datum/reagent/water))
 						tally["water"] += R.volume
 		return tally
 

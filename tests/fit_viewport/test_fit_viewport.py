@@ -68,3 +68,44 @@ class FitViewportWiring(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class SkinControlsFitTheirWindow(unittest.TestCase):
+    """A control wider than its pane at design size stays wider at every size.
+
+    Anchors scale a control's edges with the pane, so a control that starts
+    past the right or bottom edge keeps that overhang however the window is
+    resized (the chat input once hid the end of typed text this way).
+    """
+
+    @staticmethod
+    def windows():
+        import re
+        skin = read('interface/skin.dmf').replace('\r\n', '\n')
+        for block in re.split(r'\nwindow ', skin)[1:]:
+            name = block.split('\n', 1)[0].strip('"')
+            elems = re.split(r'\n\telem ', block)[1:]
+            props = [dict(re.findall(r'^\t\t([\w-]+) = (.*)$', e, re.M)) for e in elems]
+            names = [e.split('\n', 1)[0].strip('"') for e in elems]
+            yield name, list(zip(names, props))
+
+    def test_every_control_fits_inside_its_window(self):
+        checked = 0
+        for window, elems in self.windows():
+            width, height = map(int, elems[0][1]['size'].split('x'))
+            for elem, props in elems[1:]:
+                if 'size' not in props:
+                    continue
+                x, y = map(int, props.get('pos', '0,0').split(','))
+                w, h = map(int, props['size'].split('x'))
+                checked += 1
+                self.assertLessEqual(x + w, width, f'{window}.{elem} overhangs the right edge')
+                self.assertLessEqual(y + h, height, f'{window}.{elem} overhangs the bottom edge')
+        self.assertGreater(checked, 5)
+
+    def test_chat_input_spans_the_chat_pane(self):
+        elems = dict(dict(self.windows())['outputwindow'])
+        chat, entry = elems['browser_chat'], elems['input']
+        self.assertEqual(entry['size'].split('x')[0], chat['size'].split('x')[0])
+        self.assertEqual(entry['anchor1'], '0,100')
+        self.assertEqual(entry['anchor2'], '100,100')

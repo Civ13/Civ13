@@ -45,20 +45,32 @@ class DocumentDrawers(unittest.TestCase):
         f.component.amount=0;self.assertFalse(f.valid())
 
     def test_actual_document_handler_keeps_purpose(self):
+        istype=lambda obj,kind:obj.type==kind or obj.type.startswith(kind+'/')
+        predicate,_=compile_body(SOURCE,'/obj/structure/filingcabinet/proc/is_fileable_document(',
+                                 'I',dict(istype=istype))
         body=block(SOURCE,'/obj/structure/filingcabinet/attackby(')
         # Chat text contains DM interpolation/ternary syntax; the inert chat
         # adapter removes those strings, preserving every admission/move branch.
         body=re.sub(r'(?m)^(\t+)to_chat\(.*$',r'\1fixture_chat()',body)
         cabinet=NS(icon_state='chestdrawer',anchored=True,loc='floor')
         actor=NS(drop_item=lambda:None)
-        env=dict(istype=lambda obj,kind:obj.type==kind or obj.type.startswith(kind+'/'),
+        env=dict(istype=istype,is_fileable_document=predicate,
                  to_chat=lambda *a:None,playsound=lambda *a:None,sleep=lambda *a:None,
                  initial=lambda state:'chestdrawer',updateUsrDialog=lambda:None,fixture_chat=lambda:None)
         action,_=compile_body(body,'/obj/structure/filingcabinet/attackby(', 'self,P,user',env,('loc','icon_state','anchored'))
-        for kind in ('paper','paper_bundle','folder','hammer','cloth'):
+        for kind in ('paper','paper/subtype','paper_bundle','paper_bundle/subtype','folder','folder/subtype','hammer','cloth'):
             item=NS(type='/obj/item/weapon/'+kind,loc=actor)
             action(cabinet,item,actor)
-            self.assertIs(item.loc,cabinet if kind in ('paper','paper_bundle','folder') else actor)
+            self.assertIs(item.loc,cabinet if kind.split('/')[0] in ('paper','paper_bundle','folder') else actor)
+        initialize=block(SOURCE,'/obj/structure/filingcabinet/initialize(')
+        self.assertIn('for (var/obj/item/I in loc)',initialize)
+        initialize=initialize.replace('for (var/obj/item/I in loc)','for I in contents:')
+        init,_=compile_body(initialize,'/obj/structure/filingcabinet/initialize(',
+                            'self,contents',dict(is_fileable_document=predicate))
+        items=[NS(type='/obj/item/weapon/'+kind,loc='floor') for kind in
+               ('paper','paper/subtype','paper_bundle','paper_bundle/subtype','folder','folder/subtype','hammer','cloth')]
+        init(cabinet,items)
+        self.assertEqual([item.loc is cabinet for item in items], [True]*6+[False]*2)
         base=block(SOURCE,'/obj/structure/filingcabinet\n')
         for line in ('not_disassemblable = TRUE','flammable = TRUE'):self.assertIn(line,base)
         variant=block(SOURCE,KIND+'\n')

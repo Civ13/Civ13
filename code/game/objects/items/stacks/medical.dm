@@ -136,27 +136,75 @@
 // Any bandage roll doubles as a tourniquet: tighten it above a severed limb
 // artery, or loosen an existing one once the artery has stopped bleeding.
 /obj/item/stack/medical/bruise_pack/proc/try_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user)
+	return stack_tourniquet(H, affecting, user, src, 30)
+
+// Tighten a tourniquet with a binding stack, replace a makeshift one, or
+// loosen one that is no longer needed. Gauze (lasts 0) only binds a cut artery
+// so ordinary bandaging still works and makes a proper tourniquet. Emergency
+// bindings (rope, twine) bind any bleeding limb but slip loose after `lasts`
+// Life ticks. Returns TRUE when it used the click.
+/proc/stack_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user, obj/item/stack/binding, tie_time, lasts = 0, strip_name = null)
+	if (!istype(H) || !affecting || !binding || !affecting.can_take_tourniquet())
+		return FALSE
+	var/makeshift = lasts > 0
+	var/whose = H == user ? "your" : "[H]'s"
+	var/can_bind = (affecting.status & ORGAN_ARTERY_CUT) || (makeshift && (affecting.status & ORGAN_BLEEDING))
 	if (affecting.tourniquet)
+		if (can_bind && affecting.tourniquet_makeshift)
+			return tie_stack_tourniquet(H, affecting, user, binding, tie_time, lasts, strip_name, TRUE)
+		if (!makeshift && (affecting.status & ORGAN_BLEEDING))
+			return FALSE // bandage the bleeding under the tourniquet first
 		if (affecting.status & ORGAN_ARTERY_CUT)
+			if (makeshift)
+				to_chat(user, SPAN_WARNING("The artery in [whose] [affecting.name] is still cut. Keep the tourniquet tight and bandage the wound."))
+				return TRUE
 			return FALSE // keep it tight; bandage the wounds underneath instead
 		user.visible_message(SPAN_NOTICE("\The [user] starts loosening the tourniquet on [H]'s [affecting.name]."), \
-							SPAN_NOTICE("You start loosening the tourniquet on [H]'s [affecting.name]."))
+							SPAN_NOTICE("You start loosening the tourniquet on [whose] [affecting.name]."))
 		if (!do_mob(user, H, 20) || !affecting.tourniquet)
 			return TRUE
 		affecting.remove_tourniquet()
 		user.visible_message(SPAN_NOTICE("\The [user] removes the tourniquet from [H]'s [affecting.name]."), \
-							SPAN_NOTICE("You remove the tourniquet from [H]'s [affecting.name]."))
+							SPAN_NOTICE("You remove the tourniquet from [whose] [affecting.name]."))
 		return TRUE
-	if (!(affecting.status & ORGAN_ARTERY_CUT) || !affecting.can_take_tourniquet() || affecting.is_tourniqueted())
+	if (!can_bind || affecting.tourniquet_grade() == TOURNIQUET_FULL)
 		return FALSE
-	user.visible_message(SPAN_NOTICE("\The [user] starts tying \a [singular_name] tight above the wound on [H]'s [affecting.name]."), \
-						SPAN_NOTICE("You start tying \a [singular_name] tight above the wound on [H]'s [affecting.name]."))
-	if (!do_mob(user, H, 30) || affecting.is_tourniqueted() || !use(1))
+	return tie_stack_tourniquet(H, affecting, user, binding, tie_time, lasts, strip_name, FALSE)
+
+/proc/tie_stack_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user, obj/item/stack/binding, tie_time, lasts, strip_name, replacing)
+	var/whose = H == user ? "your" : "[H]'s"
+	var/strip = strip_name ? strip_name : (binding.singular_name ? binding.singular_name : binding.name)
+	var/action = replacing ? "replacing the makeshift tourniquet on" : "tying \a [strip] tight above the wound on"
+	user.visible_message(SPAN_NOTICE("\The [user] starts [action] [H]'s [affecting.name]."), \
+						SPAN_NOTICE("You start [action] [whose] [affecting.name]."))
+	if (!do_mob(user, H, tie_time) || affecting.tourniquet_grade() == TOURNIQUET_FULL || !binding.use(1))
 		return TRUE
-	affecting.apply_tourniquet()
-	user.visible_message(SPAN_NOTICE("\The [user] tightens a tourniquet on [H]'s [affecting.name]. The bleeding stops."), \
-						SPAN_NOTICE("You tighten a tourniquet on [H]'s [affecting.name]. The bleeding stops. Bandage the wound, then loosen it within half an hour."))
+	affecting.apply_tourniquet(lasts)
+	if (lasts)
+		user.visible_message(SPAN_NOTICE("\The [user] ties a makeshift tourniquet on [H]'s [affecting.name]. The bleeding slows."), \
+							SPAN_NOTICE("You tie a makeshift tourniquet on [whose] [affecting.name]. The bleeding slows, and stops while a hand holds the wound. It won't hold for long: replace it with a bandage roll."))
+	else
+		user.visible_message(SPAN_NOTICE("\The [user] tightens a tourniquet on [H]'s [affecting.name]. The bleeding stops."), \
+							SPAN_NOTICE("You tighten a tourniquet on [whose] [affecting.name]. The bleeding stops. Bandage the wound, then loosen it within half an hour."))
 	return TRUE
+
+// Rope and twine are emergency tourniquets: on help intent, tie one above any
+// bleeding arm or leg (your own too), or loosen one when it is no longer needed.
+/obj/item/stack/material/rope/attack(mob/living/M, mob/living/user, var/target_zone)
+	if (emergency_tourniquet(M, user, target_zone, 40, TOURNIQUET_ROPE_TICKS, "length of rope"))
+		return TRUE
+	return ..()
+
+/obj/item/stack/crude_twine/attack(mob/living/M, mob/living/user, var/target_zone)
+	if (emergency_tourniquet(M, user, target_zone, 50, TOURNIQUET_TWINE_TICKS))
+		return TRUE
+	return ..()
+
+/obj/item/stack/proc/emergency_tourniquet(mob/living/M, mob/living/user, target_zone, tie_time, lasts, strip_name = null)
+	if (!ishuman(M) || !ishuman(user) || user.a_intent != I_HELP)
+		return FALSE
+	var/mob/living/human/H = M
+	return stack_tourniquet(H, H.get_organ(target_zone), user, src, tie_time, lasts, strip_name)
 
 
 /obj/item/stack/medical/advanced/bruise_pack

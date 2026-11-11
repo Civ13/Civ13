@@ -53,11 +53,13 @@ internal sealed class HostSettingsDialog : Form {
         var close = new Button { Text = "Close", AutoSize = true, DialogResult = DialogResult.Cancel };
         var folder = new LinkLabel { Text = "Open folder", AutoSize = true, Margin = new Padding(12, 9, 0, 0) };
         var token = new LinkLabel { Text = "Bug report GitHub token...", AutoSize = true, Margin = new Padding(12, 9, 0, 0) };
+        var screenshotToken = new LinkLabel { Text = "Screenshot token...", AutoSize = true, Margin = new Padding(12, 9, 0, 0) };
         buttons.Controls.Add(save);
         buttons.Controls.Add(apply);
         buttons.Controls.Add(close);
         buttons.Controls.Add(folder);
         buttons.Controls.Add(token);
+        buttons.Controls.Add(screenshotToken);
         layout.Controls.Add(buttons);
         layout.Controls.Add(result);
         for (var row = 0; row < 3; row++) layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -81,30 +83,34 @@ internal sealed class HostSettingsDialog : Form {
                 result.Text = "Could not open " + location.Folder + ": " + e.Message;
             }
         };
-        token.LinkClicked += (_, _) => SetBugReportToken();
+        token.LinkClicked += (_, _) => SetToken(HostSettings.BugReportToken, "Bug report GitHub token",
+            "Paste a fine-grained GitHub token with Issues: Read and write on the repository in BUG_REPORT_GITHUB_REPO " +
+            "(Civ13/Civ13 by default). Approved in-game bug reports then become GitHub issues.");
+        screenshotToken.LinkClicked += (_, _) => SetToken(HostSettings.ScreenshotToken, "Bug report screenshot token",
+            "Paste a second fine-grained GitHub token with Contents: Read and write on only the public repository in " +
+            "BUG_REPORT_SCREENSHOT_REPO (set that line too, for example Civ13/bug-report-screenshots). Screenshots an admin " +
+            "attaches to an approved bug report are uploaded there and shown on the issue. Never give it the game repository.");
         FormClosing += (_, e) => { if (!KeepChanges()) e.Cancel = true; };
         if (place.Items.Count > 0) place.SelectedIndex = 0;
     }
 
-    // Puts BUG_REPORT_GITHUB_TOKEN into this place's config.local.txt (the editor shows it, unsaved),
-    // so approved in-game bug reports become GitHub issues. Save and apply sends it to the regions.
-    private void SetBugReportToken() {
+    // Puts a token setting (BUG_REPORT_GITHUB_TOKEN or BUG_REPORT_SCREENSHOT_TOKEN) into this place's
+    // config.local.txt (the editor shows it hidden, unsaved). Save and apply sends it to the regions.
+    private void SetToken(string setting, string title, string explanation) {
         if (Current is null) return;
         if (CurrentFile != HostSettings.LocalConfig) {
             file.SelectedIndex = file.Items.IndexOf(HostSettings.LocalConfig);
             if (CurrentFile != HostSettings.LocalConfig) return;
         }
         using var ask = new Form {
-            Text = "Bug report GitHub token", StartPosition = FormStartPosition.CenterParent, AutoScaleMode = AutoScaleMode.Dpi,
+            Text = title, StartPosition = FormStartPosition.CenterParent, AutoScaleMode = AutoScaleMode.Dpi,
             Font = Font, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false, AutoSize = true,
             AutoSizeMode = AutoSizeMode.GrowAndShrink
         };
         var panel = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, Padding = new Padding(12) };
         panel.Controls.Add(new Label {
             AutoSize = true, MaximumSize = new Size(520, 0),
-            Text = "Paste a fine-grained GitHub token with Issues: Read and write on the repository in BUG_REPORT_GITHUB_REPO " +
-                "(Civ13/Civ13 by default). Approved in-game bug reports then become GitHub issues. It is added to " +
-                Current.Label.ToLowerInvariant() + "; press Save and apply afterwards."
+            Text = explanation + " It is added to " + Current.Label.ToLowerInvariant() + "; press Save and apply afterwards."
         });
         var input = new TextBox { Width = 500, UseSystemPasswordChar = true };
         panel.Controls.Add(input);
@@ -123,7 +129,7 @@ internal sealed class HostSettingsDialog : Form {
             result.Text = "That does not look like a GitHub token (letters, digits and _ only, at least 20). Nothing changed.";
             return;
         }
-        actual = HostSettings.WithSetting(EditedText(), HostSettings.BugReportToken, value);
+        actual = HostSettings.WithSetting(EditedText(), setting, value);
         editor.Text = HostSettings.HideSecrets(actual).Replace("\n", "\r\n");
         result.Text = "Token added (shown as (hidden)). Press Save and apply to send it to the regions; running worlds use it for the next report an admin approves.";
     }

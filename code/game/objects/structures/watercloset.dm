@@ -36,20 +36,23 @@
 		swirlie.adjustBruteLoss(8)
 		return
 	if (cistern && !open)
-		if (!contents.len)
-			to_chat(user, SPAN_NOTICE("The cistern is empty."))
-			return
-		else
-			var/obj/item/I = pick(contents)
-			if (ishuman(user))
-				user.put_in_hands(I)
-			else
-				I.loc = get_turf(src)
-			to_chat(user, SPAN_NOTICE("You find \a [I] in \the [src]'s cistern."))
-			w_items -= I.w_class
-			return
+		retrieve_cistern_item(user)
+		return
 	open = !open
 	update_icon()
+
+/obj/structure/toilet/proc/retrieve_cistern_item(mob/living/user)
+	if (!contents.len)
+		to_chat(user, SPAN_NOTICE("The cistern is empty."))
+		return
+	var/obj/item/I = pick(contents)
+	if (ishuman(user))
+		user.put_in_hands(I)
+	else
+		I.loc = get_turf(src)
+	to_chat(user, SPAN_NOTICE("You find \a [I] in \the [src]'s cistern."))
+	w_items -= I.w_class
+	return
 
 /obj/structure/toilet/update_icon()
 	icon_state = "toilet[open][cistern]"
@@ -155,18 +158,8 @@
 
 /obj/structure/toilet/pit_latrine/attack_hand(mob/living/user as mob)
 	if (cistern)
-		if (!contents.len)
-			to_chat(user, SPAN_NOTICE("The cistern is empty."))
-			return
-		else
-			var/obj/item/I = pick(contents)
-			if (ishuman(user))
-				user.put_in_hands(I)
-			else
-				I.loc = get_turf(src)
-			to_chat(user, SPAN_NOTICE("You find \a [I] in \the [src]'s cistern."))
-			w_items -= I.w_class
-			return
+		retrieve_cistern_item(user)
+		return
 	return
 
 /obj/structure/toilet/pit_latrine/floorgrate
@@ -213,18 +206,8 @@
 				stored_units += M.mob_size
 			stored_units += store_mobs(stored_units)
 	if (cistern && open)
-		if (!contents.len)
-			to_chat(user, SPAN_NOTICE("The cistern is empty."))
-			return
-		else
-			var/obj/item/I = pick(contents)
-			if (ishuman(user))
-				user.put_in_hands(I)
-			else
-				I.loc = get_turf(src)
-			to_chat(user, SPAN_NOTICE("You find \a [I] in \the [src]'s cistern."))
-			w_items -= I.w_class
-			return
+		retrieve_cistern_item(user)
+		return
 
 /obj/structure/toilet/outhouse/AltClick(var/mob/living/user)
 	return

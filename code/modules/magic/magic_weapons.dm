@@ -42,8 +42,7 @@
 	unbreakable = TRUE
 
 
-/obj/item/weapon/material/sword/magic/attack(mob/living/human/M as mob, mob/living/user as mob)
-	..()
+/obj/item/weapon/material/sword/magic/on_weapon_contact(mob/living/M, mob/living/user)
 	if (!M)
 		return
 	if(prob(weakens))

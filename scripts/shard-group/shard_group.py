@@ -41,6 +41,7 @@ import re
 import secrets
 import shutil
 import socket
+import sqlite3
 import struct
 import subprocess
 import sys
@@ -564,18 +565,39 @@ class RegionHost(Host):
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
+        empty_since = None
         while True:
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 break
+            except PermissionError:
+                # Windows: the lock is being deleted by its holder right now.
+                if self.platform.now() > deadline:
+                    raise RuntimeError('another region kept the %s slot busy too long' % what)
+                self.platform.sleep(1)
+                continue
             except FileExistsError:
-                try:
-                    holder = int(lock.read_text(encoding='utf-8').strip() or 0)
-                except (OSError, ValueError):
-                    holder = 0
-                if not holder or not self.platform.alive(holder):
-                    lock.unlink(missing_ok=True)
-                    continue
+                holder = self.slot_holder(lock)
+                if holder is None:
+                    continue  # released while we looked
+                if holder:
+                    empty_since = None
+                    stale = not self.platform.alive(holder)
+                else:
+                    # The holder writes its pid just after creating the file (and Windows
+                    # refuses reading a file another process has open), so an empty lock
+                    # is only stale once it stays empty longer than a claim takes.
+                    if empty_since is None:
+                        empty_since = self.platform.now()
+                    stale = self.platform.now() - empty_since >= self.SLOT_CLAIM_SECONDS
+                if stale:
+                    try:
+                        lock.unlink(missing_ok=True)
+                        continue
+                    except PermissionError:
+                        # Windows: another region has it open (it is creating or
+                        # releasing it right now), so it is not stale after all.
+                        pass
                 if self.platform.now() > deadline:
                     raise RuntimeError('another region kept the %s slot busy too long' % what)
                 record(phase='waiting for another region\'s %s' % what)
@@ -585,7 +607,24 @@ class RegionHost(Host):
         try:
             yield
         finally:
-            lock.unlink(missing_ok=True)
+            for _ in range(10):
+                try:
+                    lock.unlink(missing_ok=True)
+                    break
+                except PermissionError:  # Windows: another region is reading it
+                    self.platform.sleep(1)
+
+    SLOT_CLAIM_SECONDS = 60
+
+    def slot_holder(self, lock):
+        """The pid written in a group slot lock: 0 when it is empty or unreadable,
+        None when it is gone."""
+        try:
+            return int(lock.read_text(encoding='utf-8').strip() or 0)
+        except FileNotFoundError:
+            return None
+        except (OSError, ValueError):
+            return 0
 
     def stage_work(self, operation):
         try:
@@ -877,9 +916,7 @@ class RegionHost(Host):
         self.mark_running()
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
-        watchdog = self.read_json(self.watchdog_file)
-        if watchdog and watchdog.pop('gave_up', None):
-            self.write_json(self.watchdog_file, watchdog)
+        self.clear_watchdog_holds()
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
         self.record_build(revision, spare)
         self.record(phase='checking out', revision=revision)
@@ -1583,6 +1620,31 @@ def coordinator_pid(group):
     return pid if process_alive(pid) else None
 
 
+def coordinator_never_established(database):
+    """True when coordinator.sqlite exists but its coordinator never accepted any
+    group: no roster, no decided home, recovery never ready, no bootstrap asked.
+
+    Such a database holds no authority (nothing was ever decided), so asserting a
+    clean bootstrap for it is the same as for a missing file. This happens when a
+    coordinator without the flag starts first on a group Fresh world just cleared
+    and creates the empty store; without this, every later start keeps the group
+    held and no account can join. The coordinator still quarantines if any agent
+    reports an earlier epoch or train history."""
+    try:
+        db = sqlite3.connect(Path(database).resolve().as_uri() + '?mode=ro', uri=True)
+    except sqlite3.Error:
+        return False
+    try:
+        ledger = dict(db.execute('SELECT key, value FROM ledger'))
+        homes = db.execute('SELECT count(*) FROM home').fetchone()[0]
+    except sqlite3.Error:
+        return False
+    finally:
+        db.close()
+    return (ledger.get('recovery') == 'unreconciled' and ledger.get('roster') == '[]' and ledger.get('rev') == '0'
+            and ledger.get('bootstrap') == '0' and homes == 0)
+
+
 def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     """Start the group's relay between region agents unless it already runs.
 
@@ -1597,8 +1659,13 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         if not refresh or read_record(root / 'coordinator.json').get('code') == code:
             return False
         (terminate or Platform().terminate)(pid)
-    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(root / 'coordinator.sqlite'), '--group', group['group'],
+    database = root / 'coordinator.sqlite'
+    argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland']]
+    if not database.exists() or coordinator_never_established(database):
+        # A new group, or one a group Fresh world just cleared. The coordinator
+        # still quarantines if any agent reports an earlier epoch or train custody.
+        argv.append('--bootstrap-new-group')
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
@@ -1626,10 +1693,12 @@ def group_check_update(group, only=None, platform=None):
     for region, host in hosts(group, only, platform):
         host.config['_group'] = group
         regions[region['id']] = host.check_update()
-    first = next(iter(regions.values()))
-    behind = max(answer['behind'] for answer in regions.values())
+    # The furthest-behind region is the group's line, so "current" is that region's
+    # build: a region already updated must not show as "x -> x" beside its count.
+    worst = max(regions.values(), key=lambda answer: answer['behind'])
+    behind = worst['behind']
     reasons = sorted({answer['reason'] for answer in regions.values() if answer['reason'] and answer['behind']})
-    return {'component': 'server', 'current': first['current'], 'available': first['available'], 'behind': behind,
+    return {'component': 'server', 'current': worst['current'], 'available': worst['available'], 'behind': behind,
             'can_update': bool(behind) and not reasons, 'reason': None if behind and not reasons else ('; '.join(reasons) or 'up to date'),
             'regions': regions}
 

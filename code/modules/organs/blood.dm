@@ -323,7 +323,8 @@ proc/blood_splatter(var/target,var/datum/reagent/blood/source,var/large)
 
 //Percentage of maximum blood volume.
 /mob/living/human/proc/get_blood_volume()
-	return round((vessel.get_reagent_amount(/datum/reagent/blood)/species.blood_volume)*100)
+	// Reagent amounts are looked up by id; a type path always read 0.
+	return round((vessel.get_reagent_amount("blood")/species.blood_volume)*100)
 
 //Percentage of maximum blood volume, affected by the condition of circulation organs
 /mob/living/human/proc/get_blood_circulation()

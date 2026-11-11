@@ -9,6 +9,7 @@
 
 /obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob, var/target_zone)
 
+	var/original_force = force
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HARM)
 			force *= force_multiplier
@@ -19,12 +20,14 @@
 	user.a_intent = I_HARM // so we actually hit people right
 
 	..(M, user, target_zone)
-	if (weakens && prob(weaken_chance))
-		M.Weaken(weakens) // decent
-
 	user.a_intent = user_last_intent
 
-	force = initial(force)
+	force = original_force
+
+/obj/item/weapon/melee/on_weapon_contact(mob/living/M, mob/living/user)
+	..()
+	if (weakens && prob(weaken_chance))
+		M.Weaken(weakens)
 
 /obj/item/weapon/melee/mace
 	name = "iron mace"
@@ -109,7 +112,8 @@
 	flammable = TRUE
 	var/cooldown = FALSE
 
-/obj/item/weapon/melee/nightbaton/sandman/attack(mob/M as mob, mob/living/user as mob)
+/obj/item/weapon/melee/nightbaton/sandman/on_weapon_contact(mob/living/M, mob/living/user)
+	..()
 	if(!cooldown)
 		M.SetWeakened(50)
 		src.cooldown = TRUE
@@ -117,7 +121,6 @@
 			src.cooldown = FALSE
 	else
 		to_chat(user, "<span class='notice'>You have used this batton not long ago. Chill out!</span>")
-	..()
 
 /obj/item/weapon/melee/classic_baton/club
 	name = "wood club"

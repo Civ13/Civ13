@@ -651,6 +651,30 @@
 /mob/proc/stat_header(title)
 	return "<span style = 'font-size: 13px;'><small><b>[title]</b></small></span>"
 
+// Counts connected clients by where their mob is: lobby, alive in the world,
+// or anything else (ghosts, dead bodies). Every bucket comes from clients, so
+// the three numbers always add up to Players Online. Cached for the tick
+// because every connected client's Stat() asks for it.
+/proc/client_population_breakdown()
+	var/global/list/client_population_cache = null
+	var/global/client_population_cached_at = -1
+	if (client_population_cache && client_population_cached_at == world.time)
+		return client_population_cache
+	var/playing = 0
+	var/observing = 0
+	var/lobby = 0
+	for (var/client/C in clients)
+		var/mob/M = C.mob
+		if (isnewplayer(M))
+			lobby++
+		else if (isliving(M) && M.stat != DEAD)
+			playing++
+		else
+			observing++
+	client_population_cache = list(playing, observing, lobby)
+	client_population_cached_at = world.time
+	return client_population_cache
+
 /mob/Stat()
 	..()
 	. = (is_client_active(10 MINUTES))
@@ -658,7 +682,8 @@
 		if (client.status_tabs && (client.add_stat_tab("Status") || client.statpanel_tab == "Status") && ticker)
 			client.add_stat("<h3>Server</h3>")
 			client.add_stat("<b>Players Online:</b>", "[clients.len]")
-			client.add_stat("<b>Playing, Observing, Lobby:</b>", "[human_clients_mob_list.len], [clients.len-human_clients_mob_list.len-new_player_mob_list.len], [new_player_mob_list.len]")
+			var/list/population = client_population_breakdown()
+			client.add_stat("<b>Playing, Observing, Lobby:</b>", "[population[1]], [population[2]], [population[3]]")
 			client.add_stat("<b>Round Duration:</b>", roundduration2text_days())
 			client.add_stat("<b>Game ID:</b>", "<b>[game_id]</b>")
 			client.add_stat("")

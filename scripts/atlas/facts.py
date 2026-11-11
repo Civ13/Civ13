@@ -12,7 +12,12 @@ VALUE = re.compile(r'^\t(?:var/(?:[a-z_]+/)*)?(\w+)[ \t]*=[ \t]*(.+)$')
 WANTED = {'name', 'desc', 'description', 'taste_description', 'id', 'w_class', 'slot_flags', 'force', 'throwforce',
           'sharp', 'edge', 'armor', 'caliber', 'nutriment_amt', 'storage_slots', 'max_storage_space', 'max_amount',
           'slowdown', 'health', 'maxHealth', 'body_parts_covered', 'hardness', 'weight', 'default_material',
-          'force_divisor', 'thrown_force_divisor', 'unwielded_force_divisor'}
+          'force_divisor', 'thrown_force_divisor', 'unwielded_force_divisor', 'melee_damage_lower',
+          'melee_damage_upper', 'behaviour', 'herbivore', 'granivore', 'carnivore', 'predatory_carnivore', 'scavenger'}
+TEMPERS = {'hostile': 'attacks on sight', 'hunt': 'hunts when hungry', 'defends': 'fights back when attacked',
+           'defend': 'fights back when attacked', 'scared': 'runs from people', 'wander': 'peaceful'}
+DIETS = (('herbivore', 'grazes on grass'), ('granivore', 'eats crops'), ('predatory_carnivore', 'hunts animals and people'),
+         ('carnivore', 'eats meat'), ('scavenger', 'scavenges'))
 SIZES = {'ITEM_SIZE_TINY': 'Tiny', 'ITEM_SIZE_SMALL': 'Small', 'ITEM_SIZE_NORMAL': 'Normal', 'ITEM_SIZE_LARGE': 'Large',
          'ITEM_SIZE_HUGE': 'Huge', 'ITEM_SIZE_GARGANTUAN': 'Gargantuan', '1': 'Tiny', '2': 'Small', '3': 'Normal',
          '4': 'Large', '5': 'Huge', '6': 'Gargantuan'}
@@ -31,7 +36,9 @@ KINDS = (('/obj/item/weapon/reagent_containers/food/drinks', 'Drink'), ('/obj/it
          ('/obj/item/weapon/material', 'Tool or weapon'), ('/obj/item/weapon/reagent_containers', 'Container'),
          ('/obj/item/weapon/storage', 'Storage'), ('/obj/item', 'Item'), ('/obj/structure/wild', 'Natural feature'),
          ('/obj/structure/oil_spring', 'Natural feature'), ('/obj/structure', 'Structure'),
-         ('/obj/covers', 'Floor or wall'), ('/mob', 'Animal'), ('/turf', 'Terrain'))
+         ('/obj/machinery', 'Machine'), ('/obj/covers', 'Floor or wall'),
+         ('/mob/living/simple_animal/hostile/human', 'Hostile person'), ('/mob', 'Animal'), ('/turf/wall', 'Wall'),
+         ('/turf', 'Terrain'))
 
 
 def literal(text):
@@ -217,6 +224,16 @@ def stats(types, typepath, materials=None):
         amount = number(get('maxHealth')) or number(get('health'))
         if amount and amount > 0:
             rows.append(['Health', str(amount)])
+        low, high = number(get('melee_damage_lower')), number(get('melee_damage_upper'))
+        if high and high > 0:
+            rows.append(['Attack', str(high) if not low or low == high else f'{low} to {high}'])
+        if TEMPERS.get(prose(get('behaviour'))):
+            rows.append(['Temper', TEMPERS[prose(get('behaviour'))]])
+        diet = [label for name, label in DIETS if get(name) in ('TRUE', '1')]
+        if 'hunts animals and people' in diet and 'eats meat' in diet:
+            diet.remove('eats meat')
+        if diet:
+            rows.append(['Diet', ', '.join(diet)])
     return rows
 
 

@@ -36,10 +36,12 @@
 	icon_state = "brain"
 	rotten_icon_state = "brain-x"
 
+// Art adapted from Pocket Stronghold 13; see the DMI's LICENSE.md.
 /obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines
 	name = "animal intestines"
-	icon_state = "innards"
-	rotten_icon_state = "innards"
+	icon = 'icons/obj/food/pocket_stronghold_food.dmi'
+	icon_state = "intestines"
+	rotten_icon_state = "intestines"
 
 // One bounded stack per carcass. No registration, processing loop or timer.
 /obj/item/stack/sinew
@@ -141,16 +143,24 @@
 	// Explicit anatomy: never infer mammalian organs from size or has_fat.
 	if (istype(src, /mob/living/simple_animal/horse) || istype(src, /mob/living/simple_animal/pet/dog) || istype(src, /mob/living/simple_animal/hostile/commanded/dog) || istype(src, /mob/living/simple_animal/hostile/mammoth) || istype(src, /mob/living/simple_animal/blackbat) || istype(src, /mob/living/simple_animal/vampirebatblack))
 		return TRUE
-	return istype(src, /mob/living/simple_animal/cattle) || istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/boar_gilt) || istype(src, /mob/living/simple_animal/boar_boar) || istype(src, /mob/living/simple_animal/goat) || istype(src, /mob/living/simple_animal/sheep) || istype(src, /mob/living/simple_animal/deer) || istype(src, /mob/living/simple_animal/bison) || istype(src, /mob/living/simple_animal/bisonbull) || istype(src, /mob/living/simple_animal/camel) || istype(src, /mob/living/simple_animal/rabbit) || istype(src, /mob/living/simple_animal/monkey) || istype(src, /mob/living/simple_animal/pet/cat) || istype(src, /mob/living/simple_animal/hostile/bear) || istype(src, /mob/living/simple_animal/hostile/wolf) || istype(src, /mob/living/simple_animal/hostile/fox) || istype(src, /mob/living/simple_animal/hostile/gorilla) || istype(src, /mob/living/simple_animal/hostile/panther) || istype(src, /mob/living/simple_animal/hostile/sabertooth) || istype(src, /mob/living/simple_animal/hostile/buffalo)
+	return istype(src, /mob/living/simple_animal/cattle) || istype(src, /mob/living/simple_animal/pig_gilt) || istype(src, /mob/living/simple_animal/pig_boar) || istype(src, /mob/living/simple_animal/boar_gilt) || istype(src, /mob/living/simple_animal/boar_boar) || istype(src, /mob/living/simple_animal/goat) || istype(src, /mob/living/simple_animal/sheep) || istype(src, /mob/living/simple_animal/deer) || istype(src, /mob/living/simple_animal/bison) || istype(src, /mob/living/simple_animal/bisonbull) || istype(src, /mob/living/simple_animal/camel) || istype(src, /mob/living/simple_animal/rabbit) || istype(src, /mob/living/simple_animal/monkey) || istype(src, /mob/living/simple_animal/pet/cat) || istype(src, /mob/living/simple_animal/hostile/bear) || istype(src, /mob/living/simple_animal/hostile/wolf) || istype(src, /mob/living/simple_animal/hostile/fox) || istype(src, /mob/living/simple_animal/hostile/gorilla) || istype(src, /mob/living/simple_animal/hostile/panther) || istype(src, /mob/living/simple_animal/hostile/sabertooth) || istype(src, /mob/living/simple_animal/hostile/buffalo) || istype(src, /mob/living/simple_animal/hostile/groundsloth)
 
-// Usable bone: every mammal, plus large reptiles. Birds keep their carcasses
-// and small animals (lizards, mice, frogs) have nothing worth working.
+// Usable bone: every mammal, large reptiles and the larger birds (penguins,
+// turkeys, geese, pelicans). Chickens keep their carcass route; small birds
+// (crows, gulls, pigeons) and small animals (lizards, mice, frogs) have nothing
+// worth working.
 /mob/living/simple_animal/proc/harvest_bones()
 	if (harvest_mammal())
 		return TRUE
 	if (istype(src, /mob/living/simple_animal/hostile/dinosaur/compsognathus))
 		return FALSE
+	if (istype(src, /mob/living/simple_animal/penguin) || istype(src, /mob/living/simple_animal/turkey_f) || istype(src, /mob/living/simple_animal/turkey_m) || istype(src, /mob/living/simple_animal/goose) || istype(src, /mob/living/simple_animal/pelican))
+		return TRUE
 	return istype(src, /mob/living/simple_animal/hostile/alligator) || istype(src, /mob/living/simple_animal/hostile/dinosaur) || istype(src, /mob/living/simple_animal/pachy) || istype(src, /mob/living/simple_animal/hostile/poison/snake/constrictor)
+
+// Tendons come from every animal with usable bone that is at least small sized.
+/mob/living/simple_animal/proc/harvest_sinew()
+	return harvest_bones()
 
 /mob/living/simple_animal/proc/harvest_food(typepath, turf/site)
 	var/obj/item/weapon/reagent_containers/food/snacks/F = new typepath(site)
@@ -211,14 +221,14 @@
 			harvest_food(/obj/item/weapon/reagent_containers/food/snacks/pig/stomach/sheep, site)
 		else if (size >= 3)
 			harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal/stomach, site)
-		if (size >= 3)
-			new /obj/item/stack/sinew(site, min(4, max(1, size-2)))
 		if (has_fat)
 			var/fat_portions = harvest_skill_amount(min(2, max(0, size-2+fat_extra-fat_penalty)), harvest_bonus)
 			for (var/i = 1, i <= fat_portions, i++)
 				harvest_food(/obj/item/weapon/reagent_containers/food/snacks/animalfat, site)
 	else if (chicken)
 		harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal, site)
+	if (size >= 3 && harvest_sinew())
+		new /obj/item/stack/sinew(site, min(4, max(1, size-2)))
 	if (harvest_bones())
 		new /obj/item/stack/material/bone(site, max(1, size-2))
 	if (skin)

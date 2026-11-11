@@ -15,7 +15,8 @@ It checks plant sites (settlement, field, roof, item, indoor and water refusal),
 the warm-up, the habitat-sized target and no growth above it, that wild plants
 are ripe and suit their biome and season, do not grow or dry out, give produce
 and seeds and wither out of season; that chopped trees leave a stump that
-remembers the tree, full-health deletion and bushes leave none, stumps do not
+remembers the tree, full-health deletion and bushes leave none, clearing a
+stump gives two logs from its roots once, stumps do not
 regrow in winter or under a built object and otherwise grow back; and the save
 fields, after_load re-registration and runtime-only worker state.
 It also covers fair bounded withering and palm extraction's pot, cooldown and

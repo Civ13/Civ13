@@ -188,6 +188,15 @@
 	values["/entries/0/3/scalars"] = list("kind" = "scalars", "length" = 3, "keys" = list("a", 2, "\improper c"), "values" = list(1.#INF, null, "x"))
 	values["/entries/0/3/precise"] = 1234567.875
 	values["/entries/0/3/quoted"] = "tab\tquote\" back\\ end"
+	// One top-level subtree whose savefile text passes 2^24 characters
+	// (Gaia's /lists): a length embedded with "[]" rendered as 1.8e+07, which
+	// the helper refused ("bad length"), failing live saves. Savefile strings
+	// stop at 65535 characters, so the size comes from many nodes.
+	var/chunk = "0123456789abcdef"
+	while(length(chunk) < 60000) chunk += chunk
+	chunk = copytext(chunk, 1, 60001)
+	for(var/i = 1 to 300)
+		values["/lists/[i]/chunk"] = "[i]:[chunk]"
 	var/savefile/scratch = new
 	var/list/native = list()
 	for(var/path in values)
@@ -204,9 +213,10 @@
 		return list("text open_write: [S.last_error]")
 	scratch.cd = "/"
 	for(var/key in scratch.dir.Copy())
-		if(!S.put_text("/[key]", scratch.ExportText("/[key]")))
-			return list("put_text /[key]: [S.last_error]")
-		scratch.cd = "/"
+		if(!S.put_savefile_text(scratch, "/[key]"))
+			return list("put_savefile_text /[key]: [S.last_error]")
+	// /lists passed SAVE_STREAM_TEXT_LIMIT and went as its children.
+	if(S.text_pieces < 300) mismatches += "text:oversized subtree not split ([S.text_pieces] pieces)"
 	for(var/path in native)
 		if(!S.put(path, native[path]))
 			return list("native put [path]: [S.last_error]")
@@ -222,4 +232,55 @@
 			mismatches += "text:[path]"
 	if(native.len < 6) mismatches += "text:native paths [native.len]"
 	S.close()
+	mismatches += run_text_length_sweep()
+	return mismatches
+
+// DM numbers are 32-bit floats: past 2^24, length() rounds to a multiple of
+// 2 or 4, so one T token for a subtree that long declared a few bytes more
+// (or fewer) than it sent and the helper refused it ("truncated token near
+// '/lists|...", live Gaia, 2026-11-11). Four subtree sizes one byte apart
+// cover every rounding case; each must split and round trip.
+/proc/run_text_length_sweep()
+	var/list/mismatches = list()
+	var/datum/save_stream/check = new
+	if(check.open_write("limit.stream"))
+		var/big = "0123456789abcdef"
+		while(length(big) < 8388608) big += big // SAVE_STREAM_TEXT_LIMIT
+		if(check.put_text("/big", big)) mismatches += "sweep:put_text took an oversized text"
+		check.abort()
+	var/chunk = "0123456789abcdef"
+	while(length(chunk) < 60000) chunk += chunk
+	chunk = copytext(chunk, 1, 60001)
+	for(var/pad = 0 to 3)
+		var/savefile/scratch = new
+		for(var/i = 1 to 290)
+			scratch["/lists/[i]/chunk"] << "[i]:[chunk]"
+			scratch["/lists/[i]/length"] << i
+		var/tail = copytext(chunk, 1, 1 + pad)
+		scratch["/lists/1/chunk"] << "1:[chunk][tail]"
+		var/datum/save_stream/S = new
+		if(!S.open_write("sweep[pad].stream"))
+			mismatches += "sweep[pad]:open_write [S.last_error]"
+			continue
+		scratch.cd = "/"
+		var/sent = TRUE
+		for(var/key in scratch.dir.Copy())
+			if(!S.put_savefile_text(scratch, "/[key]"))
+				mismatches += "sweep[pad]:put /[key]: [S.last_error]"
+				sent = FALSE
+				break
+		if(!sent)
+			S.abort()
+			continue
+		var/list/summary = S.finish()
+		if(!summary || !summary["published"])
+			mismatches += "sweep[pad]:finish [S.last_error]"
+			continue
+		if(!S.open_read("sweep[pad].stream"))
+			mismatches += "sweep[pad]:open_read [S.last_error]"
+			continue
+		if(S.get("/lists/1/chunk") != "1:[chunk][tail]") mismatches += "sweep[pad]:/lists/1/chunk"
+		if(S.get("/lists/290/chunk") != "290:[chunk]") mismatches += "sweep[pad]:/lists/290/chunk"
+		if(S.get("/lists/145/length") != 145) mismatches += "sweep[pad]:/lists/145/length"
+		S.close()
 	return mismatches

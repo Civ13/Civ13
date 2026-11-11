@@ -32,6 +32,10 @@ original HTML renderer.
   shown without a second click, and a wiki search link. Facts come from
   `scripts/atlas/facts.py`, which reads literal declarations only and leaves
   out anything computed at runtime. Rows are capped at 16.
+- Reference entries: named items, structures, animals and terrain that no
+  recipe mentions also have a page (`entity` flag, a "Reference" chip and a
+  note that the page is not a claim about the current map). They are built by
+  `scripts/atlas/entities.py`; see `docs/atlas-entity-coverage.md`.
 - Workstations: a recipe card links to where it is made, and a workstation's
   page lists the recipes made there (60 rows). The kind-to-station table in the
   adapter is presentation only; the catalog's `station` field is unchanged.

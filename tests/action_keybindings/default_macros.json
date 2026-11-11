@@ -64,7 +64,11 @@
     {"id": "", "key": "ALT+Southeast", "command": ".fine-offset-start 6", "disabled": false},
     {"id": "", "key": "ALT+Southeast+UP", "command": ".fine-offset-stop 6", "disabled": false},
     {"id": "", "key": "ALT+Southwest", "command": ".fine-offset-start 10", "disabled": false},
-    {"id": "", "key": "ALT+Southwest+UP", "command": ".fine-offset-stop 10", "disabled": false}
+    {"id": "", "key": "ALT+Southwest+UP", "command": ".fine-offset-stop 10", "disabled": false},
+    {"id": "", "key": "CTRL+I", "command": "open-worn-storage", "disabled": false},
+    {"id": "", "key": "CTRL+P", "command": "open-back-storage", "disabled": false},
+    {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
+    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false}
   ],
   "hotkeymode": [
     {"id": "", "key": "Return", "command": ".winset \\\"input.focus=true\\\"", "disabled": false},
@@ -180,6 +184,14 @@
     {"id": "", "key": "ALT+D", "command": ".fine-offset-start 4", "disabled": false},
     {"id": "", "key": "ALT+D+UP", "command": ".fine-offset-stop 4", "disabled": false},
     {"id": "", "key": "ALT+A", "command": ".fine-offset-start 8", "disabled": false},
-    {"id": "", "key": "ALT+A+UP", "command": ".fine-offset-stop 8", "disabled": false}
+    {"id": "", "key": "ALT+A+UP", "command": ".fine-offset-stop 8", "disabled": false},
+    {"id": "", "key": "I", "command": "open-worn-storage", "disabled": false},
+    {"id": "", "key": "CTRL+I", "command": "open-worn-storage", "disabled": false},
+    {"id": "", "key": "P", "command": "open-back-storage", "disabled": false},
+    {"id": "", "key": "CTRL+P", "command": "open-back-storage", "disabled": false},
+    {"id": "", "key": "K", "command": "open-belt-storage", "disabled": false},
+    {"id": "", "key": "CTRL+K", "command": "open-belt-storage", "disabled": false},
+    {"id": "", "key": "SHIFT+I", "command": "open-clothing-storage", "disabled": false},
+    {"id": "", "key": "CTRL+SHIFT+I", "command": "open-clothing-storage", "disabled": false}
   ]
 }

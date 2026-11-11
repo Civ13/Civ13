@@ -33,8 +33,10 @@
 	register_abandoned_item()
 
 /obj/item/ammo_casing/proc/checktype()
-	BB.btype = btype
-	BB.checktype()
+	if (BB)
+		BB.btype = btype
+		BB.checktype()
+	name = replacetext(replacetext(name, " (AP)", ""), " (HP)", "")
 	if (btype == "AP")
 		name = "[name] (AP)"
 	else if (btype == "HP")
@@ -144,6 +146,10 @@
 	..()
 	if (!BB)
 		to_chat(user, "This one is spent.")
+	else
+		var/datum/ammo_profile/profile = ammo_profile(btype)
+		if (profile.summary)
+			to_chat(user, "<span class='notice'>[profile.summary]</span>")
 
 //An item that holds casings and can be used to put them inside guns
 /obj/item/ammo_magazine
@@ -536,6 +542,15 @@
 /obj/item/ammo_magazine/examine(mob/user)
 	..()
 	to_chat(user, "There [(stored_ammo.len == TRUE)? "is" : "are"] [stored_ammo.len] round\s left!")
+	var/armor_piercing = 0
+	var/hollow_point = 0
+	for (var/obj/item/ammo_casing/C in stored_ammo)
+		if (C.btype == "AP")
+			armor_piercing++
+		else if (C.btype == "HP")
+			hollow_point++
+	if (armor_piercing || hollow_point)
+		to_chat(user, "<span class='notice'>[armor_piercing ? "[armor_piercing] armor-piercing" : ""][armor_piercing && hollow_point ? ", " : ""][hollow_point ? "[hollow_point] hollow-point" : ""] among them.</span>")
 
 //magazine icon state caching
 /var/global/list/magazine_icondata_keys = list()

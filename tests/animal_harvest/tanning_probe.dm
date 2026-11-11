@@ -5,6 +5,11 @@
 	var/obj/item/tanning_tool
 	var/tanning_duplicate_result = null
 
+// The fixture worker is not a human, so it stands in for a character who
+// knows Basic Tools. The production gate is checked separately.
+/mob/living/harvest_tester/tanning/hide_research_allowed(warn = FALSE)
+	return TRUE
+
 /mob/living/harvest_tester/tanning/hide_worker_connected()
 	return tanning_action != "disconnected"
 
@@ -325,7 +330,9 @@
 			harvest_assert(!bird.harvest_mammal() && bird.harvest_skin_yield() == expected, "Turkey skin eligibility changed anatomy or chick policy: [path]")
 			bird.harvest_products(site, skin)
 			harvest_assert(tanning_amount(site, /obj/item/stack/material/rawhide) == expected && !tanning_amount(site, /obj/item/stack/material/leather), "Turkey harvest skin yield/bypass: [path], skin=[skin]")
-			harvest_assert(!harvest_count(site, /obj/item/stack/sinew) && !harvest_count(site, /obj/item/stack/material/bone) && !harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/meat/offal) && !harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/animalfat), "Turkey gained mammalian byproducts: [path]")
+			harvest_assert(!harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/meat/offal) && !harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/animalfat), "Turkey gained mammalian byproducts: [path]")
+			var/frame = expected ? max(1, bird.butcher_yield()-2) : 0
+			harvest_assert(tanning_amount(site, /obj/item/stack/sinew) == (expected ? min(4, frame) : 0) && tanning_amount(site, /obj/item/stack/material/bone) == frame, "Turkey bone/sinew yield: [path]")
 			var/meat_count = 0
 			for (var/obj/item/weapon/reagent_containers/food/snacks/meat/meat in site)
 				if (!istype(meat, /obj/item/weapon/reagent_containers/food/snacks/meat/offal))
@@ -336,6 +343,9 @@
 
 /proc/harvest_tanning_regressions(turf/site)
 	initialize_chemical_reagents()
+	var/mob/living/harvest_tester/outsider = new(site)
+	harvest_assert(!outsider.hide_research_allowed(), "Hide work skipped the Basic Tools gate")
+	qdel(outsider)
 	tanning_pipeline_regression(site)
 	for (var/action in list("cancel", "drop", "deplete", "relocate", "disconnect", "concurrent", "complete", "full", "pelt", "realwait_move", "realwait_complete"))
 		tanning_prepare_case(site, action)

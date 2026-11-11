@@ -292,6 +292,7 @@ var/global/willow_seed_report = ""
 		var/obj/structure/wild/tree/live_tree/willow/W = new(site)
 		W.pixel_x = old_x
 		W.pixel_y = old_y
+		W.fit_trunk_bounds()
 		W.health = old_health
 		planted++
 		needed--

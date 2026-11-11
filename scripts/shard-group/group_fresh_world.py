@@ -7,7 +7,11 @@ journal exists), stops the agents and the coordinator, and moves, never deletes:
 
 - each region's map_saves, map_backups and map_rollback (every saved body goes with them);
 - each region's transfers.sqlite (in-flight travellers and account homes);
-- the group's coordinator.sqlite (account homes and decided transfers).
+- the group's coordinator.sqlite (account homes and decided transfers);
+- each region's separate extraction/vehicle-key/safehouse stores under data/
+  (fresh_world.SEPARATE_DOMAINS), which belong to the archived world;
+- a cold region's cold.json and running.json (saved and evicted: nothing runs, so
+  Save and stop refuses it; fresh_world.cold_stopped).
 
 into <root>/fresh-world-archives/<operation>/. Each region's own fresh-world-pending.json
 is written first, so its host refuses start, wake and the watchdog until every move
@@ -111,10 +115,15 @@ def request(group, pairs, confirmation, coordinator_pid, terminate):
             target.mkdir()
             moves = [host.repo / name for name in fresh_world.WORLD_PATHS if (host.repo / name).exists()]
             moves += store_files(host.state_dir / 'transfers.sqlite')
+            moves += [host.repo / 'data' / name for name in fresh_world.SEPARATE_DOMAINS if (host.repo / 'data' / name).exists()]
+            if fresh_world.cold_stopped(host):  # a cold region's wake records belong to the old world
+                moves += [marker for marker in (host.cold_file, host.running_file) if marker.exists()]
             for source in moves:
                 fresh_world.safe_tree(source)
-                os.rename(source, target / source.name)  # same filesystem: no copy, no delete
-                manifest['moved'].append('%s/%s' % (region['id'], source.name))
+                relative = 'data/' + source.name if source.parent == host.repo / 'data' else source.name
+                (target / relative).parent.mkdir(exist_ok=True)
+                os.rename(source, target / relative)  # same filesystem: no copy, no delete
+                manifest['moved'].append('%s/%s' % (region['id'], relative))
                 write_json(journal(group), manifest)
             (host.repo / 'map_saves').mkdir()  # check_save accepts an empty directory as fresh
         for source in store_files(root / 'coordinator.sqlite'):

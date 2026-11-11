@@ -62,8 +62,8 @@ def preview(output):
     # Bundled Pillow font sizes keep labels readable without platform font lookup.
     title_font = ImageFont.load_default(size=20)
     label_font = ImageFont.load_default(size=13)
-    crop = 'Plump helmet' if 'plump_helmet' in TARGET.name else 'Turnip'
-    draw.text((20, 15), f'Winter food: {crop}', fill='white', font=title_font)
+    crop = TARGET.stem.replace('pocket_stronghold_', '').replace('_', ' ').capitalize()
+    draw.text((20, 15), f'{"Cave food" if crop == "Cave wheat" else "Winter food"}: {crop}', fill='white', font=title_font)
     draw.text((20, 45), 'Actual DMI pixels, nearest-neighbor 4x. Asset preview - NOT a gameplay screenshot.', fill='white', font=label_font)
     for i, (name, _, original) in enumerate(MAPPING):
         x, y = 20 + (i % 5) * 224, 80 + (i // 5) * 190
@@ -79,13 +79,13 @@ def preview(output):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--crop', choices=('turnip', 'plump_helmet'), default='turnip')
+    parser.add_argument('--crop', choices=('turnip', 'plump_helmet', 'cave_wheat'), default='turnip')
     parser.add_argument('--source-dir', type=Path)
     parser.add_argument('--preview', type=Path)
     args = parser.parse_args()
-    if args.crop == 'plump_helmet':
-        TARGET = ROOT / 'icons/farming/pocket_stronghold_plump_helmet.dmi'
-        MAPPING = [(name.replace('turnip', 'plump_helmet'), file, original.replace('turnip', 'plump_helmet')) for name, file, original in MAPPING]
+    if args.crop != 'turnip':
+        TARGET = ROOT / f'icons/farming/pocket_stronghold_{args.crop}.dmi'
+        MAPPING = [(name.replace('turnip', args.crop), file, original.replace('turnip', args.crop)) for name, file, original in MAPPING]
     if args.source_dir:
         repack(args.source_dir)
     if args.preview:

@@ -1,0 +1,3 @@
+#define SMOOTH 0
+#define PIXELMODE
+#include "camtest.dm"

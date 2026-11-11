@@ -158,7 +158,7 @@
         {
           "owner": "",
           "declaration": "/obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff.",
-          "sha256_body": "f44e469ee8173e38aa3ac9480b5a1f30c1e03ff4fdef8413373ad5171422ce31"
+          "sha256_body": "79f3b80af83e75384718639b82f45e23a2ceea4a1b82135e239304223e3297b1"
         }
       ]
     },
@@ -359,6 +359,16 @@
           "owner": "",
           "declaration": "/obj/structure/window/barrier/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
           "sha256_body": "b54b6a35fbdbfbe0302f35ab71781010ccef48c8213343106e3c77e57547b80f"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/cave_wheat.dm",
+      "declarations": [
+        {
+          "owner": "/obj/item/weapon/reagent_containers/food/snacks/grown/cave_wheat",
+          "declaration": "parent_type = /obj/item/weapon/reagent_containers/food/snacks/grown/wheat",
+          "sha256_body": "277f93ceb6d62955025602c1b2a207968f7bc65c4cebeefd36724fa688960bba"
         }
       ]
     },

@@ -12,9 +12,11 @@ LEATHER = 'code/game/objects/items/stacks/sheets/leather.dm'
 HARVEST = 'code/modules/1713/animal_harvest.dm'
 LOGS = 'code/modules/materials/material_sheets.dm'
 RACK = 'code/game/objects/structures/converters.dm'
+PAGES = 'code/modules/research_tree/book_pages.dm'
 STACK = '/obj/item/stack/material/'
 BARK = '/obj/item/stack/bark'
 STATION = '/obj/structure/converter/tanning'
+PARCHMENT = '/obj/item/weapon/paper/parchment'
 
 
 def pelt_label(source, files):
@@ -37,6 +39,12 @@ def add_tanning(files, add, records, variants):
         actual = hashlib.sha256(files[path].replace('\r\n', '\n').encode()).hexdigest()
         if actual != expected:
             raise ValueError('Tanning source changed: review atlas routes and tanning-contracts.json: ' + path)
+    # Busy files pin only the audited block, from its start marker up to its end marker.
+    for path, block in audit.get('source_blocks', {}).items():
+        text = files[path].replace('\r\n', '\n')
+        start, end = text.find(block['start']), text.find(block['end'])
+        if start < 0 or end < start or hashlib.sha256(text[start:end].encode()).hexdigest() != block['sha256']:
+            raise ValueError('Tanning source changed: review atlas routes and tanning-contracts.json: ' + path)
     routes = []
 
     def route(name, inputs, outputs, path, marker, steps, tools=(), processor=False):
@@ -51,7 +59,7 @@ def add_tanning(files, add, records, variants):
                            inputs=[x['id'] for x in record['inputs']],
                            outputs=[x['id'] for x in record['outputs']],
                            steps=list(steps), tools=list(tools), conditions=conditions,
-                           era='Processing adds no era gate; rack construction retains Resource Processing research and map/faction gates.',
+                           era='Processing adds no era gate; rack construction retains Basic Toolmaking research and map/faction gates.',
                            map_notes='Animals, logs, water, vessels and construction depend on the selected map.',
                            status='source-reviewed route; native gameplay and graphical acceptance pending'))
 
@@ -66,7 +74,7 @@ def add_tanning(files, add, records, variants):
               HARVEST, '/mob/living/simple_animal/proc/harvest_skin_yield()',
               ('Use a held sharp tool on harm or grab intent and finish harvesting adjacent to the corpse.',
                'One adult turkey gives one raw hide and its normal meat; chicks give no hide.',
-               'Turkeys do not yield mammalian organs, bones, sinew or fat. One claim per corpse.'), ['Held sharp tool'])
+               'Turkeys also yield bone and sinew, but no mammalian organs or fat. One claim per corpse.'), ['Held sharp tool'])
     pelts = sorted(set(re.findall(r'new (/obj/item/stack/material/pelt[^\s(]*)\(site,', files[HARVEST])))
     for source in [STACK+'rawhide', STACK+'pelt', *pelts]:
         name = pelt_label(source, files)
@@ -89,6 +97,11 @@ def add_tanning(files, add, records, variants):
           LEATHER, '/obj/item/stack/material/dryhide/attackby(',
           ('Apply a held open liquid container containing at least 5 units of tannin to a nearby dry hide.',
            'Or hold the hide and click a nearby open container or unlocked barrel. Each use consumes one dry hide and 5 tannin, producing one ordinary leather sheet for existing recipes.'), ['Accessible liquid container'])
+    route('Cut a dry hide into parchment', [(STACK+'dryhide', 1)], [(PARCHMENT, 4)],
+          PAGES, '/obj/item/stack/material/dryhide/proc/cut_parchment(',
+          ('Use a held sharp tool that holds no liquid on a nearby dry hide; cutting takes 50 ticks, normally 5 seconds.',
+           'One dry hide becomes four sheets of parchment at your feet. Interrupted cutting consumes nothing.',
+           'Parchment is blank writing material: it works like paper for notes, books and research.'), ['Held sharp tool'])
     route('Extract bark tannin', [(BARK, 1), ('water', 10)], [('tannin', 10)],
           LEATHER, '/obj/item/stack/bark/attackby(',
           ('Apply a held open liquid container with at least 10 water to a nearby piece of tree bark.',
@@ -103,6 +116,7 @@ def add_tanning(files, add, records, variants):
                         ('wethide', 'wet hide'), ('dryhide', 'dry hide'), ('leather', 'leather')]:
         variants['/material/'+stage] = dict(type=STACK+stage, name=name)
     variants[BARK] = dict(type=BARK, name='tree bark')
+    variants[PARCHMENT] = dict(type=PARCHMENT, name='parchment')
     variants[STATION] = dict(type=STATION, name='tanning rack')
     # Tannin is a reagent, not an atom. Keep the atlas's explicit source symbol.
     variants['tannin'] = dict(type='tannin', name='tannin (bark tanning solution)')

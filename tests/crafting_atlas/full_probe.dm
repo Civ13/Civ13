@@ -23,7 +23,7 @@
 	var/grain = crafting_atlas_reference.render_html(viewer, processor = "grain_mill")
 	check_atlas(findtext(grain, "8 matching recipes") && findtext(grain, "grain item") && findtext(grain, "stamina"), "full production grain conversions")
 	var/tanning = crafting_atlas_reference.render_html(viewer, processor = "tanning_rack")
-	check_atlas(findtext(tanning, "1 matching recipes") && findtext(tanning, "resource_processing") && findtext(tanning, "300 ticks"), "full production tanning rack and construction research")
+	check_atlas(findtext(tanning, "1 matching recipes") && findtext(tanning, "basic_tools") && findtext(tanning, "300 ticks"), "full production tanning rack and construction research")
 	var/turkey = crafting_atlas_reference.page_html(viewer, "Harvest adult turkey hen skin")
 	check_atlas(findtext(turkey, "1 matching recipes") && findtext(turkey, "raw hide") && findtext(turkey, "chicks give no hide"), "full catalog adult turkey skin route")
 	var/tannin = crafting_atlas_reference.acquisition_html("tannin")

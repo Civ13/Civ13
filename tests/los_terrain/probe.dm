@@ -31,6 +31,12 @@ var/global/invalidated = 0
 	return isturf(A) ? A : get_turf(A.loc)
 /proc/los_read_allowed(mob/M, atom/A, operation)
 	return TRUE
+/client/var/datum/los_context/los_context
+/datum/los_context
+	var/mob/living/human/body
+	var/retired = FALSE
+// Stands in for world.cpu (run.py defines LOS_EYE_CPU as this).
+var/global/probe_cpu = 0
 
 /world
 	maxx = 500
@@ -118,7 +124,8 @@ var/global/invalidated = 0
 	// Grading (terrain_heights/set_level) clears the cache and refreshes viewers.
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
-	text2file(json_encode(list("fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
+	var/list/still_eye = los_still_eye_cases()
+	text2file(json_encode(list("still_eye" = still_eye, "fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
 	world.log << "LOS_TERRAIN DONE"
 	shutdown()
 
@@ -174,3 +181,41 @@ var/global/invalidated = 0
 	out["flat_wall"] = los_see_over_query(S, 8, LOS_GROUND_TOP)
 	out["flat_see_over"] = S.see_over
 	return out
+
+// The presented eye moves only when the body moves: server load swinging
+// across the pause thresholds must not move a still viewer's eye (Val,
+// 2026-11-11: sight changed at random while standing still on Gaia).
+/proc/los_still_eye_cases()
+	var/list/cases = list()
+	var/datum/los_context/V = new
+	var/mob/living/human/B = new
+	V.body = B
+	B.loc = locate(100, 100, 2)
+	B.step_x = 10
+	B.step_y = -10
+	probe_cpu = 10
+	V.settle_eye()
+	cases["moved_idle_uses_offset"] = V.eye_qx == 16 && V.eye_qy == -16
+	probe_cpu = 95
+	V.settle_eye()
+	cases["still_busy_keeps_eye"] = V.eye_qx == 16 && V.eye_qy == -16
+	probe_cpu = 70
+	V.settle_eye()
+	probe_cpu = 95
+	V.settle_eye()
+	cases["still_swinging_keeps_eye"] = V.eye_qx == 16 && V.eye_qy == -16
+	B.step_x = -10
+	V.settle_eye()
+	cases["busy_step_in_tile_keeps_eye"] = V.eye_qx == 16 && V.eye_qy == -16
+	B.loc = locate(101, 100, 2)
+	V.settle_eye()
+	cases["busy_new_tile_centres_eye"] = V.eye_qx == 0 && V.eye_qy == 0
+	probe_cpu = 10
+	V.settle_eye()
+	cases["still_after_load_keeps_eye"] = V.eye_qx == 0 && V.eye_qy == 0
+	B.step_x = 10
+	V.settle_eye()
+	cases["moved_after_load_uses_offset"] = V.eye_qx == 16 && V.eye_qy == -16
+	probe_cpu = 0
+	los_eye_offsets_paused = FALSE
+	return cases

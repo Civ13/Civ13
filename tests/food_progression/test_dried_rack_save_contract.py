@@ -21,7 +21,7 @@ class DriedRackSaveContractTests(unittest.TestCase):
         before = section(RACK, '/before_save() //before save to map')
         self.assertIn('clean_drop_slots()', before)
         drop = section(RACK, '/proc/clean_drop_slots()')
-        self.assertIn('storage.remove_from_storage(slots[R][P])', drop)
+        self.assertIn('storage.remove_from_storage(dropped_item)', drop)
         self.assertNotIn('.decay =', drop)
         self.assertNotIn('.name =', drop)
         self.assertIn('src.vars[key] != initial(src.vars[key])', SAVE)

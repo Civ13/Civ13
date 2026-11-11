@@ -174,7 +174,7 @@
 		healing_stage += 0.5
 	else
 		healing_stage = 0
-	if (healing_stage >= 30 && (istype(buckled, /obj/structure/bed) || istype(buckled, /obj/structure/optable) || istype(buckled, /obj/structure/medicalbed)))
+	if (healing_stage >= 30) // Other buckle types reset the counter immediately above.
 		if (istype(buckled, /obj/structure/medicalbed))
 			rejuvenate()
 			to_chat(src, "You feel much better.")
@@ -224,26 +224,19 @@
 			nutrition -= 0
 			water -= 0
 
-		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+		// Asleep or unconscious, in a bed or not: a full stomach lasts about 35 hours.
+		// This used to be the full awake rate unless buckled to a bed, ten times the
+		// idle awake rate, so a sleeping body went hungry faster than a resting one.
+		else if (stat == UNCONSCIOUS)
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
-		else if (map.heat_wave || map.ID == MAP_NOMADS_DESERT)
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m)
-		else
-			switch (stat)
-				if (CONSCIOUS) // takes about 1333 ticks to start starving, or ~44 minutes
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
-				if (UNCONSCIOUS) // takes over an hour to starve
-					nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m)
-					water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m)
+		else if (stat == CONSCIOUS && (map.heat_wave || map.ID == MAP_NOMADS_DESERT)) // about 77 minutes of food, 26 of water while active
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+			water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
+			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
@@ -462,7 +455,7 @@
 		eye_blind =  0
 		blinded =	0
 		eye_blurry = 0
-	else if (!vision || (vision && vision.is_broken()) || istype(eyes,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
+	else if (!vision || vision.is_broken() || istype(eyes,/obj/item/clothing/glasses/sunglasses/blindfold))   // Vision organs cut out or broken? Permablind.
 		eye_blind =  1
 		blinded =	1
 		eye_blurry = 1
@@ -588,7 +581,7 @@
 
 	if (bodytemperature < species.cold_level_1) //260.15 is 310.15 - 50, the temperature where you start to feel effects.
 		if (nutrition >= 2 && !inducedSSD) //If we are very, very cold we'll use up quite a bit of nutriment to heat us up.
-			nutrition -= 0.10
+			nutrition -= stat == UNCONSCIOUS ? 0.01 : 0.10 // a sleeping body burns far less
 		bodytemperature += 0.1
 	else if (bodytemperature > species.heat_level_1) //360.15 is 310.15 + 50, the temperature where you start to feel effects.
 		bodytemperature -= 0.1
@@ -598,18 +591,16 @@
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
-		if (C)
-			if (C.max_heat_protection_temperature && C.max_heat_protection_temperature >= temperature)
-				. |= C.heat_protection
+		if (C.max_heat_protection_temperature && C.max_heat_protection_temperature >= temperature)
+			. |= C.heat_protection
 
 //See proc/get_heat_protection_flags(temperature) for the description of this proc.
 /mob/living/human/proc/get_cold_protection_flags(temperature)
 	. = FALSE
 	//Handle normal clothing
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
-		if (C)
-			if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
-				. |= C.get_cold_coverage()
+		if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
+			. |= C.get_cold_coverage()
 
 /mob/living/human/get_heat_protection(temperature) //Temperature is the temperature you're being exposed to.
 	var/thermal_protection_flags = get_heat_protection_flags(temperature)
@@ -623,7 +614,7 @@
 	var/covered = 0
 	var/protection = 0
 	for (var/obj/item/clothing/C in list(head,wear_suit,w_uniform,shoes,gloves,wear_mask))
-		if (C && C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
+		if (C.min_cold_protection_temperature && C.min_cold_protection_temperature <= temperature)
 			var/coverage = C.get_cold_coverage()
 			// First layer blocks 80% of a body's weighted heat loss; an
 			// overlapping layer adds 16%. Exposed parts still lose heat.

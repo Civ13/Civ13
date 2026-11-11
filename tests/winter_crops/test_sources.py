@@ -298,10 +298,10 @@ class WinterCrops(unittest.TestCase):
         seed_list = block(wild, '/obj/structure/wild/proc/generate_seed_list(var/biome)')
         self.assertIn('typesof(/obj/item/stack/farming/seeds)', seed_list)
         self.assertIn('if (!(biome in seed_check.biomes))', seed_list)
-        self.assertIn('new seedpath(loc, 2)', block(FARM, '/obj/structure/farming/plant/proc/spawn_seeds()'))
+        self.assertIn('new seedpath(loc, harvest_skill_amount(2, bonus))', block(FARM, '/obj/structure/farming/plant/proc/spawn_seeds(bonus = 0)'))
         attack = block(FARM, '/obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)')
         self.assertIn('else if (readyHarvest())', attack)
-        self.assertIn('spawn_seeds()\n\t\t\tspawn_produce()', attack)
+        self.assertIn('spawn_seeds(bonus)\n\t\t\tspawn_produce(bonus)', attack)
         self.assertIn('qdel(src)', attack)
         floor = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
         self.assertIn('C.amount -= 1', floor)
@@ -345,9 +345,9 @@ class WinterCrops(unittest.TestCase):
         self.assertIn('decay = 60*600', food)
         # Shared harvest retires the crop, and shared planting debits one spore.
         attack = block(FARM, '/obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)')
-        self.assertRegex(attack, r'(?s)else if \(readyHarvest\(\)\).*?spawn_seeds\(\).*?spawn_produce\(\).*?qdel\(src\)')
+        self.assertRegex(attack, r'(?s)else if \(readyHarvest\(\)\).*?spawn_seeds\(bonus\).*?spawn_produce\(bonus\).*?qdel\(src\)')
         self.assertNotIn('/obj/structure/farming/plant/plump_helmet/attackby', FARM)
-        self.assertIn('new seedpath(loc, 2)', block(FARM, '/obj/structure/farming/plant/proc/spawn_seeds()'))
+        self.assertIn('new seedpath(loc, harvest_skill_amount(2, bonus))', block(FARM, '/obj/structure/farming/plant/proc/spawn_seeds(bonus = 0)'))
 
     def test_plump_half_rate_still_advances_ripe_crops(self):
         body = block(FARM, '/obj/structure/farming/plant/plump_helmet/stageGrowth()')
@@ -375,10 +375,11 @@ class WinterCrops(unittest.TestCase):
         self.assertEqual(helmet.stage, 11)
         growth = block(FARM, '/obj/structure/farming/plant/proc/growth()')
         self.assertIn('if (vstatic || stage > readyStageMax)', growth)
-        self.assertIn('set_dead()', growth)
+        self.assertIn('advance_stage_if_allowed(allow_stage)', growth)
+        self.assertIn('set_dead()', block(FARM, '/obj/structure/farming/plant/proc/advance_stage_if_allowed(allow_stage)'))
 
     def test_actual_dmis_have_every_referenced_state(self):
-        for crop in ('turnip', 'plump_helmet'):
+        for crop in ('turnip', 'plump_helmet', 'cave_wheat'):
             with self.subTest(crop=crop):
                 self.assert_dmi(crop)
 

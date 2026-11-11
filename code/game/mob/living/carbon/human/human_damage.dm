@@ -146,8 +146,9 @@
 	// failing that, addition 50%/77% chance to get less weakened
 	if (prob(5 + ceil(getStatCoeff("strength") * 9)))
 		amount /= pick(2,3)
-
+	var/was_weakened = weakened
 	..()
+	get_up_hint(was_weakened)
 
 // Defined here solely to take species flags into account without having to recast at mob/living level.
 /mob/living/human/getOxyLoss()

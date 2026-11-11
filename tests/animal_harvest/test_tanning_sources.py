@@ -303,7 +303,7 @@ class TanningSourceContracts(unittest.TestCase):
         for word in ('map.ID','ordinal_age','is_node_done'):
             self.assertNotIn(word,cut+source(LEATHER))
         self.assertIn('/obj/structure/converter/tanning',source('config/crafting/material_recipes_global.txt'))
-        self.assertIn('"/obj/structure/converter/tanning" = "resource_processing"',source('code/modules/research_tree/research_node.dm'))
+        self.assertIn('"/obj/structure/converter/tanning" = "basic_tools"',source('code/modules/research_tree/research_node.dm'))
 
     def test_log_cutter_revalidates_both_tool_routes_stock_and_location(self):
         text,leather=source(SHEETS),source(LEATHER)

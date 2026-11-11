@@ -249,6 +249,23 @@
 			drift.handle_diet()
 		diet_assert(drift.diet_adequate_groups() == 4 && drift.diet_imbalance_ticks == 0, "a missed meal does not cause imbalance")
 
+		// Sleeping keeps reserves (Sleep) or uses them ten times more slowly, and never builds imbalance.
+		var/mob/living/human/sleeper = diet_subject(site, 80)
+		sleeper.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
+		sleeper.inducedSSD = TRUE
+		for (var/i in 1 to 100)
+			sleeper.handle_diet()
+		diet_assert(sleeper.diet_reserves["carbohydrate"] == 120 && sleeper.diet_imbalance_ticks == 0, "Sleep keeps diet reserves and imbalance as they were")
+		sleeper.inducedSSD = FALSE
+		sleeper.stat = UNCONSCIOUS
+		for (var/i in 1 to 100)
+			sleeper.handle_diet()
+		var/slept = sleeper.diet_reserves["carbohydrate"]
+		diet_assert(slept < 120 && slept > 120 * (1 - DIET_DECAY * 0.1 * 100) - 0.01 && sleeper.diet_imbalance_ticks == 0, "other sleep decays slowly without imbalance")
+		sleeper.stat = CONSCIOUS
+		sleeper.handle_diet()
+		diet_assert(sleeper.diet_imbalance_ticks == 1, "waking resumes the imbalance count")
+
 		// A brief dip below adequate is silent both ways; recovery is announced only after a warning.
 		var/mob/living/human/diet_tester/dip = diet_subject(site, 80)
 		dip.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
@@ -269,8 +286,9 @@
 		drift.diet_reserves = list("carbohydrate" = 120, "protein" = 0, "fat" = 0, "vitamins" = 0)
 		for (var/i in 1 to 1400)
 			drift.handle_diet()
-		diet_assert(drift.diet_imbalance_ticks >= 1350 && drift.diet_recovery_factor() == 1, "penalties stay off by default")
-		diet_penalties_enabled = TRUE
+		diet_assert(diet_penalties_enabled && !map.diet_penalties, "penalties are on globally but gated per map")
+		diet_assert(drift.diet_imbalance_ticks >= 1350 && drift.diet_recovery_factor() == 1, "penalties stay off on maps without the diet gate")
+		map.diet_penalties = TRUE
 		diet_assert(drift.diet_recovery_factor() == 0.75, "enabled fatigue is mild")
 		drift.nutrition = -10
 		diet_assert(drift.diet_recovery_factor() == 1, "fatigue never stacks with starvation")
@@ -282,7 +300,7 @@
 		for (var/i in 1 to 30)
 			drift.handle_diet()
 		diet_assert(drift.diet_recovery_factor() == 1, "balanced meals restore normal recovery")
-		diet_penalties_enabled = FALSE
+		map.diet_penalties = FALSE
 		var/status = drift.diet_status_text()
 		diet_assert(findtext(status, "Energy capacity:") && findtext(status, "Carbohydrate:"), "status explains reserves and capacity")
 

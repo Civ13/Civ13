@@ -91,6 +91,9 @@ var/global/list/farmers_almanac_seed_cache = null
 	var/plant_path = entry[4]
 	if (inside && (ispath(plant_path, /obj/structure/farming/plant/mushroom) || ispath(plant_path, /obj/structure/farming/plant/mushroompsy)))
 		return TRUE
+	// Cave wheat grows in any climate and season, but only out of the sun.
+	if (ispath(plant_path, /obj/structure/farming/plant/cave_wheat))
+		return inside
 	var/list/biomes = entry[2]
 	var/list/seasons = entry[3]
 	if (!(climate in biomes))
@@ -171,7 +174,7 @@ var/global/list/farmers_almanac_seed_cache = null
 			var/current = (season_name == season)
 			dat += "<tr><td>[current ? "<b>" : ""][farmers_almanac_season_name(season_name)][current ? " (now)</b>" : ""]</td><td>[row[1]]&deg;C</td><td>[farmers_almanac_weather_phrase(row[2])]</td><td>[farmers_almanac_weather_phrase(row[3])]</td></tr>"
 		dat += "</table>"
-		dat += "<p><i>Rain and monsoons water open fields. Blizzards kill crops that are not winter-hardy, and sandstorms destroy crops. Under a roof, crops are sheltered from storms but must be watered by hand.</i></p>"
+		dat += "<p><i>Rain and monsoons water open fields. Blizzards kill crops that are not winter-hardy, and sandstorms destroy crops. Under a roof, crops are sheltered from storms but must be watered by hand. Under a glass roof, crops suited to this land keep growing out of season, at half speed.</i></p>"
 
 	dat += "<h3>Crops for this land</h3>"
 	if (!farmers_almanac_climate_matters())

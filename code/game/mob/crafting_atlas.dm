@@ -29,6 +29,7 @@ var/global/datum/crafting_atlas_presenter/crafting_atlas_presenter
 	set category = "IC"
 	if (client)
 		crafting_atlas_reference.show(src)
+		client.tutorial_event("atlas")
 
 /obj/structure/sawmill/verb/processing_reference()
 	set name = "Processing Reference"

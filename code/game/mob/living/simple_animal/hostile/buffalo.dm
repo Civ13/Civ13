@@ -44,7 +44,7 @@
 	response_harm   = "gores"
 	attacktext = "gores"
 	var/calf = FALSE
-	var/datum/reagents/udder = null
+	var/datum/reagents/udder/udder = null
 	var/pregnant = FALSE
 	var/birthCountdown = 0
 	var/overpopulationCountdown = 0

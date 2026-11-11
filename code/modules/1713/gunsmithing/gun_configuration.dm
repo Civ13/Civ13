@@ -308,6 +308,9 @@
 	return TRUE
 
 /obj/structure/repair/gun/attackby(obj/item/P, mob/user)
+	if (istype(P, /obj/item/weapon/gun_component))
+		firearm_offer_salvage(P, user)
+		return
 	if (istype(P,/obj/item/weapon/gun))
 		var/obj/item/weapon/gun/G = P
 		if (!G.service_firearm(user,null,src))

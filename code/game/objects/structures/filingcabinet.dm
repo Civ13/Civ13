@@ -33,15 +33,17 @@
 /obj/structure/filingcabinet/filingcabinet	//not changing the path to avoid unnecessary map issues, but please don't name stuff like this in the future -Pete
 	icon_state = "tallcabinet"
 
+/obj/structure/filingcabinet/proc/is_fileable_document(obj/item/I)
+	return istype(I, /obj/item/weapon/paper) || istype(I, /obj/item/weapon/paper_bundle) || istype(I, /obj/item/weapon/folder)
 
 /obj/structure/filingcabinet/initialize()
 	for (var/obj/item/I in loc)
-		if (istype(I, /obj/item/weapon/paper) || istype(I, /obj/item/weapon/paper_bundle) || istype(I, /obj/item/weapon/folder))
+		if (is_fileable_document(I))
 			I.loc = src
 
 
 /obj/structure/filingcabinet/attackby(obj/item/P as obj, mob/user as mob)
-	if (istype(P, /obj/item/weapon/paper) || istype(P, /obj/item/weapon/paper_bundle) || istype(P, /obj/item/weapon/folder))
+	if (is_fileable_document(P))
 		to_chat(user, "<span class='notice'>You put [P] in [src].</span>")
 		user.drop_item()
 		P.loc = src

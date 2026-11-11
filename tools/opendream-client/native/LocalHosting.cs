@@ -471,7 +471,8 @@ public static class LocalHosting {
             var last = Str(watchdog, "last_event") is { } kind ? Lower(kind) : "a crash";
             if (watchdog.TryGetProperty("gave_up", out _))
                 parts.Add($"watchdog gave up after repeated restarts ({last}); start it by hand");
-            else if (Str(watchdog, "last_refusal") is { Length: > 0 } refusal)
+            // A refusal only matters while the region is down: once it runs again it is out of date.
+            else if (!Bool(entry, "listening") && Str(watchdog, "last_refusal") is { Length: > 0 } refusal)
                 parts.Add("watchdog could not restart it: " + Short(refusal));
             else if (Bool(watchdog, "cold"))
                 parts.Add("watchdog left it asleep (low memory)");
