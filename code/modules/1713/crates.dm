@@ -87,7 +87,8 @@ obj/structure/closet/crate/loottreasurechest
 	storage_capacity = 5 * MOB_MEDIUM
 
 obj/structure/closet/crate/loottreasurechest/New()
-	..()
+	if (persistence_saved_atom_construction)
+		return ..()
 	var/rarity = rand(0,10)
 	if(rarity <= 2)
 		paths = list(/obj/item/stack/ore/tin = rand(0, 2),
@@ -169,8 +170,8 @@ obj/structure/closet/crate/loottreasurechest/New()
 				/obj/item/stack/money/pearls = rand(2, 3),
 				/obj/item/cursedtreasure = rand(0, 1),
 				/obj/item/weapon/material/sword/longsword/diamond = 1,)
-	for (var/stack in contents)
-		var/obj/item/stack/S = stack
+	..()
+	for (var/obj/item/stack/S in contents)
 		S.amount = rand(1+rarity,(rarity+1)*2)
 
 /obj/structure/closet/crate/chest/treasury
