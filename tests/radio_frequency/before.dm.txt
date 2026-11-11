@@ -1,0 +1,52 @@
+/obj/item/weapon/radio/proc/check_freq(var/obj/original)
+	if (!original)
+		return
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/structure/radio))
+		SR = original
+	else
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
+	return FALSE
+/obj/structure/radio/proc/check_freq(var/obj/original)
+	if (!original)
+		return
+	var/obj/item/weapon/radio/R = null
+	var/obj/structure/radio/SR = null
+	if (istype(original, /obj/item/weapon/radio))
+		R = original
+	else if (istype(original, /obj/structure/radio))
+		SR = original
+	else
+		return FALSE
+	if (SR)
+		if (multifreq)
+			if (SR.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (SR.freq == src.freq)
+				return TRUE
+	else if (R)
+		if (multifreq)
+			if (R.freq in src.multifreqlist)
+				return TRUE
+		else
+			if (R.freq == src.freq)
+				return TRUE
+	return FALSE
