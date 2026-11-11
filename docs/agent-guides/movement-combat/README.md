@@ -25,6 +25,16 @@ the next alignment or lists covered tiles uses `human_subtile_ll()` (offsets
 (`subtile_refile_lower_left`). `tests/centre_tile/run.py` is the native probe.
 Animals still use lower-left filing.
 
+<!-- 2026-11-11: trees collide at their trunk -->
+Trees (`/wild/tree`, `/wild/jungle`) set a small trunk box with
+`fit_trunk_bounds()` from their pixel offset (`trunk_center_x` is the trunk's x
+in the sprite). The box never leaves the tree's tile, so contents, shots,
+opacity and pathing stay tile-based. `turf/Enter` skips a fitted tree only for a
+human in a free-movement pulse (`trunk_collision_mover`); the tree's `Cross`
+then decides on real overlap. Every other mover still finds the tile blocked, so
+tile movers never slide part way in. Refit after changing a tree's offset.
+`tests/tree_trunk_collision/run.py` is the native probe.
+
 A turf's `contents` hold every body overlapping it, however slightly. Shots fly
 from the shooter's body centre to the target's (`setup_points`; plot_vector
 space puts a tile's centre at x * 32 and rounds to the nearest tile), and a body
