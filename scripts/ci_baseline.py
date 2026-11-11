@@ -1135,6 +1135,10 @@ SUITES = {
             'code/game/objects/items/weapons/swords_axes_etc.dm')},
     # Inert stdlib-only source/model checks; no native runner or subprocesses.
     # Shared movement sources retain their conservative all-suite fallback.
+    'melee_force': {'files': ('tests/melee_force/test_force.py',),
+        'paths': ('tests/melee_force/',),
+        'shared_paths': ('code/game/objects/items/weapons/swords_axes_etc.dm',
+                         'tests/save_movement/source_adapter.py')},
     'destroyed_grab_preflight': {'files': ('tests/test_destroyed_grab_preflight.py',),
         'paths': (), 'shared_paths': ('code/game/mob/mob_movement.dm',
                                      'code/game/mob/living/carbon/human/subtile_movement.dm')},

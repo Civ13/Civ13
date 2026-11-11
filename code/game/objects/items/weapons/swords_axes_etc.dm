@@ -9,6 +9,7 @@
 
 /obj/item/weapon/melee/attack(mob/M as mob, mob/living/user as mob, var/target_zone)
 
+	var/original_force = force
 	switch (user.a_intent) // harm intent lets us murder people, others not so much - Kachnov
 		if (I_HARM)
 			force *= force_multiplier
@@ -24,7 +25,7 @@
 
 	user.a_intent = user_last_intent
 
-	force = initial(force)
+	force = original_force
 
 /obj/item/weapon/melee/mace
 	name = "iron mace"
