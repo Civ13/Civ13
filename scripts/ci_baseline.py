@@ -46,6 +46,10 @@ SUITES = {
         'shared_paths': ('code/modules/1713/smart_home.dm', 'code/modules/1713/machinery/cables.dm',
                          'code/modules/1713/machinery/cables_types.dm',
                          'code/game/objects/structures.dm')},
+    'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
+        'paths': ('tests/cave_dismantling/', 'code/game/objects/structures/animalspawner/animal_spawner.dm',
+                  'code/game/objects/structures/animalspawner/bearcave.dm',
+                  'code/game/objects/structures/animalspawner/wolfcave.dm')},
     'shield_block': {'files': ('tests/shield_block/test_block.py',),
         'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -88,6 +92,15 @@ SUITES = {
     'flashbang_audio': {'files': ('tests/flashbang_audio/test_audio.py',),
         'paths': ('tests/flashbang_audio/', 'code/game/objects/items/weapons/grenades/flashbang.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'egg_box_count': {'files': ('tests/egg_box_count/test_egg_box_count.py',),
+        'paths': ('tests/egg_box_count/',),
+        'shared_paths': ('code/game/objects/items/weapons/storage/fancy.dm',
+                         'tests/save_movement/source_adapter.py')},
+    'donut_box_empty': {'files': ('tests/donut_box_empty/test_donut_box_empty.py',),
+        'paths': ('tests/donut_box_empty/',),
+        'shared_paths': ('code/game/objects/items/weapons/storage/fancy.dm',
+                         'tests/egg_box_count/original_fancy.dm',
+                         'tests/save_movement/source_adapter.py')},
     'ashtray_spill': {'files': ('tests/ashtray_spill/test_spill.py',),
         'paths': ('tests/ashtray_spill/', 'code/game/objects/items/weapons/material/ashtray.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -1226,6 +1239,15 @@ SUITES = {
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
         'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
+    'injury_recovery': {'files': ('tests/injury_recovery/test_source.py',
+        'tests/disease_immunity/test_source.py', 'tests/illness_pain_body_heat/test_source.py'),
+        'paths': ('tests/injury_recovery/', 'tests/disease_immunity/', 'tests/illness_pain_body_heat/'),
+        'shared_paths': ('code/modules/organs/organ.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/brain.dm', 'code/modules/organs/pain.dm',
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/game/mob/living/carbon/human/human_disease.dm',
+            'code/game/mob/living/carbon/human/severe_disease.dm',
+            'code/game/mob/living/carbon/human/immunity.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
@@ -1328,6 +1350,9 @@ SUITES = {
     # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
     'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
         'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},
+    # Prefilled belts hold and accept their initial contents (#4544, #4545, #4546).
+    'belt_contents': {'files': ('tests/belt_contents/test_source.py',),
+        'paths': ('tests/belt_contents/', 'code/game/objects/items/weapons/storage/belt.dm')},
     # Railing dismantling stops if the railing was fastened during the wait (#4413).
     'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},

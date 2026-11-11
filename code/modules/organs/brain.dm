@@ -106,7 +106,7 @@
 
 			if(owner.stat == CONSCIOUS)
 				if(damage > 0 && prob(1))
-					owner.custom_pain("Your head feels numb and painful.",9)
+					owner.custom_pain("Your head feels numb and painful.", min(9, damage))
 				if(is_bruised() && prob(1) && owner.eye_blurry <= 0)
 					to_chat(owner, "<span class='warning'>It becomes hard to see for some reason.</span>")
 					owner.eye_blurry = 10
@@ -137,10 +137,10 @@
 		switch(blood_volume)
 
 			if(BLOOD_VOLUME_SAFE to INFINITY)
-				if((damage%damage_threshold_value)>=1)
-					damage--
-					if (oxygen_reserve < 90)
-						oxygen_reserve++
+				// Oxygen reserve replenishes here; tissue recovery is handled
+				// uniformly after processing, without permanent damage plateaus.
+				if (oxygen_reserve < 90)
+					oxygen_reserve++
 			if(BLOOD_VOLUME_OKAY to BLOOD_VOLUME_SAFE)
 				if(prob(1))
 					to_chat(owner, "<span class='warning'>You feel [pick("dizzy","woozy","faint")]...</span>")

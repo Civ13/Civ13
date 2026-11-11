@@ -83,3 +83,47 @@
 	remove_commander()
 	remove_title_changer()
 	remove_faction_symbol_editor()
+
+// Return the authoritative record without inventing a faction or leader. Maps
+// without this record retain is_faction_leader()'s legacy flag fallback, but
+// cannot perform a stored-record leadership transition.
+/obj/map_metadata/proc/faction_leader_record(faction)
+	if (!faction || faction == "none")
+		return null
+	var/list/civ_data = custom_civs[faction]
+	return islist(civ_data) && civ_data.len >= 4 ? civ_data : null
+
+// Leaving and Nomad death clear only this exact character's stored position.
+// Never compare display names: unrelated characters can have identical names.
+/obj/map_metadata/proc/clear_faction_leader(mob/living/human/H, faction)
+	var/list/civ_data = faction_leader_record(faction)
+	if (!H || !civ_data || civ_data[4] != H)
+		return FALSE
+	civ_data[4] = null
+	return TRUE
+
+// Atomic, non-yielding claim/transfer of an existing faction's leader record.
+// A null previous leader means claiming a vacant position, not overriding one.
+// Callers own map eligibility, proximity, prompts and player-facing messages.
+/obj/map_metadata/proc/change_faction_leader(faction, mob/living/human/previous, mob/living/human/next)
+	var/list/civ_data = faction_leader_record(faction)
+	if (!civ_data || civ_data[4] != previous)
+		return FALSE
+	if (!istype(next) || QDELETED(next) || next.stat == DEAD || next.civilization != faction || next == previous)
+		return FALSE
+	if (previous && (QDELETED(previous) || previous.stat == DEAD || !is_faction_leader(previous, faction)))
+		return FALSE
+	civ_data[4] = next
+	next.make_commander()
+	next.make_title_changer()
+	next.grant_faction_symbol_editor()
+	next.leader = TRUE
+	next.faction_perms = list(1,1,1,1)
+	if (previous)
+		// A transfer revokes leadership powers, not titles or research roles.
+		previous.leader = FALSE
+		previous.faction_perms = list(0,0,0,0)
+		previous.remove_title_changer()
+		previous.remove_commander()
+		previous.remove_faction_symbol_editor()
+	return TRUE
