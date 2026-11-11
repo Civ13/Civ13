@@ -4,6 +4,8 @@
 #define FORAGING_CELL_STOCK 4
 #define FORAGING_CONTENT_LIMIT 64
 #define FORAGING_SEARCH_TIME 300
+// One unit grows back per hour of active server time (phase 5).
+#define FORAGING_RENEW_TIME (60 MINUTES)
 
 /obj/map_metadata/var/foraging_enabled = FALSE
 
@@ -12,8 +14,7 @@
 	return foraging_enabled || persistence
 
 // Sparse, ordinary saved roots, not a global cache or mutable turf variable.
-// No automatic regeneration in phase one: changing terrain or relogging cannot
-// replenish a cell. Keep exhausted records until the world is deliberately reset.
+// Changing terrain or relogging cannot replenish a cell; only renewal can.
 /obj/foraging_cell
 	name = "foraging depletion record"
 	invisibility = 101
@@ -22,6 +23,9 @@
 	density = FALSE
 	sinkable = FALSE
 	var/remaining = FORAGING_CELL_STOCK
+	// Renewal clock reading when the next unit started growing back; null at
+	// full stock or for a record saved before renewal existed.
+	var/renew_from = null
 
 // Anchoring alone does not stop broken floors or forceMove callers. These
 // records describe coordinates and must never travel with actors or vehicles.
@@ -42,7 +46,42 @@
 	var/list/saved = ..()
 	// /obj is a partial-save type; explicitly include even the initial value.
 	saved |= "remaining"
+	saved |= "renew_from"
 	return saved
+
+//////// Renewal (phase 5)
+// Clock policy: the durable active-server clock, the same one that drives the
+// round timer. It is saved with the world and restored on load, so downtime adds
+// nothing and a world.time reset after a reboot changes nothing. No timer or
+// worker per patch: stock is worked out lazily when someone looks or searches.
+// A clock reading behind the stamp (a legacy save without its round clock, or a
+// clock moved back) restamps without granting anything. Ground, focus or season
+// changes never touch the stock; only time does, at one unit per period, capped.
+/proc/foraging_clock()
+	return roundduration2text_in_ticks
+
+/obj/foraging_cell/proc/valid_renewal()
+	return isnull(renew_from) || (isnum(renew_from) && renew_from >= 0 && renew_from <= 1e15)
+
+// Stock at clock reading now, without changing anything.
+/obj/foraging_cell/proc/units_at(now)
+	if (remaining >= FORAGING_CELL_STOCK || !isnum(renew_from) || now < renew_from)
+		return remaining
+	return min(FORAGING_CELL_STOCK, remaining + round((now - renew_from) / FORAGING_RENEW_TIME))
+
+// Brings the stored stock and stamp up to now. Callers fence saves first.
+/obj/foraging_cell/proc/settle(now)
+	if (remaining >= FORAGING_CELL_STOCK)
+		renew_from = null
+		return
+	if (!isnum(renew_from) || now < renew_from)
+		renew_from = now
+		return
+	var/grown = round((now - renew_from) / FORAGING_RENEW_TIME)
+	if (grown <= 0)
+		return
+	remaining = min(FORAGING_CELL_STOCK, remaining + grown)
+	renew_from = remaining >= FORAGING_CELL_STOCK ? null : renew_from + grown * FORAGING_RENEW_TIME
 
 /proc/foraging_anchor(turf/T)
 	if (!T)
@@ -68,7 +107,7 @@
 		return FALSE
 	var/obj/foraging_cell/found
 	for (var/obj/foraging_cell/C in anchor)
-		if (found || !isnum(C.remaining) || C.remaining < 0 || C.remaining > FORAGING_CELL_STOCK || round(C.remaining) != C.remaining)
+		if (found || !isnum(C.remaining) || C.remaining < 0 || C.remaining > FORAGING_CELL_STOCK || round(C.remaining) != C.remaining || !C.valid_renewal())
 			return FALSE
 		found = C
 	return found
@@ -80,7 +119,11 @@
 	if (!record)
 		return 0
 	var/obj/foraging_cell/C = record
-	return C.remaining
+	var/now = foraging_clock()
+	// Looking starts the clock on a record from before renewal, outside saves.
+	if (!isnum(C.renew_from) && C.remaining < FORAGING_CELL_STOCK && foraging_persistence_ready(persistence_admission_identity))
+		C.settle(now)
+	return C.units_at(now)
 
 /proc/foraging_persistence_ready(expected_identity)
 	return !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && expected_identity == persistence_admission_identity
@@ -324,13 +367,18 @@
 	if (!isnull(record) && !record)
 		return null
 	var/obj/foraging_cell/C = record
-	if (C && C.remaining <= 0)
-		return null
+	var/now = foraging_clock()
+	if (C)
+		C.settle(now)
+		if (C.remaining <= 0)
+			return null
 	var/output = foraging_roll(T, focus)
 	if (!output)
 		return null
 	if (!C)
 		C = new(anchor)
+	if (C.remaining >= FORAGING_CELL_STOCK)
+		C.renew_from = now
 	C.remaining--
 	// Existing constructors receive an explicit single unit for stacks.
 	if (ispath(output, /obj/item/stack))

@@ -58,6 +58,15 @@ class ForagingContract(unittest.TestCase):
         topic = SOURCE.split('/mob/living/human/Topic(href, href_list)')[1].split('return ..()')[0]
         self.assertIn('usr != src', topic)
         self.assertIn('in foraging_focuses()', topic)
+    def test_renewal_is_lazy_and_durable(self):
+        self.assertIn('saved |= "renew_from"', SOURCE)
+        self.assertIn('return roundduration2text_in_ticks', SOURCE)
+        renewal = SOURCE.split('//////// Renewal (phase 5)')[1].split('/proc/foraging_anchor')[0]
+        self.assertNotIn('world.time', renewal.split('*/')[-1].split('/proc/foraging_clock()')[1])
+        self.assertNotIn('spawn(', SOURCE)
+        self.assertNotIn('START_PROCESSING', SOURCE)
+        self.assertIn('min(FORAGING_CELL_STOCK', renewal)
+        self.assertIn('now < renew_from', renewal)
     def test_source_included(self):
         self.assertIn('code\\modules\\ecology\\foraging.dm', (ROOT/'civ13.dme').read_text())
 
