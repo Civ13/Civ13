@@ -334,6 +334,9 @@
 	var/cooldown = FALSE
 	var/whistle_sound = 'sound/effects/whistle.ogg'
 
+/obj/item/weapon/whistle/persistence_runtime_var(key)
+	return key == "cooldown" || ..()
+
 /obj/item/weapon/whistle/attack_self(mob/user as mob)
 	if (!cooldown)
 		playsound(loc, whistle_sound, 100, FALSE, 5)
