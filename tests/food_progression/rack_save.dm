@@ -278,9 +278,10 @@
 	map_storage.saving_z = 1
 	rack_check(map_storage.BuildVarDirectory(live_file, live_turf, 1), "live rack turf exports")
 	rack_check(live_input.loc == live_turf && !live_rack.overlays.len, "live save drops input and clears its drawing")
+	rack_check(live_input.mouse_opacity == 0, "a dropped rack item cannot be hovered during the save")
 	map_storage.clear_bookkeeping()
 	sleep(40) // re-adoption waits one second, then reinit's own 5-15 tick delay
-	rack_check(live_input.loc == live_rack.storage && live_input.name == live_name && live_rack.overlays.len == 1, "rack re-adopts its input after a live save")
+	rack_check(live_input.loc == live_rack.storage && live_input.name == live_name && live_rack.overlays.len == 1 && live_input.mouse_opacity == initial(live_input.mouse_opacity), "rack re-adopts its input after a live save")
 	// Items a player carried off before re-adoption lose the rack encoding.
 	var/turf/stray_turf = locate(6,2,1)
 	var/obj/item/weapon/reagent_containers/food/snacks/octopus/stray = new(stray_turf)
