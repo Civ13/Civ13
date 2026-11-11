@@ -34,6 +34,14 @@ class LocalWslTests(unittest.TestCase):
 
             for name in ('scripts/build-crafting-atlas.py', 'scripts/atlas/catalog_metadata.py',
                          'scripts/atlas/tanning.py', 'scripts/atlas/variants.py',
+                         'scripts/atlas/rope_making.py', 'scripts/atlas/woodworking.py',
+                         'scripts/atlas/families.py', 'scripts/atlas/research_coverage.py',
+                         'scripts/atlas/titles.py', 'scripts/atlas/facts.py',
+                         'scripts/atlas/woodworking-contract.json',
+                         'config/crafting/furniture_joinery.json',
+                         'code/modules/1713/rope_making.dm',
+                         'code/modules/1713/primitive_woodworking.dm',
+                         'code/modules/research_tree/research_node.dm',
                          'scripts/atlas/tanning-contracts.json',
                          'code/modules/1713/production.dm',
                          'code/game/objects/items/stacks/sheets/leather.dm',
@@ -44,7 +52,11 @@ class LocalWslTests(unittest.TestCase):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())
-            for name, value in {'config/crafting/fixture.txt':
+            # The fixture-only output is explicitly ungated; production research
+            # mappings and all catalog source/provenance checks still execute.
+            for name, value in {'code/modules/research_tree/recipe_gates.dm':
+                                'var/global/list/basic_crafting_recipes = list("/obj/item/fixture")\n',
+                                'config/crafting/fixture.txt':
                                 'RECIPE: /material/wood/,fixture item,/obj/item/fixture,1,1,0,1,none,0,0,0,8,null\n',
                                 'maps/fixture.txt': 'synthetic map placeholder\n',
                                 'UI/fixture.txt': 'synthetic UI placeholder\n',
