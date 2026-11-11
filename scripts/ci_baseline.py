@@ -1186,6 +1186,10 @@ SUITES = {
                                 'tests/fishing_stock/test_native_runner.py',
                                 'tests/fishing_stock/test_ocean_fishing.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Read-only Examine navigation source contracts; no DM runtime is launched.
+    'atlas_examine': {'files': ('tests/test_atlas_examine.py',), 'paths': (
+        'tests/test_atlas_examine.py', 'code/game/mob/crafting_atlas_examine.dm'),
+        'shared_paths': ('code/game/mob/mob.dm', 'code/game/mob/crafting_atlas.dm', 'civ13.dme')},
     # Source-only candidate inventory fixtures; no compiler or native execution.
     'atlas_entity_inventory': {'files': ('tests/atlas_entity_inventory/test_inventory.py',), 'paths': (
         'tests/atlas_entity_inventory/', 'scripts/atlas/entity_inventory.py'),
