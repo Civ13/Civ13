@@ -50,6 +50,20 @@ class DaylightSweep(unittest.TestCase):
         self.assertIn('if (LO)', self.body)
 
 
+class SweepPauseProgress(unittest.TestCase):
+    # A sweep resumed on a tick already past the gate must still make progress:
+    # gating from the first step allowed one step per tick, and live Gaia's
+    # first daylight sweep (~334k overlays) left players in black for hours.
+    def test_tick_gate_applies_only_after_a_minimum_batch(self):
+        game = (ROOT / 'code/_helpers/game.dm').read_text(encoding='utf-8')
+        body = proc_body(game, '/proc/environment_sweep_pause(work)')
+        minimum = int(re.search(r'#define ENVIRONMENT_SWEEP_MIN_BATCH (\d+)', game).group(1))
+        batch = int(re.search(r'#define ENVIRONMENT_SWEEP_BATCH (\d+)', game).group(1))
+        self.assertTrue(256 <= minimum < batch)
+        self.assertIn('(work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT)', body)
+        self.assertNotIn('|| world.tick_usage', body)
+
+
 class SoilRecoveryWake(unittest.TestCase):
     # Gaia has ~134k dirt turfs. One sleeping spawn chain per turf cost about
     # 50 MB of closures and tokens for the whole round, and with a shared

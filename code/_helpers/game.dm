@@ -204,10 +204,16 @@ proc
 	return seconds * 10
 
 // Bound environment sweeps independently of the general 90% tick threshold.
+// A sweep always does ENVIRONMENT_SWEEP_MIN_BATCH steps per resume: a busy
+// server can be past the tick gate whenever a sleeping proc resumes, and a gate
+// checked from the first step then allowed one step per tick. Live Gaia's first
+// daylight sweep (~334k overlays) stalled for hours that way, leaving every
+// overlay hidden and players in black.
 #define ENVIRONMENT_SWEEP_BATCH 4096
+#define ENVIRONMENT_SWEEP_MIN_BATCH 512
 #define ENVIRONMENT_SWEEP_TICK_LIMIT 20
 /proc/environment_sweep_pause(work)
-	if (work >= ENVIRONMENT_SWEEP_BATCH || world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT)
+	if (work >= ENVIRONMENT_SWEEP_BATCH || (work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT))
 		sleep(world.tick_lag)
 		return TRUE
 	return FALSE
