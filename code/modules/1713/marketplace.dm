@@ -131,6 +131,17 @@
 		return null
 	return map.custom_company_nr[idx]
 
+// Fiat stacks contain whole units; leave any fraction in the treasury.
+/obj/structure/stockmarket/proc/withdraw_treasury_fiat(list/treasury, fid, mob/user)
+	var/amount = treasury[fid]
+	if (!isnum(amount) || amount < 1)
+		return FALSE
+	var/paid = round(amount)
+	new/obj/item/stack/money/fiat(loc, paid, fid)
+	treasury[fid] = amount - paid
+	to_chat(user, "You withdraw [paid] [fiat.currency_list[fid][1]] in faction funds.")
+	return TRUE
+
 /obj/structure/stockmarket/Topic(href, href_list)
 	if (!usr || !usr.client)
 		return
@@ -337,17 +348,20 @@
 							if (H.civilization != "none" && map.custom_civs[H.civilization])
 								businesstax = (map.custom_civs[H.civilization][10]/100)*amt
 								price_without_tax = amt - businesstax
-								if (businesstax > 0)
-									if (map.custom_civs[H.civilization].len < 11)
-										map.custom_civs[H.civilization].len = 11
-									if (!istype(map.custom_civs[H.civilization][11], /list))
-										map.custom_civs[H.civilization][11] = list()
-									if (!map.custom_civs[H.civilization][11][fid])
-										map.custom_civs[H.civilization][11][fid] = 0
-									map.custom_civs[H.civilization][11][fid] += businesstax
-							new/obj/item/stack/money/fiat(loc, round(price_without_tax), fid)
+							var/paid = round(price_without_tax)
+							if (paid < 1)
+								continue
+							if (businesstax > 0)
+								if (map.custom_civs[H.civilization].len < 11)
+									map.custom_civs[H.civilization].len = 11
+								if (!istype(map.custom_civs[H.civilization][11], /list))
+									map.custom_civs[H.civilization][11] = list()
+								if (!map.custom_civs[H.civilization][11][fid])
+									map.custom_civs[H.civilization][11][fid] = 0
+								map.custom_civs[H.civilization][11][fid] += businesstax
+							new/obj/item/stack/money/fiat(loc, paid, fid)
 							fiat_profits[fid] = 0
-							to_chat(H, "<span class='notice'>You withdraw [round(price_without_tax)] [fiat.currency_list[fid][1]] in profit, paying [businesstax] [fiat.currency_list[fid][1]] in Business Tax.</span>")
+							to_chat(H, "<span class='notice'>You withdraw [paid] [fiat.currency_list[fid][1]] in profit, paying [businesstax] [fiat.currency_list[fid][1]] in Business Tax.</span>")
 							withdrew_something = TRUE
 				if (!withdrew_something)
 					to_chat(H, "<span class='notice'>You have no profits to withdraw.</span>")
@@ -396,11 +410,7 @@
 		if (map.custom_civs[H.civilization].len >= 11 && istype(map.custom_civs[H.civilization][11], /list))
 			var/list/fiat_treasury = map.custom_civs[H.civilization][11]
 			for (var/fid in fiat_treasury)
-				var/amt = fiat_treasury[fid]
-				if (amt > 0)
-					new/obj/item/stack/money/fiat(loc, round(amt), fid)
-					to_chat(H, "You withdraw [round(amt)] [fiat.currency_list[fid][1]] in faction funds.")
-					fiat_treasury[fid] = 0
+				if (withdraw_treasury_fiat(fiat_treasury, fid, H))
 					withdrew_something = TRUE
 		if (!withdrew_something)
 			to_chat(H, "<span class='notice'>There is no money to withdraw.</span>")
@@ -414,9 +424,5 @@
 		var/fid = href_list["withdrawfiat"]
 		if (map.custom_civs[H.civilization].len >= 11 && istype(map.custom_civs[H.civilization][11], /list))
 			var/list/fiat_treasury = map.custom_civs[H.civilization][11]
-			var/amt = fiat_treasury[fid]
-			if (amt > 0)
-				new/obj/item/stack/money/fiat(loc, round(amt), fid)
-				to_chat(H, "You withdraw [round(amt)] [fiat.currency_list[fid][1]] in faction funds.")
-				fiat_treasury[fid] = 0
+			withdraw_treasury_fiat(fiat_treasury, fid, H)
 		return
