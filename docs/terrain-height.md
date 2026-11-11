@@ -115,6 +115,9 @@ the height rows and recomputes the corner lights around the tile
 (`light_char`, the same maths as `light_rows`); the original file rows stay in
 `base_rows_by_z`.
 
+Underground levels have no height rows; dirt there comes from shovelling out
+cave rock, rubble and tunnel shafts (docs/underground-excavation.md).
+
 ## Tools
 
 `scripts/terrain_heights.py`:

@@ -35,6 +35,11 @@ try {
             $consumerEnd = $consumerSource.IndexOf($consumerSpec[2], $consumerStart)
             $fixture += "`n" + $consumerSource.Substring($consumerStart, $consumerEnd - $consumerStart)
         }
+        $smartSource = Get-Content -LiteralPath (Join-Path $repo 'code/modules/1713/smart_home.dm') -Raw
+        $smartStart = $smartSource.IndexOf('/obj/proc/smart_power_cut()')
+        $smartEnd = $smartSource.IndexOf('/obj/structure/proc/smart_kind()', $smartStart)
+        if ($smartStart -lt 0 -or $smartEnd -le $smartStart) { throw 'Smart power predicate section not found.' }
+        $fixture += "`n" + $smartSource.Substring($smartStart, $smartEnd - $smartStart)
         $cableDestroyStart = $source.IndexOf('/obj/structure/cable/Destroy()')
         $cableDestroy = $source.Substring($cableDestroyStart, $source.IndexOf('///////////////////////////////////', $cableDestroyStart) - $cableDestroyStart)
         $fixture += "`n" + $cableDestroy
@@ -42,8 +47,14 @@ try {
     }
     $start = $source.IndexOf('/obj/structure/cable/proc/get_connections()')
     if ($start -lt 0) { throw 'Production network section not found.' }
+    # Cable accounting ends before the unrelated plastic crafting handlers.
+    # Keep those handlers out of this minimal accounting fixture rather than
+    # stubbing their crafting and inventory dependencies.
+    $end = $source.IndexOf('/obj/item/stack/material/plastic/proc/make_insulated_cable(', $start)
+    if ($end -lt 0) { $end = $source.Length }
+    if (!$SourceRef -and $end -eq $source.Length) { throw 'Production network end boundary not found.' }
     $environment = Join-Path $temporary 'probe.dme'
-    Set-Content -LiteralPath $environment -Value ($fixture + "`n" + $source.Substring($start))
+    Set-Content -LiteralPath $environment -Value ($fixture + "`n" + $source.Substring($start, $end - $start))
     $compiler = Start-Process -FilePath (Join-Path $ByondBin $compilerName) -ArgumentList @($environment) -Wait -PassThru -RedirectStandardOutput (Join-Path $temporary 'compile.log') @processOptions
     $compileLog = Get-Content -LiteralPath (Join-Path $temporary 'compile.log') -Raw
     Write-Output $compileLog

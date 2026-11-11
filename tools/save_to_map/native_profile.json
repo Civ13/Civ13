@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "profile_id": "native-static-v1",
+  "description": "Static built world from a completed Civ13 save, started as a fresh nomads-style round. Every saved field other than the placement fields below resets to its compiled default.",
+  "turf_roots": ["/turf/"],
+  "object_roots": ["/obj/structure/", "/obj/covers/", "/obj/roof/"],
+  "excluded_object_prefixes": [
+    "/obj/structure/vehicleparts", "/obj/structure/vehicle", "/obj/structure/vehicle_project_part",
+    "/obj/structure/vehicle_garage", "/obj/structure/car_workshop", "/obj/structure/truck",
+    "/obj/structure/plane", "/obj/structure/trains", "/obj/structure/train_part",
+    "/obj/structure/train_car_kit", "/obj/structure/train_lever", "/obj/structure/train_raid_bridge",
+    "/obj/structure/train_raid_helm", "/obj/structure/carriage", "/obj/structure/carriage_tdm",
+    "/obj/structure/rail_stored_unit", "/obj/structure/rail_stored_tile", "/obj/structure/rail_warehouse",
+    "/obj/structure/freight_dispatcher", "/obj/structure/crewed_lander", "/obj/structure/landed_lander",
+    "/obj/structure/orbit_", "/obj/structure/orbital_battery", "/obj/structure/launch_rail",
+    "/obj/structure/vessel", "/obj/structure/voyage", "/obj/structure/drone", "/obj/structure/payload",
+    "/obj/structure/nuclear_missile", "/obj/structure/boat_spawn_lever", "/obj/structure/docking_port",
+    "/obj/structure/region_gate", "/obj/structure/transfer_trade_post", "/obj/structure/safehouse_depot",
+    "/obj/structure/recruitment_station", "/obj/structure/money_", "/obj/structure/safe",
+    "/obj/structure/vending", "/obj/structure/npc_vendor", "/obj/structure/specialist_trader",
+    "/obj/structure/stockmarket", "/obj/structure/exportbook", "/obj/structure/camp_exportbook",
+    "/obj/structure/warehouse_book", "/obj/structure/supplybook", "/obj/structure/betting_box",
+    "/obj/structure/roulette", "/obj/structure/voting", "/obj/structure/mailbox", "/obj/structure/redmailbox",
+    "/obj/structure/noticeboard", "/obj/structure/recipe_book_cache", "/obj/structure/gladiator_",
+    "/obj/structure/skeleton_", "/obj/structure/townmilitia_", "/obj/structure/teleporter_controller",
+    "/obj/structure/fob_spawnpoint", "/obj/structure/animalspawner", "/obj/structure/telecom",
+    "/obj/structure/cell_tower", "/obj/structure/phoneline", "/obj/structure/phonecable"
+  ],
+  "fields": {
+    "dir": {"kind": "integer_enum", "values": [1, 2, 4, 5, 6, 8, 9, 10]},
+    "pixel_x": {"kind": "integer_range", "minimum": -32, "maximum": 32},
+    "pixel_y": {"kind": "integer_range", "minimum": -32, "maximum": 32}
+  },
+  "spawn_registries": {
+    "latejoin": "named_groups",
+    "start": "start",
+    "join": "JoinLate",
+    "supply": "supplydrop",
+    "paradrop": "covered_by_latejoin_Paradrop"
+  },
+  "required_spawn_group": "JoinLateCiv",
+  "round": {
+    "base": "/obj/map_metadata",
+    "job": "/datum/job/civilian/civnomad",
+    "nomads": true,
+    "civilizations": true,
+    "override_mapgen": true,
+    "persistence": false
+  }
+}

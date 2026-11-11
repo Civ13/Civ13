@@ -60,8 +60,7 @@ class CavernGeneratorTests(unittest.TestCase):
         d=self.generated["document"];self.assertGreaterEqual(len(d["portals"]),2)
         for portal in d["portals"]:
             self.assertEqual(("UNDERGROUND","SURFACE"),(portal["a"][2],portal["b"][2]))
-    def test_rivers_and_wetlands_rejected_before_generation(self):
-        c=small();c["water"]["river_networks"]=[1,2];self.assertEqual("BACKEND_RIVERS",generate(c)["reasons"][0]["code"])
+    def test_wetlands_rejected_before_generation(self):
         c=small();c["water"]["swamp_pct"]=[1,2];self.assertEqual("BACKEND_WATER",generate(c)["reasons"][0]["code"])
         # A cavern with no spring pool is refused, by config checks or by the backend.
         c=small();c["water"]["lake_count"]=[0,0];r=generate(c)

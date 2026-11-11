@@ -111,6 +111,13 @@
 	var/sealed = FALSE
 	var/addressee = null
 	var/sender = null
+	// Saved so the wax seal overlay can be redrawn after a reload.
+	var/wax_colour = null
+
+/obj/item/weapon/storage/envelope/after_load()
+	..()
+	if (sealed && (wax_colour in list("red", "black", "blue", "green", "pink", "white")))
+		overlays += image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wax_seal_[wax_colour]")
 
 /obj/item/weapon/storage/envelope/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	..()
@@ -235,6 +242,7 @@
 				overlays += wax_seal
 				desc += "<br>This envelope has been sealed with [wax] wax."
 				sealed = TRUE
+				wax_colour = wax
 			var/add_name = WWinput(user, "Would you like the seal to bear your name?","Wax seal","Normal",list("yes", "no"))
 			if (add_name == "no")
 				return TRUE

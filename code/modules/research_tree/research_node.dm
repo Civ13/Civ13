@@ -983,7 +983,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/pharaoh2" = "classical_dress",
 		"/obj/item/clothing/under/sari/blue" = "classical_dress",
 		"/obj/item/clothing/under/sari/red" = "classical_dress",
-		// --- combustion (16) ---
+		// --- combustion (17) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike" = "combustion",
 		"/obj/item/weapon/reagent_containers/glass/barrel/fueltank/bike25" = "combustion",
@@ -997,6 +997,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/fuelpump/star" = "combustion",
 		"/obj/structure/oil_deposits" = "combustion",
 		"/obj/structure/oilwell" = "combustion",
+		"/obj/structure/oilwell/offshore" = "combustion",
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
 		// The bakelizer turns crude petroleum into plastic, so it belongs with the
@@ -1152,11 +1153,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
-		// --- factories (27) ---
+		// --- factories (28) ---
 		// Steam-era factory floor: plain belts, their drive, parts bins and
 		// the feeder arm run on a steam engine and plain cable.
 		"/obj/item/factory_belt_assembly" = "factories",
 		"/obj/structure/closet/crate/factory_bin" = "factories",
+		"/obj/structure/tanning_drum" = "factories",
 		"/obj/structure/factory_drive" = "factories",
 		"/obj/structure/factory_arm" = "factories",
 		"/obj/item/camera/earlymodern" = "factories",
@@ -2416,6 +2418,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/pen/fancy" = "papermaking",
 		"/obj/item/weapon/writing_slate" = "basic_tools",
 		"/obj/structure/writing_desk" = "basic_furniture",
+		"/obj/item/weapon/abacus" = "early_economy",
+		"/obj/item/weapon/drafting_set" = "iron_tools",
 		"/obj/item/weapon/haircomb" = "hygiene",
 		"/obj/item/weapon/lipstick/black" = "haberdashery",
 		"/obj/item/weapon/lipstick/purple" = "haberdashery",

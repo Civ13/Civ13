@@ -616,6 +616,75 @@
 
 //--------------------------------------------------nutrition end---------------------------------------------------------
 
+//--------------------------------------------------needs---------------------------------------------------------
+// Food, water and stamina as three bars on one 64x32 plate. Used by HUD styles
+// that list "needs" (ConsoleStyle) in place of the single nutrition icon.
+#define NEEDS_BAR_PX 42
+
+// Length in pixels of a bar that is amount/maximum full; anything above zero shows.
+/proc/hud_need_bar_px(amount, maximum)
+	if (!isnum(amount) || !isnum(maximum) || maximum <= 0 || amount <= 0)
+		return 0
+	return clamp(round(amount / maximum * NEEDS_BAR_PX), 1, NEEDS_BAR_PX)
+
+/obj/screen/needs
+	name = "needs"
+	icon = 'icons/mob/screen/needs.dmi'
+	icon_state = "needs"
+	process_flag = TRUE
+	// The bar lengths on screen, so the overlays are rebuilt only on a change.
+	var/shown = null
+
+/obj/screen/needs/process()
+	update_icon()
+
+/obj/screen/needs/proc/stamina_pair()
+	var/mob/living/human/H = parentmob
+	if (!istype(H) || !islist(H.stats))
+		return null
+	var/list/S = H.stats["stamina"]
+	if (!islist(S) || S.len < 2)
+		return null
+	return S
+
+/obj/screen/needs/update_icon()
+	var/mob/living/human/H = parentmob
+	if (!istype(H))
+		return
+	var/food = hud_need_bar_px(H.nutrition, H.max_nutrition)
+	var/water = hud_need_bar_px(H.water, H.max_water)
+	var/list/S = stamina_pair()
+	var/stamina = S ? hud_need_bar_px(S[1], S[2]) : 0
+	var/now = "[food]-[water]-[stamina]"
+	if (now == shown)
+		return
+	shown = now
+	overlays.Cut()
+	overlays += image(icon, "food[food]")
+	overlays += image(icon, "water[water]")
+	overlays += image(icon, "stamina[stamina]")
+
+/obj/screen/needs/Click()
+	var/mob/living/human/H = parentmob
+	if (!istype(H))
+		return
+	var/fed = min(H.nutrition / H.max_nutrition, 1)
+	var/hydrated = min(H.water / H.max_water, 1)
+	if (hydrated <= 0)
+		to_chat(H, "<span class = 'danger'>You're dehydrating.</span>")
+	else
+		to_chat(H, "<span class = 'warning'>You're about [round(hydrated * 100)]% hydrated.</span>")
+	if (fed <= 0)
+		to_chat(H, "<span class = 'danger'>You're starving.</span>")
+	else
+		to_chat(H, "<span class = 'warning'>You're about [round(fed * 100)]% full.</span>")
+	var/list/S = stamina_pair()
+	if (S && S[2] > 0)
+		to_chat(H, "<span class = 'warning'>You have about [round(clamp(S[1] / S[2], 0, 1) * 100)]% of your stamina.</span>")
+
+#undef NEEDS_BAR_PX
+//--------------------------------------------------needs end---------------------------------------------------------
+
 //--------------------------------------------------bodytemp---------------------------------------------------------
 /obj/screen/bodytemp
 	name = "body temperature"

@@ -12,6 +12,8 @@ var/knowledge_failures = 0
 	return port == "none" ? ..() : FALSE
 /obj/map_metadata/knowledge_fixture
 	recipe_books = TRUE
+	// Earlier phases run without book research; check_book_research turns it on.
+	book_research = FALSE
 /obj/map_metadata/knowledge_fixture/New()
 	return
 /mob/living/human/knowledge_fixture/New()
@@ -117,6 +119,7 @@ var/knowledge_failures = 0
 		knowledge_check(H.knows_recipe_node(future_id) && !crafting_node_allowed(H, future_id), "changing factions retains knowledge but not another faction's ceiling")
 		H.civilization = "none"
 		check_book_research()
+		check_agent_book_ceiling()
 		knowledge_check(map_storage.Save_World() && map_storage.validate_world_save(), "native body and book durable save")
 		map_storage.ClearMap()
 		knowledge_check(map_storage.Load_World(), "native durable reload")
@@ -147,6 +150,30 @@ var/knowledge_failures = 0
 	var/list/params = params2list(world.params)
 	text2file(json_encode(list("failures" = knowledge_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
+
+// Agent characters skip personal knowledge but not the world's research.
+/proc/check_agent_book_ceiling()
+	var/old_book = map.book_research
+	map.book_research = TRUE
+	var/current_id
+	var/future_id
+	for (var/id in research_nodes)
+		var/datum/research_node/N = research_nodes[id]
+		if (N.tree != "Main" || N.mode == RESEARCH_MODE_BOOK || !valid_recipe_node_id(id))
+			continue
+		if (!current_id && N.era_tier <= map.ordinal_age)
+			current_id = id
+		if (!future_id && N.era_tier > map.ordinal_age)
+			future_id = id
+	var/mob/living/human/knowledge_fixture/agent = new(locate(9,9,1))
+	agent.civilization = "none"
+	agent_characters[agent] = "fixture"
+	knowledge_check(map.book_research_enabled() && agent.recipe_knowledge_exempt() && current_id && future_id, "agent fixture is exempt with nodes on both sides of the era")
+	knowledge_check(crafting_node_allowed(agent, current_id), "an agent crafts the current era without studying")
+	knowledge_check(!crafting_node_allowed(agent, future_id), "an agent cannot craft a later era on a book research world")
+	agent_characters -= agent
+	qdel(agent)
+	map.book_research = old_book
 
 // Call the production action directly, as a saved/stale craft href would.
 /obj/item/stack/manual_menu_fixture/New()
@@ -258,6 +285,10 @@ var/knowledge_failures = 0
 	check_scholar_tools(scholar, novice)
 	check_scholar_workplaces(scholar, novice)
 	check_scholar_supplies(scholar)
+	check_scholar_instruments(scholar)
+	check_scholar_tutoring()
+	check_scholar_apprentices()
+	check_scholar_titles()
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -335,6 +366,79 @@ var/knowledge_failures = 0
 	knowledge_check(bench.research_lit(), "a lit bench can research")
 	qdel(sheet)
 	qdel(bench)
+
+// Instruments (Val, 2026-11-10): from the Imperial Age a node needs its
+// discipline's instrument at the bench.
+/proc/check_scholar_instruments(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	knowledge_check(!node_needs_instrument("iron_tools") && bench.has_research_instrument("iron_tools"), "earlier ages need no instrument")
+	var/advanced = null
+	for (var/node_id in research_nodes)
+		if (node_needs_instrument(node_id) && node_discipline(node_id) == "engineering")
+			advanced = node_id
+			break
+	knowledge_check(advanced && !bench.has_research_instrument(advanced, scholar), "advanced engineering needs an instrument")
+	var/obj/item/weapon/drafting_set/drafting = new(locate(3,2,1))
+	knowledge_check(bench.has_research_instrument(advanced), "a drafting set next to the bench serves engineering")
+	drafting.loc = locate(6,6,1)
+	knowledge_check(!bench.has_research_instrument(advanced), "an instrument away from the bench doesn't count")
+	var/obj/item/weapon/abacus/abacus = new(locate(2,2,1))
+	knowledge_check(!bench.has_research_instrument(advanced), "another discipline's instrument doesn't count")
+	knowledge_check(is_scholar_instrument(abacus, "mathematics") && is_scholar_instrument(new /obj/item/weapon/surgery/scalpel(locate(6,6,1)), "medicine") && scholar_instrument_types("natural_science").len == 2, "each discipline has its instrument")
+	knowledge_check(get_recipe_node_req("/obj/item/weapon/abacus") == "early_economy" && get_recipe_node_req("/obj/item/weapon/drafting_set") == "iron_tools", "instruments are made before they are needed")
+	qdel(drafting)
+	qdel(abacus)
+	qdel(bench)
+
+// Tutoring (Val, 2026-11-10): someone who knows a chapter, beside a student,
+// speeds the study and raises the student's skill more.
+/proc/check_scholar_tutoring()
+	var/mob/living/human/knowledge_fixture/teacher = new(locate(2,5,1))
+	var/mob/living/human/knowledge_fixture/student = new(locate(3,5,1))
+	teacher.learn_recipe_node("basic_tools")
+	knowledge_check(student.find_tutor("basic_tools") == teacher && !student.find_tutor("primitive_construction") && !teacher.find_tutor("basic_tools"), "a tutor must know the chapter")
+	knowledge_check(teacher.still_tutoring(student, "basic_tools"), "a tutor beside the student is teaching")
+	teacher.loc = locate(6,2,1)
+	knowledge_check(!student.find_tutor("basic_tools") && !teacher.still_tutoring(student, "basic_tools"), "a tutor who walks away stops teaching")
+	knowledge_check(SCHOLAR_TUTOR_RATE > 1 && SCHOLAR_TUTOR_GAIN_MULT > 1, "tutoring speeds study and raises skill more")
+	qdel(teacher)
+	qdel(student)
+
+// Apprentices (Val, 2026-11-10): an apprentice learns faster researching
+// beside their master, and learns by watching the master research.
+/proc/check_scholar_apprentices()
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
+	var/mob/living/human/knowledge_fixture/master = new(locate(2,3,1))
+	var/mob/living/human/knowledge_fixture/apprentice = new(locate(3,3,1))
+	master.real_name = "Master Scholar"
+	apprentice.real_name = "Young Scholar"
+	knowledge_check(!master.scholar_apprentice_problem(apprentice) && master.scholar_apprentice_problem(master), "a master can take someone else beside them")
+	apprentice.scholar_master = master.scholar_identity()
+	knowledge_check(apprentice.is_apprentice_of(master) && !master.is_apprentice_of(apprentice) && master.scholar_apprentice_count() == 1, "the apprenticeship is recorded on the apprentice")
+	knowledge_check(master.scholar_apprentice_problem(apprentice) && apprentice.scholar_apprentice_problem(master), "no double or reversed apprenticeship")
+	knowledge_check(apprentice.master_nearby() && bench.apprentice_research_gain(apprentice, "basic_tools") == SCHOLAR_APPRENTICE_GAIN_MULT, "an apprentice researching beside their master learns faster")
+	var/before = apprentice.scholar_level("engineering")
+	knowledge_check(bench.apprentice_research_gain(master, "basic_tools") == 1 && apprentice.scholar_level("engineering") > before, "an apprentice learns by watching their master research")
+	master.loc = locate(8,8,1)
+	knowledge_check(!apprentice.master_nearby() && bench.apprentice_research_gain(apprentice, "basic_tools") == 1, "no bonus with the master away")
+	apprentice.forget_recipe_knowledge()
+	knowledge_check(!apprentice.scholar_master && !apprentice.is_apprentice_of(master), "death ends the apprenticeship")
+	qdel(master)
+	qdel(apprentice)
+	qdel(bench)
+
+// Titles (Val, 2026-11-10): examine shows the highest discipline as a title.
+/proc/check_scholar_titles()
+	var/mob/living/human/knowledge_fixture/H = new(locate(4,4,1))
+	H.scholarship = list("engineering" = 5)
+	knowledge_check(!H.scholar_title(), "beginners have no title")
+	H.scholarship = list("engineering" = 20, "medicine" = 12)
+	knowledge_check(H.scholar_title() == "Apprentice of Engineering", "the highest discipline names the title")
+	H.scholarship = list("engineering" = 20, "medicine" = 50)
+	knowledge_check(H.scholar_title() == "Scholar of Medicine", "a skilled character is a Scholar")
+	H.scholarship = list("mathematics" = 80)
+	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
+	qdel(H)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.

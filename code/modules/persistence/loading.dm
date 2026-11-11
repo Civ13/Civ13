@@ -260,17 +260,15 @@
 /map_storage/proc/rejuvenate_unowned_human_on_load()
 	return TRUE
 
-/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
+/map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0, var/defer_fields = FALSE)
 	try
 		TICK_CHECK
-		var/nextContents
-		if(nocontents)
-			nextContents = 2
 		if(existing_references["[ind]"])
 			if(starting_loc)
 				var/atom/movable/A = existing_references["[ind]"]
 				A.loc = starting_loc
 			return existing_references["[ind]"]
+		var/savefile/level_file = savefile
 		// A segmented level keeps this entry in one of its segment files.
 		savefile = level_entry_file(savefile, ind)
 		var/entry_dir = entry_path(savefile, ind)
@@ -365,6 +363,22 @@
 		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
 		if(loading_level_link_targets["[loading_z]:[ind]"])
 			loading_level_link_targets["[loading_z]:[ind]"] = object
+		// A field reached past PERSISTENCE_IMPORT_DEFER_DEPTH is registered now
+		// and its own fields decode once the chain unwinds (decode_saved_value).
+		if(defer_fields && !isturf(object))
+			loading_deferred_entries += list(list(level_file, ind, object, entry_dir, format_version, nocontents, lag_fix))
+			return object
+		return load_entry_fields(savefile, ind, object, entry_dir, format_version, nocontents, lag_fix)
+	catch(var/exception/e)
+		throw e
+
+// Decodes one constructed entry's saved fields and contents.
+/map_storage/proc/load_entry_fields(savefile/savefile, ind, datum/object, entry_dir, format_version, nocontents, lag_fix)
+	try
+		savefile.cd = entry_dir
+		var/nextContents
+		if(nocontents)
+			nextContents = 2
 		for(var/v in savefile.dir)
 			savefile.cd = entry_dir
 			if(object.persistence_runtime_var(v))
@@ -481,6 +495,22 @@
 			throw EXCEPTION("Invalid saved scalar list [id]")
 	return node
 
+// Field references followed before an entry's fields wait (Load_Entry).
+// One hop costs about four Dream Daemon calls; the stack ends near 400.
+#define PERSISTENCE_IMPORT_DEFER_DEPTH 24
+
+// Decodes the fields of entries Load_Entry registered without them, newest
+// first; the references they reach in turn join the queue.
+/map_storage/proc/drain_deferred_load_entries()
+	while(loading_deferred_entries.len)
+		var/list/entry = loading_deferred_entries[loading_deferred_entries.len]
+		loading_deferred_entries.len--
+		var/datum/object = entry[3]
+		if(!object || existing_references["[entry[2]]"] != object)
+			throw EXCEPTION("Deferred saved entry changed before its fields loaded")
+		// Reopen the segment: a stream reader may have recycled the handle.
+		load_entry_fields(level_entry_file(entry[1], entry[2]), entry[2], object, entry[4], entry[5], entry[6], entry[7])
+
 /map_storage/proc/decode_saved_value(savefile/F, list/value)
 	if(!islist(value))
 		return persistence_saved_scalar(value)
@@ -507,7 +537,17 @@
 		if("entry")
 			if(!value["ref"])
 				return null
-			return Load_Entry(F, value["ref"])
+			if(loading_entry_depth >= PERSISTENCE_IMPORT_DEFER_DEPTH && !existing_references["[value["ref"]]"])
+				return Load_Entry(F, value["ref"], defer_fields = TRUE)
+			loading_entry_depth++
+			try
+				. = Load_Entry(F, value["ref"])
+			catch(var/exception/entry_error)
+				loading_entry_depth--
+				throw entry_error
+			loading_entry_depth--
+			if(!loading_entry_depth && loading_deferred_entries.len) drain_deferred_load_entries()
+			return .
 		if("list")
 			var/id = value["ref"]
 			if(loaded_lists["[id]"])
@@ -656,6 +696,7 @@
 						Load_Entry(savefile, turf_ref, old_turf)
 						savefile.cd = "/map/[z]/[y]"
 						TICK_CHECK
+			drain_deferred_load_entries()
 			// A ground level's unsaved cells were plain turfs: restore them the way
 			// Load_Entry restores a turf entry that holds only its type.
 			if(sparse_level && sparse_level["kind"] == "ground")

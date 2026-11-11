@@ -45,7 +45,7 @@
 	expected_legacy_json = json_encode(legacy)
 	context_owner = paper.loc
 	context_parent = null
-	if (istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder))
+	if (istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder) || istype(context_owner, /obj/item/weapon/storage/envelope) || istype(context_owner, /obj/item/weapon/paper_bundle))
 		context_parent = context_owner.loc
 	return TRUE
 
@@ -59,7 +59,7 @@
 /datum/paper_document_authoring/has_access(mob/actor, writing = FALSE)
 	if (session_closed || !paper || paper.loc != context_owner)
 		return FALSE
-	if ((istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder)) && context_owner.loc != context_parent)
+	if ((istype(context_owner, /obj/item/weapon/clipboard) || istype(context_owner, /obj/item/weapon/folder) || istype(context_owner, /obj/item/weapon/storage/envelope) || istype(context_owner, /obj/item/weapon/paper_bundle)) && context_owner.loc != context_parent)
 		return FALSE
 	return ..(actor, writing)
 
@@ -127,10 +127,19 @@
 	var/revision = isnull(expected_record) ? 0 : expected_record["revision"]
 	return list("lease" = session_lease, "document_id" = document_id, "revision" = revision, "free_space" = max(0, paper.free_space), "languages" = languages, "default_language_id" = default_language_id, "view" = view)
 
-/datum/paper_document_authoring/append(mob/actor, obj/item/weapon/pen/pen, document_id, revision, language_id, kind, value, expected_lease = null)
+// A field label writes a blank with a caption; a field answer fills one open
+// blank (target = that label's section id). Both are language-tagged text.
+/datum/paper_document_authoring/append(mob/actor, obj/item/weapon/pen/pen, document_id, revision, language_id, kind, value, expected_lease = null, target = null)
 	if (!expected_lease || expected_lease != session_lease || !isnum(revision) || revision != round(revision) || !can_mutate(actor, pen) || !paper_knows_written_language(actor, language_id))
 		return FALSE
-	if (!(kind in list("body", "title", "signature")))
+	if (!(kind in list("body", "title", "signature", "field_label", "field_answer")))
+		return FALSE
+	if (kind == "field_answer" && !paper_document_field_open(expected_record, target))
+		return FALSE
+	if (kind != "field_answer" && !isnull(target))
+		return FALSE
+	// A blank's caption is short, like "Name" or "Date of birth".
+	if (kind == "field_label" && (!istext(value) || length(value) > 128))
 		return FALSE
 	if (isnull(expected_record))
 		if (!isnull(document_id) || revision != 0)
@@ -161,6 +170,8 @@
 		next["revision"]++
 	var/list/sections = next["sections"]
 	var/list/section = list("id" = "section-[next["next_section"]]", "lineage" = paper_document_mint_id(paper), "version" = 1, "kind" = kind, "language_id" = language_id, "text" = value, "ink" = pen.colour, "tool" = istype(pen, /obj/item/weapon/pen/crayon) ? "crayon" : "pen")
+	if (kind == "field_answer")
+		section["target"] = target
 	sections += list(section)
 	next["next_section"]++
 	var/list/next_legacy = next["legacy"]

@@ -188,12 +188,11 @@
 		if (get_dist(src, following_mob) > 2)
 			turns_since_move++
 			if (turns_since_move >= move_to_delay)
-				if (get_dist(src, following_mob) > 1)
-					if (npc_subtile_follow_enabled && npc_subtile_enabled)
-						npc_subtile_start_follow(following_mob)
-					else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))
-						walk_to(src, following_mob, 1, 6)
-					turns_since_move = FALSE
+				if (npc_subtile_follow_enabled && npc_subtile_enabled)
+					npc_subtile_start_follow(following_mob)
+				else if (npc_subtile_enabled || npc_subtile_continuous_legacy_ready("follow"))
+					walk_to(src, following_mob, 1, 6)
+				turns_since_move = FALSE
 		if (get_dist(src, following_mob) > 6)
 			npc_set_following(null)
 			stop_automated_movement = FALSE

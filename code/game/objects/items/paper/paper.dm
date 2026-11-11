@@ -137,6 +137,7 @@
 	i2.color = color2
 	overlays += i1
 	overlays += i2
+	paper_stamp_refresh_overlays(src)
 
 //lipstick wiping is in code/game/objects/items/weapons/cosmetics.dm!
 
@@ -203,6 +204,7 @@
 	return islist(sections) && length(sections)
 
 /obj/item/weapon/paper/update_icon()
+	paper_stamp_refresh_overlays(src)
 	if (base_icon == "paper")
 		if (map && map.ordinal_age <= 1)
 			if (has_document_writing())
@@ -642,29 +644,18 @@
 		show_document(user, FALSE, "editor")
 		return
 
-	else if ((istype(P, /obj/item/weapon/stamp) && !(istype(P, /obj/item/weapon/stamp/mail))))
-		if ((!in_range(src, usr) && loc != user && !(istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
+	else if (istype(P, /obj/item/weapon/stamp))
+		// Ink stamps and wax seals both leave a saved impression (stamps.dm).
+		var/stamp_result = paper_document_apply_stamp(src, P, user)
+		if (stamp_result == "crumpled")
+			to_chat(user, SPAN_WARNING("\The [src] is too crumpled to stamp."))
 			return
-		
-
-		var/image/stampoverlay = image('icons/obj/bureaucracy.dmi')
-		stampoverlay.pixel_x = rand(-2, 2)
-		stampoverlay.pixel_y = rand(-3, 2)
-		stampoverlay.icon_state = "paper_[P.icon_state]"
-
-		// The following commented code does not work.
-
-		// var/image/stampoverlay_paper = image('icons/stamps/dmi/stamps.dmi', icon_state = null)
-		// if (istype(P, /obj/item/weapon/stamp/mail))
-		// 	stampoverlay_paper = image('icons/stamps/dmi/seals.dmi', icon_state = null)
-		// stampoverlay_paper.icon_state = P.icon_state
-		// stamps += "<img src='\ref[stampoverlay_paper]'>"
-		
-		// if(!stamped)
-		// 	stamped = new
-		// stamped += P.type
-		// overlays += stampoverlay
-
+		if (stamp_result == "full")
+			to_chat(user, SPAN_WARNING("There is no room left on \the [src] for another stamp."))
+			return
+		if (stamp_result != "stamped")
+			to_chat(user, SPAN_WARNING("You cannot stamp \the [src] right now."))
+			return
 		playsound(src,'sound/effects/stamp_down.ogg', 70, TRUE)
 		to_chat(user, SPAN_NOTICE("You stamp the paper with the [P.name]."))
 
