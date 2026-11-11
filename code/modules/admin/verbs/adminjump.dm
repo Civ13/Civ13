@@ -182,10 +182,15 @@ var/turf/default_adminzone_turf = null
 	var/area/A = input(usr, "Pick an area.", "Pick an area") in return_sorted_areas()
 	if (A)
 		if (config.allow_admin_jump)
+			// Only this area's own turfs: get_area_turfs() would also include subtypes such as Jungle under Forest.
+			var/list/destinations = list()
+			for (var/turf/T in A.contents)
+				destinations += T
+			if (!destinations.len)
+				to_chat(usr, "<span class='warning'>[A] has no turfs to send [M] to.</span>")
+				return
 			M.on_mob_jump()
-			M.loc = pick(get_area_turfs(A))
-
-
+			M.loc = pick(destinations)
 			log_admin("[key_name(usr)] teleported [key_name(M)] to [A]")
 			message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)] to [A]", key_name_admin(usr))
 		else
