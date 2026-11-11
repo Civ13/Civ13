@@ -1414,7 +1414,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_water_treatment_and_save_checks_run_for_all_source_inputs(self):
         self.assertEqual(ci.SUITES['water_treatment']['files'],
                          ('tests/stone_boiling/test_source.py', 'tests/stone_kiln/test_source.py'))
-        self.assertEqual(ci.SUITES['save_movement']['files'], ('tests/save_movement/test_guard.py',))
+        self.assertEqual(ci.SUITES['save_movement']['files'], ('tests/save_movement/test_guard.py',
+                         'tests/save_movement/test_whistle_cooldown.py'))
         inputs = ('code/game/objects/structures/kitchen/stone_boiling.dm',
                   'code/game/objects/structures/kitchen/stone_kiln_upgrade.dm',
                   'code/game/objects/structures/kitchen/oven.dm',

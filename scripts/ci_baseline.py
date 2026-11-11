@@ -1288,8 +1288,10 @@ SUITES = {
         'paths': ('tests/lipstick_restore/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm',
             'code/modules/persistence/restore_contract.dm', 'tests/save_movement/source_adapter.py')},
-    'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
-        'tests/save_movement/', 'code/modules/persistence/functions.dm')},
+    'save_movement': {'files': ('tests/save_movement/test_guard.py',
+                                'tests/save_movement/test_whistle_cooldown.py'), 'paths': (
+        'tests/save_movement/', 'code/modules/persistence/functions.dm'), 'shared_paths': (
+        'code/game/objects/items/weapons/tools.dm',)},
     # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
     # and inert Help imports. No native sprite export or engine launch.
     # Shared material/Atlas inputs retain their conservative all-suite fallback.
