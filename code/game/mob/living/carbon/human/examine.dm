@@ -193,8 +193,9 @@
 
 	msg += "</span>"
 
-	// An agent-controlled character has no key or client but is awake and acting.
-	if (species.show_ssd && (!species.has_organ["brain"] || has_brain()) && stat != DEAD && !agent_character_for(src))
+	// An agent-controlled character or hired NPC has no key or client but is awake
+	// and acting; ssd_check() knows which bodies those are.
+	if ((species.show_ssd && (!species.has_organ["brain"] || has_brain()) && stat != DEAD && !agent_character_for(src)) && ssd_check())
 		if (!key)
 			msg += "<span class='deadsay'>[T.He] [T.is] [species.show_ssd]. It doesn't look like [T.he] [T.is] waking up anytime soon.</span>\n"
 		else if (!client)

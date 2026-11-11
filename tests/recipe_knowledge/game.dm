@@ -139,6 +139,8 @@ var/knowledge_failures = 0
 		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
+		var/mob/living/human/research_assistant/kept = locate() in locate(1,6,1)
+		knowledge_check(kept && kept.assistant_rank == "Master" && kept.wage_balance == 42.5 && kept.employer_name == "Fixture employer" && istext(kept.employer_id) && !kept.unpaid_warned, "a hired assistant keeps employer, rank and wages across reload")
 		var/obj/item/weapon/book/reloaded_diary
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))
@@ -292,6 +294,7 @@ var/knowledge_failures = 0
 	check_scholar_apprentices()
 	check_scholar_titles()
 	check_scholarship_panel()
+	check_research_assistants(scholar)
 	check_book_printing(scholar)
 	map.book_research = FALSE
 
@@ -443,6 +446,101 @@ var/knowledge_failures = 0
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
 	qdel(H)
+
+// Hired research assistants (Val, 2026-11-10). The fixture has no clients,
+// so the employer's presence is stubbed; everything else is production code.
+var/mob/living/human/assistant_fixture_employer = null
+/mob/living/human/research_assistant/New()
+	human_mob_list |= src
+	species = new /datum/species/human
+	body_build = new /datum/body_build
+	bloodstr = new /datum/reagents/metabolism(1000, src, CHEM_BLOOD)
+	ingested = new /datum/reagents/metabolism(1000, src, CHEM_INGEST)
+	touching = new /datum/reagents/metabolism(1000, src, CHEM_TOUCH)
+	reagents = bloodstr
+	vessel = new /datum/reagents(1000, src)
+	if (!persistence_saved_atom_construction)
+		initialize_recipe_knowledge()
+/mob/living/human/research_assistant/employer_mob()
+	return assistant_fixture_employer && assistant_fixture_employer.scholar_identity() == employer_id ? assistant_fixture_employer : null
+
+/proc/newcomer_ssd_control()
+	var/mob/living/human/knowledge_fixture/plain = new(locate(1,1,1))
+	. = plain.ssd_check()
+	qdel(plain)
+
+/proc/check_research_assistants(mob/living/human/scholar)
+	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(5,2,1))
+	bench.tier = 1
+	var/obj/item/weapon/book/B = new(locate(5,3,1))
+	bench.book_place(B, scholar)
+	bench.assigned_node = "iron_tools"
+	var/turf/scholar_home = get_turf(scholar)
+	scholar.forceMove(locate(5,4,1))
+	var/obj/item/held_before = scholar.r_hand
+	if (held_before)
+		scholar.drop_from_inventory(held_before)
+	var/obj/item/stack/money/coppercoin/few = new(locate(5,4,1), 5, FALSE)
+	scholar.put_in_r_hand(few)
+	knowledge_check(findtext(scholar.research_assistant_hire_problem(bench, "Clerk", few), "Stand beside") , "an assistant is hired beside the bench")
+	scholar.forceMove(locate(5,3,1))
+	knowledge_check(findtext(scholar.research_assistant_hire_problem(bench, "Clerk", few), "10 copper"), "a clerk wants ten minutes of wages up front")
+	scholar.drop_from_inventory(few)
+	qdel(few)
+	var/obj/item/stack/money/coppercoin/purse = new(locate(5,3,1), 30, FALSE)
+	scholar.put_in_r_hand(purse)
+	var/mob/living/human/research_assistant/A = scholar.hire_research_assistant(bench, "Clerk", purse)
+	knowledge_check(istype(A) && get_dist(A, bench) <= 1 && A.wage_balance == 30 && QDELETED(purse) && (istype(A.r_hand, /obj/item/weapon/pen/pencil) || istype(A.l_hand, /obj/item/weapon/pen/pencil)), "hiring pays wages and the assistant stands at the bench with a pencil")
+	knowledge_check(scholar.hired_research_assistant() == A && scholar.research_assistant_hire_problem(bench) == "You already have a research assistant.", "one assistant per employer")
+	assistant_fixture_employer = null
+	bench.research_supplies = "engineering=5"
+	bench.analysis_tick()
+	knowledge_check(!B.research_ticks("iron_tools") && A.wage_balance == 30, "no research or wages while the employer is away")
+	assistant_fixture_employer = scholar
+	scholar.scholarship["engineering"] = 74
+	var/skill_before = scholar.scholar_level("engineering")
+	// The fixture has no HUD for a full status update; check the gate it uses.
+	knowledge_check(A.species.show_ssd && !(A.species.show_ssd && A.ssd_check()) && newcomer_ssd_control(), "the status update won't put the assistant to sleep as a logged-off body")
+	knowledge_check(A.scholar_level("engineering") == 74 && A.research_presence(), "the assistant works with the employer's scholarship")
+	bench.analysis_tick()
+	knowledge_check(B.research_ticks("iron_tools") > 0 && B.research_ticks("iron_tools") <= bench.base_tick_rate * 2 * 0.5 + 0.01, "a clerk researches at half the employer's pace")
+	knowledge_check(A.wage_balance < 30 && A.wage_balance > 29 && scholar.scholar_level("engineering") == skill_before && !A.scholarship?.len, "each tick costs wages and teaches nobody")
+	var/mob/living/human/knowledge_fixture/newcomer = new(locate(4,4,1))
+	assistant_fixture_employer = newcomer
+	A.employer_id = newcomer.scholar_identity()
+	knowledge_check(!A.knows_research_prereqs("iron_tools"), "groundwork must be known by the employer or shelved on the bench")
+	B.add_research_chapter("basic_tools")
+	knowledge_check(A.knows_research_prereqs("iron_tools"), "a chapter in the bench's book counts as groundwork")
+	A.employer_id = scholar.scholar_identity()
+	assistant_fixture_employer = scholar
+	A.wage_balance = 0.1
+	bench.analysis_tick()
+	knowledge_check(A.wage_balance == 0 && !A.research_presence(), "an unpaid assistant stops")
+	var/obj/item/stack/money/silvercoin/silver = new(locate(5,3,1), 2, FALSE)
+	scholar.put_in_r_hand(silver)
+	knowledge_check(A.pay_wages(silver, scholar) && A.wage_balance == 20 && A.research_presence(), "silver pays ten copper a coin")
+	var/turf/T = get_turf(A)
+	A.wage_balance = 59
+	A.dismiss(scholar)
+	var/refunded = 0
+	for (var/obj/item/stack/money/M in T)
+		refunded += specialist_trader_coin_units(M.type) * M.amount
+	knowledge_check(QDELETED(A) && refunded == 59 && !scholar.hired_research_assistant(), "dismissal refunds unspent wages in coin")
+	for (var/obj/item/stack/money/M in T)
+		qdel(M)
+	assistant_fixture_employer = null
+	var/mob/living/human/research_assistant/kept = new(locate(1,6,1))
+	kept.employer_id = scholar.scholar_identity()
+	kept.employer_name = "Fixture employer"
+	kept.assistant_rank = "Master"
+	kept.wage_balance = 42.5
+	kept.unpaid_warned = TRUE
+	qdel(newcomer)
+	qdel(B)
+	qdel(bench)
+	if (held_before && !QDELETED(held_before))
+		scholar.put_in_r_hand(held_before)
+	scholar.forceMove(scholar_home)
 
 // Scholarship tab (Val, 2026-11-10): each discipline's level and the latest
 // era it can research, plus title, master and apprentices.
