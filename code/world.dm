@@ -639,11 +639,15 @@ var/global/persistence_reboot_due = FALSE
 			for(var/msg in messages_read)
 				var/list/tempmsg = splittext(msg, ":::")
 				if (tempmsg.len == 2)
-
-					for (var/client/C in admins)
-						if (R_MENTOR & C.holder.rights || R_MOD & C.holder.rights)
-							to_chat(C, "<span class='admin_channel'><IMG src='\ref[text_tag_icons]' class='text_tag' iconstate='a-discord' alt='ASAY-Discord'> <span class='name'>[tempmsg[1]]</span>(Discord): <span class='message'>[tempmsg[2]]</span></span>")
+					// Escaped like Discord OOC; shown to every admin, like in-game ASAY (adminsay.dm).
+					var/asender = sanitize(copytext_char(tempmsg[1], 1, 46), 0)
+					var/atext = sanitize(copytext_char(tempmsg[2], 1, 1025), 0)
+					if (!asender || !atext)
+						continue
+					admin_say_show(asender, atext, "", "", TRUE)
 					log_discord_asay(msg)
+					// The bot writes this file for one world only; that world hands the line on (region_asay.dm).
+					region_asay_outbound_discord(asender, atext)
 			fdel(G)
 			to_chat(G, "")
 
