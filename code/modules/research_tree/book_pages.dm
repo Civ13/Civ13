@@ -96,25 +96,32 @@ var/global/list/book_research_writing_supplies = list(
 // Transcribing a chapter from memory
 // ------------------------------------------------------------
 
-/obj/item/weapon/book/proc/write_research_chapter(mob/living/human/H, obj/item/weapon/pen/P)
+// With no node_id the writer picks from what they know. A book lying on a
+// research bench passes the bench as anchor, and must stay on it throughout.
+/obj/item/weapon/book/proc/write_research_chapter(mob/living/human/H, obj/item/weapon/pen/P, node_id = null, atom/anchor = null)
 	if (!istype(H) || !map || !map.book_research_enabled() || !can_hold_research())
 		return FALSE
 	if (page_busy)
 		to_chat(H, SPAN_WARNING("Someone is already working on [src]."))
 		return FALSE
-	var/list/choices = list()
-	for (var/node_id in clean_recipe_node_ids(H.known_recipe_nodes))
-		if (!has_research_chapter(node_id))
-			choices[get_research_node(node_id).name] = node_id
-	if (!choices.len)
-		to_chat(H, SPAN_WARNING("There's nothing you know that isn't already in [src]."))
-		return FALSE
-	var/pick = player_input(H, "Which piece of your knowledge will you write down?", "Write a chapter", null, "anything", choices, TRUE)
-	if (!pick || !(pick in choices))
-		return FALSE
-	var/node_id = choices[pick]
+	if (isnull(node_id))
+		var/list/choices = list()
+		for (var/known_id in clean_recipe_node_ids(H.known_recipe_nodes))
+			if (!has_research_chapter(known_id))
+				choices[get_research_node(known_id).name] = known_id
+		if (!choices.len)
+			to_chat(H, SPAN_WARNING("There's nothing you know that isn't already in [src]."))
+			return FALSE
+		choices = sortAssoc(choices)
+		var/pick = player_input(H, "Which piece of your knowledge will you write down?", "Write a chapter", null, "anything", choices, TRUE)
+		if (!pick || !(pick in choices))
+			return FALSE
+		node_id = choices[pick]
 	var/datum/research_node/N = get_research_node(node_id)
-	var/obj/item/weapon/paper/sheet = locate() in list(H.l_hand, H.r_hand)
+	if (!N || !H.knows_recipe_node(node_id) || has_research_chapter(node_id) || page_busy)
+		return FALSE
+	var/atom/start_loc = loc
+	var/obj/item/weapon/paper/sheet = H.ready_blank_sheet()
 	if (!blank_writing_sheet(sheet))
 		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to write on."))
 		return FALSE
@@ -125,9 +132,11 @@ var/global/list/book_research_writing_supplies = list(
 	var/time = scholar_write_time(N.era_tier, P, H)
 	to_chat(H, SPAN_NOTICE("You begin writing the chapter on [N.name] into [src]. This takes about [round(time / 600, 0.5)] minute\s."))
 	page_busy = TRUE
-	var/done = do_after(H, time, src)
+	var/done = do_after(H, time, anchor ? anchor : src)
 	page_busy = FALSE
 	if (!done || QDELETED(src) || has_research_chapter(node_id) || !H.knows_recipe_node(node_id) || !recipe_held(H, P) || !recipe_held(H, sheet) || !blank_writing_sheet(sheet))
+		return FALSE
+	if (anchor && (QDELETED(anchor) || loc != start_loc || !H.Adjacent(anchor)))
 		return FALSE
 	if (!commit_written_chapter(H, node_id, sheet))
 		to_chat(H, SPAN_WARNING("You are too tired to finish the chapter."))

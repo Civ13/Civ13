@@ -80,7 +80,7 @@ class BackendContract(unittest.TestCase):
             source = path.read_text(errors='replace')
             templates.update(re.findall(r'new /datum/nanoui/tgui(?:/\w+)*\((?:user, src|reader, src|viewer, src|viewer, reference), ui_key, "([^"]+)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)
@@ -120,6 +120,36 @@ class BackendContract(unittest.TestCase):
         self.assertIn('var/list/keys = list(action)', transport)
         self.assertIn('!(key in keys)', transport)
         self.assertNotIn('if ("designate")', transport)
+
+    def test_research_actions_reach_their_topics(self):
+        # Every button on the bench screen and the book window must pass the
+        # transport allowlist and have a branch in the Topic that receives it.
+        def allowed(template):
+            branch = re.search(r'if \("%s"\)\s+return list\(([^\n]+)\)' % re.escape(template), DM)
+            self.assertIsNotNone(branch, template)
+            return set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+        def buttons(*names):
+            found = set()
+            for name in names:
+                source = (ROOT / 'tgui/src/interfaces' / name).read_text()
+                found |= set(re.findall(r'action="([^"\n]+)"', source))
+                found |= set(re.findall(r"ui\.act\('([^'\n]+)'", source))
+            return found
+        bench = (ROOT / 'code/modules/research_tree/research_bench.dm').read_text().split('/obj/structure/research_bench/Topic', 1)[1].split('/obj/structure/research_bench/proc/write_research_item', 1)[0]
+        handled = set(re.findall(r'href_list\["([^"\n]+)"\]', bench))
+        self.assertEqual(allowed('research_bench.tmpl'), handled)
+        self.assertLessEqual(buttons('Research.tsx'), handled)
+        book_mode = bench.split('if (book_mode())', 1)[1].split('if (!H.civilization', 1)[0]
+        for action in ('assign', 'take_book', 'swap_books', 'study', 'copy', 'copy_all', 'write', 'queue', 'unqueue', 'clear_queue', 'stop_research'):
+            self.assertIn('href_list["%s"]' % action, book_mode)
+        self.assertLess(bench.index('in_range(src, usr)'), bench.index('if (book_mode())'))
+        book = (ROOT / 'code/modules/research_tree/book_interface.dm').read_text().split('/obj/item/weapon/book/Topic', 1)[1].split('/obj/item/weapon/book/AltClick', 1)[0]
+        self.assertEqual(allowed('research_book.tmpl'), set(re.findall(r'href_list\["([^"\n]+)"\]', book)))
+        self.assertEqual(buttons('ResearchBook.tsx'), allowed('research_book.tmpl'))
+        self.assertLess(book.index('research_book_state.can_use_topic(src, H) != STATUS_INTERACTIVE'), book.index('study_research_source('))
+        for template in ('research_bench.tmpl', 'research_book.tmpl'):
+            classic = (ROOT / 'UI/templates' / template).read_text()
+            self.assertLessEqual(set(re.findall(r"\{\s*['\"](\w+)['\"]\s*:", classic)), allowed(template), template)
 
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()

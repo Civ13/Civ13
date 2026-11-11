@@ -338,7 +338,30 @@ var/global/list/research_benches = list()
 /obj/structure/research_bench/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (!ishuman(user))
 		return
-	var/mob/living/human/H = user
+	var/list/data = bench_ui_data(user)
+	if (!data)
+		return
+
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (!ui)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_bench.tmpl", name, 900, 680)
+		// "basic" layout: just the content region, none of the stock SS13
+		// NanoUI chrome (title bar/status icon) that the default layout wraps
+		// around every UI -- this window is all parchment, edge to edge.
+		ui.set_layout_key("basic")
+		ui.add_stylesheet("research_tree.css")
+		ui.add_script("research_tree.js")
+		ui.set_initial_data(data)
+		ui.open()
+		// No auto_update: that polls and fully re-renders every ~1s regardless
+		// of whether anything changed, which is what was causing the whole
+		// window to visibly flash/reset constantly. Ticks land every 10s at
+		// most (see analysis_tick()), and every player action already pushes
+		// its own refresh via Topic() -- so updates now only fire when this
+		// bench's data actually changes, not on a blind fixed heartbeat.
+
+// Everything the bench screen shows H, or null without a map.
+/obj/structure/research_bench/proc/bench_ui_data(mob/living/human/H)
 	var/list/data = list()
 	data["bench_tier"] = tier
 	data["max_tier"] = MAX_BENCH_TIER
@@ -416,7 +439,12 @@ var/global/list/research_benches = list()
 		var/datum/research_node/QN = get_research_node(qid)
 		qnames += QN ? QN.name : qid
 	data["queue_names"] = qnames
-	data["can_queue"] = can_manage
+	data["can_queue"] = can_manage || book_mode
+	// Values shared by every node of this refresh in book mode.
+	var/list/book_cache = null
+	if (book_mode)
+		var/obj/item/weapon/pen/held_pen = H.held_writing_pen()
+		book_cache = list("books" = placed_books(), "queue" = queue_list(), "instruments" = list(), "desk_rate" = H.scholar_desk_rate(), "tool_rate" = H.research_tool_rate(), "pen_rate" = held_pen ? scholar_pen_rate(held_pen) : 0)
 
 	// Nodes are grouped into standalone TREES (Main first, then specialized
 	// trees like Agriculture), each rendered as its own switchable tab; within
@@ -425,7 +453,7 @@ var/global/list/research_benches = list()
 	var/list/tree_index = list()        // tree name => tree entry (sent to UI)
 	var/list/tree_layer_index = list()  // tree name => (category => layer entry)
 	if (!map)
-		return
+		return null
 	for (var/node_id in research_nodes)
 		var/datum/research_node/N = research_nodes[node_id]
 		var/list/tree_entry = tree_index[N.tree]
@@ -497,7 +525,7 @@ var/global/list/research_benches = list()
 			prereq_ids += req
 			var/datum/research_node/RN = get_research_node(req)
 			prereq_names += RN ? RN.name : req
-		layer_entry["nodes"] += list(list(
+		var/list/node_entry = list(
 			"id" = node_id,
 			"name" = N.name,
 			"era_tier" = N.era_tier,
@@ -530,26 +558,14 @@ var/global/list/research_benches = list()
 			"prototype_name" = (N.mode == RESEARCH_MODE_PROTOTYPE) ? N.prototype_display_name() : null,
 			// Queueable: staff can line up any not-done node that isn't the current
 			// subject (the queue handler rejects duplicates / already-queued).
-			"queueable" = !book_mode && can_manage && status != RNODE_DONE && node_id != assigned_node))
+			"queueable" = !book_mode && can_manage && status != RNODE_DONE && node_id != assigned_node)
+		if (book_mode)
+			var/list/book_fields = book_node_ui(H, node_id, book_cache)
+			for (var/field in book_fields)
+				node_entry[field] = book_fields[field]
+		layer_entry["nodes"] += list(node_entry)
 	data["trees"] = trees
-
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_bench.tmpl", name, 900, 680)
-		// "basic" layout: just the content region, none of the stock SS13
-		// NanoUI chrome (title bar/status icon) that the default layout wraps
-		// around every UI -- this window is all parchment, edge to edge.
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("research_tree.css")
-		ui.add_script("research_tree.js")
-		ui.set_initial_data(data)
-		ui.open()
-		// No auto_update: that polls and fully re-renders every ~1s regardless
-		// of whether anything changed, which is what was causing the whole
-		// window to visibly flash/reset constantly. Ticks land every 10s at
-		// most (see analysis_tick()), and every player action already pushes
-		// its own refresh via Topic() -- so updates now only fire when this
-		// bench's data actually changes, not on a blind fixed heartbeat.
+	return data
 
 /obj/structure/research_bench/Topic(href, href_list)
 	if (!istype(usr, /mob/living/human))
@@ -570,6 +586,22 @@ var/global/list/research_benches = list()
 			book_copy_chapter(H)
 		else if (href_list["study_shelf"])
 			book_study_shelf(H)
+		else if (href_list["study"])
+			book_study_node(H, href_list["study"])
+		else if (href_list["copy"])
+			book_copy_node(H, href_list["copy"])
+		else if (href_list["copy_all"])
+			book_copy_all(H, text2num(href_list["copy_all"]))
+		else if (href_list["write"])
+			book_write_node(H, href_list["write"])
+		else if (href_list["queue"])
+			book_queue_node(H, href_list["queue"])
+		else if (href_list["unqueue"])
+			book_unqueue_node(H, href_list["unqueue"])
+		else if (href_list["clear_queue"])
+			set_queue(null)
+		else if (href_list["stop_research"])
+			book_stop_research(H)
 		GLOB.nanomanager.update_uis(src)
 		return
 	if (!H.civilization || H.civilization == "none")
