@@ -41,8 +41,8 @@ def check(host, linked=False):
         raise Refused('connected regions require a coordinated transit/transfer reset; use the group fresh world')
     if not linked and ((host.repo / 'config/transfer_agent.json').exists() or (host.state_dir / 'transfers.sqlite').exists()):
         raise Refused('transfer state exists; use the group fresh world')
-    if any((host.repo / 'data' / name).exists() for name in SEPARATE_DOMAINS):
-        raise Refused('separate extraction/vehicle persistence exists; a coordinated reset is required')
+    if not linked and any((host.repo / 'data' / name).exists() for name in SEPARATE_DOMAINS):
+        raise Refused('separate extraction/vehicle persistence exists; use the group fresh world')
     if not (host.repo / '.git').exists() or not (host.repo / host.live_dmb_name()).is_file():
         raise Refused('set up and build the region first')
     if host.platform.listening(host.config['port']) or host.platform.listening(host.standby_port()):
@@ -64,6 +64,9 @@ def check(host, linked=False):
         raise Refused('fresh world refuses a linked archive folder')
     for name in WORLD_PATHS:
         safe_tree(host.repo / name)
+    if linked:  # the group reset archives these too (group_fresh_world.py)
+        for name in SEPARATE_DOMAINS:
+            safe_tree(host.repo / 'data' / name)
 
 
 def request(host, confirmation):
