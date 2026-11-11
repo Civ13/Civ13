@@ -427,6 +427,10 @@ SUITES = {
                          'scripts/nomads-lifecycle/supervisor.py',
                          'scripts/nomads-lifecycle/canonical_update.py',
                          'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
+    'fuel_pump_variants': {'files': ('tests/fuel_pump/test_variants.py',),
+        'paths': ('tests/fuel_pump/',), 'shared_paths': (
+            'tests/save_movement/source_adapter.py',
+            'code/game/objects/structures/vending/fuel_pump.dm')},
     # Complete mood helpers, maintenance and expression projections; no native world.
     # Production paths retain the prior conservative fallback/neighbor selection.
     'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
