@@ -255,6 +255,7 @@ var/knowledge_failures = 0
 	knowledge_check(!scholar.knows_recipe_node("iron_tools") && !crafting_node_allowed(scholar, "iron_tools"), "finishing research teaches no one")
 	var/mob/living/human/knowledge_fixture/novice = new(locate(6,7,1))
 	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
+	check_chapter_sorting(scholar, novice)
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
 	check_book_pages(scholar, novice, journal)
@@ -628,3 +629,18 @@ var/knowledge_failures = 0
 	if (P)
 		P["v"] = 2
 		knowledge_check(!region_travel_decode(json_encode(P)), "an older payload version can't smuggle scholarship")
+
+// Reading a book sorts its chapters (Val, 2026-11-11): what the reader can
+// study now, then what needs groundwork, then what they already know.
+/proc/check_chapter_sorting(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/item/weapon/book/shelf = new(locate(6,6,1))
+	shelf.research_chapters = "iron_tools;basic_tools"
+	var/tools_name = get_research_node("basic_tools").name
+	var/iron_name = get_research_node("iron_tools").name
+	var/list/novice_choices = chapter_reading_choices(novice, shelf.research_chapter_list())
+	knowledge_check(novice_choices.len == 2 && novice_choices[1] == "Study: [tools_name]" && novice_choices[2] == "Needs groundwork: [iron_name]" && novice_choices[novice_choices[1]] == "basic_tools", "a novice sees the chapter they can study first and the locked one after")
+	var/list/scholar_choices = chapter_reading_choices(scholar, shelf.research_chapter_list())
+	knowledge_check(scholar_choices.len == 2 && scholar_choices[1] == "Study: [iron_name]" && scholar_choices[2] == "Known: [tools_name]", "a known chapter sorts after the new one")
+	var/list/lines = chapter_reading_summary(scholar, shelf.research_chapter_list())
+	knowledge_check(lines.len == 2 && findtext(lines[1], "new to you: [iron_name]") && findtext(lines[2], "already know: [tools_name]"), "examining the book splits new and known chapters")
+	qdel(shelf)

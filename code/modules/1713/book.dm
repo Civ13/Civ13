@@ -25,6 +25,11 @@
 /obj/item/weapon/book/proc/monk_copy_blank()
 	return !unique && !page_busy && !author && !title && !dat && !length(written_pages) && !length(research_chapters) && !length(research_progress) && !store && !length(contents)
 
+// Whether players may write their own pages in this book. Ordinary books
+// and recipe manuals take notes; sealed books (holy books, skill scrolls) do not.
+/obj/item/weapon/book/proc/can_hold_notes()
+	return !unique
+
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
 	if (dat)
 		user.examinate(src)
@@ -80,14 +85,15 @@
 					NB.k_level = NC.k_level = 0
 					NB.styleb = NC.styleb = "scroll"
 					qdel(B)
-	if (istype(W, /obj/item/weapon/paper) && can_hold_research() && ishuman(user))
+	if (istype(W, /obj/item/weapon/paper) && can_hold_notes() && ishuman(user))
 		reinsert_page(user, W)
 		return
 	if (istype(W, /obj/item/weapon/pen))
-		if (unique)
+		if (!can_hold_notes())
 			to_chat(user, "Looks like you can't modify it.")
 			return
-		var/list/pen_choices = list("Title", "Contents", "Author")
+		// Recipe manuals keep the title of their subject.
+		var/list/pen_choices = unique ? list("Contents", "Author") : list("Title", "Contents", "Author")
 		if (map && map.book_research_enabled() && can_hold_research())
 			pen_choices += "Research chapter"
 		pen_choices += "Cancel"
@@ -96,6 +102,8 @@
 			if ("Research chapter")
 				write_research_chapter(user, W)
 			if ("Title")
+				if (unique)
+					return
 				var/newtitle = reject_bad_text(sanitizeSafe(player_input(usr, "Write a new title:", null, null, "text", null, FALSE)))
 				if (!newtitle)
 					to_chat(usr, "The title is invalid.")

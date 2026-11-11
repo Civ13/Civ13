@@ -349,6 +349,52 @@
 // Studying a chapter from any book
 // ------------------------------------------------------------
 
+// Reading a book sorts its chapters for the reader (Val, 2026-11-11):
+// returns list(new, locked, known). New chapters can be studied now, locked
+// ones need groundwork (or research) first, known ones the reader has already
+// learned. Each group is name => node id in alphabetical order.
+/proc/sort_chapters_for_reader(mob/living/human/H, list/node_ids)
+	var/list/fresh = list()
+	var/list/locked = list()
+	var/list/known = list()
+	for (var/node_id in node_ids)
+		var/datum/research_node/N = valid_recipe_node_id(node_id) ? get_research_node(node_id) : null
+		if (!N)
+			continue
+		if (H && H.knows_recipe_node(node_id))
+			known[N.name] = node_id
+		else if (H && H.can_learn_recipe_node(node_id))
+			fresh[N.name] = node_id
+		else
+			locked[N.name] = node_id
+	return list(sortAssoc(fresh), sortAssoc(locked), sortAssoc(known))
+
+// Menu entries for sort_chapters_for_reader: what the reader can study first,
+// then what needs more groundwork, then what they already know.
+/proc/chapter_reading_choices(mob/living/human/H, list/node_ids, locked_label = "Needs groundwork")
+	var/list/groups = sort_chapters_for_reader(H, node_ids)
+	var/list/labels = list("Study", locked_label, "Known")
+	var/list/choices = list()
+	for (var/i = 1, i <= groups.len, i++)
+		var/list/group = groups[i]
+		for (var/name in group)
+			choices["[labels[i]]: [name]"] = group[name]
+	return choices
+
+// One line per non-empty group, for examining a book.
+/proc/chapter_reading_summary(mob/living/human/H, list/node_ids, locked_label = "needing groundwork")
+	var/list/groups = sort_chapters_for_reader(H, node_ids)
+	var/list/heads = list("Chapters new to you", "Chapters [locked_label]", "Chapters you already know")
+	var/list/lines = list()
+	for (var/i = 1, i <= groups.len, i++)
+		var/list/group = groups[i]
+		if (group.len)
+			var/list/names = list()
+			for (var/name in group)
+				names += name
+			lines += "[heads[i]]: [jointext(names, ", ")]."
+	return lines
+
 /obj/item/weapon/book/attack_self(mob/user)
 	var/mob/living/human/H = user
 	if (!istype(H) || !map || !map.book_research_enabled() || !can_hold_research())
@@ -359,9 +405,7 @@
 	var/list/choices = list()
 	if (dat)
 		choices["Read the book"] = "read"
-	for (var/node_id in chapters)
-		var/datum/research_node/N = get_research_node(node_id)
-		choices["Study: [N.name]"] = node_id
+	choices += chapter_reading_choices(H, chapters)
 	var/pick = player_input(H, "What will you do with [src]?", "Book", null, "anything", choices, TRUE)
 	if (!pick || !(pick in choices))
 		return
@@ -410,10 +454,14 @@
 		return
 	var/list/chapters = research_chapter_list()
 	if (chapters.len)
-		var/list/names = list()
-		for (var/node_id in chapters)
-			names += get_research_node(node_id).name
-		to_chat(user, "It holds research chapters on: [jointext(names, ", ")].")
+		if (ishuman(user))
+			for (var/line in chapter_reading_summary(user, chapters))
+				to_chat(user, line)
+		else
+			var/list/names = list()
+			for (var/node_id in chapters)
+				names += get_research_node(node_id).name
+			to_chat(user, "It holds research chapters on: [jointext(names, ", ")].")
 	var/list/progress = research_progress_map()
 	for (var/node_id in progress)
 		var/datum/research_node/N = get_research_node(node_id)

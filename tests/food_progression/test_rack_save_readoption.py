@@ -47,6 +47,19 @@ class RackSaveReadoptionTests(unittest.TestCase):
         self.assertIn('istype(holder.master_item, /obj/structure/dehydrator)', orphan)
         self.assertIn('locate(/obj/structure/dehydrator) in loc', orphan)
 
+    def test_save_drop_hides_encoded_names_from_hover(self):
+        drop = section('/obj/structure/dehydrator/proc/clean_drop_slots()')
+        self.assertIn('dropped_item.mouse_opacity = 0', drop)
+        put = section('/obj/structure/dehydrator/proc/put_in_place(')
+        self.assertIn('W.mouse_opacity = initial(W.mouse_opacity)', put)
+        repair = section('/obj/item/proc/clear_dehydrator_marker(')
+        self.assertIn('mouse_opacity = initial(mouse_opacity)', repair)
+        wait = section('/obj/structure/dehydrator/proc/readopt_after_save(')
+        self.assertIn('reveal_dehydrator_drops(drop_turf)', wait)
+        self.assertIn('reveal_dehydrator_drops(get_turf(src))',
+                      section('/obj/structure/dehydrator/before_save_context('))
+        self.assertIn('a dropped rack item cannot be hovered during the save', FIXTURE)
+
     def test_native_fixture_covers_live_save_and_strays(self):
         for message in ('rack re-adopts its input after a live save',
                         'live save drops input and clears its drawing',

@@ -59,6 +59,7 @@
 
 //Ambience
 #define SOUND_CHANNEL_AMBIENCE 2
+#define SOUND_CHANNEL_RAIN 778
 
 //Hygiene levels for humans
 #define HYGIENE_LEVEL_CLEAN 250

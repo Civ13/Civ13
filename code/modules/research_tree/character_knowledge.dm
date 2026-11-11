@@ -124,7 +124,27 @@
 	B.refresh_node_title()
 	return B
 
+// Manuals and compendiums take written notes like any book, but keep their
+// subject: their own title stays, and research chapters go in ordinary books.
+/obj/item/weapon/book/node_book/can_hold_notes()
+	return TRUE
+
+// Offers "Read the notes" next to studying once someone has written in it.
+// Returns TRUE when the reader chose to read (or backed out of the choice).
+/obj/item/weapon/book/proc/offer_notes_reading(mob/user, study_label)
+	if (!dat || !user)
+		return FALSE
+	var/list/choices = list("Read the notes", study_label)
+	var/pick = player_input(user, "What will you do with [src]?", "Book", null, "anything", choices, TRUE)
+	if (pick == study_label)
+		return FALSE
+	if (pick == "Read the notes")
+		user.examinate(src)
+	return TRUE
+
 /obj/item/weapon/book/node_book/attack_self(mob/user)
+	if (offer_notes_reading(user, "Study the recipes"))
+		return
 	var/mob/living/human/H = user
 	if (!istype(H) || !H.can_learn_recipe_node(node_id))
 		to_chat(user, SPAN_WARNING("You cannot study this manual beyond your faction or era's research."))

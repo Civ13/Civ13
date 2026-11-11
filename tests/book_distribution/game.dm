@@ -104,6 +104,10 @@ var/distribution_mutation = null
 		distribution_wait_result = TRUE
 		distribution_check(press.print_recipe_manual(B, H) && B.loc == H && (!paper || paper.gcDestroyed || !paper.loc), "printing consumes paper and preserves original")
 		var/obj/item/weapon/book/node_book/second = create_node_book(H, "primitive_construction")
+		distribution_check(B.can_hold_notes() && !B.can_hold_research(), "manuals take notes but not research chapters")
+		B.add_written_page("notes on axes")
+		second.add_written_page("notes on huts")
+		distribution_check(!region_travel_item_kind(B) && region_travel_item_kind(create_node_book(locate(4,4,1), "basic_tools")) == "node:basic_tools", "a manual with notes does not travel as a bare subject")
 		H.r_hand = second
 		distribution_wait_result = FALSE
 		B.attackby(second, H)
@@ -112,6 +116,7 @@ var/distribution_mutation = null
 		B.attackby(second, H)
 		var/obj/item/weapon/book/node_compendium/bound = locate() in H
 		distribution_check(bound && bound.node_ids.len == 2 && (!B || B.gcDestroyed || !B.loc) && (!second || second.gcDestroyed || !second.loc), "binding consumes two manuals into one compendium")
+		distribution_check(bound.written_pages && bound.written_pages.len == 2 && findtext(bound.dat, "notes on axes") && findtext(bound.dat, "notes on huts") && bound.can_hold_notes(), "binding keeps the notes from both manuals")
 		var/obj/item/weapon/book/node_book/duplicate = create_node_book(H, "basic_tools")
 		H.r_hand = duplicate
 		bound.attackby(duplicate, H)

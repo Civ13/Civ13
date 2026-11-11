@@ -158,7 +158,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	show_browse(src, null, "window=memory")
 
 	// remove weather sounds
-	src << sound(null, channel = 778)
+	stop_rain_sound(src)
 	// remove ambient sounds
 	stop_ambience(src)
 	if (map && map.battleroyale)
