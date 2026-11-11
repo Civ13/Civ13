@@ -71,6 +71,9 @@ var/list/cross_observations = list()
 // Metadata adapter deliberately keeps two aliases to the same native atom.
 // All encoding/binding/validation/decoding is the production graph's work.
 /map_storage/cross_level
+	// Dense levels: a sparse baseline would skip the untouched trigger turf
+	// and never reach its before_save_context movement hook.
+	sparse_level_override = list()
 	var/list/fixture_roots
 	var/list/fixture_restored
 /map_storage/cross_level/capture_durable_world()

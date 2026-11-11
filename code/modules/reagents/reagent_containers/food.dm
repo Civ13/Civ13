@@ -20,6 +20,10 @@
 	var/rots = FALSE
 	var/rotten = FALSE
 	var/rotten_icon_state = ""
+	// Optional dedicated roasted art. Oven roasting uses it instead of the orange tint.
+	var/roasted_icon = null
+	var/roasted_icon_state = null
+	var/roasted_rotten_icon_state = null // Must be in roasted_icon.
 
 /obj/item/weapon/reagent_containers/food/New()
 	..()

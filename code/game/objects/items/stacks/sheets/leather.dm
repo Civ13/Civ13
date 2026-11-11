@@ -9,6 +9,10 @@
 /mob/proc/hide_worker_connected()
 	return client != null || agent_character_for(src)
 
+// Hide work needs Basic Tools; fixtures override this hook.
+/mob/proc/hide_research_allowed(warn = FALSE)
+	return warn ? crafting_node_allowed_or_warn(src, "basic_tools") : crafting_node_allowed(src, "basic_tools")
+
 /mob/proc/hide_preparation_wait(atom/target)
 	return do_after(src, 50, target)
 
@@ -16,10 +20,12 @@
 	return istype(user) && !QDELETED(user) && user.hide_worker_connected() && user.stat == CONSCIOUS && !QDELETED(source) && (source.loc == user || isturf(source.loc)) && user.Adjacent(source)
 
 /obj/item/stack/material/proc/hide_preparation_valid(mob/living/user, obj/item/tool, atom/source_loc, turf/site)
-	return crafting_node_allowed(user, "resource_processing") && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && amount >= 1 && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl)
+	return user.hide_research_allowed() && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && amount >= 1 && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl)
 
 /obj/item/stack/material/proc/prepare_hide(mob/living/user, obj/item/tool)
 	if (!istype(src, /obj/item/stack/material/pelt) && !istype(src, /obj/item/stack/material/rawhide))
+		return FALSE
+	if (!user.hide_research_allowed(TRUE))
 		return FALSE
 	var/atom/source_loc = loc
 	var/turf/site = get_turf(src)
@@ -114,7 +120,7 @@
 
 /obj/item/stack/material/proc/apply_hide_liquid(mob/living/user, obj/vessel, reagent_id, output_type)
 	// Explicit paid interactions avoid touch_obj's whole-holder-volume semantics.
-	if (!crafting_node_allowed(user, "resource_processing") || !istype(vessel) || amount < 1 || !hide_liquid_valid(user, src, vessel, reagent_id, 5))
+	if (!user.hide_research_allowed() || !istype(vessel) || amount < 1 || !hide_liquid_valid(user, src, vessel, reagent_id, 5))
 		return FALSE
 	var/turf/site = get_turf(src)
 	if (!use(1))
@@ -125,6 +131,8 @@
 
 /obj/item/stack/material/hairlesshide/attackby(obj/W, mob/user)
 	if (W.reagents)
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
 		if (!apply_hide_liquid(user, W, "water", /obj/item/stack/material/wethide))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of water. Hold the hide when using a vessel on the ground."))
 		return TRUE
@@ -137,6 +145,8 @@
 
 /obj/item/stack/material/dryhide/attackby(obj/W, mob/user)
 	if (W.reagents)
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
 		if (!apply_hide_liquid(user, W, "tannin", /obj/item/stack/material/leather))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of tannin. Hold the hide when using a vessel on the ground."))
 		return TRUE
@@ -161,7 +171,9 @@
 /obj/item/stack/bark/attackby(obj/W, mob/user)
 	if (W.reagents)
 		var/obj/vessel = W
-		if (!crafting_node_allowed(user, "resource_processing") || amount < 1 || !hide_liquid_valid(user, src, vessel, "water", 10))
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
+		if (amount < 1 || !hide_liquid_valid(user, src, vessel, "water", 10))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 10 units of water. Hold the bark when using a vessel on the ground."))
 			return TRUE
 		if (!use(1))

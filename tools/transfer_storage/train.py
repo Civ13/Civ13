@@ -34,6 +34,32 @@ def account_key(value):
     return isinstance(value, str) and re.fullmatch(r'[a-z0-9@]{1,32}', value) is not None
 
 
+BASE_STATE = {'name', 'desc', 'dir', 'color', 'icon_state', 'anchored', 'density', 'opacity',
+              'pixel_x', 'pixel_y', 'layer', 'flammable'}
+CRATE_STATE = {'opened', 'welded', 'health', 'storage_capacity', 'custom_code', 'locked', 'rigged',
+               'storagecap', 'icon_closed', 'icon_opened', 'store_misc', 'store_items', 'store_mobs', 'wall_mounted'}
+BED_STATE = {'material', 'padding_material', 'base_icon', 'applies_material_colour', 'can_buckle',
+             'buckle_dir', 'buckle_lying', 'persistence_bed_owner_ckey'}
+TEXT_STATE = {'name', 'desc', 'color', 'icon_state', 'base_icon', 'icon_closed', 'icon_opened'}
+
+
+def structure_state(path, state):
+    fields = BASE_STATE | (CRATE_STATE if path == '/obj/structure/closet/crate' else
+                           BED_STATE if path.startswith('/obj/structure/bed') else set())
+    _require(type(state) is dict and set(state) == fields, 'structure state fields')
+    for key, value in state.items():
+        if key in ('material', 'padding_material'):
+            _require((value is None and key == 'padding_material') or
+                     (isinstance(value, str) and 0 < len(value) <= 2048), 'material name')
+        elif key == 'persistence_bed_owner_ckey':
+            _require(value is None or account_key(value), 'bed owner')
+        elif key in TEXT_STATE:
+            _require(value is None or (isinstance(value, str) and len(value) <= 2048), 'structure text')
+        else:
+            _require(type(value) in (int, float) and math.isfinite(value) and abs(value) <= 1000000,
+                     'structure number')
+
+
 def validate(payload):
     _require(isinstance(payload, str) and len(payload.encode('utf-8')) <= MAX_BYTES,
              'payload exceeds byte limit')
@@ -117,9 +143,11 @@ def validate(payload):
                 _require(cargo.get('type') == '/obj/structure/closet/crate'
                          and type(cargo.get('items')) is list and len(cargo['items']) <= 60,
                          'crate schema')
+                structure_state(cargo['type'], cargo.get('state'))
             if e['kind'] == 'fitting':
                 _require(cargo.get('type') in ('/obj/structure/bed', '/obj/structure/bed/chair/comfy/blue',
                          '/obj/structure/bed/chair/comfy/diner_booth', '/obj/structure/table/modern/table'),
                          'fitting type')
+                structure_state(cargo['type'], cargo.get('state'))
     _require(len(owners) == len(set(owners)) and set(owners) == set(accounts), 'account manifest mismatch')
     return m

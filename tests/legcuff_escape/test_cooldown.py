@@ -55,7 +55,7 @@ class ResistProjection:
         self.resist = adapter.project(fixture(verb), '/fixture/run', '', {
             'stat': stat, 'weakened': weakened, 'canClick': self.can_click,
             'setClickCooldown': set_cooldown, 'resist_grab': lambda: None,
-            'process_resist': process_resist,
+            'process_resist': process_resist, 'resist_knockdown': lambda: None,
         })
 
     def dispatch(self, elapsed=1):

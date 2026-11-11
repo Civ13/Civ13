@@ -66,6 +66,7 @@
 	var/arterial_bleed_severity = 2		// Multiplier for bleeding in a limb.
 	var/tourniquet = FALSE				// A tourniquet is tightened on this limb.
 	var/tourniquet_ticks = 0			// Life ticks the tourniquet has been on (not world.time, so it survives saves).
+	var/tourniquet_makeshift = 0		// Rope or twine: Life ticks until it slips loose (0 = a proper tourniquet).
 	var/fracture_heal_ticks = 0			// Life ticks of splinted healing toward a mended fracture.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
@@ -425,6 +426,7 @@ This function completely restores a damaged organ to perfect condition.
 	status = FALSE
 	tourniquet = FALSE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = 0
 	fracture_heal_ticks = 0
 	perma_injury = FALSE
 	brute_dam = FALSE
@@ -497,7 +499,20 @@ This function completely restores a damaged organ to perfect condition.
 //external organs handle brokenness a bit differently when it comes to damage. Instead brute_dam is checked inside process()
 //this also ensures that an external organ cannot be "broken" without broken_description being set.
 /obj/item/organ/external/is_broken()
-	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !(status & ORGAN_SPLINTED)))
+	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !is_held_still()))
+
+// A splint, or the owner's own free hand holding the limb, keeps a break still.
+/obj/item/organ/external/proc/is_held_still()
+	return (status & ORGAN_SPLINTED) || hand_braced()
+
+/obj/item/organ/external/proc/hand_braced()
+	if (!owner)
+		return FALSE
+	for (var/which_hand in list("l_hand", "r_hand"))
+		if (owner.self_brace_hand_limb(which_hand) == src || owner.self_pressure_hand_limb(which_hand) == src)
+			if (owner.self_hand_free(which_hand))
+				return TRUE
+	return FALSE
 
 //Determines if we even need to process this organ.
 /obj/item/organ/external/proc/need_process()
@@ -1037,15 +1052,37 @@ Note that amputating the affected organ does in fact remove the infection from t
 			return TRUE
 	return FALSE
 
-/obj/item/organ/external/proc/apply_tourniquet()
+// Pressure from a hand is live state; it never saves.
+/obj/item/organ/external/persistence_runtime_var(key)
+	if (key == "applied_pressure")
+		return TRUE
+	return ..()
+
+// lasts: Life ticks a makeshift (rope, twine) tourniquet holds before slipping
+// loose; 0 for a proper one.
+/obj/item/organ/external/proc/apply_tourniquet(lasts = 0)
 	tourniquet = TRUE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = max(0, lasts)
 	if (owner)
 		owner.bad_external_organs |= src
 
 /obj/item/organ/external/proc/remove_tourniquet()
 	tourniquet = FALSE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = 0
+
+// How well bleeding on this limb is stopped from above: TOURNIQUET_FULL stops
+// it, TOURNIQUET_MAKESHIFT only slows it unless a hand also holds the wound.
+/obj/item/organ/external/proc/tourniquet_grade()
+	. = TOURNIQUET_NONE
+	var/obj/item/organ/external/E = src
+	while (E)
+		if (E.tourniquet)
+			if (!E.tourniquet_makeshift)
+				return TOURNIQUET_FULL
+			. = TOURNIQUET_MAKESHIFT
+		E = E.parent
 
 // A tourniquet stops all bleeding below it. A small (severity 1) artery under
 // a tourniquet and a bandage clots closed after a while. Left on too long the
@@ -1054,6 +1091,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!tourniquet || !owner)
 		return
 	tourniquet_ticks++
+	if (tourniquet_makeshift && tourniquet_ticks >= tourniquet_makeshift)
+		remove_tourniquet()
+		to_chat(owner, SPAN_DANGER("The makeshift tourniquet on your [name] slips loose! Replace it with a proper one."))
+		return
 	if ((status & ORGAN_ARTERY_CUT) && arterial_bleed_severity <= 1 && tourniquet_ticks >= TOURNIQUET_CLOT_TICKS && has_bandaged_wound())
 		status &= ~ORGAN_ARTERY_CUT
 		to_chat(owner, SPAN_NOTICE("The bleeding from your [artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
@@ -1071,8 +1112,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage
 	// perma_injury is the brute a fracture was dealt with; it only keeps hurting
-	// while the bone is still broken, so a healed limb reads its real damage.
-	if (!(status & ORGAN_BROKEN))
+	// while the bone is still broken and loose, so a healed, splinted or
+	// hand-held limb reads its real damage.
+	if (!(status & ORGAN_BROKEN) || is_held_still())
 		return brute_dam + burn_dam
 	return max(brute_dam + burn_dam - perma_injury, perma_injury)
 

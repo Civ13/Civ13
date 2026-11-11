@@ -103,8 +103,10 @@
 					"<span class='notice'>You draw \the [holstered2], pointing it at the ground.</span>"
 					)
 			user.put_in_hands(holstered2)
-			holstered.add_fingerprint(user)
+			holstered2.add_fingerprint(user)
 			w_class = initial(w_class)
+			if (holstered)
+				w_class = max(w_class, holstered.w_class)
 			holstered2 = null
 
 	else if (holstered && capacity == 2)

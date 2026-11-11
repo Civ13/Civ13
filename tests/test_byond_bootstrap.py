@@ -54,8 +54,14 @@ class ByondBootstrapTests(unittest.TestCase):
             stub.write_text('''#!/bin/sh
 printf '%s\\n' "$*" >> "$COMMAND_LOG"
 case "$*" in
-  *" update") [ "$FAIL_PHASE" = update ] && exit "$FAIL_STATUS" ;;
-  *" install "*) [ "$FAIL_PHASE" = install ] && exit "$FAIL_STATUS" ;;
+  *SourceList=*) fallback=1 ;;
+  *) fallback=0 ;;
+esac
+case "$*" in
+  *" update") [ "$FAIL_PHASE" = update ] && exit "$FAIL_STATUS"
+              [ "$FAIL_PHASE" = primary-update ] && [ "$fallback" = 0 ] && exit "$FAIL_STATUS" ;;
+  *" install "*) [ "$FAIL_PHASE" = install ] && exit "$FAIL_STATUS"
+                 [ "$FAIL_PHASE" = primary-install ] && [ "$fallback" = 0 ] && exit "$FAIL_STATUS" ;;
 esac
 exit 0
 ''')
@@ -79,15 +85,49 @@ exit 0
         self.assertFalse(any('upgrade' in command for command in commands))
 
     def test_package_failure_stops_before_install_or_native_setup(self):
-        for phase, count in (('update', 2), ('install', 3)):
+        # update: primary, then one fallback update. install: primary install,
+        # fallback update, fallback install.
+        for phase, count in (('update', 3), ('install', 5)):
             # Include APT's nonzero refusal and the observed outer timeout. There
-            # is no shell-level retry or fall-through into native setup.
+            # is one fallback-mirror retry and no fall-through into native setup.
             for status in (19, 100, 124):
                 with self.subTest(phase=phase, status=status):
                     result, commands = self.run_package_prefix(phase, status)
                     self.assertEqual(result.returncode, status)
                     self.assertEqual(len(commands), count)
                     self.assertNotIn('NATIVE_SETUP_REACHED', result.stdout)
+
+    def test_azure_mirror_outage_falls_back_to_public_mirrors_once(self):
+        # A hung or failed primary update, and a primary update that "succeeds"
+        # with every index ignored (seen as an install failure), both recover.
+        for phase, expected in (('primary-update', ['update', 'update', 'install']),
+                                ('primary-install', ['update', 'install', 'update', 'install'])):
+            with self.subTest(phase=phase):
+                result, commands = self.run_package_prefix(phase, 124)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn('NATIVE_SETUP_REACHED', result.stdout)
+                self.assertEqual([shlex.split(c)[-1] if c.endswith(' update') else 'install'
+                                  for c in commands[1:]], expected)
+                fallback = [c for c in commands if 'SourceList=' in c]
+                self.assertEqual(len(fallback), len(expected) - expected.index('update', 1))
+                for command in fallback:
+                    self.assertIn('civ13-apt-fallback.list', command)
+                    self.assertIn('Dir::Etc::SourceParts=', command)
+                    self.assertNotIn('/etc/apt/', command)
+                    self.assertNotIn('--allow-unauthenticated', command)
+                self.assertIn('public non-Azure mirrors', result.stderr)
+                installs = [c for c in commands if ' install ' in c]
+                # Only the fallback install may step back to the lagging mirror's versions.
+                self.assertEqual(['--allow-downgrades' in c for c in installs],
+                                 ['SourceList=' in c for c in installs])
+
+    def test_fallback_list_uses_non_azure_mirrors_with_i386(self):
+        source = SCRIPT.read_text()
+        self.assertIn('for mirror in http://mirrors.edge.kernel.org/ubuntu; do', source)
+        # Canonical hosts failed DNS from runners in the same outage.
+        self.assertNotIn('archive.ubuntu.com', source)
+        self.assertIn("deb [arch=amd64,i386] %s %s main universe", source)
+        self.assertNotIn('azure', source.split('use_fallback_mirrors() {')[1].split('\n}')[0].lower().replace('non-azure', ''))
 
     def test_transfer_options_do_not_modify_sources_authentication_or_host_networking(self):
         result, commands = self.run_package_prefix()

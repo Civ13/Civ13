@@ -142,6 +142,8 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 
 /datum/transfer_bridge/proc/saved(list/capture)
 	set waitfor = FALSE
+	train_escrow_saved()
+	train_arrival_saved()
 	// An older base is fine: the previous save's report may still be in
 	// flight or lost, and the agent skips effects it already confirmed.
 	if(isnull(ledger_base) || capture["ledger_seq"] > ledger_base) return

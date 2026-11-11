@@ -41,6 +41,7 @@ class TanningAtlasTests(unittest.TestCase):
         expected = {
             'Wash a prepared hide': ([('/material/hairlesshide', '1'), ('water', '5')], [('/material/wethide', '1')]),
             'Tan a dry hide into leather': ([('/material/dryhide', '1'), ('tannin', '5')], [('/material/leather', '1')]),
+            'Cut a dry hide into parchment': ([('/material/dryhide', '1')], [(tanning.PARCHMENT, '4')]),
             'Extract bark tannin': ([('/obj/item/stack/bark', '1'), ('water', '10')], [('tannin', '10')]),
             'Cut logs with a hatchet for bark': ([('/material/wood', '2')], [('/material/wood/soft', '1'), ('/obj/item/stack/bark', '2')]),
             'Cut logs with a saw for bark': ([('/material/wood', '1')], [('/material/wood/soft', '4'), ('/obj/item/stack/bark', '1')]),
@@ -76,21 +77,21 @@ class TanningAtlasTests(unittest.TestCase):
             r = self.recipe('Harvest adult turkey '+sex+' skin')
             self.assertEqual(r['outputs'], [{'id': '/material/rawhide', 'name': 'raw hide', 'quantity': '1'}])
             self.assertIn('chicks give no hide', r['conditions'])
-            self.assertIn('do not yield mammalian', r['conditions'])
+            self.assertIn('no mammalian organs', r['conditions'])
 
     def test_rack_is_linked_to_construction_research_and_not_consumed(self):
         rack = self.recipe('Rack-dry washed hides')
         self.assertEqual(rack['processor'], 'tanning_rack')
         self.assertEqual(rack['station'], tanning.STATION)
-        self.assertEqual(rack['unlock_eras'], [1])
-        self.assertIn('Station construction research: resource_processing', rack['era_basis'])
+        self.assertEqual(rack['unlock_eras'], [0])
+        self.assertIn('Station construction research: basic_tools', rack['era_basis'])
         self.assertEqual([(x['id'], x['quantity']) for x in rack['inputs']],
                          [('/material/wethide', 'n pieces'), (tanning.STATION, 'station; not consumed')])
         self.assertEqual(rack['outputs'][0]['quantity'], 'n pieces')
         build = next(r for r in self.recipes if r['name'] == 'tanning rack' and
                      any(v['file'].endswith('material_recipes_global.txt') for v in r.get('variants', [r])))
         self.assertEqual([(x['id'], x['quantity']) for x in build['inputs']], [('/material/wood', '8')])
-        self.assertEqual(build['unlock_eras'], [1])
+        self.assertEqual(build['unlock_eras'], [0])
 
     def test_acquisition_navigation_names_states_and_reviewed_sources(self):
         for resource in ['/material/rawhide', '/material/hairlesshide', '/material/wethide',
@@ -122,17 +123,34 @@ class TanningAtlasTests(unittest.TestCase):
         self.assertTrue(any(pelt in [x['id'] for x in r['inputs']] and r['kind'].startswith('Material /') for r in self.recipes))
 
     def test_audited_source_drift_fails_closed(self):
-        paths = json.loads((ROOT/'scripts/atlas/tanning-contracts.json').read_text())['sources']
+        audit = json.loads((ROOT/'scripts/atlas/tanning-contracts.json').read_text())
+        paths = [*audit['sources'], *audit['source_blocks']]
         files = {p: (ROOT/p).read_text(encoding='utf-8') for p in paths}
         controls = [(tanning.LEATHER, '"water", 10', '"water", 100'),
                     (tanning.RACK, 'input1 = null', 'input1 = /obj/item/stack/material/lead'),
                     (tanning.LOGS, 'hatchet ? 2 : 1', 'hatchet ? 20 : 1'),
-                    (tanning.HARVEST, 'return 1', 'return 3')]
+                    (tanning.HARVEST, 'return 1', 'return 3'),
+                    (tanning.PAGES, 'i <= 4', 'i <= 8')]
         for path, old, new in controls:
             changed = files[path].replace(old, new)
             self.assertNotEqual(changed, files[path])
             with self.assertRaisesRegex(ValueError, 'Tanning source changed'):
                 tanning.add_tanning(files | {path: changed}, lambda *a: None, [], {})
+        # Only the audited parchment block is pinned: the rest of the book file may change.
+        edited = files[tanning.PAGES] + '\n// unrelated scholar work\n'
+        try:
+            tanning.add_tanning(files | {tanning.PAGES: edited}, lambda *a: None, [], {})
+        except ValueError as error:
+            self.fail(error)
+        except (IndexError, KeyError):
+            pass  # passed the drift check; the stub builder cannot record routes
+
+    def test_parchment_has_a_route_from_dry_hide(self):
+        self.assertIn(tanning.PARCHMENT, self.catalog['resources'])
+        routes = self.catalog['acquisition'][tanning.PARCHMENT]
+        self.assertEqual([r['name'] for r in routes], ['Cut a dry hide into parchment'])
+        self.assertEqual(routes[0]['file'], tanning.PAGES)
+        self.assertIn('/material/dryhide', routes[0]['inputs'])
 
     def test_rack_entrypoint_and_processor_filter_are_present(self):
         source = (ROOT/'code/game/mob/crafting_atlas.dm').read_text()

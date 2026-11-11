@@ -50,8 +50,10 @@ whole group at once:
 python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world --confirm-group GROUP
 ```
 
-1. Use **Save and stop** on every region first. Any running, sleeping,
-   staging or busy region refuses the whole reset, and nothing changes.
+1. Use **Save and stop** on every region first. A cold region (saved and
+   evicted, its process gone) counts as stopped; its `cold.json` and
+   `running.json` go into the archive with its world. Any running, sleeping
+   (frozen), staging or busy region refuses the whole reset, and nothing changes.
 2. The command takes every region's action lock and writes
    `<root>/fresh-world-group.json`. While that file exists the supervisor does
    not start transfer agents or the coordinator. It then stops the agents and
@@ -61,8 +63,10 @@ python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world 
    start, wake and the watchdog during the moves.
 4. It renames into `<root>/fresh-world-archives/<operation>/`: each region's
    `map_saves`, `map_backups`, `map_rollback` and `transfers.sqlite` (with its
-   `-wal`/`-shm` files) under the region id, and the group's
-   `coordinator.sqlite`. Nothing is deleted. Each region gets an empty
+   `-wal`/`-shm` files) under the region id, each region's separate
+   extraction, vehicle-key and safehouse stores (`data/extraction_*`,
+   `data/vehicle_key_service`, `data/safehouse_spool`) under
+   `<region>/data/`, and the group's `coordinator.sqlite`. Nothing is deleted. Each region gets an empty
    `map_saves`.
 5. Only after every move succeeds are the pending files and the group journal
    removed. Every region is then asked to start. The supervisor starts new
@@ -70,9 +74,8 @@ python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world 
    region.
 
 All characters (their saved bodies), buildings, factions, travellers in flight
-and account home worlds are reset. Accounts in `data/player_saves`, bans and
-settings remain. Separate extraction/vehicle/safehouse storage is still
-refused. If it is interrupted, both journals stay in place; recover by hand as
+and account home worlds are reset, and so are vehicle keys and extraction or
+safehouse stashes. Accounts in `data/player_saves`, bans and settings remain. If it is interrupted, both journals stay in place; recover by hand as
 for one region, for every region in the manifest plus the coordinator store,
 then remove the group journal.
 

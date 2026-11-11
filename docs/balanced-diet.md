@@ -35,8 +35,8 @@ can store and spend. Hunger, thirst and digestion work exactly as before.
   again announces the recovery; a brief dip that never reached the warning is
   silent. The diet bonus fades as reserves fall. A mild
   fatigue penalty (stamina refills 25% slower after about 45 minutes of
-  imbalance) exists but is **off** (`diet_penalties_enabled = FALSE`) until
-  availability is shown in every supported map and season; see below.
+  imbalance) applies on the Nomads maps, where every group has a renewable
+  route in every season; see below. Other maps keep only the bonus.
 
 Ordinary meals stay viable: the base stamina ceiling never shrinks, and nothing
 here causes damage, disease or death.
@@ -136,21 +136,44 @@ Saved with the mind: `diet_tastes`, `diet_taste_token`, `diet_tastes_known`,
 `diet_taste_exposure` and the discovery records. `diet_last_check` (the Check Diet
 trend snapshot) is a runtime field excluded from saves.
 
-## Availability before penalties
+## Availability and the penalty gate
 
-Penalties beyond losing the bonus stay off. Before `diet_penalties_enabled` is
-turned on, each supported map and season needs a demonstrated, affordable route
-to all four groups without admin supplies. Current evidence, from source:
+The fatigue penalty is on (`diet_penalties_enabled = TRUE`) but applies only
+where the map sets `diet_penalties` (`diet_penalties_active()`). Every
+`/obj/map_metadata/nomads` map sets it; round-based maps such as TDM do not, so
+there imbalance only fades the bonus. The map gate is a code default and is not
+saved with the world.
 
-| Group | Surface summer | Winter | Underground start |
+Nomads maps qualify because each group has a renewable route without admin
+supplies in every season, on the surface and underground:
+
+| Group | Surface summer | Winter | Underground or indoors |
 |---|---|---|---|
-| Carbohydrate | grain, potato, corn | stored grain, turnips | plump helmets are vitamins and protein, not carbohydrate; bread or grain must be carried or traded |
-| Protein | meat, eggs, beans | meat, eggs | plump helmets, cave animals where the map has them |
-| Fat | meat, eggs, cooking oil | meat, eggs | cave animals where the map has them |
+| Carbohydrate | grain, potato, corn | stored grain, turnips | **cave wheat**: any season, no sunlight, needs water |
+| Protein | meat, eggs, beans | meat, eggs | plump helmets; meat carried down or hunted on the surface |
+| Fat | meat, eggs, cooking oil | meat, eggs | meat and eggs carried down or hunted on the surface |
 | Vitamins | vegetables, fruit, berries | turnips | plump helmets |
 
-Because the underground carbohydrate route and per-map coverage are not yet
-proven in play, enabling penalties is tracked as separate follow-up work.
+Fat comes from meat (30%) and eggs (40%). Ecology spawning puts at least one
+butcherable species in every climate the Nomads maps use: deer, boar, sheep,
+goat, cattle, pig and bison in temperate land; elk and reindeer in taiga and
+tundra; camels, goats and lizards in desert; buffalo, monkeys, pigs and
+junglefowl in jungle; dik-dik, cattle and buffalo in savanna; crabs and
+seagulls on beaches. Fishing adds fish (20% fat) wherever there is water. The
+reserve decays with about an hour's half-life and the penalty needs about an
+hour more of imbalance, so one meal of meat or eggs every hour or two keeps
+fat adequate for someone living underground.
+
+### Cave wheat
+
+`code/modules/1713/cave_wheat.dm`. Cave wheat seeds join every biome's bush
+forage pool, like plump helmet spores. They only take a ploughed plot that is
+not under open sky (a cave or a roofed room). The crop grows in every season
+at half the speed of surface wheat, stops developing if its roof is removed,
+and still needs water: underground there is no rain, so it needs fresh water
+within two tiles or a watering can. Harvest gives cave wheat, a wheat subtype,
+so mills, animal feed and wheat recipes accept it, and two seeds back. Art is
+adapted from Pocket Stronghold 13 (see `icons/farming/ATTRIBUTION.md`).
 
 ## Verification
 
@@ -175,6 +198,10 @@ the imbalance counter come back exactly, that the Check Diet trend snapshot does
 not, that the body's saved mind keeps its taste token, tastes and Notes without
 a reroll, and that the reclaimed body keeps eating and enjoying liked food. Each
 negative control must fail the matching assertion.
+
+`tests/cave_wheat/probe.dm` (run with
+`python3 tests/ecology_spawning/run_linux.py . tests/cave_wheat/probe.dm 300`)
+covers cave wheat planting, growth, water, harvest and the per-map gate.
 
 Not verified here: live play with a connected client, a cold-start world load
 (the body round trip runs inside one daemon with a probe body that skips

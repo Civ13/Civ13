@@ -125,13 +125,10 @@
 	var/hours = round(minutes / 60)
 	return "about [hours] hour\s ago"
 
+// FALSE when nothing can bring them back; wounds or blood loss that only
+// need treating first still count as revivable (resuscitation.dm).
 /mob/living/human/proc/revivable_now()
-	if (stat != DEAD || !species)
-		return FALSE
-	if (!species.has_organ["brain"])
-		return TRUE
-	var/obj/item/organ/brain/B = internal_organs_by_name["brain"]
-	return B && B.damage < 60 && B.defib_timer > 0
+	return stat == DEAD && !resuscitation_blocker(FALSE)
 
 /mob/living/human/proc/death_time_lines(mob/user)
 	var/list/out = list()
@@ -139,7 +136,11 @@
 		return out
 	out += "[src] died [time_since_death_text(world.time - timeofdeath)]."
 	if (ishuman(user) && can_triage(user))
-		out += revivable_now() ? "A defibrillator might still bring them back." : "It is too late to revive them."
+		if (!revivable_now())
+			out += "It is too late to revive them."
+		else
+			var/reason = resuscitation_blocker()
+			out += reason ? "[reason] CPR or a defibrillator might then bring them back." : "CPR or a defibrillator might still bring them back."
 	return out
 
 /mob/living/human/examine(mob/user)

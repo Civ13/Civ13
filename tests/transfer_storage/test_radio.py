@@ -43,6 +43,12 @@ def ooc(**overrides):
     return base
 
 
+def asay(**overrides):
+    base = {'name': 'Val', 'ckey': 'val', 'message': 'check the moon base', 'rank': 'Captain'}
+    base.update(overrides)
+    return base
+
+
 class RingTests(unittest.TestCase):
     def setUp(self):
         self.clock = Clock()
@@ -186,6 +192,41 @@ class OocRingTests(unittest.TestCase):
         self.clock.now += TTL + 1
         self.assertEqual([], self.alpha.outbox()['ooc'])
 
+    def test_asay_has_its_own_ring_never_the_ooc_one(self):
+        # Admin chat must never reach a world as OOC (region_asay.dm).
+        ident = self.alpha.asay_send(asay())
+        out = self.alpha.outbox()
+        self.assertEqual(([], []), (out['envelopes'], out['ooc']))
+        self.assertEqual([ident], [e['id'] for e in out['asay']])
+        self.assertEqual(('alpha', 'Captain', False, False),
+                         (out['asay'][0]['source'], out['asay'][0]['rank'], out['asay'][0]['posted'], out['asay'][0]['discord']))
+        for bad in (asay(message=''), asay(message='m' * (MAX_OOC + 1)), asay(name=''), asay(ckey=None),
+                    asay(rank='r' * 65), 'not an object'):
+            with self.assertRaises(RadioError):
+                self.alpha.asay_send(bad)
+        self.assertEqual(1, self.beta.deliver_asay(out['asay']))
+        self.assertEqual(0, self.beta.deliver_asay(out['asay']))  # duplicate id
+        self.assertEqual(0, self.alpha.deliver_asay(out['asay']))  # own line
+        self.assertEqual(0, self.beta.deliver_asay([dict(out['asay'][0], id='other', group='h')]))
+        self.assertEqual(0, self.beta.deliver_asay([dict(out['asay'][0], id='late', age=TTL + 1)]))
+        self.assertEqual([], self.beta.ooc_inbox())
+        got = self.beta.asay_inbox()
+        self.assertEqual(['check the moon base'], [e['message'] for e in got])
+        self.assertNotIn('at', got[0])
+        self.assertEqual([], self.beta.asay_inbox())
+        self.alpha.asay_send(asay(name='Mod (Discord)', ckey='discord', discord=1, posted=0))
+        self.beta.deliver_asay(self.alpha.outbox()['asay'])
+        self.assertEqual([(True, True)], [(e['discord'], e['posted']) for e in self.beta.asay_inbox()])
+        with self.assertRaises(RadioError):
+            self.beta.deliver_asay('nope')
+
+    def test_asay_rings_are_bounded_and_expire(self):
+        for i in range(RING + 5):
+            self.alpha.asay_send(asay(message='line %d' % i))
+        self.assertEqual(RING, len(self.alpha.outbox()['asay']))
+        self.alpha.asay_send(asay())
+        self.clock.now += TTL + 1
+        self.assertEqual([], self.alpha.outbox()['asay'])
 
     def test_strikes_validate_and_leave_in_their_own_list(self):
         ident = self.alpha.strike_send(strike())
@@ -287,6 +328,20 @@ class AgentRadioTests(unittest.TestCase):
                              [(e['source'], e['name'], e['fakekey'], e['message']) for e in got], region)
             self.assertEqual([], self.post(region, '/radio/inbox')['result']['envelopes'])
         self.assertFalse(self.post('alpha', '/ooc/send', {'envelope': ooc(style='rainbow')})['ok'])
+
+    def test_asay_reaches_every_other_region_and_never_as_ooc(self):
+        sent = self.post('alpha', '/asay/send', {'envelope': asay(posted=1)})
+        self.assertTrue(sent['ok'], sent)
+        self.assertEqual(2, self.coordinator.relay_radio_once())
+        self.assertEqual(0, self.coordinator.relay_radio_once())
+        self.assertEqual([], self.post('alpha', '/asay/inbox')['result']['envelopes'])
+        for region in ('beta', 'gamma'):
+            got = self.post(region, '/asay/inbox')['result']['envelopes']
+            self.assertEqual([('alpha', 'Val', 'Captain', 'check the moon base', True)],
+                             [(e['source'], e['name'], e['rank'], e['message'], e['posted']) for e in got], region)
+            self.assertEqual([], self.post(region, '/ooc/inbox')['result']['envelopes'])
+            self.assertEqual([], self.post(region, '/radio/inbox')['result']['envelopes'])
+        self.assertFalse(self.post('alpha', '/asay/send', {'envelope': asay(message='')})['ok'])
 
     def test_strike_reaches_only_the_region_it_names(self):
         sent = self.post('alpha', '/strike/send', {'envelope': strike(target='gamma', mode='imagery')})

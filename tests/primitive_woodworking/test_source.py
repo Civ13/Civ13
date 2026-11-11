@@ -78,7 +78,7 @@ class Fixture:
         def construct(kind,site,count=1):
             self.outputs.append((kind,count))
             self.construct_hook()
-        self.env=dict(crafting_node_allowed=lambda user,node: bool(user and user.researched and node=="basic_tools"), QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
+        self.env=dict(crafting_node_allowed=lambda user,node: bool(user and user.researched and node=="basic_tools"), plank_making_allowed=lambda user: bool(user and user.researched), QDELETED=lambda obj:obj is None or getattr(obj,'deleted',False),
                       istype=istype,ispath=lambda kind,parent:kind==parent or kind.startswith(parent+'/'),
                       get_turf=lambda obj:obj.site,
                       hide_worker_can_reach=lambda user,source:user.connected and user.reachable and user.stat==0 and not source.deleted and (source.loc is self.site or source.loc is user),

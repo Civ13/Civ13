@@ -82,7 +82,7 @@ var/global/list/party_train_requirements = list(
 	density = TRUE
 	// Delivered materials live only in the office, so vehicles and blasts must not delete it.
 	crushable = FALSE
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;freight;train_station_id"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;freight;train_station_id;train_escrow_records;train_arrival_records"
 	// The party building (and then owning) the train here.
 	var/party = null
 	// Material kind = amount delivered so far.
@@ -285,7 +285,7 @@ var/global/list/party_train_requirements = list(
 	desc = "A numbered platform where a party keeps its train."
 	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "cabinroof"
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;destination;berth;party;home_region;assigned_at"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;destination;berth;party;home_region;assigned_at;train_station_id;train_escrow_records;train_arrival_records"
 	var/berth = 0 // set by the yard map
 	var/party = null
 	var/home_region = null

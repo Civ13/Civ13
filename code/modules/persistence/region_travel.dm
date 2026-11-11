@@ -71,10 +71,11 @@ var/global/list/region_travel_carry_types = list(
 	if(istype(I, /obj/item/weapon/book/node_compendium))
 		var/obj/item/weapon/book/node_compendium/C = I
 		var/kind = "compendium:[json_encode(C.node_ids)]"
-		return !length(C.contents) && recipe_compendium_wire_ids(kind) ? kind : null
+		// Only the subjects travel, so a manual with notes written in it stays.
+		return !length(C.contents) && !C.dat && recipe_compendium_wire_ids(kind) ? kind : null
 	if(istype(I, /obj/item/weapon/book/node_book))
 		var/obj/item/weapon/book/node_book/B = I
-		return valid_recipe_node_id(B.node_id) && !length(B.contents) ? "node:[B.node_id]" : null
+		return valid_recipe_node_id(B.node_id) && !length(B.contents) && !B.dat ? "node:[B.node_id]" : null
 	if(istype(I, /obj/item/stack))
 		var/kind = transfer_trade_kind(I)
 		if(kind) return "stack:[kind]"

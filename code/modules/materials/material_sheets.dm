@@ -776,12 +776,14 @@
 	return key == "splitting_in_progress" || ..()
 
 /obj/item/stack/material/wood/proc/log_cutting_valid(obj/item/tool, mob/living/human/user, atom/source_loc, turf/site, cost)
-	return crafting_node_allowed(user, "basic_tools") && !woodwork_owner && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && !onfire && amount >= cost && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && (istype(tool, /obj/item/weapon/material/hatchet) || istype(tool, /obj/item/weapon/saw))
+	return plank_making_allowed(user) && !woodwork_owner && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && !onfire && amount >= cost && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && (istype(tool, /obj/item/weapon/material/hatchet) || istype(tool, /obj/item/weapon/saw))
 
 /obj/item/stack/material/wood/proc/cut_logs(obj/item/tool, mob/living/human/user)
 	var/hatchet = istype(tool, /obj/item/weapon/material/hatchet)
 	var/cost = hatchet ? 2 : 1
 	var/planks = hatchet ? 1 : 4
+	if (!plank_making_allowed_or_warn(user))
+		return FALSE
 	var/atom/source_loc = loc
 	var/turf/site = get_turf(src)
 	if (splitting_in_progress || !log_cutting_valid(tool, user, source_loc, site, cost) || user.getStatCoeff("strength") <= 0)

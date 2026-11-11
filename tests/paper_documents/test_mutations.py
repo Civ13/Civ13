@@ -180,7 +180,17 @@ class Mutations(unittest.TestCase):
     closed=views.Container('envelope',self.actor);closed.opened=False;holder.loc=closed
     self.assertFalse(self.allowed());holder.loc=self.actor
     if kind=='envelope':holder.opened=False;holder.sealed=True;self.assertFalse(self.allowed());holder.opened=True;holder.knifed=True;self.assertTrue(self.allowed())
-    if kind=='bundle':holder.pages=[vm.Paper(self.actor,views.LEGACY),self.paper];holder.page=1;self.assertFalse(self.allowed());holder.page=2;self.assertTrue(self.allowed());holder.page=1.5;self.assertFalse(self.allowed())
+    if kind=='bundle':
+     holder.pages=[vm.Paper(self.actor,views.LEGACY),self.paper];holder.page=1;self.assertFalse(self.allowed());holder.page=2;self.assertTrue(self.allowed())
+     for page in (0,3,1.5,'bad',None):
+      holder.page=page;self.assertFalse(self.allowed())
+     holder.page=1
+     for pages in (None,'bad',[]):
+      holder.pages=pages;self.assertFalse(self.allowed())
+     holder.pages=[self.paper]
+     folder=views.Container('folder',self.actor);holder.loc=folder
+     self.assertTrue(self.allowed());folder.gc_destroyed=True;self.assertFalse(self.allowed());folder.gc_destroyed=False
+     folder.loc=turf;self.assertTrue(self.allowed());folder.near=False;self.assertFalse(self.allowed())
  def test_topic_guard_dominates_prompt_and_commit_and_chemistry_reports_success_only(self):
   # Existing unindented /* comments interrupt the strict procedure-body parser;
   # bound this source contract by the next real top-level procedure instead.

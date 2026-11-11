@@ -256,12 +256,56 @@ class AtlasReaderViewContract(unittest.TestCase):
    self.assertIn(marker,view)
   self.assertLess(view.index('if (!islist(cached))'),view.index('reference.resource_info(viewer, resource)'))
 
+class AtlasEntityReferenceContract(unittest.TestCase):
+ def test_reference_entries_are_named_public_types_outside_the_recipe_graph(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.entities import entity_resources
+  files={'civ13.dme':'#include "code/a.dm"\n','code/off.dm':'/obj/item/unbuilt\n\tname = "unbuilt thing"\n',
+   'code/a.dm':'/obj/item/hat\n\tname = "hat"\n\tdesc = "A plain hat."\n/obj/item/hat/red\n\ticon_state = "red"\n/obj/item/known\n\tname = "known"\n'
+   '/obj/item/admin_tool\n\tname = "wand"\n/obj/structure/spawner_cave\n\tname = "cave"\n/obj/item/projectile/shot\n\tname = "shot"\n/obj/item/weapon/gun/projectile/rifle\n\tname = "rifle"\n'
+   '/obj/item/odd\n\tname = "[x] thing"\n/obj/item/stash\n\tname = "box"\n\tdesc = "A secret stash."\n/obj/effect/smoke\n\tname = "smoke"\n/datum/thing\n\tname = "thing"\n'
+   '/mob/living/simple_animal/goat\n\tname = "goat"\n\tmaxHealth = 40\n\tmelee_damage_lower = 2\n\tmelee_damage_upper = 5\n\therbivore = 1\n/turf/floor/moss\n\tname = "moss"\n'}
+  entries=entity_resources(files,{'/obj/item/known':{'type':'/obj/item/known'}})
+  self.assertEqual(sorted(entries),['/mob/living/simple_animal/goat','/obj/item/hat','/obj/item/weapon/gun/projectile/rifle','/turf/floor/moss'])
+  self.assertEqual(entries['/obj/item/hat'],{'name':'hat','type':'/obj/item/hat','label':'Initial sprite; runtime appearance may differ','entity':True,'kind':'Item','desc':'A plain hat.'})
+  goat=entries['/mob/living/simple_animal/goat']
+  self.assertEqual(goat['kind'],'Animal')
+  self.assertEqual(goat['stats'][:2],[['Health','40'],['Attack','2 to 5']])
+
+ def test_generated_reference_stays_separate_from_recipe_gaps(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.coverage import report
+  from atlas.entities import GUARDED,INTERNAL
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  resources=catalog['resources']
+  entities={key:value for key,value in resources.items() if value.get('entity')}
+  used={entry['id'] for recipe in catalog['recipes'] for field in ('inputs','outputs') for entry in recipe[field]}
+  self.assertGreater(len(entities),4000)
+  for key,value in entities.items():
+   self.assertEqual(value['type'],key)
+   self.assertNotIn(key,used)
+   self.assertNotIn(key,catalog['acquisition'])
+   self.assertIsNone(INTERNAL.search(key),key)
+   self.assertIsNone(GUARDED.search(value['name']+' '+value.get('desc','')),key)
+   self.assertNotRegex(value['name'],r'[\[\]<>]',key)
+  for key in ('/mob/living/simple_animal/hostile/alligator','/turf/floor/beach/sand'):
+   self.assertIn(key,resources)
+  result=report(catalog)
+  self.assertEqual(result['reference']['reference_only_entries'],len(entities))
+  self.assertEqual(result['resources'],len(resources)-len(entities))
+  self.assertFalse(set(result['resources_without_producer_or_acquisition_annotation'])&set(entities))
+  self.assertGreater(result['reference']['pages_with_description'],result['reference']['pages']*0.85)
+
 class AtlasItemPageContract(unittest.TestCase):
  def test_item_page_carries_bounded_encoded_facts_and_opens_on_its_recipe(self):
   facts=part('facts_data','display_name')
   for marker in ('html_encode("[resource["kind"]]")','html_encode("[resource["desc"]]")','stat.len == 2 && rows.len < 16','html_encode("[stat[1]]")','html_encode("[stat[2]]")'):
    self.assertIn(marker,facts)
   self.assertIn('+ facts_data(reference, resource_id)',part('guidance_data','family_variants'))
+  # Reference entries are flagged from the catalog; nothing about a live object is read.
+  self.assertIn('facts["entity"] = resource["entity"] ? TRUE : FALSE',facts)
   page=part('resource_model','model')
   for marker in ('if (makes && !first)','if (!selected && first)\n\t\tselected = first','recipe_id) && ++hosted <= 60','guidance["made_here_count"] = hosted'):
    self.assertIn(marker,page)
@@ -306,7 +350,7 @@ class AtlasFactsContract(unittest.TestCase):
 
  def test_generated_catalog_describes_most_resources(self):
   resources=json.loads((ROOT/'UI/crafting-atlas.json').read_text())['resources']
-  self.assertTrue(all(value.get('kind') for value in resources.values()))
+  self.assertTrue(all(value.get('kind') for value in resources.values() if not value.get('category')))
   self.assertGreater(sum('desc' in value for value in resources.values()),len(resources)*0.85)
   for key,value in resources.items():
    self.assertNotRegex(value.get('desc',''),r'[\[\]<>\\]',key)
@@ -353,7 +397,7 @@ class AtlasFactsContract(unittest.TestCase):
   self.assertEqual(resources['honey']['found_in'],[['/obj/item/weapon/reagent_containers/food/snacks/honeycomb','honeycomb']])
   self.assertEqual(resources['/obj/structure/wild/tree']['kind'],'Natural feature')
   made={product['id'] for recipe in catalog['recipes'] for product in recipe['outputs']}
-  craftable=[key for key,value in resources.items() if value['type'].startswith('/obj/item') and key not in made and key not in routes]
+  craftable=[key for key,value in resources.items() if value['type'].startswith('/obj/item') and key not in made and key not in routes and not value.get('entity')]
   self.assertLessEqual(len(craftable),6,craftable)
   # Damage on material tools.
   hatchet=dict(resources['/obj/item/weapon/material/hatchet']['stats'])

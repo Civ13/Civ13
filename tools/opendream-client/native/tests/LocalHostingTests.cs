@@ -35,6 +35,10 @@ static class LocalHostingTests {
             && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
         using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
             Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
+        using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
+            Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
+        using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
+            Require(LocalHosting.RegionDetails(up.RootElement) == ", port 1714", "stale refusal on a running region: " + LocalHosting.RegionDetails(up.RootElement));
         foreach (var invalid in new[] { "http://192.168.1.8:8443", "https://8.8.8.8:8443", "https://localhost:8443",
                 "https://192.168.1.8:8443/path", "https://user@192.168.1.8:8443", "https://192.168.1.8:8443/?token=secret" })
             Reject(() => LocalHosting.MobileAddress(invalid), "unsafe mobile address");
@@ -236,6 +240,14 @@ static class LocalHostingTests {
         Require(HostSettings.RestoreSecrets("WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN (hidden)\n", withToken)
             == "WEBHOOK_KEY other\nBUG_REPORT_GITHUB_TOKEN github_pat_secret\n", "saving puts the hidden token back");
         Require(HostSettings.RestoreSecrets("WEBHOOK_KEY k\n", withToken) == "WEBHOOK_KEY k\n", "deleting the hidden line removes the token");
+        var bothTokens = "BUG_REPORT_GITHUB_TOKEN github_pat_issues\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nbug_report_screenshot_token github_pat_pictures\n";
+        var shownBoth = HostSettings.HideSecrets(bothTokens);
+        Require(shownBoth == "BUG_REPORT_GITHUB_TOKEN (hidden)\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nBUG_REPORT_SCREENSHOT_TOKEN (hidden)\n"
+            && !shownBoth.Contains("github_pat_"), "the screenshot token is hidden too");
+        Require(HostSettings.RestoreSecrets(shownBoth, bothTokens) == bothTokens, "each hidden token gets its own value back");
+        Require(HostSettings.WithSetting(bothTokens, HostSettings.ScreenshotToken, "github_pat_new")
+            == "BUG_REPORT_GITHUB_TOKEN github_pat_issues\nBUG_REPORT_SCREENSHOT_REPO Civ13/shots\nBUG_REPORT_SCREENSHOT_TOKEN github_pat_new\n",
+            "setting the screenshot token leaves the issue token alone");
         Require(HostSettings.Problem(HostSettings.LocalConfig, "OK 1\n=bad\n") == "Line 2 is not a setting (\"KEY value\", \"KEY\" or \"#KEY\").", "bad override line");
         Require(HostSettings.Problem("config/account_signin.json", "{") is { } jsonProblem && jsonProblem.StartsWith("Not valid JSON"), "bad JSON");
         Reject(() => HostSettings.Save(places[1], "config/account_signin.json", "{"), "invalid JSON saved");

@@ -40,6 +40,9 @@
 	else
 		switch(M.a_intent)
 			if (I_HELP)
+				if (H != src && istype(H) && stat == DEAD && !on_fire)
+					try_cpr_revival(H)
+					return TRUE
 				if (H != src && istype(H) && health < config.health_threshold_crit && health > config.health_threshold_dead && !on_fire)
 					if (!H.check_has_mouth())
 						to_chat(H, SPAN_WARNING("You don't have a mouth, you cannot perform CPR!"))
@@ -107,6 +110,9 @@
 				return TRUE
 
 			if (I_GRAB)
+				if (M == src)
+					// Grabbing yourself presses a free hand on a bleeding wound.
+					return try_self_pressure(H.targeted_organ == "random" ? null : tgt)
 				if (anchored)
 					return FALSE
 				var/f1 = FALSE
@@ -117,17 +123,6 @@
 					f2 = TRUE
 				if (f1 != f2)
 					return FALSE
-				if (M == src)
-					var/obj/item/organ/external/organ = get_organ(tgt)
-					if(!organ || !(organ.status & ORGAN_BLEEDING))
-						return FALSE
-
-					if(organ.applied_pressure)
-						var/message = "<span class='warning'>[ismob(organ.applied_pressure)? "Someone" : "\A [organ.applied_pressure]"] is already applying pressure to [src == src? "your [organ.name]" : "[src]'s [organ.name]"].</span>"
-						to_chat(M, "[message]")
-						return FALSE
-					apply_pressure(src, tgt)
-					return
 				for (var/obj/structure/noose/N in get_turf(src))
 					if (N.hanging == src)
 						return
@@ -479,29 +474,43 @@
 		user.visible_message("\The [user] starts applying pressure to \his [organ.name]!", "You start applying pressure to your [organ.name]!")
 	else
 		user.visible_message("\The [user] starts applying pressure to [src]'s [organ.name]!", "You start applying pressure to [src]'s [organ.name]!")
-	spawn(0)
-		organ.applied_pressure = user
-		check_pressure(user,target_zone)
+	var/pressing_hand = user.hand ? "l_hand" : "r_hand"
+	organ.applied_pressure = user
+	if (user == src)
+		set_self_pressure_hand(pressing_hand, organ)
+	spawn(10)
+		check_pressure(user, target_zone, pressing_hand)
 	return 1
 
-/mob/living/human/proc/check_pressure(mob/living/user, var/target_zone)
+// Pressure lasts while the user keeps a free hand on the wound (their own empty
+// hand, or a grab on the patient) and ends once the limb stops bleeding.
+/mob/living/human/proc/check_pressure(mob/living/user, var/target_zone, pressing_hand)
 	var/obj/item/organ/external/organ = get_organ(target_zone)
-	if(!organ || !(organ.status & ORGAN_BLEEDING))
+	if(!organ || organ.applied_pressure != user)
 		return FALSE
-	//apply pressure as long as they keep a hand empty
-	if (!has_empty_hand(FALSE))
+	if(!(organ.status & ORGAN_BLEEDING))
 		organ.applied_pressure = null
-
+		if (user == src && self_pressure_hand_limb(pressing_hand) == null)
+			set_self_pressure_hand(pressing_hand, null)
+		to_chat(user, SPAN_NOTICE("The bleeding from [user == src ? "your" : "[src]'s"] [organ.name] has stopped."))
+		// A hand on a broken limb keeps holding the bone still.
+		if (user == src && self_brace_reachable(organ, pressing_hand) && self_hand_free(pressing_hand))
+			self_brace(organ, pressing_hand)
+		return FALSE
+	if (!still_pressing(user, pressing_hand, organ))
+		organ.applied_pressure = null
+		if (user == src && (pressing_hand == "l_hand" ? self_pressure_l : self_pressure_r) == organ)
+			set_self_pressure_hand(pressing_hand, null)
+		if (QDELETED(user))
+			return FALSE
 		if(user == src)
 			user.visible_message("\The [user] stops applying pressure to \his [organ.name]!", "You stop applying pressure to your [organ.name]!")
 		else
 			user.visible_message("\The [user] stops applying pressure to [src]'s [organ.name]!", "You stop applying pressure to [src]'s [organ.name]!")
 		return FALSE
-	else
-
-		spawn(10)
-			check_pressure(user, target_zone)
-			return
+	spawn(10)
+		check_pressure(user, target_zone, pressing_hand)
+	return TRUE
 // Deliberate human-to-human separation. Aimed Disarm and martial arts retain
 // their existing dispatch. These deadlines are transient, never save data.
 /mob/living/human

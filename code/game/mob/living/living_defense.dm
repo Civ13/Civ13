@@ -60,6 +60,18 @@
 /mob/living/proc/getarmor(var/def_zone, var/type)
 	return FALSE
 
+// Damage a projectile still deals through armor. Armor absorbs the share
+// armor/penetration of the hit and stops it at or above the round's
+// penetration. It never raises damage above the round's own.
+/proc/projectile_armor_residual(damage, penetration, armor)
+	if (damage <= 0)
+		return 0
+	if (armor <= 0)
+		return damage
+	if (penetration <= 0 || armor >= penetration)
+		return 0
+	return damage * (1 - armor / penetration)
+
 /mob/living/bullet_act(var/obj/item/projectile/P, var/def_zone)
 
 	var/mob/living/human/H = src
@@ -77,25 +89,22 @@
 	if(P.taser_effect)
 		stun_effect_act(P.stun, P.agony, def_zone, P)
 
-	//Armor
-	var/armor = getarmor(def_zone, P.check_armor)
+	// One impact result: armor, residual damage, wear and whether armor
+	// stopped the round all come from the same resolution.
+	var/datum/projectile_impact/impact = P.impact_on(src, def_zone)
 	var/proj_sharp = is_sharp(P)
 	var/proj_edge = P.edge
-	if ((proj_sharp || proj_edge) && armor)
+	if ((proj_sharp || proj_edge) && impact.armor)
 		proj_sharp = FALSE
 		proj_edge = FALSE
-	//Bullet
-	var/penetration = P.armor_penetration
-	var/damage = P.damage
-	
-	if(armor > 0)
-		if(armor < penetration)
-			damage *= (penetration / armor)
-		else
-			playsound(src, "ric_sound", 50, TRUE, -2)
-			damage = 0
-	H.damage_armor(def_zone, (P.damage - damage) * 0.01)
+	var/damage = impact.damage
+	if (impact.stopped)
+		playsound(src, "ric_sound", 50, TRUE, -2)
+	// Armor wears by the share of the hit it absorbed, never negatively.
 	if (ishuman(src))
+		H.damage_armor(def_zone, impact.wear)
+	// A round the armor stopped cannot reach the brain.
+	if (ishuman(src) && !impact.stopped)
 		var/instadeath = 0
 		if (def_zone == "eyes")
 			instadeath = 10
@@ -111,7 +120,8 @@
 	if (!P.nodamage)
 		apply_damage(damage, P.damage_type, def_zone, FALSE, P, sharp=proj_sharp, edge=proj_edge)
 
-	P.on_hit(src, 0, def_zone)
+	// Stun, weaken and agony riders need the round to get through.
+	P.on_hit(src, impact.stopped ? 2 : 0, def_zone)
 
 //Handles the effects of "stun" weapons
 /mob/living/proc/stun_effect_act(var/stun_amount, var/agony_amount, var/def_zone, var/used_weapon=null)
@@ -147,7 +157,7 @@
 	var/blocked = run_armor_check(hit_zone, "melee", damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
-
+	I.on_weapon_contact(src, user)
 	return blocked
 
 //returns FALSE if the effects failed to apply for some reason, TRUE otherwise.

@@ -68,7 +68,67 @@ def machine(source=SOURCE):
     return turf, house, lambda: attack(house, None)
 
 
+class CisternContents(list):
+    @property
+    def len(self):
+        return len(self)
+
+
+class CisternFixture(SimpleNamespace):
+    def __iter__(self):
+        return iter(())
+
+
+def cistern_machine(kind, cistern, opened, human, has_item):
+    messages, calls = [], []
+    item = SimpleNamespace(w_class=2, loc='cistern')
+    fixture = CisternFixture(contents=CisternContents([item] if has_item else []),
+                              cistern=cistern, open=opened, swirlie=None, w_items=4,
+                              density=False, icon_state_open='open', icon_state_closed='closed',
+                              stored_units=0)
+    fixture.update_icon = lambda: calls.append('icon')
+    fixture.dump_contents = lambda: calls.append('dump')
+    fixture.store_mobs = lambda count: 0
+    user = SimpleNamespace(human=human, put_in_hands=lambda obj: setattr(obj, 'loc', 'hands'))
+    env = {'ishuman': lambda actor: actor.human, 'pick': lambda items: items[0],
+           'get_turf': lambda obj: 'turf', 'SPAN_NOTICE': lambda text: text,
+           'to_chat': lambda actor, text: messages.append(text),
+           'typed_iter': lambda collection, path: iter(collection)}
+    fields = source_adapter.FIELDS
+    try:
+        source_adapter.FIELDS += ('open', 'cistern', 'swirlie', 'w_items', 'retrieve_cistern_item',
+                                  'update_icon', 'density', 'icon_state_open', 'icon_state_closed',
+                                  'stored_units', 'store_mobs', 'dump_contents')
+        retrieve = source_adapter.project(SOURCE, '/obj/structure/toilet/proc/retrieve_cistern_item',
+                                          'src, user', env, method=True)
+        attack = source_adapter.project(SOURCE, '/obj/structure/toilet' + kind + '/attack_hand',
+                                        'src, user', env, method=True)
+    finally:
+        source_adapter.FIELDS = fields
+    fixture.retrieve_cistern_item = lambda actor: retrieve(fixture, actor)
+    attack(fixture, user)
+    return fixture, item, messages
+
+
 class OuthouseOccupancyTests(unittest.TestCase):
+    def test_cistern_retrieval_preserves_each_fixture_gate(self):
+        for kind in ('', '/pit_latrine', '/outhouse'):
+            for cistern in (False, True):
+                for opened in (False, True):
+                    for human in (False, True):
+                        for has_item in (False, True):
+                            with self.subTest(kind=kind, cistern=cistern, opened=opened,
+                                              human=human, has_item=has_item):
+                                fixture, item, messages = cistern_machine(kind, cistern, opened, human, has_item)
+                                selected = cistern and (kind == '/pit_latrine' or
+                                    (kind == '' and not opened) or (kind == '/outhouse' and opened))
+                                self.assertEqual(len(messages), int(selected))
+                                self.assertEqual(fixture.w_items, 2 if selected and has_item else 4)
+                                self.assertEqual(item.loc, ('hands' if human else 'turf')
+                                                 if selected and has_item else 'cistern')
+                                if selected and not has_item:
+                                    self.assertEqual(messages, ['The cistern is empty.'])
+
     def test_capacity_release_and_reclose(self):
         turf, house, toggle = machine()
         first, second = Mob(turf), Mob(turf)

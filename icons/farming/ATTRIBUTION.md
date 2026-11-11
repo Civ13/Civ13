@@ -1,6 +1,7 @@
-# Pocket Stronghold winter crop art
+# Pocket Stronghold winter and cave crop art
 
-`pocket_stronghold_turnip.dmi` and `pocket_stronghold_plump_helmet.dmi` are
+`pocket_stronghold_turnip.dmi`, `pocket_stronghold_plump_helmet.dmi` and
+`pocket_stronghold_cave_wheat.dmi` are
 adapted from **Pocket Stronghold 13 / Dwarf Fortress 13 contributors**, at
 revision [`2bfb1906a9a68f58c5e5da25383f83dd495bf138`](https://github.com/Valgorithms/Pocket-Stronghold-13/tree/2bfb1906a9a68f58c5e5da25383f83dd495bf138).
 
@@ -20,7 +21,7 @@ Source-history contributors: **Maxsc (daxsc)** for the farming asset commits,
 and **LEEROY-2** for later `seeds.dmi` edits. This identifies commit contributors,
 not a claim that Git history proves who originally drew each pixel.
 
-Modifications for Civ13: selected turnip and plump-helmet states extracted,
+Modifications for Civ13: selected turnip, plump-helmet and cave-wheat states extracted,
 repacked and renamed. Upstream growth stages 2 and 4 are repeated to fit Civ13's
 six preharvest stages; stage 5 is the harvest appearance. Pixel colors, dimensions
 and transparency are unchanged. No generated art is used.

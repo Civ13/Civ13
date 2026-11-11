@@ -60,8 +60,9 @@
 	title = bug_report_clean(title, BUG_REPORT_TITLE_MAX, FALSE)
 	return "\[In-game] [length(title) ? title : "Bug report"]"
 
-// context is an ordered list of label -> value (Server, Map, Round, ...).
-/proc/bug_report_issue_body(reporter, what, steps, expected, list/context, admin_note)
+// context is an ordered list of label -> value (Server, Map, Round, ...). screenshot is the
+// uploaded picture's address, "server" when the picture stayed on the game server, or null.
+/proc/bug_report_issue_body(reporter, what, steps, expected, list/context, admin_note, screenshot)
 	var/list/lines = list()
 	lines += "Reported in game by **[bug_report_cell(reporter)]** with Help > Report bug, and approved by a game admin."
 	lines += ""
@@ -80,6 +81,14 @@
 		lines += "| --- | --- |"
 		for (var/label in context)
 			lines += "| [bug_report_cell(label)] | [bug_report_cell(context[label])] |"
+	if (bug_report_screenshot_url_valid(screenshot))
+		lines += ""
+		lines += "### Screenshot"
+		lines += "!\[What the reporter saw]([screenshot])"
+	else if (screenshot == "server")
+		lines += ""
+		lines += "### Screenshot"
+		lines += "A picture of the reporter's screen was taken but not uploaded; ask a game admin for it."
 	admin_note = bug_report_clean(admin_note)
 	if (length(admin_note))
 		lines += ""
@@ -115,14 +124,37 @@
 		url += "&labels=[url_encode(labels)]"
 	return url
 
-// The token from config lines ("BUG_REPORT_GITHUB_TOKEN value"). The last setting wins,
-// "#BUG_REPORT_GITHUB_TOKEN" lines are comments. Only plain token characters count.
-/proc/bug_report_token_from_lines(list/lines)
+// An uploaded screenshot's address: raw.githubusercontent.com, plain path characters only, so
+// it cannot break out of the Markdown image.
+/proc/bug_report_screenshot_url_valid(url)
+	var/prefix = "https://raw.githubusercontent.com/"
+	if (!istext(url) || length(url) > 300 || findtext(url, prefix) != 1 || length(url) <= length(prefix))
+		return FALSE
+	for (var/i = length(prefix) + 1, i <= length(url), i++)
+		var/c = text2ascii(url, i)
+		if (!((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 45 || c == 46 || c == 95 || c == 47))
+			return FALSE
+	return !findtext(url, "..")
+
+// A kept screenshot's file name: "<report id>.png".
+/proc/bug_report_screenshot_name_valid(name)
+	if (!istext(name) || length(name) < 5 || length(name) > 16 || copytext(name, -4) != ".png")
+		return FALSE
+	for (var/i = 1, i <= length(name) - 4, i++)
+		var/c = text2ascii(name, i)
+		if (c < 48 || c > 57)
+			return FALSE
+	return TRUE
+
+// A token from config lines ("BUG_REPORT_GITHUB_TOKEN value", or the setting named by name).
+// The last setting wins, "#BUG_REPORT_GITHUB_TOKEN" lines are comments. Only plain token
+// characters count.
+/proc/bug_report_token_from_lines(list/lines, name = "bug_report_github_token")
 	. = null
 	for (var/raw in lines)
 		var/line = trim("[raw]")
 		var/space = findtext(line, " ")
-		if (!space || lowertext(copytext(line, 1, space)) != "bug_report_github_token")
+		if (!space || lowertext(copytext(line, 1, space)) != name)
 			continue
 		var/value = trim(copytext(line, space + 1))
 		if (bug_report_token_valid(value))

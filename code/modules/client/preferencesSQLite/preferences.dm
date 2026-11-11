@@ -89,6 +89,8 @@ var/list/preferences_datums = list()
 			load_preferences(charprefs)
 		else
 			real_name = random_name(gender, species)
+			// Only brand new players are walked through the tutorial.
+			tutorial_state = TUTORIAL_ACTIVE
 			save_preferences(charprefs)
 
 /datum/preferences/Del()

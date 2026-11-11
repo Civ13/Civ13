@@ -156,6 +156,16 @@
 			blackout_click_trace("scramble")
 			scramble(A)
 			return
+	if (weakened && A == src && ishuman(src) && !stat && !paralysis && !stunned && (a_intent == I_GRAB || a_intent == I_HELP))
+		// Knocked down: grab yourself to press on a wound, or help yourself up.
+		var/mob/living/human/self_helper = src
+		if (canClick())
+			setClickCooldown(10)
+			if (a_intent == I_GRAB)
+				self_helper.try_self_pressure(self_helper.targeted_organ == "random" ? null : self_helper.targeted_organ)
+			else
+				self_helper.try_get_up()
+		return
 	if (stat || paralysis || stunned || weakened)
 		blackout_click_trace("incapacitated")
 		return

@@ -20,6 +20,47 @@ FACTORY: screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/iro
 FACTORY: claw hammer|/obj/item/weapon/hammer/modern|1|/obj/item/stack/material/iron=3|50|1|assembly_line
 FACTORY: wirecutters|/obj/item/weapon/wirecutters|1|/obj/item/stack/material/steel=4|60|1|assembly_line
 FACTORY: ammo belt|/obj/item/ammo_magazine/emptybelt|1|/obj/item/stack/material/copper=7|100|2|automation
+// AK rifle parts (issue #4443 phase 3). Receiver and internals need tier 2; fit them at a firearm bench.
+FACTORY: AK receiver|/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver|1|/obj/item/stack/material/steel=6|150|2|automatic_weapons
+FACTORY: AK bolt carrier group|/obj/item/weapon/gun_component/ak_action|1|/obj/item/stack/material/steel=3|120|2|automatic_weapons
+FACTORY: AK barrel 7.62x39mm|/obj/item/weapon/gun_component/ak_barrel_762|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK barrel 5.45x39mm|/obj/item/weapon/gun_component/ak_barrel_545|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK magazine well 7.62x39mm|/obj/item/weapon/gun_component/ak_feed_762|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK magazine well 5.45x39mm|/obj/item/weapon/gun_component/ak_feed_545|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK fixed stock|/obj/item/weapon/gun_component/ak_furniture_fixed|1|/obj/item/stack/material/wood=2|40|1|automatic_weapons
+FACTORY: AK folding stock|/obj/item/weapon/gun_component/ak_furniture_folding|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK barrel 5.56x45mm|/obj/item/weapon/gun_component/ak_barrel_556|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK magazine well 5.56x45mm|/obj/item/weapon/gun_component/ak_feed_556|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+// AR rifle parts (issue #4443 phase 5). Stocks are plastic; fit internals at a firearm bench.
+FACTORY: AR receiver|/obj/item/weapon/gun/projectile/submachinegun/m16/receiver|1|/obj/item/stack/material/steel=5|150|2|automatic_weapons
+FACTORY: AR bolt carrier group|/obj/item/weapon/gun_component/ar_action|1|/obj/item/stack/material/steel=3|120|2|automatic_weapons
+FACTORY: AR barrel 5.56x45mm|/obj/item/weapon/gun_component/ar_barrel_556|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AR magazine well 5.56x45mm|/obj/item/weapon/gun_component/ar_feed_556|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AR fixed stock|/obj/item/weapon/gun_component/ar_furniture_fixed|1|/obj/item/stack/material/plastic=2|40|1|automatic_weapons
+FACTORY: AR collapsible stock|/obj/item/weapon/gun_component/ar_furniture_collapsible|1|/obj/item/stack/material/plastic=2|60|1|automatic_weapons
+// Mauser bolt-action rifle parts (issue #4443 phase 5). Gated by Cartridge Firearms.
+FACTORY: Mauser receiver|/obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Mauser bolt|/obj/item/weapon/gun_component/mauser_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Mauser barrel 7.92x57mm|/obj/item/weapon/gun_component/mauser_barrel_792|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser barrel 7.65x53mm|/obj/item/weapon/gun_component/mauser_barrel_765|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser barrel 7x57mm|/obj/item/weapon/gun_component/mauser_barrel_7x57|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mauser magazine 7.92x57mm|/obj/item/weapon/gun_component/mauser_feed_792|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser magazine 7.65x53mm|/obj/item/weapon/gun_component/mauser_feed_765|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser magazine 7x57mm|/obj/item/weapon/gun_component/mauser_feed_7x57|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mauser stock|/obj/item/weapon/gun_component/mauser_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+// Mosin and Arisaka bolt-action rifle parts (issue #4443 phase 5). Gated by Cartridge Firearms.
+FACTORY: Mosin receiver|/obj/item/weapon/gun/projectile/boltaction/mosin/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Mosin bolt|/obj/item/weapon/gun_component/mosin_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Mosin barrel 7.62x54mmR|/obj/item/weapon/gun_component/mosin_barrel_762|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Mosin magazine 7.62x54mmR|/obj/item/weapon/gun_component/mosin_feed_762|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Mosin stock|/obj/item/weapon/gun_component/mosin_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Arisaka receiver|/obj/item/weapon/gun/projectile/boltaction/arisaka38/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Arisaka bolt|/obj/item/weapon/gun_component/arisaka_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Arisaka barrel 6.5x50mm|/obj/item/weapon/gun_component/arisaka_barrel_65|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Arisaka barrel 7.7x58mm|/obj/item/weapon/gun_component/arisaka_barrel_77|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Arisaka magazine 6.5x50mm|/obj/item/weapon/gun_component/arisaka_feed_65|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Arisaka magazine 7.7x58mm|/obj/item/weapon/gun_component/arisaka_feed_77|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Arisaka stock|/obj/item/weapon/gun_component/arisaka_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

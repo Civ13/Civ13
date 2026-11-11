@@ -31,6 +31,25 @@ def safe_tree(path):
             safe_tree(child)
 
 
+def cold_stopped(host):
+    """True for a cold region: saved and evicted, its process gone and its port closed.
+
+    Save and stop refuses such a region (nothing is running), so the group reset
+    accepts it as stopped and archives its cold.json and running.json with its world."""
+    if host.freeze_file.exists() or not host.cold_file.exists():
+        return False
+    try:
+        record = json.loads(host.cold_file.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return False
+    if not isinstance(record, dict):
+        return False
+    pid = record.get('pid')
+    if type(pid) is int and host.platform.alive(pid):
+        return False
+    return not host.platform.listening(host.config['port']) and not host.platform.listening(host.standby_port())
+
+
 def check(host, linked=False):
     """Refuse unless the region is stopped and safe to archive. linked=True is the
     group-wide reset (group_fresh_world.py), which archives the transfer stores too."""
@@ -41,13 +60,16 @@ def check(host, linked=False):
         raise Refused('connected regions require a coordinated transit/transfer reset; use the group fresh world')
     if not linked and ((host.repo / 'config/transfer_agent.json').exists() or (host.state_dir / 'transfers.sqlite').exists()):
         raise Refused('transfer state exists; use the group fresh world')
-    if any((host.repo / 'data' / name).exists() for name in SEPARATE_DOMAINS):
-        raise Refused('separate extraction/vehicle persistence exists; a coordinated reset is required')
+    if not linked and any((host.repo / 'data' / name).exists() for name in SEPARATE_DOMAINS):
+        raise Refused('separate extraction/vehicle persistence exists; use the group fresh world')
     if not (host.repo / '.git').exists() or not (host.repo / host.live_dmb_name()).is_file():
         raise Refused('set up and build the region first')
     if host.platform.listening(host.config['port']) or host.platform.listening(host.standby_port()):
         raise Refused('Save and stop the region first; fresh world never force-stops players')
-    for marker in (host.freeze_file, host.cold_file, host.running_file):
+    markers = (host.freeze_file, host.cold_file, host.running_file)
+    if linked and cold_stopped(host):
+        markers = (host.freeze_file,)  # the group reset archives the cold and running records
+    for marker in markers:
         if marker.exists():
             raise Refused('region is not explicitly stopped (running/sleep/wake marker remains); Save and stop first')
     if host.stage_lock.exists():
@@ -64,6 +86,9 @@ def check(host, linked=False):
         raise Refused('fresh world refuses a linked archive folder')
     for name in WORLD_PATHS:
         safe_tree(host.repo / name)
+    if linked:  # the group reset archives these too (group_fresh_world.py)
+        for name in SEPARATE_DOMAINS:
+            safe_tree(host.repo / 'data' / name)
 
 
 def request(host, confirmation):

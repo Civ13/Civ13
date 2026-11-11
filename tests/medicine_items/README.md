@@ -8,5 +8,7 @@ Native probe for #4226 and #4227, run on Linux with the pinned compiler:
   refused and keeps its dose; a container with room takes all of it.
 - A syringe injection stops when the patient moves away during the wait; a
   patient who stays is injected.
+- A dropper stops when the patient moves away, and transfers only the selected
+  dose to a patient who remains within reach.
 
-Both checks fail on the unfixed source.
+These checks fail on the corresponding unfixed source.

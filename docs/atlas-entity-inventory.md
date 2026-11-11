@@ -1,6 +1,8 @@
 # Atlas entity candidate inventory
 
-Part of #4460. This is an **audit-only source inventory**, not a replacement for
+Part of #4460. The player-facing reference entries are built by
+`scripts/atlas/entities.py` (see [Atlas entity coverage](atlas-entity-coverage.md)).
+This is the wider **audit-only source inventory**, not a replacement for
 `UI/crafting-atlas.json`, a player-facing encyclopedia, or a compiled type census.
 It extends the absolute-declaration inventory approach used during #3563 without
 reopening its delivered recipe work. Existing Atlas fact extraction remains the

@@ -807,6 +807,18 @@ obj/structure/religious/monument
 		check_favours()
 		return
 
+/obj/structure/religious/totem/offerings/proc/favour_mood()
+	var/pleasedval = "very angry!"
+	if (power >= 50 && power < 100)
+		pleasedval = "somewhat angry."
+	if (power >= 100 && power < 150)
+		pleasedval = "neutral."
+	if (power >= 150 && power < 250)
+		pleasedval = "somewhat pleased."
+	if (power >= 250)
+		pleasedval = "very pleased!"
+	return pleasedval
+
 /obj/structure/religious/totem/offerings/proc/check_power()
 	spawn(600) // 1 minute
 		if (reltype == "tribal")
@@ -830,15 +842,7 @@ obj/structure/religious/monument
 					current_tribesmen = R.current_positions
 			if (power > 0)
 				power = (power-(current_tribesmen))
-			var/pleasedval = "very angry!"
-			if (power >= 50 && power < 100)
-				pleasedval = "somewhat angry."
-			if (power >= 100 && power < 150)
-				pleasedval = "neutral."
-			if (power >= 150 && power < 250)
-				pleasedval = "somewhat pleased."
-			if (power >= 250)
-				pleasedval = "very pleased!"
+			var/pleasedval = favour_mood()
 			desc = "A [icon_state] stone totem. The gods seem to be [pleasedval]"
 			check_power()
 			return
@@ -846,15 +850,7 @@ obj/structure/religious/monument
 			current_tribesmen = human_clients_mob_list.len
 			if (power > 0)
 				power = (power-(2*current_tribesmen))
-			var/pleasedval = "very angry!"
-			if (power >= 50 && power < 100)
-				pleasedval = "somewhat angry."
-			if (power >= 100 && power < 150)
-				pleasedval = "neutral."
-			if (power >= 150 && power < 250)
-				pleasedval = "somewhat pleased."
-			if (power >= 250)
-				pleasedval = "very pleased!"
+			var/pleasedval = favour_mood()
 			desc = "A big stone cross. God seem to be [pleasedval]"
 			check_power()
 			return

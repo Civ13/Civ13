@@ -252,7 +252,10 @@
 				last_move = get_dir(old_location, loc)
 			los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 			return .
-		if (npc.npc_subtile_offset_owned && (step_x || step_y))
+		// A pulled animal stays draggable: the rope's pixel slide claims the
+		// offset after every move, so refusing owned offsets froze it after
+		// one pulse and the hold broke.
+		if (npc.npc_subtile_offset_owned && (step_x || step_y) && !npc.pulledby)
 			return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor

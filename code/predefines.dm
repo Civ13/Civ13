@@ -287,6 +287,11 @@
 #define ORGAN_ARTERY_CUT 8192
 
 // Field care timings, in owner life ticks (nominally one second each).
+#define TOURNIQUET_NONE 0
+#define TOURNIQUET_MAKESHIFT 1	// rope or twine: slows bleeding, stops it with a hand on the wound
+#define TOURNIQUET_FULL 2		// a proper (gauze) tourniquet stops all bleeding below it
+#define TOURNIQUET_ROPE_TICKS 300	// a rope tourniquet slips loose after 5 minutes
+#define TOURNIQUET_TWINE_TICKS 120	// crude twine gives way after 2 minutes
 #define TOURNIQUET_CLOT_TICKS 600	// small artery clots under tourniquet + bandage (10 min)
 #define TOURNIQUET_NUMB_TICKS 1800	// limb hurts after 30 min; dies at twice this
 #define FRACTURE_HEAL_TICKS 1200	// splinted break mends (20 min, 10 min resting)

@@ -270,6 +270,12 @@ PERSISTENCE_MEMORY_LIMIT_MB 3072
 BUG_REPORT_GITHUB_REPO Civ13/Civ13
 BUG_REPORT_GITHUB_LABELS bug
 #BUG_REPORT_GITHUB_TOKEN github_pat_...
+## Player reports carry a picture of the reporter's screen. Admins see it in Admin > Bug Reports.
+## To show it on the GitHub issue, set a public repository for the pictures (not this one) and,
+## in config.local.txt only, a second fine-grained token with Contents read and write on just
+## that repository. Without them the picture stays on the server in data/bug_reports/screens.
+#BUG_REPORT_SCREENSHOT_REPO Civ13/bug-report-screenshots
+#BUG_REPORT_SCREENSHOT_TOKEN github_pat_...
 
 #if uncommented, sends webhook events to Civilizationbot for processing
 #WEBHOOK_CAN_FIRE

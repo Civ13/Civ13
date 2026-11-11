@@ -143,9 +143,9 @@ var/obj/map_metadata/map
 	H.stat = UNCONSCIOUS
 	consume(H, 0.0032, 0.0032, "bed sleep")
 	H.buckled = null
-	consume(H, 0.0864, 0.0864, "unconscious ordinary")
+	consume(H, 0.0032, 0.0032, "asleep off a bed")
 	map.heat_wave = TRUE
-	consume(H, 0.0864, 0.224, "unconscious heat")
+	consume(H, 0.0032, 0.0032, "asleep in heat")
 	H.inducedSSD = TRUE
 	consume(H, 0, 0, "SSD")
 	H.inducedSSD = FALSE
@@ -197,5 +197,5 @@ var/obj/map_metadata/map
 	check(H.persistence_runtime_var("exercise_equipment"), "existing exclusion retained")
 	check(H.persistence_runtime_var("parent_sentinel"), "parent exclusion retained")
 	check(!H.persistence_runtime_var("nutrition"), "durable nutrition retained")
-	text2file("PASS: idle metabolism, reengagement, heat, bed, SSD, traits, actions and exclusions", "result.txt")
+	text2file("PASS: idle metabolism, reengagement, heat, bed, floor sleep, SSD, traits, actions and exclusions", "result.txt")
 	shutdown()

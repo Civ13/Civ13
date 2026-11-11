@@ -14,6 +14,7 @@ var/global/datum/player_help_service/player_help_service = new
 /client/verb/ask_player_help()
 	set name = "Ask for help"
 	set category = "Help!"
+	tutorial_event("help")
 	player_help_service.expire_conversations()
 	player_help_service.bind_body(src, mob)
 	var/generation = player_help_generation

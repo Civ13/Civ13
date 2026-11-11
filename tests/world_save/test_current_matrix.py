@@ -440,6 +440,9 @@ class CurrentMatrix(unittest.TestCase):
                     ("# Includes the export operation-release assertion before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:", "# Includes export operation-release and offline startup checks before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:"),
                     ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
                     ("'Historical wound source did not reproduce the constructor failure: '", "'Reverted wound fix did not reproduce the constructor failure: '"),
+                    # Reviewed #4448 book-mode date control and its larger import/check coverage.
+                    ("'year-order': 'saved date floor lost'}", "'year-order': 'saved date floor lost', 'year-book': 'book mode was not recorded'}"),
+                    ("result.get('imports') != 24 or result.get('checks') != 333:", "result.get('imports') != 32 or result.get('checks') != 353:"),
                     # A host without IPv6 has no tcp6 table.
                     ("                for row in Path(f'/proc/{child.pid}/net/{table}').read_text().splitlines()[1:]:",
                      "                # A host without IPv6 has no tcp6 table, so it holds no listeners.\n"

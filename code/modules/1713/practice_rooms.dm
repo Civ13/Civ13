@@ -282,10 +282,22 @@ var/global/datum/practice_rooms/practice_rooms = new
 	lobby << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE)
 	body.key = lobby.key
 	qdel(lobby)
-	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below; use <b>Leave Practice Room</b> (IC tab) at any time.</span>")
+	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
 	advance()
 	timer = addtimer(CALLBACK(src, PROC_REF(tick)), 1 SECOND, TIMER_LOOP | TIMER_STOPPABLE)
 	return TRUE
+
+// A chat link that returns the player to the lobby.
+/datum/practice_session/proc/leave_link()
+	return "<a href='byond://?src=\ref[src];practice_leave=1'>click here to leave</a>"
+
+/datum/practice_session/Topic(href, list/href_list)
+	if (href_list["practice_leave"] && body && usr == body)
+		leave()
+
+// Any of the player's ways out: chat link, Esc menu, verb or exit marker.
+/datum/practice_session/proc/leave()
+	end("You left the practice room.")
 
 /datum/practice_session/proc/step_id()
 	return step >= 1 && step <= steps.len ? steps[step] : null
@@ -293,7 +305,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 /datum/practice_session/proc/show_step()
 	var/id = step_id()
 	if (body && id)
-		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]]</span>")
+		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]] <span style='font-size:85%'>([leave_link()] to the lobby)</span></span>")
 
 /datum/practice_session/proc/advance()
 	step++
@@ -411,7 +423,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	set category = "IC"
 	set src = usr
 	if (practice)
-		practice.end("You left the practice room.")
+		practice.leave()
 
 /mob/living/human/practice/verb/practice_instructions()
 	set name = "Practice Instructions"
@@ -431,8 +443,19 @@ var/global/datum/practice_rooms/practice_rooms = new
 
 /obj/effect/practice_marker/exit
 	name = "exit marker"
-	desc = "Step here to return to the lobby."
+	desc = "Click it to return to the lobby at any time."
 	color = "#66aaff"
+	mouse_opacity = TRUE
+
+// Clicking the exit leaves at any step; walking onto it finishes the last one.
+/obj/effect/practice_marker/exit/Click()
+	var/mob/living/human/practice/H = usr
+	if (!istype(H) || !H.practice || H.practice.ending)
+		return
+	if (H.practice.step_id() != "exit" && alert(H, "Leave the practice room and return to the lobby?", "Practice Room", "Leave", "Stay") != "Leave")
+		return
+	if (H.practice && !H.practice.ending)
+		H.practice.leave()
 
 /obj/structure/practice_dummy/indestructible/practice_room
 	should_save = FALSE

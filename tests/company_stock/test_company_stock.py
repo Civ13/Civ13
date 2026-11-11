@@ -81,6 +81,25 @@ class StockMarket(unittest.TestCase):
         self.assertIn('if (gold > 0)', pay)
         self.assertIn('if (silver > 0)', pay)
 
+    def test_both_fiat_treasury_actions_preserve_fractional_balances(self):
+        helper = proc(MARKET, '/obj/structure/stockmarket/proc/withdraw_treasury_fiat(', '\n/')
+        self.assertLess(helper.index('amount < 1'), helper.index('new/obj/item/stack/money/fiat'))
+        self.assertIn('var/paid = round(amount)', helper)
+        self.assertIn('treasury[fid] = amount - paid', helper)
+        all_currencies = proc(MARKET, 'if (href_list["withdrawtaxes"])', '// Faction treasury - withdraw fiat tax')
+        one_currency = MARKET.split('if (href_list["withdrawfiat"])', 1)[1]
+        for action in (all_currencies, one_currency):
+            self.assertIn('withdraw_treasury_fiat(fiat_treasury, fid, H)', action)
+            self.assertNotIn('new/obj/item/stack/money/fiat', action)
+
+    def test_subunit_fiat_profit_is_not_paid_or_taxed(self):
+        withdraw = proc(MARKET, 'if (href_list["withdraw"])', '// Faction treasury - set sales tax')
+        fiat = withdraw.split('var/list/fiat_profits = j[4]', 1)[1]
+        guard = fiat.index('if (paid < 1)\n\t\t\t\t\t\t\t\tcontinue')
+        self.assertLess(guard, fiat.index('+= businesstax'))
+        self.assertLess(guard, fiat.index('new/obj/item/stack/money/fiat'))
+        self.assertLess(guard, fiat.index('fiat_profits[fid] = 0'))
+
 
 class DeathAndVending(unittest.TestCase):
     def test_dead_holder_listings_are_withdrawn(self):

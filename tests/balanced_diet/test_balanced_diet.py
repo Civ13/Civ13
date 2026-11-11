@@ -105,9 +105,13 @@ class ExistingSystemsUnchanged(unittest.TestCase):
         diet = DIET.read_text(encoding='utf-8')
         self.assertIn('round(stats["stamina"][2] * 0.02 * diet_recovery_factor()), diet_stamina_cap())', diet)
 
-    def test_penalties_default_off_and_bonus_bounded(self):
+    def test_penalties_gated_per_map_and_bonus_bounded(self):
         diet = DIET.read_text(encoding='utf-8')
-        self.assertIn('var/global/diet_penalties_enabled = FALSE', diet)
+        self.assertIn('var/global/diet_penalties_enabled = TRUE', diet)
+        self.assertIn('return diet_penalties_enabled && map && map.diet_penalties', diet)
+        self.assertIn('/obj/map_metadata\n\tvar/diet_penalties = FALSE', diet)
+        self.assertIn('/obj/map_metadata/nomads\n\tdiet_penalties = TRUE', diet)
+        self.assertNotIn('diet_penalties_enabled &&', diet.replace('return diet_penalties_enabled && map', ''))
         self.assertIn('#define DIET_BONUS_CAP 0.25', diet)
         self.assertIn('return min(DIET_BONUS_CAP,', diet)
 

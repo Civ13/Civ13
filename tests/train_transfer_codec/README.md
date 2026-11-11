@@ -18,3 +18,17 @@ Existing account-owned destination bodies cause preflight refusal before any
 constructor runs, avoiding the legacy character builder's ownership-clearing
 side effect. These checks do not establish atomicity against constructor sleeps,
 runtime exceptions, saved partial builds or concurrent account arrivals.
+
+## Prepared native structure roundtrip
+
+`python3 tests/train_transfer_codec/run.py --prepare-only --evidence-dir <fresh-dir>`
+prepares the full-source fixture without executing it. `--byond-bin <pinned-bin>
+--compile-only` compiles only. Omitting those switches launches an isolated
+DreamDaemon with `-trusted`; obtain the applicable maintainer authorization
+before that execution. The ten production-code assertions cover crate locking,
+damage and names, exact state schemas, rejection of unsupported durable fields,
+material references and bed ownership. Preparation is not a passing native run.
+
+Structure payloads now include an explicit state projection. Encoders refuse
+changed saved fields outside that projection rather than discarding them. This
+does not yet cover occupied seats, full body state or arbitrary furniture.

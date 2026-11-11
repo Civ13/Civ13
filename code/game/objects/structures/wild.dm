@@ -31,6 +31,51 @@ var/list/seed_list_jungle
 	var/max_branches = 0
 	var/tmp/cutting_grass = FALSE
 
+// Trees block only around the trunk drawn at their pixel offset, not the whole
+// tile, so free movement can walk past the canopy and around the trunk. The box
+// always stays inside the tree's own tile, so turf contents, bullets, opacity,
+// pathing and tile-stepping NPCs still treat the tile as the tree's.
+// trunk_center_x is the trunk's x in the sprite; 0 keeps whole-tile collision.
+/obj/structure/wild/var/trunk_center_x = 0
+/obj/structure/wild/var/trunk_base_y = 2
+/obj/structure/wild/var/trunk_width = 14
+/obj/structure/wild/var/trunk_height = 12
+/obj/structure/wild/var/tmp/trunk_fitted = FALSE
+
+/obj/structure/wild/proc/fit_trunk_bounds()
+	if (!trunk_center_x)
+		return FALSE
+	var/width = clamp(trunk_width, 1, world.icon_size)
+	var/height = clamp(trunk_height, 1, world.icon_size)
+	bound_x = clamp(round(pixel_x + trunk_center_x - width / 2), 0, world.icon_size - width)
+	bound_y = clamp(round(pixel_y + trunk_base_y), 0, world.icon_size - height)
+	bound_width = width
+	bound_height = height
+	trunk_fitted = TRUE
+	return TRUE
+
+// Only a human in a free-movement pulse (2px native moves) collides with the
+// trunk box. Anything else stepping a whole tile (NPCs, animals, pushed or
+// pulled things, vehicles) still finds the tree's tile blocked in turf/Enter,
+// so it never slides part way into the tile.
+/proc/trunk_collision_mover(atom/movable/mover)
+	if (!ishuman(mover))
+		return FALSE
+	var/mob/living/human/H = mover
+	return !isnull(H.human_subtile_transaction)
+
+// turf/Enter skips a fitted tree for a free-moving body, so native movement
+// asks it here, and only when the body's box actually meets the trunk.
+/obj/structure/wild/Cross(atom/movable/mover)
+	if (trunk_fitted)
+		return CanPass(mover, mover.loc, TRUE, FALSE)
+	return ..()
+
+// Saved trees come back with their saved offset after New picked a fresh one.
+/obj/structure/wild/after_load()
+	..()
+	fit_trunk_bounds()
+
 /obj/structure/wild/persistence_runtime_var(key)
 	if (key == "cutting_grass")
 		return TRUE
@@ -240,14 +285,17 @@ var/list/seed_list_jungle
 	sways = TRUE
 	amount = 5
 	layer = 5.11
+	trunk_center_x = 16
 
 /obj/structure/wild/tree/anchored
 
 /obj/structure/wild/tree/New()
 	..()
 	if (!istype(src, /obj/structure/wild/tree/anchored))
-		pixel_x = rand(-24,-8)
+		// Scatter the trunk inside the tile: 8..24px across, 0..16px up.
+		pixel_x = rand(8,24) - trunk_center_x
 		pixel_y = rand(0,16)
+	fit_trunk_bounds()
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
@@ -318,6 +366,7 @@ var/list/seed_list_jungle
 	health = 50
 	maxhealth = 50
 	pixel_x = -16
+	trunk_center_x = 32
 
 // Tuning defaults: four 5-unit draws, comparable to a normal small transfer.
 /obj/structure/wild/tree/cactus
@@ -391,6 +440,7 @@ var/list/seed_list_jungle
 	max_branches = 3
 	leaves = 0
 	pixel_x = -16
+	trunk_center_x = 32
 
 /obj/structure/wild/tree/dead_tree/destroyed/New()
 	..()
@@ -435,6 +485,7 @@ var/list/seed_list_jungle
 	branches = 3
 	max_branches = 3
 	pixel_x = -16
+	trunk_center_x = 32
 	var/current_icon = 'icons/obj/flora/deadtrees.dmi'
 
 /obj/structure/wild/tree/live_tree/New()
@@ -448,6 +499,8 @@ var/list/seed_list_jungle
 	root_tree_invalidate(src)
 	#endif
 	..()
+	// A sapling that matures resets its offset, then changes season.
+	fit_trunk_bounds()
 	if (radiation >= 15)
 		icon = deadicon
 		icon_state = deadicon_state
@@ -789,6 +842,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tree_stump
 	name = "tree stump"
+	desc = "What is left of a felled tree. Dig it out with a shovel to get some wood from its roots."
 	icon_state = "tree_stump"
 	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tree_stump"
@@ -797,6 +851,37 @@ var/list/seed_list_jungle
 	flammable = FALSE
 	health = 50
 	maxhealth = 50
+	var/stump_wood = 2 // logs from the roots; a felled live tree gives 7
+
+// Clearing a stump, by digging it out with any shovel (bone and wooden ones
+// included) or chopping it, gives a couple of logs from the roots.
+/obj/structure/wild/tree_stump/proc/drop_stump_wood()
+	var/turf/T = get_turf(src)
+	if (!T || stump_wood <= 0)
+		return null
+	var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(T)
+	dropwood.amount = stump_wood
+	dropwood.update_strings()
+	stump_wood = 0
+	return dropwood
+
+/obj/structure/wild/tree_stump/try_destroy()
+	if (health <= 0)
+		drop_stump_wood()
+	return ..()
+
+/obj/structure/wild/tree_stump/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/material/shovel))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
+		if (do_after(user, 50, src))
+			if (QDELETED(src))
+				return TRUE
+			user.visible_message(SPAN_NOTICE("[user] digs out \the [src] and pulls up some wood from its roots."), SPAN_NOTICE("You dig out \the [src] and pull up some wood from its roots."))
+			drop_stump_wood()
+			qdel(src)
+		return TRUE
+	return ..()
 
 /obj/structure/wild/tallgrass
 	name = "tall grass"
@@ -1020,8 +1105,9 @@ var/list/seed_list_jungle
 	opacity = TRUE
 	density = TRUE
 	sways = FALSE
-	bound_height = 64
-	bound_width = 32
+	trunk_center_x = 32
+	trunk_width = 20
+	trunk_base_y = 4
 	amount = 9
 	health = 200
 	maxhealth = 200
@@ -1035,8 +1121,9 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/New()
 	..()
-	pixel_x = rand(-24,-8)
+	pixel_x = rand(8,24) - trunk_center_x
 	pixel_y = rand(0,16)
+	fit_trunk_bounds()
 
 /obj/structure/wild/jungle/fire_act(temperature)
 	if (prob(25 * (temperature/500)))

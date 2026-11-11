@@ -30,8 +30,118 @@
 /proc/train_transfer_string(value, limit = 100)
 	return istext(value) && length(value) > 0 && length(value) <= limit
 
+// Explicit projection for bounded fittings. Unknown durable fields refuse,
+// instead of silently resetting a customized structure to its type defaults.
+/proc/train_transfer_structure_fields(path)
+	var/list/fields = list("name", "desc", "dir", "color", "icon_state", "anchored", "density", "opacity", "pixel_x", "pixel_y", "layer", "flammable")
+	if(path == /obj/structure/closet/crate)
+		fields |= list("opened", "welded", "health", "storage_capacity", "custom_code", "locked", "rigged", "storagecap", "icon_closed", "icon_opened", "store_misc", "store_items", "store_mobs", "wall_mounted")
+	else if(ispath(path, /obj/structure/bed) && train_transfer_fitting_path("[path]"))
+		fields |= list("material", "padding_material", "base_icon", "applies_material_colour", "can_buckle", "buckle_dir", "buckle_lying", "persistence_bed_owner_ckey")
+	else if(!train_transfer_fitting_path("[path]"))
+		return null
+	return fields
+
+/proc/train_transfer_structure_state_valid(path, list/state)
+	var/list/fields = train_transfer_structure_fields(path)
+	if(!fields || !islist(state) || state.len != fields.len) return FALSE
+	for(var/key in fields)
+		if(!(key in state)) return FALSE
+		var/value = state[key]
+		if(key in list("material", "padding_material"))
+			if(isnull(value) && key == "padding_material") continue
+			if(!istext(value) || !istype(get_material_by_name(value), /material)) return FALSE
+		else if(key == "persistence_bed_owner_ckey")
+			if(!isnull(value) && !persistence_owner_valid(value)) return FALSE
+		else if(key in list("name", "desc", "color", "icon_state", "base_icon", "icon_closed", "icon_opened"))
+			if(!isnull(value) && (!istext(value) || length(value) > 2048)) return FALSE
+		else if(!isnum(value) || abs(value) > 1000000)
+			return FALSE
+	return TRUE
+
+// Re-created constructor defaults are not transferable custom state. Admit
+// only exact inert values; unknown fields and any active relationship refuse.
+/proc/train_transfer_structure_baseline(obj/structure/A, key)
+	var/value = A.vars[key]
+	switch(key)
+		if("paths", "climbers", "vis_contents", "vis_locs", "underlays")
+			return islist(value) && !length(value)
+		if("animate_movement")
+			// /obj declares animate_movement = 2 (objects/objs.dm). Native
+			// initial() does not report that effective inherited value here.
+			// Exact supported structures reconstruct with 2; other modes refuse.
+			return isnum(value) && value == 2
+		if("override")
+			return isnum(value) && value == 0
+		if("transform")
+			var/matrix/M = value
+			return istype(M) && M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0
+		if("filters")
+			return !length(A.filters)
+		if("overlays")
+			if(A.type != /obj/structure/bed) return !length(A.overlays)
+			// Only the base bed's production update_icon projection is audited.
+			// Chairs use distinct renderers and remain fail-closed if nonempty.
+			var/obj/structure/bed/B = A
+			if(!istype(B.material, /material)) return FALSE
+			var/list/expected = list()
+			var/image/base = image('icons/obj/bed_chair.dmi', B.base_icon)
+			if(B.applies_material_colour) base.color = B.material.icon_colour
+			expected += base.appearance
+			if(B.padding_material)
+				if(!istype(B.padding_material, /material)) return FALSE
+				var/image/padding = image(B.icon, "[B.base_icon]_padding")
+				padding.color = B.padding_material.icon_colour
+				expected += padding.appearance
+			if(B.overlays.len != expected.len) return FALSE
+			for(var/i = 1, i <= expected.len, i++)
+				if(B.overlays[i] != expected[i]) return FALSE
+			return TRUE
+	return FALSE
+
+/proc/train_transfer_structure_state(obj/structure/A)
+	if(!A || QDELETED(A) || A.buckled_mob) return null
+	var/list/fields = train_transfer_structure_fields(A.type)
+	if(!fields) return null
+	if(istype(A, /obj/structure/closet))
+		var/obj/structure/closet/C = A
+		if(C.breakout) return null
+	var/list/ignored = list("train_transfer_id", "train_transfer_journey", "train_transfer_digest", "loc", "locs", "pixloc", "contents", "x", "y", "z")
+	for(var/key in A.get_saved_vars())
+		if(!(key in fields) && !(key in ignored) && !train_transfer_structure_baseline(A, key)) return null
+	var/list/state = list()
+	for(var/key in fields)
+		if(!(key in A.vars)) return null
+		var/value = A.vars[key]
+		if(key in list("material", "padding_material"))
+			var/material/M = value
+			if(istype(M) && get_material_by_name(M.name) != M) return null
+			state[key] = istype(M) ? M.name : null
+		else
+			state[key] = value
+	return train_transfer_structure_state_valid(A.type, state) ? state : null
+
+/proc/train_transfer_apply_structure_state(obj/structure/A, list/state)
+	if(!A || !train_transfer_structure_state_valid(A.type, state)) return FALSE
+	for(var/key in train_transfer_structure_fields(A.type))
+		var/value = state[key]
+		A.vars[key] = (key in list("material", "padding_material")) ? (isnull(value) ? null : get_material_by_name(value)) : value
+	if(istype(A, /obj/structure/bed))
+		var/obj/structure/bed/B = A
+		B.update_icon()
+		// update_icon regenerates labels; custom saved labels remain authoritative.
+		B.name = state["name"]
+		B.desc = state["desc"]
+		B.icon_state = state["icon_state"]
+	return TRUE
+
 // API result: error, or manifest plus live cars/loads for a caller-owned freeze.
-/proc/train_transfer_capture(obj/structure/trains/head, party, source, destination, station)
+/proc/train_transfer_capture(obj/structure/trains/head, party, source, destination, station, journey = null)
+	// Final recapture must retain the journey already bound by the prelease.
+	if(!isnull(journey) && !train_transfer_string(journey)) return list("error" = "Invalid train journey identity.")
+	if(!isnull(journey))
+		for(var/i = 1, i <= length(journey), i++)
+			if(!findtext("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.:@-", copytext(journey, i, i + 1))) return list("error" = "Invalid train journey identity.")
 	if(!istype(head) || !party_train_valid_party(party)) return list("error" = "No valid train owner.")
 	var/list/cars = list()
 	var/obj/structure/trains/car = head
@@ -50,7 +160,8 @@
 	if(!head.train_transfer_id)
 		head.train_transfer_id = md5("[source]-[world.realtime]-[rand(1, 1000000000)]-\ref[head]")
 	var/id = head.train_transfer_id
-	var/journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
+	if(isnull(journey))
+		journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
 	var/list/M = list("kind" = "train", "version" = 1, "id" = id, "journey" = journey, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
@@ -104,9 +215,14 @@
 						if(!entry) return list("error" = "A crate item cannot be preserved.")
 						entries += list(entry)
 					E["kind"] = "crate"
-					E["payload"] = list("type" = "[C.type]", "items" = entries)
+					var/list/state = train_transfer_structure_state(C)
+					if(!state) return list("error" = "A crate has unsupported custom state.")
+					E["payload"] = list("type" = "[C.type]", "items" = entries, "state" = state)
 				else if(train_transfer_fitting_path("[A.type]") && !length(A.contents))
-					return list("error" = "Remove fittings before travel; their custom state is not yet preserved.")
+					var/list/state = train_transfer_structure_state(A)
+					if(!state) return list("error" = "A fitting has unsupported custom state or is occupied.")
+					E["kind"] = "fitting"
+					E["payload"] = list("type" = "[A.type]", "state" = state)
 				else
 					return list("error" = "[A.name] cannot travel in a physical train yet.")
 				claimed[A] = TRUE
@@ -169,12 +285,12 @@
 				if(!party_freight_entry_valid(E["payload"])) return null
 			if("crate")
 				var/list/P = E["payload"]
-				if(!islist(P) || !istext(P["type"]) || P["type"] != "/obj/structure/closet/crate" || !islist(P["items"]) || length(P["items"]) > TRAIN_TRANSFER_CRATE_ITEMS) return null
+				if(!islist(P) || !istext(P["type"]) || P["type"] != "/obj/structure/closet/crate" || !islist(P["items"]) || length(P["items"]) > TRAIN_TRANSFER_CRATE_ITEMS || !train_transfer_structure_state_valid(/obj/structure/closet/crate, P["state"])) return null
 				for(var/list/entry in P["items"])
 					if(!party_freight_entry_valid(entry)) return null
 			if("fitting")
 				var/list/P = E["payload"]
-				if(!islist(P) || !train_transfer_fitting_path(P["type"])) return null
+				if(!islist(P) || !train_transfer_fitting_path(P["type"]) || !train_transfer_structure_state_valid(train_transfer_fitting_path(P["type"]), P["state"])) return null
 			else
 				return null
 	if(accounts.len != owners.len) return null
@@ -265,6 +381,7 @@
 			if("crate")
 				var/path = text2path(P["type"])
 				A = new path(T)
+				train_transfer_apply_structure_state(A, P["state"])
 				for(var/list/entry in P["items"])
 					if(!party_freight_build_item(entry, A))
 						qdel(A)
@@ -273,6 +390,7 @@
 			if("fitting")
 				var/path = train_transfer_fitting_path(P["type"])
 				A = new path(T)
+				train_transfer_apply_structure_state(A, P["state"])
 		if(!A)
 			for(var/atom/movable/B in built) qdel(B)
 			return null

@@ -6,7 +6,8 @@
 		if (istype(src, /turf/floor/beach/water))
 			if (istype(O, /obj/structure/fishing_cage))
 				var/obj/structure/fishing_cage/FC = O
-				if (!FC.found && !FC.generating)
+				// Entered can run before /atom/New marks an imported cage as restoring.
+				if (!persistence_saved_atom_construction && !FC.restoring && !FC.found && !FC.generating)
 					FC.generate_fish()
 
 /obj/structure/buoy
@@ -64,6 +65,18 @@
 	not_disassemblable = TRUE
 	var/found = null
 	var/generating = FALSE //so it doesn't run twice
+
+/obj/structure/fishing_cage/persistence_runtime_var(key)
+	return key == "generating" || ..()
+
+/obj/structure/fishing_cage/after_load()
+	..()
+	// A pending spawn is process-local. Keep a saved catch, or start a fresh wait.
+	generating = FALSE
+	update_icon()
+	if (!found && istype(loc, /turf/floor/beach/water))
+		generate_fish()
+
 /obj/structure/fishing_cage/update_icon()
 	if (istype(loc, /turf/floor/beach/water))
 		icon_state = "[base_icon_state]1"

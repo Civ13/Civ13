@@ -211,3 +211,36 @@ Remaining dependencies before a playable departure:
 
 No deployment, live save change or automatic restart is part of this draft.
 Verification results are recorded on the PR for each published revision.
+
+### In-progress custody and acceptance phase
+
+The next implementation layer separates an account prelease from the final
+immutable manifest. The coordinator reserves the exact account set and journey
+first; only after that grant may the source recapture changing body/cargo state.
+A timeout is not a cancellation. Sealed leases require transfer recovery rather
+than expiry. Lost coordinator history quarantines ordinary claims until all
+regions reconcile, preventing a fresh directory from duplicating passengers.
+
+Source station escrow and destination geometric reservation records cross a
+world-save barrier before the corresponding network action. These helpers are
+not a playable departure loop. In particular, removing the departure safety
+gate without integrating real body restoration is not an acceptable shortcut.
+
+The opt-in Rail Yard generator preserves existing homes and berths while adding
+a full-width corridor. Existing assigned berths can serve as endpoints; this
+does not allocate or relocate anyone's party home. Local topology revisions and
+arrival clearance checks still do not prove arbitrary intermediate-region
+railway continuity.
+
+Faction membership currently resides on bodies, with leadership stored as a
+body reference. A carried faction name is not remote authorization. Solo-party
+routing is the initial safe authority scope; faction travel needs an origin-owned
+durable membership/character identity registry with revocation and current scoped
+authorization over the authenticated transfer channel.
+
+Native tests distinguish crate/fitting round trips from full body preservation.
+The full-body probe uses the production persistence exporter, but capture-only
+success is not restoration evidence, and local round trips do not establish safe
+remote deserialization. Unknown fields, external references and unsupported
+constructors must fail closed rather than be omitted. Compile success alone
+cannot establish injury, NPC, corpse, inventory or client identity conservation.

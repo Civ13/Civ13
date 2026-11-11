@@ -255,8 +255,10 @@ var/knowledge_failures = 0
 	knowledge_check(!scholar.knows_recipe_node("iron_tools") && !crafting_node_allowed(scholar, "iron_tools"), "finishing research teaches no one")
 	var/mob/living/human/knowledge_fixture/novice = new(locate(6,7,1))
 	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
+	check_chapter_sorting(scholar, novice)
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
+	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && plank_making_allowed(novice), "anyone can make planks without Basic Toolmaking")
 	check_book_pages(scholar, novice, journal)
 	var/obj/item/weapon/book/other = new(locate(7,7,1))
 	bench.book_place(other, scholar)
@@ -289,6 +291,7 @@ var/knowledge_failures = 0
 	check_scholar_tutoring()
 	check_scholar_apprentices()
 	check_scholar_titles()
+	check_book_printing(scholar)
 	map.book_research = FALSE
 
 // Scholar tools (Val, 2026-11-10): research needs a writing tool in hand and
@@ -439,6 +442,47 @@ var/knowledge_failures = 0
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
 	qdel(H)
+
+// Printing (Val, 2026-11-10): a press prints a whole book, pages and
+// chapters, into a blank book, using one sheet of printing paper per chapter.
+/proc/check_book_printing(mob/living/human/scholar)
+	var/obj/structure/printingpress/press = new(locate(3,3,1))
+	var/obj/item/weapon/book/original = new(locate(3,3,1))
+	original.title = "Field notes"
+	original.add_written_page("Notes on the river.")
+	original.add_research_chapter("basic_tools")
+	original.add_research_chapter("iron_tools")
+	original.add_research_work("bronze_working", 5)
+	var/obj/item/weapon/book/stock = new(locate(3,3,1))
+	var/obj/item/weapon/book/used = new(locate(3,3,1))
+	used.add_written_page("Already written.")
+	press.base = list(original)
+	press.copy = list(used)
+	knowledge_check(press.whole_book_print_problem(original, used) == "The copy must be a blank book." && !press.finish_whole_book_print(), "the press prints only into a blank book")
+	press.copy = list(stock)
+	knowledge_check(findtext(press.whole_book_print_problem(original, stock), "needs 2 sheets") && !press.finish_whole_book_print() && !QDELETED(stock), "printing needs one sheet per chapter")
+	var/obj/item/weapon/paper/sheet = new(locate(3,3,1))
+	scholar.put_in_l_hand(sheet)
+	knowledge_check(press.load_printing_sheet(sheet, scholar) && press.printing_sheets == 1 && QDELETED(sheet), "a blank sheet loads as printing paper")
+	var/obj/item/weapon/paper/written = new(locate(3,3,1))
+	written.info = "A letter."
+	scholar.put_in_l_hand(written)
+	knowledge_check(!press.load_printing_sheet(written, scholar) && press.printing_sheets == 1, "written paper isn't printing paper")
+	scholar.drop_from_inventory(written)
+	qdel(written)
+	var/obj/item/weapon/paper_bin/bin = new(locate(3,3,1))
+	bin.amount = 3
+	knowledge_check(press.load_paper_bin(bin, scholar) && press.printing_sheets == 4 && bin.amount == 0, "a paper bin empties its blank sheets into the press")
+	var/obj/item/weapon/book/printed = press.finish_whole_book_print()
+	knowledge_check(istype(printed) && printed.has_research_chapter("basic_tools") && printed.has_research_chapter("iron_tools") && printed.title == "Field notes", "the printed book carries every chapter and the title")
+	var/list/printed_pages = printed ? printed.page_list() : list()
+	knowledge_check(printed_pages.len == 1 && printed_pages[1] == "Notes on the river." && printed && !printed.research_ticks("bronze_working"), "pages are printed, unfinished research is not")
+	knowledge_check(press.printing_sheets == 2 && QDELETED(stock) && original.has_research_chapter("iron_tools") && original.research_ticks("bronze_working") && !press.base.len && !press.copy.len, "printing uses the sheets and the blank book, and the original keeps everything")
+	knowledge_check(!press_prints_whole_book(new /obj/item/weapon/book/holybook(locate(3,3,1))), "holy books keep their own press copying")
+	qdel(printed)
+	qdel(original)
+	qdel(used)
+	qdel(press)
 
 // Use real global rows and the public material menu entry point. Personal
 // knowledge can precede a capstone, while recipe expiry remains a separate gate.
@@ -628,3 +672,18 @@ var/knowledge_failures = 0
 	if (P)
 		P["v"] = 2
 		knowledge_check(!region_travel_decode(json_encode(P)), "an older payload version can't smuggle scholarship")
+
+// Reading a book sorts its chapters (Val, 2026-11-11): what the reader can
+// study now, then what needs groundwork, then what they already know.
+/proc/check_chapter_sorting(mob/living/human/scholar, mob/living/human/novice)
+	var/obj/item/weapon/book/shelf = new(locate(6,6,1))
+	shelf.research_chapters = "iron_tools;basic_tools"
+	var/tools_name = get_research_node("basic_tools").name
+	var/iron_name = get_research_node("iron_tools").name
+	var/list/novice_choices = chapter_reading_choices(novice, shelf.research_chapter_list())
+	knowledge_check(novice_choices.len == 2 && novice_choices[1] == "Study: [tools_name]" && novice_choices[2] == "Needs groundwork: [iron_name]" && novice_choices[novice_choices[1]] == "basic_tools", "a novice sees the chapter they can study first and the locked one after")
+	var/list/scholar_choices = chapter_reading_choices(scholar, shelf.research_chapter_list())
+	knowledge_check(scholar_choices.len == 2 && scholar_choices[1] == "Study: [iron_name]" && scholar_choices[2] == "Known: [tools_name]", "a known chapter sorts after the new one")
+	var/list/lines = chapter_reading_summary(scholar, shelf.research_chapter_list())
+	knowledge_check(lines.len == 2 && findtext(lines[1], "new to you: [iron_name]") && findtext(lines[2], "already know: [tools_name]"), "examining the book splits new and known chapters")
+	qdel(shelf)

@@ -142,7 +142,10 @@
 	if (!stat)
 		egg_timer += 1
 		if (egg_timer >= 120)
-			if (!stat && eggsleft > 0)
+			// Hungry birds lay half as often and starving birds stop (husbandry_feeding.dm).
+			if (!animal_product_roll(src))
+				egg_timer = 0
+			else if (!stat && eggsleft > 0)
 				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
 				stop_automated_movement = TRUE
 				icon_state = roosting_icon
@@ -555,7 +558,10 @@
 	if (!stat)
 		egg_timer += 1
 		if (egg_timer >= 120)
-			if (!stat && eggsleft > 0)
+			// Hungry birds lay half as often and starving birds stop (husbandry_feeding.dm).
+			if (!animal_product_roll(src))
+				egg_timer = 0
+			else if (!stat && eggsleft > 0)
 				visible_message("[src] [pick("lays an egg.","squats down and croons.","begins making a huge racket.","begins clucking raucously.")]")
 				eggsleft--
 				egg_timer = 0

@@ -52,28 +52,28 @@ atom/proc/InCone(atom/center = usr, dir = NORTH)
 			if (WEST)
 				if (x > center.x)
 					return TRUE
-				if (get_dir(center, src) == center.dir)
+				if (d == center.dir)
 					return FALSE
 				if (get_dist(center, src) >= dx)
 					return FALSE
 			if (EAST)
 				if (x < center.x)
 					return TRUE
-				if (get_dir(center, src) == center.dir)
+				if (d == center.dir)
 					return FALSE
 				if (get_dist(center, src) >= dx)
 					return FALSE
 			if (NORTH)
 				if (y < center.y)
 					return TRUE
-				if (get_dir(center, src) == center.dir)
+				if (d == center.dir)
 					return FALSE
 				if (get_dist(center, src) >= dy)
 					return FALSE
 			if (SOUTH)
 				if (y > center.y)
 					return TRUE
-				if (get_dir(center, src) == center.dir)
+				if (d == center.dir)
 					return FALSE
 				if (get_dist(center,src) >= dy)
 					return FALSE

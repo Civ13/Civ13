@@ -809,7 +809,7 @@ internal sealed partial class LauncherWindow : Form {
         layout.Controls.Add(new Label { Text = "Use Save and stop first. This archives this region's map save, backups and rollback, " +
             "then starts its existing build on a fresh map. Buildings, factions, local player-built transits, saved bodies and their inventory " +
             "are removed from the active world. Account preferences/notes, bans, settings, reputation and raid cooldowns remain. " +
-            "Linked transfer groups and separate extraction/vehicle storage are refused: their shared transits need a coordinated reset. " +
+            "Linked transfer groups and separate extraction/vehicle storage are refused: use Fresh world (all regions) for those. " +
             "Nothing is permanently deleted; recovery is manual from the archive reported in the host log. " +
             "Type the exact region id to confirm: " + region,
             MaximumSize = new Size(480, 0), AutoSize = true });
@@ -855,7 +855,7 @@ internal sealed partial class LauncherWindow : Form {
             AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { Text = "Use Save and stop on every region first. This stops the travel agents and coordinator, archives every " +
-            "region's map save, backups, rollback and travel store plus the group's coordinator store, then starts every region on a fresh map. " +
+            "region's map save, backups, rollback, travel store and extraction/vehicle-key stores plus the group's coordinator store, then starts every region on a fresh map. " +
             "Every character, building and faction, travellers in flight and account home worlds are reset. Accounts, bans and settings remain. " +
             "Nothing is permanently deleted; recovery is manual from the archive under the group folder. " +
             "Type the exact group id to confirm: " + id,

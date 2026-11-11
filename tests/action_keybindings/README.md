@@ -10,14 +10,15 @@ Restoring one action refuses conflicts; restoring all always succeeds.
 
 The catalog covers prone, aiming mode, sights/drone/tank gun, running, movement
 mode, defense and secondary intents, tactics, facing, buckling, quick equip,
-holstering and directional attacks. Actions still call their original verbs and
+holstering, directional attacks and opening worn storage (cycle all, back, belt,
+and clothing attachments such as a leather harness, webbing or pockets). Actions still call their original verbs and
 their existing gameplay checks. Both original mode defaults and aliases remain.
 
 The finite key list supports plain keys, Ctrl, Shift and Ctrl+Shift. Typing mode
 only permits Ctrl and Ctrl+Shift combinations plus its pre-existing F and Space shortcuts.
 Movement, held activation, chat, spell, targeting, menu and help shortcuts remain
 reserved. Movement and held activation retain their original release handlers;
-this feature adds no held state. Applying bindings changes only the 52 named
+this feature adds no held state. Applying bindings changes only the 68 named
 action slots and does not set focus, replace macro sets or reset movement.
 
 Saved records use `mode/action/key` strings in the existing flat-list preference

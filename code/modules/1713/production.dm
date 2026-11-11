@@ -635,6 +635,7 @@
 			D.decay = 0 //stop decaying when on dehydrator
 		else
 			W.name = "[W.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(0, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
+	W.mouse_opacity = initial(W.mouse_opacity) // a save drop hid the encoded name from hover
 	slots[pos[1]][pos[2]] = W
 	storage.handle_item_insertion(W, TRUE) //put to storage for preparing to destroy, or for map save when it happens
 	for (var/P=0, P<sizeHV[1], P++)
@@ -917,7 +918,10 @@
 		for (var/P=1, P<4, P++)
 			if (slots[R][P]<>null)
 				if (!findtext(slots[R][P],"busy"))
-					storage.remove_from_storage(slots[R][P])
+					var/obj/item/dropped_item = slots[R][P]
+					storage.remove_from_storage(dropped_item)
+					// The encoded rack name must never show on hover or be clicked while it waits on the turf.
+					dropped_item.mouse_opacity = 0
 				slots[R][P] = null
 
 /obj/structure/dehydrator/proc/refill()
@@ -962,13 +966,23 @@
 // Without a world restart nothing put them back, so the rack kept drawing them while
 // players could walk off with "...ON_DEHYDRATOR..." items. Re-adopt once the save ends.
 /obj/structure/dehydrator/proc/readopt_after_save(map_storage/save_storage)
+	var/turf/drop_turf = get_turf(src)
 	spawn(10)
 		// No save-completion callback exists, so poll until this save ends, however long it takes.
 		while (!gcDestroyed && (persistence_save_in_progress || persistence_save_active() || (save_storage && length(save_storage.saving_export_stack))))
 			sleep(10)
 		if (current_process_id == "SAVE_REPAIR_REQUIRED" || !isturf(loc) || gcDestroyed)
+			reveal_dehydrator_drops(drop_turf) // let players pick strays up, which clears the encoding
 			return
 		reinit()
+
+// Undo clean_drop_slots' hover hiding for items no rack will re-adopt.
+/proc/reveal_dehydrator_drops(turf/T)
+	if (!T)
+		return
+	for (var/obj/item/E in T)
+		if (findtext(E.name, "ON_DEHYDRATOR"))
+			E.mouse_opacity = initial(E.mouse_opacity)
 
 /obj/structure/dehydrator/proc/reinit()
 	spawn(rand(5,15)) //To prevent too much load when starting the server and to slightly spread the processes of dehydrators loaded from the map in time.
@@ -1073,6 +1087,7 @@
 		// Keep real paid items and encoded progress. Delayed refill could reclaim
 		// an item whose ownership changed while sleeping; leave failure quiescent.
 		current_process_id = "SAVE_REPAIR_REQUIRED"
+		reveal_dehydrator_drops(get_turf(src))
 		throw EXCEPTION("Dehydrator save failed; rack ownership requires repair: [error]")
 
 // Restores an item that left a rack without going through remove_from_dehydrator().
@@ -1084,6 +1099,7 @@
 	var/decay_offset = findtext(name, "DECAY_", marker)
 	var/original_decay = decay_offset ? text2num(copytext(name, decay_offset + 6, decay_offset + 14)) : null
 	name = copytext(name, 1, marker)
+	mouse_opacity = initial(mouse_opacity)
 	if (istype(src, /obj/item/weapon/reagent_containers/food))
 		var/obj/item/weapon/reagent_containers/food/D = src
 		if (D.decay == 0 && isnum(original_decay) && original_decay > 0)
@@ -1716,6 +1732,14 @@
 	if(istype(W, /obj/item/weapon/book/node_compendium))
 		to_chat(user, SPAN_WARNING("Print individual manuals before binding them into a compendium."))
 		return
+	if (istype(W, /obj/item/weapon/paper_bin) && map && map.book_research_enabled())
+		return load_paper_bin(W, user)
+	if (blank_writing_sheet(W) && W.loc == user && map && map.book_research_enabled())
+		var/use = WWinput(user, "Load this sheet as printing paper for books, or as a document copy?", "Printing Press", "Cancel", list("Printing paper", "Document copy", "Cancel"))
+		if (use == "Printing paper")
+			return load_printing_sheet(W, user)
+		if (use != "Document copy")
+			return
 	if (istype(W, /obj/item/weapon/paper))
 		return insert_copy_paper(W, user)
 	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper))
@@ -1804,6 +1828,8 @@
 		else
 			if (istype(base[1], /obj/item/weapon/paper))
 				return copy_paper_document(H)
+			if (press_prints_whole_book(base[1]))
+				return print_whole_book(H)
 			var/spawntimer = 90
 			if (istype(base[1], /obj/item/weapon/book))
 				spawntimer = 250

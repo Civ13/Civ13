@@ -126,3 +126,60 @@ class FactionDoorLockpick(unittest.TestCase):
         self.assertLess(recheck, opened)
         self.assertEqual(body[opened - 3], 'if (prob(H.getStatCoeff("dexterity")*35))')
         self.assertNotIn('keyslot.locked = FALSE', body)
+
+
+class OrdinaryDoorKeyDispatch(unittest.TestCase):
+    """Project the ordinary door's key dispatch; custom and jail doors differ."""
+
+    def project(self, source, kind, anyone, matches, locked):
+        lines = proc_body(source, '/obj/structure/simple_door/key_door/attackby')
+        start = next(i for i, line in enumerate(lines) if line.startswith('\tif (istype(W,'))
+        end = next(i for i in range(start, len(lines))
+                   if lines[i].startswith('\telse if (istype(W, /obj/item/weapon/lockpick))'))
+        translated = ['def dispatch():']
+        replacements = {
+            'istype(W, /obj/item/weapon/key)': "kind == 'key'",
+            'istype(W, /obj/item/weapon/storage/belt/keychain)': "kind == 'chain'",
+            'istype(src, /obj/structure/simple_door/key_door/anyone)': 'anyone',
+            'keyslot.check_weapon(W, user, TRUE)': 'check_weapon()',
+            'keyslot.locked = !keyslot.locked': "state['locked'] = not state['locked']",
+            '||': 'or', '&&': 'and',
+        }
+        for line in lines[start:end]:
+            depth = len(line) - len(line.lstrip('\t'))
+            text = line.strip()
+            for old, new in replacements.items():
+                text = text.replace(old, new)
+            if text.startswith('else if '):
+                text = 'elif ' + text[8:]
+            if text.startswith(('if ', 'elif ')):
+                text += ':'
+            translated.append('    ' * depth + text)
+        translated.extend(['    else:', "        state['other'] = True"])
+        state = {'locked': locked, 'checks': 0, 'other': False}
+
+        def check_weapon():
+            state['checks'] += 1
+            return matches
+
+        env = dict(kind=kind, anyone=anyone, state=state, check_weapon=check_weapon)
+        exec(compile('\n'.join(translated), '<ordinary key dispatch>', 'exec'), env)
+        env['dispatch']()
+        return state
+
+    def test_keys_and_chains_keep_guards_and_toggle_once(self):
+        for kind in ('key', 'chain', 'other'):
+            for anyone in (False, True):
+                for matches in (False, True):
+                    for locked in (False, True):
+                        with self.subTest(kind=kind, anyone=anyone, matches=matches, locked=locked):
+                            result = self.project(KEY_DOOR, kind, anyone, matches, locked)
+                            checked = kind != 'other' and not anyone
+                            self.assertEqual(result, {'locked': not locked if checked and matches else locked,
+                                                      'checks': int(checked), 'other': kind == 'other'})
+
+    def test_negative_control_rejects_a_broken_combined_type_check(self):
+        broken = KEY_DOOR.replace('istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain)',
+                                  'istype(W, /obj/item/weapon/key) && istype(W, /obj/item/weapon/storage/belt/keychain)', 1)
+        self.assertNotEqual(broken, KEY_DOOR)
+        self.assertEqual(self.project(broken, 'chain', False, True, False)['checks'], 0)

@@ -79,6 +79,10 @@
 			to_chat(user, "Looks extremely dirty!")
 	if (fleas)
 		to_chat(user, "<b>\The [src] is infested with fleas!</b>")
+	if (islist(armor))
+		var/protection = bullet_protection_text(armor["gun"])
+		if (protection)
+			to_chat(user, "<span class='notice'>[protection]</span>")
 	examine_laundry(user)
 ///////////////////////////////////////////////////////////////////////
 

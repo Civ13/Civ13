@@ -69,6 +69,14 @@
 		map = new /obj/map_metadata/yeast_tester
 		var/mob/yeast_tester/U = new(site)
 		var/obj/structure/oven/O = new(locate(6,6,1))
+		var/obj/item/weapon/reagent_containers/food/snacks/dough/to_flatten = new(site)
+		to_flatten.reagents.clear_reagents()
+		to_flatten.reagents.add_reagent("protein", 1)
+		to_flatten.reagents.add_reagent("water", 5)
+		var/obj/item/weapon/material/kitchen/rollingpin/pin = new(site)
+		to_flatten.attackby(pin, U)
+		var/obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough/flat = locate() in site
+		yeast_assert(flat && flat.reagents.total_volume == 6 && flat.reagents.get_reagent_amount("protein") == 1 && flat.reagents.get_reagent_amount("water") == 5, "flattened dough retains its actual reagents")
 
 		var/obj/item/weapon/reagent_containers/food/snacks/dough/plain = new(site)
 		yeast_assert(!plain.leavened && !plain.check_risen(), "fresh dough is unleavened")

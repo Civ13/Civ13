@@ -12,11 +12,7 @@
 	New()
 		..()
 		spawn(1)
-			for(var/obj/roof/R in range(1,src))
-				if (opacity)
-					R.update_transparency(0)
-				else
-					R.update_transparency(1)
+			refresh_nearby_roofs(!opacity)
 /obj/structure/curtain/open
 	icon_state = "open"
 	opacity = FALSE
@@ -45,22 +41,22 @@
 		T.reconsider_lights()
 	if (opacity)
 		icon_state = "closed"
-		for(var/obj/roof/R in range(1,src))
-			R.update_transparency(0)
 	else
 		icon_state = "open"
-		for(var/obj/roof/R in range(1,src))
-			R.update_transparency(1)
+	refresh_nearby_roofs(!opacity)
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
+
+/obj/structure/curtain/proc/refresh_nearby_roofs(transparent)
+	for(var/obj/roof/R in range(1,src))
+		R.update_transparency(transparent)
 
 
 /obj/structure/curtain/Destroy()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
-	for(var/obj/roof/R in range(1,src))
-		R.update_transparency(0)
+	refresh_nearby_roofs(FALSE)
 
 /obj/structure/curtain/black
 	name = "black curtain"

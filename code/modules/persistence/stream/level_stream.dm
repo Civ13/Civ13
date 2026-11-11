@@ -120,8 +120,8 @@
 	var/list/top = S.dir.Copy()
 	for(var/key in top)
 		if(key == "format_version") continue
-		if(!stream.put_text("/[key]", S.ExportText("/[key]"))) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")
-		S.cd = "/"
+		// Splits a subtree whose text would pass 2^24 bytes (save_stream.dm).
+		if(!stream.put_savefile_text(S, "/[key]")) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")
 		if(!owner.moving_save_chunk) owner.save_work_check()
 	for(var/path in native_paths)
 		if(!stream.put(path, native_paths[path])) throw EXCEPTION("Stream save of level [z] failed: [stream.last_error]")

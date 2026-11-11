@@ -1,4 +1,3 @@
-/mob/living/var/next_weather_sound = -1
 /mob/living/var/last_life_tick = 0
 /mob/living/var/next_weather_scan = 0
 /mob/living/var/cached_near_rainy_area = FALSE
@@ -40,12 +39,7 @@
 				near_rainy_area = cached_near_rainy_area
 				rdist = cached_rain_dist
 
-		if (world.time >= next_weather_sound && near_rainy_area)
-			src << sound('sound/ambience/rain.ogg', channel = 778, volume = (100 - (rdist*2)))
-			next_weather_sound = world.time + 1450 // the rain sound is 1510 deciseconds long, but even when this was set to 1500, there was delay between successive rain sounds - Kachnov
-		else if (world.time < next_weather_sound && !near_rainy_area)
-			src << sound(null, channel = 778)
-			next_weather_sound = world.time
+		update_rain_sound(near_rainy_area ? (100 - (rdist*2)) : 0)
 
 	if (transforming)
 		return
@@ -223,3 +217,27 @@
 
 /mob/living/proc/handle_hud_icons_health()
 	return
+// Rain loops on the client (repeat = TRUE), so it keeps playing through a
+// server stall instead of stopping when a server-timed replay is missed.
+// The server only starts it, changes its volume and stops it.
+/mob/living/proc/update_rain_sound(volume)
+	var/client/C = client
+	if (!C)
+		return
+	volume = clamp(round(volume), 0, 100)
+	if (volume == C.rain_sound_volume)
+		return
+	if (!volume)
+		stop_rain_sound(C)
+		return
+	var/sound/S = sound('sound/ambience/rain.ogg', repeat = TRUE, wait = FALSE, volume = volume, channel = SOUND_CHANNEL_RAIN)
+	if (C.rain_sound_volume)
+		S.status = SOUND_UPDATE
+	C.rain_sound_volume = volume
+	C << S
+
+/proc/stop_rain_sound(var/mob_or_client)
+	var/client/C = isclient(mob_or_client) ? mob_or_client : mob_or_client:client
+	if (C)
+		C.rain_sound_volume = 0
+	mob_or_client << sound(null, channel = SOUND_CHANNEL_RAIN)

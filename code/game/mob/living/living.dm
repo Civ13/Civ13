@@ -779,6 +779,12 @@ default behaviour is:
 		resist_grab()
 		if (!weakened)
 			process_resist()
+		else
+			resist_knockdown()
+
+// Resist while knocked down; humans push themselves back up (self_help.dm).
+/mob/living/proc/resist_knockdown()
+	return FALSE
 
 /mob/living/proc/process_resist()
 	if(using_object && istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary))
@@ -946,9 +952,14 @@ default behaviour is:
 		return FALSE
 	if (ishuman(src))
 		var/mob/living/human/pull_actor = src
-		if (pull_actor.human_subtile_pull_enabled && (pull_actor.human_subtile_transaction || pull_actor.step_x || pull_actor.step_y))
+		if (pull_actor.human_subtile_pull_enabled && pull_actor.human_subtile_transaction)
 			to_chat(src, SPAN_NOTICE("Finish the current smooth step before starting a pull."))
 			return FALSE
+		// Free movement stops wherever the key is released, so a standing body is
+		// usually a few pixels off its tile. Settle it onto its centre tile (its
+		// loc) instead of refusing every pull until it happens to stop aligned.
+		if (pull_actor.human_subtile_pull_enabled && (pull_actor.step_x || pull_actor.step_y))
+			trench_climb_align(pull_actor)
 
 	if (AM.anchored || istype(AM, /obj/item/football))
 		to_chat(src, SPAN_WARNING("It won't budge!"))

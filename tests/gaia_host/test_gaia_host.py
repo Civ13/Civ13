@@ -706,6 +706,23 @@ class ForcedStopTests(GaiaHostTests):
         self.assertNotIn('save_refused', answer)
         self.assertEqual({'removed': [], 'forced': False, 'server_running': False, 'save': answer['save']}, self.host.unlock())
 
+    def test_unlock_forgets_the_watchdogs_lock_file_refusal(self):
+        saves = self.repo / 'map_saves'
+        write_save(saves)
+        (saves / '1.sav.lk').write_bytes(b'')
+        self.host.write_json(self.host.watchdog_file, {'last_event': 'crash', 'restarts': [5],
+                                                       'last_refusal': 'the save still has BYOND lock files'})
+        self.host.unlock(force=True)
+        self.assertEqual({'last_event': 'crash', 'restarts': [5]}, json.loads(self.host.watchdog_file.read_text()))
+
+    def test_unlock_keeps_the_refusal_when_the_save_still_fails(self):
+        saves = self.repo / 'map_saves'
+        saves.mkdir(parents=True, exist_ok=True)
+        (saves / '1.sav').write_bytes(b'x')
+        self.host.write_json(self.host.watchdog_file, {'last_refusal': 'the save marker does not match round.json'})
+        self.assertIn('save_refused', self.host.unlock())
+        self.assertIn('last_refusal', json.loads(self.host.watchdog_file.read_text()))
+
     def test_unlock_refuses_a_running_server_unless_forced(self):
         saves = self.repo / 'map_saves'
         write_save(saves)
@@ -1096,6 +1113,7 @@ class WatchdogTests(unittest.TestCase):
         self.machine.clock += 120
         self.host.watch_step(None)
         self.assertEqual(len(self.starts()), 1)
+        self.assertNotIn('last_refusal', json.loads(self.host.watchdog_file.read_text()))
 
     def test_the_watchdog_can_be_switched_off(self):
         self.config['watchdog'] = False

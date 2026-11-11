@@ -259,7 +259,8 @@
 				to_chat(user, "<span class='notice'>\The [src] is empty.</span>")
 				return
 			to_chat(user, "You start rummaging through \the [src]...")
-			if (do_after(user,40,src) && contents.len)
+			// Another player may close the lid during the wait.
+			if (do_after(user,40,src) && opened && contents.len)
 				var/obj/item/picked = pick(contents)
 				picked.forceMove(user.loc)
 				to_chat(user, "You take out \the [picked].")

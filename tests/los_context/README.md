@@ -18,7 +18,8 @@ Capture covers the actual z level and viewport (up to 63x63), plus one edge tile
 accepts ordinary terrain and clutter, and derives blockers from raw opacity.
 Fresh hover/examine captures include `step_x/32` and `step_y/32` in the eye and
 moving targets. Presentation captures place the eye at its step offset rounded
-to half a tile (`los_eye_quantized`, tile centres while `world.cpu` is high) and
+to half a tile (`los_eye_x`/`los_eye_y`; tile centres while `world.cpu` is high, and
+fixed while the body stands still) and
 anchor human targets to native tile centers. On maps with hills a terrain
 answer (`los_terrain.dm`, docs/terrain-height.md#line-of-sight) also hides
 targets below the sight line. Moving opaque blockers retain physical offsets in both

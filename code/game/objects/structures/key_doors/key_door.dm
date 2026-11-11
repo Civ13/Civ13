@@ -202,12 +202,7 @@ var/list/nonbreaking_types = list(
 
 	var/keyslot_original_locked = keyslot.locked
 
-	if (istype(W, /obj/item/weapon/key))
-		if (istype(src, /obj/structure/simple_door/key_door/anyone))
-			return
-		if (keyslot.check_weapon(W, user, TRUE))
-			keyslot.locked = !keyslot.locked
-	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
+	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
 		if (istype(src, /obj/structure/simple_door/key_door/anyone))
 			return
 		if (keyslot.check_weapon(W, user, TRUE))

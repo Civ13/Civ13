@@ -44,6 +44,13 @@ FIXTURE = r'''
 	out["token"] = bug_report_token_from_lines(list("#BUG_REPORT_GITHUB_TOKEN github_pat_commentedoutvalue000", "WEBHOOK_KEY x", "bug_report_github_token github_pat_AAAAAAAAAAAAAAAAAAAAAA", "BUG_REPORT_GITHUB_TOKEN bad token with spaces here"))
 	out["token_none"] = bug_report_token_from_lines(list("#BUG_REPORT_GITHUB_TOKEN github_pat_AAAAAAAAAAAAAAAAAAAAAA"))
 	out["labels"] = bug_report_labels(" bug, In game , bug,,")
+	var/shot = "https://raw.githubusercontent.com/Civ13/shots/main/screens/2026-11/20261111-120000-report-4.png"
+	out["body_shot"] = bug_report_issue_body("val", "x", "y", "z", list(), "", shot)
+	out["body_shot_server"] = bug_report_issue_body("val", "x", "y", "z", list(), "", "server")
+	out["body_shot_bad"] = bug_report_issue_body("val", "x", "y", "z", list(), "", "https://evil.example/x.png)")
+	out["shot_urls"] = list(bug_report_screenshot_url_valid(shot), bug_report_screenshot_url_valid("https://raw.githubusercontent.com/a/b/c.png) !\[x](y"), bug_report_screenshot_url_valid("http://raw.githubusercontent.com/a.png"), bug_report_screenshot_url_valid("https://raw.githubusercontent.com/a/../b.png"))
+	out["shot_names"] = list(bug_report_screenshot_name_valid("12.png"), bug_report_screenshot_name_valid("../12.png"), bug_report_screenshot_name_valid("12.png.exe"), bug_report_screenshot_name_valid(".png"))
+	out["shot_token"] = bug_report_token_from_lines(list("BUG_REPORT_GITHUB_TOKEN github_pat_ISSUESAAAAAAAAAAAAAAAA", "BUG_REPORT_SCREENSHOT_TOKEN github_pat_PICTURESAAAAAAAAAAAAAA"), "bug_report_screenshot_token")
 	text2file(json_encode(out), "out.json")
 	del src
 '''
@@ -100,6 +107,18 @@ class BugReportFormat(unittest.TestCase):
     def test_token(self):
         self.assertEqual(self.out['token'], 'github_pat_AAAAAAAAAAAAAAAAAAAAAA')
         self.assertIsNone(self.out['token_none'])
+
+    def test_screenshot_in_body(self):
+        self.assertIn('### Screenshot\n![What the reporter saw](https://raw.githubusercontent.com/Civ13/shots/main/screens/2026-11/20261111-120000-report-4.png)', self.out['body_shot'])
+        self.assertIn("### Screenshot\nA picture of the reporter's screen was taken but not uploaded", self.out['body_shot_server'])
+        self.assertNotIn('Screenshot', self.out['body_shot_bad'])
+        self.assertNotIn('Screenshot', self.out['body'])
+        self.assertEqual(self.out['shot_urls'], [1, 0, 0, 0])
+        self.assertEqual(self.out['shot_names'], [1, 0, 0, 0])
+
+    def test_screenshot_token_is_separate(self):
+        self.assertEqual(self.out['shot_token'], 'github_pat_PICTURESAAAAAAAAAAAAAA')
+        self.assertEqual(self.out['token'], 'github_pat_AAAAAAAAAAAAAAAAAAAAAA')
 
     def test_labels(self):
         self.assertEqual(self.out['labels'], ['bug', 'In game'])

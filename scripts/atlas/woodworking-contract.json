@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
   "source": "code/modules/1713/primitive_woodworking.dm",
-  "audit_commit": "28ab4fa62e263a67d330972abccd5752ebc38c47",
-  "source_sha256": "9f6598a3e635eea797e49d12acb458e74dbb46124ead9855190116a287e00ea4"
+  "audit_commit": "5284998bd3347fef4467ed7a6cd9c49a081a257b",
+  "source_sha256": "cf0be4a80d13ecea23901a9a64d90494357e9f3f45f7d5940b974c69c9de99d6"
 }

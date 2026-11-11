@@ -25,20 +25,25 @@ processing and poisoned-arrow processing remain on their existing item types.
 
 Supported mammals are cattle, pigs/boars, goats, sheep, deer, bison, camels,
 rabbits, monkeys, cats, bears, wolves, foxes, gorillas, panthers, sabertooths,
-horses, dogs, mammoths and bats (including their subtypes).
+horses, dogs, mammoths, ground sloths and bats (including their subtypes).
 
 | Mammal product | Count |
 | --- | --- |
 | Heart, liver, kidneys, lungs, brain, intestines | One of each if `Y >= 3`; otherwise one mixed giblets portion |
 | Stomach | Existing cow/pig/goat/sheep processing stomach; other mammals with `Y >= 3` get one food stomach |
-| Sinew | One stack containing `min(4, max(1, Y-2))`, only if `Y >= 3` |
 | Bone | One stack containing `max(1, Y-2)` |
 | Fat | At most two portions, respecting existing `has_fat`, bonus and penalty |
 | Quick-butchering leather | One stack containing `max(1, Y-2)` |
 
-Chicken/rooster also yields one giblets portion. Other nonmammals do not gain
-mammalian organs, sinew, generic leather or bone. Existing reptile skinning pelts
-remain. White-wolf and giant-gorilla special pelts are selected before their base
+Sinew (one stack containing `min(4, max(1, Y-2))`, only if `Y >= 3`) and bone
+(one stack containing `max(1, Y-2)`) come from every mammal, large reptiles
+(alligators, dinosaurs except compsognathus, pachycephalosaurs, constrictors)
+and the larger birds (penguins, turkeys, geese, pelicans).
+
+Chicken/rooster also yields one giblets portion and keeps its carcass route
+without bone or sinew. Small birds (crows, gulls, pigeons) yield neither. Other
+nonmammals do not gain mammalian organs or generic leather. Existing reptile
+skinning pelts remain. White-wolf and giant-gorilla special pelts are selected before their base
 types. Species pelt counts remain in `harvest_hide()`; no new organ datums or
 organ-specific processes/timers are registered. Offal inherits the existing
 food-decay sleeping proc per portion, so bounded outputs also bound that added

@@ -459,6 +459,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ammo_casing/arrow/vial" = "archery",
 		"/obj/structure/component_workbench/fletching" = "archery",
 		// basic_tools
+		// Stone Age hide working (scrape, wash, dry, tan) is basic toolmaking.
+		"/obj/item/stack/material/dryhide" = "basic_tools",
+		"/obj/item/stack/material/hairlesshide" = "basic_tools",
+		"/obj/item/stack/material/leather" = "basic_tools",
+		"/obj/item/stack/material/wethide" = "basic_tools",
+		"/obj/item/weapon/hole_ladder" = "basic_tools",
 		"/obj/item/hemp_rope_bundle" = "basic_tools",
 		"/obj/item/stack/bark" = "basic_tools",
 		"/obj/item/stack/dressed_hemp" = "basic_tools",
@@ -665,10 +671,6 @@ var/global/list/node_grid_col_cache = null
 		// ready_made
 		"/obj/item/clothing/suit/pimpsuit" = "ready_made",
 		// resource_processing
-		"/obj/item/stack/material/dryhide" = "resource_processing",
-		"/obj/item/stack/material/hairlesshide" = "resource_processing",
-		"/obj/item/stack/material/leather" = "resource_processing",
-		"/obj/item/stack/material/wethide" = "resource_processing",
 		"/obj/item/weapon/reagent_containers/food/condiment/flour" = "resource_processing",
 		"/obj/item/weapon/reagent_containers/food/condiment/flour/barleyflour" = "resource_processing",
 		"/obj/item/weapon/reagent_containers/food/condiment/flour/oatflour" = "resource_processing",
@@ -870,7 +872,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (21) ---
+		// --- basic_tools (22) ---
+		"/obj/structure/converter/tanning" = "basic_tools",
+		"/obj/structure/dehydrator" = "basic_tools",
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/rope_spindle" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
@@ -902,6 +906,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/swatter/modern" = "basic_tools",
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
+		"/obj/structure/fish_pen" = "basic_tools",
 		// --- brickmaking (10) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
@@ -1946,8 +1951,6 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/flax_comb" = "resource_processing",
 		"/obj/structure/hemp_dressing_bench" = "resource_processing",
 		"/obj/structure/ropewalk" = "resource_processing",
-		"/obj/structure/converter/tanning" = "resource_processing",
-		"/obj/structure/dehydrator" = "resource_processing",
 		"/obj/structure/distillery" = "resource_processing",
 		"/obj/structure/mill" = "resource_processing",
 		"/obj/structure/stone_crusher" = "resource_processing",

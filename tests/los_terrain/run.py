@@ -178,7 +178,7 @@ def main():
     with tempfile.TemporaryDirectory() as work:
         work = Path(work)
         (work / 'parser.dm').write_text(parser + geometry, encoding='utf-8')
-        (work / 'los_terrain.dm').write_text((ROOT / 'code/modules/visibility/los_terrain.dm').read_text(encoding='utf-8'), encoding='utf-8')
+        (work / 'los_terrain.dm').write_text('#define LOS_EYE_CPU probe_cpu\n' + (ROOT / 'code/modules/visibility/los_terrain.dm').read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'probe.dm').write_text((Path(__file__).parent / 'probe.dm').read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'heights.txt').write_text(HEIGHTS.read_text(encoding='utf-8'), encoding='utf-8')
         (work / 'eyes.json').write_text(json.dumps(eyes), encoding='utf-8')
@@ -229,6 +229,11 @@ def main():
     if agree < 90:
         bad += 1
         print('MISMATCH NPC sight agrees with the player sweep on under 90% of pairs')
+    for name, ok in result['still_eye'].items():
+        if not ok:
+            bad += 1
+            print('MISMATCH still eye', name)
+    print('still eye cases:', ', '.join(result['still_eye']))
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')
