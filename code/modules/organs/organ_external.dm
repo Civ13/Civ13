@@ -1071,8 +1071,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage
 	// perma_injury is the brute a fracture was dealt with; it only keeps hurting
-	// while the bone is still broken, so a healed limb reads its real damage.
-	if (!(status & ORGAN_BROKEN))
+	// while the bone is still broken and loose, so a healed or splinted limb
+	// reads its real damage.
+	if (!(status & ORGAN_BROKEN) || (status & ORGAN_SPLINTED))
 		return brute_dam + burn_dam
 	return max(brute_dam + burn_dam - perma_injury, perma_injury)
 

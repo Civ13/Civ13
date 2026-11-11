@@ -274,7 +274,7 @@ class MedicalCare(unittest.TestCase):
     def test_healed_body_has_no_phantom_pain(self):
         # A mended bone stops counting its fracture damage as pain.
         damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
-        self.assertLess(damage.index("if (!(status & ORGAN_BROKEN))"), damage.index("return max(brute_dam + burn_dam - perma_injury"))
+        self.assertLess(damage.index("if (!(status & ORGAN_BROKEN) || (status & ORGAN_SPLINTED))"), damage.index("return max(brute_dam + burn_dam - perma_injury"))
         self.assertIn("return brute_dam + burn_dam", damage)
         mend = block(ORGAN, "/obj/item/organ/external/proc/mend_fracture()")
         self.assertIn("perma_injury = 0", mend)
@@ -323,6 +323,22 @@ class MedicalCare(unittest.TestCase):
                     states[icon] = dmi_states(icon)
                 self.assertIn(state, states[icon], f"{path} uses missing state {state!r} in {icon}")
         self.assertEqual(resolved["/obj/item/stack/medical/bruise_pack"], ("icons/obj/surgery.dmi", "gauze"))
+
+    def test_splinted_break_is_safe_to_move_on(self):
+        organs = (ROOT / "code/game/mob/living/carbon/human/human_organs.dm").read_text(encoding="utf-8")
+        movement = (ROOT / "code/game/mob/living/carbon/human/human_movement.dm").read_text(encoding="utf-8")
+        # A splinted bone does not count as broken for movement damage or stance.
+        self.assertIn("((status & ORGAN_BROKEN) && !(status & ORGAN_SPLINTED))", block(ORGAN, "/obj/item/organ/external/is_broken()"))
+        jostle = organs.split("l_move_time < 15", 1)[1].split("var/limbs_count", 1)[0]
+        self.assertIn("if (E.is_broken() && E.internal_organs", jostle)
+        self.assertNotIn("ORGAN_BROKEN", jostle)
+        self.assertIn("E.is_broken() || (!E.is_usable() && !(E.status & ORGAN_SPLINTED))", organs)
+        # The fracture's lasting pain floor stops once the bone is splinted.
+        damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
+        self.assertIn("if (!(status & ORGAN_BROKEN) || (status & ORGAN_SPLINTED))\n\t\treturn brute_dam + burn_dam", damage)
+        # Splinted ribs slow you less than loose ones.
+        self.assertIn("(E.status & ORGAN_BROKEN) && !(E.status & ORGAN_SPLINTED) && E.brute_dam > E.min_broken_damage", movement)
+        self.assertIn("tally += 1 // splinted ribs", movement)
 
 if __name__ == "__main__":
     unittest.main()
