@@ -224,7 +224,7 @@
 			nutrition -= 0
 			water -= 0
 
-		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS && !inducedSSD) //if sleeping in a bed (buckled!) takes ~20 hours to starve
+		else if (istype(buckled, /obj/structure/bed) && stat == UNCONSCIOUS) //if sleeping in a bed (buckled!) takes ~20 hours to starve
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
