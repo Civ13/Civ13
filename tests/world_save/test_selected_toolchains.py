@@ -57,6 +57,11 @@ REVIEWED_DURABLE_TAIL = (
     ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
     ("'Historical wound source did not reproduce the constructor failure: '",
      "'Reverted wound fix did not reproduce the constructor failure: '"),
+    # Reviewed #4448 book-mode date control and its larger import/check coverage.
+    ("'year-order': 'saved date floor lost'}",
+     "'year-order': 'saved date floor lost', 'year-book': 'book mode was not recorded'}"),
+    ("result.get('imports') != 24 or result.get('checks') != 333:",
+     "result.get('imports') != 32 or result.get('checks') != 353:"),
 )
 # Reviewed listener census change: a host without IPv6 has no tcp6 table.
 REVIEWED_LIGHTING_CENSUS = (
