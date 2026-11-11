@@ -343,7 +343,7 @@ class TileMotion(unittest.TestCase):
         read=P.fragment(CORE,'/datum/los_context/proc/decision(')
         self.assertIn('capture(presentation = FALSE, atom/focus = null)',capture)
         self.assertIn('if (focus && !presentation && focus.z == S.eye_z)',capture)
-        self.assertIn('if (presentation)\n\t\tS.eye_x = body.x + los_eye_quantized(body.step_x) / 32',capture)
+        self.assertIn('if (presentation)\n\t\tS.eye_x = body.x + los_eye_x(body) / 32',capture)
         self.assertIn('else\n\t\tS.eye_x = body.x + body.step_x / 32\n\t\tS.eye_y = body.y + body.step_y / 32',capture)
         self.assertIn('(!S.presentation || !ishuman(target))',decision)
         self.assertIn('capture(FALSE, focus)',read)
