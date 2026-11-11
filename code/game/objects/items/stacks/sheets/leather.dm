@@ -9,9 +9,9 @@
 /mob/proc/hide_worker_connected()
 	return client != null || agent_character_for(src)
 
-// Hide work needs Resource Processing; fixtures override this hook.
-/mob/proc/hide_research_allowed()
-	return crafting_node_allowed(src, "resource_processing")
+// Hide work needs Basic Tools; fixtures override this hook.
+/mob/proc/hide_research_allowed(warn = FALSE)
+	return warn ? crafting_node_allowed_or_warn(src, "basic_tools") : crafting_node_allowed(src, "basic_tools")
 
 /mob/proc/hide_preparation_wait(atom/target)
 	return do_after(src, 50, target)
@@ -24,6 +24,8 @@
 
 /obj/item/stack/material/proc/prepare_hide(mob/living/user, obj/item/tool)
 	if (!istype(src, /obj/item/stack/material/pelt) && !istype(src, /obj/item/stack/material/rawhide))
+		return FALSE
+	if (!user.hide_research_allowed(TRUE))
 		return FALSE
 	var/atom/source_loc = loc
 	var/turf/site = get_turf(src)
@@ -129,6 +131,8 @@
 
 /obj/item/stack/material/hairlesshide/attackby(obj/W, mob/user)
 	if (W.reagents)
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
 		if (!apply_hide_liquid(user, W, "water", /obj/item/stack/material/wethide))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of water. Hold the hide when using a vessel on the ground."))
 		return TRUE
@@ -141,6 +145,8 @@
 
 /obj/item/stack/material/dryhide/attackby(obj/W, mob/user)
 	if (W.reagents)
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
 		if (!apply_hide_liquid(user, W, "tannin", /obj/item/stack/material/leather))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of tannin. Hold the hide when using a vessel on the ground."))
 		return TRUE
@@ -165,7 +171,9 @@
 /obj/item/stack/bark/attackby(obj/W, mob/user)
 	if (W.reagents)
 		var/obj/vessel = W
-		if (!user.hide_research_allowed() || amount < 1 || !hide_liquid_valid(user, src, vessel, "water", 10))
+		if (!user.hide_research_allowed(TRUE))
+			return TRUE
+		if (amount < 1 || !hide_liquid_valid(user, src, vessel, "water", 10))
 			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 10 units of water. Hold the bark when using a vessel on the ground."))
 			return TRUE
 		if (!use(1))

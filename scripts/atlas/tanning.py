@@ -51,7 +51,7 @@ def add_tanning(files, add, records, variants):
                            inputs=[x['id'] for x in record['inputs']],
                            outputs=[x['id'] for x in record['outputs']],
                            steps=list(steps), tools=list(tools), conditions=conditions,
-                           era='Processing adds no era gate; rack construction retains Resource Processing research and map/faction gates.',
+                           era='Processing adds no era gate; rack construction retains Basic Toolmaking research and map/faction gates.',
                            map_notes='Animals, logs, water, vessels and construction depend on the selected map.',
                            status='source-reviewed route; native gameplay and graphical acceptance pending'))
 

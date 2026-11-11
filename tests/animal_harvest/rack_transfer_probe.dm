@@ -11,9 +11,9 @@
 /mob/living/human/rack_transfer_tester/hide_worker_connected()
 	return TRUE
 
-// Stands in for a character who knows Resource Processing; this probe covers
+// Stands in for a character who knows Basic Tools; this probe covers
 // rack transfer, not research.
-/mob/living/human/rack_transfer_tester/hide_research_allowed()
+/mob/living/human/rack_transfer_tester/hide_research_allowed(warn = FALSE)
 	return TRUE
 
 // Explicit historical wrapper adapter: reproduce #3286's discarded return

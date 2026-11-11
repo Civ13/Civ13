@@ -112,7 +112,7 @@
 
 /obj/structure/converter/tanning/attackby(obj/item/W, mob/living/user)
 	if (istype(W, /obj/item/stack/material/wethide))
-		if (!user.hide_research_allowed() || QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
+		if (!user.hide_research_allowed(TRUE) || QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
 			return TRUE
 		var/obj/item/stack/material/wethide/hide = W
 		if (hide.amount < 1 || hide.amount > hide.max_amount)

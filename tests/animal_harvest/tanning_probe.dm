@@ -6,8 +6,8 @@
 	var/tanning_duplicate_result = null
 
 // The fixture worker is not a human, so it stands in for a character who
-// knows Resource Processing. The production gate is checked separately.
-/mob/living/harvest_tester/tanning/hide_research_allowed()
+// knows Basic Tools. The production gate is checked separately.
+/mob/living/harvest_tester/tanning/hide_research_allowed(warn = FALSE)
 	return TRUE
 
 /mob/living/harvest_tester/tanning/hide_worker_connected()
@@ -344,7 +344,7 @@
 /proc/harvest_tanning_regressions(turf/site)
 	initialize_chemical_reagents()
 	var/mob/living/harvest_tester/outsider = new(site)
-	harvest_assert(!outsider.hide_research_allowed(), "Hide work skipped the Resource Processing gate")
+	harvest_assert(!outsider.hide_research_allowed(), "Hide work skipped the Basic Tools gate")
 	qdel(outsider)
 	tanning_pipeline_regression(site)
 	for (var/action in list("cancel", "drop", "deplete", "relocate", "disconnect", "concurrent", "complete", "full", "pelt", "realwait_move", "realwait_complete"))

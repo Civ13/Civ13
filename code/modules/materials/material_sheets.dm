@@ -782,6 +782,8 @@
 	var/hatchet = istype(tool, /obj/item/weapon/material/hatchet)
 	var/cost = hatchet ? 2 : 1
 	var/planks = hatchet ? 1 : 4
+	if (!crafting_node_allowed_or_warn(user, "basic_tools"))
+		return FALSE
 	var/atom/source_loc = loc
 	var/turf/site = get_turf(src)
 	if (splitting_in_progress || !log_cutting_valid(tool, user, source_loc, site, cost) || user.getStatCoeff("strength") <= 0)

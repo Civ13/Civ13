@@ -24,6 +24,19 @@ var/global/list/basic_crafting_recipes = list()
 		return H.knows_recipe_node(node_id)
 	return istype(H) && crafting_node_world_allowed(H.civilization, node_id) && (!map.recipe_knowledge_enabled() || H.knows_recipe_node(node_id))
 
+// The same check for a hand action, telling the player which knowledge is
+// missing instead of failing silently.
+/proc/crafting_node_allowed_or_warn(mob/living/human/H, node_id)
+	if (crafting_node_allowed(H, node_id))
+		return TRUE
+	var/datum/research_node/N = istext(node_id) ? get_research_node(node_id) : null
+	if (istype(H) && N)
+		if (map && map.book_research_enabled())
+			to_chat(H, SPAN_WARNING("You don't know how to do this yet. Study the <b>[N.name]</b> chapter first."))
+		else
+			to_chat(H, SPAN_WARNING("You don't know how to do this yet. It needs <b>[N.name]</b>."))
+	return FALSE
+
 // Unknown outputs fail closed. Acquisition and generic chemistry do not call this.
 /proc/crafting_recipe_allowed(mob/living/human/H, result_path_string)
 	if (!istype(H))

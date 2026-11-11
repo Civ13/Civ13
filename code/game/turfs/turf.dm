@@ -185,9 +185,16 @@ var/list/interior_areas = list(/area/caribbean/houses,
 		mover.Bump(src, TRUE)
 		return FALSE
 
-	//Finally, check objects/mobs to block entry that are not on the border
+	//Finally, check objects/mobs to block entry that are not on the border.
+	//For a free-moving body, a tree fitted to its trunk blocks only where the
+	//boxes meet (its Cross). Whole-tile movers still find the tile blocked.
+	var/trunk_mover = trunk_collision_mover(mover)
 	for (var/atom/movable/obstacle in src)
 		if (!(obstacle.flags & ON_BORDER))
+			if (trunk_mover && istype(obstacle, /obj/structure/wild))
+				var/obj/structure/wild/W = obstacle
+				if (W.trunk_fitted)
+					continue
 			if (!obstacle.CanPass(mover, mover.loc, TRUE, FALSE) && (forget != obstacle))
 				mover.Bump(obstacle, TRUE)
 				return FALSE
