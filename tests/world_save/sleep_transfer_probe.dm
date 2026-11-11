@@ -48,6 +48,11 @@ var/list/sleep_visibility_events = list()
 	var/datum/sleep_fixture_axis/axis
 /datum/sleep_fixture_axis
 	var/driver
+// Production buckle_mob settles free-moving bodies on their tile; its subtile
+// ownership flags are not modelled here, so only the step reset is adapted.
+/mob/living/proc/settle_on_tile()
+	step_x = 0
+	step_y = 0
 /mob/living/human
 	var/lastx = 0
 	var/lasty = 0
