@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '32ccaf8f41e2873e91bb4f5443ee7716a9f425e5'
+WIKI_REVIEWED_REVISION = '43bbdb234d7f6af203273624db80900bc367ba77'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('3f9a7214ff822a77b3d9f229ce8f62b3827c3aa81afdc7e1a46cd47747788455', 'character skills traits languages'),
@@ -98,7 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('8c1351a687fa247024a13bc9e119ae0732691bc3cfad32de313026918bfd0178', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('b7baeb9d7f40c2c3fd30678c2469521aa47804c4c988b881966d578f78e2670b', 'weapons gun reload ammunition'),
-    'New_Player_Guide.md': ('af322677d304c9224ba20e341da692411fe69da428dca2fc2886b9b55e469583', 'new player beginner start first round basics'),
+    'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('3dadc2ec9bc22e0149f7dd2c384171090893c48979f1230888c5ee96232ba142', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
