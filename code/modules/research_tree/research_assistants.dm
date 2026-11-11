@@ -92,6 +92,11 @@ var/global/list/research_assistant_ranks = list(
 		unpaid_warned = TRUE
 		say("I've worked off my wages. Pay me if you want me to go on.")
 
+// An assistant has no player, but it is awake and at work: never put it to
+// sleep as a logged-off body (that would also drop its pencil).
+/mob/living/human/research_assistant/ssd_check()
+	return FALSE
+
 // They buy their own food and water out of their wages.
 /mob/living/human/research_assistant/Life()
 	. = ..()

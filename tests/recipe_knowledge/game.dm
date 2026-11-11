@@ -464,6 +464,11 @@ var/mob/living/human/assistant_fixture_employer = null
 /mob/living/human/research_assistant/employer_mob()
 	return assistant_fixture_employer && assistant_fixture_employer.scholar_identity() == employer_id ? assistant_fixture_employer : null
 
+/proc/newcomer_ssd_control()
+	var/mob/living/human/knowledge_fixture/plain = new(locate(1,1,1))
+	. = plain.ssd_check()
+	qdel(plain)
+
 /proc/check_research_assistants(mob/living/human/scholar)
 	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(5,2,1))
 	bench.tier = 1
@@ -494,6 +499,8 @@ var/mob/living/human/assistant_fixture_employer = null
 	assistant_fixture_employer = scholar
 	scholar.scholarship["engineering"] = 74
 	var/skill_before = scholar.scholar_level("engineering")
+	// The fixture has no HUD for a full status update; check the gate it uses.
+	knowledge_check(A.species.show_ssd && !(A.species.show_ssd && A.ssd_check()) && newcomer_ssd_control(), "the status update won't put the assistant to sleep as a logged-off body")
 	knowledge_check(A.scholar_level("engineering") == 74 && A.research_presence(), "the assistant works with the employer's scholarship")
 	bench.analysis_tick()
 	knowledge_check(B.research_ticks("iron_tools") > 0 && B.research_ticks("iron_tools") <= bench.base_tick_rate * 2 * 0.5 + 0.01, "a clerk researches at half the employer's pace")
