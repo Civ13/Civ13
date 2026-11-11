@@ -198,6 +198,12 @@ var/global/list/region_travel_carry_types = list(
 	if(learned.len)
 		P["v"] = 3
 		P["scholarship"] = learned
+	// Chapters read part-way (study_progress.dm) travel too, so a reader
+	// continues them in the next region. Optional: absent means none.
+	var/list/reading = clean_study_progress(study_progress)
+	if(reading.len)
+		P["v"] = max(P["v"], 2)
+		P["reading"] = reading
 	if(P["v"] >= 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
@@ -233,6 +239,8 @@ var/global/list/region_travel_carry_types = list(
 		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
 	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
 		return null
+	if("reading" in P)
+		if(P["v"] < 2 || !region_travel_reading_valid(P["reading"])) return null
 	if(P["v"] == 3)
 		if(!region_travel_scholarship_valid(P["scholarship"])) return null
 	else if("scholarship" in P)
@@ -287,6 +295,15 @@ var/global/list/region_travel_carry_types = list(
 	if(clean.len != length(value)) return FALSE
 	for(var/discipline in value)
 		if(value[discipline] != clean[discipline]) return FALSE
+	return TRUE
+
+// Partial reading travels exactly: valid node ids with fractions in (0, 1).
+/proc/region_travel_reading_valid(value)
+	if(!islist(value) || !length(value) || length(value) > length(research_nodes)) return FALSE
+	var/list/clean = clean_study_progress(value)
+	if(clean.len != length(value)) return FALSE
+	for(var/id in value)
+		if(abs(value[id] - clean[id]) > 0.001) return FALSE
 	return TRUE
 
 // The path an item entry rebuilds, or null when it is not allowed.
@@ -392,6 +409,7 @@ var/global/list/region_travel_carry_types = list(
 	H.known_recipe_nodes = P["v"] >= 2 ? P["known_recipe_nodes"].Copy() : list()
 	H.recipe_knowledge_initialized = P["v"] >= 2 ? P["recipe_knowledge_initialized"] : FALSE
 	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
+	H.study_progress = clean_study_progress(P["reading"])
 	H.gender = P["gender"]
 	H.age = P["age"]
 	H.fully_replace_character_name(H.real_name, P["name"])

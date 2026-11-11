@@ -61,7 +61,7 @@ def main(argv=None):
         dme = dme.replace('code\\world.dm', prefix + '_world.dm').replace('code\\controllers\\mc\\globals.dm', prefix + '_globals.dm')
         dme = re.sub(r'(?m)^#include ".*\.dmm"\s*$', '', dme)
         # Timed actions wait through a fixture stub; everything else is production source.
-        for name in ('book_research', 'book_pages', 'book_interface'):
+        for name in ('book_research', 'book_pages', 'book_interface', 'study_progress'):
             source = (ROOT / ('code/modules/research_tree/%s.dm' % name)).read_text()
             if 'do_after(' not in source and name != 'book_interface':
                 print('FAIL: %s.dm has no timed action to adapt' % name)

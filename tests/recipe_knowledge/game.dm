@@ -139,6 +139,7 @@ var/knowledge_failures = 0
 		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
+		knowledge_check(reloaded_scholar && reloaded_scholar.study_fraction("field_defenses") == 0.25, "a chapter read part-way survives reload")
 		var/obj/item/weapon/book/reloaded_diary
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))
@@ -256,7 +257,9 @@ var/knowledge_failures = 0
 	var/mob/living/human/knowledge_fixture/novice = new(locate(6,7,1))
 	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
 	check_chapter_sorting(scholar, novice)
+	check_study_progress(scholar, novice)
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
+	knowledge_check(!scholar.study_fraction("iron_tools") && scholar.study_fraction("field_defenses") == 0.25, "learning a chapter clears only its own reading progress")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && plank_making_allowed(novice), "anyone can make planks without Basic Toolmaking")
 	check_book_pages(scholar, novice, journal)
@@ -740,3 +743,36 @@ var/knowledge_failures = 0
 	var/list/lines = chapter_reading_summary(scholar, shelf.research_chapter_list())
 	knowledge_check(lines.len == 2 && findtext(lines[1], "new to you: [iron_name]") && findtext(lines[2], "already know: [tools_name]"), "examining the book splits new and known chapters")
 	qdel(shelf)
+
+// Stopping part-way through a chapter keeps the part read (Val, 2026-11-11).
+/proc/check_study_progress(mob/living/human/scholar, mob/living/human/novice)
+	var/iron_name = get_research_node("iron_tools").name
+	knowledge_check(!scholar.study_fraction("iron_tools") && scholar.study_time_left("iron_tools", 1000) == 1000, "an unread chapter takes the full time")
+	scholar.note_study_progress("iron_tools", 0.4)
+	knowledge_check(scholar.study_percent("iron_tools") == 40 && scholar.study_time_left("iron_tools", 1000) == 600, "a chapter read part-way takes only the rest of the time")
+	var/obj/item/weapon/book/shelf = new(locate(6,6,1))
+	shelf.research_chapters = "iron_tools"
+	var/list/choices = chapter_reading_choices(scholar, shelf.research_chapter_list())
+	knowledge_check(choices.len == 1 && choices[1] == "Continue: [iron_name] (40% read)" && choices[choices[1]] == "iron_tools", "the book offers to continue a chapter read part-way")
+	var/list/novice_choices = chapter_reading_choices(novice, shelf.research_chapter_list())
+	knowledge_check(novice_choices.len == 1 && novice_choices[1] == "Needs groundwork: [iron_name]", "another reader keeps their own progress")
+	var/list/book_data = shelf.research_book_ui_data(scholar)
+	var/list/rows = book_data["chapters"]
+	var/list/row = rows.len ? rows[1] : list()
+	knowledge_check(row["read_percent"] == 40, "the book window shows how far the reader got")
+	qdel(shelf)
+	scholar.note_study_progress("field_defenses", 5)
+	knowledge_check(abs(scholar.study_fraction("field_defenses") - 0.99) < 0.001, "reading progress never finishes a chapter by itself")
+	scholar.note_study_progress("field_defenses", 0)
+	knowledge_check(!("field_defenses" in scholar.study_progress), "zero progress is dropped")
+	scholar.note_study_progress("field_defenses", 0.25)
+	var/list/cleaned = clean_study_progress(list("iron_tools" = 0.5, "bogus" = 0.5, "basic_tools" = 2, "field_defenses" = "x"))
+	knowledge_check(cleaned.len == 1 && cleaned["iron_tools"] == 0.5, "restored reading progress is validated")
+	var/old_owner = scholar.persistence_owner_ckey
+	scholar.persistence_owner_ckey = "fixturescholar"
+	var/list/P = region_travel_decode(scholar.region_travel_payload(list()))
+	scholar.persistence_owner_ckey = old_owner
+	knowledge_check(P && islist(P["reading"]) && abs(P["reading"]["iron_tools"] - 0.4) < 0.001 && abs(P["reading"]["field_defenses"] - 0.25) < 0.001, "reading progress travels between regions")
+	if (P)
+		P["reading"] = list("bogus" = 0.5)
+		knowledge_check(!region_travel_decode(json_encode(P)), "travelling reading progress is validated")
