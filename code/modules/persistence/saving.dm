@@ -21,7 +21,9 @@
 	// so yield only to queued work instead of giving up whole ticks (about
 	// 20-40% faster on Gaia's busiest level).
 	var/datum/persistence_world_operation/operation = persistence_active_operation
-	var/shutdown = operation && operation.shutdown_save
+	// An unattended save (no client connected when its level started) has
+	// nobody to keep responsive either, so it yields the same way.
+	var/shutdown = operation && (operation.shutdown_save || saving_unattended)
 	if(saving_work >= 8192 || (!shutdown && (world.tick_usage - saving_slice_start >= 20 || world.tick_usage >= 80)))
 		saving_work = 0
 		if(!shutdown && world.tick_usage >= 80)
@@ -29,6 +31,12 @@
 		else
 			sleep(0)
 		saving_slice_start = world.tick_usage
+
+// TRUE when no client is connected: the world has no one to keep responsive.
+/proc/persistence_save_unattended()
+	for(var/client/C)
+		return FALSE
+	return TRUE
 
 /map_storage/proc/Save_World()
 	return run_world_operation("save")
@@ -118,6 +126,7 @@
 	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		saving_unattended = persistence_save_unattended()
 		// Freeze this level's players only while it is captured (restart_transaction.dm).
 		persistence_freeze_level(A)
 		saving_content_owners = alist()
