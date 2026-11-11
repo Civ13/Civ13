@@ -69,13 +69,12 @@
 	if (loc != user && anchored)
 		if (on)
 			on = FALSE
-			return
 		else if (!on && fuel > 0)
 			on = TRUE
-			return
 		else
 			on = FALSE
-			return
+		update_icon()
+		return
 	..()
 
 /obj/item/flashlight/lantern/on

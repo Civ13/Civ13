@@ -4,6 +4,7 @@ No compiler, game or network. They pin the declarations that give portable
 lights finite fuel and a refill route, and that make torches from tool handles.
 """
 from pathlib import Path
+import importlib.util
 import re
 import unittest
 
@@ -34,6 +35,49 @@ def proc_body(text, path):
 
 
 class LightFuelTests(unittest.TestCase):
+    def test_anchored_lantern_toggle_refreshes_light_and_preserves_pickup_dispatch(self):
+        spec = importlib.util.spec_from_file_location('light_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        body = proc_body(source(LANTERN), '/obj/item/flashlight/lantern/attack_hand')
+        icon = proc_body(source(FLASHLIGHT), '/obj/item/flashlight/update_icon')
+        self.assertIn('icon_state = on_state\n\t\tset_light(brightness_on)', icon)
+        self.assertIn('icon_state = off_state\n\t\tset_light(0)', icon)
+
+        def exercise(selected_body):
+            # Project the actual hand handler; these substitutions bind its DM fields
+            # and parent call to a fake light rather than simulating the game engine.
+            projected = re.sub(r'\b(loc|anchored|on|fuel)\b', r'src.\1', selected_body)
+            projected = projected.replace('update_icon()', 'src.update_icon()').replace('..()', 'parent()')
+            run = adapter.project('/test/proc/run()\n' + projected, '/test/proc/run', 'src, user, parent', {})
+
+            class Light:
+                def __init__(self, loc, anchored, on, fuel):
+                    self.loc, self.anchored, self.on, self.fuel = loc, anchored, on, fuel
+                    self.rendered = None
+                    self.refreshes = 0
+                def update_icon(self):
+                    self.rendered = self.on
+                    self.refreshes += 1
+
+            user = object()
+            for initial, fuel, expected in ((True, 10, False), (True, 0, False),
+                                             (False, 10, True), (False, 0, False)):
+                light = Light(object(), True, initial, fuel)
+                parent_calls = []
+                run(light, user, lambda: parent_calls.append(True))
+                self.assertEqual((light.on, light.rendered, light.refreshes, parent_calls),
+                                 (expected, expected, 1, []))
+            for loc, anchored in ((user, True), (object(), False)):
+                light = Light(loc, anchored, False, 10)
+                parent_calls = []
+                run(light, user, lambda: parent_calls.append(True))
+                self.assertEqual((light.on, light.refreshes, parent_calls), (False, 0, [True]))
+
+        exercise(body)
+        with self.assertRaises(AssertionError):
+            exercise(body.replace('\t\tupdate_icon()\n', '', 1))
+
     def test_military_lens_cycles_keep_both_sprite_families_and_effect_order(self):
         text = source(LANTERN)
         base = '/obj/item/flashlight/militarylight'
