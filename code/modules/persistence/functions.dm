@@ -552,6 +552,8 @@ map_storage
 		list/loading_level_link_targets = list()
 		list/loading_level_link_fields = list()
 		var/saving_work = 0
+		// Set per level by save_world_contents; see save_work_check.
+		var/saving_unattended = FALSE
 		var/saving_slice_start = 0
 		list/all_loaded = list()
 		list/found_types = list()
@@ -697,6 +699,7 @@ map_storage
 	loading_level_link_targets = list()
 	loading_level_link_fields = list()
 	saving_work = 0
+	saving_unattended = FALSE
 	saving_slice_start = world.tick_usage
 	saving_references = alist()
 	existing_references = alist()
