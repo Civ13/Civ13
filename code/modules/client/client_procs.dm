@@ -21,6 +21,12 @@
 	If you have any  questions about this stuff feel free to ask. ~Carn
 	*/
 /client/Topic(href, href_list, hsrc)
+	// Chat connection watchdog ping (interface/chat/chat.html). Answered
+	// before anything else so a client between mobs still gets its reply.
+	if (href_list["chat_ping"])
+		src << output("1", "browser_chat:chatPong")
+		return
+
 	if (!usr || usr != mob)	//stops us calling Topic for somebody else's client. Also helps prevent usr=null
 		return
 

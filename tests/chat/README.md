@@ -33,3 +33,11 @@ hidden until admin output arrives, that custom tabs are saved, that a flood of
 one type does not trim another, and that malformed saved settings fall back to
 the defaults. Set `CHAT_SCREENSHOT` to a path to save a picture of the
 settings panel.
+
+`chat-connection.browser.test.js` checks the connection watchdog. The server
+starts it from `on_ready()` and answers each `chat_ping` with `chatPong`. The
+test captures pings instead of sending them and checks that nothing pings
+before the start, that answered pings never warn, that unanswered pings warn
+once with a "Connection lost" notice shown on every tab, that an answer or any
+game message reports "Connection restored", and that timer ticks further apart
+than the timeout (a throttled hidden window) do not raise a false alarm.

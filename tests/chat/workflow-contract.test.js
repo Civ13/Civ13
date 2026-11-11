@@ -15,14 +15,18 @@ for (const marker of ['timeout-minutes: 10', 'timeout-minutes: 5', 'timeout-minu
   "node-version: '24.22.1'", 'npm ci --ignore-scripts --prefix tgui',
   'CHAT_NO_RESIZE_OBSERVER=1 node tests/chat/chat-scroll.browser.test.js',
   'CHAT_NEGATIVE_CONTROL=1 node tests/chat/chat-scroll.browser.test.js',
-  'node tests/chat/chat-filter.browser.test.js']) {
+  'node tests/chat/chat-filter.browser.test.js',
+  'node tests/chat/chat-connection.browser.test.js']) {
   assert.ok(workflow.includes(marker), marker);
 }
 assert.ok(!/DreamDaemon|DreamMaker|workflow_dispatch|schedule:/.test(workflow), 'no native/manual/scheduled execution');
-assert.ok(backend.includes("browse('interface/chat/chat.html'"));
+assert.ok(/browse\((?:client, )?'interface\/chat\/chat\.html'/.test(backend), 'chat page browse call');
 assert.ok(backend.includes('browser_chat:receiveMessage'));
 assert.ok(chat.includes('window.receiveMessage = receiveMessage;'));
 assert.ok(chat.includes('window.clearChat = clearChat;'));
 assert.ok(chat.includes("const TAB_STORAGE_KEY = 'civ13-chat-tabs-v1';"), 'chat tab settings key');
 assert.ok(read('code/__defines/chat.dm').includes("#define CHAT_TYPED(kind, message) (\"<span class='chattype-\" + kind"), 'server chat type tag');
+assert.ok(backend.includes('browser_chat:startChatHeartbeat'), 'server starts the connection watchdog');
+assert.ok(read('code/modules/client/client_procs.dm').includes('browser_chat:chatPong'), 'server answers chat pings');
+assert.ok(chat.includes('window.chatPong = heardFromServer;') && chat.includes("'byond://?chat_ping='"), 'page ping bridge');
 console.log('PASS chat workflow and delivery contracts');
