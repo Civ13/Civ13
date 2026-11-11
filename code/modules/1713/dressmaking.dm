@@ -79,7 +79,10 @@
 /obj/item/dressmaking_project/attack_self(mob/living/human/user)
 	var/turf/site = get_turf(user)
 	var/datum/save_epoch = persistence_admission_identity
-	if (dressmaking_busy || !actor_ready(user, site, save_epoch) || stage >= 2)
+	if (dressmaking_busy || stage >= 2)
+		return
+	// Say which knowledge is missing: a project can be handed to someone untrained.
+	if (!crafting_node_allowed_or_warn(user, "fine_garments") || !actor_ready(user, site, save_epoch))
 		return
 	dressmaking_busy = TRUE
 	design_menu(user, site, save_epoch)

@@ -136,6 +136,7 @@ class DressmakingTests(unittest.TestCase):
         self.assertRegex(body, r'if \("Preview"\)\n\s+show_design\(user\)\n\s+return')
         attack = adapter.extract(SOURCE, '/obj/item/dressmaking_project/attack_self')
         self.assertLess(attack.index('dressmaking_busy = TRUE'), attack.index('design_menu('))
+        self.assertLess(attack.index('crafting_node_allowed_or_warn(user, "fine_garments")'), attack.index('dressmaking_busy = TRUE'))
         self.assertGreater(attack.index('dressmaking_busy = FALSE'), attack.index('design_menu('))
         self.assertIn('stage == 0 && dressmaking_cut(selected_cut)', body)
         self.assertIn('stage != 0 || !dressmaking_color_valid(selected_color)', body)
