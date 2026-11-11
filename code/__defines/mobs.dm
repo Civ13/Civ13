@@ -79,3 +79,5 @@
 // human_subtile_glide_distance). Later chained steps glide at the exact pace.
 #define HUMAN_SUBTILE_GLIDE_BUFFER_MIN 6
 #define HUMAN_SUBTILE_GLIDE_BUFFER_MAX 8
+// Largest drawn lag free movement smooths out; anything bigger is drawn as a jump.
+#define HUMAN_SUBTILE_SMOOTH_MAX 12
