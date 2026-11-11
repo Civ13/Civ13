@@ -112,7 +112,7 @@
 
 /obj/structure/converter/tanning/attackby(obj/item/W, mob/living/user)
 	if (istype(W, /obj/item/stack/material/wethide))
-		if (!crafting_node_allowed(user, "resource_processing") || QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
+		if (!user.hide_research_allowed() || QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
 			return TRUE
 		var/obj/item/stack/material/wethide/hide = W
 		if (hide.amount < 1 || hide.amount > hide.max_amount)
@@ -125,7 +125,7 @@
 			return TRUE
 		if (QDELETED(src) || QDELETED(hide))
 			return TRUE
-		if (QDELETED(user) || !crafting_node_allowed(user, "resource_processing") || loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
+		if (QDELETED(user) || !user.hide_research_allowed() || loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
 			if (hide.loc == src)
 				if (!QDELETED(user))
 					user.put_in_hands(hide) // Normal inventory API falls back to a safe turf.

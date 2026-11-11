@@ -38,6 +38,10 @@ var/global/tanning_recipe_config = 'config/crafting/material_recipes_global.txt'
 		var/list/forced_recipes = M.get_recipes_civs(forced = TRUE)
 		harvest_assert(!forced_recipes.len, "Forced catalog retained intermediate recipes: [name]")
 		M.hardness = old_hardness
+	// The fixture skips world startup, so build the production recipe-to-node
+	// map; without it every node-gated row reads as unmapped and is dropped.
+	if (!recipe_node_requirements.len)
+		build_research_tree()
 	for (var/name in list("leather", "cowpelt", "iron"))
 		var/material/M = get_material_by_name(name)
 		M.generate_recipes_civs(list(100,100,100), "global")
