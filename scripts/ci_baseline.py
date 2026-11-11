@@ -393,6 +393,11 @@ SUITES = {
     'mood_sleep': {'files': ('tests/mood_sleep/test_mood_sleep.py',),
         'paths': ('tests/mood_sleep/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',)},
+    # Human form priority and reset-callback projections; no native world.
+    'human_life_forms': {'files': ('tests/human_life_forms/test_forms.py',),
+        'paths': ('tests/human_life_forms/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete startup observer projections and hook contracts; fake timers/Export.
     'game_ready': {'files': ('tests/game_ready/test_release.py',
                              'tests/game_ready/test_ready.py',
