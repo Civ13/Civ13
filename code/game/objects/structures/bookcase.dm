@@ -124,6 +124,17 @@
 			return
 	return FALSE
 
+/obj/structure/bookcase/proc/credit_named_faction_research(mob/living/user, research)
+	if (anti_abuse(user, research[1], research[2], research[3], sum_i, sum_m, sum_h))
+		sum_i = null
+		sum_m = null
+		sum_h = null
+		return FALSE
+	research[1] += sum_i
+	research[2] += sum_m
+	research[3] += sum_h
+	return TRUE
+
 /obj/structure/bookcase/proc/check_research()
 	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
 		return
@@ -250,65 +261,23 @@
 				return
 
 			if (user.civilization == civname_a)
-				if(anti_abuse(user, map.civa_research[1], map.civa_research[2], map.civa_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.civa_research))
 					return
-				else
-					map.civa_research[1] += sum_i
-					map.civa_research[2] += sum_m
-					map.civa_research[3] += sum_h
 			else if (user.civilization == civname_b)
-				if(anti_abuse(user, map.civb_research[1], map.civb_research[2], map.civb_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.civb_research))
 					return
-				else
-					map.civb_research[1] += sum_i
-					map.civb_research[2] += sum_m
-					map.civb_research[3] += sum_h
 			else if (user.civilization == civname_c)
-				if(anti_abuse(user, map.civc_research[1], map.civc_research[2], map.civc_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.civc_research))
 					return
-				else
-					map.civc_research[1] += sum_i
-					map.civc_research[2] += sum_m
-					map.civc_research[3] += sum_h
 			else if (user.civilization == civname_d)
-				if(anti_abuse(user, map.civd_research[1], map.civd_research[2], map.civd_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.civd_research))
 					return
-				else
-					map.civd_research[1] += sum_i
-					map.civd_research[2] += sum_m
-					map.civd_research[3] += sum_h
 			else if (user.civilization == civname_e)
-				if(anti_abuse(user, map.cive_research[1], map.cive_research[2], map.cive_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.cive_research))
 					return
-				else
-					map.cive_research[1] += sum_i
-					map.cive_research[2] += sum_m
-					map.cive_research[3] += sum_h
 			else if (user.civilization == civname_f)
-				if(anti_abuse(user, map.civf_research[1], map.civf_research[2], map.civf_research[3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_named_faction_research(user, map.civf_research))
 					return
-				else
-					map.civf_research[1] += sum_i
-					map.civf_research[2] += sum_m
-					map.civf_research[3] += sum_h
 
 			user.adaptStat("philosophy", 1*current_research)
 			to_chat(user, "You finish studying these documents. The knowledge gained will be useful in the development of our society.")
