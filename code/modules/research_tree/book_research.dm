@@ -246,6 +246,7 @@
 		to_chat(user, SPAN_NOTICE("You place [B] beside [books[1]]. Chapters can be copied between the two."))
 	else
 		to_chat(user, SPAN_NOTICE("You place [B] on the bench. Research done here will be written into it."))
+	tutorial_event_for(user, "research")
 	book_refresh_ui()
 
 // The research book becomes the other one.
@@ -399,6 +400,7 @@
 		else
 			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
+		tutorial_event_for(H, "research")
 		return TRUE
 	return FALSE
 
