@@ -14115,12 +14115,13 @@
         "/obj/item/stack/grass_cuttings"
       ],
       "tools": [
-        "/obj/item/weapon/flint"
+        "/obj/item/weapon/flint",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
       ],
       "steps": [
-        "Sharpen flint against a rock, then use it on grass. Remain adjacent with the tool while cutting. Collect two portions of grass cuttings."
+        "Sharpen flint against a rock, or take any sharp knife, then use it on grass. Remain adjacent with the tool while cutting. Collect two portions of grass cuttings."
       ],
-      "conditions": "Conscious connected actor holding sharpened flint; action changes the grass turf, so this is a terrain-consuming route.",
+      "conditions": "Conscious connected actor holding sharpened flint or a sharp knife; action changes the grass turf, so this is a terrain-consuming route.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
