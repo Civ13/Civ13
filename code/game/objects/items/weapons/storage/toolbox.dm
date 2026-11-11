@@ -54,9 +54,10 @@
 
 	New()
 		..()
-		var/color = pick("red","yellow","green","blue","pink","orange","cyan","white")
+		// Both coils share one colour. The third stack argument is the merge flag, so pass FALSE.
+		var/coil_type = pick(/obj/item/stack/cable_coil/red, /obj/item/stack/cable_coil/yellow, /obj/item/stack/cable_coil/green, /obj/item/stack/cable_coil/blue, /obj/item/stack/cable_coil/pink, /obj/item/stack/cable_coil/orange, /obj/item/stack/cable_coil/cyan, /obj/item/stack/cable_coil/white)
 		new /obj/item/weapon/wrench(src)
 		new /obj/item/weapon/wirecutters/boltcutters(src)
 		new /obj/item/weapon/crowbar/prybar(src)
-		new /obj/item/stack/cable_coil(src,30,color)
-		new /obj/item/stack/cable_coil(src,30,color)
+		new coil_type(src, 30, FALSE)
+		new coil_type(src, 30, FALSE)
