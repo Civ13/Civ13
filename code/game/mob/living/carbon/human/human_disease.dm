@@ -45,7 +45,6 @@
 				emote(pick("cough","sneeze"))
 				bodytemperature = 312.15
 			else if (disease_progression >= 60 && disease_progression < 180 && bodytemperature < 313.15 && prob(1))
-				adjustBrainLoss(rand(7,10))
 				to_chat(src, "You feel your body burning up from fever!")
 				apply_effect(10, AGONY, FALSE)
 				apply_effect(5, DROWSY, FALSE)

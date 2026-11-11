@@ -1221,6 +1221,15 @@ SUITES = {
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
         'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
+    'injury_recovery': {'files': ('tests/injury_recovery/test_source.py',
+        'tests/disease_immunity/test_source.py', 'tests/illness_pain_body_heat/test_source.py'),
+        'paths': ('tests/injury_recovery/', 'tests/disease_immunity/', 'tests/illness_pain_body_heat/'),
+        'shared_paths': ('code/modules/organs/organ.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/brain.dm', 'code/modules/organs/pain.dm',
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/game/mob/living/carbon/human/human_disease.dm',
+            'code/game/mob/living/carbon/human/severe_disease.dm',
+            'code/game/mob/living/carbon/human/immunity.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',

@@ -36,10 +36,21 @@ class DiseaseImmunity(unittest.TestCase):
         self.assertLess(body.index("if (stat == DEAD)"), body.index("if (handle_immunity())"))
         self.assertIn('#include "code\\game\\mob\\living\\carbon\\human\\immunity.dm"', read("civ13.dme"))
 
-    def test_untreated_severe_illness_still_kills_first(self):
-        # Severe illness kills untreated at progression 1200 (one per second).
-        self.assertIn("disease_progression >= 1200", read(HUMAN + "severe_disease.dm"))
-        self.assertLess(1200 * self.untreated, self.full)
+    def test_untreated_severe_illness_can_recover(self):
+        severe = read(HUMAN + "severe_disease.dm")
+        self.assertNotIn("death()", severe)
+        self.assertNotIn("adjustToxLoss", severe)
+        self.assertNotIn("adjustBrainLoss", severe)
+        self.assertAlmostEqual(self.full / self.untreated, 2000)
+        self.assertIn("if (updated >= IMMUNITY_FULL)", self.src)
+        self.assertIn("clear_disease()", self.src)
+
+    def test_ordinary_flu_does_not_damage_brain(self):
+        disease = read(HUMAN + "human_disease.dm")
+        flu = disease.split('else if (disease_type == "flu")', 1)[1].split('else if (disease_type == "zombie")', 1)[0]
+        self.assertNotIn("adjustBrainLoss", flu)
+        self.assertIn("disease_progression >= 240", flu)
+        self.assertIn("adjustBrainLoss(200)", disease)  # exceptional zombie course unchanged
 
     def test_interrupted_treatment_cannot_hold_an_illness_forever(self):
         # Alternate 60 s on medicine and 30 s off: courses never finish (180
