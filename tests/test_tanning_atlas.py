@@ -82,8 +82,8 @@ class TanningAtlasTests(unittest.TestCase):
         rack = self.recipe('Rack-dry washed hides')
         self.assertEqual(rack['processor'], 'tanning_rack')
         self.assertEqual(rack['station'], tanning.STATION)
-        self.assertEqual(rack['unlock_eras'], [1])
-        self.assertIn('Station construction research: resource_processing', rack['era_basis'])
+        self.assertEqual(rack['unlock_eras'], [0])
+        self.assertIn('Station construction research: basic_tools', rack['era_basis'])
         self.assertEqual([(x['id'], x['quantity']) for x in rack['inputs']],
                          [('/material/wethide', 'n pieces'), (tanning.STATION, 'station; not consumed')])
         self.assertEqual(rack['outputs'][0]['quantity'], 'n pieces')

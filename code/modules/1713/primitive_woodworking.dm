@@ -117,6 +117,8 @@
 /proc/woodwork_begin(obj/item/stack/material/source, mob/living/human/user, obj/item/tool, mode)
 	if (!istype(user) || QDELETED(source) || QDELETED(user) || QDELETED(tool) || source.woodwork_owner || user.woodwork_owner || tool.woodwork_owner)
 		return FALSE
+	if (!crafting_node_allowed_or_warn(user, "basic_tools"))
+		return FALSE
 	var/datum/primitive_woodwork_action/action = new(source, user, tool, mode)
 	if (!action.valid())
 		qdel(action)

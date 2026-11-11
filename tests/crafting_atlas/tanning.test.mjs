@@ -29,7 +29,7 @@ elements.get('processor').onchange();
 assert.equal(elements.get('count').textContent, '1 recipe matches');
 elements.get('catalog').children[0].onclick();
 assert.equal(elements.get('title').textContent, 'Rack-dry washed hides');
-assert(elements.get('conditions').textContent.includes('resource_processing'));
+assert(elements.get('conditions').textContent.includes('basic_tools'));
 assert(elements.get('conditions').textContent.includes('300 ticks'));
 assert(text(elements.get('diagram')).includes('station; not consumed'));
 const station = elements.get('relations').children.find(x => x.textContent === 'tanning rack');
