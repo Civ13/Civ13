@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SNACKS = 'code/modules/reagents/reagent_containers/food/snacks.dm'
 OVEN = 'code/game/objects/structures/kitchen/oven.dm'
 CONTROLS = {
+ 'flatten': (SNACKS, 'reagents.trans_to_obj(flat, reagents.total_volume)', 'reagents.trans_to_obj(flat, 0)', 'FAIL: flattened dough retains its actual reagents'),
  'oven': (OVEN, 'if (D.check_risen())', 'if (D)', 'FAIL: unleavened dough bakes flat'),
  'payment': (SNACKS, 'W.reagents.remove_reagent("enzyme", DOUGH_YEAST_AMOUNT)', 'W.reagents.remove_reagent("enzyme", 0)', 'FAIL: kneading consumes five units of yeast'),
  'rising': (SNACKS, 'if (!leavened || world.time < rise_ready_at)', 'if (!leavened)', 'FAIL: yeasted dough must rise before baking'),
@@ -47,6 +48,7 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--negative-control', choices=CONTROLS)
     parser.add_argument('--source-check', action='store_true')
+    parser.add_argument('--compile-only', action='store_true', help='compile the isolated probe without starting DreamDaemon')
     args = parser.parse_args()
     if args.source_check:
         for control in (None, *CONTROLS):
@@ -107,6 +109,9 @@ def main():
         (args.output / 'compile.log').write_text(output, encoding='utf-8')
         if build.returncode or PINNED_BYOND not in output or '0 errors, 0 warnings' not in output:
             raise RuntimeError('Pinned compile failed: ' + output[-4000:])
+        if args.compile_only:
+            print('PASS: isolated yeast probe compiled; runtime not launched')
+            return
         with tempfile.TemporaryDirectory(prefix='civ13-yeast-runtime-') as temporary:
             work = Path(temporary)
             for path in generated[5:]:

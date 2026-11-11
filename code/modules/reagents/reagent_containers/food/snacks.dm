@@ -1916,7 +1916,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		start_rising()
 		return TRUE
 	else if (istype(W,/obj/item/weapon/material/kitchen/rollingpin))
-		new /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough(get_turf(src))
+		var/obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough/flat = new(get_turf(src))
+		flat.reagents.clear_reagents()
+		reagents.trans_to_obj(flat, reagents.total_volume)
 		to_chat(user, "You flatten the dough.")
 		qdel(src)
 	else if (W.sharp || W.edge)
