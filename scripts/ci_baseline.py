@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'physical_interaction': {'files': ('tests/physical_interaction/test_touch.py',),
+        'paths': ('tests/physical_interaction/',),
+        'shared_paths': ('code/game/objects/objs.dm', 'code/game/objects/structures.dm',
+                         'code/modules/1713/weapons/guns/mg/_stationary.dm',
+                         'tests/save_movement/source_adapter.py')},
     'shield_block': {'files': ('tests/shield_block/test_block.py',),
         'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

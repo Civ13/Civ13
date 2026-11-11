@@ -42,6 +42,20 @@
 	..(user,distance)
 	return distance == -1 || (get_dist(src, user) <= distance)
 
+// Shared touch admission for structures and stationary guns. Keep caller-specific
+// can_touch wrappers and the original rejection/feedback order.
+/obj/proc/can_physically_interact(var/mob/user)
+	if (!user)
+		return FALSE
+	if (!Adjacent(user))
+		return FALSE
+	if (user.restrained() || user.buckled)
+		to_chat(user, SPAN_NOTICE("You need your hands and legs free for this."))
+		return FALSE
+	if (user.stat || user.paralysis || user.sleeping || user.lying || user.weakened)
+		return FALSE
+	return TRUE
+
 /obj/proc/matrixangle(x)
 	var/matrix/M = matrix()
 	M.Turn(x)
