@@ -1,5 +1,6 @@
 """Bounded dressmaking route, tied to the current production transition costs."""
 PATH = 'code/modules/1713/dressmaking.dm'
+AUDIT_COMMIT = '340661b78265f9b658e64a8efe012a920f121239'
 
 
 def add_dressmaking(files, add, records):
@@ -23,7 +24,7 @@ def add_dressmaking(files, add, records):
     add(name, 'Dressmaking', [('/obj/item/dressmaking_project', 1)],
         [('/obj/item/clothing/under/tailored_dress', 1)], PATH, line, ' '.join(steps))
     record = records[-1]
-    return [dict(name=name, file=PATH, line=line,
+    return [dict(name=name, file=PATH, line=line, audit_commit=AUDIT_COMMIT,
                  inputs=[x['id'] for x in record['inputs']],
                  outputs=[x['id'] for x in record['outputs']],
                  tools=[], steps=steps, conditions=' '.join(steps),

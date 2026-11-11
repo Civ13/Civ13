@@ -42,7 +42,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     'dressmaking': {'files': ('tests/dressmaking/test_source.py',),
-        'paths': ('tests/dressmaking/', 'tests/crafting/dressmaking.dm', 'code/modules/1713/dressmaking.dm'),
+        'paths': ('tests/dressmaking/', 'tests/crafting/dressmaking.dm', 'code/modules/1713/dressmaking.dm',
+                  'scripts/atlas/dressmaking.py'),
         'shared_paths': ('tests/save_movement/source_adapter.py',
                          'code/game/mob/living/carbon/human/update_icons.dm',
                          'config/crafting/material_recipes_global.txt',

@@ -41,12 +41,15 @@ sewing ticks; generic stack crafting still applies its existing time modifiers.
   adapter with fake engine boundaries. It checks happy paths, wrong stage,
   cancellation, late invalidity, competing finish, failed transfer and a missing
   post-wait guard control. Source checks cover menus, research and persistence;
-  sprite checks read actual DMI pixels and directions.
+  sprite checks read actual DMI metadata and directions.
+- `python3 tests/dressmaking/check_sprites.py` additionally checks actual DMI
+  pixels using Pillow. Each complete cut is nonempty in all four worn directions.
 - `python3 scripts/check-recipes.py` includes `tests/crafting/dressmaking.dm`.
   This native fixture checks actual cloth/wool payment, valid/invalid colors,
   cuts/layers, production transitions with controlled waits, interrupted work,
   custom disk-entry round trips and decoration/blood rebuilding. Actor physiology
-  and HUD are isolated; it does not establish real-client interaction.
+  and HUD are isolated; output auto-equipping is refused so output stays on the
+  floor. Source hand cleanup is real. It does not establish real-client interaction.
 - `python3 scripts/agent_preflight.py all --write` runs the full offline registry
   and regenerates the crafting atlas and recipe audit index. The atlas includes
   both project acquisition and the project-to-dress procedure.

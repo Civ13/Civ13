@@ -211,6 +211,10 @@
 		overlays += accessory.get_inv_overlay()
 	if (blood_DNA && blood_DNA.len && blood_overlay)
 		overlays += blood_overlay
+	if (shit_overlay)
+		overlays += shit_overlay
+	if (piss_overlay)
+		overlays += piss_overlay
 
 /obj/item/clothing/under/tailored_dress/proc/refresh_design()
 	if (!dressmaking_design_valid(dress_cut, primary_color, secondary_color, accent_color))

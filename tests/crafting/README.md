@@ -230,6 +230,7 @@ cut/panel asset, opaque color validation, cut-before-sew transitions, cancellati
 and late hand/save/incapacitation changes, then custom disk-entry round trips of
 cut work and a finished dress with an accessory and blood. Work waits and actor
 physiology/HUD are bounded adapters; production payment, stage changes and
-inventory transfer run unchanged. This does not exercise client dialogs or the
+source inventory transfer run unchanged; output auto-equipping is refused so
+the completed dress stays on the fixture floor. This does not exercise client dialogs or the
 preview browser. See `docs/custom-dressmaking.md` and `tests/dressmaking` for
 related offline source execution and sprite checks.

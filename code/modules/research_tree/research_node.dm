@@ -1355,6 +1355,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/crinoline_dress" = "fine_garments",
 		"/obj/item/clothing/under/custom/tunic" = "fine_garments",
 		"/obj/item/dressmaking_project" = "fine_garments",
+		"/obj/item/clothing/under/tailored_dress" = "fine_garments",
 		"/obj/item/clothing/under/customdress" = "fine_garments",
 		"/obj/item/clothing/under/customdress2" = "fine_garments",
 		"/obj/item/clothing/under/custompontifical" = "fine_garments",

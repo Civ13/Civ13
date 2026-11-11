@@ -1,6 +1,11 @@
 // Production recipe payment, state transitions, saved fields and appearance.
 // Only the wait is replaced to inject interruption/late-mutation cases; the
-// shared handle_ci actor disables physiology/HUD, not inventory transactions.
+// shared handle_ci actor disables physiology/HUD. Output auto-equipping is
+// refused by this fixture, so output remains on the floor; source hand cleanup
+// still uses the production inventory transaction.
+/mob/living/human/handle_ci/dress_ci/put_in_any_hand_if_possible(obj/item/W, del_on_fail = FALSE, disable_warning = TRUE, redraw_mob = TRUE, prioritize_active_hand = FALSE)
+	return FALSE
+
 /obj/item/dressmaking_project/dress_ci
 	var/wait_mode = "complete"
 
@@ -24,7 +29,7 @@
 	cloth_ci_setup()
 	cloth_ci_load_catalogs()
 	var/turf/site = locate(3,2,1)
-	var/mob/living/human/handle_ci/H = new(site)
+	var/mob/living/human/handle_ci/dress_ci/H = new(site)
 	H.civilization = "recipe_ci"
 	var/datum/save_epoch = persistence_admission_identity
 	// Wool uses the existing cloth substitution, with no second duplicate recipe.
@@ -66,8 +71,8 @@
 		dressmaking_ci_expect(P.cut_fabric(H, site, save_epoch) && P.stage == 1, "cut locks design [cut]")
 		dressmaking_ci_expect(!P.cut_fabric(H, site, save_epoch), "cannot cut twice [cut]")
 		dressmaking_ci_expect(P.sew_dress(H, site, save_epoch), "cut project sews [cut]")
-		var/obj/item/clothing/under/tailored_dress/D = H.r_hand
-		if (!istype(D)) D = H.l_hand
+		var/obj/item/clothing/under/tailored_dress/D = locate() in site
+		dressmaking_ci_expect(!H.r_hand && !H.l_hand, "consumed project clears hand [cut]")
 		dressmaking_ci_expect(istype(D) && D.dress_cut == cut && D.primary_color == "#CC6644" && D.secondary_color == "#4466CC" && D.accent_color == "#44CC66", "one wearable retains chosen panels [cut]")
 		if (istype(D))
 			var/list/worn = D.worn_design_layers()
@@ -75,7 +80,7 @@
 			dressmaking_ci_expect(D.item_state_slots[slot_w_uniform_str] == design["base"], "worn base tracks chosen cut [cut]")
 			D.refresh_design()
 			dressmaking_ci_expect(D.overlays.len == worn.len, "refresh does not accumulate layers [cut]")
-			H.remove_from_mob(D); qdel(D)
+			qdel(D)
 	for (var/mode in list("cancel", "drop", "save", "incapacitate"))
 		for (var/initial_stage in list(0, 1))
 			var/obj/item/dressmaking_project/dress_ci/P = new(H)

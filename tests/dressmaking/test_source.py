@@ -6,9 +6,10 @@ actual DMI metadata/pixels. The compiled crafting fixture covers the native path
 import importlib.util
 from pathlib import Path
 import re
+import struct
+import zlib
 import unittest
 
-from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 PATH = 'code/modules/1713/dressmaking.dm'
@@ -162,35 +163,42 @@ class DressmakingTests(unittest.TestCase):
         icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text()
         self.assertIn('standing.overlays += dress.worn_design_layers()', icons)
 
-    def test_every_reused_dress_layer_has_pixels_in_item_and_four_worn_directions(self):
+    def test_atlas_exposes_finished_dress_and_rejects_changed_timing(self):
+        spec = importlib.util.spec_from_file_location('dress_atlas', ROOT / 'scripts/atlas/dressmaking.py')
+        atlas = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(atlas)
+        records = []
+        def add(name, kind, inputs, outputs, *args):
+            records.append(dict(inputs=[dict(id=path) for path, count in inputs],
+                                outputs=[dict(id=path) for path, count in outputs]))
+        routes = atlas.add_dressmaking({PATH: SOURCE}, add, records)
+        self.assertEqual(routes[0]['outputs'], ['/obj/item/clothing/under/tailored_dress'])
+        self.assertIn('Fine Garments', routes[0]['conditions'])
+        self.assertIn('four cloth sheets', routes[0]['conditions'])
+        for timing in ('30', '60'):
+            bad = SOURCE.replace('wait_for_dressmaking(user, ' + timing + ')', 'wait_for_dressmaking(user, 999)')
+            with self.assertRaises(ValueError):
+                atlas.add_dressmaking({PATH: bad}, add, records)
+
+    def test_every_reused_state_has_item_and_four_worn_directions(self):
         cut = adapter.extract(SOURCE, '/proc/dressmaking_cut')
         states = set(re.findall(r'"((?:customdress|custombuttonup|crinoline_dress)[a-z_]*)"', cut))
         self.assertEqual(len(states), 11)
         for path, required_dirs in [('icons/obj/clothing/uniforms.dmi', 1), ('icons/mob/uniform.dmi', 4)]:
-            image = Image.open(ROOT / path)
-            metadata = image.info['Description']
-            width = int(re.search(r'\bwidth = (\d+)', metadata)[1])
-            height = int(re.search(r'\bheight = (\d+)', metadata)[1])
-            offset = 0
+            data = (ROOT / path).read_bytes()
+            at, metadata = 8, ''
+            while at < len(data):
+                size = struct.unpack('>I', data[at:at+4])[0]
+                kind, payload = data[at+4:at+8], data[at+8:at+8+size]
+                at += size + 12
+                if kind == b'zTXt' and payload.startswith(b'Description\0'):
+                    metadata = zlib.decompress(payload.split(b'\0', 1)[1][1:]).decode()
             found = set()
             for block in metadata.split('state = ')[1:]:
                 name = block.split('\n')[0].strip('"')
-                dirs = int(re.search(r'dirs = (\d+)', block)[1])
-                frames = int(re.search(r'frames = (\d+)', block)[1])
                 if name in states:
                     found.add(name)
-                    self.assertGreaterEqual(dirs, required_dirs)
-                    visible_directions = 0
-                    for direction in range(dirs):
-                        index = offset + direction
-                        x, y = (index % (image.width // width)) * width, (index // (image.width // width)) * height
-                        visible_directions += image.crop((x, y, x+width, y+height)).getbbox() is not None
-                    # Some panels (e.g. an underskirt) are intentionally hidden
-                    # in side views. Each full silhouette must remain visible.
-                    self.assertGreater(visible_directions, 0, (path, name))
-                    if name in ('customdress', 'custombuttonup_full', 'crinoline_dress'):
-                        self.assertEqual(visible_directions, dirs, (path, name))
-                offset += dirs * frames
+                    self.assertGreaterEqual(int(re.search(r'dirs = (\d+)', block)[1]), required_dirs)
             self.assertEqual(found, states)
 
 
