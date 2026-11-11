@@ -176,7 +176,8 @@ SUITES = {
         'tests/save_movement/source_adapter.py',)},
     'sign_icons': {'files': ('tests/sign_icons/test_sign_icons.py',), 'paths': (
         'tests/sign_icons/', 'code/game/objects/structures/signs.dm',
-        'icons/obj/decals.dmi', 'icons/obj/decals_wide.dmi')},
+        'code/game/objects/structures/sign_flags.dm', 'icons/obj/decals.dmi',
+        'icons/obj/decals_wide.dmi'), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'cremator_tray': {'files': ('tests/cremator_tray/test_retraction.py',), 'paths': (
         'tests/cremator_tray/', 'code/game/objects/structures/morgue.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
