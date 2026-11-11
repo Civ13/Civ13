@@ -42,6 +42,7 @@ var/probe_runtime_error = FALSE
 		pressure_checks()
 		tourniquet_checks()
 		bleeding_checks()
+		brace_checks()
 	catch(var/exception/e)
 		probe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("checks" = probe_checks, "failures" = probe_failures, "runtime_error" = probe_runtime_error)), "result.json")
@@ -181,3 +182,41 @@ var/probe_runtime_error = FALSE
 	probe_check(makeshift > 0 && makeshift < open, "a makeshift tourniquet slows it ([makeshift] < [open])")
 	probe_check(held == 0, "a makeshift tourniquet plus a hand on the wound stops it ([held])")
 	probe_check(full == 0, "a proper tourniquet stops it ([full])")
+
+/proc/brace_checks()
+	var/mob/living/human/F = probe_body(15, "Fay")
+	var/obj/item/organ/external/CH = F.get_organ("chest")
+	var/obj/item/organ/external/RA = F.get_organ("r_arm")
+	var/obj/item/organ/external/LL = F.get_organ("l_leg")
+	CH.fracture()
+	CH.perma_injury = 20 // the brute the break was dealt with
+	probe_check(CH.is_broken(), "a loose rib fracture counts as broken")
+	F.hand = 1 // left hand
+	probe_check(F.try_self_pressure("chest") && F.self_brace_l == CH, "a free hand holds a broken bone that isn't bleeding")
+	probe_check(!CH.is_broken() && CH.is_held_still(), "a held break is kept still like a splint")
+	probe_check(CH.get_damage() == CH.brute_dam + CH.burn_dam && CH.get_damage() < 20, "a held break drops the lasting fracture pain")
+	probe_check(!F.try_self_pressure("chest"), "the same hand doesn't hold one bone twice")
+	var/obj/item/weapon/flint/rock = new(F)
+	F.l_hand = rock
+	probe_check(CH.is_broken(), "filling the hand stops holding the bone at once")
+	F.check_self_brace("l_hand", CH)
+	probe_check(!F.self_brace_l, "and lets go of it")
+	F.l_hand = null
+	qdel(rock)
+	probe_check(CH.is_broken(), "an emptied hand doesn't grab the bone again by itself")
+	RA.fracture()
+	F.hand = 0 // right hand
+	probe_check(F.try_self_pressure("r_arm") && F.self_brace_r == CH, "a hand can't hold its own broken arm, so it holds the next break")
+	F.hand = 1
+	probe_check(F.try_self_pressure("r_arm") && F.self_brace_l == RA && F.self_brace_r == CH, "the other hand holds the broken arm")
+	LL.fracture()
+	LL.status |= ORGAN_BLEEDING
+	probe_check(F.try_self_pressure("l_leg") && LL.applied_pressure == F && !F.self_brace_l && !LL.is_broken(), "pressing on a bleeding break also holds the bone")
+	LL.status &= ~ORGAN_BLEEDING
+	F.check_pressure(F, "l_leg", "l_hand")
+	probe_check(F.self_brace_l == LL && !LL.is_broken(), "once it stops bleeding the hand keeps holding the bone")
+	CH.status |= ORGAN_SPLINTED
+	F.check_self_brace("r_hand", CH)
+	probe_check(!F.self_brace_r, "a splint takes over from the hand")
+	F.set_stat(UNCONSCIOUS)
+	probe_check(LL.is_broken(), "an unconscious hand holds nothing")

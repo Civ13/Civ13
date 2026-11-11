@@ -8,9 +8,12 @@
 	// The limb each of your own hands is holding shut; one bleed per hand.
 	var/tmp/obj/item/organ/external/self_pressure_l = null
 	var/tmp/obj/item/organ/external/self_pressure_r = null
+	// The broken limb each of your own hands is holding still, like a splint.
+	var/tmp/obj/item/organ/external/self_brace_l = null
+	var/tmp/obj/item/organ/external/self_brace_r = null
 
 /mob/living/human/persistence_runtime_var(key)
-	if (key == "next_get_up" || key == "getting_up" || key == "next_get_up_hint" || key == "self_pressure_l" || key == "self_pressure_r")
+	if (key == "next_get_up" || key == "getting_up" || key == "next_get_up_hint" || key == "self_pressure_l" || key == "self_pressure_r" || key == "self_brace_l" || key == "self_brace_r")
 		return TRUE
 	return ..()
 
@@ -147,10 +150,13 @@
 	if (stat || paralysis)
 		return FALSE
 	var/pressing_hand = hand ? "l_hand" : "r_hand"
-	var/obj/item/organ/external/hand_organ = organs_by_name[pressing_hand]
-	if (get_active_hand() || !hand_organ || !hand_organ.is_usable())
+	if (!self_hand_free(pressing_hand))
 		to_chat(src, SPAN_WARNING("You need a free, working hand to press on a wound."))
 		return FALSE
+	// Aimed at a broken bone that isn't bleeding: hold it still instead.
+	var/obj/item/organ/external/aimed_bone = get_organ(target_zone)
+	if (aimed_bone && !(aimed_bone.status & ORGAN_BLEEDING) && self_brace_reachable(aimed_bone, pressing_hand))
+		return self_brace(aimed_bone, pressing_hand)
 	// Each hand holds one bleed: pressing elsewhere moves this hand there.
 	var/obj/item/organ/external/held = self_pressure_hand_limb(pressing_hand)
 	var/zone = self_pressure_zone(target_zone, pressing_hand)
@@ -159,15 +165,22 @@
 		return FALSE
 	if (zone && held)
 		release_self_pressure(pressing_hand)
+	if (zone)
+		release_self_brace(pressing_hand, TRUE)
 	if (!zone)
+		var/obj/item/organ/external/bone = self_brace_target(target_zone, pressing_hand)
+		if (bone)
+			return self_brace(bone, pressing_hand)
 		var/obj/item/organ/external/aimed = get_organ(target_zone)
 		var/bleeding = FALSE
 		for (var/obj/item/organ/external/E in organs)
 			if (E.status & ORGAN_BLEEDING)
 				bleeding = TRUE
 				break
-		if (!bleeding)
-			to_chat(src, SPAN_NOTICE("You aren't bleeding anywhere."))
+		if (!bleeding && self_brace_hand_limb(pressing_hand))
+			to_chat(src, SPAN_NOTICE("You're already holding your [self_brace_hand_limb(pressing_hand).name] still with this hand."))
+		else if (!bleeding)
+			to_chat(src, SPAN_NOTICE("You aren't bleeding anywhere and have no loose broken bone to hold."))
 		else if (aimed && aimed.applied_pressure && (aimed.status & ORGAN_BLEEDING))
 			to_chat(src, SPAN_WARNING("[ismob(aimed.applied_pressure) ? "Someone" : "\A [aimed.applied_pressure]"] is already pressing on your [aimed.name]."))
 		else
@@ -212,3 +225,80 @@
 		if (G.affecting == src)
 			return TRUE
 	return FALSE
+
+// TRUE while this hand is empty, working and its owner is awake enough to use it.
+/mob/living/human/proc/self_hand_free(which_hand)
+	if (stat || paralysis)
+		return FALSE
+	var/obj/item/organ/external/hand_organ = organs_by_name[which_hand]
+	if (!hand_organ || !hand_organ.is_usable())
+		return FALSE
+	return !(which_hand == "l_hand" ? l_hand : r_hand)
+
+// Holding a broken bone still with a free hand: a temporary splint. It lasts
+// while the hand stays empty and the bone is still broken and unsplinted.
+/mob/living/human/proc/self_brace_reachable(obj/item/organ/external/E, which_hand)
+	if (!E || E.owner != src || !(E.status & ORGAN_BROKEN) || (E.status & ORGAN_SPLINTED))
+		return FALSE
+	if (E.limb_name in self_pressure_blocked_limbs(which_hand))
+		return FALSE
+	return !E.hand_braced()
+
+// The aimed broken limb, otherwise the worst loose break this hand can reach.
+/mob/living/human/proc/self_brace_target(target_zone, which_hand)
+	var/obj/item/organ/external/aimed = get_organ(target_zone)
+	if (self_brace_reachable(aimed, which_hand))
+		return aimed
+	var/obj/item/organ/external/best = null
+	for (var/obj/item/organ/external/E in organs)
+		if (!self_brace_reachable(E, which_hand))
+			continue
+		// Breaks over organs (ribs, skull, pelvis) are the ones that hurt to move.
+		var/over_organs = LAZYLEN(E.internal_organs) > 0
+		var/best_over_organs = best && LAZYLEN(best.internal_organs) > 0
+		if (!best || (over_organs && !best_over_organs) || (over_organs == best_over_organs && E.brute_dam > best.brute_dam))
+			best = E
+	return best
+
+/mob/living/human/proc/self_brace_hand_limb(which_hand)
+	var/obj/item/organ/external/E = which_hand == "l_hand" ? self_brace_l : self_brace_r
+	if (E && E.owner != src)
+		E = null
+	return E
+
+/mob/living/human/proc/set_self_brace_hand(which_hand, obj/item/organ/external/E)
+	if (which_hand == "l_hand")
+		self_brace_l = E
+	else
+		self_brace_r = E
+
+/mob/living/human/proc/self_brace(obj/item/organ/external/E, which_hand)
+	if (self_brace_hand_limb(which_hand) == E)
+		to_chat(src, SPAN_NOTICE("You're already holding your [E.name] still with this hand."))
+		return FALSE
+	release_self_pressure(which_hand)
+	release_self_brace(which_hand, TRUE)
+	set_self_brace_hand(which_hand, E)
+	visible_message(SPAN_NOTICE("[src] holds [gender == FEMALE ? "her" : gender == MALE ? "his" : "their"] broken [E.name] still."), \
+					SPAN_NOTICE("You hold your broken [E.name] still with your free hand. Keep that hand empty while you move."))
+	addtimer(CALLBACK(src, PROC_REF(check_self_brace), which_hand, E), 10)
+	return TRUE
+
+/mob/living/human/proc/release_self_brace(which_hand, quiet = FALSE)
+	var/obj/item/organ/external/E = self_brace_hand_limb(which_hand)
+	set_self_brace_hand(which_hand, null)
+	if (E && !quiet)
+		to_chat(src, SPAN_NOTICE("You let go of your [E.name]."))
+
+// Ends the hold once the hand fills, the bone is splinted or mended, or the
+// holder passes out.
+/mob/living/human/proc/check_self_brace(which_hand, obj/item/organ/external/E)
+	if (QDELETED(src) || self_brace_hand_limb(which_hand) != E)
+		return
+	if (!(E.status & ORGAN_BROKEN) || (E.status & ORGAN_SPLINTED))
+		set_self_brace_hand(which_hand, null)
+		return
+	if (!self_hand_free(which_hand))
+		release_self_brace(which_hand)
+		return
+	addtimer(CALLBACK(src, PROC_REF(check_self_brace), which_hand, E), 10)
