@@ -338,16 +338,7 @@
 	return
 
 /obj/structure/proc/can_touch(var/mob/user)
-	if (!user)
-		return FALSE
-	if (!Adjacent(user))
-		return FALSE
-	if (user.restrained() || user.buckled)
-		to_chat(user, SPAN_NOTICE("You need your hands and legs free for this."))
-		return FALSE
-	if (user.stat || user.paralysis || user.sleeping || user.lying || user.weakened)
-		return FALSE
-	return TRUE
+	return can_physically_interact(user)
 
 /obj/structure/attack_generic(var/mob/user, var/damage, var/attack_verb, var/wallbreaker)
 	if (!breakable || !damage || !wallbreaker)
