@@ -51,15 +51,20 @@
 			// A second searcher on the same patch finishes first.
 			foraging_check(foraging_commit(locate(T.x + 2, T.y + 2, T.z), persistence_admission_identity), "rival takes the last unit during the wait")
 	return TRUE
-/proc/foraging_count(turf/T)
+/proc/foraging_count(turf/T, path = /obj/item)
 	var/n = 0
-	for (var/obj/item/stack/material/M in T)
-		if (istype(M, /obj/item/stack/material/stone) || istype(M, /obj/item/stack/material/wood_piece))
-			n += M.amount
+	for (var/obj/item/I in T)
+		if (!istype(I, path))
+			continue
+		if (istype(I, /obj/item/stack))
+			var/obj/item/stack/S = I
+			n += S.amount
+		else
+			n++
 	return n
 /proc/foraging_clear(turf/T)
-	for (var/obj/item/stack/material/M in T)
-		qdel(M)
+	for (var/obj/item/I in T)
+		qdel(I)
 var/foraging_failures = 0
 var/foraging_runtime_error = FALSE
 /proc/foraging_check(condition, label)
@@ -202,6 +207,45 @@ var/foraging_runtime_error = FALSE
 		foraging_check(map.foraging_active() && U.forage(), "Persistence turns foraging on")
 		map.persistence = FALSE
 		foraging_check(foraging_count(locate(35, 35, 1)) == 1, "single unit per search")
+
+		// Phases 3 and 4: what each focus finds, seasons, time and the panel.
+		map.foraging_enabled = TRUE
+		season = "SPRING"
+		var/turf/meadow = locate(27, 3, 1) // cell anchored at 25,1
+		U.loc = meadow
+		var/list/seeds = foraging_finds(meadow, "seeds")
+		foraging_check(foraging_finds(meadow, "stone").len == 1 && foraging_finds(meadow, "wood").len == 1 && (/obj/item/stack/farming/seeds/wheat in seeds) && !(/obj/item/stack/farming/seeds/rice in seeds), "temperate spring grass offers stone, sticks and its own wild seeds")
+		foraging_check(/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom in foraging_finds(meadow, "food"), "temperate spring grass offers mushrooms")
+		foraging_check(U.forage("seeds") && foraging_count(meadow, /obj/item/stack/farming/seeds) == 1, "seed focus finds one seed")
+		foraging_check(U.forage("food") && foraging_count(meadow, /obj/item/weapon/reagent_containers/food/snacks/grown/mushroom) == 1, "food focus finds one mushroom")
+		foraging_check(U.forage("wood") && foraging_count(meadow, /obj/item/stack/material/wood_piece) == 1, "wood focus finds one stick")
+		foraging_check(foraging_available(meadow) == 1, "every focused find costs one unit")
+		var/html = U.foraging_panel_html(meadow)
+		text2file(html, "panel.html") // evidence for review renders
+		foraging_check(findtext(html, "almost bare") && findtext(html, "forage_focus=seeds") && findtext(html, "Temperate grass"), "panel shows habitat, abundance and focus links")
+		foraging_check(U.forage("stone") && findtext(U.foraging_panel_html(meadow), "picked clean") && !findtext(U.foraging_panel_html(meadow), "forage_focus="), "empty patch panel offers no search")
+		foraging_check(!U.forage("nonsense"), "unknown focus refused")
+		season = "WINTER"
+		var/turf/winter = locate(27, 11, 1)
+		U.loc = winter
+		before = U.waits
+		foraging_check(!foraging_finds(winter, "seeds").len && !foraging_finds(winter, "food").len && !U.forage("food") && U.waits == before && foraging_available(winter) == 4, "no seeds or mushrooms in winter, refused before waiting")
+		foraging_check(U.forage("anything") && !foraging_count(winter, /obj/item/stack/farming/seeds) && !foraging_count(winter, /obj/item/weapon/reagent_containers/food), "winter open search finds only stone or sticks")
+		season = "SPRING"
+		var/turf/shore = locate(27, 19, 1)
+		shore = shore.ChangeTurf(/turf/floor/beach/sand, FALSE, FALSE)
+		U.loc = shore
+		foraging_check(foraging_offers(shore, "stone") && !foraging_offers(shore, "wood") && !foraging_offers(shore, "seeds") && !foraging_offers(shore, "food"), "beach sand offers only stones")
+		before = U.waits
+		foraging_check(!U.forage("wood") && U.waits == before && foraging_available(shore) == 4, "unoffered focus refused before waiting")
+		foraging_check(U.forage("anything") && foraging_count(shore, /obj/item/stack/material/stone) == 1, "beach open search finds a stone")
+		var/time = U.foraging_search_time(meadow)
+		foraging_check(time >= 200 && time <= 450, "search time within bounds ([time])")
+		var/list/counts = list()
+		for (var/i in 1 to 400)
+			var/path = foraging_roll(meadow, "anything")
+			counts["[path]"] = (counts["[path]"] || 0) + 1
+		foraging_check(counts["[/obj/item/stack/material/stone]"] > 60 && counts["[/obj/item/weapon/reagent_containers/food/snacks/grown/mushroom]"] > 30, "open search spreads across categories")
 	catch(var/exception/e)
 		foraging_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = foraging_failures, "runtime_error" = foraging_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
