@@ -90,10 +90,10 @@
 				tally += 1.5
 
 	var/obj/item/organ/external/E = get_organ("chest")
-	if (!E || ((E.status & ORGAN_BROKEN) && !(E.status & ORGAN_SPLINTED) && E.brute_dam > E.min_broken_damage) || (E.status & ORGAN_MUTATED))
+	if (!E || ((E.status & ORGAN_BROKEN) && !E.is_held_still() && E.brute_dam > E.min_broken_damage) || (E.status & ORGAN_MUTATED))
 		tally += 3
 	else if ((E.status & ORGAN_BROKEN) && E.brute_dam > E.min_broken_damage)
-		tally += 1 // splinted ribs: still slow, but no longer crippling
+		tally += 1 // splinted or held ribs: still slow, but no longer crippling
 
 	if (shock_stage >= 10) tally += 0.5
 

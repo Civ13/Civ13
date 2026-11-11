@@ -493,6 +493,9 @@
 		if (user == src && self_pressure_hand_limb(pressing_hand) == null)
 			set_self_pressure_hand(pressing_hand, null)
 		to_chat(user, SPAN_NOTICE("The bleeding from [user == src ? "your" : "[src]'s"] [organ.name] has stopped."))
+		// A hand on a broken limb keeps holding the bone still.
+		if (user == src && self_brace_reachable(organ, pressing_hand) && self_hand_free(pressing_hand))
+			self_brace(organ, pressing_hand)
 		return FALSE
 	if (!still_pressing(user, pressing_hand, organ))
 		organ.applied_pressure = null

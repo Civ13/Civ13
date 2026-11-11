@@ -499,7 +499,20 @@ This function completely restores a damaged organ to perfect condition.
 //external organs handle brokenness a bit differently when it comes to damage. Instead brute_dam is checked inside process()
 //this also ensures that an external organ cannot be "broken" without broken_description being set.
 /obj/item/organ/external/is_broken()
-	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !(status & ORGAN_SPLINTED)))
+	return ((status & ORGAN_CUT_AWAY) || ((status & ORGAN_BROKEN) && !is_held_still()))
+
+// A splint, or the owner's own free hand holding the limb, keeps a break still.
+/obj/item/organ/external/proc/is_held_still()
+	return (status & ORGAN_SPLINTED) || hand_braced()
+
+/obj/item/organ/external/proc/hand_braced()
+	if (!owner)
+		return FALSE
+	for (var/which_hand in list("l_hand", "r_hand"))
+		if (owner.self_brace_hand_limb(which_hand) == src || owner.self_pressure_hand_limb(which_hand) == src)
+			if (owner.self_hand_free(which_hand))
+				return TRUE
+	return FALSE
 
 //Determines if we even need to process this organ.
 /obj/item/organ/external/proc/need_process()
@@ -1099,9 +1112,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage
 	// perma_injury is the brute a fracture was dealt with; it only keeps hurting
-	// while the bone is still broken and loose, so a healed or splinted limb
-	// reads its real damage.
-	if (!(status & ORGAN_BROKEN) || (status & ORGAN_SPLINTED))
+	// while the bone is still broken and loose, so a healed, splinted or
+	// hand-held limb reads its real damage.
+	if (!(status & ORGAN_BROKEN) || is_held_still())
 		return brute_dam + burn_dam
 	return max(brute_dam + burn_dam - perma_injury, perma_injury)
 

@@ -11,7 +11,9 @@ bleeding wound with a free hand (the aimed limb, falling back to the worst
 reachable bleed, one bleed per hand, moving a hand, letting go when the hand
 fills) and makeshift rope or twine tourniquets (they only slow bleeding unless
 a hand holds the wound, slip loose after a while and can be replaced by a
-proper gauze tourniquet).
+proper gauze tourniquet). It also checks holding a broken bone still with a
+free hand (a temporary splint that ends when the hand fills, the holder passes
+out or a real splint goes on, and that carries on after a held bleed stops).
 
 Timed actions that need a client progress bar (tying a tourniquet) are not
 covered; the get-up attempt runs without one.
