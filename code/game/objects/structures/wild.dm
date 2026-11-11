@@ -842,6 +842,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tree_stump
 	name = "tree stump"
+	desc = "What is left of a felled tree. Dig it out with a shovel to get some wood from its roots."
 	icon_state = "tree_stump"
 	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tree_stump"
@@ -850,6 +851,37 @@ var/list/seed_list_jungle
 	flammable = FALSE
 	health = 50
 	maxhealth = 50
+	var/stump_wood = 2 // logs from the roots; a felled live tree gives 7
+
+// Clearing a stump, by digging it out with any shovel (bone and wooden ones
+// included) or chopping it, gives a couple of logs from the roots.
+/obj/structure/wild/tree_stump/proc/drop_stump_wood()
+	var/turf/T = get_turf(src)
+	if (!T || stump_wood <= 0)
+		return null
+	var/obj/item/stack/material/wood/dropwood = new /obj/item/stack/material/wood(T)
+	dropwood.amount = stump_wood
+	dropwood.update_strings()
+	stump_wood = 0
+	return dropwood
+
+/obj/structure/wild/tree_stump/try_destroy()
+	if (health <= 0)
+		drop_stump_wood()
+	return ..()
+
+/obj/structure/wild/tree_stump/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/material/shovel))
+		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
+		if (do_after(user, 50, src))
+			if (QDELETED(src))
+				return TRUE
+			user.visible_message(SPAN_NOTICE("[user] digs out \the [src] and pulls up some wood from its roots."), SPAN_NOTICE("You dig out \the [src] and pull up some wood from its roots."))
+			drop_stump_wood()
+			qdel(src)
+		return TRUE
+	return ..()
 
 /obj/structure/wild/tallgrass
 	name = "tall grass"
