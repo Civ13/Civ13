@@ -1,0 +1,203 @@
+{
+  "schema": "civ13-generation-config/2",
+  "profile": "SURFACE",
+  "preset": "CUSTOM",
+  "seed": "graph-0",
+  "dimensions": {
+    "width": 155,
+    "height": 225,
+    "layers": {
+      "SURFACE": 2,
+      "UNDERGROUND": 1
+    }
+  },
+  "biome_mix_pct": {
+    "TEMPERATE": 70,
+    "STEPPE": 20,
+    "ARID": 10
+  },
+  "climate": {
+    "moisture_range": [
+      20,
+      80
+    ],
+    "temperature_c_range": [
+      0,
+      30
+    ]
+  },
+  "water": {
+    "coverage_pct": [
+      12,
+      30
+    ],
+    "river_networks": [
+      2,
+      2
+    ],
+    "river_width_tiles": [
+      3,
+      3
+    ],
+    "lake_count": [
+      2,
+      2
+    ],
+    "lake_area_pct": [
+      4,
+      7
+    ],
+    "swamp_pct": [
+      0,
+      2
+    ],
+    "sea_pct": [
+      2,
+      4
+    ]
+  },
+  "mountains": {
+    "range_count": [
+      0,
+      2
+    ],
+    "range_min_area": 32,
+    "range_width_tiles": [
+      3,
+      12
+    ]
+  },
+  "vegetation": {
+    "suitable_site_density_pct": [
+      10,
+      35
+    ]
+  },
+  "resources": {
+    "density_per_1000_land_tiles": [
+      10,
+      30
+    ]
+  },
+  "starts": {
+    "count": 18,
+    "min_spacing_tiles": 8,
+    "max_route_tiles": 60
+  },
+  "surface_layout": {
+    "sea_side": "S",
+    "inlets": [
+      {
+        "id": "inlet-w",
+        "side": "W",
+        "span": [
+          156,
+          158
+        ]
+      },
+      {
+        "id": "inlet-nw",
+        "side": "N",
+        "span": [
+          33,
+          35
+        ]
+      },
+      {
+        "id": "inlet-ne",
+        "side": "N",
+        "span": [
+          110,
+          112
+        ]
+      },
+      {
+        "id": "inlet-e",
+        "side": "E",
+        "span": [
+          147,
+          149
+        ]
+      }
+    ],
+    "outlets": [
+      {
+        "id": "mouth",
+        "kind": "SEA",
+        "side": "S",
+        "span": [
+          42,
+          44
+        ]
+      }
+    ],
+    "junctions": [
+      {
+        "id": "confluence-west",
+        "at_pct": [
+          26,
+          70
+        ]
+      },
+      {
+        "id": "confluence-east",
+        "at_pct": [
+          72,
+          72
+        ]
+      }
+    ],
+    "lakes": [
+      {
+        "id": "lake-west",
+        "at_pct": [
+          30,
+          40
+        ],
+        "terminal": false
+      },
+      {
+        "id": "lake-east",
+        "at_pct": [
+          70,
+          38
+        ],
+        "terminal": true
+      }
+    ],
+    "segments": [
+      {
+        "from": "inlet-w",
+        "to": "confluence-west"
+      },
+      {
+        "from": "inlet-nw",
+        "to": "confluence-west"
+      },
+      {
+        "from": "confluence-west",
+        "to": "lake-west"
+      },
+      {
+        "from": "lake-west",
+        "to": "mouth"
+      },
+      {
+        "from": "inlet-ne",
+        "to": "confluence-east"
+      },
+      {
+        "from": "inlet-e",
+        "to": "confluence-east"
+      },
+      {
+        "from": "confluence-east",
+        "to": "lake-east"
+      }
+    ],
+    "climate_axis": [
+      1,
+      1
+    ]
+  }
+}

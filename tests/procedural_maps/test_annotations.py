@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 from tools.procedural_maps.reference_annotation import build,near
 
@@ -9,7 +10,8 @@ def expand(component):
 
 class AnnotationTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.r=build()
+    # The classic map and turf files are pinned at the historical catalog commit, not live master.
+    def setUpClass(cls):cls.r=build(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
     def test_source_totals_and_component_counts(self):
         self.assertEqual({'FRESHWATER_TYPE':3139,'SALTWATER_TYPE':709,'SWAMP_FRESH_TYPE':734},self.r['class_counts'])
         self.assertEqual([17,3,226],[len(self.r['components'][k]) for k in ['FRESHWATER_TYPE','SALTWATER_TYPE','SWAMP_FRESH_TYPE']])
@@ -36,7 +38,7 @@ class AnnotationTests(unittest.TestCase):
             self.assertTrue(set(path)<=fresh);self.assertIn(path[-1],core)
             self.assertTrue(all(b in near(a) for a,b in zip(path,path[1:])))
     def test_build_is_deterministic_and_not_human_approved(self):
-        self.assertEqual(json.dumps(self.r,sort_keys=True),json.dumps(build(),sort_keys=True))
+        self.assertEqual(json.dumps(self.r,sort_keys=True),json.dumps(build(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']),sort_keys=True))
         self.assertEqual('AGENT_PROPOSAL_NOT_HUMAN_APPROVED',self.r['status'])
         self.assertTrue(all(c['flow_direction'].startswith('UNRESOLVED') for c in self.r['main_network_contact_candidates']))
 

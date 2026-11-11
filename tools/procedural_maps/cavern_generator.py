@@ -1,7 +1,8 @@
 """Original dependency-free UNDERGROUND_CAVERN backend for offline IR, never DM/game output.
 
 Noise-grown chambers joined by a minimum spanning set of winding tunnels, fresh
-spring pools cut into the rock beside chambers, isolated fungus pillars, paired
+spring pools cut into the rock beside chambers, optional underground streams
+from pools to sink pools through rock, isolated fungus pillars, paired
 surface exits, and reserved survival routes. The surface plane is open placeholder
 ground so every exit lands on a safe tile; it is not a generated surface map.
 """
@@ -20,10 +21,50 @@ PROFILE_VERSION="UNDERGROUND_CAVERN-offline/1"
 CHAMBER_AREA=900 # one chamber per this many map tiles
 MIN_CHAMBERS=4
 MAX_CHAMBERS=40
+STREAM_LENGTH=(8,) # shortest underground stream, in tiles
 
 
 def rock(**changes):
     return ground(terrain="ROCK",biome="CAVERN",soil="ROCK",blocked=True,elevation_m=-40,**changes)
+
+
+def _stream(i,source,sink_size,stream_max,w,h,interior,floor,wet,draw,field):
+    """One stream from spring pool i through rock, ending at a new sink pool, or None."""
+    def open_rock(q):return q in interior and q not in floor and q not in wet
+    def stream_cell(q,bank=False):
+        # Rock only. The first cell leaves the spring pool; later cells touch no water.
+        return open_rock(q) and all(t not in wet or bank and t in source for t in neighbors(q,w,h))
+    starts=sorted(q for p in source for q in neighbors(p,w,h) if stream_cell(q,True))
+    if not starts:return None
+    # Bounded Dijkstra inside the pool's rock region; streams hug chamber
+    # walls, where players can see and reach them, more than buried rock.
+    noise=max(3,min(w,h)//10);heap=[(0,p) for p in starts];best={p:0 for p in starts};parent={};steps={p:1 for p in starts}
+    while heap:
+        total,p=heapq.heappop(heap)
+        if total!=best[p] or steps[p]>=stream_max:continue
+        for q in neighbors(p,w,h):
+            if not stream_cell(q):continue
+            cost=total+(40 if any(t in floor for t in neighbors(q,w,h)) else 100)+field("stream-cost-"+str(i),q[0],q[1],noise)//8
+            if cost<best.get(q,10**30):best[q]=cost;parent[q]=p;steps[q]=steps[p]+1;heapq.heappush(heap,(cost,q))
+    ends=sorted((p for p in best if steps[p]>=STREAM_LENGTH[0] and any(t in floor for t in neighbors(p,w,h))),
+                key=lambda p:(-steps[p],draw("stream-end-"+str(i),*p),p))
+    for end in ends[:8]:
+        path=[end]
+        while path[-1] in parent:path.append(parent[path[-1]])
+        path.reverse();cells=set(path)
+        # The sink grows in rock that touches no water but this stream's end.
+        def sink_ok(q):
+            return open_rock(q) and q not in cells and all(t not in wet and (t not in cells or t==end) for t in neighbors(q,w,h))
+        for seed_cell in sorted(q for q in neighbors(end,w,h) if sink_ok(q))[:2]:
+            frontier=[(0,seed_cell)];seen={seed_cell};body=set()
+            while frontier and len(body)<sink_size:
+                _,p=heapq.heappop(frontier)
+                if not sink_ok(p):continue
+                body.add(p)
+                for q in neighbors(p,w,h):
+                    if q not in seen:seen.add(q);heapq.heappush(frontier,((q[0]-seed_cell[0])**2+(q[1]-seed_cell[1])**2,q))
+            if len(body)==sink_size:return path,body
+    return None
 
 
 def _generate(config,traversal):
@@ -32,7 +73,6 @@ def _generate(config,traversal):
     if config["profile"]!="UNDERGROUND_CAVERN":raise Rejection("BACKEND_PROFILE","only UNDERGROUND_CAVERN is implemented here")
     if config["schema"]!="civ13-generation-config/1":raise Rejection("BACKEND_SCHEMA","caverns use the version 1 configuration")
     water_cfg=config["water"]
-    if water_cfg["river_networks"][0]>0:raise Rejection("BACKEND_RIVERS","underground rivers are not implemented; set river_networks minimum to 0")
     if water_cfg["swamp_pct"][0]>0:raise Rejection("BACKEND_WATER","cavern backend makes no wetlands")
     if traversal not in {"forward","reverse"}:raise ValueError("traversal")
     cfg_hash=canonical_hash(config);seed=config["seed"]
@@ -142,6 +182,20 @@ def _generate(config,traversal):
     lake_pct=choose("lake-coverage",[lo,hi])
     lake_cells=max(lake_count,(area*lake_pct+99)//100)
     if lake_cells*100>hi*area:lake_cells=area*hi//100
+    # Underground streams: each leaves one spring pool through solid rock and
+    # ends in a small sink pool, so it never cuts the floor. A stream counts as
+    # one river network. Sinks and streams use water left above the spring pools,
+    # so the pools themselves are the same with or without streams.
+    stream_count=choose("river-networks",water_cfg["river_networks"]);stream_min=water_cfg["river_networks"][0]
+    if stream_min>lake_count:raise Rejection("TOPOLOGY_BUDGET","each underground stream needs its own spring pool")
+    stream_count=min(stream_count,lake_count);sink_size=0;stream_max=max(STREAM_LENGTH[0],min(w,h)//2)
+    if stream_count:
+        lake_room=area*hi//100-lake_cells
+        sink_size=min(max(4,lake_cells//(4*(lake_count+stream_count))),lake_room//stream_count)
+        stream_max=min(stream_max,(area*water_cfg["coverage_pct"][1]//100-lake_cells-stream_count*sink_size)//stream_count)
+        if sink_size<3 or stream_max<STREAM_LENGTH[0]:
+            if stream_min:raise Rejection("WATER_BUDGET","no water budget left for the requested underground streams")
+            stream_count=0
     lakes=[];lake_sets=[];wet=set()
     ranked=sorted(range(len(chambers)),key=lambda i:(draw("lake-chamber",i),i))
     def keep_clear(q):
@@ -176,6 +230,21 @@ def _generate(config,traversal):
             at(p).update(terrain="WATER",water="LAKE",salinity="FRESH",body=lid,depth_cm=200,soil="SILT",blocked=False)
         wet|=body;lake_sets.append(body)
         lakes.append(dict(id=lid,terminal_basin=True,outflow=""))
+    rivers=[];stream_records=[]
+    # Bounded search: each pool in order may source one stream until the count is met.
+    for i in range(lake_count):
+        if len(rivers)>=stream_count:break
+        made=_stream(i,lake_sets[i],sink_size,stream_max,w,h,interior,floor,wet,draw,field)
+        if made is None:continue
+        path,body=made;n=len(rivers);rid="stream-"+str(n);sid="sink-"+str(n)
+        for p in path:at(p).update(terrain="WATER",water="RIVER",salinity="FRESH",body=rid,depth_cm=30,soil="SILT",blocked=False)
+        for p in body:at(p).update(terrain="WATER",water="LAKE",salinity="FRESH",body=sid,depth_cm=200,soil="SILT",blocked=False)
+        wet|=set(path)|body
+        lakes[i].update(terminal_basin=False,outflow=rid);lakes.append(dict(id=sid,terminal_basin=True,outflow=""))
+        rivers.append(dict(id=rid,path=[[x,y,"UNDERGROUND"] for x,y in path],source=dict(kind="LAKE",target=lakes[i]["id"]),sink=dict(kind="LAKE",target=sid)))
+        stream_records.append(dict(stream=rid,source=lakes[i]["id"],sink=sid,length=len(path),sink_cells=len(body)))
+    if len(rivers)<stream_min:raise Rejection("STREAM_ROUTE","no rock room for the requested underground streams and sink pools")
+    stream_count=len(rivers)
     walk=set(floor)
     banks={p for p in walk if any(q in wet for q in neighbors(p,w,h))}
     if not banks:raise Rejection("CAVERN_WATER","no floor tile touches a spring pool")
@@ -239,7 +308,7 @@ def _generate(config,traversal):
     doc=dict(schema=VERSION,seed=seed,algorithm_version=ALGORITHM_VERSION,content_version=CONTENT_VERSION,
              profile_version=PROFILE_VERSION,profile="UNDERGROUND_CAVERN",active_layer="UNDERGROUND",width=w,height=h,
              layers={"SURFACE":{"native_z":2,"cells":surface},"UNDERGROUND":{"native_z":1,"cells":grid}},
-             ports=[],rivers=[],lakes=lakes,starts=[[x,y,"UNDERGROUND"] for x,y in starts],portals=portals,
+             ports=[],rivers=rivers,lakes=lakes,starts=[[x,y,"UNDERGROUND"] for x,y in starts],portals=portals,
              policy=dict(mountain_min_area=config["mountains"]["range_min_area"],mountain_max_components=1,
                          max_moisture_step=25,max_temperature_step=10,max_resource_distance=max_route,max_water_distance=max_route,
                          ship_radius=0,ocean_ports_min=1,land_components_min=1,start_count=len(starts),
@@ -253,8 +322,9 @@ def _generate(config,traversal):
     if reasons:raise Rejection("INVARIANT_REJECTED",json.dumps(reasons,sort_keys=True))
     manifests=seed_manifest(config,ALGORITHM_VERSION,CONTENT_VERSION,PROFILE_VERSION)
     manifests.update(status="GENERATED_VALID_OFFLINE_IR",generation_result={"ir_sha256":canonical_hash(doc),"validation_errors":[],"native_acceptance":"NOT_RUN"},
-                     generated_topology=dict(chambers=len(chambers),tunnels=len(edges),pools=lake_count,exits=len(portals)),
-                     chamber_centres=[list(c) for c in centres],tunnels=tunnel_records,
+                     generated_topology=dict(chambers=len(chambers),tunnels=len(edges),pools=lake_count,exits=len(portals),
+                                             **({"streams":stream_count,"sink_pools":stream_count} if stream_count else {})),
+                     chamber_centres=[list(c) for c in centres],tunnels=tunnel_records,**({"underground_streams":stream_records} if stream_count else {}),
                      abstract_routes=route_records,reserved_route_cells=[list(p) for p in sorted(reserved)],
                      realized_water_cells=dict(sorted(counts.items())),floor_cells=len(floor),eligible_fungus_sites=len(eligible),
                      selected_vegetation_density_pct=density,fungus_pillars=len(fungus),

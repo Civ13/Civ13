@@ -42,7 +42,7 @@ def environment(source=SOURCE):
  vm.ALLOWED|={'stationdate2text','stationtime2text','paper_document_expand_pencode'}
  vm.METHODS|={'get_signature'}
  env['paper_document_expand_pencode']=vm.project(source.replace('\\[','[').replace('\\]',']'),'/proc/paper_document_expand_pencode','value,pen,actor',env)
- for name,args in [('has_access','self,actor,writing=False'),('can_mutate','self,actor,pen'),('initialize','self,actor,pen'),('canonical_copy','self,actor'),('project','self,reader,forceshow=False'),('append','self,actor,pen,document_id,revision,language_id,kind,value,expected_lease=None')]:
+ for name,args in [('has_access','self,actor,writing=False'),('can_mutate','self,actor,pen'),('initialize','self,actor,pen'),('canonical_copy','self,actor'),('project','self,reader,forceshow=False'),('append','self,actor,pen,document_id,revision,language_id,kind,value,expected_lease=None,target=None')]:
   setattr(Session,name,vm.project(adapted,'/datum/paper_document_authoring/'+name,args,env,True))
 # Core API tests stub observer setup; test_lifecycle projects the real bodies.
  Session.start_lifecycle=lambda self:True
@@ -172,9 +172,18 @@ class Authoring(unittest.TestCase):
    self.assertIsNone(self.session.snapshot(self.actor))
   self.setUp();self.paper.loc=self.actor.loc;self.start();self.paper.near=False
   self.assertFalse(self.write());self.assertIsNone(self.session.snapshot(self.actor))
-  for kind in ('envelope','bundle','noticeboard'):
-   self.setUp();container=copies.views.Container(kind,self.actor);container.opened=True;container.pages=[self.paper]
-   self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  # Held open envelopes and the open page of a held bundle are writable and
+  # pinned like clipboards; moving the container away ends the session.
+  for kind in ('envelope','bundle'):
+   self.setUp();container=copies.views.Container(kind,self.actor);container.opened=True;container.pages=[self.paper];container.page=1
+   self.paper.loc=container;self.start();self.assertTrue(self.write())
+   container.loc=copies.Turf();self.assertFalse(self.write());self.assertIsNone(self.session.snapshot(self.actor))
+  self.setUp();container=copies.views.Container('envelope',self.actor);container.opened=False
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  self.setUp();other=self.Paper(self.actor);container=copies.views.Container('bundle',self.actor);container.pages=[other,self.paper];container.page=1
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
+  self.setUp();container=copies.views.Container('noticeboard',self.actor)
+  self.paper.loc=container;self.assertFalse(self.session.begin(self.actor));self.assertIsNone(self.paper.document_record)
  def test_subtypes_malformed_oversized_legacy_and_records_refuse_without_repair(self):
   for change in ('subtype','legacy','cycle','deep','capacity','record'):
    self.setUp()
@@ -194,7 +203,7 @@ class Authoring(unittest.TestCase):
    self.pen.signature='SECRET_SIGNATURE_CANARY';r=self.paper.document_record
    self.assertTrue(base.append(self.actor,self.pen,r['document_id'],r['revision'],RU,kind,'SECRET_'+kind.upper()+'_CANARY'))
   for kind in ('field_label','field_answer'):
-   self.paper.document_record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='SECRET_'+kind.upper()+'_CANARY',ink='white',tool='pen'))
+   self.paper.document_record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='SECRET_'+kind.upper()+'_CANARY',ink='white',tool='pen',**(dict(target='field_label') if kind=='field_answer' else {})))
   self.actor.languages=[self.langs[EN]];self.paper.info_links='SECRET_CACHE_CANARY'
   data=self.start();encoded=json.dumps(data)
   self.assertNotIn('SECRET_',encoded)

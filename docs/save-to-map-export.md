@@ -1,11 +1,16 @@
 # Saved world to reusable map: design and static-core proof
 
-Status: the first offline static-source core is implemented for synthetic
-canonical JSON only. The broader save-to-map pipeline remains a design.
-Inspected Civ13 baseline: `fa363b8a01ed7d936c10a6303ce1be4c26d82ab0`.
-No actual save was read and no native BYOND tool was launched. The original
-geometry example is hand-authored; executable conversion fixtures now live in
-`tests/save_to_map`. See [the core contract](../tools/save_to_map/README.md).
+Status: native export is implemented. `tools/save_to_map/export.py` reads
+copied level formats 3, 4 and 5 (stream) with a standalone native reader and a
+stream decoder, projects the static built world through the reviewed
+`native-static-v1` profile, writes a DMM with companion map metadata and spawn
+landmarks, and can compile the result into the full game with a missing-type
+control. See [the exporter guide](../tools/save_to_map/README.md#native-save-export).
+Verified on synthetic saves in all three formats; a real server save and a
+fresh round on an export are not yet checked. The sections below are the
+original design; where the implementation differs, the guide is current.
+The earlier synthetic canonical-JSON core and its fixtures remain in
+`tools/save_to_map/core.py` and `tests/save_to_map`.
 
 ## Outcome and scope
 
@@ -20,8 +25,7 @@ The initial implemented milestone is an offline canonical-data validator,
 deterministic DMM geometry writer and omission reporter using synthetic fixtures
 only. Its wood/iron/chair catalog is an initial serializer proof, not useful
 full-world coverage or a working full save-to-map converter. Native `.sav`
-extraction requires a separate future adapter. Do not implement extraction by
-loading a save into a game and calling a map writer.
+extraction is now `export.py`; it never loads a save into a game.
 
 ## Source findings
 

@@ -69,9 +69,6 @@
 		drop_from_inventory(handcuffed)
 
 /mob/living/human/proc/escape_legcuffs()
-	if (!canClick())
-		return
-
 	setClickCooldown(100)
 
 	if (can_break_cuffs()) //Don't want to do a lot of logic gating here.
@@ -94,7 +91,7 @@
 		)
 
 	if (do_after(src, breakouttime, incapacitation_flags = INCAPACITATION_DEFAULT & ~INCAPACITATION_RESTRAINED))
-		if (!legcuffed || buckled)
+		if (!HC || legcuffed != HC || buckled)
 			return
 		visible_message(
 			"<span class='danger'>[src] manages to remove \the [legcuffed]!</span>",

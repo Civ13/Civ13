@@ -379,6 +379,10 @@
 	if (waterwheel_refusal)
 		to_chat(user, SPAN_WARNING(waterwheel_refusal))
 		return
+	var/rig_refusal = offshore_rig_build_refusal(user, recipe.result_type)
+	if (rig_refusal)
+		to_chat(user, SPAN_WARNING(rig_refusal))
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
@@ -1774,6 +1778,10 @@
 		var/late_waterwheel_refusal = waterwheel_build_refusal(user, recipe.result_type)
 		if (late_waterwheel_refusal)
 			to_chat(user, SPAN_WARNING(late_waterwheel_refusal))
+			return
+		var/late_rig_refusal = offshore_rig_build_refusal(user, recipe.result_type)
+		if (late_rig_refusal)
+			to_chat(user, SPAN_WARNING(late_rig_refusal))
 			return
 		if (press_construction && !press_construction.valid())
 			return

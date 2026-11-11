@@ -42,9 +42,11 @@ class AtlasAdapterContract(unittest.TestCase):
   stack=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
   menu=stack.split('/obj/item/stack/proc/list_recipes(',1)[1].split('// Custom qdel',1)[0]
   lock=menu.index('if (manual_hint)')
-  self.assertLess(lock,menu.index('make=[i]'))
-  self.assertIn('continue',menu[lock:menu.index('if (can_build)',lock)])
-  self.assertIn('html_encode(manual_hint)',menu)
+  locked=menu[lock:menu.index('else if (max_multiplier < 1)',lock)]
+  self.assertIn('html_encode(manual_hint)',locked)
+  self.assertNotIn('href',locked)
+  self.assertNotIn('[action]',locked)
+  self.assertLess(lock,menu.index("<a href='[action];multiplier=1'>"))
 
  def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
   anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
@@ -236,7 +238,7 @@ class AtlasReaderViewContract(unittest.TestCase):
 
  def test_resource_page_lists_exact_makers_and_users_within_bounds(self):
   page=part('resource_model','model')
-  for marker in ('product["id"] == resource_id','ingredient["id"] == resource_id','makes && ++made <= 60','uses && ++used <= 60','data["query"] = ""','guidance["made_by_count"] = made','guidance["used_in_count"] = used'):
+  for marker in ('product["id"] == resource_id','ingredient["id"] == resource_id','recipe_id) && ++made <= 60','recipe_id) && ++used <= 60','data["query"] = ""','guidance["made_by_count"] = made','guidance["used_in_count"] = used'):
    self.assertIn(marker,page)
   self.assertNotIn('search_',page)
   self.assertIn('return resource_model(reference, viewer, data, resource_id, recipe_id, catalog, scope, known)',MODEL)
@@ -261,7 +263,7 @@ class AtlasItemPageContract(unittest.TestCase):
    self.assertIn(marker,facts)
   self.assertIn('+ facts_data(reference, resource_id)',part('guidance_data','family_variants'))
   page=part('resource_model','model')
-  for marker in ('if (makes && !first)','if (!selected && first)\n\t\tselected = first','hosts && ++hosted <= 60','guidance["made_here_count"] = hosted'):
+  for marker in ('if (makes && !first)','if (!selected && first)\n\t\tselected = first','recipe_id) && ++hosted <= 60','guidance["made_here_count"] = hosted'):
    self.assertIn(marker,page)
 
  def test_workstation_links_are_presentation_only_and_need_a_real_resource(self):
@@ -379,6 +381,21 @@ class AtlasFactsContract(unittest.TestCase):
   screen=(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
   for text in ("optional ? 'Also at: ' : 'Made at: '",'bench_heated:','Found in:',"'Natural feature':"):
    self.assertIn(text,screen)
+
+ def test_item_pages_merge_the_same_recipe_in_other_materials(self):
+  source=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
+  # One row per kind, era and product; the materials become that row's versions.
+  self.assertIn('var/list/shape = list("[recipe["kind"]]", "[recipe["era_label"]]")',source)
+  for tag in ('made','used','here'):
+   self.assertIn(f'merge_row(merged, "{tag}|[key]", recipe, matches, choice, recipe_id) && ++',source)
+  self.assertIn('row["variant_count"] = members.len',source)
+  self.assertIn('detail["family_variants"] = family_variants(reference, viewer, siblings, selected["id"], catalog, known)',source)
+  self.assertIn('common &= splittext(name, " ")',source)
+  self.assertIn("' versions: ' + text(row.ways)",(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text())
+  # The catalog really has such repeats: the hatchet is made nine ways but in three distinct manners.
+  recipes=[recipe for recipe in json.loads((ROOT/'UI/crafting-atlas.json').read_text())['recipes'] if any(product['id']=='/obj/item/weapon/material/hatchet' for product in recipe['outputs'])]
+  shapes={(recipe['kind'],recipe['era_label'],tuple(product['id'] for product in recipe['outputs'])) for recipe in recipes}
+  self.assertEqual((len(recipes),len(shapes)),(9,3))
 
 class AtlasTitleContract(unittest.TestCase):
  def test_titles_use_declared_names_and_never_replace_reviewed_names(self):

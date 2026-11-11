@@ -17,6 +17,8 @@
 		return istype(owner, /obj/item/weapon/folder) && owner.loc == reader && !reader.stat && !reader.restrained()
 	if (route == "noticeboard")
 		return istype(owner, /obj/structure/noticeboard) && owner.Adjacent(reader)
+	if (route == "filing")
+		return istype(owner, /obj/structure/filingcabinet) && owner.Adjacent(reader) && !reader.stat && !reader.restrained()
 	if (route == "bundle")
 		var/obj/item/weapon/paper_bundle/B = owner
 		if (!istype(B) || !islist(B.pages) || !isnum(B.page) || B.page != round(B.page) || B.page < 1 || B.page > B.pages.len || B.pages[B.page] != P)
@@ -112,20 +114,37 @@
 	for (var/list/section in sections)
 		if (!paper_document_ink(section["ink"]))
 			return "<b>Unable to read this document.</b>"
-		var/font = section["tool"] == "crayon" ? P.crayonfont : P.deffont
-		var/text = html_encode(section["text"])
-		if (section["kind"] == "signature")
-			font = P.signfont
-			text = "<i>" + text + "</i>"
-		else
-			text = paper_document_section_pencode(text)
-			if (section["kind"] == "title")
-				text = "<b>" + text + "</b>"
-		if (section["tool"] == "crayon")
-			text = "<b>" + text + "</b>"
-		text = replacetext(text, "\n", "<BR>")
-		result += "<BR><font face=\"" + html_encode(font) + "\" color=\"" + html_encode(section["ink"]) + "\">" + text + "</font>"
+	// A field label shows its answer (or an empty blank) on the same line;
+	// answers are drawn there rather than in writing order.
+	for (var/list/section in sections)
+		if (section["kind"] == "field_answer")
+			continue
+		var/run = paper_document_view_run(section, P)
+		if (section["kind"] == "field_label")
+			run += ": " + paper_document_view_answer(sections, section["id"], P)
+		result += "<BR>" + run
 	return result
+
+/proc/paper_document_view_answer(list/sections, id, obj/item/weapon/paper/P)
+	for (var/list/section in sections)
+		if (section["kind"] == "field_answer" && section["target"] == id)
+			return "<u>" + paper_document_view_run(section, P) + "</u>"
+	return "<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>"
+
+/proc/paper_document_view_run(list/section, obj/item/weapon/paper/P)
+	var/font = section["tool"] == "crayon" ? P.crayonfont : P.deffont
+	var/text = html_encode(section["text"])
+	if (section["kind"] == "signature")
+		font = P.signfont
+		text = "<i>" + text + "</i>"
+	else
+		text = paper_document_section_pencode(text)
+		if (section["kind"] == "title")
+			text = "<b>" + text + "</b>"
+	if (section["tool"] == "crayon")
+		text = "<b>" + text + "</b>"
+	text = replacetext(text, "\n", "<BR>")
+	return "<font face=\"" + html_encode(font) + "\" color=\"" + html_encode(section["ink"]) + "\">" + text + "</font>"
 
 // The editor's only render-time pencode, applied to already encoded section
 // text. Trailing closers stop an unbalanced tag from styling later sections;
@@ -151,6 +170,8 @@
 	if (!data)
 		return null
 	var/body = paper_document_view_body(data, src)
+	// Stamp images are sent only to a reader this route already admitted.
+	paper_stamp_send_assets(reader, src)
 	return "<HTML><HEAD><TITLE>" + paper_document_view_title(name) + "</TITLE></HEAD><BODY style=\"background:#FFFFFF;color:#000000\">" + body + "</BODY></HTML>"
 
 /obj/item/weapon/paper/proc/show_document(mob/reader, forceshow = FALSE, route = "paper", atom/owner = null)

@@ -83,3 +83,12 @@
 #define SCHOLAR_TUTOR_RATE 1.5
 // A tutored student gains this many times the usual study skill.
 #define SCHOLAR_TUTOR_GAIN_MULT 3
+// Apprentices (scholar_tools.dm): how many a master may take, how close they
+// must be, and how much faster an apprentice learns beside their master.
+#define SCHOLAR_MAX_APPRENTICES 3
+#define SCHOLAR_APPRENTICE_REACH 2
+#define SCHOLAR_APPRENTICE_GAIN_MULT 2
+// Scholar titles shown on examine, by highest discipline level.
+#define SCHOLAR_TITLE_APPRENTICE 12
+#define SCHOLAR_TITLE_SCHOLAR 40
+#define SCHOLAR_TITLE_MASTER 75
