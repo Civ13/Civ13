@@ -18,10 +18,11 @@ policy. A sampled startup listener can abort this fixture before world entry. Do
 not retry with a weaker policy or claim that a clean compile is a passed runtime.
 The manifest, compile logs, supervisor receipt and failed evidence are retained.
 
-The 46 expected assertions cover the actual helper and native pulse path: cardinal
+The 48 expected assertions cover the actual helper and native pulse path: cardinal
 motion at three signed offsets, pulse count/completion/ownership, stamina and
 recovery, wall and Help-intent body blocking, anchoring, disabled smooth movement,
-exhaustion, range, grip release without displacement, chain immunity and size.
+exhaustion, range, grip release without displacement, chain immunity, size
+and a freshly spawned body that has not walked yet.
 They are expectations until an accepted receipt confirms completion. Existing
 fixture subtype counters observe actual Move and completion hooks; there is no
 replacement shove implementation. This is headless evidence, not real-client
