@@ -52,13 +52,14 @@
 
 /obj/structure/fuelpump/premade/gasoline/New()
 	..()
-	fueltype = "gasoline"
-	name = "[brand] [fueltype] pump"
-	updatedesc()
+	set_premade_fuel("gasoline")
 
 /obj/structure/fuelpump/premade/diesel/New()
 	..()
-	fueltype = "diesel"
+	set_premade_fuel("diesel")
+
+/obj/structure/fuelpump/premade/proc/set_premade_fuel(new_fuel)
+	fueltype = new_fuel
 	name = "[brand] [fueltype] pump"
 	updatedesc()
 
@@ -69,15 +70,11 @@
 
 /obj/structure/fuelpump/premade/yamaha/gasoline/New()
 	..()
-	fueltype = "gasoline"
-	name = "[brand] [fueltype] pump"
-	updatedesc()
+	set_premade_fuel("gasoline")
 
 /obj/structure/fuelpump/premade/yamaha/diesel/New()
 	..()
-	fueltype = "diesel"
-	name = "[brand] [fueltype] pump"
-	updatedesc()
+	set_premade_fuel("diesel")
 
 /obj/structure/fuelpump/n
 	icon_state = "oilpump3"

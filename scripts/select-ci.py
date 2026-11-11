@@ -123,6 +123,7 @@ FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', '
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
+FUEL_PUMP_OFFLINE_TESTS = frozenset({'tests/fuel_pump/test_variants.py'})
 
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
@@ -416,6 +417,10 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
+        if path in FUEL_PUMP_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/fuel_pump/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered fuel-pump executable test requires explicit CI review')
         if path in MOOD_SLEEP_OFFLINE_TESTS:
             continue
         if path.startswith('tests/mood_sleep/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
