@@ -48,60 +48,47 @@ If you make a derivative work from this code, you must include this notification
 			return TRUE
 	return FALSE
 
+/datum/action/proc/prepare_wrestling_move(move_label, move_streak)
+	if(owner.incapacitated())
+		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
+		return
+	owner.visible_message("<span class='danger'>[owner] prepares to [move_label]!</span>", "<b><i>Your next attack will be a [move_label].</i></b>")
+	owner.mind.martial_art.streak = move_streak
+
 /datum/action/slam
 	name = "Slam (Cinch) - Slam a grappled opponent into the floor."
 	button_icon_state = "wrassle_slam"
 
 /datum/action/slam/Trigger()
-	if(owner.incapacitated())
-		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
-		return
-	owner.visible_message("<span class='danger'>[owner] prepares to BODY SLAM!</span>", "<b><i>Your next attack will be a BODY SLAM.</i></b>")
-	owner.mind.martial_art.streak = "slam"
+	prepare_wrestling_move("BODY SLAM", "slam")
 
 /datum/action/throw_wrassle
 	name = "Throw (Cinch) - Spin a cinched opponent around and throw them."
 	button_icon_state = "wrassle_throw"
 
 /datum/action/throw_wrassle/Trigger()
-	if(owner.incapacitated())
-		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
-		return
-	owner.visible_message("<span class='danger'>[owner] prepares to THROW!</span>", "<b><i>Your next attack will be a THROW.</i></b>")
-	owner.mind.martial_art.streak = "throw"
+	prepare_wrestling_move("THROW", "throw")
 
 /datum/action/kick
 	name = "Kick - A powerful kick, sends people flying away from you. Also useful for escaping from bad situations."
 	button_icon_state = "wrassle_kick"
 
 /datum/action/kick/Trigger()
-	if(owner.incapacitated())
-		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
-		return
-	owner.visible_message("<span class='danger'>[owner] prepares to KICK!</span>", "<b><i>Your next attack will be a KICK.</i></b>")
-	owner.mind.martial_art.streak = "kick"
+	prepare_wrestling_move("KICK", "kick")
 
 /datum/action/strike
 	name = "Strike - Hit a neaby opponent with a quick attack."
 	button_icon_state = "wrassle_strike"
 
 /datum/action/strike/Trigger()
-	if(owner.incapacitated())
-		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
-		return
-	owner.visible_message("<span class='danger'>[owner] prepares to STRIKE!</span>", "<b><i>Your next attack will be a STRIKE.</i></b>")
-	owner.mind.martial_art.streak = "strike"
+	prepare_wrestling_move("STRIKE", "strike")
 
 /datum/action/drop
 	name = "Drop - Smash down onto an opponent."
 	button_icon_state = "wrassle_drop"
 
 /datum/action/drop/Trigger()
-	if(owner.incapacitated())
-		to_chat(owner, "<span class='warning'>You can't WRESTLE while you're OUT FOR THE COUNT.</span>")
-		return
-	owner.visible_message("<span class='danger'>[owner] prepares to LEG DROP!</span>", "<b><i>Your next attack will be a LEG DROP.</i></b>")
-	owner.mind.martial_art.streak = "drop"
+	prepare_wrestling_move("LEG DROP", "drop")
 
 /datum/martial_art/wrestling/teach(mob/living/owner, make_temporary=FALSE)
 	if(..())
