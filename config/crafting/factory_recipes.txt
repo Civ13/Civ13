@@ -20,6 +20,15 @@ FACTORY: screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/iro
 FACTORY: claw hammer|/obj/item/weapon/hammer/modern|1|/obj/item/stack/material/iron=3|50|1|assembly_line
 FACTORY: wirecutters|/obj/item/weapon/wirecutters|1|/obj/item/stack/material/steel=4|60|1|assembly_line
 FACTORY: ammo belt|/obj/item/ammo_magazine/emptybelt|1|/obj/item/stack/material/copper=7|100|2|automation
+// AK rifle parts (issue #4443 phase 3). Receiver and internals need tier 2; fit them at a firearm bench.
+FACTORY: AK receiver|/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver|1|/obj/item/stack/material/steel=6|150|2|automatic_weapons
+FACTORY: AK bolt carrier group|/obj/item/weapon/gun_component/ak_action|1|/obj/item/stack/material/steel=3|120|2|automatic_weapons
+FACTORY: AK barrel 7.62x39mm|/obj/item/weapon/gun_component/ak_barrel_762|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK barrel 5.45x39mm|/obj/item/weapon/gun_component/ak_barrel_545|1|/obj/item/stack/material/steel=3|100|2|automatic_weapons
+FACTORY: AK magazine well 7.62x39mm|/obj/item/weapon/gun_component/ak_feed_762|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK magazine well 5.45x39mm|/obj/item/weapon/gun_component/ak_feed_545|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
+FACTORY: AK fixed stock|/obj/item/weapon/gun_component/ak_furniture_fixed|1|/obj/item/stack/material/wood=2|40|1|automatic_weapons
+FACTORY: AK folding stock|/obj/item/weapon/gun_component/ak_furniture_folding|1|/obj/item/stack/material/steel=2|60|1|automatic_weapons
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

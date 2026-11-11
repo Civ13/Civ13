@@ -17,6 +17,9 @@ human:
 - Save_World, ClearMap and Load_World keep the converted rifle's parts, wear,
   caliber and handling, give an untouched AKM (saved without parts) its preset
   once, and keep a loose part's id and condition with no duplicated parts.
+- the real factory recipe list makes every part type and the bare receiver,
+  all gated by Automatic Weapons, and a receiver built from fresh parts fires
+  as a 7.62 rifle named "AK rifle (7.62x39mm)".
 
 Negative controls must fail: `--negative-control no-conversion-check`,
 `compound-handling` and `eager-preset`.
