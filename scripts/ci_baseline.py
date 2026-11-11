@@ -406,6 +406,10 @@ SUITES = {
         'paths': ('tests/human_life_forms/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Narrow-cone direction equivalence against fake engine geometry.
+    'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
+        'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
+            'code/game/mob/vision_cone.dm', 'tests/save_movement/source_adapter.py')},
     # Complete startup observer projections and hook contracts; fake timers/Export.
     'game_ready': {'files': ('tests/game_ready/test_release.py',
                              'tests/game_ready/test_ready.py',

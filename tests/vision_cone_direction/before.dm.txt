@@ -1,0 +1,67 @@
+atom/proc/InCone(atom/center = usr, dir = NORTH)
+	if (get_dist(center, src) == FALSE || src == center) return FALSE
+	var/d = get_dir(center, src)
+	if (global_hud.fov.icon_state == "combat") //300 degrees
+		if (!d || d == dir) return TRUE
+		if (dir & (dir-1))
+			return (d & ~dir) ? FALSE : TRUE
+		if (!(d & dir)) return FALSE
+		var/dx = abs(x - center.x)
+		var/dy = abs(y - center.y)
+		if (dx == dy) return TRUE
+		if (dy > dx)
+			return (dir & (NORTH|SOUTH)) ? TRUE : FALSE
+		return (dir & (EAST|WEST)) ? TRUE : FALSE
+
+	else if (global_hud.fov.icon_state == "helmet") //180 degrees
+		if (!d) return TRUE
+		switch(center.dir)
+			if (WEST)
+				if (x <= center.x)
+					return FALSE
+			if (EAST)
+				if (x >= center.x)
+					return FALSE
+			if (NORTH)
+				if (y >= center.y)
+					return FALSE
+			if (SOUTH)
+				if (y <= center.y)
+					return FALSE
+		return TRUE
+
+	else if (global_hud.fov.icon_state == "narrow") //60 degrees
+		//first remove anything 180 degrees behind, and authorize anything right in front
+		var/dx = abs(x - center.x)
+		var/dy = abs(y - center.y)
+		switch(center.dir)
+			if (WEST)
+				if (x > center.x)
+					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center, src) >= dx)
+					return FALSE
+			if (EAST)
+				if (x < center.x)
+					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center, src) >= dx)
+					return FALSE
+			if (NORTH)
+				if (y < center.y)
+					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center, src) >= dy)
+					return FALSE
+			if (SOUTH)
+				if (y > center.y)
+					return TRUE
+				if (get_dir(center, src) == center.dir)
+					return FALSE
+				if (get_dist(center,src) >= dy)
+					return FALSE
+
+		return TRUE
