@@ -71,6 +71,9 @@
 /obj/structure/stone_crusher/proc/crushing_wait(mob/living/human/H)
 	return do_after(H, max(20, round(50 / H.getStatCoeff("strength"))), src)
 
+/obj/structure/stone_crusher/proc/crushing_interrupted(mob/living/human/H, obj/item/stack/material/stone/S)
+	return H.stat || !anchored || QDELETED(S) || S.loc != H || S.amount < 1 || get_dist(H, src) > 1
+
 /obj/structure/stone_crusher/proc/crushing_output_turf()
 	return get_turf(src)
 
@@ -89,13 +92,13 @@
 	visible_message(SPAN_NOTICE("[H] starts crushing stones in \the [src]."), SPAN_NOTICE("You start crushing stones in \the [src]."))
 	var/crushed = 0
 	while (TRUE)
-		if (H.stat || !anchored || QDELETED(S) || S.loc != H || S.amount < 1 || get_dist(H, src) > 1)
+		if (crushing_interrupted(H, S))
 			break
 		playsound(loc, 'sound/effects/pickaxe.ogg', 60, TRUE)
 		if (!crushing_wait(H))
 			break
 		// Revalidate the same stack and actor after the wait, before paying.
-		if (H.stat || !anchored || QDELETED(S) || S.loc != H || S.amount < 1 || get_dist(H, src) > 1)
+		if (crushing_interrupted(H, S))
 			break
 		if (!crush_one_stone(H, S))
 			break

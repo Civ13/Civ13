@@ -19,8 +19,34 @@
 /mob/living/human/crush_probe/update_icons()
 	return
 // Bounded action-delay adapter; the production loop body is unchanged.
+/obj/structure/stone_crusher/crush_probe
+	var/wait_mode
+	var/obj/item/stack/material/stone/wait_stack
+	var/wait_calls = 0
+	var/payment_attempts = 0
+
 /obj/structure/stone_crusher/crush_probe/crushing_wait(mob/living/human/H)
+	wait_calls++
+	switch (wait_mode)
+		if ("failed")
+			return FALSE
+		if ("worker")
+			H.stat = 1
+		if ("anchor")
+			anchored = FALSE
+		if ("deleted")
+			qdel(wait_stack)
+		if ("location")
+			wait_stack.loc = get_turf(src)
+		if ("amount")
+			wait_stack.amount = 0
+		if ("distance")
+			H.loc = locate(8,8,1)
 	return TRUE
+
+/obj/structure/stone_crusher/crush_probe/crush_one_stone(mob/living/human/H, obj/item/stack/material/stone/S, roll = null)
+	payment_attempts++
+	return ..(H, S, roll)
 var/crush_failures = 0
 var/crush_runtime_error = FALSE
 /proc/crush_check(condition, label)
@@ -56,6 +82,7 @@ var/crush_runtime_error = FALSE
 		crush_check(!world.port, "fixture has no listening port")
 		crush_table_checks()
 		crush_manual_checks()
+		crush_interruption_checks()
 		crush_stamp_mill_checks()
 		crush_catalog_checks()
 	catch(var/exception/e)
@@ -70,10 +97,10 @@ var/crush_runtime_error = FALSE
 	var/list/powered = stone_crushing_table(5, TRUE)
 	crush_check(!(/obj/item/stack/ore/iron in stone_age) && (/obj/item/stack/ore/iron in bronze), "iron unlocks in the Bronze Age")
 	crush_check(!(/obj/item/stack/ore/coal in bronze) && (/obj/item/stack/ore/coal in medieval) && (/obj/item/stack/ore/sulphur in medieval), "coal and powder minerals unlock in the Medieval age")
-	crush_check(crush_table_total(stone_age) == 2650 && crush_table_total(medieval) == 3500, "manual odds: 6.5% ore in the Stone Age, 15% ore by the Medieval age, plus 20% sand")
-	crush_check(crush_table_total(powered) == 4750 && powered[/obj/item/stack/ore/glass] == 2500 && powered[/obj/item/stack/ore/iron] == 450 && powered[/obj/item/stack/ore/diamond] == 15, "powered odds recover half again as much ore and 25% sand")
+	crush_check(crush_table_total(stone_age) == 2650 && crush_table_total(medieval) == 3650, "manual odds: 6.5% ore in the Stone Age, 16.5% ore by the Medieval age, plus 20% sand")
+	crush_check(crush_table_total(powered) == 4975 && powered[/obj/item/stack/ore/glass] == 2500 && powered[/obj/item/stack/ore/iron] == 450 && powered[/obj/item/stack/ore/diamond] == 15, "powered odds recover half again as much ore and 25% sand")
 	crush_check(roll_stone_crushing(medieval, 1) == /obj/item/stack/ore/glass && roll_stone_crushing(medieval, 2001) == /obj/item/stack/ore/copper, "weighted roll walks the table in order")
-	crush_check(isnull(roll_stone_crushing(medieval, 3501)) && isnull(roll_stone_crushing(powered, 10000)), "rolls past the table leave rubble")
+	crush_check(isnull(roll_stone_crushing(medieval, 3651)) && isnull(roll_stone_crushing(powered, 10000)), "rolls past the table leave rubble")
 	var/obj/item/stack/material/sandstone/sandstone = new(null)
 	var/obj/item/stack/material/stone/stone = new(null)
 	crush_check(is_crushable_stone(stone) && !is_crushable_stone(sandstone) && !is_crushable_stone(null), "only plain stone blocks are crushable")
@@ -117,6 +144,23 @@ var/crush_runtime_error = FALSE
 	qdel(H)
 	for (var/obj/item/stack/item in T)
 		qdel(item)
+
+/proc/crush_interruption_checks()
+	var/turf/T = locate(3,3,1)
+	var/turf/standing = locate(3,4,1)
+	for (var/mode in list("failed", "worker", "anchor", "deleted", "location", "amount", "distance"))
+		var/obj/structure/stone_crusher/crush_probe/C = new(T)
+		var/mob/living/human/crush_probe/H = new(standing)
+		var/obj/item/stack/material/stone/S = new(H, 5, FALSE)
+		C.wait_mode = mode
+		C.wait_stack = S
+		var/crushed = C.crush_stones(H, S)
+		crush_check(C.wait_calls == 1 && !crushed && !C.payment_attempts && !(H in C.crushing_workers), "[mode] during wait stops before payment and releases worker")
+		if (mode != "deleted" && mode != "amount")
+			crush_check(S.amount == 5, "[mode] preserves the stone stack")
+		qdel(S)
+		qdel(C)
+		qdel(H)
 
 /proc/crush_stamp_mill_checks()
 	map.ordinal_age = 5
