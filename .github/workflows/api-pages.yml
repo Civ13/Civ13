@@ -69,8 +69,23 @@ jobs:
       - name: Install checked BYOND for actual sprite extraction
         run: |
           sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y libc6-i386 lib32z1 libstdc++6:i386 libgcc-s1:i386 libcurl4:i386 libncurses6:i386
+          packages=(libc6-i386 lib32z1 libstdc++6:i386 libgcc-s1:i386 libcurl4:i386 libncurses6:i386)
+          acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
+          if ! { sudo timeout -k 5 120 apt-get "${acquire[@]}" update && sudo timeout -k 5 180 apt-get "${acquire[@]}" install -y "${packages[@]}"; }; then
+            # Same non-Azure fallback as scripts/travis_pre_byond.sh, as APT options only.
+            echo 'Ubuntu mirror failed; retrying with public non-Azure mirrors.' >&2
+            list="$RUNNER_TEMP/civ13-apt-fallback.list"
+            codename="$(. /etc/os-release && printf '%s' "$VERSION_CODENAME")"
+            : > "$list"
+            for mirror in http://mirrors.edge.kernel.org/ubuntu; do
+              for suite in "$codename" "$codename-updates" "$codename-security"; do
+                printf 'deb [arch=amd64,i386] %s %s main universe\n' "$mirror" "$suite" >> "$list"
+              done
+            done
+            sources=(-o "Dir::Etc::SourceList=$list" -o "Dir::Etc::SourceParts=$list.d")
+            sudo timeout -k 5 180 apt-get "${acquire[@]}" "${sources[@]}" update
+            sudo timeout -k 5 180 apt-get "${acquire[@]}" "${sources[@]}" install -y --allow-downgrades "${packages[@]}"
+          fi
           mkdir "$RUNNER_TEMP/api-byond"
           mkdir -p .ci/api-pages
           python -B scripts/byond_toolchain.py download --platform linux --source repository-release --output "$RUNNER_TEMP/api-byond/pinned.zip" > .ci/api-pages/acquisition.json
