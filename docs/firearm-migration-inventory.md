@@ -57,6 +57,14 @@ The scan visits `code/**/*.dm` and `config/crafting/**/*.txt`; it does not apply
 instances, load saved objects, execute recipes or discover arbitrary runtime
 construction outside the factory source candidates.
 
+## Coverage manifest and component contract
+
+`docs/firearm-coverage.json` is the compiler-resolved companion to this
+lexical inventory: one entry per gun type with category, modern/separate scope
+and a `migration` state (see `tests/firearm_coverage/README.md`). The component
+schema and invariants the migration must keep are in
+[firearm-component-contract.md](firearm-component-contract.md).
+
 ## Review before a gameplay migration
 
 1. **Choose the modern cohort explicitly.** Review declaration blocks and
