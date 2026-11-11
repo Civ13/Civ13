@@ -65,20 +65,25 @@ var/global/list/persistence_player_claims = list()
 		persistence_restored_bodies.Remove(account)
 
 /map_storage/proc/prepare_player_ownership()
+	// ClearMap retires bodies through qdel; they may remain in world until GC.
+	// Only current bodies participate, even when a retired body retains its owner.
 	var/list/active = list()
 	for(var/mob/living/human/H in world)
+		if(QDELETED(H) || H.gcDestroyed) continue
 		if(H.client && !IsGuestKey(H.client.key))
 			var/account = H.client.ckey
 			if(!account || active[account])
 				throw EXCEPTION("Duplicate or missing authenticated player account")
 			active[account] = H
 	for(var/mob/living/human/H in world)
+		if(QDELETED(H) || H.gcDestroyed) continue
 		if(H.client)
 			H.persistence_owner_ckey = IsGuestKey(H.client.key) ? null : H.client.ckey
 		else if(H.persistence_owner_ckey && active[H.persistence_owner_ckey])
 			H.persistence_owner_ckey = null
 	var/list/owners = list()
 	for(var/mob/living/human/H in world)
+		if(QDELETED(H) || H.gcDestroyed) continue
 		var/account = H.persistence_owner_ckey
 		if(isnull(account)) continue
 		if(!persistence_owner_valid(account) || owners[account])

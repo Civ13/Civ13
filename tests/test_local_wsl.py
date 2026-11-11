@@ -32,8 +32,16 @@ class LocalWslTests(unittest.TestCase):
                 return real_run(['git', '-C', str(source), *arguments], env=env,
                                 check=True, capture_output=True, text=True).stdout.strip()
 
-            for name in ('scripts/build-crafting-atlas.py', 'scripts/atlas/catalog_metadata.py',
-                         'scripts/atlas/tanning.py', 'scripts/atlas/variants.py',
+            # Stage the whole atlas package so new atlas modules do not break
+            # this fixture; the listed game inputs are the catalog's sources.
+            atlas = sorted(str(path.relative_to(root)) for path in (root / 'scripts/atlas').rglob('*')
+                           if path.is_file() and '__pycache__' not in path.parts)
+            for name in (*atlas, 'scripts/build-crafting-atlas.py',
+                         'config/crafting/furniture_joinery.json',
+                         'code/modules/1713/rope_making.dm',
+                         'code/modules/1713/primitive_woodworking.dm',
+                         'code/modules/research_tree/research_node.dm',
+                         'code/modules/research_tree/book_pages.dm',
                          'scripts/atlas/tanning-contracts.json',
                          'code/modules/1713/production.dm',
                          'code/game/objects/items/stacks/sheets/leather.dm',
@@ -44,7 +52,11 @@ class LocalWslTests(unittest.TestCase):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())
-            for name, value in {'config/crafting/fixture.txt':
+            # The fixture-only output is explicitly ungated; production research
+            # mappings and all catalog source/provenance checks still execute.
+            for name, value in {'code/modules/research_tree/recipe_gates.dm':
+                                'var/global/list/basic_crafting_recipes = list("/obj/item/fixture")\n',
+                                'config/crafting/fixture.txt':
                                 'RECIPE: /material/wood/,fixture item,/obj/item/fixture,1,1,0,1,none,0,0,0,8,null\n',
                                 'maps/fixture.txt': 'synthetic map placeholder\n',
                                 'UI/fixture.txt': 'synthetic UI placeholder\n',

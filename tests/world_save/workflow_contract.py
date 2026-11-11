@@ -169,6 +169,10 @@ def assert_workflow_contract(workflow):
                  '        with:\n'
                  '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n'
                  '          fetch-depth: 0\n'
+                 # Reviewed blobless history: pinned `git show` fixtures fetch blobs on demand.
+                 '          # Blobless: every commit and tree, blobs fetched on demand (pinned\n'
+                 '          # `git show <sha>:path` fixtures still work on this public repo).\n'
+                 '          filter: blob:none\n'
                  '          persist-credentials: false\n'),
             )
             if any(section.count(block) != 1 for block in blocks) or section.count('actions/checkout@') != 2:
