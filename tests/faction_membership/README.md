@@ -22,3 +22,19 @@ small stubs, runs DreamDaemon with `-safe` on port 0 and prints `PASS`.
 `--negative-control cooldown`, `privileges`, `leader_flag` or `switch` each
 removes one rule and must report its failure. It does not run the full game
 or a save/load.
+
+## Leadership lifecycle
+
+The membership layer also owns `faction_leader_record`,
+`clear_faction_leader` and `change_faction_leader`. Cleanup compares object
+identity, never character names. A transition checks the expected current
+leader and both memberships immediately before changing the record and role
+powers; a null expected leader means claiming a vacancy. Map eligibility and
+nearby selection remain in the verbs. Research-role and title strings remain
+unchanged during a transfer, matching the previous behavior.
+
+The native probe covers duplicate names, stale leader flags, departure/death
+cleanup, cancellation, self-transfer, changed membership/leadership, dead
+participants, vacancy claims and restored record references. Native execution
+and real-client/save-load acceptance must be reported separately from the
+offline source contracts.

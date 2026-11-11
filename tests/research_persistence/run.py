@@ -6,9 +6,9 @@ _map_metadata.dm, plus small stubs, into a temporary fixture. DreamDaemon runs
 it with -safe on port 0 (no clients) and the probe writes result.txt.
 """
 import argparse
+import importlib.util
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
@@ -16,10 +16,16 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+
+_spec = importlib.util.spec_from_file_location('fixture_source_projection', ROOT / 'scripts/fixture_source_projection.py')
+_projection = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_projection)
+proc_text = _projection.proc_text
 FACTION = 'code/modules/research_tree/research_faction.dm'
 DEFINES = 'code/modules/research_tree/_research_tree_defines.dm'
 NODE = 'code/modules/research_tree/research_node.dm'
 METADATA = 'code/game/objects/map_metadata/_map_metadata.dm'
+MEMBERSHIP = 'code/game/mob/groups/faction_membership.dm'
 
 # Each control breaks one fix; the probe must then fail.
 CONTROLS = {
@@ -31,20 +37,7 @@ CONTROLS = {
 
 def read(path, control):
     text = (ROOT / path).read_text(encoding='utf-8')
-    if control:
-        target, old, new = CONTROLS[control]
-        if target == path:
-            if text.count(old) != 1:
-                raise RuntimeError(f'Control target missing or ambiguous: {control}')
-            text = text.replace(old, new, 1)
-    return text
-
-
-def proc_text(source, signature):
-    start = source.index(signature)
-    body = source.index('\n', start) + 1
-    end = re.compile(r'^\S', re.M).search(source, body)
-    return source[start:end.start() if end else len(source)]
+    return _projection.apply_control(text, path, control, CONTROLS)
 
 
 def node_datum(source):
@@ -55,12 +48,13 @@ def node_datum(source):
 
 def build(directory, control):
     metadata = read(METADATA, control)
+    (directory / 'leader_record.dm').write_text(proc_text(read(MEMBERSHIP, control), '/obj/map_metadata/proc/faction_leader_record('), encoding='utf-8')
     (directory / 'defines.dm').write_text(read(DEFINES, control), encoding='utf-8')
     (directory / 'faction.dm').write_text(read(FACTION, control), encoding='utf-8')
     (directory / 'node.dm').write_text('var/global/list/research_nodes = list()\n' + node_datum(read(NODE, control)), encoding='utf-8')
     (directory / 'legacy.dm').write_text(proc_text(metadata, '/obj/map_metadata/proc/set_ordinal_age()') + '\n' + proc_text(metadata, '/obj/map_metadata/proc/legacy_age_advance('), encoding='utf-8')
     shutil.copy(HERE / 'probe.dm', directory / 'probe.dm')
-    (directory / 'fixture.dme').write_text(''.join(f'#include "{name}"\n' for name in ('defines.dm', 'probe.dm', 'node.dm', 'faction.dm', 'legacy.dm')), encoding='utf-8')
+    (directory / 'fixture.dme').write_text(''.join(f'#include "{name}"\n' for name in ('defines.dm', 'probe.dm', 'node.dm', 'faction.dm', 'legacy.dm', 'leader_record.dm')), encoding='utf-8')
 
 
 def main():

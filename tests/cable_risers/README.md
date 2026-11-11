@@ -10,9 +10,11 @@ the cables on the same x and y of adjacent levels into one grid, that a
 consumer on level 3 draws from an engine on level 1 only through risers on all
 three levels, that unfastening or destroying a riser and cutting a cable split
 the grid without stale cross-level links, that riser links are runtime only,
+that a simulated reload (links and grid totals dropped, then each riser's
+`after_load` run in three different level orders) rebuilds the same grid,
 that a bus tie switch joins two runs on its tile only while closed, and that
 ladders pair through `multiz_level_above()` and `multiz_level_below()`.
 
-Not covered: connected-client use, save and reload of a riser pair on a
-multi-level map, and dug-cave or building-level maps (their level order comes
+Not covered: connected-client use, a native world save and import of a riser
+pair on a multi-level map, and dug-cave or building-level maps (their level order comes
 from the same helpers).

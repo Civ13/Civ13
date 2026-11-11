@@ -42,9 +42,11 @@ class AtlasAdapterContract(unittest.TestCase):
   stack=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
   menu=stack.split('/obj/item/stack/proc/list_recipes(',1)[1].split('// Custom qdel',1)[0]
   lock=menu.index('if (manual_hint)')
-  self.assertLess(lock,menu.index('make=[i]'))
-  self.assertIn('continue',menu[lock:menu.index('if (can_build)',lock)])
-  self.assertIn('html_encode(manual_hint)',menu)
+  locked=menu[lock:menu.index('else if (max_multiplier < 1)',lock)]
+  self.assertIn('html_encode(manual_hint)',locked)
+  self.assertNotIn('href',locked)
+  self.assertNotIn('[action]',locked)
+  self.assertLess(lock,menu.index("<a href='[action];multiplier=1'>"))
 
  def test_station_labels_preserve_canonical_choices_and_explicit_foundry_gate(self):
   anvil=(ROOT/'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
@@ -236,7 +238,7 @@ class AtlasReaderViewContract(unittest.TestCase):
 
  def test_resource_page_lists_exact_makers_and_users_within_bounds(self):
   page=part('resource_model','model')
-  for marker in ('product["id"] == resource_id','ingredient["id"] == resource_id','makes && ++made <= 60','uses && ++used <= 60','data["query"] = ""','guidance["made_by_count"] = made','guidance["used_in_count"] = used'):
+  for marker in ('product["id"] == resource_id','ingredient["id"] == resource_id','recipe_id) && ++made <= 60','recipe_id) && ++used <= 60','data["query"] = ""','guidance["made_by_count"] = made','guidance["used_in_count"] = used'):
    self.assertIn(marker,page)
   self.assertNotIn('search_',page)
   self.assertIn('return resource_model(reference, viewer, data, resource_id, recipe_id, catalog, scope, known)',MODEL)
@@ -253,6 +255,147 @@ class AtlasReaderViewContract(unittest.TestCase):
   for marker in ('reader.atlas_icon_cache[id]','if (!islist(cached))','reference.resource_info(viewer, resource)','reader.atlas_icon_cache[id] = cached'):
    self.assertIn(marker,view)
   self.assertLess(view.index('if (!islist(cached))'),view.index('reference.resource_info(viewer, resource)'))
+
+class AtlasItemPageContract(unittest.TestCase):
+ def test_item_page_carries_bounded_encoded_facts_and_opens_on_its_recipe(self):
+  facts=part('facts_data','display_name')
+  for marker in ('html_encode("[resource["kind"]]")','html_encode("[resource["desc"]]")','stat.len == 2 && rows.len < 16','html_encode("[stat[1]]")','html_encode("[stat[2]]")'):
+   self.assertIn(marker,facts)
+  self.assertIn('+ facts_data(reference, resource_id)',part('guidance_data','family_variants'))
+  page=part('resource_model','model')
+  for marker in ('if (makes && !first)','if (!selected && first)\n\t\tselected = first','recipe_id) && ++hosted <= 60','guidance["made_here_count"] = hosted'):
+   self.assertIn(marker,page)
+
+ def test_workstation_links_are_presentation_only_and_need_a_real_resource(self):
+  station=part('station_of','facts_data')
+  self.assertIn('var/station = recipe["station"]',station)
+  self.assertIn('kind_stations["[recipe["kind"]]"]',station)
+  self.assertIn('reference.resource_exists(station) ? station : ""',station)
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  table=ADAPTER.split('var/static/list/kind_stations = list(',1)[1].split(')\n',1)[0]
+  pairs=re.findall(r'"([^"]+)" = "([^"]+)"',table)
+  self.assertEqual(len(pairs),8)
+  kinds={recipe['kind'] for recipe in catalog['recipes']}
+  for kind,station in pairs:
+   self.assertIn(kind,kinds)
+   self.assertIn(station,catalog['resources'],station)
+  self.assertNotRegex(ADAPTER,r'recipe\["station"\]\s*=[^=]')
+
+class AtlasFactsContract(unittest.TestCase):
+ def test_facts_read_literals_inherit_and_never_guess_runtime_values(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/obj/item/clothing/suit/coat\n\tname = "coat"\n\tdesc = "A warm coat." // note\n\tw_class = ITEM_SIZE_NORMAL\n\tslot_flags = SLOT_OCLOTHING\n\tbody_parts_covered = UPPER_TORSO|ARMS\n\tarmor = list(melee = 10, arrow = 0, gun = FALSE)\n\tforce = 7\n'
+   '/obj/item/clothing/suit/coat/fur\n\tdesc = "A fur coat. It has 0 holes in it."\n/obj/item/clothing/suit/coat/odd\n\tdesc = "Made of [material]."\n\tw_class = max(1, 2)\n'
+   '/obj/item/weapon/club\n\tdesc = "A \\"big\\" club // not a comment."\n\tforce = 12\n\tthrowforce = 0\n\tsharp = TRUE\n\tproc/unused()\n\t\tforce = 99\n'
+   '/obj/item/weapon/club/proc/swing()\n\tforce = 50\n/obj/item/weapon/material/sword\n\tforce = 30\n\tedge = TRUE\n'
+   '/datum/reagent/water\n\tid = "water"\n\tdescription = "Wet."\n\ttaste_description = "water"\n/mob/living/simple_animal/goat\n\tmaxHealth = 40\n'}
+  types={'/coat':'/obj/item/clothing/suit/coat','/fur':'/obj/item/clothing/suit/coat/fur','/odd':'/obj/item/clothing/suit/coat/odd','/club':'/obj/item/weapon/club','/sword':'/obj/item/weapon/material/sword','water':'water','mystery':'mystery','/goat':'/mob/living/simple_animal/goat'}
+  facts=resource_facts(files,types)
+  self.assertEqual(facts['/coat'],{'kind':'Clothing','desc':'A warm coat.','stats':[['Size','Normal'],['Worn on','over clothing'],['Covers','chest, arms'],['Armor','melee 10']]})
+  self.assertEqual(facts['/fur']['desc'],'A fur coat.')
+  self.assertEqual(facts['/fur']['stats'],facts['/coat']['stats'])
+  self.assertNotIn('desc',facts['/odd'])
+  self.assertNotIn('Size',dict(facts['/odd']['stats']))
+  self.assertEqual(facts['/club'],{'kind':'Item','desc':'A "big" club // not a comment.','stats':[['Melee damage','12'],['Blade','sharp']]})
+  self.assertEqual(facts['/sword'],{'kind':'Tool or weapon','stats':[['Blade','edged']]})
+  self.assertEqual(facts['water'],{'kind':'Chemical','desc':'Wet.','stats':[['Taste','water']]})
+  self.assertEqual(facts['mystery'],{'kind':'Chemical'})
+  self.assertEqual(facts['/goat'],{'kind':'Animal','stats':[['Health','40']]})
+
+ def test_generated_catalog_describes_most_resources(self):
+  resources=json.loads((ROOT/'UI/crafting-atlas.json').read_text())['resources']
+  self.assertTrue(all(value.get('kind') for value in resources.values()))
+  self.assertGreater(sum('desc' in value for value in resources.values()),len(resources)*0.85)
+  for key,value in resources.items():
+   self.assertNotRegex(value.get('desc',''),r'[\[\]<>\\]',key)
+   self.assertLessEqual(len(value.get('stats',[])),16,key)
+   for row in value.get('stats',[]):
+    self.assertTrue(len(row)==2 and all(isinstance(cell,str) and cell for cell in row),key)
+
+ def test_material_tools_list_damage_for_each_material_they_are_made_from(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/material\n\tvar/name\n// a commented line does not end the block\n\tvar/hardness = 60 // edge\n\tvar/weight = 20\n/material/steel\n\tname = "steel"\n/material/iron\n\tname = "iron"\n\thardness = 55\n\tweight = 22\n'
+   '/obj/item/weapon/material\n\tvar/force_divisor = 0.5\n\tvar/thrown_force_divisor = 0.5\n\tvar/default_material = "steel"\n'
+   '/obj/item/weapon/material/sword\n\tsharp = TRUE\n\tforce_divisor = 0.7\n/obj/item/weapon/material/club\n\tthrown_force_divisor = TRUE\n/obj/item/weapon/material/spoon\n\tforce_divisor = 0\n\tthrown_force_divisor = 0\n'
+   '/obj/item/weapon/material/odd\n\tforce_divisor = BASE * 2\n/obj/item/weapon/material/twohanded\n\tvar/unwielded_force_divisor = 0.25\n/obj/item/weapon/material/twohanded/axe\n\tedge = TRUE\n\tforce_divisor = 0.8\n'}
+  types={key:'/obj/item/weapon/material/'+key for key in ('sword','club','spoon','odd','twohanded/axe')}
+  facts=resource_facts(files,types,{'sword':['iron','steel','iron','unknown']})
+  # Blades use hardness, blunt tools use weight, and DM's one-argument round() rounds down: 55 * 0.7 = 38.5 -> 38.
+  self.assertEqual(facts['sword']['stats'],[['Melee damage','iron 38; steel 42'],['Thrown damage','iron 11; steel 10'],['Quality','well-made pieces hit harder, up to double'],['Blade','sharp']])
+  self.assertEqual(facts['club']['stats'],[['Melee damage','steel 10'],['Thrown damage','steel 20'],['Quality','well-made pieces hit harder, up to double']])
+  self.assertNotIn('stats',facts['spoon'])
+  self.assertNotIn('stats',facts['odd'])
+  self.assertEqual(facts['twohanded/axe']['stats'],[['Melee damage','steel 12 in one hand, 48 in two'],['Thrown damage','steel 6'],['Blade','edged']])
+
+ def test_liquids_list_the_items_that_already_hold_them(self):
+  import sys
+  sys.path.insert(0,str(ROOT/'scripts'))
+  from atlas.facts import resource_facts
+  files={'a.dm':'/obj/item/comb\n\tname = "honeycomb"\n\tNew()\n\t\t..()\n\t\treagents.add_reagent("honey", 5)\n\tproc/eat()\n\t\treagents.add_reagent("wax", 1)\n'
+   '/obj/item/jar\n\tname = "jar"\n/obj/item/jar/New()\n\t..()\n\treagents.add_reagent("honey", 10)\n/obj/item/jar/attackby(obj/item/W)\n\treagents.add_reagent("mead", 10)\n'
+   '/obj/item/odd\n\tname = "[x] pot"\n\tlist_reagents = list("honey" = 3)\n/obj/item/sack\n\tname = "sack"\n\tstarting_reagents = list("flour" = 30)\n/mob/bee/New()\n\treagents.add_reagent("honey", 1)\n'}
+  facts=resource_facts(files,{'honey':'honey','flour':'flour','wax':'wax','mead':'mead','/obj/item/jar':'/obj/item/jar'})
+  self.assertEqual(facts['honey']['found_in'],[['/obj/item/jar','jar'],['/obj/item/comb','honeycomb']])
+  self.assertEqual(facts['flour']['found_in'],[['/obj/item/sack','sack']])
+  self.assertNotIn('found_in',facts['wax'])
+  self.assertNotIn('found_in',facts['mead'])
+
+ def test_generated_catalog_fills_the_three_item_page_gaps(self):
+  catalog=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+  resources=catalog['resources']; routes=catalog['acquisition']
+  # Where raw materials come from.
+  for key in ('/material/copper','/material/tin','/material/clay','/material/marble','/material/bearpelt/brown','grapejuice','ethanol','/material/leaf'):
+   self.assertTrue(routes.get(key),key)
+  self.assertEqual(resources['honey']['found_in'],[['/obj/item/weapon/reagent_containers/food/snacks/honeycomb','honeycomb']])
+  self.assertEqual(resources['/obj/structure/wild/tree']['kind'],'Natural feature')
+  made={product['id'] for recipe in catalog['recipes'] for product in recipe['outputs']}
+  craftable=[key for key,value in resources.items() if value['type'].startswith('/obj/item') and key not in made and key not in routes]
+  self.assertLessEqual(len(craftable),6,craftable)
+  # Damage on material tools.
+  hatchet=dict(resources['/obj/item/weapon/material/hatchet']['stats'])
+  self.assertEqual(hatchet['Melee damage'],'bronze 23; copper 21; iron 27; steel 30')
+  self.assertEqual(hatchet['Thrown damage'],'bronze 12; copper 10; iron 16; steel 15')
+  tools=[value for value in resources.values() if value['type'].startswith('/obj/item/weapon/material')]
+  self.assertGreater(sum('Melee damage' in dict(value.get('stats',[])) for value in tools),len(tools)*0.9)
+  # Where reactions run. The catalog station field keeps its research meaning.
+  chemistry=[recipe for recipe in catalog['recipes'] if recipe['kind']=='Chemistry']
+  sites={recipe['name']:recipe.get('site') for recipe in chemistry}
+  self.assertEqual({name for name,site in sites.items() if site=='bench_only'},{'Gelatin foam','Lyocell fibre','Rayon fibre'})
+  self.assertEqual({name for name,site in sites.items() if site=='bench_heated'},{'Polypropylene'})
+  self.assertGreater(sum(site=='bench' for site in sites.values()),25)
+  self.assertGreater(sum(site is None for site in sites.values()),100)
+  self.assertFalse([recipe['name'] for recipe in chemistry if recipe.get('station')])
+  self.assertFalse([recipe['name'] for recipe in catalog['recipes'] if recipe.get('site') and recipe['kind']!='Chemistry'])
+  self.assertIn('/obj/structure/reaction_bench',resources)
+
+ def test_adapter_links_reactions_and_liquid_holders(self):
+  source=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
+  self.assertIn('if (!station && recipe["site"])\n\t\tstation = "/obj/structure/reaction_bench"',source)
+  self.assertIn('"site" = html_encode("[group["site"]]")',source)
+  self.assertIn('if (reference.resource_exists(holder[1]))',source)
+  self.assertIn('return list("found_in" = found_in, "id" = resource_id',source)
+  screen=(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
+  for text in ("optional ? 'Also at: ' : 'Made at: '",'bench_heated:','Found in:',"'Natural feature':"):
+   self.assertIn(text,screen)
+
+ def test_item_pages_merge_the_same_recipe_in_other_materials(self):
+  source=(ROOT/'code/game/mob/crafting_atlas_tgui.dm').read_text()
+  # One row per kind, era and product; the materials become that row's versions.
+  self.assertIn('var/list/shape = list("[recipe["kind"]]", "[recipe["era_label"]]")',source)
+  for tag in ('made','used','here'):
+   self.assertIn(f'merge_row(merged, "{tag}|[key]", recipe, matches, choice, recipe_id) && ++',source)
+  self.assertIn('row["variant_count"] = members.len',source)
+  self.assertIn('detail["family_variants"] = family_variants(reference, viewer, siblings, selected["id"], catalog, known)',source)
+  self.assertIn('common &= splittext(name, " ")',source)
+  self.assertIn("' versions: ' + text(row.ways)",(ROOT/'tgui/src/interfaces/CraftingAtlas.tsx').read_text())
+  # The catalog really has such repeats: the hatchet is made nine ways but in three distinct manners.
+  recipes=[recipe for recipe in json.loads((ROOT/'UI/crafting-atlas.json').read_text())['recipes'] if any(product['id']=='/obj/item/weapon/material/hatchet' for product in recipe['outputs'])]
+  shapes={(recipe['kind'],recipe['era_label'],tuple(product['id'] for product in recipe['outputs'])) for recipe in recipes}
+  self.assertEqual((len(recipes),len(shapes)),(9,3))
 
 class AtlasTitleContract(unittest.TestCase):
  def test_titles_use_declared_names_and_never_replace_reviewed_names(self):

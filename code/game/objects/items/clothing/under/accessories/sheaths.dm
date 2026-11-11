@@ -141,7 +141,7 @@
 	slots = 1
 /obj/item/clothing/accessory/storage/sheath/katana/full/New()
 	..()
-	new/obj/item/weapon/material/sword/katana(src)
+	new/obj/item/weapon/material/sword/katana(hold)
 
 
 /obj/item/clothing/accessory/storage/sheath/daisho

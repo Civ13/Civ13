@@ -26,12 +26,15 @@
 		opened = 1
 		update_icon()
 
+/obj/item/weapon/storage/fancy/proc/count_key_items()
+	return count_by_type(contents, key_type)
+
 
 /obj/item/weapon/storage/fancy/update_icon()
 	if(!opened)
 		src.icon_state = initial(icon_state)
 	else
-		var/key_count = count_by_type(contents, key_type)
+		var/key_count = count_key_items()
 		src.icon_state = "[initial(icon_state)][key_count]"
 
 /obj/item/weapon/storage/fancy/examine(mob/user)
@@ -42,7 +45,7 @@
 	if(!contents.len)
 		to_chat(user, "There are no [key_name]s left in the box.")
 	else
-		var/key_count = count_by_type(contents, key_type)
+		var/key_count = count_key_items()
 		to_chat(user, "There [key_count == 1? "is" : "are"] [key_count] [key_name]\s in the box.")
 
 /*
@@ -62,6 +65,9 @@
 		)
 
 	startswith = list(/obj/item/weapon/reagent_containers/food/snacks/egg = 12)
+
+/obj/item/weapon/storage/fancy/egg_box/count_key_items()
+	return ..() + count_by_type(contents, /obj/item/weapon/reagent_containers/food/snacks/boiledegg)
 
 /obj/item/weapon/storage/fancy/egg_box/empty
 	startswith = null
@@ -96,9 +102,12 @@
 	var/random_donut
 	var/random_donut2
 	var/random_donut3
+	var/fill_on_spawn = TRUE
 
 /obj/item/weapon/storage/fancy/donut_box/New()
 	..()
+	if(!fill_on_spawn)
+		return
 	random_donut = pick(donut_types)
 	random_donut2 = pick(donut_types)
 	random_donut3 = pick(donut_types)
@@ -128,12 +137,8 @@
 			overlays += image('icons/obj/food/donuts.dmi', icon_state = "[D.icon_state]_inbox", pixel_x = i * 3)
 			i++
 
-/obj/item/weapon/storage/fancy/donut_box/empty/
-/obj/item/weapon/storage/fancy/donut_box/empty/New()
-	..()
-	random_donut = null
-	random_donut2 = null
-	random_donut3 = null
+/obj/item/weapon/storage/fancy/donut_box/empty
+	fill_on_spawn = FALSE
 
 /*
  * Candle Box

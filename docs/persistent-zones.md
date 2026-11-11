@@ -271,11 +271,16 @@ component versions must reject before mutation, not silently disappear. This for
 does not claim to encode all future zone layers, and the native zone fixture does
 not establish combined nonzero-elevation/topology acceptance.
 
-Future ocean voyages, offshore rigs, submarines and pressurized bases, and later
-satellite/station/Moon/Mars modes remain roadmap scope. Physical depth/elevation
-and pressure/atmosphere state are distinct from native area and engine z. Vessel,
-passenger and object-group custody requires a later atomic transfer/closure design;
-a character-only handoff does not solve it. No implementation is added here.
+Offshore rigs exist: an offshore drilling rig is built on a steel bridge deck
+over deep saltwater and pumps from a seabed oil field (`code/modules/1713/offshore_rig.dm`).
+Fields are a pure function of the map ID and coordinates, so they add no saved
+or zone state; the rig itself saves like any oil well. Future ocean voyages,
+pressurized underwater bases and further satellite/station modes remain roadmap
+scope (the Moon, Mars, orbital stations and submarines have their own docs).
+Physical depth/elevation and pressure/atmosphere state are distinct from native
+area and engine z. Vessel, passenger and object-group custody requires an atomic
+transfer/closure design; a character-only handoff does not solve it. The train
+custody draft (#4489) is that design's first implementation.
 
 Weather appearance is captured as scalar icon_state in topology schema 2. Reconciliation under the owning restore context preserves the
 constructed/source-authored icon resource and restores saved icon_state, then

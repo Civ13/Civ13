@@ -47,8 +47,8 @@
 		return FALSE
 	if (H.civilization != faction)
 		return FALSE
-	var/list/civ_data = custom_civs[faction]
-	if (civ_data && civ_data.len >= 4)
+	var/list/civ_data = faction_leader_record(faction)
+	if (civ_data)
 		return civ_data[4] == H
 	return H.leader
 

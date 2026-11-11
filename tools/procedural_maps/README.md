@@ -18,10 +18,13 @@ shows PowerShell commands. No pip dependencies or engine installation are
 required for generation/validation.
 
 SURFACE generation is implemented, with N/S/E/W edge spans, one confluence and a
-through-lake. OCEANIC schema 3 generates separated islands, enclosed fresh lakes,
-connected deep sea and ship-clear routes. Use `preset --profile OCEANIC` for its
+through-lake, or a declared river graph (`preset --river-graph`) with several
+networks, confluences and through or terminal lakes. OCEANIC schema 3 generates
+separated islands, enclosed fresh lakes (optionally draining to the sea by a
+river, `--lake-rivers`), connected deep sea and ship-clear routes. Use `preset --profile OCEANIC` for its
 versioned configuration. UNDERGROUND_CAVERN generates noise-grown chambers
-joined by winding tunnels, fresh spring pools cut into the rock, isolated fungus
+joined by winding tunnels, fresh spring pools cut into the rock, underground
+streams from pools to sink pools, isolated fungus
 pillars and paired surface exits; use `preset --profile UNDERGROUND_CAVERN`.
 Legacy oceanic schema 1 rejects explicitly. Native resource, hydraulic,
 climate (beyond the playable map's elevation lapse rate) and persistence

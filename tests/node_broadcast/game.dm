@@ -54,6 +54,7 @@ var/node_failures = 0
 	map.ordinal_age = 5
 	map.persistence = TRUE
 	map.recipe_books = TRUE
+	map.book_research = FALSE
 	build_research_tree()
 	try
 		node_check(!world.port, "offline fixture")

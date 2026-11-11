@@ -41,6 +41,78 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
+    'physical_interaction': {'files': ('tests/physical_interaction/test_touch.py',),
+        'paths': ('tests/physical_interaction/',),
+        'shared_paths': ('code/game/objects/objs.dm', 'code/game/objects/structures.dm',
+                         'code/modules/1713/weapons/guns/mg/_stationary.dm',
+                         'tests/save_movement/source_adapter.py')},
+    'cable_neighbors': {'files': ('tests/power/test_neighbor_linking.py',),
+        'paths': ('tests/power/test_neighbor_linking.py', 'tests/power/fixture.dm', 'scripts/test-power.ps1'),
+        'shared_paths': ('code/modules/1713/smart_home.dm', 'code/modules/1713/machinery/cables.dm',
+                         'code/modules/1713/machinery/cables_types.dm',
+                         'code/game/objects/structures.dm')},
+    'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
+        'paths': ('tests/cave_dismantling/', 'code/game/objects/structures/animalspawner/animal_spawner.dm',
+                  'code/game/objects/structures/animalspawner/bearcave.dm',
+                  'code/game/objects/structures/animalspawner/wolfcave.dm')},
+    'shield_block': {'files': ('tests/shield_block/test_block.py',),
+        'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/subtile_movement.dm',
+                         'code/game/mob/living/living.dm', 'tests/save_movement/source_adapter.py')},
+    'stethoscope_examination': {'files': ('tests/stethoscope/test_examination.py',),
+        'paths': ('tests/stethoscope/', 'code/game/objects/items/clothing/under/accessories/stethoscope.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
+        'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
+                  'code/game/objects/items/clothing/under/accessories/storage.dm',
+                  'code/modules/1713/jobs/japanese.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'firearm_inventory': {'files': ('tests/firearm_inventory/test_inventory.py',),
+        'paths': ('tests/firearm_inventory/', 'scripts/firearm_inventory.py',
+                  'docs/firearm-migration-inventory.md')},
+    'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
+        'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    # Offline fixture composition only; this suite does not launch BYOND.
+    'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+            tuple(f'tests/{name}/run.py' for name in (
+                'faction_membership', 'faction_recruitment', 'research_persistence')),
+        'shared_paths': (
+            'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
+            'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
+            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/research_tree/_research_tree_defines.dm',
+            'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
+    'paper_bin_appearance': {'files': ('tests/paper_bin_appearance/test_appearance.py',),
+        'paths': ('tests/paper_bin_appearance/', 'code/game/objects/items/bin.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'fridge_wrench': {'files': ('tests/fridge_wrench/test_fridge_wrench.py',),
+        'paths': ('tests/fridge_wrench/', 'code/game/objects/structures/crates_lockers/closets/fridge.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'flashbang_audio': {'files': ('tests/flashbang_audio/test_audio.py',),
+        'paths': ('tests/flashbang_audio/', 'code/game/objects/items/weapons/grenades/flashbang.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'egg_box_count': {'files': ('tests/egg_box_count/test_egg_box_count.py',),
+        'paths': ('tests/egg_box_count/',),
+        'shared_paths': ('code/game/objects/items/weapons/storage/fancy.dm',
+                         'tests/save_movement/source_adapter.py')},
+    'donut_box_empty': {'files': ('tests/donut_box_empty/test_donut_box_empty.py',),
+        'paths': ('tests/donut_box_empty/',),
+        'shared_paths': ('code/game/objects/items/weapons/storage/fancy.dm',
+                         'tests/egg_box_count/original_fancy.dm',
+                         'tests/save_movement/source_adapter.py')},
+    'ashtray_spill': {'files': ('tests/ashtray_spill/test_spill.py',),
+        'paths': ('tests/ashtray_spill/', 'code/game/objects/items/weapons/material/ashtray.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
+        'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
@@ -127,6 +199,9 @@ SUITES = {
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm', 'code/_helpers/mobs.dm',
             'tests/save_movement/source_adapter.py')},
+    'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
+        'paths': ('tests/projectile_location/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -187,7 +262,8 @@ SUITES = {
         'paths': ('tests/node_broadcast/',), 'shared_paths': (
             'code/modules/research_tree/node_broadcast.dm',
             'code/modules/1713/modern_telecom.dm')},
-    'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',),
+    'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',
+                                   'tests/recipe_knowledge/test_material_visibility.py'),
         'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
             'code/modules/research_tree/character_knowledge.dm',
             'code/modules/research_tree/research_faction.dm',
@@ -468,7 +544,7 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
-    'door_intents': {'files': ('tests/door_intents/test_door_intents.py',),
+    'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
@@ -485,6 +561,9 @@ SUITES = {
         'paths': ('tests/held_movement/',), 'shared_paths': (
             'code/movementMachine.dm', 'code/game/mob/mob_movement.dm',
             'code/game/mob/living/carbon/human/subtile_movement.dm')},
+    'zombie_spawn_selection': {'files': ('tests/zombie_spawn_selection/test_selection.py',),
+        'paths': ('tests/zombie_spawn_selection/',), 'shared_paths': (
+            'code/game/objects/effects/spawner.dm', 'tests/save_movement/source_adapter.py')},
     'sweep_loops': {'files': ('tests/sweep_loops/test_sweep_loops.py',),
         'paths': ('tests/sweep_loops/',), 'shared_paths': (
             'code/processes/time_of_day_change.dm',
@@ -742,7 +821,9 @@ SUITES = {
                                   'tests/paper_documents/test_authoring.py',
                                   'tests/paper_documents/test_lifecycle.py',
                                   'tests/paper_documents/test_editor.py',
-                                  'tests/paper_documents/test_study.py'),
+                                  'tests/paper_documents/test_study.py',
+                                  'tests/paper_documents/test_stamps.py',
+                                  'tests/paper_documents/test_forms.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
@@ -1031,6 +1112,8 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'jungle_hiding': {'files': ('tests/jungle_hiding/test_source.py',), 'paths': (
         'tests/jungle_hiding/',)},
+    'foraging': {'files': ('tests/foraging/test_contract.py',), 'paths': (
+        'tests/foraging/', 'code/modules/ecology/foraging.dm', 'docs/foraging.md')},
     'flora_regressions': {'files': ('tests/flora_regrowth/test_regressions.py', 'tests/flora_regrowth/test_site_occupancy.py'), 'paths': (
         'tests/flora_regrowth/', 'tests/ecology_spawning/', 'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm')},
     'pollution': {'files': ('tests/pollution/test_pollution.py',), 'paths': (
@@ -1130,7 +1213,8 @@ SUITES = {
         'code/modules/persistence/functions.dm', 'civ13.dme')},
     # Offline only: reviewed guard projection, catalog generation, inert Help imports.
     # Shared crafting/Atlas files keep the conservative all-suite fallback.
-    'furniture_joinery': {'files': ('tests/furniture_joinery/test_table_climb.py',
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_grille_construction.py',
+                                   'tests/furniture_joinery/test_table_climb.py',
                                   'tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
@@ -1165,10 +1249,20 @@ SUITES = {
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
         'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
+    'injury_recovery': {'files': ('tests/injury_recovery/test_source.py',
+        'tests/disease_immunity/test_source.py', 'tests/illness_pain_body_heat/test_source.py'),
+        'paths': ('tests/injury_recovery/', 'tests/disease_immunity/', 'tests/illness_pain_body_heat/'),
+        'shared_paths': ('code/modules/organs/organ.dm', 'code/modules/organs/organ_external.dm',
+            'code/modules/organs/brain.dm', 'code/modules/organs/pain.dm',
+            'code/game/mob/living/carbon/human/human_organs.dm',
+            'code/game/mob/living/carbon/human/human_disease.dm',
+            'code/game/mob/living/carbon/human/severe_disease.dm',
+            'code/game/mob/living/carbon/human/immunity.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
-        'code/modules/surgery/other.dm', 'code/modules/1713/doctor_handbook.dm'),
+        'code/modules/surgery/other.dm', 'code/modules/surgery/limb_reattach.dm',
+        'code/modules/1713/doctor_handbook.dm'),
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
@@ -1182,15 +1276,24 @@ SUITES = {
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
         'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
     # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
-    'hud_layout': {'files': ('tests/hud_layout/test_layout.py',),
-        'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm'),
-        'shared_paths': ('code/game/mob/living/carbon/human/human_hud.dm',
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py'),
+        'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm', 'tools/hud-skin/',
+            'icons/mob/screen/ConsoleStyle.dmi', 'icons/mob/screen/needs.dmi',
+            'icons/mob/screen/healthdoll_console.dmi', 'icons/mob/screen/zone_sel_console.dmi'),
+        'shared_paths': ('code/datums/hud.dm', 'code/modules/client/ui_style.dm',
+            'code/_onclick/hud/base_screen_objects.dm', 'icons/mob/screen/1713Style.dmi',
+            'icons/mob/screen/healthdoll.dmi', 'icons/mob/screen/zone_sel.dmi',
+            'code/game/mob/living/carbon/human/species/species_hud.dm',
+            'code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/mob/living/carbon/human/update_icons.dm', 'code/game/mob/inventory.dm',
             'code/_onclick/hud/hud.dm', 'code/_onclick/hud/action.dm',
             'code/game/objects/items/weapons/storage/storage.dm',
             'code/game/objects/items/weapons/storage/bags.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm', 'civ13.dme')},
     # Widescreen 21x15 view, square fallback preference, HUD edge anchoring and the side panel.
+    'held_crafting_menu': {'files': ('tests/held_crafting_menu/test_menu.py',),
+        'paths': ('tests/held_crafting_menu/', 'code/js/stack_crafting.js'),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm',)},
     'widescreen_view': {'files': ('tests/widescreen_view/test_widescreen.py', 'tests/widescreen_view/test_side_panel.py'),
         'paths': ('tests/widescreen_view/', 'interface/info/info.html', 'code/game/mob/mob_view.dm', 'code/game/mob/new_player/lobby_image.dm',
             'code/_onclick/hud/movable_screen_objects.dm', 'code/modules/nano/interaction/default.dm'),
@@ -1226,7 +1329,7 @@ SUITES = {
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
         'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
-        'shared_paths': ('code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
             'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',
             'civ13.dme')},
@@ -1234,7 +1337,7 @@ SUITES = {
     'faction_membership': {'files': ('tests/faction_membership/test_source.py',),
         'paths': ('tests/faction_membership/', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/living/carbon/give.dm'),
-        'shared_paths': ('code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
+        'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
@@ -1245,9 +1348,21 @@ SUITES = {
     'snow_barricade': {'files': ('tests/snow_barricade/test_source.py',),
         'paths': ('tests/snow_barricade/', 'code/modules/1713/barriers/snow_walls.dm'),
         'shared_paths': ('code/modules/1713/barriers/sandbag.dm',)},
+    # Restraint escape dispatch and item identity across the wait.
+    'legcuff_escape': {'files': ('tests/legcuff_escape/test_cooldown.py',),
+        'paths': ('tests/legcuff_escape/', 'code/game/mob/living/carbon/resist.dm',
+                  'code/game/mob/living/living.dm', 'code/_onclick/click.dm',
+                  'code/game/objects/items/weapons/legcuffs.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Trap disarm recheck and punji animal capture/release (#4248, #4249).
     'traps': {'files': ('tests/traps/test_source.py',),
         'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
+    # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
+    'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
+        'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},
+    # Prefilled belts hold and accept their initial contents (#4544, #4545, #4546).
+    'belt_contents': {'files': ('tests/belt_contents/test_source.py',),
+        'paths': ('tests/belt_contents/', 'code/game/objects/items/weapons/storage/belt.dm')},
     # Railing dismantling stops if the railing was fastened during the wait (#4413).
     'railing_dismantle': {'files': ('tests/railing_dismantle/test_source.py',),
         'paths': ('tests/railing_dismantle/', 'code/game/objects/structures/railing.dm')},
@@ -1256,7 +1371,8 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'barbwire_crossing': {'files': ('tests/barbwire_crossing/test_crossing.py',),
         'paths': ('tests/barbwire_crossing/', 'code/modules/1713/barbwire.dm'),
-        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},    'hay': {'files': ('tests/hay/test_hay.py',),
+        'paths': ('tests/hay/', 'code/modules/1713/hay.dm', 'icons/obj/hay.dmi')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

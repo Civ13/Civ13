@@ -68,7 +68,7 @@ def expression(value):
  value=value.replace('istype(actor)','is_actor(actor)').replace('istype(pen)','is_pen(pen)').replace('istype(L)','is_living(L)')
  return value
 
-ALLOWED={'len','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_authoring_notify','paper_written_language_types','paper_written_language','paper_knows_written_language'}
+ALLOWED={'len','paper_document_field_open','paper_document_envelope_open','paper_document_bundle_page','paper_document_held_folder','range','round','length','isnull','isnum','ispath','istext','islist','lowertext','copytext','text2ascii','is_actor','is_pen','is_living','istype','isturf','isghost','json_encode','dm_text','section_id','copy_keys','copy_value','copy_append','copy_assoc','new_budget','new_record_budget','max','min','md5','stars','paper_document_copy','paper_document_legacy_snapshot','paper_document_keys','paper_document_ink','paper_document_section_valid','paper_document_record_valid','paper_document_prepare_edit','paper_document_commit_edit','paper_document_mint_id','paper_authoring_notify','paper_written_language_types','paper_written_language','paper_knows_written_language'}
 METHODS={'get','append','can_speak','get_active_hand','restrained','Adjacent','get_signature','has_access','can_mutate'}
 def project(source,signature,args,env,method=False):
  lines=['def projected('+args+'):']
@@ -85,6 +85,7 @@ def project(source,signature,args,env,method=False):
   elif code=='result[copied_key] = paper_document_copy(source[key], budget, depth + 1)':code='copy_assoc(result,copied_key,paper_document_copy(copy_value(source,key),budget,depth+1))'
   elif code=='section = sections[index]':code='section = sections[index-1]'
   elif code=='ids += section["id"]':code='ids.append(section["id"])'
+  elif re.fullmatch(r'(ids|labels|answered) \+= section\["(id|target)"\]',code):code=re.sub(r'^(\w+) \+= (.*)$',r'\1.append(\2)',code)
   else:
    if code.startswith('if ('):
     assert code.endswith(')'),code;code='if '+expression(code[4:-1])+':'
@@ -168,11 +169,18 @@ def environment(bytes_mode=False):
   if path=='/mob/living/human':return isinstance(value,Actor) and value.kind=='human'
   if path=='/obj/item/weapon/pen/crayon':return isinstance(value,Pen) and value.kind=='crayon'
   if path in ('/obj/item/weapon/clipboard','/obj/item/weapon/folder'):return getattr(value,'kind',None)==path.rsplit('/',1)[-1]
+  if path=='/obj/item/weapon/storage/envelope':return getattr(value,'kind',None)=='envelope'
+  if path=='/obj/item/weapon/paper_bundle':return getattr(value,'kind',None)=='bundle'
   return False
  def mint(paper):counter[0]+=1;return hashlib.md5(('fixture-'+str(counter[0])).encode()).hexdigest()
  env=dict(__builtins__={},len=len,range=range,round=math.floor,isinstance=isinstance,dict=dict,length=length,isnull=lambda v:v is None,isnum=lambda v:isinstance(v,(int,float)),ispath=lambda v:isinstance(v,TypePath),istext=lambda v:isinstance(v,str) and not isinstance(v,TypePath),islist=lambda v:isinstance(v,(dict,list)),lowertext=lambda v:v.lower(),copytext=lambda v,a=1,b=None:v[a-1:None if b is None else b-1],text2ascii=lambda v,i=1:ord(v[i-1]),dm_text=lambda v:'' if v is None else str(v),MAX_PAPER_MESSAGE_LEN=MAXIMUM,
   is_actor=lambda v:isinstance(v,Actor),is_pen=lambda v:isinstance(v,Pen),is_living=lambda v:isinstance(v,Actor) and v.kind!='ghost',istype=istype,isturf=lambda v:getattr(v,'kind',None)=='turf',isghost=lambda v:getattr(v,'kind',None)=='ghost',json_encode=lambda v:json.dumps(v,separators=(',',':'),ensure_ascii=False),section_id=lambda v:'section-'+str(v['next_section']),copy_keys=lambda v:list(v) if isinstance(v,dict) else v,copy_value=lambda v,k:v[k] if isinstance(v,dict) else None,copy_append=copy_append,copy_assoc=copy_assoc,new_budget=Budget,stars=lambda v:'*'*len(v or ''),paper_document_mint_id=mint,paper_written_language_types=lambda:dict(IDS),all_languages={v.name:v for v in langs.values()},INNATE=64,SIGNLANG=8,NONVERBAL=4,HIVEMIND=16)
  env['new_record_budget']=RecordBudget
+ # Container seams for the base access check (production bodies are projected
+ # separately in test_containers.py).
+ env['paper_document_envelope_open']=lambda c:getattr(c,'kind',None)=='envelope' and not c.gc_destroyed and bool(c.opened)
+ env['paper_document_bundle_page']=lambda c,P:getattr(c,'kind',None)=='bundle' and not c.gc_destroyed and 1<=c.page<=len(c.pages) and c.pages[c.page-1] is P
+ env['paper_document_held_folder']=lambda c:getattr(c,'kind',None)=='folder' and not c.gc_destroyed
  env['paper_authoring_notify']=lambda *args:None
  env['paper_written_language']=project(LANG,'/proc/paper_written_language','language_id',env)
  env['paper_knows_written_language']=project(LANG,'/proc/paper_knows_written_language','actor,language_id',env)
@@ -180,6 +188,7 @@ def environment(bytes_mode=False):
  env['paper_written_default_language']=project(LANG,'/proc/paper_written_default_language','actor',env)
  for name,args in [('copy','value,budget,depth=0'),('legacy_snapshot','P'),('keys','value,keys'),('ink','value'),('section_valid','section'),('record_valid','record')]:
   env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
+ env['paper_document_field_open']=project(SOURCE,'/proc/paper_document_field_open','record,target',env)
  for name,args in [('prepare_edit','P'),('commit_edit','P,edit,authoring_owner=None')]:
   env['paper_document_'+name]=project(SOURCE,'/proc/paper_document_'+name,args,env)
  class Service:

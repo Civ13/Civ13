@@ -114,8 +114,9 @@
 			to_chat(usr, "You are not part of any faction.")
 			return
 		else
+			var/faction = U.civilization
 			var/confirmation = WWinput(src, "Are you sure you want to leave your faction? You won't be able to re-join it for 24 hours, and everyone will know you're a former member.", "", "Stay in faction", list("Leave", "Stay in faction"))
-			if (confirmation == "Stay in faction")
+			if (confirmation != "Leave" || U.civilization != faction)
 				return
 			else
 				faction_leaving_proc()
@@ -128,11 +129,8 @@
 	if (civilization == null || civilization == "none")
 		return FALSE
 	left_factions += list(list(civilization,world.realtime+864000)) //24 hours
-	var/list/civ_data = map.custom_civs[civilization]
-	if (civ_data && civ_data[4] != null)
-		var/mob/living/human/L = civ_data[4]
-		if (L.real_name == real_name)
-			civ_data[4] = null
+	if (map)
+		map.clear_faction_leader(src, civilization)
 	// Shed any research-tree appointment so it can't carry into a new faction.
 	if (map && map.faction_research_director[civilization] == src)
 		map.faction_research_director[civilization] = null
@@ -144,51 +142,35 @@
 /mob/living/human/proc/transfer_faction()
 	set name = "Transfer Faction Leadership"
 	set category = "Faction"
-	var/mob/living/human/U
-
-	if (istype(src, /mob/living/human))
-		U = src
-	else
+	if (!map)
 		return
-	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
-		if (U.civilization == "none")
-			to_chat(usr, "You are not part of any faction.")
-			return
-		else
-			var/list/civ_data = map.custom_civs[U.civilization]
-			if (civ_data && civ_data[4] != null)
-				var/mob/living/human/L = civ_data[4]
-				if (L.real_name == U.real_name)
-					var/list/closemobs = list("Cancel")
-					for (var/mob/living/human/M in range(4,loc))
-						if (M.civilization == U.civilization)
-							closemobs += M
-					var/choice2 = WWinput(usr, "Who to nominate as the new Leader?", "Faction Leadership", "Cancel", closemobs)
-					if (choice2 == "Cancel")
-						return
-					else
-						map.custom_civs[U.civilization][4] = choice2
-						visible_message("<big>[choice2] is the new leader of [U.civilization]!</big>")
-						var/mob/living/human/CM = choice2
-						CM.make_commander()
-						CM.make_title_changer()
-						CM.grant_faction_symbol_editor()
-						CM.leader = TRUE
-						CM.faction_perms = list(1,1,1,1)
-						U.leader = FALSE
-						U.faction_perms = list(0,0,0,0)
-						U.remove_title_changer()
-						U.remove_commander()
-						U.remove_faction_symbol_editor()
-				else
-					to_chat(usr, SPAN_WARNING("You are not the Leader, so you can't transfer the faction's leadership."))
-					return
-			else
-				to_chat(usr, SPAN_WARNING("There is no Leader, so you can't transfer the faction's leadership."))
-
-	else
-		to_chat(usr, SPAN_WARNING("You cannot transfer leadership of a faction in this map."))
+	if (!(map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP))
+		to_chat(src, SPAN_WARNING("You cannot transfer leadership of a faction in this map."))
 		return
+	var/faction = civilization
+	var/obj/map_metadata/faction_map = map
+	if (!faction || faction == "none")
+		to_chat(src, "You are not part of any faction.")
+		return
+	var/list/civ_data = faction_map.faction_leader_record(faction)
+	if (!civ_data || !civ_data[4])
+		to_chat(src, SPAN_WARNING("There is no Leader, so you can't transfer the faction's leadership."))
+		return
+	if (!faction_map.is_faction_leader(src, faction) || stat == DEAD)
+		to_chat(src, SPAN_WARNING("You are not the Leader, so you can't transfer the faction's leadership."))
+		return
+	var/list/closemobs = list("Cancel")
+	for (var/mob/living/human/M in range(4, loc))
+		if (M != src && M.civilization == faction && M.stat != DEAD)
+			closemobs += M
+	var/mob/living/human/choice = WWinput(src, "Who to nominate as the new Leader?", "Faction Leadership", "Cancel", closemobs)
+	// The prompt yields: membership, leadership and location can all change.
+	if (!istype(choice) || !(choice in closemobs) || map != faction_map)
+		return
+	if (!(choice in range(4, loc)) || !faction_map.change_faction_leader(faction, src, choice))
+		to_chat(src, SPAN_WARNING("Leadership could not be transferred. Check that you are still the leader and the chosen member is nearby."))
+		return
+	visible_message("<big>[choice] is the new leader of [faction]!</big>")
 
 /mob/living/human/proc/become_leader()
 	set name = "Become Faction Leader"
@@ -204,18 +186,10 @@
 			to_chat(usr, "You are not part of any faction.")
 			return
 		else
-			if (map.custom_civs[U.civilization][4] != null)
-				to_chat(usr, SPAN_WARNING("There already is a Leader of the faction. He must transfer the leadership or be removed first."))
+			if (!map.change_faction_leader(U.civilization, null, U))
+				to_chat(usr, SPAN_WARNING("You cannot claim leadership. The faction must have a vacant leader position and you must be a living member."))
 				return
-
-			else if (map.custom_civs[U.civilization][4] == null)
-				map.custom_civs[U.civilization][4] = U
-				visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
-				U.leader = TRUE
-				U.faction_perms = list(1,1,1,1)
-				U.make_title_changer()
-				make_commander()
-				U.grant_faction_symbol_editor()
+			visible_message("<big>[U] is now the Leader of [U.civilization]!</big>")
 	else
 		to_chat(usr, SPAN_WARNING("You cannot become a Leader in this map."))
 		return

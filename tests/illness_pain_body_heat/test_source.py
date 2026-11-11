@@ -29,10 +29,10 @@ class IllnessPain(unittest.TestCase):
         self.assertIn("if (halloss < pain_cap)", self.src)
         self.assertIn("apply_effect(min(3, pain_cap - halloss), AGONY, FALSE)", self.src)
 
-    def test_cure_drops_piled_up_illness_pain(self):
+    def test_cure_preserves_pain_from_other_causes(self):
         body = self.src[self.src.index("/mob/living/human/proc/clear_disease()"):self.src.index("/mob/living/human/proc/handle_severe_disease()")]
-        self.assertIn("halloss = min(halloss, SEVERE_DISEASE_PAIN_CRITICAL)", body)
-        self.assertLess(body.index("halloss = min("), body.index("disease = FALSE"))
+        self.assertNotIn("halloss =", body)
+        self.assertIn("disease = FALSE", body)
 
     def test_an_hour_of_illness_stays_below_shock(self):
         normal = define(self.src, "SEVERE_DISEASE_PAIN")

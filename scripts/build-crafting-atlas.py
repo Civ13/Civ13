@@ -9,6 +9,7 @@ from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
 from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
+from atlas.facts import resource_facts
 
 
 def catalog_text(game):
@@ -65,7 +66,7 @@ def label(s):
         return 'cloth bedroll'
     # This item type's DM name is sand; the similarly named glass material is distinct.
     if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
-    if s.rstrip('/') == '/material/proc/generate_recipes_civs':return 'any hard material'
+    if s == 'category:hard_material':return 'any hard material'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
@@ -120,6 +121,13 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
         conditions += ' Woolcloth sheets also accepted.'
     outputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in outputs]
     records.append(dict(id='r'+str(len(records)),name=name,kind=kind,inputs=inputs,outputs=outputs,file=path,line=line,conditions=conditions,raw=raw))
+# Where a reaction runs: most happen in any container; the reaction bench offers
+# a chosen list, and a few react only on the bench (some only while heated).
+reaction_sites={path:'bench' for path in re.findall(r'/datum/chemical_reaction/\w+',(re.search(r'^/proc/controlled_reaction_paths\(\)\n\treturn list\(([^\n]+)\)',files.get('code/modules/reagents/laboratory.dm',''),re.M) or ['',''])[1])}
+for s in files.values():
+    for m in re.finditer(r'^(/datum/chemical_reaction/\w+)/can_happen\([^\n]*\n((?:[\t ][^\n]*\n|\n)*)',s,re.M):
+        gate=re.search(r'controlled_reaction_site\(holder(, TRUE)?\)',m[2])
+        if gate:reaction_sites[m[1]]='bench_heated' if gate[1] else 'bench_only'
 for p,s in files.items():
     if p.startswith('config/crafting/'):
         for ln,row in enumerate(s.splitlines(),1):
@@ -208,6 +216,7 @@ for p,raw in files.items():
         catalysts=lists(body,'catalysts'); inhibitors=lists(body,'inhibitors')
         conditions=f'Catalysts: {catalysts}; inhibitors: {inhibitors}; additional can_happen/process callbacks may apply.'
         add(name[1] if name else label(m[1]),'Chemistry',inp,[(output,qty[1] if qty else 'inherited')],p,s[:m.start()].count('\n')+1,conditions,body.strip())
+        if m[1] in reaction_sites:records[-1]['site']=reaction_sites[m[1]]
     # Direct static stack recipes outside configuration lists.
     for m in re.finditer(r'new\s*/datum/stack_recipe\s*\(',s):
         start=m.end();i=start;depth=1;quote=False
@@ -221,6 +230,12 @@ for p,raw in files.items():
         args=splitargs(s[start:i-1])
         if len(args)>=3 and args[0].startswith('"') and args[1].startswith('/'):
             prior=s[:m.start()];decls=re.findall(r'^(/[^\s(]+)',prior,re.M);owner=decls[-1] if decls else 'runtime material'
+            # A receiver proc is not a material type. Keep polymorphic input
+            # requirements symbolic instead of exporting an invalid DM typepath.
+            if owner == '/material/proc/generate_recipes_civs':
+                owner = 'category:hard_material'
+            elif '/proc/' in owner or '/verb/' in owner:
+                raise ValueError(f'Dynamic stack receiver requires explicit input mapping: {p}: {owner}')
             # "[display_name] fork": any sufficiently hard material, named by the material at runtime.
             add(re.sub(r'^\[display_name\] ','',args[0].strip('"')),'Native stack',[(owner,'1' if args[2]=='TRUE' else args[2])],[(args[1],1)],p,prior.count('\n')+1,'Receiver/context dependent; named constructor arguments retained in source.',s[m.start():i])
     for m in re.finditer(r'(/obj/[\w/]+)\s*=\s*(/obj/[\w/]+)',s):
@@ -408,10 +423,19 @@ data['limitations'].append('Unlock eras use explicit minimum gates or mapped res
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 resource_titles=display_titles(files,{x:(material_stack(x) if x.startswith('/material/') else x) for x in resource_ids if x not in sprite_variants},resource_names)
+# Which materials each material tool is actually made from, for its damage rows.
+tool_materials={}
+for r in records:
+    made=[m[1] for i in r['inputs'] for m in [re.match(r'^(?:/material/|.*#molten_)(\w+)$',i['id'])] if m][:1]
+    for o in r['outputs']:
+        if made and o['id'].startswith('/obj/item/weapon/material') and made[0] not in tool_materials.setdefault(o['id'],[]):tool_materials[o['id']].append(made[0])
+resource_details=resource_facts(files,{x:(sprite_variants[x].get('type',x) if x in sprite_variants else material_stack(x) if x.startswith('/material/') else x) for x in resource_ids},tool_materials)
 def game_resource(x):
+    if x.startswith('category:'):
+        return dict(name=resource_names[x],type='',label='Abstract input category; not a spawnable item',category=True)
     entry=dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{})
     if x in resource_titles:entry['title']=resource_titles[x]
-    return entry
+    return entry|resource_details[x]
 if options.catalog_only:
     game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:game_resource(x) for x in resource_ids})
     game_text=catalog_text(game)

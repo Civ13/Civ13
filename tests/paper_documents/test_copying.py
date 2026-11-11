@@ -111,7 +111,7 @@ class Copies(unittest.TestCase):
    self.pen.signature='UNKNOWN_SIGNATURE_CANARY';r=self.paper.document_record
    self.assertTrue(service.append(self.actor,self.pen,r['document_id'],r['revision'],lang,kind,text))
   for kind in ('field_label','field_answer'):
-   self.paper.document_record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='UNKNOWN_'+kind.upper()+'_CANARY',ink='white',tool='pen'))
+   self.paper.document_record['sections'].append(dict(id=kind,lineage='1'*32,version=1,kind=kind,language_id=RU,text='UNKNOWN_'+kind.upper()+'_CANARY',ink='white',tool='pen',**(dict(target='field_label') if kind=='field_answer' else {})))
   self.assertTrue(self.env['paper_document_record_valid'](self.paper.document_record))
   return self.paper.document_record
  def snapshot(self):return self.env['paper_document_copy_snapshot'](self.paper)

@@ -25,6 +25,7 @@
 	//processing internal organs is pretty cheap, do that first.
 	for (var/obj/item/organ/I in internal_organs)
 		I.process()
+		I.recover_internal_damage()
 
 	handle_stance()
 	handle_grasp()

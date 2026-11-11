@@ -5,6 +5,18 @@
 ///PERSISTENCE STUFF/////////////
 /////////////////////////////////
 
+/obj/map_metadata/proc/reconcile_book_research_restore()
+	if (!persistence || perschadplus || resourceresearch)
+		return
+	// The saved label identifies a book-mode generation. Other disabled clocks
+	// may be intentional and must not be restarted from the flag alone.
+	if (book_research_enabled())
+		gamemode = "Persistent (Book Research)"
+	else if (gamemode == "Persistent (Book Research)")
+		gamemode = "Persistent (Auto-Research)"
+		autoresearch = TRUE
+		autoresearch_proc()
+
 // age is the displayed epoch/date, not ordinal_age's technology tier. Only
 // recognized BC epochs and canonical numeric years can be ordered here.
 /obj/map_metadata/proc/apply_persistence_age_floor()
@@ -540,14 +552,21 @@ map_storage
 		list/loading_level_link_targets = list()
 		list/loading_level_link_fields = list()
 		var/saving_work = 0
+		// Set per level by save_world_contents; see save_work_check.
+		var/saving_unattended = FALSE
 		var/saving_slice_start = 0
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
 		list/saving_lists = alist()
 		list/saving_reference_pins = list()
+		// Field references reserved past the export depth bound (saving.dm).
+		list/saving_deferred_entries = list()
 		list/saving_list_pins = list()
 		list/loaded_lists = list()
+		// Entries whose fields wait past the import depth bound (loading.dm).
+		list/loading_deferred_entries = list()
+		loading_entry_depth = 0
 		// Stream level saves (level_stream.dm) hand each scratch segment to the
 		// helper as savefile text. While a segment is open this maps the
 		// absolute path of each node whose value does not survive that text
@@ -680,13 +699,17 @@ map_storage
 	loading_level_link_targets = list()
 	loading_level_link_fields = list()
 	saving_work = 0
+	saving_unattended = FALSE
 	saving_slice_start = world.tick_usage
 	saving_references = alist()
 	existing_references = alist()
+	loading_deferred_entries = list()
+	loading_entry_depth = 0
 	found_types = list()
 	all_loaded = list()
 	saving_lists = alist()
 	saving_reference_pins = list()
+	saving_deferred_entries = list()
 	saving_list_pins = list()
 	loaded_lists = list()
 	saved_turfs = list()
@@ -1272,6 +1295,7 @@ var/global/datum/persistence_admission_identity
 		if(storage.load_map_metadata() != TRUE)
 			throw EXCEPTION("World metadata restoration rejected")
 		storage.restore_durable_world()
+		map.reconcile_book_research_restore()
 		// Apply the date floor after both legacy and durable metadata restoration.
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)

@@ -89,6 +89,38 @@ class BackendContract(unittest.TestCase):
         self.assertIn("istype(ui, /datum/nanoui/tgui) && ui.user != mob", external)
         self.assertNotIn('"manage"', DM)
 
+    def test_recruitment_actions_reach_the_existing_topic(self):
+        # React click tests alone missed this bug: act() was called correctly,
+        # but the shared DM transport rejected every recruitment action.
+        source = (ROOT / 'code/game/mob/groups/recruitment_station.dm').read_text()
+        frontend = (ROOT / 'tgui/src/interfaces/RecruitmentStation.tsx').read_text()
+        topic = source.split('/datum/recruitment_panel/Topic', 1)[1]
+        expected = {'designate', 'unbind', 'apply', 'withdraw', 'confirm',
+                    'approve', 'reject', 'revoke', 'set_mode', 'set_open',
+                    'set_language', 'set_skill', 'set_nonmatch', 'refresh'}
+        branch = re.search(r'if \("recruitment_station\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
+        self.assertIsNotNone(branch, 'modern recruitment buttons need a transport allowlist')
+        allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
+        self.assertEqual(allowed, expected)
+        # Both local station and remote application review use this producer.
+        self.assertIn('station ? "Recruitment Station" : "Recruitment Applications"', source)
+        self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), expected)
+        self.assertEqual(set(re.findall(r'action="([^"\n]+)"', frontend)), expected - {'refresh'})
+
+    def test_recruitment_permission_checks_remain_at_dispatch(self):
+        source = (ROOT / 'code/game/mob/groups/recruitment_station.dm').read_text()
+        topic = source.split('/datum/recruitment_panel/Topic', 1)[1]
+        self.assertLess(topic.index('!still_valid(H)'), topic.index('href_list["designate"]'))
+        for guard in ('map.is_faction_leader(H, own)', 'map.can_recruit_for_faction(H, faction)',
+                      '!station.valid_for_recruitment()', 'station.faction != faction'):
+            self.assertIn(guard, topic)
+        # The common transport still admits only one action and its own scalar
+        # payload. The existing owner/generation test covers forged windows.
+        transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
+        self.assertIn('var/list/keys = list(action)', transport)
+        self.assertIn('!(key in keys)', transport)
+        self.assertNotIn('if ("designate")', transport)
+
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         for name in ('civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'):
