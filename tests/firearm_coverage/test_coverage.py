@@ -52,10 +52,12 @@ class CoverageManifestTests(unittest.TestCase):
             {'path': e['path'], 'name': e['name'], 'caliber': e['caliber'],
              'load_method': e['load_method'], 'max_shells': e['max_shells'],
              'magazine_type': e['magazine_type'], 'ammo_type': e['ammo_type'],
+             'firearm_family': e.get('family'),
              'is_laser_mg': e['category'] == 'energy' and e['caliber'] not in firearm_coverage.CALIBER_CATEGORY}
             for e in self.types.values()])
         for entry in rebuilt['types']:
             self.assertEqual(entry['category'], self.types[entry['path']]['category'], entry['path'])
+            self.assertEqual(entry['migration'], self.types[entry['path']]['migration'], entry['path'])
 
     def test_no_unclassified_types(self):
         unclassified = sorted(p for p, e in self.types.items() if e['category'] == 'unclassified')
@@ -70,6 +72,12 @@ class CoverageManifestTests(unittest.TestCase):
         missing = {p: loc for p, loc in declared_gun_types().items() if p not in self.types}
         self.assertEqual(missing, {}, 'new gun types need the manifest regenerated: '
                          'python3 tests/firearm_coverage/run.py --byond-bin <BYOND bin> --write')
+
+    def test_modular_types_are_modern(self):
+        for path, entry in self.types.items():
+            if entry['migration'] == 'modular':
+                self.assertEqual(entry['scope'], 'modern', path)
+                self.assertTrue(entry['family'], path)
 
     def test_category_rules(self):
         cases = {
