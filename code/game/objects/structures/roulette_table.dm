@@ -60,18 +60,20 @@
 
 /obj/structure/roulette/proc/process_wins()
 	can_bet = FALSE
+	var/list/unclaimed = list()
 	for(var/list/L in current_bets)
-		if(win_color == L[2] || win_half == L[2] || win_3rd == L[2] || win_odd_even == L[2] || win_color == L[2])
-			L[3] = L[3]*2
-			L[2] = "won"
+		var/multiplier = 0
+		if(win_color == L[2] || win_half == L[2] || win_odd_even == L[2])
+			multiplier = 2
 		else if(win_3rd == L[2])
-			L[3] = L[3]*3
-			L[2] = "won"
+			multiplier = 3
 		else if(num2text(win_number) == L[2])
-			L[3] = L[3]*36
+			multiplier = 36
+		if(multiplier)
+			L[3] = L[3]*multiplier
 			L[2] = "won"
-		else
-			L[2] = "lost"
+			unclaimed += list(L)
+	current_bets = unclaimed
 	if (!current_bets.len)
 		can_bet = TRUE
 
@@ -123,7 +125,7 @@
 			newchips.value = L[3]
 			H.put_in_any_hand_if_possible(newchips,FALSE,TRUE,TRUE,TRUE)
 		else
-			newlist.Add(L)
+			newlist += list(L)
 	current_bets = newlist
 	if (!current_bets.len)
 		can_bet = TRUE

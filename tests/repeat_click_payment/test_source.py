@@ -244,5 +244,88 @@ class RepeatClickPayment(unittest.TestCase):
         press = proc('code/modules/1713/production.dm', '/obj/structure/printingpress/attackby')
         self.assert_order(press, 'Add to original or copy?', 'if (input == "Cancel" || QDELETED(W) || W.loc != user)', 'base += W')
 
+class RouletteSettlement(unittest.TestCase):
+    """Execute the production settlement and collection bodies with inert engine seams."""
+
+    class Bet(list):
+        def __getitem__(self, index):
+            return super().__getitem__(index - 1)
+
+        def __setitem__(self, index, value):
+            super().__setitem__(index - 1, value)
+
+    def settle(self, bets, number=7, color='black', half='1 to 18', dozen='1st 12', odd_even='odd', mutation=None):
+        body = proc('code/game/objects/structures/roulette_table.dm', '/obj/structure/roulette/proc/process_wins')
+        if mutation:
+            body = mutation(body)
+        # Preserve the nested DM list record; translate only the list API boundary.
+        body = body.replace('unclaimed += list(L)', 'unclaimed.append(L)')
+        body = body.replace('current_bets.len', 'len(current_bets)')
+        body += '\n\treturn (current_bets, can_bet)\n'
+        source = '/proc/roulette_settlement()\n' + body
+        env = {'typed_iter': lambda values, _type: values, 'num2text': str}
+        run = adapter.project(source, '/proc/roulette_settlement',
+                              'current_bets, win_number, win_color, win_half, win_3rd, win_odd_even', env)
+        return run([self.Bet(bet) for bet in bets], number, color, half, dozen, odd_even)
+
+    def collect(self, bets, user, mutation=None):
+        body = proc('code/game/objects/structures/roulette_table.dm', '/obj/structure/roulette/attack_hand')
+        if mutation:
+            body = mutation(body)
+        body = body.replace('new/obj/item/weapon/roulette/chip(loc)', 'new_chip(loc)')
+        body = body.replace('newlist += list(L)', 'newlist.append(L)')
+        body = body.replace('newlist.Add(L)', 'newlist.extend(L)')
+        body = body.replace('current_bets.len', 'len(current_bets)')
+        body += '\n\treturn (current_bets, can_bet)\n'
+        source = '/proc/roulette_collection()\n' + body
+        env = {'typed_iter': lambda values, _type: values, 'to_chat': lambda *_: None,
+               'new_chip': lambda _loc: SimpleNamespace(value=0), 'TRUE': True, 'FALSE': False}
+        run = adapter.project(source, '/proc/roulette_collection', 'current_bets, H, loc, can_bet', env)
+        return run(bets, user, None, False)
+
+    def test_payouts_zero_losses_and_empty_table(self):
+        cases = [('black', 20), ('1 to 18', 20), ('odd', 20), ('1st 12', 30), ('7', 360)]
+        for choice, expected in cases:
+            with self.subTest(choice=choice):
+                remaining, can_bet = self.settle([['a', choice, 10]])
+                self.assertEqual(remaining, [['a', 'won', expected]])
+                self.assertFalse(can_bet)
+        self.assertEqual(self.settle([['a', 'red', 10]]), ([], True))
+        self.assertEqual(self.settle([]), ([], True))
+        remaining, can_bet = self.settle([['a', '0', 5], ['b', 'odd', 5]],
+                                         number=0, color='green', half=None, dozen=None, odd_even=None)
+        self.assertEqual(remaining, [['a', 'won', 180]])
+        self.assertFalse(can_bet)
+        # Negative control: the old two-times branch swallowed dozen bets.
+        old = lambda body: body.replace('win_half == L[2] || win_odd_even',
+                                        'win_half == L[2] || win_3rd == L[2] || win_odd_even')
+        self.assertEqual(self.settle([['a', '1st 12', 10]], mutation=old)[0][0][3], 20)
+        old_losses = lambda body: body.replace('current_bets = unclaimed', 'current_bets = current_bets')
+        self.assertFalse(self.settle([['a', 'red', 10]], mutation=old_losses)[1])
+
+    def test_collection_preserves_other_players_nested_claims(self):
+        class Actor:
+            def __init__(self):
+                self.chips = []
+            def put_in_any_hand_if_possible(self, chip, *_):
+                self.chips.append(chip.value)
+        first, second = Actor(), Actor()
+        remaining, can_bet = self.settle([[first, 'black', 10], [second, '1st 12', 5],
+                                          [first, 'red', 8]])
+        self.assertFalse(can_bet)
+        pending, can_bet = self.collect(remaining, first)
+        self.assertEqual(first.chips, [20])
+        self.assertEqual(pending, [[second, 'won', 15]])
+        self.assertFalse(can_bet)
+        final, can_bet = self.collect(pending, second)
+        self.assertEqual(second.chips, [15])
+        self.assertEqual(final, [])
+        self.assertTrue(can_bet)
+        # DM Add(L) expands a list argument instead of retaining the record.
+        old = lambda body: body.replace('newlist += list(L)', 'newlist.Add(L)')
+        broken, _ = self.collect(remaining, first, mutation=old)
+        self.assertNotEqual(broken, [[second, 'won', 15]])
+
+
 if __name__ == '__main__':
     unittest.main()
