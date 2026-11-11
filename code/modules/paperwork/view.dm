@@ -21,7 +21,7 @@
 		return istype(owner, /obj/structure/filingcabinet) && owner.Adjacent(reader) && !reader.stat && !reader.restrained()
 	if (route == "bundle")
 		var/obj/item/weapon/paper_bundle/B = owner
-		if (!istype(B) || !islist(B.pages) || !isnum(B.page) || B.page != round(B.page) || B.page < 1 || B.page > B.pages.len || B.pages[B.page] != P)
+		if (!paper_document_bundle_page(B, P))
 			return FALSE
 		if (istype(B.loc, /obj/item/weapon/folder))
 			var/obj/item/weapon/folder/F = B.loc
@@ -51,7 +51,7 @@
 		return E.opened && (E.loc == actor || (isturf(E.loc) && E.Adjacent(actor)))
 	if (istype(container, /obj/item/weapon/paper_bundle))
 		var/obj/item/weapon/paper_bundle/B = container
-		if (!islist(B.pages) || !isnum(B.page) || B.page != round(B.page) || B.page < 1 || B.page > B.pages.len || B.pages[B.page] != P)
+		if (!paper_document_bundle_page(B, P))
 			return FALSE
 		if (istype(B.loc, /obj/item/weapon/folder))
 			var/obj/item/weapon/folder/F = B.loc

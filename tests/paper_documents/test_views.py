@@ -20,7 +20,7 @@ class Container(vm.Ref):
   self.kind=kind;self.loc=actor;self.gc_destroyed=False;self.near=True;self.pages=[];self.page=1
  def Adjacent(self,reader):return self.near
 
-def environment(source=SOURCE):
+def environment(source=SOURCE,bundle_source=vm.SOURCE):
  env,Base,langs=vm.environment()
  original_type=env['istype']
  def istype(value,path=None):
@@ -29,6 +29,9 @@ def environment(source=SOURCE):
  env.update(istype=istype,in_range=lambda actor,item:getattr(item,'near',True),
             is_bundle=lambda x:getattr(x,'kind',None)=='bundle',html_encode=lambda x:html.escape('' if x is None else str(x),quote=True),html_decode=html.unescape,
             replacetext=lambda text,old,new:text.replace(old,new),parent_project=lambda self,reader,forceshow:Base.project(self,reader,forceshow))
+ # Execute the shared production page guard, adapting only native list indexing.
+ bundle_source=bundle_source.replace('B.pages.len','length(B.pages)').replace('B.pages[B.page]','B.pages[B.page-1]')
+ env['paper_document_bundle_page']=vm.project(bundle_source,'/proc/paper_document_bundle_page','container,P',env)
  vm.ALLOWED |= {'in_range','is_bundle','html_encode','html_decode','replacetext','parent_project','paper_document_route_access'}
  # Explicit inert seams: nested native list length/index, null var default,
  # subclass parent dispatch and inherited request fields. No DM statement omitted.
@@ -142,6 +145,9 @@ class Views(unittest.TestCase):
     for page in (0,2,1.5,'bad',None):
      owner.page=page;self.assertIsNone(request.project(self.actor))
     owner.page=1;owner.pages=[vm.Ref()];self.assertIsNone(request.project(self.actor));owner.pages=[self.paper]
+    for pages in (None,'bad',[]):
+     owner.pages=pages;self.assertIsNone(request.project(self.actor))
+    owner.pages=[self.paper]
    self.assertIsNotNone(request.project(self.actor))
  def test_every_reader_context_is_incapable_of_mutation(self):
   for route in ROUTES:
