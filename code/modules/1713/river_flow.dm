@@ -74,6 +74,12 @@ var/global/list/river_moved = list()
 		return FALSE
 	if (istype(A, /obj/item))
 		return TRUE
+	// A carcass snags on the river bed: drifting one tile per pulse broke
+	// butchering and carried kills into deep water, where they sink.
+	if (istype(A, /mob/living/simple_animal))
+		var/mob/living/simple_animal/carcass = A
+		if (carcass.stat == DEAD)
+			return FALSE
 	if (istype(A, /mob/living))
 		var/mob/living/L = A
 		return !L.buckled && !L.captured && !L.pulling && !L.pulledby
