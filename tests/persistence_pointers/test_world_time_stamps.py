@@ -40,6 +40,7 @@ REVIEWED = {
     'data': 'reagent message throttles share the generic data field with blood and dose data',
     'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
     'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
+    'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
