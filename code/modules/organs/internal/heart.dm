@@ -104,8 +104,12 @@
 		var/blood_max = 0
 		var/list/do_spray = list()
 		for(var/obj/item/organ/external/temp in owner.organs)
-			if(temp.is_tourniqueted())
+			var/tourniquet_grade = temp.tourniquet_grade()
+			if(tourniquet_grade == TOURNIQUET_FULL)
 				continue // nothing bleeds below a tourniquet
+			if(tourniquet_grade == TOURNIQUET_MAKESHIFT && temp.applied_pressure)
+				continue // a makeshift tourniquet plus a hand on the wound holds it shut
+			var/limb_bleed_start = blood_max
 
 			var/open_wound
 			if(temp.status & ORGAN_BLEEDING)
@@ -127,10 +131,15 @@
 						else
 							blood_max += W.damage / 40
 
+			if(tourniquet_grade == TOURNIQUET_MAKESHIFT)
+				blood_max = limb_bleed_start + (blood_max - limb_bleed_start) / 2 // a makeshift tourniquet halves it
+
 			if(temp.status & ORGAN_ARTERY_CUT)
 				var/bleed_amount = Floor((owner.vessel.total_volume / (temp.applied_pressure ? 500 : 250))*temp.arterial_bleed_severity)
 				if(bleed_amount && temp.has_bandaged_wound())
 					bleed_amount = max(1, Floor(bleed_amount / 2)) // pressure bandage
+				if(bleed_amount && tourniquet_grade == TOURNIQUET_MAKESHIFT)
+					bleed_amount = max(1, Floor(bleed_amount / 2))
 				if(bleed_amount)
 					var/dmod = 1
 					if (owner.find_trait("Hemophilia"))

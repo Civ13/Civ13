@@ -66,6 +66,7 @@
 	var/arterial_bleed_severity = 2		// Multiplier for bleeding in a limb.
 	var/tourniquet = FALSE				// A tourniquet is tightened on this limb.
 	var/tourniquet_ticks = 0			// Life ticks the tourniquet has been on (not world.time, so it survives saves).
+	var/tourniquet_makeshift = 0		// Rope or twine: Life ticks until it slips loose (0 = a proper tourniquet).
 	var/fracture_heal_ticks = 0			// Life ticks of splinted healing toward a mended fracture.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
@@ -425,6 +426,7 @@ This function completely restores a damaged organ to perfect condition.
 	status = FALSE
 	tourniquet = FALSE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = 0
 	fracture_heal_ticks = 0
 	perma_injury = FALSE
 	brute_dam = FALSE
@@ -1037,15 +1039,37 @@ Note that amputating the affected organ does in fact remove the infection from t
 			return TRUE
 	return FALSE
 
-/obj/item/organ/external/proc/apply_tourniquet()
+// Pressure from a hand is live state; it never saves.
+/obj/item/organ/external/persistence_runtime_var(key)
+	if (key == "applied_pressure")
+		return TRUE
+	return ..()
+
+// lasts: Life ticks a makeshift (rope, twine) tourniquet holds before slipping
+// loose; 0 for a proper one.
+/obj/item/organ/external/proc/apply_tourniquet(lasts = 0)
 	tourniquet = TRUE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = max(0, lasts)
 	if (owner)
 		owner.bad_external_organs |= src
 
 /obj/item/organ/external/proc/remove_tourniquet()
 	tourniquet = FALSE
 	tourniquet_ticks = 0
+	tourniquet_makeshift = 0
+
+// How well bleeding on this limb is stopped from above: TOURNIQUET_FULL stops
+// it, TOURNIQUET_MAKESHIFT only slows it unless a hand also holds the wound.
+/obj/item/organ/external/proc/tourniquet_grade()
+	. = TOURNIQUET_NONE
+	var/obj/item/organ/external/E = src
+	while (E)
+		if (E.tourniquet)
+			if (!E.tourniquet_makeshift)
+				return TOURNIQUET_FULL
+			. = TOURNIQUET_MAKESHIFT
+		E = E.parent
 
 // A tourniquet stops all bleeding below it. A small (severity 1) artery under
 // a tourniquet and a bandage clots closed after a while. Left on too long the
@@ -1054,6 +1078,10 @@ Note that amputating the affected organ does in fact remove the infection from t
 	if (!tourniquet || !owner)
 		return
 	tourniquet_ticks++
+	if (tourniquet_makeshift && tourniquet_ticks >= tourniquet_makeshift)
+		remove_tourniquet()
+		to_chat(owner, SPAN_DANGER("The makeshift tourniquet on your [name] slips loose! Replace it with a proper one."))
+		return
 	if ((status & ORGAN_ARTERY_CUT) && arterial_bleed_severity <= 1 && tourniquet_ticks >= TOURNIQUET_CLOT_TICKS && has_bandaged_wound())
 		status &= ~ORGAN_ARTERY_CUT
 		to_chat(owner, SPAN_NOTICE("The bleeding from your [artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
