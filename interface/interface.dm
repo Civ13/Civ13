@@ -18,6 +18,10 @@ Hotkey-Mode: (hotkey-mode must be on)\n \
 \tG = Cycle-intents-right\n \
 \tM = Toggle-run\n \
 \t, = Rest\n \
+\tI = Open worn storage (press again for the next one)\n \
+\tP = Open backpack\n \
+\tK = Open belt\n \
+\tShift+I = Open harness, webbing or pockets\n \
 
 \t1 = Help-intent\n \
 \t2 = Disarm-intent\n \
@@ -51,6 +55,8 @@ Any-Mode: (hotkey doesn't need to be on)\n  \
 \tCtrl+2 = Disarm-intent\n \
 \tCtrl+3 = Grab-intent\n \
 \tCtrl+4 = Harm-intent\n \
+\tCtrl+i / Ctrl+p / Ctrl+k = Open worn storage / backpack / belt\n \
+\tCtrl+Shift+i = Open harness, webbing or pockets\n \
 \t5-9 = Quick-cast wand spells\n \
 \tDEL = Pull\n \
 \tINS = Cycle-intents-right\n \
