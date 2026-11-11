@@ -27,7 +27,9 @@ class PitClimbing(unittest.TestCase):
         for guard in ('T.density', '/turf/floor/dirt/underground', '/turf/floor/beach/water', '/turf/floor/lava', 'A.density || isliving(A)', 'C.wall || C.incomplete', '!building_open_turf(T)', '/tunneltop/pit'):
             self.assertIn(guard, source)
     def test_climb_revalidates_geometry_after_wait(self):
-        self.assertIn('climb_ledge(dir)', proc('/mob/living/human/verb/climb_up_ledge()'))
+        verb = proc('/mob/living/human/verb/climb_up_ledge()')
+        self.assertIn('ledge_climb_directions(dir)', verb)
+        self.assertIn('climb_ledge(direction)', verb)
         source = proc('/mob/living/human/proc/climb_ledge(direction)')
         self.assertLess(source.index('do_after'), source.index('ledge_climb_destination(src, direction) != destination'))
         self.assertLess(source.index('ledge_climb_destination(src, direction) != destination'), source.index('trench_climb_place(src, destination)'))
@@ -36,7 +38,7 @@ class PitClimbing(unittest.TestCase):
         source = proc('/mob/living/human/proc/grab_climb_ledge(atom/A)')
         self.assertIn('a_intent != I_GRAB || get_active_hand()', source)
         self.assertIn('get_step(here, direction) != target', source)
-        self.assertLess(source.index('if (!ledge_climb_destination(src, direction))'), source.index('climb_ledge(direction)'))
+        self.assertLess(source.index('if (!ledge_climb_destination(src, direction) && !ledge_under_shaft(src))'), source.index('climb_ledge(direction)'))
         self.assertNotIn('trench_climb_place', source)
         self.assertNotIn('do_after', source)
         click = (ROOT / 'code/_onclick/other_mobs.dm').read_text()
@@ -53,10 +55,12 @@ class PitClimbing(unittest.TestCase):
         self.assertNotIn('FLYING', SOURCE)
         self.assertNotRegex(SOURCE, r'\.z\s*[+-]\s*1')
     def test_actor_and_save_guards(self):
-        source = proc('/proc/ledge_climber_ready(mob/living/human/H)')
-        for guard in ('!H.stat', '!H.lying', '!H.restrained()', '!H.buckled', '!H.pulling', '!H.pulledby', 'H.has_empty_hand()', '!persistence_save_in_progress'):
+        self.assertIn('!ledge_climber_problem(H)', proc('/proc/ledge_climber_ready(mob/living/human/H)'))
+        source = proc('/proc/ledge_climber_problem(mob/living/human/H)')
+        for guard in ('H.stat', 'H.lying', 'H.restrained()', 'H.buckled', 'H.pulling', 'H.pulledby', '!H.has_empty_hand()', 'persistence_save_in_progress'):
             self.assertIn(guard, source)
-        source = proc('/proc/ledge_climb_destination(mob/living/human/H, direction)')
+        source = proc('/proc/ledge_climb_destination(mob/living/human/H, direction, list/why)')
+        self.assertIn('ledge_climber_problem(H)', source)
         self.assertIn('map.check_caribbean_block(H, destination)', source)
         self.assertIn('persistence_movement_allowed(H, destination)', source)
         self.assertIn('!shaft && !building_open_turf(overhead)', source)
