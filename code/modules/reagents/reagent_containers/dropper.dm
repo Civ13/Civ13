@@ -32,7 +32,7 @@
 				var/time = 20 //2/3rds the time of a syringe
 				user.visible_message(SPAN_WARNING("[user] is trying to squirt something into [target]'s eyes!"), SPAN_WARNING("You start trying to squirt something into [target]'s eyes"), "You hear the squeezing and squirting of liquid.")
 
-				if (!do_mob(user, target, time))
+				if (!do_mob(user, target, time) || QDELETED(target) || !user.Adjacent(target))
 					return
 
 				if (istype(target, /mob/living/human))
@@ -57,7 +57,7 @@
 				user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Used the [name] to squirt [M.name] ([M.key]). Reagents: [contained]</font>"))
 				msg_admin_attack("[user.name] ([user.ckey]) squirted [M.name] ([M.key]) with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey, M.key)
 
-				trans = reagents.trans_to_mob(target, reagents.total_volume, CHEM_INGEST)
+				trans = reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_INGEST)
 				user.visible_message(SPAN_WARNING("[user] squirts something into [target]'s eyes!"), SPAN_WARNING("You squirt and transfer [trans] units of the solution."), "You hear the squeezing and squirting of liquid.")
 
 
