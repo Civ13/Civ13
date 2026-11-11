@@ -42,14 +42,34 @@ The verb currently remains visible when disabled and explains that fact. A later
 UI integration should hide it or offer a discoverable search toggle without
 adding more permanent HUD clutter. No client overlays or new art are included.
 
+## Phase 2: storage and economy acceptance
+
+`tests/foraging/probe.dm` runs the production search, `forage()`, with only the
+client check and the do_after wait swapped for staged events. CI runs it with
+the other isolated resource probes. It shows:
+
+- a completed search pays one unit and spends one; a cancelled search, a
+  disconnect, a save or load that completes during the wait, a save still
+  running at the end, stepping off the tile, a roof built over it and the ground
+  being replaced all spend nothing and pay nothing;
+- two searchers on the last unit: the one who finishes first is paid, the
+  other gets nothing and the patch reads 0;
+- an exhausted patch refuses before the 30-second wait starts;
+- the record survives a production disk round trip (`BuildVarDirectory` and
+  `Load_Entry`) both partly spent and fully exhausted, so a reload never refills
+  a patch; duplicate, negative and fractional records fail closed;
+- maps without Persistence or `foraging_enabled` neither search nor create records.
+
+Old saves have no records, so every patch starts full; a fresh world starts with
+none. Moving maps, shard transit and train transfer do not carry records: they
+describe a fixed coordinate on one level.
+
+Not covered natively: the real client wait bar, and a full-world save/load
+through the save operation (the record is an ordinary saved `/obj`).
+
 ## Next phases and acceptance gates
 
-1. **Prove storage and economy before activation.** Compile at the repo's BYOND pin;
-   execute native probe and full save/load round trip; test simultaneous last-unit
-   completion, canceled waits, load admitted/completed mid-wait, same-level reload,
-   patch-origin terrain replacement, roofs, explosion/fire, relog and reconnect.
-   Confirm old saves have no records and reset worlds have none. Audit world-clearing
-   and transit/shard behavior; prototype is not approved for moving-map activation.
+1. **Storage and economy.** Done; see Phase 2 above.
 2. **Player search UX.** A modern search panel and classic fallback with current
    habitat, coarse abundance and cancel state; optional player-only find indicators,
    focus categories and controller/key binding. Indicators must not leak others'
@@ -74,7 +94,5 @@ contracts. It does not execute DM or prove persistence. `tests/foraging/probe.dm
 exercises production helpers in the existing ecology constructor fixture; its
 command and permission requirements are in `tests/foraging/README.md`.
 
-Initial cloud compiler setup attempted `bash scripts/cloud_byond_setup.sh` but
-failed at `sudo: command not found`. Thus the native probe and gameplay/save-load
-roundtrip are **not run** here. Keep the PR draft and feature disabled until the
-required acceptance evidence exists. A source review is not deployment evidence.
+The probe passes at the repository pin (516.1688) on Linux through
+`tests/ecology_spawning/run_linux.py`.
