@@ -138,7 +138,7 @@ class ThrowTargetTests(unittest.TestCase):
         self.assertIn('payload', fields)
         self.assertEqual(marble.vars, before)
         # Source contracts only: actual failed-save/disk assertions are staged below.
-        saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
+        saving = (extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory') + extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/export_saved_entry'))
         guard = saving.index('if(movable.z && movable.z != saving_z)')
         diagnostic = saving.index('record_save_reference_failure("cross_level_object", A)', guard)
         rejection = saving.index('throw EXCEPTION("Cross-level object reference', diagnostic)
@@ -149,9 +149,9 @@ class ThrowTargetTests(unittest.TestCase):
         self.assertIs(marble.vars['payload'], target)
 
     def test_export_and_both_historical_import_branches_filter_before_decoding(self):
-        saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
+        saving = (extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory') + extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/export_saved_entry'))
         self.assertLess(saving.index('if(A.persistence_runtime_var(v))'), saving.index('encode_saved_value(savefile, A.vars[v])'))
-        loading = extract(read('code/modules/persistence/loading.dm'), '/map_storage/proc/Load_Entry')
+        loading = extract(read('code/modules/persistence/loading.dm'), '/map_storage/proc/Load_Entry') + extract(read('code/modules/persistence/loading.dm'), '/map_storage/proc/load_entry_fields')
         gate = loading.index('if(object.persistence_runtime_var(v))')
         self.assertRegex(loading[gate:], r'^if\(object.persistence_runtime_var\(v\)\)\n\s+continue')
         typed = re.search(r'else if\(format_version == 2(?: \|\| format_version == 3)?\)', loading)
