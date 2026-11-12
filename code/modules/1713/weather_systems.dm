@@ -361,6 +361,7 @@ var/global/weather_sample_zone_look = null
 // ---- the sky, each weather tick -----------------------------
 
 /proc/weather_systems_step()
+	weather_vanes_turn()
 	var/list/wind = weather_wind_vector()
 	var/speed = weather_wind_speed()
 	for (var/datum/weather_system/S in weather_systems.Copy())

@@ -936,6 +936,7 @@
 #include "code\modules\1713\weather.dm"
 #include "code\modules\1713\weather_chunks.dm"
 #include "code\modules\1713\weather_footwear.dm"
+#include "code\modules\1713\weather_forecast.dm"
 #include "code\modules\1713\weather_lightning.dm"
 #include "code\modules\1713\weather_policy.dm"
 #include "code\modules\1713\weather_systems.dm"

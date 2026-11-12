@@ -125,6 +125,29 @@ python3 tools/weather/make_storm_art.py --preview storm.gif
 python3 tools/weather/make_thunder.py              # needs numpy and ffmpeg
 ```
 
+## Forecasting
+
+`weather_forecast(atom, horizon)` (code/modules/1713/weather_forecast.dm) asks
+every storm for its strength over a tile at half-minute steps ahead, fifteen
+minutes by default, and returns when the next one breaks there, where it is
+now, how heavy it will be and when the storm overhead lets up. It supposes
+the wind holds, so a storm that veers makes it wrong.
+
+Players read it three ways:
+
+- A **weather vane** (wood, Primitive Construction) points into the wind when
+  it stands out of doors. Examined, it gives the wind and whether the sky
+  upwind is dark, but not how soon.
+- A **barometer** (iron, Optics & Instruments), used in the hand, says
+  whether the needle is steady, falling, falling steadily or dropping fast,
+  and in how many minutes the weather breaks or passes.
+- The **Farmer's Almanac** has an Outlook line with the same forecast, and
+  its Sky line now reads the weather over the reader's own tile.
+
+`weather_sea_state(atom)` names the water under the local wind: calm, choppy,
+rough or raging. The sprites are drawn by
+`tests/sprites/create_weather_instruments.py`.
+
 ## Admin tools
 
 - **Weather Map** (Admin tab): a live map of a level with every system, its
@@ -147,4 +170,5 @@ what is drawn.
 ## Not yet done
 
 Moisture gained over water and lost over high ground, wind in eight
-directions, and rough seas under a storm.
+directions, lightning that starts fires (and poles that draw it away), and
+rip tides.
