@@ -82,6 +82,25 @@ ahead. After each hop `craft.burn_drives()` asks every drive to pay for it at
 own fuel tank (`craft_burn()`, `engines/internal_combustion.dm`) and stalls
 when it cannot, and an external engine's heat source is its fuel.
 
+## Plane pools
+
+`craft/plane_pool.dm`. `orbit_pool()` is the pool of an orbit world, over the
+plane registry. Besides claiming and releasing planes it:
+
+- empties a plane: `clear(z)` deletes everything on it and puts the base turf
+  and area back, and `clear_refusal(z)` says why it will not (a character
+  there, awake, asleep or logged out, or a bunk kept as home).
+  `release(z, TRUE)` empties first and keeps the plane when it cannot;
+- shares a plane in slots: with a `slot_size`, `claim_slot(owner, z)` hands
+  out squares of a plane (`slot_box(n)`), one per owner, kept in the registry's
+  `slot_owners`;
+- caps loaded sites: owners named `site:...` hold one plane each and at most
+  `site_cap` together;
+- can be paused: `set_paused()` is kept in the registry's `pool_paused` and
+  stops pool claims. Admins flip it with Server > Toggle Orbit Site Loading.
+  Stations claim their own decks and sectors through `orbit_claim_plane()` and
+  are not paused.
+
 ## Wiring aboard
 
 `craft/rigid_move.dm`: cables, engines, generators, batteries and connectors
