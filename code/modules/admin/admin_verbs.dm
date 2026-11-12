@@ -140,6 +140,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/restart,
 	/datum/admins/proc/delay,
 	/client/proc/toggle_round_ending,
+	/client/proc/toggle_orbit_site_loading,
 	/client/proc/toggle_log_hrefs,
 	/datum/admins/proc/immreboot,
 	/client/proc/cmd_admin_delete,		// delete an instance/object/mob/etc,

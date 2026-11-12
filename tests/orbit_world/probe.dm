@@ -132,6 +132,45 @@ var/global/orbit_failures = 0
 		orbit_check("an orbital helm starts at the beacon with orbit sensors", OT ? "[OT.x],[OT.y]|[OT.sensor_range]|[OT.chart == OC ? 1 : 0]" : "none", "50,50|15|1")
 		qdel(OH)
 
+		// The plane pool (craft/plane_pool.dm): a cap on loaded sites, the
+		// pause switch, slots of a shared plane and emptying a plane.
+		var/datum/plane_pool/orbit/pool = orbit_pool()
+		orbit_check("the orbit pool is one pool over the registry's planes", "[pool == orbit_pool() ? 1 : 0]|[length(pool.all_planes())]|[length(pool.free_planes())]", "1|4|2")
+		pool.site_cap = 1
+		var/wreck = pool.claim("site:wreck")
+		orbit_check("a site takes the lowest free plane", "[wreck]|[pool.owner_of(wreck)]|[length(pool.site_planes())]", "3|site:wreck|1")
+		orbit_check("a site holds one plane", pool.claim_refusal("site:wreck"), "that owner already holds 1 planes")
+		orbit_check("sites share a cap so stations keep their share", "[pool.claim_refusal("site:hulk")]|[pool.claim("site:hulk")]|[isnull(pool.claim_refusal("civ:gaia:Beta")) ? 1 : 0]", "every encounter plane is in use|0|1")
+		pool.set_paused(TRUE)
+		orbit_check("the pause switch is kept in the registry and stops pool claims", "[R.pool_paused]|[pool.claim_refusal("civ:gaia:Beta")]", "1|loading is paused")
+		orbit_check("a paused pool still lets a station claim its own plane", orbit_claim_plane("civ:gaia:Beta") ? 1 : 0, 1)
+		pool.set_paused(FALSE)
+		orbit_release_plane(5)
+		pool.slot_size = 4
+		orbit_check("an 8 by 8 plane has four slots of 4", "[pool.slot_count()]|[jointext(pool.slot_box(1), ",")]|[jointext(pool.slot_box(4), ",")]|[isnull(pool.slot_box(5)) ? 1 : 0]", "4|1,1,4,4|5,5,8,8|1")
+		var/first_slot = pool.claim_slot("craft:one", wreck)
+		var/second_slot = pool.claim_slot("craft:two", wreck)
+		orbit_check("crafts take the lowest free slots", "[first_slot],[second_slot]|[pool.slot_owner(wreck, 2)]|[jointext(pool.slot_of("craft:two"), ",")]", "1,2|craft:two|3,2")
+		orbit_check("an owner holds one slot, and the table is the registry's", "[pool.claim_slot("craft:one", wreck)]|[R.slot_owners["3:1"]]", "0|craft:one")
+		orbit_check("a slot is given back", "[pool.release_slot(wreck, 1) ? 1 : 0]|[pool.release_slot(wreck, 1) ? 1 : 0]|[isnull(pool.slot_of("craft:one")) ? 1 : 0]|[pool.claim_slot("craft:three", wreck)]", "1|0|1|1")
+		// Emptying a plane.
+		var/turf/site_floor = locate(4, 4, wreck)
+		site_floor.ChangeTurf(/turf/floor/plating)
+		new /obj/item/stack/material/steel(site_floor)
+		var/obj/structure/bed/site_bunk = new(locate(5, 4, wreck))
+		site_bunk.persistence_bed_owner_ckey = "someone"
+		orbit_check("a plane where somebody keeps a bunk as home is not emptied", "[pool.clear_refusal(wreck)]|[pool.clear(wreck) ? 1 : 0]|[pool.release(wreck, TRUE) ? 1 : 0]", "someone keeps a bunk there as home|0|0")
+		site_bunk.persistence_bed_owner_ckey = null
+		var/mob/living/human/eva_tester/sleeper = new(locate(6, 4, wreck))
+		sleeper.real_name = "Sleeper"
+		orbit_check("nor one with a character on it", "[pool.clear_refusal(wreck)]|[orbit_plane_owner(wreck)]", "Sleeper is there|site:wreck")
+		qdel(sleeper)
+		orbit_check("the arrival plane is not the pool's to empty", pool.clear_refusal(1), "that is not one of this pool's planes")
+		orbit_check("an unclaimed bunk, a floor and cargo are cleared away", "[orbit_plane_empty(wreck) ? 1 : 0]|[pool.release(wreck, TRUE) ? 1 : 0]|[orbit_plane_empty(wreck) ? 1 : 0]|[orbit_plane_owner(wreck) ? 1 : 0]", "0|1|1|0")
+		orbit_check("its slots go with it", "[length(R.slot_owners)]|[isnull(pool.slot_of("craft:two")) ? 1 : 0]", "0|1")
+		pool.slot_size = initial(pool.slot_size)
+		pool.site_cap = initial(pool.site_cap)
+
 		// The ladders stood on planes the capsules will claim.
 		qdel(LU)
 		qdel(LT)
