@@ -251,7 +251,7 @@
 // floor on it that joins start edge to edge. Returns the list of turfs, or a
 // text saying why this is not a hull.
 /proc/built_hull_survey(turf/start, datum/craft/refitting = null)
-	if (!istype(start, /turf/floor/beach/water) || !(locate(/obj/covers) in start))
+	if (!istype(start, /turf/floor/beach/water) || !hull_floor_in(start))
 		return "It must stand on a floor built over water."
 	var/list/found = list(start)
 	var/list/queue = list(start)
@@ -260,7 +260,7 @@
 		queue.Cut(1, 2)
 		for (var/d in cardinal)
 			var/turf/N = get_step(T, d)
-			if (!N || (N in found) || !(locate(/obj/covers) in N))
+			if (!N || (N in found) || !hull_floor_in(N))
 				continue
 			if (!istype(N, /turf/floor/beach/water))
 				return "The hull is still joined to the shore at [N.x],[N.y]. Cut her free first."

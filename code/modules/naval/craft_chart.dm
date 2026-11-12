@@ -147,7 +147,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	S.refresh()
 	if (!token || token.chart != S)
 		return "She is not on this chart."
-	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""][running_dark ? ". She runs dark" : ""].")
+	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""][running_dark ? ". She runs dark" : ""][grapple ? ". Grappling lines hold her" : ""].")
 	var/list/ships = list()
 	var/list/harbours = list()
 	for (var/datum/chart_token/T in S.tokens)

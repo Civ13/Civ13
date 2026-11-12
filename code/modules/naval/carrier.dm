@@ -310,7 +310,7 @@
 		return "The wheel is not connected to a ship."
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/datum/craft/dark_craft = craft_of_vessel(vessel, FALSE)
-	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"][(dark_craft && dark_craft.running_dark) ? ", running dark" : ""]."
+	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"][(dark_craft && dark_craft.running_dark) ? ", running dark" : ""][(dark_craft && dark_craft.grapple) ? ", held by grappling lines" : ""]."
 
 /obj/structure/vessel_helm/examine(mob/user)
 	..()
@@ -321,7 +321,7 @@
 		return ..()
 	var/datum/craft/own = ship_craft()
 	var/dark = own && own.running_dark
-	var/list/options = list("Chart", "Ship's papers", "Hail a ship", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", dark ? "Show her lights" : "Run dark", "Cancel")
+	var/list/options = list("Chart", "Ship's papers", "Hail a ship", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", dark ? "Show her lights" : "Run dark", (own && own.grapple) ? (own.grapple.thrower == own ? "Cast off the grapple" : "Cut the grapple") : "Grapple a ship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
@@ -347,6 +347,14 @@
 		if (CRAFT_HELM_FORCE)
 			if (!force_wheel(H))
 				return
+	var/datum/craft/held = ship_craft()
+	if (choice == "Grapple a ship" || choice == "Cast off the grapple" || choice == "Cut the grapple")
+		if (held)
+			held.grapple_menu(H, src)
+		return
+	if (held && held.grapple && (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west")))
+		to_chat(H, SPAN_WARNING(held.grapple_refusal()))
+		return
 	if (choice == "Make for a berth")
 		var/datum/craft/docking = ship_craft()
 		if (docking)

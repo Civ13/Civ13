@@ -38,6 +38,8 @@ var/global/list/crafts = list()
 	stop_sailing()
 	turning_to = 0
 	clear_path()
+	if (grapple)
+		grapple.release()
 	if (ticket)
 		ticket.release()
 	if (berth && berth.occupant == src)

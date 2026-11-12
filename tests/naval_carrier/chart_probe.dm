@@ -242,6 +242,47 @@ var/naval_runtime_error = FALSE
 	naval_check(P.set_dark(FALSE) && V.deck_lights_on && V.speed_cap() == V.max_speed, "showing her lights lifts the limit")
 	V.set_speed(VESSEL_SPEED_STOP)
 
+	// ---- Grappling and boarding (naval/craft_grapple.dm) ----
+	for (var/x = 60, x <= 62, x++)
+		hull_lay(x, 5)
+		hull_lay(x, 8)
+	var/obj/structure/hull_tiller/lark_tiller = new(locate(61, 5, 2))
+	var/obj/structure/hull_tiller/gull_tiller = new(locate(61, 8, 2))
+	naval_check(isnull(lark_tiller.commission("Lark", EAST)) && isnull(gull_tiller.commission("Gull", EAST)), "the Lark and the Gull are commissioned two tiles of water apart")
+	var/datum/craft/lark = lark_tiller.craft
+	var/datum/craft/gull = gull_tiller.craft
+	var/list/reach = lark.grapple_plan(gull)
+	naval_check(reach && reach[1] == 2 && reach[2] == NORTH, "the Lark's lines would cross two tiles to the north")
+	var/list/prey = lark.grapple_candidates()
+	naval_check(prey.len == 1 && prey["Gull, 3 tiles north"] == gull, "the Gull is the one ship she can grapple")
+	naval_check(!C.order_grapple(gull) && findtext(C.last_refusal, "more than 3 tiles"), "the Wren lies too far off to grapple her ([C.last_refusal])")
+	naval_check(lark.order_grapple(gull) && lark.grapple && lark.grapple == gull.grapple && lark.grapple.thrower == lark && lark.grapple.lines.len == 2, "the Lark's lines hold the Gull")
+	var/turf/gap1 = get_turf(lark.grapple.lines[1])
+	var/turf/gap2 = get_turf(lark.grapple.lines[2])
+	naval_check(gap1.y == 6 && gap2.y == 7 && gap1.x == gap2.x && gap1.x != 61 && (locate(/obj/covers/repairedfloor/rope/boarding) in gap1) && (locate(/obj/covers/repairedfloor/rope/boarding) in gap2), "and boarding lines lie across the gap, clear of the tillers ([gap1.x],[gap1.y])")
+	lark.set_anchor(FALSE)
+	lark.set_speed(VESSEL_SPEED_SLOW)
+	gull.set_anchor(FALSE)
+	naval_check(!lark.sail_tick() && lark.body.origin().x == 60 && !gull.order_turn(NORTH), "neither ship hops or comes about while the lines hold")
+	naval_check(findtext(lark.grapple_refusal(), "grappled to the Gull. Cast off") && findtext(gull.grapple_refusal(), "grappled to the Lark. Cut") && findtext(lark.sea_chart_text(), "Grappling lines hold her"), "each helm says why")
+	naval_check(!gull.order_grapple(lark) && !C.order_grapple(lark), "a grappled ship throws and takes no second set of lines")
+	gull.set_anchor(TRUE)
+	naval_check(isnull(gull_tiller.commission()) && gull.body.tile_count() == 3, "a refit does not take the boarding lines for hull ([gull.body.tile_count()])")
+	gull.set_anchor(FALSE)
+	gull.body.hold(gull.body.heading())
+	var/datum/craft_grapple/lines = lark.grapple
+	lines.release(gull)
+	naval_check(!lark.grapple && !gull.grapple && !lark.turning_to && !gull.turning_to && !(locate(/obj/covers) in gap1) && !(locate(/obj/covers) in gap2), "cut, the lines are gone and both ships are free")
+	naval_check(!lark.order_grapple(gull) && findtext(lark.last_refusal, "still being coiled"), "the Lark must coil her lines before she throws again")
+	lark.grapple_ready_at = 0
+	naval_check(lark.order_grapple(gull), "then she can")
+	qdel(locate(/obj/covers/repairedfloor/rope/boarding) in gap1)
+	naval_check(!lark.grapple && !gull.grapple && !(locate(/obj/covers) in gap2), "a line destroyed parts the ships")
+	lark.grapple_ready_at = 0
+	naval_check(lark.order_grapple(gull), "grappled once more")
+	lark_tiller.decommission()
+	naval_check(!gull.grapple && !gull.turning_to && !(locate(/obj/covers) in gap1), "a struck hull lets go of her prize")
+
 /proc/naval_run()
 	try
 		naval_checks()

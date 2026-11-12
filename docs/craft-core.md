@@ -166,6 +166,18 @@ ship". A dark craft makes slow ahead at most (`craft.max_speed()`,
 (`body.dark_changed()`). New craft kinds get both from the base; a helm only
 needs `hail_menu()` and `dark_menu()` entries.
 
+## Grappling and boarding
+
+`naval/craft_grapple.dm`: `craft.order_grapple(other)` links two crafts with a
+`/datum/craft_grapple` when `grapple_plan()` finds a straight run of at most
+`GRAPPLE_REACH` tiles of open water between their hulls. Both bodies are held
+(`body.hold()`), so neither hops, turns or docks, and boarding lines
+(`/obj/covers/repairedfloor/rope/boarding`, never saved) lie across the gap.
+`grapple.release(by, who)` frees both and starts the thrower's cooldown; a
+destroyed line or a deleted craft releases too. `hull_floor_in()` keeps the
+lines out of hull surveys. A helm needs `grapple_menu()` and
+`grapple_refusal()`.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The
