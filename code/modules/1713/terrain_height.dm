@@ -36,6 +36,18 @@
 #define TERRAIN_STEEP_LEVELS 3
 // Stamina spent per level climbed on a steep step.
 #define TERRAIN_CLIMB_STAMINA 0.5
+// Running down a steep step (TERRAIN_STEEP_LEVELS or more) can trip you:
+// percent chance per level past 2, plus for full momentum and for running on
+// an empty stamina bar. Walking down picks a safe way.
+#define TERRAIN_TRIP_PER_LEVEL 10
+#define TERRAIN_TRIP_MOMENTUM 10
+#define TERRAIN_TRIP_TIRED 10
+#define TERRAIN_TRIP_MAX 50
+// A fall rolls on while the ground keeps dropping this many levels a tile,
+// up to TERRAIN_TUMBLE_MAX tiles, for TERRAIN_TUMBLE_DAMAGE brute per tile.
+#define TERRAIN_TUMBLE_DROP 2
+#define TERRAIN_TUMBLE_MAX 6
+#define TERRAIN_TUMBLE_DAMAGE 2
 // Deciseconds between two steep-slope messages to the same mob.
 #define TERRAIN_SLOPE_MESSAGE_DELAY 100
 
@@ -255,6 +267,67 @@
 		else
 			to_chat(H, SPAN_NOTICE("You pick your way down the steep slope."))
 	return levels
+
+// Percent chance that this step trips a running human; 0 when it cannot.
+/proc/terrain_trip_chance(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)
+	if (distance_fraction < 1 || H.m_intent != "run" || H.lying || H.buckled)
+		return 0
+	var/drop = -terrain_step_levels(origin, destination)
+	if (drop < TERRAIN_STEEP_LEVELS)
+		return 0
+	var/chance = (drop - 2) * TERRAIN_TRIP_PER_LEVEL + H.terrain_momentum * TERRAIN_TRIP_MOMENTUM
+	if (H.stats["stamina"][1] <= 0)
+		chance += TERRAIN_TRIP_TIRED
+	return min(TERRAIN_TRIP_MAX, chance)
+
+// Running down a steep slope may trip the runner, who falls once the step is
+// done and tumbles on down the hill. step_delay is the step's duration.
+/proc/terrain_trip_check(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1, step_delay = 0)
+	var/chance = terrain_trip_chance(H, origin, destination, distance_fraction)
+	if (!chance || !prob(chance))
+		return FALSE
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(terrain_tumble), H), max(world.tick_lag, step_delay))
+	return TRUE
+
+// Where a fall from T rolls to: down the steepest neighbour, tile by tile,
+// while each tile drops at least TERRAIN_TUMBLE_DROP levels.
+/proc/terrain_tumble_path(turf/T)
+	. = list()
+	var/turf/at = T
+	for (var/i in 1 to TERRAIN_TUMBLE_MAX)
+		var/turf/best = null
+		var/best_drop = 0
+		for (var/d in alldirs)
+			var/turf/N = get_step(at, d)
+			if (!N || N.density || istype(N, /turf/floor/beach/water))
+				continue
+			var/drop = -terrain_step_levels(at, N)
+			if (d in cornerdirs)
+				drop /= 1.4142
+			if (drop >= TERRAIN_TUMBLE_DROP && drop > best_drop)
+				best = N
+				best_drop = drop
+		if (!best)
+			break
+		. += best
+		at = best
+
+// The fall: the human is knocked down and rolls down the slope, bruised for
+// every tile rolled. Things in the way stop the roll as any thrown body does.
+/proc/terrain_tumble(mob/living/human/H)
+	if (QDELETED(H) || H.stat == DEAD || H.lying || H.buckled || !isturf(H.loc))
+		return FALSE
+	var/list/path = terrain_tumble_path(H.loc)
+	H.terrain_momentum = 0
+	H.Weaken(2)
+	if (!path.len)
+		H.visible_message(SPAN_WARNING("[H] trips and falls on the slope!"), SPAN_DANGER("You trip and fall on the steep slope!"))
+		H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE)
+		return TRUE
+	H.visible_message(SPAN_WARNING("[H] trips and tumbles down the slope!"), SPAN_DANGER("You lose your footing and tumble down the slope!"))
+	H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE * path.len)
+	H.throw_at(path[path.len], path.len, 1)
+	return TRUE
 
 // Delay factor for a grade in levels per tile (negative downhill), capped at
 // TERRAIN_MAX_LEVEL_STEP. Packed ground halves the extra climbing cost.
@@ -570,6 +643,13 @@ var/global/terrain_shading_applied = FALSE
 #undef TERRAIN_MOMENTUM_FLAT_GRADE
 #undef TERRAIN_MOMENTUM_KEEP
 #undef TERRAIN_FASTEST_SHARE
+#undef TERRAIN_TRIP_PER_LEVEL
+#undef TERRAIN_TRIP_MOMENTUM
+#undef TERRAIN_TRIP_TIRED
+#undef TERRAIN_TRIP_MAX
+#undef TERRAIN_TUMBLE_DROP
+#undef TERRAIN_TUMBLE_MAX
+#undef TERRAIN_TUMBLE_DAMAGE
 #undef TERRAIN_MAX_LEVEL_STEP
 #undef TERRAIN_PACKED_UPHILL_SHARE
 #undef TERRAIN_LIGHT_STEP

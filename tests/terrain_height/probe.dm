@@ -108,6 +108,22 @@ var/terrain_height_probe_checks = 0
 	C.stats["stamina"][1] = 0
 	terrain_climb_effects(C, locate(10, 6, 1), locate(10, 7, 1))
 	terrain_height_probe_assert(C.stats["stamina"][1] == 0, "no_negative_stamina")
+	// Running down a steep step can trip; walking, gentle steps and nudges never do.
+	C.stats["stamina"][1] = 50
+	C.m_intent = "run"
+	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)) == 20, "steep_run_trip_chance")
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(6, 9, 1), locate(5, 9, 1)) && !terrain_trip_chance(C, locate(10, 6, 1), locate(10, 7, 1)), "gentle_or_uphill_no_trip")
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1), 0.0625), "nudge_no_trip")
+	C.terrain_momentum = 1
+	C.stats["stamina"][1] = 0
+	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)) == 40, "momentum_and_tiredness_raise_trip")
+	C.m_intent = "walk"
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)), "walking_never_trips")
+	C.terrain_momentum = 0
+	// A fall rolls down the steepest drop while it stays 2 levels a tile.
+	var/list/roll = terrain_tumble_path(locate(10, 7, 1))
+	terrain_height_probe_assert(roll.len == 1 && roll[1] == locate(10, 6, 1), "tumble_rolls_down_the_drop")
+	terrain_height_probe_assert(!length(terrain_tumble_path(locate(6, 9, 1))) && !length(terrain_tumble_path(locate(3, 3, 1))), "gentle_or_flat_no_roll")
 	qdel(C)
 
 	// Free slides read the hill at the body's exact spot, blended between tile

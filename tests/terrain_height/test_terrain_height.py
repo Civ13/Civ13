@@ -199,6 +199,8 @@ class Wiring(unittest.TestCase):
 
     def test_client_move_applies_climb_effects_to_humans(self):
         self.assertIn('\t\t\tif (mob_is_human)\n\t\t\t\tterrain_climb_effects(H, mob_loc, n, distance_fraction)\n', MOVEMENT)
+        self.assertIn('\t\t\t\tterrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)\n', MOVEMENT)
+        self.assertIn('You lose your footing and tumble down the slope!', MODULE)
         self.assertIn('#define TERRAIN_STEEP_LEVELS 3', MODULE)
         self.assertIn('/proc/terrain_climb_effects(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)', MODULE)
         self.assertIn('var/levels = terrain_step_levels(origin, destination)', MODULE)
