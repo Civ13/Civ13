@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'e9ac2ca374be84c353d48c461181cac762461dff'
+WIKI_REVIEWED_REVISION = '5f7c1c8e3d5f7b9dfb5c76d723ae3e6a517cd058'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -81,7 +81,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('74a72aed647696ceb0097b50cc38b5943a2f5dcd90b0a05c763604ddb5eff36c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('f1fecec4400e161650510705c6db642e597aff89a2dd8cb312f2c4b86a9e6e9e', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('74daf913d98ef822848da201d9692f842b91fd8f2cbbf16ecbc0848b26f27883', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
@@ -113,9 +113,9 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('ab53a11c6e7a9b1bfd11b67bad2a38f6eeb38589339b93016e0b33d1c3d3e2e9', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Boats.md': ('933bd3d751c52d2c5582a22c4a6f2a0b61df064f1470758176c5643047b7ccca', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
-    'guides/Guide_to_Aircraft_Carriers.md': ('8b1986e4dea50354862a38fff70c0bb01c288ecf82502b9ec168002b08ca69d2', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
+    'guides/Guide_to_Aircraft_Carriers.md': ('581dd88d0928b72501cf0e4f3bf2b7a47adbe3ffd48831446e4d3209d4f40315', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('39cc22473c6e231a43198dadbdd89a3e8c0b384edd344accaf3764f75451c1b1', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
