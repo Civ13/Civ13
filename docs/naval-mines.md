@@ -64,3 +64,19 @@ move hooks as the mine check (before it). The wipe is saved on the ship's
 wheel, the tiller or the modular boat's axis (`magnetic_wipe`).
 
 Test: `tests/naval_carrier/degaussing_probe.dm`.
+
+## Minesweeping (`code/modules/naval/minesweeping.dm`)
+
+Both sweeps are bolted to a deck with a wrench and streamed or wound in by
+hand. They act from `craft.magnetic_moved(tiles)`, after wear and coil power
+and before the mine check, through `craft.sweep_moved(tiles)`.
+
+| Sweep | Does | Needs |
+| --- | --- | --- |
+| Magnetic sweep reel (`/obj/structure/mine_sweep/magnetic`) | Sets off every magnetic mine within 6 tiles of the reel where it lies | The same power as a coil (`body.power_coil`); without it the reel is wound in |
+| Oropesa sweep (`/obj/structure/mine_sweep/oropesa`) | Cuts contact mines 1 to 3 tiles off the hull up to the surface (`surfaced`, fully visible); they still go off under a hull, from a bullet or a blast, and a wrench takes them out | The ship under way |
+
+The magnetic sweep's blasts still hurt a hull close by, so it belongs on a
+wooden or wiped sweeper well ahead of steel ships.
+
+Test: `tests/naval_carrier/sweeping_probe.dm`.

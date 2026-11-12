@@ -329,6 +329,25 @@ an open offer and `write_off()` a taken one whose crate no longer exists. A
 destroyed post spills what it held. The post and the sea chart say how many
 contracts are on offer.
 
+`naval/freight_depot.dm` puts the same board on land:
+`/obj/structure/berth/quay/depot` (recipe "freight depot", Wagons & Ships).
+It is a quay with `takes_ships = FALSE`, so sea charts and docking leave it
+out, while freight can be posted from a mooring post to a depot and back. A
+board names itself by `post_word` and `place_word`, and finds the taker's
+craft with `freight_crew_craft(H)`: the depot looks through `vehicle_crafts`
+and `crafts` for one whose papers list the taker within `FREIGHT_DEPOT_REACH`.
+
+`naval/depot_jobs.dm` is the depot's own work, `/obj/craft_contract/land`,
+kept apart from freight (`jobs()` against `contracts()`). `fill_jobs()` keeps
+up to three offers when the board is read, at most once every
+`DEPOT_JOB_REFILL`; `find_spot()` picks open ground 60 to 220 tiles off
+(`depot_job_ground`). A survey hands out a stake (`/obj/item/depot_guide/stake`)
+that is driven in at the spot and reported back; lost cargo sets a crate down
+at the spot when it is taken and pays when the crate is brought within two
+tiles of the depot. Pay is made on the spot by `offer_job()` from the
+distance. A party holds two of a depot's jobs at most. A new kind of land job
+is a subtype with its own `job_text()` and a line in `fill_jobs()`.
+
 ## Hails and running dark
 
 `naval/craft_signals.dm`: `craft.hail(other, text, from)` calls across to a
@@ -465,4 +484,5 @@ The carriage saves the register in `register_state`.
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

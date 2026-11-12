@@ -73,6 +73,16 @@ var/naval_runtime_error = FALSE
 	W.forceMove(src)
 	return TRUE
 
+// A registered vehicle stood in for by the one tile it is parked on.
+/datum/craft_body/probe_spot
+	var/turf/at
+/datum/craft_body/probe_spot/placed()
+	return !isnull(at)
+/datum/craft_body/probe_spot/cells()
+	return at ? list(at) : list()
+/datum/craft_body/probe_spot/origin()
+	return at
+
 /proc/freight_person(char_name, faction, turf/T)
 	var/mob/living/human/naval_probe/H = new(T)
 	H.real_name = char_name
@@ -219,6 +229,48 @@ var/naval_runtime_error = FALSE
 		if (!length(C.freight_id))
 			spilled++
 	naval_check(spilled == 5 && !craft_contracts.len && out.freight_id == "", "a destroyed post spills its crates and ends its contracts ([spilled])")
+
+	// ---- Freight depots on land (freight_depot.dm) ----
+	var/obj/structure/berth/quay/depot/D1 = new(locate(5, 10, 2))
+	var/obj/structure/berth/quay/depot/D2 = new(locate(5, 40, 2))
+	D2.harbour = "Mill Yard"
+	naval_check((D1 in sea_harbours) && !D1.takes_ships && !D1.water_side() && D1.berth_name() == "the freight depot at 5, 10" && findtext(D1.status_text(), "any party may offer freight"), "a freight depot is a freight board that is no berth ([D1.status_text()])")
+	B = new(locate(20, 45, 2))
+	B.harbour = "Bay Town"
+	var/datum/chart/sea/depot_chart = sea_chart(2)
+	depot_chart.refresh()
+	naval_check(!D1.token && !D2.token && B.token && findtext(D1.refusal(W), "not a berth"), "it is not on the sea chart and no ship can make for it")
+	ann.forceMove(locate(5, 11, 2))
+	bob.forceMove(locate(6, 11, 2))
+	var/obj/structure/closet/crate/load = freight_crate(4, 10)
+	pay = freight_reward(ann)
+	F = D1.offer_freight(ann, load, D2, pay)
+	naval_check(F && F.dest_name == "Mill Yard" && F.destination() == D2 && load.loc == F && findtext(F.describe(get_turf(D1)), "30 tiles north"), "a crate is offered at one depot for another ([D1.freight_refusal])")
+	naval_check(isnull(D1.freight_crew_craft(bob)) && !F.take(bob, D1.freight_crew_craft(bob)) && findtext(F.last_refusal, "ship or vehicle"), "with no registered vehicle near nobody can take it ([F.last_refusal])")
+	var/datum/craft_body/probe_spot/parked = new
+	parked.at = locate(12, 10, 2)
+	var/datum/craft/vehicle/truck = new(parked)
+	truck.name = "truck"
+	truck.register = new /datum/craft_register
+	truck.register.party = party_train_party_of(bob)
+	naval_check((truck in vehicle_crafts) && !(truck in crafts) && D1.freight_crew_craft(bob) == truck && isnull(D1.freight_crew_craft(ann)), "a registered vehicle within eight tiles makes its crew one who can")
+	parked.at = locate(14, 10, 2)
+	naval_check(isnull(D1.freight_crew_craft(bob)), "and one parked further off does not")
+	parked.at = locate(8, 10, 2)
+	naval_check(F.take(bob, D1.freight_crew_craft(bob)) && F.taker_craft == "truck" && isturf(load.loc) && length(load.freight_id), "Bob takes it for the truck and the sealed crate is set down")
+	load.forceMove(locate(6, 40, 2))
+	bob.forceMove(locate(6, 41, 2))
+	naval_check(D1.hand_in(bob) == 0 && D2.hand_in(bob) == 1 && QDELETED(F) && (pay.loc == bob || pay.loc == get_turf(bob)) && load.freight_id == "", "handed in at the other depot he is paid there")
+	pay = freight_reward(ann)
+	load.forceMove(locate(4, 10, 2))
+	F = D1.offer_freight(ann, load, B, pay)
+	naval_check(F && F.destination() == B && F.take(bob, truck), "a depot sends freight to a harbour too")
+	load.forceMove(locate(21, 45, 2))
+	bob.forceMove(locate(21, 44, 2))
+	naval_check(B.hand_in(bob) == 1 && QDELETED(F), "and the harbour pays for it")
+	D1.owner_party = party_train_party_of(cat)
+	D1.welcome = BERTH_WELCOME_OWNERS
+	naval_check(!D1.may_post(reds) && D1.may_post(party_train_party_of(cat)) && findtext(D1.status_text(), "only they may offer freight"), "a claimed depot can keep its board to its own party")
 
 /proc/naval_run()
 	try

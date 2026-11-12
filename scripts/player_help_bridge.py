@@ -70,9 +70,9 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd36776cdfaca4dbd569b0586676f3ee8375c0673'
+WIKI_REVIEWED_REVISION = '96e428a8db4e8f5fa9784d5e148f1946627d79b4'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('d57a35b5247a621ff482100a3152f7cacdcac91078e28e1928f6aeafcf9dcecb', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('7b6102b505dee6ce050b53adb36811d59b4128ec7a16c4ed31e99828ed137a5a', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -85,7 +85,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('25f4ba47bfd4913949660ee0c8ca1925a21090077a9d6558c6e277570866f287', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('ba0a13d4a42cb2eb2c928994cef176a298a6ce3a3ddd73d30fda8b114c0037d3', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('4a28f61e9133aec8e6a92849139ade14bd676fd39c9b00cf3fbee09efde0313e', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -119,7 +119,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('75d16c85bc0f0eeb6b99089f8ac0f3e5cb858d07581cad68430275a8dc37ea1b', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('9f99062c2efc41ff0005bea9d59eadaa470fd928b21370bbdb21dd970ca57fd6', 'first day new character start starting survive survival research book study chapter food water shelter'),
+    'guides/Guide_to_Your_First_Day.md': ('e037ffbe841353f0f6d859d5e018d06c1d178dc5057453e16c54128b07a75dbc', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois'),
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),

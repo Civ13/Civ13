@@ -174,6 +174,22 @@ exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
 
+The same probe covers the freight depot on land
+(`code/modules/naval/freight_depot.dm`): it is no berth and no harbour on a
+sea chart, a registered vehicle's crew takes freight at it, and a claimed
+depot can keep its board to its own party.
+
+## Depot work (`depot_jobs_probe.dm`)
+
+A freight depot's own jobs (`code/modules/naval/depot_jobs.dm`) on a 200-tile
+strip of land: which ground can hold a job, spots 60 to 220 tiles off, the
+board filling three places once, a survey taken, read, driven in and paid,
+lost cargo whose crate only lies out once the job is taken, the two-job
+limit, a job given up, a spot that was built over and a destroyed depot. No
+client connects, so the depot's menus are not exercised.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
+
 ## The open sea (`open_sea_probe.dm`)
 
 An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
@@ -220,3 +236,12 @@ The probe answers the wiping station's wired power itself.
 - **Wiping:** the station on the beach finds a steel hull alongside; it asks for cable, takes thirty lengths, does nothing without power, and with power wipes 70% off for twenty lengths (20 shows as 6, "faint", and the tiller says so); ten lengths are not enough for another; the tiller keeps the wipe for a save.
 - **Wear:** the wiped hull passes a magnetic mine one tile off her course; ten tiles wear 1% off; with the wipe gone the same mine goes off.
 - **Coil:** a running coil takes 80% off; with no engine aboard a built hull trips it out on the next move. On a Scout submarine the coil is switched on by hand, takes 30 to 6, costs a battery unit a tile and trips out on a flat battery; the axis saves the wipe.
+
+## Minesweeping (`sweeping_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/sweeping_probe.dm
+```
+
+- **Oropesa:** a sweep must be bolted down and on a deck to stream; under way on a wooden hull it cuts a contact mine two tiles off her side up to the surface, leaves a far one moored, and a surfaced mine still goes off under a hull.
+- **Magnetic:** with no engine aboard a built hull the reel goes dead and is wound in; streamed aboard a Scout submarine it sets off a magnetic mine six tiles off, not one nine tiles off or a contact mine, for a battery unit a tile, and goes dead on a flat battery.
