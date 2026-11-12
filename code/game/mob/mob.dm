@@ -686,6 +686,9 @@
 			client.add_stat("<b>Playing, Observing, Lobby:</b>", "[population[1]], [population[2]], [population[3]]")
 			client.add_stat("<b>Round Duration:</b>", roundduration2text_days())
 			client.add_stat("<b>Game ID:</b>", "<b>[game_id]</b>")
+			var/planned_shutdown = planned_shutdown_status_text()
+			if (planned_shutdown)
+				client.add_stat("<b>Server [planned_shutdown_noun(planned_shutdown_kind)] in:</b>", "<font color='yellow'><b>[planned_shutdown]</b></font>")
 			client.add_stat("")
 
 			if (map && !map.civilizations)

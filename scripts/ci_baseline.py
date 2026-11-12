@@ -1533,6 +1533,11 @@ SUITES = {
             'code/game/mob/groups/factions.dm', 'code/predefines.dm',
             'tests/save_movement/source_adapter.py')},
     # Status tab "Last save" wiring; native round trip via the berry_load fixture.
+    'shutdown_notice': {'files': ('tests/shutdown_notice/test_shutdown_notice.py',),
+        'paths': ('tests/shutdown_notice/', 'code/modules/persistence/shutdown_notice.dm'),
+        'shared_paths': ('code/modules/persistence/restart_transaction.dm', 'code/modules/persistence/nomads_lifecycle.dm',
+            'code/modules/persistence/admin.dm', 'code/modules/admin/admin.dm', 'code/modules/admin/admin_verbs.dm',
+            'code/modules/agent_control/agent_actions.dm')},
     'last_save_status': {'files': ('tests/last_save_status/test_last_save.py',),
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
