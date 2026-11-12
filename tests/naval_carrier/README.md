@@ -193,3 +193,17 @@ paid and saved, and a contract given up.
 
 `python3 tools/open_sea/make_map.py --check` confirms `maps/sea/open_sea.dmm`
 matches the cell size in `code/__defines/naval.dm`.
+
+## Naval mines (`mines_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/mines_probe.dm
+```
+
+Linux: `python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/mines_probe.dm`. Blasts are recorded instead of set off (the fixture has no explosion config).
+
+- **Signature:** a freighter is worth 140, a carrier 600, a schooner 0; the reading words; a magnetic mine feels a freighter from 3 tiles but not 4, a carrier from 4 but never 5, a 30 boat only beside it, a wooden hull never; a contact mine only under a hull.
+- **Laying:** not on sand or on a hull, yes on open water; a mine is a heavy item.
+- **Wooden hull:** worth nothing and the tiller says so; she sails over a magnetic mine, which stays where it was laid and is not counted aboard; a contact mine under her goes off, with the blast on the hull tile over it.
+- **Steel hull:** twenty steel plates are worth 20 ("strong"); a magnetic mine three tiles off her course stays quiet, one tile off it goes off under her nearest plate.
+- **Submarine:** a Scout is worth 30, the systems report reads it, and a magnetic mine beside her springs two leaks.
