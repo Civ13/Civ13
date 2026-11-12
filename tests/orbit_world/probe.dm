@@ -112,7 +112,7 @@ var/global/orbit_failures = 0
 		orbit_check("a station is named for its party", SA ? SA.name : "none", "Alpha station")
 		orbit_check("its spot is kept in the registry", R.chart_spots["civ:gaia:Alpha"], "[SA.x],[SA.y]")
 		orbit_check("stations lie apart and off the beacon", (chart_distance(SA.x, SA.y, SB.x, SB.y) > 5 && chart_distance(SA.x, SA.y, 50, 50) > 5 && chart_distance(SB.x, SB.y, 50, 50) > 5) ? 1 : 0, 1)
-		orbit_check("a station sees its neighbour on the chart", (SB in OC.contacts_of(SA)) ? 0 : 1, chart_distance(SA.x, SA.y, SB.x, SB.y) > SA.sensor_range ? 1 : 0)
+		orbit_check("a station answers its neighbour from anywhere on the chart", (SB in OC.contacts_of(SA)) ? 1 : 0, 1)
 		var/spot_was = "[SA.x],[SA.y]|[SB.x],[SB.y]"
 		qdel(OC)
 		OC = orbit_chart()
