@@ -41,6 +41,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'reactor_coolant_seal': {'files': ('tests/reactor_coolant_seal/test_seal.py',),
+        'paths': ('tests/reactor_coolant_seal/', 'code/modules/1713/machinery/nuclear_generation.dm')},
     'hand_mill_workers': {'files': ('tests/hand_mill_workers/test_workers.py',),
         'paths': ('tests/hand_mill_workers/',),
         'shared_paths': ('code/modules/1713/production.dm',)},
