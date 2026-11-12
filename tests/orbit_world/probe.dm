@@ -102,6 +102,36 @@ var/global/orbit_failures = 0
 		orbit_check("release cut the sector link", orbit_plane_link(c, "west"), 0)
 		orbit_check("arrival plane cannot be released", orbit_release_plane(1) ? 1 : 0, 0)
 
+		// The orbit chart (orbit_chart.dm): a station token for every party
+		// that owns a plane, at a spot the registry keeps.
+		var/datum/chart/orbit/OC = orbit_chart()
+		orbit_check("the orbit chart is steered, the beacon in its middle", OC ? "[OC.mode]|[OC.arrival.x],[OC.arrival.y]|[OC.arrival.name]" : "none", "steered|50,50|arrival beacon")
+		orbit_check("one station token per party", OC.stations.len, 2)
+		var/datum/chart_token/station/SA = orbit_chart_station("civ:gaia:Alpha")
+		var/datum/chart_token/station/SB = orbit_chart_station("civ:gaia:Beta")
+		orbit_check("a station is named for its party", SA ? SA.name : "none", "Alpha station")
+		orbit_check("its spot is kept in the registry", R.chart_spots["civ:gaia:Alpha"], "[SA.x],[SA.y]")
+		orbit_check("stations lie apart and off the beacon", (chart_distance(SA.x, SA.y, SB.x, SB.y) > 5 && chart_distance(SA.x, SA.y, 50, 50) > 5 && chart_distance(SB.x, SB.y, 50, 50) > 5) ? 1 : 0, 1)
+		orbit_check("a station sees its neighbour on the chart", (SB in OC.contacts_of(SA)) ? 0 : 1, chart_distance(SA.x, SA.y, SB.x, SB.y) > SA.sensor_range ? 1 : 0)
+		var/spot_was = "[SA.x],[SA.y]|[SB.x],[SB.y]"
+		qdel(OC)
+		OC = orbit_chart()
+		SA = orbit_chart_station("civ:gaia:Alpha")
+		SB = orbit_chart_station("civ:gaia:Beta")
+		orbit_check("a chart made again puts the stations where they were", "[SA.x],[SA.y]|[SB.x],[SB.y]", spot_was)
+		var/gamma = orbit_claim_plane("civ:gaia:Gamma")
+		orbit_chart()
+		var/datum/chart_token/station/SG = orbit_chart_station("civ:gaia:Gamma")
+		orbit_check("a new party's first plane charts a third station", "[OC.stations.len]|[SG ? SG.name : "none"]", "3|Gamma station")
+		orbit_check("the third station is clear of the others", (SG && chart_distance(SG.x, SG.y, SA.x, SA.y) > 5 && chart_distance(SG.x, SG.y, SB.x, SB.y) > 5) ? 1 : 0, 1)
+		orbit_release_plane(gamma)
+		orbit_chart()
+		orbit_check("a party with no plane left has no station", "[OC.stations.len]|[isnull(R.chart_spots["civ:gaia:Gamma"]) ? 1 : 0]|[QDELETED(SG) ? 1 : 0]", "2|1|1")
+		var/obj/structure/chart_helm/orbit/OH = new(locate(3, 3, 1))
+		var/datum/chart_token/OT = OH.helm_token()
+		orbit_check("an orbital helm starts at the beacon with orbit sensors", OT ? "[OT.x],[OT.y]|[OT.sensor_range]|[OT.chart == OC ? 1 : 0]" : "none", "50,50|15|1")
+		qdel(OH)
+
 		// The ladders stood on planes the capsules will claim.
 		qdel(LU)
 		qdel(LT)

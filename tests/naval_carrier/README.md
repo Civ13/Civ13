@@ -108,8 +108,10 @@ The fixture is the same three levels with sand ashore (x 1-20) and deep sea beyo
 The shared craft core (`code/modules/craft/`, `docs/craft-core.md`): a craft
 with a template body around a `datum/vessel`, its move and turn hooks, drives,
 the crew register, berths and tickets, crafts carried on crafts, charts and
-plane pools. Nothing in the game calls the core yet; the probe is its only
-user.
+plane pools, and steered charts: burns, coasting, the speed limit, stop
+orders, a course that arrives and stops, the chart edge, hazard countdowns and
+interference, a craft's drives pushing her token, and the helm console saving
+and restoring its token.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
 

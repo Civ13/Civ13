@@ -27,6 +27,14 @@
 // Tiles a chart token sees and is seen at, unless its craft says otherwise.
 #define CHART_SENSOR_RANGE 40
 
+// Steered charts (craft/chart.dm): seconds between steps while anything on
+// the chart is moving, how near a token must be to have arrived, squares per
+// second per second one push per tile of hull gives, and the speed limit.
+#define CHART_STEP_SECONDS 2
+#define CHART_ARRIVE_RANGE 0.5
+#define CHART_ACCEL_PER_THRUST 0.01
+#define CHART_MAX_SPEED 1
+
 // Whether a mob may take a craft's helm (craft.helm_access()): freely, by
 // force while an owner is about, or not at all.
 #define CRAFT_HELM_FREE 0
