@@ -40,6 +40,17 @@
 /obj/structure/pot/update_icon()
 	icon_state = "[state][base_state]"
 
+// Pours as much of I's reagents as the pot has room for; anything that doesn't fit stays in I.
+/obj/structure/pot/proc/pour_into_pot(obj/item/I, mob/living/human/H)
+	var/free = reagents.maximum_volume - reagents.total_volume
+	if (free <= 0)
+		to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
+		return
+	if (food_toxin_amounts(I.reagents).len)
+		note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
+	I.reagents.trans_to_holder(reagents, free)
+	visible_message("<span class = 'notice'>[H] pours the contents of [I] into the pot.</span>")
+
 /obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
@@ -62,18 +73,14 @@
 		if (!R || !I.reagents.reagent_list.len)
 			to_chat(H, "<span class = 'warning'>There's nothing in \the [I].</span>")
 			return
+		if (!I.is_open_container())
+			to_chat(H, "<span class = 'warning'>Take the lid off \the [I] first.</span>")
+			return
 		if (!istype(R, /datum/reagent/water))
-			if (I.reagents.total_volume >= reagents.maximum_volume)
-				to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
-			else
-				if (food_toxin_amounts(I.reagents).len)
-					note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
-				for (var/datum/reagent/RR in I.reagents.reagent_list)
-					reagents.add_reagent(RR.id, RR.volume)
-				I.reagents.clear_reagents()
-				visible_message("<span class = 'notice'>[H] pours the contents of [I] into the pot.</span>")
+			pour_into_pot(I, H)
 		else
-			var/rem = min(R.volume, 100)
+			// Only take the water that fits; the rest stays in the vessel.
+			var/rem = min(R.volume, 100 - fullness)
 			I.reagents.remove_reagent(R.id, rem)
 			fullness += rem
 			fullness = min(fullness, 100)
@@ -89,15 +96,10 @@
 
 			if (istype(I, /obj/item/weapon/reagent_containers/food/drinks))
 				if (I.reagents && I.reagents.reagent_list.len)
-					if (I.reagents.total_volume >= reagents.maximum_volume)
-						to_chat(H, "<span class = 'notice'>The pot can't hold any more reagents.</span>")
-					else
-						if (food_toxin_amounts(I.reagents).len)
-							note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
-						for (var/datum/reagent/R in I.reagents.reagent_list)
-							reagents.add_reagent(R.id, R.volume)
-						I.reagents.clear_reagents()
-						visible_message("<span class = 'notice'>[H] pours the contents of [I] into the pot.</span>")
+					if (!I.is_open_container())
+						to_chat(H, "<span class = 'warning'>Take the lid off \the [I] first.</span>")
+						return
+					pour_into_pot(I, H)
 			else if (istype(I, /obj/item/weapon/reagent_containers/food/condiment))
 				var/obj/item/weapon/reagent_containers/food/condiment/C = I
 				C.standard_pour_into(H, src)
