@@ -69,6 +69,8 @@ def translate(source):
             "if fire_result != EARLY:",
         "current = null": "pass",
         "current_list = null": "ctx.pending = None",
+        "resume_pending = FALSE": "ctx.resume_pending = False",
+        "resume_pending = TRUE": "ctx.resume_pending = True",
         "return fire_result": "return fire_result",
     }
     lines = ["def execute(ctx, C=None, fire_result=None):"]
