@@ -46,10 +46,14 @@
 	slowdown = 1
 	var/integrity = SUIT_INTEGRITY_MAX
 	var/heater_charge = SUIT_HEATER_SECONDS
+	// FALSE for suits with no battery heater (diving dress): they only insulate.
+	var/has_heater = TRUE
+	// The deepest sea zone (seabed.dm) the suit stands up to; 0 = not for diving.
+	var/depth_rating = 0
 
 /obj/item/clothing/suit/pressure_suit/examine(mob/user)
 	..()
-	to_chat(user, SPAN_NOTICE("Integrity [round(integrity)]%. Heater battery [round(100 * heater_charge / SUIT_HEATER_SECONDS)]%."))
+	to_chat(user, SPAN_NOTICE("Integrity [round(integrity)]%.[has_heater ? " Heater battery [round(100 * heater_charge / SUIT_HEATER_SECONDS)]%." : ""]"))
 	if (integrity <= 0)
 		to_chat(user, SPAN_DANGER("It is torn open and will not seal until it is patched."))
 	else if (integrity <= SUIT_LEAKY_INTEGRITY)
@@ -224,7 +228,7 @@
 	var/obj/item/clothing/suit/pressure_suit/S = wear_suit
 	if (!istype(S) || ambient >= SUIT_ROOM_C)
 		return ambient
-	if (S.heater_charge <= 0)
+	if (!S.has_heater || S.heater_charge <= 0)
 		return min(SUIT_ROOM_C, ambient + SUIT_UNHEATED_INSULATION_C)
 	var/before = S.heater_charge
 	S.heater_charge = max(0, S.heater_charge - SUIT_LIFE_SECONDS)
@@ -264,5 +268,6 @@
 		return
 	var/obj/item/pressure_tank/A = back
 	stat("Suit integrity:", "[round(S.integrity)]%")
-	stat("Suit heater:", "[round(100 * S.heater_charge / SUIT_HEATER_SECONDS)]%")
+	if (S.has_heater)
+		stat("Suit heater:", "[round(100 * S.heater_charge / SUIT_HEATER_SECONDS)]%")
 	stat("Suit air:", istype(A) ? "[round(A.air_seconds / 60)] min" : "no tank")

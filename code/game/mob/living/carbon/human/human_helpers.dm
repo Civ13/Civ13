@@ -450,7 +450,19 @@
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
 	var/turf/T = get_turf(src)
-	if (istype(wear_suit, /obj/item/clothing/suit/lifejacket) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
+	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
+	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
+		drowning = FALSE
+		if (water_overlay)
+			water_overlay = FALSE
+			if (plane == FLOOR_PLANE)
+				plane = GAME_PLANE
+			if (!on_fire)
+				overlays_standing[25] = null
+			update_fire(1)
+		return
+	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
+	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
 		water_overlay = TRUE
 		update_fire(1)
