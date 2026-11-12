@@ -47,5 +47,6 @@ The isolated fixture removes map inclusion and normal world/global-controller st
 
 - `cinchona.dmi`: original hand-placed pixels; reproducible with `tests/sprites/create_cinchona.py`. No AI or third-party source artwork.
 - `crafted_item_repairs.dmi`: original chitin shield pixels and recolored `icons/obj/clothing/hats.dmi` state `wolfpelt` from this repository at the audit baseline; reproducible with `tests/sprites/create_crafted_repairs.py`.
+- `naval_mines.dmi`: original hand-placed pixels (contact and magnetic naval mines, carried and laid); reproducible with `tests/sprites/create_naval_mines.py`. No AI or third-party source artwork.
 - Five optics: unmodified existing `icons/obj/guns/parts.dmi` sprites. Their existing repository attribution/license remains intact.
 - New/adapted assets and scripts are distributed under Civ13's existing AGPL-3.0 license. No Pocket Stronghold assets were needed or imported; its third-party rights were therefore not implicated.

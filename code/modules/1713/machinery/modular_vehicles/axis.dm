@@ -447,7 +447,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M))
+			if (M.loc != T || QDELETED(M) || M.craft_left_behind())
 				continue
 			if (istype(M, /obj/item/weapon/grenade))
 				var/obj/item/weapon/grenade/G = M

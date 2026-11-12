@@ -54,6 +54,27 @@ helper. Direct `change_weather(...)` calls and special blizzard/heatwave/sandsto
 start/end logic retain their explicit behavior. It is not a replacement for those
 event state machines or a way to bypass their climate rules.
 
+## Gaia frequency
+
+Gaia overrides `weather_policy_choices` after the base policy has validated and
+filtered the seasonal pool. When the current weather is clear and clear is an
+allowed choice, it copies the pool and adds one clear slot for every original
+slot. This halves each non-clear outcome's probability per random selection:
+spring/winter wet or extreme starts are each 1/6 instead of 1/3, and summer/fall
+wet starts are 1/4 instead of 1/2. The relative mix of wet and extreme weather is
+unchanged. This is not a claim of 50% less total time in rain or 50% fewer storms
+per hour: the current weather, cooldowns and independent events still matter.
+
+Once weather is non-clear, the original pool is returned unchanged, so this does
+not lengthen existing rain spells or alter their intensity. Other maps, direct
+weather/event calls and the process timings are unchanged. Invalid, empty and
+clear-excluding policy results retain their original behavior. Gaia's random
+admin-weather command uses the same weighting. Because Gaia's climates share one
+global weather roll, natural snow and other extreme-weather starts are reduced
+alongside rain; area-specific rain/snow rules are unchanged. No saved field or
+timer is introduced. `tests/gaia_weather` verifies the production override and
+seasonal pools offline; it does not establish native list behavior or live balance.
+
 ## Invalid policy, reload and evidence
 
 Unknown keys/identifiers, wrong types, out-of-range timing values, duplicate targets,

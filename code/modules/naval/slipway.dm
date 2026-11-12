@@ -658,6 +658,7 @@ var/global/list/slipway_designs = null
 // bulkhead with a blast door, the engine room with the bunker filling point.
 /datum/vessel/freighter
 	name = "motor freighter"
+	magnetic_base = 140
 	length = 20
 	beam = 7
 	fuel_capacity = 400

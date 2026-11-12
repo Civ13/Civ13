@@ -1387,6 +1387,8 @@
 #include "code\modules\naval\craft_signals.dm"
 #include "code\modules\naval\freight.dm"
 #include "code\modules\naval\hull_drives.dm"
+#include "code\modules\naval\magnetic_signature.dm"
+#include "code\modules\naval\naval_mines.dm"
 #include "code\modules\naval\open_sea.dm"
 #include "code\modules\naval\open_sea_chart.dm"
 #include "code\modules\naval\open_sea_sites.dm"
