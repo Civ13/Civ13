@@ -244,6 +244,7 @@
 				for(var/mob/living/human/HM in range(3,src))
 					if (HM != src && HM.stat != DEAD)
 						ct++
+						break
 				if (ct)
 					adjust_mood(0.12, "having company")
 				else
@@ -254,6 +255,7 @@
 				for(var/mob/living/human/HM in range(3,src))
 					if (HM != src && HM.stat != DEAD)
 						ct++
+						break
 				if (!ct)
 					adjust_mood(0.12, "time alone")
 				else

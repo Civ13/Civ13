@@ -867,7 +867,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=16, failures=int(failing), errors=0, skipped=0))
+                        tests=17, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
