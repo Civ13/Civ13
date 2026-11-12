@@ -110,7 +110,7 @@
 		return "The tiller is not commissioned. It must stand on a floor built over water, with the hull free of the shore."
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"]. [craft.drives_text()]"
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""]. [craft.drives_text()]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
@@ -123,13 +123,13 @@
 		commission_menu(H)
 		return
 	craft.fit_drives()
-	var/list/options = list("Sea chart", "Ship's papers", "Make for a berth")
+	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
 	if (best >= VESSEL_SPEED_HALF)
 		options += "Half ahead"
-	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", "Refit the hull", "Strike the hull", "Cancel")
+	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", craft.running_dark ? "Show her lights" : "Run dark", "Refit the hull", "Strike the hull", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -138,6 +138,9 @@
 		return
 	if (choice == "Ship's papers")
 		craft.papers(H, src)
+		return
+	if (choice == "Hail a ship")
+		craft.hail_menu(H, src)
 		return
 	// A registered hull answers to her crew (ship_papers.dm).
 	switch (craft.helm_access(H))
@@ -149,6 +152,9 @@
 				return
 	if (choice == "Make for a berth")
 		craft.dock_menu(H, src)
+		return
+	if (choice == "Run dark" || choice == "Show her lights")
+		craft.dark_menu(H, src, choice == "Run dark")
 		return
 	switch (choice)
 		if ("Full ahead") craft.set_speed(VESSEL_SPEED_FULL)

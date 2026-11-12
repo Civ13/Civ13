@@ -154,6 +154,18 @@ stops her hops, and `finish_dock()` moves her `QUAY_DOCK_WARNING` later, makes
 her fast and completes the ticket. `craft.on_hop()` and `on_turn()` cast off,
 so a moored craft that moves is no longer moored. Moorings are not saved.
 
+## Hails and running dark
+
+`naval/craft_signals.dm`: `craft.hail(other, text, from)` calls across to a
+craft within `lookout_range()` on the same level; both crews hear it and the
+receiver keeps it in `last_hail`. `craft.set_dark(state)` sets `running_dark`
+(not saved): her token is `dark`, `knows(other)` is false for crafts of other
+owners, so charts, radar and hails call her "unknown contact" or "an unknown
+ship". A dark craft makes slow ahead at most (`craft.max_speed()`,
+`vessel.speed_cap()`), and a template ship's deck lights go out
+(`body.dark_changed()`). New craft kinds get both from the base; a helm only
+needs `hail_menu()` and `dark_menu()` entries.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The

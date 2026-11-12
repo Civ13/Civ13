@@ -119,6 +119,9 @@
 	return drives.len
 
 /datum/craft/max_speed()
+	// Running dark (craft_signals.dm) she makes no more than slow ahead.
+	if (running_dark)
+		return VESSEL_SPEED_SLOW
 	var/all = 0
 	var/fast = 0
 	for (var/datum/craft_drive/D in drives)

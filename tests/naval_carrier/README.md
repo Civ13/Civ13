@@ -141,6 +141,7 @@ parts.
 ## Sea chart and harbours (`chart_probe.dm`)
 
 The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):
+hails and running dark (`craft_signals.dm`),
 chart squares, tokens that follow real ships and posts, the chart read at a
 helm with lookout range and a ship running dark, a berth asked for and
 refused (too far, not welcome, promised, taken, foul), the marked slide
