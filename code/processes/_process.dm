@@ -111,6 +111,12 @@
 	var/tmp/runtime_history_reset_at = 0
 	// do we ignore tick_usage checks and run no matter what
 	var/always_runs = FALSE
+	// The last run stopped at the tick budget with entries left. The scheduler
+	// continues it on its next pass instead of waiting out schedule_interval:
+	// waiting capped the mob process at one tick's worth of Life() calls per
+	// second, so with many humans each one lived at a fraction of normal speed
+	// while the server sat idle.
+	var/tmp/resume_pending = FALSE
 
 /process/New(var/processScheduler/scheduler)
 	..()
@@ -153,6 +159,9 @@
 		// Assign null instead of cutting a possibly aliased VERY_HIGH list.
 		current = null
 		current_list = null
+		resume_pending = FALSE
+	else
+		resume_pending = TRUE
 	return fire_result
 
 /process/proc/fire()
