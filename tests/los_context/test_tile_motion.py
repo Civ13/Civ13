@@ -14,6 +14,7 @@ P=load('motion_geometry','tests/los_context/test_offline.py')
 A=load('motion_adapter','tests/save_movement/source_adapter.py')
 LIFE=(ROOT/'code/modules/visibility/los_lifecycle.dm').read_text()
 CORE=(ROOT/'code/modules/visibility/los_context.dm').read_text()
+TERRAIN=(ROOT/'code/modules/visibility/los_terrain.dm').read_text()
 
 class Tile:
     def __init__(self,x,y=1,z=1):self.x,self.y,self.z=x,y,z
@@ -427,6 +428,13 @@ class DistanceCamera(unittest.TestCase):
             getviewsize=lambda v:Cells([v*2+1,v*2+1]))
         # No tree stands on the camera's tile unless a test places one.
         env['los_own_tree']=lambda body,A:False
+        env['los_foliage_hides']=lambda viewer,target:False
+        if '/proc/los_foliage_hides(' in TERRAIN:
+            env.update(ismob=lambda a:a.type.startswith('/mob/'),LOS_FOLIAGE_RANGE=2,
+                       get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),
+                       root_tree_family=lambda a:a.type.startswith('/obj/structure/wild/tree'))
+            env['los_in_foliage']=A.project(TERRAIN,'/proc/los_in_foliage','M',env)
+            env['los_foliage_hides']=A.project(TERRAIN,'/proc/los_foliage_hides','viewer, target',env)
         if '/proc/los_own_tree(' in source:
             env['root_tree_family']=lambda a:a.type.startswith('/obj/structure/wild/tree')
             P.project(source,'/proc/los_own_tree(',env)

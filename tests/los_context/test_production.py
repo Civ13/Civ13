@@ -986,8 +986,14 @@ class BlockingTreeSurface(unittest.TestCase):
         method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible','radius_x','radius_y'])
         method('opaque_borders_visible','target_tile_x, target_tile_y',['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target'])
         _offline.project(source,'/proc/los_own_tree(',env)
+        terrain=(ROOT/'code/modules/visibility/los_terrain.dm').read_text()
+        env.update(ismob=lambda x:x.type.startswith('/mob/'),
+                   get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),LOS_FOLIAGE_RANGE=2)
+        env['los_in_foliage']=adapter.project(terrain,'/proc/los_in_foliage','M',env)
+        env['los_foliage_hides']=adapter.project(terrain,'/proc/los_foliage_hides','viewer, target',env)
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
-        body=N(type='/mob/living/human',see_invisible=25)
+        own_turf=Atom(type='/turf/floor',x=10,y=10,z=1,contents=[])
+        body=N(type='/mob/living/human',see_invisible=25,x=10,y=10,z=1,loc=own_turf)
         context=N(body=body,revision=1,policy_key=lambda:'fresh',verified_snapshot=None,verified_snapshot_time=-1)
         text=fragment(source,'/datum/los_context/proc/decision_snapshot(')
         declaration,body_text=text.split('\n',1)
@@ -1005,7 +1011,6 @@ class BlockingTreeSurface(unittest.TestCase):
         def cell(x,y,owner=None,tile=None,owners=1):
             if isinstance(owner,Atom):snapshot.capture_tree_bounds(owner)
             return N(cell_x=x,cell_y=y,tile_x=(tile or (x,y))[0],tile_y=(tile or (x,y))[1],surface_owner=owner,owners=owners)
-        own_turf=Atom(type='/turf/floor',x=10,y=10,z=1)
         def capture(objects,opaque_tiles=(),presentation=True):
             # Engine boundary: native contents lists every strictly overlapping
             # turf, including partial overlaps. Execute the entire DM capture.
@@ -1116,6 +1121,26 @@ class BlockingTreeSurface(unittest.TestCase):
             self.assertEqual([b.surface_owner for b in S.blockers],[curtain])
             self.assertEqual(m.decision(m.target(12,10,opaque=False,kind='/obj/item'),'visual'),0)
             S=m.capture([far],presentation=presentation)
+
+    def test_foliage_cover_hides_people_both_ways_beyond_two_tiles(self):
+        def person(m,x,in_tree=False):
+            p=m.target(x,10,opaque=False,kind='/mob/living/human')
+            p.loc=type(m.own_turf)(type='/turf/floor',x=x,y=10,z=1,contents=[])
+            if in_tree:
+                tree=m.target(x,10);tree.loc=p.loc;p.loc.contents+=[tree,p]
+            return p
+        for presentation in (True,False):
+            # Seen from outside: a person in a tree shows only within 2 tiles.
+            m=self.model();m.capture([],presentation=presentation)
+            self.assertEqual([m.decision(person(m,x,True),'visual') for x in (12,13,14)],[1,0,0])
+            self.assertEqual([m.decision(person(m,x),'visual') for x in (12,13,14)],[1,1,1])
+            # Seen from inside a tree: people beyond 2 tiles are hidden, while
+            # the ground and objects there stay visible.
+            m=self.model();own=m.target(10,10);own.loc=m.own_turf;m.own_turf.contents=[own]
+            m.capture([own],presentation=presentation)
+            self.assertEqual([m.decision(person(m,x),'visual') for x in (12,13,14)],[1,0,0])
+            self.assertEqual(m.decision(m.target(14,10,opaque=False,kind='/obj/item'),'visual'),1)
+            m.own_turf.contents=[]
 
     def test_partial_rectangles_clipping_and_stale_bound_records(self):
         m=self.model();tree=m.target(2,1);tree.bound_width=17;tree.bound_height=9
