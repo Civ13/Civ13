@@ -57,18 +57,20 @@
 	join_mode = CRAFT_JOIN_CLOSED
 	memo = ""
 
-/datum/craft_register/proc/summary_text(ship_name)
+// of is the craft whose words to use (a vehicle is "it" and has a driver);
+// without one the papers read as a ship's.
+/datum/craft_register/proc/summary_text(ship_name, datum/craft/of = null)
 	if (!party)
-		return "The [ship_name] is not registered to anyone. Whoever stands at the wheel may sail her."
+		return of ? "The [ship_name] is not registered to anyone. Whoever [of.helm_stance] the [of.helm_word] may [of.sail_word] [of.pro_her]." : "The [ship_name] is not registered to anyone. Whoever stands at the wheel may sail her."
 	var/list/lines = list("The [ship_name] is registered to [party_train_party_name(party)].")
 	var/list/listed = list()
 	for (var/who in crew)
-		listed += "[who] ([crew[who]])"
+		listed += "[who] ([of ? of.role_title(crew[who]) : crew[who]])"
 	lines += listed.len ? "Crew: [jointext(listed, ", ")]." : "No crew are listed."
 	switch (join_mode)
-		if (CRAFT_JOIN_OPEN) lines += "Anyone may sign on as a hand."
+		if (CRAFT_JOIN_OPEN) lines += "Anyone may sign on as a [of ? of.role_title(CRAFT_ROLE_HAND) : CRAFT_ROLE_HAND]."
 		if (CRAFT_JOIN_ASK) lines += "New crew must ask and be accepted."
-		if (CRAFT_JOIN_CLOSED) lines += "She takes no new crew."
+		if (CRAFT_JOIN_CLOSED) lines += "[of ? capitalize(of.pro_she) : "She"] takes no new crew."
 	if (requests.len)
 		lines += "Asking to join: [jointext(requests, ", ")]."
 	if (barred.len)
@@ -123,6 +125,35 @@
 
 // ---- The papers themselves: one menu for every kind of craft ----
 
+// The words the papers use. A kind of craft that is not a ship sets its own.
+/datum/craft
+	var/papers_title = "Ship's papers"
+	var/kind_word = "ship"
+	var/helm_word = "wheel"
+	var/helm_stance = "stands at"
+	var/sail_word = "sail"
+	var/pro_she = "she"
+	var/pro_her = "her"       // "sail her"
+	var/pro_hers = "her"      // "her crew"
+
+// What a role is called aboard this kind of craft.
+/datum/craft/proc/role_title(role)
+	return role
+
+// Title -> role, for the menus.
+/datum/craft/proc/role_titles(datum/craft_register/R)
+	. = list()
+	for (var/role in R.roles())
+		.[role_title(role)] = role
+
+// Entries a kind of craft adds to its papers, and what they do. An action
+// returns TRUE when it handled the choice.
+/datum/craft/proc/papers_extra(mob/living/human/H, datum/craft_register/R)
+	return list()
+
+/datum/craft/proc/papers_extra_action(mob/living/human/H, datum/craft_register/R, choice, atom/at)
+	return FALSE
+
 // Everyone aboard hears it.
 /datum/craft/proc/crew_message(text)
 	if (!body)
@@ -135,12 +166,12 @@
 	if (!register || !register.party)
 		return TRUE
 	var/owner = party_train_party_name(register.party)
-	if (WWinput(H, "The [name] belongs to [owner] and you are not one of her crew. Force the wheel? It takes a while and her crew will hear of it.", "Ship's papers", "No", list("Yes", "No")) != "Yes")
+	if (WWinput(H, "The [name] belongs to [owner] and you are not one of [pro_hers] crew. Force the [helm_word]? It takes a while and [pro_hers] crew will hear of it.", papers_title, "No", list("Yes", "No")) != "Yes")
 		return FALSE
 	if (QDELETED(src) || QDELETED(at) || get_dist(H, at) > 1)
 		return FALSE
 	crew_message(SPAN_DANGER("<b>[H] is forcing the [at.name]!</b>"))
-	log_game("[key_name(H)] forced the wheel of the [name] ([owner]) at [at.x],[at.y],[at.z].")
+	log_game("[key_name(H)] forced the [helm_word] of the [name] ([owner]) at [at.x],[at.y],[at.z].")
 	if (!do_after(H, VESSEL_FORCE_WHEEL_TIME, at))
 		return FALSE
 	// The owners may have left while the chain was being worked.
@@ -158,17 +189,18 @@
 	if (!R.party)
 		var/mine = party_train_party_of(H)
 		if (mine)
-			options += "Register her to [party_train_party_name(mine)]"
+			options += "Register [pro_her] to [party_train_party_name(mine)]"
 	else if (R.is_owner(H) || R.role_of(H) == CRAFT_ROLE_CAPTAIN)
-		options += list("Sign on crew", "Change a role or strike off", "Bar someone", "Lift a bar", "Who may join", "Write the memo", "Give up the ship")
+		options += list("Sign on crew", "Change a role or strike off", "Bar someone", "Lift a bar", "Who may join", "Write the memo", "Give up the [kind_word]")
 		if (R.requests.len)
 			options += "Answer a request"
 	else if (!R.is_crew(H) && !R.is_barred(H) && R.join_mode != CRAFT_JOIN_CLOSED)
 		options += "Ask to join"
-	var/text = R.summary_text(name)
+	options += papers_extra(H, R)
+	var/text = R.summary_text(name, src)
 	if (R.memo && R.is_crew(H))
 		text += " Memo: [R.memo]"
-	var/choice = WWinput(H, text, "Ship's papers", "Close", options + list("Close"))
+	var/choice = WWinput(H, text, papers_title, "Close", options + list("Close"))
 	if (!(choice in options) || QDELETED(src) || QDELETED(at) || get_dist(H, at) > 1 || register != R)
 		return
 	papers_action(H, R, choice, at)
@@ -177,21 +209,26 @@
 	return !QDELETED(src) && !QDELETED(at) && get_dist(H, at) <= 1 && register == R && (R.is_owner(H) || R.role_of(H) == CRAFT_ROLE_CAPTAIN)
 
 /datum/craft/proc/papers_action(mob/living/human/H, datum/craft_register/R, choice, atom/at)
-	if (findtext(choice, "Register her to ") == 1)
+	if (papers_extra_action(H, R, choice, at))
+		return
+	if (findtext(choice, "Register ") == 1)
 		if (R.claim(H))
 			crew_message(SPAN_NOTICE("[H] enters the [name] in the register for [party_train_party_name(R.party)]."))
 			log_game("[key_name(H)] registered the [name] at [at.x],[at.y],[at.z] to [R.party].")
 		return
 	if (choice == "Ask to join")
 		if (!R.ask_to_join(H))
-			to_chat(H, SPAN_WARNING("She takes no new crew."))
+			to_chat(H, SPAN_WARNING("[capitalize(pro_she)] takes no new crew."))
 		else if (R.is_crew(H))
-			crew_message(SPAN_NOTICE("[H] signs on as a hand."))
+			crew_message(SPAN_NOTICE("[H] signs on as a [role_title(CRAFT_ROLE_HAND)]."))
 		else
-			crew_message(SPAN_NOTICE("[H] asks to join the crew. An owner or the captain can answer at the wheel."))
+			crew_message(SPAN_NOTICE("[H] asks to join the crew. An owner or the [role_title(CRAFT_ROLE_CAPTAIN)] can answer at the [helm_word]."))
 		return
 	if (!papers_still_valid(H, R, at))
 		return
+	if (choice == "Give up the [kind_word]")
+		choice = "Give up"
+	var/list/titles = role_titles(R)
 	switch (choice)
 		if ("Sign on crew")
 			var/list/near = list()
@@ -199,42 +236,43 @@
 				if (M != H && M.stat != DEAD && !R.is_barred(M) && isnull(R.crew[M.real_name]))
 					near[M.real_name] = M
 			if (!near.len)
-				to_chat(H, SPAN_WARNING("Nobody who could sign on is standing near the wheel."))
+				to_chat(H, SPAN_WARNING("Nobody who could sign on is near the [helm_word]."))
 				return
-			var/who = WWinput(H, "Who signs on?", "Ship's papers", "Cancel", sortList(near) + list("Cancel"))
+			var/who = WWinput(H, "Who signs on?", papers_title, "Cancel", sortList(near) + list("Cancel"))
 			if (!(who in near) || !papers_still_valid(H, R, at))
 				return
-			var/role = WWinput(H, "As what? A captain keeps the papers; a captain or helmsman may take the wheel.", "Ship's papers", CRAFT_ROLE_HAND, R.roles())
-			if (!(role in R.roles()) || !papers_still_valid(H, R, at))
+			var/role = WWinput(H, "As what? A [role_title(CRAFT_ROLE_CAPTAIN)] keeps the papers; a [role_title(CRAFT_ROLE_CAPTAIN)] or [role_title(CRAFT_ROLE_HELMSMAN)] may take the [helm_word].", papers_title, role_title(CRAFT_ROLE_HAND), titles)
+			if (isnull(titles[role]) || !papers_still_valid(H, R, at))
 				return
-			R.set_role(who, role)
+			R.set_role(who, titles[role])
 			crew_message(SPAN_NOTICE("[who] signs on as [role]."))
 		if ("Change a role or strike off")
 			if (!R.crew.len)
 				to_chat(H, SPAN_WARNING("No crew are listed."))
 				return
-			var/who = WWinput(H, "Whose entry?", "Ship's papers", "Cancel", R.crew + list("Cancel"))
+			var/who = WWinput(H, "Whose entry?", papers_title, "Cancel", R.crew + list("Cancel"))
 			if (isnull(R.crew[who]) || !papers_still_valid(H, R, at))
 				return
-			var/role = WWinput(H, "[who] is [R.crew[who]].", "Ship's papers", "Cancel", R.roles() + list("Strike off", "Cancel"))
+			var/role = WWinput(H, "[who] is [role_title(R.crew[who])].", papers_title, "Cancel", titles + list("Strike off", "Cancel"))
 			if (!papers_still_valid(H, R, at))
 				return
 			if (role == "Strike off")
 				R.set_role(who, null)
 				crew_message(SPAN_NOTICE("[who] is struck off the crew list."))
-			else if (role in R.roles())
-				R.set_role(who, role)
+			else if (!isnull(titles[role]))
+				R.set_role(who, titles[role])
 				crew_message(SPAN_NOTICE("[who] is now [role]."))
 		if ("Answer a request")
-			var/who = WWinput(H, "Whose request?", "Ship's papers", "Cancel", R.requests + list("Cancel"))
+			var/who = WWinput(H, "Whose request?", papers_title, "Cancel", R.requests + list("Cancel"))
 			if (!(who in R.requests) || !papers_still_valid(H, R, at))
 				return
-			var/answer = WWinput(H, "[who] asks to join.", "Ship's papers", "Cancel", list("Sign on as a hand", "Refuse", "Cancel"))
+			var/sign_on = "Sign on as a [role_title(CRAFT_ROLE_HAND)]"
+			var/answer = WWinput(H, "[who] asks to join.", papers_title, "Cancel", list(sign_on, "Refuse", "Cancel"))
 			if (!papers_still_valid(H, R, at))
 				return
-			if (answer == "Sign on as a hand")
+			if (answer == sign_on)
 				R.set_role(who, CRAFT_ROLE_HAND)
-				crew_message(SPAN_NOTICE("[who] signs on as a hand."))
+				crew_message(SPAN_NOTICE("[who] signs on as a [role_title(CRAFT_ROLE_HAND)]."))
 			else if (answer == "Refuse")
 				R.requests -= who
 		if ("Bar someone")
@@ -246,7 +284,7 @@
 			if (!names.len)
 				to_chat(H, SPAN_WARNING("There is nobody here to bar."))
 				return
-			var/who = WWinput(H, "Bar whom? They leave the crew and cannot ask to join.", "Ship's papers", "Cancel", sortList(names) + list("Cancel"))
+			var/who = WWinput(H, "Bar whom? They leave the crew and cannot ask to join.", papers_title, "Cancel", sortList(names) + list("Cancel"))
 			if (!(who in names) || !papers_still_valid(H, R, at))
 				return
 			R.bar(who)
@@ -255,26 +293,26 @@
 			if (!R.barred.len)
 				to_chat(H, SPAN_WARNING("Nobody is barred."))
 				return
-			var/who = WWinput(H, "Lift whose bar?", "Ship's papers", "Cancel", R.barred + list("Cancel"))
+			var/who = WWinput(H, "Lift whose bar?", papers_title, "Cancel", R.barred + list("Cancel"))
 			if (!(who in R.barred) || !papers_still_valid(H, R, at))
 				return
 			R.barred -= who
 		if ("Who may join")
-			var/list/modes = list("Anyone may sign on as a hand" = CRAFT_JOIN_OPEN, "New crew must ask" = CRAFT_JOIN_ASK, "She takes no new crew" = CRAFT_JOIN_CLOSED)
-			var/mode = WWinput(H, "How does she take new crew?", "Ship's papers", "Cancel", modes + list("Cancel"))
+			var/list/modes = list("Anyone may sign on as a [role_title(CRAFT_ROLE_HAND)]" = CRAFT_JOIN_OPEN, "New crew must ask" = CRAFT_JOIN_ASK, "[capitalize(pro_she)] takes no new crew" = CRAFT_JOIN_CLOSED)
+			var/mode = WWinput(H, "How does [pro_she] take new crew?", papers_title, "Cancel", modes + list("Cancel"))
 			if (isnull(modes[mode]) || !papers_still_valid(H, R, at))
 				return
 			R.join_mode = modes[mode]
 		if ("Write the memo")
-			var/memo = player_input(H, "A note every member of the crew can read in the papers.", "Ship's papers", R.memo, "text", null, TRUE)
+			var/memo = player_input(H, "A note every member of the crew can read in the papers.", papers_title, R.memo, "text", null, TRUE)
 			if (isnull(memo) || !papers_still_valid(H, R, at))
 				return
 			R.memo = sanitize(copytext(memo, 1, 300))
-		if ("Give up the ship")
+		if ("Give up")
 			if (!R.is_owner(H))
-				to_chat(H, SPAN_WARNING("Only her owners can give her up."))
+				to_chat(H, SPAN_WARNING("Only [pro_hers] owners can give [pro_her] up."))
 				return
-			if (WWinput(H, "Strike the [name] from the register? Anyone may then sail or register her.", "Ship's papers", "No", list("Yes", "No")) != "Yes" || !papers_still_valid(H, R, at))
+			if (WWinput(H, "Strike the [name] from the register? Anyone may then [sail_word] or register [pro_her].", papers_title, "No", list("Yes", "No")) != "Yes" || !papers_still_valid(H, R, at))
 				return
 			log_game("[key_name(H)] gave up the [name] ([R.party]) at [at.x],[at.y],[at.z].")
 			R.give_up()

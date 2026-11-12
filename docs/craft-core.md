@@ -222,8 +222,37 @@ slowly, with the crew warned) and `CRAFT_HELM_CHAINED` when no owner is
 about. `craft.fitting_refusal(user)` guards levers and the radar the same
 way without the delay. The wheel saves the register in `register_state`.
 
+The menu is one for every kind of craft. A craft type that is not a ship
+sets the words it is read in (`papers_title`, `kind_word`, `helm_word`,
+`helm_stance`, `sail_word`, `pro_she`, `pro_her`, `pro_hers`), overrides
+`role_title(role)` to rename the roles, and adds entries of its own with
+`papers_extra()` and `papers_extra_action()`. Roles are always stored as the
+`CRAFT_ROLE_*` values.
+
+## Vehicle papers
+
+`code/modules/craft/vehicle_papers.dm` puts modular vehicles on the core. A
+vehicle is a `/datum/craft/vehicle` with a `/datum/craft_body/axis` (its
+cells are the tiles its frames stand on; it has no `move_to`, the axis still
+drives itself). `craft_of_axis(axis, make)` makes it the first time it is
+asked for. Vehicle crafts live in `vehicle_crafts`, never in `crafts`, so
+charts, hails, grapples and radar do not see them.
+
+The driver's seat has a "Vehicle Papers" verb that opens the same papers in a
+vehicle's words (commander, driver, mechanic, gunner, crewman). The steering
+wheel item asks `axis.papers_allow()` before it starts the engine or changes
+up and `axis.papers_steer()` before it turns: crew drive freely, a stranger
+must force the controls while an owner is in the world (remembered in
+`forced_by` until the crew take it back) and is locked out otherwise.
+Slowing and stopping are never locked. This sits beside the vehicle key, it
+does not replace it. The axis saves the register in `register_state`.
+Owners can name the vehicle, and "Our vehicles" lists every registered
+vehicle of the reader's party with its distance and bearing
+(`party_vehicles(party)`, `craft.where_text(from)`).
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
