@@ -244,25 +244,28 @@ class TackTests(unittest.TestCase):
         self.assertIn('do_after(MM, src.animal_mount_delay(), src)',riding)
         self.assertEqual(riding.count('do_after(M, src.animal_mount_delay(), src)'),1)
         self.assertIn('do_after(M, 40, src)',riding) # forced removal stays unchanged
-        transport=(ROOT/'code/game/objects/structures/transports.dm').read_text()
-        for n in range(1,5):self.assertEqual(transport.count(f'pulling{n}.simplehunger -= pulling{n}.animal_draft_hunger_cost()'),1)
+        carriage=(ROOT/'code/game/objects/structures/carriage.dm').read_text()
+        self.assertEqual(carriage.count('A.simplehunger -= A.animal_draft_hunger_cost() * hill'),1)
+        self.assertIn('for (var/mob/living/simple_animal/A in team)\n\t\tA.simplehunger -= A.animal_draft_hunger_cost() * hill',carriage)
         attack=(ROOT/'code/game/mob/living/simple_animal/simple_animal.dm').read_text()
         self.assertIn('return src.fit_animal_tack(O, user)',attack)
         self.assertIn('animal_tack.dm',(ROOT/'civ13.dme').read_text())
 
-    def test_actual_four_slot_debits_follow_current_owned_harness(self):
-        source=(ROOT/'code/game/objects/structures/transports.dm').read_text()
-        lines=re.findall(r'(?m)^\s*(pulling[1-4]\.simplehunger -= [^\n]+)',source)
-        self.assertEqual(len(lines),4)
-        code='/draft_step()\n'+''.join('\t'+line.split('//',1)[0].strip()+'\n' for line in lines)
-        step=adapter.project(code,'/draft_step','pulling1,pulling2,pulling3,pulling4',{})
+    def test_actual_team_debits_follow_current_owned_harness(self):
+        # Every animal in a carriage's team (carriage.dm feed_team) pays for
+        # each step; a harness it really carries halves that.
+        source=(ROOT/'code/game/objects/structures/carriage.dm').read_text()
+        lines=re.findall(r'(?m)^\s*(A\.simplehunger -= [^\n]+)',source)
+        self.assertEqual(len(lines),1)
+        code='/draft_step()\n\t'+lines[0].split('//',1)[0].strip().replace(' * hill','')+'\n'
+        step=adapter.project(code,'/draft_step','A',{})
         worlds=[World() for _ in range(4)]
         for w in worlds:w.animal.simplehunger=100
         harnesses=[Item(w,'harness',w.animal) for w in worlds]
-        step(*(w.animal for w in worlds))
+        for w in worlds:step(w.animal)
         self.assertEqual([w.animal.simplehunger for w in worlds],[99.5]*4)
         for w,t in zip(worlds,harnesses):t.forceMove(w.site)
-        step(*(w.animal for w in worlds))
+        for w in worlds:step(w.animal)
         self.assertEqual([w.animal.simplehunger for w in worlds],[98.5]*4)
 
     def test_containment_persistence_contract_no_new_links_or_cached_effects(self):

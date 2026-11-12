@@ -2932,6 +2932,8 @@ RECIPE: /material/steel/,anti-personnel mine,/obj/item/mine/ap,4,120,0,1,weapons
 RECIPE: /material/steel/,anti-tank mine,/obj/item/mine/at,8,180,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,contact naval mine,/obj/item/naval_mine,10,200,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,magnetic naval mine,/obj/item/naval_mine/magnetic,12,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,degaussing coil,/obj/structure/degaussing_coil,15,240,1,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/steel/,wiping station,/obj/structure/wiping_station,20,300,1,1,production,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null
