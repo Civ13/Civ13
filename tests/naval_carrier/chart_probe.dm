@@ -134,6 +134,28 @@ var/naval_runtime_error = FALSE
 	K.set_speed(VESSEL_SPEED_STOP)
 	K.remove_drive(strong)
 	qdel(strong)
+
+	// ---- Weather and murk (naval/sea_weather.dm) ----
+	var/area/sky = get_area(C.centre())
+	var/weather_was = sky.weather
+	naval_check(C.lookout_range() == 40 && C.sights(K) && isnull(sea_murk_name(C.centre())), "in clear weather her lookout sees 40 tiles")
+	sky.weather = WEATHER_WET
+	naval_check(C.lookout_range() == 30 && C.sights(K), "rain cuts it to 30 ([C.lookout_range()])")
+	sky.weather = WEATHER_EXTREME
+	text = C.sea_chart_text()
+	naval_check(C.lookout_range() == 15 && findtext(text, "In a storm her lookout sees 15 tiles.") && findtext(text, "Lookout, 15 tiles:") && findtext(text, "Kite, 9 tiles"), "a storm to 15, and the chart says so")
+	sky.weather = weather_was
+	var/datum/chart_hazard/fog = new
+	fog.name = "a fog bank"
+	fog.x = K.token.x
+	fog.y = K.token.y
+	fog.interference = 35
+	S.hazards += fog
+	naval_check(C.lookout_range() == 40 && K.lookout_range() == 5 && !C.sights(K) && !K.sights(C) && sea_murk_name(K.centre()) == "a fog bank", "a fog bank on the chart hides the ship inside it and blinds her")
+	naval_check(!C.hail_candidates().len && !C.hail(K, "Ahoy", null) && findtext(C.last_refusal, "out of sight") && !findtext(C.sea_chart_text(), "Kite"), "she can be neither hailed nor charted through it")
+	S.hazards -= fog
+	qdel(fog)
+	naval_check(C.sights(K), "the fog gone, she is seen again")
 	C.token.sensor_range = 5
 	naval_check(findtext(C.sea_chart_text(), "no other ship within 5 tiles"), "a ship beyond the lookout is not listed")
 	C.token.sensor_range = CHART_SENSOR_RANGE
@@ -280,6 +302,16 @@ var/naval_runtime_error = FALSE
 	naval_check(!lark.grapple && !gull.grapple && !(locate(/obj/covers) in gap2), "a line destroyed parts the ships")
 	lark.grapple_ready_at = 0
 	naval_check(lark.order_grapple(gull), "grappled once more")
+	// ---- A dark ship by night ----
+	var/hour_was = time_of_day
+	naval_check(get_dist(C.centre(), gull.centre()) > 10 && C.sights(gull), "by day the Wren sees the Gull [get_dist(C.centre(), gull.centre())] tiles off")
+	gull.set_dark(TRUE)
+	naval_check(C.sights(gull), "and still sees her running dark by day")
+	time_of_day = "Night"
+	naval_check(!C.sights(gull) && gull.sights(C) && lark.sights(gull), "by night a dark ship is made out only close by, though she sees ships that show lights")
+	gull.set_dark(FALSE)
+	naval_check(C.sights(gull), "showing her lights she is seen by night")
+	time_of_day = hour_was
 	lark_tiller.decommission()
 	naval_check(!gull.grapple && !gull.turning_to && !(locate(/obj/covers) in gap1), "a struck hull lets go of her prize")
 

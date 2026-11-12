@@ -69,23 +69,18 @@
 		return min(max_speed, VESSEL_SPEED_SLOW)
 	return max_speed
 
-// How far her lookout sees.
-/datum/craft/proc/lookout_range()
-	return token ? token.sensor_range : CHART_SENSOR_RANGE
-
 // The ships her lookout can see, nearest first: label = craft.
 /datum/craft/proc/hail_candidates()
 	. = list()
 	var/turf/here = centre()
 	if (!here)
 		return
-	var/reach = lookout_range()
 	var/list/found = list()
 	for (var/datum/craft/C in crafts)
 		if (C == src)
 			continue
 		var/turf/P = C.centre()
-		if (!P || P.z != here.z || get_dist(here, P) > reach)
+		if (!P || !sights(C))
 			continue
 		found += C
 	while (found.len)
@@ -110,7 +105,7 @@
 	if (!here || !there || other == src)
 		last_refusal = "there is nobody to hail"
 		return FALSE
-	if (here.z != there.z || get_dist(here, there) > lookout_range())
+	if (!sights(other))
 		last_refusal = "she is out of sight"
 		return FALSE
 	if (!length(text))
