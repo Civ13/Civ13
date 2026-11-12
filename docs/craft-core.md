@@ -61,6 +61,20 @@ body that implements those sails without more code. `craft.max_speed()` is
 where drives will set the top telegraph step; a hull with none makes slow
 ahead.
 
+A body made of objects sets `glides` (`glide.dm`; the built body does). Such
+a craft covers the same water in the same time one tile at a step:
+`craft.sail_tiles()` is 1 and `craft.sail_interval()` is the hop interval
+divided by the tiles a hop would cover (15, 7.5 and 5 seconds a tile at slow,
+half and full ahead). Her drives still pay once per hop's worth of tiles. For
+each step `under_way.dm` sets `body.glide_time`, and the body calls
+`craft_glide()` on everything it carried: a thing square on its tile gets the
+`glide_size` that makes the engine glide it for the whole step (given back when
+it leaves her or she stops), and a thing the engine will not glide (a step
+offset or unusual bounds, such as a free-moving human) is drawn one tile back
+and slid forward by `animate()`, with the view of its player. Appearance only:
+the server still moves her a whole tile at once. Turns, docking slides and
+turf-built vessels are not glided. Not checked in a game client.
+
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.

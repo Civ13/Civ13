@@ -129,7 +129,8 @@ papers saved and restored by the wheel.
 
 Floors laid over water commissioned at a tiller (`code/modules/craft/built_body.dm`,
 `code/modules/craft/under_way.dm`, `code/modules/naval/built_hull.dm`): what is
-and is not a hull, the hop with planks, cargo and crew, the water level handed
+and is not a hull, the one-tile gliding step (`code/modules/craft/glide.dm`)
+with planks, cargo and crew, the water level handed
 from tile to tile, obstacles, the marked path, coming about around the tiller,
 refitting, papers, the hull saved and found again by the tiller, sails that
 give half ahead, engines that give full ahead and burn from their tank at
