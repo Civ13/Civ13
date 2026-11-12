@@ -2,7 +2,7 @@
 // Swimming in deep water (docs/river-flow.md, "Swimming")
 // ------------------------------------------------------------
 // A person may wade out of their depth and swim. Swimming tires: a swimmer
-// stays afloat for about a minute in calm water, less in a storm, and then
+// stays afloat for about fifty seconds in calm water, less in a storm, and then
 // goes under and drowns as anyone in deep water used to at once. Rest on
 // land, in the shallows or on a deck brings the strength back. A lifejacket
 // or a sealed diving suit floats its wearer and costs nothing.
@@ -13,8 +13,8 @@
 // ============================================================
 
 #define SWIM_LIMIT 100 // tiredness at which a swimmer goes under
-#define SWIM_EFFORT 4 // a life tick of calm water
-#define SWIM_REST 8 // a life tick out of deep water
+#define SWIM_EFFORT 2 // a life tick (one second) of calm water: 50 seconds afloat
+#define SWIM_REST 4 // a life tick out of deep water: 25 seconds to recover
 
 /mob/living/human
 	var/tmp/swim_tiredness = 0
@@ -30,7 +30,7 @@
 	. = SWIM_EFFORT
 	var/wind = weather_wind_at(T)
 	if (wind >= 3)
-		. += 4 // a storm sea: half the time afloat
+		. += 2 // a storm sea: half the time afloat
 	else if (weather_at(T) != WEATHER_NONE)
 		. += 1
 

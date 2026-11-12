@@ -74,22 +74,22 @@ var/sea_runtime_error = FALSE
 	// Tiring, drowning and rest.
 	H.loc = calm
 	H.handle_drowning()
-	sea_check(!H.drowning && H.water_overlay && H.swim_tiredness == 4 && H.getOxyLoss() == 0, "a fresh swimmer stays afloat")
+	sea_check(!H.drowning && H.water_overlay && H.swim_tiredness == 2 && H.getOxyLoss() == 0, "a fresh swimmer stays afloat")
 	var/ticks = 1
 	while (!H.drowning && ticks < 100)
 		H.handle_drowning()
 		ticks++
-	sea_check(ticks == 25 && H.drowning && H.getOxyLoss() > 0, "a swimmer goes under after 25 life ticks of calm water ([ticks])")
+	sea_check(ticks == 50 && H.drowning && H.getOxyLoss() > 0, "a swimmer goes under after 50 life ticks of calm water ([ticks])")
 	H.loc = shore
 	H.handle_drowning()
-	sea_check(!H.drowning && H.swim_tiredness == 92, "rest on land brings strength back")
-	for (var/i = 1, i <= 20, i++)
+	sea_check(!H.drowning && H.swim_tiredness == 96, "rest on land brings strength back")
+	for (var/i = 1, i <= 30, i++)
 		H.handle_drowning()
 	sea_check(H.swim_tiredness == 0, "a rested swimmer is fresh again")
 	H.adjustOxyLoss(-200)
 
 	// A storm sea is twice the work.
-	sea_check(swim_effort_at(calm) == 4, "calm water costs 4 a tick")
+	sea_check(swim_effort_at(calm) == 2, "calm water costs 2 a tick")
 	var/area/caribbean/sky = new
 	sky.climate = "temperate"
 	sky.location = AREA_OUTSIDE
@@ -102,7 +102,7 @@ var/sea_runtime_error = FALSE
 	storm.born = world.time - 3000
 	storm.peak = 1
 	weather_sample_time = -1
-	sea_check(swim_effort_at(calm) == 8, "a storm sea costs 8 a tick ([swim_effort_at(calm)])")
+	sea_check(swim_effort_at(calm) == 4, "a storm sea costs 4 a tick ([swim_effort_at(calm)])")
 	weather_systems_clear()
 
 	// The current carries a swimmer, an item and an empty raft, not a manned one.

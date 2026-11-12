@@ -49,10 +49,11 @@ Examining sea water in the belt says which way the current sets.
 
 On the open-world maps (`map.nomads`) a played person may walk out of their
 depth and swim (code/modules/1713/swimming.dm). Swimming tires: `swim_tiredness`
-rises 4 a life tick in calm deep water, 5 in rain or snow and 8 under a
-storm's gale, and at 100 the swimmer goes under and takes the drowning damage
-deep water has always dealt. Warnings come at 50 and 80. Out of deep water,
-or on a deck or raft, it falls 8 a tick. A lifejacket or a sealed diving suit
+rises 2 a life tick (one second) in calm deep water, 3 in rain or snow and 4
+under a storm's gale, and at 100 the swimmer goes under and takes the drowning
+damage deep water has always dealt: about 50 seconds afloat in a calm, 25 in
+a storm. Warnings come at 50 and 80. Out of deep water, or on a deck or raft,
+it falls 4 a tick. A lifejacket or a sealed diving suit
 floats its wearer at no cost. Anyone unconscious drowns at once, as before.
 Battle maps use deep water as their edge and keep it closed, and people with
 nobody playing them keep out of deep water as they always did.
