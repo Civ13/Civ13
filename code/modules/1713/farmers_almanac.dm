@@ -148,9 +148,9 @@ var/global/list/farmers_almanac_seed_cache = null
 		to_chat(user, SPAN_WARNING("You can't make out where you are to consult \the [src]."))
 		return
 	user.visible_message("<span class='notice'>[user] leafs through [src].</span>", "<span class='notice'>You leaf through [src].</span>")
-	show_browse(user, almanac_text(A, get_temp(user)), "window=farmers_almanac;size=520x640")
+	show_browse(user, almanac_text(A, get_temp(user), T), "window=farmers_almanac;size=520x640")
 
-/obj/item/weapon/farmers_almanac/proc/almanac_text(area/A, local_temp)
+/obj/item/weapon/farmers_almanac/proc/almanac_text(area/A, local_temp, turf/sky_at)
 	var/climate = A.climate
 	var/inside = (A.location == AREA_INSIDE)
 	var/list/four_seasons = list("SPRING", "SUMMER", "FALL", "WINTER")
@@ -161,7 +161,11 @@ var/global/list/farmers_almanac_seed_cache = null
 	dat += "<h2>Farmer's Almanac</h2>"
 	dat += "<p>Region: <b>[table ? farmers_almanac_climate_name(climate) : "Unrecorded lands"]</b>[inside ? " (under a roof)" : ""]<br>"
 	dat += "Season: <b>[farmers_almanac_season_name(season)]</b><br>"
-	dat += "Sky: <b>[(!inside && A.icon_state) ? farmers_almanac_weather_phrase(replacetext(A.icon_state, "rad_", "")) : (inside ? "sheltered" : "clear skies")]</b><br>"
+	// The weather over the reader's own tile: a storm covers part of a zone.
+	var/sky = sky_at ? weather_look_at(sky_at) : replacetext(A.icon_state, "rad_", "")
+	dat += "Sky: <b>[inside ? "sheltered" : farmers_almanac_weather_phrase(sky)]</b><br>"
+	if (sky_at && !inside)
+		dat += "Outlook: <b>[weather_forecast_line(sky_at)]</b><br>"
 	dat += "Temperature here: <b>[local_temp]&deg;C</b></p>"
 
 	dat += "<h3>Weather through the year</h3>"

@@ -77,3 +77,11 @@ All states (`snowshoes`, `mukluks`, `hobnail_boots`, `pattens`, `rubber_boots`,
 Civ13 (2026-11-12), pixel by pixel from a fixed palette by
 `tests/sprites/create_weather_footwear.py`. No borrowed or generated artwork.
 They are under the same terms as the rest of Civ13's art.
+
+## weather_instruments.dmi
+
+All states (`weather_vane_north`, `weather_vane_east`, `weather_vane_south`,
+`weather_vane_west`, `barometer`) were drawn for Civ13 (2026-11-12), pixel by
+pixel from a fixed palette by `tests/sprites/create_weather_instruments.py`.
+No borrowed or generated artwork. They are under the same terms as the rest of
+Civ13's art.
