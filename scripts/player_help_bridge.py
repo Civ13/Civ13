@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'e7f8404e11bfd32887703dc3383314824ee8242d'
+WIKI_REVIEWED_REVISION = 'c8564290a393eedbf75d57d9fa911d88e2fb3ecb'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('7d841e6db23560fc80845b05b5fea04277cabadc316440930211280c1e67901c', 'miscellaneous crafting misc items dress dresses dressmaking tailored sew sewing candle candles'),
-    'maps/Gaia.md': ('2d69f965aab52989a0ca5a004feea0c129ab251ae64dcb245711d3248a29b9dc', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('6e0d74bdce11739ef9650cfb631db6917651b9da0d7b0f05c0af873347fc8583', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
