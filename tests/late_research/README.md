@@ -17,3 +17,9 @@ a temporary world with no listening port, maps or saves, replaces only client
 presence, light and action waits, and runs the production procs.
 
 None of this is in-game, client or graphical acceptance.
+
+The extended lines (`book_only_research_nodes` in `research_node.dm`): Emergency Medicine,
+Soil Science, Crop Breeding, Infantry Support Weapons and Guided Missiles exist only on
+book-research worlds. The fixture checks that each follows from earlier subjects, unlocks
+recipes or a standing effect, has field work, gates its recipes on personal knowledge, and
+is never done, listed or assignable where book research is off.
