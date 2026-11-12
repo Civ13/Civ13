@@ -31,14 +31,14 @@
 	return world.icon_size * world.tick_lag / max(time, world.tick_lag)
 
 // Shows the move M has just made, by (dx, dy) tiles, as a glide lasting time.
-/datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
+// was is the mover's own record of the glides it holds (atom = list(before,
+// applied)), kept so that each thing gets its own glide back afterwards.
+/proc/glide_show(list/was, atom/movable/M, dx, dy, time)
 	if (craft_glides_natively(M))
 		var/size = craft_glide_size(time)
-		if (!glide_was)
-			glide_was = list()
-		var/list/held = glide_was[M]
+		var/list/held = was[M]
 		if (!held)
-			glide_was[M] = list(M.glide_size, size)
+			was[M] = list(M.glide_size, size)
 		else
 			// Something else set its glide since; that is the value to give back.
 			if (M.glide_size != held[2])
@@ -63,22 +63,32 @@
 			C.pixel_y = rest_y - shift_y
 			animate(C, pixel_x = rest_x, pixel_y = rest_y, time = time)
 
-// After a step: gives back the glide of whatever she no longer carries. With
-// null, of everything.
-/datum/craft_body/proc/glide_keep(list/aboard)
-	if (!glide_was || !glide_was.len)
+// Gives back the glide of whatever in was is no longer in aboard. With null,
+// of everything.
+/proc/glide_give_back(list/was, list/aboard)
+	if (!was || !was.len)
 		return
 	var/list/still = list()
 	if (aboard)
 		for (var/atom/movable/M in aboard)
 			still[M] = TRUE
-	for (var/atom/movable/M in glide_was.Copy())
+	for (var/atom/movable/M in was.Copy())
 		if (still[M])
 			continue
-		var/list/held = glide_was[M]
-		glide_was -= M
+		var/list/held = was[M]
+		was -= M
 		if (M && !QDELETED(M) && M.glide_size == held[2])
 			M.glide_size = held[1]
+
+/datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
+	if (!glide_was)
+		glide_was = list()
+	glide_show(glide_was, M, dx, dy, time)
+
+// After a step: gives back the glide of whatever she no longer carries. With
+// null, of everything.
+/datum/craft_body/proc/glide_keep(list/aboard)
+	glide_give_back(glide_was, aboard)
 
 // She has stopped: once her last step has been drawn, everything aboard
 // glides at its own pace again.
@@ -95,3 +105,48 @@
 /datum/craft_body/Destroy()
 	glide_keep(null)
 	return ..()
+
+// ---- Modular vehicles (axis.do_move()) ----
+// A vehicle of frames moves a tile every vehicle_m_delay + 1 ticks. Each
+// step is shown the same way, for the frames, wheels, everything stood on
+// them and the crew, so the vehicle rolls instead of hopping.
+
+/obj/structure/vehicleparts/axis
+	var/tmp/list/glide_was = null // Things whose glide_size it holds.
+
+// How long one step of this vehicle lasts on screen, in ticks.
+/obj/structure/vehicleparts/axis/proc/glide_step_time()
+	return vehicle_m_delay + 1
+
+// After do_move(): moved maps each thing carried to the tile it left.
+/obj/structure/vehicleparts/axis/proc/glide_step(list/moved)
+	var/time = glide_step_time()
+	if (time <= world.tick_lag)
+		glide_give_back(glide_was, null)
+		return
+	if (!glide_was)
+		glide_was = list()
+	var/list/carried = list()
+	for (var/atom/movable/M in moved)
+		var/turf/from = moved[M]
+		if (QDELETED(M) || !isturf(M.loc) || !istype(from) || M.loc == from)
+			continue
+		var/dx = M.x - from.x
+		var/dy = M.y - from.y
+		if (M.z != from.z || abs(dx) > 1 || abs(dy) > 1)
+			continue
+		glide_show(glide_was, M, dx, dy, time)
+		carried += M
+	glide_give_back(glide_was, carried)
+
+// The vehicle has stopped: once its last step has been drawn, everything
+// aboard glides at its own pace again.
+/obj/structure/vehicleparts/axis/proc/glide_rest()
+	if (!glide_was || !glide_was.len)
+		return
+	addtimer(CALLBACK(src, PROC_REF(glide_rest_now)), glide_step_time() + 1)
+
+/obj/structure/vehicleparts/axis/proc/glide_rest_now()
+	if (moving)
+		return
+	glide_give_back(glide_was, null)
