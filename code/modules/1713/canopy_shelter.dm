@@ -1,4 +1,4 @@
-// Canopy shelter: standing under a pitched canopy (tent) keeps the rain off
+// Canopy shelter: standing under a pitched canopy (tent) or a lean-to keeps the rain off
 // and blocks the wind, so it is a little warmer than the open air.
 // Idea from CM-SS13's tents (cmss13-devs/cmss13, AGPL-3.0), which give cold
 // protection to people inside; reimplemented for Civ13's canopies.
@@ -9,7 +9,7 @@
 /proc/under_canopy(turf/T)
 	if (!T)
 		return FALSE
-	return locate(/obj/structure/tent) in T
+	return (locate(/obj/structure/tent) in T) || (locate(/obj/structure/lean_to) in T)
 
 // Air temperature (Celsius) felt under a canopy on T: up to 5 C warmer when
 // it is cold, never above 15 C, and unchanged when it is already mild.
