@@ -1634,6 +1634,7 @@
 #include "code\modules\1713\husbandry_feeding.dm"
 #include "code\modules\1713\fish_pen.dm"
 #include "code\modules\1713\flint_mining.dm"
+#include "code\modules\1713\stone_age_arms.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\flax_processing.dm"
 #include "code\modules\1713\rope_making.dm"
