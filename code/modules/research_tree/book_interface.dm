@@ -476,6 +476,8 @@
 	data["author"] = author ? "[author]" : null
 	data["has_text"] = dat ? 1 : 0
 	data["held"] = loc == H ? 1 : 0
+	if (is_enciphered())
+		data["cipher_note"] = can_read_cipher(H) ? "Written in cipher (strength [cipher_strength]). You can read it." : "Written in cipher (strength [cipher_strength]). You cannot study, copy or tear out its chapters until you enter its key word or break the cipher: write in it with a pen and choose Cipher."
 	var/desk = H.scholar_desk_rate()
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	var/pen_rate = pen ? scholar_pen_rate(pen) : 1

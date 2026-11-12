@@ -1,5 +1,6 @@
 // Late research on book-research worlds, on production source: standing node
-// effects, field work, research teams and rushed work. Client presence, light and action waits are isolated.
+// effects, field work, research teams, rushed work and
+// ciphers. Client presence, light and action waits are isolated.
 var/late_failures = 0
 var/late_wait_result = TRUE
 /world
@@ -250,6 +251,69 @@ var/late_wait_result = TRUE
 	late_check(kind == "injury" && lead.fixture_hurt[BRUTE] >= 8, "a slipped build crushes a hand")
 	bench.book_toggle_rush(lead)
 	late_check(!bench.rushed, "the bench can be told to work carefully again")
+/mob/living/human/late_fixture/scholar
+	var/obj/item/weapon/pen/fixture_pen = null
+/mob/living/human/late_fixture/scholar/held_writing_pen()
+	return fixture_pen
+/proc/late_test_ciphers()
+	var/mob/living/human/late_fixture/scholar/writer = new(locate(2,6,1))
+	writer.real_name = "Ansel"
+	var/mob/living/human/late_fixture/scholar/spy = new(locate(2,7,1))
+	spy.real_name = "Corvin"
+	var/mob/living/human/late_fixture/scholar/friend = new(locate(3,7,1))
+	friend.real_name = "Dessa"
+	writer.scholarship = list("mathematics" = 60)
+	var/obj/item/weapon/book/B = new(locate(2,6,1))
+	B.name = "ledger"
+	late_check(findtext(B.encipher_problem(writer), "no research"), "an empty book has nothing to hide")
+	B.add_research_chapter("basic_tools")
+	B.add_research_chapter("pottery_storage")
+	late_check(findtext(B.encipher_problem(writer), "need to know"), "writing in cipher needs the Printing Press")
+	writer.teach("printing_currency")
+	late_check(findtext(B.encipher_problem(writer), "pencil or pen"), "and a pen in hand")
+	writer.fixture_pen = new /obj/item/weapon/pen(writer)
+	late_check(isnull(B.encipher_problem(writer)) && !B.is_enciphered() && !B.cipher_blocks(spy), "a plain book is open to everyone")
+	late_check(!B.encipher_commit(writer, "ab") && !B.encipher_commit(writer, "a|b=c") && !B.is_enciphered(), "key words that are too short or would break the record are refused")
+	late_check(B.encipher_commit(writer, "  Rosebud ") && B.cipher_key == "rosebud" && B.cipher_strength == 4, "the book goes into cipher under a tidied key word, at a strength set by the writer's mathematics")
+	late_check(B.can_read_cipher(writer) && !B.cipher_blocks(writer) && B.cipher_blocks(spy) && B.cipher_refuses(spy), "the writer reads it, a stranger does not")
+	late_check(findtext(B.encipher_problem(writer), "already"), "a book in cipher is not enciphered twice")
+	// The cipher keeps strangers out of the research.
+	late_check(!study_research_source(spy, B, "basic_tools") && !spy.knows_recipe_node("basic_tools"), "a stranger cannot study a chapter in cipher")
+	late_check(!B.rip_page(spy, "basic_tools") && B.has_research_chapter("basic_tools"), "or tear one out")
+	late_check(B.research_chapter_list().len == 2 && length(B.era_record_node_ids()) == 2, "the chapters are still in the book and still count as records")
+	var/list/data = B.research_book_ui_data(spy)
+	late_check(findtext(data["cipher_note"], "cannot study") && findtext(B.research_book_ui_data(writer)["cipher_note"], "You can read it"), "the book window says who can read it")
+	// The key word.
+	late_check(!B.try_cipher_key(friend, "tulip") && B.cipher_blocks(friend), "a wrong key word opens nothing")
+	late_check(B.try_cipher_key(friend, "ROSEBUD") && !B.cipher_blocks(friend) && B.cipher_blocks(spy), "the right key word makes a reader of whoever is told it")
+	// Code-breaking.
+	spy.scholarship = list("mathematics" = 11)
+	late_check(findtext(B.break_problem(spy), "Basic Mathematics 12"), "breaking a cipher takes some mathematics")
+	spy.scholarship = list("mathematics" = 35)
+	late_check(findtext(B.break_problem(spy), "pencil or pen"), "and a pen")
+	spy.fixture_pen = new /obj/item/weapon/pen(spy)
+	late_check(isnull(B.break_problem(spy)) && B.cipher_break_time(spy) == 9600, "a breaker with half the writer's mathematics needs twice the time (16 minutes at strength 4)")
+	spy.scholarship = list("mathematics" = 100)
+	late_check(B.cipher_break_time(spy) == 3360, "a master needs far less (5.6 minutes)")
+	spy.scholarship = list("mathematics" = 35)
+	late_check(!B.break_commit(spy) && B.cipher_break_fraction(spy) > 0.03 && B.cipher_break_fraction(spy) < 0.032 && B.cipher_blocks(spy), "one sitting is a small step and the working stays with the book")
+	var/sittings = 1
+	while(sittings < 100 && !B.break_commit(spy))
+		sittings++
+	late_check(sittings == 32 && !B.cipher_blocks(spy) && B.cipher_break_fraction(spy) == 0, "32 sittings of half a minute break it for the breaker alone")
+	late_check(findtext(B.break_problem(spy), "no cipher"), "a reader has nothing left to break")
+	late_check(!B.cipher_refuses(spy), "the cipher no longer refuses the breaker")
+	// Copies keep the cipher; plain writing removes it.
+	var/obj/item/weapon/book/copy = new(locate(2,6,1))
+	copy.copy_cipher_from(B)
+	late_check(copy.cipher_key == "rosebud" && copy.cipher_strength == 4 && copy.can_read_cipher(friend) && copy.cipher_progress == "", "a printed copy stays in the same cipher")
+	var/mob/living/human/late_fixture/scholar/outsider = new(locate(4,7,1))
+	outsider.real_name = "Egon"
+	late_check(!B.decipher_commit(outsider) && B.is_enciphered(), "only a reader can write it out plainly")
+	map.book_research = FALSE
+	late_check(!B.cipher_blocks(outsider), "ciphers bind nobody where book research is off")
+	map.book_research = TRUE
+	late_check(B.decipher_commit(friend) && !B.is_enciphered() && !B.cipher_blocks(outsider) && B.cipher_readers == "", "written out plainly, the book is open again")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -267,6 +331,7 @@ var/late_wait_result = TRUE
 		late_test_node_effects()
 		late_test_field_work()
 		late_test_teams()
+		late_test_ciphers()
 	catch(var/exception/e)
 		late_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"

@@ -446,6 +446,10 @@
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !source || !source.holds_research_chapter(node_id))
 		return FALSE
+	// A book in cipher keeps strangers out (book_cipher.dm).
+	var/obj/item/weapon/book/cipher_book = source
+	if (istype(cipher_book) && cipher_book.cipher_refuses(H))
+		return FALSE
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know <b>[N.name]</b>."))
 		return FALSE
@@ -617,6 +621,8 @@
 /obj/structure/research_bench/proc/book_copy_job(mob/living/human/H, obj/item/weapon/book/source, obj/item/weapon/book/dest, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !istype(source) || !istype(dest) || source.loc != src || dest.loc != src || !source.has_research_chapter(node_id) || dest.has_research_chapter(node_id))
+		return FALSE
+	if (source.cipher_refuses(H) || dest.cipher_refuses(H))
 		return FALSE
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	if (!pen)

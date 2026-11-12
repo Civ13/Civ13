@@ -275,6 +275,9 @@ var/global/list/book_research_writing_supplies = list(
 	rip_page(H, choices[pick])
 
 /obj/item/weapon/book/proc/rip_page(mob/living/human/H, which)
+	// A stranger cannot tell where a chapter in cipher starts or ends.
+	if (istext(which) && cipher_refuses(H))
+		return FALSE
 	page_busy = TRUE
 	var/done = do_after(H, BOOK_RIP_TIME, src)
 	page_busy = FALSE
