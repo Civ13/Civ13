@@ -702,7 +702,7 @@ def region_travel_knowledge(root):
 TOXIN_SOURCE_SECTIONS = (
     ('code/game/mob/living/carbon/human/human_life.dm',
      '/mob/living/human/handle_stomach()', '/mob/living/human/proc/handle_shock()',
-     '7ca255e1019ae403dab7ff14297d978e01ea2c2c93af4e8fbdf59bad4a7fc6aa'),
+     'ea4d74d3b3f4adc3b143c2c356eb2f35573d98c4ada794297ac6a793c1873a19'),
     ('code/game/mob/living/carbon/human/human_life.dm',
      '/mob/living/human/handle_chemicals_in_body()', '/mob/living/human/handle_regular_status_updates()',
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
