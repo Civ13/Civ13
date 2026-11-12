@@ -69,7 +69,7 @@
 /datum/craft/proc/sights(datum/craft/other)
 	var/turf/here = centre()
 	var/turf/there = other ? other.centre() : null
-	if (!here || !there || here.z != there.z)
+	if (!here || !there || here.z != there.z || !sea_same_waters(here, there))
 		return FALSE
 	var/base = token ? token.sensor_range : CHART_SENSOR_RANGE
 	var/reach = max(min(base, SEA_LOOKOUT_FLOOR), base - max(sea_murk_at(here), sea_murk_at(there)))

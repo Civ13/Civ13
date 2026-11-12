@@ -173,6 +173,51 @@ stops her hops, and `finish_dock()` moves her `QUAY_DOCK_WARNING` later, makes
 her fast and completes the ticket. `craft.on_hop()` and `on_turn()` cast off,
 so a moored craft that moves is no longer moored. Moorings are not saved.
 
+## The open sea
+
+An open-sea region (shard kind `OCEANIC`, `maps/sea/open_sea.dmm`,
+`/obj/map_metadata/nomads/open_sea`) is the Shiptest loop at sea: ships are
+built in the home waters, make passage on a steered chart, and the islands and
+wrecks they reach are built when they arrive. No live region runs it yet;
+[open-sea-region.md](open-sea-region.md) has the setup steps.
+
+- **Cells** (`naval/open_sea.dm`). The sea level is cut into squares of
+  `SEA_CELL_PITCH` tiles by tide races (`/turf/.../saltwater/tide_race`, dense,
+  nothing passes or is built on them) `SEA_CELL_MARGIN` wide on every side, so
+  nobody in one cell sees or reaches the next. `sea_cell_of()`,
+  `sea_cell_box()`, `sea_home_cell()` (the middle one). A cell is a square of
+  the one level, not a level: saves, digging, weather and lighting are those of
+  any surface map, and nothing grows the world.
+- **Pool** (`/datum/plane_pool/sea`, `sea_pool()`). Its "planes" are cell
+  numbers. A cell is free when no loaded site lies in it, no craft and no
+  living or logged-in character, so only site-to-cell has to be saved.
+  `clear()` deletes what is in the cell, closes the sea and restores the rock
+  under it; it refuses while a character, a ship or a claimed bunk is there.
+- **Sites** (`naval/open_sea_sites.dm`, `/datum/chart_site/sea`). `load()`
+  claims a cell and calls `build(box)`; `unload()` clears it. An island is
+  built from its seed (`/datum/sea_dice`), so it rises the same each time. A
+  wreck is broken ship floors with crates; with a tiller she can be sailed.
+  `watch()` starts a `SEA_SITE_LINGER` count once nobody is there, and the
+  chart sweeps for that every few minutes. A site with a mooring post in its
+  cell is a harbour and stays, for up to `SEA_KEPT_CAP` sites; at most
+  `SEA_SITE_CAP` sites are loaded at once. New kinds are new subtypes with a
+  `build()`.
+- **Chart and passage** (`naval/open_sea_chart.dm`, `open_sea_chart()`). The
+  home waters are a token in the middle; each site has one. The tiller's
+  **Open sea chart** lays a course, steers by compass or heaves to. An order
+  given at a place calls `put_to_sea()`, which moves the hull to the middle of
+  a free cell; when the token arrives, `open_sea_arrive()` loads the site and
+  `open_sea_shift()` moves the hull to lie near the edge of its cell
+  (`open_sea_berth()` tries each side). Where a ship is on the chart is read
+  from where her hull lies (`open_sea_place()`), her token's place and motion
+  are saved by the tiller with the hull, and the sites by
+  `/obj/structure/sea_registry` as one text. Her drives pay once per half
+  minute under way.
+- On an open-sea world the lookout, the sea chart and the berth menu only see
+  the ship's own cell (`sea_same_waters()`).
+- The home island is built by `open_sea_prepare()` the first time the world
+  boots, while the middle of the home waters is still open sea.
+
 ## Contracts and freight
 
 `craft/contract.dm`: a contract is a record object (`/obj/craft_contract`)

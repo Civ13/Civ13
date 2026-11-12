@@ -154,7 +154,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		if (T == token)
 			continue
 		var/turf/P = T.place()
-		if (!P)
+		if (!P || !sea_same_waters(here, P))
 			continue
 		var/where = "[get_dist(here, P)] tile\s [submarine_bearing(here, P)], square [S.square_name(T.x, T.y)]"
 		var/datum/chart_token/harbour/HT = T
@@ -316,7 +316,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		return
 	var/list/choices = list()
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
-		if (Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth)
+		if (Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth && sea_same_waters(here, get_turf(Q)))
 			choices["[capitalize(Q.berth_name())], [get_dist(here, Q)] tiles [submarine_bearing(here, get_turf(Q))]"] = Q
 	if (!choices.len)
 		to_chat(H, SPAN_WARNING("There is no mooring post within [QUAY_DOCK_RANGE] tiles of the [name]."))

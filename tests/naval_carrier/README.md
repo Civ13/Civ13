@@ -173,3 +173,21 @@ board and a destroyed post. No client connects, so the post's menus are not
 exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+
+## The open sea (`open_sea_probe.dm`)
+
+An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
+`open_sea_chart.dm`) on a fixture of six 40-tile cells: cell geometry, tide
+races nobody swims, the home island raised once, the cell pool (free means no
+site, no ship and nobody there), the chart's sites saved as one text, a hull
+that puts to sea, makes passage, raises an island and anchors off it, the
+island staying while someone is ashore or a mooring post stands and sinking
+when its count runs out, the same island rising the same, a wreck with her
+hold, the site cap and the admin pause, standing off when no water is free,
+ships in different waters not sighting each other, a passage saved by the
+tiller and resumed, and the way home.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/open_sea_probe.dm 300
+
+`python3 tools/open_sea/make_map.py --check` confirms `maps/sea/open_sea.dmm`
+matches the cell size in `code/__defines/naval.dm`.
