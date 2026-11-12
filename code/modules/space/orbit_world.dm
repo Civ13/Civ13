@@ -84,6 +84,9 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 	not_disassemblable = TRUE
 	var/list/links = list()
 	var/list/owners = list()
+	// Where each party's station lies on the orbit chart (orbit_chart.dm):
+	// chart_spots[owner id] = "x,y".
+	var/list/chart_spots = list()
 	// The orbital day (orbit_station.dm): sunlit or not, and the seconds
 	// left in this part of the orbit. Plain numbers, never a world.time.
 	var/sunlit = 1
@@ -115,6 +118,8 @@ var/global/list/orbit_opposites = list("up" = "down", "down" = "up", "north" = "
 		orbit_registry.links = list()
 	if (!islist(orbit_registry.owners))
 		orbit_registry.owners = list()
+	if (!islist(orbit_registry.chart_spots))
+		orbit_registry.chart_spots = list()
 	orbit_registry.owners["[ORBIT_ARRIVAL_PLANE]"] = "arrival"
 	return orbit_registry
 

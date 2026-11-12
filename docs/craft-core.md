@@ -82,6 +82,32 @@ ahead. After each hop `craft.burn_drives()` asks every drive to pay for it at
 own fuel tank (`craft_burn()`, `engines/internal_combustion.dm`) and stalls
 when it cannot, and an external engine's heat source is its fuel.
 
+## Steered charts
+
+On a chart in `CHART_MODE_STEERED` a token has momentum (`craft/chart.dm`).
+`set_burn(heading, throttle)` pushes it along a heading in degrees clockwise
+from north, a throttle of 0 lets it coast, `order_stop()` burns against its
+motion until it lies still, and `lay_course(x, y, name)` makes for a place and
+stops there (`arrived()` is the hook). `eta()` estimates the seconds from rest.
+A full burn is `craft.thrust_per_tile() * CHART_ACCEL_PER_THRUST` squares per
+second per second, paid for through each drive's `burn()`; a token with no
+craft uses its own `accel`. `chart.wake()` starts a timer that calls
+`run_step()` every `CHART_STEP_SECONDS` and stops when nothing moves; a step
+also counts hazards down and calls `affect_craft()`. `contacts_of()` cuts the
+sensor range by the `interference` of hazards at the viewer and at the target.
+
+`craft/chart_helm.dm` is the console: `/obj/structure/chart_helm` reads the
+chart and steers the token of the craft it stands on (burn, cut, full stop,
+lay a course), behind the same helm access as a ship's wheel, and saves the
+token's place and speed as plain numbers. It is a base with no recipe; a
+subtype answers `chart()`.
+
+`space/orbit_chart.dm` is the first steered chart: `orbit_chart()` on an orbit
+world, 100 squares across with the arrival beacon in the middle and a station
+token for every party that owns a plane, at a spot the plane registry keeps in
+`chart_spots`. `/obj/structure/chart_helm/orbit` steers on it; no craft
+carries one until the plane pool phase.
+
 ## Sea chart and harbours
 
 `naval/craft_chart.dm`: `sea_chart(z)` is the mirror chart of a sea level, in
