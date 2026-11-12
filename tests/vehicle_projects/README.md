@@ -12,4 +12,6 @@ Production sources run in the shared resource-extraction constructor fixture wit
 - **Saving:** the project saves in three vars, its parts are never saved, and a load rebuilds them.
 - **Roll out:** the finished car rolls out keyed with four wheels and an empty tank, leaving the press's stock as it was; the plane rolls out whole and keyed with an empty tank; abandoning clears the jig.
 
+- **Works vehicles:** the truck, armoured car, tracked carrier and two tanks (`code/modules/craft/vehicle_works.dm`) are never one-go models and the hangar has none; a tank plan costs its listed price with Tracks and Turret stages, a truck plan has wheels and windows; a tank needs Mechanized Warfare and a truck does not; a rubber wheel is not a track. Each of the five is built through the player paths and rolls out keyed and named, filling its square on four wheels or tracks with an empty tank, no free guns, ammunition, shells or supplies, its turret only on tanks, and turns a full circle in place.
+
 The slipway uses the same plans; its probe is `tests/naval_carrier/slipway_probe.dm`.

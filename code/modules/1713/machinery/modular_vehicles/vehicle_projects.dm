@@ -39,6 +39,8 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	return list(
 		"frames" = list("Chassis", "chassis section"),
 		"wheels" = list("Wheels", "wheel"),
+		"tracks" = list("Tracks", "track"),
+		"turret" = list("Turret", "turret and gun"),
 		"engine" = list("Engine", "engine and wiring"),
 		"body" = list("Bodywork", "set of body panels"),
 		"windows" = list("Windows", "set of windows"),
@@ -58,6 +60,10 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		return null
 	var/list/words = project_words()
 	var/steel = cost["steel"] || 0
+	// A works tank's turret and gun are a stage of their own, in steel.
+	var/list/spec = works_spec(model)
+	var/gun = spec ? spec["gun"] : 0
+	steel -= gun
 	var/per = round(steel / 5)
 	var/datum/piece_plan/P = new
 	P.name = model
@@ -66,6 +72,8 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		stages += list(list("name" = words["frames"][1], "pieces" = 2, "cost" = list("steel" = per), "part" = "frames", "verb" = words["frames"][2]))
 	if (cost["wheels"])
 		stages += list(list("name" = words["wheels"][1], "pieces" = cost["wheels"], "cost" = list("wheels" = 1), "part" = "wheels", "verb" = words["wheels"][2]))
+	if (cost["tracks"])
+		stages += list(list("name" = words["tracks"][1], "pieces" = cost["tracks"], "cost" = list("tracks" = 1), "part" = "wheels", "verb" = words["tracks"][2]))
 	var/list/engine = list("steel" = steel - 4 * per)
 	if (cost["cable"])
 		engine["cable"] = cost["cable"]
@@ -76,6 +84,8 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		stages += list(list("name" = words["windows"][1], "pieces" = 1, "cost" = list("glass" = cost["glass"]), "part" = "windows", "verb" = words["windows"][2]))
 	if (cost["cloth"])
 		stages += list(list("name" = words["seats"][1], "pieces" = 1, "cost" = list("cloth" = cost["cloth"]), "part" = "seats", "verb" = words["seats"][2]))
+	if (gun)
+		stages += list(list("name" = words["turret"][1], "pieces" = 1, "cost" = list("steel" = gun), "part" = "turret", "verb" = words["turret"][2]))
 	P.stages = stages
 	vehicle_project_plans[key] = P
 	return P
@@ -93,9 +103,17 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	var/size = model_size(model)
 	var/obj/effects/premadevehicles/B = new path(null, TRUE)
 	. = list()
+	var/width = workshop_layout_width(B)
 	for (var/coords in B.tocreate)
+		var/list/made = list()
+		for (var/partpath in B.tocreate[coords])
+			partpath = workshop_layout_part(partpath)
+			if (partpath)
+				made += partpath
+		if (!made.len)
+			continue
 		var/list/C = splittext(coords, ",")
-		.["[size - 2 + text2num(C[1])],[text2num(C[2])]"] = B.tocreate[coords]
+		.["[size - width + text2num(C[1])],[text2num(C[2])]"] = made
 	qdel(B)
 	vehicle_project_layouts[key] = .
 
@@ -146,6 +164,9 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		return "A [project] is already being built in the bay."
 	if (H && !allowed(H))
 		return requirement_text(H)
+	var/list/unknown = H ? model_missing_research(H, model) : list()
+	if (unknown.len)
+		return "[english_list(unknown)] research is required to build a [model]."
 	if (!clear_footprint(model))
 		return "Clear the northeast [model_size(model)]x[model_size(model)] bay of people and objects, on dry open floor, before starting."
 	return null
@@ -185,9 +206,10 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 // Pays one free wheel. TRUE when it was taken.
 /obj/structure/car_workshop/proc/project_pay_wheel(obj/structure/vehicleparts/movement/W)
 	var/list/needed = project_needed()
-	if (!needed["wheels"] || W.type != /obj/structure/vehicleparts/movement || W.axis || W.connected || W.broken || W.anchored)
+	var/key = workshop_wheel_key(W)
+	if (!key || !needed[key] || W.axis || W.connected || W.broken || W.anchored)
 		return FALSE
-	project_paid["wheels"] = (project_paid["wheels"] || 0) + 1
+	project_paid[key] = (project_paid[key] || 0) + 1
 	qdel(W)
 	project_piece_paid()
 	return TRUE
@@ -210,7 +232,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		to_chat(H, SPAN_NOTICE("The [P.name] is finished. Roll it out from the [name]."))
 		return TRUE
 	var/list/needed = project_needed()
-	var/key = istype(I, /obj/structure/vehicleparts/movement) ? "wheels" : (istype(I, /obj/item/stack) ? piece_material(I) : null)
+	var/key = istype(I, /obj/structure/vehicleparts/movement) ? workshop_wheel_key(I) : (istype(I, /obj/item/stack) ? piece_material(I) : null)
 	if (!key || !needed[key])
 		to_chat(H, SPAN_WARNING("The next piece needs [piece_cost_text(needed)], not [I.name]."))
 		return TRUE
@@ -222,7 +244,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		busy = FALSE
 		return TRUE
 	var/before = project_done
-	var/took = key == "wheels" ? project_pay_wheel(I) : project_pay(I)
+	var/took = istype(I, /obj/structure/vehicleparts/movement) ? project_pay_wheel(I) : project_pay(I)
 	busy = FALSE
 	if (!took)
 		return TRUE
@@ -309,7 +331,7 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	start_project(action)
 	var/datum/piece_plan/P = get_project_plan()
 	log_game("[key_name(H)] started a [action] project at [x],[y],[z].")
-	to_chat(H, SPAN_NOTICE("The jig is set up for a [action]: [P.total_pieces()] pieces, [piece_cost_text(P.total_cost())] in all. [project_status()] Bring the materials to the press or to the vehicle in the bay; drag wheels onto either."))
+	to_chat(H, SPAN_NOTICE("The jig is set up for a [action]: [P.total_pieces()] pieces, [piece_cost_text(P.total_cost())] in all. [project_status()] Bring the materials to the press or to the vehicle in the bay; drag wheels or tank tracks onto either."))
 
 // ---- The vehicle in the bay ----
 

@@ -40,7 +40,9 @@ var/global/list/car_workshop_prototypes = list()
 	update_project_frames()
 
 /obj/structure/car_workshop/proc/models()
-	return list("ASNO Piccolino" = /obj/effects/premadevehicles/asno/piccolino, "ASNO Quattroporte" = /obj/effects/premadevehicles/asno/quattroporte, "Ubermacht Erstenklasse" = /obj/effects/premadevehicles/ubermacht/erstenklasse, "SMC Falcon" = /obj/effects/premadevehicles/smc/falcon, "SMC Falcon Unmarked" = /obj/effects/premadevehicles/smc/falcon/unmarked, "SMC Wyoming" = /obj/effects/premadevehicles/smc/wyoming, "Yamasaki Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu, "Yamasaki Police Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu/police, "Yamasaki Kazoku" = /obj/effects/premadevehicles/yamasaki/kazoku)
+	. = list("ASNO Piccolino" = /obj/effects/premadevehicles/asno/piccolino, "ASNO Quattroporte" = /obj/effects/premadevehicles/asno/quattroporte, "Ubermacht Erstenklasse" = /obj/effects/premadevehicles/ubermacht/erstenklasse, "SMC Falcon" = /obj/effects/premadevehicles/smc/falcon, "SMC Falcon Unmarked" = /obj/effects/premadevehicles/smc/falcon/unmarked, "SMC Wyoming" = /obj/effects/premadevehicles/smc/wyoming, "Yamasaki Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu, "Yamasaki Police Shinobu" = /obj/effects/premadevehicles/yamasaki/shinobu/police, "Yamasaki Kazoku" = /obj/effects/premadevehicles/yamasaki/kazoku)
+	// Trucks, carriers and tanks, built piece by piece only (craft/vehicle_works.dm).
+	. += works_models()
 
 // Research the press needs before it will take inputs or assemble.
 /obj/structure/car_workshop/proc/required_nodes()
@@ -60,12 +62,19 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/proc/model_size(model)
 	if (!(model in models()))
 		return 0
+	var/list/spec = works_spec(model)
+	if (spec)
+		return spec["size"]
 	return (model in list("ASNO Piccolino", "ASNO Quattroporte", "Yamasaki Kazoku")) ? 3 : 4
 
 /obj/structure/car_workshop/proc/costs(model)
 	var/size = model_size(model)
 	if (!size)
 		return null
+	var/list/spec = works_spec(model)
+	if (spec)
+		var/list/works_cost = spec["cost"]
+		return works_cost.Copy()
 	return list("steel" = size == 3 ? 40 : 60, "glass" = size == 3 ? 6 : 8, "cloth" = size == 3 ? 4 : 6, "cable" = 10, "wheels" = 4)
 
 /obj/structure/car_workshop/proc/requirement_text(mob/living/human/H)
@@ -73,7 +82,7 @@ var/global/list/car_workshop_prototypes = list()
 	return "[english_list(missing.len ? missing : required_nodes())] research [missing.len == 1 ? "is" : "are"] required."
 
 /obj/structure/car_workshop/proc/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty. Trucks, carriers and tanks are built piece by piece only."
 
 /obj/structure/car_workshop/proc/assembled_message(model)
 	return "Your [model] is assembled. Add the correct fuel before driving."
@@ -194,6 +203,9 @@ var/global/list/car_workshop_prototypes = list()
 		to_chat(H, SPAN_WARNING(requirement_text(H)))
 		return
 	var/list/options = models()
+	for (var/model in options.Copy())
+		if (!one_go(model))
+			options -= model
 	var/list/extras = extra_options()
 	options += extras
 	var/list/projects = project_options()
@@ -240,7 +252,7 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/proc/assemble_for(mob/living/human/H, choice)
 	if (busy || !Adjacent(H) || !allowed(H))
 		return null
-	if (!(choice in models()) || !has_inputs(choice) || !clear_footprint(choice))
+	if (!one_go(choice) || !has_inputs(choice) || !clear_footprint(choice))
 		to_chat(H, SPAN_WARNING("Assembly needs all inputs and an empty, dry floor bay."))
 		return null
 	busy = TRUE
@@ -297,6 +309,8 @@ var/global/list/car_workshop_prototypes = list()
 	qdel(B)
 	if (!A)
 		return null
+	if (works_spec(model))
+		A.name = lowertext(model)
 	var/list/required = costs(model)
 	for (var/key in required)
 		stock[key] -= required[key]
@@ -312,14 +326,15 @@ var/global/list/car_workshop_prototypes = list()
 	A.color = B.custom_color
 	A.new_number()
 	var/obj/structure/bed/chair/drivers/D
+	// The body stands against the east edge of the bay.
+	var/width = workshop_layout_width(B)
 	for (var/coords in B.tocreate)
 		var/list/C = splittext(coords, ",")
-		var/turf/T = locate(x + size - 2 + text2num(C[1]), y + text2num(C[2]), z)
+		var/turf/T = locate(x + size - width + text2num(C[1]), y + text2num(C[2]), z)
 		for (var/partpath in B.tocreate[coords])
-			// Map templates include free fuel/accessories. Manufacture only car parts.
-			if (ispath(partpath, /obj/item/weapon/reagent_containers/glass/barrel/fueltank))
-				partpath = ispath(partpath, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank) ? /obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank : /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
-			else if (ispath(partpath, /obj/item))
+			// Map templates include free fuel/accessories. Manufacture only vehicle parts.
+			partpath = workshop_layout_part(partpath)
+			if (!partpath)
 				continue
 			var/obj/O = new partpath(T)
 			parts += O
@@ -332,10 +347,15 @@ var/global/list/car_workshop_prototypes = list()
 			if (istype(O, /obj/structure/engine/internal))
 				A.engine = O
 				A.engine.key_axis = A
-				A.engine.engineclass = "carengine"
+				A.engine.engineclass = istype(A, /obj/structure/vehicleparts/axis/car) ? "carengine" : "engine"
 				A.engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 			if (istype(O, /obj/structure/bed/chair/drivers))
 				D = O
+	if (!D || !A.engine)
+		for (var/obj/O in parts)
+			qdel(O)
+		qdel(A)
+		return null
 	A.check_corners()
 	A.loc = A.corners[2]
 	D.axis = A
@@ -347,6 +367,8 @@ var/global/list/car_workshop_prototypes = list()
 	for (var/obj/structure/vehicleparts/movement/W in parts)
 		var/obj/structure/vehicleparts/frame/F = locate() in W.loc
 		W.MouseDrop(F)
+	for (var/obj/structure/lamp/lamp_small/tank/L in parts)
+		L.connection = A.engine
 	for (var/obj/structure/vehicleparts/license_plate/P in parts)
 		P.axis = A
 		P.reg_number = A.reg_number
