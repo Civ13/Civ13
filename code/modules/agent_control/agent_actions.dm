@@ -44,6 +44,9 @@
 				var/list/illness = H.illness_summary()
 				if (illness)
 					row["illness"] = illness
+				if (map && map.recipe_knowledge_enabled())
+					var/list/research = H.research_knowledge_summary()
+					row["research"] = list("known" = research["known"], "studying" = research["studying"], "exempt" = research["exempt"])
 			var/area/area = get_area(M)
 			if (area)
 				row["area"] = area.name
