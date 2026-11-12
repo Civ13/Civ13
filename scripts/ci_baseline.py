@@ -192,6 +192,9 @@ SUITES = {
     'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
         'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'large_bathtub_washing': {'files': ('tests/large_bathtub_washing/test_washing.py',),
+        'paths': ('tests/large_bathtub_washing/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (

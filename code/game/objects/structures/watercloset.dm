@@ -1107,36 +1107,21 @@
 	var/turf/t2 = locate(x, y+1, z)
 	var/turf/t3 = locate(x+1, y+1, z)
 
-	for (var/thing in loc)
-		var/atom/movable/AM = thing
-		var/mob/living/L = thing
-		if (istype(AM) && AM.simulated)
-			wash(AM)
-			if (istype(L))
-				process_heat(L)
-	for (var/thing in t1)
-		var/atom/movable/AM = thing
-		var/mob/living/L = thing
-		if (istype(AM) && AM.simulated)
-			wash(AM)
-			if (istype(L))
-				process_heat(L)
-	for (var/thing in t2)
-		var/atom/movable/AM = thing
-		var/mob/living/L = thing
-		if (istype(AM) && AM.simulated)
-			wash(AM)
-			if (istype(L))
-				process_heat(L)
-	for (var/thing in t3)
-		var/atom/movable/AM = thing
-		var/mob/living/L = thing
-		if (istype(AM) && AM.simulated)
-			wash(AM)
-			if (istype(L))
-				process_heat(L)
+	wash_location(loc)
+	wash_location(t1)
+	wash_location(t2)
+	wash_location(t3)
 	wash_floor()
 	reagents.add_reagent("water", reagents.get_free_space())
+
+/obj/structure/shower/bathtub/big/proc/wash_location(atom/location)
+	for (var/thing in location)
+		var/atom/movable/AM = thing
+		var/mob/living/L = thing
+		if (istype(AM) && AM.simulated)
+			wash(AM)
+			if (istype(L))
+				process_heat(L)
 
 //////////////////Fountains////////////////
 
