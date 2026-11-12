@@ -20,7 +20,7 @@
 				try
 					switch (AM.throwmode)
 						if (0)
-							if (AM && AM.original_target &&((((AM.x < AM.original_target.x && AM.dx == EAST) || (AM.x > AM.original_target.x && AM.dx == WEST)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
+							if (AM.original_target &&((((AM.x < AM.original_target.x && AM.dx == EAST) || (AM.x > AM.original_target.x && AM.dx == WEST)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
 								// only stop when we've gone the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
 								if (AM.error < 0)
 									var/atom/step = get_step(AM, AM.dy)
@@ -94,7 +94,7 @@
 							else
 								AM.finished_throwing()
 						if (1)
-							if (AM && AM.original_target &&((((AM.y < AM.original_target.y && AM.dy == NORTH) || (AM.y > AM.original_target.y && AM.dy == SOUTH)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
+							if (AM.original_target &&((((AM.y < AM.original_target.y && AM.dy == NORTH) || (AM.y > AM.original_target.y && AM.dy == SOUTH)) && AM.dist_travelled < AM.range) || (AM.a && AM.a.has_gravity == FALSE)) && AM.throwing && istype(AM.loc, /turf))
 								// only stop when we've gone a the whole distance (or max throw AM.range) and are on a non-space tile, or hit something, or hit the end of the map, or someone picks it up
 								if (AM.error < 0)
 									var/atom/step = get_step(AM, AM.dx)

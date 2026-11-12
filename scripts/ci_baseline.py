@@ -1319,6 +1319,7 @@ SUITES = {
     'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
         'tests/carriage_glide/',)},
     'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
+                              'tests/throw_launch_clearance/test_mode_guard.py',
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
