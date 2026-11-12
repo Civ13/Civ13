@@ -135,32 +135,29 @@ var/list/nonbreaking_types = list(
 	else
 		locked = FALSE
 
+/obj/structure/simple_door/key_door/custom/proc/toggle_key_lock(mob/user)
+	locked = !locked
+	if (locked == 1)
+		user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
+		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+		return
+	else if (locked == 0)
+		user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
+		playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
+		return
+
 /obj/structure/simple_door/key_door/custom/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
-			locked = !locked
-			if (locked == 1)
-				user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
-			else if (locked == 0)
-				user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
-				playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-				return
+			toggle_key_lock(user)
+			return
 		if (W.code != custom_code)
 			to_chat(user, SPAN_WARNING("This key does not match this lock!"))
 	else if (istype(W, /obj/item/weapon/storage/belt/keychain))
 		for (var/obj/item/weapon/key/KK in W.contents)
 			if (KK.code == custom_code)
-				locked = !locked
-				if (locked == 1)
-					user.visible_message(SPAN_WARNING("[user] locks the door."), SPAN_WARNING("You lock the door."))
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
-				else if (locked == 0)
-					user.visible_message(SPAN_NOTICE("[user] unlocks the door."), SPAN_NOTICE("You unlock the door."))
-					playsound(get_turf(user), 'sound/effects/door_lock_unlock.ogg', 100)
-					return
+				toggle_key_lock(user)
+				return
 		if (W.code != custom_code)
 			to_chat(user, SPAN_WARNING("None of the keys match this lock!"))
 	else if (istype(W, /obj/item/weapon/lockpick))
