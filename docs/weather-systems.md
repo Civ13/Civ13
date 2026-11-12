@@ -96,6 +96,35 @@ python3 tools/weather/make_chunks.py            # rewrite both icons
 python3 tools/weather/make_chunks.py --check    # exit 1 if either is stale
 ```
 
+### Cloud shadow
+
+Every drawn piece also carries a cloud shadow from
+`icons/effects/weather_storm.dmi`, under the rain. Its opacity follows the
+storm's strength and it starts further out than the rain does, so the cloud
+is seen arriving before it breaks. The shadow's sixteen frames slide one
+whole icon the way the wind carries the storms, so neighbouring pieces join
+and the loop has no jump.
+
+### Lightning and thunder
+
+`weather_lightning_step()` (code/modules/1713/weather_lightning.dm) lets each
+rain storm at heavy strength roll for a strike every two seconds: about one
+every 20 seconds, or every 8 in a severe storm. Snow and sand throw none.
+Players within 90 tiles see a soft white flash (weaker under a roof), see the
+bolt if it lands on their screen, and hear thunder after a third of a second
+for every ten tiles. **A strike is seen and heard only: it starts no fire and
+hurts nobody.** That stays so until firefighting tools exist.
+
+The shadow and the bolts are placed pixel by pixel by a seeded script, and
+the two thunder sounds are synthesised noise:
+
+```sh
+python3 tools/weather/make_storm_art.py            # rewrite the icons
+python3 tools/weather/make_storm_art.py --check    # exit 1 if stale
+python3 tools/weather/make_storm_art.py --preview storm.gif
+python3 tools/weather/make_thunder.py              # needs numpy and ffmpeg
+```
+
 ## Admin tools
 
 - **Weather Map** (Admin tab): a live map of a level with every system, its
@@ -117,6 +146,5 @@ what is drawn.
 
 ## Not yet done
 
-Cloud shadows and lightning, moisture gained over water and lost over high
-ground, wind in eight directions, and rough seas under a storm. Lightning
-will start no fires until firefighting tools exist.
+Moisture gained over water and lost over high ground, wind in eight
+directions, and rough seas under a storm.
