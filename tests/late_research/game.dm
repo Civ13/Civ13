@@ -1,6 +1,6 @@
 // Late research on book-research worlds, on production source: standing node
-// effects, field work, research teams, rushed work and
-// ciphers. Client presence, light and action waits are isolated.
+// effects, field work, research teams, rushed work,
+// ciphers and the extended Health, Agriculture and Military lines. Client presence, light and action waits are isolated.
 var/late_failures = 0
 var/late_wait_result = TRUE
 /world
@@ -71,8 +71,11 @@ var/late_wait_result = TRUE
 	late_check(!apply_crafting_node_effects(H, wooden) && wooden.maxhealth == wood_health, "Alloys leaves wooden tools alone")
 	late_check(!apply_crafting_node_effects(H, new /obj/item/weapon/paper(locate(1,1,1))), "Alloys ignores things that are not material tools")
 	// The scales each hook multiplies by.
-	late_check(farming_node_bonus(H) == 0.25 && farming_node_bonus(novice) == 0, "Advanced Agriculture adds a quarter to the harvest")
-	late_check(harvest_skill_user_bonus(H, "farming") - harvest_skill_user_bonus(novice, "farming") == 0.25 && harvest_skill_user_bonus(H, "hunting") == harvest_skill_user_bonus(novice, "hunting"), "the harvest bonus reaches farming and not hunting")
+	var/mob/living/human/late_fixture/farmer = new(locate(4,2,1))
+	farmer.teach("advanced_agriculture")
+	late_check(farming_node_bonus(farmer) == 0.25 && farming_node_bonus(novice) == 0, "Advanced Agriculture adds a quarter to the harvest")
+	late_check(farming_node_bonus(H) == 0.5, "Crop Breeding adds a further quarter on top")
+	late_check(harvest_skill_user_bonus(H, "farming") - harvest_skill_user_bonus(novice, "farming") == 0.5 && harvest_skill_user_bonus(H, "hunting") == harvest_skill_user_bonus(novice, "hunting"), "the harvest bonus reaches farming and not hunting")
 	late_check(surgery_node_quality(H) == 1.15 && surgery_node_quality(novice) == 1, "Anesthetic Surgery steadies the surgeon's steps")
 	late_check(surgery_node_time(H) == 0.75 && surgery_node_time(novice) == 1, "Modern Medicine shortens surgery steps")
 	late_check(H.disease_node_scale() == 0.5 && novice.disease_node_scale() == 1, "Public Health halves the chance of catching an illness")
@@ -83,6 +86,84 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	H.stat = DEAD
 	late_check(!H.has_node_effect("alloys"), "the dead hold no effects")
+/turf/floor/dirt/late_fixture/New()
+	return
+/proc/late_test_late_lines()
+	var/mob/living/human/late_fixture/H = new(locate(3,3,1))
+	var/mob/living/human/late_fixture/novice = new(locate(5,3,1))
+	var/list/ends = list("Health" = 0, "Agriculture" = 0, "Military" = 0)
+	for(var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if(N.category in ends)
+			ends[N.category] = max(ends[N.category], N.era_tier)
+	late_check(ends["Health"] >= 8 && ends["Agriculture"] >= 8 && ends["Military"] >= 8, "Health, Agriculture and Military all reach era 8 or later ([ends["Health"]], [ends["Agriculture"]], [ends["Military"]])")
+	for(var/node_id in book_only_research_nodes)
+		var/datum/research_node/N = get_research_node(node_id)
+		late_check(N && N.book_only && N.era_tier >= 7 && N.mode == RESEARCH_MODE_ANALYSIS, "[node_id] is a late book-only subject and no era capstone")
+		var/prereqs_ok = N && length(N.prereqs)
+		for(var/prereq in N?.prereqs)
+			var/datum/research_node/P = get_research_node(prereq)
+			if(!P || P.era_tier > N.era_tier)
+				prereqs_ok = FALSE
+		late_check(prereqs_ok, "[node_id] follows from earlier subjects")
+		late_check(length(get_node_recipe_paths(node_id)) || length(research_node_effect_text(node_id)), "[node_id] unlocks recipes or carries a standing effect")
+		var/has_field_work = FALSE
+		for(var/id in field_experiments)
+			var/list/E = field_experiments[id]
+			if(E[1] == node_id)
+				has_field_work = TRUE
+		late_check(has_field_work, "[node_id] can be advanced by field work")
+		late_check(!research_node_dormant(N), "[node_id] is live on a book-research world")
+	// What the new subjects unlock, for the character who knows them only.
+	var/list/unlocks = list(
+		"/obj/item/weapon/defibrillator/loaded" = "emergency_medicine",
+		"/obj/item/weapon/cell/standard" = "emergency_medicine",
+		"/obj/item/weapon/reagent_containers/syringe/autoinjector" = "emergency_medicine",
+		"/obj/item/bodybag" = "emergency_medicine",
+		"/obj/item/weapon/foldable/generic" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell/smoke" = "support_weapons",
+		"/obj/item/weapon/foldable/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm/he" = "guided_weapons")
+	for(var/path in unlocks)
+		late_check(ispath(text2path(path)) && get_recipe_node_req(path) == unlocks[path], "[path] is gated on [unlocks[path]]")
+		late_check(!crafting_recipe_allowed(novice, path), "[path] cannot be made without the chapter")
+	for(var/node_id in book_only_research_nodes)
+		H.teach(node_id)
+	var/all_allowed = TRUE
+	for(var/path in unlocks)
+		if(!crafting_recipe_allowed(H, path))
+			all_allowed = FALSE
+	late_check(all_allowed, "a character who studied the chapters can make everything they unlock")
+	// What the defibrillator recipe gives is ready to use, and the pen starts empty.
+	var/obj/item/weapon/defibrillator/loaded/defib = new(locate(1,1,1))
+	late_check(istype(defib.bcell) && defib.bcell.check_charge(100), "a crafted defibrillator comes with a charged cell")
+	var/obj/item/weapon/reagent_containers/syringe/autoinjector/pen = new(locate(1,1,1))
+	late_check(pen.reagents && pen.reagents.total_volume == 0 && pen.single_use, "a crafted autoinjector is empty and works once")
+	// Soil Science: a harvest feeds the plot, up to its limit.
+	var/turf/floor/dirt/late_fixture/plot = new(locate(7,7,1))
+	plot.soil_nutrition = 60
+	late_check(!soil_node_return(novice, plot) && plot.soil_nutrition == 60, "an ordinary farmer's harvest leaves the soil as it was")
+	late_check(soil_node_return(H, plot) && plot.soil_nutrition == 90, "Soil Science returns nutrition to the plot at harvest")
+	plot.soil_nutrition = plot.max_soil_nutrition - 5
+	soil_node_return(H, plot)
+	late_check(plot.soil_nutrition == plot.max_soil_nutrition && !soil_node_return(H, locate(1,1,1)), "the soil never goes over its limit, and only farm soil gains")
+	// Harvests are field work.
+	late_check(note_field_work(H, "harvests", 3) && H.field_work_amount("harvests") == 3, "harvests count as field work")
+	// Off book-research worlds the subjects do not exist for play.
+	map.book_research = FALSE
+	var/old_age = map.ordinal_age
+	map.ordinal_age = 9
+	var/dormant = TRUE
+	for(var/node_id in book_only_research_nodes)
+		if(!research_node_dormant(get_research_node(node_id)) || map.is_node_done("none", node_id) || map.is_node_done("Testers", node_id))
+			dormant = FALSE
+	late_check(dormant, "off book-research worlds the new subjects are never done, whatever the era")
+	late_check(!research_node_dormant(get_research_node("modern_medicine")) && map.is_node_done("none", "modern_medicine"), "older subjects are untouched there")
+	late_check(!crafting_recipe_allowed(H, "/obj/item/weapon/defibrillator/loaded") && !soil_node_return(H, plot), "and they unlock nothing there")
+	map.ordinal_age = old_age
+	map.book_research = TRUE
 /proc/late_test_field_work()
 	// Every experiment is well formed.
 	var/list/shares = list()
@@ -332,6 +413,7 @@ var/late_wait_result = TRUE
 		late_test_field_work()
 		late_test_teams()
 		late_test_ciphers()
+		late_test_late_lines()
 	catch(var/exception/e)
 		late_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"
