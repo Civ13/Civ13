@@ -1054,9 +1054,10 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
-		// --- cooperage (14) ---
+		// --- cooperage (15) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
+		"/obj/item/weapon/storage/backpack/pack_frame" = "cooperage",
 		"/obj/item/weapon/storage/backpack/rucksack" = "cooperage",
 		"/obj/item/weapon/storage/belt/leather" = "cooperage",
 		"/obj/item/weapon/storage/foodbox" = "cooperage",
@@ -1847,7 +1848,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (42) ---
+		// --- primitive_construction (43) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
@@ -1869,6 +1870,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/roofbuilder" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder/leaves" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder/palm" = "primitive_construction",
+		"/obj/structure/closet/crate/travois" = "primitive_construction",
 		"/obj/structure/grille/fence" = "primitive_construction",
 		"/obj/structure/grille/fence/picket" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
@@ -2343,7 +2345,7 @@ var/global/list/node_grid_col_cache = null
 		// --- watermills (2) ---
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (83) ---
+		// --- weaving (86) ---
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/bronze" = "weaving",
@@ -2425,6 +2427,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/bedroll/cloth" = "weaving",
 		"/obj/structure/bed/hammock" = "weaving",
 		"/obj/item/weapon/reagent_containers/glass/rag" = "weaving",
+		"/obj/item/weapon/storage/backpack/pack_basket" = "weaving",
+		"/obj/item/weapon/storage/backpack/sling_bag" = "weaving",
+		"/obj/item/weapon/storage/belt/carry_net" = "weaving",
 		"/obj/item/weapon/tent" = "weaving",
 		"/obj/structure/curtain" = "weaving",
 		"/obj/structure/curtain/leather" = "weaving",

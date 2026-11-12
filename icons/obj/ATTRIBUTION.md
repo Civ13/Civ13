@@ -35,3 +35,11 @@ All states (`diving_dress`, `diving_helmet`, `hard_dive_suit`, `hard_dive_helmet
 Civ13 (2026-11-12), pixel by pixel from a fixed palette by
 `tests/sprites/create_diving_gear.py`. No borrowed or generated artwork. They are
 under the same terms as the rest of Civ13's art.
+
+## primitive_carrying.dmi and icons/mob/primitive_carrying.dmi
+
+All states (`carry_net`, `sling_bag`, `pack_basket`, `pack_frame`, `travois`,
+`travois_open`; item icons and the four-direction worn sprites) were drawn for
+Civ13 (2026-11-12), pixel by pixel from a fixed palette by
+`tests/sprites/create_primitive_carrying.py`. No borrowed or generated artwork.
+They are under the same terms as the rest of Civ13's art.
