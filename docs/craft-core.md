@@ -148,8 +148,46 @@ subtype answers `chart()`.
 `space/orbit_chart.dm` is the first steered chart: `orbit_chart()` on an orbit
 world, 100 squares across with the arrival beacon in the middle and a station
 token for every party that owns a plane, at a spot the plane registry keeps in
-`chart_spots`. `/obj/structure/chart_helm/orbit` steers on it; no craft
-carries one until the plane pool phase.
+`chart_spots`. `/obj/structure/chart_helm/orbit` steers a spacecraft on it
+(below). A console subtype adds its own orders with `extra_orders()` and
+`extra_order()`, and `ordered()` is called before any order is carried out.
+
+## Turf bodies and spacecraft
+
+`craft/turf_body.dm`: `/datum/craft_body/turfs` is a hull made of turfs, kept
+as offsets from a pivot. `shift(x, y, level)` takes the type and facing of
+every tile and everything standing on it to the matching tiles of the new
+place, on the same level or another, inside one rigid carry, and leaves
+`open_turf` behind. `plan()` checks every tile the hull does not already
+cover with `tile_refusal()`; `ready_refusal()` is where a subtype says the
+hull cannot move as built. It does not turn, and it assumes the levels it
+moves between share one area.
+
+`space/spacecraft.dm`: a spacecraft is the habitat module an orbital helm
+stands in and every module docked to it, up to `SPACECRAFT_MAX_MODULES` (5).
+The helm reads the hull again (`survey()`) each time it is used, so modules
+docked or folded later are picked up; a node module, a hull built into a
+module that is not docked to her, a second helm or a region gate aboard keep
+her from flying, and the console says why. The helm holds the propellant
+(rocket propellant poured in, `SPACECRAFT_TANK` 120) and is her one drive.
+
+- Lying off a place her token is pinned to that place's token. Which place
+  is read from the plane her hull is on (`lies_at()`): the arrival beacon, a
+  station, or nothing in the lanes.
+- A burn or a course calls `depart()`: she is given a slot of the lanes
+  (planes owned by `transit`, 32-tile slots, claimed past the pool's pause
+  like a station's own planes) and shifted there. `spacecraft_lanes_sweep()`
+  frees the slots of ships that are gone.
+- `arrived()` calls `arrive()`: the station token under her names the level,
+  `spacecraft_welcome()` asks whether her party (the party of whoever last
+  gave an order) owns the station or one of its docking ports welcomes it,
+  and `berth_on()` finds clear space nearest the middle of the plane with two
+  tiles free all round. Refused, she holds off in the lanes.
+- "Thrusters" at the helm moves her up to 8 tiles, one every half second, a
+  unit of propellant a tile, only while she lies off a place.
+
+The orbital helm has a recipe (electronics, with the other spaceflight
+fittings). No orbit region runs yet, so the probe is what exercises this.
 
 ## Sea chart and harbours
 
@@ -361,10 +399,41 @@ Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).
 
+## Carriages
+
+`code/game/objects/structures/carriage.dm` is the horse carriage, and
+`craft/carriage_papers.dm` puts it on the core as a `/datum/craft/vehicle/carriage`
+with a `/datum/craft_body/carriage` (its footprint). It keeps a vehicle's
+papers in a carriage's words (master, coachman, wheelwright, groom), appears in
+"Our vehicles", and its reins follow the vehicle rule: crew urge the team,
+a stranger forces the reins while an owner is about and is refused otherwise.
+The carriage saves the register in `register_state`.
+
+- **Footprint.** Two tiles wide and three long along `facing`, with the team
+  in a lane two tiles wide ahead of it (`carriage_cells()`, `lane_depth()`).
+  A turn re-lays bounds and sprite offset and is refused when the new
+  footprint or lane is blocked, or when turning round faster than a walk.
+- **Team and seats.** Up to four horses or oxen (not mixed), and five seats for
+  passengers or loose structures (crates, barrels). Everything aboard stands on
+  the carriage's corner tile and is drawn there with pixel offsets
+  (`seat_point()`, `team_point()`, `place_at()`); `let_off()` is the one way off.
+- **Pace.** A horse pulls 2 and an ox 1 (half when starving). Oxen walk, one
+  horse trots, two canter (`carriage_top_gear()`). Each gear has a delay that
+  grows with `load_ratio()` (load over `pull * CARRIAGE_PULL_CAPACITY`), is
+  slower off built ground, in snow and in shallow water, and takes the walking
+  slope rule (`terrain_slope_delay()`). Past four times capacity it will not
+  move. Every animal pays hunger per step, more uphill, halved by a harness.
+- **Steps.** A timer keeps to `next_step`; each step leases one glide to the
+  carriage and everything aboard for exactly the step's interval. The tiles the
+  step newly covers must be clear: people and large animals stop it (and are
+  run into), small animals are run over, deep water needs a bridge.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

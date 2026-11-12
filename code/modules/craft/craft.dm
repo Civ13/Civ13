@@ -127,6 +127,14 @@ var/global/list/crafts = list()
 		cast_off()
 	if (token)
 		token.follow_craft()
+	// Her wiping wears off and a degaussing coil draws power as she goes
+	// (naval/degaussing.dm), then the mines near the water she just crossed
+	// feel her (naval/naval_mines.dm).
+	var/turf/now = body ? body.origin() : null
+	if (old_origin && now && old_origin.z == now.z)
+		magnetic_moved(get_dist(old_origin, now))
+	if (naval_mines.len)
+		check_naval_mines()
 
 /datum/craft/proc/on_turn(angle)
 	if (berth)
@@ -202,7 +210,7 @@ var/global/list/crafts = list()
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M))
 				continue
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
 				continue
 			. += M
 

@@ -41,6 +41,20 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'vehicle_level_shift': {'files': ('tests/vehicle_level_shift/test_shift.py',),
+        'paths': ('tests/vehicle_level_shift/',
+                  'code/modules/1713/machinery/modular_vehicles/axis.dm',
+                  'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+                  'code/modules/1713/machinery/modular_vehicles/ships/submarine.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'gaia_weather': {'files': ('tests/gaia_weather/test_frequency.py',),
+        'paths': ('tests/gaia_weather/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/modules/1713/weather_policy.dm', 'code/modules/1713/weather.dm',
+            'code/__defines/weather.dm', 'tests/weather_policy/test_policy.py')},
+    'biofuel_capacity': {'files': ('tests/biofuel_capacity/test_output.py',),
+        'paths': ('tests/biofuel_capacity/',),
+        'shared_paths': ('code/modules/1713/modern_items.dm', 'tests/save_movement/source_adapter.py')},
     'drying_rack_batches': {'files': ('tests/drying_rack_batches/test_rack.py',),
         'paths': ('tests/drying_rack_batches/', 'code/modules/1713/complex_production.dm')},
     'meat_grinder_crank': {'files': ('tests/meat_grinder_crank/test_crank.py',),
@@ -399,7 +413,8 @@ SUITES = {
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
         'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
             'code/game/objects/buckling.dm',
-            'code/game/objects/structures/transports.dm')},
+            'code/game/objects/structures/transports.dm',
+            'code/game/objects/structures/carriage.dm')},
     'paint_buckets': {'files': ('tests/paint_buckets/test_colors.py',),
         'paths': ('tests/paint_buckets/',), 'shared_paths': (
             'code/game/objects/items/weapons/paint.dm',
@@ -489,6 +504,11 @@ SUITES = {
             'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
+    # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
+        'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
+            'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
@@ -634,6 +654,7 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/simple_animal/riding.dm',
             'code/game/mob/living/simple_animal/simple_animal.dm',
             'code/game/objects/structures/transports.dm',
+            'code/game/objects/structures/carriage.dm',
             'code/modules/research_tree/research_node.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
@@ -1409,7 +1430,7 @@ SUITES = {
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Shared transport/persistence files retain their existing all-suite fallback.
     'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
-        'tests/carriage_glide/',)},
+        'tests/carriage_glide/',), 'shared_paths': ('code/game/objects/structures/carriage.dm',)},
     'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
                               'tests/throw_launch_clearance/test_mode_guard.py',
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (

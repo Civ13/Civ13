@@ -196,7 +196,7 @@ steered chart with the arrival beacon in the middle, one station token per
 party that owns a plane, named for the party and kept at a spot saved in the
 registry, stations lying apart, a chart made again finding the same spots, a
 new party charting a new station, a party with no plane left losing its token,
-and an orbital helm starting at the beacon.
+and an orbital helm outside a habitat module steering nothing.
 
 It also checks the plane pool (`code/modules/craft/plane_pool.dm`): one pool
 over the registry's planes, a site taking one plane, the cap sites share, the
@@ -204,3 +204,22 @@ pause switch kept in the registry and leaving station claims alone, slots of a
 shared plane claimed lowest first and kept in the registry, and a plane that
 is not emptied while a bunk is kept as home or a character is on it, then
 emptied, released and its slots forgotten.
+
+## Spacecraft
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
+```
+
+`spacecraft_probe.dm` runs on a 64 x 64 x 6 vacuum world and checks
+spacecraft (`code/modules/space/spacecraft.dm`, `code/modules/craft/turf_body.dm`):
+a helm in open space steers nothing, a helm in a module makes one ship of it
+and the module docked to it, a second helm aboard is refused, a dry tank
+keeps her where she is, thrusters move walls, floors, hatch, core, air, cargo
+and crew a tile at a time for a unit of propellant each and stop short of
+something in the way, a course takes her into a slot of the lanes and leaves
+nothing behind, the lanes are not charted as a station, her token crosses the
+chart burning propellant, a station that does not welcome her party leaves
+her holding off, a welcoming docking port lets her in clear of the station's
+hull and frees her slot, the ship and token are made again from the helm, the
+arrival beacon takes anyone, and six modules are refused as a station.

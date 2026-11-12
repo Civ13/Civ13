@@ -46,6 +46,16 @@
 				stopmovementloop()
 				movement_processes--
 				return FALSE
+			// Her wiping and degaussing coil (naval/degaussing.dm), then the
+			// mines near the water she just crossed (naval/naval_mines.dm).
+			if (craft || naval_mines.len)
+				var/datum/craft/MC = craft_of_axis(src)
+				if (MC)
+					MC.magnetic_moved(1)
+					if (naval_mines.len)
+						MC.check_naval_mines()
+				if (QDELETED(src))
+					return FALSE
 		else
 			currentspeed = 0
 			moving = FALSE
@@ -172,7 +182,7 @@
 						else
 							visible_message("<span class='warning'>\the [src] hits \the [O]!</span>","<span class='warning'>You hit \the [O]!</span>")
 							return FALSE
-					else if (O.density == FALSE && !(O in transporting))
+					else if (O.density == FALSE && !(O in transporting) && !O.craft_left_behind())
 						if (!istype(O, /obj/structure/sign/traffic/zebracrossing) && !istype(O, /obj/structure/sign/traffic/side) && !istype(O, /obj/structure/sign/traffic/central) && !istype(O, /obj/structure/rails))
 	//						visible_message("<span class='warning'>\the [src] crushes \the [O]!</span>","<span class='warning'>You crush \the [O]!</span>")
 							qdel(O)
@@ -263,12 +273,10 @@
 				var/obj/item/weapon/grenade/G = M
 				if (G.is_vehicle_exterior(src))
 					continue
-		 /* TODO: Naval Mines
-			if (istype(M, /obj/item/mine/at))
-				var/obj/item/mine/at/MAT = M
-				if (MAT.anchored)
-					MAT.trigger(F)
-		*/
+			// Naval mines stay where they were laid (naval/naval_mines.dm);
+			// the craft sets them off after the move.
+			if (M.craft_left_behind())
+				continue
 			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
 				if (istype(M, /obj/structure/vehicleparts/frame))
 					var/obj/structure/vehicleparts/frame/other = M

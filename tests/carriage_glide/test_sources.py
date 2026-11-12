@@ -3,6 +3,7 @@ import re,unittest,hashlib
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TRANSPORT=ROOT/'code/game/objects/structures/transports.dm'
+CARRIAGE=ROOT/'code/game/objects/structures/carriage.dm'
 HUMAN=ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm'
 SAVER=ROOT/'code/modules/persistence/functions.dm'
 
@@ -37,7 +38,7 @@ def contracts(s,h,p):
 
 class Sources(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.s=TRANSPORT.read_text();cls.h=HUMAN.read_text();cls.p=SAVER.read_text()
+    def setUpClass(cls):cls.s=TRANSPORT.read_text();cls.c=CARRIAGE.read_text();cls.h=HUMAN.read_text();cls.p=SAVER.read_text()
     def test_ownership_and_custom_save_contracts(self):contracts(self.s,self.h,self.p)
     def test_omission_controls(self):
         mutations=[('carriage_glide_owner = null','// omitted'),('if (glide_size == carriage_glide_applied)','if (TRUE)'),('carriage = null // Retire','// Retire'),('C.carriage_glide == src','TRUE'),('if (!carriage || !A || A.carriage_glide_owner != src)','if (!carriage)'),('A.carriage_glide_step = null // One arrival','// One arrival'),('H.human_subtile_release_glide()','// omitted'),('GLOB.moved_event.unregister(src, lease,','GLOB.moved_event.register(src, lease,'),('32 * world.tick_lag / max(interval, world.tick_lag)','32 / max(interval, world.tick_lag)')]
@@ -56,17 +57,24 @@ class Sources(unittest.TestCase):
     def test_interval_is_captured_before_real_step_and_used_by_carriage_wait(self):
         body=proc(self.s,'/obj/structure/vehicle/proc/movementloop')
         self.assertLess(body.index('interval = vehicle_m_delay + 1'),body.index('do_move(driver.dir, interval)'))
-        self.assertIn('spawn(istype(src, /obj/structure/vehicle/carriage) ? interval : vehicle_m_delay + 1)',body)
+        # The carriage (carriage.dm) leases each leg for the interval it then waits.
+        step=proc(self.c,'/obj/structure/vehicle/carriage/do_move')
+        self.assertLess(step.index('interval = step_interval(start, target)'),step.index('next_step = due + interval'))
+        self.assertLess(step.index('next_step = due + interval'),step.index('claim_ride_glides(m_dir, interval)'))
+        loop=proc(self.c,'/obj/structure/vehicle/carriage/movementloop')
+        self.assertIn('max(world.tick_lag, next_step - world.time)',loop)
     def test_stop_and_repeated_start_wait_for_existing_wake(self):
-        body=proc(self.s,'/obj/structure/vehicle/carriage/movementloop')
-        self.assertIn('if (!movement_processes)\n\t\trelease_carriage_glides()',body)
+        stop=proc(self.c,'/obj/structure/vehicle/carriage/stopmovementloop')
+        self.assertIn('deltimer(step_timer)',stop);self.assertIn('release_carriage_glides()',stop)
+        start=proc(self.c,'/obj/structure/vehicle/carriage/startmovementloop')
+        self.assertIn('if (moving || !gear || !driver_ready())\n\t\treturn',start)
         helpers=self.s.split('// Appearance-only leases.')[1]
         self.assertNotIn('spawn(',helpers);self.assertNotIn('sleep(',helpers)
     def test_explicit_dismount_cargo_and_untie_release_without_needing_arrival(self):
-        c=self.s[self.s.index('/obj/structure/vehicle/carriage\n'):]
-        for line in re.finditer(r'(?m)^(\t+)(ontop|ontop_o) -= (M|user|driver)$',c):
-            prior=c[:line.start()].splitlines()[-1].strip()
-            self.assertEqual(prior,line[3]+'.release_carriage_glide()')
+        # Everything leaves a carriage through let_off(), which drops the lease first.
+        body=proc(self.c,'/obj/structure/vehicle/carriage/proc/let_off')
+        self.assertLess(body.index('A.release_carriage_glide()'),body.index('ontop -= A'))
+        self.assertNotRegex(self.c,r'(?m)^\t+(ontop|ontop_o) -= (?!A$)')
     def test_external_movement_and_deletion_retire_carriage_or_member(self):
         for path in ('moved','destroyed'):
             body=proc(self.s,'/datum/carriage_glide_lease/proc/'+path)
@@ -95,24 +103,16 @@ class Sources(unittest.TestCase):
         self.assertNotIn('/atom/movable/forceMove(',self.s)
         self.assertNotIn('/atom/movable/Destroy(',self.s)
     def test_tack_substitutions_are_exact_before_legacy_projection(self):
-        for slot in range(1,5):
-            call=f'pulling{slot}.simplehunger -= pulling{slot}.animal_draft_hunger_cost()'
-            self.assertEqual(self.s.count(call),1)
-            self.assertNotIn(f'pulling{slot}.simplehunger -= 1',self.s)
+        # The harness halves the draft hunger of every animal in a team.
+        self.assertEqual(self.c.count('A.simplehunger -= A.animal_draft_hunger_cost() * hill'),1)
+        self.assertNotIn('simplehunger -= 1',self.c)
 
     def test_complete_legacy_transport_projection(self):
+        # The carriage moved to carriage.dm. The rest of the legacy file keeps
+        # its reviewed changes; undo them and compare with the frozen hash
+        # (the earlier frozen projection with the carriage block cut off).
+        self.assertNotIn('/obj/structure/vehicle/carriage',self.s.split('// Appearance-only leases.')[0])
         s=self.s.split('// Appearance-only leases.')[0].removesuffix('\n\n')
-        # The optional leather harness is a separately reviewed gameplay
-        # change. Undo exactly its four substitutions, retaining the original
-        # frozen transport hash for every other legacy statement.
-        for slot in range(1,5):
-            call=f'pulling{slot}.simplehunger -= pulling{slot}.animal_draft_hunger_cost()'
-            self.assertEqual(s.count(call),1)
-            s=s.replace(call,f'pulling{slot}.simplehunger -= 1')
-        comment='// Harnesses halve this extra draft-work hunger.'
-        self.assertEqual(s.count(comment),1)
-        s=s.replace(comment,"//Each step -1 hunger. Basically doubles it's food comsuption while carrying the carriage")
-        # Clicking a vehicle retakes its controls after waking (separately reviewed).
         retake='\tif (retake_controls(user))\n\t\treturn\n'
         self.assertEqual(s.count(retake),2)
         s=s.replace(retake,'')
@@ -120,13 +120,7 @@ class Sources(unittest.TestCase):
         s=s.replace('var/m_dir = null, interval = null','var/m_dir = null')
         s=s.replace('\t\tvar/interval = null\n','').replace('\t\t\tinterval = vehicle_m_delay + 1\n','')
         s=s.replace('do_move(driver.dir, interval)','do_move(driver.dir)')
-        s=s.replace('\t\tif (isnull(interval))\n','')
-        s=s.replace('\t\t// Other vehicles retain their original scheduling behavior.\n','')
-        s=s.replace('spawn(istype(src, /obj/structure/vehicle/carriage) ? interval : vehicle_m_delay + 1)','spawn(vehicle_m_delay+1)')
-        s=s.replace('\t// The existing scheduled wake finishes the previous visual leg, including stops.\n\t// A repeated start while that wake is pending must not snap its glide.\n\tif (!movement_processes)\n\t\trelease_carriage_glides()\n','')
-        # Riders settle squarely on the vehicle and are never run into by it
-        # (motorcycle fix); every vehicle leases its riders' glide.
-        self.assertEqual(s.count('M.settle_on_tile()\n'),6)
+        s=s.replace('spawn(vehicle_m_delay + 1)','spawn(vehicle_m_delay+1)')
         s=re.sub(r'(?m)^\t+M\.settle_on_tile\(\)\n','',s)
         own='\t\t// A rider\'s body can reach into the tile ahead; never hit our own.\n\t\tif (L == driver || (L in ontop))\n\t\t\tcontinue\n'
         self.assertEqual(s.count(own),1)
@@ -144,7 +138,7 @@ class Sources(unittest.TestCase):
         body=body[:-len(tail)]
         body=re.sub(r'(?m)^\t','',body)
         s=s[:start]+body+s[end:]
-        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'f2200e39b805dc99746b8622ec7ae985d4edac46')
+        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'7c136f55b12bc1b0b25195b8c513c334fde1de4a')
     def test_ci_is_explicit_source_only_and_preserves_mixed_file_fallback(self):
         s=(ROOT/'scripts/ci_baseline.py').read_text()
         self.assertIn("'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',)",s)
@@ -158,7 +152,7 @@ class Sources(unittest.TestCase):
         self.assertIn('R.glide_size = 4',probe)
         self.assertIn('for(var/key in list("rider", "horse1", "horse2"))',probe)
         self.assertIn('if(row[key] != row["carriage"])',probe)
-        self.assertIn('32 * world.tick_lag / max(row["delay"] + 1, world.tick_lag)',probe)
+        self.assertIn('32 * world.tick_lag / max(row["delay"], world.tick_lag)',probe)
         self.assertIn('after["rider_glide"] != 4',probe)
         for gear in ('gear1','gear2','gear3'):self.assertIn('"'+gear+'" = 0',probe)
 

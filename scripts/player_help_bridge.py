@@ -70,9 +70,9 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '2862e286fd226fc577db7f9cb3894a86e3bb6982'
+WIKI_REVIEWED_REVISION = 'd36776cdfaca4dbd569b0586676f3ee8375c0673'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Animals.md': ('d57a35b5247a621ff482100a3152f7cacdcac91078e28e1928f6aeafcf9dcecb', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('7b6102b505dee6ce050b53adb36811d59b4128ec7a16c4ed31e99828ed137a5a', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -80,7 +80,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('74a72aed647696ceb0097b50cc38b5943a2f5dcd90b0a05c763604ddb5eff36c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
+    'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('74daf913d98ef822848da201d9692f842b91fd8f2cbbf16ecbc0848b26f27883', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('06ce559515a39bd9f1b9391bb5117da49994c651a6e685e7c8f20305fd0c45b3', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Boats.md': ('f4c73e215b310722ea45cb8cad2a69e10b25824ac654902d0d6a242397979eb4', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('7d841e6db23560fc80845b05b5fea04277cabadc316440930211280c1e67901c', 'miscellaneous crafting misc items dress dresses dressmaking tailored sew sewing candle candles'),
-    'maps/Gaia.md': ('6e0d74bdce11739ef9650cfb631db6917651b9da0d7b0f05c0af873347fc8583', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('daaa1f3890ec3ae36f0b5f4d02d52bb05b1547682a6817c96c3b596c102d375f', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),

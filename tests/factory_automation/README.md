@@ -133,3 +133,19 @@ Fixture checks do not establish graphical interaction, a full disk save and relo
 - Liquids: pipes fill up to a hundred water and a hundred tannin and nothing else.
 - Work: nothing without power, and it says why; a powered drum soaks one bark in ten water for ten tannin when it runs low, tans a dry hide for five tannin in two powered seconds, washes and tans a pelt for five water and five tannin, merges leather on its tile and offers it to an arm; without water an unwashed hide waits.
 - Saving: hoppers are saved and progress is not; load drops unknown entries, clamps the hoppers and resumes; removing the drum returns its hides and bark as loaded.
+
+## Pipe networks on the factory monitor
+
+`python3 -B -m unittest discover -s tests/factory_automation -v` projects the
+complete production `pipe_network_rows()` proc with fake range, turf, type and
+deletion boundaries. It checks deduplication, the seven-tile/same-level limit,
+whole-network counts, stale topology, missing/closed/deleted/contained pipes,
+pump states, last-step flow, read-only state and negative controls for removed
+deduplication, dirty-topology and idle-flow guards. It is source-control-flow
+coverage, not native compilation, scheduling, rendering or save evidence.
+
+`meter_probe.dm` also exercises the production monitor with real pipe networks:
+a pipes-only page, two local networks, distant and other-level exclusion,
+powered flow, repeated read-only observation, stopped flow and split/rebuild.
+The new Python test file selects the existing factory-automation native group
+on its introducing PR; later native runs retain the normal opt-in rules.

@@ -367,6 +367,16 @@ also shows the power units the machine has reserved on its grid right now
 (belts draw through their drive), and the page totals them and shows each
 grid's use against its capacity, counting everything on that grid.
 
+The monitor also summarizes pipe networks reached by an open pipe within seven
+tiles on its level, once per network: pipe count, running/total pumps, idle or
+flowing state, and units moved on the last fluid step. These are whole-network
+counts, including connected equipment outside the monitor's range; the nearby
+pipe offset identifies an access point, not the network's center. Pipe flow is
+separate from item rates and does not alter the item-machine power total.
+Changing pipe topology temporarily withholds network rows until ordinary fluid
+processing rebuilds them. A monitor read never triggers that rebuild or moves
+liquid. The pipe meter remains the detailed per-machine view.
+
 ### Ownership and griefing
 
 - Arms, gates and fabricators remember the faction of whoever configured them;

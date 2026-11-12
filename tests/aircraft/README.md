@@ -31,3 +31,27 @@ The probe covers phases 1 and 2 of modular aircraft (`code/modules/1713/machiner
 Negative control: removing the `aircraft_holds` hook from `/turf/sky/building/Entered` makes the airframe and passengers fall through the open air and fails 14 checks.
 
 Not covered: flying with a real client (arrow-key steering, the Climb and Descend verbs from a player's hands), how the ground view and shadows look on screen, and a real world save and load (the probe calls the restore set-down directly).
+
+## Shared level-shift contract
+
+`level_shift.dm` runs before the flight cases through the production aircraft
+and submarine wrappers and the shared axis helper. It covers coordinate offsets,
+invalid levels and map edges before any movement, deduplication, frames before
+passengers/cargo, nested controller/cargo containment, stale/unlocated entries,
+reentrant rejection, tile guards during movement, successful cleanup, and
+injected movement exceptions with cleanup and unchanged rethrow. Partial moves
+remain after failure: there is no rollback promise. Icon refresh precedes
+passenger vision only after successful guard release.
+
+These contract cases suppress constructors, supply deterministic transport
+snapshots, replace forceMove callbacks with native loc assignment and record
+icon/vision effects. Queued-deleted entries are simulated with the production
+GC marker, including retirement during the frame pass; this is not a GC test.
+The real helper, wrapper dispatch, destination lookup, list union, guards,
+cleanup, and passenger-vision iteration are not replaced. Collection discovery,
+Entered/Exited, falling, rendering and real client vision remain the responsibility
+of the existing gameplay cases or separate acceptance. No new runner admission,
+workflow or runtime entry point is added.
+
+The new cases have been source-reviewed only; pinned compilation and native
+execution are not established by adding this fixture.

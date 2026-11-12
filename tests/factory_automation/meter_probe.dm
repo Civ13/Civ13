@@ -6,7 +6,7 @@
 	hub_password = ""
 	maxx = 20
 	maxy = 20
-	maxz = 1
+	maxz = 2
 	turf = /turf
 	area = /area
 	visibility = 0
@@ -90,8 +90,18 @@ var/pipe_runtime_error = FALSE
 	V.set_recipe("enginefuel")
 	var/obj/structure/fluid_pump/P = new(locate(4, 1, 1))
 	var/obj/structure/fluid_meter/M = new(locate(4, 2, 1))
+	var/obj/structure/factory_monitor/monitor = new(locate(6, 6, 1))
+	var/list/second = pipe_line(10, 11, 8)
+	var/list/distant = pipe_line(17, 18, 18)
+	var/obj/structure/fluid_pipe/other_level = new(locate(6, 6, 2))
 	factory_fluids_step()
 	var/list/lines = M.report()
+	var/list/rows = monitor.pipe_network_rows()
+	pipe_check(rows.len == 2, "monitor deduplicates pipes and excludes distant and other-level networks")
+	var/list/row = monitor_network_row(rows, 5)
+	pipe_check(row && row[4] == 0 && row[5] == 1 && row[6] == "idle" && row[7] == 0, "monitor counts idle pumps and flow on the whole network")
+	var/html = monitor.report_html()
+	pipe_check(findtext(html, "No factory machines") && findtext(html, "Units last step") && findtext(html, "Pumps running"), "a pipes-only monitor still renders its network table")
 	pipe_check(meter_has(lines, "5 pipes, 0 of 1 pumps running") && meter_has(lines, "fluid pump: off"), "a meter counts pipes and pumps and shows a stopped pump")
 	pipe_check(M.icon_state == "meter", "the dial is dark while nothing moves")
 	var/list/power = pipe_power(P, 4, 1)
@@ -100,6 +110,17 @@ var/pipe_runtime_error = FALSE
 	factory_fluids_step()
 	lines = M.report()
 	pipe_check(meter_has(lines, "1 of 1 pumps running") && meter_has(lines, "moved 20 units last step") && meter_has(lines, "fluid pump: running"), "a meter reports running pumps and last step's flow")
+	rows = monitor.pipe_network_rows()
+	row = monitor_network_row(rows, 5)
+	pipe_check(row && row[4] == 1 && row[5] == 1 && row[6] == "running" && row[7] == 20, "monitor shows powered pumps and actual last-step flow")
+	var/datum/fluid_network/N = fluid_network_of(P)
+	var/volume_before = T.reagents.total_volume
+	var/rotation_before = N.rotation
+	var/serial_before = fluid_step_serial
+	var/power_before = factory_power_draw(P)
+	monitor.report_html()
+	monitor.report_html()
+	pipe_check(T.reagents.total_volume == volume_before && N.rotation == rotation_before && fluid_step_serial == serial_before && factory_power_draw(P) == power_before, "reading the monitor does not pump, advance processing or reserve power")
 	pipe_check(M.icon_state == "meter_on", "the dial lights while liquid moves")
 	pipe_check(meter_has(lines, "holding tank: 180/1000 Gasoline") && meter_has(lines, "only Gasoline") && meter_has(lines, "Engine fuel - 9:1 blend, filling, 20/200"), "tank fill, filters and vessel recipe and stage are listed")
 	pipe_check(meter_has(lines, "barrel station: taking"), "other machines show their pipe role")
@@ -107,10 +128,19 @@ var/pipe_runtime_error = FALSE
 	for (var/i in 1 to 2)
 		factory_fluids_step()
 	pipe_check(M.icon_state == "meter" && meter_has(M.report(), "idle"), "the dial goes dark and the network reads idle when flow stops")
+	row = monitor_network_row(monitor.pipe_network_rows(), 5)
+	pipe_check(row && row[4] == 0 && row[6] == "idle" && row[7] == 0, "monitor clears old flow when the network goes idle")
 	fluid_meters -= M
 	M.after_load()
 	pipe_check((M in fluid_meters) && !(M in fluid_network_of(P).members), "a reloaded meter rejoins the meter list and is never a network member")
-	for (var/obj/O in pipes + list(T, out, S, V, P, M, loose) + power)
+	var/obj/structure/fluid_pipe/middle = pipes[3]
+	qdel(middle)
+	rows = monitor.pipe_network_rows()
+	pipe_check(!rows.len && findtext(monitor.report_html(), "Pipe connections changed"), "dirty topology is withheld without rebuilding it during a read")
+	factory_fluids_step()
+	rows = monitor.pipe_network_rows()
+	pipe_check(rows.len == 3, "monitor picks up both sides of a pipe split after the next fluid step")
+	for (var/obj/O in pipes + second + distant + list(T, out, S, V, P, M, loose, monitor, other_level) + power)
 		if (!QDELETED(O))
 			qdel(O)
 	fluid_mark_dirty()
@@ -124,3 +154,9 @@ var/pipe_runtime_error = FALSE
 		if (findtext(line, "RECIPE: ") == 1 && findtext(line, ",/obj/structure/fluid_meter,"))
 			found = TRUE
 	pipe_check(found, "the pipe meter has a global recipe")
+
+/proc/monitor_network_row(list/rows, pipe_count)
+	for (var/list/row in rows)
+		if (row[3] == pipe_count)
+			return row
+	return null

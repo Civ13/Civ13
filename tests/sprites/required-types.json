@@ -95,5 +95,11 @@
   "/obj/structure/bed/bedroll/cloth",
   "/obj/structure/bed/hammock",
   "/obj/structure/filingcabinet/chestdrawer/wood",
-  "/obj/item/clothing/accessory/storage/harness"
+  "/obj/item/clothing/accessory/storage/harness",
+  "/obj/item/naval_mine",
+  "/obj/item/naval_mine/magnetic",
+  "/obj/structure/naval_mine/contact",
+  "/obj/structure/naval_mine/magnetic",
+  "/obj/structure/degaussing_coil",
+  "/obj/structure/wiping_station"
 ]

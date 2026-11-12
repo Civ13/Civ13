@@ -1,6 +1,7 @@
 // Factory monitor (phase 4b of docs/factory-automation-design.md): a terminal
 // that lists the arms, fabricators, belt drives and belts within its range,
-// with each machine's state, items per minute and power draw. Counters are runtime only
+// with each machine's state, items per minute and power draw, plus nearby pipe networks.
+// Counters are runtime only
 // and cost one addition per moved item; nothing is scanned until someone looks.
 
 #define FACTORY_RATE_BUCKET 600 // deciseconds per counting bucket (one minute)
@@ -130,28 +131,76 @@
 		grid_list[++grid_list.len] = grids[key]
 	return list(total, grid_list)
 
+// One row per network reached by an open pipe within range. Read published
+// topology only: opening a monitor never rebuilds, pumps, wakes or reserves power.
+// Row: nearby pipe x/y, whole-network pipes, running pumps, all pumps, state, units.
+/obj/structure/factory_monitor/proc/pipe_network_rows()
+	var/list/rows = list()
+	var/turf/here = get_turf(src)
+	if (!here || fluid_networks_dirty)
+		return rows
+	var/list/seen = list()
+	for (var/obj/structure/fluid_pipe/P in range(FACTORY_MONITOR_RANGE, here))
+		if (QDELETED(P) || !isturf(P.loc) || !P.fluid_open())
+			continue
+		var/datum/fluid_network/N = P.network
+		if (!N || QDELETED(N) || !(N in fluid_networks) || !(P in N.pipes) || (N in seen))
+			continue
+		seen += N
+		var/pumps = 0
+		var/running = 0
+		for (var/obj/structure/fluid_pump/pump in N.members)
+			if (QDELETED(pump) || !isturf(pump.loc) || !pump.anchored)
+				continue
+			pumps++
+			if (pump.on && pump.powered)
+				running++
+		var/state = "idle"
+		var/moved = 0
+		if (!N.idle_steps && N.last_moved > 0)
+			state = "running"
+			moved = round(N.last_moved, 0.1)
+		rows[++rows.len] = list(P.x, P.y, N.pipes.len, running, pumps, state, moved)
+	return rows
+
+/obj/structure/factory_monitor/proc/pipe_network_html()
+	var/list/out = list("<h3>Pipe networks</h3>")
+	if (fluid_networks_dirty)
+		out += "<p>Pipe connections changed. Network information will update on the next fluid step.</p>"
+		return out.Join()
+	var/list/rows = pipe_network_rows()
+	if (!rows.len)
+		out += "<p>No connected pipes within [FACTORY_MONITOR_RANGE] tiles.</p>"
+		return out.Join()
+	out += "<table border=1 cellpadding=3><tr><th>Nearby pipe</th><th>Pipes</th><th>Pumps running</th><th>State</th><th>Units last step</th></tr>"
+	for (var/list/row in rows)
+		out += "<tr><td>[row[1] - x], [row[2] - y]</td><td>[row[3]]</td><td>[row[4]] of [row[5]]</td><td>[html_encode(row[6])]</td><td>[row[7]]</td></tr>"
+	out += "</table><p>Nearby pipe is east, north of this monitor. Each network appears once. Counts and flow cover the whole connected network, including pipes beyond this monitor's range. Flow is the last fluid step, not units per minute. Use a pipe meter for individual machine details.</p>"
+	return out.Join()
+
 /obj/structure/factory_monitor/proc/report_html()
 	var/list/rows = report_rows()
 	var/list/out = list("<h3>[html_encode(name)]</h3>")
 	if (!rows.len)
 		out += "<p>No factory machines within [FACTORY_MONITOR_RANGE] tiles.</p>"
-		return out.Join()
-	out += "<table border=1 cellpadding=3><tr><th>Machine</th><th>Where</th><th>State</th><th>Items/min</th><th>Power (PU)</th><th>Notes</th></tr>"
-	for (var/list/row in rows)
-		var/where = isnull(row[3]) ? "" : "[row[3] - x], [row[4] - y]"
-		var/state = row[5]
-		var/colour = (state == "running") ? "#3a3" : ((state in list("off", "idle", "waiting")) ? "#888" : "#c33")
-		out += "<tr><td>[html_encode(row[1])]</td><td>[where]</td><td><font color='[colour]'>[html_encode(state)]</font></td><td>[row[6]]</td><td>[row[8]]</td><td>[html_encode(row[7])]</td></tr>"
-	out += "</table>"
-	var/list/power = power_summary(rows)
-	out += "<p>These machines draw [power[1]] PU.</p>"
-	var/list/grids = power[2]
-	for (var/list/grid in grids)
-		var/used = grid[1]
-		var/capacity = grid[2]
-		var/colour = (capacity <= 0 || used > capacity) ? "#c33" : (used >= capacity * 0.9 ? "#c90" : "#3a3")
-		out += "<p>Power grid: <font color='[colour]'>[used] of [capacity] PU in use</font>.</p>"
-	out += "<p>Where is east, north of this monitor. Rates cover the last two minutes. A grid's use counts everything on it.</p>"
+	else
+		out += "<table border=1 cellpadding=3><tr><th>Machine</th><th>Where</th><th>State</th><th>Items/min</th><th>Power (PU)</th><th>Notes</th></tr>"
+		for (var/list/row in rows)
+			var/where = isnull(row[3]) ? "" : "[row[3] - x], [row[4] - y]"
+			var/state = row[5]
+			var/colour = (state == "running") ? "#3a3" : ((state in list("off", "idle", "waiting")) ? "#888" : "#c33")
+			out += "<tr><td>[html_encode(row[1])]</td><td>[where]</td><td><font color='[colour]'>[html_encode(state)]</font></td><td>[row[6]]</td><td>[row[8]]</td><td>[html_encode(row[7])]</td></tr>"
+		out += "</table>"
+		var/list/power = power_summary(rows)
+		out += "<p>These machines draw [power[1]] PU.</p>"
+		var/list/grids = power[2]
+		for (var/list/grid in grids)
+			var/used = grid[1]
+			var/capacity = grid[2]
+			var/colour = (capacity <= 0 || used > capacity) ? "#c33" : (used >= capacity * 0.9 ? "#c90" : "#3a3")
+			out += "<p>Power grid: <font color='[colour]'>[used] of [capacity] PU in use</font>.</p>"
+		out += "<p>Where is east, north of this monitor. Rates cover the last two minutes. A grid's use counts everything on it.</p>"
+	out += pipe_network_html()
 	return out.Join()
 
 /obj/structure/factory_monitor/attack_hand(mob/user)

@@ -195,10 +195,14 @@ the HUD updates properly! */
 	to_chat(world, "[viewer] processing faction huds.")
 	#endif
 
-	var/datum/arranged_hud_process/P = arrange_hud_process(M, Alt, faction_hud_users)
-	for (var/mob/living/human/perp in P.Mob.in_view(P.Turf))
+	var/list/hud_users = faction_hud_users
+	hud_users |= M
+	var/client/viewer_client = M.client
+	var/mob/hud_observer = Alt ? Alt : M
+	var/turf/view_turf = get_turf(hud_observer)
+	for (var/mob/living/human/perp in hud_observer.in_view(view_turf))
 
-		if (P.Mob.see_invisible < perp.invisibility)
+		if (hud_observer.see_invisible < perp.invisibility)
 			continue
 		if (!perp.original_job)
 			continue
@@ -223,9 +227,9 @@ the HUD updates properly! */
 				else
 					shared_job_check = FALSE
 			if (shared_job_check)
-				P.Client.images += perp.hud_list[BASE_FACTION]
+				viewer_client.images += perp.hud_list[BASE_FACTION]
 			else
-				P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
+				viewer_client.images += perp.hud_list[FACTION_TO_ENEMIES]
 		else
 			var/image/holderf = perp.hud_list[BASE_FACTION]
 			holderf.icon = 'icons/mob/hud_1713.dmi'
@@ -244,11 +248,11 @@ the HUD updates properly! */
 					holderf.icon_state = "" //other factions are red
 				perp.hud_list[BASE_FACTION] = holderf
 				if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == FALSE)
-					P.Client.images += perp.hud_list[BASE_FACTION]
+					viewer_client.images += perp.hud_list[BASE_FACTION]
 				else if (perp.civilization == viewer.civilization && viewer.civilization != "none" && perp.leader == TRUE)
-					P.Client.images += perp.hud_list[BASE_FACTION]
+					viewer_client.images += perp.hud_list[BASE_FACTION]
 				else
-					P.Client.images += perp.hud_list[FACTION_TO_ENEMIES]
+					viewer_client.images += perp.hud_list[FACTION_TO_ENEMIES]
 /datum/arranged_hud_process
 	var/client/Client
 	var/mob/Mob

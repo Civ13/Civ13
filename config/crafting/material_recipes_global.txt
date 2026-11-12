@@ -487,6 +487,7 @@ RECIPE: /material/electronics/,fuel cell,/obj/structure/civ_generator/fuel_cell,
 RECIPE: /material/steel/,radiator,/obj/structure/life_support/radiator,15,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,launch complex office,/obj/structure/region_gate/launch_complex,40,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,orbit console,/obj/structure/orbit_console,20,200,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/electronics/,orbital helm,/obj/structure/chart_helm/orbit,30,300,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,habitat module kit,/obj/item/habitat_kit,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,greenhouse module kit,/obj/item/habitat_kit/greenhouse,60,400,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,workshop module kit,/obj/item/habitat_kit/workshop,60,400,0,1,spaceflight,235,0,0,8,null
@@ -2913,6 +2914,10 @@ RECIPE: /material/steel/,flamethrower hose,/obj/item/weapon/flamethrower,8,240,0
 RECIPE: /material/steel/,flamethrower fuel backpack,/obj/item/weapon/reagent_containers/glass/flamethrower,10,240,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,anti-personnel mine,/obj/item/mine/ap,4,120,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank mine,/obj/item/mine/at,8,180,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,contact naval mine,/obj/item/naval_mine,10,200,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,magnetic naval mine,/obj/item/naval_mine/magnetic,12,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,degaussing coil,/obj/structure/degaussing_coil,15,240,1,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/steel/,wiping station,/obj/structure/wiping_station,20,300,1,1,production,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null

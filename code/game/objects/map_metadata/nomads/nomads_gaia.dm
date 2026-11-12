@@ -13,6 +13,17 @@
 	// Hills: per-tile heights for the surface (docs/terrain-height.md).
 	terrain_height_file = "maps/heights/nomads_gaia.txt"
 
+/obj/map_metadata/nomads/gaia/weather_policy_choices(list/possibilities)
+	var/list/choices = ..()
+	if (weather != WEATHER_NONE || !choices || !(WEATHER_NONE in choices))
+		return choices
+	// Double the pool with clear slots: halve each natural precipitation start
+	// chance without prolonging an existing wet spell or changing other maps.
+	var/list/weighted_choices = choices.Copy()
+	for (var/i = 1, i <= choices.len, i++)
+		weighted_choices += WEATHER_NONE
+	return weighted_choices
+
 
 // Gaia's authored outdoors are on level 2; level 1 is underground. Do not use
 // world.maxz: roofs and isolated instances may add levels above the surface.
