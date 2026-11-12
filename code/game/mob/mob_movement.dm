@@ -774,9 +774,14 @@
 				if (mob_is_human)
 					H.nutrition -= 0.0015 * distance_fraction
 					H.water -= 0.0015 * distance_fraction
-		// Hills: climbing costs time, going downhill saves a little (terrain_height.dm).
+		// Hills: climbing costs time, going downhill saves it (terrain_height.dm).
+		// Free slides follow the hill from the body's exact spot and carry
+		// downhill momentum; tile steps use the per-tile curve.
 		if (mob_is_living && !mob.buckled && isturf(mob_loc) && isturf(n))
-			move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
+			if (mob_is_human && fine_step)
+				move_delay += terrain_free_slope_delay(H, n, direct, move_delay - world.time, fine_step == FINE_STEP_HELD)
+			else
+				move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
 			if (mob_is_human)
 				terrain_climb_effects(H, mob_loc, n, distance_fraction)
 		if (mob.drowsyness > 0)

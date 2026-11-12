@@ -188,8 +188,11 @@ class Shading(unittest.TestCase):
 
 class Wiring(unittest.TestCase):
     def test_client_move_adds_slope_cost_for_walking_living_mobs(self):
-        hook = re.search(r'\n\t\t// Hills:.*\n\t\tif \(mob_is_living && !mob\.buckled && isturf\(mob_loc\) && isturf\(n\)\)\n'
-                         r'\t\t\tmove_delay \+= terrain_slope_delay\(mob_loc, n, move_delay - world\.time\)\n', MOVEMENT)
+        hook = re.search(r'\n\t\t// Hills:.*\n(?:\t\t//.*\n)*\t\tif \(mob_is_living && !mob\.buckled && isturf\(mob_loc\) && isturf\(n\)\)\n'
+                         r'\t\t\tif \(mob_is_human && fine_step\)\n'
+                         r'\t\t\t\tmove_delay \+= terrain_free_slope_delay\(H, n, direct, move_delay - world\.time, fine_step == FINE_STEP_HELD\)\n'
+                         r'\t\t\telse\n'
+                         r'\t\t\t\tmove_delay \+= terrain_slope_delay\(mob_loc, n, move_delay - world\.time\)\n', MOVEMENT)
         self.assertIsNotNone(hook)
         # After the intent costs, so the downhill cap sees the whole step delay.
         self.assertLess(MOVEMENT.index('if ("proning")'), hook.start())

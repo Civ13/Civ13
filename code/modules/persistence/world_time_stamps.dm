@@ -26,6 +26,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_pain_time" = list(/mob),
 	"next_slope_message" = list(/mob),
 	"next_snow_message" = list(/mob),
+	"terrain_momentum_at" = list(/mob/living/human),
 	"next_stamina_message" = list(/mob),
 	"timeofdeath" = list(/mob),
 	"last_special" = list(/mob/living),
