@@ -125,6 +125,8 @@
 	custom_emote(1, "constricts around [target_mob]!")
 	do_constricting(L)
 /mob/living/simple_animal/hostile/poison/snake/constrictor/proc/do_constricting(var/mob/living/L)
+	if (stat == DEAD || !constricting)
+		return
 	if (L && L.client)
 		L.client.canmove = FALSE
 	if (L && loc != L.loc)
@@ -145,7 +147,7 @@
 				L.client.canmove = TRUE
 			return
 		spawn(22)
-			if (L)
+			if (L && constricting && stat != DEAD)
 				do_constricting(L)
 
 /mob/living/simple_animal/hostile/poison/snake/constrictor/AttackingTarget()
