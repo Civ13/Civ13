@@ -231,12 +231,13 @@
 			nutrition -= ((0.01) * HUNGER_THIRST_MULTIPLIER * food_m)
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
-		else if (stat == CONSCIOUS && (map.heat_wave || map.ID == MAP_NOMADS_DESERT)) // about 77 minutes of food, 26 of water while active
-			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-			water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
-			nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
-			water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+			if (map.heat_wave || map.ID == MAP_NOMADS_DESERT) // about 26 minutes of water while active
+				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+				water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
+			else
+				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
+				water -= ((0.27) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 		if (find_trait("Extroverted"))
 			if (prob(20))
 				var/ct = 0
