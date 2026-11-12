@@ -1,8 +1,9 @@
-# River currents and seasonal channels
+# River and sea currents, swimming, and seasonal channels
 
 Rivers on the Nomads regions with terrain heights (Gaia, Europe, Jungle and
-Asia) carry a current. Lakes, broad water, swamps, floods, ice, salt water
-and isolated ponds stay still. The Desert region has no rivers and no sidecar.
+Asia) carry a current, and so does a belt of the sea off their coasts. Lakes, broad
+water, swamps, floods, ice, the shallows by the beach, the open sea and
+isolated ponds stay still. The Desert region has no rivers and no sidecar.
 
 When a map uses `maps/heights/example.txt`, an optional
 `maps/heights/example.flow.txt` describes one z-level. The first lines are
@@ -27,6 +28,40 @@ sea, else off the map edge, else into its lake, and with heights the water
 runs downhill: a priority flood orders tiles by the highest bank on the way
 to an outlet. Rerun and re-review a sidecar after editing a map's water or
 heights.
+
+## Sea currents
+
+The same generator gives salt water a coastal current. The belt of sea from
+4 to 16 steps off the land (`SEA_SHORE`, `SEA_BELT`) flows along the lines of
+equal distance from the shore, land on the left hand: round a basin the water
+turns one way, round an island the other, as a boundary current does. Because
+it follows those lines it never sets ashore; a thing adrift is carried along
+the coast, not onto it. The shallows inside the belt and the open sea beyond
+it are still, so a swimmer or a raft leaves the current by heading for the
+beach or straight out. Sea ice counts as shore, belts under 150 tiles (bays
+and inlets) stay still, and `build(rows, sea=False)` leaves the sea out.
+
+Besides items and people, the current carries an empty raft: one with nobody
+and nothing aboard, not being steered. Wide boats and ships keep their place.
+Examining sea water in the belt says which way the current sets.
+
+## Swimming
+
+On the open-world maps (`map.nomads`) a played person may walk out of their
+depth and swim (code/modules/1713/swimming.dm). Swimming tires: `swim_tiredness`
+rises 4 a life tick in calm deep water, 5 in rain or snow and 8 under a
+storm's gale, and at 100 the swimmer goes under and takes the drowning damage
+deep water has always dealt. Warnings come at 50 and 80. Out of deep water,
+or on a deck or raft, it falls 8 a tick. A lifejacket or a sealed diving suit
+floats its wearer at no cost. Anyone unconscious drowns at once, as before.
+Battle maps use deep water as their edge and keep it closed, and people with
+nobody playing them keep out of deep water as they always did.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/sea_probe.dm
+
+Rip currents that pull a swimmer out from the beach are not built yet.
+
+## What the current moves
 
 Flowing water moves unanchored items and unrestrained living mobs one tile
 every five seconds, using normal movement and water collision rules. Covered

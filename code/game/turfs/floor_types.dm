@@ -411,6 +411,9 @@
 			// A sealed diver swims; the sea layer has its own rules.
 			if (H.seabed_diving_rating())
 				return TRUE
+			// Anyone else swims until they tire (swimming.dm).
+			if (H.can_swim_deep())
+				return TRUE
 		return FALSE
 	else
 		return ..()

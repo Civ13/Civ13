@@ -670,7 +670,7 @@ var/global/list/los_active_contexts
 		return null
 	// Presentation follows the eye in half-tile steps; reads use the exact offset.
 	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone],[los_up_tree(body)]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/presentation_key()
 	return policy_key(TRUE)
