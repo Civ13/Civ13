@@ -320,7 +320,7 @@ class BicycleArt(unittest.TestCase):
         import importlib.util
         import subprocess
         sheet = (ROOT / 'icons/obj/vehicles/bicycle.dmi').read_bytes()
-        self.assertEqual(hashlib.sha256(sheet).hexdigest(), 'bcd47e849309fa098fcf16149a3f1e678efba6c6fae4d82c959e7ce8217d621e')
+        self.assertEqual(hashlib.sha256(sheet).hexdigest(), 'f1140a39b283be33b58e700fb52aac9d1f068654c88feafa03b08aa439695958')
         self.assertIn(b'state = "bicycle_overlay"', __import__('zlib').decompressobj().decompress(sheet[sheet.index(b'zTXtDescription') + 17:]))
         # Wheels touch the ground: the tile's bottom pixel row is drawn in every view.
         if importlib.util.find_spec('PIL'):
@@ -336,6 +336,26 @@ class BicycleArt(unittest.TestCase):
         overlay = extract(SOURCE, BASE + '/update_overlay')
         self.assertIn('overlays -= rider_overlay', overlay)
         self.assertIn('if (driver)', overlay)
+
+    def test_rider_sits_on_the_saddle_with_feet_on_the_pedals(self):
+        # The rider is drawn rider_lift pixels up while seated and put back
+        # down on getting off; the art places saddle and pedals to match.
+        self.assertIn('var/rider_lift = 6\n', SOURCE)
+        self.assertIn('driver.pixel_y = rider_lift', extract(SOURCE, BASE + '/update_overlay'))
+        self.assertIn('H.pixel_y = 0', extract(SOURCE, BASE + '/unbuckle_mob'))
+        sprites = (ROOT / 'tests/pedal_bicycle/sprites.py').read_text()
+        self.assertIn('RIDER_LIFT = 6\n', sprites)
+        import importlib.util
+        if importlib.util.find_spec('PIL'):
+            from PIL import Image
+            art = Image.open(ROOT / 'icons/obj/vehicles/bicycle.dmi').convert('RGBA')
+            side = art.crop((64, 0, 96, 32))  # east
+            saddle, pedal = (104, 66, 38, 255), (44, 40, 38, 255)
+            saddle_top = min(y for y in range(32) for x in range(32) if side.getpixel((x, y)) == saddle)
+            pedal_row = max(y for y in range(14, 32) for x in range(12, 21) if side.getpixel((x, y)) == pedal)
+            # A standing body has its crotch at row 21 and soles at row 31.
+            self.assertEqual(saddle_top, 22 - 6)
+            self.assertEqual(pedal_row, 32 - 6)
 
 
 class BicycleWiring(unittest.TestCase):
