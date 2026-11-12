@@ -341,8 +341,7 @@
 		mymist = null
 
 	if (on)
-		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER + 1, dir)
-		overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER - 1, dir)
+		add_water_overlays()
 		if (temperature_settings[watertemp] < T20C)
 			return //no mist for cold water
 		if (!ismist)
@@ -364,6 +363,10 @@
 					//BATHTUB FRAMEWORK V1//
 
 				//STONE AGE WOODEN BATHTUB//
+
+/obj/structure/shower/bathtub/proc/add_water_overlays()
+	overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2_2", MOB_LAYER + 1, dir)
+	overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER - 1, dir)
 
 /obj/structure/shower/bathtub/attack_hand(var/mob/living/user)
 	if (!isliving(user))
@@ -415,33 +418,8 @@
 	icon_state = "w_bathtub_b"
 	cleanliness = 80
 
-/obj/structure/shower/bathtub/big/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
-	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
-	if (mymist)
-		qdel(mymist)
-		mymist = null
-
-	if (on)
-		overlays += image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
-
-		if (temperature_settings[watertemp] < T20C)
-			return //no mist for cold water
-		if (!ismist)
-			spawn(50)
-				if (src && on)
-					ismist = TRUE
-					mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
-		else
-			ismist = TRUE
-			mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
-	else if (ismist)
-		ismist = TRUE
-		mymist = PoolOrNew(/obj/effect/mist/bathtub,loc)
-		spawn(250)
-			if (src && !on)
-				qdel(mymist)
-				mymist = null
-				ismist = FALSE
+/obj/structure/shower/bathtub/big/add_water_overlays()
+	overlays += image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
 
 			//BIG BATHTUB FRAMEWORK 1
 			// LATE DARK AGE

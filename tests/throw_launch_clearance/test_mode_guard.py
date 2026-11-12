@@ -79,14 +79,16 @@ class ThrowBlockerScanTests(unittest.TestCase):
             + indent + 'break\n'
         )
         cover = (
-            'for (var/obj/covers/C in step)\n'
-            + indent + 'if (C.passable == TRUE)\n'
-            + indent + '\tcontinue\n'
-            + indent + 'canMove = FALSE\n'
-            + indent + 'break\n'
+            'if (canMove)\n'
+            + indent + 'for (var/obj/covers/C in step)\n'
+            + indent + '\tif (C.passable == TRUE)\n'
+            + indent + '\t\tcontinue\n'
+            + indent + '\tcanMove = FALSE\n'
+            + indent + '\tbreak\n'
         )
         def valid(source):
-            return source.count(structure) == 4 and source.count(cover) == 4
+            # Require each guard immediately after its own structure scan.
+            return source.count(structure + '\t' * 9 + cover) == 4
 
         self.assertTrue(valid(SOURCE))
         self.assertFalse(valid(SOURCE.replace(indent + 'break\n', '')))
@@ -94,6 +96,8 @@ class ThrowBlockerScanTests(unittest.TestCase):
             'for (var/obj/covers/C in step)\n',
             'for (var/obj/covers/C in step)\n' + indent + 'break\n',
         )))
+        self.assertFalse(valid(SOURCE.replace('if (canMove)\n' + indent + 'for (var/obj/covers/C in step)',
+                                             'if (!canMove)\n' + indent + 'for (var/obj/covers/C in step)', 1)))
 
     def test_blocker_decisions_match_full_scans_in_a_model(self):
         # This models decisions, not BYOND iteration or runtime.
@@ -107,20 +111,48 @@ class ThrowBlockerScanTests(unittest.TestCase):
 
         for nearby_structures, nearby_covers in product(structures, covers):
             original = not any(blocked(x) for x in nearby_structures)
-            original = original and not any(not x for x in nearby_covers)
+            # The original always traverses covers, even after a structure blocks.
+            original_cover_blocked = any(not x for x in nearby_covers)
+            original = original and not original_cover_blocked
             can_move = True
             for item in nearby_structures:
                 if blocked(item):
                     can_move = False
                     break
-            for passable in nearby_covers:
-                if not passable:
-                    can_move = False
-                    break
+            if can_move:
+                for passable in nearby_covers:
+                    if not passable:
+                        can_move = False
+                        break
             self.assertEqual(can_move, original)
 
         # Stopping after the first passable cover misses a later blocker.
         self.assertNotEqual(not any(not x for x in (True, False)), True)
+
+    def test_cover_scan_guard_visits_only_when_structure_allows_movement(self):
+        def scan(structure_blocked, covers, guard):
+            can_move = not structure_blocked
+            visits = 0
+            if guard == 'original' or (guard == 'correct' and can_move) or (guard == 'inverted' and not can_move):
+                for passable in covers:
+                    visits += 1
+                    if not passable:
+                        can_move = False
+                        break
+            return can_move, visits
+
+        for structure_blocked, covers in (
+            (False, ()), (False, (True, True)), (False, (True, False, True)),
+            (True, (True,) * 50), (True, (True, False)),
+        ):
+            old_result, old_visits = scan(structure_blocked, covers, 'original')
+            new_result, new_visits = scan(structure_blocked, covers, 'correct')
+            self.assertEqual(new_result, old_result)
+            self.assertEqual(new_visits, 0 if structure_blocked else old_visits)
+
+        # A mutation that skips the scan when movement is allowed misses cover.
+        self.assertNotEqual(scan(False, (True, False), 'original')[0],
+                            scan(False, (True, False), 'inverted')[0])
 
 
 if __name__ == '__main__':

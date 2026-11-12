@@ -41,6 +41,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Offline source projection; the shared animal source retains conservative fallback.
+    'frog_breeding_count': {'files': ('tests/frog_breeding_count/test_source.py',),
+        'paths': ('tests/frog_breeding_count/',),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/mob/living/simple_animal/friendly/lizard.dm')},
+    'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
+        'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
+    'casing_scheduler': {'files': ('tests/casing_scheduler/test_casing_scheduler.py',),
+        'paths': ('tests/casing_scheduler/', 'code/processes/casings.dm'),
+        'shared_paths': ('code/processes/___defines.dm', 'code/_macros.dm')},
     'gladiator_stat_record': {'files': ('tests/gladiator_stat_record/test_record.py',),
         'paths': ('tests/gladiator_stat_record/', 'code/game/objects/structures/gladiator_control.dm')},
     'cooling_fan': {'files': ('tests/cooling_fan/test_fan_desc.py',),
@@ -105,6 +114,21 @@ SUITES = {
     'old_coffin_verb': {'files': ('tests/old_coffin_verb/test_verb.py',),
         'paths': ('tests/old_coffin_verb/',),
         'shared_paths': ('code/game/objects/structures/crates_lockers/closets.dm',)},
+    'constrictor_death': {'files': ('tests/constrictor_death/test_constrictor_death.py',),
+        'paths': ('tests/constrictor_death/', 'code/game/mob/living/simple_animal/hostile/snake.dm')},
+    'wet_floor_slip': {'files': ('tests/wet_floor_slip/test_wet_floor_slip.py',),
+        'paths': ('tests/wet_floor_slip/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/human.dm', 'code/game/mob/living/carbon/carbon.dm', 'code/game/turfs/turf.dm')},
+    'snow_feet': {'files': ('tests/snow_feet/test_snow_feet.py',),
+        'paths': ('tests/snow_feet/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/species/species.dm',)},
+    'oil_spring': {'files': ('tests/oil_spring/test_oil_spring.py',),
+        'paths': ('tests/oil_spring/', 'code/modules/1713/oil_fires.dm')},
+    'boat_corpse_sink': {'files': ('tests/boat_corpse_sink/test_boat_corpse_sink.py',),
+        'paths': ('tests/boat_corpse_sink/',),
+        'shared_paths': ('code/game/turfs/floor_types.dm',)},
+    'steam_engine_callbacks': {'files': ('tests/steam_engine_callbacks/test_engine_callbacks.py',),
+        'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
@@ -463,6 +487,8 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm', 'code/modules/1713/tools.dm',
             'code/modules/projectiles/__projectiles.dm',
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
+    'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
+        'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
     # Cotton is only food for ruminants: production predicate and call sites.
     'animal_cotton': {'files': ('tests/animal_cotton/test_animal_cotton.py',),
         'paths': ('tests/animal_cotton/',), 'shared_paths': (

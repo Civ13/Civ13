@@ -35,7 +35,7 @@
 	. = ..()
 	if (.)
 		for (var/atom/movable/AM in get_turf(src))
-			if (!istype(AM, /obj/effect/effect/smoke/chem) || !istype(AM, /obj/item/weapon/reagent_containers))
+			if (!istype(AM, /obj/effect/effect/smoke/chem) && !istype(AM, /obj/item/weapon/reagent_containers))
 				reagents.splash(AM, splash_amount, copy = TRUE)
 		if (loc == destination)
 			bound_width = 96
