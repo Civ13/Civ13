@@ -1,4 +1,6 @@
 /var/obj/screen/lobby_image/lobby_image = new/obj/screen/lobby_image()
+// The 672x480 picture for the 21x15 widescreen view, when the map has one.
+/var/obj/screen/lobby_image/wide/lobby_image_wide = new/obj/screen/lobby_image/wide()
 
 /obj/screen/lobby_image
 	name = "Lobby"
@@ -16,13 +18,43 @@
 		if (map && map.ID == MAP_BATTLEROYALE_MODERN)
 			update_icon_proc()
 
+/obj/screen/lobby_image/proc/lobby_picture()
+	return map ? map.lobby_icon : ""
+
+/obj/screen/lobby_image/wide
+	screen_loc = "CENTER-10,CENTER-7" // 672x480 picture, edge to edge on the 21x15 view
+	var/ready = FALSE // TRUE once the map's wide picture is loaded
+
+/obj/screen/lobby_image/wide/lobby_picture()
+	return map ? map.lobby_icon_wide : ""
+
+/obj/screen/lobby_image/wide/initialize()
+	if (!map || map.lobby_icon_wide == "" || !file(map.lobby_icon_wide))
+		return
+	..()
+	ready = TRUE
+
+// Shows this player the lobby picture that fits their view: the wide one on the
+// 21x15 view when the map has it, otherwise the 480x480 one.
+/mob/new_player/proc/show_lobby_image()
+	if (!client)
+		return
+	client.screen -= lobby_image
+	client.screen -= lobby_image_wide
+	var/list/V = getviewsize(client.default_view())
+	if (lobby_image_wide && lobby_image_wide.ready && V[1] >= 21)
+		client.screen += lobby_image_wide
+	else if (lobby_image)
+		client.screen += lobby_image
+
 /obj/screen/lobby_image/initialize()
-	if (map && map.lobby_icon != "") // Check if a custom lobby icon is specified
-		var/F = file(map.lobby_icon) // Attempt to load the file
+	var/picture = lobby_picture()
+	if (picture != "") // Check if a custom lobby icon is specified
+		var/F = file(picture) // Attempt to load the file
 		if (F) // If the file exists, use it
 			icon = F
 		else // If the file doesn't exist, log an error and fall back to the default
-			log_admin("Lobby image file not found: [map.lobby_icon]")
+			log_admin("Lobby image file not found: [picture]")
 			icon = 'icons/lobby/civ13.dmi' // Fallback to the default lobby image
 	// A lobby .dmi may carry a still "lobby" state and a looping, mostly
 	// transparent "lobby_particles" state that is drawn over it as light.

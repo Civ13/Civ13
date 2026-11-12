@@ -1938,6 +1938,8 @@
 		apply_crafting_node_effects(user, O)
 		// Practice: making it counts as field work for the next node (practice_work.dm).
 		note_craft_practice(user, "[recipe.result_type]")
+		// Built only through a demonstration kit: a crude experimental machine (demonstrations.dm).
+		mark_experimental_build(H, O, "[recipe.result_type]")
 
 		if(istype(O, /obj/structure/cannon/modern/tank))
 			var/obj/structure/cannon/modern/tank/T = O

@@ -34,6 +34,16 @@ var/submarine_runtime_error = FALSE
 	submarine_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
 
+// How many tiles the boat's hull sections span along "x" or "y".
+/proc/submarine_span(obj/structure/vehicleparts/axis/ship/submarine/S, axis)
+	var/low = 1000
+	var/high = 0
+	for (var/obj/structure/vehicleparts/frame/F in S.frames())
+		var/v = axis == "x" ? F.x : F.y
+		low = min(low, v)
+		high = max(high, v)
+	return high - low + 1
+
 /proc/submarine_turf(x, y, z)
 	var/turf/T = locate(x, y, z)
 	return T
@@ -114,17 +124,41 @@ var/submarine_runtime_error = FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/S = build_submarine(locate(10, 10, 2), "probe boat")
 	submarine_check(istype(S) && S.frames().len == 15, "the submarine builds fifteen hull frames ([S ? S.frames().len : 0])")
 	submarine_check(S && S.engine && S.engine.fueltank && (S in ship_axes), "an engine, a fuel tank and the ship registry are connected")
-	var/obj/structure/vehicleparts/shipwheel/W = locate() in locate(13, 11, 2)
+	var/obj/structure/vehicleparts/shipwheel/W = locate() in locate(13, 10, 2)
 	submarine_check(W && W.ship == S, "the ship wheel steers this boat")
-	var/obj/structure/vehicleparts/sub_station/station = locate() in locate(13, 12, 2)
+	var/obj/structure/vehicleparts/sub_station/station = locate() in locate(12, 11, 2)
 	submarine_check(station && station.boat() == S, "the ballast and periscope station belongs to this boat")
 	var/obj/structure/vehicleparts/frame/F1 = locate() in locate(12, 12, 2)
 	submarine_check(F1 && !F1.noroof && F1.w_left[1] == "" && F1.w_right[1] == "", "the hull is roofed with open hatches amidships")
 	submarine_check(!S.submerged && S.periscope_turf() == get_turf(S), "a new boat floats on the surface")
 
+	// The Scout's hull: every section shows its own tile of the boat's
+	// drawing, the bow is glazed, the engine room lies behind a watertight
+	// door and the stern quarters are sealed.
+	var/list/hull_states = icon_states('icons/obj/vehicles/submarine_hull.dmi')
+	var/hull_art = TRUE
+	for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/HF in S.frames())
+		if (!("[HF.hull_tile]_deck" in hull_states) || !("[HF.hull_tile]_roof" in hull_states) || HF.icon_state != "[HF.hull_tile]_deck" || !HF.roof || HF.roof.icon_state != "[HF.hull_tile]_roof" || HF.roof.dir != HF.dir)
+			hull_art = FALSE
+	submarine_check(S.hull_class == "scout" && S.hull_square() == 5 && hull_art, "every Scout hull section draws its own deck and roof tile")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/bow = locate() in locate(13, 10, 2)
+	submarine_check(bow && bow.hull_tile == "scout_2_1" && bow.w_front[1] == "sub_glass" && !bow.w_front[2] && bow.w_front[3], "the bow is glass: it blocks the way but not the view")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/door = locate() in locate(13, 13, 2)
+	var/mob/living/submarine_probe/walker = new(locate(13, 13, 2))
+	submarine_check(door && door.door_walls().len == 1 && !door.CheckExit(walker, locate(13, 12, 2)), "the watertight door to the engine room starts shut")
+	submarine_check(door && door.toggle_doors() && door.CheckExit(walker, locate(13, 12, 2)) && door.overlays.len == 1, "opening the door lets the crew through")
+	submarine_check(door && door.toggle_doors() && !door.CheckExit(walker, locate(13, 12, 2)), "shutting it closes the way again")
+	door.toggle_doors()
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/quarter = locate() in locate(12, 14, 2)
+	submarine_check(quarter && !quarter.CheckExit(walker, locate(13, 14, 2)) && !quarter.CheckExit(walker, locate(12, 13, 2)) && !bow.toggle_doors(), "the stern quarters are sealed and a plain section has no door")
+	qdel(walker)
+	var/obj/structure/vehicleparts/sub_fitting/battery/cells = locate() in locate(12, 13, 2)
+	var/obj/structure/vehicleparts/sub_fitting/air/flasks = locate() in locate(14, 13, 2)
+	submarine_check(cells && cells.boat() == S && findtext(cells.reading(S), "attery") && flasks && flasks.boat() == S && findtext(flasks.reading(S), "bank") && (locate(/obj/structure/closet/dive_locker) in locate(14, 11, 2)), "the battery bank, air bank and dive locker are fitted and read the boat")
+
 	// Crew and cargo aboard.
 	var/mob/living/submarine_probe/crew = new(locate(13, 13, 2))
-	var/obj/structure/closet/crate/cargo = new(locate(12, 13, 2))
+	var/obj/structure/closet/crate/cargo = new(locate(13, 12, 2))
 	submarine_check(submarine_turf(15, 15, 1).CanPass(crew, submarine_turf(15, 15, 1)) == FALSE, "the sea refuses a mob with no hull over it")
 
 	// Diving.
@@ -282,19 +316,44 @@ var/submarine_runtime_error = FALSE
 	sleep(70)
 	submarine_check(!QDELETED(dropped) && get_turf(dropped) == locate(20, 22, 1), "things dropped on the seabed stay there")
 	var/obj/structure/car_workshop/submarine_pen/pen = new(locate(3, 23, 2))
-	submarine_check(pen.model_size("Submarine") == 5 && pen.costs("Submarine")["steel"] == 90 && !pen.allowed(null), "the pen builds only the submarine, after Submarines research")
-	submarine_check(!pen.complete_assembly("Submarine"), "an empty pen builds nothing")
+	submarine_check(pen.model_size("Scout submarine") == 5 && pen.costs("Scout submarine")["steel"] == 90 && pen.model_size("Explorer submarine") == 7 && pen.costs("Explorer submarine")["steel"] == 140 && pen.largest_model_size() == 5 && !pen.allowed(null), "the pen builds the Scout and the Explorer, after Submarines research, and fits where a Scout does")
+	submarine_check(!pen.complete_assembly("Scout submarine"), "an empty pen builds nothing")
 	pen.stock = list("steel" = 100, "glass" = 5, "cloth" = 0, "cable" = 12, "wheels" = 0)
-	submarine_check(!pen.complete_assembly("Submarine"), "a pen whose bay reaches the shallows builds nothing")
+	submarine_check(!pen.complete_assembly("Scout submarine"), "a pen whose bay reaches the shallows builds nothing")
 	qdel(pen)
 	pen = new(locate(20, 24, 2))
 	pen.stock = list("steel" = 100, "glass" = 5, "cloth" = 0, "cable" = 12, "wheels" = 0)
-	var/obj/structure/vehicleparts/axis/ship/submarine/built = pen.complete_assembly("Submarine")
+	var/obj/structure/vehicleparts/axis/ship/submarine/built = pen.complete_assembly("Scout submarine")
 	submarine_check(istype(built) && built.frames().len == 15, "the pen launches a submarine into its bay of deep sea")
 	if (istype(built))
 		var/obj/structure/engine/internal/BE = built.engine
 		submarine_check(BE.fueltank && !BE.fueltank.reagents.total_volume, "the launched boat has an empty tank")
 		submarine_check(built.keyed_vehicle_id && pen.stock["steel"] == 10 && pen.stock["cable"] == 0, "the pen issues keys and spends its inputs")
+
+	// The Explorer: 21 hull sections in a 7x7 turning square.
+	var/obj/structure/vehicleparts/axis/ship/submarine/explorer/X = build_submarine(locate(23, 8, 2), "explorer", /obj/structure/vehicleparts/axis/ship/submarine/explorer)
+	submarine_check(istype(X) && X.frames().len == 21 && X.hull_square() == 7 && X.maxdist == 7 && X.hull_volume() == 21, "the Explorer builds 21 hull sections in a 7x7 square ([X ? X.frames().len : 0], [X ? X.maxdist : 0])")
+	if (istype(X))
+		var/explorer_art = TRUE
+		var/hatches = 0
+		var/doors = 0
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/XF in X.frames())
+			if (!("[XF.hull_tile]_deck" in hull_states) || !("[XF.hull_tile]_roof" in hull_states))
+				explorer_art = FALSE
+			if (istype(XF, /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch))
+				hatches++
+			doors += XF.door_walls().len
+		var/obj/structure/vehicleparts/shipwheel/XW = locate() in locate(28, 8, 2)
+		submarine_check(explorer_art && hatches == 2 && doors == 2 && XW && XW.ship == X && X.floodlight_holder() == XW && X.engine && X.engine.fueltank, "the Explorer has its own hull art, two lock-out hatches, two watertight doors, a wheel and an engine")
+		submarine_check(submarine_span(X, "x") == 3 && submarine_span(X, "y") == 7, "it lies 3 wide and 7 long")
+		submarine_check(X.do_matrix(X.dir, TURN_LEFT(X.dir), "left") && submarine_span(X, "x") == 7 && submarine_span(X, "y") == 3 && X.frames().len == 21, "the Explorer turns left inside its square ([submarine_span(X, "x")]x[submarine_span(X, "y")])")
+		var/turned = TRUE
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/XF in X.frames())
+			if (XF.dir != X.dir || XF.roof.dir != X.dir)
+				turned = FALSE
+		submarine_check(turned && get_turf(XW) && submarine_at(get_turf(XW)) == X, "every section and its roof face the new heading and the wheel stays aboard")
+		submarine_check(X.do_matrix(X.dir, TURN_RIGHT(X.dir), "right") && submarine_span(X, "x") == 3 && submarine_span(X, "y") == 7 && get_turf(XW) == locate(28, 8, 2), "turning right brings it back where it lay")
+		submarine_check(vehicle_rotation_target(5, "right", "1,2") == "2,5" && vehicle_rotation_target(5, "left", "1,2") == "4,1" && vehicle_rotation_target(7, "right", "1,2") == "2,7" && vehicle_rotation_target(7, "left", "1,2") == "6,1", "a 7x7 square turns by the same rule as the 5x5 table")
 
 /proc/submarine_run()
 	try

@@ -327,4 +327,5 @@ var/global/datum/plane_pool/sea/sea_pool_made = null
 		H.seed = 1
 		H.build(sea_cell_box(sea_home_cell()))
 		qdel(H)
+	sea_office_place()
 	return TRUE

@@ -58,6 +58,11 @@ var/naval_runtime_error = FALSE
 	C.updateturf()
 	return C
 
+// The fixture's people have no body to redraw: hands are plain fields.
+/mob/living/human/naval_probe/put_in_hands(var/obj/item/W)
+	W.forceMove(src)
+	return TRUE
+
 // A 5 by 3 hull with a rigged mast, bow east, its corner at (x, y).
 /proc/sea_ship(x, y, ship_name)
 	for (var/dx = 0, dx < 5, dx++)
@@ -288,6 +293,77 @@ var/naval_runtime_error = FALSE
 	sea_registry.state = text
 	sea_registry.after_load()
 	naval_check(chart.sites.len == 15 && !open_sea_site("s1") == FALSE && chart.state_text() == text, "and a load reads it back")
+
+	// ---- The harbour office ----
+	var/obj/structure/sea_office/office = sea_office()
+	naval_check(office && sea_cell_of(get_turf(office)) == 5 && !istype(get_turf(office), /turf/floor/beach/water) && sea_office_place() == office, "the harbour office board stands on the home island, once")
+	naval_check(office.fill() == SEA_OFFICE_OFFERS && office.contracts(CONTRACT_OPEN).len == SEA_OFFICE_OFFERS && !office.fill(), "it offers four contracts and no more until some time has passed")
+	for (var/obj/craft_contract/sea/old in office.contracts())
+		qdel(old)
+	isle = null
+	hulk = null
+	for (var/datum/chart_site/sea/S in chart.sites)
+		var/far = chart_distance(S.x, S.y, chart.home.x, chart.home.y)
+		if (istype(S, /datum/chart_site/sea/island) && (!isle || far < chart_distance(isle.x, isle.y, chart.home.x, chart.home.y)))
+			isle = S
+		if (istype(S, /datum/chart_site/sea/wreck) && (!hulk || far < chart_distance(hulk.x, hulk.y, chart.home.x, chart.home.y)))
+			hulk = S
+	var/obj/craft_contract/sea/survey/job = office.offer(isle)
+	var/obj/craft_contract/sea/salvage/haul = office.offer(hulk)
+	var/obj/item/stack/money/wage = locate(/obj/item/stack/money) in job
+	naval_check(istype(job) && istype(haul) && isnull(office.offer(isle)) && wage && wage.amount >= 10 && findtext(job.describe(null), "Survey [isle.name]") && findtext(haul.describe(null), "Salvage from [hulk.name]"), "a survey for the island and salvage for the wreck, each once, with coin in the record ([job.describe(null)])")
+	naval_check(isnull(sea_office_crew_craft(ann)) && !job.take(ann, sea_office_crew_craft(ann)) && findtext(job.last_refusal, "registered crews"), "an unregistered ship takes no contract")
+	var/reds = party_train_party_of(ann)
+	C.register = new /datum/craft_register
+	C.register.party = reds
+	naval_check(sea_office_crew_craft(ann) == C && isnull(sea_office_crew_craft(bob)) && job.take(ann, C) && haul.take(ann, C) && job.taker_party == reds, "the Wren, registered and lying in the home waters, takes both")
+	ann.forceMove(get_step(office, SOUTH))
+	naval_check(!office.report(ann) && findtext(office.last_refusal, "not anchored off") && !office.hand_in(ann) && findtext(office.last_refusal, "no crate out of"), "nothing is paid before the work is done ([office.last_refusal])")
+	ann.forceMove(locate(tiller.x + 3, tiller.y, 2))
+
+	// The survey.
+	C.set_anchor(FALSE)
+	naval_check(isnull(C.put_to_sea()), "she puts to sea for the survey")
+	T.lay_course(isle.x, isle.y, isle.name)
+	sea_passage(C)
+	naval_check(C.open_sea_place() == chart.place_of(isle) && job.done && !haul.done, "anchoring off the island does the survey")
+	C.set_anchor(FALSE)
+	C.put_to_sea()
+
+	// The salvage.
+	T.lay_course(hulk.x, hulk.y, hulk.name)
+	sea_passage(C)
+	var/obj/structure/closet/crate/prize = null
+	var/list/hulk_box = sea_cell_box(hulk.cell)
+	for (var/turf/D in block(locate(hulk_box[1], hulk_box[2], 2), locate(hulk_box[3], hulk_box[4], 2)))
+		prize = locate(/obj/structure/closet/crate) in D
+		if (prize)
+			break
+	naval_check(C.open_sea_place() == chart.place_of(hulk) && prize && prize.salvage_of == hulk.id, "off the wreck, her crates are branded as her cargo")
+	var/obj/cargo = prize.contents[1]
+	C.set_anchor(FALSE)
+	C.put_to_sea()
+	T.lay_course(chart.home.x, chart.home.y, chart.home.name)
+	sea_passage(C)
+	naval_check(C.open_sea_place() == chart.home, "home again")
+	ann.forceMove(get_step(office, SOUTH))
+	prize.forceMove(get_step(office, EAST))
+
+	bob.forceMove(get_step(office, NORTH))
+	naval_check(!office.report(bob) && !office.hand_in(bob) && !office.give_up(bob, job), "another party is paid nothing for it")
+	naval_check(!isle.charted && office.report(ann) == 1 && QDELETED(job) && isle.charted && (wage.loc == ann || wage.loc == get_turf(ann)), "Ann reports the survey, is paid, and the island is on the chart for good")
+	naval_check(office.hand_in(ann) == 1 && QDELETED(haul) && QDELETED(prize) && cargo.loc == get_step(office, EAST), "the crate is handed in for the salvage pay and its cargo stays with the crew")
+	naval_check(isnull(office.offer(isle)) && istype(office.offer(hulk), /obj/craft_contract/sea/salvage), "a surveyed island needs no second survey; a wreck can be worked again")
+	var/obj/craft_contract/sea/again = office.contract_for(hulk.id)
+	naval_check(again.take(ann, C) && office.give_up(ann, again) && again.state == CONTRACT_OPEN && !length(again.taker_party), "a contract given up goes back on the board")
+	naval_check(findtext(chart.state_text(), "\"charted\":1") && chart.read_state(chart.state_text()) && open_sea_site(isle.id).charted, "the survey is saved with the sea")
+	T.x = 5
+	T.y = 5
+	var/found_far = FALSE
+	for (var/line in C.open_sea_courses())
+		if (findtext(line, open_sea_site(isle.id).name))
+			found_far = TRUE
+	naval_check(chart_distance(5, 5, isle.x, isle.y) > OPEN_SEA_SIGHT ? found_far : TRUE, "a surveyed island can be made for from beyond sight")
 
 /proc/naval_run()
 	try

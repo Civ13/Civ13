@@ -217,6 +217,17 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   the ship's own cell (`sea_same_waters()`).
 - The home island is built by `open_sea_prepare()` the first time the world
   boots, while the middle of the home waters is still open sea.
+- **The harbour office** (`naval/sea_office.dm`). `sea_office_place()` stands
+  a board on the home island. It is a contract board whose poster is the
+  world: `fill()` offers up to four `/obj/craft_contract/sea` jobs when
+  somebody reads it, each with silver in its record. A **survey** is done when
+  the taker's ship anchors off the island (`sea_office_arrived()`, called by
+  `open_sea_arrive()`); reporting it pays and sets the site's `charted`, which
+  is saved with the sea and puts the island in every ship's course list from
+  any distance. **Salvage** is paid for a crate branded `salvage_of` the
+  wreck, set down by the board: the board keeps the crate and leaves what was
+  in it. A crew takes a contract with a registered ship lying in the home
+  waters and can give it up.
 
 ## Contracts and freight
 
