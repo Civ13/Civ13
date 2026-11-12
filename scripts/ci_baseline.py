@@ -509,7 +509,8 @@ SUITES = {
         'paths': ('tests/human_vision_organ/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
-    'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',),
+    'human_ssd_hunger': {'files': ('tests/human_ssd_hunger/test_ssd_hunger.py',
+        'tests/human_ssd_hunger/test_conscious_hunger.py'),
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
