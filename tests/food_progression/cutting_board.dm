@@ -264,6 +264,8 @@
 	var/obj/item/weapon/reagent_containers/food/snacks/restored = B.input
 	cutting_check(B && restored && restored.loc == B && !QDELETED(restored) && restored.salted_meat && restored.radiation == 137 && restored.decaytimer / restored.decay >= 0.1 && restored.reagents.get_reagent_amount("cyanide") == 2 && restored.reagents.get_reagent_amount("food_poisoning") == paid_food_poison, "board live food child, age, salt and hazards restore through actual entry codec")
 	var/paid_protein = restored.reagents.get_reagent_amount("protein")
+	restored.satisfaction = -4
+	var/list/paid_effects = cutting_board_food_effects(restored)
 	K = new knife_path(H)
 	cutting_check(H.put_in_active_hand(K), "restored board knife legal hand")
 	B.attackby(K, H)
@@ -271,11 +273,17 @@
 	var/protein = 0
 	var/cyanide = 0
 	var/food_poison = 0
+	var/radiation_eaten = 0
+	var/mood_eaten = 0
 	for (var/obj/item/weapon/reagent_containers/food/snacks/mince/output in site)
+		radiation_eaten += output.radiation * output.biteamount
+		mood_eaten += ceil(output.satisfaction / output.biteamount) * output.biteamount
 		protein += output.reagents.get_reagent_amount("protein")
 		cyanide += output.reagents.get_reagent_amount("cyanide")
 		food_poison += output.reagents.get_reagent_amount("food_poisoning")
-		cutting_check(output.salted_meat && output.radiation == 137 && output.decaytimer / output.decay >= 0.1, "output retains salt, radiation and elapsed relative age")
+		cutting_check(output.salted_meat && output.radiation > 0 && output.decaytimer / output.decay >= 0.1, "output retains salt, radiation and elapsed relative age")
 	cutting_check(abs(protein - paid_protein) < 0.001 && abs(cyanide - 2) < 0.001 && abs(food_poison - paid_food_poison) < 0.001, "output shares preserve total paid protein and poison without constructor nutrition")
+	cutting_check(paid_effects["radiation"] > 0 && abs(radiation_eaten - paid_effects["radiation"]) < 0.001, "outputs split the input's radiation instead of copying it ([radiation_eaten] vs [paid_effects["radiation"]])")
+	cutting_check(paid_effects["satisfaction"] < 0 && mood_eaten >= paid_effects["satisfaction"], "outputs split the input's mood instead of multiplying it ([mood_eaten] vs [paid_effects["satisfaction"]])")
 	text2file("PASS: cutting-board trace conservation/refusal, live food, original yields, elapsed age, salt/reagents, subtype refusal, concurrency, rejections and actual child save/load", "food_result.txt")
 	del(world)
