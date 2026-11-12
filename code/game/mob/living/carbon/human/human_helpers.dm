@@ -469,6 +469,7 @@
 		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
 		drowning = FALSE
+		swim_rest()
 		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
 			water_overlay = TRUE
 			update_fire(1)
@@ -502,6 +503,12 @@
 					drowning = FALSE
 					water_overlay = FALSE
 					return
+			// Swimming (swimming.dm): afloat until the swimmer tires.
+			if (swim_step(D))
+				drowning = FALSE
+				water_overlay = TRUE
+				update_fire(1)
+				return
 			drowning = TRUE
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
 			update_fire(1)
