@@ -151,6 +151,7 @@
 	icon = C.icon
 	icon_state = C.icon_state
 	overlay_state = C.item_state ? C.item_state : C.icon_state
+	icon_override = (C.item_icons && C.item_icons[slot_wear_suit_str]) ? C.item_icons[slot_wear_suit_str] : 'icons/mob/suit.dmi'
 	color = C.color
 	cold_protection = C.cold_protection
 	min_cold_protection_temperature = C.min_cold_protection_temperature
@@ -233,42 +234,98 @@
 	return TRUE
 
 /*
+ * New rain gear. Art is drawn by tests/sprites/create_rain_gear.py.
+ */
+/obj/item/clothing/suit/straw_rain_cape
+	name = "straw rain cape"
+	desc = "Bundles of dried grass tied in overlapping tiers. Rain runs down the straw and drips off the hem. It can be fastened over other clothes."
+	icon = 'icons/obj/clothing/rain_gear.dmi'
+	icon_state = "straw_rain_cape"
+	item_state = "straw_rain_cape"
+	item_icons = list(
+		slot_wear_suit_str = 'icons/mob/rain_gear.dmi',
+		slot_l_hand_str = 'icons/mob/items/lefthand_rain_gear.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_rain_gear.dmi',
+		)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	cold_protection = UPPER_TORSO|ARMS
+	min_cold_protection_temperature = 260
+	rain_resist = 70
+	cape_wearable = TRUE
+	flammable = TRUE
+
+/obj/item/clothing/suit/oilskin_coat
+	name = "oilskin coat"
+	desc = "A long canvas coat soaked in linseed oil until it sheds water. Stiff, yellow and smelling faintly of paint."
+	icon = 'icons/obj/clothing/rain_gear.dmi'
+	icon_state = "oilskin_coat"
+	item_state = "oilskin_coat"
+	item_icons = list(
+		slot_wear_suit_str = 'icons/mob/rain_gear.dmi',
+		slot_l_hand_str = 'icons/mob/items/lefthand_rain_gear.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_rain_gear.dmi',
+		)
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	min_cold_protection_temperature = 250
+	rain_resist = 85
+
+/obj/item/clothing/head/souwester
+	name = "sou'wester"
+	desc = "An oilskin rain hat. The long back brim keeps water from running down your collar."
+	icon = 'icons/obj/clothing/rain_gear.dmi'
+	icon_state = "souwester"
+	item_state = "souwester"
+	item_icons = list(
+		slot_head_str = 'icons/mob/rain_gear.dmi',
+		slot_l_hand_str = 'icons/mob/items/lefthand_rain_gear.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_rain_gear.dmi',
+		)
+	rain_resist = 50
+
+/*
  * Umbrellas: held open in either hand they keep most rain off and give shade
- * in hot sun. Strong wind can blow one inside out until it is fixed.
+ * in hot sun. A gale can blow one inside out until it is bent back. The held
+ * sheets are 32x48, so the open canopy draws above the holder's head.
  */
 /obj/item/weapon/umbrella
 	name = "umbrella"
-	desc = "Open it to keep the rain off. Strong wind can turn it inside out."
-	icon = 'icons/obj/items.dmi'
-	icon_state = "umbrella"
-	item_state = "umbrella"
+	desc = "Open it to keep the rain off. A gale can turn it inside out."
+	icon = 'icons/obj/clothing/rain_gear.dmi'
+	icon_state = "umbrella_cloth"
+	item_state = "umbrella_cloth"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_rain_gear.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_rain_gear.dmi',
+		)
 	w_class = ITEM_SIZE_NORMAL
 	force = 4
 	flammable = TRUE
+	var/base_state = "umbrella_cloth"
 	var/open = FALSE
 	var/inside_out = FALSE
 	var/rain_resist = 80
 	var/wind_flip_chance = 3 // percent per tick in a gale
 
 /obj/item/weapon/umbrella/paper
-	name = "oiled-paper umbrella"
-	desc = "Oiled paper stretched over a bamboo frame. It keeps rain off but tears in a gale."
+	name = "oiled paper umbrella"
+	desc = "Oiled paper stretched over split bamboo ribs. Light and good at shedding rain, but it tears in a gale."
 	icon_state = "umbrella_paper"
 	item_state = "umbrella_paper"
+	base_state = "umbrella_paper"
 	rain_resist = 70
 	wind_flip_chance = 5
 
 /obj/item/weapon/umbrella/cloth
-	name = "cloth umbrella"
-	desc = "Waxed cloth on a steel frame."
-	icon_state = "umbrella_cloth"
-	item_state = "umbrella_cloth"
+	name = "black umbrella"
+	desc = "Waxed black cloth on steel ribs, with a crooked wooden handle."
 
-/obj/item/weapon/umbrella/folding
+/obj/item/weapon/umbrella/nylon
 	name = "folding umbrella"
-	desc = "A compact nylon umbrella that folds small enough for a pocket."
-	icon_state = "umbrella_folding"
-	item_state = "umbrella_folding"
+	desc = "A nylon umbrella that telescopes down small enough for a bag."
+	icon_state = "umbrella_nylon"
+	item_state = "umbrella_nylon"
+	base_state = "umbrella_nylon"
 	w_class = ITEM_SIZE_SMALL
 	rain_resist = 85
 	wind_flip_chance = 2
@@ -277,18 +334,9 @@
 	return open && !inside_out
 
 /obj/item/weapon/umbrella/update_icon()
-	var/base = initial(icon_state)
-	if (inside_out)
-		icon_state = "[base]_broken"
-	else if (open)
-		icon_state = "[base]_open"
-	else
-		icon_state = base
-	item_state = open && !inside_out ? "[initial(item_state)]_open" : initial(item_state)
-	if (ismob(loc))
-		var/mob/M = loc
-		M.update_inv_l_hand()
-		M.update_inv_r_hand()
+	icon_state = shelters() ? "[base_state]_open" : base_state
+	item_state = icon_state
+	update_held_icon()
 
 /obj/item/weapon/umbrella/attack_self(mob/user)
 	if (inside_out)
@@ -317,19 +365,30 @@
 	update_icon()
 
 /*
- * Lean-to: a sloped frame of branches and leaves that keeps rain off like a
- * canopy. under_canopy() counts it.
+ * Lean-to: branches propped on forked poles and thatched with leaves. It
+ * keeps rain off like a canopy (under_canopy() counts it). dir is the open
+ * side; the roof draws over whoever shelters inside.
  */
 /obj/structure/lean_to
 	name = "lean-to"
-	desc = "A sloped frame of branches thatched with leaves. It keeps the rain off whoever sits under it."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "lean_to"
+	desc = "Branches propped on forked poles and thatched with leaves. One side is open. It keeps the rain off whoever sits under it."
+	icon = 'icons/obj/rain_shelter.dmi'
+	icon_state = "lean_to_frame"
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE
 	flammable = TRUE
 	not_movable = TRUE
+	var/image/roof
+
+/obj/structure/lean_to/New()
+	..()
+	update_icon()
+
+/obj/structure/lean_to/update_icon()
+	overlays -= roof
+	roof = image(icon, "lean_to_roof", dir = dir, layer = MOB_LAYER + 1)
+	overlays += roof
 
 /obj/structure/lean_to/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/machete))

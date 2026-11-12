@@ -140,6 +140,12 @@ var/rg_runtime_error = FALSE
 	var/obj/item/clothing/head/strawhat/not_cape = new(T)
 	rg_check(!coat.try_fasten_cape(not_cape, null), "only cape-wearable suits fasten as capes")
 
+	var/obj/item/clothing/suit/straw_rain_cape/straw = new(T)
+	rg_check(coat.try_fasten_cape(straw, null), "a straw rain cape fastens over a coat")
+	var/obj/item/clothing/accessory/worn_cape/SW = coat.accessories[1]
+	rg_check(SW.icon_override == 'icons/mob/rain_gear.dmi' && SW.overlay_state == "straw_rain_cape", "the worn straw cape draws its own sprite")
+	rg_check(coat.get_cold_coverage() & UPPER_TORSO, "a fastened cape adds its cold coverage")
+
 	// Wet clothes slow movement on settlement maps.
 	H.cold_wetness = 1
 	rg_check(rg_close(H.wet_clothes_slowdown(), 0.6), "soaked clothes add movement delay")

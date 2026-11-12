@@ -173,6 +173,7 @@ RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,
 //*****************| LEAVES CLOTHING |**************************
 
 RECIPE: /material/leaf/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,0,leaf
+RECIPE: /material/leaf/,straw rain cape,/obj/item/clothing/suit/straw_rain_cape,6,120,0,1,none,0,0,0,8,null
 
 RECIPE: /material/leaf/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
 RECIPE: /material/leaf/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
@@ -749,6 +750,8 @@ RECIPE: /material/cloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket
 RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/cloth/,oilskin coat,/obj/item/clothing/suit/oilskin_coat,6,120,0,1,jackets & vests,0,0,0,8,null
+RECIPE: /material/cloth/,black umbrella,/obj/item/weapon/umbrella/cloth,4,90,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/blackvest,4,80,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/bluevest,4,80,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/cloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
@@ -799,6 +802,7 @@ RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian
 RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,18,8,null
+RECIPE: /material/cloth/,sou'wester,/obj/item/clothing/head/souwester,3,60,0,1,hats,0,0,0,8,null
 RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
 RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
@@ -1020,6 +1024,7 @@ RECIPE: /material/plastic/,decorative plastic pipe junction,/obj/structure/props
 RECIPE: /material/plastic/,camera film,/obj/item/camera_film,4,55,1,1,none,95,0,0,8,null
 RECIPE: /material/plastic/,cassette tape,/obj/item/cassette,1,40,0,1,none,205,0,0,8,null
 RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/empty,2,40,0,1,none,0,0,95,8,null
+RECIPE: /material/plastic/,folding umbrella,/obj/item/weapon/umbrella/nylon,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,lighter,/obj/item/weapon/flame/lighter/random,3,95,0,1,none,150,0,0,8,null
 
 RECIPE: /material/plastic/,bug swatter,/obj/item/weapon/swatter/modern,8,70,0,1,none,0,0,0,8,null
@@ -2160,6 +2165,7 @@ RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,
 //*******************************************************
 
 RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,lean-to,/obj/structure/lean_to,4,120,1,1,none,0,0,0,8,null
 
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
@@ -2519,6 +2525,7 @@ RECIPE: /material/wood/soft/,pillory,/obj/structure/pillory,8,60,1,1,punishments
 
 //*********************| BAMBOO DECORATION & RELIGION |**************************
 
+RECIPE: /material/bamboo/,oiled paper umbrella,/obj/item/weapon/umbrella/paper,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/bamboo/,bamboo altar,/obj/structure/altar/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,none,0,0,0,8,null
