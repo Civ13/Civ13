@@ -660,6 +660,7 @@
 			return
 		update_icon()
 		var/amt = 10
+		var/output_room = max(0, barrel[1].reagents.get_free_space())
 		if (volume_et < 0)
 			volume_et = 0
 		if (volume_di < 0)
@@ -667,18 +668,24 @@
 		if (product == "ethanol")
 			if (volume_et < 10)
 				amt = volume_et
-			volume_et -= amt
-			barrel[1].reagents.add_reagent("pethanol",amt)
+			amt = min(amt, output_room)
+			if (amt >= MINIMUM_CHEMICAL_VOLUME)
+				volume_et -= amt
+				barrel[1].reagents.add_reagent("pethanol",amt)
 		else if (product == "biodiesel")
 			if (volume_di < 10)
 				amt = volume_di
-			volume_di -= amt
-			barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
+			amt = min(amt, output_room / 0.7)
+			if (0.7*amt >= MINIMUM_CHEMICAL_VOLUME)
+				volume_di -= amt
+				barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
 		else // default to diesel
 			if (volume_di < 10)
 				amt = volume_di
-			volume_di -= amt
-			barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
+			amt = min(amt, output_room / 0.7)
+			if (0.7*amt >= MINIMUM_CHEMICAL_VOLUME)
+				volume_di -= amt
+				barrel[1].reagents.add_reagent("biodiesel",0.7*amt)
 		refine_scheduled = TRUE
 		spawn(600) // 1 minute
 			refine_scheduled = FALSE
