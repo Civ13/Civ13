@@ -77,6 +77,7 @@
 		var/illness = diagnose_disease(H)
 		if (illness)
 			user.show_message("<span class='warning'><b>* [illness]</b></span>")
+			note_field_diagnosis(user, H)
 		else
 			user.show_message("<span class='notice'>* No signs of disease.</span>")
 		var/list/poisons = diagnose_poisons(H)

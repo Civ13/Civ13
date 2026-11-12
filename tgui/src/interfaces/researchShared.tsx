@@ -27,6 +27,16 @@ export function Bar({ value, label }: { value: unknown; label?: string }) {
   return <div className="rs-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label={label}><div style={{ width: `${percent}%` }} /></div>;
 }
 // A requirement list: each line says plainly whether it is met.
+export function FieldWork({ rows }: { rows: unknown }) {
+  const items = list(rows);
+  if (!items.length) return null;
+  return <><h3>Field work</h3><p className="rs-dim">Optional. Someone who has done the work stands at the bench and it is written into the book.</p>
+    <ul className="rs-checks">{items.map((row, i) => <li key={i} className={row.done ? 'rs-ok' : 'rs-dim'}>
+      <span aria-hidden="true">{row.done ? '✓' : '○'}</span> {text(row.label)}: {row.percent}% of the work
+      <span className="rs-dim"> ({row.done ? 'in the book' : `you have ${row.have} of ${row.needed}`})</span>
+    </li>)}</ul></>;
+}
+
 export function Checks({ rows }: { rows: unknown }) {
   const items = list(rows);
   if (!items.length) return null;

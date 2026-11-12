@@ -201,6 +201,11 @@
 		return
 	if (!research_lit())
 		return
+	// Field work from anyone at the bench goes into the book first (field_work.dm).
+	if (credit_field_work())
+		book_refresh_ui()
+		if (B.has_research_chapter(assigned_node))
+			return
 	// The most skilled scholar at the bench, with the best tool, sets the pace.
 	var/mob/living/human/researcher = null
 	var/best_rate = 0
@@ -214,7 +219,7 @@
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * apprentice_research_gain(researcher, assigned_node))
-	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
 	book_refresh_ui()

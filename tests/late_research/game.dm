@@ -1,5 +1,5 @@
 // Late research on book-research worlds, on production source: standing node
-// effects. Client presence, light and action waits are isolated.
+// effects and field work. Client presence, light and action waits are isolated.
 var/late_failures = 0
 var/late_wait_result = TRUE
 /world
@@ -73,6 +73,75 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	H.stat = DEAD
 	late_check(!H.has_node_effect("alloys"), "the dead hold no effects")
+/proc/late_test_field_work()
+	// Every experiment is well formed.
+	var/list/shares = list()
+	var/formed = TRUE
+	for(var/id in field_experiments)
+		var/list/E = field_experiments[id]
+		var/datum/research_node/N = get_research_node(E[1])
+		if(!N || N.era_tier < 5 || !(E[2] in field_activities) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
+			formed = FALSE
+			world.log << "FAIL: experiment [id] is malformed"
+		shares[E[1]] = (shares[E[1]] || 0) + E[4]
+	for(var/node_id in shares)
+		if(shares[node_id] > 0.7)
+			formed = FALSE
+			world.log << "FAIL: field work covers too much of [node_id]"
+	late_check(formed && field_experiments.len >= 20, "[field_experiments.len] experiments name late nodes, known activities and leave bench work to do")
+	late_check(late_bench_rate(get_research_node("cartridge_ammo")) == 1.5 && late_bench_rate(get_research_node("rifling")) == 1, "late nodes are studied faster at the bench, earlier ones are not")
+	var/mob/living/human/late_fixture/soldier = new(locate(3,2,1))
+	soldier.name = "Brann"
+	var/mob/living/human/late_fixture/doctor = new(locate(6,6,1))
+	var/mob/living/human/late_fixture/patient = new(locate(6,7,1))
+	var/mob/living/human/late_fixture/patient2 = new(locate(7,7,1))
+	// Counting.
+	late_check(note_field_work(soldier, "shots") && soldier.field_work_amount("shots") == 1, "a shot is counted on the character")
+	note_field_work(soldier, "shots", 500)
+	late_check(soldier.field_work_amount("shots") == field_activity_cap("shots") && !note_field_work(soldier, "shots"), "counting stops at the most any experiment needs ([field_activity_cap("shots")])")
+	late_check(!note_field_work(soldier, "juggling") && !note_field_work(null, "shots"), "unknown activities and nobody count nothing")
+	late_check(note_field_diagnosis(doctor, patient) && !note_field_diagnosis(doctor, patient) && note_field_diagnosis(doctor, patient2) && doctor.field_work_amount("diagnosis") == 2, "the same patient twice in a row is one diagnosis")
+	late_check(!note_field_diagnosis(doctor, doctor), "diagnosing yourself is not field work")
+	map.book_research = FALSE
+	late_check(!note_field_work(doctor, "surgery") && doctor.field_work_amount("surgery") == 0, "nothing is counted where book research is off")
+	map.book_research = TRUE
+	// Crediting at a bench.
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(3,3,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/journal = new(bench)
+	journal.name = "journal"
+	bench.assigned_node = "cartridge_ammo"
+	var/datum/research_node/CN = get_research_node("cartridge_ammo")
+	var/list/rows = bench.field_work_rows(soldier, "cartridge_ammo")
+	late_check(rows.len == 1 && rows[1]["percent"] == 35 && !rows[1]["done"] && rows[1]["have"] == 30 && rows[1]["needed"] == 30, "the window lists the experiment and the viewer's own experience")
+	soldier.stat = UNCONSCIOUS
+	late_check(!bench.credit_field_work() && journal.research_ticks("cartridge_ammo") == 0, "an unconscious veteran reports nothing")
+	soldier.stat = CONSCIOUS
+	bench.book_analysis_tick()
+	var/expected = round(CN.cost_ticks * 0.35)
+	late_check(journal.research_ticks("cartridge_ammo") == expected && journal.has_field_work("cartridge_ammo_range"), "standing at the bench writes the field work into the book without any scholar ([expected] of [CN.cost_ticks] points)")
+	bench.book_analysis_tick()
+	late_check(journal.research_ticks("cartridge_ammo") == expected && !bench.credit_field_work(), "the same experiment is written into a book only once")
+	rows = bench.field_work_rows(soldier, "cartridge_ammo")
+	late_check(rows[1]["done"] == 1, "the window shows it is in the book")
+	// Another book has not heard it yet.
+	journal.loc = locate(1,1,1)
+	var/obj/item/weapon/book/second = new(bench)
+	late_check(bench.credit_field_work() && second.research_ticks("cartridge_ammo") == expected, "the same veteran can report to another book")
+	// Too little experience, and far away.
+	bench.assigned_node = "automatic_weapons"
+	var/mob/living/human/late_fixture/recruit = new(locate(3,4,1))
+	note_field_work(recruit, "shots", 50)
+	soldier.loc = locate(8,8,1)
+	late_check(!bench.credit_field_work() && second.research_ticks("automatic_weapons") == 0, "too little experience, or a veteran out of reach, adds nothing")
+	// Field work can finish a chapter that is nearly done.
+	soldier.loc = locate(3,2,1)
+	var/datum/research_node/AN = get_research_node("automatic_weapons")
+	second.add_research_work("automatic_weapons", AN.cost_ticks - 5)
+	late_check(bench.credit_field_work() && second.has_research_chapter("automatic_weapons") && !second.has_field_work("automatic_weapons_range") && second.has_field_work("cartridge_ammo_range"), "field work finishes a nearly done chapter and is then forgotten for that subject only")
+	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
+	// A dark bench does no bookkeeping at all.
+	late_check(bench.field_work_rows(soldier, "basic_tools").len == 0, "early subjects have no field work")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -88,6 +157,7 @@ var/late_wait_result = TRUE
 	build_research_tree()
 	try
 		late_test_node_effects()
+		late_test_field_work()
 	catch(var/exception/e)
 		late_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"

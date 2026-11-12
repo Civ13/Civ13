@@ -173,7 +173,8 @@
 	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
 	var/list/supplies = cache["supplies"]
 	var/supplied = islist(supplies) ? (supplies[discipline] || 0) >= 1 : TRUE
-	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	out["field_work"] = field_work_rows(H, node_id)
 	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * RESEARCH_TICK_INTERVAL) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
 	out["holder"] = holder
@@ -240,6 +241,7 @@
 		var/pname = N.prototype_display_name()
 		checks += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
 	out["checks"] = checks
+	out["field_work"] = field_work_rows(H, assigned_node)
 	out["supply"] = supply
 	out["supply_cap"] = SCHOLAR_SUPPLY_CAP
 	out["supply_text"] = "[scholar_disciplines[discipline]] supplies ([scholar_supply_text(discipline)])"
@@ -249,7 +251,7 @@
 	var/working = researcher && B && lit && instrument_ok && tier >= N.min_bench_tier
 	out["working"] = working ? 1 : 0
 	if (working)
-		var/per_tick = round(base_tick_rate * worker[2] * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
+		var/per_tick = round(base_tick_rate * worker[2] * late_bench_rate(N) * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
 		out["pace"] = per_tick
 		if (per_tick > 0 && ticks < N.cost_ticks)
 			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * RESEARCH_TICK_INTERVAL)

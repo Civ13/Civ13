@@ -123,6 +123,7 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 				if (prob(S.tool_quality(tool, user)))
 					if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
 						S.end_step(user, M, zone, tool)		//finish successfully
+						note_field_work(user, "surgery")
 						if (ishuman(user))
 							var/mob/living/human/H = user
 							var/mod = 1

@@ -152,6 +152,7 @@ var/global/list/controlled_reactions_by_id = null
 	else
 		succeeded = synthesize(selected)
 	if(succeeded)
+		note_field_work(user, "reactions")
 		to_chat(user, SPAN_NOTICE("The selected game reaction completes."))
 	else
 		to_chat(user, SPAN_WARNING("That reaction cannot proceed. Check inputs, catalysts, and available capacity. Nothing was consumed."))
