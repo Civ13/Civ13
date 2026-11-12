@@ -212,4 +212,8 @@
 		to_chat(usr, "You turn the cooling fan off.")
 		icon_state = "fan"
 		on = FALSE
+	update_desc()
+
+/obj/structure/coolingfan/proc/update_desc()
+	desc = "A rotating cooling fan. It's switched [on ? "on" : "off"]."
 
