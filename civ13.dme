@@ -1475,6 +1475,7 @@
 #include "code\modules\research_tree\book_cipher.dm"
 #include "code\modules\research_tree\field_work.dm"
 #include "code\modules\research_tree\practice_work.dm"
+#include "code\modules\research_tree\demonstrations.dm"
 #include "code\modules\research_tree\node_broadcast.dm"
 #include "code\modules\research_tree\node_effects.dm"
 #include "code\modules\research_tree\research_faction.dm"

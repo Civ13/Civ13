@@ -245,6 +245,75 @@ var/late_wait_result = TRUE
 	// A dark bench does no bookkeeping at all.
 	late_check(bench.field_work_rows(soldier, "ritual_worship").len == 0, "a subject without experiments lists none")
 
+// Working demonstrations for late capstones (demonstrations.dm).
+/proc/late_test_demonstrations()
+	for(var/node_id in capstone_demonstrations)
+		var/datum/research_node/N = get_research_node(node_id)
+		late_check(N && N.mode == RESEARCH_MODE_PROTOTYPE && node_needs_demonstration(node_id) && findtext(prototype_need_label(N), "demonstration"), "[node_id] is a capstone that needs a demonstration")
+	late_check(!node_needs_demonstration("mechanized_war") && findtext(prototype_need_label(get_research_node("mechanized_war")), "used on the bench"), "other capstones keep their prototype")
+	map.book_research = FALSE
+	late_check(!node_needs_demonstration("steam_power"), "only book-research worlds need demonstrations")
+	map.book_research = TRUE
+	// Is it running?
+	var/obj/structure/engine/external/steam/engine = new(locate(2,6,1))
+	late_check(!demonstration_machine_running("steam_power", engine), "a cold engine demonstrates nothing")
+	engine.on = TRUE
+	late_check(demonstration_machine_running("steam_power", engine), "a running steam engine demonstrates Steam Power")
+	late_check(!demonstration_machine_running("electricity", engine), "an engine is not an electric lamp")
+	var/obj/item/weapon/telephone/mobile/phone = new(locate(2,7,1))
+	phone.wireless = TRUE
+	late_check(!demonstration_machine_running("digital_networks", phone), "an idle phone demonstrates nothing")
+	phone.connected = 1234
+	late_check(demonstration_machine_running("digital_networks", phone), "a connected mobile call demonstrates Digital Networks")
+	// The recorder.
+	var/mob/living/human/late_fixture/watcher = new(locate(2,5,1))
+	watcher.name = "Ilse"
+	watcher.teach("watermills")
+	var/list/seen = demonstrations_in_view(watcher)
+	late_check(seen.len == 1 && seen["steam_power"] == engine, "someone who knows the groundwork sees the steam engine demonstration")
+	late_check(find_demonstration_machine(watcher, "steam_power") == engine, "the running engine is found within reach")
+	// Experimental builds need a half-written chapter on the builder.
+	var/datum/research_node/SN = get_research_node("steam_power")
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam") && !crafting_recipe_allowed(watcher, "/obj/structure/engine/external/steam"), "no book, no experimental engine")
+	var/obj/item/weapon/book/draft = new(watcher)
+	draft.add_research_work("steam_power", round(SN.cost_ticks * 0.4))
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam"), "less than half a chapter is not enough")
+	draft.add_research_work("steam_power", SN.cost_ticks)
+	late_check(!draft.has_research_chapter("steam_power"), "study alone does not finish the capstone")
+	late_check(demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam") && crafting_recipe_allowed(watcher, "/obj/structure/engine/external/steam"), "half a chapter on you lets you build an experimental engine")
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/lamp/lamp_small"), "but not another capstone's machine")
+	var/obj/structure/engine/external/steam/crude = new(locate(4,6,1))
+	late_check(mark_experimental_build(watcher, crude, "/obj/structure/engine/external/steam") && crude.experimental_node == "steam_power" && findtext(crude.name, "experimental") == 1, "the build is marked experimental")
+	late_check(!mark_experimental_build(watcher, engine, "/obj/structure/lamp/lamp_small") && !engine.experimental_node, "an ordinary build stays ordinary")
+	// Experimental machines fail now and then during a demonstration.
+	crude.on = TRUE
+	var/failed = FALSE
+	for(var/i = 1 to 500)
+		if(demonstration_mishap(crude, "steam_power"))
+			failed = TRUE
+			break
+	late_check(failed && QDELETED(crude), "an experimental engine can burst during a demonstration")
+	late_check(!demonstration_mishap(engine, "steam_power"), "a proper engine never fails that way")
+	// Recording onto paper, then at the bench.
+	var/obj/item/weapon/paper/sheet = new(watcher)
+	late_check(demonstration_carrier_ok(sheet, "steam_power") && commit_demonstration(watcher, sheet, "steam_power") && sheet.demonstration_node == "steam_power", "a sheet of paper takes the demonstration notes")
+	late_check(!demonstration_carrier_ok(sheet, "steam_power"), "one demonstration per sheet")
+	var/obj/item/weapon/paper/parchment/skin = new(watcher)
+	late_check(demonstration_carrier_ok(skin, "electricity"), "parchment works too")
+	var/obj/item/weapon/paper/research_page/page = new(watcher)
+	late_check(!demonstration_carrier_ok(page, "steam_power"), "a torn-out chapter page is not a notebook")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,6,1))
+	bench.tier = 8
+	draft.loc = bench
+	bench.assigned_node = "steam_power"
+	watcher.r_hand = sheet
+	late_check(bench.take_demonstration_notes(sheet, watcher) && draft.has_research_chapter("steam_power") && QDELETED(sheet), "the notes used on the bench finish the studied chapter")
+	// Recording straight into a book.
+	var/obj/item/weapon/book/journal = new(watcher)
+	late_check(commit_demonstration(watcher, journal, "electricity") && journal.research_prototype_installed("electricity") && !journal.has_research_chapter("electricity"), "a book takes the demonstration straight away and waits for the study")
+	late_check(!demonstration_carrier_ok(journal, "electricity"), "a book holds one demonstration of a subject")
+	qdel(bench)
+
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
@@ -461,6 +530,7 @@ var/late_wait_result = TRUE
 		late_test_node_effects()
 		late_test_field_work()
 		late_test_practice_work()
+		late_test_demonstrations()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

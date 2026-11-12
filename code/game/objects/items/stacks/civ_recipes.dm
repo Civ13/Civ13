@@ -142,7 +142,7 @@
 		// fail closed instead of falling through to legacy thresholds.
 		// Era gating (i[12]) applies in both cases.
 		var/node_req = get_recipe_node_req(i[3])
-		if (!civ_generation_era(text2path(i[3])))
+		if (!civ_generation_era(text2path(i[3])) && !(user && demonstration_kit_allowed(user, i[3])))
 			continue
 		if (i[3] == "/obj/structure/chem_master/tablet_press/constructed" && !tablet_press_year_allowed())
 			continue
