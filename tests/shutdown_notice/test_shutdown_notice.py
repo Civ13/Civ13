@@ -1,28 +1,16 @@
-"""Planned shutdown notices (code/modules/persistence/shutdown_notice.dm).
+"""Planned shutdown notices (code/modules/persistence/shutdown_notice.dm): source wiring.
 
-Source checks run everywhere; the countdown probe runs when the pinned BYOND from
-scripts/cloud_byond_setup.sh is installed in ~/byond-<version>.
+The native countdown probe is developer evidence, outside the offline suite (it runs for
+about 40 seconds): python3 tests/shutdown_notice/run.py
 """
-import json
-import os
 from pathlib import Path
-import shutil
-import subprocess
-import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-NOTICE = ROOT / 'code/modules/persistence/shutdown_notice.dm'
 
 
 def read(relative):
     return (ROOT / relative).read_text(encoding='utf-8')
-
-
-def byond_bin():
-    pin = json.loads(read('tools/byond/version.json'))['version']
-    path = Path.home() / ('byond-' + pin) / 'byond' / 'bin'
-    return path if (path / 'DreamMaker').exists() else None
 
 
 class ShutdownNoticeSources(unittest.TestCase):
@@ -51,25 +39,6 @@ class ShutdownNoticeSources(unittest.TestCase):
         self.assertIn('planned_shutdown_countdown("reboot", delay,', read('code/modules/agent_control/agent_actions.dm'))
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
-
-
-@unittest.skipUnless(byond_bin(), 'pinned BYOND not installed (bash scripts/cloud_byond_setup.sh)')
-class ShutdownNoticeProbe(unittest.TestCase):
-    def test_countdown_milestones_cancel_and_discord(self):
-        binp = byond_bin()
-        env = dict(os.environ, LD_LIBRARY_PATH=str(binp) + ':' + os.environ.get('LD_LIBRARY_PATH', ''),
-                   BYOND_SYSTEM=str(binp.parent), PATH=str(binp) + ':' + os.environ['PATH'])
-        with tempfile.TemporaryDirectory(prefix='civ13-shutdown-notice-') as work:
-            work = Path(work)
-            shutil.copy(NOTICE, work / 'shutdown_notice.dm')
-            shutil.copy(Path(__file__).with_name('probe.dm'), work / 'probe.dm')
-            (work / 'probe.dme').write_text('#define R_SERVER 2\n#include "shutdown_notice.dm"\n#include "probe.dm"\n')
-            built = subprocess.run(['DreamMaker', 'probe.dme'], cwd=work, env=env, capture_output=True, text=True, timeout=120)
-            self.assertIn('0 errors, 0 warnings', built.stdout + built.stderr, built.stdout + built.stderr)
-            subprocess.run(['DreamDaemon', 'probe.dmb', '0', '-invisible', '-close', '-trusted'], cwd=work, env=env,
-                           capture_output=True, text=True, timeout=180)
-            result = json.loads((work / 'result.json').read_text())
-            self.assertEqual(result['failures'], 0, result['messages'])
 
 
 if __name__ == '__main__':
