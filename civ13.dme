@@ -1462,6 +1462,7 @@
 #include "code\modules\research_tree\book_printing.dm"
 #include "code\modules\research_tree\book_research.dm"
 #include "code\modules\research_tree\book_interface.dm"
+#include "code\modules\research_tree\book_cipher.dm"
 #include "code\modules\research_tree\field_work.dm"
 #include "code\modules\research_tree\node_broadcast.dm"
 #include "code\modules\research_tree\node_effects.dm"

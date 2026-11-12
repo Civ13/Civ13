@@ -30,6 +30,7 @@ export function ResearchBook(ui: ScreenProps) {
   return <div className="rs-bookwin">
     <Section title={text(data.name) || 'Book'}>
       <p className="rs-dim">{data.author ? `By ${text(data.author)}. ` : ''}{chapters.length} research chapter{chapters.length === 1 ? '' : 's'}{unfinished.length ? `, ${unfinished.length} unfinished` : ''}.</p>
+      {!!data.cipher_note && <p className="rs-bad">{text(data.cipher_note)}</p>}
       {!!data.has_text && <Action ui={ui} action="read">Read the written pages</Action>}
       <div className="rs-toolbar"><label className="rs-search">Find a chapter <input type="search" value={query} placeholder="Name, recipe or discipline" onChange={event => setQuery(event.target.value)} /></label></div>
       <FilterChips options={filters} value={filter} counts={counts} onChange={setFilter} />

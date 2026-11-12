@@ -148,5 +148,50 @@ class TeamsAndRushing(unittest.TestCase):
         self.assertIn('"toggle_rush"', read("code/modules/nano/tgui.dm"))
         self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
         self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
+class Ciphers(unittest.TestCase):
+    def setUp(self):
+        self.cipher = read("code/modules/research_tree/book_cipher.dm")
+        self.research = read("code/modules/research_tree/book_research.dm")
+    def test_included_after_the_reading_helper_it_uses(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\book_interface.dm"'), dme.index('research_tree\\book_cipher.dm"'))
+    def test_ciphers_bind_only_on_book_research_worlds(self):
+        blocks = proc(self.cipher, "/obj/item/weapon/book/proc/cipher_blocks")
+        for guard in ("is_enciphered()", "map.book_research_enabled()", "!can_read_cipher(H)"):
+            self.assertIn(guard, blocks)
+    def test_enciphering_needs_the_printing_press_a_pen_and_research(self):
+        problem = proc(self.cipher, "/obj/item/weapon/book/proc/encipher_problem")
+        for guard in ("map.book_research_enabled()", "can_hold_research()", "is_enciphered()", "research_chapter_list()", "H.knows_recipe_node(CIPHER_NODE)", "H.held_writing_pen()"):
+            self.assertIn(guard, problem)
+        self.assertIn('#define CIPHER_NODE "printing_currency"', self.cipher)
+        commit = proc(self.cipher, "/obj/item/weapon/book/proc/encipher_commit")
+        self.assertLess(commit.index("encipher_problem(H)"), commit.index("cipher_key = key"))
+    def test_key_words_cannot_corrupt_the_saved_record(self):
+        clean = proc(self.cipher, "/proc/clean_cipher_key")
+        for guard in ('findtext(word, "|")', 'findtext(word, "=")', "CIPHER_KEY_MIN", "CIPHER_KEY_MAX"):
+            self.assertIn(guard, clean)
+    def test_every_way_of_taking_research_out_of_a_book_asks_the_cipher(self):
+        study = proc(self.research, "/proc/study_research_source")
+        self.assertLess(study.index("cipher_book.cipher_refuses(H)"), study.index("H.knows_recipe_node(node_id)"))
+        copy = proc(self.research, "/obj/structure/research_bench/proc/book_copy_job")
+        self.assertLess(copy.index("source.cipher_refuses(H) || dest.cipher_refuses(H)"), copy.index("do_reading("))
+        rip = proc(read("code/modules/research_tree/book_pages.dm"), "/obj/item/weapon/book/proc/rip_page")
+        self.assertLess(rip.index("cipher_refuses(H)"), rip.index("do_after("))
+        self.assertIn("printed.copy_cipher_from(original)", read("code/modules/research_tree/book_printing.dm"))
+    def test_breaking_needs_skill_and_a_pen_and_is_kept_with_the_book(self):
+        problem = proc(self.cipher, "/obj/item/weapon/book/proc/break_problem")
+        for guard in ("cipher_blocks(H)", "CIPHER_BREAK_SKILL", "H.held_writing_pen()"):
+            self.assertIn(guard, problem)
+        commit = proc(self.cipher, "/obj/item/weapon/book/proc/break_commit")
+        self.assertLess(commit.index("break_problem(H)"), commit.index("add_cipher_reader(H)"))
+        self.assertIn("cipher_progress = jointext(parts", commit)
+        self.assertIn("clamp(writer / breaker, 0.5, 3)", proc(self.cipher, "/obj/item/weapon/book/proc/cipher_break_time"))
+    def test_the_pen_menu_and_both_windows_reach_it(self):
+        book = read("code/modules/1713/book.dm")
+        self.assertIn('pen_choices += "Cipher"', book)
+        self.assertIn("cipher_menu(user)", book)
+        self.assertIn('data["cipher_note"]', read("code/modules/research_tree/book_interface.dm"))
+        self.assertIn("data.cipher_note", read("tgui/src/interfaces/ResearchBook.tsx"))
+        self.assertIn("data.cipher_note", read("UI/templates/research_book.tmpl"))
 if __name__ == "__main__":
     unittest.main()
