@@ -531,8 +531,11 @@ var/global/list/ecology_species_table = null
 		total += counts[S]
 		if (S.target > 0 || counts[S] > 0)
 			notes += "[S.name] [counts[S]]/[S.target][(S in no_site) ? " (no quiet habitat found)" : ""]"
+	// Sea life on the seabed has its own cap and table (sea_life.dm).
+	var/sea_spawned = sea_life_cycle()
+	spawned += sea_spawned
 	spawned_total += spawned
-	last_report = "[total]/[total_target] wild animals, +[spawned] this cycle: [jointext(notes, ", ")]"
+	last_report = "[total]/[total_target] wild animals, +[spawned - sea_spawned] this cycle: [jointext(notes, ", ")]. Sea: [sea_life_last_report]"
 	return spawned
 
 // Far from every player, wild animals live at a slower pace: the mob process
