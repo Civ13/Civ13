@@ -409,7 +409,8 @@
 	var/obj/structure/vehicleparts/frame/found = null
 
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/lightplane.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96.dmi'  || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96_damaged.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96_damaged.dmi')
+		var/image_icon = tmpimg.icon
+		if (image_icon == 'icons/obj/vehicles/vehicleparts.dmi' || image_icon == 'icons/obj/vehicles/lightplane.dmi' || image_icon == 'icons/obj/vehicles/vehicles96x96.dmi' || image_icon == 'icons/obj/vehicles/vehicles128x128.dmi' || image_icon == 'icons/obj/vehicles/apcparts.dmi' || image_icon == 'icons/obj/vehicles/tankparts.dmi' || image_icon == 'icons/obj/vehicles/tankparts96x96.dmi' || image_icon == 'icons/obj/vehicles/apcparts96x96.dmi'  || image_icon == 'icons/obj/vehicles/tankparts96x96_damaged.dmi' || image_icon == 'icons/obj/vehicles/apcparts96x96_damaged.dmi')
 			if(get_dist(tmpimg, view_loc) < view_dist)
 				client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
