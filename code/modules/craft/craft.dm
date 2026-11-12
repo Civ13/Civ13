@@ -242,36 +242,25 @@ var/global/list/crafts = list()
 	if (!.)
 		last_refusal = vessel.last_refusal
 
+// The vessel itself tells its craft about every hop and turn
+// (datum/vessel/relocate), whoever asked for the move.
 /datum/craft_body/template/move_to(x, y, heading)
 	if (!placed())
 		last_refusal = "she is not afloat"
 		return FALSE
-	var/turf/old_origin = origin()
-	var/old_heading = vessel.dir
 	. = vessel.relocate(x, y, heading)
 	last_move_ms = vessel.last_hop_ms
 	if (!.)
 		last_refusal = vessel.last_refusal
-		return
-	if (craft)
-		craft.on_hop(old_origin)
-		if (old_heading != heading)
-			craft.on_turn(craft_turn_angle(old_heading, heading))
 
 /datum/craft_body/template/turn_to(heading)
 	if (!placed())
 		last_refusal = "she is not afloat"
 		return FALSE
-	var/turf/old_origin = origin()
-	var/old_heading = vessel.dir
 	. = vessel.turn_to(heading)
 	last_move_ms = vessel.last_hop_ms
 	if (!.)
 		last_refusal = vessel.last_refusal
-		return
-	if (craft && old_heading != heading)
-		craft.on_hop(old_origin)
-		craft.on_turn(craft_turn_angle(old_heading, heading))
 
 // The counter-clockwise angle, as turn() takes it, from one cardinal heading
 // to another: 90, 180, -90 or 0.
@@ -283,14 +272,14 @@ var/global/list/crafts = list()
 		. += 360
 
 // The craft around a vessel, made the first time it is asked for.
-/proc/craft_of_vessel(datum/vessel/V)
+/proc/craft_of_vessel(datum/vessel/V, make = TRUE)
 	if (!V || QDELETED(V))
 		return null
 	for (var/datum/craft/C in crafts)
 		var/datum/craft_body/template/B = C.body
 		if (istype(B) && B.vessel == V)
 			return C
-	return new /datum/craft(new /datum/craft_body/template(V))
+	return make ? new /datum/craft(new /datum/craft_body/template(V)) : null
 
 // The craft standing on this turf, or null.
 /proc/craft_at(turf/T)
@@ -348,10 +337,45 @@ var/global/list/crafts = list()
 
 // ---------------------------------------------------------------- hooks aboard
 
-// Called on everything aboard when its craft has moved or turned. angle is
-// counter-clockwise in degrees, as turn() takes it.
-/atom/movable/proc/craft_moved(datum/craft/C, turf/old_loc)
+// Called on everything aboard when its craft has turned. angle is
+// counter-clockwise in degrees, as turn() takes it. Objects and creatures
+// turn with the craft, so a cannon that pointed over the port rail still
+// does. A type whose facing must not follow the hull overrides this.
+/atom/movable/proc/craft_turned(datum/craft/C, angle)
 	return
 
-/atom/movable/proc/craft_turned(datum/craft/C, angle)
+/obj/craft_turned(datum/craft/C, angle)
+	if (!angle)
+		return
+	set_dir(turn(dir, angle))
+
+// Loose things keep their place on the deck plank they lie on.
+/obj/item/craft_turned(datum/craft/C, angle)
+	..()
+	if (!pixel_x && !pixel_y)
+		return
+	var/px = pixel_x
+	var/py = pixel_y
+	switch (angle)
+		if (90)
+			pixel_x = -py
+			pixel_y = px
+		if (-90)
+			pixel_x = py
+			pixel_y = -px
+		if (180, -180)
+			pixel_x = -px
+			pixel_y = -py
+
+/mob/craft_turned(datum/craft/C, angle)
+	if (!angle)
+		return
+	if (facing_dir)
+		facing_dir = turn(facing_dir, angle)
+	dir = turn(dir, angle)
+
+// Called on something aboard after a move that carried it, by bodies that
+// move things one at a time. A template body moves whole tiles and does not
+// call it on a plain hop.
+/atom/movable/proc/craft_moved(datum/craft/C, turf/old_loc)
 	return

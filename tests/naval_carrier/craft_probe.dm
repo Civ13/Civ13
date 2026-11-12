@@ -67,6 +67,16 @@ var/naval_runtime_error = FALSE
 /datum/craft_drive/probe_engine/fuel_capacity()
 	return 100
 
+// Something with a facing, and something that refuses to turn.
+/obj/structure/probe_gun
+	name = "probe gun"
+	anchored = TRUE
+/obj/structure/probe_compass
+	name = "probe compass"
+	anchored = TRUE
+/obj/structure/probe_compass/craft_turned(datum/craft/C, angle)
+	return
+
 /datum/chart/probe
 	mode = CHART_MODE_MIRROR
 	width = 70
@@ -105,9 +115,32 @@ var/naval_runtime_error = FALSE
 	naval_check(bucket.x == 38 && bucket.y == 22, "cargo rides the hop ([bucket.x],[bucket.y])")
 	naval_check(!B.can_move_to(65, 20, EAST) && findtext(B.last_refusal, "edge of the world"), "a move off the map is refused with the vessel's reason ([B.last_refusal])")
 	naval_check(!B.move_to(65, 20, EAST) && S.ox == 34 && P.hops == 1, "a refused move leaves her where she is and calls nothing")
+	// Things aboard: a gun over the port rail, a compass that never turns, a
+	// bucket set down off-centre and a sailor looking aft.
+	var/obj/structure/probe_gun/gun = new(locate(39, 22, 2))
+	gun.dir = NORTH
+	var/obj/structure/probe_compass/compass = new(locate(39, 22, 2))
+	compass.dir = NORTH
+	bucket.pixel_x = 8
+	bucket.pixel_y = 2
+	var/mob/living/human/naval_probe/sailor = new(locate(40, 22, 2))
+	sailor.dir = WEST
+	naval_check(S.relocate(35, 20, EAST) && P.hops == 2 && gun.dir == NORTH && bucket.pixel_x == 8 && sailor.dir == WEST, "a straight hop made by the vessel itself tells the craft and turns nothing")
+	naval_check(S.relocate(34, 20, EAST) && P.hops == 3, "and back")
+	P.hops = 1
 	naval_check(B.turn_to(NORTH) && S.dir == NORTH && B.heading() == NORTH && P.hops == 2 && P.last_angle == 90, "coming about from east to north is a quarter turn to the left ([P.last_angle])")
+	naval_check(gun.dir == WEST && S.contains(get_turf(gun)), "the gun over the port rail still points over the port rail ([dir2text(gun.dir)])")
+	naval_check(compass.dir == NORTH, "a thing that overrides craft_turned() keeps its own facing")
+	naval_check(bucket.pixel_x == -2 && bucket.pixel_y == 8, "the bucket keeps its place on its plank ([bucket.pixel_x],[bucket.pixel_y])")
+	naval_check(sailor.dir == SOUTH, "the sailor looking aft still looks aft ([dir2text(sailor.dir)])")
 	naval_check(B.turn_to(NORTH) && P.hops == 2, "turning to the heading she already has does nothing")
 	naval_check(B.turn_to(EAST) && P.last_angle == -90, "back to east is a quarter turn to the right ([P.last_angle])")
+	naval_check(gun.dir == NORTH && bucket.pixel_x == 8 && bucket.pixel_y == 2 && sailor.dir == WEST, "and all of it comes back with her")
+	naval_check(S.turn_to(WEST) && gun.dir == SOUTH && bucket.pixel_x == -8 && bucket.pixel_y == -2 && sailor.dir == EAST && P.last_angle == 180, "going about by the wheel turns everything half a circle ([P.last_angle])")
+	naval_check(S.turn_to(EAST) && gun.dir == NORTH, "and round again")
+	qdel(gun)
+	qdel(compass)
+	qdel(sailor)
 	naval_check(craft_turn_angle(NORTH, SOUTH) == 180 && craft_turn_angle(SOUTH, NORTH) == 180 && craft_turn_angle(NORTH, WEST) == 90 && craft_turn_angle(WEST, NORTH) == -90 && craft_turn_angle(SOUTH, EAST) == 90 && craft_turn_angle(EAST, EAST) == 0, "turn angles are the ones turn() takes")
 
 	// ---- Drives ----
