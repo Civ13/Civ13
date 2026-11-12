@@ -147,6 +147,7 @@
 
 /datum/vessel/carrier
 	name = "aircraft carrier"
+	magnetic_base = 600
 	length = CARRIER_LENGTH
 	beam = CARRIER_BEAM
 
