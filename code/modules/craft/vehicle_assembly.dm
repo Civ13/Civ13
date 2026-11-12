@@ -57,6 +57,7 @@
 	var/list/movers = list()     // Wheels and tracks standing on corner frames.
 	var/loose_movers = 0         // Wheels and tracks standing anywhere else.
 	var/list/masts = list()
+	var/list/turrets = list()    // Built turrets standing on the frames.
 
 /datum/vehicle_survey/New(obj/structure/vehicleparts/axis/A)
 	..()
@@ -134,6 +135,8 @@
 		for (var/obj/structure/bed/chair/drivers/D in T)
 			if (!seat && (!D.axis || D.axis == axis))
 				seat = D
+		for (var/obj/structure/turret/built/B in T)
+			turrets += B
 		for (var/obj/structure/vehicleparts/shipwheel/W in T)
 			if (!helm && (!W.ship || W.ship == axis))
 				helm = W
@@ -205,7 +208,24 @@
 		lines += "It has everything a [ship ? "boat needs to sail" : "vehicle needs to drive"]."
 	if (loose_movers)
 		lines += "[loose_movers] wheel\s or track\s not on a corner frame will be left out."
+	lines += turret_lines()
 	return jointext(lines, "<br>")
+
+// What each turret would still need once the things on its tile are fitted.
+/datum/vehicle_survey/proc/turret_lines()
+	. = list()
+	for (var/obj/structure/turret/built/B in turrets)
+		var/turf/T = get_turf(B)
+		var/list/need = B.lacking()
+		if (locate(/obj/structure/cannon/modern/tank) in T)
+			need -= "a tank cannon"
+		for (var/obj/structure/bed/chair/gunner/G in T)
+			if (!G.turret)
+				need -= "a gunner's seat"
+		if (need.len)
+			. += "Its turret cannot fire yet: stand [english_list(need)] on the turret's tile."
+		else
+			. += "Its turret has a gun and a gunner's seat."
 
 // ---- Assembling ----
 
@@ -281,6 +301,8 @@
 		M.MouseDrop(F)
 		if (M in wheels)
 			.++
+	for (var/obj/structure/turret/built/B in S.turrets)
+		. += B.fit()
 	for (var/obj/structure/vehicleparts/frame/F in S.frames)
 		for (var/obj/structure/lamp/lamp_small/tank/L in get_turf(F))
 			L.connection = engine
@@ -360,6 +382,8 @@
 		M.connected = null
 		M.update_icon()
 	wheels = list()
+	for (var/obj/structure/turret/built/B in built_turrets())
+		B.release()
 	for (var/obj/structure/vehicleparts/movement/sail/M in masts)
 		M.axis = null
 		M.anchored = FALSE
@@ -415,6 +439,8 @@
 			lines += "Before it will [ship ? "sail" : "drive"] it still needs [english_list(need)]."
 		else
 			lines += "It has everything a [ship ? "boat needs to sail" : "vehicle needs to drive"]."
+	if (!S.refusal)
+		lines += S.turret_lines()
 	var/weight = get_weight()
 	var/carry = (engine && !ship) ? min(maxpower, engine.maxpower * 2) : maxpower
 	lines += "It weighs [weight]; [engine ? "this axis and engine move" : "this axis carries"] up to [carry]."
@@ -453,6 +479,8 @@ var/global/list/vehicle_assembly_colors = list(
 	if (components.len)
 		if (hand_built)
 			options += list("Fit new parts", "Take it apart")
+			if (length(built_turrets()))
+				options += "Turret style"
 	else
 		var/datum/vehicle_survey/S = new(src)
 		if (!S.refusal)
@@ -464,6 +492,14 @@ var/global/list/vehicle_assembly_colors = list(
 		if ("Fit new parts")
 			var/fitted = fit_parts()
 			to_chat(H, SPAN_NOTICE(fitted ? "You fit [fitted] part\s to \the [src]." : "There is nothing new on its frames to fit."))
+		if ("Turret style")
+			var/list/styles = built_turret_styles()
+			var/style = WWinput(H, "Which turret should it carry?", "Vehicle assembly", "plain", styles + list("Cancel"))
+			if (!(style in styles) || QDELETED(src) || get_dist(H, src) > 1)
+				return
+			for (var/obj/structure/turret/built/B in built_turrets())
+				B.turret_icon = styles[style]
+				B.update_icon()
 		if ("Take it apart")
 			var/why = take_apart_refusal(H)
 			if (why)

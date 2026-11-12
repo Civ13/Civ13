@@ -1711,6 +1711,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/chair/gunner" = "mechanized_war",
 		"/obj/structure/bed/chair/loader" = "mechanized_war",
 		"/obj/structure/cannon/modern/tank" = "mechanized_war",
+		"/obj/structure/turret/built" = "mechanized_war",
 		"/obj/structure/vehicleparts/movement/tracks" = "mechanized_war",
 		// --- missiles (2) ---
 		"/obj/item/stack/ammopart/casing/booster" = "missiles",

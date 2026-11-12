@@ -1245,6 +1245,7 @@
 #include "code\modules\craft\vehicle_assembly.dm"
 #include "code\modules\craft\vehicle_papers.dm"
 #include "code\modules\craft\vehicle_tow.dm"
+#include "code\modules\craft\vehicle_turret.dm"
 #include "code\modules\collectibles\stickers.dm"
 #include "code\modules\collectibles\stickers_admin.dm"
 #include "code\modules\collectibles\structures.dm"

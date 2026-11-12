@@ -1990,6 +1990,7 @@ RECIPE: /material/steel/,tank trap,/obj/structure/barricade/antitank,25,400,1,1,
 //*********************| STEEL VEHICLE PARTS |**************************
 
 RECIPE: /material/steel/,tank cannon,/obj/structure/cannon/modern/tank,40,600,1,1,weapons,115,125,0,8,null
+RECIPE: /material/steel/,tank turret,/obj/structure/turret/built,30,400,1,1,weapons,115,125,0,8,null
 
 RECIPE: /material/steel/,rubber wheel,/obj/structure/vehicleparts/movement,1,20,0,1,vehicle parts,115,0,0,8,null
 RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,4,60,0,1,vehicle parts,135,0,0,8,null

@@ -23,7 +23,11 @@ the same for beds facing east, south and west, an engine fitted after
 assembly, and taking a vehicle apart and assembling it again. It then
 builds a boat of ship frames: refused on dry land, a car axis not taking ship
 frames, a hull with a wheel and a mast assembled facing east, moved, turned,
-taken apart and assembled again.
+taken apart and assembled again. Last it builds a tank with a built turret
+(`code/modules/craft/vehicle_turret.dm`): what an empty turret needs, the
+cannon and seats on its tile taken in at assembly, a seat fitted later, the
+turret riding along, the styles by age, and everything set down again when
+the tank is taken apart.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 
