@@ -144,6 +144,8 @@
 		to_chat(user, SPAN_WARNING("The battery is too low for a ping."))
 		return FALSE
 	battery_draw(SUB_BATTERY_PING)
+	// Every animal in range hears it (sea_life.dm).
+	sea_noise(boat_turf(), SUB_SONAR_RANGE)
 	crew_message(SPAN_NOTICE("<b>PING.</b> [user] sends a sonar pulse:"))
 	for (var/line in sonar_lines())
 		crew_message(line)
