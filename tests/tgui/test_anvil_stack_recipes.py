@@ -61,7 +61,7 @@ class AnvilStackRecipe(unittest.TestCase):
                    crafting_recipe_allowed=lambda human, recipe: self.allowed,
                    do_after=wait, qdel=discard,
                    to_chat=lambda user, message: self.messages.append(message),
-                   update_icon=lambda: None,
+                   update_icon=lambda: None, note_craft_practice=lambda *args: None,
                    spawn_output=lambda *args: self.outputs.append(args))
         self.action = adapter.project(source, '/obj/structure/anvil/proc/forge_stack_recipe',
                                       'P, user, H, choice, material_index, material_name, src, loc', env)
