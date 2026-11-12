@@ -145,6 +145,11 @@ crafts and mooring posts really on that level; nothing ticks, the chart is
 refreshed when read. `craft.sea_chart_text()` is what a helm shows: her square,
 ships within her token's `sensor_range` (a `dark` token is an unknown contact)
 and every harbour with the answer its berth would give her.
+`sea_boat_contacts()` and `sea_aircraft_contacts()` are the modular boats on a
+level and the aircraft over it within a reach; the chart lists them as far as
+the lookout sees and the carrier's radar lists them to its own range, so both
+read one list. A boat or aircraft with vehicle papers goes by the name in
+them (`sea_contact_name()`).
 
 A mooring post (`/obj/structure/berth/quay`) is the first real berth. A craft
 within `QUAY_DOCK_RANGE` calls `order_dock(post)`: the post's `request()` gives
