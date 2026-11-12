@@ -46,11 +46,14 @@
 				stopmovementloop()
 				movement_processes--
 				return FALSE
-			// Mines near the water she just crossed (naval/naval_mines.dm).
-			if (naval_mines.len)
+			// Her wiping and degaussing coil (naval/degaussing.dm), then the
+			// mines near the water she just crossed (naval/naval_mines.dm).
+			if (craft || naval_mines.len)
 				var/datum/craft/MC = craft_of_axis(src)
 				if (MC)
-					MC.check_naval_mines()
+					MC.magnetic_moved(1)
+					if (naval_mines.len)
+						MC.check_naval_mines()
 				if (QDELETED(src))
 					return FALSE
 		else

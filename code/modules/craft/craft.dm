@@ -127,7 +127,12 @@ var/global/list/crafts = list()
 		cast_off()
 	if (token)
 		token.follow_craft()
-	// Mines near the water she just crossed (naval/naval_mines.dm).
+	// Her wiping wears off and a degaussing coil draws power as she goes
+	// (naval/degaussing.dm), then the mines near the water she just crossed
+	// feel her (naval/naval_mines.dm).
+	var/turf/now = body ? body.origin() : null
+	if (old_origin && now && old_origin.z == now.z)
+		magnetic_moved(get_dist(old_origin, now))
 	if (naval_mines.len)
 		check_naval_mines()
 

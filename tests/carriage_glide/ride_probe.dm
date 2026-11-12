@@ -67,7 +67,7 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 	return locate(x0, y0, z)
 
 /datum/carriage_ride_probe/proc/sample(label, obj/structure/vehicle/carriage/C, mob/living/human/H, list/horses)
-	var/list/row = list("label" = label, "t" = world.time, "x" = C.x, "carriage" = C.glide_size, "rider" = H.glide_size, "rider_loc_same" = (H.loc == C.loc), "speed" = C.axis.currentspeed, "delay" = C.vehicle_m_delay)
+	var/list/row = list("label" = label, "t" = world.time, "x" = C.x, "carriage" = C.glide_size, "rider" = H.glide_size, "rider_loc_same" = (H.loc == C.loc), "speed" = C.gear, "delay" = C.vehicle_m_delay)
 	var/i = 0
 	for(var/mob/living/M in horses)
 		row["horse[++i]"] = M.glide_size
@@ -86,7 +86,8 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 			throw EXCEPTION("no clear road found")
 		notes["start"] = "[start.x],[start.y],[start.z] [start.type]"
 		var/obj/structure/vehicle/carriage/C = new(start)
-		C.dir = EAST
+		C.facing = EAST
+		C.apply_shape()
 		var/mob/living/simple_animal/horse/H1 = new(locate(start.x - 1, start.y - 1, start.z))
 		var/mob/living/simple_animal/horse/H2 = new(locate(start.x - 1, start.y + 1, start.z))
 		var/mob/living/human/carriage_ride_actor/R = new(locate(start.x - 1, start.y, start.z))
@@ -95,7 +96,7 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 		sleep(5)
 		C.MouseDrop_T(H1, R)
 		C.MouseDrop_T(H2, R)
-		notes["propulsion"] = C.buckled_animal_propulsion
+		notes["pull"] = C.team_pull()
 		// A fixed walking glide, as left by a scripted walk or a walking adapter.
 		R.glide_size = 4
 		C.MouseDrop_T(R, R)
@@ -116,7 +117,7 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 				if(C.x != lastx)
 					lastx = C.x
 					sample("gear[gear]", C, R, horses)
-			if(!C.moving || C.axis.currentspeed <= 0)
+			if(!C.moving || C.gear <= 0)
 				var/list/ahead = list()
 				for(var/dy = 0 to 1)
 					var/turf/T = locate(C.x + 3, C.y + dy, C.z)
@@ -124,7 +125,7 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 					for(var/atom/movable/A in T)
 						ahead += "[A.type] dense=[A.density]"
 				throw EXCEPTION("gear[gear]: carriage stopped at x=[C.x]; ahead: [jointext(ahead, ", ")]")
-		while(C.axis.currentspeed > 0)
+		while(C.gear > 0)
 			reins.secondary_attack_self(R)
 			sleep(5)
 		sleep(30)
@@ -148,7 +149,7 @@ var/global/datum/carriage_ride_probe/carriage_ride_probe = new
 		if(!(label in per_gear))
 			continue
 		per_gear[label]++
-		var/expected = 32 * world.tick_lag / max(row["delay"] + 1, world.tick_lag)
+		var/expected = 32 * world.tick_lag / max(row["delay"], world.tick_lag)
 		if(!row["rider_loc_same"])
 			throw EXCEPTION("[label] x=[row["x"]]: rider left the carriage turf")
 		if(abs(row["carriage"] - expected) > 0.0001)

@@ -427,6 +427,35 @@ Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).
 
+## Carriages
+
+`code/game/objects/structures/carriage.dm` is the horse carriage, and
+`craft/carriage_papers.dm` puts it on the core as a `/datum/craft/vehicle/carriage`
+with a `/datum/craft_body/carriage` (its footprint). It keeps a vehicle's
+papers in a carriage's words (master, coachman, wheelwright, groom), appears in
+"Our vehicles", and its reins follow the vehicle rule: crew urge the team,
+a stranger forces the reins while an owner is about and is refused otherwise.
+The carriage saves the register in `register_state`.
+
+- **Footprint.** Two tiles wide and three long along `facing`, with the team
+  in a lane two tiles wide ahead of it (`carriage_cells()`, `lane_depth()`).
+  A turn re-lays bounds and sprite offset and is refused when the new
+  footprint or lane is blocked, or when turning round faster than a walk.
+- **Team and seats.** Up to four horses or oxen (not mixed), and five seats for
+  passengers or loose structures (crates, barrels). Everything aboard stands on
+  the carriage's corner tile and is drawn there with pixel offsets
+  (`seat_point()`, `team_point()`, `place_at()`); `let_off()` is the one way off.
+- **Pace.** A horse pulls 2 and an ox 1 (half when starving). Oxen walk, one
+  horse trots, two canter (`carriage_top_gear()`). Each gear has a delay that
+  grows with `load_ratio()` (load over `pull * CARRIAGE_PULL_CAPACITY`), is
+  slower off built ground, in snow and in shallow water, and takes the walking
+  slope rule (`terrain_slope_delay()`). Past four times capacity it will not
+  move. Every animal pays hunger per step, more uphill, halved by a harness.
+- **Steps.** A timer keeps to `next_step`; each step leases one glide to the
+  carriage and everything aboard for exactly the step's interval. The tiles the
+  step newly covers must be clear: people and large animals stop it (and are
+  run into), small animals are run over, deep water needs a bridge.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
@@ -434,5 +463,6 @@ vehicle of the reader's party with its distance and bearing
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
