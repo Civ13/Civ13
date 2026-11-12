@@ -51,6 +51,7 @@ export function ResearchBook(ui: ScreenProps) {
             <h3>Groundwork</h3>
             {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {text(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study this.</p>}
             <h3>Teaches {list(row.recipe_names).length} recipes</h3><RecipeTags names={row.recipe_names} />
+            {!!row.effect && <><h3>Knowing it</h3><p>{text(row.effect)}</p></>}
             {!!data.held && <p><Action ui={ui} action="rip" value={row.id} disabled={!!data.busy}>Tear this chapter out</Action></p>}
           </div>}
         </div>;

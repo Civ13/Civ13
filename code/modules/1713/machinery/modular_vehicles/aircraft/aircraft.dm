@@ -484,7 +484,7 @@ var/global/list/airborne_aircraft = list()
 	if (!istype(E))
 		return 0
 	var/share = flight_state == AIRCRAFT_CRUISE ? AIRCRAFT_FLIGHT_BURN_CRUISE : AIRCRAFT_FLIGHT_BURN_LOW
-	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share
+	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share * flight_fuel_node_scale(driver)
 	for (var/F in E.fuels)
 		if (E.fueltank.reagents.has_reagent(F, amount))
 			E.fueltank.reagents.remove_reagent(F, amount)

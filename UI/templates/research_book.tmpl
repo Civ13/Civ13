@@ -20,7 +20,7 @@
 		{{else chapter.state === "study"}} {{:helper.link(chapter.read_percent > 0 ? 'Continue (' + chapter.read_percent + '% read, about ' + chapter.study_minutes + ' min left)' : 'Study (about ' + chapter.study_minutes + ' min)', 'pencil', {'study' : chapter.id})}}
 		{{else}}<span class='rt-locked'> (needs groundwork)</span>{{/if}}
 		{{if data.held}} {{:helper.link('Tear out', 'trash', {'rip' : chapter.id})}}{{/if}}
-		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}
+		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}{{if chapter.effect}}<br><span>Knowing it: {{:chapter.effect}}</span>{{/if}}
 	</div>
 </div>
 {{empty}}
