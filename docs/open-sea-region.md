@@ -55,6 +55,10 @@ home island.
    tiller's ordinary orders sail her about inside those waters.
 4. Lay a course for **the home waters** to come back.
 
+The harbour office's paid work is switched off for now (`npc_jobs_enabled`
+in `code/modules/craft/contract.dm`); the board stands but offers nothing.
+When it is switched on:
+
 The **harbour office board** on the home island pays crews of registered
 ships in silver: for surveying a named island (anchor off it, then report at
 the board; the island is then on every ship's chart from any distance) and for

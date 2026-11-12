@@ -245,3 +245,16 @@ The probe answers the wiping station's wired power itself.
 
 - **Oropesa:** a sweep must be bolted down and on a deck to stream; under way on a wooden hull it cuts a contact mine two tiles off her side up to the surface, leaves a far one moored, and a surfaced mine still goes off under a hull.
 - **Magnetic:** with no engine aboard a built hull the reel goes dead and is wound in; streamed aboard a Scout submarine it sets off a magnetic mine six tiles off, not one nine tiles off or a contact mine, for a battery unit a tile, and goes dead on a flat battery.
+
+## Torpedoes (`torpedo_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/torpedo_probe.dm
+```
+
+The probe steps each torpedo itself instead of waiting on timers.
+
+- **Tube:** trained a quarter turn by hand while unbolted; will not fire unbolted or pointed inland.
+- **Contact:** strikes a steel hull's side and goes off under it; one tile off her side it runs past and sinks after 40 tiles.
+- **Magnetic:** two tiles off a steel hull it does not feel her, one tile off it goes off under her nearest plate, and wiped she lets it run past; it passes close by a wooden hull but still fires on striking her.
+- **Own ship:** fired from her deck it leaves past her bow, never goes off under her, even when she looks for mines, and runs past a moored mine; a hull that runs onto a torpedo sets it off.

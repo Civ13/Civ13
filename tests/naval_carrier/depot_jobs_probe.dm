@@ -134,6 +134,8 @@ var/naval_runtime_error = FALSE
 
 	// ---- The board ----
 	naval_check(!D.jobs().len && findtext(D.jobs_text(), "no work"), "an unread board has no work")
+	naval_check(!npc_jobs_enabled && D.fill_jobs(TRUE) == 0 && !D.jobs().len, "the depot makes up no paid work of its own while such jobs are switched off")
+	npc_jobs_enabled = TRUE
 	naval_check(D.fill_jobs() == 3 && D.jobs(CONTRACT_OPEN).len == 3 && D.fill_jobs() == 0, "reading it fills three places, and not again at once")
 	naval_check(!D.contracts().len && findtext(D.status_text(), "3 jobs of the depot's own") && findtext(D.freight_text(get_turf(D)), "No freight"), "its own work is not freight")
 	for (var/obj/craft_contract/land/old in D.jobs())
