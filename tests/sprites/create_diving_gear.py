@@ -501,9 +501,51 @@ def write_dmi(path, states, dirs):
     sheet.save(path, format='PNG', pnginfo=meta)
 
 
+def base_body(direction):
+    """The male base body for one direction (0 S, 1 N, 2 E, 3 W) from r_human.dmi."""
+    sheet = Image.open(ROOT / 'icons/mob/human_races/r_human.dmi')
+    starts, index, name = {}, 0, None
+    for line in sheet.info.get('Description', '').split('\n'):
+        line = line.strip()
+        if line.startswith('state = '):
+            name = line[9:-1]
+            starts.setdefault(name, index)
+            dirs = frames = 1
+        elif line.startswith('dirs = '):
+            dirs = int(line[7:])
+            index += dirs * frames
+        elif line.startswith('frames = '):
+            index += dirs * (int(line[9:]) - 1)
+    sheet = sheet.convert('RGBA')
+    cols = sheet.width // 32
+    body = Image.new('RGBA', (32, 32))
+    for part in ('torso', 'groin', 'head', 'r_arm', 'l_arm', 'r_hand', 'l_hand', 'r_leg', 'l_leg', 'r_foot', 'l_foot'):
+        i = starts[part + '_m'] + direction
+        body.alpha_composite(sheet.crop(((i % cols) * 32, (i // cols) * 32, (i % cols) * 32 + 32, (i // cols) * 32 + 32)))
+    return body
+
+
+def write_preview(path, scale=6):
+    """Review sheet: each outfit worn on the base body in four directions, then the item icons."""
+    outfits = (('diving_dress', 'diving_bottles', 'diving_helmet'), ('hard_dive_suit', 'diving_bottles', 'hard_dive_helmet'))
+    cell = 32 * scale
+    sheet = Image.new('RGBA', (cell * 5, cell * (len(outfits) + 1)), (30, 62, 84, 255))
+    for row, outfit in enumerate(outfits):
+        for direction in range(4):
+            figure = base_body(direction)
+            for state in outfit:
+                figure.alpha_composite(WORN[state][direction].image())
+            sheet.alpha_composite(figure.resize((cell, cell), Image.NEAREST), (direction * cell, row * cell))
+    for i, name in enumerate(ITEMS):
+        sheet.alpha_composite(ITEMS[name].image().resize((cell, cell), Image.NEAREST), (i * cell, len(outfits) * cell))
+    sheet.convert('RGB').save(path)
+
+
 def main():
     write_dmi(ROOT / 'icons/obj/clothing/diving.dmi', ITEMS, 1)
     write_dmi(ROOT / 'icons/mob/diving.dmi', WORN, 4)
+    if '--preview' in sys.argv[1:-1]:
+        write_preview(sys.argv[sys.argv.index('--preview') + 1])
 
 
 if __name__ == '__main__':

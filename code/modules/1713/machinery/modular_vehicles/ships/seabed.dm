@@ -242,6 +242,11 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	icon = 'icons/obj/clothing/diving.dmi'
 	icon_state = "diving_helmet"
 	item_state = "diving_helmet"
+	// No held art of its own: in the hand it shows the generic helmet.
+	item_state_slots = list(
+		slot_l_hand_str = "helmet",
+		slot_r_hand_str = "helmet",
+		)
 	item_icons = list(
 		slot_l_hand_str = 'icons/mob/items/lefthand_hats.dmi',
 		slot_r_hand_str = 'icons/mob/items/righthand_hats.dmi',
