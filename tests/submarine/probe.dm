@@ -159,6 +159,19 @@ var/submarine_runtime_error = FALSE
 	var/obj/item/weapon/shoring_kit/dropped = new(locate(20, 22, 1))
 	locate(20, 22, 1).Entered(dropped)
 	qdel(inside)
+
+	// Hull air: the crew breathe one ledger; the blowers spend the air bank.
+	submarine_check(S.hull_volume() == 15 && S.air_bank == 6000 && S.air_breathers() == 1, "the hull holds 15 tiles of air, a full bank and one breather (got [S.hull_volume()], [S.air_bank], [S.air_breathers()])")
+	S.air_step(2000)
+	submarine_check(S.hull_air.breathable() && S.air_bank < 6000, "half an hour submerged: the blowers keep the air fresh from the bank ([S.air_report()])")
+	S.air_bank = 0
+	S.air_step(5000)
+	submarine_check(!S.hull_air.breathable() && findtext(S.air_report(), "NOT BREATHABLE"), "with the bank empty the air goes stale ([S.air_report()])")
+	submarine_check(!hull_air.outside_air_breathable(), "stale hull air cannot be breathed")
+	submarine_check(!S.blow_chamber(), "an empty bank cannot blow the lock-out chamber")
+	S.air_bank = 100
+	submarine_check(S.blow_chamber() && S.air_bank == 40, "blowing the chamber dry costs 60 bank air")
+	submarine_check(S.bank_oxygen(50) == 40 * 0.21 && S.air_bank == 0, "a bottle takes only the oxygen the bank still holds")
 	submarine_check(S.change_depth(TRUE) == "The boat is already submerged.", "a second dive is refused")
 	var/turf/boat_here = get_turf(S)
 	submarine_check(S.periscope_turf() == locate(boat_here.x, boat_here.y, 2), "the periscope looks at the surface straight above")
@@ -205,6 +218,8 @@ var/submarine_runtime_error = FALSE
 	S.moving = FALSE
 	submarine_check(!S.change_depth(FALSE), "the boat surfaces")
 	submarine_check(!S.submerged && submarine_frames_z(S, 2) && crew.z == 2 && cargo.z == 2, "the boat, crew and cargo are back on the surface")
+	S.air_step(10)
+	submarine_check(S.hull_air.breathable() && !S.hull_air.co2 && S.air_bank == 500 && S.air_breathable(), "on the surface the hatches air the boat out and the compressor refills the bank ([S.air_report()])")
 
 	// Diving needs open sea under every frame: not beside the coast.
 	var/obj/structure/vehicleparts/axis/ship/submarine/coaster = build_submarine(locate(2, 20, 2), "coaster")
