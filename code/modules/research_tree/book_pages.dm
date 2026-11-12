@@ -81,6 +81,56 @@
 /proc/blank_writing_sheet(obj/item/weapon/paper/P)
 	return istype(P) && (P.type == /obj/item/weapon/paper || P.type == /obj/item/weapon/paper/parchment) && isnull(P.document_record) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
 
+// Blank sheets usually come clipped together in a paper bundle (Val,
+// 2026-11-11), so benches, the press and writers take them from one too.
+/proc/bundle_blank_sheets(obj/item/weapon/paper_bundle/B)
+	var/list/sheets = list()
+	if (!istype(B) || QDELETED(B))
+		return sheets
+	for (var/obj/item/weapon/paper/P in B.pages)
+		if (P.loc == B && blank_writing_sheet(P))
+			sheets += P
+	return sheets
+
+// Unclips P from B onto B's turf. A bundle left with one page becomes that
+// page, held where the bundle was.
+/proc/bundle_unclip_sheet(obj/item/weapon/paper_bundle/B, obj/item/weapon/paper/P)
+	if (!istype(B) || !istype(P) || !(P in B.pages))
+		return FALSE
+	var/turf/T = get_turf(B)
+	B.pages -= P
+	P.loc = T
+	P.layer = initial(P.layer)
+	if (B.pages.len > 1)
+		B.page = clamp(B.page, 1, B.pages.len)
+		B.update_icon()
+		return TRUE
+	var/obj/item/last = B.pages.len ? B.pages[1] : null
+	B.pages.Cut()
+	var/atom/holder = B.loc
+	var/mob/M = ismob(holder) ? holder : null
+	if (M)
+		M.drop_from_inventory(B)
+	if (last)
+		last.loc = M ? T : holder
+		last.layer = initial(last.layer)
+		if (M)
+			M.put_in_hands(last)
+	qdel(B)
+	return TRUE
+
+// Frees P from B so it can be used up. Once B has fallen apart around its
+// last page, that page is already loose and is let go of as well.
+/proc/bundle_release_sheet(obj/item/weapon/paper_bundle/B, obj/item/weapon/paper/P)
+	if (istype(B) && !QDELETED(B) && (P in B.pages))
+		return bundle_unclip_sheet(B, P)
+	if (!QDELETED(B) || !blank_writing_sheet(P))
+		return FALSE
+	var/mob/M = P.loc
+	if (istype(M))
+		M.drop_from_inventory(P)
+	return TRUE
+
 // Writing supplies that let research start at all: anyone may make them in
 // book research, from 5000 B.C. (the pen stays a Papermaking upgrade).
 var/global/list/book_research_writing_supplies = list(
