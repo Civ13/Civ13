@@ -160,7 +160,8 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		var/datum/chart_token/harbour/HT = T
 		if (istype(HT))
 			var/why = HT.quay.refusal(src)
-			harbours += "[T.name], [where]: [why ? why : "she may berth here"]."
+			var/freight = length(HT.quay.contracts(CONTRACT_OPEN))
+			harbours += "[T.name], [where]: [why ? why : "she may berth here"].[freight ? " [freight] freight contract\s on offer." : ""]"
 			continue
 		var/datum/craft/C = T.craft
 		if (C ? !sights(C) : (get_dist(here, P) > lookout_range()))
@@ -430,6 +431,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		lines += "The [reserved.craft.name] is making for it."
 	else if (!water_side())
 		lines += "There is no open water beside it."
+	var/freight = length(contracts(CONTRACT_OPEN))
+	if (freight)
+		lines += "[freight] freight contract\s on offer."
 	return jointext(lines, " ")
 
 /obj/structure/berth/quay/examine(mob/user)
@@ -460,11 +464,13 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		if (guests.len)
 			options += "Strike a guest"
 		options += "Give up the berth"
-	if (!options.len)
-		to_chat(H, status_text())
-		return
+	// The freight board (naval/freight.dm) is open to everyone.
+	options += "Freight"
 	var/choice = WWinput(H, status_text(), name, "Cancel", options + list("Cancel"))
 	if (!choice || choice == "Cancel" || QDELETED(src) || get_dist(H, src) > 1)
+		return
+	if (choice == "Freight")
+		freight_menu(H)
 		return
 	party = party_train_party_of(H)
 	if (choice == "Claim the berth")

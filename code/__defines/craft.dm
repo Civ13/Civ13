@@ -40,3 +40,9 @@
 #define CRAFT_HELM_FREE 0
 #define CRAFT_HELM_FORCE 1
 #define CRAFT_HELM_CHAINED 2
+
+// The life of a contract (craft/contract.dm): on offer, being carried out,
+// or ended with its reward waiting for whoever offered it.
+#define CONTRACT_OPEN "open"
+#define CONTRACT_TAKEN "taken"
+#define CONTRACT_RETURNED "returned"

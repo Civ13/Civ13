@@ -160,3 +160,15 @@ steers afterwards, and a car parked half aboard holds the ship until it is
 gone.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ferry_probe.dm 300
+
+## Freight contracts (`freight_probe.dm`)
+
+A crate offered at one mooring post for another with a reward
+(`code/modules/naval/freight.dm`, `code/modules/craft/contract.dm`): who may
+offer, the post taking in crate and reward, a registered crew taking it, the
+hand-in and payment at the destination, a broken seal, a lost crate written
+off, a withdrawn offer, a crate finding its contract after a load, a full
+board and a destroyed post. No client connects, so the post's menus are not
+exercised.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300

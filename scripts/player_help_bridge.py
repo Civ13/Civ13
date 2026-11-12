@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8d257e4762bb1bd0a6f1bc54981c47ee8ef4ad70'
+WIKI_REVIEWED_REVISION = 'd13dd0491e8393fa1cc22433e506ff6d33b5bf55'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('bcd17c7882532f61489c2b8e3afe14635575c8fd06214aaadb0032af66829891', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
+    'guides/Guide_to_Boats.md': ('41d5bbbc2e270be89af3dbcea8d3eb5662961bebce046c792f6e745485817f1b', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),

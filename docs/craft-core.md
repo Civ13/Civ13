@@ -159,6 +159,30 @@ stops her hops, and `finish_dock()` moves her `QUAY_DOCK_WARNING` later, makes
 her fast and completes the ticket. `craft.on_hop()` and `on_turn()` cast off,
 so a moored craft that moves is no longer moored. Moorings are not saved.
 
+## Contracts and freight
+
+`craft/contract.dm`: a contract is a record object (`/obj/craft_contract`)
+that lies inside the board that offered it, so the world save keeps it there
+with its reward in its contents. It is `CONTRACT_OPEN` until a registered crew
+takes it (`take(H, craft)`, with `craft_contract_crew_craft()` finding the
+ship whose papers list the taker within reach of the board), `CONTRACT_TAKEN`
+while it is carried out and `CONTRACT_RETURNED` when it ended unearned
+(`give_back(why)`): the reward then waits for the poster to `collect()`. A
+contract that is carried out calls `pay(H)` and deletes itself. A new kind of
+job is a subtype; a new kind of board keeps the records in its contents.
+
+`naval/freight.dm` is the first kind: `/obj/craft_contract/freight`. The
+mooring post is the board ("Freight" in its menu). `offer_freight(H, crate,
+destination post, reward item)` takes a closed crate and the reward into the
+record; taking it sets the sealed crate down beside the taker;
+`hand_in(H)` at the destination post pays whoever brought the crate, seal
+whole. A crate knows its contract by `freight_id` (the global `freight_crates`
+is rebuilt by the crate's `after_load()`); opening it sets `seal_broken`,
+which turns a hand-in into a returned contract. The poster can `withdraw()`
+an open offer and `write_off()` a taken one whose crate no longer exists. A
+destroyed post spills what it held. The post and the sea chart say how many
+contracts are on offer.
+
 ## Hails and running dark
 
 `naval/craft_signals.dm`: `craft.hail(other, text, from)` calls across to a
@@ -260,4 +284,5 @@ vehicle of the reader's party with its distance and bearing
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
