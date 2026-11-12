@@ -1759,7 +1759,7 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (15) ---
+		// --- optics_instruments (16) ---
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",
 		"/obj/item/clothing/glasses/gglasses" = "optics_instruments",
@@ -1772,6 +1772,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/gloves/watch/specialwatch" = "optics_instruments",
 		"/obj/item/clothing/gloves/watch/watch" = "optics_instruments",
 		"/obj/item/weapon/attachment/scope/adjustable/binoculars" = "optics_instruments",
+		"/obj/item/weapon/barometer" = "optics_instruments",
 		"/obj/item/weapon/compass" = "optics_instruments",
 		"/obj/item/weapon/globe" = "optics_instruments",
 		"/obj/item/weapon/watch/pocket" = "optics_instruments",
@@ -1877,7 +1878,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (45) ---
+		// --- primitive_construction (24) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
@@ -1895,12 +1896,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/wood_wall/nordic" = "primitive_construction",
 		"/obj/item/flashlight/tiki_torch" = "primitive_construction",
 		"/obj/item/flashlight/torch" = "primitive_construction",
+		"/obj/item/weapon/covers" = "primitive_construction",
 		"/obj/item/weapon/fire_beater" = "primitive_construction",
 		"/obj/item/weapon/fire_beater/flapper" = "primitive_construction",
-		"/obj/item/weapon/covers" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder/leaves" = "primitive_construction",
 		"/obj/structure/lean_to" = "primitive_construction",
+		"/obj/structure/weather_vane" = "primitive_construction",
 		"/obj/item/clothing/suit/straw_rain_cape" = "weaving",
 		"/obj/item/weapon/umbrella/paper" = "papermaking",
 		"/obj/item/clothing/head/souwester" = "haberdashery",

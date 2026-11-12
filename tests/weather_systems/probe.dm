@@ -209,4 +209,48 @@ var/ws_runtime_error = FALSE
 	ws_check(abs(S.centre_x() - before_x) < 0.01 && abs(S.centre_y() - before_y) < 0.01 && S.vel_y > 0 && S.vel_x > 0, "a storm turns toward a new wind from where it is")
 	weather_disperse(locate(clamp(round(S.centre_x()), 1, world.maxx), 60, 1))
 	weather_systems_clear()
+
+	// Forecasting: the same sum, asked ahead of time.
+	map.winddirection = "West"
+	var/list/forecast = weather_forecast(field)
+	ws_check(forecast["eta"] == -1 && forecast["now"] == 0 && findtext(barometer_reading(field), "steady"), "a clear sky forecasts no change")
+	S = weather_system_spawn(WEATHER_SYSTEM_STORM, FALSE, 60, 60)
+	S.peak = 1
+	forecast = weather_forecast(field)
+	var/eta = forecast["eta"]
+	ws_check(eta > 0 && forecast["bearing"] == "west" && forecast["now"] == 0, "a storm on its way is forecast from the west ([eta])")
+	ws_check(forecast["peak"] >= WEATHER_BAND_HEAVY && !forecast["severe"], "the forecast knows how heavy it will be")
+	ws_check(findtext(barometer_reading(field), "falling steadily") && findtext(weather_forecast_line(field), "from the west"), "the barometer falls before a heavy storm")
+	ws_check(weather_forecast(sand, 600)["eta"] == -1, "a storm too far off to arrive within the horizon is not forecast")
+	var/obj/structure/weather_vane/vane = new(field)
+	var/obj/structure/weather_vane/shut_in = new(indoors)
+	ws_check(vane.icon_state == "weather_vane_west" && (vane in weather_vanes), "a weather vane points into the wind")
+	map.winddirection = "North"
+	weather_vanes_turn()
+	ws_check(vane.icon_state == "weather_vane_north" && shut_in.icon_state == "weather_vane_east", "the vane swings with the wind, but not under a roof")
+	map.winddirection = "West"
+	weather_vanes_turn()
+	// A little before the forecast time it is still dry; at it, raining.
+	ws_age(S, eta - 300)
+	ws_check(weather_at(field) == WEATHER_NONE, "dry half a minute before the forecast time")
+	ws_age(S, 300)
+	ws_check(weather_at(field) != WEATHER_NONE, "raining at the forecast time")
+	forecast = weather_forecast(field)
+	ws_check(forecast["now"] >= WEATHER_BAND_LIGHT && forecast["eta"] == -1 && findtext(barometer_reading(field), "needle is low"), "under the storm the barometer is low")
+	var/clears = forecast["clears"]
+	if (clears > 0)
+		ws_age(S, clears)
+		ws_check(weather_at(field) == WEATHER_NONE, "clear at the time the forecast said it would pass")
+	S.severe = TRUE
+	S.origin_x = 60 - S.radius_x - 20
+	S.origin_y = 60
+	S.origin_time = world.time
+	S.born = world.time - 1200
+	weather_sample_time = -1
+	ws_check(findtext(barometer_reading(field), "dropping fast"), "the barometer drops fast before a severe storm")
+	ws_check(weather_sea_state(field) == "choppy" && weather_wind_word(4) == "a gale", "sea state follows the wind")
+	qdel(vane)
+	qdel(shut_in)
+	ws_check(!weather_vanes.len, "removed vanes are forgotten")
+	weather_systems_clear()
 	ws_check(length(weather_system_report()) == 0, "report is empty with a clear sky")
