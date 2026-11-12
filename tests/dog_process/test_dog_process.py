@@ -33,13 +33,19 @@ def translate(source):
         'var/dist_y = abs(dog.y - dog.walking_to.y)': 'dist_y = abs(dog["dy"])',
         'if (dist_x > 1 || dist_y > 1 || dog.walking_to != dog.following)':
             'if dist_x > 1 or dist_y > 1 or not dog["following_target"]:',
-        'var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))': 'target = dog',
+        'var/direction = get_dir(dog, dog.walking_to)': 'direction = ctx.get_dir(dog)',
+        'var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))':
+            'target = ctx.get_step(dog, ctx.get_dir(dog))',
+        'var/turf/target = get_step(dog.loc, direction)': 'target = ctx.get_step(dog, direction)',
         'if (target.density)': 'if target["turf_dense"]:',
         'for (var/obj/S in target)': 'for S in target["objects"]:',
         'if (S.density)': 'if S:',
         # Deliberately wrong control: treat a dense object like a dense turf.
         'if (dense_object_control(target))': 'if any(target["objects"]):',
-        'step(dog, get_dir(dog, dog.walking_to))': 'ctx.events.append((dog["name"], "step"))',
+        'step(dog, get_dir(dog, dog.walking_to))': 'ctx.step(dog, ctx.get_dir(dog))',
+        'step(dog, direction)': 'ctx.step(dog, direction)',
+        # Deliberately wrong control: step in a direction other than the checked turf.
+        'step(dog, NORTH)': 'ctx.step(dog, "NORTH")',
         'else': 'else:',
         'catchBadType(current)': 'ctx.events.append((current["name"], "bad_type"))',
         'dog_mob_list -= current': 'ctx.events.append((current["name"], "remove"))',
@@ -67,19 +73,37 @@ def translate(source):
 def dog(name='dog', **changes):
     result = dict(name=name, deleted=False, conscious=True, walking_to=True,
                   frozen=False, target_is_mob=True, movement_age=0, dx=2, dy=0,
-                  following_target=True, turf_dense=False, objects=[])
+                  following_target=True, turf_dense=False, objects=[], direction='EAST')
     result.update(changes)
     return result
 
 
-def trace(source, dogs):
+def trace_details(source, dogs):
     class Context:
-        pass
+        def get_dir(self, dog):
+            self.directions.append(dog['name'])
+            return dog['direction']
+
+        def get_step(self, dog, direction):
+            self.checked.append((dog['name'], direction))
+            return dog
+
+        def step(self, dog, direction):
+            self.stepped.append((dog['name'], direction))
+            self.events.append((dog['name'], 'step'))
+
     ctx = Context()
     ctx.dogs = dogs
     ctx.events = []
+    ctx.directions = []
+    ctx.checked = []
+    ctx.stepped = []
     translate(source)(ctx)
-    return ctx.events
+    return ctx
+
+
+def trace(source, dogs):
+    return trace_details(source, dogs).events
 
 
 class DogProcessTests(unittest.TestCase):
@@ -118,7 +142,7 @@ class DogProcessTests(unittest.TestCase):
         self.assert_parity(dogs, expected)
 
     def test_dense_object_suppression_negative_control(self):
-        marker = '\t\t\t\t\t\tstep(dog, get_dir(dog, dog.walking_to))'
+        marker = '\t\t\t\t\t\tstep(dog, direction)'
         self.assertEqual(self.new.count(marker), 1)
         mutant = self.new.replace(marker, '\t\t\t\t\t\tif (dense_object_control(target))\n'
                                   '\t\t\t\t\t\t\tcontinue\n' + marker)
@@ -127,6 +151,34 @@ class DogProcessTests(unittest.TestCase):
         self.assertEqual(expected[0], ('dog', 'step'))
         self.assertNotEqual(trace(mutant, case), expected)
         self.assertEqual(trace(mutant, case), [])
+
+    def test_cached_direction_preserves_semantics_and_reduces_calls(self):
+        dogs = [dog('clear', direction='EAST'),
+                dog('dense', turf_dense=True, direction='WEST'),
+                dog('unconscious', conscious=False), dog('no_target', walking_to=False),
+                dog('frozen', frozen=True), dog('in_range', dx=1, dy=1),
+                dog('stale', movement_age=10), dog('deleted', deleted=True)]
+        old = trace_details(self.old, dogs)
+        new = trace_details(self.new, dogs)
+        self.assertEqual(new.events, old.events)
+        self.assertEqual(new.checked, old.checked)
+        self.assertEqual(new.stepped, old.stepped)
+        self.assertEqual(new.checked, [('clear', 'EAST'), ('dense', 'WEST')])
+        self.assertEqual(new.stepped, [('clear', 'EAST')])
+        self.assertEqual(old.directions, ['clear', 'clear', 'dense'])
+        self.assertEqual(new.directions, ['clear', 'dense'])
+
+    def test_wrong_step_direction_negative_control(self):
+        marker = 'step(dog, direction)'
+        self.assertEqual(self.new.count(marker), 1)
+        mutant = self.new.replace(marker, 'step(dog, NORTH)')
+        case = [dog(direction='EAST')]
+        expected = trace_details(self.old, case)
+        actual = trace_details(mutant, case)
+        self.assertEqual(actual.events, expected.events)
+        self.assertEqual(actual.checked, expected.checked)
+        self.assertNotEqual(actual.stepped, expected.stepped)
+        self.assertEqual(actual.stepped, [('dog', 'NORTH')])
 
     def test_unknown_source_fails_closed(self):
         with self.assertRaisesRegex(ValueError, 'Unsupported dog instruction'):
