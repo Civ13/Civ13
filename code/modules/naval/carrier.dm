@@ -353,8 +353,11 @@
 			if (vessel.anchored)
 				to_chat(H, SPAN_WARNING("Weigh anchor before coming about."))
 				return
-			if (!vessel.turn_to(heading))
+			if (!vessel.order_turn(heading))
 				to_chat(H, SPAN_WARNING("The ship cannot come about here: [vessel.last_refusal]."))
+				return
+			if (vessel.turning_to)
+				vessel.crew_message(SPAN_NOTICE("[H] at the wheel: coming about to the [dir2text(heading)]. Stand clear of the marked water."))
 				return
 	vessel.crew_message(SPAN_NOTICE("[H] at the wheel: [choice]. [status_text()]"))
 
