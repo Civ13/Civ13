@@ -213,8 +213,10 @@
 		var/client/C = V.owner
 		if(!C || !V.body)
 			continue
+		if(changed != V.body && T.z != V.body.z)
+			continue
 		var/list/radii = V.viewport_radii()
-		if(T && changed != V.body && (T.z != V.body.z || !radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
+		if(T && changed != V.body && (!radii || abs(T.x-V.body.x) > radii[1]+6 || abs(T.y-V.body.y) > radii[2]+6))
 			continue
 		affected |= V
 		// A transparent movable is no blocker: for other viewers only its own
