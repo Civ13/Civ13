@@ -187,7 +187,8 @@ hold, the site cap and the admin pause, standing off when no water is free,
 ships in different waters not sighting each other, a passage saved by the
 tiller and resumed, the way home, and the harbour office (`sea_office.dm`): its
 board on the home island, a survey and a salvage contract taken, done,
-paid and saved, and a contract given up.
+paid and saved, a contract given up, and two ships meeting at sea and
+parting company.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/open_sea_probe.dm 300
 
