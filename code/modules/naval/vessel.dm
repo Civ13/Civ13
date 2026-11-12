@@ -78,7 +78,10 @@ var/global/list/naval_vessels = list()
 
 /datum/vessel/Destroy()
 	stop_sailing()
+	var/datum/craft/C = craft_of_vessel(src, FALSE)
 	naval_vessels -= src
+	if (C)
+		qdel(C)
 	if (flooding)
 		global.flooding_controllers -= flooding
 		flooding = null
@@ -283,6 +286,9 @@ var/global/list/naval_vessels = list()
 		return FALSE
 	var/started = world.timeofday
 	var/list/old_cells = placed ? cells() : list()
+	// Where she was, for the craft hooks after the move.
+	var/turf/old_origin = placed ? locate(ox, oy, base_z) : null
+	var/turned = placed ? craft_turn_angle(dir, heading) : 0
 	// Destinations with the spec that goes there and the cell it comes from.
 	var/list/dest_turfs = list()
 	var/list/dest_source = list()
@@ -362,6 +368,14 @@ var/global/list/naval_vessels = list()
 			if (original)
 				S.ChangeTurf(original)
 		flooding.rebind_turfs(deck_turfs(), air)
+		// Everything aboard comes about with the hull.
+		if (turned)
+			var/datum/craft/C = craft_of_vessel(src)
+			for (var/turf/N in moved_to)
+				for (var/atom/movable/M in N)
+					if (M.loc != N || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+						continue
+					M.craft_turned(C, turned)
 		for (var/turf/N in moved_to)
 			for (var/obj/O in N)
 				O.update_icon()
@@ -372,6 +386,12 @@ var/global/list/naval_vessels = list()
 	wall_bulk_placement = old_bulk
 	relocating = FALSE
 	last_hop_ms = (world.timeofday - started) * 100
+	if (old_origin)
+		var/datum/craft/C = craft_of_vessel(src)
+		if (C)
+			C.on_hop(old_origin)
+			if (turned)
+				C.on_turn(turned)
 	return TRUE
 
 // ---- Sailing ----

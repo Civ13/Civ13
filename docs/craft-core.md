@@ -25,9 +25,15 @@ behave exactly as before.
 - `datum/vessel` is not renamed or replaced. Helms save its type path, so a
   template body wraps it. `craft_of_vessel(V)` makes the craft on first use
   and `craft_at(turf)` finds the craft a tile belongs to.
-- Move a craft through its body (`body.move_to`, `body.turn_to`) so the hooks
-  fire: `craft.on_hop(old_origin)` and `craft.on_turn(angle)`, and for things
-  aboard `craft_moved(craft, old_loc)` and `craft_turned(craft, angle)`.
+- A vessel tells its craft about every hop and turn from `relocate()`, whoever
+  asked for the move (the wheel, the hop timer or a body): `craft.on_hop(old_origin)`
+  and `craft.on_turn(angle)`.
+- When a craft turns, everything aboard gets `craft_turned(craft, angle)`.
+  Objects and creatures turn their facing with the hull, and loose items also
+  turn their pixel offset. A type whose facing must not follow the hull
+  overrides `craft_turned()`. `craft_moved(craft, old_loc)` is for bodies that
+  move things one at a time; a template body moves whole tiles and does not
+  call it.
 - Turn angles are the ones `turn()` takes (counter-clockwise positive). Use
   `craft_turn_angle(old_dir, new_dir)`.
 - A craft nobody registered is open to anyone. Once a party owns it,
