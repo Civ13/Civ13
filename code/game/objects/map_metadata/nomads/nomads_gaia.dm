@@ -3,6 +3,7 @@
 	ID = MAP_NOMADS_GAIA
 	title = "Nomads (Gaia)"
 	lobby_icon = 'icons/lobby/gaia_volcano.dmi' // the volcano crater, with drifting embers
+	lobby_icon_wide = 'icons/lobby/gaia_volcano_wide.dmi'
 	songs = list("In the beginning there was nothing:1" = "sound/music/in_the_beginning.ogg",)
 	research_active = TRUE
 	building_levels = 1

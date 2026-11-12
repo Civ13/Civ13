@@ -93,6 +93,35 @@ class WidescreenHud(unittest.TestCase):
         self.assertIn('fit_fullscreen_overlays(V)', layout)
         lobby = read('code/game/mob/new_player/lobby_image.dm')
         self.assertIn('screen_loc = "CENTER-7,CENTER-7"', lobby)
+        # A map's 672x480 picture sits edge to edge on the 21x15 view; square-view
+        # players keep the 480x480 one, so nothing reaches past their screen.
+        self.assertIn('screen_loc = "CENTER-10,CENTER-7"', lobby)
+        show = lobby[lobby.index('/mob/new_player/proc/show_lobby_image'):]
+        show = show[:show.index('\n/obj/')]
+        self.assertIn('lobby_image_wide.ready && V[1] >= 21', show)
+        self.assertIn('client.screen += lobby_image\n', show)
+        self.assertIn('show_lobby_image()', read('code/game/mob/new_player/login.dm'))
+        self.assertIn('N.show_lobby_image()', read('code/game/mob/mob_view.dm'))
+
+    def test_wide_lobby_picture_is_a_full_frame_dmi(self):
+        import struct, zlib
+        gaia = read('code/game/objects/map_metadata/nomads/nomads_gaia.dm')
+        self.assertIn("lobby_icon_wide = 'icons/lobby/gaia_volcano_wide.dmi'", gaia)
+        for name, width in (('gaia_volcano.dmi', 480), ('gaia_volcano_wide.dmi', 672)):
+            data = (ROOT / 'icons' / 'lobby' / name).read_bytes()
+            pos, desc = 8, ''
+            while pos < len(data):
+                size, kind = struct.unpack('>I4s', data[pos:pos + 8])
+                if kind == b'zTXt':
+                    body = data[pos + 8:pos + 8 + size]
+                    key, rest = body.split(b'\0', 1)
+                    if key == b'Description':
+                        desc = zlib.decompress(rest[1:]).decode()
+                pos += 12 + size
+            self.assertIn('width = %d\n' % width, desc)
+            self.assertIn('height = 480\n', desc)
+            self.assertIn('state = "lobby"', desc)
+            self.assertIn('state = "lobby_particles"', desc)
 
 
 
