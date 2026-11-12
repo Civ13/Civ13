@@ -118,6 +118,10 @@
 	var/nx = x - B[1]
 	var/ny = y - B[2]
 	var/list/mine = cells()
+	var/overhang = craft_overhang_refusal(mine)
+	if (overhang)
+		last_refusal = overhang
+		return null
 	var/list/dest = list()
 	for (var/list/O in turned)
 		var/turf/D = locate(nx + O[1], ny + O[2], z)

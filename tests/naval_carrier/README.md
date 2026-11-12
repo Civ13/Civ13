@@ -150,3 +150,13 @@ alongside for a built hull and a slipway ship, mooring, casting off by
 sailing, guests, and what leaves the chart.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/chart_probe.dm 300
+
+## Vehicles aboard (`ferry_probe.dm`)
+
+A modular car on a built hull (`code/modules/craft/vehicle_aboard.dm`): a hop
+carries every part, a turn of the ship leaves the car exactly as a turn of its
+own would (compared part by part with a car ashore), it still drives and
+steers afterwards, and a car parked half aboard holds the ship until it is
+gone.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ferry_probe.dm 300
