@@ -584,8 +584,8 @@ SUITES = {
         'paths': ('tests/human_ssd_hunger/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
-    'human_thermal_clothing': {'files': ('tests/human_thermal_clothing/test_thermal_clothing.py',),
-        'paths': ('tests/human_thermal_clothing/',), 'shared_paths': (
+    'human_thermal_clothing': {'files': ('tests/human_thermal_clothing/test_thermal_clothing.py', 'tests/human_fire_protection/test_fire_protection.py'),
+        'paths': ('tests/human_thermal_clothing/', 'tests/human_fire_protection/'), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'human_bed_healing': {'files': ('tests/human_bed_healing/test_bed_healing.py',),

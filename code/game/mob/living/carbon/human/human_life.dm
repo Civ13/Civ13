@@ -1563,15 +1563,13 @@
 		emote("scream")
 
 	var/burn_temperature = fire_burn_temperature()
-	var/thermal_protection = get_heat_protection(burn_temperature)
+	var/protected_limbs = get_heat_protection_flags(burn_temperature)
+	var/thermal_protection = get_thermal_protection(protected_limbs)
 
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
 
 	var/species_heat_mod = 1
-
-	var/protected_limbs = get_heat_protection_flags(burn_temperature)
-
 
 	if(species)
 		if(burn_temperature < species.heat_level_2)
