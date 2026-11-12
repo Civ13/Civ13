@@ -408,6 +408,9 @@
 			var/mob/living/human/H = mover
 			if(istype(H.wear_suit, /obj/item/clothing/suit/lifejacket))
 				return TRUE
+			// A sealed diver swims; the sea layer has its own rules.
+			if (H.seabed_diving_rating())
+				return TRUE
 		return FALSE
 	else
 		return ..()

@@ -6,10 +6,13 @@
 
 Production sources run in the shared resource-extraction constructor fixture with ordinary game startup disabled. The fixture world is 30x30 with two levels: z2 is the surface (land at x 1-3, shallows at x 4, deep ocean beyond) and z1 is solid rock with an old tunnel, standing in for Gaia's surface and caves.
 
-The probe covers `code/modules/1713/machinery/modular_vehicles/ships/sea_layer.dm` and `submarine.dm`:
+The probe covers `code/modules/1713/machinery/modular_vehicles/ships/sea_layer.dm`, `seabed.dm` and `submarine.dm`:
 
 - **Sea layer:** rock under open ocean becomes open sea; rock under land, a one-tile shell under the coast and the rock around an old tunnel stay; a second pass changes nothing; the pass waits a minute after the world is ready (so it does not stack on the end of a save load) and yields in bounded batches.
 - **No swimming down:** a mob cannot enter open sea unless a hull frame covers the tile, so crew cannot leave a submerged boat.
+- **Depth zones:** every sea cell gets a zone by distance from the nearest rock (shelf up to 6 tiles, open water up to 16, the deep up to 32, then the abyss), the counts add up, open sea has no air and gets colder with depth, and the hull holds air.
+- **Divers:** a sealed diver (a stub standing in for a human in a diving dress) walks the open seabed but cannot step straight into or out of a submerged boat; both side hatch sections are lock-out hatches that open onto the seabed beside them, and rock against the hull keeps the hatch shut. Things dropped on the seabed stay there.
+- **Diving gear:** the diving dress, helmet and air bottle are gated by Submarines research; the dress is rated for the shelf and has no heater, and a space pressure suit is not rated for diving.
 - **Build:** a submarine builds fifteen roofed steel hull frames with open hatches amidships, a ship wheel, the ballast and periscope station, a diesel engine and a tank, and joins the ship registry.
 - **Dive and surface:** a moving boat must stop first; a stopped boat over open sea dives with its crew, cargo and machinery; it cannot dive beside the coast or surface under anything floating; surfacing brings everyone back.
 - **Submerged movement:** the boat moves through open sea with its crew and stops when rock lies ahead.
@@ -18,4 +21,4 @@ The probe covers `code/modules/1713/machinery/modular_vehicles/ships/sea_layer.d
 
 Negative control: dropping the neighbour checks from `sea_layer_candidate()` opens the coast and tunnel shells and fails 2 checks.
 
-Not covered: a real client at the periscope (eye and perspective), steering from the ship wheel, the sea layer pass on a full Gaia save and load, and a human with a lifejacket (the fixture cannot construct a full human).
+Not covered: a full human through the lock-out timer, the emergency ascent and the suit squeeze below its rating (the fixture cannot construct a full human), a real client at the periscope (eye and perspective), steering from the ship wheel, the sea layer pass on a full Gaia save and load, and a human with a lifejacket (the fixture cannot construct a full human).

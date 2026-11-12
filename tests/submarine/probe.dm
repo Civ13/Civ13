@@ -19,6 +19,9 @@
 	return
 /mob/living/submarine_probe/New()
 	return
+// A diver sealed in a diving suit (the fixture cannot build a full human).
+/mob/living/submarine_probe/diver/can_walk_seabed()
+	return TRUE
 /obj/covers/submarine_probe_raft
 	name = "probe raft"
 var/submarine_failures = 0
@@ -77,6 +80,22 @@ var/submarine_runtime_error = FALSE
 	submarine_check(submarine_turf(1, 1, 1).type == /turf/wall/rockwall, "the map corner under land stays rock")
 	submarine_check(sea_layer_build(2, 1) == 0, "a second pass changes nothing")
 
+	// Depth zones by distance from the nearest rock.
+	var/marked = seabed_zone_pass(1)
+	submarine_check(seabed_zones_ready && marked == opened, "every sea cell gets a depth zone ([marked] of [opened])")
+	var/zone_total = 0
+	for (var/n in seabed_zone_counts)
+		zone_total += n
+	submarine_check(zone_total == marked, "the zone counts add up ([json_encode(seabed_zone_counts)])")
+	submarine_check(sea_zone_of(locate(6, 15, 1)) == SEA_ZONE_SHELF && sea_zone_of(locate(11, 15, 1)) == SEA_ZONE_SHELF, "the six cells off the coast are the shelf")
+	submarine_check(sea_zone_of(locate(12, 15, 1)) == SEA_ZONE_OPEN && sea_zone_of(locate(14, 15, 1)) == SEA_ZONE_OPEN, "farther out is open water")
+	submarine_check(sea_zone_of(locate(22, 22, 1)) == SEA_ZONE_DEEP, "far from any rock is the deep")
+	submarine_check(sea_zone_of(locate(26, 6, 1)) == SEA_ZONE_SHELF, "the water around an old tunnel's rock is shelf again")
+	submarine_check(!sea_zone_of(locate(2, 15, 1)), "rock has no depth zone")
+	var/turf/open_sea = locate(15, 15, 1)
+	submarine_check(!open_sea.outside_air_breathable() && open_sea.outside_ambient_c() == 8, "open sea has no air and is cold (got [open_sea.outside_ambient_c()])")
+	submarine_check(locate(7, 15, 1).outside_ambient_c() == 14 && locate(22, 22, 1).outside_ambient_c() == 4, "the deep is colder than the shelf")
+
 	// After a save load the pass waits for the world to settle first.
 	sea_layer_ready_at = 0
 	submarine_check(!sea_layer_settled() && sea_layer_ready_at == world.time, "the pass waits once the world is first seen ready")
@@ -120,6 +139,26 @@ var/submarine_runtime_error = FALSE
 	var/turf/crew_here = get_turf(crew)
 	submarine_check(crew_here.CanPass(crew, crew_here), "inside the hull the crew can move")
 	submarine_check(!submarine_turf(15, 13, 1).CanPass(crew, crew_here), "the crew cannot leave a submerged boat")
+
+	// Divers: the open sea lets them through, but never straight in or out of a boat.
+	var/turf/hull_air = get_turf(crew)
+	submarine_check(hull_air.outside_air_breathable() && isnull(hull_air.outside_ambient_c()), "inside the hull there is air")
+	var/mob/living/submarine_probe/diver/diver = new(locate(20, 20, 1))
+	submarine_check(locate(21, 20, 1).CanPass(diver, locate(21, 20, 1)), "a diver walks the open seabed")
+	var/mob/living/submarine_probe/diver/inside = new(locate(12, 12, 1))
+	submarine_check(!locate(11, 12, 1).CanPass(inside, locate(11, 12, 1)), "a diver cannot step out of a submerged boat past the lock-out hatch")
+	diver.forceMove(locate(11, 12, 1))
+	submarine_check(!locate(12, 12, 1).CanPass(diver, locate(12, 12, 1)), "a diver cannot step into a submerged boat past the lock-out hatch")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/starboard = locate() in locate(12, 12, 1)
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/port = locate() in locate(14, 12, 1)
+	submarine_check(starboard && starboard.boat() == S && port && port.boat() == S, "both side hatches are lock-out hatches of this boat")
+	submarine_check(port && port.lockout_exit() == locate(15, 12, 1), "the port hatch opens onto the seabed beside it")
+	locate(15, 12, 1).ChangeTurf(/turf/wall/rockwall)
+	submarine_check(port && !port.lockout_exit(), "rock against the hull keeps the hatch shut")
+	locate(15, 12, 1).ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+	var/obj/item/weapon/shoring_kit/dropped = new(locate(20, 22, 1))
+	locate(20, 22, 1).Entered(dropped)
+	qdel(inside)
 	submarine_check(S.change_depth(TRUE) == "The boat is already submerged.", "a second dive is refused")
 	var/turf/boat_here = get_turf(S)
 	submarine_check(S.periscope_turf() == locate(boat_here.x, boat_here.y, 2), "the periscope looks at the surface straight above")
@@ -177,6 +216,12 @@ var/submarine_runtime_error = FALSE
 	var/datum/research_node/N = get_research_node("submarines")
 	submarine_check(N && ("combustion" in N.prereqs) && ("wagons_ships" in N.prereqs) && N.era_tier == 6, "Submarines research follows ships and combustion")
 	submarine_check(get_recipe_node_req("/obj/structure/car_workshop/submarine_pen") == "submarines", "Submarines research gates the pen (got [get_recipe_node_req("/obj/structure/car_workshop/submarine_pen")])")
+	for (var/gear in list("/obj/item/clothing/suit/pressure_suit/diving", "/obj/item/clothing/head/pressure_helmet/diving", "/obj/item/pressure_tank/diving"))
+		submarine_check(get_recipe_node_req(gear) == "submarines", "Submarines research gates [gear]")
+	var/obj/item/clothing/suit/pressure_suit/diving/dress = new(locate(1, 1, 2))
+	submarine_check(dress.depth_rating == SEA_ZONE_SHELF && !dress.has_heater && !new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).depth_rating, "the diving dress is built for the shelf; a space suit is not for diving")
+	sleep(70)
+	submarine_check(!QDELETED(dropped) && get_turf(dropped) == locate(20, 22, 1), "things dropped on the seabed stay there")
 	var/obj/structure/car_workshop/submarine_pen/pen = new(locate(3, 23, 2))
 	submarine_check(pen.model_size("Submarine") == 5 && pen.costs("Submarine")["steel"] == 90 && !pen.allowed(null), "the pen builds only the submarine, after Submarines research")
 	submarine_check(!pen.complete_assembly("Submarine"), "an empty pen builds nothing")

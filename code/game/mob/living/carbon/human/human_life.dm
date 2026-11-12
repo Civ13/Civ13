@@ -486,12 +486,13 @@
 	if (!isnull(outside_c))
 		loc_temp = outside_c
 	outside_exposure_step(exposure_turf)
+	seabed_exposure_step(exposure_turf)
 	cold_wetness = min(1, max(0, cold_wetness))
 	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
-	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
+	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered() && !seabed_diving_rating())
 		cold_wetness = 1
 	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
 		cold_wetness = min(1, cold_wetness + 0.01)
