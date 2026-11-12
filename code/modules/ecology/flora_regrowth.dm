@@ -74,6 +74,11 @@ var/global/list/regrowing_stump_list = list()
 		/obj/structure/farming/plant/juniper = 1,
 		/obj/structure/farming/plant/flax = 2,
 		/obj/structure/farming/plant/cotton = 2,
+		/obj/structure/farming/plant/chamomile = 1,
+		/obj/structure/farming/plant/dandelion = 2,
+		/obj/structure/farming/plant/mint = 1,
+		/obj/structure/farming/plant/sunflower = 1,
+		/obj/structure/farming/plant/rose = 1,
 	)
 
 /////// Wild plants
