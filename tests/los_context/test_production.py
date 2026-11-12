@@ -985,6 +985,7 @@ class BlockingTreeSurface(unittest.TestCase):
         method('owned_surface_cells','target',['tree_bounds','radius_x','radius_y'])
         method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible','radius_x','radius_y'])
         method('opaque_borders_visible','target_tile_x, target_tile_y',['blocking_tiles','blockers','radius_x','radius_y','clear_footprints','blocks_target'])
+        _offline.project(source,'/proc/los_own_tree(',env)
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
         body=N(type='/mob/living/human',see_invisible=25)
         context=N(body=body,revision=1,policy_key=lambda:'fresh',verified_snapshot=None,verified_snapshot_time=-1)
@@ -1004,11 +1005,12 @@ class BlockingTreeSurface(unittest.TestCase):
         def cell(x,y,owner=None,tile=None,owners=1):
             if isinstance(owner,Atom):snapshot.capture_tree_bounds(owner)
             return N(cell_x=x,cell_y=y,tile_x=(tile or (x,y))[0],tile_y=(tile or (x,y))[1],surface_owner=owner,owners=owners)
+        own_turf=Atom(type='/turf/floor',x=10,y=10,z=1)
         def capture(objects,opaque_tiles=(),presentation=True):
             # Engine boundary: native contents lists every strictly overlapping
             # turf, including partial overlaps. Execute the entire DM capture.
             snapshot.tree_bounds=None;snapshot.blocking_tiles=None;snapshot.blockers=Cells();snapshot.clear_footprints.clear()
-            body.x=10;body.y=10;body.z=1;body.step_x=body.step_y=0
+            body.x=10;body.y=10;body.z=1;body.step_x=body.step_y=0;body.loc=own_turf
             def locate(x,y,z):
                 t=Atom(type='/turf/floor',x=x,y=y,z=z,opacity=(x,y) in opaque_tiles)
                 t.contents=[a for a in objects if a.x+(a.step_x+a.bound_x)/32 < x+1 and a.x+(a.step_x+a.bound_x+a.bound_width)/32 > x
@@ -1029,7 +1031,7 @@ class BlockingTreeSurface(unittest.TestCase):
             f=adapter.project(head+'\n'+code,'/datum/los_context/proc/capture','self, presentation=False, focus=None',env)
             return f(context,presentation)
         return N(S=snapshot,env=env,target=target,cell=cell,context=context,
-                 capture=capture,
+                 capture=capture,own_turf=own_turf,
                  decision=lambda t,op='visual_tree':decision(context,t,snapshot,op))
 
     def test_exposed_blocking_tree_renders_while_ground_entities_and_reads_stay_denied(self):
@@ -1097,6 +1099,23 @@ class BlockingTreeSurface(unittest.TestCase):
         S=m.capture([tree]);self.assertEqual(len(S.owned_surface_cells(tree)),2)
         self.assertEqual(len([b for b in S.blockers if b.surface_owner is tree]),3)
         S=m.capture([tree],presentation=False);self.assertIsNone(S.tree_bounds)
+
+    def test_viewer_standing_in_a_tree_tile_is_not_blinded_by_it(self):
+        # Trees block only at their trunk, so a human can share the tree's
+        # tile. That tree is not the viewer's blocker; every other one is.
+        for presentation in (True,False):
+            m=self.model();own=m.target(10,10);own.loc=m.own_turf
+            far=m.target(13,10);item=m.target(14,10,opaque=False,kind='/obj/item')
+            S=m.capture([own,far,item],presentation=presentation)
+            self.assertEqual([b.surface_owner for b in S.blockers],[far])
+            self.assertEqual(m.decision(m.target(12,10,opaque=False,kind='/obj/item'),'visual'),1)
+            self.assertEqual(m.decision(item,'visual'),0)
+            # A tree on another tile, or a curtain on the viewer's tile, still blinds.
+            curtain=m.target(10,10,kind='/obj/structure/curtain');curtain.loc=m.own_turf
+            S=m.capture([own,curtain],presentation=presentation)
+            self.assertEqual([b.surface_owner for b in S.blockers],[curtain])
+            self.assertEqual(m.decision(m.target(12,10,opaque=False,kind='/obj/item'),'visual'),0)
+            S=m.capture([far],presentation=presentation)
 
     def test_partial_rectangles_clipping_and_stale_bound_records(self):
         m=self.model();tree=m.target(2,1);tree.bound_width=17;tree.bound_height=9
