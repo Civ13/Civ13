@@ -366,7 +366,8 @@
 	var/tmp/obj/item/weapon/reagent_containers/current_work = null
 	var/tmp/complete_percent = 0 //for manual mills
 	var/tmp/list/workers_list = list() //mostly for team work possibility in manual mills
-	var/tmp/list/workers_work = list()
+	var/tmp/list/workers_work = list() // worker -> deciseconds of work on the current batch
+	var/tmp/batch_id = 0 // advanced when a batch finishes, so workers still waiting stop
 	var/tmp/obj/item/weapon/reagent_containers/current_material = null
 
 /obj/structure/mill/examine(mob/user, distance)
@@ -404,16 +405,15 @@
 			icon_state = "flour_mill"
 			visible_message("<span class='notice'>You can see how [english_list(workers_list, src.name)] finish grind [current_material.name] in [src.name] to [current_work.name]</span>",
 				"<span class='notice'>The grinding sounds are gone.</span>")
-			var/work_index = 1
 			for(var/mob/living/human/H in workers_list)
-				H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), workers_work[work_index], TRUE, TRUE, 1, 0, 0, 0, 0)
-				work_index += 1
+				H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), workers_work[H], TRUE, TRUE, 1, 0, 0, 0, 0)
 		qdel(current_material)
 		new current_work.type(src.loc) //deleting and creating for sterilization effect (we need really new object)
 		qdel(current_work)
 	current_work = null
 	current_material = null
 	complete_percent = 0
+	batch_id++
 	workers_list.Cut()
 	workers_work.Cut()
 
@@ -431,6 +431,9 @@
 	if (current_work)
 		if (istype(src, /obj/structure/mill/large))
 			to_chat(H, "<span class='warning'>\The [src.name] is busy, wait for [src.name] finish work.</span>")
+			return
+		if (H in workers_list)
+			to_chat(H, "<span class='warning'>You are already grinding at \the [src.name].</span>")
 			return
 		if (workers_list.len == 0)
 			H.visible_message(
@@ -457,9 +460,10 @@
 			finish_work()
 	else
 		var/total_work = 0
+		// Credit is keyed by worker, so another worker leaving cannot shift it.
 		workers_list += H
-		workers_work += 0
-		var/work_index = workers_work.len
+		workers_work[H] = 0
+		var/my_batch = batch_id
 		var/some_work_done = FALSE
 		var/is_tired = FALSE
 		var/is_mentally_tired = FALSE
@@ -473,10 +477,13 @@
 				some_work_done = TRUE
 				is_mentally_tired = TRUE
 				break
-			if (do_after(H, 10, H.loc, TRUE, FALSE) && crafting_recipe_allowed(H, "[type]"))
+			var/finished_work = do_after(H, 10, H.loc, TRUE, FALSE)
+			if (batch_id != my_batch)
+				return // the batch finished during the wait and finish_work() already paid this worker
+			if (finished_work && crafting_recipe_allowed(H, "[type]"))
 				complete_percent += 6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")
 				total_work += 10
-				workers_work[work_index] = total_work
+				workers_work[H] = total_work
 				H.stats["stamina"] -= STAMINA_LOSS_BASE_PER_DECISECOND_SDS_OF_WORK*10
 				H.adjust_mood(-(MOOD_LOSS_PER_DECISECOND_OF_PHYSICAL_WORK*10), "hard work")
 			else
@@ -484,8 +491,8 @@
 				break
 		if (some_work_done)
 			H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), total_work, TRUE, TRUE, 1, 0, 0, 0, 0)
-			workers_list.Cut(work_index, work_index+1)
-			workers_work.Cut(work_index, work_index+1)
+			workers_list -= H
+			workers_work -= H
 			var/reason = "stopped"
 			if (is_mentally_tired) reason = "not in mood to"
 			if (is_tired) reason = "tired to"
