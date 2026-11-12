@@ -41,6 +41,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'vehicle_level_shift': {'files': ('tests/vehicle_level_shift/test_shift.py',),
+        'paths': ('tests/vehicle_level_shift/',
+                  'code/modules/1713/machinery/modular_vehicles/axis.dm',
+                  'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+                  'code/modules/1713/machinery/modular_vehicles/ships/submarine.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'cooling_fan': {'files': ('tests/cooling_fan/test_fan_desc.py',),
         'paths': ('tests/cooling_fan/', 'code/game/objects/structures/appliances.dm')},
     'landing_craft': {'files': ('tests/landing_craft/test_lever.py',),
