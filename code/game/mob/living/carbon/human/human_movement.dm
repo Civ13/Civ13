@@ -64,6 +64,8 @@
 				tally += AC.slowdown
 	if (shoes)
 		tally += shoes.slowdown
+	tally += wet_clothes_slowdown()
+	tally += armor_plate_slowdown()
 	if (l_hand)
 		if (istype(l_hand, /obj/item/weapon/shield))
 			tally += l_hand.slowdown

@@ -1633,6 +1633,8 @@
 #include "code\modules\1713\flax_processing.dm"
 #include "code\modules\1713\rope_making.dm"
 #include "code\modules\1713\rain_barrel.dm"
+#include "code\modules\1713\rain_gear.dm"
+#include "code\modules\1713\armor_weight.dm"
 #include "code\modules\1713\active_training.dm"
 #include "code\modules\1713\extraction\ipc_crypto.dm"
 #include "code\modules\1713\extraction\ipc_wire.dm"
