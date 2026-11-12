@@ -220,3 +220,12 @@ The probe answers the wiping station's wired power itself.
 - **Wiping:** the station on the beach finds a steel hull alongside; it asks for cable, takes thirty lengths, does nothing without power, and with power wipes 70% off for twenty lengths (20 shows as 6, "faint", and the tiller says so); ten lengths are not enough for another; the tiller keeps the wipe for a save.
 - **Wear:** the wiped hull passes a magnetic mine one tile off her course; ten tiles wear 1% off; with the wipe gone the same mine goes off.
 - **Coil:** a running coil takes 80% off; with no engine aboard a built hull trips it out on the next move. On a Scout submarine the coil is switched on by hand, takes 30 to 6, costs a battery unit a tile and trips out on a flat battery; the axis saves the wipe.
+
+## Minesweeping (`sweeping_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/sweeping_probe.dm
+```
+
+- **Oropesa:** a sweep must be bolted down and on a deck to stream; under way on a wooden hull it cuts a contact mine two tiles off her side up to the surface, leaves a far one moored, and a surfaced mine still goes off under a hull.
+- **Magnetic:** with no engine aboard a built hull the reel goes dead and is wound in; streamed aboard a Scout submarine it sets off a magnetic mine six tiles off, not one nine tiles off or a contact mine, for a battery unit a tile, and goes dead on a flat battery.

@@ -64,6 +64,9 @@
 				tally += AC.slowdown
 	if (shoes)
 		tally += shoes.slowdown
+	if (istype(back, /obj/item/weapon/storage/backpack))
+		var/obj/item/weapon/storage/backpack/BP = back
+		tally += BP.carry_slowdown
 	if (l_hand)
 		if (istype(l_hand, /obj/item/weapon/shield))
 			tally += l_hand.slowdown
