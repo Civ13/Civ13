@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'hand_mill_workers': {'files': ('tests/hand_mill_workers/test_workers.py',),
+        'paths': ('tests/hand_mill_workers/',),
+        'shared_paths': ('code/modules/1713/production.dm',)},
     # Offline source projection; the shared animal source retains conservative fallback.
     'frog_breeding_count': {'files': ('tests/frog_breeding_count/test_source.py',),
         'paths': ('tests/frog_breeding_count/',),
