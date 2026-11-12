@@ -65,6 +65,16 @@ ahead.
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
 
+## Drives aboard
+
+`naval/hull_drives.dm`: anything standing on a craft can be a drive by
+answering `craft_drive()` with a `/datum/craft_drive/fitted`. `craft.fit_drives()`
+collects them (on commission, when a speed is rung and before each hop), and
+`craft.max_speed()` weighs their push against the tiles of hull: half ahead
+needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
+from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
+drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The

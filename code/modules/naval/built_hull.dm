@@ -110,7 +110,7 @@
 		return "The tiller is not commissioned. It must stand on a floor built over water, with the hull free of the shore."
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"]."
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"]. [craft.drives_text()]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
@@ -122,7 +122,14 @@
 	if (!craft)
 		commission_menu(H)
 		return
-	var/list/options = list("Ship's papers", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", "Refit the hull", "Strike the hull", "Cancel")
+	craft.fit_drives()
+	var/list/options = list("Ship's papers")
+	var/best = craft.max_speed()
+	if (best >= VESSEL_SPEED_FULL)
+		options += "Full ahead"
+	if (best >= VESSEL_SPEED_HALF)
+		options += "Half ahead"
+	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", "Refit the hull", "Strike the hull", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -138,6 +145,8 @@
 			if (!craft.force_helm(H, src) || !craft)
 				return
 	switch (choice)
+		if ("Full ahead") craft.set_speed(VESSEL_SPEED_FULL)
+		if ("Half ahead") craft.set_speed(VESSEL_SPEED_HALF)
 		if ("Slow ahead") craft.set_speed(VESSEL_SPEED_SLOW)
 		if ("All stop") craft.set_speed(VESSEL_SPEED_STOP)
 		if ("Weigh anchor") craft.set_anchor(FALSE)

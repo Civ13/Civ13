@@ -36,8 +36,8 @@
 		return null
 	return dest
 
-// The fastest telegraph step she can make. Drives decide (craft_drive);
-// a hull with none can still be poled along at slow ahead.
+// The fastest telegraph step she can make. Drives decide
+// (naval/hull_drives.dm); a hull with none is poled along at slow ahead.
 /datum/craft/proc/max_speed()
 	return VESSEL_SPEED_SLOW
 
@@ -63,11 +63,13 @@
 		clear_path()
 
 /datum/craft/proc/set_speed(new_speed)
+	fit_drives()
 	speed = clamp(new_speed, VESSEL_SPEED_STOP, max_speed())
 	if (speed > 0 && !anchored)
 		start_sailing()
 	else if (speed <= 0)
 		stop_sailing()
+	show_drives()
 
 /datum/craft/proc/set_anchor(down)
 	anchored = down
@@ -75,6 +77,7 @@
 		start_sailing()
 	else if (anchored)
 		stop_sailing()
+	show_drives()
 
 // Where the next hop would put the box corner, as list(x, y), or null.
 /datum/craft/proc/next_hop()
@@ -139,6 +142,12 @@
 		return FALSE
 	if (persistence_save_in_progress)
 		return FALSE
+	// A mast lost since the last hop slows her at once.
+	fit_drives()
+	if (speed > max_speed())
+		speed = max_speed()
+		crew_message(SPAN_WARNING("She loses way: [drives_text()]"))
+	show_drives()
 	var/list/hop = next_hop()
 	clear_path()
 	if (hop && body.move_to(hop[1], hop[2], body.heading()))
@@ -148,6 +157,7 @@
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
 	speed = VESSEL_SPEED_STOP
 	stop_sailing()
+	show_drives()
 	return FALSE
 
 // A turn ordered at the helm: the swing is marked and she comes about
