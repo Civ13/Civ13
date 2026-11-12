@@ -2184,7 +2184,11 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/ferry_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/freight_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/open_sea_probe.dm
+<<<<<<< HEAD
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/orbit_world/spacecraft_probe.dm
+=======
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/mines_probe.dm
+>>>>>>> origin/master
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/vehicle_tow/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/vehicle_papers/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/foraging/probe.dm

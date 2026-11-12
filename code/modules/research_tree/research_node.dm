@@ -353,6 +353,10 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("aviation_rocketry", "Aviation & Rocketry", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","alloys"), 7))
 	// Naval Aviation (1920s) unlocks the shipyard office that lays down an aircraft carrier.
 	register_research_node(new /datum/research_node("naval_aviation", "Naval Aviation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("powered_flight","submarines"), 7))
+	// Naval Mines (1850s) unlock the contact mine; Magnetic Mines & Degaussing
+	// (1939) the magnetic mine and the counters to it (naval/naval_mines.dm).
+	register_research_node(new /datum/research_node("naval_mines", "Naval Mines", "Military", 235, 4, RESEARCH_MODE_ANALYSIS, list("field_artillery","rail_steam"), 5))
+	register_research_node(new /datum/research_node("magnetic_mines", "Magnetic Mines & Degaussing", "Military", 305, 6, RESEARCH_MODE_ANALYSIS, list("naval_mines","submarines"), 7))
 	// --- Industrial: Infrastructure ---
 	register_research_node(new /datum/research_node("paved_infrastructure", "Paved Infrastructure", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("stone_masonry"), 3))
 	register_research_node(new /datum/research_node("utilities", "Utilities", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("paved_infrastructure","electricity"), 5))
@@ -865,6 +869,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/pressure_suit/diving/hard" = "naval_aviation",
 		"/obj/item/clothing/head/pressure_helmet/diving/hard" = "naval_aviation",
 		"/obj/item/sub_hull_plating" = "naval_aviation",
+		"/obj/item/naval_mine" = "naval_mines",
+		"/obj/item/naval_mine/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
