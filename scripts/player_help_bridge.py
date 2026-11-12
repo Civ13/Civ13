@@ -70,12 +70,12 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'af017a5aff3b33246ccdbaf1a0e6b3c9b7544a32'
+WIKI_REVIEWED_REVISION = '24905e5f390f3d2a1a81d844ee18c95f330fbf54'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('7b6102b505dee6ce050b53adb36811d59b4128ec7a16c4ed31e99828ed137a5a', 'combat fight fighting intent aim shoot melee grenade cover'),
+    'guides/Guide_to_Combat.md': ('9d647db35b1d4f753c5ae33fb2598ea8a69bb86b9dabd5549a02ab2a00b957c9', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('bfc45cbce8e90ee22f91dbf80d44aed5e5e8666eecca75f3111ffc499dbba027', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('23b0293297bdd3ab845857d8763aa784563d6f3de86874ebc9f80c6eda55b55f', 'survival winter cold warm freezing hypothermia shelter debris rain wet umbrella raincoat cape'),
+    'guides/Guide_to_Survival.md': ('23b0293297bdd3ab845857d8763aa784563d6f3de86874ebc9f80c6eda55b55f', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),

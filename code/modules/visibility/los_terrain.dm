@@ -331,7 +331,29 @@ var/global/los_eye_offsets_paused = FALSE
 // rises above it, with the same relief and allowance as the sweep. One sample per tile along the longer axis; the viewer's
 // neighbours (always seen, as in the sweep) and the target's tile are skipped.
 // About a dozen height reads; levels without heights return at once.
+// Foliage cover: a mob standing in a tree's tile (beside the trunk, see
+// wild.dm fit_trunk_bounds) is hidden from anyone farther than
+// LOS_FOLIAGE_RANGE tiles, and sees no farther than that itself. Symmetric
+// for players (decision_snapshot) and NPCs (los_terrain_ray_blocked); terrain,
+// buildings and objects stay visible, and gunfire is unaffected.
+#define LOS_FOLIAGE_RANGE 2
+
+/proc/los_in_foliage(atom/movable/M)
+	if (!M || !isturf(M.loc))
+		return FALSE
+	for (var/atom/movable/A in M.loc)
+		if (A.opacity && A != M && A.loc == M.loc && root_tree_family(A))
+			return TRUE
+	return FALSE
+
+/proc/los_foliage_hides(atom/viewer, atom/target)
+	if (!ismob(viewer) || !ismob(target) || get_dist(viewer, target) <= LOS_FOLIAGE_RANGE)
+		return FALSE
+	return los_in_foliage(viewer) || los_in_foliage(target)
+
 /proc/los_terrain_ray_blocked(atom/viewer, atom/target)
+	if (los_foliage_hides(viewer, target))
+		return TRUE
 	if (!viewer || !target || !map || !map.terrain_height_file)
 		return FALSE
 	var/turf/A = get_turf(viewer)

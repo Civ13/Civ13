@@ -234,6 +234,13 @@ def main():
             bad += 1
             print('MISMATCH still eye', name)
     print('still eye cases:', ', '.join(result['still_eye']))
+    # Viewer in a tree, then target in it (from its side), 1-4 tiles apart;
+    # then the same without the tree.
+    if result['foliage'] != [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]:
+        bad += 1
+        print('MISMATCH foliage cover NPC sight', result['foliage'])
+    else:
+        print('foliage cover: NPC sight to and from a tree stops past 2 tiles')
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')
