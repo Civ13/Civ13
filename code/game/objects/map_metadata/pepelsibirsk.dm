@@ -825,7 +825,8 @@ var/global/datum/external_relations/external_relations = new()
 	var/list/item_list = list()
 	for(var/item_name in supplies)
 		item_list.Add(list(list(
-			"name" = item_name,
+			// Plain text: the classic template encodes it, and the modern view inserts it as text.
+			"name" = html_decode(item_name),
 			"amount" = supplies[item_name])))
 	
 	data["items"] = item_list
@@ -840,10 +841,10 @@ var/global/datum/external_relations/external_relations = new()
 	var/list/supplies = list()
 	var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage)
 	for(var/turf/sel_turf in t_turfs)
+		// Goods left on the floor, such as those dropped by opening a crate, are still in the warehouse.
+		for(var/obj/item/I in sel_turf)
+			supplies[I.name] += I.amount
 		for(var/obj/structure/closet/crate/S in sel_turf)
 			for(var/obj/item/I in S)
-				if (supplies[I.name])
-					supplies[I.name] += I.amount
-				else
-					supplies[I.name] = I.amount
+				supplies[I.name] += I.amount
 	return supplies
