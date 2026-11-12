@@ -3,12 +3,30 @@
 // saves a little. Off unless a map names a height file; every tile then reads 0.
 // Heights are fixed map data loaded from a text file, so saves do not change.
 
-// Delay added per level climbed, in deciseconds (walking a flat tile is ~2.9).
-#define TERRAIN_UPHILL_DELAY 1
-// Delay saved per level descended.
-#define TERRAIN_DOWNHILL_BONUS 0.5
-// Downhill never saves more than this share of the step's delay.
-#define TERRAIN_DOWNHILL_MAX_SHARE 0.25
+// Slope speed curve (docs/terrain-height.md). A step's delay is multiplied by
+// a factor from its grade, the levels climbed (+) or descended (-) per tile.
+// Uphill: 1 + 0.4 g + 0.1 g^2, so each extra level costs more than the last.
+#define TERRAIN_UPHILL_LINEAR 0.4
+#define TERRAIN_UPHILL_SQUARE 0.1
+// Downhill: 1 / (1 + 0.45 g), never below TERRAIN_DOWNHILL_BEST; grades past
+// TERRAIN_DOWNHILL_EASY_GRADE are picked down more carefully again.
+#define TERRAIN_DOWNHILL_GAIN 0.45
+#define TERRAIN_DOWNHILL_BEST 0.55
+#define TERRAIN_DOWNHILL_EASY_GRADE 2
+#define TERRAIN_DOWNHILL_CAREFUL 0.1
+// Free movement momentum (0-1): gained running or walking downhill, it speeds
+// the next steps on flat ground and pays part of the next climb.
+#define TERRAIN_MOMENTUM_GAIN 0.25
+#define TERRAIN_MOMENTUM_SPEED 0.2
+#define TERRAIN_MOMENTUM_FLAT_DECAY 0.34
+#define TERRAIN_MOMENTUM_CLIMB_SHARE 0.6
+#define TERRAIN_MOMENTUM_CLIMB_COST 0.5
+// Grades within this of flat count as flat for momentum.
+#define TERRAIN_MOMENTUM_FLAT_GRADE 0.25
+// A pause longer than this (deciseconds) between free steps loses momentum.
+#define TERRAIN_MOMENTUM_KEEP 4
+// No slope or momentum makes a step faster than this share of its delay.
+#define TERRAIN_FASTEST_SHARE 0.45
 // A one-tile step never counts more than this many levels.
 #define TERRAIN_MAX_LEVEL_STEP 4
 // Share of the uphill delay paid when stepping onto packed ground (tamped earth).
@@ -18,10 +36,26 @@
 #define TERRAIN_STEEP_LEVELS 3
 // Stamina spent per level climbed on a steep step.
 #define TERRAIN_CLIMB_STAMINA 0.5
+// Running down a steep step (TERRAIN_STEEP_LEVELS or more) can trip you:
+// percent chance per level past 2, plus for full momentum and for running on
+// an empty stamina bar. Walking down picks a safe way.
+#define TERRAIN_TRIP_PER_LEVEL 10
+#define TERRAIN_TRIP_MOMENTUM 10
+#define TERRAIN_TRIP_TIRED 10
+#define TERRAIN_TRIP_MAX 50
+// A fall rolls on while the ground keeps dropping this many levels a tile,
+// up to TERRAIN_TUMBLE_MAX tiles, for TERRAIN_TUMBLE_DAMAGE brute per tile.
+#define TERRAIN_TUMBLE_DROP 2
+#define TERRAIN_TUMBLE_MAX 6
+#define TERRAIN_TUMBLE_DAMAGE 2
 // Deciseconds between two steep-slope messages to the same mob.
 #define TERRAIN_SLOPE_MESSAGE_DELAY 100
 
 /mob/var/next_slope_message = -1
+/mob/living/human/var/tmp/terrain_momentum = 0
+/mob/living/human/var/tmp/terrain_momentum_at = -1
+/mob/living/human/var/tmp/terrain_momentum_dir = 0
+/mob/living/human/var/tmp/terrain_pace_carry = 0
 
 /obj/map_metadata
 	// Project-relative height file, for example "maps/heights/nomads_gaia.txt".
@@ -234,15 +268,169 @@
 			to_chat(H, SPAN_NOTICE("You pick your way down the steep slope."))
 	return levels
 
-// Extra move delay (negative when it saves time) for one step between two
-// neighbouring turfs, given the step's delay before this term.
+// Percent chance that this step trips a running human; 0 when it cannot.
+/proc/terrain_trip_chance(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)
+	if (distance_fraction < 1 || H.m_intent != "run" || H.lying || H.buckled)
+		return 0
+	var/drop = -terrain_step_levels(origin, destination)
+	if (drop < TERRAIN_STEEP_LEVELS)
+		return 0
+	var/chance = (drop - 2) * TERRAIN_TRIP_PER_LEVEL + H.terrain_momentum * TERRAIN_TRIP_MOMENTUM
+	if (H.stats["stamina"][1] <= 0)
+		chance += TERRAIN_TRIP_TIRED
+	return min(TERRAIN_TRIP_MAX, chance)
+
+// Running down a steep slope may trip the runner, who falls once the step is
+// done and tumbles on down the hill. step_delay is the step's duration.
+/proc/terrain_trip_check(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1, step_delay = 0)
+	var/chance = terrain_trip_chance(H, origin, destination, distance_fraction)
+	if (!chance || !prob(chance))
+		return FALSE
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(terrain_tumble), H), max(world.tick_lag, step_delay))
+	return TRUE
+
+// Where a fall from T rolls to: down the steepest neighbour, tile by tile,
+// while each tile drops at least TERRAIN_TUMBLE_DROP levels.
+/proc/terrain_tumble_path(turf/T)
+	. = list()
+	var/turf/at = T
+	for (var/i in 1 to TERRAIN_TUMBLE_MAX)
+		var/turf/best = null
+		var/best_drop = 0
+		for (var/d in alldirs)
+			var/turf/N = get_step(at, d)
+			if (!N || N.density || istype(N, /turf/floor/beach/water))
+				continue
+			var/drop = -terrain_step_levels(at, N)
+			if (d in cornerdirs)
+				drop /= 1.4142
+			if (drop >= TERRAIN_TUMBLE_DROP && drop > best_drop)
+				best = N
+				best_drop = drop
+		if (!best)
+			break
+		. += best
+		at = best
+
+// The fall: the human is knocked down and rolls down the slope, bruised for
+// every tile rolled. Things in the way stop the roll as any thrown body does.
+/proc/terrain_tumble(mob/living/human/H)
+	if (QDELETED(H) || H.stat == DEAD || H.lying || H.buckled || !isturf(H.loc))
+		return FALSE
+	var/list/path = terrain_tumble_path(H.loc)
+	H.terrain_momentum = 0
+	H.Weaken(2)
+	if (!path.len)
+		H.visible_message(SPAN_WARNING("[H] trips and falls on the slope!"), SPAN_DANGER("You trip and fall on the steep slope!"))
+		H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE)
+		return TRUE
+	H.visible_message(SPAN_WARNING("[H] trips and tumbles down the slope!"), SPAN_DANGER("You lose your footing and tumble down the slope!"))
+	H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE * path.len)
+	H.throw_at(path[path.len], path.len, 1)
+	return TRUE
+
+// Delay factor for a grade in levels per tile (negative downhill), capped at
+// TERRAIN_MAX_LEVEL_STEP. Packed ground halves the extra climbing cost.
+/proc/terrain_grade_factor(grade, packed = FALSE)
+	grade = clamp(grade, -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
+	if (grade > 0)
+		var/extra = grade * TERRAIN_UPHILL_LINEAR + grade * grade * TERRAIN_UPHILL_SQUARE
+		return 1 + extra * (packed ? TERRAIN_PACKED_UPHILL_SHARE : 1)
+	if (grade < 0)
+		var/drop = -grade
+		if (drop > TERRAIN_DOWNHILL_EASY_GRADE)
+			return TERRAIN_DOWNHILL_BEST + (drop - TERRAIN_DOWNHILL_EASY_GRADE) * TERRAIN_DOWNHILL_CAREFUL
+		return max(TERRAIN_DOWNHILL_BEST, 1 / (1 + drop * TERRAIN_DOWNHILL_GAIN))
+	return 1
+
+// Extra move delay (negative when it saves time) for one whole-tile step
+// between two neighbouring turfs, given the step's delay before this term.
+// Tile steps (tap to step, pulling, riding, NPC agents, bicycles) use this.
 /proc/terrain_slope_delay(turf/origin, turf/destination, step_delay)
 	var/levels = terrain_step_levels(origin, destination)
-	if (levels > 0)
-		return levels * TERRAIN_UPHILL_DELAY * (destination.terrain_packed() ? TERRAIN_PACKED_UPHILL_SHARE : 1)
-	if (levels < 0)
-		return -min(-levels * TERRAIN_DOWNHILL_BONUS, max(0, step_delay) * TERRAIN_DOWNHILL_MAX_SHARE)
-	return 0
+	if (!levels)
+		return 0
+	return max(0, step_delay) * (terrain_grade_factor(levels, destination.terrain_packed()) - 1)
+
+// Height at a point in tile coordinates, where tile centres are whole numbers,
+// blended between the four nearest tile centres.
+/datum/terrain_heights/proc/sample(u, v, z)
+	var/x0 = floor(u)
+	var/y0 = floor(v)
+	var/fx = u - x0
+	var/fy = v - y0
+	var/south = at(x0, y0, z) * (1 - fx) + at(x0 + 1, y0, z) * fx
+	var/north = at(x0, y0 + 1, z) * (1 - fx) + at(x0 + 1, y0 + 1, z) * fx
+	return south * (1 - fy) + north * fy
+
+// Grade of a free (sub-tile) step: the blended height one tile ahead of the
+// body's exact position minus the height under it, per tile travelled. Between
+// tile centres it changes smoothly, so the pace follows the hill as you slide.
+/proc/terrain_free_grade(mob/living/human/M, turf/destination, direct)
+	var/turf/origin = M.loc
+	if (!isturf(origin) || !destination || origin.z != destination.z || !map || !map.terrain_height_file)
+		return 0
+	if (origin.terrain_smoothed() || destination.terrain_smoothed())
+		return 0
+	var/datum/terrain_heights/H = map.terrain_heights()
+	if (!H)
+		return 0
+	var/u = M.x + M.step_x / 32
+	var/v = M.y + M.step_y / 32
+	var/dx = (direct & EAST) ? 1 : ((direct & WEST) ? -1 : 0)
+	var/dy = (direct & NORTH) ? 1 : ((direct & SOUTH) ? -1 : 0)
+	if (!dx && !dy)
+		return 0
+	var/rise = clamp(H.sample(u + dx, v + dy, M.z) - H.sample(u, v, M.z), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
+	return (dx && dy) ? rise / 1.4142 : rise
+
+// Slope factor for a free step. held is TRUE for a held slide (not a 2px
+// nudge): only held slides build and spend downhill momentum.
+/proc/terrain_free_factor(mob/living/human/M, turf/destination, direct, step_delay, held = TRUE)
+	var/grade = terrain_free_grade(M, destination, direct)
+	var/factor = terrain_grade_factor(grade, destination && destination.terrain_packed())
+	if (held)
+		var/momentum = M.terrain_momentum
+		if (world.time - M.terrain_momentum_at > max(TERRAIN_MOMENTUM_KEEP, step_delay * 2) || (M.terrain_momentum_dir && direct == reverse_dir[M.terrain_momentum_dir]))
+			momentum = 0
+			M.terrain_pace_carry = 0
+		if (grade > TERRAIN_MOMENTUM_FLAT_GRADE)
+			// Speed carried into a climb pays part of it, and is spent doing so.
+			factor = 1 + (factor - 1) * (1 - momentum * TERRAIN_MOMENTUM_CLIMB_SHARE)
+			momentum = max(0, momentum - grade * TERRAIN_MOMENTUM_CLIMB_COST)
+		else
+			factor *= 1 - momentum * TERRAIN_MOMENTUM_SPEED
+			if (grade < -TERRAIN_MOMENTUM_FLAT_GRADE)
+				var/before = momentum
+				momentum = min(1, momentum - grade * TERRAIN_MOMENTUM_GAIN)
+				if (momentum >= 1 && before < 1 && world.time >= M.next_slope_message)
+					M.next_slope_message = world.time + TERRAIN_SLOPE_MESSAGE_DELAY
+					to_chat(M, SPAN_NOTICE("You gather speed down the slope."))
+			else
+				momentum = max(0, momentum - TERRAIN_MOMENTUM_FLAT_DECAY)
+		M.terrain_momentum = momentum
+		M.terrain_momentum_at = world.time
+		M.terrain_momentum_dir = direct
+	return max(TERRAIN_FASTEST_SHARE, factor)
+
+// Extra move delay for a free step. A held slide's pace is whole server ticks
+// plus one (human_subtile_held_pace), which used to swallow most of a gentle
+// slope. Held slides therefore aim at factor x the flat pace and carry the
+// part of a tick left over into the next step, so over a few steps the pace
+// follows the hill exactly. Flat ground keeps exactly the flat pace.
+/proc/terrain_free_slope_delay(mob/living/human/M, turf/destination, direct, step_delay, held = TRUE)
+	step_delay = max(0, step_delay)
+	var/factor = terrain_free_factor(M, destination, direct, step_delay, held)
+	if (!held)
+		return step_delay * (factor - 1)
+	var/tick = world.tick_lag
+	if (factor == 1 && !M.terrain_pace_carry)
+		return 0
+	var/flat_pace = (max(1, ceil(round(step_delay / tick, 0.001))) + 1) * tick
+	var/want = flat_pace * factor - tick + M.terrain_pace_carry
+	var/ticks = max(1, round(want / tick, 1))
+	M.terrain_pace_carry = clamp(want - ticks * tick, -tick, tick)
+	return ticks * tick - step_delay
 
 // Slope shading (scripts/terrain_heights.py bake-shading makes the sprites).
 // Each tile corner gets a light level from -2 (shadow) to 2 (lit), from the
@@ -441,9 +629,27 @@ var/global/terrain_shading_applied = FALSE
 	images += terrain_height_images
 	to_chat(src, SPAN_NOTICE("Showing terrain heights around you; use the verb again to hide them."))
 
-#undef TERRAIN_UPHILL_DELAY
-#undef TERRAIN_DOWNHILL_BONUS
-#undef TERRAIN_DOWNHILL_MAX_SHARE
+#undef TERRAIN_UPHILL_LINEAR
+#undef TERRAIN_UPHILL_SQUARE
+#undef TERRAIN_DOWNHILL_GAIN
+#undef TERRAIN_DOWNHILL_BEST
+#undef TERRAIN_DOWNHILL_EASY_GRADE
+#undef TERRAIN_DOWNHILL_CAREFUL
+#undef TERRAIN_MOMENTUM_GAIN
+#undef TERRAIN_MOMENTUM_SPEED
+#undef TERRAIN_MOMENTUM_FLAT_DECAY
+#undef TERRAIN_MOMENTUM_CLIMB_SHARE
+#undef TERRAIN_MOMENTUM_CLIMB_COST
+#undef TERRAIN_MOMENTUM_FLAT_GRADE
+#undef TERRAIN_MOMENTUM_KEEP
+#undef TERRAIN_FASTEST_SHARE
+#undef TERRAIN_TRIP_PER_LEVEL
+#undef TERRAIN_TRIP_MOMENTUM
+#undef TERRAIN_TRIP_TIRED
+#undef TERRAIN_TRIP_MAX
+#undef TERRAIN_TUMBLE_DROP
+#undef TERRAIN_TUMBLE_MAX
+#undef TERRAIN_TUMBLE_DAMAGE
 #undef TERRAIN_MAX_LEVEL_STEP
 #undef TERRAIN_PACKED_UPHILL_SHARE
 #undef TERRAIN_LIGHT_STEP

@@ -65,6 +65,16 @@ var/naval_runtime_error = FALSE
 	for (var/obj/covers/C in T)
 		.++
 
+// The steps a half minute covers at her speed: a gliding hull makes one tile
+// a step. TRUE when every step moved her.
+/proc/hull_leg(datum/craft/C)
+	var/steps = 0
+	while (steps < C.speed * VESSEL_TILES_PER_STEP)
+		if (!C.sail_tick())
+			return FALSE
+		steps++
+	return steps > 0
+
 /proc/naval_checks()
 	naval_fixture()
 	// A shallow bay to build in, with the deep sea beyond x 60.
@@ -125,9 +135,28 @@ var/naval_runtime_error = FALSE
 	C.set_speed(VESSEL_SPEED_FULL)
 	naval_check(C.speed == VESSEL_SPEED_SLOW, "a hull with no drive makes slow ahead at most")
 	var/list/hop = C.next_hop()
-	naval_check(hop && hop[1] == 32 && hop[2] == 10, "the next hop is two tiles east")
-	naval_check(C.warn_tick() == 5 && C.path_markers.len == 5 && hull_planks(locate(35, 10, 2)) == 0, "the five tiles of water she will cover are marked, and nothing has moved")
-	naval_check(C.sail_tick() && tiller.x == 34 && tiller.y == 10 && !C.path_markers.len, "the hop carries the tiller two tiles east and clears the marks ([tiller.x],[tiller.y])")
+	naval_check(hop && hop[1] == 31 && hop[2] == 10 && C.glides() && C.sail_tiles() == 1 && C.sail_interval() == 150, "her next step is one tile east, and slow ahead is a tile every fifteen seconds ([C.sail_interval()])")
+	naval_check(C.warn_tick() == 3 && C.path_markers.len == 3 && hull_planks(locate(35, 10, 2)) == 0, "the three tiles of water she will cover are marked, and nothing has moved ([C.path_markers.len])")
+	// ---- Each step is drawn as a glide (craft/glide.dm) ----
+	var/slow_glide = craft_glide_size(150)
+	var/corner_glide = corner.glide_size
+	var/mob/living/human/naval_probe/free = new(locate(32, 10, 2))
+	free.step_x = 5
+	free.pixel_x = 3
+	var/free_glide = free.glide_size
+	var/obj/structure/probe_gun/overboard = new(locate(32, 11, 2))
+	naval_check(C.sail_tick() && tiller.x == 33 && !C.path_markers.len, "one step carries the tiller one tile east and clears the marks ([tiller.x])")
+	naval_check(corner.glide_size == slow_glide && tiller.glide_size == slow_glide && ann.glide_size == slow_glide && slow_glide > 0 && slow_glide < 1, "planks, tiller and a sailor square on her tile glide for the whole step ([corner.glide_size])")
+	naval_check(free.x == 33 && free.step_x == 5 && free.pixel_x == 3 && free.glide_size == free_glide, "a sailor standing off-centre is carried, keeps her place and offset, and is slid by animation, not by glide")
+	overboard.forceMove(locate(50, 8, 2))
+	naval_check(C.sail_tick() && tiller.x == 34 && overboard.glide_size != slow_glide && corner.glide_size == slow_glide, "a thing taken off her deck has its own glide back at her next step")
+	qdel(overboard)
+	qdel(free)
+	C.set_speed(VESSEL_SPEED_STOP)
+	B.glide_rest_now()
+	naval_check(corner.glide_size == corner_glide && ann.glide_size != slow_glide && !length(B.glide_was), "stopped, everything aboard glides at its own pace again")
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(tiller.x == 34 && tiller.y == 10 && !C.path_markers.len, "two steps have carried the tiller to 34,10 ([tiller.x],[tiller.y])")
 	naval_check(bucket.x == 36 && bucket.y == 11 && gun.x == 33 && ann.x == 35 && ann.y == 10 && corner.x == 32 && corner.y == 12, "planks, cargo, gun and sailor ride along")
 	naval_check(hull_planks(locate(30, 10, 2)) == 0 && hull_planks(locate(31, 11, 2)) == 0 && hull_planks(locate(36, 10, 2)) == 1 && hull_planks(locate(34, 10, 2)) == 1, "no plank is left behind or doubled")
 	var/turf/left = locate(30, 12, 2)
@@ -139,7 +168,7 @@ var/naval_runtime_error = FALSE
 
 	// ---- Something in the way ----
 	var/obj/structure/probe_rock/rock = new(locate(38, 10, 2))
-	naval_check(C.sail_tick() && tiller.x == 35, "a rock two tiles off the bow leaves a one-tile hop ([tiller.x])")
+	naval_check(C.sail_tick() && tiller.x == 35, "with a rock two tiles off the bow she closes up to it ([tiller.x])")
 	naval_check(!C.sail_tick() && tiller.x == 35 && C.speed == VESSEL_SPEED_STOP && findtext(C.last_refusal, "probe rock in the way"), "hard against it she stops with the reason ([C.last_refusal])")
 	qdel(rock)
 	hull_lay(38, 11)
@@ -166,7 +195,7 @@ var/naval_runtime_error = FALSE
 	var/turf/shoal = locate(35, 15, 2)
 	shoal.ChangeTurf(/turf/floor/beach/sand)
 	C.set_speed(VESSEL_SPEED_SLOW)
-	naval_check(C.sail_tick() && tiller.y == 12, "she closes up to the shoal ([tiller.y])")
+	naval_check(hull_leg(C) && tiller.y == 12, "she closes up to the shoal ([tiller.y])")
 	naval_check(!C.sail_tick() && findtext(C.last_refusal, "ahead at 35,15"), "and stops at it ([C.last_refusal])")
 	shoal.ChangeTurf(/turf/floor/beach/water)
 
@@ -206,7 +235,7 @@ var/naval_runtime_error = FALSE
 				same = FALSE
 	naval_check(same && C.name == "Wren" && B.dir == NORTH && !C.anchored && C.speed == VESSEL_SPEED_SLOW, "the load finds the same hull around the tiller, under way as she was")
 	naval_check(C.register && C.helm_access(bob) == CRAFT_HELM_CHAINED && C.helm_access(ann) == CRAFT_HELM_FREE, "with her papers")
-	naval_check(C.sail_tick() && tiller.y == 14, "and she sails on ([tiller.y])")
+	naval_check(hull_leg(C) && tiller.y == 14, "and she sails on ([tiller.y])")
 
 	// ---- Sails ----
 	var/obj/structure/vehicleparts/movement/sail/mast = new(locate(tiller.x - 1, tiller.y, 2))
@@ -217,13 +246,13 @@ var/naval_runtime_error = FALSE
 	C.set_speed(VESSEL_SPEED_FULL)
 	naval_check(C.speed == VESSEL_SPEED_HALF && mast.sails_on && mast.icon_state == "sail2", "sails alone never make full ahead, and the sail is set while she is under way")
 	var/y_was = tiller.y
-	naval_check(C.sail_tick() && tiller.y == y_was + 4 && mast.y == y_was + 4, "half ahead is four tiles a hop, mast and all ([tiller.y])")
+	naval_check(C.sail_interval() == 75 && hull_leg(C) && tiller.y == y_was + 4 && mast.y == y_was + 4, "half ahead is four tiles in the half minute, mast and all ([tiller.y])")
 	C.set_anchor(TRUE)
 	naval_check(!mast.sails_on && mast.icon_state == "sail1", "at anchor the sail is furled")
 	C.set_anchor(FALSE)
 	qdel(mast.sails)
 	mast.sails = null
-	naval_check(C.sail_tick() && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 6, "with the sail gone she loses way to slow ahead ([tiller.y])")
+	naval_check(hull_leg(C) && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 6, "with the sail gone she loses way to slow ahead ([tiller.y])")
 	mast.sails = new /obj/item/sail(mast)
 	var/datum/craft_drive/fitted/sail/drive = new(mast)
 	C.add_drive(drive)
@@ -244,8 +273,8 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(tiller.status_text(), "Under 1 engine: full ahead at best. Her drives push 66; 13 tiles of hull need 13 for half ahead and 26 from engines for full ahead."), "the tiller says what she needs ([tiller.status_text()])")
 	C.set_speed(VESSEL_SPEED_FULL)
 	y_was = tiller.y
-	naval_check(C.speed == VESSEL_SPEED_FULL && C.sail_tick() && tiller.y == y_was + 6 && engine.y == y_was + 6 && bunker.y == y_was + 6, "full ahead is six tiles a hop, engine and tank and all ([tiller.y])")
-	naval_check(bunker.reagents.get_reagent_amount("diesel") == 3, "the hop burns 27 units from her tank at full ahead ([bunker.reagents.get_reagent_amount("diesel")])")
+	naval_check(C.speed == VESSEL_SPEED_FULL && C.sail_interval() == 50 && hull_leg(C) && tiller.y == y_was + 6 && engine.y == y_was + 6 && bunker.y == y_was + 6, "full ahead is six tiles in the half minute, engine and tank and all ([tiller.y])")
+	naval_check(bunker.reagents.get_reagent_amount("diesel") == 3, "those six tiles burn 27 units from her tank at full ahead ([bunker.reagents.get_reagent_amount("diesel")])")
 	C.set_speed(VESSEL_SPEED_SLOW)
 	bunker.reagents.add_reagent("diesel", 9)
 	C.burn_drives()
@@ -253,7 +282,7 @@ var/naval_runtime_error = FALSE
 	C.set_speed(VESSEL_SPEED_FULL)
 	C.burn_drives()
 	naval_check(!engine.on && bunker.reagents.get_reagent_amount("diesel") == 3, "a tank that cannot pay for a hop stalls the engine")
-	naval_check(C.sail_tick() && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 8, "and she loses way to slow ahead ([tiller.y])")
+	naval_check(hull_leg(C) && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 8, "and she loses way to slow ahead ([tiller.y])")
 	engine.on = TRUE
 	engine.broken = TRUE
 	naval_check(C.fit_drives() == 1 && C.thrust() == 0, "a broken engine pushes nothing")

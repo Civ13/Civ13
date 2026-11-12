@@ -21,10 +21,19 @@ var/global/list/field_activities = list(
 	"surgery" = "surgery steps completed",
 	"diagnosis" = "sick patients diagnosed with a doctor's handbook",
 	"reactions" = "syntheses run at a reaction bench",
-	"samples" = "survey samples analysed at a mission console")
+	"samples" = "survey samples analysed at a mission console",
+	"harvests" = "crops harvested",
+	"forage" = "finds made foraging",
+	"butchering" = "animals butchered")
 
 // experiment id => list(node id, activity, amount needed, share of the node, what to do)
 var/global/list/field_experiments = list(
+	"emergency_medicine_theatre" = list("emergency_medicine", "surgery", 15, 0.3, "Complete 15 surgery steps"),
+	"emergency_medicine_cases" = list("emergency_medicine", "diagnosis", 6, 0.2, "Diagnose 6 sick patients with a doctor's handbook"),
+	"soil_science_harvests" = list("soil_science", "harvests", 40, 0.4, "Harvest 40 crops"),
+	"crop_breeding_harvests" = list("crop_breeding", "harvests", 80, 0.4, "Harvest 80 crops"),
+	"support_weapons_gunnery" = list("support_weapons", "shots", 80, 0.35, "Fire 80 shots from firearms"),
+	"guided_weapons_gunnery" = list("guided_weapons", "shots", 120, 0.3, "Fire 120 shots from firearms"),
 	"cartridge_ammo_range" = list("cartridge_ammo", "shots", 30, 0.35, "Fire 30 shots from firearms"),
 	"pharmacology_bench" = list("pharmacology", "reactions", 5, 0.35, "Run 5 syntheses at a reaction bench"),
 	"pharmacology_cases" = list("pharmacology", "diagnosis", 2, 0.2, "Diagnose 2 sick patients with a doctor's handbook"),
@@ -54,7 +63,17 @@ var/global/list/field_experiments = list(
 	"surface_vehicles_samples" = list("surface_vehicles", "samples", 8, 0.25, "Analyse 8 survey samples at a mission console"),
 	"local_resources_samples" = list("local_resources", "samples", 10, 0.25, "Analyse 10 survey samples at a mission console"),
 	"local_resources_bench" = list("local_resources", "reactions", 20, 0.2, "Run 20 syntheses at a reaction bench"),
-	"uav_drones_hours" = list("uav_drones", "flight", 300, 0.3, "Fly an aircraft for 5 minutes"))
+	"uav_drones_hours" = list("uav_drones", "flight", 300, 0.3, "Fly an aircraft for 5 minutes"),
+	// First nodes with nothing before them (practice_work.dm covers the rest).
+	"basic_tools_forage" = list("basic_tools", "forage", 8, 0.4, "Forage 8 finds from the ground"),
+	"primitive_construction_forage" = list("primitive_construction", "forage", 6, 0.3, "Forage 6 finds from the ground"),
+	"pottery_storage_forage" = list("pottery_storage", "forage", 6, 0.3, "Forage 6 finds from the ground"),
+	"weaving_forage" = list("weaving", "forage", 8, 0.4, "Forage 8 finds from the ground"),
+	"herbalism_forage" = list("herbalism", "forage", 10, 0.4, "Forage 10 finds from the ground"),
+	"basic_agriculture_forage" = list("basic_agriculture", "forage", 12, 0.4, "Forage 12 finds from the ground"),
+	"stone_arms_butchering" = list("stone_arms", "butchering", 2, 0.4, "Butcher 2 animals"),
+	"archery_butchering" = list("archery", "butchering", 3, 0.4, "Butcher 3 animals"),
+	"padded_armor_butchering" = list("padded_armor", "butchering", 2, 0.4, "Butcher 2 animals"))
 
 #define FIELD_EXP_NODE 1
 #define FIELD_EXP_ACTIVITY 2
@@ -73,6 +92,7 @@ var/global/list/field_experiments = list(
 var/global/list/field_activity_caps = null
 
 /proc/field_activity_cap(activity)
+	build_practice_experiments()
 	if (!field_activity_caps)
 		field_activity_caps = list()
 		for (var/id in field_experiments)
@@ -82,6 +102,7 @@ var/global/list/field_activity_caps = null
 
 // Experiments that advance a node.
 /proc/node_field_experiments(node_id)
+	build_practice_experiments()
 	var/list/result = list()
 	for (var/id in field_experiments)
 		var/list/E = field_experiments[id]
@@ -120,7 +141,9 @@ var/global/list/field_activity_caps = null
 		if (E[FIELD_EXP_ACTIVITY] != activity || E[FIELD_EXP_NEEDED] <= before || E[FIELD_EXP_NEEDED] > after)
 			continue
 		var/datum/research_node/N = get_research_node(E[FIELD_EXP_NODE])
-		if (N && !H.knows_recipe_node(N.id))
+		// Only nodes this character could research now, so practice does not
+		// announce every node further down the tree.
+		if (N && !H.knows_recipe_node(N.id) && H.knows_research_prereqs(N.id))
 			to_chat(H, SPAN_NOTICE("Your experience would help a scholar researching <b>[N.name]</b>. Stand at their research bench to have it written into the book."))
 	return TRUE
 

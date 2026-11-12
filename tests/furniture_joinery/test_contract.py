@@ -93,7 +93,7 @@ class Contracts(unittest.TestCase):
         state=NS(ordinal_age=0,faction_baseline_era={actor.civilization:0})
         state.ensure_node_entry=lambda faction,node_id:entries.setdefault((faction,node_id),{1:2})
         # The existing projection's literal-null translation names isnull isNone.
-        env=dict(get_research_node=lambda node_id:node,
+        env=dict(get_research_node=lambda node_id:node,research_node_dormant=lambda n:False,
                  get_node_entry=lambda faction,node_id:state.ensure_node_entry(faction,node_id),
                  isNone=lambda value:value is None,RNODE_ENTRY_STATUS=1,RNODE_DONE=4,
                  RNODE_AVAILABLE=2,map=state)

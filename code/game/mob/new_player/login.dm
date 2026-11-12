@@ -25,12 +25,12 @@
 
 	// Safe handling for adding lobby image
 	if (client && lobby_image)
-		client.screen += lobby_image
+		show_lobby_image()
 	else if (lobby_image)
 		// Fallback if client is not ready yet
 		spawn(3)
 			if (src && src.client && lobby_image)
-				src.client.screen += lobby_image
+				show_lobby_image()
 
 	my_client = client
 	sight |= SEE_TURFS

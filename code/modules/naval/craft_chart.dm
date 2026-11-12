@@ -154,13 +154,14 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		if (T == token)
 			continue
 		var/turf/P = T.place()
-		if (!P)
+		if (!P || !sea_same_waters(here, P))
 			continue
 		var/where = "[get_dist(here, P)] tile\s [submarine_bearing(here, P)], square [S.square_name(T.x, T.y)]"
 		var/datum/chart_token/harbour/HT = T
 		if (istype(HT))
 			var/why = HT.quay.refusal(src)
-			harbours += "[T.name], [where]: [why ? why : "she may berth here"]."
+			var/freight = length(HT.quay.contracts(CONTRACT_OPEN))
+			harbours += "[T.name], [where]: [why ? why : "she may berth here"].[freight ? " [freight] freight contract\s on offer." : ""]"
 			continue
 		var/datum/craft/C = T.craft
 		if (C ? !sights(C) : (get_dist(here, P) > lookout_range()))
@@ -175,9 +176,52 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		lines += "In [murk] her lookout sees [sees] tile\s."
 	lines += ships.len ? "Lookout, [sees] tiles:" : "Lookout: no other ship within [sees] tiles."
 	lines += ships
+	// Modular boats and aircraft: the lines the carrier's radar shows, as
+	// far as her lookout sees.
+	var/list/small = sea_boat_contacts(here, sees, party()) + sea_aircraft_contacts(here, sees, party())
+	if (small.len)
+		lines += "Boats and aircraft in sight:"
+		lines += small
 	lines += harbours.len ? "Harbours on this sea:" : "No harbour is charted on this sea."
 	lines += harbours
 	return jointext(lines, "<br>")
+
+// ---------------------------------------------------------------- small contacts
+
+// What a modular boat or aircraft is called by a viewer of this party: the
+// name in its papers when it has one (craft/vehicle_papers.dm), marked as
+// ours when it is registered to the viewer's party.
+/proc/sea_contact_name(obj/structure/vehicleparts/axis/A, party = null)
+	var/datum/craft/vehicle/C = A.craft
+	if (!C || QDELETED(C) || !C.register || !C.register.party)
+		return A.name
+	return (party && C.register.party == party) ? "[C.name] (ours)" : C.name
+
+// Modular boats within reach of a tile of a sea level, one line each. The
+// sea chart and the carrier's radar both read these.
+/proc/sea_boat_contacts(turf/surface, reach, party = null)
+	. = list()
+	if (!surface)
+		return
+	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
+		var/turf/T = get_turf(S)
+		if (!T || T.z != surface.z || get_dist(T, surface) > reach)
+			continue
+		. += "Ship: [sea_contact_name(S, party)], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
+
+// Aircraft flying over that level within reach, one line each.
+/proc/sea_aircraft_contacts(turf/surface, reach, party = null)
+	. = list()
+	if (!surface)
+		return
+	for (var/obj/structure/vehicleparts/axis/aircraft/A in airborne_aircraft)
+		var/turf/T = get_turf(A)
+		if (!T || multiz_level_below(T.z) != surface.z)
+			continue
+		var/turf/below = locate(T.x, T.y, surface.z)
+		if (!below || get_dist(below, surface) > reach)
+			continue
+		. += "Aircraft: [sea_contact_name(A, party)], [get_dist(below, surface)] tiles [submarine_bearing(surface, below)], heading [dir2text(A.dir)][A.flight_state == AIRCRAFT_CRUISE ? ", high" : ", low"]."
 
 // Stops her hopping while she slides into a berth, and lets her go again.
 /datum/craft_body/proc/hold(heading)
@@ -272,7 +316,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		return
 	var/list/choices = list()
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
-		if (Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth)
+		if (Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth && sea_same_waters(here, get_turf(Q)))
 			choices["[capitalize(Q.berth_name())], [get_dist(here, Q)] tiles [submarine_bearing(here, get_turf(Q))]"] = Q
 	if (!choices.len)
 		to_chat(H, SPAN_WARNING("There is no mooring post within [QUAY_DOCK_RANGE] tiles of the [name]."))
@@ -387,6 +431,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		lines += "The [reserved.craft.name] is making for it."
 	else if (!water_side())
 		lines += "There is no open water beside it."
+	var/freight = length(contracts(CONTRACT_OPEN))
+	if (freight)
+		lines += "[freight] freight contract\s on offer."
 	return jointext(lines, " ")
 
 /obj/structure/berth/quay/examine(mob/user)
@@ -417,11 +464,13 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		if (guests.len)
 			options += "Strike a guest"
 		options += "Give up the berth"
-	if (!options.len)
-		to_chat(H, status_text())
-		return
+	// The freight board (naval/freight.dm) is open to everyone.
+	options += "Freight"
 	var/choice = WWinput(H, status_text(), name, "Cancel", options + list("Cancel"))
 	if (!choice || choice == "Cancel" || QDELETED(src) || get_dist(H, src) > 1)
+		return
+	if (choice == "Freight")
+		freight_menu(H)
 		return
 	party = party_train_party_of(H)
 	if (choice == "Claim the berth")

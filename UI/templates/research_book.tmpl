@@ -8,6 +8,7 @@
 <h2>{{:data.name}}</h2>
 <div class='item'>
 	{{if data.author}}<div class='itemContent'>By {{:data.author}}</div>{{/if}}
+	{{if data.cipher_note}}<div class='itemContent rt-locked'>{{:data.cipher_note}}</div>{{/if}}
 	{{if data.has_text}}<div class='itemContent'>{{:helper.link('Read the written pages', 'copy', {'read' : 1})}}</div>{{/if}}
 </div>
 

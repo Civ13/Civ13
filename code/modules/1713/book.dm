@@ -96,11 +96,14 @@
 		var/list/pen_choices = unique ? list("Contents", "Author") : list("Title", "Contents", "Author")
 		if (map && map.book_research_enabled() && can_hold_research())
 			pen_choices += "Research chapter"
+			pen_choices += "Cipher"
 		pen_choices += "Cancel"
 		var/choice = player_input(usr, "What would you like to change?", null, null, "anything", pen_choices, FALSE)
 		switch(choice)
 			if ("Research chapter")
 				write_research_chapter(user, W)
+			if ("Cipher")
+				cipher_menu(user)
 			if ("Title")
 				if (unique)
 					return

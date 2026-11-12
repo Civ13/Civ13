@@ -1225,6 +1225,9 @@
 			spawn_seeds(bonus)
 			spawn_produce(bonus)
 			to_chat(user, SPAN_NOTICE("You [harvest_verb] the [name]."))
+			// Book research: Soil Science feeds the plot; a harvest is field work.
+			soil_node_return(user, get_turf(src))
+			note_field_work(user, "harvests", 1)
 			if (ishuman(user))
 				var/mob/living/human/H = user
 				H.adaptStat("farming", 1)

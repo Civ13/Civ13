@@ -17,6 +17,10 @@
 #define NODE_EFFECT_SURGERY_TIME 0.75
 // Chance multiplier of catching an illness for someone who knows Public Health.
 #define NODE_EFFECT_DISEASE_CHANCE 0.5
+// Soil nutrition a farmer who knows Soil Science returns to the plot at harvest.
+#define NODE_EFFECT_SOIL_RETURN 30
+// Extra harvest fraction for a farmer who knows Crop Breeding.
+#define NODE_EFFECT_BREEDING_YIELD 0.25
 // Flight fuel multiplier for a pilot who knows Aviation & Rocketry.
 #define NODE_EFFECT_FLIGHT_FUEL 0.75
 
@@ -27,7 +31,9 @@ var/global/list/research_node_effects = list(
 	"anesthetic_surgery" = "Your patients lie still: each surgery step is 15% more likely to succeed.",
 	"modern_medicine" = "You finish each surgery step a quarter faster.",
 	"public_health" = "You are half as likely to catch an illness from people nearby or from poor hygiene.",
-	"aviation_rocketry" = "Aircraft you pilot burn a quarter less fuel in the air.")
+	"aviation_rocketry" = "Aircraft you pilot burn a quarter less fuel in the air.",
+	"soil_science" = "Your harvests leave the soil richer, so the same plot can be sown again sooner.",
+	"crop_breeding" = "Your harvests give a further 25% more crop and seed.")
 
 // The effect line for the research windows, or null off book-research worlds.
 /proc/research_node_effect_text(node_id)
@@ -61,7 +67,16 @@ var/global/list/research_node_effects = list(
 
 // Advanced Agriculture: added to the farming skill's harvest bonus.
 /proc/farming_node_bonus(mob/user)
-	return mob_has_node_effect(user, "advanced_agriculture") ? NODE_EFFECT_FARM_YIELD : 0
+	. = mob_has_node_effect(user, "advanced_agriculture") ? NODE_EFFECT_FARM_YIELD : 0
+	if (mob_has_node_effect(user, "crop_breeding"))
+		. += NODE_EFFECT_BREEDING_YIELD
+
+// Soil Science: a harvest gives some nutrition back to the plot it grew on.
+/proc/soil_node_return(mob/user, turf/floor/dirt/D)
+	if (!istype(D) || !mob_has_node_effect(user, "soil_science"))
+		return FALSE
+	D.soil_nutrition = min(D.max_soil_nutrition, D.soil_nutrition + NODE_EFFECT_SOIL_RETURN)
+	return TRUE
 
 // Anesthetic Surgery / Modern Medicine: surgeon-side scales.
 /proc/surgery_node_quality(mob/user)
@@ -84,3 +99,5 @@ var/global/list/research_node_effects = list(
 #undef NODE_EFFECT_SURGERY_TIME
 #undef NODE_EFFECT_DISEASE_CHANCE
 #undef NODE_EFFECT_FLIGHT_FUEL
+#undef NODE_EFFECT_SOIL_RETURN
+#undef NODE_EFFECT_BREEDING_YIELD

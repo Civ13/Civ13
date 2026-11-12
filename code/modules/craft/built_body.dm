@@ -23,6 +23,7 @@
 	var/list/offsets = list()     // list(dx, dy) from the pivot, one per tile.
 	var/tmp/list/offset_index = list() // "dx,dy" -> TRUE, for contains().
 	var/tmp/moving = FALSE
+	glides = TRUE
 
 /datum/craft_body/built/craft_name()
 	return hull_name
@@ -169,6 +170,8 @@
 	var/angle = craft_turn_angle(dir, heading)
 	moving = TRUE
 	var/list/carry = null
+	// A step of one tile without a turn is shown as a glide (glide.dm).
+	var/gliding = (glides && glide_time > 0 && !angle && abs(P[1] - px) + abs(P[2] - py) == 1) ? glide_time : 0
 	try
 		// What rides on each tile, and the water under every tile involved,
 		// before anything changes.
@@ -207,6 +210,8 @@
 					continue
 				if (S != D && M.loc == S)
 					M.forceMove(D)
+					if (gliding && M.loc == D)
+						craft_glide(M, D.x - S.x, D.y - S.y, gliding)
 				if (istype(M, /obj/covers))
 					var/obj/covers/C = M
 					C.origin_water_level = water[D]
@@ -215,6 +220,7 @@
 				D.water_level = water[D]
 		craft_rigid_settle(carry)
 		carry = null
+		glide_keep(gliding ? everything : null)
 		// The water closes where she was.
 		for (var/turf/S in old)
 			if (S in dest)

@@ -62,9 +62,12 @@ class FieldWork(unittest.TestCase):
         self.assertGreaterEqual(len(rows), 20)
         shares = {}
         for _id, node, activity, needed, share, _text in rows:
-            tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (?:null|list\([^)]*\)), (\d+)' % node, self.nodes)
+            tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (null|list\([^)]*\)), (\d+)' % node, self.nodes)
             self.assertTrue(tier, node)
-            self.assertGreaterEqual(int(tier[1]), 5, node)
+            # Early rows are only for first nodes; the rest is practice (practice_work.dm).
+            if int(tier[2]) < 5:
+                self.assertEqual(tier[1], "null", node)
+                self.assertIn(activity, ("forage", "butchering"), node)
             self.assertIn(activity, activities)
             self.assertGreater(int(needed), 0)
             shares[node] = shares.get(node, 0) + float(share)
@@ -76,7 +79,9 @@ class FieldWork(unittest.TestCase):
                 ("code/modules/surgery/surgery.dm", 'note_field_work(user, "surgery")'),
                 ("code/modules/1713/doctor_handbook.dm", "note_field_diagnosis(user, H)"),
                 ("code/modules/reagents/laboratory.dm", 'note_field_work(user, "reactions")'),
-                ("code/modules/space/survey.dm", 'note_field_work(H, "samples")')):
+                ("code/modules/space/survey.dm", 'note_field_work(H, "samples")'),
+                ("code/modules/ecology/foraging.dm", 'note_field_work(src, "forage")'),
+                ("code/modules/1713/animal_harvest.dm", 'note_field_work(H, "butchering")')):
             self.assertIn(call, read(path), path)
     def test_counting_needs_book_research_and_is_capped(self):
         note = proc(self.field, "/proc/note_field_work")
@@ -148,5 +153,136 @@ class TeamsAndRushing(unittest.TestCase):
         self.assertIn('"toggle_rush"', read("code/modules/nano/tgui.dm"))
         self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
         self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
+class LateLines(unittest.TestCase):
+    NEW = ("emergency_medicine", "soil_science", "crop_breeding", "support_weapons", "guided_weapons")
+    def setUp(self):
+        self.nodes = read("code/modules/research_tree/research_node.dm")
+        self.recipes = read("config/crafting/material_recipes_global.txt")
+    def test_the_new_subjects_are_registered_and_book_only(self):
+        listed = re.search(r"book_only_research_nodes = list\((.*?)\)", self.nodes)[1]
+        self.assertEqual(tuple(re.findall(r'"(\w+)"', listed)), self.NEW)
+        for node_id in self.NEW:
+            self.assertEqual(self.nodes.count('research_node("%s", ' % node_id), 1, node_id)
+        self.assertIn("N.book_only && !(map && map.book_research_enabled())", proc(self.nodes, "/proc/research_node_dormant"))
+    def test_dormant_subjects_are_never_done_listed_or_assigned(self):
+        faction = read("code/modules/research_tree/research_faction.dm")
+        self.assertIn("if (research_node_dormant(N))\n\t\treturn FALSE", proc(faction, "/obj/map_metadata/proc/is_node_done"))
+        bench = read("code/modules/research_tree/research_bench.dm")
+        self.assertIn("if (research_node_dormant(N))\n\t\t\tcontinue", proc(bench, "/obj/structure/research_bench/proc/bench_ui_data"))
+        self.assertIn("research_node_dormant(N)", proc(bench, "/obj/structure/research_bench/proc/can_assign_node"))
+    def test_every_new_recipe_row_is_gated_on_a_new_subject(self):
+        rows = [line.split(",") for line in self.recipes.splitlines() if line.startswith("RECIPE: ")]
+        gates = dict(re.findall(r'"(/[\w/]+)" = "(\w+)"', self.nodes))
+        mine = {path: node for path, node in gates.items() if node in self.NEW}
+        self.assertEqual(len(mine), 14)
+        by_path = {row[2]: row for row in rows}
+        for path in mine:
+            self.assertIn(path, by_path, path)
+            self.assertEqual(len(by_path[path]), 13, path)
+        for node_id in ("emergency_medicine", "support_weapons", "guided_weapons"):
+            self.assertIn(node_id, mine.values())
+    def test_the_farming_subjects_reach_the_harvest(self):
+        effects = read("code/modules/research_tree/node_effects.dm")
+        self.assertIn('"crop_breeding"', proc(effects, "/proc/farming_node_bonus"))
+        self.assertIn('mob_has_node_effect(user, "soil_science")', proc(effects, "/proc/soil_node_return"))
+        farming = read("code/game/objects/farming.dm")
+        self.assertIn("soil_node_return(user, get_turf(src))", farming)
+        self.assertIn('note_field_work(user, "harvests", 1)', farming)
+class Ciphers(unittest.TestCase):
+    def setUp(self):
+        self.cipher = read("code/modules/research_tree/book_cipher.dm")
+        self.research = read("code/modules/research_tree/book_research.dm")
+    def test_included_after_the_reading_helper_it_uses(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\book_interface.dm"'), dme.index('research_tree\\book_cipher.dm"'))
+    def test_ciphers_bind_only_on_book_research_worlds(self):
+        blocks = proc(self.cipher, "/obj/item/weapon/book/proc/cipher_blocks")
+        for guard in ("is_enciphered()", "map.book_research_enabled()", "!can_read_cipher(H)"):
+            self.assertIn(guard, blocks)
+    def test_enciphering_needs_the_printing_press_a_pen_and_research(self):
+        problem = proc(self.cipher, "/obj/item/weapon/book/proc/encipher_problem")
+        for guard in ("map.book_research_enabled()", "can_hold_research()", "is_enciphered()", "research_chapter_list()", "H.knows_recipe_node(CIPHER_NODE)", "H.held_writing_pen()"):
+            self.assertIn(guard, problem)
+        self.assertIn('#define CIPHER_NODE "printing_currency"', self.cipher)
+        commit = proc(self.cipher, "/obj/item/weapon/book/proc/encipher_commit")
+        self.assertLess(commit.index("encipher_problem(H)"), commit.index("cipher_key = key"))
+    def test_key_words_cannot_corrupt_the_saved_record(self):
+        clean = proc(self.cipher, "/proc/clean_cipher_key")
+        for guard in ('findtext(word, "|")', 'findtext(word, "=")', "CIPHER_KEY_MIN", "CIPHER_KEY_MAX"):
+            self.assertIn(guard, clean)
+    def test_every_way_of_taking_research_out_of_a_book_asks_the_cipher(self):
+        study = proc(self.research, "/proc/study_research_source")
+        self.assertLess(study.index("cipher_book.cipher_refuses(H)"), study.index("H.knows_recipe_node(node_id)"))
+        copy = proc(self.research, "/obj/structure/research_bench/proc/book_copy_job")
+        self.assertLess(copy.index("source.cipher_refuses(H) || dest.cipher_refuses(H)"), copy.index("do_reading("))
+        rip = proc(read("code/modules/research_tree/book_pages.dm"), "/obj/item/weapon/book/proc/rip_page")
+        self.assertLess(rip.index("cipher_refuses(H)"), rip.index("do_after("))
+        self.assertIn("printed.copy_cipher_from(original)", read("code/modules/research_tree/book_printing.dm"))
+    def test_breaking_needs_skill_and_a_pen_and_is_kept_with_the_book(self):
+        problem = proc(self.cipher, "/obj/item/weapon/book/proc/break_problem")
+        for guard in ("cipher_blocks(H)", "CIPHER_BREAK_SKILL", "H.held_writing_pen()"):
+            self.assertIn(guard, problem)
+        commit = proc(self.cipher, "/obj/item/weapon/book/proc/break_commit")
+        self.assertLess(commit.index("break_problem(H)"), commit.index("add_cipher_reader(H)"))
+        self.assertIn("cipher_progress = jointext(parts", commit)
+        self.assertIn("clamp(writer / breaker, 0.5, 3)", proc(self.cipher, "/obj/item/weapon/book/proc/cipher_break_time"))
+    def test_the_pen_menu_and_both_windows_reach_it(self):
+        book = read("code/modules/1713/book.dm")
+        self.assertIn('pen_choices += "Cipher"', book)
+        self.assertIn("cipher_menu(user)", book)
+        self.assertIn('data["cipher_note"]', read("code/modules/research_tree/book_interface.dm"))
+        self.assertIn("data.cipher_note", read("tgui/src/interfaces/ResearchBook.tsx"))
+        self.assertIn("data.cipher_note", read("UI/templates/research_book.tmpl"))
+
+
+class Practice(unittest.TestCase):
+    """Early nodes advance by making what their prerequisites teach."""
+    def setUp(self):
+        self.practice = read("code/modules/research_tree/practice_work.dm")
+    def test_included_in_the_build(self):
+        self.assertIn('#include "code\\modules\\research_tree\\practice_work.dm"', read("civ13.dme"))
+    def test_generated_only_for_early_nodes_and_counted_only_on_book_worlds(self):
+        build = proc(self.practice, "/proc/build_practice_experiments")
+        for guard in ("practice_experiments_built", "N.era_tier >= PRACTICE_BELOW_TIER", "N.prereqs.len", "field_activity_caps = null"):
+            self.assertIn(guard, build)
+        note = proc(self.practice, "/proc/note_craft_practice")
+        for guard in ("map.book_research_enabled()", "get_recipe_node_req(result_path_string)", "note_field_work(user, practice_activity(node_id))"):
+            self.assertIn(guard, note)
+        field = read("code/modules/research_tree/field_work.dm")
+        for name in ("/proc/field_activity_cap", "/proc/node_field_experiments"):
+            self.assertIn("build_practice_experiments()", proc(field, name), name)
+    def test_crafting_routes_count_practice(self):
+        for path, count in (("code/game/objects/items/stacks/stack.dm", 1),
+                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 5),
+                            ("code/game/objects/structures/blacksmithing/component_workbench.dm", 1),
+                            ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 3)):
+            self.assertEqual(read(path).count("note_craft_practice("), count, path)
+
+
+class Demonstrations(unittest.TestCase):
+    """Late capstones need a working demonstration on book-research worlds."""
+    def setUp(self):
+        self.demo = read("code/modules/research_tree/demonstrations.dm")
+    def test_included_in_the_build(self):
+        self.assertIn('#include "code\\modules\\research_tree\\demonstrations.dm"', read("civ13.dme"))
+    def test_only_book_worlds_and_the_bench_refuses_parts(self):
+        self.assertIn("map.book_research_enabled()", proc(self.demo, "/proc/node_demonstration"))
+        attack = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("take_demonstration_notes(W, user)", attack)
+        self.assertLess(attack.index("if (node_needs_demonstration(assigned_node))"), attack.index("if (B.research_prototype_installed(assigned_node))"))
+    def test_experimental_builds_are_gated_and_marked(self):
+        self.assertIn("|| demonstration_kit_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        self.assertIn('mark_experimental_build(H, O, "[recipe.result_type]")', read("code/game/objects/items/stacks/stack.dm"))
+        self.assertIn('demonstration_kit_allowed(H, "[result_type]")', read("code/modules/1713/machinery/modern_generation.dm"))
+        kit = proc(self.demo, "/proc/demonstration_kit_node")
+        for guard in ("map.book_research_enabled()", "H.knows_research_prereqs(node_id)", "H.demonstration_book(node_id)"):
+            self.assertIn(guard, kit)
+    def test_recording_needs_a_pen_light_and_a_running_machine(self):
+        record = proc(self.demo, "/mob/living/human/proc/record_demonstration")
+        for guard in ("held_writing_pen()", "do_reading(src, DEMO_STEP, src)", "demonstration_machine_running(node_id, machine)", "demonstration_mishap(machine, node_id)", "commit_demonstration(src, carrier, node_id)"):
+            self.assertIn(guard, record)
+        self.assertLess(record.index("demonstration_mishap"), record.index("commit_demonstration(src"))
+
+
 if __name__ == "__main__":
     unittest.main()

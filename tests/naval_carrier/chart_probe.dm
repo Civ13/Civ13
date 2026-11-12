@@ -67,6 +67,16 @@ var/naval_runtime_error = FALSE
 	for (var/obj/covers/C in T)
 		.++
 
+// The steps a half minute covers at her speed: a gliding hull makes one tile
+// a step. TRUE when every step moved her.
+/proc/hull_leg(datum/craft/C)
+	var/steps = 0
+	while (steps < C.speed * VESSEL_TILES_PER_STEP)
+		if (!C.sail_tick())
+			return FALSE
+		steps++
+	return steps > 0
+
 /proc/naval_checks()
 	naval_fixture()
 	var/obj/structure/berth/quay/post = new(locate(20, 20, 2))
@@ -101,6 +111,30 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(text, "the Wren lies in square E1 (42, 10)"), "the chart says where she is ([text])")
 	naval_check(findtext(text, "Kite, 9 tiles northeast, square F2, bow to the east, stopped"), "her lookout sees the Kite")
 	naval_check(findtext(text, "the mooring post at 20, 20, 22 tiles northwest, square B2: she may berth here"), "and the harbour is charted with its answer")
+
+	// ---- Modular boats and aircraft in sight ----
+	naval_check(!findtext(text, "Boats and aircraft in sight"), "with no boat or aircraft about the chart lists none")
+	var/obj/structure/vehicleparts/axis/ship/boat = new(locate(45, 14, 2))
+	boat.name = "skiff"
+	var/obj/structure/vehicleparts/axis/ship/far_boat = new(locate(42, 55, 2))
+	var/obj/structure/vehicleparts/axis/aircraft/plane = new(locate(40, 8, 3))
+	plane.name = "scout plane"
+	plane.flight_state = AIRCRAFT_LOW
+	airborne_aircraft |= plane
+	text = C.sea_chart_text()
+	naval_check(findtext(text, "Boats and aircraft in sight:") && findtext(text, "Ship: skiff, 4 tiles northeast, heading") && findtext(text, "stopped"), "a modular boat within her lookout is on the chart ([text])")
+	naval_check(findtext(text, "Aircraft: scout plane, 2 tiles southwest") && findtext(text, ", low"), "and so is an aircraft flying over")
+	naval_check(sea_boat_contacts(mid, C.lookout_range()).len == 1 && sea_boat_contacts(mid, 60).len == 2, "a boat beyond her lookout is not")
+	var/datum/craft/vehicle/skiff = craft_of_axis(boat)
+	skiff.register = new /datum/craft_register
+	skiff.register.party = "probe party"
+	skiff.rename("Minnow")
+	naval_check(findtext(C.sea_chart_text(), "Ship: Minnow, 4 tiles") && sea_contact_name(boat, "probe party") == "Minnow (ours)" && !(skiff in crafts), "a boat with papers goes by the name in them, marked as ours to its own party")
+	airborne_aircraft -= plane
+	qdel(plane)
+	qdel(boat)
+	qdel(far_boat)
+	naval_check(!findtext(C.sea_chart_text(), "Boats and aircraft in sight") && QDELETED(skiff), "gone, they leave the chart")
 
 	// ---- Running dark and hails (naval/craft_signals.dm) ----
 	var/datum/craft_drive/probe_push/strong = new
@@ -199,7 +233,7 @@ var/naval_runtime_error = FALSE
 	naval_check(KB.move_to(30, 30, EAST), "the Kite closes")
 	C.set_anchor(FALSE)
 	C.set_speed(VESSEL_SPEED_SLOW)
-	naval_check(C.sail_tick() && B.origin().y == 20 && !C.berth && !post.occupant, "a moored ship that sails has cast off")
+	naval_check(hull_leg(C) && B.origin().y == 20 && !C.berth && !post.occupant, "a moored ship that sails has cast off")
 	naval_check(!K.order_dock(post) && findtext(K.last_refusal, "does not welcome"), "the Kite is nobody's guest")
 	K.register = new /datum/craft_register
 	K.register.claim(bob)
@@ -209,7 +243,7 @@ var/naval_runtime_error = FALSE
 	naval_check(!K.order_dock(post), "until they are she is turned away")
 	post.guests |= party_train_party_of(bob)
 	naval_check(!K.order_dock(post) && findtext(K.last_refusal, "the berth is foul") && !post.reserved && !K.ticket && !K.docking, "a guest is welcome, but the Wren lies across the berth ([K.last_refusal])")
-	naval_check(C.sail_tick() && C.sail_tick() && B.origin().y == 24, "the Wren stands clear")
+	naval_check(hull_leg(C) && hull_leg(C) && B.origin().y == 24, "the Wren stands clear")
 	naval_check(K.order_dock(post) && K.finish_dock() && K.berth == post && KB.origin().x == 21 && KB.origin().y == 19, "and the Kite berths ([KB.origin().x],[KB.origin().y])")
 
 	// ---- Already alongside (after a restart) ----

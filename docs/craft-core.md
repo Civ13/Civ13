@@ -61,6 +61,20 @@ body that implements those sails without more code. `craft.max_speed()` is
 where drives will set the top telegraph step; a hull with none makes slow
 ahead.
 
+A body made of objects sets `glides` (`glide.dm`; the built body does). Such
+a craft covers the same water in the same time one tile at a step:
+`craft.sail_tiles()` is 1 and `craft.sail_interval()` is the hop interval
+divided by the tiles a hop would cover (15, 7.5 and 5 seconds a tile at slow,
+half and full ahead). Her drives still pay once per hop's worth of tiles. For
+each step `under_way.dm` sets `body.glide_time`, and the body calls
+`craft_glide()` on everything it carried: a thing square on its tile gets the
+`glide_size` that makes the engine glide it for the whole step (given back when
+it leaves her or she stops), and a thing the engine will not glide (a step
+offset or unusual bounds, such as a free-moving human) is drawn one tile back
+and slid forward by `animate()`, with the view of its player. Appearance only:
+the server still moves her a whole tile at once. Turns, docking slides and
+turf-built vessels are not glided. Not checked in a game client.
+
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
@@ -145,6 +159,11 @@ crafts and mooring posts really on that level; nothing ticks, the chart is
 refreshed when read. `craft.sea_chart_text()` is what a helm shows: her square,
 ships within her token's `sensor_range` (a `dark` token is an unknown contact)
 and every harbour with the answer its berth would give her.
+`sea_boat_contacts()` and `sea_aircraft_contacts()` are the modular boats on a
+level and the aircraft over it within a reach; the chart lists them as far as
+the lookout sees and the carrier's radar lists them to its own range, so both
+read one list. A boat or aircraft with vehicle papers goes by the name in
+them (`sea_contact_name()`).
 
 A mooring post (`/obj/structure/berth/quay`) is the first real berth. A craft
 within `QUAY_DOCK_RANGE` calls `order_dock(post)`: the post's `request()` gives
@@ -153,6 +172,96 @@ the post, on the post's `water_side()`), the water is marked, `body.hold()`
 stops her hops, and `finish_dock()` moves her `QUAY_DOCK_WARNING` later, makes
 her fast and completes the ticket. `craft.on_hop()` and `on_turn()` cast off,
 so a moored craft that moves is no longer moored. Moorings are not saved.
+
+## The open sea
+
+An open-sea region (shard kind `OCEANIC`, `maps/sea/open_sea.dmm`,
+`/obj/map_metadata/nomads/open_sea`) is the Shiptest loop at sea: ships are
+built in the home waters, make passage on a steered chart, and the islands and
+wrecks they reach are built when they arrive. No live region runs it yet;
+[open-sea-region.md](open-sea-region.md) has the setup steps.
+
+- **Cells** (`naval/open_sea.dm`). The sea level is cut into squares of
+  `SEA_CELL_PITCH` tiles by tide races (`/turf/.../saltwater/tide_race`, dense,
+  nothing passes or is built on them) `SEA_CELL_MARGIN` wide on every side, so
+  nobody in one cell sees or reaches the next. `sea_cell_of()`,
+  `sea_cell_box()`, `sea_home_cell()` (the middle one). The home waters are a
+  block of `SEA_HOME_SPAN` cells on a side round it with no race inside
+  (`sea_home_block()`); every tile of the block reads as the home cell, whose
+  box is the whole block. A cell is a square of
+  the one level, not a level: saves, digging, weather and lighting are those of
+  any surface map, and nothing grows the world.
+- **Pool** (`/datum/plane_pool/sea`, `sea_pool()`). Its "planes" are cell
+  numbers. A cell is free when no loaded site lies in it, no craft and no
+  living or logged-in character, so only site-to-cell has to be saved.
+  `clear()` deletes what is in the cell, closes the sea and restores the rock
+  under it; it refuses while a character, a ship or a claimed bunk is there.
+- **Sites** (`naval/open_sea_sites.dm`, `/datum/chart_site/sea`). `load()`
+  claims a cell and calls `build(box)`; `unload()` clears it. An island is
+  built from its seed (`/datum/sea_dice`), so it rises the same each time. A
+  wreck is broken ship floors with crates; with a tiller she can be sailed.
+  `watch()` starts a `SEA_SITE_LINGER` count once nobody is there, and the
+  chart sweeps for that every few minutes. A site with a mooring post in its
+  cell is a harbour and stays, for up to `SEA_KEPT_CAP` sites; at most
+  `SEA_SITE_CAP` sites are loaded at once. New kinds are new subtypes with a
+  `build()`.
+- **Chart and passage** (`naval/open_sea_chart.dm`, `open_sea_chart()`). The
+  home waters are a token in the middle; each site has one. The tiller's
+  **Open sea chart** lays a course, steers by compass or heaves to. An order
+  given at a place calls `put_to_sea()`, which moves the hull to the middle of
+  a free cell; when the token arrives, `open_sea_arrive()` loads the site and
+  `open_sea_shift()` moves the hull to lie near the edge of its cell
+  (`open_sea_berth()` tries each side). Where a ship is on the chart is read
+  from where her hull lies (`open_sea_place()`), her token's place and motion
+  are saved by the tiller with the hull, and the sites by
+  `/obj/structure/sea_registry` as one text. Her drives pay once per half
+  minute under way.
+- **Meeting at sea.** The chart lists other ships at sea in sight
+  (`open_sea_sails()`; one running dark only within a third of that). **Close
+  a sail** lays a course for where she is now; on arriving within
+  `CHART_ARRIVE_RANGE` of her token `open_sea_meet()` moves the hull into her
+  cell, where hails, sightings and grapples work as in any waters. Whichever
+  then sails on parts company: `put_to_sea()` gives her a cell of her own.
+- On an open-sea world the lookout, the sea chart and the berth menu only see
+  the ship's own cell (`sea_same_waters()`).
+- The home island is drawn into the region map by
+  `tools/open_sea/make_map.py`. On a map whose home waters are empty (a
+  fixture), `open_sea_prepare()` raises a small one instead.
+- **The harbour office** (`naval/sea_office.dm`). `sea_office_place()` stands
+  a board on the home island. It is a contract board whose poster is the
+  world: `fill()` offers up to four `/obj/craft_contract/sea` jobs when
+  somebody reads it, each with silver in its record. A **survey** is done when
+  the taker's ship anchors off the island (`sea_office_arrived()`, called by
+  `open_sea_arrive()`); reporting it pays and sets the site's `charted`, which
+  is saved with the sea and puts the island in every ship's course list from
+  any distance. **Salvage** is paid for a crate branded `salvage_of` the
+  wreck, set down by the board: the board keeps the crate and leaves what was
+  in it. A crew takes a contract with a registered ship lying in the home
+  waters and can give it up.
+
+## Contracts and freight
+
+`craft/contract.dm`: a contract is a record object (`/obj/craft_contract`)
+that lies inside the board that offered it, so the world save keeps it there
+with its reward in its contents. It is `CONTRACT_OPEN` until a registered crew
+takes it (`take(H, craft)`, with `craft_contract_crew_craft()` finding the
+ship whose papers list the taker within reach of the board), `CONTRACT_TAKEN`
+while it is carried out and `CONTRACT_RETURNED` when it ended unearned
+(`give_back(why)`): the reward then waits for the poster to `collect()`. A
+contract that is carried out calls `pay(H)` and deletes itself. A new kind of
+job is a subtype; a new kind of board keeps the records in its contents.
+
+`naval/freight.dm` is the first kind: `/obj/craft_contract/freight`. The
+mooring post is the board ("Freight" in its menu). `offer_freight(H, crate,
+destination post, reward item)` takes a closed crate and the reward into the
+record; taking it sets the sealed crate down beside the taker;
+`hand_in(H)` at the destination post pays whoever brought the crate, seal
+whole. A crate knows its contract by `freight_id` (the global `freight_crates`
+is rebuilt by the crate's `after_load()`); opening it sets `seal_broken`,
+which turns a hand-in into a returned contract. The poster can `withdraw()`
+an open offer and `write_off()` a taken one whose crate no longer exists. A
+destroyed post spills what it held. The post and the sea chart say how many
+contracts are on offer.
 
 ## Hails and running dark
 
@@ -222,8 +331,40 @@ slowly, with the crew warned) and `CRAFT_HELM_CHAINED` when no owner is
 about. `craft.fitting_refusal(user)` guards levers and the radar the same
 way without the delay. The wheel saves the register in `register_state`.
 
+The menu is one for every kind of craft. A craft type that is not a ship
+sets the words it is read in (`papers_title`, `kind_word`, `helm_word`,
+`helm_stance`, `sail_word`, `pro_she`, `pro_her`, `pro_hers`), overrides
+`role_title(role)` to rename the roles, and adds entries of its own with
+`papers_extra()` and `papers_extra_action()`. Roles are always stored as the
+`CRAFT_ROLE_*` values.
+
+## Vehicle papers
+
+`code/modules/craft/vehicle_papers.dm` puts modular vehicles on the core. A
+vehicle is a `/datum/craft/vehicle` with a `/datum/craft_body/axis` (its
+cells are the tiles its frames stand on; it has no `move_to`, the axis still
+drives itself). `craft_of_axis(axis, make)` makes it the first time it is
+asked for. Vehicle crafts live in `vehicle_crafts`, never in `crafts`, so
+charts, hails, grapples and radar do not see them.
+
+The driver's seat has a "Vehicle Papers" verb that opens the same papers in a
+vehicle's words (commander, driver, mechanic, gunner, crewman). The steering
+wheel item asks `axis.papers_allow()` before it starts the engine or changes
+up and `axis.papers_steer()` before it turns: crew drive freely, a stranger
+must force the controls while an owner is in the world (remembered in
+`forced_by` until the crew take it back) and is locked out otherwise.
+Slowing and stopping are never locked. This sits beside the vehicle key, it
+does not replace it. The axis saves the register in `register_state`.
+Turret controls ask `vehicle_fitting_refusal(turret, user)` before they fire:
+`craft.fitting_refusal()`, the rule a ship's levers follow.
+Owners can name the vehicle, and "Our vehicles" lists every registered
+vehicle of the reader's party with its distance and bearing
+(`party_vehicles(party)`, `craft.where_text(from)`).
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

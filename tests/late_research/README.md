@@ -6,7 +6,9 @@ research and personal knowledge, is called from its system and is shown in
 both research windows; every field work experiment names a late node and a
 counted activity, a book takes each experiment once and the bench credits it
 before looking for a scholar; big science slows a lone scholar without stopping
-them, and rushing is off by default, late only and wired to its button.
+them, and rushing is off by default, late only and wired to its button; ciphers bind only
+on book-research worlds and every way of taking research out of a book asks
+them first.
 
 Native: `python3 tests/late_research/run.py --byond-bin <pinned BYOND bin> --trusted`
 only with authorization for the isolated native runtime (`--compile-only` does
@@ -15,3 +17,9 @@ a temporary world with no listening port, maps or saves, replaces only client
 presence, light and action waits, and runs the production procs.
 
 None of this is in-game, client or graphical acceptance.
+
+The extended lines (`book_only_research_nodes` in `research_node.dm`): Emergency Medicine,
+Soil Science, Crop Breeding, Infantry Support Weapons and Guided Missiles exist only on
+book-research worlds. The fixture checks that each follows from earlier subjects, unlocks
+recipes or a standing effect, has field work, gates its recipes on personal knowledge, and
+is never done, listed or assignable where book research is off.

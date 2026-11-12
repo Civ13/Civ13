@@ -59,6 +59,13 @@
 		timing.profile_cost("timing", FALSE, 8, world.time)
 		var/list/timing_row = timing.profile_row("timing")
 		check(timing_row["cleanup_count"] == 2 && timing_row["cleanup_total_ds"] == 7 && timing_row["cleanup_max_ds"] == 5, "totals and maxima aggregate separate elapsed samples")
+		timing.profile_cost("phase-isolation", TRUE, 6, world.time)
+		timing.profile_cost("phase-isolation", TRUE, 8, world.time - 1)
+		var/list/phase_row = timing.profile_row("phase-isolation")
+		check(phase_row["forced_count"] == 2 && phase_row["forced_total_ds"] == 6 && phase_row["forced_max_ds"] == 4 && phase_row["forced_yielded"] == 1 && !phase_row["cleanup_count"] && !phase_row["cleanup_total_ds"] && !phase_row["cleanup_max_ds"] && !phase_row["cleanup_yielded"], "forced samples remain isolated and track yields")
+		timing.profile_cost("phase-isolation", FALSE, 7, world.time)
+		timing.profile_cost("phase-isolation", FALSE, 9, world.time - 1)
+		check(phase_row["cleanup_count"] == 2 && phase_row["cleanup_total_ds"] == 4 && phase_row["cleanup_max_ds"] == 3 && phase_row["cleanup_yielded"] == 1 && phase_row["forced_count"] == 2 && phase_row["forced_total_ds"] == 6 && phase_row["forced_max_ds"] == 4 && phase_row["forced_yielded"] == 1, "cleanup samples preserve forced counters and track yields")
 		profile_fixture_clock = 1
 		timing.profile_cost("midnight", TRUE, 863998, world.time)
 		var/list/wrap_row = timing.profile_row("midnight")

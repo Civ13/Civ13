@@ -306,6 +306,9 @@
 	if (is_upgrade_coin(W))
 		try_feed_coins(W, user)
 		return
+	// Demonstration notes for a capstone (demonstrations.dm).
+	if (istype(W, /obj/item/weapon/paper) && take_demonstration_notes(W, user))
+		return
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		to_chat(user, SPAN_WARNING("Place a book on the bench and choose a subject first."))
@@ -320,6 +323,9 @@
 		to_chat(user, SPAN_WARNING("You aren't skilled enough to work on <b>[N.name]</b>. [user.scholar_requirement_text(assigned_node)]."))
 		return
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
+		if (node_needs_demonstration(assigned_node))
+			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration, not a part: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
+			return
 		if (tier < N.min_bench_tier)
 			to_chat(user, SPAN_WARNING("This bench isn't upgraded enough to complete this prototype."))
 			return
@@ -446,6 +452,10 @@
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !source || !source.holds_research_chapter(node_id))
 		return FALSE
+	// A book in cipher keeps strangers out (book_cipher.dm).
+	var/obj/item/weapon/book/cipher_book = source
+	if (istype(cipher_book) && cipher_book.cipher_refuses(H))
+		return FALSE
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know <b>[N.name]</b>."))
 		return FALSE
@@ -537,8 +547,7 @@
 	var/ticks = B ? B.research_ticks(assigned_node) : 0
 	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stands at the bench with a pencil, pen or writing slate in hand."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = AN.prototype_display_name()
-		text += " It also needs a working [pname ? pname : "prototype"] fed to the bench[B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
+		text += " It also needs [lowertext(copytext(prototype_need_label(AN), 1, 2))][copytext(prototype_need_label(AN), 2)][B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))
@@ -617,6 +626,8 @@
 /obj/structure/research_bench/proc/book_copy_job(mob/living/human/H, obj/item/weapon/book/source, obj/item/weapon/book/dest, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !istype(source) || !istype(dest) || source.loc != src || dest.loc != src || !source.has_research_chapter(node_id) || dest.has_research_chapter(node_id))
+		return FALSE
+	if (source.cipher_refuses(H) || dest.cipher_refuses(H))
 		return FALSE
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	if (!pen)

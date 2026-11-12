@@ -1,5 +1,6 @@
 // Late research on book-research worlds, on production source: standing node
-// effects, field work, research teams and rushed work. Client presence, light and action waits are isolated.
+// effects, field work, research teams, rushed work,
+// ciphers and the extended Health, Agriculture and Military lines. Client presence, light and action waits are isolated.
 var/late_failures = 0
 var/late_wait_result = TRUE
 /world
@@ -70,8 +71,11 @@ var/late_wait_result = TRUE
 	late_check(!apply_crafting_node_effects(H, wooden) && wooden.maxhealth == wood_health, "Alloys leaves wooden tools alone")
 	late_check(!apply_crafting_node_effects(H, new /obj/item/weapon/paper(locate(1,1,1))), "Alloys ignores things that are not material tools")
 	// The scales each hook multiplies by.
-	late_check(farming_node_bonus(H) == 0.25 && farming_node_bonus(novice) == 0, "Advanced Agriculture adds a quarter to the harvest")
-	late_check(harvest_skill_user_bonus(H, "farming") - harvest_skill_user_bonus(novice, "farming") == 0.25 && harvest_skill_user_bonus(H, "hunting") == harvest_skill_user_bonus(novice, "hunting"), "the harvest bonus reaches farming and not hunting")
+	var/mob/living/human/late_fixture/farmer = new(locate(4,2,1))
+	farmer.teach("advanced_agriculture")
+	late_check(farming_node_bonus(farmer) == 0.25 && farming_node_bonus(novice) == 0, "Advanced Agriculture adds a quarter to the harvest")
+	late_check(farming_node_bonus(H) == 0.5, "Crop Breeding adds a further quarter on top")
+	late_check(harvest_skill_user_bonus(H, "farming") - harvest_skill_user_bonus(novice, "farming") == 0.5 && harvest_skill_user_bonus(H, "hunting") == harvest_skill_user_bonus(novice, "hunting"), "the harvest bonus reaches farming and not hunting")
 	late_check(surgery_node_quality(H) == 1.15 && surgery_node_quality(novice) == 1, "Anesthetic Surgery steadies the surgeon's steps")
 	late_check(surgery_node_time(H) == 0.75 && surgery_node_time(novice) == 1, "Modern Medicine shortens surgery steps")
 	late_check(H.disease_node_scale() == 0.5 && novice.disease_node_scale() == 1, "Public Health halves the chance of catching an illness")
@@ -82,14 +86,103 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	H.stat = DEAD
 	late_check(!H.has_node_effect("alloys"), "the dead hold no effects")
+/turf/floor/dirt/late_fixture/New()
+	return
+/proc/late_test_late_lines()
+	var/mob/living/human/late_fixture/H = new(locate(3,3,1))
+	var/mob/living/human/late_fixture/novice = new(locate(5,3,1))
+	var/list/ends = list("Health" = 0, "Agriculture" = 0, "Military" = 0)
+	for(var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if(N.category in ends)
+			ends[N.category] = max(ends[N.category], N.era_tier)
+	late_check(ends["Health"] >= 8 && ends["Agriculture"] >= 8 && ends["Military"] >= 8, "Health, Agriculture and Military all reach era 8 or later ([ends["Health"]], [ends["Agriculture"]], [ends["Military"]])")
+	for(var/node_id in book_only_research_nodes)
+		var/datum/research_node/N = get_research_node(node_id)
+		late_check(N && N.book_only && N.era_tier >= 7 && N.mode == RESEARCH_MODE_ANALYSIS, "[node_id] is a late book-only subject and no era capstone")
+		var/prereqs_ok = N && length(N.prereqs)
+		for(var/prereq in N?.prereqs)
+			var/datum/research_node/P = get_research_node(prereq)
+			if(!P || P.era_tier > N.era_tier)
+				prereqs_ok = FALSE
+		late_check(prereqs_ok, "[node_id] follows from earlier subjects")
+		late_check(length(get_node_recipe_paths(node_id)) || length(research_node_effect_text(node_id)), "[node_id] unlocks recipes or carries a standing effect")
+		var/has_field_work = FALSE
+		for(var/id in field_experiments)
+			var/list/E = field_experiments[id]
+			if(E[1] == node_id)
+				has_field_work = TRUE
+		late_check(has_field_work, "[node_id] can be advanced by field work")
+		late_check(!research_node_dormant(N), "[node_id] is live on a book-research world")
+	// What the new subjects unlock, for the character who knows them only.
+	var/list/unlocks = list(
+		"/obj/item/weapon/defibrillator/loaded" = "emergency_medicine",
+		"/obj/item/weapon/cell/standard" = "emergency_medicine",
+		"/obj/item/weapon/reagent_containers/syringe/autoinjector" = "emergency_medicine",
+		"/obj/item/bodybag" = "emergency_medicine",
+		"/obj/item/weapon/foldable/generic" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell/smoke" = "support_weapons",
+		"/obj/item/weapon/flamethrower" = "support_weapons",
+		"/obj/item/weapon/reagent_containers/glass/flamethrower" = "support_weapons",
+		"/obj/item/mine/ap" = "support_weapons",
+		"/obj/item/mine/at" = "support_weapons",
+		"/obj/item/weapon/foldable/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm/he" = "guided_weapons")
+	for(var/path in unlocks)
+		late_check(ispath(text2path(path)) && get_recipe_node_req(path) == unlocks[path], "[path] is gated on [unlocks[path]]")
+		late_check(!crafting_recipe_allowed(novice, path), "[path] cannot be made without the chapter")
+	for(var/node_id in book_only_research_nodes)
+		H.teach(node_id)
+	var/all_allowed = TRUE
+	for(var/path in unlocks)
+		if(!crafting_recipe_allowed(H, path))
+			all_allowed = FALSE
+	late_check(all_allowed, "a character who studied the chapters can make everything they unlock")
+	// What the defibrillator recipe gives is ready to use, and the pen starts empty.
+	var/obj/item/weapon/defibrillator/loaded/defib = new(locate(1,1,1))
+	late_check(istype(defib.bcell) && defib.bcell.check_charge(100), "a crafted defibrillator comes with a charged cell")
+	var/obj/item/weapon/reagent_containers/syringe/autoinjector/pen = new(locate(1,1,1))
+	late_check(pen.reagents && pen.reagents.total_volume == 0 && pen.single_use, "a crafted autoinjector is empty and works once")
+	var/obj/item/weapon/reagent_containers/glass/flamethrower/tank = new(locate(1,1,1))
+	late_check(tank.reagents && tank.reagents.total_volume == 0 && tank.volume == 100, "a crafted flamethrower backpack starts empty and holds 100 units of fuel")
+	var/obj/item/mine/ap/mine = new(locate(1,1,1))
+	late_check(!mine.anchored && !mine.triggered, "a crafted mine is not armed until someone deploys it")
+	// Soil Science: a harvest feeds the plot, up to its limit.
+	var/turf/floor/dirt/late_fixture/plot = new(locate(7,7,1))
+	plot.soil_nutrition = 60
+	late_check(!soil_node_return(novice, plot) && plot.soil_nutrition == 60, "an ordinary farmer's harvest leaves the soil as it was")
+	late_check(soil_node_return(H, plot) && plot.soil_nutrition == 90, "Soil Science returns nutrition to the plot at harvest")
+	plot.soil_nutrition = plot.max_soil_nutrition - 5
+	soil_node_return(H, plot)
+	late_check(plot.soil_nutrition == plot.max_soil_nutrition && !soil_node_return(H, locate(1,1,1)), "the soil never goes over its limit, and only farm soil gains")
+	// Harvests are field work.
+	late_check(note_field_work(H, "harvests", 3) && H.field_work_amount("harvests") == 3, "harvests count as field work")
+	// Off book-research worlds the subjects do not exist for play.
+	map.book_research = FALSE
+	var/old_age = map.ordinal_age
+	map.ordinal_age = 9
+	var/dormant = TRUE
+	for(var/node_id in book_only_research_nodes)
+		if(!research_node_dormant(get_research_node(node_id)) || map.is_node_done("none", node_id) || map.is_node_done("Testers", node_id))
+			dormant = FALSE
+	late_check(dormant, "off book-research worlds the new subjects are never done, whatever the era")
+	late_check(!research_node_dormant(get_research_node("modern_medicine")) && map.is_node_done("none", "modern_medicine"), "older subjects are untouched there")
+	late_check(!crafting_recipe_allowed(H, "/obj/item/weapon/defibrillator/loaded") && !soil_node_return(H, plot), "and they unlock nothing there")
+	map.ordinal_age = old_age
+	map.book_research = TRUE
 /proc/late_test_field_work()
-	// Every experiment is well formed.
+	build_practice_experiments()
+	// Every experiment is well formed. Late ones use a named activity; early
+	// ones may also be practice, counted per prerequisite (practice_work.dm).
 	var/list/shares = list()
 	var/formed = TRUE
 	for(var/id in field_experiments)
 		var/list/E = field_experiments[id]
 		var/datum/research_node/N = get_research_node(E[1])
-		if(!N || N.era_tier < 5 || !(E[2] in field_activities) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
+		var/practice = findtext(E[2], "craft:") == 1
+		if(!N || (practice && N.era_tier >= 5) || (!practice && !(E[2] in field_activities)) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
 			formed = FALSE
 			world.log << "FAIL: experiment [id] is malformed"
 		shares[E[1]] = (shares[E[1]] || 0) + E[4]
@@ -97,7 +190,7 @@ var/late_wait_result = TRUE
 		if(shares[node_id] > 0.7)
 			formed = FALSE
 			world.log << "FAIL: field work covers too much of [node_id]"
-	late_check(formed && field_experiments.len >= 20, "[field_experiments.len] experiments name late nodes, known activities and leave bench work to do")
+	late_check(formed && field_experiments.len >= 20, "[field_experiments.len] experiments name real nodes, known activities and leave bench work to do")
 	late_check(late_bench_rate(get_research_node("cartridge_ammo")) == 1.5 && late_bench_rate(get_research_node("rifling")) == 1, "late nodes are studied faster at the bench, earlier ones are not")
 	var/mob/living/human/late_fixture/soldier = new(locate(3,2,1))
 	soldier.name = "Brann"
@@ -150,7 +243,114 @@ var/late_wait_result = TRUE
 	late_check(bench.credit_field_work() && second.has_research_chapter("automatic_weapons") && !second.has_field_work("automatic_weapons_range") && second.has_field_work("cartridge_ammo_range"), "field work finishes a nearly done chapter and is then forgotten for that subject only")
 	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
 	// A dark bench does no bookkeeping at all.
-	late_check(bench.field_work_rows(soldier, "basic_tools").len == 0, "early subjects have no field work")
+	late_check(bench.field_work_rows(soldier, "ritual_worship").len == 0, "a subject without experiments lists none")
+
+// Working demonstrations for late capstones (demonstrations.dm).
+/proc/late_test_demonstrations()
+	for(var/node_id in capstone_demonstrations)
+		var/datum/research_node/N = get_research_node(node_id)
+		late_check(N && N.mode == RESEARCH_MODE_PROTOTYPE && node_needs_demonstration(node_id) && findtext(prototype_need_label(N), "demonstration"), "[node_id] is a capstone that needs a demonstration")
+	late_check(!node_needs_demonstration("mechanized_war") && findtext(prototype_need_label(get_research_node("mechanized_war")), "used on the bench"), "other capstones keep their prototype")
+	map.book_research = FALSE
+	late_check(!node_needs_demonstration("steam_power"), "only book-research worlds need demonstrations")
+	map.book_research = TRUE
+	// Is it running?
+	var/obj/structure/engine/external/steam/engine = new(locate(2,6,1))
+	late_check(!demonstration_machine_running("steam_power", engine), "a cold engine demonstrates nothing")
+	engine.on = TRUE
+	late_check(demonstration_machine_running("steam_power", engine), "a running steam engine demonstrates Steam Power")
+	late_check(!demonstration_machine_running("electricity", engine), "an engine is not an electric lamp")
+	var/obj/item/weapon/telephone/mobile/phone = new(locate(2,7,1))
+	phone.wireless = TRUE
+	late_check(!demonstration_machine_running("digital_networks", phone), "an idle phone demonstrates nothing")
+	phone.connected = 1234
+	late_check(demonstration_machine_running("digital_networks", phone), "a connected mobile call demonstrates Digital Networks")
+	// The recorder.
+	var/mob/living/human/late_fixture/watcher = new(locate(2,5,1))
+	watcher.name = "Ilse"
+	watcher.teach("watermills")
+	var/list/seen = demonstrations_in_view(watcher)
+	late_check(seen.len == 1 && seen["steam_power"] == engine, "someone who knows the groundwork sees the steam engine demonstration")
+	late_check(find_demonstration_machine(watcher, "steam_power") == engine, "the running engine is found within reach")
+	// Experimental builds need a half-written chapter on the builder.
+	var/datum/research_node/SN = get_research_node("steam_power")
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam") && !crafting_recipe_allowed(watcher, "/obj/structure/engine/external/steam"), "no book, no experimental engine")
+	var/obj/item/weapon/book/draft = new(watcher)
+	draft.add_research_work("steam_power", round(SN.cost_ticks * 0.4))
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam"), "less than half a chapter is not enough")
+	draft.add_research_work("steam_power", SN.cost_ticks)
+	late_check(!draft.has_research_chapter("steam_power"), "study alone does not finish the capstone")
+	late_check(demonstration_kit_allowed(watcher, "/obj/structure/engine/external/steam") && crafting_recipe_allowed(watcher, "/obj/structure/engine/external/steam"), "half a chapter on you lets you build an experimental engine")
+	late_check(!demonstration_kit_allowed(watcher, "/obj/structure/lamp/lamp_small"), "but not another capstone's machine")
+	var/obj/structure/engine/external/steam/crude = new(locate(4,6,1))
+	late_check(mark_experimental_build(watcher, crude, "/obj/structure/engine/external/steam") && crude.experimental_node == "steam_power" && findtext(crude.name, "experimental") == 1, "the build is marked experimental")
+	late_check(!mark_experimental_build(watcher, engine, "/obj/structure/lamp/lamp_small") && !engine.experimental_node, "an ordinary build stays ordinary")
+	// Experimental machines fail now and then during a demonstration.
+	crude.on = TRUE
+	var/failed = FALSE
+	for(var/i = 1 to 500)
+		if(demonstration_mishap(crude, "steam_power"))
+			failed = TRUE
+			break
+	late_check(failed && QDELETED(crude), "an experimental engine can burst during a demonstration")
+	late_check(!demonstration_mishap(engine, "steam_power"), "a proper engine never fails that way")
+	// Recording onto paper, then at the bench.
+	var/obj/item/weapon/paper/sheet = new(watcher)
+	late_check(demonstration_carrier_ok(sheet, "steam_power") && commit_demonstration(watcher, sheet, "steam_power") && sheet.demonstration_node == "steam_power", "a sheet of paper takes the demonstration notes")
+	late_check(!demonstration_carrier_ok(sheet, "steam_power"), "one demonstration per sheet")
+	var/obj/item/weapon/paper/parchment/skin = new(watcher)
+	late_check(demonstration_carrier_ok(skin, "electricity"), "parchment works too")
+	var/obj/item/weapon/paper/research_page/page = new(watcher)
+	late_check(!demonstration_carrier_ok(page, "steam_power"), "a torn-out chapter page is not a notebook")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,6,1))
+	bench.tier = 8
+	draft.loc = bench
+	bench.assigned_node = "steam_power"
+	watcher.r_hand = sheet
+	late_check(bench.take_demonstration_notes(sheet, watcher) && draft.has_research_chapter("steam_power") && QDELETED(sheet), "the notes used on the bench finish the studied chapter")
+	// Recording straight into a book.
+	var/obj/item/weapon/book/journal = new(watcher)
+	late_check(commit_demonstration(watcher, journal, "electricity") && journal.research_prototype_installed("electricity") && !journal.has_research_chapter("electricity"), "a book takes the demonstration straight away and waits for the study")
+	late_check(!demonstration_carrier_ok(journal, "electricity"), "a book holds one demonstration of a subject")
+	qdel(bench)
+
+// Practice and gathering for early nodes (practice_work.dm).
+/proc/late_test_practice_work()
+	build_practice_experiments()
+	var/list/iron = node_field_experiments("iron_tools")
+	late_check(iron.len == 1 && iron[1] == "practice_iron_tools_basic_tools", "Iron Tools is advanced by practising Basic Toolmaking")
+	var/list/E = field_experiments["practice_iron_tools_basic_tools"]
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
+	var/list/concrete = node_field_experiments("reinforced_concrete")
+	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
+	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
+	late_check(node_field_experiments("basic_tools").len == 1 && node_field_experiments("archery").len == 1, "first nodes advance by foraging or butchering")
+	// Making something counts towards the node its recipe belongs to.
+	var/craft_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "basic_tools")
+			craft_path = path
+			break
+	var/mob/living/human/late_fixture/smith = new(locate(4,2,1))
+	smith.name = "Odda"
+	late_check(craft_path && note_craft_practice(smith, craft_path) && smith.field_work_amount("craft:basic_tools") == 1, "making [craft_path] is practice in Basic Toolmaking")
+	late_check(!note_craft_practice(smith, "/obj/item/not_a_recipe") && !note_craft_practice(smith, null), "unknown things count nothing")
+	map.book_research = FALSE
+	late_check(!note_craft_practice(smith, craft_path) && smith.field_work_amount("craft:basic_tools") == 1, "nothing is counted where book research is off")
+	map.book_research = TRUE
+	late_check(note_field_work(smith, "forage", 3) && smith.field_work_amount("forage") == 3, "foraging is counted")
+	// Credited at a bench once enough has been made.
+	note_field_work(smith, "craft:basic_tools", 50)
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/notes = new(bench)
+	bench.assigned_node = "iron_tools"
+	var/list/rows = bench.field_work_rows(smith, "iron_tools")
+	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
+	var/expected = round(IN.cost_ticks * 0.5)
+	late_check(bench.credit_field_work() && notes.research_ticks("iron_tools") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	qdel(bench)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()
 	return 1
@@ -250,6 +450,69 @@ var/late_wait_result = TRUE
 	late_check(kind == "injury" && lead.fixture_hurt[BRUTE] >= 8, "a slipped build crushes a hand")
 	bench.book_toggle_rush(lead)
 	late_check(!bench.rushed, "the bench can be told to work carefully again")
+/mob/living/human/late_fixture/scholar
+	var/obj/item/weapon/pen/fixture_pen = null
+/mob/living/human/late_fixture/scholar/held_writing_pen()
+	return fixture_pen
+/proc/late_test_ciphers()
+	var/mob/living/human/late_fixture/scholar/writer = new(locate(2,6,1))
+	writer.real_name = "Ansel"
+	var/mob/living/human/late_fixture/scholar/spy = new(locate(2,7,1))
+	spy.real_name = "Corvin"
+	var/mob/living/human/late_fixture/scholar/friend = new(locate(3,7,1))
+	friend.real_name = "Dessa"
+	writer.scholarship = list("mathematics" = 60)
+	var/obj/item/weapon/book/B = new(locate(2,6,1))
+	B.name = "ledger"
+	late_check(findtext(B.encipher_problem(writer), "no research"), "an empty book has nothing to hide")
+	B.add_research_chapter("basic_tools")
+	B.add_research_chapter("pottery_storage")
+	late_check(findtext(B.encipher_problem(writer), "need to know"), "writing in cipher needs the Printing Press")
+	writer.teach("printing_currency")
+	late_check(findtext(B.encipher_problem(writer), "pencil or pen"), "and a pen in hand")
+	writer.fixture_pen = new /obj/item/weapon/pen(writer)
+	late_check(isnull(B.encipher_problem(writer)) && !B.is_enciphered() && !B.cipher_blocks(spy), "a plain book is open to everyone")
+	late_check(!B.encipher_commit(writer, "ab") && !B.encipher_commit(writer, "a|b=c") && !B.is_enciphered(), "key words that are too short or would break the record are refused")
+	late_check(B.encipher_commit(writer, "  Rosebud ") && B.cipher_key == "rosebud" && B.cipher_strength == 4, "the book goes into cipher under a tidied key word, at a strength set by the writer's mathematics")
+	late_check(B.can_read_cipher(writer) && !B.cipher_blocks(writer) && B.cipher_blocks(spy) && B.cipher_refuses(spy), "the writer reads it, a stranger does not")
+	late_check(findtext(B.encipher_problem(writer), "already"), "a book in cipher is not enciphered twice")
+	// The cipher keeps strangers out of the research.
+	late_check(!study_research_source(spy, B, "basic_tools") && !spy.knows_recipe_node("basic_tools"), "a stranger cannot study a chapter in cipher")
+	late_check(!B.rip_page(spy, "basic_tools") && B.has_research_chapter("basic_tools"), "or tear one out")
+	late_check(B.research_chapter_list().len == 2 && length(B.era_record_node_ids()) == 2, "the chapters are still in the book and still count as records")
+	var/list/data = B.research_book_ui_data(spy)
+	late_check(findtext(data["cipher_note"], "cannot study") && findtext(B.research_book_ui_data(writer)["cipher_note"], "You can read it"), "the book window says who can read it")
+	// The key word.
+	late_check(!B.try_cipher_key(friend, "tulip") && B.cipher_blocks(friend), "a wrong key word opens nothing")
+	late_check(B.try_cipher_key(friend, "ROSEBUD") && !B.cipher_blocks(friend) && B.cipher_blocks(spy), "the right key word makes a reader of whoever is told it")
+	// Code-breaking.
+	spy.scholarship = list("mathematics" = 11)
+	late_check(findtext(B.break_problem(spy), "Basic Mathematics 12"), "breaking a cipher takes some mathematics")
+	spy.scholarship = list("mathematics" = 35)
+	late_check(findtext(B.break_problem(spy), "pencil or pen"), "and a pen")
+	spy.fixture_pen = new /obj/item/weapon/pen(spy)
+	late_check(isnull(B.break_problem(spy)) && B.cipher_break_time(spy) == 9600, "a breaker with half the writer's mathematics needs twice the time (16 minutes at strength 4)")
+	spy.scholarship = list("mathematics" = 100)
+	late_check(B.cipher_break_time(spy) == 3360, "a master needs far less (5.6 minutes)")
+	spy.scholarship = list("mathematics" = 35)
+	late_check(!B.break_commit(spy) && B.cipher_break_fraction(spy) > 0.03 && B.cipher_break_fraction(spy) < 0.032 && B.cipher_blocks(spy), "one sitting is a small step and the working stays with the book")
+	var/sittings = 1
+	while(sittings < 100 && !B.break_commit(spy))
+		sittings++
+	late_check(sittings == 32 && !B.cipher_blocks(spy) && B.cipher_break_fraction(spy) == 0, "32 sittings of half a minute break it for the breaker alone")
+	late_check(findtext(B.break_problem(spy), "no cipher"), "a reader has nothing left to break")
+	late_check(!B.cipher_refuses(spy), "the cipher no longer refuses the breaker")
+	// Copies keep the cipher; plain writing removes it.
+	var/obj/item/weapon/book/copy = new(locate(2,6,1))
+	copy.copy_cipher_from(B)
+	late_check(copy.cipher_key == "rosebud" && copy.cipher_strength == 4 && copy.can_read_cipher(friend) && copy.cipher_progress == "", "a printed copy stays in the same cipher")
+	var/mob/living/human/late_fixture/scholar/outsider = new(locate(4,7,1))
+	outsider.real_name = "Egon"
+	late_check(!B.decipher_commit(outsider) && B.is_enciphered(), "only a reader can write it out plainly")
+	map.book_research = FALSE
+	late_check(!B.cipher_blocks(outsider), "ciphers bind nobody where book research is off")
+	map.book_research = TRUE
+	late_check(B.decipher_commit(friend) && !B.is_enciphered() && !B.cipher_blocks(outsider) && B.cipher_readers == "", "written out plainly, the book is open again")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -266,7 +529,11 @@ var/late_wait_result = TRUE
 	try
 		late_test_node_effects()
 		late_test_field_work()
+		late_test_practice_work()
+		late_test_demonstrations()
 		late_test_teams()
+		late_test_ciphers()
+		late_test_late_lines()
 	catch(var/exception/e)
 		late_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"

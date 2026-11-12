@@ -545,6 +545,40 @@
 	maxvolume = 300
 	product = "biodiesel"
 
+// Pours feed from a barrel into the shared feed store. Ethanol and oil share
+// maxvolume, so the donor only loses what fits; impure ethanol stores less
+// than it pours, scaled by its purity.
+/obj/structure/refinery/biofuel/proc/pour_feed(mob/living/human/H, obj/item/weapon/reagent_containers/C, reagent_id, label)
+	var/free = maxvolume - volume_et - volume_di
+	if (free <= 0)
+		to_chat(H, SPAN_NOTICE("The refinery is full."))
+		return 0
+	var/barrelamt = C.reagents.get_reagent_amount(reagent_id)
+	var/yield = 1
+	if (reagent_id == "ethanol")
+		var/strength = 0
+		var/maxetvol = 0
+		for (var/datum/reagent/ethanol/E in C.reagents.reagent_list)
+			maxetvol += E.volume
+			strength += E.volume*E.strength
+		if (maxetvol <= 0)
+			to_chat(H, SPAN_NOTICE("This [C] has no biofuel percursors in it!"))
+			return 0
+		yield = 1-((strength/maxetvol)/100)
+		if (yield <= 0)
+			to_chat(H, SPAN_NOTICE("This [C] has no biofuel percursors in it!"))
+			return 0
+	var/poured = min(barrelamt, free/yield)
+	if (poured <= 0)
+		return 0
+	C.reagents.remove_reagent(reagent_id, poured)
+	if (reagent_id == "ethanol")
+		volume_et = min(volume_et + poured*yield, maxvolume - volume_di)
+	else
+		volume_di = min(volume_di + poured, maxvolume - volume_et)
+	H.visible_message("[H] pours \the [C] into \the [src].", "You pour [round(poured, 0.1)] units of [label] from \the [C] into \the [src].")
+	return poured
+
 /obj/structure/refinery/biofuel/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
 		if (isemptylist(barrel))
@@ -559,63 +593,14 @@
 				return
 			var/obj/item/weapon/reagent_containers/glass/barrel/C = W
 			if (C.reagents.has_reagent("olive_oil",1))
-				var/barrelamt = C.reagents.get_reagent_amount("olive_oil")
-				if (barrelamt < (maxvolume-volume_di))
-					C.reagents.remove_reagent("olive_oil",barrelamt)
-					volume_di += barrelamt
-					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_di = maxvolume-volume_et
-					return
-				else
-					C.reagents.remove_reagent("olive_oil",(maxvolume-volume_di))
-					volume_di += (maxvolume-volume_di)
-					H.visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_di = maxvolume-volume_et
-					return
+				pour_feed(H, C, "olive_oil", "olive oil")
+				return
 			else if (C.reagents.has_reagent("ethanol",1))
-				var/barrelamt = C.reagents.get_reagent_amount("ethanol")
-				if (barrelamt < (maxvolume-volume_et))
-					var/strength = 0
-					var/maxetvol = 0
-					for (var/datum/reagent/ethanol/E in C.reagents.reagent_list)
-						maxetvol += E.volume
-						strength += E.volume*E.strength
-					if (maxetvol <= 0)
-						to_chat(H, SPAN_NOTICE("This [W] has no biofuel percursors in it!"))
-						return
-					strength /= maxetvol
-					strength = 1-(strength/100)
-					C.reagents.remove_reagent("ethanol",barrelamt)
-					volume_et += barrelamt*strength
-					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of unpurified ethanol from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_di = maxvolume-volume_di
-					return
-				else
-					C.reagents.remove_reagent("ethanol",(maxvolume-volume_et))
-					volume_et += (maxvolume-volume_et)
-					visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of unpurified ethanol from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_et = maxvolume-volume_di
-					return
+				pour_feed(H, C, "ethanol", "unpurified ethanol")
+				return
 			else if (C.reagents.has_reagent("fat_oil",1))
-				var/barrelamt = C.reagents.get_reagent_amount("fat_oil")
-				if (barrelamt < (maxvolume-volume_di))
-					C.reagents.remove_reagent("fat_oil",barrelamt)
-					volume_di += barrelamt
-					H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of olive oil from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_di = maxvolume-volume_et
-					return
-				else
-					C.reagents.remove_reagent("fat_oil",(maxvolume-volume_di))
-					volume_di += (maxvolume-volume_di)
-					H.visible_message("[H] pours \the [W] into \the [src].","You pour [maxvolume-volume] units of olive oil from \the [W] into \the [src].")
-					if (volume_di+volume_et > maxvolume)
-						volume_di = maxvolume-volume_et
-					return
+				pour_feed(H, C, "fat_oil", "fat oil")
+				return
 			else
 				to_chat(H, SPAN_NOTICE("This [W] has no biofuel percursors in it!"))
 				return

@@ -583,6 +583,16 @@
       ]
     },
     {
+      "path": "code/modules/naval/open_sea.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/turf/floor/beach/water/deep/saltwater/tide_race/CanPass(atom/movable/mover)",
+          "sha256_body": "d2960d30c3d890d8f4c780ad5ff0265badefc5c66216b8e29c3f1b5decd62a3a"
+        }
+      ]
+    },
+    {
       "path": "code/modules/naval/slipway.dm",
       "declarations": [
         {

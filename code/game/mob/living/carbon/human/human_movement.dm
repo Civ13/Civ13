@@ -71,7 +71,8 @@
 		if (istype(r_hand, /obj/item/weapon/shield))
 			tally += r_hand.slowdown
 	if (buckled && istype(buckled, /obj/structure/bed/chair/wheelchair))
-		for (var/organ_name in list("l_hand","r_hand","l_arm","r_arm"))
+		var/static/list/wheelchair_limbs = list("l_hand","r_hand","l_arm","r_arm")
+		for (var/organ_name in wheelchair_limbs)
 			var/obj/item/organ/external/E = get_organ(organ_name)
 			if (!E || E.is_stump())
 				tally += 2
@@ -80,7 +81,8 @@
 			else if (E.status & ORGAN_BROKEN)
 				tally += 1
 	else
-		for (var/organ_name in list("l_foot","r_foot","l_leg","r_leg"))
+		var/static/list/walking_limbs = list("l_foot","r_foot","l_leg","r_leg")
+		for (var/organ_name in walking_limbs)
 			var/obj/item/organ/external/E = get_organ(organ_name)
 			if (!E || E.is_stump())
 				tally += 4

@@ -1167,6 +1167,9 @@
 	var/fermenting = 0
 	var/fermenting_timer = 0
 	var/fermenting_contents = 0
+	// One pending callback per loop; runtime only, so a loaded jar starts clean.
+	var/tmp/ferment_loop = FALSE
+	var/tmp/growth_loop = FALSE
 	flags = FALSE
 
 /obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/human/user as mob)
@@ -1211,6 +1214,8 @@
 		..()
 
 /obj/item/weapon/starterjar/proc/fermenting_process()
+	if (ferment_loop || fermenting != 1)
+		return
 	if (world.time>=fermenting_timer)
 		visible_message("The flour in the jar ferments.")
 		fermenting = 2
@@ -1218,18 +1223,23 @@
 		icon_state = "jar1"
 		yeast_growth()
 	else
+		ferment_loop = TRUE
 		spawn(100)
+			ferment_loop = FALSE
 			fermenting_process()
 
 /obj/item/weapon/starterjar/proc/yeast_growth()
 	//Yeah there is a bug, form abuse load/unload yeast that may produce +4 fermenting_contents at time, BUT enzymes not essentials at this moment
 	//	and it will fixed, when working on TO DO part (look at the beginning of starterjar TODO)
-	if (fermenting_contents>0)
-		spawn(1500+rand(0,400))
-			if (fermenting_contents > 0 && fermenting_contents < 5)
-				fermenting_contents++
-				icon_state = "jar[fermenting_contents]"
-			yeast_growth()
+	if (growth_loop || fermenting_contents <= 0)
+		return
+	growth_loop = TRUE
+	spawn(1500+rand(0,400))
+		growth_loop = FALSE
+		if (fermenting_contents > 0 && fermenting_contents < 5)
+			fermenting_contents++
+			icon_state = "jar[fermenting_contents]"
+		yeast_growth()
 
 /obj/item/weapon/starterjar/attack_self(var/mob/living/human/user as mob)
 	if (fermenting==2 && fermenting_contents>0)
@@ -1264,9 +1274,26 @@
 	. = ..()
 	restore_from_icon_state()
 
+// A saved jar keeps its state but not its timer or pending callback: restart
+// whichever loop the saved state needs, with a fresh fermentation wait.
+/obj/item/weapon/starterjar/proc/resume_fermentation()
+	if (fermenting == 1 && !ferment_loop)
+		fermenting_timer = world.time + (icon_state == "jarG" ? 1200 : 900)
+		fermenting_process()
+	else if (fermenting == 2)
+		yeast_growth()
+
 /obj/item/weapon/starterjar/after_load()
 	. = ..()
+	ferment_loop = FALSE
+	growth_loop = FALSE
 	restore_from_icon_state()
+	resume_fermentation()
+
+/obj/item/weapon/starterjar/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("ferment_loop", "growth_loop")
+	return saved
 
 ////////////////////////////////////////////////////////////////////////
 //  Seed collector  ////////////////////////////////////////////////////

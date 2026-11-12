@@ -129,7 +129,8 @@ papers saved and restored by the wheel.
 
 Floors laid over water commissioned at a tiller (`code/modules/craft/built_body.dm`,
 `code/modules/craft/under_way.dm`, `code/modules/naval/built_hull.dm`): what is
-and is not a hull, the hop with planks, cargo and crew, the water level handed
+and is not a hull, the one-tile gliding step (`code/modules/craft/glide.dm`)
+with planks, cargo and crew, the water level handed
 from tile to tile, obstacles, the marked path, coming about around the tiller,
 refitting, papers, the hull saved and found again by the tiller, sails that
 give half ahead, engines that give full ahead and burn from their tank at
@@ -160,3 +161,36 @@ steers afterwards, and a car parked half aboard holds the ship until it is
 gone.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ferry_probe.dm 300
+
+## Freight contracts (`freight_probe.dm`)
+
+A crate offered at one mooring post for another with a reward
+(`code/modules/naval/freight.dm`, `code/modules/craft/contract.dm`): who may
+offer, the post taking in crate and reward, a registered crew taking it, the
+hand-in and payment at the destination, a broken seal, a lost crate written
+off, a withdrawn offer, a crate finding its contract after a load, a full
+board and a destroyed post. No client connects, so the post's menus are not
+exercised.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+
+## The open sea (`open_sea_probe.dm`)
+
+An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
+`open_sea_chart.dm`) on a fixture of six 40-tile cells: cell geometry, tide
+races nobody swims, the home island raised once, the cell pool (free means no
+site, no ship and nobody there), the chart's sites saved as one text, a hull
+that puts to sea, makes passage, raises an island and anchors off it, the
+island staying while someone is ashore or a mooring post stands and sinking
+when its count runs out, the same island rising the same, a wreck with her
+hold, the site cap and the admin pause, standing off when no water is free,
+ships in different waters not sighting each other, a passage saved by the
+tiller and resumed, the way home, and the harbour office (`sea_office.dm`): its
+board on the home island, a survey and a salvage contract taken, done,
+paid and saved, a contract given up, and two ships meeting at sea and
+parting company.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/open_sea_probe.dm 300
+
+`python3 tools/open_sea/make_map.py --check` confirms `maps/sea/open_sea.dmm`
+matches the cell size in `code/__defines/naval.dm`.

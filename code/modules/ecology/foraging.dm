@@ -356,6 +356,7 @@
 		return FALSE
 	to_chat(src, SPAN_NOTICE("You find something at your feet: [initial(found.name)]."))
 	adaptStat("farming", 1)
+	note_field_work(src, "forage")
 	return TRUE
 
 // No input, sleeps or result previews between validation and debit. Every result

@@ -5,12 +5,19 @@
 // its crew walk on and off through the open hatches amidships and carry crates
 // aboard. Submerged, the whole boat, crew and cargo drop to the level below,
 // where it can go only where the ocean above is open: the coast, islands and
-// shallows are rock down there. Nobody can leave a submerged boat.
+// shallows are rock down there. Divers leave a submerged boat only through
+// the lock-out hatches (seabed.dm).
+//
+// Two models share one rounded hull: the 3x5 Scout and the 3x7 Explorer
+// (submarine_layouts). Bow to stern: the helm under a glass bow, the ballast
+// station, the lock-out chambers amidships and the engine room with the
+// battery and air bank behind a watertight door.
 //
 // The ballast and periscope station aboard dives, surfaces, raises the
 // periscope (the surface straight above, following the boat) and lists the
 // contacts in range: ships and aircraft above, and other submerged boats by
-// sonar.
+// sonar. Submerged systems (battery, floodlights, hull depth, sonar ping)
+// are in submarine_systems.dm, the hull air in submarine_air.dm.
 
 // Tiles at which the periscope picks out ships and aircraft on the surface,
 // and sonar other submerged boats.
@@ -21,7 +28,23 @@
 // How often the periscope checks its watchers are still at the eyepiece.
 #define SUBMARINE_PERISCOPE_CHECK (1 SECONDS)
 
+// The stripe colour a boat leaves the pen with (drawn into the roof art).
+#define SUBMARINE_STRIPE_DEFAULT "#E89628"
+// How long repainting the hull stripes takes.
+#define SUBMARINE_PAINT_TIME (5 SECONDS)
+
 var/global/list/player_submarines = list()
+// The paints kept in a boat's stores for its hull stripes.
+var/global/list/submarine_stripe_paints = list(
+	"Orange" = SUBMARINE_STRIPE_DEFAULT,
+	"Red" = "#C8281E",
+	"Yellow" = "#F0D040",
+	"Green" = "#3C9A3C",
+	"Blue" = "#2C6CD0",
+	"Purple" = "#8040A8",
+	"White" = "#F0F0F0",
+	"Black" = "#202428",
+	)
 
 /obj/structure/vehicleparts/axis/ship/submarine
 	name = "submarine"
@@ -30,6 +53,11 @@ var/global/list/player_submarines = list()
 	maxpower = 2500
 	speedlist = alist(1=16,2=12,3=9)
 	var/submerged = FALSE
+	// Which layout and hull art the boat has (submarine_layouts).
+	var/hull_class = "scout"
+	// The colour of the stripes across the hull; the crew repaint them at the
+	// ballast station.
+	var/stripe_color = SUBMARINE_STRIPE_DEFAULT
 	// Mobs looking through the periscope. Runtime only.
 	var/tmp/list/periscope_watchers = list()
 	var/tmp/periscope_check_queued = FALSE
@@ -171,6 +199,11 @@ var/global/list/player_submarines = list()
 // Submerged, the sea layer ends where the ocean above does: a clear message
 // instead of ramming the rock.
 /obj/structure/vehicleparts/axis/ship/submarine/do_vehicle_check()
+	if (submerged && !anchor && battery <= 0)
+		visible_message(SPAN_WARNING("\The [src]'s motors whine down: the battery is flat."))
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
 	if (submerged && !anchor)
 		var/m_dir = reverse ? OPPOSITE_DIR(dir) : dir
 		for (var/obj/structure/vehicleparts/frame/F in frames())
@@ -184,6 +217,8 @@ var/global/list/player_submarines = list()
 
 /obj/structure/vehicleparts/axis/ship/submarine/do_move()
 	. = ..()
+	if (. && submerged)
+		battery_draw(SUB_BATTERY_PER_TILE)
 	if (. && periscope_watchers.len)
 		update_periscopes()
 
@@ -191,6 +226,7 @@ var/global/list/player_submarines = list()
 /obj/structure/vehicleparts/axis/ship/submarine/proc/update_boat_lights()
 	for (var/obj/structure/vehicleparts/sub_station/S in transporting)
 		S.update_light_state(submerged)
+	update_floodlights()
 
 // ---- Periscope ----
 
@@ -312,11 +348,74 @@ var/global/list/ship_axes = list()
 	for (var/line in lines)
 		to_chat(user, line)
 
+// ---- Name and stripe ----
+
+// Gives the boat a name: her hull sections carry it too, so it is what
+// people read when they look at her.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/rename_boat(new_name)
+	new_name = sanitize(copytext("[new_name]", 1, 40))
+	if (!length(new_name))
+		return FALSE
+	name = new_name
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		F.name = new_name
+	return TRUE
+
+// Repaints the stripes across the hull. Returns FALSE for a colour that is
+// not one of the boat's paints.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/paint_stripe(paint)
+	var/new_color = submarine_stripe_paints[paint]
+	if (!new_color)
+		return FALSE
+	stripe_color = new_color
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		F.update_icon()
+	return TRUE
+
+/obj/structure/vehicleparts/axis/ship/submarine/proc/stripe_paint_name()
+	for (var/paint in submarine_stripe_paints)
+		if (submarine_stripe_paints[paint] == stripe_color)
+			return paint
+	return "Orange"
+
+/obj/structure/vehicleparts/axis/ship/submarine/proc/order_name(mob/living/human/user, obj/structure/vehicleparts/sub_station/station)
+	var/new_name = player_input(user, "What is she called? Her name is what people read on her hull.", "Name the boat", name, "text", null, TRUE)
+	if (isnull(new_name) || QDELETED(src) || QDELETED(station) || !station.Adjacent(user) || station.boat() != src)
+		return
+	if (rename_boat(new_name))
+		crew_message(SPAN_NOTICE("[user] names the boat the [name]."))
+
+// The stripes are on the outside of the hull: nobody paints them submerged.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/order_paint(mob/living/human/user, obj/structure/vehicleparts/sub_station/station)
+	if (submerged)
+		to_chat(user, SPAN_WARNING("The stripes are on the outside of the hull. Surface first."))
+		return
+	var/list/paints = list()
+	for (var/paint in submarine_stripe_paints)
+		paints += paint
+	paints += "Cancel"
+	var/choice = WWinput(user, "The hull stripes are [lowertext(stripe_paint_name())]. Which paint?", "Paint the stripes", "Cancel", paints)
+	if (!choice || choice == "Cancel" || QDELETED(src) || QDELETED(station) || !station.Adjacent(user) || station.boat() != src)
+		return
+	if (submarine_stripe_paints[choice] == stripe_color)
+		to_chat(user, SPAN_NOTICE("The stripes are already [lowertext(choice)]."))
+		return
+	user.visible_message(SPAN_NOTICE("[user] takes a brush and a pot of [lowertext(choice)] paint up through the hatch."))
+	if (!do_after(user, SUBMARINE_PAINT_TIME, user))
+		return
+	if (QDELETED(src) || QDELETED(station) || station.boat() != src)
+		return
+	if (submerged)
+		to_chat(user, SPAN_WARNING("The boat dived before you could paint."))
+		return
+	if (paint_stripe(choice))
+		crew_message(SPAN_NOTICE("[user] paints the hull stripes [lowertext(choice)]."))
+
 // ---- The ballast and periscope station ----
 
 /obj/structure/vehicleparts/sub_station
 	name = "ballast and periscope station"
-	desc = "Valve wheels for the ballast tanks and the eyepiece of the periscope. Use it to dive, surface, raise the periscope or read the contacts."
+	desc = "Valve wheels for the ballast tanks and the eyepiece of the periscope. Use it to dive, surface, raise the periscope or read the contacts. The boat's name board and stripe paint are kept here too."
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "ballast"
 	anchored = TRUE
@@ -342,9 +441,14 @@ var/global/list/ship_axes = list()
 	if (!B)
 		to_chat(user, SPAN_WARNING("The station is not fitted to a submarine."))
 		return
-	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts")
+	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts", "Status", B.floodlights ? "Floodlights off" : "Floodlights on")
+	if (B.submerged)
+		options += "Sonar ping"
 	if (B.submerged)
 		options += (user in B.periscope_watchers) ? "Lower periscope" : "Raise periscope"
+	options += "Name the boat"
+	if (!B.submerged)
+		options += "Paint the stripes"
 	options += "Cancel"
 	var/choice = WWinput(user, "[B] is [B.submerged ? "submerged" : "on the surface"].", name, "Cancel", options)
 	if (QDELETED(src) || QDELETED(B) || !Adjacent(user) || boat() != B)
@@ -356,101 +460,317 @@ var/global/list/ship_axes = list()
 			B.order_depth(user, FALSE)
 		if ("Contacts")
 			B.report_contacts(user)
+		if ("Status")
+			to_chat(user, SPAN_NOTICE(B.air_report()))
+			to_chat(user, SPAN_NOTICE(B.systems_report()))
+		if ("Floodlights on", "Floodlights off")
+			B.set_floodlights(choice == "Floodlights on", user)
+		if ("Sonar ping")
+			B.sonar_ping(user)
 		if ("Raise periscope")
 			B.raise_periscope(user, src)
 		if ("Lower periscope")
 			B.lower_periscope(user)
+		if ("Name the boat")
+			B.order_name(user, src)
+		if ("Paint the stripes")
+			B.order_paint(user, src)
 
 // ---- Hull ----
 
-// A steel hull section: decked and roofed, dark grey from outside.
+// Hull walls, in the frame wall format: name, opacity, density, armour,
+// health, can open, is open. The outer hull and the glass of the bow are
+// drawn into the deck art; bulkheads and watertight doors are overlays.
+#define SUB_WALL_HULL list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
+#define SUB_WALL_GLASS list("sub_glass",FALSE,TRUE,30,40,FALSE,FALSE)
+#define SUB_WALL_BULKHEAD list("sub_bulkhead",TRUE,TRUE,30,40,FALSE,FALSE)
+#define SUB_WALL_DOOR list("sub_door",TRUE,TRUE,30,40,TRUE,FALSE)
+// The plating over a sealed tank space: a wall with nothing to draw.
+#define SUB_WALL_TANK list("sub_tank",TRUE,TRUE,30,40,FALSE,FALSE)
+
+// A steel hull section: decked and roofed. Its deck and roof art is one tile
+// of the whole boat's drawing (scripts/draw_submarine_hull.py), picked by
+// hull_tile: "<class>_<column>_<row>" of the layout table.
 /obj/structure/vehicleparts/frame/ship/steel/submarine
 	name = "submarine hull"
 	desc = "A riveted steel pressure hull section."
+	icon = 'icons/obj/vehicles/submarine_hull.dmi'
+	icon_state = "plain_deck"
+	normal_icon = 'icons/obj/vehicles/submarine_hull.dmi'
+	broken_icon = 'icons/obj/vehicles/submarine_hull.dmi'
+	prefix = ""
 	noroof = FALSE
+	var/hull_tile = "plain"
 
 /obj/structure/vehicleparts/frame/ship/steel/submarine/update_icon()
-	..()
-	if (roof)
-		roof.color = "#46505a"
+	overlays.Cut()
+	if (!axis)
+		dir = NORTH
+	icon_state = "[hull_tile]_deck"
+	// One roof image for the frame's life: clients that already hold it see
+	// it turn with the boat.
+	if (!roof || roof.icon != icon)
+		roof = image(icon = icon, loc = src, icon_state = "[hull_tile]_roof", layer = 11)
+	roof.icon_state = axis ? "[hull_tile]_roof" : ""
+	roof.dir = dir
+	// Repainted stripes lie over the factory ones drawn into the roof.
+	roof.overlays.Cut()
+	var/obj/structure/vehicleparts/axis/ship/submarine/boat = axis
+	if (istype(boat) && boat.stripe_color != SUBMARINE_STRIPE_DEFAULT && has_stripe())
+		var/image/stripe = image(icon = icon, icon_state = "[hull_tile]_stripe", dir = dir)
+		stripe.color = boat.stripe_color
+		roof.overlays += stripe
+	var/list/sides = list(list(w_front, dir), list(w_back, turn(dir, 180)), list(w_left, turn(dir, 90)), list(w_right, turn(dir, -90)))
+	for (var/list/side in sides)
+		var/list/wall = side[1]
+		var/state = null
+		switch (wall[1])
+			if ("sub_bulkhead")
+				state = "sub_bulkhead"
+			if ("sub_door")
+				state = wall[7] ? "sub_door_open" : "sub_door_closed"
+		if (state)
+			overlays += image(icon = icon, icon_state = state, layer = 2.99, dir = side[2])
 
-/obj/structure/vehicleparts/frame/ship/steel/submarine/bow_right
-	w_front = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-	w_right = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/bow
-	w_front = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/bow_left
-	w_front = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-	w_left = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/right
-	w_right = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/left
-	w_left = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-// Amidships the sides open: the hatches crew and cargo use on the surface.
+// Whether one of the hull stripes crosses this section's roof.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/has_stripe()
+	var/static/list/stripe_states = null
+	if (!stripe_states)
+		stripe_states = list()
+		for (var/state in icon_states('icons/obj/vehicles/submarine_hull.dmi'))
+			if (findtext(state, "_stripe"))
+				stripe_states[state] = TRUE
+	return stripe_states["[hull_tile]_stripe"]
+
+// The watertight doors in the bulkheads swing by hand from either side.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/door_walls()
+	. = list()
+	for (var/list/wall in list(w_front, w_back, w_left, w_right))
+		if (wall[1] == "sub_door")
+			. += list(wall)
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/toggle_doors(mob/user)
+	var/list/doors = door_walls()
+	if (!doors.len)
+		return FALSE
+	var/list/first = doors[1]
+	var/open = !first[7]
+	for (var/list/wall in doors)
+		wall[7] = open
+	update_icon()
+	playsound(loc, 'sound/effects/door_lock_unlock.ogg', 60)
+	if (user)
+		user.visible_message(SPAN_NOTICE("[user] [open ? "spins the wheel and swings the watertight door open" : "swings the watertight door shut and dogs it down"]."))
+	return TRUE
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/attack_hand(mob/living/human/user)
+	if (ishuman(user) && Adjacent(user) && toggle_doors(user))
+		return
+	return ..()
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/examine(mob/user)
+	. = ..()
+	var/list/doors = door_walls()
+	if (doors.len)
+		var/list/first = doors[1]
+		to_chat(user, SPAN_NOTICE("Its watertight door is [first[7] ? "open" : "shut"]. Use the hull section with an empty hand to work it."))
+
+// Amidships the sides open: the hatches crew and cargo use on the surface,
+// and the lock-out chambers divers use submerged (seabed.dm).
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch
-/obj/structure/vehicleparts/frame/ship/steel/submarine/stern_right
-	w_back = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-	w_right = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/stern
-	w_back = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-/obj/structure/vehicleparts/frame/ship/steel/submarine/stern_left
-	w_back = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
-	w_left = list("boat_port0",TRUE,TRUE,30,40,FALSE,FALSE)
 
-// A 3-wide, 5-long boat facing south, as "column,row" from its bow; column 1
-// is the starboard (west) side. Like the landing craft it steers from a ship
-// wheel and runs on a diesel engine.
-var/global/list/submarine_layout = list(
-	"1,1" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/bow_right),
-	"2,1" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/bow),
-	"3,1" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/bow_left),
-	"1,2" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/right),
-	"2,2" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine, /obj/structure/vehicleparts/shipwheel),
-	"3,2" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/left),
-	"1,3" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch),
-	"2,3" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine, /obj/structure/vehicleparts/sub_station),
-	"3,3" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch),
-	"1,4" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/right),
-	"2,4" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine),
-	"3,4" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/left),
-	"1,5" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/stern_right),
-	"2,5" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/stern, /obj/structure/engine/internal/diesel/premade/chiha, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank),
-	"3,5" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/stern_left),
+// Sets a hull section's walls from a layout code: letters for the sides
+// (F bow side, B stern side, L port, R starboard), each followed by its
+// wall (h hull, g glass, b bulkhead, d watertight door, t tank plating),
+// as in "Fg Rg".
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/set_hull_walls(code)
+	for (var/part in splittext(code, " "))
+		if (length(part) != 2)
+			continue
+		var/list/wall = null
+		switch (copytext(part, 2, 3))
+			if ("h")
+				wall = SUB_WALL_HULL
+			if ("g")
+				wall = SUB_WALL_GLASS
+			if ("b")
+				wall = SUB_WALL_BULKHEAD
+			if ("d")
+				wall = SUB_WALL_DOOR
+			if ("t")
+				wall = SUB_WALL_TANK
+		if (!wall)
+			continue
+		switch (copytext(part, 1, 2))
+			if ("F")
+				w_front = wall
+			if ("B")
+				w_back = wall
+			if ("L")
+				w_left = wall
+			if ("R")
+				w_right = wall
+
+// ---- Fittings ----
+
+// The boat's battery and air bank are numbers on the boat; these are where
+// the crew can see them.
+/obj/structure/vehicleparts/sub_fitting
+	name = "submarine fitting"
+	desc = "A fitting bolted to a submarine's deck."
+	icon = 'icons/obj/vehicles/submarine_hull.dmi'
+	anchored = TRUE
+	density = TRUE
+	layer = 2.99
+
+/obj/structure/vehicleparts/sub_fitting/proc/boat()
+	return submarine_at(get_turf(src))
+
+/obj/structure/vehicleparts/sub_fitting/proc/reading(obj/structure/vehicleparts/axis/ship/submarine/B)
+	return null
+
+/obj/structure/vehicleparts/sub_fitting/examine(mob/user)
+	. = ..()
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	if (B)
+		to_chat(user, SPAN_NOTICE(reading(B)))
+
+/obj/structure/vehicleparts/sub_fitting/battery
+	name = "battery bank"
+	desc = "Racks of lead-acid cells that drive the boat's motor, floodlights and sonar while it is submerged. The diesel charges them on the surface."
+	icon_state = "battery_bank"
+
+/obj/structure/vehicleparts/sub_fitting/battery/reading(obj/structure/vehicleparts/axis/ship/submarine/B)
+	return B.systems_report()
+
+/obj/structure/vehicleparts/sub_fitting/air
+	name = "air bank"
+	desc = "Flasks of compressed air that keep the hull air fresh, blow the lock-out chambers dry and fill diving bottles. The compressor refills them on the surface."
+	icon_state = "air_bank"
+
+/obj/structure/vehicleparts/sub_fitting/air/reading(obj/structure/vehicleparts/axis/ship/submarine/B)
+	return B.air_report()
+
+// A locker for diving dress, helmets and bottles beside the lock-out chambers.
+/obj/structure/closet/dive_locker
+	name = "dive locker"
+	desc = "A steel locker for diving dress, helmets and air bottles."
+	anchored = TRUE
+
+// ---- Layouts ----
+
+// Each boat is 3 wide and faces south when built, as "column,row" from its
+// bow; column 1 is the starboard (west) side. An entry lists the hull
+// section's type, its wall code (set_hull_walls) and whatever is fitted
+// there. Like the landing craft a submarine steers from a ship wheel and
+// runs on a diesel engine. The stern quarters are sealed tank spaces.
+#define SUB_HULL /obj/structure/vehicleparts/frame/ship/steel/submarine
+#define SUB_HATCH /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch
+var/global/list/submarine_layouts = list(
+	// Scout: helm under the glass bow, the lock-out chambers amidships and
+	// the engine room behind a watertight door.
+	"scout" = list(
+		"1,1" = list(SUB_HULL, "Fg Rg"),
+		"2,1" = list(SUB_HULL, "Fg", /obj/structure/vehicleparts/shipwheel),
+		"3,1" = list(SUB_HULL, "Fg Lg"),
+		"1,2" = list(SUB_HULL, "Rh", /obj/structure/vehicleparts/sub_station),
+		"2,2" = list(SUB_HULL, ""),
+		"3,2" = list(SUB_HULL, "Lh", /obj/structure/closet/dive_locker),
+		"1,3" = list(SUB_HATCH, "Fb"),
+		"2,3" = list(SUB_HULL, ""),
+		"3,3" = list(SUB_HATCH, "Fb"),
+		"1,4" = list(SUB_HULL, "Rh Fb", /obj/structure/vehicleparts/sub_fitting/battery),
+		"2,4" = list(SUB_HULL, "Fd"),
+		"3,4" = list(SUB_HULL, "Lh Fb", /obj/structure/vehicleparts/sub_fitting/air),
+		"1,5" = list(SUB_HULL, "Rh Bh Ft Lt"),
+		"2,5" = list(SUB_HULL, "Bh", /obj/structure/engine/internal/diesel/premade/chiha, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank),
+		"3,5" = list(SUB_HULL, "Lh Bh Ft Rt"),
+		),
+	// Explorer: the Scout's plan with a berth forward of the lock-out
+	// chambers and a locker space aft of them.
+	"explorer" = list(
+		"1,1" = list(SUB_HULL, "Fg Rg"),
+		"2,1" = list(SUB_HULL, "Fg", /obj/structure/vehicleparts/shipwheel),
+		"3,1" = list(SUB_HULL, "Fg Lg"),
+		"1,2" = list(SUB_HULL, "Rh", /obj/structure/vehicleparts/sub_station),
+		"2,2" = list(SUB_HULL, ""),
+		"3,2" = list(SUB_HULL, "Lh", /obj/structure/closet),
+		"1,3" = list(SUB_HULL, "Rh Fb", /obj/structure/bed),
+		"2,3" = list(SUB_HULL, "Fd"),
+		"3,3" = list(SUB_HULL, "Lh Fb", /obj/structure/bed),
+		"1,4" = list(SUB_HATCH, "Fb"),
+		"2,4" = list(SUB_HULL, ""),
+		"3,4" = list(SUB_HATCH, "Fb"),
+		"1,5" = list(SUB_HULL, "Rh Fb", /obj/structure/closet/dive_locker),
+		"2,5" = list(SUB_HULL, ""),
+		"3,5" = list(SUB_HULL, "Lh Fb", /obj/structure/closet),
+		"1,6" = list(SUB_HULL, "Rh Fb", /obj/structure/vehicleparts/sub_fitting/battery),
+		"2,6" = list(SUB_HULL, "Fd"),
+		"3,6" = list(SUB_HULL, "Lh Fb", /obj/structure/vehicleparts/sub_fitting/air),
+		"1,7" = list(SUB_HULL, "Rh Bh Ft Lt"),
+		"2,7" = list(SUB_HULL, "Bh", /obj/structure/engine/internal/diesel/premade/chiha, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank),
+		"3,7" = list(SUB_HULL, "Lh Bh Ft Rt"),
+		),
 	)
+#undef SUB_HULL
+#undef SUB_HATCH
 
-#define SUBMARINE_SQUARE 5
 #define SUBMARINE_WIDTH 3
 
-// Builds a submarine in one call, origin being the bottom-left turf of its
-// 5x5 turning square; the hull lies against the square's east edge with the
-// bow to the south. Returns the axis, or null when a tile is off the map.
-/proc/build_submarine(turf/origin, name = null)
-	if (!origin)
+// The Explorer: a longer boat with berths and lockers. Slower than the Scout.
+/obj/structure/vehicleparts/axis/ship/submarine/explorer
+	name = "explorer submarine"
+	desc = "The rudder and dive planes of a long steel submarine."
+	hull_class = "explorer"
+	speedlist = alist(1=18,2=14,3=11)
+
+/obj/structure/vehicleparts/axis/ship/submarine/proc/hull_layout()
+	return submarine_layouts[hull_class] || submarine_layouts["scout"]
+
+// The side of the square of water the boat turns in: its length.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/hull_square()
+	. = 0
+	for (var/coords in hull_layout())
+		. = max(., text2num(splittext(coords, ",")[2]))
+
+// Builds a submarine of the given model in one call, origin being the
+// bottom-left turf of its turning square; the hull lies against the square's
+// east edge with the bow to the south. Returns the axis, or null when a tile
+// is off the map.
+/proc/build_submarine(turf/origin, name = null, model = /obj/structure/vehicleparts/axis/ship/submarine)
+	if (!origin || !ispath(model, /obj/structure/vehicleparts/axis/ship/submarine))
 		return null
-	var/obj/structure/vehicleparts/axis/ship/submarine/A = new()
+	var/obj/structure/vehicleparts/axis/ship/submarine/A = new model()
 	if (name)
 		A.name = name
 	A.dir = SOUTH
 	A.anchor = FALSE
 	A.new_number()
+	var/list/layout = A.hull_layout()
+	var/square = A.hull_square()
 	var/list/parts = list()
-	for (var/coords in submarine_layout)
+	for (var/coords in layout)
 		var/list/C = splittext(coords, ",")
-		var/turf/T = locate(origin.x + SUBMARINE_SQUARE - SUBMARINE_WIDTH + text2num(C[1]) - 1, origin.y + text2num(C[2]) - 1, origin.z)
+		var/turf/T = locate(origin.x + square - SUBMARINE_WIDTH + text2num(C[1]) - 1, origin.y + text2num(C[2]) - 1, origin.z)
 		if (!T)
 			for (var/obj/O in parts)
 				qdel(O)
 			qdel(A)
 			return null
-		for (var/partpath in submarine_layout[coords])
+		var/list/entry = layout[coords]
+		for (var/partpath in entry)
+			if (!ispath(partpath))
+				continue
 			var/obj/O = new partpath(T)
 			parts += O
 			O.dir = SOUTH
 			O.anchored = TRUE
 			if (istype(O, /obj/structure/vehicleparts/frame))
-				var/obj/structure/vehicleparts/frame/F = O
+				var/obj/structure/vehicleparts/frame/ship/steel/submarine/F = O
 				F.axis = A
 				F.name = A.name
+				F.hull_tile = "[A.hull_class]_[C[1]]_[C[2]]"
+				F.set_hull_walls(entry[2])
 				A.components += F
 			if (istype(O, /obj/structure/engine))
 				var/obj/structure/engine/E = O
@@ -465,8 +785,8 @@ var/global/list/submarine_layout = list(
 		A.engine.fueltank = F
 	A.check_corners()
 	A.loc = A.corners[2]
-	for (var/dx = 0, dx < SUBMARINE_SQUARE, dx++)
-		for (var/dy = 0, dy < SUBMARINE_SQUARE, dy++)
+	for (var/dx = 0, dx < square, dx++)
+		for (var/dy = 0, dy < square, dy++)
 			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
 			if (T && !(locate(/obj/structure/vehicleparts/frame) in T))
 				var/obj/effect/pseudovehicle/P = new(T)
@@ -481,26 +801,43 @@ var/global/list/submarine_layout = list(
 
 // ---- Submarine pen: players build the boat ----
 
-// A slipway press on the shore that launches a submarine into the 5x5 square
-// of water northeast of it, like the aircraft hangar builds a plane.
+// A slipway press on the shore that launches a submarine into the square of
+// water northeast of it, like the aircraft hangar builds a plane: 5x5 for the
+// Scout and 7x7 for the Explorer.
 /obj/structure/car_workshop/submarine_pen
 	name = "submarine pen"
-	desc = "A covered slipway and riveting press. Feed it steel, glass and cable. It launches a submarine into the clear 5x5 square of water northeast of the press. The boat leaves with an empty diesel tank."
+	desc = "A covered slipway and riveting press. Feed it steel, glass and cable. It launches a submarine into the clear square of deep sea northeast of the press: 5x5 for a Scout, 7x7 for an Explorer. The boat leaves with an empty diesel tank."
 	icon_state = "workbench"
 
 /obj/structure/car_workshop/submarine_pen/models()
-	return list("Submarine" = /obj/structure/vehicleparts/axis/ship/submarine)
+	return list("Scout submarine" = /obj/structure/vehicleparts/axis/ship/submarine, "Explorer submarine" = /obj/structure/vehicleparts/axis/ship/submarine/explorer)
 
 /obj/structure/car_workshop/submarine_pen/required_nodes()
 	return list("submarines")
 
 /obj/structure/car_workshop/submarine_pen/model_size(model)
-	return (model in models()) ? SUBMARINE_SQUARE : 0
+	var/list/M = models()
+	if (!(model in M))
+		return 0
+	var/modelpath = M[model]
+	var/obj/structure/vehicleparts/axis/ship/submarine/A = modelpath
+	var/list/layout = submarine_layouts[initial(A.hull_class)]
+	. = 0
+	for (var/coords in layout)
+		. = max(., text2num(splittext(coords, ",")[2]))
+
+// The pen only has to fit the Scout where it stands; an Explorer needs its
+// larger square clear when it is launched.
+/obj/structure/car_workshop/submarine_pen/largest_model_size()
+	return model_size("Scout submarine")
 
 /obj/structure/car_workshop/submarine_pen/costs(model)
-	if (!(model in models()))
-		return null
-	return list("steel" = 90, "glass" = 4, "cable" = 12)
+	switch (model)
+		if ("Scout submarine")
+			return list("steel" = 90, "glass" = 4, "cable" = 12)
+		if ("Explorer submarine")
+			return list("steel" = 140, "glass" = 8, "cable" = 20)
+	return null
 
 /obj/structure/car_workshop/submarine_pen/bay_floor(turf/T)
 	return istype(T, /turf/floor/beach/water/deep/saltwater) && !sea_layer_cell(T) && !T.density
@@ -508,18 +845,20 @@ var/global/list/submarine_layout = list(
 /obj/structure/car_workshop/submarine_pen/build_refusal(mob/living/human/H, turf/origin)
 	. = ..()
 	if (.)
-		. = replacetext(., "a dry, open [SUBMARINE_SQUARE]x[SUBMARINE_SQUARE] floor bay", "a [SUBMARINE_SQUARE]x[SUBMARINE_SQUARE] square of open deep sea")
+		var/size = largest_model_size()
+		. = replacetext(., "a dry, open [size]x[size] floor bay", "a [size]x[size] square of open deep sea")
 
 /obj/structure/car_workshop/submarine_pen/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cable"]] cable. A submarine costs 90 steel, 4 glass and 12 cable. Keep the 5x5 square of deep sea northeast of the press clear."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cable"]] cable. A Scout costs 90 steel, 4 glass and 12 cable and needs the 5x5 square of deep sea northeast of the press clear. An Explorer costs 140 steel, 8 glass and 20 cable and needs a 7x7 square."
 
 /obj/structure/car_workshop/submarine_pen/assembled_message(model)
-	return "Your submarine is launched. Fill its tank with diesel, then use the ballast and periscope station aboard to dive once you reach open ocean."
+	return "Your [lowertext(model)] is launched. Fill its tank with diesel, then use the ballast and periscope station aboard to dive once you reach open ocean."
 
 /obj/structure/car_workshop/submarine_pen/complete_assembly(model)
 	if (!has_inputs(model) || !clear_footprint(model))
 		return null
-	var/obj/structure/vehicleparts/axis/ship/submarine/A = build_submarine(locate(x + 1, y + 1, z))
+	var/list/M = models()
+	var/obj/structure/vehicleparts/axis/ship/submarine/A = build_submarine(locate(x + 1, y + 1, z), null, M[model])
 	if (!A)
 		return null
 	var/list/required = costs(model)
@@ -529,8 +868,14 @@ var/global/list/submarine_layout = list(
 		return null
 	return A
 
-#undef SUBMARINE_SQUARE
 #undef SUBMARINE_WIDTH
+#undef SUBMARINE_STRIPE_DEFAULT
+#undef SUBMARINE_PAINT_TIME
+#undef SUB_WALL_HULL
+#undef SUB_WALL_GLASS
+#undef SUB_WALL_BULKHEAD
+#undef SUB_WALL_DOOR
+#undef SUB_WALL_TANK
 #undef SUBMARINE_PERISCOPE_RANGE
 #undef SUBMARINE_SONAR_RANGE
 #undef SUBMARINE_BALLAST_TIME
