@@ -1238,6 +1238,7 @@
 #include "code\modules\craft\turf_body.dm"
 #include "code\modules\craft\under_way.dm"
 #include "code\modules\craft\vehicle_aboard.dm"
+#include "code\modules\craft\vehicle_assembly.dm"
 #include "code\modules\craft\vehicle_papers.dm"
 #include "code\modules\craft\vehicle_tow.dm"
 #include "code\modules\collectibles\stickers.dm"

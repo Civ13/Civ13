@@ -452,6 +452,29 @@ Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).
 
+
+## Vehicle assembly
+
+`code/modules/craft/vehicle_assembly.dm` is how a land vehicle is built by
+hand. `/datum/vehicle_survey` starts from the frame an axis stands on and
+takes every loose land frame joined to it (frames of another vehicle and ship
+frames are not taken). It sets `refusal` in plain words when the frames are
+not a filled rectangle between 2 by 2 and 5 by 5, and otherwise lists the
+engine, fuel tank, driver's seat and corner wheels or tracks it found;
+`missing()` is what the vehicle still needs before it drives and `report()`
+is the text the builder reads.
+
+`axis.assemble(facing)` binds the surveyed frames in any of the four
+facings, moves the axis to the front left corner, lays the turning square
+(`assembly_square()`: from the front left corner to the vehicle's right and
+back) and calls `fit_parts()`, which also fits parts stood on the frames
+later. `take_apart()` unbinds a `hand_built` vehicle so it can be changed and
+assembled again; `take_apart_refusal(H)` keeps that to its owners while it
+is registered. Clicking the axis opens the menu. Ships keep their own
+assembly in `modular_vehicles/ships/axis.dm`.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
+
 ## Carriages
 
 `code/game/objects/structures/carriage.dm` is the horse carriage, and
