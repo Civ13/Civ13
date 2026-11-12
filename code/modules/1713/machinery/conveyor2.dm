@@ -64,6 +64,17 @@
 		movedir = 0
 	update()
 
+// A belt placed on a line takes the run state of its linked switch. Linked
+// switches share one position, so the first one found speaks for the line.
+/obj/machinery/conveyor/proc/sync_with_switch()
+	if(!id)
+		return
+	for(var/obj/machinery/conveyor_switch/S in processing_objects)
+		if(S.id == id)
+			operating = S.position
+			setmove()
+			return
+
 /obj/machinery/conveyor/proc/update()
 	if(!operable)
 		icon_state = "conveyor-broken"
@@ -323,6 +334,7 @@
 		qdel(CB)
 	var/obj/machinery/conveyor/C = new/obj/machinery/conveyor(T,cdir)
 	C.id = id
+	C.sync_with_switch()
 	transfer_fingerprints_to(C)
 	qdel(src)
 
