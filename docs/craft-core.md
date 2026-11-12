@@ -75,6 +75,13 @@ needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
 from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
 drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
 
+A running engine loose on a deck (`/obj/structure/engine`, not on a vehicle
+frame) is an engine drive: it pushes its current `maxpower` and can make full
+ahead. After each hop `craft.burn_drives()` asks every drive to pay for it at
+`speed / VESSEL_SPEED_FULL` of full power; an internal engine pays from its
+own fuel tank (`craft_burn()`, `engines/internal_combustion.dm`) and stalls
+when it cannot, and an external engine's heat source is its fuel.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The

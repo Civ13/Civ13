@@ -12,6 +12,10 @@
 //
 // A ship mast (15 planks) with a sail rigged on it is the first drive: one
 // rigged mast pushes CRAFT_SAIL_THRUST tiles of hull at half ahead.
+//
+// Any engine standing aboard and running is the second: it pushes its power
+// output, can make full ahead, and burns from its own fuel tank at every hop
+// by the telegraph step (an external engine's boiler fire is its fuel).
 // ============================================================
 
 #define CRAFT_THRUST_HALF 1
@@ -21,6 +25,8 @@
 /datum/craft_drive
 	// The fastest telegraph step this kind of drive can make.
 	var/top_step = VESSEL_SPEED_FULL
+	// What the helm calls it.
+	var/kind = "drive"
 
 // Told when the craft gets under way or stops, for sails and smoke.
 /datum/craft_drive/proc/under_way(state)
@@ -50,6 +56,7 @@
 // ---- Sails ----
 
 /datum/craft_drive/fitted/sail
+	kind = "sail"
 	thrust = CRAFT_SAIL_THRUST
 	top_step = VESSEL_SPEED_HALF
 
@@ -67,6 +74,31 @@
 // A mast standing free on a deck (not fitted to a modular ship's frame).
 /obj/structure/vehicleparts/movement/sail/craft_drive()
 	return (isturf(loc) && !axis) ? new /datum/craft_drive/fitted/sail(src) : null
+
+// ---- Engines ----
+
+/datum/craft_drive/fitted/engine
+	kind = "engine"
+
+/datum/craft_drive/fitted/engine/ready()
+	var/obj/structure/engine/E = source
+	return ..() && istype(E) && E.on && !E.broken
+
+// An engine pushes what it puts out now: a steam engine with one fire lit
+// under it pushes less than one with three.
+/datum/craft_drive/fitted/engine/push()
+	var/obj/structure/engine/E = source
+	return ready() ? max(0, E.maxpower) : 0
+
+/datum/craft_drive/fitted/engine/burn(share = 1)
+	var/obj/structure/engine/E = source
+	return ready() ? E.craft_burn(share, VESSEL_HOP_INTERVAL / 10) : 0
+
+// Loose on a deck, not fitted to a vehicle's frame.
+/obj/structure/engine/craft_drive()
+	if (!isturf(loc) || (locate(/obj/structure/vehicleparts/frame) in loc))
+		return null
+	return new /datum/craft_drive/fitted/engine(src)
 
 // ---- Fitting and speed ----
 
@@ -107,13 +139,30 @@
 	for (var/datum/craft_drive/D in drives)
 		D.under_way(moving && D.ready())
 
+// Every working drive pays for the hop just made, by the telegraph step.
+/datum/craft/proc/burn_drives()
+	var/share = clamp(speed / VESSEL_SPEED_FULL, 0, 1)
+	for (var/datum/craft_drive/D in drives)
+		D.burn(share)
+
 // What drives she has, for the helm.
 /datum/craft/proc/drives_text()
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	var/working = 0
+	var/sails = 0
+	var/engines = 0
 	for (var/datum/craft_drive/D in drives)
-		if (D.ready())
-			working++
-	if (!working)
-		return "No sail is rigged: she is poled along at slow ahead."
-	return "Under [working] sail[working == 1 ? "" : "s"]: [speeds[max_speed() + 1]] at best."
+		if (!D.ready())
+			continue
+		if (D.kind == "sail")
+			sails++
+		else
+			engines++
+	if (!sails && !engines)
+		return "No sail is rigged and no engine is running: she is poled along at slow ahead."
+	var/list/under = list()
+	if (sails)
+		under += "[sails] sail[sails == 1 ? "" : "s"]"
+	if (engines)
+		under += "[engines] engine[engines == 1 ? "" : "s"]"
+	var/tiles = mass()
+	return "Under [jointext(under, " and ")]: [speeds[max_speed() + 1]] at best. Her drives push [thrust()]; [tiles] tile[tiles == 1 ? "" : "s"] of hull need [tiles * CRAFT_THRUST_HALF] for half ahead and [tiles * CRAFT_THRUST_FULL] from engines for full ahead."

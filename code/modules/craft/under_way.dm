@@ -151,6 +151,7 @@
 	var/list/hop = next_hop()
 	clear_path()
 	if (hop && body.move_to(hop[1], hop[2], body.heading()))
+		burn_drives()
 		return TRUE
 	if (hop)
 		last_refusal = body.last_refusal
