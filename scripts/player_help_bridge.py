@@ -70,9 +70,9 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c74a8bc47bf8bfd403983e1ff6a8562fdffa885e'
+WIKI_REVIEWED_REVISION = 'd36776cdfaca4dbd569b0586676f3ee8375c0673'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Animals.md': ('d57a35b5247a621ff482100a3152f7cacdcac91078e28e1928f6aeafcf9dcecb', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('7b6102b505dee6ce050b53adb36811d59b4128ec7a16c4ed31e99828ed137a5a', 'combat fight fighting intent aim shoot melee grenade cover'),
