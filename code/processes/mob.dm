@@ -22,11 +22,6 @@
 			unregister_living_mob(M)
 			continue
 
-		else if (istype(M, /mob/new_player))
-			if (!M.client || M.client.mob != M)
-				qdel(M)
-			continue
-
 		try
 			// since we spent so long getting here we have to do this again
 			if (!M)
