@@ -695,12 +695,10 @@
 	var/turf/surface = V ? locate(here.x, here.y, V.base_z) : locate(here.x, here.y, multiz_level_below(here.z) || here.z)
 	if (!surface)
 		surface = here
-	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
-		var/turf/T = get_turf(S)
-		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
-			continue
-		. += "Ship: [S.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
 	var/datum/craft/mine = V ? craft_of_vessel(V, FALSE) : null
+	// Modular boats, and further down aircraft: the same lines a ship's
+	// lookout reads on the sea chart (naval/craft_chart.dm).
+	. += sea_boat_contacts(surface, VESSEL_RADAR_RANGE, mine ? mine.party() : null)
 	for (var/datum/vessel/O in naval_vessels)
 		if (O == V || !O.placed || O.base_z != surface.z)
 			continue
@@ -719,14 +717,7 @@
 			continue
 		var/known = !C.running_dark || (mine && mine.knows(C))
 		. += "Hull: [known ? C.name : "unknown contact"], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(C.body.heading())][C.making_way() ? "" : ", stopped"]."
-	for (var/obj/structure/vehicleparts/axis/aircraft/A in airborne_aircraft)
-		var/turf/T = get_turf(A)
-		if (!T || multiz_level_below(T.z) != surface.z)
-			continue
-		var/turf/below = locate(T.x, T.y, surface.z)
-		if (!below || get_dist(below, surface) > VESSEL_RADAR_RANGE)
-			continue
-		. += "Aircraft: [A.name], [get_dist(below, surface)] tiles [submarine_bearing(surface, below)], heading [dir2text(A.dir)][A.flight_state == AIRCRAFT_CRUISE ? ", high" : ", low"]."
+	. += sea_aircraft_contacts(surface, VESSEL_RADAR_RANGE, mine ? mine.party() : null)
 
 /obj/structure/vessel_radar/attack_hand(mob/living/human/H)
 	if (!istype(H))
