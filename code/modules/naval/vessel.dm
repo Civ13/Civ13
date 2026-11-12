@@ -516,7 +516,7 @@ var/global/list/naval_vessels = list()
 	last_refusal = refusal_was
 
 /datum/vessel/proc/set_speed(new_speed)
-	speed = clamp(new_speed, VESSEL_SPEED_STOP, max_speed)
+	speed = clamp(new_speed, VESSEL_SPEED_STOP, speed_cap())
 	if (speed > 0 && !anchored)
 		start_sailing()
 

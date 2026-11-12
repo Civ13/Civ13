@@ -97,6 +97,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 			C.token = new /datum/chart_token
 			C.token.craft = C
 		C.token.name = C.name
+		C.token.dark = C.running_dark
 		var/list/at = chart_position(P)
 		add_token(C.token, at[1], at[2])
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
@@ -146,7 +147,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	S.refresh()
 	if (!token || token.chart != S)
 		return "She is not on this chart."
-	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""].")
+	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""][running_dark ? ". She runs dark" : ""].")
 	var/list/ships = list()
 	var/list/harbours = list()
 	for (var/datum/chart_token/T in S.tokens)
@@ -163,11 +164,11 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 			continue
 		if (get_dist(here, P) > token.sensor_range)
 			continue
-		if (T.dark || !T.craft)
+		var/datum/craft/C = T.craft
+		if (!C || !knows(C))
 			ships += "[T.contact_name()], [where]."
 			continue
-		var/datum/craft/C = T.craft
-		ships += "[T.contact_name()], [where], bow to the [dir2text(C.body.heading())], [C.berth ? "moored at [C.berth.berth_name()]" : (C.making_way() ? "under way" : "stopped")]."
+		ships += "[C.name], [where][C.running_dark ? ", running dark" : ""], bow to the [dir2text(C.body.heading())], [C.berth ? "moored at [C.berth.berth_name()]" : (C.making_way() ? "under way" : "stopped")]."
 	lines += ships.len ? "Lookout, [token.sensor_range] tiles:" : "Lookout: no other ship within [token.sensor_range] tiles."
 	lines += ships
 	lines += harbours.len ? "Harbours on this sea:" : "No harbour is charted on this sea."

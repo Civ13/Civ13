@@ -44,6 +44,9 @@ var/naval_runtime_error = FALSE
 			var/turf/S = locate(x, y, 3)
 			S.ChangeTurf(/turf/sky/building)
 
+/datum/craft_drive/probe_push
+	thrust = 1000
+
 /obj/structure/probe_gun
 	name = "probe gun"
 	anchored = TRUE
@@ -98,10 +101,39 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(text, "the Wren lies in square E1 (42, 10)"), "the chart says where she is ([text])")
 	naval_check(findtext(text, "Kite, 9 tiles northeast, square F2, bow to the east, stopped"), "her lookout sees the Kite")
 	naval_check(findtext(text, "the mooring post at 20, 20, 22 tiles northwest, square B2: she may berth here"), "and the harbour is charted with its answer")
-	K.token.dark = TRUE
+
+	// ---- Running dark and hails (naval/craft_signals.dm) ----
+	var/datum/craft_drive/probe_push/strong = new
+	K.add_drive(strong)
+	K.set_speed(VESSEL_SPEED_FULL)
+	naval_check(K.speed == VESSEL_SPEED_FULL, "with a strong drive the Kite rings full ahead ([K.speed])")
+	naval_check(K.set_dark(TRUE) && K.running_dark && K.speed == VESSEL_SPEED_SLOW && !K.set_dark(TRUE), "run dark she drops to slow ahead ([K.speed])")
+	K.set_speed(VESSEL_SPEED_FULL)
+	naval_check(K.speed == VESSEL_SPEED_SLOW && K.max_speed() == VESSEL_SPEED_SLOW && findtext(tiller2.status_text(), "running dark"), "and slow ahead is all she rings while dark")
 	text = C.sea_chart_text()
-	naval_check(findtext(text, "unknown contact, 9 tiles northeast, square F2.") && !findtext(text, "Kite"), "a ship running dark is seen but not known")
-	K.token.dark = FALSE
+	naval_check(findtext(text, "unknown contact, 9 tiles northeast, square F2.") && !findtext(text, "Kite") && K.token.dark, "a ship running dark is seen but not known")
+	naval_check(findtext(K.sea_chart_text(), "She runs dark") && findtext(K.sea_chart_text(), "Wren, 9 tiles southwest"), "she still knows the ships that show themselves")
+	var/list/hails = C.hail_candidates()
+	naval_check(hails.len == 1 && hails["Unknown contact, 9 tiles northeast"] == K, "the Wren can hail the contact her lookout sees")
+	naval_check(C.hail(K, "Heave to", null) && K.last_hail == "Hail from the Wren, 9 tiles southwest: \"Heave to\"", "the Kite's crew hear the hail and where it came from ([K.last_hail])")
+	naval_check(K.hail(C, "No", null) && C.last_hail == "Hail from an unknown ship, 9 tiles northeast: \"No\"", "a dark ship answers without her name ([C.last_hail])")
+	C.last_hailed_at = world.time + 1
+	naval_check(!C.hail(K, "Again", null) && findtext(C.last_refusal, "still carrying"), "hails cannot be shouted one on top of another")
+	C.last_hailed_at = 0
+	naval_check(!C.hail(K, "", null) && !C.hail(C, "Me", null), "nothing and nobody are not hailed")
+	C.register = new /datum/craft_register
+	C.register.party = "probe owners"
+	K.register = new /datum/craft_register
+	K.register.party = "probe owners"
+	naval_check(C.knows(K) && C.name_of(K) == "Kite" && findtext(C.sea_chart_text(), "Kite, 9 tiles northeast, square F2, running dark, bow to the east"), "ships of her own owners still know her")
+	qdel(C.register)
+	qdel(K.register)
+	C.register = null
+	K.register = null
+	naval_check(K.set_dark(FALSE) && !K.token.dark && K.max_speed() == VESSEL_SPEED_FULL, "showing her lights she is known and fast again")
+	K.set_speed(VESSEL_SPEED_STOP)
+	K.remove_drive(strong)
+	qdel(strong)
 	C.token.sensor_range = 5
 	naval_check(findtext(C.sea_chart_text(), "no other ship within 5 tiles"), "a ship beyond the lookout is not listed")
 	C.token.sensor_range = CHART_SENSOR_RANGE
@@ -200,6 +232,15 @@ var/naval_runtime_error = FALSE
 	var/y_was = c1.y
 	naval_check(V.sail_hop() && c1.y > y_was && (c2 in c1.connections) && (c1 in c2.connections), "cables on her deck hop with her and stay joined ([c1.y])")
 	naval_check(!(ashore in c1.connections) && !(c1 in ashore.connections) && isnull(craft_rigid_cargo), "and the cable to the shore has parted")
+
+	// ---- A slipway ship runs dark too ----
+	V.set_speed(VESSEL_SPEED_HALF)
+	naval_check(V.speed == VESSEL_SPEED_HALF && V.deck_lights_on, "the schooner makes half ahead with her lights on")
+	naval_check(P.set_dark(TRUE) && V.speed == VESSEL_SPEED_SLOW && !V.deck_lights_on && V.speed_cap() == VESSEL_SPEED_SLOW, "run dark her deck lights go out and she drops to slow ahead")
+	V.set_speed(VESSEL_SPEED_FULL)
+	naval_check(V.speed == VESSEL_SPEED_SLOW, "and she rings no more than slow ahead")
+	naval_check(P.set_dark(FALSE) && V.deck_lights_on && V.speed_cap() == V.max_speed, "showing her lights lifts the limit")
+	V.set_speed(VESSEL_SPEED_STOP)
 
 /proc/naval_run()
 	try

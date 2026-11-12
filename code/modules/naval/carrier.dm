@@ -309,7 +309,8 @@
 	if (!vessel)
 		return "The wheel is not connected to a ship."
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"]."
+	var/datum/craft/dark_craft = craft_of_vessel(vessel, FALSE)
+	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"][(dark_craft && dark_craft.running_dark) ? ", running dark" : ""]."
 
 /obj/structure/vessel_helm/examine(mob/user)
 	..()
@@ -318,7 +319,9 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Chart", "Ship's papers", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
+	var/datum/craft/own = ship_craft()
+	var/dark = own && own.running_dark
+	var/list/options = list("Chart", "Ship's papers", "Hail a ship", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", dark ? "Show her lights" : "Run dark", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
@@ -330,6 +333,11 @@
 		return
 	if (choice == "Ship's papers")
 		papers(H)
+		return
+	if (choice == "Hail a ship")
+		var/datum/craft/hailing = ship_craft()
+		if (hailing)
+			hailing.hail_menu(H, src)
 		return
 	// A registered ship answers to her crew (ship_papers.dm).
 	switch (steer_access(H))
@@ -343,6 +351,15 @@
 		var/datum/craft/docking = ship_craft()
 		if (docking)
 			docking.dock_menu(H, src)
+		return
+	own = ship_craft()
+	dark = own && own.running_dark
+	if (choice == "Run dark" || choice == "Show her lights")
+		if (own)
+			own.dark_menu(H, src, choice == "Run dark")
+		return
+	if (dark && (choice in list("Full ahead", "Half ahead", "Deck lights on")))
+		to_chat(H, SPAN_WARNING("The [vessel.name] runs dark: she shows no lights and makes slow ahead at most. Show her lights first."))
 		return
 	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < vessel.fuel_burn(VESSEL_SPEED_SLOW))
 		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point below decks first."))
@@ -675,13 +692,25 @@
 		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
 			continue
 		. += "Ship: [S.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
+	var/datum/craft/mine = V ? craft_of_vessel(V, FALSE) : null
 	for (var/datum/vessel/O in naval_vessels)
 		if (O == V || !O.placed || O.base_z != surface.z)
 			continue
 		var/turf/T = locate(O.ox + round((O.box_w() - 1) / 2), O.oy + round((O.box_h() - 1) / 2), O.base_z)
 		if (!T || get_dist(T, surface) > VESSEL_RADAR_RANGE)
 			continue
-		. += "Vessel: [O.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(O.dir)][O.speed > 0 && !O.anchored ? "" : ", stopped"]."
+		var/datum/craft/theirs = craft_of_vessel(O, FALSE)
+		var/known = !theirs || !theirs.running_dark || (mine && mine.knows(theirs))
+		. += "Vessel: [known ? O.name : "unknown contact"], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(O.dir)][O.speed > 0 && !O.anchored ? "" : ", stopped"]."
+	// Player-built hulls (naval/built_hull.dm).
+	for (var/datum/craft/C in crafts)
+		if (C == mine || istype(C.body, /datum/craft_body/template))
+			continue
+		var/turf/T = C.centre()
+		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
+			continue
+		var/known = !C.running_dark || (mine && mine.knows(C))
+		. += "Hull: [known ? C.name : "unknown contact"], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(C.body.heading())][C.making_way() ? "" : ", stopped"]."
 	for (var/obj/structure/vehicleparts/axis/aircraft/A in airborne_aircraft)
 		var/turf/T = get_turf(A)
 		if (!T || multiz_level_below(T.z) != surface.z)
