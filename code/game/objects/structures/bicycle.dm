@@ -9,6 +9,23 @@
 /proc/bicycle_step_cost(load_ratio)
 	return Clamp(0.5 + max(0, load_ratio) * 0.5, 0.5, 2)
 
+// Natural ground (grass, dirt, sand, snowfields) is slower than built floors
+// and roads, and lying snow drags further.
+/proc/bicycle_ground_delay(step_delay, rough, snowy)
+	if (rough)
+		step_delay *= 1.25
+	if (snowy)
+		step_delay += 1
+	return step_delay
+
+// Coasting downhill is free. Rough ground and each level climbed cost more.
+/proc/bicycle_ground_cost(step_cost, rough, levels)
+	if (levels < 0)
+		return 0
+	if (rough)
+		step_cost *= 1.25
+	return step_cost + levels * 0.5
+
 // Include worn items, pockets, holsters and nested bags. Guns and magazines
 // already include their ammunition in get_weight(), so do not count it twice.
 /proc/bicycle_carried_weight(atom/container)
@@ -22,6 +39,8 @@
 
 /obj/item/vehicleparts/wheel/handle/bicycle
 	name = "bicycle handlebars"
+	icon = 'icons/obj/vehicles/bicycle.dmi'
+	icon_state = "bicycle_handlebars"
 	desc = "Use to start or stop pedaling. The secondary action brakes. Direction keys steer."
 	weight = 0
 
@@ -46,9 +65,9 @@
 
 /obj/structure/vehicle/bicycle
 	name = "pedal bicycle"
-	desc = "A pedal-powered bicycle. Carrying more weight slows it down and takes more stamina. Drag yourself onto it, use the handlebars to pedal, and use their secondary action to brake."
-	// Reuse the unpowered, wheeled motorcycle frame rather than engine art.
-	icon_state = "motorcycle_frame1"
+	desc = "A pedal-powered bicycle. It is quickest on roads and built floors, and a heavy load slows it down and tires you sooner. Drag yourself onto it, use the handlebars to pedal, and use their secondary action to brake."
+	icon = 'icons/obj/vehicles/bicycle.dmi'
+	icon_state = "bicycle"
 	density = TRUE
 	wheeled = TRUE
 	not_movable = TRUE
@@ -60,6 +79,22 @@
 	var/tmp/pedal_safety_timer = null
 	var/tmp/pedal_next_move = 0
 	var/tmp/pedal_busy = FALSE
+	// Handlebars, crank and nearest wheel, drawn in front of the rider.
+	var/tmp/image/rider_overlay = null
+
+/obj/structure/vehicle/bicycle/update_overlay()
+	if (!rider_overlay)
+		rider_overlay = image(icon, "bicycle_overlay")
+		rider_overlay.layer = MOB_LAYER + 2.1
+	overlays -= rider_overlay
+	if (driver)
+		overlays += rider_overlay
+
+// What the next tile does to a step: list(rough, snowy, levels climbed).
+/obj/structure/vehicle/bicycle/proc/ground_ahead(turf/start, turf/target)
+	var/rough = !target.terrain_smoothed()
+	var/snowy = target.has_snow_cover() && !target.terrain_floor_covered()
+	return list(rough, snowy, terrain_step_levels(start, target))
 
 /obj/structure/vehicle/bicycle/New()
 	..()
@@ -72,6 +107,7 @@
 /obj/structure/vehicle/bicycle/persistence_restore_finished()
 	..()
 	stopmovementloop()
+	update_overlay()
 	if (!istype(dwheel, /obj/item/vehicleparts/wheel/handle/bicycle))
 		dwheel = new /obj/item/vehicleparts/wheel/handle/bicycle(src)
 	dwheel.origin = src
@@ -93,7 +129,8 @@
 	stopmovementloop()
 
 /obj/structure/vehicle/bicycle/proc/rider_ready()
-	if (!driver || !driver.client || driver.stat != CONSCIOUS || health <= 0 || !isturf(loc) || anchored)
+	// ssd_check() lets agent-run bodies ride; a disconnected player stops.
+	if (!driver || driver.ssd_check() || driver.stat != CONSCIOUS || health <= 0 || !isturf(loc) || anchored)
 		return FALSE
 	if (driver.driver_vehicle != src || !driver.driver || driver.buckled != src || driver.loc != loc || !(driver in ontop))
 		return FALSE
@@ -128,15 +165,18 @@
 	user.driver = TRUE
 	user.driver_vehicle = src
 	ontop += user
+	update_overlay()
 	update_icon()
-	to_chat(user, SPAN_NOTICE("You mount the bicycle. Use the handlebars to pedal; click the bicycle to get off."))
+	user.visible_message(SPAN_NOTICE("[user] gets on \the [src]."), SPAN_NOTICE("You mount the bicycle. Use the handlebars to pedal; click the bicycle to get off."))
 
 /obj/structure/vehicle/bicycle/startmovementloop()
 	if (moving || pedal_busy || !rider_ready())
 		return
 	moving = TRUE
 	movement_processes = 1
-	// Retain the paid interval across rapid brake/start clicks.
+	// Retain the paid interval across rapid brake/start clicks, but never
+	// bank time spent stopped.
+	pedal_next_move = max(pedal_next_move, world.time)
 	pedal_timer = addtimer(CALLBACK(src, PROC_REF(movementloop)), max(world.tick_lag, pedal_next_move - world.time), TIMER_STOPPABLE)
 
 /obj/structure/vehicle/bicycle/movementloop()
@@ -192,21 +232,30 @@
 	if (!moving || world.time < pedal_next_move || !do_vehicle_check() || !(m_dir in cardinal) || m_dir != driver.dir)
 		return FALSE
 	var/mob/living/human/H = driver
+	var/turf/start = get_turf(src)
+	var/turf/target = get_step(src, m_dir)
+	var/list/ground = ground_ahead(start, target)
 	var/load_ratio = bicycle_load_ratio(bicycle_carried_weight(H), H.getStatCoeff("strength"))
-	var/cost = bicycle_step_cost(load_ratio)
+	var/cost = bicycle_ground_cost(bicycle_step_cost(load_ratio), ground[1], ground[3])
 	if (H.getStat("stamina") < cost)
 		to_chat(H, SPAN_WARNING("You are too tired to keep pedaling."))
 		return FALSE
-	interval = bicycle_step_delay(load_ratio)
+	interval = bicycle_ground_delay(bicycle_step_delay(load_ratio), ground[1], ground[2])
+	// Hills: slower uphill, a little quicker coasting down.
+	interval = Clamp(interval + terrain_slope_delay(start, target, interval), 1, 10)
 	vehicle_m_delay = interval
-	pedal_next_move = world.time + interval
-	var/turf/start = get_turf(src)
-	var/turf/target = get_step(src, m_dir)
+	// Timers land on whole server ticks. Keep to the schedule while it is less
+	// than one step behind, so late ticks do not stretch the average pace.
+	var/due = pedal_next_move
+	if (due < world.time - interval)
+		due = world.time
+	pedal_next_move = due + interval
 	var/datum/carriage_glide_lease/lease = claim_ride_glides(m_dir, interval)
 	// Native Move honors borders, doors, covers, mobs and turf collision.
 	// Do not use legacy forceMove to drive through them or inflict engine damage.
 	if (!Move(target, m_dir) || loc != target)
 		lease.release()
+		to_chat(H, SPAN_WARNING("Something is in the way. You stop pedaling."))
 		return FALSE
 	if (gcDestroyed || !H || driver != H || H.loc != start || H.buckled != src)
 		lease.release()
@@ -229,6 +278,7 @@
 		H.driver_vehicle = null
 		ontop -= H
 		driver = null
+		update_overlay()
 	return ..()
 
 /obj/structure/vehicle/bicycle/Destroy()
@@ -239,4 +289,4 @@
 	return ..()
 
 /obj/structure/vehicle/bicycle/persistence_runtime_var(key)
-	return key == "pedal_safety_timer" || key == "pedal_timer" || key == "pedal_next_move" || key == "pedal_busy" || key == "moving" || key == "movement_processes" || ..()
+	return key == "pedal_safety_timer" || key == "pedal_timer" || key == "pedal_next_move" || key == "pedal_busy" || key == "rider_overlay" || key == "moving" || key == "movement_processes" || ..()

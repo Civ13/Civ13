@@ -55,6 +55,7 @@ def rider_fixture():
            frozen=False, legcuffed=None, l_hand=b.dwheel, r_hand=None, disabled=False,
            parts={part: NS(is_stump=lambda: False) for part in ('l_leg', 'r_leg', 'l_foot', 'r_foot')})
     h.incapacitated = lambda flags: h.disabled
+    h.ssd_check = lambda: not h.client
     h.get_organ = lambda part: h.parts.get(part)
     b.driver = h
     b.dwheel.loc = h
@@ -70,7 +71,13 @@ def rider_fixture():
 
 def move_fixture(source=SOURCE, blocked=False):
     ratio, delay, cost = math_procs(source)
+    ground_env = {}
+    ground_delay = compile_proc('/proc/bicycle_ground_delay', 'step_delay, rough, snowy', ground_env, source=source)
+    ground_cost = compile_proc('/proc/bicycle_ground_cost', 'step_cost, rough, levels', ground_env, source=source)
     b, h, ready = rider_fixture()
+    b.ground = [False, False, 0]
+    b.ground_ahead = lambda start, target: dict(enumerate(b.ground, 1))
+    b.slope = 0
     h.dir = 4
     h.stamina = 10
     h.weight = 0
@@ -96,13 +103,16 @@ def move_fixture(source=SOURCE, blocked=False):
         return not blocked
     b.Move = move
     env = dict(src=b, world=NS(time=100), cardinal=[1, 2, 4, 8], max=max,
+               bicycle_ground_delay=ground_delay, bicycle_ground_cost=ground_cost,
+               terrain_slope_delay=lambda start, target, step: b.slope,
+               Clamp=lambda n, low, high: max(low, min(n, high)),
                bicycle_load_ratio=ratio, bicycle_step_delay=delay,
                bicycle_step_cost=cost, bicycle_carried_weight=lambda actor: actor.weight,
                to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
                get_turf=lambda atom: atom.loc, get_step=lambda atom, direction: 'destination',
                typed_iter=lambda items, path: list(items))
     members = ('moving', 'pedal_next_move', 'do_vehicle_check', 'driver',
-               'vehicle_m_delay', 'claim_ride_glides', 'Move', 'loc', 'update_icon', 'gcDestroyed')
+               'vehicle_m_delay', 'claim_ride_glides', 'ground_ahead', 'Move', 'loc', 'update_icon', 'gcDestroyed')
     move = compile_proc(BASE + '/do_move', 'm_dir=None, interval=None', env, members, source)
     return b, h, lease, moves, env, move
 
@@ -217,6 +227,18 @@ class BicycleMove(unittest.TestCase):
         self.assertEqual(len(moves), 1)
         self.assertEqual(h.stats['stamina'][1], 9.5)
 
+    def test_late_tick_keeps_the_schedule_but_a_long_stop_does_not_bank_time(self):
+        b, h, lease, moves, env, move = move_fixture()
+        b.pedal_next_move = 99.6
+        self.assertTrue(move(4))
+        self.assertAlmostEqual(b.pedal_next_move, 101.1)
+        b, h, lease, moves, env, move = move_fixture()
+        b.pedal_next_move = 50
+        self.assertTrue(move(4))
+        self.assertAlmostEqual(b.pedal_next_move, 101.5)
+        start = extract(SOURCE, BASE + '/startmovementloop')
+        self.assertIn('pedal_next_move = max(pedal_next_move, world.time)', start)
+
     def test_rejects_bad_terrain_invalid_direction_or_stopped(self):
         for direction, allowed, moving in ((4, False, True), (5, True, True), (4, True, False)):
             b, h, lease, moves, env, move = move_fixture()
@@ -246,6 +268,59 @@ class BicycleMove(unittest.TestCase):
         self.assertEqual(h.stats['stamina'][1], 7.5)
 
 
+class BicycleGround(unittest.TestCase):
+    def test_rough_ground_and_snow_slow_and_tire(self):
+        b, h, lease, moves, env, move = move_fixture()
+        b.ground = [True, True, 0]
+        self.assertTrue(move(4))
+        self.assertAlmostEqual(b.vehicle_m_delay, 1.5 * 1.25 + 1)
+        self.assertAlmostEqual(h.stats['stamina'][1], 10 - .625)
+
+    def test_climbing_costs_more_and_adds_slope_delay(self):
+        b, h, lease, moves, env, move = move_fixture()
+        b.ground = [True, False, 2]
+        b.slope = 2
+        self.assertTrue(move(4))
+        self.assertAlmostEqual(b.vehicle_m_delay, 1.875 + 2)
+        self.assertAlmostEqual(h.stats['stamina'][1], 10 - (.625 + 1))
+
+    def test_coasting_downhill_is_free_even_when_exhausted(self):
+        b, h, lease, moves, env, move = move_fixture()
+        b.ground = [True, False, -2]
+        b.slope = -.46875
+        h.stats['stamina'][1] = 0
+        self.assertTrue(move(4))
+        self.assertEqual(h.stats['stamina'][1], 0)
+        self.assertAlmostEqual(b.vehicle_m_delay, 1.875 - .46875)
+
+    def test_interval_is_bounded(self):
+        b, h, lease, moves, env, move = move_fixture()
+        b.slope = -5
+        self.assertTrue(move(4))
+        self.assertEqual(b.vehicle_m_delay, 1)
+        b, h, lease, moves, env, move = move_fixture()
+        b.slope = 50
+        self.assertTrue(move(4))
+        self.assertEqual(b.vehicle_m_delay, 10)
+
+    def test_ground_reads_the_tile_ahead(self):
+        body = extract(SOURCE, BASE + '/proc/ground_ahead')
+        for call in ('target.terrain_smoothed()', 'target.has_snow_cover()', 'target.terrain_floor_covered()',
+                     'terrain_step_levels(start, target)'):
+            self.assertIn(call, body)
+
+
+class BicycleArt(unittest.TestCase):
+    def test_own_sprite_sheet_is_current_and_wired(self):
+        import subprocess
+        subprocess.run([sys.executable, str(ROOT / 'tests/pedal_bicycle/sprites.py'), '--check'], check=True)
+        self.assertIn("icon = 'icons/obj/vehicles/bicycle.dmi'", SOURCE)
+        self.assertNotIn('motorcycle_frame', SOURCE)
+        overlay = extract(SOURCE, BASE + '/update_overlay')
+        self.assertIn('overlays -= rider_overlay', overlay)
+        self.assertIn('if (driver)', overlay)
+
+
 class BicycleWiring(unittest.TestCase):
     def test_timer_and_lifecycle_contracts(self):
         start = extract(SOURCE, BASE + '/startmovementloop')
@@ -259,7 +334,7 @@ class BicycleWiring(unittest.TestCase):
             self.assertIn('stopmovementloop()', extract(SOURCE, BASE + proc))
         self.assertIn('deltimer(pedal_safety_timer)', extract(SOURCE, BASE + '/Destroy'))
         save = extract(SOURCE, BASE + '/persistence_runtime_var')
-        for field in ('pedal_timer', 'pedal_safety_timer', 'pedal_next_move', 'pedal_busy', 'moving', 'movement_processes'):
+        for field in ('pedal_timer', 'pedal_safety_timer', 'pedal_next_move', 'pedal_busy', 'rider_overlay', 'moving', 'movement_processes'):
             self.assertIn('"' + field + '"', save)
 
     def test_restore_does_not_duplicate_controls_or_resume_motion(self):
