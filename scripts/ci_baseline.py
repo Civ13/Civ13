@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'biofuel_capacity': {'files': ('tests/biofuel_capacity/test_output.py',),
+        'paths': ('tests/biofuel_capacity/',),
+        'shared_paths': ('code/modules/1713/modern_items.dm', 'tests/save_movement/source_adapter.py')},
     'drying_rack_batches': {'files': ('tests/drying_rack_batches/test_rack.py',),
         'paths': ('tests/drying_rack_batches/', 'code/modules/1713/complex_production.dm')},
     'meat_grinder_crank': {'files': ('tests/meat_grinder_crank/test_crank.py',),
