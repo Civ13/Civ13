@@ -120,11 +120,15 @@ var/global/list/crafts = list()
 // Hooks for subtypes and for the systems built on the core. Called by the body
 // after a move or a turn it made.
 /datum/craft/proc/on_hop(turf/old_origin)
+	// A craft that moves has left her berth.
+	if (berth)
+		cast_off()
 	if (token)
 		token.follow_craft()
 
 /datum/craft/proc/on_turn(angle)
-	return
+	if (berth)
+		cast_off()
 
 // ---------------------------------------------------------------- bodies
 

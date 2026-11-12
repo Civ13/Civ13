@@ -123,7 +123,7 @@
 		commission_menu(H)
 		return
 	craft.fit_drives()
-	var/list/options = list("Ship's papers")
+	var/list/options = list("Sea chart", "Ship's papers", "Make for a berth")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -132,6 +132,9 @@
 	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", "Refit the hull", "Strike the hull", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
+		return
+	if (choice == "Sea chart")
+		to_chat(H, craft.sea_chart_text())
 		return
 	if (choice == "Ship's papers")
 		craft.papers(H, src)
@@ -144,6 +147,9 @@
 		if (CRAFT_HELM_FORCE)
 			if (!craft.force_helm(H, src) || !craft)
 				return
+	if (choice == "Make for a berth")
+		craft.dock_menu(H, src)
+		return
 	switch (choice)
 		if ("Full ahead") craft.set_speed(VESSEL_SPEED_FULL)
 		if ("Half ahead") craft.set_speed(VESSEL_SPEED_HALF)

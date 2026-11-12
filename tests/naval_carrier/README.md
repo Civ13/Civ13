@@ -134,3 +134,14 @@ give half ahead, and engines that give full ahead and burn from their tank at
 every hop.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
+
+## Sea chart and harbours (`chart_probe.dm`)
+
+The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):
+chart squares, tokens that follow real ships and posts, the chart read at a
+helm with lookout range and a ship running dark, a berth asked for and
+refused (too far, not welcome, promised, taken, foul), the marked slide
+alongside for a built hull and a slipway ship, mooring, casting off by
+sailing, guests, and what leaves the chart.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/chart_probe.dm 300

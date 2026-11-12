@@ -82,6 +82,23 @@ ahead. After each hop `craft.burn_drives()` asks every drive to pay for it at
 own fuel tank (`craft_burn()`, `engines/internal_combustion.dm`) and stalls
 when it cannot, and an external engine's heat source is its fuel.
 
+## Sea chart and harbours
+
+`naval/craft_chart.dm`: `sea_chart(z)` is the mirror chart of a sea level, in
+squares of `SEA_CHART_SQUARE` tiles. `refresh()` rebuilds its tokens from the
+crafts and mooring posts really on that level; nothing ticks, the chart is
+refreshed when read. `craft.sea_chart_text()` is what a helm shows: her square,
+ships within her token's `sensor_range` (a `dark` token is an unknown contact)
+and every harbour with the answer its berth would give her.
+
+A mooring post (`/obj/structure/berth/quay`) is the first real berth. A craft
+within `QUAY_DOCK_RANGE` calls `order_dock(post)`: the post's `request()` gives
+a ticket, `berth_plans()` says where she would lie (along the shore, abreast of
+the post, on the post's `water_side()`), the water is marked, `body.hold()`
+stops her hops, and `finish_dock()` moves her `QUAY_DOCK_WARNING` later, makes
+her fast and completes the ticket. `craft.on_hop()` and `on_turn()` cast off,
+so a moored craft that moves is no longer moored. Moorings are not saved.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The
