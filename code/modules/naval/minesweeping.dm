@@ -136,7 +136,7 @@ var/global/list/mine_sweeps = list()
 	if (!B)
 		return
 	for (var/obj/structure/naval_mine/M in naval_mines)
-		if (QDELETED(M) || M.fired || M.magnetic || M.z != B[5] || M.surfaced)
+		if (QDELETED(M) || M.fired || M.magnetic || M.z != B[5] || M.surfaced || !M.moored)
 			continue
 		var/dx = max(B[1] - M.x, 0, M.x - B[3])
 		var/dy = max(B[2] - M.y, 0, M.y - B[4])
