@@ -312,8 +312,16 @@ class BicycleGround(unittest.TestCase):
 
 class BicycleArt(unittest.TestCase):
     def test_own_sprite_sheet_is_current_and_wired(self):
+        # The hosted baseline has no imaging library: pin the committed sheet
+        # by hash, and redraw it for comparison only where Pillow is installed.
+        import hashlib
+        import importlib.util
         import subprocess
-        subprocess.run([sys.executable, str(ROOT / 'tests/pedal_bicycle/sprites.py'), '--check'], check=True)
+        sheet = (ROOT / 'icons/obj/vehicles/bicycle.dmi').read_bytes()
+        self.assertEqual(hashlib.sha256(sheet).hexdigest(), '1e2c0a3eb926365367bc1511cca64f6f11a4c11fb19e40292a675944ffe3411c')
+        self.assertIn(b'state = "bicycle_overlay"', __import__('zlib').decompressobj().decompress(sheet[sheet.index(b'zTXtDescription') + 17:]))
+        if importlib.util.find_spec('PIL'):
+            subprocess.run([sys.executable, str(ROOT / 'tests/pedal_bicycle/sprites.py'), '--check'], check=True)
         self.assertIn("icon = 'icons/obj/vehicles/bicycle.dmi'", SOURCE)
         self.assertNotIn('motorcycle_frame', SOURCE)
         overlay = extract(SOURCE, BASE + '/update_overlay')
