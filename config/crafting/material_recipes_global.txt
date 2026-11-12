@@ -344,6 +344,8 @@ RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,
 RECIPE: /material/leather/,laceup shoes,/obj/item/clothing/shoes/laceup,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,plain leather shoes,/obj/item/clothing/shoes/leather,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,4,110,0,1,foot wear,175,0,180,8,null
+RECIPE: /material/leather/,mukluks,/obj/item/clothing/shoes/weather/mukluks,3,80,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/leather/,hobnailed boots,/obj/item/clothing/shoes/weather/hobnail_boots,3,90,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,gloves,0,0,0,8,null
 
 //*****************| LEATHER ARMOR |***************************
@@ -1996,6 +1998,7 @@ RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/d
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
 RECIPE: /material/steel/,hard dive helmet,/obj/item/clothing/head/pressure_helmet/diving/hard,10,200,0,1,none,150,0,0,8,null
+RECIPE: /material/steel/,mountaineering boots,/obj/item/clothing/shoes/weather/climbing_boots,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,deep hull plating,/obj/item/sub_hull_plating,30,300,0,1,vehicle parts,150,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
@@ -2427,6 +2430,8 @@ RECIPE: /material/wood/soft/,monumental crucero cross,/obj/structure/religious/m
 
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
 RECIPE: /material/wood/soft/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
+RECIPE: /material/wood/,snowshoes,/obj/item/clothing/shoes/weather/snowshoes,2,60,0,1,shoes & clothing,0,0,0,8,null
+RECIPE: /material/wood/,pattens,/obj/item/clothing/shoes/weather/pattens,2,60,0,1,shoes & clothing,0,0,0,8,null
 
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
@@ -2935,6 +2940,7 @@ RECIPE: /material/electronics/,defibrillator,/obj/item/weapon/defibrillator/load
 RECIPE: /material/electronics/,standard power cell,/obj/item/weapon/cell/standard,2,90,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,autoinjector,/obj/item/weapon/reagent_containers/syringe/autoinjector,1,45,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,null
+RECIPE: /material/plastic/,rubber boots,/obj/item/clothing/shoes/weather/rubber_boots,3,60,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,smoke mortar shell,/obj/item/cannon_ball/mortar_shell/smoke,5,120,0,1,ammunition,0,0,0,8,null
