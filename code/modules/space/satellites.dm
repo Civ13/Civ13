@@ -423,6 +423,8 @@ var/global/list/satellite_kinds = list(
 // when it starts, and storms on the way.
 /proc/satellite_weather_report()
 	var/list/lines = list("<b>Weather:</b> [weather_report_name(weather)][weather != WEATHER_NONE ? " (strength [round(weather_intensity)] of 3)" : ""]. Season: [season ? lowertext(season) : "none"].")
+	for (var/line in weather_system_report())
+		lines += "Tracking [line]."
 	if (!map)
 		return lines
 	var/list/timers = map.durable_callbacks ? map.durable_callbacks.snapshot() : list()

@@ -233,7 +233,7 @@
 		var/multiplier = 0.7
 		if (A.location == 1)
 			if (global_radiation >= 300)
-				switch(A.weather)
+				switch(weather_at(src))
 					if (WEATHER_NONE)
 						multiplier = 1
 					if (WEATHER_WET)

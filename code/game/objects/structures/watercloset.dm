@@ -755,7 +755,7 @@
 
 /obj/structure/sink/attack_hand(mob/user as mob)
 
-	if (src.dry || src.volume <= 0)
+	if (heat_dried() || src.volume <= 0)
 		to_chat(user, SPAN_WARNING("The [src] is dry!"))
 		return
 	if (!Adjacent(user))
@@ -823,7 +823,7 @@
 	if (busy && busy != user)
 		to_chat(user, "<span class='warning'>Someone's already washing here.</span>")
 		return
-	if (dry || volume <= 0)
+	if (heat_dried() || volume <= 0)
 		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
 		return
 	var/obj/item/weapon/reagent_containers/RG = O
@@ -983,38 +983,38 @@
 	else
 		..()
 /obj/structure/sink/puddle/attack_hand(mob/M as mob)
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle-splash"
 	..()
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle"
 
 /obj/structure/sink/puddle/attackby(obj/item/O as obj, mob/user as mob)
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle-splash"
 	..()
-	if (!dry)
+	if (!heat_dried())
 		icon_state = "puddle"
 
 /obj/structure/sink/update_icon()
 	..()
 	if (istype(src, /obj/structure/sink/puddle))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "puddle_dry"
 		else
 			icon_state = "puddle"
 	else if  (istype(src, /obj/structure/sink/well/sandstone))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "sandstone_well_dry"
 		else
 			icon_state = "sandstone_well1"
 	else if  (istype(src, /obj/structure/sink/well/marble))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "marble_well_dry"
 		else
 			icon_state = "marble_well1"
 	else if  (istype(src, /obj/structure/sink/well))
-		if (dry || volume <= 0)
+		if (heat_dried() || volume <= 0)
 			icon_state = "well_dry"
 		else
 			icon_state = "well1"
@@ -1117,3 +1117,11 @@
 
 /obj/structure/fountain/no_bottom
 	icon_state = "fountain_tb"
+
+// Dry by its own flag, or a well or puddle under a heat wave (weather_systems.dm).
+/obj/structure/sink/proc/heat_dried()
+	if (dry)
+		return TRUE
+	if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
+		return weather_heat_at(src)
+	return FALSE

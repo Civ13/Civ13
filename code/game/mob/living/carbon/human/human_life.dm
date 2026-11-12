@@ -232,7 +232,7 @@
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
-			if (map.heat_wave || map.ID == MAP_NOMADS_DESERT) // about 26 minutes of water while active
+			if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // about 26 minutes of water while active
 				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
 				water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 			else

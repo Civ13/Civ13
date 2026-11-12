@@ -24,11 +24,10 @@
 
 		var/near_rainy_area = FALSE
 		var/rdist = 100
-		// areas only get rainy icon_states while the global weather is wet/extreme,
+		// rain only falls under a weather system or pinned zone weather,
 		// so we can skip all of this the rest of the time
-		if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
-			var/area/A = get_area(src)
-			if (A && A.weather == WEATHER_WET && findtext(A.icon_state,"rain"))
+		if (weather_anywhere())
+			if (weather_at(src) == WEATHER_WET && findtext(weather_look_at(src),"rain"))
 				near_rainy_area = TRUE
 				rdist = 0
 			else if (world.time >= next_weather_scan)
@@ -38,8 +37,7 @@
 				cached_near_rainy_area = FALSE
 				cached_rain_dist = 100
 				for (var/turf/T in view(7, src))
-					var/area/T_area = get_area(T)
-					if (T_area.weather == WEATHER_WET && findtext(T_area.icon_state,"rain"))
+					if (weather_at(T) == WEATHER_WET && findtext(weather_look_at(T),"rain"))
 						cached_near_rainy_area = TRUE
 						cached_rain_dist = min(cached_rain_dist, get_dist(src, T))
 				near_rainy_area = cached_near_rainy_area

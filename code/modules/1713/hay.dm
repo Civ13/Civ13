@@ -145,7 +145,7 @@
 	var/area/A = get_area(T)
 	if (!A || A.location != AREA_OUTSIDE || (locate(/obj/roof) in T))
 		return FALSE
-	return A.weather == WEATHER_WET || A.weather == WEATHER_EXTREME
+	return weather_intensity_at(T) > 0
 
 /obj/structure/hay_drying/proc/dry_step(epoch)
 	if (QDELETED(src) || epoch != drying_epoch || !isturf(loc) || portions < 1)

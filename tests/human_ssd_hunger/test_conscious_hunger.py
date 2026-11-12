@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('hunger_adapter', ROOT / 'tests/save_movement/source_adapter.py')
 ADAPTER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ADAPTER)
+# Heat waves are local weather systems now: weather_heat_at(src) answers for the mob's tile.
+HEAT = [False]
 
 
 def projected(mutate=None):
@@ -20,7 +22,8 @@ def projected(mutate=None):
     if mutate:
         branch = mutate(branch)
     wrapped = '/check()\n' + textwrap.indent(textwrap.dedent(branch), '\t') + '\n\treturn (nutrition, water)\n'
-    env = {'CONSCIOUS': 0, 'UNCONSCIOUS': 1, 'MAP_NOMADS_DESERT': 2, 'HUNGER_THIRST_MULTIPLIER': 0.32}
+    env = {'CONSCIOUS': 0, 'UNCONSCIOUS': 1, 'MAP_NOMADS_DESERT': 2, 'HUNGER_THIRST_MULTIPLIER': 0.32,
+           'src': None, 'weather_heat_at': lambda who: HEAT[0]}
     return ADAPTER.project(wrapped, '/check', 'inducedSSD, stat, map, nutrition, water, food_m, water_m, activity_m', env)
 
 
@@ -29,7 +32,8 @@ class ConsciousHungerTests(unittest.TestCase):
         run = projected()
         for ssd, stat, heat, desert, activity, food, water in itertools.product(
                 (False, True), (0, 1, 2), (False, True), (False, True), (0.1, 1), (0, 0.8, 1.4), (0, 0.2, 2.5)):
-            location = SimpleNamespace(heat_wave=heat, ID=2 if desert else 0)
+            location = SimpleNamespace(ID=2 if desert else 0)
+            HEAT[0] = heat
             actual = run(ssd, stat, location, 500, 500, food, water, activity)
             if ssd or stat == 2:
                 expected = (500, 500)
@@ -42,12 +46,13 @@ class ConsciousHungerTests(unittest.TestCase):
 
     def test_weather_negative_control(self):
         def omit_desert(branch):
-            marker = 'map.heat_wave || map.ID == MAP_NOMADS_DESERT'
+            marker = 'map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)'
             assert branch.count(marker) == 1
-            return branch.replace(marker, 'map.heat_wave')
+            return branch.replace(marker, 'weather_heat_at(src)')
         normal = projected()
         control = projected(omit_desert)
-        desert = SimpleNamespace(heat_wave=False, ID=2)
+        desert = SimpleNamespace(ID=2)
+        HEAT[0] = False
         args = (False, 0, desert, 500, 500, 1, 1, 1)
         self.assertNotEqual(normal(*args), control(*args))
 

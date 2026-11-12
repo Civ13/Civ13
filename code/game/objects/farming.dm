@@ -1262,15 +1262,16 @@
 	var/area/A = get_area(loc)
 	if (!A)
 		return
-	if (findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon"))
+	var/falling = weather_look_at(src)
+	if (findtext(falling, "rain") || falling == "monsoon")
 		water = min(water + 15, max_water)
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead
-	if (findtext(A.icon_state, "snow_storm") && !winter_hardy)
+	if (falling == "snow_storm" && !winter_hardy)
 		set_dead("frozen")
 		return
-	if (findtext(A.icon_state, "sandstorm"))
+	if (falling == "sandstorm")
 		set_dead("destroyed")
 		return
 
@@ -1289,7 +1290,7 @@
 		water -= 15
 	else
 		water -= 25
-	if (map.heat_wave)
+	if (weather_heat_at(src))
 		water -= 10
 
 	// Set plant to dead if water level is too low

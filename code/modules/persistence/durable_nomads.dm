@@ -346,7 +346,7 @@
 	season_queue += list(phase, season_epoch, FALSE, FALSE)
 	season_run_queue()
 /obj/map_metadata/proc/durable_nomads_ice_weather_phase(epoch)
-	if(season_worker_valid(epoch)) change_weather(vars["real_season"] == "WINTER" ? WEATHER_WET : WEATHER_NONE)
+	if(season_worker_valid(epoch)) weather_roll(vars["real_season"] == "WINTER" ? WEATHER_WET : WEATHER_NONE)
 /obj/map_metadata/proc/durable_nomads_ice_water_phase(epoch)
 	if(!season_worker_valid(epoch)) return
 	if(vars["real_season"] == "WINTER")

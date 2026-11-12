@@ -828,8 +828,8 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
             expected = ('var/collects_rain = TRUE', '/obj/item/weapon/reagent_containers/glass/barrel/jerrycan\n\tcollects_rain = FALSE',
                         '!is_open_container()', 'collection_seconds >= 60',
                         'reagents.add_reagent("water", min(rate, reagents.maximum_volume - reagents.total_volume))',
-                        'findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon")',
-                        'A.weather == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
+                        'findtext(falling, "rain") || falling == "monsoon"',
+                        'weather_at(T) == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
             if any(marker not in excerpt for marker in expected):
                 raise ValueError('Reviewed rain barrel behavior changed')
             excerpt += ('\nReviewed guidance: There is no separate dew or rain collector; an ordinary '

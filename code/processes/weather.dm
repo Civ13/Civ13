@@ -22,6 +22,7 @@
 
 /process/weather/fire()
 	if(persistence_save_in_progress) return
+	weather_systems_step()
 	// Author policy gates random selection only, not independent event service.
 	if (!map || map.weather_policy_valid())
 		var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval
@@ -29,7 +30,8 @@
 		var/mod_delay = map ? map.weather_timing_value("minimum_mod_delay", minimum_mod_weather_delay) : minimum_mod_weather_delay
 		var/change_delay = map ? map.weather_timing_value("minimum_change_delay", minimum_change_weather_delay) : minimum_change_weather_delay
 		var/prob_of_weather_mod = (25*schedule_interval)/mod_interval
-		var/prob_of_weather_change = (25*schedule_interval)/change_interval
+		// A wide map is rolled more often: each roll sends one storm, not a whole sky.
+		var/prob_of_weather_change = ((25*schedule_interval)/change_interval) * weather_system_capacity()
 		if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
 			prob_of_weather_change = (prob_of_weather_change*3)
 		if (prob(prob_of_weather_mod))
@@ -40,48 +42,30 @@
 			if (world.realtime >= next_can_change_weather)
 				change_weather_somehow()
 			next_can_change_weather = world.realtime + change_delay
-	if(map && map.uses_durable_metadata())
-		map.durable_weather_events()
+	weather_events()
+
+// Blizzards, sandstorms and heat waves are weather systems like any other:
+// they arrive from upwind, pass over and move on. An admin calls one down by
+// setting the map's triggered_ flag; summer also brings heat waves by itself.
+/proc/weather_events()
+	if (!map)
 		return
-	if ((season == "WINTER" && map.triggered_blizzard) && !map.blizzard)
-		if (prob(1) || map.triggered_blizzard)
-			if(prob(50) || map.triggered_blizzard)
-				to_chat(world, "<big>A huge blizzard is approaching!</big>")
-				map.triggered_blizzard = FALSE
-				spawn(600)
-					map.blizzard = TRUE
-					change_weather(WEATHER_EXTREME)
-					spawn(rand(2400,3600))
-						map.blizzard = FALSE
-						change_weather(WEATHER_NONE)
-	if (map && (season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
-		if (prob(1) || map.triggered_heatwave)
-			if(prob(50)|| map.triggered_heatwave)
-				to_chat(world, "<big>The weather starts to get hotter than normal...</big>")
-				map.triggered_heatwave = FALSE
-				spawn(600)
-					map.heat_wave = TRUE
-					change_weather(WEATHER_NONE)
-					to_chat(world, "<big>A heat wave has arrived in this area!</big>")
-					for(var/obj/structure/sink/S)
-						if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-							S.dry = TRUE
-							S.update_icon()
-					spawn(rand(3000,3600))
-						map.heat_wave = FALSE
-						to_chat(world, "<big>The heat wave has subsided.</big>")
-						for(var/obj/structure/sink/S)
-							if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
-								S.dry = FALSE
-								S.update_icon()
-	if ((season == "Dry Season" && map.triggered_sandstorm) && !map.sandstorm)
-		if (prob(1) || map.triggered_sandstorm)
-			if(prob(50)|| map.triggered_sandstorm)
-				to_chat(world, "<big>You start seeing dark clouds in the horizon...</big>")
-				map.triggered_sandstorm = FALSE
-				spawn(600)
-					map.sandstorm = TRUE
-					change_weather(WEATHER_EXTREME)
-					spawn(rand(3000,3600))
-						map.sandstorm = FALSE
-						change_weather(WEATHER_NONE)
+	if (map.triggered_blizzard || map.triggered_sandstorm)
+		map.triggered_blizzard = FALSE
+		map.triggered_sandstorm = FALSE
+		weather_system_spawn(WEATHER_SYSTEM_STORM, TRUE, null, null, 600)
+	if (map.triggered_heatwave || (season == "SUMMER" && prob(1) && prob(50)))
+		map.triggered_heatwave = FALSE
+		if (weather_systems.len == weather_storm_count)
+			weather_system_spawn(WEATHER_SYSTEM_HEAT, FALSE, null, null, 600)
+
+// Draws the weather systems for the players near them (weather_chunks.dm).
+/process/weather_chunks/setup()
+	name = "weather drawing"
+	schedule_interval = 2 SECONDS
+	start_delay = 4 SECONDS
+	priority = PROCESS_PRIORITY_IRRELEVANT
+	fires_at_gamestates = list(GAME_STATE_PLAYING)
+
+/process/weather_chunks/fire()
+	weather_chunks_step()

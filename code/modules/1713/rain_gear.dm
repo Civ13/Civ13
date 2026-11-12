@@ -401,19 +401,19 @@
 	..()
 
 /*
- * Weather reads. Area based until the moving weather systems replace them.
+ * Weather reads, per tile: zone weather and moving storms alike (weather_systems.dm).
  */
 // Rain intensity falling on this mob's tile: 0 when dry or sheltered, else 1-3.
 /mob/living/human/proc/rain_on_mob()
 	var/turf/T = get_turf(src)
 	if (!T)
 		return 0
-	var/area/A = get_area(T)
-	if (!A || A.location != AREA_OUTSIDE || A.weather != WEATHER_WET)
+	// Roofed tiles answer WEATHER_NONE.
+	if (weather_at(T) != WEATHER_WET)
 		return 0
 	if (under_canopy(T))
 		return 0
-	switch (A.icon_state)
+	switch (weather_look_at(T))
 		if ("rain1")
 			return 1
 		if ("rain", "rain2")
@@ -424,12 +424,13 @@
 
 // Wind strength on a tile, 0-3. Gales come with extreme weather.
 /proc/rain_gear_wind_at(turf/T)
-	var/area/A = get_area(T)
-	if (!A || A.location != AREA_OUTSIDE)
+	var/class = weather_at(T)
+	if (class == WEATHER_NONE)
 		return 0
-	if (A.weather == WEATHER_EXTREME || A.icon_state == "monsoon")
+	var/look = weather_look_at(T)
+	if (class == WEATHER_EXTREME || look == "monsoon")
 		return 3
-	if (A.weather == WEATHER_WET && A.icon_state == "rain3")
+	if (class == WEATHER_WET && look == "rain3")
 		return 2
 	return 0
 
