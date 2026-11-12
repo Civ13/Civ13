@@ -737,6 +737,12 @@ SUITES = {
         'paths': ('tests/admin_player_map/',), 'shared_paths': (
             'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
             'code/modules/admin/admin_verbs.dm')},
+    # Admin Hide Ghost / View As Player wiring and guards; offline only.
+    'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
+        'paths': ('tests/admin_spectate/',), 'shared_paths': (
+            'code/modules/admin/verbs/admin_spectate.dm', 'code/modules/admin/admin_verbs.dm',
+            'code/modules/admin/verbs/player_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
+            'code/game/mob/observer/ghost/login.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
         'paths': ('tests/research_bench/',), 'shared_paths': (

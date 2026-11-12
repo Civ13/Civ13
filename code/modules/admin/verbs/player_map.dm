@@ -4,7 +4,7 @@
 // by side. It reuses the tactical map's terrain sampling and canvas drawing
 // (code/modules/1713/tactical_map.dm), so every map works without new art.
 // Clicking a marker or a name selects that mob; the panel can then jump to it,
-// follow it as a ghost, or open its player panel or variables.
+// follow it as a ghost, share its camera, or open its player panel or variables.
 
 #define APMAP_REFRESH 20 // deciseconds between live updates
 #define APMAP_WINDOW "adminpmap"
@@ -191,6 +191,10 @@ var/global/datum/admin_player_map_controller/admin_player_maps = new
 			jump_to(C, locate(href_list["m"]))
 		if ("follow")
 			follow(C, locate(href_list["m"]))
+		if ("view")
+			var/mob/M = locate(href_list["m"])
+			if (istype(M))
+				C.admin_start_player_view(M)
 
 /datum/admin_player_map_controller/proc/level_labels()
 	var/list/labels = list()
@@ -280,6 +284,7 @@ var h=el('b',label(b));p.appendChild(h);p.appendChild(el('br'));
 p.appendChild(document.createTextNode((b[3]?b[3]+', ':'')+SN[b[2]]+' at '+b[0]+', '+b[1]));p.appendChild(el('br'));
 p.appendChild(btn('Jump',function(){go('apm=jump&m='+encodeURIComponent(b[6]));}));
 p.appendChild(btn('Follow',function(){go('apm=follow&m='+encodeURIComponent(b[6]));}));
+p.appendChild(btn('View',function(){go('apm=view&m='+encodeURIComponent(b[6]));}));
 p.appendChild(btn('PP',function(){link('_src_=holder&adminplayeropts='+encodeURIComponent(b[6]));}));
 p.appendChild(btn('VV',function(){link('_src_=vars&Vars='+encodeURIComponent(b[6]));}));}
 function pick(r){SEL=r;draw();}

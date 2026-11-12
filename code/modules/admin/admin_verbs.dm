@@ -35,6 +35,9 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/client/proc/toggle_view_range,		//changes how far we can see,
 	/datum/admins/proc/view_txt_log,	//shows the server log (diary) for today,
 	/client/proc/cmd_admin_pm_panel,	//admin-pm list,
@@ -90,6 +93,9 @@ var/list/admin_verbs_trialadmin = list(
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
 	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
 	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
@@ -282,6 +288,9 @@ var/list/admin_verbs_mod = list(
 	/client/proc/debug_variables,		// allows us to -see- the variables of any instance in the game.,
 	/datum/admins/proc/PlayerNotes,
 	/client/proc/admin_ghost,			// allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
