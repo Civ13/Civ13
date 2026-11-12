@@ -95,6 +95,7 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	var/obj/item/vehicleparts/wheel/handle/bicycle/airship/tiller = R.get_active_hand()
 	expect(istype(tiller), "no tiller in hand")
 	expect(V.overlays.len, "no rider overlay when boarded")
+	expect(R.pixel_y == 0, "rider raised [R.pixel_y] in the basket")
 	// On the ground the propeller does nothing.
 	tiller.attack_self(R)
 	sleep(10)

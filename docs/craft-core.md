@@ -1,0 +1,42 @@
+# Craft core
+
+The shared base for everything that moves as a whole: ships today, and later
+airships, spacecraft, pods and trains. It lives in `code/modules/craft/` and
+its constants in `code/__defines/craft.dm`. The ideas come from a review of
+how Shiptest moves ships; all code and art here are Civ13's own.
+
+Nothing in the game calls the core yet. Existing vessels, helms and saves
+behave exactly as before.
+
+## The pieces
+
+| Type | File | What it is |
+| --- | --- | --- |
+| `/datum/craft` | `craft.dm` | Identity only: name, body, drives, register, chart token, berth, carrier and carried crafts. |
+| `/datum/craft_body` | `craft.dm` | How the craft occupies and crosses the map. `template` wraps a `datum/vessel`. |
+| `/datum/craft_drive` | `craft.dm` | One source of push: thrust, fuel, on or off. |
+| `/datum/craft_register` | `craft_register.dm` | Owning party, crew roles, join mode, requests, barred list, memo. Saves as text. |
+| `/obj/structure/berth` | `berth.dm` | A place a craft may arrive: size, owner, who is welcome. Hands out `/datum/berth_ticket`s. |
+| `/datum/chart` | `chart.dm` | A map of tokens, sites and hazards, in mirror mode (tokens follow real positions) or steered mode. |
+| `/datum/plane_pool` | `plane_pool.dm` | Claim and release of whole z-levels. `orbit` wraps the orbit registry. |
+
+## Rules
+
+- `datum/vessel` is not renamed or replaced. Helms save its type path, so a
+  template body wraps it. `craft_of_vessel(V)` makes the craft on first use
+  and `craft_at(turf)` finds the craft a tile belongs to.
+- Move a craft through its body (`body.move_to`, `body.turn_to`) so the hooks
+  fire: `craft.on_hop(old_origin)` and `craft.on_turn(angle)`, and for things
+  aboard `craft_moved(craft, old_loc)` and `craft_turned(craft, angle)`.
+- Turn angles are the ones `turn()` takes (counter-clockwise positive). Use
+  `craft_turn_angle(old_dir, new_dir)`.
+- A craft nobody registered is open to anyone. Once a party owns it,
+  `craft.may_steer(user)` asks the register.
+- A berth is asked with `request(craft)` and answers with a ticket. A ticket
+  that is not `granted()` carries the reason in `refusal`. `complete()` docks
+  the craft and `cast_off()` frees the berth.
+- Saved fields hold text and numbers only, never object references.
+
+## Tests
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300

@@ -23,6 +23,8 @@ STEEL = (120, 124, 132, 255)
 SADDLE = (104, 66, 38, 255)
 SADDLE_DARK = (74, 46, 26, 255)
 GRIP = (44, 40, 38, 255)
+# Pixels the game raises a seated rider (rider_lift in bicycle.dm).
+RIDER_LIFT = 6
 
 
 def blank():
@@ -38,31 +40,35 @@ def wheel(d, cx, cy):
 
 
 def side_bars(d):
-    d.line((21, 9, 21, 13), fill=STEEL)
-    d.line((19, 9, 23, 9), fill=GRIP)
-    d.point((19, 10), fill=GRIP)
+    d.line((21, 10, 21, 13), fill=STEEL)
+    d.line((19, 10, 23, 10), fill=GRIP)
+    d.point((19, 11), fill=GRIP)
 
 
 def side(parts='all'):
-    """East-facing side view; the front wheel is on the right."""
+    """East-facing side view; the front wheel is on the right.
+
+    The game lifts a seated rider RIDER_LIFT pixels (bicycle.dm rider_lift),
+    which puts the hips on the saddle and the feet on the near pedal.
+    """
     im = blank()
     d = ImageDraw.Draw(im)
     if parts == 'all':
         wheel(d, 8, 22)
         wheel(d, 23, 22)
-        d.line((12, 13, 15, 22), fill=FRAME)        # seat tube
-        d.line((12, 14, 21, 14), fill=FRAME_LIGHT)  # top tube
-        d.line((21, 15, 15, 22), fill=FRAME)        # down tube
+        d.line((13, 15, 15, 22), fill=FRAME)        # seat tube
+        d.line((13, 16, 21, 15), fill=FRAME_LIGHT)  # top tube
+        d.line((21, 16, 15, 22), fill=FRAME)        # down tube
         d.line((15, 22, 8, 22), fill=FRAME)         # chain stay
-        d.line((12, 14, 8, 22), fill=FRAME)         # seat stay
+        d.line((13, 16, 8, 22), fill=FRAME)         # seat stay
         d.line((21, 13, 23, 22), fill=STEEL)        # fork
-        d.rectangle((9, 11, 14, 12), fill=SADDLE)
-        d.line((9, 12, 14, 12), fill=SADDLE_DARK)
+        d.rectangle((10, 13, 15, 14), fill=SADDLE)
+        d.line((10, 14, 15, 14), fill=SADDLE_DARK)
         d.point((15, 22), fill=HUB)
         side_bars(d)
-    # Crank and near pedal sit in front of the rider's leg.
-    d.line((15, 22, 16, 25), fill=STEEL)
-    d.line((15, 26, 18, 26), fill=GRIP)
+    # Crank and near pedal sit in front of the rider's leg, under the feet.
+    d.line((15, 22, 17, 22), fill=STEEL)
+    d.line((15, 23, 19, 23), fill=GRIP)
     if parts == 'overlay':
         side_bars(d)
     return im
@@ -73,14 +79,18 @@ def south(parts='all'):
     im = blank()
     d = ImageDraw.Draw(im)
     if parts == 'all':
-        d.rectangle((13, 7, 18, 9), fill=SADDLE)
-        d.line((13, 9, 18, 9), fill=SADDLE_DARK)
-        d.line((14, 10, 14, 16), fill=FRAME)
-        d.line((17, 10, 17, 16), fill=FRAME)
+        d.rectangle((13, 13, 18, 15), fill=SADDLE)
+        d.line((13, 15, 18, 15), fill=SADDLE_DARK)
+        d.line((14, 16, 14, 18), fill=FRAME)
+        d.line((17, 16, 17, 18), fill=FRAME)
+        # Pedals out to each side, under the rider's feet.
+        d.line((10, 24, 13, 24), fill=GRIP)
+        d.line((18, 24, 21, 24), fill=GRIP)
+        d.line((13, 24, 18, 24), fill=STEEL)
     d.rectangle((15, 16, 16, 29), fill=TYRE)
     d.line((14, 18, 14, 27), fill=STEEL)
     d.line((17, 18, 17, 27), fill=STEEL)
-    d.rectangle((15, 10, 16, 16), fill=FRAME_LIGHT)
+    d.rectangle((15, 12, 16, 16), fill=FRAME_LIGHT)
     d.line((9, 12, 22, 12), fill=STEEL)
     d.line((7, 12, 9, 12), fill=GRIP)
     d.line((22, 12, 24, 12), fill=GRIP)
@@ -94,14 +104,16 @@ def north(parts='all'):
     im = blank()
     d = ImageDraw.Draw(im)
     if parts == 'all':
-        d.line((10, 8, 21, 8), fill=STEEL)
-        d.line((8, 8, 10, 8), fill=GRIP)
-        d.line((21, 8, 23, 8), fill=GRIP)
-        d.rectangle((15, 8, 16, 12), fill=FRAME)
-        d.rectangle((13, 12, 18, 14), fill=SADDLE)
-        d.line((13, 14, 18, 14), fill=SADDLE_DARK)
-        d.line((14, 15, 14, 19), fill=FRAME)
-        d.line((17, 15, 17, 19), fill=FRAME)
+        d.line((10, 11, 21, 11), fill=STEEL)
+        d.line((8, 11, 10, 11), fill=GRIP)
+        d.line((21, 11, 23, 11), fill=GRIP)
+        d.rectangle((15, 11, 16, 12), fill=FRAME)
+        d.rectangle((13, 13, 18, 15), fill=SADDLE)
+        d.line((13, 15, 18, 15), fill=SADDLE_DARK)
+        d.line((14, 16, 14, 19), fill=FRAME)
+        d.line((17, 16, 17, 19), fill=FRAME)
+        d.line((10, 24, 13, 24), fill=GRIP)
+        d.line((18, 24, 21, 24), fill=GRIP)
     d.rectangle((15, 17, 16, 29), fill=TYRE)
     d.line((14, 19, 14, 27), fill=FRAME)
     d.line((17, 19, 17, 27), fill=FRAME)

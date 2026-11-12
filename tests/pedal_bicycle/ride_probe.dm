@@ -86,7 +86,7 @@ var/global/datum/pedal_ride_probe/pedal_ride_probe = new
 	R.dir = direction
 	V.update_icon()
 	frame("mounted", leg, V, R)
-	var/list/summary = list("mounted_sx" = R.step_x, "mounted_sy" = R.step_y, "mounted_overlays" = V.overlays.len)
+	var/list/summary = list("mounted_sx" = R.step_x, "mounted_sy" = R.step_y, "mounted_overlays" = V.overlays.len, "mounted_py" = R.pixel_y)
 	var/obj/item/vehicleparts/wheel/handle/bicycle/handle = R.get_active_hand()
 	if(!istype(handle))
 		throw EXCEPTION("[leg]: no handlebars in hand")
@@ -122,6 +122,7 @@ var/global/datum/pedal_ride_probe/pedal_ride_probe = new
 			samples += list(list("leg" = leg, "t" = world.time, "x" = V.x, "y" = V.y, "bike_glide" = V.glide_size, "rider_glide" = R.glide_size, "same_loc" = (R.loc == V.loc), "rider_sx" = R.step_x, "rider_sy" = R.step_y, "driver" = (V.driver == R), "delay" = V.vehicle_m_delay))
 			if(arrivals == 2)
 				frame("riding", leg, V, R)
+				summary["riding_py"] = R.pixel_y
 	summary["travelled"] = abs(V.x - start_x) + abs(V.y - start_y)
 	summary["interval"] = arrivals > 1 ? (last_arrival - first_arrival) / (arrivals - 1) : null
 	summary["set_delay"] = V.vehicle_m_delay
@@ -141,6 +142,7 @@ var/global/datum/pedal_ride_probe/pedal_ride_probe = new
 		V.attack_hand(R)
 		sleep(10)
 	summary["after_dismount_glide"] = R.glide_size
+	summary["after_dismount_py"] = R.pixel_y
 	summary["after_dismount_driver"] = "[V.driver]"
 	summary["after_dismount_overlays"] = V.overlays.len
 	summary["handlebars_home"] = (handle.loc == V)
@@ -196,6 +198,9 @@ var/global/datum/pedal_ride_probe/pedal_ride_probe = new
 			problems += "[leg]: seated at offset [s["mounted_sx"]],[s["mounted_sy"]]"
 		if(!s["mounted_overlays"] || s["after_dismount_overlays"])
 			problems += "[leg]: rider overlay [s["mounted_overlays"]] mounted, [s["after_dismount_overlays"]] after"
+		// Seated: raised onto the saddle while aboard, back on the ground after.
+		if(s["mounted_py"] != 6 || s["after_dismount_py"] != 0 || (!isnull(s["riding_py"]) && s["riding_py"] != 6))
+			problems += "[leg]: rider height [s["mounted_py"]] mounted, [s["riding_py"]] riding, [s["after_dismount_py"]] after"
 		if(!s["driver_after"])
 			problems += "[leg]: rider fell off"
 		if(s["brute"] > 0 || s["bike_health"] < 100)
