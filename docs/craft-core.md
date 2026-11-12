@@ -43,6 +43,38 @@ behave exactly as before.
   the craft and `cast_off()` frees the berth.
 - Saved fields hold text and numbers only, never object references.
 
+## Built bodies and sailing
+
+`/datum/craft_body/built` (`built_body.dm`) is a hull the players laid as
+`/obj/covers` floors over water. It keeps the hull as offsets from a pivot
+tile, one level only, at most `BUILT_HULL_MAX_TILES`. A move snapshots what
+stands on every tile, carries it to the matching tile of the new place and
+hands the water level from the floors that leave a tile to the floors that
+arrive; a turn rotates the offsets about the pivot. `built_hull_survey()`
+finds the hull around a tile and refuses one still joined to the shore, to a
+vessel or to another craft.
+
+`under_way.dm` gives every craft the telegraph, anchor, hop timer, path
+warning and delayed turn that vessels have, on top of `body.move_cells()`,
+`can_move_to()`, `move_to()`, `turn_to()` and `turn_corner()`. A new kind of
+body that implements those sails without more code. `craft.max_speed()` is
+where drives will set the top telegraph step; a hull with none makes slow
+ahead.
+
+`/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
+hull: it commissions, refits and strikes the hull, steers her, keeps the
+papers and saves the hull as offsets from its own tile.
+
+## Drives aboard
+
+`naval/hull_drives.dm`: anything standing on a craft can be a drive by
+answering `craft_drive()` with a `/datum/craft_drive/fitted`. `craft.fit_drives()`
+collects them (on commission, when a speed is rung and before each hop), and
+`craft.max_speed()` weighs their push against the tiles of hull: half ahead
+needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
+from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
+drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
+
 ## Ship's papers
 
 `code/modules/naval/ship_papers.dm` is the first user of the register. The
@@ -59,3 +91,4 @@ way without the delay. The wheel saves the register in `register_state`.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

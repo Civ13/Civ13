@@ -122,3 +122,13 @@ about, the levers and radar, joining, barring, giving the ship up, and the
 papers saved and restored by the wheel.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
+
+## Player-built hulls (`built_hull_probe.dm`)
+
+Floors laid over water commissioned at a tiller (`code/modules/craft/built_body.dm`,
+`code/modules/craft/under_way.dm`, `code/modules/naval/built_hull.dm`): what is
+and is not a hull, the hop with planks, cargo and crew, the water level handed
+from tile to tile, obstacles, the marked path, coming about around the tiller,
+refitting, papers, and the hull saved and found again by the tiller.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
