@@ -42,7 +42,7 @@ option for every decision below on 2026-11-04.
 | 1. Pipes and tanks (done) | Pipes that hold no reagents, valves, powered pumps, inert holding tanks; one process stepping awake networks every 2 seconds; intakes with allowed-reagent lists; water intake; oil well and refinery outputs; engine fuel feed. | Factories |
 | 2. Reaction vessel (done) | Inert vessel that pulls one chosen recipe's reagents in ratio for a batch, reacts only a full batch, pushes product out and sends leftovers to a waste output. Starts with the reaction bench's recipes. | Factories and Apothecary |
 | 3. Packaging and tiers (done) | Bottler and automated tablet press fed by belts; faster vessel tiers. Piped reagents as fabricator inputs were deferred (see Phase 3 as built). | Pharmacology, Automation, Digital Computing |
-| 4. Monitoring and hazards (meter done) | Pipe meter; network rows on the factory panel once that panel exists; optional leak spills (decided after playtesting). | Automation |
+| 4. Monitoring and hazards (monitoring done) | Pipe meter and read-only network rows on the factory monitor; optional leak spills (decided after playtesting). | Automation |
 
 ## Phase 0 as built
 
@@ -187,9 +187,15 @@ bottler container, press buffer, intake water, or the machine's pipe role).
 Its dial lights while the network moves liquid. A meter is never a network
 member, so it changes nothing about flow.
 
-Still open: network rows on the factory panel wait for that panel (phase 4 of
-the factory automation plan), and leak spills stay off until playtesting
-shows whether pipes should leak.
+The factory monitor now includes one row per network reached by an open pipe
+within its seven-tile range on the same level. Rows show whole-network pipe
+counts, running/total pumps and units moved on the last fluid step. They do not
+show units per minute or individual machine details; the pipe meter retains
+those details. Counts can include connected equipment beyond the monitor's range.
+A pipes-only factory still gets the table. Dirty topology shows an updating
+message until the normal fluid step rebuilds it. Reading never rebuilds, pumps,
+wakes a network or reserves power. Leak spills stay off until playtesting shows
+whether pipes should leak.
 
 Verification: `tests/factory_automation/meter_probe.dm`. Not verified: a full
 disk save/load round trip, in-game play and how the meter sprite looks in game.

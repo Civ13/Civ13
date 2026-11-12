@@ -144,15 +144,24 @@
 		to_chat(user, SPAN_WARNING("The battery is too low for a ping."))
 		return FALSE
 	battery_draw(SUB_BATTERY_PING)
+	// Every animal in range hears it (sea_life.dm).
+	sea_noise(boat_turf(), SUB_SONAR_RANGE)
 	crew_message(SPAN_NOTICE("<b>PING.</b> [user] sends a sonar pulse:"))
 	for (var/line in sonar_lines())
 		crew_message(line)
 	return TRUE
 
+// A blow to the hull (a mine, naval/naval_mines.dm) springs this many leaks.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/spring_leaks(count)
+	var/was = hull_leaks
+	hull_leaks = min(SUB_LEAKS_MAX, hull_leaks + count)
+	if (hull_leaks > was)
+		crew_message(SPAN_DANGER("Plates buckle and water sprays into the hull! ([hull_leaks] leak\s)"))
+
 // ---- Reports and repairs ----
 
 /obj/structure/vehicleparts/axis/ship/submarine/proc/systems_report()
-	return "Battery [round(100 * battery / SUB_BATTERY_MAX)]%[submerged ? "" : ", charging"]. Floodlights [floodlights ? "on" : "off"]. Hull rated for [sea_zone_name(hull_rating)]; [hull_leaks ? "[hull_leaks] leak\s" : "no leaks"]."
+	return "Battery [round(100 * battery / SUB_BATTERY_MAX)]%[submerged ? "" : ", charging"]. Floodlights [floodlights ? "on" : "off"]. Hull rated for [sea_zone_name(hull_rating)]; [hull_leaks ? "[hull_leaks] leak\s" : "no leaks"]. [craft_of_axis(src).magnetic_text()]"
 
 /obj/item/sub_hull_plating
 	name = "deep hull plating"

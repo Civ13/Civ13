@@ -7,9 +7,8 @@
 // at a spot the registry keeps as plain numbers, so stations lie apart and
 // stay where they are across restarts.
 //
-// Crafts that fly between them, the helm that steers them and the sites they
-// can stop at come with the plane pool (phase 4). Until an orbit region
-// runs, the probes are what exercises this.
+// Spacecraft fly between them (spacecraft.dm). Until an orbit region runs,
+// the probes are what exercises this.
 // ============================================================
 
 #define ORBIT_CHART_SIZE 100
@@ -73,7 +72,8 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	var/list/owners = list()
 	for (var/key in R.owners)
 		var/owner = R.owners[key]
-		if (istext(owner) && length(owner) && owner != "arrival")
+		// The lanes and loaded sites hold planes but are not stations.
+		if (istext(owner) && length(owner) && owner != "arrival" && owner != "transit" && findtext(owner, "site:") != 1)
 			owners |= owner
 	for (var/owner in stations.Copy())
 		if (!(owner in owners))
@@ -105,15 +105,17 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	var/datum/chart/orbit/C = orbit_chart()
 	return C ? C.stations[owner] : null
 
-// The helm of a craft in orbit. No craft carries one yet.
+// The token of whatever holds a plane: the arrival beacon, a station, or
+// null for the lanes and for a plane nobody holds.
+/datum/chart/orbit/proc/place_of_owner(owner)
+	if (owner == "arrival")
+		return arrival
+	return (istext(owner) && length(owner)) ? stations[owner] : null
+
+// The helm of a spacecraft (spacecraft.dm).
 /obj/structure/chart_helm/orbit
 	name = "orbital helm"
-	desc = "The orbit chart and the engine controls of a spacecraft."
+	desc = "The orbit chart and the engine controls of a spacecraft. Set on the floor of a habitat module, it flies that module and every module docked to it."
 
 /obj/structure/chart_helm/orbit/chart()
 	return orbit_chart()
-
-/obj/structure/chart_helm/orbit/helm_token()
-	. = ..()
-	if (token)
-		token.sensor_range = ORBIT_CHART_SENSOR_RANGE
