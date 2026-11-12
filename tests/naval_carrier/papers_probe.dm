@@ -83,7 +83,7 @@ var/papers_owners_about = FALSE
 	naval_check(helm.register_state == "", "blank papers are not saved")
 
 	// ---- Registering ----
-	helm.papers_action(ann, R, "Register her to Reds")
+	C.papers_action(ann, R, "Register her to Reds", helm)
 	naval_check(R.party == party_train_faction_party("Reds") && R.role_of(ann) == CRAFT_ROLE_CAPTAIN, "Ann registers her to the Reds and is her captain")
 	naval_check(!R.claim(bob) && R.party == party_train_faction_party("Reds"), "a registered ship cannot be registered again")
 	naval_check(helm.steer_access(ann) == CRAFT_HELM_FREE && helm.steer_access(cat) == CRAFT_HELM_FREE, "her owners take the wheel freely, listed or not")
@@ -98,16 +98,16 @@ var/papers_owners_about = FALSE
 	papers_owners_about = FALSE
 
 	// ---- Joining the crew ----
-	helm.papers_action(bob, R, "Ask to join")
+	C.papers_action(bob, R, "Ask to join", helm)
 	naval_check(!R.requests.len && !R.is_crew(bob), "she takes no new crew until her owners say how")
 	R.join_mode = CRAFT_JOIN_ASK
-	helm.papers_action(bob, R, "Ask to join")
+	C.papers_action(bob, R, "Ask to join", helm)
 	naval_check(("Bob" in R.requests) && !R.is_crew(bob), "asked, Bob's request waits for an answer")
 	R.set_role("Bob", CRAFT_ROLE_HAND)
 	naval_check(R.is_crew(bob) && isnull(vessel_fitting_refusal(S, bob)) && helm.steer_access(bob) == CRAFT_HELM_CHAINED, "a hand works the fittings but not the wheel")
 	R.set_role("Bob", CRAFT_ROLE_HELMSMAN)
 	naval_check(helm.steer_access(bob) == CRAFT_HELM_FREE, "a helmsman takes the wheel")
-	naval_check(!helm.papers_still_valid(bob, R) && helm.papers_still_valid(ann, R) && helm.papers_still_valid(cat, R), "only owners and the captain keep the papers")
+	naval_check(!C.papers_still_valid(bob, R, helm) && C.papers_still_valid(ann, R, helm) && C.papers_still_valid(cat, R, helm), "only owners and the captain keep the papers")
 	var/text = R.summary_text(S.name)
 	naval_check(findtext(text, "registered to Reds") && findtext(text, "Bob (helmsman)") && findtext(text, "must ask"), "the papers read back ([text])")
 

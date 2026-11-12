@@ -35,6 +35,9 @@ var/global/list/crafts = list()
 
 /datum/craft/Destroy()
 	crafts -= src
+	stop_sailing()
+	turning_to = 0
+	clear_path()
 	if (ticket)
 		ticket.release()
 	if (berth && berth.occupant == src)
