@@ -82,6 +82,10 @@
 	var/list/state = B.body_state()
 	state["speed"] = craft.speed
 	state["anchored"] = craft.anchored
+	// Her place and motion on the open sea chart (open_sea_chart.dm).
+	var/list/passage = craft.open_sea_state()
+	if (passage)
+		state["sea"] = passage
 	hull_state = json_encode(state)
 	register_state = (craft.register && craft.register.party) ? craft.register.register_state() : ""
 
@@ -104,6 +108,8 @@
 		craft.register = craft_register_restore(register_state)
 	if (isnum(state["speed"]) && state["speed"] > 0)
 		craft.set_speed(state["speed"])
+	if (islist(state["sea"]) && open_sea_world())
+		craft.open_sea_restore(state["sea"])
 
 /obj/structure/hull_tiller/proc/status_text()
 	if (!craft)
@@ -124,6 +130,8 @@
 		return
 	craft.fit_drives()
 	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
+	if (open_sea_world())
+		options.Insert(2, "Open sea chart")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -135,6 +143,9 @@
 		return
 	if (choice == "Sea chart")
 		to_chat(H, craft.sea_chart_text())
+		return
+	if (choice == "Open sea chart")
+		craft.open_sea_menu(H, src)
 		return
 	if (choice == "Ship's papers")
 		craft.papers(H, src)
