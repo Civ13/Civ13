@@ -189,7 +189,23 @@ var/naval_runtime_error = FALSE
 		total += hull_planks(T)
 	naval_check(total == 11, "every tile of the hull has its one plank ([total])")
 	naval_check(B.turn_to(SOUTH) && B.dir == SOUTH && gun.dir == EAST && tiller.x == 35, "she goes about half a circle in one move")
+	// A turn is shown swinging round (craft/glide.dm): a thing that moved one
+	// tile glides, a thing that moved further is slid and keeps its own glide.
+	var/near_swung = 0
+	var/far_slid = 0
+	var/swing_glide = craft_glide_size(glide_turn_time())
+	for (var/atom/movable/swung in B.glide_was)
+		if (swung.glide_size == swing_glide)
+			near_swung++
+	for (var/turf/deck in B.cells())
+		for (var/obj/covers/plank in deck)
+			if (!(plank in B.glide_was) && !plank.pixel_x && !plank.pixel_y)
+				far_slid++
+	naval_check(near_swung + far_slid >= 11 && far_slid > 0, "after her swing every plank either glides a tile or was slid further and ends square on its tile ([near_swung] glide, [far_slid] slid)")
+	B.glide_rest_now()
+	naval_check(!length(B.glide_was), "after the turn everything has its own glide back")
 	naval_check(B.turn_to(NORTH), "and back")
+	B.glide_rest_now()
 
 	// ---- The edge of the bay: land refuses her ----
 	var/turf/shoal = locate(35, 15, 2)

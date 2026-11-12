@@ -46,22 +46,42 @@
 			held[2] = size
 		M.glide_size = size
 		return
+	glide_slide(M, dx, dy, time)
+
+// Draws A (a thing or a tile) where it was, (dx, dy) tiles back, and slides it
+// to where it now is over time, with the view of a player who is that mob.
+/proc/glide_slide(atom/A, dx, dy, time, easing = LINEAR_EASING)
 	var/shift_x = dx * world.icon_size
 	var/shift_y = dy * world.icon_size
-	var/rest_x = M.pixel_x
-	var/rest_y = M.pixel_y
-	M.pixel_x = rest_x - shift_x
-	M.pixel_y = rest_y - shift_y
-	animate(M, pixel_x = rest_x, pixel_y = rest_y, time = time)
-	if (ismob(M))
-		var/mob/rider = M
+	var/rest_x = A.pixel_x
+	var/rest_y = A.pixel_y
+	A.pixel_x = rest_x - shift_x
+	A.pixel_y = rest_y - shift_y
+	animate(A, pixel_x = rest_x, pixel_y = rest_y, time = time, easing = easing)
+	if (ismob(A))
+		var/mob/rider = A
 		var/client/C = rider.client
 		if (C && C.eye == rider)
 			rest_x = C.pixel_x
 			rest_y = C.pixel_y
 			C.pixel_x = rest_x - shift_x
 			C.pixel_y = rest_y - shift_y
-			animate(C, pixel_x = rest_x, pixel_y = rest_y, time = time)
+			animate(C, pixel_x = rest_x, pixel_y = rest_y, time = time, easing = easing)
+
+// How long a turn is shown swinging round, in ticks.
+/proc/glide_turn_time()
+	return 5
+
+// Shows the place M has just taken in a turn, (dx, dy) tiles from where it
+// was. One tile is an ordinary glide; the engine does not glide a longer
+// move, so that is slid, easing in and out like a hull swinging round.
+/proc/glide_swing(list/was, atom/movable/M, dx, dy, time)
+	if (!dx && !dy)
+		return
+	if (abs(dx) <= 1 && abs(dy) <= 1)
+		glide_show(was, M, dx, dy, time)
+	else
+		glide_slide(M, dx, dy, time, SINE_EASING)
 
 // Gives back the glide of whatever in was is no longer in aboard. With null,
 // of everything.
@@ -139,12 +159,26 @@
 		carried += M
 	glide_give_back(glide_was, carried)
 
+// After do_matrix(): was_at maps each thing carried to the tile it left. The
+// turn is shown swinging round instead of snapping.
+/obj/structure/vehicleparts/axis/proc/glide_turn(list/was_at)
+	var/time = glide_turn_time()
+	if (!glide_was)
+		glide_was = list()
+	for (var/atom/movable/M in was_at)
+		var/turf/from = was_at[M]
+		if (QDELETED(M) || !isturf(M.loc) || !istype(from) || M.z != from.z || M.invisibility >= 101)
+			continue
+		glide_swing(glide_was, M, M.x - from.x, M.y - from.y, time)
+	if (!moving)
+		glide_rest()
+
 // The vehicle has stopped: once its last step has been drawn, everything
 // aboard glides at its own pace again.
 /obj/structure/vehicleparts/axis/proc/glide_rest()
 	if (!glide_was || !glide_was.len)
 		return
-	addtimer(CALLBACK(src, PROC_REF(glide_rest_now)), glide_step_time() + 1)
+	addtimer(CALLBACK(src, PROC_REF(glide_rest_now)), max(glide_step_time(), glide_turn_time()) + 1)
 
 /obj/structure/vehicleparts/axis/proc/glide_rest_now()
 	if (moving)

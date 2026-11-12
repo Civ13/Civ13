@@ -505,7 +505,12 @@ var/global/list/spacecraft_helms = list()
 		return FALSE
 	var/dx = (thrust_dir == EAST) - (thrust_dir == WEST)
 	var/dy = (thrust_dir == NORTH) - (thrust_dir == SOUTH)
-	if (!B.move_to(O.x + dx, O.y + dy, NORTH))
+	// Each tile is shown as a glide lasting the step (craft/glide.dm).
+	B.glide_time = SPACECRAFT_STEP_DELAY
+	var/moved = B.move_to(O.x + dx, O.y + dy, NORTH)
+	B.glide_time = 0
+	if (!moved)
+		B.glide_rest(SPACECRAFT_STEP_DELAY)
 		thrust_left = 0
 		S.crew_message(SPAN_WARNING("Her thrusters cut out: [B.last_refusal]."))
 		return FALSE
@@ -514,6 +519,8 @@ var/global/list/spacecraft_helms = list()
 	if (propellant < 1 && thrust_left > 0)
 		thrust_left = 0
 		S.crew_message(SPAN_WARNING("Her thrusters sputter out: the tank is dry."))
+	if (thrust_left <= 0)
+		B.glide_rest(SPACECRAFT_STEP_DELAY)
 	return TRUE
 
 /proc/spacecraft_thrust_step(obj/structure/chart_helm/orbit/H)
