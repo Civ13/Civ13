@@ -909,6 +909,7 @@ SUITES = {
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
+        'tests/ecology_spawning/test_mob_guard.py',
         'tests/human_subtile/test_insect_cadence_candidate.py',
         'tests/human_subtile/test_insect_idle_slot.py',
         'tests/human_subtile/test_npc.py',
@@ -930,7 +931,7 @@ SUITES = {
         'tests/test_wildlife_ci_registration.py',
         'tests/wildlife_arrival/test_check.py',
     ), 'paths': (), 'shared_paths': (
-        'code/game/mob/living/simple_animal/', 'code/game/mob/living/living.dm',
+        'code/processes/mob.dm', 'code/game/mob/living/simple_animal/', 'code/game/mob/living/living.dm',
         'code/game/mob/mob_movement.dm', 'code/game/atoms.dm',
         'code/game/mob/living/carbon/human/human.dm',
         'code/game/mob/living/carbon/human/human_life.dm',
