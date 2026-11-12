@@ -40,9 +40,14 @@ class RidingSources(unittest.TestCase):
         # Passengers are not always buckled, so each mob boarding move settles too.
         lines = self.t.split('\n')
         settles = [i for i, line in enumerate(lines) if line.strip() == 'M.settle_on_tile()']
-        self.assertEqual(len(settles), 6)
+        self.assertEqual(len(settles), 2)
         for i in settles:
             self.assertEqual(lines[i - 1].strip(), 'M.forceMove(get_turf(src))', f'line {i + 1}')
+        # The carriage (carriage.dm) boards everyone through three procs.
+        carriage = (ROOT / 'code/game/objects/structures/carriage.dm').read_text()
+        for name, who in (('take_seat', 'M'), ('take_reins', 'H'), ('hitch', 'A')):
+            body = proc(carriage, '/obj/structure/vehicle/carriage/proc/' + name)
+            self.assertLess(body.index('.forceMove(loc)'), body.index(who + '.settle_on_tile()'), name)
 
     def test_motorcycle_never_hits_its_own_riders(self):
         body = proc(self.t, '/obj/structure/vehicle/motorcycle/do_vehicle_check')

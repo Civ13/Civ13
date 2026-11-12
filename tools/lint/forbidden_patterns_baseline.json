@@ -275,7 +275,7 @@
       "code/modules/1713/machinery/modular_vehicles/ships/axis.dm": 2,
       "code/modules/1713/machinery/modular_vehicles/ships/frame.dm": 1,
       "code/modules/1713/machinery/modular_vehicles/wheels.dm": 2,
-      "code/modules/1713/machinery/vehicles.dm": 7,
+      "code/modules/1713/machinery/vehicles.dm": 6,
       "code/modules/1713/modern_items.dm": 8,
       "code/modules/1713/natural_disasters.dm": 4,
       "code/modules/1713/officer.dm": 8,
