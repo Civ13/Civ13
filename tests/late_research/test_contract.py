@@ -99,5 +99,54 @@ class FieldWork(unittest.TestCase):
         self.assertIn("book_mode()", proc(self.field, "/obj/structure/research_bench/proc/field_work_rows"))
         self.assertEqual(read("tgui/src/interfaces/Research.tsx").count("<FieldWork rows="), 2)
         self.assertIn("node.field_work", read("UI/templates/research_bench.tmpl"))
+class TeamsAndRushing(unittest.TestCase):
+    def setUp(self):
+        self.team = read("code/modules/research_tree/team_research.dm")
+        self.nodes = read("code/modules/research_tree/research_node.dm")
+        self.research = read("code/modules/research_tree/book_research.dm")
+        self.interface = read("code/modules/research_tree/book_interface.dm")
+    def test_included_after_the_define_it_uses(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\book_research.dm"'), dme.index('research_tree\\team_research.dm"'))
+    def test_big_science_names_real_subjects_and_facilities(self):
+        rows = re.findall(r'^\t"(\w+)" = list\("(\w+)", "(\w+)"\)', self.team, re.M)
+        self.assertGreaterEqual(len(rows), 5)
+        facilities = dict(re.findall(r'^\t"(\w+)" = list\("[^"]+", (/obj/structure/[\w/]+)\)', self.team, re.M))
+        for node, _discipline, facility in rows:
+            self.assertIn('research_node("%s", ' % node, self.nodes)
+            self.assertIn(facility, facilities)
+    def test_a_lone_scholar_is_slowed_not_stopped(self):
+        rate = proc(self.team, "/obj/structure/research_bench/proc/team_rate")
+        for part in ("N.era_tier < TEAM_MIN_TIER", "BIG_SCIENCE_SOLO_RATE", "BIG_SCIENCE_NO_FACILITY_RATE", "TEAM_SECOND_SCHOLAR_RATE"):
+            self.assertIn(part, rate)
+        solo = float(re.search(r"#define BIG_SCIENCE_SOLO_RATE ([\d.]+)", self.team)[1])
+        facility = float(re.search(r"#define BIG_SCIENCE_NO_FACILITY_RATE ([\d.]+)", self.team)[1])
+        self.assertGreater(solo * facility, 0)
+        self.assertLessEqual(solo, 0.5)
+    def test_the_lead_is_never_their_own_helper(self):
+        for path in ("/obj/structure/research_bench/proc/big_science_assistant", "/obj/structure/research_bench/proc/second_scholar"):
+            self.assertIn("H != lead", proc(self.team, path))
+    def test_rushing_is_off_by_default_late_only_and_skill_lowers_the_risk(self):
+        self.assertIn("var/rushed = FALSE", self.team)
+        self.assertIn("rushed && node_can_be_rushed(N)", proc(self.team, "/obj/structure/research_bench/proc/rush_rate"))
+        self.assertIn("N.era_tier >= TEAM_MIN_TIER", proc(self.team, "/proc/node_can_be_rushed"))
+        self.assertIn("clamp(1 - margin / 40, 0.2, 1)", proc(self.team, "/proc/rush_accident_chance"))
+        roll = proc(self.team, "/obj/structure/research_bench/proc/roll_rush_accident")
+        self.assertLess(roll.index("!rushed"), roll.index("prob("))
+        toggle = proc(self.team, "/obj/structure/research_bench/proc/book_toggle_rush")
+        for guard in ("book_mode()", "H.stat != CONSCIOUS", "get_dist(H, src) > BOOK_RESEARCH_REACH"):
+            self.assertIn(guard, toggle)
+    def test_the_bench_tick_and_estimate_use_team_and_rush_rates(self):
+        tick = proc(self.research, "/obj/structure/research_bench/proc/book_analysis_tick")
+        for part in ("team_rate(assigned_node, researcher)", "rush_rate(N)", "roll_rush_accident(researcher, N, B, analysis_scale)"):
+            self.assertIn(part, tick)
+        panel = proc(self.interface, "/obj/structure/research_bench/proc/book_assigned_ui")
+        for part in ("team_rate(assigned_node, researcher) * rush_rate(N)", "checks += team_rows(assigned_node, researcher)", 'out["rushed"]', 'out["can_rush"]'):
+            self.assertIn(part, panel)
+    def test_the_rush_button_reaches_the_bench(self):
+        self.assertIn('href_list["toggle_rush"]', read("code/modules/research_tree/research_bench.dm"))
+        self.assertIn('"toggle_rush"', read("code/modules/nano/tgui.dm"))
+        self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
+        self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
 if __name__ == "__main__":
     unittest.main()

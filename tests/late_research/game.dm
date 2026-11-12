@@ -1,5 +1,5 @@
 // Late research on book-research worlds, on production source: standing node
-// effects and field work. Client presence, light and action waits are isolated.
+// effects, field work, research teams and rushed work. Client presence, light and action waits are isolated.
 var/late_failures = 0
 var/late_wait_result = TRUE
 /world
@@ -29,6 +29,15 @@ var/late_wait_result = TRUE
 	return null
 /mob/living/human/late_fixture/update_icons()
 	return
+// Bodies here have no organs or species: record what would have hurt them.
+/mob/living/human/late_fixture
+	var/list/fixture_hurt = list()
+/mob/living/human/late_fixture/apply_damage(var/damage = 0,var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/used_weapon = null, var/sharp = FALSE, var/edge = FALSE)
+	fixture_hurt[damagetype] = (fixture_hurt[damagetype] || 0) + damage
+	return TRUE
+/mob/living/human/late_fixture/apply_effect(var/effect = FALSE, var/effecttype = STUN, var/blocked = FALSE, var/check_protection = TRUE)
+	fixture_hurt[effecttype] = (fixture_hurt[effecttype] || 0) + effect
+	return TRUE
 // Knowledge granted directly: studying is covered by tests/research_interface.
 /mob/living/human/late_fixture/proc/teach(node_id)
 	known_recipe_nodes |= node_id
@@ -142,6 +151,105 @@ var/late_wait_result = TRUE
 	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
 	// A dark bench does no bookkeeping at all.
 	late_check(bench.field_work_rows(soldier, "basic_tools").len == 0, "early subjects have no field work")
+// A scholar with the given levels who knows a subject's groundwork.
+/mob/living/human/late_fixture/scholar/research_tool_rate()
+	return 1
+/mob/living/human/late_fixture/scholar/proc/prepare(node_id, discipline_level)
+	var/datum/research_node/N = get_research_node(node_id)
+	for(var/prereq in N.prereqs)
+		teach(prereq)
+	scholarship = list("mathematics" = 100)
+	scholarship[node_discipline(node_id)] = discipline_level
+/obj/structure/research_bench/late_fixture/has_research_instrument(node_id, mob/living/human/researcher = null)
+	return TRUE
+/proc/late_tick_gain(obj/structure/research_bench/bench, obj/item/weapon/book/B, node_id)
+	var/before = B.research_ticks(node_id)
+	bench.book_analysis_tick()
+	return B.research_ticks(node_id) - before
+/proc/late_test_teams()
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(5,5,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/B = new(bench)
+	var/mob/living/human/late_fixture/scholar/lead = new(locate(5,4,1))
+	var/mob/living/human/late_fixture/scholar/second = new(locate(8,8,1))
+	// An ordinary late subject: a second able scholar helps a little.
+	lead.prepare("selfloading_firearms", 100)
+	second.prepare("selfloading_firearms", 100)
+	bench.assigned_node = "selfloading_firearms"
+	late_check(lead.can_research_node_at(bench, "selfloading_firearms") && bench.team_rate("selfloading_firearms", lead) == 1 && !bench.team_rows("selfloading_firearms", lead).len, "a lone scholar works an ordinary late subject at the usual speed")
+	var/alone = late_tick_gain(bench, B, "selfloading_firearms")
+	second.loc = locate(6,5,1)
+	late_check(bench.team_rate("selfloading_firearms", lead) == 1.25 && bench.team_rows("selfloading_firearms", lead).len == 1, "a second able scholar makes it a quarter faster")
+	var/together = late_tick_gain(bench, B, "selfloading_firearms")
+	late_check(alone > 0 && abs(together - alone * 1.25) <= 0.11, "the bench tick writes the faster pace into the book ([alone] alone, [together] together)")
+	second.scholarship = list()
+	late_check(bench.team_rate("selfloading_firearms", lead) == 1, "a bystander without the skill is no second scholar")
+	// Early subjects are unchanged.
+	lead.teach("basic_tools")
+	second.prepare("iron_tools", 100)
+	late_check(bench.team_rate("iron_tools", lead) == 1, "early subjects gain nothing from a second scholar")
+	// Big science: a second discipline and a facility.
+	lead.prepare("nuclear_power", 100)
+	bench.assigned_node = "nuclear_power"
+	second.scholarship = list("engineering" = big_science_assistant_level("nuclear_power") - 1)
+	late_check(big_science_assistant_level("nuclear_power") == 42 && is_big_science("nuclear_power") && !is_big_science("automation"), "Nuclear Power is big science and wants Engineering 42 from its second scholar")
+	late_check(bench.team_rate("nuclear_power", lead) == 0.125, "alone and without a laboratory, big science crawls at an eighth speed but still moves")
+	var/crawl = late_tick_gain(bench, B, "nuclear_power")
+	late_check(crawl > 0, "a lone scholar still makes progress on big science ([crawl] a tick)")
+	second.scholarship = list("engineering" = 42)
+	late_check(bench.team_rate("nuclear_power", lead) == 0.5 && bench.big_science_assistant("nuclear_power", lead) == second, "an engineer at the bench lifts the solo penalty")
+	var/obj/structure/reaction_bench/lab = new(locate(7,7,1))
+	late_check(bench.has_research_facility("nuclear_power") && bench.team_rate("nuclear_power", lead) == 1, "a laboratory within three tiles brings it to full speed")
+	var/full = late_tick_gain(bench, B, "nuclear_power")
+	late_check(abs(full - crawl * 8) <= 0.5, "full speed is eight times the crawl ([full] against [crawl])")
+	var/list/rows = bench.team_rows("nuclear_power", lead)
+	late_check(rows.len == 2 && rows[1]["ok"] && rows[2]["ok"] && findtext(rows[1]["label"], "Engineering 42") && findtext(rows[2]["label"], "laboratory"), "the window lists the second scholar and the facility")
+	second.stat = UNCONSCIOUS
+	lab.loc = locate(1,1,1)
+	rows = bench.team_rows("nuclear_power", lead)
+	late_check(bench.team_rate("nuclear_power", lead) == 0.125 && !rows[1]["ok"] && !rows[2]["ok"], "an unconscious assistant and a distant laboratory do not count")
+	late_check(bench.big_science_assistant("nuclear_power", lead) != lead, "the lead cannot be their own second scholar")
+	second.stat = CONSCIOUS
+	for(var/node_id in big_science_nodes)
+		var/list/need = big_science_nodes[node_id]
+		late_check(get_research_node(node_id) && (need[1] in scholar_disciplines) && need[1] != node_discipline(node_id) && research_facilities[need[2]], "[node_id] names a real subject, another discipline and a facility")
+	// --- Rushed research ---
+	var/datum/research_node/NP = get_research_node("nuclear_power")
+	late_check(!bench.rushed && bench.rush_rate(NP) == 1 && isnull(bench.roll_rush_accident(lead, NP, B)), "careful work is the default and has no accidents")
+	late_check(bench.book_toggle_rush(lead) && bench.rushed && bench.rush_rate(NP) == 1.5, "rushing makes a late subject half again as fast")
+	late_check(bench.rush_rate(get_research_node("iron_tools")) == 1 && isnull(bench.roll_rush_accident(lead, get_research_node("iron_tools"), B)), "early subjects cannot be rushed")
+	second.loc = locate(8,8,1)
+	late_check(!bench.book_toggle_rush(second) && bench.rushed, "nobody toggles rushing from across the room")
+	lead.scholarship["natural_science"] = node_scholar_requirement("nuclear_power")
+	late_check(rush_accident_chance(lead, "nuclear_power") == 1, "at the bare requirement an accident is a 1% chance each interval")
+	lead.scholarship["natural_science"] = 100
+	lead.scholarship["military"] = node_scholar_requirement("cartridge_ammo") + 40
+	late_check(rush_accident_chance(lead, "cartridge_ammo") == 0.2 && rush_accident_chance(null, "cartridge_ammo") == 0, "forty levels of spare skill cut the chance to a fifth")
+	late_check(rush_accident_kind("nuclear_power") == "radiation" && rush_accident_kind("rocketry") == "blast" && rush_accident_kind("modern_medicine") == "poison" && rush_accident_kind("power_tools") == "injury" && rush_accident_kind("digital_computing") == "error", "accidents fit their subject")
+	// A mathematical error costs work, not blood.
+	var/datum/research_node/DC = get_research_node("digital_computing")
+	var/half = round(DC.cost_ticks / 2)
+	B.add_research_work("digital_computing", half)
+	lead.fixture_hurt = list()
+	var/kind = bench.research_accident(lead, DC, B)
+	late_check(kind == "error" && !lead.fixture_hurt.len && B.research_ticks("digital_computing") == half - round(DC.cost_ticks * 0.1), "an error hurts nobody and throws out a tenth of the subject ([B.research_ticks("digital_computing")] of [half] left)")
+	late_check(B.lose_research_work("digital_computing", 100000) > 0 && B.research_ticks("digital_computing") == 0 && B.lose_research_work("digital_computing", 5) == 0, "lost work never goes below nothing")
+	var/datum/research_node/MM = get_research_node("modern_medicine")
+	half = round(MM.cost_ticks / 2)
+	B.add_research_work("modern_medicine", half)
+	kind = bench.research_accident(lead, MM, B)
+	late_check(kind == "poison" && lead.fixture_hurt[TOX] >= 8 && B.research_ticks("modern_medicine") == half - round(MM.cost_ticks * 0.05), "a bad drug trial poisons the researcher and undoes a twentieth")
+	second.loc = locate(6,5,1)
+	second.fixture_hurt = list()
+	lead.fixture_hurt = list()
+	kind = bench.research_accident(lead, get_research_node("rocketry"), B)
+	late_check(kind == "blast" && lead.fixture_hurt[BURN] >= 10 && second.fixture_hurt[BURN] >= 5 && second.fixture_hurt[BURN] <= 10, "a blast burns the researcher and, less, whoever stands beside the bench")
+	kind = bench.research_accident(lead, NP, B)
+	late_check(kind == "radiation" && lead.fixture_hurt[IRRADIATE] == 25 && second.fixture_hurt[IRRADIATE] == 25, "a reactor accident irradiates the room")
+	kind = bench.research_accident(lead, get_research_node("power_tools"), B)
+	late_check(kind == "injury" && lead.fixture_hurt[BRUTE] >= 8, "a slipped build crushes a hand")
+	bench.book_toggle_rush(lead)
+	late_check(!bench.rushed, "the bench can be told to work carefully again")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -158,6 +266,7 @@ var/late_wait_result = TRUE
 	try
 		late_test_node_effects()
 		late_test_field_work()
+		late_test_teams()
 	catch(var/exception/e)
 		late_failures++
 		world.log << "FAIL: exception [e] [e.file]:[e.line]"

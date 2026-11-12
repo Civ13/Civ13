@@ -756,11 +756,12 @@ SUITES = {
             'code/modules/research_tree/book_research.dm',
             'code/modules/research_tree/book_pages.dm',
             'code/modules/research_tree/research_bench.dm')},
-    # Late research: node effects and field work on book-research worlds; offline only.
+    # Late research: node effects, field work, teams and rushing on book-research worlds; offline only.
     'late_research': {'files': ('tests/late_research/test_contract.py',),
         'paths': ('tests/late_research/',), 'shared_paths': (
             'code/modules/research_tree/node_effects.dm',
             'code/modules/research_tree/field_work.dm',
+            'code/modules/research_tree/team_research.dm',
             'code/modules/research_tree/book_research.dm',
             'code/modules/research_tree/book_interface.dm',
             'code/modules/research_tree/research_bench.dm')},
