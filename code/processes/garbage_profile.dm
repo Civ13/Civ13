@@ -27,12 +27,18 @@
 	var/list/row = profile_row(type_name)
 	if (!row)
 		return
-	var/phase = forced ? "forced" : "cleanup"
-	row["[phase]_count"]++
-	row["[phase]_total_ds"] += elapsed
-	row["[phase]_max_ds"] = max(row["[phase]_max_ds"], elapsed)
-	if (world.time != start_tick)
-		row["[phase]_yielded"]++
+	if (forced)
+		row["forced_count"]++
+		row["forced_total_ds"] += elapsed
+		row["forced_max_ds"] = max(row["forced_max_ds"], elapsed)
+		if (world.time != start_tick)
+			row["forced_yielded"]++
+	else
+		row["cleanup_count"]++
+		row["cleanup_total_ds"] += elapsed
+		row["cleanup_max_ds"] = max(row["cleanup_max_ds"], elapsed)
+		if (world.time != start_tick)
+			row["cleanup_yielded"]++
 
 /process/garbage/proc/profile_snapshot()
 	var/list/result = list()
