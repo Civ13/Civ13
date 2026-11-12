@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('bfc45cbce8e90ee22f91dbf80d44aed5e5e8666eecca75f3111ffc499dbba027', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('43258dc42369920f7ae4ebe65b193a17d553a5eec55d960f60b6a4a2857d1dd3', 'survival winter cold warm freezing hypothermia shelter debris'),
+    'guides/Guide_to_Survival.md': ('43258dc42369920f7ae4ebe65b193a17d553a5eec55d960f60b6a4a2857d1dd3', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
