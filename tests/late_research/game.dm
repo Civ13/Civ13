@@ -123,6 +123,10 @@ var/late_wait_result = TRUE
 		"/obj/item/weapon/foldable/generic" = "support_weapons",
 		"/obj/item/cannon_ball/mortar_shell" = "support_weapons",
 		"/obj/item/cannon_ball/mortar_shell/smoke" = "support_weapons",
+		"/obj/item/weapon/flamethrower" = "support_weapons",
+		"/obj/item/weapon/reagent_containers/glass/flamethrower" = "support_weapons",
+		"/obj/item/mine/ap" = "support_weapons",
+		"/obj/item/mine/at" = "support_weapons",
 		"/obj/item/weapon/foldable/atgm" = "guided_weapons",
 		"/obj/item/ammo_casing/rocket/atgm" = "guided_weapons",
 		"/obj/item/ammo_casing/rocket/atgm/he" = "guided_weapons")
@@ -141,6 +145,10 @@ var/late_wait_result = TRUE
 	late_check(istype(defib.bcell) && defib.bcell.check_charge(100), "a crafted defibrillator comes with a charged cell")
 	var/obj/item/weapon/reagent_containers/syringe/autoinjector/pen = new(locate(1,1,1))
 	late_check(pen.reagents && pen.reagents.total_volume == 0 && pen.single_use, "a crafted autoinjector is empty and works once")
+	var/obj/item/weapon/reagent_containers/glass/flamethrower/tank = new(locate(1,1,1))
+	late_check(tank.reagents && tank.reagents.total_volume == 0 && tank.volume == 100, "a crafted flamethrower backpack starts empty and holds 100 units of fuel")
+	var/obj/item/mine/ap/mine = new(locate(1,1,1))
+	late_check(!mine.anchored && !mine.triggered, "a crafted mine is not armed until someone deploys it")
 	// Soil Science: a harvest feeds the plot, up to its limit.
 	var/turf/floor/dirt/late_fixture/plot = new(locate(7,7,1))
 	plot.soil_nutrition = 60

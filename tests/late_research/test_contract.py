@@ -169,7 +169,7 @@ class LateLines(unittest.TestCase):
         rows = [line.split(",") for line in self.recipes.splitlines() if line.startswith("RECIPE: ")]
         gates = dict(re.findall(r'"(/[\w/]+)" = "(\w+)"', self.nodes))
         mine = {path: node for path, node in gates.items() if node in self.NEW}
-        self.assertEqual(len(mine), 10)
+        self.assertEqual(len(mine), 14)
         by_path = {row[2]: row for row in rows}
         for path in mine:
             self.assertIn(path, by_path, path)
