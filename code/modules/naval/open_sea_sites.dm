@@ -49,6 +49,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	var/kind = "site"
 	var/seed = 1
 	var/cell = 0                  // The sea cell it is loaded in, or 0.
+	var/charted = 0               // 1 once a survey put it on every ship's chart.
 	var/tmp/linger_timer = 0
 
 /datum/chart_site/sea/New()
@@ -139,7 +140,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 
 // The site as plain values for the registry, and back.
 /datum/chart_site/sea/proc/site_state()
-	return list("type" = "[type]", "id" = id, "name" = name, "x" = x, "y" = y, "seed" = seed, "cell" = loaded ? cell : 0)
+	return list("type" = "[type]", "id" = id, "name" = name, "x" = x, "y" = y, "seed" = seed, "cell" = loaded ? cell : 0, "charted" = charted ? 1 : 0)
 
 /proc/open_sea_site_restore(list/state)
 	if (!islist(state))
@@ -153,6 +154,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	S.x = isnum(state["x"]) ? state["x"] : 1
 	S.y = isnum(state["y"]) ? state["y"] : 1
 	S.seed = isnum(state["seed"]) ? state["seed"] : 1
+	S.charted = state["charted"] ? 1 : 0
 	var/n = state["cell"]
 	if (isnum(n) && n >= 1 && n <= sea_cell_count() && n != sea_home_cell())
 		S.cell = n
@@ -283,6 +285,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 		if (locate(/obj/structure/closet/crate) in T)
 			continue
 		var/obj/structure/closet/crate/C = new(T)
+		C.salvage_of = id
 		for (var/n = 1, n <= 2, n++)
 			var/path = hold[dice.cast(hold.len)]
 			var/obj/item/stack/S = new path(C)

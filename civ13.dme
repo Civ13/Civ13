@@ -1390,6 +1390,7 @@
 #include "code\modules\naval\open_sea.dm"
 #include "code\modules\naval\open_sea_chart.dm"
 #include "code\modules\naval\open_sea_sites.dm"
+#include "code\modules\naval\sea_office.dm"
 #include "code\modules\naval\sea_weather.dm"
 #include "code\modules\naval\ship_papers.dm"
 #include "code\modules\naval\shipyard.dm"
