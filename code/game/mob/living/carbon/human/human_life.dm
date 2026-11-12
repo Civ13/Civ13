@@ -398,11 +398,12 @@
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
-		if (h_growth < 4 && !find_trait("Baldness"))
+		var/has_baldness = find_trait("Baldness")
+		if (h_growth < 4 && !has_baldness)
 			h_growth += 0.002
 		if (f_growth < 4)
 			f_growth += 0.002
-		if (find_trait("Baldness"))
+		if (has_baldness)
 			h_growth = 0
 			h_style = "Bald"
 		else
