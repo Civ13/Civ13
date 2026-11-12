@@ -196,6 +196,8 @@
 /obj/item/clothing/suit/pressure_suit/diving/hard
 	name = "hard dive suit"
 	desc = "A jointed steel suit with a hard torso, built to walk the seabed down to the deep. Sealed with a hard dive helmet and an air bottle. It is heavy and slow."
+	icon_state = "hard_dive_suit"
+	item_state = "hard_dive_suit"
 	depth_rating = SEA_ZONE_DEEP
 	slowdown = 3
 	armor = list(melee = 30, arrow = 20, gun = 10, energy = 5, bomb = 30, bio = 100, rad = 40)
@@ -203,6 +205,8 @@
 /obj/item/clothing/head/pressure_helmet/diving/hard
 	name = "hard dive helmet"
 	desc = "A heavy steel helmet with thick ports and a bright lamp. It locks onto a diving dress or a hard dive suit. Use it in hand to switch the lamp."
+	icon_state = "hard_dive_helmet"
+	item_state = "hard_dive_helmet"
 	brightness_on = 6
 	armor = list(melee = 30, arrow = 20, gun = 10, energy = 5, bomb = 30, bio = 100, rad = 40)
 
