@@ -67,7 +67,11 @@
 	if (!istype(H))
 		return
 	var/party = party_train_party_of(H)
-	var/list/options = list("Freight", "Depot work")
+	var/list/options = list("Freight")
+	// The depot's own paid jobs show only while they are switched on, or
+	// while one is still open from before.
+	if (npc_jobs_enabled || length(jobs()))
+		options += "Depot work"
 	if (!owner_party)
 		if (party)
 			options += "Claim the depot"
