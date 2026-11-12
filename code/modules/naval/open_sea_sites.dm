@@ -92,7 +92,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	if (!loaded)
 		return FALSE
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
-		if (sea_cell_of(get_turf(Q)) == cell)
+		if (Q.takes_ships && sea_cell_of(get_turf(Q)) == cell)
 			return TRUE
 	return FALSE
 

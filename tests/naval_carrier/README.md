@@ -174,6 +174,22 @@ exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
 
+The same probe covers the freight depot on land
+(`code/modules/naval/freight_depot.dm`): it is no berth and no harbour on a
+sea chart, a registered vehicle's crew takes freight at it, and a claimed
+depot can keep its board to its own party.
+
+## Depot work (`depot_jobs_probe.dm`)
+
+A freight depot's own jobs (`code/modules/naval/depot_jobs.dm`) on a 200-tile
+strip of land: which ground can hold a job, spots 60 to 220 tiles off, the
+board filling three places once, a survey taken, read, driven in and paid,
+lost cargo whose crate only lies out once the job is taken, the two-job
+limit, a job given up, a spot that was built over and a destroyed depot. No
+client connects, so the depot's menus are not exercised.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
+
 ## The open sea (`open_sea_probe.dm`)
 
 An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
