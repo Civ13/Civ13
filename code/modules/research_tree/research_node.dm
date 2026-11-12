@@ -1856,7 +1856,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (42) ---
+		// --- primitive_construction (44) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
@@ -1874,6 +1874,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/wood_wall/nordic" = "primitive_construction",
 		"/obj/item/flashlight/tiki_torch" = "primitive_construction",
 		"/obj/item/flashlight/torch" = "primitive_construction",
+		"/obj/item/weapon/fire_beater" = "primitive_construction",
+		"/obj/item/weapon/fire_beater/flapper" = "primitive_construction",
 		"/obj/item/weapon/covers" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder/leaves" = "primitive_construction",

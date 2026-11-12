@@ -277,6 +277,7 @@ RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,4,100,0,1,none,
 
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
+RECIPE: /material/leather/,fire flapper,/obj/item/weapon/fire_beater/flapper,3,70,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
 
 //*****************| LEATHER FURNITURE |***************************
@@ -2317,6 +2318,7 @@ RECIPE: /material/wood/soft/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wooden spade,/obj/item/weapon/material/shovel/spade/wood,3,60,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/,fire beater,/obj/item/weapon/fire_beater,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wooden ladder,/obj/item/weapon/hole_ladder,4,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
 RECIPE: /material/wood/soft/,plank handle,/obj/item/weapon/material/handle,2,70,0,1,tools,0,0,0,8,woodplank
