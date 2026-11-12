@@ -22,6 +22,10 @@
 		for (var/obj/item/organ/external/Ex in organs)
 			bad_external_organs |= Ex
 
+	antibiotic_dose_shared_at = -1
+	antibiotic_dose_shared = get_antibiotic_dose()
+	antibiotic_dose_shared_at = world.time
+
 	//processing internal organs is pretty cheap, do that first.
 	for (var/obj/item/organ/I in internal_organs)
 		I.process()

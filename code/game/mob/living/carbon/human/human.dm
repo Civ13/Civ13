@@ -1404,10 +1404,11 @@ var/list/coefflist = list()
 			if(src.looking && m_intent=="run")
 				shake_camera(src, 2, rand(1,3))
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
-		if (HMG.used_by_mob == src && loc != get_turf(HMG))
-			HMG.stopped_using(src)
-			HMG.used_by_mob = null
+	// started_using() records the manned gun in using_object, so no scan is needed.
+	var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+	if (istype(HMG) && HMG.used_by_mob == src && loc != get_turf(HMG))
+		HMG.stopped_using(src)
+		HMG.used_by_mob = null
 // reset all zooms - called from Life(), Weaken(), ghosting and more
 
 /mob/living/human/proc/handle_look_stuff(var/forced = FALSE)
@@ -1420,8 +1421,8 @@ var/list/coefflist = list()
 					H.look_into_distance(src, FALSE)
 					return
 
-	for (var/obj/item/weapon/gun/projectile/automatic/stationary/HMG in range(2, src))
-		if (HMG.used_by_mob == src && (loc != get_turf(HMG) || forced))
-			HMG.stopped_using(src)
-			HMG.used_by_mob = null
-			return
+	var/obj/item/weapon/gun/projectile/automatic/stationary/HMG = using_object
+	if (istype(HMG) && HMG.used_by_mob == src && (loc != get_turf(HMG) || forced))
+		HMG.stopped_using(src)
+		HMG.used_by_mob = null
+		return
