@@ -74,6 +74,26 @@
 	to_chat(user, SPAN_NOTICE("You load [loaded] sheet\s from [bin] into [src] ([printing_sheets] loaded)."))
 	return TRUE
 
+// Loads a bundle's blank sheets into the press; written pages stay clipped.
+/obj/structure/printingpress/proc/load_paper_bundle(obj/item/weapon/paper_bundle/B, mob/living/user)
+	if (!istype(B) || copying)
+		return FALSE
+	var/loaded = 0
+	var/bundle_name = B.name
+	for (var/obj/item/weapon/paper/P in bundle_blank_sheets(B))
+		if (printing_sheets >= PRESS_SHEET_MAX)
+			break
+		if (!bundle_release_sheet(B, P))
+			continue
+		qdel(P)
+		printing_sheets++
+		loaded++
+	if (!loaded)
+		to_chat(user, SPAN_WARNING(printing_sheets >= PRESS_SHEET_MAX ? "[src] can't hold any more printing paper." : "The [bundle_name] has no blank sheets [src] can use."))
+		return FALSE
+	to_chat(user, SPAN_NOTICE("You load [loaded] sheet\s from the [bundle_name] into [src] ([printing_sheets] loaded)."))
+	return TRUE
+
 // Returns a reason the original can't be printed into stock, or null.
 /obj/structure/printingpress/proc/whole_book_print_problem(obj/item/weapon/book/original, obj/item/weapon/book/stock)
 	if (!press_prints_whole_book(original) || !istype(stock) || original == stock)

@@ -1734,6 +1734,8 @@
 		return
 	if (istype(W, /obj/item/weapon/paper_bin) && map && map.book_research_enabled())
 		return load_paper_bin(W, user)
+	if (istype(W, /obj/item/weapon/paper_bundle) && length(bundle_blank_sheets(W)) && map && map.book_research_enabled())
+		return load_paper_bundle(W, user)
 	if (blank_writing_sheet(W) && W.loc == user && map && map.book_research_enabled())
 		var/use = WWinput(user, "Load this sheet as printing paper for books, or as a document copy?", "Printing Press", "Cancel", list("Printing paper", "Document copy", "Cancel"))
 		if (use == "Printing paper")

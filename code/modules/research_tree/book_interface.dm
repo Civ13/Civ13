@@ -20,6 +20,8 @@
 	for (var/obj/item/weapon/paper/P in get_contents())
 		if (blank_writing_sheet(P))
 			count++
+	for (var/obj/item/weapon/paper_bundle/B in get_contents())
+		count += length(bundle_blank_sheets(B))
 	return count
 
 // A blank sheet in hand for writing or copying. With none in hand and a hand
@@ -44,6 +46,20 @@
 		put_in_hands(P)
 		if (recipe_held(src, P))
 			to_chat(src, SPAN_NOTICE("You take out a blank sheet."))
+			return P
+		return null
+	// Bundles in hand or carried loose; a free hand takes one sheet off.
+	for (var/obj/item/weapon/paper_bundle/B in get_contents())
+		var/list/sheets = bundle_blank_sheets(B)
+		if (!sheets.len)
+			continue
+		var/obj/item/weapon/paper/P = sheets[1]
+		var/bundle_name = B.name
+		if (!bundle_unclip_sheet(B, P))
+			continue
+		put_in_hands(P)
+		if (recipe_held(src, P))
+			to_chat(src, SPAN_NOTICE("You take a blank sheet off the [bundle_name]."))
 			return P
 		return null
 	return null

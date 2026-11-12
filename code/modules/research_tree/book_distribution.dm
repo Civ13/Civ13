@@ -8,7 +8,7 @@
 	return istype(H) && H.client && H.stat == CONSCIOUS && !H.incapacitated() && !H.restrained() && map && map.recipe_knowledge_enabled()
 
 /proc/recipe_blank_paper(obj/item/weapon/paper/P)
-	return istype(P) && P.type == /obj/item/weapon/paper && isnull(P.document_record) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
+	return istype(P) && (P.type == /obj/item/weapon/paper || P.type == /obj/item/weapon/paper/parchment) && isnull(P.document_record) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
 
 /proc/recipe_held(mob/living/human/H, obj/item/I)
 	return I && !I.gcDestroyed && I.loc == H && (H.get_active_hand() == I || H.get_inactive_hand() == I)
@@ -24,7 +24,7 @@
 	var/obj/item/weapon/pen/P = locate() in list(l_hand, r_hand)
 	var/obj/item/weapon/paper/paper = locate() in list(l_hand, r_hand)
 	if(!istype(P) || !recipe_blank_paper(paper))
-		to_chat(src, SPAN_WARNING("Hold a pen and a blank sheet of paper."))
+		to_chat(src, SPAN_WARNING("Hold a pen and a blank sheet of paper or parchment."))
 		return
 	copy_recipe_manual(id, P, paper)
 

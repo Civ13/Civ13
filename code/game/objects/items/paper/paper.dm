@@ -166,11 +166,13 @@
 		document_capacity_ready = TRUE
 		updateinfolinks()
 
-	if (map && base_icon == "paper")
+	// Only a plain blank sheet takes its era's name. Parchment and printed
+	// forms keep their own names, so players can tell them apart.
+	if (map && type == /obj/item/weapon/paper && !length(info))
 		if (map.ordinal_age <= 1)
 			name = "papyrus"
 			icon_state = "scrollpaper"
-			desc = "A blank parchement scroll."
+			desc = "A blank papyrus scroll. It can be written on like paper."
 		else if (map.ordinal_age <= 3)
 			name = "paper"
 			icon_state = "Colonial_Paper_Empty"

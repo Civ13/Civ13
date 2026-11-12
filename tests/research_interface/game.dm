@@ -275,6 +275,54 @@ var/interface_wait_count = 0
 		chapter = interface_row(window["chapters"], child)
 		interface_check(chapter["state"] == "locked" && !chapter["groundwork"][1]["known"], "a newcomer sees a follow-up chapter as needing groundwork")
 
+		// Stone Age sheets: papyrus and parchment are both blank writing sheets.
+		var/fixture_age = map.ordinal_age
+		map.ordinal_age = 0
+		var/obj/item/weapon/paper/papyrus = new(locate(4,4,1))
+		var/obj/item/weapon/paper/parchment/hide = new(locate(4,4,1))
+		interface_check(papyrus.name == "papyrus" && hide.name == "parchment", "a Stone Age sheet is papyrus and parchment keeps its name ([papyrus.name], [hide.name])")
+		interface_check(blank_writing_sheet(papyrus) && blank_writing_sheet(hide), "papyrus and parchment are blank writing sheets")
+		interface_check(recipe_blank_paper(papyrus) && recipe_blank_paper(hide), "papyrus and parchment can be copied into recipe manuals")
+		interface_check(scholar_supply_value(papyrus, "mathematics") > 0 && scholar_supply_value(hide, "mathematics") > 0, "papyrus and parchment feed mathematics research")
+		qdel(papyrus)
+		qdel(hide)
+
+		// Blank sheets usually come clipped in a bundle.
+		var/math_node = null
+		for(var/node_id in research_nodes)
+			if(node_discipline(node_id) == "mathematics")
+				math_node = node_id
+				break
+		var/obj/structure/research_bench/interface_fixture/desk = new(locate(5,5,1))
+		desk.assigned_node = math_node
+		var/obj/item/weapon/paper_bundle/clip = new(locate(5,4,1))
+		for(var/i = 1, i <= 3, i++)
+			var/obj/item/weapon/paper/S = new(clip)
+			clip.pages += S
+		var/obj/item/weapon/paper/written = new(clip)
+		written.info = "a note"
+		clip.pages += written
+		interface_check(bundle_blank_sheets(clip).len == 3, "a bundle's blank sheets are found and written ones are not")
+		interface_check(desk.feed_research_supply(clip, H) && desk.supply_points("mathematics") == 15, "a bundle feeds mathematics research one sheet at a time ([desk.supply_points("mathematics")])")
+		interface_check(QDELETED(clip) && written.loc == locate(5,4,1), "the written sheet is left when the bundle runs out of blanks")
+		var/obj/structure/printingpress/press = new(locate(6,6,1))
+		var/obj/item/weapon/paper_bundle/stack = new(locate(6,5,1))
+		for(var/i = 1, i <= 2, i++)
+			var/obj/item/weapon/paper/S = new(stack)
+			stack.pages += S
+		interface_check(press.load_paper_bundle(stack, H) && press.printing_sheets == 2 && QDELETED(stack), "a printing press loads a bundle's blank sheets")
+		H.empty_hands()
+		var/obj/item/weapon/paper_bundle/held = new(H)
+		for(var/i = 1, i <= 3, i++)
+			var/obj/item/weapon/paper/S = new(held)
+			held.pages += S
+		H.hold(held)
+		interface_check(H.blank_sheet_count() >= 3, "blank sheets in a held bundle are counted")
+		var/obj/item/weapon/paper/taken = H.ready_blank_sheet()
+		interface_check(blank_writing_sheet(taken) && recipe_held(H, taken) && held.pages.len == 2, "a writer with a free hand takes a sheet off a held bundle")
+		H.empty_hands()
+		map.ordinal_age = fixture_age
+
 		// Screen data for cloud previews of the two windows.
 		bench.book_take(H, 1)
 		H.empty_hands()
