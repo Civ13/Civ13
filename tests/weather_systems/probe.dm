@@ -99,6 +99,18 @@ var/ws_runtime_error = FALSE
 	ws_check(edge > 0 && edge < 1, "edge of the storm is weaker than its core ([edge])")
 	ws_check(weather_anywhere(), "weather is about")
 	ws_check(weather_wind_at(field) >= 3, "wind rises under the storm")
+	var/steady_peak = S.peak
+	S.peak = 0.5
+	ws_check(!weather_lightning_sky(field), "steady rain throws no lightning")
+	S.peak = 1
+	ws_check(weather_lightning_sky(field), "heavy rain is a lightning sky")
+	var/strikes = weather_lightning_count
+	ws_check(weather_lightning(field.x, field.y) == 0 && weather_lightning_count == strikes + 1, "a strike with nobody near is seen by nobody")
+	map.winddirection = "North"
+	S.peak = steady_peak
+	ws_check(weather_shadow_look() == "shadow_s", "cloud shadow slides the way a north wind carries it")
+	map.winddirection = "West"
+	ws_check(weather_shadow_look() == "shadow_e", "cloud shadow slides east on a west wind")
 
 	// The same storm over other climates.
 	S.origin_x = 120
@@ -113,6 +125,8 @@ var/ws_runtime_error = FALSE
 	ws_check(local_precipitation(ice) == "snow", "ground snow sees the storm's snow")
 	var/list/chunk = weather_chunk_state(round(119 / 4), round(59 / 4), 1)
 	ws_check(islist(chunk) && chunk[1] == "snow_storm" && chunk[2] == 255, "drawn chunk under the core is a full blizzard")
+	ws_check(chunk[3] == 190, "the core casts the full cloud shadow")
+	ws_check(!weather_lightning_sky(ice), "a blizzard throws no lightning")
 	ws_check(isnull(weather_chunk_state(0, 0, 1)), "no chunk is drawn outside the storm")
 	season = "Dry Season"
 	weather_sample_time = -1

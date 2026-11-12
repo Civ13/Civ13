@@ -263,6 +263,37 @@ var/naval_runtime_error = FALSE
 	naval_check(!R.components.len && !R.masts.len && isnull(helm.ship) && !helm.anchored && isnull(mast.axis) && !mast.anchored, "taken apart, her wheel and mast are loose again")
 	naval_check(isnull(R.assemble(SOUTH)) && R.dir == SOUTH && helm.ship == R && (mast in R.masts), "and she assembles again facing south")
 
+	// ---- A built turret ----
+	assembly_frames(50, 20, 3, 3)
+	assembly_parts(50, 20, 3, 3)
+	var/obj/structure/vehicleparts/axis/heavy/tank = new(locate(50, 20, 1))
+	var/turf/ring = locate(51, 21, 1)
+	var/obj/structure/turret/built/turret = new(ring)
+	S = new(tank)
+	naval_check(S.turrets.len == 1 && findtext(S.report(), "turret cannot fire yet") && findtext(S.report(), "a tank cannon and a gunner's seat") && findtext(turret.fitting_text(), "Nothing is fitted"), "an empty turret on the bed says what it needs ([turret.fitting_text()])")
+	var/obj/structure/cannon/modern/tank/gun = new(ring)
+	var/obj/structure/bed/chair/gunner/gseat = new(ring)
+	var/obj/structure/bed/chair/loader/lseat = new(ring)
+	S = new(tank)
+	naval_check(findtext(S.report(), "Its turret has a gun and a gunner's seat"), "with a cannon and a gunner's seat on its tile the sheet reads ready")
+	tank.name = "Ox"
+	naval_check(isnull(tank.assemble(NORTH)) && assembly_whole(tank), "the tank assembles")
+	naval_check(gun.loc == turret && (gun in turret.weapons) && turret.gunner_seat == gseat && gseat.turret == turret && gseat.controls.turret == turret && turret.loader_seat == lseat && lseat.turret == turret && gseat.anchored, "its cannon and seats are taken into the turret")
+	naval_check(findtext(turret.fitting_text(), "a gunner's seat") && !findtext(turret.fitting_text(), "still needs") && !turret.lacking().len && findtext(tank.build_sheet(), "Its turret has a gun"), "and the turret reads fitted ([turret.fitting_text()])")
+	naval_check(tank.fit_parts() == 0, "nothing is fitted twice")
+	var/obj/structure/bed/chair/commander/cseat = new(ring)
+	naval_check(tank.fit_parts() == 1 && turret.commander_seat == cseat && cseat.turret == turret, "a commander's seat stood there later is fitted too")
+	naval_check(tank.do_move() && get_turf(turret) == get_step(ring, NORTH) && get_turf(gseat) == get_turf(turret) && gun.loc == turret, "the turret, its gun and its seats ride along when she drives")
+	var/list/styles = built_turret_styles()
+	naval_check(styles["plain"] == "tank_turret" && styles["round"] == "round_tank_turret" && styles.len == 2, "before the tank ages a builder has the plain and the round turret")
+	map.ordinal_age = 6
+	styles = built_turret_styles()
+	naval_check(styles["T34"] == "t34_turret" && styles.len == 8, "in a later age there are more to pick ([styles.len])")
+	map.ordinal_age = 0
+	tank.take_apart()
+	naval_check(isturf(gun.loc) && get_turf(gun) == get_turf(turret) && !turret.weapons.len && isnull(turret.gunner_seat) && isnull(gseat.turret) && isnull(gseat.controls.turret) && !gseat.anchored && isnull(lseat.turret) && isnull(cseat.turret) && turret.lacking().len == 2, "taken apart, the gun and the seats stand loose by the turret")
+	naval_check(isnull(tank.assemble(WEST)) && (gun in turret.weapons) && turret.gunner_seat == gseat, "and are fitted again when she is rebuilt")
+
 /proc/naval_run()
 	try
 		naval_checks()

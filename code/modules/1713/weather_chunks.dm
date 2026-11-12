@@ -43,12 +43,14 @@ var/global/list/weather_chunk_images = list() // "cx,cy,z" = image
 		plane = LIGHTING_PLANE
 		alpha = 255
 
-// The look and opacity of the weather over one chunk, or null for none.
+// What to draw over one chunk: list(precipitation look or null, its opacity,
+// cloud shadow opacity), or null for clear sky. The shadow reaches further
+// out than the rain does, so the cloud is seen arriving before it breaks.
 /proc/weather_chunk_state(cx, cy, z)
 	var/x = cx * WEATHER_CHUNK + 1
 	var/y = cy * WEATHER_CHUNK + 1
 	var/strength = weather_storm_strength(x + WEATHER_CHUNK / 2, y + WEATHER_CHUNK / 2)
-	if (strength < WEATHER_BAND_LIGHT)
+	if (strength < 0.02)
 		return null
 	var/severe = weather_storm_severe
 	// The climate of the open ground in the chunk: its middle, else a corner.
@@ -61,22 +63,47 @@ var/global/list/weather_chunk_images = list() // "cx,cy,z" = image
 			break
 	if (!place)
 		return null
+	var/shadow = round(190 * min(1, strength / WEATHER_BAND_STEADY))
 	var/list/state = weather_storm_state(place.climate, strength, severe)
-	if (!state)
-		return null
 	// Zone weather already draws itself on the area.
-	if (place.weather == state[2] && place.weather_intensity >= state[3])
-		return null
+	if (!state || (place.weather == state[2] && place.weather_intensity >= state[3]))
+		return list(null, 0, shadow)
 	var/alpha = 255
 	if (strength < WEATHER_BAND_STEADY)
 		alpha = round(70 + 185 * (strength - WEATHER_BAND_LIGHT) / (WEATHER_BAND_STEADY - WEATHER_BAND_LIGHT))
-	return list(state[1], alpha)
+	return list(state[1], alpha, shadow)
+
+// The cloud shadow slides the way the wind carries the storms.
+/proc/weather_shadow_look()
+	var/list/wind = weather_wind_vector()
+	if (wind[1] > 0)
+		return "shadow_e"
+	if (wind[1] < 0)
+		return "shadow_w"
+	return wind[2] > 0 ? "shadow_n" : "shadow_s"
+
+// The shared image for one layer of one chunk, set to this look and opacity.
+/proc/weather_chunk_image(key, cx, cy, z, sheet, look, alpha, layer)
+	var/image/I = weather_chunk_images[key]
+	if (!I)
+		I = image(sheet, locate(cx * WEATHER_CHUNK + 1, cy * WEATHER_CHUNK + 1, z), look)
+		I.plane = LIGHTING_PLANE
+		I.layer = layer
+		I.mouse_opacity = 0
+		I.alpha = 0
+		weather_chunk_images[key] = I
+	else if (I.icon_state != look)
+		I.icon_state = look
+	if (I.alpha != alpha)
+		animate(I, alpha = alpha, time = 20)
+	return I
 
 /proc/weather_chunks_step()
 	if (!weather_storm_count && !weather_chunk_images.len)
 		return
-	var/list/live = list()
-	var/list/blank = list()
+	var/list/live = list() // image key = image, drawn for somebody this step
+	var/list/known = list() // chunk key = its state, or FALSE for clear sky
+	var/shadow_look = weather_shadow_look()
 	for (var/client/C in clients)
 		var/list/want = list()
 		var/turf/T = get_turf(C.eye) || get_turf(C.mob)
@@ -91,39 +118,31 @@ var/global/list/weather_chunk_images = list() // "cx,cy,z" = image
 			for (var/cx = cx_low, cx <= cx_high, cx++)
 				for (var/cy = cy_low, cy <= cy_high, cy++)
 					var/key = "[cx],[cy],[T.z]"
-					if (blank[key])
+					var/list/state = known[key]
+					if (isnull(state))
+						state = weather_chunk_state(cx, cy, T.z)
+						known[key] = state || FALSE
+						if (state)
+							if (state[1])
+								live[key] = weather_chunk_image(key, cx, cy, T.z, 'icons/effects/weather_chunks.dmi', state[1], state[2], 10)
+							live["s[key]"] = weather_chunk_image("s[key]", cx, cy, T.z, 'icons/effects/weather_storm.dmi', shadow_look, state[3], 9)
+					if (!state)
 						continue
-					var/image/I = live[key]
-					if (!I)
-						var/list/state = weather_chunk_state(cx, cy, T.z)
-						if (!state)
-							blank[key] = TRUE
-							continue
-						I = weather_chunk_images[key]
-						if (!I)
-							I = image('icons/effects/weather_chunks.dmi', locate(cx * WEATHER_CHUNK + 1, cy * WEATHER_CHUNK + 1, T.z), state[1])
-							I.plane = LIGHTING_PLANE
-							I.layer = 10
-							I.mouse_opacity = 0
-							I.alpha = 0
-							weather_chunk_images[key] = I
-						else if (I.icon_state != state[1])
-							I.icon_state = state[1]
-						if (I.alpha != state[2])
-							animate(I, alpha = state[2], time = 20)
-						live[key] = I
-					want[key] = I
+					if (state[1])
+						want[key] = live[key]
+					want["s[key]"] = live["s[key]"]
 		var/list/shown = C.weather_chunk_shown
 		if (shown)
 			for (var/key in shown)
-				if (!want[key])
+				if (want[key] != shown[key])
 					C.images -= shown[key]
 		for (var/key in want)
-			if (!shown || !shown[key])
+			if (!shown || shown[key] != want[key])
 				C.images += want[key]
 		C.weather_chunk_shown = want.len ? want : null
 	for (var/key in weather_chunk_images)
 		if (!live[key])
 			weather_chunk_images -= key
+	weather_lightning_step()
 
 #undef WEATHER_CHUNK

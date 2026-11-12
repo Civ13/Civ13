@@ -40,6 +40,31 @@ def description(path):
     raise SystemExit(f"{path}: no DMI description")
 
 
+def description_of(data):
+    at = 8
+    while at < len(data):
+        length, kind = struct.unpack(">I4s", data[at:at + 8])
+        body = data[at + 8:at + 8 + length]
+        if kind == b"zTXt" and body.startswith(b"Description\0"):
+            return zlib.decompress(body[len(b"Description\0") + 1:]).decode()
+        at += 12 + length
+    return None
+
+
+def same_icon(path, data):
+    """TRUE when the file at path holds the same pixels and DMI description
+    as these bytes. The packed bytes themselves differ between zlib and
+    Pillow versions, so they are not compared."""
+    if not Path(path).exists():
+        return False
+    have = Path(path).read_bytes()
+    if description_of(have) != description_of(data):
+        return False
+    a = Image.open(BytesIO(have)).convert("RGBA")
+    b = Image.open(BytesIO(data)).convert("RGBA")
+    return a.size == b.size and a.tobytes() == b.tobytes()
+
+
 def states(path):
     """[(name, dirs, frames, [delays])] in sheet order, and the cell size."""
     text = description(path)
@@ -119,7 +144,7 @@ def build():
 def main():
     chunks, roof = build()
     if "--check" in sys.argv:
-        stale = [str(p.relative_to(ROOT)) for p, data in ((CHUNKS, chunks), (ROOF, roof)) if not p.exists() or p.read_bytes() != data]
+        stale = [str(p.relative_to(ROOT)) for p, data in ((CHUNKS, chunks), (ROOF, roof)) if not same_icon(p, data)]
         if stale:
             print("stale:", ", ".join(stale))
             return 1
