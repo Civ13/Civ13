@@ -26,12 +26,15 @@ another pass; additions before that copy can be selected only within the origina
 count-derived quota. All state is released on completion and normal cancellation,
 including a paused process that finishes without calling fire.
 
-Fifteen offline cases cover early/final count budgets, final deletion completion,
+Sixteen offline cases cover early/final count budgets, final deletion completion,
 ordered multi-location cleanup, quota preservation, pending deletion, retained
 survivor deletion, movement, population additions, noncleanable checkpoints,
 empty/deleted-only populations, destroyed locations and cancellation in both
 phases. Actual audited-source, per-fire aggregate-reset and late-phase-transition
 controls reproduce their named loss without treating runtime failures as success.
+The count-key differential also exercises a null location and a wrong-key mutant
+using the Python adapter; it does not establish native null-key semantics. The
+audited historical baseline is frozen in fixtures/cleanables_9db2b2f.dm.
 These are source-derived algorithm checks, not proof of native list/GC behavior.
 
 After parent review, prepare an isolated 3x1x1 BYOND 516.1681 fixture using the
