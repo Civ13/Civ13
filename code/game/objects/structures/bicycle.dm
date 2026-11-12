@@ -3,8 +3,8 @@
 	var/capacity = max(1, (((strength - 1) / 2) + 1) * 59)
 	return max(0, carried_weight) / capacity
 
-/proc/bicycle_step_delay(load_ratio)
-	return Clamp(1.5 * (1 + max(0, load_ratio)), 1.5, 6)
+/proc/bicycle_step_delay(load_ratio, fastest = 1.5, slowest = 6)
+	return Clamp(fastest * (1 + max(0, load_ratio)), fastest, slowest)
 
 /proc/bicycle_step_cost(load_ratio)
 	return Clamp(0.5 + max(0, load_ratio) * 0.5, 0.5, 2)
@@ -54,14 +54,14 @@
 			to_chat(H, SPAN_NOTICE("You stop pedaling."))
 		else if (B.rider_ready())
 			B.startmovementloop()
-			to_chat(H, SPAN_NOTICE("You start pedaling. Use direction keys to steer and the secondary action to brake."))
+			if (B.moving)
+				to_chat(H, SPAN_NOTICE("You start pedaling. Use direction keys to steer and the secondary action to brake."))
 
 /obj/item/vehicleparts/wheel/handle/bicycle/secondary_attack_self(mob/living/human/H)
 	if (istype(origin, /obj/structure/vehicle/bicycle))
 		var/obj/structure/vehicle/bicycle/B = origin
 		if (H == B.driver && loc == H)
-			B.stopmovementloop()
-			to_chat(H, SPAN_NOTICE("You brake."))
+			B.secondary_control(H)
 
 /obj/structure/vehicle/bicycle
 	name = "pedal bicycle"
@@ -81,10 +81,20 @@
 	var/tmp/pedal_busy = FALSE
 	// Handlebars, crank and nearest wheel, drawn in front of the rider.
 	var/tmp/image/rider_overlay = null
+	var/overlay_state = "bicycle_overlay"
+	var/control_type = /obj/item/vehicleparts/wheel/handle/bicycle
+	// Deciseconds per tile with no load, and the slowest a load can make it.
+	var/pedal_fastest = 1.5
+	var/pedal_slowest = 6
+
+// The handlebars' secondary action.
+/obj/structure/vehicle/bicycle/proc/secondary_control(mob/living/human/H)
+	stopmovementloop()
+	to_chat(H, SPAN_NOTICE("You brake."))
 
 /obj/structure/vehicle/bicycle/update_overlay()
 	if (!rider_overlay)
-		rider_overlay = image(icon, "bicycle_overlay")
+		rider_overlay = image(icon, overlay_state)
 		rider_overlay.layer = MOB_LAYER + 2.1
 	overlays -= rider_overlay
 	if (driver)
@@ -96,20 +106,24 @@
 	var/snowy = target.has_snow_cover() && !target.terrain_floor_covered()
 	return list(rough, snowy, terrain_step_levels(start, target))
 
+// Hills: the walking slope rule.
+/obj/structure/vehicle/bicycle/proc/slope_delay(turf/start, turf/target, interval)
+	return terrain_slope_delay(start, target, interval)
+
 /obj/structure/vehicle/bicycle/New()
 	..()
 	// Saved controls are restored with their holder and cyclic origin link.
 	// Creating a second set here would leave duplicate handlebars after load.
 	if (!persistence_saved_atom_construction)
-		dwheel = new /obj/item/vehicleparts/wheel/handle/bicycle(src)
+		dwheel = new control_type(src)
 		dwheel.origin = src
 
 /obj/structure/vehicle/bicycle/persistence_restore_finished()
 	..()
 	stopmovementloop()
 	update_overlay()
-	if (!istype(dwheel, /obj/item/vehicleparts/wheel/handle/bicycle))
-		dwheel = new /obj/item/vehicleparts/wheel/handle/bicycle(src)
+	if (!istype(dwheel, control_type))
+		dwheel = new control_type(src)
 	dwheel.origin = src
 	if (!pedal_safety_timer)
 		safety_check()
@@ -167,7 +181,10 @@
 	ontop += user
 	update_overlay()
 	update_icon()
-	user.visible_message(SPAN_NOTICE("[user] gets on \the [src]."), SPAN_NOTICE("You mount the bicycle. Use the handlebars to pedal; click the bicycle to get off."))
+	user.visible_message(SPAN_NOTICE("[user] gets on \the [src]."), SPAN_NOTICE("You get on \the [src]. [mount_hint()]"))
+
+/obj/structure/vehicle/bicycle/proc/mount_hint()
+	return "Use the handlebars to pedal; click the bicycle to get off."
 
 /obj/structure/vehicle/bicycle/startmovementloop()
 	if (moving || pedal_busy || !rider_ready())
@@ -240,9 +257,9 @@
 	if (H.getStat("stamina") < cost)
 		to_chat(H, SPAN_WARNING("You are too tired to keep pedaling."))
 		return FALSE
-	interval = bicycle_ground_delay(bicycle_step_delay(load_ratio), ground[1], ground[2])
+	interval = bicycle_ground_delay(bicycle_step_delay(load_ratio, pedal_fastest, pedal_slowest), ground[1], ground[2])
 	// Hills: slower uphill, a little quicker coasting down.
-	interval = Clamp(interval + terrain_slope_delay(start, target, interval), 1, 10)
+	interval = Clamp(interval + slope_delay(start, target, interval), 1, max(10, pedal_slowest))
 	vehicle_m_delay = interval
 	// Timers land on whole server ticks. Keep to the schedule while it is less
 	// than one step behind, so late ticks do not stretch the average pace.

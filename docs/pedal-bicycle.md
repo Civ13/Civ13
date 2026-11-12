@@ -1,7 +1,7 @@
 # Pedal bicycle
 
-The first pedal vehicle is a one-person ground bicycle. Pedal zeppelins are not
-included: buoyancy, hovering and landing need a separate design and tests.
+The first pedal vehicle is a one-person ground bicycle. The pedal airship built
+on it is described in [pedal-airship.md](pedal-airship.md).
 
 ## Obtain and ride
 

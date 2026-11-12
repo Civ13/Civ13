@@ -9,7 +9,12 @@ slower loaded and on grass, stops unhurt at an obstacle and when exhausted,
 and gets its own glide and free hands back after getting off. result.json
 also holds the frames that tests/pedal_bicycle/render.py draws.
 
+--probe airship_probe.dm runs the pedal airship flight instead: rise, fly,
+hover, refuse to get off or sink onto water, sink, the lift limit, an upper
+storey in the way and a forced set-down.
+
     python3 tests/pedal_bicycle/ride.py --byond-bin ~/byond-516.1688/byond/bin
+    python3 tests/pedal_bicycle/ride.py --byond-bin ~/byond-516.1688/byond/bin --probe airship_probe.dm
 """
 import argparse
 import json
@@ -28,6 +33,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--probe', default='ride_probe.dm', help='ride_probe.dm (bicycle) or airship_probe.dm')
     parser.add_argument('--deadline', type=int, default=1200)
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
@@ -40,7 +46,7 @@ def main():
     created = [source] + [source.with_suffix(ext) for ext in ('.dmb', '.rsc', '.int')]
     try:
         dme = (repo / 'civ13.dme').read_text(encoding='utf-8-sig')
-        source.write_text(dme + '\n#include "tests\\pedal_bicycle\\ride_probe.dm"\n', encoding='utf-8')
+        source.write_text(dme + '\n#include "tests\\pedal_bicycle\\' + args.probe + '"\n', encoding='utf-8')
         build = subprocess.run([str(args.byond_bin / 'DreamMaker'), '-max_errors', '0', source.name],
                                cwd=repo, capture_output=True, text=True, timeout=600)
         log = build.stdout + build.stderr

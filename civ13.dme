@@ -704,6 +704,7 @@
 #include "code\game\objects\structures\noticeboard.dm"
 #include "code\game\objects\structures\ocean_fishing.dm"
 #include "code\game\objects\structures\optable.dm"
+#include "code\game\objects\structures\pedal_airship.dm"
 #include "code\game\objects\structures\piano.dm"
 #include "code\game\objects\structures\plant_pots.dm"
 #include "code\game\objects\structures\railing.dm"
