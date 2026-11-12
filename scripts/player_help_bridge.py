@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'a23542b1a9fdae7a3c28511f94d257f1310a6f32'
+WIKI_REVIEWED_REVISION = '952306317b4d11056f097b94019bbe0a26df1f7b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -93,7 +93,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('bfc45cbce8e90ee22f91dbf80d44aed5e5e8666eecca75f3111ffc499dbba027', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('1431725516b2e9dda087b0723445b49ea3077ad2401280957acbe800bc5fa3f5', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning'),
+    'guides/Guide_to_Survival.md': ('8c07668c1b1e2a6fbe8eb04b67c9a72e92bfeeac28bcba88005239a3450a94b3', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
