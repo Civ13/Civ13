@@ -154,7 +154,8 @@
 /obj/item/connector/forceMove(atom/destination, special_event)
 	var/atom/previous = loc
 	. = ..()
-	if (. && loc != previous)
+	// A craft carries its wiring whole (craft/rigid_move.dm).
+	if (. && loc != previous && !craft_carrying())
 		disconnect_cables()
 		anchored = FALSE
 /obj/item/connector/attackby(obj/item/weapon/W as obj, mob/user as mob)

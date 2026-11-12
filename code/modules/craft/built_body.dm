@@ -164,6 +164,7 @@
 	var/turf/old_origin = origin()
 	var/angle = craft_turn_angle(dir, heading)
 	moving = TRUE
+	var/list/carry = null
 	try
 		// What rides on each tile, and the water under every tile involved,
 		// before anything changes.
@@ -188,6 +189,11 @@
 			if (locate(/obj/covers) in cargo[i])
 				D.water_level = 0
 				D.move_delay = 0
+		// Wiring aboard keeps its links while she carries it (rigid_move.dm).
+		var/list/everything = list()
+		for (var/list/riders in cargo)
+			everything += riders
+		carry = craft_rigid_begin(everything)
 		for (var/i = 1, i <= old.len, i++)
 			var/turf/S = old[i]
 			var/turf/D = dest[i]
@@ -203,6 +209,8 @@
 					floored = TRUE
 			if (!floored)
 				D.water_level = water[D]
+		craft_rigid_settle(carry)
+		carry = null
 		// The water closes where she was.
 		for (var/turf/S in old)
 			if (S in dest)
@@ -220,6 +228,7 @@
 						M.craft_turned(craft, angle)
 	catch (var/exception/e)
 		moving = FALSE
+		craft_rigid_settle(carry)
 		throw e
 	moving = FALSE
 	last_move_ms = (world.timeofday - started) * 100

@@ -265,6 +265,49 @@ var/naval_runtime_error = FALSE
 	qdel(bunker)
 	C.fit_drives()
 
+	// ---- Wiring rides along ----
+	var/list/planks = B.cells()
+	var/obj/structure/cable/c1 = new(planks[1])
+	var/obj/structure/cable/c2 = new(planks[2])
+	var/obj/structure/cable/c3 = new(planks[3])
+	var/obj/structure/cable/ashore = new(locate(60, 55, 2))
+	c1.connections = list(c2)
+	c2.connections = list(c1, c3)
+	c3.connections = list(c2, ashore)
+	ashore.connections = list(c3)
+	var/obj/structure/engine/internal/hotbulb/dynamo = new(planks[1])
+	dynamo.connections = list(c1)
+	c1.connections += dynamo
+	var/obj/structure/probe_gun/lamp = new(planks[3])
+	lamp.powersource = c3
+	lamp.powered = TRUE
+	c3.connections += lamp
+	var/obj/structure/probe_gun/quay_lamp = new(locate(60, 54, 2))
+	quay_lamp.powersource = c2
+	quay_lamp.powered = TRUE
+	c2.connections += quay_lamp
+	var/turf/corner_was = B.origin()
+	var/moved = FALSE
+	for (var/list/step in list(list(1, 0), list(-1, 0), list(0, 1), list(0, -1)))
+		if (B.can_move_to(corner_was.x + step[1], corner_was.y + step[2], B.heading()))
+			moved = B.move_to(corner_was.x + step[1], corner_was.y + step[2], B.heading())
+			break
+	naval_check(moved && B.contains(get_turf(c1)) && B.contains(get_turf(c3)) && get_turf(c1) != planks[1], "the cables hop with her")
+	naval_check((c2 in c1.connections) && (c1 in c2.connections) && (c3 in c2.connections) && (c2 in c3.connections), "and are still joined to each other")
+	naval_check((dynamo in c1.connections) && (c1 in dynamo.connections) && lamp.powersource == c3 && lamp.powered && (lamp in c3.connections), "her engine and her lamp are still on the grid")
+	naval_check(!(ashore in c3.connections) && !(c3 in ashore.connections), "the cable to the shore has parted")
+	naval_check(!(quay_lamp in c2.connections) && !quay_lamp.powersource && !quay_lamp.powered, "and the lamp on the quay is off her grid")
+	naval_check(isnull(craft_rigid_cargo), "nothing is being carried once she has arrived")
+	c1.tiledir = "horizontal"
+	c1.update_icon()
+	var/turned_to = turn(B.heading(), 90)
+	naval_check(B.turn_to(turned_to) && c1.tiledir == "vertical" && c1.icon_state == "vertical" && (c2 in c1.connections), "a quarter turn lays an east-west cable north-south and keeps it joined ([c1.tiledir])")
+	c2.forceMove(locate(58, 55, 2))
+	naval_check(!(c2 in c1.connections) && !(c2 in c3.connections) && !c2.connections.len, "a cable dragged off her by hand still drops its links")
+	for (var/obj/wired in list(c1, c2, c3, ashore, dynamo, lamp, quay_lamp))
+		qdel(wired)
+	C.fit_drives()
+
 	// ---- Striking her ----
 	tiller.decommission()
 	naval_check(!corner.afloat, "struck, her planks are plain planks")
