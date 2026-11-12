@@ -1,6 +1,6 @@
 """Hand-placed 32px firefighting tools: the fire beater (a leafy green branch)
-and the fire flapper (a hide flap lashed to a pole), each dry and wet, plus
-their in-hand sprites in four directions. Every pixel is placed by this script
+and the fire flapper (a hide flap lashed to a pole), each dry and wet, the
+iron fire hook, plus their in-hand sprites in four directions. Every pixel is placed by this script
 from a fixed palette (Pillow only); no external or generated artwork.
 
 Run with Pillow to reproduce icons/obj/firefighting.dmi. `--preview <png>`
@@ -27,6 +27,8 @@ HIDE = [(226, 196, 146), (198, 162, 110), (164, 126, 80), (122, 90, 56), (70, 48
 HIDE_WET = [(176, 150, 112), (146, 116, 80), (114, 86, 58), (82, 60, 40), (44, 30, 20)]
 CORD = [(222, 206, 160), (150, 132, 92)]
 DROP = [(226, 244, 255), (128, 190, 232)]
+# forged iron: highlight, light, mid, dark, outline
+IRON = [(206, 212, 220), (150, 158, 170), (104, 112, 126), (66, 72, 86), (30, 34, 44)]
 
 
 class Frame:
@@ -154,6 +156,40 @@ def flapper(wet=False):
     return f
 
 
+# ------------------------------------------------------------------ fire hook
+# A long pole with a forged iron head: a spike in line with the pole and a
+# hook curling back from it.
+# The spike, from the socket to the point, and the hook that curls back from it.
+HOOK_SPIKE = [(19, 12), (20, 11), (21, 10), (22, 9), (23, 8), (24, 7), (25, 6), (26, 5)]
+HOOK_CURL = [(19, 10), (18, 9), (17, 8), (16, 7), (15, 7), (14, 7), (13, 8), (12, 9),
+             (12, 10), (12, 11), (12, 12), (13, 13)]
+
+
+def fire_hook():
+    f = Frame()
+    diagonal(f, 1, 30, 17, POLE)                      # the pole
+    f.pts(OUT, (0, 31), (1, 31), (0, 30))
+    iron = {}
+    for i, (x, y) in enumerate(HOOK_SPIKE):           # lit above, shaded below
+        iron[(x, y)] = IRON[0] if i > 4 else IRON[1]
+        iron[(x + 1, y)] = IRON[2]
+    del iron[(27, 5)]                                 # a sharp point
+    for i, (x, y) in enumerate(HOOK_CURL):
+        iron[(x, y)] = IRON[1] if i < 7 else IRON[2]
+        iron[(x, y + 1)] = IRON[3]
+    del iron[(13, 14)]                                # and a sharp hook tip
+    for x, y in ((18, 13), (19, 13), (18, 14)):       # the socket band on the pole
+        iron[(x, y)] = IRON[2]
+    iron[(17, 14)] = IRON[3]
+    for (x, y) in list(iron):                         # dark outline on open sides
+        for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+            if n not in iron and n not in f.px:
+                f.put(n[0], n[1], IRON[4])
+    for (x, y), c in iron.items():
+        f.put(x, y, c)
+    return f
+
+
 # ------------------------------------------------------------------- in hand
 # Left hand, facing south, north, east and west: where the shaft runs (as on
 # the spear) and where the head sits. The right hand is the mirror image.
@@ -165,6 +201,7 @@ SHAFTS = {
 }
 HAND_LEAVES = ['.oo..', 'olho.', 'ollmo', 'ommdo', '.odo.']
 HAND_FLAP = ['.ooo.', 'ohllo', 'ollmo', 'olmdo', '.ooo.']
+HAND_HOOK = ['...ho', '.o.lo', 'ol.mo', 'ommo.', '.oo..']
 
 
 def in_hand(kind, facing):
@@ -178,6 +215,10 @@ def in_hand(kind, facing):
     if kind == 'beater':
         key = {'h': LEAF[0], 'l': LEAF[1], 'm': LEAF[2], 'd': LEAF[3], 'o': LEAF[4]}
         f.rows(hy - 2, hx - 2, HAND_LEAVES, key)
+    elif kind == 'hook':
+        key = {'h': IRON[0], 'l': IRON[1], 'm': IRON[2], 'd': IRON[3], 'o': IRON[4]}
+        art = HAND_HOOK if step > 0 else [row[::-1] for row in HAND_HOOK]
+        f.rows(hy - 2, hx - 2, art, key)
     else:
         key = {'h': HIDE[0], 'l': HIDE[1], 'm': HIDE[2], 'd': HIDE[3], 'o': HIDE[4]}
         f.rows(hy - 2, hx - 2, HAND_FLAP, key)
@@ -196,8 +237,9 @@ def states():
         'fire_beater_wet': [beater(True)],
         'fire_flapper': [flapper()],
         'fire_flapper_wet': [flapper(True)],
+        'fire_hook': [fire_hook()],
     }
-    for kind, name in (('beater', 'fire_beater'), ('flapper', 'fire_flapper')):
+    for kind, name in (('beater', 'fire_beater'), ('flapper', 'fire_flapper'), ('hook', 'fire_hook')):
         out[name + '_l'], out[name + '_r'] = hand_states(kind)
     return out
 
@@ -218,10 +260,10 @@ def write_dmi(path, st):
 
 def preview(path, st, scale=8):
     grounds = [(94, 132, 62), (120, 96, 66), (60, 60, 64)]   # grass, dirt, night
-    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet']
-    hands = ['fire_beater_l', 'fire_beater_r', 'fire_flapper_l', 'fire_flapper_r']
+    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet', 'fire_hook']
+    hands = ['fire_beater_l', 'fire_beater_r', 'fire_flapper_l', 'fire_flapper_r', 'fire_hook_l', 'fire_hook_r']
     cell = 32 * scale
-    sheet = Image.new('RGBA', (cell * 4, cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
+    sheet = Image.new('RGBA', (cell * 5, cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
     for r, ground in enumerate(grounds):
         for c, name in enumerate(names):
             tile = Image.new('RGBA', (32, 32), ground + (255,))

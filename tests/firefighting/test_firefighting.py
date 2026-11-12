@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/modules/1713/firefighting.dm'
 WATER = ROOT / 'code/modules/1713/firefighting_water.dm'
 FIRE = ROOT / 'code/modules/1713/oil_fires.dm'
+HOOK = ROOT / 'code/modules/1713/firefighting_hook.dm'
 ICON = ROOT / 'icons/obj/firefighting.dmi'
 
 
@@ -89,6 +90,31 @@ class FirefightingSourceTests(unittest.TestCase):
         start = water.index('\n/obj/item/weapon/bedsheet/resolve_attackby(')
         self.assertIn('return ..()', water[start:water.find('\n#undef', start)])
         self.assertIn('return key == "next_smother" || ..()', water)
+
+    def test_fire_hook(self):
+        hook = HOOK.read_text(encoding='utf-8')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8').splitlines()
+        mine = dme.index('#include "code\\modules\\1713\\firefighting_hook.dm"')
+        for original in ('code\\game\\objects\\covers.dm', 'code\\game\\objects\\roof_stuff.dm',
+                         'code\\game\\objects\\structures\\wild.dm'):
+            self.assertLess(dme.index('#include "%s"' % original), mine)
+        states = dmi_states(ICON)
+        self.assertEqual(states.get('fire_hook'), '1')
+        for hand in ('fire_hook_l', 'fire_hook_r'):
+            self.assertIn('"%s"' % hand, hook)
+            self.assertEqual(states.get(hand), '4')
+        start = hook.index('\n/obj/item/weapon/fire_hook/resolve_attackby(')
+        self.assertIn('return ..()', hook[start:hook.find('\n#undef', start)])
+        # Trees are never a target: only the brush types are listed.
+        self.assertNotIn('/obj/structure/wild/tree', hook)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        lines = [line for line in recipes.splitlines()
+                 if line.startswith('RECIPE: ') and line.split(',')[2] == '/obj/item/weapon/fire_hook']
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(len(lines[0][len('RECIPE: '):].split(',')), 13)
+        self.assertTrue(lines[0].startswith('RECIPE: /material/iron/,'))
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertIn('"/obj/item/weapon/fire_hook" = "iron_tools"', nodes)
 
 
 if __name__ == '__main__':
