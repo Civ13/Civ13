@@ -1647,6 +1647,7 @@
 #include "code\modules\1713\firefighting.dm"
 #include "code\modules\1713\firefighting_water.dm"
 #include "code\modules\1713\herbalism.dm"
+#include "code\modules\1713\preserves.dm"
 #include "code\modules\1713\husbandry_feeding.dm"
 #include "code\modules\1713\fish_pen.dm"
 #include "code\modules\1713\flint_mining.dm"
