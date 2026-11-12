@@ -477,6 +477,16 @@ A boat of ship frames is assembled by the same code from its rudder axis
 on water, and looks for a ship's wheel (`helm`), masts and an engine of any
 kind in place of a seat and corner wheels.
 
+`code/modules/craft/vehicle_turret.dm` adds `/obj/structure/turret/built`
+(recipe "tank turret", Mechanized War): the works tanks' traversing turret
+(`siege/turret.dm`), empty until fitted. `fit_parts()` calls its `fit()`,
+which takes the tank cannon and the gunner's, loader's and commander's seats
+standing on the turret's tile into it; `release()` sets them down again when
+the vehicle is taken apart. `lacking()` is what it needs before it can fire
+and the survey's `turret_lines()` reports it. `built_turret_styles()` lists
+the existing turret pictures a builder may pick in the current age ("Turret
+style" in the axis menu).
+
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 
 ## Carriages
