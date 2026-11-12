@@ -9,6 +9,10 @@
 // VESSEL_TILES_PER_STEP tiles per telegraph step, marks the water it is about
 // to cover VESSEL_PATH_WARNING ahead, and stops with a reason when something
 // is in the way.
+//
+// A body made of objects (body.glides, craft/glide.dm) covers the same water
+// in the same time one tile at a step, and every step is shown to clients as
+// one unbroken glide of the deck, all aboard and the cameras of her crew.
 // ============================================================
 
 /datum/craft
@@ -19,6 +23,8 @@
 	var/tmp/warn_timer = 0
 	var/tmp/turning_to = 0
 	var/tmp/list/path_markers = list()
+	var/tmp/sailing_at = 0       // The telegraph step the running timer was set for.
+	var/tmp/tiles_since_burn = 0 // Tiles glided since her drives last paid.
 
 // The turfs a move would occupy, or null with last_refusal set. Writes
 // nothing. A body that cannot plan cannot sail from here.
@@ -46,16 +52,38 @@
 		qdel(M)
 	path_markers = list()
 
+// TRUE when she covers her water a tile at a time.
+/datum/craft/proc/glides()
+	return body && body.glides
+
+// Tiles one move covers, and the ticks between moves. A gliding hull makes
+// the same way as a hopping one: slow ahead is two tiles every half minute.
+/datum/craft/proc/sail_tiles()
+	return glides() ? 1 : speed * VESSEL_TILES_PER_STEP
+
+/datum/craft/proc/sail_interval()
+	if (!glides() || speed <= 0)
+		return VESSEL_HOP_INTERVAL
+	return max(1, round(VESSEL_HOP_INTERVAL / (speed * VESSEL_TILES_PER_STEP)))
+
 /datum/craft/proc/start_sailing()
 	if (hop_timer)
-		return
-	hop_timer = addtimer(CALLBACK(src, PROC_REF(sail_tick)), VESSEL_HOP_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
+		if (sailing_at == speed || !glides())
+			return
+		// A new telegraph order changes her pace at once.
+		deltimer(hop_timer)
+		hop_timer = 0
+	sailing_at = speed
+	hop_timer = addtimer(CALLBACK(src, PROC_REF(sail_tick)), sail_interval(), TIMER_LOOP | TIMER_STOPPABLE)
 	schedule_path_warning()
 
 /datum/craft/proc/stop_sailing()
 	if (hop_timer)
 		deltimer(hop_timer)
 		hop_timer = 0
+		if (body)
+			body.glide_rest(sail_interval())
+	sailing_at = 0
 	if (warn_timer)
 		deltimer(warn_timer)
 		warn_timer = 0
@@ -87,7 +115,7 @@
 	if (!O)
 		return null
 	var/heading = body.heading()
-	for (var/tiles = speed * VESSEL_TILES_PER_STEP, tiles >= 1, tiles--)
+	for (var/tiles = sail_tiles(), tiles >= 1, tiles--)
 		var/turf/N = locate(O.x + (heading == EAST ? tiles : (heading == WEST ? -tiles : 0)), O.y + (heading == NORTH ? tiles : (heading == SOUTH ? -tiles : 0)), O.z)
 		if (N && body.can_move_to(N.x, N.y, heading))
 			return list(N.x, N.y)
@@ -117,7 +145,7 @@
 /datum/craft/proc/schedule_path_warning()
 	if (warn_timer)
 		deltimer(warn_timer)
-	warn_timer = addtimer(CALLBACK(src, PROC_REF(warn_tick)), VESSEL_HOP_INTERVAL - VESSEL_PATH_WARNING, TIMER_STOPPABLE)
+	warn_timer = addtimer(CALLBACK(src, PROC_REF(warn_tick)), max(1, sail_interval() - VESSEL_PATH_WARNING), TIMER_STOPPABLE)
 
 /datum/craft/proc/warn_tick()
 	warn_timer = 0
@@ -150,9 +178,17 @@
 	show_drives()
 	var/list/hop = next_hop()
 	clear_path()
-	if (hop && body.move_to(hop[1], hop[2], body.heading()))
-		burn_drives()
-		return TRUE
+	if (hop)
+		body.glide_time = glides() ? sail_interval() : 0
+		var/moved = body.move_to(hop[1], hop[2], body.heading())
+		body.glide_time = 0
+		if (moved)
+			// Her drives pay once for the water a hop would have covered.
+			tiles_since_burn += sail_tiles()
+			if (tiles_since_burn >= speed * VESSEL_TILES_PER_STEP)
+				tiles_since_burn = 0
+				burn_drives()
+			return TRUE
 	if (hop)
 		last_refusal = body.last_refusal
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
