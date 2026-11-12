@@ -489,6 +489,12 @@ style" in the axis menu).
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 
+The automobile workshop builds a truck, an armoured car, a tracked carrier
+and two tanks piece by piece from `works_vehicle_specs`
+(`code/modules/craft/vehicle_works.dm`); see
+[piece-projects.md](piece-projects.md). A new works model is one more spec
+naming an existing layout.
+
 ## Carriages
 
 `code/game/objects/structures/carriage.dm` is the horse carriage, and

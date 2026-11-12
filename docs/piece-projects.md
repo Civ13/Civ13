@@ -36,8 +36,30 @@ one-go assembly does:
 | Windows / Canopy | 1 | all the glass |
 | Seats | 1 | all the cloth |
 
+The automobile workshop also builds works vehicles
+(`code/modules/craft/vehicle_works.dm`, `works_vehicle_specs`): a cargo
+truck, an armoured car, a tracked carrier, a light tank and a medium tank.
+They are projects only (`one_go(model)` is FALSE, so the one-go menu and
+`assemble_for()` leave them out). Each spec names an existing body layout,
+its square, its cost, the steel that is turret and gun, and the research it
+needs beyond the press's own (Mechanized Warfare for all but the truck,
+checked when the project starts). Tracked models have a Tracks stage in
+place of Wheels (4 pieces, 1 craftable tank track each) and no windows;
+tanks end with a Turret stage of 70 steel. `workshop_layout_part()` leaves
+out a map layout's free extras for every press model: tanks are empty, shell
+racks are empty, and loose guns, ammunition, supply crates, hull gunner
+seats and radios are not made.
+
+| Model | Square | Steel | Glass | Cloth | Cable | Running gear |
+| --- | --- | --- | --- | --- | --- | --- |
+| Cargo truck | 4 | 80 | 8 | 6 | 10 | 4 wheels |
+| Armoured car | 3 | 120 | 0 | 4 | 10 | 4 wheels |
+| Tracked carrier | 4 | 180 | 0 | 6 | 12 | 4 tracks |
+| Light tank | 4 | 220 | 0 | 4 | 12 | 4 tracks |
+| Medium tank | 4 | 300 | 0 | 6 | 14 | 4 tracks |
+
 Stacks are paid by hitting the press or any part of the vehicle in the bay;
-wheels are dragged onto either. A piece takes 3 seconds of work and needs no
+wheels and tank tracks are dragged onto either. A piece takes 3 seconds of work and needs no
 power. Anyone may work on it; the project needs the press's research.
 
 The bay shows `/obj/structure/vehicle_project_part` objects, one per cell of
