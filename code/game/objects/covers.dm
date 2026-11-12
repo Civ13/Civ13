@@ -7,6 +7,7 @@
 	var/passable = TRUE
 	var/origin_covered = FALSE
 	var/origin_water_level = 0
+	var/afloat = FALSE // Part of a commissioned hull (craft/built_body.dm): it rides the deep sea instead of sinking.
 	var/not_movable = FALSE //if it can be removed by wrenches
 	var/health = 100
 	var/maxhealth = 100

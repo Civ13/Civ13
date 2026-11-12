@@ -44,7 +44,8 @@
 	if (!ishuman(user))
 		return 0
 	var/mob/living/human/H = user
-	return H.harvest_skill_bonus(statname)
+	// Advanced Agriculture adds to a farmer's harvest (node_effects.dm).
+	return H.harvest_skill_bonus(statname) + (statname == "farming" ? farming_node_bonus(H) : 0)
 
 #undef HARVEST_SKILL_BASE
 #undef HARVEST_SKILL_MAX_BONUS

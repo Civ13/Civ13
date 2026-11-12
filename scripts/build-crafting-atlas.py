@@ -4,6 +4,7 @@ import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras
 from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
+from atlas.dressmaking import add_dressmaking
 from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 from atlas.families import annotate_families
@@ -349,6 +350,7 @@ for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d
 
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 rope_routes=add_rope_making(files, add, records)
+dressmaking_routes=add_dressmaking(files, add, records)
 light_path='code/modules/1713/light_fuel.dm'
 light=uncomment(files.get(light_path,''))
 if light:
@@ -410,7 +412,7 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
-for route in tanning_routes + rope_routes + woodworking_routes:
+for route in tanning_routes + rope_routes + woodworking_routes + dressmaking_routes:
     for resource in route['outputs']:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)

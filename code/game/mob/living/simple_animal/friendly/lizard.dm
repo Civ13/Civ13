@@ -78,6 +78,8 @@
 		var/frogCount = 0
 		for(var/mob/living/simple_animal/frog/M in range(6,src))
 			frogCount++
+			if (frogCount > 2)
+				break
 		if (frogCount <= 2)
 			if (isturf(loc) || istype(loc, /turf/floor/beach/water))
 				new/obj/item/weapon/reagent_containers/food/snacks/frogegg(src.loc)

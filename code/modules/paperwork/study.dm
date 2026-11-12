@@ -56,8 +56,10 @@
 	var/version = section["version"]
 	var/points = paper_study_points(section["text"])
 	var/delay = points * PAPER_STUDY_TICKS_PER_POINT
+	if (H.too_dark_to_read())
+		return FALSE
 	H.visible_message(SPAN_NOTICE("[H] starts studying [P] closely."), SPAN_NOTICE("You start puzzling over the [L.name] writing on [P]. This will take about [round(delay / 10)] seconds, and you need to hold still."))
-	if (!do_after(H, delay, P))
+	if (!do_reading(H, delay, P))
 		to_chat(H, SPAN_WARNING("You stop studying [P]."))
 		return FALSE
 	if (P.gc_destroyed || P.loc != H || H.stat)

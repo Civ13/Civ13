@@ -40,6 +40,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	var/title = null
 	var/description = ""
 	var/lobby_icon = ""
+	var/lobby_icon_wide = "" // optional 672x480 picture that fills the 21x15 widescreen view; lobby_icon serves the square view
 	var/list/caribbean_blocking_area_types = list()
 	var/list/allow_bullets_through_blocks = list()
 	var/last_crossing_block_status[3]

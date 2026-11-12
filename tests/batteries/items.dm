@@ -33,14 +33,21 @@ var/list/battery_item_errors = list()
 			battery_item_check("compiled output", ispath(text2path(row[3]), /obj/structure/battery), TRUE)
 			craftlist_lists["global"] += list(row)
 	battery_item_check("four recipe tiers", found, 4)
+	// Battery assemblies are gated by the Industrial research tree, so the menu
+	// check grants the two cell nodes to a probe faction instead of relying on era.
+	build_research_tree()
+	var/research_faction = "battery_ci"
+	for (var/node_id in list("early_cells", "galvanic_cells"))
+		var/list/node = map.ensure_node_entry(research_faction, node_id)
+		node[RNODE_ENTRY_STATUS] = RNODE_DONE
 	var/material/copper/M = get_material_by_name("copper")
-	M.generate_recipes_civs(list(200,200,200), "global")
+	M.generate_recipes_civs(list(200,200,200), "global", research_faction)
 	var/count = 0
 	for (var/datum/stack_recipe_list/G in M.recipes)
 		count += G.recipes.len
 	battery_item_check("copper assemblies in production menu", count, 2)
 	var/material/lead/LM = get_material_by_name("lead")
-	LM.generate_recipes_civs(list(200,200,200), "global")
+	LM.generate_recipes_civs(list(200,200,200), "global", research_faction)
 	count = 0
 	for (var/datum/stack_recipe_list/G in LM.recipes)
 		count += G.recipes.len
@@ -133,6 +140,8 @@ var/list/battery_item_errors = list()
 		del(O)
 	map.ID = "BATTERY_CI"
 	map.loc = locate(4,4,1)
+	// World startup normally assigns the round identity that save validation requires.
+	global.game_id = "battery-ci-fixture"
 	var/list/types = list(/obj/structure/battery, /obj/structure/battery/pile, /obj/structure/battery/lead_acid)
 	var/index = 0
 	for (var/path in types)

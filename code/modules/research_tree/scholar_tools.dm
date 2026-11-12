@@ -195,7 +195,7 @@
 /proc/scholar_supply_text(discipline)
 	switch (discipline)
 		if ("mathematics")
-			return "blank paper or parchment"
+			return "blank paper, papyrus or parchment, loose or in a bundle"
 		if ("engineering")
 			return "wood, stone or metal"
 		if ("natural_science")
@@ -213,6 +213,8 @@
 	if (!assigned_node)
 		return FALSE
 	var/discipline = node_discipline(assigned_node)
+	if (istype(W, /obj/item/weapon/paper_bundle))
+		return feed_research_bundle(W, user, discipline)
 	var/value = scholar_supply_value(W, discipline)
 	if (value <= 0)
 		return FALSE
@@ -236,15 +238,45 @@
 	book_refresh_ui()
 	return TRUE
 
-// Uses one supply point for node_id's discipline; the rate this tick runs at.
-/obj/structure/research_bench/proc/use_research_supply(node_id)
+// Blank sheets from a bundle, one at a time until the bench is full.
+/obj/structure/research_bench/proc/feed_research_bundle(obj/item/weapon/paper_bundle/B, mob/living/human/user, discipline)
+	var/list/sheets = bundle_blank_sheets(B)
+	if (!sheets.len || scholar_supply_value(sheets[1], discipline) <= 0)
+		return FALSE
+	var/list/supplies = supply_map()
+	var/have = supplies[discipline] || 0
+	if (have >= SCHOLAR_SUPPLY_CAP)
+		to_chat(user, SPAN_WARNING("The bench already holds all the [scholar_disciplines[discipline]] supplies it can."))
+		return TRUE
+	var/used = 0
+	for (var/obj/item/weapon/paper/P in sheets)
+		if (have >= SCHOLAR_SUPPLY_CAP)
+			break
+		var/value = scholar_supply_value(P, discipline)
+		if (value <= 0 || !bundle_release_sheet(B, P))
+			continue
+		qdel(P)
+		have = min(SCHOLAR_SUPPLY_CAP, have + value)
+		used++
+	supplies[discipline] = have
+	set_supply_map(supplies)
+	to_chat(user, SPAN_NOTICE("You set out [used] blank sheet\s for [scholar_disciplines[discipline]] research ([have]/[SCHOLAR_SUPPLY_CAP])."))
+	book_refresh_ui()
+	return TRUE
+
+// Uses one supply point per interval of work for node_id's discipline; the
+// rate this tick runs at (part supplied, part not when the points run out).
+/obj/structure/research_bench/proc/use_research_supply(node_id, intervals = 1)
 	var/discipline = node_discipline(node_id)
 	var/list/supplies = supply_map()
-	if ((supplies[discipline] || 0) < 1)
+	var/have = supplies[discipline] || 0
+	if (have < 1)
 		return SCHOLAR_UNSUPPLIED_RATE
-	supplies[discipline] -= 1
+	var/needed = max(1, round(intervals))
+	var/used = min(have, needed)
+	supplies[discipline] -= used
 	set_supply_map(supplies)
-	return 1
+	return (used + (needed - used) * SCHOLAR_UNSUPPLIED_RATE) / needed
 
 /obj/structure/research_bench/proc/research_lit()
 	var/turf/T = get_turf(src)

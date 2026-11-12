@@ -3,6 +3,7 @@
 var/interface_failures = 0
 var/interface_wait_result = TRUE
 var/interface_wait_count = 0
+var/interface_dark_after = 0 // the reader's light goes out once this many waits have passed
 /world
 	hub = ""
 	hub_password = ""
@@ -26,6 +27,10 @@ var/interface_wait_count = 0
 	return FALSE
 /mob/living/human/interface_fixture/research_presence()
 	return TRUE
+/mob/living/human/interface_fixture
+	var/fixture_dark = FALSE
+/mob/living/human/interface_fixture/reading_light_problem()
+	return fixture_dark ? "It's too dark to read or write here." : null
 /mob/living/human/interface_fixture/remove_from_mob(obj/O)
 	if(l_hand == O) l_hand = null
 	if(r_hand == O) r_hand = null
@@ -50,6 +55,9 @@ var/interface_wait_count = 0
 	return fixture_lit
 /proc/interface_wait(mob/living/human/H, delay, atom/target)
 	interface_wait_count++
+	if(interface_dark_after && interface_wait_count >= interface_dark_after && istype(H, /mob/living/human/interface_fixture))
+		var/mob/living/human/interface_fixture/F = H
+		F.fixture_dark = TRUE
 	return interface_wait_result
 /proc/interface_check(condition, label)
 	if(!condition) interface_failures++
@@ -139,6 +147,22 @@ var/interface_wait_count = 0
 		bench.book_analysis_tick()
 		assigned = bench.book_assigned_ui(H)
 		interface_check(assigned["working"] && assigned["ticks"] > 0 && assigned["eta_minutes"] > 0 && assigned["pace"] == 0.5 && interface_check_named(assigned["checks"], "You are working on it"), "with a pencil the work goes on at half pace without supplies, with time left shown")
+		// --- A slow scheduler pass still credits the time that passed ---
+		bench.last_analysis_time = 1000
+		interface_check(bench.analysis_elapsed_scale(1300) == 3 && bench.last_analysis_time == 1300, "a bench visited 30 seconds after the last visit is credited three intervals")
+		interface_check(bench.analysis_elapsed_scale(1350) == 1, "a visit is never credited less than one interval")
+		interface_check(bench.analysis_elapsed_scale(100000) == RESEARCH_TICK_MAX_CATCHUP, "a stalled scheduler pays out at most a minute")
+		var/ticks_before = assigned["ticks"]
+		bench.analysis_scale = 3
+		bench.book_analysis_tick()
+		bench.analysis_scale = 1
+		assigned = bench.book_assigned_ui(H)
+		interface_check(abs(assigned["ticks"] - ticks_before - 1.5) < 0.01, "three intervals of unsupplied work write three ticks' worth ([assigned["ticks"] - ticks_before])")
+		var/discipline = node_discipline(root)
+		var/list/supplies = list()
+		supplies[discipline] = 2
+		bench.set_supply_map(supplies)
+		interface_check(abs(bench.use_research_supply(root, 3) - (2.5 / 3)) < 0.01 && !bench.supply_points(discipline), "catch-up work uses one supply point per interval and runs unsupplied once they run out")
 		bench.fixture_lit = FALSE
 		assigned = bench.book_assigned_ui(H)
 		interface_check(!assigned["working"] && !interface_check_named(assigned["checks"], "Light")["ok"], "a dark bench is reported as not working")
@@ -162,6 +186,14 @@ var/interface_wait_count = 0
 		interface_wait_result = FALSE
 		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root), "an interrupted study teaches nothing")
 		interface_wait_result = TRUE
+		H.fixture_dark = TRUE
+		var/waits_before = interface_wait_count
+		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root) && interface_wait_count == waits_before, "studying can't start in the dark")
+		H.fixture_dark = FALSE
+		interface_dark_after = interface_wait_count + 3
+		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root) && interface_wait_count == interface_dark_after, "studying stops when the reader's light goes out")
+		interface_dark_after = 0
+		H.fixture_dark = FALSE
 		interface_check(bench.book_study_node(H, root) && H.knows_recipe_node(root), "studying from the bench teaches the chapter")
 		interface_check(!bench.book_study_node(H, child), "a chapter no book holds can't be studied")
 		data = bench.bench_ui_data(H)
@@ -203,6 +235,9 @@ var/interface_wait_count = 0
 		interface_wait_result = FALSE
 		interface_check(!bench.book_copy_node(H, root) && sheet.loc == H && !copybook.page_busy, "an interrupted copy costs nothing and frees the book")
 		interface_wait_result = TRUE
+		H.fixture_dark = TRUE
+		interface_check(!bench.book_copy_node(H, root) && sheet.loc == H && !copybook.page_busy && !copybook.has_research_chapter(root), "copying can't be done in the dark")
+		H.fixture_dark = FALSE
 		interface_check(bench.book_copy_node(H, root) && copybook.has_research_chapter(root) && H.stats["stamina"][1] < stamina && (!sheet || sheet.gcDestroyed || !sheet.loc), "one click copies the chapter for a sheet and stamina")
 		interface_check(!bench.book_copy_node(H, root), "a chapter both books hold can't be copied again")
 		var/list/extra = list()
@@ -258,6 +293,54 @@ var/interface_wait_count = 0
 		window = copybook.research_book_ui_data(novice)
 		chapter = interface_row(window["chapters"], child)
 		interface_check(chapter["state"] == "locked" && !chapter["groundwork"][1]["known"], "a newcomer sees a follow-up chapter as needing groundwork")
+
+		// Stone Age sheets: papyrus and parchment are both blank writing sheets.
+		var/fixture_age = map.ordinal_age
+		map.ordinal_age = 0
+		var/obj/item/weapon/paper/papyrus = new(locate(4,4,1))
+		var/obj/item/weapon/paper/parchment/hide = new(locate(4,4,1))
+		interface_check(papyrus.name == "papyrus" && hide.name == "parchment", "a Stone Age sheet is papyrus and parchment keeps its name ([papyrus.name], [hide.name])")
+		interface_check(blank_writing_sheet(papyrus) && blank_writing_sheet(hide), "papyrus and parchment are blank writing sheets")
+		interface_check(recipe_blank_paper(papyrus) && recipe_blank_paper(hide), "papyrus and parchment can be copied into recipe manuals")
+		interface_check(scholar_supply_value(papyrus, "mathematics") > 0 && scholar_supply_value(hide, "mathematics") > 0, "papyrus and parchment feed mathematics research")
+		qdel(papyrus)
+		qdel(hide)
+
+		// Blank sheets usually come clipped in a bundle.
+		var/math_node = null
+		for(var/node_id in research_nodes)
+			if(node_discipline(node_id) == "mathematics")
+				math_node = node_id
+				break
+		var/obj/structure/research_bench/interface_fixture/desk = new(locate(5,5,1))
+		desk.assigned_node = math_node
+		var/obj/item/weapon/paper_bundle/clip = new(locate(5,4,1))
+		for(var/i = 1, i <= 3, i++)
+			var/obj/item/weapon/paper/S = new(clip)
+			clip.pages += S
+		var/obj/item/weapon/paper/written = new(clip)
+		written.info = "a note"
+		clip.pages += written
+		interface_check(bundle_blank_sheets(clip).len == 3, "a bundle's blank sheets are found and written ones are not")
+		interface_check(desk.feed_research_supply(clip, H) && desk.supply_points("mathematics") == 15, "a bundle feeds mathematics research one sheet at a time ([desk.supply_points("mathematics")])")
+		interface_check(QDELETED(clip) && written.loc == locate(5,4,1), "the written sheet is left when the bundle runs out of blanks")
+		var/obj/structure/printingpress/press = new(locate(6,6,1))
+		var/obj/item/weapon/paper_bundle/stack = new(locate(6,5,1))
+		for(var/i = 1, i <= 2, i++)
+			var/obj/item/weapon/paper/S = new(stack)
+			stack.pages += S
+		interface_check(press.load_paper_bundle(stack, H) && press.printing_sheets == 2 && QDELETED(stack), "a printing press loads a bundle's blank sheets")
+		H.empty_hands()
+		var/obj/item/weapon/paper_bundle/held = new(H)
+		for(var/i = 1, i <= 3, i++)
+			var/obj/item/weapon/paper/S = new(held)
+			held.pages += S
+		H.hold(held)
+		interface_check(H.blank_sheet_count() >= 3, "blank sheets in a held bundle are counted")
+		var/obj/item/weapon/paper/taken = H.ready_blank_sheet()
+		interface_check(blank_writing_sheet(taken) && recipe_held(H, taken) && held.pages.len == 2, "a writer with a free hand takes a sheet off a held bundle")
+		H.empty_hands()
+		map.ordinal_age = fixture_age
 
 		// Screen data for cloud previews of the two windows.
 		bench.book_take(H, 1)

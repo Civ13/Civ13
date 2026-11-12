@@ -667,6 +667,7 @@ RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1
 //**************************************************************
 
 RECIPE: /material/cloth/,small cloth sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
+RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 RECIPE: /material/cloth/,cashbag,/obj/item/weapon/storage/bag/cash,1,105,0,1,none,0,0,90,8,null
@@ -947,6 +948,7 @@ RECIPE: /material/cloth/,nun dress,/obj/item/clothing/under/nun,4,85,0,1,feminin
 RECIPE: /material/cloth/,plain black dress,/obj/item/clothing/under/blackdress,4,85,0,1,feminine clothing,0,0,38,6,null
 RECIPE: /material/cloth/,blue sari,/obj/item/clothing/under/sari/blue,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,red sari,/obj/item/clothing/under/sari/red,4,85,0,1,feminine clothing,0,0,38,8,null
+RECIPE: /material/cloth/,dressmaking project,/obj/item/dressmaking_project,4,25,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable dress,/obj/item/clothing/under/customdress,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,customizable buttoned dress,/obj/item/clothing/under/customdress2,4,85,0,1,feminine clothing,0,0,38,8,null
 RECIPE: /material/cloth/,dark dress,/obj/item/clothing/under/civf1,3,75,0,1,feminine clothing,0,0,78,4,null
@@ -1964,6 +1966,12 @@ RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,2
 RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
+RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null
+RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/diving,8,200,0,1,none,126,0,0,8,null
+RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
+RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
+RECIPE: /material/steel/,hard dive helmet,/obj/item/clothing/head/pressure_helmet/diving/hard,10,200,0,1,none,150,0,0,8,null
+RECIPE: /material/steel/,deep hull plating,/obj/item/sub_hull_plating,30,300,0,1,vehicle parts,150,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
 
@@ -1972,6 +1980,7 @@ RECIPE: /material/steel/,loaders's seat,/obj/structure/bed/chair/loader,6,40,0,1
 RECIPE: /material/steel/,gunner's seat,/obj/structure/bed/chair/gunner,6,40,0,1,vehicle parts,126,125,0,8,null
 RECIPE: /material/steel/,commander's seat,/obj/structure/bed/chair/commander,10,40,0,1,vehicle parts,126,125,0,8,null
 
+RECIPE: /material/steel/,pedal bicycle,/obj/structure/vehicle/bicycle,12,200,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/steel/,motorcycle frame,/obj/item/vehicleparts/frame/bike,12,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,steel vehicle frame,/obj/structure/vehicleparts/frame,2,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,cargo hold,/obj/structure/cargo_hold,8,120,1,1,vehicle parts,115,0,0,8,null
@@ -2171,6 +2180,8 @@ RECIPE: /material/wood/soft/,light ship rudder axis (1200 weight),/obj/structure
 RECIPE: /material/wood/soft/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail,15,140,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,mooring post,/obj/structure/berth/quay,6,80,1,1,vehicle parts,41,0,0,8,null
 
 //*********************| WOOD PRODUCTION & ECONOMY |**************************
 
@@ -2879,3 +2890,18 @@ RECIPE: /material/steel/,grey bar stool,/obj/item/weapon/barstool/grey,3,90,0,1,
 RECIPE: /material/electronics/,studio television camera,/obj/item/tv_camera,4,100,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,street television camera,/obj/item/tv_camera/street,4,100,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,television helmet camera,/obj/item/tv_camera/helmet,4,100,1,1,none,160,0,0,8,null
+// Late Health and Military lines (book-research worlds only; see book_only_research_nodes)
+RECIPE: /material/electronics/,defibrillator,/obj/item/weapon/defibrillator/loaded,6,240,0,1,medical,0,0,0,8,null
+RECIPE: /material/electronics/,standard power cell,/obj/item/weapon/cell/standard,2,90,0,1,medical,0,0,0,8,null
+RECIPE: /material/plastic/,autoinjector,/obj/item/weapon/reagent_containers/syringe/autoinjector,1,45,0,1,medical,0,0,0,8,null
+RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,null
+RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
+RECIPE: /material/steel/,smoke mortar shell,/obj/item/cannon_ball/mortar_shell/smoke,5,120,0,1,ammunition,0,0,0,8,null
+RECIPE: /material/steel/,flamethrower hose,/obj/item/weapon/flamethrower,8,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,flamethrower fuel backpack,/obj/item/weapon/reagent_containers/glass/flamethrower,10,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,anti-personnel mine,/obj/item/mine/ap,4,120,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,anti-tank mine,/obj/item/mine/at,8,180,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
+RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null

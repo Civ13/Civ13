@@ -30,8 +30,14 @@
 			G  = user.l_hand
 		else
 			G  = user.r_hand
+		if (!G.is_open_container())
+			to_chat(user, SPAN_WARNING("Take the lid off \the [G] first."))
+			return
 		if (G.reagents.get_reagent_amount("fat_oil") >= 5)
 			if(do_after(user, 90))
+				// The lid, the container or the oil may have changed during the wait.
+				if (!G.is_open_container() || (G != user.l_hand && G != user.r_hand) || G.reagents.get_reagent_amount("fat_oil") < 5)
+					return
 				user.visible_message(SPAN_NOTICE("[user.name] pours the [src.name] into the [G.name], mixing it."), SPAN_NOTICE("You pour the [src.name] into \the [G.name], mixing it."))
 				G.reagents.remove_reagent("fat_oil", 5)
 				new/obj/item/weapon/reagent_containers/food/snacks/pemmican(user.loc)
@@ -242,6 +248,9 @@
 /obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if(istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/container = W
+		if(!container.is_open_container())
+			to_chat(H, SPAN_WARNING("Open \the [container] first."))
+			return
 		if(load_gelatin(container))
 			to_chat(H, SPAN_NOTICE("You spread gelatin on the rack to dry."))
 		else
@@ -265,7 +274,7 @@
 				qdel(W)
 				dry_obj(producttype)
 				return
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		if (is_dryable_sausage(W))
 			max_capacity = 5
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
@@ -295,7 +304,7 @@
 				qdel(W)
 				dry_obj(producttype)
 				return
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		if (is_dryable_sausage(W))
 			max_capacity = 5
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
@@ -309,7 +318,7 @@
 			return
 // One paid batch occupies the rack until its callback completes.
 /obj/structure/drying_rack/proc/load_gelatin(obj/item/weapon/reagent_containers/glass/container)
-	if(gcDestroyed || gc_destroyed || !isturf(loc) || filled || gelatin_drying || !container || container.gcDestroyed || container.gc_destroyed || !container.reagents)
+	if(gcDestroyed || gc_destroyed || !isturf(loc) || filled || gelatin_drying || !container || container.gcDestroyed || container.gc_destroyed || !container.reagents || !container.is_open_container())
 		return FALSE
 	var/feedstock = container.reagents.has_reagent("gelatin", 5) ? "gelatin" : (container.reagents.has_reagent("gelatin_foam", 5) ? "gelatin_foam" : null)
 	if(!feedstock)
@@ -331,6 +340,14 @@
 		var/batch_id = ++gelatin_batch_id
 		spawn(1500)
 			finish_gelatin(batch_id)
+	// Drying callbacks are not saved, so restart one full interval per hung item.
+	else if(filled > 0 && (producttype == /obj/item/weapon/pigleg || producttype == /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		for(var/i in 1 to filled)
+			dry_obj(producttype)
+
+// Only salted sausage dries into salami; finished salami and its slices do not.
+/obj/structure/drying_rack/proc/is_dryable_sausage(obj/item/W)
+	return istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted) && !istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami)
 
 /obj/structure/drying_rack/proc/finish_gelatin(batch_id)
 	if(gcDestroyed || gc_destroyed || batch_id != gelatin_batch_id || !gelatin_drying || filled != 1 || producttype != /obj/item/weapon/reagent_containers/glass || !isturf(loc))
@@ -673,6 +690,8 @@
 
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
+	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice))
+		return ..() // A slice is already the smallest portion.
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		to_chat(user, "You slice the salami up.")
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
@@ -766,41 +785,49 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/input
+	var/input // name of the loaded item; the item itself is deleted on insertion
 	var/output_amount = 0
+	var/tmp/cranking = FALSE // one crank per batch, whoever turns it
 
 /obj/structure/meat_grinder/attack_hand(mob/living/human/user as mob)
 	if (input != null)
+		if (cranking)
+			to_chat(user, "<span class='warning'>Someone is already cranking \the [src].</span>")
+			return
+		cranking = TRUE
 		to_chat(user, "You start to crank the lever.")
 		icon_state = active_state
-		if (do_after(user, 35))
+		var/cranked = do_after(user, 35)
+		cranking = FALSE
+		if (cranked && input != null)
 			playsound(loc, 'sound/effects/rollermove.ogg', 35, TRUE)
 			to_chat(user, "The grinder plops out some mince!")
 			for(var/i=1, i<=output_amount, i++)
 				new /obj/item/weapon/reagent_containers/food/snacks/mince(get_turf(src))
 			input = null
+			output_amount = 0
 			icon_state = empty_state
 		else
-			icon_state = full_state
+			icon_state = input != null ? full_state : empty_state
 
 /obj/structure/meat_grinder/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(input==null)
 		if (istype(W, /obj/item/weapon/pigleg) || istype(W, /obj/item/weapon/chicken_carcass))
-			input = W
+			input = "[W.name]"
 			output_amount = 4
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
-			input = W
+			input = "[W.name]"
 			output_amount = 2
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
-			input = W
+			input = "[W.name]"
 			output_amount = 1
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")

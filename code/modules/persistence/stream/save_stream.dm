@@ -136,9 +136,22 @@
 	if(batch_bytes >= batch_limit) return flush()
 	return TRUE
 
-// Sends the subtree of S at path as savefile text, split into its children
-// (and the node's own value, sent natively) wherever one piece would pass
-// SAVE_STREAM_TEXT_LIMIT. Leaves S.cd at "/"; text_pieces counts the T tokens sent.
+// Text handed to the helper per T token when a subtree is split.
+#define SAVE_STREAM_TEXT_PIECE 1048576
+
+// A top-level line of exported savefile text: a newline not followed by a
+// tab. Strings escape their newlines, so only resource data can break this.
+var/global/regex/save_stream_child_break = regex(@"\n(?!\t)")
+
+// Sends the subtree of S at path as savefile text. Text at or past
+// SAVE_STREAM_TEXT_LIMIT is cut between the node's children and sent as
+// several T tokens for the same base, about SAVE_STREAM_TEXT_PIECE each (the
+// node's own value goes natively). The children come from the text itself:
+// walking a savefile directory (for(x in S.dir), S.dir.Copy()) costs time
+// with the square of its size, about 9 s for 40,000 children and 325 s for
+// 200,000, which froze live Gaia for 14 minutes on one /lists subtree
+// (2026-11-11). Only a single child too long for a token is exported again
+// on its own. Leaves S.cd at "/"; text_pieces counts the T tokens sent.
 /datum/save_stream/var/text_pieces = 0
 /datum/save_stream/proc/put_savefile_text(savefile/S, path, max_text = SAVE_STREAM_TEXT_LIMIT)
 	var/text = S.ExportText(path)
@@ -146,7 +159,77 @@
 	if(length(text) < max_text)
 		text_pieces++
 		return put_text(path, text)
+	// Resource data spans raw lines; such a subtree is split by directory.
+	if(findtext(text, "filedata("))
+		text = null
+		return put_savefile_children(S, path, max_text)
+	var/list/children = splittext(text, save_stream_child_break)
 	text = null
+	var/piece = min(SAVE_STREAM_TEXT_PIECE, max_text)
+	var/list/group = list()
+	var/group_bytes = 0
+	var/sent = FALSE
+	var/first = TRUE
+	for(var/i = 1, i <= children.len, i++)
+		var/child = children[i]
+		children[i] = null
+		var/size = length(child) + 1
+		if(size <= 1) continue
+		var/own_value = first && (child == "." || copytext(child, 1, 5) == ". = ")
+		first = FALSE
+		if(own_value)
+			// The node's own value: natively, as the directory split sends it.
+			var/value = S[path]
+			S.cd = "/"
+			if(!isnull(value) && !put(path, value)) return FALSE
+			sent = TRUE
+			continue
+		if(group.len && group_bytes + size > piece)
+			if(!put_text_group(path, group)) return FALSE
+			group = list()
+			group_bytes = 0
+		if(size >= max_text)
+			// One child too long for a token: export it again on its own.
+			var/name = save_stream_child_name(child)
+			child = null
+			if(isnull(name)) return put_savefile_children(S, path, max_text)
+			if(!put_savefile_text(S, "[path]/[name]", max_text)) return FALSE
+			sent = TRUE
+			continue
+		group += child
+		group_bytes += size
+		sent = TRUE
+	if(group.len && !put_text_group(path, group)) return FALSE
+	if(!sent)
+		last_error = "savefile text of [path] is too long for one token and has no children"
+		return FALSE
+	return TRUE
+
+/datum/save_stream/proc/put_text_group(path, list/group)
+	text_pieces++
+	if(!put_text(path, jointext(group, "\n"))) return FALSE
+	between_pieces()
+	return TRUE
+
+// Called after each piece of a split subtree; a level writer yields here.
+/datum/save_stream/proc/between_pieces()
+	return
+
+// The plain name that starts a top-level child's text, or null when the name
+// is quoted or escaped and cannot be used in a path as written.
+/proc/save_stream_child_name(text)
+	var/stop = findtext(text, "\n")
+	var/assign = findtext(text, " = ")
+	if(assign && (!stop || assign < stop)) stop = assign
+	var/name = stop ? copytext(text, 1, stop) : text
+	if(!length(name) || findtext(name, "\\") || findtext(name, "\"") || findtext(name, "/")) return null
+	return name
+
+// Directory split: each child exported on its own. Correct for any subtree,
+// but listing a large directory is slow (see put_savefile_text).
+/datum/save_stream/var/directory_splits = 0
+/datum/save_stream/proc/put_savefile_children(savefile/S, path, max_text = SAVE_STREAM_TEXT_LIMIT)
+	directory_splits++
 	S.cd = path
 	var/list/children = S.dir.Copy()
 	var/value = S[path]
@@ -156,7 +239,16 @@
 		return FALSE
 	if(!isnull(value) && !put(path, value)) return FALSE
 	for(var/child in children)
-		if(!put_savefile_text(S, "[path]/[child]", max_text)) return FALSE
+		var/child_path = "[path]/[child]"
+		var/text = S.ExportText(child_path)
+		S.cd = "/"
+		if(length(text) < max_text)
+			text_pieces++
+			if(!put_text(child_path, text)) return FALSE
+		else
+			text = null
+			if(!put_savefile_children(S, child_path, max_text)) return FALSE
+		between_pieces()
 	return TRUE
 
 // Hands the batch to the helper. Writes are pipelined: an error in one batch

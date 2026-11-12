@@ -61,6 +61,7 @@ def main():
         sources += ["code/game/objects/structures/blacksmithing/molds.dm",
                     "code/game/objects/structures/kitchen/oven.dm",
                     "code/modules/research_tree/research_node.dm", "tests/crafting/stone_molds.dm"]
+        sources += ["code/modules/1713/dressmaking.dm", "tests/crafting/dressmaking.dm"]
         sources += ["code/game/objects/items/stacks/cloth_crafting.dm", "tests/crafting/woolcloth.dm",
                     "code/game/objects/structures/blacksmithing/armor_workbench.dm",
                     "code/modules/persistence/party_train.dm", "code/modules/1713/apparel_medieval.dm",
@@ -142,6 +143,7 @@ def main():
         if args.stone_casting_only:
             dme += f'\n#include "{root.as_posix()}/tests/stone_molds/casting.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/woolcloth.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/dressmaking.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)

@@ -11,16 +11,27 @@ spec.loader.exec_module(adapter)
 SOURCE = (ROOT / 'code/game/objects/items/weapons/cigs_lighters.dm').read_text()
 
 
+def flame_override(path, fields):
+    body = adapter.extract(SOURCE, path + '/is_open_flame')
+    return adapter.project('/test/proc/run()\n' + body + '\n', '/test/proc/run', ', '.join(fields), {})
+
+
 def flame_source(kind, enabled):
+    # isflamesource() dispatches to each type's is_open_flame() override.
     body = adapter.extract(SOURCE, '/proc/isflamesource')
-    for path, name in [('/obj/item/weapon/flame', 'flame'),
-                       ('/obj/item/flashlight/torch', 'torch'),
-                       ('/obj/item/flashlight/flare', 'flare')]:
-        body = body.replace(path + ')', repr(name) + ')')
-    def istype(obj, kind):
-        return obj.kind == kind
-    proc = adapter.project('/test/proc/run()\n' + body + '\n', '/test/proc/run', 'A', {'istype': istype})
-    return proc(SimpleNamespace(kind=kind, lit=enabled, on=enabled))
+    proc = adapter.project('/test/proc/run()\n' + body + '\n', '/test/proc/run', 'A',
+                           {'isatom': lambda value: hasattr(value, 'is_open_flame')})
+    if kind == 'text':
+        return proc('fire')
+    if kind == 'flame':
+        check = flame_override('/obj/item/weapon/flame', ['lit'])
+        atom = SimpleNamespace(is_open_flame=lambda: check(enabled))
+    else:
+        # Torches, oil lamps and flares set open_flame; electric lights do not.
+        open_flame = kind in ('torch', 'flare', 'lantern')
+        check = flame_override('/obj/item/flashlight', ['open_flame', 'on'])
+        atom = SimpleNamespace(is_open_flame=lambda: check(open_flame, enabled))
+    return proc(atom)
 
 
 def burnout(on_mob):
@@ -42,11 +53,12 @@ def burnout(on_mob):
 
 class SmokableTest(unittest.TestCase):
     def test_ignition_requires_active_flame(self):
-        for kind in ('flame', 'torch', 'flare'):
+        for kind in ('flame', 'torch', 'flare', 'lantern'):
             with self.subTest(kind=kind):
                 self.assertFalse(flame_source(kind, False))
                 self.assertTrue(flame_source(kind, True))
         self.assertFalse(flame_source('flashlight', True))
+        self.assertFalse(flame_source('text', True))
         parent = adapter.extract(SOURCE, '/obj/item/clothing/mask/smokable/attackby')
         self.assertIn('if (isflamesource(W))', parent)
         self.assertNotIn('istype(W, /obj/item/flashlight)', SOURCE)

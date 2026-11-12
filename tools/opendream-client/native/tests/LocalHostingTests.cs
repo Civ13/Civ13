@@ -213,6 +213,12 @@ static class LocalHostingTests {
             File.WriteAllText(Path.Combine(gaiaOverlay, "config", name), "{}");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
+        // Players' warning: the group config's shutdown_warning_seconds, defaulting to two minutes.
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == HostSettings.DefaultShutdownWarningSeconds, "default players' warning");
+        HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 300);
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2,
+            "players' warning saved, other settings kept");
+        Reject(() => HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 3601), "a warning over an hour");
         var places = HostSettings.Locations(host.Control!.Group!);
         Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
             ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),
@@ -367,6 +373,8 @@ static class LocalHostingTests {
         Require(LocalHosting.ParseControl("unlock", 1, "{\"ok\": false, \"refused\": \"the server is running\"}").Message == "Refused: the server is running", "unlock refusal");
         var groupUnlock = LocalHosting.ParseGroup("force-unlock", 0, "{\"done\": {\"gaia\": {\"removed\": [], \"save_refused\": \"level 2 of the save is missing\"}}, \"refused\": {}, \"ok\": true}");
         Require(groupUnlock is { Ok: true } && groupUnlock.Message == "gaia: no lock files. The save still does not load: level 2 of the save is missing.", "group unlock: " + groupUnlock.Message);
+        var stageUnlock = LocalHosting.ParseGroup("unlock", 0, "{\"done\": {\"desert\": {\"removed\": [], \"save\": \"g\", \"stage_cleared\": true}}, \"refused\": {}, \"ok\": true}");
+        Require(stageUnlock is { Ok: true } && stageUnlock.Message == "desert: no lock files. The save is ready to load. Cleared an old failed update build message.", "unlock stage clear: " + stageUnlock.Message);
         Require(LocalHosting.GroupStep(host.Control!, "unlock", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "unlock", "--region", "gaia" }), "one-region unlock argv");
         var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
         Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);

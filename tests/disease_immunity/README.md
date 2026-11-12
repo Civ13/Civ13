@@ -5,3 +5,5 @@
 Not covered: a full in-game run. `tests/survival` exercises the severe illness rules in a live world but is pinned to BYOND 516.1681 and times out on the current pin.
 
 Balance: otherwise stable patients recover from named severe illnesses in about 2000 active disease calls (nominally 33 minutes), or about 180 continuously treated calls at full medicine strength. Severe weakness and drowsiness remain, and existing starvation, oxygen loss, injury and infected-organ hazards are not cleared. Zombie disease retains its exceptional lethal transformation. These are game-balance rules, not medical claims.
+
+`python3 tests/disease_immunity/test_check_illnesses.py` checks that the read-only Check Illnesses admin verb and the agent `players` read share one illness summary and change nothing.

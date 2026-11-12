@@ -14,6 +14,9 @@
 	var/not_disassemblable = TRUE
 
 /obj/structure/Destroy()
+	if (school_property)
+		school_property = FALSE
+		moldy_school_property_destroyed(src)
 	if (parts)
 		new parts(loc)
 	..()

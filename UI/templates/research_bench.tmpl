@@ -88,7 +88,7 @@
 	{{/if}}
 	{{else}}
 	<div class='itemContent rt-progress'>{{:data.assigned_status_text}}</div>
-	{{if data.book_mode}}<div class='itemContent'>{{:helper.link('Stop researching', 'trash', {'stop_research' : 1})}}</div>{{/if}}
+	{{if data.book_mode}}<div class='itemContent'>{{:helper.link('Stop researching', 'trash', {'stop_research' : 1})}}{{if data.assigned && data.assigned.can_rush}} {{:helper.link(data.assigned.rushed ? 'Work carefully (now rushed: accidents possible)' : 'Rush the work (faster, accidents possible)', 'alert', {'toggle_rush' : 1})}}{{/if}}</div>{{/if}}
 	{{/if}}
 </div>
 {{/if}}
@@ -156,6 +156,12 @@
 			{{for node.research_needs :need:qi}}<div class='{{:need.ok ? "rt-done" : "rt-locked"}}'>{{:need.ok ? "Met" : "Missing"}}: {{:need.label}}</div>{{/for}}
 		</div>
 		{{/if}}
+		{{if node.field_work && node.field_work.length}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Optional field work</div>
+			{{for node.field_work :job:fi}}<div class='{{:job.done ? "rt-done" : ""}}'>{{:job.done ? "In the book" : "You have " + job.have + " of " + job.needed}}: {{:job.label}} ({{:job.percent}}% of the work)</div>{{/for}}
+		</div>
+		{{/if}}
 
 		{{if node.mode_text !== "Book only"}}
 		<div class='rt-modal-row'>
@@ -184,9 +190,15 @@
 				{{/for}}
 			</div>
 		</div>
+		{{if node.effect}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Knowing it</div>
+			<div>{{:node.effect}}</div>
+		</div>
+		{{/if}}
 
 		{{if node.can_study}}
-		<div class='rt-modal-row'>{{:helper.link('Study this chapter (about ' + node.study_minutes + ' min)', 'pencil', { "study" : node.id })}}</div>
+		<div class='rt-modal-row'>{{:helper.link(node.read_percent > 0 ? 'Continue this chapter (' + node.read_percent + '% read, about ' + node.study_minutes + ' min left)' : 'Study this chapter (about ' + node.study_minutes + ' min)', 'pencil', { "study" : node.id })}}</div>
 		{{/if}}
 		{{if node.assignable}}
 		<div class='rt-modal-row'>{{:helper.link(data.book_mode ? 'Research this here' : 'Assign this bench', 'circle-arrow-s', { "assign" : node.id })}}</div>

@@ -1,11 +1,11 @@
 """Offline source-derived phase traces; native iteration/qdel remain unverified."""
 from pathlib import Path
 import re
-import subprocess
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = "9db2b2f42a5fbbb0bdd49d50a2672da6111a7709"
+HISTORICAL_FIXTURE = ROOT / "tests/cleanables_scheduler/fixtures/cleanables_9db2b2f.dm"
 EARLY = 1234
 
 
@@ -22,6 +22,11 @@ def translate(source):
         "for (current in current_list)": "for ctx.current in ctx.pending.copy():",
         "var/obj/effect/decal/cleanable/C = current": "C = ctx.current; ctx.visits.append(C)",
         "if (!isDeleted(C))": "if not retired(C):",
+        "var/decal_location = C.loc": "decal_location = C.loc",
+        "var/decal_location = null": "decal_location = None",
+        "if (!turf2cleanables[decal_location])": "if not ctx.counts.get(decal_location):",
+        "turf2cleanables[decal_location] = 0": "ctx.counts[decal_location] = 0",
+        "++turf2cleanables[decal_location]": "ctx.counts[decal_location] += 1",
         "if (!turf2cleanables[C.loc])": "if not ctx.counts.get(C.loc):",
         "turf2cleanables[C.loc] = 0": "ctx.counts[C.loc] = 0",
         "++turf2cleanables[C.loc]": "ctx.counts[C.loc] += 1",
@@ -73,6 +78,8 @@ def translate(source):
         "fire_result = null": "fire_result = None",
         "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))":
             "if fire_result != EARLY or not ctx.pending:",
+        "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)":
+            "if fire_result != EARLY:",
         "current = null": "ctx.current = None",
         "current_list = null": "ctx.pending = None",
         "return fire_result": "return fire_result",
@@ -180,6 +187,33 @@ class CleanablesTests(unittest.TestCase):
     def assert_released(self, t):
         self.assertEqual((t.pending, t.counts, t.contents, t.kept, t.deleting),
                          (None, None, None, None, False))
+
+    def test_shared_finish_matches_previous_guard_and_detects_missing_normalization(self):
+        shared = (ROOT / "code/processes/_process.dm").read_text()
+        finish = body(shared, "/process/proc/finished(fire_result = null)")
+        simplified = "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)"
+        previous = "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))"
+        normalization = "\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n"
+        self.assertEqual(finish.count(simplified), 1)
+        self.assertEqual(finish.count(normalization), 1)
+        before = translate(finish.replace(simplified, previous, 1))
+        after = translate(finish)
+        mutant = translate(finish.replace(normalization, "", 1))
+
+        def outcome(fn, initial, fire_result):
+            live = None if initial is None else initial.copy()
+            ctx = SimpleNamespace(pending=live, current="visited")
+            result = fn(ctx, fire_result)
+            # Observe list identity as well as contents: clearing a reference must
+            # never cut the aliased live list, including an exhausted snapshot.
+            return result, ctx.current, ctx.pending, ctx.pending is live, live
+
+        for initial in (None, [], ["pending"]):
+            for result in (None, EARLY, 42):
+                with self.subTest(initial=initial, result=result):
+                    self.assertEqual(outcome(after, initial, result),
+                                     outcome(before, initial, result))
+        self.assertNotEqual(outcome(mutant, [], EARLY), outcome(before, [], EARLY))
 
     def test_one_entry_budgets_preserve_counts_tail_and_release_all_state(self):
         t = Trace(self.source, self.decals)
@@ -311,8 +345,46 @@ class CleanablesTests(unittest.TestCase):
                 self.assert_released(t)
                 self.assertEqual(t.deletions, [])
 
+    def test_cached_location_matches_original_counting_and_detects_wrong_key(self):
+        declaration = "\t\t\t\tvar/decal_location = C.loc\n"
+        self.assertEqual(self.source.count(declaration), 1)
+        original = self.source.replace(declaration, "", 1).replace(
+            "turf2cleanables[decal_location]", "turf2cleanables[C.loc]", 3)
+        mutant = self.source.replace(declaration,
+                                     "\t\t\t\tvar/decal_location = null\n", 1)
+
+        def run(source, budget):
+            first, second = Atom("first"), Atom("second")
+            entries = [Atom("a", first, True), Atom("b", second, True),
+                       Atom("c", first, True), Atom("loose", cleanable=True),
+                       Atom("d", second, True), None, Atom("dead", first, True)]
+            entries[-1].deleted = True
+            trace = Trace(source, entries)
+
+            def name(atom):
+                return None if atom is None else atom.name
+
+            snapshots = []
+            for _ in range(100):
+                result = trace.dispatch(budget)
+                counts = None if trace.counts is None else sorted(
+                    ((name(key) or "<null>", value) for key, value in trace.counts.items()))
+                pending = None if trace.pending is None else [name(x) for x in trace.pending]
+                snapshots.append((result, counts, pending, trace.deleting,
+                                  [name(x) for x in trace.live], trace.deletions.copy(),
+                                  name(trace.kept)))
+                if result != EARLY:
+                    return snapshots
+            raise AssertionError("tail did not finish")
+
+        for budget in (None, 1, 2, 7):
+            with self.subTest(budget=budget):
+                expected = run(original, budget)
+                self.assertEqual(run(self.source, budget), expected)
+                self.assertNotEqual(run(mutant, budget), expected)
+
     def test_audited_baseline_loses_aggregate_across_budget_returns(self):
-        old = subprocess.check_output(["git", "show", BASE + ":code/processes/cleanables.dm"], cwd=ROOT, text=True)
+        old = HISTORICAL_FIXTURE.read_text()
         t = Trace(old, self.decals)
         t.complete()
         self.assertEqual(t.visits, self.decals)

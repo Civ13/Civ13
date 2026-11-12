@@ -68,17 +68,31 @@
 	var/cut = findlasttext(path, "/")
 	return cut ? copytext(path, cut + 1) : path
 
+// A level's stream yields between the pieces of a split subtree, like the
+// drain does between subtrees. A moving-save chunk must finish within its tick.
+/datum/save_stream/level
+	var/map_storage/storage
+
+/datum/save_stream/level/between_pieces()
+	if(storage && !storage.moving_save_chunk) storage.save_work_check()
+
 /datum/level_segment_writer/stream
-	var/datum/save_stream/stream
+	var/datum/save_stream/level/stream
 	var/stream_path
 	var/list/late_loaded = list()
 	var/drained = 0
+	// Largest scratch segment of this level, for the save log: entries plus
+	// lists, and the first entry it holds.
+	var/largest_nodes = 0
+	var/largest_start
+	var/first_entry = 0
 
 /datum/level_segment_writer/stream/New(map_storage/storage, savefile/F, path, level, generation_id, segment_budget)
 	stream_path = level_stream_path(path)
 	if(fexists(stream_path) && !fdel(stream_path)) throw EXCEPTION("Could not replace level stream [stream_path]")
 	if(fexists("[stream_path].tmp")) fdel("[stream_path].tmp")
 	stream = new
+	stream.storage = storage
 	if(!stream.open_write(stream_path)) throw EXCEPTION("Could not start level stream [stream_path]: [stream.last_error]")
 	stream.put("/generation", generation_id)
 	stream.put("/level", level)
@@ -92,14 +106,29 @@
 	// The exporter notes nodes whose value does not survive savefile text while this segment is open.
 	owner.saving_stream_native_paths = list()
 	start_nodes = owner.saving_reference_pins.len + owner.saving_list_pins.len
+	first_entry = owner.saving_reference_pins.len + 1
 
 /datum/level_segment_writer/stream/close_current()
 	if(!current) return
 	entry_last += owner.saving_reference_pins.len
 	list_last += owner.saving_list_pins.len
+	var/nodes = owner.saving_reference_pins.len + owner.saving_list_pins.len - start_nodes
+	if(nodes > largest_nodes)
+		largest_nodes = nodes
+		largest_start = describe_segment_start()
 	drain(current, owner.saving_stream_native_paths)
 	owner.saving_stream_native_paths = null
 	current = null
+
+// What the open segment starts with: a segment only rotates between tiles
+// and roster members, so one far past the budget is a single connected group.
+/datum/level_segment_writer/stream/proc/describe_segment_start()
+	if(first_entry < 1 || first_entry > owner.saving_reference_pins.len) return "no entry"
+	var/datum/D = owner.saving_reference_pins[first_entry]
+	if(!D) return "a deleted entry"
+	var/atom/A = D
+	if(istype(A) && A.z) return "[A.type] at [A.x],[A.y],[A.z]"
+	return "[D.type]"
 
 // Hands every node of a scratch segment to the helper. The helper keeps the
 // last value written to a path, so a late rewrite of a node replaces it.
@@ -179,6 +208,9 @@
 	index["/stream/file"] << level_stream_name(index_path)
 	index["/stream/nodes"] << summary["nodes"]
 	index["/stream/bytes"] << summary["bytes"]
+	var/report = "Stream level [z]: [number] segments, largest [largest_nodes] entries and lists (budget [budget]) starting with [largest_start ? largest_start : "nothing"]; [summary["nodes"]] nodes, [summary["bytes"]] bytes."
+	world.log << report
+	persistence_game_log(report)
 
 /datum/level_segment_writer/stream/abort()
 	if(stream) stream.abort()

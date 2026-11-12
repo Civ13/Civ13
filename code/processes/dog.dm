@@ -21,13 +21,11 @@
 					var/dist_x = abs(dog.x - dog.walking_to.x)
 					var/dist_y = abs(dog.y - dog.walking_to.y)
 					if (dist_x > 1 || dist_y > 1 || dog.walking_to != dog.following)
-						var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))
+						var/direction = get_dir(dog, dog.walking_to)
+						var/turf/target = get_step(dog.loc, direction)
 						if (target.density)
 							continue
-						for (var/obj/S in target)
-							if (S.density)
-								continue
-						step(dog, get_dir(dog, dog.walking_to))
+						step(dog, direction)
 			else
 				catchBadType(current)
 				dog_mob_list -= current

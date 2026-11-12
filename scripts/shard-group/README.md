@@ -45,8 +45,11 @@ See [group.example.json](group.example.json). Required keys: `group`,
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
-`save_timeout_seconds`, `start_timeout_seconds`, `backups_kept` and `min_free_disk_mb`
-(default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off).
+`save_timeout_seconds`, `start_timeout_seconds`, `backups_kept`, `min_free_disk_mb`
+(default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off)
+and `shutdown_warning_seconds` (default 120, 0-3600: the countdown players online get in chat,
+on the Status tab and on Discord before a `stop`, `restart` or `handover` saves; 0 saves at once.
+Each action reads it from the group config, so the launcher's **Players' warning** applies at once).
 
 In game, every region polls its peers once a minute and players see the group
 with the OOC verb **Regions**, with join links for regions that are up.

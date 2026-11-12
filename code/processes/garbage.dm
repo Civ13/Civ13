@@ -109,9 +109,10 @@ var/list/delayed_hard_garbage = list()
 	#endif
 	A.gcDestroyed = world.time+1
 	A.gc_destroyed = A.gcDestroyed
-	destroyed -= "\ref[A]" // Removing any previous references that were GC'd so that the current object will be at the end of the list.
-	destroyed["\ref[A]"] = A.gcDestroyed
-	triage_enqueued("\ref[A]", "[A.type]")
+	var/ref_id = "\ref[A]"
+	destroyed -= ref_id // Removing any previous references that were GC'd so that the current object will be at the end of the list.
+	destroyed[ref_id] = A.gcDestroyed
+	triage_enqueued(ref_id, "[A.type]")
 	enqueued++
 	queue_high_water = max(queue_high_water, destroyed.len)
 

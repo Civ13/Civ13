@@ -1438,13 +1438,31 @@
 	npc_subtile_offset_owned = FALSE
 	living_movement_completed()
 
+var/global/npc_subtile_malformed_restores = 0
+
+/mob/living/simple_animal/proc/npc_subtile_log_malformed(list/S)
+	npc_subtile_malformed_restores++
+	// The first few name the animal and what was saved; later ones only count.
+	if (npc_subtile_malformed_restores > 5)
+		return
+	var/saved = islist(S) ? json_encode(S) : (isnull(S) ? "null" : "[S]")
+	var/where = isturf(loc) ? "[x],[y],[z] step [step_x],[step_y]" : "inside [loc ? loc.type : "nothing"]"
+	var/report = "Restored [type] aligned on its tile: saved sub-tile position [saved] does not fit [where] (#[npc_subtile_malformed_restores])."
+	world.log << report
+	log_debug(report)
+
 /mob/living/simple_animal/after_load()
 	. = ..()
 	if (!npc_subtile_import_owned)
 		return
 	var/list/S = npc_subtile_position
 	if (!human_subtile_same(S, S) || !npc_subtile_shape() || pulling || pulledby || buckled || x != S["x"] || y != S["y"] || z != S["z"] || S["sx"] < 0 || S["sx"] >= 32 || S["sy"] < 0 || S["sy"] >= 32)
-		throw EXCEPTION("Malformed NPC sub-tile position")
+		// A saved offset that does not match where the animal loaded (another
+		// level number, a non-turf holder, a damaged list) is only a few pixels
+		// of position: restore on the tile, aligned, and keep loading the world.
+		npc_subtile_log_malformed(S)
+		npc_subtile_restore_aligned()
+		return .
 	// Bodies may share tiles and overlap now, so a blocked offset never fails
 	// the load: the animal restores on its saved tile, aligned, like a human.
 	for (var/tx = x, tx <= x + (S["sx"] > 0), tx++)

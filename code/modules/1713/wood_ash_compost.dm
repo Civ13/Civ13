@@ -118,7 +118,7 @@
 			// Reagent feedstock is paid in full, without religious crafting discounts.
 			if (take > 0 && S.use(take))
 				nitrary_plants += take * value
-		else if (istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents)
+		else if (istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents && W.is_open_container())
 			var/take = min(10 - nitrary_water, W.reagents.get_reagent_amount("water"))
 			if (take > 0)
 				W.reagents.remove_reagent("water", take)
@@ -128,7 +128,7 @@
 			nitrary_time_left = 18000 // Thirty running-server minutes, not real chemistry time.
 			nitrary_last_tick = world.time
 		return TRUE
-	if (nitrary_stage == 2 && istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents && W.reagents.get_reagent_amount("ash") >= 1)
+	if (nitrary_stage == 2 && istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents && W.is_open_container() && W.reagents.get_reagent_amount("ash") >= 1)
 		W.reagents.remove_reagent("ash", 1)
 		nitrary_stage = 3
 		nitrary_time_left = 600
@@ -140,7 +140,7 @@
 	return FALSE
 
 /obj/structure/compost/proc/nitrary_draw(obj/item/W, mob/living/human/H)
-	if (!nitrary_mode || !nitrary_actor(H) || nitrary_stage != 4 || !istype(W, /obj/item/weapon/reagent_containers/glass/small_pot) || (H.l_hand != W && H.r_hand != W) || !W.reagents || W.reagents.total_volume || W.reagents.maximum_volume < 10)
+	if (!nitrary_mode || !nitrary_actor(H) || nitrary_stage != 4 || !istype(W, /obj/item/weapon/reagent_containers/glass/small_pot) || (H.l_hand != W && H.r_hand != W) || !W.reagents || !W.is_open_container() || W.reagents.total_volume || W.reagents.maximum_volume < 10)
 		return FALSE
 	W.reagents.add_reagent("nitrate_leachate", 10)
 	// The entire paid batch is spent once, after the non-yielding transfer.

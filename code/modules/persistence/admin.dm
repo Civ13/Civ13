@@ -26,13 +26,16 @@
 	set category = "Server"
 	set name = "Save and Shut Down"
 	if(!check_rights(R_SERVER)) return
-	if(WWinput(usr, "Save this world and shut the server down? It stays down until it is started again (start.bat or the launcher); the host's watchdog will not restart it. Players get a minute's notice. Supported on native Gaia/Europe only.", "Save and Shut Down", "No", list("Yes", "No")) != "Yes") return
+	if(WWinput(usr, "Save this world and shut the server down? It stays down until it is started again (start.bat or the launcher); the host's watchdog will not restart it. Players get a countdown first, which Cancel Planned Restart can call off. Supported on native Gaia/Europe only.", "Save and Shut Down", "No", list("Yes", "No")) != "Yes") return
+	var/when = WWinput(usr, "How long a warning should players get before the save starts?", "Save and Shut Down", "1 minute", list("1 minute", "5 minutes", "10 minutes", "Cancel"))
+	var/warn_seconds = list("1 minute" = 60, "5 minutes" = 300, "10 minutes" = 600)[when]
+	if(!warn_seconds) return
 	if(!check_rights(R_SERVER)) return
 	var/stopped_by = usr ? usr.ckey : null
 	log_admin("[key_name(usr)] requested save and shut down.")
 	message_admins("[key_name_admin(usr)] requested save and shut down.")
 	spawn(0)
-		persistence_restart.execute(stay_down = TRUE, stopped_by = stopped_by)
+		persistence_restart.execute(stay_down = TRUE, stopped_by = stopped_by, warn_seconds = warn_seconds)
 
 /datum/admins/proc/resume_pending_recovery()
 	set category = "Server"

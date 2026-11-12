@@ -136,6 +136,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 	if (!loc) return FALSE
 	if (!client) return FALSE
+	if (client.admin_player_view) // the mirrored player's HUD images stay
+		return
 
 	if (client.images.len)
 		for (var/image/hud in client.images)
@@ -210,13 +212,13 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 	return TRUE
 
-/mob/observer/ghost/verb/follow(input in getfitmobs()+"Cancel")
+/mob/observer/ghost/verb/follow(input in ghost_follow_targets()+"Cancel")
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
 	if (input != "Cancel")
-		var/list/mobs = getfitmobs()
+		var/list/mobs = ghost_follow_targets()
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
@@ -254,7 +256,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		GLOB.destroyed_event.unregister(following, src)
 		following = null
 
-/mob/observer/ghost/verb/jumptomob(target in getfitmobs() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
+/mob/observer/ghost/verb/jumptomob(target in ghost_follow_targets() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
 	set name = "Jump to Mob"
 	set desc = "Teleport to a mob"
@@ -267,7 +269,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		if (!target)//Make sure we actually have a target
 			return
 		else
-			var/mob/M = getfitmobs()[target] //Destination mob
+			var/mob/M = ghost_follow_targets()[target] //Destination mob
 			var/turf/T = get_turf(M) //Turf of the destination mob
 			stop_following()
 			forceMove(T)

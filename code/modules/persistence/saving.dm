@@ -1054,9 +1054,12 @@
 // file as typed envelopes: "value" wraps one scalar, "scalars" holds flat key
 // and value lists, and the reference kinds hold only ids, coordinates and
 // type paths. Other lists are walked a few levels deep.
+// ExportText cuts a string at 65,535 characters without an error.
+#define PERSISTENCE_TEXT_EXPORT_LIMIT 65535
+
 /proc/persistence_stream_text_unsafe(value, depth = 0)
 	if(isnull(value) || ispath(value)) return FALSE
-	if(istext(value)) return length("[value]") != length(value)
+	if(istext(value)) return length("[value]") != length(value) || length(value) >= PERSISTENCE_TEXT_EXPORT_LIMIT
 	if(isnum(value)) return value != value || value == 1.#INF || value == -1.#INF
 	if(!islist(value)) return TRUE
 	var/list/L = value
@@ -1081,7 +1084,7 @@
 	for(var/i = 1, i <= L.len, i++)
 		var/item = L[i]
 		if(istext(item))
-			if(length("[item]") != length(item)) return TRUE
+			if(length("[item]") != length(item) || length(item) >= PERSISTENCE_TEXT_EXPORT_LIMIT) return TRUE
 		else if(isnum(item))
 			if(item != item || item == 1.#INF || item == -1.#INF) return TRUE
 	return FALSE
@@ -1294,6 +1297,8 @@
 	var/list/animals = registry.Copy()
 	for(var/mob/living/A in animals)
 		save_work_check()
+		// Mobs captured here would otherwise all join the level's last segment.
+		if(saving_segments) saving_segments.rotate_if_full()
 		if(!A || A.gcDestroyed || A.z != saving_z || !isturf(A.loc)) continue
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(ishuman(A)) continue // The human roster drain owns every human edge.
@@ -1365,6 +1370,9 @@
 			F[path] << chunks
 			F = level_file
 			saving_content_owners[key] = parent_ref
+		// Roster members would otherwise all join the level's last segment
+		// (rotation yields; the check below covers it).
+		if(saving_segments) saving_segments.rotate_if_full()
 		save_work_check()
 		// The work check can yield after attaching the saved edge. Keep the
 		// existing strict roster invariant through that final checkpoint too.

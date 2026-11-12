@@ -39,6 +39,14 @@
 			if (istype(M, /mob/living))
 				var/mob/living/L = M
 				row["health"] = L.health
+			if (ishuman(M))
+				var/mob/living/human/H = M
+				var/list/illness = H.illness_summary()
+				if (illness)
+					row["illness"] = illness
+				if (map && map.recipe_knowledge_enabled())
+					var/list/research = H.research_knowledge_summary()
+					row["research"] = list("known" = research["known"], "studying" = research["studying"], "exempt" = research["exempt"])
 			var/area/area = get_area(M)
 			if (area)
 				row["area"] = area.name
@@ -421,11 +429,15 @@
 	if (persistence_save_in_progress || persistence_restart.busy || persistence_restart.startup_hold)
 		agent_fail("unavailable", "a save or recovery is in progress")
 	var/reason = istext(req["reason"]) ? html_encode(copytext(req["reason"], 1, 257)) : "requested by a server agent"
+	// delay_seconds (5-3600, default 5): players see a countdown that an admin can call off.
+	var/delay = isnum(req["delay_seconds"]) ? clamp(round(req["delay_seconds"]), 5, 3600) : 5
 	audit(A, "restart", reason)
-	to_chat(world, "<span class='danger'>Restarting world!</span> <span class='notice'>Initiated by server agent <b>[html_encode(A.name)]</b>: [reason]</span>")
-	spawn(50)
-		world.Reboot()
-	return list("restarting_in_seconds" = 5)
+	to_chat(world, "<span class='danger'>Restart planned.</span> <span class='notice'>Initiated by server agent <b>[html_encode(A.name)]</b>: [reason]</span>")
+	spawn(0)
+		if (planned_shutdown_countdown("reboot", delay, "restart by server agent [A.name]: [reason]"))
+			world.Reboot()
+			planned_shutdown_clear() // only reached when the reboot was refused
+	return list("restarting_in_seconds" = delay)
 
 // ---------------------------------------------------------------------------
 // Spawning and deletion

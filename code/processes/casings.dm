@@ -9,17 +9,10 @@
 	processes.casings = src
 
 /process/casings/fire()
-	var/list/turf2casings = list()
-
-	// get casings
+	// Remove retired casings from the registry while preserving the process budget checks.
 	for (current in current_list)
 		var/obj/item/ammo_casing/A = current
-		if (!isDeleted(A))
-			if (A.loc && isturf(A.loc)) // so we don't delete ammo casings in guns or mags or nullspace
-				if (!turf2casings[A.loc])
-					turf2casings[A.loc] = 0
-				++turf2casings[A.loc]
-		else
+		if (isDeleted(A))
 			catchBadType(A)
 			bullet_casings -= A
 

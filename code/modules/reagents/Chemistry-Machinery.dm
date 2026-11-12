@@ -188,6 +188,9 @@
 /obj/structure/chemical_dispenser/attackby(var/obj/item/weapon/reagent_containers/B as obj, var/mob/user as mob)
 	if (beaker)
 		if (B && B.reagents && B.reagents.reagent_list.len)
+			if (!B.is_open_container())
+				to_chat(user, "<span class='warning'>Take the lid off \the [B] first.</span>")
+				return
 			to_chat(user, "You transfer the reagents to the dispenser.")
 			for(var/datum/reagent/R in B.reagents.reagent_list)
 				var/done = FALSE
@@ -200,6 +203,7 @@
 					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
 			B.reagents.clear_reagents()
 			sanitize_reagents()
+			GLOB.nanomanager.update_uis(src) // show the new stock in open windows
 			return
 		else
 			to_chat(user, "A beaker is already placed in the dispenser.")
@@ -207,6 +211,7 @@
 	if (istype(B, /obj/item/weapon/reagent_containers/glass) || istype(B, /obj/item/weapon/reagent_containers/food))
 		if (!accept_glass && istype(B,/obj/item/weapon/reagent_containers/food))
 			to_chat(user, "<span class='notice'>You should only use beakers to manage chemicals.</span>")
+			return
 		beaker =  B
 		user.drop_item()
 		B.loc = src

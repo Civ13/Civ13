@@ -81,13 +81,17 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_height_at(locate(12, 7, 1)) == 11, "hex_level")
 	terrain_height_probe_assert(terrain_height_at(locate(12, 6, 1)) == 0, "south_half_flat")
 
-	// Uphill one level costs 1; downhill saves 0.5.
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(5, 9, 1), locate(6, 9, 1), 2.85), 1), "uphill_one_level")
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), locate(5, 9, 1), 2.85), -0.5), "downhill_one_level")
+	// Uphill one level costs half the step again; downhill saves 31%.
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(5, 9, 1), locate(6, 9, 1), 2.85), 1.425), "uphill_one_level")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), locate(5, 9, 1), 2.85), 2.85 / 1.45 - 2.85), "downhill_one_level")
+	// The curve: each extra level climbed costs more than the last; descents
+	// are fastest at two levels and picked down more carefully past that.
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_grade_factor(2), 2.2) && terrain_height_probe_close(terrain_grade_factor(3), 3.1), "uphill_curve")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_grade_factor(-2), 0.55) && terrain_height_probe_close(terrain_grade_factor(-3), 0.65) && terrain_height_probe_close(terrain_grade_factor(-0.5), 1 / 1.225), "downhill_curve")
 	terrain_height_probe_assert(terrain_slope_delay(locate(5, 3, 1), locate(6, 3, 1), 2.85) == 0, "flat_no_cost")
-	// Big drops are capped at four levels and a quarter of the step's delay.
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 7, 1), locate(10, 6, 1), 2.85), -0.7125), "downhill_share_cap")
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 6, 1), locate(10, 7, 1), 2.85), 4), "uphill_level_cap")
+	// Big drops are capped at four levels.
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 7, 1), locate(10, 6, 1), 2.85), -0.7125), "steep_descent_careful")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(10, 6, 1), locate(10, 7, 1), 2.85), 2.85 * 3.2), "uphill_level_cap")
 	terrain_height_probe_assert(terrain_slope_delay(locate(10, 7, 1), locate(10, 6, 1), 0) == 0, "no_negative_delay")
 	// Steep steps: signed capped level change; climbing spends stamina, with one chat message per window.
 	terrain_height_probe_assert(terrain_step_levels(locate(10, 6, 1), locate(10, 7, 1)) == 4 && terrain_step_levels(locate(10, 7, 1), locate(10, 6, 1)) == -4, "step_levels_capped")
@@ -104,7 +108,72 @@ var/terrain_height_probe_checks = 0
 	C.stats["stamina"][1] = 0
 	terrain_climb_effects(C, locate(10, 6, 1), locate(10, 7, 1))
 	terrain_height_probe_assert(C.stats["stamina"][1] == 0, "no_negative_stamina")
+	// Running down a steep step can trip; walking, gentle steps and nudges never do.
+	C.stats["stamina"][1] = 50
+	C.m_intent = "run"
+	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)) == 20, "steep_run_trip_chance")
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(6, 9, 1), locate(5, 9, 1)) && !terrain_trip_chance(C, locate(10, 6, 1), locate(10, 7, 1)), "gentle_or_uphill_no_trip")
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1), 0.0625), "nudge_no_trip")
+	C.terrain_momentum = 1
+	C.stats["stamina"][1] = 0
+	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)) == 40, "momentum_and_tiredness_raise_trip")
+	C.m_intent = "walk"
+	terrain_height_probe_assert(!terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)), "walking_never_trips")
+	C.terrain_momentum = 0
+	// A fall rolls down the steepest drop while it stays 2 levels a tile.
+	var/list/roll = terrain_tumble_path(locate(10, 7, 1))
+	terrain_height_probe_assert(roll.len == 1 && roll[1] == locate(10, 6, 1), "tumble_rolls_down_the_drop")
+	terrain_height_probe_assert(!length(terrain_tumble_path(locate(6, 9, 1))) && !length(terrain_tumble_path(locate(3, 3, 1))), "gentle_or_flat_no_roll")
 	qdel(C)
+
+	// Free slides read the hill at the body's exact spot, blended between tile
+	// centres, so half a tile short of a rise only feels half of it.
+	var/mob/living/human/terrain_height_probe_climber/F = new(locate(6, 6, 1))
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_grade(F, locate(6, 7, 1), NORTH), 4), "free_grade_capped_at_centre")
+	F.step_y = -16
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_grade(F, locate(6, 7, 1), NORTH), 2.5), "free_grade_blends_offsets")
+	F.step_y = 0
+	F.loc = locate(6, 9, 1)
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_grade(F, locate(7, 10, 1), NORTHEAST), 1 / 1.4142), "free_grade_diagonal_per_tile")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_slope_delay(F, locate(7, 9, 1), EAST, 2.85, FALSE), 1.425) && F.terrain_momentum == 0, "nudge_no_momentum")
+	// Held slides downhill gather momentum, which speeds the next steps...
+	F.loc = locate(8, 9, 1)
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_factor(F, locate(7, 9, 1), WEST, 2.85), 1 / 1.45) && terrain_height_probe_close(F.terrain_momentum, 0.25), "downhill_builds_momentum")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_factor(F, locate(7, 9, 1), WEST, 2.85), 0.95 / 1.45) && terrain_height_probe_close(F.terrain_momentum, 0.5), "momentum_speeds_descent")
+	// ...carries on onto flat ground, fading...
+	F.loc = locate(5, 3, 1)
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_factor(F, locate(4, 3, 1), WEST, 2.85), 0.9) && terrain_height_probe_close(F.terrain_momentum, 0.16), "momentum_carries_on_flat")
+	// ...is lost turning back or pausing...
+	terrain_height_probe_assert(terrain_free_factor(F, locate(6, 3, 1), EAST, 2.85) == 1 && F.terrain_momentum == 0, "reverse_loses_momentum")
+	F.terrain_momentum = 1
+	F.terrain_momentum_at = world.time - 50
+	terrain_height_probe_assert(terrain_free_factor(F, locate(6, 3, 1), EAST, 2.85) == 1 && F.terrain_momentum == 0, "pause_loses_momentum")
+	// ...and pays part of the next climb.
+	F.loc = locate(5, 9, 1)
+	F.terrain_momentum = 1
+	F.terrain_momentum_at = world.time
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_factor(F, locate(6, 9, 1), EAST, 2.85), 1.2) && terrain_height_probe_close(F.terrain_momentum, 0.5), "momentum_pays_climb")
+	F.terrain_momentum = 1
+	F.terrain_momentum_at = world.time
+	F.loc = locate(10, 9, 1)
+	F.terrain_momentum_dir = WEST
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_free_factor(F, locate(9, 9, 1), WEST, 2.85), 0.8 / 1.45), "full_momentum_descent")
+	// Held slides are paced in whole ticks; the leftover carries over, so the
+	// average pace over a climb is the curve's 1.5 x the flat pace, and flat
+	// ground keeps the flat pace exactly.
+	F.loc = locate(5, 3, 1)
+	F.terrain_momentum = 0
+	F.terrain_pace_carry = 0
+	terrain_height_probe_assert(terrain_free_slope_delay(F, locate(6, 3, 1), EAST, 2.85) == 0, "flat_free_pace_unchanged")
+	F.loc = locate(5, 9, 1)
+	var/tick = world.tick_lag
+	var/flat_pace = (ceil(2.85 / tick) + 1) * tick
+	var/total = 0
+	for (var/i in 1 to 20)
+		var/delay = 2.85 + terrain_free_slope_delay(F, locate(6, 9, 1), EAST, 2.85)
+		total += (max(1, ceil(round(delay / tick, 0.001))) + 1) * tick
+	terrain_height_probe_assert(abs(total / 20 - flat_pace * 1.5) <= tick / 20 + 0.0001, "climb_pace_follows_curve")
+	qdel(F)
 
 	// Malformed files load flat instead of half-loaded.
 	terrain_height_probe_rejects(null, "null")
@@ -154,7 +223,7 @@ var/terrain_height_probe_checks = 0
 	built = locate(7, 9, 1)
 	terrain_height_probe_assert(built.terrain_smoothed() && !slope.terrain_smoothed(), "built_vs_natural")
 	terrain_height_probe_assert(terrain_slope_delay(locate(6, 9, 1), built, 2.85) == 0 && terrain_slope_delay(built, locate(8, 9, 1), 2.85) == 0, "built_floor_no_slope_cost")
-	terrain_height_probe_assert(terrain_slope_delay(locate(8, 9, 1), locate(9, 9, 1), 2.85) == 1, "natural_ground_keeps_cost")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(8, 9, 1), locate(9, 9, 1), 2.85), 1.425), "natural_ground_keeps_cost")
 	terrain_height_probe_assert(!terrain_height_probe_shade(built), "built_floor_unshaded")
 	built.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
 	built = locate(7, 9, 1)
@@ -177,9 +246,9 @@ var/terrain_height_probe_checks = 0
 	var/turf/floor/tamped_earth/tamped = road
 	// Packed, not levelled: the hill and shading stay, climbing onto it costs half.
 	terrain_height_probe_assert(istype(tamped) && tamped.terrain_packed() && !tamped.terrain_smoothed() && !tamped.may_become_muddy, "tamped_earth_packed_and_firm")
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), road, 2.85), 0.5), "tamped_earth_half_climb")
-	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(road, locate(6, 9, 1), 2.85), -0.5), "tamped_earth_downhill_unchanged")
-	terrain_height_probe_assert(terrain_slope_delay(road, locate(8, 9, 1), 2.85) == 1, "leaving_tamped_earth_full_climb")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(locate(6, 9, 1), road, 2.85), 0.7125), "tamped_earth_half_climb")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(road, locate(6, 9, 1), 2.85), 2.85 / 1.45 - 2.85), "tamped_earth_downhill_unchanged")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(road, locate(8, 9, 1), 2.85), 1.425), "leaving_tamped_earth_full_climb")
 	terrain_height_probe_assert(terrain_height_probe_shade(road), "tamped_earth_still_shaded")
 	terrain_height_probe_assert(road_tamping_problem(road), "tamped_earth_not_retamped")
 	road.ChangeTurf(/turf/floor/rocky/terrain_height_probe)
@@ -191,7 +260,7 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 0, "floor_cover_no_slope_cost")
 	terrain_height_probe_assert(!terrain_height_probe_shade(covered), "floor_cover_unshaded")
 	qdel(floor_cover)
-	terrain_height_probe_assert(!covered.terrain_smoothed() && terrain_slope_delay(locate(7, 9, 1), covered, 2.85) == 1, "removed_cover_slope_back")
+	terrain_height_probe_assert(!covered.terrain_smoothed() && terrain_height_probe_close(terrain_slope_delay(locate(7, 9, 1), covered, 2.85), 1.425), "removed_cover_slope_back")
 	terrain_height_probe_assert(terrain_height_probe_shade(covered), "removed_cover_shaded_again")
 	var/obj/covers/wood_wall/wall_cover = new(covered)
 	terrain_height_probe_assert(!covered.terrain_smoothed(), "cover_wall_not_a_floor")
@@ -210,7 +279,7 @@ var/terrain_height_probe_checks = 0
 	graded.terrain_grade = -1
 	graded.terrain_grade_apply()
 	terrain_height_probe_assert(terrain_height_at(graded) == 5 && fixture.base_at(7, 9, 1) == 6, "cut_lowers_one_level")
-	terrain_height_probe_assert(terrain_slope_delay(graded, locate(8, 9, 1), 2.85) == 2, "cut_steepens_next_step")
+	terrain_height_probe_assert(terrain_height_probe_close(terrain_slope_delay(graded, locate(8, 9, 1), 2.85), 2.85 * 1.2), "cut_steepens_next_step")
 	graded.terrain_grade = -2
 	graded.terrain_grade_apply()
 	terrain_height_probe_assert(terrain_height_at(graded) == 4, "cut_twice")

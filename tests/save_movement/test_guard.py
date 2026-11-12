@@ -107,7 +107,8 @@ class Fixture:
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
                         to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
                         paper_authoring_notify=lambda source, reason: self.paper_notifications.append((source, reason, source.loc)),
-                        record_save_outcome=self.save_results.append)
+                        record_save_outcome=self.save_results.append,
+                        notify_world_save=lambda event, operation, success=False: None)
         self.area, self.admin = Area(), Area(True)
         self.sleep = Atom(self.admin, turf=True, xyz=(1, 1, 1))
         self.home = Atom(self.area, turf=True, xyz=(3, 2, 2))

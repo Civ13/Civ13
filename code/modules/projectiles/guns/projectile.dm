@@ -194,6 +194,7 @@
 	return null
 
 /obj/item/weapon/gun/projectile/handle_post_fire(mob/user)
+	note_field_work(user, "shots")
 	..()
 	if (chambered)
 		chambered.expend()

@@ -409,7 +409,8 @@
 	var/obj/structure/vehicleparts/frame/found = null
 
 	for (var/image/tmpimg in client.images)
-		if (tmpimg.icon == 'icons/obj/vehicles/vehicleparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/lightplane.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/vehicles128x128.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts.dmi' || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96.dmi'  || tmpimg.icon == 'icons/obj/vehicles/tankparts96x96_damaged.dmi' || tmpimg.icon == 'icons/obj/vehicles/apcparts96x96_damaged.dmi')
+		var/image_icon = tmpimg.icon
+		if (image_icon == 'icons/obj/vehicles/vehicleparts.dmi' || image_icon == 'icons/obj/vehicles/lightplane.dmi' || image_icon == 'icons/obj/vehicles/vehicles96x96.dmi' || image_icon == 'icons/obj/vehicles/vehicles128x128.dmi' || image_icon == 'icons/obj/vehicles/apcparts.dmi' || image_icon == 'icons/obj/vehicles/tankparts.dmi' || image_icon == 'icons/obj/vehicles/tankparts96x96.dmi' || image_icon == 'icons/obj/vehicles/apcparts96x96.dmi'  || image_icon == 'icons/obj/vehicles/tankparts96x96_damaged.dmi' || image_icon == 'icons/obj/vehicles/apcparts96x96_damaged.dmi')
 			if(get_dist(tmpimg, view_loc) < view_dist)
 				client.images.Remove(tmpimg)
 	for (var/obj/structure/vehicleparts/frame/FRL in loc)
@@ -449,7 +450,19 @@
 	var/water_overlay = FALSE
 /mob/living/human/proc/handle_drowning()
 	var/turf/T = get_turf(src)
-	if (istype(wear_suit, /obj/item/clothing/suit/lifejacket) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
+	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
+	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
+		drowning = FALSE
+		if (water_overlay)
+			water_overlay = FALSE
+			if (plane == FLOOR_PLANE)
+				plane = GAME_PLANE
+			if (!on_fire)
+				overlays_standing[25] = null
+			update_fire(1)
+		return
+	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
+	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
 		water_overlay = TRUE
 		update_fire(1)

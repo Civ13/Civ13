@@ -19,6 +19,9 @@
 	return
 /mob/living/submarine_probe/New()
 	return
+// A diver sealed in a diving suit (the fixture cannot build a full human).
+/mob/living/submarine_probe/diver/can_walk_seabed()
+	return TRUE
 /obj/covers/submarine_probe_raft
 	name = "probe raft"
 var/submarine_failures = 0
@@ -30,6 +33,16 @@ var/submarine_runtime_error = FALSE
 /world/Error(exception/e)
 	submarine_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
+
+// How many tiles the boat's hull sections span along "x" or "y".
+/proc/submarine_span(obj/structure/vehicleparts/axis/ship/submarine/S, axis)
+	var/low = 1000
+	var/high = 0
+	for (var/obj/structure/vehicleparts/frame/F in S.frames())
+		var/v = axis == "x" ? F.x : F.y
+		low = min(low, v)
+		high = max(high, v)
+	return high - low + 1
 
 /proc/submarine_turf(x, y, z)
 	var/turf/T = locate(x, y, z)
@@ -77,6 +90,22 @@ var/submarine_runtime_error = FALSE
 	submarine_check(submarine_turf(1, 1, 1).type == /turf/wall/rockwall, "the map corner under land stays rock")
 	submarine_check(sea_layer_build(2, 1) == 0, "a second pass changes nothing")
 
+	// Depth zones by distance from the nearest rock.
+	var/marked = seabed_zone_pass(1)
+	submarine_check(seabed_zones_ready && marked == opened, "every sea cell gets a depth zone ([marked] of [opened])")
+	var/zone_total = 0
+	for (var/n in seabed_zone_counts)
+		zone_total += n
+	submarine_check(zone_total == marked, "the zone counts add up ([json_encode(seabed_zone_counts)])")
+	submarine_check(sea_zone_of(locate(6, 15, 1)) == SEA_ZONE_SHELF && sea_zone_of(locate(11, 15, 1)) == SEA_ZONE_SHELF, "the six cells off the coast are the shelf")
+	submarine_check(sea_zone_of(locate(12, 15, 1)) == SEA_ZONE_OPEN && sea_zone_of(locate(14, 15, 1)) == SEA_ZONE_OPEN, "farther out is open water")
+	submarine_check(sea_zone_of(locate(22, 22, 1)) == SEA_ZONE_DEEP, "far from any rock is the deep")
+	submarine_check(sea_zone_of(locate(26, 6, 1)) == SEA_ZONE_SHELF, "the water around an old tunnel's rock is shelf again")
+	submarine_check(!sea_zone_of(locate(2, 15, 1)), "rock has no depth zone")
+	var/turf/open_sea = locate(15, 15, 1)
+	submarine_check(!open_sea.outside_air_breathable() && open_sea.outside_ambient_c() == 8, "open sea has no air and is cold (got [open_sea.outside_ambient_c()])")
+	submarine_check(locate(7, 15, 1).outside_ambient_c() == 14 && locate(22, 22, 1).outside_ambient_c() == 4, "the deep is colder than the shelf")
+
 	// After a save load the pass waits for the world to settle first.
 	sea_layer_ready_at = 0
 	submarine_check(!sea_layer_settled() && sea_layer_ready_at == world.time, "the pass waits once the world is first seen ready")
@@ -95,17 +124,41 @@ var/submarine_runtime_error = FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/S = build_submarine(locate(10, 10, 2), "probe boat")
 	submarine_check(istype(S) && S.frames().len == 15, "the submarine builds fifteen hull frames ([S ? S.frames().len : 0])")
 	submarine_check(S && S.engine && S.engine.fueltank && (S in ship_axes), "an engine, a fuel tank and the ship registry are connected")
-	var/obj/structure/vehicleparts/shipwheel/W = locate() in locate(13, 11, 2)
+	var/obj/structure/vehicleparts/shipwheel/W = locate() in locate(13, 10, 2)
 	submarine_check(W && W.ship == S, "the ship wheel steers this boat")
-	var/obj/structure/vehicleparts/sub_station/station = locate() in locate(13, 12, 2)
+	var/obj/structure/vehicleparts/sub_station/station = locate() in locate(12, 11, 2)
 	submarine_check(station && station.boat() == S, "the ballast and periscope station belongs to this boat")
 	var/obj/structure/vehicleparts/frame/F1 = locate() in locate(12, 12, 2)
 	submarine_check(F1 && !F1.noroof && F1.w_left[1] == "" && F1.w_right[1] == "", "the hull is roofed with open hatches amidships")
 	submarine_check(!S.submerged && S.periscope_turf() == get_turf(S), "a new boat floats on the surface")
 
+	// The Scout's hull: every section shows its own tile of the boat's
+	// drawing, the bow is glazed, the engine room lies behind a watertight
+	// door and the stern quarters are sealed.
+	var/list/hull_states = icon_states('icons/obj/vehicles/submarine_hull.dmi')
+	var/hull_art = TRUE
+	for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/HF in S.frames())
+		if (!("[HF.hull_tile]_deck" in hull_states) || !("[HF.hull_tile]_roof" in hull_states) || HF.icon_state != "[HF.hull_tile]_deck" || !HF.roof || HF.roof.icon_state != "[HF.hull_tile]_roof" || HF.roof.dir != HF.dir)
+			hull_art = FALSE
+	submarine_check(S.hull_class == "scout" && S.hull_square() == 5 && hull_art, "every Scout hull section draws its own deck and roof tile")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/bow = locate() in locate(13, 10, 2)
+	submarine_check(bow && bow.hull_tile == "scout_2_1" && bow.w_front[1] == "sub_glass" && !bow.w_front[2] && bow.w_front[3], "the bow is glass: it blocks the way but not the view")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/door = locate() in locate(13, 13, 2)
+	var/mob/living/submarine_probe/walker = new(locate(13, 13, 2))
+	submarine_check(door && door.door_walls().len == 1 && !door.CheckExit(walker, locate(13, 12, 2)), "the watertight door to the engine room starts shut")
+	submarine_check(door && door.toggle_doors() && door.CheckExit(walker, locate(13, 12, 2)) && door.overlays.len == 1, "opening the door lets the crew through")
+	submarine_check(door && door.toggle_doors() && !door.CheckExit(walker, locate(13, 12, 2)), "shutting it closes the way again")
+	door.toggle_doors()
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/quarter = locate() in locate(12, 14, 2)
+	submarine_check(quarter && !quarter.CheckExit(walker, locate(13, 14, 2)) && !quarter.CheckExit(walker, locate(12, 13, 2)) && !bow.toggle_doors(), "the stern quarters are sealed and a plain section has no door")
+	qdel(walker)
+	var/obj/structure/vehicleparts/sub_fitting/battery/cells = locate() in locate(12, 13, 2)
+	var/obj/structure/vehicleparts/sub_fitting/air/flasks = locate() in locate(14, 13, 2)
+	submarine_check(cells && cells.boat() == S && findtext(cells.reading(S), "attery") && flasks && flasks.boat() == S && findtext(flasks.reading(S), "bank") && (locate(/obj/structure/closet/dive_locker) in locate(14, 11, 2)), "the battery bank, air bank and dive locker are fitted and read the boat")
+
 	// Crew and cargo aboard.
 	var/mob/living/submarine_probe/crew = new(locate(13, 13, 2))
-	var/obj/structure/closet/crate/cargo = new(locate(12, 13, 2))
+	var/obj/structure/closet/crate/cargo = new(locate(13, 12, 2))
 	submarine_check(submarine_turf(15, 15, 1).CanPass(crew, submarine_turf(15, 15, 1)) == FALSE, "the sea refuses a mob with no hull over it")
 
 	// Diving.
@@ -120,6 +173,67 @@ var/submarine_runtime_error = FALSE
 	var/turf/crew_here = get_turf(crew)
 	submarine_check(crew_here.CanPass(crew, crew_here), "inside the hull the crew can move")
 	submarine_check(!submarine_turf(15, 13, 1).CanPass(crew, crew_here), "the crew cannot leave a submerged boat")
+
+	// Divers: the open sea lets them through, but never straight in or out of a boat.
+	var/turf/hull_air = get_turf(crew)
+	submarine_check(hull_air.outside_air_breathable() && isnull(hull_air.outside_ambient_c()), "inside the hull there is air")
+	var/mob/living/submarine_probe/diver/diver = new(locate(20, 20, 1))
+	submarine_check(locate(21, 20, 1).CanPass(diver, locate(21, 20, 1)), "a diver walks the open seabed")
+	var/mob/living/submarine_probe/diver/inside = new(locate(12, 12, 1))
+	submarine_check(!locate(11, 12, 1).CanPass(inside, locate(11, 12, 1)), "a diver cannot step out of a submerged boat past the lock-out hatch")
+	diver.forceMove(locate(11, 12, 1))
+	submarine_check(!locate(12, 12, 1).CanPass(diver, locate(12, 12, 1)), "a diver cannot step into a submerged boat past the lock-out hatch")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/starboard = locate() in locate(12, 12, 1)
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/port = locate() in locate(14, 12, 1)
+	submarine_check(starboard && starboard.boat() == S && port && port.boat() == S, "both side hatches are lock-out hatches of this boat")
+	submarine_check(port && port.lockout_exit() == locate(15, 12, 1), "the port hatch opens onto the seabed beside it")
+	locate(15, 12, 1).ChangeTurf(/turf/wall/rockwall)
+	submarine_check(port && !port.lockout_exit(), "rock against the hull keeps the hatch shut")
+	locate(15, 12, 1).ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+	var/obj/item/weapon/shoring_kit/dropped = new(locate(20, 22, 1))
+	locate(20, 22, 1).Entered(dropped)
+	qdel(inside)
+
+	// Hull air: the crew breathe one ledger; the blowers spend the air bank.
+	submarine_check(S.hull_volume() == 15 && S.air_bank == 6000 && S.air_breathers() == 1, "the hull holds 15 tiles of air, a full bank and one breather (got [S.hull_volume()], [S.air_bank], [S.air_breathers()])")
+	S.air_step(2000)
+	submarine_check(S.hull_air.breathable() && S.air_bank < 6000, "half an hour submerged: the blowers keep the air fresh from the bank ([S.air_report()])")
+	S.air_bank = 0
+	S.air_step(5000)
+	submarine_check(!S.hull_air.breathable() && findtext(S.air_report(), "NOT BREATHABLE"), "with the bank empty the air goes stale ([S.air_report()])")
+	submarine_check(!hull_air.outside_air_breathable(), "stale hull air cannot be breathed")
+	submarine_check(!S.blow_chamber(), "an empty bank cannot blow the lock-out chamber")
+	S.air_bank = 100
+	submarine_check(S.blow_chamber() && S.air_bank == 40, "blowing the chamber dry costs 60 bank air")
+	submarine_check(S.bank_oxygen(50) == 40 * 0.21 && S.air_bank == 0, "a bottle takes only the oxygen the bank still holds")
+	S.air_bank = 6000
+
+	// Battery, floodlights, hull depth and sonar.
+	submarine_check(S.battery == 5400 && S.hull_rating == SEA_ZONE_OPEN && !S.hull_leaks, "a new boat has a full battery and a hull rated for open water")
+	S.set_floodlights(TRUE)
+	submarine_check(S.floodlight_source == W && W.light_range == 7, "the floodlights shine from the bow")
+	S.systems_step(100)
+	submarine_check(S.battery == 5300, "the floodlights drain the battery while submerged (got [S.battery])")
+	S.hull_rating = SEA_ZONE_SHELF
+	S.hull_pressure_step(100)
+	submarine_check(S.hull_leaks == 1, "deeper than its rating the hull springs a leak")
+	S.hull_rating = SEA_ZONE_OPEN
+	var/bank_before = S.air_bank
+	S.air_step(100)
+	var/leak_cost = bank_before - S.air_bank
+	S.hull_leaks = 0
+	bank_before = S.air_bank
+	S.air_step(100)
+	submarine_check(leak_cost > (bank_before - S.air_bank), "a leaking hull costs the air bank more ([leak_cost] vs [bank_before - S.air_bank])")
+	var/list/sonar = S.sonar_lines()
+	submarine_check(findtext(sonar[1], "open water") && findtext(sonar[2], "west"), "a sonar ping reports the depth and the rock to the west ([jointext(sonar, " | ")])")
+	S.battery = 0
+	S.battery_draw(1)
+	submarine_check(!S.floodlight_source && !W.light_range, "a flat battery puts the floodlights out")
+	submarine_check(!S.do_vehicle_check(), "a flat battery stops the submerged boat")
+	submarine_check(!S.sonar_ping(crew), "a flat battery cannot ping")
+	S.battery = 5400
+	S.set_floodlights(FALSE)
 	submarine_check(S.change_depth(TRUE) == "The boat is already submerged.", "a second dive is refused")
 	var/turf/boat_here = get_turf(S)
 	submarine_check(S.periscope_turf() == locate(boat_here.x, boat_here.y, 2), "the periscope looks at the surface straight above")
@@ -166,6 +280,11 @@ var/submarine_runtime_error = FALSE
 	S.moving = FALSE
 	submarine_check(!S.change_depth(FALSE), "the boat surfaces")
 	submarine_check(!S.submerged && submarine_frames_z(S, 2) && crew.z == 2 && cargo.z == 2, "the boat, crew and cargo are back on the surface")
+	S.air_step(10)
+	submarine_check(S.hull_air.breathable() && !S.hull_air.co2 && S.air_bank == 500 && S.air_breathable(), "on the surface the hatches air the boat out and the compressor refills the bank ([S.air_report()])")
+	S.battery = 0
+	S.systems_step(10)
+	submarine_check(S.battery == 450, "on the surface the diesel charges the battery")
 
 	// Diving needs open sea under every frame: not beside the coast.
 	var/obj/structure/vehicleparts/axis/ship/submarine/coaster = build_submarine(locate(2, 20, 2), "coaster")
@@ -177,20 +296,97 @@ var/submarine_runtime_error = FALSE
 	var/datum/research_node/N = get_research_node("submarines")
 	submarine_check(N && ("combustion" in N.prereqs) && ("wagons_ships" in N.prereqs) && N.era_tier == 6, "Submarines research follows ships and combustion")
 	submarine_check(get_recipe_node_req("/obj/structure/car_workshop/submarine_pen") == "submarines", "Submarines research gates the pen (got [get_recipe_node_req("/obj/structure/car_workshop/submarine_pen")])")
+	for (var/gear in list("/obj/item/clothing/suit/pressure_suit/diving", "/obj/item/clothing/head/pressure_helmet/diving", "/obj/item/pressure_tank/diving"))
+		submarine_check(get_recipe_node_req(gear) == "submarines", "Submarines research gates [gear]")
+	for (var/gear in list("/obj/item/clothing/suit/pressure_suit/diving/hard", "/obj/item/clothing/head/pressure_helmet/diving/hard", "/obj/item/sub_hull_plating"))
+		submarine_check(get_recipe_node_req(gear) == "naval_aviation", "Naval Aviation research gates [gear]")
+	submarine_check(new /obj/item/clothing/suit/pressure_suit/diving/hard(locate(1, 1, 2)).depth_rating == SEA_ZONE_DEEP, "the hard dive suit is built for the deep")
+	var/obj/item/clothing/suit/pressure_suit/diving/dress = new(locate(1, 1, 2))
+	submarine_check(dress.depth_rating == SEA_ZONE_SHELF && !dress.has_heater && !new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).depth_rating, "the diving dress is built for the shelf; a space suit is not for diving")
+	// Diving gear has its own art, held and worn, not the space suit's.
+	for (var/list/gear in list(list(/obj/item/clothing/suit/pressure_suit/diving, slot_wear_suit_str), list(/obj/item/clothing/suit/pressure_suit/diving/hard, slot_wear_suit_str), list(/obj/item/clothing/head/pressure_helmet/diving, slot_head_str), list(/obj/item/clothing/head/pressure_helmet/diving/hard, slot_head_str), list(/obj/item/pressure_tank/diving, slot_back_str)))
+		var/gear_type = gear[1]
+		var/obj/item/G = new gear_type(locate(1, 1, 2))
+		var/worn = G.item_icons[gear[2]]
+		submarine_check(G.icon_state != "astronaut" && (G.icon_state in icon_states(G.icon)) && worn && (G.icon_state in icon_states(worn)) && length(icon_states(worn)), "[gear_type] has its own diving sprite, item and worn (state [G.icon_state])")
+	submarine_check(new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).icon_state == "astronaut", "the space pressure suit keeps its own look")
+	for (var/helmet_type in list(/obj/item/clothing/head/pressure_helmet/diving, /obj/item/clothing/head/pressure_helmet/diving/hard))
+		var/obj/item/clothing/head/held = new helmet_type(locate(1, 1, 2))
+		submarine_check((held.item_state_slots[slot_l_hand_str] in icon_states(held.item_icons[slot_l_hand_str])) && (held.item_state_slots[slot_r_hand_str] in icon_states(held.item_icons[slot_r_hand_str])), "[helmet_type] held in a hand uses a state the hand sheets have")
+	sleep(70)
+	submarine_check(!QDELETED(dropped) && get_turf(dropped) == locate(20, 22, 1), "things dropped on the seabed stay there")
 	var/obj/structure/car_workshop/submarine_pen/pen = new(locate(3, 23, 2))
-	submarine_check(pen.model_size("Submarine") == 5 && pen.costs("Submarine")["steel"] == 90 && !pen.allowed(null), "the pen builds only the submarine, after Submarines research")
-	submarine_check(!pen.complete_assembly("Submarine"), "an empty pen builds nothing")
+	submarine_check(pen.model_size("Scout submarine") == 5 && pen.costs("Scout submarine")["steel"] == 90 && pen.model_size("Explorer submarine") == 7 && pen.costs("Explorer submarine")["steel"] == 140 && pen.largest_model_size() == 5 && !pen.allowed(null), "the pen builds the Scout and the Explorer, after Submarines research, and fits where a Scout does")
+	submarine_check(!pen.complete_assembly("Scout submarine"), "an empty pen builds nothing")
 	pen.stock = list("steel" = 100, "glass" = 5, "cloth" = 0, "cable" = 12, "wheels" = 0)
-	submarine_check(!pen.complete_assembly("Submarine"), "a pen whose bay reaches the shallows builds nothing")
+	submarine_check(!pen.complete_assembly("Scout submarine"), "a pen whose bay reaches the shallows builds nothing")
 	qdel(pen)
 	pen = new(locate(20, 24, 2))
 	pen.stock = list("steel" = 100, "glass" = 5, "cloth" = 0, "cable" = 12, "wheels" = 0)
-	var/obj/structure/vehicleparts/axis/ship/submarine/built = pen.complete_assembly("Submarine")
+	var/obj/structure/vehicleparts/axis/ship/submarine/built = pen.complete_assembly("Scout submarine")
 	submarine_check(istype(built) && built.frames().len == 15, "the pen launches a submarine into its bay of deep sea")
 	if (istype(built))
 		var/obj/structure/engine/internal/BE = built.engine
 		submarine_check(BE.fueltank && !BE.fueltank.reagents.total_volume, "the launched boat has an empty tank")
 		submarine_check(built.keyed_vehicle_id && pen.stock["steel"] == 10 && pen.stock["cable"] == 0, "the pen issues keys and spends its inputs")
+
+	// The Explorer: 21 hull sections in a 7x7 turning square.
+	var/obj/structure/vehicleparts/axis/ship/submarine/explorer/X = build_submarine(locate(23, 8, 2), "explorer", /obj/structure/vehicleparts/axis/ship/submarine/explorer)
+	submarine_check(istype(X) && X.frames().len == 21 && X.hull_square() == 7 && X.maxdist == 7 && X.hull_volume() == 21, "the Explorer builds 21 hull sections in a 7x7 square ([X ? X.frames().len : 0], [X ? X.maxdist : 0])")
+	if (istype(X))
+		var/explorer_art = TRUE
+		var/hatches = 0
+		var/doors = 0
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/XF in X.frames())
+			if (!("[XF.hull_tile]_deck" in hull_states) || !("[XF.hull_tile]_roof" in hull_states))
+				explorer_art = FALSE
+			if (istype(XF, /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch))
+				hatches++
+			doors += XF.door_walls().len
+		var/obj/structure/vehicleparts/shipwheel/XW = locate() in locate(28, 8, 2)
+		submarine_check(explorer_art && hatches == 2 && doors == 2 && XW && XW.ship == X && X.floodlight_holder() == XW && X.engine && X.engine.fueltank, "the Explorer has its own hull art, two lock-out hatches, two watertight doors, a wheel and an engine")
+		submarine_check(submarine_span(X, "x") == 3 && submarine_span(X, "y") == 7, "it lies 3 wide and 7 long")
+		submarine_check(X.do_matrix(X.dir, TURN_LEFT(X.dir), "left") && submarine_span(X, "x") == 7 && submarine_span(X, "y") == 3 && X.frames().len == 21, "the Explorer turns left inside its square ([submarine_span(X, "x")]x[submarine_span(X, "y")])")
+		var/turned = TRUE
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/XF in X.frames())
+			if (XF.dir != X.dir || XF.roof.dir != X.dir)
+				turned = FALSE
+		submarine_check(turned && get_turf(XW) && submarine_at(get_turf(XW)) == X, "every section and its roof face the new heading and the wheel stays aboard")
+		submarine_check(X.do_matrix(X.dir, TURN_RIGHT(X.dir), "right") && submarine_span(X, "x") == 3 && submarine_span(X, "y") == 7 && get_turf(XW) == locate(28, 8, 2), "turning right brings it back where it lay")
+		submarine_check(vehicle_rotation_target(5, "right", "1,2") == "2,5" && vehicle_rotation_target(5, "left", "1,2") == "4,1" && vehicle_rotation_target(7, "right", "1,2") == "2,7" && vehicle_rotation_target(7, "left", "1,2") == "6,1", "a 7x7 square turns by the same rule as the 5x5 table")
+
+
+	// Name and stripe: the crew name the boat and repaint her hull stripes.
+	var/obj/structure/vehicleparts/axis/ship/submarine/PB = build_submarine(locate(22, 22, 2), "paint boat")
+	submarine_check(istype(PB), "a boat builds for the paint checks")
+	if (PB)
+		var/obj/structure/vehicleparts/frame/ship/steel/submarine/striped = null
+		var/obj/structure/vehicleparts/frame/ship/steel/submarine/bare = null
+		var/stripes = 0
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/NF in PB.frames())
+			if (NF.has_stripe())
+				stripes++
+				striped = NF
+			else
+				bare = NF
+		submarine_check(stripes == 6 && striped && bare, "two stripes cross six of the Scout's fifteen roof sections ([stripes])")
+		submarine_check(PB.stripe_color == "#E89628" && PB.stripe_paint_name() == "Orange" && striped && !striped.roof.overlays.len, "a new boat wears the factory orange drawn into her roof")
+		submarine_check(PB.paint_stripe("Blue") && PB.stripe_color == submarine_stripe_paints["Blue"] && PB.stripe_paint_name() == "Blue", "the stripes repaint blue")
+		submarine_check(striped && striped.roof.overlays.len == 1 && bare && !bare.roof.overlays.len, "only the striped sections carry the new paint, once")
+		var/image/old_roof = striped ? striped.roof : null
+		PB.paint_stripe("Red")
+		submarine_check(striped && striped.roof == old_roof && striped.roof.overlays.len == 1, "repainting keeps the one roof image and one coat")
+		submarine_check(!PB.paint_stripe("Tartan") && PB.stripe_paint_name() == "Red", "an unknown paint changes nothing")
+		PB.paint_stripe("Orange")
+		submarine_check(striped && !striped.roof.overlays.len, "factory orange needs no coat")
+		submarine_check(PB.rename_boat("Nautilus") && PB.name == "Nautilus" && striped && striped.name == "Nautilus", "naming the boat names her hull sections")
+		submarine_check(!PB.rename_boat("") && PB.name == "Nautilus", "an empty name is refused")
+		submarine_check(length(PB.name) && PB.rename_boat("0123456789012345678901234567890123456789012345") && length(PB.name) == 39, "a long name is cut to 39 letters")
+		var/missing = 0
+		for (var/paint in submarine_stripe_paints)
+			if (!findtext(submarine_stripe_paints[paint], "#") || length(submarine_stripe_paints[paint]) != 7)
+				missing++
+		submarine_check(submarine_stripe_paints.len == 8 && !missing, "eight paints, each a colour")
 
 /proc/submarine_run()
 	try

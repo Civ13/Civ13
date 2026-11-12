@@ -20,6 +20,12 @@ ENDPOINT_ADAPTERS = """var/list/epoch_names = list("Stone Age")
 /obj/map_metadata/var/age = "Stone Age"
 /obj/map_metadata/proc/set_epoch(ordinal)
 	return FALSE
+/proc/planned_shutdown_remaining()
+	return null
+/proc/planned_shutdown_countdown(kind, seconds, reason = null, warn_players = TRUE, cancellable = TRUE)
+	return TRUE
+/proc/planned_shutdown_clear()
+	return
 """
 
 

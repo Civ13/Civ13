@@ -128,7 +128,7 @@
 		if ("vending_machine2.tmpl", "vending_machine_gulag.tmpl", "vending_machine_taotd.tmpl")
 			return list("vend", "cancelpurchase", "remove_money", "togglevoice")
 		if ("research_bench.tmpl")
-			return list("assign", "queue", "clear_queue", "write_book", "write_notes", "claim", "appoint_director", "dismiss_director", "set_director_title", "appoint_researcher", "dismiss_researcher", "take_book", "swap_books", "copy_chapter", "study_shelf", "study", "copy", "copy_all", "write", "unqueue", "stop_research")
+			return list("assign", "queue", "clear_queue", "write_book", "write_notes", "claim", "appoint_director", "dismiss_director", "set_director_title", "appoint_researcher", "dismiss_researcher", "take_book", "swap_books", "copy_chapter", "study_shelf", "study", "copy", "copy_all", "write", "unqueue", "stop_research", "toggle_rush")
 		if ("research_book.tmpl")
 			return list("study", "write", "rip", "read")
 		if ("recruitment_station.tmpl")

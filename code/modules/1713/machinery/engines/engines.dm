@@ -543,5 +543,6 @@
 /obj/structure/engine/forceMove(atom/destination, var/special_event)
 	var/atom/previous_location = loc
 	. = ..()
-	if (. && loc != previous_location)
+	// A craft carries its wiring whole (craft/rigid_move.dm).
+	if (. && loc != previous_location && !craft_carrying())
 		disconnect_cables()

@@ -30,6 +30,7 @@ export function ResearchBook(ui: ScreenProps) {
   return <div className="rs-bookwin">
     <Section title={text(data.name) || 'Book'}>
       <p className="rs-dim">{data.author ? `By ${text(data.author)}. ` : ''}{chapters.length} research chapter{chapters.length === 1 ? '' : 's'}{unfinished.length ? `, ${unfinished.length} unfinished` : ''}.</p>
+      {!!data.cipher_note && <p className="rs-bad">{text(data.cipher_note)}</p>}
       {!!data.has_text && <Action ui={ui} action="read">Read the written pages</Action>}
       <div className="rs-toolbar"><label className="rs-search">Find a chapter <input type="search" value={query} placeholder="Name, recipe or discipline" onChange={event => setQuery(event.target.value)} /></label></div>
       <FilterChips options={filters} value={filter} counts={counts} onChange={setFilter} />
@@ -43,14 +44,15 @@ export function ResearchBook(ui: ScreenProps) {
         return <div key={row.id} className="rs-row rs-row-wrap">
           <button type="button" className="rs-row-main" aria-expanded={isOpen} onClick={() => setExpanded(isOpen ? null : String(row.id))}>
             <strong>{text(row.name)}</strong>
-            <small>{text(row.era_name)} - {text(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => text(item.name)).join(', ')}` : ''}{row.state === 'study' ? ` - about ${minutes(row.study_minutes)}${row.tutor ? ` with ${text(row.tutor)} tutoring` : ''}` : ''}</small>
+            <small>{text(row.era_name)} - {text(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => text(item.name)).join(', ')}` : ''}{row.state === 'study' ? `${Number(row.read_percent) > 0 ? ` - ${row.read_percent}% read` : ''} - about ${minutes(row.study_minutes)}${Number(row.read_percent) > 0 ? ' left' : ''}${row.tutor ? ` with ${text(row.tutor)} tutoring` : ''}` : ''}</small>
           </button>
           <span className={`rs-badge rs-${row.state === 'locked' ? 'locked' : row.state}`}>{labels[row.state] ?? text(row.state)}</span>
-          <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>Study</Action>}</span>
+          <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>{Number(row.read_percent) > 0 ? 'Continue' : 'Study'}</Action>}</span>
           {isOpen && <div className="rs-row-detail">
             <h3>Groundwork</h3>
             {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {text(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study this.</p>}
             <h3>Teaches {list(row.recipe_names).length} recipes</h3><RecipeTags names={row.recipe_names} />
+            {!!row.effect && <><h3>Knowing it</h3><p>{text(row.effect)}</p></>}
             {!!data.held && <p><Action ui={ui} action="rip" value={row.id} disabled={!!data.busy}>Tear this chapter out</Action></p>}
           </div>}
         </div>;

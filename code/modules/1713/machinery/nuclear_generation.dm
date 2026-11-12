@@ -82,6 +82,10 @@
 		F.use(1)
 		return
 	if (W.reagents && W.reagents.get_reagent_amount("water") >= 1 && coolant < 100)
+		// A sealed vessel keeps its water.
+		if (!W.is_open_container())
+			to_chat(user, "<span class='warning'>Open \the [W] first.</span>")
+			return
 		var/transfer = min(100 - coolant, W.reagents.get_reagent_amount("water"))
 		W.reagents.remove_reagent("water", transfer)
 		coolant += transfer

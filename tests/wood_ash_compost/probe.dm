@@ -180,6 +180,10 @@
 		P.reagents.clear_reagents()
 		P.reagents.add_reagent("water",15)
 		nitrary_hold(H,P)
+		P.flags &= ~OPENCONTAINER
+		C.attackby(P,H)
+		check_nitrary(C.nitrary_water == 0 && P.reagents.get_reagent_amount("water") == 15, "sealed container cannot pour water")
+		P.flags |= OPENCONTAINER
 		C.attackby(P,H)
 		check_nitrary(C.nitrary_stage == 1 && C.nitrary_time_left == 18000 && P.reagents.get_reagent_amount("water") == 5, "paid plants and water require aging")
 		C.process()
@@ -196,6 +200,10 @@
 		check_nitrary(C.nitrary_stage == 1, "batch immature before full aging")
 		nitrary_age(C,1)
 		check_nitrary(C.nitrary_stage == 2, "production process completes paid aging")
+		P.flags &= ~OPENCONTAINER
+		C.attackby(P,H)
+		check_nitrary(C.nitrary_stage == 2 && P.reagents.get_reagent_amount("ash") == 2, "sealed container cannot pour ash")
+		P.flags |= OPENCONTAINER
 		C.attackby(P,H)
 		check_nitrary(C.nitrary_stage == 3 && P.reagents.get_reagent_amount("ash") == 1 && C.nitrary_time_left == 600, "mature batch pays ash for timed leaching")
 		P.reagents.clear_reagents()
@@ -212,6 +220,9 @@
 		H.l_hand = null
 		check_nitrary(!C.nitrary_draw(P,H), "unheld pot cannot draw")
 		nitrary_hold(H,P)
+		P.flags &= ~OPENCONTAINER
+		check_nitrary(!C.nitrary_draw(P,H) && C.nitrary_stage == 4 && !P.reagents.total_volume, "sealed pot cannot draw leachate")
+		P.flags |= OPENCONTAINER
 		check_nitrary(C.nitrary_draw(P,H) && P.reagents.get_reagent_amount("nitrate_leachate") == 10 && !P.reagents.get_reagent_amount("potassium") && !P.reagents.get_reagent_amount("nitrogen"), "draw gives finite dilute leachate before boiling")
 		check_nitrary(!C.nitrary_draw(P,H) && C.nitrary_stage == 0 && C.nitrary_plants == 0 && C.nitrary_water == 0, "batch can be drawn only once")
 		var/obj/structure/oven/stove = new(H.loc)

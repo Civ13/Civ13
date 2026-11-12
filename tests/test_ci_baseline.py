@@ -867,7 +867,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=16, failures=int(failing), errors=0, skipped=0))
+                        tests=17, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
@@ -1361,7 +1361,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
                          {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler'})
         self.assertIn('year', self.selected(['code/setup.dm']))
 
     def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):

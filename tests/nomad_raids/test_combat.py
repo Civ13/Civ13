@@ -8,6 +8,7 @@ No Git history, compiler, game process or network is used.
 """
 import ast
 import importlib.util
+from itertools import product
 from pathlib import Path
 import re
 from types import SimpleNamespace, MethodType
@@ -401,6 +402,46 @@ class CombatTests(unittest.TestCase):
             with self.subTest(statement=statement):
                 with self.assertRaises(AssertionError):
                     Fixture(source)
+
+
+class NpcCoverThreatThresholdTests(unittest.TestCase):
+    """Offline decision and iteration model; does not execute BYOND."""
+
+    def test_source_only_stops_after_the_second_live_enemy(self):
+        source = (ROOT / 'code/game/mob/living/simple_animal/hostile/humans/human.dm').read_text()
+        scan = ("for(var/mob/living/L in view(7, src))\n"
+                "\t\t\tif(L.faction != faction && L.stat != DEAD)\n"
+                "\t\t\t\tenemies_nearby++\n"
+                "\t\t\t\tif(enemies_nearby >= 2)\n"
+                "\t\t\t\t\tbreak\n")
+        decision = 'if(enemies_nearby >= 2 || (ishuman(target_mob) && target_mob:get_active_hand()))'
+        self.assertEqual(source.count(scan), 1)
+        self.assertIn(decision, source)
+        self.assertNotIn(scan, source.replace('if(enemies_nearby >= 2)\n', 'if(enemies_nearby >= 1)\n', 1))
+
+    def test_decision_parity_and_iteration_counts(self):
+        # (same faction, dead): enemy alive, friendly alive, enemy dead.
+        kinds = ((False, False), (True, False), (False, True))
+        def candidate(mobs, target_armed, threshold=2):
+            count = visits = 0
+            for same_faction, dead in mobs:
+                visits += 1
+                if not same_faction and not dead:
+                    count += 1
+                    if count >= threshold:
+                        break
+            return count >= 2 or target_armed, visits
+        for size in range(6):
+            for mobs in product(kinds, repeat=size):
+                for target_armed in (False, True):
+                    expected = sum(not same and not dead for same, dead in mobs) >= 2 or target_armed
+                    result, visits = candidate(mobs, target_armed)
+                    self.assertEqual(result, expected)
+                    self.assertLessEqual(visits, len(mobs))
+        crowded = (kinds[0], kinds[0], kinds[1], kinds[0])
+        self.assertEqual(candidate(crowded, False), (True, 2))
+        self.assertEqual(candidate(crowded, False, threshold=1), (False, 1))
+        self.assertEqual(candidate((kinds[1], kinds[2]), False), (False, 2))
 
 
 if __name__ == '__main__':
