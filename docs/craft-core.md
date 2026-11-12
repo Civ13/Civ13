@@ -175,6 +175,18 @@ turns; the result equals `axis.do_matrix()`. `craft_overhang(turfs)` finds a
 vehicle with frames both on and off the craft, and both move planners
 (`built.plan()`, `vessel.plan_move()`) refuse while one stands half aboard.
 
+## Tow lines
+
+`craft/vehicle_tow.dm`: a `/datum/vehicle_tow` joins a tug axis and a towed
+axis that stood in line behind it (`axis.tow_plan()`, `hitch_tow()`). It keeps
+a queue of what the towed vehicle has still to do: one move for every tile it
+stood behind, then every move and turn of the tug. After each tug move the
+towed vehicle works through the queue with its own `do_move()` and
+`do_matrix()`, so it turns where the tug turned. It parts when more than
+`TOW_SLACK` moves are owed. The file hooks `do_move`, `do_matrix`,
+`get_weight`, `Destroy` and the frame's `attackby` by redefining them and
+calling on, so the vehicle files are untouched. Test: `tests/vehicle_tow`.
+
 ## Weather and murk at sea
 
 `naval/sea_weather.dm`: `sea_murk_at(turf)` is what the area's weather takes
