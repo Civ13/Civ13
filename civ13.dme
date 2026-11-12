@@ -1511,6 +1511,7 @@
 #include "code\modules\space\orbit_docking.dm"
 #include "code\modules\space\orbit_asteroids.dm"
 #include "code\modules\space\orbit_chart.dm"
+#include "code\modules\space\orbit_sites.dm"
 #include "code\modules\space\orbit_defences.dm"
 #include "code\modules\space\orbit_lab.dm"
 #include "code\modules\space\orbit_refinery.dm"
