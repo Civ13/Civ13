@@ -8,7 +8,9 @@ whole with its bow up, then cut into 32x32 tiles. A tile's state is named
 "<class>_<column>_<row>_roof" or "..._deck" after its place in the DM layout
 table (submarine_layouts in ships/submarine.dm: column 1 is the west side of
 a boat facing south, row 1 its bow) and holds the four directions the boat
-can face.
+can face. A roof tile the accent stripe crosses also gets a "..._stripe"
+state: the stripe alone in white, which the game tints to the colour the crew
+painted and lays over the roof.
 
 Usage: python3 scripts/draw_submarine_hull.py [--preview out.png]
 """
@@ -25,7 +27,7 @@ H3 = (60, 72, 84, 255)
 H4 = (40, 49, 59, 255)
 SEAM = (48, 58, 68, 255)
 RIV = (136, 150, 160, 255)
-ACC = (232, 150, 40, 255)   # accent stripe (paintable later)
+ACC = (232, 150, 40, 255)   # accent stripe: the factory colour, repainted in game
 ACC2 = (178, 104, 24, 255)
 G1 = (188, 240, 244, 255)   # glass
 G2 = (110, 200, 214, 255)
@@ -275,6 +277,19 @@ def interior(W, L, spec, **kw):
     return im
 
 
+def stripe_layer(roof):
+    """The accent stripes of a roof drawing on their own, in white for tinting."""
+    im = Image.new('RGBA', roof.size, (0, 0, 0, 0))
+    src, dst = roof.load(), im.load()
+    for y in range(roof.height):
+        for x in range(roof.width):
+            if src[x, y] == ACC:
+                dst[x, y] = (255, 255, 255, 255)
+            elif src[x, y] == ACC2:
+                dst[x, y] = (196, 196, 196, 255)
+    return im
+
+
 # ---- fittings ----
 def prop_battery():
     im = Image.new('RGBA', (T, T), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
@@ -356,11 +371,14 @@ def build_states():
         states.append((f'plain_{kind}', [plain(kind)]))
     for name, b in BOATS.items():
         roof, deck = boat_art(name)
+        stripe = stripe_layer(roof)
         for r in range(1, b['L'] + 1):
             for c in range(1, b['W'] + 1):
                 box = ((b['W'] - c) * T, (r - 1) * T, (b['W'] - c + 1) * T, r * T)
                 states.append((f'{name}_{c}_{r}_deck', four_dirs(deck.crop(box))))
                 states.append((f'{name}_{c}_{r}_roof', four_dirs(roof.crop(box))))
+                if stripe.crop(box).getbbox():
+                    states.append((f'{name}_{c}_{r}_stripe', four_dirs(stripe.crop(box))))
     for kind in ('bulkhead', 'door_closed', 'door_open'):
         north = edge_strip(kind)
         # the direction of these states is the tile edge the wall stands on
