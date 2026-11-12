@@ -630,6 +630,7 @@
 					standing_on_snow = 4
 				else if(SD.water_depth >= 50)
 					standing_on_snow = 2
+			standing_on_snow *= footwear_terrain_mult(H, "wade")
 			if ((F_area.weather == WEATHER_WET && findtext(F_area.icon_state,"rain")) || F_area.weather == WEATHER_EXTREME)
 				if (F.may_become_muddy)
 					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")
@@ -654,6 +655,11 @@
 					standing_on_snow = 1.75
 					snow_message = "You're slowed down quite a bit by the snow."
 					snow_span = "warning"
+				var/snow_footwear = footwear_terrain_mult(H, "snow")
+				standing_on_snow *= snow_footwear
+				if (snow_footwear <= 0.4)
+					snow_message = "Your [H.shoes.name] keep you on top of the snow."
+					snow_span = "notice"
 
 			//Radiation Burns NOT IMPLEMENTED YET
 			/*
@@ -709,6 +715,7 @@
 					standing_on_snow = rand(4,5)
 				else
 					standing_on_snow = rand(2,3)
+				standing_on_snow *= footwear_terrain_mult(H, "mud")
 				if (world.time >= mob.next_mud_message)
 					to_chat(mob, SPAN_WARNING("The mud slows you down."))
 					mob.next_mud_message = world.time+100
@@ -735,10 +742,17 @@
 									S.overlays.Cut()
 									S.overlays += S.blood_overlay
 			if (!H.crab)
-				move_delay += F.move_delay
+				if (istype(F, /turf/floor/beach/water))
+					move_delay += F.move_delay * footwear_terrain_mult(H, "wade")
+				else
+					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
-				standing_on_snow = rand(2,3)
+				standing_on_snow = rand(2,3) * footwear_terrain_mult(H, "wade")
 				mob.next_mud_message = world.time+100
+			// Snowshoes are clumsy anywhere but on snow.
+			if (!(F.has_snow_cover() && snow))
+				standing_on_snow += footwear_offsnow_slowdown(H)
+			footwear_ice_slip_check(H, F, distance_fraction)
 		if (mob.velocity_lastdir != -1)
 			if (direct != mob.velocity_lastdir)
 				mob.velocity = max(mob.velocity-pick(1,2), FALSE)
@@ -816,7 +830,8 @@
 				move_delay += 1.00
 
 			else if (istype(mob.pulling, /obj/structure))
-				move_delay += 0.75
+				var/obj/structure/pulled_structure = mob.pulling
+				move_delay += pulled_structure.drag_delay(mob)
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)

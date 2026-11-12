@@ -53,3 +53,19 @@ Civ13 (2026-11-12), pixel by pixel from fixed palettes by
 `tests/sprites/create_sea_life.py`. No borrowed or generated artwork. They are
 under the same terms as the rest of Civ13's art. The living shoals use the
 existing `fish1` and `fish2` states of `icons/mob/fish.dmi`.
+
+## primitive_carrying.dmi and icons/mob/primitive_carrying.dmi
+
+All states (`carry_net`, `sling_bag`, `pack_basket`, `pack_frame`, `travois`,
+`travois_open`; item icons and the four-direction worn sprites) were drawn for
+Civ13 (2026-11-12), pixel by pixel from a fixed palette by
+`tests/sprites/create_primitive_carrying.py`. No borrowed or generated artwork.
+They are under the same terms as the rest of Civ13's art.
+
+## weather_footwear.dmi and icons/mob/weather_footwear.dmi
+
+All states (`snowshoes`, `mukluks`, `hobnail_boots`, `pattens`, `rubber_boots`,
+`climbing_boots`; item icons and the four-direction worn sprites) were drawn for
+Civ13 (2026-11-12), pixel by pixel from a fixed palette by
+`tests/sprites/create_weather_footwear.py`. No borrowed or generated artwork.
+They are under the same terms as the rest of Civ13's art.

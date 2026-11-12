@@ -101,7 +101,7 @@ var/global/list/craft_contracts = list()
 	if (state != CONTRACT_OPEN)
 		return "that contract is no longer on offer"
 	if (!C)
-		return "contracts go to registered crews: bring a ship whose papers list you within reach of the board"
+		return "contracts go to registered crews: bring a ship or vehicle whose papers list you within reach of the board"
 	return null
 
 /obj/craft_contract/proc/take(mob/living/human/H, datum/craft/C)

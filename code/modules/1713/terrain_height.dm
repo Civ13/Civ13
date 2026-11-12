@@ -278,6 +278,8 @@
 	var/chance = (drop - 2) * TERRAIN_TRIP_PER_LEVEL + H.terrain_momentum * TERRAIN_TRIP_MOMENTUM
 	if (H.stats["stamina"][1] <= 0)
 		chance += TERRAIN_TRIP_TIRED
+	// Hobnails and crampons bite; snowshoes and pattens wobble (weather_footwear.dm).
+	chance *= footwear_slope_grip(H)
 	return min(TERRAIN_TRIP_MAX, chance)
 
 // Running down a steep slope may trip the runner, who falls once the step is
