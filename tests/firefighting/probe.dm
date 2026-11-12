@@ -41,6 +41,8 @@ var/fire_runtime_error = FALSE
 		fire_soak_checks()
 		fire_mob_checks()
 		fire_smother_checks()
+		fire_water_checks()
+		fire_blanket_checks()
 		fire_recipe_checks()
 	catch(var/exception/e)
 		fire_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -179,3 +181,110 @@ var/fire_runtime_error = FALSE
 	build_research_tree()
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater") == "primitive_construction", "the fire beater is Primitive Construction knowledge")
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater/flapper") == "primitive_construction", "the fire flapper is Primitive Construction knowledge")
+
+/proc/fire_water_checks()
+	var/mob/living/fire_tester/U = new(locate(10, 15, 1))
+	var/turf/site = locate(11, 15, 1)
+	fire_check(fire_douse_chance(0) == 0 && fire_douse_chance(10) == 20 && fire_douse_chance(50) == 100 && fire_douse_chance(120) == 100, "douse odds scale with the water and cap at certain")
+	var/obj/item/weapon/reagent_containers/glass/bucket/K = new(site)
+	var/obj/effect/fire/F = new(site)
+	fire_check(!F.attackby(K, U) && !QDELETED(F), "an empty bucket does nothing to a fire")
+	K.reagents.add_reagent("petroleum", 20)
+	fire_check(!F.attackby(K, U) && K.reagents.get_reagent_amount("petroleum") == 20, "a bucket without water is not emptied")
+	K.reagents.add_reagent("water", 60)
+	fire_check(F.attackby(K, U) && QDELETED(F) && K.reagents.get_reagent_amount("water") == 0 && K.reagents.get_reagent_amount("petroleum") == 20, "sixty water always puts the fire out and only the water is used")
+	// A splash of water is used up and seldom works.
+	var/out = 0
+	for (var/i = 1, i <= 40, i++)
+		F = new(site)
+		K.reagents.add_reagent("water", 5)
+		F.attackby(K, U)
+		if (QDELETED(F))
+			out++
+		else
+			qdel(F)
+	fire_check(out <= 15 && K.reagents.get_reagent_amount("water") == 0, "five water rarely puts a fire out ([out] of 40)")
+	K.reagents.clear_reagents()
+	// A full bucket splashes the neighbours and puts out a burning person.
+	var/splashed = 0
+	for (var/i = 1, i <= 10, i++)
+		F = new(site)
+		var/list/ring = list()
+		for (var/turf/T in orange(1, site))
+			ring += new /obj/effect/fire(T)
+		K.reagents.add_reagent("water", 120)
+		F.attackby(K, U)
+		for (var/obj/effect/fire/N in ring)
+			if (QDELETED(N))
+				splashed++
+			else
+				qdel(N)
+	fire_check(splashed >= 15 && splashed <= 65, "a full bucket splashes about half the neighbouring fires ([splashed] of 80)")
+	var/mob/living/fire_tester/V = new(site)
+	V.fire_stacks = 5
+	V.on_fire = TRUE
+	F = new(site)
+	K.reagents.add_reagent("water", 120)
+	F.attackby(K, U)
+	fire_check(!V.on_fire, "a full bucket puts out a person burning on the tile")
+	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/E = new(site)
+	F = new(site)
+	fire_check(!F.attackby(E, U) && E.reagents.get_reagent_amount("water") == 30, "the extinguisher is not emptied by clicking the fire")
+	qdel(F)
+	qdel(E)
+	qdel(V)
+	qdel(K)
+	qdel(U)
+
+/proc/fire_blanket_checks()
+	var/mob/living/fire_tester/U = new(locate(15, 15, 1))
+	var/turf/site = locate(16, 15, 1)
+	var/turf/water = locate(15, 16, 1)
+	water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/obj/item/weapon/bedsheet/S = new(null)
+	fire_hold(U, S)
+	fire_check(S.resolve_attackby(water, U) && S.wet_uses == 4, "open water soaks a bedsheet")
+	var/out = 0
+	for (var/i = 1, i <= 40, i++)
+		var/obj/effect/fire/F = new(site)
+		S.wet_uses = 4
+		S.next_smother = 0
+		S.resolve_attackby(F, U)
+		if (QDELETED(F))
+			out++
+		else
+			qdel(F)
+	fire_check(out >= 24 && !QDELETED(S) && S.wet_uses == 3, "a wet blanket smothers most fires and never burns ([out] of 40)")
+	var/mob/living/fire_tester/V = new(site)
+	U.a_intent = I_HELP
+	V.fire_stacks = 9
+	V.on_fire = TRUE
+	S.next_smother = 0
+	fire_check(S.resolve_attackby(V, U) && !V.on_fire && S.wet_uses == 2, "a wet blanket puts a burning person out in one go")
+	S.wet_uses = 0
+	V.fire_stacks = 5
+	V.on_fire = TRUE
+	S.next_smother = 0
+	S.resolve_attackby(V, U)
+	fire_check(V.on_fire && V.fire_stacks == 3, "a dry sheet only knocks the flames back")
+	var/burned = 0
+	for (var/i = 1, i <= 40, i++)
+		var/obj/item/weapon/bedsheet/D = new(null)
+		var/obj/effect/fire/F = new(site)
+		D.resolve_attackby(F, U)
+		if (QDELETED(D))
+			burned++
+		else
+			qdel(D)
+		if (!QDELETED(F))
+			qdel(F)
+	fire_check(burned >= 2 && burned <= 22, "dry sheets sometimes burn up ([burned] of 40)")
+	var/obj/item/weapon/reagent_containers/glass/bucket/K = new(site)
+	K.reagents.add_reagent("water", 30)
+	fire_check(S.try_soak_blanket(K, U) && S.wet_uses == 4 && K.reagents.get_reagent_amount("water") == 20, "a bucket soaks the sheet for ten water")
+	fire_check(("wet_uses" in S.get_saved_vars()) && S.persistence_runtime_var("next_smother"), "wetness is saved, the cooldown is not")
+	qdel(K)
+	qdel(V)
+	qdel(S)
+	qdel(U)
+	water.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)

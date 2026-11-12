@@ -10,6 +10,8 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/modules/1713/firefighting.dm'
+WATER = ROOT / 'code/modules/1713/firefighting_water.dm'
+FIRE = ROOT / 'code/modules/1713/oil_fires.dm'
 ICON = ROOT / 'icons/obj/firefighting.dmi'
 
 
@@ -74,6 +76,19 @@ class FirefightingSourceTests(unittest.TestCase):
     def test_cooldown_is_runtime_state(self):
         self.assertIn('var/tmp/next_beat', self.source)
         self.assertIn('return key == "next_beat" || ..()', self.source)
+
+    def test_water_and_blanket_hooks(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8').splitlines()
+        mine = dme.index('#include "code\\modules\\1713\\firefighting_water.dm"')
+        self.assertLess(dme.index('#include "code\\game\\objects\\structures\\bedsheet_bin.dm"'), mine)
+        fire = FIRE.read_text(encoding='utf-8')
+        self.assertIn('return douse_fire_with_container(src, W, user)', fire)
+        # The old check always passed, whatever the amount of water.
+        self.assertNotIn('prob(max(R.volume, 100))', fire)
+        water = WATER.read_text(encoding='utf-8')
+        start = water.index('\n/obj/item/weapon/bedsheet/resolve_attackby(')
+        self.assertIn('return ..()', water[start:water.find('\n#undef', start)])
+        self.assertIn('return key == "next_smother" || ..()', water)
 
 
 if __name__ == '__main__':
