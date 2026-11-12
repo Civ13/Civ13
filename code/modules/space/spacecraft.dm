@@ -12,8 +12,8 @@
 //  - A burn or a course laid while she lies off a station takes her into the
 //    lanes: a plane the plane pool keeps for craft in flight, where she has
 //    a slot to herself while her token crosses the chart.
-//  - When a course brings her token to a station or the arrival beacon she
-//    is moved into clear space on that plane. A station takes her in when
+//  - When a course brings her token to a station, the arrival beacon or a
+//    site (orbit_sites.dm) she is moved into clear space on that plane. A station takes her in when
 //    her party owns it or one of its docking ports welcomes her party.
 //  - Lying off a station her thrusters move her a tile at a time, a unit of
 //    propellant a tile, to bring a hatch near.
@@ -435,6 +435,13 @@ var/global/list/spacecraft_helms = list()
 	if (!S || !token || !in_lanes())
 		return FALSE
 	var/datum/chart_token/station/place = landfall()
+	// A site is built when the first ship reaches it (orbit_sites.dm).
+	var/datum/chart_token/station/site/found = place
+	if (istype(found) && found.site)
+		var/why = found.site.load()
+		if (why)
+			S.crew_message(SPAN_WARNING("The [S.name] cannot close [place.name]: [why]. She holds off in open space."))
+			return FALSE
 	var/level = level_of(place)
 	if (!level)
 		S.crew_message(SPAN_NOTICE("The [S.name] lies still in open space."))
@@ -452,6 +459,9 @@ var/global/list/spacecraft_helms = list()
 	if (slot)
 		pool.release_slot(slot[1], slot[2])
 	helm_token()
+	if (istype(found) && found.site)
+		found.site.charted = TRUE
+		found.site.visited = TRUE
 	S.crew_message(SPAN_NOTICE("The [S.name] lies off [place.name]."))
 	return TRUE
 
