@@ -275,6 +275,8 @@ must force the controls while an owner is in the world (remembered in
 `forced_by` until the crew take it back) and is locked out otherwise.
 Slowing and stopping are never locked. This sits beside the vehicle key, it
 does not replace it. The axis saves the register in `register_state`.
+Turret controls ask `vehicle_fitting_refusal(turret, user)` before they fire:
+`craft.fitting_refusal()`, the rule a ship's levers follow.
 Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).

@@ -112,6 +112,22 @@ var/papers_owners_about = FALSE
 	naval_check(!A.papers_allow(bob, seat) && A.papers_steer(bob), "if the owners leave he can still steer what is rolling, but not speed up")
 	C.forced_by = null
 
+	// ---- The guns follow the rule a ship's levers do ----
+	var/obj/structure/turret/gun = new(get_turf(A.components[1]))
+	var/obj/item/turret_controls/trigger = new(get_turf(gun))
+	trigger.turret = gun
+	naval_check(vehicle_axis_at(get_turf(gun)) == A && isnull(vehicle_axis_at(locate(5, 5, 1))), "a turret finds the vehicle whose frame it stands on")
+	naval_check(findtext(vehicle_fitting_refusal(gun, bob), "belongs to Reds") && isnull(vehicle_fitting_refusal(gun, ann)), "with no owner about its guns are locked to a stranger, never to its owners ([vehicle_fitting_refusal(gun, bob)])")
+	trigger.attack_self(bob)
+	naval_check(!gun.is_firing, "and the trigger does nothing in his hands")
+	papers_owners_about = TRUE
+	naval_check(isnull(vehicle_fitting_refusal(gun, bob)), "while an owner is about a stranger who got aboard can fire them")
+	papers_owners_about = FALSE
+	R.set_role("Bob", CRAFT_ROLE_GUNNER)
+	naval_check(isnull(vehicle_fitting_refusal(gun, bob)) && !A.papers_allow(bob, seat), "a listed gunner always can, though he may not drive")
+	qdel(trigger)
+	qdel(gun)
+
 	// ---- Crew ----
 	R.set_role("Bob", CRAFT_ROLE_HAND)
 	naval_check(R.is_crew(bob) && !A.papers_allow(bob, seat), "a crewman is crew but does not drive")
