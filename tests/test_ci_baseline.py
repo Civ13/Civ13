@@ -1361,7 +1361,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
                          {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler'})
         self.assertIn('year', self.selected(['code/setup.dm']))
 
     def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):

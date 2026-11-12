@@ -1,11 +1,10 @@
 """Offline source-derived phase traces; native iteration/qdel remain unverified."""
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = "9db2b2f42a5fbbb0bdd49d50a2672da6111a7709"
+HISTORICAL_FIXTURE = ROOT / "tests/cleanables_scheduler/fixtures/cleanables_9db2b2f.dm"
 EARLY = 1234
 
 
@@ -22,6 +21,11 @@ def translate(source):
         "for (current in current_list)": "for ctx.current in ctx.pending.copy():",
         "var/obj/effect/decal/cleanable/C = current": "C = ctx.current; ctx.visits.append(C)",
         "if (!isDeleted(C))": "if not retired(C):",
+        "var/decal_location = C.loc": "decal_location = C.loc",
+        "var/decal_location = null": "decal_location = None",
+        "if (!turf2cleanables[decal_location])": "if not ctx.counts.get(decal_location):",
+        "turf2cleanables[decal_location] = 0": "ctx.counts[decal_location] = 0",
+        "++turf2cleanables[decal_location]": "ctx.counts[decal_location] += 1",
         "if (!turf2cleanables[C.loc])": "if not ctx.counts.get(C.loc):",
         "turf2cleanables[C.loc] = 0": "ctx.counts[C.loc] = 0",
         "++turf2cleanables[C.loc]": "ctx.counts[C.loc] += 1",
@@ -311,8 +315,46 @@ class CleanablesTests(unittest.TestCase):
                 self.assert_released(t)
                 self.assertEqual(t.deletions, [])
 
+    def test_cached_location_matches_original_counting_and_detects_wrong_key(self):
+        declaration = "\t\t\t\tvar/decal_location = C.loc\n"
+        self.assertEqual(self.source.count(declaration), 1)
+        original = self.source.replace(declaration, "", 1).replace(
+            "turf2cleanables[decal_location]", "turf2cleanables[C.loc]", 3)
+        mutant = self.source.replace(declaration,
+                                     "\t\t\t\tvar/decal_location = null\n", 1)
+
+        def run(source, budget):
+            first, second = Atom("first"), Atom("second")
+            entries = [Atom("a", first, True), Atom("b", second, True),
+                       Atom("c", first, True), Atom("loose", cleanable=True),
+                       Atom("d", second, True), None, Atom("dead", first, True)]
+            entries[-1].deleted = True
+            trace = Trace(source, entries)
+
+            def name(atom):
+                return None if atom is None else atom.name
+
+            snapshots = []
+            for _ in range(100):
+                result = trace.dispatch(budget)
+                counts = None if trace.counts is None else sorted(
+                    ((name(key) or "<null>", value) for key, value in trace.counts.items()))
+                pending = None if trace.pending is None else [name(x) for x in trace.pending]
+                snapshots.append((result, counts, pending, trace.deleting,
+                                  [name(x) for x in trace.live], trace.deletions.copy(),
+                                  name(trace.kept)))
+                if result != EARLY:
+                    return snapshots
+            raise AssertionError("tail did not finish")
+
+        for budget in (None, 1, 2, 7):
+            with self.subTest(budget=budget):
+                expected = run(original, budget)
+                self.assertEqual(run(self.source, budget), expected)
+                self.assertNotEqual(run(mutant, budget), expected)
+
     def test_audited_baseline_loses_aggregate_across_budget_returns(self):
-        old = subprocess.check_output(["git", "show", BASE + ":code/processes/cleanables.dm"], cwd=ROOT, text=True)
+        old = HISTORICAL_FIXTURE.read_text()
         t = Trace(old, self.decals)
         t.complete()
         self.assertEqual(t.visits, self.decals)
