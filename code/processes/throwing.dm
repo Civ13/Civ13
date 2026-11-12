@@ -42,10 +42,12 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+										break
 									for (var/obj/covers/C in step)
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+										break
 									var/advanced = FALSE
 									if (canMove)
 										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
@@ -76,10 +78,12 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+										break
 									for (var/obj/covers/C in step)
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+										break
 									var/advanced = FALSE
 									if (canMove)
 										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
@@ -115,10 +119,12 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+										break
 									for (var/obj/covers/C in step)
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+										break
 									var/advanced = FALSE
 									if (canMove)
 										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
@@ -148,10 +154,12 @@
 										if (!S.density && !istype(S, /obj/structure/window/classic))
 											continue
 										canMove = FALSE
+										break
 									for (var/obj/covers/C in step)
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+										break
 									var/advanced = FALSE
 									if (canMove)
 										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)

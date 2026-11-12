@@ -66,5 +66,62 @@ class ThrowModeGuardTests(unittest.TestCase):
             evaluate(current, None)
 
 
+class ThrowBlockerScanTests(unittest.TestCase):
+    def test_each_scan_stops_only_after_a_blocker(self):
+        indent = '\t' * 10
+        structure = (
+            'for (var/obj/structure/S in step)\n'
+            + indent + 'if (istype(S, /obj/structure/window/barrier) || S.throwpass)\n'
+            + indent + '\tcontinue\n'
+            + indent + 'if (!S.density && !istype(S, /obj/structure/window/classic))\n'
+            + indent + '\tcontinue\n'
+            + indent + 'canMove = FALSE\n'
+            + indent + 'break\n'
+        )
+        cover = (
+            'for (var/obj/covers/C in step)\n'
+            + indent + 'if (C.passable == TRUE)\n'
+            + indent + '\tcontinue\n'
+            + indent + 'canMove = FALSE\n'
+            + indent + 'break\n'
+        )
+        def valid(source):
+            return source.count(structure) == 4 and source.count(cover) == 4
+
+        self.assertTrue(valid(SOURCE))
+        self.assertFalse(valid(SOURCE.replace(indent + 'break\n', '')))
+        self.assertFalse(valid(SOURCE.replace(
+            'for (var/obj/covers/C in step)\n',
+            'for (var/obj/covers/C in step)\n' + indent + 'break\n',
+        )))
+
+    def test_blocker_decisions_match_full_scans_in_a_model(self):
+        # This models decisions, not BYOND iteration or runtime.
+        structure_types = tuple(product((False, True), repeat=4))
+        structures = [()] + [(x,) for x in structure_types] + list(product(structure_types, repeat=2))
+        covers = [()] + [(x,) for x in (False, True)] + list(product((False, True), repeat=2))
+
+        def blocked(item):
+            barrier, throwpass, dense, classic = item
+            return not (barrier or throwpass or (not dense and not classic))
+
+        for nearby_structures, nearby_covers in product(structures, covers):
+            original = not any(blocked(x) for x in nearby_structures)
+            original = original and not any(not x for x in nearby_covers)
+            can_move = True
+            for item in nearby_structures:
+                if blocked(item):
+                    can_move = False
+                    break
+            for passable in nearby_covers:
+                if not passable:
+                    can_move = False
+                    break
+            self.assertEqual(can_move, original)
+
+        # Stopping after the first passable cover misses a later blocker.
+        self.assertNotEqual(not any(not x for x in (True, False)), True)
+
+
 if __name__ == '__main__':
     unittest.main()
