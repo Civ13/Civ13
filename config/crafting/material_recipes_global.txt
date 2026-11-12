@@ -173,6 +173,7 @@ RECIPE: /material/leaf/,thatch roofing,/obj/item/weapon/roofbuilder/leaves,2,45,
 //*****************| LEAVES CLOTHING |**************************
 
 RECIPE: /material/leaf/,leaf head covering,/obj/item/clothing/head/leaves,3,60,0,1,none,0,0,0,0,leaf
+RECIPE: /material/leaf/,straw rain cape,/obj/item/clothing/suit/straw_rain_cape,6,120,0,1,none,0,0,0,8,null
 
 RECIPE: /material/leaf/,laurel crown,/obj/item/clothing/head/laurelcrown,4,100,0,1,none,23,0,0,2,leaf
 RECIPE: /material/leaf/,gold laurel crown,/obj/item/clothing/head/laurelcrown/gold,6,150,0,1,none,23,0,0,2,gold
@@ -276,6 +277,8 @@ RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,4,100,0,1,none,
 //*****************| LEATHER WEAPONS & TOOLS |***************************
 
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
+RECIPE: /material/leather/,slingstaff,/obj/item/weapon/gun/projectile/bow/sling/staff,4,80,0,1,weapons,0,0,0,1,null
+RECIPE: /material/leather/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,weapons,0,0,0,1,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
 
@@ -342,6 +345,8 @@ RECIPE: /material/leather/,work boots,/obj/item/clothing/shoes/workboots,4,80,0,
 RECIPE: /material/leather/,laceup shoes,/obj/item/clothing/shoes/laceup,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,plain leather shoes,/obj/item/clothing/shoes/leather,3,60,0,1,foot wear,112,0,112,8,null
 RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,4,110,0,1,foot wear,175,0,180,8,null
+RECIPE: /material/leather/,mukluks,/obj/item/clothing/shoes/weather/mukluks,3,80,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/leather/,hobnailed boots,/obj/item/clothing/shoes/weather/hobnail_boots,3,90,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,gloves,0,0,0,8,null
 
 //*****************| LEATHER ARMOR |***************************
@@ -749,6 +754,8 @@ RECIPE: /material/cloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket
 RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/cloth/,oilskin coat,/obj/item/clothing/suit/oilskin_coat,6,120,0,1,jackets & vests,0,0,0,8,null
+RECIPE: /material/cloth/,black umbrella,/obj/item/weapon/umbrella/cloth,4,90,0,1,none,0,0,0,8,null
 RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/blackvest,4,80,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/bluevest,4,80,0,1,jackets & vests,0,0,89,8,null
 RECIPE: /material/cloth/,olive vest,/obj/item/clothing/suit/storage/jacket/olivevest,4,80,0,1,jackets & vests,0,0,89,8,null
@@ -799,6 +806,7 @@ RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian
 RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,18,8,null
+RECIPE: /material/cloth/,sou'wester,/obj/item/clothing/head/souwester,3,60,0,1,hats,0,0,0,8,null
 RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
 RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
@@ -1020,6 +1028,7 @@ RECIPE: /material/plastic/,decorative plastic pipe junction,/obj/structure/props
 RECIPE: /material/plastic/,camera film,/obj/item/camera_film,4,55,1,1,none,95,0,0,8,null
 RECIPE: /material/plastic/,cassette tape,/obj/item/cassette,1,40,0,1,none,205,0,0,8,null
 RECIPE: /material/plastic/,blood pack,/obj/item/weapon/reagent_containers/blood/empty,2,40,0,1,none,0,0,95,8,null
+RECIPE: /material/plastic/,folding umbrella,/obj/item/weapon/umbrella/nylon,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,lighter,/obj/item/weapon/flame/lighter/random,3,95,0,1,none,150,0,0,8,null
 
 RECIPE: /material/plastic/,bug swatter,/obj/item/weapon/swatter/modern,8,70,0,1,none,0,0,0,8,null
@@ -1126,6 +1135,7 @@ RECIPE: /material/bearpelt/brown/,furhat,/obj/item/clothing/head/furhat,2,100,0,
 //*****************| BROWN BEARPELT ARMOR|***************************
 
 RECIPE: /material/bearpelt/brown/,brown napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin/brown,4,120,0,1,none,0,88,92,3,null
+RECIPE: /material/bearpelt/brown/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| WHITE BEARPELT CLOTHES |***************************
 
@@ -1141,6 +1151,7 @@ RECIPE: /material/bearpelt/white/,regal ermine cape,/obj/item/clothing/suit/stor
 //*****************| WHITE BEARPELT ARMOR|***************************
 
 RECIPE: /material/bearpelt/white/,white napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin/white,4,120,0,1,none,0,88,92,3,null
+RECIPE: /material/bearpelt/white/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| BLACK BEARPELT CLOTHES |***************************
 
@@ -1156,6 +1167,7 @@ RECIPE: /material/bearpelt/black/,furhat,/obj/item/clothing/head/furhat,2,100,0,
 //*****************| BLACK BEARPELT ARMOR|***************************
 
 RECIPE: /material/bearpelt/black/,black napoleonic bearskin hat,/obj/item/clothing/head/helmet/napoleonic/bearskin,4,120,0,1,none,0,88,92,3,null
+RECIPE: /material/bearpelt/black/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| WOLFPELT |*****************************
@@ -1168,6 +1180,7 @@ RECIPE: /material/wolfpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/g
 RECIPE: /material/wolfpelt/,wolf pelt headcover,/obj/item/clothing/head/wolfpelt,4,150,0,1,none,0,0,0,8,null
 RECIPE: /material/wolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/wolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/wolfpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| WHITE WOLFPELT |***************************
 
@@ -1179,6 +1192,7 @@ RECIPE: /material/whitewolfpelt/,white wolf pelt headcover,/obj/item/clothing/he
 RECIPE: /material/whitewolfpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
 RECIPE: /material/whitewolfpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/whitewolfpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/whitewolfpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| CATPELT |******************************
@@ -1190,6 +1204,7 @@ RECIPE: /material/catpelt/,fur boots,/obj/item/clothing/shoes/fur,3,80,0,1,none,
 RECIPE: /material/catpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/catpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/catpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/catpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| PANTHERPELT |***************************
 
@@ -1197,6 +1212,7 @@ RECIPE: /material/pantherpelt/,panther pelt headcover,/obj/item/clothing/head/pa
 
 RECIPE: /material/pantherpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
 RECIPE: /material/pantherpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+RECIPE: /material/pantherpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| LIONPELT |***************************
 
@@ -1204,6 +1220,7 @@ RECIPE: /material/lionpelt/,lion pelt headcover,/obj/item/clothing/head/lionpelt
 
 RECIPE: /material/lionpelt/,mbata pelt vest,/obj/item/clothing/suit/zulu_mbata,3,110,0,1,none,0,0,0,3,null
 RECIPE: /material/lionpelt/,umghele headband,/obj/item/clothing/head/zulu_umghele,2,110,0,1,none,0,0,0,3,null
+RECIPE: /material/lionpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //***************************************************************
 //*********************| LIZARDPELT |***************************
@@ -1242,10 +1259,12 @@ RECIPE: /material/sheeppelt/,wool boots,/obj/item/clothing/shoes/fur/white,3,80,
 RECIPE: /material/sheeppelt/,wool gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/sheeppelt/,sheep pelt headcover,/obj/item/clothing/head/sheeppelt,3,150,0,1,none,0,0,0,8,null
 RECIPE: /material/sheeppelt/,raw wool,/obj/item/stack/material/wool,1,20,0,0,none,0,0,0,8,null
+RECIPE: /material/sheeppelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*********************| GOATPELT |***************************
 
 RECIPE: /material/goatpelt/,goat pelt headcover,/obj/item/clothing/head/goatpelt,3,150,0,1,none,0,0,0,8,null
+RECIPE: /material/goatpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| COWPELT |***************************
@@ -1256,6 +1275,7 @@ RECIPE: /material/cowpelt/,nguni shield,/obj/item/weapon/shield/nguni_shield,6,1
 
 RECIPE: /material/cowpelt/,fur boots,/obj/item/clothing/shoes/fur/white,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/cowpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/white,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/cowpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*********************| BISONPELT |*************************
 
@@ -1270,6 +1290,7 @@ RECIPE: /material/bisonpelt/,fur coat,/obj/item/clothing/suit/storage/coat/fur/b
 RECIPE: /material/bisonpelt/,fancy fur coat,/obj/item/clothing/suit/storage/coat/fancy_fur_coat,10,200,0,1,none,0,0,0,8,null
 RECIPE: /material/bisonpelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/bisonpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
+RECIPE: /material/bisonpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| MONKEYPELT |***************************
@@ -1281,6 +1302,7 @@ RECIPE: /material/monkeypelt/,fur boots,/obj/item/clothing/shoes/fur/brown,3,80,
 RECIPE: /material/monkeypelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/brown,3,80,0,1,none,0,0,0,8,null
 RECIPE: /material/monkeypelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/monkeypelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/monkeypelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| ORCPELT |******************************
@@ -1301,6 +1323,7 @@ RECIPE: /material/gorillapelt/,fur gloves,/obj/item/clothing/gloves/thick/leathe
 RECIPE: /material/gorillapelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/gorillapelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/gorillapelt/,full body gorilla suit,/obj/item/clothing/suit/gorillasuit,12,150,0,1,none,0,0,112,8,null
+RECIPE: /material/gorillapelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| HUMANPELT |****************************
@@ -1321,6 +1344,7 @@ RECIPE: /material/foxpelt/,fur gloves,/obj/item/clothing/gloves/thick/leather/br
 RECIPE: /material/foxpelt/,fox pelt headcover,/obj/item/clothing/head/foxpelt,3,150,0,1,none,0,0,0,8,null
 RECIPE: /material/foxpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/foxpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/foxpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //*****************| WHITE FOXPELT |***************************
 
@@ -1332,6 +1356,7 @@ RECIPE: /material/whitefoxpelt/,white fox pelt headcover,/obj/item/clothing/head
 RECIPE: /material/whitefoxpelt/,regal ermine cape,/obj/item/clothing/suit/storage/jacket/regal,9,220,0,1,none,0,0,38,8,null
 RECIPE: /material/whitefoxpelt/,furcap,/obj/item/clothing/head/furcap,2,100,0,1,none,0,0,89,8,null
 RECIPE: /material/whitefoxpelt/,furhat,/obj/item/clothing/head/furhat,2,100,0,1,none,0,0,89,8,null
+RECIPE: /material/whitefoxpelt/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 
 //**************************************************************
 //*********************| TOBACCO |******************************
@@ -1358,13 +1383,15 @@ RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,
 //*************************************************************
 
 RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,3,null
-RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,2,null
-RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,2,null
-RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,1,null
-RECIPE: /material/bone/,primitive bone hair-pipe armor,/obj/item/clothing/suit/hairbonearmor,5,100,0,1,none,0,0,0,2,null
+RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,8,null
+RECIPE: /material/bone/,primitive bone hair-pipe armor,/obj/item/clothing/suit/hairbonearmor,5,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone hatchet,/obj/item/weapon/material/hatchet/tribal/bone,2,35,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,battle axe,/obj/item/weapon/material/hatchet/bone_battleaxe,10,70,0,1,none,0,0,0,4,bone
 RECIPE: /material/bone/,tribal bone knife,/obj/item/weapon/material/kitchen/utensil/knife/bone,4,90,0,1,none,0,0,0,4,bone
+RECIPE: /material/bone/,bone harpoon,/obj/item/weapon/material/harpoon/bone,4,90,0,1,none,0,0,0,1,bone
+RECIPE: /material/bone/,bone needle and awl,/obj/item/weapon/bone_needle,1,40,0,1,none,0,0,0,1,null
 RECIPE: /material/bone/,bone pickaxe,/obj/item/weapon/material/pickaxe/bone,2,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone shovel,/obj/item/weapon/material/shovel/bone,2,50,0,1,none,0,0,0,8,bone
 RECIPE: /material/bone/,blowing horn,/obj/item/weapon/horn,4,110,0,1,none,0,0,0,4,null
@@ -1406,6 +1433,8 @@ RECIPE: /material/stone/,chisel,/obj/item/weapon/chisel,8,140,1,1,tools,0,0,0,8,
 RECIPE: /material/stone/,stone pickaxe,/obj/item/weapon/material/pickaxe/stone,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,stone rammer,/obj/item/weapon/stone_rammer,2,50,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,stone hatchet,/obj/item/weapon/material/hatchet/tribal,2,35,0,1,tools,0,0,0,8,stone
+RECIPE: /material/stone/,stone adze,/obj/item/weapon/material/hatchet/tribal/adze,3,45,0,1,tools,0,0,0,1,stone
+RECIPE: /material/stone/,stone-headed club,/obj/item/weapon/melee/classic_baton/club/stone,3,60,0,1,weapons,0,0,0,1,null
 
 //*************| STONE FLOORS |***************
 
@@ -1615,10 +1644,12 @@ RECIPE: /material/flax/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8
 
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,none,0,0,0,1,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope hammock,/obj/structure/bed/hammock,6,180,1,1,furniture,0,0,0,8,rope
 RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
+RECIPE: /material/rope/,grass carry net,/obj/item/weapon/storage/belt/carry_net,3,60,0,1,none,0,0,0,8,null
 
 //*************************************************************
 //*********************| GLASS |*******************************
@@ -1972,6 +2003,7 @@ RECIPE: /material/brass/,diving helmet,/obj/item/clothing/head/pressure_helmet/d
 RECIPE: /material/steel/,diving air bottle,/obj/item/pressure_tank/diving,5,120,0,1,none,126,0,0,8,null
 RECIPE: /material/steel/,hard dive suit,/obj/item/clothing/suit/pressure_suit/diving/hard,20,250,0,1,none,150,0,0,8,null
 RECIPE: /material/steel/,hard dive helmet,/obj/item/clothing/head/pressure_helmet/diving/hard,10,200,0,1,none,150,0,0,8,null
+RECIPE: /material/steel/,mountaineering boots,/obj/item/clothing/shoes/weather/climbing_boots,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,deep hull plating,/obj/item/sub_hull_plating,30,300,0,1,vehicle parts,150,0,0,8,null
 RECIPE: /material/steel/,vehicle garage,/obj/structure/vehicle_garage,20,200,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,heavy axis (2500 weight),/obj/structure/vehicleparts/axis/heavy,30,200,0,1,vehicle parts,126,0,0,8,null
@@ -2160,6 +2192,7 @@ RECIPE: /material/brass/,grenade casing,/obj/item/stack/ammopart/casing/grenade,
 //*******************************************************
 
 RECIPE: /material/wood/,wooden knife,/obj/item/weapon/material/kitchen/utensil/knife/wood,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,lean-to,/obj/structure/lean_to,4,120,1,1,none,0,0,0,8,null
 
 
 //*********************| WOOD VEHICLES & LOCOMOTIVES |**************************
@@ -2183,6 +2216,7 @@ RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,mooring post,/obj/structure/berth/quay,6,80,1,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,freight depot,/obj/structure/berth/quay/depot,8,80,1,1,vehicle parts,41,0,0,8,null
 
 //*********************| WOOD PRODUCTION & ECONOMY |**************************
 
@@ -2290,6 +2324,9 @@ RECIPE: /material/wood/,punji sticks trap,/obj/item/weapon/punji_sticks,4,70,0,1
 
 RECIPE: /material/wood/,quarterstaff,/obj/item/weapon/material/quarterstaff,2,50,0,1,weapons,0,0,0,8,wood
 RECIPE: /material/wood/,wood club,/obj/item/weapon/melee/classic_baton/club,3,50,0,1,weapons,0,0,0,0,wood
+RECIPE: /material/wood/,atlatl,/obj/item/weapon/gun/projectile/bow/sling/atlatl,2,60,0,1,weapons,0,0,0,1,null
+RECIPE: /material/wood/,atlatl dart shaft,/obj/item/ammo_casing/atlatl_dart,1,25,0,1,weapons,0,0,0,1,null
+RECIPE: /material/wood/,javelin,/obj/item/weapon/material/javelin,2,50,0,1,weapons,0,0,0,1,wood
 RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weapons,0,0,0,3,wood
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
@@ -2317,6 +2354,7 @@ RECIPE: /material/wood/soft/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wooden spade,/obj/item/weapon/material/shovel/spade/wood,3,60,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/,digging stick,/obj/item/weapon/plough/digging_stick,2,40,0,1,tools,0,0,0,1,null
 RECIPE: /material/wood/,wooden ladder,/obj/item/weapon/hole_ladder,4,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood handle,/obj/item/weapon/material/handle,1,35,0,1,tools,0,0,0,8,wood
 RECIPE: /material/wood/soft/,plank handle,/obj/item/weapon/material/handle,2,70,0,1,tools,0,0,0,8,woodplank
@@ -2398,6 +2436,8 @@ RECIPE: /material/wood/soft/,monumental crucero cross,/obj/structure/religious/m
 
 RECIPE: /material/wood/,sandals,/obj/item/clothing/shoes/sandal,1,40,0,1,shoes & clothing,0,0,0,8,null
 RECIPE: /material/wood/soft/,geta sandals,/obj/item/clothing/shoes/geta,1,40,0,1,shoes & clothing,24,0,38,8,null
+RECIPE: /material/wood/,snowshoes,/obj/item/clothing/shoes/weather/snowshoes,2,60,0,1,shoes & clothing,0,0,0,8,null
+RECIPE: /material/wood/,pattens,/obj/item/clothing/shoes/weather/pattens,2,60,0,1,shoes & clothing,0,0,0,8,null
 
 RECIPE: /material/wood/,expressive wearable wood mask,/obj/item/clothing/mask/wooden/expressive,3,50,0,1,shoes & clothing,0,0,0,2,null
 RECIPE: /material/wood/,black african wood mask,/obj/item/clothing/mask/wooden/african,3,50,0,1,shoes & clothing,0,0,0,2,null
@@ -2519,6 +2559,7 @@ RECIPE: /material/wood/soft/,pillory,/obj/structure/pillory,8,60,1,1,punishments
 
 //*********************| BAMBOO DECORATION & RELIGION |**************************
 
+RECIPE: /material/bamboo/,oiled paper umbrella,/obj/item/weapon/umbrella/paper,3,90,0,1,none,0,0,0,8,null
 RECIPE: /material/bamboo/,bamboo altar,/obj/structure/altar/bamboo,20,200,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,small tiki statue,/obj/structure/religious/tiki_statue/small,8,150,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/bamboo/,tiki torch,/obj/item/flashlight/tiki_torch,5,60,0,1,none,0,0,0,8,null
@@ -2549,6 +2590,9 @@ RECIPE: /material/bamboo/,rice hat,/obj/item/clothing/head/rice_hat,3,75,0,1,non
 
 RECIPE: /material/bamboo/,training sword,/obj/item/weapon/material/sword/training/bamboo,8,80,0,1,none,0,21,0,3,bamboo
 RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,none,0,0,0,3,bamboo
+RECIPE: /material/bamboo/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
+RECIPE: /material/bamboo/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
+RECIPE: /material/bamboo/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
 
 //*******************************************************
 //*********************| IRON |**************************
@@ -2852,6 +2896,7 @@ RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_proc
 
 RECIPE: /material/leather/,leather saddle,/obj/item/animal_tack/saddle,6,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,leather animal harness,/obj/item/animal_tack/harness,4,60,0,1,none,0,0,0,8,null
+RECIPE: /material/leather/,hide sling bag,/obj/item/weapon/storage/backpack/sling_bag,3,80,0,1,storage,0,0,0,8,null
 //**| SUPPLIED-ITEM RECIPES (#3563) |**
 RECIPE: /material/iron/,screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,18,0,0,8,null
 RECIPE: /material/iron/,lockpick,/obj/item/weapon/lockpick,1,60,0,1,tools,18,0,0,8,null
@@ -2875,7 +2920,13 @@ RECIPE: /material/wood/soft/,specimen box,/obj/item/weapon/scholar_practice/spec
 RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bones,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,seed tray,/obj/item/weapon/scholar_practice/seed_tray,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,war game board,/obj/item/weapon/scholar_practice/war_game,2,60,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/wood/soft/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
+RECIPE: /material/wood/soft/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
+RECIPE: /material/wood/soft/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
 RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,null
+RECIPE: /material/wood/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
+RECIPE: /material/wood/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/electronics/,video camera,/obj/item/video_camera,8,150,0,1,none,205,0,0,8,null
@@ -2896,6 +2947,7 @@ RECIPE: /material/electronics/,defibrillator,/obj/item/weapon/defibrillator/load
 RECIPE: /material/electronics/,standard power cell,/obj/item/weapon/cell/standard,2,90,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,autoinjector,/obj/item/weapon/reagent_containers/syringe/autoinjector,1,45,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,null
+RECIPE: /material/plastic/,rubber boots,/obj/item/clothing/shoes/weather/rubber_boots,3,60,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,smoke mortar shell,/obj/item/cannon_ball/mortar_shell/smoke,5,120,0,1,ammunition,0,0,0,8,null
@@ -2907,6 +2959,11 @@ RECIPE: /material/steel/,contact naval mine,/obj/item/naval_mine,10,200,0,1,weap
 RECIPE: /material/steel/,magnetic naval mine,/obj/item/naval_mine/magnetic,12,240,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,degaussing coil,/obj/structure/degaussing_coil,15,240,1,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/steel/,wiping station,/obj/structure/wiping_station,20,300,1,1,production,0,0,0,8,null
+RECIPE: /material/steel/,magnetic sweep reel,/obj/structure/mine_sweep/magnetic,10,240,1,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/steel/,Oropesa sweep,/obj/structure/mine_sweep/oropesa,8,200,1,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/steel/,torpedo tube,/obj/structure/torpedo_tube,25,300,1,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,torpedo,/obj/item/naval_torpedo,14,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,magnetic torpedo,/obj/item/naval_torpedo/magnetic,16,280,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null

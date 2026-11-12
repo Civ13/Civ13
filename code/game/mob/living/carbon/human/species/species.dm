@@ -239,12 +239,20 @@
 			if (FP.on == TRUE)
 				return
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.has_snow_cover() && (!H.shoes || H.shoes.cold_protection != FEET))
-			if (prob(25 - (H.shoes ? 15 : 0)))
+		if (istype(T) && T.has_snow_cover() && footwear_feet_bare_to_snow(H))
+			var/obj/item/clothing/shoes/snow_shoes = H.shoes
+			if (prob(25 - ((istype(snow_shoes) && !snow_shoes.open_toed) ? 15 : 0)))
 				to_chat(H, SPAN_DANGER("Your feet are freezing!"))
 				if (player_help_service)
 					player_help_service.record_observed_injury(H.client, H, "reported_freezing_feet")
 				H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
+		else if (istype(T) && footwear_wet_ground(T) && !footwear_feet_dry(H))
+			// Cold water and mud soak through ordinary footwear.
+			if (prob(15))
+				to_chat(H, SPAN_DANGER("Your wet feet are freezing!"))
+				if (player_help_service)
+					player_help_service.record_observed_injury(H.client, H, "reported_freezing_feet")
+				H.adjustBurnLossByPart(0.5*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0

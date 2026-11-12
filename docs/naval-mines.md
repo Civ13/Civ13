@@ -64,3 +64,43 @@ move hooks as the mine check (before it). The wipe is saved on the ship's
 wheel, the tiller or the modular boat's axis (`magnetic_wipe`).
 
 Test: `tests/naval_carrier/degaussing_probe.dm`.
+
+## Minesweeping (`code/modules/naval/minesweeping.dm`)
+
+Both sweeps are bolted to a deck with a wrench and streamed or wound in by
+hand. They act from `craft.magnetic_moved(tiles)`, after wear and coil power
+and before the mine check, through `craft.sweep_moved(tiles)`.
+
+| Sweep | Does | Needs |
+| --- | --- | --- |
+| Magnetic sweep reel (`/obj/structure/mine_sweep/magnetic`) | Sets off every magnetic mine within 6 tiles of the reel where it lies | The same power as a coil (`body.power_coil`); without it the reel is wound in |
+| Oropesa sweep (`/obj/structure/mine_sweep/oropesa`) | Cuts contact mines 1 to 3 tiles off the hull up to the surface (`surfaced`, fully visible); they still go off under a hull, from a bullet or a blast, and a wrench takes them out | The ship under way |
+
+The magnetic sweep's blasts still hurt a hull close by, so it belongs on a
+wooden or wiped sweeper well ahead of steel ships.
+
+Test: `tests/naval_carrier/sweeping_probe.dm`.
+
+## Torpedoes (`code/modules/naval/torpedoes.dm`)
+
+A torpedo tube (`/obj/structure/torpedo_tube`, 25 steel) is trained a quarter
+turn by hand while unbolted, bolted to a deck or a quay with a wrench, loaded
+with a torpedo (4 seconds) and fired by hand along the line it points. The
+torpedo leaves from the first tile past the firing ship's own hull, which must
+be open water or another hull.
+
+A running torpedo is a naval mine on the move (`/obj/structure/naval_mine/torpedo`):
+it runs 40 tiles at most, a tile every 2 deciseconds, and sinks when it reaches
+land or the end of its run.
+
+| Torpedo | Goes off |
+| --- | --- |
+| Torpedo (`/obj/item/naval_torpedo`, 14 steel, Naval Mines) | On a hull its course crosses |
+| Magnetic torpedo (`/obj/item/naval_torpedo/magnetic`, 16 steel, Magnetic Mines & Degaussing) | On a hull it strikes, and under a steel hull it passes within 2 tiles of, by the magnetic mine rule (felt signature / distance squared >= 15) |
+
+It never goes off under the ship that fired it (`ignores()`, also respected by
+`check_naval_mines()`), an Oropesa sweep leaves it alone (`moored = FALSE`),
+and a hull that runs onto it, a bullet or a blast sets it off. After a load it
+keeps running on the run it had left.
+
+Test: `tests/naval_carrier/torpedo_probe.dm`.

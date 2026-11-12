@@ -791,6 +791,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/exercise/course" = "primitive_construction",
 		"/obj/structure/exercise/modern" = "factories",
 		"/obj/structure/exercise/modern/course" = "factories",
+		// --- alloys (1) ---
+		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
 		// --- anesthetic_surgery (2) ---
 		"/obj/item/clothing/mask/sterile" = "anesthetic_surgery",
 		"/obj/item/clothing/suit/storage/jacket/surgeon" = "anesthetic_surgery",
@@ -812,6 +814,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/bow" = "archery",
 		"/obj/item/weapon/gun/projectile/bow/shortbow" = "archery",
 		"/obj/item/weapon/gun/projectile/bow/sling" = "archery",
+		"/obj/item/weapon/gun/projectile/bow/sling/atlatl" = "archery",
+		"/obj/item/weapon/gun/projectile/bow/sling/staff" = "archery",
+		"/obj/item/ammo_casing/atlatl_dart" = "archery",
+		"/obj/item/ammo_casing/atlatl_dart/flint" = "archery",
+		"/obj/item/ammo_casing/atlatl_dart/stone" = "archery",
 		"/obj/item/weapon/gun/projectile/dartgun/blowgun" = "archery",
 		"/obj/item/weapon/storage/backpack/quiver" = "archery",
 		// --- assembly_line (22) ---
@@ -873,6 +880,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/naval_mine/magnetic" = "magnetic_mines",
 		"/obj/structure/degaussing_coil" = "magnetic_mines",
 		"/obj/structure/wiping_station" = "magnetic_mines",
+		"/obj/structure/mine_sweep/magnetic" = "magnetic_mines",
+		"/obj/structure/mine_sweep/oropesa" = "naval_mines",
+		"/obj/structure/torpedo_tube" = "naval_mines",
+		"/obj/item/naval_torpedo" = "naval_mines",
+		"/obj/item/naval_torpedo/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",
 		"/obj/structure/vehicle_garage" = "automobiles",
 		"/obj/item/vehicleparts/frame/bike" = "automobiles",
@@ -953,6 +965,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/kitchen/rollingpin" = "basic_tools",
 		"/obj/item/weapon/material/shovel/bone" = "basic_tools",
 		"/obj/item/weapon/material/shovel/spade/wood" = "basic_tools",
+		"/obj/item/weapon/plough/digging_stick" = "basic_tools",
+		"/obj/item/weapon/material/hatchet/tribal/hand_axe" = "basic_tools",
+		"/obj/item/weapon/material/hide_scraper" = "basic_tools",
+		"/obj/item/weapon/bone_needle" = "basic_tools",
+		"/obj/item/weapon/material/hatchet/tribal/adze" = "basic_tools",
 		"/obj/item/weapon/mop" = "basic_tools",
 		"/obj/item/weapon/researchkit" = "basic_tools",
 		"/obj/item/weapon/swatter" = "basic_tools",
@@ -1062,9 +1079,10 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
-		// --- cooperage (14) ---
+		// --- cooperage (15) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
+		"/obj/item/weapon/storage/backpack/pack_frame" = "cooperage",
 		"/obj/item/weapon/storage/backpack/rucksack" = "cooperage",
 		"/obj/item/weapon/storage/belt/leather" = "cooperage",
 		"/obj/item/weapon/storage/foodbox" = "cooperage",
@@ -1610,12 +1628,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (5) ---
+		// --- iron_smithing (6) ---
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/heatsource" = "iron_smithing",
+		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (5) ---
 		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
 		"/obj/item/flashlight/lantern" = "iron_tools",
@@ -1856,7 +1875,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (42) ---
+		// --- primitive_construction (43) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
@@ -1877,7 +1896,15 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/covers" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder" = "primitive_construction",
 		"/obj/item/weapon/roofbuilder/leaves" = "primitive_construction",
+		"/obj/structure/lean_to" = "primitive_construction",
+		"/obj/item/clothing/suit/straw_rain_cape" = "weaving",
+		"/obj/item/weapon/umbrella/paper" = "papermaking",
+		"/obj/item/clothing/head/souwester" = "haberdashery",
+		"/obj/item/clothing/suit/oilskin_coat" = "textile_mills",
+		"/obj/item/weapon/umbrella/cloth" = "textile_mills",
+		"/obj/item/weapon/umbrella/nylon" = "synthetics",
 		"/obj/item/weapon/roofbuilder/palm" = "primitive_construction",
+		"/obj/structure/closet/crate/travois" = "primitive_construction",
 		"/obj/structure/grille/fence" = "primitive_construction",
 		"/obj/structure/grille/fence/picket" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
@@ -1937,7 +1964,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/rails/split/switcher/right" = "rail_steam",
 		"/obj/structure/train_lever" = "rail_steam",
 		"/obj/structure/vehicleparts/movement/reversed" = "rail_steam",
-		// --- ready_made (29) ---
+		// --- ready_made (30) ---
 		"/obj/item/clothing/head/custom/custom_beanie" = "ready_made",
 		"/obj/item/clothing/head/custom/pimp_hat" = "ready_made",
 		"/obj/item/clothing/head/flatcap1" = "ready_made",
@@ -1967,6 +1994,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/customuniform/baggy" = "ready_made",
 		"/obj/item/clothing/under/customuniform/short" = "ready_made",
 		"/obj/item/clothing/under/punk" = "ready_made",
+		"/obj/item/clothing/shoes/weather/rubber_boots" = "ready_made",
 		// --- regalia (21) ---
 		"/obj/item/clothing/accessory/custom/armband" = "regalia",
 		"/obj/item/clothing/accessory/custom/cape" = "regalia",
@@ -2105,6 +2133,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/sword/training/bamboo" = "stone_arms",
 		"/obj/item/weapon/material/thrown/tomahawk" = "stone_arms",
 		"/obj/item/weapon/melee/classic_baton/club" = "stone_arms",
+		"/obj/item/weapon/melee/classic_baton/club/stone" = "stone_arms",
+		"/obj/item/weapon/material/javelin" = "stone_arms",
+		"/obj/item/weapon/legcuffs/bola" = "stone_arms",
+		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
 		// --- stone_masonry (44) ---
@@ -2179,7 +2211,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/gorillasuit" = "synthetics",
 		"/obj/item/clothing/suit/storage/coat/oldyjacket" = "synthetics",
 		"/obj/item/weapon/storage/bag/plasticbag" = "synthetics",
-		// --- tailoring (57) ---
+		// --- tailoring (58) ---
 		"/obj/item/clothing/accessory/ruffle/neck" = "tailoring",
 		"/obj/item/clothing/head/artisan" = "tailoring",
 		"/obj/item/clothing/head/cavalier" = "tailoring",
@@ -2237,6 +2269,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/renaissance" = "tailoring",
 		"/obj/item/clothing/under/renaissance/doge" = "tailoring",
 		"/obj/item/clothing/under/renaissance_pontifical" = "tailoring",
+		"/obj/item/clothing/shoes/weather/pattens" = "tailoring",
 		// --- textile_mills (67) ---
 		"/obj/item/clothing/glasses/pilot" = "textile_mills",
 		"/obj/item/clothing/gloves/motorist" = "textile_mills",
@@ -2324,6 +2357,7 @@ var/global/list/node_grid_col_cache = null
 		// --- wagons_ships (26) ---
 		"/obj/structure/slipway" = "wagons_ships",
 		"/obj/structure/berth/quay" = "wagons_ships",
+		"/obj/structure/berth/quay/depot" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",
@@ -2352,7 +2386,7 @@ var/global/list/node_grid_col_cache = null
 		// --- watermills (2) ---
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (83) ---
+		// --- weaving (88) ---
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/bronze" = "weaving",
@@ -2434,11 +2468,16 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/bedroll/cloth" = "weaving",
 		"/obj/structure/bed/hammock" = "weaving",
 		"/obj/item/weapon/reagent_containers/glass/rag" = "weaving",
+		"/obj/item/weapon/storage/backpack/pack_basket" = "weaving",
+		"/obj/item/weapon/storage/backpack/sling_bag" = "weaving",
+		"/obj/item/weapon/storage/belt/carry_net" = "weaving",
 		"/obj/item/weapon/tent" = "weaving",
 		"/obj/structure/curtain" = "weaving",
 		"/obj/structure/curtain/leather" = "weaving",
 		"/obj/structure/loom" = "weaving",
 		"/obj/structure/religious/tribalmask" = "weaving",
+		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
+		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		// --- workshops (24) ---
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",

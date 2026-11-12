@@ -187,7 +187,35 @@ her from flying, and the console says why. The helm holds the propellant
   unit of propellant a tile, only while she lies off a place.
 
 The orbital helm has a recipe (electronics, with the other spaceflight
-fittings). No orbit region runs yet, so the probe is what exercises this.
+fittings). No orbit region runs yet, so the probes are what exercises this.
+
+## Encounter sites in orbit
+
+`space/orbit_sites.dm`: `/datum/chart_site/orbit` is a place on the orbit
+chart that is built on a pool plane when a spacecraft reaches it. A fresh
+chart seeds `ORBIT_SITE_DERELICTS` (5) derelicts and `ORBIT_SITE_FIELDS` (3)
+asteroid fields, at least 10 squares from the beacon and 7 from each other
+and from stations.
+
+- `load()` claims a plane as `site:<id>` through the pool, so the site cap
+  (4) and the admin pause apply, and calls `build(z)`. A ship that reaches a
+  site that cannot load holds off in the lanes.
+- A derelict is one to three dead habitat modules rolled from the site's
+  seed: no air, the cold of space, one hole in the hull, salvage crates
+  (steel, glass, electronics, copper, sometimes a hull patch kit or a module
+  kit) and sometimes a life support machine. Patched and aired it is an
+  ordinary module, and a helm makes a ship of it.
+- A field is 6 to 11 small asteroids (`orbit_asteroids.dm`) that keep their
+  place, with fresh rock each time it loads.
+- A loaded site is looked at every `ORBIT_SITE_LOOK` (5 minutes). Two looks
+  in a row with no ship there and nothing `clear_refusal()` protects (a
+  character, a bunk kept as home) empty the plane and give it back. A
+  derelict that was visited is then removed and another is seeded elsewhere;
+  a field stays on the chart.
+- `contacts_of()` on the orbit chart always lists the beacon and stations.
+  A site is listed inside sensor range and from then on (`charted`).
+- The registry saves the sites as one text (`site_state`): place, seed,
+  charted, visited and the plane each loaded site holds.
 
 ## Sea chart and harbours
 
@@ -300,6 +328,31 @@ which turns a hand-in into a returned contract. The poster can `withdraw()`
 an open offer and `write_off()` a taken one whose crate no longer exists. A
 destroyed post spills what it held. The post and the sea chart say how many
 contracts are on offer.
+
+`naval/freight_depot.dm` puts the same board on land:
+`/obj/structure/berth/quay/depot` (recipe "freight depot", Wagons & Ships).
+It is a quay with `takes_ships = FALSE`, so sea charts and docking leave it
+out, while freight can be posted from a mooring post to a depot and back. A
+board names itself by `post_word` and `place_word`, and finds the taker's
+craft with `freight_crew_craft(H)`: the depot looks through `vehicle_crafts`
+and `crafts` for one whose papers list the taker within `FREIGHT_DEPOT_REACH`.
+
+`naval/depot_jobs.dm` is the depot's own work, `/obj/craft_contract/land`,
+kept apart from freight (`jobs()` against `contracts()`). `fill_jobs()` keeps
+up to three offers when the board is read, at most once every
+`DEPOT_JOB_REFILL`; `find_spot()` picks open ground 60 to 220 tiles off
+(`depot_job_ground`). A survey hands out a stake (`/obj/item/depot_guide/stake`)
+that is driven in at the spot and reported back; lost cargo sets a crate down
+at the spot when it is taken and pays when the crate is brought within two
+tiles of the depot. Pay is made on the spot by `offer_job()` from the
+distance. A party holds two of a depot's jobs at most. A new kind of land job
+is a subtype with its own `job_text()` and a line in `fill_jobs()`.
+
+Jobs a board makes up and pays for itself are switched off:
+`npc_jobs_enabled` (`craft/contract.dm`) is FALSE, so `fill_jobs()` and the
+harbour office's `fill()` offer nothing and the depot's menu has no "Depot
+work". Only contracts one player posts for another are on offer. Probes set
+the switch to exercise the jobs.
 
 ## Hails and running dark
 
@@ -432,8 +485,10 @@ The carriage saves the register in `register_state`.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300

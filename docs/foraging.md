@@ -87,7 +87,7 @@ existing gathering path and still costs exactly one shared unit.
 | --- | --- | --- | --- |
 | Stones | grass, dirt, beach, desert sand | any | 1 stone |
 | Sticks | grass, dirt | not desert | 1 small wood piece |
-| Wild seeds | grass, dirt | the crop's own biomes; not winter | 1 seed of a wild crop (wheat, oat, barley, rice, turnip, potato, beans, flax, cotton, parsley, celery) |
+| Wild seeds | grass, dirt | the crop's own biomes; not winter | 1 seed of a wild crop (wheat, oat, barley, rice, turnip, potato, beans, flax, cotton, parsley, celery, chamomile, dandelion, mint, sunflower, rose) |
 | Mushrooms | grass, dirt | the mushroom crop's biomes; not winter or dry season | 1 bunch of edible mushrooms |
 
 Anything picks a category weighted 3:3:2:2 among those the tile offers. The seed

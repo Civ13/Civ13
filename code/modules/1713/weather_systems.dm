@@ -295,19 +295,24 @@ var/global/weather_sample_time = -1
 var/global/weather_sample_class = WEATHER_NONE
 var/global/weather_sample_look = ""
 var/global/weather_sample_intensity = 0
+var/global/weather_sample_zone_class = null
+var/global/weather_sample_zone_look = null
 
 /proc/weather_sample(atom/A)
 	var/turf/T = get_turf(A)
-	if (T && T == weather_sample_turf && world.time == weather_sample_time)
+	var/area/place = T ? T.loc : null
+	// The zone's own weather is part of the key: a script may repaint it mid-tick.
+	if (T && T == weather_sample_turf && world.time == weather_sample_time && istype(place) && place.weather == weather_sample_zone_class && place.icon_state == weather_sample_zone_look)
 		return
 	weather_sample_turf = T
 	weather_sample_time = world.time
 	weather_sample_class = WEATHER_NONE
 	weather_sample_look = ""
 	weather_sample_intensity = 0
-	var/area/place = T ? T.loc : null
 	if (!istype(place))
 		return
+	weather_sample_zone_class = place.weather
+	weather_sample_zone_look = place.icon_state
 	// Zone weather pinned by a map script or an admin.
 	weather_sample_class = place.weather
 	weather_sample_look = place.icon_state
