@@ -15,7 +15,7 @@
 #define WILD_HERB_SEED_MIN 4
 #define WILD_HERB_GRASS_PER_PATCH 1500
 #define WILD_HERB_SEED_VIEW_MARGIN 20
-#define WILD_HERB_STEEP_WATER 10
+#define HERB_STEEP_WATER 10 // water a container needs before any herb is steeped
 
 /////////////////////////////// Herb patches ///////////////////////////////
 
@@ -183,16 +183,26 @@ var/global/list/wild_herb_list = list()
 	return TRUE
 
 /obj/item/stack/medical/wild_herb/proc/steep(obj/vessel, mob/user)
-	if (!steep_reagent || !user || QDELETED(src) || QDELETED(vessel) || amount < 1)
+	if (!steep_reagent || QDELETED(src) || amount < 1)
 		return FALSE
-	if (!vessel.is_open_container() || !vessel.reagents.has_reagent("water", WILD_HERB_STEEP_WATER) || !(vessel.loc == user || (isturf(vessel.loc) && user.Adjacent(vessel))))
-		to_chat(user, SPAN_WARNING("Steep \the [singular_name] in an open container holding at least [WILD_HERB_STEEP_WATER] units of water."))
+	if (!herb_steep_into(singular_name, vessel, user, steep_reagent, steep_amount, steep_message))
+		return FALSE
+	use(1)
+	return TRUE
+
+// Shared by every steepable herb: turns water in an open container held by
+// or next to the user into the same amount of tea.
+/proc/herb_steep_into(source_name, obj/vessel, mob/user, reagent, amount, message)
+	if (!reagent || !user || QDELETED(vessel) || amount <= 0)
+		return FALSE
+	var/needed = max(HERB_STEEP_WATER, amount)
+	if (!vessel.reagents || !vessel.is_open_container() || !vessel.reagents.has_reagent("water", needed) || !(vessel.loc == user || (isturf(vessel.loc) && user.Adjacent(vessel))))
+		to_chat(user, SPAN_WARNING("Steep \the [source_name] in an open container holding at least [needed] units of water."))
 		return FALSE
 	// The tea replaces the water it was brewed in.
-	vessel.reagents.remove_reagent("water", steep_amount)
-	vessel.reagents.add_reagent(steep_reagent, steep_amount)
-	to_chat(user, SPAN_NOTICE("You steep \a [singular_name] in \the [vessel]. [steep_message]"))
-	use(1)
+	vessel.reagents.remove_reagent("water", amount)
+	vessel.reagents.add_reagent(reagent, amount)
+	to_chat(user, SPAN_NOTICE("You steep \a [source_name] in \the [vessel]. [message]"))
 	return TRUE
 
 /obj/item/stack/medical/wild_herb/yarrow
@@ -354,4 +364,3 @@ var/global/wild_herb_seed_report = ""
 #undef WILD_HERB_SEED_MIN
 #undef WILD_HERB_GRASS_PER_PATCH
 #undef WILD_HERB_SEED_VIEW_MARGIN
-#undef WILD_HERB_STEEP_WATER

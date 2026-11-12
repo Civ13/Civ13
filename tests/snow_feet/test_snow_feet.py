@@ -21,8 +21,12 @@ def branch(source):
 
 
 def evaluate(cond, shoes):
-    """Evaluate a DM condition for shoes: None (barefoot), 'plain' or 'insulated'."""
+    """Evaluate a DM condition for shoes: None (barefoot), 'plain', 'insulated' or 'sandals'.
+
+    footwear_feet_bare_to_snow() (weather_footwear.dm) is true for bare feet,
+    open-toed sandals and shoes without FEET cold protection."""
     expr = cond.replace('istype(T) && T.has_snow_cover()', 'True')
+    expr = expr.replace('footwear_feet_bare_to_snow(H)', '(shoes != "insulated")')
     expr = expr.replace('H.shoes.cold_protection != FEET', '(shoes == "plain")')
     expr = expr.replace('!H.shoes', '(shoes is None)').replace('H.shoes', '(shoes is not None)')
     expr = expr.replace('||', ' or ').replace('&&', ' and ')
@@ -34,9 +38,11 @@ def freeze_chance(source, shoes):
     text = branch(source)
     for cond in re.findall(r'if \((.*)\)\n', text):
         if cond.startswith('prob('):
-            chance = re.match(r'prob\(25 - \(H\.shoes \? 15 : 0\)\)', cond)
-            assert chance, cond
-            return 10 if shoes else 25
+            if re.match(r'prob\(25 - \(H\.shoes \? 15 : 0\)\)', cond):
+                return 10 if shoes else 25
+            # Closed shoes cut the chance; bare feet and open toes do not.
+            assert re.match(r'prob\(25 - \(\(istype\(snow_shoes\) && !snow_shoes\.open_toed\) \? 15 : 0\)\)', cond), cond
+            return 10 if shoes in ('plain', 'insulated') else 25
         if not evaluate(cond, shoes):
             return 0
     raise AssertionError('no prob() in branch')
@@ -54,6 +60,9 @@ class SnowFeetTest(unittest.TestCase):
 
     def test_insulated_shoes_never_freeze(self):
         self.assertEqual(freeze_chance(self.source, 'insulated'), 0)
+
+    def test_sandals_freeze_like_bare_feet(self):
+        self.assertEqual(freeze_chance(self.source, 'sandals'), 25)
 
     def test_negative_control_old_branch_skips_bare_feet(self):
         self.assertEqual(freeze_chance(OLD_BRANCH, None), 0)

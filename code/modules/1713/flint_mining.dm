@@ -110,7 +110,9 @@
 	var/list/options = list()
 	if (!sharpened)
 		options += "Sharp flake"
-	options += list("Three arrowheads", "Flint knife", "Spearhead", "Cancel")
+	options += list("Three arrowheads", "Flint knife", "Spearhead")
+	options += stone_age_knap_options(H)
+	options += "Cancel"
 	var/choice = WWinput(H, "What do you want to knap from \the [src]?", "Knapping", "Cancel", options)
 	if (!choice || choice == "Cancel" || (choice == "Sharp flake" && sharpened) || !knap_reachable(H, hammer))
 		return
@@ -126,6 +128,12 @@
 		if ("Spearhead")
 			delay = 80
 			fail_chance = 30
+		if ("Hand axe")
+			delay = 100
+			fail_chance = 30
+		if ("Hide scraper")
+			delay = 50
+			fail_chance = 15
 	H.visible_message(SPAN_NOTICE("[H] starts knapping \the [src] with \the [hammer]."), SPAN_NOTICE("You start knapping \the [src] with \the [hammer]."))
 	playsound(get_turf(src), 'sound/effects/chop.ogg', 60, TRUE)
 	if (!do_after(H, delay / max(0.5, H.getStatCoeff("dexterity")), src) || !knap_reachable(H, hammer))
@@ -154,6 +162,8 @@
 			result = new /obj/item/weapon/material/kitchen/utensil/knife/flint(T)
 		if ("Spearhead")
 			result = new /obj/item/weapon/flint_spearhead(T)
+		else
+			result = stone_age_knap_result(choice, T, H)
 	qdel(src)
 	if (result && in_hand)
 		H.put_in_hands(result)

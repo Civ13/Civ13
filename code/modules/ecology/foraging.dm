@@ -161,6 +161,11 @@
 		/obj/item/stack/farming/seeds/cotton = list("temperate", "desert", "sea", "semiarid"),
 		/obj/item/stack/farming/seeds/parsley = list("temperate", "semiarid", "sea"),
 		/obj/item/stack/farming/seeds/celery = list("temperate", "semiarid", "sea", "jungle"),
+		/obj/item/stack/farming/seeds/chamomile = list("temperate", "semiarid", "sea", "taiga"),
+		/obj/item/stack/farming/seeds/dandelion = list("temperate", "taiga", "tundra", "sea", "semiarid"),
+		/obj/item/stack/farming/seeds/mint = list("temperate", "sea", "semiarid", "jungle"),
+		/obj/item/stack/farming/seeds/sunflower = list("temperate", "semiarid", "savanna", "desert"),
+		/obj/item/stack/farming/seeds/rose = list("temperate", "semiarid", "sea"),
 	)
 
 // Mushrooms grow where the mushroom crop does, outside the cold and dry seasons.
