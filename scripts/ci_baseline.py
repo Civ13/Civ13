@@ -127,6 +127,8 @@ SUITES = {
     'boat_corpse_sink': {'files': ('tests/boat_corpse_sink/test_boat_corpse_sink.py',),
         'paths': ('tests/boat_corpse_sink/',),
         'shared_paths': ('code/game/turfs/floor_types.dm',)},
+    'steam_engine_callbacks': {'files': ('tests/steam_engine_callbacks/test_engine_callbacks.py',),
+        'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
