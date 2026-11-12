@@ -98,6 +98,7 @@
 	var/datum/habitat_ledger/L = hull_ledger()
 	if (seconds <= 0)
 		return
+	systems_step(seconds)
 	if (!submerged)
 		sub_air_freshen(L)
 		air_bank = min(SUB_AIR_BANK_MAX, air_bank + SUB_AIR_BANK_RECHARGE_PER_SECOND * seconds)
@@ -107,7 +108,7 @@
 	while (seconds > 0)
 		var/dt = min(seconds, SUB_AIR_MAX_STEP_SECONDS)
 		seconds -= dt
-		L.advance(dt, breathers)
+		L.advance(dt, breathers, hull_leaks)
 		if (L.co2_kpa() > SUB_AIR_VENT_CO2_KPA || L.oxygen_kpa() < SUB_AIR_VENT_OXYGEN_KPA)
 			vent_hull(SUB_AIR_VENT_FRACTION_PER_SECOND * dt)
 	if (air_bank <= 0 && !air_warned)

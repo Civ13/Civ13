@@ -172,6 +172,34 @@ var/submarine_runtime_error = FALSE
 	S.air_bank = 100
 	submarine_check(S.blow_chamber() && S.air_bank == 40, "blowing the chamber dry costs 60 bank air")
 	submarine_check(S.bank_oxygen(50) == 40 * 0.21 && S.air_bank == 0, "a bottle takes only the oxygen the bank still holds")
+	S.air_bank = 6000
+
+	// Battery, floodlights, hull depth and sonar.
+	submarine_check(S.battery == 5400 && S.hull_rating == SEA_ZONE_OPEN && !S.hull_leaks, "a new boat has a full battery and a hull rated for open water")
+	S.set_floodlights(TRUE)
+	submarine_check(S.floodlight_source == W && W.light_range == 7, "the floodlights shine from the bow")
+	S.systems_step(100)
+	submarine_check(S.battery == 5300, "the floodlights drain the battery while submerged (got [S.battery])")
+	S.hull_rating = SEA_ZONE_SHELF
+	S.hull_pressure_step(100)
+	submarine_check(S.hull_leaks == 1, "deeper than its rating the hull springs a leak")
+	S.hull_rating = SEA_ZONE_OPEN
+	var/bank_before = S.air_bank
+	S.air_step(100)
+	var/leak_cost = bank_before - S.air_bank
+	S.hull_leaks = 0
+	bank_before = S.air_bank
+	S.air_step(100)
+	submarine_check(leak_cost > (bank_before - S.air_bank), "a leaking hull costs the air bank more ([leak_cost] vs [bank_before - S.air_bank])")
+	var/list/sonar = S.sonar_lines()
+	submarine_check(findtext(sonar[1], "open water") && findtext(sonar[2], "west"), "a sonar ping reports the depth and the rock to the west ([jointext(sonar, " | ")])")
+	S.battery = 0
+	S.battery_draw(1)
+	submarine_check(!S.floodlight_source && !W.light_range, "a flat battery puts the floodlights out")
+	submarine_check(!S.do_vehicle_check(), "a flat battery stops the submerged boat")
+	submarine_check(!S.sonar_ping(crew), "a flat battery cannot ping")
+	S.battery = 5400
+	S.set_floodlights(FALSE)
 	submarine_check(S.change_depth(TRUE) == "The boat is already submerged.", "a second dive is refused")
 	var/turf/boat_here = get_turf(S)
 	submarine_check(S.periscope_turf() == locate(boat_here.x, boat_here.y, 2), "the periscope looks at the surface straight above")
@@ -220,6 +248,9 @@ var/submarine_runtime_error = FALSE
 	submarine_check(!S.submerged && submarine_frames_z(S, 2) && crew.z == 2 && cargo.z == 2, "the boat, crew and cargo are back on the surface")
 	S.air_step(10)
 	submarine_check(S.hull_air.breathable() && !S.hull_air.co2 && S.air_bank == 500 && S.air_breathable(), "on the surface the hatches air the boat out and the compressor refills the bank ([S.air_report()])")
+	S.battery = 0
+	S.systems_step(10)
+	submarine_check(S.battery == 450, "on the surface the diesel charges the battery")
 
 	// Diving needs open sea under every frame: not beside the coast.
 	var/obj/structure/vehicleparts/axis/ship/submarine/coaster = build_submarine(locate(2, 20, 2), "coaster")
@@ -233,6 +264,9 @@ var/submarine_runtime_error = FALSE
 	submarine_check(get_recipe_node_req("/obj/structure/car_workshop/submarine_pen") == "submarines", "Submarines research gates the pen (got [get_recipe_node_req("/obj/structure/car_workshop/submarine_pen")])")
 	for (var/gear in list("/obj/item/clothing/suit/pressure_suit/diving", "/obj/item/clothing/head/pressure_helmet/diving", "/obj/item/pressure_tank/diving"))
 		submarine_check(get_recipe_node_req(gear) == "submarines", "Submarines research gates [gear]")
+	for (var/gear in list("/obj/item/clothing/suit/pressure_suit/diving/hard", "/obj/item/clothing/head/pressure_helmet/diving/hard", "/obj/item/sub_hull_plating"))
+		submarine_check(get_recipe_node_req(gear) == "naval_aviation", "Naval Aviation research gates [gear]")
+	submarine_check(new /obj/item/clothing/suit/pressure_suit/diving/hard(locate(1, 1, 2)).depth_rating == SEA_ZONE_DEEP, "the hard dive suit is built for the deep")
 	var/obj/item/clothing/suit/pressure_suit/diving/dress = new(locate(1, 1, 2))
 	submarine_check(dress.depth_rating == SEA_ZONE_SHELF && !dress.has_heater && !new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).depth_rating, "the diving dress is built for the shelf; a space suit is not for diving")
 	sleep(70)
