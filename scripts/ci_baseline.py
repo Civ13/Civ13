@@ -41,6 +41,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
+        'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'casing_scheduler': {'files': ('tests/casing_scheduler/test_casing_scheduler.py',),
         'paths': ('tests/casing_scheduler/', 'code/processes/casings.dm'),
         'shared_paths': ('code/processes/___defines.dm', 'code/_macros.dm')},
