@@ -463,6 +463,7 @@ var/global/list/airborne_aircraft = list()
 		flight_watching = FALSE
 		return
 	burn_flight_fuel()
+	note_field_work(driver, "flight")
 	if (!moving || edge_blocked || currentspeed < stall_gear || !check_engine())
 		stall_seconds++
 		if (stall_seconds == 1)

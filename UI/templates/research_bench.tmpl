@@ -156,6 +156,12 @@
 			{{for node.research_needs :need:qi}}<div class='{{:need.ok ? "rt-done" : "rt-locked"}}'>{{:need.ok ? "Met" : "Missing"}}: {{:need.label}}</div>{{/for}}
 		</div>
 		{{/if}}
+		{{if node.field_work && node.field_work.length}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Optional field work</div>
+			{{for node.field_work :job:fi}}<div class='{{:job.done ? "rt-done" : ""}}'>{{:job.done ? "In the book" : "You have " + job.have + " of " + job.needed}}: {{:job.label}} ({{:job.percent}}% of the work)</div>{{/for}}
+		</div>
+		{{/if}}
 
 		{{if node.mode_text !== "Book only"}}
 		<div class='rt-modal-row'>

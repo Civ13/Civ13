@@ -45,5 +45,59 @@ class NodeEffects(unittest.TestCase):
         for path, field in (("tgui/src/interfaces/Research.tsx", "detail.effect"), ("tgui/src/interfaces/ResearchBook.tsx", "row.effect"),
                             ("UI/templates/research_bench.tmpl", "node.effect"), ("UI/templates/research_book.tmpl", "chapter.effect")):
             self.assertIn(field, read(path))
+class FieldWork(unittest.TestCase):
+    def setUp(self):
+        self.field = read("code/modules/research_tree/field_work.dm")
+        self.nodes = read("code/modules/research_tree/research_node.dm")
+        self.research = read("code/modules/research_tree/book_research.dm")
+        self.interface = read("code/modules/research_tree/book_interface.dm")
+    def experiments(self):
+        return re.findall(r'^\t"(\w+)" = list\("(\w+)", "(\w+)", (\d+), ([\d.]+), "([^"]+)"\)', self.field, re.M)
+    def test_included_after_the_define_it_uses(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\book_research.dm"'), dme.index('research_tree\\field_work.dm"'))
+    def test_experiments_name_late_nodes_and_known_activities(self):
+        activities = set(re.findall(r'^\t"(\w+)" = "[^"]+"[,)]', self.field.split("field_experiments")[0], re.M))
+        rows = self.experiments()
+        self.assertGreaterEqual(len(rows), 20)
+        shares = {}
+        for _id, node, activity, needed, share, _text in rows:
+            tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (?:null|list\([^)]*\)), (\d+)' % node, self.nodes)
+            self.assertTrue(tier, node)
+            self.assertGreaterEqual(int(tier[1]), 5, node)
+            self.assertIn(activity, activities)
+            self.assertGreater(int(needed), 0)
+            shares[node] = shares.get(node, 0) + float(share)
+        self.assertLessEqual(max(shares.values()), 0.7)
+    def test_every_activity_is_counted_somewhere(self):
+        for path, call in (
+                ("code/modules/projectiles/guns/projectile.dm", 'note_field_work(user, "shots")'),
+                ("code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm", 'note_field_work(driver, "flight")'),
+                ("code/modules/surgery/surgery.dm", 'note_field_work(user, "surgery")'),
+                ("code/modules/1713/doctor_handbook.dm", "note_field_diagnosis(user, H)"),
+                ("code/modules/reagents/laboratory.dm", 'note_field_work(user, "reactions")'),
+                ("code/modules/space/survey.dm", 'note_field_work(H, "samples")')):
+            self.assertIn(call, read(path), path)
+    def test_counting_needs_book_research_and_is_capped(self):
+        note = proc(self.field, "/proc/note_field_work")
+        for guard in ("map.book_research_enabled()", "field_activity_cap(activity)", "before >= cap", "min(cap, before + amount)"):
+            self.assertIn(guard, note)
+    def test_a_book_takes_each_experiment_once(self):
+        record = proc(self.field, "/obj/item/weapon/book/proc/record_field_work")
+        for guard in ("has_field_work(experiment_id)", "has_research_chapter(", "add_research_work(N.id, points)"):
+            self.assertIn(guard, record)
+        self.assertLess(record.index("has_field_work(experiment_id)"), record.index("add_research_work"))
+    def test_the_bench_credits_field_work_and_studies_late_nodes_faster(self):
+        tick = proc(self.research, "/obj/structure/research_bench/proc/book_analysis_tick")
+        self.assertLess(tick.index("research_lit()"), tick.index("credit_field_work()"))
+        self.assertLess(tick.index("credit_field_work()"), tick.index("var/mob/living/human/researcher"))
+        self.assertIn("late_bench_rate(N)", tick)
+        self.assertEqual(self.interface.count("late_bench_rate(N)"), 2)
+        self.assertIn("N.era_tier >= FIELD_WORK_MIN_TIER", proc(self.field, "/proc/late_bench_rate"))
+    def test_windows_list_field_work(self):
+        self.assertEqual(self.interface.count('out["field_work"] = field_work_rows(H, '), 2)
+        self.assertIn("book_mode()", proc(self.field, "/obj/structure/research_bench/proc/field_work_rows"))
+        self.assertEqual(read("tgui/src/interfaces/Research.tsx").count("<FieldWork rows="), 2)
+        self.assertIn("node.field_work", read("UI/templates/research_bench.tmpl"))
 if __name__ == "__main__":
     unittest.main()
