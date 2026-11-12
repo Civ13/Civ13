@@ -721,6 +721,7 @@
 #include "code\game\objects\structures\table_rack.dm"
 #include "code\game\objects\structures\target_stake.dm"
 #include "code\game\objects\structures\transports.dm"
+#include "code\game\objects\structures\bicycle.dm"
 #include "code\game\objects\structures\transport_controls.dm"
 #include "code\game\objects\structures\watercloset.dm"
 #include "code\game\objects\structures\wild.dm"

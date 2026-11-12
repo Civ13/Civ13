@@ -362,6 +362,12 @@ SUITES = {
             'code/game/turfs/turf.dm',
             'code/game/objects/farming.dm',
             'code/modules/ecology/willow_trees.dm')},
+    'pedal_bicycle': {'files': ('tests/pedal_bicycle/test_bicycle.py',),
+        'paths': ('tests/pedal_bicycle/', 'code/game/objects/structures/bicycle.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',
+                         'code/game/objects/structures/transports.dm',
+                         'code/modules/research_tree/research_node.dm',
+                         'config/crafting/material_recipes_global.txt')},
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
         'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
             'code/game/objects/buckling.dm',

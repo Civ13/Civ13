@@ -1165,6 +1165,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/factory_bin" = "factories",
 		"/obj/structure/tanning_drum" = "factories",
 		"/obj/structure/factory_drive" = "factories",
+		"/obj/structure/vehicle/bicycle" = "factories",
 		"/obj/structure/factory_arm" = "factories",
 		"/obj/item/camera/earlymodern" = "factories",
 		// nuclear_power's prototype item: must be researchable BEFORE that
