@@ -239,16 +239,10 @@ var/global/list/nomads_fire_callbacks = list()
 /obj/effect/fire/proc/fire_blood_cleanup(obj/effect/decal/cleanable/blood/O)
 	if(O) qdel(O)
 
+// Water thrown on the fire: the odds scale with the amount (firefighting_water.dm).
 /obj/effect/fire/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
-		var/obj/item/weapon/reagent_containers/CT = W
-		for (var/datum/reagent/R in CT.reagents.reagent_list)
-			if (istype(R, /datum/reagent/water))
-				user.visible_message("[user] empties \the [CT] into the fire!", "You empty \the [CT] into the fire!")
-				if (prob(max(R.volume, 100)))
-					qdel(src)
-					visible_message("The fire is extinguished!")
-				CT.reagents.clear_reagents()
+		return douse_fire_with_container(src, W, user)
 
 /obj/effect/fire/proc/burningproc()
 	if(isDeleted(src) || !loc) return
