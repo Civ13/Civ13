@@ -13,6 +13,7 @@
 	uses_batteries = FALSE
 	refuel_reagents = list("petroleum" = 120, "olive_oil" = 120, "fat_oil" = 120, "cornoil" = 120)
 	empty_message = "is out of oil"
+	open_flame = TRUE
 
 /obj/item/flashlight/lantern/copper
 	name = "copper lamp"
@@ -147,6 +148,7 @@
 	uses_batteries = FALSE
 	refuel_reagents = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "petroleum" = 30)
 	empty_message = "has burnt down"
+	open_flame = TRUE
 	// The handle the torch was wrapped around; it is left when the torch burns out.
 	var/handle_material = "wood"
 
@@ -184,6 +186,7 @@
 	uses_batteries = FALSE
 	refuel_reagents = list("fat_oil" = 60, "olive_oil" = 60, "cornoil" = 60, "petroleum" = 60)
 	empty_message = "is out of oil"
+	open_flame = TRUE
 
 /obj/item/flashlight/tiki_torch/update_icon()
 	..()

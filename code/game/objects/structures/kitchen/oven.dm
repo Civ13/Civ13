@@ -16,6 +16,7 @@
 	var/looping = FALSE //for campfires
 	var/cooking_time = 50
 	var/tmp/fire_epoch = 0 // Changes on every light/extinguish so stale cooking and loop callbacks stop.
+	var/open_flame = TRUE // Electric stoves, griddles and fryers cannot light a candle.
 
 /obj/structure/oven/persistence_runtime_var(key)
 	return key == "fire_epoch" || ..()
@@ -423,6 +424,7 @@
 	fuel = 4
 
 /obj/structure/oven/stove
+	open_flame = FALSE
 	name = "stove"
 	desc = "A stove that runs on electricity."
 	icon = 'icons/obj/kitchen.dmi'
@@ -462,6 +464,7 @@
 	base_state = "grill2"
 
 /obj/structure/oven/griddle
+	open_flame = FALSE
 	name = "electric griddle"
 	desc = "A heavy, flat iron plate that is heated and used for cooking food."
 	icon = 'icons/obj/kitchen.dmi'
@@ -476,6 +479,7 @@
 	fuel = 4
 
 /obj/structure/oven/fryer
+	open_flame = FALSE
 	name = "fryer"
 	desc = "A large, deep container for frying food."
 	icon = 'icons/obj/kitchen.dmi'
