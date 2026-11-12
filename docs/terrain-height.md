@@ -86,6 +86,16 @@ well as paid for. `terrain_climb_effects` runs for humans after the slope
 cost: scrambling up spends 0.5 stamina per level (half of that onto tamped
 earth, scaled by the share of a tile moved, never below 0), and either
 direction prints a short notice, at most one per 10 seconds per player.
+Running down a steep step can trip (`terrain_trip_check`, also called for
+agent characters): 10% per level past 2 (so 10% at three levels, 20% at four),
++10% at full momentum and +10% on an empty stamina bar, at most 50%. Walking,
+stealth, nudges and gentler steps never trip. Once the step finishes the
+runner is knocked down (`Weaken(2)`) and rolls (`terrain_tumble`): the path
+follows the steepest neighbour while each tile drops at least 2 levels (per
+tile travelled), up to 6 tiles, and the body is thrown along it, spinning,
+taking 2 brute per tile rolled. Walls, water and anything a thrown body hits
+stop the roll. With nowhere to roll the runner just falls.
+
 `terrain_step_levels(from, to)` is the shared signed, capped level change
 that both procs use; it is 0 across built ground or without a height file.
 

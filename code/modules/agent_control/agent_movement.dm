@@ -187,3 +187,4 @@
 			H.nutrition -= 0.0015
 			H.water -= 0.0015
 	terrain_climb_effects(H, old, n, 1)
+	terrain_trip_check(H, old, n, 1)

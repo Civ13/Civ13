@@ -784,6 +784,7 @@
 				move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
 			if (mob_is_human)
 				terrain_climb_effects(H, mob_loc, n, distance_fraction)
+				terrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
