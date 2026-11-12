@@ -63,3 +63,13 @@ duplicate/semantic comparisons and explicit gameplay limits. The
 [conversion tools](../../tools/art_ports/README.md) reproduce and test the pack.
 The [preview](../../docs/media/humanity-wild-herbs.png) uses actual pixels at 4x
 and 1x for review; it is not a gameplay screenshot.
+
+## Herb garden crops (chamomile, dandelion, mint, sunflower, rose)
+
+The `chamomile-*`, `dandelion-*`, `mint-*`, `sunflower-*` and `rose-*` states in
+`plants.dmi`, the matching `*seeds` states in `seeds.dmi`, their produce, sprig
+and dried states in `icons/obj/food/`, and `icons/obj/herbalism.dmi` are original
+Civ13 art under the project's AGPL-3.0 licence. They are hand-placed pixels from a
+fixed palette, reproduced by `tests/sprites/create_herb_garden.py`. The picked
+yarrow, comfrey, elderflower and milk thistle sprigs reuse the colours of
+`humanity_wild_herbs.dmi` but are newly drawn. No external or AI-generated art.
