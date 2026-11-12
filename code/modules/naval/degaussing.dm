@@ -70,6 +70,9 @@ var/global/list/degaussing_coils = list()
 	var/obj/structure/degaussing_coil/D = running_coil()
 	if (D && body && !body.power_coil(tiles))
 		D.trip(src)
+	// Minesweeping gear streamed from her (naval/minesweeping.dm).
+	if (mine_sweeps.len)
+		sweep_moved(tiles)
 
 // TRUE when the body could power a running coil over these tiles (and paid).
 /datum/craft_body/proc/power_coil(tiles)

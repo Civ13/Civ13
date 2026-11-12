@@ -52,3 +52,11 @@ four-direction `_l` and `_r` in-hand sprites) were drawn for Civ13 (2026-11-12),
 pixel by pixel from fixed palettes by `tests/sprites/create_firefighting.py`.
 No borrowed or generated artwork. They are under the same terms as the rest of
 Civ13's art.
+
+## primitive_carrying.dmi and icons/mob/primitive_carrying.dmi
+
+All states (`carry_net`, `sling_bag`, `pack_basket`, `pack_frame`, `travois`,
+`travois_open`; item icons and the four-direction worn sprites) were drawn for
+Civ13 (2026-11-12), pixel by pixel from a fixed palette by
+`tests/sprites/create_primitive_carrying.py`. No borrowed or generated artwork.
+They are under the same terms as the rest of Civ13's art.
