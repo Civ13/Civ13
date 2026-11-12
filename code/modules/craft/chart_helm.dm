@@ -74,6 +74,17 @@
 	..()
 	helm_token()
 
+// Orders a subtype adds to the console's menu, what each does, and a call
+// before any order is carried out.
+/obj/structure/chart_helm/proc/extra_orders(mob/living/human/H)
+	return list()
+
+/obj/structure/chart_helm/proc/extra_order(mob/living/human/H, choice)
+	return
+
+/obj/structure/chart_helm/proc/ordered(mob/living/human/H, choice)
+	return
+
 // The chart as the console shows it: her place and motion, then every
 // contact her sensors make out with its distance and bearing.
 /obj/structure/chart_helm/proc/read_text()
@@ -103,7 +114,8 @@
 	if (!T)
 		to_chat(H, "The console shows no chart.")
 		return
-	var/choice = WWinput(H, read_text(), name, "Cancel", list("Read the chart", "Burn", "Cut the engines", "Full stop", "Lay a course", "Cancel"))
+	var/list/more = extra_orders(H)
+	var/choice = WWinput(H, read_text(), name, "Cancel", list("Read the chart", "Burn", "Cut the engines", "Full stop", "Lay a course") + more + list("Cancel"))
 	if (!choice || choice == "Cancel" || QDELETED(src) || get_dist(H, src) > 1 || !token)
 		return
 	if (choice == "Read the chart")
@@ -119,6 +131,10 @@
 			if (CRAFT_HELM_FORCE)
 				if (!mine.force_helm(H, src) || QDELETED(src) || !token)
 					return
+	ordered(H, choice)
+	if (choice in more)
+		extra_order(H, choice)
+		return
 	switch (choice)
 		if ("Burn")
 			var/list/points = list("North" = 0, "Northeast" = 45, "East" = 90, "Southeast" = 135, "South" = 180, "Southwest" = 225, "West" = 270, "Northwest" = 315)
