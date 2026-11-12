@@ -1073,6 +1073,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\ships\submarine_air.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\seabed.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\submarine_systems.dm"
+#include "code\modules\1713\machinery\modular_vehicles\ships\sea_life.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\submarine.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\wheels.dm"
 #include "code\modules\1713\martial_arts\_martial.dm"

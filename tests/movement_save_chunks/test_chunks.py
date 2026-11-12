@@ -162,6 +162,9 @@ class ProductionBoundaryTests(unittest.TestCase):
             # Audited for #3883: a nonyielding key comparison; raiders never save.
             '/mob/living/simple_animal/hostile/human/nomad_raider/persistence_runtime_var',
             '/mob/living/simple_animal/pet/persistence_runtime_var',
+            # Audited for ocean phase 4: nonyielding key lists of AI state.
+            '/mob/living/simple_animal/sea/persistence_runtime_var',
+            '/mob/living/simple_animal/sea/reef_eel/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
 
     def test_packet_materializes_only_hashed_sources(self):
