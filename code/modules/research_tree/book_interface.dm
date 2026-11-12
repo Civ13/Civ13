@@ -167,6 +167,8 @@
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
 		var/pname = N.prototype_display_name()
 		needs += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
+	if (is_big_science(node_id))
+		needs += team_rows(node_id, null)
 	out["research_needs"] = needs
 	var/desk = cache["desk_rate"]
 	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk))
@@ -240,7 +242,10 @@
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
 		var/pname = N.prototype_display_name()
 		checks += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
+	checks += team_rows(assigned_node, researcher)
 	out["checks"] = checks
+	out["rushed"] = rushed ? 1 : 0
+	out["can_rush"] = node_can_be_rushed(N) ? 1 : 0
 	out["field_work"] = field_work_rows(H, assigned_node)
 	out["supply"] = supply
 	out["supply_cap"] = SCHOLAR_SUPPLY_CAP
@@ -251,7 +256,7 @@
 	var/working = researcher && B && lit && instrument_ok && tier >= N.min_bench_tier
 	out["working"] = working ? 1 : 0
 	if (working)
-		var/per_tick = round(base_tick_rate * worker[2] * late_bench_rate(N) * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
+		var/per_tick = round(base_tick_rate * worker[2] * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
 		out["pace"] = per_tick
 		if (per_tick > 0 && ticks < N.cost_ticks)
 			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * RESEARCH_TICK_INTERVAL)

@@ -219,9 +219,12 @@
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
 	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * apprentice_research_gain(researcher, assigned_node))
-	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
+	else
+		// Rushed work can go wrong (team_research.dm).
+		roll_rush_accident(researcher, N, B, analysis_scale)
 	book_refresh_ui()
 
 // Whether this bench can work on node_id for its book. Prerequisites are

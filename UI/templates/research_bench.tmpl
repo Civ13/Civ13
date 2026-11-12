@@ -88,7 +88,7 @@
 	{{/if}}
 	{{else}}
 	<div class='itemContent rt-progress'>{{:data.assigned_status_text}}</div>
-	{{if data.book_mode}}<div class='itemContent'>{{:helper.link('Stop researching', 'trash', {'stop_research' : 1})}}</div>{{/if}}
+	{{if data.book_mode}}<div class='itemContent'>{{:helper.link('Stop researching', 'trash', {'stop_research' : 1})}}{{if data.assigned && data.assigned.can_rush}} {{:helper.link(data.assigned.rushed ? 'Work carefully (now rushed: accidents possible)' : 'Rush the work (faster, accidents possible)', 'alert', {'toggle_rush' : 1})}}{{/if}}</div>{{/if}}
 	{{/if}}
 </div>
 {{/if}}

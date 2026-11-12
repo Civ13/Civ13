@@ -624,6 +624,8 @@ var/global/list/research_benches = list()
 			set_queue(null)
 		else if (href_list["stop_research"])
 			book_stop_research(H)
+		else if (href_list["toggle_rush"])
+			book_toggle_rush(H)
 		GLOB.nanomanager.update_uis(src)
 		return
 	if (!H.civilization || H.civilization == "none")
