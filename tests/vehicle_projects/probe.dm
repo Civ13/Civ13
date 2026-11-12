@@ -259,6 +259,13 @@ var/project_runtime_error = FALSE
 		for (var/atom/movable/part in locations)
 			back_home = back_home && part.loc == locations[part]
 		project_check(turned && back_home, "[model]: turns a full circle in place")
+		var/swung = 0
+		for (var/atom/movable/part in made.glide_was)
+			if (part.glide_size == craft_glide_size(glide_turn_time()))
+				swung++
+		project_check(swung > 0, "[model]: a turn is drawn swinging round ([swung] parts glide a tile)")
+		made.glide_rest_now()
+		project_check(!length(made.glide_was), "[model]: after the turn everything has its own glide back")
 		// Each step is drawn as a glide lasting the step (craft/glide.dm).
 		var/obj/structure/vehicleparts/frame/rolling = locate() in made.components
 		var/obj/item/stack/material/steel/loose = new(rolling.loc)

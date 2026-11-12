@@ -72,14 +72,23 @@ each step `under_way.dm` sets `body.glide_time`, and the body calls
 it leaves her or she stops), and a thing the engine will not glide (a step
 offset or unusual bounds, such as a free-moving human) is drawn one tile back
 and slid forward by `animate()`, with the view of its player. Appearance only:
-the server still moves her a whole tile at once. Turns, docking slides and
-turf-built vessels are not glided. Not checked in a game client.
+the server still moves her a whole tile at once. Docking slides are not
+glided. Not checked in a game client.
 
 Modular vehicles and frame boats glide the same way: `axis.do_move()` calls
 `glide_step()` with what it moved, which shows every frame, wheel, thing and
 person carried through the shared `glide_show()` for `vehicle_m_delay + 1`
-ticks, and `glide_rest()` gives the glides back when the vehicle stops. Their
-turns (`do_matrix()`) are not glided.
+ticks, and `glide_rest()` gives the glides back when the vehicle stops.
+
+Turns swing round instead of snapping. After a built hull's `move_to()` with
+a turn, and after `axis.do_matrix()`, each thing carried goes through
+`glide_swing()` for `glide_turn_time()` (5 ticks): a thing that moved one tile
+glides there, and a thing that moved further, which the engine will not glide,
+is slid there by `glide_slide()` with a sine ease. Sprites take their new
+facing at once; only the travel is drawn. A spacecraft's thruster step
+(`thrust_one()`) sets `glide_time` on her turf body, whose `shift()` glides
+what she carries and slides her tiles with `glide_slide()`; her jumps between
+levels and slots are not glided.
 
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the

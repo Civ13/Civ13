@@ -798,6 +798,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for(var/obj/OM in todestroy)
 				if (!istype(OM, /obj/structure/sign/traffic/zebracrossing) && !istype(OM, /obj/structure/sign/traffic/side) && !istype(OM, /obj/structure/sign/traffic/central) && !istype(OM, /obj/structure/rails) && !istype(OM, /obj/covers) && !istype(OM, /obj/structure/gate) && !istype(OM, /obj/structure/lamp/lamppost_small/) && !istype(OM, /obj/structure/lamp/lamp_big/alwayson) && !istype(OM, /obj/structure/lamp/lamp_small/alwayson) && !istype(OM, /obj/structure/redmailbox) && !istype(OM, /obj/structure/billboard) && !istype(OM, /obj/structure/multiz) && !istype(OM, /obj/structure/vessel_lever))
 					turn_destroy |= OM
+	var/list/was_at = list()
+	for (var/cell in matrix_current_locs)
+		var/list/entry = matrix_current_locs[cell]
+		for (var/atom/movable/M in entry[2])
+			was_at[M] = entry[1]
 	transforming_vehicle = TRUE
 	transform_tiles = turn_turfs
 	for (var/turf/T in turn_turfs)
@@ -865,6 +870,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(turn_turfs)
 		throw e
 	release_transform_tiles(turn_turfs)
+	glide_turn(was_at)
 	refresh_passenger_vision()
 	return TRUE
 

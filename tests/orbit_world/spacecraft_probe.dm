@@ -90,10 +90,18 @@ var/naval_runtime_error = FALSE
 	helm.propellant = 60
 	naval_check(isnull(helm.thrust(EAST, 3)) && helm.thrust_left == 3, "with propellant aboard a burn of three tiles is ordered")
 	var/moved = 0
+	var/crate_glide = crate.glide_size
+	var/step_glide = craft_glide_size(SPACECRAFT_STEP_DELAY)
+	var/glided = TRUE
 	while (helm.thrust_left > 0 && moved < 10)
 		if (!helm.thrust_one())
 			break
 		moved++
+		// Each tile is drawn as a glide lasting the step (craft/glide.dm).
+		glided = glided && crate.glide_size == step_glide && helm.glide_size == step_glide
+	naval_check(glided && step_glide > 0 && length(B.glide_was), "each thruster step glides what she carries for the whole step ([crate.glide_size] of [step_glide])")
+	B.glide_rest_now()
+	naval_check(crate.glide_size == crate_glide && !length(B.glide_was), "at rest everything aboard has its own glide back")
 	naval_check(moved == 3 && helm.x == 23 && Q.x == 23 && A.x == 27 && crate.x == 22 && crew.x == 24 && helm.propellant == 57, "she moves three tiles east with everything aboard for three units of propellant")
 	naval_check(istype(locate(18, 20, alpha), /turf/floor/space/orbit) && istype(locate(20, 20, alpha), /turf/floor/space/orbit) && istype(locate(21, 18, alpha), /turf/wall/habitat_shell) && istype(locate(23, 20, alpha), /turf/floor/habitat) && istype(locate(29, 22, alpha), /turf/wall/habitat_shell), "space closes behind her and her walls and floors are where she is")
 	naval_check(probe_count(alpha, /turf/wall/habitat_shell) + probe_count(alpha, /turf/floor/habitat) == 45 && !Q.breaches() && !A.breaches() && Q.air_oxygen == air_was && Q.air().breathable(), "her hull is whole and her air is the air she had")
