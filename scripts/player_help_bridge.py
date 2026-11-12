@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '19d9cc94b759f55cf5b1f734743fcd85d525f6eb'
+WIKI_REVIEWED_REVISION = 'e9542de4bb3e10d7cddfc671ba81e63ba41a10d6'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -115,7 +115,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('f137ddd260eab807be0ee08e6326a02506c32cde636f32ba23c3b0a1027d031e', 'boat boats ship sailing sail raft canoe rowing oars anchor'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
-    'guides/Guide_to_Aircraft_Carriers.md': ('5b7b385b41f195b300880e38cc1160aee7ed48efdd12f76a57b21a94f511bad3', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
+    'guides/Guide_to_Aircraft_Carriers.md': ('8b1986e4dea50354862a38fff70c0bb01c288ecf82502b9ec168002b08ca69d2', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('39cc22473c6e231a43198dadbdd89a3e8c0b384edd344accaf3764f75451c1b1', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),

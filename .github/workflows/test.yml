@@ -2179,6 +2179,7 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/arming_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/craft_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/papers_probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/built_hull_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/foraging/probe.dm
 
       - name: Run constructed vehicle movement regressions
