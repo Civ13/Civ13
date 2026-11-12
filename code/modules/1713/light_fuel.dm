@@ -184,7 +184,7 @@
 		make_torch(user, TORCH_FAT_FUEL, W)
 		return TRUE
 	if (istype(W, /obj/item/weapon/reagent_containers) && W.reagents && !istype(W, /obj/item/weapon/reagent_containers/food/snacks))
-		var/list/accepted = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "petroleum" = 30)
+		var/list/accepted = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "sunflower_oil" = 30, "linseed_oil" = 30, "petroleum" = 30)
 		var/units_needed = TORCH_OIL_UNITS
 		var/reagent_id
 		for (var/id in accepted)

@@ -1414,6 +1414,7 @@ RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,no
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
 RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,1,none,14,0,0,8,null
+RECIPE: /material/stone/,mortar and pestle,/obj/item/weapon/reagent_containers/glass/mortar,2,40,0,1,kitchen,0,0,0,8,null
 
 //*****************| STONE SUPPORTS & ROOFING |***************************
 

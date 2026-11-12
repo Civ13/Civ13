@@ -92,6 +92,17 @@ class HerbGardenSourceTests(unittest.TestCase):
 
     def test_no_spawn(self):
         self.assertNotIn('spawn(', self.source)
+        self.assertNotIn('spawn(', (ROOT / 'code/modules/1713/herbalism.dm').read_text(encoding='utf-8'))
+
+    def test_mortar_recipe_sprites_and_fuel(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        self.assertIn('RECIPE: /material/stone/,mortar and pestle,/obj/item/weapon/reagent_containers/glass/mortar,2,40,0,1,kitchen,0,0,0,8,null', recipes)
+        self.assertLessEqual({'mortar_pestle', 'mortar_pestle_full'}, dmi_states(ROOT / 'icons/obj/herbalism.dmi'))
+        lantern = (ROOT / 'code/modules/1713/lantern.dm').read_text(encoding='utf-8')
+        torch = (ROOT / 'code/modules/1713/light_fuel.dm').read_text(encoding='utf-8')
+        for oil in ('sunflower_oil', 'linseed_oil'):
+            self.assertEqual(lantern.count(f'"{oil}" = '), 3)
+            self.assertIn(f'"{oil}" = 30', torch)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@
 	max_fuel = 3600 // one hour of oil
 	unlimited = FALSE
 	uses_batteries = FALSE
-	refuel_reagents = list("petroleum" = 120, "olive_oil" = 120, "fat_oil" = 120, "cornoil" = 120)
+	refuel_reagents = list("petroleum" = 120, "olive_oil" = 120, "fat_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 
@@ -146,7 +146,7 @@
 	fuel = 300 // 5 mins
 	max_fuel = 600
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "petroleum" = 30)
+	refuel_reagents = list("fat_oil" = 30, "olive_oil" = 30, "cornoil" = 30, "sunflower_oil" = 30, "linseed_oil" = 30, "petroleum" = 30)
 	empty_message = "has burnt down"
 	open_flame = TRUE
 	// The handle the torch was wrapped around; it is left when the torch burns out.
@@ -184,7 +184,7 @@
 	anchored = FALSE
 	flammable = TRUE
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 60, "olive_oil" = 60, "cornoil" = 60, "petroleum" = 60)
+	refuel_reagents = list("fat_oil" = 60, "olive_oil" = 60, "cornoil" = 60, "sunflower_oil" = 60, "linseed_oil" = 60, "petroleum" = 60)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 
