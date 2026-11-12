@@ -391,9 +391,11 @@ SUITES = {
             'code/modules/research_tree/node_broadcast.dm',
             'code/modules/1713/modern_telecom.dm')},
     'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',
-                                   'tests/recipe_knowledge/test_material_visibility.py'),
+                                   'tests/recipe_knowledge/test_material_visibility.py',
+                                   'tests/recipe_knowledge/test_admin_research_view.py'),
         'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
             'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/admin/verbs/research_knowledge.dm',
             'code/modules/research_tree/research_faction.dm',
             'code/modules/persistence/player_reclaim.dm',
             'code/game/mob/living/carbon/carbon.dm',

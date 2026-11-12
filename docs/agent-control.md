@@ -75,6 +75,14 @@ ill human also gets `illness`: `type`, `severe`, `stage` (`mild`, `early`,
 `treated` and `resistance` (0-100). Admins see the same list in game with
 **Special > Check Illnesses**.
 
+On maps with personal research knowledge (persistent worlds), each human also
+gets `research`: `known` (research node ids the character has learned),
+`studying` (node id to percent read, for chapters or manuals they stopped
+part-way through) and `exempt` (agent characters craft without books). Admins
+see this in game with **Special > Check Research Knowledge** (everyone, plus
+who knows each node, including sleeping offline characters) and right-click
+**Show Research Knowledge** on one character.
+
 ## Protocol
 
 Send a Topic request to the world port:
