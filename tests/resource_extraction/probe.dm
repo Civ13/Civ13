@@ -187,7 +187,15 @@ var/extraction_runtime_error = FALSE
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = extraction_failures, "runtime_error" = extraction_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "result.json")
 	del(world)
 
+// Drills and circuits need Electricity (recipe gates); give the crafter's
+// faction that node without the capstone's world-wide era side effects.
+/proc/extraction_grant_electricity(mob/living/human/extraction_probe/H, faction)
+	H.civilization = faction
+	var/list/entry = map.ensure_node_entry(faction, "electricity")
+	entry[RNODE_ENTRY_STATUS] = RNODE_DONE
+
 /proc/extraction_construction(mob/living/human/extraction_probe/H)
+	extraction_grant_electricity(H, "extraction-construction")
 	var/turf/T = locate(8,8,1)
 	T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
 	H.loc = T
@@ -257,6 +265,7 @@ var/extraction_runtime_error = FALSE
 	map.ordinal_age = 2
 
 /proc/extraction_circuit_inputs(mob/living/human/extraction_probe/H)
+	extraction_grant_electricity(H, "extraction-circuits")
 	var/turf/T = locate(10,8,1)
 	T = T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
 	H.loc = T
