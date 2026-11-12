@@ -241,42 +241,7 @@ var/global/list/airborne_aircraft = list()
 // Moves the whole aircraft and everything aboard to target_z, shifted by
 // dx, dy tiles (straight up or down by default).
 /obj/structure/vehicleparts/axis/aircraft/proc/aircraft_shift(target_z, dx = 0, dy = 0)
-	if (!target_z || transforming_vehicle)
-		return FALSE
-	add_transporting(FALSE)
-	var/list/movers = list()
-	var/list/destinations = list()
-	var/list/tiles = list()
-	for (var/atom/movable/M in (transporting | components))
-		if (QDELETED(M) || !isturf(M.loc))
-			continue
-		var/turf/D = locate(M.x + dx, M.y + dy, target_z)
-		if (!D)
-			return FALSE
-		movers += M
-		destinations[M] = D
-		tiles |= M.loc
-		tiles |= D
-	transforming_vehicle = TRUE
-	transform_tiles = tiles
-	for (var/turf/T in tiles)
-		T.vehicle_transforming = src
-	try
-		// Frames first, so whatever stands on them arrives on a floor.
-		for (var/obj/structure/vehicleparts/frame/F in movers)
-			F.forceMove(destinations[F])
-		for (var/atom/movable/M in movers)
-			if (istype(M, /obj/structure/vehicleparts/frame) || QDELETED(M))
-				continue
-			M.forceMove(destinations[M])
-	catch (var/exception/e)
-		release_transform_tiles(tiles)
-		throw e
-	release_transform_tiles(tiles)
-	for (var/obj/O in movers)
-		O.update_icon()
-	refresh_passenger_vision()
-	return TRUE
+	return shift_vehicle_level(target_z, dx, dy)
 
 /obj/structure/vehicleparts/axis/aircraft/proc/set_flight_state(state)
 	var/was_airborne = airborne()
