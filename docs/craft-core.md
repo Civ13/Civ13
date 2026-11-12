@@ -470,8 +470,12 @@ facings, moves the axis to the front left corner, lays the turning square
 back) and calls `fit_parts()`, which also fits parts stood on the frames
 later. `take_apart()` unbinds a `hand_built` vehicle so it can be changed and
 assembled again; `take_apart_refusal(H)` keeps that to its owners while it
-is registered. Clicking the axis opens the menu. Ships keep their own
-assembly in `modular_vehicles/ships/axis.dm`.
+is registered. Clicking the axis opens the menu.
+
+A boat of ship frames is assembled by the same code from its rudder axis
+(`axis.ship`): the survey takes ship frames only, refuses any that do not lie
+on water, and looks for a ship's wheel (`helm`), masts and an engine of any
+kind in place of a seat and corner wheels.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 

@@ -182,6 +182,10 @@ var/naval_runtime_error = FALSE
 	var/obj/structure/engine/internal/spare = new /obj/structure/engine/internal/gasoline/premade/v6(locate(40, 11, 1))
 	spare.anchored = FALSE
 	naval_check(late.fit_parts() == 2 && late.engine == spare && spare.anchored && spare.fueltank && findtext(late.build_sheet(), "everything a vehicle needs"), "an engine stood on a frame later is fitted with its tank")
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/joined = spare.fueltank
+	joined.forceMove(spare)
+	S = new(late)
+	naval_check(S.tank == joined && !S.missing().len && late.fit_parts() == 0, "a tank connected into the engine by hand still counts")
 	var/obj/structure/vehicleparts/movement/extra = new(locate(41, 10, 1))
 	naval_check(late.fit_parts() == 0 && !(extra in late.wheels), "a fifth wheel is not fitted")
 	qdel(extra)
@@ -214,6 +218,50 @@ var/naval_runtime_error = FALSE
 	naval_check(loose == 4 && out == 4 && !late.components.len && !late.wheels.len && !late.engine && !late.wheel && !spare.anchored && !(locate(/obj/effect/pseudovehicle) in range(4, locate(40, 10, 1))), "taken apart, its frames, wheels, engine and seat stand loose and its turning square is gone ([loose], [out])")
 	naval_check(isnull(late.assemble(EAST)) && late.dir == EAST && assembly_whole(late), "and the same parts assemble again, facing another way")
 	naval_check(craft_of_axis(late) == C && C.register.is_owner(ann), "its papers outlast the rebuild")
+
+	// ---- A boat of ship frames ----
+	for (var/x = 2, x <= 16, x++)
+		for (var/y = 12, y <= 30, y++)
+			var/turf/sea = locate(x, y, 1)
+			sea.ChangeTurf(/turf/floor/beach/water)
+	// On the sand a boat is refused, and each kind of axis takes its own frames.
+	for (var/dx = 0, dx < 2, dx++)
+		for (var/dy = 0, dy < 2, dy++)
+			new /obj/structure/vehicleparts/frame/ship(locate(30 + dx, 30 + dy, 1))
+	var/obj/structure/vehicleparts/axis/ship/beached = new(locate(30, 30, 1))
+	S = new(beached)
+	naval_check(S.ship && findtext(S.refusal, "must lie on water: 4 do not") && findtext(S.report(), "cannot be made into a boat"), "ship frames on dry land are refused as a boat ([S.refusal])")
+	var/obj/structure/vehicleparts/axis/car/wrong = new(locate(31, 31, 1))
+	S = new(wrong)
+	naval_check(!S.ship && findtext(S.refusal, "must stand on one of the vehicle's frames"), "a car axis does not take ship frames")
+	var/list/hull = list()
+	for (var/dx = 0, dx < 3, dx++)
+		for (var/dy = 0, dy < 4, dy++)
+			hull += new /obj/structure/vehicleparts/frame/ship(locate(6 + dx, 18 + dy, 1))
+	var/obj/structure/vehicleparts/axis/ship/R = new(locate(7, 19, 1))
+	var/obj/structure/vehicleparts/shipwheel/helm = new(locate(7, 18, 1))
+	S = new(R)
+	naval_check(isnull(S.refusal) && S.ship && S.frames.len == 12 && S.helm == helm && S.missing().len == 1 && findtext(S.report(), "still needs a mast or an engine"), "a 3 by 4 hull on the water with a wheel still needs a mast or an engine ([S.report()])")
+	var/obj/structure/vehicleparts/movement/sail/premade/mast = new(locate(7, 20, 1))
+	S = new(R)
+	naval_check(!S.missing().len && S.masts.len == 1 && !S.movers.len && findtext(S.report(), "everything a boat needs to sail"), "with a mast it surveys ready to sail")
+	R.name = "Teal"
+	var/why_boat = R.assemble(EAST)
+	var/planks = 0
+	for (var/obj/structure/vehicleparts/frame/ship/F in R.components)
+		planks++
+	naval_check(isnull(why_boat) && R.dir == EAST && planks == 12 && R.components.len == 16 && R.hand_built, "the hull assembles facing east with its turning square ([why_boat], [planks], [R.components.len])")
+	naval_check(helm.ship == R && helm.anchored && (mast in R.masts) && mast.axis == R && get_turf(R) == locate(8, 21, 1), "wheel and mast are fitted and the rudder axis moves to the front left corner")
+	var/turf/helm_was = get_turf(helm)
+	var/turf/mast_was = get_turf(mast)
+	naval_check(R.do_move() && assembly_shape(R) == "12 frames, 3 by 4 at 7,18" && get_turf(helm) == get_step(helm_was, EAST) && get_turf(mast) == get_step(mast_was, EAST), "she moves a tile east with her wheel and mast ([assembly_shape(R)])")
+	naval_check(R.do_matrix(R.dir, TURN_LEFT(R.dir), "left"), "she turns left")
+	sleep(20)
+	naval_check(R.dir == NORTH && findtext(assembly_shape(R), "12 frames, 4 by 3") && (vehicle_assembly_frame(get_turf(helm), R) in R.components) && (vehicle_assembly_frame(get_turf(mast), R) in R.components), "and is a 4 by 3 hull facing north with wheel and mast aboard ([assembly_shape(R)])")
+	naval_check(isnull(R.take_apart_refusal(ann)), "at rest she can be taken apart")
+	R.take_apart()
+	naval_check(!R.components.len && !R.masts.len && isnull(helm.ship) && !helm.anchored && isnull(mast.axis) && !mast.anchored, "taken apart, her wheel and mast are loose again")
+	naval_check(isnull(R.assemble(SOUTH)) && R.dir == SOUTH && helm.ship == R && (mast in R.masts), "and she assembles again facing south")
 
 /proc/naval_run()
 	try

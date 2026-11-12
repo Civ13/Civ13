@@ -13,8 +13,11 @@
 // not, and nothing said why a vehicle would not move.
 //
 // A hand-built vehicle can be taken apart again by its owners, and parts
-// stood on it later are fitted from the same menu. Ships keep their own
-// assembly (modular_vehicles/ships/axis.dm).
+// stood on it later are fitted from the same menu.
+//
+// A boat built from ship frames is assembled the same way from its rudder
+// axis: its frames must lie on water, it takes a ship's wheel in place of a
+// driver's seat, and masts or an engine in place of wheels.
 // ============================================================
 
 #define VEHICLE_ASSEMBLY_MIN 2
@@ -22,12 +25,13 @@
 /obj/structure/vehicleparts/axis
 	var/hand_built = FALSE   // Assembled by a player from loose frames.
 
-// The land frame on a tile that this axis could take or already has.
+// The frame on a tile that this axis could take or already has: ship
+// frames for a rudder axis, land frames for any other.
 /proc/vehicle_assembly_frame(turf/T, obj/structure/vehicleparts/axis/A)
-	if (!T)
+	if (!T || !A)
 		return null
 	for (var/obj/structure/vehicleparts/frame/F in T)
-		if (istype(F, /obj/structure/vehicleparts/frame/ship))
+		if (istype(F, /obj/structure/vehicleparts/frame/ship) != (A.ship ? TRUE : FALSE))
 			continue
 		if (!F.axis || F.axis == A)
 			return F
@@ -45,11 +49,14 @@
 	var/width = 0                // Tiles west to east.
 	var/height = 0               // Tiles south to north.
 	var/refusal = null           // Why this cannot be a vehicle, or null.
-	var/obj/structure/engine/internal/engine
+	var/ship = FALSE             // A boat of ship frames, surveyed from a rudder axis.
+	var/obj/structure/engine/engine
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
 	var/obj/structure/bed/chair/drivers/seat
+	var/obj/structure/vehicleparts/shipwheel/helm
 	var/list/movers = list()     // Wheels and tracks standing on corner frames.
 	var/loose_movers = 0         // Wheels and tracks standing anywhere else.
+	var/list/masts = list()
 
 /datum/vehicle_survey/New(obj/structure/vehicleparts/axis/A)
 	..()
@@ -57,9 +64,10 @@
 	if (!A)
 		refusal = "there is no axis"
 		return
+	ship = A.ship ? TRUE : FALSE
 	var/obj/structure/vehicleparts/frame/first = vehicle_assembly_frame(get_turf(A), A)
 	if (!first)
-		refusal = "the axis must stand on one of the vehicle's frames"
+		refusal = ship ? "the rudder axis must stand on one of the boat's ship frames" : "the axis must stand on one of the vehicle's frames"
 		return
 	var/limit = VEHICLE_CONSTANTS.MAX_COMPONENTS
 	var/list/queue = list(first)
@@ -98,6 +106,15 @@
 	if (gaps)
 		refusal = "the frames must fill a rectangle: [gaps] of the [width] by [height] tiles [gaps == 1 ? "has" : "have"] no frame"
 		return
+	if (ship)
+		var/dry = 0
+		for (var/obj/structure/vehicleparts/frame/F in frames)
+			var/turf/T = get_turf(F)
+			if (!istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/trench/flooded))
+				dry++
+		if (dry)
+			refusal = "every ship frame must lie on water: [dry] [dry == 1 ? "does" : "do"] not"
+			return
 	find_parts()
 
 // TRUE for the four corner tiles of the surveyed rectangle.
@@ -108,8 +125,8 @@
 /datum/vehicle_survey/proc/find_parts()
 	for (var/obj/structure/vehicleparts/frame/F in frames)
 		var/turf/T = get_turf(F)
-		for (var/obj/structure/engine/internal/E in T)
-			if (!engine)
+		for (var/obj/structure/engine/E in T)
+			if (!engine && (ship || istype(E, /obj/structure/engine/internal)))
 				engine = E
 		for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/K in T)
 			if (!tank)
@@ -117,20 +134,43 @@
 		for (var/obj/structure/bed/chair/drivers/D in T)
 			if (!seat && (!D.axis || D.axis == axis))
 				seat = D
+		for (var/obj/structure/vehicleparts/shipwheel/W in T)
+			if (!helm && (!W.ship || W.ship == axis))
+				helm = W
 		for (var/obj/structure/vehicleparts/movement/M in T)
-			if (istype(M, /obj/structure/vehicleparts/movement/sail) || (M.axis && M.axis != axis))
+			if (M.axis && M.axis != axis)
+				continue
+			if (istype(M, /obj/structure/vehicleparts/movement/sail))
+				if (ship)
+					masts |= M
+				continue
+			if (ship)
 				continue
 			if (is_corner(T))
 				movers += M
 			else
 				loose_movers++
 		// A fitted wheel lies inside its frame.
-		if (F.mwheel && F.mwheel.axis == axis && !(F.mwheel in movers))
-			movers += F.mwheel
+		if (F.mwheel && F.mwheel.axis == axis)
+			if (istype(F.mwheel, /obj/structure/vehicleparts/movement/sail))
+				masts |= F.mwheel
+			else
+				movers |= F.mwheel
+	// A tank already connected to the engine by hand counts.
+	if (engine && engine.fueltank)
+		tank = engine.fueltank
 
 // What the vehicle still needs before it will drive, in words.
 /datum/vehicle_survey/proc/missing()
 	. = list()
+	if (ship)
+		if (!helm)
+			. += "a ship's wheel"
+		if (!masts.len && !engine)
+			. += "a mast or an engine"
+		if (istype(engine, /obj/structure/engine/internal) && !tank)
+			. += "a fuel tank for the engine"
+		return
 	if (!engine)
 		. += "an engine"
 	if (!tank)
@@ -142,7 +182,7 @@
 
 /datum/vehicle_survey/proc/report()
 	if (refusal)
-		return "This cannot be made into a vehicle: [refusal]."
+		return "This cannot be made into a [ship ? "boat" : "vehicle"]: [refusal]."
 	var/list/lines = list("<b>[width] by [height] frames</b>, [frames.len] in all.")
 	var/list/found = list()
 	if (engine)
@@ -151,14 +191,18 @@
 		found += "\the [tank]"
 	if (seat)
 		found += "\the [seat]"
+	if (helm)
+		found += "\the [helm]"
+	if (masts.len)
+		found += "[masts.len] mast\s"
 	if (movers.len)
 		found += "[movers.len] wheel\s or track\s on the corners"
 	lines += found.len ? "Found on the frames: [english_list(found)]." : "Nothing is fitted on the frames yet."
 	var/list/need = missing()
 	if (need.len)
-		lines += "Before it will drive it still needs [english_list(need)]. Stand them on the frames; they can be fitted after assembly too."
+		lines += "Before it will [ship ? "sail" : "drive"] it still needs [english_list(need)]. Stand them on the frames; they can be fitted after assembly too."
 	else
-		lines += "It has everything a vehicle needs to drive."
+		lines += "It has everything a [ship ? "boat needs to sail" : "vehicle needs to drive"]."
 	if (loose_movers)
 		lines += "[loose_movers] wheel\s or track\s not on a corner frame will be left out."
 	return jointext(lines, "<br>")
@@ -192,13 +236,14 @@
 	if (S.engine && engine != S.engine)
 		engine = S.engine
 		engine.anchored = TRUE
-		engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
-		if (istype(src, /obj/structure/vehicleparts/axis/car))
-			engine.engineclass = "carengine"
-			engine.density = TRUE
-		else
-			engine.engineclass = "engine"
-		engine.update_icon()
+		if (istype(engine, /obj/structure/engine/internal))
+			engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
+			if (istype(src, /obj/structure/vehicleparts/axis/car))
+				engine.engineclass = "carengine"
+				engine.density = TRUE
+			else
+				engine.engineclass = "engine"
+			engine.update_icon()
 		.++
 	if (engine && S.tank && engine.fueltank != S.tank)
 		engine.fueltank = S.tank
@@ -212,6 +257,20 @@
 		S.seat.axis = src
 		wheel = S.seat.wheel
 		wheel.control = vehicle_assembly_frame(get_turf(S.seat), src)
+		.++
+	if (S.helm && S.helm.ship != src)
+		S.helm.anchored = TRUE
+		S.helm.dir = dir
+		S.helm.ship = src
+		.++
+	for (var/obj/structure/vehicleparts/movement/sail/M in S.masts)
+		if (M in masts)
+			continue
+		masts += M
+		M.axis = src
+		M.anchored = TRUE
+		M.dir = dir
+		M.update_icon()
 		.++
 	for (var/obj/structure/vehicleparts/movement/M in S.movers)
 		if (M.axis == src && (M in wheels))
@@ -301,6 +360,16 @@
 		M.connected = null
 		M.update_icon()
 	wheels = list()
+	for (var/obj/structure/vehicleparts/movement/sail/M in masts)
+		M.axis = null
+		M.anchored = FALSE
+		M.update_icon()
+	masts = list()
+	for (var/obj/O in components)
+		for (var/obj/structure/vehicleparts/shipwheel/W in get_turf(O))
+			if (W.ship == src)
+				W.ship = null
+				W.anchored = FALSE
 	for (var/obj/O in components)
 		if (istype(O, /obj/effect/pseudovehicle))
 			qdel(O)
@@ -315,6 +384,7 @@
 		if (engine.fueltank)
 			engine.fueltank.anchored = FALSE
 			engine.fueltank = null
+		engine.on = FALSE
 		engine.anchored = FALSE
 		engine = null
 	if (wheel)
@@ -342,11 +412,11 @@
 	if (!S.refusal)
 		var/list/need = S.missing()
 		if (need.len)
-			lines += "Before it will drive it still needs [english_list(need)]."
+			lines += "Before it will [ship ? "sail" : "drive"] it still needs [english_list(need)]."
 		else
-			lines += "It has everything a vehicle needs to drive."
+			lines += "It has everything a [ship ? "boat needs to sail" : "vehicle needs to drive"]."
 	var/weight = get_weight()
-	var/carry = engine ? min(maxpower, engine.maxpower * 2) : maxpower
+	var/carry = (engine && !ship) ? min(maxpower, engine.maxpower * 2) : maxpower
 	lines += "It weighs [weight]; [engine ? "this axis and engine move" : "this axis carries"] up to [carry]."
 	if (weight > carry)
 		lines += "It is too heavy to move."
@@ -412,13 +482,15 @@ var/global/list/vehicle_assembly_colors = list(
 			var/way = WWinput(H, "Which way does its front point?", "Vehicle assembly", "North", list("North", "East", "South", "West", "Cancel"))
 			if (!(way in ways))
 				return
-			var/new_name = player_input(H, "What do you want to name this vehicle?", null, null, "text", null, FALSE)
-			var/list/colors = assembly_colors(H)
-			var/paint = WWinput(H, "Choose this vehicle's color:", "Vehicle assembly", colors[1], colors)
+			var/new_name = player_input(H, "What do you want to name this [ship ? "boat" : "vehicle"]?", null, null, "text", null, FALSE)
+			var/paint = null
+			if (!ship)
+				var/list/colors = assembly_colors(H)
+				paint = WWinput(H, "Choose this vehicle's color:", "Vehicle assembly", colors[1], colors)
 			if (QDELETED(src) || get_dist(H, src) > 1 || components.len)
 				return
 			new_name = sanitize(copytext("[new_name]", 1, 40))
-			name = length(new_name) ? new_name : "[H]'s vehicle"
+			name = length(new_name) ? new_name : "[H]'s [ship ? "boat" : "vehicle"]"
 			if (paint in vehicle_assembly_colors)
 				color = vehicle_assembly_colors[paint]
 			var/why = assemble(ways[way])

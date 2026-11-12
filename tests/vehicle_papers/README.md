@@ -20,7 +20,10 @@ refusals (no frame under the axis, a single row, an L, too long), a 2 by 3
 bed assembled facing north with its parts fitted in one step, a second bed
 laid against it staying its own vehicle, driving and turning left and right,
 the same for beds facing east, south and west, an engine fitted after
-assembly, and taking a vehicle apart and assembling it again.
+assembly, and taking a vehicle apart and assembling it again. It then
+builds a boat of ship frames: refused on dry land, a car axis not taking ship
+frames, a hull with a wheel and a mast assembled facing east, moved, turned,
+taken apart and assembled again.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/assembly_probe.dm 300
 
