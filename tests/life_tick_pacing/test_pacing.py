@@ -52,8 +52,8 @@ class SchedulerResume(unittest.TestCase):
     def test_finished_records_an_unfinished_budgeted_run(self):
         finished = body(PROCESS, '/process/proc/finished(')
         early = finished.index('if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)')
-        self.assertIn('resume_pending = FALSE', finished[early:finished.index('else', early)])
-        self.assertIn('resume_pending = TRUE', finished[finished.index('else', early):])
+        self.assertIn('\tresume_pending = TRUE\n\tif (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)', finished)
+        self.assertIn('\t\tresume_pending = FALSE\n\treturn fire_result', finished)
         # An exhausted snapshot is normalized to a completed run first.
         self.assertLess(finished.index('!length(current_list)'), early)
         self.assertIn('var/tmp/resume_pending = FALSE', PROCESS)
