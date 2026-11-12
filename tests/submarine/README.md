@@ -38,7 +38,7 @@ Covers `ships/sea_life.dm` in a 30x30 fixture whose level 1 is a sea basin with 
 - **Water only:** sea animals swim open sea of their own depth zones and never enter rock or a boat's hull; one carried out of its waters swims back.
 - **Senses:** a diver two tiles off, a diver with a lit lamp four tiles off, or a sonar ping (`sea_noise()`, heard for six seconds within its range) scatters a shoal; a diver four tiles off without a lamp does not.
 - **Kinds:** darters swim back to their school; a hurt kelp turtle hurries off and stays on the shelf; a reef eel waits hidden in water against rock, bites a diver who comes within two tiles and goes back to its crevice; a drift jelly glows, stings a diver it touches and goes dark when dead.
-- **Butchering and art:** a dead shoal shows dead fish and gives raw fish only; every state exists (`icons/mob/sea_life.dmi`; the shoals use `icons/mob/fish.dmi`).
+- **Butchering and art:** a dead shoal shows dead fish and gives raw fish only; every state exists (`icons/mob/sea_life.dmi`, drawn by `tests/sprites/create_sea_life.py`; the shoals use `icons/mob/fish.dmi`).
 - **Spawning:** `sea_life_cycle()` (run by the ecology cycle) tops each kind up to its target in open water of its zones, eels against rock, spawns nothing more when full and stops at `sea_life_cap`.
 
 Not covered: a full human diver (bites through armour, suit tearing, hard suit against stings), Life() pacing on a live server, and a real client seeing the animals in the dark.
