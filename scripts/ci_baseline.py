@@ -709,7 +709,8 @@ SUITES = {
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
             'code/modules/persistence/world_time_stamps.dm',
-            'code/game/objects/structures/key_doors/key_door.dm')},
+            'code/game/objects/structures/key_doors/key_door.dm',
+            'tests/save_movement/source_adapter.py')},
     # Map merge/lint tooling ported from CM-SS13 and scripts/maplint.py over
     # every map; standard library only, no BYOND runtime.
     'map_tools': {'files': ('tests/map_tools/test_map_tools.py',),

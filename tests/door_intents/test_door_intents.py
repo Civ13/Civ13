@@ -1,11 +1,15 @@
 """Offline projection of door hand intents from production DM, without starting BYOND."""
 from pathlib import Path
 import re
+import sys
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 DOOR = (ROOT / 'code/game/objects/structures/door.dm').read_text()
 KEY_DOOR = (ROOT / 'code/game/objects/structures/key_doors/key_door.dm').read_text()
+sys.path.insert(0, str(ROOT / 'tests' / 'save_movement'))
+import source_adapter
 
 
 def proc_body(source, header):
@@ -183,3 +187,72 @@ class OrdinaryDoorKeyDispatch(unittest.TestCase):
                                   'istype(W, /obj/item/weapon/key) && istype(W, /obj/item/weapon/storage/belt/keychain)', 1)
         self.assertNotEqual(broken, KEY_DOOR)
         self.assertEqual(self.project(broken, 'chain', False, True, False)['checks'], 0)
+
+
+class CustomDoorKeyDispatch(unittest.TestCase):
+    """Project the custom key paths and shared toggle with fake engine effects."""
+
+    def project(self, source, kind, code, keys, locked):
+        events = []
+        door = SimpleNamespace(locked=locked)
+        user = SimpleNamespace(visible_message=lambda *messages: events.append(('message', *messages)))
+        item = SimpleNamespace(kind=kind, code=code,
+                               contents=[SimpleNamespace(kind='key', code=k) for k in keys])
+        env = {'SPAN_WARNING': lambda text: ('warning', text.replace('__exclamation__', '!')),
+               'SPAN_NOTICE': lambda text: ('notice', text),
+               'playsound': lambda *args: events.append(('sound', *args)),
+               'get_turf': lambda actor: actor,
+               'to_chat': lambda actor, text: events.append(('chat', text)),
+               'is_key': lambda obj: obj.kind == 'key',
+               'is_chain': lambda obj: obj.kind == 'chain',
+               'typed_iter': lambda objects, _type: (obj for obj in objects if obj.kind == 'key')}
+        original_fields = source_adapter.FIELDS
+        try:
+            source_adapter.FIELDS += ('locked',)
+            toggle = source_adapter.project(source,
+                '/obj/structure/simple_door/key_door/custom/proc/toggle_key_lock',
+                'src, user', env, method=True)
+        finally:
+            source_adapter.FIELDS = original_fields
+        lines = proc_body(source, '/obj/structure/simple_door/key_door/custom/attackby')
+        end = next(i for i, line in enumerate(lines)
+                   if line.startswith('\telse if (istype(W, /obj/item/weapon/lockpick))'))
+        branch = '\n'.join(lines[:end]).replace('istype(W, /obj/item/weapon/key)', 'is_key(W)')
+        branch = branch.replace('istype(W, /obj/item/weapon/storage/belt/keychain)', 'is_chain(W)')
+        # The projection translates DM negation even inside literals.
+        branch = branch.replace('lock!"', 'lock__exclamation__"')
+        dispatch = source_adapter.project('/proc/projected()\n' + branch + '\n', '/proc/projected',
+            'W, user, custom_code, toggle_key_lock', env)
+        dispatch(item, user, 42, lambda actor: toggle(door, actor))
+        return door.locked, events
+
+    def test_key_and_keychain_preserve_matching_and_feedback(self):
+        for initially_locked in (False, True):
+            for kind, code, keys, matches, mismatch in (
+                ('key', 42, [], True, None),
+                ('key', 1, [], False, 'This key does not match this lock!'),
+                ('chain', -1, [1, 42, 42], True, None),
+                ('chain', -1, [1, 2], False, 'None of the keys match this lock!'),
+                ('chain', 42, [], False, None),
+                ('other', -1, [], False, None),
+            ):
+                with self.subTest(locked=initially_locked, kind=kind, code=code, keys=keys):
+                    final, events = self.project(KEY_DOOR, kind, code, keys, initially_locked)
+                    self.assertEqual(final, not initially_locked if matches else initially_locked)
+                    if matches:
+                        label = 'notice' if initially_locked else 'warning'
+                        action = 'unlock' if initially_locked else 'lock'
+                        self.assertEqual(events[0], ('message', (label, '[user] ' + action + 's the door.'),
+                                                     (label, 'You ' + action + ' the door.')))
+                        self.assertEqual(events[1][0], 'sound')
+                        self.assertEqual(events[1][2:], ('sound/effects/door_lock_unlock.ogg', 100))
+                        self.assertEqual(len(events), 2)
+                    elif mismatch:
+                        self.assertEqual(events, [('chat', ('warning', mismatch))])
+                    else:
+                        self.assertEqual(events, [])
+
+    def test_negative_control_detects_a_missing_key_toggle(self):
+        broken = KEY_DOOR.replace('\t\t\ttoggle_key_lock(user)', '\t\t\treturn', 1)
+        self.assertNotEqual(broken, KEY_DOOR)
+        self.assertEqual(self.project(broken, 'key', 42, [], False), (False, []))
