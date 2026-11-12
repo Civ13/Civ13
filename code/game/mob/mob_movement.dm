@@ -816,7 +816,8 @@
 				move_delay += 1.00
 
 			else if (istype(mob.pulling, /obj/structure))
-				move_delay += 0.75
+				var/obj/structure/pulled_structure = mob.pulling
+				move_delay += pulled_structure.drag_delay(mob)
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)

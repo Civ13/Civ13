@@ -256,6 +256,39 @@ var/carriage_owners_about = FALSE
 	qdel(C)
 	carriage_check(!ann.buckled && !ann.driver && !crate.anchored && crate.density && !(craft3 in vehicle_crafts), "a destroyed carriage lets everyone off and takes its papers with it")
 
+// Hand carts (code/game/objects/structures/hand_cart.dm): the handles turn
+// toward the puller and the load sets how much the cart slows them.
+/proc/carriage_cart_checks()
+	var/mob/living/human/carriage_probe/pat = carriage_person(40, 40, "Pat")
+	var/obj/structure/closet/crate/cart/wooden/cart = new(locate(41, 40, 1))
+	var/obj/structure/closet/crate/plain = new(locate(45, 45, 1))
+	carriage_check(cart.dir == WEST, "a new cart shows its handles to the west as before")
+	var/empty = cart.drag_delay(pat)
+	carriage_check(empty > 0 && empty < plain.drag_delay(pat), "an empty cart drags more easily than a crate")
+	for (var/i in 1 to 4)
+		var/obj/item/stack/material/wood/W = new(cart)
+		W.amount = 50
+	var/loaded = cart.drag_delay(pat)
+	carriage_check(loaded > empty, "a loaded cart drags harder than an empty one")
+	for (var/i in 1 to 40)
+		var/obj/item/stack/material/wood/W = new(cart)
+		W.amount = 50
+	carriage_check(cart.drag_delay(pat) == 3, "a cart's drag is capped")
+	cart.pulledby = pat
+	pat.forceMove(locate(39, 40, 1))
+	cart.Move(locate(40, 40, 1), WEST)
+	carriage_check(cart.dir == WEST, "pulled west, the handles point west")
+	pat.forceMove(locate(39, 41, 1))
+	cart.Move(locate(39, 40, 1), WEST)
+	carriage_check(cart.dir == NORTH, "the handles turn north toward the puller")
+	pat.forceMove(locate(41, 41, 1))
+	cart.Move(locate(40, 40, 1), EAST)
+	carriage_check(cart.dir == EAST, "a puller off to the side leaves the handles along the step")
+	pat.forceMove(locate(40, 39, 1))
+	cart.Move(locate(40, 40, 1), SOUTH)
+	carriage_check(cart.dir == EAST, "a cart that did not move keeps its handles")
+	cart.pulledby = null
+
 /world/New()
 	OpenPort("none")
 	try
@@ -272,6 +305,7 @@ var/carriage_owners_about = FALSE
 		if (!all_species.len)
 			makeDatumRefLists()
 		carriage_checks()
+		carriage_cart_checks()
 	catch(var/exception/e)
 		carriage_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "checks" = carriage_checks, "failures" = carriage_failures, "runtime_error" = carriage_runtime_error)), "result.json")
