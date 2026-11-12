@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--negative-control', choices=('bound', 'cleanup', 'forced', 'clock'))
+    parser.add_argument('--negative-control', choices=('bound', 'cleanup', 'forced', 'clock', 'forced-yield'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = args.output or Path(tempfile.mkdtemp(prefix='civ13-gc-profile-'))
@@ -34,6 +34,7 @@ def main():
             'bound': ('code/processes/garbage_profile.dm', '#define GC_PROFILE_TYPE_LIMIT 128', '#define GC_PROFILE_TYPE_LIMIT 10000', 'type rows stay bounded including overflow'),
             'cleanup': ('code/processes/garbage.dm', 'profile_cost(profile_type, FALSE, cleanup_started, cleanup_tick)', 'profile_discard(profile_type, FALSE, cleanup_started, cleanup_tick)', 'cleanup hook counts once across recursive and repeated qdel'),
             'forced': ('code/processes/garbage.dm', 'profile_cost(forced_type, TRUE, forced_started, forced_tick)', 'profile_discard(forced_type, TRUE, forced_started, forced_tick)', 'collector times actual forced deletion'),
+            'forced-yield': ('code/processes/garbage_profile.dm', 'row["forced_yielded"]++', 'row["forced_yielded"] += 0', 'forced samples remain isolated and track yields'),
             'clock': ('code/processes/garbage_profile.dm', 'elapsed += 864000', 'elapsed += 0', 'elapsed samples handle one midnight wrap'),
         }
         relative, before, after, expected = controls[args.negative_control]
