@@ -309,8 +309,9 @@ var/global/list/car_workshop_prototypes = list()
 	qdel(B)
 	if (!A)
 		return null
-	if (works_spec(model))
-		A.name = lowertext(model)
+	var/list/works = works_spec(model)
+	if (works)
+		works_fit(A, works + list("name" = model))
 	var/list/required = costs(model)
 	for (var/key in required)
 		stock[key] -= required[key]
