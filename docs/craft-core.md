@@ -185,7 +185,10 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   `SEA_CELL_PITCH` tiles by tide races (`/turf/.../saltwater/tide_race`, dense,
   nothing passes or is built on them) `SEA_CELL_MARGIN` wide on every side, so
   nobody in one cell sees or reaches the next. `sea_cell_of()`,
-  `sea_cell_box()`, `sea_home_cell()` (the middle one). A cell is a square of
+  `sea_cell_box()`, `sea_home_cell()` (the middle one). The home waters are a
+  block of `SEA_HOME_SPAN` cells on a side round it with no race inside
+  (`sea_home_block()`); every tile of the block reads as the home cell, whose
+  box is the whole block. A cell is a square of
   the one level, not a level: saves, digging, weather and lighting are those of
   any surface map, and nothing grows the world.
 - **Pool** (`/datum/plane_pool/sea`, `sea_pool()`). Its "planes" are cell
@@ -215,8 +218,9 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   minute under way.
 - On an open-sea world the lookout, the sea chart and the berth menu only see
   the ship's own cell (`sea_same_waters()`).
-- The home island is built by `open_sea_prepare()` the first time the world
-  boots, while the middle of the home waters is still open sea.
+- The home island is drawn into the region map by
+  `tools/open_sea/make_map.py`. On a map whose home waters are empty (a
+  fixture), `open_sea_prepare()` raises a small one instead.
 - **The harbour office** (`naval/sea_office.dm`). `sea_office_place()` stands
   a board on the home island. It is a contract board whose poster is the
   world: `fill()` offers up to four `/obj/craft_contract/sea` jobs when

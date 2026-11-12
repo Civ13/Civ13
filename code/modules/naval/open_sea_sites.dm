@@ -9,7 +9,7 @@
 // site: up to SEA_KEPT_CAP sites with one stay for good.
 //
 // Building is plain DM over the cell's water, so it needs no map files and
-// the same code builds the home island the first time an open-sea world boots.
+// the same code raises a home island on a map that has none drawn in.
 // ============================================================
 
 var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this world
@@ -156,7 +156,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	S.seed = isnum(state["seed"]) ? state["seed"] : 1
 	S.charted = state["charted"] ? 1 : 0
 	var/n = state["cell"]
-	if (isnum(n) && n >= 1 && n <= sea_cell_count() && n != sea_home_cell())
+	if (isnum(n) && n >= 1 && n <= sea_cell_count() && !sea_cell_is_home(n))
 		S.cell = n
 		S.loaded = TRUE
 	return S
@@ -169,6 +169,13 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	// The half-widths an island is rolled between, in tiles.
 	var/radius_low = 12
 	var/radius_high = 22
+
+// TRUE when a spot lies in one of the round patches: each list(dx, dy, radius).
+/proc/sea_in_blob(dx, dy, list/blobs)
+	for (var/list/B in blobs)
+		if ((dx - B[1]) * (dx - B[1]) + (dy - B[2]) * (dy - B[2]) <= B[3] * B[3])
+			return TRUE
+	return FALSE
 
 // TRUE when this spot of the island must stay clear of trees and rocks.
 /datum/chart_site/sea/island/proc/keep_clear(dx, dy)
@@ -186,13 +193,30 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	var/p1 = dice.cast(360)
 	var/p2 = dice.cast(360)
 	var/p3 = dice.cast(360)
-	// A fresh pond off the middle.
-	var/pond_x = dice.cast(7) - 4
-	var/pond_y = dice.cast(7) - 4
-	var/pond_r = 1 + dice.cast(2)
-	if (abs(pond_x) < 3 && abs(pond_y) < 3)
-		pond_x += 5
-	var/reach = max(rx, ry) + 6
+	// Fresh ponds off the middle, and on a wide island outcrops of rock to
+	// mine: each list(dx, dy, radius). A small island has one pond.
+	var/list/ponds = list()
+	var/list/outcrops = list()
+	var/wide = min(rx, ry)
+	for (var/i = 1, i <= 1 + round(rx * ry / 1200), i++)
+		var/pond_x = dice.cast(7) - 4
+		var/pond_y = dice.cast(7) - 4
+		var/pond_r = 1 + dice.cast(2)
+		if (i > 1)
+			pond_x = dice.cast(wide) - round(wide / 2)
+			pond_y = dice.cast(wide) - round(wide / 2)
+			pond_r = 1 + dice.cast(2 + round(wide / 25))
+		if (abs(pond_x) < 3 + pond_r && abs(pond_y) < 3 + pond_r)
+			pond_x += 5 + pond_r
+		ponds += list(list(pond_x, pond_y, pond_r))
+	for (var/i = 1, i <= round(rx * ry / 2500), i++)
+		var/rock_x = dice.cast(wide) - round(wide / 2)
+		var/rock_y = dice.cast(wide) - round(wide / 2)
+		if (abs(rock_x) < 12 && abs(rock_y) < 12)
+			rock_x += 20
+		outcrops += list(list(rock_x, rock_y, 3 + dice.cast(4)))
+	// The shore wanders out to about 1.6 times the half-width at its capes.
+	var/reach = round(max(rx, ry) * 1.65) + 2
 	var/list/grass = list()
 	var/list/sand = list()
 	for (var/x = max(box[1], cx - reach), x <= min(box[3], cx + reach), x++)
@@ -207,8 +231,10 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 				continue
 			if (d > 1)
 				T.ChangeTurf(/turf/floor/beach/water/shallowsaltwater)
-			else if (sqrt((dx - pond_x) * (dx - pond_x) + (dy - pond_y) * (dy - pond_y)) <= pond_r && d < 0.6)
+			else if (d < 0.6 && sea_in_blob(dx, dy, ponds))
 				T.ChangeTurf(/turf/floor/beach/water)
+			else if (d < 0.7 && sea_in_blob(dx, dy, outcrops))
+				T.ChangeTurf(/turf/floor/dirt/underground)
 			else if (d > 0.8)
 				sand += T.ChangeTurf(/turf/floor/beach/sand) || T
 			else
@@ -231,13 +257,18 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 			new /obj/structure/wild/palm(T)
 		else if (dice.chance(1))
 			new /obj/structure/wild/rock(T)
+	// Game: a flock on any island with room, and one more for every wide
+	// stretch of grass after that.
 	if (grass.len >= 200)
-		var/turf/den = grass[dice.cast(grass.len)]
-		if (!keep_clear(den.x - cx, den.y - cy))
-			new /obj/effect/spawner/mobspawner/turkeys(den)
+		for (var/i = 1, i <= 1 + round(grass.len / 5000), i++)
+			var/turf/den = grass[dice.cast(grass.len)]
+			if (!keep_clear(den.x - cx, den.y - cy))
+				new /obj/effect/spawner/mobspawner/turkeys(den)
 	return grass.len + sand.len
 
-// The island of the home waters: larger, and clear where arrivals land.
+// The island of the home waters, clear where arrivals land. The region map
+// (tools/open_sea/make_map.py) has its own, far wider, drawn into it; this
+// one is raised only on a map whose home waters are empty, such as a fixture.
 /datum/chart_site/sea/island/home
 	name = "home island"
 	radius_low = 24
