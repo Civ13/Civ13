@@ -29,7 +29,7 @@
 			new/obj/structure/wild/smallbush/winter(SB.loc)
 			qdel(SB)
 		spawn(100)
-			change_weather(WEATHER_WET)
+			weather_roll(WEATHER_WET)
 		spawn(800)
 		for (var/turf/floor/beach/water/shallowsaltwater/W)
 			W.ChangeTurf(/turf/floor/beach/water/ice/salty)

@@ -51,6 +51,8 @@
 
 /obj/screen/plane_master/lighting/New()
 	..()
+	// Weather is drawn on this plane. Roofed areas cut it away (weather_chunks.dm).
+	filters += filter(type = "alpha", render_source = "*weather_roof", flags = MASK_INVERSE)
 	#ifdef OPENDREAM
 	appearance_flags |= KEEP_TOGETHER
 	invisibility = 0

@@ -261,11 +261,12 @@ var/global/list/nomads_fire_callbacks = list()
 	var/area/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (A.weather == WEATHER_WET)
+	var/falling = weather_at(src)
+	if (falling == WEATHER_WET)
 		if (A.climate != "semiarid" || A.climate != "jungle" || A.climate != "desert" || A.climate != "savanna" || season == "WINTER" || season == "SPRING")
 			if (prob(30))
 				qdel(src)
-	if (A.weather == WEATHER_EXTREME)
+	if (falling == WEATHER_EXTREME)
 		qdel(src)
 	if(isDeleted(src) || !loc) return
 

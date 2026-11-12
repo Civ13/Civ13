@@ -716,8 +716,8 @@ obj/structure/religious/monument
 	spawn(1800)
 		//very angry
 		if (power < 50)
-			if (weather == WEATHER_NONE)
-				change_weather_somehow()
+			if (weather_at(src) == WEATHER_NONE)
+				weather_system_spawn(WEATHER_SYSTEM_STORM, FALSE, x, y, 300)
 			visible_message("The gods are angry, sending heavy rains!")
 			if (prob(100-power))
 				var/diseasedone = FALSE
@@ -736,8 +736,8 @@ obj/structure/religious/monument
 		else if (power >= 50 && power < 100)
 			if (prob(100-power))
 				visible_message("Heavy winds and rain have destroyed the crops!")
-				if (weather == WEATHER_NONE)
-					change_weather_somehow()
+				if (weather_at(src) == WEATHER_NONE)
+					weather_system_spawn(WEATHER_SYSTEM_STORM, FALSE, x, y, 300)
 				for (var/obj/structure/farming/plant/P in range(30,loc))
 					P.icon_state = "[P.plant]-dead"
 					P.desc = "A dead [P.plant] plant."
@@ -752,13 +752,13 @@ obj/structure/religious/monument
 		//pleased
 		else if (power >= 150 && power < 250)
 			if (prob(power/250))
-				if (weather == WEATHER_WET)
-					change_weather_somehow()
+				if (weather_at(src) == WEATHER_WET)
+					weather_disperse(src)
 					visible_message("The gods have blessed us with good weather!")
 		//very pleased
 		else if (power >= 250)
-			if (weather == WEATHER_WET)
-				change_weather_somehow()
+			if (weather_at(src) == WEATHER_WET)
+				weather_disperse(src)
 			visible_message("The gods have blessed us with good weather!")
 			if (prob(50) && human_clients_mob_list.len>0)
 				if (prob(30))

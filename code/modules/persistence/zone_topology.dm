@@ -602,5 +602,6 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		var/list/fields = zone["fields"]
 		if(!A || A.persistence_zone_id != id || A.weather != fields["weather"] || A.weather_intensity != fields["weather_intensity"]) throw EXCEPTION("Restored local weather changed")
 		A.icon_state = fields["icon_state"]
+		A.weather_roof_mask() // a save from before the mask has "" for a roofed zone
 		TICK_CHECK
 		context.require_owner()

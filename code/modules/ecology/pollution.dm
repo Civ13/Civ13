@@ -187,7 +187,7 @@ var/global/pollution_cleaned_total = 0
 /turf/proc/pollution_cleanup_factor()
 	. = 1
 	var/area/A = loc
-	if (istype(A) && A.weather == WEATHER_WET)
+	if (istype(A) && weather_at(src) == WEATHER_WET)
 		. += 1
 	if ((locate(/obj/structure/wild/tree) in src) || (locate(/obj/structure/wild/palm) in src) || (locate(/obj/structure/wild/jungle) in src))
 		. += 2

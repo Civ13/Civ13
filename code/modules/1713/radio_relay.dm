@@ -203,12 +203,14 @@ var/global/list/civ_relay_outbound_queue = list()
 	if (++civ_relay_wear_seconds < CIV_RELAY_WEAR_SECONDS)
 		return
 	civ_relay_wear_seconds = 0
-	var/amount = CIV_RELAY_WEAR_FAIR
-	if (weather == WEATHER_WET)
-		amount = CIV_RELAY_WEAR_WET
-	else if (weather == WEATHER_EXTREME)
-		amount = CIV_RELAY_WEAR_EXTREME
 	for (var/obj/structure/telecom/relay/R in civ_telecom_devices)
+		// The weather over each mast, not one sky for the whole map.
+		var/amount = CIV_RELAY_WEAR_FAIR
+		switch (weather_at(R))
+			if (WEATHER_WET)
+				amount = CIV_RELAY_WEAR_WET
+			if (WEATHER_EXTREME)
+				amount = CIV_RELAY_WEAR_EXTREME
 		R.wear(amount)
 
 /proc/civ_relay_on_air_list()

@@ -431,8 +431,9 @@ var/global/datum/player_help_service/player_help_service = new
 		var/area/A = get_area(H)
 		if (A)
 			condition["outdoors"] = A.location == AREA_OUTSIDE ? TRUE : FALSE
-			condition["local_weather"] = A.weather == WEATHER_WET ? "Wet weather" : (A.weather == WEATHER_EXTREME ? "Extreme weather" : (A.weather == WEATHER_SMOG ? "Smog" : "No weather"))
-			if (A.location == AREA_OUTSIDE && A.weather != WEATHER_NONE)
+			var/local_weather = weather_at(H)
+			condition["local_weather"] = local_weather == WEATHER_WET ? "Wet weather" : (local_weather == WEATHER_EXTREME ? "Extreme weather" : (local_weather == WEATHER_SMOG ? "Smog" : "No weather"))
+			if (A.location == AREA_OUTSIDE && local_weather != WEATHER_NONE)
 				events += "Exposed to local weather"
 		condition["active_effects"] = events
 		condition["inventory"] = inventory_context(H)
