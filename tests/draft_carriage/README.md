@@ -8,6 +8,9 @@ and the pace it costs, the footprint and team lane for each facing, boarding
 people, deep water, a bridge), turning and when it is refused, hunger and the
 harness, the papers and the lock on the reins for strangers, saving the
 papers and the name, getting off, a dead horse and a destroyed carriage.
+It also checks the hand carts in `code/game/objects/structures/hand_cart.dm`:
+an empty cart drags more easily than a crate, the load makes it harder up to
+a cap, and the handles turn toward the puller and stay put on a blocked pull.
 
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
 
