@@ -5,7 +5,8 @@
 // from frames around an axis) is a craft with an axis body. It keeps the
 // same papers a ship has, read in a vehicle's words: a commander keeps them,
 // a commander or driver may take the controls, and a stranger can only force
-// them while one of the owners is in the world.
+// them while one of the owners is in the world. Its turret guns follow the
+// rule a ship's levers do: locked to strangers while no owner is about.
 //
 // The papers are opened from the driver's seat. They sit beside the vehicle
 // key: a keyed vehicle still needs its key, and a registered one also needs
@@ -193,6 +194,33 @@ var/global/list/vehicle_crafts = list()
 /obj/item/vehicleparts/wheel/modular/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (control && control.axis && control.axis.craft && !control.axis.papers_steer(mob))
 		return FALSE
+	return ..()
+
+// ---- The guns ----
+
+// The vehicle whose frame stands on this tile, or null.
+/proc/vehicle_axis_at(turf/T)
+	if (!T)
+		return null
+	for (var/obj/structure/vehicleparts/frame/F in T)
+		if (F.axis && !QDELETED(F.axis))
+			return F.axis
+	return null
+
+// Why this mob may not work a fitting of the vehicle standing here (its
+// guns), or null: the rule a ship's levers follow. Crew always may; a
+// stranger may only while one of the owners is in the world.
+/proc/vehicle_fitting_refusal(atom/at, mob/user)
+	var/obj/structure/vehicleparts/axis/A = vehicle_axis_at(get_turf(at))
+	var/datum/craft/vehicle/C = A ? A.craft : null
+	return (C && !QDELETED(C)) ? C.fitting_refusal(user) : null
+
+/obj/item/turret_controls/attack_self(mob/living/human/user)
+	if (turret)
+		var/locked = vehicle_fitting_refusal(turret, user)
+		if (locked)
+			to_chat(user, SPAN_WARNING(locked))
+			return
 	return ..()
 
 // ---- The driver's seat ----
