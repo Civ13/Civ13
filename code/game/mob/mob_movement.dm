@@ -630,7 +630,7 @@
 					standing_on_snow = 4
 				else if(SD.water_depth >= 50)
 					standing_on_snow = 2
-			if ((F_area.weather == WEATHER_WET && findtext(F_area.icon_state,"rain")) || F_area.weather == WEATHER_EXTREME)
+			if ((weather_at(F) == WEATHER_WET && findtext(weather_look_at(F),"rain")) || weather_at(F) == WEATHER_EXTREME)
 				if (F.may_become_muddy)
 					if (F_area.climate != "semiarid" || F_area.climate != "jungle" || F_area.climate != "desert" || F_area.climate != "savanna" || season == "WINTER" || season == "SPRING")
 						F.muddy = TRUE
@@ -704,8 +704,8 @@
 					to_chat(mob, "<span class = '[snow_span]'>[snow_message]</span>")
 					mob.next_snow_message = world.time+100
 
-			else if (F.muddy && !H.lizard && F_area.icon_state != "")
-				if (F_area.weather == WEATHER_EXTREME && findtext(F_area.icon_state,"monsoon"))
+			else if (F.muddy && !H.lizard && weather_look_at(F) != "")
+				if (weather_at(F) == WEATHER_EXTREME && findtext(weather_look_at(F),"monsoon"))
 					standing_on_snow = rand(4,5)
 				else
 					standing_on_snow = rand(2,3)

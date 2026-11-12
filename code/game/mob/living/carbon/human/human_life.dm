@@ -232,7 +232,7 @@
 			water -= ((0.01) * HUNGER_THIRST_MULTIPLIER * water_m)
 
 		else if (stat == CONSCIOUS) // about 77 minutes of food while active, ten times longer while idle
-			if (map.heat_wave || map.ID == MAP_NOMADS_DESERT) // about 26 minutes of water while active
+			if (map.ID == MAP_NOMADS_DESERT || weather_heat_at(src)) // about 26 minutes of water while active
 				nutrition -= ((0.27) * HUNGER_THIRST_MULTIPLIER * food_m * activity_m)
 				water -= ((0.7) * HUNGER_THIRST_MULTIPLIER * water_m * activity_m)
 			else
@@ -494,7 +494,7 @@
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
 	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered() && !seabed_diving_rating())
 		cold_wetness = 1
-	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
+	else if (mob_area.location == AREA_OUTSIDE && weather_at(exposure_turf) == WEATHER_WET && (findtext(weather_look_at(exposure_turf), "rain") || weather_look_at(exposure_turf) == "monsoon") && !under_canopy(exposure_turf))
 		cold_wetness = min(1, cold_wetness + 0.01)
 	else
 		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))

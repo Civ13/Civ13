@@ -379,7 +379,7 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/wind()
 	var/oldwind = winddirection
 	var/oldspeed = windspeedvar
-	winddirection = pick("North", "South", "East", "West")
+	winddirection = weather_veer(winddirection)
 	windspeedvar += pick(-1,0,1)
 	if (windspeedvar > 4)
 		windspeedvar = 4
@@ -1618,12 +1618,12 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 /obj/map_metadata/proc/season_phase_7(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	change_weather(WEATHER_WET)
+	weather_roll(WEATHER_WET)
 
 /obj/map_metadata/proc/season_phase_8(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	change_weather(WEATHER_WET)
+	weather_roll(WEATHER_WET)
 	season_schedule_phase(1200, "season_phase_9", epoch)
 
 /obj/map_metadata/proc/season_phase_9(var/epoch)

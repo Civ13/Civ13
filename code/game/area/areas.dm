@@ -48,6 +48,7 @@
 	icon = 'icons/effects/weather.dmi'
 	icon_state = ""
 	layer = 10
+	weather_roof_mask()
 
 	..()
 

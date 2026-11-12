@@ -385,7 +385,6 @@
       "code/processes/_process.dm": 1,
       "code/processes/mapswap.dm": 5,
       "code/processes/ticker.dm": 1,
-      "code/processes/weather.dm": 6,
       "code/setup.dm": 3,
       "code/world.dm": 7
     },

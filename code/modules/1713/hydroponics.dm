@@ -137,9 +137,10 @@
 	var/area/A = get_area(T)
 	if (!T || !A || A.location != AREA_OUTSIDE || (locate(/obj/roof) in T))
 		return null
-	if (findtext(A.icon_state, "snow_storm"))
+	var/falling = weather_look_at(T)
+	if (falling == "snow_storm")
 		return "frozen"
-	if (findtext(A.icon_state, "sandstorm"))
+	if (falling == "sandstorm")
 		return "destroyed"
 	return null
 

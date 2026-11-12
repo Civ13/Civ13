@@ -146,7 +146,8 @@ class GaiaWeatherTests(unittest.TestCase):
         selector = policy.body((ROOT / "code/modules/1713/weather.dm").read_text(),
                                "/proc/change_weather_somehow()")
         self.assertIn("possibilities = map.weather_policy_choices(possibilities)", selector)
-        self.assertIn("change_weather(pick(possibilities))", selector)
+        # The pick is one roll of the sky: a wet or extreme result sends a storm system.
+        self.assertIn("weather_roll(pick(possibilities))", selector)
 
     def test_controls_detect_missing_weighting_and_weighting_active_rain(self):
         pool = self.pools["SPRING"]

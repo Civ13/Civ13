@@ -21,9 +21,9 @@
 // sticking point; otherwise "rain", or null when nothing is falling.
 /proc/local_precipitation(turf/T, stick_c = 0)
 	var/area/A = get_area(T)
-	if (!A || !(A.weather == WEATHER_WET || A.weather == WEATHER_EXTREME) || A.weather_intensity <= 0)
+	if (!A || weather_intensity_at(T) <= 0)
 		return null
-	var/state = replacetext("[A.icon_state]", "rad_", "")
+	var/state = weather_look_at(T)
 	if (state in list("snow1", "snow2", "snow_storm"))
 		return "snow"
 	if (findtext(state, "rain") || findtext(state, "monsoon"))

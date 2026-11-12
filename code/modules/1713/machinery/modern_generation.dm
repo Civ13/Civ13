@@ -197,7 +197,7 @@ var/global/list/civ_generators = list()
 		if ("Afternoon") fraction = 0.8
 		if ("Evening") fraction = 0.15
 	// Night, Dark Night and unknown labels deliberately produce no output.
-	switch (A.weather)
+	switch (weather_at(src))
 		if (WEATHER_WET) fraction *= 0.5
 		if (WEATHER_SMOG) fraction *= 0.35
 		if (WEATHER_EXTREME) fraction *= 0.1

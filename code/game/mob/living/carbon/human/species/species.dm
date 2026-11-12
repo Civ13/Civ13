@@ -216,7 +216,7 @@
 		if (prob(12))
 			to_chat(H, SPAN_DANGER("[pick(heat_discomfort_strings)]"))
 
-		if (A.weather == WEATHER_EXTREME && findtext(A,"sandstorm"))
+		if (A.location == AREA_OUTSIDE && weather_look_at(H) == "sandstorm")
 			if (prob(15))
 				to_chat(H, SPAN_DANGER("The dust abrades your exposed flesh!"))
 			for (var/i in exposed_bp)
@@ -280,7 +280,7 @@
 		if (prob(12))
 			to_chat(H, SPAN_DANGER("[pick(cold_discomfort_strings)]"))
 
-		if (A.icon_state == "snow_storm" && A.location == AREA_OUTSIDE)
+		if (A.location == AREA_OUTSIDE && weather_look_at(H) == "snow_storm")
 			if (prob(12))
 				to_chat(H, SPAN_DANGER("The blizzard chills you to the bone!"))
 			H.adjustBurnLoss(0.8*dmod)

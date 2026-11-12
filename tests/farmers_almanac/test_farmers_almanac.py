@@ -29,18 +29,18 @@ def blocks(text, indent):
 
 
 def production_weather():
-    """(climate, season) -> (wet icon, storm icon) from apply_area_weather()."""
-    source = body(WEATHER, '/proc/apply_area_weather(var/area/caribbean/A)')
+    """(climate, season) -> (wet icon, storm icon) from climate_weather_state()."""
+    source = body(WEATHER, '/proc/climate_weather_state(climate, weather, weather_intensity)')
     table = {}
     for climates, climate_text in blocks(source, 2):
         for seasons, season_text in blocks(climate_text, 4):
             icons = {}
             weathers = list(blocks(season_text, 6))
             if not weathers:  # no inner switch: one outcome for every weather
-                icon = re.search(r'A\.icon_state = "([^"]*)"', season_text).group(1)
+                icon = re.search(r'look = "([^"]*)"', season_text).group(1)
                 icons = {'WEATHER_WET': icon, 'WEATHER_EXTREME': icon}
             for names, weather_text in weathers:
-                icon = re.search(r'A\.icon_state = "([^"]*)"', weather_text).group(1)
+                icon = re.search(r'look = "([^"]*)"', weather_text).group(1)
                 for name in names:
                     icons[name] = icon
                 if names == ['else']:

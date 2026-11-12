@@ -172,9 +172,9 @@
 		for (var/turf/floor/grass/G)
 			G.update_icon()
 		spawn(100)
-			change_weather(WEATHER_WET)
+			weather_roll(WEATHER_WET)
 		spawn(15000)
-			change_weather(WEATHER_WET)
+			weather_roll(WEATHER_WET)
 			spawn(1200)
 				return
 

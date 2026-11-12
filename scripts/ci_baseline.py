@@ -369,6 +369,11 @@ SUITES = {
     'lava_animal_remains': {'files': ('tests/lava_animal_remains/test_callback.py',),
         'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
             'code/modules/1713/natural_disasters.dm',)},
+    # Weather system icons are the existing sheet tiled by tools/weather/make_chunks.py.
+    'weather_systems': {'files': ('tests/weather_systems/test_icons.py',),
+        'paths': ('tests/weather_systems/', 'tools/weather/'),
+        'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
+                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py',),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm',
