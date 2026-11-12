@@ -81,6 +81,56 @@
 /proc/blank_writing_sheet(obj/item/weapon/paper/P)
 	return istype(P) && (P.type == /obj/item/weapon/paper || P.type == /obj/item/weapon/paper/parchment) && isnull(P.document_record) && !P.gcDestroyed && P.loc && !length(P.info) && !length(P.stamps) && !length(P.stamped) && !length(P.contents)
 
+// Blank sheets usually come clipped together in a paper bundle (Val,
+// 2026-11-11), so benches, the press and writers take them from one too.
+/proc/bundle_blank_sheets(obj/item/weapon/paper_bundle/B)
+	var/list/sheets = list()
+	if (!istype(B) || QDELETED(B))
+		return sheets
+	for (var/obj/item/weapon/paper/P in B.pages)
+		if (P.loc == B && blank_writing_sheet(P))
+			sheets += P
+	return sheets
+
+// Unclips P from B onto B's turf. A bundle left with one page becomes that
+// page, held where the bundle was.
+/proc/bundle_unclip_sheet(obj/item/weapon/paper_bundle/B, obj/item/weapon/paper/P)
+	if (!istype(B) || !istype(P) || !(P in B.pages))
+		return FALSE
+	var/turf/T = get_turf(B)
+	B.pages -= P
+	P.loc = T
+	P.layer = initial(P.layer)
+	if (B.pages.len > 1)
+		B.page = clamp(B.page, 1, B.pages.len)
+		B.update_icon()
+		return TRUE
+	var/obj/item/last = B.pages.len ? B.pages[1] : null
+	B.pages.Cut()
+	var/atom/holder = B.loc
+	var/mob/M = ismob(holder) ? holder : null
+	if (M)
+		M.drop_from_inventory(B)
+	if (last)
+		last.loc = M ? T : holder
+		last.layer = initial(last.layer)
+		if (M)
+			M.put_in_hands(last)
+	qdel(B)
+	return TRUE
+
+// Frees P from B so it can be used up. Once B has fallen apart around its
+// last page, that page is already loose and is let go of as well.
+/proc/bundle_release_sheet(obj/item/weapon/paper_bundle/B, obj/item/weapon/paper/P)
+	if (istype(B) && !QDELETED(B) && (P in B.pages))
+		return bundle_unclip_sheet(B, P)
+	if (!QDELETED(B) || !blank_writing_sheet(P))
+		return FALSE
+	var/mob/M = P.loc
+	if (istype(M))
+		M.drop_from_inventory(P)
+	return TRUE
+
 // Writing supplies that let research start at all: anyone may make them in
 // book research, from 5000 B.C. (the pen stays a Papermaking upgrade).
 var/global/list/book_research_writing_supplies = list(
@@ -96,25 +146,32 @@ var/global/list/book_research_writing_supplies = list(
 // Transcribing a chapter from memory
 // ------------------------------------------------------------
 
-/obj/item/weapon/book/proc/write_research_chapter(mob/living/human/H, obj/item/weapon/pen/P)
+// With no node_id the writer picks from what they know. A book lying on a
+// research bench passes the bench as anchor, and must stay on it throughout.
+/obj/item/weapon/book/proc/write_research_chapter(mob/living/human/H, obj/item/weapon/pen/P, node_id = null, atom/anchor = null)
 	if (!istype(H) || !map || !map.book_research_enabled() || !can_hold_research())
 		return FALSE
 	if (page_busy)
 		to_chat(H, SPAN_WARNING("Someone is already working on [src]."))
 		return FALSE
-	var/list/choices = list()
-	for (var/node_id in clean_recipe_node_ids(H.known_recipe_nodes))
-		if (!has_research_chapter(node_id))
-			choices[get_research_node(node_id).name] = node_id
-	if (!choices.len)
-		to_chat(H, SPAN_WARNING("There's nothing you know that isn't already in [src]."))
-		return FALSE
-	var/pick = player_input(H, "Which piece of your knowledge will you write down?", "Write a chapter", null, "anything", choices, TRUE)
-	if (!pick || !(pick in choices))
-		return FALSE
-	var/node_id = choices[pick]
+	if (isnull(node_id))
+		var/list/choices = list()
+		for (var/known_id in clean_recipe_node_ids(H.known_recipe_nodes))
+			if (!has_research_chapter(known_id))
+				choices[get_research_node(known_id).name] = known_id
+		if (!choices.len)
+			to_chat(H, SPAN_WARNING("There's nothing you know that isn't already in [src]."))
+			return FALSE
+		choices = sortAssoc(choices)
+		var/pick = player_input(H, "Which piece of your knowledge will you write down?", "Write a chapter", null, "anything", choices, TRUE)
+		if (!pick || !(pick in choices))
+			return FALSE
+		node_id = choices[pick]
 	var/datum/research_node/N = get_research_node(node_id)
-	var/obj/item/weapon/paper/sheet = locate() in list(H.l_hand, H.r_hand)
+	if (!N || !H.knows_recipe_node(node_id) || has_research_chapter(node_id) || page_busy)
+		return FALSE
+	var/atom/start_loc = loc
+	var/obj/item/weapon/paper/sheet = H.ready_blank_sheet()
 	if (!blank_writing_sheet(sheet))
 		to_chat(H, SPAN_WARNING("Hold a blank sheet of paper or parchment to write on."))
 		return FALSE
@@ -122,12 +179,16 @@ var/global/list/book_research_writing_supplies = list(
 	if (H.stats["stamina"][1] < cost)
 		to_chat(H, SPAN_WARNING("You are too tired to write a chapter now."))
 		return FALSE
+	if (H.too_dark_to_read())
+		return FALSE
 	var/time = scholar_write_time(N.era_tier, P, H)
 	to_chat(H, SPAN_NOTICE("You begin writing the chapter on [N.name] into [src]. This takes about [round(time / 600, 0.5)] minute\s."))
 	page_busy = TRUE
-	var/done = do_after(H, time, src)
+	var/done = do_reading(H, time, anchor ? anchor : src)
 	page_busy = FALSE
 	if (!done || QDELETED(src) || has_research_chapter(node_id) || !H.knows_recipe_node(node_id) || !recipe_held(H, P) || !recipe_held(H, sheet) || !blank_writing_sheet(sheet))
+		return FALSE
+	if (anchor && (QDELETED(anchor) || loc != start_loc || !H.Adjacent(anchor)))
 		return FALSE
 	if (!commit_written_chapter(H, node_id, sheet))
 		to_chat(H, SPAN_WARNING("You are too tired to finish the chapter."))
@@ -214,6 +275,9 @@ var/global/list/book_research_writing_supplies = list(
 	rip_page(H, choices[pick])
 
 /obj/item/weapon/book/proc/rip_page(mob/living/human/H, which)
+	// A stranger cannot tell where a chapter in cipher starts or ends.
+	if (istext(which) && cipher_refuses(H))
+		return FALSE
 	page_busy = TRUE
 	var/done = do_after(H, BOOK_RIP_TIME, src)
 	page_busy = FALSE

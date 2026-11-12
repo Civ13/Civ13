@@ -39,6 +39,10 @@ var/global/list/research_benches = list()
 	// like the other string vars (a list var wouldn't survive the save).
 	var/research_queue = ""
 	var/tmp/writing = FALSE    // transcription in progress (tmp: never persists)
+	// world.time of this bench's last analysis visit, and how many intervals
+	// of work the current visit stands for (see analysis_elapsed_scale()).
+	var/tmp/last_analysis_time = 0
+	var/tmp/analysis_scale = 1
 	// Item types already studied as samples toward the CURRENT assignment; each
 	// type only teaches something once. tmp: resets on reboot, no need to persist.
 	var/tmp/list/studied_samples = null
@@ -51,8 +55,25 @@ var/global/list/research_benches = list()
 	research_benches -= src
 	..()
 
+// How many analysis intervals have passed since this bench's last visit.
+// The process works through the bench list under a tick budget, and a list it
+// can't finish is resumed only on its next fire, so with several benches each
+// one can be visited every 20s or more instead of every 10s. Crediting the
+// time that actually passed keeps research at its designed pace. Visits are
+// never closer than one interval (one visit per fire), so 1 is the floor; the
+// cap stops a stalled scheduler from paying out a burst.
+/obj/structure/research_bench/proc/analysis_elapsed_scale(now = world.time)
+	var/interval = processes && processes.research_tree ? processes.research_tree.schedule_interval : RESEARCH_TICK_INTERVAL
+	if (!isnum(interval) || interval <= 0)
+		interval = RESEARCH_TICK_INTERVAL
+	. = 1
+	if (last_analysis_time > 0)
+		. = clamp((now - last_analysis_time) / interval, 1, RESEARCH_TICK_MAX_CATCHUP)
+	last_analysis_time = now
+
 // Called by /process/research_tree once per analysis interval.
 /obj/structure/research_bench/proc/analysis_tick()
+	analysis_scale = analysis_elapsed_scale()
 	if (book_mode())
 		book_analysis_tick()
 		return
@@ -87,7 +108,7 @@ var/global/list/research_benches = list()
 	// to drag the whole server forward" exploit.
 	if (!map.faction_has_active_researcher(faction))
 		return
-	map.add_research_ticks(faction, assigned_node, base_tick_rate)
+	map.add_research_ticks(faction, assigned_node, round(base_tick_rate * analysis_scale, 0.1))
 	// Push a refresh to anyone currently viewing this bench. There's no
 	// blind polling (see ui_interact()) -- this is the only thing that
 	// changes this bench's own data outside of a player's own Topic() call
@@ -111,7 +132,7 @@ var/global/list/research_benches = list()
 	if (!map || !faction || faction == "none")
 		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
-	if (!N || N.min_bench_tier > tier)
+	if (!N || N.min_bench_tier > tier || research_node_dormant(N))
 		return FALSE
 	var/status = map.node_status(faction, node_id)
 	return status == RNODE_AVAILABLE || status == RNODE_IN_PROGRESS
@@ -338,7 +359,30 @@ var/global/list/research_benches = list()
 /obj/structure/research_bench/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	if (!ishuman(user))
 		return
-	var/mob/living/human/H = user
+	var/list/data = bench_ui_data(user)
+	if (!data)
+		return
+
+	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
+	if (!ui)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_bench.tmpl", name, 900, 680)
+		// "basic" layout: just the content region, none of the stock SS13
+		// NanoUI chrome (title bar/status icon) that the default layout wraps
+		// around every UI -- this window is all parchment, edge to edge.
+		ui.set_layout_key("basic")
+		ui.add_stylesheet("research_tree.css")
+		ui.add_script("research_tree.js")
+		ui.set_initial_data(data)
+		ui.open()
+		// No auto_update: that polls and fully re-renders every ~1s regardless
+		// of whether anything changed, which is what was causing the whole
+		// window to visibly flash/reset constantly. Ticks land every 10s at
+		// most (see analysis_tick()), and every player action already pushes
+		// its own refresh via Topic() -- so updates now only fire when this
+		// bench's data actually changes, not on a blind fixed heartbeat.
+
+// Everything the bench screen shows H, or null without a map.
+/obj/structure/research_bench/proc/bench_ui_data(mob/living/human/H)
 	var/list/data = list()
 	data["bench_tier"] = tier
 	data["max_tier"] = MAX_BENCH_TIER
@@ -416,7 +460,12 @@ var/global/list/research_benches = list()
 		var/datum/research_node/QN = get_research_node(qid)
 		qnames += QN ? QN.name : qid
 	data["queue_names"] = qnames
-	data["can_queue"] = can_manage
+	data["can_queue"] = can_manage || book_mode
+	// Values shared by every node of this refresh in book mode.
+	var/list/book_cache = null
+	if (book_mode)
+		var/obj/item/weapon/pen/held_pen = H.held_writing_pen()
+		book_cache = list("books" = placed_books(), "queue" = queue_list(), "instruments" = list(), "desk_rate" = H.scholar_desk_rate(), "tool_rate" = H.research_tool_rate(), "pen_rate" = held_pen ? scholar_pen_rate(held_pen) : 0, "supplies" = supply_map())
 
 	// Nodes are grouped into standalone TREES (Main first, then specialized
 	// trees like Agriculture), each rendered as its own switchable tab; within
@@ -425,9 +474,11 @@ var/global/list/research_benches = list()
 	var/list/tree_index = list()        // tree name => tree entry (sent to UI)
 	var/list/tree_layer_index = list()  // tree name => (category => layer entry)
 	if (!map)
-		return
+		return null
 	for (var/node_id in research_nodes)
 		var/datum/research_node/N = research_nodes[node_id]
+		if (research_node_dormant(N))
+			continue
 		var/list/tree_entry = tree_index[N.tree]
 		if (!tree_entry)
 			// idx is the 0-based tab position (Main = 0). Carried as a data field
@@ -497,7 +548,7 @@ var/global/list/research_benches = list()
 			prereq_ids += req
 			var/datum/research_node/RN = get_research_node(req)
 			prereq_names += RN ? RN.name : req
-		layer_entry["nodes"] += list(list(
+		var/list/node_entry = list(
 			"id" = node_id,
 			"name" = N.name,
 			"era_tier" = N.era_tier,
@@ -513,6 +564,7 @@ var/global/list/research_benches = list()
 			"prereq_ids" = jointext(prereq_ids, ","),
 			"prereq_names" = prereq_names.len ? jointext(prereq_names, ", ") : "None",
 			"recipe_names" = get_node_recipe_names(node_id),
+			"effect" = research_node_effect_text(node_id),
 			"status_text" = status_text,
 			"status_class" = status_class,
 			"detail" = detail,
@@ -530,26 +582,14 @@ var/global/list/research_benches = list()
 			"prototype_name" = (N.mode == RESEARCH_MODE_PROTOTYPE) ? N.prototype_display_name() : null,
 			// Queueable: staff can line up any not-done node that isn't the current
 			// subject (the queue handler rejects duplicates / already-queued).
-			"queueable" = !book_mode && can_manage && status != RNODE_DONE && node_id != assigned_node))
+			"queueable" = !book_mode && can_manage && status != RNODE_DONE && node_id != assigned_node)
+		if (book_mode)
+			var/list/book_fields = book_node_ui(H, node_id, book_cache)
+			for (var/field in book_fields)
+				node_entry[field] = book_fields[field]
+		layer_entry["nodes"] += list(node_entry)
 	data["trees"] = trees
-
-	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
-	if (!ui)
-		ui = new /datum/nanoui/tgui(user, src, ui_key, "research_bench.tmpl", name, 900, 680)
-		// "basic" layout: just the content region, none of the stock SS13
-		// NanoUI chrome (title bar/status icon) that the default layout wraps
-		// around every UI -- this window is all parchment, edge to edge.
-		ui.set_layout_key("basic")
-		ui.add_stylesheet("research_tree.css")
-		ui.add_script("research_tree.js")
-		ui.set_initial_data(data)
-		ui.open()
-		// No auto_update: that polls and fully re-renders every ~1s regardless
-		// of whether anything changed, which is what was causing the whole
-		// window to visibly flash/reset constantly. Ticks land every 10s at
-		// most (see analysis_tick()), and every player action already pushes
-		// its own refresh via Topic() -- so updates now only fire when this
-		// bench's data actually changes, not on a blind fixed heartbeat.
+	return data
 
 /obj/structure/research_bench/Topic(href, href_list)
 	if (!istype(usr, /mob/living/human))
@@ -570,6 +610,24 @@ var/global/list/research_benches = list()
 			book_copy_chapter(H)
 		else if (href_list["study_shelf"])
 			book_study_shelf(H)
+		else if (href_list["study"])
+			book_study_node(H, href_list["study"])
+		else if (href_list["copy"])
+			book_copy_node(H, href_list["copy"])
+		else if (href_list["copy_all"])
+			book_copy_all(H, text2num(href_list["copy_all"]))
+		else if (href_list["write"])
+			book_write_node(H, href_list["write"])
+		else if (href_list["queue"])
+			book_queue_node(H, href_list["queue"])
+		else if (href_list["unqueue"])
+			book_unqueue_node(H, href_list["unqueue"])
+		else if (href_list["clear_queue"])
+			set_queue(null)
+		else if (href_list["stop_research"])
+			book_stop_research(H)
+		else if (href_list["toggle_rush"])
+			book_toggle_rush(H)
 		GLOB.nanomanager.update_uis(src)
 		return
 	if (!H.civilization || H.civilization == "none")
@@ -623,10 +681,12 @@ var/global/list/research_benches = list()
 	if (!map || !map.is_node_done(faction, node_id))
 		to_chat(H, SPAN_WARNING("You can only document research your faction has completed."))
 		return
+	if (H.too_dark_to_read())
+		return
 	var/wtime = is_book ? RESEARCH_BOOK_WRITE_TIME : RESEARCH_NOTES_WRITE_TIME
 	to_chat(H, SPAN_NOTICE("You begin [is_book ? "transcribing a full research book" : "jotting down research notes"] on [N.name]..."))
 	writing = TRUE
-	if (!do_after(H, wtime, src))
+	if (!do_reading(H, wtime, src))
 		writing = FALSE
 		return
 	writing = FALSE

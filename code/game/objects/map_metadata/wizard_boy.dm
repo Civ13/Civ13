@@ -46,6 +46,7 @@
 		sabotage = new /datum/moldy_sabotage(src)
 		spawn(30)
 			load_houses()
+			mark_school_property()
 		spawn(35)
 			load_stats()
 		spawn(100)

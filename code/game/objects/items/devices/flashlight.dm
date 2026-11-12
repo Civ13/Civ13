@@ -23,6 +23,8 @@
 	var/uses_batteries = TRUE
 	var/list/refuel_reagents = null
 	var/empty_message = "has dead batteries"
+	// Burns with a real flame when on, so it can light candles and smokables.
+	var/open_flame = FALSE
 
 /obj/item/flashlight/initialize()
 	..()
@@ -125,6 +127,7 @@
 	turn_on_sound = 'sound/effects/Custom_flare.ogg'
 	fuel = 0
 	uses_batteries = FALSE
+	open_flame = TRUE
 	slot_flags = SLOT_POCKET|SLOT_BELT
 
 	var/burnt_out = FALSE

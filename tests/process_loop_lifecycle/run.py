@@ -23,15 +23,22 @@ source = '\n'.join(re.search(pattern, raw[index]).group() for index, patterns in
 defines = (r/'code/processes/___defines.dm').read_text()
 macros = '\n'.join(line for line in defines.splitlines() if line.startswith(('#define PROCESS_TICK_CHECK_RETURNED_EARLY ', '#define PROCESS_LIST_CHECK ', '#define PROCESS_TICK_CHECK ')))
 assert len(macros.splitlines()) == 3
-if a.negative_control == 'relay-result':
-    old = '\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n'
-    assert source.count(old) == 1
-    source = source.replace(old, '')
-elif a.negative_control == 'exhausted-snapshot':
-    old = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
-    assert source.count(old) == 1
-    source = source.replace(old, 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)')
-    source = source.replace('\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n', '')
+if a.negative_control in ('relay-result', 'exhausted-snapshot'):
+    normalization = '\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n'
+    old_guard = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
+    new_guard = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)'
+    assert source.count(normalization) == 1
+    assert source.count(old_guard) + source.count(new_guard) == 1
+    if a.negative_control == 'relay-result':
+        # Keep exhausted-list cleanup but deliberately leave the EARLY result.
+        # On the older guard the existing second test already performs cleanup.
+        replacement = ('' if old_guard in source else
+                       '\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tcurrent = null\n\t\tcurrent_list = null\n')
+        source = source.replace(normalization, replacement, 1)
+    else:
+        # Restore the historical defect: an exhausted EARLY snapshot survives.
+        source = source.replace(normalization, '', 1)
+        source = source.replace(old_guard, new_guard, 1)
 elif a.negative_control == 'token':
     for old,new in [('if (!isRunning || run_token != token)', 'if (!isRunning)'), ('while (isRunning && run_token == token)', 'while (isRunning)')]:
         assert source.count(old) == 1

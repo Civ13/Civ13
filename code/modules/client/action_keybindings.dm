@@ -18,14 +18,15 @@
 		"storage" = list("Open worn storage (cycle)", "open-worn-storage", list("CTRL+I"), list("I", "CTRL+I")),
 		"storage_back" = list("Open backpack / back storage", "open-back-storage", list("CTRL+P"), list("P", "CTRL+P")),
 		"storage_belt" = list("Open belt storage", "open-belt-storage", list("CTRL+K"), list("K", "CTRL+K")),
-		"storage_clothing" = list("Open harness / webbing / pockets", "open-clothing-storage", list("CTRL+SHIFT+I"), list("SHIFT+I", "CTRL+SHIFT+I")))
+		"storage_clothing" = list("Open harness / webbing / pockets", "open-clothing-storage", list("CTRL+SHIFT+I"), list("SHIFT+I", "CTRL+SHIFT+I")),
+		"resist" = list("Resist (escape grab, cuffs, buckle, fire)", "Resist", list("CTRL+B"), list("CTRL+B")))
 	return catalog
 
 // Actions added after players had already saved bindings. Their defaults give
 // way to any key a player saved for another action, so an older saved layout
 // (for example prone on K) is kept instead of failing validation and resetting.
 /proc/action_keybinding_yielding()
-	return list("storage", "storage_back", "storage_belt", "storage_clothing")
+	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist")
 
 /proc/action_keybinding_modes()
 	return list("macro", "hotkeymode")

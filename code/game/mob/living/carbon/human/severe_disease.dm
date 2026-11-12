@@ -67,13 +67,44 @@
 	else if (disease && disease_type == "flu")
 		disease_treatment = TRUE
 
+// Illnesses that pass between people standing close together. Cholera comes
+// only from swallowed germs (unboiled water) and typhus only from fleas, so
+// neither spreads from a sick person or a body.
+var/global/list/contagious_diseases = list("flu", "plague")
+
+// Germs swallowed in food or drink get one infection roll per swallow, scaled
+// by the dose actually swallowed: 25% per unit. The germ reagents themselves
+// are inert in the stomach, so this roll is the only ingestion route.
+var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
+
+/mob/living/human/proc/swallow_germs(datum/reagents/swallowed)
+	if (!swallowed || disease || droid || orc || crab || inducedSSD || (status_flags & GODMODE))
+		return null
+	var/dmod = 1
+	if (find_trait("Weak Immune System"))
+		dmod = 2
+	if (find_trait("Strong Immune System"))
+		dmod = 0.2
+	for (var/kind in swallowed_germs)
+		var/amount = swallowed.get_reagent_amount(kind)
+		if (amount <= 0 || (kind in disease_immunity) || resists_disease(kind))
+			continue
+		if (prob(min(amount * 25 * dmod, 100)))
+			disease = TRUE
+			disease_type = kind
+			disease_progression = 0
+			disease_treatment = 0
+			disease_course = 0
+			return kind
+	return null
+
 /mob/living/human/proc/acquire_nearby_disease()
 	if (inducedSSD || droid || disease)
 		return
 	for (var/mob/living/human/H in range(2, src))
-		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || (H.disease_type in list("none", "malaria", "zombie")))
+		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || !(H.disease_type in contagious_diseases))
 			continue
-		var/chance = H.stat == DEAD ? 3 : 1
+		var/chance = (H.stat == DEAD ? 3 : 1) * disease_node_scale()
 		if (find_trait("Weak Immune System"))
 			chance *= 2
 		if (istype(wear_mask, /obj/item/clothing/mask/sterile))
@@ -88,7 +119,7 @@
 			disease_course = 0
 			return
 	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity) && !resists_disease("flu"))
-		if (prob(find_trait("Weak Immune System") ? 0.4 : 0.2))
+		if (prob((find_trait("Weak Immune System") ? 0.4 : 0.2) * disease_node_scale()))
 			disease = TRUE
 			disease_type = "flu"
 			disease_progression = 0

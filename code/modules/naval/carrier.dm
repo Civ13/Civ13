@@ -309,7 +309,8 @@
 	if (!vessel)
 		return "The wheel is not connected to a ship."
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"]."
+	var/datum/craft/dark_craft = craft_of_vessel(vessel, FALSE)
+	return "[capitalize(vessel.name)]: [speeds[vessel.speed + 1]], bow to the [dir2text(vessel.dir)], anchor [vessel.anchored ? "down" : "up"][(dark_craft && dark_craft.running_dark) ? ", running dark" : ""][(dark_craft && dark_craft.grapple) ? ", held by grappling lines" : ""]."
 
 /obj/structure/vessel_helm/examine(mob/user)
 	..()
@@ -318,12 +319,55 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Chart", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
+	var/datum/craft/own = ship_craft()
+	var/dark = own && own.running_dark
+	var/list/options = list("Chart", "Ship's papers", "Hail a ship", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", dark ? "Show her lights" : "Run dark", (own && own.grapple) ? (own.grapple.thrower == own ? "Cast off the grapple" : "Cut the grapple") : "Grapple a ship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
 	if (choice == "Chart")
 		to_chat(H, vessel.chart_text())
+		var/datum/craft/charted = ship_craft()
+		if (charted)
+			to_chat(H, charted.sea_chart_text())
+		return
+	if (choice == "Ship's papers")
+		papers(H)
+		return
+	if (choice == "Hail a ship")
+		var/datum/craft/hailing = ship_craft()
+		if (hailing)
+			hailing.hail_menu(H, src)
+		return
+	// A registered ship answers to her crew (ship_papers.dm).
+	switch (steer_access(H))
+		if (CRAFT_HELM_CHAINED)
+			to_chat(H, SPAN_WARNING("The wheel is chained. The [vessel.name] is registered and none of her owners are about."))
+			return
+		if (CRAFT_HELM_FORCE)
+			if (!force_wheel(H))
+				return
+	var/datum/craft/held = ship_craft()
+	if (choice == "Grapple a ship" || choice == "Cast off the grapple" || choice == "Cut the grapple")
+		if (held)
+			held.grapple_menu(H, src)
+		return
+	if (held && held.grapple && (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west")))
+		to_chat(H, SPAN_WARNING(held.grapple_refusal()))
+		return
+	if (choice == "Make for a berth")
+		var/datum/craft/docking = ship_craft()
+		if (docking)
+			docking.dock_menu(H, src)
+		return
+	own = ship_craft()
+	dark = own && own.running_dark
+	if (choice == "Run dark" || choice == "Show her lights")
+		if (own)
+			own.dark_menu(H, src, choice == "Run dark")
+		return
+	if (dark && (choice in list("Full ahead", "Half ahead", "Deck lights on")))
+		to_chat(H, SPAN_WARNING("The [vessel.name] runs dark: she shows no lights and makes slow ahead at most. Show her lights first."))
 		return
 	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < vessel.fuel_burn(VESSEL_SPEED_SLOW))
 		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point below decks first."))
@@ -342,8 +386,11 @@
 			if (vessel.anchored)
 				to_chat(H, SPAN_WARNING("Weigh anchor before coming about."))
 				return
-			if (!vessel.turn_to(heading))
+			if (!vessel.order_turn(heading))
 				to_chat(H, SPAN_WARNING("The ship cannot come about here: [vessel.last_refusal]."))
+				return
+			if (vessel.turning_to)
+				vessel.crew_message(SPAN_NOTICE("[H] at the wheel: coming about to the [dir2text(heading)]. Stand clear of the marked water."))
 				return
 	vessel.crew_message(SPAN_NOTICE("[H] at the wheel: [choice]. [status_text()]"))
 
@@ -459,7 +506,7 @@
 /obj/structure/vessel_lever/elevator/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
-	var/result = operate(H)
+	var/result = vessel_fitting_refusal(ship(), H) || operate(H)
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
@@ -545,7 +592,7 @@
 /obj/structure/vessel_lever/catapult/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
-	var/result = launch(H)
+	var/result = vessel_fitting_refusal(ship(), H) || launch(H)
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
@@ -648,30 +695,37 @@
 	var/turf/surface = V ? locate(here.x, here.y, V.base_z) : locate(here.x, here.y, multiz_level_below(here.z) || here.z)
 	if (!surface)
 		surface = here
-	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
-		var/turf/T = get_turf(S)
-		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
-			continue
-		. += "Ship: [S.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
+	var/datum/craft/mine = V ? craft_of_vessel(V, FALSE) : null
+	// Modular boats, and further down aircraft: the same lines a ship's
+	// lookout reads on the sea chart (naval/craft_chart.dm).
+	. += sea_boat_contacts(surface, VESSEL_RADAR_RANGE, mine ? mine.party() : null)
 	for (var/datum/vessel/O in naval_vessels)
 		if (O == V || !O.placed || O.base_z != surface.z)
 			continue
 		var/turf/T = locate(O.ox + round((O.box_w() - 1) / 2), O.oy + round((O.box_h() - 1) / 2), O.base_z)
 		if (!T || get_dist(T, surface) > VESSEL_RADAR_RANGE)
 			continue
-		. += "Vessel: [O.name], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(O.dir)][O.speed > 0 && !O.anchored ? "" : ", stopped"]."
-	for (var/obj/structure/vehicleparts/axis/aircraft/A in airborne_aircraft)
-		var/turf/T = get_turf(A)
-		if (!T || multiz_level_below(T.z) != surface.z)
+		var/datum/craft/theirs = craft_of_vessel(O, FALSE)
+		var/known = !theirs || !theirs.running_dark || (mine && mine.knows(theirs))
+		. += "Vessel: [known ? O.name : "unknown contact"], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(O.dir)][O.speed > 0 && !O.anchored ? "" : ", stopped"]."
+	// Player-built hulls (naval/built_hull.dm).
+	for (var/datum/craft/C in crafts)
+		if (C == mine || istype(C.body, /datum/craft_body/template))
 			continue
-		var/turf/below = locate(T.x, T.y, surface.z)
-		if (!below || get_dist(below, surface) > VESSEL_RADAR_RANGE)
+		var/turf/T = C.centre()
+		if (!T || T.z != surface.z || get_dist(T, surface) > VESSEL_RADAR_RANGE)
 			continue
-		. += "Aircraft: [A.name], [get_dist(below, surface)] tiles [submarine_bearing(surface, below)], heading [dir2text(A.dir)][A.flight_state == AIRCRAFT_CRUISE ? ", high" : ", low"]."
+		var/known = !C.running_dark || (mine && mine.knows(C))
+		. += "Hull: [known ? C.name : "unknown contact"], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], bow to the [dir2text(C.body.heading())][C.making_way() ? "" : ", stopped"]."
+	. += sea_aircraft_contacts(surface, VESSEL_RADAR_RANGE, mine ? mine.party() : null)
 
 /obj/structure/vessel_radar/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
+	var/locked = vessel_fitting_refusal(ship(), H)
+	if (locked)
+		to_chat(H, SPAN_WARNING(locked))
+		return
 	var/list/lines = contacts()
 	to_chat(H, SPAN_NOTICE("The radar sweeps [VESSEL_RADAR_RANGE] tiles around the ship."))
 	if (!lines.len)

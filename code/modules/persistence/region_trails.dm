@@ -163,6 +163,9 @@ var/global/list/region_trail_next_request = list()
 	if(!isturf(T)) return FALSE
 	var/area/A = get_area(T)
 	if(!A || A.location != AREA_OUTSIDE || turf_is_above_ground(T)) return FALSE
+	// The open sea has no border to walk to: the way out is a landing on the
+	// shore of the home island (naval/open_sea.dm).
+	if(open_sea_world()) return open_sea_landing_at(T)
 	var/d = REGION_TRAIL_EDGE_TILES
 	return T.x <= d || T.y <= d || T.x > world.maxx - d || T.y > world.maxy - d
 
@@ -171,6 +174,7 @@ var/global/list/region_trail_next_request = list()
 /proc/region_trail_build_refusal(mob/user, result_type)
 	if(result_type != /obj/structure/region_gate/trail_marker) return null
 	if(region_trail_at_edge(get_turf(user))) return null
+	if(open_sea_world()) return "On the open sea a trail marker is a landing. Build it on dry ground at the shore of the home island, within [OPEN_SEA_LANDING_TILES] tiles of the water."
 	return "Trails lead out of the land from its edge. Build the trail marker outdoors, on the ground, within [REGION_TRAIL_EDGE_TILES] tiles of the edge of the world."
 
 /proc/region_trail_name(id)

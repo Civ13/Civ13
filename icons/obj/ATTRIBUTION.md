@@ -27,3 +27,11 @@ these states must keep this attribution and the same licence.
 
 The `bipod` and `weapon_light` states (drawn under a rifle) were drawn for Civ13
 (2026-11-08) and are under the same terms as the rest of Civ13's art.
+
+## clothing/diving.dmi and icons/mob/diving.dmi
+
+All states (`diving_dress`, `diving_helmet`, `hard_dive_suit`, `hard_dive_helmet`,
+`diving_bottles`; item icons and the four-direction worn sprites) were drawn for
+Civ13 (2026-11-12), pixel by pixel from a fixed palette by
+`tests/sprites/create_diving_gear.py`. No borrowed or generated artwork. They are
+under the same terms as the rest of Civ13's art.

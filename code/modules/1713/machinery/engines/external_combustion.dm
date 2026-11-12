@@ -8,6 +8,7 @@
 	desc = "A basic engine."
 	weight = 30
 	var/defaultmaxpower = 0
+	var/tmp/run_generation = 0
 	starting_snd = 'sound/machines/steam_starting.ogg'
 	running_snd = 'sound/machines/steam_loop.ogg'
 	ending_snd = 'sound/machines/steam_ending.ogg'
@@ -23,6 +24,7 @@
 			visible_message("[user] turns \the [src] on.","You turn \the [src] on.")
 			playsound(loc, starting_snd, 35, FALSE, 3)
 			on = TRUE
+			run_generation++
 			update_icon()
 			running()
 			spawn(40)
@@ -38,6 +40,8 @@
 		return
 
 /obj/structure/engine/external/running()
+	if (!on)
+		return
 	var/pwd=0
 	for(var/obj/structure/heatsource/HSI in range(1,src))
 		if (HSI.on)
@@ -59,8 +63,10 @@
 		if (maxpower > defaultmaxpower)
 			maxpower = defaultmaxpower
 		currentpower = process_power_output()
+		var/generation = run_generation
 		spawn(10)
-			running()
+			if (on && generation == run_generation)
+				running()
 		for (var/obj/structure/cable/CB in connections)
 			CB.power_on(maxpower)
 		return

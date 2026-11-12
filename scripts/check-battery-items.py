@@ -1,5 +1,6 @@
 """Compile the real game types, but run battery item checks without game startup or maps."""
 import argparse
+import json
 from pathlib import Path
 import re
 import shutil
@@ -11,6 +12,12 @@ def replace_once(source, old, new):
     if source.count(old) != 1:
         raise RuntimeError(f"Isolation include changed: {old}")
     return source.replace(old, new)
+
+def pinned_byond_version():
+    # The modern energy probe must build with the repository's pinned compiler.
+    pin = json.loads((Path(__file__).resolve().parents[1] / "tools/byond/version.json").read_text(encoding="utf-8"))
+    return pin["version"]
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -63,7 +70,10 @@ def main():
             start = floor.index("/turf/proc/mining_proc(")
             end_match = re.search(r"\n/[^\n]+", floor[start + 1:])
             end = start + 1 + end_match.start() if end_match else len(floor)
+            # The probe forces uranium by position, so count the ore rolls that precede it.
+            rolls_before_uranium = len(re.findall(r"\bprob\(", floor[start:floor.index("prob(uranium_chance)", start)]))
             floor = floor[:start] + re.sub(r"\bprob\(", "energy_mining_prob(", floor[start:end]) + floor[end:]
+            floor = f"#define ENERGY_ROLLS_BEFORE_URANIUM {rolls_before_uranium}\n" + floor
             (build / "floor.dm").write_text(floor, encoding="utf-8")
             dme = replace_once(dme, '#include "code\\game\\turfs\\floor_attackby.dm"', f'#include "{build.as_posix()}/floor.dm"')
         if args.negative_control:
@@ -85,7 +95,7 @@ def main():
                 old, new = "uranium_retired || gc_destroyed || gcDestroyed || !loc || amount < 1", "amount < 1"
             elif args.route_negative_control == "radiation":
                 path = "code/modules/1713/radiation.dm"
-                old, new = "duration-1, 0, local_only)", "duration-1, 0)"
+                old, new = "duration-1, 0, local_only, event)", "duration-1, 0, FALSE, event)"
             else:
                 path = "code/modules/1713/machinery/nuclear_generation.dm"
                 old, new = ("if (U.use(1))", "if (TRUE)") if args.route_negative_control == "debit" else ("!fuel_retired && loc == machine_loc && processing_access(H,U)", "machine_loc && H && U && !H.gc_destroyed && !H.gcDestroyed && !U.gc_destroyed && !U.gcDestroyed")
@@ -99,7 +109,7 @@ def main():
         (build / "recipes.dme").write_text(dme, encoding="utf-8")
         compiled = subprocess.run([args.compiler, "-max_errors", "0", str(build / "recipes.dme")], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
         print(compiled.stdout)
-        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout or (args.probe == "modern-energy" and "516.1681" not in compiled.stdout):
+        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout or (args.probe == "modern-energy" and pinned_byond_version() not in compiled.stdout):
             return 1
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")

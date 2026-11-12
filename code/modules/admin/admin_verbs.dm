@@ -28,10 +28,16 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_campaign_whitelist,
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
+	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
+	/client/proc/cmd_admin_check_research,	//read-only list of who knows which research,
+	/client/proc/cmd_admin_show_research,	//read-only research knowledge of one character,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/client/proc/toggle_view_range,		//changes how far we can see,
 	/datum/admins/proc/view_txt_log,	//shows the server log (diary) for today,
 	/client/proc/cmd_admin_pm_panel,	//admin-pm list,
@@ -87,6 +93,9 @@ var/list/admin_verbs_trialadmin = list(
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/toggleooc,		//toggles ooc on/off for everyone,
 	/datum/admins/proc/togglelooc,		//toggles looc on/off for everyone,
 	/datum/admins/proc/toggleoocdead,	//toggles ooc on/off for everyone who is dead,
@@ -137,6 +146,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/restart,
 	/datum/admins/proc/delay,
 	/client/proc/toggle_round_ending,
+	/client/proc/toggle_orbit_site_loading,
 	/client/proc/toggle_log_hrefs,
 	/datum/admins/proc/immreboot,
 	/client/proc/cmd_admin_delete,		// delete an instance/object/mob/etc,
@@ -149,6 +159,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/save_debug_lossy,
 	/datum/admins/proc/save_restart_resume,
 	/datum/admins/proc/save_and_shut_down,
+	/datum/admins/proc/cancel_planned_shutdown,
 	/datum/admins/proc/save_update_resume,
 	/datum/admins/proc/resume_pending_recovery
 	)
@@ -206,7 +217,9 @@ var/list/admin_verbs_permissions = list(
 	/client/proc/edit_admin_permissions
 	)
 var/list/admin_verbs_rejuv = list(
-	/client/proc/respawn_character
+	/client/proc/respawn_character,
+	/client/proc/cmd_admin_cure_disease,
+	/client/proc/cmd_admin_cure_all_diseases
 	)
 
 //verbs which can be hidden - needs work
@@ -275,6 +288,9 @@ var/list/admin_verbs_mod = list(
 	/client/proc/debug_variables,		// allows us to -see- the variables of any instance in the game.,
 	/datum/admins/proc/PlayerNotes,
 	/client/proc/admin_ghost,			// allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
+	/client/proc/admin_view_player,		// share a player's camera
+	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,

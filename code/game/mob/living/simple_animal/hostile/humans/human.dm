@@ -588,6 +588,8 @@ var/global/list/npc_appearance_cache = list()
 		for(var/mob/living/L in view(7, src))
 			if(L.faction != faction && L.stat != DEAD)
 				enemies_nearby++
+				if(enemies_nearby >= 2)
+					break
 		
 		if(enemies_nearby >= 2 || (ishuman(target_mob) && target_mob:get_active_hand()))
 			should_seek_cover = TRUE

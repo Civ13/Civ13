@@ -209,6 +209,8 @@ var/global/datum/shard_group/shard_group = new
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
 	peer["train_stations"] = train_route_clean_advertisements(reply["train_stations"])
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
+	// The mainland's era is the floor a region's era can fall to (era_loss.dm).
+	peer["ordinal_age"] = isnum(reply["ordinal_age"]) ? reply["ordinal_age"] : null
 	if(id == mainland)
 		follow_mainland_epoch(reply["ordinal_age"])
 	return TRUE

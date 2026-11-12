@@ -111,6 +111,16 @@ sheet, the same stamina and time as writing, and no knowledge of the node.
 "Study a chapter" studies from a shelved book without picking it up, and each
 book has its own Take button (Alt-click takes the last one).
 
+### Resumable studying
+
+Studying a chapter or a recipe manual can stop part-way (moving away, taking
+the book, being interrupted). The time already spent is kept per character in
+`study_progress` (node id to fraction read, `study_progress.dm`), saved with
+the body and carried on region travel as the optional `reading` field. The
+next read of any copy of that chapter or manual only takes the rest of the
+time; menus and windows offer "Continue" with the percentage read. Learning
+the node clears its entry, and progress alone never teaches it.
+
 ### No clock (phase 5)
 
 With book research on, a Persistence world has no 1943 date floor and no

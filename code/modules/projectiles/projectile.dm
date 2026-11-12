@@ -839,10 +839,6 @@
 		location = next_location		// update the locally stored location data
 		next_location = null
 
-		if (!location)
-			qdel(src)	// if it's left the world... kill it
-			return
-
 		var/list/_untouchable = list()
 		var/src_loc = get_turf(src)
 		if (ismob(firer) && (!firer.prone && !firer.lying))

@@ -90,6 +90,9 @@ var/global/list/airborne_aircraft = list()
 	// Mid-climb or mid-move, the tiles an aircraft is transforming are its own.
 	if (istype(T.vehicle_transforming, /obj/structure/vehicleparts/axis/aircraft))
 		return TRUE
+	// A pedal airship aloft holds itself and its rider (pedal_airship.dm).
+	if (aloft_pedal_airships.len && pedal_airship_holds(T, A))
+		return TRUE
 	if (!airborne_aircraft.len)
 		return FALSE
 	// Standing on an airborne frame holds; stepping off it does not.
@@ -460,6 +463,7 @@ var/global/list/airborne_aircraft = list()
 		flight_watching = FALSE
 		return
 	burn_flight_fuel()
+	note_field_work(driver, "flight")
 	if (!moving || edge_blocked || currentspeed < stall_gear || !check_engine())
 		stall_seconds++
 		if (stall_seconds == 1)
@@ -481,7 +485,7 @@ var/global/list/airborne_aircraft = list()
 	if (!istype(E))
 		return 0
 	var/share = flight_state == AIRCRAFT_CRUISE ? AIRCRAFT_FLIGHT_BURN_CRUISE : AIRCRAFT_FLIGHT_BURN_LOW
-	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share
+	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share * flight_fuel_node_scale(driver)
 	for (var/F in E.fuels)
 		if (E.fueltank.reagents.has_reagent(F, amount))
 			E.fueltank.reagents.remove_reagent(F, amount)

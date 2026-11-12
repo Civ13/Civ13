@@ -23,7 +23,7 @@ def strings(text):
 
 def catalog(source):
     rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', source, re.M)
-    if len(rows) != 17:
+    if len(rows) != 18:
         raise AssertionError('Catalog grammar or action count changed; review skin capacity')
     return {key: (label, command, strings(normal), strings(hotkey)) for key, label, command, normal, hotkey in rows}
 
@@ -85,7 +85,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(read(SOURCE))
         for mode, rows in skin(read('interface/skin.dmf')).items():
             managed = {row['id']: row for row in rows if row['id'].startswith('action_')}
-            self.assertEqual(len(managed), 34)
+            self.assertEqual(len(managed), 36)
             for action, (_, command, normal, hotkey) in entries.items():
                 defaults = normal if mode == 'macro' else hotkey
                 for index in range(2):
@@ -152,7 +152,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(source)
         body = source.split('/proc/action_keybinding_yielding()')[1].split('/proc/')[0]
         yielding = strings(body)
-        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing'])
+        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing', 'resist'])
         for action in yielding:
             self.assertIn(action, entries)
         self.assertEqual(entries['storage_belt'][1], 'open-belt-storage')
@@ -163,9 +163,16 @@ class Keybindings(unittest.TestCase):
         self.assertIn('if (slot in seen)\n\t\t\t\tcontinue', mapping)
         self.assertIn('if (!("[mode]/[key]" in claimed))', mapping)
         verbs = read('code/game/mob/living/carbon/human/worn_storage.dm')
-        for _, command, _, _ in (entries[action] for action in yielding):
+        for _, command, _, _ in (entries[action] for action in yielding if action.startswith('storage')):
             self.assertIn(f'set name = "{command}"', verbs)
         self.assertIn('worn_storage.dm', read('civ13.dme'))
+
+    def test_resist_hotkey_calls_the_resist_verb(self):
+        entries = catalog(read(SOURCE))
+        self.assertEqual(entries['resist'][1:], ('Resist', ['CTRL+B'], ['CTRL+B']))
+        living = read('code/game/mob/living/living.dm').split('/mob/living/verb/resist()')[1].split('\n/')[0]
+        self.assertIn('set name = "Resist"', living)
+        self.assertIn('if (!stat && canClick())', living)
 
     def test_ui_cancellation_and_final_validation_follow_yielding_prompts(self):
         ui = read(SOURCE).split('/client/verb/configure_action_keybindings()')[1]

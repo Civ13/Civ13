@@ -9,6 +9,7 @@
   "save_timeout_seconds": 5400,
   "start_timeout_seconds": 120,
   "backups_kept": 3,
+  "shutdown_warning_seconds": 120,
   "freeze_idle_minutes": 15,
   "freeze_trim_memory": false,
   "wake_ignore": ["127.0.0.1", "::1"],

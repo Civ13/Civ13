@@ -304,10 +304,17 @@ proc/admin_notice(var/message, var/rights)
 		if (unconfirm == "No")
 			return
 	if (confirm == "Yes")
-		to_chat(world, "<span class='danger'>Restarting world!</span> <span class='notice'>Initiated by <b>[usr.client.holder.fakekey ? "Admin" : usr.key]</b>!</span>")
-		log_admin("[key_name(usr)] initiated a reboot.")
-		sleep(50)
+		// Players get a countdown (Cancel Planned Restart calls it off); Discord hears of it too.
+		var/when = WWinput(usr, "When should the world restart? Players see a countdown.", "Restart", "In 1 minute", list("In 5 seconds", "In 1 minute", "In 5 minutes", "Cancel"))
+		var/delay = list("In 5 seconds" = 5, "In 1 minute" = 60, "In 5 minutes" = 300)[when]
+		if (!delay)
+			return
+		to_chat(world, "<span class='danger'>Restart planned.</span> <span class='notice'>Initiated by <b>[usr.client.holder.fakekey ? "Admin" : usr.key]</b>.</span>")
+		log_admin("[key_name(usr)] initiated a reboot in [delay] seconds.")
+		if (!planned_shutdown_countdown("reboot", delay, "restart by an admin"))
+			return
 		world.Reboot()
+		planned_shutdown_clear() // only reached when the reboot was refused
 
 /datum/admins/proc/announce()
 	set category = "Special"
@@ -555,6 +562,7 @@ proc/admin_notice(var/message, var/rights)
 		return
 	to_chat(world, "<span class = 'red'><b>Rebooting world!</b> <span class = 'notice'>Initiated by [usr.client.holder.fakekey ? "Admin" : usr.key]!</span></span>")
 	log_admin("[key_name(usr)] initiated an immediate reboot.")
+	planned_shutdown_countdown("reboot", 0, "immediate reboot by an admin") // tells Discord; no wait
 	world.Reboot()
 /datum/admins/proc/set_research()
 	set category = "Nomads"

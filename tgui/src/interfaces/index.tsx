@@ -3,6 +3,7 @@ import type { ScreenProps } from '../types';
 import { Appearance, Chemistry, Vending, Warehouse } from './Standard';
 import { Faction } from './Faction';
 import { Research } from './Research';
+import { ResearchBook } from './ResearchBook';
 import { KnownLanguages } from './KnownLanguages';
 import { ShipStocks } from './ShipStocks';
 import { ReligionList } from './ReligionList';
@@ -22,6 +23,7 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'faction_creation.tmpl': Faction,
   'faction_symbol.tmpl': Faction,
   'research_bench.tmpl': Research,
+  'research_book.tmpl': ResearchBook,
   'vending_machine.tmpl': Vending,
   'vending_machine2.tmpl': Vending,
   'vending_machine_gulag.tmpl': Vending,

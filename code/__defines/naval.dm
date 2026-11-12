@@ -6,6 +6,8 @@
 #define VESSEL_HOP_INTERVAL 300
 // Tiles moved per hop for each telegraph step (full ahead is 3 steps).
 #define VESSEL_TILES_PER_STEP 2
+// Ticks of warning on the water before a hop or a turn covers it.
+#define VESSEL_PATH_WARNING 50
 
 #define VESSEL_SPEED_STOP 0
 #define VESSEL_SPEED_SLOW 1
@@ -35,3 +37,16 @@
 // Motor freighter compartments below the waterline (slipway.dm).
 #define FREIGHTER_COMP_HOLD "freighter_hold"
 #define FREIGHTER_COMP_ENGINE_ROOM "freighter_engine_room"
+
+// The open sea (code/modules/naval/open_sea.dm): the side of a sea cell in
+// tiles and the width of the tide race round each one, how many loaded sites
+// the cells hold at once and how many of them a mooring post may keep, and
+// the ticks a site nobody is at stays loaded.
+#define SEA_CELL_PITCH 100
+#define SEA_CELL_MARGIN 7
+#define SEA_HOME_SPAN 3 // The home waters are this many cells on a side, with no tide race between them.
+#define SEA_SITE_CAP 8
+#define SEA_KEPT_CAP 4
+#define SEA_SITE_LINGER 6000
+// How near the water a trail marker must stand on the home island.
+#define OPEN_SEA_LANDING_TILES 3

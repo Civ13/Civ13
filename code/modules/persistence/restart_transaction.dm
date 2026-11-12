@@ -238,7 +238,9 @@ var/global/list/persistence_frozen_levels = list()
 // caller (nomads_lifecycle) later calls handover_release() or handover_cancel().
 // stay_down: an admin's in-game save and shut down. The world leaves a stop marker for the
 // host (see stop_marker_path) so its watchdog leaves the world down instead of restarting it.
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE, stay_down = FALSE, stopped_by = null)
+// warn_seconds: how long players are warned first (shutdown_notice.dm); null is a minute,
+// or no warning for a handover from a host that predates the setting.
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null, handover = FALSE, stay_down = FALSE, stopped_by = null, warn_seconds = null)
 	if((shutdown || handover) && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
@@ -260,13 +262,26 @@ var/global/list/persistence_frozen_levels = list()
 	lifecycle_operation = (shutdown || handover) ? operation : null
 	lifecycle_session = (shutdown || handover) ? session : null
 	var/list/published
+	// The planned-shutdown countdown (chat, Status tab, Discord). Resolved at runtime: the
+	// standalone transaction fixture compiles without shutdown_notice.dm.
+	var/countdown = text2path("/proc/planned_shutdown_countdown")
+	var/called_off = FALSE
 	if(handover)
 		handover_state = "saving"
+		if(countdown && !call(countdown)("update", clients.len && isnum(warn_seconds) ? warn_seconds : 0, "moving to an updated build"))
+			called_off = TRUE
 		// The standby's load validates this save; see validation_record_matches.
-		map_storage.handover_candidate = TRUE
-		set_world_moving(TRUE)
-		to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves; after your level is saved you can play on, but anything you do from then until the move finishes in a few minutes will not carry over.</b></font>")
-	// Give connected players a minute's notice; busy already blocks other saves.
+		map_storage.handover_candidate = !called_off
+		if(!called_off) set_world_moving(TRUE)
+		if(!called_off) to_chat(world, "<font color='yellow' size=4><b>The world is moving to the updated server. Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves; after your level is saved you can play on, but anything you do from then until the move finishes in a few minutes will not carry over.</b></font>")
+	// Give connected players notice (a minute unless the host or admin chose otherwise);
+	// busy already blocks other saves.
+	else if(countdown && !prewarned)
+		var/kind = (!isnull(expected_persistence) && expected_persistence == 0) ? "fresh" : (stay_down ? "shutdown" : (shutdown ? "maintenance" : "restart"))
+		if(!call(countdown)(kind, clients.len ? (isnum(warn_seconds) ? warn_seconds : 60) : 0, stopped_by ? "requested by [stopped_by]" : null))
+			called_off = TRUE
+		else if(clients.len)
+			to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down || shutdown ? "shut down" : "restart"] when the save completes.</b></font>")
 	else if(clients.len && !prewarned)
 		if(!isnull(expected_persistence) && expected_persistence == 0)
 			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
@@ -277,6 +292,7 @@ var/global/list/persistence_frozen_levels = list()
 		sleep(600)
 		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down ? "shut down" : "restart"] when the save completes.</b></font>")
 	try
+		if(called_off) throw EXCEPTION("The planned restart was called off by an admin; the server keeps running")
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		diagnostic_phase = "save"
 		if(!save_generation_settled()) throw EXCEPTION("World save failed; server remains running")
@@ -316,6 +332,8 @@ var/global/list/persistence_frozen_levels = list()
 			request_restart()
 	catch(var/exception/e)
 		diagnostic_phase = "failure_cleanup"
+		var/clear_notice = text2path("/proc/planned_shutdown_clear")
+		if(clear_notice) call(clear_notice)()
 		if(handover)
 			handover_state = null
 			map_storage.handover_candidate = FALSE

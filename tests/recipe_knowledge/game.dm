@@ -139,6 +139,12 @@ var/knowledge_failures = 0
 		knowledge_check(journal && journal.has_research_chapter("iron_tools") && journal.dat == "Day one.", "book on the bench keeps its chapter and writing across reload")
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
+		knowledge_check(reloaded_scholar && reloaded_scholar.study_fraction("field_defenses") == 0.25, "a chapter read part-way survives reload")
+		var/list/scholar_research = reloaded_scholar ? reloaded_scholar.research_knowledge_summary() : null
+		knowledge_check(scholar_research && scholar_research["studying"]["field_defenses"] == 25 && !("field_defenses" in scholar_research["known"]) && !scholar_research["exempt"], "admin research view shows a part-way chapter as 25% read")
+		var/known_before = H ? H.known_recipe_nodes.len : -1
+		var/list/body_research = H ? H.research_knowledge_summary() : null
+		knowledge_check(body_research && (node_id in body_research["known"]) && H.known_recipe_nodes.len == known_before && H.research_knowledge_status() != "online", "admin research view lists known research of a body without a player and changes nothing")
 		var/obj/item/weapon/book/reloaded_diary
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))
@@ -256,7 +262,9 @@ var/knowledge_failures = 0
 	var/mob/living/human/knowledge_fixture/novice = new(locate(6,7,1))
 	knowledge_check(!novice.can_learn_recipe_node("iron_tools") && scholar.can_learn_recipe_node("iron_tools"), "studying a chapter needs its groundwork")
 	check_chapter_sorting(scholar, novice)
+	check_study_progress(scholar, novice)
 	knowledge_check(scholar.learn_recipe_node("iron_tools") && crafting_node_allowed(scholar, "iron_tools"), "studying the chapter allows crafting")
+	knowledge_check(!scholar.study_fraction("iron_tools") && scholar.study_fraction("field_defenses") == 0.25, "learning a chapter clears only its own reading progress")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && crafting_recipe_allowed(novice, "/obj/structure/research_bench"), "no era grants, but anyone can build a bench")
 	knowledge_check(!crafting_node_allowed(novice, "basic_tools") && plank_making_allowed(novice), "anyone can make planks without Basic Toolmaking")
 	check_book_pages(scholar, novice, journal)
@@ -281,6 +289,7 @@ var/knowledge_failures = 0
 	qdel(third)
 	qdel(again)
 	check_book_clock(journal)
+	check_era_loss()
 	check_book_fabricator()
 	check_book_material_visibility()
 	check_scholarship_travel(scholar)
@@ -291,6 +300,7 @@ var/knowledge_failures = 0
 	check_scholar_tutoring()
 	check_scholar_apprentices()
 	check_scholar_titles()
+	check_scholar_practice()
 	check_scholarship_panel()
 	check_book_printing(scholar)
 	map.book_research = FALSE
@@ -442,6 +452,39 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_title() == "Scholar of Medicine", "a skilled character is a Scholar")
 	H.scholarship = list("mathematics" = 80)
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
+	qdel(H)
+
+// Practice (Val, 2026-11-11): practice tools train a discipline a little per
+// session, more with an instrument or beside a master, never past the cap.
+/proc/check_scholar_practice()
+	var/mob/living/human/knowledge_fixture/H = new(locate(4,3,1))
+	H.stats["stamina"][1] = 100
+	H.scholarship = list()
+	var/list/tools = list(
+		new /obj/item/weapon/writing_slate(H.loc), new /obj/item/weapon/abacus(H.loc),
+		new /obj/item/weapon/scholar_practice/model_kit(H.loc), new /obj/item/weapon/scholar_practice/specimen_box(H.loc),
+		new /obj/item/weapon/scholar_practice/study_bones(H.loc), new /obj/item/weapon/scholar_practice/seed_tray(H.loc),
+		new /obj/item/weapon/scholar_practice/war_game(H.loc))
+	var/list/trained = list()
+	for (var/obj/item/I in tools)
+		trained |= scholar_practice_discipline(I)
+	knowledge_check(trained.len == scholar_disciplines.len, "every discipline has a practice tool")
+	for (var/path in list("/obj/item/weapon/scholar_practice/model_kit", "/obj/item/weapon/scholar_practice/specimen_box", "/obj/item/weapon/scholar_practice/study_bones", "/obj/item/weapon/scholar_practice/seed_tray", "/obj/item/weapon/scholar_practice/war_game"))
+		knowledge_check(get_recipe_node_req(path) == "basic_tools", "[path] is made from the Stone Age")
+	knowledge_check(!H.scholar_practice_problem("mathematics"), "a rested character in the light can practise")
+	var/gained = H.scholar_practice_commit("mathematics", scholar_practice_tool_rate(tools[1]))
+	knowledge_check(gained == SCHOLAR_PRACTICE_GAIN && H.scholar_level("mathematics") == SCHOLAR_PRACTICE_GAIN, "a slate session teaches Basic Mathematics")
+	knowledge_check(H.stats["stamina"][1] == 100 - SCHOLAR_PRACTICE_STAMINA, "practice costs stamina")
+	knowledge_check(H.scholar_level("engineering") == 0, "practice trains only its own discipline")
+	knowledge_check(scholar_practice_tool_rate(tools[2]) > scholar_practice_tool_rate(tools[1]), "an abacus teaches more than a slate")
+	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP - 2)
+	knowledge_check(H.scholar_practice_gain("medicine") < SCHOLAR_PRACTICE_GAIN, "practice teaches less near its cap")
+	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP)
+	knowledge_check(H.scholar_practice_problem("medicine") && !H.scholar_practice_commit("medicine") && H.scholar_level("medicine") == SCHOLAR_PRACTICE_CAP, "practice stops at its cap")
+	H.stats["stamina"][1] = SCHOLAR_PRACTICE_STAMINA - 1
+	knowledge_check(H.scholar_practice_problem("agriculture") && !H.scholar_practice_commit("agriculture"), "a tired character can't practise")
+	for (var/obj/item/I in tools)
+		qdel(I)
 	qdel(H)
 
 // Scholarship tab (Val, 2026-11-10): each discipline's level and the latest
@@ -659,6 +702,90 @@ var/knowledge_failures = 0
 	for (var/i = 1, i <= 9, i++)
 		map.vars["age[i]_done"] = old_flags[i]
 
+// Losing an era (Val, 2026-11-12): when no book, manual, compendium or torn
+// chapter holds the current era's capstone, the world falls back one era.
+/proc/check_era_loss()
+	var/old_age = map.age
+	var/old_ordinal = map.ordinal_age
+	var/old_ready = persistence_player_restore_ready
+	persistence_player_restore_ready = TRUE
+	map.age = "1013"
+	map.ordinal_age = 2
+	era_loss_missed = 0
+	var/obj/item/weapon/book/record = new(locate(4,6,1))
+	knowledge_check(record in era_record_items, "new books join the era record list")
+	record.research_chapters = "iron_smithing"
+	var/list/kept = list(record)
+	knowledge_check(surviving_era_record_tier(kept) == 2 && !map.check_era_records(kept) && !map.check_era_records(kept) && map.ordinal_age == 2, "a book holding the era's capstone keeps the era")
+	var/obj/item/weapon/paper/research_page/torn = new(locate(4,6,1))
+	torn.node_id = "iron_smithing"
+	var/obj/item/weapon/book/node_book/manual = create_node_book(locate(4,6,1), "iron_smithing")
+	var/obj/item/weapon/book/node_compendium/compendium = new(locate(4,6,1))
+	compendium.node_ids = list("basic_tools", "iron_smithing")
+	knowledge_check(surviving_era_record_tier(list(torn)) == 2 && surviving_era_record_tier(list(manual)) == 2 && surviving_era_record_tier(list(compendium)) == 2, "torn chapters, manuals and compendiums count as records")
+	var/obj/item/weapon/book/later = new(locate(4,6,1))
+	later.research_chapters = "gunpowder"
+	knowledge_check(surviving_era_record_tier(list(later)) == 3 && !map.check_era_records(list(later)) && !map.check_era_records(list(later)) && map.ordinal_age == 2, "a later era's capstone also keeps the era")
+	var/obj/item/weapon/book/older = new(locate(4,6,1))
+	older.research_chapters = "bronze_working"
+	var/list/only_older = list(older)
+	knowledge_check(!map.check_era_records(only_older) && map.ordinal_age == 2, "one missed check never costs an era")
+	knowledge_check(!map.check_era_records(kept) && !map.check_era_records(only_older) && map.ordinal_age == 2, "finding the record again restarts the count")
+	knowledge_check(map.check_era_records(only_older) && map.ordinal_age == 1 && map.age == "313 B.C." && !map.age2_done, "two missed checks in a row cost one era")
+	knowledge_check(!map.check_era_records(only_older) && !map.check_era_records(only_older) && map.ordinal_age == 1, "an era whose capstone survives holds")
+	var/list/nothing = list()
+	map.check_era_records(nothing)
+	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 0 && map.age == "5000 B.C.", "with no records left the eras fall one at a time")
+	knowledge_check(!map.check_era_records(nothing) && !map.check_era_records(nothing) && map.ordinal_age == 0, "the Stone Age is never lost")
+	map.ordinal_age = 2
+	map.persistence = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "round maps never lose an era")
+	map.persistence = TRUE
+	map.book_research = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "worlds without book research never lose an era")
+	map.book_research = TRUE
+	persistence_player_restore_ready = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "no era is lost before the world has finished loading")
+	persistence_player_restore_ready = TRUE
+	var/old_enabled = shard_group.enabled
+	var/old_region = shard_group.region
+	var/old_mainland = shard_group.mainland
+	var/old_peers = shard_group.peers
+	shard_group.enabled = TRUE
+	shard_group.region = "fixture_region"
+	shard_group.mainland = "fixture_mainland"
+	shard_group.peers = list("fixture_mainland" = list("state" = "DOWN", "ordinal_age" = 0))
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region holds its era while the mainland can't be reached")
+	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 2)
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region never falls below its mainland's era")
+	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 1)
+	map.check_era_records(nothing)
+	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 1, "a region falls with its mainland")
+	shard_group.enabled = old_enabled
+	shard_group.region = old_region
+	shard_group.mainland = old_mainland
+	shard_group.peers = old_peers
+	var/obj/item/weapon/book/rewrite = new(locate(4,6,1))
+	knowledge_check(rewrite.add_research_chapter("iron_smithing") && map.ordinal_age == 2 && map.age == "1013", "writing a lost capstone down again brings its era back")
+	map.ordinal_age = 2
+	qdel(rewrite)
+	knowledge_check(!(rewrite in era_record_items), "destroyed books leave the era record list")
+	qdel(record)
+	qdel(torn)
+	qdel(manual)
+	qdel(compendium)
+	qdel(later)
+	qdel(older)
+	map.age = old_age
+	map.ordinal_age = old_ordinal
+	era_loss_missed = 0
+	persistence_player_restore_ready = old_ready
+
 // With book research a fabricator lists what its user knows, even when the
 // faction never researched it (review finding, 2026-11-10).
 /proc/check_book_fabricator()
@@ -706,3 +833,36 @@ var/knowledge_failures = 0
 	var/list/lines = chapter_reading_summary(scholar, shelf.research_chapter_list())
 	knowledge_check(lines.len == 2 && findtext(lines[1], "new to you: [iron_name]") && findtext(lines[2], "already know: [tools_name]"), "examining the book splits new and known chapters")
 	qdel(shelf)
+
+// Stopping part-way through a chapter keeps the part read (Val, 2026-11-11).
+/proc/check_study_progress(mob/living/human/scholar, mob/living/human/novice)
+	var/iron_name = get_research_node("iron_tools").name
+	knowledge_check(!scholar.study_fraction("iron_tools") && scholar.study_time_left("iron_tools", 1000) == 1000, "an unread chapter takes the full time")
+	scholar.note_study_progress("iron_tools", 0.4)
+	knowledge_check(scholar.study_percent("iron_tools") == 40 && scholar.study_time_left("iron_tools", 1000) == 600, "a chapter read part-way takes only the rest of the time")
+	var/obj/item/weapon/book/shelf = new(locate(6,6,1))
+	shelf.research_chapters = "iron_tools"
+	var/list/choices = chapter_reading_choices(scholar, shelf.research_chapter_list())
+	knowledge_check(choices.len == 1 && choices[1] == "Continue: [iron_name] (40% read)" && choices[choices[1]] == "iron_tools", "the book offers to continue a chapter read part-way")
+	var/list/novice_choices = chapter_reading_choices(novice, shelf.research_chapter_list())
+	knowledge_check(novice_choices.len == 1 && novice_choices[1] == "Needs groundwork: [iron_name]", "another reader keeps their own progress")
+	var/list/book_data = shelf.research_book_ui_data(scholar)
+	var/list/rows = book_data["chapters"]
+	var/list/row = rows.len ? rows[1] : list()
+	knowledge_check(row["read_percent"] == 40, "the book window shows how far the reader got")
+	qdel(shelf)
+	scholar.note_study_progress("field_defenses", 5)
+	knowledge_check(abs(scholar.study_fraction("field_defenses") - 0.99) < 0.001, "reading progress never finishes a chapter by itself")
+	scholar.note_study_progress("field_defenses", 0)
+	knowledge_check(!("field_defenses" in scholar.study_progress), "zero progress is dropped")
+	scholar.note_study_progress("field_defenses", 0.25)
+	var/list/cleaned = clean_study_progress(list("iron_tools" = 0.5, "bogus" = 0.5, "basic_tools" = 2, "field_defenses" = "x"))
+	knowledge_check(cleaned.len == 1 && cleaned["iron_tools"] == 0.5, "restored reading progress is validated")
+	var/old_owner = scholar.persistence_owner_ckey
+	scholar.persistence_owner_ckey = "fixturescholar"
+	var/list/P = region_travel_decode(scholar.region_travel_payload(list()))
+	scholar.persistence_owner_ckey = old_owner
+	knowledge_check(P && islist(P["reading"]) && abs(P["reading"]["iron_tools"] - 0.4) < 0.001 && abs(P["reading"]["field_defenses"] - 0.25) < 0.001, "reading progress travels between regions")
+	if (P)
+		P["reading"] = list("bogus" = 0.5)
+		knowledge_check(!region_travel_decode(json_encode(P)), "travelling reading progress is validated")

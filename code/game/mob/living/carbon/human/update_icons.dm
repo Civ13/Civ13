@@ -587,7 +587,10 @@ var/global/list/human_face_icon_cache = list()
 		//need to append _s to the icon state for legacy compatibility
 		var/image/standing = image(icon = under_icon, icon_state = under_state, layer = layer + 0.01)
 		standing.color = w_uniform.color
-		if (istype(w_uniform, /obj/item/clothing/under/customuniform))
+		if (istype(w_uniform, /obj/item/clothing/under/tailored_dress))
+			var/obj/item/clothing/under/tailored_dress/dress = w_uniform
+			standing.overlays += dress.worn_design_layers()
+		else if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
 				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_pants")

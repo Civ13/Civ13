@@ -317,6 +317,122 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		WWalert(src, "Admin rejuvenation is disabled.", "Admin Rejuvenation")
 
 
+// Clears an illness without healing injuries or reviving the dead, so admins
+// can stop an outbreak without the side effects of Rejuvenate. Bodies are
+// cleared too: a body that died sick could otherwise keep infecting people.
+/mob/living/human/proc/admin_cure_disease()
+	if (!disease && disease_type == "none")
+		return FALSE
+	clear_disease()
+	if (stat != DEAD)
+		bodytemperature = species ? species.body_temperature : 310.055
+	return TRUE
+
+/client/proc/cmd_admin_cure_disease(mob/living/human/H as mob in human_mob_list)
+	set category = "Special"
+	set name = "Cure Disease"
+	set desc = "Cure this person's illness without healing or reviving them."
+	if (!check_rights(R_REJUVINATE))
+		return
+	if (!istype(H))
+		return
+	var/old_type = H.disease_type
+	if (!H.admin_cure_disease())
+		to_chat(src, SPAN_NOTICE("[H] is not ill."))
+		return
+	if (H.stat != DEAD)
+		to_chat(H, SPAN_NOTICE("You feel much better. Your illness is gone."))
+	log_and_message_admins("cured [key_name(H)] of [old_type].")
+
+/client/proc/cmd_admin_cure_all_diseases()
+	set category = "Special"
+	set name = "Cure All Diseases"
+	set desc = "Cure every living person and body of their illness, without healing or reviving anyone."
+	if (!check_rights(R_REJUVINATE))
+		return
+	if (WWinput(src, "Cure every person and body in the world of their illness?", "Cure All Diseases", "No", list("Yes", "No")) != "Yes")
+		return
+	var/living = 0
+	var/bodies = 0
+	for (var/mob/living/human/H in human_mob_list)
+		if (!H.admin_cure_disease())
+			continue
+		if (H.stat == DEAD)
+			bodies++
+		else
+			living++
+			to_chat(H, SPAN_NOTICE("You feel much better. Your illness is gone."))
+	log_and_message_admins("cured all diseases: [living] living, [bodies] bodies.")
+
+// Read-only illness summary for one person, or null when they are not ill.
+// Shared by the Check Illnesses admin verb and the agent `players` read.
+/mob/living/human/proc/illness_summary()
+	if (!disease || !disease_type || disease_type == "none")
+		return null
+	var/severe = is_severe_disease()
+	var/stage = "mild"
+	if (severe)
+		stage = disease_progression >= 900 ? "critical" : (disease_progression >= 180 ? "worsening" : "early")
+	return list(
+		"type" = disease_type,
+		"severe" = severe ? TRUE : FALSE,
+		"stage" = stage,
+		"progression" = round(disease_progression),
+		"course" = round(disease_course),
+		"treated" = (disease_treatment > 0 || disease_course > 0) ? TRUE : FALSE,
+		"resistance" = round(disease_resistance_to(disease_type)))
+
+// Lists everyone who is ill: players first, then characters without a
+// player and bodies. Looks only; it changes nothing.
+/client/proc/cmd_admin_check_illnesses()
+	set category = "Special"
+	set name = "Check Illnesses"
+	set desc = "List every person who is ill, with their illness, stage and treatment."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/rows = list()
+	var/list/counts = list()
+	var/players = 0
+	var/others = 0
+	var/bodies = 0
+	for (var/mob/living/human/H in human_mob_list)
+		var/list/ill = H.illness_summary()
+		if (!ill)
+			continue
+		var/who
+		var/order
+		if (H.stat == DEAD)
+			who = "body"
+			order = 2
+			bodies++
+		else if (H.ckey)
+			who = H.client ? "[H.ckey]" : "[H.ckey] (disconnected)"
+			order = 0
+			players++
+		else
+			who = "no player"
+			order = 1
+			others++
+		counts[ill["type"]] = (counts[ill["type"]] || 0) + 1
+		var/area/A = get_area(H)
+		rows += list(list(order, "<tr><td>[html_encode(H.real_name)]</td><td>[html_encode(who)]</td><td>[ill["type"]]</td><td>[ill["stage"]]</td><td>[ill["progression"]]</td><td>[ill["treated"] ? "yes ([ill["course"]]/180)" : "no"]</td><td>[ill["resistance"]]%</td><td>[A ? html_encode(A.name) : "-"]</td></tr>"))
+	if (!rows.len)
+		to_chat(src, SPAN_NOTICE("Nobody is ill right now."))
+		return
+	var/list/summary = list()
+	for (var/kind in counts)
+		summary += "[kind]: [counts[kind]]"
+	var/html = "<html><head><title>Illnesses</title></head><body>"
+	html += "<b>[players] player\s, [others] other\s, [bodies] bod[bodies == 1 ? "y" : "ies"] ill.</b> [jointext(summary, ", ")]<br>"
+	html += "<small>Severe illnesses turn critical at progression 900. Treatment is the medicine course out of 180; resistance at 100% clears the illness.</small><br><br>"
+	html += "<table border=1 cellspacing=0 cellpadding=3><tr><th>Name</th><th>Player</th><th>Illness</th><th>Stage</th><th>Progression</th><th>Treated</th><th>Resistance</th><th>Area</th></tr>"
+	for (var/order in 0 to 2)
+		for (var/list/row in rows)
+			if (row[1] == order)
+				html += row[2]
+	html += "</table></body></html>"
+	src << browse(html, "window=check_illnesses;size=760x480")
+
 /client/proc/cmd_admin_create_centcom_report()
 	set category = "Special"
 	set name = "Create Command Report"

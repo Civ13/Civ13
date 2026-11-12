@@ -26,7 +26,7 @@
 			if (istype(TT, text2path(allowed_tools[i][1])))
 				quality = allowed_tools[i][2]
 		if (istype(user, /mob/living/human))
-			quality *= user.getStatCoeff("medical")
+			quality *= user.getStatCoeff("medical") * surgery_node_quality(user)
 
 		if (quality > 100)
 			quality = 100
@@ -121,8 +121,9 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 				S.begin_step(user, M, zone, tool)		//start on it
 				//We had proper tools! (or RNG smiled.) and user did not move or change hands.
 				if (prob(S.tool_quality(tool, user)))
-					if (do_after(user, rand(S.min_duration, S.max_duration), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
+					if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
 						S.end_step(user, M, zone, tool)		//finish successfully
+						note_field_work(user, "surgery")
 						if (ishuman(user))
 							var/mob/living/human/H = user
 							var/mod = 1

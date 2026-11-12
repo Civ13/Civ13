@@ -14,10 +14,12 @@
 	<div class='itemLabel'>Books on the bench:</div>
 	<div class='itemContent'>
 		{{if data.books && data.books.length}}
-		{{for data.books :book}}
+		{{for data.books :book:bi}}
 		<div class='item'>{{:book.name}}{{if book.is_target}} <span class='rt-done'>(research is written here)</span>{{/if}}
 			{{:helper.link('Take', 'circle-minus', {'take_book' : book.idx})}}
-			{{if book.chapters.length}}<br>{{for book.chapters}}<span class='rt-recipe-tag'>{{:value}}</span> {{/for}}{{/if}}
+			{{if book.chapters.length}}<br>{{for book.chapters :chapter:ci}}<span class='rt-recipe-tag'>{{:chapter.name}}{{if chapter.state === "study"}} (can study){{else chapter.state === "known"}} (known){{/if}}</span> {{/for}}{{/if}}
+			{{for book.unfinished :item:ui}}<br><span class='rt-progress'>Unfinished: {{:item.name}} ({{:item.percent}}%)</span>{{/for}}
+			{{if book.copy_missing}}<br>{{:helper.link('Copy every chapter ' + book.other_name + ' lacks (' + book.copy_missing + ')', 'circle-plus', {'copy_all' : book.idx})}}{{/if}}
 		</div>
 		{{/for}}
 		{{else}}<span class='rt-locked'>None. Place a book on the bench; research done here is written into it.</span>{{/if}}
@@ -86,6 +88,7 @@
 	{{/if}}
 	{{else}}
 	<div class='itemContent rt-progress'>{{:data.assigned_status_text}}</div>
+	{{if data.book_mode}}<div class='itemContent'>{{:helper.link('Stop researching', 'trash', {'stop_research' : 1})}}{{if data.assigned && data.assigned.can_rush}} {{:helper.link(data.assigned.rushed ? 'Work carefully (now rushed: accidents possible)' : 'Rush the work (faster, accidents possible)', 'alert', {'toggle_rush' : 1})}}{{/if}}</div>{{/if}}
 	{{/if}}
 </div>
 {{/if}}
@@ -115,12 +118,12 @@
 			<div class='rt-layer-title'>{{:layer.layer_name}}</div>
 			<div class='rt-grid'>
 				{{for layer.nodes :node:ni}}
-				<div class='rt-node rt-layer-{{:layer.layer_name.toLowerCase()}} {{:node.status_text === "Done" ? "rt-status-done" : (node.status_text === "Locked" ? "rt-status-locked" : "rt-status-active")}}'
+				<div class='rt-node rt-layer-{{:layer.layer_name.toLowerCase()}} {{:(node.status_text === "Done" || node.status_text === "Known") ? "rt-status-done" : (node.status_text === "Locked" ? "rt-status-locked" : "rt-status-active")}}'
 					data-id='{{:node.id}}'
 					data-prereqs='{{:node.prereq_ids}}'
 					style='grid-column: {{:node.grid_col}};'>
 					<span class='rt-node-name'>{{:node.name}}{{if node.is_era_changing}} <span class='rt-star' title='Advances the era'>&#9733;</span>{{/if}}</span>
-					<span class='rt-node-sub'>{{:node.mode_text === "Book only" ? "Book only" : node.cost_ticks + " ticks" + (node.mode_text === "Prototype" ? " + prototype" : "")}}</span>
+					<span class='rt-node-sub'>{{:node.state_label ? node.state_label : (node.mode_text === "Book only" ? "Book only" : node.cost_ticks + " ticks" + (node.mode_text === "Prototype" ? " + prototype" : ""))}}</span>
 					<div class='rt-node-bar'><div class='rt-node-bar-fill' style='width: {{:node.progress_percent}}%;'></div></div>
 				</div>
 				{{/for}}
@@ -145,8 +148,20 @@
 
 		<div class='rt-modal-row'>
 			<div class='rt-modal-label'>Status</div>
-			<div>{{:node.status_text}} - {{:node.detail}}</div>
+			<div>{{:node.state_label ? node.state_label : node.status_text}} - {{:node.detail}}</div>
 		</div>
+		{{if node.research_needs && node.research_needs.length}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>To research it at this bench</div>
+			{{for node.research_needs :need:qi}}<div class='{{:need.ok ? "rt-done" : "rt-locked"}}'>{{:need.ok ? "Met" : "Missing"}}: {{:need.label}}</div>{{/for}}
+		</div>
+		{{/if}}
+		{{if node.field_work && node.field_work.length}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Optional field work</div>
+			{{for node.field_work :job:fi}}<div class='{{:job.done ? "rt-done" : ""}}'>{{:job.done ? "In the book" : "You have " + job.have + " of " + job.needed}}: {{:job.label}} ({{:job.percent}}% of the work)</div>{{/for}}
+		</div>
+		{{/if}}
 
 		{{if node.mode_text !== "Book only"}}
 		<div class='rt-modal-row'>
@@ -175,9 +190,27 @@
 				{{/for}}
 			</div>
 		</div>
+		{{if node.effect}}
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Knowing it</div>
+			<div>{{:node.effect}}</div>
+		</div>
+		{{/if}}
 
+		{{if node.can_study}}
+		<div class='rt-modal-row'>{{:helper.link(node.read_percent > 0 ? 'Continue this chapter (' + node.read_percent + '% read, about ' + node.study_minutes + ' min left)' : 'Study this chapter (about ' + node.study_minutes + ' min)', 'pencil', { "study" : node.id })}}</div>
+		{{/if}}
 		{{if node.assignable}}
-		<div class='rt-modal-row'>{{:helper.link('Assign this bench', 'circle-arrow-s', { "assign" : node.id })}}</div>
+		<div class='rt-modal-row'>{{:helper.link(data.book_mode ? 'Research this here' : 'Assign this bench', 'circle-arrow-s', { "assign" : node.id })}}</div>
+		{{/if}}
+		{{if node.can_copy}}
+		<div class='rt-modal-row'>{{:helper.link('Copy into the other book', 'copy', { "copy" : node.id })}}</div>
+		{{/if}}
+		{{if node.can_write}}
+		<div class='rt-modal-row'>{{:helper.link('Write it from memory (about ' + node.write_minutes + ' min)', 'pencil', { "write" : node.id })}}</div>
+		{{/if}}
+		{{if node.queue_pos}}
+		<div class='rt-modal-row'>{{:helper.link('Remove from queue', 'trash', { "unqueue" : node.id })}}</div>
 		{{/if}}
 		{{if node.can_write_notes}}
 		<div class='rt-modal-row'>{{:helper.link('Write Research Notes (quick, boosts a buyer)', 'pencil', { "write_notes" : node.id })}}</div>

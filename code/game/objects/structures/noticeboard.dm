@@ -51,10 +51,14 @@
 		..()
 
 /obj/structure/noticeboard/Topic(href, href_list)
-	..()
+	if (..())
+		return
 	usr.set_using_object(src)
 	if (href_list["remove"])
 		if ((usr.stat || usr.restrained()))	//For when a player is handcuffed while they have the notice window open
+			return
+		// The window can stay open after the player walks away; only a living player next to the board can take a paper.
+		if (!isliving(usr) || !usr.Adjacent(src))
 			return
 		var/obj/item/P = locate(href_list["remove"])
 		if (P && P.loc == src)

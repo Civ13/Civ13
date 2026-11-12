@@ -291,6 +291,9 @@ internal sealed partial class LauncherWindow : Form {
             var settings = new Button { Text = "Host settings", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             settings.Click += (_, _) => ShowHostSettings();
             groupButtons.Controls.Add(settings);
+            var warning = new Button { Text = "Players' warning", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
+            warning.Click += (_, _) => ShowShutdownWarning();
+            groupButtons.Controls.Add(warning);
             var hubNames = new Button { Text = "Hub names", AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
             hubNames.Click += (_, _) => ShowHubNames();
             groupButtons.Controls.Add(hubNames);
@@ -768,6 +771,7 @@ internal sealed partial class LauncherWindow : Form {
                 "and players keep playing on the old world (held only while their own level saves) until the new one has loaded the save.",
             _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
+        if (action is "stop" or "restart") question += " " + WarningNote();
         if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
         if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
@@ -927,6 +931,48 @@ internal sealed partial class LauncherWindow : Form {
         dialog.ShowDialog(this);
     }
 
+    // How long players online are warned (chat countdown, Status tab and Discord) before Save and stop,
+    // Restart or Save, update and restart saves a region. Stored in the group config; applies to the next action.
+    private void ShowShutdownWarning() {
+        if (host?.Control?.Group is not { } group) return;
+        int current;
+        try { current = HostSettings.ShutdownWarningSeconds(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Players' warning", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = "Before Save and stop, Restart or Save, update and restart saves a region with players online, they get this long a " +
+                "countdown in chat and on the Status tab, and Discord is told. Admins can call it off in game with Cancel Planned Restart. " +
+                "0 saves at once. Applies from the next action; the worlds keep running." });
+        var row = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
+        var minutes = new NumericUpDown { Minimum = 0, Maximum = HostSettings.MaxShutdownWarningSeconds / 60, DecimalPlaces = 1, Increment = 0.5m,
+            Value = Math.Min(HostSettings.MaxShutdownWarningSeconds / 60, current / 60m), Width = 70 };
+        row.Controls.Add(minutes);
+        row.Controls.Add(new Label { Text = "minutes", AutoSize = true, Margin = new Padding(6, 6, 0, 0) });
+        layout.Controls.Add(row);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var seconds = (int)Math.Round(minutes.Value * 60);
+        try {
+            HostSettings.SetShutdownWarningSeconds(group, seconds);
+            HostLine(seconds == 0 ? "Players' warning off: saves start at once." : "Players' warning set to " + seconds + " seconds.");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save the players' warning: " + e.Message);
+        }
+    }
+
     // The name each region shows on the BYOND hub (SERVER_NAME in its overlay), as its own window.
     private void ShowHubNames() {
         if (host?.Control is not { } control || OverlayLocations() is not { } locations) return;
@@ -947,6 +993,18 @@ internal sealed partial class LauncherWindow : Form {
             return null;
         }
         return locations;
+    }
+
+    // One sentence on the players' countdown, for the stop, restart and deploy questions.
+    private string WarningNote() {
+        if (host?.Control?.Group is not { } group) return "";
+        try {
+            var seconds = HostSettings.ShutdownWarningSeconds(group);
+            return seconds == 0 ? "Players' warning is off, so the save starts at once."
+                : $"Players online first get a {seconds}-second countdown in game and on Discord (Players' warning).";
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) {
+            return "";
+        }
     }
 
     private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
@@ -970,7 +1028,7 @@ internal sealed partial class LauncherWindow : Form {
         using var dialog = new Form { Text = label, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
             StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
-        layout.Controls.Add(new Label { Text = DeployQuestion, MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
+        layout.Controls.Add(new Label { Text = (DeployQuestion + " " + WarningNote()).Trim(), MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
         var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
         foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, only == null || region.Id == only);
         layout.Controls.Add(list);

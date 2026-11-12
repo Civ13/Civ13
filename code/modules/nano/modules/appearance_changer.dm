@@ -27,7 +27,7 @@
 				cut_and_generate_data()
 				return TRUE
 	if (href_list["gender"])
-		if (can_change(APPEARANCE_GENDER))
+		if (can_change(APPEARANCE_GENDER) && (href_list["gender"] in owner.species.genders))
 			if (owner.change_gender(href_list["gender"]))
 				cut_and_generate_data()
 				return TRUE
@@ -113,6 +113,11 @@
 		data["species"] = species
 
 	data["change_gender"] = can_change(APPEARANCE_GENDER)
+	if (data["change_gender"])
+		var/genders[0]
+		for (var/gender_key in owner.species.genders)
+			genders[++genders.len] = list("gender_name" = capitalize(gender_key), "gender_key" = gender_key)
+		data["genders"] = genders
 	data["change_skin_tone"] = can_change_skin_tone()
 	data["change_skin_color"] = can_change_skin_color()
 	data["change_eye_color"] = can_change(APPEARANCE_EYE_COLOR)

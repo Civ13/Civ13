@@ -1,5 +1,6 @@
 """Project statue initialization with the deferred callback run immediately."""
 import sys
+import re
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -99,6 +100,57 @@ class StatueAppearanceTests(unittest.TestCase):
             self.assertEqual(calls, [True], name)
             if name == 'The King':
                 self.assertEqual(statue.name, name)
+
+    def test_monument_top_initialization_preserves_each_sprite_and_layer(self):
+        source = (ROOT / 'code/game/objects/structures/religious.dm').read_text()
+        cases = {
+            'obelisk': ('obelisk_top', 3.2),
+            'megalith': ('megalith_top', 3.2),
+            'pillar_monument': ('monumental_pillar_top', 3.2),
+            'crucero': ('crucero_top', 3.2),
+            'venus': ('venus_top', 6.0),
+            'karl_marx': ('communist_santa_top', 3.2),
+            'cultist': (None, 3.2),
+            'cultist/cthulu': ('cthulu_top', 3.2),
+            'cultist/moloch': ('moloch_top', 3.2),
+            'cultist/outsider': ('outsider_top', 3.2),
+            'cultist/sauron': ('sauron_top', 3.2),
+            'cultist/sauron/reverse': ('reverse_sauron_top', 3.2),
+            'monk': (None, 3.2),
+            'monk/quangshi': ('quangshi_top', 3.2),
+            'priesthood': (None, 3.2),
+            'priesthood/saint': ('saint_top', 3.2),
+            'shaman': (None, 3.2),
+            'shaman/ape': ('great_ape_top', 3.2),
+        }
+        constructor = re.compile(
+            r'^/obj/structure/religious/monument/([^\s]+)[^\n]*\n'
+            r'(?:(?!^/obj/structure/).)*?\tNew\(\)\n\t\t\.\.\(\)\n'
+            r'\t\tinitialize_top\((null|"[^\"]+"), ([\d.]+)\)', re.M | re.S)
+        actual = {name: (None if state == 'null' else state[1:-1], float(layer))
+                  for name, state, layer in constructor.findall(source)}
+        self.assertEqual(actual, cases)
+
+        image_call = "image(icon='icons/obj/statue.dmi', icon_state = top_state, layer=top_layer)"
+        self.assertEqual(source.count(image_call), 1)
+        projected_source = source.replace(image_call, 'make_image(top_state, top_layer)')
+        env = {'make_image': lambda state, layer: SimpleNamespace(state=state, layer=layer)}
+        old_fields = source_adapter.FIELDS
+        try:
+            source_adapter.FIELDS += ('top', 'update_icon')
+            initialize = source_adapter.project(projected_source,
+                '/obj/structure/religious/monument/proc/initialize_top',
+                'src, top_state, top_layer', env, method=True)
+        finally:
+            source_adapter.FIELDS = old_fields
+        for subtype, (state, layer) in cases.items():
+            with self.subTest(subtype=subtype):
+                observed = []
+                monument = SimpleNamespace(top=None)
+                monument.update_icon = lambda: observed.append(
+                    (monument.top.state, monument.top.layer, monument.top.pixel_y))
+                initialize(monument, state, layer)
+                self.assertEqual(observed, [(state, layer, 32)])
 
 
 if __name__ == '__main__':

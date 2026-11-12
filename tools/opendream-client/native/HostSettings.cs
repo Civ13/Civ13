@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
 namespace Civ13.Launcher;
@@ -14,6 +15,27 @@ public static class HostSettings {
     public sealed record Location(string Label, string Folder, string? Region);
 
     public const string LocalConfig = "config/config.local.txt";
+
+    // The countdown players online get before a Save and stop, Restart or Save, update and restart
+    // saves (the group config's shutdown_warning_seconds; shard_group.py reads it at each action).
+    public const int DefaultShutdownWarningSeconds = 120;
+    public const int MaxShutdownWarningSeconds = 3600;
+
+    public static int ShutdownWarningSeconds(HostGroup group) {
+        var root = JsonNode.Parse(File.ReadAllText(group.Config));
+        return root?["shutdown_warning_seconds"] is JsonValue value && value.TryGetValue<int>(out var seconds)
+            && seconds is >= 0 and <= MaxShutdownWarningSeconds ? seconds : DefaultShutdownWarningSeconds;
+    }
+
+    // Rewrites the group config with the new value, keeping every other setting.
+    public static void SetShutdownWarningSeconds(HostGroup group, int seconds) {
+        if (seconds is < 0 or > MaxShutdownWarningSeconds) throw new InvalidDataException("The players' warning must be 0 to 3600 seconds.");
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        root["shutdown_warning_seconds"] = seconds;
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+    }
     public static readonly string[] Offered = [LocalConfig, "config/host.txt"];
     // Earlier versions an overlay keeps (shard_group.py KEPT_COPY); they are never offered or copied.
     private static readonly Regex Kept = new(@"\.(previous|migrated)$|\.bak(-|$)");

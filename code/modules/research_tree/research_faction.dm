@@ -115,6 +115,8 @@
 
 /obj/map_metadata/proc/is_node_done(faction, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
+	if (research_node_dormant(N))
+		return FALSE
 	// The era-baseline free grant is a MAIN-TREE-ONLY mechanic. Specialist
 	// trees (Agriculture, Tailoring, ...) must never auto-complete by era --
 	// a faction's edge there is meant to be durable and actually earned, and

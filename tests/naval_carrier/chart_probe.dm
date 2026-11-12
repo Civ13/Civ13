@@ -1,0 +1,373 @@
+// The sea chart and harbours (code/modules/naval/craft_chart.dm,
+// docs/craft-core.md): a mirror chart per sea level whose tokens follow the
+// real ships and mooring posts; the chart read at a helm; a mooring post
+// that answers a ship with a ticket, the marked slide alongside, the mooring
+// and casting off; owners, guests and a foul berth.
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 70
+	maxy = 60
+	maxz = 3
+	turf = /turf
+	area = /area
+	visibility = 0
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+var/naval_research_done = FALSE
+/obj/map_metadata/naval_probe/New()
+	return
+/obj/map_metadata/naval_probe/is_node_done(faction, node_id)
+	return naval_research_done
+/mob/living/human/naval_probe/New()
+	return
+var/naval_failures = 0
+var/naval_runtime_error = FALSE
+/proc/naval_check(condition, label)
+	if (!condition)
+		naval_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+/world/Error(exception/e)
+	naval_runtime_error = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+
+// Rock under everything, sand ashore (x 1-20) and deep sea beyond, sky above.
+/proc/naval_fixture()
+	for (var/x = 1, x <= world.maxx, x++)
+		for (var/y = 1, y <= world.maxy, y++)
+			var/turf/R = locate(x, y, 1)
+			R.ChangeTurf(/turf/wall/rockwall)
+			var/turf/W = locate(x, y, 2)
+			W.ChangeTurf(x <= 20 ? /turf/floor/beach/sand : /turf/floor/beach/water/deep/saltwater)
+			var/turf/S = locate(x, y, 3)
+			S.ChangeTurf(/turf/sky/building)
+
+/datum/craft_drive/probe_push
+	thrust = 1000
+
+/obj/structure/probe_gun
+	name = "probe gun"
+	anchored = TRUE
+/obj/structure/probe_rock
+	name = "probe rock"
+	anchored = TRUE
+	density = TRUE
+
+// A plank laid the way a player lays one, with its first update already run.
+/proc/hull_lay(x, y)
+	var/turf/T = locate(x, y, 2)
+	var/obj/covers/repairedfloor/ship/C = new(T)
+	C.updateturf()
+	return C
+
+/proc/hull_planks(turf/T)
+	. = 0
+	for (var/obj/covers/C in T)
+		.++
+
+// The steps a half minute covers at her speed: a gliding hull makes one tile
+// a step. TRUE when every step moved her.
+/proc/hull_leg(datum/craft/C)
+	var/steps = 0
+	while (steps < C.speed * VESSEL_TILES_PER_STEP)
+		if (!C.sail_tick())
+			return FALSE
+		steps++
+	return steps > 0
+
+/proc/naval_checks()
+	naval_fixture()
+	var/obj/structure/berth/quay/post = new(locate(20, 20, 2))
+	naval_check((post in sea_harbours) && post.water_side() == EAST, "a mooring post on the sand finds the water to its east")
+	var/obj/structure/berth/quay/inland = new(locate(10, 20, 2))
+	naval_check(!inland.water_side() && findtext(inland.status_text(), "no open water"), "a post inland has no water beside it")
+	qdel(inland)
+	naval_check(!(inland in sea_harbours), "and leaves the harbour list when it goes")
+
+	// ---- Two hulls ----
+	for (var/x = 40, x <= 44, x++)
+		hull_lay(x, 10)
+		hull_lay(x, 11)
+	var/obj/structure/hull_tiller/tiller = new(locate(42, 10, 2))
+	naval_check(isnull(tiller.commission("Wren", EAST)), "the Wren is commissioned")
+	var/datum/craft/C = tiller.craft
+	var/datum/craft_body/built/B = C.body
+	for (var/x = 50, x <= 52, x++)
+		hull_lay(x, 12)
+	var/obj/structure/hull_tiller/tiller2 = new(locate(51, 12, 2))
+	naval_check(isnull(tiller2.commission("Kite", EAST)), "the Kite is commissioned")
+	var/datum/craft/K = tiller2.craft
+	var/turf/mid = C.centre()
+	naval_check(mid.x == 42 && mid.y == 10 && !C.making_way(), "the Wren's middle is 42,10 and she is stopped ([mid.x],[mid.y])")
+
+	// ---- The chart ----
+	var/datum/chart/sea/S = sea_chart(2)
+	naval_check(S == sea_chart(2) && S.mode == CHART_MODE_MIRROR && S.width == 7 && S.height == 6, "one mirror chart for the level, 7 squares by 6 ([S.width],[S.height])")
+	naval_check(S.square_name(1, 1) == "A1" && S.square_name(5, 3) == "E3" && S.square_name(27, 10) == "AA10", "squares are lettered across and numbered up")
+	naval_check(S.refresh() == 3 && C.token && C.token.x == 5 && C.token.y == 1 && post.token && post.token.x == 2 && post.token.y == 2, "the chart holds both ships and the harbour where they really are")
+	var/text = C.sea_chart_text()
+	naval_check(findtext(text, "the Wren lies in square E1 (42, 10)"), "the chart says where she is ([text])")
+	naval_check(findtext(text, "Kite, 9 tiles northeast, square F2, bow to the east, stopped"), "her lookout sees the Kite")
+	naval_check(findtext(text, "the mooring post at 20, 20, 22 tiles northwest, square B2: she may berth here"), "and the harbour is charted with its answer")
+
+	// ---- Modular boats and aircraft in sight ----
+	naval_check(!findtext(text, "Boats and aircraft in sight"), "with no boat or aircraft about the chart lists none")
+	var/obj/structure/vehicleparts/axis/ship/boat = new(locate(45, 14, 2))
+	boat.name = "skiff"
+	var/obj/structure/vehicleparts/axis/ship/far_boat = new(locate(42, 55, 2))
+	var/obj/structure/vehicleparts/axis/aircraft/plane = new(locate(40, 8, 3))
+	plane.name = "scout plane"
+	plane.flight_state = AIRCRAFT_LOW
+	airborne_aircraft |= plane
+	text = C.sea_chart_text()
+	naval_check(findtext(text, "Boats and aircraft in sight:") && findtext(text, "Ship: skiff, 4 tiles northeast, heading") && findtext(text, "stopped"), "a modular boat within her lookout is on the chart ([text])")
+	naval_check(findtext(text, "Aircraft: scout plane, 2 tiles southwest") && findtext(text, ", low"), "and so is an aircraft flying over")
+	naval_check(sea_boat_contacts(mid, C.lookout_range()).len == 1 && sea_boat_contacts(mid, 60).len == 2, "a boat beyond her lookout is not")
+	var/datum/craft/vehicle/skiff = craft_of_axis(boat)
+	skiff.register = new /datum/craft_register
+	skiff.register.party = "probe party"
+	skiff.rename("Minnow")
+	naval_check(findtext(C.sea_chart_text(), "Ship: Minnow, 4 tiles") && sea_contact_name(boat, "probe party") == "Minnow (ours)" && !(skiff in crafts), "a boat with papers goes by the name in them, marked as ours to its own party")
+	airborne_aircraft -= plane
+	qdel(plane)
+	qdel(boat)
+	qdel(far_boat)
+	naval_check(!findtext(C.sea_chart_text(), "Boats and aircraft in sight") && QDELETED(skiff), "gone, they leave the chart")
+
+	// ---- Running dark and hails (naval/craft_signals.dm) ----
+	var/datum/craft_drive/probe_push/strong = new
+	K.add_drive(strong)
+	K.set_speed(VESSEL_SPEED_FULL)
+	naval_check(K.speed == VESSEL_SPEED_FULL, "with a strong drive the Kite rings full ahead ([K.speed])")
+	naval_check(K.set_dark(TRUE) && K.running_dark && K.speed == VESSEL_SPEED_SLOW && !K.set_dark(TRUE), "run dark she drops to slow ahead ([K.speed])")
+	K.set_speed(VESSEL_SPEED_FULL)
+	naval_check(K.speed == VESSEL_SPEED_SLOW && K.max_speed() == VESSEL_SPEED_SLOW && findtext(tiller2.status_text(), "running dark"), "and slow ahead is all she rings while dark")
+	text = C.sea_chart_text()
+	naval_check(findtext(text, "unknown contact, 9 tiles northeast, square F2.") && !findtext(text, "Kite") && K.token.dark, "a ship running dark is seen but not known")
+	naval_check(findtext(K.sea_chart_text(), "She runs dark") && findtext(K.sea_chart_text(), "Wren, 9 tiles southwest"), "she still knows the ships that show themselves")
+	var/list/hails = C.hail_candidates()
+	naval_check(hails.len == 1 && hails["Unknown contact, 9 tiles northeast"] == K, "the Wren can hail the contact her lookout sees")
+	naval_check(C.hail(K, "Heave to", null) && K.last_hail == "Hail from the Wren, 9 tiles southwest: \"Heave to\"", "the Kite's crew hear the hail and where it came from ([K.last_hail])")
+	naval_check(K.hail(C, "No", null) && C.last_hail == "Hail from an unknown ship, 9 tiles northeast: \"No\"", "a dark ship answers without her name ([C.last_hail])")
+	C.last_hailed_at = world.time + 1
+	naval_check(!C.hail(K, "Again", null) && findtext(C.last_refusal, "still carrying"), "hails cannot be shouted one on top of another")
+	C.last_hailed_at = 0
+	naval_check(!C.hail(K, "", null) && !C.hail(C, "Me", null), "nothing and nobody are not hailed")
+	C.register = new /datum/craft_register
+	C.register.party = "probe owners"
+	K.register = new /datum/craft_register
+	K.register.party = "probe owners"
+	naval_check(C.knows(K) && C.name_of(K) == "Kite" && findtext(C.sea_chart_text(), "Kite, 9 tiles northeast, square F2, running dark, bow to the east"), "ships of her own owners still know her")
+	qdel(C.register)
+	qdel(K.register)
+	C.register = null
+	K.register = null
+	naval_check(K.set_dark(FALSE) && !K.token.dark && K.max_speed() == VESSEL_SPEED_FULL, "showing her lights she is known and fast again")
+	K.set_speed(VESSEL_SPEED_STOP)
+	K.remove_drive(strong)
+	qdel(strong)
+
+	// ---- Weather and murk (naval/sea_weather.dm) ----
+	var/area/sky = get_area(C.centre())
+	var/weather_was = sky.weather
+	naval_check(C.lookout_range() == 40 && C.sights(K) && isnull(sea_murk_name(C.centre())), "in clear weather her lookout sees 40 tiles")
+	sky.weather = WEATHER_WET
+	naval_check(C.lookout_range() == 30 && C.sights(K), "rain cuts it to 30 ([C.lookout_range()])")
+	sky.weather = WEATHER_EXTREME
+	text = C.sea_chart_text()
+	naval_check(C.lookout_range() == 15 && findtext(text, "In a storm her lookout sees 15 tiles.") && findtext(text, "Lookout, 15 tiles:") && findtext(text, "Kite, 9 tiles"), "a storm to 15, and the chart says so")
+	sky.weather = weather_was
+	var/datum/chart_hazard/fog = new
+	fog.name = "a fog bank"
+	fog.x = K.token.x
+	fog.y = K.token.y
+	fog.interference = 35
+	S.hazards += fog
+	naval_check(C.lookout_range() == 40 && K.lookout_range() == 5 && !C.sights(K) && !K.sights(C) && sea_murk_name(K.centre()) == "a fog bank", "a fog bank on the chart hides the ship inside it and blinds her")
+	naval_check(!C.hail_candidates().len && !C.hail(K, "Ahoy", null) && findtext(C.last_refusal, "out of sight") && !findtext(C.sea_chart_text(), "Kite"), "she can be neither hailed nor charted through it")
+	S.hazards -= fog
+	qdel(fog)
+	naval_check(C.sights(K), "the fog gone, she is seen again")
+	C.token.sensor_range = 5
+	naval_check(findtext(C.sea_chart_text(), "no other ship within 5 tiles"), "a ship beyond the lookout is not listed")
+	C.token.sensor_range = CHART_SENSOR_RANGE
+
+	// ---- Asking for the berth ----
+	naval_check(!C.order_dock(post) && findtext(C.last_refusal, "more than 20 tiles off") && !post.reserved, "a berth 22 tiles off is too far to make for ([C.last_refusal])")
+	naval_check(B.move_to(30, 10, EAST), "she closes to 12 tiles")
+	var/mob/living/human/naval_probe/ann = new(locate(32, 10, 2))
+	ann.real_name = "Ann"
+	ann.civilization = "Reds"
+	var/mob/living/human/naval_probe/bob = new(locate(51, 12, 2))
+	bob.real_name = "Bob"
+	bob.civilization = "Blues"
+	post.owner_party = party_train_party_of(ann)
+	post.welcome = BERTH_WELCOME_OWNERS
+	naval_check(!C.order_dock(post) && findtext(C.last_refusal, "does not welcome") && !post.reserved && !C.ticket, "a claimed post turns an unregistered ship away ([C.last_refusal])")
+	naval_check(findtext(C.sea_chart_text(), "square B2: the berth does not welcome her party"), "and her chart says so")
+	C.register = new /datum/craft_register
+	C.register.claim(ann)
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(C.order_dock(post) && post.reserved && C.ticket == post.reserved && C.ticket.granted(), "registered to the owners she is given a ticket")
+	naval_check(C.docking && C.docking[1] == 21 && C.docking[2] == 18 && C.docking[3] == NORTH && C.path_markers.len == 10, "she will lie along the shore abreast of the post, and the water is marked ([C.path_markers.len])")
+	naval_check(!C.sail_tick() && B.origin().x == 30 && C.speed == VESSEL_SPEED_SLOW, "she does not hop while she waits to slide in")
+	naval_check(findtext(post.refusal(K), "promised to Wren") && findtext(post.status_text(), "Wren is making for it"), "the berth is promised to her")
+	naval_check(!C.order_dock(post) && findtext(C.last_refusal, "already coming about"), "a second order waits for the first")
+
+	// ---- Alongside ----
+	naval_check(C.finish_dock(), "she slides in")
+	var/turf/O = B.origin()
+	naval_check(O.x == 21 && O.y == 18 && B.heading() == NORTH && B.contains(get_turf(tiller)) && B.contains(get_turf(ann)), "she lies at 21,18 with her bow to the north, tiller and sailor aboard ([O.x],[O.y])")
+	naval_check(C.berth == post && post.occupant == C && !post.reserved && !C.ticket && !C.docking && !C.turning_to && !C.path_markers.len, "she is moored and the ticket is spent")
+	naval_check(C.anchored && C.speed == VESSEL_SPEED_STOP, "all stop, anchor down")
+	post.harbour = "Port Ann"
+	naval_check(findtext(C.sea_chart_text(), "moored at Port Ann") && findtext(post.status_text(), "The Wren is moored here"), "chart and post both say she is moored at Port Ann")
+	naval_check(findtext(K.sea_chart_text(), "Port Ann, ") && findtext(post.refusal(K), "taken by Wren"), "the Kite reads the harbour's name and that it is taken")
+	naval_check(!C.order_dock(post) && findtext(C.last_refusal, "already lies there"), "she cannot make for the berth she lies in")
+
+	// ---- A foul berth, guests ----
+	var/datum/craft_body/built/KB = K.body
+	naval_check(KB.move_to(30, 30, EAST), "the Kite closes")
+	C.set_anchor(FALSE)
+	C.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(hull_leg(C) && B.origin().y == 20 && !C.berth && !post.occupant, "a moored ship that sails has cast off")
+	naval_check(!K.order_dock(post) && findtext(K.last_refusal, "does not welcome"), "the Kite is nobody's guest")
+	K.register = new /datum/craft_register
+	K.register.claim(bob)
+	post.welcome = BERTH_WELCOME_GUESTS
+	var/list/found = post.guest_candidates()
+	naval_check(found.len == 1 && found["Blues (the Kite)"] == party_train_party_of(bob), "her owners can be made guests while she lies in reach")
+	naval_check(!K.order_dock(post), "until they are she is turned away")
+	post.guests |= party_train_party_of(bob)
+	naval_check(!K.order_dock(post) && findtext(K.last_refusal, "the berth is foul") && !post.reserved && !K.ticket && !K.docking, "a guest is welcome, but the Wren lies across the berth ([K.last_refusal])")
+	naval_check(hull_leg(C) && hull_leg(C) && B.origin().y == 24, "the Wren stands clear")
+	naval_check(K.order_dock(post) && K.finish_dock() && K.berth == post && KB.origin().x == 21 && KB.origin().y == 19, "and the Kite berths ([KB.origin().x],[KB.origin().y])")
+
+	// ---- Already alongside (after a restart) ----
+	K.cast_off()
+	var/redock = K.order_dock(post)
+	var/refusal_was = K.last_refusal
+	naval_check(!K.berth && redock && K.finish_dock() && K.berth == post && KB.origin().y == 19, "a ship already lying alongside is made fast where she lies ([redock], [refusal_was], [KB.origin().y], [KB.heading()])")
+
+	// ---- Gone ----
+	qdel(post)
+	naval_check(!K.berth && !sea_harbours.len && S.refresh() == 2, "with the post gone she is moored to nothing and the chart shows two ships")
+	tiller2.decommission()
+	naval_check(S.refresh() == 1 && !findtext(C.sea_chart_text(), "Kite"), "a struck hull leaves the chart")
+
+	// ---- A slipway ship berths the same way ----
+	var/datum/vessel/schooner/V = new
+	naval_check(V.place(30, 40, 2, EAST), "a schooner is laid on the sea ([V.last_refusal])")
+	var/datum/craft/P = craft_at(locate(32, 42, 2))
+	var/obj/structure/berth/quay/post2 = new(locate(20, 45, 2))
+	mid = P.centre()
+	naval_check(mid.x == 36 && mid.y == 42 && findtext(P.sea_chart_text(), "the mooring post at 20, 45, 16 tiles"), "the schooner charts the new post 16 tiles off ([mid.x],[mid.y])")
+	V.set_anchor(FALSE)
+	V.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(P.order_dock(post2) && V.turning_to == NORTH && P.path_markers.len > 0 && !V.sail_hop() && V.ox == 30, "she is given the berth, her water is marked and she holds her hops")
+	naval_check(P.finish_dock() && V.ox == 21 && V.oy == 39 && V.dir == NORTH && !V.turning_to, "she slides in along the shore, bow to the north ([V.ox],[V.oy])")
+	naval_check(P.berth == post2 && post2.occupant == P && V.anchored && V.speed == VESSEL_SPEED_STOP && !P.making_way(), "and is made fast")
+	V.set_anchor(FALSE)
+	V.set_speed(VESSEL_SPEED_SLOW)
+	naval_check(P.making_way() && V.sail_hop() && !P.berth && !post2.occupant, "sailing on, she has cast off")
+
+	// ---- Wiring rides a slipway ship too (craft/rigid_move.dm) ----
+	var/list/deck = list()
+	for (var/turf/T in V.cells())
+		if (T.z == 2)
+			deck += T
+	var/obj/structure/cable/c1 = new(deck[1])
+	var/obj/structure/cable/c2 = new(deck[2])
+	var/obj/structure/cable/ashore = new(locate(10, 50, 2))
+	c1.connections = list(c2, ashore)
+	c2.connections = list(c1)
+	ashore.connections = list(c1)
+	var/y_was = c1.y
+	naval_check(V.sail_hop() && c1.y > y_was && (c2 in c1.connections) && (c1 in c2.connections), "cables on her deck hop with her and stay joined ([c1.y])")
+	naval_check(!(ashore in c1.connections) && !(c1 in ashore.connections) && isnull(craft_rigid_cargo), "and the cable to the shore has parted")
+
+	// ---- A slipway ship runs dark too ----
+	V.set_speed(VESSEL_SPEED_HALF)
+	naval_check(V.speed == VESSEL_SPEED_HALF && V.deck_lights_on, "the schooner makes half ahead with her lights on")
+	naval_check(P.set_dark(TRUE) && V.speed == VESSEL_SPEED_SLOW && !V.deck_lights_on && V.speed_cap() == VESSEL_SPEED_SLOW, "run dark her deck lights go out and she drops to slow ahead")
+	V.set_speed(VESSEL_SPEED_FULL)
+	naval_check(V.speed == VESSEL_SPEED_SLOW, "and she rings no more than slow ahead")
+	naval_check(P.set_dark(FALSE) && V.deck_lights_on && V.speed_cap() == V.max_speed, "showing her lights lifts the limit")
+	V.set_speed(VESSEL_SPEED_STOP)
+
+	// ---- Grappling and boarding (naval/craft_grapple.dm) ----
+	for (var/x = 60, x <= 62, x++)
+		hull_lay(x, 5)
+		hull_lay(x, 8)
+	var/obj/structure/hull_tiller/lark_tiller = new(locate(61, 5, 2))
+	var/obj/structure/hull_tiller/gull_tiller = new(locate(61, 8, 2))
+	naval_check(isnull(lark_tiller.commission("Lark", EAST)) && isnull(gull_tiller.commission("Gull", EAST)), "the Lark and the Gull are commissioned two tiles of water apart")
+	var/datum/craft/lark = lark_tiller.craft
+	var/datum/craft/gull = gull_tiller.craft
+	var/list/reach = lark.grapple_plan(gull)
+	naval_check(reach && reach[1] == 2 && reach[2] == NORTH, "the Lark's lines would cross two tiles to the north")
+	var/list/prey = lark.grapple_candidates()
+	naval_check(prey.len == 1 && prey["Gull, 3 tiles north"] == gull, "the Gull is the one ship she can grapple")
+	naval_check(!C.order_grapple(gull) && findtext(C.last_refusal, "more than 3 tiles"), "the Wren lies too far off to grapple her ([C.last_refusal])")
+	naval_check(lark.order_grapple(gull) && lark.grapple && lark.grapple == gull.grapple && lark.grapple.thrower == lark && lark.grapple.lines.len == 2, "the Lark's lines hold the Gull")
+	var/turf/gap1 = get_turf(lark.grapple.lines[1])
+	var/turf/gap2 = get_turf(lark.grapple.lines[2])
+	naval_check(gap1.y == 6 && gap2.y == 7 && gap1.x == gap2.x && gap1.x != 61 && (locate(/obj/covers/repairedfloor/rope/boarding) in gap1) && (locate(/obj/covers/repairedfloor/rope/boarding) in gap2), "and boarding lines lie across the gap, clear of the tillers ([gap1.x],[gap1.y])")
+	lark.set_anchor(FALSE)
+	lark.set_speed(VESSEL_SPEED_SLOW)
+	gull.set_anchor(FALSE)
+	naval_check(!lark.sail_tick() && lark.body.origin().x == 60 && !gull.order_turn(NORTH), "neither ship hops or comes about while the lines hold")
+	naval_check(findtext(lark.grapple_refusal(), "grappled to the Gull. Cast off") && findtext(gull.grapple_refusal(), "grappled to the Lark. Cut") && findtext(lark.sea_chart_text(), "Grappling lines hold her"), "each helm says why")
+	naval_check(!gull.order_grapple(lark) && !C.order_grapple(lark), "a grappled ship throws and takes no second set of lines")
+	gull.set_anchor(TRUE)
+	naval_check(isnull(gull_tiller.commission()) && gull.body.tile_count() == 3, "a refit does not take the boarding lines for hull ([gull.body.tile_count()])")
+	gull.set_anchor(FALSE)
+	gull.body.hold(gull.body.heading())
+	var/datum/craft_grapple/lines = lark.grapple
+	lines.release(gull)
+	naval_check(!lark.grapple && !gull.grapple && !lark.turning_to && !gull.turning_to && !(locate(/obj/covers) in gap1) && !(locate(/obj/covers) in gap2), "cut, the lines are gone and both ships are free")
+	naval_check(!lark.order_grapple(gull) && findtext(lark.last_refusal, "still being coiled"), "the Lark must coil her lines before she throws again")
+	lark.grapple_ready_at = 0
+	naval_check(lark.order_grapple(gull), "then she can")
+	qdel(locate(/obj/covers/repairedfloor/rope/boarding) in gap1)
+	naval_check(!lark.grapple && !gull.grapple && !(locate(/obj/covers) in gap2), "a line destroyed parts the ships")
+	lark.grapple_ready_at = 0
+	naval_check(lark.order_grapple(gull), "grappled once more")
+	// ---- A dark ship by night ----
+	var/hour_was = time_of_day
+	naval_check(get_dist(C.centre(), gull.centre()) > 10 && C.sights(gull), "by day the Wren sees the Gull [get_dist(C.centre(), gull.centre())] tiles off")
+	gull.set_dark(TRUE)
+	naval_check(C.sights(gull), "and still sees her running dark by day")
+	time_of_day = "Night"
+	naval_check(!C.sights(gull) && gull.sights(C) && lark.sights(gull), "by night a dark ship is made out only close by, though she sees ships that show lights")
+	gull.set_dark(FALSE)
+	naval_check(C.sights(gull), "showing her lights she is seen by night")
+	time_of_day = hour_was
+	lark_tiller.decommission()
+	naval_check(!gull.grapple && !gull.turning_to && !(locate(/obj/covers) in gap1), "a struck hull lets go of her prize")
+
+/proc/naval_run()
+	try
+		naval_checks()
+	catch(var/exception/e)
+		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+/world/New()
+	OpenPort("none")
+	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		movementMachine = new
+		map = new /obj/map_metadata/naval_probe
+		naval_check(!world.port, "fixture has no listening port")
+	catch(var/exception/e)
+		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
+	spawn(0)
+		naval_run()

@@ -300,6 +300,86 @@ class RepeatClickPayment(unittest.TestCase):
         press = proc('code/modules/1713/production.dm', '/obj/structure/printingpress/attackby')
         self.assert_order(press, 'Add to original or copy?', 'if (input == "Cancel" || QDELETED(W) || W.loc != user)', 'base += W')
 
+class PlantPotCinchona(unittest.TestCase):
+    """Exercise the shared planting body with an injected wait boundary."""
+
+    def plant(self, pot, item, actor, wait, mutation=None):
+        body = proc('code/game/objects/structures/plant_pots.dm',
+                    '/obj/structure/plant_pot/proc/plant_cinchona')
+        if mutation:
+            body = mutation(body)
+        # Adapt engine-only icons, typepaths, interpolation and implicit src fields.
+        body = re.sub(r'to_chat\(user, "[^\n]*"\)', 'to_chat(user)', body)
+        body = body.replace('filled_type || filled', 'src.filled_type || src.filled')
+        body = body.replace("icon = 'icons/obj/flora/filled_plantpots.dmi'", 'src.icon = "filled"')
+        body = body.replace('icon_state = "[planttype]cinchona"', 'src.icon_state = "cinchona"')
+        body = body.replace('desc = "A pot with a cinchona plant."', 'src.desc = "cinchona"')
+        body = body.replace('filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona',
+                            'src.filled_type = "cinchona"')
+        source = '/proc/plant_projection()\n' + body + '\n'
+        env = {'to_chat': lambda *_: None, 'do_after': wait,
+               'QDELETED': lambda obj: obj.deleted,
+               'qdel': lambda obj: setattr(obj, 'deleted', True)}
+        return adapter.project(source, '/proc/plant_projection', 'src, W, user', env)(pot, item, actor)
+
+    def test_both_pots_use_shared_planting_and_recheck_after_wait(self):
+        source = read('code/game/objects/structures/plant_pots.dm')
+        for subtype in ('clay/light', 'medium_planter/clay/yellow'):
+            body = adapter.extract(source, '/obj/structure/plant_pot/' + subtype + '/attackby')
+            self.assertIn('&& plant_cinchona(W, user)', body)
+
+        actor = object()
+        def fresh():
+            return (SimpleNamespace(filled_type=None, filled=False, deleted=False),
+                    SimpleNamespace(loc=actor, deleted=False))
+
+        pot, item = fresh()
+        self.assertTrue(self.plant(pot, item, actor, lambda *_: True))
+        self.assertEqual(pot.filled_type, 'cinchona')
+        self.assertTrue(item.deleted)
+
+        pot, item = fresh()
+        self.assertFalse(self.plant(pot, item, actor, lambda *_: False))
+        self.assertIsNone(pot.filled_type)
+        self.assertFalse(item.deleted)
+
+        for attribute, value in (('filled_type', 'other plant'), ('filled', True)):
+            with self.subTest(concurrent=attribute):
+                pot, item = fresh()
+                def competing_fill(*_):
+                    setattr(pot, attribute, value)
+                    return True
+                self.assertTrue(self.plant(pot, item, actor, competing_fill))
+                self.assertEqual(getattr(pot, attribute), value)
+                self.assertFalse(item.deleted)
+                # The previous code overwrote the concurrent fill and paid twice.
+                old = lambda body: body.replace(
+                    '\tif (QDELETED(src) || filled_type || filled || QDELETED(W) || W.loc != user)\n\t\treturn TRUE\n', '')
+                pot, item = fresh()
+                self.plant(pot, item, actor, competing_fill, mutation=old)
+                self.assertTrue(item.deleted)
+                self.assertEqual(pot.filled_type, 'cinchona')
+
+        for stale in ('pot', 'item', 'moved'):
+            with self.subTest(stale=stale):
+                pot, item = fresh()
+                def invalidate(*_):
+                    if stale == 'pot':
+                        pot.deleted = True
+                    elif stale == 'item':
+                        item.deleted = True
+                    else:
+                        item.loc = None
+                    return True
+                self.assertTrue(self.plant(pot, item, actor, invalidate))
+                self.assertIsNone(pot.filled_type)
+
+        pot, item = fresh()
+        pot.filled_type = 'already occupied'
+        self.assertTrue(self.plant(pot, item, actor, lambda *_: self.fail('should not wait')))
+        self.assertFalse(item.deleted)
+
+
 class RouletteSettlement(unittest.TestCase):
     """Execute the production settlement and collection bodies with inert engine seams."""
 

@@ -6,6 +6,13 @@ var/list/energy_mining_rolls = list()
 	var/result = energy_mining_rolls[1]
 	energy_mining_rolls.Cut(1,2)
 	return result
+// ENERGY_ROLLS_BEFORE_URANIUM is counted from mining_proc by scripts/check-battery-items.py,
+// so a new ore roll ahead of uranium does not shift the forced uranium roll.
+/proc/energy_uranium_rolls()
+	. = list()
+	for (var/i in 1 to ENERGY_ROLLS_BEFORE_URANIUM)
+		. += FALSE
+	. += TRUE
 /obj/item/energy_rad_receiver
 	var/pulses = 0
 	var/dose = 0
@@ -73,7 +80,7 @@ var/list/energy_mining_rolls = list()
 	var/obj/structure/reactor_fuel_processor/energy_ci/P = new(H.loc)
 	var/turf/mine = new /turf/floor/dirt/underground(locate(1,4,1))
 	energy_ci_check("real underground terrain is mineable", mine.is_mineable, TRUE)
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = energy_uranium_rolls()
 	mine.mining_proc(null)
 	mine = locate(1,4,1)
 	var/obj/item/stack/ore/uranium/U = locate() in mine
@@ -82,12 +89,12 @@ var/list/energy_mining_rolls = list()
 	if (!U)
 		qdel(P)
 		return
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = energy_uranium_rolls()
 	mine.mining_proc(null)
 	energy_ci_check("depleted terrain cannot mint more uranium", energy_ore_units(locate(1,4,1)), 1)
 	var/turf/early = new /turf/floor/dirt/underground(locate(4,4,1))
 	map.ordinal_age = 7
-	energy_mining_rolls = list(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE)
+	energy_mining_rolls = energy_uranium_rolls()
 	early.mining_proc(null)
 	energy_ci_check("preModern mining cannot yield uranium", energy_ore_units(locate(4,4,1)), 0)
 	map.ordinal_age = 8

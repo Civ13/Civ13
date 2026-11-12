@@ -314,7 +314,7 @@
 	material_name = "stone"
 	color = null
 
-/obj/structure/barricade/sandstone_h/ex_act(severity)
+/obj/structure/barricade/proc/stone_wall_explosion(severity)
 	switch(severity)
 		if (1.0)
 			health -= 150
@@ -326,45 +326,18 @@
 		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
 		qdel(src)
 		return
+
+/obj/structure/barricade/sandstone_h/ex_act(severity)
+	stone_wall_explosion(severity)
 
 /obj/structure/barricade/sandstone_v/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			health -= 150
-		if (2.0)
-			health -= 100
-		if (3.0)
-			health -= 50
-	if (health <= 0)
-		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-		qdel(src)
-		return
+	stone_wall_explosion(severity)
 
 /obj/structure/barricade/sandstone_h/crenelated/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			health -= 150
-		if (2.0)
-			health -= 100
-		if (3.0)
-			health -= 50
-	if (health <= 0)
-		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-		qdel(src)
-		return
+	stone_wall_explosion(severity)
 
 /obj/structure/barricade/sandstone_v/crenelated/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			health -= 150
-		if (2.0)
-			health -= 100
-		if (3.0)
-			health -= 50
-	if (health <= 0)
-		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-		qdel(src)
-		return
+	stone_wall_explosion(severity)
 /obj/structure/barricade/antitank
 	name = "czech hedgehog"
 	desc = "A static anti-tank obstacle defense made of metal angle beams."
@@ -494,65 +467,19 @@
 	color = null
 
 /obj/structure/barricade/stone_h/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			health -= 150
-		if (2.0)
-			health -= 100
-		if (3.0)
-			health -= 50
-	if (health <= 0)
-		visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-		qdel(src)
-		return
+	stone_wall_explosion(severity)
 
 /obj/structure/barricade/stone_v/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/stone_h/crenelated/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/stone_v/crenelated/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/stone_h/cliffside
 	name = "cliffside"
@@ -591,19 +518,7 @@
 
 /obj/structure/barricade/jap_h/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap_h_l
 	name = "shingled stone wall"
@@ -627,19 +542,7 @@
 
 /obj/structure/barricade/jap_h_l/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap_h_r
 	name = "shingled stone wall"
@@ -663,19 +566,7 @@
 
 /obj/structure/barricade/jap_h_r/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap_v
 	name = "shingled stone wall"
@@ -699,19 +590,7 @@
 
 /obj/structure/barricade/jap_v/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap_v_t
 	name = "shingled stone wall"
@@ -735,19 +614,7 @@
 
 /obj/structure/barricade/jap_v_t/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap_v_b
 	name = "shingled stone wall"
@@ -771,19 +638,7 @@
 
 /obj/structure/barricade/jap_v_b/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/tires
 	name = "pile of tires"
@@ -979,19 +834,7 @@
 
 /obj/structure/barricade/jap/ex_act(severity)
 	if (map.ID != "WHITERUN")
-		switch(severity)
-			if (1.0)
-				health -= 150
-			if (2.0)
-				health -= 100
-			if (3.0)
-				health -= 50
-		if (health <= 0)
-			visible_message(SPAN_DANGER("\The [src] is blown apart!"))
-			qdel(src)
-			return
-	else
-		return
+		stone_wall_explosion(severity)
 
 /obj/structure/barricade/jap/tall
 	name = "tall shingled stone wall"
