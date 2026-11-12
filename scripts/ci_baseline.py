@@ -981,6 +981,11 @@ SUITES = {
             'code/modules/1713/modern_telecom.dm',
             'tests/save_movement/source_adapter.py')},
 
+    # Bone armor stays craftable in every era with its stone-age protection; source checks only.
+    'bone_armor': {'files': ('tests/bone_armor/test_bone_armor.py',),
+        'paths': ('tests/bone_armor/',), 'shared_paths': (
+            'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
+
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
