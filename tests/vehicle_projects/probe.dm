@@ -7,7 +7,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 30
+	maxx = 40
 	maxy = 30
 	maxz = 1
 	turf = /turf
@@ -200,7 +200,18 @@ var/project_runtime_error = FALSE
 	project_deny_node = null
 	project_check(!R.project_refusal("Medium tank", H), "with the research the tank can start")
 	qdel(R)
-	var/list/spots = list("Cargo truck" = list(5, 12), "Armoured car" = list(12, 12), "Tracked carrier" = list(19, 12), "Light tank" = list(5, 20), "Medium tank" = list(12, 20))
+	project_deny_node = "modern_armor"
+	R = new(locate(5, 20, 1))
+	project_check(findtext(R.project_refusal("Main battle tank", H), "research is required") && !R.project_refusal("Heavy tank", H), "the main battle tank needs Modern Armor; the heavy tank does not")
+	project_deny_node = null
+	qdel(R)
+	// Every works model is built in turn, each at its own press.
+	var/list/spots = list()
+	var/spot_index = 0
+	for (var/model in works_vehicle_specs)
+		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
+		spot_index++
+	project_check(spots.len == 10, "ten works models ([spots.len])")
 	for (var/model in spots)
 		var/list/spot = spots[model]
 		var/obj/structure/car_workshop/project_probe/V = new(locate(spot[1], spot[2], 1))
@@ -248,7 +259,14 @@ var/project_runtime_error = FALSE
 						frames++
 		project_check(!extras && !shells, "[model]: no free guns, ammunition, shells or supplies ([extras], [shells])")
 		project_check(frames == cells.len, "[model]: every layout cell has its frame ([frames] of [cells.len])")
-		project_check(turrets == (findtext(model, "tank") ? 1 : 0), "[model]: [findtext(model, "tank") ? "has its turret" : "has no turret"]")
+		var/list/model_spec = works_vehicle_specs[model]
+		var/gunned = model_spec["gun"] > 0
+		project_check(turrets == (gunned ? 1 : 0), "[model]: [gunned ? "has its turret" : "has no turret"]")
+		project_check(made.hand_built && !made.take_apart_refusal(null), "[model]: counts as hand built, so it can be refitted and taken apart ([made.take_apart_refusal(null)])")
+		for (var/obj/structure/turret/built/fitted in made.built_turrets())
+			var/obj/structure/cannon/modern/tank/gun = locate() in fitted.weapons
+			project_check(fitted.weapons.len == 1 && gun && gun.type == /obj/structure/cannon/modern/tank && fitted.gunner_seat && fitted.loader_seat && !length(fitted.lacking()), "[model]: its turret is the craftable one, fitted with the craftable cannon and a gunner's and loader's seat ([fitted.fitting_text()])")
+			project_check("[fitted.turret_icon]0" in icon_states('icons/obj/vehicles/vehicles256x256.dmi'), "[model]: its turret picture exists ([fitted.turret_icon])")
 		var/list/locations = list()
 		for (var/atom/movable/part in made.components)
 			locations[part] = part.loc

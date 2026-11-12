@@ -38,25 +38,36 @@ one-go assembly does:
 
 The automobile workshop also builds works vehicles
 (`code/modules/craft/vehicle_works.dm`, `works_vehicle_specs`): a cargo
-truck, an armoured car, a tracked carrier, a light tank and a medium tank.
+truck, scout, field and armoured cars, a tankette, a tracked carrier and
+light, medium, heavy and main battle tanks.
 They are projects only (`one_go(model)` is FALSE, so the one-go menu and
 `assemble_for()` leave them out). Each spec names an existing body layout,
 its square, its cost, the steel that is turret and gun, and the research it
-needs beyond the press's own (Mechanized Warfare for all but the truck,
+needs beyond the press's own (none for the truck, scout car and field car,
+Modern Armor for the main battle tank, Mechanized Warfare for the rest,
 checked when the project starts). Tracked models have a Tracks stage in
 place of Wheels (4 pieces, 1 craftable tank track each) and no windows;
-tanks end with a Turret stage of 70 steel. `workshop_layout_part()` leaves
+tanks end with a Turret stage of 70 steel. A tank's turret is the craftable
+`/obj/structure/turret/built` with the craftable tank cannon and a gunner's
+and a loader's seat, fitted by `works_fit()`, and every works vehicle is
+`hand_built`, so its owners can restyle the turret, refit it or take it apart
+from the axis menu (craft-core.md "Vehicle assembly"). `workshop_layout_part()` leaves
 out a map layout's free extras for every press model: tanks are empty, shell
 racks are empty, and loose guns, ammunition, supply crates, hull gunner
 seats and radios are not made.
 
 | Model | Square | Steel | Glass | Cloth | Cable | Running gear |
 | --- | --- | --- | --- | --- | --- | --- |
+| Scout car | 3 | 50 | 4 | 4 | 10 | 4 wheels |
+| Field car | 3 | 90 | 6 | 4 | 10 | 4 wheels |
 | Cargo truck | 4 | 80 | 8 | 6 | 10 | 4 wheels |
 | Armoured car | 3 | 120 | 0 | 4 | 10 | 4 wheels |
+| Tankette | 3 | 140 | 0 | 4 | 10 | 4 tracks |
 | Tracked carrier | 4 | 180 | 0 | 6 | 12 | 4 tracks |
 | Light tank | 4 | 220 | 0 | 4 | 12 | 4 tracks |
 | Medium tank | 4 | 300 | 0 | 6 | 14 | 4 tracks |
+| Heavy tank | 4 | 380 | 0 | 6 | 14 | 4 tracks |
+| Main battle tank | 4 | 460 | 0 | 6 | 16 | 4 tracks |
 
 Stacks are paid by hitting the press or any part of the vehicle in the bay;
 wheels and tank tracks are dragged onto either. A piece takes 3 seconds of work and needs no
