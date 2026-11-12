@@ -291,6 +291,13 @@ SUITES = {
         'paths': ('tests/smokables/',), 'shared_paths': (
             'code/game/objects/items/weapons/cigs_lighters.dm',
             'tests/save_movement/source_adapter.py')},
+    'candle_lighting': {'files': ('tests/candle_lighting/test_flame_source.py',),
+        'paths': ('tests/candle_lighting/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cigs_lighters.dm',
+            'code/game/objects/items/weapons/candle.dm',
+            'code/modules/1713/lantern.dm',
+            'code/modules/1713/cmss13_gear.dm',
+            'code/game/objects/structures/kitchen/oven.dm')},
     'mimic_treasure': {'files': ('tests/mimic_treasure/test_initialization.py',),
         'paths': ('tests/mimic_treasure/',), 'shared_paths': (
             'code/modules/1713/crates.dm',

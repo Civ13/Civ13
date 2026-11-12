@@ -16,13 +16,43 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/weapon/flame
 	var/lit = FALSE
 
+// The shared "can this light a wick" check: a burning open flame, never an
+// electric light or a glowstick. Things that can be lit (candles, smokables)
+// ask isflamesource(); a new flame source overrides is_open_flame().
 /proc/isflamesource(A)
-	if (istype(A, /obj/item/weapon/flame))
-		var/obj/item/weapon/flame/F = A
-		return (F.lit)
-	if (istype(A, /obj/item/flashlight/torch) || istype(A, /obj/item/flashlight/flare))
-		var/obj/item/flashlight/F = A
-		return F.on
+	if (!isatom(A))
+		return FALSE
+	var/atom/AT = A
+	return AT.is_open_flame()
+
+/atom/proc/is_open_flame()
+	return FALSE
+
+/obj/item/weapon/flame/is_open_flame()
+	return lit
+
+/obj/item/flashlight/is_open_flame()
+	return open_flame && on
+
+/obj/structure/oven/is_open_flame()
+	return on && open_flame
+
+/obj/structure/furnace/is_open_flame()
+	return on
+
+/obj/structure/brazier/is_open_flame()
+	return on
+
+/obj/effect/fire/is_open_flame()
+	return TRUE
+
+// A wall mount is lit when it holds a lit torch or lantern.
+/obj/structure/torch_stand/is_open_flame()
+	if (!storage)
+		return FALSE
+	for (var/obj/item/I in storage.contents)
+		if (isflamesource(I))
+			return TRUE
 	return FALSE
 
 ///////////

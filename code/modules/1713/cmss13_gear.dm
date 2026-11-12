@@ -43,6 +43,7 @@
 	light_color = "#40ff60"
 	turn_on_sound = 'sound/effects/Custom_flashlight.ogg'
 	show_flame = FALSE
+	open_flame = FALSE
 	w_class = ITEM_SIZE_TINY
 	var/glow_state = "glowstick_green"
 
