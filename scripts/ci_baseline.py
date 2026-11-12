@@ -41,6 +41,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'vehicle_level_shift': {'files': ('tests/vehicle_level_shift/test_shift.py',),
+        'paths': ('tests/vehicle_level_shift/',
+                  'code/modules/1713/machinery/modular_vehicles/axis.dm',
+                  'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+                  'code/modules/1713/machinery/modular_vehicles/ships/submarine.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'gaia_weather': {'files': ('tests/gaia_weather/test_frequency.py',),
         'paths': ('tests/gaia_weather/',), 'shared_paths': (
             'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
@@ -497,6 +503,11 @@ SUITES = {
             'code/modules/paperwork/lifecycle.dm', 'code/modules/reagents/Chemistry-Holder.dm',
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
+    # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
+        'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
+            'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
+            'tests/save_movement/source_adapter.py')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
