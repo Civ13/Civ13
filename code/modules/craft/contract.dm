@@ -17,6 +17,12 @@
 
 var/global/list/craft_contracts = list()
 
+// Jobs a board makes up and pays for itself (the depot's surveys and lost
+// cargo, the harbour office's contracts) are off until they are wanted: only
+// contracts one player posts for another are offered. Boards check this
+// before they fill, so switching it on needs nothing else.
+var/global/npc_jobs_enabled = FALSE
+
 /obj/craft_contract
 	name = "contract"
 	invisibility = 101

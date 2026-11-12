@@ -248,6 +248,8 @@ var/global/list/depot_cargo = list()
 // Fills the free places on the board. Returns how many jobs were added.
 /obj/structure/berth/quay/depot/proc/fill_jobs(force = FALSE)
 	. = 0
+	if (!npc_jobs_enabled)
+		return
 	if (!force && world.time < next_job_fill)
 		return
 	for (var/n = jobs(CONTRACT_OPEN).len, n < DEPOT_JOB_OFFERS, n++)

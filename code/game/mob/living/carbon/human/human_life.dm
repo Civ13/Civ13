@@ -492,18 +492,21 @@
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
-	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered() && !seabed_diving_rating())
+	// Rain gear, umbrellas and fires are in rain_gear.dm.
+	var/rain_intensity = rain_on_mob()
+	if (in_soaking_water())
 		cold_wetness = 1
-	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
-		cold_wetness = min(1, cold_wetness + 0.01)
+	else if (rain_intensity > 0)
+		rain_soak_step(rain_intensity)
 	else
-		cold_wetness = max(0, cold_wetness - (loc_temp >= 18 ? 0.01 : 0.002))
+		cold_wetness = max(0, cold_wetness - drying_rate(loc_temp))
 	if (cold_wetness >= 1 && previous_wetness < 1)
 		to_chat(src, "<span class='warning'>You are soaked through. Get out of the rain or water and find warmth to dry off.</span>")
 	else if (cold_wetness <= 0 && previous_wetness > 0)
 		to_chat(src, "<span class='notice'>You have dried off completely.</span>")
 
 	loc_temp = canopy_shelter_temperature(exposure_turf, loc_temp)
+	loc_temp = umbrella_shade_temperature(loc_temp)
 	for (var/obj/structure/bed/bedroll/BRL in src.loc)
 		if (BRL.used == TRUE && BRL.buckled_mob == src)
 			if (loc_temp < 22)
