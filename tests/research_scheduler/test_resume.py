@@ -58,6 +58,8 @@ def translate(body):
         "fire_result = null": "fire_result = None",
         "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))":
             "if fire_result != EARLY or not ctx.pending:",
+        "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)":
+            "if fire_result != EARLY:",
         "current = null": "pass",
         "current_list = null": "ctx.pending = None",
         "return fire_result": "return fire_result",

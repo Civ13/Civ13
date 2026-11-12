@@ -149,7 +149,7 @@
 	if (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))
 		fire_result = null
 	// Budgeted runs retain only nonempty snapshots for the scheduler to resume.
-	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))
+	if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)
 		// Assign null instead of cutting a possibly aliased VERY_HIGH list.
 		current = null
 		current_list = null
