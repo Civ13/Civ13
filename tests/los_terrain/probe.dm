@@ -13,8 +13,10 @@
 	return terrain_heights_cache.error ? null : terrain_heights_cache
 var/global/obj/map_metadata/map
 var/global/invalidated = 0
+/obj/probe_tree
+	opacity = TRUE
 /proc/root_tree_family(atom/A)
-	return FALSE
+	return istype(A, /obj/probe_tree)
 /proc/los_invalidate(atom/A, possible = FALSE)
 	invalidated++
 /mob
@@ -125,7 +127,24 @@ var/global/probe_cpu = 0
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
 	var/list/still_eye = los_still_eye_cases()
-	text2file(json_encode(list("still_eye" = still_eye, "fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
+	// Foliage cover: NPC sight to or from a mob in a tree's tile stops past
+	// two tiles, on flat ground (no height file) as well.
+	var/list/foliage = list()
+	var/obj/probe_tree/tree = new(locate(40, 40, 2))
+	M.lying = FALSE
+	T.lying = FALSE
+	map.terrain_height_file = null
+	for (var/d in 1 to 4)
+		M.loc = locate(40, 40, 2)
+		T.loc = locate(40 + d, 40, 2)
+		foliage += los_terrain_ray_blocked(M, T) ? 1 : 0
+		foliage += los_terrain_ray_blocked(T, M) ? 1 : 0
+	tree.loc = null
+	for (var/d in 1 to 4)
+		M.loc = locate(40, 40, 2)
+		T.loc = locate(40 + d, 40, 2)
+		foliage += los_terrain_ray_blocked(M, T) ? 1 : 0
+	text2file(json_encode(list("foliage" = foliage, "still_eye" = still_eye, "fields" = out, "builds" = builds, "build_ds" = build_ds, "cached_ds" = cached_ds, "cleared" = cleared, "see_over" = los_see_over_cases(), "rays" = rays, "agree" = agree, "ray_ds" = ray_ds)), "result.json")
 	world.log << "LOS_TERRAIN DONE"
 	shutdown()
 

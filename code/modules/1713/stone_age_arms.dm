@@ -9,7 +9,7 @@
 #define NEEDLE_REPAIR_AMOUNT 8
 #define SPEAR_FISHING_DELAY 100
 #define SPEAR_FISHING_CHANCE 35
-#define DIGGING_STICK_SPEED 0.5
+#define DIGGING_STICK_SPEED 0.75 // half of the base plough's 1.5
 
 // ---------------------------------------------------------------- atlatl
 // A spear-thrower: one hand (a sling subtype, so the bow's two-hand rule is
@@ -325,31 +325,56 @@
 	name = initial(name)
 
 /mob/living/simple_animal
-	var/tmp/harvest_scraped = FALSE
+	var/tmp/mob/harvest_scraper_user = null
 
 /mob/living/simple_animal/persistence_runtime_var(key)
-	if (key == "harvest_scraped")
+	if (key == "harvest_scraper_user")
 		return TRUE
 	return ..()
 
 /proc/holds_hide_scraper(mob/user, obj/item/tool)
-	return istype(tool, /obj/item/weapon/material/hide_scraper) || istype(user.get_inactive_hand(), /obj/item/weapon/material/hide_scraper)
+	if (!user)
+		return FALSE
+	return istype(tool, /obj/item/weapon/material/hide_scraper) || istype(user.get_active_hand(), /obj/item/weapon/material/hide_scraper) || istype(user.get_inactive_hand(), /obj/item/weapon/material/hide_scraper)
 
+// Only the harvest that is actually accepted records the scraper user; a
+// second click while one is in progress must not touch the first one's state.
 /mob/living/simple_animal/harvest_animal(mob/user, obj/item/tool, skin = FALSE)
-	harvest_scraped = skin && user && holds_hide_scraper(user, tool)
+	var/owns_scraper_state = FALSE
+	if (!harvesting)
+		owns_scraper_state = TRUE
+		harvest_scraper_user = (skin && holds_hide_scraper(user, tool)) ? user : null
 	. = ..()
-	if (!QDELETED(src))
-		harvest_scraped = FALSE
+	if (owns_scraper_state && !QDELETED(src))
+		harvest_scraper_user = null
 
-/mob/living/simple_animal/harvest_products(turf/site, skin)
-	..()
-	if (!skin || !harvest_scraped)
-		return
+/proc/hide_stack_amounts(turf/site)
+	var/list/amounts = list()
+	if (!site)
+		return amounts
 	for (var/obj/item/stack/material/S in site)
 		if (istype(S, /obj/item/stack/material/pelt) || istype(S, /obj/item/stack/material/rawhide))
-			S.amount = min(S.max_amount, S.amount + HIDE_SCRAPER_BONUS)
-			S.update_icon()
-			return
+			amounts[S] = S.amount
+	return amounts
+
+// The bonus goes only to a pelt or rawhide stack this carcass produced (new or
+// grown), and only if the user still holds the scraper when skinning finishes.
+/mob/living/simple_animal/harvest_products(turf/site, skin)
+	var/mob/scraper_user = harvest_scraper_user
+	var/list/before = (skin && scraper_user) ? hide_stack_amounts(site) : null
+	..()
+	if (!before || !holds_hide_scraper(scraper_user, null))
+		return
+	for (var/obj/item/stack/material/S in site)
+		if (!istype(S, /obj/item/stack/material/pelt) && !istype(S, /obj/item/stack/material/rawhide))
+			continue
+		if ((S in before) && S.amount <= before[S])
+			continue
+		if (S.amount >= S.max_amount)
+			continue
+		S.amount = min(S.max_amount, S.amount + HIDE_SCRAPER_BONUS)
+		S.update_icon()
+		return
 
 // ---------------------------------------------------------------- bone needle
 // Mend worn clothing: use the needle on it while holding sinew, leather,

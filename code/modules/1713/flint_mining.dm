@@ -164,6 +164,9 @@
 			result = new /obj/item/weapon/flint_spearhead(T)
 		else
 			result = stone_age_knap_result(choice, T, H)
+	if (!result)
+		to_chat(H, SPAN_WARNING("You can't knap that from this flint."))
+		return
 	qdel(src)
 	if (result && in_hand)
 		H.put_in_hands(result)

@@ -50,6 +50,10 @@ def dmi_states(path):
     return set(re.findall(r'state = "([^"]*)"', text))
 
 
+def strip_comments(text):
+    return '\n'.join(line for line in text.splitlines() if not line.strip().startswith('//'))
+
+
 def recipe_rows():
     rows = []
     for line in (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8').splitlines():
@@ -73,6 +77,8 @@ class StoneAgeArms(unittest.TestCase):
     def test_sprites_exist_for_every_state_used(self):
         states = dmi_states(DMI)
         self.assertEqual(STATES, states)
+        self.assertIn('atlatl', states)
+        self.assertIn('atlatl_loaded', states)
         used = set(re.findall(r'icon_state = "([^"]+)"', self.source))
         used |= set(re.findall(r'"(atlatl(?:_loaded)?)"', self.source))
         icon_items = re.findall(r'\n(/[^\n]+)\n((?:\t[^\n]*\n)+)', self.source)
@@ -100,12 +106,36 @@ class StoneAgeArms(unittest.TestCase):
             self.assertIn(f'"/obj/item/ammo_casing/atlatl_dart/{dart}" = "archery",', self.nodes)
 
     def test_knapping_offers_gated_flint_tools(self):
-        flint = (ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8')
+        flint = strip_comments((ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8'))
         self.assertIn('options += stone_age_knap_options(H)', flint)
         self.assertIn('result = stone_age_knap_result(choice, T, H)', flint)
         for path in KNAPPED:
             self.assertIn(f'crafting_recipe_allowed(H, "{path}")', self.source)
         self.assertIn('if (!path || !crafting_recipe_allowed(H, "[path]"))', self.source)
+
+    def test_refused_knap_keeps_the_flint(self):
+        flint = strip_comments((ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8'))
+        tail = flint[flint.index('result = stone_age_knap_result(choice, T, H)'):]
+        guard = tail.index('if (!result)')
+        self.assertLess(guard, tail.index('qdel(src)'))
+        self.assertIn('return', tail[guard:tail.index('qdel(src)')])
+
+    def test_digging_stick_is_half_plough_speed(self):
+        tools = (ROOT / 'code/modules/1713/tools.dm').read_text(encoding='utf-8')
+        plough = tools[tools.index('/obj/item/weapon/plough\n'):]
+        base = float(re.search(r'var/usespeed = ([0-9.]+)', plough[:plough.index('\n/', 1)]).group(1))
+        stick = float(re.search(r'#define DIGGING_STICK_SPEED ([0-9.]+)', self.source).group(1))
+        self.assertAlmostEqual(base / 2, stick)
+
+    def test_scraper_bonus_is_scoped_to_the_accepted_harvest(self):
+        harvest = self.source[self.source.index('/mob/living/simple_animal/harvest_animal('):]
+        harvest = harvest[:harvest.index('\n\n')]
+        self.assertIn('if (!harvesting)', harvest)
+        products = self.source[self.source.index('/mob/living/simple_animal/harvest_products('):]
+        products = products[:products.index('\n\n')]
+        self.assertLess(products.index('hide_stack_amounts(site)'), products.index('..()'))
+        self.assertIn('holds_hide_scraper(scraper_user, null)', products)
+        self.assertIn('S.amount <= before[S]', products)
 
     def test_atlatl_darts_only_take_flint_or_stone_points(self):
         self.assertIn('/obj/item/ammo_casing/atlatl_dart/flint\n', self.source)
@@ -124,7 +154,8 @@ class StoneAgeArms(unittest.TestCase):
             body = body[:body.index('\n\n')]
             self.assertIn('..()', body, header)
         harvest = self.source[self.source.index('/mob/living/simple_animal/harvest_products('):]
-        self.assertTrue(harvest.split('\n')[1].strip() == '..()')
+        harvest = harvest[:harvest.index('\n\n')]
+        self.assertIn('\n\t..()\n', harvest)
 
     def test_digging_stick_cannot_be_hitched(self):
         self.assertIn('/obj/item/weapon/plough/digging_stick\n', self.source)
