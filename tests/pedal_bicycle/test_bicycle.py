@@ -318,8 +318,15 @@ class BicycleArt(unittest.TestCase):
         import importlib.util
         import subprocess
         sheet = (ROOT / 'icons/obj/vehicles/bicycle.dmi').read_bytes()
-        self.assertEqual(hashlib.sha256(sheet).hexdigest(), '1e2c0a3eb926365367bc1511cca64f6f11a4c11fb19e40292a675944ffe3411c')
+        self.assertEqual(hashlib.sha256(sheet).hexdigest(), 'bcd47e849309fa098fcf16149a3f1e678efba6c6fae4d82c959e7ce8217d621e')
         self.assertIn(b'state = "bicycle_overlay"', __import__('zlib').decompressobj().decompress(sheet[sheet.index(b'zTXtDescription') + 17:]))
+        # Wheels touch the ground: the tile's bottom pixel row is drawn in every view.
+        if importlib.util.find_spec('PIL'):
+            from PIL import Image
+            art = Image.open(ROOT / 'icons/obj/vehicles/bicycle.dmi').convert('RGBA')
+            for i in range(4):
+                tile = art.crop(((i % 3) * 32, (i // 3) * 32, (i % 3) * 32 + 32, (i // 3) * 32 + 32))
+                self.assertTrue(any(tile.getpixel((x, 31))[3] for x in range(32)), i)
         if importlib.util.find_spec('PIL'):
             subprocess.run([sys.executable, str(ROOT / 'tests/pedal_bicycle/sprites.py'), '--check'], check=True)
         self.assertIn("icon = 'icons/obj/vehicles/bicycle.dmi'", SOURCE)

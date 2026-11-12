@@ -124,10 +124,19 @@ def mirrored(im):
     return im.transpose(Image.FLIP_LEFT_RIGHT)
 
 
+def lowered(im, rows):
+    out = blank()
+    out.paste(im, (0, rows))
+    return out
+
+
 def build():
     # BYOND stores four-direction states as south, north, east, west.
-    frames = [south(), north(), side(), mirrored(side()),
-              south('overlay'), north('overlay'), side('overlay'), mirrored(side('overlay')),
+    # Every view is lowered so the tyres rest on the tile's bottom edge, the
+    # ground line a standing rider's feet share.
+    frames = [lowered(south(), 2), lowered(north(), 2), lowered(side(), 3), lowered(mirrored(side()), 3),
+              lowered(south('overlay'), 2), lowered(north('overlay'), 2),
+              lowered(side('overlay'), 3), lowered(mirrored(side('overlay')), 3),
               handlebars()]
     sheet = Image.new('RGBA', (32 * 3, 32 * 3), (0, 0, 0, 0))
     for i, frame in enumerate(frames):
