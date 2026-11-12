@@ -303,51 +303,7 @@
 //in this case, 1,1 is the FL, 1,3 is the FR, 4,1 is the BL, 4,3 is the BR.
 //so if we turn LEFT: we will be facing EAST, and it will change to:
 
-/obj/structure/vehicleparts/axis/ship/attack_hand(var/mob/living/human/H)
-	if (!ishuman(H))
-		return
-	for(var/obj/structure/vehicleparts/frame/F1 in get_turf(get_step(src, WEST)))
-		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
-		return
-	for(var/obj/structure/vehicleparts/frame/F2 in get_turf(get_step(src, NORTH)))
-		to_chat(H, "<span class='notice'>The axis needs to be placed at the <b>TOP LEFT</b> corner!</span>")
-		return
-	var/inp = WWinput(H, "Are you sure you wan't to assemble a ship here? This has to be the top left corner.", "Vehicle Assembly", "No", list("No", "Yes"))
-	if (inp == "No")
-		return
-	var/found_base=FALSE
-	for(var/obj/structure/vehicleparts/frame/F in loc)
-		if (F.axis && F.axis != src)
-			return
-		found_base=TRUE
-		var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
-		if (!customname || customname == "")
-			name = "[H]'s ship"
-		else
-			name = customname
-		dir = 1
-		new/obj/effect/autoassembler(locate(x+2,y-2,z))
-		to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
-		for (var/obj/O in components)
-			O.update_icon()
-		return
-	if (!found_base)
-
-		for(var/obj/structure/vehicleparts/frame/F in locate(x+1,y-1,z))
-			if (F.axis && F.axis != src)
-				return
-			var/customname = player_input(H, "What do you want to name this ship?", null, null, "text", null, FALSE)
-			if (!customname || customname == "")
-				name = "[H]'s ship"
-			else
-				name = customname
-			dir = 1
-			forceMove(F.loc)
-			new/obj/effect/autoassembler(locate(x+2,y-2,z))
-			to_chat(H, "<span class='warning'>Vehicle assembled.</span>")
-			for (var/obj/O in components)
-				O.update_icon()
-			return
+// Assembly, its survey and taking a boat apart: craft/vehicle_assembly.dm.
 
 /obj/structure/vehicleparts/axis/ship/proc/check_sails()
 	var/timer = 15
