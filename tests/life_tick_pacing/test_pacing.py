@@ -118,5 +118,64 @@ class MannedGunRelease(unittest.TestCase):
         self.assertIn('used_by_mob = user\n\tuser.using_object = src', started)
 
 
+class NearbyHeat(unittest.TestCase):
+    WEATHER = (ROOT / 'code/modules/1713/weather.dm').read_text(encoding='utf-8')
+    RAIN = (ROOT / 'code/modules/1713/rain_gear.dm').read_text(encoding='utf-8')
+
+    def test_get_temp_keeps_every_heat_source_and_radius(self):
+        scan = body(self.WEATHER, '/proc/nearby_heat_source(')
+        for kind, radius in (('brazier', 3), ('heatsource', 3), ('oven/fireplace', 1), ('engine', 1)):
+            self.assertRegex(scan, r'for \(var/obj/structure/%s/\w+ in range\(%d, A\)\)\n\t\tif \(\w+\.on\)\n\t\t\treturn TRUE' % (kind, radius))
+        temp = body(self.WEATHER, '/proc/get_temp(')
+        self.assertIn('if (loc_temp < 22)', temp)
+        self.assertIn('if (istype(H) ? H.life_nearby_heat() : nearby_heat_source(A))\n\t\t\tloc_temp = 22', temp)
+
+    def test_cache_is_dropped_on_a_new_tile_or_after_three_seconds(self):
+        self.assertIn('#define LIFE_HEAT_SCAN_INTERVAL 30', self.WEATHER)
+        current = body(self.WEATHER, '/mob/living/human/proc/life_heat_scan_current()')
+        self.assertIn('if (T != life_heat_scan_turf || world.time >= life_heat_scan_until)', current)
+        self.assertIn('life_heat_scan_warm = null', current)
+        self.assertIn('life_heat_scan_drying = null', current)
+        # Inside a container there is no tile to remember: scan as before.
+        self.assertIn('if (!isturf(T))\n\t\treturn FALSE', current)
+        warm = body(self.WEATHER, '/mob/living/human/proc/life_nearby_heat()')
+        self.assertIn('if (!life_heat_scan_current())\n\t\treturn nearby_heat_source(src)', warm)
+        drying = body(self.WEATHER, '/mob/living/human/proc/life_near_drying_fire()')
+        self.assertIn('if (!life_heat_scan_current())\n\t\treturn near_drying_fire(get_turf(src))', drying)
+        self.assertIn('if (life_near_drying_fire())\n\t\treturn FIRE_DRYING_RATE', body(self.RAIN, '/mob/living/human/proc/drying_rate('))
+
+    def test_cache_model(self):
+        calls = []
+        state = {'turf': None, 'until': 0, 'warm': None}
+
+        def warm(turf, now, lit):
+            if turf != state['turf'] or now >= state['until']:
+                state.update(turf=turf, until=now + 30, warm=None)
+            if state['warm'] is None:
+                calls.append(now)
+                state['warm'] = lit
+            return state['warm']
+
+        self.assertFalse(warm('a', 0, False))
+        self.assertFalse(warm('a', 10, True))   # a fire lit beside a standing human
+        self.assertFalse(warm('a', 20, True))
+        self.assertTrue(warm('a', 30, True))    # is felt within three seconds
+        self.assertTrue(warm('b', 40, True))    # and at once after a step
+        self.assertEqual(calls, [0, 30, 40])
+
+
+class StanceDislocation(unittest.TestCase):
+    def test_one_dislocation_walk_per_limb(self):
+        stance = body(HUMAN_ORGANS, '/mob/living/human/proc/handle_stance()')
+        self.assertEqual(stance.count('E.is_dislocated()'), 1)
+        self.assertNotIn('(!E.is_usable() &&', stance)
+        self.assertIn('(E.status & (ORGAN_MUTATED|ORGAN_DEAD)) || E.is_stump())', stance)
+        self.assertIn('if (E.is_broken() || (dislocated && !(E.status & ORGAN_SPLINTED)))', stance)
+        self.assertIn('else if (dislocated)\n\t\t\t\tstance_damage += 0.5', stance)
+        # The shortcut holds only while is_usable() is "not dislocated and not mutated or dead".
+        external = (ROOT / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/organ/external/is_usable()\n\treturn !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))', external)
+
+
 if __name__ == '__main__':
     unittest.main()

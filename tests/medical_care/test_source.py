@@ -337,7 +337,7 @@ class MedicalCare(unittest.TestCase):
         jostle = organs.split("l_move_time < 15", 1)[1].split("var/limbs_count", 1)[0]
         self.assertIn("if (E.is_broken() && E.internal_organs", jostle)
         self.assertNotIn("ORGAN_BROKEN", jostle)
-        self.assertIn("E.is_broken() || (!E.is_usable() && !(E.status & ORGAN_SPLINTED))", organs)
+        self.assertIn("E.is_broken() || (dislocated && !(E.status & ORGAN_SPLINTED))", organs)
         # The fracture's lasting pain floor stops once the bone is splinted.
         damage = block(ORGAN, "/obj/item/organ/external/proc/get_damage()")
         self.assertIn("if (!(status & ORGAN_BROKEN) || is_held_still())\n\t\treturn brute_dam + burn_dam", damage)

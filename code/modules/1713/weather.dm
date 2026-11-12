@@ -550,24 +550,60 @@
 						loc_temp = 19
 						break
 	if (loc_temp < 22)
-		for (var/obj/structure/brazier/BR in range(3, A))
-			if (BR.on)
-				loc_temp = 22
-				break
-	if (loc_temp < 22)
-		for (var/obj/structure/heatsource/HS in range(3, A))
-			if (HS.on)
-				loc_temp = 22
-				break
-	if (loc_temp < 22)
-		for (var/obj/structure/oven/fireplace/FP in range(1, A))
-			if (FP.on)
-				loc_temp = 22
-				break
-	if (loc_temp < 22)
-		for (var/obj/structure/engine/EN in range(1, A))
-			if (EN.on)
-				loc_temp = 22
-				break
+		// A human asks every Life tick; it remembers the answer for its tile for 3 seconds.
+		var/mob/living/human/H = A
+		if (istype(H) ? H.life_nearby_heat() : nearby_heat_source(A))
+			loc_temp = 22
 
 	return loc_temp
+
+// A lit brazier or heat source within 3 tiles, or a lit fireplace or running engine next to A.
+/proc/nearby_heat_source(var/atom/A)
+	for (var/obj/structure/brazier/BR in range(3, A))
+		if (BR.on)
+			return TRUE
+	for (var/obj/structure/heatsource/HS in range(3, A))
+		if (HS.on)
+			return TRUE
+	for (var/obj/structure/oven/fireplace/FP in range(1, A))
+		if (FP.on)
+			return TRUE
+	for (var/obj/structure/engine/EN in range(1, A))
+		if (EN.on)
+			return TRUE
+	return FALSE
+
+// The seven range scans behind get_temp() and near_drying_fire() were a tenth of
+// every human Life tick. A human standing on one tile repeats them every 3 seconds
+// instead of every second; stepping onto another tile scans again at once.
+#define LIFE_HEAT_SCAN_INTERVAL 30
+/mob/living/human/var/tmp/turf/life_heat_scan_turf = null
+/mob/living/human/var/tmp/life_heat_scan_until = 0
+/mob/living/human/var/tmp/life_heat_scan_warm = null
+/mob/living/human/var/tmp/life_heat_scan_drying = null
+
+/mob/living/human/proc/life_heat_scan_current()
+	var/turf/T = loc
+	if (!isturf(T))
+		return FALSE
+	if (T != life_heat_scan_turf || world.time >= life_heat_scan_until)
+		life_heat_scan_turf = T
+		life_heat_scan_until = world.time + LIFE_HEAT_SCAN_INTERVAL
+		life_heat_scan_warm = null
+		life_heat_scan_drying = null
+	return TRUE
+
+/mob/living/human/proc/life_nearby_heat()
+	if (!life_heat_scan_current())
+		return nearby_heat_source(src)
+	if (isnull(life_heat_scan_warm))
+		life_heat_scan_warm = nearby_heat_source(src)
+	return life_heat_scan_warm
+
+/mob/living/human/proc/life_near_drying_fire()
+	if (!life_heat_scan_current())
+		return near_drying_fire(get_turf(src))
+	if (isnull(life_heat_scan_drying))
+		life_heat_scan_drying = near_drying_fire(life_heat_scan_turf)
+	return life_heat_scan_drying
+#undef LIFE_HEAT_SCAN_INTERVAL
