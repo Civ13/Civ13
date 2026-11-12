@@ -1,6 +1,7 @@
 """Offline source-derived phase traces; native iteration/qdel remain unverified."""
 from pathlib import Path
 import re
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,6 +78,8 @@ def translate(source):
         "fire_result = null": "fire_result = None",
         "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))":
             "if fire_result != EARLY or not ctx.pending:",
+        "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)":
+            "if fire_result != EARLY:",
         "current = null": "ctx.current = None",
         "current_list = null": "ctx.pending = None",
         "return fire_result": "return fire_result",
@@ -184,6 +187,33 @@ class CleanablesTests(unittest.TestCase):
     def assert_released(self, t):
         self.assertEqual((t.pending, t.counts, t.contents, t.kept, t.deleting),
                          (None, None, None, None, False))
+
+    def test_shared_finish_matches_previous_guard_and_detects_missing_normalization(self):
+        shared = (ROOT / "code/processes/_process.dm").read_text()
+        finish = body(shared, "/process/proc/finished(fire_result = null)")
+        simplified = "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)"
+        previous = "if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))"
+        normalization = "\tif (fire_result == PROCESS_TICK_CHECK_RETURNED_EARLY && !length(current_list))\n\t\tfire_result = null\n"
+        self.assertEqual(finish.count(simplified), 1)
+        self.assertEqual(finish.count(normalization), 1)
+        before = translate(finish.replace(simplified, previous, 1))
+        after = translate(finish)
+        mutant = translate(finish.replace(normalization, "", 1))
+
+        def outcome(fn, initial, fire_result):
+            live = None if initial is None else initial.copy()
+            ctx = SimpleNamespace(pending=live, current="visited")
+            result = fn(ctx, fire_result)
+            # Observe list identity as well as contents: clearing a reference must
+            # never cut the aliased live list, including an exhausted snapshot.
+            return result, ctx.current, ctx.pending, ctx.pending is live, live
+
+        for initial in (None, [], ["pending"]):
+            for result in (None, EARLY, 42):
+                with self.subTest(initial=initial, result=result):
+                    self.assertEqual(outcome(after, initial, result),
+                                     outcome(before, initial, result))
+        self.assertNotEqual(outcome(mutant, [], EARLY), outcome(before, [], EARLY))
 
     def test_one_entry_budgets_preserve_counts_tail_and_release_all_state(self):
         t = Trace(self.source, self.decals)
