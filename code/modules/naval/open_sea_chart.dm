@@ -396,6 +396,8 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 		return FALSE
 	set_anchor(TRUE)
 	crew_message(SPAN_NOTICE("<b>Land ho!</b> The [name] raises [P.name] and lets go her anchor off it."))
+	if (P.site)
+		sea_office_arrived(src, P.site)
 	return TRUE
 
 /datum/craft/Destroy()
@@ -426,10 +428,10 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 		if (istype(P) && !P.site)
 			lines += "[capitalize(P.name)]: [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
 			continue
-		if (far > T.sensor_range)
+		if (far > T.sensor_range && !(istype(P) && P.site.charted))
 			continue
 		if (istype(P))
-			lines += "[capitalize(P.name)] ([P.site.kind][P.site.loaded ? ", a ship has raised it" : ""]): [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
+			lines += "[capitalize(P.name)] ([P.site.kind][P.site.charted ? ", surveyed" : ""][P.site.loaded ? ", a ship has raised it" : ""]): [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
 		else if (O.craft && !O.craft.open_sea_place())
 			lines += "[capitalize(O.contact_name())], a sail at sea: [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
 	if (lines.len <= 1 + (thrust() <= 0 ? 1 : 0))
@@ -447,7 +449,7 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 		if (P == at)
 			continue
 		var/far = chart_distance(T.x, T.y, P.x, P.y)
-		if (P.site && far > T.sensor_range)
+		if (P.site && far > T.sensor_range && !P.site.charted)
 			continue
 		.["[capitalize(P.name)], [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, P.x, P.y))]"] = P
 

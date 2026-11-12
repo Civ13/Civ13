@@ -48,6 +48,13 @@ home island.
    tiller's ordinary orders sail her about inside those waters.
 4. Lay a course for **the home waters** to come back.
 
+The **harbour office board** on the home island pays crews of registered
+ships in silver: for surveying a named island (anchor off it, then report at
+the board; the island is then on every ship's chart from any distance) and for
+salvage (set one crate out of a named wreck down by the board; the office
+keeps the crate, the crew keeps what was in it). The pay is 10 coins plus the
+miles for a survey and 20 plus the miles for salvage.
+
 An island or wreck is taken away ten minutes after the last ship and the last
 person have left it, with whatever was left there. A mooring post built on it
 makes it a harbour that stays; four sites can be harbours at once.
