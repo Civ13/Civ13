@@ -3,12 +3,12 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 414,
+  "types": 416,
   "modern": 313,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
-   "bow": 6,
+   "bow": 8,
    "custom_gunsmith": 1,
    "dart": 5,
    "energy": 23,
@@ -2283,6 +2283,32 @@
   {
    "path": "/obj/item/weapon/gun/projectile/bow/sling",
    "name": "sling",
+   "category": "bow",
+   "scope": "separate",
+   "caliber": "stone",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": null,
+   "ammo_type": "/obj/item/ammo_casing/stone",
+   "family": null,
+   "migration": "pending"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/bow/sling/atlatl",
+   "name": "atlatl",
+   "category": "bow",
+   "scope": "separate",
+   "caliber": "atlatl_dart",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": null,
+   "ammo_type": "/obj/item/ammo_casing/atlatl_dart/flint",
+   "family": null,
+   "migration": "pending"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/bow/sling/staff",
+   "name": "slingstaff",
    "category": "bow",
    "scope": "separate",
    "caliber": "stone",
