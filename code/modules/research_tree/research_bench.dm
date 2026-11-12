@@ -132,7 +132,7 @@ var/global/list/research_benches = list()
 	if (!map || !faction || faction == "none")
 		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
-	if (!N || N.min_bench_tier > tier)
+	if (!N || N.min_bench_tier > tier || research_node_dormant(N))
 		return FALSE
 	var/status = map.node_status(faction, node_id)
 	return status == RNODE_AVAILABLE || status == RNODE_IN_PROGRESS
@@ -477,6 +477,8 @@ var/global/list/research_benches = list()
 		return null
 	for (var/node_id in research_nodes)
 		var/datum/research_node/N = research_nodes[node_id]
+		if (research_node_dormant(N))
+			continue
 		var/list/tree_entry = tree_index[N.tree]
 		if (!tree_entry)
 			// idx is the 0-based tab position (Main = 0). Carried as a data field

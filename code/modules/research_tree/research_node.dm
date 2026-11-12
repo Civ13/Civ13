@@ -13,6 +13,14 @@
 // id => /datum/research_node
 var/global/list/research_nodes = list()
 
+// Nodes that exist only on book-research worlds (see /datum/research_node/book_only).
+var/global/list/book_only_research_nodes = list("emergency_medicine", "soil_science", "crop_breeding", "support_weapons", "guided_weapons")
+
+// Whether a node plays no part on this world: a book-only node off a
+// book-research world.
+/proc/research_node_dormant(datum/research_node/N)
+	return istype(N) && N.book_only && !(map && map.book_research_enabled())
+
 // result-path string (recipe field i[3]) => required node id.
 // Populated in build_research_tree(). A recipe present here is gated on
 // its node being DONE for the faction instead of the legacy research
@@ -177,6 +185,9 @@ var/global/list/node_grid_col_cache = null
 	// switchable tab. Columns are laid out independently per tree.
 	var/tree = "Main"
 	var/list/unlocks = list()        // recipe ids / feature flags (wired in Phase 1)
+	// TRUE for nodes that exist only on book-research worlds: elsewhere they
+	// are never done, never listed at a bench and unlock nothing.
+	var/book_only = FALSE
 	// Alternate-completion payloads (used in later phases):
 	var/prototype_type = null        // PROTOTYPE mode: item type to build & consume
 	var/book_subject = null          // BOOK mode: matching research-book subject
@@ -426,6 +437,19 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("trench_warfare", "Trench Warfare", "Armour", 235, 4, RESEARCH_MODE_ANALYSIS, list("mail_plate"), 5, null, "Tailoring"))
 	register_research_node(new /datum/research_node("modern_armor", "Modern Armor", "Armour", 305, 6, RESEARCH_MODE_ANALYSIS, list("trench_warfare","alloys"), 7, null, "Tailoring"))
 
+	// --- Late lines for book-research worlds (Val, 2026-11-12) ---
+	// Health, Agriculture and Military used to stop a tier or two before the
+	// rest of the tree. These carry them on, and exist only where research is
+	// done in books (book_only).
+	register_research_node(new /datum/research_node("emergency_medicine", "Emergency Medicine", "Health", 400, 7, RESEARCH_MODE_ANALYSIS, list("modern_medicine","anesthetic_surgery"), 8))
+	register_research_node(new /datum/research_node("soil_science", "Soil Science", "Agriculture", 340, 6, RESEARCH_MODE_ANALYSIS, list("hydroponics"), 7, null, "Agriculture"))
+	register_research_node(new /datum/research_node("crop_breeding", "Crop Breeding", "Agriculture", 400, 7, RESEARCH_MODE_ANALYSIS, list("soil_science"), 8, null, "Agriculture"))
+	register_research_node(new /datum/research_node("support_weapons", "Infantry Support Weapons", "Military", 340, 6, RESEARCH_MODE_ANALYSIS, list("field_artillery","automatic_weapons"), 7))
+	register_research_node(new /datum/research_node("guided_weapons", "Guided Missiles", "Military", 400, 7, RESEARCH_MODE_ANALYSIS, list("missiles","support_weapons"), 8))
+	for (var/late_id in book_only_research_nodes)
+		var/datum/research_node/LN = research_nodes[late_id]
+		LN.book_only = TRUE
+
 	// Era-changing capstones (the PROTOTYPE-mode nodes) advance the whole world's
 	// era on completion (see complete_node), so they should be a serious
 	// undertaking to reach by passive study -- their tick cost is 5x a normal
@@ -441,6 +465,17 @@ var/global/list/node_grid_col_cache = null
 	// misclassifications. Unmapped paths (not listed here) keep the legacy
 	// threshold gate unchanged (see generate_recipes_civs in civ_recipes.dm).
 	recipe_node_requirements = list(
+		// Late lines for book-research worlds (book_only nodes).
+		"/obj/item/weapon/defibrillator/loaded" = "emergency_medicine",
+		"/obj/item/weapon/cell/standard" = "emergency_medicine",
+		"/obj/item/weapon/reagent_containers/syringe/autoinjector" = "emergency_medicine",
+		"/obj/item/bodybag" = "emergency_medicine",
+		"/obj/item/weapon/foldable/generic" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell" = "support_weapons",
+		"/obj/item/cannon_ball/mortar_shell/smoke" = "support_weapons",
+		"/obj/item/weapon/foldable/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm" = "guided_weapons",
+		"/obj/item/ammo_casing/rocket/atgm/he" = "guided_weapons",
 		// Phase 0: source-audited station and hand-crafting coverage (#4239).
 		"/obj/item/stack/material/rettedfabric" = "weaving",
 		"/obj/item/stack/material/preparedkevlar" = "synthetics",

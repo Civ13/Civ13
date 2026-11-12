@@ -148,6 +148,41 @@ class TeamsAndRushing(unittest.TestCase):
         self.assertIn('"toggle_rush"', read("code/modules/nano/tgui.dm"))
         self.assertIn('action="toggle_rush"', read("tgui/src/interfaces/Research.tsx"))
         self.assertIn("'toggle_rush'", read("UI/templates/research_bench.tmpl"))
+class LateLines(unittest.TestCase):
+    NEW = ("emergency_medicine", "soil_science", "crop_breeding", "support_weapons", "guided_weapons")
+    def setUp(self):
+        self.nodes = read("code/modules/research_tree/research_node.dm")
+        self.recipes = read("config/crafting/material_recipes_global.txt")
+    def test_the_new_subjects_are_registered_and_book_only(self):
+        listed = re.search(r"book_only_research_nodes = list\((.*?)\)", self.nodes)[1]
+        self.assertEqual(tuple(re.findall(r'"(\w+)"', listed)), self.NEW)
+        for node_id in self.NEW:
+            self.assertEqual(self.nodes.count('research_node("%s", ' % node_id), 1, node_id)
+        self.assertIn("N.book_only && !(map && map.book_research_enabled())", proc(self.nodes, "/proc/research_node_dormant"))
+    def test_dormant_subjects_are_never_done_listed_or_assigned(self):
+        faction = read("code/modules/research_tree/research_faction.dm")
+        self.assertIn("if (research_node_dormant(N))\n\t\treturn FALSE", proc(faction, "/obj/map_metadata/proc/is_node_done"))
+        bench = read("code/modules/research_tree/research_bench.dm")
+        self.assertIn("if (research_node_dormant(N))\n\t\t\tcontinue", proc(bench, "/obj/structure/research_bench/proc/bench_ui_data"))
+        self.assertIn("research_node_dormant(N)", proc(bench, "/obj/structure/research_bench/proc/can_assign_node"))
+    def test_every_new_recipe_row_is_gated_on_a_new_subject(self):
+        rows = [line.split(",") for line in self.recipes.splitlines() if line.startswith("RECIPE: ")]
+        gates = dict(re.findall(r'"(/[\w/]+)" = "(\w+)"', self.nodes))
+        mine = {path: node for path, node in gates.items() if node in self.NEW}
+        self.assertEqual(len(mine), 10)
+        by_path = {row[2]: row for row in rows}
+        for path in mine:
+            self.assertIn(path, by_path, path)
+            self.assertEqual(len(by_path[path]), 13, path)
+        for node_id in ("emergency_medicine", "support_weapons", "guided_weapons"):
+            self.assertIn(node_id, mine.values())
+    def test_the_farming_subjects_reach_the_harvest(self):
+        effects = read("code/modules/research_tree/node_effects.dm")
+        self.assertIn('"crop_breeding"', proc(effects, "/proc/farming_node_bonus"))
+        self.assertIn('mob_has_node_effect(user, "soil_science")', proc(effects, "/proc/soil_node_return"))
+        farming = read("code/game/objects/farming.dm")
+        self.assertIn("soil_node_return(user, get_turf(src))", farming)
+        self.assertIn('note_field_work(user, "harvests", 1)', farming)
 class Ciphers(unittest.TestCase):
     def setUp(self):
         self.cipher = read("code/modules/research_tree/book_cipher.dm")
