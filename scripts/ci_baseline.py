@@ -41,6 +41,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Offline source projection; the shared animal source retains conservative fallback.
+    'frog_breeding_count': {'files': ('tests/frog_breeding_count/test_source.py',),
+        'paths': ('tests/frog_breeding_count/',),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/mob/living/simple_animal/friendly/lizard.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'casing_scheduler': {'files': ('tests/casing_scheduler/test_casing_scheduler.py',),
