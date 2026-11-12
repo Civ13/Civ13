@@ -75,6 +75,12 @@ and slid forward by `animate()`, with the view of its player. Appearance only:
 the server still moves her a whole tile at once. Turns, docking slides and
 turf-built vessels are not glided. Not checked in a game client.
 
+Modular vehicles and frame boats glide the same way: `axis.do_move()` calls
+`glide_step()` with what it moved, which shows every frame, wheel, thing and
+person carried through the shared `glide_show()` for `vehicle_m_delay + 1`
+ticks, and `glide_rest()` gives the glides back when the vehicle stops. Their
+turns (`do_matrix()`) are not glided.
+
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.

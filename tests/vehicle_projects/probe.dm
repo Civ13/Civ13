@@ -259,6 +259,20 @@ var/project_runtime_error = FALSE
 		for (var/atom/movable/part in locations)
 			back_home = back_home && part.loc == locations[part]
 		project_check(turned && back_home, "[model]: turns a full circle in place")
+		// Each step is drawn as a glide lasting the step (craft/glide.dm).
+		var/obj/structure/vehicleparts/frame/rolling = locate() in made.components
+		var/obj/item/stack/material/steel/loose = new(rolling.loc)
+		loose.step_x = 4
+		var/own_glide = rolling.glide_size
+		var/loose_glide = loose.glide_size
+		var/turf/rolled_from = rolling.loc
+		made.vehicle_m_delay = 9
+		var/stepped = made.do_move()
+		project_check(stepped && rolling.loc == get_step(rolled_from, made.dir) && rolling.glide_size == craft_glide_size(10), "[model]: a step glides its frames for the whole step ([rolling.glide_size])")
+		project_check(loose.loc == rolling.loc && loose.glide_size == loose_glide && !(loose in made.glide_was), "[model]: cargo off its tile centre is slid, not engine-glided")
+		made.glide_rest_now()
+		project_check(rolling.glide_size == own_glide && !length(made.glide_was), "[model]: at rest everything gets its own glide back")
+		qdel(loose)
 		project_check(!V.project && V.stock["steel"] == 0 && !V.stock["tracks"], "[model]: the project is spent")
 	H.loc = locate(6, 5, 1)
 

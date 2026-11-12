@@ -71,6 +71,7 @@
 /obj/structure/vehicleparts/axis/ship/stopmovementloop()
 	moving = FALSE
 	currentspeed = 0
+	glide_rest()
 	for (var/obj/structure/vehicleparts/movement/sail/S in masts)
 		S.update_icon()
 	return
