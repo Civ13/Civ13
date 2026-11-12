@@ -2895,6 +2895,10 @@ RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,n
 RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,smoke mortar shell,/obj/item/cannon_ball/mortar_shell/smoke,5,120,0,1,ammunition,0,0,0,8,null
+RECIPE: /material/steel/,flamethrower hose,/obj/item/weapon/flamethrower,8,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,flamethrower fuel backpack,/obj/item/weapon/reagent_containers/glass/flamethrower,10,240,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,anti-personnel mine,/obj/item/mine/ap,4,120,0,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,anti-tank mine,/obj/item/mine/at,8,180,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null
