@@ -321,6 +321,8 @@
 
 			// Not seen behind a ridge (los_terrain.dm).
 			if (los_terrain_ray_blocked(src, L)) continue
+			// Out of reach up a tree (tree_climbing.dm).
+			if (!can_reach_tree_climber(L)) continue
 
 			stance = HOSTILE_STANCE_ATTACK
 			T = L
@@ -590,7 +592,7 @@
 		src.do_movement(target_mob) // Use do_movement for consistent pathfinding
 
 /mob/living/simple_animal/proc/AttackTarget()
-	if (!target_mob || !SA_attackable(target_mob))
+	if (!target_mob || !SA_attackable(target_mob) || !can_reach_tree_climber(target_mob))
 		LoseTarget()
 		return FALSE
 	if (!(target_mob in view(aggro_vision_range, src)))

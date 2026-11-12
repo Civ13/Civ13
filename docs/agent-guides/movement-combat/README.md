@@ -34,6 +34,11 @@ human in a free-movement pulse (`trunk_collision_mover`); the tree's `Cross`
 then decides on real overlap. Every other mover still finds the tile blocked, so
 tile movers never slide part way in. Refit after changing a tree's offset.
 `tests/tree_trunk_collision/run.py` is the native probe.
+Climbing trees (`code/game/objects/structures/tree_climbing.dm`): the climber
+stays on the tree's turf; `los_up_tree` lifts its own foliage limit, raises the
+eye to `LOS_EYE_CLIMBED` and gives flat ground an open canopy field so walls and
+tree tops are seen over. Non-climbing animals drop climbers as targets.
+`tests/tree_climbing/run.py` is the native probe.
 
 A turf's `contents` hold every body overlapping it, however slightly. Shots fly
 from the shooter's body centre to the target's (`setup_points`; plot_vector

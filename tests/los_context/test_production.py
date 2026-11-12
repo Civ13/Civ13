@@ -989,6 +989,7 @@ class BlockingTreeSurface(unittest.TestCase):
         terrain=(ROOT/'code/modules/visibility/los_terrain.dm').read_text()
         env.update(ismob=lambda x:x.type.startswith('/mob/'),
                    get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),LOS_FOLIAGE_RANGE=2)
+        env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
         env['los_in_foliage']=adapter.project(terrain,'/proc/los_in_foliage','M',env)
         env['los_foliage_hides']=adapter.project(terrain,'/proc/los_foliage_hides','viewer, target',env)
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
@@ -1140,6 +1141,12 @@ class BlockingTreeSurface(unittest.TestCase):
             m.capture([own],presentation=presentation)
             self.assertEqual([m.decision(person(m,x),'visual') for x in (12,13,14)],[1,0,0])
             self.assertEqual(m.decision(m.target(14,10,opaque=False,kind='/obj/item'),'visual'),1)
+            # Up the tree (tree_climbing.dm): the climber's own foliage no
+            # longer limits its sight, but people in other trees stay hidden.
+            m.context.body.up_tree=True
+            self.assertEqual([m.decision(person(m,x),'visual') for x in (12,13,14)],[1,1,1])
+            self.assertEqual([m.decision(person(m,x,True),'visual') for x in (12,13,14)],[1,0,0])
+            m.context.body.up_tree=False
             m.own_turf.contents=[]
 
     def test_partial_rectangles_clipping_and_stale_bound_records(self):
