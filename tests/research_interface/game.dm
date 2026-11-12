@@ -139,6 +139,22 @@ var/interface_wait_count = 0
 		bench.book_analysis_tick()
 		assigned = bench.book_assigned_ui(H)
 		interface_check(assigned["working"] && assigned["ticks"] > 0 && assigned["eta_minutes"] > 0 && assigned["pace"] == 0.5 && interface_check_named(assigned["checks"], "You are working on it"), "with a pencil the work goes on at half pace without supplies, with time left shown")
+		// --- A slow scheduler pass still credits the time that passed ---
+		bench.last_analysis_time = 1000
+		interface_check(bench.analysis_elapsed_scale(1300) == 3 && bench.last_analysis_time == 1300, "a bench visited 30 seconds after the last visit is credited three intervals")
+		interface_check(bench.analysis_elapsed_scale(1350) == 1, "a visit is never credited less than one interval")
+		interface_check(bench.analysis_elapsed_scale(100000) == RESEARCH_TICK_MAX_CATCHUP, "a stalled scheduler pays out at most a minute")
+		var/ticks_before = assigned["ticks"]
+		bench.analysis_scale = 3
+		bench.book_analysis_tick()
+		bench.analysis_scale = 1
+		assigned = bench.book_assigned_ui(H)
+		interface_check(abs(assigned["ticks"] - ticks_before - 1.5) < 0.01, "three intervals of unsupplied work write three ticks' worth ([assigned["ticks"] - ticks_before])")
+		var/discipline = node_discipline(root)
+		var/list/supplies = list()
+		supplies[discipline] = 2
+		bench.set_supply_map(supplies)
+		interface_check(abs(bench.use_research_supply(root, 3) - (2.5 / 3)) < 0.01 && !bench.supply_points(discipline), "catch-up work uses one supply point per interval and runs unsupplied once they run out")
 		bench.fixture_lit = FALSE
 		assigned = bench.book_assigned_ui(H)
 		interface_check(!assigned["working"] && !interface_check_named(assigned["checks"], "Light")["ok"], "a dark bench is reported as not working")
