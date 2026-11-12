@@ -43,6 +43,19 @@ behave exactly as before.
   the craft and `cast_off()` frees the berth.
 - Saved fields hold text and numbers only, never object references.
 
+## Ship's papers
+
+`code/modules/naval/ship_papers.dm` is the first user of the register. The
+ship's wheel has a "Ship's papers" entry: a player registers the ship to
+their party, and owners or the captain sign crew on, change roles, bar
+people, set how she takes new crew and write a memo. `craft.helm_access(user)`
+answers `CRAFT_HELM_FREE` for owners and steering crew, `CRAFT_HELM_FORCE`
+for anyone else while an owner is in the world (the wheel can be forced,
+slowly, with the crew warned) and `CRAFT_HELM_CHAINED` when no owner is
+about. `craft.fitting_refusal(user)` guards levers and the radar the same
+way without the delay. The wheel saves the register in `register_state`.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300

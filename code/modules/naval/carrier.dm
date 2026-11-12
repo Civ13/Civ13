@@ -318,13 +318,24 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Chart", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
+	var/list/options = list("Chart", "Ship's papers", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
 	if (choice == "Chart")
 		to_chat(H, vessel.chart_text())
 		return
+	if (choice == "Ship's papers")
+		papers(H)
+		return
+	// A registered ship answers to her crew (ship_papers.dm).
+	switch (steer_access(H))
+		if (CRAFT_HELM_CHAINED)
+			to_chat(H, SPAN_WARNING("The wheel is chained. The [vessel.name] is registered and none of her owners are about."))
+			return
+		if (CRAFT_HELM_FORCE)
+			if (!force_wheel(H))
+				return
 	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < vessel.fuel_burn(VESSEL_SPEED_SLOW))
 		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point below decks first."))
 		return
@@ -459,7 +470,7 @@
 /obj/structure/vessel_lever/elevator/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
-	var/result = operate(H)
+	var/result = vessel_fitting_refusal(ship(), H) || operate(H)
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
@@ -545,7 +556,7 @@
 /obj/structure/vessel_lever/catapult/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
-	var/result = launch(H)
+	var/result = vessel_fitting_refusal(ship(), H) || launch(H)
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
@@ -672,6 +683,10 @@
 /obj/structure/vessel_radar/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
+	var/locked = vessel_fitting_refusal(ship(), H)
+	if (locked)
+		to_chat(H, SPAN_WARNING(locked))
+		return
 	var/list/lines = contacts()
 	to_chat(H, SPAN_NOTICE("The radar sweeps [VESSEL_RADAR_RANGE] tiles around the ship."))
 	if (!lines.len)

@@ -112,3 +112,13 @@ plane pools. Nothing in the game calls the core yet; the probe is its only
 user.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+
+## Ship's papers (`papers_probe.dm`)
+
+The crew register at the wheel (`code/modules/naval/ship_papers.dm`): an
+unregistered ship answers to anyone, registering, owners and listed crew at
+the wheel, a stranger chained out or forcing the wheel while an owner is
+about, the levers and radar, joining, barring, giving the ship up, and the
+papers saved and restored by the wheel.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
