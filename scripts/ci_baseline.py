@@ -291,6 +291,13 @@ SUITES = {
         'paths': ('tests/smokables/',), 'shared_paths': (
             'code/game/objects/items/weapons/cigs_lighters.dm',
             'tests/save_movement/source_adapter.py')},
+    'candle_lighting': {'files': ('tests/candle_lighting/test_flame_source.py',),
+        'paths': ('tests/candle_lighting/',), 'shared_paths': (
+            'code/game/objects/items/weapons/cigs_lighters.dm',
+            'code/game/objects/items/weapons/candle.dm',
+            'code/modules/1713/lantern.dm',
+            'code/modules/1713/cmss13_gear.dm',
+            'code/game/objects/structures/kitchen/oven.dm')},
     'mimic_treasure': {'files': ('tests/mimic_treasure/test_initialization.py',),
         'paths': ('tests/mimic_treasure/',), 'shared_paths': (
             'code/modules/1713/crates.dm',
@@ -384,9 +391,11 @@ SUITES = {
             'code/modules/research_tree/node_broadcast.dm',
             'code/modules/1713/modern_telecom.dm')},
     'recipe_knowledge': {'files': ('tests/recipe_knowledge/test_contract.py',
-                                   'tests/recipe_knowledge/test_material_visibility.py'),
+                                   'tests/recipe_knowledge/test_material_visibility.py',
+                                   'tests/recipe_knowledge/test_admin_research_view.py'),
         'paths': ('tests/recipe_knowledge/',), 'shared_paths': (
             'code/modules/research_tree/character_knowledge.dm',
+            'code/modules/admin/verbs/research_knowledge.dm',
             'code/modules/research_tree/research_faction.dm',
             'code/modules/persistence/player_reclaim.dm',
             'code/game/mob/living/carbon/carbon.dm',

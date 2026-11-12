@@ -140,6 +140,11 @@ var/knowledge_failures = 0
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
 		knowledge_check(reloaded_scholar && reloaded_scholar.study_fraction("field_defenses") == 0.25, "a chapter read part-way survives reload")
+		var/list/scholar_research = reloaded_scholar ? reloaded_scholar.research_knowledge_summary() : null
+		knowledge_check(scholar_research && scholar_research["studying"]["field_defenses"] == 25 && !("field_defenses" in scholar_research["known"]) && !scholar_research["exempt"], "admin research view shows a part-way chapter as 25% read")
+		var/known_before = H ? H.known_recipe_nodes.len : -1
+		var/list/body_research = H ? H.research_knowledge_summary() : null
+		knowledge_check(body_research && (node_id in body_research["known"]) && H.known_recipe_nodes.len == known_before && H.research_knowledge_status() != "online", "admin research view lists known research of a body without a player and changes nothing")
 		var/obj/item/weapon/book/reloaded_diary
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))

@@ -1160,6 +1160,7 @@
 #include "code\modules\admin\verbs\playsound.dm"
 #include "code\modules\admin\verbs\quickBan.dm"
 #include "code\modules\admin\verbs\random_verbs.dm"
+#include "code\modules\admin\verbs\research_knowledge.dm"
 #include "code\modules\admin\verbs\roundend.dm"
 #include "code\modules\admin\verbs\staffsay.dm"
 #include "code\modules\admin\verbs\ticklag.dm"
