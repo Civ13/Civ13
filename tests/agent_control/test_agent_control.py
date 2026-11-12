@@ -2702,7 +2702,7 @@ class MovementParityTests(unittest.TestCase):
         'terrain_climb_effects(H, mob_loc, n, distance_fraction)',
         'if (mob.drowsyness > 0)\n\t\t\tmove_delay += 3',
         'move_delay += 1.25',
-        'move_delay += 0.75',
+        'move_delay += pulled_structure.drag_delay(mob)',
         't_movement_speed_multiplier *= 0.85',
         't_movement_speed_multiplier *= 1.15',
         't_movement_speed_multiplier *= 0.9',
@@ -2722,7 +2722,8 @@ class MovementParityTests(unittest.TestCase):
         movement = dm_source("agent_movement.dm")
         for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
                        "terrain_climb_effects(H, old, n, 1)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
-                       "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015"):
+                       "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015",
+                       "delay += pulled_structure.drag_delay(M)"):
             self.assertIn(anchor, movement)
 
 

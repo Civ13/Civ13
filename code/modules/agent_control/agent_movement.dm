@@ -137,7 +137,8 @@
 		else if (istype(M.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
 			delay += 1
 		else if (istype(M.pulling, /obj/structure))
-			delay += 0.75
+			var/obj/structure/pulled_structure = M.pulling
+			delay += pulled_structure.drag_delay(M)
 	M.Move(n, d)
 	var/moved = get_turf(M) != old
 	if (moved && H)
