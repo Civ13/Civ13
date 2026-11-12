@@ -230,6 +230,7 @@ RECIPE: /material/clay/,unfired very small clay pot,/obj/item/weapon/clay/verysm
 RECIPE: /material/clay/,unfired small clay pot,/obj/item/weapon/clay/smallclaypot,1,30,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired medium clay pot,/obj/item/weapon/clay/claypot,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pot,/obj/item/weapon/clay/bigclaypot,3,60,0,1,kitchen,0,0,0,8,null
+RECIPE: /material/clay/,unfired clay crock,/obj/item/weapon/clay/crock,3,60,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay pitcher,/obj/item/weapon/clay/claypitcher,2,50,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largeclaypitcher,3,60,0,1,kitchen,0,0,0,8,null
 
@@ -1658,6 +1659,7 @@ RECIPE: /material/rope/,grass carry net,/obj/item/weapon/storage/belt/carry_net,
 //*************************************************************
 
 RECIPE: /material/glass/,fermentation jar,/obj/item/weapon/starterjar,3,50,0,1,none,0,0,0,8,null
+RECIPE: /material/glass/,preserve jar,/obj/item/weapon/reagent_containers/glass/preserve_jar,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/glass/,display case,/obj/structure/display_case,6,120,1,1,none,0,0,0,8,null
 RECIPE: /material/glass/,vial arrowhead (x4),/obj/item/stack/arrowhead/vial,1,10,0,1,none,0,26,26,8,null
 RECIPE: /material/glass/,chemical dispenser,/obj/structure/chemical_dispenser,12,180,1,1,none,90,0,0,8,null

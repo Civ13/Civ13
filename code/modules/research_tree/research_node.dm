@@ -1836,13 +1836,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/chemical_dispenser" = "pharmacology",
 		"/obj/structure/chemical_dispenser/full/laboratory" = "pharmacology",
 		"/obj/structure/closet/fridge" = "pharmacology",
-		// --- pottery_storage (32) ---
+		// --- pottery_storage (34) ---
 		"/obj/item/kitchen/wood_bowl" = "pottery_storage",
 		"/obj/item/stack/material/stone" = "pottery_storage",
 		"/obj/item/weapon/clay/bigclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/claybowl" = "pottery_storage",
 		"/obj/item/weapon/clay/claybricks" = "pottery_storage",
 		"/obj/item/weapon/clay/claycup" = "pottery_storage",
+		"/obj/item/weapon/clay/crock" = "pottery_storage",
 		"/obj/item/weapon/clay/clayjug" = "pottery_storage",
 		"/obj/item/weapon/clay/claypitcher" = "pottery_storage",
 		"/obj/item/weapon/clay/claypot" = "pottery_storage",
@@ -1865,6 +1866,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/glass/small_pot" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_large" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_small" = "pottery_storage",
+		"/obj/item/weapon/reagent_containers/glass/preserve_jar" = "pottery_storage",
 		"/obj/item/weapon/starterjar" = "pottery_storage",
 		"/obj/structure/plant_pot/clay/light" = "pottery_storage",
 		"/obj/structure/plant_pot/medium_planter/clay/yellow" = "pottery_storage",
