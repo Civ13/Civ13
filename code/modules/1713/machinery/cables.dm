@@ -409,7 +409,8 @@ var/global/cable_identity_sequence = 0
 /obj/structure/cable/forceMove(atom/destination, var/special_event)
 	var/atom/previous_location = loc
 	. = ..()
-	if (. && loc != previous_location)
+	// A craft carries its wiring whole (craft/rigid_move.dm).
+	if (. && loc != previous_location && !craft_carrying())
 		disconnect()
 
 // Plastic insulation and copper are both paid before cable is created.

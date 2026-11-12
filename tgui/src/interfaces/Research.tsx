@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Button, Section, NoticeBox } from 'tgui-core/components';
 import type { Data, ScreenProps } from '../types';
 import { Action, list, text } from './common';
-import { Bar, Checks, FilterChips, RecipeTags, StateBadge, matches, minutes, nodeState, stateRank } from './researchShared';
+import { Bar, Checks, FieldWork, FilterChips, RecipeTags, StateBadge, matches, minutes, nodeState, stateRank } from './researchShared';
 export function lockedAncestors(nodes: Data[], id: string): Set<string> {
   const byId = new Map(nodes.map(node => [String(node.id), node]));
   const visited = new Set<string>();
@@ -89,9 +89,11 @@ function Assigned({ ui, open }: { ui: ScreenProps; open: (id: string) => void })
       <p>{assigned.ticks} of {assigned.cost} points written into the book.{' '}
         {assigned.working ? <span className="rs-good">Work is going on{assigned.eta_minutes ? `: about ${minutes(assigned.eta_minutes)} left at this pace` : ''}.</span> : <span className="rs-bad">Nobody is working on it right now.</span>}</p>
       <Checks rows={assigned.checks} />
+      <FieldWork rows={assigned.field_work} />
       <p className={Number(assigned.supply) >= 1 ? 'rs-dim' : 'rs-bad'}>{text(assigned.supply_text)}: {assigned.supply}/{assigned.supply_cap}{Number(assigned.supply) < 1 && ' - research runs at half speed until some are used on the bench'}</p>
       {!!assigned.library_bonus && <p className="rs-dim">Library nearby: research is {assigned.library_bonus}% faster.</p>}
-      <Button onClick={() => open(String(assigned.id))}>Details</Button><Action ui={ui} action="stop_research">Stop researching</Action>
+      {!!assigned.can_rush && <p className={assigned.rushed ? 'rs-bad' : 'rs-dim'}>{assigned.rushed ? 'Rushed: half again as fast, but accidents can hurt the researcher and undo work.' : 'Careful work: no accidents.'}</p>}
+      <Button onClick={() => open(String(assigned.id))}>Details</Button><Action ui={ui} action="stop_research">Stop researching</Action>{!!assigned.can_rush && <Action ui={ui} action="toggle_rush">{assigned.rushed ? 'Work carefully' : 'Rush the work'}</Action>}
     </>)}
     {!!queue.length && <div className="rs-queue"><strong>Queued next:</strong> {queue.map((item, i) => <span className="tag" key={item.id}>{i + 1}. <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <button type="button" className="rs-link" disabled={!ui.interactive} aria-label={`Remove ${text(item.name)} from the queue`} onClick={() => ui.act('unqueue', { unqueue: item.id })}>x</button></span>)}
       <Action ui={ui} action="clear_queue">Clear queue</Action></div>}
@@ -229,6 +231,7 @@ export function Research(ui: ScreenProps) {
           <span aria-hidden="true">{item.known ? '✓' : '✗'}</span> <button type="button" className="rs-link" onClick={() => open(String(item.id))}>{text(item.name)}</button> <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study or research this.</p>}
         {nodeState(detail) !== 'known' && detail.mode_text !== 'Book only' && <><h3>To research it at this bench</h3>
           <Checks rows={detail.research_needs} />
+          <FieldWork rows={detail.field_work} />
           <p className="rs-dim">{detail.cost_ticks} points of work, about {minutes(detail.research_minutes)} at your pace with supplies. Studying a finished chapter takes about {minutes(detail.study_minutes)}.</p></>}
       </> : <>
         <h3>Status</h3><p>{text(detail.status_text)} - {text(detail.detail)}</p>
@@ -240,6 +243,7 @@ export function Research(ui: ScreenProps) {
         return !!next.length && <><h3>Leads to</h3><p>{next.map(node => <button type="button" key={node.id} className="rs-link rs-lead" onClick={() => open(String(node.id))}>{text(node.name)}</button>)}</p></>;
       })()}
       <h3>Unlocks {list(detail.recipe_names).length} recipes</h3>{list(detail.recipe_names).length ? <RecipeTags names={detail.recipe_names} /> : 'None yet'}
+      {!!detail.effect && <><h3>Knowing it</h3><p>{text(detail.effect)}</p></>}
       {!book && <div>{!!detail.assignable && <Action ui={ui} action="assign" value={detail.id}>Assign this bench</Action>}{!!detail.can_write_notes && <Action ui={ui} action="write_notes" value={detail.id}>Write Research Notes (quick, boosts a buyer)</Action>}{!!detail.can_write_book && <Action ui={ui} action="write_book" value={detail.id}>Write Research Book (slow, completes for a buyer)</Action>}{!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to research queue</Action>}</div>}
     </section></div>}
   </>;

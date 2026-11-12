@@ -20,6 +20,8 @@
 	for (var/obj/item/weapon/paper/P in get_contents())
 		if (blank_writing_sheet(P))
 			count++
+	for (var/obj/item/weapon/paper_bundle/B in get_contents())
+		count += length(bundle_blank_sheets(B))
 	return count
 
 // A blank sheet in hand for writing or copying. With none in hand and a hand
@@ -44,6 +46,20 @@
 		put_in_hands(P)
 		if (recipe_held(src, P))
 			to_chat(src, SPAN_NOTICE("You take out a blank sheet."))
+			return P
+		return null
+	// Bundles in hand or carried loose; a free hand takes one sheet off.
+	for (var/obj/item/weapon/paper_bundle/B in get_contents())
+		var/list/sheets = bundle_blank_sheets(B)
+		if (!sheets.len)
+			continue
+		var/obj/item/weapon/paper/P = sheets[1]
+		var/bundle_name = B.name
+		if (!bundle_unclip_sheet(B, P))
+			continue
+		put_in_hands(P)
+		if (recipe_held(src, P))
+			to_chat(src, SPAN_NOTICE("You take a blank sheet off the [bundle_name]."))
 			return P
 		return null
 	return null
@@ -149,14 +165,18 @@
 			instruments[discipline] = has_research_instrument(node_id, H) ? 1 : 0
 		needs += list(list("label" = "[capitalize(scholar_instrument_text(discipline))] on or next to the bench", "ok" = instruments[discipline]))
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = N.prototype_display_name()
-		needs += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
+		needs += list(list("label" = prototype_need_label(N), "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
+	if (is_big_science(node_id))
+		needs += team_rows(node_id, null)
 	out["research_needs"] = needs
 	var/desk = cache["desk_rate"]
 	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk))
 	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
-	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1)
-	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * 100) : 0
+	var/list/supplies = cache["supplies"]
+	var/supplied = islist(supplies) ? (supplies[discipline] || 0) >= 1 : TRUE
+	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * late_bench_rate(N) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	out["field_work"] = field_work_rows(H, node_id)
+	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * RESEARCH_TICK_INTERVAL) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
 	out["holder"] = holder
 	out["can_study"] = state == "study" ? 1 : 0
@@ -219,9 +239,12 @@
 	if (node_needs_instrument(assigned_node))
 		checks += list(list("label" = "[capitalize(scholar_instrument_text(discipline))] on or next to the bench", "ok" = instrument_ok ? 1 : 0))
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = N.prototype_display_name()
-		checks += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
+		checks += list(list("label" = prototype_need_label(N), "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
+	checks += team_rows(assigned_node, researcher)
 	out["checks"] = checks
+	out["rushed"] = rushed ? 1 : 0
+	out["can_rush"] = node_can_be_rushed(N) ? 1 : 0
+	out["field_work"] = field_work_rows(H, assigned_node)
 	out["supply"] = supply
 	out["supply_cap"] = SCHOLAR_SUPPLY_CAP
 	out["supply_text"] = "[scholar_disciplines[discipline]] supplies ([scholar_supply_text(discipline)])"
@@ -231,10 +254,10 @@
 	var/working = researcher && B && lit && instrument_ok && tier >= N.min_bench_tier
 	out["working"] = working ? 1 : 0
 	if (working)
-		var/per_tick = round(base_tick_rate * worker[2] * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
+		var/per_tick = round(base_tick_rate * worker[2] * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
 		out["pace"] = per_tick
 		if (per_tick > 0 && ticks < N.cost_ticks)
-			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * 100)
+			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * RESEARCH_TICK_INTERVAL)
 	return out
 
 // One book on the bench: its chapters marked for the viewer, its unfinished
@@ -451,6 +474,8 @@
 	data["author"] = author ? "[author]" : null
 	data["has_text"] = dat ? 1 : 0
 	data["held"] = loc == H ? 1 : 0
+	if (is_enciphered())
+		data["cipher_note"] = can_read_cipher(H) ? "Written in cipher (strength [cipher_strength]). You can read it." : "Written in cipher (strength [cipher_strength]). You cannot study, copy or tear out its chapters until you enter its key word or break the cipher: write in it with a pen and choose Cipher."
 	var/desk = H.scholar_desk_rate()
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	var/pen_rate = pen ? scholar_pen_rate(pen) : 1
@@ -474,7 +499,8 @@
 			"groundwork" = node_groundwork_rows(H, N),
 			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk)),
 			"read_percent" = state == "study" ? H.study_percent(node_id) : 0,
-			"recipe_names" = get_node_recipe_names(node_id))
+			"recipe_names" = get_node_recipe_names(node_id),
+			"effect" = research_node_effect_text(node_id))
 		if (state == "study")
 			tutor_cache = H.find_tutor(node_id)
 			if (tutor_cache)
@@ -489,7 +515,7 @@
 		var/list/entry = progress[node_id]
 		if (!N)
 			continue
-		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? N.prototype_display_name() : null, "prototype_done" = entry[2] ? 1 : 0))
+		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? (node_needs_demonstration(node_id) ? "demonstration" : N.prototype_display_name()) : null, "prototype_done" = entry[2] ? 1 : 0))
 	data["unfinished"] = unfinished
 	var/list/writable = list()
 	if (!H.recipe_knowledge_exempt())

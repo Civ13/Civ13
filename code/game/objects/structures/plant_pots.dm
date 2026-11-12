@@ -45,6 +45,24 @@
 	qdel(src)
 	return
 
+/obj/structure/plant_pot/proc/plant_cinchona(obj/item/W, mob/user)
+	if (filled_type || filled)
+		to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
+		return TRUE
+	to_chat(user, "You start [plantverb] the cinchona...")
+	if (!do_after(user, 15, src))
+		return FALSE
+	// Another player can fill this pot while the action sleeps.
+	if (QDELETED(src) || filled_type || filled || QDELETED(W) || W.loc != user)
+		return TRUE
+	to_chat(user, "You finish [plantverb] the cinchona.")
+	icon = 'icons/obj/flora/filled_plantpots.dmi'
+	icon_state = "[planttype]cinchona"
+	desc = "A pot with a cinchona plant."
+	filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
+	qdel(W)
+	return TRUE
+
 /* Clay Plant-Pots*/
 
 /obj/structure/plant_pot/clay/light
@@ -179,20 +197,8 @@
 					S.filled = TRUE
 					return
 
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
-		if (filled_type || filled)
-			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
-			return
-		else
-			to_chat(user, "You start [plantverb] the cinchona...")
-			if (do_after(user, 15, src))
-				to_chat(user, "You finish [plantverb] the cinchona.")
-				icon = 'icons/obj/flora/filled_plantpots.dmi'
-				icon_state = "[planttype]cinchona"
-				desc = "A pot with a cinchona plant."
-				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
-				qdel(W)
-				return
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona) && plant_cinchona(W, user))
+		return
 
 	if (istype(W, /obj/item/stack/farming/seeds))
 		var/obj/item/stack/farming/seeds/WS = W
@@ -376,20 +382,8 @@
 					S.filled = TRUE
 					return
 
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona))
-		if (filled_type || filled)
-			to_chat(user, "<span class = 'warning'>You need to remove the current plant first with the trowel before you [plantverb] this.</span>")
-			return
-		else
-			to_chat(user, "You start [plantverb] the cinchona...")
-			if (do_after(user, 15, src))
-				to_chat(user, "You finish [plantverb] the cinchona.")
-				icon = 'icons/obj/flora/filled_plantpots.dmi'
-				icon_state = "[planttype]cinchona"
-				desc = "A pot with a cinchona plant."
-				filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
-				qdel(W)
-				return
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona) && plant_cinchona(W, user))
+		return
 
 	if (istype(W, /obj/item/stack/farming/seeds))
 		var/obj/item/stack/farming/seeds/WS = W

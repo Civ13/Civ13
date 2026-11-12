@@ -190,3 +190,17 @@ Not covered: a real save and restore of an orbit world, connected clients,
 seams crossed by players, the drift loop itself (it needs clients; the probe
 drives each step, and each pod step), and a full launch and deorbit through the transfer
 agent (the travel path is the existing crewed-flight one).
+
+It also checks the orbit chart (`code/modules/space/orbit_chart.dm`): a
+steered chart with the arrival beacon in the middle, one station token per
+party that owns a plane, named for the party and kept at a spot saved in the
+registry, stations lying apart, a chart made again finding the same spots, a
+new party charting a new station, a party with no plane left losing its token,
+and an orbital helm starting at the beacon.
+
+It also checks the plane pool (`code/modules/craft/plane_pool.dm`): one pool
+over the registry's planes, a site taking one plane, the cap sites share, the
+pause switch kept in the registry and leaving station claims alone, slots of a
+shared plane claimed lowest first and kept in the registry, and a plane that
+is not emptied while a bunk is kept as home or a character is on it, then
+emptied, released and its slots forgotten.

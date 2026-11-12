@@ -789,6 +789,7 @@ var/global/list/space_survey_maps = list()
 	var/first = !(S.kind in analysed_kinds)
 	analysed_kinds |= S.kind
 	book.boost_scale = survey_sample_value(S.kind, first)
+	note_field_work(H, "samples")
 	book.name = "research notes: [N.name]"
 	book.title = "Notes on a [S.kind] sample"
 	book.desc = "Console analysis of a [first ? "first " : ""][S.kind] sample from another world, worth [book.boost_scale]x ordinary notes. A research bench studying [N.name] can use them to speed up its work."

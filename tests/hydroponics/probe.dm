@@ -55,6 +55,7 @@ var/hydro_runtime_error = FALSE
 		hydro_lifecycle_checks()
 		hydro_shortage_checks()
 		hydro_persistence_checks()
+		hydro_drain_checks()
 		hydro_construction_checks()
 		hydro_catalog_checks()
 	catch(var/exception/e)
@@ -184,6 +185,24 @@ var/hydro_runtime_error = FALSE
 	A.icon_state = old_state
 	qdel(tray)
 	qdel(H)
+
+/proc/hydro_drain_checks()
+	var/obj/structure/hydroponics_tray/tray = hydro_powered_tray(11, 3)
+	var/mob/living/human/hydro_probe/H = new(locate(11, 4, 1))
+	var/obj/item/stack/farming/seeds/potato/potato = new(H, 5)
+	tray.plant_seed(H, potato)
+	var/obj/item/weapon/reagent_containers/glass/bucket/full = new(H)
+	full.reagents.add_reagent("water", 100)
+	hydro_check(tray.fill_water(H, full) == 60 && tray.reservoir_free() == 0 && !tray.can_pay_cycle(), "an all-water reservoir is full and cannot grow")
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer/F1 = new(H)
+	hydro_check(!tray.add_compost(H, F1) && !QDELETED(F1), "an all-water reservoir refuses compost")
+	hydro_check(tray.drain_reservoir(H) && tray.water_units == 0 && tray.nutrient_units == 0 && !QDELETED(tray) && tray.crop == "potato" && tray.stage == 1, "draining empties the reservoir and keeps the tray and crop")
+	hydro_check(!tray.drain_reservoir(H), "an empty reservoir reports nothing to drain")
+	hydro_check(tray.add_compost(H, F1) && tray.fill_water(H, full) == 40 && tray.can_pay_cycle(), "a drained tray takes both ingredients again")
+	tray.water_units = 0
+	tray.nutrient_units = 60
+	hydro_check(tray.reservoir_free() == 0 && !tray.can_pay_cycle(), "an all-nutrient reservoir is full and cannot grow")
+	hydro_check(tray.drain_reservoir(H) && tray.reservoir_free() == 60, "draining clears an all-nutrient reservoir")
 
 /proc/hydro_persistence_checks()
 	var/obj/structure/hydroponics_tray/tray = hydro_powered_tray(7, 3)

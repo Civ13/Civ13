@@ -43,7 +43,10 @@
 /obj/item/weapon/book/proc/has_research_chapter(node_id)
 	return node_id in research_chapter_list()
 
-/obj/item/weapon/book/proc/add_research_chapter(node_id)
+// A capstone chapter that comes into being by any route (research, writing it
+// from memory, copying, printing) can move the era: research announces a
+// discovery, any other route brings a lost era back (era_loss.dm).
+/obj/item/weapon/book/proc/add_research_chapter(node_id, discovered = FALSE)
 	if (!valid_recipe_node_id(node_id))
 		return FALSE
 	var/list/chapters = research_chapter_list()
@@ -52,6 +55,7 @@
 	chapters += node_id
 	research_chapters = jointext(chapters, ";")
 	clear_research_progress(node_id)
+	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
 
 // node_id => list(ticks, prototype_installed)
@@ -110,20 +114,25 @@
 		return FALSE
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && !entry[2])
 		return FALSE
-	add_research_chapter(node_id)
-	map?.book_research_node_finished(N)
+	add_research_chapter(node_id, TRUE)
 	return TRUE
 
 // The world era still moves on a capstone, the first time anyone finishes one.
-// No one learns the node here: it has to be studied from the book.
-/obj/map_metadata/proc/book_research_node_finished(datum/research_node/N)
-	if (!N || N.mode != RESEARCH_MODE_PROTOTYPE || N.era_tier <= ordinal_age)
+// No one learns the node here: it has to be studied from the book. A capstone
+// written down again after its era was lost (rewritten) brings the era back.
+/obj/map_metadata/proc/book_research_node_finished(datum/research_node/N, rewritten = FALSE)
+	if (!N || !book_research_enabled() || N.mode != RESEARCH_MODE_PROTOTYPE || N.era_tier <= ordinal_age)
 		return
 	ordinal_age = N.era_tier
 	var/new_year = ordinal_age_year(N.era_tier)
 	if (new_year)
 		age = new_year
-	to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+	era_loss_missed = 0
+	if (rewritten)
+		log_game("Book research: [N.id] was written down again; the world returns to era [N.era_tier].")
+		to_chat(world, "<big><font color='#c98a1d'><b>[N.name]</b> is written down again, and the world returns to the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+	else
+		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 
 // ------------------------------------------------------------
 // Personal knowledge rules in book mode
@@ -192,6 +201,11 @@
 		return
 	if (!research_lit())
 		return
+	// Field work from anyone at the bench goes into the book first (field_work.dm).
+	if (credit_field_work())
+		book_refresh_ui()
+		if (B.has_research_chapter(assigned_node))
+			return
 	// The most skilled scholar at the bench, with the best tool, sets the pace.
 	var/mob/living/human/researcher = null
 	var/best_rate = 0
@@ -204,10 +218,13 @@
 			best_rate = rate
 	if (!researcher || !has_research_instrument(assigned_node, researcher))
 		return
-	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * apprentice_research_gain(researcher, assigned_node))
-	if (B.add_research_work(assigned_node, round(base_tick_rate * best_rate * library_rate(assigned_node) * use_research_supply(assigned_node), 0.1)))
+	researcher.gain_scholarship(assigned_node, SCHOLAR_RESEARCH_GAIN * analysis_scale * apprentice_research_gain(researcher, assigned_node))
+	if (B.add_research_work(assigned_node, round(base_tick_rate * analysis_scale * best_rate * late_bench_rate(N) * team_rate(assigned_node, researcher) * rush_rate(N) * library_rate(assigned_node) * use_research_supply(assigned_node, analysis_scale), 0.1)))
 		for (var/mob/living/human/H in viewers(world.view, src))
 			to_chat(H, SPAN_NOTICE("The chapter on <b>[N.name]</b> in [B] is finished. It can now be studied."))
+	else
+		// Rushed work can go wrong (team_research.dm).
+		roll_rush_accident(researcher, N, B, analysis_scale)
 	book_refresh_ui()
 
 // Whether this bench can work on node_id for its book. Prerequisites are
@@ -289,6 +306,9 @@
 	if (is_upgrade_coin(W))
 		try_feed_coins(W, user)
 		return
+	// Demonstration notes for a capstone (demonstrations.dm).
+	if (istype(W, /obj/item/weapon/paper) && take_demonstration_notes(W, user))
+		return
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		to_chat(user, SPAN_WARNING("Place a book on the bench and choose a subject first."))
@@ -303,6 +323,9 @@
 		to_chat(user, SPAN_WARNING("You aren't skilled enough to work on <b>[N.name]</b>. [user.scholar_requirement_text(assigned_node)]."))
 		return
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
+		if (node_needs_demonstration(assigned_node))
+			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration, not a part: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
+			return
 		if (tier < N.min_bench_tier)
 			to_chat(user, SPAN_WARNING("This bench isn't upgraded enough to complete this prototype."))
 			return
@@ -429,11 +452,17 @@
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !source || !source.holds_research_chapter(node_id))
 		return FALSE
+	// A book in cipher keeps strangers out (book_cipher.dm).
+	var/obj/item/weapon/book/cipher_book = source
+	if (istype(cipher_book) && cipher_book.cipher_refuses(H))
+		return FALSE
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know <b>[N.name]</b>."))
 		return FALSE
 	if (!H.knows_research_prereqs(node_id))
 		to_chat(H, SPAN_WARNING("You need to understand this chapter's groundwork first."))
+		return FALSE
+	if (H.too_dark_to_read())
 		return FALSE
 	var/time = H.scholar_study_time(N.era_tier)
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
@@ -518,8 +547,7 @@
 	var/ticks = B ? B.research_ticks(assigned_node) : 0
 	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stands at the bench with a pencil, pen or writing slate in hand."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = AN.prototype_display_name()
-		text += " It also needs a working [pname ? pname : "prototype"] fed to the bench[B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
+		text += " It also needs [lowertext(copytext(prototype_need_label(AN), 1, 2))][copytext(prototype_need_label(AN), 2)][B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))
@@ -599,6 +627,8 @@
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !istype(source) || !istype(dest) || source.loc != src || dest.loc != src || !source.has_research_chapter(node_id) || dest.has_research_chapter(node_id))
 		return FALSE
+	if (source.cipher_refuses(H) || dest.cipher_refuses(H))
+		return FALSE
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	if (!pen)
 		to_chat(H, SPAN_WARNING("Hold a pencil or pen to copy with."))
@@ -613,10 +643,12 @@
 	if (dest.page_busy)
 		to_chat(H, SPAN_WARNING("Someone is already working on [dest]."))
 		return FALSE
+	if (H.too_dark_to_read())
+		return FALSE
 	var/time = scholar_write_time(N.era_tier, pen, H)
 	to_chat(H, SPAN_NOTICE("You begin copying the chapter on [N.name] into [dest]. This takes about [round(time / 600, 0.5)] minute\s."))
 	dest.page_busy = TRUE
-	var/done = do_after(H, time, src)
+	var/done = do_reading(H, time, src)
 	dest.page_busy = FALSE
 	if (!done || QDELETED(src) || source.loc != src || dest.loc != src || !recipe_held(H, sheet) || !recipe_held(H, pen))
 		return FALSE

@@ -162,6 +162,26 @@ var/naval_runtime_error = FALSE
 	naval_check(!edge.place(20, 30, 2, EAST) && findtext(edge.last_refusal, "ahead") && !edge.placed, "a second ship cannot be laid over the first ([edge.last_refusal])")
 	qdel(edge)
 
+	// The water ahead is marked before a hop and before a turn.
+	var/list/hop = C.next_hop()
+	var/was_x = C.ox
+	naval_check(hop && hop[1] > was_x && hop[2] == C.oy && C.ox == was_x, "next_hop() names the hop and moves nothing")
+	var/marked = C.warn_tick()
+	naval_check(marked > 0 && marked == C.path_markers.len && naval_count(2, /turf/floor/plating/carrier_deck) == 360, "the warning marks the water ahead and lays no deck ([marked])")
+	var/obj/effect/vessel_path/mark = C.path_markers[1]
+	naval_check(mark.loc && !C.contains(mark.loc) && !mark.density && !mark.should_save, "the marks lie outside the hull, block nothing and are never saved")
+	naval_check(C.sail_tick() && C.ox == hop[1] && !C.path_markers.len && QDELETED(mark), "the hop lands where it was marked and clears the marks ([C.ox])")
+	C.set_anchor(TRUE)
+	naval_check(isnull(C.next_hop()) && !C.warn_tick() && !C.path_markers.len, "a ship at anchor marks nothing")
+	C.set_anchor(FALSE)
+	was_x = C.ox
+	naval_check(C.order_turn(NORTH) && C.turning_to == NORTH && C.dir == EAST && C.path_markers.len > 0, "a turn ordered at the wheel marks the water first ([C.path_markers.len])")
+	naval_check(!C.order_turn(SOUTH) && findtext(C.last_refusal, "already"), "one turn at a time")
+	naval_check(!C.sail_tick() && C.ox == was_x && C.speed == VESSEL_SPEED_FULL, "she does not hop while she waits to turn")
+	naval_check(C.finish_turn() && C.dir == NORTH && !C.turning_to && !C.path_markers.len, "then she comes about and the marks are gone")
+	naval_check(C.turn_to(EAST) && C.dir == EAST, "and back to the east")
+	C.set_speed(VESSEL_SPEED_STOP)
+
 	// Coming about: north, around the centre of the ship.
 	naval_check(C.turn_to(NORTH) && C.dir == NORTH, "the ship comes about to the north ([C.ox],[C.oy], [C.last_refusal])")
 	naval_check(istype(locate(C.ox, C.oy, 2), /turf/floor/plating/carrier_deck) && istype(locate(C.ox + 8, C.oy + 39, 2), /turf/floor/plating/carrier_deck) && !istype(locate(C.ox + 9, C.oy, 2), /turf/floor/plating/carrier_deck), "the footprint is now 9 wide and 40 long")

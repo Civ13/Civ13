@@ -1698,6 +1698,23 @@ class HandoverTests(unittest.TestCase):
         machine.start_standby = boot
         return group, host
 
+    def test_handover_warns_players_for_the_group_configs_current_warning(self):
+        group, host = self.staged()
+        path = Path(host.config['group_config'])
+        data = json.loads(path.read_text())
+        data['shutdown_warning_seconds'] = 45  # the launcher's Players' warning, changed after setup
+        path.write_text(json.dumps(data))
+        query = self.machine.query
+
+        def offering(port, token, action='status', operation=None, session=None, extra=None):
+            answer = query(port, token, action, operation, session, extra)
+            return dict(answer, shutdown_warning=True) if port == self.LIVE and action == 'status' else answer
+        self.machine.query = offering
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        saves = [extra for _, action, extra in self.actions if action == 'handover_save']
+        self.assertEqual(saves, [{'warn': '45'}])
+
     def test_old_world_that_keeps_its_port_is_killed_before_the_standby_opens_it(self):
         group, host = self.staged()
         query = self.machine.query

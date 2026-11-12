@@ -430,7 +430,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	// Older assemblies filled the entire 5x5 assembler area with placeholders.
 	// Keep only this vehicle's current turning square; never remove physical hull parts.
 	var/turf/origin = get_turf(src)
-	if (origin && maxdist >= 1 && maxdist <= 5)
+	if (origin && maxdist >= 1 && maxdist <= VEHICLE_MAX_TURNING_SQUARE)
 		var/end_x = origin.x + ((dir == EAST || dir == SOUTH) ? -1 : 1) * (maxdist - 1)
 		var/end_y = origin.y + ((dir == EAST || dir == NORTH) ? -1 : 1) * (maxdist - 1)
 		for (var/obj/effect/pseudovehicle/PV in components.Copy())
@@ -673,7 +673,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		return FALSE
 	if (isemptylist(matrix) && !check_matrix())
 		return FALSE
-	if (maxdist < 1 || maxdist > 5)
+	if (maxdist < 1 || maxdist > VEHICLE_MAX_TURNING_SQUARE)
 		return FALSE
 	// Rotation collects membership without triggering movement-only mine effects.
 	add_transporting(FALSE)
@@ -728,17 +728,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		for (var/locy=1; locy<=maxdist; locy++)
 			var/loc2textv = "[locx],[locy]"
 			var/dlocfinding
-			switch(maxdist)
-				if (1)
-					dlocfinding = rotation_matrixes1[tdir][loc2textv][1]
-				if (2)
-					dlocfinding = rotation_matrixes2[tdir][loc2textv][1]
-				if (3)
-					dlocfinding = rotation_matrixes3[tdir][loc2textv][1]
-				if (4)
-					dlocfinding = rotation_matrixes4[tdir][loc2textv][1]
-				if (5)
-					dlocfinding = rotation_matrixes5[tdir][loc2textv][1]
+			dlocfinding = vehicle_rotation_target(maxdist, tdir, loc2textv)
 			var/turf/T = matrix_current_locs[dlocfinding][1]
 			var/list/source_contents = matrix_current_locs[loc2textv][2]
 			if (!T)
@@ -824,17 +814,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			for (var/locy=1; locy<=maxdist; locy++)
 				var/loc2textv = "[locx],[locy]"
 				var/dlocfind
-				switch(maxdist)
-					if (1)
-						dlocfind = rotation_matrixes1[tdir][loc2textv][1]
-					if (2)
-						dlocfind = rotation_matrixes2[tdir][loc2textv][1]
-					if (3)
-						dlocfind = rotation_matrixes3[tdir][loc2textv][1]
-					if (4)
-						dlocfind = rotation_matrixes4[tdir][loc2textv][1]
-					if (5)
-						dlocfind = rotation_matrixes5[tdir][loc2textv][1]
+				dlocfind = vehicle_rotation_target(maxdist, tdir, loc2textv)
 	//			world.log << "LOG: currloc: [loc2textv] ([matrix_current_locs[loc2textv][1].x],[matrix_current_locs[loc2textv][1].y]), moving to: [rotation_matrixes5[tdir][loc2textv][1]] ([matrix_current_locs[dlocfind][1].x],[matrix_current_locs[dlocfind][1].y])")
 				if (islist(matrix_current_locs[loc2textv][2]))
 					var/has_hull = FALSE

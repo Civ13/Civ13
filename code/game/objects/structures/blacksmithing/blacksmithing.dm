@@ -47,6 +47,7 @@
 					to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 					var/rtype = anvil_recipes[parsed_choice2[1]][9]
 					new rtype (loc,material_name)
+					note_craft_practice(user, "[rtype]")
 				in_use = FALSE
 			else
 				in_use = FALSE
@@ -362,6 +363,7 @@
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
+										note_craft_practice(user, "[rtype]")
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
@@ -427,6 +429,7 @@
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
+										note_craft_practice(user, "[rtype]")
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
@@ -493,6 +496,7 @@
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
+										note_craft_practice(user, "[rtype]")
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0
@@ -654,6 +658,7 @@
 										to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 										var/obj/item/weapon/material/rtype = anvil_recipes[parsed_choice2[1]][9]
 										new rtype (loc,ML.current_material)
+										note_craft_practice(user, "[rtype]")
 										if (ML.capacity < 1)
 											ML.current_material = null
 											ML.capacity = 0

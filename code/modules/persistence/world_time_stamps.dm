@@ -13,6 +13,7 @@
 var/global/list/persistence_world_time_stamps = list(
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
+	"next_fill" = list(/obj/structure/sea_office),
 	"last_moved" = list(/obj/structure/trains/platform),
 	"l_move_time" = list(/atom/movable),
 	"last_movement" = list(/mob),
@@ -26,6 +27,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_pain_time" = list(/mob),
 	"next_slope_message" = list(/mob),
 	"next_snow_message" = list(/mob),
+	"terrain_momentum_at" = list(/mob/living/human),
 	"next_stamina_message" = list(/mob),
 	"timeofdeath" = list(/mob),
 	"last_special" = list(/mob/living),

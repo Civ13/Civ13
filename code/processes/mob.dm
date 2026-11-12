@@ -22,22 +22,11 @@
 			unregister_living_mob(M)
 			continue
 
-		else if (istype(M, /mob/new_player))
-			if (!M.client || M.client.mob != M)
-				qdel(M)
-			continue
-
 		try
-			// since we spent so long getting here we have to do this again
-			if (!M)
-				catchBadType(M)
-				mob_list -= M
-				unregister_living_mob(M)
-				continue
 			if (ecology_animal_frozen(M))
 				var/mob/living/simple_animal/frozen = M
 				frozen.ecology_hold_still()
-			else if (!ecology_animal_resting(M))
+			else if (!ecology_animal_resting(M) && !(persistence_frozen_levels.len && persistence_life_frozen(M)))
 				M.Life()
 			if (!(M == null))
 				if (world.time - M.last_movement > 7)

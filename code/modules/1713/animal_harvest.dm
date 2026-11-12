@@ -135,6 +135,7 @@
 		var/mob/living/human/H = user
 		H.adaptStat("medical", butcher_yield()/3)
 		H.adaptStat("hunting", butcher_yield()/2)
+		note_field_work(H, "butchering")
 	crush()
 	qdel(src)
 	return TRUE

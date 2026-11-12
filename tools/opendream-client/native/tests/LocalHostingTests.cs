@@ -213,6 +213,12 @@ static class LocalHostingTests {
             File.WriteAllText(Path.Combine(gaiaOverlay, "config", name), "{}");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
+        // Players' warning: the group config's shutdown_warning_seconds, defaulting to two minutes.
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == HostSettings.DefaultShutdownWarningSeconds, "default players' warning");
+        HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 300);
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2,
+            "players' warning saved, other settings kept");
+        Reject(() => HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 3601), "a warning over an hour");
         var places = HostSettings.Locations(host.Control!.Group!);
         Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
             ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),

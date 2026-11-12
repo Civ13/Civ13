@@ -47,10 +47,12 @@ if args.baseline:
 if args.negative_control:
     source = '#define UNCONDITIONAL_CLEAR_CONTROL\n' + source
 if args.negative_control:
-    anchor = 'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))'
-    if source.count(anchor) != 1:
+    anchors = ('if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY || !length(current_list))',
+               'if (fire_result != PROCESS_TICK_CHECK_RETURNED_EARLY)')
+    matches = [anchor for anchor in anchors if source.count(anchor) == 1]
+    if len(matches) != 1:
         raise SystemExit('Negative control anchor changed')
-    source = source.replace(anchor, 'if (TRUE)')
+    source = source.replace(matches[0], 'if (TRUE)', 1)
     EXPECTED_FAILURES = {'budgeted snapshot retained for next pass', 'member snapshot retained for next pass'}
 if args.reset_control:
     anchor = '\t\tif (p)\n\t\t\tqueue -= p'

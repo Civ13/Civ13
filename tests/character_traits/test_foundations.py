@@ -137,6 +137,36 @@ class TraitFoundations(unittest.TestCase):
             self.assertEqual(count, expected)
         self.assertNotEqual(social.replace('HM != src && ', '').count('if (HM != src && HM.stat != DEAD)'), 2)
 
+    def test_social_proximity_stops_after_first_match(self):
+        source = read(LIFE)
+        social = source[source.index('if (find_trait("Extroverted"))'):source.index('if (!inducedSSD)', source.index('if (find_trait("Extroverted"))'))]
+        loop = ('for(var/mob/living/human/HM in range(3,src))\n'
+                '\t\t\t\t\tif (HM != src && HM.stat != DEAD)\n'
+                '\t\t\t\t\t\tct++\n'
+                '\t\t\t\t\t\tbreak\n\t\t\t\t')
+        def valid_loops(text):
+            bodies = re.findall(r'for\(var/mob/living/human/HM in range\(3,src\)\).*?(?=if \(!?ct\))', text, re.S)
+            return len(bodies) == 2 and all(body == loop for body in bodies)
+
+        self.assertTrue(valid_loops(social))
+        self.assertFalse(valid_loops(social.replace('\t\t\t\t\t\tbreak', '')))
+        self.assertFalse(valid_loops(social.replace('range(3,src))\n', 'range(3,src))\n\t\t\t\t\tbreak\n')))
+
+        # Compare modeled iteration counts and decisions; this does not execute DM.
+        for nearby, visited in (([], 0), ([('self', False)], 1),
+                                ([('self', False), ('other', True)], 2),
+                                ([('other', False), ('another', False)], 1),
+                                ([('self', False), ('other', True), ('another', False)], 3)):
+            old_count = sum(who != 'self' and not dead for who, dead in nearby)
+            found, iterations = False, 0
+            for who, dead in nearby:
+                iterations += 1
+                if who != 'self' and not dead:
+                    found = True
+                    break
+            self.assertEqual(found, bool(old_count))
+            self.assertEqual(iterations, visited)
+
     def test_actual_body_modifiers_documented_without_rebalance(self):
         table = definitions(read(TRAITS))
         for trait, phrases in {'Dwarfism': ('Strength x0.7', 'crafting x1.5', 'food use x0.8'),

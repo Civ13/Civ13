@@ -24,14 +24,14 @@ class ResearchInterfaceContract(unittest.TestCase):
         self.assertEqual(order, sorted(order))
     def test_one_click_copy_keeps_every_cost_and_recheck(self):
         job = proc(self.research, "/obj/structure/research_bench/proc/book_copy_job")
-        before, after = job.split("do_after(H, time, src)")
+        before, after = job.split("do_reading(H, time, src)")
         for guard in ("source.loc != src", "dest.loc != src", "source.has_research_chapter(node_id)", "dest.has_research_chapter(node_id)",
                       "H.held_writing_pen()", "blank_writing_sheet(sheet)", "BOOK_WRITE_STAMINA(N.era_tier)", "dest.page_busy"):
             self.assertIn(guard, before)
         for guard in ("source.loc != src", "dest.loc != src", "recipe_held(H, sheet)", "recipe_held(H, pen)", "copy_chapter_commit(H, source, dest, node_id, sheet)"):
             self.assertIn(guard, after)
-        self.assertLess(job.index("dest.page_busy = TRUE"), job.index("do_after(H, time, src)"))
-        self.assertLess(job.index("do_after(H, time, src)"), job.index("dest.page_busy = FALSE"))
+        self.assertLess(job.index("dest.page_busy = TRUE"), job.index("do_reading(H, time, src)"))
+        self.assertLess(job.index("do_reading(H, time, src)"), job.index("dest.page_busy = FALSE"))
         commit = proc(self.research, "/obj/structure/research_bench/proc/copy_chapter_commit")
         for cost in ('H.stats["stamina"][1] -= cost', "qdel(sheet)"):
             self.assertIn(cost, commit)
@@ -46,7 +46,7 @@ class ResearchInterfaceContract(unittest.TestCase):
     def test_writing_a_chosen_chapter_still_needs_knowledge_pen_sheet_and_stamina(self):
         write = proc(self.pages, "/obj/item/weapon/book/proc/write_research_chapter")
         self.assertIn("!H.knows_recipe_node(node_id) || has_research_chapter(node_id) || page_busy", write)
-        after = write.split("do_after(H, time, anchor ? anchor : src)")[1]
+        after = write.split("do_reading(H, time, anchor ? anchor : src)")[1]
         for guard in ("has_research_chapter(node_id)", "!H.knows_recipe_node(node_id)", "!recipe_held(H, P)", "!recipe_held(H, sheet)", "!blank_writing_sheet(sheet)",
                       "loc != start_loc", "!H.Adjacent(anchor)", "commit_written_chapter(H, node_id, sheet)"):
             self.assertIn(guard, after)
@@ -89,5 +89,27 @@ class ResearchInterfaceContract(unittest.TestCase):
         # Characters without a client keep the menu the agent prompts can answer.
         use = proc(self.research, "/obj/item/weapon/book/attack_self")
         self.assertLess(use.index("if (H.client && (chapters.len || length(research_progress_map())))"), use.index("player_input("))
+    def test_reading_and_writing_need_light(self):
+        progress = read("code/modules/research_tree/study_progress.dm")
+        light = proc(progress, "/mob/living/human/proc/reading_light_problem")
+        self.assertIn("T.get_lumcount() < SCHOLAR_MIN_LIGHT", light)
+        wait = proc(progress, "/proc/do_reading")
+        # Refuses to start in the dark, and rechecks the light between short waits.
+        self.assertLess(wait.index("H.too_dark_to_read()"), wait.index("do_after(H, wait, target, TRUE, FALSE)"))
+        self.assertIn("H.reading_light_problem()", wait.split("do_after(H, wait, target, TRUE, FALSE)")[1])
+        self.assertIn("do_reading(src, left, anchor)", proc(progress, "/mob/living/human/proc/timed_study"))
+        # Every read, copy and written page waits through it.
+        for path, token in (("code/modules/research_tree/book_research.dm", "do_reading(H, time, src)"),
+                            ("code/modules/research_tree/book_pages.dm", "do_reading(H, time, anchor ? anchor : src)"),
+                            ("code/modules/research_tree/book_distribution.dm", "do_reading(src, RECIPE_COPY_TIME, paper)"),
+                            ("code/modules/research_tree/book_distribution.dm", "do_reading(H, 600, src)"),
+                            ("code/modules/research_tree/research_bench.dm", "do_reading(H, wtime, src)"),
+                            ("code/modules/paperwork/study.dm", "do_reading(H, delay, P)"),
+                            ("code/modules/1713/language_book.dm", "do_reading(user, 800, src)"),
+                            ("code/modules/1713/language_book.dm", "do_reading(user, 1200, src)")):
+            self.assertIn(token, read(path), path)
+        # Study and the timed waits say it is too dark before announcing a start.
+        study = proc(self.research, "/proc/study_research_source")
+        self.assertLess(study.index("H.too_dark_to_read()"), study.index("H.begin_study_message("))
 if __name__ == "__main__":
     unittest.main()

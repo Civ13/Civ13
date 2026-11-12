@@ -245,6 +245,37 @@ class GaiaHostTests(unittest.TestCase):
         receipt = json.loads((self.root / 'state' / 'backups' / operations[-1] / 'backup-receipt.json').read_text())
         self.assertEqual(receipt['1.sav'], hashlib.sha256(b'level 1').hexdigest())
 
+    def test_stop_asks_for_the_players_warning_only_from_a_world_that_offers_it(self):
+        # shutdown_warning_seconds (default 120) is sent as "warn" when the world's status says
+        # it can count down; an older build refuses unknown fields, so it is asked as before.
+        self.give_token()
+        real_query = self.machine.query
+        for offers, expected in ((True, {'warn': '120'}), (False, None)):
+            with self.subTest(offers=offers):
+                seen = []
+
+                def query(port, token, action='status', operation=None, session=None, extra=None):
+                    if action == 'save_shutdown':
+                        seen.append(extra)
+                        return real_query(port, token, action, operation, session)
+                    answer = real_query(port, token, action, operation, session)
+                    if offers and isinstance(answer, dict):
+                        answer = dict(answer, shutdown_warning=True)
+                    return answer
+                self.machine.query = query
+                self.machine.up = True
+                self.machine.on_save = lambda: write_save(self.repo / 'map_saves', intent=MARKER)
+                self.host.work('stop', self.accept('stop'))
+                self.assertEqual(self.host.read_state()['phase'], 'done', self.host.read_state())
+                self.assertEqual(seen, [expected])
+        self.machine.query = real_query
+
+    def test_shutdown_warning_setting_is_checked(self):
+        self.assertEqual(gaia_host.warning_fields({'shutdown_warning': True}, 0), {'warn': '0'})
+        for bad in (-1, 3601, 1.5, '60', True):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                gaia_host.check_shutdown_warning(bad)
+
     def test_stop_refused_without_token(self):
         self.machine.up = True
         with self.assertRaisesRegex(gaia_host.Refused, 'lifecycle-token'):

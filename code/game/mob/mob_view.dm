@@ -18,6 +18,9 @@
 		var/mob/living/human/H = mob
 		if (H.hud_used)
 			H.apply_hud_layout()
+	if (istype(mob, /mob/new_player))
+		var/mob/new_player/N = mob
+		N.show_lobby_image()
 	fit_viewport_soon()
 
 /mob/proc/reset_zoom()

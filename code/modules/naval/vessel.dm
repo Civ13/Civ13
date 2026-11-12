@@ -70,6 +70,9 @@ var/global/list/naval_vessels = list()
 	var/last_hop_ms = 0        // Wall time the last relocation took, for the probe.
 	var/last_refusal = ""
 	var/tmp/relocating = FALSE
+	var/tmp/list/path_markers = list() // The water marked ahead of the next move.
+	var/tmp/warn_timer = 0
+	var/tmp/turning_to = 0             // A turn ordered at the wheel, waiting out its warning.
 
 /datum/vessel/New()
 	..()
@@ -78,7 +81,14 @@ var/global/list/naval_vessels = list()
 
 /datum/vessel/Destroy()
 	stop_sailing()
+	clear_path()
 	naval_vessels -= src
+	// Her craft goes with her (craft_of_vessel() no longer answers for a
+	// vessel being deleted).
+	for (var/datum/craft/C in crafts)
+		var/datum/craft_body/template/B = C.body
+		if (istype(B) && B.vessel == src)
+			qdel(C)
 	if (flooding)
 		global.flooding_controllers -= flooding
 		flooding = null
@@ -245,6 +255,12 @@ var/global/list/naval_vessels = list()
 // or null for a cell the ship did not cover). Cells in old_cells are the
 // ship's own and need no terrain check. Returns FALSE with last_refusal set.
 /datum/vessel/proc/plan_move(x, y, heading, list/old_cells, list/dest_turfs, list/dest_source)
+	// A vehicle half on her deck would be torn in two (craft/vehicle_aboard.dm).
+	if (placed && length(old_cells))
+		var/overhang = craft_overhang_refusal(old_cells)
+		if (overhang)
+			last_refusal = overhang
+			return FALSE
 	for (var/datum/vessel_level/L in levels)
 		for (var/v = 0, v < beam, v++)
 			for (var/u = 0, u < length, u++)
@@ -283,14 +299,19 @@ var/global/list/naval_vessels = list()
 		return FALSE
 	var/started = world.timeofday
 	var/list/old_cells = placed ? cells() : list()
+	// Where she was, for the craft hooks after the move.
+	var/turf/old_origin = placed ? locate(ox, oy, base_z) : null
+	var/turned = placed ? craft_turn_angle(dir, heading) : 0
 	// Destinations with the spec that goes there and the cell it comes from.
 	var/list/dest_turfs = list()
 	var/list/dest_source = list()
 	if (!plan_move(x, y, heading, old_cells, dest_turfs, dest_source))
 		return FALSE
+	clear_path()
 	relocating = TRUE
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
+	var/list/carry = null
 	try
 		// What each old cell carries and how damaged it is, keyed by position.
 		var/list/states = list()
@@ -344,6 +365,12 @@ var/global/list/naval_vessels = list()
 					new path(N)
 		// Carry everything across. Turf references are positional, so the
 		// cargo lists were taken before any turf changed.
+		// Wiring aboard keeps its links while she carries it
+		// (craft/rigid_move.dm).
+		var/list/everything = list()
+		for (var/turf/S in cargo)
+			everything += cargo[S]
+		carry = craft_rigid_begin(everything)
 		for (var/turf/N in moved_to)
 			var/turf/S = moved_to[N]
 			if (S == N)
@@ -352,6 +379,8 @@ var/global/list/naval_vessels = list()
 				if (QDELETED(M) || M.loc != S)
 					continue
 				M.forceMove(N)
+		craft_rigid_settle(carry)
+		carry = null
 		// Put the sea back where the ship was.
 		for (var/turf/S in old_cells)
 			if (S in dest_turfs)
@@ -362,16 +391,31 @@ var/global/list/naval_vessels = list()
 			if (original)
 				S.ChangeTurf(original)
 		flooding.rebind_turfs(deck_turfs(), air)
+		// Everything aboard comes about with the hull.
+		if (turned)
+			var/datum/craft/C = craft_of_vessel(src)
+			for (var/turf/N in moved_to)
+				for (var/atom/movable/M in N)
+					if (M.loc != N || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+						continue
+					M.craft_turned(C, turned)
 		for (var/turf/N in moved_to)
 			for (var/obj/O in N)
 				O.update_icon()
 	catch (var/exception/e)
 		relocating = FALSE
 		wall_bulk_placement = old_bulk
+		craft_rigid_settle(carry)
 		throw e
 	wall_bulk_placement = old_bulk
 	relocating = FALSE
 	last_hop_ms = (world.timeofday - started) * 100
+	if (old_origin)
+		var/datum/craft/C = craft_of_vessel(src)
+		if (C)
+			C.on_hop(old_origin)
+			if (turned)
+				C.on_turn(turned)
 	return TRUE
 
 // ---- Sailing ----
@@ -380,14 +424,105 @@ var/global/list/naval_vessels = list()
 	if (hop_timer)
 		return
 	hop_timer = addtimer(CALLBACK(src, PROC_REF(sail_tick)), VESSEL_HOP_INTERVAL, TIMER_LOOP | TIMER_STOPPABLE)
+	schedule_path_warning()
 
 /datum/vessel/proc/stop_sailing()
 	if (hop_timer)
 		deltimer(hop_timer)
 		hop_timer = 0
+	if (warn_timer)
+		deltimer(warn_timer)
+		warn_timer = 0
+	if (!turning_to)
+		clear_path()
+
+// ---- The warning ahead of a move ----
+
+// Marks the water a hop or a turn is about to cover, a few seconds ahead, so
+// swimmers and small boats can get clear. Something solid still in the way
+// stops the ship as before.
+/obj/effect/vessel_path
+	name = "ship's path"
+	desc = "A ship is about to move over this water. Get clear."
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "white"
+	color = "#ffd23f"
+	alpha = 90
+	anchored = TRUE
+	density = FALSE
+	mouse_opacity = 0
+	layer = 2.1
+	should_save = FALSE
+
+/obj/effect/vessel_path/craft_turned(datum/craft/C, angle)
+	return
+
+/datum/vessel/proc/clear_path()
+	for (var/obj/effect/vessel_path/M in path_markers)
+		qdel(M)
+	path_markers = list()
+
+// Where the next hop would put the box corner, as list(x, y), or null when
+// she would not move. Writes nothing.
+/datum/vessel/proc/next_hop()
+	if (!placed || anchored || speed <= 0 || turning_to || fuel < fuel_burn(speed))
+		return null
+	var/refusal_was = last_refusal
+	var/list/old_cells = cells()
+	for (var/tiles = speed * VESSEL_TILES_PER_STEP, tiles >= 1, tiles--)
+		var/sx = 0
+		var/sy = 0
+		switch (dir)
+			if (EAST) sx = tiles
+			if (WEST) sx = -tiles
+			if (NORTH) sy = tiles
+			if (SOUTH) sy = -tiles
+		if (plan_move(ox + sx, oy + sy, dir, old_cells, list(), list()))
+			last_refusal = refusal_was
+			return list(ox + sx, oy + sy)
+	last_refusal = refusal_was
+	return null
+
+// Marks every tile a move to (x, y, heading) would newly cover. Returns the
+// number of tiles marked, or 0 with last_refusal set when the move is refused.
+/datum/vessel/proc/mark_path(x, y, heading)
+	clear_path()
+	if (!placed)
+		return 0
+	var/list/old_cells = cells()
+	var/list/dest_turfs = list()
+	if (!plan_move(x, y, heading, old_cells, dest_turfs, list()))
+		return 0
+	for (var/turf/D in dest_turfs)
+		// Only the waterline is marked: nobody swims under the keel or
+		// stands in the sky.
+		if (D.z != base_z || (D in old_cells))
+			continue
+		path_markers += new /obj/effect/vessel_path(D)
+		for (var/mob/living/M in D)
+			if (M.client)
+				to_chat(M, SPAN_DANGER("The [name] is about to move over you. Get clear!"))
+	return path_markers.len
+
+/datum/vessel/proc/schedule_path_warning()
+	if (warn_timer)
+		deltimer(warn_timer)
+	warn_timer = addtimer(CALLBACK(src, PROC_REF(warn_tick)), VESSEL_HOP_INTERVAL - VESSEL_PATH_WARNING, TIMER_STOPPABLE)
+
+// Runs VESSEL_PATH_WARNING before each hop.
+/datum/vessel/proc/warn_tick()
+	warn_timer = 0
+	if (persistence_save_in_progress || turning_to)
+		return 0
+	var/list/hop = next_hop()
+	if (!hop)
+		return 0
+	var/refusal_was = last_refusal
+	. = mark_path(hop[1], hop[2], dir)
+	last_refusal = refusal_was
 
 /datum/vessel/proc/set_speed(new_speed)
-	speed = clamp(new_speed, VESSEL_SPEED_STOP, max_speed)
+	speed = clamp(new_speed, VESSEL_SPEED_STOP, speed_cap())
 	if (speed > 0 && !anchored)
 		start_sailing()
 
@@ -396,9 +531,15 @@ var/global/list/naval_vessels = list()
 	if (!anchored && speed > 0)
 		start_sailing()
 
-// One hop along the heading. Returns TRUE when the ship moved.
+// The hop timer: one hop, then the warning for the next.
 /datum/vessel/proc/sail_tick()
-	if (!placed || anchored || speed <= 0)
+	. = sail_hop()
+	if (hop_timer)
+		schedule_path_warning()
+
+// One hop along the heading. Returns TRUE when the ship moved.
+/datum/vessel/proc/sail_hop()
+	if (!placed || anchored || speed <= 0 || turning_to)
 		return FALSE
 	// Never rewrite a level while the world save is capturing it.
 	if (persistence_save_in_progress)
@@ -430,10 +571,8 @@ var/global/list/naval_vessels = list()
 	return FALSE
 
 // Turning swaps the long axis of the footprint about the box centre; the new
-// box must be clear like any other move.
-/datum/vessel/proc/turn_to(heading)
-	if (heading == dir)
-		return TRUE
+// box must be clear like any other move. The box corner after the turn:
+/datum/vessel/proc/turn_origin(heading)
 	var/cx = ox + (box_w() - 1) / 2
 	var/cy = oy + (box_h() - 1) / 2
 	var/old_dir = dir
@@ -441,7 +580,43 @@ var/global/list/naval_vessels = list()
 	var/nx = round(cx - (box_w() - 1) / 2)
 	var/ny = round(cy - (box_h() - 1) / 2)
 	dir = old_dir
-	return relocate(nx, ny, heading)
+	return list(nx, ny)
+
+/datum/vessel/proc/turn_to(heading)
+	if (heading == dir)
+		return TRUE
+	var/list/corner = turn_origin(heading)
+	return relocate(corner[1], corner[2], heading)
+
+// A turn ordered at the wheel: the water she will swing over is marked, and
+// she comes about VESSEL_PATH_WARNING later. Returns FALSE with last_refusal
+// set when she cannot turn here.
+/datum/vessel/proc/order_turn(heading)
+	if (turning_to)
+		last_refusal = "she is already coming about"
+		return FALSE
+	if (heading == dir)
+		return TRUE
+	var/list/corner = turn_origin(heading)
+	if (!plan_move(corner[1], corner[2], heading, cells(), list(), list()))
+		return FALSE
+	mark_path(corner[1], corner[2], heading)
+	turning_to = heading
+	addtimer(CALLBACK(src, PROC_REF(finish_turn)), VESSEL_PATH_WARNING)
+	return TRUE
+
+/datum/vessel/proc/finish_turn()
+	var/heading = turning_to
+	turning_to = 0
+	if (!heading)
+		return FALSE
+	if (!placed || anchored || sunk)
+		clear_path()
+		return FALSE
+	. = turn_to(heading)
+	if (!.)
+		clear_path()
+		crew_message(SPAN_WARNING("The ship cannot come about: [last_refusal]."))
 
 // Switches every deck light aboard.
 /datum/vessel/proc/set_deck_lights(state)

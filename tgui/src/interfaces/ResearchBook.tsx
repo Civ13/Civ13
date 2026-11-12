@@ -30,6 +30,7 @@ export function ResearchBook(ui: ScreenProps) {
   return <div className="rs-bookwin">
     <Section title={text(data.name) || 'Book'}>
       <p className="rs-dim">{data.author ? `By ${text(data.author)}. ` : ''}{chapters.length} research chapter{chapters.length === 1 ? '' : 's'}{unfinished.length ? `, ${unfinished.length} unfinished` : ''}.</p>
+      {!!data.cipher_note && <p className="rs-bad">{text(data.cipher_note)}</p>}
       {!!data.has_text && <Action ui={ui} action="read">Read the written pages</Action>}
       <div className="rs-toolbar"><label className="rs-search">Find a chapter <input type="search" value={query} placeholder="Name, recipe or discipline" onChange={event => setQuery(event.target.value)} /></label></div>
       <FilterChips options={filters} value={filter} counts={counts} onChange={setFilter} />
@@ -51,6 +52,7 @@ export function ResearchBook(ui: ScreenProps) {
             <h3>Groundwork</h3>
             {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {text(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study this.</p>}
             <h3>Teaches {list(row.recipe_names).length} recipes</h3><RecipeTags names={row.recipe_names} />
+            {!!row.effect && <><h3>Knowing it</h3><p>{text(row.effect)}</p></>}
             {!!data.held && <p><Action ui={ui} action="rip" value={row.id} disabled={!!data.busy}>Tear this chapter out</Action></p>}
           </div>}
         </div>;

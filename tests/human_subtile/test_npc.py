@@ -60,7 +60,7 @@ class NpcContracts(unittest.TestCase):
         spec.loader.exec_module(runner)
         # Synthetic oracle controls only: no BYOND execution or native result.
         row = dict(head=FIXTURE_HEAD, error=None, port=0, byond_version=516, byond_build=1688,
-                   npc_checks=48, npc_rows=[])
+                   npc_checks=49, npc_rows=[])
         for direction in (1, 2, 4, 8, 5, 9, 6, 10):
             dx = 1 if direction & 4 else -1 if direction & 8 else 0
             dy = 1 if direction & 1 else -1 if direction & 2 else 0
@@ -170,7 +170,7 @@ class NpcContracts(unittest.TestCase):
         self.assertIn('if (glide_size == npc_subtile_applied_glide)', source)
         self.assertIn('glide_size = npc_subtile_previous_glide', source)
 
-    def test_save_import_owns_offsets_before_raw_decode_and_refuses_null(self):
+    def test_save_import_owns_offsets_before_raw_decode_and_restores_malformed_aligned(self):
         loader = read('code/modules/persistence/loading.dm')
         self.assertLess(loader.index('restored_npc.npc_subtile_prepare_import(savefile)'), loader.index('for(var/v in savefile.dir)'))
         source = read(MODULE)
@@ -182,6 +182,9 @@ class NpcContracts(unittest.TestCase):
         # A blocked or overlapped offset restores aligned instead of failing the load.
         self.assertIn('npc_subtile_restore_aligned()', source)
         self.assertIn("if (A != src && !ismob(A) && !A.CanPass(src, T, 1.5, FALSE))", source)
+        # A malformed or mismatched capsule never aborts the whole world import.
+        self.assertNotIn('Malformed NPC sub-tile position', source)
+        self.assertIn('npc_subtile_log_malformed(S)', source)
 
     def test_cadence_bound_and_diagonal_distance_budget(self):
         # Independent grid-distance budget, including odd legacy-import offsets.

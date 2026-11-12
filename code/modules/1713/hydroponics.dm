@@ -219,6 +219,8 @@
 /obj/structure/hydroponics_tray/examine(mob/user, distance)
 	..(user, distance)
 	to_chat(user, SPAN_NOTICE("Reservoir: [round(water_units, 0.1)] water and [round(nutrient_units, 0.1)] nutrient of [HYDROPONICS_RESERVOIR] units."))
+	if (!can_pay_cycle() && reservoir_free() < HYDROPONICS_COMPOST_NUTRIENT)
+		to_chat(user, SPAN_NOTICE("The reservoir is too full to take what it lacks. Right-click the tray and choose Drain Reservoir to empty it."))
 	if (!crop)
 		to_chat(user, SPAN_NOTICE("Nothing is planted. It accepts potato, carrot, cabbage, tomato, bean or wheat seeds."))
 		return
@@ -308,6 +310,33 @@
 	C.update_icon()
 	to_chat(user, SPAN_NOTICE("You pour [round(accepted, 0.1)] units of water into \the [src]."))
 	return accepted
+
+// Empties the reservoir in place so a tray filled with only one ingredient
+// can be refilled with both. Nothing is refunded; the tray is kept.
+/obj/structure/hydroponics_tray/proc/drain_reservoir(mob/user)
+	if (water_units <= 0 && nutrient_units <= 0)
+		to_chat(user, SPAN_WARNING("\The [src]'s reservoir is already empty."))
+		return FALSE
+	water_units = 0
+	nutrient_units = 0
+	update_icon()
+	to_chat(user, SPAN_NOTICE("You drain \the [src]'s reservoir."))
+	return TRUE
+
+/obj/structure/hydroponics_tray/verb/drain_reservoir_verb()
+	set name = "Drain Reservoir"
+	set category = null
+	set src in view(1)
+	var/mob/living/user = usr
+	if (!istype(user) || user.incapacitated() || !Adjacent(user))
+		return
+	if (water_units <= 0 && nutrient_units <= 0)
+		drain_reservoir(user)
+		return
+	to_chat(user, SPAN_NOTICE("You start draining \the [src]'s reservoir."))
+	if (!do_after(user, 30, src))
+		return
+	drain_reservoir(user)
 
 /obj/structure/hydroponics_tray/proc/add_compost(mob/user, obj/item/I)
 	if (reservoir_free() < HYDROPONICS_COMPOST_NUTRIENT)

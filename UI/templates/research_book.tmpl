@@ -8,6 +8,7 @@
 <h2>{{:data.name}}</h2>
 <div class='item'>
 	{{if data.author}}<div class='itemContent'>By {{:data.author}}</div>{{/if}}
+	{{if data.cipher_note}}<div class='itemContent rt-locked'>{{:data.cipher_note}}</div>{{/if}}
 	{{if data.has_text}}<div class='itemContent'>{{:helper.link('Read the written pages', 'copy', {'read' : 1})}}</div>{{/if}}
 </div>
 
@@ -20,7 +21,7 @@
 		{{else chapter.state === "study"}} {{:helper.link(chapter.read_percent > 0 ? 'Continue (' + chapter.read_percent + '% read, about ' + chapter.study_minutes + ' min left)' : 'Study (about ' + chapter.study_minutes + ' min)', 'pencil', {'study' : chapter.id})}}
 		{{else}}<span class='rt-locked'> (needs groundwork)</span>{{/if}}
 		{{if data.held}} {{:helper.link('Tear out', 'trash', {'rip' : chapter.id})}}{{/if}}
-		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}
+		{{for chapter.groundwork :req:gi}}<br><span class='{{:req.known ? "rt-done" : "rt-locked"}}'>{{:req.known ? "Known" : "Not known yet"}}: {{:req.name}}</span>{{/for}}{{if chapter.effect}}<br><span>Knowing it: {{:chapter.effect}}</span>{{/if}}
 	</div>
 </div>
 {{empty}}

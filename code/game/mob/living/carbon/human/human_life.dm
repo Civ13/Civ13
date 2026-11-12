@@ -244,6 +244,7 @@
 				for(var/mob/living/human/HM in range(3,src))
 					if (HM != src && HM.stat != DEAD)
 						ct++
+						break
 				if (ct)
 					adjust_mood(0.12, "having company")
 				else
@@ -254,6 +255,7 @@
 				for(var/mob/living/human/HM in range(3,src))
 					if (HM != src && HM.stat != DEAD)
 						ct++
+						break
 				if (!ct)
 					adjust_mood(0.12, "time alone")
 				else
@@ -396,11 +398,12 @@
 	if (gender == MALE)
 		var/currh = h_growth
 		var/currf = f_growth
-		if (h_growth < 4 && !find_trait("Baldness"))
+		var/has_baldness = find_trait("Baldness")
+		if (h_growth < 4 && !has_baldness)
 			h_growth += 0.002
 		if (f_growth < 4)
 			f_growth += 0.002
-		if (find_trait("Baldness"))
+		if (has_baldness)
 			h_growth = 0
 			h_style = "Bald"
 		else
@@ -483,12 +486,13 @@
 	if (!isnull(outside_c))
 		loc_temp = outside_c
 	outside_exposure_step(exposure_turf)
+	seabed_exposure_step(exposure_turf)
 	cold_wetness = min(1, max(0, cold_wetness))
 	var/previous_wetness = cold_wetness
 	// Rain and immersion soak insulation; shelter and nearby heat let it dry.
 	// This scalar needs no retained references, spawned timers or registries.
 	// A floor, bridge, boat or raft over the water keeps the occupant dry, and so does ice.
-	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered())
+	if (istype(exposure_turf, /turf/floor/beach/water) && !istype(exposure_turf, /turf/floor/beach/water/ice) && !exposure_turf.iscovered() && !seabed_diving_rating())
 		cold_wetness = 1
 	else if (mob_area.location == AREA_OUTSIDE && mob_area.weather == WEATHER_WET && (findtext(mob_area.icon_state, "rain") || mob_area.icon_state == "monsoon") && !under_canopy(exposure_turf))
 		cold_wetness = min(1, cold_wetness + 0.01)
@@ -923,7 +927,7 @@
 
 	else if (nutrition < 20) //Nutrition is below 20 = starvation
 
-		var/list/hunger_phrases = list(
+		var/static/list/hunger_phrases = list(
 			"You feel weak and malnourished. You must find something to eat now!",
 			"You haven't eaten in ages, and your body feels weak! It's time to eat something.",
 			"You can barely remember the last time you had a proper, nutritional meal. Your body will shut down soon if you don't eat something!",
@@ -1044,7 +1048,7 @@
 
 	else if (water < 20) //Nutrition is below 20 = dehydration
 
-		var/list/thirst_phrases = list(
+		var/static/list/thirst_phrases = list(
 			"You feel weak and malnourished. You must find something to drink now!",
 			"You haven't drank in ages, and your body feels weak! It's time to drink something.",
 			"You can barely remember the last time you had something to drink!",
@@ -1560,15 +1564,13 @@
 		emote("scream")
 
 	var/burn_temperature = fire_burn_temperature()
-	var/thermal_protection = get_heat_protection(burn_temperature)
+	var/protected_limbs = get_heat_protection_flags(burn_temperature)
+	var/thermal_protection = get_thermal_protection(protected_limbs)
 
 	if (thermal_protection < 1 && bodytemperature < burn_temperature)
 		bodytemperature += round(BODYTEMP_HEATING_MAX*(1-thermal_protection), TRUE)
 
 	var/species_heat_mod = 1
-
-	var/protected_limbs = get_heat_protection_flags(burn_temperature)
-
 
 	if(species)
 		if(burn_temperature < species.heat_level_2)

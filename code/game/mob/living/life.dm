@@ -2,6 +2,15 @@
 /mob/living/var/next_weather_scan = 0
 /mob/living/var/cached_near_rainy_area = FALSE
 /mob/living/var/cached_rain_dist = 100
+// A player's or agent's character is held in time while its level is saved, as its input is
+// (restart_transaction.dm): Life() does not run, so hunger, thirst, the bladder and bowels,
+// breathing, bleeding, sickness and healing all wait until the level's capture finishes.
+/proc/persistence_life_frozen(mob/living/M)
+	if (!persistence_frozen_levels.len || !M || (!M.ckey && !agent_characters[M]))
+		return FALSE
+	var/turf/T = get_turf(M)
+	return (T && persistence_frozen_levels["[T.z]"]) ? TRUE : FALSE
+
 /mob/living/Life()
 
 	..()

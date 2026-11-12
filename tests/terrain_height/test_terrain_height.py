@@ -188,14 +188,19 @@ class Shading(unittest.TestCase):
 
 class Wiring(unittest.TestCase):
     def test_client_move_adds_slope_cost_for_walking_living_mobs(self):
-        hook = re.search(r'\n\t\t// Hills:.*\n\t\tif \(mob_is_living && !mob\.buckled && isturf\(mob_loc\) && isturf\(n\)\)\n'
-                         r'\t\t\tmove_delay \+= terrain_slope_delay\(mob_loc, n, move_delay - world\.time\)\n', MOVEMENT)
+        hook = re.search(r'\n\t\t// Hills:.*\n(?:\t\t//.*\n)*\t\tif \(mob_is_living && !mob\.buckled && isturf\(mob_loc\) && isturf\(n\)\)\n'
+                         r'\t\t\tif \(mob_is_human && fine_step\)\n'
+                         r'\t\t\t\tmove_delay \+= terrain_free_slope_delay\(H, n, direct, move_delay - world\.time, fine_step == FINE_STEP_HELD\)\n'
+                         r'\t\t\telse\n'
+                         r'\t\t\t\tmove_delay \+= terrain_slope_delay\(mob_loc, n, move_delay - world\.time\)\n', MOVEMENT)
         self.assertIsNotNone(hook)
         # After the intent costs, so the downhill cap sees the whole step delay.
         self.assertLess(MOVEMENT.index('if ("proning")'), hook.start())
 
     def test_client_move_applies_climb_effects_to_humans(self):
         self.assertIn('\t\t\tif (mob_is_human)\n\t\t\t\tterrain_climb_effects(H, mob_loc, n, distance_fraction)\n', MOVEMENT)
+        self.assertIn('\t\t\t\tterrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)\n', MOVEMENT)
+        self.assertIn('You lose your footing and tumble down the slope!', MODULE)
         self.assertIn('#define TERRAIN_STEEP_LEVELS 3', MODULE)
         self.assertIn('/proc/terrain_climb_effects(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)', MODULE)
         self.assertIn('var/levels = terrain_step_levels(origin, destination)', MODULE)

@@ -36,21 +36,66 @@ byte per tile). Heights are map data, not world state: they are not saved, and
 
 ## Movement
 
-`client/Move` adds `terrain_slope_delay(from, to, step_delay)` after the
-movement-intent costs, for living mobs walking between turfs (not when
-buckled). For the level difference between the two tiles, capped at 4:
+`client/Move` adds a slope term after the movement-intent costs, for living
+mobs walking between turfs (not when buckled). The step's delay is multiplied
+by `terrain_grade_factor(grade)`, where the grade is levels climbed (+) or
+descended (-) per tile, capped at 4:
 
-- uphill: +1 decisecond per level (a walking step is about 2.9);
-- downhill: -0.5 per level, never more than a quarter of the step's delay.
+- uphill: `1 + 0.4 g + 0.1 g^2` (1.5 at one level, 2.2 at two, 4.2 at four),
+  so every extra level costs more than the last; onto tamped earth the extra
+  is halved;
+- downhill: `1 / (1 + 0.45 g)`, fastest (0.55) at two levels; steeper drops are
+  picked down more carefully again (0.65 at three, 0.75 at four).
 
-Held movement rounds each step up to whole server ticks (0.4 ds), so on a walk
-one level up is about 22% slower and one level down about 22% faster.
+Tile steps (tap to step, pulling, riding and the other tile paths, plus agent
+and bicycle movement) use `terrain_slope_delay(from, to, step_delay)`: the
+level change between the two tiles, once per tile.
+
+Free slides (`terrain_free_slope_delay`) read the hill continuously:
+
+- the grade is the blended height one tile ahead of the body's exact pixel
+  position minus the height under it (`terrain_heights.sample`, bilinear
+  between tile centres), divided by 1.41 on diagonals, so the pace changes
+  smoothly as you slide across a slope instead of once per tile;
+- held slides build momentum (0-1) going downhill, +0.25 per level. Momentum
+  makes later steps up to 20% quicker, fades over about three flat tiles, pays
+  up to 60% of the extra cost of the next climb (spending 0.5 per level), and
+  is lost when you turn back or stop for more than about two steps' time. The
+  first time it is full a player reads "You gather speed down the slope.";
+- held pace is whole server ticks plus one (`human_subtile_held_pace`), which
+  used to swallow most of a gentle slope. A held slide therefore aims at
+  factor x the flat pace and carries the leftover part of a tick into the next
+  step (`terrain_pace_carry`), so over a few steps the pace follows the curve
+  exactly. Flat ground keeps exactly the flat pace.
+- no step gets faster than 0.45 x its delay.
+
+Average held pace compared with flat ground (tick 0.4 ds, walk 2.85 ds, run
+1.9 ds, no momentum):
+
+| Levels per tile | Walk before | Walk now | Run before | Run now |
+|---|---|---|---|---|
+| -2 | +29% | +82% | +20% | +82% |
+| -1 | +29% | +45% | +20% | +45% |
+| +1 | -18% | -33% | -33% | -33% |
+| +2 | -36% | -55% | -45% | -55% |
+| +3 | -44% | -68% | -57% | -68% |
+| +4 | -53% | -76% | -62% | -76% |
 
 Steep steps (3 or more levels in one tile, `TERRAIN_STEEP_LEVELS`) are felt as
 well as paid for. `terrain_climb_effects` runs for humans after the slope
 cost: scrambling up spends 0.5 stamina per level (half of that onto tamped
 earth, scaled by the share of a tile moved, never below 0), and either
 direction prints a short notice, at most one per 10 seconds per player.
+Running down a steep step can trip (`terrain_trip_check`, also called for
+agent characters): 10% per level past 2 (so 10% at three levels, 20% at four),
++10% at full momentum and +10% on an empty stamina bar, at most 50%. Walking,
+stealth, nudges and gentler steps never trip. Once the step finishes the
+runner is knocked down (`Weaken(2)`) and rolls (`terrain_tumble`): the path
+follows the steepest neighbour while each tile drops at least 2 levels (per
+tile travelled), up to 6 tiles, and the body is thrown along it, spinning,
+taking 2 brute per tile rolled. Walls, water and anything a thrown body hits
+stop the roll. With nowhere to roll the runner just falls.
+
 `terrain_step_levels(from, to)` is the shared signed, capped level change
 that both procs use; it is 0 across built ground or without a height file.
 
@@ -60,7 +105,6 @@ trench and lava) or a built wall has no slope cost, and those turfs are not
 shaded (`terrain_smoothed()`). Building or removing a floor updates the
 shading through `ChangeTurf`.
 
-Smooth (sub-tile) steps go through the same code, so they pay the same cost.
 NPC and animal movement do not use terrain height yet.
 
 ## Shading

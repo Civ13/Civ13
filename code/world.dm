@@ -597,10 +597,10 @@ var/global/persistence_reboot_due = FALSE
 			start_persistence_loop()
 
 /proc/persistence_maintenance_reboot()
-	to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart for scheduled maintenance in 5 minutes.</b></font>")
-	sleep(2400)
-	to_chat(world, "<font color='yellow' size=4><b>Attention - Saving and restarting in 1 minute. The world will resume from this save after the restart.</b></font>")
-	sleep(600)
+	// Five minutes' countdown in chat, on the Status tab and to Discord (shutdown_notice.dm).
+	if (!planned_shutdown_countdown("restart", 300, "scheduled maintenance reboot"))
+		message_admins("Scheduled maintenance reboot called off. It is tried again after the next restart.")
+		return
 	nextsave = world.realtime + 216000 // suppress the periodic save around the reboot
 	if (ticker && ticker.savemap(null, null, TRUE) && fexists("map_saves/save_complete.txt"))
 		to_chat(world, "<font color='yellow' size=4><b>Save complete. Rebooting - you can reconnect in a minute or two.</b></font>")
@@ -611,6 +611,7 @@ var/global/persistence_reboot_due = FALSE
 		// re-checks every 30s, so clearing it would re-announce "restarting in
 		// 5 minutes" and re-attempt a full save for the rest of the hour. The
 		// flag resets on the next successful reboot; until then admins decide.
+		planned_shutdown_clear()
 		message_admins("Scheduled maintenance reboot aborted: the map save did not complete. The server keeps running, but memory will not be reclaimed until it is manually saved and rebooted.")
 
 /proc/start_messaging_loop()

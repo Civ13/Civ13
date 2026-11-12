@@ -140,6 +140,11 @@ var/knowledge_failures = 0
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
 		knowledge_check(reloaded_scholar && reloaded_scholar.study_fraction("field_defenses") == 0.25, "a chapter read part-way survives reload")
+		var/list/scholar_research = reloaded_scholar ? reloaded_scholar.research_knowledge_summary() : null
+		knowledge_check(scholar_research && scholar_research["studying"]["field_defenses"] == 25 && !("field_defenses" in scholar_research["known"]) && !scholar_research["exempt"], "admin research view shows a part-way chapter as 25% read")
+		var/known_before = H ? H.known_recipe_nodes.len : -1
+		var/list/body_research = H ? H.research_knowledge_summary() : null
+		knowledge_check(body_research && (node_id in body_research["known"]) && H.known_recipe_nodes.len == known_before && H.research_knowledge_status() != "online", "admin research view lists known research of a body without a player and changes nothing")
 		var/obj/item/weapon/book/reloaded_diary
 		for (var/obj/item/weapon/book/candidate in locate(6,6,1))
 			if (candidate.has_research_chapter("basic_tools"))
@@ -284,6 +289,7 @@ var/knowledge_failures = 0
 	qdel(third)
 	qdel(again)
 	check_book_clock(journal)
+	check_era_loss()
 	check_book_fabricator()
 	check_book_material_visibility()
 	check_scholarship_travel(scholar)
@@ -695,6 +701,90 @@ var/knowledge_failures = 0
 	map.autoresearch = old_auto
 	for (var/i = 1, i <= 9, i++)
 		map.vars["age[i]_done"] = old_flags[i]
+
+// Losing an era (Val, 2026-11-12): when no book, manual, compendium or torn
+// chapter holds the current era's capstone, the world falls back one era.
+/proc/check_era_loss()
+	var/old_age = map.age
+	var/old_ordinal = map.ordinal_age
+	var/old_ready = persistence_player_restore_ready
+	persistence_player_restore_ready = TRUE
+	map.age = "1013"
+	map.ordinal_age = 2
+	era_loss_missed = 0
+	var/obj/item/weapon/book/record = new(locate(4,6,1))
+	knowledge_check(record in era_record_items, "new books join the era record list")
+	record.research_chapters = "iron_smithing"
+	var/list/kept = list(record)
+	knowledge_check(surviving_era_record_tier(kept) == 2 && !map.check_era_records(kept) && !map.check_era_records(kept) && map.ordinal_age == 2, "a book holding the era's capstone keeps the era")
+	var/obj/item/weapon/paper/research_page/torn = new(locate(4,6,1))
+	torn.node_id = "iron_smithing"
+	var/obj/item/weapon/book/node_book/manual = create_node_book(locate(4,6,1), "iron_smithing")
+	var/obj/item/weapon/book/node_compendium/compendium = new(locate(4,6,1))
+	compendium.node_ids = list("basic_tools", "iron_smithing")
+	knowledge_check(surviving_era_record_tier(list(torn)) == 2 && surviving_era_record_tier(list(manual)) == 2 && surviving_era_record_tier(list(compendium)) == 2, "torn chapters, manuals and compendiums count as records")
+	var/obj/item/weapon/book/later = new(locate(4,6,1))
+	later.research_chapters = "gunpowder"
+	knowledge_check(surviving_era_record_tier(list(later)) == 3 && !map.check_era_records(list(later)) && !map.check_era_records(list(later)) && map.ordinal_age == 2, "a later era's capstone also keeps the era")
+	var/obj/item/weapon/book/older = new(locate(4,6,1))
+	older.research_chapters = "bronze_working"
+	var/list/only_older = list(older)
+	knowledge_check(!map.check_era_records(only_older) && map.ordinal_age == 2, "one missed check never costs an era")
+	knowledge_check(!map.check_era_records(kept) && !map.check_era_records(only_older) && map.ordinal_age == 2, "finding the record again restarts the count")
+	knowledge_check(map.check_era_records(only_older) && map.ordinal_age == 1 && map.age == "313 B.C." && !map.age2_done, "two missed checks in a row cost one era")
+	knowledge_check(!map.check_era_records(only_older) && !map.check_era_records(only_older) && map.ordinal_age == 1, "an era whose capstone survives holds")
+	var/list/nothing = list()
+	map.check_era_records(nothing)
+	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 0 && map.age == "5000 B.C.", "with no records left the eras fall one at a time")
+	knowledge_check(!map.check_era_records(nothing) && !map.check_era_records(nothing) && map.ordinal_age == 0, "the Stone Age is never lost")
+	map.ordinal_age = 2
+	map.persistence = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "round maps never lose an era")
+	map.persistence = TRUE
+	map.book_research = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "worlds without book research never lose an era")
+	map.book_research = TRUE
+	persistence_player_restore_ready = FALSE
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "no era is lost before the world has finished loading")
+	persistence_player_restore_ready = TRUE
+	var/old_enabled = shard_group.enabled
+	var/old_region = shard_group.region
+	var/old_mainland = shard_group.mainland
+	var/old_peers = shard_group.peers
+	shard_group.enabled = TRUE
+	shard_group.region = "fixture_region"
+	shard_group.mainland = "fixture_mainland"
+	shard_group.peers = list("fixture_mainland" = list("state" = "DOWN", "ordinal_age" = 0))
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region holds its era while the mainland can't be reached")
+	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 2)
+	map.check_era_records(nothing)
+	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region never falls below its mainland's era")
+	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 1)
+	map.check_era_records(nothing)
+	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 1, "a region falls with its mainland")
+	shard_group.enabled = old_enabled
+	shard_group.region = old_region
+	shard_group.mainland = old_mainland
+	shard_group.peers = old_peers
+	var/obj/item/weapon/book/rewrite = new(locate(4,6,1))
+	knowledge_check(rewrite.add_research_chapter("iron_smithing") && map.ordinal_age == 2 && map.age == "1013", "writing a lost capstone down again brings its era back")
+	map.ordinal_age = 2
+	qdel(rewrite)
+	knowledge_check(!(rewrite in era_record_items), "destroyed books leave the era record list")
+	qdel(record)
+	qdel(torn)
+	qdel(manual)
+	qdel(compendium)
+	qdel(later)
+	qdel(older)
+	map.age = old_age
+	map.ordinal_age = old_ordinal
+	era_loss_missed = 0
+	persistence_player_restore_ready = old_ready
 
 // With book research a fabricator lists what its user knows, even when the
 // faction never researched it (review finding, 2026-11-10).

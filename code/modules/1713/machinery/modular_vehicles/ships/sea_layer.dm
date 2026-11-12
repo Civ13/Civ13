@@ -8,10 +8,12 @@
 // before. Continents, islands and shallows therefore wall the sea layer in,
 // and a submerged boat goes only where the ocean above is open.
 //
-// Nobody walks or swims down here: a mob may stand only where a vessel's
-// frame covers the tile, so crew stay aboard while submerged and a tunnel
-// that later reaches the sea meets a wall of water rather than flooding.
-// Loose objects that fall off a boat sink the way they do on the surface.
+// Only divers sealed in a diving suit and sea animals move through the open
+// water down here (seabed.dm). Everyone else may stand only where a vessel's
+// frame covers the tile, so a tunnel that later reaches the sea meets a wall
+// of water rather than flooding. Nobody steps straight between a boat and the
+// open sea: the submarine's lock-out hatch is the way in and out. Loose
+// objects come to rest on the seabed instead of sinking out of the world.
 //
 // The conversion runs once the startup import has settled (like the standing
 // building level), and only ever changes rock into sea, so later rounds find
@@ -28,12 +30,26 @@
 
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer
 	name = "open sea"
-	desc = "Cold, dark water under the ocean. Only a submarine can go here."
+	desc = "Cold, dark water over the seabed. Only a submarine or a diver in a sealed diving suit can go here."
+	move_delay = 3
 
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer/CanPass(atom/movable/mover)
-	if (ismob(mover) && !iscovered())
+	if (!ismob(mover))
+		return ..()
+	var/mob/M = mover
+	var/turf/from = get_turf(M)
+	var/stepping = from && from != src
+	if (iscovered())
+		// Aboard a boat; never straight in from the open sea.
+		if (stepping && sea_layer_cell(from) && !from.iscovered())
+			return FALSE
+		return ..()
+	if (!M.can_walk_seabed())
 		return FALSE
-	return ..()
+	// Never straight out of a boat either: the lock-out hatch floods first.
+	if (stepping && from.iscovered())
+		return FALSE
+	return TRUE
 
 #define SEA_LAYER_POLL (5 SECONDS)
 // Quiet time after the world is ready before the pass starts.
@@ -129,6 +145,8 @@ var/global/sea_layer_ready_at = 0 // world.time the world was first seen ready
 	sea_layer_converted = sea_layer_build(map.sea_layer_surface_z, below)
 	if (sea_layer_converted)
 		world.log << "Sea layer: [sea_layer_converted] cells of rock under the ocean opened to the sea on level [below]."
+	// Depth zones are runtime only, so they are worked out every round.
+	seabed_zone_pass(below)
 	return TRUE
 
 /proc/sea_layer_watch_loop()

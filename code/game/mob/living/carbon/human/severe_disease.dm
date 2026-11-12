@@ -104,7 +104,7 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
 	for (var/mob/living/human/H in range(2, src))
 		if (H == src || !H.disease || (H.disease_type in disease_immunity) || resists_disease(H.disease_type) || !(H.disease_type in contagious_diseases))
 			continue
-		var/chance = H.stat == DEAD ? 3 : 1
+		var/chance = (H.stat == DEAD ? 3 : 1) * disease_node_scale()
 		if (find_trait("Weak Immune System"))
 			chance *= 2
 		if (istype(wear_mask, /obj/item/clothing/mask/sterile))
@@ -119,7 +119,7 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague")
 			disease_course = 0
 			return
 	if (map && map.civilizations && hygiene < HYGIENE_LEVEL_DIRTY && !("flu" in disease_immunity) && !resists_disease("flu"))
-		if (prob(find_trait("Weak Immune System") ? 0.4 : 0.2))
+		if (prob((find_trait("Weak Immune System") ? 0.4 : 0.2) * disease_node_scale()))
 			disease = TRUE
 			disease_type = "flu"
 			disease_progression = 0

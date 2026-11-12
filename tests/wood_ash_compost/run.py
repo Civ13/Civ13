@@ -21,6 +21,7 @@ CONTROLS = {
  'replay': ('nitrary_stage = 0\n\tnitrary_plants = 0', 'nitrary_stage = 4\n\tnitrary_plants = 0', 'FAIL: batch can be drawn only once'),
  'persistence': ('key == "nitrary_last_tick" || ', '', 'FAIL: runtime clock excluded'),
 }
+CONTROLS['sealed'] = ('|| !W.is_open_container() ||', '||', 'FAIL: sealed pot cannot draw leachate')
 CONTROLS['classification'] = ('if (is_plant)', 'if (is_plant || istype(I, /obj/item/stack/ore/coal))', 'FAIL: coal does not supply wood residue')
 # Restore the historical unsafe constructor's ordinary floor claim in a generated
 # subtype only. This must fail on real occupied-destination native restoration.

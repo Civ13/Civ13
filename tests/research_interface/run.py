@@ -63,10 +63,11 @@ def main(argv=None):
         # Timed actions wait through a fixture stub; everything else is production source.
         for name in ('book_research', 'book_pages', 'book_interface', 'study_progress'):
             source = (ROOT / ('code/modules/research_tree/%s.dm' % name)).read_text()
-            if 'do_after(' not in source and name != 'book_interface':
+            if 'do_after(' not in source and 'do_reading(' not in source and name != 'book_interface':
                 print('FAIL: %s.dm has no timed action to adapt' % name)
                 return 1
             adapter = ROOT / ('%s_%s.dm' % (prefix, name))
+            # Lit reading (do_reading in study_progress.dm) waits in steps through the same stub.
             adapter.write_text(source.replace('do_after(', 'interface_wait('))
             generated.append(adapter)
             dme = dme.replace('code\\modules\\research_tree\\%s.dm' % name, adapter.name)

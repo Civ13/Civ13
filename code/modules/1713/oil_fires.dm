@@ -20,9 +20,18 @@
 
 	if (istype(O, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = O
-		if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
+		if (!istype(RG) || !RG.is_open_container() || !RG.reagents)
+			return
+		if (RG.reagents.total_volume >= RG.volume)
+			to_chat(user, "<span class='warning'>\The [RG] is full.</span>")
+			return
+		if (do_after(user, 15, src, check_for_repeats = FALSE))
+			var/free = RG.volume - RG.reagents.total_volume
+			if (free <= 0 || !RG.is_open_container())
+				to_chat(user, "<span class='warning'>\The [RG] has no room.</span>")
+				return
 			if (counter > 0)
-				RG.reagents.add_reagent("petroleum", min(RG.volume - RG.reagents.total_volume, 10))
+				RG.reagents.add_reagent("petroleum", min(free, 10))
 				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>", "<span class='notice'>You fill \the [RG] using \the [src].</span>")
 				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
 				user.setClickCooldown(20)
@@ -281,6 +290,9 @@ var/global/list/nomads_fire_callbacks = list()
 		if (OS.counter > 0)
 			OS.oil_explode()
 			OS.counter = 0
+			OS.timeout = world.time + 1800
+			OS.update_icon()
+			OS.refill()
 
 //burn floors
 	if (istype(get_turf(src), /turf/floor/grass))

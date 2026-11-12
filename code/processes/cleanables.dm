@@ -18,9 +18,10 @@
 		for (current in current_list)
 			var/obj/effect/decal/cleanable/C = current
 			if (!isDeleted(C))
-				if (!turf2cleanables[C.loc])
-					turf2cleanables[C.loc] = 0
-				++turf2cleanables[C.loc]
+				var/decal_location = C.loc
+				if (!turf2cleanables[decal_location])
+					turf2cleanables[decal_location] = 0
+				++turf2cleanables[decal_location]
 			else
 				catchBadType(C)
 				cleanables -= C

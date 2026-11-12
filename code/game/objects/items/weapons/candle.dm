@@ -30,34 +30,43 @@
 	icon_state = "candle[i][lit ? "_lit" : ""]"
 
 
+// Any open flame lights a candle: a lit candle, match, lighter, torch, tiki
+// torch, oil lamp, flare, campfire, stove or brazier (see isflamesource()).
 /obj/item/weapon/flame/candle/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	..()
-	if (istype(W, /obj/item/weapon/flame/lighter))
-		var/obj/item/weapon/flame/lighter/L = W
-		if (L.lit)
-			light()
-	else if (istype(W, /obj/item/weapon/flame/match))
-		var/obj/item/weapon/flame/match/M = W
-		if (M.lit)
-			light()
-	else if (istype(W, /obj/item/weapon/flame/candle))
-		var/obj/item/weapon/flame/candle/C = W
-		if (C.lit)
-			light()
-	else if (istype(W, /obj/item/flashlight))
-		var/obj/item/flashlight/F = W
-		if(F.on)
-			light()
+	if (!lit && isflamesource(W))
+		light_from(W, user)
+		return TRUE
+	return ..()
+
+// Holding the candle against a flame: a placed tiki torch, a campfire, a lit
+// candle on a table. Checked before the target's own attackby so a lit oven
+// or torch mount does not take the candle as an ingredient or a light.
+// The click code only calls this for things in reach or on the user.
+/obj/item/weapon/flame/candle/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
+	if (!lit && A != src && isflamesource(A))
+		light_from(A, user)
+		return TRUE
+	return ..()
+
+/obj/item/weapon/flame/candle/proc/light_from(atom/source, mob/user)
+	if (lit)
+		return FALSE
+	if (user)
+		light("<span class='notice'>\The [user] lights \the [src] from \the [source].</span>", user)
+	else
+		light()
 	update_icon()
+	return TRUE
 
-
-/obj/item/weapon/flame/candle/proc/light(var/flavor_text = "<span class='notice'>\The [usr] lights the [name].</span>")
+/obj/item/weapon/flame/candle/proc/light(var/flavor_text = "<span class='notice'>\The [usr] lights the [name].</span>", mob/user = usr)
 	if (!lit)
 		lit = TRUE
-		for (var/mob/O in viewers(usr, null))
+		var/atom/viewer_center = user ? user : src
+		for (var/mob/O in viewers(viewer_center, null))
 			O.show_message(flavor_text, TRUE)
 		set_light(CANDLE_LUM)
 		processing_objects += src
+		update_icon()
 
 
 /obj/item/weapon/flame/candle/process()

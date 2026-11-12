@@ -61,7 +61,7 @@ def main(argv=None):
         dme = re.sub(r'(?m)^#include ".*\.dmm"\s*$', '', dme)
         distribution = (ROOT / 'code/modules/research_tree/book_distribution.dm').read_text()
         distribution = distribution.replace('H.client && H.stat', 'H.stat')
-        distribution = distribution.replace('do_after(', 'distribution_wait(')
+        distribution = distribution.replace('do_after(', 'distribution_wait(').replace('do_reading(', 'distribution_wait(')
         adapter = ROOT / (prefix + '_distribution.dm')
         adapter.write_text(distribution)
         generated.append(adapter)

@@ -102,3 +102,95 @@ The fixture is the same three levels with sand ashore (x 1-20) and deep sea beyo
 - **Launch:** a wreck on the ways blocks it; the schooner slides 15 tiles to float with a sailor and a crate aboard, the berth is sand again, her wheel and masts stand; she makes half ahead at best and sails without fuel.
 - **Freighter:** a 132-tile berth reaching into the water; afloat she has 82 hold and engine room tiles in two compartments, the bunker in the engine room, paired ladders, and stays put with dry bunkers.
 - **Dry dock:** a schooner built in a dug trench is refused until the trench is flooded, then floats out; abandoning a project clears the berth.
+
+## Craft core (`craft_probe.dm`)
+
+The shared craft core (`code/modules/craft/`, `docs/craft-core.md`): a craft
+with a template body around a `datum/vessel`, its move and turn hooks, drives,
+the crew register, berths and tickets, crafts carried on crafts, charts and
+plane pools, and steered charts: burns, coasting, the speed limit, stop
+orders, a course that arrives and stops, the chart edge, hazard countdowns and
+interference, a craft's drives pushing her token, and the helm console saving
+and restoring its token.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+
+## Ship's papers (`papers_probe.dm`)
+
+The crew register at the wheel (`code/modules/naval/ship_papers.dm`): an
+unregistered ship answers to anyone, registering, owners and listed crew at
+the wheel, a stranger chained out or forcing the wheel while an owner is
+about, the levers and radar, joining, barring, giving the ship up, and the
+papers saved and restored by the wheel.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
+
+## Player-built hulls (`built_hull_probe.dm`)
+
+Floors laid over water commissioned at a tiller (`code/modules/craft/built_body.dm`,
+`code/modules/craft/under_way.dm`, `code/modules/naval/built_hull.dm`): what is
+and is not a hull, the one-tile gliding step (`code/modules/craft/glide.dm`)
+with planks, cargo and crew, the water level handed
+from tile to tile, obstacles, the marked path, coming about around the tiller,
+refitting, papers, the hull saved and found again by the tiller, sails that
+give half ahead, engines that give full ahead and burn from their tank at
+every hop, and wiring that stays joined aboard while a cable to the shore
+parts.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
+
+## Sea chart and harbours (`chart_probe.dm`)
+
+The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):
+hails and running dark (`craft_signals.dm`), grappling and boarding lines
+(`craft_grapple.dm`), weather, fog and night at the lookout (`sea_weather.dm`),
+chart squares, tokens that follow real ships and posts, the chart read at a
+helm with lookout range and a ship running dark, a berth asked for and
+refused (too far, not welcome, promised, taken, foul), the marked slide
+alongside for a built hull and a slipway ship, mooring, casting off by
+sailing, guests, and what leaves the chart.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/chart_probe.dm 300
+
+## Vehicles aboard (`ferry_probe.dm`)
+
+A modular car on a built hull (`code/modules/craft/vehicle_aboard.dm`): a hop
+carries every part, a turn of the ship leaves the car exactly as a turn of its
+own would (compared part by part with a car ashore), it still drives and
+steers afterwards, and a car parked half aboard holds the ship until it is
+gone.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ferry_probe.dm 300
+
+## Freight contracts (`freight_probe.dm`)
+
+A crate offered at one mooring post for another with a reward
+(`code/modules/naval/freight.dm`, `code/modules/craft/contract.dm`): who may
+offer, the post taking in crate and reward, a registered crew taking it, the
+hand-in and payment at the destination, a broken seal, a lost crate written
+off, a withdrawn offer, a crate finding its contract after a load, a full
+board and a destroyed post. No client connects, so the post's menus are not
+exercised.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
+
+## The open sea (`open_sea_probe.dm`)
+
+An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
+`open_sea_chart.dm`) on a fixture of six 40-tile cells: cell geometry, tide
+races nobody swims, the home island raised once, the cell pool (free means no
+site, no ship and nobody there), the chart's sites saved as one text, a hull
+that puts to sea, makes passage, raises an island and anchors off it, the
+island staying while someone is ashore or a mooring post stands and sinking
+when its count runs out, the same island rising the same, a wreck with her
+hold, the site cap and the admin pause, standing off when no water is free,
+ships in different waters not sighting each other, a passage saved by the
+tiller and resumed, the way home, and the harbour office (`sea_office.dm`): its
+board on the home island, a survey and a salvage contract taken, done,
+paid and saved, a contract given up, and two ships meeting at sea and
+parting company.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/open_sea_probe.dm 300
+
+`python3 tools/open_sea/make_map.py --check` confirms `maps/sea/open_sea.dmm`
+matches the cell size in `code/__defines/naval.dm`.
