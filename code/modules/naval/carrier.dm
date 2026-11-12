@@ -318,12 +318,15 @@
 /obj/structure/vessel_helm/attack_hand(mob/living/human/H)
 	if (!istype(H) || !vessel)
 		return ..()
-	var/list/options = list("Chart", "Ship's papers", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
+	var/list/options = list("Chart", "Ship's papers", "Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", vessel.anchored ? "Weigh anchor" : "Drop anchor", vessel.deck_lights_on ? "Deck lights off" : "Deck lights on", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !vessel || get_dist(H, src) > 1)
 		return
 	if (choice == "Chart")
 		to_chat(H, vessel.chart_text())
+		var/datum/craft/charted = ship_craft()
+		if (charted)
+			to_chat(H, charted.sea_chart_text())
 		return
 	if (choice == "Ship's papers")
 		papers(H)
@@ -336,6 +339,11 @@
 		if (CRAFT_HELM_FORCE)
 			if (!force_wheel(H))
 				return
+	if (choice == "Make for a berth")
+		var/datum/craft/docking = ship_craft()
+		if (docking)
+			docking.dock_menu(H, src)
+		return
 	if ((choice in list("Full ahead", "Half ahead", "Slow ahead")) && vessel.fuel < vessel.fuel_burn(VESSEL_SPEED_SLOW))
 		to_chat(H, SPAN_WARNING("The bunkers are dry: pour fuel oil into the bunker filling point below decks first."))
 		return
