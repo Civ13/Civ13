@@ -342,7 +342,7 @@ var/global/list/ship_axes = list()
 	if (!B)
 		to_chat(user, SPAN_WARNING("The station is not fitted to a submarine."))
 		return
-	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts")
+	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts", "Air")
 	if (B.submerged)
 		options += (user in B.periscope_watchers) ? "Lower periscope" : "Raise periscope"
 	options += "Cancel"
@@ -356,6 +356,8 @@ var/global/list/ship_axes = list()
 			B.order_depth(user, FALSE)
 		if ("Contacts")
 			B.report_contacts(user)
+		if ("Air")
+			to_chat(user, SPAN_NOTICE(B.air_report()))
 		if ("Raise periscope")
 			B.raise_periscope(user, src)
 		if ("Lower periscope")

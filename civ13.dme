@@ -1070,6 +1070,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\ships\frame_parts.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\movement.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\sea_layer.dm"
+#include "code\modules\1713\machinery\modular_vehicles\ships\submarine_air.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\seabed.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\submarine.dm"
 #include "code\modules\1713\machinery\modular_vehicles\ships\wheels.dm"

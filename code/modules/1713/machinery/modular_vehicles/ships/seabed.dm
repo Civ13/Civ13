@@ -31,6 +31,7 @@
 #define SEABED_LOCKOUT_TIME (5 SECONDS)
 #define SEABED_ASCENT_TIME (15 SECONDS)
 #define SEABED_REFILL_TIME (3 SECONDS)
+#define SEABED_HAND_PUMP_TIME (20 SECONDS)
 
 var/global/seabed_zones_ready = FALSE
 // Cells of each zone after the last pass, for admins and tests.
@@ -129,8 +130,12 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 
 // ---- The water ----
 
+// Aboard a submarine the crew breathe its hull air (submarine_air.dm).
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer/outside_air_breathable()
-	return iscovered()
+	if (!iscovered())
+		return FALSE
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = submarine_at(src)
+	return B ? B.air_breathable() : TRUE
 
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer/outside_ambient_c()
 	if (iscovered())
@@ -236,23 +241,26 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	name = "diving air bottle"
 	desc = "Compressed air for a diving helmet. Wear it on your back. Refill it at a submarine's ballast station, a habitat module's core or a landed lander."
 
-// The boat's compressor tops bottles up at the ballast station.
+// The ballast station fills bottles from the boat's air bank.
 /obj/structure/vehicleparts/sub_station/attackby(obj/item/W, mob/user)
 	if (!istype(W, /obj/item/pressure_tank))
 		return ..()
 	var/obj/item/pressure_tank/A = W
-	if (!boat())
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	if (!B)
 		to_chat(user, SPAN_WARNING("The station is not fitted to a submarine."))
 		return
-	var/full = initial(A.air_seconds)
-	if (A.air_seconds >= full)
+	if (A.refill_need() <= 0)
 		to_chat(user, SPAN_NOTICE("\The [A] is already full."))
 		return
-	to_chat(user, SPAN_NOTICE("You couple \the [A] to the boat's compressor..."))
-	if (!do_after(user, SEABED_REFILL_TIME, src) || QDELETED(A))
+	if (B.air_bank <= 0)
+		to_chat(user, SPAN_WARNING("The air bank is empty. Surface to recharge it."))
 		return
-	A.air_seconds = full
-	to_chat(user, SPAN_NOTICE("\The [A] is full."))
+	to_chat(user, SPAN_NOTICE("You couple \the [A] to the air bank..."))
+	if (!do_after(user, SEABED_REFILL_TIME, src) || QDELETED(A) || QDELETED(B))
+		return
+	A.refill(B.bank_oxygen(A.refill_need()))
+	to_chat(user, SPAN_NOTICE("\The [A] now holds about [round(A.air_seconds / 60)] minute\s of air."))
 
 // ---- The lock-out hatch ----
 
@@ -314,16 +322,24 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	to_chat(user, SPAN_NOTICE("The outer hatch swings open and you step out onto the seabed."))
 	return TRUE
 
-// Lets a diver in from the seabed and pumps the chamber dry.
+// Lets a diver in from the seabed and blows the chamber dry with bank air,
+// or pumps it out by hand when the bank is short.
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/lock_in(mob/living/human/user)
-	to_chat(user, SPAN_NOTICE("You open the outer hatch and climb into the lock-out chamber..."))
-	if (!do_after(user, SEABED_LOCKOUT_TIME, src))
-		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	var/blow = B && B.air_bank >= SUB_AIR_LOCKIN_COST
+	if (blow)
+		to_chat(user, SPAN_NOTICE("You open the outer hatch and climb into the lock-out chamber..."))
+	else
+		to_chat(user, SPAN_WARNING("You climb into the lock-out chamber. The air bank is empty, so you work the hand pump..."))
+	if (!do_after(user, blow ? SEABED_LOCKOUT_TIME : SEABED_HAND_PUMP_TIME, src))
+		return FALSE
+	B = boat()
 	if (QDELETED(src) || !B || !B.submerged || !Adjacent(user))
 		return FALSE
+	if (blow)
+		B.blow_chamber()
 	user.forceMove(get_turf(src))
-	to_chat(user, SPAN_NOTICE("The chamber pumps dry and you climb back aboard."))
+	to_chat(user, SPAN_NOTICE("The chamber [blow ? "blows" : "pumps"] dry and you climb back aboard."))
 	return TRUE
 
 #undef SEA_ZONE_SHELF_MAX
@@ -333,3 +349,4 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 #undef SEABED_LOCKOUT_TIME
 #undef SEABED_ASCENT_TIME
 #undef SEABED_REFILL_TIME
+#undef SEABED_HAND_PUMP_TIME
