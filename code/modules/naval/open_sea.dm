@@ -3,7 +3,8 @@
 // ------------------------------------------------------------
 // An open-sea region (shard kind OCEANIC, maps/sea/open_sea.dmm) is one wide
 // level of deep salt water cut into square cells by tide races nothing can
-// cross. One cell is the home waters, with the island new arrivals land on.
+// cross. A block of cells in the middle, with no race between them, is the
+// home waters, with the island new arrivals land on.
 // The others are a pool (craft/plane_pool.dm): a ship making passage on the
 // open sea chart lies alone in one, and an island or a wreck she reaches is
 // built in another when she arrives and taken away again some time after the
@@ -18,6 +19,7 @@
 
 var/global/sea_cell_pitch = SEA_CELL_PITCH
 var/global/sea_cell_margin = SEA_CELL_MARGIN
+var/global/sea_home_span = SEA_HOME_SPAN
 
 // TRUE on an open-sea world (the map, not the shard kind, so fixtures work).
 /proc/open_sea_world()
@@ -60,13 +62,43 @@ var/global/sea_cell_margin = SEA_CELL_MARGIN
 /proc/sea_cells_across()
 	return round(world.maxx / sea_cell_pitch)
 
-/proc/sea_cell_count()
-	return sea_cells_across() * round(world.maxy / sea_cell_pitch)
+/proc/sea_cells_down()
+	return round(world.maxy / sea_cell_pitch)
 
-// The whole square of cell n, tide race and all: list(x1, y1, x2, y2).
+/proc/sea_cell_count()
+	return sea_cells_across() * sea_cells_down()
+
+// The block of cells that is the home waters, as columns and rows from 0:
+// list(c1, r1, c2, r2). SEA_HOME_SPAN cells on a side round the middle cell,
+// as far as the grid goes.
+/proc/sea_home_block()
+	var/across = sea_cells_across()
+	var/down = sea_cells_down()
+	var/reach = round((max(1, sea_home_span) - 1) / 2)
+	var/column = round(across / 2)
+	var/row = round(down / 2)
+	return list(max(0, column - reach), max(0, row - reach), min(across - 1, column + reach), min(down - 1, row + reach))
+
+// TRUE when cell n is part of the home waters.
+/proc/sea_cell_is_home(n)
+	if (!isnum(n) || n < 1 || n > sea_cell_count())
+		return FALSE
+	var/list/H = sea_home_block()
+	var/column = (n - 1) % sea_cells_across()
+	var/row = round((n - 1) / sea_cells_across())
+	return column >= H[1] && column <= H[3] && row >= H[2] && row <= H[4]
+
+// The whole square of cell n, tide race and all: list(x1, y1, x2, y2). The
+// home waters are one cell, numbered as their middle; the other cells of
+// their block have no square of their own.
 /proc/sea_cell_outer(n)
 	if (!isnum(n) || n < 1 || n > sea_cell_count())
 		return null
+	if (sea_cell_is_home(n))
+		if (n != sea_home_cell())
+			return null
+		var/list/H = sea_home_block()
+		return list(H[1] * sea_cell_pitch + 1, H[2] * sea_cell_pitch + 1, (H[3] + 1) * sea_cell_pitch, (H[4] + 1) * sea_cell_pitch)
 	var/column = (n - 1) % sea_cells_across()
 	var/row = round((n - 1) / sea_cells_across())
 	return list(column * sea_cell_pitch + 1, row * sea_cell_pitch + 1, (column + 1) * sea_cell_pitch, (row + 1) * sea_cell_pitch)
@@ -84,8 +116,11 @@ var/global/sea_cell_margin = SEA_CELL_MARGIN
 		return 0
 	var/column = round((T.x - 1) / sea_cell_pitch)
 	var/row = round((T.y - 1) / sea_cell_pitch)
-	if (column >= sea_cells_across() || row >= round(world.maxy / sea_cell_pitch))
+	if (column >= sea_cells_across() || row >= sea_cells_down())
 		return 0
+	var/list/H = sea_home_block()
+	if (column >= H[1] && column <= H[3] && row >= H[2] && row <= H[4])
+		return sea_home_cell()
 	return row * sea_cells_across() + column + 1
 
 /proc/sea_cell_centre(n)
@@ -95,15 +130,20 @@ var/global/sea_cell_margin = SEA_CELL_MARGIN
 // The cell of the home waters: the middle of the grid.
 /proc/sea_home_cell()
 	var/across = sea_cells_across()
-	var/down = round(world.maxy / sea_cell_pitch)
-	return round(down / 2) * across + round(across / 2) + 1
+	return round(sea_cells_down() / 2) * across + round(across / 2) + 1
 
 // TRUE when the tile is part of a tide race (or off the grid).
 /proc/sea_tide_race_at(x, y)
 	var/px = (x - 1) % sea_cell_pitch
 	var/py = (y - 1) % sea_cell_pitch
-	if (x > sea_cells_across() * sea_cell_pitch || y > round(world.maxy / sea_cell_pitch) * sea_cell_pitch)
+	if (x < 1 || y < 1 || x > sea_cells_across() * sea_cell_pitch || y > sea_cells_down() * sea_cell_pitch)
 		return TRUE
+	// Inside the home waters only the rim of the whole block is a race.
+	var/list/H = sea_home_block()
+	var/column = round((x - 1) / sea_cell_pitch)
+	var/row = round((y - 1) / sea_cell_pitch)
+	if (column >= H[1] && column <= H[3] && row >= H[2] && row <= H[4])
+		return x <= H[1] * sea_cell_pitch + sea_cell_margin || y <= H[2] * sea_cell_pitch + sea_cell_margin || x > (H[3] + 1) * sea_cell_pitch - sea_cell_margin || y > (H[4] + 1) * sea_cell_pitch - sea_cell_margin
 	return px < sea_cell_margin || py < sea_cell_margin || px >= sea_cell_pitch - sea_cell_margin || py >= sea_cell_pitch - sea_cell_margin
 
 // Lays the tide races of the sea level. The compiled map already has them;
@@ -196,9 +236,8 @@ var/global/obj/structure/sea_registry/sea_registry = null
 
 /datum/plane_pool/sea/all_planes()
 	. = list()
-	var/home = sea_home_cell()
 	for (var/n = 1, n <= sea_cell_count(), n++)
-		if (n != home)
+		if (!sea_cell_is_home(n))
 			. += n
 
 // Who holds cell n: "site:<id>" for a loaded site, "ship" or "people" for a

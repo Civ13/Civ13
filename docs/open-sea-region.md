@@ -7,13 +7,20 @@ This page is how to run one. Nothing here starts or changes a live server.
 
 ## The map
 
-`maps/sea/open_sea.dmm` is 400 x 400 on two levels: rock under one level of
-deep salt water, cut into 16 sea cells of 100 tiles by tide races. It holds no
-land. The game raises the home island in the middle cell the first time the
-world boots; after that the island is part of the save like any other terrain.
+`maps/sea/open_sea.dmm` is 500 x 500 on two levels: rock under one level of
+deep salt water, cut into sea cells of 100 tiles by tide races. The middle
+three by three cells have no race between them: they are the home waters, 286
+tiles of water on a side. The 16 cells round them are the pool.
 
-The map is written by a script, because the cell size lives in
-`code/__defines/naval.dm` (`SEA_CELL_PITCH`, `SEA_CELL_MARGIN`):
+The home island is drawn into the map in the middle of the home waters: about
+200 tiles across and 31,000 tiles of land, with woods, ponds, outcrops of rock
+to mine, flocks of turkeys, the harbour office board and a clearing in the
+middle where arrivals land.
+
+The map is written by a script, which also draws the island (the same one
+every time), because the cell size lives in
+`code/__defines/naval.dm` (`SEA_CELL_PITCH`, `SEA_CELL_MARGIN`, and
+`SEA_HOME_SPAN`, the number of cells on a side of the home waters):
 
 ```sh
 python3 tools/open_sea/make_map.py            # rewrite the map after changing the cell size
@@ -61,7 +68,7 @@ makes it a harbour that stays; four sites can be harbours at once.
 
 ## Limits
 
-- 15 cells serve everything outside the home waters: ships at sea, and up to 8
+- 16 cells serve everything outside the home waters: ships at sea, and up to 8
   loaded sites. When none is free a ship cannot put to sea or stands off the
   place she reached until one is.
 - Only hulls built at a tiller make passage. Slipway ships, the carrier and

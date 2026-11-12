@@ -43,6 +43,7 @@ var/naval_runtime_error = FALSE
 /proc/naval_fixture()
 	sea_cell_pitch = 40
 	sea_cell_margin = 3
+	sea_home_span = 1
 	for (var/x = 1, x <= world.maxx, x++)
 		for (var/y = 1, y <= world.maxy, y++)
 			var/turf/R = locate(x, y, 1)
@@ -106,6 +107,13 @@ var/naval_runtime_error = FALSE
 	var/list/first = sea_cell_box(1)
 	naval_check(first[1] == 4 && first[2] == 4 && first[3] == 37 && first[4] == 37 && isnull(sea_cell_box(7)), "a cell's water lies inside its tide race ([first[1]],[first[2]] to [first[3]],[first[4]])")
 	naval_check(sea_cell_of(locate(45, 45, 2)) == 5 && sea_cell_of(locate(45, 45, 1)) == 5 && sea_cell_of(locate(1, 1, 2)) == 1 && sea_cell_of(locate(120, 80, 2)) == 6 && !sea_cell_of(locate(45, 45, 3)), "a tile knows its cell, on the sea and under it")
+	// The home waters can be a block of cells with no race inside it.
+	sea_home_span = 3
+	var/list/wide = sea_cell_box(5)
+	naval_check(sea_cell_of(locate(1, 1, 2)) == 5 && sea_cell_of(locate(120, 80, 2)) == 5 && sea_cell_is_home(1) && isnull(sea_cell_box(1)) && wide[1] == 4 && wide[2] == 4 && wide[3] == 117 && wide[4] == 77, "three cells wide, the home waters are the whole of this little sea ([wide[1]],[wide[2]] to [wide[3]],[wide[4]])")
+	naval_check(!sea_tide_race_at(40, 20) && !sea_tide_race_at(60, 40) && sea_tide_race_at(1, 1) && sea_tide_race_at(118, 40) && sea_tide_race_at(60, 78) && !length(sea_pool().all_planes()), "with a race only round their rim and no cell left for the pool")
+	sea_home_span = 1
+	naval_check(sea_cell_of(locate(1, 1, 2)) == 1 && sea_tide_race_at(40, 20) && !sea_cell_is_home(1) && sea_cell_is_home(5), "one cell wide, they are the middle cell again")
 	naval_check(open_sea_prepare(), "the world is prepared")
 	var/turf/race = locate(40, 20, 2)
 	var/turf/open = locate(20, 20, 2)

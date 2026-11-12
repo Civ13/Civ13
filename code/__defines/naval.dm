@@ -44,6 +44,7 @@
 // the ticks a site nobody is at stays loaded.
 #define SEA_CELL_PITCH 100
 #define SEA_CELL_MARGIN 7
+#define SEA_HOME_SPAN 3 // The home waters are this many cells on a side, with no tide race between them.
 #define SEA_SITE_CAP 8
 #define SEA_KEPT_CAP 4
 #define SEA_SITE_LINGER 6000
