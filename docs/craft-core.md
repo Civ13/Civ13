@@ -166,6 +166,15 @@ ship". A dark craft makes slow ahead at most (`craft.max_speed()`,
 (`body.dark_changed()`). New craft kinds get both from the base; a helm only
 needs `hail_menu()` and `dark_menu()` entries.
 
+## Vehicles aboard
+
+`craft/vehicle_aboard.dm`: a modular vehicle whose every frame stands on a
+craft's tiles rides with her as cargo. Its axis and wheels sit inside frames,
+so `frame/craft_turned()` turns the axis heading and wheels when the craft
+turns; the result equals `axis.do_matrix()`. `craft_overhang(turfs)` finds a
+vehicle with frames both on and off the craft, and both move planners
+(`built.plan()`, `vessel.plan_move()`) refuse while one stands half aboard.
+
 ## Weather and murk at sea
 
 `naval/sea_weather.dm`: `sea_murk_at(turf)` is what the area's weather takes

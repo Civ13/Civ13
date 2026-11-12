@@ -255,6 +255,12 @@ var/global/list/naval_vessels = list()
 // or null for a cell the ship did not cover). Cells in old_cells are the
 // ship's own and need no terrain check. Returns FALSE with last_refusal set.
 /datum/vessel/proc/plan_move(x, y, heading, list/old_cells, list/dest_turfs, list/dest_source)
+	// A vehicle half on her deck would be torn in two (craft/vehicle_aboard.dm).
+	if (placed && length(old_cells))
+		var/overhang = craft_overhang_refusal(old_cells)
+		if (overhang)
+			last_refusal = overhang
+			return FALSE
 	for (var/datum/vessel_level/L in levels)
 		for (var/v = 0, v < beam, v++)
 			for (var/u = 0, u < length, u++)
