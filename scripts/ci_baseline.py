@@ -981,6 +981,11 @@ SUITES = {
             'code/modules/1713/modern_telecom.dm',
             'tests/save_movement/source_adapter.py')},
 
+    # Bone armor stays craftable in every era with its stone-age protection; source checks only.
+    'bone_armor': {'files': ('tests/bone_armor/test_bone_armor.py',),
+        'paths': ('tests/bone_armor/',), 'shared_paths': (
+            'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
+
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
@@ -1694,6 +1699,9 @@ SUITES = {
         'paths': ('tests/barbwire_crossing/', 'code/modules/1713/barbwire.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},    'hay': {'files': ('tests/hay/test_hay.py',),
         'paths': ('tests/hay/', 'code/modules/1713/hay.dm', 'icons/obj/hay.dmi')},
+    'wild_herbs': {'files': ('tests/wild_herbs/test_wild_herbs.py',),
+        'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
+                  'icons/obj/food/food.dmi')},
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
