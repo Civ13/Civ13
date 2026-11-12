@@ -24,7 +24,21 @@
 /proc/cutting_board_food_is_safe(obj/item/weapon/reagent_containers/food/snacks/food)
 	return istype(food) && !QDELETED(food) && cutting_board_recipe(food.type) && !food.rotten && food.decay > 0 && food.decaytimer < food.decay && (!food.rots || food.decaytimer < food.decay / 2) && food.reagents && food.reagents.total_volume <= 50 && !food.contents.len && cutting_board_reagents_can_split(food)
 
-/proc/cutting_board_transfer_food(obj/item/weapon/reagent_containers/food/snacks/food, obj/item/weapon/reagent_containers/food/snacks/output, remaining)
+// Bites left in a snack: mood and radiation apply once per bite, so they scale with this.
+/proc/cutting_board_bites_left(obj/item/weapon/reagent_containers/food/snacks/food)
+	food.recalculate_bitesize()
+	if (!food.bitesize || food.bitesize <= 0)
+		return max(1, food.biteamount)
+	return max(1, ceil(food.reagents.total_volume / food.bitesize))
+
+// Per-bite mood and radiation still left in the paid food, before any of it is moved.
+/proc/cutting_board_food_effects(obj/item/weapon/reagent_containers/food/snacks/food)
+	var/bites = cutting_board_bites_left(food)
+	var/satisfaction_total = ceil(food.satisfaction / max(1, food.biteamount)) * bites
+	var/radiation = food.radiation * bites
+	return list("satisfaction" = satisfaction_total, "radiation" = radiation)
+
+/proc/cutting_board_transfer_food(obj/item/weapon/reagent_containers/food/snacks/food, obj/item/weapon/reagent_containers/food/snacks/output, remaining, list/effects = null, count = 1)
 	output.reagents.clear_reagents()
 	food.reagents.trans_to_holder(output.reagents, food.reagents.total_volume / remaining)
 	if (food.salted_meat)
@@ -35,8 +49,18 @@
 	output.boiled = food.boiled
 	output.disgusting = food.disgusting
 	output.non_vegetarian = food.non_vegetarian
-	output.radiation = food.radiation
-	output.satisfaction = min(output.satisfaction, food.satisfaction)
+	if (!effects)
+		effects = cutting_board_food_effects(food)
+	// Split what eating the input would have done across the outputs instead of copying it
+	// to each one; a pleasant input still cannot make an output nicer than its own default.
+	output.biteamount = null
+	output.recalculate_bitesize()
+	var/out_bites = max(1, output.biteamount)
+	var/mood_share = effects["satisfaction"] / max(1, count)
+	output.satisfaction = min(output.satisfaction, mood_share)
+	if (mood_share < 0)
+		output.satisfaction = mood_share
+	output.radiation = effects["radiation"] / max(1, count) / out_bites
 	if (output.rots && output.decaytimer >= output.decay / 2)
 		output.rot()
 
@@ -122,9 +146,10 @@
 		paid_input.forceMove(null)
 		icon_state = "cutting_board_dirty"
 		var/output_type = recipe["output"]
+		var/list/effects = cutting_board_food_effects(paid_input)
 		for (var/i = 1, i <= recipe["count"], i++)
 			var/obj/item/weapon/reagent_containers/food/snacks/output = new output_type(site)
-			cutting_board_transfer_food(paid_input, output, recipe["count"] - i + 1)
+			cutting_board_transfer_food(paid_input, output, recipe["count"] - i + 1, effects, recipe["count"])
 		qdel(paid_input)
 		return
 	if (input || !user.canUnEquip(W))
