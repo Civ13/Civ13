@@ -41,15 +41,15 @@
 			return
 
 
-	var/T = side_effects[name]
-	if (!T)
-		return
-
-	var/datum/medical_effect/M = new T
-	if (M.name == name)
-		M.strength = strength
-		M.start = life_tick
-		side_effects += M
+	// side_effects holds active effects only; find the effect type by name.
+	for (var/T in typesof(/datum/medical_effect) - /datum/medical_effect)
+		var/datum/medical_effect/E = T
+		if (initial(E.name) == name)
+			var/datum/medical_effect/M = new T
+			M.strength = strength
+			M.start = life_tick
+			side_effects += M
+			return
 
 /mob/living/human/proc/handle_medical_side_effects()
 	//Going to handle those things only every few ticks.

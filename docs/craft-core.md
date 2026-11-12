@@ -166,6 +166,17 @@ ship". A dark craft makes slow ahead at most (`craft.max_speed()`,
 (`body.dark_changed()`). New craft kinds get both from the base; a helm only
 needs `hail_menu()` and `dark_menu()` entries.
 
+## Weather and murk at sea
+
+`naval/sea_weather.dm`: `sea_murk_at(turf)` is what the area's weather takes
+off a lookout there (wet 10, smog 20, extreme 25 tiles) plus the
+`interference` of any `/datum/chart_hazard` the level's sea chart holds over
+that square (in tiles on a sea chart). `craft.lookout_range()` is her range
+where she lies; `craft.sights(other)` uses the worse murk of the two places,
+and by night caps a ship running dark at `SEA_DARK_NIGHT_RANGE`. The sea
+chart and hails go through `sights()`; radar does not. To add a fog bank or
+a squall, put a hazard in `sea_chart(z).hazards`.
+
 ## Grappling and boarding
 
 `naval/craft_grapple.dm`: `craft.order_grapple(other)` links two crafts with a

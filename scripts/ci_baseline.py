@@ -138,6 +138,8 @@ SUITES = {
         'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
     'conveyor_sync': {'files': ('tests/conveyor_sync/test_sync.py',),
         'paths': ('tests/conveyor_sync/', 'code/modules/1713/machinery/conveyor2.dm', 'code/modules/1713/hydroponics.dm')},
+    'medical_side_effects': {'files': ('tests/medical_side_effects/test_registration.py',),
+        'paths': ('tests/medical_side_effects/', 'code/game/mob/living/carbon/human/MedicalSideEffects.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
