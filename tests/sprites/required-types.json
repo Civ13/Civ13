@@ -103,5 +103,9 @@
   "/obj/structure/degaussing_coil",
   "/obj/structure/wiping_station",
   "/obj/structure/mine_sweep/magnetic",
-  "/obj/structure/mine_sweep/oropesa"
+  "/obj/structure/mine_sweep/oropesa",
+  "/obj/structure/torpedo_tube",
+  "/obj/item/naval_torpedo",
+  "/obj/item/naval_torpedo/magnetic",
+  "/obj/structure/naval_mine/torpedo"
 ]
