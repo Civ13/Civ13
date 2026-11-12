@@ -1026,7 +1026,7 @@
 	ripable = FALSE
 	flags = CONDUCT
 	slots = 2
-	slowdown = 0.1
+	slowdown = 0.25
 	weight = 5.9
 
 /obj/item/clothing/accessory/armor/coldwar/flakjacket // Google searches only reveal M-1965 Field Jacket's being normal american jackets, replace eventually please.

@@ -9,6 +9,11 @@
 				return FALSE
 
 /obj/item/clothing/attackby(var/obj/item/I, var/mob/user)
+	// Capes and grease rubbing are in rain_gear.dm.
+	if (try_fasten_cape(I, user))
+		return
+	if (try_waterproof(I, user))
+		return
 	if (istype(I, /obj/item/clothing/accessory))
 
 		if (!valid_accessory_slots || !valid_accessory_slots.len)
@@ -114,6 +119,7 @@
 
 /obj/item/clothing/examine(var/mob/user)
 	..(user)
+	examine_rain_gear(user)
 	if (accessories.len)
 		for (var/obj/item/clothing/accessory/A in accessories)
 			to_chat(user, "\A [A] is attached to it.")
