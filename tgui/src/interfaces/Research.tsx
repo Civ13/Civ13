@@ -240,6 +240,7 @@ export function Research(ui: ScreenProps) {
         return !!next.length && <><h3>Leads to</h3><p>{next.map(node => <button type="button" key={node.id} className="rs-link rs-lead" onClick={() => open(String(node.id))}>{text(node.name)}</button>)}</p></>;
       })()}
       <h3>Unlocks {list(detail.recipe_names).length} recipes</h3>{list(detail.recipe_names).length ? <RecipeTags names={detail.recipe_names} /> : 'None yet'}
+      {!!detail.effect && <><h3>Knowing it</h3><p>{text(detail.effect)}</p></>}
       {!book && <div>{!!detail.assignable && <Action ui={ui} action="assign" value={detail.id}>Assign this bench</Action>}{!!detail.can_write_notes && <Action ui={ui} action="write_notes" value={detail.id}>Write Research Notes (quick, boosts a buyer)</Action>}{!!detail.can_write_book && <Action ui={ui} action="write_book" value={detail.id}>Write Research Book (slow, completes for a buyer)</Action>}{!!detail.queueable && <Action ui={ui} action="queue" value={detail.id}>Add to research queue</Action>}</div>}
     </section></div>}
   </>;

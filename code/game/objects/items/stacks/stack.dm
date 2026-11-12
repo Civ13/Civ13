@@ -1934,6 +1934,9 @@
 			var/obj/covers/floor = O
 			floor.building_finish_floor()
 
+		// Alloys: a smith who knows it forges longer-lasting metal (node_effects.dm).
+		apply_crafting_node_effects(user, O)
+
 		if(istype(O, /obj/structure/cannon/modern/tank))
 			var/obj/structure/cannon/modern/tank/T = O
 			T.caliber = inpt

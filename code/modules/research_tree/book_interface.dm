@@ -492,7 +492,8 @@
 			"groundwork" = node_groundwork_rows(H, N),
 			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk)),
 			"read_percent" = state == "study" ? H.study_percent(node_id) : 0,
-			"recipe_names" = get_node_recipe_names(node_id))
+			"recipe_names" = get_node_recipe_names(node_id),
+			"effect" = research_node_effect_text(node_id))
 		if (state == "study")
 			tutor_cache = H.find_tutor(node_id)
 			if (tutor_cache)

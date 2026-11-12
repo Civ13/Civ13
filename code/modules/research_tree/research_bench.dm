@@ -562,6 +562,7 @@ var/global/list/research_benches = list()
 			"prereq_ids" = jointext(prereq_ids, ","),
 			"prereq_names" = prereq_names.len ? jointext(prereq_names, ", ") : "None",
 			"recipe_names" = get_node_recipe_names(node_id),
+			"effect" = research_node_effect_text(node_id),
 			"status_text" = status_text,
 			"status_class" = status_class,
 			"detail" = detail,
