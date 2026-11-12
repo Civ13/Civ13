@@ -248,6 +248,9 @@
 /obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
 	if(istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/container = W
+		if(!container.is_open_container())
+			to_chat(H, SPAN_WARNING("Open \the [container] first."))
+			return
 		if(load_gelatin(container))
 			to_chat(H, SPAN_NOTICE("You spread gelatin on the rack to dry."))
 		else
@@ -271,7 +274,7 @@
 				qdel(W)
 				dry_obj(producttype)
 				return
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		if (is_dryable_sausage(W))
 			max_capacity = 5
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
@@ -301,7 +304,7 @@
 				qdel(W)
 				dry_obj(producttype)
 				return
-		if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		if (is_dryable_sausage(W))
 			max_capacity = 5
 			H.visible_message(
 				"<span class='notice'>You can see how [H.name] hangs \the [W.name] to dry.</span>",
@@ -315,7 +318,7 @@
 			return
 // One paid batch occupies the rack until its callback completes.
 /obj/structure/drying_rack/proc/load_gelatin(obj/item/weapon/reagent_containers/glass/container)
-	if(gcDestroyed || gc_destroyed || !isturf(loc) || filled || gelatin_drying || !container || container.gcDestroyed || container.gc_destroyed || !container.reagents)
+	if(gcDestroyed || gc_destroyed || !isturf(loc) || filled || gelatin_drying || !container || container.gcDestroyed || container.gc_destroyed || !container.reagents || !container.is_open_container())
 		return FALSE
 	var/feedstock = container.reagents.has_reagent("gelatin", 5) ? "gelatin" : (container.reagents.has_reagent("gelatin_foam", 5) ? "gelatin_foam" : null)
 	if(!feedstock)
@@ -337,6 +340,14 @@
 		var/batch_id = ++gelatin_batch_id
 		spawn(1500)
 			finish_gelatin(batch_id)
+	// Drying callbacks are not saved, so restart one full interval per hung item.
+	else if(filled > 0 && (producttype == /obj/item/weapon/pigleg || producttype == /obj/item/weapon/reagent_containers/food/snacks/sausage/salted))
+		for(var/i in 1 to filled)
+			dry_obj(producttype)
+
+// Only salted sausage dries into salami; finished salami and its slices do not.
+/obj/structure/drying_rack/proc/is_dryable_sausage(obj/item/W)
+	return istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted) && !istype(W, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami)
 
 /obj/structure/drying_rack/proc/finish_gelatin(batch_id)
 	if(gcDestroyed || gc_destroyed || batch_id != gelatin_batch_id || !gelatin_drying || filled != 1 || producttype != /obj/item/weapon/reagent_containers/glass || !isturf(loc))
@@ -679,6 +690,8 @@
 
 
 /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)
+	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice))
+		return ..() // A slice is already the smallest portion.
 	if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife))
 		to_chat(user, "You slice the salami up.")
 		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
