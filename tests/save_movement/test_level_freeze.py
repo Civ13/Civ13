@@ -66,6 +66,17 @@ class LevelFreeze(unittest.TestCase):
         self.assertIn('Players are held still only while their own level is being saved.', admission)
         self.assertIn('Do not move between z-levels until the move finishes. Each level is held still for a moment while it saves', self.restart)
 
+    def test_held_players_needs_wait_with_their_movement(self):
+        life = read('code/game/mob/living/life.dm')
+        helper = proc_body(life, '/proc/persistence_life_frozen(mob/living/M)')
+        # Players, logged-off player bodies and agent characters; never wildlife or NPCs.
+        self.assertIn('(!M.ckey && !agent_characters[M])', helper)
+        self.assertIn('persistence_frozen_levels["[T.z]"]', helper)
+        mob = read('code/processes/mob.dm')
+        self.assertIn('!(persistence_frozen_levels.len && persistence_life_frozen(M)))\n\t\t\t\tM.Life()', mob)
+        living = read('code/game/mob/living/living.dm')
+        self.assertIn('!persistence_life_frozen(src))\n\t\t\t\tLife()', living)
+
 
 if __name__ == '__main__':
     unittest.main()

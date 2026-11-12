@@ -41,7 +41,7 @@ class Mob:
         self.events.append('hold')
 
 
-def run(source, kind='living', deleted=False, phase='active'):
+def run(source, kind='living', deleted=False, phase='active', saving=False):
     events = []
     mob = None if kind == 'null' else Mob(events, kind, deleted, phase)
     source = source.replace('mob_list -= M', 'remove_mob(M)')
@@ -63,6 +63,8 @@ def run(source, kind='living', deleted=False, phase='active'):
         'zoom_remove': record('zoom_remove'), 'list_check': record('list_check'),
         'tick_check': record('tick_check'), 'catchException': record('exception'),
         'world': SimpleNamespace(time=20),
+        'persistence_frozen_levels': SimpleNamespace(len=1 if saving else 0),
+        'persistence_life_frozen': lambda m: saving and m.kind == 'human',
     }
     ADAPTER.project(source, '/process/mob/fire', '', env)()
     return events, None if mob is None else object.__getattribute__(mob, 'velocity')
@@ -99,6 +101,15 @@ class MobGuardTests(unittest.TestCase):
         bad = SOURCE.replace('if (!(M == null))', 'if (TRUE)', 1)
         # A retired DM reference becomes null; the adapter rejects dereference.
         self.assertNotEqual(run(SOURCE, 'human', phase='retire'), run(bad, 'human', phase='retire'))
+
+    def test_saving_level_holds_player_life(self):
+        # A player's Life() waits while their level is captured (persistence_life_frozen).
+        self.assertIn('persistence_life_frozen(M)', SOURCE)
+        held, _ = run(SOURCE, 'human', saving=True)
+        self.assertNotIn('life', held)
+        self.assertIn('zoom_add', held)
+        self.assertIn('life', run(SOURCE, 'human')[0])
+        self.assertIn('life', run(SOURCE, 'living', saving=True)[0])
 
 
 if __name__ == '__main__':
