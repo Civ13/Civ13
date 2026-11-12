@@ -221,6 +221,9 @@ def load_group(path):
     group.setdefault('save_timeout_seconds', 5400)
     group.setdefault('start_timeout_seconds', 300)
     group.setdefault('backups_kept', 3)
+    # The players' countdown before a save and stop, restart or handover (seconds, 0-3600).
+    group.setdefault('shutdown_warning_seconds', gaia_host.DEFAULT_SHUTDOWN_WARNING_SECONDS)
+    gaia_host.check_shutdown_warning(group['shutdown_warning_seconds'])
     # stage and handover refuse while the region's drive has less than this free: a handover
     # copies the build, writes a whole save and backs it up, and a full drive fails it midway.
     group.setdefault('min_free_disk_mb', DEFAULT_MIN_FREE_DISK_MB)
@@ -467,6 +470,15 @@ class RegionHost(Host):
         self.stage_lock = self.state_dir / 'stage.lock'
         self.stage_file = self.state_dir / 'stage.json'
         self.staged_file = self.state_dir / 'staged.json'
+
+    def shutdown_warning(self):
+        """The group config's current shutdown_warning_seconds (the launcher's Players' warning),
+        read at each action so a change applies without a setup; the region's own config if
+        the group config cannot be read."""
+        try:
+            return load_group(self.config['group_config'])['shutdown_warning_seconds']
+        except (OSError, ValueError, KeyError):
+            return super().shutdown_warning()
 
     def status(self):
         report = super().status()
@@ -866,8 +878,14 @@ class RegionHost(Host):
             raise RuntimeError('the standby world gave no valid session')
         generation = None
         try:
-            self.record(phase='saving', clients=before.get('clients'))
-            answer = self.platform.query(port, token, 'handover_save', operation, session)
+            warning = self.shutdown_warning()
+            if before.get('clients') and warning and before.get('shutdown_warning'):
+                self.record(phase='warning players (%d s), then saving' % warning, clients=before.get('clients'))
+            else:
+                self.record(phase='saving', clients=before.get('clients'))
+            fields = gaia_host.warning_fields(before, warning)
+            answer = (self.platform.query(port, token, 'handover_save', operation, session, extra=fields) if fields
+                      else self.platform.query(port, token, 'handover_save', operation, session))
             if answer.get('operation') != operation:
                 raise RuntimeError('the world did not accept the save: %s' % (answer.get('error') or 'no operation in its reply'))
             self.wait_world(port, token, lambda s: s.get('handover') == 'saved', self.config['save_timeout_seconds'],

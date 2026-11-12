@@ -146,6 +146,8 @@ def load_config(path):
     config.setdefault('start_timeout_seconds', 120)
     config.setdefault('backups_kept', 3)
     config.setdefault('branch', 'master')
+    config.setdefault('shutdown_warning_seconds', DEFAULT_SHUTDOWN_WARNING_SECONDS)
+    check_shutdown_warning(config['shutdown_warning_seconds'])
     for key, value in FREEZE_DEFAULTS.items():
         config.setdefault(key, value)
     return config
@@ -1344,6 +1346,10 @@ class Host:
     def start_task(self):
         return self.platform.start_task(self.config['task'])
 
+    def shutdown_warning(self):
+        """Seconds of countdown players get before a host save; read at each action."""
+        return self.config.get('shutdown_warning_seconds', DEFAULT_SHUTDOWN_WARNING_SECONDS)
+
     def do_handover(self, operation):
         raise RuntimeError('a handover needs a region host (scripts/shard-group)')
 
@@ -1367,8 +1373,14 @@ class Host:
             self.release_save_locks(pid)
             self.record(phase='stopped', saved=False)
             return
-        self.record(phase='saving', clients=before.get('clients'))
-        answer = self.platform.query(port, token, 'save_shutdown', operation, session)
+        warning = self.shutdown_warning()
+        if before.get('clients') and warning and before.get('shutdown_warning'):
+            self.record(phase='warning players (%d s), then saving' % warning, clients=before.get('clients'))
+        else:
+            self.record(phase='saving', clients=before.get('clients'))
+        fields = warning_fields(before, warning)
+        answer = (self.platform.query(port, token, 'save_shutdown', operation, session, extra=fields) if fields
+                  else self.platform.query(port, token, 'save_shutdown', operation, session))
         if answer.get('operation') != operation:
             raise RuntimeError('the world did not accept the save')
         self.running_file.unlink(missing_ok=True)  # it is going down on purpose
@@ -1546,6 +1558,23 @@ def start_pager_first(hosts):
         if host.config['start_requires_byond_pager']:
             return host.byond_signed_in()
     return None
+
+
+# Players online get this long a countdown before a host save and stop, restart or handover
+# (code/modules/persistence/shutdown_notice.dm). 0 starts the save at once; at most an hour.
+DEFAULT_SHUTDOWN_WARNING_SECONDS = 120
+
+
+def check_shutdown_warning(value):
+    if type(value) is not int or not 0 <= value <= 3600:
+        raise ValueError('shutdown_warning_seconds must be a whole number of seconds, 0-3600')
+    return value
+
+
+def warning_fields(world, seconds):
+    """The Topic field asking the world for a countdown; empty for a build that predates
+    it (its status has no shutdown_warning), which refuses unknown fields and gives a minute."""
+    return {'warn': str(seconds)} if world.get('shutdown_warning') else None
 
 
 def main(argv=None):

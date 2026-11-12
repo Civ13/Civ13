@@ -18,6 +18,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/operation
 	var/operation_is_maintenance = FALSE
 	var/expected_persistence
+	// Seconds of warning the host asked players to get (save_shutdown/handover_save "warn").
+	var/warn_seconds
 	var/busy = FALSE
 	var/last_error
 	var/list/used_operations = list()
@@ -38,13 +40,20 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	maintenance_used += maintenance_operation
 	var/requested_operation = maintenance_operation
 	to_chat(world, "<b>An administrator requested maintenance. The server will save and shut down after one minute if its supervisor accepts the request. Stop gameplay now.</b>")
+	announce_maintenance_countdown()
 	spawn(600)
 		maintenance_announcing = FALSE
 	spawn(3000)
 		if(maintenance_operation == requested_operation && !busy)
 			maintenance_operation = null
+			planned_shutdown_clear()
 			message_admins("Maintenance request expired without an accepted shutdown. Check the supervisor and its operation journal before retrying.")
 	return TRUE
+
+// Status tab and Discord for the minute's warning; the supervisor, not this countdown, decides the stop.
+/datum/nomads_lifecycle_control/proc/announce_maintenance_countdown()
+	set waitfor = FALSE
+	planned_shutdown_countdown("maintenance", 60, "maintenance requested by an admin", FALSE, FALSE)
 
 /datum/nomads_lifecycle_control/proc/read_token()
 	if(!fexists("config/lifecycle-token.txt")) return null
@@ -64,7 +73,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "port" = world.port, "debug" = agent_diagnostic_state())
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "port" = world.port, "debug" = agent_diagnostic_state(), "shutdown_warning" = TRUE, "shutdown_in" = planned_shutdown_remaining())
 
 // A standby world has no lifecycle operation of its own, so its replies echo the host's
 // handover operation (standby_operation) in "operation" like any accepted request.
@@ -130,6 +139,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(action == "standby_open") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "port")
 	if(action == "set_epoch") allowed = list("nomads_lifecycle", "token", "action", "epoch")
 	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
+	// The players' warning before the save, in whole seconds (0-3600); status advertises it as shutdown_warning.
+	if((action == "save_shutdown" || action == "handover_save") && ("warn" in input)) allowed += "warn"
 	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "set_epoch")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
@@ -190,6 +201,11 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 		return json_encode(snapshot(FALSE, "operation_replayed"))
 	if(used_operations.len >= 64)
 		return json_encode(snapshot(FALSE, "operation_limit_restart_required"))
+	var/requested_warning = null
+	if("warn" in input)
+		requested_warning = istext(input["warn"]) && length(input["warn"]) <= 4 ? text2num(input["warn"]) : null
+		if(!isnum(requested_warning) || requested_warning != round(requested_warning) || requested_warning < 0 || requested_warning > 3600)
+			return json_encode(snapshot(FALSE, "malformed_request"))
 	if("expected_persistence" in input)
 		if(!(input["expected_persistence"] in list("0", "1")) || !map || !ticker || text2num(input["expected_persistence"]) != !!persistence_round_active())
 			return json_encode(snapshot(FALSE, "persistence_mode_changed"))
@@ -199,6 +215,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	operation = input["operation"]
 	expected_persistence = ("expected_persistence" in input) ? text2num(input["expected_persistence"]) : null
 	operation_is_maintenance = action == "maintenance_save_shutdown"
+	warn_seconds = requested_warning
 	used_operations += operation
 	busy = TRUE // Reserve before the asynchronous saver can yield.
 	last_error = null
@@ -261,12 +278,13 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 
 /datum/nomads_lifecycle_control/proc/run_operation(handover = FALSE)
 	try
-		persistence_restart.execute(!handover, operation, boot_session(), operation_is_maintenance, expected_persistence, handover)
+		persistence_restart.execute(!handover, operation, boot_session(), operation_is_maintenance, expected_persistence, handover, warn_seconds = warn_seconds)
 		last_error = persistence_restart.last_error ? persistence_restart.last_error : (handover ? "handover_returned" : "shutdown_returned")
 	catch(var/exception/e)
 		last_error = "[e]"
 	busy = FALSE
 	expected_persistence = null
+	warn_seconds = null
 
 // The standby's load: the restart-intent restore a held boot would run from setup.dm, started
 // once the host says the save is complete. Its failure is the handover's failure: the host
