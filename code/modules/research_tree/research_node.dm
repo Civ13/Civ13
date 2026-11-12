@@ -791,6 +791,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/exercise/course" = "primitive_construction",
 		"/obj/structure/exercise/modern" = "factories",
 		"/obj/structure/exercise/modern/course" = "factories",
+		// --- alloys (1) ---
+		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
 		// --- anesthetic_surgery (2) ---
 		"/obj/item/clothing/mask/sterile" = "anesthetic_surgery",
 		"/obj/item/clothing/suit/storage/jacket/surgeon" = "anesthetic_surgery",
@@ -1611,12 +1613,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (5) ---
+		// --- iron_smithing (6) ---
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/heatsource" = "iron_smithing",
+		"/obj/item/clothing/shoes/weather/hobnail_boots" = "iron_smithing",
 		// --- iron_tools (5) ---
 		"/obj/item/weapon/flame/lighter/striker" = "iron_tools",
 		"/obj/item/flashlight/lantern" = "iron_tools",
@@ -1939,7 +1942,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/rails/split/switcher/right" = "rail_steam",
 		"/obj/structure/train_lever" = "rail_steam",
 		"/obj/structure/vehicleparts/movement/reversed" = "rail_steam",
-		// --- ready_made (29) ---
+		// --- ready_made (30) ---
 		"/obj/item/clothing/head/custom/custom_beanie" = "ready_made",
 		"/obj/item/clothing/head/custom/pimp_hat" = "ready_made",
 		"/obj/item/clothing/head/flatcap1" = "ready_made",
@@ -1969,6 +1972,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/customuniform/baggy" = "ready_made",
 		"/obj/item/clothing/under/customuniform/short" = "ready_made",
 		"/obj/item/clothing/under/punk" = "ready_made",
+		"/obj/item/clothing/shoes/weather/rubber_boots" = "ready_made",
 		// --- regalia (21) ---
 		"/obj/item/clothing/accessory/custom/armband" = "regalia",
 		"/obj/item/clothing/accessory/custom/cape" = "regalia",
@@ -2181,7 +2185,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/gorillasuit" = "synthetics",
 		"/obj/item/clothing/suit/storage/coat/oldyjacket" = "synthetics",
 		"/obj/item/weapon/storage/bag/plasticbag" = "synthetics",
-		// --- tailoring (57) ---
+		// --- tailoring (58) ---
 		"/obj/item/clothing/accessory/ruffle/neck" = "tailoring",
 		"/obj/item/clothing/head/artisan" = "tailoring",
 		"/obj/item/clothing/head/cavalier" = "tailoring",
@@ -2239,6 +2243,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/renaissance" = "tailoring",
 		"/obj/item/clothing/under/renaissance/doge" = "tailoring",
 		"/obj/item/clothing/under/renaissance_pontifical" = "tailoring",
+		"/obj/item/clothing/shoes/weather/pattens" = "tailoring",
 		// --- textile_mills (67) ---
 		"/obj/item/clothing/glasses/pilot" = "textile_mills",
 		"/obj/item/clothing/gloves/motorist" = "textile_mills",
@@ -2354,7 +2359,7 @@ var/global/list/node_grid_col_cache = null
 		// --- watermills (2) ---
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (86) ---
+		// --- weaving (88) ---
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/bronze" = "weaving",
@@ -2444,6 +2449,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/curtain/leather" = "weaving",
 		"/obj/structure/loom" = "weaving",
 		"/obj/structure/religious/tribalmask" = "weaving",
+		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
+		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		// --- workshops (24) ---
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",
