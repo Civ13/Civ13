@@ -173,13 +173,16 @@ var/late_wait_result = TRUE
 	map.ordinal_age = old_age
 	map.book_research = TRUE
 /proc/late_test_field_work()
-	// Every experiment is well formed.
+	build_practice_experiments()
+	// Every experiment is well formed. Late ones use a named activity; early
+	// ones may also be practice, counted per prerequisite (practice_work.dm).
 	var/list/shares = list()
 	var/formed = TRUE
 	for(var/id in field_experiments)
 		var/list/E = field_experiments[id]
 		var/datum/research_node/N = get_research_node(E[1])
-		if(!N || N.era_tier < 5 || !(E[2] in field_activities) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
+		var/practice = findtext(E[2], "craft:") == 1
+		if(!N || (practice && N.era_tier >= 5) || (!practice && !(E[2] in field_activities)) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
 			formed = FALSE
 			world.log << "FAIL: experiment [id] is malformed"
 		shares[E[1]] = (shares[E[1]] || 0) + E[4]
@@ -187,7 +190,7 @@ var/late_wait_result = TRUE
 		if(shares[node_id] > 0.7)
 			formed = FALSE
 			world.log << "FAIL: field work covers too much of [node_id]"
-	late_check(formed && field_experiments.len >= 20, "[field_experiments.len] experiments name late nodes, known activities and leave bench work to do")
+	late_check(formed && field_experiments.len >= 20, "[field_experiments.len] experiments name real nodes, known activities and leave bench work to do")
 	late_check(late_bench_rate(get_research_node("cartridge_ammo")) == 1.5 && late_bench_rate(get_research_node("rifling")) == 1, "late nodes are studied faster at the bench, earlier ones are not")
 	var/mob/living/human/late_fixture/soldier = new(locate(3,2,1))
 	soldier.name = "Brann"
@@ -240,7 +243,45 @@ var/late_wait_result = TRUE
 	late_check(bench.credit_field_work() && second.has_research_chapter("automatic_weapons") && !second.has_field_work("automatic_weapons_range") && second.has_field_work("cartridge_ammo_range"), "field work finishes a nearly done chapter and is then forgotten for that subject only")
 	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
 	// A dark bench does no bookkeeping at all.
-	late_check(bench.field_work_rows(soldier, "basic_tools").len == 0, "early subjects have no field work")
+	late_check(bench.field_work_rows(soldier, "ritual_worship").len == 0, "a subject without experiments lists none")
+
+// Practice and gathering for early nodes (practice_work.dm).
+/proc/late_test_practice_work()
+	build_practice_experiments()
+	var/list/iron = node_field_experiments("iron_tools")
+	late_check(iron.len == 1 && iron[1] == "practice_iron_tools_basic_tools", "Iron Tools is advanced by practising Basic Toolmaking")
+	var/list/E = field_experiments["practice_iron_tools_basic_tools"]
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
+	var/list/concrete = node_field_experiments("reinforced_concrete")
+	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
+	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
+	late_check(node_field_experiments("basic_tools").len == 1 && node_field_experiments("archery").len == 1, "first nodes advance by foraging or butchering")
+	// Making something counts towards the node its recipe belongs to.
+	var/craft_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "basic_tools")
+			craft_path = path
+			break
+	var/mob/living/human/late_fixture/smith = new(locate(4,2,1))
+	smith.name = "Odda"
+	late_check(craft_path && note_craft_practice(smith, craft_path) && smith.field_work_amount("craft:basic_tools") == 1, "making [craft_path] is practice in Basic Toolmaking")
+	late_check(!note_craft_practice(smith, "/obj/item/not_a_recipe") && !note_craft_practice(smith, null), "unknown things count nothing")
+	map.book_research = FALSE
+	late_check(!note_craft_practice(smith, craft_path) && smith.field_work_amount("craft:basic_tools") == 1, "nothing is counted where book research is off")
+	map.book_research = TRUE
+	late_check(note_field_work(smith, "forage", 3) && smith.field_work_amount("forage") == 3, "foraging is counted")
+	// Credited at a bench once enough has been made.
+	note_field_work(smith, "craft:basic_tools", 50)
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/notes = new(bench)
+	bench.assigned_node = "iron_tools"
+	var/list/rows = bench.field_work_rows(smith, "iron_tools")
+	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
+	var/expected = round(IN.cost_ticks * 0.5)
+	late_check(bench.credit_field_work() && notes.research_ticks("iron_tools") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	qdel(bench)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()
 	return 1
@@ -419,6 +460,7 @@ var/late_wait_result = TRUE
 	try
 		late_test_node_effects()
 		late_test_field_work()
+		late_test_practice_work()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

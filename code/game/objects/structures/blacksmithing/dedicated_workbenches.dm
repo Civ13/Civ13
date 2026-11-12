@@ -156,6 +156,7 @@
 			qdel(head)
 		qdel(shaft)
 		new result_type(T)
+		note_craft_practice(H, "[result_type]")
 		made++
 	return made
 
@@ -321,6 +322,7 @@
 	metal.use(R["metal"])
 	wood.use(1)
 	var/result_type = R["result"]
+	note_craft_practice(H, "[result_type]")
 	return new result_type(get_turf(src), metal_kind)
 
 /obj/structure/component_workbench/toolsmith/assemble(mob/living/human/H)
@@ -450,6 +452,7 @@
 	pot.update_icon()
 	wood.use(1)
 	var/result_type = R["result"]
+	note_craft_practice(H, "[result_type]")
 	return new result_type(get_turf(src), metal_kind)
 
 /obj/structure/component_workbench/toolsmith/foundry/recipe_status()

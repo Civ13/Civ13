@@ -62,9 +62,12 @@ class FieldWork(unittest.TestCase):
         self.assertGreaterEqual(len(rows), 20)
         shares = {}
         for _id, node, activity, needed, share, _text in rows:
-            tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (?:null|list\([^)]*\)), (\d+)' % node, self.nodes)
+            tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (null|list\([^)]*\)), (\d+)' % node, self.nodes)
             self.assertTrue(tier, node)
-            self.assertGreaterEqual(int(tier[1]), 5, node)
+            # Early rows are only for first nodes; the rest is practice (practice_work.dm).
+            if int(tier[2]) < 5:
+                self.assertEqual(tier[1], "null", node)
+                self.assertIn(activity, ("forage", "butchering"), node)
             self.assertIn(activity, activities)
             self.assertGreater(int(needed), 0)
             shares[node] = shares.get(node, 0) + float(share)
@@ -76,7 +79,9 @@ class FieldWork(unittest.TestCase):
                 ("code/modules/surgery/surgery.dm", 'note_field_work(user, "surgery")'),
                 ("code/modules/1713/doctor_handbook.dm", "note_field_diagnosis(user, H)"),
                 ("code/modules/reagents/laboratory.dm", 'note_field_work(user, "reactions")'),
-                ("code/modules/space/survey.dm", 'note_field_work(H, "samples")')):
+                ("code/modules/space/survey.dm", 'note_field_work(H, "samples")'),
+                ("code/modules/ecology/foraging.dm", 'note_field_work(src, "forage")'),
+                ("code/modules/1713/animal_harvest.dm", 'note_field_work(H, "butchering")')):
             self.assertIn(call, read(path), path)
     def test_counting_needs_book_research_and_is_capped(self):
         note = proc(self.field, "/proc/note_field_work")
@@ -228,5 +233,31 @@ class Ciphers(unittest.TestCase):
         self.assertIn('data["cipher_note"]', read("code/modules/research_tree/book_interface.dm"))
         self.assertIn("data.cipher_note", read("tgui/src/interfaces/ResearchBook.tsx"))
         self.assertIn("data.cipher_note", read("UI/templates/research_book.tmpl"))
+
+
+class Practice(unittest.TestCase):
+    """Early nodes advance by making what their prerequisites teach."""
+    def setUp(self):
+        self.practice = read("code/modules/research_tree/practice_work.dm")
+    def test_included_in_the_build(self):
+        self.assertIn('#include "code\\modules\\research_tree\\practice_work.dm"', read("civ13.dme"))
+    def test_generated_only_for_early_nodes_and_counted_only_on_book_worlds(self):
+        build = proc(self.practice, "/proc/build_practice_experiments")
+        for guard in ("practice_experiments_built", "N.era_tier >= PRACTICE_BELOW_TIER", "N.prereqs.len", "field_activity_caps = null"):
+            self.assertIn(guard, build)
+        note = proc(self.practice, "/proc/note_craft_practice")
+        for guard in ("map.book_research_enabled()", "get_recipe_node_req(result_path_string)", "note_field_work(user, practice_activity(node_id))"):
+            self.assertIn(guard, note)
+        field = read("code/modules/research_tree/field_work.dm")
+        for name in ("/proc/field_activity_cap", "/proc/node_field_experiments"):
+            self.assertIn("build_practice_experiments()", proc(field, name), name)
+    def test_crafting_routes_count_practice(self):
+        for path, count in (("code/game/objects/items/stacks/stack.dm", 1),
+                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 5),
+                            ("code/game/objects/structures/blacksmithing/component_workbench.dm", 1),
+                            ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 3)):
+            self.assertEqual(read(path).count("note_craft_practice("), count, path)
+
+
 if __name__ == "__main__":
     unittest.main()

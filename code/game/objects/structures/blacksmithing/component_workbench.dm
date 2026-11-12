@@ -117,7 +117,9 @@
 	if (do_after(H, assembly_time, src)) M = finish_assembly(H, P, B, choice)
 	busy = FALSE
 	assembler = null
-	if (M) to_chat(H, "You finish [M]. Retrieve it from [src].")
+	if (M)
+		to_chat(H, "You finish [M]. Retrieve it from [src].")
+		note_craft_practice(H, "[M.type]")
 	return M
 
 /obj/structure/component_workbench/attack_hand(mob/living/human/H)
