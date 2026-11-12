@@ -90,6 +90,9 @@ var/global/list/airborne_aircraft = list()
 	// Mid-climb or mid-move, the tiles an aircraft is transforming are its own.
 	if (istype(T.vehicle_transforming, /obj/structure/vehicleparts/axis/aircraft))
 		return TRUE
+	// A pedal airship aloft holds itself and its rider (pedal_airship.dm).
+	if (aloft_pedal_airships.len && pedal_airship_holds(T, A))
+		return TRUE
 	if (!airborne_aircraft.len)
 		return FALSE
 	// Standing on an airborne frame holds; stepping off it does not.

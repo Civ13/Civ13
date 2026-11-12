@@ -32,7 +32,7 @@ def compile_proc(path, args, env, members=(), source=SOURCE):
 def math_procs(source=SOURCE):
     env = {'max': max, 'Clamp': lambda n, low, high: max(low, min(n, high))}
     ratio = compile_proc('/proc/bicycle_load_ratio', 'carried_weight, strength', env, source=source)
-    delay = compile_proc('/proc/bicycle_step_delay', 'load_ratio', env, source=source)
+    delay = compile_proc('/proc/bicycle_step_delay', 'load_ratio, fastest=1.5, slowest=6', env, source=source)
     cost = compile_proc('/proc/bicycle_step_cost', 'load_ratio', env, source=source)
     return ratio, delay, cost
 
@@ -78,6 +78,9 @@ def move_fixture(source=SOURCE, blocked=False):
     b.ground = [False, False, 0]
     b.ground_ahead = lambda start, target: dict(enumerate(b.ground, 1))
     b.slope = 0
+    b.slope_delay = lambda start, target, step: b.slope
+    b.pedal_fastest = 1.5
+    b.pedal_slowest = 6
     h.dir = 4
     h.stamina = 10
     h.weight = 0
@@ -104,7 +107,6 @@ def move_fixture(source=SOURCE, blocked=False):
     b.Move = move
     env = dict(src=b, world=NS(time=100), cardinal=[1, 2, 4, 8], max=max,
                bicycle_ground_delay=ground_delay, bicycle_ground_cost=ground_cost,
-               terrain_slope_delay=lambda start, target, step: b.slope,
                Clamp=lambda n, low, high: max(low, min(n, high)),
                bicycle_load_ratio=ratio, bicycle_step_delay=delay,
                bicycle_step_cost=cost, bicycle_carried_weight=lambda actor: actor.weight,
@@ -112,7 +114,7 @@ def move_fixture(source=SOURCE, blocked=False):
                get_turf=lambda atom: atom.loc, get_step=lambda atom, direction: 'destination',
                typed_iter=lambda items, path: list(items))
     members = ('moving', 'pedal_next_move', 'do_vehicle_check', 'driver',
-               'vehicle_m_delay', 'claim_ride_glides', 'ground_ahead', 'Move', 'loc', 'update_icon', 'gcDestroyed')
+               'vehicle_m_delay', 'claim_ride_glides', 'ground_ahead', 'slope_delay', 'pedal_fastest', 'pedal_slowest', 'Move', 'loc', 'update_icon', 'gcDestroyed')
     move = compile_proc(BASE + '/do_move', 'm_dir=None, interval=None', env, members, source)
     return b, h, lease, moves, env, move
 
@@ -151,7 +153,7 @@ class BicycleMath(unittest.TestCase):
         self.assertEqual(weight_proc()(item(0, [item(-20), item(4)])), 4)
 
     def test_removed_weight_penalty_is_detected(self):
-        mutated = SOURCE.replace('1.5 * (1 + max(0, load_ratio))', '1.5')
+        mutated = SOURCE.replace('fastest * (1 + max(0, load_ratio))', 'fastest')
         self.assertNotEqual(mutated, SOURCE)
         ratio, delay, _ = math_procs(mutated)
         self.assertEqual(delay(ratio(59, 1)), delay(ratio(0, 1)))

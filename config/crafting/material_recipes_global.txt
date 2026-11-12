@@ -667,6 +667,7 @@ RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1
 //**************************************************************
 
 RECIPE: /material/cloth/,small cloth sail,/obj/item/sail,15,125,0,1,none,0,0,22,8,null
+RECIPE: /material/cloth/,pedal airship,/obj/structure/vehicle/bicycle/airship,30,300,1,1,vehicle parts,95,0,0,8,null
 RECIPE: /material/cloth/,cigarette pack,/obj/item/weapon/storage/fancy/cigarettes,1,20,0,1,none,90,0,0,8,null
 RECIPE: /material/cloth/,sandbag,/obj/item/weapon/barrier/sandbag/empty,1,105,0,1,none,0,0,90,8,null
 RECIPE: /material/cloth/,cashbag,/obj/item/weapon/storage/bag/cash,1,105,0,1,none,0,0,90,8,null
