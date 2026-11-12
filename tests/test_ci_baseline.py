@@ -1361,7 +1361,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
                          {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'ping', 'time_of_day_progress', 'cleanables_scheduler', 'life_tick_pacing'})
         self.assertIn('year', self.selected(['code/setup.dm']))
 
     def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):
@@ -1381,7 +1381,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertIn('ping', self.selected(['tests/ping_scheduler/historical-ping.txt']))
         self.assertIn('research', self.selected(['tests/research_scheduler/historical-research.txt']))
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
-                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research'})
+                         {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'research', 'life_tick_pacing'})
 
     def test_hub_status_inputs_select_only_reviewed_offline_contracts(self):
         self.assertEqual(ci.SUITES['hub_status']['files'], ('tests/test_hub_status.py',))
