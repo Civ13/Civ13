@@ -58,7 +58,7 @@ def literal(text):
     return text.strip()
 
 
-def declared(files):
+def declared(files, wanted=WANTED):
     """{type path: {var: literal text}} for top-level type blocks."""
     types = {}
     for path in sorted(files):
@@ -76,7 +76,7 @@ def declared(files):
                 current = None
             elif current is not None:
                 value = VALUE.match(line)
-                if value and value[1] in WANTED:
+                if value and value[1] in wanted:
                     current.setdefault(value[1], literal(value[2]))
     return types
 

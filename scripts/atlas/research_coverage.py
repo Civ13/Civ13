@@ -47,6 +47,8 @@ def annotate_research(records, files, canon):
             exclusion = 'Corpse hide harvesting is acquisition, not tanning.'
         elif kind == 'Flintlock preparation' and outputs == ['/obj/item/weapon/flint']:
             exclusion = 'Gathering flint from a rock is acquisition.'
+        elif recipe.get('interaction') and not (outputs and all(value in canonical for value in outputs)):
+            exclusion = 'Hand interaction with no research check of its own; tools and stations keep their own gates.'
         if exclusion:
             recipe.update(research_status='excluded', research_nodes=[], research_exclusion=exclusion)
             continue

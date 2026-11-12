@@ -167,6 +167,70 @@ class AtlasNavigationTests(unittest.TestCase):
         sand = next(r for r in self.catalog['acquisition']['/turf/floor/beach/sand'] if r['name'] == 'Shovel sand')
         self.assertIn('non-harm', sand['conditions'])
 
+    def test_hand_interactions_are_generated_from_source(self):
+        routes = self.catalog['acquisition']
+        grown = '/obj/item/weapon/reagent_containers/food/snacks/grown/'
+        expected = {
+            'chamomile_tea': 'Steep chamomile flowers into chamomile tea',
+            'elderflower_tea': 'Steep elderflowers into elderflower tea',
+            'sunflower_oil': 'Grind shelled sunflower seeds in a mortar and pestle',
+            grown + 'dried_mint': 'Dry mint on a dehydrator',
+            grown + 'sunflower_seeds': 'Shell a sunflower head',
+            grown + 'dandelion_root': 'Grow and harvest dandelion',
+            '/obj/item/stack/medical/wild_herb/yarrow': 'Pick yarrow',
+            '/obj/item/weapon/material/hide_scraper': 'Knap a hide scraper from flint',
+            '/obj/item/weapon/reagent_containers/food/snacks/fishfillet': 'Fillet raw fish',
+        }
+        for resource, name in expected.items():
+            self.assertIn(name, [route['name'] for route in routes.get(resource, [])], resource)
+            self.assertIn(resource, self.catalog['resources'])
+        tea = next(r for r in self.catalog['recipes'] if r['name'] == expected['chamomile_tea'])
+        self.assertEqual([(x['id'], x['quantity']) for x in tea['inputs']], [(grown + 'chamomile', '1'), ('water', '5')])
+        self.assertEqual(tea['research_status'], 'excluded')
+        scraper = next(r for r in self.catalog['recipes'] if r['name'] == expected['/obj/item/weapon/material/hide_scraper'])
+        self.assertEqual(scraper['research_nodes'], ['basic_tools'])
+        # Curated routes win: wheat keeps its reviewed harvest text and gets no generated copy.
+        wheat = [r['name'] for r in routes[grown + 'wheat']]
+        self.assertNotIn('Grow and harvest wheat', wheat)
+
+    def test_new_content_is_picked_up_and_changed_mechanisms_stop_generation(self):
+        sys.path.insert(0, str(ROOT/'scripts'))
+        from atlas.interactions import add_interactions
+        paths = ('code/modules/1713/production.dm', 'code/modules/ecology/wild_herbs.dm', 'code/modules/1713/herbalism.dm',
+                 'code/modules/1713/flint_mining.dm', 'code/modules/1713/stone_age_arms.dm', 'code/modules/1713/herb_garden.dm',
+                 'code/game/objects/farming.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm')
+        files = {path: (ROOT/path).read_text(encoding='utf-8', errors='replace') for path in paths}
+        files['code/new_herb.dm'] = ('/obj/item/new_herb\n\tname = "lovage"\n\tdry_size = 2\n\tdried_type = /obj/item/new_herb/dried\n'
+                                     '\tsteep_reagent = "lovage_tea"\n\tsteep_amount = 7\n'
+                                     '/obj/item/new_herb/dried\n\tname = "dried lovage"\n\tdried_type = null\n'
+                                     '/datum/reagent/drink/lovage_tea\n\tid = "lovage_tea"\n')
+        files['civ13.dme'] = ''.join(f'#include "{path}"\n' for path in files)
+        records = []
+
+        def add(name, kind, inputs, outputs, path, line, conditions=''):
+            records.append(dict(name=name, kind=kind, inputs=[{'id': a.removeprefix('reagent:')} for a, _ in inputs],
+                                outputs=[{'id': a.removeprefix('reagent:')} for a, _ in outputs]))
+        names = {route['name'] for route in add_interactions(files, add, records, set())}
+        self.assertIn('Dry lovage on a dehydrator', names)
+        self.assertIn('Steep lovage into lovage tea', names)
+        self.assertNotIn('Dry dried lovage on a dehydrator', names)
+        changed = dict(files)
+        changed['code/modules/ecology/wild_herbs.dm'] = files['code/modules/ecology/wild_herbs.dm'].replace(
+            'vessel.reagents.remove_reagent("water", amount)', 'vessel.reagents.remove_reagent("water", amount * 2)')
+        with self.assertRaisesRegex(ValueError, 'wild_herbs.dm changed'):
+            add_interactions(changed, add, records, set())
+
+    def test_coverage_since_lists_new_types_without_routes(self):
+        sys.path.insert(0, str(ROOT/'scripts'))
+        from atlas.coverage import added_without_route
+        catalog = {'recipes': [{'outputs': [{'id': '/obj/item/made'}]}], 'acquisition': {},
+                   'resources': {'/obj/item/made': {'name': 'made'}, '/obj/item/orphan': {'name': 'orphan'}}}
+        diff = ('+++ b/code/x.dm\n+/obj/item/made\n+/obj/item/orphan\n+/datum/reagent/drink/odd\n+\tid = "odd"\n'
+                '+++ b/tests/probe.dm\n+/obj/item/ignored\n')
+        found = added_without_route(catalog, diff)
+        self.assertEqual(sorted(found), ['/obj/item/orphan', 'odd'])
+        self.assertIn('no atlas page', found['odd']['problem'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -49,7 +49,15 @@ class LocalWslTests(unittest.TestCase):
                          'code/modules/1713/animal_harvest.dm',
                          'code/modules/materials/material_sheets.dm',
                          'code/game/objects/structures/converters.dm',
-                         'code/modules/materials/materials.dm'):
+                         'code/modules/materials/materials.dm',
+                         # Hand-interaction mechanisms read by scripts/atlas/interactions.py.
+                         'code/modules/ecology/wild_herbs.dm',
+                         'code/modules/1713/herbalism.dm',
+                         'code/modules/1713/flint_mining.dm',
+                         'code/modules/1713/stone_age_arms.dm',
+                         'code/modules/1713/herb_garden.dm',
+                         'code/game/objects/farming.dm',
+                         'code/modules/reagents/reagent_containers/food/snacks/meat.dm'):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())
