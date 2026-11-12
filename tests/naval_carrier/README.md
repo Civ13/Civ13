@@ -102,3 +102,13 @@ The fixture is the same three levels with sand ashore (x 1-20) and deep sea beyo
 - **Launch:** a wreck on the ways blocks it; the schooner slides 15 tiles to float with a sailor and a crate aboard, the berth is sand again, her wheel and masts stand; she makes half ahead at best and sails without fuel.
 - **Freighter:** a 132-tile berth reaching into the water; afloat she has 82 hold and engine room tiles in two compartments, the bunker in the engine room, paired ladders, and stays put with dry bunkers.
 - **Dry dock:** a schooner built in a dug trench is refused until the trench is flooded, then floats out; abandoning a project clears the berth.
+
+## Craft core (`craft_probe.dm`)
+
+The shared craft core (`code/modules/craft/`, `docs/craft-core.md`): a craft
+with a template body around a `datum/vessel`, its move and turn hooks, drives,
+the crew register, berths and tickets, crafts carried on crafts, charts and
+plane pools. Nothing in the game calls the core yet; the probe is its only
+user.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
