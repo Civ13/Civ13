@@ -927,7 +927,7 @@
 
 	else if (nutrition < 20) //Nutrition is below 20 = starvation
 
-		var/list/hunger_phrases = list(
+		var/static/list/hunger_phrases = list(
 			"You feel weak and malnourished. You must find something to eat now!",
 			"You haven't eaten in ages, and your body feels weak! It's time to eat something.",
 			"You can barely remember the last time you had a proper, nutritional meal. Your body will shut down soon if you don't eat something!",
@@ -1048,7 +1048,7 @@
 
 	else if (water < 20) //Nutrition is below 20 = dehydration
 
-		var/list/thirst_phrases = list(
+		var/static/list/thirst_phrases = list(
 			"You feel weak and malnourished. You must find something to drink now!",
 			"You haven't drank in ages, and your body feels weak! It's time to drink something.",
 			"You can barely remember the last time you had something to drink!",
