@@ -485,7 +485,7 @@
 
 // Wetness lost this tick when out of the rain.
 /mob/living/human/proc/drying_rate(loc_temp_c)
-	if (near_drying_fire(get_turf(src)))
+	if (life_near_drying_fire())
 		return FIRE_DRYING_RATE
 	return loc_temp_c >= 18 ? 0.01 : 0.002
 

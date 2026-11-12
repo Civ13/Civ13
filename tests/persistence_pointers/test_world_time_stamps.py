@@ -41,6 +41,8 @@ REVIEWED = {
     'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
     'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
     'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
+    'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
+    'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

@@ -242,6 +242,10 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 proc/blood_incompatible(donor,receiver,donor_species,receiver_species)
 	if (!donor || !receiver) return FALSE
 
+	// A body's own organs: the same blood type and the same species datum always match.
+	if (donor == receiver && donor_species == receiver_species)
+		return FALSE
+
 	if (donor_species && receiver_species)
 		// Compare by name: a body restored from a save holds a copy of its
 		// species datum, while organs grown after the load hold the global one.
