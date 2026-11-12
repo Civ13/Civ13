@@ -259,5 +259,30 @@ class Practice(unittest.TestCase):
             self.assertEqual(read(path).count("note_craft_practice("), count, path)
 
 
+class Demonstrations(unittest.TestCase):
+    """Late capstones need a working demonstration on book-research worlds."""
+    def setUp(self):
+        self.demo = read("code/modules/research_tree/demonstrations.dm")
+    def test_included_in_the_build(self):
+        self.assertIn('#include "code\\modules\\research_tree\\demonstrations.dm"', read("civ13.dme"))
+    def test_only_book_worlds_and_the_bench_refuses_parts(self):
+        self.assertIn("map.book_research_enabled()", proc(self.demo, "/proc/node_demonstration"))
+        attack = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("take_demonstration_notes(W, user)", attack)
+        self.assertLess(attack.index("if (node_needs_demonstration(assigned_node))"), attack.index("if (B.research_prototype_installed(assigned_node))"))
+    def test_experimental_builds_are_gated_and_marked(self):
+        self.assertIn("|| demonstration_kit_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        self.assertIn('mark_experimental_build(H, O, "[recipe.result_type]")', read("code/game/objects/items/stacks/stack.dm"))
+        self.assertIn('demonstration_kit_allowed(H, "[result_type]")', read("code/modules/1713/machinery/modern_generation.dm"))
+        kit = proc(self.demo, "/proc/demonstration_kit_node")
+        for guard in ("map.book_research_enabled()", "H.knows_research_prereqs(node_id)", "H.demonstration_book(node_id)"):
+            self.assertIn(guard, kit)
+    def test_recording_needs_a_pen_light_and_a_running_machine(self):
+        record = proc(self.demo, "/mob/living/human/proc/record_demonstration")
+        for guard in ("held_writing_pen()", "do_reading(src, DEMO_STEP, src)", "demonstration_machine_running(node_id, machine)", "demonstration_mishap(machine, node_id)", "commit_demonstration(src, carrier, node_id)"):
+            self.assertIn(guard, record)
+        self.assertLess(record.index("demonstration_mishap"), record.index("commit_demonstration(src"))
+
+
 if __name__ == "__main__":
     unittest.main()

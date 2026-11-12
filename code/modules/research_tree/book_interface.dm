@@ -165,8 +165,7 @@
 			instruments[discipline] = has_research_instrument(node_id, H) ? 1 : 0
 		needs += list(list("label" = "[capitalize(scholar_instrument_text(discipline))] on or next to the bench", "ok" = instruments[discipline]))
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = N.prototype_display_name()
-		needs += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
+		needs += list(list("label" = prototype_need_label(N), "ok" = target && target.research_prototype_installed(node_id) ? 1 : 0))
 	if (is_big_science(node_id))
 		needs += team_rows(node_id, null)
 	out["research_needs"] = needs
@@ -240,8 +239,7 @@
 	if (node_needs_instrument(assigned_node))
 		checks += list(list("label" = "[capitalize(scholar_instrument_text(discipline))] on or next to the bench", "ok" = instrument_ok ? 1 : 0))
 	if (N.mode == RESEARCH_MODE_PROTOTYPE)
-		var/pname = N.prototype_display_name()
-		checks += list(list("label" = "A working [pname ? pname : "prototype"] used on the bench", "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
+		checks += list(list("label" = prototype_need_label(N), "ok" = B && B.research_prototype_installed(assigned_node) ? 1 : 0))
 	checks += team_rows(assigned_node, researcher)
 	out["checks"] = checks
 	out["rushed"] = rushed ? 1 : 0
@@ -517,7 +515,7 @@
 		var/list/entry = progress[node_id]
 		if (!N)
 			continue
-		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? N.prototype_display_name() : null, "prototype_done" = entry[2] ? 1 : 0))
+		unfinished += list(list("id" = node_id, "name" = N.name, "percent" = round(entry[1] / N.cost_ticks * 100), "ticks" = entry[1], "cost" = N.cost_ticks, "prototype" = N.mode == RESEARCH_MODE_PROTOTYPE ? (node_needs_demonstration(node_id) ? "demonstration" : N.prototype_display_name()) : null, "prototype_done" = entry[2] ? 1 : 0))
 	data["unfinished"] = unfinished
 	var/list/writable = list()
 	if (!H.recipe_knowledge_exempt())
