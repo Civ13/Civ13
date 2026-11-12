@@ -24,6 +24,15 @@
 		else // If the file doesn't exist, log an error and fall back to the default
 			log_admin("Lobby image file not found: [map.lobby_icon]")
 			icon = 'icons/lobby/civ13.dmi' // Fallback to the default lobby image
+	// A lobby .dmi may carry a still "lobby" state and a looping, mostly
+	// transparent "lobby_particles" state that is drawn over it as light.
+	var/list/lobby_states = icon_states(icon)
+	if ("lobby" in lobby_states)
+		icon_state = "lobby"
+		if ("lobby_particles" in lobby_states)
+			var/image/particles = image(icon = icon, icon_state = "lobby_particles", layer = layer + 0.01)
+			particles.blend_mode = BLEND_ADD
+			overlays += particles
 	if (map && map.ID == MAP_LIGHTS_OUT)
 		icon = 'icons/lobby/lights_out.dmi'
 		icon_state = "lights_out"

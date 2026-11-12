@@ -10,7 +10,8 @@
 // The ballast and periscope station aboard dives, surfaces, raises the
 // periscope (the surface straight above, following the boat) and lists the
 // contacts in range: ships and aircraft above, and other submerged boats by
-// sonar.
+// sonar. Submerged systems (battery, floodlights, hull depth, sonar ping)
+// are in submarine_systems.dm, the hull air in submarine_air.dm.
 
 // Tiles at which the periscope picks out ships and aircraft on the surface,
 // and sonar other submerged boats.
@@ -171,6 +172,11 @@ var/global/list/player_submarines = list()
 // Submerged, the sea layer ends where the ocean above does: a clear message
 // instead of ramming the rock.
 /obj/structure/vehicleparts/axis/ship/submarine/do_vehicle_check()
+	if (submerged && !anchor && battery <= 0)
+		visible_message(SPAN_WARNING("\The [src]'s motors whine down: the battery is flat."))
+		moving = FALSE
+		stopmovementloop()
+		return FALSE
 	if (submerged && !anchor)
 		var/m_dir = reverse ? OPPOSITE_DIR(dir) : dir
 		for (var/obj/structure/vehicleparts/frame/F in frames())
@@ -184,6 +190,8 @@ var/global/list/player_submarines = list()
 
 /obj/structure/vehicleparts/axis/ship/submarine/do_move()
 	. = ..()
+	if (. && submerged)
+		battery_draw(SUB_BATTERY_PER_TILE)
 	if (. && periscope_watchers.len)
 		update_periscopes()
 
@@ -191,6 +199,7 @@ var/global/list/player_submarines = list()
 /obj/structure/vehicleparts/axis/ship/submarine/proc/update_boat_lights()
 	for (var/obj/structure/vehicleparts/sub_station/S in transporting)
 		S.update_light_state(submerged)
+	update_floodlights()
 
 // ---- Periscope ----
 
@@ -342,7 +351,9 @@ var/global/list/ship_axes = list()
 	if (!B)
 		to_chat(user, SPAN_WARNING("The station is not fitted to a submarine."))
 		return
-	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts", "Air")
+	var/list/options = list(B.submerged ? "Surface" : "Dive", "Contacts", "Status", B.floodlights ? "Floodlights off" : "Floodlights on")
+	if (B.submerged)
+		options += "Sonar ping"
 	if (B.submerged)
 		options += (user in B.periscope_watchers) ? "Lower periscope" : "Raise periscope"
 	options += "Cancel"
@@ -356,8 +367,13 @@ var/global/list/ship_axes = list()
 			B.order_depth(user, FALSE)
 		if ("Contacts")
 			B.report_contacts(user)
-		if ("Air")
+		if ("Status")
 			to_chat(user, SPAN_NOTICE(B.air_report()))
+			to_chat(user, SPAN_NOTICE(B.systems_report()))
+		if ("Floodlights on", "Floodlights off")
+			B.set_floodlights(choice == "Floodlights on", user)
+		if ("Sonar ping")
+			B.sonar_ping(user)
 		if ("Raise periscope")
 			B.raise_periscope(user, src)
 		if ("Lower periscope")
