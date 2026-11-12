@@ -222,10 +222,12 @@
 
 	var/turf/T = get_step(s, direction)
 	explosion_spread(T, spread_power, direction)
-	T = get_step(s, turn(direction,90))
-	explosion_spread(T, spread_power, turn(direction,90))
-	T = get_step(s, turn(direction,-90))
-	explosion_spread(T, spread_power, turn(direction,-90))
+	var/side_direction = turn(direction,90)
+	T = get_step(s, side_direction)
+	explosion_spread(T, spread_power, side_direction)
+	side_direction = turn(direction,-90)
+	T = get_step(s, side_direction)
+	explosion_spread(T, spread_power, side_direction)
 
 /process/explosion/proc/queue(var/datum/explosiondata/data)
 	if (!data) return
