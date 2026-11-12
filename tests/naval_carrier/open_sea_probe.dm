@@ -305,6 +305,8 @@ var/naval_runtime_error = FALSE
 	// ---- The harbour office ----
 	var/obj/structure/sea_office/office = sea_office()
 	naval_check(office && sea_cell_of(get_turf(office)) == 5 && !istype(get_turf(office), /turf/floor/beach/water) && sea_office_place() == office, "the harbour office board stands on the home island, once")
+	naval_check(!npc_jobs_enabled && !office.fill(TRUE) && !office.contracts().len, "the office offers nothing of its own while such jobs are switched off")
+	npc_jobs_enabled = TRUE
 	naval_check(office.fill() == SEA_OFFICE_OFFERS && office.contracts(CONTRACT_OPEN).len == SEA_OFFICE_OFFERS && !office.fill(), "it offers four contracts and no more until some time has passed")
 	for (var/obj/craft_contract/sea/old in office.contracts())
 		qdel(old)

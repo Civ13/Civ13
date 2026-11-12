@@ -348,6 +348,12 @@ tiles of the depot. Pay is made on the spot by `offer_job()` from the
 distance. A party holds two of a depot's jobs at most. A new kind of land job
 is a subtype with its own `job_text()` and a line in `fill_jobs()`.
 
+Jobs a board makes up and pays for itself are switched off:
+`npc_jobs_enabled` (`craft/contract.dm`) is FALSE, so `fill_jobs()` and the
+harbour office's `fill()` offer nothing and the depot's menu has no "Depot
+work". Only contracts one player posts for another are on offer. Probes set
+the switch to exercise the jobs.
+
 ## Hails and running dark
 
 `naval/craft_signals.dm`: `craft.hail(other, text, from)` calls across to a
