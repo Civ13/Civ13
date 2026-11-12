@@ -355,6 +355,39 @@ var/submarine_runtime_error = FALSE
 		submarine_check(X.do_matrix(X.dir, TURN_RIGHT(X.dir), "right") && submarine_span(X, "x") == 3 && submarine_span(X, "y") == 7 && get_turf(XW) == locate(28, 8, 2), "turning right brings it back where it lay")
 		submarine_check(vehicle_rotation_target(5, "right", "1,2") == "2,5" && vehicle_rotation_target(5, "left", "1,2") == "4,1" && vehicle_rotation_target(7, "right", "1,2") == "2,7" && vehicle_rotation_target(7, "left", "1,2") == "6,1", "a 7x7 square turns by the same rule as the 5x5 table")
 
+
+	// Name and stripe: the crew name the boat and repaint her hull stripes.
+	var/obj/structure/vehicleparts/axis/ship/submarine/PB = build_submarine(locate(22, 22, 2), "paint boat")
+	submarine_check(istype(PB), "a boat builds for the paint checks")
+	if (PB)
+		var/obj/structure/vehicleparts/frame/ship/steel/submarine/striped = null
+		var/obj/structure/vehicleparts/frame/ship/steel/submarine/bare = null
+		var/stripes = 0
+		for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/NF in PB.frames())
+			if (NF.has_stripe())
+				stripes++
+				striped = NF
+			else
+				bare = NF
+		submarine_check(stripes == 6 && striped && bare, "two stripes cross six of the Scout's fifteen roof sections ([stripes])")
+		submarine_check(PB.stripe_color == "#E89628" && PB.stripe_paint_name() == "Orange" && striped && !striped.roof.overlays.len, "a new boat wears the factory orange drawn into her roof")
+		submarine_check(PB.paint_stripe("Blue") && PB.stripe_color == submarine_stripe_paints["Blue"] && PB.stripe_paint_name() == "Blue", "the stripes repaint blue")
+		submarine_check(striped && striped.roof.overlays.len == 1 && bare && !bare.roof.overlays.len, "only the striped sections carry the new paint, once")
+		var/image/old_roof = striped ? striped.roof : null
+		PB.paint_stripe("Red")
+		submarine_check(striped && striped.roof == old_roof && striped.roof.overlays.len == 1, "repainting keeps the one roof image and one coat")
+		submarine_check(!PB.paint_stripe("Tartan") && PB.stripe_paint_name() == "Red", "an unknown paint changes nothing")
+		PB.paint_stripe("Orange")
+		submarine_check(striped && !striped.roof.overlays.len, "factory orange needs no coat")
+		submarine_check(PB.rename_boat("Nautilus") && PB.name == "Nautilus" && striped && striped.name == "Nautilus", "naming the boat names her hull sections")
+		submarine_check(!PB.rename_boat("") && PB.name == "Nautilus", "an empty name is refused")
+		submarine_check(length(PB.name) && PB.rename_boat("0123456789012345678901234567890123456789012345") && length(PB.name) == 39, "a long name is cut to 39 letters")
+		var/missing = 0
+		for (var/paint in submarine_stripe_paints)
+			if (!findtext(submarine_stripe_paints[paint], "#") || length(submarine_stripe_paints[paint]) != 7)
+				missing++
+		submarine_check(submarine_stripe_paints.len == 8 && !missing, "eight paints, each a colour")
+
 /proc/submarine_run()
 	try
 		submarine_checks()

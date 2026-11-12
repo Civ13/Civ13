@@ -322,7 +322,7 @@ var/global/list/naval_vessels = list()
 			for (var/atom/movable/M in S)
 				if (M.loc != S || QDELETED(M))
 					continue
-				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
 					continue
 				aboard += M
 			cargo[S] = aboard
@@ -786,6 +786,9 @@ var/global/list/naval_vessels = list()
 	if (comps.len)
 		var/flooded = flooded_compartments()
 		lines += "Damage control: [flooded] of [comps.len] compartments flooded[flooded ? ", the ship lists and [speeds[max_speed + 1]] is all she will make; [sink_threshold()] flooded sinks her" : ""]."
+	var/datum/craft/C = craft_of_vessel(src, FALSE)
+	if (C)
+		lines += C.magnetic_text()
 	if (last_refusal)
 		lines += "Last refusal: [last_refusal]."
 	return jointext(lines, "<br>")

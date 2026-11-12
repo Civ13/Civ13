@@ -143,6 +143,18 @@
 	var/scanning = 0
 	var/radiation_count = 0
 	var/checked = FALSE
+	var/tmp/scan_generation = 0 // runtime only: the one live scan loop
+	var/tmp/last_pulse_time = -1000 // runtime only: when the last pulse was measured
+
+/obj/item/weapon/geiger_counter/get_saved_vars()
+	var/list/saved = ..()
+	saved -= list("scan_generation", "last_pulse_time")
+	return saved
+
+/obj/item/weapon/geiger_counter/after_load()
+	. = ..()
+	if (scanning)
+		start_scanning()
 
 /obj/item/weapon/geiger_counter/examine(mob/user)
 	..()
@@ -176,6 +188,7 @@
 	if (global_radiation > 0 && loc.z == multiz_top_z())
 		backgroundrad = global_radiation/1000
 	radiation_count = (radiation_count+backgroundrad)
+	last_pulse_time = world.time
 	update_icon()
 
 /obj/item/weapon/geiger_counter/proc/check_radiation(mob/user)
@@ -216,35 +229,45 @@
 	to_chat(usr, "<span class='notice'>You switch [scanning ? "on" : "off"] \the [src].</span>")
 	if (!scanning)
 		radiation_count = 0
-	if (scanning)
-		processing()
-
-/obj/item/weapon/geiger_counter/proc/processing()
-	if (scanning)
-		var/backgroundrad = 0
-		if (global_radiation > 0 && loc.z == multiz_top_z())
-			backgroundrad = global_radiation/1000
-		if (backgroundrad > radiation_count)
-			radiation_count = (radiation_count+backgroundrad)
-		var/rad_min = radiation_count*60 //we check the effects over 1 min
-		switch(rad_min)
-			if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
-				playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)
-			if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
-				playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
-			if(RAD_LEVEL_HIGH + 1 to RAD_LEVEL_VERY_HIGH)
-				playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
-			if(RAD_LEVEL_VERY_HIGH + 1 to RAD_LEVEL_CRITICAL)
-				playsound(get_turf(src), pick('sound/machines/geiger/high1.ogg','sound/machines/geiger/high2.ogg','sound/machines/geiger/high3.ogg','sound/machines/geiger/high4.ogg'),75)
-			if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
-				playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
-		update_icon()
-		checked = TRUE
-		spawn(10)
-			processing()
+		scan_generation++ // retire the pending loop
 	else
+		start_scanning()
+
+// Starts the single scan loop; any older loop sees a stale generation and stops.
+/obj/item/weapon/geiger_counter/proc/start_scanning()
+	scan_generation++
+	processing(scan_generation)
+
+/obj/item/weapon/geiger_counter/proc/processing(generation)
+	if (generation != scan_generation)
+		return
+	if (!scanning)
 		radiation_count = 0
 		return
+	var/backgroundrad = 0
+	if (global_radiation > 0 && loc && loc.z == multiz_top_z())
+		backgroundrad = global_radiation/1000
+	// Pulses repeat every second; a reading older than two seconds means the source is gone.
+	if (world.time - last_pulse_time > 20)
+		radiation_count = backgroundrad
+	else if (backgroundrad > radiation_count)
+		radiation_count = (radiation_count+backgroundrad)
+	var/rad_min = radiation_count*60 //we check the effects over 1 min
+	switch(rad_min)
+		if(RAD_LEVEL_NORMAL to RAD_LEVEL_MODERATE)
+			playsound(get_turf(src), pick('sound/machines/geiger/low1.ogg','sound/machines/geiger/low2.ogg','sound/machines/geiger/low3.ogg','sound/machines/geiger/low4.ogg'),75)
+		if(RAD_LEVEL_MODERATE + 1 to RAD_LEVEL_HIGH)
+			playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
+		if(RAD_LEVEL_HIGH + 1 to RAD_LEVEL_VERY_HIGH)
+			playsound(get_turf(src), pick('sound/machines/geiger/med1.ogg','sound/machines/geiger/med2.ogg','sound/machines/geiger/med3.ogg','sound/machines/geiger/med4.ogg'),75)
+		if(RAD_LEVEL_VERY_HIGH + 1 to RAD_LEVEL_CRITICAL)
+			playsound(get_turf(src), pick('sound/machines/geiger/high1.ogg','sound/machines/geiger/high2.ogg','sound/machines/geiger/high3.ogg','sound/machines/geiger/high4.ogg'),75)
+		if(RAD_LEVEL_CRITICAL + 1 to INFINITY)
+			playsound(get_turf(src), pick('sound/machines/geiger/ext1.ogg','sound/machines/geiger/ext2.ogg','sound/machines/geiger/ext3.ogg','sound/machines/geiger/ext4.ogg'),75)
+	update_icon()
+	checked = TRUE
+	spawn(10)
+		processing(generation)
 
 
 /proc/nuke_map(turf/epicenter, severity, duration, log, datum/durable_nomads_event/event = null)

@@ -62,6 +62,11 @@ salvage (set one crate out of a named wreck down by the board; the office
 keeps the crate, the crew keeps what was in it). The pay is 10 coins plus the
 miles for a survey and 20 plus the miles for salvage.
 
+Two ships at sea can meet. The chart lists any sail in sight; **Close a sail**
+steers for where she is now, and on coming up with her the ship heaves to in
+the same water, where the crews can hail, trade or board. Whichever sails on
+parts company. A ship running dark is only made out from close by.
+
 An island or wreck is taken away ten minutes after the last ship and the last
 person have left it, with whatever was left there. A mooring post built on it
 makes it a harbour that stays; four sites can be harbours at once.

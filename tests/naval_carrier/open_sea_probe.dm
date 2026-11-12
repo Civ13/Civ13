@@ -373,6 +373,35 @@ var/naval_runtime_error = FALSE
 			found_far = TRUE
 	naval_check(chart_distance(5, 5, isle.x, isle.y) > OPEN_SEA_SIGHT ? found_far : TRUE, "a surveyed island can be made for from beyond sight")
 
+	// ---- Meeting at sea ----
+	T.x = chart.home.x
+	T.y = chart.home.y
+	var/obj/structure/hull_tiller/lark_tiller = sea_ship(50, 70, "Lark")
+	var/datum/craft/L = lark_tiller.craft
+	L.set_anchor(FALSE)
+	var/lark_refusal = L.put_to_sea()
+	naval_check(isnull(lark_refusal) && isnull(L.open_sea_place()) && !length(L.sea_company()), "the Lark puts to sea alone ([lark_refusal])")
+	var/datum/chart_token/passage/LT = L.sea_token
+	LT.x = chart.home.x + 12
+	LT.y = chart.home.y
+	naval_check(!length(C.open_sea_sails()) || C.open_sea_sails()[C.open_sea_sails()[1]] == L, "from the home waters the Wren makes out the Lark")
+	C.set_anchor(FALSE)
+	naval_check(isnull(C.put_to_sea()) && sea_cell_of(get_turf(tiller)) != sea_cell_of(get_turf(lark_tiller)) && !C.sights(L), "at sea each lies in her own water, out of sight of the other")
+	var/list/sails = C.open_sea_sails()
+	naval_check(sails.len == 1 && sails[sails[1]] == L && findtext(sails[1], "Lark") && findtext(C.open_sea_text(), "Lark, a sail at sea"), "the chart shows the Lark as a sail at sea ([sails.len ? sails[1] : "none"])")
+	L.running_dark = TRUE
+	L.open_sea_token()
+	naval_check(length(C.open_sea_sails()) == 0 && !findtext(C.open_sea_text(), "a sail at sea"), "running dark twelve miles off she is not made out")
+	L.running_dark = FALSE
+	L.open_sea_token()
+	T.lay_course(LT.x, LT.y, "the Lark")
+	sea_passage(C)
+	naval_check(sea_cell_of(get_turf(tiller)) == sea_cell_of(get_turf(lark_tiller)) && C.sea_company().len == 1 && L.sea_company()[1] == C && T.x == LT.x && isnull(C.open_sea_place()), "coming up with her, the Wren is moved into the Lark's water")
+	naval_check(C.sights(L) && L.sights(C) && !length(C.open_sea_sails()) && findtext(C.open_sea_text(), "Lark lies hove to in the same water"), "where they sight each other ([C.open_sea_text()])")
+	var/shared = sea_cell_of(get_turf(tiller))
+	naval_check(isnull(L.put_to_sea()) && sea_cell_of(get_turf(lark_tiller)) != shared && sea_cell_of(get_turf(tiller)) == shared && !length(C.sea_company()), "the Lark sails on and parts company, into water of her own")
+	naval_check(isnull(C.put_to_sea()) && sea_cell_of(get_turf(tiller)) == shared, "left alone, the Wren stays where she is")
+
 /proc/naval_run()
 	try
 		naval_checks()

@@ -28,7 +28,23 @@
 // How often the periscope checks its watchers are still at the eyepiece.
 #define SUBMARINE_PERISCOPE_CHECK (1 SECONDS)
 
+// The stripe colour a boat leaves the pen with (drawn into the roof art).
+#define SUBMARINE_STRIPE_DEFAULT "#E89628"
+// How long repainting the hull stripes takes.
+#define SUBMARINE_PAINT_TIME (5 SECONDS)
+
 var/global/list/player_submarines = list()
+// The paints kept in a boat's stores for its hull stripes.
+var/global/list/submarine_stripe_paints = list(
+	"Orange" = SUBMARINE_STRIPE_DEFAULT,
+	"Red" = "#C8281E",
+	"Yellow" = "#F0D040",
+	"Green" = "#3C9A3C",
+	"Blue" = "#2C6CD0",
+	"Purple" = "#8040A8",
+	"White" = "#F0F0F0",
+	"Black" = "#202428",
+	)
 
 /obj/structure/vehicleparts/axis/ship/submarine
 	name = "submarine"
@@ -39,6 +55,9 @@ var/global/list/player_submarines = list()
 	var/submerged = FALSE
 	// Which layout and hull art the boat has (submarine_layouts).
 	var/hull_class = "scout"
+	// The colour of the stripes across the hull; the crew repaint them at the
+	// ballast station.
+	var/stripe_color = SUBMARINE_STRIPE_DEFAULT
 	// Mobs looking through the periscope. Runtime only.
 	var/tmp/list/periscope_watchers = list()
 	var/tmp/periscope_check_queued = FALSE
@@ -90,42 +109,7 @@ var/global/list/player_submarines = list()
 
 // Moves the whole boat and everything aboard straight to target_z.
 /obj/structure/vehicleparts/axis/ship/submarine/proc/shift_level(target_z)
-	if (!target_z || transforming_vehicle)
-		return FALSE
-	add_transporting(FALSE)
-	var/list/movers = list()
-	var/list/destinations = list()
-	var/list/tiles = list()
-	for (var/atom/movable/M in (transporting | components))
-		if (QDELETED(M) || !isturf(M.loc))
-			continue
-		var/turf/D = locate(M.x, M.y, target_z)
-		if (!D)
-			return FALSE
-		movers += M
-		destinations[M] = D
-		tiles |= M.loc
-		tiles |= D
-	transforming_vehicle = TRUE
-	transform_tiles = tiles
-	for (var/turf/T in tiles)
-		T.vehicle_transforming = src
-	try
-		// Frames first, so whatever stands on them arrives on a deck.
-		for (var/obj/structure/vehicleparts/frame/F in movers)
-			F.forceMove(destinations[F])
-		for (var/atom/movable/M in movers)
-			if (istype(M, /obj/structure/vehicleparts/frame) || QDELETED(M))
-				continue
-			M.forceMove(destinations[M])
-	catch (var/exception/e)
-		release_transform_tiles(tiles)
-		throw e
-	release_transform_tiles(tiles)
-	for (var/obj/O in movers)
-		O.update_icon()
-	refresh_passenger_vision()
-	return TRUE
+	return shift_vehicle_level(target_z)
 
 // Why the boat cannot dive or surface now, or null.
 /obj/structure/vehicleparts/axis/ship/submarine/proc/depth_refusal(diving)
@@ -329,11 +313,74 @@ var/global/list/ship_axes = list()
 	for (var/line in lines)
 		to_chat(user, line)
 
+// ---- Name and stripe ----
+
+// Gives the boat a name: her hull sections carry it too, so it is what
+// people read when they look at her.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/rename_boat(new_name)
+	new_name = sanitize(copytext("[new_name]", 1, 40))
+	if (!length(new_name))
+		return FALSE
+	name = new_name
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		F.name = new_name
+	return TRUE
+
+// Repaints the stripes across the hull. Returns FALSE for a colour that is
+// not one of the boat's paints.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/paint_stripe(paint)
+	var/new_color = submarine_stripe_paints[paint]
+	if (!new_color)
+		return FALSE
+	stripe_color = new_color
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		F.update_icon()
+	return TRUE
+
+/obj/structure/vehicleparts/axis/ship/submarine/proc/stripe_paint_name()
+	for (var/paint in submarine_stripe_paints)
+		if (submarine_stripe_paints[paint] == stripe_color)
+			return paint
+	return "Orange"
+
+/obj/structure/vehicleparts/axis/ship/submarine/proc/order_name(mob/living/human/user, obj/structure/vehicleparts/sub_station/station)
+	var/new_name = player_input(user, "What is she called? Her name is what people read on her hull.", "Name the boat", name, "text", null, TRUE)
+	if (isnull(new_name) || QDELETED(src) || QDELETED(station) || !station.Adjacent(user) || station.boat() != src)
+		return
+	if (rename_boat(new_name))
+		crew_message(SPAN_NOTICE("[user] names the boat the [name]."))
+
+// The stripes are on the outside of the hull: nobody paints them submerged.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/order_paint(mob/living/human/user, obj/structure/vehicleparts/sub_station/station)
+	if (submerged)
+		to_chat(user, SPAN_WARNING("The stripes are on the outside of the hull. Surface first."))
+		return
+	var/list/paints = list()
+	for (var/paint in submarine_stripe_paints)
+		paints += paint
+	paints += "Cancel"
+	var/choice = WWinput(user, "The hull stripes are [lowertext(stripe_paint_name())]. Which paint?", "Paint the stripes", "Cancel", paints)
+	if (!choice || choice == "Cancel" || QDELETED(src) || QDELETED(station) || !station.Adjacent(user) || station.boat() != src)
+		return
+	if (submarine_stripe_paints[choice] == stripe_color)
+		to_chat(user, SPAN_NOTICE("The stripes are already [lowertext(choice)]."))
+		return
+	user.visible_message(SPAN_NOTICE("[user] takes a brush and a pot of [lowertext(choice)] paint up through the hatch."))
+	if (!do_after(user, SUBMARINE_PAINT_TIME, user))
+		return
+	if (QDELETED(src) || QDELETED(station) || station.boat() != src)
+		return
+	if (submerged)
+		to_chat(user, SPAN_WARNING("The boat dived before you could paint."))
+		return
+	if (paint_stripe(choice))
+		crew_message(SPAN_NOTICE("[user] paints the hull stripes [lowertext(choice)]."))
+
 // ---- The ballast and periscope station ----
 
 /obj/structure/vehicleparts/sub_station
 	name = "ballast and periscope station"
-	desc = "Valve wheels for the ballast tanks and the eyepiece of the periscope. Use it to dive, surface, raise the periscope or read the contacts."
+	desc = "Valve wheels for the ballast tanks and the eyepiece of the periscope. Use it to dive, surface, raise the periscope or read the contacts. The boat's name board and stripe paint are kept here too."
 	icon = 'icons/obj/machines/submarine.dmi'
 	icon_state = "ballast"
 	anchored = TRUE
@@ -364,6 +411,9 @@ var/global/list/ship_axes = list()
 		options += "Sonar ping"
 	if (B.submerged)
 		options += (user in B.periscope_watchers) ? "Lower periscope" : "Raise periscope"
+	options += "Name the boat"
+	if (!B.submerged)
+		options += "Paint the stripes"
 	options += "Cancel"
 	var/choice = WWinput(user, "[B] is [B.submerged ? "submerged" : "on the surface"].", name, "Cancel", options)
 	if (QDELETED(src) || QDELETED(B) || !Adjacent(user) || boat() != B)
@@ -386,6 +436,10 @@ var/global/list/ship_axes = list()
 			B.raise_periscope(user, src)
 		if ("Lower periscope")
 			B.lower_periscope(user)
+		if ("Name the boat")
+			B.order_name(user, src)
+		if ("Paint the stripes")
+			B.order_paint(user, src)
 
 // ---- Hull ----
 
@@ -424,6 +478,13 @@ var/global/list/ship_axes = list()
 		roof = image(icon = icon, loc = src, icon_state = "[hull_tile]_roof", layer = 11)
 	roof.icon_state = axis ? "[hull_tile]_roof" : ""
 	roof.dir = dir
+	// Repainted stripes lie over the factory ones drawn into the roof.
+	roof.overlays.Cut()
+	var/obj/structure/vehicleparts/axis/ship/submarine/boat = axis
+	if (istype(boat) && boat.stripe_color != SUBMARINE_STRIPE_DEFAULT && has_stripe())
+		var/image/stripe = image(icon = icon, icon_state = "[hull_tile]_stripe", dir = dir)
+		stripe.color = boat.stripe_color
+		roof.overlays += stripe
 	var/list/sides = list(list(w_front, dir), list(w_back, turn(dir, 180)), list(w_left, turn(dir, 90)), list(w_right, turn(dir, -90)))
 	for (var/list/side in sides)
 		var/list/wall = side[1]
@@ -435,6 +496,16 @@ var/global/list/ship_axes = list()
 				state = wall[7] ? "sub_door_open" : "sub_door_closed"
 		if (state)
 			overlays += image(icon = icon, icon_state = state, layer = 2.99, dir = side[2])
+
+// Whether one of the hull stripes crosses this section's roof.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/has_stripe()
+	var/static/list/stripe_states = null
+	if (!stripe_states)
+		stripe_states = list()
+		for (var/state in icon_states('icons/obj/vehicles/submarine_hull.dmi'))
+			if (findtext(state, "_stripe"))
+				stripe_states[state] = TRUE
+	return stripe_states["[hull_tile]_stripe"]
 
 // The watertight doors in the bulkheads swing by hand from either side.
 /obj/structure/vehicleparts/frame/ship/steel/submarine/proc/door_walls()
@@ -763,6 +834,8 @@ var/global/list/submarine_layouts = list(
 	return A
 
 #undef SUBMARINE_WIDTH
+#undef SUBMARINE_STRIPE_DEFAULT
+#undef SUBMARINE_PAINT_TIME
 #undef SUB_WALL_HULL
 #undef SUB_WALL_GLASS
 #undef SUB_WALL_BULKHEAD

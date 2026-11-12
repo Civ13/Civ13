@@ -216,6 +216,12 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   are saved by the tiller with the hull, and the sites by
   `/obj/structure/sea_registry` as one text. Her drives pay once per half
   minute under way.
+- **Meeting at sea.** The chart lists other ships at sea in sight
+  (`open_sea_sails()`; one running dark only within a third of that). **Close
+  a sail** lays a course for where she is now; on arriving within
+  `CHART_ARRIVE_RANGE` of her token `open_sea_meet()` moves the hull into her
+  cell, where hails, sightings and grapples work as in any waters. Whichever
+  then sails on parts company: `put_to_sea()` gives her a cell of her own.
 - On an open-sea world the lookout, the sea chart and the berth menu only see
   the ship's own cell (`sea_same_waters()`).
 - The home island is drawn into the region map by
