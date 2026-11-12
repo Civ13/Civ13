@@ -772,41 +772,49 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/input
+	var/input // name of the loaded item; the item itself is deleted on insertion
 	var/output_amount = 0
+	var/tmp/cranking = FALSE // one crank per batch, whoever turns it
 
 /obj/structure/meat_grinder/attack_hand(mob/living/human/user as mob)
 	if (input != null)
+		if (cranking)
+			to_chat(user, "<span class='warning'>Someone is already cranking \the [src].</span>")
+			return
+		cranking = TRUE
 		to_chat(user, "You start to crank the lever.")
 		icon_state = active_state
-		if (do_after(user, 35))
+		var/cranked = do_after(user, 35)
+		cranking = FALSE
+		if (cranked && input != null)
 			playsound(loc, 'sound/effects/rollermove.ogg', 35, TRUE)
 			to_chat(user, "The grinder plops out some mince!")
 			for(var/i=1, i<=output_amount, i++)
 				new /obj/item/weapon/reagent_containers/food/snacks/mince(get_turf(src))
 			input = null
+			output_amount = 0
 			icon_state = empty_state
 		else
-			icon_state = full_state
+			icon_state = input != null ? full_state : empty_state
 
 /obj/structure/meat_grinder/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(input==null)
 		if (istype(W, /obj/item/weapon/pigleg) || istype(W, /obj/item/weapon/chicken_carcass))
-			input = W
+			input = "[W.name]"
 			output_amount = 4
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish/) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/chicken))
-			input = W
+			input = "[W.name]"
 			output_amount = 2
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(W, /obj/item/weapon/reagent_containers/food/snacks/fishfillet))
-			input = W
+			input = "[W.name]"
 			output_amount = 1
 			icon_state = full_state
 			to_chat(user, "You insert the [W] into the [src].")
