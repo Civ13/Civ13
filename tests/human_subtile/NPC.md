@@ -41,7 +41,8 @@ an interrupted intent therefore need explicit interaction acceptance: release th
 unsupported state before ordinary AI recovery. This is a retained limitation to
 review, not evidence that every legacy interaction works during an offset.
 Save/load captures owned offsets through a five-scalar capsule, excludes runtime
-state, rejects occupied/malformed placements and does not replay workers. Legacy
+state, restores occupied or malformed placements aligned on the saved tile
+instead of failing the world load, and does not replay workers. Legacy
 unowned raw offsets are not silently adopted.
 
 Update budget is at most 16 top-level Move calls per admitted AI intent, versus 1

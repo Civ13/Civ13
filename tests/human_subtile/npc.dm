@@ -96,6 +96,21 @@ var/list/npc_subtile_rows = list()
 	npc_subtile_assert(L.ai_step(get_step(L, WEST), 4), "npc_restored_recovery_admitted")
 	sleep(5)
 	npc_subtile_assert(!L.step_x && L.x == 5 && !L.npc_subtile_transaction, "npc_restored_recovery_aligned")
+	// A capsule that does not match where the animal loaded (it stepped to
+	// another tile while its save entry was captured, or a level was renumbered)
+	// restores aligned on the loaded tile instead of aborting the world import.
+	map_storage.clear_bookkeeping()
+	var/malformed_failed = FALSE
+	var/mob/living/simple_animal/npc_vendor/smuggler/subtile_fixture/M
+	try
+		M = map_storage.Load_Entry(F, ref, starting_loc = locate(5, 8, 1))
+		M.npc_subtile_position["x"] = M.x + 3
+		M.after_load()
+	catch
+		malformed_failed = TRUE
+	npc_subtile_assert(!malformed_failed && M && M.x == 5 && M.y == 8 && !M.step_x && !M.step_y && !M.npc_subtile_import_owned && !M.npc_subtile_offset_owned && isnull(M.npc_subtile_position), "npc_malformed_offset_restores_on_tile")
+	if (M)
+		qdel(M)
 	// Bodies may overlap: a person standing in the saved offset's way makes the
 	// animal restore aligned on its tile instead of failing the whole load.
 	var/mob/living/human/overlap = new(locate(6, 8, 1))
