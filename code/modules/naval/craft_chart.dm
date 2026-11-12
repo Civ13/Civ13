@@ -102,7 +102,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		add_token(C.token, at[1], at[2])
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
 		var/turf/P = get_turf(Q)
-		if (QDELETED(Q) || !P || P.z != z)
+		if (QDELETED(Q) || !P || P.z != z || !Q.takes_ships)
 			continue
 		if (!Q.token)
 			Q.token = new /datum/chart_token/harbour
@@ -316,7 +316,7 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 		return
 	var/list/choices = list()
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
-		if (Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth && sea_same_waters(here, get_turf(Q)))
+		if (Q.takes_ships && Q.z == here.z && get_dist(here, Q) <= QUAY_DOCK_RANGE && Q != berth && sea_same_waters(here, get_turf(Q)))
 			choices["[capitalize(Q.berth_name())], [get_dist(here, Q)] tiles [submarine_bearing(here, get_turf(Q))]"] = Q
 	if (!choices.len)
 		to_chat(H, SPAN_WARNING("There is no mooring post within [QUAY_DOCK_RANGE] tiles of the [name]."))
@@ -349,6 +349,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	// Saved: the harbour's name. owner_party, welcome and guests save too.
 	var/harbour = ""
 	var/tmp/datum/chart_token/harbour/token
+	// FALSE for a board that is not a berth for ships (freight_depot.dm): it
+	// stays off the sea chart and no ship can make for it.
+	var/takes_ships = TRUE
 
 /obj/structure/berth/quay/New()
 	..()
