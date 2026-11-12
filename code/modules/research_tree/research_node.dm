@@ -1141,6 +1141,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/life_support/radiator" = "orbital_flight",
 		"/obj/structure/region_gate/launch_complex" = "orbital_flight",
 		"/obj/structure/orbit_console" = "orbital_flight",
+		"/obj/structure/chart_helm/orbit" = "orbital_flight",
 		"/obj/item/habitat_kit" = "sealed_habitats",
 		"/obj/item/habitat_kit/greenhouse" = "sealed_habitats",
 		"/obj/item/habitat_kit/workshop" = "sealed_habitats",

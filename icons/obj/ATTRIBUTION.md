@@ -36,6 +36,15 @@ Civ13 (2026-11-12), pixel by pixel from a fixed palette by
 `tests/sprites/create_diving_gear.py`. No borrowed or generated artwork. They are
 under the same terms as the rest of Civ13's art.
 
+## icons/mob/sea_life.dmi
+
+All states (`kelp_turtle`, `kelp_turtle_dead`, `reef_eel`, `reef_eel_hidden`,
+`reef_eel_dead`, `drift_jelly`, `drift_jelly_dead`, `shoal_dead`) were drawn for
+Civ13 (2026-11-12), pixel by pixel from fixed palettes by
+`tests/sprites/create_sea_life.py`. No borrowed or generated artwork. They are
+under the same terms as the rest of Civ13's art. The living shoals use the
+existing `fish1` and `fish2` states of `icons/mob/fish.dmi`.
+
 ## primitive_carrying.dmi and icons/mob/primitive_carrying.dmi
 
 All states (`carry_net`, `sling_bag`, `pack_basket`, `pack_frame`, `travois`,
