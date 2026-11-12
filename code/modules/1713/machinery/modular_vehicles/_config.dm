@@ -85,6 +85,31 @@ var/global/datum/vehicle_constants/VEHICLE_CONSTANTS = new()
 		),
 	)
 
+/// The largest square a vehicle can turn in (the Explorer submarine is 7 long).
+#define VEHICLE_MAX_TURNING_SQUARE 7
+
+/// The cell "x,y" of a size x size turning square that the cell at key moves
+/// to in a quarter turn. Squares up to 5 use the tables below; larger ones
+/// follow the same rule worked out.
+/proc/vehicle_rotation_target(size, tdir, key)
+	switch (size)
+		if (1)
+			return rotation_matrixes1[tdir][key][1]
+		if (2)
+			return rotation_matrixes2[tdir][key][1]
+		if (3)
+			return rotation_matrixes3[tdir][key][1]
+		if (4)
+			return rotation_matrixes4[tdir][key][1]
+		if (5)
+			return rotation_matrixes5[tdir][key][1]
+	var/list/C = splittext(key, ",")
+	var/a = text2num(C[1])
+	var/b = text2num(C[2])
+	if (tdir == "right")
+		return "[b],[size + 1 - a]"
+	return "[size + 1 - b],[a]"
+
 /// Rotation matrices for vehicle turning calculations
 /// These define how vehicle parts rotate when turning
 var/global/list/rotation_matrixes1 = list(
