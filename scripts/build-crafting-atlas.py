@@ -12,6 +12,7 @@ from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
 from atlas.facts import resource_facts
 from atlas.entities import entity_resources
+from atlas.interactions import add_interactions
 
 
 def catalog_text(game):
@@ -413,6 +414,10 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
 for route in tanning_routes + rope_routes + woodworking_routes + dressmaking_routes:
+    for resource in route['outputs']:
+        acquisition.setdefault(canon(resource),[]).append(route)
+# Hand-interaction routes generated from source (drying, steeping, grinding, knapping, crops).
+for route in add_interactions(files, add, records, set(acquisition)):
     for resource in route['outputs']:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
