@@ -32,8 +32,10 @@
 			var/datum/language/langtolearn = lang1
 			if (known1)
 				langtolearn = lang2
+			if(H.too_dark_to_read())
+				return
 			H.visible_message("<span class='notice'>[user] begins to read the [src].</span>", "<span class='notice'>You begin reading translations for [langtolearn.name] in the [src]. This will take around 80 seconds, and you need to stand or sit still.</span>")
-			if(do_after(user, 800, src))
+			if(do_reading(user, 800, src))
 				H.visible_message("<span class='notice'>[user] finishes reading the [src].</span>", "<span class='notice'>You finish reading translations in the [src]. You can now understand and speak [langtolearn.name]!</span>")
 				H.add_language(langtolearn.name, FALSE)
 				H.add_note("Known Languages", "[langtolearn.name]")
@@ -48,6 +50,8 @@
 		if(written)
 			to_chat(user, "<span class = 'warning'>You can't write a language book that has already been written in!</span>")
 			return
+		if(user.too_dark_to_read())
+			return
 		var/list/langcopy = user.languages.Copy() + "Cancel"
 		var/datum/language/language1 = WWinput(user, "What will your 1st language to translate be?", "Writing Translations", "Cancel", langcopy)
 		if (!istype(language1))
@@ -57,7 +61,7 @@
 		if (!istype(language2))
 			return
 		user.visible_message("<span class='notice'>[user] begins to write in the [src].</span>", "<span class='notice'>You begin writing translations in the [src]. This will take around 2 minutes, and you need to stand or sit still.</span>")
-		if(do_after(user, 1200, src))
+		if(do_reading(user, 1200, src))
 			if (written)
 				return
 			user.visible_message("<span class='notice'>[user] finishes writing in the [src].</span>", "<span class='notice'>You finish writing translations in the [src].</span>")

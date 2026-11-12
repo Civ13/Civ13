@@ -444,6 +444,8 @@
 	if (!H.knows_research_prereqs(node_id))
 		to_chat(H, SPAN_WARNING("You need to understand this chapter's groundwork first."))
 		return FALSE
+	if (H.too_dark_to_read())
+		return FALSE
 	var/time = H.scholar_study_time(N.era_tier)
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
 	var/mob/living/human/tutor = H.find_tutor(node_id)
@@ -622,10 +624,12 @@
 	if (dest.page_busy)
 		to_chat(H, SPAN_WARNING("Someone is already working on [dest]."))
 		return FALSE
+	if (H.too_dark_to_read())
+		return FALSE
 	var/time = scholar_write_time(N.era_tier, pen, H)
 	to_chat(H, SPAN_NOTICE("You begin copying the chapter on [N.name] into [dest]. This takes about [round(time / 600, 0.5)] minute\s."))
 	dest.page_busy = TRUE
-	var/done = do_after(H, time, src)
+	var/done = do_reading(H, time, src)
 	dest.page_busy = FALSE
 	if (!done || QDELETED(src) || source.loc != src || dest.loc != src || !recipe_held(H, sheet) || !recipe_held(H, pen))
 		return FALSE

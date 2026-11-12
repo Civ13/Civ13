@@ -64,7 +64,7 @@
 /mob/living/human/proc/timed_study(node_id, total_time, atom/anchor)
 	var/left = study_time_left(node_id, total_time)
 	var/started = world.time
-	var/done = do_after(src, left, anchor)
+	var/done = do_reading(src, left, anchor)
 	var/spent = done ? left : clamp(world.time - started, 0, left)
 	if (spent > 0 && total_time > 0)
 		note_study_progress(node_id, study_fraction(node_id) + spent / total_time)
@@ -82,3 +82,53 @@
 	study_progress = clean_study_progress(study_progress)
 	if (stat == DEAD)
 		study_progress = list()
+
+// ------------------------------------------------------------
+// Reading needs light (Val, 2026-11-12)
+// ------------------------------------------------------------
+// Studying, copying and writing are done by eye: the reader's tile must be lit
+// at least as well as a research bench needs (SCHOLAR_MIN_LIGHT). Evening
+// daylight is enough; night or a dark room needs a candle, lamp or torch
+// nearby. A read that is interrupted because the light went out keeps the part
+// already read, like any other interruption (timed_study above).
+
+/mob/living/human/proc/reading_light_problem()
+	var/turf/T = get_turf(src)
+	if (!T || T.get_lumcount() < SCHOLAR_MIN_LIGHT)
+		return "It's too dark to read or write here. Bring a candle, lamp or torch, or wait for daylight."
+	return null
+
+// Says why H can't read here and returns TRUE, or returns FALSE when lit.
+/mob/living/human/proc/too_dark_to_read()
+	var/problem = reading_light_problem()
+	if (problem)
+		to_chat(src, SPAN_WARNING(problem))
+		return TRUE
+	return FALSE
+
+// A do_after for reading and writing: it refuses to start in the dark and
+// stops as soon as the reader's light goes out. It waits in short steps under
+// one progress bar so the light is checked while the reader works.
+/proc/do_reading(mob/living/human/H, delay, atom/target)
+	if (!istype(H))
+		return do_after(H, delay, target)
+	if (H.too_dark_to_read())
+		return FALSE
+	delay = max(1, round(delay))
+	var/datum/progressbar/bar = H.client ? new /datum/progressbar(H, delay, target) : null
+	var/started = world.time
+	var/steps = max(1, -round(-delay / READING_LIGHT_CHECK))
+	. = TRUE
+	for (var/i = 1 to steps)
+		var/wait = min(READING_LIGHT_CHECK, delay - (i - 1) * READING_LIGHT_CHECK)
+		if (!do_after(H, wait, target, TRUE, FALSE))
+			. = FALSE
+			break
+		if (bar)
+			bar.update(world.time - started)
+		if (i < steps && H.reading_light_problem())
+			to_chat(H, SPAN_WARNING("It has grown too dark to see the page. Bring a candle, lamp or torch, or wait for daylight."))
+			. = FALSE
+			break
+	if (bar)
+		qdel(bar)
