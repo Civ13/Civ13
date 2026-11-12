@@ -141,3 +141,24 @@ var/global/list/river_moved = list()
 	if (!occupied)
 		river_active_water -= src
 
+
+// ---- flow lines ---------------------------------------------
+// Flowing water shows which way it runs: pale streaks that slide with the
+// current (tools/weather/make_flow.py). They are shared images in the turf's
+// overlays, in the slot hill shading uses on land (terrain_height.dm), so the
+// same hooks put them back after a floor icon rebuild or a turf change, they
+// are never clickable and never saved. Ice and still water have none.
+var/global/list/water_flow_images = list()
+
+/proc/water_flow_image(turf/T)
+	var/direction = river_current_direction(T)
+	if (!direction)
+		return null
+	var/key = "flow_[dir2text(direction)][(T.x * 3 + T.y * 5) % 2 ? "2" : ""]"
+	var/image/I = water_flow_images[key]
+	if (!I)
+		I = image('icons/turf/water_flow.dmi', icon_state = key, layer = 2.035)
+		I.plane = FLOOR_PLANE
+		I.mouse_opacity = 0
+		water_flow_images[key] = I
+	return I

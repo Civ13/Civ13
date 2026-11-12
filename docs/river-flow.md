@@ -61,6 +61,21 @@ nobody playing them keep out of deep water as they always did.
 
 Rip currents that pull a swimmer out from the beach are not built yet.
 
+## Flow lines
+
+Flowing water, river or sea, shows which way it runs: a few pale streaks
+slide along each flowing tile (`icons/turf/water_flow.dmi`, eight directions
+in two variants so a wide current is not one tile repeated). They are shared
+images in the turf's overlays, in the slot hill shading uses on land
+(`terrain_shade_overlay`), so the same hooks restore them after a floor icon
+rebuild or a turf change, they are never clickable and never saved. Still
+water and ice have none. The streaks are placed pixel by pixel by a seeded
+script:
+
+    python3 tools/weather/make_flow.py            # rewrite the icon
+    python3 tools/weather/make_flow.py --check    # exit 1 if stale
+    python3 tools/weather/make_flow.py --preview flow.gif
+
 ## What the current moves
 
 Flowing water moves unanchored items and unrestrained living mobs one tile

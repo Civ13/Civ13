@@ -123,3 +123,20 @@ var/sea_runtime_error = FALSE
 	var/turf/frozen = locate(20, 20, 1)
 	frozen = frozen.ChangeTurf(/turf/floor/beach/water/ice/salty, FALSE, FALSE)
 	sea_check(!river_current_direction(frozen), "no current moves things on sea ice")
+
+	// Flow lines: flowing water wears them, still water and ice do not.
+	var/turf/lined = locate(30, 20, 1)
+	var/image/line = water_flow_image(lined)
+	sea_check(line && findtext(line.icon_state, "flow_east") == 1 && line.plane == FLOOR_PLANE && !line.mouse_opacity, "flowing sea has an eastward flow line")
+	sea_check(icon_states('icons/turf/water_flow.dmi').Find(line.icon_state), "the flow line state exists in the icon")
+	sea_check(water_flow_image(locate(31, 20, 1)) != line && water_flow_image(locate(32, 20, 1)) == line, "neighbouring tiles alternate two shared images")
+	var/bare = lined.overlays.len
+	lined.terrain_shade_refresh()
+	sea_check(lined.terrain_shade_overlay == line && lined.overlays.len == bare + 1, "the turf wears its flow line")
+	lined.terrain_shade_icon()
+	lined.terrain_shade_refresh()
+	sea_check(lined.overlays.len == bare + 1, "an icon rebuild or a refresh keeps one flow line")
+	sea_check(isnull(water_flow_image(calm)) && isnull(water_flow_image(frozen)), "still water and ice have no flow line")
+	calm.terrain_shade_refresh()
+	sea_check(isnull(calm.terrain_shade_overlay), "still water wears nothing")
+
