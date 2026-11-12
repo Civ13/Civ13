@@ -465,6 +465,8 @@ SUITES = {
             'code/game/turfs/floor_attackby.dm', 'code/modules/1713/tools.dm',
             'code/modules/projectiles/__projectiles.dm',
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
+    'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
+        'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
     # Cotton is only food for ruminants: production predicate and call sites.
     'animal_cotton': {'files': ('tests/animal_cotton/test_animal_cotton.py',),
         'paths': ('tests/animal_cotton/',), 'shared_paths': (

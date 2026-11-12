@@ -24,9 +24,6 @@
 						var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))
 						if (target.density)
 							continue
-						for (var/obj/S in target)
-							if (S.density)
-								continue
 						step(dog, get_dir(dog, dog.walking_to))
 			else
 				catchBadType(current)
