@@ -182,7 +182,7 @@
 			for (var/atom/movable/M in S)
 				if (M.loc != S || QDELETED(M))
 					continue
-				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path))
+				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
 					continue
 				riders += M
 			cargo += list(riders)

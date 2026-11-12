@@ -11,6 +11,9 @@
 //    she lies alone while her token crosses the chart.
 //  - When her token reaches a place, the place is built in a cell if it is not
 //    there already and she is moved to lie off it.
+//  - Two ships at sea can meet: one lays a course for the other's sail and,
+//    on reaching her, is moved into her water. Whichever sails on parts
+//    company and takes a cell of her own again.
 //  - Where a ship is on the chart is read from where her hull lies (the home
 //    cell, a site's cell, or neither), so nothing but her token's place and
 //    motion has to be saved, and the tiller saves that with the hull.
@@ -340,10 +343,9 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 	var/datum/chart_token/passage/T = open_sea_token()
 	if (!T)
 		return "she has no chart"
-	if (!at)
-		return open_sea_refusal()
+	var/list/company = at ? null : sea_company()
 	var/refusal = open_sea_refusal()
-	if (refusal)
+	if (refusal || (!at && !length(company)))
 		return refusal
 	var/datum/plane_pool/sea/pool = sea_pool()
 	var/list/free = pool.free_planes()
@@ -352,11 +354,70 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 	refusal = open_sea_shift(free[1], FALSE)
 	if (refusal)
 		return refusal
+	if (!at)
+		// She sails on from a meeting at sea.
+		var/datum/craft/other = company[1]
+		crew_message(SPAN_NOTICE("The [name] parts company with the [other.name]."))
+		other.crew_message(SPAN_NOTICE("The [name] parts company and drops below the horizon."))
+		return null
 	T.x = at.x
 	T.y = at.y
 	if (at.site)
 		at.site.watch()
 	crew_message(SPAN_NOTICE("The [name] puts to sea. [capitalize(at.name)] drops below the horizon."))
+	return null
+
+// The other ships lying in her water while she is at sea.
+/datum/craft/proc/sea_company()
+	. = list()
+	var/turf/O = (body && body.placed()) ? body.origin() : null
+	if (!O || open_sea_place())
+		return
+	for (var/datum/craft/C in sea_crafts_in(sea_cell_of(O)))
+		if (C != src)
+			. += C
+
+// The sails at sea she can make for: text = craft. A ship running dark is
+// made out only from close by.
+/datum/craft/proc/open_sea_sails()
+	. = list()
+	var/datum/chart_token/passage/T = open_sea_token()
+	if (!T)
+		return
+	var/list/company = sea_company()
+	for (var/datum/chart_token/passage/O in T.chart.tokens)
+		var/datum/craft/C = O.craft
+		if (O == T || !C || QDELETED(C) || (C in company) || C.open_sea_place() || !C.body || !C.body.placed())
+			continue
+		var/far = chart_distance(T.x, T.y, O.x, O.y)
+		if (far > (O.dark ? T.sensor_range / 3 : T.sensor_range))
+			continue
+		.["[capitalize(O.contact_name())], [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]"] = C
+
+// Her token has come up with another ship at sea: she is moved into that
+// ship's water. Returns the ship she met, or null.
+/datum/craft/proc/open_sea_meet()
+	var/datum/chart_token/passage/T = sea_token
+	if (!T || !T.chart || open_sea_place())
+		return null
+	for (var/datum/chart_token/passage/O in T.chart.tokens)
+		var/datum/craft/C = O.craft
+		if (O == T || !C || QDELETED(C) || C.open_sea_place() || !C.body || !C.body.placed())
+			continue
+		if (chart_distance(T.x, T.y, O.x, O.y) > CHART_ARRIVE_RANGE)
+			continue
+		var/n = sea_cell_of(C.body.origin())
+		if (!n || n == sea_cell_of(body.origin()))
+			continue
+		var/refusal = open_sea_shift(n, TRUE)
+		if (refusal)
+			crew_message(SPAN_WARNING("The [name] cannot close the [C.name]: [refusal]."))
+			return null
+		T.x = O.x
+		T.y = O.y
+		crew_message(SPAN_NOTICE("<b>Sail ho!</b> The [name] comes up with the [C.name] and heaves to in her water."))
+		C.crew_message(SPAN_NOTICE("<b>Sail ho!</b> The [name] comes up and heaves to close by."))
+		return C
 	return null
 
 // The place her token has reached, or null: the home waters or a site.
@@ -374,7 +435,8 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 /datum/craft/proc/open_sea_arrive()
 	var/datum/chart_token/sea_place/P = open_sea_landfall()
 	if (!P)
-		crew_message(SPAN_NOTICE("The [name] is on station. Nothing but open water here."))
+		if (!open_sea_meet())
+			crew_message(SPAN_NOTICE("The [name] is on station. Nothing but open water here."))
 		return FALSE
 	if (open_sea_place() == P)
 		return TRUE
@@ -413,6 +475,7 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 		return "She has no open sea chart: only a hull built at a tiller makes passage."
 	var/datum/chart_token/sea_place/at = open_sea_place()
 	var/list/lines = list()
+	var/list/company = sea_company()
 	fit_drives()
 	if (at)
 		lines += "<b>Open sea chart:</b> the [name] lies [at.site ? "off [at.name]" : "in [at.name]"]."
@@ -432,7 +495,9 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 			continue
 		if (istype(P))
 			lines += "[capitalize(P.name)] ([P.site.kind][P.site.charted ? ", surveyed" : ""][P.site.loaded ? ", a ship has raised it" : ""]): [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
-		else if (O.craft && !O.craft.open_sea_place())
+		else if (O.craft && (O.craft in company))
+			lines += "The [O.craft.name] lies hove to in the same water."
+		else if (O.craft && !O.craft.open_sea_place() && !(O.dark && far > T.sensor_range / 3))
 			lines += "[capitalize(O.contact_name())], a sail at sea: [round(far, 0.1)] miles [chart_bearing_name(chart_bearing(T.x, T.y, O.x, O.y))]."
 	if (lines.len <= 1 + (thrust() <= 0 ? 1 : 0))
 		lines += "No land in sight."
@@ -460,7 +525,11 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 	if (!open_sea_token())
 		to_chat(H, SPAN_WARNING(open_sea_text()))
 		return
-	var/choice = WWinput(H, open_sea_text(), "Open sea chart", "Cancel", list("Read the chart", "Lay a course", "Steer by compass", "Heave to", "Cancel"))
+	var/list/orders = list("Read the chart", "Lay a course")
+	if (length(open_sea_sails()))
+		orders += "Close a sail"
+	orders += list("Steer by compass", "Heave to", "Cancel")
+	var/choice = WWinput(H, open_sea_text(), "Open sea chart", "Cancel", orders)
 	if (!choice || choice == "Cancel" || QDELETED(src) || QDELETED(at) || get_dist(H, at) > 1 || !sea_token)
 		return
 	if (choice == "Read the chart")
@@ -496,6 +565,21 @@ var/global/list/open_sea_wreck_names = list("Marigold", "Sea Otter", "Good Hope"
 				return
 			T.lay_course(P.x, P.y, P.name)
 			crew_message(SPAN_NOTICE("[H] at the tiller lays a course for [P.name]. She is [T.motion_text()]."))
+		if ("Close a sail")
+			var/list/sails = open_sea_sails()
+			var/sail = WWinput(H, "Make for which sail? She steers for where the other ship is now and, on coming up with her, heaves to in the same water.", "Open sea chart", "Cancel", sails + list("Cancel"))
+			var/datum/craft/other = sails[sail]
+			if (!istype(other) || QDELETED(other) || QDELETED(src) || QDELETED(at) || get_dist(H, at) > 1 || !sea_token || !other.sea_token)
+				return
+			if (thrust() <= 0)
+				to_chat(H, SPAN_WARNING("Nothing drives her: she needs a sail or a running engine to make passage."))
+				return
+			var/refusal = put_to_sea()
+			if (refusal)
+				to_chat(H, SPAN_WARNING("She cannot put to sea: [refusal]."))
+				return
+			T.lay_course(other.sea_token.x, other.sea_token.y, "the [other.sea_token.contact_name()]")
+			crew_message(SPAN_NOTICE("[H] at the tiller makes for the [other.sea_token.contact_name()]. She is [T.motion_text()]."))
 		if ("Steer by compass")
 			var/list/points = list("North" = 0, "Northeast" = 45, "East" = 90, "Southeast" = 135, "South" = 180, "Southwest" = 225, "West" = 270, "Northwest" = 315)
 			var/point = WWinput(H, "Steer which way? She puts to sea and holds that heading until you heave to or lay a course.", "Open sea chart", "Cancel", points + list("Cancel"))
