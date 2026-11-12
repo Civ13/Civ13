@@ -208,6 +208,30 @@ var/naval_runtime_error = FALSE
 	naval_check(C.register && C.helm_access(bob) == CRAFT_HELM_CHAINED && C.helm_access(ann) == CRAFT_HELM_FREE, "with her papers")
 	naval_check(C.sail_tick() && tiller.y == 14, "and she sails on ([tiller.y])")
 
+	// ---- Sails ----
+	var/obj/structure/vehicleparts/movement/sail/mast = new(locate(tiller.x - 1, tiller.y, 2))
+	naval_check(B.contains(get_turf(mast)) && C.fit_drives() == 1 && C.thrust() == 0 && C.max_speed() == VESSEL_SPEED_SLOW, "a bare mast pushes nothing")
+	mast.sails = new /obj/item/sail(mast)
+	naval_check(C.fit_drives() == 1 && C.thrust() == 31 && C.max_speed() == VESSEL_SPEED_HALF, "a rigged mast pushes her thirteen tiles at half ahead ([C.thrust()])")
+	naval_check(findtext(tiller.status_text(), "Under 1 sail: half ahead at best"), "the tiller says so ([tiller.status_text()])")
+	C.set_speed(VESSEL_SPEED_FULL)
+	naval_check(C.speed == VESSEL_SPEED_HALF && mast.sails_on && mast.icon_state == "sail2", "sails alone never make full ahead, and the sail is set while she is under way")
+	var/y_was = tiller.y
+	naval_check(C.sail_tick() && tiller.y == y_was + 4 && mast.y == y_was + 4, "half ahead is four tiles a hop, mast and all ([tiller.y])")
+	C.set_anchor(TRUE)
+	naval_check(!mast.sails_on && mast.icon_state == "sail1", "at anchor the sail is furled")
+	C.set_anchor(FALSE)
+	qdel(mast.sails)
+	mast.sails = null
+	naval_check(C.sail_tick() && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 6, "with the sail gone she loses way to slow ahead ([tiller.y])")
+	mast.sails = new /obj/item/sail(mast)
+	var/datum/craft_drive/fitted/sail/drive = new(mast)
+	C.add_drive(drive)
+	mast.forceMove(locate(50, 8, 2))
+	naval_check(!drive.ready() && drive.push() == 0, "a mast that is no longer aboard pushes nothing")
+	qdel(mast)
+	naval_check(C.fit_drives() == 0, "and is forgotten at the next look")
+
 	// ---- Striking her ----
 	tiller.decommission()
 	naval_check(!corner.afloat, "struck, her planks are plain planks")
