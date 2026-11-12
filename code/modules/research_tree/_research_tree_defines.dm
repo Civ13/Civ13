@@ -77,6 +77,7 @@
 // Scholar research supplies and light (scholar_tools.dm).
 // Research needs light: a bench in the dark makes no progress.
 #define SCHOLAR_MIN_LIGHT 0.3
+#define READING_LIGHT_CHECK 20 // ticks between light checks while reading or writing
 // Without supplies for its discipline, research runs at this fraction.
 #define SCHOLAR_UNSUPPLIED_RATE 0.5
 // A bench stores at most this many supply points per discipline.

@@ -30,9 +30,10 @@
 
 /mob/living/human/proc/copy_recipe_manual(id, obj/item/weapon/pen/P, obj/item/weapon/paper/paper)
 	if(!recipe_book_actor_valid(src) || !knows_recipe_node(id) || !can_learn_recipe_node(id) || !recipe_held(src, P) || !recipe_held(src, paper) || !recipe_blank_paper(paper)) return FALSE
+	if(too_dark_to_read()) return FALSE
 	to_chat(src, SPAN_NOTICE("You begin copying a manual. Keep the pen and paper in your hands for two minutes."))
 	var/client/session = client
-	if(!do_after(src, RECIPE_COPY_TIME, paper)) return FALSE
+	if(!do_reading(src, RECIPE_COPY_TIME, paper)) return FALSE
 	if(client != session || !recipe_book_actor_valid(src) || !knows_recipe_node(id) || !can_learn_recipe_node(id) || !recipe_held(src, P) || !recipe_held(src, paper) || !recipe_blank_paper(paper)) return FALSE
 	var/obj/item/weapon/book/node_book/B = create_node_book(get_turf(src), id)
 	if(!B) return FALSE
@@ -113,7 +114,7 @@
 		to_chat(H, SPAN_NOTICE("You already know that chapter."))
 		return
 	if(!(id in node_ids) || !H.can_learn_recipe_node(id) || H.knows_recipe_node(id)) return
-	if(do_after(H, 600, src) && src && !gcDestroyed && H.Adjacent(src) && recipe_book_actor_valid(H) && (id in node_ids))
+	if(do_reading(H, 600, src) && src && !gcDestroyed && H.Adjacent(src) && recipe_book_actor_valid(H) && (id in node_ids))
 		H.learn_recipe_node(id)
 
 /obj/item/weapon/book/node_book/attackby(obj/item/weapon/W, mob/living/human/H)

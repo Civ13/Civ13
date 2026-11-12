@@ -3,6 +3,7 @@
 var/interface_failures = 0
 var/interface_wait_result = TRUE
 var/interface_wait_count = 0
+var/interface_dark_after = 0 // the reader's light goes out once this many waits have passed
 /world
 	hub = ""
 	hub_password = ""
@@ -26,6 +27,10 @@ var/interface_wait_count = 0
 	return FALSE
 /mob/living/human/interface_fixture/research_presence()
 	return TRUE
+/mob/living/human/interface_fixture
+	var/fixture_dark = FALSE
+/mob/living/human/interface_fixture/reading_light_problem()
+	return fixture_dark ? "It's too dark to read or write here." : null
 /mob/living/human/interface_fixture/remove_from_mob(obj/O)
 	if(l_hand == O) l_hand = null
 	if(r_hand == O) r_hand = null
@@ -50,6 +55,9 @@ var/interface_wait_count = 0
 	return fixture_lit
 /proc/interface_wait(mob/living/human/H, delay, atom/target)
 	interface_wait_count++
+	if(interface_dark_after && interface_wait_count >= interface_dark_after && istype(H, /mob/living/human/interface_fixture))
+		var/mob/living/human/interface_fixture/F = H
+		F.fixture_dark = TRUE
 	return interface_wait_result
 /proc/interface_check(condition, label)
 	if(!condition) interface_failures++
@@ -178,6 +186,14 @@ var/interface_wait_count = 0
 		interface_wait_result = FALSE
 		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root), "an interrupted study teaches nothing")
 		interface_wait_result = TRUE
+		H.fixture_dark = TRUE
+		var/waits_before = interface_wait_count
+		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root) && interface_wait_count == waits_before, "studying can't start in the dark")
+		H.fixture_dark = FALSE
+		interface_dark_after = interface_wait_count + 3
+		interface_check(!bench.book_study_node(H, root) && !H.knows_recipe_node(root) && interface_wait_count == interface_dark_after, "studying stops when the reader's light goes out")
+		interface_dark_after = 0
+		H.fixture_dark = FALSE
 		interface_check(bench.book_study_node(H, root) && H.knows_recipe_node(root), "studying from the bench teaches the chapter")
 		interface_check(!bench.book_study_node(H, child), "a chapter no book holds can't be studied")
 		data = bench.bench_ui_data(H)
@@ -219,6 +235,9 @@ var/interface_wait_count = 0
 		interface_wait_result = FALSE
 		interface_check(!bench.book_copy_node(H, root) && sheet.loc == H && !copybook.page_busy, "an interrupted copy costs nothing and frees the book")
 		interface_wait_result = TRUE
+		H.fixture_dark = TRUE
+		interface_check(!bench.book_copy_node(H, root) && sheet.loc == H && !copybook.page_busy && !copybook.has_research_chapter(root), "copying can't be done in the dark")
+		H.fixture_dark = FALSE
 		interface_check(bench.book_copy_node(H, root) && copybook.has_research_chapter(root) && H.stats["stamina"][1] < stamina && (!sheet || sheet.gcDestroyed || !sheet.loc), "one click copies the chapter for a sheet and stamina")
 		interface_check(!bench.book_copy_node(H, root), "a chapter both books hold can't be copied again")
 		var/list/extra = list()

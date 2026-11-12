@@ -179,10 +179,12 @@ var/global/list/book_research_writing_supplies = list(
 	if (H.stats["stamina"][1] < cost)
 		to_chat(H, SPAN_WARNING("You are too tired to write a chapter now."))
 		return FALSE
+	if (H.too_dark_to_read())
+		return FALSE
 	var/time = scholar_write_time(N.era_tier, P, H)
 	to_chat(H, SPAN_NOTICE("You begin writing the chapter on [N.name] into [src]. This takes about [round(time / 600, 0.5)] minute\s."))
 	page_busy = TRUE
-	var/done = do_after(H, time, anchor ? anchor : src)
+	var/done = do_reading(H, time, anchor ? anchor : src)
 	page_busy = FALSE
 	if (!done || QDELETED(src) || has_research_chapter(node_id) || !H.knows_recipe_node(node_id) || !recipe_held(H, P) || !recipe_held(H, sheet) || !blank_writing_sheet(sheet))
 		return FALSE

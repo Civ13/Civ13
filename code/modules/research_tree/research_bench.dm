@@ -676,10 +676,12 @@ var/global/list/research_benches = list()
 	if (!map || !map.is_node_done(faction, node_id))
 		to_chat(H, SPAN_WARNING("You can only document research your faction has completed."))
 		return
+	if (H.too_dark_to_read())
+		return
 	var/wtime = is_book ? RESEARCH_BOOK_WRITE_TIME : RESEARCH_NOTES_WRITE_TIME
 	to_chat(H, SPAN_NOTICE("You begin [is_book ? "transcribing a full research book" : "jotting down research notes"] on [N.name]..."))
 	writing = TRUE
-	if (!do_after(H, wtime, src))
+	if (!do_reading(H, wtime, src))
 		writing = FALSE
 		return
 	writing = FALSE

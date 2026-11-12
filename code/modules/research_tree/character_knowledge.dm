@@ -152,6 +152,8 @@
 	if (H.knows_recipe_node(node_id))
 		to_chat(H, SPAN_NOTICE("You already know the recipes in this manual."))
 		return
+	if (H.too_dark_to_read())
+		return
 	var/reading_node = node_id
 	H.begin_study_message(reading_node, 600, "[src]")
 	if (!H.timed_study(reading_node, 600, src) || QDELETED(src) || node_id != reading_node || !H.Adjacent(src) || H.incapacitated())

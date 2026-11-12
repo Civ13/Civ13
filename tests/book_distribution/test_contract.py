@@ -14,7 +14,7 @@ class DistributionContract(unittest.TestCase):
         self.source = read("code/modules/research_tree/book_distribution.dm")
     def test_copy_revalidates_payment_and_knowledge(self):
         p = proc(self.source, "/mob/living/human/proc/copy_recipe_manual")
-        before, after = p.split("do_after(src, RECIPE_COPY_TIME, paper)")
+        before, after = p.split("do_reading(src, RECIPE_COPY_TIME, paper)")
         for field in ("knows_recipe_node(id)", "can_learn_recipe_node(id)", "recipe_held(src, P)", "recipe_held(src, paper)", "recipe_blank_paper(paper)"):
             self.assertIn(field, before)
             self.assertIn(field, after)
