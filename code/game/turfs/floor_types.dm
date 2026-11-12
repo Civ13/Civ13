@@ -364,7 +364,7 @@
 					return
 			if (ML && ML.stat == DEAD)
 				spawn(60)
-					if (A && A.loc == src)
+					if (A && A.loc == src && !iscovered())
 						qdel(A)
 /turf/floor/beach/water/deep/jungle
 	name = "deep jungle river"
