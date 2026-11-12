@@ -39,6 +39,10 @@ var/global/list/research_benches = list()
 	// like the other string vars (a list var wouldn't survive the save).
 	var/research_queue = ""
 	var/tmp/writing = FALSE    // transcription in progress (tmp: never persists)
+	// world.time of this bench's last analysis visit, and how many intervals
+	// of work the current visit stands for (see analysis_elapsed_scale()).
+	var/tmp/last_analysis_time = 0
+	var/tmp/analysis_scale = 1
 	// Item types already studied as samples toward the CURRENT assignment; each
 	// type only teaches something once. tmp: resets on reboot, no need to persist.
 	var/tmp/list/studied_samples = null
@@ -51,8 +55,25 @@ var/global/list/research_benches = list()
 	research_benches -= src
 	..()
 
+// How many analysis intervals have passed since this bench's last visit.
+// The process works through the bench list under a tick budget, and a list it
+// can't finish is resumed only on its next fire, so with several benches each
+// one can be visited every 20s or more instead of every 10s. Crediting the
+// time that actually passed keeps research at its designed pace. Visits are
+// never closer than one interval (one visit per fire), so 1 is the floor; the
+// cap stops a stalled scheduler from paying out a burst.
+/obj/structure/research_bench/proc/analysis_elapsed_scale(now = world.time)
+	var/interval = processes && processes.research_tree ? processes.research_tree.schedule_interval : RESEARCH_TICK_INTERVAL
+	if (!isnum(interval) || interval <= 0)
+		interval = RESEARCH_TICK_INTERVAL
+	. = 1
+	if (last_analysis_time > 0)
+		. = clamp((now - last_analysis_time) / interval, 1, RESEARCH_TICK_MAX_CATCHUP)
+	last_analysis_time = now
+
 // Called by /process/research_tree once per analysis interval.
 /obj/structure/research_bench/proc/analysis_tick()
+	analysis_scale = analysis_elapsed_scale()
 	if (book_mode())
 		book_analysis_tick()
 		return
@@ -87,7 +108,7 @@ var/global/list/research_benches = list()
 	// to drag the whole server forward" exploit.
 	if (!map.faction_has_active_researcher(faction))
 		return
-	map.add_research_ticks(faction, assigned_node, base_tick_rate)
+	map.add_research_ticks(faction, assigned_node, round(base_tick_rate * analysis_scale, 0.1))
 	// Push a refresh to anyone currently viewing this bench. There's no
 	// blind polling (see ui_interact()) -- this is the only thing that
 	// changes this bench's own data outside of a player's own Topic() call
@@ -444,7 +465,7 @@ var/global/list/research_benches = list()
 	var/list/book_cache = null
 	if (book_mode)
 		var/obj/item/weapon/pen/held_pen = H.held_writing_pen()
-		book_cache = list("books" = placed_books(), "queue" = queue_list(), "instruments" = list(), "desk_rate" = H.scholar_desk_rate(), "tool_rate" = H.research_tool_rate(), "pen_rate" = held_pen ? scholar_pen_rate(held_pen) : 0)
+		book_cache = list("books" = placed_books(), "queue" = queue_list(), "instruments" = list(), "desk_rate" = H.scholar_desk_rate(), "tool_rate" = H.research_tool_rate(), "pen_rate" = held_pen ? scholar_pen_rate(held_pen) : 0, "supplies" = supply_map())
 
 	// Nodes are grouped into standalone TREES (Main first, then specialized
 	// trees like Agriculture), each rendered as its own switchable tab; within

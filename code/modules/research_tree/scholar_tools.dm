@@ -236,15 +236,19 @@
 	book_refresh_ui()
 	return TRUE
 
-// Uses one supply point for node_id's discipline; the rate this tick runs at.
-/obj/structure/research_bench/proc/use_research_supply(node_id)
+// Uses one supply point per interval of work for node_id's discipline; the
+// rate this tick runs at (part supplied, part not when the points run out).
+/obj/structure/research_bench/proc/use_research_supply(node_id, intervals = 1)
 	var/discipline = node_discipline(node_id)
 	var/list/supplies = supply_map()
-	if ((supplies[discipline] || 0) < 1)
+	var/have = supplies[discipline] || 0
+	if (have < 1)
 		return SCHOLAR_UNSUPPLIED_RATE
-	supplies[discipline] -= 1
+	var/needed = max(1, round(intervals))
+	var/used = min(have, needed)
+	supplies[discipline] -= used
 	set_supply_map(supplies)
-	return 1
+	return (used + (needed - used) * SCHOLAR_UNSUPPLIED_RATE) / needed
 
 /obj/structure/research_bench/proc/research_lit()
 	var/turf/T = get_turf(src)

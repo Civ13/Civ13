@@ -68,6 +68,10 @@
 #define SCHOLAR_LEVEL_PER_TIER 12
 #define SCHOLAR_MAX_LEVEL 100
 #define SCHOLAR_RESEARCH_GAIN 0.02 // per bench tick the researcher works
+// Research process interval (the pace every research estimate assumes), and
+// the most intervals one bench visit may catch up after a slow scheduler pass.
+#define RESEARCH_TICK_INTERVAL 100
+#define RESEARCH_TICK_MAX_CATCHUP 6
 #define SCHOLAR_STUDY_GAIN 1       // per chapter studied
 
 // Scholar research supplies and light (scholar_tools.dm).
