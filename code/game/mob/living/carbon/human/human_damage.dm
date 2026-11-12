@@ -297,7 +297,8 @@ This function restores all organs.
 
 /mob/living/human/proc/get_organ(var/zone)
 	if (!zone)	zone = "chest"
-	if (zone in list( "eyes", "mouth" ))
+	var/static/list/face_zones = list( "eyes", "mouth" )
+	if (zone in face_zones)
 		zone = "head"
 	return organs_by_name[zone]
 
