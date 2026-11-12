@@ -6,6 +6,8 @@
 #define VESSEL_HOP_INTERVAL 300
 // Tiles moved per hop for each telegraph step (full ahead is 3 steps).
 #define VESSEL_TILES_PER_STEP 2
+// Ticks of warning on the water before a hop or a turn covers it.
+#define VESSEL_PATH_WARNING 50
 
 #define VESSEL_SPEED_STOP 0
 #define VESSEL_SPEED_SLOW 1
