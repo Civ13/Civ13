@@ -129,7 +129,7 @@ var/global/orbit_failures = 0
 		orbit_check("a party with no plane left has no station", "[OC.stations.len]|[isnull(R.chart_spots["civ:gaia:Gamma"]) ? 1 : 0]|[QDELETED(SG) ? 1 : 0]", "2|1|1")
 		var/obj/structure/chart_helm/orbit/OH = new(locate(3, 3, 1))
 		var/datum/chart_token/OT = OH.helm_token()
-		orbit_check("an orbital helm starts at the beacon with orbit sensors", OT ? "[OT.x],[OT.y]|[OT.sensor_range]|[OT.chart == OC ? 1 : 0]" : "none", "50,50|15|1")
+		orbit_check("an orbital helm outside a habitat module steers nothing (spacecraft_probe.dm)", OT ? "[OT.x],[OT.y]" : "none", "none")
 		qdel(OH)
 
 		// The plane pool (craft/plane_pool.dm): a cap on loaded sites, the

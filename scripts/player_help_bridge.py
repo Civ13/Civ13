@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'a2a3445e0be1bf477a59bebd67f47ccdf0720a02'
+WIKI_REVIEWED_REVISION = 'efefbdd3f2d28ec7c4c3c999b344a268d0fc445f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('221a7b8e12bd73f2587d00e908633d54b166186dd72a1f263a36a5fd8bdad329', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
@@ -80,7 +80,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('74a72aed647696ceb0097b50cc38b5943a2f5dcd90b0a05c763604ddb5eff36c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
+    'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('74daf913d98ef822848da201d9692f842b91fd8f2cbbf16ecbc0848b26f27883', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('2d24c079057a15a888feafd052d45f1f4a95658de20e4251536dae43654d2e89', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('7d841e6db23560fc80845b05b5fea04277cabadc316440930211280c1e67901c', 'miscellaneous crafting misc items dress dresses dressmaking tailored sew sewing candle candles'),
-    'maps/Gaia.md': ('6e0d74bdce11739ef9650cfb631db6917651b9da0d7b0f05c0af873347fc8583', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('daaa1f3890ec3ae36f0b5f4d02d52bb05b1547682a6817c96c3b596c102d375f', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
