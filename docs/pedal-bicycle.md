@@ -9,7 +9,8 @@ In the global crafting catalogue, **Factories** unlocks a pedal bicycle under
 **vehicle parts**. It costs 12 steel and uses a 200-decisecond base crafting time.
 It has its own sprites in `icons/obj/vehicles/bicycle.dmi`, drawn by
 `tests/pedal_bicycle/sprites.py`; the handlebars, crank and nearest wheel are
-drawn in front of the rider. There is no engine, fuel tank, passenger seat or
+drawn in front of the rider. A seated rider is drawn 6 pixels up (`rider_lift`),
+which rests the hips on the saddle and the feet on the pedals. There is no engine, fuel tank, passenger seat or
 cargo platform.
 
 Drag yourself onto the bicycle with one free hand. Use the handlebars to start

@@ -43,6 +43,8 @@ var/global/list/aloft_pedal_airships = list()
 	control_type = /obj/item/vehicleparts/wheel/handle/bicycle/airship
 	pedal_fastest = 3
 	pedal_slowest = 12
+	// The rider stands in the basket.
+	rider_lift = 0
 	vehicle_m_delay = 3
 	var/aloft = FALSE
 	var/tmp/changing_height = FALSE

@@ -9,7 +9,9 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tests/motorcycle_riding'))
+sys.path.insert(1, str(ROOT / 'tests/pedal_bicycle'))
 from render import Dmi, tint  # noqa: E402
+from sprites import RIDER_LIFT  # noqa: E402
 
 SCALE = 6
 PARTS = ('groin_m', 'torso_m', 'l_leg_m', 'r_leg_m', 'l_foot_m', 'r_foot_m',
@@ -27,7 +29,7 @@ def main():
             sheet.alpha_composite(road, (col * 32, row * 32))
             sheet.alpha_composite(bike.get('bicycle', d), (col * 32, row * 32))
         for part in PARTS:
-            sheet.alpha_composite(tint(body.get(part, d), (224, 172, 132)), (col * 32, 32))
+            sheet.alpha_composite(tint(body.get(part, d), (224, 172, 132)), (col * 32, 32 - RIDER_LIFT))
         sheet.alpha_composite(bike.get('bicycle_overlay', d), (col * 32, 32))
     big = sheet.resize((sheet.width * SCALE, sheet.height * SCALE), Image.NEAREST)
     out = Image.new('RGBA', (big.width, big.height + 24), (24, 24, 28, 255))

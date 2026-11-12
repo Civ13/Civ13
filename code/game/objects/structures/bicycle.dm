@@ -86,6 +86,9 @@
 	// Deciseconds per tile with no load, and the slowest a load can make it.
 	var/pedal_fastest = 1.5
 	var/pedal_slowest = 6
+	// Pixels a seated rider is drawn above the ground, so the hips rest on the
+	// saddle and the feet on the pedals (tests/pedal_bicycle/sprites.py).
+	var/rider_lift = 6
 
 // The handlebars' secondary action.
 /obj/structure/vehicle/bicycle/proc/secondary_control(mob/living/human/H)
@@ -99,6 +102,7 @@
 	overlays -= rider_overlay
 	if (driver)
 		overlays += rider_overlay
+		driver.pixel_y = rider_lift
 
 // What the next tile does to a step: list(rough, snowy, levels climbed).
 /obj/structure/vehicle/bicycle/proc/ground_ahead(turf/start, turf/target)
@@ -295,6 +299,7 @@
 		H.driver_vehicle = null
 		ontop -= H
 		driver = null
+		H.pixel_y = 0
 		update_overlay()
 	return ..()
 
