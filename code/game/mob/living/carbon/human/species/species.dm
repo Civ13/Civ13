@@ -239,13 +239,12 @@
 			if (FP.on == TRUE)
 				return
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.has_snow_cover() && H.shoes)
-			if (H.shoes.cold_protection != FEET)
-				if (prob(25 - (H.shoes ? 15 : 0)))
-					to_chat(H, SPAN_DANGER("Your feet are freezing!"))
-					if (player_help_service)
-						player_help_service.record_observed_injury(H.client, H, "reported_freezing_feet")
-					H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
+		if (istype(T) && T.has_snow_cover() && (!H.shoes || H.shoes.cold_protection != FEET))
+			if (prob(25 - (H.shoes ? 15 : 0)))
+				to_chat(H, SPAN_DANGER("Your feet are freezing!"))
+				if (player_help_service)
+					player_help_service.record_observed_injury(H.client, H, "reported_freezing_feet")
+				H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
 		var/sum = 0
