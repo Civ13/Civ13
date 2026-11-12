@@ -81,6 +81,11 @@ var/naval_runtime_error = FALSE
 	mode = CHART_MODE_MIRROR
 	width = 70
 	height = 60
+/obj/structure/chart_helm/probe
+	var/datum/chart/probe_chart
+/obj/structure/chart_helm/probe/chart()
+	return probe_chart
+
 /datum/chart/probe/chart_position(turf/T)
 	return T ? list(T.x, T.y) : null
 
@@ -275,6 +280,99 @@ var/naval_runtime_error = FALSE
 	naval_check(!site.can_unload() && isnull(site.site_template()), "a keep beacon holds it")
 	qdel(mine)
 	naval_check(!P.token && !(mine in chart.tokens), "a deleted token leaves its chart and its craft")
+
+	// ---- Steered charts: momentum, burns, stop orders and courses ----
+	var/datum/chart/sky = new
+	sky.mode = CHART_MODE_STEERED
+	sky.width = 100
+	sky.height = 100
+	var/datum/chart_token/ship = new
+	ship.name = "probe ship"
+	ship.accel = 0.05
+	sky.add_token(ship, 50, 50)
+	naval_check(!sky.run_step(2) && ship.motion_text() == "lying still" && !chart.run_step(2), "a token with no orders lies still, and a mirror chart never steps")
+	ship.set_burn(90, 1)
+	naval_check(sky.run_step(2) == 1 && abs(ship.vx - 0.1) < 0.001 && abs(ship.vy) < 0.001 && abs(ship.x - 50.2) < 0.001, "a full burn east for two seconds gives her 0.1 squares a second ([ship.vx], [ship.x])")
+	ship.set_burn(0, 0.5)
+	sky.run_step(2)
+	naval_check(abs(ship.vx - 0.1) < 0.001 && abs(ship.vy - 0.05) < 0.001, "a half burn north adds half as much and keeps what she had ([ship.vx], [ship.vy])")
+	ship.set_burn(0, 0)
+	var/x_was = ship.x
+	naval_check(sky.run_step(2) == 1 && abs(ship.x - x_was - 0.2) < 0.001 && abs(ship.vy - 0.05) < 0.001 && findtext(ship.motion_text(), "coasting east-northeast at 0.11"), "with the engines cut she coasts ([ship.motion_text()])")
+	sky.add_token(ship, 5, 50)
+	ship.set_burn(90, 1)
+	for (var/i = 1, i <= 30, i++)
+		sky.run_step(2)
+	naval_check(ship.speed() <= CHART_MAX_SPEED + 0.001 && ship.speed() > 0.99, "a long burn stops at the speed limit ([ship.speed()])")
+	ship.order_stop()
+	var/steps = 0
+	while (ship.stopping && steps < 100)
+		sky.run_step(2)
+		steps++
+	naval_check(!ship.stopping && ship.speed() == 0 && steps >= 10 && steps < 100 && !sky.run_step(2), "a stop order burns against her motion until she lies still ([steps] steps)")
+	ship.order_stop()
+	naval_check(!ship.stopping, "a ship lying still has nothing to stop")
+	naval_check(!ship.lay_course(120, 20), "a course cannot be laid off the chart")
+	sky.add_token(ship, 20, 20)
+	var/guess = ship.eta(80, 60)
+	naval_check(ship.lay_course(80, 60, "the wreck") && guess > 0 && findtext(ship.motion_text(), "making for the wreck"), "a course is laid for the wreck, about [guess] seconds off ([ship.motion_text()])")
+	steps = 0
+	while (sky.run_step(2) && steps < 600)
+		steps++
+	naval_check(ship.x == 80 && ship.y == 60 && ship.speed() == 0 && !ship.on_course && steps * 2 < guess * 3, "she arrives and stops there in [steps * 2] seconds")
+	sky.add_token(ship, 99.9, 50)
+	ship.vx = 1
+	sky.run_step(2)
+	naval_check(ship.x == 100 && ship.vx == 0, "the edge of the chart stops her")
+	var/datum/chart_token/hulk = new
+	hulk.name = "hulk"
+	sky.add_token(hulk, 88, 50)
+	naval_check(hulk.eta(50, 50) == -1 && hulk.lay_course(50, 50) && !sky.run_step(2) && hulk.x == 88 && findtext(hulk.motion_text(), "nothing drives her"), "a token with nothing to drive her keeps her course and waits")
+	hulk.on_course = FALSE
+	ship.sensor_range = 15
+	naval_check((hulk in sky.contacts_of(ship)) && chart_bearing_name(chart_bearing(ship.x, ship.y, hulk.x, hulk.y)) == "west", "a hulk 12 squares west is a contact")
+	var/datum/chart_hazard/fog = new
+	fog.chart = sky
+	fog.x = 100
+	fog.y = 50
+	fog.radius = 2
+	fog.interference = 10
+	fog.lifetime = 4
+	sky.hazards += fog
+	naval_check(sky.interference_at(100, 50) == 10 && !(hulk in sky.contacts_of(ship)), "interference where she lies hides it")
+	sky.run_step(2)
+	naval_check((fog in sky.hazards) && fog.lifetime == 2, "a hazard counts down")
+	sky.run_step(2)
+	naval_check(!sky.hazards.len && (hulk in sky.contacts_of(ship)), "and when it has gone the contact is back")
+	// A craft's token is pushed by her drives.
+	var/datum/craft/tug = new
+	var/datum/craft_drive/motor = new
+	motor.thrust = 5
+	tug.add_drive(motor)
+	hulk.craft = tug
+	naval_check(abs(hulk.full_accel() - 0.05) < 0.0001 && hulk.eta(50, 50) > 0, "a craft's push per tile of hull is her burn")
+	hulk.set_burn(270, 1)
+	sky.run_step(2)
+	naval_check(abs(hulk.vx + 0.1) < 0.001, "and moves her token ([hulk.vx])")
+	motor.enabled = FALSE
+	sky.run_step(2)
+	naval_check(abs(hulk.vx + 0.1) < 0.001 && hulk.full_accel() == 0, "with her drive off she only coasts")
+	hulk.craft = null
+	qdel(tug)
+	// The helm console of a steered chart.
+	var/obj/structure/chart_helm/probe/console = new(locate(60, 50, 2))
+	console.probe_chart = sky
+	console.chart_x = 30
+	console.chart_y = 40
+	console.chart_vx = 0.2
+	var/datum/chart_token/steered = console.helm_token()
+	naval_check(steered && steered.chart == sky && steered.x == 30 && steered.y == 40 && steered.vx == 0.2 && console.helm_token() == steered, "a helm console puts its token back where it was saved, still moving")
+	sky.run_step(2)
+	console.before_save()
+	naval_check(abs(console.chart_x - 30.4) < 0.001 && console.chart_vx == 0.2 && findtext(console.read_text(), "helm console at 30.4, 40, coasting east at 0.2"), "and saves where it has got to ([console.read_text()])")
+	qdel(console)
+	naval_check(!(steered in sky.tokens), "a console that is gone takes its token off the chart")
+	qdel(sky)
 
 	// ---- Plane pools ----
 	var/datum/plane_pool/pool = new
