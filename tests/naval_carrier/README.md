@@ -132,8 +132,9 @@ Floors laid over water commissioned at a tiller (`code/modules/craft/built_body.
 and is not a hull, the hop with planks, cargo and crew, the water level handed
 from tile to tile, obstacles, the marked path, coming about around the tiller,
 refitting, papers, the hull saved and found again by the tiller, sails that
-give half ahead, and engines that give full ahead and burn from their tank at
-every hop.
+give half ahead, engines that give full ahead and burn from their tank at
+every hop, and wiring that stays joined aboard while a cable to the shore
+parts.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
 

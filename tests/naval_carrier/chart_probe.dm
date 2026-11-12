@@ -186,6 +186,21 @@ var/naval_runtime_error = FALSE
 	V.set_speed(VESSEL_SPEED_SLOW)
 	naval_check(P.making_way() && V.sail_hop() && !P.berth && !post2.occupant, "sailing on, she has cast off")
 
+	// ---- Wiring rides a slipway ship too (craft/rigid_move.dm) ----
+	var/list/deck = list()
+	for (var/turf/T in V.cells())
+		if (T.z == 2)
+			deck += T
+	var/obj/structure/cable/c1 = new(deck[1])
+	var/obj/structure/cable/c2 = new(deck[2])
+	var/obj/structure/cable/ashore = new(locate(10, 50, 2))
+	c1.connections = list(c2, ashore)
+	c2.connections = list(c1)
+	ashore.connections = list(c1)
+	var/y_was = c1.y
+	naval_check(V.sail_hop() && c1.y > y_was && (c2 in c1.connections) && (c1 in c2.connections), "cables on her deck hop with her and stay joined ([c1.y])")
+	naval_check(!(ashore in c1.connections) && !(c1 in ashore.connections) && isnull(craft_rigid_cargo), "and the cable to the shore has parted")
+
 /proc/naval_run()
 	try
 		naval_checks()

@@ -1221,6 +1221,7 @@
 #include "code\modules\craft\craft.dm"
 #include "code\modules\craft\craft_register.dm"
 #include "code\modules\craft\plane_pool.dm"
+#include "code\modules\craft\rigid_move.dm"
 #include "code\modules\craft\under_way.dm"
 #include "code\modules\collectibles\stickers.dm"
 #include "code\modules\collectibles\stickers_admin.dm"

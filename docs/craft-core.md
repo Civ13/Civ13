@@ -82,6 +82,16 @@ ahead. After each hop `craft.burn_drives()` asks every drive to pay for it at
 own fuel tank (`craft_burn()`, `engines/internal_combustion.dm`) and stalls
 when it cannot, and an external engine's heat source is its fuel.
 
+## Wiring aboard
+
+`craft/rigid_move.dm`: cables, engines, generators, batteries and connectors
+drop their links when they are moved. A body that carries cargo wraps the move
+in `craft_rigid_begin(things)` and `craft_rigid_settle(carry)`: while it runs,
+`craft_carrying()` is TRUE for the cargo and those types keep their links;
+afterwards `craft_carried(aboard)` on each thing cuts only the links to what
+stayed behind. Both the built body and `datum/vessel/relocate()` do this, and a
+cable swaps its `tiledir` on a quarter turn. Piped barrels still disconnect.
+
 ## Steered charts
 
 On a chart in `CHART_MODE_STEERED` a token has momentum (`craft/chart.dm`).

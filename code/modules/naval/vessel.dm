@@ -305,6 +305,7 @@ var/global/list/naval_vessels = list()
 	relocating = TRUE
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
+	var/list/carry = null
 	try
 		// What each old cell carries and how damaged it is, keyed by position.
 		var/list/states = list()
@@ -358,6 +359,12 @@ var/global/list/naval_vessels = list()
 					new path(N)
 		// Carry everything across. Turf references are positional, so the
 		// cargo lists were taken before any turf changed.
+		// Wiring aboard keeps its links while she carries it
+		// (craft/rigid_move.dm).
+		var/list/everything = list()
+		for (var/turf/S in cargo)
+			everything += cargo[S]
+		carry = craft_rigid_begin(everything)
 		for (var/turf/N in moved_to)
 			var/turf/S = moved_to[N]
 			if (S == N)
@@ -366,6 +373,8 @@ var/global/list/naval_vessels = list()
 				if (QDELETED(M) || M.loc != S)
 					continue
 				M.forceMove(N)
+		craft_rigid_settle(carry)
+		carry = null
 		// Put the sea back where the ship was.
 		for (var/turf/S in old_cells)
 			if (S in dest_turfs)
@@ -390,6 +399,7 @@ var/global/list/naval_vessels = list()
 	catch (var/exception/e)
 		relocating = FALSE
 		wall_bulk_placement = old_bulk
+		craft_rigid_settle(carry)
 		throw e
 	wall_bulk_placement = old_bulk
 	relocating = FALSE

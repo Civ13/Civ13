@@ -95,7 +95,8 @@
 /obj/structure/battery/forceMove(atom/destination, var/special_event)
 	var/atom/previous = loc
 	. = ..()
-	if (. && loc != previous) disconnect_battery()
+	// A craft carries its wiring whole (craft/rigid_move.dm).
+	if (. && loc != previous && !craft_carrying()) disconnect_battery()
 // Only durable chemical state is saved. Output, mode and timers restart off,
 // so loading cannot replay prepaid output. The cable link is not saved either,
 // but the cable still lies on the battery's tile, so after_load rejoins it.

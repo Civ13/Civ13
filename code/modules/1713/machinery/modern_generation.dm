@@ -85,7 +85,8 @@ var/global/list/civ_generators = list()
 /obj/structure/civ_generator/forceMove(atom/destination, special_event)
 	var/atom/previous = loc
 	. = ..()
-	if (. && loc != previous)
+	// A craft carries its wiring whole (craft/rigid_move.dm).
+	if (. && loc != previous && !craft_carrying())
 		disconnect_generation()
 
 /obj/structure/civ_generator/persistence_runtime_var(key)
