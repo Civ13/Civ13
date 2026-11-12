@@ -530,6 +530,10 @@ var/global/terrain_shading_applied = FALSE
 
 /turf/proc/terrain_shade_refresh()
 	var/image/shade = null
+	// Water wears flow lines in the same slot (river_flow.dm); it is never shaded.
+	if (istype(src, /turf/floor/beach/water))
+		terrain_shade_set(water_flow_image(src))
+		return
 	if (map && map.terrain_height_file && !istype(src, /turf/floor/beach/water) && !terrain_smoothed())
 		var/datum/terrain_heights/H = map.terrain_heights()
 		var/key = H ? H.shade_key(x, y, z) : null
@@ -576,7 +580,12 @@ var/global/terrain_shading_applied = FALSE
 		for (var/y in 1 to H.maxy)
 			for (var/x in 1 to H.maxx)
 				var/turf/T = locate(x, y, z)
-				if (!T || istype(T, /turf/floor/beach/water) || T.terrain_smoothed())
+				if (istype(T, /turf/floor/beach/water))
+					var/image/flow = water_flow_image(T)
+					if (flow)
+						T.terrain_shade_set(flow)
+					continue
+				if (!T || T.terrain_smoothed())
 					continue
 				var/key = H.shade_key(x, y, z)
 				if (key != "cccc")
