@@ -232,6 +232,39 @@ var/naval_runtime_error = FALSE
 	qdel(mast)
 	naval_check(C.fit_drives() == 0, "and is forgotten at the next look")
 
+	// ---- Engines ----
+	var/obj/structure/engine/internal/hotbulb/engine = new(locate(tiller.x - 1, tiller.y, 2))
+	naval_check(B.contains(get_turf(engine)) && C.fit_drives() == 1 && C.thrust() == 0 && C.max_speed() == VESSEL_SPEED_SLOW, "an engine that is not running pushes nothing")
+	naval_check(findtext(tiller.status_text(), "no engine is running"), "and the tiller says so ([tiller.status_text()])")
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/bunker = new(get_turf(tiller))
+	bunker.reagents.add_reagent("diesel", 30)
+	engine.fueltank = bunker
+	engine.on = TRUE
+	naval_check(C.fit_drives() == 1 && C.thrust() == 66 && C.max_speed() == VESSEL_SPEED_FULL, "running, a hot bulb engine pushes her thirteen tiles at full ahead ([C.thrust()])")
+	naval_check(findtext(tiller.status_text(), "Under 1 engine: full ahead at best. Her drives push 66; 13 tiles of hull need 13 for half ahead and 26 from engines for full ahead."), "the tiller says what she needs ([tiller.status_text()])")
+	C.set_speed(VESSEL_SPEED_FULL)
+	y_was = tiller.y
+	naval_check(C.speed == VESSEL_SPEED_FULL && C.sail_tick() && tiller.y == y_was + 6 && engine.y == y_was + 6 && bunker.y == y_was + 6, "full ahead is six tiles a hop, engine and tank and all ([tiller.y])")
+	naval_check(bunker.reagents.get_reagent_amount("diesel") == 3, "the hop burns 27 units from her tank at full ahead ([bunker.reagents.get_reagent_amount("diesel")])")
+	C.set_speed(VESSEL_SPEED_SLOW)
+	bunker.reagents.add_reagent("diesel", 9)
+	C.burn_drives()
+	naval_check(bunker.reagents.get_reagent_amount("diesel") == 3, "slow ahead burns a third of that ([bunker.reagents.get_reagent_amount("diesel")])")
+	C.set_speed(VESSEL_SPEED_FULL)
+	C.burn_drives()
+	naval_check(!engine.on && bunker.reagents.get_reagent_amount("diesel") == 3, "a tank that cannot pay for a hop stalls the engine")
+	naval_check(C.sail_tick() && C.speed == VESSEL_SPEED_SLOW && tiller.y == y_was + 8, "and she loses way to slow ahead ([tiller.y])")
+	engine.on = TRUE
+	engine.broken = TRUE
+	naval_check(C.fit_drives() == 1 && C.thrust() == 0, "a broken engine pushes nothing")
+	engine.broken = FALSE
+	var/obj/structure/vehicleparts/frame/bed = new(get_turf(engine))
+	naval_check(C.fit_drives() == 0, "an engine fitted to a vehicle's frame is that vehicle's, not hers")
+	qdel(bed)
+	qdel(engine)
+	qdel(bunker)
+	C.fit_drives()
+
 	// ---- Striking her ----
 	tiller.decommission()
 	naval_check(!corner.afloat, "struck, her planks are plain planks")

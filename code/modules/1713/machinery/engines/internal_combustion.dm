@@ -159,6 +159,30 @@
 			running()
 	return
 
+// Driving a hull (naval/hull_drives.dm): pays for that many seconds at that
+// share of full power, on top of what idling takes. Returns 1 when paid; an
+// engine that cannot pay stalls and returns 0.
+/obj/structure/engine/proc/craft_burn(share = 1, seconds = 1)
+	return (on && !broken) ? 1 : 0
+
+/obj/structure/engine/internal/craft_burn(share = 1, seconds = 1)
+	if (!on || broken)
+		return 0
+	var/need = fuelefficiency * clamp(share, 0, 1) * seconds * FUEL_CONSUMPTION_MODIFIER * 0.9
+	for (var/F in fuels)
+		if (fueltank && fueltank.reagents && fueltank.reagents.has_reagent(F, need))
+			fueltank.reagents.remove_reagent(F, need)
+			pollution_emit(src, need * 0.05, 2)
+			return 1
+	visible_message("The engine stalls.")
+	playsound(loc, ending_snd, 100, FALSE, 3)
+	on = FALSE
+	power_off_connections()
+	currentspeed = 0
+	currentpower = 0
+	update_icon()
+	return 0
+
 ///////////////////////ENGINES//////////////////////////////////////////////
 /obj/structure/engine/internal/hotbulb
 	name = "hot bulb engine"
