@@ -171,8 +171,10 @@
 	var/desk = cache["desk_rate"]
 	out["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) / desk))
 	out["read_percent"] = state == "study" ? H.study_percent(node_id) : 0
-	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1)
-	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * 100) : 0
+	var/list/supplies = cache["supplies"]
+	var/supplied = islist(supplies) ? (supplies[discipline] || 0) >= 1 : TRUE
+	var/pace = base_tick_rate * H.scholar_research_rate(node_id) * max(cache["tool_rate"], 1) * (supplied ? 1 : SCHOLAR_UNSUPPLIED_RATE)
+	out["research_minutes"] = pace > 0 ? ui_minutes((N.cost_ticks - ticks) / pace * RESEARCH_TICK_INTERVAL) : 0
 	out["write_minutes"] = ui_minutes(BOOK_WRITE_TIME(N.era_tier) / max(cache["pen_rate"], 1) / desk)
 	out["holder"] = holder
 	out["can_study"] = state == "study" ? 1 : 0
@@ -250,7 +252,7 @@
 		var/per_tick = round(base_tick_rate * worker[2] * library * (supply >= 1 ? 1 : SCHOLAR_UNSUPPLIED_RATE), 0.1)
 		out["pace"] = per_tick
 		if (per_tick > 0 && ticks < N.cost_ticks)
-			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * 100)
+			out["eta_minutes"] = ui_minutes((N.cost_ticks - ticks) / per_tick * RESEARCH_TICK_INTERVAL)
 	return out
 
 // One book on the bench: its chapters marked for the viewer, its unfinished
