@@ -6488,6 +6488,7 @@
 "/obj/covers/ornate_marbletile":{"name":"ornate marble tile","type":"/obj/covers/ornate_marbletile","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},
 "/obj/covers/repairedfloor":{"name":"repaired floor","type":"/obj/covers/repairedfloor","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A repaired wood floor."},
 "/obj/covers/repairedfloor/rope":{"name":"grappling hook rope","type":"/obj/covers/repairedfloor/rope","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A piece of rope attached to a grappling hook"},
+"/obj/covers/repairedfloor/rope/boarding":{"name":"boarding line","type":"/obj/covers/repairedfloor/rope/boarding","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"Grappling lines hauled taut between two ships, sound enough to cross on. Click one to cut the ships apart."},
 "/obj/covers/repairedfloor/ship":{"name":"ship floor","type":"/obj/covers/repairedfloor/ship","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A wooden ship floor."},
 "/obj/covers/roads":{"name":"road","type":"/obj/covers/roads","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},
 "/obj/covers/roads/dirt":{"name":"dirt road","type":"/obj/covers/roads/dirt","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},

@@ -110,7 +110,7 @@
 		return "The tiller is not commissioned. It must stand on a floor built over water, with the hull free of the shore."
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""]. [craft.drives_text()]"
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull, [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
@@ -129,7 +129,7 @@
 		options += "Full ahead"
 	if (best >= VESSEL_SPEED_HALF)
 		options += "Half ahead"
-	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", craft.running_dark ? "Show her lights" : "Run dark", "Refit the hull", "Strike the hull", "Cancel")
+	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Weigh anchor" : "Drop anchor", craft.running_dark ? "Show her lights" : "Run dark", craft.grapple ? (craft.grapple.thrower == craft ? "Cast off the grapple" : "Cut the grapple") : "Grapple a ship", "Refit the hull", "Strike the hull", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -151,10 +151,19 @@
 			if (!craft.force_helm(H, src) || !craft)
 				return
 	if (choice == "Make for a berth")
+		if (craft.grapple)
+			to_chat(H, SPAN_WARNING(craft.grapple_refusal()))
+			return
 		craft.dock_menu(H, src)
 		return
 	if (choice == "Run dark" || choice == "Show her lights")
 		craft.dark_menu(H, src, choice == "Run dark")
+		return
+	if (choice == "Grapple a ship" || choice == "Cast off the grapple" || choice == "Cut the grapple")
+		craft.grapple_menu(H, src)
+		return
+	if (craft.grapple && (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Refit the hull")))
+		to_chat(H, SPAN_WARNING(craft.grapple_refusal()))
 		return
 	switch (choice)
 		if ("Full ahead") craft.set_speed(VESSEL_SPEED_FULL)
