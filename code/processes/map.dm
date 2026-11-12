@@ -10,3 +10,6 @@
 /process/map/fire()
 	if (map)
 		map.tick()
+		// Book research: has the current era lost its last written record? (era_loss.dm)
+		if (ticker && ticker.current_state == GAME_STATE_PLAYING)
+			map.era_loss_tick()

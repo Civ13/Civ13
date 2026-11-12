@@ -43,7 +43,10 @@
 /obj/item/weapon/book/proc/has_research_chapter(node_id)
 	return node_id in research_chapter_list()
 
-/obj/item/weapon/book/proc/add_research_chapter(node_id)
+// A capstone chapter that comes into being by any route (research, writing it
+// from memory, copying, printing) can move the era: research announces a
+// discovery, any other route brings a lost era back (era_loss.dm).
+/obj/item/weapon/book/proc/add_research_chapter(node_id, discovered = FALSE)
 	if (!valid_recipe_node_id(node_id))
 		return FALSE
 	var/list/chapters = research_chapter_list()
@@ -52,6 +55,7 @@
 	chapters += node_id
 	research_chapters = jointext(chapters, ";")
 	clear_research_progress(node_id)
+	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
 
 // node_id => list(ticks, prototype_installed)
@@ -110,20 +114,25 @@
 		return FALSE
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && !entry[2])
 		return FALSE
-	add_research_chapter(node_id)
-	map?.book_research_node_finished(N)
+	add_research_chapter(node_id, TRUE)
 	return TRUE
 
 // The world era still moves on a capstone, the first time anyone finishes one.
-// No one learns the node here: it has to be studied from the book.
-/obj/map_metadata/proc/book_research_node_finished(datum/research_node/N)
-	if (!N || N.mode != RESEARCH_MODE_PROTOTYPE || N.era_tier <= ordinal_age)
+// No one learns the node here: it has to be studied from the book. A capstone
+// written down again after its era was lost (rewritten) brings the era back.
+/obj/map_metadata/proc/book_research_node_finished(datum/research_node/N, rewritten = FALSE)
+	if (!N || !book_research_enabled() || N.mode != RESEARCH_MODE_PROTOTYPE || N.era_tier <= ordinal_age)
 		return
 	ordinal_age = N.era_tier
 	var/new_year = ordinal_age_year(N.era_tier)
 	if (new_year)
 		age = new_year
-	to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+	era_loss_missed = 0
+	if (rewritten)
+		log_game("Book research: [N.id] was written down again; the world returns to era [N.era_tier].")
+		to_chat(world, "<big><font color='#c98a1d'><b>[N.name]</b> is written down again, and the world returns to the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+	else
+		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 
 // ------------------------------------------------------------
 // Personal knowledge rules in book mode
