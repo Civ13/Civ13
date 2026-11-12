@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'gaia_weather': {'files': ('tests/gaia_weather/test_frequency.py',),
+        'paths': ('tests/gaia_weather/',), 'shared_paths': (
+            'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+            'code/modules/1713/weather_policy.dm', 'code/modules/1713/weather.dm',
+            'code/__defines/weather.dm', 'tests/weather_policy/test_policy.py')},
     'biofuel_capacity': {'files': ('tests/biofuel_capacity/test_output.py',),
         'paths': ('tests/biofuel_capacity/',),
         'shared_paths': ('code/modules/1713/modern_items.dm', 'tests/save_movement/source_adapter.py')},
