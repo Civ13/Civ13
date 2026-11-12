@@ -303,6 +303,16 @@ var/submarine_runtime_error = FALSE
 	submarine_check(new /obj/item/clothing/suit/pressure_suit/diving/hard(locate(1, 1, 2)).depth_rating == SEA_ZONE_DEEP, "the hard dive suit is built for the deep")
 	var/obj/item/clothing/suit/pressure_suit/diving/dress = new(locate(1, 1, 2))
 	submarine_check(dress.depth_rating == SEA_ZONE_SHELF && !dress.has_heater && !new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).depth_rating, "the diving dress is built for the shelf; a space suit is not for diving")
+	// Diving gear has its own art, held and worn, not the space suit's.
+	for (var/list/gear in list(list(/obj/item/clothing/suit/pressure_suit/diving, slot_wear_suit_str), list(/obj/item/clothing/suit/pressure_suit/diving/hard, slot_wear_suit_str), list(/obj/item/clothing/head/pressure_helmet/diving, slot_head_str), list(/obj/item/clothing/head/pressure_helmet/diving/hard, slot_head_str), list(/obj/item/pressure_tank/diving, slot_back_str)))
+		var/gear_type = gear[1]
+		var/obj/item/G = new gear_type(locate(1, 1, 2))
+		var/worn = G.item_icons[gear[2]]
+		submarine_check(G.icon_state != "astronaut" && (G.icon_state in icon_states(G.icon)) && worn && (G.icon_state in icon_states(worn)) && length(icon_states(worn)), "[gear_type] has its own diving sprite, item and worn (state [G.icon_state])")
+	submarine_check(new /obj/item/clothing/suit/pressure_suit(locate(1, 1, 2)).icon_state == "astronaut", "the space pressure suit keeps its own look")
+	for (var/helmet_type in list(/obj/item/clothing/head/pressure_helmet/diving, /obj/item/clothing/head/pressure_helmet/diving/hard))
+		var/obj/item/clothing/head/held = new helmet_type(locate(1, 1, 2))
+		submarine_check((held.item_state_slots[slot_l_hand_str] in icon_states(held.item_icons[slot_l_hand_str])) && (held.item_state_slots[slot_r_hand_str] in icon_states(held.item_icons[slot_r_hand_str])), "[helmet_type] held in a hand uses a state the hand sheets have")
 	sleep(70)
 	submarine_check(!QDELETED(dropped) && get_turf(dropped) == locate(20, 22, 1), "things dropped on the seabed stay there")
 	var/obj/structure/car_workshop/submarine_pen/pen = new(locate(3, 23, 2))

@@ -218,6 +218,10 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 /obj/item/clothing/suit/pressure_suit/diving
 	name = "diving dress"
 	desc = "A rubberised canvas suit with weighted boots and a breastplate for the helmet. Sealed with a diving helmet and an air bottle on your back it lets you walk the seabed outside a submarine, but only on the shelf near the coast: deeper water crushes it."
+	icon = 'icons/obj/clothing/diving.dmi'
+	icon_state = "diving_dress"
+	item_state = "diving_dress"
+	item_icons = list(slot_wear_suit_str = 'icons/mob/diving.dmi')
 	has_heater = FALSE
 	heater_charge = 0
 	depth_rating = SEA_ZONE_SHELF
@@ -235,11 +239,27 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 /obj/item/clothing/head/pressure_helmet/diving
 	name = "diving helmet"
 	desc = "A brass helmet with glass ports and a lamp. It locks onto a diving dress. Use it in hand to switch the lamp on or off."
+	icon = 'icons/obj/clothing/diving.dmi'
+	icon_state = "diving_helmet"
+	item_state = "diving_helmet"
+	// No held art of its own: in the hand it shows the generic helmet.
+	item_state_slots = list(
+		slot_l_hand_str = "helmet",
+		slot_r_hand_str = "helmet",
+		)
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_hats.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_hats.dmi',
+		slot_head_str = 'icons/mob/diving.dmi',
+		)
 	brightness_on = 4
 
 /obj/item/pressure_tank/diving
 	name = "diving air bottle"
 	desc = "Compressed air for a diving helmet. Wear it on your back. Refill it at a submarine's ballast station, a habitat module's core or a landed lander."
+	icon = 'icons/obj/clothing/diving.dmi'
+	icon_state = "diving_bottles"
+	item_icons = list(slot_back_str = 'icons/mob/diving.dmi')
 
 // The ballast station fills bottles from the boat's air bank.
 /obj/structure/vehicleparts/sub_station/attackby(obj/item/W, mob/user)
