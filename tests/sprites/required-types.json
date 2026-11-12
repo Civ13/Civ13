@@ -101,5 +101,7 @@
   "/obj/structure/naval_mine/contact",
   "/obj/structure/naval_mine/magnetic",
   "/obj/structure/degaussing_coil",
-  "/obj/structure/wiping_station"
+  "/obj/structure/wiping_station",
+  "/obj/structure/mine_sweep/magnetic",
+  "/obj/structure/mine_sweep/oropesa"
 ]
