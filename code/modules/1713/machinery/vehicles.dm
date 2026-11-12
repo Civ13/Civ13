@@ -623,68 +623,21 @@ var/global/list/vehicle_axes = list()
 	var/obj/structure/vehicle/origin = null
 
 /obj/item/vehicleparts/wheel/rope
-	name = "Reins"
-	desc = "Used to control animal propulsion vehicles."
+	name = "reins"
+	desc = "Use them to urge a carriage's team on; their secondary action reins in. Direction keys steer."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "leash"
 
+// The reins drive a carriage (code/game/objects/structures/carriage.dm).
 /obj/item/vehicleparts/wheel/rope/attack_self(mob/living/human/H)
-	if(istype(H.driver_vehicle, /obj/structure/vehicle/carriage))
-		var/obj/structure/vehicle/carriage/M = H.driver_vehicle
-		if(M.buckled_animal_propulsion <= 0)
-			to_chat(H, "You need animals to move the [H.driver_vehicle.name].")
-			return
-		else if(M.buckled_animal_propulsion == 1)
-			H.driver_vehicle.axis.speedlist = alist(1=25,2=20)
-		else if(M.buckled_animal_propulsion == 2)
-			H.driver_vehicle.axis.speedlist = alist(1=20,2=15,3=10)
-		else if(M.buckled_animal_propulsion == 4)
-			H.driver_vehicle.axis.speedlist = alist(1=10,2=4,3=1.6)
-		else if(M.buckled_animal_propulsion == 6)
-			H.driver_vehicle.axis.speedlist = alist(1=9,2=3,3=1.4)
-		else if(M.buckled_animal_propulsion == 8)
-			H.driver_vehicle.axis.speedlist = alist(1=8,2=2.8,3=1.2)
-	if (H.driver_vehicle.axis.currentspeed <= 0)
-		H.driver_vehicle.axis.currentspeed = 1
-		var/spd = H.driver_vehicle.axis.get_speed()
-		if (spd <= 0)
-			return
-		else
-			H.driver_vehicle.vehicle_m_delay = spd
-		spawn(1)
-			if (H.driver_vehicle.axis.currentspeed == 1)
-				H.driver_vehicle.moving = TRUE
-				H.driver_vehicle.startmovementloop()
-				to_chat(H, "You hit the animal to move.")
-		return
-	else if (H.driver_vehicle.axis.currentspeed<H.driver_vehicle.axis.speedlist.len)
-		H.driver_vehicle.axis.currentspeed++
-		if (H.driver_vehicle.axis.currentspeed>H.driver_vehicle.axis.speedlist.len)
-			H.driver_vehicle.axis.currentspeed = H.driver_vehicle.axis.speedlist.len
-		var/spd = H.driver_vehicle.axis.get_speed()
-		if (spd <= 0)
-			return
-		else
-			H.driver_vehicle.vehicle_m_delay = spd
-			to_chat(H, "You hit the animal harder.")
-			return
-	else
-		return
+	var/obj/structure/vehicle/carriage/C = origin
+	if (istype(C) && loc == H)
+		C.urge(H)
 
-/obj/item/vehicleparts/wheel/rope/secondary_attack_self(mob/living/human/user)
-	if (user && user.driver_vehicle && user.driver_vehicle.axis && user.driver_vehicle.axis.currentspeed <= 0)
-		return
-	else
-		user.driver_vehicle.axis.currentspeed--
-		var/spd = user.driver_vehicle.axis.get_speed()
-		if (spd <= 0 || user.driver_vehicle.axis.currentspeed == 0)
-			user.driver_vehicle.moving = FALSE
-			to_chat(user, "You stop \the [user.driver_vehicle].")
-			return
-		else
-			user.driver_vehicle.vehicle_m_delay = spd
-			to_chat(user, "You pull the rope to reduce the speed.")
-			return
+/obj/item/vehicleparts/wheel/rope/secondary_attack_self(mob/living/human/H)
+	var/obj/structure/vehicle/carriage/C = origin
+	if (istype(C) && loc == H)
+		C.rein_in(H)
 
 /obj/item/vehicleparts/wheel/handle
 	name = "motorcycle handles"

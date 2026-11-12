@@ -396,7 +396,8 @@ SUITES = {
     'motorcycle_riding': {'files': ('tests/motorcycle_riding/test_sources.py',),
         'paths': ('tests/motorcycle_riding/',), 'shared_paths': (
             'code/game/objects/buckling.dm',
-            'code/game/objects/structures/transports.dm')},
+            'code/game/objects/structures/transports.dm',
+            'code/game/objects/structures/carriage.dm')},
     'paint_buckets': {'files': ('tests/paint_buckets/test_colors.py',),
         'paths': ('tests/paint_buckets/',), 'shared_paths': (
             'code/game/objects/items/weapons/paint.dm',
@@ -631,6 +632,7 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/simple_animal/riding.dm',
             'code/game/mob/living/simple_animal/simple_animal.dm',
             'code/game/objects/structures/transports.dm',
+            'code/game/objects/structures/carriage.dm',
             'code/modules/research_tree/research_node.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
@@ -1406,7 +1408,7 @@ SUITES = {
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Shared transport/persistence files retain their existing all-suite fallback.
     'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
-        'tests/carriage_glide/',)},
+        'tests/carriage_glide/',), 'shared_paths': ('code/game/objects/structures/carriage.dm',)},
     'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
                               'tests/throw_launch_clearance/test_mode_guard.py',
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (

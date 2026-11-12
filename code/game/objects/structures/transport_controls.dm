@@ -125,18 +125,3 @@
 	update_overlay()
 	update_icon()
 	return TRUE
-
-/obj/structure/vehicle/carriage/driver_died(var/mob/living/human/H)
-	if (H != driver)
-		return FALSE
-	if (bucklepoint1 == H)
-		bucklepoint1 = null
-	if (bucklepoint2 == H)
-		bucklepoint2 = null
-	if (bucklepoint3 == H)
-		bucklepoint3 = null
-	if (bucklepoint4 == H)
-		bucklepoint4 = null
-	if (bucklepoint5 == H)
-		bucklepoint5 = null
-	return ..()
