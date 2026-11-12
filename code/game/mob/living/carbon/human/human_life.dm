@@ -266,11 +266,12 @@
 	handle_diet()
 	if (stats && stats.len)
 	// hotfixes some stamina bugs
-		if (stats["stamina"][1] < 0)
-			stats["stamina"][1] = 0
+		var/stamina_values = stats["stamina"]
+		if (stamina_values[1] < 0)
+			stamina_values[1] = 0
 
-		if (stats["stamina"][2] < 80)
-			stats["stamina"][2] = 80
+		if (stamina_values[2] < 80)
+			stamina_values[2] = 80
 
 		if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
 			to_chat(src, "<span class = 'good'>You feel like you can run for a while.</span>")
