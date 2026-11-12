@@ -7,7 +7,8 @@
 // at a spot the registry keeps as plain numbers, so stations lie apart and
 // stay where they are across restarts.
 //
-// Spacecraft fly between them (spacecraft.dm). Until an orbit region runs,
+// Spacecraft fly between them (spacecraft.dm), and to the derelicts and
+// asteroid fields scattered round them (orbit_sites.dm). Until an orbit region runs,
 // the probes are what exercises this.
 // ============================================================
 
@@ -45,6 +46,7 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	if (!orbit_chart_made || QDELETED(orbit_chart_made))
 		orbit_chart_made = new /datum/chart/orbit
 	orbit_chart_made.sync_stations()
+	orbit_chart_made.ready_sites()
 	return orbit_chart_made
 
 // Where the nth station to be charted lies: a spiral out from the beacon, so
@@ -106,11 +108,17 @@ var/global/datum/chart/orbit/orbit_chart_made = null
 	return C ? C.stations[owner] : null
 
 // The token of whatever holds a plane: the arrival beacon, a station, or
-// null for the lanes and for a plane nobody holds.
+// a loaded site (orbit_sites.dm), or null for the lanes and for a plane
+// nobody holds.
 /datum/chart/orbit/proc/place_of_owner(owner)
 	if (owner == "arrival")
 		return arrival
-	return (istext(owner) && length(owner)) ? stations[owner] : null
+	if (!istext(owner) || !length(owner))
+		return null
+	if (findtext(owner, "site:") == 1)
+		var/datum/chart_site/orbit/S = orbit_site(copytext(owner, 6))
+		return S ? S.token : null
+	return stations[owner]
 
 // The helm of a spacecraft (spacecraft.dm).
 /obj/structure/chart_helm/orbit

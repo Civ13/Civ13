@@ -187,7 +187,35 @@ her from flying, and the console says why. The helm holds the propellant
   unit of propellant a tile, only while she lies off a place.
 
 The orbital helm has a recipe (electronics, with the other spaceflight
-fittings). No orbit region runs yet, so the probe is what exercises this.
+fittings). No orbit region runs yet, so the probes are what exercises this.
+
+## Encounter sites in orbit
+
+`space/orbit_sites.dm`: `/datum/chart_site/orbit` is a place on the orbit
+chart that is built on a pool plane when a spacecraft reaches it. A fresh
+chart seeds `ORBIT_SITE_DERELICTS` (5) derelicts and `ORBIT_SITE_FIELDS` (3)
+asteroid fields, at least 10 squares from the beacon and 7 from each other
+and from stations.
+
+- `load()` claims a plane as `site:<id>` through the pool, so the site cap
+  (4) and the admin pause apply, and calls `build(z)`. A ship that reaches a
+  site that cannot load holds off in the lanes.
+- A derelict is one to three dead habitat modules rolled from the site's
+  seed: no air, the cold of space, one hole in the hull, salvage crates
+  (steel, glass, electronics, copper, sometimes a hull patch kit or a module
+  kit) and sometimes a life support machine. Patched and aired it is an
+  ordinary module, and a helm makes a ship of it.
+- A field is 6 to 11 small asteroids (`orbit_asteroids.dm`) that keep their
+  place, with fresh rock each time it loads.
+- A loaded site is looked at every `ORBIT_SITE_LOOK` (5 minutes). Two looks
+  in a row with no ship there and nothing `clear_refusal()` protects (a
+  character, a bunk kept as home) empty the plane and give it back. A
+  derelict that was visited is then removed and another is seeded elsewhere;
+  a field stays on the chart.
+- `contacts_of()` on the orbit chart always lists the beacon and stations.
+  A site is listed inside sensor range and from then on (`charted`).
+- The registry saves the sites as one text (`site_state`): place, seed,
+  charted, visited and the plane each loaded site holds.
 
 ## Sea chart and harbours
 
@@ -399,11 +427,42 @@ Owners can name the vehicle, and "Our vehicles" lists every registered
 vehicle of the reader's party with its distance and bearing
 (`party_vehicles(party)`, `craft.where_text(from)`).
 
+## Carriages
+
+`code/game/objects/structures/carriage.dm` is the horse carriage, and
+`craft/carriage_papers.dm` puts it on the core as a `/datum/craft/vehicle/carriage`
+with a `/datum/craft_body/carriage` (its footprint). It keeps a vehicle's
+papers in a carriage's words (master, coachman, wheelwright, groom), appears in
+"Our vehicles", and its reins follow the vehicle rule: crew urge the team,
+a stranger forces the reins while an owner is about and is refused otherwise.
+The carriage saves the register in `register_state`.
+
+- **Footprint.** Two tiles wide and three long along `facing`, with the team
+  in a lane two tiles wide ahead of it (`carriage_cells()`, `lane_depth()`).
+  A turn re-lays bounds and sprite offset and is refused when the new
+  footprint or lane is blocked, or when turning round faster than a walk.
+- **Team and seats.** Up to four horses or oxen (not mixed), and five seats for
+  passengers or loose structures (crates, barrels). Everything aboard stands on
+  the carriage's corner tile and is drawn there with pixel offsets
+  (`seat_point()`, `team_point()`, `place_at()`); `let_off()` is the one way off.
+- **Pace.** A horse pulls 2 and an ox 1 (half when starving). Oxen walk, one
+  horse trots, two canter (`carriage_top_gear()`). Each gear has a delay that
+  grows with `load_ratio()` (load over `pull * CARRIAGE_PULL_CAPACITY`), is
+  slower off built ground, in snow and in shallow water, and takes the walking
+  slope rule (`terrain_slope_delay()`). Past four times capacity it will not
+  move. Every animal pays hunger per step, more uphill, halved by a harness.
+- **Steps.** A timer keeps to `next_step`; each step leases one glide to the
+  carriage and everything aboard for exactly the step's interval. The tiles the
+  step newly covers must be clear: people and large animals stop it (and are
+  run into), small animals are run over, deep water needs a bridge.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/freight_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/built_hull_probe.dm 300
