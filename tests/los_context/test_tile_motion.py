@@ -68,6 +68,50 @@ class TileMotion(unittest.TestCase):
                 'changed, possible_opacity=False, viewer_refresh=False',env)
         return N(actor=actor,owner=owner,context=context,clients=clients,before=before,after=after,events=events,invalidate=env['los_invalidate'])
 
+    def test_off_level_viewport_skip_preserves_invalidation_trace(self):
+        guard = '\t\tif(changed != V.body && T.z != V.body.z)\n\t\t\tcontinue\n'
+        new_check = 'if(T && changed != V.body && (!radii ||'
+        old_check = 'if(T && changed != V.body && (T.z != V.body.z || !radii ||'
+        self.assertEqual(LIFE.count(guard), 1)
+        self.assertEqual(LIFE.count(new_check), 1)
+        original = LIFE.replace(guard, '', 1).replace(new_check, old_check, 1)
+
+        def trace(source, missing, own_other_level):
+            s = self.scene(source, real_invalidation=True)
+            if own_other_level:
+                # The changed body must still be refreshed even if its turf and z disagree.
+                s.actor.z = 2
+            contexts = [c.los_context for c in s.clients]
+            calls, events = [], []
+            for i, client in enumerate(s.clients):
+                client.los_note_mover = lambda actor, i=i: events.append(('mover', i))
+                client.root_tree_presenter = N(invalidate=lambda *args, i=i: events.append(('root', i)))
+                client.los_presenter = N(invalidate=lambda *args, i=i: events.append(('los', i)))
+            for i, context in enumerate(contexts):
+                def radii(i=i):
+                    calls.append(i)
+                    return None if missing and i == 1 else P.DMList([7, 7])
+                context.viewport_radii = radii
+            affected = s.invalidate(s.actor)
+            return ([i for i, context in enumerate(contexts)
+                     if any(context is item for item in affected)],
+                    [c.los_dirty for c in s.clients], events, calls)
+
+        for missing in (False, True):
+            for own_other_level in (False, True):
+                before = trace(original, missing, own_other_level)
+                after = trace(LIFE, missing, own_other_level)
+                self.assertEqual(after[:3], before[:3])
+                self.assertEqual(before[3], [0, 1, 2, 3])
+                self.assertEqual(after[3], [0, 1, 2])
+                self.assertIn(0, after[0])
+                self.assertEqual(1 in after[0], not missing)
+                self.assertNotIn(3, after[0])
+
+        # A guard that omits the self exception would suppress the body's refresh.
+        broken = LIFE.replace(guard, guard.replace('changed != V.body && ', ''), 1)
+        self.assertNotIn(0, trace(broken, False, True)[0])
+
     def test_offset_pulses_and_failed_moves_do_not_force_capture(self):
         s=self.scene()
         # Pulses inside one half-tile eye step change nothing.
