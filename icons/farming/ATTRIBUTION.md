@@ -73,3 +73,12 @@ Civ13 art under the project's AGPL-3.0 licence. They are hand-placed pixels from
 fixed palette, reproduced by `tests/sprites/create_herb_garden.py`. The picked
 yarrow, comfrey, elderflower and milk thistle sprigs reuse the colours of
 `humanity_wild_herbs.dmi` but are newly drawn. No external or AI-generated art.
+
+## Crock and preserve jars (`icons/obj/food/preserves.dmi`)
+
+The `unfired_crock`, `crock`, `crock_closed`, `crock_fill`, `preserve_jar`,
+`jam_jar` and `jam_jar_fill` states in `icons/obj/food/preserves.dmi` are original
+Civ13 art under the project's AGPL-3.0 licence. They are hand-placed pixels from a
+fixed palette, reproduced by `tests/sprites/create_preserves.py`. The unfired
+crock reuses the grey clay tones of `icons/obj/claystuff.dmi` but is newly drawn.
+No external or AI-generated art.

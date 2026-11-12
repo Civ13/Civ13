@@ -1733,6 +1733,8 @@ SUITES = {
                   'icons/obj/food/food.dmi', 'icons/obj/food/dryed.dmi', 'icons/obj/food/dryer.dmi',
                   'code/modules/1713/herbalism.dm', 'icons/obj/herbalism.dmi', 'code/modules/1713/lantern.dm',
                   'code/modules/1713/light_fuel.dm')},
+    'preserves': {'files': ('tests/preserves/test_preserves.py',),
+        'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
