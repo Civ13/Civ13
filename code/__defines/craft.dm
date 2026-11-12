@@ -26,3 +26,9 @@
 
 // Tiles a chart token sees and is seen at, unless its craft says otherwise.
 #define CHART_SENSOR_RANGE 40
+
+// Whether a mob may take a craft's helm (craft.helm_access()): freely, by
+// force while an owner is about, or not at all.
+#define CRAFT_HELM_FREE 0
+#define CRAFT_HELM_FORCE 1
+#define CRAFT_HELM_CHAINED 2

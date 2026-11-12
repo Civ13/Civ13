@@ -78,10 +78,13 @@ var/global/list/naval_vessels = list()
 
 /datum/vessel/Destroy()
 	stop_sailing()
-	var/datum/craft/C = craft_of_vessel(src, FALSE)
 	naval_vessels -= src
-	if (C)
-		qdel(C)
+	// Her craft goes with her (craft_of_vessel() no longer answers for a
+	// vessel being deleted).
+	for (var/datum/craft/C in crafts)
+		var/datum/craft_body/template/B = C.body
+		if (istype(B) && B.vessel == src)
+			qdel(C)
 	if (flooding)
 		global.flooding_controllers -= flooding
 		flooding = null
