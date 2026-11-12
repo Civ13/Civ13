@@ -1141,6 +1141,7 @@
 #include "code\modules\admin\secrets\logs.dm"
 #include "code\modules\admin\secrets\toggle_bomb_cap.dm"
 #include "code\modules\admin\verbs\1713.dm"
+#include "code\modules\admin\verbs\admin_spectate.dm"
 #include "code\modules\admin\verbs\adminhelp.dm"
 #include "code\modules\admin\verbs\adminjump.dm"
 #include "code\modules\admin\verbs\adminpm.dm"
