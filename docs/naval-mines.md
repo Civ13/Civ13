@@ -48,4 +48,19 @@ modular boats never carry them, and modular boats do not crush them.
 
 A Scout submarine is 30, an Explorer 42. The tiller, the turf-built ship's
 chart and the submarine systems report read it as none, faint (< 20), strong
-(20-100) or very strong. `magnetic_factor()` is 1 until degaussing lands.
+(20-100) or very strong, with the wipe and coil noted.
+
+## Degaussing (`code/modules/naval/degaussing.dm`)
+
+`craft.magnetic_factor()` = (1 - wipe / 100) x (0.2 while a coil runs aboard).
+
+| Counter | How | Cost | Lasts |
+| --- | --- | --- | --- |
+| Degaussing coil (`/obj/structure/degaussing_coil`) | Bolt it to a deck with a wrench, switch it on by hand | Submarine: 1 battery unit a tile. Turf-built ship: a quarter of a slow-ahead hop's fuel oil per move (none under sail, so no coil). Built hull or modular boat: needs an engine running aboard | Until switched off, or tripped when the power fails |
+| Wiping (`/obj/structure/wiping_station`) | Station on the shore or a quay, wired to a cable with 30 power to spare, fed 20 lengths of cable coil; the ship lies still within 2 tiles; 2 minutes at the station | 20 cable, 30 power | 70% off, wearing off 0.1% a tile sailed (700 tiles to fade) |
+
+Wear and coil power are paid by `craft.magnetic_moved(tiles)` from the same
+move hooks as the mine check (before it). The wipe is saved on the ship's
+wheel, the tiller or the modular boat's axis (`magnetic_wipe`).
+
+Test: `tests/naval_carrier/degaussing_probe.dm`.

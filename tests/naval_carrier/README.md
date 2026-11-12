@@ -208,3 +208,15 @@ Linux: `python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/mines_
 - **Wooden hull:** worth nothing and the tiller says so; she sails over a magnetic mine, which stays where it was laid and is not counted aboard; a contact mine under her goes off, with the blast on the hull tile over it.
 - **Steel hull:** twenty steel plates are worth 20 ("strong"); a magnetic mine three tiles off her course stays quiet, one tile off it goes off under her nearest plate.
 - **Submarine:** a Scout is worth 30, the systems report reads it, and a magnetic mine beside her springs two leaks.
+
+## Degaussing (`degaussing_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/degaussing_probe.dm
+```
+
+The probe answers the wiping station's wired power itself.
+
+- **Wiping:** the station on the beach finds a steel hull alongside; it asks for cable, takes thirty lengths, does nothing without power, and with power wipes 70% off for twenty lengths (20 shows as 6, "faint", and the tiller says so); ten lengths are not enough for another; the tiller keeps the wipe for a save.
+- **Wear:** the wiped hull passes a magnetic mine one tile off her course; ten tiles wear 1% off; with the wipe gone the same mine goes off.
+- **Coil:** a running coil takes 80% off; with no engine aboard a built hull trips it out on the next move. On a Scout submarine the coil is switched on by hand, takes 30 to 6, costs a battery unit a tile and trips out on a flat battery; the axis saves the wipe.

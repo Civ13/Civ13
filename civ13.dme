@@ -1385,6 +1385,7 @@
 #include "code\modules\naval\craft_chart.dm"
 #include "code\modules\naval\craft_grapple.dm"
 #include "code\modules\naval\craft_signals.dm"
+#include "code\modules\naval\degaussing.dm"
 #include "code\modules\naval\freight.dm"
 #include "code\modules\naval\hull_drives.dm"
 #include "code\modules\naval\magnetic_signature.dm"
