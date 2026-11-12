@@ -133,6 +133,8 @@ SUITES = {
         'shared_paths': ('code/game/turfs/floor_types.dm',)},
     'steam_engine_callbacks': {'files': ('tests/steam_engine_callbacks/test_engine_callbacks.py',),
         'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
+    'conveyor_sync': {'files': ('tests/conveyor_sync/test_sync.py',),
+        'paths': ('tests/conveyor_sync/', 'code/modules/1713/machinery/conveyor2.dm', 'code/modules/1713/hydroponics.dm')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
