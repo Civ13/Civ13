@@ -90,6 +90,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 /obj/structure/vehicleparts/axis/proc/stopmovementloop()
 	moving = FALSE
 	currentspeed = 0
+	glide_rest()
 	for (var/obj/structure/vehicleparts/movement/W in wheels)
 		W.update_icon()
 	return
@@ -362,6 +363,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(move_turfs)
 		throw e
 	release_transform_tiles(move_turfs)
+	glide_step(origins)
 	refresh_passenger_vision()
 	if (rover_trailers.len)
 		rover_trailers_follow(src)
@@ -409,6 +411,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	return TRUE
 
 /obj/structure/vehicleparts/axis/Destroy()
+	glide_give_back(glide_was, null)
 	release_transform_tiles(transform_tiles)
 	return ..()
 
