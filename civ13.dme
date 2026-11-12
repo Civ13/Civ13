@@ -1377,6 +1377,7 @@
 #include "code\modules\naval\craft_grapple.dm"
 #include "code\modules\naval\craft_signals.dm"
 #include "code\modules\naval\hull_drives.dm"
+#include "code\modules\naval\sea_weather.dm"
 #include "code\modules\naval\ship_papers.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"

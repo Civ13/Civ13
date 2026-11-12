@@ -162,14 +162,18 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 			var/why = HT.quay.refusal(src)
 			harbours += "[T.name], [where]: [why ? why : "she may berth here"]."
 			continue
-		if (get_dist(here, P) > token.sensor_range)
-			continue
 		var/datum/craft/C = T.craft
+		if (C ? !sights(C) : (get_dist(here, P) > lookout_range()))
+			continue
 		if (!C || !knows(C))
 			ships += "[T.contact_name()], [where]."
 			continue
 		ships += "[C.name], [where][C.running_dark ? ", running dark" : ""], bow to the [dir2text(C.body.heading())], [C.berth ? "moored at [C.berth.berth_name()]" : (C.making_way() ? "under way" : "stopped")]."
-	lines += ships.len ? "Lookout, [token.sensor_range] tiles:" : "Lookout: no other ship within [token.sensor_range] tiles."
+	var/murk = sea_murk_name(here)
+	var/sees = lookout_range()
+	if (murk)
+		lines += "In [murk] her lookout sees [sees] tile\s."
+	lines += ships.len ? "Lookout, [sees] tiles:" : "Lookout: no other ship within [sees] tiles."
 	lines += ships
 	lines += harbours.len ? "Harbours on this sea:" : "No harbour is charted on this sea."
 	lines += harbours
