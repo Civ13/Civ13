@@ -17,6 +17,10 @@
 	if (grab_climb_ledge(A))
 		return
 
+	// Grab a tree with a free hand to climb it (tree_climbing.dm).
+	if (grab_climb_tree(A))
+		return
+
 	// Special glove functions:
 	// If the gloves do anything, have them return TRUE to stop
 	// normal attack_hand() here.

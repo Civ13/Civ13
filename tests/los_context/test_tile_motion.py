@@ -308,7 +308,8 @@ class TileMotion(unittest.TestCase):
         offset_key=branch[1] if anchored else branch[2]
         template=re.search(r'\treturn "([^\n]*)"',policy)[1]
         names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time),
-                   los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}')
+                   los_eye_bucket=lambda b:f'{(b.step_x+8)//16*16},{(b.step_y+8)//16*16}',
+                   los_up_tree=lambda b:int(getattr(b,'up_tree',False)))
         def expression(code):
             if code=='config ? config.disable_fov : 1':return 1
             if ' ? ' in code:
@@ -433,6 +434,7 @@ class DistanceCamera(unittest.TestCase):
             env.update(ismob=lambda a:a.type.startswith('/mob/'),LOS_FOLIAGE_RANGE=2,
                        get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),
                        root_tree_family=lambda a:a.type.startswith('/obj/structure/wild/tree'))
+            env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
             env['los_in_foliage']=A.project(TERRAIN,'/proc/los_in_foliage','M',env)
             env['los_foliage_hides']=A.project(TERRAIN,'/proc/los_foliage_hides','viewer, target',env)
         if '/proc/los_own_tree(' in source:

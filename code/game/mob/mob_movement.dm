@@ -454,6 +454,12 @@
 		if (N.hanging == mob)
 			return
 
+	// Up a tree: a movement key climbs down (tree_climbing.dm).
+	if (mob.climbed_tree && ishuman(mob))
+		var/mob/living/human/tree_climber = mob
+		tree_climber.start_climb_down()
+		return
+
 	if (mob.prone && istype(n, /turf))
 		var/turf/floor/F = n
 		if (F.Adjacent(mob))

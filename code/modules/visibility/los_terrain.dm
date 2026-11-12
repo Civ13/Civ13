@@ -15,6 +15,9 @@
 // Eye height above the ground, in height levels.
 #define LOS_EYE_STANDING 1.5
 #define LOS_EYE_LOW 0.5
+// Up a tree (tree_climbing.dm): near the top of the canopy, above other tree
+// tops (5) and walls (3), so a climber sees over both outdoors.
+#define LOS_EYE_CLIMBED 7
 // The eye moves in steps of this many pixels inside a tile (half a tile).
 // Each step refreshes the viewer, so a walker refreshes twice per tile.
 #define LOS_EYE_OFFSET_QUANTUM 16
@@ -127,6 +130,8 @@ var/global/los_eye_offsets_paused = FALSE
 /proc/los_eye_level(mob/M)
 	if (!M)
 		return LOS_EYE_STANDING
+	if (los_up_tree(M))
+		return LOS_EYE_CLIMBED
 	if (M.resting || M.lying || M.prone)
 		return LOS_EYE_LOW
 	return LOS_EYE_STANDING
@@ -298,11 +303,11 @@ var/global/los_eye_offsets_paused = FALSE
 // The shared terrain answer for a body's eye, or null when the body's level
 // has no heights or the ground in view is flat.
 /proc/los_terrain_for(mob/body, view_radius)
-	if (!body || !map || !map.terrain_height_file || !isturf(body.loc))
+	if (!body || !map || !isturf(body.loc))
 		return null
-	var/datum/terrain_heights/H = map.terrain_heights()
+	var/datum/terrain_heights/H = map.terrain_height_file ? map.terrain_heights() : null
 	if (!H || !H.rows_by_z["[body.z]"])
-		return null
+		return los_canopy_field_for(body, view_radius, null)
 	if (los_terrain_cache_source != H)
 		los_terrain_cache = list()
 		los_terrain_cache_source = H
@@ -323,8 +328,34 @@ var/global/los_eye_offsets_paused = FALSE
 			los_terrain_cache.Cut(1, round(LOS_TERRAIN_CACHE_MAX / 2) + 1)
 		los_terrain_cache[key] = F
 	if (F.flat)
-		return null
+		return los_canopy_field_for(body, view_radius, H)
 	return list(F, tile_x, tile_y)
+
+// A climber's eye is far above flat ground, so walls and other trees below it
+// can be seen over even where the ground has no heights. The field is open
+// (no ground hides anything); only its eye and ground levels matter, for
+// los_blocker_top and los_height_clears. Null for anyone not up a tree.
+/proc/los_canopy_field_for(mob/body, view_radius, datum/terrain_heights/H)
+	if (!los_up_tree(body))
+		return null
+	var/base = 0
+	if (H && H.rows_by_z["[body.z]"])
+		base = H.at(body.x, body.y, body.z)
+	var/key = "canopy|[base]|[view_radius]"
+	var/datum/los_terrain_field/F = los_terrain_cache[key]
+	if (!F)
+		F = new
+		F.radius = max(1, view_radius)
+		F.side = F.radius * 2 + 1
+		F.ground = new /list(F.side * F.side)
+		for (var/n in 1 to F.ground.len)
+			F.ground[n] = base
+		F.required = new /list(F.side * F.side)
+		F.eye = base + LOS_EYE_CLIMBED
+		if (los_terrain_cache.len >= LOS_TERRAIN_CACHE_MAX)
+			los_terrain_cache.Cut(1, round(LOS_TERRAIN_CACHE_MAX / 2) + 1)
+		los_terrain_cache[key] = F
+	return list(F, body.x, body.y)
 
 // One-target terrain test for NPC sight, without a field or cache: TRUE when
 // ground under the straight line from the viewer's eye to the target's top
@@ -346,10 +377,18 @@ var/global/los_eye_offsets_paused = FALSE
 			return TRUE
 	return FALSE
 
+// Someone who has climbed the tree on their tile (tree_climbing.dm) looks out
+// over the canopy: their own foliage no longer limits what they see, while
+// they stay hidden in it from anyone farther than LOS_FOLIAGE_RANGE.
+/mob/var/tmp/atom/movable/climbed_tree = null
+
+/proc/los_up_tree(mob/M)
+	return ismob(M) && M.climbed_tree && M.climbed_tree.loc == M.loc && isturf(M.loc)
+
 /proc/los_foliage_hides(atom/viewer, atom/target)
 	if (!ismob(viewer) || !ismob(target) || get_dist(viewer, target) <= LOS_FOLIAGE_RANGE)
 		return FALSE
-	return los_in_foliage(viewer) || los_in_foliage(target)
+	return (los_in_foliage(viewer) && !los_up_tree(viewer)) || los_in_foliage(target)
 
 /proc/los_terrain_ray_blocked(atom/viewer, atom/target)
 	if (los_foliage_hides(viewer, target))

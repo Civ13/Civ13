@@ -1225,6 +1225,9 @@ var/list/coefflist = list()
 			for(var/obj/item/weapon/attachment/scope/A in G.attachments)//Looks through the attachments of the gun in hand
 				AL += A.zoom_amt
 			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
+	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
+	if (climbed_tree)
+		look_amount = max(look_amount, 8)
 
 	if(!user || !user.client)
 		return
