@@ -373,6 +373,24 @@ def spawn_markers(meta, profile, report):
     return markers
 
 
+def plain_cells(header, total):
+    """A level's plain templates and its per-cell template numbers (0 for none)."""
+    templates = header.get("plain_templates")
+    if templates is None:
+        return [], None
+    runs = header.get("plain_runs")
+    require(type(templates) is list and 1 <= len(templates) <= 255 and all(type(t) is dict for t in templates), "invalid_plain_cells")
+    require(type(runs) is list and runs and len(runs) % 2 == 0, "invalid_plain_cells")
+    cells = []
+    for number, length in zip(runs[::2], runs[1::2]):
+        require(type(number) in (int, float) and type(length) in (int, float), "invalid_plain_cells")
+        require(number == int(number) and 0 <= number <= len(templates), "invalid_plain_cells")
+        require(length == int(length) and length >= 1 and len(cells) + length <= total, "invalid_plain_cells")
+        cells += [int(number)] * int(length)
+    require(len(cells) == total, "invalid_plain_cells")
+    return templates, cells
+
+
 def project(levels, meta, profile, catalog, preview, report=None):
     report = report if report is not None else Report()
     maxx, maxy, maxz = meta["dims"]
@@ -385,11 +403,21 @@ def project(levels, meta, profile, catalog, preview, report=None):
         header = level["header"]
         sparse_turf = header.get("sparse_turf")
         sparse_zone = header.get("sparse_zone")
+        templates, plain = plain_cells(header, maxx * maxy)
         for y in range(1, maxy + 1):
             for x in range(1, maxx + 1):
                 cell = level["cells"].get((x, y))
                 atoms = []
-                if cell is None:
+                number = plain[(y - 1) * maxx + x - 1] if cell is None and plain else 0
+                template = templates[number - 1] if number else None
+                if template is not None:
+                    turf_path, zone = template.get("type"), template.get("zone")
+                    require(type(turf_path) is str and TYPE_PATH.match(turf_path), "invalid_turf")
+                    if not (turf_path.startswith(tuple(profile["turf_roots"])) and turf_path in catalog):
+                        raise CoreError("unsupported_terrain")
+                    turf_path = atom_text(turf_path, admitted_fields(template, profile, report, "turf"))
+                    report.counts["plain_cells"] += 1
+                elif cell is None:
                     require(type(sparse_turf) is str and sparse_zone in zones, "incomplete_grid")
                     require(TYPE_PATH.match(sparse_turf) and sparse_turf in catalog, "unsupported_terrain")
                     turf_path, zone = sparse_turf, sparse_zone
