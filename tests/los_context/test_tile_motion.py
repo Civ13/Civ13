@@ -473,16 +473,6 @@ class DistanceCamera(unittest.TestCase):
             getviewsize=lambda v:Cells([v*2+1,v*2+1]))
         # No tree stands on the camera's tile unless a test places one.
         env['los_own_tree']=lambda body,A:False
-        env['los_foliage_hides']=lambda viewer,target:False
-        if '/proc/los_foliage_hides(' in TERRAIN:
-            env.update(ismob=lambda a:a.type.startswith('/mob/'),LOS_FOLIAGE_RANGE=2,
-                       get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),
-                       root_tree_family=lambda a:a.type.startswith('/obj/structure/wild/tree'))
-            env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
-            env['los_leafy_tree']=lambda a:a.type.startswith('/obj/structure/wild/tree')
-            env['los_canopy_hides']=lambda viewer,target:False
-            env['los_in_foliage']=A.project(TERRAIN,'/proc/los_in_foliage','M',env)
-            env['los_foliage_hides']=A.project(TERRAIN,'/proc/los_foliage_hides','viewer, target',env)
         if '/proc/los_own_tree(' in source:
             env['root_tree_family']=lambda a:a.type.startswith('/obj/structure/wild/tree')
             P.project(source,'/proc/los_own_tree(',env)

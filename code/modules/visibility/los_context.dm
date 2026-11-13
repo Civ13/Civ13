@@ -860,10 +860,6 @@ var/global/list/los_active_contexts
 	var/outside_view = abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5
 	if (outside_view && !tree_presentation)
 		return LOS_DENY
-	// Foliage cover (los_terrain.dm): people in a tree are hidden beyond a
-	// short range, and someone in a tree sees no people beyond it.
-	if (ismob(target) && los_foliage_hides(body, target))
-		return LOS_DENY
 	// Preserve the existing directional human concealment policy, when active.
 	if (istype(target, /mob/living/human) && config && !config.disable_fov && body.HUDtech && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)
 		var/obj/screen/fov/F = body.HUDtech["fov"]

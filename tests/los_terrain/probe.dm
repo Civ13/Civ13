@@ -13,11 +13,9 @@
 	return terrain_heights_cache.error ? null : terrain_heights_cache
 var/global/obj/map_metadata/map
 var/global/invalidated = 0
-// Trees are see-through (opacity FALSE); a leafy canopy is what hides people.
+// Trees are see-through (opacity FALSE) and hide nobody.
 /obj/structure/wild
-	var/canopy = FALSE
 /obj/structure/wild/probe_tree
-	canopy = TRUE
 /obj/structure/wild/probe_palm
 /proc/root_tree_family(atom/A)
 	return istype(A, /obj/structure/wild)
@@ -131,8 +129,8 @@ var/global/probe_cpu = 0
 	los_terrain_heights_changed(locate(M.x, M.y, 2))
 	var/cleared = !los_terrain_cache.len && invalidated == 1
 	var/list/still_eye = los_still_eye_cases()
-	// Foliage cover: NPC sight to or from a mob in a tree's tile stops past
-	// two tiles, on flat ground (no height file) as well.
+	// No foliage cover: NPC sight to or from a mob in a tree's tile is clear
+	// at every range, on flat ground (no height file).
 	var/list/foliage = list()
 	var/obj/structure/wild/probe_tree/tree = new(locate(40, 40, 2))
 	M.lying = FALSE
@@ -148,8 +146,7 @@ var/global/probe_cpu = 0
 		M.loc = locate(40, 40, 2)
 		T.loc = locate(40 + d, 40, 2)
 		foliage += los_terrain_ray_blocked(M, T) ? 1 : 0
-	// Deep forest: people 10 tiles apart with 3, then 4, leafy trees on the
-	// line between; then the 4th swapped for a palm, which hides nothing.
+	// A row of trees between people 10 tiles apart hides nobody either.
 	var/list/forest = list()
 	var/list/trees = list()
 	M.loc = locate(40, 40, 2)

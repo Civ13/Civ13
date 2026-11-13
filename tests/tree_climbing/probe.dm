@@ -97,12 +97,12 @@ var/tree_climbing_probe_checks = 0
 	var/datum/los_terrain_field/F = field[1]
 	tree_climbing_probe_assert(F.eye == LOS_EYE_CLIMBED && !F.flat && F.visible(5, 5, 0.25), "canopy_field_open")
 
-	// Foliage: the climber sees people far off; they still cannot see it.
+	// Trees hide nobody: the climber and people far off see each other.
 	var/mob/living/human/tree_climbing_probe/far = tree_climbing_probe_actor(14, 8)
 	var/mob/living/human/tree_climbing_probe/near = tree_climbing_probe_actor(9, 9)
-	tree_climbing_probe_assert(!los_foliage_hides(H, far), "climber_sees_far")
-	tree_climbing_probe_assert(los_foliage_hides(far, H), "climber_hidden_from_far")
-	tree_climbing_probe_assert(!los_foliage_hides(near, H), "climber_seen_near")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(H, far), "climber_sees_far")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(far, H), "climber_seen_from_far")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(near, H), "climber_seen_near")
 
 	// One climber per tree; a full pair of hands cannot climb.
 	tree_climbing_probe_assert(near.tree_climb_refusal(T) == "Someone is already up \the [T].", "one_climber_per_tree")
@@ -142,7 +142,7 @@ var/tree_climbing_probe_checks = 0
 	H.climb_down_tree()
 	tree_climbing_probe_assert(!H.climbed_tree && !T.tree_climber && !los_up_tree(H), "down")
 	tree_climbing_probe_assert(H.loc == locate(9, 8, 1) && H.step_x == 4 && H.step_y == 6 && H.pixel_y == 0 && H.pixel_x == 0, "back_at_start")
-	tree_climbing_probe_assert(los_foliage_hides(far, H) == FALSE, "visible_again")
+	tree_climbing_probe_assert(!los_terrain_ray_blocked(far, H), "visible_again")
 
 	// The tree going away drops the climber.
 	tree_climbing_probe_assert(H.finish_climb_tree(T), "climbed_again")

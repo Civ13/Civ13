@@ -37,11 +37,8 @@ var/list/seed_list_jungle
 // pathing and tile-stepping NPCs still treat the tile as the tree's.
 // trunk_center_x is the trunk's x in the sprite; 0 keeps whole-tile collision.
 /obj/structure/wild/var/trunk_center_x = 0
-// Trees never block sight like walls (opacity stays FALSE). A leafy canopy
-// gives foliage cover to whoever stands in its tile and, several trees deep,
-// hides people behind a forest (los_terrain.dm). Palms and bare trees hide
-// nothing. holds_climber is the tree_climbing.dm rule, kept apart from sight.
-/obj/structure/wild/var/canopy = FALSE
+// Trees never block sight or hide anyone (opacity stays FALSE).
+// holds_climber is the tree_climbing.dm rule, kept apart from sight.
 /obj/structure/wild/var/holds_climber = FALSE
 /obj/structure/wild/var/trunk_base_y = 2
 /obj/structure/wild/var/trunk_width = 14
@@ -287,7 +284,6 @@ var/list/seed_list_jungle
 	deadicon = "icons/obj/flora/wild.dmi"
 	deadicon_state = "deadtree"
 	opacity = FALSE
-	canopy = TRUE
 	holds_climber = TRUE
 	density = TRUE
 	sways = TRUE
@@ -375,7 +371,6 @@ var/list/seed_list_jungle
 	maxhealth = 50
 	pixel_x = -16
 	trunk_center_x = 32
-	canopy = FALSE
 
 // Tuning defaults: four 5-unit draws, comparable to a normal small transfer.
 /obj/structure/wild/tree/cactus
@@ -447,7 +442,6 @@ var/list/seed_list_jungle
 	amount = 5
 	branches = 3
 	max_branches = 3
-	canopy = FALSE
 	leaves = 0
 	pixel_x = -16
 	trunk_center_x = 32
@@ -644,7 +638,6 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/palm.dmi'
 	deadicon_state = "dead_palm1"
 	opacity = FALSE
-	canopy = FALSE
 	holds_climber = TRUE
 	sways = FALSE
 	amount = 4
@@ -1117,7 +1110,6 @@ var/list/seed_list_jungle
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
 	deadicon_state = "tree_1"
 	opacity = FALSE
-	canopy = TRUE
 	holds_climber = TRUE
 	density = TRUE
 	sways = FALSE
@@ -1161,7 +1153,6 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/acacia/dead
 	name = "dead acacia tree"
-	canopy = FALSE
 	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "african_acacia_dead"
 	deadicon_state = "african_acacia_dead"
@@ -1201,7 +1192,6 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/yucca
 	name = "Joshua tree"
-	canopy = FALSE
 	icon = 'icons/obj/flora/bigtrees.dmi'
 	desc = "A desert tree, also known as Yucca."
 	icon_state = "joshua_2"
@@ -1220,7 +1210,6 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/medpine/dead
 	name = "dead mediterranean pine tree"
-	canopy = FALSE
 	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "med_pine_dead"
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
@@ -1255,7 +1244,6 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/jungle/cherry/dead
 	name = "dead cherry blossom tree"
-	canopy = FALSE
 	icon = 'icons/obj/flora/deadtrees.dmi'
 	icon_state = "tree_1"
 	deadicon = 'icons/obj/flora/deadtrees.dmi'
