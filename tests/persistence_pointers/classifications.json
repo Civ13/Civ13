@@ -494,5 +494,13 @@
     "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
     "policy": "unsaved_graph",
     "reason": "Generation authority snapshot; the enclosing process-local movement datum is never saved."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "provoked_by",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Declared tmp: the last attacker an animal holds a grudge against is not saved and is reacquired when it is hurt again."
   }
 ]

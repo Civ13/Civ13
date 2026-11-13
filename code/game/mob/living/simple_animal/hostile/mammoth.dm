@@ -38,7 +38,7 @@
 		bound_x = 64
 
 /mob/living/simple_animal/hostile/mammoth/AttackingTarget()
-	var/damage = pick(melee_damage_lower, melee_damage_upper)
+	var/damage = rand(melee_damage_lower, melee_damage_upper)
 	if (!Adjacent(target_mob))
 		return
 	custom_emote(1, pick("bites [target_mob]!","stomps on [target_mob]!", "kicks [target_mob]!"))

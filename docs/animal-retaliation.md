@@ -96,3 +96,23 @@ with a second ram during the same cooldown and with a lamb, scared deer and
 existing hostile predator. Record exact build/map and actual screenshots/video;
 connected-client timing and appearance remain unverified. Do not use Gaia or
 production saves for these checks.
+
+## Predators
+
+Wild predators (`carnivore` or `predatory_carnivore` animals that fight through
+the generic `AttackTarget` path) only go for a person who comes within
+`predator_encroach_range` (3 tiles), who hurt them, or when their hunger is
+below `predator_starving_hunger` (150). A fed predator gives up an unprovoking
+person who backs off past `predator_chase_range` (6 tiles); its attacker
+(`provoked_by`, not saved) is never given up. Animal prey is unaffected.
+
+Every generic-path animal bites at most once per cooldown: `melee_attack_delay`,
+or `move_to_delay` seconds clamped to 2-4 s. Adjacent fights run every Life tick,
+so walking speed no longer sets the bite rate, and a hungry animal in a fight
+keeps fighting instead of foraging. A hunting or defending animal that is hurt
+by melee or a projectile turns on its attacker, and bites back at once when
+adjacent and its cooldown allows. Damage rolls across the whole
+`melee_damage_lower`-`melee_damage_upper` range, bites land torso-weighted
+(`animal_bite_zone`), and a bite heavy enough to break bone does so only
+`bite_fracture_chance` (20%) of the time. Native evidence:
+`tests/animal_combat/run.py` (`predator.dm`).
