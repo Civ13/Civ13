@@ -212,6 +212,22 @@ var/global/list/factory_active_fabricators = list()
 	if (fab_active && !powered)
 		to_chat(user, SPAN_WARNING("It is waiting for power."))
 
+#define FACTORY_GROUP_THRESHOLD 30
+
+// Menu group for a recipe: gun parts and receivers by family, the rest "General".
+/proc/factory_recipe_group(datum/factory_recipe/R)
+	if (!R)
+		return "General"
+	var/family = null
+	if (ispath(R.output_type, /obj/item/weapon/gun_component))
+		var/obj/item/weapon/gun_component/part_path = R.output_type
+		var/datum/firearm_component/C = firearm_component_def(initial(part_path.component_id))
+		family = C ? C.family : null
+	else if (ispath(R.output_type, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/gun_path = R.output_type
+		family = initial(gun_path.firearm_family)
+	return family ? "[firearm_family_labels[family]] parts" : "General"
+
 /obj/structure/factory_fabricator/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return
@@ -222,6 +238,25 @@ var/global/list/factory_active_fabricators = list()
 	if (!choices.len)
 		to_chat(H, SPAN_WARNING(map && map.book_research_enabled() ? "You don't know any recipe this fabricator can make." : "Your faction has not researched any recipe this fabricator can make."))
 		return
+	// A long list (every gun family has its own parts) is chosen group first.
+	if (choices.len > FACTORY_GROUP_THRESHOLD)
+		var/list/groups = list()
+		for (var/recipe_choice in choices)
+			var/datum/factory_recipe/GR = factory_get_recipes()[recipe_choice]
+			var/group = factory_recipe_group(GR)
+			if (!groups[group])
+				groups[group] = list()
+			var/list/members = groups[group]
+			members += recipe_choice
+		if (groups.len > 1)
+			var/list/group_names = sortList(groups.Copy() - "General")
+			if (groups["General"])
+				group_names.Insert(1, "General")
+			var/current_group = recipe_name ? factory_recipe_group(factory_get_recipes()[recipe_name]) : null
+			var/group_choice = player_input(H, "Choose a group of recipes.", "Fabricator recipe", (current_group in group_names) ? current_group : group_names[1], "anything", group_names, TRUE)
+			if (!group_choice || !groups[group_choice] || QDELETED(src) || !H.Adjacent(src) || H.incapacitated())
+				return
+			choices = groups[group_choice]
 	choices += "(clear recipe)"
 	var/list/labels = list()
 	var/default_label = recipe_name
