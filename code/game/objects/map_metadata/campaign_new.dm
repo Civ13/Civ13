@@ -304,6 +304,9 @@
 // CAMPAIGN METATATA //
 
 /obj/map_metadata/campaign_new
+	// TRUE where the Turkestan SFSR holds the objective, so it wins when the timer runs out
+	// and the CAFR wins by capturing it.
+	var/timer_victor_is_tsfsr = FALSE
 	ID = MAP_CAMPAIGN_NEW
 	gamemode_vote = FALSE
 	title = "Campaign"
@@ -471,7 +474,7 @@
 		if (win_condition_spam_check)
 			return FALSE
 		ticker.finished = TRUE
-		var/message = SPAN_BLUE("The <b>CAFR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+		var/message = timer_victor_is_tsfsr ? SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!") : SPAN_BLUE("The <b>CAFR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 		
 		show_global_battle_report(null)
@@ -481,7 +484,7 @@
 		ticker.finished = TRUE
 		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
 		if (current_winner && current_loser)
-			message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
+			message = timer_victor_is_tsfsr ? SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!") : SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
 		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
 
 		show_global_battle_report(null)
@@ -560,6 +563,7 @@
 	)
 
 /obj/map_metadata/campaign_new/campaign1b
+	timer_victor_is_tsfsr = TRUE
 	ID = MAP_CAMPAIGN_1B
 	battle_name = "Battle of the Road"
 	mission_start_message = "<font size=4><b>5 minutes</b> until the battle begins. The Turkestan SFSR must hold the road tunnel for 45 minutes to achieve victory.</font>"
@@ -588,77 +592,8 @@
 		list(CAFR) = /area/caribbean/faction2,
 		)
 
-/obj/map_metadata/campaign_new/campaign1b/update_win_condition()
-	// Win when timer reaches zero
-	if (world.time >= victory_time)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-		
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		no_loop_ca = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
-	return TRUE
-
 /obj/map_metadata/campaign_new/campaign2a
+	timer_victor_is_tsfsr = TRUE
 	ID = MAP_CAMPAIGN_2A
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
 	battle_name = "Battle of Samarkand"
@@ -691,76 +626,6 @@
 		list(CAFR) = /area/caribbean/faction2,
 		)
 	can_spawn_on_base_capture = FALSE
-
-/obj/map_metadata/campaign_new/campaign2a/update_win_condition()
-	// Win when timer reaches zero
-	if (world.time >= victory_time)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-		
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		no_loop_ca = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
-	return TRUE
 
 /obj/map_metadata/campaign_new/campaign2b
 	ID = MAP_CAMPAIGN_2B
@@ -824,6 +689,7 @@
 		)
 
 /obj/map_metadata/campaign_new/campaign3b
+	timer_victor_is_tsfsr = TRUE
 	ID = MAP_CAMPAIGN_3B
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/semiarid)
 	battle_name = "Battle of Bokhtar"
@@ -854,77 +720,8 @@
 		list(CAFR) = /area/caribbean/faction1,
 		)
 
-/obj/map_metadata/campaign_new/campaign3b/update_win_condition()
-	// Win when timer reaches zero
-	if (world.time >= victory_time)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-		
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		no_loop_ca = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
-	return TRUE
-
 /obj/map_metadata/campaign_new/campaign4a
+	timer_victor_is_tsfsr = TRUE
 	ID = MAP_CAMPAIGN_4A
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/tundra)
 	battle_name = "Route to Alma-Ata"
@@ -953,76 +750,6 @@
 		list(TSFSR) = /area/caribbean/british/land/outside/objective,
 		list(CAFR) = /area/caribbean/faction1,
 		)
-
-/obj/map_metadata/campaign_new/campaign4a/update_win_condition()
-	// Win when timer reaches zero
-	if (world.time >= victory_time)
-		if (win_condition_spam_check)
-			return FALSE
-		ticker.finished = TRUE
-		var/message = SPAN_RED("The <b>Turkestan SFSR</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-		
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		return FALSE
-	if ((current_winner && current_loser && world.time > next_win) && no_loop_ca == FALSE)
-		ticker.finished = TRUE
-		var/message = "The [battle_name ? battle_name : "battle"] has ended in a stalemate!"
-		if (current_winner && current_loser)
-			message = SPAN_BLUE("The <b>Central Asian Federal Republic</b> is victorious [battle_name ? "in the [battle_name]" : "the battle"]!")
-		to_chat(world, SPAN_NOTICE("<font size = 4>[message]</font>"))
-
-		show_global_battle_report(null)
-		win_condition_spam_check = TRUE
-		no_loop_ca = TRUE
-		return FALSE
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>Turkestan SFSR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// Soviet major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// Soviet minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The <b>CAFR</b> has captured the objective! They will win in {time} minutes."
-				next_win = world.time + short_win_time(CAFR)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
-		if (current_win_condition != no_winner && current_winner && current_loser)
-			to_chat(world, "<font size = 3>The <b>CAFR</b> has retaken control over the objective!</font>")
-			current_winner = null
-			current_loser = null
-		next_win = -1
-		current_win_condition = no_winner
-		win_condition.hash = 0
-	last_win_condition = win_condition.hash
-	return TRUE
 
 /obj/map_metadata/campaign_new/campaign4b
 	ID = MAP_CAMPAIGN_4B
