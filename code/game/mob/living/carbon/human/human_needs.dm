@@ -104,11 +104,18 @@
 		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
 		img_nasties.overlays += fleas
 		adjust_mood(-(0.02), "fleas")
+		if (!has_fleas)
+			to_chat(src, SPAN_WARNING("You feel something biting you. Your filthy clothes are crawling with fleas! Wash them, or you may catch typhus."))
+		else if (prob(1))
+			to_chat(src, SPAN_WARNING(pick("You scratch at a flea bite.", "Your skin itches and crawls.", "Something bites you under your clothes.")))
 		if ((prob(0.2) || (prob(0.5) && find_trait("Weak Immune System"))) && !disease && !inducedSSD)
 			disease = TRUE
 			disease_type = "typhus"
 			disease_progression = 0
 			disease_treatment = 0
+	else if (has_fleas)
+		to_chat(src, SPAN_NOTICE("You no longer feel fleas biting you."))
+	has_fleas = fleas_found
 	// The overlay only changes with the smell and lice states; replacing it every
 	// tick depended on Life() redrawing every human once a second.
 	var/nasties_state = "[hygiene < HYGIENE_LEVEL_DIRTY ? 1 : 0][fleas_found ? 1 : 0]"
@@ -117,6 +124,8 @@
 		overlays_standing[27] = img_nasties
 		queue_overlay_redraw()
 /mob/living/human/var/tmp/hygiene_overlay_state = null
+// Whether the last awake hygiene check found fleas, so the warning shows once.
+/mob/living/human/var/tmp/has_fleas = FALSE
 
 /mob/living/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
