@@ -1,5 +1,43 @@
 # Seasonal construction deterioration (draft balance)
 
+## Pacing, shelter, ruins and sagging roofs (2026-11-13)
+
+`code/processes/seasonal_construction_pacing.dm` sits between the debt and the
+damage. It supersedes the "zero health uses `qdel()`" wording below for walls.
+
+- **Rate.** A wall with a roof on its tile or a neighbouring tile weathers a
+  quarter slower, and so does a wall on a foundation (`building_founded`): rock
+  or a stone, concrete or steel floor. Both together halve the rate. Roofs keep
+  the plain rate. Examine text and warnings count real seasons at that rate.
+- **One warning band per season step.** The bands are sound, last year
+  (4 seasons or fewer), last season, and for walls ruin. A service that would
+  pass a band boundary stops on it and keeps the rest as debt; a second
+  boundary waits for the next counted season (or the next load). A backlog
+  after a long absence therefore still gives both warnings before anything
+  falls. A building in its last year creaks and sheds dust on every season in
+  between.
+- **Cracks.** Weathering walls show `cracks1` at half health, `cracks2` at a
+  quarter and `cracks3` in their last year, from the existing overlays in
+  `icons/turf/walls.dmi`. No new art.
+- **Ruins.** A weathering wall at zero health is not deleted. It is renamed
+  "ruined ...", keeps its deepest cracks, carries no roof or storey
+  (`building_support_tier` and `/obj/roof/is_supported` skip it) and can be
+  repaired with its building material at full cost. After
+  `CONSTRUCTION_RUIN_SEASONS` (4) more seasons it crumbles away through the
+  normal `qdel()` path.
+- **Sagging roofs.** A roof whose support wore out gets `collapse_check(TRUE)`:
+  it sags, warns everyone who can see it and falls `ROOF_SAG_TIME` (60 seconds)
+  later unless a wall or support is put under it. Supports that are knocked
+  down, burnt, blown up or dismantled keep the 5 second fuse.
+- **Nothing new is saved.** Band, cracks, ruin name and sag are derived from
+  health and are `tmp` runtime variables. A reload during a sag leaves the roof
+  standing until the ruin crumbles or another support event rechecks it.
+
+Evidence: `tests/seasonal_construction` (trace port of the pacing rules and
+source pins) and the native `tests/construction_weathering_load` probe with its
+`shelter`, `pace`, `ruin` and `sag` controls. Not covered: a connected client
+seeing the messages and overlays, and Gaia's real save.
+
 ## Year-based lifetimes, warnings and repair (2026-11-04)
 
 With 60-minute seasons, the original 16/32/64-season lifetimes made straw

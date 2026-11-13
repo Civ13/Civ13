@@ -15,11 +15,18 @@ var/global/construction_contents_probe_destroy_calls = 0
 	var/obj/item/neighbor = new(locate(3,3,1))
 	construction_contents_probe_target = W
 	construction_contents_probe_destroy_calls = 0
-	for (var/i = 1, i <= 16, i++) construction_probe_transition()
+	// One season left: the next one makes the wall a ruin, with its contents
+	// in place, and a year of seasons later it is destroyed in the normal way.
+	W.health = initial(W.health) / W.seasonal_construction_lifetime()
+	construction_probe_transition()
 	W.check_seasonal_construction()
-	durable_world_check(W.gc_destroyed && !W.seasonal_construction_index && W.health == 0 && W.seasonal_construction_due == 0 && construction_contents_probe_destroy_calls == 1, "occupied construction postponed terminal destruction or retained paid debt")
+	durable_world_check(!W.gc_destroyed && W.seasonal_construction_ruined() && W.health == 0 && W.seasonal_construction_due == 0 && construction_contents_probe_destroy_calls == 0 && child.loc == W, "occupied construction was destroyed without standing as a ruin")
+	for (var/i = 1, i <= 4, i++)
+		construction_probe_transition()
+		W.check_seasonal_construction()
+	durable_world_check(W.gc_destroyed && !W.seasonal_construction_index && W.seasonal_construction_due == 0 && construction_contents_probe_destroy_calls == 1, "occupied construction postponed terminal destruction or retained paid debt")
 	W.check_seasonal_construction()
-	durable_world_check(W.health == 0 && W.seasonal_construction_due == 0 && construction_contents_probe_destroy_calls == 1, "repeated service changed terminal debt or destruction dispatch")
+	durable_world_check(W.seasonal_construction_due == 0 && construction_contents_probe_destroy_calls == 1, "repeated service changed terminal debt or destruction dispatch")
 	construction_contents_probe_target = null
 	// Dispose fixture-owned objects without asserting their fate in normal hooks.
 	qdel(child)

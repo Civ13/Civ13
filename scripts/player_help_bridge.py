@@ -70,14 +70,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '0d5293e565835780978c2c23ab45b5c764c3363e'
+WIKI_REVIEWED_REVISION = '3b2d087833853f9884475ce1d2efe2e84255deee'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('957ba73f963c2956604252fe154de3f744177a125e09609194190943325c3193', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('a2ce2d33477c504d09c7e7fa96b3972c0a8b58a63664672976d5599810479bb9', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('3a05dab368c14a62d36a9411b4a6a71fa5cb618cd7a6639be0ecfae36a217955', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('72871c98783491aa0d1b212cbfc1b49f69e73a866a06a96dd6c04701ba76c5e1', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('fd52a6f49e4bb37a82eb76556d7837d55277a20206241ab5fc45d4243e78a2e6', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('41c565657cac586480bc2a5ec33394ac03aadf268c89a2571e69094d79b6f056', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),

@@ -15,11 +15,19 @@ import subprocess
 import tempfile
 import uuid
 
-HELPERS = 'code/game/objects/building_levels.dm'
-# Each control removes one part of the fix and must fail its own assertion.
+# Each control removes one part of the behaviour from one production file and
+# must fail its own assertion: name -> (file, old, new, expected failure).
 CONTROLS = {
-    'roof-debt': ('"switch_area", "seasonal_construction_due")', '"switch_area")',
+    'roof-debt': ('code/game/objects/building_levels.dm', '"switch_area", "seasonal_construction_due")', '"switch_area")',
                   'FAIL: unpaid season is carried over'),
+    'shelter': ('code/processes/seasonal_construction_pacing.dm', '\tif (building_founded(src))\n\t\trate -= 0.25\n', '',
+                'FAIL: a founded wall under a roof weathers at half the rate'),
+    'ruin': ('code/processes/seasonal_construction.dm', 'if (seasonal_construction_ruin())', 'if (FALSE)',
+             'FAIL: then stands as a ruin'),
+    'sag': ('code/game/objects/roof_stuff.dm', '\t\t\tif (slow)\n\t\t\t\tsag()\n\t\t\t\treturn\n', '',
+            'FAIL: roofs over a ruin sag before they fall'),
+    'pace': ('code/processes/seasonal_construction_pacing.dm', '\tif (seasons < reserve - floor - 0.001)\n', '\tif (TRUE)\n',
+             'FAIL: a backlog stops at the last-year warning'),
 }
 
 
@@ -61,12 +69,12 @@ def main():
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         replacements = [('code\\world.dm', '_world.dm'), ('code\\controllers\\mc\\globals.dm', '_globals.dm')]
         if args.negative_control:
-            old, new, _ = CONTROLS[args.negative_control]
-            helpers = (root / HELPERS).read_text(encoding='utf-8')
+            target, old, new, _ = CONTROLS[args.negative_control]
+            helpers = (root / target).read_text(encoding='utf-8')
             if helpers.count(old) != 1:
                 raise RuntimeError('Negative-control target missing or ambiguous')
             generated['_helpers.dm'].write_text(helpers.replace(old, new, 1), encoding='utf-8')
-            replacements.append((HELPERS.replace('/', '\\'), '_helpers.dm'))
+            replacements.append((target.replace('/', '\\'), '_helpers.dm'))
         for original, suffix in replacements:
             if source.count(original) != 1:
                 raise RuntimeError(f'Include {original} missing from civ13.dme')
@@ -93,13 +101,13 @@ def main():
         if os.name == 'nt':
             command += ['-invisible', '-close']
         runtime = subprocess.run(command + ['-trusted', '-log', 'runtime.log'], cwd=output,
-                                 capture_output=True, text=True, timeout=120)
+                                 capture_output=True, text=True, timeout=300)
         (output / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')
         print(log, flush=True)
         result = (output / 'weathering_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
-        expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS:'
+        expected = CONTROLS[args.negative_control][3] if args.negative_control else 'PASS:'
         if runtime.returncode or not result.startswith(expected) or any(x in log.lower() for x in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError('Construction weathering probe failed')
         if args.negative_control:

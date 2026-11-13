@@ -301,26 +301,54 @@
 	for (var/obj/structure/simple_door/SD in loc)
 		return TRUE
 	for (var/obj/covers/C in range(1, src))
-		if (C.wall == TRUE)
+		if (C.wall == TRUE && !C.seasonal_construction_ruined())
 			return TRUE
 	return FALSE
 
-/obj/roof/proc/collapse_check()
-	spawn(50)
+// How long a sagging roof gives people to prop it up or get out.
+#define ROOF_SAG_TIME 600
+
+/obj/roof
+	var/tmp/sagging = FALSE
+
+// slow is for supports that wore out: the roof sags and warns first. Supports
+// that were knocked down, burnt or taken away keep the short fuse.
+/obj/roof/proc/collapse_check(slow = FALSE)
+	spawn(slow ? 10 : 50)
 		if (!src || gcDestroyed || gc_destroyed)
 			return
 		if (persistence_save_in_progress)
-			collapse_check()
+			collapse_check(slow)
 			return
 		var/supportfound = is_supported()
 	//if no support >> roof falls down
 		if (!supportfound)
+			if (slow)
+				sag()
+				return
 			playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
 			for (var/mob/living/human/M in range(1, src))
 				M.adjustBruteLoss(rand(17,27))
 				M.Weaken(15)
 				to_chat(M, "The roof collapses!")
 			qdel(src)
+
+/obj/roof/proc/sag()
+	if (sagging)
+		return
+	sagging = TRUE
+	visible_message(SPAN_DANGER("\The [src] sags and creaks as dust trickles down. It will fall within a minute unless a wall or support is put under it!"))
+	addtimer(CALLBACK(src, PROC_REF(sag_end)), ROOF_SAG_TIME)
+
+/obj/roof/proc/sag_end()
+	if (gcDestroyed || gc_destroyed)
+		return
+	sagging = FALSE
+	if (is_supported())
+		visible_message("<span class='notice'>\The [src] settles onto its support.</span>")
+		return
+	visible_message(SPAN_DANGER("\The [src] cracks loudly. It is coming down!"))
+	collapse_check()
 
 /obj/item/weapon/roofbuilder
 	name = "roof builder"
