@@ -1795,6 +1795,8 @@ SUITES = {
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
+    'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
+        'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
