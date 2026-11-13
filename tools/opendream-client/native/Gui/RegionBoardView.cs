@@ -29,7 +29,6 @@ internal sealed class RegionBoardView : ScrollableControl {
         AutoScroll = true;
         TabStop = true;
         Dock = DockStyle.Fill;
-        Margin = new Padding(0, 0, 0, 6);
         AccessibleName = "Region status";
         AccessibleRole = AccessibleRole.List;
     }

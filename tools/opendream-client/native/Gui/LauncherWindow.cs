@@ -241,19 +241,17 @@ internal sealed partial class LauncherWindow : Form {
 
     private TabPage BuildHostPage(HostProfile profile) {
         var page = new TabPage("Host server") { Padding = new Padding(10) };
-        var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1 };
-        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         var group = profile.Control?.Group;
         // The board answers "what is running, what is out of date, what is broken"; the rows below act on it.
+        // Plain docking: the board fills the tab and each button row sits under it, wrapping at the tab's width.
         hostBoard = new RegionBoardView { Choosable = group != null };
-        layout.Controls.Add(hostBoard);
-        var rows = new TableLayoutPanel { Dock = DockStyle.Fill, AutoSize = true, ColumnCount = 2, Margin = new Padding(0) };
-        rows.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        rows.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        page.Controls.Add(hostBoard);
         FlowLayoutPanel Row(string caption) {
-            rows.Controls.Add(new Label { Text = caption, AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 9, 12, 3) });
-            var flow = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Fill, Margin = new Padding(0) };
-            rows.Controls.Add(flow);
+            var flow = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Bottom, Margin = new Padding(0), Padding = new Padding(0, 3, 0, 0) };
+            flow.Controls.Add(new Label { Text = caption, AutoSize = false, Width = LogicalToDeviceUnits(118), Height = LogicalToDeviceUnits(26),
+                TextAlign = ContentAlignment.MiddleLeft, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 3, 4, 3) });
+            // Rows added later dock first, so each new row goes under the ones before it.
+            page.Controls.Add(flow);
             return flow;
         }
         if (group != null) {
@@ -308,10 +306,6 @@ internal sealed partial class LauncherWindow : Form {
         var details = new LinkLabel { Text = "Setup details", AutoSize = true, Margin = new Padding(8, 8, 0, 3) };
         details.LinkClicked += (_, _) => MessageBox.Show(this, SetupDetails(profile), "Host server setup", MessageBoxButtons.OK, MessageBoxIcon.Information);
         server.Controls.Add(details);
-        layout.Controls.Add(rows);
-        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        page.Controls.Add(layout);
         page.Enter += async (_, _) => await RefreshHostState();
         // While the tab is open the board follows the servers by itself; a running action polls faster (hostPoll).
         hostIdlePoll = new System.Windows.Forms.Timer { Interval = 30000, Enabled = true };
