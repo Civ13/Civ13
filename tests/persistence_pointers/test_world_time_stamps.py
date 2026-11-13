@@ -43,6 +43,8 @@ REVIEWED = {
     'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
     'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
     'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
+    'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
+    'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

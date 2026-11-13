@@ -314,6 +314,8 @@
 				if (RH in friends) continue
 				if (RH.wolfman && istype(src, /mob/living/simple_animal/hostile/wolf)) continue
 				if (RH.lizard && istype(src, /mob/living/simple_animal/hostile/alligator)) continue
+				// Wild predators leave people alone unless starving or crowded.
+				if (!predator_will_hunt(RH)) continue
 			else
 				if (istype(L, /mob/living/simple_animal/civilian) && istype(src, /mob/living/simple_animal/hostile/human/redmenian_ng)) continue
 				if (L in friends) continue
@@ -595,6 +597,10 @@
 	if (!target_mob || !SA_attackable(target_mob) || !can_reach_tree_climber(target_mob))
 		LoseTarget()
 		return FALSE
+	// A fed predator lets a person who never hurt it back away.
+	if (ishuman(target_mob) && !predator_will_hunt(target_mob) && get_dist(src, target_mob) > predator_chase_range)
+		LoseTarget()
+		return FALSE
 	if (!(target_mob in view(aggro_vision_range, src)))
 		LostTarget()
 		return FALSE
@@ -607,6 +613,11 @@
 		// AI continues to decide attacks on its normal ticks, after an owned step.
 		if (npc_subtile_pursuit_enabled && npc_subtile_pursuit && npc_subtile_transaction)
 			return FALSE
+		// One bite per cooldown, however many callers reach this in a tick.
+		if (uses_paced_bites())
+			if (world.time < next_melee_attack)
+				return TRUE
+			next_melee_attack = world.time + melee_attack_cooldown()
 		AttackingTarget()
 		return TRUE
 	else
@@ -623,11 +634,12 @@
 	if (isliving(target_mob))
 		append_attack_log(text("\[[time_stamp()]\] <font color='red'>attacked [target_mob.name] ([target_mob.ckey])</font>"))
 		target_mob.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>was attacked by [name] ([ckey])</font>"))
-	var/damage = pick(melee_damage_lower, melee_damage_upper)
+	var/damage = rand(melee_damage_lower, melee_damage_upper)
 	if (ishuman(target_mob))
 		var/mob/living/human/H = target_mob
-		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
-		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		var/obj/item/organ/external/affecting = H.get_organ(animal_bite_zone())
+		if (!affecting || affecting.is_stump())
+			affecting = H.get_organ("chest")
 		// Observe before damage: the same blow may incapacitate the victim.
 		// Never disclose an unseen animal or infer injury from the attack emote.
 		var/client/observing_client = H.client
@@ -639,7 +651,12 @@
 			try_infect(H, 3, "plague")
 
 		if (prob(95) || !can_bite_limbs_off)
+			// Bites tear more than they crush: one heavy enough to break a bone
+			// only sometimes does. The guard expires by itself after this tick.
+			if (!prob(bite_fracture_chance))
+				H.bite_fracture_guard = world.time + 1
 			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+			H.bite_fracture_guard = 0
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
 			visible_message("\The [src] bites off [H]'s limb!")
@@ -662,9 +679,55 @@
 					SA.npc_set_combat_target(src)
 		return L
 
+// Torso-weighted, so a run of bites wounds rather than wrecks every limb.
+/mob/living/simple_animal/proc/animal_bite_zone()
+	return pickweight(list("chest" = 29, "groin" = 15, "l_arm" = 9, "r_arm" = 9, "l_leg" = 9, "r_leg" = 9, "l_hand" = 4, "r_hand" = 4, "l_foot" = 4, "r_foot" = 4, "head" = 4))
+
+// Animals that fight through the generic AttackTarget path. Human NPCs,
+// wizard-school NPCs and the beetle keep their own attack timing.
+/mob/living/simple_animal/proc/uses_paced_bites()
+	return !istype(src, /mob/living/simple_animal/hostile/human) && !istype(src, /mob/living/simple_animal/wizard) && !istype(src, /mob/living/simple_animal/hostile/wizard) && !istype(src, /mob/living/simple_animal/hostile/phosphor_beetle)
+
+/mob/living/simple_animal/proc/melee_attack_cooldown()
+	if (melee_attack_delay > 0)
+		return melee_attack_delay
+	return max(20, min(40, move_to_delay * 10))
+
+/mob/living/simple_animal/proc/is_natural_predator()
+	return (predatory_carnivore || carnivore) && uses_paced_bites()
+
+// Wild predators only go for a person who is too close, who hurt them, or when starving.
+/mob/living/simple_animal/proc/predator_will_hunt(mob/living/L)
+	if (!ishuman(L) || !is_natural_predator() || L == provoked_by)
+		return TRUE
+	if (starves && simplehunger < predator_starving_hunger)
+		return TRUE
+	return get_dist(src, L) <= predator_encroach_range
+
+// A hunting or defending animal that gets hurt turns on its attacker and,
+// when it is in reach and its bite is ready, bites back at once.
+/mob/living/simple_animal/proc/animal_provoked(mob/living/attacker)
+	if (!uses_paced_bites() || client || stat != CONSCIOUS || !istype(attacker) || attacker == src || attacker == rider || attacker.stat == DEAD)
+		return FALSE
+	if (!(behaviour == "hunt" || behaviour == "defends" || behaviour == "hostile") || uses_defensive_retaliation())
+		return FALSE
+	if (istype(attacker, /mob/living/simple_animal))
+		var/mob/living/simple_animal/SA = attacker
+		if (SA.faction == faction)
+			return FALSE
+	provoked_by = attacker
+	if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 1)
+		npc_set_combat_target(attacker)
+	stance = HOSTILE_STANCE_ATTACK
+	stance_step = max(stance_step, 6)
+	if (target_mob == attacker && get_dist(src, attacker) <= 1 && world.time >= next_melee_attack && canmove && !resting && !buckled && isturf(loc))
+		AttackTarget()
+	return TRUE
+
 /mob/living/simple_animal/proc/LoseTarget()
 	if (npc_subtile_pursuit_enabled)
 		npc_subtile_stop_pursuit()
+	provoked_by = null
 	stance = HOSTILE_STANCE_IDLE
 	npc_set_combat_target(null)
 	walk(src, FALSE)

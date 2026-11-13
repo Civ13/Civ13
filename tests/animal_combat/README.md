@@ -37,3 +37,13 @@ is preserved, and `88d013f` corrects the test setup. Connected-client timing and
 appearance remain untested; local native execution stayed deferred. See
 [`docs/animal-retaliation.md`](../../docs/animal-retaliation.md) for species scope,
 triggers, cooldowns, timing limits and client reproduction steps.
+
+`predator.dm` checks predator temperament and bite pacing on a real human:
+fed predators ignore people beyond `predator_encroach_range` (3 tiles) unless
+starving or hurt by them, give up an unprovoking person past
+`predator_chase_range`, bite once per cooldown (move_to_delay seconds, clamped to
+2-4 s) whichever caller reaches `AttackTarget`, keep biting when hungry instead
+of foraging, bite a provoking adjacent attacker back at once (once per cooldown), roll
+damage across the whole range, and break bone on a heavy bite only with
+`bite_fracture_chance`. Reverting the hunger gate makes it fail with
+"Hungry predator foraged instead of biting".

@@ -54,8 +54,8 @@ class AnimalAttackContracts(unittest.TestCase):
         self.assertNotIn('H.sleeping', post_hit)
         self.assertIn('if (observed_attack && player_help_service', post_hit)
 
-    def test_legacy_damage_choices_remain_unchanged(self):
-        for operation in ('var/damage = pick(melee_damage_lower, melee_damage_upper)',
+    def test_damage_choices(self):
+        for operation in ('var/damage = rand(melee_damage_lower, melee_damage_upper)',
                           'if (prob(95) || !can_bite_limbs_off)',
                           'H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)',
                           'affecting.droplimb(FALSE, DROPLIMB_EDGE)',

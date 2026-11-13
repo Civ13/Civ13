@@ -242,6 +242,10 @@
 			   DAMAGE PROCS
 ****************************************************/
 
+// Set for the instant of an animal bite that should wound without breaking bone (tactical_ai.dm).
+/mob/living/human
+	var/tmp/bite_fracture_guard = 0
+
 /obj/item/organ/external/proc/is_damageable(var/additional_damage = FALSE)
 	return (vital || brute_dam + burn_dam + additional_damage <= max_damage)
 
@@ -299,7 +303,7 @@
 			//getting hit on broken hand hurts
 			owner.emote("scream")
 	//if the damage from this event is high enough OR the accumulated blunt damage is high enough
-	if(brute >= min_broken_damage || (brute >= ceil(min_broken_damage * 0.5) && prob(blunt_dam)) ) //blunt damage is gud at fracturing
+	if((brute >= min_broken_damage || (brute >= ceil(min_broken_damage * 0.5) && prob(blunt_dam))) && !(owner && owner.bite_fracture_guard > world.time)) //blunt damage is gud at fracturing
 		if (istype(used_weapon, /obj/item/projectile))
 			if (prob(35))
 				fracture()

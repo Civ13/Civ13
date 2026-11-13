@@ -24,7 +24,7 @@
 	behaviour = "defends"
 
 /mob/living/simple_animal/hostile/poison/snake/AttackingTarget()
-	var/damage = pick(melee_damage_lower, melee_damage_upper)
+	var/damage = rand(melee_damage_lower, melee_damage_upper)
 	if (!Adjacent(target_mob))
 		return
 

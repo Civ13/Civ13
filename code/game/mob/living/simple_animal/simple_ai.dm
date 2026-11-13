@@ -24,6 +24,13 @@
 	if (!isturf(loc) || resting || buckled || !canmove)
 		return
 
+	// An adjacent fight runs every Life tick and the bite cooldown sets the
+	// pace, so walking speed no longer decides how often an animal bites.
+	if (stance == HOSTILE_STANCE_ATTACK && target_mob && uses_paced_bites() && get_dist(src, target_mob) <= 1)
+		if (world.time >= next_melee_attack)
+			AttackTarget()
+		return
+
 	turns_since_move++
 	if (turns_since_move < move_to_delay)
 		return
@@ -48,8 +55,9 @@
 			src.do_movement(A.target_loc)
 			return
 
-	// Hunger/Food check takes priority for idle animals
-	if (((stance == HOSTILE_STANCE_IDLE || stance == HOSTILE_STANCE_TIRED) && (prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220)) || simplehunger < 180)
+	// Hunger/Food check takes priority for idle animals. A fight never stops
+	// for food: a hungry predator in ATTACK stance used to forage instead of biting.
+	if ((stance == HOSTILE_STANCE_IDLE || stance == HOSTILE_STANCE_TIRED) && ((prob(20) && (herbivore || carnivore || predatory_carnivore || granivore || scavenger) && simplehunger < 220) || simplehunger < 180))
 		ai_tick_delay = 0
 		check_food()
 		return
@@ -188,6 +196,8 @@
 
 	if (predatory_carnivore)
 		for (var/mob/living/ML in range(2, src))
+			if (ishuman(ML) && !predator_will_hunt(ML))
+				continue
 			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type) && istype(src, /mob/living/simple_animal/hostile))
 				npc_subtile_stop_continuous_walk()
 				var/mob/living/simple_animal/hostile/HS = src
@@ -261,6 +271,8 @@
 
 	if (predatory_carnivore)
 		for (var/mob/living/ML in range(9, src))
+			if (ishuman(ML) && !predator_will_hunt(ML))
+				continue
 			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
 				smart_step_towards(ML)
 				return
