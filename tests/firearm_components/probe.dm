@@ -193,7 +193,10 @@
 	for(var/recipe_name in factory_recipes)
 		var/datum/factory_recipe/R = factory_recipes[recipe_name]
 		if(ispath(R.output_type, /obj/item/weapon/gun_component) || ispath(R.output_type, /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver) || ispath(R.output_type, /obj/item/weapon/gun/projectile/submachinegun/m16/receiver) || ispath(R.output_type, /obj/item/weapon/gun/projectile/boltaction))
-			var/mauser_part = findtext("[R.output_type]", "mauser") || findtext("[R.output_type]", "mosin") || findtext("[R.output_type]", "arisaka") || ispath(R.output_type, /obj/item/weapon/gun/projectile/boltaction)
+			var/mauser_part = ispath(R.output_type, /obj/item/weapon/gun/projectile/boltaction)
+			for(var/bolt_family in list("mauser", "mosin", "arisaka", "enfield", "springfield", "lebel", "berthier", "carcano"))
+				if(findtext("[R.output_type]", bolt_family))
+					mauser_part = TRUE
 			parts_check(R.node == (mauser_part ? "cartridge_ammo" : "automatic_weapons"), "[recipe_name] is gated by [mauser_part ? "Cartridge Firearms" : "Automatic Weapons"] ([R.node])")
 			made += R.output_type
 	for(var/path in typesof(/obj/item/weapon/gun_component) - /obj/item/weapon/gun_component)
@@ -342,6 +345,61 @@
 		H.drop_from_inventory(BR)
 		qdel(BR)
 
+	// Lee-Enfield, Springfield, Lebel, Berthier and Carcano families, plus the
+	// Gewehr 71 and Madsen M47 on Mauser parts.
+	var/list/presets = list(
+		/obj/item/weapon/gun/projectile/boltaction/enfield = list("a303", /obj/item/ammo_magazine/enfield, 10),
+		/obj/item/weapon/gun/projectile/boltaction/p14enfield = list("a303", /obj/item/ammo_magazine/enfield, null),
+		/obj/item/weapon/gun/projectile/boltaction/springfield/sniper = list("a3006", /obj/item/ammo_magazine/springfield, 5),
+		/obj/item/weapon/gun/projectile/boltaction/lebel = list("a8x50", /obj/item/ammo_magazine/c8x50, 8),
+		/obj/item/weapon/gun/projectile/boltaction/berthier = list("a8x50", /obj/item/ammo_magazine/c8x50_3clip, 3),
+		/obj/item/weapon/gun/projectile/boltaction/berthier/m16 = list("a8x50", /obj/item/ammo_magazine/c8x50_5clip, 5),
+		/obj/item/weapon/gun/projectile/boltaction/carcano = list("a65x52", /obj/item/ammo_magazine/carcano, null),
+		/obj/item/weapon/gun/projectile/boltaction/gewehr71 = list("a765x53", /obj/item/ammo_magazine/gewehr71, null),
+		/obj/item/weapon/gun/projectile/boltaction/madsenm47 = list("a765x53", /obj/item/ammo_magazine/gewehr71, null))
+	for(var/gun_type in presets)
+		var/list/want = presets[gun_type]
+		var/obj/item/weapon/gun/projectile/P = new gun_type(locate(2,2,1))
+		parts_check(!P.firearm_fire_block() && P.caliber == want[1] && (want[2] in P.good_mags) && (!want[3] || P.max_shells == want[3]), "[gun_type] builds its preset ([P.caliber], [P.max_shells])")
+		var/obj/item/ammo_casing/loose = P.ammo_type
+		parts_check(!loose || initial(loose.caliber) == P.caliber, "[gun_type] names loose rounds of its own caliber")
+		qdel(P)
+	// A Berthier M07/15 takes the longer M16 magazine and then holds five rounds.
+	var/obj/item/weapon/gun/projectile/boltaction/berthier/BT = new(locate(2,2,1))
+	parts_unload(BT)
+	H.put_in_inactive_hand(BT)
+	var/obj/item/weapon/gun_component/bfeed = BT.firearm_remove("feed", H)
+	parts_check(istype(bfeed), "a Berthier magazine comes off by hand")
+	var/obj/item/weapon/gun_component/b5 = new /obj/item/weapon/gun_component/berthier_feed_8x50_5(locate(2,2,1))
+	parts_hold(H, b5)
+	parts_check(BT.firearm_install(b5, H) && BT.max_shells == 5 && (/obj/item/ammo_magazine/c8x50_5clip in BT.good_mags), "a Berthier with the M16 magazine holds five rounds")
+	var/obj/item/weapon/gun_component/lebel_part = new /obj/item/weapon/gun_component/lebel_action(locate(2,2,1))
+	parts_check(BT.firearm_install_block(lebel_part) == "that part is for a different rifle family", "Lebel parts do not fit a Berthier")
+	qdel(lebel_part)
+	H.drop_from_inventory(BT)
+	qdel(BT)
+	qdel(bfeed)
+	var/list/builds = list(
+		/obj/item/weapon/gun/projectile/boltaction/enfield/receiver = list("Lee-Enfield rifle (.303 British)", /obj/item/weapon/gun_component/enfield_action, /obj/item/weapon/gun_component/enfield_barrel_303, /obj/item/weapon/gun_component/enfield_feed_303, /obj/item/weapon/gun_component/enfield_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/springfield/receiver = list("Springfield rifle (.30-06)", /obj/item/weapon/gun_component/springfield_action, /obj/item/weapon/gun_component/springfield_barrel_3006, /obj/item/weapon/gun_component/springfield_feed_3006, /obj/item/weapon/gun_component/springfield_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/lebel/receiver = list("Lebel rifle (8x50mmR)", /obj/item/weapon/gun_component/lebel_action, /obj/item/weapon/gun_component/lebel_barrel_8x50, /obj/item/weapon/gun_component/lebel_feed_8x50, /obj/item/weapon/gun_component/lebel_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/berthier/receiver = list("Berthier rifle (8x50mmR)", /obj/item/weapon/gun_component/berthier_action, /obj/item/weapon/gun_component/berthier_barrel_8x50, /obj/item/weapon/gun_component/berthier_feed_8x50_5, /obj/item/weapon/gun_component/berthier_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/carcano/receiver = list("Carcano rifle (6.5x52mm)", /obj/item/weapon/gun_component/carcano_action, /obj/item/weapon/gun_component/carcano_barrel_65x52, /obj/item/weapon/gun_component/carcano_feed_65x52, /obj/item/weapon/gun_component/carcano_furniture_stock))
+	for(var/receiver_type in builds)
+		var/list/plan = builds[receiver_type]
+		var/obj/item/weapon/gun/projectile/BR = new receiver_type(locate(2,2,1))
+		H.put_in_inactive_hand(BR)
+		parts_check(!BR.loaded.len && BR.firearm_fire_block() == "it has no action", "a bare [BR.name] holds no rounds and cannot fire")
+		parts_check(receiver_type in made, "a fabricator makes [receiver_type]")
+		for(var/i = 2, i <= plan.len, i++)
+			var/part_type = plan[i]
+			var/obj/item/weapon/gun_component/part = new part_type(locate(2,2,1))
+			parts_hold(H, part)
+			parts_check(BR.firearm_install(part, H), "[receiver_type] takes [part_type]")
+		parts_check(!BR.firearm_fire_block() && BR.name == plan[1], "a receiver built from factory parts fires ([BR.name])")
+		H.drop_from_inventory(BR)
+		qdel(BR)
+
 	// An AK receiver can also be built for 5.56x45mm.
 	var/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver/AKR = new(locate(2,2,1))
 	H.put_in_inactive_hand(AKR)
@@ -383,5 +441,5 @@
 	parts_check(loose.component_id == "ak/barrel/545x39" && loose.condition == 0.4 && loose.name == "AK barrel (5.45x39mm)", "loose part keeps identity and condition")
 	parts_check(parts_count() == 1, "no part is duplicated by save/load")
 
-	text2file("PASS: AK, AR, Mauser, Mosin and Arisaka parts strip, convert, wear and survive save/load without duplication", "parts_result.txt")
+	text2file("PASS: AK, AR, Mauser, Mosin, Arisaka, Lee-Enfield, Springfield, Lebel, Berthier and Carcano parts strip, convert, wear and survive save/load without duplication", "parts_result.txt")
 	del(world)

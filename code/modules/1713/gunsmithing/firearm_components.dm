@@ -1,6 +1,6 @@
 // Modular firearm components (issue #4443: AK family from phase 2; AR family,
-// AK-100 series and the Mauser, Mosin and Arisaka bolt-action families from
-// phase 5).
+// AK-100 series and the Mauser, Mosin, Arisaka, Lee-Enfield, Springfield,
+// Lebel, Berthier and Carcano bolt-action families from phase 5).
 // Contract: docs/firearm-component-contract.md. Installed parts are data on the
 // gun (component id + condition per slot), so a gun costs no extra objects
 // until a part is removed. Removed parts are /obj/item/weapon/gun_component
@@ -24,6 +24,7 @@
 	var/caliber = null        // barrel and feed parts
 	var/list/good_mags = null // feed parts: magazines or clips the gun accepts
 	var/ammo_type = null      // feed parts: the loose round a box of ammo must hold
+	var/capacity = null       // feed parts: rounds held, when it differs between feeds of one family
 	var/ergonomics = 1        // furniture handling factor
 
 /datum/firearm_component/New(list/data)
@@ -53,6 +54,12 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	var/list/mosin_clips = list(/obj/item/ammo_magazine/mosin)
 	var/list/arisaka65_clips = list(/obj/item/ammo_magazine/arisaka)
 	var/list/arisaka77_clips = list(/obj/item/ammo_magazine/arisaka99)
+	var/list/enfield_clips = list(/obj/item/ammo_magazine/enfield)
+	var/list/springfield_clips = list(/obj/item/ammo_magazine/springfield, /obj/item/ammo_magazine/garand)
+	var/list/lebel_clips = list(/obj/item/ammo_magazine/c8x50)
+	var/list/berthier3_clips = list(/obj/item/ammo_magazine/c8x50_3clip)
+	var/list/berthier5_clips = list(/obj/item/ammo_magazine/c8x50_5clip)
+	var/list/carcano_clips = list(/obj/item/ammo_magazine/carcano)
 	for (var/list/data in list(
 		list("id" = "ak/action", "family" = "ak", "slot" = FIREARM_SLOT_ACTION, "name" = "AK bolt carrier group",
 			"desc" = "The bolt and carrier of an AK-pattern rifle. Fits any AK receiver.", "icon_state" = "Dual Selective Fire"),
@@ -124,6 +131,54 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"caliber" = "a77x58", "good_mags" = arisaka77_clips, "ammo_type" = /obj/item/ammo_casing/a77x58),
 		list("id" = "arisaka/furniture/stock", "family" = "arisaka", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Arisaka stock",
 			"desc" = "A wooden Arisaka rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "enfield/action", "family" = "enfield", "slot" = FIREARM_SLOT_ACTION, "name" = "Lee-Enfield bolt",
+			"desc" = "The bolt of a Lee-Enfield rifle. Fits any Lee-Enfield receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "enfield/barrel/303", "family" = "enfield", "slot" = FIREARM_SLOT_BARREL, "name" = "Lee-Enfield barrel (.303 British)",
+			"desc" = "A .303 British barrel for a Lee-Enfield rifle. Pair it with a .303 British magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a303"),
+		list("id" = "enfield/feed/303", "family" = "enfield", "slot" = FIREARM_SLOT_FEED, "name" = "Lee-Enfield magazine (.303 British)",
+			"desc" = "A detachable ten-round box magazine and clip guide. Takes .303 chargers.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a303", "good_mags" = enfield_clips, "ammo_type" = /obj/item/ammo_casing/a303),
+		list("id" = "enfield/furniture/stock", "family" = "enfield", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Lee-Enfield stock",
+			"desc" = "A wooden Lee-Enfield rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "springfield/action", "family" = "springfield", "slot" = FIREARM_SLOT_ACTION, "name" = "Springfield bolt",
+			"desc" = "The bolt of a Springfield rifle. Fits any Springfield receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "springfield/barrel/3006", "family" = "springfield", "slot" = FIREARM_SLOT_BARREL, "name" = "Springfield barrel (.30-06)",
+			"desc" = "A .30-06 barrel for a Springfield rifle. Pair it with a .30-06 magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a3006"),
+		list("id" = "springfield/feed/3006", "family" = "springfield", "slot" = FIREARM_SLOT_FEED, "name" = "Springfield magazine (.30-06)",
+			"desc" = "A fixed five-round magazine and clip guide. Takes Springfield stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a3006", "good_mags" = springfield_clips, "ammo_type" = /obj/item/ammo_casing/a3006),
+		list("id" = "springfield/furniture/stock", "family" = "springfield", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Springfield stock",
+			"desc" = "A wooden M1903 Springfield stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "lebel/action", "family" = "lebel", "slot" = FIREARM_SLOT_ACTION, "name" = "Lebel bolt",
+			"desc" = "The bolt of a Lebel rifle. Fits any Lebel receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "lebel/barrel/8x50", "family" = "lebel", "slot" = FIREARM_SLOT_BARREL, "name" = "Lebel barrel (8x50mmR)",
+			"desc" = "A 8x50mmR barrel for a Lebel rifle. Pair it with a 8x50mmR magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a8x50"),
+		list("id" = "lebel/feed/8x50", "family" = "lebel", "slot" = FIREARM_SLOT_FEED, "name" = "Lebel magazine (8x50mmR)",
+			"desc" = "A tube magazine under the barrel, loaded a round at a time.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a8x50", "good_mags" = lebel_clips, "ammo_type" = /obj/item/ammo_casing/a8x50),
+		list("id" = "lebel/furniture/stock", "family" = "lebel", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Lebel stock",
+			"desc" = "A wooden Lebel rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "berthier/action", "family" = "berthier", "slot" = FIREARM_SLOT_ACTION, "name" = "Berthier bolt",
+			"desc" = "The bolt of a Berthier rifle. Fits any Berthier receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "berthier/barrel/8x50", "family" = "berthier", "slot" = FIREARM_SLOT_BARREL, "name" = "Berthier barrel (8x50mmR)",
+			"desc" = "A 8x50mmR barrel for a Berthier rifle. Pair it with a 8x50mmR magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a8x50"),
+		list("id" = "berthier/feed/8x50_3", "family" = "berthier", "slot" = FIREARM_SLOT_FEED, "name" = "Berthier magazine (8x50mmR, 3 rounds)",
+			"desc" = "A three-round magazine for Berthier en-bloc clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a8x50", "good_mags" = berthier3_clips, "ammo_type" = /obj/item/ammo_casing/a8x50, "capacity" = 3),
+		list("id" = "berthier/feed/8x50_5", "family" = "berthier", "slot" = FIREARM_SLOT_FEED, "name" = "Berthier magazine (8x50mmR, 5 rounds)",
+			"desc" = "The longer M16 magazine for five-round Berthier clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a8x50", "good_mags" = berthier5_clips, "ammo_type" = /obj/item/ammo_casing/a8x50, "capacity" = 5),
+		list("id" = "berthier/furniture/stock", "family" = "berthier", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Berthier stock",
+			"desc" = "A wooden Berthier rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "carcano/action", "family" = "carcano", "slot" = FIREARM_SLOT_ACTION, "name" = "Carcano bolt",
+			"desc" = "The bolt of a Carcano rifle. Fits any Carcano receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "carcano/barrel/65x52", "family" = "carcano", "slot" = FIREARM_SLOT_BARREL, "name" = "Carcano barrel (6.5x52mm)",
+			"desc" = "A 6.5x52mm barrel for a Carcano rifle. Pair it with a 6.5x52mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a65x52"),
+		list("id" = "carcano/feed/65x52", "family" = "carcano", "slot" = FIREARM_SLOT_FEED, "name" = "Carcano magazine (6.5x52mm)",
+			"desc" = "A fixed six-round magazine for Carcano en-bloc clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a65x52", "good_mags" = carcano_clips, "ammo_type" = /obj/item/ammo_casing/a65x52),
+		list("id" = "carcano/furniture/stock", "family" = "carcano", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Carcano stock",
+			"desc" = "A wooden Carcano rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -142,18 +197,31 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"mosin" = list(FIREARM_SLOT_ACTION = "mosin/action", FIREARM_SLOT_BARREL = "mosin/barrel/762x54", FIREARM_SLOT_FEED = "mosin/feed/762x54", FIREARM_SLOT_FURNITURE = "mosin/furniture/stock"),
 		"arisaka_65" = list(FIREARM_SLOT_ACTION = "arisaka/action", FIREARM_SLOT_BARREL = "arisaka/barrel/65x50", FIREARM_SLOT_FEED = "arisaka/feed/65x50", FIREARM_SLOT_FURNITURE = "arisaka/furniture/stock"),
 		"arisaka_77" = list(FIREARM_SLOT_ACTION = "arisaka/action", FIREARM_SLOT_BARREL = "arisaka/barrel/77x58", FIREARM_SLOT_FEED = "arisaka/feed/77x58", FIREARM_SLOT_FURNITURE = "arisaka/furniture/stock"),
+		"enfield" = list(FIREARM_SLOT_ACTION = "enfield/action", FIREARM_SLOT_BARREL = "enfield/barrel/303", FIREARM_SLOT_FEED = "enfield/feed/303", FIREARM_SLOT_FURNITURE = "enfield/furniture/stock"),
+		"springfield" = list(FIREARM_SLOT_ACTION = "springfield/action", FIREARM_SLOT_BARREL = "springfield/barrel/3006", FIREARM_SLOT_FEED = "springfield/feed/3006", FIREARM_SLOT_FURNITURE = "springfield/furniture/stock"),
+		"lebel" = list(FIREARM_SLOT_ACTION = "lebel/action", FIREARM_SLOT_BARREL = "lebel/barrel/8x50", FIREARM_SLOT_FEED = "lebel/feed/8x50", FIREARM_SLOT_FURNITURE = "lebel/furniture/stock"),
+		"berthier_3" = list(FIREARM_SLOT_ACTION = "berthier/action", FIREARM_SLOT_BARREL = "berthier/barrel/8x50", FIREARM_SLOT_FEED = "berthier/feed/8x50_3", FIREARM_SLOT_FURNITURE = "berthier/furniture/stock"),
+		"berthier_5" = list(FIREARM_SLOT_ACTION = "berthier/action", FIREARM_SLOT_BARREL = "berthier/barrel/8x50", FIREARM_SLOT_FEED = "berthier/feed/8x50_5", FIREARM_SLOT_FURNITURE = "berthier/furniture/stock"),
+		"carcano" = list(FIREARM_SLOT_ACTION = "carcano/action", FIREARM_SLOT_BARREL = "carcano/barrel/65x52", FIREARM_SLOT_FEED = "carcano/feed/65x52", FIREARM_SLOT_FURNITURE = "carcano/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
 		"mauser_receiver" = list(),
 		"mosin_receiver" = list(),
 		"arisaka_receiver" = list(),
+		"enfield_receiver" = list(),
+		"springfield_receiver" = list(),
+		"lebel_receiver" = list(),
+		"berthier_receiver" = list(),
+		"carcano_receiver" = list(),
 	)
 
-var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka")
+var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
+	"enfield" = "Lee-Enfield", "springfield" = "Springfield", "lebel" = "Lebel", "berthier" = "Berthier", "carcano" = "Carcano")
 var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
 	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
-	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm")
+	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm", "a303" = ".303 British", "a3006" = ".30-06", "a8x50" = "8x50mmR",
+	"a65x52" = "6.5x52mm")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -225,6 +293,38 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_family = "arisaka"
 	firearm_preset = "arisaka_77"
 
+// The Gewehr 71 and Madsen M47 take the Mauser 7.65x53mm parts. The Madsen used
+// to name 7.62x51 loose rounds for its 7.65x53mm chamber.
+/obj/item/weapon/gun/projectile/boltaction/gewehr71
+	firearm_family = "mauser"
+	firearm_preset = "mauser_765"
+/obj/item/weapon/gun/projectile/boltaction/madsenm47
+	firearm_family = "mauser"
+	firearm_preset = "mauser_765"
+	ammo_type = /obj/item/ammo_casing/a765x53
+/obj/item/weapon/gun/projectile/boltaction/enfield
+	firearm_family = "enfield"
+	firearm_preset = "enfield"
+/obj/item/weapon/gun/projectile/boltaction/p14enfield
+	firearm_family = "enfield"
+	firearm_preset = "enfield"
+/obj/item/weapon/gun/projectile/boltaction/springfield
+	firearm_family = "springfield"
+	firearm_preset = "springfield"
+/obj/item/weapon/gun/projectile/boltaction/lebel
+	firearm_family = "lebel"
+	firearm_preset = "lebel"
+/obj/item/weapon/gun/projectile/boltaction/berthier
+	firearm_family = "berthier"
+	firearm_preset = "berthier_3"
+// The M1907/16 used to accept only three-round clips despite its five-round magazine.
+/obj/item/weapon/gun/projectile/boltaction/berthier/m16
+	firearm_preset = "berthier_5"
+	good_mags = list(/obj/item/ammo_magazine/c8x50_5clip)
+/obj/item/weapon/gun/projectile/boltaction/carcano
+	firearm_family = "carcano"
+	firearm_preset = "carcano"
+
 // Factory output: the bare core. It names itself from its barrel once fitted.
 /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver
 	name = "AK receiver"
@@ -259,6 +359,41 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	desc = "A bare Mauser-pattern receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
 	ammo_type = null
 	firearm_preset = "mauser_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/enfield/receiver
+	name = "Lee-Enfield receiver"
+	desc = "A bare Lee-Enfield receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "enfield_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/springfield/receiver
+	name = "Springfield receiver"
+	desc = "A bare Springfield receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "springfield_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/lebel/receiver
+	name = "Lebel receiver"
+	desc = "A bare Lebel receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "lebel_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/berthier/receiver
+	name = "Berthier receiver"
+	desc = "A bare Berthier receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "berthier_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/boltaction/carcano/receiver
+	name = "Carcano receiver"
+	desc = "A bare Carcano receiver. Fit a bolt and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	firearm_preset = "carcano_receiver"
 	firearm_named_by_parts = TRUE
 
 /obj/item/weapon/gun
@@ -331,6 +466,7 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 			G.good_mags = feed.good_mags.Copy()
 		if (feed.ammo_type)
 			G.ammo_type = feed.ammo_type
+		G.max_shells = feed.capacity ? feed.capacity : initial(G.max_shells)
 	if (firearm_named_by_parts)
 		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
@@ -780,4 +916,46 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 /obj/item/weapon/gun_component/arisaka_furniture_stock
 	component_id = "arisaka/furniture/stock"
 
+/obj/item/weapon/gun_component/enfield_action
+	component_id = "enfield/action"
+/obj/item/weapon/gun_component/enfield_barrel_303
+	component_id = "enfield/barrel/303"
+/obj/item/weapon/gun_component/enfield_feed_303
+	component_id = "enfield/feed/303"
+/obj/item/weapon/gun_component/enfield_furniture_stock
+	component_id = "enfield/furniture/stock"
+/obj/item/weapon/gun_component/springfield_action
+	component_id = "springfield/action"
+/obj/item/weapon/gun_component/springfield_barrel_3006
+	component_id = "springfield/barrel/3006"
+/obj/item/weapon/gun_component/springfield_feed_3006
+	component_id = "springfield/feed/3006"
+/obj/item/weapon/gun_component/springfield_furniture_stock
+	component_id = "springfield/furniture/stock"
+/obj/item/weapon/gun_component/lebel_action
+	component_id = "lebel/action"
+/obj/item/weapon/gun_component/lebel_barrel_8x50
+	component_id = "lebel/barrel/8x50"
+/obj/item/weapon/gun_component/lebel_feed_8x50
+	component_id = "lebel/feed/8x50"
+/obj/item/weapon/gun_component/lebel_furniture_stock
+	component_id = "lebel/furniture/stock"
+/obj/item/weapon/gun_component/berthier_action
+	component_id = "berthier/action"
+/obj/item/weapon/gun_component/berthier_barrel_8x50
+	component_id = "berthier/barrel/8x50"
+/obj/item/weapon/gun_component/berthier_feed_8x50_3
+	component_id = "berthier/feed/8x50_3"
+/obj/item/weapon/gun_component/berthier_feed_8x50_5
+	component_id = "berthier/feed/8x50_5"
+/obj/item/weapon/gun_component/berthier_furniture_stock
+	component_id = "berthier/furniture/stock"
+/obj/item/weapon/gun_component/carcano_action
+	component_id = "carcano/action"
+/obj/item/weapon/gun_component/carcano_barrel_65x52
+	component_id = "carcano/barrel/65x52"
+/obj/item/weapon/gun_component/carcano_feed_65x52
+	component_id = "carcano/feed/65x52"
+/obj/item/weapon/gun_component/carcano_furniture_stock
+	component_id = "carcano/furniture/stock"
 #undef FIREARM_BARREL_LIFE
