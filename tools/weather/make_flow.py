@@ -2,10 +2,10 @@
 
 icons/turf/water_flow.dmi, 32 px, one state for each of the eight directions
 (flow_north .. flow_northwest) in two variants (the second ends in "2"), so
-a wide current is not one tile repeated. A few pale streaks slide the way the water
-runs, eight frames to cross one tile, so neighbouring tiles join and the loop
-has no jump. The streaks are clear enough to read the direction and faint
-enough to leave the water under them its own look.
+a wide current is not one tile repeated. Three pale streaks of foam slide the
+way the water runs, eight frames to cross one tile, so neighbouring tiles join
+and the loop has no jump. Each has a bright head two pixels thick and a tail
+that fades, so it stands out from the water's own pattern in a still frame.
 
 Every pixel is placed by the code below from a fixed seed: no image
 generation, no borrowed art.
@@ -39,9 +39,9 @@ def streaks(rng, diagonal):
     """[(across, along, length, strength)]: where each streak starts in the
     tile, measured across and along the flow."""
     found = []
-    lanes = [3, 11, 19, 27] if not diagonal else [2, 10, 18, 26]
+    lanes = [4, 15, 26] if not diagonal else [3, 14, 25]
     for lane in lanes:
-        found.append((lane + rng.randint(-1, 1), rng.randrange(SIZE), rng.randint(6, 10), rng.choice((70, 84, 96))))
+        found.append((lane + rng.randint(-1, 1), rng.randrange(SIZE), rng.randint(9, 13), rng.choice((150, 172, 196))))
     return found
 
 
@@ -66,6 +66,12 @@ def frame(direction, shift, marks):
                 y = (-dy * travelled) % SIZE
             if pixels[x, y][3] < alpha:
                 pixels[x, y] = COLOUR + (alpha,)
+            # The head is two pixels thick, so it reads as foam and not as
+            # one more line of the water's own pattern.
+            if i >= length - 4:
+                bx, by = ((x, (y + 1) % SIZE) if dx and not dy else ((x + 1) % SIZE, y))
+                if pixels[bx, by][3] < alpha // 2:
+                    pixels[bx, by] = COLOUR + (alpha // 2,)
     return image
 
 

@@ -49,27 +49,67 @@ class StormArtTests(unittest.TestCase):
         self.assertTrue(TOOL.same_icon(STORM.STORM, storm), "run python3 tools/weather/make_storm_art.py")
         self.assertTrue(TOOL.same_icon(STORM.BOLT, bolt), "run python3 tools/weather/make_storm_art.py")
 
-    def test_shadow_slides_one_whole_icon_and_wraps(self):
-        for name, frames, delays in STORM.shadow_frames():
-            self.assertEqual(len(frames), STORM.FRAMES, name)
-            first = frames[0].getchannel("A")
-            # Never clear and never black, so pieces of different strength blend.
-            low, high = first.getextrema()
-            self.assertGreaterEqual(low, 40, name)
-            self.assertLessEqual(high, 180, name)
-            # Every frame is the first one moved, so the loop closes exactly.
-            self.assertEqual(sorted(first.tobytes()), sorted(frames[-1].getchannel("A").tobytes()), name)
-        east = dict((n, f) for n, f, _ in STORM.shadow_frames())["shadow_e"]
-        step = STORM.SIZE // STORM.FRAMES
+    def test_shadow_pieces_join_slide_and_wrap(self):
+        states = dict((name, frames) for name, frames, _ in STORM.shadow_frames())
+        self.assertEqual(len(states), 16)
+        field = STORM.shadow_field()
+        low, high = field.getextrema()
+        # Never clear and never black, so pieces of different strength blend.
+        self.assertGreaterEqual(low, 40)
+        self.assertLessEqual(high, 180)
+        size = STORM.SIZE
+        for wind, dx, dy in STORM.DRIFT:
+            for frame in (0, 1, STORM.FRAMES - 1):
+                # The four pieces of a frame put together are the whole cloud, moved.
+                whole = STORM.Image.new("L", (STORM.FIELD, STORM.FIELD))
+                for qx in (0, 1):
+                    for qy in (0, 1):
+                        piece = states[f"shadow_{wind}_{qx}{qy}"]
+                        self.assertEqual(len(piece), STORM.FRAMES)
+                        whole.paste(piece[frame].getchannel("A"), (qx * size, (1 - qy) * size))
+                self.assertEqual(whole.tobytes(), STORM.shifted_field(field, dx, dy, frame).tobytes(), (wind, frame))
+                # A wrapped move loses nothing, so the loop closes exactly.
+                self.assertEqual(sorted(whole.tobytes()), sorted(field.tobytes()), (wind, frame))
+        step = STORM.FIELD // STORM.FRAMES
+        east = states["shadow_e_00"]
         self.assertEqual(east[1].getpixel((step + 5, 9)), east[0].getpixel((5, 9)))
+        # It does not repeat from one piece to the next.
+        self.assertNotEqual(states["shadow_e_00"][0].tobytes(), states["shadow_e_10"][0].tobytes())
 
     def test_states_the_game_asks_for_exist(self):
         chunks = (ROOT / "code/modules/1713/weather_chunks.dm").read_text(encoding="utf-8")
         wanted = set(re.findall(r'"(shadow_[a-z]+)"', chunks))
         self.assertEqual(wanted, {"shadow_n", "shadow_e", "shadow_s", "shadow_w"})
-        self.assertLessEqual(wanted, {name for name, _, _, _ in TOOL.states(STORM.STORM)[0]})
+        self.assertIn('return "[look]_[cx % 2][cy % 2]"', chunks)
+        have = {name for name, _, _, _ in TOOL.states(STORM.STORM)[0]}
+        self.assertEqual(have, {f"{look}_{qx}{qy}" for look in wanted for qx in (0, 1) for qy in (0, 1)})
         bolts = {name for name, _, _, _ in TOOL.states(STORM.BOLT)[0]}
         self.assertEqual(bolts, {"bolt1", "bolt2", "bolt3", "bolt4"})
+
+    def test_edge_fades_match_the_generator_and_cover_every_corner_mix(self):
+        self.assertTrue(TOOL.same_icon(STORM.EDGE, STORM.build_edge()), "run python3 tools/weather/make_storm_art.py")
+        chunks = (ROOT / "code/modules/1713/weather_chunks.dm").read_text(encoding="utf-8")
+        self.assertIn(f"#define WEATHER_EDGE_LEVELS {STORM.EDGE_LEVELS} ", chunks)
+        self.assertIn('return "m[sw][se][nw][ne]"', chunks)
+        have = {name for name, _, _, _ in TOOL.states(STORM.EDGE)[0]}
+        levels = range(STORM.EDGE_LEVELS + 1)
+        every = {f"m{a}{b}{c}{d}" for a in levels for b in levels for c in levels for d in levels}
+        # Nothing at all and the whole piece need no mask.
+        self.assertEqual(have, every - {"m0000", "m3333"})
+
+    def test_an_edge_fade_runs_evenly_between_its_corners(self):
+        size = STORM.SIZE
+        mask = STORM.edge_mask(0, 1, 2, 3).getchannel("A")
+        # South-west is the image's lower left; north-east its upper right.
+        self.assertLessEqual(mask.getpixel((0, size - 1)), 3)
+        self.assertGreaterEqual(mask.getpixel((size - 1, 0)), 252)
+        self.assertAlmostEqual(mask.getpixel((size - 1, size - 1)), 85, delta=3)
+        self.assertAlmostEqual(mask.getpixel((0, 0)), 170, delta=3)
+        # Two pieces side by side meet without a step: the shared edge is the same.
+        west = STORM.edge_mask(0, 2, 1, 3).getchannel("A")
+        east = STORM.edge_mask(2, 3, 3, 0).getchannel("A")
+        for y in range(0, size, 9):
+            self.assertLessEqual(abs(west.getpixel((size - 1, y)) - east.getpixel((0, y))), 3, y)
 
     def test_a_bolt_stands_on_the_middle_of_its_tile(self):
         for name, frames, _ in STORM.bolt_states():

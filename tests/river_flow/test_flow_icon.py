@@ -35,9 +35,15 @@ class FlowIconTests(unittest.TestCase):
                     moved = second.getpixel(((x + dx * step) % TOOL.SIZE, (y - dy * step) % TOOL.SIZE))
                     self.assertEqual(first.getpixel((x, y)), moved, name)
 
-    def test_streaks_are_faint(self):
+    def test_streaks_show_in_a_still_frame_and_leave_the_water_its_look(self):
+        # A headless render of a Gaia coast (2026-11-12) showed streaks of
+        # alpha 96 lost in the water's own pattern.
         for name, frames, _ in TOOL.states():
-            self.assertLessEqual(frames[0].getchannel("A").getextrema()[1], 100, name)
+            alpha = frames[0].getchannel("A")
+            self.assertGreaterEqual(alpha.getextrema()[1], 150, name)
+            self.assertLessEqual(alpha.getextrema()[1], 200, name)
+            drawn = sum(1 for value in alpha.tobytes() if value)
+            self.assertLessEqual(drawn, TOOL.SIZE * TOOL.SIZE * 0.08, name)
 
 
 if __name__ == "__main__":
