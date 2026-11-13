@@ -807,6 +807,11 @@ SUITES = {
         'shared_paths': ('code/game/objects/map_metadata/campaign_new.dm',
                          'code/game/objects/map_metadata/battleroyale.dm',
                          'code/game/objects/map_metadata/hungergames.dm')},
+    # Wall and jail covers share one utensil-to-shank proc; source checks
+    # against the frozen copied block, no BYOND runtime.
+    'utensil_shank': {'files': ('tests/utensil_shank/test_utensil_shank.py',),
+        'paths': ('tests/utensil_shank/',), 'shared_paths': (
+            'code/game/objects/covers.dm', 'code/game/objects/covers_types/')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),

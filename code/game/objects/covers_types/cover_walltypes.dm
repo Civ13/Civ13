@@ -302,16 +302,8 @@
 	else
 		..()
 /obj/covers/stone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message(SPAN_WARNING("[U] sharpens \the [I] on \the [src]!"))
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/stone_wall/plain
@@ -471,16 +463,8 @@
 	..()
 
 /obj/covers/marble_wall/plain/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_wall
@@ -504,16 +488,8 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_smooth_wall //just a parent to the real smooth sandstone wall.
@@ -537,16 +513,8 @@
 	buildstack = /obj/item/stack/material/sandstone
 
 /obj/covers/sandstone_smooth_wall/attackby(var/obj/item/weapon/material/kitchen/utensil/I, var/mob/living/human/U)
-	if (istype(I,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(I,/obj/item/weapon/material/kitchen/utensil/fork) || istype(I,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[U] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				U.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(U,I.material.name)
-				U.put_in_hands(SHK)
-				to_chat(U, "\The [I] turns into a shank.")
-				qdel(I)
+	if (istype(I, /obj/item/weapon/material/kitchen/utensil/spoon) || istype(I, /obj/item/weapon/material/kitchen/utensil/fork) || istype(I, /obj/item/weapon/material/kitchen/utensil/chopsticks))
+		sharpen_utensil(I, U)
 	..()
 
 /obj/covers/sandstone_smooth_wall/plain
