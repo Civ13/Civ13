@@ -41,7 +41,7 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 // Practice rooms (code/modules/1713/practice_rooms.dm) never exist in fixtures.
-#ifndef PRACTICE_ROOM_SIZE
+#ifndef PRACTICE_ROOM_WIDTH
 var/practice_room_z = 0
 /proc/practice_rooms_close_for_save()
 	return TRUE
