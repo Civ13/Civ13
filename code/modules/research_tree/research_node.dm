@@ -1778,7 +1778,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/compass" = "optics_instruments",
 		"/obj/item/weapon/globe" = "optics_instruments",
 		"/obj/item/weapon/watch/pocket" = "optics_instruments",
-		// --- padded_armor (31) ---
+		// --- padded_armor (32) ---
 		"/obj/item/clothing/head/helmet/aged_eisenbruck" = "padded_armor",
 		"/obj/item/clothing/head/helmet/bone" = "padded_armor",
 		"/obj/item/clothing/head/helmet/brown_eisenbruck" = "padded_armor",
@@ -1804,6 +1804,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/armor/samurai/red" = "padded_armor",
 		"/obj/item/clothing/suit/hairbonearmor" = "padded_armor",
 		"/obj/item/clothing/suit/storage/jacket/bonearmor" = "padded_armor",
+		"/obj/item/clothing/suit/woodarmor" = "padded_armor",
 		"/obj/item/weapon/shield" = "padded_armor",
 		"/obj/item/weapon/shield/chimalli" = "padded_armor",
 		"/obj/item/weapon/shield/chitin" = "padded_armor",
