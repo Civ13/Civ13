@@ -1830,6 +1830,11 @@ SUITES = {
         'shared_paths': ('code/modules/persistence/restart_transaction.dm', 'code/modules/persistence/nomads_lifecycle.dm',
             'code/modules/persistence/admin.dm', 'code/modules/admin/admin.dm', 'code/modules/admin/admin_verbs.dm',
             'code/modules/agent_control/agent_actions.dm')},
+    # A handover's standby clears the map and sets turfs from the last save while it waits.
+    'standby_prepare': {'files': ('tests/standby_prepare/test_standby_prepare.py',),
+        'paths': ('tests/standby_prepare/', 'code/modules/persistence/standby_prepare.dm'),
+        'shared_paths': ('code/setup.dm', 'code/modules/persistence/nomads_lifecycle.dm',
+            'code/modules/persistence/functions.dm', 'civ13.dme')},
     'last_save_status': {'files': ('tests/last_save_status/test_last_save.py',),
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',

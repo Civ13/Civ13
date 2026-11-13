@@ -357,7 +357,11 @@ without stopping it for the load:
    it that no region, transfer agent, relay or doorman of the group uses) with
    `-params standby=1`.
    It boots the map and lighting (about 3 minutes for Gaia) and then waits; it
-   is hidden from the hub, refuses joins and never saves.
+   is hidden from the hub, refuses joins and never saves. While it waits it
+   does load work ahead (`code/modules/persistence/standby_prepare.dm`): it
+   deletes the boot map's mobs and objects and turns each turf into the type the
+   last completed save recorded (`map_saves/validated.json`, read at boot), so the
+   load only changes turfs that changed since then. `standby_load` stops it first.
 2. The running world saves, freezing each level only while it is captured
    (players there can look and chat but not move or act; crossing between levels
    is blocked for the whole save). Play on a level after its capture is

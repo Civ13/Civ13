@@ -888,6 +888,14 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 	var/list/grid = validated_turf_grids["[z]"]
 	if(islist(grid)) return grid
 	var/list/encoded = islist(validated_record_turfs) ? validated_record_turfs["[z]"] : null
+	grid = decode_turf_grid_runs(encoded)
+	if(!grid) return null
+	validated_turf_grids["[z]"] = grid
+	return grid
+
+// One level's turf_grid_runs() back as one turf path per cell, or null when it
+// is malformed or not this world's size.
+/proc/decode_turf_grid_runs(list/encoded)
 	if(!islist(encoded)) return null
 	var/list/types = encoded["types"]
 	var/list/runs = encoded["runs"]
@@ -897,7 +905,7 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		var/path = istext(name) ? text2path(name) : null
 		if(!ispath(path, /turf)) return null
 		paths += path
-	grid = list()
+	var/list/grid = list()
 	for(var/i = 1, i <= runs.len, i += 2)
 		var/index = runs[i]
 		var/count = runs[i + 1]
@@ -905,7 +913,6 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 		var/path = paths[index]
 		for(var/n = 1, n <= count, n++) grid += path
 	if(grid.len != world.maxx * world.maxy) return null
-	validated_turf_grids["[z]"] = grid
 	return grid
 
 /map_storage/proc/validation_record_turfs(list/grids = validated_turf_grids)
