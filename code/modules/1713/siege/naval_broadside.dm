@@ -10,10 +10,14 @@
 #define BROADSIDE_RIPPLE 3        // Ticks between one gun and the next.
 #define BROADSIDE_COOLDOWN 100    // Ticks before the call can be blown again.
 
-// The ship a turf belongs to, as the area path up to ".../ship", or null.
+// The ship a turf belongs to: the sailing craft on it (code/modules/craft/),
+// else the area path up to ".../ship", or null.
 /proc/broadside_ship_of(turf/T)
 	if (!istype(T))
 		return null
+	var/datum/craft/S = craft_at(T)
+	if (S)
+		return S
 	var/area/A = get_area(T)
 	if (!A)
 		return null
@@ -64,10 +68,31 @@
 	var/facing = dir2angle(C.dir)
 	if (abs(C.azimuth - facing) > 45 && abs(C.azimuth - facing) < 315)
 		C.azimuth = facing
+	broadside_lay_gun(C)
 	C.max_distance = C.maxrange
 	C.get_target_coords()
 	C.discharge(null)
 	return TRUE
+
+// On a sailing ship the gun captains lay their guns on the enemy hull: a gun
+// that points square along its facing and has another ship in its line
+// within range is set to the range of her deck. Otherwise its own aim stands.
+/proc/broadside_lay_gun(obj/structure/cannon/C)
+	var/datum/craft/own = craft_at(get_turf(C))
+	if (!own || !(C.dir in cardinal) || C.azimuth != dir2angle(C.dir))
+		return FALSE
+	var/sx = (C.dir == EAST) - (C.dir == WEST)
+	var/sy = (C.dir == NORTH) - (C.dir == SOUTH)
+	for (var/d = max(C.minrange, 1), d <= C.maxrange, d++)
+		var/turf/T = locate(C.x + sx * d, C.y + sy * d, C.z)
+		if (!T)
+			return FALSE
+		var/datum/craft/other = craft_at(T)
+		if (other && other != own)
+			// Two tiles in from her rail, onto her deck.
+			C.distance = min(d + 2, C.maxrange)
+			return TRUE
+	return FALSE
 
 /obj/item/weapon/whistle/broadside
 	name = "boatswain's call"
@@ -110,9 +135,9 @@
 #undef BROADSIDE_RIPPLE
 #undef BROADSIDE_COOLDOWN
 
-// Ship captains on the Naval Battle get the call.
+// Ship captains on the Naval Battle and Broadside maps get the call.
 /proc/broadside_give_call(mob/living/human/H)
-	if (!istype(H) || !map || map.ID != MAP_NAVAL)
+	if (!istype(H) || !map || (map.ID != MAP_NAVAL && map.ID != MAP_BROADSIDE))
 		return FALSE
 	var/obj/item/weapon/whistle/broadside/B = new(H)
 	if (!H.equip_to_slot_if_possible(B, slot_r_store, disable_warning = TRUE) && !H.put_in_hands(B))

@@ -46,6 +46,7 @@ REVIEWED = {
     'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
     'next_hoof_dust': 'var/tmp dust-puff throttle on ridden horses, never saved',
     'next_call': 'var/tmp cooldown of the boatswain\'s call, never saved',
+    'held_since': 'var/tmp capture clock on a Broadside TDM tiller, never saved',
     'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
 }
 
