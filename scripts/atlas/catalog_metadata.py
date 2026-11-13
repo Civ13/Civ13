@@ -133,3 +133,25 @@ def add_processors(files, add, records):
             conditions += ('Automatic 31-60 tick wait; idle mill.' if suffix else 'Manual work to 100%; actor mood and at least 10% stamina; interrupted progress can be resumed or helped.')
             add(name + ': ' + feed.rsplit('/', 1)[1], 'Processor', [(feed, 1)], [(product, 1)], path, line, conditions)
             records[-1].update(processor='grain_mill', processor_name='Grain mills', station='/obj/structure/mill' + suffix)
+
+
+def add_intestine_casings(files, add, records):
+    path = 'code/modules/1713/animal_harvest.dm'
+    anchor = '/obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines/attackby('
+    source = files.get(path, '')
+    if anchor not in source:
+        return
+    block = source[source.index(anchor):source.index('// One bounded stack per carcass.')]
+    for contract in ('user.a_intent != I_GRAB', 'map.ordinal_age < 1',
+                     'qdel(src)', 'new /obj/item/stack/sausagecasing(site, 1)',
+                     'can_cut_preserved_meat()', 'R.id != "protein"'):
+        if contract not in block:
+            raise ValueError('Intestine casing contract changed: ' + contract)
+    add('Prepare intestine casing', 'Hand crafting',
+        [('/obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines', 1)],
+        [('/obj/item/stack/sausagecasing', 1)], path,
+        source[:source.index(anchor)].count('\n') + 1,
+        'Held knife, grab intent, Bronze Age onward; whole fresh uncooked intestines '
+        'held or on your tile. Refuses bitten, spoiled, irradiated, above-ambient germ-contaminated '
+        'or chemically modified food. One portion is consumed per casing; no transplant use.')
+    records[-1].update(min_era=1, interaction=True)

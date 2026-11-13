@@ -39,9 +39,44 @@
 // Art adapted from Pocket Stronghold 13; see the DMI's LICENSE.md.
 /obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines
 	name = "animal intestines"
+	desc = "Edible animal intestines. Use a knife on grab intent to prepare one sausage casing from a whole, fresh, uncooked portion."
 	icon = 'icons/obj/food/pocket_stronghold_food.dmi'
 	icon_state = "intestines"
 	rotten_icon_state = "intestines"
+
+// Grab intent reserves knife preparation for casings; other intents retain meat cutting.
+/obj/item/weapon/reagent_containers/food/snacks/meat/offal/intestines/attackby(obj/item/weapon/W, mob/user)
+	if (!istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || !user || user.a_intent != I_GRAB)
+		return ..()
+	if (QDELETED(src) || QDELETED(W) || QDELETED(user) || user.stat != CONSCIOUS || user.get_active_hand() != W)
+		return
+	var/turf/site = get_turf(user)
+	if (!site || (loc != user && loc != site))
+		return
+	if (!map || map.ordinal_age < 1)
+		to_chat(user, SPAN_WARNING("Sausage casings require the Bronze Age or later."))
+		return
+	if (!raw || roasted || boiled || bitecount || !can_cut_preserved_meat() || radiation > 0 || germ_level > GERM_LEVEL_AMBIENT)
+		to_chat(user, SPAN_WARNING("Use whole, fresh, uncooked and uncontaminated intestines."))
+		return
+	// Casings are non-food stacks and cannot retain food reagents. Refuse added
+	// chemicals rather than laundering poison or infection through this recipe.
+	if (!reagents || reagents.get_reagent_amount("protein") < 2)
+		return
+	for (var/datum/reagent/R in reagents.reagent_list)
+		if (R.id != "protein")
+			to_chat(user, SPAN_WARNING("These intestines contain added substances and cannot become casings."))
+			return
+	if (loc == user)
+		if (!user.canUnEquip(src))
+			return
+		user.remove_from_mob(src)
+		if (QDELETED(src) || loc != site)
+			return
+	// No wait: retire the one paid input before a stack constructor can merge.
+	qdel(src)
+	new /obj/item/stack/sausagecasing(site, 1)
+	to_chat(user, SPAN_NOTICE("You prepare the intestines into one sausage casing."))
 
 // One bounded stack per carcass. No registration, processing loop or timer.
 /obj/item/stack/sinew
