@@ -41,11 +41,15 @@ bullet_act
 					user.visible_message(SPAN_NOTICE("[user] starts to butcher [src]."))
 					if (do_after(user, 1200, src))
 						user.visible_message(SPAN_NOTICE("[user] butchers [src] into a few meat slabs."))
+						// A sick body's raw flesh carries its illness until cooked.
+						var/germ = carried_germ(TRUE)
 						if (!crab)
 							for(var/i=1;i<=4;i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/human/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat/human(get_turf(src))
 								meat.name = "[src.name] meat"
 								meat.radiation = radiation/10
+								if (germ && meat.reagents)
+									meat.reagents.add_reagent(germ, 2)
 								var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
 								HD.name = "[src.name]'s head"
 						else

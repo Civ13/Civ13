@@ -77,6 +77,9 @@
 		var/illness = diagnose_disease(H)
 		if (illness)
 			user.show_message("<span class='warning'><b>* [illness]</b></span>")
+			var/cure = disease_cure_text(H.disease_type)
+			if (cure)
+				user.show_message("<span class='notice'>* [cure]</span>")
 			note_field_diagnosis(user, H)
 		else
 			user.show_message("<span class='notice'>* No signs of disease.</span>")
@@ -227,16 +230,16 @@
 /obj/item/weapon/doctor_handbook/proc/diagnose_disease(mob/living/human/H)
 	if (!H.disease || !H.disease_type || H.disease_type == "none")
 		return null
-	var/list/names = list("flu" = "Influenza", "zombie" = "Zombie infection", "plague" = "Plague", "typhus" = "Typhus", "malaria" = "Malaria", "cholera" = "Cholera")
+	var/list/names = list("flu" = "Influenza", "zombie" = "Zombie infection", "plague" = "Plague", "typhus" = "Typhus", "malaria" = "Malaria", "cholera" = "Cholera", "worms" = "Intestinal worms")
 	var/illness = names[H.disease_type] || capitalize(H.disease_type)
 	var/fighting = H.builds_disease_immunity(H.disease_type) ? " The body has built [round(H.disease_resistance_to(H.disease_type))]% of the resistance it needs to clear it." : ""
 	if (H.is_severe_disease())
 		var/stage = "early stage"
 		if (H.disease_progression >= 900)
-			stage = "critical stage, fatal without treatment"
+			stage = "critical stage"
 		else if (H.disease_progression >= 180)
 			stage = "worsening stage"
-		illness += " ([stage]). It will not clear on its own; it needs a full medicine course"
+		illness += " ([stage]). The body clears it slowly on its own; a full medicine course is much faster"
 		if (H.disease_course > 0)
 			illness += ", currently [round(min(100, H.disease_course / 1.8))]% done"
 		return illness + "." + fighting
@@ -247,7 +250,28 @@
 		else if (H.disease_progression >= 60)
 			stage = "high fever"
 		return "[illness] ([stage]).[fighting]"
+	if (H.disease_type == "worms")
+		var/stage = H.disease_progression >= 300 ? "cramps and hunger" : "early, no symptoms yet"
+		illness += " ([stage])"
+		if (H.disease_course > 0)
+			illness += ", purge [round(min(100, H.disease_course / 0.6))]% done"
+		return illness + "."
 	return "[illness]."
+
+// How to treat an illness, shown under the diagnosis.
+/proc/disease_cure_text(kind)
+	switch (kind)
+		if ("flu")
+			return "Treatment: rest it out, ideally in bed. Tea, elderflower tea, willow bark, aspirin, chewed healing herbs or penicillin speed recovery."
+		if ("plague", "typhus", "cholera")
+			return "Treatment: a full course of penicillin, or a slower course of chewed healing herbs. Bed rest helps the body fight it."
+		if ("malaria")
+			return "Treatment: keep drinking quinine (tonic water) or chew healing herbs for a full course. Bed rest helps the body fight it."
+		if ("worms")
+			return "Treatment: penicillin does nothing. Chew healing herbs or drink absinthe until they are purged. They also pass on their own in time, faster in bed."
+		if ("zombie")
+			return "Treatment: potassium iodide in the blood stops it if given early."
+	return null
 
 // Poisons in the blood and stomach, one line each, by reagent name.
 /obj/item/weapon/doctor_handbook/proc/diagnose_poisons(mob/living/human/H)

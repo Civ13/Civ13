@@ -1033,6 +1033,12 @@
 	color = "#33EE00"
 	strength = 40
 
+// The wormwood in absinthe purges intestinal worms while it is in the stomach.
+/datum/reagent/ethanol/absinthe/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (istype(M, /mob/living/human) && M.disease && M.disease_type == "worms")
+		M.receive_disease_treatment(1)
+
 /datum/reagent/ethanol/mezcal
 	name = "Mezcal"
 	id = "mezcal"

@@ -1,8 +1,11 @@
 // Modular aircraft, phase 1: the flight core.
 //
 // An aircraft is a modular vehicle whose altitude is the z-level it is on.
-// On the ground it taxis like a car. After a takeoff roll at full throttle on
-// runway tiles, the whole vehicle moves up to the level above the surface
+// On the ground it taxis like a car: any gear, steering, reverse, into and out
+// of hangar bays, along roads and taxiways, without ever lifting off. Only a
+// takeoff roll leaves the ground: at full throttle on runway tiles, or on open
+// ground once the pilot has pressed Climb to line up for a field takeoff. Then
+// the whole vehicle moves up to the level above the surface
 // (multiz_level_above), which on Gaia is the standing open-air building level.
 // Its altitude is counted on the ground's hill height scale (aircraft_altitude.dm):
 // up to the top of that scale it is in low flight, among the hills, trees and
@@ -50,6 +53,10 @@ var/global/list/airborne_aircraft = list()
 	// Highest gear at which it can land on a runway.
 	var/landing_gear = 2
 	var/tmp/runway_roll = 0
+	// Climb pressed on the ground: the next full-throttle roll may lift off
+	// open ground too. Without it the plane only taxis off a runway.
+	var/tmp/takeoff_armed = FALSE
+	var/tmp/field_hint_given = FALSE
 	var/tmp/stall_seconds = 0
 	var/tmp/flight_watching = FALSE
 	var/tmp/force_landing_until = 0
@@ -58,7 +65,7 @@ var/global/list/airborne_aircraft = list()
 	var/tmp/edge_blocked = FALSE
 
 /obj/structure/vehicleparts/axis/aircraft/persistence_runtime_var(key)
-	return (key in list("runway_roll", "stall_seconds", "flight_watching", "force_landing_until", "no_airspace_warned", "edge_blocked")) || ..(key)
+	return (key in list("runway_roll", "takeoff_armed", "field_hint_given", "stall_seconds", "flight_watching", "force_landing_until", "no_airspace_warned", "edge_blocked")) || ..(key)
 
 /obj/structure/vehicleparts/axis/aircraft/proc/airborne()
 	return flight_state != AIRCRAFT_GROUND
@@ -246,6 +253,8 @@ var/global/list/airborne_aircraft = list()
 /obj/structure/vehicleparts/axis/aircraft/proc/set_flight_state(state)
 	var/was_airborne = airborne()
 	flight_state = state
+	takeoff_armed = FALSE
+	field_hint_given = FALSE
 	if (airborne())
 		if (!was_airborne)
 			start_altitude()
@@ -283,19 +292,33 @@ var/global/list/airborne_aircraft = list()
 	return TRUE
 
 // What the pilot still has to do before the wheels leave the ground. Takeoff
-// itself is automatic (after_aircraft_move); Climb only works in the air.
+// itself is automatic (after_aircraft_move): on a runway always, on open ground
+// once Climb has lined the plane up for it.
 /obj/structure/vehicleparts/axis/aircraft/proc/takeoff_hint()
 	if (!engine || !engine.on)
 		return "Start the engine first: use the control column."
+	if (!on_runway() && !takeoff_armed)
+		return "On the ground the plane only taxis. Press Climb to line up for a takeoff from open ground, or taxi onto a runway."
 	if (currentspeed < speeds || reverse)
-		return "Climb only works in the air. Throttle up to full (gear [speeds]) and roll forward in a straight line: the plane takes off by itself after [takeoff_roll] tiles of runway or [rough_takeoff_roll] tiles of open ground."
+		return "Throttle up to full (gear [speeds]) and roll forward in a straight line: the plane takes off by itself after [takeoff_roll] tiles of runway or [rough_takeoff_roll] tiles of open ground."
 	return "Keep rolling: the plane takes off by itself after [max(1, takeoff_distance() - runway_roll)] more tile\s of [on_runway() ? "runway" : "open ground"]."
+
+// Climb on the ground: line up for a takeoff, which off a runway is the only
+// way a roll lifts the plane. Taxiing never takes off from open ground by itself.
+/obj/structure/vehicleparts/axis/aircraft/proc/arm_takeoff(mob/user)
+	if (!engine || !engine.on || landing_gear_broken())
+		to_chat(user, SPAN_WARNING(landing_gear_broken() ? "The landing gear is broken. Weld any part of the airframe to fix it." : takeoff_hint()))
+		return FALSE
+	if (!takeoff_armed)
+		takeoff_armed = TRUE
+		runway_roll = 0
+	to_chat(user, SPAN_NOTICE("You line up for takeoff. [takeoff_hint()]"))
+	return TRUE
 
 /obj/structure/vehicleparts/axis/aircraft/proc/climb(mob/user)
 	switch (flight_state)
 		if (AIRCRAFT_GROUND)
-			to_chat(user, SPAN_WARNING(takeoff_hint()))
-			return FALSE
+			return arm_takeoff(user)
 	if (target_altitude >= AIRCRAFT_MAX_ALTITUDE)
 		to_chat(user, SPAN_WARNING("You are already climbing as high as the aircraft goes."))
 		return FALSE
@@ -336,6 +359,8 @@ var/global/list/airborne_aircraft = list()
 			return FALSE
 		set_flight_state(AIRCRAFT_GROUND)
 		currentspeed = min(currentspeed, 1)
+		// Roll out at first gear's pace, ready to taxi.
+		vehicle_m_delay = get_speed()
 		visible_message(SPAN_NOTICE(runway ? "\The [src] touches down on the runway." : "\The [src] touches down smoothly on the level ground."))
 		if (on_arresting_wires())
 			currentspeed = 0
@@ -517,6 +542,8 @@ var/global/list/airborne_aircraft = list()
 		moving = FALSE
 		movement_processes--
 		if (!airborne())
+			// Coming to a stop on the ground stands down a lined-up takeoff.
+			takeoff_armed = FALSE
 			stopmovementloop()
 		return
 	addtimer(CALLBACK(src, PROC_REF(next_aircraft_move)), vehicle_m_delay+1)
@@ -534,9 +561,14 @@ var/global/list/airborne_aircraft = list()
 	if (currentspeed >= speeds && !reverse)
 		runway_roll++
 		if (runway_roll >= takeoff_distance())
-			try_takeoff()
+			if (takeoff_armed || on_runway())
+				try_takeoff()
+			else if (!field_hint_given)
+				field_hint_given = TRUE
+				pilot_message(SPAN_NOTICE("The plane is only taxiing. Press Climb to line up for a takeoff from open ground."))
 	else
 		runway_roll = 0
+		field_hint_given = FALSE
 
 // Full-throttle tiles needed to lift off from where the aircraft is now.
 /obj/structure/vehicleparts/axis/aircraft/proc/takeoff_distance()

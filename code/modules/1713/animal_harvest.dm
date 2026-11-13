@@ -166,6 +166,9 @@
 /mob/living/simple_animal/proc/harvest_food(typepath, turf/site)
 	var/obj/item/weapon/reagent_containers/food/snacks/F = new typepath(site)
 	F.radiation = radiation/2
+	// One mammal cut in ten carries worm eggs in its raw meat; cooking kills them.
+	if (harvest_mammal() && istype(F, /obj/item/weapon/reagent_containers/food/snacks/meat) && F.reagents && prob(10))
+		F.reagents.add_reagent("worm_eggs", 1)
 	if (!istype(src, /mob/living/simple_animal/frog/poisonous))
 		F.name = "[name] [F.name]"
 	return F

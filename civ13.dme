@@ -256,6 +256,7 @@
 #include "code\game\mob\living\carbon\human\human_disease.dm"
 #include "code\game\mob\living\carbon\human\immunity.dm"
 #include "code\game\mob\living\carbon\human\severe_disease.dm"
+#include "code\game\mob\living\carbon\human\intestinal_worms.dm"
 #include "code\game\mob\living\carbon\human\human_movement.dm"
 #include "code\game\mob\living\carbon\human\subtile_movement.dm"
 #include "code\game\mob\living\carbon\human\pull_pair_ownership.dm"
