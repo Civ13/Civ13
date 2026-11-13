@@ -13,7 +13,7 @@
 	is_officer = TRUE
 	is_commander = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	min_positions = 1
 	max_positions = 1
@@ -55,7 +55,7 @@
 	is_commander = TRUE
 	is_officer = TRUE
 	whitelisted = TRUE
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	min_positions = 1
 	max_positions = 1
@@ -90,7 +90,7 @@
 	title = "Chef dequipage"
 	en_meaning = "Head of Personnel Officer"
 	rank_abbreviation = "Chef deq."
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	spawn_location = "JoinLateRNBoatswain"
 	whitelisted = TRUE
@@ -136,7 +136,7 @@
 
 	spawn_location = "JoinLateRNMidshipman"
 	is_officer = TRUE
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 
 	min_positions = 1
@@ -174,7 +174,7 @@
 	spawn_location = "JoinLateRNSurgeon"
 
 	is_medic = TRUE
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 
 	min_positions = 1
@@ -211,7 +211,7 @@
 	rank_abbreviation = "Charpentier"
 
 	spawn_location = "JoinLateRNCarpenter"
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	min_positions = 1
 	max_positions = 10
@@ -249,7 +249,7 @@
 	title = "Cuisinier"
 	en_meaning = "Cook"
 	rank_abbreviation = "Cuisinier"
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	spawn_location = "JoinLateRNCook"
 
@@ -300,7 +300,7 @@
 	rank_abbreviation = ""
 
 	spawn_location = "JoinLateRN" //for testing!
-	allowed_maps = list(MAP_NAVAL)
+	allowed_maps = list(MAP_NAVAL, MAP_BROADSIDE)
 
 	min_positions = 6
 	max_positions = 200

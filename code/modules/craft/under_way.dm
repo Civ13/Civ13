@@ -25,6 +25,9 @@
 	var/tmp/list/path_markers = list()
 	var/tmp/sailing_at = 0       // The telegraph step the running timer was set for.
 	var/tmp/tiles_since_burn = 0 // Tiles glided since her drives last paid.
+	// How many times faster than the sea she makes her way. A battle map sets
+	// it on its ships (map_metadata/broadside.dm); everywhere else it is 1.
+	var/tmp/pace = 1
 
 // The turfs a move would occupy, or null with last_refusal set. Writes
 // nothing. A body that cannot plan cannot sail from here.
@@ -64,7 +67,7 @@
 /datum/craft/proc/sail_interval()
 	if (!glides() || speed <= 0)
 		return VESSEL_HOP_INTERVAL
-	return max(1, round(VESSEL_HOP_INTERVAL / (speed * VESSEL_TILES_PER_STEP)))
+	return max(1, round(VESSEL_HOP_INTERVAL / (speed * VESSEL_TILES_PER_STEP * max(pace, 1))))
 
 /datum/craft/proc/start_sailing()
 	if (hop_timer)

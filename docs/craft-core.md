@@ -65,7 +65,8 @@ A body made of objects sets `glides` (`glide.dm`; the built body does). Such
 a craft covers the same water in the same time one tile at a step:
 `craft.sail_tiles()` is 1 and `craft.sail_interval()` is the hop interval
 divided by the tiles a hop would cover (15, 7.5 and 5 seconds a tile at slow,
-half and full ahead). Her drives still pay once per hop's worth of tiles. For
+half and full ahead). Her drives still pay once per hop's worth of tiles. A craft's `pace` (1 everywhere
+else) divides that interval: the Broadside TDM map sails its ships at pace 4. For
 each step `under_way.dm` sets `body.glide_time`, and the body calls
 `craft_glide()` on everything it carried: a thing square on its tile gets the
 `glide_size` that makes the engine glide it for the whole step (given back when

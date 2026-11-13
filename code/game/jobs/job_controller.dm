@@ -215,7 +215,14 @@ var/global/datum/controller/occupations/job_master
 		if (birth_area)
 			birth_area.play_ambience(H)
 		return TRUE
-	
+
+	// Broadside ships sail: a crewman joins his ship wherever she is now.
+	if (broadside_spawn_aboard(H))
+		var/area/ship_area = get_area(H)
+		if (ship_area)
+			ship_area.play_ambience(H)
+		return TRUE
+
 	if (H.original_job && H.original_job.uses_squads && !map.fob_spawns)
 		var/mob/living/human/HSL = null
 		if(H.original_job.is_squad_leader)
