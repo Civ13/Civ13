@@ -150,7 +150,10 @@
 
 /mob/living/human/Stun(amount)
 	handle_look_stuff(1)
+	var/was_stunned = stunned
 	..()
+	if (stunned > was_stunned)
+		jostle_held_items(FALSE)
 
 /mob/living/human/Weaken(amount)
 	// failing that, addition 50%/77% chance to get less weakened
@@ -159,6 +162,14 @@
 	var/was_weakened = weakened
 	..()
 	get_up_hint(was_weakened)
+	if (weakened > was_weakened)
+		jostle_held_items(TRUE)
+
+/mob/living/human/Paralyse(amount)
+	var/was_paralysed = paralysis
+	..()
+	if (paralysis > was_paralysed)
+		jostle_held_items(TRUE)
 
 // Defined here solely to take species flags into account without having to recast at mob/living level.
 /mob/living/human/getOxyLoss()

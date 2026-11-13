@@ -275,6 +275,7 @@
 // apparently called whenever an item is removed from a slot, container, or anything else.
 /obj/item/proc/dropped(mob/user as mob)
 	reset_abandonment()
+	grip_tightened = FALSE
 	plane = GAME_PLANE
 	spawn (1)
 		if (dropsound)
