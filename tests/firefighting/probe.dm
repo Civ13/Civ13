@@ -44,6 +44,7 @@ var/fire_runtime_error = FALSE
 		fire_water_checks()
 		fire_blanket_checks()
 		fire_hook_checks()
+		fire_pump_checks()
 		fire_recipe_checks()
 	catch(var/exception/e)
 		fire_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -183,6 +184,7 @@ var/fire_runtime_error = FALSE
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater") == "primitive_construction", "the fire beater is Primitive Construction knowledge")
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater/flapper") == "primitive_construction", "the fire flapper is Primitive Construction knowledge")
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_hook") == "iron_tools", "the fire hook is Iron Tools knowledge")
+	fire_check(get_recipe_node_req("/obj/structure/fire_pump") == "wagons_ships", "the hand pump fire engine is Wagons & Ships knowledge")
 
 /proc/fire_water_checks()
 	var/mob/living/fire_tester/U = new(locate(10, 15, 1))
@@ -357,4 +359,81 @@ var/fire_runtime_error = FALSE
 	qdel(RT)
 	qdel(T)
 	qdel(H)
+	qdel(U)
+
+/obj/covers/fire_probe_wall/solid
+	opacity = TRUE
+
+/proc/fire_pump_checks()
+	var/mob/living/fire_tester/U = new(locate(3, 17, 1))
+	var/obj/structure/fire_pump/P = new(locate(3, 18, 1))
+	fire_check(P.water == 0 && P.max_water == 400 && !P.anchored && P.density, "a new engine is an empty tub that can be pulled")
+	// Filling by bucket.
+	var/obj/item/weapon/reagent_containers/glass/bucket/K = new(locate(2, 17, 1))
+	K.reagents.add_reagent("petroleum", 10)
+	fire_check(P.attackby(K, U) && P.water == 0 && K.reagents.get_reagent_amount("petroleum") == 10, "a bucket without water puts nothing in the tub")
+	K.reagents.add_reagent("water", 60)
+	fire_check(P.attackby(K, U) && P.water == 60 && K.reagents.get_reagent_amount("water") == 0 && K.reagents.get_reagent_amount("petroleum") == 10, "a bucket pours only its water into the tub")
+	P.water = 390
+	K.reagents.add_reagent("water", 60)
+	fire_check(P.attackby(K, U) && P.water == 400 && K.reagents.get_reagent_amount("water") == 50, "a full tub leaves the rest in the bucket")
+	fire_check(P.attackby(K, U) && P.water == 400 && K.reagents.get_reagent_amount("water") == 50, "a full tub takes no more")
+	qdel(K)
+	// Where a jet lands.
+	fire_check(fire_jet_landing(U, locate(6, 17, 1)) == locate(6, 17, 1), "a jet lands on a tile three away")
+	fire_check(fire_jet_landing(U, locate(12, 17, 1)) == locate(8, 17, 1), "a jet aimed too far lands five tiles out")
+	fire_check(fire_jet_landing(U, U) == get_turf(U), "a jet at your own feet lands there")
+	var/obj/covers/fire_probe_wall/solid/W = new(locate(5, 17, 1))
+	fire_check(fire_jet_landing(U, locate(7, 17, 1)) == locate(4, 17, 1), "a wall stops the jet on the tile before it")
+	qdel(W)
+	// The nozzle and its jets.
+	var/obj/item/weapon/fire_nozzle/N = P.get_nozzle()
+	fire_check(N.loc == P && N.pump == P && P.get_nozzle() == N && !P.nozzle_out(), "the engine has one nozzle, stowed on it")
+	fire_hold(U, N)
+	fire_check(P.nozzle_out(), "a nozzle in hand is run out")
+	var/turf/site = locate(7, 17, 1)
+	var/obj/effect/fire/F = new(site)
+	var/mob/living/fire_tester/V = new(site)
+	V.fire_stacks = 5
+	V.on_fire = TRUE
+	P.water = 50
+	N.afterattack(site, U, FALSE)
+	fire_check(QDELETED(F) && !V.on_fire && P.water == 30, "a jet puts out the fire and the person where it lands for twenty water")
+	F = new(site)
+	N.afterattack(site, U, FALSE)
+	fire_check(!QDELETED(F) && P.water == 30, "a second jet inside the cooldown does nothing")
+	N.next_spray = 0
+	N.afterattack(site, U, TRUE)
+	fire_check(!QDELETED(F) && P.water == 30, "an adjacent click is left to the click handler")
+	fire_check(N.resolve_attackby(site, U) && QDELETED(F) && P.water == 10, "the click handler sprays too")
+	F = new(site)
+	N.next_spray = 0
+	fire_check(!N.spray(site, U) && !QDELETED(F) && P.water == 10, "too little water throws no jet")
+	// Splash: a jet reaches the tiles around where it lands, by chance.
+	P.water = 400
+	var/obj/effect/fire/side = new(locate(7, 16, 1))
+	var/tries = 0
+	while (!QDELETED(side) && tries < 12)
+		tries++
+		N.next_spray = 0
+		N.spray(site, U)
+	fire_check(QDELETED(F) && QDELETED(side), "jets splash the fire on the next tile out")
+	// The hose.
+	P.water = 400
+	N.next_spray = 0
+	U.loc = locate(3, 14, 1)
+	fire_check(!N.spray(locate(3, 12, 1), U) && N.loc == P && P.water == 400 && !P.nozzle_out(), "four tiles from the engine the hose pulls the nozzle back")
+	fire_hold(U, N)
+	U.loc = locate(3, 15, 1)
+	N.next_spray = 0
+	fire_check(N.spray(locate(3, 12, 1), U) && P.water == 380, "three tiles from the engine it still sprays")
+	P.Move(locate(4, 19, 1))
+	fire_check(N.loc == P, "pulling the engine away takes the nozzle with it")
+	fire_hold(U, N)
+	U.loc = locate(4, 18, 1)
+	fire_check(P.attackby(N, U) && N.loc == P, "the nozzle hangs back on the engine")
+	fire_check(P.persistence_runtime_var("nozzle") && !N.should_save && P.should_save, "the engine is saved with its water, the nozzle is not")
+	qdel(P)
+	fire_check(QDELETED(N), "the nozzle goes with its engine")
+	qdel(V)
 	qdel(U)

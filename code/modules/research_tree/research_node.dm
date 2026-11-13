@@ -2363,7 +2363,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lamp/lamppost_small" = "utilities",
 		"/obj/structure/searchlight" = "utilities",
 		"/obj/structure/phoneline" = "utilities",
-		// --- wagons_ships (26) ---
+		// --- wagons_ships (27) ---
+		"/obj/structure/fire_pump" = "wagons_ships",
 		"/obj/structure/slipway" = "wagons_ships",
 		"/obj/structure/berth/quay" = "wagons_ships",
 		"/obj/structure/berth/quay/depot" = "wagons_ships",

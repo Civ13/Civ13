@@ -1721,7 +1721,7 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},    'hay': {'files': ('tests/hay/test_hay.py',),
         'paths': ('tests/hay/', 'code/modules/1713/hay.dm', 'icons/obj/hay.dmi')},
     'firefighting': {'files': ('tests/firefighting/test_firefighting.py',),
-        'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm',
+        'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm', 'code/modules/1713/firefighting_pump.dm',
                   'code/modules/1713/oil_fires.dm', 'icons/obj/firefighting.dmi',
                   'tests/sprites/create_firefighting.py')},
     'wild_herbs': {'files': ('tests/wild_herbs/test_wild_herbs.py',),
