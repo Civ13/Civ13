@@ -83,7 +83,9 @@ class TreeClimbingSources(unittest.TestCase):
         self.assertIn('OpenFire(target_mob)', npc)
 
     def test_climber_drawn_at_treetop(self):
-        self.assertIn('#define TREE_CLIMBER_LAYER 5.12', CLIMB)
+        # Behind the leaves: the climber never takes a layer over trees.
+        self.assertNotIn('layer =', CLIMB)
+        self.assertIn('#define TREE_CLIMB_HEAD_Y 22', CLIMB)
         self.assertIn('tree_climb_apply_pose()', proc(CLIMB, '/mob/living/human/proc/tree_climb_check('))
         self.assertIn('pixel_y = rest_pixel_y()', ANIM)
         self.assertIn('return climbed_tree ? tree_climb_pixel_y : ..()', CLIMB)

@@ -134,6 +134,23 @@ class InputTrace(unittest.TestCase):
                               '\t\treturn\n')
         self.assertEqual(prior.count(approved_self_help), 1, 'approved self-help block')
         prior = prior.replace(approved_self_help, '')
+        # #5079 keeps melee from reaching across a tree canopy (tree_climbing.dm):
+        # an adjacent click on someone up a tree (or from one) fires a gun or
+        # is refused, and kick/jump/bite are refused the same way.
+        approved_tree_reach = ('\t\t\t// Up a tree, or at the foot of one: no melee across the canopy\n'
+                               '\t\t\t// (tree_climbing.dm). A gun still fires; anything else is refused.\n'
+                               '\t\t\tif (ismob(A) && tree_melee_blocked(src, A))\n'
+                               '\t\t\t\tif (istype(W, /obj/item/weapon/gun))\n'
+                               '\t\t\t\t\tW.afterattack(A, src, FALSE, params)\n'
+                               '\t\t\t\telse\n'
+                               '\t\t\t\t\ttree_melee_refused(src, A)\n'
+                               '\t\t\t\treturn\n')
+        self.assertEqual(prior.count(approved_tree_reach), 1, 'approved tree reach block')
+        prior = prior.replace(approved_tree_reach, '')
+        approved_tree_middle = ('\t\tif ((M.middle_click_intent == "kick" || M.middle_click_intent == "jump" || M.middle_click_intent == "bite") && ismob(src) && tree_melee_refused(M, src))\n'
+                                '\t\t\treturn\n')
+        self.assertEqual(prior.count(approved_tree_middle), 1, 'approved tree middle-click block')
+        prior = prior.replace(approved_tree_middle, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')

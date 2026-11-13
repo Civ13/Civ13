@@ -65,6 +65,11 @@ var/tree_climbing_probe_checks = 0
 
 	var/obj/structure/wild/tree/live_tree/T = new(locate(8, 8, 1))
 	tree_climbing_probe_assert(tree_climbable(T), "live_tree_climbable")
+	var/obj/structure/wild/tree/small = new(locate(12, 12, 1))
+	var/mob/living/human/tree_climbing_probe/kid = tree_climbing_probe_actor(12, 11)
+	tree_climbing_probe_assert(kid.tree_climb_refusal(small) == "\The [small] is too small to climb.", "small_tree_too_small")
+	qdel(kid)
+	qdel(small)
 	var/obj/structure/wild/bush/B = new(locate(3, 3, 1))
 	tree_climbing_probe_assert(!tree_climbable(B), "bush_not_climbable")
 
@@ -75,15 +80,14 @@ var/tree_climbing_probe_checks = 0
 	tree_climbing_probe_assert(isnull(los_terrain_for(H, 7)), "ground_no_canopy_field")
 	tree_climbing_probe_assert(H.finish_climb_tree(T), "climbed")
 	tree_climbing_probe_assert(H.loc == T.loc && H.climbed_tree == T && T.tree_climber == H && los_up_tree(H), "up_the_tree")
-	// Drawn at the treetop over the canopy: trunk centre, head at the highest
-	// leaf of the sprite, layered above trees.
-	tree_climbing_probe_assert(H.tree_climb_pixel_x == T.pixel_x + 32 - 16 && H.tree_climb_pixel_y == max(0, T.pixel_y + tree_sprite_top(T.icon, T.icon_state) - 28), "pose_at_treetop")
+	// Raised to the treetop behind the leaves: trunk centre, head peeking over
+	// the highest leaf of the sprite, layered under the tree.
+	tree_climbing_probe_assert(H.tree_climb_pixel_x == T.pixel_x + 32 - 16 && H.tree_climb_pixel_y == max(0, T.pixel_y + tree_sprite_top(T.icon, T.icon_state) - 22), "pose_at_treetop")
 	tree_climbing_probe_assert(tree_sprite_top('icons/obj/flora/bigtrees.dmi', "tree_1") == 62 && tree_sprite_top('icons/obj/flora/palm.dmi', "palm1") == 54 && tree_sprite_top('icons/obj/flora/jungletreesmaller.dmi', "tree2") == 78, "canopy_top_from_sprite")
-	tree_climbing_probe_assert(H.pixel_x == H.tree_climb_pixel_x && H.pixel_y == H.tree_climb_pixel_y && H.layer > T.layer, "drawn_over_canopy")
+	tree_climbing_probe_assert(H.pixel_x == H.tree_climb_pixel_x && H.pixel_y == H.tree_climb_pixel_y && H.layer < T.layer, "drawn_behind_canopy")
 	H.pixel_y = 0
-	H.layer = initial(H.layer)
 	H.tree_climb_check()
-	tree_climbing_probe_assert(H.pixel_y == H.tree_climb_pixel_y && H.layer > T.layer, "pose_restored_each_life")
+	tree_climbing_probe_assert(H.pixel_y == H.tree_climb_pixel_y, "pose_restored_each_life")
 	tree_climbing_probe_assert(H.rest_pixel_y() == H.tree_climb_pixel_y, "attack_animation_rests_at_treetop")
 	tree_climbing_probe_assert(los_eye_level(H) == LOS_EYE_CLIMBED, "climber_eye")
 	// Flat ground without heights still gets an open field with the eye up high,
@@ -137,7 +141,7 @@ var/tree_climbing_probe_checks = 0
 	// Climbing down returns to the exact starting spot.
 	H.climb_down_tree()
 	tree_climbing_probe_assert(!H.climbed_tree && !T.tree_climber && !los_up_tree(H), "down")
-	tree_climbing_probe_assert(H.loc == locate(9, 8, 1) && H.step_x == 4 && H.step_y == 6 && H.pixel_y == 0 && H.pixel_x == 0 && H.layer == initial(H.layer), "back_at_start")
+	tree_climbing_probe_assert(H.loc == locate(9, 8, 1) && H.step_x == 4 && H.step_y == 6 && H.pixel_y == 0 && H.pixel_x == 0, "back_at_start")
 	tree_climbing_probe_assert(los_foliage_hides(far, H) == FALSE, "visible_again")
 
 	// The tree going away drops the climber.

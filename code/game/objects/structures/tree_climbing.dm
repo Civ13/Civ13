@@ -2,8 +2,8 @@
 //
 // Grab intent with a free hand on a tree (or the tree's right-click Climb Tree
 // verb) climbs it after a few seconds. Up a tree:
-// - the climber is drawn at the top of the tree's sprite, over the canopy
-//   (TREE_CLIMBER_LAYER; tree_climb_pose);
+// - the climber is raised to the top of the tree's sprite and drawn behind its
+//   leaves, head peeking out over the canopy (tree_climb_pose);
 // - melee is out of reach both ways: nobody on the ground can hit, grab, kick
 //   or pull the climber, and the climber cannot hit them. Guns, bows and thrown
 //   things still work (tree_melee_blocked). Animals that climb still follow;
@@ -21,12 +21,10 @@
 
 #define TREE_CLIMB_TIME 50
 #define TREE_CLIMB_DOWN_TIME 20
-// Human sprites put the top of the head about this high; the climber's head
-// sits at the top of the canopy.
-#define TREE_CLIMB_HEAD_Y 28
-// Just above trees (5.11), so the climber is drawn over its own canopy and the
-// canopies of the trees around it.
-#define TREE_CLIMBER_LAYER 5.12
+// The climber's feet sit this far below the canopy top. Human heads are about
+// 28px tall, so the head (6px) peeks out over the leaves and the body stays
+// behind them; the climber keeps its normal layer under the tree.
+#define TREE_CLIMB_HEAD_Y 22
 
 // Height of the tree's canopy top above the bottom of its sprite. 0 finds it
 // from the sprite: the highest row with a visible pixel.
@@ -104,6 +102,12 @@ var/global/list/tree_canopy_tops = list()
 	var/obj/structure/wild/W = A
 	return W.density && W.opacity
 
+// Only grown trees hold a climber: a sprite a single tile tall (the small tree,
+// young or burnt-down trees) is too small.
+/proc/tree_grown_enough(obj/structure/wild/W)
+	var/list/size = tree_icon_size(W.icon)
+	return size[2] > world.icon_size
+
 // TRUE when the attacker cannot reach the target in melee because one of them
 // is up a tree and the other is not. Only animals that climb follow a climber
 // into the branches; everyone else needs a gun, a bow or something to throw.
@@ -132,7 +136,7 @@ var/global/list/tree_canopy_tops = list()
 		to_chat(attacker, SPAN_WARNING("[target] is up the tree, out of reach."))
 	return TRUE
 
-// Where the climber is drawn: centred on the trunk, head at the canopy top.
+// Where the climber is drawn: centred on the trunk, head peeking over the top.
 /mob/living/human/proc/tree_climb_pose(obj/structure/wild/W)
 	var/list/size = tree_icon_size(W.icon)
 	var/trunk_x = W.trunk_center_x ? W.trunk_center_x : round(size[1] / 2)
@@ -140,11 +144,9 @@ var/global/list/tree_canopy_tops = list()
 	tree_climb_pixel_x = initial(pixel_x) + W.pixel_x + trunk_x - world.icon_size / 2
 	tree_climb_pixel_y = initial(pixel_y) + max(0, W.pixel_y + top - TREE_CLIMB_HEAD_Y)
 
-// Keeps the climber at the treetop; attack animations, posture and lying
-// updates put pixel offsets and layer back to their ground values.
+// Keeps the climber at the treetop; attack animations and posture updates
+// put pixel offsets back to their ground values.
 /mob/living/human/proc/tree_climb_apply_pose(animate_time = 0)
-	if (layer != TREE_CLIMBER_LAYER)
-		layer = TREE_CLIMBER_LAYER
 	if (pixel_x == tree_climb_pixel_x && pixel_y == tree_climb_pixel_y)
 		return
 	if (animate_time)
@@ -163,6 +165,8 @@ var/global/list/tree_canopy_tops = list()
 /mob/living/human/proc/tree_climb_refusal(obj/structure/wild/W)
 	if (!tree_climbable(W) || QDELETED(W))
 		return "That can't be climbed."
+	if (!tree_grown_enough(W))
+		return "\The [W] is too small to climb."
 	if (climbed_tree)
 		return "You are already up a tree."
 	if (!isturf(loc) || W.z != z || get_dist(src, W) > 1 || !W.Adjacent(src))
@@ -252,7 +256,6 @@ var/global/list/tree_canopy_tops = list()
 	animate(src)
 	pixel_x = initial(pixel_x)
 	pixel_y = initial(pixel_y)
-	layer = initial(layer)
 	var/turf/from = tree_climb_from
 	tree_climb_from = null
 	if (!fall && isturf(from) && isturf(loc) && from.z == z && get_dist(from, loc) <= 1 && (!W || W.loc == loc))
@@ -344,4 +347,3 @@ var/global/list/tree_canopy_tops = list()
 #undef TREE_CLIMB_TIME
 #undef TREE_CLIMB_DOWN_TIME
 #undef TREE_CLIMB_HEAD_Y
-#undef TREE_CLIMBER_LAYER
