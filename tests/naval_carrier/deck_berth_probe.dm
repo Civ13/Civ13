@@ -222,6 +222,27 @@ var/naval_runtime_error = FALSE
 	qdel(davit)
 	naval_check(isnull(teal.carrier) && !C.carried.len && isnull(teal.berth), "a davit that is destroyed lets her go")
 
+	// ---- A davit on a turf-built ship: the carrier's flight deck ----
+	var/datum/vessel/carrier/V = carrier_lay_down(locate(22, 30, 2), EAST)
+	naval_check(istype(V) && V.placed, "a carrier is laid down bow east")
+	if (istype(V))
+		var/datum/craft/big = craft_of_vessel(V)
+		var/obj/structure/berth/deck/flight = new(locate(30, 31, 2))
+		flight.set_dir(NORTH)
+		flight.berth_length = 3
+		flight.berth_beam = 2
+		naval_check(flight.ship() == big && isnull(flight.cradle_refusal()) && flight.sea_z() == 2, "a davit on her flight deck has its cradle on her deck ([flight.cradle_refusal()])")
+		var/list/teal_box = deck_berth_box(deck_berth_frames(boat))
+		naval_check(boat.shift_vehicle_level(2, 30 - teal_box[1], 25 - teal_box[2]) && boat_afloat(boat), "the Teal lies off the carrier's quarter")
+		why = flight.hoist(boat)
+		naval_check(isnull(why) && boat_whole_in(boat, flight.cradle()) && teal.carrier == big && teal.berth == flight, "the carrier's davit hoists her onto the flight deck ([why])")
+		var/turf/boat_was = get_turf(boat)
+		naval_check(big.body.move_to(V.ox + 2, V.oy, EAST), "the carrier moves two tiles east ([V.last_refusal])")
+		var/turf/boat_now = get_turf(boat)
+		naval_check(boat_now.x == boat_was.x + 2 && flight.x == 32 && boat_whole_in(boat, flight.cradle()) && teal.carrier == big && flight.occupant == teal, "and the Teal rides her deck, still carried")
+		why = flight.launch(SOUTH)
+		naval_check(isnull(why) && boat_afloat(boat) && isnull(teal.carrier) && !big.carried.len, "she is lowered over the carrier's side to the water ([why])")
+
 	// ---- A vehicle parked in a cradle ----
 	var/turf/TO = get_turf(tiller)
 	var/obj/structure/berth/deck/second = null
