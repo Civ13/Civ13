@@ -213,13 +213,13 @@ var/global/list/region_travel_carry_types = list(
 	var/burn = clamp(round(getBurnLoss()), 0, 200)
 	if(brute) P["brute"] = brute
 	if(burn) P["burn"] = burn
-	// A party train trip (party_train.dm) says whose train it is and where it left from.
+	// Every trip says where it left from: a raid trip (region_raid.dm) goes
+	// home there, a party train (party_train.dm) records its way back, and an
+	// ordinary traveller arrives at the trail leading back there.
+	P["from"] = shard_group.region
+	// A party train trip says whose train it is.
 	if(party)
 		P["party"] = party
-		P["from"] = shard_group.region
-	// A raid trip (region_raid.dm) says where the raider goes home to.
-	else if(raid)
-		P["from"] = shard_group.region
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
 		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats"))
@@ -339,6 +339,15 @@ var/global/list/region_travel_carry_types = list(
 	if(length(starts)) return pick(starts)
 	return null
 
+// The trail here leading back to the land a traveller came from, so a trail
+// placed on each side connects the two. Null when there is none.
+/proc/region_travel_return_trail_turf(list/P)
+	var/from = islist(P) ? P["from"] : null
+	if(!istext(from) || !shard_group.enabled || from == shard_group.region) return null
+	for(var/obj/structure/region_gate/gate in region_gates)
+		if(gate.destination == from && gate.accepts_arrivals() && !QDELETED(gate) && isturf(gate.loc)) return gate.loc
+	return null
+
 // Builds recorded characters at T: arrivals at the destination, or travellers
 // a peer refused back at the source. Callers have already recorded the effect,
 // so this never refuses; an unreadable payload is reported and dropped.
@@ -353,7 +362,8 @@ var/global/list/region_travel_carry_types = list(
 			continue
 		// A party train trip arrives at the party's berth or station instead.
 		// A crewed flight arrives in its landed lander (space/lander.dm).
-		var/turf/at = space_flight_arrival_turf(P, incoming) || party_train_arrival_turf(P) || T
+		// Otherwise a traveller comes out at the trail here that leads back home.
+		var/turf/at = space_flight_arrival_turf(P, incoming) || party_train_arrival_turf(P) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
 		// A recorded trip (or a refused one coming back) makes this land the home.
@@ -737,8 +747,21 @@ var/global/list/region_stopped_alerted = list()
 		region_home_note(account, "depart", destination)
 	return "departed"
 
+// An admin ghost can follow a trail: their client goes to that land's server,
+// nothing travels with them. Others' ghosts do nothing here.
 /obj/structure/region_gate/attack_ghost(mob/user)
-	return
+	if(!user || !user.client || !check_rights(R_ADMIN, FALSE, user)) return
+	var/id = ghost_passage_destination()
+	if(!shard_group.enabled || !istext(id) || !shard_group.peers[id]) return
+	var/name = region_trail_name(id)
+	if(WWinput(user, "Follow this trail to [name] as an admin? You join that land's server in its lobby; nothing here travels with you.", "Trail", "Stay", list("Go", "Stay")) != "Go") return
+	if(!user.client || !check_rights(R_ADMIN, FALSE, user)) return
+	log_admin("[key_name(user)] followed the trail at [x],[y],[z] to [id] as a ghost.")
+	shard_group.send_player(user.client, id)
+
+// Where an admin ghost following this gate goes.
+/obj/structure/region_gate/proc/ghost_passage_destination()
+	return destination
 
 #undef REGION_TRAVEL_PAYLOAD_MAX
 #undef REGION_TRAVEL_ITEMS_MAX

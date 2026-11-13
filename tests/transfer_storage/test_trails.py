@@ -37,8 +37,8 @@ class TrailMarkerTests(unittest.TestCase):
     def test_closed_until_approved(self):
         self.assertIn('var/approved = FALSE', TRAILS)
         body = proc(TRAILS, MARKER + '/closed_reason')
-        self.assertLess(body.index('if(!approved)'), body.index('return ..()'))
-        # Using an unapproved marker only asks; it never travels.
+        self.assertLess(body.index('if(!approved && !admin_passage)'), body.index('return ..()'))
+        # A player using an unapproved marker only asks; only an admin may walk it.
         use = proc(TRAILS, MARKER + '/attack_hand')
         self.assertLess(use.index('if(approved)'), use.index('request(user)'))
 
@@ -107,6 +107,49 @@ class TrailMarkerTests(unittest.TestCase):
         # Refused before any wood is spent or the build wait starts.
         self.assertLess(check, body.index('if (recipe.time)'))
         self.assertLess(check, body.index('if (!can_use(required))'))
+
+    def test_admins_can_walk_a_pending_trail_alone(self):
+        # Val, 2026-11-13: admins use a pending trail to reach the land it asks for.
+        use = proc(TRAILS, MARKER + '/attack_hand')
+        self.assertLess(use.index('check_rights(R_ADMIN, FALSE, user)'), use.index('admin_travel(user)'))
+        self.assertLess(use.index('admin_travel(user)'), use.index('request(user)'))
+        walk = proc(TRAILS, MARKER + '/proc/admin_travel')
+        self.assertLess(walk.index('admin_passage = user'), walk.index('travel(user)'))
+        self.assertLess(walk.index('travel(user)'), walk.index('if(!approved)\n\t\tdestination = null'))
+        self.assertIn('if(admin_passage == user)\n\t\tadmin_passage = null', walk)
+        self.assertIn('var/tmp/mob/living/human/admin_passage', TRAILS)
+        # Everyone else is still turned back while the admin walks it.
+        refusal = proc(TRAILS, MARKER + '/travel_refusal')
+        self.assertIn('if(!approved && admin_passage != H)\n\t\treturn pending_reason()', refusal)
+        self.assertIn('if(!approved && !admin_passage)', proc(TRAILS, MARKER + '/closed_reason'))
+        # Arrivals still never come out at an unapproved marker.
+        self.assertIn(MARKER + '/accepts_arrivals()\n\treturn approved', TRAILS)
+
+    def test_admin_ghosts_follow_a_trail_without_a_character(self):
+        travel = read('code/modules/persistence/region_travel.dm')
+        ghost = proc(travel, '/obj/structure/region_gate/attack_ghost')
+        self.assertLess(ghost.index('check_rights(R_ADMIN, FALSE, user)'), ghost.index('shard_group.send_player(user.client, id)'))
+        self.assertIn('return destination || requested_destination', proc(TRAILS, MARKER + '/ghost_passage_destination'))
+
+    def test_admins_place_a_trail_where_they_stand(self):
+        verbs = read('code/modules/admin/admin_verbs.dm')
+        self.assertIn('/datum/admins/proc/place_region_trail,', verbs)
+        place = proc(TRAILS, '/datum/admins/proc/place_region_trail')
+        self.assertIn('set category = "Admin"', place)
+        self.assertLess(place.index('get_turf(M)'), place.index('marker.approve(id, M.ckey)'))
+        self.assertLess(place.index('marker.approve(id, M.ckey)'), place.index('shard_group.send_player(M.client, id)'))
+        # No edge rule for admins: the build refusal covers only crafting.
+        self.assertNotIn('region_trail_build_refusal', place)
+
+    def test_travellers_arrive_at_the_trail_leading_back(self):
+        travel = read('code/modules/persistence/region_travel.dm')
+        payload = proc(travel, '/mob/living/human/proc/region_travel_payload')
+        self.assertIn('\tP["from"] = shard_group.region\n', payload)
+        back = proc(travel, '/proc/region_travel_return_trail_turf')
+        self.assertIn('from == shard_group.region) return null', back)
+        self.assertIn('gate.destination == from && gate.accepts_arrivals()', back)
+        arrive = proc(travel, '/proc/region_travel_arrive')
+        self.assertLess(arrive.index('party_train_arrival_turf(P)'), arrive.index('(incoming ? region_travel_return_trail_turf(P) : null)'))
 
 
 if __name__ == '__main__':
