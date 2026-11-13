@@ -388,6 +388,7 @@ This function restores all organs.
 			traumatic_shock -= O.volume/2
 			shock_stage -= O.volume/4
 	traumatic_shock *= leader_order_hold_mult()
+	traumatic_shock *= trait_pain_mult()
 	if (traumatic_shock < 0)
 		traumatic_shock = FALSE
 

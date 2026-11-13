@@ -1448,7 +1448,8 @@ SUITES = {
             'code/modules/client/preferencesSQLite/preferences.dm',
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
-            'code/game/mob/living/carbon/human/human_stats.dm')},
+            'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/game/mob/living/carbon/human/playstyle_traits.dm')},
     # Reviewed stdlib-only projection; shared production changes keep fallback.
     'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
         'paths': ('tests/tablet_press/',),
