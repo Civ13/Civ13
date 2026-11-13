@@ -189,6 +189,20 @@ By design, d1 is the smallest direction and d2 is the highest
 						connections += CB
 	return connections
 
+// A consumer reaches its cable when it stands on or next to it, or when a
+// power point on that cable serves it from further away (power_points.dm).
+/obj/var/tmp/obj/power_point = null
+
+/obj/proc/power_point_serves(obj/O)
+	return FALSE
+
+/obj/proc/cable_reach(obj/structure/cable/C)
+	if (!C || !isturf(loc) || z != C.z)
+		return FALSE
+	if (get_dist(src, C) <= 1)
+		return TRUE
+	return power_point && power_point.powersource == C && power_point.power_point_serves(src)
+
 // Scalar identities contain no cable references. Refresh from the live graph,
 // rather than retaining cached topology across disconnects or imports.
 var/global/cable_identity_sequence = 0
@@ -253,7 +267,7 @@ var/global/cable_identity_sequence = 0
 // Capacity is instantaneous engine output, not accumulated energy. Visit each
 // cable and engine once, including when a network contains loops or branches.
 /obj/structure/cable/proc/rebuild_supply(obj/requester, request = 0)
-	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !isturf(requester.loc) || get_dist(src, requester) > 1 || requester.z != z))
+	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !requester.cable_reach(src)))
 		return FALSE
 	var/list/pending = list(src)
 	var/list/cables = list()
@@ -274,7 +288,7 @@ var/global/cable_identity_sequence = 0
 		if (!isturf(CB.loc))
 			continue
 		for (var/obj/consumer in CB.power_consumers.Copy())
-			if (consumer.powersource != CB || !(consumer in CB.connections) || !isturf(consumer.loc) || get_dist(CB, consumer) > 1 || consumer.z != CB.z)
+			if (consumer.powersource != CB || !(consumer in CB.connections) || !consumer.cable_reach(CB))
 				CB.power_consumers -= consumer
 			else
 				demand += CB.power_consumers[consumer]
@@ -351,7 +365,7 @@ var/global/cable_identity_sequence = 0
 	if (powerneeded <= 0)
 		powersource.update_power(0, 1, src)
 		return FALSE
-	if (!isturf(loc) || !(src in powersource.connections) || get_dist(src, powersource) > 1 || z != powersource.z)
+	if (!(src in powersource.connections) || !cable_reach(powersource))
 		powersource.update_power(-powerneeded, 1, src)
 		return FALSE
 	// A reservation that the last traversal, under a second ago, left within

@@ -1208,7 +1208,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (17) ---
+		// --- electricity (18) ---
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -1228,6 +1228,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
+		"/obj/structure/power_point/transformer" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
 		// --- factories (28) ---
