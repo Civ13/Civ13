@@ -1,6 +1,7 @@
 """Audit-only lexical entity candidates. Never a compiled or player-facing registry."""
 import argparse
 from collections import Counter, defaultdict
+import functools
 import json
 from pathlib import Path
 import re
@@ -21,62 +22,59 @@ def family(typepath):
     return next((label for root, label in ROOTS if typepath == root or typepath.startswith(root + '/')), None)
 
 
+TOKEN = re.compile(r'//|/\*|\{"|"')
+BLOCK_EDGE = re.compile(r'/\*|\*/')
+STRING_BODY = re.compile(r'(?:[^"\\]|\\.)*"?', re.S)
+TEXT_BODY = re.compile(r'(?:[^"\\]|\\.|"(?!\}))*', re.S)
+VISIBLE = re.compile(r'[^\r\n]')
+
+
+@functools.lru_cache(maxsize=None)
 def masked_source(source):
     """Blank comments and multiline strings, preserving offsets for provenance.
 
     Ordinary quoted strings remain intact. This is not a preprocessor/parser;
     multiline text is deliberately unsupported rather than scanned as DM code.
+    The scan jumps between tokens; the result is cached because the Atlas build
+    masks every source file more than once.
     """
-    chars = list(source)
+    size = len(source)
+    pieces = []
+    done = 0
     i = 0
-    while i < len(source):
-        end = None
-        if source.startswith('//', i):
-            end = source.find('\n', i)
-            end = len(source) if end < 0 else end
-        elif source.startswith('/*', i):
-            end, nesting = i + 2, 1
-            while end < len(source) and nesting:
-                if source.startswith('/*', end):
-                    nesting += 1
-                    end += 2
-                elif source.startswith('*/', end):
-                    nesting -= 1
-                    end += 2
-                else:
-                    end += 1
-        elif source.startswith('{"', i):
-            end = i + 2
-            while end < len(source):
-                if source[end] == '\\':
-                    end += 2
-                elif source.startswith('"}', end):
-                    end += 2
-                    break
-                else:
-                    end += 1
-            end = min(end, len(source))
-        elif source[i] == '"':
-            i += 1
-            while i < len(source):
-                if source[i] == '\\':
-                    i += 2
-                    continue
-                if source[i] == '"':
-                    i += 1
-                    break
-                i += 1
+    while True:
+        token = TOKEN.search(source, i)
+        if not token:
+            break
+        i = token.start()
+        kind = token.group()
+        if kind == '"':
+            i = STRING_BODY.match(source, i + 1).end()
             continue
-        if end is not None:
-            for j in range(i, end):
-                if chars[j] not in '\r\n':
-                    chars[j] = ' '
-            if source.startswith('{"', i):
-                chars[i] = '?'  # Retain an explicitly unsupported RHS marker.
-            i = end
+        if kind == '//':
+            end = source.find('\n', i)
+            end = size if end < 0 else end
+        elif kind == '/*':
+            end, nesting = i + 2, 1
+            while nesting:
+                edge = BLOCK_EDGE.search(source, end)
+                if not edge:
+                    end = size
+                    break
+                nesting += 1 if edge.group() == '/*' else -1
+                end = edge.end()
         else:
-            i += 1
-    return ''.join(chars)
+            end = TEXT_BODY.match(source, i + 2).end()
+            # A closing "} is consumed; anything else left is an unfinished escape.
+            end = end + 2 if source.startswith('"}', end) else size
+        blank = VISIBLE.sub(' ', source[i:end])
+        if kind == '{"':
+            blank = '?' + blank[1:]  # Retain an explicitly unsupported RHS marker.
+        pieces.append(source[done:i])
+        pieces.append(blank)
+        done = i = end
+    pieces.append(source[done:])
+    return ''.join(pieces)
 
 
 def include_graph(files, entry='civ13.dme'):
