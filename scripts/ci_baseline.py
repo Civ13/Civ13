@@ -330,6 +330,10 @@ SUITES = {
         'tests/statue_appearance/', 'code/game/objects/structures/religious.dm')},
     'weightlifter': {'files': ('tests/weightlifter/test_weightlifter.py',), 'paths': (
         'tests/weightlifter/', 'code/game/objects/structures/fitness.dm')},
+    'building_sleeping_cells': {'files': ('tests/building_sleeping_cells/test_sources.py',), 'paths': (
+        'tests/building_sleeping_cells/',), 'shared_paths': (
+        'code/modules/multiz/building_lighting.dm', 'code/modules/persistence/zone_topology.dm',
+        'code/modules/persistence/saving.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
     'practice_dummy_armor': {'files': ('tests/practice_dummy_armor/test_armor.py',), 'paths': (
         'tests/practice_dummy_armor/', 'code/game/objects/structures/target_stake.dm')},
     'mirror_fastening': {'files': ('tests/mirror_fastening/test_prompt.py',), 'paths': (

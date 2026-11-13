@@ -12,6 +12,21 @@
 /proc/building_level_lazy(z)
 	return z > building_base_maxz() && z != dug_underground_z()
 
+// A cell of an added level that nothing has woken or replaced: it skipped its
+// constructor during allocation, so it holds its compiled defaults, is not in
+// the turf registry and has no lighting. The world restore leaves such cells
+// unlit and a sparse save takes them as the baseline without comparing fields.
+/proc/building_cell_asleep(turf/T)
+	return istype(T, /turf/sky/building) && !turf_registry_members[T] && !T.lighting_overlay
+
+// Added levels where an open-air cell became another turf. Until then a lazy
+// level holds nothing but open air, and scans for ground turfs skip it. The
+// practice level builds its rooms without ChangeTurf and is always walked.
+var/global/list/building_levels_with_ground = list()
+
+/proc/building_level_only_sky(z)
+	return building_level_lazy(z) && z != practice_room_z && !building_levels_with_ground["[z]"]
+
 /proc/building_wake_cells(turf/center)
 	if (!center || !created_lighting_corners_and_overlays || building_allocating_z || !building_level_lazy(center.z))
 		return
@@ -34,4 +49,6 @@
 
 /turf/sky/building/ChangeTurf(var/path, var/tell_universe = 1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)
 	building_wake_cells(src)
+	if (!ispath(path, /turf/sky/building))
+		building_levels_with_ground["[z]"] = TRUE
 	return ..()

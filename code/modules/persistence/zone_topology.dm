@@ -511,6 +511,11 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		A.luminosity = !A.dynamic_lighting
 	// Cells run in zone_index order, so the grid is read by a running index.
 	var/cell = 0
+	// A sleeping open-air cell of an added building level (building_lighting.dm)
+	// stays unlit until something is built near it; lighting all of them here
+	// cost every restart 175,000 overlays per level. Read by name: fixtures
+	// compile this file without the building lighting module.
+	var/cell_asleep = text2path("/proc/building_cell_asleep")
 	for(var/z = 1, z <= world.maxz, z++)
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
@@ -519,6 +524,9 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 				A.contents += T
 				// Import repairs derived lighting without dispatching occupant events.
 				T.window_coeff_dirty = TRUE
+				if(cell_asleep && A.dynamic_lighting && call(cell_asleep)(T))
+					TICK_CHECK
+					continue
 				if(A.dynamic_lighting && !(T.z in map.zlevels_without_lighting)) T.lighting_build_overlay()
 				else T.lighting_clear_overlay()
 				TICK_CHECK
