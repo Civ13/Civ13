@@ -149,8 +149,14 @@ Tamped earth never turns to mud, and a shovel breaks it back into plain dirt.
 Grading changes the heights themselves, one level at a time. A shovel on
 disarm intent cuts a dirt or tamped-earth tile down a level (about 10 seconds,
 faster with strength), leaves loose dirt and drops a dirt pile
-(`/obj/item/weapon/barrier`). The rammer on a tile with a dirt pile on it
-packs the pile in, raises the tile a level and leaves tamped earth. A tile
+(`/obj/item/weapon/barrier`). The rammer levels toward the user's own tile
+(`stone_rammer_level_direction`): on a tile higher than the one the user
+stands on it pounds the tile down a level in the same time, leaves tamped
+earth and drops the loosened dirt pile at the user's feet, so repeated blows
+keep cutting until the tile is level with the user (or at the grade limit). On
+level or lower ground it only tamps, and on lower ground it says to ram a dirt
+pile in. The rammer on a tile with a dirt pile on it packs the pile in, raises
+the tile a level and leaves tamped earth. A tile
 moves at most `TERRAIN_GRADE_LIMIT` (2) levels from the file's height and
 stays within 0-15; snow, covers, crops, dense objects or water within one tile
 block it. The change is `turf.terrain_grade` (saved only when non-zero,
