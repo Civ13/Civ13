@@ -466,7 +466,9 @@ towed vehicle works through the queue with its own `do_move()` and
 `do_matrix()`, so it turns where the tug turned. It parts when more than
 `TOW_SLACK` moves are owed. The file hooks `do_move`, `do_matrix`,
 `get_weight`, `Destroy` and the frame's `attackby` by redefining them and
-calling on, so the vehicle files are untouched. Test: `tests/vehicle_tow`.
+calling on, so the vehicle files are untouched. Aircraft tow and are towed
+only on the ground: `tow_plan()` refuses an airborne one, and a plane on a line
+does not take off (`try_takeoff()`). Test: `tests/vehicle_tow`.
 
 ## Weather and murk at sea
 
