@@ -3,8 +3,8 @@
 // In Discord, /approveme without a ckey gives the player a private single-use
 // code (CivilizationBot docs/ingame-verification.md). They type it here; BYOND
 // has already signed them in, so the game vouches for the ckey and the code
-// vouches for the Discord account. The game sends both to its own bot as the
-// discord_verify webhook method and shows the bot's answer. A desktop bot
+// vouches for the Discord account. The game POSTs both to its own bot's
+// discord_verify webhook (key in a header) and shows the bot's answer. A desktop bot
 // relays the request to CivilizationBot, which does the actual registration.
 // The link reaches this world with the next verified-list refresh.
 
@@ -37,14 +37,40 @@
 		return list("ok" = FALSE, "message" = "The Discord bot did not answer. Try again in a minute, or use /approveme with your ckey in Discord.")
 	return list("ok" = !!answer["ok"], "message" = copytext(answer["message"], 1, 401))
 
+// Where to POST: WEBHOOK_ADDRESS + "/discord_verify", only when that address is
+// loopback or https. The request carries the webhook key and a live code, so it
+// never crosses a network in clear. Null otherwise.
+/proc/discord_verify_endpoint(address)
+	if(!istext(address) || length(address) > 2048)
+		return null
+	var/regex/safe = regex(@"^(https:/{2}[^\s/?#@]+|http:/{2}(127\.0\.0\.1|localhost|\[::1\])(:[0-9]+)?)(/[^\s?#]*)?$", "i")
+	if(!safe.Find(address))
+		return null
+	var/regex/trailing = regex(@"/+$")
+	address = trailing.Replace(address, "")
+	return address + "/discord_verify"
+
+// POST with the key in a header and ckey + code in the JSON body, so neither
+// secret is ever part of a URL that a proxy or access log could keep.
 /proc/discord_verify_send(ckey, code)
 	if(!webhook_enabled())
 		return list("ok" = FALSE, "message" = "This server is not connected to the Discord bot. Use /approveme with your ckey in Discord instead.")
-	var/query = "[config.webhook_address]?key=[url_encode(config.webhook_key)]&method=discord_verify&data=[url_encode(json_encode(list("ckey" = ckey, "code" = code)))]"
-	var/list/http = world.Export(query)
+	var/url = discord_verify_endpoint(config.webhook_address)
+	if(!url)
+		return list("ok" = FALSE, "message" = "Verifying from this server is not set up securely yet. Use /approveme in Discord instead.")
+	var/datum/http_request/request = new
+	request.prepare(RUSTG_HTTP_METHOD_POST, url, json_encode(list("ckey" = ckey, "code" = code)), list("Content-Type" = "application/json", "X-Webhook-Key" = config.webhook_key))
+	request.begin_async()
+	var/deadline = world.timeofday + 150
+	while(!request.is_complete())
+		if(world.timeofday > deadline || world.timeofday < deadline - 300) // midnight rollover
+			break
+		sleep(1)
 	var/body = null
-	if(islist(http) && http["CONTENT"])
-		body = file2text(http["CONTENT"])
+	if(request.is_complete())
+		var/datum/http_response/response = request.into_response()
+		if(response && !response.error)
+			body = response.body
 	return discord_verify_parse_answer(body)
 
 /client/verb/verify_discord()
