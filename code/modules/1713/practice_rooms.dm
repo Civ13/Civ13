@@ -9,14 +9,17 @@
 //
 // The rooms live on one extra level appended above the world while anyone
 // practises. That level is never saved or built on: a save closes every room
-// and removes the level first (begin_persistence_operation), an idle level is
-// removed after PRACTICE_IDLE_DROP, and while it exists world_z_budget refuses
-// every other new level, so it is always world.maxz and can be removed whole.
+// and removes the level first (begin_persistence_operation), the level is
+// removed as soon as the last player leaves, and while it exists world_z_budget
+// refuses every other new level, so it is always world.maxz and can be removed
+// whole. Every room is rebuilt from scratch when it is opened, so nothing a
+// player left behind reaches the next one.
 
 #define PRACTICE_ROOM_SIZE 12
 #define PRACTICE_ROOM_PITCH 14
 #define PRACTICE_MAX_ROOMS 8
-#define PRACTICE_IDLE_DROP (5 MINUTES)
+// Retry while a save holds the level (a save removes it itself).
+#define PRACTICE_IDLE_DROP (30 SECONDS)
 // A practice level is Gaia-sized at most. A 500 x 350 open-air plane measured
 // 0.3 s and 20 MiB to add (building_admission.dm); this one only exists while
 // someone practises and is removed before any save, so it never reaches a load.
@@ -111,6 +114,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (practice_room_z != world.maxz)
 		log_game("Practice level z [practice_room_z] is not the top level ([world.maxz]); kept.")
 		return FALSE
+	evacuate_level()
 	for (var/slot = 1 to capacity())
 		wipe_room(slot)
 		for (var/turf/T in slot_turfs(slot))
@@ -124,6 +128,15 @@ var/global/datum/practice_rooms/practice_rooms = new
 	world.maxz = z - 1
 	log_game("Practice level z [z] removed.")
 	return TRUE
+
+// Anyone still on the level (an admin ghost watching a room) is moved to the
+// first level, so removing the level never deletes a connected player's mob.
+/datum/practice_rooms/proc/evacuate_level()
+	var/turf/safe = locate(round(world.maxx / 2), round(world.maxy / 2), 1)
+	for (var/client/C in clients)
+		var/mob/M = C.mob
+		if (M && M.z == practice_room_z && safe)
+			M.forceMove(safe)
 
 /datum/practice_rooms/proc/schedule_idle_drop()
 	if (idle_timer)
@@ -163,10 +176,10 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/T in slot_turfs(slot))
+		// Always a fresh turf: blood, footprints and other marks on the old one go.
 		if (T.x == x1 || T.x == x2 || T.y == y1 || T.y == y2 || (T.x == split && T.y != y1 + 5))
-			if (!istype(T, /turf/wall/indestructable))
-				new /turf/wall/indestructable(T)
-		else if (!istype(T, /turf/floor/wood))
+			new /turf/wall/indestructable(T)
+		else
 			new /turf/floor/wood(T)
 	wall_bulk_placement = old_bulk
 	var/list/props = list()
@@ -213,8 +226,11 @@ var/global/datum/practice_rooms/practice_rooms = new
 			sessions -= key
 			break
 	wipe_room(S.slot)
+	// The last player out resets everything: the whole level goes now, and the
+	// next player gets a freshly built one. A save in progress removes it itself.
 	if (!sessions.len && practice_room_z)
-		schedule_idle_drop()
+		if (persistence_save_in_progress || !drop_level())
+			schedule_idle_drop()
 
 // Before every save: send everyone back to the lobby and remove the level.
 /datum/practice_rooms/proc/close_all(reason)

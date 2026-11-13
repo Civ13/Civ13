@@ -108,10 +108,26 @@ var/global/practice_probe_runtime_error = FALSE
 	H.forceMove(exit.loc)
 	practice_probe_check("exit/done", S.step_id() == "exit" && S.step_done("exit"))
 
+	// A second player keeps the level while the first one leaves.
+	var/datum/practice_session/S2 = new(R, 2, R.build_room(2))
+	R.sessions["2"] = S2
 	S.end(null)
-	practice_probe_check("end/freed", !R.sessions.len && !S.body)
+	practice_probe_check("end/freed", R.sessions.len == 1 && !S.body)
 	practice_probe_check("end/room_wiped", !(locate(/obj/item) in inside) && !(locate(/obj/structure/practice_dummy) in get_turf(D)))
+	practice_probe_check("end/level_kept_while_occupied", practice_room_z == 2 && world.maxz == 2)
 
+	// Reopening a room replaces every turf, so marks on the old floor are gone.
+	inside = locate(O[1] + 3, O[2] + 3, 2)
+	inside.name = "marked floor"
+	R.build_room(1)
+	var/turf/rebuilt = locate(O[1] + 3, O[2] + 3, 2)
+	practice_probe_check("room/rebuilt_fresh", istype(rebuilt, /turf/floor/wood) && rebuilt.name != "marked floor")
+	R.wipe_room(1)
+
+	S2.end(null)
+	practice_probe_check("end/last_out_drops_level", !R.sessions.len && world.maxz == 1 && !practice_room_z && !R.idle_timer)
+
+	R.ensure_level()
 	practice_probe_check("save/drops_level", practice_rooms_close_for_save() && world.maxz == 1 && !practice_room_z)
 	practice_probe_check("save/no_stale_turfs", !(null in turfs))
 	practice_probe_check("budget/growth_free_again", isnull(world_z_budget.error(2, "underground")) || !findtext(world_z_budget.error(2, "underground"), "practice room"))
