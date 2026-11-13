@@ -115,7 +115,7 @@
 	qdel(fixed)
 
 	// Wrong gun and filled slot.
-	var/obj/item/weapon/gun/projectile/pistol/luger/pistol = new(locate(4,2,1))
+	var/obj/item/weapon/gun/projectile/revolver/makeshift/pistol = new(locate(4,2,1))
 	var/obj/item/weapon/gun_component/action = new /obj/item/weapon/gun_component/ak_action(locate(2,2,1))
 	parts_check(pistol.firearm_install_block(action) == "this gun takes no modular parts", "non-modular guns refuse parts")
 	parts_check(G.firearm_install_block(action) == "the action slot is already filled", "a filled slot refuses a second part")
@@ -207,12 +207,24 @@
 				"vg" = "selfloading_firearms", "ptrd" = "selfloading_firearms", "pzb" = "selfloading_firearms",
 				"sks" = "selfloading_firearms", "gewehr43" = "selfloading_firearms", "svt" = "selfloading_firearms", "garand" = "selfloading_firearms",
 				"m1carbine" = "selfloading_firearms", "avtomat" = "selfloading_firearms", "vg5" = "selfloading_firearms", "ptrs" = "selfloading_firearms",
-				"svd" = "automatic_weapons", "vss" = "automatic_weapons", "m82" = "automatic_weapons", "bamr" = "automatic_weapons")
+				"svd" = "automatic_weapons", "vss" = "automatic_weapons", "m82" = "automatic_weapons", "bamr" = "automatic_weapons",
+				"makarov" = "automatic_weapons", "aps" = "automatic_weapons", "glock" = "automatic_weapons", "beretta" = "automatic_weapons", "jericho" = "automatic_weapons", "sig250" = "automatic_weapons", "p220" = "automatic_weapons", "pl14" = "automatic_weapons", "mp443" = "automatic_weapons", "deagle" = "automatic_weapons", "magnum44" = "automatic_weapons", "mckellen" = "automatic_weapons", "judge" = "automatic_weapons")
 			var/want_node = era_nodes[recipe_family] || "cartridge_ammo"
 			parts_check(R.node == want_node, "[recipe_name] is gated by [want_node] ([R.node])")
 			made += R.output_type
 	for(var/path in typesof(/obj/item/weapon/gun_component) - /obj/item/weapon/gun_component)
 		parts_check(path in made, "a fabricator makes [path]")
+	for(var/gun_path in typesof(/obj/item/weapon/gun))
+		var/obj/item/weapon/gun/receiver_path = gun_path
+		if(initial(receiver_path.firearm_named_by_parts))
+			parts_check(gun_path in made, "a fabricator makes [gun_path]")
+	// Long fabricator menus group gun parts by family.
+	parts_check(factory_recipe_group(factory_recipes["Glock frame"]) == "Glock parts" && factory_recipe_group(factory_recipes["Glock slide"]) == "Glock parts", "Glock recipes share the Glock parts group")
+	for(var/recipe_name in factory_recipes)
+		var/datum/factory_recipe/GR = factory_recipes[recipe_name]
+		if(!ispath(GR.output_type, /obj/item/weapon/gun_component) && !ispath(GR.output_type, /obj/item/weapon/gun))
+			parts_check(factory_recipe_group(GR) == "General", "[recipe_name] is in the General group")
+			break
 	parts_check(/obj/item/weapon/gun/projectile/submachinegun/ak74/receiver in made, "a fabricator makes the AK receiver")
 	parts_check(/obj/item/weapon/gun/projectile/submachinegun/m16/receiver in made, "a fabricator makes the AR receiver")
 	parts_check(/obj/item/weapon/gun/projectile/boltaction/gewehr98/receiver in made, "a fabricator makes the Mauser receiver")
@@ -242,7 +254,7 @@
 	var/obj/item/weapon/gun_component/ar_feed = M4.firearm_remove("feed", H)
 	parts_check(istype(ar_feed) && ar_feed.component_id == "ar/feed/556x45", "an AR magazine well comes off by hand")
 	var/obj/item/weapon/gun_component/ak_feed556 = new /obj/item/weapon/gun_component/ak_feed_556(locate(2,2,1))
-	parts_check(M4.firearm_install_block(ak_feed556) == "that part is for a different rifle family", "AK parts do not fit an AR")
+	parts_check(M4.firearm_install_block(ak_feed556) == "that part is for a different gun family", "AK parts do not fit an AR")
 	parts_hold(H, ar_feed)
 	parts_check(M4.firearm_install(ar_feed, H) && !M4.firearm_fire_block(), "the AR magazine well goes back in")
 	var/obj/item/weapon/gun/projectile/submachinegun/fallout_check = new /obj/item/weapon/gun/projectile/submachinegun/m16/fallout/service_rifle(locate(2,2,1))
@@ -292,7 +304,7 @@
 	K98.load_ammo(round765, H)
 	parts_check(round765 in K98.loaded, "a converted Kar98k loads a 7.65x53 round (bolt [K98.bolt_open], loaded [K98.loaded.len], round at [round765.loc])")
 	var/obj/item/weapon/gun_component/ak_bolt = new /obj/item/weapon/gun_component/ak_action(locate(2,2,1))
-	parts_check(K98.firearm_install_block(ak_bolt) == "that part is for a different rifle family", "AK parts do not fit a Mauser")
+	parts_check(K98.firearm_install_block(ak_bolt) == "that part is for a different gun family", "AK parts do not fit a Mauser")
 	qdel(ak_bolt)
 	parts_unload(K98)
 	H.drop_from_inventory(K98)
@@ -336,7 +348,7 @@
 		parts_check(A38.firearm_install(part, H), "Type 38 takes [part_type]")
 	parts_check(!A38.firearm_fire_block() && A38.caliber == "a77x58" && A38.ammo_type == /obj/item/ammo_casing/a77x58 && (/obj/item/ammo_magazine/arisaka99 in A38.good_mags), "a Type 38 converts to 7.7x58 with Type 99 clips")
 	var/obj/item/weapon/gun_component/mosin_part = new /obj/item/weapon/gun_component/mosin_action(locate(2,2,1))
-	parts_check(A38.firearm_install_block(mosin_part) == "that part is for a different rifle family", "Mosin parts do not fit an Arisaka")
+	parts_check(A38.firearm_install_block(mosin_part) == "that part is for a different gun family", "Mosin parts do not fit an Arisaka")
 	qdel(mosin_part)
 	H.drop_from_inventory(A38)
 	qdel(A38)
@@ -401,7 +413,49 @@
 		/obj/item/weapon/gun/projectile/leveraction/winchesterm1873/gold = list("a44", null, 14),
 		/obj/item/weapon/gun/projectile/leveraction/evansrepeater = list("a44", null, 28),
 		/obj/item/weapon/gun/projectile/leveraction/winchesterm1886 = list("a4570", null, 9),
-		/obj/item/weapon/gun/projectile/leveraction/cowboy_repeater = list("a357", null, 7))
+		/obj/item/weapon/gun/projectile/leveraction/cowboy_repeater = list("a357", null, 7),
+		/obj/item/weapon/gun/projectile/pistol/ww2/nambu = list("c8mmnambu", /obj/item/ammo_magazine/c8mmnambu, null),
+		/obj/item/weapon/gun/projectile/pistol/bergmann = list("c8mmnambu", /obj/item/ammo_magazine/bergmann, null),
+		/obj/item/weapon/gun/projectile/pistol/luger = list("a9x19", /obj/item/ammo_magazine/luger, null),
+		/obj/item/weapon/gun/projectile/pistol/waltherp38/silenced = list("a9x19", /obj/item/ammo_magazine/walther, null),
+		/obj/item/weapon/gun/projectile/pistol/browninghp = list("a9x19", /obj/item/ammo_magazine/browninghp, null),
+		/obj/item/weapon/gun/projectile/pistol/mauser = list("a762x25", /obj/item/ammo_magazine/mauser, null),
+		/obj/item/weapon/gun/projectile/pistol/borchardt = list("a765x25", /obj/item/ammo_magazine/borchardt, null),
+		/obj/item/weapon/gun/projectile/pistol/colthammerless = list("a32acp", /obj/item/ammo_magazine/colthammerless, null),
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908 = list("a380acp", /obj/item/ammo_magazine/colthammerless/a380acp, null),
+		/obj/item/weapon/gun/projectile/pistol/blackm1911/silenced = list("a45acp", /obj/item/ammo_magazine/m1911, null),
+		/obj/item/weapon/gun/projectile/pistol/sti2011 = list("a45acp", /obj/item/ammo_magazine/sti2011, null),
+		/obj/item/weapon/gun/projectile/pistol/tt30 = list("a762x25", /obj/item/ammo_magazine/tt30, null),
+		/obj/item/weapon/gun/projectile/pistol/makarov/silenced = list("a9x18", /obj/item/ammo_magazine/makarov, null),
+		/obj/item/weapon/gun/projectile/pistol/aps = list("a9x18", /obj/item/ammo_magazine/aps, null),
+		/obj/item/weapon/gun/projectile/pistol/glock17/standardized = list("a9x19", /obj/item/ammo_magazine/glock17, null),
+		/obj/item/weapon/gun/projectile/pistol/iogb7 = list("a9x19", /obj/item/ammo_magazine/glock17, null),
+		/obj/item/weapon/gun/projectile/pistol/tarus = list("a9x19", /obj/item/ammo_magazine/glock17, null),
+		/obj/item/weapon/gun/projectile/pistol/m9beretta/tan = list("a9x19", /obj/item/ammo_magazine/m9beretta, null),
+		/obj/item/weapon/gun/projectile/pistol/jericho941 = list("a9x19", /obj/item/ammo_magazine/jericho, null),
+		/obj/item/weapon/gun/projectile/pistol/sig250 = list("a9x19", /obj/item/ammo_magazine/sig250, null),
+		/obj/item/weapon/gun/projectile/pistol/p220/silenced = list("a45", /obj/item/ammo_magazine/p220, null),
+		/obj/item/weapon/gun/projectile/pistol/pl14 = list("a9x19", /obj/item/ammo_magazine/pl14, null),
+		/obj/item/weapon/gun/projectile/pistol/mp443 = list("a9x19", /obj/item/ammo_magazine/mp443, null),
+		/obj/item/weapon/gun/projectile/pistol/deagle = list("a50cal", /obj/item/ammo_magazine/deagle, null),
+		/obj/item/weapon/gun/projectile/pistol/deaglemagnum = list("a44magnum", /obj/item/ammo_magazine/deaglemagnum, null),
+		/obj/item/weapon/gun/projectile/revolver/nagant_revolver/silenced = list("a762x38", null, null),
+		/obj/item/weapon/gun/projectile/revolver/m1892 = list("a8x27", null, null),
+		/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper = list("a45", null, null),
+		/obj/item/weapon/gun/projectile/revolver/frontier = list("a44", null, null),
+		/obj/item/weapon/gun/projectile/revolver/colt1892 = list("a38", null, null),
+		/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized = list("a32", null, null),
+		/obj/item/weapon/gun/projectile/revolver/smithwesson = list("a32", null, null),
+		/obj/item/weapon/gun/projectile/revolver/sw3 = list("a32", null, null),
+		/obj/item/weapon/gun/projectile/revolver/snw10 = list("a38", null, null),
+		/obj/item/weapon/gun/projectile/revolver/enfieldno2 = list("a41", null, null),
+		/obj/item/weapon/gun/projectile/revolver/webley4 = list("a455", null, null),
+		/obj/item/weapon/gun/projectile/revolver/t26_revolver = list("c9mm_jap_revolver", null, null),
+		/obj/item/weapon/gun/projectile/revolver/derringer = list("a41", null, null),
+		/obj/item/weapon/gun/projectile/revolver/magnum44/silenced = list("a44magnum", null, null),
+		/obj/item/weapon/gun/projectile/revolver/graysonfito12 = list("a44magnum", null, null),
+		/obj/item/weapon/gun/projectile/revolver/taurus = list("a45", null, null),
+		/obj/item/weapon/gun/projectile/revolving/colt = list("a44", null, null))
 	for(var/gun_type in presets)
 		var/list/want = presets[gun_type]
 		var/obj/item/weapon/gun/projectile/P = new gun_type(locate(2,2,1))
@@ -473,7 +527,7 @@
 	parts_hold(H, b5)
 	parts_check(BT.firearm_install(b5, H) && BT.max_shells == 5 && (/obj/item/ammo_magazine/c8x50_5clip in BT.good_mags), "a Berthier with the M16 magazine holds five rounds")
 	var/obj/item/weapon/gun_component/lebel_part = new /obj/item/weapon/gun_component/lebel_action(locate(2,2,1))
-	parts_check(BT.firearm_install_block(lebel_part) == "that part is for a different rifle family", "Lebel parts do not fit a Berthier")
+	parts_check(BT.firearm_install_block(lebel_part) == "that part is for a different gun family", "Lebel parts do not fit a Berthier")
 	qdel(lebel_part)
 	H.drop_from_inventory(BT)
 	qdel(BT)
@@ -506,7 +560,16 @@
 		/obj/item/weapon/gun/projectile/semiautomatic/vintorez/receiver = list("VSS rifle (9x39mm)", /obj/item/weapon/gun_component/vss_action, /obj/item/weapon/gun_component/vss_barrel_9x39, /obj/item/weapon/gun_component/vss_feed_9x39, /obj/item/weapon/gun_component/vss_furniture_stock),
 		/obj/item/weapon/gun/projectile/semiautomatic/barrett/receiver = list("Barrett M82 rifle (.50 BMG)", /obj/item/weapon/gun_component/m82_action, /obj/item/weapon/gun_component/m82_barrel_50cal, /obj/item/weapon/gun_component/m82_feed_50cal, /obj/item/weapon/gun_component/m82_furniture_stock),
 		/obj/item/weapon/gun/projectile/semiautomatic/bamr/receiver = list("BAMR rifle (15x115mm)", /obj/item/weapon/gun_component/bamr_action, /obj/item/weapon/gun_component/bamr_barrel_15115, /obj/item/weapon/gun_component/bamr_feed_15115, /obj/item/weapon/gun_component/bamr_furniture_stock),
-		/obj/item/weapon/gun/projectile/leveraction/receiver = list("Lever-action rifle (.357 Magnum)", /obj/item/weapon/gun_component/lever_action, /obj/item/weapon/gun_component/lever_barrel_357, /obj/item/weapon/gun_component/lever_feed_357, /obj/item/weapon/gun_component/lever_furniture_stock))
+		/obj/item/weapon/gun/projectile/leveraction/receiver = list("Lever-action rifle (.357 Magnum)", /obj/item/weapon/gun_component/lever_action, /obj/item/weapon/gun_component/lever_barrel_357, /obj/item/weapon/gun_component/lever_feed_357, /obj/item/weapon/gun_component/lever_furniture_stock),
+		/obj/item/weapon/gun/projectile/pistol/nambu/receiver = list("Nambu pistol (8mm Nambu)", /obj/item/weapon/gun_component/nambu_action, /obj/item/weapon/gun_component/nambu_barrel_8mm, /obj/item/weapon/gun_component/nambu_feed_8mm, /obj/item/weapon/gun_component/nambu_furniture_grip),
+		/obj/item/weapon/gun/projectile/pistol/glock17/receiver = list("Glock pistol (9x19mm)", /obj/item/weapon/gun_component/glock_action, /obj/item/weapon/gun_component/glock_barrel_9x19, /obj/item/weapon/gun_component/glock_feed_9x19, /obj/item/weapon/gun_component/glock_furniture_grip),
+		/obj/item/weapon/gun/projectile/pistol/colthammerless/receiver = list("Colt Pocket Hammerless pistol (.380 ACP)", /obj/item/weapon/gun_component/colthammerless_action, /obj/item/weapon/gun_component/colthammerless_barrel_380acp, /obj/item/weapon/gun_component/colthammerless_feed_380acp, /obj/item/weapon/gun_component/colthammerless_furniture_grip),
+		/obj/item/weapon/gun/projectile/pistol/m1911/receiver = list("M1911 pistol (.45 ACP)", /obj/item/weapon/gun_component/m1911_action, /obj/item/weapon/gun_component/m1911_barrel_45acp, /obj/item/weapon/gun_component/m1911_feed_45acp_2011, /obj/item/weapon/gun_component/m1911_furniture_grip),
+		/obj/item/weapon/gun/projectile/pistol/deagle/receiver = list("Desert Eagle pistol (.44 Magnum)", /obj/item/weapon/gun_component/deagle_action, /obj/item/weapon/gun_component/deagle_barrel_44magnum, /obj/item/weapon/gun_component/deagle_feed_44magnum, /obj/item/weapon/gun_component/deagle_furniture_grip),
+		/obj/item/weapon/gun/projectile/revolver/peacemaker/receiver = list("Colt Single Action revolver (.44-40)", /obj/item/weapon/gun_component/colt_saa_action, /obj/item/weapon/gun_component/colt_saa_barrel_44, /obj/item/weapon/gun_component/colt_saa_feed_44, /obj/item/weapon/gun_component/colt_saa_furniture_grip),
+		/obj/item/weapon/gun/projectile/revolver/smithwesson/receiver = list("Smith & Wesson revolver (.38)", /obj/item/weapon/gun_component/smithwesson_action, /obj/item/weapon/gun_component/smithwesson_barrel_38, /obj/item/weapon/gun_component/smithwesson_feed_38, /obj/item/weapon/gun_component/smithwesson_furniture_grip),
+		/obj/item/weapon/gun/projectile/revolver/derringer/receiver = list("Derringer pistol (.41)", /obj/item/weapon/gun_component/derringer_action, /obj/item/weapon/gun_component/derringer_barrel_41, /obj/item/weapon/gun_component/derringer_feed_41, /obj/item/weapon/gun_component/derringer_furniture_grip),
+		/obj/item/weapon/gun/projectile/revolving/colt/receiver = list("Colt Revolving rifle (.44-40)", /obj/item/weapon/gun_component/revolving_action, /obj/item/weapon/gun_component/revolving_barrel_44, /obj/item/weapon/gun_component/revolving_feed_44, /obj/item/weapon/gun_component/revolving_furniture_stock))
 	for(var/receiver_type in builds)
 		var/list/plan = builds[receiver_type]
 		var/obj/item/weapon/gun/projectile/BR = new receiver_type(locate(2,2,1))
@@ -563,5 +626,5 @@
 	parts_check(loose.component_id == "ak/barrel/545x39" && loose.condition == 0.4 && loose.name == "AK barrel (5.45x39mm)", "loose part keeps identity and condition")
 	parts_check(parts_count() == 1, "no part is duplicated by save/load")
 
-	text2file("PASS: Every modular rifle family strips, converts, wears and survives save/load without duplication", "parts_result.txt")
+	text2file("PASS: Every modular rifle, pistol and revolver family strips, converts, wears and survives save/load without duplication", "parts_result.txt")
 	del(world)
