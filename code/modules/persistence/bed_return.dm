@@ -204,7 +204,8 @@
 	if(registered && registered.len && (registered.len != 1 || registered[1] != H)) return FALSE
 	return H && H.persistence_owner_ckey == account && !H.gc_destroyed && !H.gcDestroyed && H.stat != DEAD && !H.client && !H.key && get_turf(H)
 
+// A player who chose to sleep stays asleep on reconnect until they use Wake Up.
+// The refresh loop did not survive the save, so restart it here.
 /map_storage/proc/finish_character_return(mob/living/human/H)
-	if(persistence_bed_return_enabled() && H && H.inducedSSD && !is_protected_sleep_location(H) && !character_recovery_unready())
-		H.inducedSSD = FALSE
-		H.sleeping = 0
+	if(H && H.inducedSSD && H.stat != DEAD)
+		H.sleep_update()
