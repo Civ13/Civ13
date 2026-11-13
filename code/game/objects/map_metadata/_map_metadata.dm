@@ -797,6 +797,25 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 			current_loser = roundend_condition_def2army(roundend_condition_sides[defender][1])
 	return TRUE
 
+// Message for capture_step's message_id; maps with their own capture chain
+// override it. Built only when a capture is announced.
+/obj/map_metadata/proc/capture_message(id)
+	return null
+
+// capture_branch with a map-specific message and timer argument, for maps
+// whose copied capture chains differ only in wording and timers.
+/obj/map_metadata/proc/capture_step(attacker, defender, threshold, long_timer, timer_arg, message_id)
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[defender]]), roundend_condition_sides[attacker], roundend_condition_sides[defender], threshold, TRUE))
+		return FALSE
+	if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[attacker]]), roundend_condition_sides[defender], roundend_condition_sides[attacker], threshold))
+		if (last_win_condition != win_condition.hash)
+			current_win_condition = capture_message(message_id)
+			next_win = world.time + (long_timer ? long_win_time(timer_arg) : short_win_time(timer_arg))
+			announce_current_win_condition()
+			current_winner = roundend_condition_def2army(roundend_condition_sides[attacker][1])
+			current_loser = roundend_condition_def2army(roundend_condition_sides[defender][1])
+	return TRUE
+
 /obj/map_metadata/proc/has_occupied_base(side)
 
 	// hack
