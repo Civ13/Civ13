@@ -119,6 +119,9 @@
 	var/predator_starving_hunger = 150 // ...or when their hunger is below this
 	var/predator_chase_range = 6 // an unprovoked, fed predator gives up a person who gets this far away
 	var/tmp/mob/living/provoked_by // last mob that hurt this animal; it is always fought
+	var/food_distraction_time = 200 // ds a starving predator spends going after thrown meat instead of a person
+	var/tmp/obj/item/weapon/reagent_containers/food/snacks/distracted_by // thrown meat it left a person for
+	var/tmp/distracted_until = 0
 
 // Invalidate deferred work at the mutation, even if the link later returns to
 // its old value between worker checks. Save restoration has no pending worker.

@@ -1395,7 +1395,7 @@
 /mob/living/simple_animal/persistence_runtime_var(key)
 	// Targets, path caches and their control state belong to this AI run.
 	// following_mob is durable; see persistence_level_link_var above.
-	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step", "provoked_by"))
+	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step", "provoked_by", "distracted_by", "distracted_until"))
 		return TRUE
 	// Free movement switched on near players is not a saved opt-in.
 	if ((key == "npc_subtile_enabled" || key == "npc_subtile_species_enabled") && npc_subtile_auto_owned)

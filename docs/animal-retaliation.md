@@ -116,3 +116,17 @@ adjacent and its cooldown allows. Damage rolls across the whole
 (`animal_bite_zone`), and a bite heavy enough to break bone does so only
 `bite_fracture_chance` (20%) of the time. Native evidence:
 `tests/animal_combat/run.py` (`predator.dm`).
+
+### Distracting a starving predator with thrown meat
+
+When a person throws meat, fish or another non-vegetarian food and it lands
+on a turf, every starving natural predator within sight of it (up to its
+`aggro_vision_range`) that is chasing or watching a person turns to the food
+instead (`lure_starving_predators`, `distract_with_food`). It drops its target,
+walks to the food, eats it (`finish_eating(400)`, which leaves it fed) and so
+falls back to the fed-predator rule above. People are ignored while it goes for
+the food, for at most `food_distraction_time` (20 s), or until the food is
+picked up or gone. An animal anyone has hurt (`provoked_by` set) is never
+distracted, and hurting a distracted animal ends the distraction. Fed
+predators, plant food and animals that are not after a person are unaffected.
+The errand (`distracted_by`, `distracted_until`) is not saved.
