@@ -55,7 +55,7 @@ def validator_contract(source):
 class TraitFoundations(unittest.TestCase):
     def test_table_and_all_exclusions_both_orders(self):
         table = definitions(read(TRAITS))
-        self.assertEqual(len(table), 32)
+        self.assertEqual(len(table), 47)
         self.assertEqual(table['Baldness'][0], 0)
         for name, (_, excluded, _) in table.items():
             for other in excluded:
@@ -205,6 +205,32 @@ class TraitFoundations(unittest.TestCase):
             source = read(path)
             for needle in needles:
                 self.assertIn(needle, source, path)
+
+    def test_point_trait_pairs_balance_and_exclude(self):
+        table = definitions(read(TRAITS))
+        pairs = {'Quick Learner': ('Slow Learner', 3), 'Light Eater': ('Glutton', 2),
+                 'Deep Lungs': ('Asthmatic', 2), 'Thick Skinned': ('Low Pain Tolerance', 2),
+                 'Bookworm': ('Dyslexic', 2), 'Steady Hands': ('Butterfingers', 2),
+                 'Strong Back': ('Bad Back', 1)}
+        for perk, (drawback, cost) in pairs.items():
+            self.assertEqual(table[perk][0], cost)
+            self.assertEqual(table[drawback][0], -cost)
+            self.assertEqual(validate([perk, drawback], table, False), 'incompatible')
+            self.assertEqual(validate([perk], table), 'budget')
+            self.assertIsNone(validate([drawback], table))
+        self.assertEqual(table['Squeamish'][0], -1)
+        for a, b in (('Thick Skinned', 'Hardened Fighter'), ('Strong Back', 'Quartermaster'),
+                     ('Squeamish', 'Hardened Fighter')):
+            self.assertEqual(validate([a, b], table, False), 'incompatible')
+        self.assertIsNone(validate(['Quick Learner', 'Glutton', 'Bad Back'], table))
+        stats = read('code/game/mob/living/carbon/human/human_stats.dm')
+        self.assertIn('mood_modifier*med_mod', stats)
+        self.assertIn('wanderer_recover_stamina()', read(LIFE))
+        source = read(PLAYSTYLE)
+        for needle in ('find_trait("Quick Learner")', 'find_trait("Light Eater")', 'find_trait("Asthmatic")',
+                       'find_trait("Low Pain Tolerance")', 'proc/trait_study_time_mult()', 'find_trait("Bad Back")',
+                       'proc/trait_gore_mood_mult()', '/mob/living/human/adjust_mood(amount, cause = null)'):
+            self.assertIn(needle, source)
 
 
 if __name__ == '__main__':

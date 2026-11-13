@@ -157,3 +157,51 @@ var/ps_runtime_error = FALSE
 	W2.last_movement = -1
 	W2.wanderer_recover_stamina()
 	ps_check(W2.stats["stamina"][1] == 11, "resting wanderer gets no extra stamina")
+
+	var/mob/living/human/plain4 = ps_human(1, 1)
+	var/mob/living/human/QL = ps_human(10, 10, "Quick Learner")
+	ps_check(abs(QL.trait_skill_gain_mult("dexterity") - 1.15) < 0.001, "quick learner trains faster")
+	QL.traits = list("Slow Learner"); QL.traits_dirty = TRUE
+	ps_check(abs(QL.trait_skill_gain_mult("dexterity") - 0.85) < 0.001, "slow learner trains slower")
+	QL.traits = list("Light Eater"); QL.traits_dirty = TRUE
+	ps_check(QL.trait_food_mult() == 0.85, "light eater eats less")
+	QL.traits = list("Glutton"); QL.traits_dirty = TRUE
+	ps_check(QL.trait_food_mult() == 1.2, "glutton eats more")
+	QL.traits = list("Thick Skinned"); QL.traits_dirty = TRUE
+	ps_check(QL.trait_pain_mult() == 0.85, "thick skinned hurts less")
+	QL.traits = list("Low Pain Tolerance"); QL.traits_dirty = TRUE
+	ps_check(QL.trait_pain_mult() == 1.2, "low pain tolerance hurts more")
+	QL.traits = list("Bookworm"); QL.traits_dirty = TRUE
+	ps_check(QL.scholar_study_time(1) < plain4.scholar_study_time(1), "bookworm studies faster")
+	QL.traits = list("Dyslexic"); QL.traits_dirty = TRUE
+	ps_check(QL.scholar_study_time(1) > plain4.scholar_study_time(1), "dyslexic studies slower")
+	QL.traits = list("Steady Hands"); QL.traits_dirty = TRUE
+	ps_check(abs(QL.getStatCoeff("medical") - plain4.getStatCoeff("medical") * 1.15) < 0.001, "steady hands medical x1.15")
+	QL.traits = list("Butterfingers"); QL.traits_dirty = TRUE
+	ps_check(abs(QL.getStatCoeff("medical") - plain4.getStatCoeff("medical") * 0.9) < 0.001 && abs(QL.getStatCoeff("crafting") - plain4.getStatCoeff("crafting") * 0.9) < 0.001, "butterfingers crafting and medical x0.9")
+	QL.traits = list("Strong Back"); QL.traits_dirty = TRUE
+	ps_check(QL.pull_drag_mult() == 0.8, "strong back drags less")
+	QL.traits = list("Bad Back"); QL.traits_dirty = TRUE
+	ps_check(QL.pull_drag_mult() == 1.25, "bad back drags more")
+	QL.traits = list("Squeamish"); QL.traits_dirty = TRUE
+	ps_check(QL.trait_gore_mood_mult() == 2 && plain4.trait_gore_mood_mult() == 1, "squeamish doubles gore mood")
+	QL.traits = list("Deep Lungs"); QL.traits_dirty = TRUE
+	QL.stats["stamina"] = list(10, 100)
+	QL.wanderer_recover_stamina()
+	ps_check(abs(QL.stats["stamina"][1] - 10.5) < 0.001, "deep lungs recover faster ([QL.stats["stamina"][1]])")
+	QL.traits = list("Asthmatic"); QL.traits_dirty = TRUE
+	QL.stats["stamina"] = list(10, 100)
+	QL.wanderer_recover_stamina()
+	ps_check(abs(QL.stats["stamina"][1] - 9.5) < 0.001, "asthmatic recovers slower ([QL.stats["stamina"][1]])")
+	QL.stats["stamina"] = list(100, 100)
+	var/full = QL.diet_stamina_cap()
+	QL.stats["stamina"][1] = full
+	QL.wanderer_recover_stamina()
+	ps_check(QL.stats["stamina"][1] == full, "asthma never drains a full bar")
+	QL.traits = list("Squeamish"); QL.traits_dirty = TRUE
+	QL.mood = 50
+	QL.adjust_mood(-10, "seeing someone maimed")
+	ps_check(QL.mood == 30, "squeamish loses twice the mood at gore ([QL.mood])")
+	QL.mood = 50
+	QL.adjust_mood(-10, "something else")
+	ps_check(QL.mood == 40, "other mood losses are unchanged")
