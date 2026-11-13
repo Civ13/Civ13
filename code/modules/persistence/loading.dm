@@ -791,6 +791,7 @@
 	catch
 		transfer_round_state = null
 	transfer_loaded(transfer_round_state)
+	visited_loaded(transfer_round_state)
 	try
 		restore_dug_levels()
 	catch(var/exception/cave_error)

@@ -140,6 +140,7 @@
 	for(var/A = 1, A <= world.maxz, A++)
 		if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		saving_z = A
+		saving_skipped_wildlife = list()
 		saving_unattended = persistence_save_unattended()
 		// Freeze this level's players only while it is captured (restart_transaction.dm).
 		persistence_freeze_level(A)
@@ -230,6 +231,8 @@
 				log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
 		drain_moving_save_roster(savefile)
 		sweep_uncaptured_animals(savefile)
+		if(saving_skipped_wildlife.len)
+			log_startup_progress("	Z-level [A]: left out [saving_skipped_wildlife.len] wild animals where no player has been.")
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		drain_human_save_roster(savefile, operation)
 #endif
@@ -285,6 +288,8 @@
 	// Transfer effects applied in memory, so the committed save can confirm them.
 	var/list/transfer_capture = transfer_capture(generation)
 	if(transfer_capture) round_state["transfer"] = transfer_capture
+	var/list/visited = visited_capture()
+	if(visited) round_state["visited"] = visited
 	round_state["saved_at"] = persistence_save_stamp()
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
@@ -363,6 +368,8 @@
 	if(!A.should_save)
 		return 0
 	if(istype(A, /obj/map_metadata))
+		return 0
+	if(ismob(A) && save_skips_wildlife(A))
 		return 0
 	for(var/ignored in ignore_types)
 		if(istype(A, ignored))
@@ -759,7 +766,7 @@
 	return T && T.z != saving_z
 
 /map_storage/proc/level_link_target_saved(atom/movable/target)
-	if(!target.should_save || istype(target, /obj/map_metadata))
+	if(!target.should_save || istype(target, /obj/map_metadata) || (ismob(target) && save_skips_wildlife(target)))
 		return FALSE
 	for(var/ignored in ignore_types)
 		if(istype(target, ignored))
@@ -1939,7 +1946,7 @@
 /map_storage/proc/plain_cell_fields(turf/T)
 	if(!T.should_save || T.persistence_export_frame || !istype(T.loc, /area)) return null
 	for(var/atom/movable/M in T)
-		if(M.loc != T || !M.should_save) continue
+		if(M.loc != T || !M.should_save || (ismob(M) && save_skips_wildlife(M))) continue
 		var/ignored = FALSE
 		for(var/type in ignore_types)
 			if(istype(M, type))
