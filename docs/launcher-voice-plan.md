@@ -3,6 +3,12 @@
 Tracking issue: [#5122](https://github.com/Civ13/Civ13/issues/5122).
 Reviewed 2026-11-13 against master a504fad4828e50ce57ed6c2b7da45848b6f04e6c.
 
+## Mandatory architecture: DiscordPHP
+
+**DiscordPHP must be used for this implementation**, per the owner's explicit requirement. The intended server/control integration is PHP + DiscordPHP: identity/session coordination and Discord-facing orchestration through supported APIs. Do not substitute a separate bot library or Python Discord implementation.
+
+The launcher/native Social SDK companion remains the proposed local microphone/audio boundary, not a replacement for DiscordPHP. DiscordPHP's bot voice support is not automatically a Social SDK player-voice binding. Before implementation, verify which lobby/auth/control operations DiscordPHP and Discord's supported API actually expose, identify any required DiscordPHP extension, and document the boundary. No claim is made that the current PHP package already supports Social SDK player calls. Never put bot credentials in the player launcher.
+
 ## Scope and stopping rule
 
 Deliver the existing native companion's missing host endpoint in a focused source
