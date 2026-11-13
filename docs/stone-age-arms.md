@@ -23,3 +23,6 @@ Every crafted item below is limited to the Stone and Bronze Ages (recipe field 1
 
 Knapping (hammerstone on flint) adds "Hand axe" (10 s, 30% fail) and "Hide scraper" (5 s, 15% fail)
 when the knapper's research allows them.
+
+The knapped flint knife (`/obj/item/weapon/material/kitchen/utensil/knife/flint`, in `flint_mining.dm`)
+uses the `flint_knife` state from the same DMI with material tinting off, and the existing knife in-hands.
