@@ -42,7 +42,12 @@ class Coverage(unittest.TestCase):
 
     def test_no_free_basics_only_research_essentials(self):
         _, mappings, basics, _, _ = research_contract(files(), canon)
-        self.assertEqual(basics, set())
+        # Only the campfire is free: a new character's first fire (Val, 2026-11-13).
+        self.assertEqual(basics, {'/obj/structure/oven/fireplace'})
+        self.assertNotIn('/obj/structure/oven/fireplace', mappings)
+        campfire = record(output=canon('/obj/structure/oven/fireplace'))
+        annotate_research([campfire], files(), canon)
+        self.assertEqual((campfire['research_status'], campfire['research_nodes']), ('basic', []))
         self.assertEqual(mappings['/obj/item/stack/material/rope'], 'basic_tools')
         self.assertEqual(mappings['/obj/item/stack/material/stonebrick'], 'brickmaking')
         self.assertEqual(mappings['/obj/structure/researchdesk'], 'basic_tools')
@@ -59,7 +64,7 @@ class Coverage(unittest.TestCase):
 
     def test_runtime_exempts_only_research_essentials_from_manuals(self):
         gate = files()[GATE_SOURCE]
-        self.assertIn('var/global/list/basic_crafting_recipes = list()', gate)
+        self.assertIn('var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")', gate)
         self.assertIn('if (is_research_essential_recipe(result_path_string))\n\t\treturn crafting_node_world_allowed(H.civilization, node_id)', gate)
         self.assertIn('ispath(path, N.prototype_type)', gate)
 
