@@ -887,6 +887,15 @@ var/global/datum/persistence_admission_identity
 	var/diagnostic_phase = "admitted"
 	var/diagnostic_save_id
 	var/diagnostic_generation
+	// Stall watchdog (save_watchdog.dm). world.time of the last save work and
+	// of the last finished phase; abort_reason makes the next work check throw;
+	// abandoned marks an operation the watchdog released, so its proc, if it
+	// ever wakes, stops without touching a later save's state.
+	var/progress_at = 0
+	var/phase_at = 0
+	var/last_phase = "admitted"
+	var/abort_reason
+	var/abandoned = FALSE
 	var/datum/save_debug_recovery/debug_recovery
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
@@ -1020,6 +1029,8 @@ var/global/datum/persistence_admission_identity
 
 /datum/persistence_world_operation/New()
 	..()
+	progress_at = world.time
+	phase_at = world.time
 	admission_identity = new /datum
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
@@ -1214,6 +1225,11 @@ var/global/world_save_notice_started = null
 			map_storage.last_error = null
 		map_storage.last_export_error = null
 	catch(var/exception/e)
+		// Released by the stall watchdog: its cleanup and report already ran,
+		// and a later save may own the bookkeeping now.
+		if(operation.abandoned)
+			world.log << "Abandoned world save stopped: [e] on [e.file]:[e.line]"
+			return 0
 		var/cleanup_ok = TRUE
 		if(debug_policy)
 			cleanup_ok = map_storage.debug_cleanup_owned(operation)

@@ -1831,6 +1831,11 @@ SUITES = {
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
+    # Save stall watchdog wiring; the native probe tests/save_watchdog/run.py runs by hand.
+    'save_watchdog': {'files': ('tests/save_watchdog/test_save_watchdog.py',),
+        'paths': ('tests/save_watchdog/', 'code/modules/persistence/save_watchdog.dm'),
+        'shared_paths': ('code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+            'civ13.dme', 'tests/save_movement/source_adapter.py')},
     # Server Revision verb and admin Status line; native_server_build.py runs by hand.
     'server_build': {'files': ('tests/server_build/test_server_build.py',),
         'paths': ('tests/server_build/', 'code/modules/server_build/'),
