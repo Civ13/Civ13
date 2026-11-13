@@ -96,8 +96,9 @@ class PartyTrainTests(unittest.TestCase):
         self.assertIn(OFFICE + '/ex_act(severity)\n\treturn', TRAIN)
 
     def test_trails_never_lead_to_the_rail_yard(self):
-        choices = proc(read('code/modules/persistence/region_trails.dm'), '/obj/structure/region_gate/trail_marker/proc/peer_choices')
-        self.assertIn('if(peer["kind"] == "RAILYARD") continue', choices)
+        trails = read('code/modules/persistence/region_trails.dm')
+        self.assertIn('return region_trail_peer_choices()', proc(trails, '/obj/structure/region_gate/trail_marker/proc/peer_choices'))
+        self.assertIn('if(peer["kind"] == "RAILYARD") continue', proc(trails, '/proc/region_trail_peer_choices'))
 
     def test_closed_until_every_material_is_delivered(self):
         closed = proc(TRAIN, OFFICE + '/closed_reason')
@@ -137,7 +138,7 @@ class RailYardTests(unittest.TestCase):
 
     def test_party_trips_arrive_at_the_berth_or_the_station(self):
         arrive = proc(TRAVEL, '/proc/region_travel_arrive')
-        self.assertLess(arrive.index('party_train_arrival_turf(P) || T'), arrive.index('region_travel_build(P, at)'))
+        self.assertLess(arrive.index('party_train_arrival_turf(P) ||'), arrive.index('region_travel_build(P, at)'))
         self.assertIn('H.party_train_party = P["party"]', proc(TRAVEL, '/proc/region_travel_build'))
         turf = proc(TRAIN, '/proc/party_train_arrival_turf')
         self.assertIn('party_train_berth_of(party) || party_train_assign_berth(party)', turf)
