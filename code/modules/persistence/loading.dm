@@ -614,6 +614,10 @@
 				var/baseline = sparse["turf"]
 				// Saved cells' types from the preflight, as for a full level below.
 				var/list/sparse_grid = validated_turf_grid(z)
+				// A plain cell takes its template's type (functions.dm).
+				var/list/plain = sparse_plain_level(F, z, sparse)
+				var/list/plain_cells = plain ? plain["cells"] : null
+				var/list/plain_templates = plain ? plain["templates"] : null
 				for(var/y = 1, y <= world.maxy, y++)
 					var/list/columns = cells["[y]"]
 					var/next = 1
@@ -624,8 +628,14 @@
 							var/saved_type = sparse_grid ? sparse_grid[(y - 1) * world.maxx + x] : null
 							if(!saved_type) saved_type = level_entry_value(F, F["/map/[z]/[y]/[x]"], "type")
 							T.ChangeTurf(saved_type, FALSE, FALSE)
-						else if(T.type != baseline)
-							T.ChangeTurf(baseline, FALSE, FALSE)
+							continue
+						var/plain_template = plain_cells ? plain_cells[(y - 1) * world.maxx + x] : 0
+						var/unsaved_type = baseline
+						if(plain_template)
+							var/list/template = plain_templates[plain_template]
+							unsaved_type = template["type"]
+						if(T.type != unsaved_type)
+							T.ChangeTurf(unsaved_type, FALSE, FALSE)
 					TICK_CHECK
 				continue
 			// The preflight's turf types (full walk or trusted record) spare a read
@@ -702,7 +712,7 @@
 			// A ground level's unsaved cells were plain turfs: restore them the way
 			// Load_Entry restores a turf entry that holds only its type.
 			if(sparse_level && sparse_level["kind"] == "ground")
-				restore_sparse_ground_cells(B, sparse_cells_saved)
+				restore_sparse_ground_cells(B, sparse_cells_saved, sparse_plain_level(savefile, B, sparse_level))
 			// Every floor of the level is placed and its fields restored: rebuild
 			// each icon once before after_load adds snow and irrigation overlays.
 			refresh_deferred_floor_icons_level(B)
@@ -1122,8 +1132,15 @@ var/global/persistence_boot_build_identity = persistence_build_identity()
 			var/list/turf_grid = new /list(world.maxx * world.maxy)
 			if(sparse)
 				var/baseline_turf = sparse["turf"]
+				// A plain cell holds its template's type (functions.dm).
+				var/list/plain = sparse_plain_level(F, z, sparse)
+				var/list/plain_cells = plain ? plain["cells"] : null
+				var/list/plain_types = list()
+				if(plain)
+					for(var/list/template in plain["templates"]) plain_types += template["type"]
 				for(var/cell_index = 1, cell_index <= turf_grid.len, cell_index++)
-					turf_grid[cell_index] = baseline_turf
+					var/plain_template = plain_cells ? plain_cells[cell_index] : 0
+					turf_grid[cell_index] = plain_template ? plain_types[plain_template] : baseline_turf
 			validated_turf_grids["[z]"] = turf_grid
 			if(!sparse)
 				F.cd = "/map"
@@ -2253,7 +2270,11 @@ var/global/persistence_memory_probe_error
 // Unsaved cells of a sparse ground level held the baseline turf with every
 // saved field at its default; constructors may have changed some (random
 // states), so put the defaults back and queue each turf's after_load.
-/map_storage/proc/restore_sparse_ground_cells(z, list/cells)
+// A plain cell (functions.dm) is restored as Load_Entry restores a turf entry
+// with no contents and its template's fields.
+/map_storage/proc/restore_sparse_ground_cells(z, list/cells, list/plain)
+	var/list/plain_cells = plain ? plain["cells"] : null
+	var/list/plain_templates = plain ? plain["templates"] : null
 	for(var/y = 1, y <= world.maxy, y++)
 		var/list/columns = cells["[y]"]
 		var/next = 1
@@ -2262,6 +2283,11 @@ var/global/persistence_memory_probe_error
 				next++
 				continue
 			var/turf/T = locate(x, y, z)
+			var/plain_template = plain_cells ? plain_cells[(y - 1) * world.maxx + x] : 0
+			if(plain_template)
+				T = restore_plain_cell(T, plain_templates[plain_template])
+				all_loaded += T
+				continue
 			var/list/default_fields = T.persistence_field_allowlist()
 			for(var/v in default_fields)
 				if(!persistence_type_vars(T)[v] || persistence_runtime_field(T, v)) continue
@@ -2272,3 +2298,46 @@ var/global/persistence_memory_probe_error
 			T.persistence_import_fields(list("type"))
 			all_loaded += T
 		TICK_CHECK
+
+
+// Load_Entry's turf path plus load_entry_fields for a turf entry whose content
+// list was empty and whose fields are the template's.
+/map_storage/proc/restore_plain_cell(turf/T, list/template)
+	var/type = template["type"]
+	var/list/fields = template["fields"]
+	var/x = T.x
+	var/y = T.y
+	var/z = T.z
+	T.activate_reserved_lighting()
+	if(T.type != type)
+		T.ChangeTurf(type, FALSE, FALSE)
+		T = locate(x, y, z)
+	T.activate_reserved_lighting()
+	if(istype(T, /turf/floor))
+		var/turf/floor/restored_floor = T
+		restored_floor.irrigation_prepare_load()
+	T.weather_snow = 0
+	T.snowfall_ground_icon()
+	for(var/obj/ob in T.contents.Copy())
+		if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay) || istype(ob, /atom/movable/lighting_fullbright))
+			continue
+		if(is_loaded_validated_roof(ob))
+			continue
+		if(ob.loc == T)
+			qdel(ob)
+	var/list/type_vars = persistence_type_vars(T)
+	for(var/v in fields)
+		if(T.persistence_runtime_var(v)) continue
+		if(!type_vars[v]) throw EXCEPTION("Plain cell field [v] is not a variable of [type]")
+		T.vars[v] = fields[v]
+	var/list/default_fields = T.persistence_field_allowlist()
+	for(var/v in default_fields)
+		if((v in fields) || !type_vars[v] || persistence_runtime_field(T, v)) continue
+		var/default_value = initial(T.vars[v])
+		if(persistence_default_scalar(default_value) && T.vars[v] != default_value)
+			T.vars[v] = default_value
+	var/list/import_fields = list("type", "content") + fields
+	T.persistence_reset_omitted_fields(import_fields)
+	T.persistence_import_fields(import_fields)
+	T.sync_fullbright_coverage()
+	return T

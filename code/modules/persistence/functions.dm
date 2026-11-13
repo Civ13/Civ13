@@ -1973,6 +1973,10 @@ var/global/world_save_notice_started = null
 		return FALSE
 	return TRUE
 
+// Plain cells (sparse_plain_level below) mark their header with this turf.
+#define SPARSE_PLAIN_MARKER "plain"
+#define SPARSE_PLAIN_TEMPLATE_LIMIT 255
+
 // The sparse header of a level index, or null for a full level. Presence is
 // checked through the directory: reading an absent savefile key creates it.
 /map_storage/proc/sparse_level_header(savefile/F)
@@ -1983,7 +1987,12 @@ var/global/world_save_notice_started = null
 	F.cd = "/"
 	for(var/key in list("kind", "turf", "cells"))
 		if(!(key in keys)) throw EXCEPTION("Incomplete sparse level header")
-	var/list/header = list("kind" = F["/sparse/kind"], "turf" = F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null)
+	// A level with plain cells (sparse_plain_level) names its baseline in
+	// "baseline" and writes "plain" as its turf, which builds that predate
+	// plain cells reject as an invalid header instead of misreading the level.
+	var/plain = ("plain" in keys)
+	if(plain && (F["/sparse/turf"] != SPARSE_PLAIN_MARKER || !("baseline" in keys))) throw EXCEPTION("Invalid sparse level header")
+	var/list/header = list("kind" = F["/sparse/kind"], "turf" = plain ? F["/sparse/baseline"] : F["/sparse/turf"], "cells" = F["/sparse/cells"], "zone" = ("zone" in keys) ? F["/sparse/zone"] : null, "plain" = plain)
 	if(!istext(header["kind"]) || !ispath(header["turf"], /turf) || !isnum(header["cells"]) || header["cells"] < 0 || header["cells"] != round(header["cells"]) || (!isnull(header["zone"]) && !istext(header["zone"]))) throw EXCEPTION("Invalid sparse level header")
 	return header
 
@@ -2023,6 +2032,50 @@ var/global/world_save_notice_started = null
 	F.cd = "/"
 	if(header && header["cells"] != count) throw EXCEPTION("Sparse level cell count differs from its header on z=[z]")
 	return cells
+
+// Plain cells: an empty turf of a sparse ground level whose saved fields are
+// all scalars is written as one of the level's templates (type, zone and
+// fields) in a run-length grid instead of as a full entry. On Gaia on
+// 2026-11-13 these were 169,272 of the 169,513 turf entries of level 1 and
+// 96,703 of 112,366 on level 2, in 9 and 36 distinct templates.
+
+// The level's plain cells, or null when it has none: "templates" lists each
+// template as list("type", "zone", "fields"), and "cells" holds one template
+// number (0 for none) per cell, row by row. Shape is checked here; each caller
+// checks a plain cell is not also a saved cell.
+/map_storage/proc/sparse_plain_level(savefile/F, z, list/header)
+	if(!header || !header["plain"]) return null
+	if(header["kind"] != "ground") throw EXCEPTION("Plain cells on a sparse level that is not ground on z=[z]")
+	F.cd = "/sparse/plain"
+	var/list/keys = F.dir.Copy()
+	F.cd = "/"
+	if(!("count" in keys) || !("runs" in keys)) throw EXCEPTION("Incomplete plain cells on z=[z]")
+	var/count = F["/sparse/plain/count"]
+	if(!isnum(count) || count < 1 || count > SPARSE_PLAIN_TEMPLATE_LIMIT || count != round(count)) throw EXCEPTION("Invalid plain template count on z=[z]")
+	var/list/templates = list()
+	for(var/i = 1, i <= count, i++)
+		var/type = F["/sparse/plain/[i]/type"]
+		var/zone = F["/sparse/plain/[i]/zone"]
+		var/list/fields = F["/sparse/plain/[i]/fields"]
+		// A template has a zone exactly when the level names its baseline zone.
+		if(!ispath(type, /turf) || !islist(fields) || (istext(header["zone"]) ? !istext(zone) || !length(zone) : !isnull(zone))) throw EXCEPTION("Invalid plain template [i] on z=[z]")
+		for(var/key in fields)
+			if(!istext(key) || !length(key) || !persistence_default_scalar(fields[key])) throw EXCEPTION("Invalid plain template [i] field on z=[z]")
+			if(key in list("type", "content", "loc", "locs", "pixloc", "contents", "vars", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")) throw EXCEPTION("Structural plain template [i] field on z=[z]")
+		templates += list(list("type" = type, "zone" = zone, "fields" = fields))
+	var/list/runs = F["/sparse/plain/runs"]
+	var/total = world.maxx * world.maxy
+	if(!islist(runs) || !runs.len || runs.len % 2) throw EXCEPTION("Invalid plain cell runs on z=[z]")
+	var/list/cells = new /list(total)
+	var/cell = 0
+	for(var/i = 1, i <= runs.len, i += 2)
+		var/template = runs[i]
+		var/length = runs[i + 1]
+		if(!isnum(template) || template < 0 || template > count || template != round(template) || !isnum(length) || length < 1 || length != round(length) || cell + length > total) throw EXCEPTION("Invalid plain cell run on z=[z]")
+		for(var/n = 1, n <= length, n++)
+			cells[++cell] = template
+	if(cell != total) throw EXCEPTION("Plain cell runs do not cover z=[z]")
+	return list("templates" = templates, "cells" = cells)
 
 // Every turf reference a level's grid holds, for reachability walks. Full
 // levels list every cell; sparse levels list their saved cells only, since

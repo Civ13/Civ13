@@ -188,16 +188,28 @@
 		// never constructed or woken, so it is the baseline without the field
 		// comparison that cost an empty Gaia level several seconds per save.
 		var/cell_asleep = sparse_kind == "building" ? text2path("/proc/building_cell_asleep") : null
+		// Plain cells (functions.dm): empty ground turfs whose saved fields are
+		// scalars go into a run-length grid of templates instead of full entries.
+		// Without zone export (fixtures) templates carry no zone.
+		var/datum/plain_cell_writer/plain = sparse_kind == "ground" && sparse_area && (!sparse_zone || sparse_anchors) && !debug_policy ? new /datum/plain_cell_writer(src, sparse_anchors) : null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		plain = null // Spatial candidate checks read every saved turf's density.
+#endif
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
 				if(sparse_turf && ((cell_asleep && T.type == sparse_turf && T.loc == sparse_area && !T.contents.len && call(cell_asleep)(T)) || sparse_baseline_cell(T, sparse_turf, sparse_area)))
 					if(turf_grid) turf_grid += sparse_turf
+					if(plain) plain.add(0)
 					// A zone with no saved turf (an untouched sky level) still
 					// needs an anchor cell, or its area row is never written.
 					if(sparse_anchors && !sparse_anchors[sparse_zone]) sparse_anchors[sparse_zone] = list("x" = T.x, "y" = T.y, "z" = T.z)
 					continue // Regenerated on load; yields once per row below.
+				if(plain && plain.add_turf(T))
+					if(turf_grid) turf_grid += T.type
+					continue
+				if(plain) plain.add(0)
 				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
 					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
@@ -212,7 +224,10 @@
 			if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		if(sparse_turf)
 			savefile["/sparse/cells"] << sparse_cells
-			log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
+			if(plain && plain.write(savefile, sparse_turf))
+				log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells saved in full, [plain.plain_cells] as [plain.templates.len] plain templates, the rest [sparse_turf].")
+			else
+				log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
 		drain_moving_save_roster(savefile)
 		sweep_uncaptured_animals(savefile)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
@@ -1916,3 +1931,95 @@
 			human_record["slots_checked"] = TRUE
 	files = list()
 #endif
+
+// The fields a full entry of T would hold, when T can be a plain cell instead
+// (sparse_plain_level, functions.dm): nothing inside it is saved and every
+// field the entry would write is a scalar. Mirrors BuildVarDirectory's field
+// rule, as sparse_turf_at_baseline does for the baseline.
+/map_storage/proc/plain_cell_fields(turf/T)
+	if(!T.should_save || T.persistence_export_frame || !istype(T.loc, /area)) return null
+	for(var/atom/movable/M in T)
+		if(M.loc != T || !M.should_save) continue
+		var/ignored = FALSE
+		for(var/type in ignore_types)
+			if(istype(M, type))
+				ignored = TRUE
+				break
+		if(!ignored) return null
+	var/list/fields = list()
+	var/list/default_fields = T.persistence_field_allowlist()
+	var/list/type_vars = persistence_type_vars(T)
+	for(var/v in T.get_saved_vars())
+		if(persistence_runtime_field(T, v)) continue
+		switch(v)
+			if("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey")
+				continue
+		if(!type_vars[v]) continue
+		var/raw = T.vars[v]
+		if(!persistence_default_scalar(raw)) return null
+		if(default_fields && (v in default_fields) && raw == initial(T.vars[v])) continue
+		// Type paths stay in full entries: save_to_map reads template fields
+		// as one list, where a path it was not compiled with cannot be read.
+		if(ispath(raw)) return null
+		fields[v] = raw
+	return fields
+
+// Collects one level's plain cells as the save walks it, row by row.
+/datum/plain_cell_writer
+	var/map_storage/storage
+	var/list/anchors
+	var/list/templates = list()
+	var/list/template_numbers = list()
+	var/list/runs = list()
+	var/run_template = -1
+	var/run_length = 0
+	var/plain_cells = 0
+
+/datum/plain_cell_writer/New(map_storage/S, list/zone_anchors)
+	storage = S
+	anchors = zone_anchors
+
+/datum/plain_cell_writer/proc/add(template)
+	if(template == run_template)
+		run_length++
+		return
+	if(run_length) runs += list(run_template, run_length)
+	run_template = template
+	run_length = 1
+
+/datum/plain_cell_writer/proc/add_turf(turf/T)
+	var/list/fields = storage.plain_cell_fields(T)
+	if(!fields) return FALSE
+	var/area/zone_area = T.loc
+	var/list/parts = list("[T.type]", "\ref[zone_area]")
+	for(var/key in fields)
+		var/value = fields[key]
+		parts += "[key]=[isnull(value) ? "x" : isnum(value) ? "n[num2text(value, 12)]" : ispath(value) ? "p[value]" : "t[value]"]"
+	var/key = jointext(parts, "|")
+	var/number = template_numbers[key]
+	if(!number)
+		if(templates.len >= SPARSE_PLAIN_TEMPLATE_LIMIT) return FALSE
+		templates += list(list("type" = T.type, "zone" = anchors ? storage.capture_zone_descriptor(zone_area) : null, "fields" = fields))
+		number = templates.len
+		template_numbers[key] = number
+	var/list/template = templates[number]
+	// A zone whose every cell is plain still needs an anchor for its area row.
+	if(anchors && !anchors[template["zone"]]) anchors[template["zone"]] = list("x" = T.x, "y" = T.y, "z" = T.z)
+	add(number)
+	plain_cells++
+	return TRUE
+
+/datum/plain_cell_writer/proc/write(savefile/F, baseline)
+	if(!plain_cells) return FALSE
+	if(run_length) runs += list(run_template, run_length)
+	run_length = 0
+	F["/sparse/turf"] << SPARSE_PLAIN_MARKER
+	F["/sparse/baseline"] << baseline
+	F["/sparse/plain/count"] << templates.len
+	for(var/i = 1, i <= templates.len, i++)
+		var/list/template = templates[i]
+		F["/sparse/plain/[i]/type"] << template["type"]
+		F["/sparse/plain/[i]/zone"] << template["zone"]
+		F["/sparse/plain/[i]/fields"] << template["fields"]
+	F["/sparse/plain/runs"] << runs
+	return TRUE

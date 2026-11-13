@@ -364,6 +364,15 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		var/list/sparse_cells = sparse ? sparse_level_cells(F, z, sparse) : null
 		var/baseline_zone = sparse ? sparse["zone"] : null
 		if(sparse && sparse["cells"] < world.maxx * world.maxy && (!istext(baseline_zone) || !validated_zones[baseline_zone])) throw EXCEPTION("Sparse level names no saved baseline zone")
+		// A plain cell belongs to its template's zone (functions.dm).
+		var/list/plain = sparse_plain_level(F, z, sparse)
+		var/list/plain_cells = plain ? plain["cells"] : null
+		var/list/plain_zones = list()
+		if(plain)
+			for(var/list/template in plain["templates"])
+				var/template_zone = template["zone"]
+				if(!istext(template_zone) || !validated_zones[template_zone]) throw EXCEPTION("Plain template names no saved zone")
+				plain_zones += template_zone
 		var/captured = 0
 		if("zone_capture" in header_keys)
 			F.cd = "/zone_capture"
@@ -383,9 +392,11 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 			var/next_column = 1
 			for(var/x = 1, x <= world.maxx, x++)
 				if(sparse)
+					var/plain_template = plain_cells ? plain_cells[(y - 1) * world.maxx + x] : 0
 					if(!columns || next_column > columns.len || columns[next_column] != x)
-						validated_zone_grid += baseline_zone
+						validated_zone_grid += plain_template ? plain_zones[plain_template] : baseline_zone
 						continue
+					if(plain_template) throw EXCEPTION("Plain cell is also saved at [x],[y],[z]")
 					next_column++
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(isnull(ref)) throw EXCEPTION("Missing captured turf coordinate")
