@@ -275,7 +275,7 @@ internal sealed partial class LauncherWindow : Form {
                     ("Update offline regions", "update-offline"), ("Save, update and restart", "deploy") })
                 all.Controls.Add(HostButton(text, () => GroupAction(action, text), HostGate.All));
             all.Controls.Add(MoreButton(
-                ("Update (stopped regions only)", () => GroupAction("update", "Update"), HostGate.All),
+                ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
@@ -893,10 +893,12 @@ internal sealed partial class LauncherWindow : Form {
         if (host?.Control is not { } control || control.Group == null) return;
         var target = region == null ? "every region" : "region " + region;
         var question = action switch {
-            "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped region" : target + " (it must be stopped)")}?",
+            "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped or asleep region" : target + " (it must be stopped or asleep)")}? " +
+                "An asleep region keeps sleeping while the update builds beside it, then is stopped from its save and starts on the new build at its next wake.",
             "update-offline" => "Update every region that is not running to the latest master, so each is ready when it starts? " +
                 "Running regions are left alone: nobody is kicked and no world is stopped or woken. Stopped regions build it one at a time " +
-                "and install it; asleep regions build it and install it while they sleep. The status line shows each region's progress.",
+                "and install it; asleep regions build it while they sleep, then are stopped from their save and start on it at their next wake. " +
+                "The status line shows each region's progress.",
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",

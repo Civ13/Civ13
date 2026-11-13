@@ -424,6 +424,10 @@ static class LocalHostingTests {
         var groupRefused = LocalHosting.ParseGroup("start", 1, "{\"ok\": false, \"refused\": {\"gaia\": \"already running\"}}");
         Require(groupRefused is { Ok: false, Busy: false } && groupRefused.Message == "Refused: gaia: already running", "group refusal line: " + groupRefused.Message);
         Require(LocalHosting.ParseGroup("update", 1, "{\"ok\": false, \"refused\": \"git fetch origin failed\"}").Message == "Refused: git fetch origin failed", "whole-group refusal");
+        // Update on an asleep region builds it while it sleeps instead of being refused.
+        var sleeper = LocalHosting.ParseGroup("update", 0, "{\"ok\": true, \"accepted\": {\"gaia\": {\"accepted\": true, \"action\": \"update\"}, " +
+            "\"moon\": {\"accepted\": true, \"action\": \"stage\", \"state\": \"asleep\"}}, \"refused\": {}}");
+        Require(sleeper.Ok && sleeper.Message.Contains("Asleep, so not woken: moon (") && !sleeper.Message.Contains("woken: gaia"), "asleep update: " + sleeper.Message);
         Require(!LocalHosting.ParseGroup("restart", 0, "{\"ok\": true, \"accepted\": {}, \"refused\": {}}").Ok, "an empty acceptance counted");
         Require(!LocalHosting.ParseGroup("status", 1, "Traceback").Ok, "group garbage accepted");
         // Forced stop and restart: no save, the next start loads the last completed one.
