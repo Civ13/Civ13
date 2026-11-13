@@ -91,7 +91,7 @@ KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions
 CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt',
-             'config/tdm-token.txt', 'config/shard_build.json')
+             'config/tdm-token.txt', 'config/shard_build.json', 'config/server-build.json')
 # BARRACKS is the always-on TDM world players wait and practise in; BATTLE runs the
 # TDM rounds, rotates its map after each vote and sends everyone back to the
 # barracks before it reboots (code/modules/tdm_barracks).
@@ -965,6 +965,7 @@ class RegionHost(Host):
         self.clear_watchdog_holds()
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
         self.record_build(revision, spare)
+        self.write_server_build(revision, self.repo / spare)
         self.record(phase='checking out', revision=revision)
         try:  # the sources beside the new build; the world itself needs nothing from them
             prepare_tree(group, region, self.repo, revision, self.platform, self.config['git'])

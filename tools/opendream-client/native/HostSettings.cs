@@ -41,7 +41,8 @@ public static class HostSettings {
     private static readonly Regex Kept = new(@"\.(previous|migrated)$|\.bak(-|$)");
     // Files shard_group.py setup writes for each region; an overlay must not hold them (GENERATED).
     private static readonly string[] Generated = ["config/shard_region.json", "config/lifecycle-token.txt", "config/lifecycle-revision.txt",
-        "config/transfer-token.txt", "config/transfer_agent.json", "config/relay-token.txt"];
+        "config/transfer-token.txt", "config/transfer_agent.json", "config/relay-token.txt", "config/tdm-token.txt",
+        "config/shard_build.json", "config/server-build.json"];
     private static readonly Regex SettingName = new("^[A-Za-z][A-Za-z0-9_]*$");
     private static readonly Regex RegionId = new("^[a-z0-9][a-z0-9_-]{0,31}$");
 

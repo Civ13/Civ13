@@ -18,7 +18,9 @@ save takes minutes. Only one action runs at a time. Actions never take paths,
 commands or arguments from the caller; everything comes from the config file.
 
 The world must have config/lifecycle-token.txt (32 hex characters, git-ignored)
-for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD.
+for save-and-stop; start writes config/lifecycle-revision.txt from git HEAD and
+config/server-build.json (commit, compile and update times) for the in-game
+Server Revision verb.
 start and restart first pull and recompile unless the last build (build.json in
 the state folder) is already of the fetched revision, so a server never runs a
 stale build; a failed fetch or compile leaves it stopped with the error.
@@ -116,6 +118,7 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    'load_timeout_seconds': 1800}
 MARKER = re.compile(r'^round-v([12]):[0-9a-f]{32}$')
 HEX32 = re.compile(r'^[0-9a-f]{32}$')
+BYOND_EPOCH = 946684800  # 2000-01-01 UTC in unix seconds, world.realtime's zero
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
 
 
@@ -1328,6 +1331,7 @@ class Host:
         if not HEX40.match(revision):
             raise RuntimeError('could not read the git revision')
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
+        self.write_server_build(revision)
         if self.platform.listening(self.config['port']):
             raise RuntimeError('something is already listening on the port')
         self.record(phase='starting', generation=generation, revision=revision)
@@ -1495,6 +1499,42 @@ class Host:
             self.write_json(self.build_file(), record)
         else:
             self.build_file().unlink(missing_ok=True)
+
+    def write_server_build(self, revision, dmb=None):
+        """Write config/server-build.json for the in-game Server Revision verb: the commit
+        (time and subject), when its .dmb was compiled and when this revision went live.
+        A restart onto the same revision keeps the first deployed time. Best effort: a
+        failure never stops a start or a handover."""
+        path = self.repo / 'config' / 'server-build.json'
+        try:
+            record = {'schema': 1, 'revision': revision}
+            code, out = self.platform.run([self.config['git'], 'show', '-s', '--format=%ct%n%s', revision],
+                                          cwd=self.repo, timeout=60)
+            lines = out.splitlines() if code == 0 else []
+            if len(lines) >= 2 and lines[0].strip().isdigit():
+                record['committed'] = int(lines[0].strip())
+                record['subject'] = lines[1].strip()[:200]
+            try:
+                record['compiled'] = int((dmb or self.dmb()).stat().st_mtime)
+            except OSError:
+                pass
+            try:
+                previous = json.loads(path.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                previous = None
+            kept = previous.get('deployed') if isinstance(previous, dict) and previous.get('revision') == revision else None
+            record['deployed'] = kept if isinstance(kept, int) else int(self.platform.now())
+            # The world reads whole minutes since 2000-01-01 UTC (BYOND's epoch): unix seconds
+            # do not fit a BYOND number exactly, these do.
+            for key in ('committed', 'compiled', 'deployed'):
+                if key in record:
+                    record[key + '_utc'] = time.strftime('%Y-%m-%d %H:%M', time.gmtime(record[key]))
+                    record[key + '_minute'] = (record[key] - BYOND_EPOCH) // 60
+            temporary = path.with_suffix('.tmp')
+            temporary.write_text(json.dumps(record), encoding='utf-8')
+            os.replace(temporary, path)
+        except (OSError, ValueError, RuntimeError, subprocess.SubprocessError):
+            pass
 
     def built_revision(self):
         """The revision the current .dmb was compiled from, or None when unknown."""

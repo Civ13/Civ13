@@ -92,6 +92,7 @@
 		add_stat("<b>Joining:</b>", player_join_status(player_status))
 		var/last_save = persistence_last_save_text()
 		if(last_save) add_stat("<b>Last save:</b>", last_save)
+		if(holder) add_stat("<b>Server build:</b>", server_build_summary())
 		statpanel_data += previous_stats
 	
 	var/list/verbs_data = list()

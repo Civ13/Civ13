@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -196,6 +197,42 @@ class GaiaHostTests(unittest.TestCase):
         self.assertIn(['schtasks', 'Civ13 Gaia On-Demand'], self.machine.calls)
         self.assertEqual((self.repo / 'config' / 'lifecycle-revision.txt').read_text().strip(), REVISION)
         self.assertFalse(self.host.lock.exists())
+
+    def test_start_writes_server_build_for_the_revision_verb(self):
+        real = self.machine.run
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:4] == ['show', '-s', '--format=%ct%n%s']:
+                self.machine.calls.append(list(argv))
+                return 0, '1794790800\nShow the server revision in-game (#5010)\n'
+            return real(argv, cwd, timeout)
+        self.machine.run = run
+        (self.repo / 'civ13.dmb').write_bytes(b'build')
+        os.utime(self.repo / 'civ13.dmb', (1794794400, 1794794400))
+        self.machine.clock = 1794798000.0
+        self.host.work('start', self.accept('start'))
+        record = json.loads((self.repo / 'config' / 'server-build.json').read_text())
+        self.assertEqual(record['revision'], REVISION)
+        self.assertEqual((record['committed'], record['committed_utc']), (1794790800, '2026-11-16 01:00'))
+        self.assertEqual(record['subject'], 'Show the server revision in-game (#5010)')
+        self.assertEqual(record['deployed'], 1794798000)
+        self.assertEqual((record['deployed_utc'], record['deployed_minute']), ('2026-11-16 03:00', 14135220))
+        self.assertEqual(record['committed_minute'], 14135100)
+        self.assertIn('compiled_utc', record)
+        # A restart onto the same revision keeps the time it first went live.
+        self.machine.up = False
+        self.machine.clock += 3600
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(json.loads((self.repo / 'config' / 'server-build.json').read_text())['deployed'], 1794798000)
+        # A new revision is a new update.
+        self.host.write_server_build('e' * 40)
+        record = json.loads((self.repo / 'config' / 'server-build.json').read_text())
+        self.assertEqual((record['revision'], record['deployed']), ('e' * 40, 1794801600))
+
+    def test_server_build_failure_never_blocks_start(self):
+        (self.repo / 'config').mkdir(exist_ok=True)
+        (self.repo / 'config' / 'server-build.json').mkdir()  # cannot be replaced
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
 
     def test_start_refusals_leave_no_lock(self):
         self.machine.up = True
