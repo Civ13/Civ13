@@ -630,10 +630,12 @@ var/aircraft_runtime_error = FALSE
 
 // Kept in this admitted fixture; no additional runner or runtime entry point.
 #include "level_shift.dm"
+#include "huey_cases.dm"
 
 /proc/aircraft_run()
 	try
 		level_shift_checks()
+		huey_checks()
 		aircraft_checks()
 	catch(var/exception/e)
 		aircraft_check(FALSE, "exception [e] [e.file]:[e.line]")

@@ -15,12 +15,16 @@
 	icon = 'icons/obj/vehicles/lightplane.dmi'
 	icon_state = "fuselage_center_floor"
 	var/hull_state = "fuselage_center"
+	// The sheet the sections draw from: the light plane's, or a helicopter's (helicopter.dm).
+	var/hull_icon = 'icons/obj/vehicles/lightplane.dmi'
+	// A hit on an engine section can stop the engine (aircraft_damage.dm).
+	var/engine_section = FALSE
 
 /obj/structure/vehicleparts/frame/car/aircraft/update_icon()
 	overlays.Cut()
 	if (!axis)
 		dir = 1
-	icon = 'icons/obj/vehicles/lightplane.dmi'
+	icon = hull_icon
 	if (noroof)
 		// A wing is the same from inside and out.
 		icon_state = hull_state
@@ -40,6 +44,8 @@
 				break
 		overlays += image(icon=icon, icon_state=spinning ? "prop_spin" : "prop", layer=11.2, dir=dir)
 
+/obj/structure/vehicleparts/frame/car/aircraft/nose
+	engine_section = TRUE
 /obj/structure/vehicleparts/frame/car/aircraft/nose/right
 	hull_state = "nose_right"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
