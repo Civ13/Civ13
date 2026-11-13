@@ -444,5 +444,44 @@ class NpcCoverThreatThresholdTests(unittest.TestCase):
         self.assertEqual(candidate((kinds[1], kinds[2]), False), (False, 2))
 
 
+class NpcMedicDistanceTests(unittest.TestCase):
+    """Compare the source-projected branch, not native BYOND timing."""
+
+    def test_distance_cache_preserves_medic_control_flow(self):
+        source = (ROOT / 'code/game/mob/living/simple_animal/hostile/humans/human.dm').read_text()
+        body = extract(source, '/mob/living/simple_animal/hostile/human/proc/help_patient')
+        block = body.split('\tstop_automated_movement = TRUE\n', 1)[1].split('\n\tvar/enemy_detected = FALSE', 1)[0]
+        declaration = '\tvar/patient_distance = get_dist(target_obj,src)\n'
+        self.assertEqual(block.count(declaration), 1)
+        self.assertEqual(block.count('patient_distance>1'), 1)
+        self.assertEqual(block.count('patient_distance<=1'), 1)
+        original = (block.replace(declaration, '', 1)
+                    .replace('patient_distance>1', 'get_dist(target_obj,src)>1', 1)
+                    .replace('patient_distance<=1', 'get_dist(target_obj,src)<=1', 1))
+
+        def run(fragment, distance, action):
+            events, calls = [], []
+            actor, patient, location = object(), object(), object()
+            def get_dist(first, second):
+                calls.append((first, second))
+                return distance
+            env = dict(get_dist=get_dist, src=actor, target_obj=patient, loc=location,
+                       do_movement=lambda destination: events.append(('move', destination is patient)),
+                       walk=lambda who, value: events.append(('walk', who is actor, value)))
+            wrapped = '/proc/medic_distance_check(target_action)\n' + fragment + '\n\treturn target_action\n'
+            projected = _adapter.project(wrapped, '/proc/medic_distance_check', 'target_action', env)
+            return projected(action), events, len(calls)
+
+        for distance, action in product((-1, 0, 1, 2, 7), ('drag', 'helping', 'bandaging')):
+            before = run(original, distance, action)
+            after = run(block, distance, action)
+            self.assertEqual(after[:2], before[:2])
+            self.assertEqual(after[2], 1)
+            self.assertEqual(before[2], 1 if distance > 1 and action != 'helping' else 2)
+
+        # At distance 1, an incorrect threshold changes the movement sequence.
+        broken = block.replace('patient_distance<=1', 'patient_distance<1', 1)
+        self.assertNotEqual(run(broken, 1, 'drag')[:2], run(original, 1, 'drag')[:2])
+
 if __name__ == '__main__':
     unittest.main()
