@@ -16,6 +16,10 @@
 /mob/living/human/var/tmp/list/revival_recipe_nodes = null
 /mob/living/human/var/tmp/cpr_revival_busy = FALSE
 
+// A save taken during CPR must not keep the lock on the restored body.
+/mob/living/human/persistence_runtime_var(key)
+	return key == "cpr_revival_busy" || ..()
+
 // Called by death() before the dead forget what they knew.
 /mob/living/human/proc/note_revival_window()
 	revival_clock = max(world.time, 1) // 0 means no fresh death
