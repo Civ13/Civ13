@@ -1224,6 +1224,7 @@
 #include "code\modules\client\client_procs.dm"
 #include "code\modules\client\action_keybindings.dm"
 #include "code\modules\client\client_verbs.dm"
+#include "code\modules\client\discord_verify.dm"
 #include "code\modules\client\escape_menu.dm"
 #include "code\modules\client\fullscreen.dm"
 #include "code\modules\client\interface.dm"
