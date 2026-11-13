@@ -1010,6 +1010,8 @@
 	var/list/paths = list()
 	// Highest tick share this capture used past its 40% share, or 0.
 	var/overrun_usage = 0
+	// Wall-clock deciseconds a slow capture took past one, or 0.
+	var/overrun_elapsed_ds = 0
 	proc/check()
 		var/tick_delta = world.time - start_tick
 		var/current_usage = world.tick_usage
@@ -1027,8 +1029,13 @@
 		// takes) hit 40% while Gaia ran at 78-89% (round cIh-c7qU, 2026-11-09).
 		// An overrun is noted instead; capture_moving_save_root keeps that
 		// root on the turf path from the next save on.
+		// elapsed_ds is the same wall-clock cost in coarser units: world.time
+		// cannot move without a sleep, so only tick_delta proves a yield. A
+		// 162-unit drift jelly took 2 ds on a host already at 133% tick usage
+		// (2026-11-13) and the throw failed the whole save; note it instead.
 		if(usage_delta > 40) overrun_usage = max(overrun_usage, usage_delta)
-		if(++work > 8192 || tick_delta || elapsed_ds > 1)
+		if(elapsed_ds > 1) overrun_elapsed_ds = max(overrun_elapsed_ds, elapsed_ds)
+		if(++work > 8192 || tick_delta)
 			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: root=[root ? root.type : "null"] work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
@@ -1255,12 +1262,12 @@
 		if(findtext("[error]", "uncaptured external movable")) moving_save_demoted[record["identity"]] = TRUE
 		throw error
 	moving_save_chunk = null
-	if(chunk.overrun_usage)
+	if(chunk.overrun_usage || chunk.overrun_elapsed_ds)
 		// The snapshot is consistent (same tick, within its logical bounds), so
 		// keep it; only its cost was high. Defer this animal to the turf path
 		// in later saves so a slow root does not keep costing a tick.
 		moving_save_demoted[record["identity"]] = TRUE
-		world.log << "Moving save chunk overran its tick share and was kept: root=[A.type] work=[chunk.work] usage_delta=[chunk.overrun_usage] admission_usage=[chunk.admission_usage] start_usage=[chunk.start_usage]"
+		world.log << "Moving save chunk overran its tick share and was kept: root=[A.type] work=[chunk.work] usage_delta=[chunk.overrun_usage] elapsed_ds=[chunk.overrun_elapsed_ds] admission_usage=[chunk.admission_usage] start_usage=[chunk.start_usage]"
 	record["origin"] = origin
 	record["ref"] = ref
 	if(saving_segments && destination == saving_segments.index) destination = saving_segments.current
