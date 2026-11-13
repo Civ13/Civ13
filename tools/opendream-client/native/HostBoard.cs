@@ -45,6 +45,22 @@ public static class HostBoard {
         return behind;
     }
 
+    // The regions of shard_group.py status that run an action (their action lock is held) or are being
+    // handed over to a new build. Only these are locked in the launcher; every other region stays usable.
+    public static IReadOnlySet<string> BusyRegions(string statusOutput) {
+        var busy = new HashSet<string>();
+        if (LastObject(statusOutput) is not { } document) return busy;
+        using (document) {
+            var json = document.RootElement;
+            if (!Bool(json, "ok") || !json.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return busy;
+            foreach (var region in regions.EnumerateObject().Take(16))
+                if (region.Value.ValueKind == JsonValueKind.Object && (Bool(region.Value, "busy")
+                        || (region.Value.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object)))
+                    busy.Add(region.Name);
+        }
+        return busy;
+    }
+
     // One card per region of shard_group.py status, in the group's order. mainland: that region's id.
     // behind: RegionsBehind of the last check-update, or null before any check has answered.
     public static IReadOnlyList<RegionCard> Regions(string statusOutput, IReadOnlyDictionary<string, int>? behind, string? mainland = null) {

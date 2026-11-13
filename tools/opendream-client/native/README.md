@@ -212,6 +212,14 @@ to choose the region the **Selected region** buttons act on. The board refreshes
 every 30 seconds while the tab is open and every five seconds while an action
 runs; action results are written to the launcher log under the tabs.
 
+Buttons are locked per region. While one region starts, saves or updates, only
+that region's **Selected region** buttons are greyed out (its **Force stop** in
+More stays available for a world that hangs); choose another row and its buttons
+work. **All regions** actions leave a busy region alone and say so in their
+question, and Save, update and restart opens with busy regions unticked. Only a
+running Save, update and restart, a host-service restart, Advance epoch or a
+group fresh world lock every row until they finish.
+
 Each button row shows the everyday actions; **More** holds the rarer ones and
 everything forceful (force stop, lock files, fresh world). **Setup details** shows
 the folders and scripts `host.json` configured. The Civilizationbot, Player help
