@@ -56,5 +56,19 @@ class MapSchemaMigration(unittest.TestCase):
                         restore.index('durable_metadata_restore_fields(map, fields, durable_metadata_map_schema())'))
 
 
+class WeatherCallbackCompatibility(unittest.TestCase):
+    def test_finite_legacy_callbacks_remain_without_old_scheduler(self):
+        source = (ROOT/'code/modules/persistence/durable_environment.dm').read_text()
+        for event in ('blizzard', 'heat', 'sandstorm'):
+            for phase in ('start', 'end'):
+                key = f'{event}_{phase}'
+                self.assertIn(f'"{key}" = "durable_{key}"', source)
+                self.assertIn(f'/obj/map_metadata/proc/durable_{key}()', source)
+        self.assertNotIn('/obj/map_metadata/proc/durable_weather_events()', source)
+        queue = (ROOT/'code/modules/persistence/durable_timers.dm').read_text()
+        self.assertIn('!(key in allowed)', queue)
+        self.assertIn('remaining < 0 || remaining > 1e15', queue)
+
+
 if __name__=='__main__':
     unittest.main()
