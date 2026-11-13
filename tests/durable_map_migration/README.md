@@ -48,3 +48,12 @@ frozen prior/current fixtures plus malformed-save and immutable-input controls
 for every migration. Preserve source generations and recovery identity; write
 the current schema only during a separately admitted new save. The urgent fix
 implements this policy only for `faction_renames`, not a blanket fallback.
+
+The fixture also covers the six finite legacy weather callbacks from saves made
+before moving weather: mixed ordinary/legacy timer restore and recapture,
+repeated-load row invalidation, strict rejection of unknown names and invalid
+remainders, and blizzard/sandstorm/heat start/end cleanup. Heat cleanup checks
+wells and puddles without changing an ordinary sink. These adapters retain the
+legacy global weather and dry-state semantics for the saved event only; they do
+not revive the old random scheduler. This is synthetic metadata and callback
+coverage, not a production-save restoration or visual weather check.
