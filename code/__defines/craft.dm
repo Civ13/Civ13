@@ -55,3 +55,15 @@
 #define DECK_BERTH_REACH 8
 #define DECK_BERTH_SWING 4
 #define DECK_HOIST_TIME 100
+
+// Chart hazards and sectors (craft/chart_hazards.dm): seconds of chart time
+// between rolls for a passing hazard, how many passing hazards a chart holds
+// at once, how long a craft thrown by a wormhole is left alone, and the
+// least health, as a share, a strike leaves a hull plank.
+#define CHART_HAZARD_ROLL 120
+#define CHART_HAZARD_CAP 5
+#define CHART_WORMHOLE_REST 60
+#define CHART_STRIKE_FLOOR 0.25
+#define CHART_SECTOR_HARBOUR "harbour"
+#define CHART_SECTOR_WILD "wild"
+#define CHART_SECTOR_HELD "held"

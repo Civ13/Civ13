@@ -602,3 +602,8 @@ var/global/list/spacecraft_helms = list()
 		to_chat(user, SPAN_NOTICE("You fill her tank ([round(propellant)]/[SPACECRAFT_TANK])."))
 		return
 	return ..()
+
+// A spacecraft lying off a station, the beacon or a site is out of reach of
+// the chart's hazards (craft/chart_hazards.dm); in the lanes she is not.
+/datum/chart_token/spacecraft/exposed()
+	return !helm || helm.in_lanes()
