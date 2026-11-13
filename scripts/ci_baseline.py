@@ -1383,6 +1383,9 @@ SUITES = {
     # inputs remain shared so they do not suppress other suites' fallback.
     'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
         'paths': (), 'shared_paths': (
+            'code/game/mob/living/carbon/human/shit_piss.dm',
+            'code/game/mob/living/carbon/human/emotes/emote.dm',
+            'code/modules/reagents/reagent_containers/glass.dm',
             'scripts/player_help_bridge.py', 'UI/player-help.json', 'UI/crafting-atlas.json',
             'code/game/objects/structures/blacksmithing/refining.dm',
             'code/game/objects/structures/blacksmithing/molds.dm',
