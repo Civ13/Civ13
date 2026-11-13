@@ -56,7 +56,7 @@ existing `fish1` and `fish2` states of `icons/mob/fish.dmi`.
 
 ## firefighting.dmi
 
-All states (`fire_beater`, `fire_flapper`, `fire_hook`, `fire_pump`, `fire_nozzle`,
+All states (`fire_beater`, `fire_flapper`, `fire_hook`, `fire_pump`, `fire_nozzle`, `fire_hose_reel`, `fire_hose_reel_out`,
 the `_wet` variants and the four-direction `_l` and `_r` in-hand sprites) were
 drawn for Civ13 (2026-11-12 and 2026-11-13),
 pixel by pixel from fixed palettes by `tests/sprites/create_firefighting.py`.

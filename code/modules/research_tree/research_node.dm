@@ -1686,10 +1686,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (4) ---
+		// --- machined_tools (5) ---
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
+		"/obj/structure/fire_pump/reel" = "machined_tools",
 		"/obj/item/weapon/weldingtool" = "machined_tools",
 		// --- mail_plate (7) ---
 		"/obj/item/clothing/head/helmet/jingasa" = "mail_plate",
