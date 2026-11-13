@@ -131,6 +131,7 @@ var/eco_runtime_error = FALSE
 	eco_check(!E.enabled && !E.heatmap, "stop releases the heatmap")
 	eco_check(E.cycle() == 0, "a stopped spawner does nothing")
 	eco_check(!("heatmap" in E.get_saved_vars()) && !("enabled" in E.get_saved_vars()) && !("habitat_cells" in E.get_saved_vars()), "spawner state is runtime-only")
+	eco_shy_checks()
 	eco_default_species_checks()
 	eco_index_checks()
 	eco_rest_checks()
@@ -184,7 +185,7 @@ var/eco_runtime_error = FALSE
 	map.ecology_wildlife_cap = 3
 	E.size_targets()
 	eco_check(E.total_target <= 3 + E.species.len && deer.target >= 1, "the map cap scales targets down")
-	map.ecology_wildlife_cap = 700
+	map.ecology_wildlife_cap = 450
 	// A spawner of an indexed species is replaced only while ecology runs.
 	map.ecology_wildlife = TRUE
 	E.size_targets()
@@ -264,3 +265,37 @@ var/eco_runtime_error = FALSE
 	for (var/mob/living/simple_animal/deer/C in range(2, F))
 		qdel(C)
 	qdel(M)
+
+// Shy spawning: a crowd of any species blocks wild spawns and matings there.
+/proc/eco_shy_checks()
+	var/turf/T = locate(30, 30, 1)
+	var/list/crowd = list()
+	for (var/i = 1, i <= 7, i++)
+		crowd += new /mob/living/simple_animal/deer/eco_probe(locate(28 + i % 4, 28 + round(i / 4), 1))
+	eco_check(!animal_spot_crowded(T, 1), "seven animals leave room for one more")
+	eco_check(animal_spot_crowded(T, 2), "a herd of two would make the spot crowded")
+	var/mob/living/simple_animal/deer/eco_probe/far = new(locate(38, 38, 1))
+	eco_check(!animal_spot_crowded(locate(22, 22, 1), 1), "animals beyond seven tiles do not count")
+	var/mob/living/simple_animal/deer/eco_probe/dead = crowd[1]
+	dead.stat = DEAD
+	eco_check(!animal_spot_crowded(T, 2), "a dead animal does not count")
+	dead.stat = CONSCIOUS
+	var/datum/ecology_spawner/E = new
+	var/datum/ecology_species/deer = new("deer", list(/mob/living/simple_animal/deer/eco_probe), 3, list("temperate"))
+	deer.herd_max = 2
+	E.heatmap = new /datum/ecology_activity_heatmap(4096, 60, 1800, 0.25)
+	var/list/sites = list()
+	for (var/i = 1, i <= 60, i++)
+		var/turf/S = E.find_site(deer)
+		if (S)
+			sites += S
+	var/crowded_sites = 0
+	for (var/turf/S in sites)
+		if (get_dist(S, T) <= 7 && animal_spot_crowded(S, 2))
+			crowded_sites++
+	eco_check(sites.len && !crowded_sites, "spawn sites avoid the crowd ([sites.len] sites)")
+	for (var/mob/M in crowd + far)
+		deer_count -= M
+		unregister_living_mob(M)
+		qdel(M)
+	E.stop()

@@ -160,7 +160,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && bison_count.len < 60)
+	if (!pregnant && bison_count.len < 39)
 		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/bisonbull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -180,7 +180,7 @@
 				if (M.stat == CONSCIOUS)
 					bisonCount++
 
-			if (bisonCount > 5) // max 5 cows/bulls in a 15x15 area around cow
+			if (bisonCount > 5 || animal_spot_crowded(src, 0)) // max 5 cows/bulls in a 15x15 area around cow
 				overpopulationCountdown = 300
 				pregnant = FALSE
 	else if (pregnant)

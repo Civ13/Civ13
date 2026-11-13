@@ -37,7 +37,7 @@ var/global/ecology_admin_disabled = FALSE
 
 /obj/map_metadata
 	var/ecology_wildlife = FALSE // Spawn wildlife by habitat instead of fixed map spawners.
-	var/ecology_wildlife_cap = 700 // Wild animals across all ecology species.
+	var/ecology_wildlife_cap = 450 // Wild animals across all ecology species.
 	var/ecology_density_scale = 2 // Multiplies every species' density; raise for a busier map.
 
 /obj/map_metadata/nomads
@@ -395,7 +395,7 @@ var/global/list/ecology_species_table = null
 	size_targets()
 
 /datum/ecology_spawner/proc/size_targets()
-	var/cap = map ? map.ecology_wildlife_cap : 700
+	var/cap = map ? map.ecology_wildlife_cap : 450
 	var/scale_density = map ? map.ecology_density_scale : 2
 	var/tile_per_hit = (ECOLOGY_CELL_SIZE * ECOLOGY_CELL_SIZE) / ECOLOGY_INDEX_SAMPLES
 	var/total = 0
@@ -460,6 +460,9 @@ var/global/list/ecology_species_table = null
 		if (isnull(pressure) || pressure > ECOLOGY_QUIET_PRESSURE)
 			continue
 		if (ecology_visible_to_players(T))
+			continue
+		// Shy spawning: a herd never lands where animals already crowd.
+		if (animal_spot_crowded(T, S.herd_max))
 			continue
 		return T
 	return null
