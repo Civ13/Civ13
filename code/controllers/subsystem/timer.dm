@@ -293,6 +293,7 @@ SUBSYSTEM_DEF(timer)
 		// Insert the timer into the bucket, and perform necessary circular doubly-linked list operations
 		new_bucket_count++
 		var/bucket_pos = BUCKET_POS(timer)
+		timer.bucket_pos = bucket_pos
 		var/datum/timedevent/bucket_head = bucket_list[bucket_pos]
 		if (!bucket_head)
 			bucket_list[bucket_pos] = timer
@@ -309,6 +310,8 @@ SUBSYSTEM_DEF(timer)
 	// Cut the timers that are tracked by the buckets from the secondary queue
 	if (i)
 		alltimers.Cut(1, i + 1)
+	for (var/datum/timedevent/queued in alltimers)
+		queued.bucket_pos = -1
 	second_queue = alltimers
 	bucket_count = new_bucket_count
 
@@ -351,6 +354,13 @@ SUBSYSTEM_DEF(timer)
 	var/datum/timedevent/next
 	/// Previous timed event in the bucket
 	var/datum/timedevent/prev
+	/// The bucket this event was put in, or -1 when it is in no bucket. Eject
+	/// uses it instead of recomputing BUCKET_POS: head_offset and timeToRun
+	/// drift apart in floating point, and a recomputed floor() could name the
+	/// neighbouring bucket. The fire loop then popped the same timer from the
+	/// bucket forever, invoking a looping timer tens of thousands of times a
+	/// second and wedging every other timer.
+	var/bucket_pos = -1
 
 /datum/timedevent/New(datum/callback/callBack, wait, flags, hash, source)
 	var/static/nextid = 1
@@ -421,32 +431,16 @@ SUBSYSTEM_DEF(timer)
   * Removes this timed event from any relevant buckets, or the secondary queue
   */
 /datum/timedevent/proc/bucketEject()
-	// Attempt to find bucket that contains this timed event
-	var/bucketpos = BUCKET_POS(src)
-
-	// Store local references for the bucket list and secondary queue
-	// This is faster than referencing them from the datum itself
+	// The bucket recorded when this event joined (see bucket_pos).
 	var/list/bucket_list = SStimer.bucket_list
-	var/list/second_queue = SStimer.second_queue
-
-	// Attempt to get the head of the bucket
-	var/datum/timedevent/buckethead
-	if(bucketpos > 0)
-		buckethead = bucket_list[bucketpos]
-
-	// Decrement the number of timers in buckets if the timed event is
-	// the head of the bucket, or has a TTR less than TIMER_MAX implying it fits
-	// into an existing bucket, or is otherwise not present in the secondary queue
-	if(buckethead == src)
-		bucket_list[bucketpos] = next
-		SStimer.bucket_count--
-	else if(timeToRun < TIMER_MAX)
+	if(bucket_pos > 0)
+		if(bucket_list[bucket_pos] == src)
+			// A lone event's next is null; a ring's head passes to the next one.
+			bucket_list[bucket_pos] = (next && next != src) ? next : null
 		SStimer.bucket_count--
 	else
-		var/l = length(second_queue)
-		second_queue -= src
-		if(l == length(second_queue))
-			SStimer.bucket_count--
+		SStimer.second_queue -= src
+	bucket_pos = -1
 
 	// Remove the timed event from the bucket, ensuring to maintain
 	// the integrity of the bucket's list if relevant
@@ -480,6 +474,7 @@ SUBSYSTEM_DEF(timer)
 	else if (timeToRun >= TIMER_MAX)
 		L = SStimer.second_queue
 	if(L)
+		bucket_pos = -1
 		BINARY_INSERT(src, L, /datum/timedevent, src, timeToRun, COMPARE_KEY)
 		return
 
@@ -487,7 +482,7 @@ SUBSYSTEM_DEF(timer)
 	var/list/bucket_list = SStimer.bucket_list
 
 	// Find the correct bucket for this timed event
-	var/bucket_pos = BUCKET_POS(src)
+	bucket_pos = BUCKET_POS(src)
 	var/datum/timedevent/bucket_head = bucket_list[bucket_pos]
 	SStimer.bucket_count++
 
