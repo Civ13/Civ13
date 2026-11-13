@@ -6,6 +6,7 @@ build, config and map_saves, so regions never share a save or a lock:
 
     python shard_group.py --config group.json setup     # worktrees and region config
     python shard_group.py --config group.json update    # check out and compile every region
+    python shard_group.py --config group.json update-offline [--region ID]  # update every region not running
     python shard_group.py --config group.json start|stop|restart [--region ID]
     python shard_group.py --config group.json status
     python shard_group.py --config group.json freeze|thaw [--region ID]
@@ -59,7 +60,7 @@ from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world')
+                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -470,6 +471,8 @@ class RegionHost(Host):
         self.stage_lock = self.state_dir / 'stage.lock'
         self.stage_file = self.state_dir / 'stage.json'
         self.staged_file = self.state_dir / 'staged.json'
+        # update-offline: install the build into the stopped region as soon as its stage is ready.
+        self.install_marker = self.state_dir / 'install-after-stage'
 
     def shutdown_warning(self):
         """The group config's current shutdown_warning_seconds (the launcher's Players' warning),
@@ -672,8 +675,9 @@ class RegionHost(Host):
                 return
         except OSError:
             return
+        ready = False
         try:
-            self.stage_record(phase='checking for updates', error=None)
+            self.stage_record(phase='checking for updates', error=None, install=None)
             latest = self.latest_revision()
             if not HEX40.match(latest):
                 raise RuntimeError('could not read the latest revision')
@@ -682,6 +686,7 @@ class RegionHost(Host):
                 return
             if self.staged_revision() == latest:
                 self.stage_record(phase='ready', revision=latest)
+                ready = True
                 return
             group = load_group(self.config['group_config'])
             region = next(r for r in group['regions'] if r['id'] == self.config['region'])
@@ -708,10 +713,28 @@ class RegionHost(Host):
                 self.write_json(self.staged_file, {'revision': latest, 'dmb': [stat.st_size, stat.st_mtime_ns],
                                                    'staged_at': int(self.platform.now())})
             self.stage_record(phase='ready', revision=latest)
+            ready = True
         except Exception as error:  # stage.json is the only place a detached worker can report
             self.stage_record(phase='failed', error=str(error)[:500])
         finally:
+            install = self.install_marker.exists()
+            self.install_marker.unlink(missing_ok=True)
             self.stage_lock.unlink(missing_ok=True)
+            if install and ready:
+                self.install_after_stage()
+
+    def install_after_stage(self):
+        """update-offline: copy the build just staged into a region that is still not running,
+        so its next start loads at once. A region that started or fell asleep meanwhile is left
+        alone; it gets the build at its next empty restart or while it sleeps, as after any stage."""
+        try:
+            if self.frozen() or self.platform.listening(self.config['port']):
+                raise Refused('the region started while its update was building')
+            if self.update_pending():
+                self.request('update')
+                self.stage_record(install='installing')
+        except Refused as refusal:
+            self.stage_record(install='not installed: %s' % str(refusal)[:200])
 
     def install_staged(self, revision):
         """Copy the staged build of revision into the region; False when there is none."""
@@ -731,6 +754,9 @@ class RegionHost(Host):
         # Checked before the lock: taking it would create the folder setup needs empty.
         if action in ('start', 'restart', 'update', 'handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
+        if action == 'update' and self.frozen():
+            # Host.request would wake it first, only to refuse it as running.
+            raise Refused('the region is asleep; Update offline regions installs it while it sleeps')
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
@@ -1631,6 +1657,47 @@ def hosts(group, only=None, platform=None):
     return [(r, RegionHost(region_config(group, r), platform)) for r in chosen]
 
 
+def update_offline(group, only=None, platform=None):
+    """Bring every region that is not running up to the latest group revision, so it is
+    ready when it next starts; a running region is never stopped, woken or rebuilt.
+
+    A stopped (or cold) region builds the update in its staging worktree, then copies it in
+    (install_after_stage). An asleep region builds it the same way and the host service
+    installs it while it sleeps (install_staged_while_down). The builds take turns in the
+    group compile slot at low priority, so the running regions keep their CPU and memory.
+    """
+    accepted, skipped = {}, {}
+    for region, host in hosts(group, only, platform):
+        name = region['id']
+        if not (host.repo / '.git').exists():
+            skipped[name] = 'not set up'
+            continue
+        if fresh_world.pending(host).exists():
+            skipped[name] = 'interrupted fresh-world archive'
+            continue
+        asleep = host.frozen()
+        if not asleep and host.platform.listening(host.config['port']):
+            skipped[name] = 'running'
+            continue
+        if host.lock.exists():
+            skipped[name] = 'busy: %s' % (host.read_state() or {}).get('action')
+            continue
+        state = 'asleep' if asleep else 'cold' if host.cold() else 'stopped'
+        if not asleep:
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+            host.install_marker.write_text('update-offline\n', encoding='utf-8')
+        try:
+            accepted[name] = dict(host.request_stage(), state=state)
+        except Refused as refusal:
+            if 'already being staged' in str(refusal):
+                # The running stage installs it when it finishes (it reads the marker last).
+                accepted[name] = {'accepted': True, 'action': 'stage', 'state': state, 'already_staging': True}
+                continue
+            host.install_marker.unlink(missing_ok=True)
+            skipped[name] = str(refusal)
+    return {'accepted': accepted, 'skipped': skipped}
+
+
 def region_view(port, timeout=10):
     """Ask a running region what it is and how it sees its peers (shard_region topic)."""
     try:
@@ -2310,6 +2377,8 @@ def main(argv=None):
             if args.epoch is None or args.region:
                 parser.error('epoch needs --epoch and acts on the whole group')
             result = group_epoch(group, args.epoch)
+        elif args.action == 'update-offline':
+            result = update_offline(group, args.region)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'config-apply':

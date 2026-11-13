@@ -301,6 +301,23 @@ other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
 
+### Updating the regions that are not running
+
+`update-offline [--region ID]` brings every region that is not running up to the
+latest group revision, so it is ready when it next starts, and never touches a
+running region (it is not stopped, woken, staged or restarted). Each stopped or
+cold region is staged as above (taking its turn at the compile slot, at low
+priority) with an `install-after-stage` marker in `data/shard-host`; when its
+stage is ready the stage worker runs `update`, which copies the build in. A
+region that started while it built is left on its old build (`stage.json`
+`install` says so) and gets the new one at its next empty restart. An asleep
+region is staged without the marker and the host service installs it while it
+sleeps, as above. A region with an action running or an interrupted fresh-world
+archive is skipped. It answers `{"accepted": {id: {"state": "stopped" | "cold" |
+"asleep", ...}}, "skipped": {id: reason}}`. `update` itself now refuses an
+asleep region instead of waking it. `update-offline.bat` pulls the source
+checkout first, and the launcher's **Update offline regions** button runs it.
+
 ## Handover: updating a running region without downtime
 
 `handover [--region ID]` moves a running region onto its ready staged build

@@ -273,7 +273,7 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control?.Group != null) {
             groupButtons.Controls.Add(new Label { Text = "All regions:", AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 11, 0, 6) });
             foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update"), ("Build update", "stage"),
-                    ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
+                    ("Update offline regions", "update-offline"), ("Save, update and restart", "deploy"), ("Restart host service", "restart-host"), ("Force stop", "kill"), ("Force restart", "force-restart"),
                     ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") }) {
                 var button = new Button { Text = text, AutoSize = true, Margin = new Padding(8, 6, 0, 6) };
                 button.Click += async (_, _) => await GroupAction(action, text);
@@ -755,6 +755,9 @@ internal sealed partial class LauncherWindow : Form {
         var target = region == null ? "every region" : "region " + region;
         var question = action switch {
             "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped region" : target + " (it must be stopped)")}?",
+            "update-offline" => "Update every region that is not running to the latest master, so each is ready when it starts? " +
+                "Running regions are left alone: nobody is kicked and no world is stopped or woken. Stopped regions build it one at a time " +
+                "and install it; asleep regions build it and install it while they sleep. The status line shows each region's progress.",
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",

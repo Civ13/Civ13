@@ -332,6 +332,17 @@ static class LocalHostingTests {
             && LocalHosting.GroupStep(host.Control!, "handover", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "handover", "--region", "gaia" }), "stage and handover argv");
         Require(LocalHosting.ParseGroup("stage", 0, "{\"accepted\": {\"gaia\": {\"accepted\": true}}, \"refused\": {\"moon\": \"a build is already being staged\"}, \"ok\": true}").Message
             == "Building the update beside gaia... Refused: moon: a build is already being staged.", "stage line");
+        // Update offline regions: stopped and asleep regions build the update, running ones are left alone.
+        Require(LocalHosting.GroupStep(host.Control!, "update-offline").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "update-offline" }), "update-offline argv");
+        var offline = LocalHosting.ParseGroup("update-offline", 0, "{\"accepted\": {\"railyard\": {\"accepted\": true, \"state\": \"stopped\"}, "
+            + "\"moon\": {\"accepted\": true, \"state\": \"asleep\"}}, \"skipped\": {\"gaia\": \"running\"}, \"ok\": true}");
+        Require(offline.Ok && offline.Busy && offline.Message == "Building the latest update, one region at a time, for railyard (stopped: installs once built), "
+            + "moon (asleep: installs while it sleeps). Left alone: gaia (running).", "update-offline line: " + offline.Message);
+        var allRunning = LocalHosting.ParseGroup("update-offline", 0, "{\"accepted\": {}, \"skipped\": {\"gaia\": \"running\"}, \"ok\": true}");
+        Require(allRunning.Ok && !allRunning.Busy && allRunning.Message == "No region needed updating while stopped or asleep. Left alone: gaia (running).", "update-offline none: " + allRunning.Message);
+        var notInstalled = LocalHosting.ParseGroup("status", 0, "{\"regions\": {\"moon\": {\"name\": \"Moon\", \"state\": \"awake\", "
+            + "\"stage\": {\"phase\": \"ready\", \"pending\": true, \"install\": \"not installed: the region started while its update was building\"}}}, \"ok\": true}");
+        Require(notInstalled.Message == "Group: Moon: awake, update built (not installed: the region started while its update was building).", "update-offline status: " + notInstalled.Message);
         // The group status also tells staged updates, handovers, the watchdog and travel.
         var detailed = LocalHosting.ParseGroup("status", 0, "{\"group\": \"earth\", \"regions\": {"
             + "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"port\": 1714, \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"standby\": {\"port\": 1728, \"listening\": true}, \"transfer_agent\": true}, "
