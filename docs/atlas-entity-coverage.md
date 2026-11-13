@@ -42,5 +42,18 @@ meaning is explicitly mapped, rather than exporting a procedure as an item.
   with stats, with a recipe or route, examine-linkable) and keeps them out of
   the recipe-resource gap list.
 
-Not covered: habitats, hazards and map availability are not source-reviewed per
-entry, and generated coverage does not substitute for native UI or gameplay tests.
+- Habitat rows (`habitats.py`) come from the tables the game spawns from: the
+  wildlife species table in `ecology_default_species()` (biomes and ground),
+  `wild_herb_climates()` and each sea animal's `zone_min`/`zone_max`. They say
+  where open-world spawning places a species, not that a map has it.
+- Hazard rows come from the reviewed list in `scripts/atlas/hazards.json`. An
+  entry covers its type and subtypes unless a subtype has its own entry, and
+  names the source lines it was checked against;
+  `tests/atlas_habitats/test_habitats.py` fails when those lines change, so a
+  reworked mechanic is reviewed again. Add an entry with its evidence when a
+  new trap, terrain or animal can hurt players in a way its stats do not show.
+- `coverage.py` also counts pages with a habitat and with a hazard.
+
+Not covered: map availability, and animals or plants placed only by map files
+rather than by ecology spawning. Generated coverage does not substitute for
+native UI or gameplay tests.
