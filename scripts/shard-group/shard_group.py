@@ -95,11 +95,14 @@ KEPT_COPY = re.compile(r'\.(previous|migrated)$|\.bak(-|$)')  # earlier versions
 CONFIG_NAME = re.compile(r'^[A-Za-z][A-Za-z0-9_]*$')
 GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/lifecycle-revision.txt',
              'config/transfer-token.txt', 'config/transfer_agent.json', 'config/relay-token.txt',
-             'config/tdm-token.txt', 'config/shard_build.json', 'config/server-build.json')
+             'config/tdm-token.txt', 'config/event-token.txt', 'config/shard_build.json', 'config/server-build.json')
 # BARRACKS is the always-on TDM world players wait and practise in; BATTLE runs the
 # TDM rounds, rotates its map after each vote and sends everyone back to the
 # barracks before it reboots (code/modules/tdm_barracks).
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE')
+# EVENT is an admin-run event world: admins send players there and back while
+# their characters wait, saved, in their own land (docs/event-regions.md). It
+# never saves and nobody lives there.
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -174,6 +177,8 @@ def load_group(path):
         raise ValueError('a BATTLE region needs a BARRACKS region in its group')
     if any(r['id'] == mainland for r in battles):
         raise ValueError('the mainland cannot be a BATTLE region')
+    if any(r['id'] == mainland and r['kind'] == 'EVENT' for r in regions):
+        raise ValueError('the mainland cannot be an EVENT region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -189,8 +194,8 @@ def load_group(path):
         if type(control) is not int or not 1024 <= control <= 65535 or control in ports or control == relay:
             raise ValueError('relay_control_port must be a free port from 1024 to 65535')
         gate = group.setdefault('gate', mainland)
-        if gate not in ids or any(r['id'] == gate and r['kind'] == 'RAID' for r in regions):
-            raise ValueError('gate must be one of the region ids and not a RAID region')
+        if gate not in ids or any(r['id'] == gate and r['kind'] in ('RAID', 'EVENT') for r in regions):
+            raise ValueError('gate must be one of the region ids and not a RAID or EVENT region')
         if type(group.setdefault('relay_bind', '0.0.0.0')) is not str or not group['relay_bind']:
             raise ValueError('relay_bind must be an address')
         if type(group.setdefault('relay_capture', False)) is not bool:
@@ -1752,7 +1757,7 @@ def setup(group, platform=None, region_id=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
-                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] else 0,
+                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] != 'EVENT' else 0,
                     'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
                     # The host service's doorman on this machine; regions ask it which peers
                     # sleep (a direct poll would wake them) and to wake one for a traveller.
@@ -1763,6 +1768,9 @@ def setup(group, platform=None, region_id=None):
         (config / 'shard_region.json').write_text(json.dumps(settings, indent=1) + '\n', encoding='utf-8')
         if any(r['kind'] == 'BARRACKS' for r in group['regions']) and region['kind'] in ('BARRACKS', 'BATTLE'):
             (config / 'tdm-token.txt').write_text(group_token(group, 'tdm-token.txt') + '\n', encoding='utf-8')
+        if any(r['kind'] == 'EVENT' for r in group['regions']):
+            # Every region: home worlds and the event world tell each other who went where.
+            (config / 'event-token.txt').write_text(group_token(group, 'event-token.txt') + '\n', encoding='utf-8')
         if region['kind'] == 'BATTLE':
             # What scripts/shard-group/battle_mapswap.py needs to build the next voted map.
             build = {'root': str(Path(group['root']).resolve()), 'region': region['id'], 'git': group['git'],
@@ -2520,6 +2528,9 @@ def group_status(group, only=None, view=region_view, platform=None):
                 # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
                 if type(seen.get('battle_phase')) is str:
                     entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
+                # Characters kept here while their players are at an event region.
+                if type(seen.get('event_away')) is int and seen['event_away'] >= 0:
+                    entry['region_view']['event_away'] = seen['event_away']
                 age = seen.get('ordinal_age')
                 if type(age) is int and 0 <= age < len(EPOCH_NAMES):
                     entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}

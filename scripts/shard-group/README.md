@@ -43,7 +43,7 @@ See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
-`ORBIT`, `BARRACKS`, `BATTLE` or `OTHER`; a `RAID` or `BATTLE` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
+`ORBIT`, `BARRACKS`, `BATTLE`, `EVENT` or `OTHER`; a `RAID`, `BATTLE` or `EVENT` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds`, `backups_kept`, `min_free_disk_mb`
 (default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off)
@@ -82,6 +82,24 @@ Barracks every 10 seconds, and a frozen Barracks would hold those reports.
 - A `start` or `update` of the battle region builds the last voted map again
   (`rotation.json` state `ready` or `building`), or its configured `map` when
   there is none, so a rebuild after master moves keeps the voted map.
+
+## Event regions
+
+A region of kind `EVENT` is a world for admin-run events. An admin uses
+**Event Transfer** (Admin tab) to send everyone, or chosen players, from their
+land to it; their characters stay in their own land, saved and out of play,
+until they come back, where they stood or beside their bed. See
+[docs/event-regions.md](../../docs/event-regions.md).
+
+- An `EVENT` region never saves (`setup` writes `save_minutes` 0 for it), keeps
+  no homes, and cannot be the mainland or the relay gate. Trails never lead
+  there, and the Regions panel offers no Join link for it.
+- `setup` writes the group's shared `config/event-token.txt` into every region
+  of a group that has an `EVENT` region. Re-run `setup` after adding one, and
+  restart the other regions so they learn the new peer and token.
+- `status` shows `event_away` in a region's `region_view`: how many characters
+  wait there while their players are at an event. The launcher shows it on the
+  region's row, and marks the event region.
 
 ## The live group (Gaia)
 

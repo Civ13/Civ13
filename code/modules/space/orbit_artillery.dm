@@ -36,7 +36,7 @@
 #define ORBIT_ARTILLERY_WARN_RANGE 15
 
 // Peer kinds a battery may not fire on.
-var/global/list/orbit_artillery_closed_kinds = list("ORBIT", "RAILYARD", "BARRACKS", "BATTLE", "RAID")
+var/global/list/orbit_artillery_closed_kinds = list("ORBIT", "RAILYARD", "BARRACKS", "BATTLE", "RAID", "EVENT")
 // Painted spots on this world: list(party, turf, world.time painted). Runtime only.
 var/global/list/orbit_artillery_marks = list()
 var/global/orbit_artillery_next_poll = 0

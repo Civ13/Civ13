@@ -517,9 +517,18 @@ public static class LocalHosting {
             // TDM Barracks and battle regions: what the battle is doing.
             if (Str(view, "error") == null && Str(view, "battle_phase") is { Length: > 0 } phase)
                 parts.Add("battle " + BattlePhase(phase));
+            // Characters kept in this land while their players are at an event region.
+            if (Str(view, "error") == null && EventAway(view) is > 0 and var away)
+                parts.Add(AwayText(away));
         }
+        if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
+
+    // shard_group.py region_view event_away (code/modules/persistence/region_event.dm), or null.
+    public static int? EventAway(JsonElement view) =>
+        view.TryGetProperty("event_away", out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out var count) && count >= 0 ? count : null;
+    public static string AwayText(int away) => away == 1 ? "1 player away at an event" : away + " players away at an event";
 
     // shard_group.py region_view battle_phase (code/modules/tdm_barracks): plain words for the Host tab.
     public static string BattlePhase(string phase) => phase switch {
