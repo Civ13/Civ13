@@ -28,3 +28,9 @@
 
 /obj/structure/bed/bedroll/persistence_runtime_var(key)
 	return key == "cover_overlay" || key == "use_cycle" || ..()
+
+// A material stack's crafting recipes are rebuilt from its material in New() and
+// again whenever someone opens the list. Saving them wrote thousands of recipe
+// datums per level (about 2,200 on Gaia's level 1 and 5,200 on level 2, 2026-11-13).
+/obj/item/stack/material/persistence_runtime_var(key)
+	return key == "recipes" || ..()
