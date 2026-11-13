@@ -33,7 +33,7 @@ KNAPPED = {
     '/obj/item/weapon/material/hide_scraper': 'basic_tools',
 }
 STATES = {'atlatl', 'atlatl_loaded', 'atlatl_dart', 'bola', 'javelin', 'stone_club',
-          'digging_stick', 'hand_axe', 'hide_scraper', 'bone_needle', 'stone_adze'}
+          'digging_stick', 'hand_axe', 'hide_scraper', 'bone_needle', 'stone_adze', 'flint_knife'}
 
 
 def dmi_states(path):
