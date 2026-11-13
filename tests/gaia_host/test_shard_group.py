@@ -1599,6 +1599,103 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(self.machine.detached[-1][-2], 'restart')
         self.assertFalse(host.frozen())
 
+    def test_an_empty_saved_region_updates_at_once_when_master_moves_on(self):
+        # Val (2026-11-13): once the region is empty and has saved, an update is built beside it
+        # and it restarts onto it straight away, without waiting the idle minutes for sleep.
+        group, host = self.built()
+        self.machine.up = {1720}
+        idle, wait = host.watch_step(None)
+        self.assertEqual(['--worker', 'stage'], self.machine.detached[-1][-3:-1], 'the update is built beside the world')
+        self.assertEqual((idle, wait), (0, 30))
+        self.machine.clock += 20 * 60  # the build is slow: the region does not fall asleep meanwhile
+        idle, _ = host.watch_step(idle)
+        self.assertFalse(host.frozen())
+        self.assertEqual('stage', self.machine.detached[-1][-2], 'only one build')
+        host.work('stage', self.machine.detached[-1][-1])
+        host.watch_step(idle)
+        self.assertEqual('restart', self.machine.detached[-1][-2])
+
+    def test_a_player_online_or_an_unsaved_world_holds_the_update(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        host.write_json(host.activity_file, {'last_client': 100})  # someone played since the last save
+        self.machine.clock = 200
+        host.watch_step(None)
+        self.assertEqual([], [argv for argv in self.machine.detached if argv[-2] == 'stage'], 'no save since the last player')
+        self.assertEqual(0, sum(1 for argv, _ in self.machine.calls if argv[1:2] == ['fetch']), 'nothing fetched yet')
+
+    def test_update_when_empty_off_leaves_the_old_behaviour(self):
+        self.group['update_when_empty'] = False
+        group, host = self.built()
+        self.machine.up = {1720}
+        idle, _ = host.watch_step(None)
+        self.machine.clock += 5 * 60
+        host.watch_step(idle)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')])
+        # The launcher's toggle rewrites the group config; the host reads it at the next check.
+        self.group['update_when_empty'] = True
+        self.write_group()
+        host.watch_step(idle)
+        self.assertEqual('stage', self.machine.detached[-1][-2])
+
+    def test_the_remote_is_checked_at_most_every_update_check_minutes(self):
+        self.group['update_check_minutes'] = 10
+        self.group['fetch'] = 'origin'
+        group, host = self.built()
+        self.machine.revision = REVISION  # nothing new
+        self.machine.up = {1720}
+        fetches = lambda: sum(1 for argv, _ in self.machine.calls if argv[1:2] == ['fetch'])
+        idle, _ = host.watch_step(None)
+        first = fetches()
+        self.assertGreater(first, 0)
+        self.machine.clock += 9 * 60
+        idle, _ = host.watch_step(idle)
+        self.assertEqual(first, fetches())
+        self.machine.clock += 60
+        host.watch_step(idle)
+        self.assertGreater(fetches(), first)
+
+    def test_a_failed_update_build_is_not_retried_for_the_same_revision(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        self.machine.compile_output = 'region.dmb - 1 errors, 0 warnings'
+        idle, _ = host.watch_step(None)
+        host.work('stage', self.machine.detached[-1][-1])
+        self.assertEqual('failed', host.read_json(host.stage_file)['phase'])
+        stages = len(self.machine.detached)
+        self.machine.clock += 15 * 60
+        host.watch_step(idle)
+        self.assertEqual(stages, len(self.machine.detached), 'no rebuild of the same broken revision')
+
+    def test_a_world_that_does_not_save_is_left_alone(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        self.machine.query = lambda *args, **kwargs: {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32,
+                                                      'persistence_mode': 0}
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')])
+
+    def test_an_asleep_region_builds_the_update_and_wakes_on_it(self):
+        group, host = self.built()
+        self.machine.pids = {77}
+        self.machine.connections = lambda port: []
+        host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
+        self.machine.up = {1720}
+        host.watch_step(None)
+        self.assertEqual('stage', self.machine.detached[-1][-2])
+        self.assertTrue(host.frozen(), 'building does not wake it')
+        host.work('stage', self.machine.detached[-1][-1])
+        self.assertTrue(host.update_pending())
+
+    def test_update_when_empty_must_be_a_boolean(self):
+        self.group['update_when_empty'] = 'yes'
+        with self.assertRaisesRegex(ValueError, 'update_when_empty'):
+            self.write_group()
+        self.group['update_when_empty'] = True
+        self.group['update_check_minutes'] = 0
+        with self.assertRaisesRegex(ValueError, 'update_check_minutes'):
+            self.write_group()
+
     def test_stage_reaches_every_region_from_the_command_line(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)

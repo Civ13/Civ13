@@ -219,6 +219,12 @@ static class LocalHostingTests {
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2,
             "players' warning saved, other settings kept");
         Reject(() => HostSettings.SetShutdownWarningSeconds(host.Control!.Group!, 3601), "a warning over an hour");
+        // Update when empty: on unless the group config says false; turning it on makes the group follow origin/master.
+        Require(HostSettings.UpdateWhenEmpty(host.Control!.Group!) && !HostSettings.FollowsRemote(host.Control!.Group!), "update when empty on by default");
+        Require(!HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, false) && !HostSettings.UpdateWhenEmpty(host.Control!.Group!), "update when empty off");
+        Require(HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true) && HostSettings.UpdateWhenEmpty(host.Control!.Group!)
+            && HostSettings.FollowsRemote(host.Control!.Group!) && !HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true), "update when empty follows origin/master once");
+        Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
         var places = HostSettings.Locations(host.Control!.Group!);
         Require(places.Select(place => (place.Label, place.Folder, place.Region)).SequenceEqual(new[] {
             ("Every region (shared)", Path.GetFullPath(sharedOverlay), (string?)null), ("Gaia only", Path.GetFullPath(gaiaOverlay), "gaia") }),

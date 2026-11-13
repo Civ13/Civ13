@@ -74,6 +74,7 @@ STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
+DEFAULT_UPDATE_CHECK_MINUTES = 5  # how often an empty or sleeping region fetches to look for an update
 DEFAULT_MIN_FREE_DISK_MB = 2048  # stage and handover refuse below this much free disk (min_free_disk_mb)
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
@@ -225,6 +226,13 @@ def load_group(path):
     # The players' countdown before a save and stop, restart or handover (seconds, 0-3600).
     group.setdefault('shutdown_warning_seconds', gaia_host.DEFAULT_SHUTDOWN_WARNING_SECONDS)
     gaia_host.check_shutdown_warning(group['shutdown_warning_seconds'])
+    # A region that is empty and has saved since its last player moves onto the latest revision
+    # at once (RegionHost.update_while_empty); the remote is checked at most this often.
+    if type(group.setdefault('update_when_empty', True)) is not bool:
+        raise ValueError('update_when_empty must be true or false')
+    minutes = group.setdefault('update_check_minutes', DEFAULT_UPDATE_CHECK_MINUTES)
+    if type(minutes) is not int or not 1 <= minutes <= 1440:
+        raise ValueError('update_check_minutes must be a whole number of minutes, 1-1440')
     # stage and handover refuse while the region's drive has less than this free: a handover
     # copies the build, writes a whole save and backs it up, and a full drive fails it midway.
     group.setdefault('min_free_disk_mb', DEFAULT_MIN_FREE_DISK_MB)
@@ -722,6 +730,67 @@ class RegionHost(Host):
             self.stage_lock.unlink(missing_ok=True)
             if install and ready:
                 self.install_after_stage()
+
+    # -- updating an empty region -------------------------------------------------
+    # Val (2026-11-13): once the last player leaves and the world has saved, a region with an
+    # update waiting shuts down, takes the new build and starts again. The update is built
+    # beside the running world first (stage), so a failed build never takes it down and a
+    # player who joins meanwhile is never kicked: the restart waits until it is empty again.
+    def update_settings(self):
+        """(update_when_empty, update_check_minutes) from the group config, read at each check
+        so the launcher's toggle applies without a setup or a host service restart."""
+        try:
+            group = load_group(self.config['group_config'])
+            return group['update_when_empty'], group['update_check_minutes']
+        except (OSError, ValueError, KeyError):
+            return False, DEFAULT_UPDATE_CHECK_MINUTES
+
+    def update_when_empty(self):
+        return self.update_settings()[0]
+
+    def stage_if_behind(self):
+        """Stage the latest revision when the region's build is behind it; at most once per
+        update_check_minutes (each check fetches). True when a stage was started."""
+        now = self.platform.now()
+        if now < self.next_update_check or self.stage_lock.exists():
+            return False
+        self.next_update_check = now + self.update_settings()[1] * 60
+        try:
+            latest = self.latest_revision()
+        except (Refused, RuntimeError, OSError) as error:
+            self.log({'update_check_failed': str(error)[:300]})
+            return False
+        if not HEX40.match(latest or '') or latest == self.built_revision() or latest == self.staged_revision():
+            return False
+        stage = self.read_json(self.stage_file) or {}
+        if stage.get('phase') == 'failed' and stage.get('revision') == latest:
+            return False  # that build already failed; a new commit or a Build update tries again
+        try:
+            self.log(dict(self.request_stage(), reason='update available', revision=latest))
+        except Refused as refusal:
+            self.log({'update_stage_refused': str(refusal)})
+            return False
+        return True
+
+    def update_while_empty(self):
+        """An awake region that is empty and saved: restart onto a ready update, or build the
+        latest revision beside it. The next wait, or None to carry on towards sleep."""
+        if self.update_pending():
+            try:
+                self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
+            except Refused as refusal:
+                self.log({'staged_install_refused': str(refusal)})
+                return None
+            return 30
+        if self.stage_lock.exists():
+            return 30  # an update is building: restart onto it once it is ready, rather than sleep
+        return 30 if self.stage_if_behind() else None
+
+    def keep_sleeper_current(self):
+        """An asleep or cold region: build the latest revision, which install_staged_while_down
+        then copies in, so its next wake starts on it."""
+        if self.update_when_empty():
+            self.stage_if_behind()
 
     def install_after_stage(self):
         """update-offline: copy the build just staged into a region that is still not running,
