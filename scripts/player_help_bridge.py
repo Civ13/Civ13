@@ -713,6 +713,7 @@ def region_travel_knowledge(root):
             'It leads to [destination_name()]. Use it to travel there with what you wear and carry.',
             'The trail is overgrown. It leads nowhere for now.',
             'Nobody seems to be coming back from [destination_name()] right now.',
+            'is closed for now: its land is not running, so the trail cannot take anyone there.',
             'Only players with a BYOND account can travel.', 'You are too hurt to make the journey.',
             "You can't set off right now.", 'You carry too much to travel.',
             'Join it to continue; if your character cannot be taken in there, you will find them back here.'),
@@ -720,7 +721,8 @@ def region_travel_knowledge(root):
     text = ('REVIEWED CURRENT GAMEPLAY CODE - TRAVEL BETWEEN LANDS (region trails): '
             'Some persistent worlds are split into several lands, each its own server, joined by trails. '
             'Examine a trail to see which land it leads to, or that it is overgrown (no land connected right now) '
-            'or that nobody is coming back from there (that land is down). Use the trail with an empty hand and '
+            'or that nobody is coming back from there (that land is down), or that the land is closed for now (its server is stopped; '
+            'the trail opens again once an admin starts it, and admins are told someone tried). Use the trail with an empty hand and '
             'confirm to set off. You leave with what you wear and carry; the game then sends you to the other land, '
             'where you join to continue as the same character. You cannot travel without a BYOND account, while hurt '
             '(health must be full), restrained, buckled, pulling something, or while carrying too much; the trail '

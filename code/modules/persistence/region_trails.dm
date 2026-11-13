@@ -136,6 +136,11 @@ var/global/list/region_trail_next_request = list()
 	if(!choice || QDELETED(src) || !check_rights(R_ADMIN, TRUE, admin)) return
 	if(approve(choices[choice], admin.ckey))
 		message_admins("[key_name_admin(admin)] approved the trail at [x],[y],[z] to [html_encode(destination_name())].")
+		// A trail never starts a stopped land: say so now rather than when a
+		// traveller is turned back.
+		var/list/peer = shard_group.peers[destination]
+		if(peer && peer["state"] == "STOPPED")
+			to_chat(admin, SPAN_WARNING("[destination_name()] is stopped right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
 
 // Opens the trail toward a known peer. Returns TRUE when it did.
 /obj/structure/region_gate/trail_marker/proc/approve(id, by)

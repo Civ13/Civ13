@@ -593,7 +593,11 @@ var/global/list/region_travel_carry_types = list(
 	// Event regions are reached only by an admin's event transfer (region_event.dm).
 	if(peer && peer["kind"] == "EVENT")
 		return "The trail is overgrown. It leads nowhere for now."
-	// A sleeping region is woken when someone sets off (travel()).
+	// A sleeping region is woken when someone sets off (travel()). A stopped
+	// one stays down until the host starts it again, so the traveller is told
+	// so plainly and the admins hear someone is waiting at the trail.
+	if(peer && peer["state"] == "STOPPED")
+		return "[destination_name()] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
 	if(!peer || peer["state"] != "UP" && !shard_group.peer_wakeable(destination))
 		return "Nobody seems to be coming back from [destination_name()] right now."
 	if(busy || persistence_save_active())
@@ -622,6 +626,7 @@ var/global/list/region_travel_carry_types = list(
 	var/reason = travel_refusal(H)
 	if(reason)
 		to_chat(H, SPAN_WARNING(reason))
+		alert_stopped_destination(H)
 		return
 	var/list/items = H.region_travel_items()
 	if(istext(items))
@@ -655,6 +660,24 @@ var/global/list/region_travel_carry_types = list(
 	var/result = depart(H)
 	if(result != "departed")
 		to_chat(H, SPAN_WARNING(result))
+
+// A player turned back because the destination's server is stopped: tell the
+// admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since only the host
+// can start it again (a trail never starts a stopped land).
+#define REGION_STOPPED_ALERT_COOLDOWN 6000
+var/global/list/region_stopped_alerted = list()
+
+/obj/structure/region_gate/proc/alert_stopped_destination(mob/living/human/H)
+	if(!destination || !shard_group.enabled) return FALSE
+	var/list/peer = shard_group.peers[destination]
+	if(!peer || peer["state"] != "STOPPED") return FALSE
+	if(world.time < region_stopped_alerted[destination]) return FALSE
+	region_stopped_alerted[destination] = world.time + REGION_STOPPED_ALERT_COOLDOWN
+	log_game("Region travel: [key_name(H)] was turned back at [x],[y],[z]: [destination] is stopped.")
+	message_admins("[key_name_admin(H)] tried the trail at [x],[y],[z] to [html_encode(destination_name())], but that land is stopped. Start it from the host or launcher if players should reach it.")
+	return TRUE
+
+#undef REGION_STOPPED_ALERT_COOLDOWN
 
 // Sends a character whose owner is recorded. Returns "departed" or a reason.
 // Players reach this through travel(); a host agent can call it for a test
