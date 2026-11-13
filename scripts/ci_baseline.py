@@ -1753,13 +1753,14 @@ SUITES = {
     'save_policy': {'files': ('tests/save_policy/test_policy.py', 'tests/save_policy/test_runtime_var_cache.py',
                               'tests/save_policy/test_save_validator_boot.py',
                               'tests/save_policy/test_private_scratch_savefiles.py',
+                              'tests/save_policy/test_stack_recipes_unsaved.py',
                               'tests/save_policy/test_action_locks_unsaved.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/research_tree/scholar_practice.dm', 'code/game/objects/structures/tree_climbing.dm',
         'code/game/mob/living/carbon/human/resuscitation.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
-        'code/modules/persistence/train_body_graph.dm')},
+        'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
