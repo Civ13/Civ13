@@ -61,6 +61,7 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import byond_text_md5, query  # noqa: E402
+import player_changelog  # noqa: E402
 
 # Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
 # service would each flash a console window on Windows.
@@ -287,6 +288,9 @@ class Platform:
 
     def query(self, port, token, action='status', operation=None, session=None, extra=None):
         return query(port, token, action, operation, session, extra=extra)
+
+    def http_get_json(self, url):
+        return player_changelog.http_get_json(url, os.environ.get('CIV13_GITHUB_TOKEN') or None)
 
     def start_task(self, name):
         return self.run(['schtasks', '/Run', '/TN', name], timeout=60)
@@ -1377,6 +1381,7 @@ class Host:
             self.platform.sleep(2)
         self.mark_running()
         self.clear_watchdog_holds()
+        self.write_player_changelog(revision)
         self.record(phase='started')
 
     def start_task(self):
@@ -1566,6 +1571,21 @@ class Host:
             temporary.write_text(json.dumps(record), encoding='utf-8')
             os.replace(temporary, path)
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError):
+            pass
+
+    def write_player_changelog(self, revision):
+        """Refresh config/player-changelog.json (the lobby's What's New) from the merged PRs'
+        Changelog: lines in this revision. Runs after the world is up so GitHub never delays a
+        start; the world re-reads the file. Best effort: a failure keeps the previous list."""
+        fetch = getattr(self.platform, 'http_get_json', None)
+        if fetch is None or not HEX40.match(revision or ''):
+            return
+        try:
+            code, out = self.platform.run([self.config['git'], 'rev-list', '--max-count=%d' % player_changelog.HISTORY_DEPTH,
+                                           revision], cwd=self.repo, timeout=60)
+            player_changelog.write(self.repo, revision, player_changelog.history_from_output(code, out), fetch,
+                                   now=self.platform.now())
+        except Exception:  # never fails a start or a handover
             pass
 
     def built_revision(self):

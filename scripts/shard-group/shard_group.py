@@ -1115,6 +1115,7 @@ class RegionHost(Host):
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
         self.record_build(revision, spare)
         self.write_server_build(revision, self.repo / spare)
+        self.write_player_changelog(revision)
         self.record(phase='checking out', revision=revision)
         try:  # the sources beside the new build; the world itself needs nothing from them
             prepare_tree(group, region, self.repo, revision, self.platform, self.config['git'])

@@ -228,6 +228,30 @@ class GaiaHostTests(unittest.TestCase):
         record = json.loads((self.repo / 'config' / 'server-build.json').read_text())
         self.assertEqual((record['revision'], record['deployed']), ('e' * 40, 1794801600))
 
+    def test_start_refreshes_the_player_changelog_after_the_world_is_up(self):
+        fetched = []
+
+        def fetch(url):
+            fetched.append(self.machine.up)
+            return [{'number': 9, 'merge_commit_sha': REVISION, 'merged_at': '2026-11-13T10:00:00Z',
+                     'body': 'Changelog: Added sails.'}]
+        self.machine.http_get_json = fetch
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertEqual(fetched, [True], 'GitHub is asked only once the world is listening')
+        self.assertTrue(any(call[1:2] == ['rev-list'] for call in self.machine.calls))
+        # rev-list output is empty in this fake, so every merged PR counts
+        record = json.loads((self.repo / 'config' / 'player-changelog.json').read_text())
+        self.assertEqual((record['revision'], record['entries'][0]['text']), (REVISION, 'Added sails.'))
+
+    def test_player_changelog_failure_never_blocks_start(self):
+        def fetch(url):
+            raise OSError('offline')
+        self.machine.http_get_json = fetch
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertFalse((self.repo / 'config' / 'player-changelog.json').exists())
+
     def test_server_build_failure_never_blocks_start(self):
         (self.repo / 'config').mkdir(exist_ok=True)
         (self.repo / 'config' / 'server-build.json').mkdir()  # cannot be replaced

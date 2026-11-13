@@ -147,7 +147,8 @@ var/global/redirect_all_players = null
 		else
 			output += "<p><a href='byond://?src=\ref[src];late_join=1'>["Join Game!"]</a></p>"
 
-	var/height = 280
+	var/height = 310
+	output += "<p><a href='byond://?src=\ref[src];changelog=1'>What's New</A></p>"
 	if (ticker && !practice_rooms.entry_error())
 		output += "<p><a href='byond://?src=\ref[src];practice=1'>Practice Room</A></p>"
 		height += 30
@@ -211,6 +212,10 @@ var/global/redirect_all_players = null
 
 	if (href_list["show_preferences"])
 		client.prefs.ShowChoices(src)
+		return TRUE
+
+	if (href_list["changelog"])
+		client.show_player_changelog()
 		return TRUE
 
 	if (href_list["ready"])
