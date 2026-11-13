@@ -70,6 +70,8 @@
 			meat_amount = 1
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				if (female)
 					babydeer = FALSE
 					icon_state = "deer_f"
@@ -229,6 +231,8 @@
 			meat_amount = 1
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				if (female)
 					babydeer = FALSE
 					icon_state = "dikdik_female"

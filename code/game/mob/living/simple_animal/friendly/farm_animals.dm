@@ -145,6 +145,8 @@
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				calf = FALSE
 				icon_state = "bull"
 				icon_living = "bull"
@@ -165,6 +167,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				calf = FALSE
 				icon_state = "cow"
 				icon_living = "cow"
@@ -472,6 +476,8 @@
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				piglet = FALSE
 				icon_state = "pig_boar"
 				icon_living = "pig_boar"
@@ -492,6 +498,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				piglet = FALSE
 				icon_state = "pig_gilt"
 				icon_living = "pig_gilt"
@@ -642,6 +650,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				piglet = FALSE
 				icon_state = "boar_gilt"
 				icon_living = "boar_gilt"
@@ -750,6 +760,8 @@
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				lamb = FALSE
 				icon_state = "goat_ram"
 				icon_living = "goat_ram"
@@ -788,6 +800,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				lamb = FALSE
 				icon_state = "goat_ewe"
 				icon_living = "goat_ewe"
@@ -879,27 +893,24 @@
 /mob/living/simple_animal/sheep/uses_defensive_retaliation()
 	return !lamb && ..()
 
+// Picks the body sprites, then lets the base proc show icon_dead on a corpse.
 /mob/living/simple_animal/sheep/update_icons()
-	..()
 	if (sheared)
-		icon_state = "sheep_ram_sheared"
-		icon_living = "sheep_ram_sheared"
-		icon_dead = "sheep_ram_sheared_dead"
+		icon_living = "[adult_sheep_state()]_sheared"
+	else if (lamb)
+		icon_living = "sheep_lamb"
 	else
-		icon_state = "sheep_ram"
-		icon_living = "sheep_ram"
-		icon_dead = "sheep_ram_dead"
+		icon_living = adult_sheep_state()
+	icon_dead = "[icon_living]_dead"
+	if (stat != DEAD)
+		icon_state = icon_living
+	..()
 
-/mob/living/simple_animal/sheep/female/update_icons()
-	..()
-	if (sheared)
-		icon_state = "sheep_ewe_sheared"
-		icon_living = "sheep_ewe_sheared"
-		icon_dead = "sheep_ewe_sheared_dead"
-	else
-		icon_state = "sheep_ewe"
-		icon_living = "sheep_ewe"
-		icon_dead = "sheep_ewe_dead"
+/mob/living/simple_animal/sheep/proc/adult_sheep_state()
+	return "sheep_ram"
+
+/mob/living/simple_animal/sheep/female/adult_sheep_state()
+	return "sheep_ewe"
 
 /mob/living/simple_animal/sheep/female
 	name = "sheep ewe"
@@ -929,6 +940,8 @@
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				lamb = FALSE
 				icon_state = "sheep_ram"
 				icon_living = "sheep_ram"
@@ -947,6 +960,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				lamb = FALSE
 				icon_state = "sheep_ewe"
 				icon_living = "sheep_ewe"
@@ -955,6 +970,8 @@
 
 /mob/living/simple_animal/sheep/proc/regrowth()
 	spawn(4800)
+		if (stat == DEAD) // a corpse keeps its sprite
+			return
 		sheared = FALSE
 		update_icons()
 		return
@@ -1077,11 +1094,9 @@
 	else
 		..()
 /mob/living/simple_animal/camel/update_icons()
-	..()
-	if (packed)
-		icon_state = "pack_camel"
-	else
-		icon_state = "camel"
+	if (stat != DEAD)
+		icon_state = packed ? "pack_camel" : "camel"
+	..() // a dead camel shows icon_dead
 
 /mob/living/simple_animal/camel/verb/remove_from_storage()
 	set category = null

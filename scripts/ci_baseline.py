@@ -302,12 +302,14 @@ SUITES = {
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
         'shared_paths': tuple(f'tests/{name}/run.py' for name in (
             'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
-            'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+            'animal_dead_states', 'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save',
+            'vending_load'))},
     'fixture_compiler_output': {'files': ('tests/fixture_compiler_output/test_compiler_output.py',),
         'paths': ('tests/fixture_compiler_output/', 'scripts/fixture_compiler_output.py'),
         'shared_paths': ('scripts/fixture_global_initialization.py',) + tuple(f'tests/{name}/run.py' for name in (
             'ammo_casing_load', 'berry_load', 'construction_weathering_load', 'custom_clothing_load',
-            'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save', 'vending_load'))},
+            'animal_dead_states', 'gun_icon_states', 'load_construction', 'roof_support_load', 'trench_save',
+            'vending_load'))},
     # Offline mocked runner contracts; the native irrigation workflow remains opt-in.
     'irrigation_ci_runner': {'files': ('tests/irrigation_persistence/test_ci_runner.py',),
         'paths': ('tests/irrigation_persistence/', 'tests/trench_save/', 'code/world.dm',
@@ -747,6 +749,18 @@ SUITES = {
             'code/modules/1713/farmers_almanac.dm',
             'code/modules/1713/weather.dm',
             'code/game/objects/farming.dm')},
+    # Dead animal sprites: reviewed gap list against the DMI files, update_icons()
+    # overrides and grow-up timers. run.py (native sweep) is not part of this suite.
+    'animal_dead_states': {'files': ('tests/animal_dead_states/test_animal_dead_states.py',),
+        'paths': ('tests/animal_dead_states/',),
+        'shared_paths': (
+            'scripts/fixture_compiler_output.py',
+            'scripts/fixture_global_initialization.py',
+            'code/game/mob/living/simple_animal/',
+            'code/modules/1713/complex_animal/',
+            'code/modules/magic/magic_npcs_hostile.dm',
+            'code/modules/magic/magic_npcs_friendly.dm',
+            'icons/mob/', 'icons/obj/flora/largejungleflora.dmi')},
     # Gun sprite-state fallback: reviewed gap list against the DMI files and the
     # render paths that apply it. run.py (native sweep) is not part of this suite.
     'gun_icon_states': {'files': ('tests/gun_icon_states/test_gun_icon_states.py',),

@@ -114,6 +114,8 @@
 			meat_amount = 2
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				calf = FALSE
 				icon_state = "bisonbull"
 				icon_living = "bisonbull"
@@ -134,6 +136,8 @@
 			udder.remove_reagent("milk")
 			mob_size = MOB_SMALL
 			spawn(3000)
+				if (stat == DEAD) // a corpse keeps its sprite
+					return
 				calf = FALSE
 				icon_state = "bison_cow"
 				icon_living = "bison_cow"
