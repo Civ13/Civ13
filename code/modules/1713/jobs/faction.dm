@@ -65,9 +65,6 @@ var/global/soldiers[27]
 	title = "Pirate"
 	team = TEAM_PI
 
-/datum/faction/pirates/base_type()
-	return "/datum/faction/pirates"
-
 /datum/faction/spanish
 	icon_state = "spanish_basic"
 	title = "Spanish"

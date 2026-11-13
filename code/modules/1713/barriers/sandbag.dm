@@ -43,19 +43,6 @@
 				H.dir = get_dir(H, src)
 				do_climb(H)
 
-/obj/structure/window/barrier/ex_act(severity)
-	switch(severity)
-		if (1.0)
-			qdel(src)
-			return
-		if (2.0)
-			qdel(src)
-			return
-		else
-			if (prob(50))
-				return ex_act(2.0)
-	return
-
 var/set_dir = null // Set the variable outside of any scopes
 
 /obj/structure/window/barrier/New(location, var/mob/creator, direction)

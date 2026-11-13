@@ -46,18 +46,6 @@
 		if (INDIANS)
 			return "Warband Mercenaries"
 
-/obj/map_metadata/tadojsville/short_win_time(faction)
-	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 600
-	else
-		return 3000 // 5 minutes
-
-/obj/map_metadata/tadojsville/long_win_time(faction)
-	if (!(alive_n_of_side(faction1)) || !(alive_n_of_side(faction2)))
-		return 600
-	else
-		return 3000 // 5 minutes
-
 /obj/map_metadata/tadojsville/update_win_condition()
 	if (world.time >= 21000)
 		if (win_condition_spam_check)

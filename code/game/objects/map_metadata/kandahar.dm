@@ -109,19 +109,6 @@
 	else
 		return ""
 
-/obj/map_metadata/kandahar/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (caribbean_blocking_area_types.Find(A.type))
-		if (H.faction_text == faction2 || H.faction_text == faction1 && !H.original_job.is_muj)
-			return !faction1_can_cross_blocks()
-		else if (H.original_job.is_muj)
-			return !faction2_can_cross_blocks()
-		else
-			return FALSE
-	return FALSE
-
 /obj/map_metadata/kandahar/proc/points_check()
 	if (processes.ticker.playtime_elapsed > 4800)
 		var/c1 = 0

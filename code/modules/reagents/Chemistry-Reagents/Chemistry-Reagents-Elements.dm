@@ -839,11 +839,6 @@
 	atomic_nr = 80
 	chemical_symbol = "Hg"
 
-/datum/reagent/mercury/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	if (prob(5))
-		M.emote(pick("twitch", "drool", "moan"))
-	M.adjustBrainLoss(0.1)
-
 /datum/reagent/thallium
 	name = "Thallium"
 	id = "thallium"
