@@ -879,6 +879,12 @@ SUITES = {
         'code/game/objects/map_metadata/yeltsin.dm',
         'code/game/objects/map_metadata/zhenbao.dm',
     )},
+    # Piano, violin, shamisen and trumpet share one song player and editor;
+    # source contracts against the frozen copies, no BYOND runtime.
+    'instrument_song': {'files': ('tests/instrument_song/test_instrument_song.py',), 'paths': ('tests/instrument_song/',),
+        'shared_paths': ('code/game/objects/items/devices/instrument_song.dm', 'code/game/objects/items/devices/violin.dm',
+                         'code/game/objects/items/devices/shamisen.dm', 'code/game/objects/items/devices/trombone.dm',
+                         'code/game/objects/structures/piano.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
