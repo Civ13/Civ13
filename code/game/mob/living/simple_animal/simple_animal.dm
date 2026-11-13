@@ -833,7 +833,8 @@
 		return
 
 /mob/living/simple_animal/handle_mutations_and_radiation()
-	if (z == multiz_top_z())
+	// rad_act() ignores a dose of zero, so skip finding the surface level.
+	if (global_radiation > 0 && z == multiz_top_z())
 		rad_act((global_radiation/1000))
 	if (radiation < 0)
 		radiation = 0

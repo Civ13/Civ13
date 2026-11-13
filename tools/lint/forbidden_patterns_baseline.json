@@ -422,7 +422,6 @@
       "code/game/objects/map_metadata/verdun.dm": 7,
       "code/game/objects/map_metadata/voyage.dm": 18,
       "code/game/objects/map_metadata/ypres.dm": 7,
-      "code/game/objects/structures/animalspawner/bearcave.dm": 1,
       "code/game/objects/structures/gladiator_control.dm": 2,
       "code/game/objects/structures/minimap.dm": 1,
       "code/game/objects/structures/vending/npc_vendors.dm": 5,

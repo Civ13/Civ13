@@ -78,6 +78,16 @@
 /mob/living/human/adjustHalLoss(var/amount)
 	var/heal = (amount < 0)
 	amount = abs(amount)
+	// Unconscious bodies heal pain every Life tick. With no damage and no pain on
+	// any limb, healing changes nothing, so skip copying and walking the limbs.
+	if (heal)
+		var/hurt = FALSE
+		for (var/obj/item/organ/external/E in organs)
+			if (E.brute_dam || E.burn_dam || E.pain || E.damage)
+				hurt = TRUE
+				break
+		if (!hurt)
+			return
 	var/list/pick_organs = organs.Copy()
 	while(amount > 0 && pick_organs.len)
 		var/obj/item/organ/external/E = pick(pick_organs)
