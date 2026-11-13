@@ -38,7 +38,7 @@
 	if (config.discordurl)
 		to_chat(src, "<i>If no mentors are online, please ping @Mentor <a href = '[config.discordurl]'>in the discord</a>.</i>")
 
-	discord_mentorhelp_log(key_name(src),msg)
+	discord_mentorhelp_log(key_name(src),msg,holder ? TRUE : FALSE)
 
 	var/mentormsg = "<b><font color=green>Request for Help:</font>[get_options_bar(mob, 4, FALSE, TRUE, FALSE)]:</b> [msg]</font>"
 	var/adminmsg = "(MENTORHELP) [mentormsg]"

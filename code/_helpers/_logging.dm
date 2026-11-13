@@ -43,26 +43,26 @@
 	if (map)
 		oocdiary << "__**\[[time_stamp()]] ([map.ID]) OOC:**__ **[name]** [text]"
 
-/proc/discord_ahelp_log(name,text)
+/proc/discord_ahelp_log(name,text,from_staff = FALSE)
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]"
-		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]")
-	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) AHELP:**__ **[name]** [text]")
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) AHELP:**__ **[name]** [text]", "ahelp", from_staff)
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) AHELP:**__ **[name]** [text]", "ahelp", from_staff)
 
-/proc/discord_mentorhelp_log(name,text)
+/proc/discord_mentorhelp_log(name,text,from_staff = FALSE)
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) MENTORHELP:**__ **[name]** [text]"
-		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) MHELP:**__ **[name]** [text]")
-	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) MHELP:**__ **[name]** [text]")
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) MHELP:**__ **[name]** [text]", "mhelp", from_staff)
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) MHELP:**__ **[name]** [text]", "mhelp", from_staff)
 
-/proc/discord_adminpm_log(name,text,aname)
+/proc/discord_adminpm_log(name,text,aname,from_staff = FALSE)
 	var/admindiary = file("admin.log")
 	if (map)
 		admindiary << "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]"
-		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]")
-	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) ADMINPM TO **[aname]**:**__ **[name]** [text]")
+		webhook_send_asay(name, "__**\[[time_stamp()]] ([map.ID]) ADMINPM TO **[aname]**:**__ **[name]** [text]", "adminpm", from_staff)
+	else webhook_send_asay(name, "__**\[[time_stamp()]] (NULL) ADMINPM TO **[aname]**:**__ **[name]** [text]", "adminpm", from_staff)
 
 /proc/discord_admin_ban(banner,banned,duration,reason)
 	var/admindiary = file("admin.log")
