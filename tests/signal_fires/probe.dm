@@ -69,6 +69,9 @@ var/signal_runtime_error = FALSE
 	signal_check(signal_fire_bearing(locate(150, 50, 1), F) == "to the west, far off", "a fire straight west, far off")
 	signal_check(signal_fire_bearing(locate(350, 50, 1), F) == "to the west, very far off", "three hundred tiles is very far off")
 	signal_check(signal_fire_bearing(locate(40, 40, 1), F) == "to the north-east, close by", "diagonals read north-east")
+	signal_check(signal_fire_bearing(locate(49, 250, 1), F) == "to the south, very far off", "200 tiles south and 1 east is south, not south-east")
+	signal_check(signal_fire_bearing(locate(10, 60, 1), F) == "to the east, some way off", "40 east and 10 south is east")
+	signal_check(signal_fire_bearing(locate(10, 70, 1), F) == "to the south-east, some way off", "40 east and 20 south is south-east")
 	signal_check(signal_fire_bearing(locate(51, 51, 1), F) == "right beside you", "next to the fire")
 
 /proc/signal_tester(x, y, z = 1)
