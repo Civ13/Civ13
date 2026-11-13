@@ -101,8 +101,9 @@ GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/l
 # barracks before it reboots (code/modules/tdm_barracks).
 # EVENT is an admin-run event world: admins send players there and back while
 # their characters wait, saved, in their own land (docs/event-regions.md). It
-# never saves and nobody lives there.
-KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT')
+# never saves and nobody lives there. TUTORIAL only runs the practice rooms, never
+# saves, and sends players back when they leave (code/modules/1713/tutorial_region.dm).
+KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT', 'TUTORIAL')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -179,6 +180,11 @@ def load_group(path):
         raise ValueError('the mainland cannot be a BATTLE region')
     if any(r['id'] == mainland and r['kind'] == 'EVENT' for r in regions):
         raise ValueError('the mainland cannot be an EVENT region')
+    tutorials = [r for r in regions if r['kind'] == 'TUTORIAL']
+    if len(tutorials) > 1:
+        raise ValueError('a group has at most one TUTORIAL region')
+    if any(r['id'] == mainland for r in tutorials):
+        raise ValueError('the mainland cannot be a TUTORIAL region')
     for key, low, high, default in (('save_minutes', 0, 1440, 15), ('travel_save_seconds', 10, 3600, 60)):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
@@ -194,8 +200,8 @@ def load_group(path):
         if type(control) is not int or not 1024 <= control <= 65535 or control in ports or control == relay:
             raise ValueError('relay_control_port must be a free port from 1024 to 65535')
         gate = group.setdefault('gate', mainland)
-        if gate not in ids or any(r['id'] == gate and r['kind'] in ('RAID', 'EVENT') for r in regions):
-            raise ValueError('gate must be one of the region ids and not a RAID or EVENT region')
+        if gate not in ids or any(r['id'] == gate and r['kind'] in ('RAID', 'EVENT', 'TUTORIAL') for r in regions):
+            raise ValueError('gate must be one of the region ids and not a RAID, EVENT or TUTORIAL region')
         if type(group.setdefault('relay_bind', '0.0.0.0')) is not str or not group['relay_bind']:
             raise ValueError('relay_bind must be an address')
         if type(group.setdefault('relay_capture', False)) is not bool:
@@ -1382,8 +1388,7 @@ def prepare_tree(group, region, path, revision, platform, git):
         raise RuntimeError('checkout failed: ' + out.strip()[-300:])
     apply_overlays(group, region, path)
     (path / 'config').mkdir(exist_ok=True)
-    if group['persistent']:
-        persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
+    region_mode_config(group, region, path / 'config' / 'config.txt')
     if group.get('rust_g'):
         shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
     include = place_map(group, region, path)
@@ -1587,8 +1592,7 @@ def apply_config(group, region_id=None, platform=None):
             continue
         try:
             copied = apply_overlays(group, region, path)
-            if group['persistent']:
-                persistent_config(path / 'config' / 'config.txt', saving=not region.get('reset_minutes'))
+            region_mode_config(group, region, path / 'config' / 'config.txt')
         except (RuntimeError, OSError) as error:
             refused[region['id']] = str(error)
             continue
@@ -1653,6 +1657,36 @@ def fetch_remote(group, platform=None):
     if code != 0:
         raise Refused('git fetch %s failed: %s' % (group['fetch'], out.strip()[-300:]))
     return True
+
+
+def region_mode_config(group, region, path):
+    """Set a region's round mode after its overlays: a tutorial region never saves,
+    even in a persistent group; the others follow the group."""
+    if region['kind'] == 'TUTORIAL':
+        tutorial_config(path)
+    elif group['persistent']:
+        persistent_config(path, saving=not region.get('reset_minutes'))
+
+
+def tutorial_config(path):
+    """A tutorial region is an ordinary round that never saves: ALLOWED_GAMEMODES ALL
+    (whatever an overlay set) and SKIP_PERSISTENCE_SAVING on."""
+    lines = path.read_text(encoding='utf-8').splitlines() if path.exists() else []
+    out, skip = [], False
+    for line in lines:
+        key = line.lstrip('#').strip().split(' ', 1)[0]
+        if key == 'ALLOWED_GAMEMODES':
+            continue
+        if key == 'SKIP_PERSISTENCE_SAVING':
+            if not skip:
+                out.append('SKIP_PERSISTENCE_SAVING')
+                skip = True
+            continue
+        out.append(line)
+    out.append('ALLOWED_GAMEMODES ALL')
+    if not skip:
+        out.append('SKIP_PERSISTENCE_SAVING')
+    path.write_text('\n'.join(out) + '\n', encoding='utf-8')
 
 
 def persistent_config(path, saving=True):
@@ -1757,7 +1791,7 @@ def setup(group, platform=None, region_id=None):
         config = path / 'config'
         config.mkdir(exist_ok=True)
         settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
-                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] != 'EVENT' else 0,
+                    'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
                     'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
                     # The host service's doorman on this machine; regions ask it which peers
                     # sleep (a direct poll would wake them) and to wake one for a traveller.

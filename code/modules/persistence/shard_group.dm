@@ -104,7 +104,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -263,7 +263,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	T.admin_started = TRUE
 	// The Barracks is an always-on lobby: no pregame countdown.
-	if(shard_group.kind == "BARRACKS")
+	if(shard_group.kind in list("BARRACKS", "TUTORIAL"))
 		T.skip_pregame_countdown = TRUE
 	log_game("Region group: [shard_group.region] starts its round on its own.")
 	return TRUE
@@ -526,6 +526,7 @@ var/global/datum/shard_group/shard_group = new
 		if("BARRACKS") return "barracks"
 		if("BATTLE") return "battle"
 		if("EVENT") return "event"
+		if("TUTORIAL") return "practice rooms"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"

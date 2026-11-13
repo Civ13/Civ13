@@ -43,7 +43,8 @@ See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
 `public_host` (the address players use to join) and 1 to 16 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
-`ORBIT`, `BARRACKS`, `BATTLE`, `EVENT` or `OTHER`; a `RAID`, `BATTLE` or `EVENT` region cannot be the mainland), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
+`ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
+a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
 (default false, so the worlds are not listed on the hub),
 `save_timeout_seconds`, `start_timeout_seconds`, `backups_kept`, `min_free_disk_mb`
 (default 2048; `stage` and `handover` refuse while the regions' drive has less free, 0 turns it off)

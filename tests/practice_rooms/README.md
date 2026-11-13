@@ -15,6 +15,8 @@ level is admitted by `world_z_budget` and added, other growth is refused while i
 exists, multi-z links skip it, a room is built with walls, floor, area and props,
 each step is pending and then done from the state its click leaves, the body has
 no saved owner, ending wipes the room while another room keeps the level,
-reopening a room replaces its turfs, the last player out removes the level, the save hook removes the level without
+reopening a room replaces its turfs, the last player out removes the level, the tutorial region
+(hand-made group) refuses Join, returns players to the mainland, holds 32 rooms on its
+116 x 60 map, and other regions' lobbies send players there only while it is up, the save hook removes the level without
 stale turf registrations, and the level can be added again. No client joins: the
 lobby link, key transfer, HUD clicks and step messages are not driven.

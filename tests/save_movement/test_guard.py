@@ -91,6 +91,8 @@ class Fixture:
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         # Practice rooms own no saved state; their close hook is covered by tests/practice_rooms.
                         practice_rooms_close_for_save=lambda: True,
+                        # A tutorial region never saves; these worlds are not one.
+                        tutorial_region_here=lambda: False,
                         # Per-level input holds (restart_transaction.dm) are pinned in test_level_freeze.py.
                         persistence_release_all_levels=lambda: None,
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),

@@ -43,7 +43,7 @@ class PracticeRoomSourceTests(unittest.TestCase):
     def test_lobby_link(self):
         lobby = read('code/game/mob/new_player/new_player.dm')
         self.assertIn('practice=1', lobby)
-        self.assertIn('practice_rooms.enter(src)', lobby)
+        self.assertIn('practice_room_open(src)', lobby)
 
     def test_ways_out_are_easy_to_find(self):
         rooms = read('code/modules/1713/practice_rooms.dm')
@@ -61,6 +61,26 @@ class PracticeRoomSourceTests(unittest.TestCase):
         # Side panel shows the verbs first on the IC tab, not under "Other".
         panel = read('interface/info/info.html')
         self.assertIn('"IC": [\n                ["Practice", ["Leave Practice Room", "Practice Instructions"]]', panel)
+
+    def test_tutorial_region_never_saves(self):
+        source = read('code/modules/persistence/functions.dm')
+        self.assertLess(source.index('if(kind == "save" && tutorial_region_here()) return null'), source.index('persistence_active_operation = operation'))
+        self.assertIn('"EVENT", "TUTORIAL")))', read('code/modules/persistence/shard_group.dm'))
+        self.assertIn('"BARRACKS", "BATTLE", "EVENT", "TUTORIAL"', read('code/modules/persistence/region_home.dm'))
+        self.assertIn('#include "code\\modules\\1713\\tutorial_region.dm"', read('civ13.dme'))
+
+    def test_lobby_goes_to_the_tutorial_region(self):
+        lobby = read('code/game/mob/new_player/new_player.dm')
+        self.assertIn('if (practice_room_available())', lobby)
+        self.assertIn('practice_room_open(src)', lobby)
+        join = lobby[lobby.index('/mob/new_player/proc/handle_lobby_join('):]
+        self.assertLess(join.index('tutorial_region_refuse_join(src)'), join.index('allow_new_character(src)'))
+
+    def test_tutorial_map(self):
+        dmm = read('maps/special/tutorial.dmm')
+        self.assertIn('/obj/map_metadata/tutorial,', dmm)
+        rows = dmm.split('{"\n', 1)[1].split('\n"}', 1)[0].splitlines()
+        self.assertEqual((116, 60), (len(rows[0]), len(rows)))
 
     def test_fixture_prepares(self):
         generated = run.sources()

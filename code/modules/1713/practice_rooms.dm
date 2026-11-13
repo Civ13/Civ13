@@ -18,6 +18,8 @@
 #define PRACTICE_ROOM_SIZE 12
 #define PRACTICE_ROOM_PITCH 14
 #define PRACTICE_MAX_ROOMS 8
+// A tutorial region (tutorial_region.dm) only runs rooms, so it holds more.
+#define PRACTICE_MAX_ROOMS_TUTORIAL 32
 // Retry while a save holds the level (a save removes it itself).
 #define PRACTICE_IDLE_DROP (30 SECONDS)
 // A practice level is Gaia-sized at most. A 500 x 350 open-air plane measured
@@ -44,7 +46,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 /datum/practice_rooms/proc/capacity()
 	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH)
 	var/rows = round((world.maxy - 1) / PRACTICE_ROOM_PITCH)
-	return max(0, min(PRACTICE_MAX_ROOMS, cols * rows))
+	return max(0, min(tutorial_region_here() ? PRACTICE_MAX_ROOMS_TUTORIAL : PRACTICE_MAX_ROOMS, cols * rows))
 
 // Why a lobby player cannot enter now, or null.
 /datum/practice_rooms/proc/entry_error()
@@ -253,7 +255,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (!C)
 		return
 	var/mob/new_player/lobby = new
+	// In a tutorial region the player goes back to the group, not into a new room.
+	var/home = tutorial_region_here()
+	if (home)
+		lobby.tutorial_returning = TRUE
 	lobby.key = C.key
+	if (home && C)
+		to_chat(C, SPAN_NOTICE("Taking you back to [tutorial_region_return_name()]."))
+		tutorial_region_send_home(C)
 
 // ---- Steps ----
 
@@ -388,7 +397,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (!id || !step_done(id))
 		return
 	if (id == "exit")
-		end("Practice complete. Welcome back to the lobby - press Join when you are ready.")
+		end(tutorial_region_here() ? "Practice complete." : "Practice complete. Welcome back to the lobby - press Join when you are ready.")
 		return
 	to_chat(body, "<span class='good'>Done!</span>")
 	advance()
@@ -491,4 +500,5 @@ var/global/datum/practice_rooms/practice_rooms = new
 #undef PRACTICE_ROOM_SIZE
 #undef PRACTICE_ROOM_PITCH
 #undef PRACTICE_MAX_ROOMS
+#undef PRACTICE_MAX_ROOMS_TUTORIAL
 #undef PRACTICE_IDLE_DROP

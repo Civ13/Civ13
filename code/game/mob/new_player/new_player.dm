@@ -149,7 +149,7 @@ var/global/redirect_all_players = null
 
 	var/height = 310
 	output += "<p><a href='byond://?src=\ref[src];changelog=1'>What's New</A></p>"
-	if (ticker && !practice_rooms.entry_error())
+	if (practice_room_available())
 		output += "<p><a href='byond://?src=\ref[src];practice=1'>Practice Room</A></p>"
 		height += 30
 	if (client && client.holder)
@@ -228,7 +228,7 @@ var/global/redirect_all_players = null
 			ready = FALSE
 
 	if (href_list["practice"])
-		practice_rooms.enter(src)
+		practice_room_open(src)
 		return TRUE
 
 	if (href_list["refresh"])
@@ -385,6 +385,8 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/handle_lobby_join(list/href_list, native_choices = FALSE)
 	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
 		lobby_join_trace("handler_denied", "owner_or_busy")
+		return FALSE
+	if(tutorial_region_refuse_join(src))
 		return FALSE
 	if(!map_storage.allow_new_character(src))
 		// Reclaim may have transferred/deleted this lobby. Record only a lobby

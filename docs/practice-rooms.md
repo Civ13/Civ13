@@ -31,4 +31,30 @@ purpose `practice`) only while someone practises:
   player's saved character is untouched. The room area is an admin-area subtype,
   which keeps the body out of battle reports and spawn picks.
 
+## Tutorial region
+
+A region group can run the rooms on a world of their own, like the TDM
+Barracks: a region of kind `TUTORIAL` on the blank map
+`maps/special/tutorial.dmm` (116 x 60, up to 32 rooms). Code:
+`code/modules/1713/tutorial_region.dm`.
+
+- It never saves: `shard_group.py` gives it `save_minutes` 0 and a config with
+  `ALLOWED_GAMEMODES ALL` and `SKIP_PERSISTENCE_SAVING`, whatever the group or an
+  overlay says, and `begin_persistence_operation` refuses a save there. The
+  host's stop does not ask a non-saving world to save.
+- It starts its round on its own with no countdown. Every arrival goes straight
+  into a room; Join only points back. Leaving a room sends the player to the
+  group's gate (which forwards them to their home land) or, without a relay, to
+  the mainland.
+- On every other region the lobby's **Practice Room** link sends the player
+  there when the tutorial region is up or can be woken, and opens a room on its
+  own world otherwise (or when waking fails).
+- Nobody has a home there, trails and orbital batteries skip it, and it can be
+  neither the mainland nor the gate. A group has at most one.
+
+Add one to a group config like any region, for example
+`{"id": "tutorial", "name": "Tutorial", "kind": "TUTORIAL", "port": 1760, "transfer_port": 1770, "map": "maps/special/tutorial.dmm"}`
+(`transfer_port` only when the group's other regions have one), then run
+`setup --region tutorial` and `start --region tutorial`.
+
 Tests: [tests/practice_rooms](../tests/practice_rooms/README.md).

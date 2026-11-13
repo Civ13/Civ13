@@ -133,6 +133,32 @@ var/global/practice_probe_runtime_error = FALSE
 	practice_probe_check("budget/growth_free_again", isnull(world_z_budget.error(2, "underground")) || !findtext(world_z_budget.error(2, "underground"), "practice room"))
 	practice_probe_check("level/reusable", R.ensure_level() && world.maxz == 2 && R.drop_level() && world.maxz == 1)
 
+	// Tutorial region (tutorial_region.dm), with a hand-made group.
+	shard_group.enabled = TRUE
+	shard_group.group = "earth"
+	shard_group.region = "tutorial"
+	shard_group.kind = "TUTORIAL"
+	shard_group.mainland = "gaia"
+	shard_group.peers = list("gaia" = list("name" = "Gaia", "kind" = "SURFACE", "address" = "127.0.0.1:1714", "state" = "UP"))
+	shard_group.order = list("gaia")
+	practice_probe_check("tutorial/here", tutorial_region_here() && isnull(tutorial_region_peer()))
+	practice_probe_check("tutorial/returns_to_mainland", tutorial_region_return_id() == "gaia" && tutorial_region_return_name() == "Gaia")
+	var/mob/new_player/lobby = new
+	practice_probe_check("tutorial/join_refused", tutorial_region_refuse_join(lobby))
+	world.maxx = 116
+	world.maxy = 60
+	practice_probe_check("tutorial/more_rooms", R.capacity() == 32)
+	shard_group.region = "gaia"
+	shard_group.kind = "SURFACE"
+	shard_group.peers = list("tutorial" = list("name" = "Tutorial", "kind" = "TUTORIAL", "address" = "127.0.0.1:1760", "state" = "UP"))
+	shard_group.order = list("tutorial")
+	practice_probe_check("tutorial/other_regions_keep_eight", R.capacity() == 8 && !tutorial_region_refuse_join(lobby))
+	practice_probe_check("tutorial/lobby_link_goes_there", tutorial_region_peer() == "tutorial" && practice_room_available())
+	shard_group.peers["tutorial"]["state"] = "DOWN"
+	practice_probe_check("tutorial/down_falls_back", isnull(tutorial_region_peer()))
+	qdel(lobby)
+	shard_group.enabled = FALSE
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
