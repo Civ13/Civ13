@@ -3,7 +3,11 @@
 	desc = "It's an arrow hanging in mid-air. There may be a wizard about."
 	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "arrow"
+	// Above lighting, roofs, tree canopies and weather: the arrow is a marker,
+	// not an object in the world, so night and cover must not hide it.
+	plane = CHAT_PLANE
 	layer = 16.0
+	appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
 	anchored = TRUE
 	mouse_opacity = FALSE
 	should_save = 0

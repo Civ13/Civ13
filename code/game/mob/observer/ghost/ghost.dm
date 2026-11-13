@@ -293,11 +293,6 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return FALSE
 	return M.do_possession(src)
 
-/mob/observer/ghost/verb/pointed(atom/A as mob|obj|turf in view())
-	set category = "Ghost"
-	set name = "Point To"
-	return TRUE
-
 /mob/observer/ghost/canface()
 	return TRUE
 
