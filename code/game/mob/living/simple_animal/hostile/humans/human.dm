@@ -661,10 +661,11 @@ var/global/list/npc_appearance_cache = list()
 		action_running = FALSE
 		return
 	stop_automated_movement = TRUE
-	if (get_dist(target_obj,src)>1 && target_action != "helping")
+	var/patient_distance = get_dist(target_obj,src)
+	if (patient_distance>1 && target_action != "helping")
 		do_movement(target_obj)
 		return
-	else if (get_dist(target_obj,src)<=1 && target_action != "helping")
+	else if (patient_distance<=1 && target_action != "helping")
 		walk(src,0)
 		do_movement(loc)
 		target_action = "helping"
