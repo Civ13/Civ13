@@ -1539,6 +1539,7 @@
 #include "code\modules\research_tree\team_research.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
 #include "code\modules\player_changelog\player_changelog.dm"
+#include "code\modules\server_build\host_controls.dm"
 #include "code\modules\server_build\server_build.dm"
 #include "code\modules\space\barren_world.dm"
 #include "code\modules\space\habitat_ledger.dm"

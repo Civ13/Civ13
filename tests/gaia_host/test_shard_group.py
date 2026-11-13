@@ -2407,3 +2407,183 @@ class SaveValidatorTests(unittest.TestCase):
         self.clock[0] += shard_group.VALIDATOR_TIMEOUT_SECONDS + 1
         self.assertEqual({'save_validation': {'gaia': 'failed: timed out'}}, self.step())
         self.assertNotIn(77, self.alive)
+
+
+class UpdateWithoutSaveTests(unittest.TestCase):
+    """update-unsaved (launcher Update and restart without saving, and admins in game): the update
+    is built beside the running world, then the world is ended without a save, its last completed
+    save is backed up and the new build starts from it. A failed build never stops the world, and
+    a region that is not running is never started."""
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+    built = StagedBuildTests.built
+    write_save = HandoverTests.write_save
+    MARKER = HandoverTests.MARKER
+    LIVE = 1720
+
+    def running(self):
+        group, host = self.built()
+        self.machine.up = {self.LIVE}
+        self.machine.pids_by_port = {self.LIVE: 100}
+        self.write_save(Path(host.config['repository']) / 'map_saves')
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(self.LIVE)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        sleep = self.machine.sleep
+
+        def build_while_waiting(seconds):
+            # The stage worker the action started runs while the action waits for it.
+            if host.stage_lock.exists():
+                host.work('stage', host.stage_lock.read_text().strip())
+            sleep(seconds)
+        self.machine.sleep = build_while_waiting
+        return group, host
+
+    def test_builds_first_then_restarts_on_the_update_without_a_save_and_keeps_a_backup(self):
+        group, host = self.running()
+        accepted = host.request('update-unsaved')
+        self.assertEqual(['--worker', 'update-unsaved', accepted['operation']], self.machine.detached[-1][-3:])
+        host.work('update-unsaved', accepted['operation'])
+        state = host.read_state()
+        self.assertEqual(('done', NEWER), (state['phase'], host.built_revision()), state)
+        commands = [call[0] for call in self.machine.calls]
+        staged_compile = next(i for i, (argv, where) in enumerate(self.machine.calls)
+                              if argv[-1] == 'region.dme' and '.staging' in where)
+        self.assertLess(staged_compile, commands.index(['kill_tree', 100]), 'built before the world is ended')
+        self.assertEqual('start', commands[-1][0])
+        backup = Path(state['backup'])
+        self.assertEqual(self.MARKER, (backup / 'save_complete.txt').read_text())
+        self.assertTrue((backup / 'backup-receipt.json').exists())
+        saves = Path(host.config['repository']) / 'map_saves'
+        self.assertEqual(self.MARKER, (saves / 'save_complete.txt').read_text(), 'the save is never wiped')
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_a_failed_build_leaves_the_world_running(self):
+        group, host = self.running()
+        self.machine.compile_output = 'region.dmb - 1 errors, 0 warnings'
+        host.work('update-unsaved', host.request('update-unsaved')['operation'])
+        state = host.read_state()
+        self.assertEqual('failed', state['phase'])
+        self.assertIn('left running', state['error'])
+        self.assertNotIn((['kill_tree', 100], None), self.machine.calls)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_a_person_force_stopping_it_while_it_builds_keeps_it_down(self):
+        group, host = self.running()
+        build = self.machine.sleep
+
+        def person_stops_it(seconds):
+            if self.LIVE in self.machine.up:
+                host.kill()  # Force stop from the launcher while the update builds
+            build(seconds)
+        self.machine.sleep = person_stops_it
+        host.work('update-unsaved', host.request('update-unsaved')['operation'])
+        state = host.read_state()
+        self.assertEqual('killed', state['phase'], state)
+        self.assertNotIn(self.LIVE, self.machine.up)
+        self.assertFalse([argv for argv, _ in self.machine.calls if argv[0] == 'start'])
+
+    def test_a_stopped_region_is_refused_and_never_started(self):
+        group, host = self.built()
+        with self.assertRaisesRegex(shard_group.Refused, 'not running'):
+            host.request('update-unsaved')
+        self.assertFalse(host.lock.exists())
+
+    def test_an_asleep_region_is_refused(self):
+        group, host = self.built()
+        self.machine.up = {self.LIVE}
+        self.machine.pids = {77}
+        host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
+        with self.assertRaisesRegex(shard_group.Refused, 'asleep'):
+            host.request('update-unsaved')
+        self.assertTrue(host.frozen(), 'not woken')
+
+    def test_every_region_from_the_command_line_skips_the_stopped_ones(self):
+        group, host = self.running()
+        with mock.patch.object(shard_group, 'Platform', return_value=self.machine), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'update-unsaved'])
+        result = json.loads(out.getvalue())
+        self.assertEqual((0, ['gaia'], ['deep']), (code, sorted(result['accepted']), sorted(result['refused'])), result)
+        self.assertIn('not running', result['refused']['deep'])
+
+
+class WorldRequestTests(unittest.TestCase):
+    """Admins in game ask the host service for its actions through data/host_request.json."""
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+    built = StagedBuildTests.built
+    running = UpdateWithoutSaveTests.running
+    write_save = HandoverTests.write_save
+    MARKER = HandoverTests.MARKER
+    LIVE = 1720
+
+    def ask(self, host, action):
+        data = Path(host.config['repository']) / 'data'
+        data.mkdir(exist_ok=True)
+        (data / 'host_request.json').write_text(json.dumps({'id': 'abc123', 'action': action, 'by': 'someadmin'}))
+        host.serve_world()
+        self.assertFalse((data / 'host_request.json').exists(), 'a request is taken once')
+        return json.loads((data / 'host_reply.json').read_text())
+
+    def test_update_without_saving_from_the_world_starts_the_worker(self):
+        group, host = self.running()
+        host.log = lambda values: None
+        reply = self.ask(host, 'update-unsaved')
+        self.assertEqual(('abc123', True), (reply['id'], reply['ok']), reply)
+        self.assertEqual('update-unsaved', self.machine.detached[-1][-2])
+        status = json.loads((Path(host.config['repository']) / 'data' / 'host_status.json').read_text())
+        self.assertTrue(status['busy'])
+        self.assertEqual('gaia', status['region'])
+
+    def test_save_update_and_restart_from_the_world_hands_over(self):
+        group, host = self.running()
+        host.log = lambda values: None
+        reply = self.ask(host, 'update-handover')
+        self.assertTrue(reply['ok'], reply)
+        self.assertEqual('update-handover', self.machine.detached[-1][-2])
+
+    def test_only_listed_actions_are_taken(self):
+        group, host = self.running()
+        host.log = lambda values: None
+        workers = len(self.machine.detached)
+        for action in ('kill', 'stop', 'fresh-world', None):
+            reply = self.ask(host, action)
+            self.assertFalse(reply['ok'], reply)
+        self.assertFalse(host.lock.exists())
+        self.assertEqual(workers, len(self.machine.detached), 'no worker started')
+
+    def test_update_when_empty_toggle_writes_the_group_config(self):
+        group, host = self.running()
+        host.log = lambda values: None
+        self.assertTrue(self.ask(host, 'update-when-empty-off')['ok'])
+        self.assertFalse(json.loads(self.path.read_text())['update_when_empty'])
+        self.assertFalse(host.update_when_empty())
+        self.assertTrue(self.ask(host, 'update-when-empty-on')['ok'])
+        saved = json.loads(self.path.read_text())
+        self.assertTrue(saved['update_when_empty'])
+        self.assertEqual('origin', saved['fetch'])
+
+    def test_a_busy_host_answers_refused(self):
+        group, host = self.running()
+        host.log = lambda values: None
+        host.request('update-unsaved')
+        reply = self.ask(host, 'update-handover')
+        self.assertFalse(reply['ok'])
+        self.assertIn('still running', reply['result'])
+
+    def test_a_stopped_world_is_not_served(self):
+        group, host = self.built()
+        data = Path(host.config['repository']) / 'data'
+        data.mkdir(exist_ok=True)
+        (data / 'host_request.json').write_text(json.dumps({'id': 'x', 'action': 'update-unsaved'}))
+        host.serve_world()
+        self.assertTrue((data / 'host_request.json').exists())

@@ -887,6 +887,41 @@ class ForcedStopTests(GaiaHostTests):
             self.host.force_restart(lock_wait_seconds=10)
 
 
+class UpdateWithoutSaveTests(GaiaHostTests):
+    """update-unsaved on a single server: ended without a save, last completed save backed up,
+    pulled, compiled and started from that save. A stopped server is refused, never started."""
+
+    def test_ends_without_saving_backs_up_then_updates_and_starts(self):
+        self.machine.up = True
+        write_save(self.repo / 'map_saves')
+        self.host.work('update-unsaved', self.accept('update-unsaved'))
+        state = self.host.read_state()
+        self.assertEqual('done', state['phase'], state)
+        self.assertFalse(any(call[:2] == ['query', 'save_shutdown'] for call in self.machine.calls))
+        commands = self.machine.calls
+        self.assertLess(commands.index(['kill_tree', 4242]), commands.index(['git', 'merge', '--ff-only', 'origin/master']))
+        self.assertEqual(['schtasks', 'Civ13 Gaia On-Demand'], commands[-1])
+        self.assertEqual(MARKER, (Path(state['backup']) / 'save_complete.txt').read_text())
+        self.assertEqual(MARKER, (self.repo / 'map_saves' / 'save_complete.txt').read_text())
+        self.assertTrue(self.machine.up)
+
+    def test_a_stopped_server_is_refused(self):
+        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
+            self.host.request('update-unsaved')
+        self.assertFalse(self.host.lock.exists())
+
+    def test_the_world_can_ask_for_it_but_not_for_other_actions(self):
+        self.machine.up = True
+        data = self.repo / 'data'
+        data.mkdir()
+        for action, ok in (('force-restart', False), ('update-unsaved', True)):
+            (data / 'host_request.json').write_text(json.dumps({'id': 'a1', 'action': action}))
+            self.host.serve_world()
+            self.assertEqual(ok, json.loads((data / 'host_reply.json').read_text())['ok'], action)
+        self.assertEqual('update-unsaved', self.machine.detached[-1][-2])
+        self.assertIn('busy', json.loads((data / 'host_status.json').read_text()))
+
+
 class InterruptedSaveTests(GaiaHostTests):
     """A crash during a save leaves map_saves/ without a marker; the completed
     generation in map_backups/ is swapped back in before the start."""
@@ -1233,3 +1268,23 @@ class WatchdogTests(unittest.TestCase):
         with self.assertRaisesRegex(gaia_host.Refused, 'region host'):
             self.host.request_stage()
         self.assertFalse(self.host.update_pending())
+
+
+class HostControlsContractTests(unittest.TestCase):
+    """code/modules/server_build/host_controls.dm only asks for actions the host takes from a world,
+    and reads only status keys the host writes."""
+
+    def test_the_verbs_actions_and_status_keys_match_the_host(self):
+        import re
+        source = (ROOT / 'code/modules/server_build/host_controls.dm').read_text(encoding='utf-8')
+        asked = set(re.findall(r'" = "([a-z-]+)"', source))
+        self.assertTrue(asked)
+        self.assertLessEqual(asked, set(gaia_host.Host.WORLD_REQUESTS))
+        read = set(re.findall(r'status\["([a-z_]+)"\]', source))
+        with tempfile.TemporaryDirectory() as folder:
+            host = gaia_host.Host({'repository': folder, 'port': 1, 'task': 't', 'compiler': 'dm', 'git': 'git',
+                                   'state_dir': folder + '/state', 'branch': 'master', '_path': folder + '/h.json'},
+                                  FakeMachine(), script=Path('gaia_host.py'))
+            written = set(host.host_status())
+        region_only = {'staged', 'stage', 'group'}  # RegionHost.host_status adds these
+        self.assertLessEqual(read - region_only, written)

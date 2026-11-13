@@ -450,6 +450,12 @@ static class LocalHostingTests {
         Require(LocalHosting.GroupStep(host.Control!, "unlock", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "unlock", "--region", "gaia" }), "one-region unlock argv");
         var groupForce = LocalHosting.ParseGroup("force-restart", 0, "{\"accepted\": {\"gaia\": {}, \"railyard\": {}}, \"refused\": {}, \"ok\": true}");
         Require(groupForce is { Ok: true, Busy: true } && groupForce.Message.EndsWith("gaia, railyard..."), "group force-restart: " + groupForce.Message);
+        // Update and restart without saving: built first, then ended without a save from its backed-up last save.
+        Require(LocalHosting.GroupStep(host.Control!, "update-unsaved", "gaia").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "update-unsaved", "--region", "gaia" }), "update-unsaved argv");
+        var noSave = LocalHosting.ParseGroup("update-unsaved", 0, "{\"accepted\": {\"gaia\": {}}, \"refused\": {\"moon\": \"the server is not running\"}, \"ok\": true}");
+        Require(noSave is { Ok: true, Busy: true } && noSave.Message.StartsWith("Building the update first") && noSave.Message.Contains("gaia...") && noSave.Message.Contains("moon"), "group update-unsaved: " + noSave.Message);
+        Require(LocalHosting.ParseControl("update-unsaved", 0, "{\"accepted\": true, \"action\": \"update-unsaved\", \"operation\": \"x\", \"ok\": true}") is { Ok: true, Busy: true } single
+            && single.Message.StartsWith("Updating without saving"), "update-unsaved answer");
 
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");

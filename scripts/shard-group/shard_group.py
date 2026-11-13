@@ -60,7 +60,8 @@ from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
-                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline')
+                 'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
+                 'update-unsaved')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -875,7 +876,7 @@ class RegionHost(Host):
         if fresh_world.pending(self).exists():
             raise Refused('interrupted fresh-world archive: manual recovery required before any host action')
         # Checked before the lock: taking it would create the folder setup needs empty.
-        if action in ('start', 'restart', 'update', 'handover') and not (self.repo / '.git').exists():
+        if action in ('start', 'restart', 'update', 'handover', 'update-unsaved', 'update-handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.frozen():
             # Host.request would wake it first, only to refuse it as running.
@@ -904,7 +905,92 @@ class RegionHost(Host):
         # region with no build yet is not refused.
         if action == 'handover':
             return self.precheck_handover()
+        if action == 'update-handover':
+            # The build is made by the action itself; the handover checks run once it is ready.
+            if self.frozen():
+                raise Refused('the region is asleep; use Update, which installs the new build while it sleeps')
+            return super().precheck('restart')
         super().precheck(action)
+
+    # -- update and restart (in game, launcher) -------------------------------------
+    def extra_steps(self, action):
+        # The update is built beside the running world first; only a ready build ends it.
+        steps = {'update-unsaved': [self.wait_for_build, self.do_kill_unsaved, self.do_update, self.stop_if_killed, self.do_start],
+                 'update-handover': [self.wait_for_build, self.do_handover_if_behind]}
+        return steps[action]
+
+    BUILD_WAIT_SECONDS = 7200
+
+    def wait_for_build(self, operation):
+        """Build the latest revision beside the running world (stage) and wait until it is
+        ready. Nothing is stopped yet: a failed build leaves the world running."""
+        self.record(phase='checking for updates')
+        latest = self.latest_revision()
+        if not HEX40.match(latest or ''):
+            raise RuntimeError('could not read the latest revision; the world was left running')
+        if self.built_revision() == latest or self.staged_revision() == latest:
+            self.record(revision=latest)
+            return
+        try:
+            self.request_stage()
+        except Refused as refusal:
+            if 'already being staged' not in str(refusal):
+                raise RuntimeError('%s; the world was left running' % refusal)
+        self.record(phase='building the update beside the running world', revision=latest)
+        deadline = self.platform.now() + self.BUILD_WAIT_SECONDS
+        while self.stage_lock.exists():
+            if self.platform.now() > deadline:
+                raise RuntimeError('the update took too long to build; the world was left running')
+            self.platform.sleep(10)
+        if self.built_revision() == latest or self.staged_revision() == latest or self.update_pending():
+            return
+        stage = self.read_json(self.stage_file) or {}
+        raise RuntimeError('the update did not build (%s); the world was left running'
+                           % (stage.get('error') or stage.get('phase') or 'no ready build'))
+
+    def do_handover_if_behind(self, operation):
+        """Hand the world over to the build wait_for_build made ready (players keep playing
+        while the new build loads the save), or nothing when it already runs it."""
+        if not self.update_pending():
+            self.record(phase='already on the latest build')
+            return
+        try:
+            self.precheck_handover()
+        except Refused as refusal:
+            raise RuntimeError('%s; the world was left running on its old build' % refusal)
+        self.do_handover(operation)
+
+    def set_update_when_empty(self, enabled):
+        """The group's update_when_empty switch (the launcher's Update when empty...), written
+        into the group config; it applies to every region at its next check."""
+        path = Path(self.config['group_config'])
+        try:
+            raw = json.loads(path.read_text(encoding='utf-8-sig'))
+        except (OSError, ValueError) as error:
+            raise Refused('could not read the group config: %s' % str(error)[:200])
+        if not isinstance(raw, dict):
+            raise Refused('the group config is not an object')
+        raw['update_when_empty'] = bool(enabled)
+        if enabled and not (isinstance(raw.get('fetch'), str) and raw['fetch']):
+            # As the launcher's toggle does: without a fetch, new commits would only show up
+            # after the host's checkout is pulled by hand.
+            raw['fetch'], raw['revision'] = 'origin', 'origin/master'
+        write_json_atomic(path, raw)
+        load_group(str(path))  # still valid
+
+    def host_status(self):
+        report = super().host_status()
+        stage = self.read_json(self.stage_file)
+        if stage and not self.stage_failure_superseded(stage):
+            report['stage'] = {key: stage.get(key) for key in ('phase', 'revision', 'error', 'updated')}
+        report['staged'] = self.staged_revision()
+        try:
+            group = load_group(self.config['group_config'])
+            report['group'] = group['group']
+            report['shutdown_warning_seconds'] = group['shutdown_warning_seconds']
+        except (OSError, ValueError, KeyError):
+            pass
+        return report
 
     def task_ready_for_start(self):
         return True
@@ -1161,7 +1247,7 @@ class RegionHost(Host):
     def kill(self, reason='forced stop', keep_running=False):
         """A forced stop during a handover also ends its standby, so the update cannot bring
         back a region a person stopped; the handover sees killed.json and gives up."""
-        handing_over = self.lock.exists() and self.read_state().get('action') == 'handover'
+        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'update-handover')
         if handing_over:
             self.note_kill_during_action(reason)
             standby = self.stop_standby(self.standby_port())
