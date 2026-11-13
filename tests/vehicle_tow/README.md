@@ -4,7 +4,9 @@
 premade cars in line, the hitch and its refusals, the towed car rolling and
 turning where the tug did, the tug pulling both weights, a blocked tow paying
 out and snapping, no reversing with a line out, casting off with the rope
-returned, and a destroyed car letting go.
+returned, and a destroyed car letting go. A truck then tows a light plane on
+the ground: the plane rolls after it, cannot take off while hitched, and a plane
+in the air cannot take a tow line.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_tow/probe.dm 300
 

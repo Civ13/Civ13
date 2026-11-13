@@ -199,6 +199,10 @@
 
 // ---- Hitching ----
 
+/proc/vehicle_tow_airborne(obj/structure/vehicleparts/axis/A)
+	var/obj/structure/vehicleparts/axis/aircraft/P = A
+	return istype(P) && P.airborne()
+
 // The vehicle this one could be hitched behind: list(tug axis, tiles between
 // the two axes along their heading), or null with a reason in tow_refusal.
 /obj/structure/vehicleparts/axis/var/tmp/tow_refusal = ""
@@ -233,8 +237,10 @@
 	if (found.dir != dir)
 		tow_refusal = "it must face the same way as \the [found]"
 		return null
-	if (istype(src, /obj/structure/vehicleparts/axis/aircraft) || istype(found, /obj/structure/vehicleparts/axis/aircraft))
-		tow_refusal = "aircraft are not towed"
+	// Planes are towed on the ground like any vehicle (a tug pulling one out
+	// of its hangar), and can tow on the ground too; never in the air.
+	if (vehicle_tow_airborne(src) || vehicle_tow_airborne(found))
+		tow_refusal = "an aircraft in the air cannot take a tow line"
 		return null
 	if (istype(src, /obj/structure/vehicleparts/axis/ship) != istype(found, /obj/structure/vehicleparts/axis/ship))
 		tow_refusal = "a boat tows a boat and a vehicle tows a vehicle"
