@@ -58,6 +58,16 @@ def category(path, row):
     return 'base' if path in (GUN, P) else 'unclassified'
 
 
+def migration(row):
+    """modular: has parts; fixed: a modern design kept whole on purpose
+    (firearm_fixed_reason); pending: not reviewed yet."""
+    if row.get('firearm_family'):
+        return 'modular'
+    if row.get('firearm_fixed_reason'):
+        return 'fixed'
+    return 'pending'
+
+
 def build(rows):
     entries = []
     for row in sorted(rows, key=lambda r: r['path']):
@@ -75,8 +85,10 @@ def build(rows):
             # "modular" once the type's family has component definitions
             # (code/modules/1713/gunsmithing/firearm_components.dm).
             'family': row.get('firearm_family'),
-            'migration': 'modular' if row.get('firearm_family') else 'pending',
+            'migration': migration(row),
         }
+        if entry['migration'] == 'fixed':
+            entry['fixed_reason'] = row['firearm_fixed_reason']
         if (row.get('name') or '').lower() in ABSTRACT_NAMES:
             entry['review'] = 'abstract-looking name; confirm whether players can obtain it'
         entries.append(entry)
@@ -95,7 +107,8 @@ def build(rows):
             'modern': sum(e['scope'] == 'modern' for e in entries),
             'by_category': dict(sorted(counts.items())),
             'modern_calibers': len(calibers),
-            'migrated': sum(e['migration'] != 'pending' for e in entries if e['scope'] == 'modern'),
+            'migrated': sum(e['migration'] == 'modular' for e in entries if e['scope'] == 'modern'),
+            'fixed': sum(e['migration'] == 'fixed' for e in entries if e['scope'] == 'modern'),
         },
         'modern_calibers': calibers,
         'types': entries,

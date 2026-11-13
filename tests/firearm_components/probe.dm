@@ -192,12 +192,21 @@
 	var/list/made = list()
 	for(var/recipe_name in factory_recipes)
 		var/datum/factory_recipe/R = factory_recipes[recipe_name]
-		if(ispath(R.output_type, /obj/item/weapon/gun_component) || ispath(R.output_type, /obj/item/weapon/gun/projectile/submachinegun/ak74/receiver) || ispath(R.output_type, /obj/item/weapon/gun/projectile/submachinegun/m16/receiver) || ispath(R.output_type, /obj/item/weapon/gun/projectile/boltaction))
-			var/mauser_part = ispath(R.output_type, /obj/item/weapon/gun/projectile/boltaction)
-			for(var/bolt_family in list("mauser", "mosin", "arisaka", "enfield", "springfield", "lebel", "berthier", "carcano"))
-				if(findtext("[R.output_type]", bolt_family))
-					mauser_part = TRUE
-			parts_check(R.node == (mauser_part ? "cartridge_ammo" : "automatic_weapons"), "[recipe_name] is gated by [mauser_part ? "Cartridge Firearms" : "Automatic Weapons"] ([R.node])")
+		var/recipe_family = null
+		if(ispath(R.output_type, /obj/item/weapon/gun_component))
+			var/obj/item/weapon/gun_component/part_path = R.output_type
+			var/datum/firearm_component/def = firearm_component_def(initial(part_path.component_id))
+			parts_check(def, "[recipe_name] makes a registered part")
+			recipe_family = def.family
+		else if(ispath(R.output_type, /obj/item/weapon/gun))
+			var/obj/item/weapon/gun/gun_path = R.output_type
+			recipe_family = initial(gun_path.firearm_family)
+		if(recipe_family)
+			// Each family is gated by the era its design belongs to.
+			var/list/era_nodes = list("ak" = "automatic_weapons", "ar" = "automatic_weapons", "m24" = "automatic_weapons", "barrett" = "automatic_weapons",
+				"vg" = "selfloading_firearms", "ptrd" = "selfloading_firearms", "pzb" = "selfloading_firearms")
+			var/want_node = era_nodes[recipe_family] || "cartridge_ammo"
+			parts_check(R.node == want_node, "[recipe_name] is gated by [want_node] ([R.node])")
 			made += R.output_type
 	for(var/path in typesof(/obj/item/weapon/gun_component) - /obj/item/weapon/gun_component)
 		parts_check(path in made, "a fabricator makes [path]")
@@ -356,14 +365,50 @@
 		/obj/item/weapon/gun/projectile/boltaction/berthier/m16 = list("a8x50", /obj/item/ammo_magazine/c8x50_5clip, 5),
 		/obj/item/weapon/gun/projectile/boltaction/carcano = list("a65x52", /obj/item/ammo_magazine/carcano, null),
 		/obj/item/weapon/gun/projectile/boltaction/gewehr71 = list("a765x53", /obj/item/ammo_magazine/gewehr71, null),
-		/obj/item/weapon/gun/projectile/boltaction/madsenm47 = list("a765x53", /obj/item/ammo_magazine/gewehr71, null))
+		/obj/item/weapon/gun/projectile/boltaction/madsenm47 = list("a765x53", /obj/item/ammo_magazine/gewehr71, null),
+		/obj/item/weapon/gun/projectile/boltaction/murata = list("a8x53", /obj/item/ammo_magazine/murata, 8),
+		/obj/item/weapon/gun/projectile/boltaction/berdan = list("a762x54", /obj/item/ammo_magazine/mosin, null),
+		/obj/item/weapon/gun/projectile/boltaction/vg = list("a792x33", /obj/item/ammo_magazine/vgclip, 10),
+		/obj/item/weapon/gun/projectile/boltaction/m24 = list("a762x51", /obj/item/ammo_magazine/m24, null),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot = list("a4570", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock = list("a4570", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish = list("a43", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry = list("a577", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd = list("a145", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39 = list("a792x94", null, 1),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper = list("a50cal", null, 1))
 	for(var/gun_type in presets)
 		var/list/want = presets[gun_type]
 		var/obj/item/weapon/gun/projectile/P = new gun_type(locate(2,2,1))
-		parts_check(!P.firearm_fire_block() && P.caliber == want[1] && (want[2] in P.good_mags) && (!want[3] || P.max_shells == want[3]), "[gun_type] builds its preset ([P.caliber], [P.max_shells])")
-		var/obj/item/ammo_casing/loose = P.ammo_type
-		parts_check(!loose || initial(loose.caliber) == P.caliber, "[gun_type] names loose rounds of its own caliber")
+		parts_check(!P.firearm_fire_block() && P.caliber == want[1] && (!want[2] || (want[2] in P.good_mags)) && (!want[3] || P.max_shells == want[3]), "[gun_type] builds its preset ([P.caliber], [P.max_shells])")
+		for(var/round_type in (islist(P.ammo_type) ? P.ammo_type : list(P.ammo_type)))
+			var/obj/item/ammo_casing/loose = round_type
+			parts_check(!loose || initial(loose.caliber) == P.caliber, "[gun_type] names loose rounds of its own caliber")
 		qdel(P)
+	// The makeshift bolt is a fixed design; anti-tank rifles keep every round type.
+	var/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt/MB = new(locate(2,2,1))
+	parts_check(!MB.firearm_parts_ready() && MB.firearm_fixed_reason, "the makeshift bolt stays a fixed design")
+	qdel(MB)
+	var/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd/PT = new(locate(2,2,1))
+	var/datum/firearm_component/ptrd_feed = PT.firearm_part("feed")
+	parts_check(islist(PT.ammo_type) && length(PT.ammo_type) == 2 && PT.ammo_type != ptrd_feed.ammo_type, "a PTRD takes both 14.5mm rounds on its own list")
+	qdel(PT)
+	// A Rolling-Block rifle converts between .45-70 and .43 Spanish.
+	var/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/RB = new(locate(2,2,1))
+	parts_unload(RB)
+	H.put_in_inactive_hand(RB)
+	var/obj/item/weapon/gun_component/rb_feed = RB.firearm_remove("feed", H)
+	var/obj/item/weapon/gun_component/rb_barrel = RB.firearm_remove("barrel", H)
+	parts_check(istype(rb_feed) && istype(rb_barrel), "a Rolling-Block rifle gives up its barrel and extractor at the bench")
+	for(var/part_type in list(/obj/item/weapon/gun_component/rollingblock_barrel_43, /obj/item/weapon/gun_component/rollingblock_feed_43))
+		var/obj/item/weapon/gun_component/part = new part_type(locate(2,2,1))
+		parts_hold(H, part)
+		parts_check(RB.firearm_install(part, H), "a Rolling-Block rifle takes [part_type]")
+	parts_check(!RB.firearm_fire_block() && RB.caliber == "a43" && RB.ammo_type == /obj/item/ammo_casing/a43, "a converted Rolling-Block rifle fires .43 Spanish ([RB.caliber])")
+	H.drop_from_inventory(RB)
+	qdel(RB)
+	qdel(rb_feed)
+	qdel(rb_barrel)
 	// A Berthier M07/15 takes the longer M16 magazine and then holds five rounds.
 	var/obj/item/weapon/gun/projectile/boltaction/berthier/BT = new(locate(2,2,1))
 	parts_unload(BT)
@@ -384,7 +429,17 @@
 		/obj/item/weapon/gun/projectile/boltaction/springfield/receiver = list("Springfield rifle (.30-06)", /obj/item/weapon/gun_component/springfield_action, /obj/item/weapon/gun_component/springfield_barrel_3006, /obj/item/weapon/gun_component/springfield_feed_3006, /obj/item/weapon/gun_component/springfield_furniture_stock),
 		/obj/item/weapon/gun/projectile/boltaction/lebel/receiver = list("Lebel rifle (8x50mmR)", /obj/item/weapon/gun_component/lebel_action, /obj/item/weapon/gun_component/lebel_barrel_8x50, /obj/item/weapon/gun_component/lebel_feed_8x50, /obj/item/weapon/gun_component/lebel_furniture_stock),
 		/obj/item/weapon/gun/projectile/boltaction/berthier/receiver = list("Berthier rifle (8x50mmR)", /obj/item/weapon/gun_component/berthier_action, /obj/item/weapon/gun_component/berthier_barrel_8x50, /obj/item/weapon/gun_component/berthier_feed_8x50_5, /obj/item/weapon/gun_component/berthier_furniture_stock),
-		/obj/item/weapon/gun/projectile/boltaction/carcano/receiver = list("Carcano rifle (6.5x52mm)", /obj/item/weapon/gun_component/carcano_action, /obj/item/weapon/gun_component/carcano_barrel_65x52, /obj/item/weapon/gun_component/carcano_feed_65x52, /obj/item/weapon/gun_component/carcano_furniture_stock))
+		/obj/item/weapon/gun/projectile/boltaction/carcano/receiver = list("Carcano rifle (6.5x52mm)", /obj/item/weapon/gun_component/carcano_action, /obj/item/weapon/gun_component/carcano_barrel_65x52, /obj/item/weapon/gun_component/carcano_feed_65x52, /obj/item/weapon/gun_component/carcano_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/murata/receiver = list("Murata rifle (8x53mm)", /obj/item/weapon/gun_component/murata_action, /obj/item/weapon/gun_component/murata_barrel_8x53, /obj/item/weapon/gun_component/murata_feed_8x53, /obj/item/weapon/gun_component/murata_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/berdan/receiver = list("Berdan rifle (7.62x54mmR)", /obj/item/weapon/gun_component/berdan_action, /obj/item/weapon/gun_component/berdan_barrel_762x54, /obj/item/weapon/gun_component/berdan_feed_762x54, /obj/item/weapon/gun_component/berdan_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/vg/receiver = list("Volkssturmgewehr rifle (7.92x33mm Kurz)", /obj/item/weapon/gun_component/vg_action, /obj/item/weapon/gun_component/vg_barrel_792x33, /obj/item/weapon/gun_component/vg_feed_792x33, /obj/item/weapon/gun_component/vg_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/m24/receiver = list("M24 rifle (7.62x51mm)", /obj/item/weapon/gun_component/m24_action, /obj/item/weapon/gun_component/m24_barrel_762x51, /obj/item/weapon/gun_component/m24_feed_762x51, /obj/item/weapon/gun_component/m24_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/receiver = list("Sharps rifle (.45-70)", /obj/item/weapon/gun_component/sharps_action, /obj/item/weapon/gun_component/sharps_barrel_4570, /obj/item/weapon/gun_component/sharps_feed_4570, /obj/item/weapon/gun_component/sharps_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/receiver = list("Rolling-block rifle (.43 Spanish)", /obj/item/weapon/gun_component/rollingblock_action, /obj/item/weapon/gun_component/rollingblock_barrel_43, /obj/item/weapon/gun_component/rollingblock_feed_43, /obj/item/weapon/gun_component/rollingblock_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry/receiver = list("Martini-Henry rifle (.577/450)", /obj/item/weapon/gun_component/martini_action, /obj/item/weapon/gun_component/martini_barrel_577, /obj/item/weapon/gun_component/martini_feed_577, /obj/item/weapon/gun_component/martini_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd/receiver = list("PTRD rifle (14.5x114mm)", /obj/item/weapon/gun_component/ptrd_action, /obj/item/weapon/gun_component/ptrd_barrel_145, /obj/item/weapon/gun_component/ptrd_feed_145, /obj/item/weapon/gun_component/ptrd_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39/receiver = list("PzB rifle (7.92x94mm)", /obj/item/weapon/gun_component/pzb_action, /obj/item/weapon/gun_component/pzb_barrel_792x94, /obj/item/weapon/gun_component/pzb_feed_792x94, /obj/item/weapon/gun_component/pzb_furniture_stock),
+		/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/receiver = list("Barrett rifle (.50 BMG)", /obj/item/weapon/gun_component/barrett_action, /obj/item/weapon/gun_component/barrett_barrel_50cal, /obj/item/weapon/gun_component/barrett_feed_50cal, /obj/item/weapon/gun_component/barrett_furniture_stock))
 	for(var/receiver_type in builds)
 		var/list/plan = builds[receiver_type]
 		var/obj/item/weapon/gun/projectile/BR = new receiver_type(locate(2,2,1))
@@ -441,5 +496,5 @@
 	parts_check(loose.component_id == "ak/barrel/545x39" && loose.condition == 0.4 && loose.name == "AK barrel (5.45x39mm)", "loose part keeps identity and condition")
 	parts_check(parts_count() == 1, "no part is duplicated by save/load")
 
-	text2file("PASS: AK, AR, Mauser, Mosin, Arisaka, Lee-Enfield, Springfield, Lebel, Berthier and Carcano parts strip, convert, wear and survive save/load without duplication", "parts_result.txt")
+	text2file("PASS: AK, AR and every bolt-action and single-shot rifle family strip, convert, wear and survive save/load without duplication", "parts_result.txt")
 	del(world)

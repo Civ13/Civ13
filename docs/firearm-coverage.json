@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 421,
-  "modern": 318,
+  "types": 431,
+  "modern": 328,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -17,14 +17,15 @@
    "machine_gun_mounted": 32,
    "pistol": 38,
    "revolver": 27,
-   "rifle_bolt": 56,
+   "rifle_bolt": 66,
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 76
+  "migrated": 99,
+  "fixed": 4
  },
  "modern_calibers": [
   "12gauge",
@@ -1680,7 +1681,8 @@
    "magazine_type": "/obj/item/ammo_magazine/arisaka99_training",
    "ammo_type": "/obj/item/ammo_casing/a77x58_wood",
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "training rifle that fires wooden bullets"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/berdan",
@@ -1692,8 +1694,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "berdan",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/berdan/receiver",
+   "name": "Berdan receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a762x54",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/mosin",
+   "ammo_type": null,
+   "family": "berdan",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/berthier",
@@ -1952,8 +1967,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/m24",
    "ammo_type": "/obj/item/ammo_casing/a762x51",
-   "family": null,
-   "migration": "pending"
+   "family": "m24",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/m24/receiver",
+   "name": "M24 receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/m24",
+   "ammo_type": null,
+   "family": "m24",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/madsenm47",
@@ -2057,7 +2085,8 @@
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "sawn-off with its own weight, size and damage"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mosin/receiver",
@@ -2082,8 +2111,21 @@
    "max_shells": 8,
    "magazine_type": "/obj/item/ammo_magazine/murata",
    "ammo_type": "/obj/item/ammo_casing/a8x53",
-   "family": null,
-   "migration": "pending"
+   "family": "murata",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/murata/receiver",
+   "name": "Murata receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a8x53",
+   "load_method": 3,
+   "max_shells": 8,
+   "magazine_type": "/obj/item/ammo_magazine/murata",
+   "ammo_type": null,
+   "family": "murata",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/p14enfield",
@@ -2108,8 +2150,8 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/sharps",
    "ammo_type": "/obj/item/ammo_casing/a4570",
-   "family": null,
-   "migration": "pending"
+   "family": "sharps",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett",
@@ -2121,8 +2163,21 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "barrett",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/receiver",
+   "name": "Barrett receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a50cal",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/mosin",
+   "ammo_type": null,
+   "family": "barrett",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/barrett/sniper",
@@ -2134,8 +2189,8 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "barrett",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt",
@@ -2148,7 +2203,8 @@
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "crude one-off build with no standard parts"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry",
@@ -2160,8 +2216,21 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/c577",
    "ammo_type": "/obj/item/ammo_casing/a577",
-   "family": null,
-   "migration": "pending"
+   "family": "martini",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry/receiver",
+   "name": "Martini-Henry receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a577",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/c577",
+   "ammo_type": null,
+   "family": "martini",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd",
@@ -2173,8 +2242,21 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "ptrd",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd/receiver",
+   "name": "PTRD receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a145",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/mosin",
+   "ammo_type": null,
+   "family": "ptrd",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/ptrd/sniper",
@@ -2186,8 +2268,8 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/mosin",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "ptrd",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39",
@@ -2199,8 +2281,34 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/pzb_case",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "pzb",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/pzb39/receiver",
+   "name": "PzB receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a792x94",
+   "load_method": 5,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/pzb_case",
+   "ammo_type": null,
+   "family": "pzb",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/receiver",
+   "name": "Sharps receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a4570",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/sharps",
+   "ammo_type": null,
+   "family": "sharps",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock",
@@ -2212,8 +2320,21 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/sharps",
    "ammo_type": "/obj/item/ammo_casing/a4570",
-   "family": null,
-   "migration": "pending"
+   "family": "rollingblock",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/receiver",
+   "name": "Rolling-block receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a4570",
+   "load_method": 1,
+   "max_shells": 1,
+   "magazine_type": "/obj/item/ammo_magazine/sharps",
+   "ammo_type": null,
+   "family": "rollingblock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock/spanish",
@@ -2225,8 +2346,8 @@
    "max_shells": 1,
    "magazine_type": "/obj/item/ammo_magazine/c43",
    "ammo_type": "/obj/item/ammo_casing/a43",
-   "family": null,
-   "migration": "pending"
+   "family": "rollingblock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/springfield",
@@ -2277,8 +2398,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/vgclip",
    "ammo_type": "/obj/item/ammo_casing/a792x33",
-   "family": null,
-   "migration": "pending"
+   "family": "vg",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/vg/receiver",
+   "name": "Volkssturmgewehr receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a792x33",
+   "load_method": 3,
+   "max_shells": 10,
+   "magazine_type": "/obj/item/ammo_magazine/vgclip",
+   "ammo_type": null,
+   "family": "vg",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/bow",
@@ -5042,7 +5176,8 @@
    "magazine_type": "/obj/item/ammo_magazine/service_rifle",
    "ammo_type": null,
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "takes its own magazines"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16/m16a2",
