@@ -114,7 +114,7 @@
 
 /obj/structure/battery/examine(mob/user)
 	..()
-	to_chat(user, "Energy: [stored_energy]/[energy_capacity] PU s. Output limit: [discharge_rate] PU. Mode: [mode].")
+	to_chat(user, "Energy: [energy_text(stored_energy)] of [energy_text(energy_capacity)]. Output limit: [power_text(discharge_rate)]. Mode: [mode].")
 	if (!assembled)
 		to_chat(user, "Fit a fired clay vase first.")
 	else if (!commissioned && rechargeable)

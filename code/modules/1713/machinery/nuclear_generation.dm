@@ -67,7 +67,7 @@
 
 /obj/structure/civ_generator/nuclear/examine(mob/user)
 	..()
-	to_chat(user, "Fuel: [fuel_energy]/18000 PU s. Coolant: [coolant]/100. Heat: [heat]/100. Wear: [wear]/120. Setting: [control_setting] PU.")
+	to_chat(user, "Fuel: [energy_text(fuel_energy)] of [energy_text(18000)]. Coolant: [coolant]/100. Heat: [heat]/100. Wear: [wear]/120. Setting: [power_text(control_setting)].")
 
 /obj/structure/civ_generator/nuclear/attackby(obj/item/W, mob/user)
 	if (enabled)
@@ -104,7 +104,7 @@
 	if (enabled || heat >= 40)
 		return
 	control_setting = control_setting == 20 ? 60 : 20
-	to_chat(usr, "Reactor output set to [control_setting] PU while off.")
+	to_chat(usr, "Reactor output set to [power_text(control_setting)] while off.")
 
 /obj/structure/reactor_fuel_processor
 	name = "reactor fuel processor"

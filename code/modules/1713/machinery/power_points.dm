@@ -226,7 +226,7 @@ var/global/list/power_points = list()
 	for (var/obj/O in served)
 		if (O.power_point == src && O.powersource == powersource)
 			live++
-	to_chat(user, "It feeds machines up to [reach] tiles away with nothing solid between: [live] connected. Grid supply [powersource.powerflow], demand [powersource.currentflow].")
+	to_chat(user, "It feeds machines up to [reach] tiles away with nothing solid between: [live] connected. Grid supply [power_text(powersource.powerflow)], demand [power_text(powersource.currentflow)].")
 
 // ---------------------------------------------------------------- machines
 

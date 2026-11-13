@@ -121,7 +121,7 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/structure/cable/examine(mob/user)
 	. = ..()
 	rebuild_supply()
-	to_chat(user, "Supply capacity: [powerflow]. Reserved demand: [currentflow]. Connected cables: [component_size].")
+	to_chat(user, "Supply capacity: [power_text(powerflow)]. Reserved demand: [power_text(currentflow)]. Connected cables: [component_size].")
 
 
 ///////////////////////////////////
