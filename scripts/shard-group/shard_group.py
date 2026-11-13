@@ -915,7 +915,7 @@ class RegionHost(Host):
     # -- update and restart (in game, launcher) -------------------------------------
     def extra_steps(self, action):
         # The update is built beside the running world first; only a ready build ends it.
-        steps = {'update-unsaved': [self.wait_for_build, self.do_kill_unsaved, self.do_update, self.do_start],
+        steps = {'update-unsaved': [self.wait_for_build, self.do_kill_unsaved, self.do_update, self.stop_if_killed, self.do_start],
                  'update-handover': [self.wait_for_build, self.do_handover_if_behind]}
         return steps[action]
 
@@ -1247,7 +1247,7 @@ class RegionHost(Host):
     def kill(self, reason='forced stop', keep_running=False):
         """A forced stop during a handover also ends its standby, so the update cannot bring
         back a region a person stopped; the handover sees killed.json and gives up."""
-        handing_over = self.lock.exists() and self.read_state().get('action') == 'handover'
+        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'update-handover')
         if handing_over:
             self.note_kill_during_action(reason)
             standby = self.stop_standby(self.standby_port())

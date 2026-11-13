@@ -2473,6 +2473,21 @@ class UpdateWithoutSaveTests(unittest.TestCase):
         self.assertNotIn((['kill_tree', 100], None), self.machine.calls)
         self.assertIn(self.LIVE, self.machine.up)
 
+    def test_a_person_force_stopping_it_while_it_builds_keeps_it_down(self):
+        group, host = self.running()
+        build = self.machine.sleep
+
+        def person_stops_it(seconds):
+            if self.LIVE in self.machine.up:
+                host.kill()  # Force stop from the launcher while the update builds
+            build(seconds)
+        self.machine.sleep = person_stops_it
+        host.work('update-unsaved', host.request('update-unsaved')['operation'])
+        state = host.read_state()
+        self.assertEqual('killed', state['phase'], state)
+        self.assertNotIn(self.LIVE, self.machine.up)
+        self.assertFalse([argv for argv, _ in self.machine.calls if argv[0] == 'start'])
+
     def test_a_stopped_region_is_refused_and_never_started(self):
         group, host = self.built()
         with self.assertRaisesRegex(shard_group.Refused, 'not running'):

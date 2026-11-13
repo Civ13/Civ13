@@ -1309,10 +1309,16 @@ class Host:
     # running world first, so a build that fails never takes the world down.
     def extra_steps(self, action):
         """Worker steps for actions beyond the basic ones (a KeyError for an unknown one)."""
-        steps = {'update-unsaved': [self.do_kill_unsaved, self.do_refresh, self.do_start],
+        steps = {'update-unsaved': [self.do_kill_unsaved, self.do_refresh, self.stop_if_killed, self.do_start],
                  # A single server builds as it restarts: save and stop, pull, compile, start.
                  'update-handover': [self.do_stop, self.do_refresh, self.do_start]}
         return steps[action]
+
+    def stop_if_killed(self, operation):
+        """A person force-stopped the world while this action ran: leave it down."""
+        reason = self.killed_during(operation)
+        if reason:
+            raise RuntimeError('%s: the server stays stopped' % reason)
 
     def precheck_update_unsaved(self, listening):
         if self.frozen() or self.cold():
@@ -1340,10 +1346,12 @@ class Host:
     def do_kill_unsaved(self, operation, close_seconds=120):
         """End the running world without a save, then back up the last completed save."""
         port = self.config['port']
+        self.stop_if_killed(operation)  # a person force-stopped it while the update built
         self.record(phase='stopping without saving')
         if self.platform.listening(port) or self.platform.server_pid(port):
             # keep_running: if the update below fails, the watchdog brings the world back from its save.
             self.kill('update without saving', keep_running=True)
+            self.killed_file.unlink(missing_ok=True)  # this action's own stop, not a person's
         deadline = self.platform.now() + close_seconds
         while self.platform.listening(port):
             if self.platform.now() > deadline:
