@@ -248,6 +248,10 @@ SUITES = {
     'firearm_coverage': {'files': ('tests/firearm_coverage/test_coverage.py',),
         'paths': ('tests/firearm_coverage/', 'docs/firearm-coverage.json', 'code/modules/projectiles/',
                   'code/modules/1713/weapons/', 'code/modules/1713/gunsmithing/')},
+    # Handloading table covers every modern caliber; the native probe is tests/handloading/run.py.
+    'handloading': {'files': ('tests/handloading/test_coverage.py',),
+        'paths': ('tests/handloading/', 'docs/firearm-coverage.json', 'code/modules/projectiles/handloading.dm',
+                  'code/modules/projectiles/_ammo_casing.dm')},
     'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
         'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

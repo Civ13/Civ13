@@ -1427,6 +1427,7 @@
 #include "code\modules\projectiles\_ammo_casing.dm"
 #include "code\modules\projectiles\ammo_crafting.dm"
 #include "code\modules\projectiles\ammo_profiles.dm"
+#include "code\modules\projectiles\handloading.dm"
 #include "code\modules\projectiles\ammunition.dm"
 #include "code\modules\projectiles\effects.dm"
 #include "code\modules\projectiles\gun.dm"
