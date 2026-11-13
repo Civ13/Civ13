@@ -758,6 +758,362 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"caliber" = "a44", "ammo_type" = /obj/item/ammo_casing/a44),
 		list("id" = "revolving/furniture/stock", "family" = "revolving", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt Revolving stock",
 			"desc" = "A wooden Colt Revolving stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "pump/action", "family" = "pump", "slot" = FIREARM_SLOT_ACTION, "name" = "Pump-action pump action",
+			"desc" = "The pump action of a Pump-action shotgun. Fits any Pump-action receiver.", "icon_state" = "Pump-Action"),
+		list("id" = "pump/barrel/12g", "family" = "pump", "slot" = FIREARM_SLOT_BARREL, "name" = "Pump-action barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a Pump-action shotgun. Pair it with a 12 gauge tube magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "pump/feed/12g", "family" = "pump", "slot" = FIREARM_SLOT_FEED, "name" = "Pump-action tube magazine (12 gauge)",
+			"desc" = "A tube magazine under the barrel, loaded a shell at a time. Its length stays with the gun.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "pump/furniture/stock", "family" = "pump", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Pump-action stock",
+			"desc" = "A wooden Pump-action stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "ks23/action", "family" = "ks23", "slot" = FIREARM_SLOT_ACTION, "name" = "KS-23 pump action",
+			"desc" = "The pump action of a KS-23 shotgun. Fits any KS-23 receiver.", "icon_state" = "Pump-Action"),
+		list("id" = "ks23/barrel/12g", "family" = "ks23", "slot" = FIREARM_SLOT_BARREL, "name" = "KS-23 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a KS-23 shotgun. Pair it with a 12 gauge tube magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "ks23/feed/12g", "family" = "ks23", "slot" = FIREARM_SLOT_FEED, "name" = "KS-23 tube magazine (12 gauge)",
+			"desc" = "A tube magazine under the barrel, loaded a shell at a time. Its length stays with the gun.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "ks23/furniture/stock", "family" = "ks23", "slot" = FIREARM_SLOT_FURNITURE, "name" = "KS-23 stock",
+			"desc" = "A wooden KS-23 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "coachgun/action", "family" = "coachgun", "slot" = FIREARM_SLOT_ACTION, "name" = "Coach gun break action",
+			"desc" = "The break action of a Coach gun shotgun. Fits any Coach gun receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "coachgun/barrel/12g", "family" = "coachgun", "slot" = FIREARM_SLOT_BARREL, "name" = "Coach gun barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a Coach gun shotgun. Pair it with a 12 gauge breech.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "coachgun/feed/12g", "family" = "coachgun", "slot" = FIREARM_SLOT_FEED, "name" = "Coach gun breech (12 gauge)",
+			"desc" = "A double-barrel breech, loaded a shell at a time.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "coachgun/furniture/stock", "family" = "coachgun", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Coach gun stock",
+			"desc" = "A wooden Coach gun stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "mts225/action", "family" = "mts225", "slot" = FIREARM_SLOT_ACTION, "name" = "MTS-225 lockwork",
+			"desc" = "The lockwork of a MTS-225 shotgun. Fits any MTS-225 receiver.", "icon_state" = "Revolver"),
+		list("id" = "mts225/barrel/12g", "family" = "mts225", "slot" = FIREARM_SLOT_BARREL, "name" = "MTS-225 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a MTS-225 shotgun. Pair it with a 12 gauge cylinder.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "mts225/feed/12g", "family" = "mts225", "slot" = FIREARM_SLOT_FEED, "name" = "MTS-225 cylinder (12 gauge)",
+			"desc" = "A five-shell revolving cylinder, loaded a shell at a time.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "mts225/furniture/stock", "family" = "mts225", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MTS-225 stock",
+			"desc" = "A wooden MTS-225 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "remington11/action", "family" = "remington11", "slot" = FIREARM_SLOT_ACTION, "name" = "Remington 11 action",
+			"desc" = "The action of a Remington 11 shotgun. Fits any Remington 11 receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "remington11/barrel/12g", "family" = "remington11", "slot" = FIREARM_SLOT_BARREL, "name" = "Remington 11 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a Remington 11 shotgun. Pair it with a 12 gauge tube magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "remington11/feed/12g", "family" = "remington11", "slot" = FIREARM_SLOT_FEED, "name" = "Remington 11 tube magazine (12 gauge)",
+			"desc" = "A tube magazine under the barrel, loaded a shell at a time. Its length stays with the gun.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "remington11/furniture/stock", "family" = "remington11", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Remington 11 stock",
+			"desc" = "A wooden Remington 11 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "spas/action", "family" = "spas", "slot" = FIREARM_SLOT_ACTION, "name" = "SPAS-12 action",
+			"desc" = "The action of a SPAS-12 shotgun. Fits any SPAS-12 receiver.", "icon_state" = "Pump-Action"),
+		list("id" = "spas/barrel/12g", "family" = "spas", "slot" = FIREARM_SLOT_BARREL, "name" = "SPAS-12 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a SPAS-12 shotgun. Pair it with a 12 gauge tube magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "spas/feed/12g", "family" = "spas", "slot" = FIREARM_SLOT_FEED, "name" = "SPAS-12 tube magazine (12 gauge)",
+			"desc" = "A tube magazine under the barrel, loaded a shell at a time. Its length stays with the gun.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "12gauge"),
+		list("id" = "spas/furniture/stock", "family" = "spas", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SPAS-12 stock",
+			"desc" = "A steel SPAS-12 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "saiga/action", "family" = "saiga", "slot" = FIREARM_SLOT_ACTION, "name" = "Saiga-12 action",
+			"desc" = "The action of a Saiga-12 shotgun. Fits any Saiga-12 receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "saiga/barrel/12g", "family" = "saiga", "slot" = FIREARM_SLOT_BARREL, "name" = "Saiga-12 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for a Saiga-12 shotgun. Pair it with a 12 gauge magazine well.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "saiga/feed/12g", "family" = "saiga", "slot" = FIREARM_SLOT_FEED, "name" = "Saiga-12 magazine well (12 gauge)",
+			"desc" = "A magazine well for 12 gauge Saiga-12 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "12gauge", "good_mags" = list(/obj/item/ammo_magazine/saiga12, /obj/item/ammo_magazine/saiga12/slug)),
+		list("id" = "saiga/furniture/stock", "family" = "saiga", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Saiga-12 stock",
+			"desc" = "A steel Saiga-12 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "usas12/action", "family" = "usas12", "slot" = FIREARM_SLOT_ACTION, "name" = "USAS-12 action",
+			"desc" = "The action of an USAS-12 shotgun. Fits any USAS-12 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "usas12/barrel/12g", "family" = "usas12", "slot" = FIREARM_SLOT_BARREL, "name" = "USAS-12 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for an USAS-12 shotgun. Pair it with a 12 gauge magazine well.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "usas12/feed/12g", "family" = "usas12", "slot" = FIREARM_SLOT_FEED, "name" = "USAS-12 magazine well (12 gauge)",
+			"desc" = "A magazine well for 12 gauge USAS-12 magazines.", "icon_state" = "Large External Magazine_unloaded",
+			"caliber" = "12gauge", "good_mags" = list(/obj/item/ammo_magazine/usas12, /obj/item/ammo_magazine/usas12/slug, /obj/item/ammo_magazine/usas12drum, /obj/item/ammo_magazine/usas12drum/slug)),
+		list("id" = "usas12/furniture/stock", "family" = "usas12", "slot" = FIREARM_SLOT_FURNITURE, "name" = "USAS-12 stock",
+			"desc" = "A polymer USAS-12 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "ar12/action", "family" = "ar12", "slot" = FIREARM_SLOT_ACTION, "name" = "AR-12 action",
+			"desc" = "The action of an AR-12 shotgun. Fits any AR-12 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "ar12/barrel/12g", "family" = "ar12", "slot" = FIREARM_SLOT_BARREL, "name" = "AR-12 barrel (12 gauge)",
+			"desc" = "A 12 gauge barrel for an AR-12 shotgun. Pair it with a 12 gauge magazine well.", "icon_state" = "Long Rifle Barrel", "caliber" = "12gauge"),
+		list("id" = "ar12/feed/12g", "family" = "ar12", "slot" = FIREARM_SLOT_FEED, "name" = "AR-12 magazine well (12 gauge)",
+			"desc" = "A magazine well for 12 gauge AR-12 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "12gauge", "good_mags" = list(/obj/item/ammo_magazine/ar12)),
+		list("id" = "ar12/furniture/stock", "family" = "ar12", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AR-12 stock",
+			"desc" = "A polymer AR-12 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "mp40/action", "family" = "mp40", "slot" = FIREARM_SLOT_ACTION, "name" = "MP40 bolt",
+			"desc" = "The bolt of a MP40 submachine gun. Fits any MP40 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "mp40/barrel/9x19", "family" = "mp40", "slot" = FIREARM_SLOT_BARREL, "name" = "MP40 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a MP40 submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "mp40/feed/9x19", "family" = "mp40", "slot" = FIREARM_SLOT_FEED, "name" = "MP40 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm MP40 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/mp40), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "mp40/furniture/stock", "family" = "mp40", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MP40 stock",
+			"desc" = "A steel MP40 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "erma/action", "family" = "erma", "slot" = FIREARM_SLOT_ACTION, "name" = "Erma EMP bolt",
+			"desc" = "The bolt of an Erma EMP submachine gun. Fits any Erma EMP receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "erma/barrel/9x19", "family" = "erma", "slot" = FIREARM_SLOT_BARREL, "name" = "Erma EMP barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for an Erma EMP submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "erma/feed/9x19", "family" = "erma", "slot" = FIREARM_SLOT_FEED, "name" = "Erma EMP magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Erma EMP magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/mp40, /obj/item/ammo_magazine/mp40/erma), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "erma/furniture/stock", "family" = "erma", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Erma EMP stock",
+			"desc" = "A steel Erma EMP stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "mab38/action", "family" = "mab38", "slot" = FIREARM_SLOT_ACTION, "name" = "MAB 38 bolt",
+			"desc" = "The bolt of a MAB 38 submachine gun. Fits any MAB 38 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "mab38/barrel/9x19", "family" = "mab38", "slot" = FIREARM_SLOT_BARREL, "name" = "MAB 38 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a MAB 38 submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "mab38/feed/9x19", "family" = "mab38", "slot" = FIREARM_SLOT_FEED, "name" = "MAB 38 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm MAB 38 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/mp40/modello38), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "mab38/furniture/stock", "family" = "mab38", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MAB 38 stock",
+			"desc" = "A steel MAB 38 stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "sten/action", "family" = "sten", "slot" = FIREARM_SLOT_ACTION, "name" = "Sten bolt",
+			"desc" = "The bolt of a Sten submachine gun. Fits any Sten receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "sten/barrel/9x19", "family" = "sten", "slot" = FIREARM_SLOT_BARREL, "name" = "Sten barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Sten submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "sten/feed/9x19", "family" = "sten", "slot" = FIREARM_SLOT_FEED, "name" = "Sten magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Sten magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/sten2), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "sten/furniture/stock", "family" = "sten", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Sten stock",
+			"desc" = "A steel Sten stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "thompson/action", "family" = "thompson", "slot" = FIREARM_SLOT_ACTION, "name" = "Thompson bolt",
+			"desc" = "The bolt of a Thompson submachine gun. Fits any Thompson receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "thompson/barrel/45acp", "family" = "thompson", "slot" = FIREARM_SLOT_BARREL, "name" = "Thompson barrel (.45 ACP)",
+			"desc" = "A .45 ACP barrel for a Thompson submachine gun. Pair it with a .45 ACP magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a45acp"),
+		list("id" = "thompson/feed/45acp", "family" = "thompson", "slot" = FIREARM_SLOT_FEED, "name" = "Thompson magazine well (.45 ACP)",
+			"desc" = "A magazine well for .45 ACP Thompson magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45acp", "good_mags" = list(/obj/item/ammo_magazine/thompson, /obj/item/ammo_magazine/tommy), "ammo_type" = /obj/item/ammo_casing/a45acp),
+		list("id" = "thompson/furniture/stock", "family" = "thompson", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Thompson stock",
+			"desc" = "A steel Thompson stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "greasegun/action", "family" = "greasegun", "slot" = FIREARM_SLOT_ACTION, "name" = "M3 Grease Gun bolt",
+			"desc" = "The bolt of a M3 Grease Gun submachine gun. Fits any M3 Grease Gun receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "greasegun/barrel/45acp", "family" = "greasegun", "slot" = FIREARM_SLOT_BARREL, "name" = "M3 Grease Gun barrel (.45 ACP)",
+			"desc" = "A .45 ACP barrel for a M3 Grease Gun submachine gun. Pair it with a .45 ACP magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a45acp"),
+		list("id" = "greasegun/feed/45acp", "family" = "greasegun", "slot" = FIREARM_SLOT_FEED, "name" = "M3 Grease Gun magazine well (.45 ACP)",
+			"desc" = "A magazine well for .45 ACP M3 Grease Gun magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45acp", "good_mags" = list(/obj/item/ammo_magazine/greasegun), "ammo_type" = /obj/item/ammo_casing/a45acp),
+		list("id" = "greasegun/furniture/stock", "family" = "greasegun", "slot" = FIREARM_SLOT_FURNITURE, "name" = "M3 Grease Gun stock",
+			"desc" = "A steel M3 Grease Gun stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "ppsh/action", "family" = "ppsh", "slot" = FIREARM_SLOT_ACTION, "name" = "PPSh bolt",
+			"desc" = "The bolt of a PPSh submachine gun. Fits any PPSh receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "ppsh/barrel/762x25", "family" = "ppsh", "slot" = FIREARM_SLOT_BARREL, "name" = "PPSh barrel (7.62x25mm)",
+			"desc" = "A 7.62x25mm barrel for a PPSh submachine gun. Pair it with a 7.62x25mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a762x25"),
+		list("id" = "ppsh/feed/762x25", "family" = "ppsh", "slot" = FIREARM_SLOT_FEED, "name" = "PPSh magazine well (7.62x25mm)",
+			"desc" = "A magazine well for 7.62x25mm PPSh magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x25", "good_mags" = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps), "ammo_type" = /obj/item/ammo_casing/a762x25),
+		list("id" = "ppsh/furniture/stock", "family" = "ppsh", "slot" = FIREARM_SLOT_FURNITURE, "name" = "PPSh stock",
+			"desc" = "A steel PPSh stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "ppd/action", "family" = "ppd", "slot" = FIREARM_SLOT_ACTION, "name" = "PPD bolt",
+			"desc" = "The bolt of a PPD submachine gun. Fits any PPD receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "ppd/barrel/762x25", "family" = "ppd", "slot" = FIREARM_SLOT_BARREL, "name" = "PPD barrel (7.62x25mm)",
+			"desc" = "A 7.62x25mm barrel for a PPD submachine gun. Pair it with a 7.62x25mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a762x25"),
+		list("id" = "ppd/feed/762x25", "family" = "ppd", "slot" = FIREARM_SLOT_FEED, "name" = "PPD magazine well (7.62x25mm)",
+			"desc" = "A magazine well for 7.62x25mm PPD magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x25", "good_mags" = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps), "ammo_type" = /obj/item/ammo_casing/a762x25),
+		list("id" = "ppd/furniture/stock", "family" = "ppd", "slot" = FIREARM_SLOT_FURNITURE, "name" = "PPD stock",
+			"desc" = "A steel PPD stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "pps/action", "family" = "pps", "slot" = FIREARM_SLOT_ACTION, "name" = "PPS bolt",
+			"desc" = "The bolt of a PPS submachine gun. Fits any PPS receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "pps/barrel/762x25", "family" = "pps", "slot" = FIREARM_SLOT_BARREL, "name" = "PPS barrel (7.62x25mm)",
+			"desc" = "A 7.62x25mm barrel for a PPS submachine gun. Pair it with a 7.62x25mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a762x25"),
+		list("id" = "pps/feed/762x25", "family" = "pps", "slot" = FIREARM_SLOT_FEED, "name" = "PPS magazine well (7.62x25mm)",
+			"desc" = "A magazine well for 7.62x25mm PPS magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x25", "good_mags" = list(/obj/item/ammo_magazine/c762x25_ppsh, /obj/item/ammo_magazine/c762x25_pps), "ammo_type" = /obj/item/ammo_casing/a762x25),
+		list("id" = "pps/furniture/stock", "family" = "pps", "slot" = FIREARM_SLOT_FURNITURE, "name" = "PPS stock",
+			"desc" = "A steel PPS stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "type100/action", "family" = "type100", "slot" = FIREARM_SLOT_ACTION, "name" = "Type 100 bolt",
+			"desc" = "The bolt of a Type 100 submachine gun. Fits any Type 100 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "type100/barrel/8mm", "family" = "type100", "slot" = FIREARM_SLOT_BARREL, "name" = "Type 100 barrel (8mm Nambu)",
+			"desc" = "An 8mm Nambu barrel for a Type 100 submachine gun. Pair it with a 8mm Nambu magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "c8mmnambu"),
+		list("id" = "type100/feed/8mm", "family" = "type100", "slot" = FIREARM_SLOT_FEED, "name" = "Type 100 magazine well (8mm Nambu)",
+			"desc" = "A magazine well for 8mm Nambu Type 100 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "c8mmnambu", "good_mags" = list(/obj/item/ammo_magazine/type100), "ammo_type" = /obj/item/ammo_casing/c8mmnambu),
+		list("id" = "type100/furniture/stock", "family" = "type100", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Type 100 stock",
+			"desc" = "A steel Type 100 stock.", "icon_state" = "Carbine Wooden Stock", "ergonomics" = 1),
+		list("id" = "mp5/action", "family" = "mp5", "slot" = FIREARM_SLOT_ACTION, "name" = "MP5 bolt",
+			"desc" = "The bolt of a MP5 submachine gun. Fits any MP5 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "mp5/barrel/9x19", "family" = "mp5", "slot" = FIREARM_SLOT_BARREL, "name" = "MP5 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a MP5 submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "mp5/feed/9x19", "family" = "mp5", "slot" = FIREARM_SLOT_FEED, "name" = "MP5 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm MP5 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/mp40/mp5), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "mp5/furniture/stock", "family" = "mp5", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MP5 stock",
+			"desc" = "A polymer MP5 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "uzi/action", "family" = "uzi", "slot" = FIREARM_SLOT_ACTION, "name" = "Uzi bolt",
+			"desc" = "The bolt of an Uzi submachine gun. Fits any Uzi receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "uzi/barrel/9x19", "family" = "uzi", "slot" = FIREARM_SLOT_BARREL, "name" = "Uzi barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for an Uzi submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "uzi/feed/9x19", "family" = "uzi", "slot" = FIREARM_SLOT_FEED, "name" = "Uzi magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Uzi magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/uzi), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "uzi/furniture/stock", "family" = "uzi", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Uzi stock",
+			"desc" = "A steel Uzi stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "skorpion/action", "family" = "skorpion", "slot" = FIREARM_SLOT_ACTION, "name" = "Skorpion bolt",
+			"desc" = "The bolt of a Skorpion submachine gun. Fits any Skorpion receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "skorpion/barrel/9x19", "family" = "skorpion", "slot" = FIREARM_SLOT_BARREL, "name" = "Skorpion barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Skorpion submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "skorpion/feed/9x19", "family" = "skorpion", "slot" = FIREARM_SLOT_FEED, "name" = "Skorpion magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Skorpion magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/skorpion), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "skorpion/furniture/stock", "family" = "skorpion", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Skorpion stock",
+			"desc" = "A steel Skorpion stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "tec9/action", "family" = "tec9", "slot" = FIREARM_SLOT_ACTION, "name" = "TEC-9 bolt",
+			"desc" = "The bolt of a TEC-9 submachine gun. Fits any TEC-9 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "tec9/barrel/9x19", "family" = "tec9", "slot" = FIREARM_SLOT_BARREL, "name" = "TEC-9 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a TEC-9 submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "tec9/feed/9x19", "family" = "tec9", "slot" = FIREARM_SLOT_FEED, "name" = "TEC-9 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm TEC-9 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/tec9), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "tec9/furniture/grip", "family" = "tec9", "slot" = FIREARM_SLOT_FURNITURE, "name" = "TEC-9 grip",
+			"desc" = "A polymer TEC-9 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "vector/action", "family" = "vector", "slot" = FIREARM_SLOT_ACTION, "name" = "Kriss Vector bolt",
+			"desc" = "The bolt of a Kriss Vector submachine gun. Fits any Kriss Vector receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "vector/barrel/9x19", "family" = "vector", "slot" = FIREARM_SLOT_BARREL, "name" = "Kriss Vector barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Kriss Vector submachine gun. Pair it with a 9x19mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x19"),
+		list("id" = "vector/feed/9x19", "family" = "vector", "slot" = FIREARM_SLOT_FEED, "name" = "Kriss Vector magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Kriss Vector magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/glock17, /obj/item/ammo_magazine/glock17/vector), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "vector/furniture/stock", "family" = "vector", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Kriss Vector stock",
+			"desc" = "A polymer Kriss Vector stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "mac10/action", "family" = "mac10", "slot" = FIREARM_SLOT_ACTION, "name" = "MAC-10 bolt",
+			"desc" = "The bolt of a MAC-10 submachine gun. Fits any MAC-10 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "mac10/barrel/45acp", "family" = "mac10", "slot" = FIREARM_SLOT_BARREL, "name" = "MAC-10 barrel (.45 ACP)",
+			"desc" = "A .45 ACP barrel for a MAC-10 submachine gun. Pair it with a .45 ACP magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a45acp"),
+		list("id" = "mac10/feed/45acp", "family" = "mac10", "slot" = FIREARM_SLOT_FEED, "name" = "MAC-10 magazine well (.45 ACP)",
+			"desc" = "A magazine well for .45 ACP MAC-10 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45acp", "good_mags" = list(/obj/item/ammo_magazine/mac10), "ammo_type" = /obj/item/ammo_casing/a45acp),
+		list("id" = "mac10/furniture/stock", "family" = "mac10", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MAC-10 stock",
+			"desc" = "A steel MAC-10 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "p90/action", "family" = "p90", "slot" = FIREARM_SLOT_ACTION, "name" = "P90 bolt",
+			"desc" = "The bolt of a P90 submachine gun. Fits any P90 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "p90/barrel/57x28", "family" = "p90", "slot" = FIREARM_SLOT_BARREL, "name" = "P90 barrel (5.7x28mm)",
+			"desc" = "A 5.7x28mm barrel for a P90 submachine gun. Pair it with a 5.7x28mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a57x28"),
+		list("id" = "p90/feed/57x28", "family" = "p90", "slot" = FIREARM_SLOT_FEED, "name" = "P90 magazine well (5.7x28mm)",
+			"desc" = "A magazine well for 5.7x28mm P90 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a57x28", "good_mags" = list(/obj/item/ammo_magazine/p90), "ammo_type" = /obj/item/ammo_casing/a57x28),
+		list("id" = "p90/furniture/stock", "family" = "p90", "slot" = FIREARM_SLOT_FURNITURE, "name" = "P90 stock",
+			"desc" = "A polymer P90 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "sr3/action", "family" = "sr3", "slot" = FIREARM_SLOT_ACTION, "name" = "SR-3 bolt",
+			"desc" = "The bolt of a SR-3 rifle. Fits any SR-3 receiver.", "icon_state" = "Open-Bolt (small)"),
+		list("id" = "sr3/barrel/9x39", "family" = "sr3", "slot" = FIREARM_SLOT_BARREL, "name" = "SR-3 barrel (9x39mm)",
+			"desc" = "A 9x39mm barrel for a SR-3 rifle. Pair it with a 9x39mm magazine well.", "icon_state" = "Carbine Barrel", "caliber" = "a9x39"),
+		list("id" = "sr3/feed/9x39", "family" = "sr3", "slot" = FIREARM_SLOT_FEED, "name" = "SR-3 magazine well (9x39mm)",
+			"desc" = "A magazine well for 9x39mm SR-3 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x39", "good_mags" = list(/obj/item/ammo_magazine/srm, /obj/item/ammo_magazine/srm/srms, /obj/item/ammo_magazine/vintorez), "ammo_type" = /obj/item/ammo_casing/a9x39),
+		list("id" = "sr3/furniture/stock", "family" = "sr3", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SR-3 stock",
+			"desc" = "A steel SR-3 stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "stg/action", "family" = "stg", "slot" = FIREARM_SLOT_ACTION, "name" = "StG-44 bolt carrier",
+			"desc" = "The bolt carrier of a StG-44 rifle. Fits any StG-44 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "stg/barrel/792x33", "family" = "stg", "slot" = FIREARM_SLOT_BARREL, "name" = "StG-44 barrel (7.92x33mm Kurz)",
+			"desc" = "A 7.92x33mm Kurz barrel for a StG-44 rifle. Pair it with a 7.92x33mm Kurz magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a792x33"),
+		list("id" = "stg/feed/792x33", "family" = "stg", "slot" = FIREARM_SLOT_FEED, "name" = "StG-44 magazine well (7.92x33mm Kurz)",
+			"desc" = "A magazine well for 7.92x33mm Kurz StG-44 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a792x33", "good_mags" = list(/obj/item/ammo_magazine/stg), "ammo_type" = /obj/item/ammo_casing/a792x33),
+		list("id" = "stg/furniture/stock", "family" = "stg", "slot" = FIREARM_SLOT_FURNITURE, "name" = "StG-44 stock",
+			"desc" = "A wooden StG-44 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "fg42/action", "family" = "fg42", "slot" = FIREARM_SLOT_ACTION, "name" = "FG42 bolt carrier",
+			"desc" = "The bolt carrier of a FG42 rifle. Fits any FG42 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "fg42/barrel/792x57", "family" = "fg42", "slot" = FIREARM_SLOT_BARREL, "name" = "FG42 barrel (7.92x57mm)",
+			"desc" = "A 7.92x57mm barrel for a FG42 rifle. Pair it with a 7.92x57mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a792x57"),
+		list("id" = "fg42/feed/792x57", "family" = "fg42", "slot" = FIREARM_SLOT_FEED, "name" = "FG42 magazine well (7.92x57mm)",
+			"desc" = "A magazine well for 7.92x57mm FG42 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a792x57", "good_mags" = list(/obj/item/ammo_magazine/fg42, /obj/item/ammo_magazine/fg42/small), "ammo_type" = /obj/item/ammo_casing/a792x57),
+		list("id" = "fg42/furniture/stock", "family" = "fg42", "slot" = FIREARM_SLOT_FURNITURE, "name" = "FG42 stock",
+			"desc" = "A steel FG42 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "m14/action", "family" = "m14", "slot" = FIREARM_SLOT_ACTION, "name" = "M14 bolt carrier",
+			"desc" = "The bolt carrier of a M14 rifle. Fits any M14 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "m14/barrel/762x51", "family" = "m14", "slot" = FIREARM_SLOT_BARREL, "name" = "M14 barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for a M14 rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "m14/feed/762x51", "family" = "m14", "slot" = FIREARM_SLOT_FEED, "name" = "M14 magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm M14 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/m14), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "m14/furniture/stock", "family" = "m14", "slot" = FIREARM_SLOT_FURNITURE, "name" = "M14 stock",
+			"desc" = "A wooden M14 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "fal/action", "family" = "fal", "slot" = FIREARM_SLOT_ACTION, "name" = "FAL bolt carrier",
+			"desc" = "The bolt carrier of a FAL rifle. Fits any FAL receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "fal/barrel/762x51", "family" = "fal", "slot" = FIREARM_SLOT_BARREL, "name" = "FAL barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for a FAL rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "fal/feed/762x51", "family" = "fal", "slot" = FIREARM_SLOT_FEED, "name" = "FAL magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm FAL magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/fal), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "fal/furniture/stock", "family" = "fal", "slot" = FIREARM_SLOT_FURNITURE, "name" = "FAL stock",
+			"desc" = "A wooden FAL stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "g3/action", "family" = "g3", "slot" = FIREARM_SLOT_ACTION, "name" = "G3 bolt carrier",
+			"desc" = "The bolt carrier of a G3 rifle. Fits any G3 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "g3/barrel/762x51", "family" = "g3", "slot" = FIREARM_SLOT_BARREL, "name" = "G3 barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for a G3 rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "g3/feed/762x51", "family" = "g3", "slot" = FIREARM_SLOT_FEED, "name" = "G3 magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm G3 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/hk), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "g3/furniture/stock", "family" = "g3", "slot" = FIREARM_SLOT_FURNITURE, "name" = "G3 stock",
+			"desc" = "A polymer G3 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "ar10/action", "family" = "ar10", "slot" = FIREARM_SLOT_ACTION, "name" = "AR-10 bolt carrier",
+			"desc" = "The bolt carrier of an AR-10 rifle. Fits any AR-10 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "ar10/barrel/762x51", "family" = "ar10", "slot" = FIREARM_SLOT_BARREL, "name" = "AR-10 barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for an AR-10 rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "ar10/feed/762x51", "family" = "ar10", "slot" = FIREARM_SLOT_FEED, "name" = "AR-10 magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm AR-10 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/ar10), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "ar10/furniture/stock", "family" = "ar10", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AR-10 stock",
+			"desc" = "A polymer AR-10 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "hk417/action", "family" = "hk417", "slot" = FIREARM_SLOT_ACTION, "name" = "HK417 bolt carrier",
+			"desc" = "The bolt carrier of a HK417 rifle. Fits any HK417 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "hk417/barrel/762x51", "family" = "hk417", "slot" = FIREARM_SLOT_BARREL, "name" = "HK417 barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for a HK417 rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "hk417/feed/762x51", "family" = "hk417", "slot" = FIREARM_SLOT_FEED, "name" = "HK417 magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm HK417 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/scarh), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "hk417/furniture/stock", "family" = "hk417", "slot" = FIREARM_SLOT_FURNITURE, "name" = "HK417 stock",
+			"desc" = "A polymer HK417 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "scar/action", "family" = "scar", "slot" = FIREARM_SLOT_ACTION, "name" = "SCAR bolt carrier",
+			"desc" = "The bolt carrier of a SCAR rifle. Fits any SCAR receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "scar/barrel/556x45", "family" = "scar", "slot" = FIREARM_SLOT_BARREL, "name" = "SCAR barrel (5.56x45mm)",
+			"desc" = "A 5.56x45mm barrel for a SCAR rifle. Pair it with a 5.56x45mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a556x45"),
+		list("id" = "scar/barrel/762x51", "family" = "scar", "slot" = FIREARM_SLOT_BARREL, "name" = "SCAR barrel (7.62x51mm)",
+			"desc" = "A 7.62x51mm barrel for a SCAR rifle. Pair it with a 7.62x51mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x51"),
+		list("id" = "scar/feed/556x45", "family" = "scar", "slot" = FIREARM_SLOT_FEED, "name" = "SCAR magazine well (5.56x45mm)",
+			"desc" = "A magazine well for 5.56x45mm SCAR magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a556x45", "good_mags" = stanag_mags, "ammo_type" = /obj/item/ammo_casing/a556x45),
+		list("id" = "scar/feed/762x51", "family" = "scar", "slot" = FIREARM_SLOT_FEED, "name" = "SCAR magazine well (7.62x51mm)",
+			"desc" = "A magazine well for 7.62x51mm SCAR magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x51", "good_mags" = list(/obj/item/ammo_magazine/scarh), "ammo_type" = /obj/item/ammo_casing/a762x51),
+		list("id" = "scar/furniture/stock", "family" = "scar", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SCAR stock",
+			"desc" = "A polymer SCAR stock.", "icon_state" = "Folding Stock", "ergonomics" = 1),
+		list("id" = "aug/action", "family" = "aug", "slot" = FIREARM_SLOT_ACTION, "name" = "AUG bolt carrier",
+			"desc" = "The bolt carrier of an AUG rifle. Fits any AUG receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "aug/barrel/556x45", "family" = "aug", "slot" = FIREARM_SLOT_BARREL, "name" = "AUG barrel (5.56x45mm)",
+			"desc" = "A 5.56x45mm barrel for an AUG rifle. Pair it with a 5.56x45mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a556x45"),
+		list("id" = "aug/feed/556x45", "family" = "aug", "slot" = FIREARM_SLOT_FEED, "name" = "AUG magazine well (5.56x45mm)",
+			"desc" = "A magazine well for 5.56x45mm AUG magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a556x45", "good_mags" = stanag_mags, "ammo_type" = /obj/item/ammo_casing/a556x45),
+		list("id" = "aug/furniture/stock", "family" = "aug", "slot" = FIREARM_SLOT_FURNITURE, "name" = "AUG stock",
+			"desc" = "A polymer AUG stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "l85/action", "family" = "l85", "slot" = FIREARM_SLOT_ACTION, "name" = "L85 bolt carrier",
+			"desc" = "The bolt carrier of a L85 rifle. Fits any L85 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "l85/barrel/556x45", "family" = "l85", "slot" = FIREARM_SLOT_BARREL, "name" = "L85 barrel (5.56x45mm)",
+			"desc" = "A 5.56x45mm barrel for a L85 rifle. Pair it with a 5.56x45mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a556x45"),
+		list("id" = "l85/feed/556x45", "family" = "l85", "slot" = FIREARM_SLOT_FEED, "name" = "L85 magazine well (5.56x45mm)",
+			"desc" = "A magazine well for 5.56x45mm L85 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a556x45", "good_mags" = stanag_mags, "ammo_type" = /obj/item/ammo_casing/a556x45),
+		list("id" = "l85/furniture/stock", "family" = "l85", "slot" = FIREARM_SLOT_FURNITURE, "name" = "L85 stock",
+			"desc" = "A polymer L85 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "qbz95/action", "family" = "qbz95", "slot" = FIREARM_SLOT_ACTION, "name" = "QBZ-95 bolt carrier",
+			"desc" = "The bolt carrier of a QBZ-95 rifle. Fits any QBZ-95 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "qbz95/barrel/58x42", "family" = "qbz95", "slot" = FIREARM_SLOT_BARREL, "name" = "QBZ-95 barrel (5.8x42mm)",
+			"desc" = "A 5.8x42mm barrel for a QBZ-95 rifle. Pair it with a 5.8x42mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a58x42"),
+		list("id" = "qbz95/feed/58x42", "family" = "qbz95", "slot" = FIREARM_SLOT_FEED, "name" = "QBZ-95 magazine well (5.8x42mm)",
+			"desc" = "A magazine well for 5.8x42mm QBZ-95 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a58x42", "good_mags" = list(/obj/item/ammo_magazine/qbz95), "ammo_type" = /obj/item/ammo_casing/a58x42),
+		list("id" = "qbz95/furniture/stock", "family" = "qbz95", "slot" = FIREARM_SLOT_FURNITURE, "name" = "QBZ-95 stock",
+			"desc" = "A polymer QBZ-95 stock.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "vz58/action", "family" = "vz58", "slot" = FIREARM_SLOT_ACTION, "name" = "VZ-58 bolt carrier",
+			"desc" = "The bolt carrier of a VZ-58 rifle. Fits any VZ-58 receiver.", "icon_state" = "Dual Selective Fire"),
+		list("id" = "vz58/barrel/762x39", "family" = "vz58", "slot" = FIREARM_SLOT_BARREL, "name" = "VZ-58 barrel (7.62x39mm)",
+			"desc" = "A 7.62x39mm barrel for a VZ-58 rifle. Pair it with a 7.62x39mm magazine well.", "icon_state" = "Rifle Barrel", "caliber" = "a762x39"),
+		list("id" = "vz58/feed/762x39", "family" = "vz58", "slot" = FIREARM_SLOT_FEED, "name" = "VZ-58 magazine well (7.62x39mm)",
+			"desc" = "A magazine well for 7.62x39mm VZ-58 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x39", "good_mags" = ak47_mags, "ammo_type" = /obj/item/ammo_casing/a762x39),
+		list("id" = "vz58/furniture/stock", "family" = "vz58", "slot" = FIREARM_SLOT_FURNITURE, "name" = "VZ-58 stock",
+			"desc" = "A wooden VZ-58 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -849,6 +1205,46 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"mckellen" = list(FIREARM_SLOT_ACTION = "mckellen/action", FIREARM_SLOT_BARREL = "mckellen/barrel/44magnum", FIREARM_SLOT_FEED = "mckellen/feed/44magnum", FIREARM_SLOT_FURNITURE = "mckellen/furniture/grip"),
 		"judge" = list(FIREARM_SLOT_ACTION = "judge/action", FIREARM_SLOT_BARREL = "judge/barrel/45", FIREARM_SLOT_FEED = "judge/feed/45", FIREARM_SLOT_FURNITURE = "judge/furniture/grip"),
 		"revolving" = list(FIREARM_SLOT_ACTION = "revolving/action", FIREARM_SLOT_BARREL = "revolving/barrel/44", FIREARM_SLOT_FEED = "revolving/feed/44", FIREARM_SLOT_FURNITURE = "revolving/furniture/stock"),
+		"pump" = list(FIREARM_SLOT_ACTION = "pump/action", FIREARM_SLOT_BARREL = "pump/barrel/12g", FIREARM_SLOT_FEED = "pump/feed/12g", FIREARM_SLOT_FURNITURE = "pump/furniture/stock"),
+		"ks23" = list(FIREARM_SLOT_ACTION = "ks23/action", FIREARM_SLOT_BARREL = "ks23/barrel/12g", FIREARM_SLOT_FEED = "ks23/feed/12g", FIREARM_SLOT_FURNITURE = "ks23/furniture/stock"),
+		"coachgun" = list(FIREARM_SLOT_ACTION = "coachgun/action", FIREARM_SLOT_BARREL = "coachgun/barrel/12g", FIREARM_SLOT_FEED = "coachgun/feed/12g", FIREARM_SLOT_FURNITURE = "coachgun/furniture/stock"),
+		"mts225" = list(FIREARM_SLOT_ACTION = "mts225/action", FIREARM_SLOT_BARREL = "mts225/barrel/12g", FIREARM_SLOT_FEED = "mts225/feed/12g", FIREARM_SLOT_FURNITURE = "mts225/furniture/stock"),
+		"remington11" = list(FIREARM_SLOT_ACTION = "remington11/action", FIREARM_SLOT_BARREL = "remington11/barrel/12g", FIREARM_SLOT_FEED = "remington11/feed/12g", FIREARM_SLOT_FURNITURE = "remington11/furniture/stock"),
+		"spas" = list(FIREARM_SLOT_ACTION = "spas/action", FIREARM_SLOT_BARREL = "spas/barrel/12g", FIREARM_SLOT_FEED = "spas/feed/12g", FIREARM_SLOT_FURNITURE = "spas/furniture/stock"),
+		"saiga" = list(FIREARM_SLOT_ACTION = "saiga/action", FIREARM_SLOT_BARREL = "saiga/barrel/12g", FIREARM_SLOT_FEED = "saiga/feed/12g", FIREARM_SLOT_FURNITURE = "saiga/furniture/stock"),
+		"usas12" = list(FIREARM_SLOT_ACTION = "usas12/action", FIREARM_SLOT_BARREL = "usas12/barrel/12g", FIREARM_SLOT_FEED = "usas12/feed/12g", FIREARM_SLOT_FURNITURE = "usas12/furniture/stock"),
+		"ar12" = list(FIREARM_SLOT_ACTION = "ar12/action", FIREARM_SLOT_BARREL = "ar12/barrel/12g", FIREARM_SLOT_FEED = "ar12/feed/12g", FIREARM_SLOT_FURNITURE = "ar12/furniture/stock"),
+		"mp40" = list(FIREARM_SLOT_ACTION = "mp40/action", FIREARM_SLOT_BARREL = "mp40/barrel/9x19", FIREARM_SLOT_FEED = "mp40/feed/9x19", FIREARM_SLOT_FURNITURE = "mp40/furniture/stock"),
+		"erma" = list(FIREARM_SLOT_ACTION = "erma/action", FIREARM_SLOT_BARREL = "erma/barrel/9x19", FIREARM_SLOT_FEED = "erma/feed/9x19", FIREARM_SLOT_FURNITURE = "erma/furniture/stock"),
+		"mab38" = list(FIREARM_SLOT_ACTION = "mab38/action", FIREARM_SLOT_BARREL = "mab38/barrel/9x19", FIREARM_SLOT_FEED = "mab38/feed/9x19", FIREARM_SLOT_FURNITURE = "mab38/furniture/stock"),
+		"sten" = list(FIREARM_SLOT_ACTION = "sten/action", FIREARM_SLOT_BARREL = "sten/barrel/9x19", FIREARM_SLOT_FEED = "sten/feed/9x19", FIREARM_SLOT_FURNITURE = "sten/furniture/stock"),
+		"thompson" = list(FIREARM_SLOT_ACTION = "thompson/action", FIREARM_SLOT_BARREL = "thompson/barrel/45acp", FIREARM_SLOT_FEED = "thompson/feed/45acp", FIREARM_SLOT_FURNITURE = "thompson/furniture/stock"),
+		"greasegun" = list(FIREARM_SLOT_ACTION = "greasegun/action", FIREARM_SLOT_BARREL = "greasegun/barrel/45acp", FIREARM_SLOT_FEED = "greasegun/feed/45acp", FIREARM_SLOT_FURNITURE = "greasegun/furniture/stock"),
+		"ppsh" = list(FIREARM_SLOT_ACTION = "ppsh/action", FIREARM_SLOT_BARREL = "ppsh/barrel/762x25", FIREARM_SLOT_FEED = "ppsh/feed/762x25", FIREARM_SLOT_FURNITURE = "ppsh/furniture/stock"),
+		"ppd" = list(FIREARM_SLOT_ACTION = "ppd/action", FIREARM_SLOT_BARREL = "ppd/barrel/762x25", FIREARM_SLOT_FEED = "ppd/feed/762x25", FIREARM_SLOT_FURNITURE = "ppd/furniture/stock"),
+		"pps" = list(FIREARM_SLOT_ACTION = "pps/action", FIREARM_SLOT_BARREL = "pps/barrel/762x25", FIREARM_SLOT_FEED = "pps/feed/762x25", FIREARM_SLOT_FURNITURE = "pps/furniture/stock"),
+		"type100" = list(FIREARM_SLOT_ACTION = "type100/action", FIREARM_SLOT_BARREL = "type100/barrel/8mm", FIREARM_SLOT_FEED = "type100/feed/8mm", FIREARM_SLOT_FURNITURE = "type100/furniture/stock"),
+		"mp5" = list(FIREARM_SLOT_ACTION = "mp5/action", FIREARM_SLOT_BARREL = "mp5/barrel/9x19", FIREARM_SLOT_FEED = "mp5/feed/9x19", FIREARM_SLOT_FURNITURE = "mp5/furniture/stock"),
+		"uzi" = list(FIREARM_SLOT_ACTION = "uzi/action", FIREARM_SLOT_BARREL = "uzi/barrel/9x19", FIREARM_SLOT_FEED = "uzi/feed/9x19", FIREARM_SLOT_FURNITURE = "uzi/furniture/stock"),
+		"skorpion" = list(FIREARM_SLOT_ACTION = "skorpion/action", FIREARM_SLOT_BARREL = "skorpion/barrel/9x19", FIREARM_SLOT_FEED = "skorpion/feed/9x19", FIREARM_SLOT_FURNITURE = "skorpion/furniture/stock"),
+		"tec9" = list(FIREARM_SLOT_ACTION = "tec9/action", FIREARM_SLOT_BARREL = "tec9/barrel/9x19", FIREARM_SLOT_FEED = "tec9/feed/9x19", FIREARM_SLOT_FURNITURE = "tec9/furniture/grip"),
+		"vector" = list(FIREARM_SLOT_ACTION = "vector/action", FIREARM_SLOT_BARREL = "vector/barrel/9x19", FIREARM_SLOT_FEED = "vector/feed/9x19", FIREARM_SLOT_FURNITURE = "vector/furniture/stock"),
+		"mac10" = list(FIREARM_SLOT_ACTION = "mac10/action", FIREARM_SLOT_BARREL = "mac10/barrel/45acp", FIREARM_SLOT_FEED = "mac10/feed/45acp", FIREARM_SLOT_FURNITURE = "mac10/furniture/stock"),
+		"p90" = list(FIREARM_SLOT_ACTION = "p90/action", FIREARM_SLOT_BARREL = "p90/barrel/57x28", FIREARM_SLOT_FEED = "p90/feed/57x28", FIREARM_SLOT_FURNITURE = "p90/furniture/stock"),
+		"sr3" = list(FIREARM_SLOT_ACTION = "sr3/action", FIREARM_SLOT_BARREL = "sr3/barrel/9x39", FIREARM_SLOT_FEED = "sr3/feed/9x39", FIREARM_SLOT_FURNITURE = "sr3/furniture/stock"),
+		"stg" = list(FIREARM_SLOT_ACTION = "stg/action", FIREARM_SLOT_BARREL = "stg/barrel/792x33", FIREARM_SLOT_FEED = "stg/feed/792x33", FIREARM_SLOT_FURNITURE = "stg/furniture/stock"),
+		"fg42" = list(FIREARM_SLOT_ACTION = "fg42/action", FIREARM_SLOT_BARREL = "fg42/barrel/792x57", FIREARM_SLOT_FEED = "fg42/feed/792x57", FIREARM_SLOT_FURNITURE = "fg42/furniture/stock"),
+		"m14" = list(FIREARM_SLOT_ACTION = "m14/action", FIREARM_SLOT_BARREL = "m14/barrel/762x51", FIREARM_SLOT_FEED = "m14/feed/762x51", FIREARM_SLOT_FURNITURE = "m14/furniture/stock"),
+		"fal" = list(FIREARM_SLOT_ACTION = "fal/action", FIREARM_SLOT_BARREL = "fal/barrel/762x51", FIREARM_SLOT_FEED = "fal/feed/762x51", FIREARM_SLOT_FURNITURE = "fal/furniture/stock"),
+		"g3" = list(FIREARM_SLOT_ACTION = "g3/action", FIREARM_SLOT_BARREL = "g3/barrel/762x51", FIREARM_SLOT_FEED = "g3/feed/762x51", FIREARM_SLOT_FURNITURE = "g3/furniture/stock"),
+		"ar10" = list(FIREARM_SLOT_ACTION = "ar10/action", FIREARM_SLOT_BARREL = "ar10/barrel/762x51", FIREARM_SLOT_FEED = "ar10/feed/762x51", FIREARM_SLOT_FURNITURE = "ar10/furniture/stock"),
+		"hk417" = list(FIREARM_SLOT_ACTION = "hk417/action", FIREARM_SLOT_BARREL = "hk417/barrel/762x51", FIREARM_SLOT_FEED = "hk417/feed/762x51", FIREARM_SLOT_FURNITURE = "hk417/furniture/stock"),
+		"scar_l" = list(FIREARM_SLOT_ACTION = "scar/action", FIREARM_SLOT_BARREL = "scar/barrel/556x45", FIREARM_SLOT_FEED = "scar/feed/556x45", FIREARM_SLOT_FURNITURE = "scar/furniture/stock"),
+		"scar_h" = list(FIREARM_SLOT_ACTION = "scar/action", FIREARM_SLOT_BARREL = "scar/barrel/762x51", FIREARM_SLOT_FEED = "scar/feed/762x51", FIREARM_SLOT_FURNITURE = "scar/furniture/stock"),
+		"aug" = list(FIREARM_SLOT_ACTION = "aug/action", FIREARM_SLOT_BARREL = "aug/barrel/556x45", FIREARM_SLOT_FEED = "aug/feed/556x45", FIREARM_SLOT_FURNITURE = "aug/furniture/stock"),
+		"l85" = list(FIREARM_SLOT_ACTION = "l85/action", FIREARM_SLOT_BARREL = "l85/barrel/556x45", FIREARM_SLOT_FEED = "l85/feed/556x45", FIREARM_SLOT_FURNITURE = "l85/furniture/stock"),
+		"qbz95" = list(FIREARM_SLOT_ACTION = "qbz95/action", FIREARM_SLOT_BARREL = "qbz95/barrel/58x42", FIREARM_SLOT_FEED = "qbz95/feed/58x42", FIREARM_SLOT_FURNITURE = "qbz95/furniture/stock"),
+		"vz58" = list(FIREARM_SLOT_ACTION = "vz58/action", FIREARM_SLOT_BARREL = "vz58/barrel/762x39", FIREARM_SLOT_FEED = "vz58/feed/762x39", FIREARM_SLOT_FURNITURE = "vz58/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
@@ -917,6 +1313,45 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"mckellen_receiver" = list(),
 		"judge_receiver" = list(),
 		"revolving_receiver" = list(),
+		"pump_receiver" = list(),
+		"ks23_receiver" = list(),
+		"coachgun_receiver" = list(),
+		"mts225_receiver" = list(),
+		"remington11_receiver" = list(),
+		"spas_receiver" = list(),
+		"saiga_receiver" = list(),
+		"usas12_receiver" = list(),
+		"ar12_receiver" = list(),
+		"mp40_receiver" = list(),
+		"erma_receiver" = list(),
+		"mab38_receiver" = list(),
+		"sten_receiver" = list(),
+		"thompson_receiver" = list(),
+		"greasegun_receiver" = list(),
+		"ppsh_receiver" = list(),
+		"ppd_receiver" = list(),
+		"pps_receiver" = list(),
+		"type100_receiver" = list(),
+		"mp5_receiver" = list(),
+		"uzi_receiver" = list(),
+		"skorpion_receiver" = list(),
+		"tec9_receiver" = list(),
+		"vector_receiver" = list(),
+		"mac10_receiver" = list(),
+		"p90_receiver" = list(),
+		"sr3_receiver" = list(),
+		"stg_receiver" = list(),
+		"fg42_receiver" = list(),
+		"m14_receiver" = list(),
+		"fal_receiver" = list(),
+		"g3_receiver" = list(),
+		"ar10_receiver" = list(),
+		"hk417_receiver" = list(),
+		"scar_receiver" = list(),
+		"aug_receiver" = list(),
+		"l85_receiver" = list(),
+		"qbz95_receiver" = list(),
+		"vz58_receiver" = list(),
 	)
 
 var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
@@ -925,7 +1360,8 @@ var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" 
 	"martini" = "Martini-Henry", "ptrd" = "PTRD", "pzb" = "PzB", "barrett" = "Barrett",
 	"sks" = "SKS", "gewehr43" = "Gewehr 41/43", "svt" = "SVT", "garand" = "M1 Garand", "m1carbine" = "M1 Carbine", "avtomat" = "Fedorov",
 	"vg5" = "Volkssturmkarabiner", "ptrs" = "PTRS", "svd" = "SVD", "vss" = "VSS", "m82" = "Barrett M82", "bamr" = "BAMR", "lever" = "Lever-action",
-	"nambu" = "Nambu", "bergmann" = "Bergmann", "luger" = "Luger", "walther" = "Walther P38", "browninghp" = "Browning Hi-Power", "c96" = "Mauser C96", "borchardt" = "Borchardt", "colthammerless" = "Colt Pocket Hammerless", "m1911" = "M1911", "tt" = "Tokarev", "makarov" = "Makarov", "aps" = "Stechkin", "glock" = "Glock", "beretta" = "Beretta M9", "jericho" = "Jericho 941", "sig250" = "SIG 250", "p220" = "SIG P220", "pl14" = "PL-14", "mp443" = "MP-443", "deagle" = "Desert Eagle", "nagant" = "Nagant", "m1892" = "Modele 1892", "colt_saa" = "Colt Single Action", "colt1892" = "Colt M1892", "policepositive" = "Colt Police Positive", "smithwesson" = "Smith & Wesson", "enfieldno2" = "Enfield No. 2", "webley" = "Webley", "type26" = "Type 26", "derringer" = "Derringer", "magnum44" = "Magnum 44", "mckellen" = "Mckellen", "judge" = "Taurus Judge", "revolving" = "Colt Revolving")
+	"nambu" = "Nambu", "bergmann" = "Bergmann", "luger" = "Luger", "walther" = "Walther P38", "browninghp" = "Browning Hi-Power", "c96" = "Mauser C96", "borchardt" = "Borchardt", "colthammerless" = "Colt Pocket Hammerless", "m1911" = "M1911", "tt" = "Tokarev", "makarov" = "Makarov", "aps" = "Stechkin", "glock" = "Glock", "beretta" = "Beretta M9", "jericho" = "Jericho 941", "sig250" = "SIG 250", "p220" = "SIG P220", "pl14" = "PL-14", "mp443" = "MP-443", "deagle" = "Desert Eagle", "nagant" = "Nagant", "m1892" = "Modele 1892", "colt_saa" = "Colt Single Action", "colt1892" = "Colt M1892", "policepositive" = "Colt Police Positive", "smithwesson" = "Smith & Wesson", "enfieldno2" = "Enfield No. 2", "webley" = "Webley", "type26" = "Type 26", "derringer" = "Derringer", "magnum44" = "Magnum 44", "mckellen" = "Mckellen", "judge" = "Taurus Judge", "revolving" = "Colt Revolving",
+	"pump" = "Pump-action", "ks23" = "KS-23", "coachgun" = "Coach gun", "mts225" = "MTS-225", "remington11" = "Remington 11", "spas" = "SPAS-12", "saiga" = "Saiga-12", "usas12" = "USAS-12", "ar12" = "AR-12", "mp40" = "MP40", "erma" = "Erma EMP", "mab38" = "MAB 38", "sten" = "Sten", "thompson" = "Thompson", "greasegun" = "M3 Grease Gun", "ppsh" = "PPSh", "ppd" = "PPD", "pps" = "PPS", "type100" = "Type 100", "mp5" = "MP5", "uzi" = "Uzi", "skorpion" = "Skorpion", "tec9" = "TEC-9", "vector" = "Kriss Vector", "mac10" = "MAC-10", "p90" = "P90", "sr3" = "SR-3", "stg" = "StG-44", "fg42" = "FG42", "m14" = "M14", "fal" = "FAL", "g3" = "G3", "ar10" = "AR-10", "hk417" = "HK417", "scar" = "SCAR", "aug" = "AUG", "l85" = "L85", "qbz95" = "QBZ-95", "vz58" = "VZ-58")
 var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
 	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
 	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm", "a303" = ".303 British", "a3006" = ".30-06", "a8x50" = "8x50mmR",
@@ -934,7 +1370,8 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	"a762x33" = "7.62x33mm", "a9x39" = "9x39mm", "a15115" = "15x115mm", "a44" = ".44-40", "a357" = ".357 Magnum",
 	"c8mmnambu" = "8mm Nambu", "a9x19" = "9x19mm", "a9x18" = "9x18mm", "a762x25" = "7.62x25mm", "a765x25" = "7.65x25mm", "a32acp" = ".32 ACP",
 	"a380acp" = ".380 ACP", "a45acp" = ".45 ACP", "a45" = ".45 Colt", "a44magnum" = ".44 Magnum", "a762x38" = "7.62x38mmR", "a8x27" = "8x27mmR",
-	"a38" = ".38", "a32" = ".32", "a41" = ".41", "a455" = ".455 Webley", "c9mm_jap_revolver" = "9mm Japanese")
+	"a38" = ".38", "a32" = ".32", "a41" = ".41", "a455" = ".455 Webley", "c9mm_jap_revolver" = "9mm Japanese",
+	"12gauge" = "12 gauge", "a57x28" = "5.7x28mm", "a58x42" = "5.8x42mm")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -1277,6 +1714,167 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_kind = "pistol"
 /obj/item/weapon/gun/projectile/shotgun
 	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/shotgun/pump
+	firearm_family = "pump"
+	firearm_preset = "pump"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/shotgun/pump/ks23
+	firearm_family = "ks23"
+	firearm_preset = "ks23"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/shotgun/coachgun
+	firearm_family = "coachgun"
+	firearm_preset = "coachgun"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/shotgun/mts225
+	firearm_family = "mts225"
+	firearm_preset = "mts225"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/semiautomatic/remington11
+	firearm_family = "remington11"
+	firearm_preset = "remington11"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/submachinegun/spas
+	firearm_family = "spas"
+	firearm_preset = "spas"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/submachinegun/saiga12
+	firearm_family = "saiga"
+	firearm_preset = "saiga"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/submachinegun/usas12
+	firearm_family = "usas12"
+	firearm_preset = "usas12"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/submachinegun/ar12
+	firearm_family = "ar12"
+	firearm_preset = "ar12"
+	firearm_kind = "shotgun"
+/obj/item/weapon/gun/projectile/submachinegun/mp40
+	firearm_family = "mp40"
+	firearm_preset = "mp40"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/ermaemp
+	firearm_family = "erma"
+	firearm_preset = "erma"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38
+	firearm_family = "mab38"
+	firearm_preset = "mab38"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/sten
+	firearm_family = "sten"
+	firearm_preset = "sten"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/thompson
+	firearm_family = "thompson"
+	firearm_preset = "thompson"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/tommy
+	firearm_family = "thompson"
+	firearm_preset = "thompson"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/greasegun
+	firearm_family = "greasegun"
+	firearm_preset = "greasegun"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/ppsh
+	firearm_family = "ppsh"
+	firearm_preset = "ppsh"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/ppd
+	firearm_family = "ppd"
+	firearm_preset = "ppd"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/pps
+	firearm_family = "pps"
+	firearm_preset = "pps"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/type100
+	firearm_family = "type100"
+	firearm_preset = "type100"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5
+	firearm_family = "mp5"
+	firearm_preset = "mp5"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/uzi
+	firearm_family = "uzi"
+	firearm_preset = "uzi"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/skorpion
+	firearm_family = "skorpion"
+	firearm_preset = "skorpion"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/tec9
+	firearm_family = "tec9"
+	firearm_preset = "tec9"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/vector
+	firearm_family = "vector"
+	firearm_preset = "vector"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/mac10
+	firearm_family = "mac10"
+	firearm_preset = "mac10"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/p90
+	firearm_family = "p90"
+	firearm_preset = "p90"
+	firearm_kind = "submachine gun"
+/obj/item/weapon/gun/projectile/submachinegun/srm
+	firearm_family = "sr3"
+	firearm_preset = "sr3"
+/obj/item/weapon/gun/projectile/submachinegun/stg
+	firearm_family = "stg"
+	firearm_preset = "stg"
+/obj/item/weapon/gun/projectile/submachinegun/fg42
+	firearm_family = "fg42"
+	firearm_preset = "fg42"
+/obj/item/weapon/gun/projectile/submachinegun/m14
+	firearm_family = "m14"
+	firearm_preset = "m14"
+/obj/item/weapon/gun/projectile/submachinegun/fal
+	firearm_family = "fal"
+	firearm_preset = "fal"
+/obj/item/weapon/gun/projectile/submachinegun/g3
+	firearm_family = "g3"
+	firearm_preset = "g3"
+/obj/item/weapon/gun/projectile/submachinegun/ar10
+	firearm_family = "ar10"
+	firearm_preset = "ar10"
+/obj/item/weapon/gun/projectile/submachinegun/hk417
+	firearm_family = "hk417"
+	firearm_preset = "hk417"
+/obj/item/weapon/gun/projectile/submachinegun/scarl
+	firearm_family = "scar"
+	firearm_preset = "scar_l"
+/obj/item/weapon/gun/projectile/submachinegun/scarh
+	firearm_family = "scar"
+	firearm_preset = "scar_h"
+/obj/item/weapon/gun/projectile/submachinegun/aug
+	firearm_family = "aug"
+	firearm_preset = "aug"
+/obj/item/weapon/gun/projectile/submachinegun/l85a2
+	firearm_family = "l85"
+	firearm_preset = "l85"
+/obj/item/weapon/gun/projectile/submachinegun/qbz95
+	firearm_family = "qbz95"
+	firearm_preset = "qbz95"
+/obj/item/weapon/gun/projectile/submachinegun/vz58
+	firearm_family = "vz58"
+	firearm_preset = "vz58"
+// The M2 carbine is a select-fire M1 Carbine; the AK-74M, AK-12 and AK-15 are AKs.
+/obj/item/weapon/gun/projectile/submachinegun/m2carbine
+	firearm_family = "m1carbine"
+	firearm_preset = "m1carbine"
+/obj/item/weapon/gun/projectile/submachinegun/ak74m
+	firearm_family = "ak"
+	firearm_preset = "aks74"
+/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15
+	firearm_preset = "ak100_762"
+/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47
+	firearm_fixed_reason = "crude one-off build with no standard parts"
 // The makeshift bolt is a crude one-off build with no standard parts.
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	firearm_family = null
@@ -1855,6 +2453,357 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	magazine_type = null
 	firearm_family = "revolving"
 	firearm_preset = "revolving_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/shotgun/pump/receiver
+	name = "Pump-action receiver"
+	desc = "A bare Pump-action receiver. Fit a pump action and barrel at a firearm bench, then a tube magazine and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "pump"
+	firearm_preset = "pump_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/shotgun/pump/ks23/receiver
+	name = "KS-23 receiver"
+	desc = "A bare KS-23 receiver. Fit a pump action and barrel at a firearm bench, then a tube magazine and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ks23"
+	firearm_preset = "ks23_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/shotgun/coachgun/receiver
+	name = "Coach gun receiver"
+	desc = "A bare Coach gun receiver. Fit a break action and barrel at a firearm bench, then a breech and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "coachgun"
+	firearm_preset = "coachgun_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/shotgun/mts225/receiver
+	name = "MTS-225 receiver"
+	desc = "A bare MTS-225 receiver. Fit a lockwork and barrel at a firearm bench, then a cylinder and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mts225"
+	firearm_preset = "mts225_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/remington11/receiver
+	name = "Remington 11 receiver"
+	desc = "A bare Remington 11 receiver. Fit an action and barrel at a firearm bench, then a tube magazine and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "remington11"
+	firearm_preset = "remington11_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/spas/receiver
+	name = "SPAS-12 receiver"
+	desc = "A bare SPAS-12 receiver. Fit an action and barrel at a firearm bench, then a tube magazine and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "spas"
+	firearm_preset = "spas_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/saiga12/receiver
+	name = "Saiga-12 receiver"
+	desc = "A bare Saiga-12 receiver. Fit an action and barrel at a firearm bench, then a magazine well and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "saiga"
+	firearm_preset = "saiga_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/usas12/receiver
+	name = "USAS-12 receiver"
+	desc = "A bare USAS-12 receiver. Fit an action and barrel at a firearm bench, then a magazine well and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "usas12"
+	firearm_preset = "usas12_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/ar12/receiver
+	name = "AR-12 receiver"
+	desc = "A bare AR-12 receiver. Fit an action and barrel at a firearm bench, then a magazine well and stock, to build a working shotgun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ar12"
+	firearm_preset = "ar12_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/mp40/receiver
+	name = "MP40 receiver"
+	desc = "A bare MP40 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mp40"
+	firearm_preset = "mp40_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/ermaemp/receiver
+	name = "Erma EMP receiver"
+	desc = "A bare Erma EMP receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "erma"
+	firearm_preset = "erma_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38/receiver
+	name = "MAB 38 receiver"
+	desc = "A bare MAB 38 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mab38"
+	firearm_preset = "mab38_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/sten/receiver
+	name = "Sten receiver"
+	desc = "A bare Sten receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "sten"
+	firearm_preset = "sten_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/thompson/receiver
+	name = "Thompson receiver"
+	desc = "A bare Thompson receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "thompson"
+	firearm_preset = "thompson_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/greasegun/receiver
+	name = "M3 Grease Gun receiver"
+	desc = "A bare M3 Grease Gun receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "greasegun"
+	firearm_preset = "greasegun_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/ppsh/receiver
+	name = "PPSh receiver"
+	desc = "A bare PPSh receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ppsh"
+	firearm_preset = "ppsh_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/ppd/receiver
+	name = "PPD receiver"
+	desc = "A bare PPD receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ppd"
+	firearm_preset = "ppd_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/pps/receiver
+	name = "PPS receiver"
+	desc = "A bare PPS receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "pps"
+	firearm_preset = "pps_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/type100/receiver
+	name = "Type 100 receiver"
+	desc = "A bare Type 100 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "type100"
+	firearm_preset = "type100_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5/receiver
+	name = "MP5 receiver"
+	desc = "A bare MP5 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mp5"
+	firearm_preset = "mp5_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/uzi/receiver
+	name = "Uzi receiver"
+	desc = "A bare Uzi receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "uzi"
+	firearm_preset = "uzi_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/skorpion/receiver
+	name = "Skorpion receiver"
+	desc = "A bare Skorpion receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "skorpion"
+	firearm_preset = "skorpion_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/tec9/receiver
+	name = "TEC-9 receiver"
+	desc = "A bare TEC-9 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and grip, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "tec9"
+	firearm_preset = "tec9_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/vector/receiver
+	name = "Kriss Vector receiver"
+	desc = "A bare Kriss Vector receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "vector"
+	firearm_preset = "vector_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/mac10/receiver
+	name = "MAC-10 receiver"
+	desc = "A bare MAC-10 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mac10"
+	firearm_preset = "mac10_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/p90/receiver
+	name = "P90 receiver"
+	desc = "A bare P90 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working submachine gun."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "p90"
+	firearm_preset = "p90_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/srm/receiver
+	name = "SR-3 receiver"
+	desc = "A bare SR-3 receiver. Fit a bolt and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "sr3"
+	firearm_preset = "sr3_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/stg/receiver
+	name = "StG-44 receiver"
+	desc = "A bare StG-44 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "stg"
+	firearm_preset = "stg_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/fg42/receiver
+	name = "FG42 receiver"
+	desc = "A bare FG42 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "fg42"
+	firearm_preset = "fg42_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/m14/receiver
+	name = "M14 receiver"
+	desc = "A bare M14 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "m14"
+	firearm_preset = "m14_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/fal/receiver
+	name = "FAL receiver"
+	desc = "A bare FAL receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "fal"
+	firearm_preset = "fal_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/g3/receiver
+	name = "G3 receiver"
+	desc = "A bare G3 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "g3"
+	firearm_preset = "g3_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/ar10/receiver
+	name = "AR-10 receiver"
+	desc = "A bare AR-10 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ar10"
+	firearm_preset = "ar10_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/hk417/receiver
+	name = "HK417 receiver"
+	desc = "A bare HK417 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "hk417"
+	firearm_preset = "hk417_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/scarh/receiver
+	name = "SCAR receiver"
+	desc = "A bare SCAR receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "scar"
+	firearm_preset = "scar_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/aug/receiver
+	name = "AUG receiver"
+	desc = "A bare AUG receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "aug"
+	firearm_preset = "aug_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/l85a2/receiver
+	name = "L85 receiver"
+	desc = "A bare L85 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "l85"
+	firearm_preset = "l85_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/qbz95/receiver
+	name = "QBZ-95 receiver"
+	desc = "A bare QBZ-95 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "qbz95"
+	firearm_preset = "qbz95_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/submachinegun/vz58/receiver
+	name = "VZ-58 receiver"
+	desc = "A bare VZ-58 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine well and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "vz58"
+	firearm_preset = "vz58_receiver"
 	firearm_named_by_parts = TRUE
 
 /obj/item/weapon/gun
@@ -2918,4 +3867,320 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	component_id = "revolving/feed/44"
 /obj/item/weapon/gun_component/revolving_furniture_stock
 	component_id = "revolving/furniture/stock"
+/obj/item/weapon/gun_component/pump_action
+	component_id = "pump/action"
+/obj/item/weapon/gun_component/pump_barrel_12g
+	component_id = "pump/barrel/12g"
+/obj/item/weapon/gun_component/pump_feed_12g
+	component_id = "pump/feed/12g"
+/obj/item/weapon/gun_component/pump_furniture_stock
+	component_id = "pump/furniture/stock"
+/obj/item/weapon/gun_component/ks23_action
+	component_id = "ks23/action"
+/obj/item/weapon/gun_component/ks23_barrel_12g
+	component_id = "ks23/barrel/12g"
+/obj/item/weapon/gun_component/ks23_feed_12g
+	component_id = "ks23/feed/12g"
+/obj/item/weapon/gun_component/ks23_furniture_stock
+	component_id = "ks23/furniture/stock"
+/obj/item/weapon/gun_component/coachgun_action
+	component_id = "coachgun/action"
+/obj/item/weapon/gun_component/coachgun_barrel_12g
+	component_id = "coachgun/barrel/12g"
+/obj/item/weapon/gun_component/coachgun_feed_12g
+	component_id = "coachgun/feed/12g"
+/obj/item/weapon/gun_component/coachgun_furniture_stock
+	component_id = "coachgun/furniture/stock"
+/obj/item/weapon/gun_component/mts225_action
+	component_id = "mts225/action"
+/obj/item/weapon/gun_component/mts225_barrel_12g
+	component_id = "mts225/barrel/12g"
+/obj/item/weapon/gun_component/mts225_feed_12g
+	component_id = "mts225/feed/12g"
+/obj/item/weapon/gun_component/mts225_furniture_stock
+	component_id = "mts225/furniture/stock"
+/obj/item/weapon/gun_component/remington11_action
+	component_id = "remington11/action"
+/obj/item/weapon/gun_component/remington11_barrel_12g
+	component_id = "remington11/barrel/12g"
+/obj/item/weapon/gun_component/remington11_feed_12g
+	component_id = "remington11/feed/12g"
+/obj/item/weapon/gun_component/remington11_furniture_stock
+	component_id = "remington11/furniture/stock"
+/obj/item/weapon/gun_component/spas_action
+	component_id = "spas/action"
+/obj/item/weapon/gun_component/spas_barrel_12g
+	component_id = "spas/barrel/12g"
+/obj/item/weapon/gun_component/spas_feed_12g
+	component_id = "spas/feed/12g"
+/obj/item/weapon/gun_component/spas_furniture_stock
+	component_id = "spas/furniture/stock"
+/obj/item/weapon/gun_component/saiga_action
+	component_id = "saiga/action"
+/obj/item/weapon/gun_component/saiga_barrel_12g
+	component_id = "saiga/barrel/12g"
+/obj/item/weapon/gun_component/saiga_feed_12g
+	component_id = "saiga/feed/12g"
+/obj/item/weapon/gun_component/saiga_furniture_stock
+	component_id = "saiga/furniture/stock"
+/obj/item/weapon/gun_component/usas12_action
+	component_id = "usas12/action"
+/obj/item/weapon/gun_component/usas12_barrel_12g
+	component_id = "usas12/barrel/12g"
+/obj/item/weapon/gun_component/usas12_feed_12g
+	component_id = "usas12/feed/12g"
+/obj/item/weapon/gun_component/usas12_furniture_stock
+	component_id = "usas12/furniture/stock"
+/obj/item/weapon/gun_component/ar12_action
+	component_id = "ar12/action"
+/obj/item/weapon/gun_component/ar12_barrel_12g
+	component_id = "ar12/barrel/12g"
+/obj/item/weapon/gun_component/ar12_feed_12g
+	component_id = "ar12/feed/12g"
+/obj/item/weapon/gun_component/ar12_furniture_stock
+	component_id = "ar12/furniture/stock"
+/obj/item/weapon/gun_component/mp40_action
+	component_id = "mp40/action"
+/obj/item/weapon/gun_component/mp40_barrel_9x19
+	component_id = "mp40/barrel/9x19"
+/obj/item/weapon/gun_component/mp40_feed_9x19
+	component_id = "mp40/feed/9x19"
+/obj/item/weapon/gun_component/mp40_furniture_stock
+	component_id = "mp40/furniture/stock"
+/obj/item/weapon/gun_component/erma_action
+	component_id = "erma/action"
+/obj/item/weapon/gun_component/erma_barrel_9x19
+	component_id = "erma/barrel/9x19"
+/obj/item/weapon/gun_component/erma_feed_9x19
+	component_id = "erma/feed/9x19"
+/obj/item/weapon/gun_component/erma_furniture_stock
+	component_id = "erma/furniture/stock"
+/obj/item/weapon/gun_component/mab38_action
+	component_id = "mab38/action"
+/obj/item/weapon/gun_component/mab38_barrel_9x19
+	component_id = "mab38/barrel/9x19"
+/obj/item/weapon/gun_component/mab38_feed_9x19
+	component_id = "mab38/feed/9x19"
+/obj/item/weapon/gun_component/mab38_furniture_stock
+	component_id = "mab38/furniture/stock"
+/obj/item/weapon/gun_component/sten_action
+	component_id = "sten/action"
+/obj/item/weapon/gun_component/sten_barrel_9x19
+	component_id = "sten/barrel/9x19"
+/obj/item/weapon/gun_component/sten_feed_9x19
+	component_id = "sten/feed/9x19"
+/obj/item/weapon/gun_component/sten_furniture_stock
+	component_id = "sten/furniture/stock"
+/obj/item/weapon/gun_component/thompson_action
+	component_id = "thompson/action"
+/obj/item/weapon/gun_component/thompson_barrel_45acp
+	component_id = "thompson/barrel/45acp"
+/obj/item/weapon/gun_component/thompson_feed_45acp
+	component_id = "thompson/feed/45acp"
+/obj/item/weapon/gun_component/thompson_furniture_stock
+	component_id = "thompson/furniture/stock"
+/obj/item/weapon/gun_component/greasegun_action
+	component_id = "greasegun/action"
+/obj/item/weapon/gun_component/greasegun_barrel_45acp
+	component_id = "greasegun/barrel/45acp"
+/obj/item/weapon/gun_component/greasegun_feed_45acp
+	component_id = "greasegun/feed/45acp"
+/obj/item/weapon/gun_component/greasegun_furniture_stock
+	component_id = "greasegun/furniture/stock"
+/obj/item/weapon/gun_component/ppsh_action
+	component_id = "ppsh/action"
+/obj/item/weapon/gun_component/ppsh_barrel_762x25
+	component_id = "ppsh/barrel/762x25"
+/obj/item/weapon/gun_component/ppsh_feed_762x25
+	component_id = "ppsh/feed/762x25"
+/obj/item/weapon/gun_component/ppsh_furniture_stock
+	component_id = "ppsh/furniture/stock"
+/obj/item/weapon/gun_component/ppd_action
+	component_id = "ppd/action"
+/obj/item/weapon/gun_component/ppd_barrel_762x25
+	component_id = "ppd/barrel/762x25"
+/obj/item/weapon/gun_component/ppd_feed_762x25
+	component_id = "ppd/feed/762x25"
+/obj/item/weapon/gun_component/ppd_furniture_stock
+	component_id = "ppd/furniture/stock"
+/obj/item/weapon/gun_component/pps_action
+	component_id = "pps/action"
+/obj/item/weapon/gun_component/pps_barrel_762x25
+	component_id = "pps/barrel/762x25"
+/obj/item/weapon/gun_component/pps_feed_762x25
+	component_id = "pps/feed/762x25"
+/obj/item/weapon/gun_component/pps_furniture_stock
+	component_id = "pps/furniture/stock"
+/obj/item/weapon/gun_component/type100_action
+	component_id = "type100/action"
+/obj/item/weapon/gun_component/type100_barrel_8mm
+	component_id = "type100/barrel/8mm"
+/obj/item/weapon/gun_component/type100_feed_8mm
+	component_id = "type100/feed/8mm"
+/obj/item/weapon/gun_component/type100_furniture_stock
+	component_id = "type100/furniture/stock"
+/obj/item/weapon/gun_component/mp5_action
+	component_id = "mp5/action"
+/obj/item/weapon/gun_component/mp5_barrel_9x19
+	component_id = "mp5/barrel/9x19"
+/obj/item/weapon/gun_component/mp5_feed_9x19
+	component_id = "mp5/feed/9x19"
+/obj/item/weapon/gun_component/mp5_furniture_stock
+	component_id = "mp5/furniture/stock"
+/obj/item/weapon/gun_component/uzi_action
+	component_id = "uzi/action"
+/obj/item/weapon/gun_component/uzi_barrel_9x19
+	component_id = "uzi/barrel/9x19"
+/obj/item/weapon/gun_component/uzi_feed_9x19
+	component_id = "uzi/feed/9x19"
+/obj/item/weapon/gun_component/uzi_furniture_stock
+	component_id = "uzi/furniture/stock"
+/obj/item/weapon/gun_component/skorpion_action
+	component_id = "skorpion/action"
+/obj/item/weapon/gun_component/skorpion_barrel_9x19
+	component_id = "skorpion/barrel/9x19"
+/obj/item/weapon/gun_component/skorpion_feed_9x19
+	component_id = "skorpion/feed/9x19"
+/obj/item/weapon/gun_component/skorpion_furniture_stock
+	component_id = "skorpion/furniture/stock"
+/obj/item/weapon/gun_component/tec9_action
+	component_id = "tec9/action"
+/obj/item/weapon/gun_component/tec9_barrel_9x19
+	component_id = "tec9/barrel/9x19"
+/obj/item/weapon/gun_component/tec9_feed_9x19
+	component_id = "tec9/feed/9x19"
+/obj/item/weapon/gun_component/tec9_furniture_grip
+	component_id = "tec9/furniture/grip"
+/obj/item/weapon/gun_component/vector_action
+	component_id = "vector/action"
+/obj/item/weapon/gun_component/vector_barrel_9x19
+	component_id = "vector/barrel/9x19"
+/obj/item/weapon/gun_component/vector_feed_9x19
+	component_id = "vector/feed/9x19"
+/obj/item/weapon/gun_component/vector_furniture_stock
+	component_id = "vector/furniture/stock"
+/obj/item/weapon/gun_component/mac10_action
+	component_id = "mac10/action"
+/obj/item/weapon/gun_component/mac10_barrel_45acp
+	component_id = "mac10/barrel/45acp"
+/obj/item/weapon/gun_component/mac10_feed_45acp
+	component_id = "mac10/feed/45acp"
+/obj/item/weapon/gun_component/mac10_furniture_stock
+	component_id = "mac10/furniture/stock"
+/obj/item/weapon/gun_component/p90_action
+	component_id = "p90/action"
+/obj/item/weapon/gun_component/p90_barrel_57x28
+	component_id = "p90/barrel/57x28"
+/obj/item/weapon/gun_component/p90_feed_57x28
+	component_id = "p90/feed/57x28"
+/obj/item/weapon/gun_component/p90_furniture_stock
+	component_id = "p90/furniture/stock"
+/obj/item/weapon/gun_component/sr3_action
+	component_id = "sr3/action"
+/obj/item/weapon/gun_component/sr3_barrel_9x39
+	component_id = "sr3/barrel/9x39"
+/obj/item/weapon/gun_component/sr3_feed_9x39
+	component_id = "sr3/feed/9x39"
+/obj/item/weapon/gun_component/sr3_furniture_stock
+	component_id = "sr3/furniture/stock"
+/obj/item/weapon/gun_component/stg_action
+	component_id = "stg/action"
+/obj/item/weapon/gun_component/stg_barrel_792x33
+	component_id = "stg/barrel/792x33"
+/obj/item/weapon/gun_component/stg_feed_792x33
+	component_id = "stg/feed/792x33"
+/obj/item/weapon/gun_component/stg_furniture_stock
+	component_id = "stg/furniture/stock"
+/obj/item/weapon/gun_component/fg42_action
+	component_id = "fg42/action"
+/obj/item/weapon/gun_component/fg42_barrel_792x57
+	component_id = "fg42/barrel/792x57"
+/obj/item/weapon/gun_component/fg42_feed_792x57
+	component_id = "fg42/feed/792x57"
+/obj/item/weapon/gun_component/fg42_furniture_stock
+	component_id = "fg42/furniture/stock"
+/obj/item/weapon/gun_component/m14_action
+	component_id = "m14/action"
+/obj/item/weapon/gun_component/m14_barrel_762x51
+	component_id = "m14/barrel/762x51"
+/obj/item/weapon/gun_component/m14_feed_762x51
+	component_id = "m14/feed/762x51"
+/obj/item/weapon/gun_component/m14_furniture_stock
+	component_id = "m14/furniture/stock"
+/obj/item/weapon/gun_component/fal_action
+	component_id = "fal/action"
+/obj/item/weapon/gun_component/fal_barrel_762x51
+	component_id = "fal/barrel/762x51"
+/obj/item/weapon/gun_component/fal_feed_762x51
+	component_id = "fal/feed/762x51"
+/obj/item/weapon/gun_component/fal_furniture_stock
+	component_id = "fal/furniture/stock"
+/obj/item/weapon/gun_component/g3_action
+	component_id = "g3/action"
+/obj/item/weapon/gun_component/g3_barrel_762x51
+	component_id = "g3/barrel/762x51"
+/obj/item/weapon/gun_component/g3_feed_762x51
+	component_id = "g3/feed/762x51"
+/obj/item/weapon/gun_component/g3_furniture_stock
+	component_id = "g3/furniture/stock"
+/obj/item/weapon/gun_component/ar10_action
+	component_id = "ar10/action"
+/obj/item/weapon/gun_component/ar10_barrel_762x51
+	component_id = "ar10/barrel/762x51"
+/obj/item/weapon/gun_component/ar10_feed_762x51
+	component_id = "ar10/feed/762x51"
+/obj/item/weapon/gun_component/ar10_furniture_stock
+	component_id = "ar10/furniture/stock"
+/obj/item/weapon/gun_component/hk417_action
+	component_id = "hk417/action"
+/obj/item/weapon/gun_component/hk417_barrel_762x51
+	component_id = "hk417/barrel/762x51"
+/obj/item/weapon/gun_component/hk417_feed_762x51
+	component_id = "hk417/feed/762x51"
+/obj/item/weapon/gun_component/hk417_furniture_stock
+	component_id = "hk417/furniture/stock"
+/obj/item/weapon/gun_component/scar_action
+	component_id = "scar/action"
+/obj/item/weapon/gun_component/scar_barrel_556x45
+	component_id = "scar/barrel/556x45"
+/obj/item/weapon/gun_component/scar_barrel_762x51
+	component_id = "scar/barrel/762x51"
+/obj/item/weapon/gun_component/scar_feed_556x45
+	component_id = "scar/feed/556x45"
+/obj/item/weapon/gun_component/scar_feed_762x51
+	component_id = "scar/feed/762x51"
+/obj/item/weapon/gun_component/scar_furniture_stock
+	component_id = "scar/furniture/stock"
+/obj/item/weapon/gun_component/aug_action
+	component_id = "aug/action"
+/obj/item/weapon/gun_component/aug_barrel_556x45
+	component_id = "aug/barrel/556x45"
+/obj/item/weapon/gun_component/aug_feed_556x45
+	component_id = "aug/feed/556x45"
+/obj/item/weapon/gun_component/aug_furniture_stock
+	component_id = "aug/furniture/stock"
+/obj/item/weapon/gun_component/l85_action
+	component_id = "l85/action"
+/obj/item/weapon/gun_component/l85_barrel_556x45
+	component_id = "l85/barrel/556x45"
+/obj/item/weapon/gun_component/l85_feed_556x45
+	component_id = "l85/feed/556x45"
+/obj/item/weapon/gun_component/l85_furniture_stock
+	component_id = "l85/furniture/stock"
+/obj/item/weapon/gun_component/qbz95_action
+	component_id = "qbz95/action"
+/obj/item/weapon/gun_component/qbz95_barrel_58x42
+	component_id = "qbz95/barrel/58x42"
+/obj/item/weapon/gun_component/qbz95_feed_58x42
+	component_id = "qbz95/feed/58x42"
+/obj/item/weapon/gun_component/qbz95_furniture_stock
+	component_id = "qbz95/furniture/stock"
+/obj/item/weapon/gun_component/vz58_action
+	component_id = "vz58/action"
+/obj/item/weapon/gun_component/vz58_barrel_762x39
+	component_id = "vz58/barrel/762x39"
+/obj/item/weapon/gun_component/vz58_feed_762x39
+	component_id = "vz58/feed/762x39"
+/obj/item/weapon/gun_component/vz58_furniture_stock
+	component_id = "vz58/furniture/stock"
 #undef FIREARM_BARREL_LIFE

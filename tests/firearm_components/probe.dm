@@ -208,7 +208,9 @@
 				"sks" = "selfloading_firearms", "gewehr43" = "selfloading_firearms", "svt" = "selfloading_firearms", "garand" = "selfloading_firearms",
 				"m1carbine" = "selfloading_firearms", "avtomat" = "selfloading_firearms", "vg5" = "selfloading_firearms", "ptrs" = "selfloading_firearms",
 				"svd" = "automatic_weapons", "vss" = "automatic_weapons", "m82" = "automatic_weapons", "bamr" = "automatic_weapons",
-				"makarov" = "automatic_weapons", "aps" = "automatic_weapons", "glock" = "automatic_weapons", "beretta" = "automatic_weapons", "jericho" = "automatic_weapons", "sig250" = "automatic_weapons", "p220" = "automatic_weapons", "pl14" = "automatic_weapons", "mp443" = "automatic_weapons", "deagle" = "automatic_weapons", "magnum44" = "automatic_weapons", "mckellen" = "automatic_weapons", "judge" = "automatic_weapons")
+				"makarov" = "automatic_weapons", "aps" = "automatic_weapons", "glock" = "automatic_weapons", "beretta" = "automatic_weapons", "jericho" = "automatic_weapons", "sig250" = "automatic_weapons", "p220" = "automatic_weapons", "pl14" = "automatic_weapons", "mp443" = "automatic_weapons", "deagle" = "automatic_weapons", "magnum44" = "automatic_weapons", "mckellen" = "automatic_weapons", "judge" = "automatic_weapons",
+				"mp40" = "selfloading_firearms", "erma" = "selfloading_firearms", "mab38" = "selfloading_firearms", "sten" = "selfloading_firearms", "thompson" = "selfloading_firearms", "greasegun" = "selfloading_firearms", "ppsh" = "selfloading_firearms", "ppd" = "selfloading_firearms", "pps" = "selfloading_firearms", "type100" = "selfloading_firearms", "stg" = "selfloading_firearms", "fg42" = "selfloading_firearms",
+				"ks23" = "automatic_weapons", "mts225" = "automatic_weapons", "spas" = "automatic_weapons", "saiga" = "automatic_weapons", "usas12" = "automatic_weapons", "ar12" = "automatic_weapons", "mp5" = "automatic_weapons", "uzi" = "automatic_weapons", "skorpion" = "automatic_weapons", "tec9" = "automatic_weapons", "vector" = "automatic_weapons", "mac10" = "automatic_weapons", "p90" = "automatic_weapons", "sr3" = "automatic_weapons", "m14" = "automatic_weapons", "fal" = "automatic_weapons", "g3" = "automatic_weapons", "ar10" = "automatic_weapons", "hk417" = "automatic_weapons", "scar" = "automatic_weapons", "aug" = "automatic_weapons", "l85" = "automatic_weapons", "qbz95" = "automatic_weapons", "vz58" = "automatic_weapons")
 			var/want_node = era_nodes[recipe_family] || "cartridge_ammo"
 			parts_check(R.node == want_node, "[recipe_name] is gated by [want_node] ([R.node])")
 			made += R.output_type
@@ -517,6 +519,43 @@
 	qdel(WM)
 	qdel(wm_feed)
 	qdel(wm_barrel)
+	// Every modular gun builds its preset and names loose rounds of its own caliber,
+	// and every bare receiver builds into a working gun from its family's parts.
+	for(var/gun_path in typesof(/obj/item/weapon/gun/projectile))
+		var/obj/item/weapon/gun/projectile/gun_type = gun_path
+		if(!initial(gun_type.firearm_family) || initial(gun_type.firearm_named_by_parts))
+			continue
+		var/obj/item/weapon/gun/projectile/SG = new gun_path(locate(2,2,1))
+		var/datum/firearm_component/sweep_barrel = SG.firearm_part("barrel")
+		parts_check(SG.firearm_parts_ready() && !SG.firearm_fire_block() && sweep_barrel && SG.caliber == sweep_barrel.caliber, "[gun_path] builds its preset ([SG.caliber])")
+		for(var/round_type in (islist(SG.ammo_type) ? SG.ammo_type : list(SG.ammo_type)))
+			var/obj/item/ammo_casing/sweep_round = round_type
+			parts_check(!sweep_round || initial(sweep_round.caliber) == SG.caliber, "[gun_path] names loose rounds of its own caliber")
+		qdel(SG)
+	for(var/gun_path in typesof(/obj/item/weapon/gun/projectile))
+		var/obj/item/weapon/gun/projectile/gun_type = gun_path
+		if(!initial(gun_type.firearm_named_by_parts))
+			continue
+		var/obj/item/weapon/gun/projectile/BR = new gun_path(locate(2,2,1))
+		H.put_in_inactive_hand(BR)
+		parts_check(!BR.loaded.len && !BR.ammo_magazine && BR.firearm_fire_block() == "it has no action", "a bare [gun_path] holds no rounds and cannot fire")
+		var/chosen_caliber = null
+		for(var/slot in list("action", "barrel", "feed", "furniture"))
+			for(var/part_path in typesof(/obj/item/weapon/gun_component) - /obj/item/weapon/gun_component)
+				var/obj/item/weapon/gun_component/part_type = part_path
+				var/datum/firearm_component/def = firearm_component_def(initial(part_type.component_id))
+				if(def.family != BR.firearm_family || def.slot != slot || (slot == "feed" && def.caliber != chosen_caliber))
+					continue
+				var/obj/item/weapon/gun_component/part = new part_path(locate(2,2,1))
+				parts_hold(H, part)
+				parts_check(BR.firearm_install(part, H), "[gun_path] takes [part_path]")
+				if(slot == "barrel")
+					chosen_caliber = def.caliber
+				break
+		var/want_name = "[firearm_family_labels[BR.firearm_family]] [BR.firearm_kind] ([firearm_caliber_labels[chosen_caliber]])"
+		parts_check(!BR.firearm_fire_block() && BR.name == want_name, "[gun_path] builds into [want_name] ([BR.name], [BR.firearm_fire_block()])")
+		H.drop_from_inventory(BR)
+		qdel(BR)
 	// A Berthier M07/15 takes the longer M16 magazine and then holds five rounds.
 	var/obj/item/weapon/gun/projectile/boltaction/berthier/BT = new(locate(2,2,1))
 	parts_unload(BT)
@@ -626,5 +665,5 @@
 	parts_check(loose.component_id == "ak/barrel/545x39" && loose.condition == 0.4 && loose.name == "AK barrel (5.45x39mm)", "loose part keeps identity and condition")
 	parts_check(parts_count() == 1, "no part is duplicated by save/load")
 
-	text2file("PASS: Every modular rifle, pistol and revolver family strips, converts, wears and survives save/load without duplication", "parts_result.txt")
+	text2file("PASS: Every modular gun family strips, converts, wears and survives save/load without duplication", "parts_result.txt")
 	del(world)

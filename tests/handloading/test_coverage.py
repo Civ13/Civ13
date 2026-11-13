@@ -27,7 +27,6 @@ EXCLUDED = {
     'a35': 'autocannon shell, not a small-arms cartridge',
     'a77x58_wood': 'wooden training bullet for the training rifle',
     'a44p': 'legacy test caliber whose round is named "Bugged bullet"',
-    'l85a2': 'gun caliber with no cartridge of its own; tracked by the family migration',
 }
 
 
