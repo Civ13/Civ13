@@ -143,6 +143,9 @@
 	var/tmp/obj/structure/fire_pump/pump
 	var/tmp/next_spray = 0
 
+/obj/item/weapon/fire_nozzle/persistence_runtime_var(key)
+	return key == "next_spray" || key == "pump" || ..()
+
 /obj/item/weapon/fire_nozzle/Destroy()
 	if (pump && pump.nozzle == src)
 		pump.nozzle = null
