@@ -1,6 +1,11 @@
 // Handloading and spent-brass recovery on the production types, 6x4x1 world.
 /obj/map_metadata/handload_fixture/New()
 	return
+var/global/handload_fixture_research = FALSE
+/obj/map_metadata/handload_fixture/book_research_enabled()
+	return FALSE
+/obj/map_metadata/handload_fixture/is_node_done(faction, node_id)
+	return handload_fixture_research
 /proc/handload_check(condition, message)
 	if(!condition)
 		text2file("FAIL: [message]", "handload_result.txt")
@@ -41,6 +46,7 @@
 	GLOB.name_set_event = new /decl/observ/name_set
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	initialize_chemical_reagents()
+	initialize_chemical_reactions()
 	build_research_tree()
 	map = new /obj/map_metadata/handload_fixture
 	map.ID = MAP_NOMADS_CONTINENTAL
@@ -121,5 +127,43 @@
 	var/obj/item/ammo_casing/a762x39/boxed = new(box)
 	qdel(boxed.expend())
 	handload_check(!boxed.spent_brass_class(), "a spent round inside a box is left alone")
+
+	// Smokeless powder: cotton and saltpeter nitrate in acid that is not used up,
+	// guncotton gelatinizes with alcohol, and each unit charges like two of gunpowder.
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/acid = new(work)
+	acid.reagents.add_reagent("sacid", 5)
+	acid.reagents.add_reagent("cotton", 20)
+	acid.reagents.add_reagent("potassium", 10)
+	acid.reagents.process_reactions()
+	handload_check(acid.reagents.get_reagent_amount("guncotton") == 20, "acid bath nitrates 20 cotton into 20 guncotton ([acid.reagents.get_reagent_amount("guncotton")])")
+	handload_check(acid.reagents.get_reagent_amount("sacid") == 5, "the acid bath is not used up ([acid.reagents.get_reagent_amount("sacid")])")
+	handload_check(!acid.reagents.get_reagent_amount("cotton") && !acid.reagents.get_reagent_amount("potassium"), "cotton and saltpeter are used up")
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/flask = new(work)
+	acid.reagents.trans_id_to(flask, "guncotton", 20)
+	flask.reagents.add_reagent("ethanol", 10)
+	flask.reagents.process_reactions()
+	handload_check(flask.reagents.get_reagent_amount("smokeless_powder") == 30, "20 guncotton and 10 alcohol make 30 smokeless powder ([flask.reagents.get_reagent_amount("smokeless_powder")])")
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/lab = new(work)
+	lab.reagents.add_reagent("nitric_acid", 2)
+	lab.reagents.add_reagent("cotton", 4)
+	lab.reagents.process_reactions()
+	handload_check(lab.reagents.get_reagent_amount("guncotton") == 4, "nitric acid nitrates cotton with no sulfur ([lab.reagents.get_reagent_amount("guncotton")])")
+
+	var/obj/item/stack/ammopart/casing/rifle/SM = new(work, 10)
+	handload_fixture_research = FALSE
+	SM.handload_attackby(flask, M)
+	handload_check(SM.gunpowder == 0 && flask.reagents.get_reagent_amount("smokeless_powder") == 30, "smokeless powder needs Cartridge Firearms ([SM.gunpowder])")
+	handload_fixture_research = TRUE
+	flask.reagents.add_reagent("gunpowder", 10)
+	SM.handload_attackby(flask, M)
+	handload_check(SM.gunpowder == 15, "smokeless fills ten rifle casings ([SM.gunpowder])")
+	handload_check(flask.reagents.get_reagent_amount("smokeless_powder") == 22.5, "ten rifle casings take 7.5 smokeless powder ([flask.reagents.get_reagent_amount("smokeless_powder")])")
+	handload_check(flask.reagents.get_reagent_amount("gunpowder") == 10, "black powder is kept when smokeless covers the charge")
+	var/obj/item/stack/ammopart/casing/rifle/MIX = new(work, 10)
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/mixed = new(work)
+	mixed.reagents.add_reagent("smokeless_powder", 3)
+	mixed.reagents.add_reagent("gunpowder", 20)
+	MIX.handload_attackby(mixed, M)
+	handload_check(MIX.gunpowder == 15 && !mixed.reagents.get_reagent_amount("smokeless_powder") && mixed.reagents.get_reagent_amount("gunpowder") == 11, "a short smokeless pour is topped up with gunpowder ([MIX.gunpowder], [mixed.reagents.get_reagent_amount("gunpowder")] left)")
 	text2file("PASS: handloading pays once per round and spent brass comes back", "handload_result.txt")
 	del(world)
