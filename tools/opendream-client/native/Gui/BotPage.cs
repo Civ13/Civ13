@@ -12,7 +12,7 @@ internal sealed partial class LauncherWindow {
     private static readonly TimeSpan BotStopWait = TimeSpan.FromSeconds(90);
     private readonly OwnedBot ownedBot = new();
     private HostBot? botProfile;
-    private Label? botState;
+    private StatusLine? botState;
     private TextBox? botLog;
     private ComboBox? botLogChoice;
     private Button? botClearStop;
@@ -37,7 +37,8 @@ internal sealed partial class LauncherWindow {
         Row("Bot folder", bot.Root);
         Row("Profile", bot.Profile);
         Row("When the launcher closes", "A bot started here is stopped first; one started outside the launcher keeps running");
-        botState = new Label { AutoSize = true, Margin = new Padding(0, 10, 0, 6), Text = "Checking..." };
+        botState = new StatusLine { Margin = new Padding(0, 10, 0, 6) };
+        botState.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         foreach (var (text, action) in new (string, Func<Task>)[] { ("Start", StartBot), ("Stop", () => StopBot(true)), ("Restart", RestartBot), ("Update", UpdateBot) }) {
             var button = new Button { Text = text, AutoSize = true, Enabled = false, Margin = new Padding(botButtons.Count == 0 ? 0 : 8, 6, 0, 6) };
@@ -120,7 +121,9 @@ internal sealed partial class LauncherWindow {
         else text = "Not running.";
         if (status.StopPending) text += status.Running ? " Stop requested; waiting for it to exit." : " An old stop request is blocking start.";
         if (!status.Ok) text += $" (Status unavailable: {status.Error}; checked port {bot.HttpPort} instead.)";
-        botState.Text = text;
+        var (tone, glyph, pill) = !status.Running ? status.StopPending ? (Tone.Bad, Glyph.Alert, "Blocked") : (Tone.Idle, Glyph.Ring, "Stopped")
+            : status.StopPending ? (Tone.Busy, Glyph.Arc, "Stopping") : (Tone.Good, Glyph.Dot, "Running");
+        botState.Set(tone, glyph, pill, text);
         if (botClearStop != null) botClearStop.Visible = status.StopPending && !status.Running;
         UpdateBotButtons();
     }
@@ -278,6 +281,6 @@ internal sealed partial class LauncherWindow {
 
     private void BotLine(string line) {
         Console.WriteLine(line);
-        if (botState != null) botState.Text = line;
+        botState?.SetDetail(line);
     }
 }

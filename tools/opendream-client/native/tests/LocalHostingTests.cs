@@ -353,6 +353,52 @@ static class LocalHostingTests {
             + "Rail Yard: stopped, port 1715, building update (compiling), watchdog gave up after repeated restarts (crash); start it by hand, travel agent not running; "
             + "Mars: awake, update build failed: compile failed, watchdog restarted it 1 time recently (last: hang), not answering as this region; Moon: asleep. "
             + "Travel coordinator is not running (a start or restart starts it).", "detailed group status: " + detailed.Message);
+        // The Host tab's board: the same status as three separate answers per region (running, build, problem).
+        var boardStatus = "noise\n{\"group\": \"earth\", \"regions\": {"
+            + "\"gaia\": {\"name\": \"Gaia\", \"state\": \"awake\", \"listening\": true, \"port\": 1714, \"world\": {\"ready\": 1, \"clients\": 5}, \"operation\": {\"action\": \"start\", \"phase\": \"done\", \"error\": null}, \"stage\": {\"phase\": \"ready\", \"pending\": true}, \"transfer_agent\": true, \"region_view\": {\"epoch\": {\"ordinal\": 3}}}, "
+            + "\"railyard\": {\"name\": \"Rail Yard\", \"state\": \"asleep\", \"stage\": {\"phase\": \"current\"}}, "
+            + "\"barren\": {\"name\": \"Mars\", \"state\": \"stopped\", \"busy\": true, \"operation\": {\"action\": \"update\", \"phase\": \"compiling\", \"error\": null}, \"transfer_agent\": false}, "
+            + "\"moon\": {\"name\": \"Moon\", \"state\": \"stopped\", \"operation\": {\"action\": \"update\", \"phase\": \"failed\", \"error\": \"compile failed:\\n  x.dm:1: error\"}, \"watchdog\": {\"gave_up\": 5, \"last_event\": \"crash\"}}, "
+            + "\"orbit\": {\"name\": \"Orbit\", \"state\": \"awake\", \"world\": {\"ready\": 0, \"clients\": 0}, \"stage\": {\"phase\": \"failed\", \"error\": \"compile.lock is held\"}, \"transfer_agent\": false, \"region_view\": {\"error\": \"no answer\"}}, "
+            + "\"island\": {\"name\": \"Island\", \"state\": \"cold\", \"stage\": {\"phase\": \"compiling\"}}, "
+            + "\"sea\": {\"name\": \"Open Sea\", \"state\": \"awake\", \"world\": {\"ready\": 1, \"clients\": 1}, \"busy\": true, \"operation\": {\"action\": \"handover\", \"phase\": \"loading the standby\"}, \"standby\": {\"port\": 1728, \"listening\": true}, "
+            + "\"stage\": {\"phase\": \"ready\", \"pending\": true, \"install\": \"not installed: the region started while its update was building\"}}, "
+            + "\"lost\": {\"state\": \"unknown\", \"error\": \"config unreadable\"}}, \"coordinator\": false, \"ok\": true}";
+        var behindNow = HostBoard.RegionsBehind("{\"component\": \"server\", \"behind\": 3, \"regions\": {\"gaia\": {\"behind\": 3}, \"railyard\": {\"behind\": 0}, \"barren\": {\"behind\": 3}, \"moon\": {\"behind\": -1}, \"orbit\": \"x\"}, \"ok\": true}");
+        Require(behindNow.Count == 3 && behindNow["gaia"] == 3 && behindNow["railyard"] == 0, "regions behind: " + behindNow.Count);
+        Require(HostBoard.RegionsBehind("{\"ok\": false, \"regions\": {\"gaia\": {\"behind\": 3}}}").Count == 0 && HostBoard.RegionsBehind("Traceback").Count == 0, "a refused check counted");
+        var board = HostBoard.Regions(boardStatus, behindNow, "gaia");
+        RegionCard Row(string id) => board.Single(card => card.Id == id);
+        Require(board.Count == 8 && board[0].Id == "gaia" && board[7].Id == "lost", "board rows: " + board.Count);
+        Require(Row("gaia") is { Name: "Gaia", Mainland: true, Run: RegionRun.Running, RunText: "Running", Players: 5, Build: RegionBuild.Built, BuildText: "Update built", Activity: null, Problem: null } gaiaRow
+            && gaiaRow.Notes == "port 1714, epoch 1713, last start done, ready to hand over", "running row: " + Row("gaia").Describe());
+        Require(Row("railyard") is { Mainland: false, Run: RegionRun.Asleep, Players: null, Build: RegionBuild.Current, BuildText: "Up to date", Problem: null, Notes: "" }, "asleep row: " + Row("railyard").Describe());
+        // A stopped region without its travel agent is normal; a compile under way shows as working, not stopped.
+        Require(Row("barren") is { Run: RegionRun.Working, RunText: "Working", Activity: "update: compiling", Build: RegionBuild.Behind, BuildText: "3 behind", Problem: null, Notes: "travel agent not running" },
+            "working row: " + Row("barren").Describe());
+        Require(Row("moon") is { Run: RegionRun.Stopped, Build: RegionBuild.Unknown, BuildText: "Not checked" } moonRow
+            && moonRow.Problem == "Update failed: compile failed: x.dm:1: error. Watchdog gave up after repeated restarts (crash); start it by hand.", "failed row: " + Row("moon").Problem);
+        // A world that is up but not ready is still loading; a running world without its travel agent is a problem.
+        Require(Row("orbit") is { Run: RegionRun.Working, Activity: "loading the world", Players: 0, Build: RegionBuild.Failed, BuildText: "Build failed" } orbitRow
+            && orbitRow.Problem == "Update build failed: compile.lock is held. Travel agent not running. Not answering as this region.", "orbit row: " + Row("orbit").Problem);
+        Require(Row("island") is { Run: RegionRun.Asleep, RunText: "Asleep (saved)", Build: RegionBuild.Building, BuildText: "Building" } islandRow
+            && islandRow.Notes == "building update: compiling, stopped after its last save; a wake or travel starts it", "cold row: " + Row("island").Notes);
+        Require(Row("sea") is { Run: RegionRun.Working, Activity: "handover: loading the standby", Players: 1, Build: RegionBuild.Built } seaRow
+            && seaRow.Notes == "new build running beside it, not installed: the region started while its update was building", "handover row: " + Row("sea").Notes);
+        Require(Row("lost") is { Name: "lost", Run: RegionRun.Unknown, Problem: "Status unavailable: config unreadable." }, "unknown row: " + Row("lost").Describe());
+        Require(Row("gaia").Describe() == "Gaia: running, 5 players, build update built, port 1714, epoch 1713, last start done, ready to hand over."
+            && Row("moon").Describe().StartsWith("Moon: stopped, build not checked. Update failed:"), "row sentence: " + Row("gaia").Describe());
+        Require(string.Join("; ", HostBoard.Summary(board).Select(count => count.Kind + "=" + count.Text))
+            == "problem=3 problems; working=3 working; behind=5 out of date; running=1 running; asleep=2 asleep; stopped=1 stopped; unknown=1 unknown; players=6 players online",
+            "board summary: " + string.Join("; ", HostBoard.Summary(board).Select(count => count.Text)));
+        Require(HostBoard.Coordinator(boardStatus) == false && HostBoard.Coordinator("{\"regions\": {}, \"ok\": true}") == null, "coordinator flag");
+        // Before any update check has answered, nothing claims to be up to date.
+        Require(HostBoard.Regions(boardStatus, null).All(card => card.Build != RegionBuild.Current && !card.Mainland), "unchecked builds claimed current");
+        Require(HostBoard.Regions("{\"ok\": false, \"refused\": \"x\"}", null).Count == 0 && HostBoard.Regions("Traceback", null).Count == 0, "board from a refusal");
+        // One server without a region group: the same card from gaia_host.py status.
+        var lone = HostBoard.Server("civ13.dmb", "{\"port\": 1714, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": true, \"clients\": 1, \"error\": \"\"}, \"ok\": true}", 0);
+        Require(lone is { Id: "server", Name: "civ13.dmb", Run: RegionRun.Running, Players: 1, Build: RegionBuild.Current, Problem: null, Notes: "port 1714" }, "single server card: " + lone?.Describe());
+        Require(HostBoard.Server("civ13.dmb", "{\"ok\": false, \"refused\": \"x\"}", null) == null && HostBoard.Server("civ13.dmb", "", null) == null, "server card from a refusal");
         var frozen = LocalHosting.ParseGroup("freeze", 0, "{\"done\": {\"moon\": {\"frozen\": true, \"pid\": 4}}, \"refused\": {\"gaia\": \"1 client(s) are connected\"}, \"ok\": true}");
         Require(frozen is { Ok: true, Busy: false } && frozen.Message == "Asleep now (a join or travel wakes it): moon. Refused: gaia: 1 client(s) are connected.", "freeze: " + frozen.Message);
         Require(LocalHosting.ParseGroup("thaw", 0, "{\"done\": {\"moon\": {\"thawed\": true}}, \"refused\": {}, \"ok\": true}").Message == "Woken: moon.", "thaw");

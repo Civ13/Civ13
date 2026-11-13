@@ -25,6 +25,8 @@ public static class Program {
         output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
         output.WriteLine("  --bot status|check-update|start|stop|restart|update [--root <absolute folder>]");
         output.WriteLine("      Manage host.json's Civilizationbot without the window; start leaves it running.");
+        output.WriteLine("  --render-tabs <launcher data folder> <output folder>");
+        output.WriteLine("      Draw the hosting tabs to PNG files for review, from that folder's host.json. Starts nothing.");
         output.WriteLine("Run without options for the normal launcher. The launcher is optional for BYOND gameplay.");
     }
 
@@ -81,6 +83,13 @@ public static class Program {
                 var bot = BotCommand.Load(botRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13"));
                 return await BotCommand.Run(action, bot, Console.Out, BotCommand.System);
             }
+#if CIV13_GUI
+            // Draws the hosting tabs to PNG files from a host.json (tests/render); no update, BYOND or server is touched.
+            if (args.Length == 3 && args[0] == "--render-tabs") {
+                if (!Path.IsPathFullyQualified(args[1]) || !Path.IsPathFullyQualified(args[2])) throw new ArgumentException("--render-tabs takes two absolute folders.");
+                return Gui.LauncherWindow.RenderTabs(Path.GetFullPath(args[1]), Path.GetFullPath(args[2]), version);
+            }
+#endif
             string? explicitRoot = null;
             string? localReceipt = null;
             var textMenu = false;
