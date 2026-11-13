@@ -314,6 +314,60 @@ var/late_wait_result = TRUE
 	late_check(!demonstration_carrier_ok(journal, "electricity"), "a book holds one demonstration of a subject")
 	qdel(bench)
 
+// Prototypes and field study (subject_prototypes.dm).
+/proc/late_test_subject_prototypes()
+	var/item_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			item_path = path
+			break
+	late_check(item_path, "Iron Tools has something to make ([item_path])")
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/mob/living/human/late_fixture/maker = new(locate(7,2,1))
+	maker.name = "Wulf"
+	maker.teach("basic_tools")
+	late_check(!subject_prototype_allowed(maker, item_path) && !crafting_recipe_allowed(maker, item_path), "no book, no prototypes")
+	var/obj/item/weapon/book/notebook = new(maker)
+	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.2))
+	late_check(!subject_prototype_allowed(maker, item_path), "a fifth of the chapter is too little")
+	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.2))
+	late_check(subject_prototype_allowed(maker, item_path) && crafting_recipe_allowed(maker, item_path), "a third of the chapter lets you make its things as prototypes")
+	var/before = notebook.research_ticks("iron_tools")
+	var/points = record_subject_prototype(maker, item_path)
+	late_check(points == round(IN.cost_ticks * 0.08) && notebook.research_ticks("iron_tools") == before + points && notebook.prototypes_made("iron_tools") == 1, "a prototype writes [points] points into the book")
+	for(var/i = 2 to 5)
+		record_subject_prototype(maker, item_path)
+	late_check(notebook.prototypes_made("iron_tools") == 5 && !subject_prototype_allowed(maker, item_path) && !record_subject_prototype(maker, item_path), "five prototypes per book, then no more early making")
+	var/mob/living/human/late_fixture/stranger = new(locate(7,3,1))
+	late_check(!subject_prototype_allowed(stranger, item_path), "without the groundwork you can't make prototypes")
+	// Field study.
+	var/tool_path = text2path(item_path)
+	var/obj/item/weapon/tool = new tool_path(locate(7,1,1))
+	var/list/targets = field_study_targets(maker)
+	late_check(targets[tool] == "iron_tools", "a nearby [tool] can be studied for Iron Tools")
+	late_check(!field_study_targets(stranger)[tool], "not by someone who lacks the groundwork")
+	var/obj/item/weapon/book/fresh = new(maker)
+	var/kind = "[tool.type]"
+	var/got = commit_field_study(maker, fresh, "iron_tools", kind, tool.name)
+	late_check(got == round(IN.cost_ticks * 0.1) && fresh.research_ticks("iron_tools") == got, "studying it writes [got] points into a book")
+	late_check(!field_study_carrier_ok(fresh, "iron_tools", kind) && !commit_field_study(maker, fresh, "iron_tools", kind, tool.name), "each kind of thing once per book")
+	fresh.record_field_study("iron_tools", "/obj/a")
+	fresh.record_field_study("iron_tools", "/obj/b")
+	late_check(!fresh.can_take_field_study("iron_tools", "/obj/c") && fresh.field_study_count("iron_tools") == 3, "three kinds per subject per book")
+	var/obj/item/weapon/paper/sheet = new(maker)
+	late_check(commit_field_study(maker, sheet, "iron_tools", kind, tool.name) && sheet.field_study_node == "iron_tools", "paper takes field notes")
+	late_check(!field_study_carrier_ok(sheet, "iron_tools", "/obj/a"), "one study per sheet")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,2,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/target = new(bench)
+	bench.assigned_node = "iron_tools"
+	maker.r_hand = sheet
+	late_check(bench.take_field_notes(sheet, maker) && target.research_ticks("iron_tools") == got && QDELETED(sheet), "field notes used on the bench go into its book")
+	map.book_research = FALSE
+	late_check(!subject_prototype_allowed(maker, item_path) && !field_study_targets(maker).len, "only on book-research worlds")
+	map.book_research = TRUE
+	qdel(bench)
+
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
@@ -531,6 +585,7 @@ var/late_wait_result = TRUE
 		late_test_field_work()
 		late_test_practice_work()
 		late_test_demonstrations()
+		late_test_subject_prototypes()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()
