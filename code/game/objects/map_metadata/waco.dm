@@ -179,21 +179,6 @@ var/no_loop_waco = FALSE
 		return FALSE
 	var/area/A = get_area(T)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else
-			return !faction2_can_cross_blocks()
-	return FALSE
-
-/obj/map_metadata/waco/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one) && processes.ticker.playtime_elapsed <= 3000)
 			if (H.faction_text == faction2 || H.faction_text == faction1)
 				return TRUE

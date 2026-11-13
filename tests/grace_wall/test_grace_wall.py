@@ -1,8 +1,11 @@
-"""Source parity of the opt-in map grace-wall helper and its callers.
+"""Source contracts for the shared faction grace wall.
 
-The fixture is the pre-extraction decision body, not a second implementation.
-These tests do not run BYOND or establish gameplay behavior.
+legacy_bodies.json freezes each map's pre-refactor check_caribbean_block body.
+run.py compiles those bodies against the live helper and compares them in
+DreamDaemon; these offline tests only check that every listed map still
+dispatches to the helper and that no copy of a frozen body has come back.
 """
+import json
 from pathlib import Path
 import re
 import unittest
@@ -10,52 +13,63 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 MAPS = ROOT / 'code/game/objects/map_metadata'
 HERE = Path(__file__).resolve().parent
-NAMES = ('barbarossa', 'caloocan', 'camp', 'east_los_santos', 'hill203',
-         'holdmadrid', 'hotel', 'marco_polo_bridge', 'oasis', 'omaha',
-         'pavlov_house', 'reichstag', 'rizal_stadium', 'siberiad',
-         'twotribes', 'warsaw')
+HEADER = '/check_caribbean_block(var/mob/living/human/H, var/turf/T)'
+CALL = re.compile(r'^\treturn check_faction_grace_wall\(H, T, (faction1|faction2), (faction1|faction2|null)(, [^\n]*)?\)$')
 
 
 def body(source, header):
-    match = re.search(r'(?m)^' + re.escape(header) + r'\n(.*?)(?=^/|\Z)', source, re.S)
+    match = re.search(r'(?m)^' + re.escape(header) + r'\n((?:\t.*\n?|[ \t]*\n)*)', source)
     if not match:
-        raise AssertionError(f'missing {header}')
-    return match.group(1).strip('\n')
+        return None
+    return match.group(1).rstrip('\n')
 
 
-def parity_errors(base, maps):
-    errors = []
-    helper = '/obj/map_metadata/proc/check_two_sided_grace_wall(var/mob/living/human/H, var/turf/T)'
-    expected = (HERE / 'original_body.dm.txt').read_text(encoding='utf-8').strip('\n')
-    if body(base, helper) != expected:
-        errors.append('helper differs from pre-extraction behavior')
-    for name in NAMES:
-        header = f'/obj/map_metadata/{name}/check_caribbean_block(var/mob/living/human/H, var/turf/T)'
-        if body(maps[name], header) != '\treturn check_two_sided_grace_wall(H, T)':
-            errors.append(f'{name} must call the shared helper')
-    return errors
+def errors(sources, entries):
+    found = []
+    helper = body(sources['_map_metadata.dm'], '/obj/map_metadata/proc/check_faction_grace_wall(var/mob/living/human/H, var/turf/T, one_faction, two_faction, grace_side = 1, wall_area = /area/caribbean/no_mans_land/invisible_wall, one_area = /area/caribbean/no_mans_land/invisible_wall/one, two_area = /area/caribbean/no_mans_land/invisible_wall/two)')
+    if not helper:
+        found.append('shared helper missing')
+    for entry in entries:
+        name = Path(entry['file']).name
+        current = body(sources[name], entry['type'] + HEADER)
+        if current is None or not CALL.match(current):
+            found.append(f'{entry["type"]} must call check_faction_grace_wall')
+    legacy = {entry['old'] for entry in entries}
+    for name, source in sources.items():
+        for old in legacy:
+            if old + '\n' in source:
+                found.append(f'{name} still carries a copied grace wall body')
+                break
+    return found
 
 
-class GraceWallParity(unittest.TestCase):
+class GraceWallContracts(unittest.TestCase):
     def setUp(self):
-        self.base = (MAPS / '_map_metadata.dm').read_text(encoding='utf-8')
-        self.maps = {name: (MAPS / f'{name}.dm').read_text(encoding='utf-8') for name in NAMES}
+        self.entries = json.loads((HERE / 'legacy_bodies.json').read_text(encoding='utf-8'))
+        self.sources = {path.name: path.read_text(encoding='utf-8') for path in MAPS.rglob('*.dm')}
 
-    def test_all_opted_in_maps_preserve_exact_decision_body(self):
-        self.assertEqual(parity_errors(self.base, self.maps), [])
+    def test_fixture_covers_each_map_once(self):
+        types = [entry['type'] for entry in self.entries]
+        self.assertEqual(len(types), len(set(types)))
+        self.assertGreaterEqual(len(types), 50)
 
-    def test_detects_changed_faction_and_grace_rules(self):
-        for original, replacement in (('H.faction_text == faction1', 'H.faction_text == faction2'),
-                                      ('return !faction1_can_cross_blocks()', 'return FALSE')):
-            with self.subTest(original=original):
-                altered = self.base.replace(original, replacement, 1)
-                self.assertNotEqual(altered, self.base)
-                self.assertTrue(parity_errors(altered, self.maps))
+    def test_every_listed_map_uses_the_shared_helper(self):
+        self.assertEqual(errors(self.sources, self.entries), [])
+
+    def test_detects_reintroduced_copy(self):
+        changed = dict(self.sources)
+        entry = self.entries[0]
+        name = Path(entry['file']).name
+        changed[name] = changed[name] + '\n/obj/map_metadata/copy' + HEADER + '\n' + entry['old'] + '\n'
+        self.assertTrue(errors(changed, self.entries))
 
     def test_detects_wrong_dispatch(self):
-        changed = dict(self.maps)
-        changed['oasis'] = changed['oasis'].replace('return check_two_sided_grace_wall(H, T)', 'return FALSE', 1)
-        self.assertTrue(parity_errors(self.base, changed))
+        changed = dict(self.sources)
+        entry = self.entries[-1]
+        name = Path(entry['file']).name
+        current = body(changed[name], entry['type'] + HEADER)
+        changed[name] = changed[name].replace(current, '\treturn FALSE', 1)
+        self.assertTrue(errors(changed, self.entries))
 
 
 if __name__ == '__main__':

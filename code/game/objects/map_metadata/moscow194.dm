@@ -133,16 +133,7 @@
 	return TRUE
 
 /obj/map_metadata/siegemoscow/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_faction_grace_wall(H, T, faction1, null, wall_area = /area/caribbean/no_mans_land/invisible_wall/tundra, one_area = /area/caribbean/no_mans_land/invisible_wall/tundra/one, two_area = null)
 
 
 ///////////////////////////////////////////////////////////
@@ -284,13 +275,4 @@
 	return TRUE
 
 /obj/map_metadata/smallsiegemoscow/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_faction_grace_wall(H, T, faction1, null, wall_area = /area/caribbean/no_mans_land/invisible_wall/tundra, one_area = /area/caribbean/no_mans_land/invisible_wall/tundra/one, two_area = null)

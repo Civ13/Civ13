@@ -652,20 +652,23 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	return TRUE
 
 // Opt-in helper for maps with fixed faction-specific side walls.
-/obj/map_metadata/proc/check_two_sided_grace_wall(var/mob/living/human/H, var/turf/T)
+// Shared faction grace wall. Inside wall_area, a tile of one_area holds back
+// one_faction and a tile of two_area holds back two_faction for the whole round;
+// any other wall_area tile blocks everyone until the grace timer of grace_side
+// (1 or 2) ends. Pass null for two_area on maps with a single faction wall.
+/obj/map_metadata/proc/check_faction_grace_wall(var/mob/living/human/H, var/turf/T, one_faction, two_faction, grace_side = 1, wall_area = /area/caribbean/no_mans_land/invisible_wall, one_area = /area/caribbean/no_mans_land/invisible_wall/one, two_area = /area/caribbean/no_mans_land/invisible_wall/two)
 	if (!istype(H) || !istype(T))
 		return FALSE
 	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	if (!istype(A, wall_area))
+		return FALSE
+	if (istype(A, one_area))
+		return H.faction_text == one_faction
+	if (two_area && istype(A, two_area))
+		return H.faction_text == two_faction
+	if (grace_side == 2)
+		return !faction2_can_cross_blocks()
+	return !faction1_can_cross_blocks()
 
 /obj/map_metadata/proc/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	if (!istype(H) || !istype(T))

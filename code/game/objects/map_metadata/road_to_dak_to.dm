@@ -33,16 +33,4 @@
 	return "<font size = 4>All factions may cross the grace wall now!</font>"
 
 /obj/map_metadata/road_to_dak_to/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_faction_grace_wall(H, T, faction1, faction2, one_area = /area/caribbean/no_mans_land/invisible_wall/inside, two_area = /area/caribbean/no_mans_land/invisible_wall/one)
