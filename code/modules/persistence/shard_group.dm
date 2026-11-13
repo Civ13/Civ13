@@ -406,6 +406,8 @@ var/global/datum/shard_group/shard_group = new
 		return "That land is not known here."
 	if(peer["state"] == "UP")
 		return null
+	if(peer["state"] == "STOPPED")
+		return "[peer["name"]] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
 	if(!peer_wakeable(id))
 		return "Nobody seems to be coming back from [peer["name"]] right now."
 	var/list/reply = ask_doorman("wake=1&port=[shard_address_port(peer["address"])]")
