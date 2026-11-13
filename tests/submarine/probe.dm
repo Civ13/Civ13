@@ -24,6 +24,7 @@
 	return TRUE
 /obj/covers/submarine_probe_raft
 	name = "probe raft"
+#include "assembly.dm"
 var/submarine_failures = 0
 var/submarine_runtime_error = FALSE
 /proc/submarine_check(condition, label)
@@ -387,6 +388,8 @@ var/submarine_runtime_error = FALSE
 			if (!findtext(submarine_stripe_paints[paint], "#") || length(submarine_stripe_paints[paint]) != 7)
 				missing++
 		submarine_check(submarine_stripe_paints.len == 8 && !missing, "eight paints, each a colour")
+
+	submarine_assembly_checks()
 
 /proc/submarine_run()
 	try

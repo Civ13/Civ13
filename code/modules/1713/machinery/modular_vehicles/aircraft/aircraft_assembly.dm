@@ -29,9 +29,12 @@
 /obj/structure/bed/chair/drivers/aircraft/loose
 	anchored = FALSE
 
-// Airframe sections only join airframe controls, and the reverse.
+// Airframe sections only join airframe controls, and submarine hull sections
+// only submarine controls, and the reverse.
 /proc/vehicle_assembly_kind_matches(obj/structure/vehicleparts/frame/F, obj/structure/vehicleparts/axis/A)
-	return istype(F, /obj/structure/vehicleparts/frame/car/aircraft) == istype(A, /obj/structure/vehicleparts/axis/aircraft)
+	if (istype(F, /obj/structure/vehicleparts/frame/car/aircraft) != istype(A, /obj/structure/vehicleparts/axis/aircraft))
+		return FALSE
+	return istype(F, /obj/structure/vehicleparts/frame/ship/steel/submarine) == istype(A, /obj/structure/vehicleparts/axis/ship/submarine)
 
 /obj/structure/vehicleparts/axis/proc/assembly_refusal(datum/vehicle_survey/S)
 	return null
