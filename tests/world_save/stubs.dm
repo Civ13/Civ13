@@ -47,6 +47,9 @@ var/practice_room_z = 0
 	return TRUE
 /datum/world_z_budget/proc/practice_admitted(target_z)
 	return FALSE
+// Nor is a fixture ever a tutorial region (code/modules/1713/tutorial_region.dm).
+/proc/tutorial_region_here()
+	return FALSE
 #endif
 var/TimeOfGame = 0
 // Declared with the save vote in code/datums/vote.dm, which fixtures omit.
