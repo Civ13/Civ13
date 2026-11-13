@@ -12,3 +12,7 @@
 #define AIRCRAFT_CLIMB_STEP 5
 // Within this many levels of the ground, Descend tries to land.
 #define AIRCRAFT_LANDING_CLEARANCE 2
+
+// Ticks from a strike's drop until its first payload leaves the aircraft
+// (turf/airstrike spawns payload i after i * 5 ticks).
+#define AIR_SUPPORT_FIRST_RELEASE 5
