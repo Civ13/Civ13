@@ -1539,7 +1539,9 @@ SUITES = {
             'code/game/objects/structures/converters.dm',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},
-    'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
+    # The CI policy files grow with every admitted suite and took ~30 s on hosted
+    # runners, so the shared 30 s deadline failed master by timing alone.
+    'policy': {'files': POLICY_FILES, 'always': True, 'paths': (), 'timeout': 120},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
@@ -1913,13 +1915,16 @@ SUITES = {
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
 TIMEOUT = 30  # per reviewed suite; enclosing job also has a wall-clock limit
+MAX_SUITE_TIMEOUT = 300  # a reviewed per-suite 'timeout' can raise TIMEOUT up to this
 
 
-def suite_deadline():
-    """scripts/local_ci.py raises the deadline on slower workstations (git is
+def suite_deadline(name=None):
+    """A reviewed suite may set its own 'timeout' (bounded by MAX_SUITE_TIMEOUT).
+    scripts/local_ci.py raises the deadline on slower workstations (git is
     slow on Windows); hosted CI never sets it. Bounded so a typo cannot disable it."""
+    base = min(MAX_SUITE_TIMEOUT, max(TIMEOUT, int(SUITES.get(name, {}).get('timeout', TIMEOUT))))
     value = os.environ.get('CIV13_LOCAL_SUITE_TIMEOUT', '')
-    return min(600, max(TIMEOUT, int(value))) if value.isdigit() else TIMEOUT
+    return min(600, max(base, int(value))) if value.isdigit() else base
 # Reviewed prose/presentation formats only. Script/config suffixes deliberately
 # fall back even below docs/; compilation retains its separate existing policy.
 DOC_SUFFIXES = {'.md', '.rst', '.html', '.css', '.png', '.jpg', '.jpeg', '.gif',
@@ -2161,7 +2166,7 @@ def execute(plan, output):
             counts.unlink(missing_ok=True)
             command = [sys.executable, '-B', str(Path(__file__).resolve()), 'unit',
                        '--suite', name, '--output', str(counts.resolve())]
-            deadline = suite_deadline()
+            deadline = suite_deadline(name)
             row.update(command=command, timeout_seconds=deadline, files=list(SUITES[name]['files']))
             started = time.monotonic()
             with (output / (name + '.log')).open('wb') as log:
