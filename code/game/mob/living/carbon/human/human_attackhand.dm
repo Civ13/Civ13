@@ -11,6 +11,8 @@
 /mob/living/human/attack_hand(mob/living/human/M as mob)
 	if (map && istype(map, /obj/map_metadata/football))
 		return
+	if (tree_melee_refused(M, src))
+		return
 	var/mob/living/human/H = M
 	if (istype(H))
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
