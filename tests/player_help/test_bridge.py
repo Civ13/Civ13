@@ -47,6 +47,70 @@ class BridgeTests(unittest.TestCase):
             time.sleep(.002)
         self.fail('Response not committed')
 
+    def urine_prompt(self, question, history=None, evidence_chars=None, remove=False):
+        self.corpus = bridge.gameplay_knowledge(ROOT) + bridge.recipe_context(ROOT / 'UI/crafting-atlas.json')
+        if remove:
+            self.corpus = [entry for entry in self.corpus if not entry.get('urine_collection')]
+        if evidence_chars:
+            self.config['evidence_chars'] = evidence_chars
+        calls = []
+        instance = self.make(lambda _, payload, *args: calls.append(payload) or
+                             {'message': {'content': 'Injected answer'}})
+        request = {'id': 'urine', 'account': 'a' * 32, 'question': question}
+        if history:
+            request['conversation'] = {'version': 1, 'turns': history}
+        try:
+            return instance.answer(request), calls
+        finally:
+            instance.close()
+            self.instances.remove(instance)
+
+    def test_urine_collection_aliases_reach_prompt(self):
+        for question in ('How do you collect piss?', 'How do I collect urine?',
+                         'Can I pee into a bucket?', 'Does urinating fill a beaker?'):
+            with self.subTest(question=question):
+                result, calls = self.urine_prompt(question)
+                self.assertEqual(result['status'], 'ok')
+                prompt = calls[0]['messages'][0]['content']
+                for required in ('Urine collection exists.', 'same tile', 'pee emote',
+                                 'Holding the bucket is not enough', '5-10', 'free capacity',
+                                 'not guaranteed pure urine', 'first reagent container',
+                                 'open toilets', 'Clothing does not block'):
+                    self.assertIn(required, prompt)
+
+    def test_urine_followup_keeps_whole_evidence(self):
+        result, calls = self.urine_prompt('Should I put the bucket under me?',
+            history=[{'question': 'How do I collect urine?', 'answer': 'No mechanic exists.'}])
+        self.assertEqual(result['status'], 'ok')
+        self.assertIn('Urine collection exists.', calls[0]['messages'][0]['content'])
+
+    def test_urine_missing_record_negative_control(self):
+        _, calls = self.urine_prompt('How do I collect piss?', remove=True)
+        self.assertNotIn('CURRENT GAMEPLAY GUIDANCE (urine collection)', calls[0]['messages'][0]['content'])
+
+    def test_urine_tiny_budget_does_not_send_partial_guidance(self):
+        _, calls = self.urine_prompt('How do I collect urine?', evidence_chars=100)
+        self.assertEqual(calls, [])
+
+    def test_urine_record_does_not_override_unrelated_questions(self):
+        self.corpus = bridge.urine_knowledge(ROOT)
+        calls = []
+        instance = self.make(lambda _, payload, *args: calls.append(payload) or
+                             {'message': {'content': 'Injected answer'}})
+        instance.answer({'id': 'unrelated', 'account': 'b' * 32, 'question': 'How to smelt iron?'})
+        self.assertNotIn('Urine collection exists.', calls[0]['messages'][0]['content'])
+
+    def test_urine_source_contract_fails_closed(self):
+        original = Path.read_bytes
+        def changed(path):
+            data = original(path)
+            if path.name == 'shit_piss.dm':
+                data = data.replace(b'RC.reagents.add_reagent("urine", amount)', b'RC.reagents.add_reagent("water", amount)')
+            return data
+        with mock.patch.object(Path, 'read_bytes', changed):
+            with self.assertRaisesRegex(ValueError, 'urine collection mechanics changed'):
+                bridge.urine_knowledge(ROOT)
+
     def test_grounding_protocol_and_no_identifiers(self):
         calls = []
         def transport(endpoint, payload, headers, timeout):

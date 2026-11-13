@@ -184,3 +184,11 @@ admit more evidence. Reviewed wiki guides are pinned to civ13-wiki
 `36143d43ada6`; set `CIV13_WIKI_ROOT` to a checkout to verify every pinned hash.
 The native probe asserts the role snapshot is absent without a job and detached
 once captured. No model answer quality is established by these checks.
+
+Urine collection grounding in `test_bridge.py` captures the real bridge prompt
+with an injected transport: pee/piss/urine aliases, follow-up questions, complete
+priority evidence under a bounded budget, unrelated questions, and reviewed
+source drift. Removing the record reproduces the missing collection guidance.
+This verifies retrieval, not a live model answer or in-game collection. The
+bridge builds its corpus at startup; deployment and worker restart remain
+separate operations.

@@ -601,6 +601,43 @@ def reviewed_sources(root, paths, label):
     return identities
 
 
+# Public collection mechanic, absent from recipe/catalog-only retrieval.
+URINE_QUESTION = re.compile(r'\b(?:urine|urinate|urinating|urination|pee|peeing|piss|pissing)\b', re.I)
+
+
+def urine_knowledge(root):
+    """Reviewed collection instructions only, never a player's private bladder state."""
+    identities = reviewed_sources(root, {
+        'code/game/mob/living/carbon/human/shit_piss.dm': (
+            '/mob/living/human/proc/handle_piss()', 'if (bladder < 30 && stat != DEAD)',
+            'var/obj/item/weapon/reagent_containers/RC = locate() in src.loc',
+            'if((S) && gender != FEMALE)', 'else if(T && T.open)', 'else if (in_outhouse)',
+            'else if(RC && (istype(RC, /obj/item/weapon/reagent_containers/food/drinks) || istype(RC, /obj/item/weapon/reagent_containers/glass)) && RC.is_open_container())',
+            'var/amount = rand(5,10)\n\t\tRC.reagents.add_reagent("urine", amount)',
+            'reagents.trans_to(RC, amount)', 'else if(w_uniform)'),
+        'code/game/mob/living/carbon/human/emotes/emote.dm': (
+            'if ("pee")\n\t\t\t\thandle_piss()',),
+        'code/modules/reagents/reagent_containers/glass.dm': (
+            '/obj/item/weapon/reagent_containers/glass/bucket\n',
+            '/obj/item/weapon/reagent_containers/glass/New()\n\t..()\n\tbase_name = name\n\tflags |= OPENCONTAINER'),
+    }, 'urine collection')
+    return [{'topic': 'collect urine pee piss urinate urinating peeing pissing bucket container bladder',
+             'source': 'code', 'urine_collection': True, 'source_hashes': identities,
+             'sha256': hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest(),
+             'text': ('CURRENT GAMEPLAY GUIDANCE (urine collection): '
+                      'Urine collection exists. Put an open bucket with free capacity on the same tile '
+                      'as your character, then use the pee emote. Holding the bucket is not enough. '
+                      'Open glass/beaker and drink containers can also work. The action attempts to add '
+                      '5-10 units of urine, limited by free capacity, and can also transfer other body '
+                      'reagents, so the result is not guaranteed pure urine. If the living character has '
+                      'too little in their bladder, it says you do not have to piss; this context does '
+                      'not reveal your current bladder level. Sinks (for non-female characters), open '
+                      'toilets and being inside an outhouse take priority. Leave only the intended '
+                      'container on the tile: the code selects the first reagent container, not the '
+                      'first suitable open one. Clothing does not block successful container collection; '
+                      'without a valid destination you may soil your clothes or the floor.')}]
+
+
 # Field care questions where this compact record must lead generic damage hits.
 MEDICAL_QUESTION = re.compile(
     r'\b(?:tourniquets?|arter(?:y|ies|ial)|bleed(?:s|ing)?|blood|splints?(?:ed)?|fractures?d?|broken|'
@@ -725,7 +762,8 @@ TOXIN_SOURCE_SECTIONS = (
 BRONZE_QUESTION = re.compile(r'\bbronze\b', re.I)
 TOXIN_QUESTION = re.compile(r'\b(?:poison(?:ing|ed|s)?|toxin(?:s)?|toxic(?:ity)?|toxloss)\b', re.I)
 # Reviewed records that must reach the model complete: (entry flag, question, player label).
-PRIORITY_RECORDS = (('toxin_mechanics', TOXIN_QUESTION, 'toxin damage'),
+PRIORITY_RECORDS = (('urine_collection', URINE_QUESTION, 'urine collection'),
+                    ('toxin_mechanics', TOXIN_QUESTION, 'toxin damage'),
                     ('bronze_mechanics', BRONZE_QUESTION, 'bronze production and research'))
 
 
@@ -848,6 +886,7 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
     result.extend(mood_knowledge(root))
     result.extend(toxin_knowledge(root))
     result.extend(medical_knowledge(root))
+    result.extend(urine_knowledge(root))
     result.extend(region_travel_knowledge(root))
     status = {'configured': bool(wiki_root), 'legacy_freshness': 'not verified',
               'reviewed_guides': len(WIKI_REVIEWED_GUIDES), 'verified_guides': 0,
