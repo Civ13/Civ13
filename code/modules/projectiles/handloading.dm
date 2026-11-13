@@ -163,7 +163,7 @@
 	if (sets)
 		to_chat(user, "<span class='notice'>[sets] round\s ready. Use the casings in hand to choose a cartridge.</span>")
 	else
-		to_chat(user, "<span class='notice'>Fill them from a container of gunpowder, then seat iron bullets. Spent brass of the same size can be added back.</span>")
+		to_chat(user, "<span class='notice'>Fill them from a container of gunpowder or smokeless powder, then seat iron bullets. Spent brass of the same size can be added back.</span>")
 
 /obj/item/stack/ammopart/casing/rifle/attackby(obj/item/W, mob/user)
 	if (handload_attackby(W, user))
@@ -189,9 +189,20 @@
 		if (needed <= 0)
 			to_chat(user, "<span class='notice'>The casings are already full of gunpowder.</span>")
 			return TRUE
+		// Smokeless powder goes first: each unit is worth two of black powder.
+		var/smokeless = handload_pour_smokeless(RC, user, needed)
+		if (smokeless < 0)
+			to_chat(user, "<span class='warning'>You don't know how to measure smokeless powder charges yet (Cartridge Firearms).</span>")
+			smokeless = 0
+		else if (smokeless > 0)
+			to_chat(user, "You pour smokeless powder worth [smokeless] unit\s of gunpowder into the casings ([gunpowder]/[gunpowder_max * amount]).")
+		needed = gunpowder_max * amount - gunpowder
 		var/available = RC.reagents ? RC.reagents.get_reagent_amount("gunpowder") : 0
-		if (available <= 0)
-			to_chat(user, "<span class='notice'>There is no gunpowder in [RC].</span>")
+		if (available <= 0 || needed <= 0)
+			if (smokeless <= 0)
+				to_chat(user, "<span class='notice'>There is no gunpowder in [RC].</span>")
+			else
+				handload_offer(user)
 			return TRUE
 		var/poured = min(needed, available)
 		RC.reagents.remove_reagent("gunpowder", poured)

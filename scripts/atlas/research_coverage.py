@@ -84,6 +84,9 @@ def annotate_research(records, files, canon):
             required = ['gunsmithing']
         elif kind == 'Handloading':
             required = [recipe['handload_node']] if recipe.get('handload_node') else []
+            if required and recipe.get('handload_smokeless'):
+                # Measuring smokeless powder needs Cartridge Firearms (smokeless_powder.dm).
+                required = sorted(set(required) | {'cartridge_ammo'})
         else:
             basic = bool(outputs) and all(value in basic_ids for value in outputs)
             required = sorted({canonical[value] for value in outputs if value in canonical}) if not basic else []
