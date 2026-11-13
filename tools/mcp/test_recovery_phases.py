@@ -20,9 +20,9 @@ class RecoveryPhases(unittest.TestCase):
                 'operation.diagnostic_phase = "write_marker"', 'text2file(generation,"map_saves/save_complete.txt")')
         body = tx.split('/datum/persistence_restart_transaction/proc/execute(', 1)[1].split('/datum/persistence_restart_transaction/proc/resume_startup()', 1)[0]
         sequence = ('diagnostic_phase = "save"', 'save_generation_settled()',
-                    'diagnostic_phase = "post_save_validation"', 'current_identity()',
+                    'diagnostic_phase = "post_save_validation"', 'current_identity(!handover)',
                     'diagnostic_phase = "intent_publication"', 'publish(I)',
-                    'diagnostic_phase = "final_validation"', 'matches(I, current_identity())',
+                    'diagnostic_phase = "final_validation"', 'matches(I, current_identity(FALSE))',
                     'request_shutdown(expected_persistence)')
         ordered(body, *sequence)
         with self.assertRaises(ValueError):
