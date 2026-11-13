@@ -1,10 +1,17 @@
 # Practice rooms
 
-A lobby link, **Practice Room**, puts a player in a private 12 x 12 room with a
-throwaway "Trainee" body. Nine steps appear in chat one at a time: walk to a
-marker, pick up a knife, swap hands, wear a straw hat, open a door, hit a
-practice dummy on Harm intent, bandage a small cut, eat a bread slice and walk
-onto the exit. Finishing, dying or disconnecting returns the player to the
+A lobby link, **Practice Room**, puts a player in a private 17 x 12 room with a
+throwaway "Trainee" body. Nineteen steps appear in chat one at a time. The
+controls part: walk to a marker, pick up a knife, swap hands, wear a straw hat
+and open a door. The middle part: hit a practice dummy on Harm intent and
+bandage a small cut. The camp, behind a second door after switching back to
+Help intent, covers the first day: fuel and light a campfire, roast raw meat
+and eat it, fill a pot at a puddle, boil it on the fire and drink it, wash the
+flea-ridden shirt at the puddle, wash with soap while undressed, dress again,
+lie down in a bed, and walk onto the exit. The practice campfire never burns
+away, cooks in five seconds and starts a new cycle whenever something is put on
+it; the practice puddle neither refills nor breeds mosquitoes. A practice body
+that catches an illness (fleas) is cured on the next step check. Finishing, dying or disconnecting returns the player to the
 lobby. To leave early: the "click here to leave" link on the welcome line and
 every step, **Leave practice room** in the Esc menu, clicking the blue exit
 marker (asks first unless it is the last step), or the **Leave Practice Room**
