@@ -14,6 +14,8 @@
 /mob/living/human/var/tmp/revival_clock = 0
 /mob/living/human/var/tmp/revival_ckey = null
 /mob/living/human/var/tmp/list/revival_recipe_nodes = null
+/mob/living/human/var/tmp/list/revival_scholarship = null
+/mob/living/human/var/tmp/revival_scholar_master = null
 /mob/living/human/var/tmp/cpr_revival_busy = FALSE
 
 // A save taken during CPR must not keep the lock on the restored body.
@@ -25,6 +27,30 @@
 	revival_clock = max(world.time, 1) // 0 means no fresh death
 	revival_ckey = ckey
 	revival_recipe_nodes = islist(known_recipe_nodes) ? known_recipe_nodes.Copy() : null
+	revival_scholarship = islist(scholarship) ? scholarship.Copy() : null
+	revival_scholar_master = scholar_master
+
+// Gives a revived body back the research and scholarship it had when it
+// died. Every way back from death uses this: CPR, a defibrillator and an
+// admin or magic revive.
+/mob/living/human/proc/restore_revival_knowledge()
+	if (islist(revival_recipe_nodes))
+		known_recipe_nodes = revival_recipe_nodes
+	if (islist(revival_scholarship))
+		scholarship = revival_scholarship
+	if (revival_scholar_master)
+		scholar_master = revival_scholar_master
+	revival_recipe_nodes = null
+	revival_scholarship = null
+	revival_scholar_master = null
+
+// Admin heal/revive, revival kits, shrines and spells bring the dead back
+// through rejuvenate(), not restart_from_death().
+/mob/living/human/rejuvenate()
+	var/was_dead = stat == DEAD
+	. = ..()
+	if (was_dead && stat != DEAD)
+		restore_revival_knowledge()
 
 /mob/living/human/proc/revival_window()
 	return config.defib_timer MINUTES
@@ -193,9 +219,7 @@
 		heart.pulse = PULSE_NORM
 		heart.handle_pulse()
 	apply_revival_brain_damage(dead_for)
-	if (islist(revival_recipe_nodes))
-		known_recipe_nodes = revival_recipe_nodes
-	revival_recipe_nodes = null
+	restore_revival_knowledge()
 	never_set_faction_huds = TRUE
 	regenerate_appearance()
 	update_canmove()

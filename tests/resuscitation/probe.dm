@@ -62,6 +62,8 @@ var/probe_runtime_error = FALSE
 	// A fresh death opens the window and stashes what the person knew.
 	var/mob/living/human/A = probe_body(2, "Abel")
 	A.known_recipe_nodes = list("probe_node")
+	A.scholarship = list("mathematics" = 30)
+	A.scholar_master = "Probe Teacher"
 	A.death()
 	A.timeofdeath = world.time - 3000
 	probe_check(A.stat == DEAD && A.revival_clock > 0, "a death starts the revival clock")
@@ -72,8 +74,32 @@ var/probe_runtime_error = FALSE
 	probe_check(A.restart_from_death(null), "a fresh body comes back")
 	probe_check(A.stat != DEAD && (A in living_mob_list) && !(A in dead_mob_list), "the revived are living again")
 	probe_check(("probe_node" in A.known_recipe_nodes) && !A.revival_recipe_nodes, "the revived remember what they knew")
+	probe_check(A.scholar_level("mathematics") == 30 && A.scholar_master == "Probe Teacher" && !A.revival_scholarship, "the revived keep their scholarship and master")
 	probe_check(!A.revival_clock && !A.start_to_rot && !A.corpse_decay_record, "a revival clears the death clock and decay")
 	probe_check(!A.restart_from_death(null), "the living cannot be revived again")
+
+	// An admin heal/revive (rejuvenate) brings the knowledge back too.
+	var/mob/living/human/K = probe_body(16, "Kit")
+	K.known_recipe_nodes = list("probe_node")
+	K.scholarship = list("mathematics" = 12)
+	K.death()
+	probe_check(!length(K.known_recipe_nodes) && !K.scholar_level("mathematics"), "the dead forget their research and scholarship")
+	K.revive()
+	probe_check(K.stat != DEAD && ("probe_node" in K.known_recipe_nodes) && K.scholar_level("mathematics") == 12, "an admin revive gives back what they knew")
+	probe_check(!K.revival_recipe_nodes && !K.revival_scholarship, "the revive uses up the kept knowledge")
+	K.rejuvenate()
+	probe_check(("probe_node" in K.known_recipe_nodes) && K.scholar_level("mathematics") == 12, "healing the living leaves their knowledge alone")
+
+	// Admins can give back knowledge a bug took, from a saved record. It only adds.
+	if (!research_nodes.len)
+		build_research_tree()
+	var/mob/living/human/R = probe_body(18, "Rue")
+	R.scholarship = list("engineering" = 40)
+	var/list/added = R.admin_restore_research(json_decode("{\"known\": \[\"basic_tools\", \"no_such_node\"\], \"scholarship\": {\"mathematics\": 17.5, \"engineering\": 20, \"bogus\": 50}}"))
+	probe_check(("basic_tools" in R.known_recipe_nodes) && !("no_such_node" in R.known_recipe_nodes), "a restore adds real research only: [json_encode(R.known_recipe_nodes)]")
+	probe_check(R.scholar_level("mathematics") == 17.5 && R.scholar_level("engineering") == 40 && !("bogus" in R.scholarship), "a restore never lowers scholarship: [json_encode(R.scholarship)]")
+	probe_check(added.len == 2, "the restore reports what it added: [json_encode(added)]")
+	probe_check(!length(R.admin_restore_research(json_decode("{\"known\": \[\"basic_tools\"\]}"))), "restoring twice adds nothing")
 
 	// Too long dead.
 	var/mob/living/human/B = probe_dead(4, "Bea")
@@ -117,13 +143,25 @@ var/probe_runtime_error = FALSE
 
 	// Wounds and blood loss need treatment first, but do not end the chance.
 	var/mob/living/human/E = probe_dead(10, "Eda")
-	E.adjustBruteLoss(250)
-	probe_check(findtext(E.resuscitation_blocker(), "Treat them first") && E.revivable_now(), "lethal wounds must be treated first")
+	// Damage lands on random limbs and each limb caps it, so keep hitting until it is lethal.
+	for (var/i in 1 to 10)
+		E.adjustBruteLoss(100)
+		E.updatehealth()
+		if (E.health + E.getOxyLoss() <= config.health_threshold_dead - 50)
+			break
+	// Blows to the head can spill into the brain and other organs; only the wounds are under test.
+	for (var/obj/item/organ/O in E.internal_organs)
+		O.damage = 0
+	probe_check(findtext(E.resuscitation_blocker(), "Treat them first") && E.revivable_now(), "lethal wounds must be treated first: [E.resuscitation_blocker()]")
 	probe_check(findtext(jointext(E.death_time_lines(probe_medic()), "|"), "might then bring them back"), "medics are told to treat first")
 	probe_check(!E.restart_from_death(null), "a body with lethal wounds is not restarted")
-	E.heal_overall_damage(250, 250)
+	for (var/i in 1 to 10)
+		if (!E.getBruteLoss() && !E.getBurnLoss())
+			break
+		E.heal_overall_damage(E.getBruteLoss(), E.getBurnLoss())
+	E.setOxyLoss(0)
 	E.vessel.remove_reagent("blood", E.vessel.get_reagent_amount("blood") * 0.9)
-	probe_check(findtext(E.resuscitation_blocker(), "blood"), "too little blood must be replaced first")
+	probe_check(findtext(E.resuscitation_blocker(), "blood"), "too little blood must be replaced first: [E.resuscitation_blocker()]")
 
 	// Spirit.
 	var/mob/living/human/F = probe_dead(12, "Fen")
