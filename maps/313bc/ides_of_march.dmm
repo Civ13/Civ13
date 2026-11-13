@@ -1,88 +1,278 @@
 "aa" = (/turf/wall/indestructable/black,/area/caribbean/void)
 "ab" = (/obj/map_metadata/ides_of_march,/turf/wall/indestructable/black,/area/caribbean/void)
-"ac" = (/turf/floor/plating/cobblestone,/area/caribbean/ides)
-"ad" = (/turf/floor/grass,/area/caribbean/ides)
-"ae" = (/obj/covers/stone_wall/classic/villa,/turf/floor/plating/cobblestone,/area/caribbean/ides)
-"af" = (/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"ag" = (/obj/structure/table/wood,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"ah" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"ai" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/ides)
-"aj" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/marble/tile,/area/caribbean/ides)
-"ak" = (/turf/floor/plating/marble/tile,/area/caribbean/ides)
-"al" = (/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
-"am" = (/obj/structure/religious/monument/pillar_monument,/turf/floor/plating/marble/tile,/area/caribbean/ides)
-"an" = (/obj/covers/marble_wall/classic,/turf/floor/plating/cobblestone,/area/caribbean/ides)
-"ao" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"ap" = (/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"aq" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"ar" = (/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"as" = (/obj/structure/brazier/marble,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"at" = (/obj/effect/landmark{name = "JoinLateIdesCaesar"},/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"au" = (/obj/structure/religious/monument/pillar_monument,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"av" = (/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
-"aw" = (/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
-"ax" = (/obj/covers/marble_wall/grecian/archway,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"ay" = (/obj/covers/stone_wall/classic/villa,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"az" = (/obj/structure/religious/statue{name = "statue of Pompey"; desc = "Gnaeus Pompeius Magnus, in marble."},/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
-"aA" = (/obj/structure/bed/chair/throne{dir = 2},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
-"aB" = (/obj/structure/brazier/marble,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
-"aC" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"ac" = (/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"ad" = (/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"ae" = (/obj/covers/brick_wall,/turf/floor/plating/tiled/woodh,/area/caribbean/ides)
+"af" = (/obj/structure/closet/crate/barrel,/turf/floor/dirt,/area/caribbean/ides)
+"ag" = (/turf/floor/dirt,/area/caribbean/ides)
+"ah" = (/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/ides)
+"ai" = (/obj/covers/stone_wall/classic,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"aj" = (/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"ak" = (/obj/covers/stone_wall/classic,/turf/floor/dirt,/area/caribbean/ides)
+"al" = (/turf/floor/grass,/area/caribbean/ides)
+"am" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/ides)
+"an" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"ao" = (/obj/structure/bed/wood,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"ap" = (/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"aq" = (/obj/covers/brick_wall,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"ar" = (/obj/structure/closet/crate/urn,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"as" = (/obj/structure/table/rack/shelf/wooden,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"at" = (/obj/covers/stone_wall/classic,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"au" = (/obj/structure/mine_support/stone/ionic,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"av" = (/obj/structure/brazier/marble/lit,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"aw" = (/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"ax" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"ay" = (/obj/structure/closet/crate/barrel,/turf/floor/dirt,/area/caribbean/ides/house)
+"az" = (/turf/floor/dirt,/area/caribbean/ides/house)
+"aA" = (/obj/structure/closet/crate/empty,/turf/floor/dirt,/area/caribbean/ides/house)
+"aB" = (/obj/structure/wild/bush,/turf/floor/grass,/area/caribbean/ides)
+"aC" = (/obj/covers/clay_wall/redearth,/turf/floor/plating/tiled/woodv,/area/caribbean/ides)
+"aD" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aE" = (/turf/floor/plating/marble,/area/caribbean/ides/house)
+"aF" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"aG" = (/obj/structure/curtain/open/red,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"aH" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"aI" = (/obj/structure/table/rack/shelf/wooden,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aJ" = (/obj/covers/clay_wall/redearth,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aK" = (/obj/structure/closet/crate/empty,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aL" = (/obj/structure/closet/crate/urn,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aM" = (/turf/floor/beach/water,/area/caribbean/ides/house)
+"aN" = (/obj/covers/stone_wall/classic/archway,/turf/floor/dirt,/area/caribbean/ides/house)
+"aO" = (/obj/structure/closet/crate/urn,/turf/floor/dirt,/area/caribbean/ides/house)
+"aP" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/ides)
+"aQ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/water,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"aR" = (/obj/structure/loom,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aS" = (/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aT" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"aU" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"aV" = (/obj/covers/stone_wall/classic/villa_doorway,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"aW" = (/obj/structure/hay_bale,/turf/floor/dirt,/area/caribbean/ides/house)
+"aX" = (/obj/structure/hay_bale,/turf/floor/dirt,/area/caribbean/ides)
+"aY" = (/obj/structure/wild/tree/live_tree,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"aZ" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"ba" = (/obj/structure/wild/bush/big,/turf/floor/grass,/area/caribbean/ides)
+"bb" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bc" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bd" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"be" = (/obj/structure/bed/chair/wood/bleacher{dir = 2},/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bf" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt,/area/caribbean/ides/house)
+"bg" = (/obj/structure/wild/flowers,/turf/floor/grass,/area/caribbean/ides)
+"bh" = (/obj/structure/pot,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bi" = (/obj/structure/table/wood,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bj" = (/obj/structure/mine_support/stone/ionic,/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"bk" = (/obj/structure/closet/crate/urn/stand,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"bl" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/dirt,/area/caribbean/ides/house)
+"bm" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"bn" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/water,/turf/floor/plating/tiled/woodv,/area/caribbean/ides/house)
+"bo" = (/turf/floor/plating/cobblestone/vertical,/area/caribbean/ides)
+"bp" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/cobblestone/vertical,/area/caribbean/ides)
+"bq" = (/obj/structure/wild/jungle/cherry{name = "almond tree"; desc = "An almond tree, in blossom for the Ides of March."},/turf/floor/grass,/area/caribbean/ides)
+"br" = (/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/vertical,/area/caribbean/ides)
+"bs" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/cobblestone/vertical,/area/caribbean/ides)
+"bt" = (/obj/structure/religious/monument/pillar_monument,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"bu" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bv" = (/obj/structure/hay_bale,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bw" = (/turf/floor/dirt/dust,/area/caribbean/ides)
+"bx" = (/obj/structure/closet/crate/urn,/turf/floor/dirt/dust,/area/caribbean/ides)
+"by" = (/obj/covers/stone_wall/classic/villa/pillared,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bz" = (/obj/covers/stone_wall/classic/villa,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bA" = (/obj/covers/stone_wall/classic/villa/relief/gladiator,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bB" = (/obj/covers/stone_wall/classic/archway/marble,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"bC" = (/obj/covers/stone_wall/classic/villa/relief/greek,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bD" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"bE" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bF" = (/obj/structure/closet/crate/empty,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bG" = (/obj/structure/closet/crate/barrel,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bH" = (/obj/structure/sink/well/marble,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bI" = (/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"bJ" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"bK" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"bL" = (/obj/structure/mine_support/stone/ionic,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"bM" = (/obj/structure/props/marketstall,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bN" = (/obj/structure/props/marketstall,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bO" = (/turf/floor/plating/marble/decorative_tile,/area/caribbean/ides)
+"bP" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bQ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bR" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt/dust,/area/caribbean/ides)
+"bS" = (/obj/structure/table/fancy,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bT" = (/obj/structure/bed/chair/wood{dir = 2},/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"bU" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"bV" = (/turf/floor/plating/cobblestone,/area/caribbean/no_mans_land/invisible_wall)
+"bW" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/ides)
+"bX" = (/obj/covers/marble_wall/grecian,/turf/floor/plating/marble/ornate,/area/caribbean/ides)
+"bY" = (/obj/covers/marble_wall/classic,/turf/floor/plating/marble/ornate,/area/caribbean/ides)
+"bZ" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"ca" = (/obj/structure/closet/crate/urn,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"cb" = (/obj/structure/brazier/marble/lit,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"cc" = (/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"cd" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"ce" = (/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"cf" = (/turf/floor/plating/marble,/area/caribbean/ides/curia)
+"cg" = (/obj/covers/cobblestone/stairs,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"ch" = (/obj/structure/potted_plant,/turf/floor/plating/marble,/area/caribbean/ides)
+"ci" = (/turf/floor/plating/marble,/area/caribbean/ides)
+"cj" = (/obj/covers/stone_wall/classic/villa/pillared,/turf/floor/plating/marble,/area/caribbean/ides)
+"ck" = (/obj/covers/stone_wall/classic/villa,/turf/floor/plating/marble,/area/caribbean/ides)
+"cl" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"cm" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"cn" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"co" = (/turf/floor/plating/marble/grid,/area/caribbean/ides)
+"cp" = (/obj/structure/bed/wood,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cq" = (/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cr" = (/obj/structure/potted_plant,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cs" = (/obj/covers/stone_wall/classic/villa,/turf/floor/plating/marble,/area/caribbean/ides/house)
+"ct" = (/obj/structure/pot,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cu" = (/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cv" = (/obj/structure/closet/crate/barrel,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cw" = (/obj/structure/table/marble,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"cx" = (/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cy" = (/obj/structure/window/barrier/railing/stone{dir = 2},/turf/floor/grass,/area/caribbean/ides)
+"cz" = (/obj/structure/fountain,/turf/floor/plating/marble/grid,/area/caribbean/ides)
+"cA" = (/obj/structure/window/barrier/railing/stone{dir = 1},/turf/floor/grass,/area/caribbean/ides)
+"cB" = (/obj/structure/table/rack/shelf/wooden,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cC" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cD" = (/obj/structure/bed/chair/wood/bleacher{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cE" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 4},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cF" = (/obj/structure/wild/smallbush,/obj/structure/window/barrier/railing/stone{dir = 2},/turf/floor/grass,/area/caribbean/ides)
+"cG" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cH" = (/obj/structure/table/wood,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cI" = (/obj/structure/closet/crate/empty,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"cJ" = (/obj/covers/stone_wall/classic/villa/relief/aquila,/turf/floor/plating/marble,/area/caribbean/ides)
+"cK" = (/obj/structure/table/wood,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cL" = (/obj/covers/marble_wall/grecian,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"cM" = (/obj/structure/wild/flowers,/obj/structure/window/barrier/railing/stone{dir = 2},/turf/floor/grass,/area/caribbean/ides)
+"cN" = (/obj/structure/wild/smallbush,/obj/structure/window/barrier/railing/stone{dir = 1},/turf/floor/grass,/area/caribbean/ides)
+"cO" = (/obj/structure/props/marketstall,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"cP" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"cQ" = (/obj/structure/closet/crate/urn,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"cR" = (/obj/structure/brazier/marble/lit,/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cS" = (/turf/floor/plating/marble/decorative_tile,/area/caribbean/ides/curia)
+"cT" = (/obj/structure/table/marble,/turf/floor/plating/marble/decorative_tile,/area/caribbean/ides/curia)
+"cU" = (/obj/structure/mine_support/stone/ionic,/turf/floor/plating/marble/grid,/area/caribbean/ides/curia)
+"cV" = (/turf/floor/plating/marble/grid,/area/caribbean/ides/curia)
+"cW" = (/obj/covers/stone_wall/classic/villa_doorway,/turf/floor/plating/marble,/area/caribbean/ides/house)
+"cX" = (/obj/structure/mine_support/stone/ionic,/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"cY" = (/obj/structure/potted_plant,/turf/floor/plating/marble/decorative_tile,/area/caribbean/ides/curia)
+"cZ" = (/obj/structure/brazier/marble/lit,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"da" = (/obj/effect/landmark{name = "JoinLateIdesCaesar"},/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"db" = (/obj/structure/religious/statue{name = "statue of Venus Genetrix"; desc = "The mother of the Julian house."},/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"dc" = (/obj/structure/closet/crate/urn/stand,/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"dd" = (/turf/floor/carpet/purplecarpet,/area/caribbean/ides/curia)
+"de" = (/obj/structure/religious/statue{name = "statue of Calliope"; desc = "One of the Muses that Pompey set up in his portico."},/turf/floor/grass,/area/caribbean/ides)
+"df" = (/obj/structure/religious/statue{name = "statue of Clio"; desc = "One of the Muses that Pompey set up in his portico."},/turf/floor/grass,/area/caribbean/ides)
+"dg" = (/obj/structure/potted_plant,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"dh" = (/obj/covers/marble_wall/grecian/archway,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"di" = (/turf/floor/plating/marble/tile,/area/caribbean/no_mans_land/invisible_wall)
+"dj" = (/obj/effect/landmark{name = "JoinLateIdesCaesar"},/turf/floor/plating/marble/decorative_tile,/area/caribbean/ides/house)
+"dk" = (/obj/structure/religious/statue{name = "statue of Pompey"; desc = "Gnaeus Pompeius Magnus, in marble. He looks down on the chair of the man who beat him."},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"dl" = (/obj/structure/bed/chair/throne{dir = 2; name = "Caesar's chair"; desc = "The gilded chair the senate voted to the Dictator."},/turf/floor/carpet/purplecarpet,/area/caribbean/ides/curia)
+"dm" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/marble,/area/caribbean/ides/house)
+"dn" = (/obj/structure/closet/crate/chest/treasury,/turf/floor/plating/marble/tile,/area/caribbean/ides/house)
+"do" = (/obj/structure/religious/statue{name = "statue of Urania"; desc = "One of the Muses that Pompey set up in his portico."},/turf/floor/grass,/area/caribbean/ides)
+"dp" = (/obj/structure/religious/statue{name = "statue of Thalia"; desc = "One of the Muses that Pompey set up in his portico."},/turf/floor/grass,/area/caribbean/ides)
+"dq" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"dr" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"ds" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/tile,/area/caribbean/ides/curia)
+"dt" = (/obj/structure/hay_bale,/turf/floor/plating/cobblestone/dark,/area/caribbean/ides)
+"du" = (/obj/structure/closet/crate/chest/treasury,/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dv" = (/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dw" = (/obj/structure/potted_plant,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"dx" = (/obj/structure/bookcase,/turf/floor/plating/marble/ornate,/area/caribbean/ides/curia)
+"dy" = (/obj/structure/bed/chair/wood/bleacher/l{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"dz" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"dA" = (/obj/structure/bed/chair/wood/bleacher/r{dir = 8},/obj/effect/landmark{name = "JoinLateIdesSenate"},/turf/floor/plating/marble/pink,/area/caribbean/ides/curia)
+"dB" = (/obj/structure/bookcase,/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dC" = (/obj/structure/curtain/open/red,/turf/floor/plating/marble,/area/caribbean/ides/house)
+"dD" = (/obj/structure/table/fancy,/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dE" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dF" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/carpet/purplecarpet,/area/caribbean/ides/house)
+"dG" = (/obj/covers/sandstone_wall/classic,/turf/floor/plating/tiled/woodh,/area/caribbean/ides)
+"dH" = (/obj/structure/bed/chair/wood/bleacher{dir = 1},/turf/floor/grass,/area/caribbean/ides)
+"dI" = (/obj/structure/religious/statue{name = "statue of Victory"; desc = "Winged Victory, holding out a wreath."},/turf/floor/grass,/area/caribbean/ides)
+"dJ" = (/obj/structure/bed/chair/wood{dir = 1},/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"dK" = (/obj/structure/sink/well/marble,/turf/floor/plating/cobblestone,/area/caribbean/ides)
+"dL" = (/obj/structure/table/marble,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/amphora/wine,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"dM" = (/obj/structure/bed/chair/wood/bleacher{dir = 8},/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"dN" = (/obj/covers/sandstone_wall/classic,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"dO" = (/obj/structure/closet/crate/empty,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"dP" = (/obj/structure/table/marble,/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"dQ" = (/obj/structure/oven/fireplace,/turf/floor/dirt,/area/caribbean/ides/house)
+"dR" = (/obj/structure/table/wood,/turf/floor/dirt,/area/caribbean/ides/house)
+"dS" = (/obj/structure/anvil,/turf/floor/dirt,/area/caribbean/ides/house)
+"dT" = (/obj/covers/cobblestone/stairs{dir = 4},/turf/floor/plating/marble/tile,/area/caribbean/ides)
+"dU" = (/obj/covers/sandstone_wall/classic/archway,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"dV" = (/obj/covers/brick_wall,/turf/floor/plating/tiled,/area/caribbean/ides)
+"dW" = (/obj/structure/simple_door/key_door/anyone/roman,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"dX" = (/obj/covers/marble_wall/grecian/archway,/turf/floor/plating/marble/ornate,/area/caribbean/ides/house)
+"dY" = (/obj/structure/sink/well/marble,/turf/floor/grass,/area/caribbean/ides)
+"dZ" = (/obj/covers/stone_wall/classic,/turf/floor/dirt,/area/caribbean/ides/house)
+"ea" = (/obj/structure/closet/crate/urn/stand,/turf/floor/plating/marble/ornate,/area/caribbean/ides/house)
+"eb" = (/turf/floor/plating/marble/ornate,/area/caribbean/ides/house)
+"ec" = (/obj/structure/religious/monument/venus,/turf/floor/carpet/redcarpet,/area/caribbean/ides/house)
+"ed" = (/obj/structure/mill,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"ee" = (/obj/structure/loom,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"ef" = (/obj/structure/closet/crate/chest/treasury,/turf/floor/plating/tiled/woodh,/area/caribbean/ides/house)
+"eg" = (/obj/structure/brazier/marble/lit,/turf/floor/plating/marble/ornate,/area/caribbean/ides/house)
+"eh" = (/obj/structure/hay_bale,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"ei" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"ej" = (/obj/structure/oven/fireplace,/turf/floor/plating/tiled,/area/caribbean/ides/house)
+"ek" = (/obj/structure/hay_bale,/turf/floor/plating/cobblestone,/area/caribbean/ides)
 
 (1,1,1) = {"
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacaeaeaeaeaeaeaeaeaeaeaeacacacacacaeaeaeaeaeaeaeaeaeaeaeacacacacacacacacacacacacacacacacacacaa
-aaacaeaeaeaeaeaeaeaeaeaeaeacacacacacaeafafafafafafafafafaeacacacacacaeafafafafafafafafafaeacacacacacaeaeaeaeaeaeaeaeaeaeaeacacaa
-aaacaeafafafafafafafafafaeacacacacacaeafafafafafafafafafaeacacacacacaeafafafafafafafafafaeacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacaeafafafafagafafafafaeacacacacacaeafafafafagafafafafaeacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacaiacaeafafafafafafafafafaeacacacacacaeafafafafafafafafafaeacaiacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafagafafafafaeacacacacacaeaeaeaeaeahaeaeaeaeaeacacacacacaeaeaeaeaeahaeaeaeaeaeacacacacacaeafafafafagafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacanananananananananananananananananananananananananacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeaeaeaeaeahaeaeaeaeaeacacacacacacanapapapapapapapapapapapapapapapapapapapapapapapanacacacacacacaeaeaeaeaeahaeaeaeaeaeacacaa
-aaacacacacacacacacacacacacacacacacacacanapapapapasapapapapapapazapapapapapapasapapapapanacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacanapapapapapapapapavavavavavavavapapapapapapapapanacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacanapapapapapapapapavavavaAavavavapapapapapapapapanacacacacacacacacacacacacacacacacacacacaa
-aaacaeaeaeaeaeaeaeaeaeaeacacacacacacacanapapapapapapapapavavavavavavavapapapapapapapapanacacacacacacacaeaeaeaeaeaeaeaeaeaeacacaa
-aaacaeafafafafafafafafaeacacacaiacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacaiacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararauapapapapapapapapapauarararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafagafafafafahacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacahafafafagafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacalaoapapapapapapapapapapapapapapapapapapapapapapapaoalacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanaqaqaqarararauapapapapapapapapapauarararaCaCaCanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeaeaeaeaeaeaeaeaeaeacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacaeaeaeaeaeaeaeaeaeaeacacaa
-aaacacacacacacacacacacacacacacaiacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacaiacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacanaqaqaqarararauapapapapapapapapapauarararaCaCaCanacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacanaqaqaqarararapapapapapapapapapapaparararaCaCaCanacacacacacacacacacacacacacacacacacacacaa
-aaacaeaeaeaeaeaeaeaeaeaeacacacacacacacanapapapapapapapapapapapapapapapapapapapapapapapanacacacacacacacaeaeaeaeaeaeaeaeaeaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanapapapapapapapapapapapapapapapapapapapapapapapanacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacanananananananananananaxaxaxanananananananananananacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacacacacacacacacacacacacacacalalalacacacacacacacacacacacacacacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafagafafafafahacacacacacajakakakakakakakakakakakakakakakakakakakakakakakakakakakajacacacacacahafafafagafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacacacacaeafafafafafafafafaeacacaa
-aaacaeafafafafafafafafaeacacacacacakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacacacacaeafafafafafafafafaeacacaa
-aaacaeaeaeaeaeaeaeaeaeaeacacacacacakamakakamakakamakakamakakakakakakakakamakakamakakamakakakacacacacacaeaeaeaeaeaeaeaeaeaeacacaa
-aaacacacacacacacacacacacacacacacacakakakakakakakakakakakakakakakakakakakakakakakakakakakakakacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacawawawawawacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacawawawawawacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaa
-aaacacacacacacacacacacacacacacacacacacacacacacacacacacacacawawawawawacacacacacacacacacacacacacacacacacacacacacacacacacacacacacaa
-aaacaeaeaeaeaeaeaeaeaeaeaeacacacacacacacacacacacacacacacacawawawawawacacacacacacacacacacacacacacacacaeaeaeaeaeaeaeaeaeaeaeacacaa
-aaacaeafafafafafafafafafaeacacacaiacacacacacacacacacacacacawawawawawacacacacacacacacacacacacaiacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacaeaeaeaeaeaeaeayahayaeaeaeaeaeaeaeacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacaeafafafafafafafafafafafafafafafaeacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafagafafafafahacacacacacacacacacacaeafafagafafafafafafafafafagafafaeacacacacacacacacacacahafafafafagafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacaeafatatatatatatatatatatatatatafaeacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacaeafatatatatatatatatatatatatatafaeacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeafafafafafafafafafaeacacacacacacacacacacaeafatatatatatataBatatatatatatafaeacacacacacacacacacacaeafafafafafafafafafaeacacaa
-aaacaeaeaeaeaeaeaeaeaeaeaeacacacacacacacacacacaeafafafafafafafafafafafafafafafaeacacacacacacacacacacaeaeaeaeaeaeaeaeaeaeaeacacaa
-aaacacacacacacacacacacacacacacacacacacacacacacaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeacacacacacacacacacacacacacacacacacacacacacacacaa
-aaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
-aaadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaa
+aaacadadadadadadadadadadadadadadadadbUacadadadadadanadadadadadadadadadadadanadadadadadadbUacadadadadadadadadadadadadadadadadekaa
+aaadadadadadadaYadadadadadadadadbMbPadadadadadadadadadadcLcLcLcLcLcLcLadadadadadadadadadadaddKadadadadadadadadaYadadadadadadadaa
+aaadanadadadadadadadadadadadadadadadadadadadadadadadadcLcLdccxdkcxdccLcLadadadadadadadadadadadadadadadadadadadadadadadadadanadaa
+aaadadadadadadadadadadanadadadadadadadadadadadbVadadcLcRcxcxcxcxcxcxcxcRcLadadbVadadadadadadadadadadadanadadadadadadadadadadadaa
+aaaeaeaeaeaeaeaHaeaeaebobobobvbwbwbwbwadbXbYbXbZbXbYbXbYcXcxcxcxcxcxcXbYbXbYbXbZbXbYbXadbWalalalalbobobodGdGdGdGdGaHdGdGdGdGdGaa
+aaaeaoapapaQapapapbhaebobobobwbFbwbFbwadbYcbcccccccccccScYddddddddddcYcScccccccccccbbYadalalalbgbabobobodGbEapapapapapdNbhaodGaa
+aaaeapapapapapapapapaHbobobobwbwbNbQbwadbYcccccwcwcccccScSdddddlddddcScSccccdxdxccccbYadalaPalalbabobobodGbTapapapapapaGapapdGaa
+aaaeaoapapapapapapbcaebpbobobwbwbwbwbwadbXcdcccccccccccTcSddddddddddcScTcccccccccccdbXadalalalalbabobobpdGbcapdNdNdUdNdNapapdGaa
+aaaeaqaqaGaqaqaqaqaqaebobobobwbwbwbwbxadbYcececxcxcececScSddddddddddcScScececxcxcecebYadalalalaPalbobobodGapapdNbgalaldNapbidGaa
+aaaearapapapaqapbbbiaebobobobwbGbwbFbwadbYceclcxcCceclcUcVcVcVcVcVcVcVcUdqcedycxdqcebYadaldHalalalboboboaHapapdUaldYalaGapapdGaa
+aaaeapapapapaGapapapaHbobobobwbwbNbQbwadbXcecmcxcDcecmcVcccccccScccccccVdrcedzcxdrcebXadbgalbgbWalbobobodGapapdNalalbWdNapaodGaa
+aaaeaoapapapaqasbcapaebpbobobxbwbwbwbwadbYcecncxcEcecncVcccccccScccccccVdscedAcxdscebYadalalalalalbobsbpdGapapdNdNdUdNdNapapdGaa
+aaaeaeaeaHaeaeaeaeaeaebobobobwbwbwbRbwadbYcececxcxcececUcccccccScccccccUcececxcxcecebYadalcZbIcZalbobobodGarapaGapapapapapbcdGaa
+aaafagagagagagagagagagbobobobwbHbwbwbwbVbZcfcfcfcfcfcfcVcfcfcfcScfcfcfcVcfcfcfcfcfcfbZbVbIbIdLbIbIbobobodGaoapdNapapapapbuasdGaa
+aaagahagagagaXagagagagbobobobwbwbwbwbwadbYcececxcxcececUcccccccScccccccUcececxcxcecebYadalbIbIbIalbobobodGdGdGdGdGaHdGdGdGdGdGaa
+aaagagaCaCaCaCaCaCaCaCbobobobwbFbwbGbwadbYceclcxcCceclcVcccccccScccccccVdqcedycxdqcebYadbWalalalalboboboagagafagagagagagagahagaa
+aaagagaCaIaRaSaSbdaSbmbobobobwbwbNbQbwadbXcecmcxcDcecmcVcccccccScccccccVdrcedzcxdrcebXadaldIbgalalboboboagagagagagagagagagagagaa
+aaagagaCaIaSaSaZaSaSaSbobrbobwbwbwbwbwadbYcecmcxcDcecmcUcccccccScccccccUdrcedzcxdrcebYadbgalalbqalboboboakakakakakakakblakakakaa
+aaagagaCaJaJaJaJaJaJaCbobobobwbwbwbwbxadbYcecmcxcDcecmcVcccccccScccccccVdrcedzcxdrcebYadalalalalalboboboakdQazazaAdZbiapapapakaa
+aaagagaCaKaIaSaSbdaSbnbobobobwbGbwbFbwadbXcecncxcEcecncVcccccccScccccccVdscedAcxdscebXadalaPalalbaboboboaNazazazazdZapapapeeakaa
+aaagagaDaIaSaSaSaSaSaSbpbobobwbwbNbQbwadbYcececxcxcececUcccccccScccccccUcececxcxcecebYadalalalalbabobobpakazazazazdZapapapapakaa
+aaagagaCaJaJaJaJaJaJaCbobobobvbwbwbwbwadbYcbcccccccdcccVcccccccScccccccVcccdcccccccbbYadbgalbWalbaboboboakazdSazazaNapapapapakaa
+aaagagaCaLaTaSaSbdaSbmbobobobwbwbwbRbwadbXbYbXbYbXbYbXbYbXbYdhdhdhbYbXbYbXbYbXbYbXbYbXadalalalalalboboboakazazazbfdZapapapeeakaa
+aaagagaCaIaSaSaZaSaSaSbobobobybIbIbIbIbIbIbIbIbIbIbIbIbIcZbIdididibIcZbIbIbIbIbIbIbIbIbIbIbIbIbIbyboboboblazazazazdZapapapapakaa
+aaagagaCaCaCaCaCaCaCaCbobobobzbJbIbIbIbIcabIbObIbIbObIbIbObIbIbIbIbIbObIbIbObIbIbObIcabIbIbIbIbJbzboboboakazazazazdZapapapbcakaa
+aaahagagagagagagagagagbobobobzbIbObIbIbIbIbLbIbLbIbLbIbLbIbLbIbIbIbLbIbLbIbLbIbLbIbLbIbIbIbIbObIbzbobrboakdRazazaydZapasasefakaa
+aaagagagagagagagagafagbobobobybIbIbIbIbIbIcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgcgbIbIbIbIbIbIbyboboboakakakblakakakakakakakaa
+aaaiaiaiaiaUaiaiaiaiaibobobobzbIbIbIbLbWalalalalalbgalalaBbabIbIbIbaaBalbgalalalalbWalbgbLbIbIbIbzboboboagafagagagagagagagagagaa
+aaaiasasapapapapbebeaibpbobobAbKbObIbIalalbWalbgalalalalalbabIbIbIbaalalalalbWalbgalalalbIbIbOdMbAbobobpagagagagagagagagagagahaa
+aaaiapapapapapapaparaibobobobzbIbIbIbLalaPalalcycFcycMalbqbabIbIbIbabqalcycMcycyalalaPalbLbIbIbIbzbobobobaalbabgbaalbabgbaalbaaa
+aaaiatatataVatatatataibobobobybJbIbIbIbgalchcicicicichalalbabIbIbIbaalalchcicicicichalbgbIbIbIbJbybobobobIbIbIbIbIbIbIbIbIbIbIaa
+aaaiauawawawawawawbjaibobsbobzbIbObIbLalalcicococococialaldebIbIbIdoalaBcicococococialalbLbIbObIbzbobobobIbIdTbLbXbYbYbXbYbYbXaa
+aaaiavaEaEaEaEaEaEawaibobobobBbIbIbIbIbIbIcicococococibIbIbIbObObObIbIbIcicococococibIbIbIbIbIbIbBbobobocZbIdTbIbYeaebebebegbYaa
+aaaiawaEaMaMaMaMaEawaUbobobobBbIbIbIbIbIbIcicoczcococibIbIbIbObObObIbIbIcicoczcococibIbIbIbIbIbIbBbobobobIbIdTbLbYebebebebebbYaa
+aaaiawaEaMaMaMaMaEawaibobobobzbIbObIbLalalcicocococociaBaldfbIbIbIdpalalcicococococialalbLbIbObIbzbobobodPbIdTbIdXcqcqcqecebbXaa
+aaaiaxaEaMaMaMaMaEawaibobobobybJbIbIbIbgalchcicicicichalbgbabIbIbIbabgalchcicicicichalbgbIbIbIbJbybobobobIbIdTbLbYebebebebebbYaa
+aaaiawaEaMaMaMaMaEbkaibpbobobzbIbIbIbLalalalalcAcAcAcNalalbabIbIbIbaalalcNcAcAcAalalalalbLbIbIbIbzbobobpcZbIdTbIbYeaebebebegbYaa
+aaaiawaEaMaMaMaMaEawaibobobobCbKbObIbIalaPalalbgalalalaPalbabIbIbIbaalaPalbgalbWalalaPalbIbIbOdMbCbobobobIbIdTbLbXbYbYbXbYbYbXaa
+aaaiauaEaEaEaEaEaEauaibobobobzbIbIbIbLbgalalbWalalbgalalaBbabIbIbIbaaBalalalalalbgalalalbLbIbIbIbzbobobobIbIbIbIbIbIbIbIbIbIbIaa
+aaaiaiaiaiaiaiaiaiaiaibobobobybLbIbLbIbLbObLbIbLbObLbIbLbObLbIbIbIbLbObLbIbLbObLbIbLbObLbIbLbIbLbybobobobabgbaalbabgbaalbabgbaaa
+aaajajajajajajajajaFajajajajajajajaFajajajajajajajajajajajadadadadadajajajajajajajajajajajaFajajajajajajajaFajajajajajajajajajaa
+aaajajajajajajajajajajajajbtajajajajajajajajajajajcIcOajajadadadadadajajdtbDajajajajajajajajajajajbtajajajajajajajajajajajajajaa
+aaajajaFajajajajajajajajajajbDajajajajajajajajaFajajajajajdganadandgajajajajajaFajajajajajajajajajajajajajajajajajajajaFajajajaa
+aaakakakaNaNakakakakagagaeaeaeaHaeaeaeagagcjckckckcJckckcjckckdmckckcjckckcJckckckcjagagdGdGaHdGdGdGaHdGdGagagdVdVdVdWdVdVdVdVaa
+aaakayayazazazayaWakagagaebbapapapbSaeagagckcpcqcpcqcPcsavawawawawawavcsdudvdBdBdEckagagdGdJapapdNbcapapdGagagdVcBcucucucuehdVaa
+aaakayazazazazazaAakagagaeapapapapbTaeagagckcqcqcGcKcqcsdadadadadadadacWdvdvdvdDdFckagagdGbiapapaGapapaodGagagdVcucucucuedcudVaa
+aaakazazaOazaOazazakagagaebibEbiaQapaeagagckcrcqcqcqcqcWdadadjdjdjdadacsdvdvdvdvdvckagagdGapapapdNapapapdGagagdVcucucucucucudVaa
+aaakazazazazazazbfblagagaeapapapapapaHagagcjcscscsaEaEcsdadadjaMdjdadacscscsdCcscscjagagaHapapapdNapapapdGagagdWcucucucucueidVaa
+aaakaAazazazazazazakagagaebcapapapapaeagagckctcucHcucucsdadadjdjdjdadacsarapapapaockagagdGapapapdNapapapaHagagdVcucucucucucudVaa
+aaakaAaAazaWaWaAaAakagagaebububhasbuaeagagckcucucucucucWdadadadadadadacWapapapapapckagagdGaoapardNasapdOdGagagdVcvcucHcHcuejdVaa
+aaakakakakakakakakakagagaeaeaeaeaeaeaeagagckcvcBcBcucQcsdbawawdnawawbkcsdwapapapaockagagdGdGdGdGdGdGdGdGdGagagdVdVdVdVdVdVdVdVaa
+aaagagagagagagagagagagagagagagagagagagagagcjckckckckckckckckckckckckckckckckdmckckcjagagagagagagagagagagagagagagagagagagagagagaa
+aaalaBalalalalbaalalalalalalaBalalalbgalalbaalalalalalbgalbaalalalaBalalalalalalalbaalalbgalalalalalbaalalalalalbgaBalalalaBamaa
+aaamalalaPalalalbgalalbqalamalalaPalalamalalalbgalaPalalalalalalbgalalbqalalalbgalalalamalalaPalamalalalbgalbqalalalalaPalalamaa
 abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 "}
