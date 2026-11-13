@@ -109,7 +109,15 @@
 			disease_type = "typhus"
 			disease_progression = 0
 			disease_treatment = 0
-	overlays_standing[27] = img_nasties
+	// The overlay only changes with the smell and lice states; replacing it every
+	// tick depended on Life() redrawing every human once a second.
+	var/nasties_state = "[hygiene < HYGIENE_LEVEL_DIRTY ? 1 : 0][fleas_found ? 1 : 0]"
+	if (nasties_state != hygiene_overlay_state || !overlays_standing[27])
+		hygiene_overlay_state = nasties_state
+		overlays_standing[27] = img_nasties
+		queue_overlay_redraw()
+/mob/living/human/var/tmp/hygiene_overlay_state = null
+
 /mob/living/human/proc/adjust_hygiene(var/amount)
 	var/old_hygiene = hygiene
 	if(amount>0)

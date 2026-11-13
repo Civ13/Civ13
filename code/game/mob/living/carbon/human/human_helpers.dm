@@ -459,58 +459,61 @@
 				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
-			update_fire(1)
+		life_water_refresh()
 		return
 	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
 	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
 		water_overlay = TRUE
-		update_fire(1)
+		life_water_refresh()
 		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
 		drowning = FALSE
 		swim_rest()
 		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
 			water_overlay = TRUE
-			update_fire(1)
+			life_water_refresh()
 			return
 		else
 			if (istype(T, /turf/floor/sub_deck) && T:water_depth > 0)
 				drowning = FALSE
 				water_overlay = TRUE
-				update_fire(1)
+				life_water_refresh()
 				return
 			water_overlay = FALSE
 			if (plane == FLOOR_PLANE)
 				plane = GAME_PLANE
 			if (!on_fire)
 				overlays_standing[25] = null
-			update_fire(1)
+			life_water_refresh()
 			return
 	else
 		var/turf/floor/beach/water/deep/D = T
 		if (D.iscovered())
 			drowning = FALSE
 			water_overlay = FALSE
+			life_water_refresh()
 			return
 		else if (buckled && istype(buckled, /obj/structure/vehicle/boat))
 			drowning = FALSE
 			water_overlay = FALSE
+			life_water_refresh()
 			return
 		else
 			for(var/obj/structure/vehicle/boat/BT in range(1,src))
 				if(src in BT.ontop)
 					drowning = FALSE
 					water_overlay = FALSE
+					life_water_refresh()
 					return
 			// Swimming (swimming.dm): afloat until the swimmer tires.
 			if (swim_step(D))
 				drowning = FALSE
 				water_overlay = TRUE
-				update_fire(1)
+				life_water_refresh()
 				return
 			drowning = TRUE
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
-			update_fire(1)
+			life_water_refresh()
 			adjustOxyLoss(10)
 			return

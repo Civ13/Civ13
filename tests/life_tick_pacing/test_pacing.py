@@ -16,6 +16,9 @@ ORGAN = (ROOT / 'code/modules/organs/organ.dm').read_text(encoding='utf-8')
 HUMAN_ORGANS = (ROOT / 'code/game/mob/living/carbon/human/human_organs.dm').read_text(encoding='utf-8')
 BLOOD = (ROOT / 'code/modules/organs/blood.dm').read_text(encoding='utf-8')
 HUMAN = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
+ICONS = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text(encoding='utf-8')
+HELPERS = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text(encoding='utf-8')
+NEEDS = (ROOT / 'code/game/mob/living/carbon/human/human_needs.dm').read_text(encoding='utf-8')
 
 
 def body(source, signature):
@@ -175,6 +178,74 @@ class StanceDislocation(unittest.TestCase):
         # The shortcut holds only while is_usable() is "not dislocated and not mutated or dead".
         external = (ROOT / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
         self.assertIn('/obj/item/organ/external/is_usable()\n\treturn !is_dislocated() && !(status & (ORGAN_MUTATED|ORGAN_DEAD))', external)
+
+
+class OverlayRedraw(unittest.TestCase):
+    """Life() used to redraw every human once a second, which hid layer changes
+    that were never drawn. Measured 2026-11-13: 1.0 update_icons per human per
+    second before, one per 30 s after, with skipped redraws drawn on the next tick."""
+
+    LAYER_PROCS = re.findall(
+        r'^(/mob/living/human/(?:proc/)?(?:update_\w+|UpdateDamageIcon))\(var/update_icons=1',
+        ICONS, re.M)
+
+    def test_every_layer_proc_queues_a_skipped_redraw(self):
+        self.assertGreaterEqual(len(self.LAYER_PROCS), 24)
+        for signature in self.LAYER_PROCS:
+            with self.subTest(signature):
+                first = body(ICONS, signature + '(').lstrip('\n').split('\n')[:2]
+                self.assertEqual(first, ['\tif (!update_icons)', '\t\tqueue_overlay_redraw()'])
+
+    def test_queued_redraw_is_one_flush_per_tick(self):
+        queue = body(ICONS, '/mob/living/human/proc/queue_overlay_redraw(')
+        self.assertLess(queue.index('overlays_dirty = TRUE'), queue.index('if (overlays_flush_queued)'))
+        self.assertIn('\toverlays_flush_queued = TRUE\n'
+                      '\taddtimer(CALLBACK(src, PROC_REF(flush_overlay_redraw)), 0)', queue)
+        self.assertNotIn('spawn', queue)
+        flush = body(ICONS, '/mob/living/human/proc/flush_overlay_redraw(')
+        self.assertIn('\toverlays_flush_queued = FALSE\n'
+                      '\tif (overlays_dirty && !QDELETED(src))\n\t\tupdate_icons()', flush)
+        redraw = body(ICONS, '/mob/living/human/update_icons(')
+        self.assertIn('overlays_dirty = FALSE', redraw)
+        self.assertLess(redraw.index('overlays_dirty = FALSE'), redraw.index('overlays.Cut()'))
+
+    def test_redraw_masks_replaced_images_in_water(self):
+        redraw = body(ICONS, '/mob/living/human/update_icons(')
+        mask = redraw.index('if (drowning || water_overlay)\n\t\t\tapply_water_mask()')
+        self.assertLess(mask, redraw.index('for (var/image/I in overlays_standing)'))
+        fire = body(ICONS, '/mob/living/human/update_fire(')
+        self.assertLess(fire.index('apply_water_mask()'), fire.index('update_icons()'))
+
+    def test_life_only_redraws_on_a_change_or_the_backstop(self):
+        refresh = body(ICONS, '/mob/living/human/proc/life_water_refresh(')
+        self.assertIn('if (state != life_water_state || overlays_dirty || !(life_tick % LIFE_OVERLAY_BACKSTOP))', refresh)
+        self.assertIn('\telse\n\t\tupdate_posture_transform()', refresh)
+        self.assertIn('\t\tif (riding && riding_mob)\n\t\t\triding_mob.update_icons()', refresh)
+        self.assertIn('on_fire', refresh)
+        self.assertIn('water_mask_state()', refresh)
+        self.assertIn('#define LIFE_OVERLAY_BACKSTOP 30', ICONS)
+
+    def test_drowning_never_redraws_unconditionally(self):
+        drowning = body(HELPERS, '/mob/living/human/proc/handle_drowning(')
+        self.assertNotIn('update_fire(', drowning)
+        # Every exit refreshes, including under cover and on a boat, where the
+        # water mask used to stay on.
+        returns = [m.start() for m in re.finditer(r'^\t+return$', drowning, re.M)]
+        self.assertGreaterEqual(len(returns), 9)
+        for at in returns:
+            before = drowning[:at].rstrip('\n').split('\n')
+            tail = [line.strip() for line in before[-2:]]
+            self.assertIn('life_water_refresh()', tail, before[-3:])
+
+    def test_hygiene_overlay_is_replaced_only_on_a_change(self):
+        # The proc holds commented-out lines at column 0, so slice to the next proc.
+        start = NEEDS.index('/mob/living/human/proc/handle_hygiene(')
+        hygiene = NEEDS[start:NEEDS.index('/mob/living/human/proc/adjust_hygiene(')]
+        self.assertEqual(hygiene.count('overlays_standing[27] = img_nasties'), 1)
+        self.assertIn('if (nasties_state != hygiene_overlay_state || !overlays_standing[27])\n'
+                      '\t\thygiene_overlay_state = nasties_state\n'
+                      '\t\toverlays_standing[27] = img_nasties\n'
+                      '\t\tqueue_overlay_redraw()', hygiene)
 
 
 if __name__ == '__main__':

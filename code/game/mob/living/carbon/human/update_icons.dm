@@ -141,6 +141,29 @@ Please contact me on #coderbus IRC. ~Carn x
 	var/list/overlays_standing[TOTAL_LAYERS]
 	var/previous_damage_appearance // store what the body last looked like, so we only have to update it if something changed
 
+// The update_*() procs take update_icons = 0 to change a layer without redrawing,
+// for a caller that redraws once at the end. Many callers never did, and the
+// change only appeared when Life() redrew every human once a second. A skipped
+// redraw is now recorded and drawn on the next tick, so the Life redraw
+// only has to run when something changed.
+/mob/living/human
+	var/tmp/overlays_dirty = FALSE
+	var/tmp/overlays_flush_queued = FALSE
+	// Fire and water state last drawn by life_water_refresh().
+	var/tmp/life_water_state = null
+
+/mob/living/human/proc/queue_overlay_redraw()
+	overlays_dirty = TRUE
+	if (overlays_flush_queued)
+		return
+	overlays_flush_queued = TRUE
+	addtimer(CALLBACK(src, PROC_REF(flush_overlay_redraw)), 0)
+
+/mob/living/human/proc/flush_overlay_redraw()
+	overlays_flush_queued = FALSE
+	if (overlays_dirty && !QDELETED(src))
+		update_icons()
+
 /mob/living/human/Login()
 	..()
 	if(client)
@@ -155,10 +178,14 @@ Please contact me on #coderbus IRC. ~Carn x
 //I'll work on removing that stuff by rewriting some of the cloaking stuff at a later date.
 /mob/living/human/update_icons()
 	lying_prev = lying	//so we don't update overlays for lying/standing unless our stance changes again
+	overlays_dirty = FALSE
 	overlays.Cut()
 
 	if (icon_update)
 		icon = stand_icon
+		// Images replaced while standing in water are new and unmasked.
+		if (drowning || water_overlay)
+			apply_water_mask()
 		for (var/image/I in overlays_standing)
 			overlays += I
 		if (species.has_floating_eyes)
@@ -206,6 +233,8 @@ var/global/list/damage_icon_parts = list()
 //DAMAGE OVERLAYS
 //constructs damage icon for each organ from mask * damage field and saves it in our overlays_ lists
 /mob/living/human/UpdateDamageIcon(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	// first check whether something actually changed about damage appearance
 	var/damage_appearance = ""
 
@@ -246,6 +275,8 @@ var/global/list/damage_icon_parts = list()
 
 //BASE MOB SPRITE
 /mob/living/human/proc/update_body(var/update_icons=1, var/forced=FALSE)
+	if (!update_icons)
+		queue_overlay_redraw()
 
 	//CACHING: Generate an index key from visible bodyparts.
 	//0 = destroyed, TRUE = normal, 2 = necrotic.
@@ -353,6 +384,8 @@ var/global/list/human_face_icon_cache = list()
 #undef HUMAN_FACE_ICON_CACHE_LIMIT
 
 /mob/living/human/proc/update_hair(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	//Reset our hair
 	overlays_standing[HAIR_LAYER]	= null
 	if (body_build.nohair || body_build.nofacialhair) return
@@ -455,6 +488,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_mutations(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	var/obj/item/organ/external/LL = get_organ("l_leg")
 	var/obj/item/organ/external/RL = get_organ("r_leg")
 	var/obj/item/organ/external/LF = get_organ("l_foot")
@@ -550,6 +585,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_w_uniform(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
 	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
@@ -796,6 +833,8 @@ var/global/list/human_face_icon_cache = list()
 		update_icons()
 
 /mob/living/human/update_inv_wear_id(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (wear_id)
 		wear_id.screen_loc = find_inv_position(slot_wear_id)
 		if (w_uniform && w_uniform:displays_id)
@@ -814,6 +853,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_gloves(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (gloves)
 
 		var/t_state = gloves.icon_state
@@ -844,6 +885,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_eyes(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (eyes)
 
 		eyes.screen_loc = find_inv_position(slot_eyes)
@@ -859,6 +902,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_ears(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	overlays_standing[EARS_LAYER] = null
 //this was causing the image to not move, so removed
 //	if ( (head && (head.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))) || (wear_mask && (wear_mask.flags_inv & (BLOCKHAIR | BLOCKHEADHAIR))))
@@ -892,6 +937,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_shoes(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (shoes && !(wear_suit && wear_suit.flags_inv & HIDESHOES))
 
 		shoes.screen_loc = find_inv_position(slot_shoes)
@@ -920,6 +967,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_head(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 
 	var/image/band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2")
 	var/image/cap = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l1")
@@ -1041,6 +1090,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_belt(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (belt)
 
 		belt.screen_loc = find_inv_position(slot_belt)
@@ -1080,6 +1131,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_wear_suit(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	var/image/base = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_top")
 	var/image/secondary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_dec")
 	var/image/tertiary = image("icon" = 'icons/mob/suit.dmi', "icon_state" = "customcolonialcoat_lines")
@@ -1192,6 +1245,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_pockets(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (l_store)
 
 		l_store.screen_loc = find_inv_position(slot_l_store)
@@ -1201,6 +1256,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)	update_icons()
 
 /mob/living/human/update_inv_wear_mask(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if ( wear_mask && ( istype(wear_mask, /obj/item/clothing/mask) || istype(wear_mask, /obj/item/clothing/accessory) || istype(wear_mask, /obj/item/weapon/grenade)) && !(head && head.flags_inv & HIDEMASK))
 
 
@@ -1225,6 +1282,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_back(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (back)
 		back.screen_loc = find_inv_position(slot_back)
 		//determine the icon to use
@@ -1254,6 +1313,8 @@ var/global/list/human_face_icon_cache = list()
 
 ////////////SHOULDER
 /mob/living/human/update_inv_shoulder(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (shoulder)
 		shoulder.screen_loc = find_inv_position(slot_shoulder)
 		//determine the icon to use
@@ -1285,6 +1346,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_handcuffed(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (handcuffed)
 		drop_r_hand()
 		drop_l_hand()
@@ -1303,6 +1366,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_legcuffed(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (legcuffed)
 
 		var/image/standing
@@ -1324,6 +1389,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_r_hand(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (r_hand)
 		r_hand.screen_loc = find_inv_position(slot_r_hand)
 		//determine icon state to use
@@ -1365,6 +1432,8 @@ var/global/list/human_face_icon_cache = list()
 
 
 /mob/living/human/update_inv_l_hand(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	if (l_hand)
 		var/new_screen_loc = find_inv_position(slot_l_hand)
 		if (new_screen_loc)
@@ -1411,11 +1480,18 @@ var/global/list/human_face_icon_cache = list()
 
 //this actually also handles other over-mob overlays like the water wading overlays
 /mob/living/human/update_fire(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	overlays_standing[FIRE_LAYER] = null
 	overlays_standing[WATER_LAYER] = null
 	if (on_fire)
 		overlays_standing[FIRE_LAYER] = image("icon"='icons/mob/OnFire.dmi', "icon_state"="Standing", "layer"=FIRE_LAYER)
 
+	apply_water_mask()
+	if (update_icons)
+		update_icons()
+
+/mob/living/human/proc/apply_water_mask()
 	var/icon/mask_icon = get_water_mask_icon()
 	if (mask_icon)
 		filters = null
@@ -1431,10 +1507,9 @@ var/global/list/human_face_icon_cache = list()
 		if (plane==FLOOR_PLANE)
 			plane=GAME_PLANE
 	apply_footwear_water_mask(mask_icon)
-	if (update_icons)
-		update_icons()
 
-/mob/living/human/proc/get_water_mask_icon()
+// The beach.dmi state that hides the submerged part of the body, or null on dry ground.
+/mob/living/human/proc/water_mask_state()
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
 		// Determine mask state based on water type and depth
@@ -1451,8 +1526,28 @@ var/global/list/human_face_icon_cache = list()
 				return null
 		else if (drowning)
 			mask_state = "seashallow_over3"  // Deep water - fully submerged
-		return icon('icons/turf/beach.dmi', mask_state)
+		return mask_state
 	return null
+
+/mob/living/human/proc/get_water_mask_icon()
+	var/mask_state = water_mask_state()
+	return mask_state ? icon('icons/turf/beach.dmi', mask_state) : null
+
+// Life() calls this once a second. It used to redraw every overlay each time; now
+// it redraws when the fire or water state changed or a redraw is still owed, and
+// otherwise only once in LIFE_OVERLAY_BACKSTOP ticks as a safety net.
+#define LIFE_OVERLAY_BACKSTOP 30
+/mob/living/human/proc/life_water_refresh()
+	var/state = "[on_fire ? 1 : 0]|[water_mask_state()]"
+	if (state != life_water_state || overlays_dirty || !(life_tick % LIFE_OVERLAY_BACKSTOP))
+		life_water_state = state
+		update_fire(1)
+	else
+		update_posture_transform()
+		// A mount's icon has always followed its rider's redraw; keep that.
+		if (riding && riding_mob)
+			riding_mob.update_icons()
+#undef LIFE_OVERLAY_BACKSTOP
 
 /mob/living/human/proc/apply_footwear_water_mask(var/icon/mask_icon)
 	var/image/footwear = overlays_standing[SHOES_LAYER]
@@ -1474,6 +1569,8 @@ var/global/list/human_face_icon_cache = list()
 			img.filters = null
 
 /mob/living/human/proc/update_surgery(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	overlays_standing[SURGERY_LEVEL] = null
 	var/image/total = new
 	for (var/obj/item/organ/external/E in organs)
@@ -1504,6 +1601,8 @@ var/global/list/human_face_icon_cache = list()
 	if (update_icons)   update_icons()
 
 /mob/living/human/proc/update_bandaging(var/update_icons=1)
+	if (!update_icons)
+		queue_overlay_redraw()
 	var/image/DD = image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="")
 	for (var/obj/item/organ/external/O in organs)
 		if (O.is_stump())
