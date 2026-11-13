@@ -1411,6 +1411,7 @@
 #include "code\modules\multiz\explosion_remains.dm"
 #include "code\modules\multiz\building_lighting.dm"
 #include "code\modules\multiz\standing_building_level.dm"
+#include "code\modules\naval\boathouse.dm"
 #include "code\modules\naval\built_hull.dm"
 #include "code\modules\naval\carrier.dm"
 #include "code\modules\naval\craft_chart.dm"
