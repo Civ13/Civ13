@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 431,
-  "modern": 328,
+  "types": 444,
+  "modern": 341,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -18,13 +18,13 @@
    "pistol": 38,
    "revolver": 27,
    "rifle_bolt": 66,
-   "rifle_lever": 9,
-   "rifle_semiauto": 26,
+   "rifle_lever": 10,
+   "rifle_semiauto": 38,
    "shotgun": 7,
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 99,
+  "migrated": 144,
   "fixed": 4
  },
  "modern_calibers": [
@@ -2945,8 +2945,8 @@
    "max_shells": 15,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/cowboy_repeater",
@@ -2958,8 +2958,8 @@
    "max_shells": 7,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a357",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/evansrepeater",
@@ -2971,8 +2971,8 @@
    "max_shells": 28,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/henryrepeater",
@@ -2984,8 +2984,21 @@
    "max_shells": 15,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/leveraction/receiver",
+   "name": "Lever-action receiver",
+   "category": "rifle_lever",
+   "scope": "modern",
+   "caliber": "a44",
+   "load_method": 1,
+   "max_shells": 15,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/winchesterm1873",
@@ -2997,8 +3010,8 @@
    "max_shells": 14,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/winchesterm1873/gold",
@@ -3010,8 +3023,8 @@
    "max_shells": 14,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/winchesterm1876",
@@ -3023,8 +3036,8 @@
    "max_shells": 13,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/winchesterm1886",
@@ -3036,8 +3049,8 @@
    "max_shells": 9,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a4570",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/leveraction/winchesterm1892",
@@ -3049,8 +3062,8 @@
    "max_shells": 12,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a44",
-   "family": null,
-   "migration": "pending"
+   "family": "lever",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol",
@@ -4041,8 +4054,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ar15",
    "ammo_type": "/obj/item/ammo_casing/a556x45",
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/avtomat",
@@ -4054,8 +4067,21 @@
    "max_shells": 25,
    "magazine_type": "/obj/item/ammo_magazine/avtomat",
    "ammo_type": "/obj/item/ammo_casing/a65x50",
-   "family": null,
-   "migration": "pending"
+   "family": "avtomat",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/avtomat/receiver",
+   "name": "Fedorov receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a65x50",
+   "load_method": 7,
+   "max_shells": 25,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "avtomat",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/bamr",
@@ -4067,8 +4093,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/bamr",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "bamr",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/bamr/receiver",
+   "name": "BAMR receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a15115",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "bamr",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/bamr/telescope",
@@ -4080,8 +4119,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/bamr",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "bamr",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/barrett",
@@ -4093,8 +4132,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/barrett",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "m82",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/barrett/receiver",
+   "name": "Barrett M82 receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a50cal",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "m82",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/barrett/sniper",
@@ -4106,8 +4158,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/barrett",
    "ammo_type": "",
-   "family": null,
-   "migration": "pending"
+   "family": "m82",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/g41",
@@ -4119,8 +4171,8 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/gewehr98",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "gewehr43",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/g43",
@@ -4132,8 +4184,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/g43",
    "ammo_type": "/obj/item/ammo_casing/a792x57",
-   "family": null,
-   "migration": "pending"
+   "family": "gewehr43",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/g43/receiver",
+   "name": "Gewehr 41/43 receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a792x57",
+   "load_method": 7,
+   "max_shells": 10,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "gewehr43",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/laser",
@@ -4223,8 +4288,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m1carbine",
    "ammo_type": "/obj/item/ammo_casing/a762x33",
-   "family": null,
-   "migration": "pending"
+   "family": "m1carbine",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/m1carbine/receiver",
+   "name": "M1 Carbine receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a762x33",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "m1carbine",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/m1garand",
@@ -4236,8 +4314,8 @@
    "max_shells": 8,
    "magazine_type": "/obj/item/ammo_magazine/garand",
    "ammo_type": "/obj/item/ammo_casing/a3006",
-   "family": null,
-   "migration": "pending"
+   "family": "garand",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/m1garand/match",
@@ -4249,8 +4327,21 @@
    "max_shells": 8,
    "magazine_type": "/obj/item/ammo_magazine/garand",
    "ammo_type": "/obj/item/ammo_casing/a3006",
-   "family": null,
-   "migration": "pending"
+   "family": "garand",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/m1garand/receiver",
+   "name": "M1 Garand receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a3006",
+   "load_method": 3,
+   "max_shells": 8,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "garand",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/ptrs",
@@ -4262,8 +4353,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/ptrs",
    "ammo_type": "/obj/item/ammo_casing/a145",
-   "family": null,
-   "migration": "pending"
+   "family": "ptrs",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/ptrs/receiver",
+   "name": "PTRS receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a145",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ptrs",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/remington11",
@@ -4288,8 +4392,8 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/sks",
    "ammo_type": "/obj/item/ammo_casing/a762x39",
-   "family": null,
-   "migration": "pending"
+   "family": "sks",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/sks/chinese",
@@ -4301,8 +4405,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/sks",
    "ammo_type": "/obj/item/ammo_casing/a762x39",
-   "family": null,
-   "migration": "pending"
+   "family": "sks",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/sks/receiver",
+   "name": "SKS receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a762x39",
+   "load_method": 3,
+   "max_shells": 10,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "sks",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/sks/sksm",
@@ -4314,8 +4431,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/sksm",
    "ammo_type": "/obj/item/ammo_casing/a762x39",
-   "family": null,
-   "migration": "pending"
+   "family": "sks",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/svd",
@@ -4327,8 +4444,8 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/svd",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "svd",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/svd/acog",
@@ -4340,8 +4457,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/svd",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "svd",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/svd/receiver",
+   "name": "SVD receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a762x54",
+   "load_method": 7,
+   "max_shells": 10,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "svd",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/svt",
@@ -4353,8 +4483,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/svt",
    "ammo_type": "/obj/item/ammo_casing/a762x54",
-   "family": null,
-   "migration": "pending"
+   "family": "svt",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/svt/receiver",
+   "name": "SVT receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a762x54",
+   "load_method": 7,
+   "max_shells": 10,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "svt",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/vg5",
@@ -4366,8 +4509,21 @@
    "max_shells": 30,
    "magazine_type": "/obj/item/ammo_magazine/stg",
    "ammo_type": "/obj/item/ammo_casing/a792x33",
-   "family": null,
-   "migration": "pending"
+   "family": "vg5",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/vg5/receiver",
+   "name": "Volkssturmkarabiner receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a792x33",
+   "load_method": 4,
+   "max_shells": 30,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "vg5",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/vintorez",
@@ -4379,8 +4535,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/vintorez",
    "ammo_type": "/obj/item/ammo_casing/a9x39",
-   "family": null,
-   "migration": "pending"
+   "family": "vss",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/vintorez/receiver",
+   "name": "VSS receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "a9x39",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "vss",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun",
@@ -4498,8 +4667,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak74",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/special/mk18",
@@ -4511,8 +4680,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mk18",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/special/mk18/tan",
@@ -4524,8 +4693,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mk18",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun",

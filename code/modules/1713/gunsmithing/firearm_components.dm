@@ -24,7 +24,9 @@
 	var/caliber = null        // barrel and feed parts
 	var/list/good_mags = null // feed parts: magazines or clips the gun accepts
 	var/ammo_type = null      // feed parts: the loose round a box of ammo must hold
-	var/capacity = null       // feed parts: rounds held, when it differs between feeds of one family
+	var/capacity = null       // feed parts: rounds held, when it differs between feeds of one family (0 = none, magazine only)
+	var/load_method = null    // feed parts: how the gun loads, when it differs between feeds of one family
+	var/cliploader = null     // feed parts: TRUE when clips load into a detachable magazine
 	var/ergonomics = 1        // furniture handling factor
 
 /datum/firearm_component/New(list/data)
@@ -47,7 +49,7 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	var/list/ak47_mags = list(/obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak47/makeshift)
 	var/list/ak74_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak74/ak74m)
 	var/list/ak101_mags = list(/obj/item/ammo_magazine/ak101, /obj/item/ammo_magazine/ak101/drum)
-	var/list/stanag_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15)
+	var/list/stanag_mags = list(/obj/item/ammo_magazine/m16, /obj/item/ammo_magazine/m16/mag5_60, /obj/item/ammo_magazine/ar15, /obj/item/ammo_magazine/mk18)
 	var/list/mauser792_clips = list(/obj/item/ammo_magazine/gewehr98)
 	var/list/mauser765_clips = list(/obj/item/ammo_magazine/gewehr71)
 	var/list/mauser7x57_clips = list(/obj/item/ammo_magazine/mauser1893)
@@ -67,6 +69,19 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 	var/list/ptrd_rounds = list(/obj/item/ammo_casing/a145, /obj/item/ammo_casing/a145_ap)
 	var/list/pzb_rounds = list(/obj/item/ammo_casing/a792x94, /obj/item/ammo_casing/a792x94_ap)
 	var/list/barrett_rounds = list(/obj/item/ammo_casing/a50cal, /obj/item/ammo_casing/a50cal_ap, /obj/item/ammo_casing/a50cal_he)
+	var/list/bamr_rounds = list(/obj/item/ammo_casing/a15115, /obj/item/ammo_casing/a15115_ap, /obj/item/ammo_casing/a15115_aphe)
+	var/list/sks_clips = list(/obj/item/ammo_magazine/sks)
+	var/list/sksm_mags = list(/obj/item/ammo_magazine/sks, /obj/item/ammo_magazine/sksm, /obj/item/ammo_magazine/rpk47, /obj/item/ammo_magazine/rpk47/drum, /obj/item/ammo_magazine/ak47, /obj/item/ammo_magazine/ak47/makeshift)
+	var/list/g43_mags = list(/obj/item/ammo_magazine/g43, /obj/item/ammo_magazine/gewehr98)
+	var/list/svt_mags = list(/obj/item/ammo_magazine/svt, /obj/item/ammo_magazine/mosin)
+	var/list/m1carbine_mags = list(/obj/item/ammo_magazine/m1carbine, /obj/item/ammo_magazine/m1carbine/big)
+	var/list/avtomat_mags = list(/obj/item/ammo_magazine/avtomat)
+	var/list/vg5_mags = list(/obj/item/ammo_magazine/stg, /obj/item/ammo_magazine/vgclip)
+	var/list/ptrs_clips = list(/obj/item/ammo_magazine/ptrs)
+	var/list/svd_mags = list(/obj/item/ammo_magazine/svd)
+	var/list/vss_mags = list(/obj/item/ammo_magazine/vintorez)
+	var/list/m82_mags = list(/obj/item/ammo_magazine/barrett)
+	var/list/bamr_mags = list(/obj/item/ammo_magazine/bamr, /obj/item/ammo_magazine/bamr_aphe, /obj/item/ammo_magazine/bamr_ap)
 	for (var/list/data in list(
 		list("id" = "ak/action", "family" = "ak", "slot" = FIREARM_SLOT_ACTION, "name" = "AK bolt carrier group",
 			"desc" = "The bolt and carrier of an AK-pattern rifle. Fits any AK receiver.", "icon_state" = "Dual Selective Fire"),
@@ -281,6 +296,139 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"caliber" = "a50cal", "ammo_type" = barrett_rounds),
 		list("id" = "barrett/furniture/stock", "family" = "barrett", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Barrett stock",
 			"desc" = "The steel skeleton stock of a Barrett M99.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "sks/action", "family" = "sks", "slot" = FIREARM_SLOT_ACTION, "name" = "SKS bolt carrier",
+			"desc" = "The bolt carrier of a SKS rifle. Fits any SKS receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "sks/barrel/762x39", "family" = "sks", "slot" = FIREARM_SLOT_BARREL, "name" = "SKS barrel (7.62x39mm)",
+			"desc" = "A 7.62x39mm barrel for a SKS rifle. Pair it with a 7.62x39mm magazine.", "icon_state" = "Rifle Barrel", "caliber" = "a762x39"),
+		list("id" = "sks/feed/762x39", "family" = "sks", "slot" = FIREARM_SLOT_FEED, "name" = "SKS magazine (7.62x39mm)",
+			"desc" = "A fixed ten-round magazine loaded from SKS stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a762x39", "good_mags" = sks_clips, "ammo_type" = /obj/item/ammo_casing/a762x39, "capacity" = 10, "load_method" = SINGLE_CASING|SPEEDLOADER, "cliploader" = FALSE),
+		list("id" = "sks/feed/762x39_detachable", "family" = "sks", "slot" = FIREARM_SLOT_FEED, "name" = "SKS-M magazine well (7.62x39mm)",
+			"desc" = "A Type 63 magazine well that takes SKS-M and AK-47 magazines, which SKS clips can top up.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x39", "good_mags" = sksm_mags, "ammo_type" = /obj/item/ammo_casing/a762x39, "capacity" = 0, "load_method" = SINGLE_CASING|SPEEDLOADER|MAGAZINE, "cliploader" = TRUE),
+		list("id" = "sks/furniture/stock", "family" = "sks", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SKS stock",
+			"desc" = "A wooden SKS stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "gewehr43/action", "family" = "gewehr43", "slot" = FIREARM_SLOT_ACTION, "name" = "Gewehr 41/43 bolt carrier",
+			"desc" = "The bolt carrier of a Gewehr 41/43 rifle. Fits any Gewehr 41/43 receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "gewehr43/barrel/792x57", "family" = "gewehr43", "slot" = FIREARM_SLOT_BARREL, "name" = "Gewehr 41/43 barrel (7.92x57mm)",
+			"desc" = "A 7.92x57mm barrel for a Gewehr 41/43 rifle. Pair it with a 7.92x57mm magazine.", "icon_state" = "Rifle Barrel", "caliber" = "a792x57"),
+		list("id" = "gewehr43/feed/792x57", "family" = "gewehr43", "slot" = FIREARM_SLOT_FEED, "name" = "Gewehr 41 magazine (7.92x57mm)",
+			"desc" = "A fixed ten-round magazine loaded from Mauser stripper clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a792x57", "good_mags" = mauser792_clips, "ammo_type" = /obj/item/ammo_casing/a792x57, "capacity" = 10, "load_method" = SINGLE_CASING|SPEEDLOADER, "cliploader" = FALSE),
+		list("id" = "gewehr43/feed/792x57_detachable", "family" = "gewehr43", "slot" = FIREARM_SLOT_FEED, "name" = "Gewehr 43 magazine well (7.92x57mm)",
+			"desc" = "A magazine well for detachable Gewehr 43 magazines, which Mauser clips can top up.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a792x57", "good_mags" = g43_mags, "ammo_type" = /obj/item/ammo_casing/a792x57, "capacity" = 10, "load_method" = SINGLE_CASING|SPEEDLOADER|MAGAZINE, "cliploader" = TRUE),
+		list("id" = "gewehr43/furniture/stock", "family" = "gewehr43", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Gewehr 41/43 stock",
+			"desc" = "A wooden Gewehr 41/43 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "svt/action", "family" = "svt", "slot" = FIREARM_SLOT_ACTION, "name" = "SVT bolt carrier",
+			"desc" = "The bolt carrier of a SVT rifle. Fits any SVT receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "svt/barrel/762x54", "family" = "svt", "slot" = FIREARM_SLOT_BARREL, "name" = "SVT barrel (7.62x54mmR)",
+			"desc" = "A 7.62x54mmR barrel for a SVT rifle. Pair it with a 7.62x54mmR magazine.", "icon_state" = "Rifle Barrel", "caliber" = "a762x54"),
+		list("id" = "svt/feed/762x54", "family" = "svt", "slot" = FIREARM_SLOT_FEED, "name" = "SVT magazine well (7.62x54mmR)",
+			"desc" = "A magazine well for SVT-40 magazines, which Mosin clips can top up.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x54", "good_mags" = svt_mags, "ammo_type" = /obj/item/ammo_casing/a762x54),
+		list("id" = "svt/furniture/stock", "family" = "svt", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SVT stock",
+			"desc" = "A wooden SVT-40 stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "garand/action", "family" = "garand", "slot" = FIREARM_SLOT_ACTION, "name" = "M1 Garand operating rod and bolt",
+			"desc" = "The operating rod of a M1 Garand rifle. Fits any M1 Garand receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "garand/barrel/3006", "family" = "garand", "slot" = FIREARM_SLOT_BARREL, "name" = "M1 Garand barrel (.30-06)",
+			"desc" = "A .30-06 barrel for a M1 Garand rifle. Pair it with a .30-06 magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a3006"),
+		list("id" = "garand/feed/3006", "family" = "garand", "slot" = FIREARM_SLOT_FEED, "name" = "M1 Garand magazine (.30-06)",
+			"desc" = "A fixed magazine for eight-round en-bloc clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a3006", "good_mags" = springfield_clips, "ammo_type" = /obj/item/ammo_casing/a3006),
+		list("id" = "garand/furniture/stock", "family" = "garand", "slot" = FIREARM_SLOT_FURNITURE, "name" = "M1 Garand stock",
+			"desc" = "A wooden M1 Garand stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "m1carbine/action", "family" = "m1carbine", "slot" = FIREARM_SLOT_ACTION, "name" = "M1 Carbine bolt carrier",
+			"desc" = "The bolt carrier of a M1 Carbine rifle. Fits any M1 Carbine receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "m1carbine/barrel/762x33", "family" = "m1carbine", "slot" = FIREARM_SLOT_BARREL, "name" = "M1 Carbine barrel (7.62x33mm)",
+			"desc" = "A 7.62x33mm barrel for a M1 Carbine rifle. Pair it with a 7.62x33mm magazine.", "icon_state" = "Carbine Barrel", "caliber" = "a762x33"),
+		list("id" = "m1carbine/feed/762x33", "family" = "m1carbine", "slot" = FIREARM_SLOT_FEED, "name" = "M1 Carbine magazine well (7.62x33mm)",
+			"desc" = "A magazine well for M1 Carbine magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x33", "good_mags" = m1carbine_mags, "ammo_type" = /obj/item/ammo_casing/a762x33),
+		list("id" = "m1carbine/furniture/stock", "family" = "m1carbine", "slot" = FIREARM_SLOT_FURNITURE, "name" = "M1 Carbine stock",
+			"desc" = "A wooden M1 Carbine stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "avtomat/action", "family" = "avtomat", "slot" = FIREARM_SLOT_ACTION, "name" = "Fedorov bolt carrier",
+			"desc" = "The bolt carrier of a Fedorov rifle. Fits any Fedorov receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "avtomat/barrel/65x50", "family" = "avtomat", "slot" = FIREARM_SLOT_BARREL, "name" = "Fedorov barrel (6.5x50mm)",
+			"desc" = "A 6.5x50mm barrel for a Fedorov rifle. Pair it with a 6.5x50mm magazine.", "icon_state" = "Rifle Barrel", "caliber" = "a65x50"),
+		list("id" = "avtomat/feed/65x50", "family" = "avtomat", "slot" = FIREARM_SLOT_FEED, "name" = "Fedorov magazine well (6.5x50mm)",
+			"desc" = "A magazine well for Fedorov Avtomat magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a65x50", "good_mags" = avtomat_mags, "ammo_type" = /obj/item/ammo_casing/a65x50),
+		list("id" = "avtomat/furniture/stock", "family" = "avtomat", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Fedorov stock",
+			"desc" = "A wooden Fedorov Avtomat stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "vg5/action", "family" = "vg5", "slot" = FIREARM_SLOT_ACTION, "name" = "Volkssturmkarabiner bolt carrier",
+			"desc" = "The bolt carrier of a Volkssturmkarabiner rifle. Fits any Volkssturmkarabiner receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "vg5/barrel/792x33", "family" = "vg5", "slot" = FIREARM_SLOT_BARREL, "name" = "Volkssturmkarabiner barrel (7.92x33mm Kurz)",
+			"desc" = "A 7.92x33mm Kurz barrel for a Volkssturmkarabiner rifle. Pair it with a 7.92x33mm Kurz magazine.", "icon_state" = "Carbine Barrel", "caliber" = "a792x33"),
+		list("id" = "vg5/feed/792x33", "family" = "vg5", "slot" = FIREARM_SLOT_FEED, "name" = "Volkssturmkarabiner magazine well (7.92x33mm Kurz)",
+			"desc" = "A magazine well for StG 44 magazines and 7.92x33mm clips.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a792x33", "good_mags" = vg5_mags, "ammo_type" = /obj/item/ammo_casing/a792x33),
+		list("id" = "vg5/furniture/stock", "family" = "vg5", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Volkssturmkarabiner stock",
+			"desc" = "A plain wooden Volkssturmkarabiner stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "ptrs/action", "family" = "ptrs", "slot" = FIREARM_SLOT_ACTION, "name" = "PTRS bolt carrier",
+			"desc" = "The bolt carrier of a PTRS rifle. Fits any PTRS receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "ptrs/barrel/145", "family" = "ptrs", "slot" = FIREARM_SLOT_BARREL, "name" = "PTRS barrel (14.5x114mm)",
+			"desc" = "A 14.5x114mm barrel for a PTRS rifle. Pair it with a 14.5x114mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a145"),
+		list("id" = "ptrs/feed/145", "family" = "ptrs", "slot" = FIREARM_SLOT_FEED, "name" = "PTRS magazine (14.5x114mm)",
+			"desc" = "A fixed five-round magazine loaded from PTRS clips.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a145", "good_mags" = ptrs_clips, "ammo_type" = /obj/item/ammo_casing/a145),
+		list("id" = "ptrs/furniture/stock", "family" = "ptrs", "slot" = FIREARM_SLOT_FURNITURE, "name" = "PTRS stock",
+			"desc" = "The padded steel stock of a PTRS-41.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "svd/action", "family" = "svd", "slot" = FIREARM_SLOT_ACTION, "name" = "SVD bolt carrier",
+			"desc" = "The bolt carrier of a SVD rifle. Fits any SVD receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "svd/barrel/762x54", "family" = "svd", "slot" = FIREARM_SLOT_BARREL, "name" = "SVD barrel (7.62x54mmR)",
+			"desc" = "A 7.62x54mmR barrel for a SVD rifle. Pair it with a 7.62x54mmR magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a762x54"),
+		list("id" = "svd/feed/762x54", "family" = "svd", "slot" = FIREARM_SLOT_FEED, "name" = "SVD magazine well (7.62x54mmR)",
+			"desc" = "A magazine well for SVD magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x54", "good_mags" = svd_mags, "ammo_type" = /obj/item/ammo_casing/a762x54),
+		list("id" = "svd/furniture/stock", "family" = "svd", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SVD stock",
+			"desc" = "A wooden SVD thumbhole stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "vss/action", "family" = "vss", "slot" = FIREARM_SLOT_ACTION, "name" = "VSS bolt carrier",
+			"desc" = "The bolt carrier of a VSS rifle. Fits any VSS receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "vss/barrel/9x39", "family" = "vss", "slot" = FIREARM_SLOT_BARREL, "name" = "VSS barrel (9x39mm)",
+			"desc" = "A 9x39mm barrel for a VSS rifle. Pair it with a 9x39mm magazine.", "icon_state" = "Carbine Barrel", "caliber" = "a9x39"),
+		list("id" = "vss/feed/9x39", "family" = "vss", "slot" = FIREARM_SLOT_FEED, "name" = "VSS magazine well (9x39mm)",
+			"desc" = "A magazine well for VSS Vintorez magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x39", "good_mags" = vss_mags, "ammo_type" = /obj/item/ammo_casing/a9x39),
+		list("id" = "vss/furniture/stock", "family" = "vss", "slot" = FIREARM_SLOT_FURNITURE, "name" = "VSS stock",
+			"desc" = "A wooden VSS skeleton stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "m82/action", "family" = "m82", "slot" = FIREARM_SLOT_ACTION, "name" = "Barrett M82 bolt carrier",
+			"desc" = "The bolt carrier of a Barrett M82 rifle. Fits any Barrett M82 receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "m82/barrel/50cal", "family" = "m82", "slot" = FIREARM_SLOT_BARREL, "name" = "Barrett M82 barrel (.50 BMG)",
+			"desc" = "A .50 BMG barrel for a Barrett M82 rifle. Pair it with a .50 BMG magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a50cal"),
+		list("id" = "m82/feed/50cal", "family" = "m82", "slot" = FIREARM_SLOT_FEED, "name" = "Barrett M82 magazine well (.50 BMG)",
+			"desc" = "A magazine well for Barrett M82 magazines.", "icon_state" = "Large External Magazine_unloaded",
+			"caliber" = "a50cal", "good_mags" = m82_mags, "ammo_type" = barrett_rounds),
+		list("id" = "m82/furniture/stock", "family" = "m82", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Barrett M82 stock",
+			"desc" = "The steel stock of a Barrett M82.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "bamr/action", "family" = "bamr", "slot" = FIREARM_SLOT_ACTION, "name" = "BAMR bolt carrier",
+			"desc" = "The bolt carrier of a BAMR rifle. Fits any BAMR receiver.", "icon_state" = "Semi-Auto (large)"),
+		list("id" = "bamr/barrel/15115", "family" = "bamr", "slot" = FIREARM_SLOT_BARREL, "name" = "BAMR barrel (15x115mm)",
+			"desc" = "A 15x115mm barrel for a BAMR rifle. Pair it with a 15x115mm magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a15115"),
+		list("id" = "bamr/feed/15115", "family" = "bamr", "slot" = FIREARM_SLOT_FEED, "name" = "BAMR magazine well (15x115mm)",
+			"desc" = "A magazine well for BAMR magazines.", "icon_state" = "Large External Magazine_unloaded",
+			"caliber" = "a15115", "good_mags" = bamr_mags, "ammo_type" = bamr_rounds),
+		list("id" = "bamr/furniture/stock", "family" = "bamr", "slot" = FIREARM_SLOT_FURNITURE, "name" = "BAMR stock",
+			"desc" = "The steel stock of a BAMR.", "icon_state" = "Steel Stock", "ergonomics" = 1),
+		list("id" = "lever/action", "family" = "lever", "slot" = FIREARM_SLOT_ACTION, "name" = "lever action",
+			"desc" = "The lever of a Lever-action rifle. Fits any Lever-action receiver.", "icon_state" = "Bolt-Action"),
+		list("id" = "lever/barrel/44", "family" = "lever", "slot" = FIREARM_SLOT_BARREL, "name" = "Lever-action barrel (.44-40)",
+			"desc" = "A .44-40 barrel for a Lever-action rifle. Pair it with a .44-40 magazine.", "icon_state" = "Rifle Barrel", "caliber" = "a44"),
+		list("id" = "lever/barrel/357", "family" = "lever", "slot" = FIREARM_SLOT_BARREL, "name" = "Lever-action barrel (.357 Magnum)",
+			"desc" = "A .357 Magnum barrel for a Lever-action rifle. Pair it with a .357 Magnum magazine.", "icon_state" = "Carbine Barrel", "caliber" = "a357"),
+		list("id" = "lever/barrel/4570", "family" = "lever", "slot" = FIREARM_SLOT_BARREL, "name" = "Lever-action barrel (.45-70)",
+			"desc" = "A .45-70 barrel for a Lever-action rifle. Pair it with a .45-70 magazine.", "icon_state" = "Long Rifle Barrel", "caliber" = "a4570"),
+		list("id" = "lever/feed/44", "family" = "lever", "slot" = FIREARM_SLOT_FEED, "name" = "Lever-action tube magazine (.44-40)",
+			"desc" = "A tube magazine under the barrel, loaded a round at a time. Its length stays with the rifle.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a44", "ammo_type" = /obj/item/ammo_casing/a44),
+		list("id" = "lever/feed/357", "family" = "lever", "slot" = FIREARM_SLOT_FEED, "name" = "Lever-action tube magazine (.357 Magnum)",
+			"desc" = "A tube magazine under the barrel, loaded a round at a time. Its length stays with the rifle.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a357", "ammo_type" = /obj/item/ammo_casing/a357),
+		list("id" = "lever/feed/4570", "family" = "lever", "slot" = FIREARM_SLOT_FEED, "name" = "Lever-action tube magazine (.45-70)",
+			"desc" = "A tube magazine under the barrel, loaded a round at a time. Its length stays with the rifle.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a4570", "ammo_type" = /obj/item/ammo_casing/a4570),
+		list("id" = "lever/furniture/stock", "family" = "lever", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Lever-action stock",
+			"desc" = "A wooden lever-action rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -316,6 +464,23 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"ptrd" = list(FIREARM_SLOT_ACTION = "ptrd/action", FIREARM_SLOT_BARREL = "ptrd/barrel/145", FIREARM_SLOT_FEED = "ptrd/feed/145", FIREARM_SLOT_FURNITURE = "ptrd/furniture/stock"),
 		"pzb" = list(FIREARM_SLOT_ACTION = "pzb/action", FIREARM_SLOT_BARREL = "pzb/barrel/792x94", FIREARM_SLOT_FEED = "pzb/feed/792x94", FIREARM_SLOT_FURNITURE = "pzb/furniture/stock"),
 		"barrett" = list(FIREARM_SLOT_ACTION = "barrett/action", FIREARM_SLOT_BARREL = "barrett/barrel/50cal", FIREARM_SLOT_FEED = "barrett/feed/50cal", FIREARM_SLOT_FURNITURE = "barrett/furniture/stock"),
+		"sks" = list(FIREARM_SLOT_ACTION = "sks/action", FIREARM_SLOT_BARREL = "sks/barrel/762x39", FIREARM_SLOT_FEED = "sks/feed/762x39", FIREARM_SLOT_FURNITURE = "sks/furniture/stock"),
+		"sksm" = list(FIREARM_SLOT_ACTION = "sks/action", FIREARM_SLOT_BARREL = "sks/barrel/762x39", FIREARM_SLOT_FEED = "sks/feed/762x39_detachable", FIREARM_SLOT_FURNITURE = "sks/furniture/stock"),
+		"gewehr41" = list(FIREARM_SLOT_ACTION = "gewehr43/action", FIREARM_SLOT_BARREL = "gewehr43/barrel/792x57", FIREARM_SLOT_FEED = "gewehr43/feed/792x57", FIREARM_SLOT_FURNITURE = "gewehr43/furniture/stock"),
+		"gewehr43" = list(FIREARM_SLOT_ACTION = "gewehr43/action", FIREARM_SLOT_BARREL = "gewehr43/barrel/792x57", FIREARM_SLOT_FEED = "gewehr43/feed/792x57_detachable", FIREARM_SLOT_FURNITURE = "gewehr43/furniture/stock"),
+		"svt" = list(FIREARM_SLOT_ACTION = "svt/action", FIREARM_SLOT_BARREL = "svt/barrel/762x54", FIREARM_SLOT_FEED = "svt/feed/762x54", FIREARM_SLOT_FURNITURE = "svt/furniture/stock"),
+		"garand" = list(FIREARM_SLOT_ACTION = "garand/action", FIREARM_SLOT_BARREL = "garand/barrel/3006", FIREARM_SLOT_FEED = "garand/feed/3006", FIREARM_SLOT_FURNITURE = "garand/furniture/stock"),
+		"m1carbine" = list(FIREARM_SLOT_ACTION = "m1carbine/action", FIREARM_SLOT_BARREL = "m1carbine/barrel/762x33", FIREARM_SLOT_FEED = "m1carbine/feed/762x33", FIREARM_SLOT_FURNITURE = "m1carbine/furniture/stock"),
+		"avtomat" = list(FIREARM_SLOT_ACTION = "avtomat/action", FIREARM_SLOT_BARREL = "avtomat/barrel/65x50", FIREARM_SLOT_FEED = "avtomat/feed/65x50", FIREARM_SLOT_FURNITURE = "avtomat/furniture/stock"),
+		"vg5" = list(FIREARM_SLOT_ACTION = "vg5/action", FIREARM_SLOT_BARREL = "vg5/barrel/792x33", FIREARM_SLOT_FEED = "vg5/feed/792x33", FIREARM_SLOT_FURNITURE = "vg5/furniture/stock"),
+		"ptrs" = list(FIREARM_SLOT_ACTION = "ptrs/action", FIREARM_SLOT_BARREL = "ptrs/barrel/145", FIREARM_SLOT_FEED = "ptrs/feed/145", FIREARM_SLOT_FURNITURE = "ptrs/furniture/stock"),
+		"svd" = list(FIREARM_SLOT_ACTION = "svd/action", FIREARM_SLOT_BARREL = "svd/barrel/762x54", FIREARM_SLOT_FEED = "svd/feed/762x54", FIREARM_SLOT_FURNITURE = "svd/furniture/stock"),
+		"vss" = list(FIREARM_SLOT_ACTION = "vss/action", FIREARM_SLOT_BARREL = "vss/barrel/9x39", FIREARM_SLOT_FEED = "vss/feed/9x39", FIREARM_SLOT_FURNITURE = "vss/furniture/stock"),
+		"m82" = list(FIREARM_SLOT_ACTION = "m82/action", FIREARM_SLOT_BARREL = "m82/barrel/50cal", FIREARM_SLOT_FEED = "m82/feed/50cal", FIREARM_SLOT_FURNITURE = "m82/furniture/stock"),
+		"bamr" = list(FIREARM_SLOT_ACTION = "bamr/action", FIREARM_SLOT_BARREL = "bamr/barrel/15115", FIREARM_SLOT_FEED = "bamr/feed/15115", FIREARM_SLOT_FURNITURE = "bamr/furniture/stock"),
+		"lever_44" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/44", FIREARM_SLOT_FEED = "lever/feed/44", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
+		"lever_4570" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/4570", FIREARM_SLOT_FEED = "lever/feed/4570", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
+		"lever_357" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/357", FIREARM_SLOT_FEED = "lever/feed/357", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
@@ -337,17 +502,33 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"ptrd_receiver" = list(),
 		"pzb_receiver" = list(),
 		"barrett_receiver" = list(),
+		"sks_receiver" = list(),
+		"gewehr43_receiver" = list(),
+		"svt_receiver" = list(),
+		"garand_receiver" = list(),
+		"m1carbine_receiver" = list(),
+		"avtomat_receiver" = list(),
+		"vg5_receiver" = list(),
+		"ptrs_receiver" = list(),
+		"svd_receiver" = list(),
+		"vss_receiver" = list(),
+		"m82_receiver" = list(),
+		"bamr_receiver" = list(),
+		"lever_receiver" = list(),
 	)
 
 var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
 	"enfield" = "Lee-Enfield", "springfield" = "Springfield", "lebel" = "Lebel", "berthier" = "Berthier", "carcano" = "Carcano",
 	"murata" = "Murata", "berdan" = "Berdan", "vg" = "Volkssturmgewehr", "m24" = "M24", "sharps" = "Sharps", "rollingblock" = "Rolling-block",
-	"martini" = "Martini-Henry", "ptrd" = "PTRD", "pzb" = "PzB", "barrett" = "Barrett")
+	"martini" = "Martini-Henry", "ptrd" = "PTRD", "pzb" = "PzB", "barrett" = "Barrett",
+	"sks" = "SKS", "gewehr43" = "Gewehr 41/43", "svt" = "SVT", "garand" = "M1 Garand", "m1carbine" = "M1 Carbine", "avtomat" = "Fedorov",
+	"vg5" = "Volkssturmkarabiner", "ptrs" = "PTRS", "svd" = "SVD", "vss" = "VSS", "m82" = "Barrett M82", "bamr" = "BAMR", "lever" = "Lever-action")
 var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
 	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
 	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm", "a303" = ".303 British", "a3006" = ".30-06", "a8x50" = "8x50mmR",
 	"a65x52" = "6.5x52mm", "a8x53" = "8x53mm", "a792x33" = "7.92x33mm Kurz", "a762x51" = "7.62x51mm", "a4570" = ".45-70",
-	"a43" = ".43 Spanish", "a577" = ".577/450", "a145" = "14.5x114mm", "a792x94" = "7.92x94mm", "a50cal" = ".50 BMG")
+	"a43" = ".43 Spanish", "a577" = ".577/450", "a145" = "14.5x114mm", "a792x94" = "7.92x94mm", "a50cal" = ".50 BMG",
+	"a762x33" = "7.62x33mm", "a9x39" = "9x39mm", "a15115" = "15x115mm", "a44" = ".44-40", "a357" = ".357 Magnum")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -487,6 +668,64 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 /obj/item/weapon/gun/projectile/boltaction/singleshot/barrett
 	firearm_family = "barrett"
 	firearm_preset = "barrett"
+/obj/item/weapon/gun/projectile/semiautomatic/sks
+	firearm_family = "sks"
+	firearm_preset = "sks"
+/obj/item/weapon/gun/projectile/semiautomatic/sks/sksm
+	firearm_preset = "sksm"
+/obj/item/weapon/gun/projectile/semiautomatic/g41
+	firearm_family = "gewehr43"
+	firearm_preset = "gewehr41"
+/obj/item/weapon/gun/projectile/semiautomatic/g43
+	firearm_family = "gewehr43"
+	firearm_preset = "gewehr43"
+/obj/item/weapon/gun/projectile/semiautomatic/svt
+	firearm_family = "svt"
+	firearm_preset = "svt"
+/obj/item/weapon/gun/projectile/semiautomatic/m1garand
+	firearm_family = "garand"
+	firearm_preset = "garand"
+/obj/item/weapon/gun/projectile/semiautomatic/m1carbine
+	firearm_family = "m1carbine"
+	firearm_preset = "m1carbine"
+/obj/item/weapon/gun/projectile/semiautomatic/avtomat
+	firearm_family = "avtomat"
+	firearm_preset = "avtomat"
+/obj/item/weapon/gun/projectile/semiautomatic/vg5
+	firearm_family = "vg5"
+	firearm_preset = "vg5"
+/obj/item/weapon/gun/projectile/semiautomatic/ptrs
+	firearm_family = "ptrs"
+	firearm_preset = "ptrs"
+/obj/item/weapon/gun/projectile/semiautomatic/svd
+	firearm_family = "svd"
+	firearm_preset = "svd"
+/obj/item/weapon/gun/projectile/semiautomatic/vintorez
+	firearm_family = "vss"
+	firearm_preset = "vss"
+/obj/item/weapon/gun/projectile/semiautomatic/barrett
+	firearm_family = "m82"
+	firearm_preset = "m82"
+/obj/item/weapon/gun/projectile/semiautomatic/bamr
+	firearm_family = "bamr"
+	firearm_preset = "bamr"
+/obj/item/weapon/gun/projectile/leveraction
+	firearm_family = "lever"
+	firearm_preset = "lever_44"
+/obj/item/weapon/gun/projectile/leveraction/winchesterm1886
+	firearm_preset = "lever_4570"
+/obj/item/weapon/gun/projectile/leveraction/cowboy_repeater
+	firearm_preset = "lever_357"
+// The semi-automatic AR-15 and MK-18 take AR parts; the MK-18's own magazines are STANAG.
+/obj/item/weapon/gun/projectile/semiautomatic/ar15
+	firearm_family = "ar"
+	firearm_preset = "ar_rifle"
+/obj/item/weapon/gun/projectile/special/mk18
+	firearm_family = "ar"
+	firearm_preset = "ar_carbine"
+/obj/item/weapon/gun/projectile/special/ak74mtactical
+	firearm_family = "ak"
+	firearm_preset = "aks74"
 // The makeshift bolt is a crude one-off build with no standard parts.
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	firearm_family = null
@@ -644,6 +883,123 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_preset = "barrett_receiver"
 	firearm_named_by_parts = TRUE
 
+/obj/item/weapon/gun/projectile/semiautomatic/sks/receiver
+	name = "SKS receiver"
+	desc = "A bare SKS receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "sks"
+	firearm_preset = "sks_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/g43/receiver
+	name = "Gewehr 41/43 receiver"
+	desc = "A bare Gewehr 41/43 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "gewehr43"
+	firearm_preset = "gewehr43_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/svt/receiver
+	name = "SVT receiver"
+	desc = "A bare SVT receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "svt"
+	firearm_preset = "svt_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/m1garand/receiver
+	name = "M1 Garand receiver"
+	desc = "A bare M1 Garand receiver. Fit an operating rod and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "garand"
+	firearm_preset = "garand_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/m1carbine/receiver
+	name = "M1 Carbine receiver"
+	desc = "A bare M1 Carbine receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "m1carbine"
+	firearm_preset = "m1carbine_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/avtomat/receiver
+	name = "Fedorov receiver"
+	desc = "A bare Fedorov receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "avtomat"
+	firearm_preset = "avtomat_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/vg5/receiver
+	name = "Volkssturmkarabiner receiver"
+	desc = "A bare Volkssturmkarabiner receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "vg5"
+	firearm_preset = "vg5_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/ptrs/receiver
+	name = "PTRS receiver"
+	desc = "A bare PTRS receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "ptrs"
+	firearm_preset = "ptrs_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/svd/receiver
+	name = "SVD receiver"
+	desc = "A bare SVD receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "svd"
+	firearm_preset = "svd_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/vintorez/receiver
+	name = "VSS receiver"
+	desc = "A bare VSS receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "vss"
+	firearm_preset = "vss_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/barrett/receiver
+	name = "Barrett M82 receiver"
+	desc = "A bare Barrett M82 receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "m82"
+	firearm_preset = "m82_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/semiautomatic/bamr/receiver
+	name = "BAMR receiver"
+	desc = "A bare BAMR receiver. Fit a bolt carrier and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "bamr"
+	firearm_preset = "bamr_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/leveraction/receiver
+	name = "Lever-action receiver"
+	desc = "A bare Lever-action receiver. Fit a lever and barrel at a firearm bench, then a magazine and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "lever"
+	firearm_preset = "lever_receiver"
+	firearm_named_by_parts = TRUE
+
 /obj/item/weapon/gun
 	var/firearm_family = null
 	var/firearm_preset = null
@@ -719,7 +1075,9 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 			G.ammo_type = rounds.Copy()
 		else if (feed.ammo_type)
 			G.ammo_type = feed.ammo_type
-		G.max_shells = feed.capacity ? feed.capacity : initial(G.max_shells)
+		G.max_shells = isnull(feed.capacity) ? initial(G.max_shells) : feed.capacity
+		G.load_method = isnull(feed.load_method) ? initial(G.load_method) : feed.load_method
+		G.cliploader = isnull(feed.cliploader) ? initial(G.cliploader) : feed.cliploader
 	if (firearm_named_by_parts)
 		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
@@ -1295,4 +1653,120 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	component_id = "barrett/feed/50cal"
 /obj/item/weapon/gun_component/barrett_furniture_stock
 	component_id = "barrett/furniture/stock"
+/obj/item/weapon/gun_component/sks_action
+	component_id = "sks/action"
+/obj/item/weapon/gun_component/sks_barrel_762x39
+	component_id = "sks/barrel/762x39"
+/obj/item/weapon/gun_component/sks_feed_762x39
+	component_id = "sks/feed/762x39"
+/obj/item/weapon/gun_component/sks_feed_762x39_detachable
+	component_id = "sks/feed/762x39_detachable"
+/obj/item/weapon/gun_component/sks_furniture_stock
+	component_id = "sks/furniture/stock"
+/obj/item/weapon/gun_component/gewehr43_action
+	component_id = "gewehr43/action"
+/obj/item/weapon/gun_component/gewehr43_barrel_792x57
+	component_id = "gewehr43/barrel/792x57"
+/obj/item/weapon/gun_component/gewehr43_feed_792x57
+	component_id = "gewehr43/feed/792x57"
+/obj/item/weapon/gun_component/gewehr43_feed_792x57_detachable
+	component_id = "gewehr43/feed/792x57_detachable"
+/obj/item/weapon/gun_component/gewehr43_furniture_stock
+	component_id = "gewehr43/furniture/stock"
+/obj/item/weapon/gun_component/svt_action
+	component_id = "svt/action"
+/obj/item/weapon/gun_component/svt_barrel_762x54
+	component_id = "svt/barrel/762x54"
+/obj/item/weapon/gun_component/svt_feed_762x54
+	component_id = "svt/feed/762x54"
+/obj/item/weapon/gun_component/svt_furniture_stock
+	component_id = "svt/furniture/stock"
+/obj/item/weapon/gun_component/garand_action
+	component_id = "garand/action"
+/obj/item/weapon/gun_component/garand_barrel_3006
+	component_id = "garand/barrel/3006"
+/obj/item/weapon/gun_component/garand_feed_3006
+	component_id = "garand/feed/3006"
+/obj/item/weapon/gun_component/garand_furniture_stock
+	component_id = "garand/furniture/stock"
+/obj/item/weapon/gun_component/m1carbine_action
+	component_id = "m1carbine/action"
+/obj/item/weapon/gun_component/m1carbine_barrel_762x33
+	component_id = "m1carbine/barrel/762x33"
+/obj/item/weapon/gun_component/m1carbine_feed_762x33
+	component_id = "m1carbine/feed/762x33"
+/obj/item/weapon/gun_component/m1carbine_furniture_stock
+	component_id = "m1carbine/furniture/stock"
+/obj/item/weapon/gun_component/avtomat_action
+	component_id = "avtomat/action"
+/obj/item/weapon/gun_component/avtomat_barrel_65x50
+	component_id = "avtomat/barrel/65x50"
+/obj/item/weapon/gun_component/avtomat_feed_65x50
+	component_id = "avtomat/feed/65x50"
+/obj/item/weapon/gun_component/avtomat_furniture_stock
+	component_id = "avtomat/furniture/stock"
+/obj/item/weapon/gun_component/vg5_action
+	component_id = "vg5/action"
+/obj/item/weapon/gun_component/vg5_barrel_792x33
+	component_id = "vg5/barrel/792x33"
+/obj/item/weapon/gun_component/vg5_feed_792x33
+	component_id = "vg5/feed/792x33"
+/obj/item/weapon/gun_component/vg5_furniture_stock
+	component_id = "vg5/furniture/stock"
+/obj/item/weapon/gun_component/ptrs_action
+	component_id = "ptrs/action"
+/obj/item/weapon/gun_component/ptrs_barrel_145
+	component_id = "ptrs/barrel/145"
+/obj/item/weapon/gun_component/ptrs_feed_145
+	component_id = "ptrs/feed/145"
+/obj/item/weapon/gun_component/ptrs_furniture_stock
+	component_id = "ptrs/furniture/stock"
+/obj/item/weapon/gun_component/svd_action
+	component_id = "svd/action"
+/obj/item/weapon/gun_component/svd_barrel_762x54
+	component_id = "svd/barrel/762x54"
+/obj/item/weapon/gun_component/svd_feed_762x54
+	component_id = "svd/feed/762x54"
+/obj/item/weapon/gun_component/svd_furniture_stock
+	component_id = "svd/furniture/stock"
+/obj/item/weapon/gun_component/vss_action
+	component_id = "vss/action"
+/obj/item/weapon/gun_component/vss_barrel_9x39
+	component_id = "vss/barrel/9x39"
+/obj/item/weapon/gun_component/vss_feed_9x39
+	component_id = "vss/feed/9x39"
+/obj/item/weapon/gun_component/vss_furniture_stock
+	component_id = "vss/furniture/stock"
+/obj/item/weapon/gun_component/m82_action
+	component_id = "m82/action"
+/obj/item/weapon/gun_component/m82_barrel_50cal
+	component_id = "m82/barrel/50cal"
+/obj/item/weapon/gun_component/m82_feed_50cal
+	component_id = "m82/feed/50cal"
+/obj/item/weapon/gun_component/m82_furniture_stock
+	component_id = "m82/furniture/stock"
+/obj/item/weapon/gun_component/bamr_action
+	component_id = "bamr/action"
+/obj/item/weapon/gun_component/bamr_barrel_15115
+	component_id = "bamr/barrel/15115"
+/obj/item/weapon/gun_component/bamr_feed_15115
+	component_id = "bamr/feed/15115"
+/obj/item/weapon/gun_component/bamr_furniture_stock
+	component_id = "bamr/furniture/stock"
+/obj/item/weapon/gun_component/lever_action
+	component_id = "lever/action"
+/obj/item/weapon/gun_component/lever_barrel_44
+	component_id = "lever/barrel/44"
+/obj/item/weapon/gun_component/lever_barrel_357
+	component_id = "lever/barrel/357"
+/obj/item/weapon/gun_component/lever_barrel_4570
+	component_id = "lever/barrel/4570"
+/obj/item/weapon/gun_component/lever_feed_44
+	component_id = "lever/feed/44"
+/obj/item/weapon/gun_component/lever_feed_357
+	component_id = "lever/feed/357"
+/obj/item/weapon/gun_component/lever_feed_4570
+	component_id = "lever/feed/4570"
+/obj/item/weapon/gun_component/lever_furniture_stock
+	component_id = "lever/furniture/stock"
 #undef FIREARM_BARREL_LIFE
