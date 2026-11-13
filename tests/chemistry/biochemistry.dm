@@ -534,6 +534,19 @@
 	chemistry_assert(eater.water == 100, "Seawater quenched thirst")
 	soup_water.affect_ingest(eater, null, 2)
 	chemistry_assert(eater.water > 100, "Lightly salted water did not quench thirst")
+	eater.lastpuke = FALSE
+	var/early = 0
+	var/late = 0
+	sea_water.dose = SEAWATER_NAUSEA_DOSE - 1
+	for (var/i in 1 to 200)
+		early += sea_water.brine_nausea(eater)
+	sea_water.dose = SEAWATER_NAUSEA_DOSE
+	for (var/i in 1 to 200)
+		late += sea_water.brine_nausea(eater)
+	chemistry_assert(!early, "A few sips of seawater caused vomiting")
+	chemistry_assert(late, "Chugging seawater never caused vomiting")
+	eater.lastpuke = TRUE
+	chemistry_assert(!sea_water.brine_nausea(eater), "Seawater vomiting ignored the vomit cooldown")
 	qdel(sea)
 	qdel(soup)
 	qdel(salt)

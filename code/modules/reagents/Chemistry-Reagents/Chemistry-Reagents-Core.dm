@@ -66,10 +66,22 @@
 			L.adjust_fire_stacks(-(amount / 10))
 			remove_self(amount)
 
+// Units of seawater or brine drunk in one go before the stomach starts to turn.
+#define SEAWATER_NAUSEA_DOSE 20
+#define SEAWATER_VOMIT_CHANCE 10
+
 /datum/reagent/water/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (reagents_are_brine(holder, volume)) // seawater and brine do not quench thirst
+		brine_nausea(M)
 		return
 	..()
+
+// Chugging seawater eventually makes you throw up. Returns TRUE when it does.
+/datum/reagent/water/proc/brine_nausea(var/mob/living/human/M)
+	if (!istype(M) || M.lastpuke || dose < SEAWATER_NAUSEA_DOSE || !prob(SEAWATER_VOMIT_CHANCE))
+		return FALSE
+	M.vomit()
+	return TRUE
 
 /datum/reagent/water/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (M.water < 0)
