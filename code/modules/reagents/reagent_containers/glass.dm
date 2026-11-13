@@ -53,7 +53,7 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		to_chat(user, SPAN_NOTICE("the airtight lid seals it completely!"))
 
 /obj/item/weapon/reagent_containers/glass/self_feed_message(var/mob/user)
-	user.visible_message("<span class='notice'>[src] drinks from \the [src].</span>", "<span class='notice'>You swallow a gulp from \the [src].</span>") // Different perspectives from different point of views of the 	clients.
+	user.visible_message("<span class='notice'>[user] drinks from \the [src].</span>", "<span class='notice'>You swallow a gulp from \the [src].</span>") // Different perspectives from different point of views of the 	clients.
 
 /obj/item/weapon/reagent_containers/glass/feed_sound(var/mob/user)
 	playsound(user.loc, "drink", rand(10, 50), TRUE)

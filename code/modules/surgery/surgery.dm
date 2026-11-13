@@ -107,58 +107,66 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 	var/zone = user.targeted_organ
 	if (user.targeted_organ == "random")
 		zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	// Aiming an open drink at your own mouth always means drinking, never surgery.
+	if (M == user && zone == "mouth" && istype(tool, /obj/item/weapon/reagent_containers) && tool.is_open_container())
+		return FALSE
 	if (zone in M.op_stage.in_progress) //Can't operate on someone repeatedly.
 		to_chat(user, "<span class='warning'>You can't operate on this area while surgery is already in progress.</span>")
 		return TRUE
 	for (var/datum/surgery_step/S in surgery_steps)
 		//check if tool is right or close enough and if this step is possible
-		if (S.tool_quality(tool, user) > 50)
-			var/step_is_valid = S.can_use(user, M, zone, tool)
-			if (step_is_valid && S.is_valid_target(M))
-				if (step_is_valid == SURGERY_FAILURE) // This is a failure that already has a message for failing.
-					return TRUE
-				M.op_stage.in_progress += zone
-				S.begin_step(user, M, zone, tool)		//start on it
-				//We had proper tools! (or RNG smiled.) and user did not move or change hands.
-				if (prob(S.tool_quality(tool, user)))
-					if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
-						S.end_step(user, M, zone, tool)		//finish successfully
-						note_field_work(user, "surgery")
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							var/mod = 1
-							if (user.religious_clergy == "Shamans")
-								mod = 2
-							H.adaptStat("medical", 1.5*mod)
-						M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
-					else
-						if (M)
-							M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
-				else
-					if (user.Adjacent(M) && (tool in user.contents))			//or
-						// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov
-						S.fail_step(user, M, zone, tool)		//malpractice
-					else
-						if (!(tool in user.contents))
-							to_chat(user, "<span class='warning'>You stop the surgery.</span>")
-							if (prob(5))
-								S.fail_step(user, M, zone, tool)
-						else if (!user.Adjacent(M))
-							to_chat(user, "<span class='warning'>You must remain close to your patient to conduct surgery.</span>")
-							if (prob(15))
-								S.fail_step(user, M, zone, tool)
-						else // This failing silently was a pain.
-							to_chat(user, "<span class='warning'>Your hand slips!</span>")
-							if (prob(8))
-								S.fail_step(user, M, zone, tool)
-					M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
-					if (ishuman(M))
-						var/mob/living/human/H = M
-						H.update_surgery()
-				return	TRUE	  												//don't want to do weapony things after surgery
-		else if (S.tool_quality(tool, user) > 0 && S.tool_quality(tool, user) <= 50)
+		var/quality = S.tool_quality(tool, user)
+		if (quality <= 0)
+			continue
+		// Only steps that actually apply here may claim the click, so an ordinary
+		// use such as drinking from a bucket is not blocked by an unrelated step.
+		var/step_is_valid = S.can_use(user, M, zone, tool)
+		if (!step_is_valid || !S.is_valid_target(M))
+			continue
+		if (step_is_valid == SURGERY_FAILURE) // This is a failure that already has a message for failing.
+			return TRUE
+		if (quality <= 50)
 			to_chat(user, "You are not skilled enough to perform this surgery step with \the [tool].")
 			return TRUE
+		M.op_stage.in_progress += zone
+		S.begin_step(user, M, zone, tool)		//start on it
+		//We had proper tools! (or RNG smiled.) and user did not move or change hands.
+		if (prob(S.tool_quality(tool, user)))
+			if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
+				S.end_step(user, M, zone, tool)		//finish successfully
+				note_field_work(user, "surgery")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					var/mod = 1
+					if (user.religious_clergy == "Shamans")
+						mod = 2
+					H.adaptStat("medical", 1.5*mod)
+				M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
+			else
+				if (M)
+					M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
+		else
+			if (user.Adjacent(M) && (tool in user.contents))			//or
+				// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov
+				S.fail_step(user, M, zone, tool)		//malpractice
+			else
+				if (!(tool in user.contents))
+					to_chat(user, "<span class='warning'>You stop the surgery.</span>")
+					if (prob(5))
+						S.fail_step(user, M, zone, tool)
+				else if (!user.Adjacent(M))
+					to_chat(user, "<span class='warning'>You must remain close to your patient to conduct surgery.</span>")
+					if (prob(15))
+						S.fail_step(user, M, zone, tool)
+				else // This failing silently was a pain.
+					to_chat(user, "<span class='warning'>Your hand slips!</span>")
+					if (prob(8))
+						S.fail_step(user, M, zone, tool)
+			M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
+			if (ishuman(M))
+				var/mob/living/human/H = M
+				H.update_surgery()
+		return	TRUE	  												//don't want to do weapony things after surgery
 	return FALSE
 
 proc/sort_surgeries()
