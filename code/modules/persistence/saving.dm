@@ -177,11 +177,15 @@
 			saving_segments = low_memory ? new /datum/level_segment_writer(src, savefile, "map_saves/[A].sav", A, generation, segment_budget()) : null
 		var/list/turf_grid = handover_turfs ? list() : null
 		if(turf_grid) handover_turfs["[A]"] = turf_grid
+		// A sleeping open-air cell of a building level (building_lighting.dm) was
+		// never constructed or woken, so it is the baseline without the field
+		// comparison that cost an empty Gaia level several seconds per save.
+		var/cell_asleep = sparse_kind == "building" ? text2path("/proc/building_cell_asleep") : null
 		// Visit each coordinate once, without rescanning other levels.
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf/T = locate(x, y, A)
-				if(sparse_turf && sparse_baseline_cell(T, sparse_turf, sparse_area))
+				if(sparse_turf && ((cell_asleep && T.type == sparse_turf && T.loc == sparse_area && !T.contents.len && call(cell_asleep)(T)) || sparse_baseline_cell(T, sparse_turf, sparse_area)))
 					if(turf_grid) turf_grid += sparse_turf
 					// A zone with no saved turf (an untouched sky level) still
 					// needs an anchor cell, or its area row is never written.

@@ -1124,12 +1124,18 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	var/work = 0
 	// Native category scans avoid unrelated atoms without caching membership.
 	if (ispath(atom_type, /turf))
-		for (var/turf/T in world)
-			work++
-			if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
-				return null
-			if (istype(T, atom_type) && !T.gcDestroyed)
-				candidates += T
+		// Level by level: an added building level that is still all open air
+		// (building_lighting.dm) holds no ground turf and is not walked.
+		var/only_sky = ispath(atom_type, /turf/sky) ? null : text2path("/proc/building_level_only_sky")
+		for (var/z = 1 to world.maxz)
+			if (only_sky && call(only_sky)(z))
+				continue
+			for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+				work++
+				if (!(work % 64) && !season_work_pause(epoch, work, TRUE))
+					return null
+				if (istype(T, atom_type) && !T.gcDestroyed)
+					candidates += T
 	else if (ispath(atom_type, /obj))
 		for (var/obj/O in world)
 			work++

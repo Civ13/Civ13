@@ -395,7 +395,7 @@
       "code/game/mob/groups/factions.dm": 1,
       "code/game/mob/living/simple_animal/simple_animal.dm": 1,
       "code/game/mob/mob.dm": 1,
-      "code/game/objects/map_metadata/_map_metadata.dm": 4,
+      "code/game/objects/map_metadata/_map_metadata.dm": 3,
       "code/game/objects/map_metadata/bank_robbery.dm": 5,
       "code/game/objects/map_metadata/colonia.dm": 10,
       "code/game/objects/map_metadata/elaia.dm": 1,
