@@ -797,24 +797,7 @@
 	crushable = FALSE
 
 /obj/structure/barricade/jap/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/barricade/jap/can_join_with(var/atom/W)
 	if (istype(W,src))

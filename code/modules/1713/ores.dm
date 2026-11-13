@@ -28,17 +28,7 @@
 		process_radioactivity()
 
 /obj/item/stack/ore/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 12)
-			icon_suffix = ""
-		if (13 to 24)
-			icon_suffix = "_2"
-		if (25 to 36)
-			icon_suffix = "_3"
-		if (37 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "[initial(icon_state)][icon_suffix]"
+	icon_state = "[initial(icon_state)][pile_suffix(amount, list(13, 25, 37))]"
 
 /obj/item/stack/ore/iron
 	name = "iron ore"

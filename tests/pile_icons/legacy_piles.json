@@ -1,0 +1,176 @@
+[
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/iron",
+  "original": "/obj/item/stack/material/iron/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-iron[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/iron/update_icon()\n\ticon_state = \"sheet-iron[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/bronze",
+  "original": "/obj/item/stack/material/bronze/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-bronze[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/bronze/update_icon()\n\ticon_state = \"sheet-bronze[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/zinc",
+  "original": "/obj/item/stack/material/zinc/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-tin[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/zinc/update_icon()\n\ticon_state = \"sheet-tin[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/brass",
+  "original": "/obj/item/stack/material/brass/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-tin[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/brass/update_icon()\n\ticon_state = \"sheet-tin[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/copper",
+  "original": "/obj/item/stack/material/copper/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-copper[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/copper/update_icon()\n\ticon_state = \"sheet-copper[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/tin",
+  "original": "/obj/item/stack/material/tin/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-tin[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/tin/update_icon()\n\ticon_state = \"sheet-tin[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/plastic",
+  "original": "/obj/item/stack/material/plastic/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-plastic[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/plastic/update_icon()\n\ticon_state = \"sheet-plastic[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/lead",
+  "original": "/obj/item/stack/material/lead/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-lead[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/lead/update_icon()\n\ticon_state = \"sheet-lead[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/sandstone",
+  "original": "/obj/item/stack/material/sandstone/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 16)\n\t\t\ticon_suffix = \"\"\n\t\tif (17 to 32)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (33 to INFINITY)\n\t\t\ticon_suffix = \"_3\"\n\ticon_state = \"sheet-sandstone[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/sandstone/update_icon()\n\ticon_state = \"sheet-sandstone[pile_suffix(amount, list(17, 33))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/clay",
+  "original": "/obj/item/stack/material/clay/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"claylump[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/clay/update_icon()\n\ticon_state = \"claylump[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/marble",
+  "original": "/obj/item/stack/material/marble/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 16)\n\t\t\ticon_suffix = \"\"\n\t\tif (17 to 33)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (34 to INFINITY)\n\t\t\ticon_suffix = \"_3\"\n\ticon_state = \"sheet-marble[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/marble/update_icon()\n\ticon_state = \"sheet-marble[pile_suffix(amount, list(17, 34))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/gold",
+  "original": "/obj/item/stack/material/gold/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-gold[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/gold/update_icon()\n\ticon_state = \"sheet-gold[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/silver",
+  "original": "/obj/item/stack/material/silver/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-silver[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/silver/update_icon()\n\ticon_state = \"sheet-silver[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/steel",
+  "original": "/obj/item/stack/material/steel/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-metal[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/steel/update_icon()\n\ticon_state = \"sheet-metal[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/wood",
+  "original": "/obj/item/stack/material/wood/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"logs[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/wood/update_icon()\n\ticon_state = \"logs[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/cloth",
+  "original": "/obj/item/stack/material/cloth/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-cloth[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/cloth/update_icon()\n\ticon_state = \"sheet-cloth[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/leather",
+  "original": "/obj/item/stack/material/leather/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 16)\n\t\t\ticon_suffix = \"\"\n\t\tif (17 to 33)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (34 to INFINITY)\n\t\t\ticon_suffix = \"_3\"\n\ticon_state = \"sheet-leather[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/leather/update_icon()\n\ticon_state = \"sheet-leather[pile_suffix(amount, list(17, 34))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/glass",
+  "original": "/obj/item/stack/material/glass/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-glass[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/glass/update_icon()\n\ticon_state = \"sheet-glass[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/materials/material_sheets.dm",
+  "type": "/obj/item/stack/material/glass/reinforced",
+  "original": "/obj/item/stack/material/glass/reinforced/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (0 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 25)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (26 to 38)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (39 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"sheet-rglass[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/material/glass/reinforced/update_icon()\n\ticon_state = \"sheet-rglass[pile_suffix(amount, list(13, 26, 39))]\"\n"
+ },
+ {
+  "file": "code/modules/1713/ores.dm",
+  "type": "/obj/item/stack/ore",
+  "original": "/obj/item/stack/ore/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 12)\n\t\t\ticon_suffix = \"\"\n\t\tif (13 to 24)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (25 to 36)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (37 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"[initial(icon_state)][icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/ore/update_icon()\n\ticon_state = \"[initial(icon_state)][pile_suffix(amount, list(13, 25, 37))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/real",
+  "original": "/obj/item/stack/money/real/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"real[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/real/update_icon()\n\ticon_state = \"real[pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/european",
+  "original": "/obj/item/stack/money/european/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"[initial(icon_state)][icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/european/update_icon()\n\ticon_state = \"[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/asian",
+  "original": "/obj/item/stack/money/asian/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"[initial(icon_state)][icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/asian/update_icon()\n\ticon_state = \"[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/fictional",
+  "original": "/obj/item/stack/money/fictional/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"[initial(icon_state)][icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/fictional/update_icon()\n\ticon_state = \"[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/escudo",
+  "original": "/obj/item/stack/money/escudo/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"escudo[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/escudo/update_icon()\n\ticon_state = \"escudo[pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/doubloon",
+  "original": "/obj/item/stack/money/doubloon/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"dobloon[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/doubloon/update_icon()\n\ticon_state = \"dobloon[pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/coppercoin",
+  "original": "/obj/item/stack/money/coppercoin/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"coppercoin_pile[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/coppercoin/update_icon()\n\ticon_state = \"coppercoin_pile[pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/silvercoin",
+  "original": "/obj/item/stack/money/silvercoin/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 49)\n\t\t\ticon_suffix = \"\"\n\t\tif (50 to 99)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (100 to 299)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (300 to 499)\n\t\t\ticon_suffix = \"_4\"\n\t\tif (500 to INFINITY)\n\t\t\ticon_suffix = \"_5\"\n\ticon_state = \"silvercoin_pile[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/silvercoin/update_icon()\n\ticon_state = \"silvercoin_pile[pile_suffix(amount, list(50, 100, 300, 500))]\"\n"
+ },
+ {
+  "file": "code/game/objects/items/stacks/money.dm",
+  "type": "/obj/item/stack/money/goldcoin",
+  "original": "/obj/item/stack/money/goldcoin/update_icon()\n\tvar/icon_suffix = \"\"\n\tswitch(amount)\n\t\tif (1 to 124)\n\t\t\ticon_suffix = \"\"\n\t\tif (125 to 249)\n\t\t\ticon_suffix = \"_2\"\n\t\tif (250 to 374)\n\t\t\ticon_suffix = \"_3\"\n\t\tif (375 to INFINITY)\n\t\t\ticon_suffix = \"_4\"\n\ticon_state = \"goldcoin_pile[icon_suffix]\"\n",
+  "replacement": "/obj/item/stack/money/goldcoin/update_icon()\n\ticon_state = \"goldcoin_pile[pile_suffix(amount, list(125, 250, 375))]\"\n"
+ }
+]

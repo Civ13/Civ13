@@ -457,24 +457,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window_frame/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 /obj/structure/window_frame/abashiri/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
@@ -499,24 +482,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
 /obj/structure/window_frame/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 /obj/structure/window_frame/medieval/can_join_with(var/atom/W)
 	if (istype(W,src))
 		return TRUE
@@ -1031,24 +997,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/abashiri,/obj/structure/window_frame/abashiri,/turf/wall/abashiri,/obj/covers/wood_wall/abashiri)
 /obj/structure/window/classic/abashiri/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/window/classic/abashiri/can_join_with(var/atom/W)
 	if (istype(W,src))
@@ -1130,24 +1079,7 @@
 	var/adjusts = TRUE
 	mergewith = list(/obj/structure/window/classic/medieval,/obj/structure/window_frame/medieval,/obj/covers/wood_wall/medieval)
 /obj/structure/window/classic/medieval/check_relatives(var/update_self = FALSE, var/update_others = FALSE)
-	if (!adjusts)
-		return
-	var/junction
-	if (update_self)
-		junction = FALSE
-	for (var/checkdir in cardinal)
-		var/turf/T = get_step(src, checkdir)
-		for(var/atom/CV in T)
-			if (!can_join_with(CV))
-				continue
-			if (update_self)
-				if (can_join_with(CV))
-					junction |= get_dir(src,CV)
-			if (update_others)
-				CV.check_relatives(1,0)
-	if (!isnull(junction))
-		icon_state = "[base_icon_state][junction]"
-	return
+	join_neighbours(src, src:adjusts, src:base_icon_state, update_self, update_others)
 
 /obj/structure/window/classic/medieval/can_join_with(var/atom/W)
 	if (istype(W,src))

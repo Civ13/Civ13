@@ -113,17 +113,7 @@
 	return ..()
 
 /obj/item/stack/material/iron/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-iron[icon_suffix]"
+	icon_state = "sheet-iron[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/iron/twentyfive
 	amount = 25
@@ -157,17 +147,7 @@
 	return ..()
 
 /obj/item/stack/material/bronze/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-bronze[icon_suffix]"
+	icon_state = "sheet-bronze[pile_suffix(amount, list(13, 26, 39))]"
 
 // Uses the tin ingot art, tinted by the material colour.
 /obj/item/stack/material/zinc
@@ -183,17 +163,7 @@
 	return ..()
 
 /obj/item/stack/material/zinc/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-tin[icon_suffix]"
+	icon_state = "sheet-tin[pile_suffix(amount, list(13, 26, 39))]"
 
 // Uses the tin ingot art, tinted by the material colour.
 /obj/item/stack/material/brass
@@ -209,17 +179,7 @@
 	return ..()
 
 /obj/item/stack/material/brass/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-tin[icon_suffix]"
+	icon_state = "sheet-tin[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/copper
 	name = "copper"
@@ -234,17 +194,7 @@
 	return ..()
 
 /obj/item/stack/material/copper/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-copper[icon_suffix]"
+	icon_state = "sheet-copper[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/tin
 	name = "tin"
@@ -259,17 +209,7 @@
 	return ..()
 
 /obj/item/stack/material/tin/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-tin[icon_suffix]"
+	icon_state = "sheet-tin[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/plastic
 	name = "plastic"
@@ -283,17 +223,7 @@
 	return ..()
 
 /obj/item/stack/material/plastic/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-plastic[icon_suffix]"
+	icon_state = "sheet-plastic[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/lead
 	name = "lead"
@@ -308,17 +238,7 @@
 	return ..()
 
 /obj/item/stack/material/lead/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-lead[icon_suffix]"
+	icon_state = "sheet-lead[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/sandstone
 	name = "sandstone"
@@ -331,15 +251,7 @@
 	return ..()
 
 /obj/item/stack/material/sandstone/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 16)
-			icon_suffix = ""
-		if (17 to 32)
-			icon_suffix = "_2"
-		if (33 to INFINITY)
-			icon_suffix = "_3"
-	icon_state = "sheet-sandstone[icon_suffix]"
+	icon_state = "sheet-sandstone[pile_suffix(amount, list(17, 33))]"
 
 /obj/item/stack/material/stone
 	name = "stone block"
@@ -380,17 +292,7 @@
 	return ..()
 
 /obj/item/stack/material/clay/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "claylump[icon_suffix]"
+	icon_state = "claylump[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/clay/attackby(obj/item/W as obj, mob/user as mob)
 	if (map.ID == MAP_GULAG13)
@@ -428,15 +330,7 @@
 	return ..()
 
 /obj/item/stack/material/marble/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 16)
-			icon_suffix = ""
-		if (17 to 33)
-			icon_suffix = "_2"
-		if (34 to INFINITY)
-			icon_suffix = "_3"
-	icon_state = "sheet-marble[icon_suffix]"
+	icon_state = "sheet-marble[pile_suffix(amount, list(17, 34))]"
 
 /obj/item/stack/material/diamond
 	name = "diamond"
@@ -644,17 +538,7 @@
 	return ..()
 
 /obj/item/stack/material/gold/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-gold[icon_suffix]"
+	icon_state = "sheet-gold[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/silver
 	name = "silver"
@@ -668,17 +552,7 @@
 	return ..()
 
 /obj/item/stack/material/silver/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-silver[icon_suffix]"
+	icon_state = "sheet-silver[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/steel
 	name = "steel"
@@ -693,17 +567,7 @@
 	return ..()
 
 /obj/item/stack/material/steel/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-metal[icon_suffix]"
+	icon_state = "sheet-metal[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/steel/twentyfive
 	amount = 25
@@ -724,17 +588,7 @@
 	return ..()
 
 /obj/item/stack/material/wood/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "logs[icon_suffix]"
+	icon_state = "logs[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/wood/twentyfive
 	amount = 25
@@ -888,17 +742,7 @@
 	return ..()
 
 /obj/item/stack/material/cloth/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-cloth[icon_suffix]"
+	icon_state = "sheet-cloth[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/rettedfabric
 	name = "retted fabric"
@@ -968,15 +812,7 @@
 	return ..()
 
 /obj/item/stack/material/leather/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 16)
-			icon_suffix = ""
-		if (17 to 33)
-			icon_suffix = "_2"
-		if (34 to INFINITY)
-			icon_suffix = "_3"
-	icon_state = "sheet-leather[icon_suffix]"
+	icon_state = "sheet-leather[pile_suffix(amount, list(17, 34))]"
 
 /*
 /obj/item/stack/material/scales/gator_scale  //placeholder for alternative scaly hide crafting
@@ -1216,17 +1052,7 @@
 	return ..()
 
 /obj/item/stack/material/glass/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-glass[icon_suffix]"
+	icon_state = "sheet-glass[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/glass/reinforced
 	name = "reinforced glass"
@@ -1240,17 +1066,7 @@
 	return ..()
 
 /obj/item/stack/material/glass/reinforced/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (0 to 12)
-			icon_suffix = ""
-		if (13 to 25)
-			icon_suffix = "_2"
-		if (26 to 38)
-			icon_suffix = "_3"
-		if (39 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "sheet-rglass[icon_suffix]"
+	icon_state = "sheet-rglass[pile_suffix(amount, list(13, 26, 39))]"
 
 /obj/item/stack/material/bone
 	name = "bones"

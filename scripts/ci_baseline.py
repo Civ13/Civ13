@@ -889,6 +889,13 @@ SUITES = {
     # source contracts against a frozen grenade copy, no BYOND runtime.
     'fragment_burst': {'files': ('tests/fragment_burst/test_fragment_burst.py',), 'paths': ('tests/fragment_burst/',),
         'shared_paths': ('code/game/objects/items/weapons/grenades/grenade.dm', 'code/game/objects/items/weapons/mines.dm')},
+    # Stack pile sprites share pile_suffix and joining walls share
+    # join_neighbours; replays frozen copies, no BYOND runtime.
+    'pile_icons': {'files': ('tests/pile_icons/test_pile_icons.py',), 'paths': ('tests/pile_icons/',),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/money.dm',
+                         'code/modules/materials/material_sheets.dm', 'code/modules/1713/ores.dm', 'code/game/atoms.dm',
+                         'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/structures/barricades.dm',
+                         'code/game/objects/structures/window.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
