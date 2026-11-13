@@ -64,13 +64,13 @@ class EventRegionSeams(unittest.TestCase):
             self.assertIn('input["token"] != region_event.token', run)
 
     def test_event_kind_across_region_code(self):
-        self.assertIn('"BATTLE", "EVENT")))', SHARD)
+        self.assertIn('"BATTLE", "EVENT"', SHARD)
         self.assertIn('if("EVENT") return "event"', SHARD)
         self.assertIn('peer["kind"] != "EVENT"', SHARD)
         self.assertIn('.["event_away"] = length(event_stashes())', SHARD)
-        self.assertIn('list("BARRACKS", "BATTLE", "EVENT")', HOME)
+        self.assertIn('list("BARRACKS", "BATTLE", "EVENT"', HOME)
         self.assertRegex(TRAVEL, r'if\(peer && peer\["kind"\] == "EVENT"\)\s*\n\s*return "The trail is overgrown')
-        self.assertIn("'BARRACKS', 'BATTLE', 'EVENT')", HOST)
+        self.assertIn("'BARRACKS', 'BATTLE', 'EVENT'", HOST)
         self.assertIn("'config/event-token.txt'", HOST)
 
 

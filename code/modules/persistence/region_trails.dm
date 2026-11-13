@@ -35,6 +35,8 @@ var/global/list/region_trail_next_request = list()
 		if(peer["kind"] == "RAILYARD") continue
 		// Orbit is reached only by rocket.
 		if(peer["kind"] == "ORBIT") continue
+		// The tutorial is reached from the lobby, never on foot.
+		if(peer["kind"] == "TUTORIAL") continue
 		choices["[peer["name"]] ([id])"] = id
 	return choices
 

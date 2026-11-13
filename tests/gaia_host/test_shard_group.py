@@ -601,6 +601,31 @@ class ShardGroupTests(unittest.TestCase):
         gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
         self.assertEqual((15, 0), (gaia['save_minutes'], gaia['reset_minutes']))
 
+    def test_tutorial_region(self):
+        self.refuse_config('mainland cannot be a TUTORIAL', mainland='deep', region_kind='TUTORIAL')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='TUTORIAL')
+        self.group['regions'][0]['kind'] = 'TUTORIAL'
+        self.refuse_config('at most one TUTORIAL', region_kind='TUTORIAL', mainland='deep')
+        self.group['regions'][0]['kind'] = 'SURFACE'
+        self.group['regions'][1]['kind'] = 'TUTORIAL'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(0, settings['save_minutes'], 'a tutorial region never saves')
+        gaia = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(15, gaia['save_minutes'])
+
+    def test_tutorial_config_never_saves(self):
+        path = self.base / 'config.txt'
+        path.write_text('A 1\nALLOWED_GAMEMODES PERSISTENCE\n#SKIP_PERSISTENCE_SAVING\n')
+        shard_group.tutorial_config(path)
+        self.assertEqual(['A 1', 'SKIP_PERSISTENCE_SAVING', 'ALLOWED_GAMEMODES ALL'], path.read_text().splitlines())
+        path.write_text('ALLOWED_GAMEMODES PERSISTENCE\n')
+        shard_group.region_mode_config({'persistent': True}, {'kind': 'TUTORIAL'}, path)
+        self.assertEqual(['ALLOWED_GAMEMODES ALL', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+        shard_group.region_mode_config({'persistent': True}, {'kind': 'SURFACE'}, path)
+        self.assertIn('ALLOWED_GAMEMODES PERSISTENCE', path.read_text())
+
     def test_persistent_config_without_saving(self):
         path = self.base / 'config.txt'
         path.write_text('ALLOWED_GAMEMODES ALL\nSKIP_PERSISTENCE_SAVING\n')
