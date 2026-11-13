@@ -67,8 +67,10 @@
 	flags = FALSE
 
 /obj/item/weapon/snowwall/attack_self(mob/user)
+	if (!wall_foundation_tile_free(user, /obj/covers/snow_wall/blocks/incomplete))
+		return
 	to_chat(user, "You start building the snow blocks wall...")
-	if (do_after(user, 25, src))
+	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/snow_wall/blocks/incomplete))
 		to_chat(user, "You finish the placement of the snow blocks wall foundation.")
 		new /obj/covers/snow_wall/blocks/incomplete(user.loc)
 		qdel(src)

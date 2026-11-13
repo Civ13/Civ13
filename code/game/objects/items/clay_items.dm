@@ -136,10 +136,12 @@
 
 
 /obj/item/weapon/clay/claybricks/fired/attack_self(mob/user)
+	if (!wall_foundation_tile_free(user, /obj/covers/clay_wall/incomplete))
+		return
 	var/choice = WWinput(user, "What time of clay wall do you want to build?","Clay Walls","Clay Blocks",list("Clay Blocks","Sumerian Clay"))
 	if (choice == "Clay Blocks")
 		to_chat(user, "You start building the clay wall...")
-		if (do_after(user, 25, src))
+		if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/clay_wall/incomplete))
 			to_chat(user, "You finish the placement of the clay block wall foundation.")
 			new /obj/covers/clay_wall/incomplete(user.loc)
 			qdel(src)
@@ -147,23 +149,27 @@
 
 	else if (choice == "Sumerian Clay")
 		to_chat(user, "You start building the sumerian clay wall...")
-		if (do_after(user, 25, src))
+		if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/clay_wall/sumerian/incomplete))
 			to_chat(user, "You finish the placement of the sumerian clay wall foundation.")
 			new /obj/covers/clay_wall/sumerian/incomplete(user.loc)
 			qdel(src)
 			return
 
 /obj/item/weapon/clay/advclaybricks/fired/attack_self(mob/user)
+	if (!wall_foundation_tile_free(user, /obj/covers/brick_wall/incomplete))
+		return
 	to_chat(user, "You start building the brick wall...")
-	if (do_after(user, 25, src))
+	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/brick_wall/incomplete))
 		to_chat(user, "You finish the placement of the brick wall foundation.")
 		new /obj/covers/brick_wall/incomplete(user.loc)
 		qdel(src)
 		return
 
 /obj/item/weapon/clay/advclaybricks/fired/cement/attack_self(mob/user)
+	if (!wall_foundation_tile_free(user, /obj/covers/cement_wall/incomplete))
+		return
 	to_chat(user, "You start building the cement wall...")
-	if (do_after(user, 25, src))
+	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/cement_wall/incomplete))
 		to_chat(user, "You finish the placement of the cement wall foundation.")
 		new /obj/covers/cement_wall/incomplete(user.loc)
 		qdel(src)

@@ -170,6 +170,10 @@
 	if (WWinput(user, "This will start building a new ship floor [dir2text(user.dir)] of you.", "Ship Floor Repair", "Continue", list("Continue", "Stop")) == "Continue")
 		visible_message("<span class='danger'>[user] starts constructing the new floor.</span>", "<span class='danger'>You start constructing the new floor.</span>")
 		if (do_after(user, covers_time, user.loc) && src)
+			var/floor_refusal = tile_build_refusal(get_step(user, user.dir), /obj/covers/repairedfloor/ship)
+			if (floor_refusal)
+				to_chat(user, SPAN_WARNING(floor_refusal))
+				return
 			qdel(src)
 			new/obj/covers/repairedfloor/ship(get_step(user, user.dir), user)
 			visible_message("<span class='danger'>[user] finishes placing the new floor.</span>")

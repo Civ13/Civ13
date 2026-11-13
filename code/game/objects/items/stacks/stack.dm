@@ -1682,6 +1682,12 @@
 		to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 		return
 
+	// One floor and one wall per tile (tile_occupancy.dm).
+	var/tile_refusal = tile_build_refusal(get_turf(user), recipe.result_type)
+	if (tile_refusal)
+		to_chat(user, SPAN_WARNING(tile_refusal))
+		return
+
 	if (recipe.on_floor && !isfloor(user.loc))
 		to_chat(user, "<span class='warning'>\The [recipe.title] must be constructed on the floor!</span>")
 		return
@@ -1883,6 +1889,11 @@
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
 			return
+	// The tile may have gained a floor or wall during the wait.
+	tile_refusal = tile_build_refusal(get_turf(user), recipe.result_type)
+	if (tile_refusal)
+		to_chat(user, SPAN_WARNING(tile_refusal))
+		return
 
 	if (needs_crafting_handle)
 		if (loc != handle_crafting_source_loc || !crafting_stack_accessible(H) || !crafting_handle_available(H, crafting_handle))

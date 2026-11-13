@@ -438,6 +438,15 @@ SUITES = {
             'code/_onclick/click.dm',
             'code/game/mob/living/living.dm',
             'code/game/mob/observer/ghost/ghost.dm')},
+    'tile_occupancy': {'files': ('tests/tile_occupancy/test_sources.py',),
+        'paths': ('tests/tile_occupancy/', 'code/game/objects/tile_occupancy.dm'), 'shared_paths': (
+            'civ13.dme',
+            'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/items/clay_items.dm',
+            'code/modules/1713/barriers/sandbag.dm',
+            'code/modules/1713/barriers/snow_walls.dm',
+            'code/game/objects/covers.dm',
+            'code/modules/multiz/open_space.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
