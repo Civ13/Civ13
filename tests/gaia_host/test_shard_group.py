@@ -2115,6 +2115,61 @@ class HandoverTests(unittest.TestCase):
         self.assertIn((['kill_tree', 200], None), self.machine.calls)
         self.assertIn(self.LIVE, self.machine.up)
 
+    def force_stop_on(self, host, trigger):
+        """Script a person's Force stop that lands when the handover sends trigger; a world
+        that is gone refuses connections as on Windows (WinError 10061)."""
+        query = self.machine.query
+        stopped = []
+
+        def stopping(port, token, action='status', operation=None, session=None, extra=None):
+            if port not in self.machine.up:
+                raise ConnectionRefusedError(10061, 'No connection could be made because the target machine actively refused it')
+            answer = query(port, token, action, operation, session, extra)
+            if action == trigger and not stopped:
+                stopped.append(host.kill())
+            return answer
+        self.machine.query = stopping
+        return stopped
+
+    def test_a_force_stop_during_the_save_ends_the_handover_and_the_region_stays_down(self):
+        # 2026-11-13: Europe and Desert were force-stopped mid-handover and reported only
+        # "[WinError 10061] ... actively refused it".
+        group, host = self.staged()
+        stopped = self.force_stop_on(host, 'handover_save')
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(len(stopped), 1)
+        self.assertEqual((state['phase'], state.get('reason')), ('killed', 'forced stop'), state)
+        self.assertIn('forced stop during handover', state['error'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls, 'the standby is stopped')
+        self.assertEqual(self.machine.up, set())
+        self.assertFalse(host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertEqual(host.built_revision(), REVISION)
+        self.assertFalse(host.lock.exists())
+        self.assertFalse(host.killed_file.exists())
+
+    def test_a_force_stop_after_the_release_never_lets_the_standby_open_the_region(self):
+        group, host = self.staged()
+        host.mark_running()
+        stopped = self.force_stop_on(host, 'handover_release')
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(len(stopped), 1)
+        self.assertEqual(state['phase'], 'killed', state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertNotIn('standby_open', names)
+        self.assertIn((['kill_tree', 200], None), self.machine.calls)
+        self.assertEqual(self.machine.up, set(), 'neither world runs')
+        self.assertFalse(host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertEqual(host.built_revision(), REVISION)
+
+    def test_a_forced_handover_is_not_counted_as_a_failed_build(self):
+        group, host = self.staged()
+        self.force_stop_on(host, 'handover_save')
+        host.work('handover', host.request('handover')['operation'])
+        self.assertNotEqual(host.read_state().get('phase'), 'failed')
+        self.assertTrue(host.update_pending(), 'the staged build is installed by the next start')
+
     def test_handover_refusals(self):
         group, host = self.staged()
         self.machine.up = set()

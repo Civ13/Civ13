@@ -1067,7 +1067,12 @@ class RegionHost(Host):
             except (OSError, RuntimeError, ValueError):
                 pass
             raise
-        # The switch: from here the standby is the region.
+        # The switch: from here the standby is the region, unless a person force-stopped it.
+        try:
+            self.stop_if_killed(operation)
+        except RuntimeError:
+            self.stop_standby(spare_port, standby_pid)
+            raise
         self.record(phase='switching')
         self.platform.query(port, token, 'handover_release', operation, session)
         # world.OpenPort on a port another process still holds fails and closes the standby's
@@ -1090,6 +1095,9 @@ class RegionHost(Host):
         # down, then one sent with the session read back from its status succeeded at once.
         deadline = self.platform.now() + OPEN_SECONDS
         while True:
+            if self.killed_during(operation):
+                self.stop_standby(spare_port, standby_pid)
+                self.stop_if_killed(operation)
             try:
                 current = self.platform.query(spare_port, token).get('session', '')
                 if gaia_host.HEX32.match(current or ''):
@@ -1108,6 +1116,7 @@ class RegionHost(Host):
             if self.platform.now() > deadline:
                 raise RuntimeError('the new world did not open port %d; it still answers on port %d' % (port, spare_port))
             self.platform.sleep(2)
+        self.stop_if_killed(operation)  # a forced stop now must not leave running.json for the watchdog
         self.mark_running()
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
@@ -1148,6 +1157,24 @@ class RegionHost(Host):
             if self.platform.now() > deadline:
                 raise RuntimeError(what)
             self.platform.sleep(5)
+
+    def kill(self, reason='forced stop', keep_running=False):
+        """A forced stop during a handover also ends its standby, so the update cannot bring
+        back a region a person stopped; the handover sees killed.json and gives up."""
+        handing_over = self.lock.exists() and self.read_state().get('action') == 'handover'
+        if handing_over:
+            self.note_kill_during_action(reason)
+            standby = self.stop_standby(self.standby_port())
+            if not (self.frozen() or self.platform.server_pid(self.config['port'])):
+                if not keep_running:
+                    self.running_file.unlink(missing_ok=True)
+                return {'killed': True, 'pid': standby, 'reason': reason, 'released_locks': [], 'standby': standby}
+        return super().kill(reason, keep_running)
+
+    def stop_if_killed(self, operation):
+        reason = self.killed_during(operation)
+        if reason:
+            raise RuntimeError('%s: the region stays stopped' % reason)
 
     def stop_standby(self, port, pid=None):
         pid = self.platform.server_pid(port) or pid

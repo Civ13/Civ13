@@ -628,6 +628,10 @@ class Host:
         # a stop or a forced stop removes it. The watchdog only restarts such a world.
         self.running_file = self.state_dir / 'running.json'
         self.watchdog_file = self.state_dir / 'watchdog.json'
+        # killed.json: a forced stop that came while an action held the lock. That action
+        # must not bring the world back (2026-11-13: regions force-stopped mid-handover
+        # reported a refused connection instead of the stop), so it checks this file.
+        self.killed_file = self.state_dir / 'killed.json'
         # Written by the world when an admin uses Save and Shut Down in game: the exit that
         # follows is a stop, not a crash (restart_transaction.dm write_stop_marker).
         self.stop_marker = self.repo / 'data' / 'stopped_in_game.json'
@@ -720,6 +724,7 @@ class Host:
         operation = secrets.token_hex(16)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(operation)
+        self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
             self.precheck(action)
         except BaseException:
@@ -983,6 +988,7 @@ class Host:
             if not self.lock.exists():
                 self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
             return {'killed': True, 'pid': None, 'reason': reason, 'released_locks': [], 'was_asleep_on_save': True}
+        self.note_kill_during_action(reason)
         self.platform.kill_tree(pid)
         released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
@@ -992,6 +998,22 @@ class Host:
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def note_kill_during_action(self, reason):
+        """Tell the action holding the lock, if any, that a forced stop ended its world."""
+        try:
+            operation = self.lock.read_text().strip()
+        except OSError:
+            return None
+        if operation:
+            self.write_json(self.killed_file, {'operation': operation, 'reason': reason,
+                                               'at': int(self.platform.now())})
+        return operation or None
+
+    def killed_during(self, operation):
+        """The reason of a forced stop that came during this operation, or None."""
+        killed = self.read_json(self.killed_file) or {}
+        return killed.get('reason') or 'forced stop' if killed.get('operation') == operation else None
 
     def release_save_locks(self, pid, wait_seconds=30):
         """Remove the BYOND lock files a killed server left in map_saves.
@@ -1354,8 +1376,16 @@ class Host:
                 step(operation)
             self.record(phase='done', error=None)
         except Exception as error:  # the state file is the only place a detached worker can report
-            self.record(phase='failed', error=str(error)[:500])
+            reason = self.killed_during(operation)
+            if reason:
+                # A forced stop ended the world under this action: report the stop, which
+                # is what a person did, not the refused connection that followed it.
+                self.record(phase='killed', reason=reason,
+                            error='%s during %s: %s' % (reason, action, str(error)[:300]))
+            else:
+                self.record(phase='failed', error=str(error)[:500])
         finally:
+            self.killed_file.unlink(missing_ok=True)
             self.lock.unlink(missing_ok=True)
 
     def do_start(self, operation):
