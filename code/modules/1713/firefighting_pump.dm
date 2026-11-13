@@ -23,6 +23,8 @@
 	flammable = TRUE
 	var/water = 0
 	var/max_water = FIRE_PUMP_MAX_WATER
+	var/hose_length = FIRE_PUMP_HOSE // how far from here the nozzle reaches
+	var/nozzle_type = /obj/item/weapon/fire_nozzle
 	var/tmp/obj/item/weapon/fire_nozzle/nozzle
 
 /obj/structure/fire_pump/persistence_runtime_var(key)
@@ -39,12 +41,29 @@
 
 /obj/structure/fire_pump/examine(mob/user, distance = -1)
 	. = ..()
+	examine_water(user)
+	if (nozzle_out())
+		to_chat(user, SPAN_NOTICE("Its hose is run out."))
+
+/obj/structure/fire_pump/proc/examine_water(mob/user)
 	if (water <= 0)
 		to_chat(user, SPAN_WARNING("The tub is empty. Pour water in with a bucket."))
 	else
 		to_chat(user, SPAN_NOTICE("The tub holds [water] of [max_water] units of water, enough for [round(water / FIRE_PUMP_SHOT_WATER)] jet\s."))
-	if (nozzle_out())
-		to_chat(user, SPAN_NOTICE("Its hose is run out."))
+
+// Water on hand for jets, and taking some of it. draw_water returns TRUE when
+// the whole amount was there to take.
+/obj/structure/fire_pump/proc/water_left()
+	return water
+
+/obj/structure/fire_pump/proc/draw_water(amount)
+	if (water < amount)
+		return FALSE
+	water -= amount
+	return TRUE
+
+/obj/structure/fire_pump/proc/dry_message()
+	return "\The [src] is out of water. Pour more in with a bucket."
 
 /obj/structure/fire_pump/proc/nozzle_out()
 	return nozzle && !QDELETED(nozzle) && nozzle.loc != src
@@ -52,7 +71,7 @@
 // The engine's one nozzle, made the first time it is needed.
 /obj/structure/fire_pump/proc/get_nozzle()
 	if (!nozzle || QDELETED(nozzle))
-		nozzle = new /obj/item/weapon/fire_nozzle(src)
+		nozzle = new nozzle_type(src)
 		nozzle.pump = src
 	return nozzle
 
@@ -63,6 +82,7 @@
 	if (holder)
 		holder.remove_from_mob(nozzle)
 	nozzle.forceMove(src)
+	update_icon()
 	return TRUE
 
 // Returns the units of water that went in.
@@ -111,20 +131,21 @@
 		N.forceMove(src)
 		to_chat(M, SPAN_WARNING("You need a free hand for the nozzle."))
 		return TRUE
-	to_chat(M, SPAN_NOTICE("You take the nozzle of \the [src]. Click where the water should land, up to [FIRE_PUMP_RANGE] tiles away. Stay within [FIRE_PUMP_HOSE] tiles of the engine."))
+	to_chat(M, SPAN_NOTICE("You take the nozzle of \the [src]. Click where the water should land, up to [FIRE_PUMP_RANGE] tiles away. Stay within [hose_length] tiles of \the [src]."))
+	update_icon()
 	return TRUE
 
 // Pulled or pushed away from whoever holds the nozzle: the hose comes back.
 /obj/structure/fire_pump/Move()
 	. = ..()
-	if (. && nozzle_out() && get_dist(get_turf(nozzle), src) > FIRE_PUMP_HOSE)
+	if (. && nozzle_out() && get_dist(get_turf(nozzle), src) > hose_length)
 		var/mob/holder = ismob(nozzle.loc) ? nozzle.loc : null
 		if (stow_nozzle() && holder)
 			to_chat(holder, SPAN_WARNING("The hose pulls taut and the nozzle is dragged out of your hands."))
 
 /obj/item/weapon/fire_nozzle
 	name = "fire engine nozzle"
-	desc = "The brass nozzle of a hand pump fire engine, on a short leather hose. Click where the water should land."
+	desc = "A brass fire nozzle on the end of its hose. Click where the water should land."
 	icon = 'icons/obj/firefighting.dmi'
 	icon_state = "fire_nozzle"
 	item_state = "fire_nozzle"
@@ -166,6 +187,15 @@
 	..()
 	addtimer(CALLBACK(src, PROC_REF(check_tether)), 1)
 
+// A wall stops water: a dense turf, or a solid wall built on the tile.
+/proc/fire_jet_blocked(turf/T)
+	if (!T || T.density)
+		return TRUE
+	for (var/obj/covers/C in T)
+		if (C.density && C.opacity)
+			return TRUE
+	return FALSE
+
 // Where a jet aimed at the target comes down: the target's tile, or the last
 // open tile before a wall or the end of the jet's reach.
 /proc/fire_jet_landing(atom/from, atom/target, reach = FIRE_PUMP_RANGE)
@@ -176,14 +206,9 @@
 	var/turf/landing = start
 	var/steps = 0
 	for (var/turf/T in getline2(start, aim, FALSE))
-		if (steps >= reach || T.density)
+		if (steps >= reach)
 			break
-		var/blocked = FALSE
-		for (var/obj/covers/C in T)
-			if (C.density && C.opacity)
-				blocked = TRUE
-				break
-		if (blocked)
+		if (fire_jet_blocked(T))
 			break
 		landing = T
 		steps++
@@ -213,26 +238,26 @@
 		return FALSE
 	if (!user || world.time < next_spray)
 		return FALSE
-	if (get_dist(user, pump) > FIRE_PUMP_HOSE || user.z != pump.z)
+	if (get_dist(user, pump) > pump.hose_length || user.z != pump.z)
 		pump.stow_nozzle()
 		to_chat(user, SPAN_WARNING("The hose pulls taut and the nozzle is dragged out of your hands."))
 		return FALSE
-	if (pump.water < FIRE_PUMP_SHOT_WATER)
-		to_chat(user, SPAN_WARNING("\The [pump] is out of water. Pour more in with a bucket."))
+	if (pump.water_left() < FIRE_PUMP_SHOT_WATER)
+		to_chat(user, SPAN_WARNING(pump.dry_message()))
 		return FALSE
 	var/turf/landing = fire_jet_landing(user, target)
 	if (!landing)
 		return FALSE
 	next_spray = world.time + FIRE_PUMP_COOLDOWN
 	user.setClickCooldown(FIRE_PUMP_COOLDOWN)
-	pump.water -= FIRE_PUMP_SHOT_WATER
+	pump.draw_water(FIRE_PUMP_SHOT_WATER)
 	playsound(get_turf(user), 'sound/effects/extinguish.ogg', 70, TRUE)
 	new /obj/effect/fire_jet(landing)
 	var/out = fire_jet_hit(landing)
 	if (out)
 		playsound(landing, 'sound/items/cig_snuff.ogg', 50, TRUE)
-	if (pump.water < FIRE_PUMP_SHOT_WATER)
-		to_chat(user, SPAN_WARNING("That was the last of the water in \the [pump]."))
+	if (pump.water_left() < FIRE_PUMP_SHOT_WATER)
+		to_chat(user, SPAN_WARNING("That was the last of the water for \the [pump]."))
 	return TRUE
 
 /obj/item/weapon/fire_nozzle/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
@@ -258,6 +283,72 @@
 	..()
 	QDEL_IN(src, 6)
 
+// Fire hose reel: a canvas hose on a drum, plumbed to a sink or well beside
+// it. It has no tub of its own: every jet draws on that water, so it keeps
+// going for as long as the supply does, and the long hose covers a building.
+
+#define FIRE_REEL_HOSE 7
+#define FIRE_REEL_SUPPLY_RANGE 1
+
+/obj/structure/fire_pump/reel
+	name = "fire hose reel"
+	desc = "A canvas fire hose wound on a drum. It draws its water from a sink or well beside it."
+	icon_state = "fire_hose_reel"
+	density = FALSE
+	anchored = TRUE
+	flammable = FALSE
+	max_water = 0
+	hose_length = FIRE_REEL_HOSE
+
+/obj/structure/fire_pump/reel/update_icon()
+	..()
+	icon_state = nozzle_out() ? "fire_hose_reel_out" : "fire_hose_reel"
+
+/obj/structure/fire_pump/reel/after_load()
+	. = ..()
+	update_icon()
+
+// The sinks and wells this reel is plumbed to. Puddles do not count.
+/obj/structure/fire_pump/reel/proc/supplies()
+	var/list/found = list()
+	for (var/obj/structure/sink/S in range(FIRE_REEL_SUPPLY_RANGE, src))
+		if (istype(S, /obj/structure/sink/puddle) || S.dry || S.volume <= 0)
+			continue
+		found += S
+	return found
+
+/obj/structure/fire_pump/reel/water_left()
+	var/total = 0
+	for (var/obj/structure/sink/S in supplies())
+		total += S.volume
+	return total
+
+/obj/structure/fire_pump/reel/draw_water(amount)
+	if (water_left() < amount)
+		return FALSE
+	for (var/obj/structure/sink/S in supplies())
+		var/taken = min(amount, S.volume)
+		S.volume -= taken
+		amount -= taken
+		if (amount <= 0)
+			break
+	return TRUE
+
+/obj/structure/fire_pump/reel/fill_from(obj/item/weapon/reagent_containers/RC, mob/user)
+	return FALSE
+
+/obj/structure/fire_pump/reel/dry_message()
+	return "No water comes: \the [src] needs a sink or well with water in it right beside it."
+
+/obj/structure/fire_pump/reel/examine_water(mob/user)
+	var/left = water_left()
+	if (left < FIRE_PUMP_SHOT_WATER)
+		to_chat(user, SPAN_WARNING("It has no water supply. It must stand right beside a sink or well with water in it."))
+	else
+		to_chat(user, SPAN_NOTICE("Its supply holds enough water for [round(left / FIRE_PUMP_SHOT_WATER)] jet\s."))
+
+#undef FIRE_REEL_HOSE
+#undef FIRE_REEL_SUPPLY_RANGE
 #undef FIRE_PUMP_MAX_WATER
 #undef FIRE_PUMP_SHOT_WATER
 #undef FIRE_PUMP_RANGE

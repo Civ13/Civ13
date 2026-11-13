@@ -35,6 +35,8 @@ RED = [(214, 92, 70), (176, 56, 44), (132, 38, 34), (92, 26, 28), (46, 14, 18)]
 # leather hose
 HOSE = [(150, 112, 74), (112, 80, 50), (70, 48, 30)]
 # forged iron: highlight, light, mid, dark, outline
+# flat canvas fire hose: highlight, light, mid, dark
+CANVAS = [(238, 230, 204), (204, 194, 164), (158, 148, 122), (100, 92, 76)]
 IRON = [(206, 212, 220), (150, 158, 170), (104, 112, 126), (66, 72, 86), (30, 34, 44)]
 
 
@@ -282,6 +284,56 @@ def nozzle():
     return f
 
 
+# ---------------------------------------------------------------- hose reel
+# A red drum on an iron wall bracket, seen face on. Reeled in, the flat canvas
+# hose is wound round the hub in rings and its brass nozzle hangs at the right.
+# Run out, the bare drum and its spokes show.
+def hose_reel(out=False):
+    f = Frame()
+    cx, cy = 14.5, 15.5
+    for y in range(32):
+        for x in range(32):
+            dx, dy = x - cx, y - cy
+            d = (dx * dx + dy * dy) ** 0.5
+            lit = dx + dy < -3            # light falls from the upper left
+            shade = dx + dy > 5
+            if d > 12.2:
+                continue
+            if d > 11.2:
+                c = RED[4]
+            elif d > 9.2:
+                c = RED[0] if lit and d < 10.6 else RED[3] if shade else RED[1]
+            elif d > 8.4:
+                c = RED[4]
+            elif d > 3.2:
+                if out:
+                    spoke = abs(dx) < 0.8 or abs(dy) < 0.8 or abs(abs(dx) - abs(dy)) < 0.8
+                    c = (RED[2] if lit else RED[3]) if spoke else (40, 32, 34)
+                else:
+                    ring = int(d - 3.2) % 2
+                    c = CANVAS[3] if ring else (CANVAS[0] if lit else CANVAS[2] if shade else CANVAS[1])
+            elif d > 2.2:
+                c = BRASS[4]
+            else:
+                c = BRASS[0] if lit else BRASS[2] if shade else BRASS[1]
+            f.put(x, y, c)
+    # the bracket: two iron lugs bolted to the wall above the drum
+    for x in (8, 9, 20, 21):
+        f.pts(IRON[4], (x, 1))
+        for y in (2, 3, 4, 5):
+            if (x, y) not in f.px:
+                f.put(x, y, IRON[1] if x in (8, 20) else IRON[3])
+    if not out:
+        # the tail of the hose drops from the drum to the nozzle
+        for y in range(15, 24):
+            f.pts(CANVAS[3], (26, y), (29, y))
+            f.pts(CANVAS[0], (27, y))
+            f.pts(CANVAS[2], (28, y))
+        f.rows(24, 25, ['.kkkk.', '.kbBk.', '.kbBk.', '..kBk.', '..khk.', '..kbk.', '...k..'],
+               {'k': BRASS[4], 'b': BRASS[1], 'B': BRASS[2], 'h': BRASS[0]})
+    return f
+
+
 # ------------------------------------------------------------------- in hand
 # Left hand, facing south, north, east and west: where the shaft runs (as on
 # the spear) and where the head sits. The right hand is the mirror image.
@@ -343,6 +395,8 @@ def states():
         'fire_hook': [fire_hook()],
         'fire_pump': [pump()],
         'fire_nozzle': [nozzle()],
+        'fire_hose_reel': [hose_reel()],
+        'fire_hose_reel_out': [hose_reel(True)],
     }
     for kind, name in (('beater', 'fire_beater'), ('flapper', 'fire_flapper'), ('hook', 'fire_hook'),
                        ('nozzle', 'fire_nozzle')):
@@ -366,10 +420,11 @@ def write_dmi(path, st):
 
 def preview(path, st, scale=8):
     grounds = [(94, 132, 62), (120, 96, 66), (60, 60, 64)]   # grass, dirt, night
-    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet', 'fire_hook', 'fire_pump', 'fire_nozzle']
+    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet', 'fire_hook', 'fire_pump', 'fire_nozzle',
+             'fire_hose_reel', 'fire_hose_reel_out']
     hands = ['fire_beater_l', 'fire_beater_r', 'fire_flapper_l', 'fire_flapper_r', 'fire_hook_l', 'fire_hook_r', 'fire_nozzle_l', 'fire_nozzle_r']
     cell = 32 * scale
-    sheet = Image.new('RGBA', (cell * 7, cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
+    sheet = Image.new('RGBA', (cell * len(names), cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
     for r, ground in enumerate(grounds):
         for c, name in enumerate(names):
             tile = Image.new('RGBA', (32, 32), ground + (255,))

@@ -45,7 +45,7 @@
  */
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher
 	name = "fire extinguisher"
-	desc = "An extinguisher for putting out fires, with a refill port for water."
+	desc = "A pressurised water extinguisher. Hold it with your other hand free and click toward a fire up to three tiles away. Refill it with water at a sink or well."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "fire_extinguisher"
 	flags = CONDUCT
@@ -55,84 +55,72 @@
 	w_class = ITEM_SIZE_NORMAL
 
 	attack_verb = list("bashed", "battered", "bludgeoned", "whacked")
-	volume = 30
+	volume = 60
 	var/lastfire = 0
-	var/max_range = 1
+	var/max_range = 3
+	var/shot_water = 5
 	New()
 		..()
 		if (!istype(src, /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty))
-			reagents.add_reagent("water",30)
+			reagents.add_reagent("water", volume)
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/New()
 	..()
 	return
 
+/obj/item/weapon/reagent_containers/glass/fire_extinguisher/examine(mob/user, distance = -1)
+	. = ..()
+	var/shots = reagents ? round(reagents.get_reagent_amount("water") / shot_water) : 0
+	if (shots > 0)
+		to_chat(user, SPAN_NOTICE("It has water for [shots] burst\s."))
+	else
+		to_chat(user, SPAN_WARNING("It is empty. Refill it with water."))
+
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
-	if (!H)
+	if (!H || !target)
 		return
 	if (world.time<=lastfire)
+		return
+	// Only clicks out in the world spray: not the HUD, and not things carried or stored.
+	if (!isturf(target) && !isturf(target.loc))
 		return
 	if (!H.has_empty_hand(both = FALSE))
 		to_chat(H, SPAN_WARNING("You need both hands to use \the [src]!"))
 		return
-	if (!cdir)
-		cdir = H.dir
-	else
-		process_foam(H,cdir,target)
-		return
+	process_foam(H,cdir,target)
 
+// One burst: foam along the line to the target, up to max_range tiles, putting
+// out every fire and burning creature on the way. Walls stop it.
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/proc/process_foam(var/mob/living/human/user, var/cdir = null, atom/target)
-	if (!cdir || !(cdir in list(NORTH,SOUTH,EAST,WEST)))
-		cdir = user.dir
-	if (src.reagents && src.reagents.get_reagent_amount("water") >= 5)
-		src.reagents.remove_reagent("water",5)
-		lastfire = world.time+12
-		var/turf/source_turf = get_turf(user)
-
-		var/list/turfs = getline2(source_turf, target)
-
-		var/distance = 0
-		var/stop_at_turf = FALSE
-
-		playsound(source_turf, 'sound/effects/extinguish.ogg', 100, FALSE)
-
-		for(var/turf/T in turfs)
-			if(distance > max_range)
-				break
-
-			if(T.density)
-				if(!istype(T, /obj/structure/barricade) || !istype(T, /obj/structure/window/barrier))
-					stop_at_turf = TRUE
-			else
-				if (distance > 0)
-					new/obj/effect/decal/cleanable/foam(T)
-					for (var/obj/effect/fire/F in T)
-						qdel(F)
-					for (var/mob/living/human/H in T)
-						if (H.on_fire)
-							H.fire_stacks = 0
-							H.ExtinguishMob()
-
-			if(T == target.loc)
-				if(stop_at_turf)
-					break
-				continue
-
-			if(stop_at_turf)
-				break
-
-			distance++
-	else
+	lastfire = world.time+12
+	if (!reagents || reagents.get_reagent_amount("water") < shot_water)
 		to_chat(user, SPAN_WARNING("\The [src] is empty."))
-		return
+		return FALSE
+	reagents.remove_reagent("water", shot_water)
+	var/turf/source_turf = get_turf(user)
+	playsound(source_turf, 'sound/effects/extinguish.ogg', 100, FALSE)
+	var/list/turfs = getline2(source_turf, target, FALSE)
+	if (!turfs || !turfs.len)
+		turfs = list(source_turf) // aimed at your own feet
+	var/distance = 0
+	for (var/turf/T in turfs)
+		if (distance >= max_range || fire_jet_blocked(T))
+			break
+		distance++
+		if (!(locate(/obj/effect/decal/cleanable/foam) in T))
+			new/obj/effect/decal/cleanable/foam(T)
+		for (var/obj/effect/fire/F in T)
+			qdel(F)
+		for (var/mob/living/L in T)
+			if (L.on_fire)
+				L.fire_stacks = 0
+				L.ExtinguishMob()
+	return TRUE
 
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2
 	name = "fire extinguisher"
-	desc = "A fire extinguisher used to put out fires. You can fill it with water."
+	desc = "A pressurised water extinguisher. Hold it with your other hand free and click toward a fire up to three tiles away. Refill it with water at a sink or well."
 	icon_state = "german_fire_extinguisher"
-	New()
-		..()
-		reagents.add_reagent("water",30)
 
 /*
  * Screwdriver

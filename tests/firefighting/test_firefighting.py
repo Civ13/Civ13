@@ -145,6 +145,31 @@ class FirefightingSourceTests(unittest.TestCase):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertIn('"/obj/structure/fire_pump" = "wagons_ships"', nodes)
 
+    def test_hose_reel_and_extinguisher(self):
+        pump = PUMP.read_text(encoding='utf-8')
+        states = dmi_states(ICON)
+        for state in ('fire_hose_reel', 'fire_hose_reel_out'):
+            self.assertIn('"%s"' % state, pump)
+            self.assertEqual(states.get(state), '1')
+        # The reel has no store of its own and never counts a puddle as plumbing.
+        reel = pump[pump.index('\n/obj/structure/fire_pump/reel\n'):]
+        self.assertIn('max_water = 0', reel)
+        self.assertIn('/obj/structure/sink/puddle', reel)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        lines = [line for line in recipes.splitlines()
+                 if line.startswith('RECIPE: ') and line.split(',')[2] == '/obj/structure/fire_pump/reel']
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(len(lines[0][len('RECIPE: '):].split(',')), 13)
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertIn('"/obj/structure/fire_pump/reel" = "machined_tools"', nodes)
+        tools = (ROOT / 'code/game/objects/items/weapons/tools.dm').read_text(encoding='utf-8')
+        start = tools.index('/obj/item/weapon/reagent_containers/glass/fire_extinguisher\n')
+        ext = tools[start:tools.index(' * Screwdriver', start)]
+        self.assertIn('fire_jet_blocked(T)', ext)
+        self.assertIn('for (var/mob/living/L in T)', ext)
+        self.assertIn('!isturf(target) && !isturf(target.loc)', ext)
+        self.assertNotIn('spawn', ext)
+
 
 if __name__ == '__main__':
     unittest.main()

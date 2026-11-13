@@ -45,6 +45,8 @@ var/fire_runtime_error = FALSE
 		fire_blanket_checks()
 		fire_hook_checks()
 		fire_pump_checks()
+		fire_reel_checks()
+		fire_extinguisher_checks()
 		fire_recipe_checks()
 	catch(var/exception/e)
 		fire_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -185,6 +187,7 @@ var/fire_runtime_error = FALSE
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater/flapper") == "primitive_construction", "the fire flapper is Primitive Construction knowledge")
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_hook") == "iron_tools", "the fire hook is Iron Tools knowledge")
 	fire_check(get_recipe_node_req("/obj/structure/fire_pump") == "wagons_ships", "the hand pump fire engine is Wagons & Ships knowledge")
+	fire_check(get_recipe_node_req("/obj/structure/fire_pump/reel") == "machined_tools", "the fire hose reel is Machined Tools knowledge")
 
 /proc/fire_water_checks()
 	var/mob/living/fire_tester/U = new(locate(10, 15, 1))
@@ -233,7 +236,7 @@ var/fire_runtime_error = FALSE
 	fire_check(!V.on_fire, "a full bucket puts out a person burning on the tile")
 	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/E = new(site)
 	F = new(site)
-	fire_check(!F.attackby(E, U) && E.reagents.get_reagent_amount("water") == 30, "the extinguisher is not emptied by clicking the fire")
+	fire_check(!F.attackby(E, U) && E.reagents.get_reagent_amount("water") == 60, "the extinguisher is not emptied by clicking the fire")
 	qdel(F)
 	qdel(E)
 	qdel(V)
@@ -436,4 +439,97 @@ var/fire_runtime_error = FALSE
 	qdel(P)
 	fire_check(QDELETED(N), "the nozzle goes with its engine")
 	qdel(V)
+	qdel(U)
+
+/obj/structure/sink/fire_probe/New()
+	return
+/obj/structure/sink/puddle/fire_probe/New()
+	return
+
+/proc/fire_reel_checks()
+	var/mob/living/fire_tester/U = new(locate(14, 17, 1))
+	var/obj/structure/fire_pump/reel/R = new(locate(14, 18, 1))
+	fire_check(R.anchored && !R.density && R.hose_length == 7 && R.icon_state == "fire_hose_reel", "a hose reel is fixed in place with a long hose")
+	var/obj/item/weapon/fire_nozzle/N = R.get_nozzle()
+	fire_hold(U, N)
+	R.update_icon()
+	fire_check(R.icon_state == "fire_hose_reel_out", "the drum shows bare while the hose is out")
+	var/turf/site = locate(17, 17, 1)
+	var/obj/effect/fire/F = new(site)
+	fire_check(R.water_left() == 0 && !N.spray(site, U) && !QDELETED(F), "with no sink or well beside it the reel gives no water")
+	var/obj/structure/sink/puddle/fire_probe/P = new(locate(15, 18, 1))
+	P.volume = 500
+	fire_check(R.water_left() == 0, "a puddle is not a water supply")
+	qdel(P)
+	var/obj/structure/sink/fire_probe/far = new(locate(16, 18, 1))
+	far.volume = 500
+	fire_check(R.water_left() == 0, "a sink two tiles away is not plumbed in")
+	qdel(far)
+	var/obj/structure/sink/fire_probe/S = new(locate(15, 18, 1))
+	S.volume = 30
+	N.next_spray = 0
+	fire_check(R.water_left() == 30 && N.spray(site, U) && QDELETED(F) && S.volume == 10, "a jet draws twenty water from the sink beside the reel")
+	F = new(site)
+	N.next_spray = 0
+	fire_check(!N.spray(site, U) && !QDELETED(F) && S.volume == 10, "a sink that is nearly dry gives no jet")
+	S.volume = 100
+	S.dry = TRUE
+	fire_check(R.water_left() == 0, "a dried-up sink gives nothing")
+	S.dry = FALSE
+	var/obj/item/weapon/reagent_containers/glass/bucket/K = new(locate(13, 17, 1))
+	K.reagents.add_reagent("water", 40)
+	R.attackby(K, U)
+	fire_check(R.water == 0 && K.reagents.get_reagent_amount("water") == 40, "a reel has no tub to pour water into")
+	qdel(K)
+	// The hose is long but not endless.
+	U.loc = locate(7, 18, 1)
+	N.next_spray = 0
+	fire_check(N.spray(locate(5, 18, 1), U) && S.volume == 80, "seven tiles from the reel it still sprays")
+	U.loc = locate(6, 18, 1)
+	N.next_spray = 0
+	fire_check(!N.spray(locate(5, 18, 1), U) && N.loc == R && R.icon_state == "fire_hose_reel", "eight tiles out the hose winds back onto the drum")
+	qdel(F)
+	qdel(S)
+	qdel(R)
+	qdel(U)
+
+/proc/fire_extinguisher_checks()
+	var/mob/living/fire_tester/U = new(locate(3, 3, 1))
+	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/E = new(null)
+	fire_hold(U, E)
+	fire_check(E.reagents.get_reagent_amount("water") == 60 && E.max_range == 3, "a new extinguisher is full, twelve bursts")
+	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/ww2/E2 = new(null)
+	var/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty/E3 = new(null)
+	fire_check(E2.reagents.get_reagent_amount("water") == 60 && E3.reagents.total_volume == 0, "the old pattern is full too and a newly made one is empty")
+	qdel(E2)
+	qdel(E3)
+	var/obj/effect/fire/F1 = new(locate(4, 3, 1))
+	var/obj/effect/fire/F3 = new(locate(6, 3, 1))
+	var/obj/effect/fire/F4 = new(locate(7, 3, 1))
+	var/mob/living/fire_tester/V = new(locate(5, 3, 1))
+	V.fire_stacks = 5
+	V.on_fire = TRUE
+	fire_check(E.process_foam(U, EAST, locate(9, 3, 1)) && QDELETED(F1) && QDELETED(F3) && !QDELETED(F4) && !V.on_fire, "a burst clears three tiles in a line and anyone burning on them")
+	fire_check(E.reagents.get_reagent_amount("water") == 55 && (locate(/obj/effect/decal/cleanable/foam) in locate(6, 3, 1)) && !(locate(/obj/effect/decal/cleanable/foam) in locate(7, 3, 1)), "it uses five water and leaves foam only where it reached")
+	// A wall stops the burst.
+	var/obj/covers/fire_probe_wall/solid/W = new(locate(3, 5, 1))
+	var/obj/effect/fire/behind = new(locate(3, 6, 1))
+	var/obj/effect/fire/before = new(locate(3, 4, 1))
+	E.process_foam(U, NORTH, locate(3, 6, 1))
+	fire_check(QDELETED(before) && !QDELETED(behind), "a wall stops the burst")
+	qdel(W)
+	qdel(behind)
+	// Clicks that are not out in the world do nothing.
+	var/obj/item/weapon/fire_beater/held = new(U)
+	E.lastfire = 0
+	E.fire(U, EAST, held)
+	fire_check(E.reagents.get_reagent_amount("water") == 50, "clicking something you carry does not spray")
+	qdel(held)
+	E.reagents.clear_reagents()
+	F1 = new(locate(4, 3, 1))
+	fire_check(!E.process_foam(U, EAST, F1) && !QDELETED(F1), "an empty extinguisher does nothing")
+	qdel(F1)
+	qdel(F4)
+	qdel(V)
+	qdel(E)
 	qdel(U)
