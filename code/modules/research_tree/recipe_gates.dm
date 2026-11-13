@@ -74,7 +74,8 @@ var/global/list/basic_crafting_recipes = list()
 	if (is_research_essential_recipe(result_path_string))
 		return crafting_node_world_allowed(H.civilization, node_id)
 	// A crude experimental machine for a capstone demonstration (demonstrations.dm).
-	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string)
+	// Or a prototype of a subject the actor's book is a third into (subject_prototypes.dm).
+	return crafting_node_allowed(H, node_id) || demonstration_kit_allowed(H, result_path_string) || subject_prototype_allowed(H, result_path_string)
 
 // The only recipes that skip personal manuals are the ones needed to reach the
 // next research level: the research bench, the legacy research desk and every
