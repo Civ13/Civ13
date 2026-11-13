@@ -70,14 +70,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3b2d087833853f9884475ce1d2efe2e84255deee'
+WIKI_REVIEWED_REVISION = '74bf35ea0eefc998dcee0b2972924c94edffb2f2'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('393abbe89696cf0fcf4c4792b1032e1835a8098da3ea8d2be76bf213c1ac55b5', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('e774a84e516a835946a240e3e53db236f8ecf4a6c563d8b5b0f630b91ac58892', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('957ba73f963c2956604252fe154de3f744177a125e09609194190943325c3193', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('3a05dab368c14a62d36a9411b4a6a71fa5cb618cd7a6639be0ecfae36a217955', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('d1f1d1c67287c95780dd70c94e8783f830c8a126afe49e49e0d749d77abc7d95', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('fdb0468074e691d8255017e340cf9530d5c91841b58d9ee4ded3424ad0c6237e', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
@@ -85,7 +85,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Fishing.md': ('42d61537bcddf488dfc0ea111482a32d7a1ece8e56ce6486ab5fa99ce81902ef', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('038a5f5d2ac9aa50cdf7bbe3953756ce438dd2f3b602b29c23709f369189fe17', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('ba0a13d4a42cb2eb2c928994cef176a298a6ce3a3ddd73d30fda8b114c0037d3', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('6c97f7d1b969741ed405953bafa199058aed9f26c6f80b4cea124aea4df8cc14', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('4a28f61e9133aec8e6a92849139ade14bd676fd39c9b00cf3fbee09efde0313e', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('f962a648103ad3d248058e89c60bb7c46e409d710a134b85c3b5a2e2bb2abdc8', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Weapons.md': ('e154c5b469a575862290858ba16da17b2bbabff1166b915faf425227e36f0368', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Weapons.md': ('ac094346d9e3a42ad912ee2ef525f4102d676258e6aeb4660a931185656a676e', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('3df3be9ca6ed544b5a97d7531e93f7fdde15c1d824a5635b8ba35a8688f15c8b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('512e26c2ec469aec84c698fab9219787d5f08a61520b45e64a4bb1009c328832', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
