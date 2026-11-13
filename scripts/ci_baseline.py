@@ -1847,6 +1847,11 @@ SUITES = {
         'paths': ('tests/standby_prepare/', 'code/modules/persistence/standby_prepare.dm'),
         'shared_paths': ('code/setup.dm', 'code/modules/persistence/nomads_lifecycle.dm',
             'code/modules/persistence/functions.dm', 'civ13.dme')},
+    # Where players have been; saves leave out wild animals nobody has been near.
+    'visited_areas': {'files': ('tests/visited_areas/test_visited_areas.py',),
+        'paths': ('tests/visited_areas/', 'code/modules/persistence/visited_areas.dm'),
+        'shared_paths': ('code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+            'code/modules/persistence/loading.dm', 'civ13.dme')},
     'last_save_status': {'files': ('tests/last_save_status/test_last_save.py',),
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',

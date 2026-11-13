@@ -1395,6 +1395,7 @@
 #include "code\modules\persistence\shard_group.dm"
 #include "code\modules\persistence\shutdown_notice.dm"
 #include "code\modules\persistence\standby_prepare.dm"
+#include "code\modules\persistence\visited_areas.dm"
 #include "code\modules\persistence\stream\level_stream.dm"
 #include "code\modules\persistence\stream\save_stream.dm"
 #include "code\modules\persistence\transfer_bridge.dm"

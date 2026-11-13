@@ -606,6 +606,8 @@ map_storage
 		// validation reads these instead of walking the files back.
 		list/saving_candidate_structure
 		var/saving_z = 0
+		// Wild animals this level's save left out (visited_areas.dm), by \ref.
+		var/list/saving_skipped_wildlife = list()
 		var/last_error = null
 		// The last_error a failed save export set. A save failure leaves the
 		// world as it was, so it must not hold character recovery the way a
@@ -635,6 +637,7 @@ map_storage
 	if(key == "human_save_roots") return TRUE
 #endif
 	if(key == "consecutive_save_failures") return TRUE
+	if(key == "saving_skipped_wildlife") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas", "validated_roof_walk_levels", "validated_reachable_entries", "validated_entries_trusted")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
@@ -1478,6 +1481,34 @@ var/global/world_save_notice_started = null
 /map_storage/proc/transfer_loaded(list/round_state)
 	return
 
+// Where players have been (visited_areas.dm); isolated fixtures keep these
+// inert stubs and their saves carry no "visited" record.
+/map_storage/proc/visited_capture()
+	return null
+
+/map_storage/proc/visited_loaded(list/round_state)
+	return
+
+// TRUE for a wild animal the save leaves out because no player has been near
+// its chunk (visited_areas.dm); fixtures keep every animal.
+/map_storage/proc/save_skips_wildlife(atom/movable/A)
+	return FALSE
+
+#define VISITED_CHUNK 16
+// Shape only: "levels" holds one "0"/"1" text per saved level, one character
+// per VISITED_CHUNK x VISITED_CHUNK chunk, row by row.
+/proc/valid_visited_record(list/record, maxx, maxy, maxz)
+	if(!islist(record) || record.len != 4 || record["version"] != 1 || record["chunk"] != VISITED_CHUNK) return FALSE
+	if(!isnum(record["since"]) || record["since"] <= 0) return FALSE
+	var/list/levels = record["levels"]
+	if(!islist(levels) || levels.len != maxz) return FALSE
+	var/cells = -round(-maxx / VISITED_CHUNK) * -round(-maxy / VISITED_CHUNK)
+	for(var/z = 1, z <= maxz, z++)
+		var/row = levels["[z]"]
+		if(!istext(row) || length(row) != cells) return FALSE
+		if(length(replacetext(replacetext(row, "0", ""), "1", ""))) return FALSE
+	return TRUE
+
 // Dug cave levels (multiz/dug_underground.dm) rebuild their lighting after a
 // load; isolated fixtures keep this inert stub.
 /map_storage/proc/restore_dug_levels()
@@ -1511,11 +1542,13 @@ var/global/world_save_notice_started = null
 	var/has_debug_recovery = islist(state) && ("debug_recovery" in state)
 	var/has_transfer = islist(state) && ("transfer" in state)
 	var/has_saved_at = islist(state) && ("saved_at" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_visited = islist(state) && ("visited" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links + has_debug_recovery + has_transfer + has_saved_at + has_visited || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_debug_recovery && !valid_debug_recovery_audit(state["debug_recovery"], marker)) throw EXCEPTION("Invalid debug recovery audit")
 	if(has_transfer && !valid_transfer_capture(state["transfer"])) throw EXCEPTION("Invalid transfer capture")
 	if(has_saved_at && !valid_persistence_save_stamp(state["saved_at"])) throw EXCEPTION("Invalid save time")
+	if(has_visited && !valid_visited_record(state["visited"], world.maxx, world.maxy, save_validation_maxz())) throw EXCEPTION("Invalid visited areas record")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(has_level_links) validate_level_link_rows(state["level_links"])
