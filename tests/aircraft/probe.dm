@@ -616,6 +616,47 @@ var/aircraft_runtime_error = FALSE
 		qdel(cabin)
 	else
 		aircraft_check(FALSE, "the cabin plane builds")
+	// The trainer turns in a 3x3 square; the cargo plane carries cargo bays.
+	aircraft_check(hangar.model_size("Trainer") == 3 && hangar.costs("Trainer")["steel"] == 35 && hangar.model_size("Cargo plane") == 4 && hangar.costs("Cargo plane")["steel"] == 60, "the hangar also offers the trainer (3x3) and the cargo plane")
+	var/list/trainer_layout = hangar.project_layout("Trainer")
+	aircraft_check(trainer_layout && trainer_layout.len == 9 && ("1,1" in trainer_layout) && ("3,3" in trainer_layout) && !("4,1" in trainer_layout), "a trainer built piece by piece fills the 3x3 bay")
+	aircraft_clear_ground(13, 29, 18, 34)
+	var/obj/structure/vehicleparts/axis/aircraft/trainer = build_aircraft_model("Trainer", locate(14, 30, 1))
+	if (istype(trainer))
+		var/tseats = 0
+		for (var/obj/structure/vehicleparts/frame/F in trainer.frames())
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				tseats++
+		aircraft_check(trainer.frames().len == 9 && trainer.components.len == 9 && trainer.maxdist == 3 && tseats == 2 && trainer.takeoff_roll == 6, "the trainer has nine frames, two seats and the shortest roll ([trainer.frames().len] frames, maxdist [trainer.maxdist], [tseats] seats)")
+		trainer.engine.on = TRUE
+		trainer.moving = TRUE
+		trainer.currentspeed = 1
+		trainer.wheel.lastdirchange = world.time - 1
+		aircraft_check(trainer.wheel.turndir(null, "right") && trainer.dir == WEST, "the trainer turns within its 3x3 square")
+		for (var/atom/movable/part in trainer.components.Copy())
+			if (part != trainer)
+				qdel(part)
+		aircraft_clear_ground(13, 29, 18, 34)
+		qdel(trainer)
+	else
+		aircraft_check(FALSE, "the trainer builds")
+	var/obj/structure/vehicleparts/axis/aircraft/freighter = build_aircraft_model("Cargo plane", locate(14, 30, 1))
+	if (istype(freighter))
+		var/bays = 0
+		var/cseats = 0
+		for (var/obj/structure/vehicleparts/frame/F in freighter.frames())
+			for (var/obj/structure/table/carboot/aircraft_cargo/bay in F.loc)
+				bays++
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				cseats++
+		aircraft_check(freighter.frames().len == 12 && bays == 3 && cseats == 1 && freighter.takeoff_roll == 9, "the cargo plane has three cargo bays behind the pilot ([bays] bays, [cseats] seats)")
+		for (var/atom/movable/part in freighter.components.Copy())
+			if (part != freighter)
+				qdel(part)
+		aircraft_clear_ground(13, 29, 18, 34)
+		qdel(freighter)
+	else
+		aircraft_check(FALSE, "the cargo plane builds")
 
 	// Enough hits break the airframe up: the plane comes down where it is.
 	if (istype(built))

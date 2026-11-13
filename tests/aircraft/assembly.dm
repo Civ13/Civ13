@@ -20,6 +20,17 @@
 					F.broken = TRUE
 				qdel(M)
 
+// Clears what stands on z1 in the box, keeping roads and runway covers.
+/proc/aircraft_clear_ground(x1, y1, x2, y2)
+	for (var/turf/T in block(locate(x1, y1, 1), locate(x2, y2, 1)))
+		for (var/obj/O in T)
+			if (istype(O, /obj/covers))
+				continue
+			if (istype(O, /obj/structure/vehicleparts/frame))
+				var/obj/structure/vehicleparts/frame/F = O
+				F.broken = TRUE
+			qdel(O)
+
 /proc/aircraft_assembly_checks()
 	// A 3-wide, 4-long airframe at x 12-14, y 10-13; its front will be south.
 	aircraft_lay_sections(12, 10, 14, 13)
