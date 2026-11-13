@@ -320,6 +320,7 @@
       "code/modules/client/asset_cache.dm": 1,
       "code/modules/client/client_procs.dm": 4,
       "code/modules/client/preferencesSQLite/preferences.dm": 1,
+      "code/modules/craft/deck_berth.dm": 1,
       "code/modules/dmm_suite/reader.dm": 1,
       "code/modules/ecology/ecology_spawning.dm": 1,
       "code/modules/ecology/flora_regrowth.dm": 1,

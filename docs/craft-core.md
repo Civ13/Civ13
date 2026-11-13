@@ -394,6 +394,32 @@ turns; the result equals `axis.do_matrix()`. `craft_overhang(turfs)` finds a
 vehicle with frames both on and off the craft, and both move planners
 (`built.plan()`, `vessel.plan_move()`) refuse while one stands half aboard.
 
+## Boats carried on ships
+
+`craft/deck_berth.dm`: `/obj/structure/berth/deck` is the boat davit (recipe
+"boat davit", wagons and ships research), a berth that stands on a ship's
+deck. Its `cradle()` is `berth_length` tiles ahead of it by `berth_beam` to
+the right of that way, so it turns with the deck. `hoist_plan(axis)` and
+`launch_plan(axis, way)` write nothing and answer with offsets or the reason
+in plain words; `hoist()` and `launch()` move the whole boat with
+`axis.shift_vehicle_level()`, crew and cargo included. A boat is hoisted from
+within `DECK_BERTH_REACH` tiles on her waterline level (`sea_z()`) and
+lowered to the first clear water within `DECK_BERTH_SWING` tiles of her side.
+A boat in a cradle refuses to sail (`axis.in_cradle()`).
+
+Whatever vehicle stands wholly in a cradle is berthed aboard: `refresh()`
+sets the davit's `occupant`, the vehicle craft's `berth` and, through
+`craft.take_aboard()` / `set_down()`, the `carrier` and `carried` links
+(rings refused). Nothing of that is saved; it is found again from what
+stands there. After each hop `craft.on_hop()` calls `tell_carried()`, which
+calls `on_carried()` on every carried craft in nesting order: the hook for
+anything a carried craft must do when its carrier moved it. The sea chart
+lists carried boats as "In her davits" and leaves them out of the boats in
+sight. A new kind of deck berth (an aircraft tie-down, a pod port) is a
+subtype that changes `cradle()` or what `vehicle_in()` accepts.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/deck_berth_probe.dm 300
+
 ## Tow lines
 
 `craft/vehicle_tow.dm`: a `/datum/vehicle_tow` joins a tug axis and a towed

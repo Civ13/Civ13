@@ -148,6 +148,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	if (!token || token.chart != S)
 		return "She is not on this chart."
 	var/list/lines = list("<b>Sea chart:</b> the [name] lies in square [S.square_name(token.x, token.y)] ([here.x], [here.y])[berth ? ", moored at [berth.berth_name()]" : ""][running_dark ? ". She runs dark" : ""][grapple ? ". Grappling lines hold her" : ""].")
+	var/list/in_davits = carried_names()
+	if (in_davits.len)
+		lines += "In her davits: [jointext(in_davits, ", ")]."
 	var/list/ships = list()
 	var/list/harbours = list()
 	for (var/datum/chart_token/T in S.tokens)
@@ -206,6 +209,9 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	for (var/obj/structure/vehicleparts/axis/ship/S in ship_axes)
 		var/turf/T = get_turf(S)
 		if (!T || T.z != surface.z || get_dist(T, surface) > reach)
+			continue
+		// A boat hoisted into a davit's cradle is part of the ship that carries it.
+		if (S.in_cradle())
 			continue
 		. += "Ship: [sea_contact_name(S, party)], [get_dist(T, surface)] tiles [submarine_bearing(surface, T)], heading [dir2text(S.dir)][S.moving ? "" : ", stopped"]."
 
