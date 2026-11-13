@@ -1818,14 +1818,6 @@
 	bound_height = 64
 	crushable = FALSE
 
-/obj/structure/machinery/construction_crane/New()
-	if (dir == NORTH || dir == EAST)//Need to find another way to displace bounds than bound_x;bound_y
-		bound_width = 64
-		bound_height = 64
-	else
-		bound_width = 64
-		bound_height = 64
-
 /obj/structure/truck
 	name = "transport truck"
 	desc = "Doesn't look like this is moving soon."

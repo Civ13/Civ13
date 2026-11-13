@@ -545,7 +545,7 @@
 	min_positions = 2
 	max_positions = 5
 
-/datum/job/american/pmcs/serg/equip(var/mob/living/human/H)
+/datum/job/civilian/lab/FacSci/equip(var/mob/living/human/H)
 //shoes
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/color/white(H), slot_shoes)
 

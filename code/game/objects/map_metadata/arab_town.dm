@@ -184,20 +184,20 @@ var/no_loop_arab = FALSE
 	switch (define)
 		if (ARAB)
 			return "Insurgent"
-/obj/map_metadata/arab_town/roundend_condition_def2army(define)
+/obj/map_metadata/arab_town_2/roundend_condition_def2army(define)
 	..()
 	switch (define)
 		if (ARAB)
 			return "Insurgents"
 
-/obj/map_metadata/arab_town/army2name(army)
+/obj/map_metadata/arab_town_2/army2name(army)
 	..()
 	switch (army)
 		if ("Insurgents")
 			return "Insurgent"
 
 
-/obj/map_metadata/arab_town/cross_message(faction)
+/obj/map_metadata/arab_town_2/cross_message(faction)
 	if (faction == AMERICAN)
 		return "<font size = 4>Both factions may now cross the invisible wall!</font>"
 	else if (faction == ARAB)
@@ -205,7 +205,7 @@ var/no_loop_arab = FALSE
 	else
 		return ""
 
-/obj/map_metadata/arab_town/reverse_cross_message(faction)
+/obj/map_metadata/arab_town_2/reverse_cross_message(faction)
 	if (faction == AMERICAN)
 		return "<span class = 'userdanger'>Both factions may no longer cross the invisible wall!</span>"
 	else if (faction == ARAB)

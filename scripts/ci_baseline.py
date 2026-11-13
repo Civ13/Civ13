@@ -796,13 +796,17 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
-    # Per-round battle map variation inserts: generator freshness, slot bounds,
-    # open-ground placement against the base maps and loader rules; no BYOND runtime.
+    # Same-type duplicate overrides whose earlier body is dead; source scan of
+    # code/, run by full and preflight sweeps (not per-file selection).
+    'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
+        'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
         'paths': ('tests/grace_wall/',), 'shared_paths': (
             'code/game/objects/map_metadata/',)},
+    # Per-round battle map variation inserts: generator freshness, slot bounds,
+    # open-ground placement against the base maps and loader rules; no BYOND runtime.
     'map_variations': {'files': ('tests/map_variations/test_map_variations.py',),
         'paths': ('tests/map_variations/', 'maps/zones/variations/',
                   'code/modules/map_variations/'), 'shared_paths': (
