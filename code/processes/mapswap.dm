@@ -165,6 +165,7 @@
 					MAP_GLADIATORS = 0,
 					MAP_TEUTOBURG = 8,
 					MAP_HERACLEA = 8,
+					MAP_IDES_OF_MARCH = 0,
 					MAP_SAMMIRHAYEED = 10,
 					MAP_TWOTRIBES = 0,
 				)

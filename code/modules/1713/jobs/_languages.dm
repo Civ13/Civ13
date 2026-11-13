@@ -269,6 +269,10 @@
 				for (var/datum/language/russian/RR in H.languages)
 					H.default_language = RR
 					break
+			else if (map.ID == MAP_IDES_OF_MARCH)
+				for (var/datum/language/latin/LA in H.languages)
+					H.default_language = LA
+					break
 			else
 				if (map.ID == MAP_WHITERUN)
 					for (var/datum/language/oldnorse/N in H.languages)
