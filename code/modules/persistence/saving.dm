@@ -20,14 +20,20 @@
 	return FALSE
 
 /map_storage/proc/save_work_check()
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	// Progress for the stall watchdog (save_watchdog.dm).
+	if(operation) operation.progress_at = world.time
 	if(moving_save_chunk)
 		moving_save_chunk.check()
 		return
+	// The watchdog gave up on a save that stopped advancing: fail it here so
+	// the ordinary failure path cleans up and a later save can run.
+	if(operation && operation.abort_reason)
+		throw EXCEPTION("World save stopped by the stall watchdog: [operation.abort_reason]")
 	saving_work++
 	// Shutdown save: the server stops right after it and players were warned,
 	// so yield only to queued work instead of giving up whole ticks (about
 	// 20-40% faster on Gaia's busiest level).
-	var/datum/persistence_world_operation/operation = persistence_active_operation
 	// An unattended save (no client connected when its level started) has
 	// nobody to keep responsive either, so it yields the same way.
 	var/shutdown = operation && (operation.shutdown_save || saving_unattended)
@@ -132,6 +138,7 @@
 	log_startup_progress("	Saved metadata.")
 	save_phase_started = persistence_save_phase_log("metadata and backup", save_phase_started)
 	for(var/A = 1, A <= world.maxz, A++)
+		if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		saving_z = A
 		saving_unattended = persistence_save_unattended()
 		// Freeze this level's players only while it is captured (restart_transaction.dm).
@@ -201,6 +208,8 @@
 				if(turf_grid) turf_grid += saved_turf_type
 				if(saving_segments) saving_segments.rotate_if_full()
 			if(sparse_turf) save_work_check()
+			// A save the watchdog released may wake here; stop before another row.
+			if(operation.abandoned) throw EXCEPTION("World save was abandoned by the stall watchdog")
 		if(sparse_turf)
 			savefile["/sparse/cells"] << sparse_cells
 			log_startup_progress("	Sparse z-level [A]: [sparse_cells] of [world.maxx * world.maxy] cells differ from [sparse_turf].")
@@ -255,6 +264,8 @@
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	operation.validate_human_spatial_candidates()
 #endif
+	// Never publish a candidate whose operation the stall watchdog released.
+	if(!operation.current(src, "save")) throw EXCEPTION("World save lost its operation before the completion marker")
 	operation.diagnostic_phase = "write_marker"
 	// Transfer effects applied in memory, so the committed save can confirm them.
 	var/list/transfer_capture = transfer_capture(generation)
@@ -311,6 +322,11 @@
 // across ticks, so world.timeofday, not world.cpu, measures what admins wait.
 // Returns the start of the next phase.
 /proc/persistence_save_phase_log(phase, started)
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(operation)
+		operation.progress_at = world.time
+		operation.phase_at = world.time
+		operation.last_phase = phase
 	var/now = world.timeofday
 	var/elapsed = now - started
 	if(elapsed < 0) elapsed += 864000 // midnight wrap

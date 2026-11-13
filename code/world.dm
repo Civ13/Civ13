@@ -561,6 +561,8 @@ var/global/persistence_reboot_due = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
+			// A save that stopped advancing is reported, then released (save_watchdog.dm).
+			persistence_save_watchdog()
 			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
 				// First save is one full interval after the round starts, not at round start.
 				if (!nextsave)
