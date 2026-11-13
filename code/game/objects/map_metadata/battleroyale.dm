@@ -28,6 +28,7 @@
 	gamemode = "Battleroyale"
 	required_players = 6
 	grace_wall_timer = 1200
+	var/zone_auto_close = TRUE
 
 /obj/map_metadata/battleroyale/job_enabled_specialcheck(var/datum/job/J)
 	if (J.is_deathmatch && J.is_1713)
@@ -73,6 +74,8 @@
 
 /obj/map_metadata/battleroyale/New()
 	..()
+	if (!zone_auto_close)
+		return
 	spawn(1000)
 		closing_areas()
 

@@ -86,84 +86,17 @@ var/global/FREQM = rand(101,120)
 	interact(attacker)
 
 /obj/structure/radio/interact(var/mob/m)
-	if (user)
-		if (get_dist(src, user) > 1)
-			user = null
-	restart:
-	if (user && user != m)
-		if (user.client)
-			return
-		else
-			user = null
-			goto restart
-	else
-		user = m
-		do_html(user)
+	radio_interact(src, m)
 
 /obj/structure/radio/Topic(href, href_list, hsrc)
-
-	var/mob/user = usr
-
-	if (!user || user.lying)
-		return
-
-	user.face_atom(src)
-
-	if (!locate(user) in range(1,src))
-		to_chat(user, "<span class = 'danger'>Get close to the [src] to use it.</span>")
-		return FALSE
-
-	if (!user.can_use_hands())
-		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
-		return FALSE
-
-	if (href_list["set_frequency"])
-		if (multifreq)
-			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist_selectable)
-			if (!input || input == freq)
-				return
-			freq = input
-			to_chat(user, "Frequency set to <b>[freq]</b>.")
-			do_html(user)
-			return
-
-		else
-			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
-			if (!input)
-				return
-			freq = sanitize_integer(input, min=150, max=300, default=150)
-			to_chat(user, "Frequency set to [freq]kHz.")
-			desc = "Used to communicate with distant places. Set to [freq]kHz."
-			do_html(user)
-			return
-
-	if (href_list["receiver"])
-		if (receiver)
-			receiver_on = !receiver_on
-			do_html(user)
-			return
-
-	if (href_list["transmitter"])
-		if (transmitter)
-			transmitter_on = !transmitter_on
-			do_html(user)
-			return
-
-
-	do_html(user)
-
+	radio_topic(src, usr, href_list)
 
 /obj/structure/radio/verb/name_radio()
 	set category = null
 	set name = "Name"
 	set desc = "Name this radio."
-
 	set src in view(1)
-	var/yn = player_input(usr, "Name this radio?", null, null, "anything", list("Yes", "No"), FALSE)
-	if (yn == "Yes")
-		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
-		name = sanitize(_name, 20)
-	return
+	radio_name_prompt(src, usr)
 
 /obj/structure/radio/proc/do_html(var/mob/m)
 	var/style = "Radio Receiver/Transmitter"
@@ -296,11 +229,88 @@ var/global/FREQM = rand(101,120)
 				"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
 /obj/structure/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
+	radio_broadcast(src, msg, speaker, verbage)
 
+// Shared by /obj/structure/radio and /obj/item/weapon/radio. The two sit in
+// different type trees but carry the same tuning vars (freq, receiver,
+// transmitter, receiver_on, transmitter_on, multifreq, multifreqlist,
+// multifreqlist_selectable, user) and procs (do_html, check_freq), so R's vars
+// are read by name.
+/proc/radio_interact(obj/R, mob/m)
+	if (R:user)
+		if (get_dist(R, R:user) > 1)
+			R:user = null
+	restart:
+	var/mob/current = R:user
+	if (current && current != m)
+		if (current.client)
+			return
+		else
+			R:user = null
+			goto restart
+	else
+		R:user = m
+		R:do_html(m)
+
+/proc/radio_topic(obj/R, mob/user, list/href_list)
+	if (!user || user.lying)
+		return
+
+	user.face_atom(R)
+
+	if (!locate(user) in range(1,R))
+		to_chat(user, "<span class = 'danger'>Get close to the [R] to use it.</span>")
+		return FALSE
+
+	if (!user.can_use_hands())
+		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
+		return FALSE
+
+	if (href_list["set_frequency"])
+		if (R:multifreq)
+			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", R:freq, R:multifreqlist_selectable)
+			if (!input || input == R:freq)
+				return
+			R:freq = input
+			to_chat(user, "Frequency set to <b>[R:freq]</b>.")
+			R:do_html(user)
+			return
+
+		else
+			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
+			if (!input)
+				return
+			R:freq = sanitize_integer(input, min=150, max=300, default=150)
+			to_chat(user, "Frequency set to [R:freq]kHz.")
+			R.desc = "Used to communicate with distant places. Set to [R:freq]kHz."
+			R:do_html(user)
+			return
+
+	if (href_list["receiver"])
+		if (R:receiver)
+			R:receiver_on = !R:receiver_on
+			R:do_html(user)
+			return
+
+	if (href_list["transmitter"])
+		if (R:transmitter)
+			R:transmitter_on = !R:transmitter_on
+			R:do_html(user)
+			return
+
+	R:do_html(user)
+
+/proc/radio_name_prompt(obj/R, mob/user)
+	var/yn = player_input(user, "Name this radio?", null, null, "anything", list("Yes", "No"), FALSE)
+	if (yn == "Yes")
+		var/_name = player_input(user, "What name?", null, null, "text", null, FALSE)
+		R.name = sanitize(_name, 20)
+
+/proc/radio_broadcast(obj/R, msg, mob/living/human/speaker, verbage = "says")
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
 		return
-	if (!transmitter || !transmitter_on)
+	if (!R:transmitter || !R:transmitter_on)
 		return
 	var/list/tried_mobs = list()
 
@@ -317,30 +327,29 @@ var/global/FREQM = rand(101,120)
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
+				if (R:check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, R)
 			for (var/obj/item/weapon/radio/radio in view(2,hearer))
 				if (isturf(radio.loc) && radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
+				if (R:check_freq(radio) && radio.receiver_on)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, R)
 			for (var/obj/item/weapon/radio/radio in hearer.contents)
 				if (radio.receiver_on)
 					radios |= radio
 				if (used_radios.Find(radio))
 					continue
 				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
-	// let observers hear it
+				if (R:check_freq(radio) && radio.receiver_on)
+					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, R)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
+		O.hear_radio(msg, verbage, speaker.default_language, speaker, R, R)
 	// other lands, through a keyed relay station (radio_relay.dm)
-	civ_relay_outbound(freq, speaker, msg, verbage)
+	civ_relay_outbound(R:freq, speaker, msg, verbage)
 
 //broadcasts an announcement on the Police/Emergency frequency
 /proc/global_broadcast(var/tfreq, var/msg)
@@ -585,81 +594,17 @@ var/global/FREQM = rand(101,120)
 	interact(user)
 
 /obj/item/weapon/radio/interact(var/mob/m)
-	if (user)
-		if (get_dist(src, user) > 1)
-			user = null
-	restart:
-	if (user && user != m)
-		if (user.client)
-			return
-		else
-			user = null
-			goto restart
-	else
-		user = m
-		do_html(user)
+	radio_interact(src, m)
 
 /obj/item/weapon/radio/Topic(href, href_list, hsrc)
-
-	var/mob/user = usr
-
-	if (!user || user.lying)
-		return
-
-	user.face_atom(src)
-
-	if (!locate(user) in range(1,src))
-		to_chat(user, "<span class = 'danger'>Get close to the [src] to use it.</span>")
-		return FALSE
-
-	if (!user.can_use_hands())
-		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
-		return FALSE
-
-	if (href_list["set_frequency"])
-		if (multifreq)
-			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", freq, multifreqlist_selectable)
-			if (!input || input == freq)
-				return
-			freq = input
-			to_chat(user, "Frequency set to <b>[freq]</b>.")
-			do_html(user)
-			return
-		else
-			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
-			if (!input)
-				return
-			freq = sanitize_integer(input, min=150, max=300, default=150)
-			to_chat(user, "Frequency set to [freq]kHz.")
-			desc = "Used to communicate with distant places. Set to [freq]kHz."
-			do_html(user)
-			return
-
-	if (href_list["receiver"])
-		if (receiver)
-			receiver_on = !receiver_on
-			do_html(user)
-			return
-
-	if (href_list["transmitter"])
-		if (transmitter)
-			transmitter_on = !transmitter_on
-			do_html(user)
-			return
-
-	do_html(user)
+	radio_topic(src, usr, href_list)
 
 /obj/item/weapon/radio/verb/name_radio()
 	set category = null
 	set name = "Name"
 	set desc = "Name this radio."
-
 	set src in view(1)
-	var/yn = player_input(usr, "Name this radio?", null, null, "anything", list("Yes", "No"), FALSE)
-	if (yn == "Yes")
-		var/_name = player_input(usr, "What name?", null, null, "text", null, FALSE)
-		name = sanitize(_name, 20)
-	return
+	radio_name_prompt(src, usr)
 
 /obj/item/weapon/radio/proc/do_html(var/mob/m)
 	var/style = "PORTABLE RADIO"
@@ -696,50 +641,7 @@ var/global/FREQM = rand(101,120)
 		"},  "window=artillery_window;border=1;can_close=1;can_resize=1;can_minimize=0;titlebar=1;size=500x500")
 
 /obj/item/weapon/radio/proc/broadcast(var/msg, var/mob/living/human/speaker, var/verbage = "says")
-
-	// ignore emotes.
-	if (dd_hasprefix(msg, "*"))
-		return
-	if (!transmitter || !transmitter_on)
-		return
-	var/list/tried_mobs = list()
-
-	for (var/mob/living/human/hearer in human_mob_list)
-		if (tried_mobs.Find(hearer))
-			continue
-		tried_mobs += hearer
-		var/list/used_radios = list()
-		if (hearer.stat == CONSCIOUS)
-			var/list/radios = list()
-			for (var/obj/structure/radio/radio in view(7, hearer))
-				if (radio.receiver_on)
-					radios |= radio
-				if (used_radios.Find(radio))
-					continue
-				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on && (radio.check_power() || radio.powerneeded == 0))
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
-			for (var/obj/item/weapon/radio/radio in view(2,hearer))
-				if (isturf(radio.loc) && radio.receiver_on)
-					radios |= radio
-				if (used_radios.Find(radio))
-					continue
-				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
-			for (var/obj/item/weapon/radio/radio in hearer.contents)
-				if (radio.receiver_on)
-					radios |= radio
-				if (used_radios.Find(radio))
-					continue
-				used_radios += radio
-				if (check_freq(radio) && radio.receiver_on)
-					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, src)
-	// let observers hear it
-	for (var/mob/observer/O in mob_list)
-		O.hear_radio(msg, verbage, speaker.default_language, speaker, src, src)
-	// other lands, through a keyed relay station (radio_relay.dm)
-	civ_relay_outbound(freq, speaker, msg, verbage)
+	radio_broadcast(src, msg, speaker, verbage)
 
 /obj/item/weapon/radio/galacticbattles
 	name = "portable communications backpack"

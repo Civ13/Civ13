@@ -85,6 +85,22 @@ def zone_errors(shared, maps):
     return errors
 
 
+def hunger_games_errors(hunger, royale, death, dmm):
+    errors = []
+    if not hunger.startswith('/obj/map_metadata/battleroyale/hunger_games\n'):
+        errors.append('Hunger Games must be a Battle Royale subtype')
+    for proc in ('save_awards', 'give_award'):
+        if f'/hunger_games/{proc}(' in hunger:
+            errors.append(f'Hunger Games copies {proc} again')
+    if '\tzone_auto_close = FALSE\n' not in hunger or 'if (!zone_auto_close)' not in royale:
+        errors.append('Hunger Games zones must not close on their own')
+    if death.count('give_award(client.ckey, real_name, alive_n_of_side(PIRATES))') != 1:
+        errors.append('a death must record one award entry')
+    if '/obj/map_metadata/battleroyale/hunger_games' not in dmm:
+        errors.append('the Hunger Games map must place the new type')
+    return errors
+
+
 class MapMetadataDedupe(unittest.TestCase):
     def setUp(self):
         self.campaign = (MAPS / 'campaign_new.dm').read_text(encoding='utf-8')
@@ -100,6 +116,11 @@ class MapMetadataDedupe(unittest.TestCase):
 
     def test_shrinking_zone_table_matches_original_branches(self):
         self.assertEqual(zone_errors(self.shared, self.maps), [])
+
+    def test_hunger_games_reuses_battle_royale(self):
+        death = (ROOT / 'code/game/mob/living/carbon/human/death.dm').read_text(encoding='utf-8')
+        dmm = (ROOT / 'maps/special/hunger_games.dmm').read_text(encoding='utf-8')
+        self.assertEqual(hunger_games_errors(self.maps['hungergames.dm'], self.maps['battleroyale.dm'], death, dmm), [])
 
     def test_shrinking_zone_detects_renamed_zone(self):
         altered = self.shared.replace('"Western"', '"West"', 1)
