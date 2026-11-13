@@ -1676,6 +1676,10 @@ SUITES = {
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
+    # Server Revision verb and admin Status line; the native fixture needs DreamMaker.
+    'server_build': {'files': ('tests/server_build/test_server_build.py',),
+        'paths': ('tests/server_build/', 'code/modules/server_build/'),
+        'shared_paths': ('code/modules/statpanel/statpanel.dm', 'civ13.dme', '.gitignore')},
     # Status tab Playing/Observing/Lobby counted from connected clients.
     'player_count_status': {'files': ('tests/player_count_status/test_player_count.py',),
         'paths': ('tests/player_count_status/',), 'shared_paths': ('code/game/mob/mob.dm',)},

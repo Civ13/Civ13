@@ -1891,6 +1891,7 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(host.built_revision(), NEWER)
         self.assertFalse(host.update_pending())
         self.assertEqual((live / 'config' / 'lifecycle-revision.txt').read_text().strip(), NEWER)
+        self.assertEqual(json.loads((live / 'config' / 'server-build.json').read_text())['revision'], NEWER)
         self.assertEqual(host.status()['build'], 'region.b.dmb')
         self.assertIn((['git', 'checkout', '--force', '--detach', NEWER], str(live)), self.machine.calls, 'the sources follow the build')
         self.assertTrue(host.running_file.exists())
