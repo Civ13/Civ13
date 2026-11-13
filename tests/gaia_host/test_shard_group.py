@@ -1610,6 +1610,97 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual((code, sorted(result['accepted'])), (0, ['deep', 'gaia']), result)
 
 
+    def offline_group(self):
+        """gaia runs, deep is stopped; both have a build of REVISION and NEWER is out."""
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        hosts = {name: self.host(group, name) for name in ('gaia', 'deep')}
+        for host in hosts.values():
+            host.log = lambda values: None
+            host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1720}
+        return group, hosts
+
+    def run_offline(self, *extra):
+        with mock.patch.object(shard_group, 'Platform', return_value=self.machine), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'update-offline'] + list(extra))
+        return code, json.loads(out.getvalue())
+
+    def test_update_offline_builds_and_installs_stopped_regions_and_leaves_running_ones(self):
+        group, hosts = self.offline_group()
+        code, result = self.run_offline()
+        self.assertEqual((0, ['deep'], {'gaia': 'running'}), (code, sorted(result['accepted']), result['skipped']), result)
+        self.assertEqual('stopped', result['accepted']['deep']['state'])
+        gaia, deep = hosts['gaia'], hosts['deep']
+        self.assertFalse(gaia.stage_lock.exists(), 'nothing is staged for the running region')
+        self.assertEqual(1, len(self.machine.detached) - 2, 'one worker: the stopped region\'s stage')
+        stage = self.machine.detached[-1]
+        self.assertEqual(['--worker', 'stage'], stage[-3:-1])
+        deep.work('stage', stage[-1])
+        self.assertEqual(['--worker', 'update'], self.machine.detached[-1][-3:-1], 'the ready stage is installed')
+        self.assertFalse(deep.install_marker.exists())
+        self.assertEqual('installing', deep.read_json(deep.stage_file)['install'])
+        deep.work('update', self.machine.detached[-1][-1])
+        self.assertEqual((NEWER, True), (deep.built_revision(), deep.read_state().get('staged')), deep.read_state())
+        self.assertEqual(1, self.compiles(self.base / 'regions' / 'deep'), 'installed by copying, not compiled again')
+        self.assertEqual(REVISION, gaia.built_revision(), 'the running region keeps its build')
+        self.assertEqual({1720}, self.machine.up)
+
+    def test_update_offline_never_wakes_an_asleep_region_and_lets_the_host_install_it(self):
+        group, hosts = self.offline_group()
+        gaia = hosts['gaia']
+        self.machine.pids = {77}
+        gaia.write_json(gaia.freeze_file, {'pid': 77, 'frozen_at': 0})
+        self.machine.up = {1720, 1721}  # deep runs this time
+        code, result = self.run_offline()
+        self.assertEqual((['gaia'], {'deep': 'running'}), (sorted(result['accepted']), result['skipped']), result)
+        self.assertEqual('asleep', result['accepted']['gaia']['state'])
+        self.assertTrue(gaia.frozen(), 'still asleep')
+        self.assertFalse(gaia.install_marker.exists(), 'the host service installs it while it sleeps')
+        gaia.work('stage', self.machine.detached[-1][-1])
+        self.assertEqual('ready', gaia.read_json(gaia.stage_file)['phase'])
+        self.assertEqual(['--worker', 'stage'], self.machine.detached[-1][-3:-1], 'no update was started')
+        self.assertTrue(gaia.update_pending())
+        with self.assertRaisesRegex(shard_group.Refused, 'asleep'):
+            gaia.request('update')
+        self.assertTrue(gaia.frozen(), 'a refused update does not wake it either')
+
+    def test_update_offline_leaves_a_region_that_started_while_building(self):
+        group, hosts = self.offline_group()
+        deep = hosts['deep']
+        code, result = self.run_offline('--region', 'deep')
+        self.assertEqual(['deep'], sorted(result['accepted']))
+        self.machine.up = {1720, 1721}  # someone started deep meanwhile
+        deep.work('stage', self.machine.detached[-1][-1])
+        self.assertEqual(['--worker', 'stage'], self.machine.detached[-1][-3:-1])
+        self.assertIn('started while', deep.read_json(deep.stage_file)['install'])
+        self.assertTrue(deep.update_pending(), 'it installs at its next empty restart instead')
+
+    def test_update_offline_joins_a_stage_already_running_and_skips_busy_regions(self):
+        group, hosts = self.offline_group()
+        deep = hosts['deep']
+        operation = deep.request_stage()['operation']
+        self.machine.up = set()
+        hosts['gaia'].lock.write_text('busy')
+        hosts['gaia'].record(action='stop', operation='x', phase='saving')
+        code, result = self.run_offline()
+        self.assertEqual({'gaia': 'busy: stop'}, result['skipped'], result)
+        self.assertTrue(result['accepted']['deep']['already_staging'])
+        deep.work('stage', operation)
+        self.assertEqual(['--worker', 'update'], self.machine.detached[-1][-3:-1], 'the running stage installs it')
+
+    def test_update_offline_with_everything_running_changes_nothing(self):
+        group, hosts = self.offline_group()
+        self.machine.up = {1720, 1721}
+        before = len(self.machine.detached)
+        code, result = self.run_offline()
+        self.assertEqual((0, {}, {'gaia': 'running', 'deep': 'running'}), (code, result['accepted'], result['skipped']))
+        self.assertEqual(before, len(self.machine.detached))
+
+
 class HandoverTests(unittest.TestCase):
     """handover: the staged build boots beside the running region, loads its save and takes over."""
     setUp = ShardGroupTests.setUp

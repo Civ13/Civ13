@@ -191,7 +191,7 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -399,6 +399,23 @@ public static class LocalHosting {
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script changed no region's epoch."
                     : "Epoch " + name + ": " + string.Join("; ", lines) + ".", false);
             }
+            if (action == "update-offline") {
+                // {"accepted": {id: {"state": "stopped" | "cold" | "asleep", "already_staging"?}}, "skipped": {id: why}}
+                var lines = new List<string>();
+                if (json.TryGetProperty("accepted", out var chosen) && chosen.ValueKind == JsonValueKind.Object)
+                    foreach (var region in chosen.EnumerateObject().Take(16)) {
+                        var state = region.Value.ValueKind == JsonValueKind.Object && Str(region.Value, "state") is { } known ? Lower(known) : "stopped";
+                        lines.Add(Clean(region.Name) + (state == "asleep" ? " (asleep: installs while it sleeps)" : " (" + state + ": installs once built)"));
+                    }
+                var left = new List<string>();
+                if (json.TryGetProperty("skipped", out var skipped) && skipped.ValueKind == JsonValueKind.Object)
+                    foreach (var region in skipped.EnumerateObject().Take(16))
+                        left.Add(Clean(region.Name) + " (" + (region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "skipped") + ")");
+                var text = lines.Count == 0 ? "No region needed updating while stopped or asleep."
+                    : "Building the latest update, one region at a time, for " + string.Join(", ", lines) + ".";
+                if (left.Count > 0) text += " Left alone: " + string.Join(", ", left) + ".";
+                return new ControlAnswer(true, text, lines.Count > 0);
+            }
             if (action == "setup") {
                 // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
                 var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
@@ -442,7 +459,9 @@ public static class LocalHosting {
         var text = "";
         if (entry.TryGetProperty("stage", out var stage) && stage.ValueKind == JsonValueKind.Object && Str(stage, "phase") is { } phase) {
             text = phase switch {
-                "ready" => Bool(stage, "pending") ? ", update built (ready to hand over)" : "",
+                // update-offline could not copy it in (the region started while it built): it waits for a restart.
+                "ready" => !Bool(stage, "pending") ? "" : Str(stage, "install") is { } install && install.StartsWith("not installed")
+                    ? ", update built (" + Short(install) + ")" : ", update built (ready to hand over)",
                 "current" => "",
                 "failed" => ", update build failed" + (Str(stage, "error") is { Length: > 0 } failed ? ": " + failed : ""),
                 _ => ", building update (" + Words(phase) + ")",

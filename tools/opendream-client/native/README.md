@@ -193,7 +193,9 @@ starts, update steps, control answers and port probes, so it launches nothing.
 ### One region and group status
 
 With `control.group` set, the Host server tab has two rows of group buttons. **All
-regions** runs each action for the whole group. **One region** has a region list (each with its game and travel port; the
+regions** runs each action for the whole group; its **Update offline regions**
+(`shard_group.py update-offline`) brings every region that is not running to the
+latest master so it is ready when it starts, and leaves running regions alone. **One region** has a region list (each with its game and travel port; the
 list re-reads the group config whenever it opens) and the same `shard_group.py`
 actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
 **Save, update and restart** (the handover deploy, `deploy.bat REGION`: its dialog
