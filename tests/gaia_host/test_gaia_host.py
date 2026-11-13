@@ -836,9 +836,46 @@ class ForcedStopTests(GaiaHostTests):
         with self.assertRaisesRegex(gaia_host.Refused, 'action is still running: start'):
             self.host.unlock()
 
-    def test_kill_refuses_a_stopped_server(self):
-        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
-            self.host.kill()
+    def test_a_force_stop_while_a_start_boots_ends_the_world_it_started(self):
+        # 2026-11-13: Orbit came back after Force stop all, from a start already booting.
+        real = self.machine.start_task
+        stops = []
+        def start_task(*args, **kwargs):
+            stops.append(self.host.kill())  # the port is still closed: nothing to end yet
+            return real(*args, **kwargs)
+        self.machine.start_task = start_task
+        self.host.work('start', self.accept('start'))
+        self.assertEqual(len(stops), 1)
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['phase']), ('start', 'killed'), state)
+        self.assertIn(['kill_tree', 4242], self.machine.calls)
+        self.assertFalse(self.machine.up)
+        self.assertFalse(self.host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertFalse(self.host.lock.exists())
+        self.assertFalse(self.host.killed_file.exists())
+
+    def test_kill_of_a_stopped_server_clears_its_old_result(self):
+        # 2026-11-13: after Force stop, stopped regions still showed an old "Handover failed".
+        self.host.record(action='handover', operation='x', phase='failed', error='[WinError 10061] refused')
+        self.host.write_json(self.host.running_file, {'since': 1})
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': None, 'reason': 'forced stop', 'released_locks': [],
+                                  'already_stopped': True})
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['phase'], state['error']), ('kill', 'killed', None))
+        self.assertFalse(self.host.running_file.exists(), 'the watchdog leaves it down')
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+
+    def test_kill_never_ends_a_reused_pid_from_an_old_freeze_record(self):
+        # Asia showed Asleep after Force stop: its freeze record named a pid that is alive
+        # again as some other process while nothing serves the region's port.
+        self.host.write_json(self.host.freeze_file, {'pid': 4242, 'frozen_at': self.machine.now()})
+        self.machine.alive = lambda pid: True
+        result = self.host.kill()
+        self.assertTrue(result['killed'])
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+        self.assertFalse(self.host.freeze_file.exists())
+        self.assertEqual(self.host.status()['state'], 'stopped')
 
     def test_kill_stops_a_server_asleep_on_its_save(self):
         # Shut down to disk while asleep: no process is left, yet it still read as asleep after a forced stop.
@@ -850,8 +887,7 @@ class ForcedStopTests(GaiaHostTests):
         self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
         self.assertEqual(self.host.status()['state'], 'stopped')
         self.assertEqual(self.host.read_state()['phase'], 'killed')
-        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
-            self.host.kill()
+        self.assertTrue(self.host.kill().get('already_stopped'))
 
     def test_kill_leaves_a_stuck_save_worker_its_record(self):
         self.give_token()
