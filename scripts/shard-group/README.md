@@ -306,13 +306,20 @@ service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last
 player, it fetches (at most every `update_check_minutes`, default 5) and, when
 the group revision has moved past the region's build, stages it; the region does
-not fall asleep while that build runs, and is restarted onto it as soon as it is
-ready, if it is still empty and saved. A player joining meanwhile holds the
+not fall asleep while that build runs, and is handed over to it (`handover`)
+as soon as it is ready, if it is still empty and saved. An unattended update is
+never a plain restart: the handover backs up the save, the new build loads it
+beside the running world, and only a successful load takes the port. A save the
+new code cannot read (an unknown durable timer, say) fails that load and the old
+world plays on; that build is not tried again unattended, and a refused handover
+(low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
 restart until the region is empty again, a failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs),
 and a world that does not save (TDM) is never touched. Asleep and cold regions
-are staged the same way and get the build while they sleep, as above. The
-restart starts from the save: it never wipes a world. The key is read at each
+are staged the same way; an asleep region keeps its old build (the host service
+does not install into it) until it is next awake, empty and saved, when it hands
+over like any other, and a cold region takes the build at its next start. It
+never wipes a world. The key is read at each
 check, so the launcher's **Update when empty** toggle applies without a setup;
 turning it on also sets `fetch: origin` and `revision: origin/master` for a
 group that does not fetch, since otherwise new commits only appear once the

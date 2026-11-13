@@ -1101,7 +1101,9 @@ class Host:
         self.maybe_stage()
         if self.frozen():
             self.forget_answers()  # a thawed world gets a fresh hang allowance
-            if self.install_check_due() and self.install_staged_while_down():
+            # With update_when_empty the build waits for the next empty, saved spell awake, when a
+            # handover loads the save on it before the old world lets go (RegionHost.update_while_empty).
+            if not self.update_when_empty() and self.install_check_due() and self.install_staged_while_down():
                 return None, 30
             self.keep_sleeper_current()
             ignore = set(self.config['wake_ignore'])
@@ -1140,7 +1142,7 @@ class Host:
             return idle_since, 30
         if self.config['freeze_requires_save'] and not self.saved_since_last_client():
             return idle_since, 60  # the world saves itself once it is empty; freeze after that
-        if self.update_pending():
+        if self.update_pending() and not self.update_when_empty():
             # Empty and saved: the moment to swap in a staged build without kicking anyone.
             try:
                 self.log(dict(self.request('restart'), reason='installing the staged build while the world is empty'))

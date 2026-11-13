@@ -481,6 +481,7 @@ class RegionHost(Host):
         self.staged_file = self.state_dir / 'staged.json'
         # update-offline: install the build into the stopped region as soon as its stage is ready.
         self.install_marker = self.state_dir / 'install-after-stage'
+        self.next_install_attempt = 0.0  # update_while_empty: when to try a refused handover again
 
     def shutdown_warning(self):
         """The group config's current shutdown_warning_seconds (the launcher's Players' warning),
@@ -773,13 +774,29 @@ class RegionHost(Host):
         return True
 
     def update_while_empty(self):
-        """An awake region that is empty and saved: restart onto a ready update, or build the
-        latest revision beside it. The next wait, or None to carry on towards sleep."""
+        """An awake region that is empty and saved: hand over to a ready update, or build the
+        latest revision beside it. The next wait, or None to carry on towards sleep.
+
+        Unattended updates always hand over rather than restart: the save is backed up, then
+        the new build loads it beside the running world, and only a load that succeeds takes
+        the region's port. A save the new code cannot read (such as a timer it no longer
+        knows) fails that load and the old world plays on, so no unattended update can leave
+        a region down on a broken load."""
         if self.update_pending():
+            now = self.platform.now()
+            if now < self.next_install_attempt:
+                return None
+            last = self.read_state()
+            if (last.get('action') == 'handover' and last.get('phase') == 'failed'
+                    and last.get('revision') == self.staged_revision()):
+                return None  # this build already failed to take over (its load or save failed); a person looks
             try:
-                self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
+                self.log(dict(self.request('handover'), reason='installing the update while the world is empty'))
             except Refused as refusal:
-                self.log({'staged_install_refused': str(refusal)})
+                # Low memory, a busy world, ...: try again after the next check interval, never
+                # by a plain restart, which would load the save on the new build unchecked.
+                self.next_install_attempt = now + self.update_settings()[1] * 60
+                self.log({'empty_handover_refused': str(refusal)})
                 return None
             return 30
         if self.stage_lock.exists():
@@ -787,8 +804,9 @@ class RegionHost(Host):
         return 30 if self.stage_if_behind() else None
 
     def keep_sleeper_current(self):
-        """An asleep or cold region: build the latest revision, which install_staged_while_down
-        then copies in, so its next wake starts on it."""
+        """An asleep or cold region: build the latest revision, so it is ready for a handover
+        once the region is awake, empty and saved again (an asleep region keeps its old build
+        until then), or for a cold region's next start."""
         if self.update_when_empty():
             self.stage_if_behind()
 
