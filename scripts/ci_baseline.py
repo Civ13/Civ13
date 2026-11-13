@@ -1676,7 +1676,7 @@ SUITES = {
         'paths': ('tests/last_save_status/', 'code/modules/persistence/last_save_status.dm'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'civ13.dme')},
-    # Server Revision verb and admin Status line; the native fixture needs DreamMaker.
+    # Server Revision verb and admin Status line; native_server_build.py runs by hand.
     'server_build': {'files': ('tests/server_build/test_server_build.py',),
         'paths': ('tests/server_build/', 'code/modules/server_build/'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'civ13.dme', '.gitignore')},
