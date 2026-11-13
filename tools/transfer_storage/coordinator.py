@@ -145,10 +145,38 @@ class Coordinator(TrainCustody):
             # forgot it); it stays where it lives.
             self._set_home(ckey, source)
 
+    def _proven_authority(self, roster, regions, asked, epoch):
+        """Whether every enrolled agent proves this database is still its home
+        authority, so a quarantine (for example from an enrolment racing a pass,
+        before that was fixed) can lift by itself. Every roster member must still
+        be enrolled and answer; each agent holds this database's epoch, or is a
+        new region that never had a ledger or train custody; at least one holds
+        the epoch, and none claims a newer revision than this database decided."""
+        if not roster or not set(roster) <= set(regions) or set(asked) != set(regions):
+            return False
+        rev = int(self._ledger('rev'))
+        proven = False
+        for answer in asked.values():
+            if answer.get('epoch') == epoch:
+                if int(answer.get('rev') or 0) > rev:
+                    return False
+                proven = True
+            elif answer.get('epoch') or answer.get('train_history') or int(answer.get('rev') or 0):
+                return False
+        return proven
+
     def homes_once(self):
         """Decide every queued account request and bring each agent's ledger copy
         up to date. Returns the number of requests decided."""
-        regions = self.regions()
+        # Directory and roster from one snapshot: setup enrols a new region
+        # (both tables in one transaction) while this coordinator runs, and a
+        # roster read after the slow agent calls below would miss that region.
+        self.db.execute('BEGIN')
+        try:
+            regions = self.regions()
+            roster = json.loads(self._ledger('roster'))
+        finally:
+            self.db.execute('COMMIT')
         epoch = self._ledger('epoch')
         asked = {}
         for name, (url, token) in regions.items():
@@ -158,11 +186,25 @@ class Coordinator(TrainCustody):
                 continue  # down: its requests and rows wait for a later pass
             if answer.get('ok'):
                 asked[name] = answer['result']
-        roster = json.loads(self._ledger('roster'))
-        if roster and set(roster) != set(regions):
+        if roster and not set(roster) <= set(regions):
+            # A member left the directory: it may still hold bodies or trains.
             self.db.execute("UPDATE ledger SET value = 'quarantined' WHERE key = 'recovery'")
+        elif roster and set(roster) != set(regions):
+            # An enrolled region the roster lacks only adds a member: wait for it.
+            self.db.execute('BEGIN IMMEDIATE')
+            try:
+                roster = sorted(set(roster) | set(regions))
+                self.db.execute("UPDATE ledger SET value = ? WHERE key = 'roster'", (json.dumps(roster),))
+                if self._ledger('recovery') != 'quarantined':
+                    self.db.execute("UPDATE ledger SET value = 'unreconciled' WHERE key = 'recovery'")
+                self.db.execute('COMMIT')
+            except Exception:
+                self.db.execute('ROLLBACK')
+                raise
         if self._ledger('recovery') != 'ready':
-            if self._ledger('recovery') == 'quarantined' or not regions or set(asked) != set(regions):
+            if not regions or set(asked) != set(regions):
+                return 0
+            if self._ledger('recovery') == 'quarantined' and not self._proven_authority(roster, regions, asked, epoch):
                 return 0
             # A replacement coordinator must not discard surviving train custody
             # or let a third world create a second body from an empty home map.
@@ -335,13 +377,22 @@ def main(argv=None):
                 next_ledger = now + args.interval
                 try:
                     coordinator.relay_once()
-                    coordinator.homes_once()
-                    if coordinator.recovery_status()['state'] != 'ready':
-                        print('Home authority held: restore the original coordinator database. '
-                              '--bootstrap-new-group is only for a genuinely new, clean group.', file=sys.stderr)
                 except (OSError, ValueError) as e:
                     # An agent is down or answered garbage: its outbox waits for the next pass.
                     print('relay pass failed: %s' % e, file=sys.stderr)
+                # Homes are decided even when one agent's outbox is unreachable:
+                # homes_once skips agents that are down by itself.
+                try:
+                    coordinator.homes_once()
+                    status = coordinator.recovery_status()
+                    if status['state'] != 'ready':
+                        print('Home authority held (%s, roster %s): every enrolled region agent must answer. '
+                              'A quarantine lifts once every agent holds this database\'s epoch; otherwise '
+                              'restore the original coordinator database. --bootstrap-new-group is only for '
+                              'a genuinely new, clean group.' % (status['state'], ', '.join(status['roster']) or 'empty'),
+                              file=sys.stderr)
+                except (OSError, ValueError) as e:
+                    print('home pass failed: %s' % e, file=sys.stderr)
             coordinator.relay_radio_once()
             if args.once:
                 return
