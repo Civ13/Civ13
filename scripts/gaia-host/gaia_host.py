@@ -72,7 +72,7 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'update-unsaved', 'update-handover')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
@@ -763,6 +763,10 @@ class Host:
         elif action == 'update':
             if listening:
                 raise Refused('stop the server before updating')
+        elif action == 'update-unsaved':
+            self.precheck_update_unsaved(listening)
+        elif action == 'update-handover':
+            self.precheck('restart')
         elif action == 'handover':
             raise Refused('a handover needs a region host (scripts/shard-group)')
 
@@ -1136,6 +1140,7 @@ class Host:
             if any(address not in ignore for address in self.platform.connections(self.config['port'])):
                 self.log(self.thaw('player connection'))
             return None, self.config['wake_poll_seconds']
+        self.serve_world()
         if self.lock.exists():
             self.forget_answers()
             self.down_since = None
@@ -1295,6 +1300,154 @@ class Host:
         self.log(dict(accepted, watchdog=kind, detail=detail))
         return 30
 
+    # -- update and restart without saving ---------------------------------------
+    # Val (2026-11-13): the launcher, and admins in game, can update a world and start it
+    # again without asking it to save first, for a world whose save would take too long or
+    # that should not save its current state. Nothing is wiped: the world is ended like a
+    # forced stop, the last completed save is backed up beside the save-and-stop backups,
+    # and the new build starts from that save. Region hosts build the update beside the
+    # running world first, so a build that fails never takes the world down.
+    def extra_steps(self, action):
+        """Worker steps for actions beyond the basic ones (a KeyError for an unknown one)."""
+        steps = {'update-unsaved': [self.do_kill_unsaved, self.do_refresh, self.do_start],
+                 # A single server builds as it restarts: save and stop, pull, compile, start.
+                 'update-handover': [self.do_stop, self.do_refresh, self.do_start]}
+        return steps[action]
+
+    def precheck_update_unsaved(self, listening):
+        if self.frozen() or self.cold():
+            raise Refused('the server is asleep on its save, so nothing is unsaved; use Update, which installs '
+                          'the new build while it sleeps')
+        if not listening and not self.platform.server_pid(self.config['port']):
+            # Never start a world someone stopped: this action only restarts a running one.
+            raise Refused('the server is not running; use Update, then Start it when wanted')
+
+    def backup_last_save(self, operation):
+        """Copy the last completed save to <state_dir>/backups/<operation> (kept like the save-and-stop
+        backups). Returns (generation, backup path); (None, None) for an empty, fresh world."""
+        saves = self.repo / 'map_saves'
+        self.recover_interrupted_save()
+        generation = check_save(saves)
+        if generation is None:
+            return None, None
+        backups = self.state_dir / 'backups'
+        copy_save(saves, backups / operation)
+        kept = sorted((p for p in backups.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+        for old in kept[:-self.config['backups_kept']]:
+            shutil.rmtree(old)
+        return generation, backups / operation
+
+    def do_kill_unsaved(self, operation, close_seconds=120):
+        """End the running world without a save, then back up the last completed save."""
+        port = self.config['port']
+        self.record(phase='stopping without saving')
+        if self.platform.listening(port) or self.platform.server_pid(port):
+            # keep_running: if the update below fails, the watchdog brings the world back from its save.
+            self.kill('update without saving', keep_running=True)
+        deadline = self.platform.now() + close_seconds
+        while self.platform.listening(port):
+            if self.platform.now() > deadline:
+                raise RuntimeError('the ended server kept its port open')
+            self.platform.sleep(2)
+        self.record(phase='backing up the last completed save')
+        generation, backup = self.backup_last_save(operation)
+        self.record(phase='stopped without saving', generation=generation, backup=str(backup) if backup else None)
+
+    # -- requests from the running world (admins in game) ---------------------------
+    # The world cannot run host actions itself, so an admin's request is a file the world
+    # writes into its own data folder; the host service picks it up on its next pass (every
+    # ~30 s while the world is awake), runs it for this world only and writes its answer
+    # beside it. The host also keeps data/host_status.json current, so admins see in game
+    # what the launcher shows. Only the actions listed here are ever taken from the world.
+    WORLD_REQUESTS = ('status', 'stage', 'update-handover', 'update-unsaved', 'update-when-empty-on',
+                      'update-when-empty-off')
+    WORLD_REQUEST_MAX_AGE = 600  # seconds; an older request file is answered as expired, never run
+    HOST_STATUS_SECONDS = 60
+
+    def world_file(self, name):
+        return self.repo / 'data' / name
+
+    def write_world_json(self, name, value):
+        path = self.world_file(name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix('.tmp')
+        temporary.write_text(json.dumps(value, sort_keys=True), encoding='utf-8')
+        os.replace(temporary, path)
+
+    def set_update_when_empty(self, enabled):
+        raise Refused('update when empty needs a region group (scripts/shard-group)')
+
+    def world_request_answer(self, action):
+        """Run one request from the world; a short answer for the admin."""
+        if action == 'status':
+            return 'host status refreshed'
+        if action == 'stage':
+            self.request_stage()
+            return 'building the latest update beside the running world'
+        if action in ('update-when-empty-on', 'update-when-empty-off'):
+            self.set_update_when_empty(action.endswith('-on'))
+            return 'update when empty is now %s' % ('on' if action.endswith('-on') else 'off')
+        answer = self.request(action)
+        return 'accepted (operation %s)' % str(answer.get('operation', ''))[:8]
+
+    def take_world_request(self):
+        """Answer data/host_request.json if the world wrote one. True when one was taken."""
+        path = self.world_file('host_request.json')
+        try:
+            age = time.time() - path.stat().st_mtime
+        except OSError:
+            return False
+        request = self.read_json(path)
+        if request is None and age < 5:
+            return False  # the world may still be writing it; read it on the next pass
+        request = request or {}
+        path.unlink(missing_ok=True)
+        ident = str(request.get('id', ''))
+        action = request.get('action')
+        by = str(request.get('by', ''))[:32]
+        answer = {'id': ident if re.match(r'^[0-9a-z]{1,32}$', ident) else '', 'action': str(action)[:32],
+                  'answered': int(time.time())}
+        try:
+            if action not in self.WORLD_REQUESTS:
+                raise Refused('the host does not take that action from the world')
+            if age > self.WORLD_REQUEST_MAX_AGE:
+                raise Refused('the request is too old; ask again')
+            answer.update(ok=True, result=self.world_request_answer(action))
+        except Refused as refusal:
+            answer.update(ok=False, result=str(refusal)[:300])
+        self.log({'world_request': answer['action'], 'by': by, 'ok': answer['ok'], 'result': answer['result']})
+        self.write_world_json('host_reply.json', answer)
+        self.write_host_status(force=True)
+        return True
+
+    def host_status(self):
+        """What admins in game see of the host (the launcher's board row for this world)."""
+        state = self.read_state() or {}
+        now = int(time.time())
+        # at_minute: whole minutes since 2000-01-01 UTC, which DM compares with world.realtime exactly.
+        report = {'at': now, 'at_minute': (now - BYOND_EPOCH) // 60, 'busy': self.lock.exists(), 'update_pending': bool(self.update_pending()),
+                  'update_when_empty': bool(self.update_when_empty()), 'built': self.built_revision(),
+                  'region': self.config.get('region'), 'actions': list(self.WORLD_REQUESTS),
+                  'operation': {key: state.get(key) for key in ('action', 'phase', 'error', 'updated')} if state else None}
+        return report
+
+    def write_host_status(self, force=False):
+        now = self.platform.now()
+        if not force and now < getattr(self, 'next_host_status', 0):
+            return
+        self.next_host_status = now + self.HOST_STATUS_SECONDS
+        try:
+            self.write_world_json('host_status.json', self.host_status())
+        except OSError as error:
+            self.log({'host_status_failed': str(error)[:200]})
+
+    def serve_world(self):
+        """Each watch pass of an awake world: its request, then its status file."""
+        if not self.platform.listening(self.config['port']):
+            return
+        if not self.take_world_request():
+            self.write_host_status()
+
     # -- staged builds (region groups only; see shard_group.RegionHost) ----------
     def request_stage(self):
         raise Refused('staged builds need a region host (scripts/shard-group)')
@@ -1371,7 +1524,8 @@ class Host:
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
             steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}[action]
+                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}.get(action) \
+                or self.extra_steps(action)
             for step in steps:
                 step(operation)
             self.record(phase='done', error=None)

@@ -143,7 +143,8 @@ public static class LocalHosting {
 
     // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
     // unlock removes stale BYOND lock files from a stopped server's save; force-unlock even if it looks running.
-    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart", "unlock", "force-unlock"];
+    // update-unsaved: update and restart without saving (the last completed save is backed up and loaded; nothing is wiped).
+    public static readonly string[] ControlActions = ["status", "start", "stop", "restart", "update", "check-update", "kill", "force-restart", "unlock", "force-unlock", "update-unsaved"];
 
     // Only the action name reaches the script; its config file names every path and command.
     public static ProcessStartInfo ControlStep(HostControl control, string action) {
@@ -183,6 +184,7 @@ public static class LocalHosting {
                 "stop" => "Saving the world, then stopping the server...",
                 "restart" => "Saving the world, then restarting the server...",
                 "force-restart" => (Bool(json, "killed") ? "Server force-stopped without saving; s" : "S") + "tarting it from the last completed save...",
+                "update-unsaved" => "Updating without saving: the server is ended without a save, its last completed save is backed up, then it is updated and started from that save...",
                 _ => "Pulling and compiling master...",
             }, true);
         }
@@ -191,7 +193,7 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -439,6 +441,7 @@ public static class LocalHosting {
             }
             var message = action switch {
                 "force-restart" => "Force-restarting (no save) and starting from the last completed save:",
+                "update-unsaved" => "Building the update first; once it is ready each world is ended without saving, its last completed save is backed up, and it starts on the new build from that save:",
                 "fresh-world" => "Archiving the old world and starting the installed build fresh:",
                 "group-fresh-world" => "Archived every region's world and travel state; starting fresh:",
                 "start" => "Starting",

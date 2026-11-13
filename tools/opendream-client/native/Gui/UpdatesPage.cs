@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace Civ13.Launcher.Gui;
@@ -8,12 +9,15 @@ namespace Civ13.Launcher.Gui;
 // region group; the bot through control.php). Each check-update only fetches; Update uses the
 // component's own update path. For a region group that is the whole save, pull, compile and restart
 // (deploy.bat), so it is offered while the worlds are running.
+// The Launcher row (Val, 2026-11-13) reads the stable launcher channel the startup check uses and installs a
+// newer launcher on request: it is downloaded and verified, then the launcher restarts onto it.
 // Checks run at startup, when the tab opens, and every 30 minutes while the launcher is open.
 internal sealed partial class LauncherWindow {
     private static readonly TimeSpan UpdateCheckEvery = TimeSpan.FromMinutes(30);
     private TabPage? updatesPage;
-    private StatusLine? serverUpdate, botUpdate;
-    private Button? serverUpdateButton, botUpdateButton;
+    private StatusLine? serverUpdate, botUpdate, launcherUpdate;
+    private Button? serverUpdateButton, botUpdateButton, launcherUpdateButton;
+    private string? launcherLatest; // the stable channel's version when it is newer than this launcher
     private readonly List<Button> checkButtons = [];
     private UpdateCheck? serverCheck, botCheck;
     private DateTime lastUpdateCheckUtc = DateTime.MinValue;
@@ -41,6 +45,8 @@ internal sealed partial class LauncherWindow {
             layout.Controls.Add(button);
             return (state, button);
         }
+        (launcherUpdate, launcherUpdateButton) = Row("Launcher", InstallLauncherUpdate);
+        launcherUpdateButton!.Text = "Install and restart";
         if (profile.Control?.Group != null) {
             (serverUpdate, serverUpdateButton) = Row("Server", ServerDeploy);
             serverUpdateButton!.Text = "Save, update and restart";
@@ -69,7 +75,7 @@ internal sealed partial class LauncherWindow {
         foreach (var button in checkButtons) button.Enabled = false;
         try {
             lastUpdateCheckUtc = DateTime.UtcNow;
-            await Task.WhenAll(CheckServerUpdate(), CheckBotUpdate());
+            await Task.WhenAll(CheckServerUpdate(), CheckBotUpdate(), CheckLauncherUpdate());
         } finally {
             checkingUpdates = false;
             foreach (var button in checkButtons) button.Enabled = true;
@@ -96,6 +102,57 @@ internal sealed partial class LauncherWindow {
     }
 
     private Task ServerDeploy() => ChooseAndDeploy("Save, update and restart");
+
+    // The launcher itself: installed version against the stable channel (the same manifest the startup check reads).
+    private async Task CheckLauncherUpdate() {
+        if (launcherUpdate == null) return;
+        launcherUpdate.Set(Tone.Idle, Glyph.Arc, "Checking", "");
+        var installed = version.ToString(3);
+        try {
+            var manifest = Channel.Read(await transport.Text(Updater.LauncherChannelUrl));
+            manifest.Validate(true);
+            var latest = Version.Parse(manifest.Version);
+            launcherLatest = latest > version ? latest.ToString(3) : null;
+            if (launcherLatest != null)
+                launcherUpdate.Set(Tone.Busy, Glyph.Down, "Update available", $"Installed {installed}; latest {launcherLatest}. Checked {DateTime.Now:t}.");
+            else
+                launcherUpdate.Set(Tone.Good, Glyph.Check, "Up to date", $"Installed {installed}; latest published {latest.ToString(3)}. Checked {DateTime.Now:t}.");
+        } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException or TimeoutException or JsonException or FormatException or ArgumentException) {
+            launcherLatest = null;
+            launcherUpdate.Set(Tone.Bad, Glyph.Alert, "Check failed", $"Installed {installed}. {Updater.DescribeFailure(e)}");
+        }
+        if (launcherUpdateButton != null) launcherUpdateButton.Enabled = launcherLatest != null;
+        CountUpdates();
+    }
+
+    private async Task InstallLauncherUpdate() {
+        if (launcherLatest == null) return;
+        if (MessageBox.Show(this, $"Download launcher {launcherLatest}, verify it and restart the launcher on it? The game servers keep running; " +
+                "a Civilizationbot this launcher started is stopped as it closes, so start it again afterwards.", "Civ13 Launcher",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        if (launcherUpdateButton != null) launcherUpdateButton.Enabled = false;
+        launcherUpdate?.Set(Tone.Busy, Glyph.Arc, "Installing", $"Downloading and verifying launcher {launcherLatest}...");
+        try {
+            var owner = Updater.Lock(root);
+            if (await Program.CheckLauncherUpdate(transport, version, root)) {
+                // The update helper waits for this process to exit; never block it with a dialog.
+                SetStatus("Launcher update downloaded. Restarting...");
+                owner.Dispose();
+                Close();
+                return;
+            }
+            owner.Dispose();
+            launcherUpdate?.Set(Tone.Bad, Glyph.Alert, "Not installed", "The update was not installed; the launcher log says why.");
+        } catch (IOException e) {
+            launcherUpdate?.Set(Tone.Bad, Glyph.Alert, "Not installed", e.Message);
+        }
+        if (launcherUpdateButton != null) launcherUpdateButton.Enabled = launcherLatest != null;
+    }
+
+    private void CountUpdates() {
+        var count = (serverCheck?.HasUpdate == true ? 1 : 0) + (botCheck?.HasUpdate == true ? 1 : 0) + (launcherLatest != null ? 1 : 0);
+        if (updatesPage != null) updatesPage.Text = count == 0 ? "Updates" : $"Updates ({count})";
+    }
 
     private void ShowServerUpdateBusy() {
         serverUpdate?.Set(Tone.Busy, Glyph.Arc, "Updating", "Building, then saving, updating and restarting; follow it on the Host server tab.");
@@ -140,8 +197,7 @@ internal sealed partial class LauncherWindow {
         state.Set(tone, glyph, pill, text + $" Checked {DateTime.Now:t}.");
         // can_update already says why not: the server must be stopped first; the bot needs a clean main checkout.
         if (button != null) button.Enabled = !(deploys && groupScriptRunning) && check.HasUpdate && (check.CanUpdate || deployable);
-        var count = (serverCheck?.HasUpdate == true ? 1 : 0) + (botCheck?.HasUpdate == true ? 1 : 0);
-        if (updatesPage != null) updatesPage.Text = count == 0 ? "Updates" : $"Updates ({count})";
+        CountUpdates();
         if (check.HasUpdate) Console.WriteLine($"{(check.Component == "bot" ? "Civilizationbot" : "Server")}: {check.Describe()}");
     }
 }

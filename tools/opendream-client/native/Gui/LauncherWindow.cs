@@ -285,6 +285,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
                 ("-", null, null),
+                ("Update and restart without saving…", () => GroupAction("update-unsaved", "Update and restart without saving"), HostGate.All),
                 ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),
                 ("Force restart", () => GroupAction("force-restart", "Force restart"), HostGate.All),
                 ("Clear lock files", () => GroupAction("unlock", "Clear lock files"), HostGate.All),
@@ -297,7 +298,8 @@ internal sealed partial class LauncherWindow : Form {
         server.Controls.Add(hostStart);
         if (profile.Control != null) {
             var daily = new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") };
-            var forceful = new[] { ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") };
+            var forceful = new[] { ("Update and restart without saving…", "update-unsaved"), ("Force stop", "kill"), ("Force restart", "force-restart"),
+                ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") };
             var menu = new List<(string, Func<Task>?, HostGate?)>();
             foreach (var (text, action) in daily) {
                 // With a region group these repeat the region rows for the one server host.json names, so they wait in the menu.
@@ -425,7 +427,7 @@ internal sealed partial class LauncherWindow : Form {
             return Task.CompletedTask;
         }, null));
         menu.Add(("-", null, null));
-        foreach (var (text, action) in new[] { ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"),
+        foreach (var (text, action) in new[] { ("Update and restart without saving…", "update-unsaved"), ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"),
                 ("Force clear lock files", "force-unlock"), ("Fresh world…", "fresh-world") })
             menu.Add((text, () => GroupAction(action, text, Chosen()), action == "kill" ? HostGate.RegionRescue : HostGate.Region));
         row.Controls.Add(MoreButton([.. menu]));
@@ -855,6 +857,12 @@ internal sealed partial class LauncherWindow : Form {
         }
     }
 
+    // Update and restart without saving (Val, 2026-11-13): destructive, so the question says what is lost and what is kept.
+    private static string UnsavedQuestion(string target) => $"Update and restart {target} WITHOUT SAVING? " +
+        "Anything players did since the last completed save is lost. Nothing is wiped: the last completed save is backed up, " +
+        "the update is built first while the world keeps running (a failed build stops nothing), then the world is ended " +
+        "and starts on the new build from that save. Players are kicked until it is back. Stopped and asleep regions are left alone.";
+
     private const string UnlockQuestion = "Check the save for BYOND lock files (left when a world is killed) and remove them? "
         + "Only worlds that are stopped with no action running are touched.";
     private const string ForceUnlockQuestion = "Remove BYOND lock files even from a world that looks running? Use this only when its "
@@ -863,15 +871,17 @@ internal sealed partial class LauncherWindow : Form {
     // Accepted actions finish in the script's worker; the timer follows them until they settle.
     private async Task HostAction(string action, string label) {
         if (host?.Control is not { } control) return;
-        var forced = action is "kill" or "force-restart" or "force-unlock";
+        var forced = action is "kill" or "force-restart" or "force-unlock" or "update-unsaved";
         var question = action switch {
+            "update-unsaved" => UnsavedQuestion("the server"),
             "unlock" => UnlockQuestion,
             "force-unlock" => ForceUnlockQuestion,
             _ => forced ? label + " the server? It is ended at once WITHOUT saving: anything since the last completed save is lost. Use this only for a server that hangs."
                 : label + " the server? Players are saved and can rejoin when it is back.",
         };
         if (action != "update" && MessageBox.Show(this, question, "Civ13 Launcher",
-                MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
+                MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question,
+                action == "update-unsaved" ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1) != DialogResult.OK) return;
         actingServer = true;
         ApplyHostGates();
         try {
@@ -909,6 +919,7 @@ internal sealed partial class LauncherWindow : Form {
             "config-apply" => $"Write the overlays' host settings into {target}? A running world uses them from its next restart.",
             "setup" => $"Create or refresh {target}'s folder and config? It must be stopped. A region newly added to the group config is set up "
                 + "and enrolled for travel with the running regions, which keep running.",
+            "update-unsaved" => UnsavedQuestion(target),
             "kill" or "force-restart" => $"{label} {target}? It is ended at once WITHOUT saving: anything since its last completed save is lost. Use this only for a server that hangs.",
             "restart" => $"{label} {target}? It saves, stops and starts on the build it has, so players are kicked until it is back. " +
                 "To move players over without kicking them, use Save, update and restart: it builds the latest master beside the running world, " +
@@ -921,7 +932,8 @@ internal sealed partial class LauncherWindow : Form {
         if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
         if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
-                action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
+                action is "force-unlock" or "update-unsaved" ? MessageBoxIcon.Warning : MessageBoxIcon.Question,
+                action == "update-unsaved" ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1) != DialogResult.OK) return;
         if (action == "restart-host") {
             groupScriptRunning = true;
             ApplyHostGates();
