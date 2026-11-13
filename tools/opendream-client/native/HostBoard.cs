@@ -146,8 +146,10 @@ public static class HostBoard {
                         && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index) && index >= 0 && index < LocalHosting.EpochNames.Length)
                     notes.Insert(0, "epoch " + LocalHosting.EpochNames[index]);
                 if (Str(view, "battle_phase") is { Length: > 0 } battle) notes.Insert(0, "battle " + LocalHosting.BattlePhase(battle));
+                if (LocalHosting.EventAway(view) is > 0 and var away) notes.Add(LocalHosting.AwayText(away));
             }
         }
+        if (Str(entry, "kind") == "EVENT") notes.Insert(0, "event region");
         if (entry.TryGetProperty("port", out var portValue) && portValue.ValueKind == JsonValueKind.Number && portValue.TryGetInt32(out var port) && port is > 0 and < 65536)
             notes.Insert(0, "port " + port);
 

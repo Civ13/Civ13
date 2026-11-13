@@ -461,6 +461,17 @@ SUITES = {
             'code/game/mob/mob_movement.dm',
             'code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
             'code/game/mob/living/carbon/human/human.dm')},
+    # Event regions: home characters kept out of play while their players are at an event.
+    'event_regions': {'files': ('tests/event_regions/test_sources.py',),
+        'paths': ('tests/event_regions/', 'code/modules/persistence/region_event.dm',
+                  'code/modules/admin/event_transfer.dm', 'docs/event-regions.md'), 'shared_paths': (
+            'code/modules/persistence/shard_group.dm',
+            'code/modules/persistence/region_home.dm',
+            'code/modules/persistence/region_travel.dm',
+            'code/processes/mob.dm',
+            'code/modules/reagents/reagent_containers/food.dm',
+            'code/modules/admin/admin_verbs.dm',
+            'scripts/shard-group/shard_group.py')},
     'pedal_bicycle': {'files': ('tests/pedal_bicycle/test_bicycle.py', 'tests/pedal_bicycle/test_airship.py'),
         'paths': ('tests/pedal_bicycle/', 'code/game/objects/structures/bicycle.dm',
                   'code/game/objects/structures/pedal_airship.dm', 'icons/obj/vehicles/pedal_airship.dmi'),

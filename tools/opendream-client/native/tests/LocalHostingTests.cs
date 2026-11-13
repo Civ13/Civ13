@@ -35,6 +35,14 @@ static class LocalHostingTests {
             && LocalHosting.BattlePhase("odd<phase>") == "oddphase", "TDM battle phase words");
         using (var details = JsonDocument.Parse("{\"port\":1715,\"region_view\":{\"players\":4,\"battle_phase\":\"playing\"}}"))
             Require(LocalHosting.RegionDetails(details.RootElement).EndsWith("battle in progress"), "battle phase on the region row: " + LocalHosting.RegionDetails(details.RootElement));
+        using (var away = JsonDocument.Parse("{\"port\":1714,\"region_view\":{\"players\":0,\"event_away\":3}}"))
+            Require(LocalHosting.RegionDetails(away.RootElement).EndsWith("3 players away at an event"), "event away count on the region row: " + LocalHosting.RegionDetails(away.RootElement));
+        using (var eventRegion = JsonDocument.Parse("{\"port\":1760,\"kind\":\"EVENT\",\"region_view\":{\"players\":5}}")) {
+            Require(LocalHosting.RegionDetails(eventRegion.RootElement).Contains("event region"), "event region on the region row: " + LocalHosting.RegionDetails(eventRegion.RootElement));
+            Require(HostBoard.Card("fair", "Fair", false, eventRegion.RootElement, 0).Notes.StartsWith("port 1760, event region"), "event region on the board card");
+        }
+        using (var awayCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"event_away\":1}}"))
+            Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
             Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
         using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))

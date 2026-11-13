@@ -269,6 +269,41 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(str((self.base / 'regions').resolve()), build['root'])
         self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'shard_build.json').exists())
 
+    def test_event_region_validation_and_setup(self):
+        # An event world (region_event.dm): never the mainland or the gate, never saves,
+        # and every region of its group shares one event token.
+        self.refuse_config('mainland cannot be an EVENT', mainland='deep', region_kind='EVENT')
+        self.refuse_config('gate must be', relay_port=1730, gate='deep', region_kind='EVENT')
+        self.group['regions'][1]['kind'] = 'EVENT'
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        tokens = set()
+        for region in ('gaia', 'deep'):
+            tokens.add((self.base / 'regions' / region / 'config' / 'event-token.txt').read_text().strip())
+        self.assertEqual({(self.base / 'regions' / 'event-token.txt').read_text().strip()}, tokens)
+        self.assertRegex(tokens.pop(), '^[0-9a-f]{48}$')
+        event = json.loads((self.base / 'regions' / 'deep' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(0, event['save_minutes'])
+        home = json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(group['save_minutes'], home['save_minutes'])
+        self.assertIn('config/event-token.txt', shard_group.GENERATED)
+
+    def test_ordinary_groups_get_no_event_token(self):
+        shard_group.setup(self.write_group(), self.machine)
+        self.assertFalse((self.base / 'regions' / 'gaia' / 'config' / 'event-token.txt').exists())
+
+    def test_status_shows_characters_away_at_an_event(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Caves', 'event_away': 4}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual(4, status['regions']['deep']['region_view']['event_away'])
+        for bad in (-1, '4', 2.5, True):
+            answers[1721]['event_away'] = bad
+            status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+            self.assertNotIn('event_away', status['regions']['deep']['region_view'], bad)
+
     def test_a_battle_rebuild_keeps_the_voted_map(self):
         # A start after master moved (or a watchdog restart) rebuilds the battle region;
         # it must build the map the last vote picked, not the configured one.

@@ -26,6 +26,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/enable_whitelist,
 	/client/proc/disable_whitelist,
 	/client/proc/disable_campaign_whitelist,
+	/datum/admins/proc/event_transfer,	//send players to an event region and back, characters kept safe
 	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,

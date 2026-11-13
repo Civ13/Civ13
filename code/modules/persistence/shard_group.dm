@@ -104,7 +104,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -179,6 +179,10 @@ var/global/datum/shard_group/shard_group = new
 		.["battle_phase"] = tdm_battle.phase()
 	if(kind == "BARRACKS" && tdm_barracks_active())
 		.["battle_phase"] = tdm_barracks.status_fresh() ? tdm_barracks.status["phase"] : null
+	// The host tool and launcher show how many characters wait here while their
+	// players are at an event (region_event.dm).
+	if(kind != "EVENT")
+		.["event_away"] = length(event_stashes())
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -491,7 +495,8 @@ var/global/datum/shard_group/shard_group = new
 		var/state = peer["state"]
 		var/players = isnum(peer["players"]) ? "[peer["players"]]" : "-"
 		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
-		var/join = (state == "UP" || state == "ASLEEP") ? "<a href='[player_href(id)]'>Join</a>" : ""
+		// Event regions are reached only when an admin sends players there (region_event.dm).
+		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" ? "<a href='[player_href(id)]'>Join</a>" : ""
 		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 	lines += "</table>"
 	if(!order.len)
@@ -520,6 +525,7 @@ var/global/datum/shard_group/shard_group = new
 		if("ORBIT") return "orbit"
 		if("BARRACKS") return "barracks"
 		if("BATTLE") return "battle"
+		if("EVENT") return "event"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"

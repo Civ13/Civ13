@@ -590,6 +590,9 @@ var/global/list/region_travel_carry_types = list(
 	if(!destination || !transfer_bridge.ready() || !(destination in transfer_bridge.peers) || !shard_group.enabled)
 		return "The trail is overgrown. It leads nowhere for now."
 	var/list/peer = shard_group.peers[destination]
+	// Event regions are reached only by an admin's event transfer (region_event.dm).
+	if(peer && peer["kind"] == "EVENT")
+		return "The trail is overgrown. It leads nowhere for now."
 	// A sleeping region is woken when someone sets off (travel()).
 	if(!peer || peer["state"] != "UP" && !shard_group.peer_wakeable(destination))
 		return "Nobody seems to be coming back from [destination_name()] right now."

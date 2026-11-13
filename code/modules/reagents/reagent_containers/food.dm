@@ -63,6 +63,10 @@
 		if (istype(loc, /obj/structure/vending))
 			food_decay()
 			return
+		// Carried by a character kept away during an event (region_event.dm): its clock is stopped.
+		if (ismob(loc) && event_stash_holds(src))
+			food_decay()
+			return
 		else if (istype(loc, /obj/item/weapon/can))
 			var/obj/item/weapon/can/C = loc
 			if (!C.open)
