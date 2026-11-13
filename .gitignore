@@ -18,6 +18,8 @@ config/host.txt
 config/lifecycle-token.txt
 config/lifecycle-revision.txt
 config/server-build.json
+config/player-changelog.json
+config/player-changelog.tmp
 config/variable-observability.txt
 recipes.txt
 .vscode/

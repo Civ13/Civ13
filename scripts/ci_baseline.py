@@ -1813,6 +1813,11 @@ SUITES = {
     'server_build': {'files': ('tests/server_build/test_server_build.py',),
         'paths': ('tests/server_build/', 'code/modules/server_build/'),
         'shared_paths': ('code/modules/statpanel/statpanel.dm', 'civ13.dme', '.gitignore')},
+    # What's New: host collector of PR Changelog: lines and the lobby/Game Menu window.
+    'player_changelog': {'files': ('tests/player_changelog/test_player_changelog.py',),
+        'paths': ('tests/player_changelog/', 'code/modules/player_changelog/', 'scripts/gaia-host/player_changelog.py'),
+        'shared_paths': ('code/game/mob/new_player/new_player.dm', 'code/modules/client/escape_menu.dm',
+            'scripts/gaia-host/gaia_host.py', 'scripts/shard-group/shard_group.py', 'civ13.dme', '.gitignore')},
     # Status tab Playing/Observing/Lobby counted from connected clients.
     'player_count_status': {'files': ('tests/player_count_status/test_player_count.py',),
         'paths': ('tests/player_count_status/',), 'shared_paths': ('code/game/mob/mob.dm',)},
