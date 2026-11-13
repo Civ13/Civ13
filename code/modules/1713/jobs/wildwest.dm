@@ -731,6 +731,9 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")
+	if (map && map.ID == MAP_LITTLE_CREEK_TDM)
+		H.add_note("Horse", "You start in the saddle. Ride hard, shoot from horseback, and carry the loot back to the stagecoach. Click your horse to climb down; drag yourself onto a horse to mount again.")
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(wildwest_mount_outlaw), H), 1 SECOND)
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)

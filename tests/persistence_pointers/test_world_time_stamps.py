@@ -44,6 +44,7 @@ REVIEWED = {
     'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
     'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
     'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
+    'next_hoof_dust': 'var/tmp dust-puff throttle on ridden horses, never saved',
     'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
 }
 
