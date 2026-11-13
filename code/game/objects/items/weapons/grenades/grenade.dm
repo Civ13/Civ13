@@ -19,6 +19,14 @@
 	value = 5
 	var/explosion_sound = 'sound/weapons/Explosives/HEGrenade.ogg'
 	var/mob/living/human/firer = null
+	// Blast and fragment settings, used by fragment grenades.
+	var/explosion_size = 0
+	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	var/num_fragments = 0  //total number of fragments produced by the grenade
+	var/fragment_damage = 15
+	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	//The radius of the circle used to launch projectiles. Lower values mean less projectiles are used but if set too low gaps may appear in the spread pattern
+	var/spread_range = 7
 /obj/item/weapon/grenade/proc/mark_vehicle_exterior(obj/structure/vehicleparts/axis/A, turf/T)
 	vehicle_exterior_owner = WEAKREF(A)
 	vehicle_exterior_location = T
@@ -101,11 +109,45 @@
 	..()
 	return
 
+// Fragment grenade detonation: the blast (light_range wide) and, unless the
+// grenade is still held, one fragment ring that the source turf's mobs absorb.
+/obj/item/weapon/grenade/proc/frag_detonate(light_range)
+	var/turf/T = get_turf(src)
+	if(!T) return
+
+	if(explosion_size)
+		explosion(T,1,1,light_range,1,sound=explosion_sound)
+		damage_hull(T)
+	if (!ismob(loc))
+		fragment_burst(T, fragment_type, num_fragments, fragment_damage, damage_step, spread_range, name, TRUE)
+
+	spawn (5)
+		qdel(src)
+
 /obj/item/weapon/grenade/proc/damage_hull(var/turf/T)
 	for(var/obj/structure/vehicleparts/frame/F in range(1,T))
 		for (var/mob/M in F.axis.transporting)
 			shake_camera(M, 1, 1)
 		explosion_damage_hull_panel(F, src, src, heavy_armor_penetration)
+
+// One ring of fragments from T, shared by fragment grenades, mines and bomb
+// payloads. num_fragments is split evenly over the ring. With hit_source_mobs,
+// every mob on T absorbs each fragment as it leaves.
+/proc/fragment_burst(turf/T, fragment_type, num_fragments, fragment_damage, damage_step, spread_range, shot_from, hit_source_mobs = FALSE)
+	var/list/target_turfs = getcircle(T, spread_range)
+	if (!target_turfs.len)
+		return
+	var/fragments_per_projectile = round(num_fragments/target_turfs.len)
+	for (var/turf/TT in target_turfs)
+		var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
+		P.damage = fragment_damage
+		P.pellets = fragments_per_projectile
+		P.range_step = damage_step
+		P.shot_from = shot_from
+		P.launch_fragment(TT)
+		if (hit_source_mobs)
+			for (var/mob/living/L in T)
+				P.attack_mob(L, 0, 0)
 
 /proc/explosion_damage_hull_panel(obj/structure/vehicleparts/frame/F, atom/hit_origin, atom/message_origin, heavy_armor_penetration)
 	var/penloc = F.CheckPenLoc(hit_origin)
@@ -176,7 +218,7 @@
 	name = "grenade"
 	desc = "A hand held grenade, with a 5 second fuse."
 	heavy_armor_penetration = 5
-	var/explosion_size = 2
+	explosion_size = 2
 
 /obj/item/weapon/grenade/old_grenade/prime()
 	set waitfor = 0
@@ -194,7 +236,7 @@
 	name = "gunpowder barrel bomb"
 	desc = "A gunpowder barrel, with a loose gunpowder fuse. Should take about 10 seconds to detonate, but it's not very fiable."
 	icon_state = "bomb"
-	var/explosion_size = 3
+	explosion_size = 3
 	nothrow = TRUE
 	throw_speed = 1
 	throw_range = 2
@@ -222,7 +264,7 @@
 	icon_state = "dynamite0"
 	det_time = 40
 	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
-	var/explosion_size = 2
+	explosion_size = 2
 	var/state = 0
 
 /obj/item/weapon/grenade/dynamite/prime()
@@ -318,43 +360,18 @@
 /obj/item/weapon/grenade/modern
 	name = "grenade"
 	desc = "A hand held grenade, with a 5 second fuse."
-	var/explosion_size = 2
-	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 30  //total number of fragments produced by the grenade
-	var/fragment_damage = 15
-	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
-	var/spread_range = 7
+	explosion_size = 2
+	fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	num_fragments = 30  //total number of fragments produced by the grenade
+	fragment_damage = 15
+	damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	spread_range = 7
 	heavy_armor_penetration = 3
 	explosion_sound = 'sound/weapons/Explosives/FragGrenade.ogg'
 /obj/item/weapon/grenade/modern/prime()
 	set waitfor = 0
 	..()
-
-	var/turf/T = get_turf(src)
-	if(!T) return
-
-	if(explosion_size)
-		explosion(T,1,1,3,1,sound=explosion_sound)
-		damage_hull(T)
-	if (!ismob(loc))
-
-		var/list/target_turfs = getcircle(T, spread_range)
-		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-		for (var/turf/TT in target_turfs)
-			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-			P.damage = fragment_damage
-			P.pellets = fragments_per_projectile
-			P.range_step = damage_step
-			P.shot_from = name
-			P.launch_fragment(TT)
-
-			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
-			for (var/mob/living/L in T)
-				P.attack_mob(L, 0, 0)
-
-	spawn (5)
-		qdel(src)
+	frag_detonate(3)
 
 /obj/item/weapon/grenade/modern/mills
 	name = "mills bomb no. 5"
@@ -496,62 +513,12 @@
 /obj/item/weapon/grenade/ww2/prime()
 	set waitfor = 0
 	..()
-
-	var/turf/T = get_turf(src)
-	if(!T) return
-
-	if(explosion_size)
-		explosion(T,1,1,3,1,sound=explosion_sound)
-		damage_hull(T)
-	if (!ismob(loc))
-
-		var/list/target_turfs = getcircle(T, spread_range)
-		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-		for (var/turf/TT in target_turfs)
-			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-			P.damage = fragment_damage
-			P.pellets = fragments_per_projectile
-			P.range_step = damage_step
-			P.shot_from = name
-			P.launch_fragment(TT)
-
-			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
-			for (var/mob/living/L in T)
-				P.attack_mob(L, 0, 0)
-
-	spawn (5)
-		qdel(src)
+	frag_detonate(3)
 
 /obj/item/weapon/grenade/coldwar/prime()
 	set waitfor = 0
 	..()
-
-	var/turf/T = get_turf(src)
-	if(!T) return
-
-	if(explosion_size)
-		explosion(T,1,1,4,1,sound=explosion_sound)
-		damage_hull(T)
-	if (!ismob(loc))
-
-		var/list/target_turfs = getcircle(T, spread_range)
-		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-		for (var/turf/TT in target_turfs)
-			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-			P.damage = fragment_damage
-			P.pellets = fragments_per_projectile
-			P.range_step = damage_step
-			P.shot_from = name
-			P.launch_fragment(TT)
-
-			// any mob on the source turf, lying or not, absorbs 100% of shrapnel now
-			for (var/mob/living/L in T)
-				P.attack_mob(L, 0, 0)
-
-	spawn (5)
-		qdel(src)
+	frag_detonate(4)
 
 /obj/item/weapon/grenade/coldwar/nonfrag/m26
 	name = "M26 explosive grenade"
@@ -573,28 +540,28 @@
 
 /obj/item/weapon/grenade/ww2
 	heavy_armor_penetration = 5
-	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 37  //total number of fragments produced by the grenade
-	var/fragment_damage = 15
-	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	num_fragments = 37  //total number of fragments produced by the grenade
+	fragment_damage = 15
+	damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 	secondary_action = TRUE
-	var/explosion_size = 2
-	var/spread_range = 7
+	explosion_size = 2
+	spread_range = 7
 
 /obj/item/weapon/grenade/modern
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/coldwar
 	heavy_armor_penetration = 6
-	var/fragment_type = /obj/item/projectile/bullet/pellet/fragment
-	var/num_fragments = 37  //total number of fragments produced by the grenade
-	var/fragment_damage = 15
-	var/damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
+	fragment_type = /obj/item/projectile/bullet/pellet/fragment
+	num_fragments = 37  //total number of fragments produced by the grenade
+	fragment_damage = 15
+	damage_step = 2	  //projectiles lose a fragment each time they travel this distance. Can be a non-integer.
 
 	//The radius of the circle used to launch projectiles. Lower values mean less projectiles are used but if set too low gaps may appear in the spread pattern
-	var/spread_range = 7
+	spread_range = 7
 	secondary_action = TRUE
-	var/explosion_size = 2
+	explosion_size = 2
 
 /obj/item/weapon/grenade/secondary_attack_self(mob/living/human/user)
 	if (secondary_action)
@@ -1039,16 +1006,7 @@
 			qdel(src)
 			explosion(T, devastation_range, heavy_impact_range, light_impact_range, flash_range, sound = explosion_sound)
 			if (!ismob(loc))
-				var/list/target_turfs = getcircle(T, spread_range)
-				var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-
-				for (var/turf/TT in target_turfs)
-					var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-					P.damage = fragment_damage
-					P.pellets = fragments_per_projectile
-					P.range_step = damage_step
-					P.shot_from = name
-					P.launch_fragment(TT)
+				fragment_burst(T, fragment_type, num_fragments, fragment_damage, damage_step, spread_range, name)
 	return
 
 /obj/structure/payload/attackby(obj/item/W as obj, mob/user as mob)

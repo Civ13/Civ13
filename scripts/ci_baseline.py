@@ -885,6 +885,10 @@ SUITES = {
         'shared_paths': ('code/game/objects/items/devices/instrument_song.dm', 'code/game/objects/items/devices/violin.dm',
                          'code/game/objects/items/devices/shamisen.dm', 'code/game/objects/items/devices/trombone.dm',
                          'code/game/objects/structures/piano.dm')},
+    # Fragment grenades, mines and bomb payloads share one fragment ring;
+    # source contracts against a frozen grenade copy, no BYOND runtime.
+    'fragment_burst': {'files': ('tests/fragment_burst/test_fragment_burst.py',), 'paths': ('tests/fragment_burst/',),
+        'shared_paths': ('code/game/objects/items/weapons/grenades/grenade.dm', 'code/game/objects/items/weapons/mines.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
