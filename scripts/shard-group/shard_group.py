@@ -2636,6 +2636,9 @@ def main(argv=None):
                         done[region['id']] = getattr(host, args.action)()  # freeze, thaw or kill
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
+                except (OSError, RuntimeError, ValueError) as error:
+                    # One region that cannot be ended must not leave the rest running.
+                    refused[region['id']] = '%s failed: %s' % (args.action, str(error)[:300])
             if refused and not done:
                 print(json.dumps({'ok': False, 'refused': refused}))
                 return 1
