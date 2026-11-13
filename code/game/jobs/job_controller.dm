@@ -444,6 +444,7 @@ var/global/datum/controller/occupations/job_master
 		H.wipe_notes()
 
 		job.equip(H)
+		huey_give_note(H)
 
 		#define SAFE_SPAWN_TIME 4
 		// Add loadout items. spawn(SAFE_SPAWN_TIME) so it happens after our pockets are filled with default job item

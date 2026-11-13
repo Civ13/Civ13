@@ -18,27 +18,9 @@
 /obj/covers/jail/attackby(obj/item/W as obj, mob/living/human/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	if (istype(W,/obj/item/weapon/material/kitchen/utensil/spoon) || istype(W,/obj/item/weapon/material/kitchen/utensil/fork))
-		var/obj/item/weapon/material/kitchen/utensil/I = W
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[user] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				user.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank(user,I.material.name)
-				user.put_in_hands(SHK)
-				to_chat(user, "\The [I] turns into a shank.")
-				qdel(I)
+		sharpen_utensil(W, user)
 	if (istype(W,/obj/item/weapon/material/kitchen/utensil/chopsticks))
-		var/obj/item/weapon/material/kitchen/utensil/I = W
-		if (I.shiv < 10)
-			I.shiv++
-			visible_message("<span class='warning'>[user] sharpens \the [I] on \the [src]!</span>")
-			if (I.shiv >= 10)
-				user.drop_from_inventory(I)
-				var/obj/item/weapon/material/kitchen/utensil/knife/shank/wood/SHK = new /obj/item/weapon/material/kitchen/utensil/knife/shank/wood(user,I.material.name)
-				user.put_in_hands(SHK)
-				to_chat(user, "\The [I] turns into a shank.")
-				qdel(I)
+		sharpen_utensil(W, user, /obj/item/weapon/material/kitchen/utensil/knife/shank/wood)
 	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/metalfile)) //No weapons can harm me! If not weapon and not a wrench.
 		to_chat(user, "You pound the bars uselessly!")//sucker
 

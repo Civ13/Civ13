@@ -361,7 +361,7 @@ Example for later use:
 	name = "Snowy Tree"
 	icon_state = "tree"
 	spawn_nothing_percentage = 15
-/obj/random/plants/snow/spawn_choices()
+/obj/random/plants/tree_snow_lowchance/spawn_choices()
 	return list(
 				/obj/structure/wild/tree/live_tree/snow = 1,
 				/obj/structure/wild/rock = 1,

@@ -325,3 +325,16 @@
 			try_destroy()
 			qdel(SF)
 			return
+
+// Scraping a spoon, fork or chopsticks on a hard wall or bars. Ten scrapes turn
+// it into a shank of shank_type.
+/obj/covers/proc/sharpen_utensil(obj/item/weapon/material/kitchen/utensil/I, mob/living/human/user, shank_type = /obj/item/weapon/material/kitchen/utensil/knife/shank)
+	if (I.shiv >= 10)
+		return
+	I.shiv++
+	visible_message(SPAN_WARNING("[user] sharpens \the [I] on \the [src]!"))
+	if (I.shiv >= 10)
+		user.drop_from_inventory(I)
+		user.put_in_hands(new shank_type(user, I.material.name))
+		to_chat(user, "\The [I] turns into a shank.")
+		qdel(I)

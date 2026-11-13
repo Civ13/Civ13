@@ -800,13 +800,29 @@ SUITES = {
             'tests/dagger_map/build_map.py', 'tests/dagger_map/build_raid_train.py',
             'code/game/objects/random.dm',
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
-    # Per-round battle map variation inserts: generator freshness, slot bounds,
-    # open-ground placement against the base maps and loader rules; no BYOND runtime.
+    # Same-type duplicate overrides whose earlier body is dead; source scan of
+    # code/, run by full and preflight sweeps (not per-file selection).
+    'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
+        'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Shared Campaign win condition and Battle Royale / Hunger Games shrinking
+    # zone against frozen pre-refactor bodies; source projection only.
+    'map_metadata_dedupe': {'files': ('tests/map_metadata_dedupe/test_map_metadata_dedupe.py',),
+        'paths': ('tests/map_metadata_dedupe/', 'code/game/objects/map_metadata/shrinking_zone.dm'),
+        'shared_paths': ('code/game/objects/map_metadata/campaign_new.dm',
+                         'code/game/objects/map_metadata/battleroyale.dm',
+                         'code/game/objects/map_metadata/hungergames.dm')},
+    # Wall and jail covers share one utensil-to-shank proc; source checks
+    # against the frozen copied block, no BYOND runtime.
+    'utensil_shank': {'files': ('tests/utensil_shank/test_utensil_shank.py',),
+        'paths': ('tests/utensil_shank/',), 'shared_paths': (
+            'code/game/objects/covers.dm', 'code/game/objects/covers_types/')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
         'paths': ('tests/grace_wall/',), 'shared_paths': (
             'code/game/objects/map_metadata/',)},
+    # Per-round battle map variation inserts: generator freshness, slot bounds,
+    # open-ground placement against the base maps and loader rules; no BYOND runtime.
     'map_variations': {'files': ('tests/map_variations/test_map_variations.py',),
         'paths': ('tests/map_variations/', 'maps/zones/variations/',
                   'code/modules/map_variations/'), 'shared_paths': (
@@ -1788,6 +1804,8 @@ SUITES = {
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
+    'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
+        'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
