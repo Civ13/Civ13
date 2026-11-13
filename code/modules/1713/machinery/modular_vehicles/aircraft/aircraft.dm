@@ -273,6 +273,12 @@ var/global/list/airborne_aircraft = list()
 	update_flight_visuals()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/try_takeoff()
+	// A tow line keeps it on the ground; the roll starts over, so the
+	// warning repeats once per takeoff distance, not every tile.
+	if (tow_in || tow_out)
+		pilot_message(SPAN_WARNING("A tow line still holds the plane to the ground. Cast it off before taking off."))
+		runway_roll = 0
+		return FALSE
 	var/up = multiz_level_above(flight_z())
 	if (!up)
 		if (!no_airspace_warned)

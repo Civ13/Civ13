@@ -571,6 +571,9 @@
 	var/mob/M = AM
 	if (ismob(AM))
 
+		if (tree_melee_refused(src, AM))
+			return
+
 		if (!can_pull_mobs || !can_pull_size)
 			to_chat(src, "<span class='warning'>It won't budge!</span>")
 			return

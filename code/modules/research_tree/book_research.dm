@@ -471,7 +471,7 @@
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
 	var/mob/living/human/tutor = H.find_tutor(node_id)
 	if (tutor)
-		time = round(time / SCHOLAR_TUTOR_RATE)
+		time = round(time / tutor.tutor_rate())
 		to_chat(tutor, SPAN_NOTICE("You help [H] through the chapter on [N.name]."))
 	H.begin_study_message(node_id, time, "the chapter on [N.name]", tutor ? " with [tutor]'s help" : "")
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc

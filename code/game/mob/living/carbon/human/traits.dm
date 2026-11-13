@@ -22,8 +22,8 @@ var/global/list/trait_list = list(
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
 	"Blind" = list(-6,list(),"You can not see, you may require aid."),
 //	"Partial Blindness" = list(-2,list(),"You can barely see, you may require aid or sometype of instrument"),
-	"Introverted" = list(1,list("Extroverted"),"In hunger-enabled modes, your mood improves without other living humans within 3 tiles, and falls near them."),
-	"Extroverted" = list(-1,list("Introverted"),"In hunger-enabled modes, your mood improves near other living humans within 3 tiles, and falls when alone."),
+	"Introverted" = list(1,list("Extroverted","Rallying Voice"),"In hunger-enabled modes, your mood improves without other living humans within 3 tiles, and falls near them."),
+	"Extroverted" = list(-1,list("Introverted","Recluse Scholar"),"In hunger-enabled modes, your mood improves near other living humans within 3 tiles, and falls when alone."),
 //	"Down Syndrome" = list(-5,list(),"You are very backward in your mental and physical development, you are no scolar. (Can't get Philo past 1.4, and has errors in speech and speech comes out slow)"),
 //	"Sickle Celled Anemia" = list(-1,list(),"Your blood cells are not normal, and you have a higher chance of having Heart failure. (Random Heart attacks and pains in the chest and other parts in the body)"),
 	"Hemophilia" = list(-2,list(),"Your blood does not clot normally. (Affected blood-loss paths remove 25% more blood)"),
@@ -56,6 +56,14 @@ var/global/list/trait_list = list(
 	"Cold Tolerance" = list(2,list("Cold Sensitivity"),"Cold-discomfort damage multiplier x0.3; not blanket cold immunity. Nomad starting climate may replace this choice."),
 	"Cold Sensitivity" = list(-2,list("Cold Tolerance"),"Cold-discomfort damage multiplier x2. Nomad starting climate may replace this choice."),
 	"Stutter"= list(-1,list("Mute"),"You have a permanent stutter."),
+	"Recluse Scholar" = list(0,list("Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice","Extroverted"),"Playstyle. Studying and research are 25% faster with nobody else within 5 tiles, but 25% slower with people around, and your mood falls in crowds of 3 or more."),
+	"Menacing" = list(0,list("Recluse Scholar","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. You can Intimidate someone who can see you, souring their mood a little, and wild grazing animals bolt from your glare. Others see you look dangerous, and you tutor students more slowly."),
+	"Hardened Fighter" = list(0,list("Recluse Scholar","Menacing","Quartermaster","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. Sword and melee skill trains 50% faster and wounds hurt you 15% less. Crafting and scholarship train 25% slower."),
+	"Quartermaster" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Green Thumb","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. Pulling carts, crates and bodies slows you 40% less, and you can count the items in a closed crate. Combat skills train 25% slower."),
+	"Green Thumb" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Tinkerer","Wanderer","Rallying Voice"),"Playstyle. Farming trains 50% faster and harvests yield about 10% more. Hunting and combat skills train 25% slower."),
+	"Tinkerer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Wanderer","Rallying Voice"),"Playstyle. Crafting x1.1 and Engineering scholarship trains 50% faster. Strength x0.9."),
+	"Wanderer" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Rallying Voice"),"Playstyle. You recover stamina 50% faster while on the move and use 10% less food where hunger applies. Your mood slowly falls if you stay within 20 tiles of one spot for 45 minutes."),
+	"Rallying Voice" = list(0,list("Recluse Scholar","Menacing","Hardened Fighter","Quartermaster","Green Thumb","Tinkerer","Wanderer","Introverted"),"Playstyle. When you shout, friendly people who hear you get a small mood lift, at most once every 2 minutes each. Your own mood falls when nobody is within 3 tiles."),
 
 )
 
@@ -85,7 +93,7 @@ var/global/list/trait_list = list(
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
-// The current catalog has 24 entries. Refuse oversized future catalogs rather
+// The current catalog has 32 entries. Refuse oversized future catalogs rather
 // than silently truncating eligibility or letting a click do unbounded work.
 /proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
 	if (!islist(trait_list) || trait_list.len > 64)

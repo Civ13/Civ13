@@ -468,7 +468,7 @@ mob/living/simple_animal/hostile/wizard/moldy_man/lieutenant/death()
 	icon = 'icons/mob/npcs_wizards.dmi'
 	icon_state = "training_dummy"
 	icon_living = "training_dummy"
-	icon_dead = "training_dummy_dead"
+	icon_dead = "target_dummy_dead"
 	maxHealth = 9999
 	health = 9999
 	wander = FALSE

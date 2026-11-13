@@ -202,6 +202,7 @@
 			food_m *= 1.4
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
+		food_m *= trait_food_mult()
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
@@ -262,6 +263,7 @@
 					adjust_mood(-(0.4), "people around you")
 		if (!inducedSSD)
 			adjust_mood(-(0.02))
+		handle_playstyle_traits()
 	#undef HUNGER_THIRST_MULTIPLIER
 	handle_diet()
 	if (stats && stats.len)

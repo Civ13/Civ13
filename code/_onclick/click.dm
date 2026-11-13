@@ -268,6 +268,14 @@
 				if (needs_to_be_in_front) // but if we're making a new sandbag wall, we have to click right in front of us.
 					if (A != get_step(src, dir))
 						return
+			// Up a tree, or at the foot of one: no melee across the canopy
+			// (tree_climbing.dm). A gun still fires; anything else is refused.
+			if (ismob(A) && tree_melee_blocked(src, A))
+				if (istype(W, /obj/item/weapon/gun))
+					W.afterattack(A, src, FALSE, params)
+				else
+					tree_melee_refused(src, A)
+				return
 			if (W)
 				var/resolved = W.resolve_attackby(A, src, icon_x, icon_y) // Return TRUE in attackby() to prevent afterattack() effects (when safely moving items for example)
 				if (!resolved && A && W)
@@ -554,6 +562,8 @@
 				H.football = null
 		jump_act(src, M)
 	else
+		if ((M.middle_click_intent == "kick" || M.middle_click_intent == "jump" || M.middle_click_intent == "bite") && ismob(src) && tree_melee_refused(M, src))
+			return
 		if(M.middle_click_intent == "kick")
 			return kick_act(M)
 		else if(M.middle_click_intent == "jump")

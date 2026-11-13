@@ -275,3 +275,18 @@ A harbour sector keeps standing, passing and drifting hazards out by their whole
 
 Not covered: hazards met by a real ship on passage in a running world (the timer), and how any of it reads in a client.
 
+
+## The boathouse (`boathouse_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/boathouse_probe.dm
+```
+
+The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 10,5 on the shore.
+
+- **Slip:** Wagons & Ships gates the recipe; the slip is the 49 tiles of the 7x7 square diagonally north-east of the office.
+- **Putting away:** a 3 by 2 boat of ship frames in the slip is offered by name; under way or with a sailor aboard she is refused; a boat lying outside the slip is not offered. Put away, no frame is left in the slip, her axis and the rope on her deck are inside the office, and she is off `ship_axes`.
+- **Submarine:** a Scout lying in the slip is offered; submerged or with floodlights on she is refused; stored she leaves `ship_axes` and `player_submarines`, and stays off them when the office's `after_load()` runs after the axis registers itself again.
+- **Small boats:** a raft and an outrigger in the slip are offered; the outrigger is put away and a full office (three boats) refuses the raft.
+- **Taking out:** a rock or another boat in her tiles keeps a boat in; the Teal comes back on the same six tiles with her cargo where it lay and is a boat afloat again; the submarine comes back with her name, battery and all 15 hull frames; the outrigger comes back where it lay.
+- **Wrench:** an office with boats stored does not turn; an empty one turns its slip to the next corner clockwise.

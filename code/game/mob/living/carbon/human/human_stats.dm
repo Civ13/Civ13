@@ -26,7 +26,10 @@
 		found_trait = TRUE
 		str_mod = 1.5
 		dex_mod = 0.7
-	
+	if (find_trait("Tinkerer"))
+		str_mod *= 0.9
+		craft_mod *= 1.1
+
 	// Apply modifiers
 	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
 		switch (statname)
@@ -115,6 +118,8 @@
 	ensure_late_stats()
 	if (!stats.Find(statname))
 		return
+	if (multiplier > 0)
+		multiplier *= trait_skill_gain_mult(statname)
 
 	var/increase_multiple = 0.001 // 1 / 1000, to prevent crazy ugly decimals
 
