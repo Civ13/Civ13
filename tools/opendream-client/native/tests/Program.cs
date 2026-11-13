@@ -320,7 +320,10 @@ try {
     Console.Error.WriteLine("FAIL: " + e);
     return 1;
 } finally {
-    // Task-created exact temporary root only.
+    // Task-created exact temporary root only. Git marks its object files read-only, which
+    // Windows refuses to delete (the bot repair fixture's repositories), so clear that first.
+    foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        File.SetAttributes(file, FileAttributes.Normal);
     Directory.Delete(root, true);
 }
 return 0;

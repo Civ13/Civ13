@@ -20,7 +20,10 @@ static class BotRepairTests {
             return output.Trim();
         }
         var dir = Path.Combine(root, "bot-repair");
-        if (Directory.Exists(dir)) Directory.Delete(dir, true);
+        if (Directory.Exists(dir)) {
+            foreach (var file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)) File.SetAttributes(file, FileAttributes.Normal);
+            Directory.Delete(dir, true);
+        }
         Directory.CreateDirectory(dir);
         var origin = Path.Combine(dir, "origin.git"); var seed = Path.Combine(dir, "seed"); var repo = Path.Combine(dir, "bot");
         Git(dir, "init", "--bare", "--initial-branch=main", origin);
