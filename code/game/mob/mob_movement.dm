@@ -257,6 +257,7 @@
 		// one pulse and the hold broke.
 		if (npc.npc_subtile_offset_owned && (step_x || step_y) && !npc.pulledby)
 			return FALSE
+	var/atom/ride_from = loc // Where a rider stood before this move (hoof dust).
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	var/subtile_realign = FALSE
@@ -343,6 +344,8 @@
 			if (!H.human_subtile_mount_follow())
 				H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
+			if (ride_from != H.loc && isturf(ride_from))
+				hoof_dust(H.riding_mob, ride_from)
 	los_refresh_moved_viewer(src, FALSE, los_move_contexts)
 	return
 
