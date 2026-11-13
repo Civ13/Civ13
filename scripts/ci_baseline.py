@@ -816,6 +816,12 @@ SUITES = {
     'utensil_shank': {'files': ('tests/utensil_shank/test_utensil_shank.py',),
         'paths': ('tests/utensil_shank/',), 'shared_paths': (
             'code/game/objects/covers.dm', 'code/game/objects/covers_types/')},
+    # Folding-stock guns share one toggle; source checks against the frozen
+    # copied verb, no BYOND runtime.
+    'folding_stock': {'files': ('tests/folding_stock/test_folding_stock.py',),
+        'paths': ('tests/folding_stock/',), 'shared_paths': (
+            'code/modules/projectiles/guns/projectile.dm', 'code/modules/1713/weapons/guns/mg/smg.dm',
+            'code/modules/1713/weapons/guns/mg/aks.dm', 'code/modules/1713/weapons/guns/mg/lmg.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
