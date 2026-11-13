@@ -51,6 +51,10 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 // Multiplier on stat training from adaptStat().
 /mob/living/human/proc/trait_skill_gain_mult(statname)
 	. = 1
+	if (find_trait("Quick Learner"))
+		. *= 1.15
+	if (find_trait("Slow Learner"))
+		. *= 0.85
 	if (find_trait("Hardened Fighter"))
 		if (statname == "swords")
 			. *= PLAYSTYLE_FAST_SKILL
@@ -159,11 +163,39 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 // ------------------------------------------------------------
 
 /mob/living/human/proc/trait_pain_mult()
-	return find_trait("Hardened Fighter") ? HARDENED_PAIN_MULT : 1
+	. = 1
+	if (find_trait("Hardened Fighter") || find_trait("Thick Skinned"))
+		. *= HARDENED_PAIN_MULT
+	if (find_trait("Low Pain Tolerance"))
+		. *= 1.2
 
 // Scales how much pulling something slows the puller.
 /mob/proc/pull_drag_mult()
-	return find_trait("Quartermaster") ? QUARTERMASTER_DRAG_MULT : 1
+	. = 1
+	if (find_trait("Quartermaster"))
+		. *= QUARTERMASTER_DRAG_MULT
+	if (find_trait("Strong Back"))
+		. *= 0.8
+	if (find_trait("Bad Back"))
+		. *= 1.25
+
+// Time to study a research chapter.
+/mob/living/human/proc/trait_study_time_mult()
+	. = 1
+	if (find_trait("Bookworm"))
+		. *= 0.85
+	if (find_trait("Dyslexic"))
+		. *= 1.25
+
+// Mood lost to a gruesome sight.
+/mob/living/human/proc/trait_gore_mood_mult()
+	return find_trait("Squeamish") ? 2 : 1
+
+// Included after human_needs.dm, so this wraps the ordinary adjust_mood().
+/mob/living/human/adjust_mood(amount, cause = null)
+	if (amount < 0 && cause == "seeing someone maimed")
+		amount *= trait_gore_mood_mult()
+	return ..(amount, cause)
 
 /mob/living/human/proc/trait_harvest_bonus(statname)
 	return (statname == "farming" && find_trait("Green Thumb")) ? GREEN_THUMB_HARVEST_BONUS : 0
@@ -184,22 +216,35 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 // ------------------------------------------------------------
 
 /mob/living/human/proc/trait_food_mult()
-	return find_trait("Wanderer") ? WANDERER_FOOD_MULT : 1
+	. = 1
+	if (find_trait("Wanderer"))
+		. *= WANDERER_FOOD_MULT
+	if (find_trait("Light Eater"))
+		. *= 0.85
+	if (find_trait("Glutton"))
+		. *= 1.2
 
 /mob/living/human/proc/trait_stamina_recovery_mult()
+	. = 1
 	if (find_trait("Wanderer") && last_movement >= 0 && world.time - last_movement <= WANDERER_MOVING_WINDOW)
-		return WANDERER_RECOVERY_MULT
-	return 1
+		. *= WANDERER_RECOVERY_MULT
+	if (find_trait("Deep Lungs"))
+		. *= 1.25
+	if (find_trait("Asthmatic"))
+		. *= 0.75
 
-// On top of the ordinary recovery (diet_recover_stamina, 2% a tick), so a
-// wanderer on the move recovers at the multiplied rate.
+// Runs right after the ordinary recovery (diet_recover_stamina, 2% a tick) and
+// adds or takes back the difference, so the total runs at the multiplied rate.
+// A slower recovery never drains a full or empty bar.
 /mob/living/human/proc/wanderer_recover_stamina()
 	var/extra = trait_stamina_recovery_mult() - 1
-	if (extra <= 0 || !islist(stats["stamina"]))
+	if (!extra || !islist(stats["stamina"]))
 		return
 	var/cap = diet_stamina_cap()
-	if (stats["stamina"][1] < cap)
-		stats["stamina"][1] = min(stats["stamina"][1] + round(stats["stamina"][2] * 0.02 * diet_recovery_factor() * extra), cap)
+	var/current = stats["stamina"][1]
+	if (current >= cap || current <= 0)
+		return
+	stats["stamina"][1] = clamp(current + stats["stamina"][2] * 0.02 * diet_recovery_factor() * extra, 0, cap)
 
 // Restless feet: staying around one spot for a long while wears on the mood.
 /mob/living/human/proc/handle_wanderer()
@@ -244,7 +289,6 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 /mob/living/human/proc/handle_playstyle_traits()
 	if (find_trait("Wanderer"))
 		handle_wanderer()
-		wanderer_recover_stamina()
 	if (!prob(20))
 		return
 	if (find_trait("Recluse Scholar"))

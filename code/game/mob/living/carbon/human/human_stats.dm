@@ -26,9 +26,15 @@
 		found_trait = TRUE
 		str_mod = 1.5
 		dex_mod = 0.7
+	var/med_mod = 1
 	if (find_trait("Tinkerer"))
 		str_mod *= 0.9
 		craft_mod *= 1.1
+	if (find_trait("Steady Hands"))
+		med_mod *= 1.15
+	if (find_trait("Butterfingers"))
+		craft_mod *= 0.9
+		med_mod *= 0.9
 
 	// Apply modifiers
 	if (stats[lowertext(statname)] && stats[lowertext(statname)][1])
@@ -39,6 +45,8 @@
 				return (stats[lowertext(statname)][1]/100)*mood_modifier*dex_mod
 			if ("crafting")
 				return (stats[lowertext(statname)][1]/100)*mood_modifier*craft_mod
+			if ("medical")
+				return (stats[lowertext(statname)][1]/100)*mood_modifier*med_mod
 			if ("magic")
 				return (stats[lowertext(statname)][1]/100)
 			else

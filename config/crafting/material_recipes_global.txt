@@ -2001,6 +2001,9 @@ RECIPE: /material/steel/,tank track,/obj/structure/vehicleparts/movement/tracks,
 RECIPE: /material/steel/,light axis (800 weight),/obj/structure/vehicleparts/axis/car,10,80,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,automobile workshop,/obj/structure/car_workshop,30,230,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,aircraft hangar,/obj/structure/car_workshop/hangar,40,260,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,airframe section,/obj/structure/vehicleparts/frame/car/aircraft/section,4,60,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,airframe controls (800 weight),/obj/structure/vehicleparts/axis/aircraft/airframe,12,100,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,pilot's seat,/obj/structure/bed/chair/drivers/aircraft/loose,8,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
