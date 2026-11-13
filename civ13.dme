@@ -1063,6 +1063,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_damage.dm"
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_arming.dm"
 #include "code\modules\1713\machinery\modular_vehicles\aircraft\aircraft_hangar.dm"
+#include "code\modules\1713\machinery\modular_vehicles\aircraft\helicopter.dm"
 #include "code\modules\1713\machinery\modular_vehicles\axis.dm"
 #include "code\modules\1713\machinery\modular_vehicles\factory.dm"
 #include "code\modules\1713\machinery\modular_vehicles\car_workshop.dm"
