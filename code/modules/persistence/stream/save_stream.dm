@@ -17,6 +17,52 @@
 // Values with no native token (icons, sounds, appearances) are encoded as
 // BYOND savefile text through a scratch savefile, so they round trip exactly as
 // a savefile would store them. See tools/savestream/README.md.
+// Scratch savefiles. An anonymous /savefile lives in BYOND's per-user cache,
+// which every Dream Daemon on the host shares. Two regions loading at once can
+// pick the same cache file there, and Windows then refuses it ("file is in
+// use"), stopping the load. On Windows each world uses its own folder under
+// data/scratch-saves instead. Files nothing else references any more are
+// closed and deleted as new ones are made (deleting a file BYOND still has open
+// erases the live savefile), and folders from runs over a day old go at the
+// first use.
+var/global/persistence_scratch_run
+var/global/persistence_scratch_serial = 0
+var/global/list/persistence_scratch_files = list()
+
+/proc/new_scratch_savefile()
+	if(world.system_type != MS_WINDOWS) return new /savefile
+	if(!persistence_scratch_run)
+		sweep_old_scratch_runs()
+		persistence_scratch_run = "[num2text(world.realtime, 12)]-[world.port]-[rand(100000, 999999)]"
+	if(!(persistence_scratch_serial % 32)) sweep_released_scratch_savefiles()
+	var/path = "data/scratch-saves/[persistence_scratch_run]/[++persistence_scratch_serial].sav"
+	if(fexists(path)) fdel(path)
+	var/savefile/S = new(path)
+	persistence_scratch_files[S] = path
+	return S
+
+/proc/sweep_released_scratch_savefiles()
+	// A file only this list holds counts the same as an unreferenced datum
+	// held the same way.
+	var/list/probe = list(new /datum)
+	var/unused
+	for(var/datum/D in probe)
+		unused = refcount(D)
+	var/list/released = list()
+	for(var/savefile/F in persistence_scratch_files)
+		if(refcount(F) <= unused) released += F
+	for(var/savefile/F in released)
+		var/path = persistence_scratch_files[F]
+		persistence_scratch_files -= F
+		del(F)
+		fdel(path)
+
+/proc/sweep_old_scratch_runs()
+	var/oldest = world.realtime - 864000
+	for(var/run in flist("data/scratch-saves/"))
+		var/started = text2num(copytext(run, 1, findtext(run, "-")))
+		if(isnum(started) && started < oldest) fdel("data/scratch-saves/[run]")
+
 /datum/save_stream
 	var/lib
 	var/helper
@@ -478,7 +524,7 @@ var/global/regex/save_stream_child_break = regex(@"\n(?!\t)")
 			if(!template) return cached
 			var/copy_name = "savestream_value_[++value_files]_[world.timeofday].sav"
 			if(fcopy(template, copy_name)) return "Y[num2text(length(copy_name), 12)]:[copy_name]"
-	if(!scratch) scratch = new /savefile()
+	if(!scratch) scratch = new_scratch_savefile()
 	scratch["v"] << value
 	var/text = scratch.ExportText("v")
 	scratch.dir.Cut()
@@ -570,7 +616,7 @@ var/global/regex/save_stream_child_break = regex(@"\n(?!\t)")
 	return value
 
 /datum/save_stream/proc/decode_savefile_text(body)
-	if(!scratch) scratch = new /savefile()
+	if(!scratch) scratch = new_scratch_savefile()
 	scratch.ImportText("v", ". = [body]")
 	var/value
 	scratch["v"] >> value

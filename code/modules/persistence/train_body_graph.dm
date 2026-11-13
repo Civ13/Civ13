@@ -296,7 +296,7 @@
 		var/turf/body_turf = get_turf(body)
 		saving_z = body_turf ? body_turf.z : 0
 		if(!saving_z) throw EXCEPTION("Body is not on a world level")
-		var/savefile/F = new
+		var/savefile/F = new_scratch_savefile()
 		F["/format_version"] << 3
 		F["/value_format"] << 2
 		var/root = BuildVarDirectory(F, body, 1)
@@ -412,7 +412,7 @@
 	if(doc["schema"] != "train-body-1" || !islist(entries) || !islist(lists) || entries.len + lists.len > TRAIN_BODY_NODES || !body_ref(doc["root"], entries.len))
 		throw EXCEPTION("Malformed body graph")
 	wire_edges = 0
-	var/savefile/F = new
+	var/savefile/F = new_scratch_savefile()
 	F["/format_version"] << 3
 	F["/value_format"] << 2
 	F["/train_body_root"] << doc["root"]

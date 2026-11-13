@@ -1214,7 +1214,7 @@
 		return 0
 	var/turf/origin = A.loc
 	var/admission_usage = world.tick_usage
-	var/savefile/staged = new
+	var/savefile/staged = new_scratch_savefile()
 	staged["/format_version"] << 3
 	var/datum/moving_save_capture/chunk = new
 	chunk.root = A
