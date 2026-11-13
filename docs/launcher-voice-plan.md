@@ -7,7 +7,7 @@ Reviewed 2026-11-13 against master a504fad4828e50ce57ed6c2b7da45848b6f04e6c.
 
 **DiscordPHP must be used for this implementation**, per the owner's explicit requirement. The intended server/control integration is PHP + DiscordPHP: identity/session coordination and Discord-facing orchestration through supported APIs. Do not substitute a separate bot library or Python Discord implementation.
 
-The launcher/native Social SDK companion remains the proposed local microphone/audio boundary, not a replacement for DiscordPHP. DiscordPHP's bot voice support is not automatically a Social SDK player-voice binding. Before implementation, verify which lobby/auth/control operations DiscordPHP and Discord's supported API actually expose, identify any required DiscordPHP extension, and document the boundary. No claim is made that the current PHP package already supports Social SDK player calls. Never put bot credentials in the player launcher.
+The launcher/native Social SDK companion remains the proposed local microphone/audio boundary, not a replacement for DiscordPHP. DiscordPHP's bot voice support is not automatically a Social SDK player-voice binding. Before implementation, verify which lobby/auth/control operations DiscordPHP and Discord's supported API actually expose, identify any required DiscordPHP extension, and document the boundary. Verified DiscordPHP source already supplies Social SDK backend lobby APIs through LobbyRepository and SessionLobbyRepository. Player message operations use player OAuth, not bot impersonation. This is not a native client PCM/audio binding. Never put bot credentials in the player launcher.
 
 ## Long-term goal: move chat into the SDK
 
@@ -144,3 +144,19 @@ cosmetic voice controls that imply unavailable functionality.
 - [SDK terms](https://support-dev.discord.com/hc/en-us/articles/30225844245271-Discord-Social-SDK-Terms):
   separate use/distribution obligations. This document records a release gate,
   not legal advice, acceptance of terms or a finding of license compatibility.
+
+## DiscordPHP backend integration evidence
+
+Reviewed [DiscordPHP source](https://github.com/discord-php/DiscordPHP/blob/991eab3e9f5a5349eda814c9f9424ed8f5c5ebc6/scripts/social-sdk-compatibility.md):
+LobbyRepository supplies lobby creation, modification and membership operations;
+SessionLobbyRepository supplies player-session lobby join/leave, messages and
+channel linking. Reuse these APIs rather than introduce a competing Discord
+client. Preserve its supported PHP compatibility in any extension.
+
+[The lobby guide](https://github.com/discord-php/DiscordPHP/blob/991eab3e9f5a5349eda814c9f9424ed8f5c5ebc6/guide/parts/lobby.rst)
+records important limits: session message sending uses player OAuth; channel
+linking requires CanLinkLobby; metadata is not retained on a linked guild-channel
+copy. Moderation metadata is interpreted by clients and must not be mistaken for
+server-side prevention of delivery. Bot mutations do not automatically refresh
+separate player-repository caches. Account for stale caches during reconciliation
+and do not equate a cached member list with current admission authority.
