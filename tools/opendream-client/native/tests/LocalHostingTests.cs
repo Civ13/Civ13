@@ -381,8 +381,8 @@ static class LocalHostingTests {
         // A world that is up but not ready is still loading; a running world without its travel agent is a problem.
         Require(Row("orbit") is { Run: RegionRun.Working, Activity: "loading the world", Players: 0, Build: RegionBuild.Failed, BuildText: "Build failed" } orbitRow
             && orbitRow.Problem == "Update build failed: compile.lock is held. Travel agent not running. Not answering as this region.", "orbit row: " + Row("orbit").Problem);
-        Require(Row("island") is { Run: RegionRun.Asleep, RunText: "Asleep (saved)", Build: RegionBuild.Building, BuildText: "Building" } islandRow
-            && islandRow.Notes == "building update: compiling, stopped after its last save; a wake or travel starts it", "cold row: " + Row("island").Notes);
+        Require(Row("island") is { Run: RegionRun.Asleep, RunText: "Asleep", Build: RegionBuild.Building, BuildText: "Building" } islandRow
+            && islandRow.Notes == "saved and shut down; a wake or travel starts it, building update: compiling", "cold row: " + Row("island").Notes);
         Require(Row("sea") is { Run: RegionRun.Working, Activity: "handover: loading the standby", Players: 1, Build: RegionBuild.Built } seaRow
             && seaRow.Notes == "new build running beside it, not installed: the region started while its update was building", "handover row: " + Row("sea").Notes);
         Require(Row("lost") is { Name: "lost", Run: RegionRun.Unknown, Problem: "Status unavailable: config unreadable." }, "unknown row: " + Row("lost").Describe());

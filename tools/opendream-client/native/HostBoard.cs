@@ -139,11 +139,11 @@ public static class HostBoard {
         var (run, runText) = working != null ? (RegionRun.Working, "Working") : state switch {
             "awake" => (RegionRun.Running, "Running"),
             "asleep" => (RegionRun.Asleep, "Asleep"),
-            "cold" => (RegionRun.Asleep, "Asleep (saved)"),
+            "cold" => (RegionRun.Asleep, "Asleep"),
             "stopped" => (RegionRun.Stopped, "Stopped"),
             _ => (RegionRun.Unknown, "Unknown"),
         };
-        if (state == "cold") notes.Add("stopped after its last save; a wake or travel starts it");
+        if (state == "cold") notes.Insert(0, "saved and shut down; a wake or travel starts it");
         return new RegionCard(id, name, mainland, run, runText, players, build, buildText, working, string.Join(", ", notes),
             problems.Count == 0 ? null : string.Join(". ", problems) + ".");
     }
