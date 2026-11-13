@@ -1570,6 +1570,12 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertFalse(output.exists())
             self.assertFalse(receipt.exists())
 
+    def test_policy_suite_has_a_bounded_longer_deadline(self):
+        self.assertEqual(ci.suite_deadline('policy'), 120)
+        self.assertEqual(ci.suite_deadline('access_lists'), ci.TIMEOUT)
+        self.assertEqual(ci.suite_deadline(None), ci.TIMEOUT)
+        self.assertTrue(all(ci.TIMEOUT <= ci.suite_deadline(name) <= ci.MAX_SUITE_TIMEOUT for name in ci.SUITES))
+
     def test_suite_deadline_and_missing_test_counts_fail_execution(self):
         plan, _, _, _ = fixtures()
         real_run = ci.subprocess.run
