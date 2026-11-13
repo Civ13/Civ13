@@ -25,8 +25,15 @@ var/global/list/region_trail_next_request = list()
 	var/requested_destination = null
 	var/requester_ckey = null
 	var/approved_by = null
+	// An admin walking the unapproved trail to the land it should lead to; it
+	// stays closed to everyone else meanwhile. Runtime only.
+	var/tmp/mob/living/human/admin_passage = null
 
 /obj/structure/region_gate/trail_marker/proc/peer_choices()
+	return region_trail_peer_choices()
+
+// "Name (id)" = id for every land a trail may lead to.
+/proc/region_trail_peer_choices()
 	var/list/choices = list()
 	if(!shard_group.enabled) return choices
 	for(var/id in shard_group.peers)
@@ -41,11 +48,23 @@ var/global/list/region_trail_next_request = list()
 	return choices
 
 /obj/structure/region_gate/trail_marker/closed_reason()
-	if(!approved)
-		if(requested_destination)
-			return "The trail toward [region_trail_name(requested_destination)] is marked out, but nobody has cleared it yet. An admin must approve it."
-		return "The trail is only marked out. Use it to choose where it should lead; an admin must approve it before anyone can travel."
+	if(!approved && !admin_passage)
+		return pending_reason()
 	return ..()
+
+/obj/structure/region_gate/trail_marker/proc/pending_reason()
+	if(requested_destination)
+		return "The trail toward [region_trail_name(requested_destination)] is marked out, but nobody has cleared it yet. An admin must approve it."
+	return "The trail is only marked out. Use it to choose where it should lead; an admin must approve it before anyone can travel."
+
+// While an admin walks an unapproved trail, only that admin may set off.
+/obj/structure/region_gate/trail_marker/travel_refusal(mob/living/human/H)
+	if(!approved && admin_passage != H)
+		return pending_reason()
+	return ..()
+
+/obj/structure/region_gate/trail_marker/ghost_passage_destination()
+	return destination || requested_destination
 
 // An unapproved marker anyone built must not catch arriving travellers.
 /obj/structure/region_gate/trail_marker/accepts_arrivals()
@@ -55,7 +74,35 @@ var/global/list/region_trail_next_request = list()
 	if(!istype(user) || !user.client) return
 	if(approved)
 		return ..()
+	// An admin may walk a marked trail to the land it asks for before opening it.
+	if(requested_destination && check_rights(R_ADMIN, FALSE, user))
+		var/choice = WWinput(user, "This trail toward [region_trail_name(requested_destination)] waits for approval. As an admin you can walk it there now; it stays closed to everyone else.", "Trail marker", "Cancel", list("Travel there", "Approve or redirect", "Reject", "Cancel"))
+		if(QDELETED(src) || !user.client || !check_rights(R_ADMIN, FALSE, user)) return
+		switch(choice)
+			if("Travel there")
+				admin_travel(user)
+			if("Approve or redirect")
+				admin_approve(user)
+			if("Reject")
+				admin_reject(user)
+		return
 	request(user)
+
+// An admin's own character travels the unapproved trail to the requested land.
+/obj/structure/region_gate/trail_marker/proc/admin_travel(mob/living/human/user)
+	if(approved || !requested_destination || !(requested_destination in shard_group.peers)) return
+	if(admin_passage)
+		to_chat(user, SPAN_WARNING("Someone is already walking this trail. Try again in a moment."))
+		return
+	admin_passage = user
+	destination = requested_destination
+	log_admin("[key_name(user)] walked the unapproved trail at [x],[y],[z] to [requested_destination].")
+	travel(user)
+	// Approved meanwhile: the admin's choice of destination stands.
+	if(!approved)
+		destination = null
+	if(admin_passage == user)
+		admin_passage = null
 
 // A player asks for this marker to lead somewhere; admins decide.
 /obj/structure/region_gate/trail_marker/proc/request(mob/living/human/user)
@@ -183,6 +230,43 @@ var/global/list/region_trail_next_request = list()
 	if(region_trail_at_edge(get_turf(user))) return null
 	if(open_sea_world()) return "On the open sea a trail marker is a landing. Build it on dry ground at the shore of the home island, within [OPEN_SEA_LANDING_TILES] tiles of the water."
 	return "Trails lead out of the land from its edge. Build the trail marker outdoors, on the ground, within [REGION_TRAIL_EDGE_TILES] tiles of the edge of the world."
+
+// Admin tab: places an open trail where the admin stands (a ghost works too),
+// then offers to go to the other land to place the trail leading back. A
+// traveller from a land arrives at the trail here that leads back to it
+// (region_travel_return_trail_turf), so the two trails connect.
+/datum/admins/proc/place_region_trail()
+	set category = "Admin"
+	set name = "Place Trail"
+	set desc = "Place an open trail to another land where you stand (ghosts too), then go there to place the trail back."
+	if(!check_rights(R_ADMIN)) return
+	var/mob/M = usr
+	if(!M || !M.client) return
+	if(!shard_group.enabled)
+		to_chat(M, SPAN_WARNING("This server is not part of a region group, so a trail cannot lead anywhere."))
+		return
+	var/list/choices = region_trail_peer_choices()
+	if(!length(choices))
+		to_chat(M, SPAN_WARNING("No other lands are known from here."))
+		return
+	var/choice = WWinput(M, "Where should a trail placed here lead? It opens at once.", "Place Trail", "Cancel", choices + "Cancel")
+	if(!choice || choice == "Cancel" || !(choice in choices) || !M.client || !check_rights(R_ADMIN)) return
+	var/turf/T = get_turf(M)
+	if(!T)
+		return
+	var/id = choices[choice]
+	var/obj/structure/region_gate/trail_marker/marker = new(T)
+	marker.requester_ckey = M.ckey
+	if(!marker.approve(id, M.ckey))
+		qdel(marker)
+		to_chat(M, SPAN_WARNING("That land cannot be reached by a trail."))
+		return
+	message_admins("[key_name_admin(M)] placed a trail at [T.x],[T.y],[T.z] to [html_encode(marker.destination_name())].")
+	var/list/peer = shard_group.peers[id]
+	if(peer && peer["state"] == "STOPPED")
+		to_chat(M, SPAN_WARNING("[marker.destination_name()] is stopped right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
+	if(WWinput(M, "The trail to [marker.destination_name()] is open. Travellers from [marker.destination_name()] arrive at this trail once that land has a trail leading back here. Go there now to place it?", "Place Trail", "Stay", list("Go there", "Stay")) == "Go there" && M.client)
+		shard_group.send_player(M.client, id)
 
 /proc/region_trail_name(id)
 	var/list/peer = shard_group.enabled ? shard_group.peers[id] : null

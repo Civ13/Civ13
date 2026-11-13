@@ -167,6 +167,16 @@ works like an admin gate. The approval is saved with the marker
 (`code/modules/persistence/region_trails.dm`). There is no ferry yet; a
 player-made ferry can reuse the same approval later.
 
+Admins can also use a waiting marker: their own character can walk it to the
+land it asks for (the trail stays closed to everyone else), or they can
+approve or reject it from the same prompt. An admin ghost clicking any trail or
+gate can follow it, which sends their client to that land's server with
+nothing carried. **Admin > Place Trail** places an open trail where the admin
+stands, ghost or not and without the edge rule, then offers to go to the other
+land to place the trail leading back. Every trip records the land it left
+from (`from`), and an arriving traveller comes out at a trail leading back
+there when one exists, before the usual admin gate or approved trail.
+
 A **launch pad** (`code/modules/space/lander.dm`) is a trail marker that can
 only lead to a region with a survey map in `config/space/survey/`, approved
 the same way. Crew launch together from a crewed lander beside it; each
