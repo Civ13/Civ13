@@ -285,6 +285,7 @@
 
 				// Finally, apply damage to target
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
+				hand_struck(hit_zone, real_damage)
 
 			if (I_DISARM)
 				if (M == src)
@@ -345,7 +346,15 @@
 					//Actually disarm them
 					for (var/obj/item/I in holding)
 						if (I)
-							drop_from_inventory(I)
+							if (I.grip_tightened)
+								I.set_grip(src, FALSE, silent = TRUE)
+								M.visible_message(SPAN_WARNING("[M] breaks [src]'s grip on \the [I]!"), SPAN_WARNING("You break [src]'s grip on \the [I]!"))
+								playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
+								return
+							if (I.jostle_drop_chance)
+								I.knocked_from_hand(src)
+							else
+								drop_from_inventory(I)
 							M.visible_message("<span class='danger'>[M] has disarmed [src]!</span>", "<span class='danger'>You have disarmed [src]!</span>")
 							playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 							return

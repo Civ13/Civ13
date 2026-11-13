@@ -433,6 +433,9 @@ bullet_act
 			SP.loc = organ
 			organ.embed(SP)
 
+	if (def_zone == "l_hand" || def_zone == "r_hand")
+		hand_struck(def_zone, P.damage)
+
 	if (P.gibs)
 		gib()
 	else if (P.crushes)
@@ -735,6 +738,8 @@ bullet_act
 	else if(!..())
 		return 0
 
+	hand_struck(hit_zone, effective_force)
+
 	if(effective_force > 10 || effective_force >= 5 && prob(33))
 		forcesay(hit_appends)	//forcesay checks stat already
 
@@ -890,6 +895,8 @@ bullet_act
 		var/hit_area = affecting.name
 		if (!hit_area)
 			return
+		if (zone == "l_hand" || zone == "r_hand")
+			hand_struck(zone, throw_damage)
 
 		if (istype(O, /obj/item/weapon/reagent_containers/food/snacks/poo))
 			var/obj/structure/pillory/pillory = null
