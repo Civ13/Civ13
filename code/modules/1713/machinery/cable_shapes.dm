@@ -169,8 +169,14 @@ var/global/list/cable_autolink_queue = list()
 		if (QDELETED(C) || !isturf(C.loc))
 			continue
 		for (var/obj/O in C.loc)
+			if (istype(O, /obj/structure/power_point))
+				continue
 			if (O != C && !istype(O, /obj/structure/cable) && !istype(O, /obj/item))
 				O.map_cable_attach(C)
+	// Power points last, once every machine they could feed is in.
+	for (var/obj/structure/power_point/P in queue)
+		if (!QDELETED(P) && P.anchored && P.attach_cable())
+			P.serve_nearby()
 	return count
 
 // Joins a machine standing on a map-placed cable, the way laying a cable
