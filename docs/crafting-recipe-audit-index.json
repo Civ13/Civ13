@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 227,
     "material_recipes_carib.txt": 1285,
     "material_recipes_crustacean.txt": 1338,
-    "material_recipes_global.txt": 1889,
+    "material_recipes_global.txt": 1892,
     "material_recipes_gorilla.txt": 1299,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1280,
@@ -78,7 +78,7 @@
     "tool": 1,
     "tools": 421,
     "trains": 94,
-    "vehicle parts": 126,
+    "vehicle parts": 129,
     "wall coverings & stucco": 6,
     "weapon accessories": 84,
     "weapons": 200
@@ -120,6 +120,6 @@
   ],
   "reviewed_follow_on_families": 14,
   "reviewed_legacy_bedroll_rows": 11,
-  "current_furniture_candidates": 571,
+  "current_furniture_candidates": 572,
   "reviewed_legacy_canopy_rows": 12
 }

@@ -33,6 +33,9 @@
 	for (var/obj/structure/vehicleparts/frame/F in T)
 		if (istype(F, /obj/structure/vehicleparts/frame/ship) != (A.ship ? TRUE : FALSE))
 			continue
+		// Airframe sections and airframe controls only go together.
+		if (!vehicle_assembly_kind_matches(F, A))
+			continue
 		if (!F.axis || F.axis == A)
 			return F
 	return null
@@ -107,6 +110,9 @@
 	if (gaps)
 		refusal = "the frames must fill a rectangle: [gaps] of the [width] by [height] tiles [gaps == 1 ? "has" : "have"] no frame"
 		return
+	refusal = A.assembly_refusal(src)
+	if (refusal)
+		return
 	if (ship)
 		var/dry = 0
 		for (var/obj/structure/vehicleparts/frame/F in frames)
@@ -133,6 +139,9 @@
 			if (!tank)
 				tank = K
 		for (var/obj/structure/bed/chair/drivers/D in T)
+			// A plane is flown from a pilot's seat, whose column climbs and descends.
+			if (istype(axis, /obj/structure/vehicleparts/axis/aircraft) != istype(D, /obj/structure/bed/chair/drivers/aircraft))
+				continue
 			if (!seat && (!D.axis || D.axis == axis))
 				seat = D
 		for (var/obj/structure/turret/built/B in T)
@@ -179,7 +188,7 @@
 	if (!tank)
 		. += "a fuel tank"
 	if (!seat)
-		. += "a driver's seat"
+		. += istype(axis, /obj/structure/vehicleparts/axis/aircraft) ? "a pilot's seat" : "a driver's seat"
 	if (movers.len < 4)
 		. += "a wheel or track on each corner frame ([movers.len] of 4 fitted)"
 
