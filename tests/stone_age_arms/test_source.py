@@ -113,6 +113,15 @@ class StoneAgeArms(unittest.TestCase):
             self.assertIn(f'crafting_recipe_allowed(H, "{path}")', self.source)
         self.assertIn('if (!path || !crafting_recipe_allowed(H, "[path]"))', self.source)
 
+    def test_flint_knife_uses_its_own_untinted_sprite(self):
+        flint = (ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8')
+        body = flint[flint.index('/obj/item/weapon/material/kitchen/utensil/knife/flint\n'):]
+        body = body[:body.index('\n\n')]
+        self.assertIn("icon = 'icons/obj/stone_age_arms.dmi'", body)
+        self.assertIn('icon_state = "flint_knife"', body)
+        self.assertIn('applies_material_colour = FALSE', body)
+        self.assertIn('flint_knife', dmi_states(DMI))
+
     def test_refused_knap_keeps_the_flint(self):
         flint = strip_comments((ROOT / 'code/modules/1713/flint_mining.dm').read_text(encoding='utf-8'))
         tail = flint[flint.index('result = stone_age_knap_result(choice, T, H)'):]
