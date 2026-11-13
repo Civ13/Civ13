@@ -61,6 +61,33 @@ FACTORY: Arisaka barrel 7.7x58mm|/obj/item/weapon/gun_component/arisaka_barrel_7
 FACTORY: Arisaka magazine 6.5x50mm|/obj/item/weapon/gun_component/arisaka_feed_65|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
 FACTORY: Arisaka magazine 7.7x58mm|/obj/item/weapon/gun_component/arisaka_feed_77|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
 FACTORY: Arisaka stock|/obj/item/weapon/gun_component/arisaka_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+// Lee-Enfield, Springfield, Lebel, Berthier and Carcano rifle parts (issue #4443 phase 5). Gated by Cartridge Firearms.
+FACTORY: Lee-Enfield receiver|/obj/item/weapon/gun/projectile/boltaction/enfield/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Lee-Enfield bolt|/obj/item/weapon/gun_component/enfield_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Lee-Enfield barrel .303 British|/obj/item/weapon/gun_component/enfield_barrel_303|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Lee-Enfield magazine .303 British|/obj/item/weapon/gun_component/enfield_feed_303|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Lee-Enfield stock|/obj/item/weapon/gun_component/enfield_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Springfield receiver|/obj/item/weapon/gun/projectile/boltaction/springfield/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Springfield bolt|/obj/item/weapon/gun_component/springfield_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Springfield barrel .30-06|/obj/item/weapon/gun_component/springfield_barrel_3006|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Springfield magazine .30-06|/obj/item/weapon/gun_component/springfield_feed_3006|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Springfield stock|/obj/item/weapon/gun_component/springfield_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Lebel receiver|/obj/item/weapon/gun/projectile/boltaction/lebel/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Lebel bolt|/obj/item/weapon/gun_component/lebel_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Lebel barrel 8x50mmR|/obj/item/weapon/gun_component/lebel_barrel_8x50|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Lebel magazine 8x50mmR|/obj/item/weapon/gun_component/lebel_feed_8x50|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Lebel stock|/obj/item/weapon/gun_component/lebel_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Berthier receiver|/obj/item/weapon/gun/projectile/boltaction/berthier/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Berthier bolt|/obj/item/weapon/gun_component/berthier_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Berthier barrel 8x50mmR|/obj/item/weapon/gun_component/berthier_barrel_8x50|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Berthier magazine 8x50mmR 3-round|/obj/item/weapon/gun_component/berthier_feed_8x50_3|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Berthier magazine 8x50mmR 5-round|/obj/item/weapon/gun_component/berthier_feed_8x50_5|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Berthier stock|/obj/item/weapon/gun_component/berthier_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
+FACTORY: Carcano receiver|/obj/item/weapon/gun/projectile/boltaction/carcano/receiver|1|/obj/item/stack/material/steel=4|120|1|cartridge_ammo
+FACTORY: Carcano bolt|/obj/item/weapon/gun_component/carcano_action|1|/obj/item/stack/material/steel=2|90|1|cartridge_ammo
+FACTORY: Carcano barrel 6.5x52mm|/obj/item/weapon/gun_component/carcano_barrel_65x52|1|/obj/item/stack/material/steel=3|100|1|cartridge_ammo
+FACTORY: Carcano magazine 6.5x52mm|/obj/item/weapon/gun_component/carcano_feed_65x52|1|/obj/item/stack/material/steel=1|50|1|cartridge_ammo
+FACTORY: Carcano stock|/obj/item/weapon/gun_component/carcano_furniture_stock|1|/obj/item/stack/material/wood=3|40|1|cartridge_ammo
 FACTORY: synthetic leather|/obj/item/stack/material/leather/synthetic|2|/obj/item/stack/material/cloth=1;/obj/item/stack/material/plastic=1|40|1|synthetics
 // Tier 4 is the 3D printer (Digital Age), which prints only these rows.
 FACTORY: printed screwdriver|/obj/item/weapon/screwdriver|1|/obj/item/stack/material/plastic=1|30|4|additive_manufacturing

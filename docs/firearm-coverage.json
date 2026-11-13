@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 416,
-  "modern": 313,
+  "types": 421,
+  "modern": 318,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -17,14 +17,14 @@
    "machine_gun_mounted": 32,
    "pistol": 38,
    "revolver": 27,
-   "rifle_bolt": 51,
+   "rifle_bolt": 56,
    "rifle_lever": 9,
    "rifle_semiauto": 26,
    "shotgun": 7,
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 59
+  "migrated": 76
  },
  "modern_calibers": [
   "12gauge",
@@ -1705,8 +1705,8 @@
    "max_shells": 3,
    "magazine_type": "/obj/item/ammo_magazine/c8x50_3clip",
    "ammo_type": "/obj/item/ammo_casing/a8x50",
-   "family": null,
-   "migration": "pending"
+   "family": "berthier",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/berthier/m16",
@@ -1718,8 +1718,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/c8x50_5clip",
    "ammo_type": "/obj/item/ammo_casing/a8x50",
-   "family": null,
-   "migration": "pending"
+   "family": "berthier",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/berthier/m16/sniper",
@@ -1731,8 +1731,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/c8x50_5clip",
    "ammo_type": "/obj/item/ammo_casing/a8x50",
-   "family": null,
-   "migration": "pending"
+   "family": "berthier",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/berthier/receiver",
+   "name": "Berthier receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a8x50",
+   "load_method": 3,
+   "max_shells": 3,
+   "magazine_type": "/obj/item/ammo_magazine/c8x50_3clip",
+   "ammo_type": null,
+   "family": "berthier",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/carcano",
@@ -1744,8 +1757,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/carcano",
    "ammo_type": "/obj/item/ammo_casing/a65x52",
-   "family": null,
-   "migration": "pending"
+   "family": "carcano",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/carcano/receiver",
+   "name": "Carcano receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a65x52",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/carcano",
+   "ammo_type": null,
+   "family": "carcano",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/enfield",
@@ -1757,8 +1783,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/enfield",
    "ammo_type": "/obj/item/ammo_casing/a303",
-   "family": null,
-   "migration": "pending"
+   "family": "enfield",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/enfield/receiver",
+   "name": "Lee-Enfield receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a303",
+   "load_method": 3,
+   "max_shells": 10,
+   "magazine_type": "/obj/item/ammo_magazine/enfield",
+   "ammo_type": null,
+   "family": "enfield",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr71",
@@ -1770,8 +1809,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr71",
    "ammo_type": "/obj/item/ammo_casing/a765x53",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/gewehr98",
@@ -1874,8 +1913,21 @@
    "max_shells": 8,
    "magazine_type": "/obj/item/ammo_magazine/c8x50",
    "ammo_type": "/obj/item/ammo_casing/a8x50",
-   "family": null,
-   "migration": "pending"
+   "family": "lebel",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/lebel/receiver",
+   "name": "Lebel receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a8x50",
+   "load_method": 1,
+   "max_shells": 8,
+   "magazine_type": "/obj/item/ammo_magazine/c8x50",
+   "ammo_type": null,
+   "family": "lebel",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/lebel/sniper",
@@ -1887,8 +1939,8 @@
    "max_shells": 8,
    "magazine_type": "/obj/item/ammo_magazine/c8x50",
    "ammo_type": "/obj/item/ammo_casing/a8x50",
-   "family": null,
-   "migration": "pending"
+   "family": "lebel",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/m24",
@@ -1913,8 +1965,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/gewehr71",
    "ammo_type": "/obj/item/ammo_casing/a762x51",
-   "family": null,
-   "migration": "pending"
+   "family": "mauser",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/mauser1890",
@@ -2043,8 +2095,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/enfield",
    "ammo_type": "/obj/item/ammo_casing/a303",
-   "family": null,
-   "migration": "pending"
+   "family": "enfield",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/singleshot",
@@ -2186,8 +2238,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/springfield",
    "ammo_type": "/obj/item/ammo_casing/a3006",
-   "family": null,
-   "migration": "pending"
+   "family": "springfield",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/boltaction/springfield/receiver",
+   "name": "Springfield receiver",
+   "category": "rifle_bolt",
+   "scope": "modern",
+   "caliber": "a3006",
+   "load_method": 3,
+   "max_shells": 5,
+   "magazine_type": "/obj/item/ammo_magazine/springfield",
+   "ammo_type": null,
+   "family": "springfield",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/springfield/sniper",
@@ -2199,8 +2264,8 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/springfield",
    "ammo_type": "/obj/item/ammo_casing/a3006",
-   "family": null,
-   "migration": "pending"
+   "family": "springfield",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/boltaction/vg",
