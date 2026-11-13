@@ -967,7 +967,17 @@ class Host:
         state = self.frozen()
         pid = state['pid'] if state else self.platform.server_pid(self.config['port'])
         if not pid:
-            raise Refused('the server is not running')
+            # Asleep on its save with no process (shut down to disk, or its frozen process
+            # died): there is nothing to end, but a forced stop still means "stay down", so
+            # forget the cold record. Otherwise it reads as asleep and a join would start it.
+            if not self.cold():
+                raise Refused('the server is not running')
+            self.cold_file.unlink(missing_ok=True)
+            if not keep_running:
+                self.running_file.unlink(missing_ok=True)
+            if not self.lock.exists():
+                self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
+            return {'killed': True, 'pid': None, 'reason': reason, 'released_locks': [], 'was_asleep_on_save': True}
         self.platform.kill_tree(pid)
         released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
