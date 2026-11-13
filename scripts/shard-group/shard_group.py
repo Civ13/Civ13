@@ -46,6 +46,7 @@ import sqlite3
 import struct
 import subprocess
 import sys
+import threading
 import time
 
 HERE = Path(__file__).resolve().parent
@@ -1112,6 +1113,7 @@ class RegionHost(Host):
             self.stop_standby(spare_port, standby_pid)
             raise RuntimeError('the standby world gave no valid session')
         generation = None
+        backup = None
         try:
             warning = self.shutdown_warning()
             if before.get('clients') and warning and before.get('shutdown_warning'):
@@ -1133,10 +1135,9 @@ class RegionHost(Host):
                 self.platform.sleep(2)
             generation = gaia_host.check_save(saves)
             backups = self.state_dir / 'backups'
-            gaia_host.copy_save(saves, backups / operation)
-            kept = sorted((p for p in backups.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
-            for old in kept[:-self.config['backups_kept']]:
-                shutil.rmtree(old)
+            # The backup copies while the standby loads (Val, 2026-11-13: the copy before the
+            # load added to the pause). Both only read map_saves; the switch waits for it.
+            backup = self.start_backup(saves, backups, operation)
             self.record(phase='loading the standby', generation=generation, backup=str(backups / operation))
             answer = self.platform.query(spare_port, token, 'standby_load', operation, standby_session)
             if answer.get('operation') != operation:
@@ -1144,7 +1145,10 @@ class RegionHost(Host):
             self.wait_world(spare_port, token, lambda s: s.get('ready') and not s.get('restart_hold'),
                             self.config['load_timeout_seconds'], 'the standby world did not load the save in time',
                             standby=True)
+            self.finish_backup(backup)
         except Exception as error:
+            if backup is not None:
+                backup.join()  # never leave a copy running into the next handover
             # The old world is still running: stop the standby and release the freeze.
             self.record(phase='rolling back', error=str(error)[:500])
             self.stop_standby(spare_port, standby_pid)
@@ -1256,6 +1260,31 @@ class RegionHost(Host):
                     self.running_file.unlink(missing_ok=True)
                 return {'killed': True, 'pid': standby, 'reason': reason, 'released_locks': [], 'standby': standby}
         return super().kill(reason, keep_running)
+
+    def start_backup(self, saves, backups, operation):
+        """Copy the save to backups/operation in a thread, then drop the oldest beyond backups_kept."""
+        keep = self.config['backups_kept']
+
+        def copy():
+            try:
+                gaia_host.copy_save(saves, backups / operation)
+                kept = sorted((p for p in backups.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+                for old in kept[:-keep]:
+                    shutil.rmtree(old)
+            except BaseException as error:  # reported by finish_backup
+                worker.error = error
+        worker = threading.Thread(target=copy, name='handover-backup', daemon=True)
+        worker.error = None
+        worker.start()
+        return worker
+
+    def finish_backup(self, worker):
+        """Wait for the backup; a failed one stops the handover before the switch."""
+        if self.read_state().get('phase') == 'loading the standby':
+            self.record(phase='finishing the backup')
+        worker.join()
+        if worker.error is not None:
+            raise RuntimeError('the save could not be backed up: %s' % worker.error)
 
     def stop_if_killed(self, operation):
         reason = self.killed_during(operation)

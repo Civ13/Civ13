@@ -2115,6 +2115,51 @@ class HandoverTests(unittest.TestCase):
         self.assertIn((['kill_tree', 200], None), self.machine.calls)
         self.assertIn(self.LIVE, self.machine.up)
 
+    def test_the_backup_copies_while_the_standby_loads(self):
+        # Val, 2026-11-13: copying the save before the load added about 23 s to the pause.
+        import threading
+        group, host = self.staged()
+        query, real_copy = self.machine.query, shard_group.gaia_host.copy_save
+        load_sent, seen = threading.Event(), []
+
+        def loading(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_load':
+                load_sent.set()
+            return query(port, token, action, operation, session, extra)
+
+        def copy_save(source, target):
+            seen.append(load_sent.wait(5))  # the load is under way while the copy runs
+            return real_copy(source, target)
+        self.machine.query = loading
+        shard_group.gaia_host.copy_save = copy_save
+        try:
+            accepted = host.request('handover')
+            host.work('handover', accepted['operation'])
+        finally:
+            shard_group.gaia_host.copy_save = real_copy
+        self.assertEqual(seen, [True])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        self.assertTrue((Path(host.config['state_dir']) / 'backups' / accepted['operation'] / '1.sav').exists())
+
+    def test_a_failed_backup_stops_the_handover_before_the_switch(self):
+        group, host = self.staged()
+        real_copy = shard_group.gaia_host.copy_save
+
+        def broken(source, target):
+            raise OSError('disk full')
+        shard_group.gaia_host.copy_save = broken
+        try:
+            host.work('handover', host.request('handover')['operation'])
+        finally:
+            shard_group.gaia_host.copy_save = real_copy
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('could not be backed up: disk full', state['error'])
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_cancel'])
+        self.assertIn(self.LIVE, self.machine.up, 'the old world keeps running')
+        self.assertNotIn(self.STANDBY, self.machine.up)
+
     def force_stop_on(self, host, trigger):
         """Script a person's Force stop that lands when the handover sends trigger; a world
         that is gone refuses connections as on Windows (WinError 10061)."""

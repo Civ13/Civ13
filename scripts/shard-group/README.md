@@ -363,9 +363,10 @@ without stopping it for the load:
    is blocked for the whole save). Play on a level after its capture is
    end-of-round activity that does not carry over, and players are warned. It then
    publishes
-   its restart intent (lifecycle action `handover_save`). `map_saves` is backed
-   up as a stop would.
-3. The standby loads that save (`standby_load`). Its preflight and load are the
+   its restart intent (lifecycle action `handover_save`).
+3. The standby loads that save (`standby_load`) while `map_saves` is backed up
+   beside it, as a stop would (both only read the save; the switch waits for the
+   copy, and a failed copy rolls back). Its preflight and load are the
    validation of both the save and the new build; while it loads, the old world
    is still up.
 4. The old world is released (`handover_release`): it reboots out (DreamDaemon
