@@ -9,6 +9,7 @@ BASIC = 'code/modules/client/preferencesSQLite/preference_setup/general/01_basic
 PREFS = 'code/modules/client/preferencesSQLite/preferences.dm'
 SAVE = 'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm'
 LIFE = 'code/game/mob/living/carbon/human/human_life.dm'
+PLAYSTYLE = 'code/game/mob/living/carbon/human/playstyle_traits.dm'
 
 
 def read(path):
@@ -54,7 +55,7 @@ def validator_contract(source):
 class TraitFoundations(unittest.TestCase):
     def test_table_and_all_exclusions_both_orders(self):
         table = definitions(read(TRAITS))
-        self.assertEqual(len(table), 24)
+        self.assertEqual(len(table), 32)
         self.assertEqual(table['Baldness'][0], 0)
         for name, (_, excluded, _) in table.items():
             for other in excluded:
@@ -178,6 +179,32 @@ class TraitFoundations(unittest.TestCase):
         stats = read('code/game/mob/living/carbon/human/human_stats.dm')
         self.assertIn('craft_mod = 1.5', stats)
         self.assertIn('craft_mod = 1.15', stats)
+
+    def test_playstyle_traits_are_free_exclusive_and_hooked(self):
+        table = definitions(read(TRAITS))
+        playstyle = ['Recluse Scholar', 'Menacing', 'Hardened Fighter', 'Quartermaster',
+                     'Green Thumb', 'Tinkerer', 'Wanderer', 'Rallying Voice']
+        for name in playstyle:
+            self.assertEqual(table[name][0], 0, name)
+            self.assertTrue(table[name][2].startswith('Playstyle.'), name)
+            self.assertIsNone(validate([name], table))
+            for other in playstyle:
+                if other != name:
+                    self.assertEqual(validate([name, other], table, False), 'incompatible')
+        self.assertEqual(validate(['Recluse Scholar', 'Extroverted'], table, False), 'incompatible')
+        self.assertEqual(validate(['Rallying Voice', 'Introverted'], table, False), 'incompatible')
+        self.assertIsNone(validate(['Green Thumb', 'Agile', 'Deaf'], table))
+        hooks = {
+            'code/game/mob/living/carbon/human/human_stats.dm': ('trait_skill_gain_mult(statname)', 'find_trait("Tinkerer")'),
+            LIFE: ('food_m *= trait_food_mult()', 'handle_playstyle_traits()'),
+            PLAYSTYLE: ('/mob/living/human/say(', 'rally_shout()', 'proc/recluse_rate()', 'proc/pull_drag_mult()',
+                        'proc/trait_pain_mult()', 'proc/trait_harvest_bonus(', 'proc/trait_stamina_recovery_mult()', 'wanderer_recover_stamina()',
+                        'verb/intimidate()', 'player_input(src, "Who do you want to intimidate?"'),
+        }
+        for path, needles in hooks.items():
+            source = read(path)
+            for needle in needles:
+                self.assertIn(needle, source, path)
 
 
 if __name__ == '__main__':

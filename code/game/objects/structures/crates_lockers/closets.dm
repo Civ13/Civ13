@@ -70,6 +70,7 @@
 				to_chat(user, "There is still some free space.")
 			else
 				to_chat(user, "It is full.")
+			quartermaster_count(user)
 
 /obj/structure/closet/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (!istype(mover, /obj/item/projectile))

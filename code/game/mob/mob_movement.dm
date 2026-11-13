@@ -828,7 +828,7 @@
 				mob.stop_pulling()
 
 			else if (istype(mob.pulling, /mob))
-				move_delay += 1.25
+				move_delay += 1.25 * mob.pull_drag_mult()
 				if (istype(mob.pulling, /mob/living/human))
 					var/mob/living/human/HH = mob.pulling
 					for (var/obj/structure/noose/N in get_turf(HH))
@@ -836,11 +836,11 @@
 							mob.stop_pulling()
 
 			else if (istype(mob.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
-				move_delay += 1.00
+				move_delay += 1.00 * mob.pull_drag_mult()
 
 			else if (istype(mob.pulling, /obj/structure))
 				var/obj/structure/pulled_structure = mob.pulling
-				move_delay += pulled_structure.drag_delay(mob)
+				move_delay += pulled_structure.drag_delay(mob) * mob.pull_drag_mult()
 
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)

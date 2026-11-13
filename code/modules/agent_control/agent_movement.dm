@@ -133,12 +133,12 @@
 		if (!M.pulling.Adjacent(M))
 			M.stop_pulling()
 		else if (ismob(M.pulling))
-			delay += 1.25
+			delay += 1.25 * M.pull_drag_mult()
 		else if (istype(M.pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
-			delay += 1
+			delay += 1 * M.pull_drag_mult()
 		else if (istype(M.pulling, /obj/structure))
 			var/obj/structure/pulled_structure = M.pulling
-			delay += pulled_structure.drag_delay(M)
+			delay += pulled_structure.drag_delay(M) * M.pull_drag_mult()
 	M.Move(n, d)
 	var/moved = get_turf(M) != old
 	if (moved && H)

@@ -792,6 +792,7 @@ class BaselinePolicyTests(unittest.TestCase):
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
+            'code/game/mob/living/carbon/human/playstyle_traits.dm',
         }
         self.assertEqual(set(suite['shared_paths']), expected_sources)
         for path in expected_sources:
@@ -867,7 +868,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=17, failures=int(failing), errors=0, skipped=0))
+                        tests=18, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
