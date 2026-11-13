@@ -111,7 +111,7 @@ var/global/list/civ_generators = list()
 
 /obj/structure/civ_generator/examine(mob/user)
 	..()
-	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [available_output()] PU. Maximum: [rated_output()] PU.")
+	to_chat(user, "Generator: [enabled ? "enabled" : "off"]. Available output: [power_text(available_output())]. Maximum: [power_text(rated_output())].")
 
 /obj/structure/civ_generator/attack_hand(mob/user)
 	if (!registered || !connected() || !map || map.ordinal_age < min_age)

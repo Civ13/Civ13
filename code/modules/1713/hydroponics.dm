@@ -232,11 +232,11 @@
 	else
 		to_chat(user, SPAN_NOTICE("The [crop] has completed [stage - 1] of 6 growth cycles ([round(cycle_progress / 10)] of 60 seconds into the next)."))
 		if (!powersource)
-			to_chat(user, SPAN_WARNING("Growth is paused: connect a cable carrying [HYDROPONICS_POWER] PU."))
+			to_chat(user, SPAN_WARNING("Growth is paused: connect a cable carrying [power_text(HYDROPONICS_POWER)]."))
 		else if (!can_pay_cycle())
 			to_chat(user, SPAN_WARNING("Growth is paused: each cycle needs [HYDROPONICS_CYCLE_WATER] water and [HYDROPONICS_CYCLE_NUTRIENT] nutrient."))
 		else if (!powered)
-			to_chat(user, SPAN_WARNING("Growth is paused until the cable can supply [HYDROPONICS_POWER] PU."))
+			to_chat(user, SPAN_WARNING("Growth is paused until the cable can supply [power_text(HYDROPONICS_POWER)]."))
 		if ((crop in hydroponics_fragile_crops()) && water_units < HYDROPONICS_CYCLE_WATER)
 			to_chat(user, SPAN_WARNING("The [crop] is wilting and will die if it stays without water."))
 

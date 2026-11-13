@@ -62,7 +62,7 @@
 				pull_factor = 20
 				break
 		to_chat(user, "<span class='notice'>Pulling power (vehicles): <b>[maxpower*pull_factor]</b>.</span>")
-		to_chat(user, "<span class='notice'>Cable power output: <b>[maxpower]</b>.</span>")
+		to_chat(user, "<span class='notice'>Cable power output: <b>[power_text(maxpower)]</b>.</span>")
 /obj/structure/engine/proc/turn_on()
 	return
 

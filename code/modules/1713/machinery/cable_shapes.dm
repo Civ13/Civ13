@@ -173,6 +173,9 @@ var/global/list/cable_autolink_queue = list()
 				continue
 			if (O != C && !istype(O, /obj/structure/cable) && !istype(O, /obj/item))
 				O.map_cable_attach(C)
+	for (var/obj/structure/power_meter/M in queue)
+		if (!QDELETED(M) && M.anchored)
+			M.attach_cable()
 	// Power points last, once every machine they could feed is in.
 	for (var/obj/structure/power_point/P in queue)
 		if (!QDELETED(P) && P.anchored && P.attach_cable())

@@ -184,7 +184,7 @@
 	if (!rows.len)
 		out += "<p>No factory machines within [FACTORY_MONITOR_RANGE] tiles.</p>"
 	else
-		out += "<table border=1 cellpadding=3><tr><th>Machine</th><th>Where</th><th>State</th><th>Items/min</th><th>Power (PU)</th><th>Notes</th></tr>"
+		out += "<table border=1 cellpadding=3><tr><th>Machine</th><th>Where</th><th>State</th><th>Items/min</th><th>Power (kW)</th><th>Notes</th></tr>"
 		for (var/list/row in rows)
 			var/where = isnull(row[3]) ? "" : "[row[3] - x], [row[4] - y]"
 			var/state = row[5]
@@ -192,13 +192,13 @@
 			out += "<tr><td>[html_encode(row[1])]</td><td>[where]</td><td><font color='[colour]'>[html_encode(state)]</font></td><td>[row[6]]</td><td>[row[8]]</td><td>[html_encode(row[7])]</td></tr>"
 		out += "</table>"
 		var/list/power = power_summary(rows)
-		out += "<p>These machines draw [power[1]] PU.</p>"
+		out += "<p>These machines draw [power_text(power[1])].</p>"
 		var/list/grids = power[2]
 		for (var/list/grid in grids)
 			var/used = grid[1]
 			var/capacity = grid[2]
 			var/colour = (capacity <= 0 || used > capacity) ? "#c33" : (used >= capacity * 0.9 ? "#c90" : "#3a3")
-			out += "<p>Power grid: <font color='[colour]'>[used] of [capacity] PU in use</font>.</p>"
+			out += "<p>Power grid: <font color='[colour]'>[power_text(used)] of [power_text(capacity)] in use</font>.</p>"
 		out += "<p>Where is east, north of this monitor. Rates cover the last two minutes. A grid's use counts everything on it.</p>"
 	out += pipe_network_html()
 	return out.Join()
