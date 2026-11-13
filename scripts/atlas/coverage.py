@@ -27,6 +27,8 @@ def reference(resources, annotated, produced):
         'reference_only_by_kind': dict(sorted(kinds.items())),
         'pages_with_description': sum(bool(value.get('desc')) for value in pages.values()),
         'pages_with_stats': sum(bool(value.get('stats')) for value in pages.values()),
+        'pages_with_habitat': sum(any(row[0] == 'Habitat' for row in value.get('stats', ())) for value in pages.values()),
+        'pages_with_hazard': sum(any(row[0] == 'Hazard' for row in value.get('stats', ())) for value in pages.values()),
         'pages_with_recipe_or_route': len(set(pages) & (annotated | produced)),
         'examine_linkable_types': sum(key.startswith(('/obj/', '/mob/', '/turf/', '/material/')) for key in pages),
         'note': 'Eligibility is decided by scripts/atlas/entities.py. A reference entry is a static type page, '

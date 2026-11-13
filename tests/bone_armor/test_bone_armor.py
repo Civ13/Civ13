@@ -10,7 +10,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 BONE_SET = ('/obj/item/clothing/head/helmet/bone', '/obj/item/clothing/suit/storage/jacket/bonearmor',
-            '/obj/item/clothing/suit/hairbonearmor', '/obj/item/clothing/mask/skullmask')
+            '/obj/item/clothing/suit/hairbonearmor', '/obj/item/clothing/mask/skullmask',
+            '/obj/item/clothing/suit/woodarmor')
 
 
 def read(path):
@@ -51,6 +52,14 @@ class BoneArmorEras(unittest.TestCase):
         self.assertEqual(armor('/obj/item/clothing/suit/hairbonearmor')['gun'], 0)
         self.assertEqual(armor('/obj/item/clothing/mask/skullmask')['gun'], 0)
         self.assertLessEqual(armor('/obj/item/clothing/head/helmet/bone')['gun'], 10)
+        self.assertEqual(armor('/obj/item/clothing/suit/woodarmor')['gun'], 0)
+
+    def test_primitive_armor_maps_to_primitive_armor_node(self):
+        # Unmapped recipes fail closed, so every row needs a research node.
+        research = read('code/modules/research_tree/research_node.dm')
+        for path in BONE_SET:
+            if path != '/obj/item/clothing/mask/skullmask':
+                self.assertIn('"%s" = "padded_armor"' % path, research)
 
 
 if __name__ == '__main__':
