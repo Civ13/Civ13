@@ -1149,10 +1149,11 @@ internal sealed partial class LauncherWindow : Form {
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
             Text = "When the last player leaves a region and it has saved, the host service checks for new commits (every few minutes). " +
-                "If there are any, it builds them beside the running world, then saves, stops and starts the region on the new build. " +
-                "Nobody is kicked: if a player joins while it builds, the restart waits until the region is empty again, and a failed " +
-                "build leaves the world running. Asleep regions get the build while they sleep and start on it at their next wake. " +
-                "It never wipes a world: it always starts from the save." +
+                "If there are any, it builds them beside the running world, then hands the region over: the save is backed up, the new " +
+                "build loads it beside the old world, and only a load that succeeds takes over. A save the new code cannot read leaves the " +
+                "old world running. Nobody is kicked: if a player joins while it builds, it waits until the region is empty again, and a " +
+                "failed build leaves the world running. Asleep regions keep their build until they are next awake and empty. " +
+                "It never wipes a world." +
                 (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
         var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
         layout.Controls.Add(enabled);

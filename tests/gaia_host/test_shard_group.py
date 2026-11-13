@@ -1580,6 +1580,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(len(refusals), 2)
 
     def test_a_cold_region_gets_the_staged_build_before_its_next_wake(self):
+        self.group['update_when_empty'] = False
         group, host = self.built()
         host.work('stage', host.request_stage()['operation'])
         host.write_json(host.cold_file, {'frozen_at': 0})
@@ -1590,6 +1591,8 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(host.status()['state'], 'cold', 'it still starts on the next wake')
 
     def test_an_empty_region_restarts_onto_the_staged_build_instead_of_sleeping(self):
+        # Without update_when_empty a staged build still goes in by a restart at the idle minutes.
+        self.group['update_when_empty'] = False
         group, host = self.built()
         host.work('stage', host.request_stage()['operation'])
         self.machine.up = {1720}
@@ -1613,7 +1616,41 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('stage', self.machine.detached[-1][-2], 'only one build')
         host.work('stage', self.machine.detached[-1][-1])
         host.watch_step(idle)
-        self.assertEqual('restart', self.machine.detached[-1][-2])
+        self.assertEqual('handover', self.machine.detached[-1][-2], 'the new build loads the save before it takes over')
+
+    def test_an_unattended_update_never_falls_back_to_a_plain_restart(self):
+        # A save the new code cannot read must not leave the region down: only a handover,
+        # whose standby loads the save first, may install an unattended update.
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.up = {1720}
+        self.machine.free_mb = 100  # too little memory for a standby
+        self.machine.detached.clear()
+        idle, _ = host.watch_step(None)
+        for _ in range(3):
+            self.machine.clock += 15 * 60
+            idle, _ = host.watch_step(idle)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover', 'update')])
+
+    def test_a_failed_handover_is_not_retried_for_the_same_build(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        host.record(action='handover', phase='failed', revision=NEWER, error='the standby world did not load the save in time')
+        self.machine.up = {1720}
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover')])
+
+    def test_an_asleep_region_keeps_its_build_until_it_can_hand_over(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.pids = {77}
+        self.machine.connections = lambda port: []
+        host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
+        self.machine.up = {1720}
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertTrue(host.frozen(), 'not stopped to install an unchecked build')
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'update'])
 
     def test_a_player_online_or_an_unsaved_world_holds_the_update(self):
         group, host = self.built()
