@@ -78,11 +78,25 @@ internal sealed partial class LauncherWindow : Form {
     private DiscordSignIn? signIn;
     private HttpClient? signInHttp;
     private readonly LinkLabel signInLink = new() { AutoSize = true, Visible = false, Margin = new Padding(0, 3, 14, 0) };
-    private readonly List<Button> hostActions = [];
-    private readonly List<ToolStripItem> hostMenuActions = [];
+    // What an action waits for. Region: the chosen region is idle. All: nothing (the group script skips a
+    // busy region itself). AllIdle: every region is idle. Server: host.json's own server is idle. A Rescue
+    // action (force stop) stays offered while its target is busy, because that is when a hung world needs it.
+    private enum HostGate { Region, RegionRescue, All, AllIdle, Server, ServerRescue }
+    private readonly List<(Button Button, HostGate Gate)> hostActions = [];
+    private readonly List<(ToolStripItem Item, HostGate Gate)> hostMenuActions = [];
     private System.Windows.Forms.Timer? hostPoll, hostIdlePoll;
     private bool hostControlBusy;
     private bool groupScriptRunning;
+    // Busy is tracked per region, so one region's start or save never locks the others' buttons.
+    // busyRegions: regions the last status says run an action or a handover. actingRegions: regions a
+    // launcher request is being sent for right now. actingAll: an every-region request is being sent.
+    // actingWhole: an action that needs the whole group (epoch, group fresh world) is running.
+    private IReadOnlySet<string> busyRegions = new HashSet<string>();
+    private readonly HashSet<string> actingRegions = [];
+    private int actingAll, actingWhole;
+    private bool serverBusy, actingServer;
+    private int lastBusyRegions;
+    private Func<string>? chosenRegion;
 
     public static int Run(string root, Version version) {
         var thread = new Thread(() => {
@@ -259,22 +273,22 @@ internal sealed partial class LauncherWindow : Form {
             var all = Row("All regions");
             foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"),
                     ("Update offline regions", "update-offline"), ("Save, update and restart", "deploy") })
-                all.Controls.Add(HostButton(text, () => GroupAction(action, text)));
+                all.Controls.Add(HostButton(text, () => GroupAction(action, text), HostGate.All));
             all.Controls.Add(MoreButton(
-                ("Update (stopped regions only)", () => GroupAction("update", "Update"), true),
-                ("Build update", () => GroupAction("stage", "Build update"), true),
-                ("Restart host service", () => GroupAction("restart-host", "Restart host service"), true),
-                ("Advance epoch…", AdvanceEpoch, true),
-                ("-", null, false),
-                ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, false),
-                ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, false),
-                ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, false),
-                ("-", null, false),
-                ("Force stop", () => GroupAction("kill", "Force stop"), true),
-                ("Force restart", () => GroupAction("force-restart", "Force restart"), true),
-                ("Clear lock files", () => GroupAction("unlock", "Clear lock files"), true),
-                ("Force clear lock files", () => GroupAction("force-unlock", "Force clear lock files"), true),
-                ("Fresh world (all regions)…", GroupFreshWorld, true)));
+                ("Update (stopped regions only)", () => GroupAction("update", "Update"), HostGate.All),
+                ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
+                ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
+                ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
+                ("-", null, null),
+                ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, null),
+                ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
+                ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
+                ("-", null, null),
+                ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),
+                ("Force restart", () => GroupAction("force-restart", "Force restart"), HostGate.All),
+                ("Clear lock files", () => GroupAction("unlock", "Clear lock files"), HostGate.All),
+                ("Force clear lock files", () => GroupAction("force-unlock", "Force clear lock files"), HostGate.All),
+                ("Fresh world (all regions)…", GroupFreshWorld, HostGate.AllIdle)));
         }
         var server = Row(group != null ? "This server" : "Server");
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 3, 6, 3) };
@@ -283,19 +297,19 @@ internal sealed partial class LauncherWindow : Form {
         if (profile.Control != null) {
             var daily = new[] { ("Save and stop", "stop"), ("Restart", "restart"), ("Update", "update") };
             var forceful = new[] { ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"), ("Force clear lock files", "force-unlock") };
-            var menu = new List<(string, Func<Task>?, bool)>();
+            var menu = new List<(string, Func<Task>?, HostGate?)>();
             foreach (var (text, action) in daily) {
                 // With a region group these repeat the region rows for the one server host.json names, so they wait in the menu.
-                if (group == null) server.Controls.Add(HostButton(text, () => HostAction(action, text)));
-                else menu.Add((text, () => HostAction(action, text), true));
+                if (group == null) server.Controls.Add(HostButton(text, () => HostAction(action, text), HostGate.Server));
+                else menu.Add((text, () => HostAction(action, text), HostGate.Server));
             }
-            if (menu.Count > 0) menu.Add(("-", null, false));
-            foreach (var (text, action) in forceful) menu.Add((text, () => HostAction(action, text), true));
-            menu.Add(("-", null, false));
+            if (menu.Count > 0) menu.Add(("-", null, null));
+            foreach (var (text, action) in forceful) menu.Add((text, () => HostAction(action, text), action == "kill" ? HostGate.ServerRescue : HostGate.Server));
+            menu.Add(("-", null, null));
             menu.Add(("Open world log", () => {
                 Open(new ProcessStartInfo(Path.Combine(profile.GameDirectory, "logs", "world.log")) { UseShellExecute = true }, "the world log");
                 return Task.CompletedTask;
-            }, false));
+            }, null));
             server.Controls.Add(MoreButton([.. menu]));
             hostPoll = new System.Windows.Forms.Timer { Interval = 5000 };
             hostPoll.Tick += async (_, _) => await RefreshHostState();
@@ -329,23 +343,23 @@ internal sealed partial class LauncherWindow : Form {
         return string.Join(Environment.NewLine + Environment.NewLine, lines);
     }
 
-    // A host action button: disabled while an action runs (SetHostBusy).
-    private Button HostButton(string text, Func<Task> run) {
+    // A host action button: disabled only while what it acts on is busy (ApplyHostGates).
+    private Button HostButton(string text, Func<Task> run, HostGate gate) {
         var button = new Button { Text = text, AutoSize = true, Margin = new Padding(0, 3, 6, 3) };
         button.Click += async (_, _) => await run();
-        hostActions.Add(button);
+        hostActions.Add((button, gate));
         return button;
     }
 
     // "More": the rarer and the forceful actions, so each row shows only what is used every day.
-    // An item named "-" is a separator; gated items are disabled while an action runs.
-    private Button MoreButton(params (string Text, Func<Task>? Run, bool Gated)[] items) {
+    // An item named "-" is a separator; an item with a gate is disabled while what it acts on is busy.
+    private Button MoreButton(params (string Text, Func<Task>? Run, HostGate? Gate)[] items) {
         var menu = new ContextMenuStrip { ShowImageMargin = false };
-        foreach (var (text, run, gated) in items) {
+        foreach (var (text, run, gate) in items) {
             if (run == null) { menu.Items.Add(new ToolStripSeparator()); continue; }
             var item = new ToolStripMenuItem(text);
             item.Click += async (_, _) => await run();
-            if (gated) hostMenuActions.Add(item);
+            if (gate is { } gated) hostMenuActions.Add((item, gated));
             menu.Items.Add(item);
         }
         var button = new Button { Text = "More ▾", AutoSize = true, Margin = new Padding(0, 3, 6, 3) };
@@ -385,7 +399,8 @@ internal sealed partial class LauncherWindow : Form {
             catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) { HostLine("Could not re-read the regions: " + e.Message); }
         };
         // The list and the board show the same choice.
-        picker.SelectedIndexChanged += (_, _) => { if (hostBoard != null) hostBoard.Selected = Chosen(); };
+        picker.SelectedIndexChanged += (_, _) => { if (hostBoard != null) hostBoard.Selected = Chosen(); ApplyHostGates(); };
+        chosenRegion = Chosen;
         if (hostBoard != null) {
             hostBoard.Selected = Chosen();
             hostBoard.Chosen += id => {
@@ -396,10 +411,10 @@ internal sealed partial class LauncherWindow : Form {
         row.Controls.Add(picker);
         foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Sleep now", "freeze"), ("Wake", "thaw"),
                 ("Save, update and restart", "deploy") })
-            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen())));
-        var menu = new List<(string, Func<Task>?, bool)>();
+            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen()), HostGate.Region));
+        var menu = new List<(string, Func<Task>?, HostGate?)>();
         foreach (var (text, action) in new[] { ("Update", "update"), ("Build update", "stage"), ("Apply host settings", "config-apply"), ("Set up", "setup") })
-            menu.Add((text, () => GroupAction(action, text, Chosen()), true));
+            menu.Add((text, () => GroupAction(action, text, Chosen()), HostGate.Region));
         menu.Add(("Open its world log", () => {
             string? path;
             try { path = LocalHosting.RegionLog(group, Chosen()); }
@@ -407,11 +422,11 @@ internal sealed partial class LauncherWindow : Form {
             if (path == null) { HostLine("The group config names no root folder."); return Task.CompletedTask; }
             Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
             return Task.CompletedTask;
-        }, false));
-        menu.Add(("-", null, false));
+        }, null));
+        menu.Add(("-", null, null));
         foreach (var (text, action) in new[] { ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"),
                 ("Force clear lock files", "force-unlock"), ("Fresh world…", "fresh-world") })
-            menu.Add((text, () => GroupAction(action, text, Chosen()), true));
+            menu.Add((text, () => GroupAction(action, text, Chosen()), action == "kill" ? HostGate.RegionRescue : HostGate.Region));
         row.Controls.Add(MoreButton([.. menu]));
     }
 
@@ -759,7 +774,7 @@ internal sealed partial class LauncherWindow : Form {
                 answer = new ControlAnswer(false, "Status unavailable: " + e.Message, false);
                 serverStatusOutput = "";
             }
-            var busy = answer.Busy;
+            serverBusy = answer.Busy;
             var text = answer.Message;
             hostStatusProblem = answer.Ok ? null : answer.Message;
             if (control.Group != null) {
@@ -773,14 +788,15 @@ internal sealed partial class LauncherWindow : Form {
                     groupStatusOutput = "";
                 }
                 text += Environment.NewLine + group.Message;
-                busy |= group.Busy;
+                // A failed read keeps the last answer, so a busy region is not unlocked by a hiccup.
+                if (group.Ok) busyRegions = HostBoard.BusyRegions(groupStatusOutput);
                 if (!group.Ok) hostStatusProblem = group.Message;
                 else if (hostStatusProblem != null) hostStatusProblem = "This server: " + hostStatusProblem;
             }
             hostStateText = text;
             hostCheckedAt = DateTime.Now;
             ShowBoard();
-            SetHostBusy(busy || groupScriptRunning);
+            ApplyHostGates();
             return;
         }
         var port = profile.Port;
@@ -816,7 +832,8 @@ internal sealed partial class LauncherWindow : Form {
         if (host == null || byond == null || hostStart == null) return;
         var profile = host;
         var bin = byond;
-        hostStart.Enabled = false;
+        actingServer = true;
+        ApplyHostGates();
         try {
             if (profile.Update != null && !await Task.Run(() => LocalHosting.Listening(profile.Port)))
                 HostLine($"Updating to origin/{profile.Update.Branch} and rebuilding {profile.World}; this can take a few minutes...");
@@ -831,7 +848,8 @@ internal sealed partial class LauncherWindow : Form {
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine("Local hosting failed: " + e.Message);
         } finally {
-            hostStart.Enabled = byond != null;
+            actingServer = false;
+            ApplyHostGates();
             await RefreshHostState();
         }
     }
@@ -853,14 +871,17 @@ internal sealed partial class LauncherWindow : Form {
         };
         if (action != "update" && MessageBox.Show(this, question, "Civ13 Launcher",
                 MessageBoxButtons.OKCancel, forced ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
-        SetHostBusy(true);
+        actingServer = true;
+        ApplyHostGates();
         try {
             var answer = await Task.Run(() => LocalHosting.RunControl(control, action));
             HostLine(answer.Message);
-            if (!answer.Ok) SetHostBusy(false);
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine(label + " failed: " + e.Message);
-            SetHostBusy(false);
+        } finally {
+            // An accepted action holds the server's lock by now, so the status read keeps it busy until it settles.
+            actingServer = false;
+            await RefreshHostState();
         }
     }
 
@@ -892,13 +913,15 @@ internal sealed partial class LauncherWindow : Form {
             _ => $"{label} {target}? Players are saved and can rejoin when it is back.",
         };
         if (action is "stop" or "restart") question += " " + WarningNote();
+        if (region == null && action is "start" or "stop" or "restart" or "update" or "stage" && BusyNames() is { Length: > 0 } skipped)
+            question += $" Busy now and left alone: {skipped}.";
         if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
         if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action == "force-unlock" ? MessageBoxIcon.Warning : MessageBoxIcon.Question) != DialogResult.OK) return;
-        SetHostBusy(true);
         if (action == "restart-host") {
             groupScriptRunning = true;
+            ApplyHostGates();
             HostLine(label + "...");
             try {
                 var (exit, _) = await RunGroupScript(control, action, false);
@@ -911,17 +934,29 @@ internal sealed partial class LauncherWindow : Form {
             }
             return;
         }
+        // Only what this request acts on is locked while it is sent: the one region, or the All regions row.
+        if (region != null && !actingRegions.Add(region)) return;
+        if (region == null) actingAll++;
+        ApplyHostGates();
         try {
             if (action == "setup") HostLine($"Setting up {target}; fetching and making its worktree can take a minute...");
             var answer = await Task.Run(() => LocalHosting.RunGroup(control, action, null, region));
             HostLine(answer.Message);
-            // These finish at once rather than in a worker the status poll follows.
-            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
-            if (!answer.Busy) await RefreshHostState();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine(label + " failed: " + e.Message);
-            SetHostBusy(false);
+        } finally {
+            if (region != null) actingRegions.Remove(region);
+            else actingAll--;
+            // An accepted action holds its region's lock by now, so the status read keeps that region busy until it settles.
+            await RefreshHostState();
         }
+    }
+
+    // The names of the regions an every-region action would skip, for its question.
+    private string BusyNames() {
+        var busy = busyRegions.Concat(actingRegions).Distinct()
+            .Select(id => hostBoard?.Cards.FirstOrDefault(card => card.Id == id)?.Name ?? id).ToList();
+        return string.Join(", ", busy);
     }
 
     private async Task FreshWorld(string region) {
@@ -947,15 +982,16 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.CancelButton = cancel;
         if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != region) return;
-        SetHostBusy(true);
+        if (!actingRegions.Add(region)) return;
+        ApplyHostGates();
         try {
             var answer = await Task.Run(() => LocalHosting.RunGroup(control, "fresh-world", null, region, null, region));
             HostLine(answer.Message);
-            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
-            if (!answer.Busy) await RefreshHostState();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine("Fresh world refused: " + e.Message);
-            SetHostBusy(false);
+        } finally {
+            actingRegions.Remove(region);
+            await RefreshHostState();
         }
     }
 
@@ -994,15 +1030,16 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.CancelButton = cancel;
         if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != id) return;
-        SetHostBusy(true);
+        actingWhole++;
+        ApplyHostGates();
         try {
             var answer = await Task.Run(() => LocalHosting.RunGroup(control, "group-fresh-world", null, null, null, null, id));
             HostLine(answer.Message);
-            if (!answer.Ok || !answer.Busy) SetHostBusy(false);
-            if (!answer.Busy) await RefreshHostState();
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException or ArgumentException) {
             HostLine("Fresh world (all regions) refused: " + e.Message);
-            SetHostBusy(false);
+        } finally {
+            actingWhole--;
+            await RefreshHostState();
         }
     }
 
@@ -1032,14 +1069,15 @@ internal sealed partial class LauncherWindow : Form {
         dialog.CancelButton = cancel;
         if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0) return;
         var ordinal = picker.SelectedIndex;
-        SetHostBusy(true);
+        actingWhole++;
+        ApplyHostGates();
         try {
             HostLine("Advancing every region to the epoch " + LocalHosting.EpochNames[ordinal] + "...");
             HostLine((await Task.Run(() => LocalHosting.RunGroup(control, "epoch", null, null, ordinal))).Message);
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             HostLine("Advance epoch failed: " + e.Message);
         } finally {
-            SetHostBusy(false);
+            actingWhole--;
             await RefreshHostState();
         }
     }
@@ -1150,7 +1188,11 @@ internal sealed partial class LauncherWindow : Form {
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { Text = (DeployQuestion + " " + WarningNote()).Trim(), MaximumSize = new Size(460, 0), AutoSize = true, Margin = new Padding(0, 0, 0, 8) });
         var list = new CheckedListBox { CheckOnClick = true, Width = 460, Height = Math.Min(16, regions.Count) * 20 + 8, IntegralHeight = false };
-        foreach (var region in regions) list.Items.Add(region.Mainland ? region.Name + " (mainland)" : region.Name, only == null || region.Id == only);
+        // A region in the middle of its own action is left unticked: the others need not wait for it.
+        bool Busy(string id) => busyRegions.Contains(id) || actingRegions.Contains(id);
+        foreach (var region in regions)
+            list.Items.Add(region.Name + (region.Mainland ? " (mainland)" : "") + (Busy(region.Id) ? " (busy now)" : ""),
+                only == null ? !Busy(region.Id) : region.Id == only);
         layout.Controls.Add(list);
         var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
         var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
@@ -1161,6 +1203,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = go;
         dialog.CancelButton = cancel;
+        go.Enabled = list.CheckedIndices.Count > 0;
         // ItemCheck fires before the box changes, so count the pending state.
         list.ItemCheck += (_, e) => go.Enabled = list.CheckedIndices.Count + (e.NewValue == CheckState.Checked ? 1 : 0) - (e.CurrentValue == CheckState.Checked ? 1 : 0) > 0;
         if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
@@ -1181,8 +1224,8 @@ internal sealed partial class LauncherWindow : Form {
     private async Task DeployGroup(string label, IReadOnlyList<string> regions) {
         if (host?.Control is not { } control || control.Group == null || groupScriptRunning) return;
         SelectHostTab();
-        SetHostBusy(true);
         groupScriptRunning = true;
+        ApplyHostGates();
         ShowServerUpdateBusy();
         var which = regions.Count == 0 ? "every region" : string.Join(", ", regions);
         HostLine($"{label}: {which}...");
@@ -1244,16 +1287,36 @@ internal sealed partial class LauncherWindow : Form {
         lock (output) return (exit, output.ToString());
     }
 
-    private void SetHostBusy(bool value) {
-        var settled = hostControlBusy && !value;
+    // Enables each host action by what it acts on, from the last status and the requests being sent now.
+    // A deploy or host-service restart (groupScriptRunning) and a whole-group action still lock every row.
+    private void ApplyHostGates() {
+        var locked = groupScriptRunning || actingWhole > 0;
+        var region = chosenRegion?.Invoke();
+        var regionActing = region != null && actingRegions.Contains(region);
+        var regionBusy = regionActing || (region != null && busyRegions.Contains(region));
+        var ownBusy = serverBusy || actingServer;
+        var anyBusy = locked || ownBusy || actingAll > 0 || actingRegions.Count > 0 || busyRegions.Count > 0;
+        bool Open(HostGate gate) => !locked && gate switch {
+            HostGate.Region => !regionBusy,
+            HostGate.RegionRescue => !regionActing,
+            HostGate.All => actingAll == 0,
+            HostGate.AllIdle => !anyBusy,
+            HostGate.Server => !ownBusy,
+            HostGate.ServerRescue => !actingServer,
+            _ => false,
+        };
+        foreach (var (button, gate) in hostActions) button.Enabled = Open(gate);
+        foreach (var (item, gate) in hostMenuActions) item.Enabled = Open(gate);
+        if (hostStart != null) hostStart.Enabled = !locked && !ownBusy && byond != null;
+        var settled = hostControlBusy && !anyBusy;
         if (settled && hostStateText.Length > 0) HostLine(hostStateText);
-        hostControlBusy = value;
-        foreach (var button in hostActions) button.Enabled = !value;
-        foreach (var item in hostMenuActions) item.Enabled = !value;
-        if (hostStart != null) hostStart.Enabled = !value && byond != null;
-        if (hostPoll != null) hostPoll.Enabled = value;
+        hostControlBusy = anyBusy;
+        // The faster poll follows whatever is still working.
+        if (hostPoll != null) hostPoll.Enabled = anyBusy;
         // An action that just finished may have changed a build: refresh the board's build column.
-        if (settled && !groupScriptRunning) _ = CheckAllUpdates();
+        // So may one region finishing while others still work.
+        if (settled || (!locked && busyRegions.Count < lastBusyRegions)) _ = CheckAllUpdates();
+        lastBusyRegions = busyRegions.Count;
     }
 
     // Turning it off clears the activity at once; the choice is kept in discord.json.

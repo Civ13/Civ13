@@ -367,6 +367,11 @@ static class LocalHostingTests {
         var behindNow = HostBoard.RegionsBehind("{\"component\": \"server\", \"behind\": 3, \"regions\": {\"gaia\": {\"behind\": 3}, \"railyard\": {\"behind\": 0}, \"barren\": {\"behind\": 3}, \"moon\": {\"behind\": -1}, \"orbit\": \"x\"}, \"ok\": true}");
         Require(behindNow.Count == 3 && behindNow["gaia"] == 3 && behindNow["railyard"] == 0, "regions behind: " + behindNow.Count);
         Require(HostBoard.RegionsBehind("{\"ok\": false, \"regions\": {\"gaia\": {\"behind\": 3}}}").Count == 0 && HostBoard.RegionsBehind("Traceback").Count == 0, "a refused check counted");
+        // Only the regions that hold an action lock or are being handed over lock their buttons; a region that is
+        // merely loading its world, or whose last action failed, stays usable, and so does every other region.
+        var busyNow = HostBoard.BusyRegions(boardStatus);
+        Require(busyNow.SetEquals(["barren", "sea"]), "busy regions: " + string.Join(",", busyNow));
+        Require(HostBoard.BusyRegions("{\"ok\": false, \"refused\": \"x\"}").Count == 0 && HostBoard.BusyRegions("Traceback").Count == 0, "busy regions from a refusal");
         var board = HostBoard.Regions(boardStatus, behindNow, "gaia");
         RegionCard Row(string id) => board.Single(card => card.Id == id);
         Require(board.Count == 8 && board[0].Id == "gaia" && board[7].Id == "lost", "board rows: " + board.Count);
