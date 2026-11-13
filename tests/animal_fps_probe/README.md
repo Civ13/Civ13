@@ -8,7 +8,10 @@ player. Not compiled by CI.
 2. Run `dreamdaemon.exe fpsprobe.dmb <port> -trusted` from a scratch folder
    holding `config/` and connect `dreamseeker.exe byond://127.0.0.1:<port>`.
    Size the map window to about 1280x720.
-3. Start `sampler.ps1 -RunDir <daemon folder> -WindowTitle <seeker title>`.
+3. If another Dream Seeker is open (a live server), give the probe window its
+   own title first; the sampler measures only the window with that title.
+4. Start `sampler.ps1 -RunDir <daemon folder> -WindowTitle <seeker title>` before joining:
+   the probe starts its first phase as soon as the client arrives.
 
 Once the round plays the probe moves the client into a human on a clear
 Gaia field and runs 20 s phases: walking with no animals, with 80 still

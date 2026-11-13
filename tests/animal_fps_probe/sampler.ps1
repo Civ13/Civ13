@@ -17,7 +17,7 @@ $recorded = @{}
 while ($true) {
 	Start-Sleep -Milliseconds 500
 	$phase = if (Test-Path $phaseFile) { (Get-Content $phaseFile -Raw).Trim() } else { "none" }
-	$p = Get-Process dreamseeker -ErrorAction SilentlyContinue | Sort-Object WorkingSet64 -Descending | Select-Object -First 1
+	$p = Get-Process dreamseeker -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -eq $WindowTitle } | Select-Object -First 1
 	if (-not $p) { continue }
 	$now = Get-Date
 	$cpu = $p.TotalProcessorTime.TotalMilliseconds
@@ -29,7 +29,7 @@ while ($true) {
 	if ($phase -ne $last -and $phase -match "^(walk|stand)" -and -not $recorded[$phase]) {
 		$recorded[$phase] = $true
 		$log = Join-Path $RunDir "frames-$phase.log"
-		Start-Process -FilePath $Ffmpeg -ArgumentList @("-hide_banner", "-f", "gdigrab", "-framerate", "100", "-draw_mouse", "0", "-ss", "3", "-i", "title=$WindowTitle", "-t", "12", "-vf", "mpdecimate=hi=64:lo=32:frac=0.1", "-f", "null", "-") -RedirectStandardError $log -WindowStyle Hidden
+		Start-Process -FilePath $Ffmpeg -ArgumentList @("-hide_banner", "-f", "gdigrab", "-framerate", "100", "-draw_mouse", "0", "-ss", "3", "-i", "`"title=$WindowTitle`"", "-t", "12", "-vf", "mpdecimate=hi=64:lo=32:frac=0.1", "-f", "null", "-") -RedirectStandardError $log -WindowStyle Hidden
 	}
 	$last = $phase
 	if ($phase -eq "done") { break }
