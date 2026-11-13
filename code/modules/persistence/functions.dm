@@ -1335,7 +1335,8 @@ var/global/world_save_notice_started = null
 			throw EXCEPTION("Restore attempt binding changed before preflight")
 		if(!storage.prepare_saved_dimensions(expected_intent, operation) || (!operation || storage.exact_validation_operation != operation) && !storage.validate_world_save())
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save preflight rejected")
-		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity())))
+		// Validated just above: compare the files' identity without a second walk.
+		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity(FALSE))))
 			throw EXCEPTION("Restart intent does not match the completed generation")
 		var/watch = start_watch()
 		log_startup_progress("Starting map load...")
