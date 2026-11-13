@@ -39,11 +39,12 @@ var/frontier_delete_attempted = FALSE
 	before_save()
 		if(armed && world.params["scenario"] == "yield") sleep(1)
 		// A slow capture that stays inside one tick: spend more than the 40%
-		// tick share without sleeping, like the Gaia buffalo (2026-11-09).
+		// tick share and over 1 ds of wall clock without sleeping, like the
+		// Gaia buffalo (2026-11-09) and the drift jelly (2026-11-13).
 		var/datum/moving_save_capture/overrun_chunk = map_storage.moving_save_chunk
 		if(armed && world.params["scenario"] == "overrun" && overrun_chunk && overrun_chunk.root == src)
 			var/spin = ""
-			while(world.tick_usage - overrun_chunk.start_usage <= 45) spin = md5("[spin]")
+			while(world.tick_usage - overrun_chunk.start_usage <= 45 || (world.timeofday - overrun_chunk.start_clock + 864000) % 864000 <= 2) spin = md5("[spin]")
 		if(armed && world.params["scenario"] == "depth")
 			var/list/deep = list()
 			for(var/i = 1, i <= 70, i++) deep = list(deep)

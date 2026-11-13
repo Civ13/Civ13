@@ -239,7 +239,20 @@ class ProductionBoundaryTests(unittest.TestCase):
         self.assertIn('(last_error && last_error != last_export_error)', reclaim)
 
     def test_capture_budget_diagnostics_keep_original_limits(self):
-        self.assertIn('work > 8192 || tick_delta || elapsed_ds > 1', SAVING)
+        self.assertIn('if(++work > 8192 || tick_delta)', SAVING)
+
+    def test_wall_clock_overrun_keeps_capture_and_demotes_root(self):
+        # 2026-11-13: a drift jelly (work 162, tick_delta 0) took elapsed_ds 2
+        # on a lagging host and the throw failed the whole save. Wall clock is
+        # cost, not a yield: note it like the tick share and demote the root.
+        capture = SAVING.split('/datum/moving_save_capture\n', 1)[1].split('proc/reserve_bytes', 1)[0]
+        throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
+        self.assertNotIn('elapsed_ds', throw_line)
+        self.assertIn('if(elapsed_ds > 1) overrun_elapsed_ds = max(overrun_elapsed_ds, elapsed_ds)', capture)
+        root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
+        self.assertIn('if(chunk.overrun_usage || chunk.overrun_elapsed_ds)', root)
+        probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text(encoding='utf-8')
+        self.assertIn('(world.timeofday - overrun_chunk.start_clock + 864000) % 864000 <= 2', probe)
 
     def test_capture_without_headroom_declines_instead_of_failing_the_save(self):
         # Gaia 2026-11-09: at time dilation 128% the one-tick wait never found
@@ -287,9 +300,9 @@ class ProductionBoundaryTests(unittest.TestCase):
         throw_line = [line for line in capture.splitlines() if line.strip().startswith('if(++work > 8192')][0]
         self.assertNotIn('usage_delta', throw_line)
         root = SAVING.split('/map_storage/proc/capture_moving_save_root(', 1)[1].split('\n/map_storage/proc/', 1)[0]
-        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage)')
+        detach = root.index('\tmoving_save_chunk = null\n\tif(chunk.overrun_usage || chunk.overrun_elapsed_ds)')
         self.assertLess(detach, root.index('moving_save_demoted[record["identity"]] = TRUE', detach))
-        self.assertLess(root.index('if(chunk.overrun_usage)'), root.index('record["ref"] = ref'))
+        self.assertLess(root.index('if(chunk.overrun_usage || chunk.overrun_elapsed_ds)'), root.index('record["ref"] = ref'))
 
     def test_busy_tick_admission_does_not_fail_capture(self):
         # Gaia 2026-11-09: an elk admitted at 76% usage cost 13.7% and hit the
