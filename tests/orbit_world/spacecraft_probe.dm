@@ -172,6 +172,8 @@ var/naval_runtime_error = FALSE
 	del(world)
 
 /world/New()
+	// These checks are about passage, not weather (craft/chart_hazards.dm).
+	chart_hazards_off = TRUE
 	OpenPort("none")
 	try
 		GLOB.all_observable_events = list()

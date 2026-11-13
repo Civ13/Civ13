@@ -96,6 +96,7 @@
 	var/muddy = C.interference_at(T.x, T.y)
 	if (muddy)
 		lines += "Interference here cuts her sensors to [max(0, T.sensor_range - muddy)] squares."
+	lines += C.hazard_lines(T)
 	var/list/seen = C.contacts_of(T)
 	if (!seen.len)
 		lines += "No contacts."

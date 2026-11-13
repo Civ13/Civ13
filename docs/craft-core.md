@@ -171,6 +171,41 @@ token for every party that owns a plane, at a spot the plane registry keeps in
 (below). A console subtype adds its own orders with `extra_orders()` and
 `extra_order()`, and `ordered()` is called before any order is carried out.
 
+## Chart hazards and sectors
+
+`craft/chart_hazards.dm` builds on the `/datum/chart_hazard` base. Every
+step of a steered chart calls `chart.hazard_step()`: each hazard drifts by
+its `vx`/`vy` (turning back from the chart's edge and from a sector that
+keeps hazards out), `entered()` tells a crew once when their craft comes
+inside, `affect_token(token, seconds)` acts on every craft token inside that
+is `exposed()` (a token whose craft lies at a place is not), lifetimes count
+down, and every `CHART_HAZARD_ROLL` seconds of chart time one hazard from
+`passing_table()` is brought on by `spawn_passing()` while fewer than
+`hazard_cap` are passing. `standing_hazards()` are laid once at fixed spots
+(`standing_spot()`), so nothing is saved and a restart moves nothing. A chart
+only steps while something on it moves, so weather costs nothing on an empty
+sea. `hazard_lines(token, unit)` is what a helm reads.
+
+Kinds: `field` (asteroid field, `field/reef`) strikes a craft going faster
+than `safe_share` of her top speed, halving her speed and calling
+`craft.hazard_struck()`, which batters the body through
+`body.hazard_damage()` (a built hull takes it on one plank, never below
+`CHART_STRIKE_FLOOR` of its health; other bodies take none yet); `storm`
+sets her along `blow` and carries `interference`, `storm/solar` only blinds;
+`wormhole` throws her to its `twin`, leaves her alone for
+`CHART_WORMHOLE_REST` seconds and closes with its twin.
+
+`/datum/chart_sector` is a box of a chart with rules: `hazards` (FALSE keeps
+them out, as `sector/harbour` does), `boarding` (FALSE makes
+`craft.order_grapple()` refuse through `sector_boarding_refusal()`) and
+`owner` for `sector/held`. The open sea has reefs, squalls and a harbour
+sector over the home waters; the orbit chart has asteroid fields, solar
+storms, wormhole pairs and a harbour sector round the arrival beacon. Both
+leave boarding allowed. A test that must not meet weather sets
+`chart_hazards_off`; one chart is quietened with `hazards_on = FALSE`.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hazards_probe.dm 300
+
 ## Turf bodies and spacecraft
 
 `craft/turf_body.dm`: `/datum/craft_body/turfs` is a hull made of turfs, kept
