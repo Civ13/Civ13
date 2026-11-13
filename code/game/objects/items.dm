@@ -449,7 +449,12 @@ var/list/global/slot_flags_enumeration = list(
 
 	if (!(usr)) //BS12 EDIT
 		return
-	if (!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))
+	// Same gate as clicking the item (ClickOn): sitting in a chair turns off
+	// canmove but still lets you reach, so canmove is not checked here.
+	if (usr.stat || usr.paralysis || usr.stunned || usr.weakened)
+		return
+	if (!Adjacent(usr))
+		to_chat(usr, "<span class='warning'>You can't reach that.</span>")
 		return
 	if ((!istype(usr, /mob/living/human)))//Is humanoid, and is not a brain
 		to_chat(usr, "<span class='warning'>You can't pick things up!</span>")
