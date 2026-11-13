@@ -320,7 +320,10 @@ try {
     Console.Error.WriteLine("FAIL: " + e);
     return 1;
 } finally {
-    // Task-created exact temporary root only.
+    // Task-created exact temporary root only. Git fixtures (bot repair) leave read-only
+    // object files, which Windows refuses to delete until the attribute is cleared.
+    foreach (var file in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        File.SetAttributes(file, FileAttributes.Normal);
     Directory.Delete(root, true);
 }
 return 0;
