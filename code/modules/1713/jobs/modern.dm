@@ -1681,10 +1681,13 @@
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/tacpouches/m249(H), slot_belt)
 			H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/m18smoke(H), slot_r_store)
 			web.attackby(new/obj/item/ammo_magazine/m249, H)
+	// Operators are the side's air controllers: they call in the F-16s.
+	web.attackby(new /obj/item/weapon/attachment/scope/adjustable/binoculars/laser_designator(null), H)
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
 	H.add_note("Role", "You are an <b>[title]</b>, assisting the Free Syrian Army in its operations. As an operator you may act on your own, but try to follow given orders!")
+	H.add_note("Air support", "Your webbing holds a <b>laser designator</b>. Use it in hand to pick an attack direction and payload, then click a spot with it in hand to call in an F-16. Stay still while you call; enemy SAM sites can shoot the jet down.")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_MEDIUM_HIGH)
