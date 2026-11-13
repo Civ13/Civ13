@@ -109,8 +109,11 @@ var/global/list/persistence_frozen_levels = list()
 		throw EXCEPTION("Partial lifecycle restart binding")
 	return I
 
-/datum/persistence_restart_transaction/proc/current_identity()
-	if(!map_storage.validate_world_save())
+// validate FALSE: the files' identity only, for a recheck right after a validation
+// of the same generation. Each Gaia preflight costs about 35 s even when trusted,
+// and a save used to run three in a row (2026-11-13).
+/datum/persistence_restart_transaction/proc/current_identity(validate = TRUE)
+	if(validate && !map_storage.validate_world_save())
 		throw EXCEPTION("Save validation failed: [map_storage.last_error]")
 	var/list/R = map_storage.read_round_state()
 	if(R["version"] != 2)
@@ -217,7 +220,7 @@ var/global/list/persistence_frozen_levels = list()
 
 /datum/persistence_restart_transaction/proc/request_shutdown(expected_persistence = null)
 	var/list/I = read_intent()
-	if(!busy || startup_hold || !expected_generation || I["generation"] != expected_generation || !matches(I, current_identity()))
+	if(!busy || startup_hold || !expected_generation || I["generation"] != expected_generation || !matches(I, current_identity(FALSE)))
 		throw EXCEPTION("Validated shutdown lost its generation ownership")
 	// Validation can yield. Recheck the durable ownership at the final boundary.
 	if(!matches(I, read_intent()) || trim(file2text("map_saves/save_complete.txt")) != expected_generation)
@@ -299,14 +302,16 @@ var/global/list/persistence_frozen_levels = list()
 		diagnostic_phase = "post_save_validation"
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed during save")
 		if(!isnull(expected_persistence) && expected_persistence != saved_persistence_mode()) throw EXCEPTION("Saved persistence mode differs from the accepted mode")
-		var/list/I = current_identity()
+		// A handover's standby validates this save as it loads it, and a failed load
+		// leaves this world running, so the saving world does not check it again.
+		var/list/I = current_identity(!handover)
 		// Record ownership before publication, including a failed partial write.
 		published = I
 		diagnostic_phase = "intent_publication"
 		publish(I)
 		expected_generation = I["generation"]
 		diagnostic_phase = "final_validation"
-		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
+		if(!matches(I, current_identity(FALSE))) throw EXCEPTION("Completed generation changed before restart")
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before shutdown")
 		if(handover)
 			wait_for_handover()

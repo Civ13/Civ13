@@ -27,7 +27,7 @@ def prepare(root, output, control=None):
     relative = 'code/modules/persistence/restart_transaction.dm'
     source = (root / relative).read_text(encoding='utf-8')
     mutations = {
-        'generation': ('if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")', '// Negative control: skip final validation.'),
+        'generation': ('if(!matches(I, current_identity(FALSE))) throw EXCEPTION("Completed generation changed before restart")', '// Negative control: skip final validation.'),
         'consume': ('\t\tconsume(I)\n', '\t\t// Negative control: retain successful intent.\n'),
         'import': ('if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")', 'load_generation(I) // Negative control: ignore import failure.'),
     }
