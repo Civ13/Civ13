@@ -267,11 +267,67 @@ var/global/list/aircraft_cabin_plane_layout = list(
 /proc/build_cabin_plane(turf/origin)
 	return build_aircraft(origin, /obj/structure/vehicleparts/axis/aircraft/cabin_plane, aircraft_cabin_plane_layout, 3, 4)
 
-// Hangar models: name -> axis type. Every model is 3 wide in a 4x4 square.
+// The two-seat trainer: the light plane without its fuselage row, a nose,
+// the wings and cockpit and a tail with the instructor's seat. Its 3x3
+// turning square is the smallest plane; it is cheap and lifts off soonest.
+/obj/structure/vehicleparts/axis/aircraft/trainer
+	name = "trainer"
+	desc = "The controls of a short two-seat trainer."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	takeoff_roll = 6
+	rough_takeoff_roll = 12
+
+var/global/list/aircraft_trainer_layout = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
+	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/bed/chair/drivers/aircraft),
+	"3,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/left),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/right, /obj/structure/vehicleparts/movement/reversed),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/center, /obj/structure/bed/chair/carseat/aircraft_cabin),
+	"3,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/left, /obj/structure/vehicleparts/movement/reversed),
+	)
+
+// The cargo plane: the light plane's airframe with its fuselage row given
+// over to three cargo bays, which carry what is put on them like a car boot
+// (and stay aboard when the plane is hangared). It flies the pilot alone.
+/obj/structure/vehicleparts/axis/aircraft/cargo_plane
+	name = "cargo plane"
+	desc = "The controls of a single-engine cargo plane."
+	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon_state = "axis_powered"
+	takeoff_roll = 9
+	rough_takeoff_roll = 18
+
+/obj/structure/table/carboot/aircraft_cargo
+	name = "cargo bay"
+	desc = "A floored bay in the plane's fuselage. Whatever is put on it flies with the plane."
+
+var/global/list/aircraft_cargo_plane_layout = list(
+	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
+	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
+	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
+	"1,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/right),
+	"2,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/bed/chair/drivers/aircraft),
+	"3,2" = list(/obj/structure/vehicleparts/frame/car/aircraft/wing/left),
+	"1,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/right, /obj/structure/table/carboot/aircraft_cargo),
+	"2,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/center, /obj/structure/table/carboot/aircraft_cargo),
+	"3,3" = list(/obj/structure/vehicleparts/frame/car/aircraft/fuselage/left, /obj/structure/table/carboot/aircraft_cargo),
+	"1,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/right, /obj/structure/vehicleparts/movement/reversed),
+	"2,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/center),
+	"3,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/left, /obj/structure/vehicleparts/movement/reversed),
+	)
+
+// Hangar models: name -> axis type. Every model is 3 wide; the trainer turns
+// in a 3x3 square, the rest in 4x4 (aircraft_model_size()).
 /proc/aircraft_models()
 	var/static/list/models = list(
 		"Light plane" = /obj/structure/vehicleparts/axis/aircraft/light_plane,
 		"Cabin plane" = /obj/structure/vehicleparts/axis/aircraft/cabin_plane,
+		"Trainer" = /obj/structure/vehicleparts/axis/aircraft/trainer,
+		"Cargo plane" = /obj/structure/vehicleparts/axis/aircraft/cargo_plane,
 		)
 	return models
 
@@ -281,14 +337,23 @@ var/global/list/aircraft_cabin_plane_layout = list(
 			return aircraft_light_plane_layout
 		if ("Cabin plane")
 			return aircraft_cabin_plane_layout
+		if ("Trainer")
+			return aircraft_trainer_layout
+		if ("Cargo plane")
+			return aircraft_cargo_plane_layout
 	return null
+
+/proc/aircraft_model_size(model)
+	if (!(model in aircraft_models()))
+		return 0
+	return model == "Trainer" ? 3 : 4
 
 /proc/build_aircraft_model(model, turf/origin)
 	var/axis_type = aircraft_models()[model]
 	var/list/layout = aircraft_model_layout(model)
 	if (!axis_type || !layout)
 		return null
-	return build_aircraft(origin, axis_type, layout, 3, 4)
+	return build_aircraft(origin, axis_type, layout, 3, aircraft_model_size(model))
 
 // Admin spawn: builds the light plane facing south, with this tile as the
 // bottom-left of its 4x4 footprint.

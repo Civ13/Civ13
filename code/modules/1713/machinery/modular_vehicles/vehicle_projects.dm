@@ -132,10 +132,12 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	if (!layout)
 		return null
 	. = list()
-	// build_aircraft(): origin x + 1, body against the east edge of the 4x4.
+	// build_aircraft(): origin x + 1, the 3-wide body against the east edge
+	// of the model's turning square.
+	var/size = aircraft_model_size(model)
 	for (var/coords in layout)
 		var/list/C = splittext(coords, ",")
-		.["[1 + 4 - 3 + text2num(C[1]) - 1],[text2num(C[2])]"] = layout[coords]
+		.["[1 + size - 3 + text2num(C[1]) - 1],[text2num(C[2])]"] = layout[coords]
 
 /obj/structure/car_workshop/proc/get_project_plan()
 	return project ? project_plan(project) : null
