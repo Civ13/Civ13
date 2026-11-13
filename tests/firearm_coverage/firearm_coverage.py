@@ -58,12 +58,13 @@ def category(path, row):
     return 'base' if path in (GUN, P) else 'unclassified'
 
 
-def migration(row):
+def migration(row, scope):
     """modular: has parts; fixed: a modern design kept whole on purpose
-    (firearm_fixed_reason); pending: not reviewed yet."""
+    (firearm_fixed_reason, which separate categories may inherit and ignore);
+    pending: not reviewed yet."""
     if row.get('firearm_family'):
         return 'modular'
-    if row.get('firearm_fixed_reason'):
+    if row.get('firearm_fixed_reason') and scope == 'modern':
         return 'fixed'
     return 'pending'
 
@@ -85,7 +86,7 @@ def build(rows):
             # "modular" once the type's family has component definitions
             # (code/modules/1713/gunsmithing/firearm_components.dm).
             'family': row.get('firearm_family'),
-            'migration': migration(row),
+            'migration': migration(row, 'modern' if cat in MODERN else 'separate'),
         }
         if entry['migration'] == 'fixed':
             entry['fixed_reason'] = row['firearm_fixed_reason']

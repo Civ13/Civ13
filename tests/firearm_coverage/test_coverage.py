@@ -87,6 +87,13 @@ class CoverageManifestTests(unittest.TestCase):
                 self.assertFalse(entry['family'], path)
                 self.assertTrue(entry.get('fixed_reason'), path)
 
+    def test_every_modern_type_is_modular_or_fixed(self):
+        # Issue #4443: a new modern gun needs parts (firearm_family) or a
+        # firearm_fixed_reason. Abstract parents (with a review note) are exempt.
+        pending = sorted(p for p, e in self.types.items()
+                         if e['scope'] == 'modern' and e['migration'] == 'pending' and 'review' not in e)
+        self.assertEqual(pending, [], 'give these guns a firearm family or a firearm_fixed_reason')
+
     def test_category_rules(self):
         cases = {
             '/obj/item/weapon/gun/projectile/automatic/stationary/pkm': 'machine_gun_mounted',
