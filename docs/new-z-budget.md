@@ -1,5 +1,9 @@
 # Dynamic level allocation budget
 
+For proposed logical mine depths sharing bounded physical rectangles, see the
+[multi-depth mining plan](multi-depth-mining.md). It is design-only and does not
+add an allocation exception or establish memory admission for lit caves.
+
 Production refuses new native grid growth with an explicit `UNMEASURED`
 reason, before native allocation, with two exceptions. A map that opts into a
 dug underground (`dig_down_underground`, see `code/modules/multiz/dug_underground.dm`)
