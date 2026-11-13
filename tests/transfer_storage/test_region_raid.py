@@ -61,7 +61,7 @@ class RegionRaidTests(unittest.TestCase):
         # Everyone plays in both the Barracks and the battle world; a home there
         # refused every battle join ("Your character belongs to Barracks").
         enabled = proc(HOME, '/proc/region_home_enabled')
-        self.assertLess(enabled.index('shard_group.kind in list("BARRACKS", "BATTLE"))) return FALSE'),
+        self.assertLess(enabled.index('shard_group.kind in list("BARRACKS", "BATTLE"'),
                         enabled.index('return shard_group && shard_group.enabled'))
 
 
