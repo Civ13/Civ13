@@ -1755,15 +1755,44 @@ class StagedBuildTests(unittest.TestCase):
         code, result = self.run_offline()
         self.assertEqual((['gaia'], {'deep': 'running'}), (sorted(result['accepted']), result['skipped']), result)
         self.assertEqual('asleep', result['accepted']['gaia']['state'])
-        self.assertTrue(gaia.frozen(), 'still asleep')
-        self.assertFalse(gaia.install_marker.exists(), 'the host service installs it while it sleeps')
+        self.assertTrue(gaia.frozen(), 'still asleep while it builds')
+        self.assertTrue(gaia.install_marker.exists(), 'installed as soon as it is built, host service or not')
+        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         gaia.work('stage', self.machine.detached[-1][-1])
-        self.assertEqual('ready', gaia.read_json(gaia.stage_file)['phase'])
-        self.assertEqual(['--worker', 'stage'], self.machine.detached[-1][-3:-1], 'no update was started')
-        self.assertTrue(gaia.update_pending())
-        with self.assertRaisesRegex(shard_group.Refused, 'asleep'):
-            gaia.request('update')
-        self.assertTrue(gaia.frozen(), 'a refused update does not wake it either')
+        stage = gaia.read_json(gaia.stage_file)
+        self.assertEqual(('ready', 'installing'), (stage['phase'], stage.get('install')), stage)
+        self.assertEqual(['--worker', 'update'], self.machine.detached[-1][-3:-1])
+        self.assertFalse(gaia.frozen(), 'stopped from its save, never woken')
+        self.assertEqual('cold', gaia.status()['state'], 'it starts on the new build at its next wake')
+        gaia.work('update', self.machine.detached[-1][-1])
+        self.assertEqual(NEWER, gaia.built_revision())
+
+    def test_update_on_an_asleep_region_builds_and_installs_it_without_waking_it(self):
+        # Val (2026-11-13): asleep regions must be able to take the new update.
+        group, host = StagedBuildTests.built(self)
+        self.machine.pids = {77}
+        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
+        self.machine.up = {1720}
+        answer = host.request('update')
+        self.assertEqual(('stage', 'asleep'), (answer['action'], answer['state']), answer)
+        self.assertTrue(host.frozen(), 'it sleeps (and can wake at once) while the update builds')
+        host.work('stage', answer['operation'])
+        self.assertEqual('update', self.machine.detached[-1][-2])
+        host.work('update', self.machine.detached[-1][-1])
+        self.assertEqual((NEWER, 'cold'), (host.built_revision(), host.status()['state']))
+
+    def test_update_on_an_asleep_region_with_a_ready_build_installs_it_at_once(self):
+        group, host = StagedBuildTests.built(self)
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.pids = {77}
+        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
+        answer = host.request('update')
+        self.assertEqual(('update', 'asleep'), (answer['action'], answer['state']), answer)
+        self.assertFalse(host.frozen())
+        host.work('update', answer['operation'])
+        self.assertEqual(NEWER, host.built_revision())
 
     def test_update_offline_leaves_a_region_that_started_while_building(self):
         group, hosts = self.offline_group()

@@ -328,11 +328,14 @@ priority) with an `install-after-stage` marker in `data/shard-host`; when its
 stage is ready the stage worker runs `update`, which copies the build in. A
 region that started while it built is left on its old build (`stage.json`
 `install` says so) and gets the new one at its next empty restart. An asleep
-region is staged without the marker and the host service installs it while it
-sleeps, as above. A region with an action running or an interrupted fresh-world
+region is staged the same way while it keeps sleeping (a join still thaws it at
+once); when the build is ready it is stopped (it saved before it froze), its port
+is let go and `update` copies the build in, so it starts on it at its next wake.
+This does not need the host service. A region with an action running or an interrupted fresh-world
 archive is skipped. It answers `{"accepted": {id: {"state": "stopped" | "cold" |
-"asleep", ...}}, "skipped": {id: reason}}`. `update` itself now refuses an
-asleep region instead of waking it. `update-offline.bat` pulls the source
+"asleep", ...}}, "skipped": {id: reason}}`. `update` of an asleep region does the same
+instead of waking it: with a ready staged build it installs at once, otherwise it
+answers `{"action": "stage", "state": "asleep"}` and installs once built. `update-offline.bat` pulls the source
 checkout first, and the launcher's **Update offline regions** button runs it.
 
 ## Handover: updating a running region without downtime

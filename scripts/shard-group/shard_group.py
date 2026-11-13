@@ -792,12 +792,48 @@ class RegionHost(Host):
         if self.update_when_empty():
             self.stage_if_behind()
 
+    def update_asleep(self):
+        """Update an asleep region without waking it (Val, 2026-11-13: asleep regions must be
+        able to take the new update). A ready build is copied in at once: the world saved before
+        it froze, so it is stopped and starts from that save on the new build at its next wake.
+        Otherwise the update is built beside it while it keeps sleeping (it can still wake at
+        once) and installed the same way as soon as the build is ready."""
+        if self.update_pending():
+            return dict(self.install_into_sleeper(), state='asleep')
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        self.install_marker.write_text('update\n', encoding='utf-8')
+        try:
+            return dict(self.request_stage(), state='asleep')
+        except Refused as refusal:
+            if 'already being staged' in str(refusal):
+                # The running stage installs it when it finishes (it reads the marker last).
+                return {'accepted': True, 'action': 'stage', 'state': 'asleep', 'already_staging': True}
+            self.install_marker.unlink(missing_ok=True)
+            raise
+
+    def install_into_sleeper(self, close_seconds=60):
+        """Stop an asleep region (it saved before it froze), wait for its port to close, then
+        run update, which copies the ready build in; it starts on it at its next wake."""
+        self.evict('installing the update')
+        deadline = self.platform.now() + close_seconds
+        while self.platform.listening(self.config['port']):
+            if self.platform.now() > deadline:
+                raise Refused('the stopped world kept its port open; it gets the update from the host service')
+            self.platform.sleep(1)
+        return Host.request(self, 'update')
+
     def install_after_stage(self):
         """update-offline: copy the build just staged into a region that is still not running,
-        so its next start loads at once. A region that started or fell asleep meanwhile is left
-        alone; it gets the build at its next empty restart or while it sleeps, as after any stage."""
+        so its next start loads at once. An asleep region is stopped first (it saved before it
+        froze) and wakes on the new build. A region that started meanwhile is left alone; it
+        gets the build at its next empty restart, as after any stage."""
         try:
-            if self.frozen() or self.platform.listening(self.config['port']):
+            if self.frozen():
+                if self.update_pending():
+                    self.install_into_sleeper()
+                    self.stage_record(install='installing')
+                return
+            if self.platform.listening(self.config['port']):
                 raise Refused('the region started while its update was building')
             if self.update_pending():
                 self.request('update')
@@ -825,7 +861,7 @@ class RegionHost(Host):
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.frozen():
             # Host.request would wake it first, only to refuse it as running.
-            raise Refused('the region is asleep; Update offline regions installs it while it sleeps')
+            return self.update_asleep()
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
@@ -1732,8 +1768,8 @@ def update_offline(group, only=None, platform=None):
     ready when it next starts; a running region is never stopped, woken or rebuilt.
 
     A stopped (or cold) region builds the update in its staging worktree, then copies it in
-    (install_after_stage). An asleep region builds it the same way and the host service
-    installs it while it sleeps (install_staged_while_down). The builds take turns in the
+    (install_after_stage). An asleep region builds it the same way while it keeps sleeping,
+    then is stopped (it saved before it froze) and the build copied in, so it wakes on it. The builds take turns in the
     group compile slot at low priority, so the running regions keep their CPU and memory.
     """
     accepted, skipped = {}, {}
@@ -1753,9 +1789,8 @@ def update_offline(group, only=None, platform=None):
             skipped[name] = 'busy: %s' % (host.read_state() or {}).get('action')
             continue
         state = 'asleep' if asleep else 'cold' if host.cold() else 'stopped'
-        if not asleep:
-            host.state_dir.mkdir(parents=True, exist_ok=True)
-            host.install_marker.write_text('update-offline\n', encoding='utf-8')
+        host.state_dir.mkdir(parents=True, exist_ok=True)
+        host.install_marker.write_text('update-offline\n', encoding='utf-8')
         try:
             accepted[name] = dict(host.request_stage(), state=state)
         except Refused as refusal:

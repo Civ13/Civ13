@@ -448,6 +448,13 @@ public static class LocalHosting {
                 "handover" => "Handing over to the new build (the old world saves one level at a time, holding only the level being saved, the new one loads the save, then players reconnect):",
                 _ => "Checking out and compiling",
             } + " " + string.Join(", ", accepted) + "...";
+            if (action == "update" && acceptedJson.ValueKind == JsonValueKind.Object) {
+                // An asleep region is not woken: {"action": "stage" | "update", "state": "asleep"} (RegionHost.update_asleep).
+                var asleep = acceptedJson.EnumerateObject().Where(entry => entry.Value.ValueKind == JsonValueKind.Object && Str(entry.Value, "state") == "asleep")
+                    .Select(entry => Clean(entry.Name)).ToList();
+                if (asleep.Count > 0)
+                    message += " Asleep, so not woken: " + string.Join(", ", asleep) + " (the update builds while it sleeps, then it starts on it at its next wake).";
+            }
             if (refused != null) message += " Refused: " + refused + ".";
             return new ControlAnswer(true, message, true);
         }
