@@ -123,3 +123,5 @@ The biochemistry probe also checks table salt: one ingested unit costs 25
 hydration, any salt dose stops at the 60 "really thirsty" floor, an overdose
 only causes nausea, and seawater-strength brine (3% salt or more) does not
 quench thirst while lightly salted water still does.
+Drinking 20 or more units of seawater in one go gives a 10% chance per tick
+of vomiting, respecting the usual vomit cooldown; fewer units never do.
