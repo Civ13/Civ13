@@ -110,7 +110,7 @@
 
 // Studying a chapter of era tier, at a desk or not.
 /mob/living/human/proc/scholar_study_time(tier)
-	return round(BOOK_STUDY_TIME(tier) / (scholar_desk_rate() * recluse_rate()))
+	return round(BOOK_STUDY_TIME(tier) * trait_study_time_mult() / (scholar_desk_rate() * recluse_rate()))
 
 // Research speed from a library: distinct chapters on the node's groundwork or
 // in its discipline, in books on bookcases near the bench.
