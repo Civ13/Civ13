@@ -479,6 +479,8 @@ class DistanceCamera(unittest.TestCase):
                        get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),
                        root_tree_family=lambda a:a.type.startswith('/obj/structure/wild/tree'))
             env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
+            env['los_leafy_tree']=lambda a:a.type.startswith('/obj/structure/wild/tree')
+            env['los_canopy_hides']=lambda viewer,target:False
             env['los_in_foliage']=A.project(TERRAIN,'/proc/los_in_foliage','M',env)
             env['los_foliage_hides']=A.project(TERRAIN,'/proc/los_foliage_hides','viewer, target',env)
         if '/proc/los_own_tree(' in source:

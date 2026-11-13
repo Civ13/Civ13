@@ -104,7 +104,7 @@ var/global/list/tree_canopy_tops = list()
 	if (!root_tree_family(A) || !isturf(A.loc))
 		return FALSE
 	var/obj/structure/wild/W = A
-	return W.density && W.opacity
+	return W.density && W.holds_climber
 
 // Only grown trees hold a climber: a sprite a single tile tall (the small tree,
 // young or burnt-down trees) is too small.

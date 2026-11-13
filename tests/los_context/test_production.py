@@ -990,6 +990,10 @@ class BlockingTreeSurface(unittest.TestCase):
         env.update(ismob=lambda x:x.type.startswith('/mob/'),
                    get_dist=lambda a,b:max(abs(a.x-b.x),abs(a.y-b.y)),LOS_FOLIAGE_RANGE=2)
         env['los_up_tree']=lambda M:getattr(M,'up_tree',False)
+        # Trees are see-through; a leafy canopy gives cover. The deep-forest
+        # line rule is checked natively in tests/los_terrain.
+        env['los_leafy_tree']=lambda a:a.type.startswith('/obj/structure/wild/tree')
+        env['los_canopy_hides']=lambda viewer,target:False
         env['los_in_foliage']=adapter.project(terrain,'/proc/los_in_foliage','M',env)
         env['los_foliage_hides']=adapter.project(terrain,'/proc/los_foliage_hides','viewer, target',env)
         snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)

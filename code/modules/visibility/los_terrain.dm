@@ -357,24 +357,61 @@ var/global/los_eye_offsets_paused = FALSE
 		los_terrain_cache[key] = F
 	return list(F, body.x, body.y)
 
-// One-target terrain test for NPC sight, without a field or cache: TRUE when
-// ground under the straight line from the viewer's eye to the target's top
-// rises above it, with the same relief and allowance as the sweep. One sample per tile along the longer axis; the viewer's
-// neighbours (always seen, as in the sweep) and the target's tile are skipped.
-// About a dozen height reads; levels without heights return at once.
-// Foliage cover: a mob standing in a tree's tile (beside the trunk, see
+// Trees never block sight like walls (wild.dm keeps their opacity FALSE).
+// Foliage cover: a mob standing in a leafy tree's tile (beside the trunk, see
 // wild.dm fit_trunk_bounds) is hidden from anyone farther than
-// LOS_FOLIAGE_RANGE tiles, and sees no farther than that itself. Symmetric
+// LOS_FOLIAGE_RANGE tiles, and sees no farther than that itself. Deep forest:
+// people are also hidden behind LOS_CANOPY_DEPTH or more leafy trees on the
+// straight line between them. Palms and bare trees hide nothing. Symmetric
 // for players (decision_snapshot) and NPCs (los_terrain_ray_blocked); terrain,
 // buildings and objects stay visible, and gunfire is unaffected.
 #define LOS_FOLIAGE_RANGE 2
+#define LOS_CANOPY_DEPTH 4
+
+/proc/los_leafy_tree(atom/A)
+	if (!istype(A, /obj/structure/wild))
+		return FALSE
+	var/obj/structure/wild/W = A
+	return W.canopy
 
 /proc/los_in_foliage(atom/movable/M)
 	if (!M || !isturf(M.loc))
 		return FALSE
 	for (var/atom/movable/A in M.loc)
-		if (A.opacity && A != M && A.loc == M.loc && root_tree_family(A))
+		if (A != M && A.loc == M.loc && los_leafy_tree(A))
 			return TRUE
+	return FALSE
+
+/proc/los_turf_has_canopy(turf/T)
+	if (!T)
+		return FALSE
+	for (var/obj/structure/wild/W in T)
+		if (W.canopy)
+			return TRUE
+	return FALSE
+
+// Leafy tree tiles strictly between viewer and target (one sample per tile
+// along the longer axis), stopping at LOS_CANOPY_DEPTH. A climber looks out
+// over the canopy.
+/proc/los_canopy_hides(atom/viewer, atom/target)
+	if (los_up_tree(viewer))
+		return FALSE
+	var/turf/A = get_turf(viewer)
+	var/turf/B = get_turf(target)
+	if (!A || !B || A.z != B.z)
+		return FALSE
+	var/dx = B.x - A.x
+	var/dy = B.y - A.y
+	var/steps = max(abs(dx), abs(dy))
+	if (steps <= LOS_CANOPY_DEPTH)
+		return FALSE
+	var/trees = 0
+	for (var/n in 1 to steps - 1)
+		var/t = n / steps
+		if (los_turf_has_canopy(locate(A.x + round(dx * t + 0.5), A.y + round(dy * t + 0.5), A.z)))
+			trees++
+			if (trees >= LOS_CANOPY_DEPTH)
+				return TRUE
 	return FALSE
 
 // Someone who has climbed the tree on their tile (tree_climbing.dm) looks out
@@ -388,8 +425,13 @@ var/global/los_eye_offsets_paused = FALSE
 /proc/los_foliage_hides(atom/viewer, atom/target)
 	if (!ismob(viewer) || !ismob(target) || get_dist(viewer, target) <= LOS_FOLIAGE_RANGE)
 		return FALSE
-	return (los_in_foliage(viewer) && !los_up_tree(viewer)) || los_in_foliage(target)
+	return (los_in_foliage(viewer) && !los_up_tree(viewer)) || los_in_foliage(target) || los_canopy_hides(viewer, target)
 
+// One-target terrain test for NPC sight, without a field or cache: TRUE when
+// ground under the straight line from the viewer's eye to the target's top
+// rises above it, with the same relief and allowance as the sweep. One sample per tile along the longer axis; the viewer's
+// neighbours (always seen, as in the sweep) and the target's tile are skipped.
+// About a dozen height reads; levels without heights return at once.
 /proc/los_terrain_ray_blocked(atom/viewer, atom/target)
 	if (los_foliage_hides(viewer, target))
 		return TRUE

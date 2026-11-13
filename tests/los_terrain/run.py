@@ -241,6 +241,12 @@ def main():
         print('MISMATCH foliage cover NPC sight', result['foliage'])
     else:
         print('foliage cover: NPC sight to and from a tree stops past 2 tiles')
+    # 3 leafy trees between, then 4 (both ways), then the 4th a palm.
+    if result['forest'] != [0, 1, 1, 0]:
+        bad += 1
+        print('MISMATCH deep forest NPC sight', result['forest'])
+    else:
+        print('deep forest: 4 leafy trees between hide people; palms hide nothing')
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')
