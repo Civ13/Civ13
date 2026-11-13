@@ -322,7 +322,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && cow_count.len < 60)
+	if (!pregnant && cow_count.len < 39)
 		var/nearbyObjects = range(1,src) //3x3 area around cow
 		for(var/mob/living/simple_animal/cattle/bull/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -342,7 +342,7 @@
 				if (M.stat == CONSCIOUS)
 					cowCount++
 
-			if (cowCount > 5) // max 5 cows/bulls in a 15x15 area around cow
+			if (cowCount > 5 || animal_spot_crowded(src, 0)) // max 5 cows/bulls in a 15x15 area around cow
 				overpopulationCountdown = 300
 				pregnant = FALSE
 	else if (pregnant)
@@ -522,7 +522,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && pig_count.len < 50)
+	if (!pregnant && pig_count.len < 32)
 		var/nearbyObjects = range(1,src) //3x3 area around pig
 		for(var/mob/living/simple_animal/pig_boar/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -542,7 +542,7 @@
 				if (M.stat == CONSCIOUS)
 					pigCount++
 
-			if (pigCount > 5) // max 5 pig_boars/pig_gilts in a 15x15 area around pig gilt
+			if (pigCount > 5 || animal_spot_crowded(src, 0)) // max 5 pig_boars/pig_gilts in a 15x15 area around pig gilt
 				overpopulationCountdown = 300
 				pregnant = FALSE
 	else if (pregnant)
@@ -674,7 +674,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && boar_count.len < 70)
+	if (!pregnant && boar_count.len < 45)
 		var/nearbyObjects = range(1,src) //3x3 area around pig
 		for(var/mob/living/simple_animal/boar_boar/M in nearbyObjects)
 			if (M.stat == CONSCIOUS)
@@ -694,7 +694,7 @@
 				if (M.stat == CONSCIOUS)
 					pigCount++
 
-			if (pigCount > 5) // max 5 boar_boars/boar_gilt in a 15x15 area around boar gilt
+			if (pigCount > 5 || animal_spot_crowded(src, 0)) // max 5 boar_boars/boar_gilt in a 15x15 area around boar gilt
 				overpopulationCountdown = 300
 				pregnant = FALSE
 	else if (pregnant)
@@ -822,7 +822,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && goat_count.len < 70)
+	if (!pregnant && goat_count.len < 45)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/goat/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/goat/female))
@@ -839,7 +839,7 @@
 					goatCount++
 
 
-			if (goatCount > 5) // max 5 cows/bulls in a 15x15 area around
+			if (goatCount > 5 || animal_spot_crowded(src, 0)) // max 5 cows/bulls in a 15x15 area around
 				overpopulationCountdown = 300 // 5 minutes
 				pregnant = FALSE
 	else if (pregnant)
@@ -1014,7 +1014,7 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && sheep_count.len < 90)
+	if (!pregnant && sheep_count.len < 58)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
 			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/sheep/female))
@@ -1031,7 +1031,7 @@
 					sheepCount++
 
 
-			if (sheepCount > 5) // max 5 cows/bulls in a 15x15 area around
+			if (sheepCount > 5 || animal_spot_crowded(src, 0)) // max 5 cows/bulls in a 15x15 area around
 				overpopulationCountdown = 300 // 5 minutes
 				pregnant = FALSE
 	else if (pregnant)

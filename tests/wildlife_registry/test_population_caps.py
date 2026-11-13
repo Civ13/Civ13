@@ -13,10 +13,10 @@ ANIMALS = ROOT / 'code/game/mob/living/simple_animal'
 # Source file -> (registry, cap) for each global conception/hatching gate.
 CAPS = {
     'friendly/birds.dm': [('chicken_count', 80), ('turkey_count', 80)],
-    'friendly/deer.dm': [('deer_count', 150), ('deer_count', 150)],
-    'friendly/farm_animals.dm': [('cow_count', 60), ('pig_count', 50), ('boar_count', 70),
-                                 ('goat_count', 70), ('sheep_count', 90)],
-    'hostile/buffalo.dm': [('bison_count', 60)],
+    'friendly/deer.dm': [('deer_count', 96), ('deer_count', 96)],
+    'friendly/farm_animals.dm': [('cow_count', 39), ('pig_count', 32), ('boar_count', 45),
+                                 ('goat_count', 45), ('sheep_count', 58)],
+    'hostile/buffalo.dm': [('bison_count', 39)],
     'hostile/wolf.dm': [('wolf_count', 50)],
     'hostile/bear.dm': [('bear_count', 30)],
 }
