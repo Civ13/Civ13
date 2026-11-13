@@ -22,8 +22,9 @@ def dm_json_decode(text):
 
 
 class Regex:
-    def __init__(self, pattern): self.pattern = pattern
-    def Find(self, text): return bool(re.search(self.pattern, text))
+    def __init__(self, pattern, flags=''): self.pattern = re.compile(pattern, re.I if 'i' in flags else 0)
+    def Find(self, text): return bool(self.pattern.search(text))
+    def Replace(self, text, new): return self.pattern.sub(new, text, count=1)
 
 
 class DMList(dict):
@@ -39,6 +40,28 @@ class DiscordVerify(unittest.TestCase):
                    json_decode=lambda text: DMList(dm_json_decode(text)) if isinstance(dm_json_decode(text), dict) else dm_json_decode(text))
         self.clean = adapter.project(PROJECTED, '/proc/discord_verify_clean_code', 'code', env)
         self.parse = adapter.project(PROJECTED, '/proc/discord_verify_parse_answer', 'body', env)
+        self.endpoint = adapter.project(PROJECTED, '/proc/discord_verify_endpoint', 'address', env)
+
+    def test_only_loopback_or_https_addresses_get_the_key_and_code(self):
+        for address, url in (('http://127.0.0.1:55555/webhook/nomads', 'http://127.0.0.1:55555/webhook/nomads/discord_verify'),
+                             ('http://localhost:8080/webhook/tdm/', 'http://localhost:8080/webhook/tdm/discord_verify'),
+                             ('http://[::1]:55555/webhook/x', 'http://[::1]:55555/webhook/x/discord_verify'),
+                             ('HTTPS://civ13.com/webhook/nomads', 'HTTPS://civ13.com/webhook/nomads/discord_verify')):
+            with self.subTest(address=address):
+                self.assertEqual(self.endpoint(address), url)
+        for bad in ('http://civ13.com:55555/webhook/nomads', 'http://127.0.0.1.evil.example/webhook', 'http://localhost@evil.example/x',
+                    'https://user@evil.example/x', 'http://192.168.0.5:55555/webhook/x', 'ftp://127.0.0.1/x',
+                    'http://127.0.0.1:55555/webhook?key=x', '', None, 'https://' + 'a' * 3000):
+            with self.subTest(bad=bad):
+                self.assertIsNone(self.endpoint(bad))
+
+    def test_key_and_code_travel_in_header_and_body_not_url(self):
+        send = SOURCE[SOURCE.index('/proc/discord_verify_send'):SOURCE.index('/client/verb/verify_discord')]
+        self.assertNotIn('?key=', send)
+        self.assertNotIn('world.Export', send)
+        self.assertIn('RUSTG_HTTP_METHOD_POST', send)
+        self.assertIn('"X-Webhook-Key" = config.webhook_key', send)
+        self.assertIn('discord_verify_endpoint(config.webhook_address)', send)
 
     def test_codes_are_cleaned_like_the_bot_does(self):
         self.assertEqual(self.clean('ABCD-EFGH'), 'ABCDEFGH')
