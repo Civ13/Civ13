@@ -109,6 +109,10 @@ var/world_is_open = TRUE
 	var/floor_icons_started = world.timeofday
 	var/floor_icons = refresh_deferred_floor_icons()
 	world.log << "Floor icons: [floor_icons] floors refreshed once in [round((world.timeofday - floor_icons_started) / 10, 0.1)] s."
+	// Cables placed in the compiled map join their neighbours and machines once.
+	var/mapped_cables = release_cable_autolink()
+	if (mapped_cables)
+		world.log << "Map wiring: [mapped_cables] cables joined."
 
 	callHook("startup")
 	//Emergency Fix

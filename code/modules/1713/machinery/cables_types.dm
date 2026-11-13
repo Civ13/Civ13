@@ -36,7 +36,7 @@
 
 /obj/item/connector
 	name = "cable connector"
-	desc = "A cable connector. Secure it on a tile (use it in hand there, or wrench it down) to join every cable on that tile, including corners, crossings and different colours."
+	desc = "A cable connector. Secure it on a tile (use it in hand there, or wrench it down) to join every cable on that tile, such as crossings, T-junctions and different colours. Corners join by themselves."
 	w_class = ITEM_SIZE_TINY
 	layer = 3.92
 	icon = 'icons/obj/machines/power.dmi'
@@ -234,10 +234,13 @@
 		currdir = "horizontal"
 	else if (dirn == 1 || dirn == 2)
 		currdir = "vertical"
-	for(var/obj/structure/cable/LC in T)
-		if(LC.tiledir == currdir)
-			to_chat(user, "<span class='warning'>There's already a cable at that position with the same direction!</span>")
-			return
+	// A corner when this continues a loose end from the side (cable_shapes.dm).
+	var/list/corner = cable_corner_for(T, dirn)
+	if (!corner)
+		for(var/obj/structure/cable/LC in T)
+			if(LC.tiledir == currdir)
+				to_chat(user, "<span class='warning'>There's already a cable at that position with the same direction!</span>")
+				return
 
 	var/obj/structure/cable/C = new /obj/structure/cable(T)
 	C.color = color
@@ -246,9 +249,11 @@
 	C.d1 = 0 //it's a O-X node cable
 	C.d2 = dirn
 	C.tiledir = currdir
+	if (corner)
+		C.set_cable_shape(corner[1], corner[2])
 	C.add_fingerprint(user)
 	C.update_icon()
-	C.link_straight_neighbors(user)
+	C.link_end_neighbors(user)
 	// Crossing directions join only through a secured connector.
 	for (var/obj/item/connector/junction in T)
 		if (junction.anchored)

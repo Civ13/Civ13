@@ -363,5 +363,5 @@
 	powersource.update_icon()
 	// place_turf already links these edges; this idempotent pass retains the
 	// machine attachment feedback without rebuilding supply a second time.
-	powersource.link_straight_neighbors(user, FALSE)
+	powersource.link_end_neighbors(user, FALSE)
 	to_chat(user, SPAN_NOTICE("You connect the cable to \the [src]."))

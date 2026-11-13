@@ -27,6 +27,12 @@
 	cutlet.decaytimer = decaytimer * cutlet.decay / decay
 	if (cutlet.rots && cutlet.decaytimer >= cutlet.decay / 2)
 		cutlet.rot()
+	// Each of the two strips keeps half the slab's germs; only cooking kills them.
+	if (reagents && cutlet.reagents)
+		for (var/germ in germ_reagent_disease)
+			var/amount = reagents.get_reagent_amount(germ)
+			if (amount > 0)
+				cutlet.reagents.add_reagent(germ, amount / 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/salt_meat(obj/item/weapon/reagent_containers/food/condiment/salt_source, mob/user)
 	if (salted_meat)
