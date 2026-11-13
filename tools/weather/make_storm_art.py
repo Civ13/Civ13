@@ -1,9 +1,20 @@
 """Draw the storm art of the moving weather systems (docs/weather-systems.md).
 
 icons/effects/weather_storm.dmi, 128 px (four tiles):
-  shadow_n .. shadow_nw   the mottled shadow of storm cloud, sixteen frames
-                          that slide one whole icon in the named direction, so
-                          neighbouring pieces join and the loop has no jump
+  shadow_<wind>_<qx><qy>  the mottled shadow of storm cloud. The cloud is one
+                          field eight tiles on a side, cut in four pieces
+                          (qx, qy = 0 or 1, west to east and south to north),
+                          so the pattern repeats every eight tiles and not
+                          every four. Its thirty-two frames slide the whole
+                          field once round in the direction the named wind
+                          carries it (n, e, s or w), so neighbouring pieces
+                          join and the loop has no jump
+icons/effects/weather_edge.dmi, 128 px:
+  m<sw><se><nw><ne>       the fade of a piece on the storm's edge: white, with
+                          an opacity that runs evenly between the levels (0 to
+                          3) at its four corners. The game lays it over the
+                          piece as an alpha mask. A corner is shared by the
+                          pieces round it, so the fade has no step
 icons/effects/weather_bolt.dmi, 64 x 160 px:
   bolt1 .. bolt4          forked lightning standing on its tile; the game
                           flickers and fades it
@@ -30,11 +41,13 @@ from make_chunks import same_icon  # noqa: E402
 ROOT = Path(__file__).resolve().parents[2]
 STORM = ROOT / "icons/effects/weather_storm.dmi"
 BOLT = ROOT / "icons/effects/weather_bolt.dmi"
+EDGE = ROOT / "icons/effects/weather_edge.dmi"
+EDGE_LEVELS = 3
 SIZE = 128
-FRAMES = 16
-# name, pixels moved per frame (x right, y up)
-DRIFT = (("n", 0, 1), ("ne", 1, 1), ("e", 1, 0), ("se", 1, -1),
-         ("s", 0, -1), ("sw", -1, -1), ("w", -1, 0), ("nw", -1, 1))
+FIELD = SIZE * 2
+FRAMES = 32
+# name, pixels moved per frame (x right, y up). The wind has four quarters.
+DRIFT = (("n", 0, 1), ("e", 1, 0), ("s", 0, -1), ("w", -1, 0))
 BOLT_W, BOLT_H = 64, 160
 
 
@@ -67,10 +80,10 @@ def dmi_bytes(width, height, entries):
 
 
 def cloud_field():
-    """A 128 x 128 field of 0..1 that wraps on both edges: soft cloud masses."""
+    """A 256 x 256 field of 0..1 that wraps on both edges: soft cloud masses."""
     rng = random.Random(1713)
     total = None
-    for cells, weight in ((4, 1.0), (8, 0.5), (16, 0.22)):
+    for cells, weight in ((4, 1.0), (8, 0.6), (16, 0.3), (32, 0.12)):
         grid = Image.new("L", (cells, cells))
         grid.putdata([rng.randrange(256) for _ in range(cells * cells)])
         # Three by three copies, scaled up, middle kept: the edges then wrap.
@@ -78,38 +91,84 @@ def cloud_field():
         for gx in range(3):
             for gy in range(3):
                 wide.paste(grid, (gx * cells, gy * cells))
-        wide = wide.resize((SIZE * 3, SIZE * 3), Image.BICUBIC).crop((SIZE, SIZE, SIZE * 2, SIZE * 2))
+        wide = wide.resize((FIELD * 3, FIELD * 3), Image.BICUBIC).crop((FIELD, FIELD, FIELD * 2, FIELD * 2))
         values = [v * weight for v in wide.tobytes()]
         total = values if total is None else [t + v for t, v in zip(total, values)]
     low, high = min(total), max(total)
-    return [[(total[y * SIZE + x] - low) / (high - low) for x in range(SIZE)] for y in range(SIZE)]
+    return [[(total[y * FIELD + x] - low) / (high - low) for x in range(FIELD)] for y in range(FIELD)]
+
+
+def shadow_field():
+    """The whole cloud as an alpha image, in twelve soft steps, 44 to 176 of
+    255: never clear, never black."""
+    field = cloud_field()
+    base = Image.new("L", (FIELD, FIELD))
+    pixels = base.load()
+    for y in range(FIELD):
+        for x in range(FIELD):
+            step = min(11, int(field[y][x] * 12))
+            pixels[x, y] = 44 + step * 12
+    return base
+
+
+def shifted_field(base, dx, dy, frame):
+    """The field moved frame steps the way (dx, dy) points, wrapping."""
+    step_px = FIELD // FRAMES
+    # Image y runs down, the map's y runs up.
+    shift_x = (dx * step_px * frame) % FIELD
+    shift_y = (-dy * step_px * frame) % FIELD
+    alpha = Image.new("L", (FIELD, FIELD))
+    for ox in (shift_x - FIELD, shift_x):
+        for oy in (shift_y - FIELD, shift_y):
+            alpha.paste(base, (ox, oy))
+    return alpha
 
 
 def shadow_frames():
-    field = cloud_field()
-    # Alpha in twelve soft steps, 44 to 176 of 255: never clear, never black.
-    base = Image.new("L", (SIZE, SIZE))
-    pixels = base.load()
-    for y in range(SIZE):
-        for x in range(SIZE):
-            step = min(11, int(field[y][x] * 12))
-            pixels[x, y] = 44 + step * 12
-    step_px = SIZE // FRAMES
+    base = shadow_field()
     states = []
     for name, dx, dy in DRIFT:
-        frames = []
-        for frame in range(FRAMES):
-            # Image y runs down, the map's y runs up.
-            shift_x = (dx * step_px * frame) % SIZE
-            shift_y = (-dy * step_px * frame) % SIZE
-            alpha = Image.new("L", (SIZE, SIZE))
-            for ox in (shift_x - SIZE, shift_x):
-                for oy in (shift_y - SIZE, shift_y):
-                    alpha.paste(base, (ox, oy))
-            image = Image.new("RGBA", (SIZE, SIZE), (14, 18, 30, 0))
-            image.putalpha(alpha)
-            frames.append(image)
-        states.append((f"shadow_{name}", frames, [4] * FRAMES))
+        moved = [shifted_field(base, dx, dy, frame) for frame in range(FRAMES)]
+        for qx in (0, 1):
+            for qy in (0, 1):
+                frames = []
+                # qy 0 is the south half: the lower rows of the image.
+                box = (qx * SIZE, (1 - qy) * SIZE, qx * SIZE + SIZE, (1 - qy) * SIZE + SIZE)
+                for alpha in moved:
+                    image = Image.new("RGBA", (SIZE, SIZE), (14, 18, 30, 0))
+                    image.putalpha(alpha.crop(box))
+                    frames.append(image)
+                states.append((f"shadow_{name}_{qx}{qy}", frames, [4] * FRAMES))
+    return states
+
+
+def edge_mask(sw, se, nw, ne):
+    """White, its opacity running evenly between the four corner levels."""
+    alpha = Image.new("L", (SIZE, SIZE))
+    pixels = alpha.load()
+    for py in range(SIZE):
+        # Image y runs down, the map's y runs up.
+        v = 1 - (py + 0.5) / SIZE
+        for px in range(SIZE):
+            u = (px + 0.5) / SIZE
+            level = (sw * (1 - u) + se * u) * (1 - v) + (nw * (1 - u) + ne * u) * v
+            pixels[px, py] = round(255 * level / EDGE_LEVELS)
+    image = Image.new("RGBA", (SIZE, SIZE), (255, 255, 255, 0))
+    image.putalpha(alpha)
+    return image
+
+
+def edge_states():
+    """Every mix of corner levels but nothing at all and the whole piece."""
+    states = []
+    levels = range(EDGE_LEVELS + 1)
+    for sw in levels:
+        for se in levels:
+            for nw in levels:
+                for ne in levels:
+                    if sw == se == nw == ne and sw in (0, EDGE_LEVELS):
+                        continue
+                    states.append((f"m{sw}{se}{nw}{ne}", [edge_mask(sw, se, nw, ne)], []))
     return states
 
 
@@ -178,6 +237,10 @@ def build():
     return storm, bolt
 
 
+def build_edge():
+    return dmi_bytes(SIZE, SIZE, edge_states())
+
+
 def preview(path):
     """Grass-coloured ground, the shadow sliding east over it, and a bolt."""
     shadows = dict((name, frames) for name, frames, _ in shadow_frames())
@@ -192,7 +255,7 @@ def preview(path):
         scene = ground.copy()
         for tx in range(3):
             for ty in range(2):
-                piece = shadows["shadow_e"][frame % FRAMES]
+                piece = shadows[f"shadow_e_{tx % 2}{(1 - ty) % 2}"][frame % FRAMES]
                 # The storm thins toward the right edge of the view.
                 piece = faded(piece, (1.0, 0.75, 0.4)[tx])
                 scene.alpha_composite(piece, (tx * SIZE, ty * SIZE))
@@ -212,7 +275,7 @@ def main():
         return 0
     storm, bolt = build()
     if "--check" in sys.argv:
-        stale = [str(p.relative_to(ROOT)) for p, data in ((STORM, storm), (BOLT, bolt)) if not same_icon(p, data)]
+        stale = [str(p.relative_to(ROOT)) for p, data in ((STORM, storm), (BOLT, bolt), (EDGE, build_edge())) if not same_icon(p, data)]
         if stale:
             print("stale:", ", ".join(stale))
             return 1
@@ -220,6 +283,7 @@ def main():
         return 0
     STORM.write_bytes(storm)
     BOLT.write_bytes(bolt)
+    EDGE.write_bytes(build_edge())
     print(f"wrote {STORM.relative_to(ROOT)} ({len(storm)} bytes), {BOLT.relative_to(ROOT)} ({len(bolt)} bytes)")
     return 0
 

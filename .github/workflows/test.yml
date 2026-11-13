@@ -130,6 +130,11 @@ jobs:
         with:
           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
+      # The weather and sprite generator suites decode icons with Pillow.
+      - name: Install Pillow for the icon generator suites
+        timeout-minutes: 3
+        shell: bash
+        run: timeout -k 5 120 python3 -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Run required bounded offline baseline
         id: baseline
         env:

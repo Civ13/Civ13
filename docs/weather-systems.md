@@ -83,6 +83,14 @@ opacity from the storm's strength there, so the edge of the rain is a line on
 the ground that moves with the storm. Images are client-side only: they are
 in no turf's contents and are never saved.
 
+A piece on the storm's edge is not drawn at one strength. The strength is
+asked at the piece's four corners, each put on a scale of 0 to 3, and the
+piece is cut by the matching fade from `icons/effects/weather_edge.dmi`
+(`m<sw><se><nw><ne>`) as an alpha mask filter. A corner is shared by the four
+pieces round it, so the rain and the cloud shadow thin out evenly toward the
+edge with no step between pieces. A piece whose fade changes is a new image
+that fades in over two seconds while the old one fades out.
+
 Roofed areas (`location == AREA_INSIDE`) draw `icons/effects/weather_roof.dmi`
 on `WEATHER_ROOF_PLANE`, which is never shown. The weather plane (plane 3)
 has an inverse alpha mask filter from it, so weather is cut away over roofs.
@@ -101,9 +109,12 @@ python3 tools/weather/make_chunks.py --check    # exit 1 if either is stale
 Every drawn piece also carries a cloud shadow from
 `icons/effects/weather_storm.dmi`, under the rain. Its opacity follows the
 storm's strength and it starts further out than the rain does, so the cloud
-is seen arriving before it breaks. The shadow's sixteen frames slide one
-whole icon the way the wind carries the storms, so neighbouring pieces join
-and the loop has no jump.
+is seen arriving before it breaks. The cloud is one field eight tiles on a
+side, cut in four pieces, and each drawn piece shows the quarter its place
+calls for (`weather_shadow_piece()`), so the pattern repeats every eight
+tiles. Its thirty-two frames slide the whole field once round the way the
+wind carries the storms, so neighbouring pieces join and the loop has no
+jump.
 
 ### Lightning and thunder
 

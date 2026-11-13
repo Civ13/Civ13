@@ -126,6 +126,22 @@ var/ws_runtime_error = FALSE
 	var/list/chunk = weather_chunk_state(round(119 / 4), round(59 / 4), 1)
 	ws_check(islist(chunk) && chunk[1] == "snow_storm" && chunk[2] == 255, "drawn chunk under the core is a full blizzard")
 	ws_check(chunk[3] == 190, "the core casts the full cloud shadow")
+	ws_check(chunk[4] == "" && chunk[5] == "", "the core is drawn whole, with no fade")
+	ws_check(isnull(weather_edge_mask(0, 0, 0, 0)) && weather_edge_mask(3, 3, 3, 3) == "" && weather_edge_mask(0, 1, 2, 3) == "m0123", "a piece's fade is named by its four corners")
+	// On the storm's edge neighbouring pieces fade, and share their corners.
+	var/joined = FALSE
+	var/faded = FALSE
+	for (var/cx = round(119 / 4), cx <= round((120 + S.radius_x + 8) / 4), cx++)
+		var/list/west_piece = weather_chunk_state(cx, round(59 / 4), 1)
+		var/list/east_piece = weather_chunk_state(cx + 1, round(59 / 4), 1)
+		if (!west_piece || !east_piece || length(west_piece[4]) != 5 || length(east_piece[4]) != 5)
+			continue
+		faded = TRUE
+		// m<sw><se><nw><ne>: the west piece's east corners are the east piece's west corners.
+		joined = copytext(west_piece[4], 3, 4) == copytext(east_piece[4], 2, 3) && copytext(west_piece[4], 5, 6) == copytext(east_piece[4], 4, 5)
+		if (!joined)
+			break
+	ws_check(faded && joined, "pieces on the storm's edge fade and meet at shared corners")
 	ws_check(!weather_lightning_sky(ice), "a blizzard throws no lightning")
 	ws_check(isnull(weather_chunk_state(0, 0, 1)), "no chunk is drawn outside the storm")
 	season = "Dry Season"
