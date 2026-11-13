@@ -34,6 +34,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
 	/client/proc/cmd_admin_check_research,	//read-only list of who knows which research,
 	/client/proc/cmd_admin_show_research,	//read-only research knowledge of one character,
+	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
