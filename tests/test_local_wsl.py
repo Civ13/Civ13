@@ -57,7 +57,9 @@ class LocalWslTests(unittest.TestCase):
                          'code/modules/1713/stone_age_arms.dm',
                          'code/modules/1713/herb_garden.dm',
                          'code/game/objects/farming.dm',
-                         'code/modules/reagents/reagent_containers/food/snacks/meat.dm'):
+                         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+                         'code/modules/projectiles/handloading.dm',
+                         'code/modules/projectiles/_ammo_casing.dm'):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())

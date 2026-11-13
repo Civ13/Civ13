@@ -28,6 +28,9 @@ KNAP_EXTRA = 'code/modules/1713/stone_age_arms.dm'
 FARMING = 'code/game/objects/farming.dm'
 SHELL = 'code/modules/1713/herb_garden.dm'
 FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
+HANDLOAD = 'code/modules/projectiles/handloading.dm'
+CASINGS = 'code/modules/projectiles/_ammo_casing.dm'
+NODES = 'code/modules/research_tree/research_node.dm'
 VARS = {'name', 'dried_type', 'dry_size', 'steep_reagent', 'steep_amount', 'sprig_type', 'plant', 'stack',
         'condiment', 'stack_amount', 'biomes', 'seasons'}
 MAP_NOTE = 'Availability depends on the selected map; placements and construction reachability were not executed.'
@@ -216,6 +219,43 @@ def add_interactions(files, add, records, covered):
                   FISH, line_of(fish, whole + '/attackby'),
                   ('Use a knife, bayonet or hatchet on a raw fish that is not rotten.',), 'The whole fish is used up.',
                   ('/obj/item/weapon/material/kitchen/utensil/knife',))
+
+    # Handloading: the cartridge table in handloading.dm names each round, its casing size
+    # and the research that teaches it; spent brass of a listed caliber comes back as a casing.
+    hand = files[HANDLOAD]
+    require(hand, HANDLOAD, '/proc/handload_cartridges()', 'research_node_known(user, R.node)',
+            'var/room = min(amount, round((gunpowder + 0.001) / gunpowder_max)) - bulletn',
+            '/obj/item/ammo_casing/proc/spent_brass_class()', 'handload_brass_classes()[caliber]')
+    rows = re.findall(r'new /datum/handload_cartridge\("([^"]+)", (/obj/item/ammo_casing[\w/]*), HANDLOAD_(PISTOL|RIFLE), "(\w+)"', hand)
+    if not rows:
+        raise ValueError(f'{HANDLOAD} changed (no cartridge rows found): review scripts/atlas/interactions.py')
+    casing_source = files[CASINGS]
+    node_names = {nid: (name, int(era)) for nid, name, era in re.findall(
+        r'new /datum/research_node\("(\w+)", "([^"]+)", "[^"]+", \d+, \d+, \w+, (?:list\([^)]*\)|null), (\d+)', files[NODES])}
+    ages = ['Stone Age', 'Classical Age', 'Medieval Age', 'Imperial Age', 'Industrial Age', 'WW1', 'WW2', 'Cold War',
+            'Modern Age', 'Digital Age']
+    for label, cartridge, size, node in rows:
+        casing = '/obj/item/stack/ammopart/casing/' + size.lower()
+        block = casing_source.split('\n' + casing + '\n', 1)[1].split('\n/', 1)[0] if ('\n' + casing + '\n') in casing_source else ''
+        powder = re.search(r'gunpowder_max = ([\d.]+)', block)
+        powder = float(powder[1]) if powder else 2.0
+        powder = int(powder) if powder == int(powder) else powder
+        known = node_names.get(node)
+        era = (f'Needs the {known[0]} research ({ages[known[1]] if 0 <= known[1] < len(ages) else known[1]}).'
+               if known else f'Needs the {node} research.')
+        route(f'Handload {label}', 'Handloading',
+              [(casing, 1), ('/obj/item/stack/ammopart/bullet', 1), ('reagent:gunpowder', powder)], [(cartridge, 1)],
+              HANDLOAD, line_of(hand, f'"{label}"'),
+              ('Use a container of gunpowder on a stack of empty casings; it pours only what the casings need.',
+               'Use iron bullets on the casings; each bullet needs a casing that already holds its powder.',
+               f'Use the casings in hand and choose "{label}". Most rifle and pistol rounds can be normal, hollow point or armor-piercing.'),
+              'One casing, its powder charge and one bullet make one round. A stack loads every complete set at once.',
+              ('/obj/item/stack/ammopart/bullet',), era=era)
+        records[-1]['handload_node'] = node if records and records[-1]['name'] == f'Handload {label}' else None
+        route(f'Recover brass from a spent {label} round', 'Brass recovery', [(cartridge, 'spent')], [(casing, 1)],
+              HANDLOAD, line_of(hand, '/obj/item/ammo_casing/attack_self'),
+              ('Use a fired casing in hand, or click spent casings (or the tile they lie on) with a stack of empty casings of the same size.',),
+              'Only loose, fired casings count; heavy machine-gun brass and rounds in boxes or guns are left alone.')
 
     # Crops: each plant type yields the product its plant/stack/condiment names, plus seeds.
     farming = files[FARMING]

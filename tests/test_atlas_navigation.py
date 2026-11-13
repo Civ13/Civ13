@@ -198,7 +198,9 @@ class AtlasNavigationTests(unittest.TestCase):
         from atlas.interactions import add_interactions
         paths = ('code/modules/1713/production.dm', 'code/modules/ecology/wild_herbs.dm', 'code/modules/1713/herbalism.dm',
                  'code/modules/1713/flint_mining.dm', 'code/modules/1713/stone_age_arms.dm', 'code/modules/1713/herb_garden.dm',
-                 'code/game/objects/farming.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm')
+                 'code/game/objects/farming.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+                 'code/modules/projectiles/handloading.dm', 'code/modules/projectiles/_ammo_casing.dm',
+                 'code/modules/research_tree/research_node.dm')
         files = {path: (ROOT/path).read_text(encoding='utf-8', errors='replace') for path in paths}
         files['code/new_herb.dm'] = ('/obj/item/new_herb\n\tname = "lovage"\n\tdry_size = 2\n\tdried_type = /obj/item/new_herb/dried\n'
                                      '\tsteep_reagent = "lovage_tea"\n\tsteep_amount = 7\n'
@@ -214,6 +216,8 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertIn('Dry lovage on a dehydrator', names)
         self.assertIn('Steep lovage into lovage tea', names)
         self.assertNotIn('Dry dried lovage on a dehydrator', names)
+        self.assertIn('Handload 7.62x39mm', names)
+        self.assertIn('Recover brass from a spent 7.62x39mm round', names)
         changed = dict(files)
         changed['code/modules/ecology/wild_herbs.dm'] = files['code/modules/ecology/wild_herbs.dm'].replace(
             'vessel.reagents.remove_reagent("water", amount)', 'vessel.reagents.remove_reagent("water", amount * 2)')
