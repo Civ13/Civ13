@@ -43,6 +43,7 @@ var/fire_runtime_error = FALSE
 		fire_smother_checks()
 		fire_water_checks()
 		fire_blanket_checks()
+		fire_hook_checks()
 		fire_recipe_checks()
 	catch(var/exception/e)
 		fire_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -181,6 +182,7 @@ var/fire_runtime_error = FALSE
 	build_research_tree()
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater") == "primitive_construction", "the fire beater is Primitive Construction knowledge")
 	fire_check(get_recipe_node_req("/obj/item/weapon/fire_beater/flapper") == "primitive_construction", "the fire flapper is Primitive Construction knowledge")
+	fire_check(get_recipe_node_req("/obj/item/weapon/fire_hook") == "iron_tools", "the fire hook is Iron Tools knowledge")
 
 /proc/fire_water_checks()
 	var/mob/living/fire_tester/U = new(locate(10, 15, 1))
@@ -288,3 +290,71 @@ var/fire_runtime_error = FALSE
 	qdel(S)
 	qdel(U)
 	water.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+
+/obj/covers/fire_probe_wall
+	wall = TRUE
+	density = TRUE
+	buildstackamount = 8
+/obj/covers/fire_probe_wall/New()
+	return
+/obj/covers/fire_probe_floor
+	buildstackamount = 5
+/obj/covers/fire_probe_floor/New()
+	return
+/obj/covers/fire_probe_stone
+	flammable = FALSE
+	wall = TRUE
+/obj/covers/fire_probe_stone/New()
+	return
+/obj/roof/fire_probe/New()
+	return
+/obj/roof/fire_probe/Destroy()
+	loc = null
+	return QDEL_HINT_QUEUE
+/obj/roof/fire_probe/tile
+	flammable = FALSE
+/obj/structure/wild/smallbush/fire_probe/New()
+	return
+/obj/structure/wild/tree/fire_probe/New()
+	return
+
+/proc/fire_hook_wood(turf/T)
+	. = 0
+	for (var/obj/item/stack/material/wood/W in T)
+		. += W.amount
+		qdel(W)
+
+/proc/fire_hook_checks()
+	var/mob/living/fire_tester/U = new(locate(3, 10, 1))
+	var/turf/site = locate(4, 10, 1)
+	var/obj/item/weapon/fire_hook/H = new(null)
+	fire_hold(U, H)
+	var/obj/covers/fire_probe_wall/W = new(site)
+	var/obj/covers/fire_probe_floor/F = new(site)
+	var/obj/covers/fire_probe_stone/S = new(site)
+	var/obj/roof/fire_probe/R = new(site)
+	var/obj/roof/fire_probe/tile/RT = new(site)
+	var/obj/structure/wild/smallbush/fire_probe/B = new(site)
+	var/obj/structure/wild/tree/fire_probe/T = new(site)
+	fire_check(fire_hook_base_time(W) == 50 && fire_hook_base_time(F) == 30 && fire_hook_base_time(R) == 25 && fire_hook_base_time(B) == 15, "walls, floors, roofs and brush have their own pull-down times")
+	fire_check(!fire_hook_base_time(S) && !fire_hook_base_time(RT) && !fire_hook_base_time(T) && !fire_hook_base_time(site), "stone, tiled roofs, trees and bare ground are refused")
+	fire_check(fire_hook_time(W) == 150 && fire_hook_time(R) == 75, "with no fire near, the work takes three times as long")
+	var/obj/effect/fire/near = new(locate(7, 10, 1))
+	fire_check(fire_hook_time(W) == 50 && fire_hook_time(B) == 15, "a fire three tiles away makes it urgent")
+	qdel(near)
+	near = new(locate(8, 10, 1))
+	fire_check(fire_hook_time(W) == 150, "a fire four tiles away does not")
+	qdel(near)
+	fire_check(!H.pull_down(S, U) && !QDELETED(S) && !H.pull_down(T, U) && !QDELETED(T), "pulling at stone or a tree does nothing")
+	fire_check(H.pull_down(W, U) && QDELETED(W) && fire_hook_wood(site) == 4, "a pulled-down wall gives back half its wood")
+	fire_check(H.pull_down(R, U) && QDELETED(R), "a thatch roof comes down")
+	fire_check(H.pull_down(B, U) && QDELETED(B), "brush is ripped out")
+	near = new(site)
+	fire_check(H.pull_down(F, U) && QDELETED(F) && fire_hook_wood(site) == 0, "a floor pulled out from under a fire gives nothing back")
+	qdel(near)
+	fire_check(H.persistence_runtime_var("hooking") && H.icon_state == "fire_hook", "the busy flag is not saved")
+	qdel(S)
+	qdel(RT)
+	qdel(T)
+	qdel(H)
+	qdel(U)
