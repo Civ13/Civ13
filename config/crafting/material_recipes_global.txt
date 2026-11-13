@@ -2005,6 +2005,11 @@ RECIPE: /material/steel/,airframe section,/obj/structure/vehicleparts/frame/car/
 RECIPE: /material/steel/,airframe controls (800 weight),/obj/structure/vehicleparts/axis/aircraft/airframe,12,100,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,pilot's seat,/obj/structure/bed/chair/drivers/aircraft/loose,8,40,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,submarine pen,/obj/structure/car_workshop/submarine_pen,40,260,1,1,production,126,0,0,8,null
+RECIPE: /material/steel/,submarine hull section,/obj/structure/vehicleparts/frame/ship/steel/submarine/section,6,60,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,submarine controls (2500 weight),/obj/structure/vehicleparts/axis/ship/submarine/controls,20,200,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,ballast and periscope station,/obj/structure/vehicleparts/sub_station/loose,10,100,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,submarine battery bank,/obj/structure/vehicleparts/sub_fitting/battery/loose,8,60,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/steel/,submarine air bank,/obj/structure/vehicleparts/sub_fitting/air/loose,8,60,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/steel/,shipyard office,/obj/structure/car_workshop/shipyard,60,260,1,1,production,150,0,0,8,null
 RECIPE: /material/wood/soft/,shoring kit,/obj/item/weapon/shoring_kit,6,120,0,1,none,126,0,0,8,null
 RECIPE: /material/cloth/,diving dress,/obj/item/clothing/suit/pressure_suit/diving,12,200,0,1,clothing,126,0,0,8,null

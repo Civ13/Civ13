@@ -33,12 +33,16 @@
 	for (var/obj/structure/vehicleparts/frame/F in T)
 		if (istype(F, /obj/structure/vehicleparts/frame/ship) != (A.ship ? TRUE : FALSE))
 			continue
-		// Airframe sections and airframe controls only go together.
+		// Airframe sections and submarine hull sections only take their own controls.
 		if (!vehicle_assembly_kind_matches(F, A))
 			continue
 		if (!F.axis || F.axis == A)
 			return F
 	return null
+
+// The longest side a vehicle on this axis may have.
+/obj/structure/vehicleparts/axis/proc/assembly_max_size()
+	return VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE
 
 // ---- The survey ----
 
@@ -57,6 +61,7 @@
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank
 	var/obj/structure/bed/chair/drivers/seat
 	var/obj/structure/vehicleparts/shipwheel/helm
+	var/obj/structure/vehicleparts/sub_station/station  // A submarine's ballast and periscope station.
 	var/list/movers = list()     // Wheels and tracks standing on corner frames.
 	var/loose_movers = 0         // Wheels and tracks standing anywhere else.
 	var/list/masts = list()
@@ -99,7 +104,7 @@
 		max_y = max(max_y, F.y)
 	width = max_x - min_x + 1
 	height = max_y - min_y + 1
-	var/most = VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE
+	var/most = A.assembly_max_size()
 	if (width > most || height > most)
 		refusal = "the frames are [width] by [height] tiles; a vehicle can be [most] long and wide at most"
 		return
@@ -149,6 +154,8 @@
 		for (var/obj/structure/vehicleparts/shipwheel/W in T)
 			if (!helm && (!W.ship || W.ship == axis))
 				helm = W
+		if (!station)
+			station = locate(/obj/structure/vehicleparts/sub_station) in T
 		for (var/obj/structure/vehicleparts/movement/M in T)
 			if (M.axis && M.axis != axis)
 				continue
@@ -182,6 +189,8 @@
 			. += "a mast or an engine"
 		if (istype(engine, /obj/structure/engine/internal) && !tank)
 			. += "a fuel tank for the engine"
+		if (istype(axis, /obj/structure/vehicleparts/axis/ship/submarine) && !station)
+			. += "a ballast and periscope station to dive"
 		return
 	if (!engine)
 		. += "an engine"
@@ -205,6 +214,8 @@
 		found += "\the [seat]"
 	if (helm)
 		found += "\the [helm]"
+	if (station && istype(axis, /obj/structure/vehicleparts/axis/ship/submarine))
+		found += "\the [station]"
 	if (masts.len)
 		found += "[masts.len] mast\s"
 	if (movers.len)

@@ -560,6 +560,19 @@ A boat of ship frames is assembled by the same code from its rudder axis
 on water, and looks for a ship's wheel (`helm`), masts and an engine of any
 kind in place of a seat and corner wheels.
 
+Planes and submarines are assembled by the same code from their own controls,
+which only take their own sections (`vehicle_assembly_kind_matches()`).
+`axis.assembly_refusal(S)` adds a kind's shape rules and `assembly_max_size()`
+its longest side. Airframe controls (`aircraft/aircraft_assembly.dm`) take a
+3-wide airframe 3 to 5 long and reshape each section into the nose, wing,
+cockpit, fuselage or tail its place calls for. Submarine controls
+(`ships/submarine_assembly.dm`) take a hull 3 wide and 5 (Scout) or 7
+(Explorer) long on surface water, reshape each section from
+`submarine_layouts` (hull art tile, walls, lock-out hatches), and want a
+ballast and periscope station (`survey.station`); the crafted station, battery
+bank and air bank are bolted down by `fit_parts()` and come loose again with
+`take_apart()`.
+
 `code/modules/craft/vehicle_turret.dm` adds `/obj/structure/turret/built`
 (recipe "tank turret", Mechanized War): the works tanks' traversing turret
 (`siege/turret.dm`), empty until fitted. `fit_parts()` calls its `fit()`,
