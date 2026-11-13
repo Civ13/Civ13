@@ -236,17 +236,17 @@ def main():
     print('still eye cases:', ', '.join(result['still_eye']))
     # Viewer in a tree, then target in it (from its side), 1-4 tiles apart;
     # then the same without the tree.
-    if result['foliage'] != [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0]:
+    if any(result['foliage']):
         bad += 1
-        print('MISMATCH foliage cover NPC sight', result['foliage'])
+        print('MISMATCH a tree hid someone from NPC sight', result['foliage'])
     else:
-        print('foliage cover: NPC sight to and from a tree stops past 2 tiles')
-    # 3 leafy trees between, then 4 (both ways), then the 4th a palm.
-    if result['forest'] != [0, 1, 1, 0]:
+        print('trees: NPC sight to and from a tree tile is clear at 1-4 tiles')
+    # 3 trees between, then 4 (both ways), then the 4th a palm.
+    if any(result['forest']):
         bad += 1
-        print('MISMATCH deep forest NPC sight', result['forest'])
+        print('MISMATCH a row of trees hid someone from NPC sight', result['forest'])
     else:
-        print('deep forest: 4 leafy trees between hide people; palms hide nothing')
+        print('trees: a row of up to 4 trees between hides nobody')
     if not result['cleared']:
         bad += 1
         print('MISMATCH grading did not clear the cache and refresh viewers')

@@ -7,11 +7,11 @@
 // - melee is out of reach both ways: nobody on the ground can hit, grab, kick
 //   or pull the climber, and the climber cannot hit them. Guns, bows and thrown
 //   things still work (tree_melee_blocked). Animals that climb still follow;
-// - the climber sees over walls and other trees outdoors and is not limited by
-//   its own foliage (los_terrain.dm los_up_tree, LOS_EYE_CLIMBED);
+// - the climber sees over walls outdoors (los_terrain.dm los_up_tree,
+//   LOS_EYE_CLIMBED);
 // - Look into Distance reaches 8 tiles (human.dm look_into_distance);
 // - animals that cannot climb (can_climb_trees) lose interest and cannot reach
-//   the climber, while foliage cover still hides the climber beyond two tiles.
+//   the climber. Trees hide nobody, so the climber stays in plain sight.
 // Any movement key, grab-clicking the tree again or Climb Down climbs down to
 // where the climb started. Being knocked out, stunned or the tree going away
 // drops the climber to the ground.
