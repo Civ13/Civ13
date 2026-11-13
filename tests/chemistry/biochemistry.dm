@@ -29,6 +29,7 @@
 	biochemistry_butyl_stopper_checks()
 	biochemistry_willow_checks()
 	biochemistry_willow_seed_checks()
+	biochemistry_salt_checks()
 	return TRUE
 
 /proc/biochemistry_plastic_pipe_checks()
@@ -499,3 +500,41 @@
 	var/obj/structure/wild/tree/live_tree/willow/W = locate() in T
 	chemistry_assert(n == 1 && W && QDELETED(old) && !(locate(/obj/structure/wild/tree/live_tree/willow) in far), "seed failed [n] [willow_seed_report]")
 	chemistry_assert(willow_seed_stands(TRUE) == 0, "seed not idempotent [willow_seed_report]")
+
+// Eating salt makes you thirsty but is never lethal; seawater does not hydrate.
+/proc/biochemistry_salt_checks()
+	var/turf/site = locate(25, 25, 1)
+	var/mob/living/human/chemistry_builder/eater = new(site)
+	var/datum/reagent/sodiumchloride/salt = new
+	eater.water = 350
+	salt.affect_ingest(eater, null, 1)
+	chemistry_assert(eater.water == 325, "One unit of salt cost [350 - eater.water] water, not 25")
+	salt.affect_ingest(eater, null, 1000)
+	chemistry_assert(eater.water == 60, "A huge salt dose left [eater.water] water instead of the thirst floor")
+	salt.affect_blood(eater, null, 1000)
+	chemistry_assert(eater.water == 60, "Injected salt went below the thirst floor")
+	eater.water = 10
+	salt.affect_ingest(eater, null, 5)
+	chemistry_assert(eater.water == 10, "Salt changed water already below the floor")
+	eater.lastpuke = TRUE
+	salt.overdose(eater, null)
+	chemistry_assert(eater.lastpuke, "Salt overdose reset the vomit cooldown")
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/sea = new(site)
+	sea.reagents.add_reagent("water", 24)
+	sea.reagents.add_reagent("sodiumchloride", 1)
+	var/obj/item/weapon/reagent_containers/glass/beaker/large/soup = new(site)
+	soup.reagents.add_reagent("water", 50)
+	soup.reagents.add_reagent("sodiumchloride", 1)
+	chemistry_assert(reagents_are_brine(sea.reagents, 24), "Seawater-strength brine was not recognised")
+	chemistry_assert(!reagents_are_brine(soup.reagents, 50), "Lightly salted water counted as brine")
+	var/datum/reagent/water/sea_water = locate() in sea.reagents.reagent_list
+	var/datum/reagent/water/soup_water = locate() in soup.reagents.reagent_list
+	eater.water = 100
+	sea_water.affect_ingest(eater, null, 2)
+	chemistry_assert(eater.water == 100, "Seawater quenched thirst")
+	soup_water.affect_ingest(eater, null, 2)
+	chemistry_assert(eater.water > 100, "Lightly salted water did not quench thirst")
+	qdel(sea)
+	qdel(soup)
+	qdel(salt)
+	qdel(eater)

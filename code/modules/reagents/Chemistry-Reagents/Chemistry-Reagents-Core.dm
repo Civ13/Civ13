@@ -66,6 +66,11 @@
 			L.adjust_fire_stacks(-(amount / 10))
 			remove_self(amount)
 
+/datum/reagent/water/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	if (reagents_are_brine(holder, volume)) // seawater and brine do not quench thirst
+		return
+	..()
+
 /datum/reagent/water/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	if (M.water < 0)
 		M.water += rand(40,50)
