@@ -143,6 +143,8 @@
 	if (stat == DEAD || stat == UNCONSCIOUS)
 		return FALSE
 	a_intent = I_HARM
+	if (food_distraction_tick())
+		return t_behaviour
 
 	if (t_behaviour == "hunt" || (t_behaviour == "defends" && target_mob))
 		if(prob(50))
@@ -700,6 +702,9 @@
 /mob/living/simple_animal/proc/predator_will_hunt(mob/living/L)
 	if (!ishuman(L) || !is_natural_predator() || L == provoked_by)
 		return TRUE
+	// Busy with thrown meat: people are left alone until it is eaten or gone.
+	if (is_food_distracted())
+		return FALSE
 	if (starves && simplehunger < predator_starving_hunger)
 		return TRUE
 	return get_dist(src, L) <= predator_encroach_range
@@ -716,12 +721,92 @@
 		if (SA.faction == faction)
 			return FALSE
 	provoked_by = attacker
+	end_food_distraction()
 	if (!target_mob || target_mob.stat == DEAD || get_dist(src, target_mob) > 1)
 		npc_set_combat_target(attacker)
 	stance = HOSTILE_STANCE_ATTACK
 	stance_step = max(stance_step, 6)
 	if (target_mob == attacker && get_dist(src, attacker) <= 1 && world.time >= next_melee_attack && canmove && !resting && !buckled && isturf(loc))
 		AttackTarget()
+	return TRUE
+
+// Thrown meat draws a starving predator off a person it is chasing or watching.
+// An animal anyone has hurt is not fooled, and a fed one has no interest.
+/obj/item/weapon/reagent_containers/food/snacks/proc/is_predator_bait()
+	return non_vegetarian || istype(src, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/rawfish)
+
+/obj/item/weapon/reagent_containers/food/snacks/throw_impact(atom/hit_atom, speed)
+	var/mob/living/human/H = thrower
+	..()
+	if (isturf(hit_atom) && ishuman(H) && !QDELETED(src) && isturf(loc))
+		lure_starving_predators(H)
+
+/obj/item/weapon/reagent_containers/food/snacks/proc/lure_starving_predators(mob/living/human/thrower)
+	var/turf/T = get_turf(src)
+	if (!T || !isturf(loc) || !is_predator_bait())
+		return 0
+	var/lured = 0
+	for (var/mob/living/simple_animal/SA in range(9, T))
+		if (SA.distract_with_food(src, thrower))
+			lured++
+	return lured
+
+/mob/living/simple_animal/proc/distract_with_food(obj/item/weapon/reagent_containers/food/snacks/food, mob/living/human/thrower)
+	if (client || stat != CONSCIOUS || !is_natural_predator() || provoked_by || !istype(food) || !isturf(food.loc))
+		return FALSE
+	if (!starves || simplehunger >= predator_starving_hunger)
+		return FALSE
+	// Only an animal already after a person: chasing, closing in or watching.
+	if (!ishuman(target_mob) || target_mob.stat == DEAD)
+		return FALSE
+	var/turf/T = food.loc
+	var/sight = aggro_vision_range || 9
+	if (get_dist(src, T) > sight || !(T in view(sight, src)))
+		return FALSE
+	var/mob/living/prey = target_mob
+	LoseTarget()
+	distracted_by = food
+	distracted_until = world.time + food_distraction_time
+	set_dir(get_dir(src, T))
+	visible_message("<span class='notice'>\The [src] turns away from [prey] toward \the [food].</span>")
+	if (get_dist(src, T) > 1)
+		do_movement(food)
+	return TRUE
+
+/mob/living/simple_animal/proc/is_food_distracted()
+	if (!distracted_by)
+		return FALSE
+	if (QDELETED(distracted_by) || !isturf(distracted_by.loc) || world.time > distracted_until || stat != CONSCIOUS)
+		end_food_distraction()
+		return FALSE
+	return TRUE
+
+/mob/living/simple_animal/proc/end_food_distraction()
+	if (!distracted_by)
+		return
+	if (target_obj == distracted_by)
+		target_obj = null
+		found_path = list()
+		move_gen++
+		moving = FALSE
+	distracted_by = null
+	distracted_until = 0
+
+// Each AI tick while distracted: walk to the meat, then eat it. TRUE while busy.
+/mob/living/simple_animal/proc/food_distraction_tick()
+	if (!is_food_distracted())
+		return FALSE
+	var/obj/item/weapon/reagent_containers/food/snacks/F = distracted_by
+	if (get_dist(src, F) <= 1)
+		end_food_distraction()
+		npc_subtile_stop_continuous_walk()
+		set_dir(get_dir(src, F))
+		visible_message("<span class='notice'>\The [src] wolfs down \the [F].</span>")
+		finish_eating(400)
+		qdel(F)
+		return TRUE
+	if (!moving || target_obj != F)
+		do_movement(F)
 	return TRUE
 
 /mob/living/simple_animal/proc/LoseTarget()

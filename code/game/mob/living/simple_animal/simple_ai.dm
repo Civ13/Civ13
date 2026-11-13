@@ -24,6 +24,10 @@
 	if (!isturf(loc) || resting || buckled || !canmove)
 		return
 
+	// Going for thrown meat comes before any fight or forage.
+	if (food_distraction_tick())
+		return
+
 	// An adjacent fight runs every Life tick and the bite cooldown sets the
 	// pace, so walking speed no longer decides how often an animal bites.
 	if (stance == HOSTILE_STANCE_ATTACK && target_mob && uses_paced_bites() && get_dist(src, target_mob) <= 1)
