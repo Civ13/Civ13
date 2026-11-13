@@ -810,7 +810,8 @@ SUITES = {
         'paths': ('tests/map_metadata_dedupe/', 'code/game/objects/map_metadata/shrinking_zone.dm'),
         'shared_paths': ('code/game/objects/map_metadata/campaign_new.dm',
                          'code/game/objects/map_metadata/battleroyale.dm',
-                         'code/game/objects/map_metadata/hungergames.dm')},
+                         'code/game/objects/map_metadata/hungergames.dm',
+                         'maps/special/hunger_games.dmm')},
     # Wall and jail covers share one utensil-to-shank proc; source checks
     # against the frozen copied block, no BYOND runtime.
     'utensil_shank': {'files': ('tests/utensil_shank/test_utensil_shank.py',),
@@ -822,6 +823,10 @@ SUITES = {
         'paths': ('tests/folding_stock/',), 'shared_paths': (
             'code/modules/projectiles/guns/projectile.dm', 'code/modules/1713/weapons/guns/mg/smg.dm',
             'code/modules/1713/weapons/guns/mg/aks.dm', 'code/modules/1713/weapons/guns/mg/lmg.dm')},
+    # Structure and handheld radios share Topic/broadcast/interact; source
+    # parity against the frozen structure bodies, no BYOND runtime.
+    'radio_shared': {'files': ('tests/radio_shared/test_radio_shared.py',),
+        'paths': ('tests/radio_shared/',), 'shared_paths': ('code/modules/1713/radio.dm',)},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
