@@ -483,6 +483,12 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_practice_problem("medicine") && !H.scholar_practice_commit("medicine") && H.scholar_level("medicine") == SCHOLAR_PRACTICE_CAP, "practice stops at its cap")
 	H.stats["stamina"][1] = SCHOLAR_PRACTICE_STAMINA - 1
 	knowledge_check(H.scholar_practice_problem("agriculture") && !H.scholar_practice_commit("agriculture"), "a tired character can't practise")
+	// A save taken mid-session must not lock the restored character out of
+	// practice for good (Gaia, 2026-11-13: "You are already practising").
+	H.scholar_practising = TRUE
+	knowledge_check(!("scholar_practising" in H.get_saved_vars()), "a practice session's lock is never saved")
+	knowledge_check(H.persistence_runtime_var("scholar_practising") && H.persistence_runtime_var("tree_climb_busy") && H.persistence_runtime_var("cpr_revival_busy"), "a saved body's action locks are skipped on load")
+	H.scholar_practising = FALSE
 	for (var/obj/item/I in tools)
 		qdel(I)
 	qdel(H)

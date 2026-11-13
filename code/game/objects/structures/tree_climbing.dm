@@ -74,6 +74,10 @@ var/global/list/tree_canopy_tops = list()
 /mob/living/human/var/tmp/tree_climb_pixel_x = 0
 /mob/living/human/var/tmp/tree_climb_pixel_y = 0
 
+// A save taken while climbing up or down must not keep the climb lock.
+/mob/living/human/persistence_runtime_var(key)
+	return key == "tree_climb_busy" || ..()
+
 // Animals that can follow someone up a tree.
 /mob/living/simple_animal/var/can_climb_trees = FALSE
 /mob/living/simple_animal/hostile/panther
