@@ -9,6 +9,12 @@ Reviewed 2026-11-13 against master a504fad4828e50ce57ed6c2b7da45848b6f04e6c.
 
 The launcher/native Social SDK companion remains the proposed local microphone/audio boundary, not a replacement for DiscordPHP. DiscordPHP's bot voice support is not automatically a Social SDK player-voice binding. Before implementation, verify which lobby/auth/control operations DiscordPHP and Discord's supported API actually expose, identify any required DiscordPHP extension, and document the boundary. No claim is made that the current PHP package already supports Social SDK player calls. Never put bot credentials in the player launcher.
 
+## Long-term goal: move chat into the SDK
+
+The owner's intended destination is to move all chat functionality into the SDK, not only voice. Treat this as a staged migration, not removal of current BYOND chat now. DiscordPHP remains mandatory for server/control integration. Inventory IC speech, whispers/shouts, language comprehension, radio/telephone, faction/OOC/admin channels, system notices and moderation before choosing a transport for each. Preserve formatting, accessibility, history, rate limits, block/report behavior and the distinction between private and public channels.
+
+Before switching any channel, verify that the supported SDK/API can enforce its server-authoritative audience and permissions without trusting client-side filtering. An SDK lobby containing every player is not proof of confidential whispers or hidden-language delivery. Define which text is sent to Discord, retention/deletion and moderation responsibilities, and applicable platform-policy limits. Migrate one low-risk opt-in channel first with parity/failure tests; retain BYOND fallback until the replacement is demonstrated. Do not migrate private admin traffic or publish player conversations as a side effect of implementation.
+
 ## Scope and stopping rule
 
 Deliver the existing native companion's missing host endpoint in a focused source
