@@ -257,8 +257,10 @@ var/set_dir = null // Set the variable outside of any scopes
 				if(O.dir == user.dir)
 					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
 					return
+	if (!wall_foundation_tile_free(user, /obj/covers/dirt_wall/blocks/incomplete))
+		return
 	to_chat(user, SPAN_NOTICE("You start building the dirt blocks wall..."))
-	if (do_after(user, 25, src))
+	if (do_after(user, 25, src) && wall_foundation_tile_free(user, /obj/covers/dirt_wall/blocks/incomplete))
 		to_chat(user, SPAN_NOTICE("You finish the placement of the dirt blocks wall foundation."))
 		new /obj/covers/dirt_wall/blocks/incomplete(user.loc)
 		qdel(src)
