@@ -7,7 +7,6 @@
 	var/dilation = 0
 	var/last_tick_realtime = 0
 	var/last_tick_byond_time = 0
-	var/last_tick_tickcount = 0
 	var/first_run = TRUE
 	var/list/averages = list()
 	var/list/average_cpus = list()
@@ -36,27 +35,21 @@
 
 	var/current_realtime = world.timeofday
 
-	if (current_realtime < last_tick_realtime) // midnight rollerover
-		current_realtime = 864000 + schedule_interval
-
 	var/current_byondtime = world.time
-	var/current_tickcount = world.time/world.tick_lag
 
 	if (!first_run)
-		var/tick_drift = max(0, (((current_realtime - last_tick_realtime) - (current_byondtime - last_tick_byond_time)) / world.tick_lag))
-		if ((current_tickcount - last_tick_tickcount) * 100 == 0)
-			dilation = 0
-		else
-			dilation = tick_drift / (current_tickcount - last_tick_tickcount) * 100
+		var/real_elapsed = current_realtime - last_tick_realtime
+		if (real_elapsed < 0) // timeofday wraps at midnight
+			real_elapsed += 864000
+		var/game_elapsed = current_byondtime - last_tick_byond_time
+		// Both clocks are deciseconds. Dividing cumulative world.time by the
+		// current tick_lag invents a tick-count jump whenever an admin changes FPS.
+		dilation = game_elapsed > 0 ? max(0, (real_elapsed - game_elapsed) / game_elapsed) * 100 : 0
 	else
 		first_run = FALSE
 
-	if (current_realtime == (864000 + schedule_interval))
-		current_realtime = world.timeofday
-
 	last_tick_realtime = current_realtime
 	last_tick_byond_time = current_byondtime
-	last_tick_tickcount = current_tickcount
 
 	averages += dilation
 	check_lag_capture()

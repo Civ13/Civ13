@@ -73,6 +73,8 @@ SUITES = {
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
         'paths': ('tests/cleanables_scheduler/', 'code/processes/cleanables.dm'),
         'shared_paths': ('code/processes/_process.dm', 'code/processes/___defines.dm', 'code/_macros.dm')},
+    'time_tracking': {'files': ('tests/time_tracking/test_time_tracking.py',),
+        'paths': ('tests/time_tracking/', 'code/processes/time_track.dm')},
     'life_tick_pacing': {'files': ('tests/life_tick_pacing/test_pacing.py',),
         'paths': ('tests/life_tick_pacing/',), 'shared_paths': (
             'code/processes/_process.dm', 'code/processes/__processScheduler.dm',
