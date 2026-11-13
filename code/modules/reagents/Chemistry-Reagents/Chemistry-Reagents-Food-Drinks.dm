@@ -282,9 +282,37 @@
 	color = "#FFFFFF"
 	taste_mult = 2
 	overdose = REAGENTS_OVERDOSE
-//salt will make you thirsty
+
+// Salt makes you thirsty but never kills: it only drains hydration down to
+// SALT_THIRST_FLOOR ("really thirsty"), and a big dose causes nausea at most.
+#define SALT_THIRST_PER_UNIT 25
+#define SALT_THIRST_FLOOR 60
+// Water carrying at least this much salt per unit (seawater, brine) does not
+// quench thirst, so drinking seawater still leaves you thirsty.
+#define SALT_BRINE_RATIO 0.03
+
+/datum/reagent/sodiumchloride/proc/salt_thirst(var/mob/living/human/M, var/amount)
+	if (!istype(M) || M.water <= SALT_THIRST_FLOOR)
+		return
+	M.water = max(SALT_THIRST_FLOOR, M.water - amount * SALT_THIRST_PER_UNIT)
+
+/datum/reagent/sodiumchloride/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	salt_thirst(M, removed)
+
 /datum/reagent/sodiumchloride/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.water -= (removed * 360 * 1.5) //basically, it removes the saltwater you drink plus dehydrates you in the same amount
+	salt_thirst(M, removed * 2)
+
+/datum/reagent/sodiumchloride/overdose(var/mob/living/human/M, var/alien)
+	if (!istype(M) || M.lastpuke || !prob(4))
+		return
+	M.vomit()
+	if (M.ingested)
+		M.ingested.remove_reagent("sodiumchloride", 10)
+
+/proc/reagents_are_brine(var/datum/reagents/R, var/water_volume)
+	if (!R || water_volume <= 0)
+		return FALSE
+	return R.get_reagent_amount("sodiumchloride") >= water_volume * SALT_BRINE_RATIO
 
 /datum/reagent/blackpepper
 	name = "Black Pepper"

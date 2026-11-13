@@ -118,3 +118,8 @@ It checks butyl tape payment, missing feedstock, and paid copper insulation.
 
 The biochemistry probe checks butyl stopper and gasket payment, container sealing and rejection of a beaker.
 The biochemistry probe checks the willow bark route (salicin to salicylic acid to aspirin), willow bark stock saving, willow season sprites and one-time riverside willow seeding.
+
+The biochemistry probe also checks table salt: one ingested unit costs 25
+hydration, any salt dose stops at the 60 "really thirsty" floor, an overdose
+only causes nausea, and seawater-strength brine (3% salt or more) does not
+quench thirst while lightly salted water still does.
