@@ -84,6 +84,8 @@ dmm_suite/proc/read_map(dmm_text as text, coordX as num, coordY as num, coordZ a
 	if(!coordX) coordX = 1
 	if(!coordY) coordY = 1
 	if(!coordZ) coordZ = 1
+	// Map-placed cables join once every atom of this read is in (cable_shapes.dm).
+	hold_cable_autolink()
 	// Store quoted portions of text in text_strings, and replaces them with an index to that list.
 	var/gridText = copytext(dmm_text, startGridPos)
 	var/list/gridLevels = list()
@@ -107,6 +109,7 @@ dmm_suite/proc/read_map(dmm_text as text, coordX as num, coordY as num, coordZ a
 				parse_grid(grid_models[modelKey], posX+(coordX-1), posY+(coordY-1), posZ+(coordZ-1))
 			sleep(-1)
 		sleep(-1)
+	release_cable_autolink()
 	//
 	return TRUE
 
