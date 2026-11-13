@@ -46,7 +46,8 @@
 		if (AIRCRAFT_CRUISE)
 			label("HIGH [A.altitude]")
 		else
-			label("GROUND")
+			// On the ground: lined up for takeoff, taxiing, or parked.
+			label(A.takeoff_armed ? "TAKEOFF" : (A.moving && A.currentspeed > 0 ? "TAXI" : "PARKED"))
 
 /obj/screen/vehicle/flight/climb
 	name = "climb"

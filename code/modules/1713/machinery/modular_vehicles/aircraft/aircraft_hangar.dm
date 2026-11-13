@@ -27,7 +27,7 @@
 	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. The light plane (2 seats) costs 50/6/4/8/4; the cabin plane (4 seats) costs 65/8/8/8/4 and needs a slightly longer roll. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
-	return "Your [model] is assembled. Fill its tank with gasoline, then roll it at full throttle to take off: [model == "Cabin plane" ? "10 tiles on a runway or 20" : "8 tiles on a runway or 16"] on open ground."
+	return "Your [model] is assembled. Fill its tank with gasoline and taxi it like a car. To take off, roll at full throttle along [model == "Cabin plane" ? "10" : "8"] tiles of runway, or press Climb first and roll [model == "Cabin plane" ? "20" : "16"] tiles of open ground."
 
 // The light plane comes from the aircraft builder, not a car template, and
 // leaves the press with an empty tank like every workshop vehicle.

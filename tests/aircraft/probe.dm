@@ -302,7 +302,7 @@ var/aircraft_runtime_error = FALSE
 	shadowed += A.ground_view_anchor
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over the runway lands with the passenger")
 	aircraft_check(shadowed.len == 13 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow or ground view behind")
-	aircraft_check(!(A in airborne_aircraft) && A.currentspeed == 1, "a landed aircraft leaves the airborne list and slows")
+	aircraft_check(!(A in airborne_aircraft) && A.currentspeed == 1 && A.vehicle_m_delay == A.speedlist[1], "a landed aircraft leaves the airborne list and slows to first gear's taxi pace")
 	aircraft_check(!A.descend(M), "descending on the ground is refused")
 
 	// Hitting an upper storey in low flight crashes.
@@ -517,14 +517,18 @@ var/aircraft_runtime_error = FALSE
 	BE.fueltank.reagents.add_reagent(BE.fuels[1], 100, safety = TRUE)
 	B.engine.on = TRUE
 	aircraft_check(!B.on_runway() && B.takeoff_distance() == B.rough_takeoff_roll && B.rough_takeoff_roll > B.takeoff_roll, "off a runway the takeoff roll is longer")
-	var/rough_rolled = aircraft_roll(B, B.takeoff_roll + 2)
-	aircraft_check(rough_rolled == B.takeoff_roll + 2 && !B.airborne() && B.flight_z() == 1 && B.runway_roll == B.takeoff_roll + 2, "a runway-length roll on open ground stays on the ground")
-	aircraft_check(findtext(B.takeoff_hint(), "more tiles of open ground"), "climb on open ground counts the tiles left")
+	var/rough_rolled = aircraft_roll(B, B.rough_takeoff_roll + 2)
+	aircraft_check(rough_rolled == B.rough_takeoff_roll + 2 && !B.airborne() && B.flight_z() == 1 && B.runway_roll == B.rough_takeoff_roll + 2 && B.field_hint_given, "taxiing at full throttle over open ground never takes off by itself, and says how to")
+	aircraft_check(findtext(B.takeoff_hint(), "Press Climb"), "on open ground the hint says to press Climb")
+	// Back to where the old ten-tile roll left it, for the hill cases below.
+	B.aircraft_shift(1, 0, B.rough_takeoff_roll - B.takeoff_roll)
 	B.engine.on = FALSE
-	aircraft_check(findtext(B.takeoff_hint(), "Start the engine"), "climb with the engine off says to start it")
+	aircraft_check(!B.climb(null) && !B.takeoff_armed && findtext(B.takeoff_hint(), "Start the engine"), "climb with the engine off says to start it")
 	B.engine.on = TRUE
-	rough_rolled += aircraft_roll(B, B.rough_takeoff_roll)
-	aircraft_check(B.airborne() && B.flight_z() == 2 && rough_rolled == B.rough_takeoff_roll, "a full-throttle roll of [B.rough_takeoff_roll] tiles of open ground takes off")
+	aircraft_check(B.climb(null) && B.takeoff_armed && B.runway_roll == 0 && !B.airborne(), "climb on the ground lines the plane up for takeoff")
+	aircraft_check(findtext(B.takeoff_hint(), "[B.rough_takeoff_roll] more tiles of open ground"), "lined up at full throttle, the hint counts the tiles left")
+	rough_rolled = aircraft_roll(B, B.rough_takeoff_roll)
+	aircraft_check(B.airborne() && B.flight_z() == 2 && rough_rolled == B.rough_takeoff_roll && !B.takeoff_armed, "lined up, a full-throttle roll of [B.rough_takeoff_roll] tiles of open ground takes off")
 	var/obj/structure/vehicleparts/axis/aircraft/C = build_light_plane(locate(16, 50, 2))
 	aircraft_check(!C.try_takeoff() && C.flight_z() == 2 && !C.airborne(), "with no level above there is nowhere to climb")
 	aircraft_check(!A.climb(M), "climb on the ground is refused")
@@ -630,10 +634,12 @@ var/aircraft_runtime_error = FALSE
 
 // Kept in this admitted fixture; no additional runner or runtime entry point.
 #include "level_shift.dm"
+#include "taxi.dm"
 
 /proc/aircraft_run()
 	try
 		level_shift_checks()
+		aircraft_taxi_checks()
 		aircraft_checks()
 	catch(var/exception/e)
 		aircraft_check(FALSE, "exception [e] [e.file]:[e.line]")
