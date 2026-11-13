@@ -22,7 +22,7 @@ purpose `practice`) only while someone practises:
 - Up to 8 rooms, 14 tiles apart, on a plane of at most 175,000 cells (Gaia's
   500 x 350). Adding a Gaia-sized open-air plane measured 0.3 s and 20 MiB.
 - The level is never saved. `begin_persistence_operation` closes every room
-  and removes the level before a save; an idle level is removed after 5 minutes.
+  and removes the level before a save; the level is removed as soon as the last player leaves, and every room is rebuilt with fresh turfs when it opens.
 - While it exists `world_z_budget` refuses every other new level, so it stays
   `world.maxz` and can be removed whole. Multi-z links, observer spawn,
   landers and the ecology index skip it.
