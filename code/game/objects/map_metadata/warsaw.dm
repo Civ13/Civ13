@@ -151,4 +151,4 @@
 	return TRUE
 
 /obj/map_metadata/warsaw/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	return check_two_sided_grace_wall(H, T)
+	return check_faction_grace_wall(H, T, faction1, faction2)

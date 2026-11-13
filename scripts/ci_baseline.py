@@ -798,7 +798,8 @@ SUITES = {
             'code/game/objects/effects/spawners/loot.dm', 'code/__defines/maps.dm', 'civ13.dme')},
     # Per-round battle map variation inserts: generator freshness, slot bounds,
     # open-ground placement against the base maps and loader rules; no BYOND runtime.
-    # Explicit opt-in grace-wall overrides preserve their original decision body.
+    # Maps dispatch to the shared faction grace wall; run.py is the native
+    # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
         'paths': ('tests/grace_wall/',), 'shared_paths': (
             'code/game/objects/map_metadata/',)},

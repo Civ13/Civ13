@@ -138,16 +138,4 @@
 	return TRUE
 
 /obj/map_metadata/zhenbao/check_caribbean_block(var/mob/living/human/H, var/turf/T)
-	if (!istype(H) || !istype(T))
-		return FALSE
-	var/area/A = get_area(T)
-	if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga))
-		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/two))
-			if (H.faction_text == faction1)
-				return TRUE
-		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/one))
-			if (H.faction_text == faction2)
-				return TRUE
-		else
-			return !faction1_can_cross_blocks()
-	return FALSE
+	return check_faction_grace_wall(H, T, faction2, faction1, wall_area = /area/caribbean/no_mans_land/invisible_wall/taiga, one_area = /area/caribbean/no_mans_land/invisible_wall/taiga/one, two_area = /area/caribbean/no_mans_land/invisible_wall/taiga/two)

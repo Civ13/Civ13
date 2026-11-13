@@ -1,0 +1,252 @@
+[
+ {
+  "type": "/obj/map_metadata/ardennes",
+  "file": "code/game/objects/map_metadata/ardennes.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/barbarossa",
+  "file": "code/game/objects/map_metadata/barbarossa.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/caloocan",
+  "file": "code/game/objects/map_metadata/caloocan.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/camp",
+  "file": "code/game/objects/map_metadata/camp.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/campaign",
+  "file": "code/game/objects/map_metadata/campaign_old.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/campaign_new",
+  "file": "code/game/objects/map_metadata/campaign_new.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/compound",
+  "file": "code/game/objects/map_metadata/compound.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/czech_border",
+  "file": "code/game/objects/map_metadata/czech_border.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/east_los_santos",
+  "file": "code/game/objects/map_metadata/east_los_santos.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/elaia",
+  "file": "code/game/objects/map_metadata/elaia.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/grozny",
+  "file": "code/game/objects/map_metadata/grozny.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/hill203",
+  "file": "code/game/objects/map_metadata/hill203.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/holdmadrid",
+  "file": "code/game/objects/map_metadata/holdmadrid.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/hotel",
+  "file": "code/game/objects/map_metadata/hotel.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/hue",
+  "file": "code/game/objects/map_metadata/hue.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/intramuros",
+  "file": "code/game/objects/map_metadata/intramuros.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/karak",
+  "file": "code/game/objects/map_metadata/karak.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/long_march",
+  "file": "code/game/objects/map_metadata/long_march.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/marco_polo_bridge",
+  "file": "code/game/objects/map_metadata/marco_polo_bridge.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/missionary_ridge",
+  "file": "code/game/objects/map_metadata/missionary_ridge.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/nanjing",
+  "file": "code/game/objects/map_metadata/nanjing.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/nankou",
+  "file": "code/game/objects/map_metadata/nankou.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/nationsrp/coldwar_cmp",
+  "file": "code/game/objects/map_metadata/nationsrp.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/nomads/persistence_beta",
+  "file": "code/game/objects/map_metadata/nomads/nomads_persistence_beta.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/oasis",
+  "file": "code/game/objects/map_metadata/oasis.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/omaha",
+  "file": "code/game/objects/map_metadata/omaha.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/operation_falcon",
+  "file": "code/game/objects/map_metadata/operation_falcon.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/osowiec",
+  "file": "code/game/objects/map_metadata/osowiec.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/pavlov_house",
+  "file": "code/game/objects/map_metadata/pavlov_house.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/port_arthur",
+  "file": "code/game/objects/map_metadata/port_arthur.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/red_menace",
+  "file": "code/game/objects/map_metadata/red_menace.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/reichstag",
+  "file": "code/game/objects/map_metadata/reichstag.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/rizal_stadium",
+  "file": "code/game/objects/map_metadata/rizal_stadium.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/road_to_dak_to",
+  "file": "code/game/objects/map_metadata/road_to_dak_to.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/rotstadt",
+  "file": "code/game/objects/map_metadata/rotstadt.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/temperate/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/ruhr_uprising",
+  "file": "code/game/objects/map_metadata/ruhr_uprising.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/sammirhayeed",
+  "file": "code/game/objects/map_metadata/sammirhayeed.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/siberiad",
+  "file": "code/game/objects/map_metadata/siberiad.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/siegemoscow",
+  "file": "code/game/objects/map_metadata/moscow194.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/smallsiegemoscow",
+  "file": "code/game/objects/map_metadata/moscow194.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/stalingrad",
+  "file": "code/game/objects/map_metadata/stalingrad.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/stalingrad/minigrad",
+  "file": "code/game/objects/map_metadata/stalingrad.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/tundra/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/tantiveiv",
+  "file": "code/game/objects/map_metadata/tantiveiv.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/tsaritsyn",
+  "file": "code/game/objects/map_metadata/tsaritsyn.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/twotribes",
+  "file": "code/game/objects/map_metadata/twotribes.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/verdun",
+  "file": "code/game/objects/map_metadata/verdun.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction2_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/wake_island",
+  "file": "code/game/objects/map_metadata/wake_island.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/warsaw",
+  "file": "code/game/objects/map_metadata/warsaw.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/whiterun",
+  "file": "code/game/objects/map_metadata/whiterun.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ },
+ {
+  "type": "/obj/map_metadata/zhenbao",
+  "file": "code/game/objects/map_metadata/zhenbao.dm",
+  "old": "\tif (!istype(H) || !istype(T))\n\t\treturn FALSE\n\tvar/area/A = get_area(T)\n\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga))\n\t\tif (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/two))\n\t\t\tif (H.faction_text == faction1)\n\t\t\t\treturn TRUE\n\t\telse if (istype(A, /area/caribbean/no_mans_land/invisible_wall/taiga/one))\n\t\t\tif (H.faction_text == faction2)\n\t\t\t\treturn TRUE\n\t\telse\n\t\t\treturn !faction1_can_cross_blocks()\n\treturn FALSE"
+ }
+]
