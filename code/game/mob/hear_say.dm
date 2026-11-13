@@ -128,23 +128,10 @@
 				play_tts(message2, speaker)
 
 
-/mob/proc/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
-
-	if (!client || !message)
-		return
-
-	if (!destination && origin)
-		destination = origin
-	
-	message = capitalize(message)
-	message = replacetext(message, "&#39", "'")
-
-	if (sleeping || stat== UNCONSCIOUS) //If unconscious or sleeping
-		hear_sleep(message)
-		return
-
-	var/track = null
-
+// Device speech shares comprehension, not presentation or ordinary speech learning.
+// A one-element list means deliver (even if its message is null/empty); null means
+// suppress an unintelligible animal with no vocabulary, matching the old callers.
+/mob/proc/comprehend_device_speech(var/message, var/datum/language/language, var/mob/speaker)
 	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
 	if (language && (language.flags & NONVERBAL))
 		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
@@ -163,6 +150,30 @@
 					message = language.scramble(message, src)
 				else
 					message = stars(message)
+
+	return list(message)
+
+/mob/proc/hear_radio(var/message, var/verb="says", var/datum/language/language=null, var/mob/speaker = null, var/obj/destination=null, var/obj/origin=null)
+
+	if (!client || !message)
+		return
+
+	if (!destination && origin)
+		destination = origin
+
+	message = capitalize(message)
+	message = replacetext(message, "&#39", "'")
+
+	if (sleeping || stat== UNCONSCIOUS) //If unconscious or sleeping
+		hear_sleep(message)
+		return
+
+	var/track = null
+
+	var/list/comprehended = comprehend_device_speech(message, language, speaker)
+	if (isnull(comprehended))
+		return
+	message = comprehended[1]
 
 	var/speaker_name = speaker.name
 
@@ -239,24 +250,10 @@
 
 	var/track = null
 
-	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
-	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
-			message = stars(message)
-
-	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
-		if (!say_understands(speaker,language))
-			if (istype(speaker,/mob/living/simple_animal))
-				var/mob/living/simple_animal/S = speaker
-				if (S.speak && S.speak.len)
-					message = pick(S.speak)
-				else
-					return
-			else
-				if (language)
-					message = language.scramble(message, src)
-				else
-					message = stars(message)
+	var/list/comprehended = comprehend_device_speech(message, language, speaker)
+	if (isnull(comprehended))
+		return
+	message = comprehended[1]
 
 	var/speaker_name = speaker.name
 
@@ -301,24 +298,10 @@
 
 	var/track = null
 
-	//non-verbal languages are garbled if you can't see the speaker. Yes, this includes if they are inside a closet.
-	if (language && (language.flags & NONVERBAL))
-		if (!speaker || (sdisabilities & BLIND) || blinded || find_trait("Blind") || !(speaker in view(src)))
-			message = stars(message)
-
-	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
-		if (!say_understands(speaker,language))
-			if (istype(speaker,/mob/living/simple_animal))
-				var/mob/living/simple_animal/S = speaker
-				if (S.speak && S.speak.len)
-					message = pick(S.speak)
-				else
-					return
-			else
-				if (language)
-					message = language.scramble(message, src)
-				else
-					message = stars(message)
+	var/list/comprehended = comprehend_device_speech(message, language, speaker)
+	if (isnull(comprehended))
+		return
+	message = comprehended[1]
 
 	var/speaker_name = speaker.name
 

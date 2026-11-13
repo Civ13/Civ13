@@ -1490,6 +1490,9 @@ SUITES = {
             'code/game/objects/items/stacks/civ_recipes.dm',
             'code/modules/research_tree/research_node.dm',
             'code/modules/reagents/laboratory.dm', 'config/crafting/')},
+    'device_hearing': {'files': ('tests/device_hearing/test_contract.py',),
+        'paths': ('tests/device_hearing/',),
+        'shared_paths': ('code/game/mob/hear_say.dm',)},
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection, and the link test
     # imports the cross-level runner only to stage files; no native launch.
