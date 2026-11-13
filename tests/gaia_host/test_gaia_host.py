@@ -816,6 +816,19 @@ class ForcedStopTests(GaiaHostTests):
         with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
             self.host.kill()
 
+    def test_kill_stops_a_server_asleep_on_its_save(self):
+        # Shut down to disk while asleep: no process is left, yet it still read as asleep after a forced stop.
+        self.host.write_json(self.host.cold_file, {'frozen_at': 1, 'pid': 4242, 'detected_at': 2})
+        self.assertEqual(self.host.status()['state'], 'cold')
+        result = self.host.kill()
+        self.assertEqual(result, {'killed': True, 'pid': None, 'reason': 'forced stop', 'released_locks': [],
+                                  'was_asleep_on_save': True})
+        self.assertFalse(any(call[0] == 'kill_tree' for call in self.machine.calls))
+        self.assertEqual(self.host.status()['state'], 'stopped')
+        self.assertEqual(self.host.read_state()['phase'], 'killed')
+        with self.assertRaisesRegex(gaia_host.Refused, 'not running'):
+            self.host.kill()
+
     def test_kill_leaves_a_stuck_save_worker_its_record(self):
         self.give_token()
         self.machine.up = True
