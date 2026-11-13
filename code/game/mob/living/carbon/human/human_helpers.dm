@@ -216,14 +216,20 @@
 			inducedSSD = FALSE
 
 //to keep the character sleeping
+// One refresh loop per body: a restored body restarts it on reconnect, and a
+// second caller only tops up sleeping instead of starting another loop.
+/mob/living/human/var/tmp/sleep_update_queued = FALSE
+
 /mob/living/human/proc/sleep_update()
 	if (!inducedSSD)
 		return
-	else
-		sleeping = 66
-		spawn(600) // 1 minute
-			sleep_update()
-			return
+	sleeping = 66
+	if (sleep_update_queued)
+		return
+	sleep_update_queued = TRUE
+	spawn(600) // 1 minute
+		sleep_update_queued = FALSE
+		sleep_update()
 
 /mob/living/human/handle_mutations_and_radiation()
 	get_rads_from_equipment()

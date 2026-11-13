@@ -32,7 +32,7 @@
       "/map_storage/proc/prepare_character_return": "e46f80998f36b8eaf01ff66ca6cccc4a77133fed7405f9544243c1c1b7d574ea",
       "/map_storage/proc/character_return_pending": "16dda9021c738bfb89b1981d1bec668ffd1b2735f1762781b9868e42b9ad6f27",
       "/map_storage/proc/return_player_eligible": "3fd7f5cb76cc978c64043463c50a2bd5e66005c8d11863a52c554f884832c63f",
-      "/map_storage/proc/finish_character_return": "37da25cf167204f3266dbf9e5172f4d53378b547e7191f44dbef9dee8a07d163",
+      "/map_storage/proc/finish_character_return": "293e59097017478fe8afd0a23d42b19d1245a3ba9a923ac5a25759b4afc034f9",
       "/map_storage/proc/character_return_turf": "50cbb1adb8c73f73ffb2297f4c26a603b2e9a903842541d3a356a032ad4494f4",
       "/map_storage/proc/character_recovery_unready": "ad3acc9efa31ae0d786fa2a3f7992168cd6abf33a96f954e5a0ec51ef80b3d10",
       "/map_storage/proc/allow_new_character": "d34ec0373272304a4b0ceb65800c5698fd2b22a1839adf6f1cf0fbf5536ab757"

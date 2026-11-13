@@ -330,7 +330,7 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertIs(f.body.inventory, items)
         self.assertIs(f.body.organs, organs)
         self.assertEqual((f.body.health, f.body.nutrition, f.body.water, f.body.stat), (23, 83, 29, 1))
-        self.assertFalse(f.body.inducedSSD)
+        self.assertTrue(f.body.inducedSSD)
         self.assertFalse(f.claims)
         self.assertFalse(f.registered)
 
@@ -646,7 +646,8 @@ class CharacterReturnTests(unittest.TestCase):
                 with self.subTest(pending=pending, sleeping=sleeping):
                     self.assertTrue(f.store.reclaim_saved_player(f.lobby))
                     self.assertIs(f.body.loc, f.bed_turf if pending else f.home)
-                    self.assertFalse(f.body.inducedSSD)
+                    self.assertEqual(f.body.inducedSSD, sleeping)
+                    self.assertEqual(f.body.sleep_updates, 1 if sleeping else 0)
                     self.assertTrue(f.body.persistence_restored)
 
     def test_legacy_physical_zone_return_is_not_disabled_by_consumed_import_claim(self):
@@ -655,7 +656,23 @@ class CharacterReturnTests(unittest.TestCase):
         f.body.loc = f.zone
         self.assertTrue(f.store.reclaim_saved_player(f.lobby))
         self.assertIs(f.body.loc, f.bed_turf)
-        self.assertFalse(f.body.inducedSSD)
+        self.assertTrue(f.body.inducedSSD)
+        self.assertEqual(f.body.sleep_updates, 1)
+
+    def test_voluntary_sleeper_stays_asleep_on_reconnect(self):
+        f = ReturnFixture()
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.client.mob, f.body)
+        self.assertTrue(f.body.inducedSSD, 'reconnect woke a player who chose to sleep')
+        self.assertEqual(f.body.sleeping, 66)
+        self.assertEqual(f.body.sleep_updates, 1, 'sleep refresh loop was not restarted after the save')
+
+    def test_sleep_refresh_loop_is_single_per_body(self):
+        proc = adapter.extract(adapter.read(HELPERS), '/mob/living/human/proc/sleep_update')
+        self.assertIn('/mob/living/human/var/tmp/sleep_update_queued', adapter.read(HELPERS))
+        self.assertLess(proc.index('sleeping = 66'), proc.index('if (sleep_update_queued)'))
+        self.assertLess(proc.index('if (sleep_update_queued)'), proc.index('spawn(600)'))
+        self.assertLess(proc.index('sleep_update_queued = FALSE'), proc.rindex('sleep_update()'))
 
     def test_reclaim_leaves_delayed_customization_suppression_intact(self):
         nomads = adapter.extract(adapter.read('code/game/mob/living/carbon/human/nomads_spawn.dm'),
