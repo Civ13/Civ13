@@ -351,35 +351,14 @@
 		update_icon()
 	H.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 
-/obj/structure/oven/fireplace/proc/smoke_signals()
-	for (var/mob/living/human/HH in range(25,src))
-		if (!HH.blinded && !HH.paralysis && HH.sleeping <= 0 && HH.stat == 0)
-			var/currdir = "somewhere"
-			if (z == HH.z)
-				if (y < HH.y)
-					currdir = "south"
-				if (y > HH.y)
-					currdir = "north"
-				if (y == HH.y)
-					currdir = ""
-				if (x <= HH.x)
-					currdir = "[currdir]west"
-				if (x > HH.x)
-					currdir = "[currdir]east"
-				if (x == HH.x)
-					currdir = ""
-			if (currdir != "somewhere" && currdir != "")
-				to_chat(HH, "<b>You see some smoke signals [currdir] of you...</b>")
-
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (type == /obj/structure/oven/fireplace && istype(I, /obj/item/stack/material/stone) && istype(H) && H.a_intent == I_HELP)
 		upgrade_to_stone_kiln(I, H)
 		return TRUE
 	if (stone_upgrade_busy)
 		return TRUE
-	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
-		to_chat(H, "You produce some smoke signals.")
-		smoke_signals()
+	if (on && signal_fire_material(I) && istype(H))
+		send_smoke_signal(I, H)
 	else
 		..()
 
