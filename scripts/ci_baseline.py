@@ -1540,6 +1540,12 @@ SUITES = {
     'atlas_entity_inventory': {'files': ('tests/atlas_entity_inventory/test_inventory.py',), 'paths': (
         'tests/atlas_entity_inventory/', 'scripts/atlas/entity_inventory.py'),
         'shared_paths': ('scripts/atlas/facts.py', 'scripts/atlas/families.py')},
+    # Atlas habitat and hazard rows: reviewed source evidence only; no DM runtime.
+    'atlas_habitats': {'files': ('tests/atlas_habitats/test_habitats.py',), 'paths': (
+        'tests/atlas_habitats/', 'scripts/atlas/habitats.py', 'scripts/atlas/hazards.json'),
+        'shared_paths': ('scripts/atlas/facts.py', 'code/modules/ecology/ecology_spawning.dm',
+                         'code/modules/ecology/wild_herbs.dm',
+                         'code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm')},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
