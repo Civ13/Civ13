@@ -12,7 +12,7 @@ namespace Civ13.Launcher.Gui;
 internal sealed partial class LauncherWindow {
     private static readonly TimeSpan UpdateCheckEvery = TimeSpan.FromMinutes(30);
     private TabPage? updatesPage;
-    private Label? serverUpdate, botUpdate;
+    private StatusLine? serverUpdate, botUpdate;
     private Button? serverUpdateButton, botUpdateButton;
     private readonly List<Button> checkButtons = [];
     private UpdateCheck? serverCheck, botCheck;
@@ -27,9 +27,10 @@ internal sealed partial class LauncherWindow {
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-        (Label, Button) Row(string name, Func<Task> update) {
+        (StatusLine, Button) Row(string name, Func<Task> update) {
             layout.Controls.Add(new Label { Text = name, AutoSize = true, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 9, 12, 3) });
-            var state = new Label { Text = "Not checked yet.", AutoSize = true, Margin = new Padding(0, 9, 12, 3) };
+            var state = new StatusLine { Margin = new Padding(0, 6, 12, 3) };
+            state.Set(Tone.Idle, Glyph.Dash, "Not checked", "");
             layout.Controls.Add(state);
             var check = new Button { Text = "Check now", AutoSize = true, Margin = new Padding(0, 4, 8, 4) };
             check.Click += async (_, _) => await CheckAllUpdates();
@@ -78,10 +79,18 @@ internal sealed partial class LauncherWindow {
     private async Task CheckServerUpdate() {
         if (host?.Control is not { } control || serverUpdate == null) return;
         if (control.Group != null && groupScriptRunning) return; // a deploy is running; its row says so
-        serverUpdate.Text = "Checking...";
+        serverUpdate.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         // A group answers for every region, so a region behind the mainland counts too.
-        serverCheck = await Check("server", () => LocalHosting.RunCaptured(control.Group != null
-            ? LocalHosting.GroupStep(control, "check-update") : LocalHosting.ControlStep(control, "check-update")));
+        var answer = "";
+        serverCheck = await Check("server", () => {
+            var result = LocalHosting.RunCaptured(control.Group != null
+                ? LocalHosting.GroupStep(control, "check-update") : LocalHosting.ControlStep(control, "check-update"));
+            answer = result.Output;
+            return result;
+        });
+        // The Host tab's board shows the same answer per region.
+        if (control.Group != null && serverCheck.Ok) regionsBehind = HostBoard.RegionsBehind(answer);
+        ShowBoard();
         if (control.Group != null && groupScriptRunning) return; // a deploy started meanwhile; its row says so
         ShowCheck(serverCheck, serverUpdate, serverUpdateButton, control.Group != null);
     }
@@ -89,7 +98,7 @@ internal sealed partial class LauncherWindow {
     private Task ServerDeploy() => ChooseAndDeploy("Save, update and restart");
 
     private void ShowServerUpdateBusy() {
-        if (serverUpdate != null) serverUpdate.Text = "Building, then saving, updating and restarting; follow it on the Host server tab.";
+        serverUpdate?.Set(Tone.Busy, Glyph.Arc, "Updating", "Building, then saving, updating and restarting; follow it on the Host server tab.");
         if (serverUpdateButton != null) serverUpdateButton.Enabled = false;
     }
 
@@ -99,7 +108,7 @@ internal sealed partial class LauncherWindow {
 
     private async Task CheckBotUpdate() {
         if (host?.Bot is not { } bot || botUpdate == null) return;
-        botUpdate.Text = "Checking...";
+        botUpdate.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         botCheck = await Check("bot", () => LocalHosting.RunCaptured(LocalBot.Control(bot, "check-update")));
         ShowCheck(botCheck, botUpdate, botUpdateButton);
     }
@@ -113,10 +122,22 @@ internal sealed partial class LauncherWindow {
         }
     }
 
-    private void ShowCheck(UpdateCheck check, Label state, Button? button, bool deploys = false) {
+    private void ShowCheck(UpdateCheck check, StatusLine state, Button? button, bool deploys = false) {
         // A deploy stops the worlds itself, so "stop the server first" is no reason to hold it back.
         var deployable = deploys && check.OnlyNeedsStop;
-        state.Text = (deployable ? check.Describe(withReason: false) : check.Describe()) + $" Checked {DateTime.Now:t}.";
+        // The pill says which of the three it is; the sentence keeps the commits and the reason.
+        var text = deployable ? check.Describe(withReason: false) : check.Describe();
+        foreach (var lead in new[] { "Update available: ", "Check failed: " })
+            if (text.StartsWith(lead) && text.Length > lead.Length) text = char.ToUpperInvariant(text[lead.Length]) + text[(lead.Length + 1)..];
+        if (text.StartsWith("Up to date (")) text = "Build " + text["Up to date (".Length..].TrimEnd('.', ')') + ".";
+        if (deploys && check.Ok && regionsBehind is { Count: > 0 } regions) {
+            string Name(string id) => hostBoard?.Cards.FirstOrDefault(card => card.Id == id)?.Name ?? id;
+            var behind = regions.Where(region => region.Value > 0).Select(region => Name(region.Key)).ToList();
+            if (behind.Count > 0 && behind.Count < regions.Count) text += " Out of date: " + string.Join(", ", behind) + ".";
+        }
+        var (tone, glyph, pill) = !check.Ok ? (Tone.Bad, Glyph.Alert, "Check failed")
+            : check.HasUpdate ? (Tone.Busy, Glyph.Down, "Update available") : (Tone.Good, Glyph.Check, "Up to date");
+        state.Set(tone, glyph, pill, text + $" Checked {DateTime.Now:t}.");
         // can_update already says why not: the server must be stopped first; the bot needs a clean main checkout.
         if (button != null) button.Enabled = !(deploys && groupScriptRunning) && check.HasUpdate && (check.CanUpdate || deployable);
         var count = (serverCheck?.HasUpdate == true ? 1 : 0) + (botCheck?.HasUpdate == true ? 1 : 0);

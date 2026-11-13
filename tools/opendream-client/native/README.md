@@ -190,12 +190,54 @@ and its phase) that refreshes every five seconds while an action runs. Only the
 action name reaches the script. `tests/LocalHostingTests.cs` injects process
 starts, update steps, control answers and port probes, so it launches nothing.
 
+### Reading the Host server tab
+
+The top of the tab is a status board with one row per region (or one row for a
+single server). Each row answers three separate questions:
+
+- **State**: a pill saying Running (green), Asleep (blue), Stopped (grey) or
+  Working (amber, with what it is doing beside it, such as "update: compiling").
+- **Build**: Up to date (green), "3 behind" (amber, from the last update check),
+  Update built (blue, waiting to be handed over or installed), Building (amber),
+  Build failed (red) or Not checked.
+- **Problems**: a region that needs you gets a red edge and a second line in red
+  saying what is wrong (a failed action, a failed update build, a watchdog that
+  gave up, a running world without its travel agent, a world not answering as its
+  region). Everything else (port, epoch, last action) is in quiet grey.
+
+The band above the rows counts them, most urgent first ("2 problems", "1 working",
+"3 out of date", "4 running"...), and shows when the status was last checked. Every
+pill has a shape and a word as well as a colour. Click a row, or use Up and Down,
+to choose the region the **Selected region** buttons act on. The board refreshes
+every 30 seconds while the tab is open and every five seconds while an action
+runs; action results are written to the launcher log under the tabs.
+
+Each button row shows the everyday actions; **More** holds the rarer ones and
+everything forceful (force stop, lock files, fresh world). **Setup details** shows
+the folders and scripts `host.json` configured. The Civilizationbot, Player help
+and Updates tabs use the same pills, and the Play tab colours each server's status.
+
+To review a change to these tabs without a host, make a pretend setup and draw it:
+
+```
+py -3 tests/render/host_fixture.py make D:\temp\launcher-fixture
+publish\Civ13.exe --render-tabs D:\temp\launcher-fixture\launcher D:\temp\launcher-render
+```
+
+`--render-tabs` builds the window from that folder's `host.json`, asks its scripts
+only for `status`, `check-update` and `help-status`, and writes one PNG per tab at
+96 DPI. The fixture's scripts are stand-ins that print fixed answers covering every
+state and refuse every other action. CI draws them on each launcher pull request and
+uploads them with the executable. Add `--single` to `make` for a host without a
+region group.
+
 ### One region and group status
 
-With `control.group` set, the Host server tab has two rows of group buttons. **All
+With `control.group` set, the Host server tab has two rows of group buttons under
+the board. **All
 regions** runs each action for the whole group; its **Update offline regions**
 (`shard_group.py update-offline`) brings every region that is not running to the
-latest master so it is ready when it starts, and leaves running regions alone. **One region** has a region list (each with its game and travel port; the
+latest master so it is ready when it starts, and leaves running regions alone. **Selected region** has a region list, kept in step with the row chosen on the board (each with its game and travel port; the
 list re-reads the group config whenever it opens) and the same `shard_group.py`
 actions with `--region`: Start, Save and stop, Restart, Update, **Build update**,
 **Save, update and restart** (the handover deploy, `deploy.bat REGION`: its dialog

@@ -9,7 +9,7 @@ namespace Civ13.Launcher.Gui;
 // them to finish their answers and keeps them stopped (the host service will not restart them) until Start.
 // Unlike the bot, they belong to the host service, so closing the launcher leaves them as they are.
 internal sealed partial class LauncherWindow {
-    private Label? helpState;
+    private StatusLine? helpState;
     private TextBox? helpLog;
     private ComboBox? helpLogChoice;
     private Button? helpStart, helpStop, helpRegionStart, helpRegionStop;
@@ -19,9 +19,11 @@ internal sealed partial class LauncherWindow {
     private TabPage BuildHelpPage(HostControl control) {
         var page = new TabPage("Player help") { Padding = new Padding(10) };
         var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1 };
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         layout.Controls.Add(new Label { AutoSize = true, Margin = new Padding(0, 3, 0, 6),
             Text = "\"Ask for help\" answers players through the local model. The host service starts it with the server and restarts it if it exits." });
-        helpState = new Label { AutoSize = true, Margin = new Padding(0, 4, 0, 6), Text = "Checking..." };
+        helpState = new StatusLine { Margin = new Padding(0, 4, 0, 6) };
+        helpState.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         layout.Controls.Add(helpState);
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
         helpStart = new Button { Text = "Start all", AutoSize = true, Enabled = false, Margin = new Padding(0, 6, 0, 6) };
@@ -77,7 +79,16 @@ internal sealed partial class LauncherWindow {
             status = new HelpStatus(false, false, false, [], e.Message);
         }
         helpStatus = status;
-        if (!helpBusy) helpState.Text = status.Describe();
+        if (!helpBusy) {
+            var running = status.Regions.Count(region => region.Running);
+            var (tone, glyph, pill) = !status.Ok ? (Tone.Bad, Glyph.Alert, "Unavailable")
+                : !status.Configured ? (Tone.Idle, Glyph.Dash, "Not set up")
+                : status.Regions.Any(region => region.Stale) ? (Tone.Bad, Glyph.Alert, "Not answering")
+                : running == 0 ? (Tone.Idle, Glyph.Ring, "Stopped")
+                : running < status.Regions.Count ? (Tone.Busy, Glyph.Dot, $"Running in {running} of {status.Regions.Count}")
+                : (Tone.Good, Glyph.Dot, "Running");
+            helpState.Set(tone, glyph, pill, status.Describe());
+        }
         if (helpLogChoice != null) {
             var names = status.Regions.Select(region => region.Id).ToArray();
             if (!names.SequenceEqual(helpLogChoice.Items.Cast<string>())) {
@@ -118,7 +129,7 @@ internal sealed partial class LauncherWindow {
         helpBusy = true;
         UpdateHelpButtons();
         var which = region == null ? "" : " in " + region;
-        helpState.Text = action == "help-stop" ? $"Stopping player help{which} (waits for answers in progress)..." : $"Starting player help{which}...";
+        helpState.Set(Tone.Busy, Glyph.Arc, "Working", action == "help-stop" ? $"Stopping player help{which} (waits for answers in progress)..." : $"Starting player help{which}...");
         string line;
         try {
             var (exit, output) = await Task.Run(() => LocalHosting.RunCaptured(LocalHosting.GroupStep(control, action, region)));
@@ -127,7 +138,7 @@ internal sealed partial class LauncherWindow {
         Console.WriteLine(line);
         helpBusy = false;
         await RefreshHelp(control);
-        helpState.Text = line + Environment.NewLine + helpState.Text;
+        helpState.SetDetail(line + Environment.NewLine + helpState.Detail);
         RefreshHelpLog(true);
     }
 }
