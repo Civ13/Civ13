@@ -2159,7 +2159,7 @@ RECIPE: /material/wood/,ceremonial black african wood mask,/obj/item/clothing/ma
 
 //*********************| WOOD ARMOR |**************************
 
-/material/wood/,primitive wood armor,/obj/item/clothing/suit/woodarmor,15,150,0,1,none,0,0,0,2,null
+RECIPE: /material/wood/,primitive wood armor,/obj/item/clothing/suit/woodarmor,15,150,0,1,none,0,0,0,8,null
 
 //*********************| WOOD KITCHEN |**************************
 
