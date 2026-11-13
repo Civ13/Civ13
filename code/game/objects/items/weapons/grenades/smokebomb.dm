@@ -259,7 +259,7 @@
 	det_time = 60
 	item_state = "incendiary"
 	slot_flags = SLOT_BELT
-	var/spread_range = 2
+	spread_range = 2
 
 /obj/item/weapon/grenade/incendiary/incendiarydetonator
 	name = "Incendiary Detonator"

@@ -105,7 +105,7 @@
       "code/game/objects/items/weapons/defib.dm": 1,
       "code/game/objects/items/weapons/explosives.dm": 2,
       "code/game/objects/items/weapons/grenades/explosive.dm": 2,
-      "code/game/objects/items/weapons/grenades/grenade.dm": 10,
+      "code/game/objects/items/weapons/grenades/grenade.dm": 8,
       "code/game/objects/items/weapons/grenades/smokebomb.dm": 9,
       "code/game/objects/items/weapons/material/material_weapons.dm": 1,
       "code/game/objects/items/weapons/material/misc.dm": 2,
