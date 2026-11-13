@@ -73,6 +73,7 @@
 	var/smoke_color = /datum/effect/effect/system/smoke_spread/purple
 	var/list/things_to_spawn
 	var/triggered = FALSE
+	var/marks_lz = FALSE // Calls the Huey (huey_assault.dm) instead of a supply drop.
 
 /obj/item/weapon/grenade/smokebomb/signal/New()
 	..()
@@ -95,9 +96,12 @@
 					options["Explosives"] = list(/obj/structure/closet/crate/ww2/vietnam/us_explosives)
 					options["Engineering supplies"] = list(/obj/structure/closet/crate/ww2/vietnam/us_engineering)
 					options["AP mines"] = list(/obj/structure/closet/crate/ww2/vietnam/us_ap_mines)
+					if (huey_of(AMERICAN))
+						options["Landing zone for the Huey"] = list()
 					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
 					if(src && choice)
 						things_to_spawn = options[choice]
+						marks_lz = (choice == "Landing zone for the Huey")
 						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
 						firer = user
 						activate(user)
@@ -169,6 +173,11 @@
 			smoke.set_up(5, FALSE, usr ? usr.loc : loc)
 			spawn(0)
 				smoke.start()
+			if (triggered && marks_lz)
+				huey_mark_lz(get_turf(src), firer)
+				sleep(200)
+				qdel(src)
+				return
 			if (triggered)
 				sleep(300)
 				if (time_of_day != "Night")
