@@ -1164,9 +1164,10 @@ SUITES = {
     # Discord account keys (source projection) and the stdlib sign-in service
     # against a fake Discord; the HTTP test binds an ephemeral loopback port.
     'account_signin': {'files': ('tests/account_signin/test_signin.py',
-                                 'tests/account_signin/test_account_keys.py'),
+                                 'tests/account_signin/test_account_keys.py',
+                                 'tests/account_signin/test_discord_verify.py'),
         'paths': ('tests/account_signin/', 'tools/account_signin/'),
-        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/client_procs.dm',
+        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/discord_verify.dm', 'code/modules/client/client_procs.dm',
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
