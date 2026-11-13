@@ -309,6 +309,9 @@
 	// Demonstration notes for a capstone (demonstrations.dm).
 	if (istype(W, /obj/item/weapon/paper) && take_demonstration_notes(W, user))
 		return
+	// Field notes (subject_prototypes.dm).
+	if (istype(W, /obj/item/weapon/paper) && take_field_notes(W, user))
+		return
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		to_chat(user, SPAN_WARNING("Place a book on the bench and choose a subject first."))

@@ -4,6 +4,12 @@
 	icon_state = "musket"
 	w_class = ITEM_SIZE_NORMAL
 	var/base_icon = null
+	// Folding stock: the "Toggle Stock" verb calls toggle_folding_stock(). A folded
+	// gun fits on the belt and draws "[base_icon]_folded"; extending the stock
+	// multiplies recoil by stock_recoil_mult.
+	var/folding_stock = FALSE
+	var/folded = FALSE
+	var/stock_recoil_mult = 1.5
 
 	var/caliber = "musketball"		//determines which casings will fit
 	var/handle_casings = EJECT_CASINGS	//determines how spent casings should be handled
@@ -143,6 +149,28 @@
 		item_state = "[base_icon]_open"
 	update_attachment_icon()
 	update_held_icon()
+	if (folding_stock)
+		icon_state = folded ? "[base_icon]_folded" : "[base_icon]"
+
+/obj/item/weapon/gun/projectile/proc/toggle_folding_stock(mob/user)
+	if (folded)
+		folded = FALSE
+		recoil *= stock_recoil_mult
+		to_chat(user, "You extend the stock on \the [src].")
+		equiptimer = 15
+	else
+		recoil /= stock_recoil_mult
+		folded = TRUE
+		to_chat(user, "You collapse the stock on \the [src].")
+		equiptimer = 7
+	set_stock()
+	update_icon()
+
+/obj/item/weapon/gun/projectile/proc/set_stock()
+	if (folded)
+		slot_flags = SLOT_SHOULDER|SLOT_BELT
+	else
+		slot_flags = SLOT_SHOULDER
 
 // base_icon names the gun's sprite family; "[base_icon]_open" and similar
 // unloaded states are missing from many icon files.

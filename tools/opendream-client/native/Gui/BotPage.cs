@@ -40,7 +40,7 @@ internal sealed partial class LauncherWindow {
         botState = new StatusLine { Margin = new Padding(0, 10, 0, 6) };
         botState.Set(Tone.Idle, Glyph.Arc, "Checking", "");
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0) };
-        foreach (var (text, action) in new (string, Func<Task>)[] { ("Start", StartBot), ("Stop", () => StopBot(true)), ("Restart", RestartBot), ("Update", UpdateBot) }) {
+        foreach (var (text, action) in new (string, Func<Task>)[] { ("Start", StartBot), ("Stop", () => StopBot(true)), ("Restart", RestartBot), ("Update", UpdateBot), ("Repair and update", () => RepairBot(true)) }) {
             var button = new Button { Text = text, AutoSize = true, Enabled = false, Margin = new Padding(botButtons.Count == 0 ? 0 : 8, 6, 0, 6) };
             button.Click += async (_, _) => await action();
             botButtons.Add(button);
@@ -136,6 +136,7 @@ internal sealed partial class LauncherWindow {
         botButtons[1].Enabled = !botBusy && running && !pending;
         botButtons[2].Enabled = !botBusy && running && !pending;
         botButtons[3].Enabled = !botBusy && !pending;
+        if (botButtons.Count > 4) botButtons[4].Enabled = !botBusy && !pending;
         if (botClearStop != null) botClearStop.Enabled = !botBusy;
         foreach (var button in botForceButtons) button.Enabled = !botBusy;
     }
@@ -174,7 +175,10 @@ internal sealed partial class LauncherWindow {
         // control.php refuses quickly (bad profile, source guard, old stop request); give it a moment to say so.
         if (await ownedBot.WaitForExit(TimeSpan.FromSeconds(3))) {
             botWasOwned = false;
-            BotLine("Civilizationbot did not start: " + LocalBot.FailureText(ownedBot.ExitCode ?? -1, ownedBot.Errors));
+            var failure = LocalBot.FailureText(ownedBot.ExitCode ?? -1, ownedBot.Errors);
+            BotLine("Civilizationbot did not start: " + failure);
+            // An older bot refuses to boot on a source-check problem; offer the one-click fix.
+            if (BotRepair.Fixes(failure)) await OfferBotRepair(failure, wasRunning: true);
         }
     });
 
@@ -222,13 +226,50 @@ internal sealed partial class LauncherWindow {
         BotLine("Updating Civilizationbot...");
         var (exit, output) = await RunBot("update");
         if (exit == 0) BotLine("Civilizationbot updated.");
-        else BotLine("Update refused: " + LocalBot.FailureText(exit, output));
+        else {
+            var failure = LocalBot.FailureText(exit, output);
+            BotLine("Update refused: " + failure);
+            if (BotRepair.Fixes(failure)) { await OfferBotRepair(failure, wasRunning); return; }
+        }
         if (wasRunning) {
             botBusy = false;
             await StartBot();
         }
         await CheckBotUpdate();
     });
+
+    // Repair and update: whatever the source check refused for, git brings the checkout back to a clean,
+    // current main (local edits to a stash, local commits to a backup branch, nothing deleted), then
+    // starts the bot again if asked. Works on bot checkouts too old to repair themselves.
+    private Task RepairBot(bool confirm) => WithBotBusy(async () => {
+        if (botProfile is not { } bot) return;
+        var wasRunning = botStatus?.Running ?? false;
+        if (confirm && MessageBox.Show(this, "Repair and update Civilizationbot? " + (wasRunning ? "It is stopped first. " : "") +
+                "Local edits go to a git stash and local commits to a backup branch (nothing is deleted), then the bot folder is set to the latest main" +
+                (wasRunning ? " and the bot is started again." : "."), "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        if (wasRunning && !await StopBotAndWait()) return;
+        await RunBotRepair(bot, wasRunning);
+    });
+
+    private async Task OfferBotRepair(string failure, bool wasRunning) {
+        if (botProfile is not { } bot) return;
+        if (MessageBox.Show(this, "Civilizationbot's source check refused: " + failure + "\n\nRepair and update now? Local edits go to a git stash and local commits to a backup branch (nothing is deleted), the bot folder is set to the latest main, and the bot is started.",
+                "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+        await RunBotRepair(bot, true);
+    }
+
+    private async Task RunBotRepair(HostBot bot, bool startAfter) {
+        BotLine("Repairing Civilizationbot source...");
+        BotRepair.Result result;
+        try { result = await Task.Run(() => BotRepair.Run(bot, LocalHosting.RunCaptured, DateTime.UtcNow)); }
+        catch (Exception e) when (e is Win32Exception or IOException) { BotLine("Repair could not run git: " + e.Message); return; }
+        BotLine(result.Summary);
+        if (result.Ok && startAfter) {
+            botBusy = false;
+            await StartBot();
+        }
+        await CheckBotUpdate();
+    }
 
     // Forced stop: ends the bot's supervisor and bot.php process trees at once, whoever started them, and
     // removes a stop request the bot never acted on. With restart, it is then started from this window.

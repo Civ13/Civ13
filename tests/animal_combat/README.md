@@ -45,5 +45,8 @@ starving or hurt by them, give up an unprovoking person past
 2-4 s) whichever caller reaches `AttackTarget`, keep biting when hungry instead
 of foraging, bite a provoking adjacent attacker back at once (once per cooldown), roll
 damage across the whole range, and break bone on a heavy bite only with
-`bite_fracture_chance`. Reverting the hunger gate makes it fail with
+`bite_fracture_chance`. Thrown meat draws a starving, unhurt predator off the
+person it is after until it eats the meat; a predator the thrower hurt, a fed
+predator and plant food are not affected, and hurting a distracted predator ends
+the distraction. Reverting the hunger gate makes it fail with
 "Hungry predator foraged instead of biting".

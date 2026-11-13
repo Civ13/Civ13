@@ -252,6 +252,22 @@ def add_interactions(files, add, records, covered):
               'One casing, its powder charge and one bullet make one round. A stack loads every complete set at once.',
               ('/obj/item/stack/ammopart/bullet',), era=era)
         records[-1]['handload_node'] = node if records and records[-1]['name'] == f'Handload {label}' else None
+        # Smokeless powder (smokeless_powder.dm) charges a casing like two units of gunpowder.
+        smokeless = powder / 2
+        smokeless = int(smokeless) if smokeless == int(smokeless) else smokeless
+        smokeless_era = (era if node != 'rifling' else
+                         'Needs the Rifling research to load it and Cartridge Firearms to measure smokeless powder.')
+        route(f'Handload {label} with smokeless powder', 'Handloading',
+              [(casing, 1), ('/obj/item/stack/ammopart/bullet', 1), ('reagent:smokeless_powder', smokeless)], [(cartridge, 1)],
+              HANDLOAD, line_of(hand, 'handload_pour_smokeless(RC, user, needed)'),
+              ('Use a container of smokeless powder on a stack of empty casings; each unit counts as two of gunpowder.',
+               'Use iron bullets on the casings; each bullet needs a casing that already holds its powder.',
+               f'Use the casings in hand and choose "{label}".'),
+              'Measuring smokeless charges needs the Cartridge Firearms research. Gunpowder in the same container tops up a short pour.',
+              ('/obj/item/stack/ammopart/bullet',), era=smokeless_era)
+        if records and records[-1]['name'] == f'Handload {label} with smokeless powder':
+            records[-1]['handload_node'] = node
+            records[-1]['handload_smokeless'] = True
         route(f'Recover brass from a spent {label} round', 'Brass recovery', [(cartridge, 'spent')], [(casing, 1)],
               HANDLOAD, line_of(hand, '/obj/item/ammo_casing/attack_self'),
               ('Use a fired casing in hand, or click spent casings (or the tile they lie on) with a stack of empty casings of the same size.',),

@@ -377,16 +377,7 @@
 	var/turf/T = get_turf(src)
 	if (!T)
 		return
-	var/list/target_turfs = getcircle(T, spread_range)
-	if (target_turfs.len)
-		var/fragments_per_projectile = round(num_fragments/target_turfs.len)
-		for (var/turf/TT in target_turfs)
-			var/obj/item/projectile/bullet/pellet/fragment/P = new fragment_type(T)
-			P.damage = fragment_damage
-			P.pellets = fragments_per_projectile
-			P.range_step = damage_step
-			P.shot_from = name
-			P.launch_fragment(TT)
+	fragment_burst(T, fragment_type, num_fragments, fragment_damage, damage_step, spread_range, name)
 	spawn(9)
 		if (src)
 			qdel(src)

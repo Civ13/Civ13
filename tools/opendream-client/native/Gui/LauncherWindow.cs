@@ -275,13 +275,14 @@ internal sealed partial class LauncherWindow : Form {
                     ("Update offline regions", "update-offline"), ("Save, update and restart", "deploy") })
                 all.Controls.Add(HostButton(text, () => GroupAction(action, text), HostGate.All));
             all.Controls.Add(MoreButton(
-                ("Update (stopped regions only)", () => GroupAction("update", "Update"), HostGate.All),
+                ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
                 ("-", null, null),
                 ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, null),
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
+                ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
                 ("-", null, null),
                 ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),
@@ -892,10 +893,12 @@ internal sealed partial class LauncherWindow : Form {
         if (host?.Control is not { } control || control.Group == null) return;
         var target = region == null ? "every region" : "region " + region;
         var question = action switch {
-            "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped region" : target + " (it must be stopped)")}?",
+            "update" => $"Check out and compile the group's revision in {(region == null ? "every stopped or asleep region" : target + " (it must be stopped or asleep)")}? " +
+                "An asleep region keeps sleeping while the update builds beside it, then is stopped from its save and starts on the new build at its next wake.",
             "update-offline" => "Update every region that is not running to the latest master, so each is ready when it starts? " +
                 "Running regions are left alone: nobody is kicked and no world is stopped or woken. Stopped regions build it one at a time " +
-                "and install it; asleep regions build it and install it while they sleep. The status line shows each region's progress.",
+                "and install it; asleep regions build it while they sleep, then are stopped from their save and start on it at their next wake. " +
+                "The status line shows each region's progress.",
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
@@ -1128,6 +1131,47 @@ internal sealed partial class LauncherWindow : Form {
             HostLine(seconds == 0 ? "Players' warning off: saves start at once." : "Players' warning set to " + seconds + " seconds.");
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save the players' warning: " + e.Message);
+        }
+    }
+
+    // Update when empty (group config update_when_empty): once the last player leaves a region and it has saved,
+    // the host service builds the latest master beside it and restarts it onto that build. Applies at the next check.
+    private void ShowUpdateWhenEmpty() {
+        if (host?.Control?.Group is not { } group) return;
+        bool current, follows;
+        try { current = HostSettings.UpdateWhenEmpty(group); follows = HostSettings.FollowsRemote(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Update when empty", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = "When the last player leaves a region and it has saved, the host service checks for new commits (every few minutes). " +
+                "If there are any, it builds them beside the running world, then saves, stops and starts the region on the new build. " +
+                "Nobody is kicked: if a player joins while it builds, the restart waits until the region is empty again, and a failed " +
+                "build leaves the world running. Asleep regions get the build while they sleep and start on it at their next wake. " +
+                "It never wipes a world: it always starts from the save." +
+                (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
+        var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
+        layout.Controls.Add(enabled);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        try {
+            var followed = HostSettings.SetUpdateWhenEmpty(group, enabled.Checked);
+            HostLine(!enabled.Checked ? "Update when empty off: regions take updates only from Save, update and restart or Update offline regions."
+                : "Update when empty on: regions move onto new commits once empty and saved." + (followed ? " The group now follows origin/master." : ""));
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save Update when empty: " + e.Message);
         }
     }
 

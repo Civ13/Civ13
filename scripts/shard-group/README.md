@@ -301,6 +301,23 @@ other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
 
+**Update when empty** (`update_when_empty`, group key, default `true`): the host
+service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
+As soon as an awake region that saves is empty and has saved since its last
+player, it fetches (at most every `update_check_minutes`, default 5) and, when
+the group revision has moved past the region's build, stages it; the region does
+not fall asleep while that build runs, and is restarted onto it as soon as it is
+ready, if it is still empty and saved. A player joining meanwhile holds the
+restart until the region is empty again, a failed build leaves the world
+running (and is not retried until the revision changes or a Build update runs),
+and a world that does not save (TDM) is never touched. Asleep and cold regions
+are staged the same way and get the build while they sleep, as above. The
+restart starts from the save: it never wipes a world. The key is read at each
+check, so the launcher's **Update when empty** toggle applies without a setup;
+turning it on also sets `fetch: origin` and `revision: origin/master` for a
+group that does not fetch, since otherwise new commits only appear once the
+source checkout is pulled.
+
 ### Updating the regions that are not running
 
 `update-offline [--region ID]` brings every region that is not running up to the
@@ -311,11 +328,14 @@ priority) with an `install-after-stage` marker in `data/shard-host`; when its
 stage is ready the stage worker runs `update`, which copies the build in. A
 region that started while it built is left on its old build (`stage.json`
 `install` says so) and gets the new one at its next empty restart. An asleep
-region is staged without the marker and the host service installs it while it
-sleeps, as above. A region with an action running or an interrupted fresh-world
+region is staged the same way while it keeps sleeping (a join still thaws it at
+once); when the build is ready it is stopped (it saved before it froze), its port
+is let go and `update` copies the build in, so it starts on it at its next wake.
+This does not need the host service. A region with an action running or an interrupted fresh-world
 archive is skipped. It answers `{"accepted": {id: {"state": "stopped" | "cold" |
-"asleep", ...}}, "skipped": {id: reason}}`. `update` itself now refuses an
-asleep region instead of waking it. `update-offline.bat` pulls the source
+"asleep", ...}}, "skipped": {id: reason}}`. `update` of an asleep region does the same
+instead of waking it: with a ready staged build it installs at once, otherwise it
+answers `{"action": "stage", "state": "asleep"}` and installs once built. `update-offline.bat` pulls the source
 checkout first, and the launcher's **Update offline regions** button runs it.
 
 ## Handover: updating a running region without downtime

@@ -661,42 +661,14 @@
 	icon_state = "akms"
 	item_state = "akms"
 	base_icon = "akms"
-	var/folded = FALSE
+	folding_stock = TRUE
 	weight = 3
-
-/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/update_icon()
-	..()
-	if (folded)
-		icon_state = "akms_folded"
-	else
-		icon_state = "akms"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak47/akms/verb/fold()
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
-	if (folded)
-		folded = FALSE
-		recoil *= 1.5
-		icon_state = "[base_icon]_folded"
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		recoil /= 1.5
-		folded = TRUE
-		icon_state = "[base_icon]"
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
-
-/obj/item/weapon/gun/projectile/submachinegun/ak47/akms/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER
+	toggle_folding_stock(usr)
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74
 	name = "AK-74"
@@ -745,42 +717,14 @@
 	icon_state = "aks74"
 	item_state = "aks74"
 	base_icon = "aks74"
-	var/folded = FALSE
+	folding_stock = TRUE
 	weight = 2.95
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/update_icon()
-	..()
-	if (folded)
-		icon_state = "[base_icon]_folded"
-	else
-		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/verb/fold()
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
-	if (folded)
-		folded = FALSE
-		recoil *= 1.5
-		icon_state = "[base_icon]_folded"
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		recoil /= 1.5
-		folded = TRUE
-		icon_state = "[base_icon]"
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER
+	toggle_folding_stock(usr)
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u
 	name = "AKS-74U"
@@ -802,40 +746,6 @@
 	scope_x_offset = 1
 	under_mounts = list ()
 
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/update_icon()
-	..()
-	if (folded)
-		icon_state = "[base_icon]_folded"
-	else
-		icon_state = "[base_icon]"
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/fold()
-	set name = "Toggle Stock"
-	set category = null
-	set src in usr
-	if (folded)
-		folded = FALSE
-		recoil *= 1.5
-		icon_state = "[base_icon]_folded"
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		recoil /= 1.5
-		folded = TRUE
-		icon_state = "[base_icon]"
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER
-
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso
 	name = "AKS-74U SpecOps"
 	desc = "Soviet assault carbine version of the AK-74, chambered in 5.45x39mm, with a folding stock. This one has picatinny rails for attachments."
@@ -850,13 +760,6 @@
 	attachment_slots = ATTACH_IRONSIGHTS|ATTACH_SCOPE|ATTACH_UNDER|ATTACH_BARREL
 	scope_mounts = list ("dovetail", "picatinny")
 	under_mounts = list ("picatinny")
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/update_icon()
-	..()
-	if (folded)
-		icon_state = "[base_icon]_folded"
-	else
-		icon_state = "[base_icon]"
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb
 	folded = TRUE
@@ -880,27 +783,6 @@
 	var/obj/item/weapon/attachment/silencer/SL = new/obj/item/weapon/attachment/silencer(src)
 	SL.attached(null,src,TRUE)
 
-
-/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/fold()
-	set name = "Toggle Stock"
-	set category = null
-	set src in usr
-	if (folded)
-		folded = FALSE
-		recoil *= 1.5
-		icon_state = "[base_icon]_folded"
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		recoil /= 1.5
-		folded = TRUE
-		icon_state = "[base_icon]"
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
 
 /obj/item/weapon/gun/projectile/submachinegun/ak74m
 	name = "AK-74M"
@@ -1645,7 +1527,7 @@
 	magazine_type = /obj/item/ammo_magazine/srm
 	good_mags = list(/obj/item/ammo_magazine/srm,/obj/item/ammo_magazine/srm/srms,/obj/item/ammo_magazine/vintorez)
 	equiptimer = 12
-	var/folded = FALSE
+	folding_stock = TRUE
 	weight = 2
 	firemodes = list(
 		list(name = "semiauto",	burst=1, burst_delay=2.0),
@@ -1669,31 +1551,7 @@
 	set name = "Toggle Stock"
 	set category = null
 	set src in usr
-	set name = "Toggle Stock"
-	set category = null
-	set src in usr
-	if (folded)
-		folded = FALSE
-		recoil *= 1.5
-		icon_state = "[base_icon]_folded"
-		to_chat(usr, "You extend the stock on \the [src].")
-		equiptimer = 15
-		set_stock()
-		update_icon()
-	else
-		recoil /= 1.5
-		folded = TRUE
-		icon_state = "[base_icon]"
-		to_chat(usr, "You collapse the stock on \the [src].")
-		equiptimer = 7
-		set_stock()
-		update_icon()
-
-/obj/item/weapon/gun/projectile/submachinegun/srm/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER
+	toggle_folding_stock(usr)
 
 /obj/item/weapon/gun/projectile/submachinegun/l85a2
 	name = "L85A2"

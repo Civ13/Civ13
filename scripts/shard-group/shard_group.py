@@ -74,6 +74,7 @@ STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
+DEFAULT_UPDATE_CHECK_MINUTES = 5  # how often an empty or sleeping region fetches to look for an update
 DEFAULT_MIN_FREE_DISK_MB = 2048  # stage and handover refuse below this much free disk (min_free_disk_mb)
 # Runtime state a stopped standalone server keeps outside map_saves (bans, admins,
 # player notes, faction symbols, ...). adopt copies whichever of these exist.
@@ -225,6 +226,13 @@ def load_group(path):
     # The players' countdown before a save and stop, restart or handover (seconds, 0-3600).
     group.setdefault('shutdown_warning_seconds', gaia_host.DEFAULT_SHUTDOWN_WARNING_SECONDS)
     gaia_host.check_shutdown_warning(group['shutdown_warning_seconds'])
+    # A region that is empty and has saved since its last player moves onto the latest revision
+    # at once (RegionHost.update_while_empty); the remote is checked at most this often.
+    if type(group.setdefault('update_when_empty', True)) is not bool:
+        raise ValueError('update_when_empty must be true or false')
+    minutes = group.setdefault('update_check_minutes', DEFAULT_UPDATE_CHECK_MINUTES)
+    if type(minutes) is not int or not 1 <= minutes <= 1440:
+        raise ValueError('update_check_minutes must be a whole number of minutes, 1-1440')
     # stage and handover refuse while the region's drive has less than this free: a handover
     # copies the build, writes a whole save and backs it up, and a full drive fails it midway.
     group.setdefault('min_free_disk_mb', DEFAULT_MIN_FREE_DISK_MB)
@@ -723,12 +731,109 @@ class RegionHost(Host):
             if install and ready:
                 self.install_after_stage()
 
+    # -- updating an empty region -------------------------------------------------
+    # Val (2026-11-13): once the last player leaves and the world has saved, a region with an
+    # update waiting shuts down, takes the new build and starts again. The update is built
+    # beside the running world first (stage), so a failed build never takes it down and a
+    # player who joins meanwhile is never kicked: the restart waits until it is empty again.
+    def update_settings(self):
+        """(update_when_empty, update_check_minutes) from the group config, read at each check
+        so the launcher's toggle applies without a setup or a host service restart."""
+        try:
+            group = load_group(self.config['group_config'])
+            return group['update_when_empty'], group['update_check_minutes']
+        except (OSError, ValueError, KeyError):
+            return False, DEFAULT_UPDATE_CHECK_MINUTES
+
+    def update_when_empty(self):
+        return self.update_settings()[0]
+
+    def stage_if_behind(self):
+        """Stage the latest revision when the region's build is behind it; at most once per
+        update_check_minutes (each check fetches). True when a stage was started."""
+        now = self.platform.now()
+        if now < self.next_update_check or self.stage_lock.exists():
+            return False
+        self.next_update_check = now + self.update_settings()[1] * 60
+        try:
+            latest = self.latest_revision()
+        except (Refused, RuntimeError, OSError) as error:
+            self.log({'update_check_failed': str(error)[:300]})
+            return False
+        if not HEX40.match(latest or '') or latest == self.built_revision() or latest == self.staged_revision():
+            return False
+        stage = self.read_json(self.stage_file) or {}
+        if stage.get('phase') == 'failed' and stage.get('revision') == latest:
+            return False  # that build already failed; a new commit or a Build update tries again
+        try:
+            self.log(dict(self.request_stage(), reason='update available', revision=latest))
+        except Refused as refusal:
+            self.log({'update_stage_refused': str(refusal)})
+            return False
+        return True
+
+    def update_while_empty(self):
+        """An awake region that is empty and saved: restart onto a ready update, or build the
+        latest revision beside it. The next wait, or None to carry on towards sleep."""
+        if self.update_pending():
+            try:
+                self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
+            except Refused as refusal:
+                self.log({'staged_install_refused': str(refusal)})
+                return None
+            return 30
+        if self.stage_lock.exists():
+            return 30  # an update is building: restart onto it once it is ready, rather than sleep
+        return 30 if self.stage_if_behind() else None
+
+    def keep_sleeper_current(self):
+        """An asleep or cold region: build the latest revision, which install_staged_while_down
+        then copies in, so its next wake starts on it."""
+        if self.update_when_empty():
+            self.stage_if_behind()
+
+    def update_asleep(self):
+        """Update an asleep region without waking it (Val, 2026-11-13: asleep regions must be
+        able to take the new update). A ready build is copied in at once: the world saved before
+        it froze, so it is stopped and starts from that save on the new build at its next wake.
+        Otherwise the update is built beside it while it keeps sleeping (it can still wake at
+        once) and installed the same way as soon as the build is ready."""
+        if self.update_pending():
+            return dict(self.install_into_sleeper(), state='asleep')
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        self.install_marker.write_text('update\n', encoding='utf-8')
+        try:
+            return dict(self.request_stage(), state='asleep')
+        except Refused as refusal:
+            if 'already being staged' in str(refusal):
+                # The running stage installs it when it finishes (it reads the marker last).
+                return {'accepted': True, 'action': 'stage', 'state': 'asleep', 'already_staging': True}
+            self.install_marker.unlink(missing_ok=True)
+            raise
+
+    def install_into_sleeper(self, close_seconds=60):
+        """Stop an asleep region (it saved before it froze), wait for its port to close, then
+        run update, which copies the ready build in; it starts on it at its next wake."""
+        self.evict('installing the update')
+        deadline = self.platform.now() + close_seconds
+        while self.platform.listening(self.config['port']):
+            if self.platform.now() > deadline:
+                raise Refused('the stopped world kept its port open; it gets the update from the host service')
+            self.platform.sleep(1)
+        return Host.request(self, 'update')
+
     def install_after_stage(self):
         """update-offline: copy the build just staged into a region that is still not running,
-        so its next start loads at once. A region that started or fell asleep meanwhile is left
-        alone; it gets the build at its next empty restart or while it sleeps, as after any stage."""
+        so its next start loads at once. An asleep region is stopped first (it saved before it
+        froze) and wakes on the new build. A region that started meanwhile is left alone; it
+        gets the build at its next empty restart, as after any stage."""
         try:
-            if self.frozen() or self.platform.listening(self.config['port']):
+            if self.frozen():
+                if self.update_pending():
+                    self.install_into_sleeper()
+                    self.stage_record(install='installing')
+                return
+            if self.platform.listening(self.config['port']):
                 raise Refused('the region started while its update was building')
             if self.update_pending():
                 self.request('update')
@@ -756,7 +861,7 @@ class RegionHost(Host):
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.frozen():
             # Host.request would wake it first, only to refuse it as running.
-            raise Refused('the region is asleep; Update offline regions installs it while it sleeps')
+            return self.update_asleep()
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
@@ -1663,8 +1768,8 @@ def update_offline(group, only=None, platform=None):
     ready when it next starts; a running region is never stopped, woken or rebuilt.
 
     A stopped (or cold) region builds the update in its staging worktree, then copies it in
-    (install_after_stage). An asleep region builds it the same way and the host service
-    installs it while it sleeps (install_staged_while_down). The builds take turns in the
+    (install_after_stage). An asleep region builds it the same way while it keeps sleeping,
+    then is stopped (it saved before it froze) and the build copied in, so it wakes on it. The builds take turns in the
     group compile slot at low priority, so the running regions keep their CPU and memory.
     """
     accepted, skipped = {}, {}
@@ -1684,9 +1789,8 @@ def update_offline(group, only=None, platform=None):
             skipped[name] = 'busy: %s' % (host.read_state() or {}).get('action')
             continue
         state = 'asleep' if asleep else 'cold' if host.cold() else 'stopped'
-        if not asleep:
-            host.state_dir.mkdir(parents=True, exist_ok=True)
-            host.install_marker.write_text('update-offline\n', encoding='utf-8')
+        host.state_dir.mkdir(parents=True, exist_ok=True)
+        host.install_marker.write_text('update-offline\n', encoding='utf-8')
         try:
             accepted[name] = dict(host.request_stage(), state=state)
         except Refused as refusal:

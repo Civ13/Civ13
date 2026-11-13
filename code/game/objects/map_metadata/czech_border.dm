@@ -88,43 +88,10 @@ obj/map_metadata/czech_border/roundend_condition_def2name(define)
 		win_condition_spam_check = TRUE
 		no_loop_r = TRUE
 		return FALSE
-	// russian major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = " <b>NATO</b> has reached The Planning Center! They will win in {time} minutes."
-				next_win = world.time + short_win_time(GERMAN)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// russian minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = " <b>NATO</b> has reached The Planning Center! They will win in {time} minutes."
-				next_win = world.time + short_win_time(GERMAN)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[2][1])
-	// German major
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = " <b>NATO</b> has reached The Planning Center! They will win in {time} minutes."
-				next_win = world.time + short_win_time(GERMAN)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	// German minor
-	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
-		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
-			if (last_win_condition != win_condition.hash)
-				current_win_condition = " <b>NATO</b> has reached The Planning Center! They will win in {time} minutes."
-				next_win = world.time + short_win_time(GERMAN)
-				announce_current_win_condition()
-				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
-				current_loser = roundend_condition_def2army(roundend_condition_sides[1][1])
-	else
+	else if (!capture_step(1, 2, 1.33, FALSE, GERMAN, 1) && \
+		!capture_step(1, 2, 1.01, FALSE, GERMAN, 1) && \
+		!capture_step(2, 1, 1.33, FALSE, GERMAN, 1) && \
+		!capture_step(2, 1, 1.01, FALSE, GERMAN, 1))
 		if (current_win_condition != no_winner && current_winner && current_loser)
 			to_chat(world, "<font size = 3>The <b>Czechs</b> have recaptured the Planning center!</font>")
 			current_winner = null
@@ -134,6 +101,11 @@ obj/map_metadata/czech_border/roundend_condition_def2name(define)
 		win_condition.hash = 0
 	last_win_condition = win_condition.hash
 	return TRUE
+
+/obj/map_metadata/czech_border/capture_message(id)
+	switch (id)
+		if (1)
+			return " <b>NATO</b> has reached The Planning Center! They will win in {time} minutes."
 
 /obj/map_metadata/czech_border/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction1, null, wall_area = /area/caribbean/no_mans_land/invisible_wall/temperate, one_area = /area/caribbean/no_mans_land/invisible_wall/temperate/one, two_area = null)

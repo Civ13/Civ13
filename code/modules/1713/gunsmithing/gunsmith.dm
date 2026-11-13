@@ -893,7 +893,6 @@ function pickAppearance(a) {
 	var/single_action = FALSE
 	var/cocked = FALSE
 	base_icon = null
-	var/folded = FALSE
 
 	//shotgun
 	var/recentpump = FALSE // to prevent spammage
@@ -1577,8 +1576,3 @@ function pickAppearance(a) {
 		to_chat(usr, "\The [src] has no stock to toggle.")
 	update_icon()
 
-/obj/item/weapon/gun/projectile/custom/proc/set_stock()
-	if (folded)
-		slot_flags = SLOT_SHOULDER|SLOT_BELT
-	else
-		slot_flags = SLOT_SHOULDER

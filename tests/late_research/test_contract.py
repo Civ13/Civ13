@@ -284,5 +284,24 @@ class Demonstrations(unittest.TestCase):
         self.assertLess(record.index("demonstration_mishap"), record.index("commit_demonstration(src"))
 
 
+class SubjectPrototypes(unittest.TestCase):
+    """Prototypes from a part-written chapter, and field study of existing things."""
+    def setUp(self):
+        self.src = read("code/modules/research_tree/subject_prototypes.dm")
+    def test_included_and_wired(self):
+        self.assertIn('#include "code\\modules\\research_tree\\subject_prototypes.dm"', read("civ13.dme"))
+        self.assertIn("|| subject_prototype_allowed(H, result_path_string)", read("code/modules/research_tree/recipe_gates.dm"))
+        self.assertIn("record_subject_prototype(user, result_path_string)", read("code/modules/research_tree/practice_work.dm"))
+        self.assertIn("take_field_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+    def test_gates(self):
+        node = proc(self.src, "/proc/subject_prototype_node")
+        for guard in ("map.book_research_enabled()", "H.knows_research_prereqs(node_id)", "H.prototype_book(node_id)"):
+            self.assertIn(guard, node)
+        self.assertIn("SUBJECT_PROTO_MAX", proc(self.src, "/mob/living/human/proc/prototype_book"))
+        study = proc(self.src, "/mob/living/human/proc/study_in_field")
+        for guard in ("held_writing_pen()", "do_reading(src, FIELD_STUDY_TIME, thing)", "commit_field_study(src, carrier, node_id, kind, thing.name)"):
+            self.assertIn(guard, study)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -810,12 +810,92 @@ SUITES = {
         'paths': ('tests/map_metadata_dedupe/', 'code/game/objects/map_metadata/shrinking_zone.dm'),
         'shared_paths': ('code/game/objects/map_metadata/campaign_new.dm',
                          'code/game/objects/map_metadata/battleroyale.dm',
-                         'code/game/objects/map_metadata/hungergames.dm')},
+                         'code/game/objects/map_metadata/hungergames.dm',
+                         'maps/special/hunger_games.dmm')},
     # Wall and jail covers share one utensil-to-shank proc; source checks
     # against the frozen copied block, no BYOND runtime.
     'utensil_shank': {'files': ('tests/utensil_shank/test_utensil_shank.py',),
         'paths': ('tests/utensil_shank/',), 'shared_paths': (
             'code/game/objects/covers.dm', 'code/game/objects/covers_types/')},
+    # Folding-stock guns share one toggle; source checks against the frozen
+    # copied verb, no BYOND runtime.
+    'folding_stock': {'files': ('tests/folding_stock/test_folding_stock.py',),
+        'paths': ('tests/folding_stock/',), 'shared_paths': (
+            'code/modules/projectiles/guns/projectile.dm', 'code/modules/1713/weapons/guns/mg/smg.dm',
+            'code/modules/1713/weapons/guns/mg/aks.dm', 'code/modules/1713/weapons/guns/mg/lmg.dm')},
+    # Structure and handheld radios share Topic/broadcast/interact; source
+    # parity against the frozen structure bodies, no BYOND runtime.
+    'radio_shared': {'files': ('tests/radio_shared/test_radio_shared.py',),
+        'paths': ('tests/radio_shared/',), 'shared_paths': ('code/modules/1713/radio.dm',)},
+    # Copied capture chains in map update_win_condition use capture_step;
+    # source parity against the frozen chains, no BYOND runtime.
+    'capture_chain': {'files': ('tests/capture_chain/test_capture_chain.py',), 'paths': ('tests/capture_chain/',), 'shared_paths': ('code/game/objects/map_metadata/_map_metadata.dm',
+        'code/game/objects/map_metadata/2Fort.dm',
+        'code/game/objects/map_metadata/arab_town.dm',
+        'code/game/objects/map_metadata/ardennes.dm',
+        'code/game/objects/map_metadata/bank_robbery.dm',
+        'code/game/objects/map_metadata/barbarossa.dm',
+        'code/game/objects/map_metadata/berlin.dm',
+        'code/game/objects/map_metadata/caloocan.dm',
+        'code/game/objects/map_metadata/campaign_old.dm',
+        'code/game/objects/map_metadata/capitol_hill.dm',
+        'code/game/objects/map_metadata/czech_border.dm',
+        'code/game/objects/map_metadata/drug_bust.dm',
+        'code/game/objects/map_metadata/elaia.dm',
+        'code/game/objects/map_metadata/fallujah.dm',
+        'code/game/objects/map_metadata/grozny.dm',
+        'code/game/objects/map_metadata/hill203.dm',
+        'code/game/objects/map_metadata/hill_3234.dm',
+        'code/game/objects/map_metadata/holdmadrid.dm',
+        'code/game/objects/map_metadata/hotel.dm',
+        'code/game/objects/map_metadata/intramuros.dm',
+        'code/game/objects/map_metadata/iwojima.dm',
+        'code/game/objects/map_metadata/lab.dm',
+        'code/game/objects/map_metadata/landing_at_constantinopoli.dm',
+        'code/game/objects/map_metadata/long_march.dm',
+        'code/game/objects/map_metadata/magistral.dm',
+        'code/game/objects/map_metadata/marco_polo_bridge.dm',
+        'code/game/objects/map_metadata/missionary_ridge.dm',
+        'code/game/objects/map_metadata/moscow194.dm',
+        'code/game/objects/map_metadata/nanjing.dm',
+        'code/game/objects/map_metadata/nankou.dm',
+        'code/game/objects/map_metadata/omaha.dm',
+        'code/game/objects/map_metadata/ong_thahn.dm',
+        'code/game/objects/map_metadata/osowiec.dm',
+        'code/game/objects/map_metadata/pavlov_house.dm',
+        'code/game/objects/map_metadata/port_arthur.dm',
+        'code/game/objects/map_metadata/red_menace.dm',
+        'code/game/objects/map_metadata/reichflakturm.dm',
+        'code/game/objects/map_metadata/reichstag.dm',
+        'code/game/objects/map_metadata/retreat.dm',
+        'code/game/objects/map_metadata/rizal_stadium.dm',
+        'code/game/objects/map_metadata/rotstadt.dm',
+        'code/game/objects/map_metadata/ruhr_uprising.dm',
+        'code/game/objects/map_metadata/syria.dm',
+        'code/game/objects/map_metadata/tantiveiv.dm',
+        'code/game/objects/map_metadata/tsaritsyn.dm',
+        'code/game/objects/map_metadata/waco.dm',
+        'code/game/objects/map_metadata/warsaw.dm',
+        'code/game/objects/map_metadata/yeltsin.dm',
+        'code/game/objects/map_metadata/zhenbao.dm',
+    )},
+    # Piano, violin, shamisen and trumpet share one song player and editor;
+    # source contracts against the frozen copies, no BYOND runtime.
+    'instrument_song': {'files': ('tests/instrument_song/test_instrument_song.py',), 'paths': ('tests/instrument_song/',),
+        'shared_paths': ('code/game/objects/items/devices/instrument_song.dm', 'code/game/objects/items/devices/violin.dm',
+                         'code/game/objects/items/devices/shamisen.dm', 'code/game/objects/items/devices/trombone.dm',
+                         'code/game/objects/structures/piano.dm')},
+    # Fragment grenades, mines and bomb payloads share one fragment ring;
+    # source contracts against a frozen grenade copy, no BYOND runtime.
+    'fragment_burst': {'files': ('tests/fragment_burst/test_fragment_burst.py',), 'paths': ('tests/fragment_burst/',),
+        'shared_paths': ('code/game/objects/items/weapons/grenades/grenade.dm', 'code/game/objects/items/weapons/mines.dm')},
+    # Stack pile sprites share pile_suffix and joining walls share
+    # join_neighbours; replays frozen copies, no BYOND runtime.
+    'pile_icons': {'files': ('tests/pile_icons/test_pile_icons.py',), 'paths': ('tests/pile_icons/',),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/money.dm',
+                         'code/modules/materials/material_sheets.dm', 'code/modules/1713/ores.dm', 'code/game/atoms.dm',
+                         'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/structures/barricades.dm',
+                         'code/game/objects/structures/window.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
@@ -1091,9 +1171,10 @@ SUITES = {
     # Discord account keys (source projection) and the stdlib sign-in service
     # against a fake Discord; the HTTP test binds an ephemeral loopback port.
     'account_signin': {'files': ('tests/account_signin/test_signin.py',
-                                 'tests/account_signin/test_account_keys.py'),
+                                 'tests/account_signin/test_account_keys.py',
+                                 'tests/account_signin/test_discord_verify.py'),
         'paths': ('tests/account_signin/', 'tools/account_signin/'),
-        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/client_procs.dm',
+        'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/discord_verify.dm', 'code/modules/client/client_procs.dm',
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 

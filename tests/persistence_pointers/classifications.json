@@ -502,5 +502,13 @@
     "path": "code/game/mob/living/simple_animal/simple_animal.dm",
     "policy": "runtime",
     "reason": "Declared tmp: the last attacker an animal holds a grudge against is not saved and is reacquired when it is hurt again."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "distracted_by",
+    "type": "/obj/item/weapon/reagent_containers/food/snacks",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Declared tmp: thrown meat a starving predator is walking to is a seconds-long AI errand that ends on load."
   }
 ]

@@ -59,19 +59,7 @@
 	return ..()
 
 /obj/item/stack/money/real/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "real[icon_suffix]"
+	icon_state = "real[pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/rubles
 	name = "Soviet Ruble"
@@ -340,57 +328,21 @@
 	return ..()
 
 /obj/item/stack/money/european/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "[initial(icon_state)][icon_suffix]"
+	icon_state = "[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/asian/New()
 	update_icon()
 	return ..()
 
 /obj/item/stack/money/asian/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "[initial(icon_state)][icon_suffix]"
+	icon_state = "[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/fictional/New()
 	update_icon()
 	return ..()
 
 /obj/item/stack/money/fictional/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "[initial(icon_state)][icon_suffix]"
+	icon_state = "[initial(icon_state)][pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/yen
 	name = "yen"
@@ -527,19 +479,7 @@
 	return ..()
 
 /obj/item/stack/money/escudo/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "escudo[icon_suffix]"
+	icon_state = "escudo[pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/doubloon
 	name = "spanish doubloons"
@@ -555,19 +495,7 @@
 	return ..()
 
 /obj/item/stack/money/doubloon/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "dobloon[icon_suffix]"
+	icon_state = "dobloon[pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/goldnugget
 	name = "gold nuggets"
@@ -720,19 +648,7 @@
 	return ..()
 
 /obj/item/stack/money/coppercoin/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "coppercoin_pile[icon_suffix]"
+	icon_state = "coppercoin_pile[pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/coppercoin/twohundred
 	amount = 20
@@ -751,19 +667,7 @@
 	return ..()
 
 /obj/item/stack/money/silvercoin/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 49)
-			icon_suffix = ""
-		if (50 to 99)
-			icon_suffix = "_2"
-		if (100 to 299)
-			icon_suffix = "_3"
-		if (300 to 499)
-			icon_suffix = "_4"
-		if (500 to INFINITY)
-			icon_suffix = "_5"
-	icon_state = "silvercoin_pile[icon_suffix]"
+	icon_state = "silvercoin_pile[pile_suffix(amount, list(50, 100, 300, 500))]"
 
 /obj/item/stack/money/silvercoin/twenty
 	amount = 20
@@ -785,17 +689,7 @@
 	return ..()
 
 /obj/item/stack/money/goldcoin/update_icon()
-	var/icon_suffix = ""
-	switch(amount)
-		if (1 to 124)
-			icon_suffix = ""
-		if (125 to 249)
-			icon_suffix = "_2"
-		if (250 to 374)
-			icon_suffix = "_3"
-		if (375 to INFINITY)
-			icon_suffix = "_4"
-	icon_state = "goldcoin_pile[icon_suffix]"
+	icon_state = "goldcoin_pile[pile_suffix(amount, list(125, 250, 375))]"
 
 /obj/item/stack/money/bitcoin
 	name = "bitcoin"

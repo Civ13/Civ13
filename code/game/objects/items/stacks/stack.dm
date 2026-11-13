@@ -2443,3 +2443,11 @@
 	if (istype(S) && S.can_use(20))
 		return S
 	return null
+
+// Icon suffix for a stack drawn as a growing pile: "" below the first
+// threshold, then "_2", "_3"... for each threshold the amount reaches.
+/proc/pile_suffix(amount, list/thresholds)
+	. = ""
+	for (var/i = thresholds.len, i >= 1, i--)
+		if (amount >= thresholds[i])
+			return "_[i + 1]"

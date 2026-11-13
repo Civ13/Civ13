@@ -5,6 +5,7 @@
 	L.LoseTarget()
 	L.simplehunger = 1000
 	L.provoked_by = null
+	L.end_food_distraction()
 	L.next_melee_attack = 0
 	L.stance = HOSTILE_STANCE_IDLE
 	L.forceMove(locate(lx, 4, 1))
@@ -127,3 +128,49 @@
 		var/z = S.animal_bite_zone()
 		zones[z] = (zones[z] || 0) + 1
 	combat_assert(zones["chest"] > zones["l_foot"] * 3 && zones.len == 11, "Bite zones are not torso-weighted across the body")
+
+	// Thrown meat draws a starving, unhurt predator off the person it is after.
+	H = new(locate(1, 4, 1))
+	H.faction_text = "predator_fixture"
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = L.predator_starving_hunger - 1
+	L.npc_set_combat_target(H)
+	L.stance = HOSTILE_STANCE_ATTACK
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/bait = new(locate(8, 4, 1))
+	combat_assert(bait.lure_starving_predators(H) == 1 && L.distracted_by == bait && !L.target_mob && L.stance == HOSTILE_STANCE_IDLE, "Thrown meat did not distract a starving predator")
+	combat_assert(!L.predator_will_hunt(H) && !L.FindTarget(), "Distracted predator still hunted the thrower")
+	L.forceMove(locate(7, 4, 1))
+	L.food_distraction_tick()
+	combat_assert(QDELETED(bait) && !L.distracted_by && L.simplehunger >= L.predator_starving_hunger, "Distracted predator did not eat the meat")
+	combat_assert(!L.predator_will_hunt(H), "Fed predator still hunted a distant person after eating")
+
+	// Hurting it while it goes for the meat ends the distraction.
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = L.predator_starving_hunger - 1
+	L.npc_set_combat_target(H)
+	bait = new(locate(8, 4, 1))
+	bait.lure_starving_predators(H)
+	L.animal_provoked(H)
+	combat_assert(!L.distracted_by && L.target_mob == H, "Hurt predator kept going for the meat")
+	qdel(bait)
+
+	// An animal you have hurt is not fooled.
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = L.predator_starving_hunger - 1
+	L.animal_provoked(H)
+	bait = new(locate(8, 4, 1))
+	combat_assert(!bait.lure_starving_predators(H) && L.target_mob == H && !L.distracted_by, "Thrown meat distracted a predator the thrower hurt")
+	qdel(bait)
+
+	// A fed predator closing in has no interest, and plant food is no bait.
+	predator_reset(L, H, 4, 1)
+	L.npc_set_combat_target(H)
+	bait = new(locate(8, 4, 1))
+	combat_assert(!bait.lure_starving_predators(H) && L.target_mob == H, "Thrown meat distracted a fed predator")
+	qdel(bait)
+	predator_reset(L, H, 6, 1)
+	L.simplehunger = L.predator_starving_hunger - 1
+	L.npc_set_combat_target(H)
+	var/obj/item/weapon/reagent_containers/food/snacks/grown/wheat/W = new(locate(8, 4, 1))
+	combat_assert(!W.is_predator_bait() && !W.lure_starving_predators(H) && L.target_mob == H, "Plant food distracted a predator")
+	qdel(W)

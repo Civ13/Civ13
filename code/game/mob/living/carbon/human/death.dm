@@ -73,8 +73,6 @@
 		if (map.battleroyale && alive_n_of_side(PIRATES) > 1)
 			var/obj/map_metadata/battleroyale/BR = map
 			BR.give_award(client.ckey, real_name, alive_n_of_side(PIRATES))
-			var/obj/map_metadata/hunger_games/HG = map
-			HG.give_award(client.ckey, real_name, alive_n_of_side(PIRATES))
 
 		switch (map.ID)
 			if (MAP_GLADIATORS)
