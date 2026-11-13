@@ -112,7 +112,7 @@ internal sealed partial class LauncherWindow : Form {
         Font = new Font("Segoe UI", 9.75f);
         StartPosition = FormStartPosition.CenterScreen;
         MinimumSize = new Size(760, 560);
-        Size = new Size(1040, 720);
+        Size = new Size(1040, 780);
         try { Icon = Icon.ExtractAssociatedIcon(Environment.ProcessPath ?? ""); } catch (Exception e) when (e is ArgumentException or IOException) { }
 
         var body = new SplitContainer {
@@ -128,7 +128,7 @@ internal sealed partial class LauncherWindow : Form {
         Controls.Add(BuildFooter());
         Controls.Add(BuildHeader());
         Load += (_, _) => {
-            body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(150));
+            body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(120));
         };
         if (renderTo == null) Shown += async (_, _) => await Startup();
         else Shown += async (_, _) => await RenderTabsTo(renderTo);
@@ -248,7 +248,7 @@ internal sealed partial class LauncherWindow : Form {
         page.Controls.Add(hostBoard);
         FlowLayoutPanel Row(string caption) {
             var flow = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Bottom, Margin = new Padding(0), Padding = new Padding(0, 3, 0, 0) };
-            flow.Controls.Add(new Label { Text = caption, AutoSize = false, Width = LogicalToDeviceUnits(118), Height = LogicalToDeviceUnits(26),
+            flow.Controls.Add(new Label { Text = caption, AutoSize = false, Width = LogicalToDeviceUnits(112), Height = LogicalToDeviceUnits(26),
                 TextAlign = ContentAlignment.MiddleLeft, Font = new Font(Font, FontStyle.Bold), Margin = new Padding(0, 3, 4, 3) });
             // Rows added later dock first, so each new row goes under the ones before it.
             page.Controls.Add(flow);
@@ -364,7 +364,7 @@ internal sealed partial class LauncherWindow : Form {
             row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message, AutoSize = true, Margin = new Padding(0, 9, 0, 3) });
             return;
         }
-        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 230, Margin = new Padding(0, 4, 8, 3) };
+        var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 190, Margin = new Padding(0, 4, 8, 3) };
         void Fill(string? keep) {
             picker.Items.Clear();
             foreach (var region in regions) {

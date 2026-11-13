@@ -77,10 +77,10 @@ internal sealed class RegionBoardView : ScrollableControl {
         base.Dispose(disposing);
     }
 
-    private int SummaryHeight => Px(38);
-    private int HeaderHeight => Px(22);
+    private int SummaryHeight => Px(34);
+    private int HeaderHeight => Px(20);
     private int MessageHeight => message == null ? 0 : Px(28);
-    private int RowHeight(RegionCard card) => Px(card.Problem == null ? 32 : 52);
+    private int RowHeight(RegionCard card) => Px(card.Problem == null ? 28 : 46);
 
     private void Relayout() {
         AutoScrollMinSize = new Size(0, SummaryHeight + MessageHeight + (cards.Count == 0 ? 0 : HeaderHeight) + cards.Sum(RowHeight) + 1);
@@ -157,7 +157,7 @@ internal sealed class RegionBoardView : ScrollableControl {
         // Summary band: what needs attention first, then the plain counts.
         using (var band = new SolidBrush(StatusPaint.Band)) g.FillRectangle(band, 0, y, width, SummaryHeight);
         var x = Px(10);
-        var pillHeight = Px(22);
+        var pillHeight = Px(20);
         var counts = HostBoard.Summary(cards).ToList();
         foreach (var count in counts) {
             var (tone, glyph) = StatusPaint.ForCount(count.Kind);
@@ -226,7 +226,7 @@ internal sealed class RegionBoardView : ScrollableControl {
         for (var index = 0; index < cards.Count; index++) {
             var card = cards[index];
             var height = RowHeight(card);
-            var first = Px(32);
+            var first = Px(28);
             var chosen = Choosable && card.Id == selected;
             if (y + height >= 0 && y <= ClientSize.Height) {
                 var backColor = chosen ? StatusPaint.Selected : card.Problem != null ? StatusPaint.ProblemBack : index == hover && Choosable ? StatusPaint.Hover : BackColor;
@@ -262,7 +262,7 @@ internal sealed class RegionBoardView : ScrollableControl {
                     TextRenderer.DrawText(g, card.Notes, Font, new Rectangle(notesLeft, y, width - notesLeft - Px(8), first), StatusPaint.Muted, OneLine);
 
                 if (card.Problem is { } problem) {
-                    var top = y + first - Px(4);
+                    var top = y + first - Px(5);
                     StatusPaint.DrawGlyph(g, Glyph.Alert, new RectangleF(nameX, top + Px(5), Px(10), Px(10)), StatusPaint.Fore(Tone.Bad), backColor, Dpi);
                     TextRenderer.DrawText(g, problem, Bold, new Rectangle(nameX + Px(16), top, Math.Max(0, width - nameX - Px(24)), Px(20)), StatusPaint.Fore(Tone.Bad), OneLine);
                 }
