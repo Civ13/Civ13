@@ -37,11 +37,11 @@ By design, d1 is the smallest direction and d2 is the highest
 	name = "power cable"
 	desc = "A flexible, superconducting insulated cable for power transfer."
 	icon = 'icons/obj/machines/cables.dmi'
-	icon_state = "0-1"
+	icon_state = "horizontal" // or "vertical", or a corner such as "1-4" (cable_shapes.dm)
 	layer = 1.95
 	anchored = TRUE
-	var/d1 = 0   // cable direction 1 (see above)
-	var/d2 = 1   // cable direction 2 (see above)
+	var/d1 = 0   // cable direction 1 (see above); a corner's first end
+	var/d2 = 1   // cable direction 2 (see above); a corner's second end
 	var/list/connections = list()
 	not_movable = FALSE
 	not_disassemblable = FALSE
@@ -53,26 +53,7 @@ By design, d1 is the smallest direction and d2 is the highest
 	var/list/power_consumers = list() // consumer => reserved demand
 	var/currentflow = 0 //reserved demand in this connected component
 	var/tilepos = "under"
-	var/tiledir = "horizontal"
-
-// Straight neighbors only. Same-tile crossings belong to secured connectors.
-// Do not rebuild supply here: placement must finish junctions first.
-/obj/structure/cable/proc/link_straight_neighbors(mob/user, notify_second = TRUE)
-	var/list/directions
-	if (tiledir == "horizontal")
-		directions = list(EAST, WEST)
-	else if (tiledir == "vertical")
-		directions = list(NORTH, SOUTH)
-	else
-		return
-	for (var/i = 1, i <= directions.len, i++)
-		for (var/obj/structure/cable/neighbor in get_turf(get_step(src, directions[i])))
-			if (neighbor == src || neighbor.tiledir != tiledir)
-				continue
-			neighbor.connections |= src
-			connections |= neighbor
-			if (user && (i == 1 || notify_second))
-				to_chat(user, "You connect the two cables.")
+	var/tiledir = "horizontal" // "horizontal", "vertical" or "corner" (cable_shapes.dm)
 
 /obj/structure/cable/verb/hiding()
 	set category = null
@@ -148,8 +129,7 @@ By design, d1 is the smallest direction and d2 is the highest
 ///////////////////////////////////
 
 /obj/structure/cable/update_icon()
-//	icon_state = "[d1]-[d2]"
-	icon_state = tiledir
+	icon_state = tiledir == "corner" ? "[d1]-[d2]" : tiledir
 
 // Items usable on a cable :
 //   - knife : cut it duh !

@@ -87,9 +87,14 @@ var/global/list/craft_rigid_cargo = null
 	for (var/obj/structure/cable/CB in left)
 		CB.rebuild_supply()
 
-// A cable laid east to west lies north to south after a quarter turn.
+// A cable laid east to west lies north to south after a quarter turn, and a
+// corner turns its ends with the craft.
 /obj/structure/cable/craft_turned(datum/craft/C, angle)
 	..()
+	if (tiledir == "corner")
+		if (angle)
+			set_cable_shape(turn(d1, angle), turn(d2, angle))
+		return
 	if (abs(angle) == 90)
 		if (tiledir == "horizontal")
 			tiledir = "vertical"
