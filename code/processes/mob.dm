@@ -9,7 +9,6 @@
 	processes.mob = src
 
 /process/mob/fire()
-	ecology_refresh_observers()
 	for (current in current_list)
 
 		var/mob/M = current
@@ -44,6 +43,9 @@
 /process/mob/reset_current_list()
 	PROCESS_USE_FASTEST_LIST(living_mob_list)
 	ecology_advance_rest_phase()
+	// Once per pass: a budgeted fire resumes many times a second, and the
+	// observers used to be rebuilt on every resume.
+	ecology_refresh_observers()
 
 /process/mob/statProcess(client/C)
 	..(C)

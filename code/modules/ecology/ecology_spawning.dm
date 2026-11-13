@@ -547,6 +547,11 @@ var/global/list/ecology_species_table = null
 #define ECOLOGY_AWAKE_RANGE 32
 #define ECOLOGY_REST_EVERY 4
 var/global/list/ecology_observer_turfs = list()
+// The same turfs bucketed into ECOLOGY_AWAKE_RANGE squares, one list per z, so
+// each animal checks the observers in the nine squares around it instead of all.
+var/global/list/ecology_observer_cells = list()
+var/global/ecology_observer_columns = 1
+var/global/ecology_observer_rows = 1
 var/global/ecology_rest_phase = 0
 // TRUE while nobody is connected (no client, not even in the lobby) and no
 // agent character plays: living animals hold still, do not get hungry and do
@@ -571,7 +576,35 @@ var/global/ecology_world_unwatched = FALSE
 		if (T)
 			turfs |= T
 	ecology_observer_turfs = turfs
+	var/list/cells = list()
+	if (turfs.len)
+		cells.len = world.maxz
+		var/columns = ecology_cell_columns()
+		var/rows = ecology_cell_rows()
+		ecology_observer_columns = columns
+		ecology_observer_rows = rows
+		for (var/turf/T in turfs)
+			var/list/z_cells = cells[T.z]
+			if (!z_cells)
+				z_cells = new /list(columns * rows)
+				cells[T.z] = z_cells
+			var/index = ecology_cell_index(T.x, T.y, rows)
+			var/list/cell = z_cells[index]
+			if (!cell)
+				cell = list()
+				z_cells[index] = cell
+			cell += T
+	ecology_observer_cells = cells
 	ecology_world_unwatched = !length(clients) && !length(agent_characters)
+
+/proc/ecology_cell_columns()
+	return round((world.maxx - 1) / ECOLOGY_AWAKE_RANGE) + 1
+
+/proc/ecology_cell_rows()
+	return round((world.maxy - 1) / ECOLOGY_AWAKE_RANGE) + 1
+
+/proc/ecology_cell_index(x, y, rows)
+	return round((x - 1) / ECOLOGY_AWAKE_RANGE) * rows + round((y - 1) / ECOLOGY_AWAKE_RANGE) + 1
 
 // Val (2026-11-09): with no players connected, animals should not move,
 // starve or attack. Their whole Life() waits, including NPC humans, so a
@@ -597,6 +630,27 @@ var/global/ecology_world_unwatched = FALSE
 	else
 		walk(src, 0)
 
+// TRUE when an observer stands within ECOLOGY_AWAKE_RANGE of T, one level up or down included.
+/proc/ecology_observer_near(turf/T)
+	if (ecology_observer_cells.len)
+		var/columns = ecology_observer_columns
+		var/rows = ecology_observer_rows
+		var/cx = round((T.x - 1) / ECOLOGY_AWAKE_RANGE)
+		var/cy = round((T.y - 1) / ECOLOGY_AWAKE_RANGE)
+		for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)
+			var/list/z_cells = ecology_observer_cells[z]
+			if (!z_cells)
+				continue
+			for (var/x = max(0, cx - 1), x <= min(columns - 1, cx + 1), x++)
+				for (var/y = max(0, cy - 1), y <= min(rows - 1, cy + 1), y++)
+					var/list/cell = z_cells[x * rows + y + 1]
+					if (!cell)
+						continue
+					for (var/turf/O in cell)
+						if (max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE)
+							return TRUE
+	return FALSE
+
 /proc/ecology_animal_resting(mob/living/simple_animal/A)
 	if (!istype(A) || A.client || A.stat == DEAD || istype(A, /mob/living/simple_animal/hostile/human))
 		return FALSE
@@ -605,9 +659,8 @@ var/global/ecology_world_unwatched = FALSE
 	var/turf/T = A.loc
 	if (!isturf(T))
 		return FALSE
-	for (var/turf/O in ecology_observer_turfs)
-		if (abs(O.z - T.z) <= 1 && max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE)
-			return FALSE
+	if (ecology_observer_near(T))
+		return FALSE
 	// Staggered by position so resting animals do not all wake together.
 	return ((ecology_rest_phase + T.x + T.y) % ECOLOGY_REST_EVERY) != 0
 

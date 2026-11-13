@@ -19,6 +19,12 @@ HUMAN = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text(encoding
 ICONS = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text(encoding='utf-8')
 HELPERS = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text(encoding='utf-8')
 NEEDS = (ROOT / 'code/game/mob/living/carbon/human/human_needs.dm').read_text(encoding='utf-8')
+DAMAGE = (ROOT / 'code/game/mob/living/carbon/human/human_damage.dm').read_text(encoding='utf-8')
+BEARCAVE = (ROOT / 'code/game/objects/structures/animalspawner/bearcave.dm').read_text(encoding='utf-8')
+GLOBALS = (ROOT / 'code/global.dm').read_text(encoding='utf-8')
+ECOLOGY = (ROOT / 'code/modules/ecology/ecology_spawning.dm').read_text(encoding='utf-8')
+MOB_PROCESS = (ROOT / 'code/processes/mob.dm').read_text(encoding='utf-8')
+ANIMAL = (ROOT / 'code/game/mob/living/simple_animal/simple_animal.dm').read_text(encoding='utf-8')
 
 
 def body(source, signature):
@@ -246,6 +252,88 @@ class OverlayRedraw(unittest.TestCase):
                       '\t\thygiene_overlay_state = nasties_state\n'
                       '\t\toverlays_standing[27] = img_nasties\n'
                       '\t\tqueue_overlay_redraw()', hygiene)
+
+
+class LoopAudit(unittest.TestCase):
+    """Second loop audit (2026-11-13): work every tick that changed nothing."""
+
+    def test_pain_healing_skips_unhurt_bodies(self):
+        hal = body(DAMAGE, '/mob/living/human/adjustHalLoss(')
+        guard = hal.index('if (heal)\n\t\tvar/hurt = FALSE')
+        self.assertIn('if (E.brute_dam || E.burn_dam || E.pain || E.damage)', hal)
+        self.assertIn('\t\tif (!hurt)\n\t\t\treturn', hal)
+        self.assertLess(guard, hal.index('organs.Copy()'))
+
+    def test_each_bear_cave_ticks_itself_without_a_world_scan(self):
+        tick = body(BEARCAVE, '/obj/structure/animalspawner/bearcave/proc/Tick(')
+        self.assertNotIn(' in world', tick)
+        self.assertIn('\tif(ticking || gcDestroyed || gc_destroyed)\n\t\treturn\n\tticking = TRUE\n', tick)
+        self.assertIn('\tspawn while(src && ticking && !gcDestroyed && !gc_destroyed)\n', tick)
+        self.assertIn('\t\ttotal_population = males + females + cubs\n\t\tTicker()\n\t\tsleep(50)', tick)
+        self.assertIn('\tticking = FALSE\n\treturn ..()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/Destroy('))
+        self.assertIn('return key == "ticking" || ..()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/persistence_runtime_var('))
+        self.assertEqual(body(BEARCAVE, '/obj/structure/animalspawner/bearcave/New(').count('\tTick()\n'), 1)
+        self.assertNotIn('Tick()', body(BEARCAVE, '/obj/structure/animalspawner/bearcave/full/New('))
+        self.assertNotIn('bearcave_ticking', BEARCAVE + GLOBALS)
+
+
+def cell_near(observers, x, y, z, max_x, max_y, max_z, reach=32):
+    """Python model of ecology_refresh_observers' buckets and ecology_observer_near()."""
+    rows = (max_y - 1) // reach + 1
+    columns = (max_x - 1) // reach + 1
+    cells = {}
+    for ox, oy, oz in observers:
+        cells.setdefault(oz, {}).setdefault(((ox - 1) // reach) * rows + (oy - 1) // reach + 1, []).append((ox, oy))
+    cx, cy = (x - 1) // reach, (y - 1) // reach
+    for cz in range(max(1, z - 1), min(max_z, z + 1) + 1):
+        for gx in range(max(0, cx - 1), min(columns - 1, cx + 1) + 1):
+            for gy in range(max(0, cy - 1), min(rows - 1, cy + 1) + 1):
+                for ox, oy in cells.get(cz, {}).get(gx * rows + gy + 1, ()):
+                    if max(abs(ox - x), abs(oy - y)) <= reach:
+                        return True
+    return False
+
+
+class ObserverBuckets(unittest.TestCase):
+    """Animals far from players rest; the range check used to walk every observer
+    for every animal each second, and the observer list was rebuilt on every
+    resumed slice of the mob process (21,000 times in 164 s with 413 mobs)."""
+
+    def test_refresh_runs_once_per_pass(self):
+        fire = body(MOB_PROCESS, '/process/mob/fire(')
+        self.assertNotIn('ecology_refresh_observers()', fire)
+        reset = body(MOB_PROCESS, '/process/mob/reset_current_list(')
+        self.assertLess(reset.index('PROCESS_USE_FASTEST_LIST(living_mob_list)'), reset.index('ecology_refresh_observers()'))
+
+    def test_resting_uses_the_buckets(self):
+        resting = body(ECOLOGY, '/proc/ecology_animal_resting(')
+        self.assertIn('if (ecology_observer_near(T))\n\t\treturn FALSE', resting)
+        self.assertNotIn('ecology_observer_turfs', resting)
+        near = body(ECOLOGY, '/proc/ecology_observer_near(')
+        self.assertIn('max(abs(O.x - T.x), abs(O.y - T.y)) <= ECOLOGY_AWAKE_RANGE', near)
+        self.assertIn('for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)', near)
+        self.assertIn('var/rows = ecology_observer_rows', near)
+        self.assertIn('ecology_observer_rows = rows', refresh_src := body(ECOLOGY, '/proc/ecology_refresh_observers('))
+        refresh = body(ECOLOGY, '/proc/ecology_refresh_observers(')
+        self.assertIn('ecology_observer_turfs = turfs', refresh)
+        self.assertIn('var/index = ecology_cell_index(T.x, T.y, rows)', refresh)
+        self.assertIn('return round((x - 1) / ECOLOGY_AWAKE_RANGE) * rows + round((y - 1) / ECOLOGY_AWAKE_RANGE) + 1',
+                      body(ECOLOGY, '/proc/ecology_cell_index('))
+
+    def test_bucket_model_matches_the_old_scan(self):
+        import random
+        rng = random.Random(4)
+        for trial in range(60):
+            max_x, max_y, max_z = rng.choice([(500, 500, 6), (255, 300, 3), (33, 64, 2), (32, 32, 1)])
+            observers = [(rng.randint(1, max_x), rng.randint(1, max_y), rng.randint(1, max_z)) for _ in range(rng.randint(0, 12))]
+            for _ in range(300):
+                x, y, z = rng.randint(1, max_x), rng.randint(1, max_y), rng.randint(1, max_z)
+                old = any(abs(oz - z) <= 1 and max(abs(ox - x), abs(oy - y)) <= 32 for ox, oy, oz in observers)
+                self.assertEqual(old, cell_near(observers, x, y, z, max_x, max_y, max_z))
+
+    def test_animals_skip_the_surface_lookup_without_radiation(self):
+        rad = body(ANIMAL, '/mob/living/simple_animal/handle_mutations_and_radiation(')
+        self.assertIn('if (global_radiation > 0 && z == multiz_top_z())', rad)
 
 
 FRESH = '(world.tick_usage-initial_tick_usage)'
