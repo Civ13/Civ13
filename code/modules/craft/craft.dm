@@ -135,6 +135,9 @@ var/global/list/crafts = list()
 		magnetic_moved(get_dist(old_origin, now))
 	if (naval_mines.len)
 		check_naval_mines()
+	// What she carries in her cradles came with her (deck_berth.dm).
+	if (carried.len)
+		tell_carried()
 
 /datum/craft/proc/on_turn(angle)
 	if (berth)

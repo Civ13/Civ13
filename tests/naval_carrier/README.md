@@ -258,3 +258,11 @@ The probe steps each torpedo itself instead of waiting on timers.
 - **Contact:** strikes a steel hull's side and goes off under it; one tile off her side it runs past and sinks after 40 tiles.
 - **Magnetic:** two tiles off a steel hull it does not feel her, one tile off it goes off under her nearest plate, and wiped she lets it run past; it passes close by a wooden hull but still fires on striking her.
 - **Own ship:** fired from her deck it leaves past her bow, never goes off under her, even when she looks for mines, and runs past a moored mine; a hull that runs onto a torpedo sets it off.
+
+## Boat davits (`deck_berth_probe.dm`)
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/deck_berth_probe.dm 300
+
+A davit ashore, a cradle past the deck, a boat out of reach, too big, under way, a blocked cradle and a ship under way are each refused in words. A 3 by 2 boat is hoisted whole with her sailor and crate, is berthed at the davit and carried by the ship, shows as "In her davits" on the chart, cannot sail off the deck, rides a hop and a turn (the cradle turns with the deck), and is lowered over a side with open water, further out when a rock lies where she would land. A destroyed davit lets her go; a vehicle parked wholly in a cradle is carried; crafts nest without rings; a registered ship's davit works only for her crew.
+
+Not covered: the davit's menu in a client, a save and load with a boat in the cradle, a davit on a template ship's deck, and how the lift looks on screen (the boat jumps).

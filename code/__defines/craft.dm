@@ -46,3 +46,12 @@
 #define CONTRACT_OPEN "open"
 #define CONTRACT_TAKEN "taken"
 #define CONTRACT_RETURNED "returned"
+
+// Boat davits (craft/deck_berth.dm): the cradle's sides in tiles, how far
+// from the davit a boat may lie to be hoisted, how many tiles of water
+// beyond the ship's side the falls reach, and how long a lift takes.
+#define DECK_BERTH_MIN 2
+#define DECK_BERTH_MAX 5
+#define DECK_BERTH_REACH 8
+#define DECK_BERTH_SWING 4
+#define DECK_HOIST_TIME 100

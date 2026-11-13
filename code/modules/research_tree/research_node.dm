@@ -2369,6 +2369,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/slipway" = "wagons_ships",
 		"/obj/structure/berth/quay" = "wagons_ships",
 		"/obj/structure/berth/quay/depot" = "wagons_ships",
+		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
 		"/obj/item/sail" = "wagons_ships",
 		"/obj/item/sail/wool" = "wagons_ships",

@@ -120,6 +120,9 @@
 	if (berth.occupant == src)
 		berth.occupant = null
 	berth = null
+	// A craft berthed aboard another (deck_berth.dm) is no longer carried.
+	if (carrier)
+		carrier.set_down(src)
 	return TRUE
 
 // The smallest free berth in the list that will take this craft, or null:
