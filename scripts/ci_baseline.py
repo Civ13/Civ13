@@ -422,6 +422,12 @@ SUITES = {
             'code/game/turfs/turf.dm',
             'code/game/objects/farming.dm',
             'code/modules/ecology/willow_trees.dm')},
+    'pointing': {'files': ('tests/pointing/test_sources.py',),
+        'paths': ('tests/pointing/', 'code/game/mob/living/verbs.dm',
+            'code/game/objects/effects/decals/misc.dm'), 'shared_paths': (
+            'code/_onclick/click.dm',
+            'code/game/mob/living/living.dm',
+            'code/game/mob/observer/ghost/ghost.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
