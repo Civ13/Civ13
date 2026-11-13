@@ -24,6 +24,12 @@ MOVE = read('code/game/mob/mob_movement.dm')
 AI = read('code/game/mob/living/simple_animal/hostile/tactical_ai.dm')
 HUMAN = read('code/game/mob/living/carbon/human/human.dm')
 DME = read('civ13.dme')
+CLICK_CORE = read('code/_onclick/click.dm')
+ITEM_ATTACK = read('code/_onclick/item_attack.dm')
+ATTACK_HAND = read('code/game/mob/living/carbon/human/human_attackhand.dm')
+MOB = read('code/game/mob/mob.dm')
+NPC = read('code/game/mob/living/simple_animal/hostile/humans/human.dm')
+ANIM = read('code/game/mob/animations.dm')
 
 
 def proc(text, name):
@@ -62,6 +68,25 @@ class TreeClimbingSources(unittest.TestCase):
         grab = proc(CLIMB, '/mob/living/human/proc/grab_climb_tree(')
         self.assertIn('gorillaman && W.edible && W.leaves >= 1', grab)
         self.assertIn('W.stored_unit', grab)
+
+
+    def test_no_melee_across_the_canopy(self):
+        # Clicks: a gun still fires at someone in or under the tree; anything
+        # else is refused before an item or bare hand is used.
+        self.assertRegex(CLICK_CORE, r'if \(ismob\(A\) && tree_melee_blocked\(src, A\)\)\n\t+if \(istype\(W, /obj/item/weapon/gun\)\)\n\t+W\.afterattack\(A, src, FALSE, params\)')
+        self.assertIn('tree_melee_refused(M, src)', proc(CLICK_CORE, '/atom/proc/middle_click_intent_check('))
+        self.assertIn('if (tree_melee_refused(user, src))', proc(ITEM_ATTACK, '/mob/living/attackby('))
+        self.assertIn('if (tree_melee_refused(M, src))', proc(ATTACK_HAND, '/mob/living/human/attack_hand('))
+        self.assertIn('if (tree_melee_refused(src, AM))', proc(MOB, '/mob/proc/start_pulling('))
+        npc = proc(NPC, '/mob/living/simple_animal/hostile/human/AttackTarget(')
+        self.assertIn('if (dist <= 1 && !tree_melee_blocked(src, target_mob))', npc)
+        self.assertIn('OpenFire(target_mob)', npc)
+
+    def test_climber_drawn_at_treetop(self):
+        self.assertIn('#define TREE_CLIMBER_LAYER 5.12', CLIMB)
+        self.assertIn('tree_climb_apply_pose()', proc(CLIMB, '/mob/living/human/proc/tree_climb_check('))
+        self.assertIn('pixel_y = rest_pixel_y()', ANIM)
+        self.assertIn('return climbed_tree ? tree_climb_pixel_y : ..()', CLIMB)
 
 
 if __name__ == '__main__':

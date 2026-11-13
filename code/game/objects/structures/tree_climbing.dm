@@ -2,6 +2,11 @@
 //
 // Grab intent with a free hand on a tree (or the tree's right-click Climb Tree
 // verb) climbs it after a few seconds. Up a tree:
+// - the climber is drawn at the top of the tree's sprite, over the canopy
+//   (TREE_CLIMBER_LAYER; tree_climb_pose);
+// - melee is out of reach both ways: nobody on the ground can hit, grab, kick
+//   or pull the climber, and the climber cannot hit them. Guns, bows and thrown
+//   things still work (tree_melee_blocked). Animals that climb still follow;
 // - the climber sees over walls and other trees outdoors and is not limited by
 //   its own foliage (los_terrain.dm los_up_tree, LOS_EYE_CLIMBED);
 // - Look into Distance reaches 8 tiles (human.dm look_into_distance);
@@ -16,13 +21,60 @@
 
 #define TREE_CLIMB_TIME 50
 #define TREE_CLIMB_DOWN_TIME 20
-#define TREE_CLIMB_PIXEL_Y 10
+// Human sprites put the top of the head about this high; the climber's head
+// sits at the top of the canopy.
+#define TREE_CLIMB_HEAD_Y 28
+// Just above trees (5.11), so the climber is drawn over its own canopy and the
+// canopies of the trees around it.
+#define TREE_CLIMBER_LAYER 5.12
+
+// Height of the tree's canopy top above the bottom of its sprite. 0 finds it
+// from the sprite: the highest row with a visible pixel.
+/obj/structure/wild/var/tree_canopy_top = 0
+
+var/global/list/tree_icon_sizes = list()
+var/global/list/tree_canopy_tops = list()
+
+// list(width, height) of an icon file, cached per file.
+/proc/tree_icon_size(icon_file)
+	if (!icon_file)
+		return list(world.icon_size, world.icon_size)
+	var/key = "[icon_file]"
+	var/list/size = tree_icon_sizes[key]
+	if (!size)
+		var/icon/I = icon(icon_file)
+		size = list(max(1, I.Width()), max(1, I.Height()))
+		tree_icon_sizes[key] = size
+	return size
+
+// Highest visible row of a tree sprite, counted from its bottom; cached per
+// icon state. Scans down from the top and stops at the first leaf.
+/proc/tree_sprite_top(icon_file, state)
+	var/list/size = tree_icon_size(icon_file)
+	if (!icon_file)
+		return size[2]
+	var/key = "[icon_file]|[state]"
+	if (!isnull(tree_canopy_tops[key]))
+		return tree_canopy_tops[key]
+	var/top = size[2]
+	var/icon/I = icon(icon_file, state, SOUTH, 1)
+	var/found = FALSE
+	for (var/y = size[2], y >= 1 && !found, y--)
+		for (var/x = 1, x <= size[1], x++)
+			if (I.GetPixel(x, y))
+				top = y
+				found = TRUE
+				break
+	tree_canopy_tops[key] = top
+	return top
 
 /obj/structure/wild/var/tmp/mob/living/human/tree_climber = null
 /mob/living/human/var/tmp/turf/tree_climb_from = null
 /mob/living/human/var/tmp/tree_climb_from_x = 0
 /mob/living/human/var/tmp/tree_climb_from_y = 0
 /mob/living/human/var/tmp/tree_climb_busy = FALSE
+/mob/living/human/var/tmp/tree_climb_pixel_x = 0
+/mob/living/human/var/tmp/tree_climb_pixel_y = 0
 
 // Animals that can follow someone up a tree.
 /mob/living/simple_animal/var/can_climb_trees = FALSE
@@ -36,17 +88,76 @@
 	can_climb_trees = TRUE
 
 // TRUE when this animal can still reach and fight someone up a tree. Human NPCs
-// keep their weapons and sight; only beasts are left at the foot of the tree.
+// with guns or bows keep shooting; beasts and melee NPCs are left at the foot.
 /mob/living/simple_animal/proc/can_reach_tree_climber(mob/M)
 	if (!los_up_tree(M))
 		return TRUE
-	return can_climb_trees || istype(src, /mob/living/simple_animal/hostile/human)
+	if (can_climb_trees)
+		return TRUE
+	// Human NPCs can still shoot a climber, but not club one.
+	var/mob/living/simple_animal/hostile/human/HN = src
+	return istype(HN) && HN.ranged
 
 /proc/tree_climbable(atom/A)
 	if (!root_tree_family(A) || !isturf(A.loc))
 		return FALSE
 	var/obj/structure/wild/W = A
 	return W.density && W.opacity
+
+// TRUE when the attacker cannot reach the target in melee because one of them
+// is up a tree and the other is not. Only animals that climb follow a climber
+// into the branches; everyone else needs a gun, a bow or something to throw.
+/proc/tree_melee_blocked(mob/attacker, mob/target)
+	if (!ismob(attacker) || !ismob(target) || attacker == target)
+		return FALSE
+	var/attacker_up = los_up_tree(attacker)
+	var/target_up = los_up_tree(target)
+	if (!attacker_up && !target_up)
+		return FALSE
+	if (attacker_up && target_up)
+		return attacker.climbed_tree != target.climbed_tree
+	var/mob/ground = attacker_up ? target : attacker
+	if (istype(ground, /mob/living/simple_animal))
+		var/mob/living/simple_animal/SA = ground
+		return !SA.can_climb_trees
+	return TRUE
+
+// tree_melee_blocked with a message to the attacker.
+/proc/tree_melee_refused(mob/attacker, mob/target)
+	if (!tree_melee_blocked(attacker, target))
+		return FALSE
+	if (los_up_tree(attacker))
+		to_chat(attacker, SPAN_WARNING("You can't reach [target] from up the tree."))
+	else
+		to_chat(attacker, SPAN_WARNING("[target] is up the tree, out of reach."))
+	return TRUE
+
+// Where the climber is drawn: centred on the trunk, head at the canopy top.
+/mob/living/human/proc/tree_climb_pose(obj/structure/wild/W)
+	var/list/size = tree_icon_size(W.icon)
+	var/trunk_x = W.trunk_center_x ? W.trunk_center_x : round(size[1] / 2)
+	var/top = W.tree_canopy_top ? W.tree_canopy_top : tree_sprite_top(W.icon, W.icon_state)
+	tree_climb_pixel_x = initial(pixel_x) + W.pixel_x + trunk_x - world.icon_size / 2
+	tree_climb_pixel_y = initial(pixel_y) + max(0, W.pixel_y + top - TREE_CLIMB_HEAD_Y)
+
+// Keeps the climber at the treetop; attack animations, posture and lying
+// updates put pixel offsets and layer back to their ground values.
+/mob/living/human/proc/tree_climb_apply_pose(animate_time = 0)
+	if (layer != TREE_CLIMBER_LAYER)
+		layer = TREE_CLIMBER_LAYER
+	if (pixel_x == tree_climb_pixel_x && pixel_y == tree_climb_pixel_y)
+		return
+	if (animate_time)
+		animate(src, pixel_x = tree_climb_pixel_x, pixel_y = tree_climb_pixel_y, time = animate_time)
+	else
+		pixel_x = tree_climb_pixel_x
+		pixel_y = tree_climb_pixel_y
+
+/mob/living/human/rest_pixel_x()
+	return climbed_tree ? tree_climb_pixel_x : ..()
+
+/mob/living/human/rest_pixel_y()
+	return climbed_tree ? tree_climb_pixel_y : ..()
 
 // Null when H can climb W now, otherwise the reason it cannot.
 /mob/living/human/proc/tree_climb_refusal(obj/structure/wild/W)
@@ -97,6 +208,8 @@
 
 /mob/living/human/proc/finish_climb_tree(obj/structure/wild/W)
 	stop_pulling()
+	if (pulledby)
+		pulledby.stop_pulling()
 	tree_climb_from = loc
 	tree_climb_from_x = step_x
 	tree_climb_from_y = step_y
@@ -109,7 +222,8 @@
 		return FALSE
 	climbed_tree = W
 	W.tree_climber = src
-	pixel_y = initial(pixel_y) + TREE_CLIMB_PIXEL_Y
+	tree_climb_pose(W)
+	tree_climb_apply_pose(4)
 	visible_message(SPAN_NOTICE("[src] climbs up \the [W]."), SPAN_NOTICE("You climb up \the [W]. You can see far from up here; Look into Distance reaches further. Move or grab the tree again to climb down."))
 	tree_climb_refresh_sight()
 	return TRUE
@@ -135,7 +249,10 @@
 	climbed_tree = null
 	if (W && W.tree_climber == src)
 		W.tree_climber = null
+	animate(src)
+	pixel_x = initial(pixel_x)
 	pixel_y = initial(pixel_y)
+	layer = initial(layer)
 	var/turf/from = tree_climb_from
 	tree_climb_from = null
 	if (!fall && isturf(from) && isturf(loc) && from.z == z && get_dist(from, loc) <= 1 && (!W || W.loc == loc))
@@ -167,9 +284,9 @@
 	if (stat || paralysis || weakened || stunned || sleeping > 0 || buckled)
 		climb_down_tree(TRUE)
 		return
-	// Attack animations return pixel_y to its initial value.
-	if (pixel_y != initial(pixel_y) + TREE_CLIMB_PIXEL_Y)
-		pixel_y = initial(pixel_y) + TREE_CLIMB_PIXEL_Y
+	// The tree may have been re-offset (a save loaded, a sapling grew).
+	tree_climb_pose(W)
+	tree_climb_apply_pose()
 
 /mob/living/human/Life()
 	. = ..()
@@ -226,4 +343,5 @@
 
 #undef TREE_CLIMB_TIME
 #undef TREE_CLIMB_DOWN_TIME
-#undef TREE_CLIMB_PIXEL_Y
+#undef TREE_CLIMB_HEAD_Y
+#undef TREE_CLIMBER_LAYER
