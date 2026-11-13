@@ -1,7 +1,7 @@
 """Generate current-source recipes and genuine isolated BYOND icon previews."""
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
-from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras
+from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras, add_intestine_casings
 from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
 from atlas.dressmaking import add_dressmaking
@@ -422,6 +422,7 @@ for route in add_interactions(files, add, records, set(acquisition)):
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 add_tablet_press(files, add, records)
+add_intestine_casings(files, add, records)
 annotate_research(records, files, canon)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)
