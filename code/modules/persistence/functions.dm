@@ -775,17 +775,24 @@ map_storage
 	// This is called when loading a map after all the verification and
 	// password stuff is completed so that the map can have a fresh template
 	// to work with.
+/map_storage/var/tmp/list/standby_kept_objects
 /map_storage/proc/ClearMap()
+	// What a standby's turf preparation made with its turfs (standby_prepare.dm):
+	// the load's own turf pass would have made the same things after this clear.
+	var/list/kept = standby_kept_objects
+	standby_kept_objects = null
 	sleep(1)
 	world.log << "Clearing mobs..."
 	for (var/mob/mob in world)
 		// Lighting's runtime view singleton must outlive map contents.
-		if (!istype(mob, /mob/new_player) && mob != dview_mob)
+		if (!istype(mob, /mob/new_player) && mob != dview_mob && !(kept && kept[mob]))
 			qdel(mob)
 	sleep(1)
 	world.log << "Clearing objects..."
 	for (var/obj/object in world)
 		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))
+			continue
+		if(kept && kept[object])
 			continue
 		qdel(object)
 	return

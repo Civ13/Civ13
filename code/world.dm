@@ -97,6 +97,9 @@ var/world_is_open = TRUE
 	// A standby world stays off the hub until a handover opens the region's port.
 	if (persistence_restart.standby)
 		world.visibility = FALSE
+		// Before the first yield: the old world's save removes the record once the
+		// host sees this standby answer (standby_prepare.dm).
+		map_storage.read_standby_prepare_hint()
 
 	if (config && config.server_name != null && config.server_suffix && world.port > 0)
 		// dumb and hardcoded but I don't care~

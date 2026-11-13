@@ -292,6 +292,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 /datum/nomads_lifecycle_control/proc/standby_run()
 	set waitfor = FALSE
 	try
+		// The wait's preparation must be finished before the load touches the map.
+		if(hascall(map_storage, "stop_standby_prepare")) call(map_storage, "stop_standby_prepare")()
 		if(persistence_restart.resume_startup())
 			if(persistence_restart.players_ready) announce_restored_round_once()
 		else
