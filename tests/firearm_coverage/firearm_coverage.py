@@ -38,7 +38,7 @@ MODERN = {'revolver', 'pistol', 'rifle_bolt', 'rifle_lever', 'rifle_semiauto',
           'shotgun', 'submachine_gun', 'machine_gun', 'machine_gun_mounted'}
 # Names that mark abstract parents nobody should spawn.
 ABSTRACT_NAMES = {'gun', 'projectile gun', 'automatic weapon', 'semi-automatic rifle',
-                  'bolt-action rifle', 'submachine gun', 'pistol', 'revolver', 'shotgun'}
+                  'bolt-action rifle', 'submachine gun', 'pistol', 'revolver', 'shotgun', 'revolving rifle'}
 
 
 # Calibers that move a type out of the cartridge families whatever its parent.

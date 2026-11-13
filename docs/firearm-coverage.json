@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 444,
-  "modern": 341,
+  "types": 478,
+  "modern": 375,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -15,8 +15,8 @@
    "launcher": 31,
    "machine_gun": 32,
    "machine_gun_mounted": 32,
-   "pistol": 38,
-   "revolver": 27,
+   "pistol": 58,
+   "revolver": 41,
    "rifle_bolt": 66,
    "rifle_lever": 10,
    "rifle_semiauto": 38,
@@ -24,8 +24,8 @@
    "submachine_gun": 91
   },
   "modern_calibers": 62,
-  "migrated": 144,
-  "fixed": 4
+  "migrated": 237,
+  "fixed": 6
  },
  "modern_calibers": [
   "12gauge",
@@ -3089,8 +3089,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/aps",
    "ammo_type": "/obj/item/ammo_casing/a9x18",
-   "family": null,
-   "migration": "pending"
+   "family": "aps",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/aps/receiver",
+   "name": "Stechkin frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x18",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "aps",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/bergmann",
@@ -3102,8 +3115,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/bergmann",
    "ammo_type": "/obj/item/ammo_casing/c8mmnambu",
-   "family": null,
-   "migration": "pending"
+   "family": "bergmann",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/bergmann/receiver",
+   "name": "Bergmann frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "c8mmnambu",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "bergmann",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/blackm1911",
@@ -3115,8 +3141,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m1911",
    "ammo_type": "/obj/item/ammo_casing/a45acp",
-   "family": null,
-   "migration": "pending"
+   "family": "m1911",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/blackm1911/silenced",
@@ -3128,8 +3154,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m1911",
    "ammo_type": "/obj/item/ammo_casing/a45acp",
-   "family": null,
-   "migration": "pending"
+   "family": "m1911",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/borchardt",
@@ -3141,8 +3167,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/borchardt",
    "ammo_type": "/obj/item/ammo_casing/a765x25",
-   "family": null,
-   "migration": "pending"
+   "family": "borchardt",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/borchardt/receiver",
+   "name": "Borchardt frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a765x25",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "borchardt",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/browninghp",
@@ -3154,8 +3193,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/browninghp",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "browninghp",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/browninghp/receiver",
+   "name": "Browning Hi-Power frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "browninghp",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/colthammerless",
@@ -3167,8 +3219,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/colthammerless",
    "ammo_type": "/obj/item/ammo_casing/a32acp",
-   "family": null,
-   "migration": "pending"
+   "family": "colthammerless",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908",
@@ -3180,8 +3232,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/colthammerless/a380acp",
    "ammo_type": "/obj/item/ammo_casing/a380acp",
-   "family": null,
-   "migration": "pending"
+   "family": "colthammerless",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/colthammerless/receiver",
+   "name": "Colt Pocket Hammerless frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a32acp",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "colthammerless",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/deagle",
@@ -3193,8 +3258,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/deagle",
    "ammo_type": "/obj/item/ammo_casing/a50cal",
-   "family": null,
-   "migration": "pending"
+   "family": "deagle",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/deagle/receiver",
+   "name": "Desert Eagle frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a50cal",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "deagle",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/deaglemagnum",
@@ -3206,8 +3284,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/deagle",
    "ammo_type": "/obj/item/ammo_casing/a44magnum",
-   "family": null,
-   "migration": "pending"
+   "family": "deagle",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/glock17",
@@ -3219,8 +3297,21 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/glock17",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "glock",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/glock17/receiver",
+   "name": "Glock frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 17,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "glock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/glock17/silenced",
@@ -3232,8 +3323,8 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/glock17",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "glock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/glock17/standardized",
@@ -3245,8 +3336,8 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/emptymagazine/pistol",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "glock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/iogb7",
@@ -3258,8 +3349,8 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/glock17",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "glock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/jericho941",
@@ -3271,8 +3362,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/jericho",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "jericho",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/jericho941/receiver",
+   "name": "Jericho 941 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "jericho",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/laser",
@@ -3388,8 +3492,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/luger",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "luger",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/luger/receiver",
+   "name": "Luger frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "luger",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/m1911",
@@ -3401,8 +3518,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m1911",
    "ammo_type": "/obj/item/ammo_casing/a45acp",
-   "family": null,
-   "migration": "pending"
+   "family": "m1911",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/m1911/receiver",
+   "name": "M1911 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a45acp",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "m1911",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/m9beretta",
@@ -3414,8 +3544,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m9beretta",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "beretta",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/m9beretta/receiver",
+   "name": "Beretta M9 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "beretta",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/m9beretta/silenced",
@@ -3427,8 +3570,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m9beretta",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "beretta",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/m9beretta/tan",
@@ -3440,8 +3583,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m9beretta",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "beretta",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/makarov",
@@ -3453,8 +3596,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/makarov",
    "ammo_type": "/obj/item/ammo_casing/a9x18",
-   "family": null,
-   "migration": "pending"
+   "family": "makarov",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/makarov/receiver",
+   "name": "Makarov frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x18",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "makarov",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/makarov/silenced",
@@ -3466,8 +3622,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/makarov",
    "ammo_type": "/obj/item/ammo_casing/a9x18",
-   "family": null,
-   "migration": "pending"
+   "family": "makarov",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/mauser",
@@ -3479,8 +3635,21 @@
    "max_shells": 10,
    "magazine_type": "/obj/item/ammo_magazine/mauser",
    "ammo_type": "/obj/item/ammo_casing/a762x25",
-   "family": null,
-   "migration": "pending"
+   "family": "c96",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/mauser/receiver",
+   "name": "Mauser C96 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a762x25",
+   "load_method": 3,
+   "max_shells": 10,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "c96",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/mp443",
@@ -3492,8 +3661,21 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/mp443",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "mp443",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/mp443/receiver",
+   "name": "MP-443 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 17,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mp443",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/nambu",
@@ -3505,8 +3687,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c8mmnambu",
    "ammo_type": "/obj/item/ammo_casing/c8mmnambu",
-   "family": null,
-   "migration": "pending"
+   "family": "nambu",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/nambu/receiver",
+   "name": "Nambu frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "c8mmnambu",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "nambu",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/p220",
@@ -3518,8 +3713,21 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/p220",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "p220",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/p220/receiver",
+   "name": "SIG P220 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a45",
+   "load_method": 4,
+   "max_shells": 7,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "p220",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/p220/silenced",
@@ -3531,8 +3739,8 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/p220",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "p220",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/pl14",
@@ -3544,8 +3752,21 @@
    "max_shells": 16,
    "magazine_type": "/obj/item/ammo_magazine/pl14",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "pl14",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/pl14/receiver",
+   "name": "PL-14 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 16,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "pl14",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/sig250",
@@ -3557,8 +3778,21 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/sig250",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "sig250",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/sig250/receiver",
+   "name": "SIG 250 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 17,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "sig250",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/sti2011",
@@ -3570,8 +3804,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/sti2011",
    "ammo_type": "/obj/item/ammo_casing/a45acp",
-   "family": null,
-   "migration": "pending"
+   "family": "m1911",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/tarus",
@@ -3583,8 +3817,8 @@
    "max_shells": 17,
    "magazine_type": "/obj/item/ammo_magazine/glock17",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "glock",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/taser",
@@ -3609,8 +3843,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/tt30",
    "ammo_type": "/obj/item/ammo_casing/a762x25",
-   "family": null,
-   "migration": "pending"
+   "family": "tt",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/tt30/receiver",
+   "name": "Tokarev frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a762x25",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "tt",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/tt30/silenced",
@@ -3622,8 +3869,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/tt30",
    "ammo_type": "/obj/item/ammo_casing/a762x25",
-   "family": null,
-   "migration": "pending"
+   "family": "tt",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/waltherp38",
@@ -3635,8 +3882,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/walther",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "walther",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/pistol/waltherp38/receiver",
+   "name": "Walther P38 frame",
+   "category": "pistol",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "walther",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/waltherp38/silenced",
@@ -3648,8 +3908,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/walther",
    "ammo_type": "/obj/item/ammo_casing/a9x19",
-   "family": null,
-   "migration": "pending"
+   "family": "walther",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/pistol/ww2",
@@ -3675,8 +3935,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c8mmnambu",
    "ammo_type": "/obj/item/ammo_casing/c8mmnambu",
-   "family": null,
-   "migration": "pending"
+   "family": "nambu",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver",
@@ -3702,8 +3962,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c38",
    "ammo_type": "/obj/item/ammo_casing/a38",
-   "family": null,
-   "migration": "pending"
+   "family": "colt1892",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/colt1892/receiver",
+   "name": "Colt M1892 frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a38",
+   "load_method": 1,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "colt1892",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/coltpolicepositive",
@@ -3715,8 +3988,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c32",
    "ammo_type": "/obj/item/ammo_casing/a32",
-   "family": null,
-   "migration": "pending"
+   "family": "policepositive",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/receiver",
+   "name": "Colt Police Positive frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a32",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "policepositive",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/silenced",
@@ -3728,8 +4014,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c32",
    "ammo_type": "/obj/item/ammo_casing/a32",
-   "family": null,
-   "migration": "pending"
+   "family": "policepositive",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/standardized",
@@ -3741,8 +4027,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c32",
    "ammo_type": "/obj/item/ammo_casing/a32",
-   "family": null,
-   "migration": "pending"
+   "family": "policepositive",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/derringer",
@@ -3754,8 +4040,21 @@
    "max_shells": 2,
    "magazine_type": "/obj/item/ammo_magazine/c41",
    "ammo_type": "/obj/item/ammo_casing/a41",
-   "family": null,
-   "migration": "pending"
+   "family": "derringer",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/derringer/receiver",
+   "name": "Derringer frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a41",
+   "load_method": 1,
+   "max_shells": 2,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "derringer",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/enfieldno2",
@@ -3767,8 +4066,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c41",
    "ammo_type": "/obj/item/ammo_casing/a41",
-   "family": null,
-   "migration": "pending"
+   "family": "enfieldno2",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/enfieldno2/receiver",
+   "name": "Enfield No. 2 frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a41",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "enfieldno2",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/frontier",
@@ -3780,8 +4092,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c44",
    "ammo_type": "/obj/item/ammo_magazine/c44",
-   "family": null,
-   "migration": "pending"
+   "family": "colt_saa",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/graysonfito12",
@@ -3793,8 +4105,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c44magnum",
    "ammo_type": "/obj/item/ammo_magazine/c44magnum",
-   "family": null,
-   "migration": "pending"
+   "family": "mckellen",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/graysonfito12/receiver",
+   "name": "Mckellen frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a44magnum",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mckellen",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/m1892",
@@ -3806,8 +4131,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c8x27",
    "ammo_type": "/obj/item/ammo_casing/a8x27",
-   "family": null,
-   "migration": "pending"
+   "family": "m1892",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/m1892/receiver",
+   "name": "Modele 1892 frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a8x27",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "m1892",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/magnum44",
@@ -3819,8 +4157,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c44magnum",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "magnum44",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/magnum44/receiver",
+   "name": "Magnum 44 frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a44magnum",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "magnum44",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/magnum44/silenced",
@@ -3832,8 +4183,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c44magnum",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "magnum44",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/makeshift",
@@ -3846,7 +4197,8 @@
    "magazine_type": "/obj/item/ammo_magazine/c45",
    "ammo_type": "/obj/item/ammo_casing/a45",
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "crude one-off build with no standard parts"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/nagant_revolver",
@@ -3858,8 +4210,21 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/c762x38mmR",
    "ammo_type": "/obj/item/ammo_casing/a762x38",
-   "family": null,
-   "migration": "pending"
+   "family": "nagant",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/nagant_revolver/receiver",
+   "name": "Nagant frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a762x38",
+   "load_method": 3,
+   "max_shells": 7,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "nagant",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/nagant_revolver/silenced",
@@ -3871,8 +4236,8 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/c762x38mmR",
    "ammo_type": "/obj/item/ammo_casing/a762x38",
-   "family": null,
-   "migration": "pending"
+   "family": "nagant",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/panther",
@@ -3885,7 +4250,8 @@
    "magazine_type": "/obj/item/ammo_magazine/c44p",
    "ammo_type": "/obj/item/ammo_casing/a45",
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "legacy revolver with a placeholder test cartridge"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker",
@@ -3897,8 +4263,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c45",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "colt_saa",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory",
@@ -3910,8 +4276,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c45",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "colt_saa",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/receiver",
+   "name": "Colt Single Action frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a45",
+   "load_method": 1,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "colt_saa",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper",
@@ -3923,8 +4302,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c45",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "colt_saa",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/smithwesson",
@@ -3936,8 +4315,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c32",
    "ammo_type": "/obj/item/ammo_casing/a32",
-   "family": null,
-   "migration": "pending"
+   "family": "smithwesson",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/smithwesson/receiver",
+   "name": "Smith & Wesson frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a32",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "smithwesson",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/snw10",
@@ -3949,8 +4341,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c38",
    "ammo_type": "/obj/item/ammo_casing/a38",
-   "family": null,
-   "migration": "pending"
+   "family": "smithwesson",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/sw3",
@@ -3962,8 +4354,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c32",
    "ammo_type": "/obj/item/ammo_casing/a32",
-   "family": null,
-   "migration": "pending"
+   "family": "smithwesson",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/t26_revolver",
@@ -3975,8 +4367,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c9mm_jap_revolver",
    "ammo_type": "/obj/item/ammo_casing/c9mm_jap_revolver",
-   "family": null,
-   "migration": "pending"
+   "family": "type26",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/t26_revolver/receiver",
+   "name": "Type 26 frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "c9mm_jap_revolver",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "type26",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/taurus",
@@ -3988,8 +4393,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c45",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "judge",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/taurus/receiver",
+   "name": "Taurus Judge frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a45",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "judge",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/webley4",
@@ -4001,8 +4419,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c455",
    "ammo_type": "/obj/item/ammo_casing/a455",
-   "family": null,
-   "migration": "pending"
+   "family": "webley",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/webley4/receiver",
+   "name": "Webley frame",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a455",
+   "load_method": 3,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "webley",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolving",
@@ -4015,7 +4446,8 @@
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/a45",
    "family": null,
-   "migration": "pending"
+   "migration": "pending",
+   "review": "abstract-looking name; confirm whether players can obtain it"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolving/colt",
@@ -4027,8 +4459,21 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/c44",
    "ammo_type": "/obj/item/ammo_casing/a45",
-   "family": null,
-   "migration": "pending"
+   "family": "revolving",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolving/colt/receiver",
+   "name": "Colt Revolving receiver",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a44",
+   "load_method": 1,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "revolving",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic",

@@ -429,6 +429,335 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 			"caliber" = "a4570", "ammo_type" = /obj/item/ammo_casing/a4570),
 		list("id" = "lever/furniture/stock", "family" = "lever", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Lever-action stock",
 			"desc" = "A wooden lever-action rifle stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
+		list("id" = "nambu/action", "family" = "nambu", "slot" = FIREARM_SLOT_ACTION, "name" = "Nambu slide",
+			"desc" = "The slide of a Nambu pistol. Fits any Nambu frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "nambu/barrel/8mm", "family" = "nambu", "slot" = FIREARM_SLOT_BARREL, "name" = "Nambu barrel (8mm Nambu)",
+			"desc" = "A 8mm Nambu barrel for a Nambu pistol. Pair it with a 8mm Nambu magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "c8mmnambu"),
+		list("id" = "nambu/feed/8mm", "family" = "nambu", "slot" = FIREARM_SLOT_FEED, "name" = "Nambu magazine well (8mm Nambu)",
+			"desc" = "A magazine well for 8mm Nambu Nambu magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "c8mmnambu", "good_mags" = list(/obj/item/ammo_magazine/c8mmnambu, /obj/item/ammo_magazine/c8mmnambu/empty), "ammo_type" = /obj/item/ammo_casing/c8mmnambu),
+		list("id" = "nambu/furniture/grip", "family" = "nambu", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Nambu grip",
+			"desc" = "A wooden Nambu grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "bergmann/action", "family" = "bergmann", "slot" = FIREARM_SLOT_ACTION, "name" = "Bergmann slide",
+			"desc" = "The slide of a Bergmann pistol. Fits any Bergmann frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "bergmann/barrel/8mm", "family" = "bergmann", "slot" = FIREARM_SLOT_BARREL, "name" = "Bergmann barrel (8mm Nambu)",
+			"desc" = "A 8mm Nambu barrel for a Bergmann pistol. Pair it with a 8mm Nambu magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "c8mmnambu"),
+		list("id" = "bergmann/feed/8mm", "family" = "bergmann", "slot" = FIREARM_SLOT_FEED, "name" = "Bergmann magazine well (8mm Nambu)",
+			"desc" = "A magazine well for 8mm Nambu Bergmann magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "c8mmnambu", "good_mags" = list(/obj/item/ammo_magazine/bergmann), "ammo_type" = /obj/item/ammo_casing/c8mmnambu),
+		list("id" = "bergmann/furniture/grip", "family" = "bergmann", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Bergmann grip",
+			"desc" = "A wooden Bergmann grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "luger/action", "family" = "luger", "slot" = FIREARM_SLOT_ACTION, "name" = "Luger slide",
+			"desc" = "The slide of a Luger pistol. Fits any Luger frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "luger/barrel/9x19", "family" = "luger", "slot" = FIREARM_SLOT_BARREL, "name" = "Luger barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Luger pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "luger/feed/9x19", "family" = "luger", "slot" = FIREARM_SLOT_FEED, "name" = "Luger magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Luger magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/luger, /obj/item/ammo_magazine/luger/empty), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "luger/furniture/grip", "family" = "luger", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Luger grip",
+			"desc" = "A wooden Luger grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "walther/action", "family" = "walther", "slot" = FIREARM_SLOT_ACTION, "name" = "Walther P38 slide",
+			"desc" = "The slide of a Walther P38 pistol. Fits any Walther P38 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "walther/barrel/9x19", "family" = "walther", "slot" = FIREARM_SLOT_BARREL, "name" = "Walther P38 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Walther P38 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "walther/feed/9x19", "family" = "walther", "slot" = FIREARM_SLOT_FEED, "name" = "Walther P38 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Walther P38 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/walther), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "walther/furniture/grip", "family" = "walther", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Walther P38 grip",
+			"desc" = "A wooden Walther P38 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "browninghp/action", "family" = "browninghp", "slot" = FIREARM_SLOT_ACTION, "name" = "Browning Hi-Power slide",
+			"desc" = "The slide of a Browning Hi-Power pistol. Fits any Browning Hi-Power frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "browninghp/barrel/9x19", "family" = "browninghp", "slot" = FIREARM_SLOT_BARREL, "name" = "Browning Hi-Power barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Browning Hi-Power pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "browninghp/feed/9x19", "family" = "browninghp", "slot" = FIREARM_SLOT_FEED, "name" = "Browning Hi-Power magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Browning Hi-Power magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/browninghp), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "browninghp/furniture/grip", "family" = "browninghp", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Browning Hi-Power grip",
+			"desc" = "A wooden Browning Hi-Power grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "c96/action", "family" = "c96", "slot" = FIREARM_SLOT_ACTION, "name" = "Mauser C96 slide",
+			"desc" = "The slide of a Mauser C96 pistol. Fits any Mauser C96 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "c96/barrel/762x25", "family" = "c96", "slot" = FIREARM_SLOT_BARREL, "name" = "Mauser C96 barrel (7.62x25mm)",
+			"desc" = "A 7.62x25mm barrel for a Mauser C96 pistol. Pair it with a 7.62x25mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a762x25"),
+		list("id" = "c96/feed/762x25", "family" = "c96", "slot" = FIREARM_SLOT_FEED, "name" = "Mauser C96 magazine well (7.62x25mm)",
+			"desc" = "A fixed ten-round magazine loaded from stripper clips.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x25", "good_mags" = list(/obj/item/ammo_magazine/mauser), "ammo_type" = /obj/item/ammo_casing/a762x25),
+		list("id" = "c96/furniture/grip", "family" = "c96", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Mauser C96 grip",
+			"desc" = "A wooden Mauser C96 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "borchardt/action", "family" = "borchardt", "slot" = FIREARM_SLOT_ACTION, "name" = "Borchardt slide",
+			"desc" = "The slide of a Borchardt pistol. Fits any Borchardt frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "borchardt/barrel/765x25", "family" = "borchardt", "slot" = FIREARM_SLOT_BARREL, "name" = "Borchardt barrel (7.65x25mm)",
+			"desc" = "A 7.65x25mm barrel for a Borchardt pistol. Pair it with a 7.65x25mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a765x25"),
+		list("id" = "borchardt/feed/765x25", "family" = "borchardt", "slot" = FIREARM_SLOT_FEED, "name" = "Borchardt magazine well (7.65x25mm)",
+			"desc" = "A magazine well for 7.65x25mm Borchardt magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a765x25", "good_mags" = list(/obj/item/ammo_magazine/borchardt, /obj/item/ammo_magazine/borchardt/empty), "ammo_type" = /obj/item/ammo_casing/a765x25),
+		list("id" = "borchardt/furniture/grip", "family" = "borchardt", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Borchardt grip",
+			"desc" = "A wooden Borchardt grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "colthammerless/action", "family" = "colthammerless", "slot" = FIREARM_SLOT_ACTION, "name" = "Colt Pocket Hammerless slide",
+			"desc" = "The slide of a Colt Pocket Hammerless pistol. Fits any Colt Pocket Hammerless frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "colthammerless/barrel/32acp", "family" = "colthammerless", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Pocket Hammerless barrel (.32 ACP)",
+			"desc" = "A .32 ACP barrel for a Colt Pocket Hammerless pistol. Pair it with a .32 ACP magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a32acp"),
+		list("id" = "colthammerless/barrel/380acp", "family" = "colthammerless", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Pocket Hammerless barrel (.380 ACP)",
+			"desc" = "A .380 ACP barrel for a Colt Pocket Hammerless pistol. Pair it with a .380 ACP magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a380acp"),
+		list("id" = "colthammerless/feed/32acp", "family" = "colthammerless", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Pocket Hammerless magazine well (.32 ACP)",
+			"desc" = "A magazine well for .32 ACP Colt Pocket Hammerless magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a32acp", "good_mags" = list(/obj/item/ammo_magazine/colthammerless), "ammo_type" = /obj/item/ammo_casing/a32acp),
+		list("id" = "colthammerless/feed/380acp", "family" = "colthammerless", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Pocket Hammerless magazine well (.380 ACP)",
+			"desc" = "A magazine well for .380 ACP Colt Pocket Hammerless magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a380acp", "good_mags" = list(/obj/item/ammo_magazine/colthammerless/a380acp), "ammo_type" = /obj/item/ammo_casing/a380acp),
+		list("id" = "colthammerless/furniture/grip", "family" = "colthammerless", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt Pocket Hammerless grip",
+			"desc" = "A wooden Colt Pocket Hammerless grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "m1911/action", "family" = "m1911", "slot" = FIREARM_SLOT_ACTION, "name" = "M1911 slide",
+			"desc" = "The slide of a M1911 pistol. Fits any M1911 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "m1911/barrel/45acp", "family" = "m1911", "slot" = FIREARM_SLOT_BARREL, "name" = "M1911 barrel (.45 ACP)",
+			"desc" = "A .45 ACP barrel for a M1911 pistol. Pair it with a .45 ACP magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a45acp"),
+		list("id" = "m1911/feed/45acp", "family" = "m1911", "slot" = FIREARM_SLOT_FEED, "name" = "M1911 magazine well (.45 ACP)",
+			"desc" = "A magazine well for .45 ACP M1911 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45acp", "good_mags" = list(/obj/item/ammo_magazine/m1911, /obj/item/ammo_magazine/m1911/empty), "ammo_type" = /obj/item/ammo_casing/a45acp),
+		list("id" = "m1911/feed/45acp_2011", "family" = "m1911", "slot" = FIREARM_SLOT_FEED, "name" = "M1911 2011 grip module (.45 ACP)",
+			"desc" = "A double-stack 2011 grip module for STI 2011 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45acp", "good_mags" = list(/obj/item/ammo_magazine/sti2011), "ammo_type" = /obj/item/ammo_casing/a45acp),
+		list("id" = "m1911/furniture/grip", "family" = "m1911", "slot" = FIREARM_SLOT_FURNITURE, "name" = "M1911 grip",
+			"desc" = "A wooden M1911 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "tt/action", "family" = "tt", "slot" = FIREARM_SLOT_ACTION, "name" = "Tokarev slide",
+			"desc" = "The slide of a Tokarev pistol. Fits any Tokarev frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "tt/barrel/762x25", "family" = "tt", "slot" = FIREARM_SLOT_BARREL, "name" = "Tokarev barrel (7.62x25mm)",
+			"desc" = "A 7.62x25mm barrel for a Tokarev pistol. Pair it with a 7.62x25mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a762x25"),
+		list("id" = "tt/feed/762x25", "family" = "tt", "slot" = FIREARM_SLOT_FEED, "name" = "Tokarev magazine well (7.62x25mm)",
+			"desc" = "A magazine well for 7.62x25mm Tokarev magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a762x25", "good_mags" = list(/obj/item/ammo_magazine/tt30, /obj/item/ammo_magazine/tt30ll, /obj/item/ammo_magazine/tt30/empty, /obj/item/ammo_magazine/tt30ll/rubber), "ammo_type" = /obj/item/ammo_casing/a762x25),
+		list("id" = "tt/furniture/grip", "family" = "tt", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Tokarev grip",
+			"desc" = "A wooden Tokarev grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "makarov/action", "family" = "makarov", "slot" = FIREARM_SLOT_ACTION, "name" = "Makarov slide",
+			"desc" = "The slide of a Makarov pistol. Fits any Makarov frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "makarov/barrel/9x18", "family" = "makarov", "slot" = FIREARM_SLOT_BARREL, "name" = "Makarov barrel (9x18mm)",
+			"desc" = "A 9x18mm barrel for a Makarov pistol. Pair it with a 9x18mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x18"),
+		list("id" = "makarov/feed/9x18", "family" = "makarov", "slot" = FIREARM_SLOT_FEED, "name" = "Makarov magazine well (9x18mm)",
+			"desc" = "A magazine well for 9x18mm Makarov magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x18", "good_mags" = list(/obj/item/ammo_magazine/makarov, /obj/item/ammo_magazine/makarov/empty), "ammo_type" = /obj/item/ammo_casing/a9x18),
+		list("id" = "makarov/furniture/grip", "family" = "makarov", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Makarov grip",
+			"desc" = "A polymer Makarov grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "aps/action", "family" = "aps", "slot" = FIREARM_SLOT_ACTION, "name" = "Stechkin slide",
+			"desc" = "The slide of a Stechkin pistol. Fits any Stechkin frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "aps/barrel/9x18", "family" = "aps", "slot" = FIREARM_SLOT_BARREL, "name" = "Stechkin barrel (9x18mm)",
+			"desc" = "A 9x18mm barrel for a Stechkin pistol. Pair it with a 9x18mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x18"),
+		list("id" = "aps/feed/9x18", "family" = "aps", "slot" = FIREARM_SLOT_FEED, "name" = "Stechkin magazine well (9x18mm)",
+			"desc" = "A magazine well for 9x18mm Stechkin magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x18", "good_mags" = list(/obj/item/ammo_magazine/aps, /obj/item/ammo_magazine/aps/empty), "ammo_type" = /obj/item/ammo_casing/a9x18),
+		list("id" = "aps/furniture/grip", "family" = "aps", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Stechkin grip",
+			"desc" = "A polymer Stechkin grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "glock/action", "family" = "glock", "slot" = FIREARM_SLOT_ACTION, "name" = "Glock slide",
+			"desc" = "The slide of a Glock pistol. Fits any Glock frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "glock/barrel/9x19", "family" = "glock", "slot" = FIREARM_SLOT_BARREL, "name" = "Glock barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Glock pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "glock/feed/9x19", "family" = "glock", "slot" = FIREARM_SLOT_FEED, "name" = "Glock magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Glock magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/glock17), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "glock/furniture/grip", "family" = "glock", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Glock grip",
+			"desc" = "A polymer Glock grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "beretta/action", "family" = "beretta", "slot" = FIREARM_SLOT_ACTION, "name" = "Beretta M9 slide",
+			"desc" = "The slide of a Beretta M9 pistol. Fits any Beretta M9 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "beretta/barrel/9x19", "family" = "beretta", "slot" = FIREARM_SLOT_BARREL, "name" = "Beretta M9 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Beretta M9 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "beretta/feed/9x19", "family" = "beretta", "slot" = FIREARM_SLOT_FEED, "name" = "Beretta M9 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Beretta M9 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/m9beretta), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "beretta/furniture/grip", "family" = "beretta", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Beretta M9 grip",
+			"desc" = "A polymer Beretta M9 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "jericho/action", "family" = "jericho", "slot" = FIREARM_SLOT_ACTION, "name" = "Jericho 941 slide",
+			"desc" = "The slide of a Jericho 941 pistol. Fits any Jericho 941 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "jericho/barrel/9x19", "family" = "jericho", "slot" = FIREARM_SLOT_BARREL, "name" = "Jericho 941 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a Jericho 941 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "jericho/feed/9x19", "family" = "jericho", "slot" = FIREARM_SLOT_FEED, "name" = "Jericho 941 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm Jericho 941 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/jericho), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "jericho/furniture/grip", "family" = "jericho", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Jericho 941 grip",
+			"desc" = "A polymer Jericho 941 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "sig250/action", "family" = "sig250", "slot" = FIREARM_SLOT_ACTION, "name" = "SIG 250 slide",
+			"desc" = "The slide of a SIG 250 pistol. Fits any SIG 250 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "sig250/barrel/9x19", "family" = "sig250", "slot" = FIREARM_SLOT_BARREL, "name" = "SIG 250 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a SIG 250 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "sig250/feed/9x19", "family" = "sig250", "slot" = FIREARM_SLOT_FEED, "name" = "SIG 250 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm SIG 250 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/sig250), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "sig250/furniture/grip", "family" = "sig250", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SIG 250 grip",
+			"desc" = "A polymer SIG 250 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "p220/action", "family" = "p220", "slot" = FIREARM_SLOT_ACTION, "name" = "SIG P220 slide",
+			"desc" = "The slide of a SIG P220 pistol. Fits any SIG P220 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "p220/barrel/45", "family" = "p220", "slot" = FIREARM_SLOT_BARREL, "name" = "SIG P220 barrel (.45)",
+			"desc" = "A .45 barrel for a SIG P220 pistol. Pair it with a .45 magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a45"),
+		list("id" = "p220/feed/45", "family" = "p220", "slot" = FIREARM_SLOT_FEED, "name" = "SIG P220 magazine well (.45)",
+			"desc" = "A magazine well for .45 SIG P220 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a45", "good_mags" = list(/obj/item/ammo_magazine/p220), "ammo_type" = /obj/item/ammo_casing/a45),
+		list("id" = "p220/furniture/grip", "family" = "p220", "slot" = FIREARM_SLOT_FURNITURE, "name" = "SIG P220 grip",
+			"desc" = "A polymer SIG P220 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "pl14/action", "family" = "pl14", "slot" = FIREARM_SLOT_ACTION, "name" = "PL-14 slide",
+			"desc" = "The slide of a PL-14 pistol. Fits any PL-14 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "pl14/barrel/9x19", "family" = "pl14", "slot" = FIREARM_SLOT_BARREL, "name" = "PL-14 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a PL-14 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "pl14/feed/9x19", "family" = "pl14", "slot" = FIREARM_SLOT_FEED, "name" = "PL-14 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm PL-14 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/pl14), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "pl14/furniture/grip", "family" = "pl14", "slot" = FIREARM_SLOT_FURNITURE, "name" = "PL-14 grip",
+			"desc" = "A polymer PL-14 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "mp443/action", "family" = "mp443", "slot" = FIREARM_SLOT_ACTION, "name" = "MP-443 slide",
+			"desc" = "The slide of a MP-443 pistol. Fits any MP-443 frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "mp443/barrel/9x19", "family" = "mp443", "slot" = FIREARM_SLOT_BARREL, "name" = "MP-443 barrel (9x19mm)",
+			"desc" = "A 9x19mm barrel for a MP-443 pistol. Pair it with a 9x19mm magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a9x19"),
+		list("id" = "mp443/feed/9x19", "family" = "mp443", "slot" = FIREARM_SLOT_FEED, "name" = "MP-443 magazine well (9x19mm)",
+			"desc" = "A magazine well for 9x19mm MP-443 magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a9x19", "good_mags" = list(/obj/item/ammo_magazine/mp443), "ammo_type" = /obj/item/ammo_casing/a9x19),
+		list("id" = "mp443/furniture/grip", "family" = "mp443", "slot" = FIREARM_SLOT_FURNITURE, "name" = "MP-443 grip",
+			"desc" = "A polymer MP-443 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "deagle/action", "family" = "deagle", "slot" = FIREARM_SLOT_ACTION, "name" = "Desert Eagle slide",
+			"desc" = "The slide of a Desert Eagle pistol. Fits any Desert Eagle frame.", "icon_state" = "Semi-Auto (small)"),
+		list("id" = "deagle/barrel/50ae", "family" = "deagle", "slot" = FIREARM_SLOT_BARREL, "name" = "Desert Eagle barrel (.50 AE)",
+			"desc" = "A .50 AE barrel for a Desert Eagle pistol. Pair it with a .50 AE magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a50cal"),
+		list("id" = "deagle/barrel/44magnum", "family" = "deagle", "slot" = FIREARM_SLOT_BARREL, "name" = "Desert Eagle barrel (.44 Magnum)",
+			"desc" = "A .44 Magnum barrel for a Desert Eagle pistol. Pair it with a .44 Magnum magazine well.", "icon_state" = "Pistol Barrel", "caliber" = "a44magnum"),
+		list("id" = "deagle/feed/50ae", "family" = "deagle", "slot" = FIREARM_SLOT_FEED, "name" = "Desert Eagle magazine well (.50 AE)",
+			"desc" = "A magazine well for .50 AE Desert Eagle magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a50cal", "good_mags" = list(/obj/item/ammo_magazine/deagle), "ammo_type" = /obj/item/ammo_casing/a50cal),
+		list("id" = "deagle/feed/44magnum", "family" = "deagle", "slot" = FIREARM_SLOT_FEED, "name" = "Desert Eagle magazine well (.44 Magnum)",
+			"desc" = "A magazine well for .44 Magnum Desert Eagle magazines.", "icon_state" = "External Magazine_unloaded",
+			"caliber" = "a44magnum", "good_mags" = list(/obj/item/ammo_magazine/deaglemagnum), "ammo_type" = /obj/item/ammo_casing/a44magnum),
+		list("id" = "deagle/furniture/grip", "family" = "deagle", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Desert Eagle grip",
+			"desc" = "A polymer Desert Eagle grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "nagant/action", "family" = "nagant", "slot" = FIREARM_SLOT_ACTION, "name" = "Nagant lockwork",
+			"desc" = "The lockwork of a Nagant revolver. Fits any Nagant frame.", "icon_state" = "Revolver"),
+		list("id" = "nagant/barrel/762x38", "family" = "nagant", "slot" = FIREARM_SLOT_BARREL, "name" = "Nagant barrel (7.62x38mmR)",
+			"desc" = "A 7.62x38mmR barrel for a Nagant revolver. Pair it with a 7.62x38mmR cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a762x38"),
+		list("id" = "nagant/feed/762x38", "family" = "nagant", "slot" = FIREARM_SLOT_FEED, "name" = "Nagant cylinder (7.62x38mmR)",
+			"desc" = "A 7.62x38mmR cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a762x38", "ammo_type" = /obj/item/ammo_casing/a762x38),
+		list("id" = "nagant/furniture/grip", "family" = "nagant", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Nagant grip",
+			"desc" = "A wooden Nagant grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "m1892/action", "family" = "m1892", "slot" = FIREARM_SLOT_ACTION, "name" = "Modele 1892 lockwork",
+			"desc" = "The lockwork of a Modele 1892 revolver. Fits any Modele 1892 frame.", "icon_state" = "Revolver"),
+		list("id" = "m1892/barrel/8x27", "family" = "m1892", "slot" = FIREARM_SLOT_BARREL, "name" = "Modele 1892 barrel (8x27mmR)",
+			"desc" = "A 8x27mmR barrel for a Modele 1892 revolver. Pair it with a 8x27mmR cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a8x27"),
+		list("id" = "m1892/feed/8x27", "family" = "m1892", "slot" = FIREARM_SLOT_FEED, "name" = "Modele 1892 cylinder (8x27mmR)",
+			"desc" = "A 8x27mmR cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a8x27", "ammo_type" = /obj/item/ammo_casing/a8x27),
+		list("id" = "m1892/furniture/grip", "family" = "m1892", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Modele 1892 grip",
+			"desc" = "A wooden Modele 1892 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "colt_saa/action", "family" = "colt_saa", "slot" = FIREARM_SLOT_ACTION, "name" = "Colt Single Action lockwork",
+			"desc" = "The lockwork of a Colt Single Action revolver. Fits any Colt Single Action frame.", "icon_state" = "Revolver"),
+		list("id" = "colt_saa/barrel/45", "family" = "colt_saa", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Single Action barrel (.45 Colt)",
+			"desc" = "A .45 Colt barrel for a Colt Single Action revolver. Pair it with a .45 Colt cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a45"),
+		list("id" = "colt_saa/barrel/44", "family" = "colt_saa", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Single Action barrel (.44-40)",
+			"desc" = "A .44-40 barrel for a Colt Single Action revolver. Pair it with a .44-40 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a44"),
+		list("id" = "colt_saa/feed/45", "family" = "colt_saa", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Single Action cylinder (.45 Colt)",
+			"desc" = "A .45 Colt cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a45", "ammo_type" = /obj/item/ammo_casing/a45),
+		list("id" = "colt_saa/feed/44", "family" = "colt_saa", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Single Action cylinder (.44-40)",
+			"desc" = "A .44-40 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a44", "ammo_type" = /obj/item/ammo_casing/a44),
+		list("id" = "colt_saa/furniture/grip", "family" = "colt_saa", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt Single Action grip",
+			"desc" = "A wooden Colt Single Action grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "colt1892/action", "family" = "colt1892", "slot" = FIREARM_SLOT_ACTION, "name" = "Colt M1892 lockwork",
+			"desc" = "The lockwork of a Colt M1892 revolver. Fits any Colt M1892 frame.", "icon_state" = "Revolver"),
+		list("id" = "colt1892/barrel/38", "family" = "colt1892", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt M1892 barrel (.38)",
+			"desc" = "A .38 barrel for a Colt M1892 revolver. Pair it with a .38 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a38"),
+		list("id" = "colt1892/feed/38", "family" = "colt1892", "slot" = FIREARM_SLOT_FEED, "name" = "Colt M1892 cylinder (.38)",
+			"desc" = "A .38 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a38", "ammo_type" = /obj/item/ammo_casing/a38),
+		list("id" = "colt1892/furniture/grip", "family" = "colt1892", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt M1892 grip",
+			"desc" = "A wooden Colt M1892 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "policepositive/action", "family" = "policepositive", "slot" = FIREARM_SLOT_ACTION, "name" = "Colt Police Positive lockwork",
+			"desc" = "The lockwork of a Colt Police Positive revolver. Fits any Colt Police Positive frame.", "icon_state" = "Revolver"),
+		list("id" = "policepositive/barrel/32", "family" = "policepositive", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Police Positive barrel (.32)",
+			"desc" = "A .32 barrel for a Colt Police Positive revolver. Pair it with a .32 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a32"),
+		list("id" = "policepositive/feed/32", "family" = "policepositive", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Police Positive cylinder (.32)",
+			"desc" = "A .32 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a32", "ammo_type" = /obj/item/ammo_casing/a32),
+		list("id" = "policepositive/furniture/grip", "family" = "policepositive", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt Police Positive grip",
+			"desc" = "A wooden Colt Police Positive grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "smithwesson/action", "family" = "smithwesson", "slot" = FIREARM_SLOT_ACTION, "name" = "Smith & Wesson lockwork",
+			"desc" = "The lockwork of a Smith & Wesson revolver. Fits any Smith & Wesson frame.", "icon_state" = "Revolver"),
+		list("id" = "smithwesson/barrel/32", "family" = "smithwesson", "slot" = FIREARM_SLOT_BARREL, "name" = "Smith & Wesson barrel (.32)",
+			"desc" = "A .32 barrel for a Smith & Wesson revolver. Pair it with a .32 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a32"),
+		list("id" = "smithwesson/barrel/38", "family" = "smithwesson", "slot" = FIREARM_SLOT_BARREL, "name" = "Smith & Wesson barrel (.38)",
+			"desc" = "A .38 barrel for a Smith & Wesson revolver. Pair it with a .38 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a38"),
+		list("id" = "smithwesson/feed/32", "family" = "smithwesson", "slot" = FIREARM_SLOT_FEED, "name" = "Smith & Wesson cylinder (.32)",
+			"desc" = "A .32 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a32", "ammo_type" = /obj/item/ammo_casing/a32),
+		list("id" = "smithwesson/feed/38", "family" = "smithwesson", "slot" = FIREARM_SLOT_FEED, "name" = "Smith & Wesson cylinder (.38)",
+			"desc" = "A .38 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a38", "ammo_type" = /obj/item/ammo_casing/a38),
+		list("id" = "smithwesson/furniture/grip", "family" = "smithwesson", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Smith & Wesson grip",
+			"desc" = "A wooden Smith & Wesson grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "enfieldno2/action", "family" = "enfieldno2", "slot" = FIREARM_SLOT_ACTION, "name" = "Enfield No. 2 lockwork",
+			"desc" = "The lockwork of an Enfield No. 2 revolver. Fits any Enfield No. 2 frame.", "icon_state" = "Revolver"),
+		list("id" = "enfieldno2/barrel/41", "family" = "enfieldno2", "slot" = FIREARM_SLOT_BARREL, "name" = "Enfield No. 2 barrel (.41)",
+			"desc" = "A .41 barrel for an Enfield No. 2 revolver. Pair it with a .41 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a41"),
+		list("id" = "enfieldno2/feed/41", "family" = "enfieldno2", "slot" = FIREARM_SLOT_FEED, "name" = "Enfield No. 2 cylinder (.41)",
+			"desc" = "A .41 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a41", "ammo_type" = /obj/item/ammo_casing/a41),
+		list("id" = "enfieldno2/furniture/grip", "family" = "enfieldno2", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Enfield No. 2 grip",
+			"desc" = "A wooden Enfield No. 2 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "webley/action", "family" = "webley", "slot" = FIREARM_SLOT_ACTION, "name" = "Webley lockwork",
+			"desc" = "The lockwork of a Webley revolver. Fits any Webley frame.", "icon_state" = "Revolver"),
+		list("id" = "webley/barrel/455", "family" = "webley", "slot" = FIREARM_SLOT_BARREL, "name" = "Webley barrel (.455 Webley)",
+			"desc" = "A .455 Webley barrel for a Webley revolver. Pair it with a .455 Webley cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a455"),
+		list("id" = "webley/feed/455", "family" = "webley", "slot" = FIREARM_SLOT_FEED, "name" = "Webley cylinder (.455 Webley)",
+			"desc" = "A .455 Webley cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a455", "ammo_type" = /obj/item/ammo_casing/a455),
+		list("id" = "webley/furniture/grip", "family" = "webley", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Webley grip",
+			"desc" = "A wooden Webley grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "type26/action", "family" = "type26", "slot" = FIREARM_SLOT_ACTION, "name" = "Type 26 lockwork",
+			"desc" = "The lockwork of a Type 26 revolver. Fits any Type 26 frame.", "icon_state" = "Revolver"),
+		list("id" = "type26/barrel/9mm", "family" = "type26", "slot" = FIREARM_SLOT_BARREL, "name" = "Type 26 barrel (9mm Japanese)",
+			"desc" = "A 9mm Japanese barrel for a Type 26 revolver. Pair it with a 9mm Japanese cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "c9mm_jap_revolver"),
+		list("id" = "type26/feed/9mm", "family" = "type26", "slot" = FIREARM_SLOT_FEED, "name" = "Type 26 cylinder (9mm Japanese)",
+			"desc" = "A 9mm Japanese cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "c9mm_jap_revolver", "ammo_type" = /obj/item/ammo_casing/c9mm_jap_revolver),
+		list("id" = "type26/furniture/grip", "family" = "type26", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Type 26 grip",
+			"desc" = "A wooden Type 26 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "derringer/action", "family" = "derringer", "slot" = FIREARM_SLOT_ACTION, "name" = "Derringer lockwork",
+			"desc" = "The lockwork of a Derringer revolver. Fits any Derringer frame.", "icon_state" = "Revolver"),
+		list("id" = "derringer/barrel/41", "family" = "derringer", "slot" = FIREARM_SLOT_BARREL, "name" = "Derringer barrel (.41)",
+			"desc" = "A .41 barrel for a Derringer revolver. Pair it with a .41 cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a41"),
+		list("id" = "derringer/feed/41", "family" = "derringer", "slot" = FIREARM_SLOT_FEED, "name" = "Derringer cylinder (.41)",
+			"desc" = "A two-shot over-and-under breech, loaded a round at a time.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a41", "ammo_type" = /obj/item/ammo_casing/a41),
+		list("id" = "derringer/furniture/grip", "family" = "derringer", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Derringer grip",
+			"desc" = "A wooden Derringer grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "magnum44/action", "family" = "magnum44", "slot" = FIREARM_SLOT_ACTION, "name" = "Magnum 44 lockwork",
+			"desc" = "The lockwork of a Magnum 44 revolver. Fits any Magnum 44 frame.", "icon_state" = "Revolver"),
+		list("id" = "magnum44/barrel/44magnum", "family" = "magnum44", "slot" = FIREARM_SLOT_BARREL, "name" = "Magnum 44 barrel (.44 Magnum)",
+			"desc" = "A .44 Magnum barrel for a Magnum 44 revolver. Pair it with a .44 Magnum cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a44magnum"),
+		list("id" = "magnum44/feed/44magnum", "family" = "magnum44", "slot" = FIREARM_SLOT_FEED, "name" = "Magnum 44 cylinder (.44 Magnum)",
+			"desc" = "A .44 Magnum cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a44magnum", "ammo_type" = /obj/item/ammo_casing/a44magnum),
+		list("id" = "magnum44/furniture/grip", "family" = "magnum44", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Magnum 44 grip",
+			"desc" = "A polymer Magnum 44 grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "mckellen/action", "family" = "mckellen", "slot" = FIREARM_SLOT_ACTION, "name" = "Mckellen lockwork",
+			"desc" = "The lockwork of a Mckellen revolver. Fits any Mckellen frame.", "icon_state" = "Revolver"),
+		list("id" = "mckellen/barrel/44magnum", "family" = "mckellen", "slot" = FIREARM_SLOT_BARREL, "name" = "Mckellen barrel (.44 Magnum)",
+			"desc" = "A .44 Magnum barrel for a Mckellen revolver. Pair it with a .44 Magnum cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a44magnum"),
+		list("id" = "mckellen/feed/44magnum", "family" = "mckellen", "slot" = FIREARM_SLOT_FEED, "name" = "Mckellen cylinder (.44 Magnum)",
+			"desc" = "A .44 Magnum cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a44magnum", "ammo_type" = /obj/item/ammo_casing/a44magnum),
+		list("id" = "mckellen/furniture/grip", "family" = "mckellen", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Mckellen grip",
+			"desc" = "A polymer Mckellen grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "judge/action", "family" = "judge", "slot" = FIREARM_SLOT_ACTION, "name" = "Taurus Judge lockwork",
+			"desc" = "The lockwork of a Taurus Judge revolver. Fits any Taurus Judge frame.", "icon_state" = "Revolver"),
+		list("id" = "judge/barrel/45", "family" = "judge", "slot" = FIREARM_SLOT_BARREL, "name" = "Taurus Judge barrel (.45 Colt)",
+			"desc" = "A .45 Colt barrel for a Taurus Judge revolver. Pair it with a .45 Colt cylinder.", "icon_state" = "Pistol Barrel", "caliber" = "a45"),
+		list("id" = "judge/feed/45", "family" = "judge", "slot" = FIREARM_SLOT_FEED, "name" = "Taurus Judge cylinder (.45 Colt)",
+			"desc" = "A .45 Colt cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a45", "ammo_type" = /obj/item/ammo_casing/a45),
+		list("id" = "judge/furniture/grip", "family" = "judge", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Taurus Judge grip",
+			"desc" = "A polymer Taurus Judge grip.", "icon_state" = "Pistol Grip", "ergonomics" = 1),
+		list("id" = "revolving/action", "family" = "revolving", "slot" = FIREARM_SLOT_ACTION, "name" = "Colt Revolving lockwork",
+			"desc" = "The lockwork of a Colt Revolving rifle. Fits any Colt Revolving receiver.", "icon_state" = "Revolver"),
+		list("id" = "revolving/barrel/44", "family" = "revolving", "slot" = FIREARM_SLOT_BARREL, "name" = "Colt Revolving barrel (.44-40)",
+			"desc" = "A .44-40 barrel for a Colt Revolving rifle. Pair it with a .44-40 cylinder.", "icon_state" = "Rifle Barrel", "caliber" = "a44"),
+		list("id" = "revolving/feed/44", "family" = "revolving", "slot" = FIREARM_SLOT_FEED, "name" = "Colt Revolving cylinder (.44-40)",
+			"desc" = "A .44-40 cylinder, loaded a round at a time or from a speedloader.", "icon_state" = "Internal Magazine_unloaded",
+			"caliber" = "a44", "ammo_type" = /obj/item/ammo_casing/a44),
+		list("id" = "revolving/furniture/stock", "family" = "revolving", "slot" = FIREARM_SLOT_FURNITURE, "name" = "Colt Revolving stock",
+			"desc" = "A wooden Colt Revolving stock.", "icon_state" = "RIfle Wooden Stock", "ergonomics" = 1),
 	))
 		var/datum/firearm_component/C = new(data)
 		firearm_component_defs[C.id] = C
@@ -481,6 +810,45 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"lever_44" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/44", FIREARM_SLOT_FEED = "lever/feed/44", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
 		"lever_4570" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/4570", FIREARM_SLOT_FEED = "lever/feed/4570", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
 		"lever_357" = list(FIREARM_SLOT_ACTION = "lever/action", FIREARM_SLOT_BARREL = "lever/barrel/357", FIREARM_SLOT_FEED = "lever/feed/357", FIREARM_SLOT_FURNITURE = "lever/furniture/stock"),
+		"nambu" = list(FIREARM_SLOT_ACTION = "nambu/action", FIREARM_SLOT_BARREL = "nambu/barrel/8mm", FIREARM_SLOT_FEED = "nambu/feed/8mm", FIREARM_SLOT_FURNITURE = "nambu/furniture/grip"),
+		"bergmann" = list(FIREARM_SLOT_ACTION = "bergmann/action", FIREARM_SLOT_BARREL = "bergmann/barrel/8mm", FIREARM_SLOT_FEED = "bergmann/feed/8mm", FIREARM_SLOT_FURNITURE = "bergmann/furniture/grip"),
+		"luger" = list(FIREARM_SLOT_ACTION = "luger/action", FIREARM_SLOT_BARREL = "luger/barrel/9x19", FIREARM_SLOT_FEED = "luger/feed/9x19", FIREARM_SLOT_FURNITURE = "luger/furniture/grip"),
+		"walther" = list(FIREARM_SLOT_ACTION = "walther/action", FIREARM_SLOT_BARREL = "walther/barrel/9x19", FIREARM_SLOT_FEED = "walther/feed/9x19", FIREARM_SLOT_FURNITURE = "walther/furniture/grip"),
+		"browninghp" = list(FIREARM_SLOT_ACTION = "browninghp/action", FIREARM_SLOT_BARREL = "browninghp/barrel/9x19", FIREARM_SLOT_FEED = "browninghp/feed/9x19", FIREARM_SLOT_FURNITURE = "browninghp/furniture/grip"),
+		"c96" = list(FIREARM_SLOT_ACTION = "c96/action", FIREARM_SLOT_BARREL = "c96/barrel/762x25", FIREARM_SLOT_FEED = "c96/feed/762x25", FIREARM_SLOT_FURNITURE = "c96/furniture/grip"),
+		"borchardt" = list(FIREARM_SLOT_ACTION = "borchardt/action", FIREARM_SLOT_BARREL = "borchardt/barrel/765x25", FIREARM_SLOT_FEED = "borchardt/feed/765x25", FIREARM_SLOT_FURNITURE = "borchardt/furniture/grip"),
+		"colthammerless_32" = list(FIREARM_SLOT_ACTION = "colthammerless/action", FIREARM_SLOT_BARREL = "colthammerless/barrel/32acp", FIREARM_SLOT_FEED = "colthammerless/feed/32acp", FIREARM_SLOT_FURNITURE = "colthammerless/furniture/grip"),
+		"colthammerless_380" = list(FIREARM_SLOT_ACTION = "colthammerless/action", FIREARM_SLOT_BARREL = "colthammerless/barrel/380acp", FIREARM_SLOT_FEED = "colthammerless/feed/380acp", FIREARM_SLOT_FURNITURE = "colthammerless/furniture/grip"),
+		"m1911" = list(FIREARM_SLOT_ACTION = "m1911/action", FIREARM_SLOT_BARREL = "m1911/barrel/45acp", FIREARM_SLOT_FEED = "m1911/feed/45acp", FIREARM_SLOT_FURNITURE = "m1911/furniture/grip"),
+		"sti2011" = list(FIREARM_SLOT_ACTION = "m1911/action", FIREARM_SLOT_BARREL = "m1911/barrel/45acp", FIREARM_SLOT_FEED = "m1911/feed/45acp_2011", FIREARM_SLOT_FURNITURE = "m1911/furniture/grip"),
+		"tt" = list(FIREARM_SLOT_ACTION = "tt/action", FIREARM_SLOT_BARREL = "tt/barrel/762x25", FIREARM_SLOT_FEED = "tt/feed/762x25", FIREARM_SLOT_FURNITURE = "tt/furniture/grip"),
+		"makarov" = list(FIREARM_SLOT_ACTION = "makarov/action", FIREARM_SLOT_BARREL = "makarov/barrel/9x18", FIREARM_SLOT_FEED = "makarov/feed/9x18", FIREARM_SLOT_FURNITURE = "makarov/furniture/grip"),
+		"aps" = list(FIREARM_SLOT_ACTION = "aps/action", FIREARM_SLOT_BARREL = "aps/barrel/9x18", FIREARM_SLOT_FEED = "aps/feed/9x18", FIREARM_SLOT_FURNITURE = "aps/furniture/grip"),
+		"glock" = list(FIREARM_SLOT_ACTION = "glock/action", FIREARM_SLOT_BARREL = "glock/barrel/9x19", FIREARM_SLOT_FEED = "glock/feed/9x19", FIREARM_SLOT_FURNITURE = "glock/furniture/grip"),
+		"beretta" = list(FIREARM_SLOT_ACTION = "beretta/action", FIREARM_SLOT_BARREL = "beretta/barrel/9x19", FIREARM_SLOT_FEED = "beretta/feed/9x19", FIREARM_SLOT_FURNITURE = "beretta/furniture/grip"),
+		"jericho" = list(FIREARM_SLOT_ACTION = "jericho/action", FIREARM_SLOT_BARREL = "jericho/barrel/9x19", FIREARM_SLOT_FEED = "jericho/feed/9x19", FIREARM_SLOT_FURNITURE = "jericho/furniture/grip"),
+		"sig250" = list(FIREARM_SLOT_ACTION = "sig250/action", FIREARM_SLOT_BARREL = "sig250/barrel/9x19", FIREARM_SLOT_FEED = "sig250/feed/9x19", FIREARM_SLOT_FURNITURE = "sig250/furniture/grip"),
+		"p220" = list(FIREARM_SLOT_ACTION = "p220/action", FIREARM_SLOT_BARREL = "p220/barrel/45", FIREARM_SLOT_FEED = "p220/feed/45", FIREARM_SLOT_FURNITURE = "p220/furniture/grip"),
+		"pl14" = list(FIREARM_SLOT_ACTION = "pl14/action", FIREARM_SLOT_BARREL = "pl14/barrel/9x19", FIREARM_SLOT_FEED = "pl14/feed/9x19", FIREARM_SLOT_FURNITURE = "pl14/furniture/grip"),
+		"mp443" = list(FIREARM_SLOT_ACTION = "mp443/action", FIREARM_SLOT_BARREL = "mp443/barrel/9x19", FIREARM_SLOT_FEED = "mp443/feed/9x19", FIREARM_SLOT_FURNITURE = "mp443/furniture/grip"),
+		"deagle_50" = list(FIREARM_SLOT_ACTION = "deagle/action", FIREARM_SLOT_BARREL = "deagle/barrel/50ae", FIREARM_SLOT_FEED = "deagle/feed/50ae", FIREARM_SLOT_FURNITURE = "deagle/furniture/grip"),
+		"deagle_44" = list(FIREARM_SLOT_ACTION = "deagle/action", FIREARM_SLOT_BARREL = "deagle/barrel/44magnum", FIREARM_SLOT_FEED = "deagle/feed/44magnum", FIREARM_SLOT_FURNITURE = "deagle/furniture/grip"),
+		"nagant" = list(FIREARM_SLOT_ACTION = "nagant/action", FIREARM_SLOT_BARREL = "nagant/barrel/762x38", FIREARM_SLOT_FEED = "nagant/feed/762x38", FIREARM_SLOT_FURNITURE = "nagant/furniture/grip"),
+		"m1892" = list(FIREARM_SLOT_ACTION = "m1892/action", FIREARM_SLOT_BARREL = "m1892/barrel/8x27", FIREARM_SLOT_FEED = "m1892/feed/8x27", FIREARM_SLOT_FURNITURE = "m1892/furniture/grip"),
+		"colt_saa_45" = list(FIREARM_SLOT_ACTION = "colt_saa/action", FIREARM_SLOT_BARREL = "colt_saa/barrel/45", FIREARM_SLOT_FEED = "colt_saa/feed/45", FIREARM_SLOT_FURNITURE = "colt_saa/furniture/grip"),
+		"colt_saa_44" = list(FIREARM_SLOT_ACTION = "colt_saa/action", FIREARM_SLOT_BARREL = "colt_saa/barrel/44", FIREARM_SLOT_FEED = "colt_saa/feed/44", FIREARM_SLOT_FURNITURE = "colt_saa/furniture/grip"),
+		"colt1892" = list(FIREARM_SLOT_ACTION = "colt1892/action", FIREARM_SLOT_BARREL = "colt1892/barrel/38", FIREARM_SLOT_FEED = "colt1892/feed/38", FIREARM_SLOT_FURNITURE = "colt1892/furniture/grip"),
+		"policepositive" = list(FIREARM_SLOT_ACTION = "policepositive/action", FIREARM_SLOT_BARREL = "policepositive/barrel/32", FIREARM_SLOT_FEED = "policepositive/feed/32", FIREARM_SLOT_FURNITURE = "policepositive/furniture/grip"),
+		"smithwesson_32" = list(FIREARM_SLOT_ACTION = "smithwesson/action", FIREARM_SLOT_BARREL = "smithwesson/barrel/32", FIREARM_SLOT_FEED = "smithwesson/feed/32", FIREARM_SLOT_FURNITURE = "smithwesson/furniture/grip"),
+		"smithwesson_38" = list(FIREARM_SLOT_ACTION = "smithwesson/action", FIREARM_SLOT_BARREL = "smithwesson/barrel/38", FIREARM_SLOT_FEED = "smithwesson/feed/38", FIREARM_SLOT_FURNITURE = "smithwesson/furniture/grip"),
+		"enfieldno2" = list(FIREARM_SLOT_ACTION = "enfieldno2/action", FIREARM_SLOT_BARREL = "enfieldno2/barrel/41", FIREARM_SLOT_FEED = "enfieldno2/feed/41", FIREARM_SLOT_FURNITURE = "enfieldno2/furniture/grip"),
+		"webley" = list(FIREARM_SLOT_ACTION = "webley/action", FIREARM_SLOT_BARREL = "webley/barrel/455", FIREARM_SLOT_FEED = "webley/feed/455", FIREARM_SLOT_FURNITURE = "webley/furniture/grip"),
+		"type26" = list(FIREARM_SLOT_ACTION = "type26/action", FIREARM_SLOT_BARREL = "type26/barrel/9mm", FIREARM_SLOT_FEED = "type26/feed/9mm", FIREARM_SLOT_FURNITURE = "type26/furniture/grip"),
+		"derringer" = list(FIREARM_SLOT_ACTION = "derringer/action", FIREARM_SLOT_BARREL = "derringer/barrel/41", FIREARM_SLOT_FEED = "derringer/feed/41", FIREARM_SLOT_FURNITURE = "derringer/furniture/grip"),
+		"magnum44" = list(FIREARM_SLOT_ACTION = "magnum44/action", FIREARM_SLOT_BARREL = "magnum44/barrel/44magnum", FIREARM_SLOT_FEED = "magnum44/feed/44magnum", FIREARM_SLOT_FURNITURE = "magnum44/furniture/grip"),
+		"mckellen" = list(FIREARM_SLOT_ACTION = "mckellen/action", FIREARM_SLOT_BARREL = "mckellen/barrel/44magnum", FIREARM_SLOT_FEED = "mckellen/feed/44magnum", FIREARM_SLOT_FURNITURE = "mckellen/furniture/grip"),
+		"judge" = list(FIREARM_SLOT_ACTION = "judge/action", FIREARM_SLOT_BARREL = "judge/barrel/45", FIREARM_SLOT_FEED = "judge/feed/45", FIREARM_SLOT_FURNITURE = "judge/furniture/grip"),
+		"revolving" = list(FIREARM_SLOT_ACTION = "revolving/action", FIREARM_SLOT_BARREL = "revolving/barrel/44", FIREARM_SLOT_FEED = "revolving/feed/44", FIREARM_SLOT_FURNITURE = "revolving/furniture/stock"),
 		// A factory-made receiver starts empty and is built up from parts.
 		"ak_receiver" = list(),
 		"ar_receiver" = list(),
@@ -515,6 +883,40 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"m82_receiver" = list(),
 		"bamr_receiver" = list(),
 		"lever_receiver" = list(),
+		"nambu_receiver" = list(),
+		"bergmann_receiver" = list(),
+		"luger_receiver" = list(),
+		"walther_receiver" = list(),
+		"browninghp_receiver" = list(),
+		"c96_receiver" = list(),
+		"borchardt_receiver" = list(),
+		"colthammerless_receiver" = list(),
+		"m1911_receiver" = list(),
+		"tt_receiver" = list(),
+		"makarov_receiver" = list(),
+		"aps_receiver" = list(),
+		"glock_receiver" = list(),
+		"beretta_receiver" = list(),
+		"jericho_receiver" = list(),
+		"sig250_receiver" = list(),
+		"p220_receiver" = list(),
+		"pl14_receiver" = list(),
+		"mp443_receiver" = list(),
+		"deagle_receiver" = list(),
+		"nagant_receiver" = list(),
+		"m1892_receiver" = list(),
+		"colt_saa_receiver" = list(),
+		"colt1892_receiver" = list(),
+		"policepositive_receiver" = list(),
+		"smithwesson_receiver" = list(),
+		"enfieldno2_receiver" = list(),
+		"webley_receiver" = list(),
+		"type26_receiver" = list(),
+		"derringer_receiver" = list(),
+		"magnum44_receiver" = list(),
+		"mckellen_receiver" = list(),
+		"judge_receiver" = list(),
+		"revolving_receiver" = list(),
 	)
 
 var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
@@ -522,13 +924,17 @@ var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" 
 	"murata" = "Murata", "berdan" = "Berdan", "vg" = "Volkssturmgewehr", "m24" = "M24", "sharps" = "Sharps", "rollingblock" = "Rolling-block",
 	"martini" = "Martini-Henry", "ptrd" = "PTRD", "pzb" = "PzB", "barrett" = "Barrett",
 	"sks" = "SKS", "gewehr43" = "Gewehr 41/43", "svt" = "SVT", "garand" = "M1 Garand", "m1carbine" = "M1 Carbine", "avtomat" = "Fedorov",
-	"vg5" = "Volkssturmkarabiner", "ptrs" = "PTRS", "svd" = "SVD", "vss" = "VSS", "m82" = "Barrett M82", "bamr" = "BAMR", "lever" = "Lever-action")
+	"vg5" = "Volkssturmkarabiner", "ptrs" = "PTRS", "svd" = "SVD", "vss" = "VSS", "m82" = "Barrett M82", "bamr" = "BAMR", "lever" = "Lever-action",
+	"nambu" = "Nambu", "bergmann" = "Bergmann", "luger" = "Luger", "walther" = "Walther P38", "browninghp" = "Browning Hi-Power", "c96" = "Mauser C96", "borchardt" = "Borchardt", "colthammerless" = "Colt Pocket Hammerless", "m1911" = "M1911", "tt" = "Tokarev", "makarov" = "Makarov", "aps" = "Stechkin", "glock" = "Glock", "beretta" = "Beretta M9", "jericho" = "Jericho 941", "sig250" = "SIG 250", "p220" = "SIG P220", "pl14" = "PL-14", "mp443" = "MP-443", "deagle" = "Desert Eagle", "nagant" = "Nagant", "m1892" = "Modele 1892", "colt_saa" = "Colt Single Action", "colt1892" = "Colt M1892", "policepositive" = "Colt Police Positive", "smithwesson" = "Smith & Wesson", "enfieldno2" = "Enfield No. 2", "webley" = "Webley", "type26" = "Type 26", "derringer" = "Derringer", "magnum44" = "Magnum 44", "mckellen" = "Mckellen", "judge" = "Taurus Judge", "revolving" = "Colt Revolving")
 var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
 	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
 	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm", "a303" = ".303 British", "a3006" = ".30-06", "a8x50" = "8x50mmR",
 	"a65x52" = "6.5x52mm", "a8x53" = "8x53mm", "a792x33" = "7.92x33mm Kurz", "a762x51" = "7.62x51mm", "a4570" = ".45-70",
 	"a43" = ".43 Spanish", "a577" = ".577/450", "a145" = "14.5x114mm", "a792x94" = "7.92x94mm", "a50cal" = ".50 BMG",
-	"a762x33" = "7.62x33mm", "a9x39" = "9x39mm", "a15115" = "15x115mm", "a44" = ".44-40", "a357" = ".357 Magnum")
+	"a762x33" = "7.62x33mm", "a9x39" = "9x39mm", "a15115" = "15x115mm", "a44" = ".44-40", "a357" = ".357 Magnum",
+	"c8mmnambu" = "8mm Nambu", "a9x19" = "9x19mm", "a9x18" = "9x18mm", "a762x25" = "7.62x25mm", "a765x25" = "7.65x25mm", "a32acp" = ".32 ACP",
+	"a380acp" = ".380 ACP", "a45acp" = ".45 ACP", "a45" = ".45 Colt", "a44magnum" = ".44 Magnum", "a762x38" = "7.62x38mmR", "a8x27" = "8x27mmR",
+	"a38" = ".38", "a32" = ".32", "a41" = ".41", "a455" = ".455 Webley", "c9mm_jap_revolver" = "9mm Japanese")
 
 /proc/firearm_component_def(id)
 	firearm_registry_init()
@@ -726,6 +1132,151 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 /obj/item/weapon/gun/projectile/special/ak74mtactical
 	firearm_family = "ak"
 	firearm_preset = "aks74"
+/obj/item/weapon/gun/projectile/pistol/nambu
+	firearm_family = "nambu"
+	firearm_preset = "nambu"
+/obj/item/weapon/gun/projectile/pistol/ww2/nambu
+	firearm_family = "nambu"
+	firearm_preset = "nambu"
+/obj/item/weapon/gun/projectile/pistol/bergmann
+	firearm_family = "bergmann"
+	firearm_preset = "bergmann"
+/obj/item/weapon/gun/projectile/pistol/luger
+	firearm_family = "luger"
+	firearm_preset = "luger"
+/obj/item/weapon/gun/projectile/pistol/waltherp38
+	firearm_family = "walther"
+	firearm_preset = "walther"
+/obj/item/weapon/gun/projectile/pistol/browninghp
+	firearm_family = "browninghp"
+	firearm_preset = "browninghp"
+/obj/item/weapon/gun/projectile/pistol/mauser
+	firearm_family = "c96"
+	firearm_preset = "c96"
+/obj/item/weapon/gun/projectile/pistol/borchardt
+	firearm_family = "borchardt"
+	firearm_preset = "borchardt"
+/obj/item/weapon/gun/projectile/pistol/colthammerless
+	firearm_family = "colthammerless"
+	firearm_preset = "colthammerless_32"
+/obj/item/weapon/gun/projectile/pistol/colthammerless/m1908
+	firearm_family = "colthammerless"
+	firearm_preset = "colthammerless_380"
+/obj/item/weapon/gun/projectile/pistol/m1911
+	firearm_family = "m1911"
+	firearm_preset = "m1911"
+/obj/item/weapon/gun/projectile/pistol/blackm1911
+	firearm_family = "m1911"
+	firearm_preset = "m1911"
+/obj/item/weapon/gun/projectile/pistol/sti2011
+	firearm_family = "m1911"
+	firearm_preset = "sti2011"
+/obj/item/weapon/gun/projectile/pistol/tt30
+	firearm_family = "tt"
+	firearm_preset = "tt"
+/obj/item/weapon/gun/projectile/pistol/makarov
+	firearm_family = "makarov"
+	firearm_preset = "makarov"
+/obj/item/weapon/gun/projectile/pistol/aps
+	firearm_family = "aps"
+	firearm_preset = "aps"
+/obj/item/weapon/gun/projectile/pistol/glock17
+	firearm_family = "glock"
+	firearm_preset = "glock"
+/obj/item/weapon/gun/projectile/pistol/iogb7
+	firearm_family = "glock"
+	firearm_preset = "glock"
+/obj/item/weapon/gun/projectile/pistol/tarus
+	firearm_family = "glock"
+	firearm_preset = "glock"
+/obj/item/weapon/gun/projectile/pistol/m9beretta
+	firearm_family = "beretta"
+	firearm_preset = "beretta"
+/obj/item/weapon/gun/projectile/pistol/jericho941
+	firearm_family = "jericho"
+	firearm_preset = "jericho"
+/obj/item/weapon/gun/projectile/pistol/sig250
+	firearm_family = "sig250"
+	firearm_preset = "sig250"
+/obj/item/weapon/gun/projectile/pistol/p220
+	firearm_family = "p220"
+	firearm_preset = "p220"
+/obj/item/weapon/gun/projectile/pistol/pl14
+	firearm_family = "pl14"
+	firearm_preset = "pl14"
+/obj/item/weapon/gun/projectile/pistol/mp443
+	firearm_family = "mp443"
+	firearm_preset = "mp443"
+/obj/item/weapon/gun/projectile/pistol/deagle
+	firearm_family = "deagle"
+	firearm_preset = "deagle_50"
+/obj/item/weapon/gun/projectile/pistol/deaglemagnum
+	firearm_family = "deagle"
+	firearm_preset = "deagle_44"
+/obj/item/weapon/gun/projectile/revolver/nagant_revolver
+	firearm_family = "nagant"
+	firearm_preset = "nagant"
+/obj/item/weapon/gun/projectile/revolver/m1892
+	firearm_family = "m1892"
+	firearm_preset = "m1892"
+/obj/item/weapon/gun/projectile/revolver/peacemaker
+	firearm_family = "colt_saa"
+	firearm_preset = "colt_saa_45"
+/obj/item/weapon/gun/projectile/revolver/frontier
+	firearm_family = "colt_saa"
+	firearm_preset = "colt_saa_44"
+/obj/item/weapon/gun/projectile/revolver/colt1892
+	firearm_family = "colt1892"
+	firearm_preset = "colt1892"
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive
+	firearm_family = "policepositive"
+	firearm_preset = "policepositive"
+/obj/item/weapon/gun/projectile/revolver/smithwesson
+	firearm_family = "smithwesson"
+	firearm_preset = "smithwesson_32"
+/obj/item/weapon/gun/projectile/revolver/sw3
+	firearm_family = "smithwesson"
+	firearm_preset = "smithwesson_32"
+/obj/item/weapon/gun/projectile/revolver/snw10
+	firearm_family = "smithwesson"
+	firearm_preset = "smithwesson_38"
+/obj/item/weapon/gun/projectile/revolver/enfieldno2
+	firearm_family = "enfieldno2"
+	firearm_preset = "enfieldno2"
+/obj/item/weapon/gun/projectile/revolver/webley4
+	firearm_family = "webley"
+	firearm_preset = "webley"
+/obj/item/weapon/gun/projectile/revolver/t26_revolver
+	firearm_family = "type26"
+	firearm_preset = "type26"
+/obj/item/weapon/gun/projectile/revolver/derringer
+	firearm_family = "derringer"
+	firearm_preset = "derringer"
+/obj/item/weapon/gun/projectile/revolver/magnum44
+	firearm_family = "magnum44"
+	firearm_preset = "magnum44"
+/obj/item/weapon/gun/projectile/revolver/graysonfito12
+	firearm_family = "mckellen"
+	firearm_preset = "mckellen"
+/obj/item/weapon/gun/projectile/revolver/taurus
+	firearm_family = "judge"
+	firearm_preset = "judge"
+/obj/item/weapon/gun/projectile/revolving/colt
+	firearm_family = "revolving"
+	firearm_preset = "revolving"
+// The Panther fires a placeholder test cartridge and the makeshift revolver is a one-off build.
+/obj/item/weapon/gun/projectile/revolver/panther
+	firearm_fixed_reason = "legacy revolver with a placeholder test cartridge"
+/obj/item/weapon/gun/projectile/revolver/makeshift
+	firearm_fixed_reason = "crude one-off build with no standard parts"
+/obj/item/weapon/gun/projectile/pistol
+	firearm_kind = "pistol"
+/obj/item/weapon/gun/projectile/revolver
+	firearm_kind = "revolver"
+/obj/item/weapon/gun/projectile/revolver/derringer
+	firearm_kind = "pistol"
+/obj/item/weapon/gun/projectile/shotgun
+	firearm_kind = "shotgun"
 // The makeshift bolt is a crude one-off build with no standard parts.
 /obj/item/weapon/gun/projectile/boltaction/singleshot/makeshiftbolt
 	firearm_family = null
@@ -1000,12 +1551,320 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	firearm_preset = "lever_receiver"
 	firearm_named_by_parts = TRUE
 
+/obj/item/weapon/gun/projectile/pistol/nambu/receiver
+	name = "Nambu frame"
+	desc = "A bare Nambu frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "nambu"
+	firearm_preset = "nambu_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/bergmann/receiver
+	name = "Bergmann frame"
+	desc = "A bare Bergmann frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "bergmann"
+	firearm_preset = "bergmann_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/luger/receiver
+	name = "Luger frame"
+	desc = "A bare Luger frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "luger"
+	firearm_preset = "luger_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/waltherp38/receiver
+	name = "Walther P38 frame"
+	desc = "A bare Walther P38 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "walther"
+	firearm_preset = "walther_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/browninghp/receiver
+	name = "Browning Hi-Power frame"
+	desc = "A bare Browning Hi-Power frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "browninghp"
+	firearm_preset = "browninghp_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/mauser/receiver
+	name = "Mauser C96 frame"
+	desc = "A bare Mauser C96 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "c96"
+	firearm_preset = "c96_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/borchardt/receiver
+	name = "Borchardt frame"
+	desc = "A bare Borchardt frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "borchardt"
+	firearm_preset = "borchardt_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/colthammerless/receiver
+	name = "Colt Pocket Hammerless frame"
+	desc = "A bare Colt Pocket Hammerless frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "colthammerless"
+	firearm_preset = "colthammerless_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/m1911/receiver
+	name = "M1911 frame"
+	desc = "A bare M1911 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "m1911"
+	firearm_preset = "m1911_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/tt30/receiver
+	name = "Tokarev frame"
+	desc = "A bare Tokarev frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "tt"
+	firearm_preset = "tt_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/makarov/receiver
+	name = "Makarov frame"
+	desc = "A bare Makarov frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "makarov"
+	firearm_preset = "makarov_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/aps/receiver
+	name = "Stechkin frame"
+	desc = "A bare Stechkin frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "aps"
+	firearm_preset = "aps_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/glock17/receiver
+	name = "Glock frame"
+	desc = "A bare Glock frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "glock"
+	firearm_preset = "glock_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/m9beretta/receiver
+	name = "Beretta M9 frame"
+	desc = "A bare Beretta M9 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "beretta"
+	firearm_preset = "beretta_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/jericho941/receiver
+	name = "Jericho 941 frame"
+	desc = "A bare Jericho 941 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "jericho"
+	firearm_preset = "jericho_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/sig250/receiver
+	name = "SIG 250 frame"
+	desc = "A bare SIG 250 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "sig250"
+	firearm_preset = "sig250_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/p220/receiver
+	name = "SIG P220 frame"
+	desc = "A bare SIG P220 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "p220"
+	firearm_preset = "p220_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/pl14/receiver
+	name = "PL-14 frame"
+	desc = "A bare PL-14 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "pl14"
+	firearm_preset = "pl14_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/mp443/receiver
+	name = "MP-443 frame"
+	desc = "A bare MP-443 frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mp443"
+	firearm_preset = "mp443_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/pistol/deagle/receiver
+	name = "Desert Eagle frame"
+	desc = "A bare Desert Eagle frame. Fit a slide and barrel at a firearm bench, then a magazine well and grip, to build a working pistol."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "deagle"
+	firearm_preset = "deagle_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/nagant_revolver/receiver
+	name = "Nagant frame"
+	desc = "A bare Nagant frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "nagant"
+	firearm_preset = "nagant_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/m1892/receiver
+	name = "Modele 1892 frame"
+	desc = "A bare Modele 1892 frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "m1892"
+	firearm_preset = "m1892_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/peacemaker/receiver
+	name = "Colt Single Action frame"
+	desc = "A bare Colt Single Action frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "colt_saa"
+	firearm_preset = "colt_saa_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/colt1892/receiver
+	name = "Colt M1892 frame"
+	desc = "A bare Colt M1892 frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "colt1892"
+	firearm_preset = "colt1892_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/coltpolicepositive/receiver
+	name = "Colt Police Positive frame"
+	desc = "A bare Colt Police Positive frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "policepositive"
+	firearm_preset = "policepositive_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/smithwesson/receiver
+	name = "Smith & Wesson frame"
+	desc = "A bare Smith & Wesson frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "smithwesson"
+	firearm_preset = "smithwesson_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/enfieldno2/receiver
+	name = "Enfield No. 2 frame"
+	desc = "A bare Enfield No. 2 frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "enfieldno2"
+	firearm_preset = "enfieldno2_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/webley4/receiver
+	name = "Webley frame"
+	desc = "A bare Webley frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "webley"
+	firearm_preset = "webley_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/t26_revolver/receiver
+	name = "Type 26 frame"
+	desc = "A bare Type 26 frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "type26"
+	firearm_preset = "type26_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/derringer/receiver
+	name = "Derringer frame"
+	desc = "A bare Derringer frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "derringer"
+	firearm_preset = "derringer_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/magnum44/receiver
+	name = "Magnum 44 frame"
+	desc = "A bare Magnum 44 frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "magnum44"
+	firearm_preset = "magnum44_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/graysonfito12/receiver
+	name = "Mckellen frame"
+	desc = "A bare Mckellen frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "mckellen"
+	firearm_preset = "mckellen_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolver/taurus/receiver
+	name = "Taurus Judge frame"
+	desc = "A bare Taurus Judge frame. Fit a lockwork and barrel at a firearm bench, then a cylinder and grip, to build a working revolver."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "judge"
+	firearm_preset = "judge_receiver"
+	firearm_named_by_parts = TRUE
+
+/obj/item/weapon/gun/projectile/revolving/colt/receiver
+	name = "Colt Revolving receiver"
+	desc = "A bare Colt Revolving receiver. Fit a lockwork and barrel at a firearm bench, then a cylinder and stock, to build a working rifle."
+	ammo_type = null
+	magazine_type = null
+	firearm_family = "revolving"
+	firearm_preset = "revolving_receiver"
+	firearm_named_by_parts = TRUE
+
 /obj/item/weapon/gun
 	var/firearm_family = null
 	var/firearm_preset = null
 	// Why a modern gun deliberately has no modular parts (coverage manifest).
 	var/firearm_fixed_reason = null
 	var/firearm_named_by_parts = FALSE
+	// What a gun built from parts is called: "[family] [kind] ([caliber])".
+	var/firearm_kind = "rifle"
 	// Saved state, null until first used: slot -> component id and slot -> condition (0..1).
 	var/list/firearm_part_ids = null
 	var/list/firearm_part_condition = null
@@ -1079,7 +1938,7 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 		G.load_method = isnull(feed.load_method) ? initial(G.load_method) : feed.load_method
 		G.cliploader = isnull(feed.cliploader) ? initial(G.cliploader) : feed.cliploader
 	if (firearm_named_by_parts)
-		name = barrel ? "[firearm_family_labels[firearm_family]] rifle ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
+		name = barrel ? "[firearm_family_labels[firearm_family]] [firearm_kind] ([firearm_caliber_labels[barrel.caliber]])" : initial(name)
 	// No stock at all handles badly but still fires. The base is the type's
 	// compiled value, so reapplying (or loading a save) never compounds.
 	var/handling = firearm_assembly_handling(firearm_part_ids)
@@ -1104,7 +1963,7 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	if (!C)
 		return "that part is not recognised"
 	if (C.family != firearm_family)
-		return "that part is for a different rifle family"
+		return "that part is for a different gun family"
 	if (firearm_part_ids[C.slot])
 		return "the [C.slot] slot is already filled"
 	return null
@@ -1206,7 +2065,7 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 		verbs += /obj/item/weapon/gun/proc/remove_rifle_part
 
 /obj/item/weapon/gun/proc/remove_rifle_part()
-	set name = "Rifle Parts"
+	set name = "Gun Parts"
 	set desc = "Inspect, remove, fit and salvage parts. Unload first; magazine and stock come off by hand, the action and barrel need a firearm bench."
 	set category = null
 	set src in usr
@@ -1420,14 +2279,14 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 /proc/firearm_offer_salvage(obj/item/weapon/gun_component/P, mob/living/human/H)
 	if (!istype(P) || !istype(H))
 		return FALSE
-	var/choice = WWinput(H, firearm_salvage_preview(P), "Salvage rifle part", "Cancel", list("Salvage", "Cancel"))
+	var/choice = WWinput(H, firearm_salvage_preview(P), "Salvage gun part", "Cancel", list("Salvage", "Cancel"))
 	if (choice != "Salvage")
 		return FALSE
 	return firearm_salvage(P, H)
 
 /obj/item/weapon/gun_component
-	name = "rifle part"
-	desc = "A modular rifle part."
+	name = "gun part"
+	desc = "A modular gun part."
 	icon = 'icons/obj/gunsmithing.dmi'
 	icon_state = "none"
 	w_class = ITEM_SIZE_SMALL
@@ -1769,4 +2628,294 @@ var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39"
 	component_id = "lever/feed/4570"
 /obj/item/weapon/gun_component/lever_furniture_stock
 	component_id = "lever/furniture/stock"
+/obj/item/weapon/gun_component/nambu_action
+	component_id = "nambu/action"
+/obj/item/weapon/gun_component/nambu_barrel_8mm
+	component_id = "nambu/barrel/8mm"
+/obj/item/weapon/gun_component/nambu_feed_8mm
+	component_id = "nambu/feed/8mm"
+/obj/item/weapon/gun_component/nambu_furniture_grip
+	component_id = "nambu/furniture/grip"
+/obj/item/weapon/gun_component/bergmann_action
+	component_id = "bergmann/action"
+/obj/item/weapon/gun_component/bergmann_barrel_8mm
+	component_id = "bergmann/barrel/8mm"
+/obj/item/weapon/gun_component/bergmann_feed_8mm
+	component_id = "bergmann/feed/8mm"
+/obj/item/weapon/gun_component/bergmann_furniture_grip
+	component_id = "bergmann/furniture/grip"
+/obj/item/weapon/gun_component/luger_action
+	component_id = "luger/action"
+/obj/item/weapon/gun_component/luger_barrel_9x19
+	component_id = "luger/barrel/9x19"
+/obj/item/weapon/gun_component/luger_feed_9x19
+	component_id = "luger/feed/9x19"
+/obj/item/weapon/gun_component/luger_furniture_grip
+	component_id = "luger/furniture/grip"
+/obj/item/weapon/gun_component/walther_action
+	component_id = "walther/action"
+/obj/item/weapon/gun_component/walther_barrel_9x19
+	component_id = "walther/barrel/9x19"
+/obj/item/weapon/gun_component/walther_feed_9x19
+	component_id = "walther/feed/9x19"
+/obj/item/weapon/gun_component/walther_furniture_grip
+	component_id = "walther/furniture/grip"
+/obj/item/weapon/gun_component/browninghp_action
+	component_id = "browninghp/action"
+/obj/item/weapon/gun_component/browninghp_barrel_9x19
+	component_id = "browninghp/barrel/9x19"
+/obj/item/weapon/gun_component/browninghp_feed_9x19
+	component_id = "browninghp/feed/9x19"
+/obj/item/weapon/gun_component/browninghp_furniture_grip
+	component_id = "browninghp/furniture/grip"
+/obj/item/weapon/gun_component/c96_action
+	component_id = "c96/action"
+/obj/item/weapon/gun_component/c96_barrel_762x25
+	component_id = "c96/barrel/762x25"
+/obj/item/weapon/gun_component/c96_feed_762x25
+	component_id = "c96/feed/762x25"
+/obj/item/weapon/gun_component/c96_furniture_grip
+	component_id = "c96/furniture/grip"
+/obj/item/weapon/gun_component/borchardt_action
+	component_id = "borchardt/action"
+/obj/item/weapon/gun_component/borchardt_barrel_765x25
+	component_id = "borchardt/barrel/765x25"
+/obj/item/weapon/gun_component/borchardt_feed_765x25
+	component_id = "borchardt/feed/765x25"
+/obj/item/weapon/gun_component/borchardt_furniture_grip
+	component_id = "borchardt/furniture/grip"
+/obj/item/weapon/gun_component/colthammerless_action
+	component_id = "colthammerless/action"
+/obj/item/weapon/gun_component/colthammerless_barrel_32acp
+	component_id = "colthammerless/barrel/32acp"
+/obj/item/weapon/gun_component/colthammerless_barrel_380acp
+	component_id = "colthammerless/barrel/380acp"
+/obj/item/weapon/gun_component/colthammerless_feed_32acp
+	component_id = "colthammerless/feed/32acp"
+/obj/item/weapon/gun_component/colthammerless_feed_380acp
+	component_id = "colthammerless/feed/380acp"
+/obj/item/weapon/gun_component/colthammerless_furniture_grip
+	component_id = "colthammerless/furniture/grip"
+/obj/item/weapon/gun_component/m1911_action
+	component_id = "m1911/action"
+/obj/item/weapon/gun_component/m1911_barrel_45acp
+	component_id = "m1911/barrel/45acp"
+/obj/item/weapon/gun_component/m1911_feed_45acp
+	component_id = "m1911/feed/45acp"
+/obj/item/weapon/gun_component/m1911_feed_45acp_2011
+	component_id = "m1911/feed/45acp_2011"
+/obj/item/weapon/gun_component/m1911_furniture_grip
+	component_id = "m1911/furniture/grip"
+/obj/item/weapon/gun_component/tt_action
+	component_id = "tt/action"
+/obj/item/weapon/gun_component/tt_barrel_762x25
+	component_id = "tt/barrel/762x25"
+/obj/item/weapon/gun_component/tt_feed_762x25
+	component_id = "tt/feed/762x25"
+/obj/item/weapon/gun_component/tt_furniture_grip
+	component_id = "tt/furniture/grip"
+/obj/item/weapon/gun_component/makarov_action
+	component_id = "makarov/action"
+/obj/item/weapon/gun_component/makarov_barrel_9x18
+	component_id = "makarov/barrel/9x18"
+/obj/item/weapon/gun_component/makarov_feed_9x18
+	component_id = "makarov/feed/9x18"
+/obj/item/weapon/gun_component/makarov_furniture_grip
+	component_id = "makarov/furniture/grip"
+/obj/item/weapon/gun_component/aps_action
+	component_id = "aps/action"
+/obj/item/weapon/gun_component/aps_barrel_9x18
+	component_id = "aps/barrel/9x18"
+/obj/item/weapon/gun_component/aps_feed_9x18
+	component_id = "aps/feed/9x18"
+/obj/item/weapon/gun_component/aps_furniture_grip
+	component_id = "aps/furniture/grip"
+/obj/item/weapon/gun_component/glock_action
+	component_id = "glock/action"
+/obj/item/weapon/gun_component/glock_barrel_9x19
+	component_id = "glock/barrel/9x19"
+/obj/item/weapon/gun_component/glock_feed_9x19
+	component_id = "glock/feed/9x19"
+/obj/item/weapon/gun_component/glock_furniture_grip
+	component_id = "glock/furniture/grip"
+/obj/item/weapon/gun_component/beretta_action
+	component_id = "beretta/action"
+/obj/item/weapon/gun_component/beretta_barrel_9x19
+	component_id = "beretta/barrel/9x19"
+/obj/item/weapon/gun_component/beretta_feed_9x19
+	component_id = "beretta/feed/9x19"
+/obj/item/weapon/gun_component/beretta_furniture_grip
+	component_id = "beretta/furniture/grip"
+/obj/item/weapon/gun_component/jericho_action
+	component_id = "jericho/action"
+/obj/item/weapon/gun_component/jericho_barrel_9x19
+	component_id = "jericho/barrel/9x19"
+/obj/item/weapon/gun_component/jericho_feed_9x19
+	component_id = "jericho/feed/9x19"
+/obj/item/weapon/gun_component/jericho_furniture_grip
+	component_id = "jericho/furniture/grip"
+/obj/item/weapon/gun_component/sig250_action
+	component_id = "sig250/action"
+/obj/item/weapon/gun_component/sig250_barrel_9x19
+	component_id = "sig250/barrel/9x19"
+/obj/item/weapon/gun_component/sig250_feed_9x19
+	component_id = "sig250/feed/9x19"
+/obj/item/weapon/gun_component/sig250_furniture_grip
+	component_id = "sig250/furniture/grip"
+/obj/item/weapon/gun_component/p220_action
+	component_id = "p220/action"
+/obj/item/weapon/gun_component/p220_barrel_45
+	component_id = "p220/barrel/45"
+/obj/item/weapon/gun_component/p220_feed_45
+	component_id = "p220/feed/45"
+/obj/item/weapon/gun_component/p220_furniture_grip
+	component_id = "p220/furniture/grip"
+/obj/item/weapon/gun_component/pl14_action
+	component_id = "pl14/action"
+/obj/item/weapon/gun_component/pl14_barrel_9x19
+	component_id = "pl14/barrel/9x19"
+/obj/item/weapon/gun_component/pl14_feed_9x19
+	component_id = "pl14/feed/9x19"
+/obj/item/weapon/gun_component/pl14_furniture_grip
+	component_id = "pl14/furniture/grip"
+/obj/item/weapon/gun_component/mp443_action
+	component_id = "mp443/action"
+/obj/item/weapon/gun_component/mp443_barrel_9x19
+	component_id = "mp443/barrel/9x19"
+/obj/item/weapon/gun_component/mp443_feed_9x19
+	component_id = "mp443/feed/9x19"
+/obj/item/weapon/gun_component/mp443_furniture_grip
+	component_id = "mp443/furniture/grip"
+/obj/item/weapon/gun_component/deagle_action
+	component_id = "deagle/action"
+/obj/item/weapon/gun_component/deagle_barrel_50ae
+	component_id = "deagle/barrel/50ae"
+/obj/item/weapon/gun_component/deagle_barrel_44magnum
+	component_id = "deagle/barrel/44magnum"
+/obj/item/weapon/gun_component/deagle_feed_50ae
+	component_id = "deagle/feed/50ae"
+/obj/item/weapon/gun_component/deagle_feed_44magnum
+	component_id = "deagle/feed/44magnum"
+/obj/item/weapon/gun_component/deagle_furniture_grip
+	component_id = "deagle/furniture/grip"
+/obj/item/weapon/gun_component/nagant_action
+	component_id = "nagant/action"
+/obj/item/weapon/gun_component/nagant_barrel_762x38
+	component_id = "nagant/barrel/762x38"
+/obj/item/weapon/gun_component/nagant_feed_762x38
+	component_id = "nagant/feed/762x38"
+/obj/item/weapon/gun_component/nagant_furniture_grip
+	component_id = "nagant/furniture/grip"
+/obj/item/weapon/gun_component/m1892_action
+	component_id = "m1892/action"
+/obj/item/weapon/gun_component/m1892_barrel_8x27
+	component_id = "m1892/barrel/8x27"
+/obj/item/weapon/gun_component/m1892_feed_8x27
+	component_id = "m1892/feed/8x27"
+/obj/item/weapon/gun_component/m1892_furniture_grip
+	component_id = "m1892/furniture/grip"
+/obj/item/weapon/gun_component/colt_saa_action
+	component_id = "colt_saa/action"
+/obj/item/weapon/gun_component/colt_saa_barrel_45
+	component_id = "colt_saa/barrel/45"
+/obj/item/weapon/gun_component/colt_saa_barrel_44
+	component_id = "colt_saa/barrel/44"
+/obj/item/weapon/gun_component/colt_saa_feed_45
+	component_id = "colt_saa/feed/45"
+/obj/item/weapon/gun_component/colt_saa_feed_44
+	component_id = "colt_saa/feed/44"
+/obj/item/weapon/gun_component/colt_saa_furniture_grip
+	component_id = "colt_saa/furniture/grip"
+/obj/item/weapon/gun_component/colt1892_action
+	component_id = "colt1892/action"
+/obj/item/weapon/gun_component/colt1892_barrel_38
+	component_id = "colt1892/barrel/38"
+/obj/item/weapon/gun_component/colt1892_feed_38
+	component_id = "colt1892/feed/38"
+/obj/item/weapon/gun_component/colt1892_furniture_grip
+	component_id = "colt1892/furniture/grip"
+/obj/item/weapon/gun_component/policepositive_action
+	component_id = "policepositive/action"
+/obj/item/weapon/gun_component/policepositive_barrel_32
+	component_id = "policepositive/barrel/32"
+/obj/item/weapon/gun_component/policepositive_feed_32
+	component_id = "policepositive/feed/32"
+/obj/item/weapon/gun_component/policepositive_furniture_grip
+	component_id = "policepositive/furniture/grip"
+/obj/item/weapon/gun_component/smithwesson_action
+	component_id = "smithwesson/action"
+/obj/item/weapon/gun_component/smithwesson_barrel_32
+	component_id = "smithwesson/barrel/32"
+/obj/item/weapon/gun_component/smithwesson_barrel_38
+	component_id = "smithwesson/barrel/38"
+/obj/item/weapon/gun_component/smithwesson_feed_32
+	component_id = "smithwesson/feed/32"
+/obj/item/weapon/gun_component/smithwesson_feed_38
+	component_id = "smithwesson/feed/38"
+/obj/item/weapon/gun_component/smithwesson_furniture_grip
+	component_id = "smithwesson/furniture/grip"
+/obj/item/weapon/gun_component/enfieldno2_action
+	component_id = "enfieldno2/action"
+/obj/item/weapon/gun_component/enfieldno2_barrel_41
+	component_id = "enfieldno2/barrel/41"
+/obj/item/weapon/gun_component/enfieldno2_feed_41
+	component_id = "enfieldno2/feed/41"
+/obj/item/weapon/gun_component/enfieldno2_furniture_grip
+	component_id = "enfieldno2/furniture/grip"
+/obj/item/weapon/gun_component/webley_action
+	component_id = "webley/action"
+/obj/item/weapon/gun_component/webley_barrel_455
+	component_id = "webley/barrel/455"
+/obj/item/weapon/gun_component/webley_feed_455
+	component_id = "webley/feed/455"
+/obj/item/weapon/gun_component/webley_furniture_grip
+	component_id = "webley/furniture/grip"
+/obj/item/weapon/gun_component/type26_action
+	component_id = "type26/action"
+/obj/item/weapon/gun_component/type26_barrel_9mm
+	component_id = "type26/barrel/9mm"
+/obj/item/weapon/gun_component/type26_feed_9mm
+	component_id = "type26/feed/9mm"
+/obj/item/weapon/gun_component/type26_furniture_grip
+	component_id = "type26/furniture/grip"
+/obj/item/weapon/gun_component/derringer_action
+	component_id = "derringer/action"
+/obj/item/weapon/gun_component/derringer_barrel_41
+	component_id = "derringer/barrel/41"
+/obj/item/weapon/gun_component/derringer_feed_41
+	component_id = "derringer/feed/41"
+/obj/item/weapon/gun_component/derringer_furniture_grip
+	component_id = "derringer/furniture/grip"
+/obj/item/weapon/gun_component/magnum44_action
+	component_id = "magnum44/action"
+/obj/item/weapon/gun_component/magnum44_barrel_44magnum
+	component_id = "magnum44/barrel/44magnum"
+/obj/item/weapon/gun_component/magnum44_feed_44magnum
+	component_id = "magnum44/feed/44magnum"
+/obj/item/weapon/gun_component/magnum44_furniture_grip
+	component_id = "magnum44/furniture/grip"
+/obj/item/weapon/gun_component/mckellen_action
+	component_id = "mckellen/action"
+/obj/item/weapon/gun_component/mckellen_barrel_44magnum
+	component_id = "mckellen/barrel/44magnum"
+/obj/item/weapon/gun_component/mckellen_feed_44magnum
+	component_id = "mckellen/feed/44magnum"
+/obj/item/weapon/gun_component/mckellen_furniture_grip
+	component_id = "mckellen/furniture/grip"
+/obj/item/weapon/gun_component/judge_action
+	component_id = "judge/action"
+/obj/item/weapon/gun_component/judge_barrel_45
+	component_id = "judge/barrel/45"
+/obj/item/weapon/gun_component/judge_feed_45
+	component_id = "judge/feed/45"
+/obj/item/weapon/gun_component/judge_furniture_grip
+	component_id = "judge/furniture/grip"
+/obj/item/weapon/gun_component/revolving_action
+	component_id = "revolving/action"
+/obj/item/weapon/gun_component/revolving_barrel_44
+	component_id = "revolving/barrel/44"
+/obj/item/weapon/gun_component/revolving_feed_44
+	component_id = "revolving/feed/44"
+/obj/item/weapon/gun_component/revolving_furniture_stock
+	component_id = "revolving/furniture/stock"
 #undef FIREARM_BARREL_LIFE
