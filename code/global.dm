@@ -3,7 +3,6 @@
 //#warn This compiler is out of date. You may experience issues with projectile animations.
 //#endif
 
-var/bearcave_ticking = FALSE
 
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax
