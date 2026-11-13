@@ -340,6 +340,9 @@ var/knowledge_failures = 0
 	desk.anchored = TRUE
 	knowledge_check(novice.at_writing_desk() && novice.scholar_study_time(2) < plain_study && scholar_write_time(2, pencil, novice) < plain_write, "studying and writing beside a writing desk are faster")
 	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/writing_desk") && scholar.learn_recipe_node("basic_furniture") && crafting_recipe_allowed(scholar, "/obj/structure/writing_desk"), "the writing desk is Basic Furniture")
+	// A new character's first fire needs no research (Val, 2026-11-13).
+	knowledge_check(!novice.knows_recipe_node("basic_furniture") && crafting_recipe_allowed(novice, "/obj/structure/oven/fireplace") && !get_recipe_node_req("/obj/structure/oven/fireplace"), "a novice can make a campfire")
+	knowledge_check(!crafting_recipe_allowed(novice, "/obj/structure/brazier"), "a brazier still needs Basic Furniture")
 	var/obj/structure/research_bench/knowledge_fixture/bench = new(locate(2,2,1))
 	var/obj/structure/bookcase/near = new(locate(3,2,1))
 	var/obj/structure/bookcase/far = new(locate(8,8,1))

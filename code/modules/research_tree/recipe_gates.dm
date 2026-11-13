@@ -1,6 +1,8 @@
-// Explicit fully ungated outputs. Empty by design (Val, 2026-11-09): every
-// crafted output needs research. Tests may add a synthetic output here.
-var/global/list/basic_crafting_recipes = list()
+// Explicit fully ungated outputs. Every other crafted output needs research
+// (Val, 2026-11-09), except the campfire: a new character's first fire must
+// not wait on Basic Furniture (Val, 2026-11-13). Tests may add a synthetic
+// output here.
+var/global/list/basic_crafting_recipes = list("/obj/structure/oven/fireplace")
 
 /proc/is_basic_crafting_recipe(result_path_string)
 	return istext(result_path_string) && (result_path_string in basic_crafting_recipes)
