@@ -800,6 +800,13 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # Shared Campaign win condition and Battle Royale / Hunger Games shrinking
+    # zone against frozen pre-refactor bodies; source projection only.
+    'map_metadata_dedupe': {'files': ('tests/map_metadata_dedupe/test_map_metadata_dedupe.py',),
+        'paths': ('tests/map_metadata_dedupe/', 'code/game/objects/map_metadata/shrinking_zone.dm'),
+        'shared_paths': ('code/game/objects/map_metadata/campaign_new.dm',
+                         'code/game/objects/map_metadata/battleroyale.dm',
+                         'code/game/objects/map_metadata/hungergames.dm')},
     # Maps dispatch to the shared faction grace wall; run.py is the native
     # equivalence probe against the frozen legacy bodies (manual).
     'grace_wall': {'files': ('tests/grace_wall/test_grace_wall.py',),
