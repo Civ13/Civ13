@@ -1602,6 +1602,7 @@
 #include "code\processes\abandoned_items.dm"
 #include "code\processes\human_corpse_decay.dm"
 #include "code\processes\seasonal_construction.dm"
+#include "code\processes\seasonal_construction_pacing.dm"
 #include "code\processes\chemistry.dm"
 #include "code\processes\decal_decay.dm"
 #include "code\processes\cleanables.dm"

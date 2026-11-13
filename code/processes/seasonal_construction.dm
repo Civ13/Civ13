@@ -6,6 +6,8 @@
 #define CONSTRUCTION_TIMBER_SEASONS 256
 // Players are warned once a building has a year (four seasons) left.
 #define CONSTRUCTION_WARNING_SEASONS 4
+// A wall at the end of its life stands as a ruin for a year before it is gone.
+#define CONSTRUCTION_RUIN_SEASONS 4
 #define CONSTRUCTION_DECAY_BATCH 64
 
 // Process-local clock. before_save folds unserviced transitions into each
@@ -101,6 +103,8 @@ var/global/seasonal_construction_cursor = 1
 /obj/covers/damage_seasonal_construction(damage)
 	health -= damage
 	if (health <= 0)
+		if (seasonal_construction_ruin())
+			return
 		visible_message(SPAN_WARNING("The [name] falls apart from seasonal weathering!"))
 		qdel(src)
 	else
@@ -120,7 +124,10 @@ var/global/seasonal_construction_cursor = 1
 	var/design = seasonal_construction_design_health()
 	if (!lifetime || design <= 0)
 		return null
-	return max(0, ceil(seasonal_construction_health() * lifetime / design - 0.001) - seasonal_construction_due)
+	var/left = ceil(seasonal_construction_health() * seasonal_construction_span() / design - 0.001)
+	// Debt is charged one warning band at a time, so a standing building
+	// always has at least the season it is in.
+	return max(left > 0 ? 1 : 0, left - seasonal_construction_due)
 
 /obj/proc/seasonal_construction_warning(left)
 	return "\The [src] is badly weathered and will fall apart within [left] season[left == 1 ? "" : "s"] unless it is repaired."
@@ -130,9 +137,14 @@ var/global/seasonal_construction_cursor = 1
 	var/left = seasonal_construction_seasons_left()
 	if (isnull(left))
 		return
-	var/before = ceil((seasonal_construction_health() + damage) * seasonal_construction_lifetime() / seasonal_construction_design_health() - 0.001)
-	if ((before > CONSTRUCTION_WARNING_SEASONS && left <= CONSTRUCTION_WARNING_SEASONS) || (before > 1 && left <= 1))
+	var/span = seasonal_construction_span()
+	var/design = seasonal_construction_design_health()
+	var/before = ceil((seasonal_construction_health() + damage) * span / design - 0.001)
+	var/now = ceil(seasonal_construction_health() * span / design - 0.001)
+	if ((before > CONSTRUCTION_WARNING_SEASONS && now <= CONSTRUCTION_WARNING_SEASONS) || (before > 1 && now <= 1))
 		visible_message(SPAN_WARNING(seasonal_construction_warning(left)))
+	else if (damage > 0 && now <= CONSTRUCTION_WARNING_SEASONS)
+		visible_message("<span class='notice'>\The [src] creaks, and a little dust drifts down from it.</span>")
 
 /obj/proc/seasonal_construction_repair_hint()
 	return null
@@ -152,6 +164,8 @@ var/global/seasonal_construction_cursor = 1
 	if (isnull(left))
 		return null
 	var/hint = seasonal_construction_repair_hint()
+	if (seasonal_construction_ruined())
+		return SPAN_WARNING("It is a ruin. It holds nothing up and will crumble away unless it is repaired.[hint ? " [hint]" : ""]")
 	if (left <= CONSTRUCTION_WARNING_SEASONS)
 		return SPAN_WARNING("[seasonal_construction_warning(left)][hint ? " [hint]" : ""]")
 	var/years = round(left / 4, 0.25)
@@ -177,6 +191,7 @@ var/global/seasonal_construction_cursor = 1
 	// destruction/support hooks without special content handling here.
 	// Debit debt before normal qdel hooks; no sleep or direct Destroy call.
 	seasonal_construction_due = 0
+	damage = seasonal_construction_paced(damage)
 	damage_seasonal_construction(damage)
 
 /obj/persistence_runtime_var(key)
@@ -198,6 +213,7 @@ var/global/seasonal_construction_cursor = 1
 	..()
 	unregister_seasonal_construction()
 	register_seasonal_construction()
+	seasonal_construction_stage()
 
 /obj/roof/after_load()
 	..()

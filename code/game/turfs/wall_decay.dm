@@ -29,7 +29,7 @@
 		to_chat(user, "\The [src] doesn't need repairs.")
 		return
 	// Cost is the missing share of the build stack, at least one.
-	var/amt = max(1, ceil((maxhealth - health) / maxhealth * buildstackamount))
+	var/amt = max(1, ceil((maxhealth - max(health, 0)) / maxhealth * buildstackamount))
 	do_repair(user, I, amt)
 
 /obj/covers/proc/do_repair(var/mob/user,var/obj/item/I, var/amt=0)
@@ -37,6 +37,8 @@
 		return
 	to_chat(user, "Repairing \the [src]...")
 	if (do_after(user,40,src))
+		// A ruin is rebuilt from nothing, not from below it.
+		health = max(health, 0)
 		if (istype(I, /obj/item/stack))
 			var/obj/item/stack/S = I
 			if (S.amount >= amt)
@@ -59,6 +61,7 @@
 			to_chat(user, "The wall is repaired.")
 			moldy = max(0,moldy-=1)
 			cracked = max(0, cracked-=1)
+		seasonal_construction_stage()
 		return
 	return
 /obj/covers/examine(mob/user)

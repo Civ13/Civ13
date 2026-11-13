@@ -13,6 +13,11 @@ codec is not executed. Source checks cover constructors, both historical cover
 lifecycle definitions, Del/Destroy cleanup, roof partial-save fields and inherited
 runtime exclusions. See [policy/rates/limits](../../docs/seasonal-construction.md).
 
+`seasonal_construction_paced` and `seasonal_construction_ruin` live in
+`code/processes/seasonal_construction_pacing.dm` and are ported by hand in
+`test_decay.py`; `test_sources.py` pins the ported lines, the tmp-only
+variables and the anchors of the native weathering controls.
+
 Prepare the unrun native fixture, optionally with `--control mode`, `replay`,
 `save-debt`, `paired` or `contents` (reinstates the superseded terminal deferral):
 

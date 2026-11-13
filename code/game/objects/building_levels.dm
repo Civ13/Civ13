@@ -137,7 +137,7 @@ var/building_compiled_maxz = 0
 	. |= list("building_pair_id", "building_floor_z", "health", "current_area_type", "switch_area", "seasonal_construction_due")
 
 /obj/roof/persistence_runtime_var(key)
-	return key == "roof_overlay" || ..()
+	return key == "roof_overlay" || key == "sagging" || ..()
 
 // Building levels stack over the surface; a dug cave level is never one.
 /proc/building_upper_z(z)
@@ -183,6 +183,10 @@ var/building_compiled_maxz = 0
 	if (wall || incomplete || health <= 0 || gc_destroyed || gcDestroyed)
 		return FALSE
 	return (lowertext(material) in list("stone", "steel", "iron", "concrete"))
+
+// A dirt road is packed soil, whatever its parent type is made of.
+/obj/covers/roads/dirt/building_foundation()
+	return FALSE
 
 // A ground-floor support is founded on rock or over a stone, brick, concrete
 // or metal floor. Derived from what stands there; nothing is saved for it.
