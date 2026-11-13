@@ -236,19 +236,21 @@
 				for (var/atom/movable/M in riders)
 					if (!QDELETED(M))
 						M.craft_turned(craft, angle)
-			// The turn is shown swinging round instead of snapping (glide.dm).
-			if (glides)
-				if (!glide_was)
-					glide_was = list()
-				for (var/i = 1, i <= old.len, i++)
-					var/turf/S = old[i]
-					var/turf/D = dest[i]
-					if (S == D)
-						continue
-					for (var/atom/movable/M in cargo[i])
-						if (!QDELETED(M) && M.loc == D)
-							glide_swing(glide_was, M, D.x - S.x, D.y - S.y, glide_turn_time())
-				glide_rest(glide_turn_time())
+		// A turn is shown swinging round, and a slide into a berth is drawn
+		// for as long as its caller asked, instead of snapping (glide.dm).
+		if (glides && !gliding && (angle || slide_time > 0))
+			var/shown = slide_time > 0 ? slide_time : glide_turn_time()
+			if (!glide_was)
+				glide_was = list()
+			for (var/i = 1, i <= old.len, i++)
+				var/turf/S = old[i]
+				var/turf/D = dest[i]
+				if (S == D)
+					continue
+				for (var/atom/movable/M in cargo[i])
+					if (!QDELETED(M) && M.loc == D)
+						glide_swing(glide_was, M, D.x - S.x, D.y - S.y, shown)
+			glide_rest(shown)
 	catch (var/exception/e)
 		moving = FALSE
 		craft_rigid_settle(carry)

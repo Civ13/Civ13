@@ -298,6 +298,15 @@ var/project_runtime_error = FALSE
 		made.glide_rest_now()
 		project_check(rolling.glide_size == own_glide && !length(made.glide_was), "[model]: at rest everything gets its own glide back")
 		qdel(loose)
+		// A works vehicle is hand built: its owners can take it apart and
+		// assemble the same parts again (craft/vehicle_assembly.dm).
+		made.take_apart()
+		project_check(!made.components.len && !made.wheels.len, "[model]: comes apart into loose frames and parts")
+		var/rebuilt = made.assemble(SOUTH)
+		var/refitted = TRUE
+		for (var/obj/structure/turret/built/again in made.built_turrets())
+			refitted = refitted && !length(again.lacking())
+		project_check(isnull(rebuilt) && made.components.len == size * size && made.wheels.len == 4 && made.engine && made.engine.fueltank && made.wheel && refitted && length(made.built_turrets()) == (gunned ? 1 : 0), "[model]: the same parts assemble again ([rebuilt], [made.components.len] parts, [made.wheels.len] wheels)")
 		project_check(!V.project && V.stock["steel"] == 0 && !V.stock["tracks"], "[model]: the project is spent")
 	H.loc = locate(6, 5, 1)
 

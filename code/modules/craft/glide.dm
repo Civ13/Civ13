@@ -20,6 +20,7 @@
 /datum/craft_body
 	var/glides = FALSE            // TRUE when a one-tile step can be shown as a glide.
 	var/tmp/glide_time = 0        // Ticks the step now being made should take on screen.
+	var/tmp/slide_time = 0        // Ticks a longer move now being made (a docking slide) should take on screen.
 	var/tmp/list/glide_was = null // Things whose glide_size she holds: atom = list(before, applied).
 
 // TRUE when the engine itself will glide this thing over a one-tile move.
@@ -67,6 +68,10 @@
 			C.pixel_x = rest_x - shift_x
 			C.pixel_y = rest_y - shift_y
 			animate(C, pixel_x = rest_x, pixel_y = rest_y, time = time, easing = easing)
+
+// How long a slide of this many tiles into a berth is shown for, in ticks.
+/proc/glide_dock_time(tiles)
+	return clamp(tiles * 3, 10, 40)
 
 // How long a turn is shown swinging round, in ticks.
 /proc/glide_turn_time()

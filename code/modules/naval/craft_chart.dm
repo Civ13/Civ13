@@ -299,7 +299,12 @@ var/global/list/sea_harbours = list()    // /obj/structure/berth/quay
 	var/turf/O = body.origin()
 	// Already lying alongside (after a restart, say): only the lines go out.
 	var/there = O && O.x == plan[1] && O.y == plan[2] && body.heading() == plan[3]
-	if (!there && !body.move_to(plan[1], plan[2], plan[3]))
+	// She is drawn sliding in alongside, not jumping there (craft/glide.dm).
+	if (!there && O)
+		body.slide_time = glide_dock_time(max(abs(plan[1] - O.x), abs(plan[2] - O.y)))
+	var/berthed = there || body.move_to(plan[1], plan[2], plan[3])
+	body.slide_time = 0
+	if (!berthed)
 		last_refusal = body.last_refusal
 		T.release()
 		crew_message(SPAN_WARNING("She cannot make the berth: [last_refusal]."))
