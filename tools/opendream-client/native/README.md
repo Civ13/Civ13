@@ -334,7 +334,18 @@ object with kill-on-close ends a launcher-started bot if the launcher exits any
 other way. A bot started outside the launcher is shown but left running on close.
 The console `H` option still starts the bot detached.
 
-The same actions run without the window as `Civ13.exe --bot status|check-update|start|stop|restart|update`
+**Repair and update** fixes anything the bot's default-branch source check refuses
+for (local edits, a modified `composer.lock`, another branch or a detached HEAD,
+local commits) with git directly, so it also works on bot checkouts too old to
+repair themselves: local edits and untracked files go to a stash named
+`Civ13 launcher repair <UTC time>`, local commits stay on a
+`civilizationbot-backup-<UTC time>` branch, the folder is set to a clean `main`
+equal to `origin/main`, a local `composer.lock` is put back when upstream did not
+change it, and the bot is started again. When **Update** or **Start** is refused
+by the source check the window offers it at once. Nothing is deleted.
+`tests/BotRepairTests.cs` runs it against real temporary Git repositories.
+
+The same actions run without the window as `Civ13.exe --bot status|check-update|start|stop|restart|update|repair`
 (add `--root <folder>` for another launcher data folder). `start` asks Windows to create the supervisor
 (CIM `Win32_Process.Create`), so the bot keeps running after the command exits and outside any job object
 of the caller; it waits up to 30 seconds for `control.php status` to report it running. `stop` waits up to

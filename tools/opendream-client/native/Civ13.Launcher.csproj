@@ -38,6 +38,7 @@
     <Compile Include="HostSettings.cs" />
     <Compile Include="LocalBot.cs" />
     <Compile Include="BotCommand.cs" />
+    <Compile Include="BotRepair.cs" />
     <Compile Include="LocalHelp.cs" />
     <Compile Include="StartMenuShortcut.cs" />
     <Compile Include="DiscordPresence.cs" />

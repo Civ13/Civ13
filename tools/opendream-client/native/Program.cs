@@ -23,7 +23,7 @@ public static class Program {
         output.WriteLine("  --local-dreamdaemon <absolute host receipt>");
         output.WriteLine("      Join the verified local host; requires --root.");
         output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
-        output.WriteLine("  --bot status|check-update|start|stop|restart|update [--root <absolute folder>]");
+        output.WriteLine("  --bot status|check-update|start|stop|restart|update|repair [--root <absolute folder>]");
         output.WriteLine("      Manage host.json's Civilizationbot without the window; start leaves it running.");
         output.WriteLine("  --render-tabs <launcher data folder> <output folder>");
         output.WriteLine("      Draw the hosting tabs to PNG files for review, from that folder's host.json. Starts nothing.");
