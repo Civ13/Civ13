@@ -1103,6 +1103,7 @@
 #include "code\modules\1713\siege\cannon_types.dm"
 #include "code\modules\1713\siege\catapult.dm"
 #include "code\modules\1713\siege\fire.dm"
+#include "code\modules\1713\siege\naval_broadside.dm"
 #include "code\modules\1713\siege\piece.dm"
 #include "code\modules\1713\siege\shell.dm"
 #include "code\modules\1713\siege\turret.dm"
