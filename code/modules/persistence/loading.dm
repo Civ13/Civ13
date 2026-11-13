@@ -598,6 +598,7 @@
 	// Floors are replaced level by level; their icons refresh once per level
 	// after its entries load (floor.dm), not on every neighbour placement.
 	set_floor_icon_updates_deferred(TRUE)
+	var/allocation_started = world.timeofday
 	try
 		// Allocate all levels first so references to turfs on later levels stay valid.
 		for(var/z = 1, z <= world.maxz, z++)
@@ -643,6 +644,7 @@
 		// the roof topology proven by preflight, before any object fields decode.
 		materialize_saved_roof_areas()
 		begin_level_link_import()
+		persistence_load_phase_log("allocating every level's turfs", allocation_started)
 	catch(var/exception/allocation_error)
 		// The caller rethrows; the world keeps running, so floors must redraw again.
 		set_floor_icon_updates_deferred(FALSE)
@@ -750,8 +752,10 @@
 			saved_turfs = list()
 			return FALSE
 	set_floor_icon_updates_deferred(FALSE)
+	var/links_started = world.timeofday
 	try
 		restore_level_links()
+		persistence_load_phase_log("level links", links_started)
 	catch(var/exception/link_error)
 		if (surface_inventory) surface_inventory.discovery_fail()
 		clear_saved_roof_areas()

@@ -506,6 +506,17 @@ var/map_storage/map_storage = new("SS13")
 /proc/log_startup_progress(var/message)
 	to_chat(world, "<span class='danger'>[message]</span>")
 
+// The load's phases, timed like the save's (persistence_save_phase_log): where a start or a handover's standby spends
+// the time before and between the levels (2026-11-13, sizing the Gaia handover).
+/proc/persistence_load_phase_log(phase, started)
+	var/now = world.timeofday
+	var/elapsed = now - started
+	if(elapsed < 0) elapsed += 864000 // midnight wrap
+	var/text = "World load: [phase] took [round(elapsed / 10, 0.1)] s."
+	world.log << text
+	persistence_game_log(text)
+	return now
+
 //Key thing that stops lag. Cornerstone of performance in ss13, Just sitting here, in unsorted.dm.
 /proc/stoplag()
 	. = 1
@@ -1324,6 +1335,7 @@ var/global/world_save_notice_started = null
 	var/phase = "preflight"
 	operation.diagnostic_phase = "preflight"
 	storage.restore_cleanup_error = null
+	var/load_phase_started = world.timeofday
 	try
 		if(policy)
 			attempt = policy.begin_attempt(storage)
@@ -1338,6 +1350,7 @@ var/global/world_save_notice_started = null
 		// Validated just above: compare the files' identity without a second walk.
 		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity(FALSE))))
 			throw EXCEPTION("Restart intent does not match the completed generation")
+		load_phase_started = persistence_load_phase_log("preflight", load_phase_started)
 		var/watch = start_watch()
 		log_startup_progress("Starting map load...")
 		var/list/saved_round = storage.read_round_state()
@@ -1359,9 +1372,11 @@ var/global/world_save_notice_started = null
 		storage.suspend_durable_world()
 		invalidate_persistence_area_snapshots()
 		storage.ClearMap()
+		load_phase_started = persistence_load_phase_log("clearing the map", load_phase_started)
 		phase = "world"
 		if(!storage.run_world_operation("load", operation))
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
+		load_phase_started = persistence_load_phase_log("levels", load_phase_started)
 		phase = "metadata"
 		operation.diagnostic_phase = "metadata"
 		if(storage.load_map_metadata() != TRUE)
@@ -1372,6 +1387,7 @@ var/global/world_save_notice_started = null
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)
 		storage.restore_zone_spawns()
+		load_phase_started = persistence_load_phase_log("metadata, durable world and round state", load_phase_started)
 		if(attempt_owned)
 			phase = "release"
 			release_attempted = TRUE
