@@ -78,7 +78,15 @@
 
 /obj/item/weapon/material/kitchen/utensil/knife/flint
 	desc = "A knapped flint blade with a wrapped grip. Sharp, but it chips with use."
+	icon = 'icons/obj/stone_age_arms.dmi'
+	icon_state = "flint_knife"
+	item_state = "knife"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_weapons.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_weapons.dmi',
+		)
 	default_material = "flint"
+	applies_material_colour = FALSE // drawn in the flint's own colours
 
 /obj/item/weapon/material/spear/flint
 	desc = "A wooden shaft tipped with a knapped flint point."
