@@ -27,6 +27,9 @@ var/list/failures = list()
 		return TRUE
 
 /datum/moving_save_capture/proc/check()
+/datum/save_export_frame
+	var/datum/source
+	var/current_field
 
 /map_storage
 	var/saving_z = 1
@@ -38,8 +41,10 @@ var/list/failures = list()
 	var/saving_work = 0
 	var/saving_slice_start = 0
 	var/saving_unattended = TRUE
+	var/list/saving_export_stack = list()
 	proc/cleanup_world_operation()
 		cleanups++
+		saving_export_stack = list()
 	proc/record_save_outcome(success)
 		if(!success) failures_recorded++
 
@@ -60,6 +65,11 @@ var/list/failures = list()
 	persistence_active_operation = operation
 	return operation
 
+/world
+	maxx = 4
+	maxy = 4
+	maxz = 1
+
 /world/New()
 	..()
 	spawn(0) probe_run()
@@ -71,12 +81,18 @@ var/list/failures = list()
 	expect(isnull(persistence_save_watchdog(5999)), "nine minutes idle is not a stall")
 	operation.progress_at = 20000
 	expect(isnull(persistence_save_watchdog(25000)), "a save that keeps working is left alone")
-	// Ten minutes without work: alarm once and ask the save to stop.
+	// Ten minutes without work: alarm once and ask the save to stop, naming
+	// the entry it was exporting.
+	var/turf/stuck_turf = locate(2, 3, 1)
+	var/datum/save_export_frame/frame = new
+	frame.source = stuck_turf
+	frame.current_field = "contents"
+	storage.saving_export_stack += frame
 	operation.progress_at = 0
 	operation.phase_at = 0
 	expect(persistence_save_watchdog(6000) == "alarm", "ten idle minutes raise the alarm")
 	expect(findtext(operation.abort_reason, "no save progress for 10 minutes"), "abort reason: [operation.abort_reason]")
-	expect(admin_lines.len == 1 && findtext(admin_lines[1], "World save stalled") && findtext(admin_lines[1], "level 1"), "admins hear of it: [json_encode(admin_lines)]")
+	expect(admin_lines.len == 1 && findtext(admin_lines[1], "World save stalled") && findtext(admin_lines[1], "level 1") && findtext(admin_lines[1], "exporting /turf at 2,3,1 (contents)"), "admins hear of it: [json_encode(admin_lines)]")
 	expect(isnull(persistence_save_watchdog(6300)), "the alarm is raised once")
 	// A live save proc stops at its next work check and takes the ordinary failure path.
 	var/thrown = null

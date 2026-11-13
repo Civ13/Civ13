@@ -40,7 +40,22 @@
 /proc/persistence_save_watchdog_where(datum/persistence_world_operation/operation)
 	var/map_storage/storage = operation.storage
 	var/level = storage ? storage.saving_z : null
-	return "[operation.diagnostic_save_id ? operation.diagnostic_save_id : "save"], phase [operation.diagnostic_phase], after [operation.last_phase][level ? ", level [level]" : ""]"
+	return "[operation.diagnostic_save_id ? operation.diagnostic_save_id : "save"], phase [operation.diagnostic_phase], after [operation.last_phase][level ? ", level [level]" : ""][persistence_save_watchdog_frames(storage)]"
+
+// The entries the save was exporting when it stopped, innermost last: the
+// 2026-11-13 Gaia stall left level 1 a quarter written with no hint of where.
+/proc/persistence_save_watchdog_frames(map_storage/storage)
+	if(!storage || !islist(storage.saving_export_stack) || !storage.saving_export_stack.len) return ""
+	var/list/parts = list()
+	var/list/stack = storage.saving_export_stack
+	for(var/i = max(1, stack.len - 2), i <= stack.len, i++)
+		var/datum/save_export_frame/frame = stack[i]
+		if(!istype(frame)) continue
+		var/datum/source = frame.source
+		var/atom/A = source
+		var/where = istype(A) && A.z ? " at [A.x],[A.y],[A.z]" : ""
+		parts += "[source ? source.type : "a deleted entry"][where] ([istext(frame.current_field) ? copytext(frame.current_field, 1, 41) : "contents"])"
+	return parts.len ? ", exporting [jointext(parts, " > ")]" : ""
 
 /proc/persistence_save_watchdog_alert(message)
 	world.log << message
