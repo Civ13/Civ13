@@ -36,6 +36,37 @@ public static class HostSettings {
         File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
         File.Move(temporary, group.Config, true);
     }
+    // Update when empty: a region whose last player left and which has saved since builds the latest
+    // revision beside itself and restarts onto it (the group config's update_when_empty, on unless
+    // set false; shard_group.py RegionHost reads it at each check). New commits are only seen when the
+    // group fetches its remote, so turning it on also points a group that does not at origin/master.
+    public static bool UpdateWhenEmpty(HostGroup group) {
+        var root = JsonNode.Parse(File.ReadAllText(group.Config));
+        return root?["update_when_empty"] is not JsonValue value || !value.TryGetValue<bool>(out var on) || on;
+    }
+
+    // Whether the group fetches a remote before resolving its revision (shard_group.py fetch_remote).
+    public static bool FollowsRemote(HostGroup group) {
+        var root = JsonNode.Parse(File.ReadAllText(group.Config));
+        return root?["fetch"] is JsonValue value && value.TryGetValue<string>(out var remote) && remote.Length > 0;
+    }
+
+    // Returns true when turning it on also set "fetch": "origin" and "revision": "origin/master".
+    public static bool SetUpdateWhenEmpty(HostGroup group, bool on) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        root["update_when_empty"] = on;
+        var followed = false;
+        if (on && !(root["fetch"] is JsonValue fetch && fetch.TryGetValue<string>(out var remote) && remote.Length > 0)) {
+            root["fetch"] = "origin";
+            root["revision"] = "origin/master";
+            followed = true;
+        }
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+        return followed;
+    }
+
     public static readonly string[] Offered = [LocalConfig, "config/host.txt"];
     // Earlier versions an overlay keeps (shard_group.py KEPT_COPY); they are never offered or copied.
     private static readonly Regex Kept = new(@"\.(previous|migrated)$|\.bak(-|$)");

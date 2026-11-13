@@ -633,6 +633,7 @@ class Host:
         self.last_busy = False       # whether that answer said it was saving
         self.next_stage = 0.0
         self.next_install_check = 0.0
+        self.next_update_check = 0.0
 
     # -- state -------------------------------------------------------------
     def record(self, **values):
@@ -1102,6 +1103,7 @@ class Host:
             self.forget_answers()  # a thawed world gets a fresh hang allowance
             if self.install_check_due() and self.install_staged_while_down():
                 return None, 30
+            self.keep_sleeper_current()
             ignore = set(self.config['wake_ignore'])
             if any(address not in ignore for address in self.platform.connections(self.config['port'])):
                 self.log(self.thaw('player connection'))
@@ -1112,8 +1114,10 @@ class Host:
             return None, 30
         if not self.platform.listening(self.config['port']):
             self.forget_answers()
-            if self.cold() and self.install_check_due() and self.install_staged_while_down():
-                return None, 30
+            if self.cold():
+                if self.install_check_due() and self.install_staged_while_down():
+                    return None, 30
+                self.keep_sleeper_current()
             return None, self.check_crash()
         self.down_since = None
         world = self.world()
@@ -1125,6 +1129,11 @@ class Host:
         if not world or world.get('busy') or not world.get('ready') or world.get('clients'):
             return None, 30
         now = self.platform.now()
+        if self.update_when_empty() and world_saves(world) and self.saved_since_last_client():
+            # Empty and saved: an update waiting goes in now, not after the idle wait.
+            wait = self.update_while_empty()
+            if wait is not None:
+                return (now if idle_since is None else idle_since), wait
         if idle_since is None:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
@@ -1265,6 +1274,17 @@ class Host:
     def update_pending(self):
         """True when a staged build newer than the running one is ready to install."""
         return False
+
+    def update_when_empty(self):
+        """Whether an empty world that has saved moves onto the latest revision at once
+        (region hosts only: they build the update beside the running world)."""
+        return False
+
+    def update_while_empty(self):
+        return None
+
+    def keep_sleeper_current(self):
+        pass
 
     def maybe_stage(self):
         minutes = self.config['auto_stage_minutes']
