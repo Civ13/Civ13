@@ -139,10 +139,12 @@ character lives, with a join link.
   changing enrollment extends the durable roster and waits for reconciliation
   with every member; it never silently forgets an offline region. A directory
   that lost a roster member is quarantined; an enrolled region the roster lacks
-  only extends the roster. A quarantine lifts by itself once every enrolled
-  agent answers and each holds this database's epoch (no newer revision), or is
-  a new region with no ledger or train history. Otherwise restore authority
-  rather than deleting records to clear the hold.
+  only extends the roster. A database that has decided homes lifts its hold
+  (unreconciled or quarantined) by itself once the agents that answer prove it:
+  each holds this database's epoch with no newer revision, or is a new region
+  with no ledger or train history, and at least one holds the epoch. Stopped
+  regions run no agent and need not answer; their homes stay in the ledger.
+  Otherwise restore authority rather than deleting records to clear the hold.
 - A relay failure (one agent's outbox down) no longer skips the home pass.
 - A trip, departure or death note keeps retrying (backing off to every five
   minutes) until the agent has it.

@@ -151,23 +151,61 @@ class QuarantineRecoveryTests(CoordinatorFixture):
         self.assertEqual('ready', self.c.recovery_status()['state'])
 
     def test_quarantine_lifts_when_every_agent_holds_this_epoch(self):
-        a, b, epoch = self.ready_group()
+        a, b, epoch = self.decided_group()
         g = self.enroll('gamma', 3)  # new region: no ledger yet
         self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
-        self.answers[a]['requests'] = [{'id': 1, 'ckey': 'breadguy', 'op': 'claim', 'region': 'alpha'}]
+        self.answers[a]['requests'] = [{'id': 5, 'ckey': 'breadguy', 'op': 'claim', 'region': 'alpha'}]
         self.assertEqual(1, self.c.homes_once())
         self.assertEqual('ready', self.c.recovery_status()['state'])
         self.assertEqual('alpha', self.c.home('breadguy'))
 
-    def test_quarantine_holds_while_an_agent_is_offline(self):
+    def decided_group(self):
         a, b, epoch = self.ready_group()
+        self.answers[a]['requests'] = [{'id': 1, 'ckey': 'alice', 'op': 'claim', 'region': 'alpha'}]
+        self.c.homes_once()
+        self.answers[a]['requests'] = []
+        rev = int(self.c._ledger('rev'))
+        self.assertEqual(1, rev)
+        for url in (a, b):
+            self.answers[url]['rev'] = rev
+        return a, b, epoch
+
+    def test_hold_lifts_with_stopped_regions_offline(self):
+        # Stopped regions run no agent; the live group had 8 of 10 stopped.
+        a, b, epoch = self.decided_group()
+        g = self.enroll('gamma', 3)
+        del self.answers[b]; del self.answers[g]
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        self.answers[a]['requests'] = [{'id': 2, 'ckey': 'breadguy', 'op': 'claim', 'region': 'alpha'}]
+        self.assertEqual(1, self.c.homes_once())
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+        self.assertEqual('alpha', self.c.home('breadguy'))
+        self.assertEqual('alpha', self.c.home('alice'))
+
+    def test_unreconciled_new_member_lifts_with_it_offline(self):
+        a, b, epoch = self.decided_group()
+        self.enroll('gamma', 3)
+        del self.answers['http://127.0.0.1:3']
+        self.assertEqual('unreconciled', self.c.recovery_status()['state'])
+        self.c.homes_once()
+        self.assertEqual('ready', self.c.recovery_status()['state'])
+
+    def test_quarantine_holds_while_no_answering_agent_proves_the_epoch(self):
+        a, b, epoch = self.decided_group()
+        self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
+        del self.answers[a]; del self.answers[b]
+        self.assertEqual(0, self.c.homes_once())
+        self.assertEqual('quarantined', self.c.recovery_status()['state'])
+
+    def test_undecided_database_still_needs_every_member(self):
+        a, b, epoch = self.ready_group()  # rev 0: nothing proves authority
         self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
         del self.answers[b]
         self.assertEqual(0, self.c.homes_once())
         self.assertEqual('quarantined', self.c.recovery_status()['state'])
 
     def test_quarantine_holds_for_a_foreign_epoch_or_newer_ledger(self):
-        a, b, epoch = self.ready_group()
+        a, b, epoch = self.decided_group()
         self.c.db.execute("UPDATE ledger SET value='quarantined' WHERE key='recovery'")
         self.answers[b]['epoch'] = 'other-authority'
         self.assertEqual(0, self.c.homes_once())

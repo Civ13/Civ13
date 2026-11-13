@@ -146,15 +146,18 @@ class Coordinator(TrainCustody):
             self._set_home(ckey, source)
 
     def _proven_authority(self, roster, regions, asked, epoch):
-        """Whether every enrolled agent proves this database is still its home
-        authority, so a quarantine (for example from an enrolment racing a pass,
-        before that was fixed) can lift by itself. Every roster member must still
-        be enrolled and answer; each agent holds this database's epoch, or is a
-        new region that never had a ledger or train custody; at least one holds
-        the epoch, and none claims a newer revision than this database decided."""
-        if not roster or not set(roster) <= set(regions) or set(asked) != set(regions):
-            return False
+        """Whether the agents that answer prove this database is still the
+        group's home authority, so a hold (unreconciled after an enrolment, or a
+        quarantine from an enrolment racing a pass, before that was fixed) lifts
+        by itself. This database has decided homes (rev above 0) and every roster
+        member is still enrolled. Each answering agent holds this database's
+        epoch with no newer revision, or is a new region that never had a ledger
+        or train custody, and at least one holds the epoch. A member that is down
+        (a stopped region runs no agent) loses nothing: its accounts' homes are
+        in this ledger, and it gets the rows it missed when it answers again."""
         rev = int(self._ledger('rev'))
+        if rev <= 0 or not roster or not set(roster) <= set(regions) or not asked:
+            return False
         proven = False
         for answer in asked.values():
             if answer.get('epoch') == epoch:
@@ -202,10 +205,9 @@ class Coordinator(TrainCustody):
                 self.db.execute('ROLLBACK')
                 raise
         if self._ledger('recovery') != 'ready':
-            if not regions or set(asked) != set(regions):
-                return 0
-            if self._ledger('recovery') == 'quarantined' and not self._proven_authority(roster, regions, asked, epoch):
-                return 0
+            if not self._proven_authority(roster, regions, asked, epoch):
+                if self._ledger('recovery') == 'quarantined' or not regions or set(asked) != set(regions):
+                    return 0
             # A replacement coordinator must not discard surviving train custody
             # or let a third world create a second body from an empty home map.
             if any(a.get('train_history') and a.get('epoch') != epoch for a in asked.values()):
@@ -386,8 +388,8 @@ def main(argv=None):
                     coordinator.homes_once()
                     status = coordinator.recovery_status()
                     if status['state'] != 'ready':
-                        print('Home authority held (%s, roster %s): every enrolled region agent must answer. '
-                              'A quarantine lifts once every agent holds this database\'s epoch; otherwise '
+                        print('Home authority held (%s, roster %s): no answering agent proves this database\'s epoch. '
+                              'It lifts once a running agent holds it; otherwise '
                               'restore the original coordinator database. --bootstrap-new-group is only for '
                               'a genuinely new, clean group.' % (status['state'], ', '.join(status['roster']) or 'empty'),
                               file=sys.stderr)
