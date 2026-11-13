@@ -89,7 +89,7 @@ run those validators; maplint is the shared floor, not a replacement.
 <!-- 2026-10-18: centralized level admission -->
 Dynamic z growth must reserve its complete target through world_z_budget before
 the first native resize. The uncalibrated hard ceiling is 1,400,000 total grid cells,
-with one roof-added plane and lower-only host settings. Production additionally
+with at most four roof-added planes (a map opts in with `building_levels`) and lower-only host settings. Production additionally
 refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
 reviewed; configuration cannot bypass this. Isolated tests select a tests-only
 subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks

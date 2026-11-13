@@ -158,8 +158,110 @@ var/building_compiled_maxz = 0
 		if (R.building_pair_id == building_pair_id && R.building_floor_z == z && !R.gc_destroyed && !R.gcDestroyed)
 			return R
 
-// -1 is unsupported air. Natural/mapped solid ground is a foundation. Every
-// elevated support must lead through a paired slab to a real foundation.
+// Soft ground carries this many storeys; taller buildings need a foundation.
+#define BUILDING_UNFOUNDED_STOREYS 2
+// Load that founded ground carries: more than any tier.
+#define BUILDING_GROUND_STRENGTH 1000
+
+// Rock, mapped masonry and built stone or metal floors are foundations.
+/turf/proc/building_foundation()
+	return FALSE
+
+/turf/wall/building_foundation()
+	return TRUE
+
+/turf/floor/plating/building_foundation()
+	return TRUE
+
+/turf/floor/rocky/building_foundation()
+	return TRUE
+
+/turf/floor/dirt/underground/building_foundation()
+	return TRUE
+
+/obj/covers/proc/building_foundation()
+	if (wall || incomplete || health <= 0 || gc_destroyed || gcDestroyed)
+		return FALSE
+	return (lowertext(material) in list("stone", "steel", "iron", "concrete"))
+
+// A ground-floor support is founded on rock or over a stone, brick, concrete
+// or metal floor. Derived from what stands there; nothing is saved for it.
+/proc/building_founded(atom/A)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return FALSE
+	if (T.building_foundation())
+		return TRUE
+	for (var/obj/covers/C in T)
+		if (C.building_foundation())
+			return TRUE
+	return FALSE
+
+// Storeys the ground under a ground-floor support carries.
+/proc/building_ground_strength(atom/A)
+	return building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS
+
+// How far a support holds a slab: pillars reach further than walls.
+/proc/building_support_reach(atom/A)
+	if (istype(A, /obj/structure/roof_support))
+		return 3
+	if (istype(A, /obj/structure/mine_support/stone) || isturf(A))
+		return 2
+	if (istype(A, /obj/covers))
+		return 1
+	return 0
+
+// What support A stands on: list(storey, strength). Ground is storey 0 and
+// carries anything when founded; an upper floor passes on what holds it.
+/proc/building_support_base(atom/A, list/memo, depth = 0)
+	var/turf/U = get_turf(A)
+	if (!U)
+		return null
+	if (!building_open_turf(U))
+		return list(0, building_ground_strength(A))
+	for (var/obj/covers/C in U)
+		if (C.gc_destroyed || C.gcDestroyed)
+			continue
+		var/obj/roof/R = C.building_roof()
+		if (R)
+			var/list/info = building_slab_info(get_turf(R), memo, depth + 1)
+			if (info)
+				return info
+	return null
+
+// The storey a roof on T is and the storeys its strongest support chain
+// carries: list(storey, strength), or null when nothing holds it. Every
+// elevated support must lead through a paired slab to real ground, and a chain
+// is as strong as its weakest support. memo keeps each roof tile's answer for
+// one check, so supports shared between tiles are resolved once and the work
+// grows with the size of the building, not exponentially with its height.
+/proc/building_slab_info(turf/T, list/memo, depth = 0)
+	if (!T || depth > BUILDING_EXTRA_LEVELS)
+		return null
+	var/known = memo[T]
+	if (known)
+		return islist(known) ? known : null
+	memo[T] = -1
+	var/list/best
+	for (var/atom/A in range(3, T))
+		var/tier = A.building_support_tier()
+		if (!tier || get_dist(A, T) > building_support_reach(A))
+			continue
+		var/list/under = building_support_base(A, memo, depth)
+		if (!under)
+			continue
+		var/h = under[1] + 1
+		// A chain is as strong as its weakest support.
+		var/cap = min(tier, under[2])
+		if (h > cap)
+			continue
+		if (!best || cap > best[2])
+			best = list(h, cap)
+	if (best)
+		memo[T] = best
+	return best
+
+// -1 is unsupported air. Natural/mapped solid ground is a foundation.
 /proc/building_floor_height(turf/T, depth = 0, required_height = 0)
 	if (!T || depth > BUILDING_EXTRA_LEVELS)
 		return -1
@@ -175,27 +277,79 @@ var/building_compiled_maxz = 0
 				return h
 	return -1
 
+// The storey of a roof on T, or 0 when nothing holds it (or nothing that
+// carries required_height storeys).
 /proc/building_supported_height(turf/T, depth = 0, required_height = 0)
-	if (!T || depth > BUILDING_EXTRA_LEVELS)
+	var/list/info = building_slab_info(T, list(), depth)
+	if (!info || info[2] < required_height)
 		return 0
+	return info[1]
+
+// A support on an upper floor carries storey h only over supports that carry
+// it too: walk down, one storey at a time, looking within a tile of the column
+// for a wall or pillar of that strength, founded where it meets the ground.
+/proc/building_column_carries(atom/A, h)
+	var/turf/U = get_turf(A)
+	var/storeys = 0
+	while (U && building_open_turf(U))
+		if (++storeys > BUILDING_EXTRA_LEVELS)
+			return FALSE
+		var/turf/below
+		for (var/obj/covers/C in U)
+			if (C.gc_destroyed || C.gcDestroyed)
+				continue
+			var/obj/roof/R = C.building_roof()
+			if (R)
+				below = get_turf(R)
+				break
+		if (!below)
+			return FALSE
+		var/atom/carrier
+		for (var/atom/S in range(1, below))
+			if (S.building_support_tier() < h)
+				continue
+			if (!building_open_turf(get_turf(S)) && building_ground_strength(S) < h)
+				continue
+			carrier = S
+			break
+		if (!carrier)
+			return FALSE
+		U = get_turf(carrier)
+	return TRUE
+
+// Why a new roof on T may not be built, or null. Standing roofs keep the plain
+// support rule (building_supported_height); new work must also be designed:
+// supports above supports and, from the second storey up, no slab hung from
+// one distant pillar.
+/proc/building_design_error(turf/T)
+	var/list/memo = list()
+	var/list/info = building_slab_info(T, memo)
+	if (!info)
+		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
+	var/h = info[1]
+	var/near = FALSE
+	var/uncarried = FALSE
+	var/list/sides = list()
 	for (var/atom/A in range(3, T))
 		var/tier = A.building_support_tier()
-		if (!tier)
+		if (tier < h || get_dist(A, T) > building_support_reach(A))
 			continue
-		var/reach = 0
-		if (istype(A, /obj/structure/roof_support))
-			reach = 3
-		else if (istype(A, /obj/structure/mine_support/stone) || isturf(A))
-			reach = 2
-		else if (istype(A, /obj/covers))
-			reach = 1
-		if (get_dist(A, T) > reach)
+		var/list/under = building_support_base(A, memo)
+		if (!under || under[1] + 1 != h || under[2] < h)
 			continue
-		var/h = building_floor_height(get_turf(A), depth)
-		if (h >= 0 && max(h + 1, required_height) <= tier)
-			if (building_floor_height(get_turf(A), depth, max(h + 1, required_height)) >= 0)
-				return h + 1
-	return 0
+		if (!building_column_carries(A, h))
+			uncarried = TRUE
+			continue
+		if (get_dist(A, T) <= 1)
+			near = TRUE
+			break
+		sides |= get_dir(T, A)
+	// A ground-floor roof keeps its old rule: any one support within reach.
+	if (near || sides.len >= 2 || (h < 2 && sides.len))
+		return null
+	if (uncarried)
+		return "The walls or pillars here have nothing strong enough beneath them on the floor below. Build supports above supports of the same strength."
+	return "One distant pillar cannot hold this. Build a wall or pillar next to this tile, or a second support on another side."
 
 /proc/building_roof_error(turf/T)
 	if (!T || building_allocating_z || persistence_save_in_progress)
@@ -204,8 +358,9 @@ var/building_compiled_maxz = 0
 		return "You cannot build a roof here."
 	if (locate(/obj/roof) in T)
 		return "That area is already roofed!"
-	if (!building_supported_height(T))
-		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight."
+	var/design_error = building_design_error(T)
+	if (design_error)
+		return design_error
 	// A roof does not require a new plane. Admission for optional upper-floor
 	// growth stays in building_allocate_level; existing upper turfs must be clear.
 	var/upper_z = building_upper_z(T.z)
@@ -213,7 +368,20 @@ var/building_compiled_maxz = 0
 		var/turf/above = locate(T.x, T.y, upper_z)
 		if (!building_open_turf(above) || (locate(/obj/covers) in above) || istype(get_area(above), /area/caribbean/no_mans_land))
 			return "There is already terrain or construction above this roof."
+	else if (practice_room_z && T.z + 1 == practice_room_z && building_stack_room(T.z))
+		return "The level above is in use for a moment. Try again in a few minutes."
 	return null
+
+// TRUE when the map lets its building levels grow above z.
+/proc/building_stack_room(z)
+	return map && map.building_levels && z >= building_base_maxz() && z < building_base_maxz() + map.building_levels
+
+// A roof adds the next level when it is on the top ground level, as before, or
+// on the highest building level of a map that permits more of them.
+/proc/building_grows_from(z)
+	if (building_upper_z(z))
+		return FALSE
+	return z == multiz_top_z() || (z == world.maxz && z > building_base_maxz() && building_stack_room(z))
 
 /proc/building_floor_error(turf/T)
 	if (!T)
@@ -246,7 +414,7 @@ var/building_compiled_maxz = 0
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return null
-	if (!building_upper_z(T.z) && T.z == multiz_top_z())
+	if (building_grows_from(T.z))
 		building_allocate_level(world.maxz + 1)
 	// Allocation can yield: recheck both support and occupancy before placing.
 	error = building_roof_error(T)

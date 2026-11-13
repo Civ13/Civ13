@@ -365,7 +365,8 @@ var/global/list/ecology_species_table = null
 	habitat_hits = list()
 	var/cells_x = round((world.maxx - 1) / ECOLOGY_CELL_SIZE) + 1
 	var/cells_y = round((world.maxy - 1) / ECOLOGY_CELL_SIZE) + 1
-	for (var/z = 1, z <= world.maxz, z++)
+	// Ground levels only: added building levels hold no habitat.
+	for (var/z = 1, z <= multiz_top_z(), z++)
 		if (z == practice_room_z)
 			continue
 		for (var/cx = 1, cx <= cells_x, cx++)
@@ -445,7 +446,7 @@ var/global/list/ecology_species_table = null
 			var/x = min(world.maxx, (cell[2] - 1) * ECOLOGY_CELL_SIZE + rand(1, ECOLOGY_CELL_SIZE))
 			var/y = min(world.maxy, (cell[3] - 1) * ECOLOGY_CELL_SIZE + rand(1, ECOLOGY_CELL_SIZE))
 			return locate(x, y, cell[1])
-	return locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, world.maxz))
+	return locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, multiz_top_z()))
 
 // Returns the turf used, or null. Picks random habitat candidates; never scans the world.
 /datum/ecology_spawner/proc/find_site(datum/ecology_species/S)

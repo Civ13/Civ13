@@ -6,7 +6,8 @@
 	lobby_icon_wide = 'icons/lobby/gaia_volcano_wide.dmi'
 	songs = list("In the beginning there was nothing:1" = "sound/music/in_the_beginning.ogg",)
 	research_active = TRUE
-	building_levels = 1
+	// Roofs may add up to four open-air levels: buildings of up to four storeys.
+	building_levels = 4
 	building_level_standing = TRUE
 	// The rock under Gaia's deep ocean (level 1) opens to the sea for submarines.
 	sea_layer_surface_z = 2

@@ -20,7 +20,7 @@ def arithmetic(source=None):
                             '(added if purpose == "instance" else 0)')
     source = source.replace('(purpose == "safehouse" ? added : 0)',
                             '(added if purpose == "safehouse" else 0)')
-    env = dict(NEW_Z_CELL_CEILING=ceiling, NEW_Z_ROOF_CEILING=1,
+    env = dict(NEW_Z_CELL_CEILING=ceiling, NEW_Z_ROOF_CEILING=4,
                BUILDING_MAX_Z=32, BUILDING_EXTRA_LEVELS=8,
                isnum=lambda x: isinstance(x, (int, float)), round=round,
                list=lambda *x: list(x),

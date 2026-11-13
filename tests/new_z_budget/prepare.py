@@ -13,7 +13,7 @@ CONTROLS = {
                          'return null', 'default unmeasured allocation preserves grid'),
     'cell-limit': ('if (exceeds_budget)',
                    'if (FALSE)', 'one-over total-cell ceiling blocked'),
-    'roof-ceiling': ('#define NEW_Z_ROOF_CEILING 1',
+    'roof-ceiling': ('#define NEW_Z_ROOF_CEILING 4',
                      '#define NEW_Z_ROOF_CEILING 8', 'raising roof allowance rejected'),
 }
 

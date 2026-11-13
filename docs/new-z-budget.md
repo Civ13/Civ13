@@ -5,12 +5,14 @@ reason, before native allocation, with two exceptions. A map that opts into a
 dug underground (`dig_down_underground`, see `code/modules/multiz/dug_underground.dm`)
 may add, and restore, exactly one cave level below its single compiled level
 while the whole world stays within Gaia's measured live profile (500 x 350 x 2 =
-350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into one open-air
-building level (`building_levels = 1`, see `code/modules/multiz/building_admission.dm`;
-Gaia does) may add, and restore, exactly one roof-added level while the world
-stays within 525,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's 500 x 350 x 3).
-That level is saved sparsely: its file keeps only the cells that differ from
-open air in the level's area (see the persistence guide), so the extra plane
+350,000 cells, `NEW_Z_MEASURED_CELLS`). A map that opts into open-air
+building levels (`building_levels = N`, see `code/modules/multiz/building_admission.dm`;
+Gaia sets 4) may add, and restore, up to N roof-added levels, at most four, while
+the world stays within 1,050,000 cells (`NEW_Z_BUILDING_MEASURED_CELLS`, Gaia's
+500 x 350 x 6). A level is added only when a roof is built on the highest
+existing one, so the world grows only as high as something stands.
+Those levels are saved sparsely: a file keeps only the cells that differ from
+open air in the level's area (see the persistence guide), so an extra plane
 adds kilobytes to a save instead of a full level file. Every other purpose
 still has no validated incremental/player/save/address-space headroom profile.
 Roof construction can still consume its roofing item and provide shelter
@@ -24,19 +26,20 @@ native grid: `world.maxx * world.maxy * target_z`, including compiled levels,
 existing additions and configured unused reservations. A small room on another
 z still allocates a full world plane. BYOND does not provide a sparse grid here.
 
-The provisional default and inclusive hard ceiling is **1,400,000 total cells**, with at most **one
-roof-added plane** above the actual compiled maximum. Existing limits of 32
+The provisional default and inclusive hard ceiling is **1,400,000 total cells**, with at most **four
+roof-added planes** above the actual compiled maximum (and only as many as the
+map's `building_levels`). Existing limits of 32
 absolute levels and 8 added levels remain. A host may lower these settings in
 `config.txt`; this patch provides no higher override:
 
 ```text
 NEW_Z_CELL_BUDGET 1400000
-NEW_Z_ROOF_LEVELS 1
+NEW_Z_ROOF_LEVELS 4
 NEW_Z_INSTANCE_RESERVE 0
 NEW_Z_SAFEHOUSE_RESERVE 0
 ```
 
-The first two accept decimal integers in 0..1400000 and 0..1 respectively. Zero
+The first two accept decimal integers in 0..1400000 and 0..4 respectively. Zero
 disables the corresponding arithmetic permission; no value enables the missing
 production memory admission. The reservation counts accept
 integers in 0..8 and reserve whole planes for future explicit consumers. Unknown
