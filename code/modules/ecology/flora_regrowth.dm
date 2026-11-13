@@ -229,11 +229,14 @@ var/global/list/regrowing_stump_list = list()
 // Estimates natural outdoor ground from random samples; never scans the world.
 /datum/flora_regrowth/proc/size_plant_target()
 	var/hits = 0
+	// Ground levels only: added building levels are open air, and sampling
+	// them would thin the samples each time a level is added.
+	var/top = multiz_top_z()
 	for (var/i = 1, i <= FLORA_HABITAT_SAMPLES, i++)
-		var/turf/T = locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, world.maxz))
+		var/turf/T = locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, top))
 		if (flora_ground(T) && ecology_outdoor_climate(T))
 			hits++
-	habitat_tiles = round(world.maxx * world.maxy * world.maxz * hits / FLORA_HABITAT_SAMPLES)
+	habitat_tiles = round(world.maxx * world.maxy * top * hits / FLORA_HABITAT_SAMPLES)
 	var/density = map ? map.wild_plant_density : 2.5
 	var/cap = map ? map.wild_plant_cap : 250
 	plant_target = clamp(round(habitat_tiles * density / 1000), 0, cap)
@@ -362,7 +365,7 @@ var/global/list/regrowing_stump_list = list()
 	var/missing = plant_target - wild_plant_list.len
 	for (var/i = 1, i <= min(missing, FLORA_PLANT_BUDGET), i++)
 		for (var/try_n = 1, try_n <= FLORA_PLANT_ATTEMPTS, try_n++)
-			var/turf/T = locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, world.maxz))
+			var/turf/T = locate(rand(1, world.maxx), rand(1, world.maxy), rand(1, multiz_top_z()))
 			if (plant_site_error(T))
 				continue
 			if (grow_plant(T))

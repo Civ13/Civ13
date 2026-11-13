@@ -24,10 +24,13 @@ STANDING_CONTROLS = {
 CONTROLS = {
     'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
     'removal': ('\t\tqdel(C)', '\t\treturn', 'FAIL: roof removal removes floor'),
-    'foundation': ('if (building_floor_height(get_turf(A), depth, max(h + 1, required_height)) >= 0)', 'if (TRUE)', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
+    'foundation': ('var/cap = min(tier, under[2])', 'var/cap = tier', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
     'persistence': ('"building_pair_id", "building_floor_z", "health"', '"building_floor_z", "health"', 'FAIL: disk restored slab links'),
     'pair': ('R.building_pair_id = id', 'R.building_pair_id = null', 'FAIL: pair resolves both faces'),
-    'support': ('max(h + 1, required_height) <= tier', 'TRUE', 'FAIL: wood height limit'),
+    'unfounded': ('return building_founded(A) ? BUILDING_GROUND_STRENGTH : BUILDING_UNFOUNDED_STOREYS', 'return BUILDING_GROUND_STRENGTH', 'FAIL: soft ground carries two storeys'),
+    'span': ('(h < 2 && sides.len)', 'sides.len', 'FAIL: one distant pillar cannot hold an upper storey'),
+    'column': ('if (!building_column_carries(A, h))', 'if (FALSE)', 'FAIL: upper support needs a support beneath it'),
+    'support': ('\t\tif (h > cap)\n\t\t\tcontinue\n', '', 'FAIL: wood height limit'),
 }
 
 

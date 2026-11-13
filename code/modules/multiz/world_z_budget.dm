@@ -1,7 +1,7 @@
 // Uncalibrated allocation throttle, not a byte limit or an OOM guarantee.
 // Each new z allocates the full native world plane, including unused sky.
 #define NEW_Z_CELL_CEILING 1400000
-#define NEW_Z_ROOF_CEILING 1
+#define NEW_Z_ROOF_CEILING 4
 // Gaia's live world (500 x 350 x 2 cells) is the measured production profile
 // (memory probes and save loads, 2026-11-05). See underground_admitted.
 #define NEW_Z_MEASURED_CELLS 350000

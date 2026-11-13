@@ -330,6 +330,12 @@ SUITES = {
         'tests/statue_appearance/', 'code/game/objects/structures/religious.dm')},
     'weightlifter': {'files': ('tests/weightlifter/test_weightlifter.py',), 'paths': (
         'tests/weightlifter/', 'code/game/objects/structures/fitness.dm')},
+    'building_storeys': {'files': ('tests/building_storeys/test_sources.py',), 'paths': (
+        'tests/building_storeys/',), 'shared_paths': (
+        'code/game/objects/building_levels.dm', 'code/modules/multiz/building_admission.dm',
+        'code/modules/multiz/world_z_budget.dm', 'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
+        'code/modules/ecology/flora_regrowth.dm', 'code/modules/ecology/ecology_spawning.dm',
+        'code/game/objects/roof_stuff.dm')},
     'building_sleeping_cells': {'files': ('tests/building_sleeping_cells/test_sources.py',), 'paths': (
         'tests/building_sleeping_cells/',), 'shared_paths': (
         'code/modules/multiz/building_lighting.dm', 'code/modules/persistence/zone_topology.dm',
