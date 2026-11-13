@@ -184,6 +184,49 @@
 			H.disease = 1
 	return
 
+// Intestinal worm eggs in raw meat or dirty water. Cooking kills them.
+/datum/reagent/toxin/worm_eggs
+	name = "Worm eggs"
+	id = "worm_eggs"
+	description = "Tiny parasite eggs."
+	taste_mult = FALSE
+	reagent_state = LIQUID
+	color = "#C8B88A"
+	strength = 0
+	taste_description = "grit"
+	metabolism = REM
+
+// Swallowed germs roll once in /mob/living/human/proc/swallow_germs().
+/datum/reagent/toxin/worm_eggs/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	return
+
+// Eggs need the gut; in the blood they do nothing.
+/datum/reagent/toxin/worm_eggs/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	return
+
+// Malaria parasites carried in a sick person's blood. Only injection or a
+// transfusion passes them on; swallowed, they do nothing.
+/datum/reagent/toxin/malaria
+	name = "Malaria"
+	id = "malaria"
+	description = "Blood parasites."
+	taste_mult = FALSE
+	reagent_state = LIQUID
+	color = "#8A1010"
+	strength = 0
+	taste_description = "iron"
+	metabolism = REM
+
+/datum/reagent/toxin/malaria/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	return
+
+/datum/reagent/toxin/malaria/affect_blood(var/mob/living/human/M, var/alien, var/removed)
+	if (ishuman(M))
+		var/mob/living/human/H = M
+		if (!H.disease && !H.resists_disease("malaria") && !("malaria" in H.disease_immunity))
+			H.catch_disease("malaria")
+	return
+
 /datum/reagent/toxin/potassium_chloride
 	name = "Potassium Chloride"
 	id = "potassium_chloride"
