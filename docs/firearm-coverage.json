@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 478,
-  "modern": 375,
+  "types": 517,
+  "modern": 414,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -19,13 +19,13 @@
    "revolver": 41,
    "rifle_bolt": 66,
    "rifle_lever": 10,
-   "rifle_semiauto": 38,
-   "shotgun": 7,
-   "submachine_gun": 91
+   "rifle_semiauto": 39,
+   "shotgun": 11,
+   "submachine_gun": 125
   },
-  "modern_calibers": 62,
-  "migrated": 237,
-  "fixed": 6
+  "modern_calibers": 61,
+  "migrated": 334,
+  "fixed": 7
  },
  "modern_calibers": [
   "12gauge",
@@ -88,8 +88,7 @@
   "a9x19",
   "a9x39",
   "c8mmnambu",
-  "c9mm_jap_revolver",
-  "l85a2"
+  "c9mm_jap_revolver"
  ],
  "types": [
   {
@@ -4824,8 +4823,21 @@
    "max_shells": 5,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/shotgun",
-   "family": null,
-   "migration": "pending"
+   "family": "remington11",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/semiautomatic/remington11/receiver",
+   "name": "Remington 11 receiver",
+   "category": "rifle_semiauto",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 5,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "remington11",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/semiautomatic/sks",
@@ -5020,8 +5032,21 @@
    "max_shells": 2,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "coachgun",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/shotgun/coachgun/receiver",
+   "name": "Coach gun receiver",
+   "category": "shotgun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 2,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "coachgun",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun/mts225",
@@ -5033,8 +5058,21 @@
    "max_shells": 5,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "mts225",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/shotgun/mts225/receiver",
+   "name": "MTS-225 receiver",
+   "category": "shotgun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 5,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mts225",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun/pump",
@@ -5046,8 +5084,8 @@
    "max_shells": 6,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "pump",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun/pump/ks23",
@@ -5059,8 +5097,34 @@
    "max_shells": 4,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "ks23",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/shotgun/pump/ks23/receiver",
+   "name": "KS-23 receiver",
+   "category": "shotgun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 4,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ks23",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/shotgun/pump/receiver",
+   "name": "Pump-action receiver",
+   "category": "shotgun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 6,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "pump",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun/pump/remington870",
@@ -5072,8 +5136,8 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "pump",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/shotgun/pump/remington870/brown",
@@ -5085,8 +5149,8 @@
    "max_shells": 7,
    "magazine_type": "/obj/item/ammo_magazine/shellbox",
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "pump",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/special",
@@ -5386,8 +5450,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak74/ak74m",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12",
@@ -5399,8 +5463,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak74",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ak74m/ak12/ak15",
@@ -5412,8 +5476,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ak",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ar10",
@@ -5425,8 +5489,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ar10",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar10",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ar10/receiver",
+   "name": "AR-10 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ar10",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ar12",
@@ -5438,8 +5515,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ar12",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ar12",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ar12/receiver",
+   "name": "AR-12 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ar12",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/aug",
@@ -5451,8 +5541,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "aug",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/aug/receiver",
+   "name": "AUG receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a556x45",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "aug",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/c7",
@@ -5529,8 +5632,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40/erma",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "erma",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ermaemp/receiver",
+   "name": "Erma EMP receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "erma",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/fal",
@@ -5542,8 +5658,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/fal",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "fal",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/fal/receiver",
+   "name": "FAL receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "fal",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/fg42",
@@ -5555,8 +5684,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/fg42",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "fg42",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/fg42/receiver",
+   "name": "FG42 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a792x57",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "fg42",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/fg42/scope",
@@ -5568,8 +5710,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/fg42",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "fg42",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/g3",
@@ -5581,8 +5723,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/hk",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "g3",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/g3/receiver",
+   "name": "G3 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "g3",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/greasegun",
@@ -5594,8 +5749,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/greasegun",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "greasegun",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/greasegun/receiver",
+   "name": "M3 Grease Gun receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a45acp",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "greasegun",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/hk417",
@@ -5607,8 +5775,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/scarh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "hk417",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/hk417/att",
@@ -5620,21 +5788,47 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/scarh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "hk417",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/hk417/receiver",
+   "name": "HK417 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "hk417",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/l85a2",
    "name": "L85A2",
    "category": "submachine_gun",
    "scope": "modern",
-   "caliber": "l85a2",
+   "caliber": "a556x45",
    "load_method": 4,
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "l85",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/l85a2/receiver",
+   "name": "L85 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a556x45",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "l85",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m14",
@@ -5646,8 +5840,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m14",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "m14",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/m14/receiver",
+   "name": "M14 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "m14",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m14/sniper",
@@ -5659,8 +5866,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m14",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "m14",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m14/sniper/m21",
@@ -5672,8 +5879,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m14",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "m14",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/m16",
@@ -5894,8 +6101,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m1carbine",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "m1carbine",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mac10",
@@ -5907,8 +6114,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mac10",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mac10",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/mac10/receiver",
+   "name": "MAC-10 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a45acp",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mac10",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/makeshiftak47",
@@ -5921,7 +6141,8 @@
    "magazine_type": "/obj/item/ammo_magazine/ak47/makeshift",
    "ammo_type": null,
    "family": null,
-   "migration": "pending"
+   "migration": "fixed",
+   "fixed_reason": "crude one-off build with no standard parts"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40",
@@ -5933,8 +6154,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mp40",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/blyskawica",
@@ -5946,8 +6167,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mp40",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38",
@@ -5959,8 +6180,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40/modello38",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mab38",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38/receiver",
+   "name": "MAB 38 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mab38",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/mp38",
@@ -5972,8 +6206,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mp40",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5",
@@ -5985,8 +6219,34 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/mp40/mp5",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "mp5",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/mp5/receiver",
+   "name": "MP5 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mp5",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/mp40/receiver",
+   "name": "MP40 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "mp40",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/p90",
@@ -5998,8 +6258,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/p90",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "p90",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/p90/receiver",
+   "name": "P90 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a57x28",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "p90",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ppd",
@@ -6011,8 +6284,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c762x25_ppsh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ppd",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ppd/receiver",
+   "name": "PPD receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x25",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ppd",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/pps",
@@ -6024,8 +6310,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c762x25_pps",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "pps",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/pps/receiver",
+   "name": "PPS receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x25",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "pps",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ppsh",
@@ -6037,8 +6336,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c762x25_ppsh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ppsh",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/ppsh/chinese",
@@ -6050,8 +6349,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/c762x25_ppsh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "ppsh",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/ppsh/receiver",
+   "name": "PPSh receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x25",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "ppsh",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/qbz95",
@@ -6063,8 +6375,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/qbz95",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "qbz95",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/qbz95/receiver",
+   "name": "QBZ-95 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a58x42",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "qbz95",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/saiga12",
@@ -6076,8 +6401,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/saiga12",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "saiga",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/saiga12/breacher",
@@ -6089,8 +6414,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/saiga12",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "saiga",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/saiga12/receiver",
+   "name": "Saiga-12 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "saiga",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/scarh",
@@ -6102,8 +6440,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/scarh",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "scar",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/scarh/receiver",
+   "name": "SCAR receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x51",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "scar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/scarl",
@@ -6115,8 +6466,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/m16",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "scar",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/skorpion",
@@ -6128,8 +6479,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/skorpion",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "skorpion",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/skorpion/receiver",
+   "name": "Skorpion receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "skorpion",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/spas",
@@ -6141,8 +6505,21 @@
    "max_shells": 8,
    "magazine_type": null,
    "ammo_type": "/obj/item/ammo_casing/shotgun/buckshot",
-   "family": null,
-   "migration": "pending"
+   "family": "spas",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/spas/receiver",
+   "name": "SPAS-12 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 1,
+   "max_shells": 8,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "spas",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/srm",
@@ -6154,8 +6531,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/srm",
    "ammo_type": "/obj/item/ammo_casing/a9x39",
-   "family": null,
-   "migration": "pending"
+   "family": "sr3",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/srm/receiver",
+   "name": "SR-3 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x39",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "sr3",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/sten",
@@ -6167,8 +6557,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/sten2",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "sten",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/sten/receiver",
+   "name": "Sten receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "sten",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/sten/stv",
@@ -6180,8 +6583,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/sten2",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "sten",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/stg",
@@ -6193,8 +6596,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/stg",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "stg",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/stg/receiver",
+   "name": "StG-44 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a792x33",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "stg",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/tec9",
@@ -6206,8 +6622,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/tec9",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "tec9",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/tec9/receiver",
+   "name": "TEC-9 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "tec9",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/thompson",
@@ -6219,8 +6648,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/thompson",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "thompson",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/thompson/receiver",
+   "name": "Thompson receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a45acp",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "thompson",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/tommy",
@@ -6232,8 +6674,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/tommy",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "thompson",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/type100",
@@ -6245,8 +6687,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/type100",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "type100",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/type100/receiver",
+   "name": "Type 100 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "c8mmnambu",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "type100",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/usas12",
@@ -6258,8 +6713,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/usas12",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "usas12",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/usas12/receiver",
+   "name": "USAS-12 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "12gauge",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "usas12",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/uzi",
@@ -6271,8 +6739,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/uzi",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "uzi",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/uzi/receiver",
+   "name": "Uzi receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "uzi",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/vector",
@@ -6284,8 +6765,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/glock17",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "vector",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/vector/receiver",
+   "name": "Kriss Vector receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a9x19",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "vector",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/vz58",
@@ -6297,8 +6791,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "vz58",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/vz58/black",
@@ -6310,8 +6804,21 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "vz58",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/submachinegun/vz58/receiver",
+   "name": "VZ-58 receiver",
+   "category": "submachine_gun",
+   "scope": "modern",
+   "caliber": "a762x39",
+   "load_method": 4,
+   "max_shells": 0,
+   "magazine_type": null,
+   "ammo_type": null,
+   "family": "vz58",
+   "migration": "modular"
   },
   {
    "path": "/obj/item/weapon/gun/projectile/submachinegun/vz58/white",
@@ -6323,8 +6830,8 @@
    "max_shells": 0,
    "magazine_type": "/obj/item/ammo_magazine/ak47",
    "ammo_type": null,
-   "family": null,
-   "migration": "pending"
+   "family": "vz58",
+   "migration": "modular"
   }
  ]
 }

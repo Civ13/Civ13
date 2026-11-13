@@ -1702,7 +1702,7 @@
 	icon_state = "l85a2"
 	item_state = "m16"
 	base_icon = "m16"
-	caliber = "l85a2"
+	caliber = "a556x45"
 	fire_sound = 'sound/weapons/guns/fire/M4A1.ogg'
 	stat = "rifle"
 	magazine_type = /obj/item/ammo_magazine/m16
