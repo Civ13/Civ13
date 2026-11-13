@@ -1,6 +1,7 @@
 """Hand-placed 32px firefighting tools: the fire beater (a leafy green branch)
 and the fire flapper (a hide flap lashed to a pole), each dry and wet, the
-iron fire hook, plus their in-hand sprites in four directions. Every pixel is placed by this script
+iron fire hook, the hand pump fire engine and its brass nozzle, plus the
+in-hand sprites in four directions. Every pixel is placed by this script
 from a fixed palette (Pillow only); no external or generated artwork.
 
 Run with Pillow to reproduce icons/obj/firefighting.dmi. `--preview <png>`
@@ -27,6 +28,12 @@ HIDE = [(226, 196, 146), (198, 162, 110), (164, 126, 80), (122, 90, 56), (70, 48
 HIDE_WET = [(176, 150, 112), (146, 116, 80), (114, 86, 58), (82, 60, 40), (44, 30, 20)]
 CORD = [(222, 206, 160), (150, 132, 92)]
 DROP = [(226, 244, 255), (128, 190, 232)]
+# brass: highlight, light, mid, dark, outline
+BRASS = [(244, 212, 116), (204, 160, 70), (152, 110, 42), (100, 70, 26), (56, 38, 14)]
+# painted engine red: highlight, light, mid, dark, outline
+RED = [(214, 92, 70), (176, 56, 44), (132, 38, 34), (92, 26, 28), (46, 14, 18)]
+# leather hose
+HOSE = [(150, 112, 74), (112, 80, 50), (70, 48, 30)]
 # forged iron: highlight, light, mid, dark, outline
 IRON = [(206, 212, 220), (150, 158, 170), (104, 112, 126), (66, 72, 86), (30, 34, 44)]
 
@@ -190,6 +197,91 @@ def fire_hook():
     return f
 
 
+# ------------------------------------------------------------ hand pump engine
+# A red-painted tub on two spoked wheels, with a brass pump barrel, the long
+# rocking handle over it and the hose coiled at the front.
+# r/R/d red tub, o outline, w/W wheel rim, s spoke, b/B/k brass, h/H hose,
+# p/P wooden handle, i/I iron.
+PUMP = [
+    '................................',
+    '................................',
+    '....PPPPPPPPPPPPPPPPPPPPPPP.....',
+    '...PppppppppppppppppppppppPP....',
+    '....PPPPPPPPPPiIPPPPPPPPPPP.....',
+    '..............iI................',
+    '.............kbbk...............',
+    '............kbhBBk..............',
+    '............kbbBBk..............',
+    '............kbbBBk.......kk.....',
+    '............kbbBBk......kbBk....',
+    '...oooooooooobbBBooooooookBkoo..',
+    '..orrrrrrrrrrrrrrrrrrrrrrrrrrRo.',
+    '..orRRRRRRRRRRRRRRRRRRRRRRRRRdo.',
+    '..obbbbbbbbbbbbbbbbbbbbbbbbbbBo.',
+    '..orrrrrrrrrrrrrrrrrrrrrrrrrRdo.',
+    '..orrrrrrrrrrrrrrrrrrrHHHHrrRdo.',
+    '..orrRRRRRRRRRRRRRRRRHhhhhHRRdo.',
+    '..orRRRWWWWWRRRRRRRRHhHHHhHWRdo.',
+    '..oRRWWwwwwwWWRRRRRRHhHWWhHwWWo.',
+    '..oRWwwsWsWswwWRRRRRRHhhhHwswwW.',
+    '..odWwswWsWwswWdddddddHHHWwsWswW',
+    '...WwwswwswwswwWoooooooooWwswswW',
+    '...WwsssssssssswW........WsssssW',
+    '...WwwswwswwswwW.........WwswswW',
+    '...WwswWsWwswwW..........WwsWswW',
+    '....WwwsWsWswwW...........WwswW.',
+    '.....WWwwwwwWW.............WWW..',
+    '.......WWWWW....................',
+    '................................',
+    '................................',
+    '................................',
+]
+# The nozzle: a tapering brass branch pipe on a stub of leather hose.
+NOZZLE = [
+    '......................kk..',
+    '.....................kbhk.',
+    '....................kbhBk.',
+    '...................kbhBk..',
+    '..................kbhBk...',
+    '.................kbbBk....',
+    '................kbbBk.....',
+    '...............kbbBBk.....',
+    '..............kkbBBk......',
+    '.............kbbkBk.......',
+    '............oHkbbk........',
+    '...........oHhHkk.........',
+    '..........oHhHHo..........',
+    '.........oHhHHo...........',
+    '........oHhHHo............',
+    '.......oHhHHo.............',
+    '......oHhHHo..............',
+    '.....oHhHHo...............',
+    '.....oHHHo................',
+    '......ooo.................',
+]
+
+
+def pump():
+    f = Frame()
+    key = {'r': RED[1], 'R': RED[2], 'd': RED[3], 'o': RED[4],
+           'W': (38, 30, 24), 'w': (112, 82, 50), 's': (176, 140, 92),
+           'b': BRASS[1], 'B': BRASS[2], 'k': BRASS[4], 'h': HOSE[0], 'H': HOSE[2],
+           'p': POLE[0], 'P': POLE[2], 'i': IRON[1], 'I': IRON[3]}
+    f.rows(0, 0, PUMP, key)
+    f.pts(BRASS[0], (14, 7), (26, 10))                # glints on the barrel and the hose union
+    f.pts(RED[0], (4, 12), (5, 12), (6, 12))          # a highlight on the tub rim
+    return f
+
+
+def nozzle():
+    f = Frame()
+    key = {'b': BRASS[1], 'B': BRASS[2], 'h': BRASS[0], 'k': BRASS[4], 'H': HOSE[1], 'o': HOSE[2]}
+    key_hose = dict(key, h=HOSE[0])
+    f.rows(6, 3, NOZZLE[:10], key)
+    f.rows(16, 3, NOZZLE[10:], key_hose)
+    return f
+
+
 # ------------------------------------------------------------------- in hand
 # Left hand, facing south, north, east and west: where the shaft runs (as on
 # the spear) and where the head sits. The right hand is the mirror image.
@@ -201,6 +293,7 @@ SHAFTS = {
 }
 HAND_LEAVES = ['.oo..', 'olho.', 'ollmo', 'ommdo', '.odo.']
 HAND_FLAP = ['.ooo.', 'ohllo', 'ollmo', 'olmdo', '.ooo.']
+HAND_NOZZLE = ['...kk', '..kbk', '.kbk.', 'kbk..', 'kk...']
 HAND_HOOK = ['...ho', '.o.lo', 'ol.mo', 'ommo.', '.oo..']
 
 
@@ -215,6 +308,16 @@ def in_hand(kind, facing):
     if kind == 'beater':
         key = {'h': LEAF[0], 'l': LEAF[1], 'm': LEAF[2], 'd': LEAF[3], 'o': LEAF[4]}
         f.rows(hy - 2, hx - 2, HAND_LEAVES, key)
+    elif kind == 'nozzle':
+        f.px = {}
+        hose = [HOSE[0], HOSE[1], HOSE[2]]
+        for x, y in shaft[:3]:
+            f.put(x, y, hose[0])
+            f.put(x + step, y, hose[2])
+        key = {'b': BRASS[1], 'k': BRASS[4]}
+        art = HAND_NOZZLE if step > 0 else [row[::-1] for row in HAND_NOZZLE]
+        sx, sy = shaft[2]
+        f.rows(sy - 5, sx + (1 if step > 0 else -5), art, key)
     elif kind == 'hook':
         key = {'h': IRON[0], 'l': IRON[1], 'm': IRON[2], 'd': IRON[3], 'o': IRON[4]}
         art = HAND_HOOK if step > 0 else [row[::-1] for row in HAND_HOOK]
@@ -238,8 +341,11 @@ def states():
         'fire_flapper': [flapper()],
         'fire_flapper_wet': [flapper(True)],
         'fire_hook': [fire_hook()],
+        'fire_pump': [pump()],
+        'fire_nozzle': [nozzle()],
     }
-    for kind, name in (('beater', 'fire_beater'), ('flapper', 'fire_flapper'), ('hook', 'fire_hook')):
+    for kind, name in (('beater', 'fire_beater'), ('flapper', 'fire_flapper'), ('hook', 'fire_hook'),
+                       ('nozzle', 'fire_nozzle')):
         out[name + '_l'], out[name + '_r'] = hand_states(kind)
     return out
 
@@ -260,10 +366,10 @@ def write_dmi(path, st):
 
 def preview(path, st, scale=8):
     grounds = [(94, 132, 62), (120, 96, 66), (60, 60, 64)]   # grass, dirt, night
-    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet', 'fire_hook']
-    hands = ['fire_beater_l', 'fire_beater_r', 'fire_flapper_l', 'fire_flapper_r', 'fire_hook_l', 'fire_hook_r']
+    names = ['fire_beater', 'fire_beater_wet', 'fire_flapper', 'fire_flapper_wet', 'fire_hook', 'fire_pump', 'fire_nozzle']
+    hands = ['fire_beater_l', 'fire_beater_r', 'fire_flapper_l', 'fire_flapper_r', 'fire_hook_l', 'fire_hook_r', 'fire_nozzle_l', 'fire_nozzle_r']
     cell = 32 * scale
-    sheet = Image.new('RGBA', (cell * 5, cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
+    sheet = Image.new('RGBA', (cell * 7, cell * (len(grounds) + len(hands)) // 1), (40, 40, 44, 255))
     for r, ground in enumerate(grounds):
         for c, name in enumerate(names):
             tile = Image.new('RGBA', (32, 32), ground + (255,))

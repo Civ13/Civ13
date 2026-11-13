@@ -2205,6 +2205,7 @@ RECIPE: /material/wood/,lean-to,/obj/structure/lean_to,4,120,1,1,none,0,0,0,8,nu
 RECIPE: /material/wood/soft/,mining cart,/obj/structure/trains/storage/miningcart,10,150,1,1,trains,93,0,0,8,null
 
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
+RECIPE: /material/wood/,hand pump fire engine,/obj/structure/fire_pump,20,200,1,1,logistics,20,0,0,8,null
 
 RECIPE: /material/wood/soft/,carriage,/obj/structure/vehicle/carriage,50,180,1,1,vehicle parts,22,0,0,8,null
 
