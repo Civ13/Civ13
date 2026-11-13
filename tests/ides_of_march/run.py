@@ -48,7 +48,7 @@ def check_map(root):
             raise RuntimeError(f'map has fewer than {least} tiles with {text}')
     code = '\n'.join(p.read_text(encoding='utf-8', errors='ignore') for p in (root / 'code').rglob('*.dm'))
     for kind in set(re.findall(r'(/(?:obj|turf|area)/[\w/]+)', after)):
-        if not re.search('^' + re.escape(kind) + r'\s*$', code, re.M):
+        if not re.search('^' + re.escape(kind) + r'\s*(//.*)?$', code, re.M):
             raise RuntimeError(f'map uses {kind}, which is not defined')
     vote = (root / 'code/processes/mapswap.dm').read_text(encoding='utf-8')
     if not re.search(r'^\t+MAP_IDES_OF_MARCH = \d+,', vote, re.M):

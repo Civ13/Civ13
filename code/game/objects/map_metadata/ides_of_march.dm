@@ -20,6 +20,16 @@
 	icon_state = "red2"
 	location = AREA_INSIDE
 
+// A marble brazier that is already burning when the round starts.
+/obj/structure/brazier/marble/lit
+	icon_state = "marble_brazier1"
+	fuel = 5000
+	on = TRUE
+
+/obj/structure/brazier/marble/lit/New()
+	..()
+	set_light(5)
+
 /obj/map_metadata/ides_of_march
 	ID = MAP_IDES_OF_MARCH
 	title = "The Ides of March"
