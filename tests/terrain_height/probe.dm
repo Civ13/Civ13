@@ -311,6 +311,29 @@ var/terrain_height_probe_checks = 0
 	graded.terrain_grade = 0
 	graded.terrain_grade_apply()
 	terrain_height_probe_assert(terrain_height_at(graded) == 6, "grade_undone")
+	// The rammer levels toward the user's own tile: a higher tile is pounded
+	// down a level, stays tamped and drops its dirt at the user's feet.
+	var/turf/high = locate(8, 10, 1)
+	var/turf/feet = locate(7, 10, 1)
+	high.ChangeTurf(/turf/floor/dirt)
+	high = locate(8, 10, 1)
+	terrain_height_probe_assert(stone_rammer_level_direction(high, feet) == -1, "rammer_cuts_higher_tile")
+	terrain_height_probe_assert(stone_rammer_level_direction(feet, high) == 0, "rammer_never_cuts_lower_tile")
+	terrain_height_probe_assert(stone_rammer_level_direction(high, high) == 0 && stone_rammer_level_direction(locate(5, 3, 1), locate(4, 2, 1)) == 0, "rammer_level_ground_only_tamps")
+	var/obj/item/weapon/stone_rammer/rammer = new
+	high = terrain_grade_finish(high, -1, rammer, feet)
+	terrain_height_probe_assert(istype(high, /turf/floor/tamped_earth) && terrain_height_at(high) == 6 && high.terrain_grade == -1, "rammer_cut_lowers_and_packs")
+	terrain_height_probe_assert((locate(/obj/item/weapon/barrier) in feet) && !(locate(/obj/item/weapon/barrier) in high), "rammer_cut_pile_at_feet")
+	terrain_height_probe_assert(stone_rammer_level_direction(high, feet) == 0, "rammer_stops_at_your_level")
+	var/obj/item/weapon/barrier/fill_pile = locate(/obj/item/weapon/barrier) in feet
+	fill_pile.forceMove(high)
+	high = terrain_grade_finish(high, 1, rammer, null, fill_pile)
+	terrain_height_probe_assert(terrain_height_at(high) == 7 && !high.terrain_grade && QDELETED(fill_pile), "rammer_fill_raises")
+	high = terrain_grade_finish(high, -1, null)
+	terrain_height_probe_assert(istype(high, /turf/floor/dirt) && terrain_height_at(high) == 6 && (locate(/obj/item/weapon/barrier) in high), "shovel_cut_pile_on_tile")
+	high.terrain_grade = 0
+	high.terrain_grade_apply()
+	qdel(rammer)
 
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
