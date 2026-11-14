@@ -41,6 +41,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
+    'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
+        'tests/poison_frog_bolts/',), 'shared_paths': (
+        'code/modules/reagents/reagent_containers/food/snacks/meat.dm',)},
     'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
         'paths': ('tests/organ_utilities/',),
         'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},
@@ -412,6 +416,8 @@ SUITES = {
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
         'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm',
+                         'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
+                         'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
                          'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
                          'maps/nomads/nomads_desert.dmm',
                          'code/processes/river_current.dm',
@@ -846,6 +852,12 @@ SUITES = {
         'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
                   'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
         'shared_paths': ('code/modules/materials/materials.dm',)},
+    'tool_material_speeds': {'files': ('tests/tool_material_speeds/test_tool_material_speeds.py',),
+        'paths': ('tests/tool_material_speeds/', 'code/modules/materials/tool_speeds.dm'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/items/weapons/material/material_weapons.dm',
+                         'code/game/objects/items/weapons/material/misc.dm')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -1092,6 +1104,15 @@ SUITES = {
         'paths': ('tests/tribal_deeds/',), 'shared_paths': (
             'code/modules/1713/tribal_deeds.dm', 'code/modules/1713/dugout_canoe.dm',
             'code/modules/1713/domestication.dm', 'code/modules/1713/rock_art.dm')},
+    # Burial mounds, cairns and feasts: source contracts only.
+    'stone_age_rites': {'files': ('tests/stone_age_rites/test_source.py',),
+        'paths': ('tests/stone_age_rites/',), 'shared_paths': (
+            'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
+            'code/game/objects/items/stacks/stack.dm')},
+    # Bead trade goods and the two-sided barter mat: source contracts only.
+    'barter': {'files': ('tests/barter/test_source.py',),
+        'paths': ('tests/barter/',), 'shared_paths': (
+            'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
@@ -1255,7 +1276,7 @@ SUITES = {
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
-            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/misc.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},

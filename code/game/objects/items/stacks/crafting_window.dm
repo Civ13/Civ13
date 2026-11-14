@@ -88,6 +88,14 @@ var/global/list/crafting_purpose_cache = list()
 	// Opened with the craft key: the material may be in either hand or loose
 	// on a tile next to the player, and the window offers the others in reach.
 	var/reach = FALSE
+	// A row the window should select when it next opens, and a counter so the
+	// same row can be asked for twice. Set by the Atlas hand-off only.
+	var/focus = ""
+	var/focus_seq = 0
+	// The selected recipe's exact requirements and the choices it asks for.
+	var/list/detail
+	// Set for one push that must reuse the last snapshot instead of rebuilding every row.
+	var/keep_snapshot = FALSE
 
 /datum/crafting_window/New(mob/living/human/H, obj/item/stack/S)
 	viewer = H
@@ -188,7 +196,7 @@ var/global/list/crafting_purpose_cache = list()
 
 // TRUE when the modern window took this request; FALSE sends the caller on to
 // the classic list.
-/obj/item/stack/proc/crafting_window_shown(mob/user, reach = FALSE)
+/obj/item/stack/proc/crafting_window_shown(mob/user, reach = FALSE, focus = "")
 	var/mob/living/human/H = user
 	if (!istype(H) || !H.client || H.client.crafting_window_classic || H.client.modern_ui_failed)
 		return FALSE
@@ -207,6 +215,9 @@ var/global/list/crafting_purpose_cache = list()
 		H.crafting_window = W
 	W.source = src
 	W.reach = reach
+	W.focus = "[focus]"
+	if (length(W.focus))
+		W.focus_seq++
 	if (reach)
 		W.load_recipes()
 	show_browse(H, null, "window=stack")
@@ -218,9 +229,11 @@ var/global/list/crafting_purpose_cache = list()
 /datum/crafting_window/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = null)
 	if (user != viewer || !still_valid(viewer))
 		return
-	var/list/data = (working && cached) ? cached : build_data()
+	var/list/data = ((working || keep_snapshot) && cached) ? cached : build_data()
+	keep_snapshot = FALSE
 	cached = data
 	data["working"] = working
+	data["detail"] = detail
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		var/datum/topic_state/crafting_window/window_state = new()
@@ -242,13 +255,118 @@ var/global/list/crafting_purpose_cache = list()
 		return
 	cached = null
 	load_recipes()
+	// What the selected recipe needs may have changed with what was just made.
+	if (detail)
+		detail = detail_for(detail["id"])
 	ui_interact(viewer, force_open = FALSE)
+
+// Push the last snapshot again with only its small parts changed.
+/datum/crafting_window/proc/push_cached()
+	if (!viewer || !still_valid(viewer))
+		return
+	keep_snapshot = TRUE
+	ui_interact(viewer, force_open = FALSE)
+
+// One recipe looked at closely: every requirement its guards report as unmet
+// right now, and the choices it would otherwise ask in pop-ups. Read only.
+/datum/crafting_window/proc/detail_for(id)
+	var/datum/stack_recipe/R = find_recipe(id)
+	if (!R)
+		return null
+	var/list/needs = list()
+	for (var/list/line in craft_recipe_requirements(viewer, R))
+		needs += list(list("label" = html_encode(trim("[line["label"]]")), "met" = line["met"] ? 1 : 0))
+	var/list/fields = list()
+	var/datum/craft_product/P = craft_product_for(R)
+	if (P)
+		for (var/list/prompt in P.prompts)
+			var/list/field = list(
+				"field" = "[prompt["field"]]",
+				"kind" = "[prompt["kind"]]",
+				"question" = html_encode("[craft_product_text(prompt["question"], R, viewer)]"),
+				"default" = html_encode("[craft_product_text(prompt["default"], R, viewer)]"),
+				"required" = prompt["required"] ? 1 : 0,
+				"max_length" = prompt["max_length"] ? prompt["max_length"] : 256)
+			if (prompt["kind"] == "company")
+				var/list/choices = list()
+				for (var/company in craft_product_companies(viewer))
+					choices += html_encode("[company]")
+				field["choices"] = choices
+			fields += list(field)
+	return list("id" = "[id]", "needs" = needs, "fields" = fields)
+
+// The answers the card sent for this recipe's declared choices. Only fields the
+// product declares are kept; the craft code sanitizes and validates each one,
+// and asks in a pop-up for any that are missing.
+/datum/crafting_window/proc/given_options(datum/stack_recipe/R, raw)
+	var/datum/craft_product/P = craft_product_for(R)
+	if (!P || !istext(raw) || length(raw) > 4096)
+		return null
+	var/list/sent
+	try
+		sent = json_decode(raw)
+	catch
+		return null
+	if (!islist(sent))
+		return null
+	var/list/options = list()
+	for (var/list/prompt in P.prompts)
+		var/field = "[prompt["field"]]"
+		var/value = sent[field]
+		if (istext(value) && length(value) <= 1024)
+			options[field] = value
+	return options.len ? options : null
 
 // Material stacks rebuild their list for this character, as the classic list does on opening.
 /datum/crafting_window/proc/load_recipes()
 	if (istype(source, /obj/item/stack/material))
 		var/obj/item/stack/material/M = source
 		M.recipes = M.material.get_recipes_civs(viewer)
+
+// The row id of the first recipe in this stack's lists that makes the given type, or "".
+/obj/item/stack/proc/crafting_window_row_for(wanted)
+	if (!ispath(wanted) || !recipes)
+		return ""
+	for (var/i = 1, i <= recipes.len, i++)
+		var/E = recipes[i]
+		if (istype(E, /datum/stack_recipe_list))
+			var/datum/stack_recipe_list/srl = E
+			for (var/j = 1, j <= srl.recipes.len, j++)
+				var/datum/stack_recipe/inner = srl.recipes[j]
+				if (istype(inner) && inner.result_type == wanted)
+					return crafting_window_row_id(inner, i, j)
+		else if (istype(E, /datum/stack_recipe))
+			var/datum/stack_recipe/top = E
+			if (top.result_type == wanted)
+				return crafting_window_row_id(top, 0, i)
+	return ""
+
+// "Craft this" on an Atlas recipe: open the Crafting window on that recipe when
+// a material that makes it is within reach. A hand-off only; nothing is made
+// here and the window applies its own checks before anything is.
+/proc/crafting_window_from_atlas(mob/viewer, product)
+	var/mob/living/human/H = viewer
+	if (!istype(H) || !H.client || H.stat || H.restrained())
+		if (viewer)
+			to_chat(viewer, "<span class='notice'>You cannot craft right now.</span>")
+		return FALSE
+	var/wanted = text2path("[product]")
+	if (!ispath(wanted, /atom))
+		return FALSE
+	for (var/obj/item/stack/near in H.crafting_stacks_within_reach())
+		// Material stacks list recipes per character, as they do when used in hand.
+		if (istype(near, /obj/item/stack/material))
+			var/obj/item/stack/material/M = near
+			M.recipes = M.material.get_recipes_civs(H)
+		var/row = near.crafting_window_row_for(wanted)
+		if (!length(row))
+			continue
+		if (near.crafting_window_shown(H, TRUE, row))
+			return TRUE
+		to_chat(H, "<span class='notice'>You can make that from the [near.name] within reach. Use it in your hand to open the classic crafting list.</span>")
+		return FALSE
+	to_chat(H, "<span class='notice'>Nothing within reach makes that. Hold the material the recipe needs, or stand next to it, and try again.</span>")
+	return FALSE
 
 // Where a material is, in the player's words.
 /datum/crafting_window/proc/where(obj/item/stack/S)
@@ -417,6 +535,8 @@ var/global/list/crafting_purpose_cache = list()
 				"current" = near == S ? 1 : 0,
 				"image" = product_image(near.type, budget)))
 	return list(
+		"focus" = focus,
+		"focus_seq" = focus_seq,
 		"reach" = reach ? 1 : 0,
 		"sources" = sources,
 		"where" = where(S),
@@ -483,7 +603,14 @@ var/global/list/crafting_purpose_cache = list()
 			for (var/list/row in cached["rows"])
 				if (row["id"] == href_list["pin"])
 					row["pinned"] = pinned.Find(pin_key) ? 1 : 0
-			ui_interact(H, force_open = FALSE)
+			push_cached()
+		return FALSE
+	if (href_list["detail"])
+		// Selecting a row asks what exactly it needs. Nothing is spent or built.
+		if (working)
+			return FALSE
+		detail = detail_for(href_list["detail"])
+		push_cached()
 		return FALSE
 	if (href_list["make"])
 		if (working || !H.can_build_recipe)
@@ -499,12 +626,13 @@ var/global/list/crafting_purpose_cache = list()
 			refresh()
 			return FALSE
 		var/obj/item/stack/S = source
+		var/list/options = given_options(R, href_list["options"])
 		working = list("id" = href_list["make"], "name" = html_encode("[R.title]"), "time" = expected_time(R))
 		GLOB.nanomanager.update_uis(src)
 		var/held_before = S.amount
 		var/recent_key = crafting_window_pin_key(S, R)
 		H.can_build_recipe = FALSE
-		S.produce_recipe(R, quantity, H)
+		S.produce_recipe(R, quantity, H, options)
 		H.can_build_recipe = TRUE
 		working = null
 		// Material went, so something was made: remember it for the Recent strip.

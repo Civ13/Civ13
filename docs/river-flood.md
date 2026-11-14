@@ -83,6 +83,19 @@ or person; nothing loops over the map.
   `1 + stage / 3` (0.5 to 2).
 - Ground a player has raised (shovel and rammer grading) stays dry until the
   stage tops its new height.
+- Crops under knee-deep water drown after 6 growth minutes (3 at waist depth
+  or deeper); rice doesn't. Floodwater waters a crop fully, and a crop that
+  comes through a flood alive leaves 40 soil nutrition of silt.
+- A well under floodwater is fouled (its `dirty` flag, cleaned with soap).
+- Waist-deep floodwater soaks clothes like wading in a river.
+- Flood marks: each reach keeps a high-water mark (`peak`, saved with the
+  water) that fades 0.005 levels a minute. Examining a tree, a built wall or
+  the ground within 2 tiles tells how high the last floods stood there, or how
+  deep the water is now.
+- Things on the floor, on tiles a player can see (once per river tick per
+  tile): flour sacks are ruined and gunpowder pouches emptied; at knee depth
+  or more, small items float one tile toward deeper water, and into the river's
+  current. A table keeps things dry below waist depth.
 - Placeholder drawing: shallow water over flooded land as images only the
   viewer holds, more opaque when deeper, redrawn when the viewer has moved 4
   tiles or the rivers changed. Nothing is drawn while every reach is at or
@@ -90,9 +103,10 @@ or person; nothing loops over the map.
 
 ## Saving
 
-The water held and the snowpack of every reach are the map field
-`river_flood_state`, saved with the durable world metadata (field version 4;
-older saves load with rivers at their dry-spell level). A loaded save's water is
+The water held, the snowpack and the high-water mark of every reach are the
+map field `river_flood_state`, saved with the durable world metadata (field version 4;
+older saves load with rivers at their dry-spell level; saves from before flood
+marks load with the marks at the water). A loaded save's water is
 taken up on the next tick. The parsed sidecar is never saved.
 
 ## Admin tools

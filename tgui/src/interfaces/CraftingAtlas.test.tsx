@@ -292,6 +292,24 @@ describe('Crafting Atlas navigation', () => {
   });
 });
 
+describe('Crafting Atlas hand-off to the Crafting window', () => {
+  it('offers Craft this on held-material recipes and names only the product', () => {
+    const props = ui(); render(<CraftingAtlas {...props} />);
+    fireEvent.click(screen.getByText('Craft this'));
+    expect(props.act).toHaveBeenCalledTimes(1);
+    expect(props.act).toHaveBeenLastCalledWith('atlas_craft', { atlas_craft: '/obj/plank' });
+  });
+  it('does not offer it for bench recipes, other maps, retired recipes or a locked window', () => {
+    for (const detail of [{ ...recipe, kind: 'Anvil' }, { ...recipe, elsewhere: true }, { ...recipe, retired: true }, { ...recipe, outputs: [] }]) {
+      render(<CraftingAtlas {...ui({ detail })} />);
+      expect(screen.queryByText('Craft this')).toBeNull();
+      cleanup();
+    }
+    const props = ui({}, false); render(<CraftingAtlas {...props} />);
+    expect((screen.getByText('Craft this') as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
 describe('Crafting Atlas requirement notes', () => {
   it('shows one row for a recipe that comes in several materials', () => {
     const page = { id: '/obj/item/hatchet', name: 'hatchet', heading: 'How to obtain', routes: [], kind: 'Tool or weapon', made_by_count: 2, used_in_count: 0, used_in: [],

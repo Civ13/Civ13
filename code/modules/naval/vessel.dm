@@ -73,6 +73,7 @@ var/global/list/naval_vessels = list()
 	var/tmp/list/path_markers = list() // The water marked ahead of the next move.
 	var/tmp/warn_timer = 0
 	var/tmp/turning_to = 0             // A turn ordered at the wheel, waiting out its warning.
+	var/tmp/turn_held_for_save = FALSE // The crew was told a turn waits for a save.
 
 /datum/vessel/New()
 	..()
@@ -294,11 +295,26 @@ var/global/list/naval_vessels = list()
 // not ours. One call does the whole move and never sleeps, so nobody sees a
 // half-moved ship.
 /datum/vessel/proc/relocate(x, y, heading)
+	// The whole block is written in this one call: anything aboard that
+	// slept here would let a save begin between decks.
+	SHOULD_NOT_SLEEP(TRUE)
 	if (relocating)
 		last_refusal = "already moving"
 		return FALSE
-	var/started = world.timeofday
+	// Never rewrite a level while the world save is capturing it, whoever
+	// asked for the move (a hop, a turn ordered before the save, a launch).
+	if (persistence_save_in_progress)
+		last_refusal = "holding for a world save"
+		return FALSE
+	// Cost of this call in milliseconds: it never sleeps, so the tick usage
+	// it adds is all its own (world.timeofday only counts tenths of seconds).
+	var/started_usage = world.tick_usage
 	var/list/old_cells = placed ? cells() : list()
+	// Keyed copy of the old footprint: list membership by `in` is a linear
+	// search, which made every hop grow with the square of the hull.
+	var/list/old_set = list()
+	for (var/turf/S in old_cells)
+		old_set[S] = TRUE
 	// Where she was, for the craft hooks after the move.
 	var/turf/old_origin = placed ? locate(ox, oy, base_z) : null
 	var/turned = placed ? craft_turn_angle(dir, heading) : 0
@@ -338,7 +354,7 @@ var/global/list/naval_vessels = list()
 			var/list/mine = next[L]
 			var/list/was = prior[L]
 			var/key = "[D.x],[D.y]"
-			mine[key] = (D in old_cells) ? was[key] : D.type
+			mine[key] = old_set[D] ? was[key] : D.type
 		var/list/air = flooding.air_snapshot()
 		// The ship now stands at the new place: vessel_at() must find it from
 		// the constructors of the turfs written below.
@@ -383,7 +399,7 @@ var/global/list/naval_vessels = list()
 		carry = null
 		// Put the sea back where the ship was.
 		for (var/turf/S in old_cells)
-			if (S in dest_turfs)
+			if (dest_turfs[S])
 				continue
 			var/datum/vessel_level/L = level_for_z(S.z)
 			var/list/was = L ? prior[L] : null
@@ -409,7 +425,7 @@ var/global/list/naval_vessels = list()
 		throw e
 	wall_bulk_placement = old_bulk
 	relocating = FALSE
-	last_hop_ms = (world.timeofday - started) * 100
+	last_hop_ms = round((world.tick_usage - started_usage) * world.tick_lag, 0.1)
 	if (old_origin)
 		var/datum/craft/C = craft_of_vessel(src)
 		if (C)
@@ -607,9 +623,18 @@ var/global/list/naval_vessels = list()
 
 /datum/vessel/proc/finish_turn()
 	var/heading = turning_to
-	turning_to = 0
 	if (!heading)
 		return FALSE
+	// A turn that falls due while the world saves waits for the save to end
+	// instead of rewriting the decks under it.
+	if (persistence_save_in_progress && placed && !anchored && !sunk)
+		if (!turn_held_for_save)
+			turn_held_for_save = TRUE
+			crew_message(SPAN_NOTICE("She holds her turn while the world saves."))
+		addtimer(CALLBACK(src, PROC_REF(finish_turn)), VESSEL_PATH_WARNING)
+		return FALSE
+	turn_held_for_save = FALSE
+	turning_to = 0
 	if (!placed || anchored || sunk)
 		clear_path()
 		return FALSE

@@ -158,6 +158,10 @@ FROZEN_RATINGS = {
     ('edge', 'copper'): (0.59, 0.49),
     ('edge', 'bronze'): (0.77, 0.8),
     ('edge', 'iron'): (0.89, 0.75),
+    ('work_head', 'copper'): (0.46, 0.49),
+    ('work_head', 'bronze'): (0.67, 0.8),
+    ('work_head', 'iron'): (0.8, 0.75),
+    ('work_head', 'flint'): (0.25, 0.13),
     ('striker', 'iron'): (1.0, 1.0),
     ('striker', 'lead'): (0.67, 0.25),
     ('striker', 'glass'): None,
@@ -188,6 +192,7 @@ FROZEN_RATINGS = {
 # Materials allowed to outperform a role's standard, before clamping.
 BEATS_STANDARD = {
     'edge': {'diamond'},
+    'work_head': set(),
     'striker': {'steel', 'submarine hull'},
     'handle': {'bamboo'},
     'gear': set(),

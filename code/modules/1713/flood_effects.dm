@@ -65,6 +65,127 @@
 /proc/flood_douses(atom/A)
 	return flood_depth_at(get_turf(A)) > 0
 
+// ---- crops ---------------------------------------------------
+// A crop under knee-deep water or more drowns: after 6 growth minutes at the
+// knee, 3 at the waist or deeper. Rice grows in standing water. A crop that
+// comes through a flood alive leaves fresh silt in the soil.
+
+#define FLOOD_SILT_NUTRITION 40
+
+/obj/structure/farming/plant
+	var/flood_tolerant = FALSE
+	var/tmp/flooded_minutes = 0
+
+/obj/structure/farming/plant/rice
+	flood_tolerant = TRUE
+
+/obj/structure/farming/plant/persistence_runtime_var(key)
+	return key == "flooded_minutes" || ..()
+
+// One growth minute. Returns TRUE while the plant stands in floodwater, which
+// waters it fully.
+/obj/structure/farming/plant/proc/flood_plant_step()
+	var/turf/T = get_turf(src)
+	var/band = flood_band_at(T)
+	if (!band)
+		if (flooded_minutes && stage <= readyStageMax)
+			flooded_minutes = 0
+			var/turf/floor/dirt/D = T
+			if (istype(D))
+				D.soil_nutrition = min(D.max_soil_nutrition, D.soil_nutrition + FLOOD_SILT_NUTRITION)
+				plant_nutrition = D.soil_nutrition
+		return FALSE
+	water = max_water
+	flooded_minutes++
+	if (!flood_tolerant && band >= FLOOD_BAND_KNEE && flooded_minutes >= (band >= FLOOD_BAND_WAIST ? 3 : 6))
+		set_dead("drowned")
+	return TRUE
+
+#undef FLOOD_SILT_NUTRITION
+
+// ---- wells -----------------------------------------------------
+// Floodwater over a well fouls it until it is scrubbed clean with soap.
+
+/obj/structure/sink/well/proc/flood_foul()
+	if (!dirty && flood_depth_at(get_turf(src)) > 0)
+		dirty = TRUE
+	return dirty
+
+// ---- clothes -----------------------------------------------------
+// Waist-deep floodwater soaks clothes like wading in a river.
+
+/proc/flood_soaks(turf/T)
+	return T && !T.iscovered() && flood_band_at(T) >= FLOOD_BAND_WAIST
+
+// ---- flood marks -------------------------------------------------
+// The last floods leave a line of dried silt on trees, walls and the ground.
+
+/proc/flood_mark_text(turf/T)
+	var/depth = flood_depth_at(T)
+	if (depth > 0)
+		return "It stands in [flood_band_name(flood_band(depth))] floodwater."
+	var/mark = flood_mark_at(T)
+	if (mark <= 0)
+		return null
+	switch (flood_band(mark))
+		if (FLOOD_BAND_ANKLE)
+			return "A thin line of dried silt shows a recent flood stood ankle-deep here."
+		if (FLOOD_BAND_KNEE)
+			return "A line of dried silt shows a recent flood stood knee-deep here."
+		if (FLOOD_BAND_WAIST)
+			return "A line of dried silt at waist height shows how high a recent flood rose here."
+	return "Dried silt and wrack sit high above your head: a recent flood ran deep here."
+
+/proc/flood_mark_examine(atom/A, mob/user)
+	if (!user || get_dist(A, user) > 2)
+		return
+	var/text = flood_mark_text(get_turf(A))
+	if (text)
+		to_chat(user, SPAN_NOTICE(text))
+
+// ---- things on the floor --------------------------------------------
+// Floodwater ruins flour and gunpowder left on the floor (the flour sack falls
+// apart, a gunpowder pouch is left empty) and floats small light things toward deeper water. A table
+// keeps things above anything shallower than the waist. It runs for the tiles
+// a player can see (the drawing scan below), once per river tick per tile, so
+// unwatched land costs nothing.
+
+var/global/list/flood_items_done = list()
+var/global/flood_items_revision = -1
+
+/proc/flood_ruins(obj/item/I)
+	return istype(I, /obj/item/weapon/reagent_containers/food/condiment/flour) || istype(I, /obj/item/weapon/reagent_containers/food/drinks/gunpowder)
+
+/proc/flood_items_at(turf/T, band)
+	if (flood_items_revision != flood_draw_revision)
+		flood_items_revision = flood_draw_revision
+		flood_items_done.Cut()
+	if (flood_items_done[T])
+		return
+	flood_items_done[T] = TRUE
+	if (band < FLOOD_BAND_WAIST && (locate(/obj/structure/table) in T))
+		return
+	var/turf/deeper = null
+	if (band >= FLOOD_BAND_KNEE)
+		var/best = flood_depth_at(T)
+		for (var/d in cardinal)
+			var/turf/N = get_step(T, d)
+			if (!N || N.density)
+				continue
+			var/depth = istype(N, /turf/floor/beach/water) ? 99 : flood_depth_at(N)
+			if (depth > best)
+				best = depth
+				deeper = N
+	for (var/obj/item/I in T)
+		if (I.anchored)
+			continue
+		if (flood_ruins(I) && I.reagents && I.reagents.total_volume)
+			// An emptied flour sack falls apart; a gunpowder pouch stays, empty.
+			I.visible_message(SPAN_WARNING("Floodwater soaks \the [I] and ruins what was inside."))
+			I.reagents.clear_reagents()
+		else if (deeper && I.w_class <= ITEM_SIZE_SMALL)
+			I.Move(deeper)
+
 // ---- currents -------------------------------------------------
 // A river in flood carries things further; at low water it barely moves them.
 // Steps per current pulse (5 seconds): 0 or 1 at low water, 1 normally, 2 in
@@ -136,6 +257,7 @@ var/global/list/flood_band_alpha = list(90, 140, 190, 230)
 			var/band = flood_band_at(T)
 			if (!band)
 				continue
+			flood_items_at(T, band)
 			var/image/I = image('icons/turf/beach.dmi', T, "seashallow", 2.04)
 			I.alpha = flood_band_alpha[band]
 			I.mouse_opacity = 0

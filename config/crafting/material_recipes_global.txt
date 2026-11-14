@@ -280,6 +280,8 @@ RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,4,100,0,1,none,
 RECIPE: /material/leather/,sling,/obj/item/weapon/gun/projectile/bow/sling,3,60,0,1,weapons,0,0,0,8,null
 RECIPE: /material/leather/,slingstaff,/obj/item/weapon/gun/projectile/bow/sling/staff,4,80,0,1,weapons,0,0,0,1,null
 RECIPE: /material/leather/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,weapons,0,0,0,1,null
+RECIPE: /material/leather/,feasting mat,/obj/structure/feast_mat,3,60,1,1,furniture,0,0,0,8,null
+RECIPE: /material/leather/,barter mat,/obj/structure/barter_mat,2,40,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,fire flapper,/obj/item/weapon/fire_beater/flapper,3,70,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,whip,/obj/item/weapon/melee/classic_baton/whip,4,100,0,1,weapons,0,38,0,8,null
@@ -1392,6 +1394,7 @@ RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,
 
 RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,3,null
 RECIPE: /material/bone/,bone bead necklace,/obj/item/clothing/accessory/necklace/bead,1,50,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone beads,/obj/item/stack/barter_beads/bone,1,30,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,8,null
@@ -1468,6 +1471,8 @@ RECIPE: /material/stone/,large stone head,/obj/structure/religious/olmec_head,12
 RECIPE: /material/stone/,moai,/obj/structure/religious/moai,20,250,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,long moai,/obj/structure/religious/moai/long,20,250,1,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/stone/,gravestone,/obj/structure/religious/gravestone,3,60,1,1,religious & decoration,26,0,0,8,null
+RECIPE: /material/stone/,cairn,/obj/structure/religious/cairn,5,80,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/stone/,stone beads,/obj/item/stack/barter_beads/stone,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,gargoyle statue,/obj/structure/religious/gargoyle,12,190,1,1,religious & decoration,32,0,0,8,null
 RECIPE: /material/stone/,angel statue,/obj/structure/religious/angel,12,190,1,1,religious & decoration,32,0,0,8,null
 

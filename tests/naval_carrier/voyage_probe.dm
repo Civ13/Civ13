@@ -209,6 +209,24 @@ var/naval_runtime_error = FALSE
 		if (!found)
 			missing += name
 	naval_check(!length(missing), "every game name on the chart is an ecology species ([jointext(missing, ", ")])")
+	// ---- Giving up a faction's claim at its charter (land_choices.dm) ----
+	shard_group.kind = "EXPEDITION"
+	expedition_land_info["key"] = "1,2"
+	var/obj/structure/colony_charter/charter = new(get_step(H, EAST))
+	charter.faction = "Rome Colony"
+	map.faction_colonies()["Rome Colony"] = list("civ:gaia:Rome Empire", 0)
+	world_chart["claims"] = list("civ:gaia:Rome Empire" = "1,2")
+	H.civilization = "Rome Colony"
+	H.leader = FALSE
+	naval_check(isnull(charter.unclaim_parent(H)), "only the colony's leader may give its claim up")
+	H.leader = TRUE
+	naval_check(charter.unclaim_parent(H) == "civ:gaia:Rome Empire", "its leader may, for the parent faction that holds it")
+	world_chart["claims"] = list("civ:gaia:Rome Empire" = "6,3")
+	naval_check(isnull(charter.unclaim_parent(H)), "not when the faction's claim is on another land")
+	H.civilization = null
+	H.leader = FALSE
+	shard_group.kind = "SURFACE"
+	qdel(charter)
 	expedition_land_info = null
 
 /proc/naval_run()

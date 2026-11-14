@@ -828,6 +828,119 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
 	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
+/proc/late_test_naturalist_finds()
+	var/datum/research_node/N = get_research_node("basic_agriculture")
+	var/mob/living/human/late_fixture/scholar/nat = new(locate(2,7,1))
+	nat.name = "Linne"
+	nat.real_name = "Linne"
+	nat.prepare("basic_agriculture", 0)
+	var/mob/living/simple_animal/rabbit/rabbit = new(locate(2,8,1))
+	var/obj/item/stack/ore/copper/ore = new(locate(3,7,1))
+	var/mob/living/simple_animal/civilian/person = new(locate(1,7,1))
+	late_check(find_discipline(rabbit) == "agriculture" && find_discipline(ore) == "natural_science" && find_discipline(new /obj/structure/wild/flowers(locate(2,6,1))) == "medicine", "animals, ores and wild plants are finds of their own disciplines")
+	late_check(isnull(find_discipline(person)) && isnull(find_discipline(nat)) && isnull(find_discipline(new /obj/structure/wild/tree_stump(locate(3,8,1)))), "people and stumps are no finds")
+	var/list/targets = find_targets(nat)
+	late_check(targets.len >= 3, "the scholar sees three things to record ([targets.len])")
+	var/obj/item/weapon/book/B = new(nat)
+	var/kind = "[rabbit.type]"
+	late_check(node_discipline("basic_agriculture") == "agriculture" && ("basic_agriculture" in find_subjects(nat, "agriculture", B, kind)), "a subject of the discipline whose groundwork is known can take the find")
+	var/level = nat.scholar_level("agriculture")
+	var/points = commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture")
+	late_check(points == max(1, round(N.cost_ticks * 0.05)) && B.research_ticks("basic_agriculture") == points, "a find writes a twentieth of the chapter ([points])")
+	late_check(nat.scholar_level("agriculture") > level, "and teaches the one who made it")
+	late_check(B.has_find(kind) && !commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture") && !B.find_room("weaving", kind), "a book takes each kind of find once")
+	late_check(!commit_find(nat, B, "[ore.type]", "natural_science", "copper ore", "basic_agriculture"), "a find cannot go to a subject of another discipline")
+	// Finds fill at most three tenths of a chapter.
+	var/total = points
+	for(var/i = 1 to 8)
+		total += B.record_find("basic_agriculture", "test_kind_[i]")
+	late_check(total == round(N.cost_ticks * 0.3) && B.find_points("basic_agriculture") == total && !B.find_room("basic_agriculture", "one_more"), "finds stop at three tenths of the chapter ([total] of [N.cost_ticks])")
+	// A sheet of notes goes to a bench working on the discipline.
+	var/obj/item/weapon/paper/P = new(nat)
+	late_check(commit_find(nat, P, kind, "agriculture", "rabbit") == 1 && P.find_kind == kind && P.find_discipline == "agriculture" && !find_paper_ok(P), "a sheet takes one record")
+	late_check(!field_study_carrier_ok(P, "basic_agriculture", "x") && !demonstration_carrier_ok(P, "steam_power"), "and is then no use for other notes")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,7,1))
+	var/obj/item/weapon/book/fresh = new(bench)
+	bench.assigned_node = "basic_agriculture"
+	nat.put_in_hands(P)
+	late_check(bench.take_find_notes(P, nat) && fresh.has_find(kind) && fresh.research_ticks("basic_agriculture") == points, "notes used on the bench are written into its book")
+	// Double on a land reached by expedition.
+	var/obj/item/weapon/book/far = new(nat)
+	expedition_land_info = list("biome" = "temperate", "land_type" = "plain", "size" = "small")
+	late_check(find_double_here() && commit_find(nat, far, kind, "agriculture", "rabbit", "basic_agriculture") == max(1, round(N.cost_ticks * 0.1)), "a find on an expedition land is worth double")
+	expedition_land_info = list()
+	late_check(!find_double_here(), "and the usual amount at home")
+	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
+/proc/late_test_compare_notes()
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
+	bench.tier = 8
+	for(var/mob/living/human/other in range(2, bench))
+		other.loc = locate(1,1,1)
+	var/datum/research_node/N = get_research_node("selfloading_firearms")
+	var/obj/item/weapon/book/ours = new(bench)
+	ours.name = "our book"
+	var/mob/living/human/late_fixture/scholar/lead = new(locate(7,2,1))
+	lead.name = "Ada"
+	lead.real_name = "Ada"
+	lead.prepare("selfloading_firearms", 100)
+	var/mob/living/human/late_fixture/scholar/visitor = new(locate(1,1,1))
+	visitor.name = "Bede"
+	visitor.real_name = "Bede"
+	visitor.prepare("selfloading_firearms", 100)
+	ours.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.6))
+	late_check(!bench.comparable_subjects().len && !bench.compare_notes(lead), "one book has nothing to compare with")
+	var/obj/item/weapon/book/theirs = new(bench)
+	theirs.name = "their book"
+	late_check(!bench.comparable_subjects().len, "the other book must hold part of the same chapter")
+	theirs.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(bench.comparable_subjects().len == 1 && bench.comparable_subjects()[1] == "selfloading_firearms", "two part-written chapters on one subject can be compared")
+	late_check(findtext(bench.compare_notes_problem(lead, "selfloading_firearms"), "takes two") && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a lone scholar cannot compare notes")
+	visitor.loc = locate(8,3,1)
+	var/before = ours.research_ticks("selfloading_firearms")
+	var/lead_before = lead.scholar_level(node_discipline("selfloading_firearms"))
+	lead.scholarship[node_discipline("selfloading_firearms")] = 90
+	visitor.scholarship[node_discipline("selfloading_firearms")] = 90
+	lead_before = 90
+	late_check(isnull(bench.compare_notes_problem(lead, "selfloading_firearms")), "with a second scholar at the bench it can be done")
+	var/points = bench.compare_notes(lead)
+	var/expected = round(round(N.cost_ticks * 0.3) * 0.5)
+	late_check(points == expected && ours.research_ticks("selfloading_firearms") == before + expected && theirs.research_ticks("selfloading_firearms") == round(N.cost_ticks * 0.3), "the fuller chapter gains half of the other's points ([points]) and the other keeps its own")
+	late_check(lead.scholar_level(node_discipline("selfloading_firearms")) > lead_before && visitor.scholar_level(node_discipline("selfloading_firearms")) > 90, "both scholars learn from it")
+	late_check(ours.has_compared("selfloading_firearms") && theirs.has_compared("selfloading_firearms") && !bench.comparable_subjects().len && !bench.compare_notes_commit(lead, "selfloading_firearms"), "a book is compared on a subject once")
+	// A third book cannot be milked by a book already compared.
+	theirs.loc = locate(1,1,1)
+	var/obj/item/weapon/book/third = new(bench)
+	third.add_research_work("selfloading_firearms", round(N.cost_ticks * 0.3))
+	late_check(!bench.comparable_subjects().len, "nor again with a fresh book")
+	// The lesser book may lie first; the gain never passes the chapter's cost.
+	ours.loc = locate(1,1,1)
+	var/obj/item/weapon/book/nearly = new(bench)
+	nearly.add_research_work("selfloading_firearms", N.cost_ticks - 3)
+	late_check(bench.placed_books()[1] == third && bench.compare_notes_commit(lead, "selfloading_firearms") == 3 && nearly.has_research_chapter("selfloading_firearms"), "the fuller book gains whichever lies first, up to a finished chapter")
+	map.book_research = FALSE
+	late_check(!bench.compare_notes(lead), "no comparing where book research is off")
+	map.book_research = TRUE
+	// Samples: the first two kinds taken apart teach a fifth each, later kinds less.
+	bench.assigned_node = null
+	for(var/obj/item/weapon/book/old in bench)
+		old.loc = locate(1,1,1)
+	var/obj/item/weapon/book/samples = new(bench)
+	var/list/kinds = list()
+	for(var/path in get_node_recipe_paths("selfloading_firearms"))
+		if(ispath(path, /obj/item) && kinds.len < 3)
+			kinds += path
+	bench.assigned_node = "selfloading_firearms"
+	bench.studied_samples = null
+	if(kinds.len >= 3)
+		var/list/gains = list()
+		for(var/path in kinds)
+			var/obj/item/sample = new path(lead)
+			var/had = samples.research_ticks("selfloading_firearms")
+			bench.book_attackby(sample, lead)
+			gains += samples.research_ticks("selfloading_firearms") - had
+		late_check(gains[1] == round(N.cost_ticks * 0.2) && gains[2] == gains[1] && gains[3] == round(N.cost_ticks * 0.12), "the first two kinds of sample write a fifth each, the third the usual share ([gains[1]], [gains[2]], [gains[3]])")
+	else
+		late_check(FALSE, "Self-loading Firearms has three kinds of thing to sample")
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -850,6 +963,8 @@ var/late_wait_result = TRUE
 		late_test_learning_by_doing()
 		late_test_trial_and_error()
 		late_test_trade_learning()
+		late_test_compare_notes()
+		late_test_naturalist_finds()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

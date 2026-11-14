@@ -51,7 +51,7 @@ Performance is bounded to 25%-125% of the standard part and lifetime to
 at all: too fragile for shocks, too soft for a gear, bearing or wheel, below
 the role's heat floor, flammable for a vessel, or zero in a property the role's performance depends on.
 
-Roles: edge, striker, handle, gear, bearing, spring (in a mechanism), limb
+Roles: edge, work_head (pick, axe and shovel heads), striker, handle, gear, bearing, spring (in a mechanism), limb
 (bow or crossbow), pipe, vessel, conductor, wheel. `ROLE_FRAME` and `ROLE_PLATE` are reserved ids rated by the vehicle
 materials work.
 
@@ -68,3 +68,20 @@ value is deliberate.
 
 Material items show a "Material:" line on examine built from
 `/material/proc/property_summary()`.
+
+## Tool speeds
+
+`code/modules/materials/tool_speeds.dm` holds one table per tool family
+(pickaxe, shovel, hatchet) with the speed each hand-made material always had.
+`tool_material_speed(family, material)` returns that exact number for a listed
+material. Any other material (a cast copper or bronze head) is placed between
+its listed neighbours by its `work_head` performance and never leaves the
+listed range. `set_material()` applies it to the plain family tool; variants
+with their own hand-set speed (jackhammer, spades, battle axes, chainsaw) keep
+it. Assembled head-and-handle tools use the same head speed times the handle
+factor (docs/component-tools.md).
+
+Plain tools that are not material items name their material in
+`tool_material`; `tool_material_name(item)` reads either kind.
+`python3 -m unittest discover -s tests/tool_material_speeds -v` checks the
+table against the named variants and pins the in-between values.

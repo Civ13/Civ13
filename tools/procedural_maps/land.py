@@ -32,9 +32,16 @@ from .playable import (SURFACE_AREA, apply_elevation, elevation_profile, playabl
                        verify_types, write_text, DEFAULT_LAPSE)
 from .repo_source import read_source
 from .source_audit import parse_classic
+from .validator import MAX_SIDE, unchanged
 
 LAND_VERSION = "civ13-expedition-land/1"
 MAX_ATTEMPTS = 8
+# A land's world holds both planes of its map. The largest world measured on
+# BYOND 516.1688 so far is about 1.04 million cells (the Americas drafts: a
+# reload peak near half the 32-bit memory limit), so a land may not ask for
+# more than this without a new measurement.
+LAND_PLANES = 2
+MEASURED_CELLS = 1050000
 SIZES = ("TINY", "SMALL", "MEDIUM", "LARGE", "MASSIVE")
 LAND_TYPES = ("COASTAL_PLAIN", "RIVER_DELTA", "HIGHLANDS", "ARCHIPELAGO", "FJORD_COAST", "MARSH", "VOLCANIC_ISLE",
               "PLATEAU")
@@ -124,8 +131,11 @@ def template_errors(t):
     if t.get("size") not in SIZES:
         problems.append("unknown size")
     for key in ("width", "height"):
-        if type(t.get(key)) is not int or not 64 <= t[key] <= 512:
-            problems.append(key + " must be 64..512 tiles")
+        if type(t.get(key)) is not int or not 64 <= t[key] <= MAX_SIDE:
+            problems.append(key + " must be 64..%d tiles" % MAX_SIDE)
+    if all(type(t.get(key)) is int for key in ("width", "height")) and t["width"] * t["height"] * LAND_PLANES > MEASURED_CELLS:
+        problems.append("%d x %d on %d levels is more than the %d cells a world has been measured to hold"
+                        % (t["width"], t["height"], LAND_PLANES, MEASURED_CELLS))
     coast = t.get("coast")
     if type(coast) is not list or not coast or not all(s in SIDES for s in coast):
         problems.append("a land needs at least one coast side (N, S, E or W)")
@@ -217,10 +227,11 @@ def reskin(doc, layout, t):
     return counts
 
 
-def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE):
+def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE, full_bundle=False):
     """Generates the land for template t into the new folder out: the
-    generator bundle (bundle/), the region map (land.dmm) and a report
-    (land.json). Returns the report."""
+    generator's seed manifest and preview (bundle/), the region map
+    (land.dmm) and a report (land.json). full_bundle also keeps the typed IR
+    and sidecar, which `verify` and `playable` read. Returns the report."""
     problems = template_errors(t)
     if problems:
         raise ValueError("LAND_TEMPLATE: " + "; ".join(problems))
@@ -241,17 +252,20 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE):
     else:
         raise ValueError("LAND_REJECTED: no candidate in %d attempts: %s" % (MAX_ATTEMPTS, json.dumps(rejected[-1:])))
     generated = time.monotonic()
-    write_bundle(new_output(folder / "bundle", True), result["document"], result["manifest"], catalog_root, True, fresh=True)
     doc = result["document"]
-    layout, counts = playable_layout(doc, "native")
-    skin_counts = reskin(doc, layout, t)
-    profile = elevation_profile(doc, lapse)
-    apply_elevation(layout, profile, EXPEDITION_METADATA)
-    text = write_text(doc, layout)
-    _, parsed, dims = parse_classic(text)
-    if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:
-        raise ValueError("LAND_LAYOUT_MISMATCH")
-    (folder / "land.dmm").write_text(text, encoding="utf-8", newline="\n")
+    # The generator has just validated and hashed this document; nothing below changes it.
+    with unchanged(doc, [], result["manifest"]["generation_result"]["ir_sha256"]):
+        write_bundle(new_output(folder / "bundle", True), result["document"], result["manifest"], catalog_root, True, fresh=True,
+                     light=not full_bundle)
+        layout, counts = playable_layout(doc, "native")
+        skin_counts = reskin(doc, layout, t)
+        profile = elevation_profile(doc, lapse)
+        apply_elevation(layout, profile, EXPEDITION_METADATA)
+        text = write_text(doc, layout)
+        _, parsed, dims = parse_classic(text)
+        if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:
+            raise ValueError("LAND_LAYOUT_MISMATCH")
+        (folder / "land.dmm").write_text(text, encoding="utf-8", newline="\n")
     finished = time.monotonic()
     report = {
         "schema": LAND_VERSION,

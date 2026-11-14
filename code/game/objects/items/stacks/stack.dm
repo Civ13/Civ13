@@ -816,7 +816,7 @@
 				customname = targetskull
 				qdelHandReturn(H.r_hand, H)
 
-	if (findtext(recipe.title, "gravestone"))
+	if (findtext(recipe.title, "gravestone") || findtext(recipe.title, "cairn"))
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
 			return
@@ -1764,6 +1764,10 @@
 			var/obj/covers/floor = O
 			floor.building_finish_floor()
 
+		// Tailoring: the project is made of whichever woven fabric paid for it.
+		if (istype(O, /obj/item/tailoring_project))
+			var/obj/item/tailoring_project/project = O
+			project.fabric_kind = tailoring_fabric_kind_of(src) || project.fabric_kind
 		// Alloys: a smith who knows it forges longer-lasting metal (node_effects.dm).
 		apply_crafting_node_effects(user, O)
 		// Practice: making it counts as field work for the next node (practice_work.dm).

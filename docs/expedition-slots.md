@@ -44,7 +44,7 @@ The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
    `shard_group.py --config group.json expedition-land --region far1 --template tile.json --key 24,16`.
    The template is a world-chart template, or a tile as the chart prints it
    (`{"template": {...}}`). The land is generated into
-   `<root>/expeditions/lands/far1-<time>/` (about 11 s for a tiny land and 29 s
+   `<root>/expeditions/lands/far1-<time>/` (about 4 s for a tiny land and 7 s
    for a small one in the cloud).
 2. **Compile it**: `update-offline --region far1`. The region's map becomes
    `maps/regions/far1.dmm` (a copy of the land), and the host writes
@@ -93,6 +93,10 @@ An abandoned land (by its crew, or after 7 days with nobody there) is
 reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
 (it saves first), archives it and frees it. The coordinator has already moved
 any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).
+
+An archived save is kept 7 days so an admin can restore it by hand. After
+that the host service deletes it, with the land folder it was built from
+unless a slot holds that land again (`prune_archives`, each `serve` pass).
 
 ## In game
 

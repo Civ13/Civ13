@@ -373,6 +373,49 @@ class TradeLearning(unittest.TestCase):
         for guard in ("maker.knows_recipe_node(node_id)", "TRADE_WATCH_MAX", "watcher.can_learn_trade(node_id)"):
             self.assertIn(guard, watched)
         self.assertIn("learn_recipe_node(node_id)", proc(self.src, "/mob/living/human/proc/add_trade_learning"))
+class CompareNotes(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/compare_notes.dm")
+    def test_included_after_teams(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\team_research.dm"'), dme.index('research_tree\\compare_notes.dm"'))
+    def test_gates(self):
+        problem = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_problem")
+        for guard in ("comparable_subjects()", "cipher_refuses(H)", "research_lit()", "H.can_research_node_at(src, node_id)", "second_scholar(node_id, H)"):
+            self.assertIn(guard, problem)
+        subjects = proc(self.src, "/obj/structure/research_bench/proc/comparable_subjects")
+        for guard in ("book_mode()", "A.has_compared(node_id) || B.has_compared(node_id)", "has_research_chapter(node_id)"):
+            self.assertIn(guard, subjects)
+        commit = proc(self.src, "/obj/structure/research_bench/proc/compare_notes_commit")
+        self.assertIn("fuller.mark_compared(node_id)\n\tlesser.mark_compared(node_id)", commit)
+        self.assertIn("player_input(", proc(self.src, "/obj/structure/research_bench/proc/compare_notes"))
+    def test_first_samples_teach_more(self):
+        research = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("#define BOOK_SAMPLE_FIRST_KINDS 2", research)
+        self.assertIn("#define BOOK_SAMPLE_FIRST_FRACTION 0.2", research)
+        self.assertIn("studied_samples.len <= BOOK_SAMPLE_FIRST_KINDS ? BOOK_SAMPLE_FIRST_FRACTION : RESEARCH_SAMPLE_BOOST_FRACTION", research)
+
+class NaturalistFinds(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/naturalist_finds.dm")
+    def test_included(self):
+        self.assertIn('research_tree\\naturalist_finds.dm"', read("civ13.dme"))
+    def test_limits(self):
+        self.assertIn("#define FIND_POINTS 0.05", self.src)
+        self.assertIn("#define FIND_CHAPTER_CAP 0.3", self.src)
+        room = proc(self.src, "/obj/item/weapon/book/proc/find_room")
+        for guard in ("has_research_chapter(node_id)", "has_find(kind)", "FIND_CHAPTER_CAP", "double ? 2 : 1"):
+            self.assertIn(guard, room)
+    def test_gates(self):
+        subjects = proc(self.src, "/proc/find_subjects")
+        for guard in ("map.book_research_enabled()", "node_discipline(node_id) != discipline", "H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id)"):
+            self.assertIn(guard, subjects)
+        verb = proc(self.src, "/mob/living/human/proc/record_a_find")
+        for guard in ("held_writing_pen()", "do_reading(", "player_input("):
+            self.assertIn(guard, verb)
+        self.assertIn('gain_active_scholarship(node_id, ., "find:[kind]")', proc(self.src, "/proc/commit_find"))
+    def test_bench_takes_notes(self):
+        self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
 
 if __name__ == "__main__":
     unittest.main()

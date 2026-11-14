@@ -73,6 +73,7 @@
 	var/weathering = seasonal_construction_condition()
 	if (weathering)
 		to_chat(user, weathering)
+	flood_mark_examine(src, user)
 
 /obj/covers/proc/get_wall_condition()
 	var/healthp = (health/maxhealth)*100

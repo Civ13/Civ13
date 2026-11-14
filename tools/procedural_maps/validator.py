@@ -5,11 +5,16 @@ import argparse
 import hashlib
 import json
 from collections import deque
+from contextlib import contextmanager
+from copy import deepcopy
 from pathlib import Path
 
 VERSION = "civ13-geography-ir/1"
 PORT_VERSION = "civ13-geography-ir/2"
 OCEAN_VERSION = "civ13-geography-ir/3"
+# Longest map side the offline tools accept. What a BYOND world can hold is a
+# separate, smaller budget: see MEASURED_CELLS in land.py.
+MAX_SIDE = 1280
 PROFILES = {"SURFACE", "OCEANIC", "UNDERGROUND_CAVERN"}
 TERRAINS = {"PLAIN", "HILL", "MOUNTAIN", "BEACH", "CAVE_FLOOR", "ROCK", "WATER"}
 BIOMES = {"TEMPERATE", "LUSH", "STEPPE", "ARID", "DESERT", "ALPINE", "CAVERN", "COAST"}
@@ -34,21 +39,80 @@ POLICY_KEYS = {"mountain_min_area", "mountain_max_components", "max_moisture_ste
                "river_half_width", "max_path_uphill_m"}
 
 
+_DRAW_PREFIX = {}
+
+
 def stable_u64(seed: str, algorithm: str, content: str, profile: str,
                stage: str, layer: str, x: int, y: int, slot: int = 0) -> int:
     """Coordinate-stable draw; JSON array framing prevents concatenation collisions."""
+    if type(x) is int and type(y) is int and type(slot) is int:
+        # Same bytes as the JSON array below: the six strings are framed once
+        # per stage and the three integers appended, which is what keeps a
+        # million-tile map's draws affordable.
+        key = (seed, algorithm, content, profile, stage, layer)
+        prefix = _DRAW_PREFIX.get(key)
+        if prefix is None:
+            if len(_DRAW_PREFIX) > 4096:
+                _DRAW_PREFIX.clear()
+            prefix = _DRAW_PREFIX[key] = json.dumps(list(key), ensure_ascii=True,
+                                                    separators=(",", ":"))[:-1].encode("ascii") + b","
+        return int.from_bytes(hashlib.sha256(prefix + b"%d,%d,%d]" % (x, y, slot)).digest()[:8], "big")
     payload = json.dumps([seed, algorithm, content, profile, stage, layer, x, y, slot],
                          ensure_ascii=True, separators=(",", ":")).encode("ascii")
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
 
 
+# Documents a caller has promised not to change for a while (see unchanged()):
+# id -> [document, validation errors or None, canonical hash or None, extras].
+_UNCHANGED = {}
+
+
+@contextmanager
+def unchanged(document, errors=None, sha256=None):
+    """While this block runs, validate(), canonical_hash() and the DMM
+    projection of this exact object are worked out once and reused. The
+    caller promises not to change the document inside the block. `errors` and
+    `sha256` hand over results the generator has just computed for it. Every
+    check still runs at least once, and any other object is checked in full
+    as before; a large map is simply not re-read six times."""
+    if type(document) is not dict or id(document) in _UNCHANGED:
+        yield document
+        return
+    _UNCHANGED[id(document)] = [document, None if errors is None else list(errors), sha256, {}]
+    try:
+        yield document
+    finally:
+        del _UNCHANGED[id(document)]
+
+
+def remembered(document):
+    """The unchanged() record of this exact object, or None."""
+    entry = _UNCHANGED.get(id(document))
+    return entry if entry is not None and entry[0] is document else None
+
+
 def canonical_hash(document: dict) -> str:
-    return hashlib.sha256(json.dumps(document, sort_keys=True, separators=(",", ":"),
-                                     allow_nan=False).encode()).hexdigest()
+    entry = remembered(document)
+    if entry is not None and entry[2] is not None:
+        return entry[2]
+    digest = hashlib.sha256(json.dumps(document, sort_keys=True, separators=(",", ":"),
+                                       allow_nan=False).encode()).hexdigest()
+    if entry is not None:
+        entry[2] = digest
+    return digest
 
 
 def validate(d: object) -> list[dict]:
     """Reject malformed documents before graph traversal. Never mutate input."""
+    entry = remembered(d)
+    if entry is None:
+        return _validate(d)
+    if entry[1] is None:
+        entry[1] = _validate(d)
+    return deepcopy(entry[1])
+
+
+def _validate(d: object) -> list[dict]:
     errors: list[dict] = []
 
     def err(code, detail, at=None):
@@ -79,7 +143,7 @@ def validate(d: object) -> list[dict]:
         for k in ("seed", "algorithm_version", "content_version", "profile_version"):
             require(type(d[k]) is str and 0 < len(d[k]) <= 128, k)
         require(d["seed"].isascii(), "seed must be ASCII")
-        require(integer(d["width"], 3, 512) and integer(d["height"], 3, 512), "dimensions")
+        require(integer(d["width"], 3, MAX_SIDE) and integer(d["height"], 3, MAX_SIDE), "dimensions")
         w, h = d["width"], d["height"]
         require(type(d["layers"]) is dict and 1 <= len(d["layers"]) <= 4, "layers")
         require(d["active_layer"] in d["layers"], "active_layer")

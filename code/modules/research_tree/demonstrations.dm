@@ -256,7 +256,7 @@ var/global/list/capstone_demonstrations = list(
 /proc/demonstration_carrier_ok(obj/item/carrier, node_id)
 	if (istype(carrier, /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/P = carrier
-		return !istype(P, /obj/item/weapon/paper/research_page) && !P.demonstration_node
+		return !istype(P, /obj/item/weapon/paper/research_page) && !P.demonstration_node && !P.find_kind
 	if (istype(carrier, /obj/item/weapon/book) && !istype(carrier, /obj/item/weapon/book/research/tree_book))
 		var/obj/item/weapon/book/B = carrier
 		var/datum/research_node/N = get_research_node(node_id)
