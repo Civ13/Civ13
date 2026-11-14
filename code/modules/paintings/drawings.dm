@@ -11,7 +11,6 @@
 /obj/item/weapon/book/var/list/drawings = null
 
 var/global/list/drawing_holders = list() // papers and books with drawings
-var/global/drawing_holders_scanned = FALSE
 
 /proc/drawing_limit(atom/A)
 	return istype(A, /obj/item/weapon/book) ? DRAWINGS_PER_BOOK : DRAWINGS_PER_PAPER
@@ -191,17 +190,18 @@ var/global/drawing_holders_scanned = FALSE
 
 /////////////////////////////// Admin list ///////////////////////////////
 
+// Loaded pages and books with drawings join the admin list.
+/obj/item/weapon/paper/after_load()
+	..()
+	if (length(drawings))
+		drawing_holders |= src
+
+/obj/item/weapon/book/after_load()
+	..()
+	if (length(drawings))
+		drawing_holders |= src
+
 /proc/drawing_holders_refresh()
-	if (!drawing_holders_scanned)
-		drawing_holders_scanned = TRUE
-		for (var/obj/item/weapon/paper/P in world)
-			if (length(P.drawings))
-				drawing_holders |= P
-			CHECK_TICK
-		for (var/obj/item/weapon/book/B in world)
-			if (length(B.drawings))
-				drawing_holders |= B
-			CHECK_TICK
 	for (var/atom/A in drawing_holders.Copy())
 		if (QDELETED(A) || !length(drawing_list(A)))
 			drawing_holders -= A

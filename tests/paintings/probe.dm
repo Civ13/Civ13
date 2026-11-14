@@ -202,6 +202,9 @@ var/paint_runtime_error = FALSE
 	for (var/i = 1, i <= 11, i++)
 		B.drawings = (B.drawings || list()) + list(P.drawings[1])
 	paint_check(!B.page_drawings_fit(P), "a nearly full book refuses a page with two pictures")
+	drawing_holders -= B
+	B.after_load()
+	paint_check(B in drawing_holders, "a loaded book with pictures rejoins the admin list")
 	drawing_set_list(C, null)
 	paint_check(!(C in drawing_holders), "a page without pictures leaves the admin list")
 	qdel(C)
