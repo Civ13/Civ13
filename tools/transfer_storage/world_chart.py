@@ -14,6 +14,8 @@ have seen. Admins see everything.
 """
 import hashlib
 import json
+import os
+from pathlib import Path
 import random
 import re
 import secrets
@@ -82,11 +84,41 @@ GAME = {
 STATES = ('CHARTED', 'LANDED', 'SETTLED', 'CLAIMED', 'LOST')
 SIDES = (('N', 0, 1), ('S', 0, -1), ('E', 1, 0), ('W', -1, 0))
 
+# Courses (docs/world-chart.md#courses): a ship that set course for a land
+# asks for a world there. Its answer stays on the chart this long.
+COURSE_STATES = ('ASSIGNED', 'READY', 'REFUSED')
+COURSE_KEEP_SECONDS = 6 * 3600
+# What the host keeps about its expedition slots (scripts/shard-group/expedition_slots.py).
+SLOT_RECORDS = 'slots'
+SLOT_WANTED = 'wanted'
+SLOT_FAILED = 'failed'
+NO_SLOT = 'every harbour master is busy: no new land can be opened for a crew right now. Try a land that is already open, or wait.'
+
+_VOYAGE = re.compile(r'^[a-z0-9_\-]{1,80}$')
 _OWNER = re.compile(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$')
 
 
 def owner_valid(owner):
     return isinstance(owner, str) and bool(_OWNER.match(owner))
+
+
+def voyage_valid(voyage):
+    return isinstance(voyage, str) and bool(_VOYAGE.match(voyage))
+
+
+def _write_json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(value, indent=1, sort_keys=True) + '\n', encoding='utf-8')
+    os.replace(temporary, path)
+
+
+def _read_json(path):
+    try:
+        value = json.loads(Path(path).read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return None
+    return value if isinstance(value, dict) else None
 
 
 def tile_valid(x, y):
@@ -186,10 +218,14 @@ def roll_template(chart_seed, x, y, reroll, biome, coast):
 class WorldChart:
     """The chart in a coordinator database (an open sqlite3 connection in
     autocommit mode). mainland names the region pinned at the chart's middle
-    on a new chart."""
+    on a new chart. slots are the group's EXPEDITION regions and expeditions
+    the folder where the host keeps them (<group root>/expeditions): without
+    both, a course for a land nobody has opened is refused."""
 
-    def __init__(self, db, mainland=None):
+    def __init__(self, db, mainland=None, slots=(), expeditions=None):
         self.db = db
+        self.slots = [s for s in slots if isinstance(s, str) and s]
+        self.expeditions = Path(expeditions) if expeditions else None
         db.execute('''CREATE TABLE IF NOT EXISTS chart_tile(
             x INTEGER NOT NULL, y INTEGER NOT NULL, template TEXT NOT NULL, reroll INTEGER NOT NULL,
             state TEXT NOT NULL, region TEXT, by TEXT, at INTEGER NOT NULL, PRIMARY KEY(x, y))''')
@@ -197,6 +233,9 @@ class WorldChart:
             owner TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL, PRIMARY KEY(owner, x, y))''')
         db.execute('CREATE TABLE IF NOT EXISTS chart_pin(region TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS chart_meta(key TEXT PRIMARY KEY, value TEXT NOT NULL)')
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_course(
+            voyage TEXT PRIMARY KEY, owner TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL, origin TEXT,
+            slot TEXT, state TEXT NOT NULL, reason TEXT, at INTEGER NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('seed', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('rev', '0')")
         if mainland and not db.execute('SELECT 1 FROM chart_pin LIMIT 1').fetchone():
@@ -331,6 +370,131 @@ class WorldChart:
         for x, y in self.db.execute('SELECT x, y FROM chart_tile ORDER BY y, x'):
             if seen is None or (x, y) in seen:
                 tiles['%d,%d' % (x, y)] = self.template(x, y)
-        return {'key': self.key(), 'rev': self.rev(), 'width': CHART_WIDTH, 'height': CHART_HEIGHT, 'rows': self.text_rows(owner),
-                'pins': {r: list(xy) for r, xy in self.pins().items()}, 'tiles': tiles,
-                'sizes_enabled': list(SIZES_ENABLED)}
+        answer = {'key': self.key(), 'rev': self.rev(), 'width': CHART_WIDTH, 'height': CHART_HEIGHT, 'rows': self.text_rows(owner),
+                  'pins': {r: list(xy) for r, xy in self.pins().items()}, 'tiles': tiles,
+                  'sizes_enabled': list(SIZES_ENABLED)}
+        if owner is None:
+            # What each owner has seen, as a bitmap in hex (bit x of row y, row by
+            # row from y = 0), and every course still kept: worlds show a crew its
+            # own chart and wait on their ships' courses.
+            answer['seen'] = {o: self.seen_mask(o) for (o,) in self.db.execute(
+                'SELECT DISTINCT owner FROM chart_seen ORDER BY owner')}
+            answer['courses'] = self.courses()
+        return answer
+
+    def seen_mask(self, owner):
+        bits = 0
+        for x, y in self.seen(owner):
+            bits |= 1 << (y * CHART_WIDTH + x)
+        return '%0*x' % (CHART_WIDTH * CHART_HEIGHT // 4, bits)
+
+    # -- courses -------------------------------------------------------------
+    # A ship sets course for a land tile. The land needs a world: one already
+    # opened for the tile, or a free expedition slot the host fills from the
+    # tile's template while she sails (expedition_slots.py: the coordinator
+    # writes <expeditions>/wanted/<slot>.json, the host builds and starts the
+    # slot and records it in <expeditions>/slots/<slot>.json).
+
+    def courses(self):
+        return {v: {'owner': o, 'x': x, 'y': y, 'origin': origin, 'region': slot, 'state': state, 'reason': reason, 'at': at}
+                for v, o, x, y, origin, slot, state, reason, at in self.db.execute(
+                    'SELECT voyage, owner, x, y, origin, slot, state, reason, at FROM chart_course ORDER BY at, voyage')}
+
+    def course(self, voyage):
+        return self.courses().get(voyage)
+
+    def _slot_record(self, slot):
+        return _read_json(self.expeditions / SLOT_RECORDS / (slot + '.json')) if self.expeditions else None
+
+    def slot_free(self, slot):
+        """A slot the coordinator may give a land: no tile names it, the host
+        holds it FREE and nothing waits for it or failed in it."""
+        if not self.expeditions or slot not in self.slots:
+            return False
+        if self.db.execute('SELECT 1 FROM chart_tile WHERE region = ?', (slot,)).fetchone():
+            return False
+        record = self._slot_record(slot)
+        if record is not None and record.get('state') != 'FREE':
+            return False
+        return not any((self.expeditions / folder / (slot + '.json')).exists() for folder in (SLOT_WANTED, SLOT_FAILED))
+
+    def slot_ready(self, slot, x, y):
+        """True when the host has started slot on the land of tile (x, y)."""
+        record = self._slot_record(slot)
+        return bool(record) and record.get('state') == 'LAND' and record.get('key') == '%d,%d' % (x, y) \
+            and record.get('phase') == 'started'
+
+    def _refuse(self, voyage, owner, x, y, origin, reason, now):
+        self.db.execute('INSERT INTO chart_course VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?)',
+                        (voyage, owner, x, y, origin, 'REFUSED', reason, now))
+        self._bump()
+        return self.course(voyage)
+
+    def set_course(self, voyage, owner, x, y, origin=None, now=None):
+        """A ship of owner sets course for land tile (x, y). Returns the course
+        ({'state': 'ASSIGNED' | 'READY' | 'REFUSED', 'region', 'reason'...}),
+        the same one again for a voyage already decided, or None for a bad
+        request."""
+        if not voyage_valid(voyage) or not owner_valid(owner) or not tile_valid(x, y):
+            return None
+        found = self.course(voyage)
+        if found:
+            return found
+        now = int(time.time() if now is None else now)
+        origin = origin if isinstance(origin, str) and origin else None
+        tile = self.template(x, y)
+        if self.terrain(x, y) in ('OCEAN', 'MAINLAND') or not tile:
+            return self._refuse(voyage, owner, x, y, origin, 'there is no charted land there', now)
+        if (x, y) not in self.seen(owner):
+            return self._refuse(voyage, owner, x, y, origin, 'your chart does not show that land', now)
+        if tile['state'] == 'LOST':
+            return self._refuse(voyage, owner, x, y, origin, 'that land was abandoned for good', now)
+        if not tile['template'].get('coast'):
+            return self._refuse(voyage, owner, x, y, origin, 'that land has no coast a ship can reach', now)
+        slot = tile['region']
+        if not slot:
+            slot = next((s for s in self.slots if self.slot_free(s)), None)
+            if not slot:
+                return self._refuse(voyage, owner, x, y, origin, NO_SLOT, now)
+            _write_json(self.expeditions / SLOT_WANTED / (slot + '.json'),
+                        {'region': slot, 'key': '%d,%d' % (x, y), 'template': tile['template'], 'voyage': voyage, 'at': now})
+            self.db.execute("UPDATE chart_tile SET region = ?, state = 'LANDED' WHERE x = ? AND y = ?", (slot, x, y))
+        state = 'READY' if self.slot_ready(slot, x, y) else 'ASSIGNED'
+        self.db.execute('INSERT INTO chart_course VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)',
+                        (voyage, owner, x, y, origin, slot, state, now))
+        self._bump()
+        return self.course(voyage)
+
+    def refresh_courses(self, now=None):
+        """Each coordinator pass: a course whose land the host has started is
+        READY; one whose land could not be made is REFUSED and its tile is
+        free for the next try (the template stays, so it gives the same land).
+        Old courses are forgotten. True when anything changed."""
+        now = int(time.time() if now is None else now)
+        changed = False
+        failed = {}
+        for slot in self.slots:
+            record = _read_json(self.expeditions / SLOT_FAILED / (slot + '.json')) if self.expeditions else None
+            if record is not None:
+                failed[slot] = record
+        for slot, record in failed.items():
+            key = str(record.get('key') or '')
+            reason = 'the land could not be made ready: %s' % str(record.get('reason') or 'unknown')[:200]
+            for voyage, x, y in self.db.execute(
+                    "SELECT voyage, x, y FROM chart_course WHERE slot = ? AND state = 'ASSIGNED'", (slot,)).fetchall():
+                if '%d,%d' % (x, y) == key:
+                    self.db.execute("UPDATE chart_course SET state = 'REFUSED', reason = ? WHERE voyage = ?", (reason, voyage))
+            self.db.execute("UPDATE chart_tile SET region = NULL, state = 'CHARTED' WHERE region = ? AND state = 'LANDED'",
+                            (slot,))
+            (self.expeditions / SLOT_FAILED / (slot + '.json')).unlink(missing_ok=True)
+            changed = True
+        for voyage, x, y, slot in self.db.execute(
+                "SELECT voyage, x, y, slot FROM chart_course WHERE state = 'ASSIGNED'").fetchall():
+            if self.slot_ready(slot, x, y):
+                self.db.execute("UPDATE chart_course SET state = 'READY' WHERE voyage = ?", (voyage,))
+                changed = True
+        if self.db.execute('DELETE FROM chart_course WHERE at < ?', (now - COURSE_KEEP_SECONDS,)).rowcount:
+            changed = True
+        if changed:
+            self._bump()
+        return changed

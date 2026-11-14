@@ -1469,6 +1469,7 @@
 #include "code\modules\naval\sea_weather.dm"
 #include "code\modules\naval\ship_crossing.dm"
 #include "code\modules\naval\ship_papers.dm"
+#include "code\modules\naval\ship_voyage.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
 #include "code\modules\naval\torpedoes.dm"

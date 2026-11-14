@@ -459,8 +459,9 @@
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
-// Sends her to region id. Null when she left, else why not. Sleeps.
-/obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null)
+// Sends her to region id. Null when she left, else why not. Sleeps. voyage:
+// the voyage she makes the crossing on (ship_voyage.dm), else a new one.
+/obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null, voyage = null)
 	var/reason = crossing_refusal(notify)
 	if (reason)
 		return reason
@@ -495,7 +496,8 @@
 		if (problem)
 			return "She cannot leave: [problem]"
 	var/list/record = packed["record"]
-	var/voyage = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
+	if (!voyage)
+		voyage = "[shard_group.region || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
 	var/turf/pivot = get_turf(src)
 	var/obj/structure/region_gate/sea_crossing/gate = new(pivot)
 	gate.destination = id
