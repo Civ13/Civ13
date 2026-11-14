@@ -14,7 +14,7 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
 
 | File | What it is |
 | --- | --- |
-| `land.dmm` | the region map, two levels (underground z1, surface z2), map **A New Land** (`/obj/map_metadata/nomads/expedition`) |
+| `land.dmm` | the region map, the surface alone on level 1, map **A New Land** (`/obj/map_metadata/nomads/expedition`) |
 | `land.json` | the report: template, attempt, map hash, starts, supplies, timings and `slot_world` |
 | `land.heights.txt`, `land.flow.txt`, `land.flood.txt` | the land's hill levels, river currents and flood reaches (below) |
 | `bundle/` | the generator's seed manifest and a preview image; `--full-bundle` also keeps the typed IR and its sidecar (about 80 MB for a small land, 880 MB at a million tiles), which `verify` and `playable` read |
@@ -98,13 +98,39 @@ Measured in a cloud container, one run each:
 The host will be faster or slower; the expedition slots will measure the time
 on Val's host before a crew waits on it.
 
-A side may be 64 to 1280 tiles. A land's world holds both levels of its map,
-and the largest world measured on BYOND so far is about 1.04 million cells, so
-a template is refused when width x height x 2 is more than 1,050,000
-(`MEASURED_CELLS` in `tools/procedural_maps/land.py`): 724 x 724 at most. The
+A side may be 64 to 1280 tiles, and a template is refused when width x height
+is more than 480,000 tiles (`MEASURED_CELLS` in `tools/procedural_maps/land.py`):
+692 x 692 at most, which holds the largest massive land (690 x 690). The
 generator itself runs past that (a 1132 x 920 relief land takes about 40 s),
 but such a map is not a land a slot may open until a world that size has been
 measured.
+
+## One level, and its measurement
+
+A land's map is its surface alone. The generator's second level, solid rock
+under the whole land, was a boulder on every tile, and it is left out of the
+map: mountains stand on the surface as rock to mine, and the land's map sets
+`dig_down_underground`, so the first tunnel dug down makes a cave level where
+the world's level budget allows one ([level budget](new-z-budget.md): surface
+and cave together within 350,000 cells, so lands up to 175,000 tiles, every
+tiny and small land and a medium one of Gaia's size). Larger lands have no
+caves until a world with one is measured.
+
+The largest land, 690 x 690, measured in an isolated world in a cloud
+container (BYOND 516.1688, Linux, no players; the limit is 3,072 MB):
+
+| | Two levels (before) | One level |
+| --- | --- | --- |
+| Cells and boulders under the land | 952,200 and 476,100 | 476,100 and none |
+| Start to setup finished | about 2.5 min | about 70 s |
+| Memory after start | 1.3 GB | 0.7 GB |
+| Saving the world | 15 min, 3.4 GB, and it failed | under 3 min, 1.27 GB peak |
+| Reloading the save | not reached | about 4 min, 1.3 GB peak |
+
+No run logged a runtime error. The start times include the two start-up
+changes this measurement led to (the turf registry and start-up lighting,
+#5355 and #5360): before them the two-level land took over twelve minutes to
+start. Not measured: a land with players and buildings on it, and Val's host.
 
 ## Ore, rare finds and game
 

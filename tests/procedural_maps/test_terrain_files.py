@@ -107,7 +107,7 @@ class TerrainFileTests(unittest.TestCase):
                 self.assertEqual(first, (Path(tmp) / "two" / name).read_bytes(), name)
                 self.assertNotIn(b"\r", first)
             self.assertEqual(report["terrain"], again["terrain"])
-            self.assertEqual(2, report["terrain"]["z"])
+            self.assertEqual(land.LAND_Z, report["terrain"]["z"])
             self.assertGreater(report["terrain"]["flood_tiles"], 0)
 
 

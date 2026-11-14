@@ -83,8 +83,8 @@ class BuildLandTests(unittest.TestCase):
     def test_the_land_wears_its_biome(self):
         text = (Path(self.tmp.name) / "one" / "land.dmm").read_text(encoding="utf-8")
         skin = land.BIOME_SKINS["DESERT"]
-        _, layout, _ = parse_classic(text)
-        surface = [recipe.split(",") for (x, y, z), recipe in layout.items() if z == 2]
+        _, layout, _ = parse_classic(text, (land.LAND_Z,))
+        surface = [recipe.split(",") for (x, y, z), recipe in layout.items() if z == land.LAND_Z]
         self.assertTrue(surface)
         self.assertTrue(all(skin["area"] in atoms and land.SURFACE_AREA not in atoms for atoms in surface))
         self.assertGreater(self.report["skin"]["ground swapped"], 0)
