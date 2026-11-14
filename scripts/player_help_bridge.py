@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '7114eaf5581798fc1f8889fc655bb244e8431e42'
+WIKI_REVIEWED_REVISION = '78c76ce716c1d5ab2777a11bbdc060d0d053cf4e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('af81934c60bde5421a801ddf5fb2fa7c9415d559c1de0e41f9c3bc097b8da367', 'character skills traits languages'),
@@ -81,11 +81,11 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('4b8dc44d8a632be7989e46165c74bb6bf6ad7328ec3de1d8df64620bb7c3b2da', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('43dca72d262d9c1d8edaa819be8fbf8d023f22034727c46932a222b78bdc9074', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('6c6f8dcc1ce8c18e77823d4be411df8f4c63663f9e36c678d29557c10fcb23ec', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('42d61537bcddf488dfc0ea111482a32d7a1ece8e56ce6486ab5fa99ce81902ef', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('657c1c7ae6e2b7b425255ba7c9449206ff715e8ce422fa28a15700acce240752', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('e44b23def01e0120bc1c465e18bcc3d41452b1f5bdea26f00324d7aadac19c34', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('b498c1d49dd99afd1465489d71bb16bca59f108cc1ca71ba74bbe611465c3e77', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('2c86a3b73c4efdf01a21e2f17b18727c4d9066bcab5b47af8d3882e3f0291a59', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('04bed9fb3d409455d466928f071ddfc509ba49a9d7b450815595f0bc27c9670b', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('97506f64ac6d4213d3e5cf72e6d82e6c845d70aa752e0402657acb8caccfe269', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('70691e17262f75ee998bcddac0aea6ad6bf9fa994e10fecbdf06535e9a7b3397', 'new player beginner start first round basics'),
-    'Hotkeys.md': ('512e26c2ec469aec84c698fab9219787d5f08a61520b45e64a4bb1009c328832', 'hotkeys hotkey keys keyboard controls key press'),
+    'Hotkeys.md': ('f89455a4be687613cece646e9c59748cb92d3df90ad5b8517eea53672c7d7d9d', 'hotkeys hotkey keys keyboard controls key press'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('d02b7a67d0c47e32fbe37fec1425600a80e32e9daf08756f64c57d8e6b3cd4b4', 'merchant role supplies export trade colony'),

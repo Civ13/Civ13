@@ -107,5 +107,7 @@
   "/obj/structure/torpedo_tube",
   "/obj/item/naval_torpedo",
   "/obj/item/naval_torpedo/magnetic",
-  "/obj/structure/naval_mine/torpedo"
+  "/obj/structure/naval_mine/torpedo",
+  "/obj/structure/boathouse",
+  "/obj/effect/boathouse_pile"
 ]
