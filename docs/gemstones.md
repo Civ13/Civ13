@@ -105,6 +105,13 @@ grindstone does for steel. (Speeding wood crafting would need stack.dm, whose
 projection tests are pinned.) Jewel microscope lenses were left out:
 the game's microscope is a modern electron microscope.
 
+Synthetic ruby: using 4 emery while standing beside a lit furnace grows a
+synthetic ruby boule (Electricity, Verneuil 1902). Chisel and hammer on a
+boule gives 10 jewel bearings. A boule used on a lapping wheel with 2 diamond
+charges makes a ruby rod (Consumer Electronics), and a ruby rod fitted into
+field binoculars turns them into a laser rangefinder (ruby laser, 1960). The
+boule is not a gemstone, so it carries no gem trade value.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
