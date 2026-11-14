@@ -2574,7 +2574,23 @@ def group_status(group, only=None, view=region_view, platform=None):
     result = {'group': group['group'], 'regions': report}
     if group['transfers']:
         result['coordinator'] = coordinator_pid(group) is not None
+        # Land stages and readiness (docs/land-stages.md), read-only from the
+        # coordinator's database, for the launcher's region board.
+        for region_id, land in group_lands(group).items():
+            if region_id in report:
+                report[region_id]['land'] = land
     return result
+
+
+def group_lands(group):
+    """Each land's stage and readiness from the coordinator database, or {}."""
+    path = Path(group['root']) / 'coordinator.sqlite'
+    if not path.exists():
+        return {}
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage.coordinator import read_lands
+    return read_lands(str(path), group['mainland'])
 
 
 def parse_epoch(value):

@@ -12,6 +12,7 @@ var/global/list/land_stages = list() // region id -> list("stage", "paused", "by
 var/global/list/land_stage_pending = list() // admin changes the coordinator has not decided yet
 var/global/land_stages_checked = 0 // world.time of the last good read (0: never)
 var/global/land_stages_refreshing = FALSE
+var/global/list/land_suggestions_told = list() // region id -> the suggestion admins here were last told about
 
 /proc/land_stage_names()
 	return list("CLOSED", "FRONTIER", "COLONY", "OPEN")
@@ -41,7 +42,8 @@ var/global/land_stages_refreshing = FALSE
 		if(!shard_id_valid(id) || !islist(entry) || !((entry["stage"] in land_stage_names()) || entry["stage"] == "MAINLAND"))
 			continue
 		clean[id] = list("stage" = entry["stage"], "paused" = entry["paused"] ? TRUE : FALSE,
-			"by" = istext(entry["by"]) ? ckey(entry["by"]) : null, "at" = isnum(entry["at"]) ? entry["at"] : 0)
+			"by" = istext(entry["by"]) ? ckey(entry["by"]) : null, "at" = isnum(entry["at"]) ? entry["at"] : 0,
+			"readiness" = land_readiness_clean(entry["readiness"]))
 	var/list/waiting = list()
 	if(islist(result["pending"]))
 		for(var/list/request in result["pending"])
@@ -50,7 +52,53 @@ var/global/land_stages_refreshing = FALSE
 	land_stages = clean
 	land_stage_pending = waiting
 	land_stages_checked = world.time
+	land_suggestions_tell()
 	return TRUE
+
+// The coordinator's population numbers for one land, or null.
+/proc/land_readiness_clean(list/ready)
+	if(!islist(ready))
+		return null
+	var/list/clean = list()
+	for(var/key in list("homes", "players_peak", "living", "hours"))
+		clean[key] = isnum(ready[key]) ? max(0, round(ready[key])) : 0
+	clean["players_avg"] = isnum(ready["players_avg"]) ? max(0, ready["players_avg"]) : 0
+	clean["suggest"] = (ready["suggest"] in list("OPEN", "PAUSE", "RESUME")) ? ready["suggest"] : null
+	return clean
+
+/proc/land_suggestion_text(suggest)
+	switch(suggest)
+		if("OPEN") return "ready to settle: enough people live there and the mainland can spare them"
+		if("PAUSE") return "consider pausing new starts: the mainland is quiet or this land has outgrown it"
+		if("RESUME") return "ready to resume new starts"
+	return ""
+
+// Tells this world's admins once when a land's suggested change appears or
+// changes. Admins decide; nothing changes by itself.
+/proc/land_suggestions_tell()
+	for(var/id in land_stages)
+		var/list/entry = land_stages[id]
+		var/list/ready = entry["readiness"]
+		var/suggest = ready ? ready["suggest"] : null
+		if(land_suggestions_told[id] == suggest)
+			continue
+		land_suggestions_told[id] = suggest
+		if(!suggest)
+			continue
+		var/name = id == shard_group.region ? shard_group.name : (shard_group.peers[id] ? shard_group.peers[id]["name"] : id)
+		message_admins("Land Status: [html_encode(name)] is [land_suggestion_text(suggest)]. See Admin > Land Status.")
+
+// Reports this world's population to its transfer agent for the coordinator's
+// weekly numbers: players connected and living characters owned by an account.
+/proc/land_sample_post()
+	if(!shard_group.enabled || !transfer_bridge || !transfer_bridge.enabled())
+		return FALSE
+	var/living = 0
+	for(var/mob/living/human/H in human_mob_list)
+		if(H.persistence_owner_ckey && H.stat != DEAD && !QDELETED(H))
+			living++
+	var/list/answer = transfer_bridge.request("/land/sample", list("players" = length(clients), "living" = living))
+	return answer && answer["ok"]
 
 // A refresh when the copy is older than LAND_STAGE_REFRESH; called by the
 // region poll loop (shard_group.start_polling).
@@ -117,21 +165,32 @@ var/global/land_stages_refreshing = FALSE
 	return choices
 
 /proc/land_stage_admin_html()
-	var/list/lines = list("<table class='regions'><tr><th>Land</th><th>Stage</th><th>What it allows</th><th>Set by</th></tr>")
+	var/list/lines = list("<table class='regions'><tr><th>Land</th><th>Stage</th><th>What it allows</th><th>Homes</th><th>Players (7-day avg / peak)</th><th>Living</th><th>Set by</th></tr>")
 	var/list/choices = land_stage_choices()
-	lines += "<tr><td>[html_encode(shard_group.mainland == shard_group.region ? shard_group.name : (shard_group.peers[shard_group.mainland] ? shard_group.peers[shard_group.mainland]["name"] : shard_group.mainland))]</td><td>mainland</td><td>every new character starts here</td><td></td></tr>"
+	lines += "<tr><td>[html_encode(shard_group.mainland == shard_group.region ? shard_group.name : (shard_group.peers[shard_group.mainland] ? shard_group.peers[shard_group.mainland]["name"] : shard_group.mainland))]</td><td>mainland</td><td>every new character starts here</td>[land_readiness_cells(shard_group.mainland)]<td></td></tr>"
 	for(var/label in choices)
 		var/id = choices[label]
 		var/stage = land_stage(id)
 		var/list/entry = land_stages[id]
 		var/by = entry && entry["by"] ? html_encode(entry["by"]) : ""
-		lines += "<tr><td>[html_encode(label)]</td><td>[land_stage_text(stage, land_stage_paused(id))]</td><td>[land_stage_help(stage)]</td><td>[by]</td></tr>"
+		lines += "<tr><td>[html_encode(label)]</td><td>[land_stage_text(stage, land_stage_paused(id))]</td><td>[land_stage_help(stage)]</td>[land_readiness_cells(id)]<td>[by]</td></tr>"
+		var/list/ready = entry ? entry["readiness"] : null
+		if(ready && ready["suggest"])
+			lines += "<tr><td></td><td colspan='6' class='note'>Suggested: [land_suggestion_text(ready["suggest"])].</td></tr>"
 	lines += "</table>"
 	if(length(land_stage_pending))
 		lines += "<p class='note'>Waiting for the world directory: [length(land_stage_pending)] change(s).</p>"
 	if(!land_stages_checked)
 		lines += "<p class='note'>The stage list has not been read from the world directory yet.</p>"
 	return jointext(lines, "")
+
+/proc/land_readiness_cells(id)
+	var/list/entry = land_stages[id]
+	var/list/ready = entry ? entry["readiness"] : null
+	if(!ready)
+		return "<td>-</td><td>-</td><td>-</td>"
+	var/avg = ready["hours"] ? "[round(ready["players_avg"], 0.1)] / [ready["players_peak"]]" : "no data yet"
+	return "<td>[ready["homes"]]</td><td>[avg]</td><td>[ready["living"]]</td>"
 
 /datum/admins/proc/land_status()
 	set category = "Admin"
@@ -144,8 +203,8 @@ var/global/land_stages_refreshing = FALSE
 		to_chat(M, SPAN_WARNING("This server is not part of a region group, so it has no lands."))
 		return
 	land_stages_refresh()
-	var/datum/browser/popup = new(M, "land_status", "Land Status", 640, 360)
-	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}p.note{color:#c96}</style>")
+	var/datum/browser/popup = new(M, "land_status", "Land Status", 820, 380)
+	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}p.note,td.note{color:#c96}</style>")
 	popup.set_content(land_stage_admin_html())
 	popup.open(FALSE)
 	var/list/choices = land_stage_choices()

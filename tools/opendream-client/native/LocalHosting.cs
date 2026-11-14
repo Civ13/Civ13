@@ -522,7 +522,35 @@ public static class LocalHosting {
                 parts.Add(AwayText(away));
         }
         if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
+        if (LandText(entry) is { } land) parts.Add(land);
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
+    }
+
+    // shard_group.py status "land" (docs/land-stages.md): the land's settlement stage, how many accounts
+    // live there and any change the coordinator suggests. Null for the mainland and when there is none.
+    public static string? LandText(JsonElement entry) {
+        if (!entry.TryGetProperty("land", out var land) || land.ValueKind != JsonValueKind.Object) return null;
+        var stage = Str(land, "stage") switch {
+            "CLOSED" => "unexplored land",
+            "FRONTIER" => "frontier land",
+            "COLONY" => "colonised land",
+            "OPEN" => "settled land",
+            _ => null,
+        };
+        if (stage == null) return null;
+        if (land.TryGetProperty("paused", out var paused) && paused.ValueKind == JsonValueKind.True) stage += " (new starts paused)";
+        if (land.TryGetProperty("readiness", out var ready) && ready.ValueKind == JsonValueKind.Object) {
+            if (ready.TryGetProperty("homes", out var homes) && homes.ValueKind == JsonValueKind.Number && homes.TryGetInt32(out var count) && count > 0)
+                stage += count == 1 ? ", 1 home" : ", " + count + " homes";
+            var suggest = Str(ready, "suggest") switch {
+                "OPEN" => "ready to settle",
+                "PAUSE" => "consider pausing new starts",
+                "RESUME" => "ready to resume new starts",
+                _ => null,
+            };
+            if (suggest != null) stage += ", " + suggest;
+        }
+        return stage;
     }
 
     // shard_group.py region_view event_away (code/modules/persistence/region_event.dm), or null.

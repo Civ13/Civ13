@@ -15,6 +15,7 @@ import hashlib
 import secrets
 import json
 import sqlite3
+import time
 from tools.transfer_storage.train import validate as validate_train
 from tools.transfer_storage.train_lease import TrainLeaseQueue
 
@@ -198,6 +199,8 @@ class RegionStore(TrainLeaseQueue):
         # Land stages: this region's copy of the coordinator's stage list, and
         # admin changes waiting for the coordinator's next pass.
         db.execute("INSERT OR IGNORE INTO meta VALUES ('lands', '{}')")
+        # The world's latest population sample, read by the coordinator (land readiness).
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('land_sample', '')")
         db.execute('''CREATE TABLE IF NOT EXISTS land_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, region TEXT NOT NULL, stage TEXT NOT NULL,
             paused INTEGER NOT NULL, admin TEXT NOT NULL)''')
@@ -767,6 +770,7 @@ class RegionStore(TrainLeaseQueue):
                     'SELECT id, ckey, op, region, homes_epoch, home_rev FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
                 'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests(),
+                'land_sample': json.loads(self._meta('land_sample') or 'null'),
                 'land_requests': [dict(zip(('id', 'region', 'stage', 'paused', 'admin'), (i, r, st, bool(p), a)))
                                   for i, r, st, p, a in self.db.execute(
                                       'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')]}
@@ -833,6 +837,16 @@ class RegionStore(TrainLeaseQueue):
             cursor = self.db.execute('INSERT INTO land_request(region, stage, paused, admin) VALUES (?, ?, ?, ?)',
                                      (region, stage, 1 if paused else 0, admin))
         return {'id': cursor.lastrowid}
+
+    def land_sample(self, players, living):
+        """The world's population now: players connected and living characters
+        that belong to an account. The coordinator reads the latest one each pass."""
+        if type(players) is not int or type(living) is not int or not 0 <= players <= 1000 or not 0 <= living <= 10000:
+            raise TransferError('bad population sample')
+        with self._tx():
+            self._set_meta('land_sample', json.dumps({'players': players, 'living': living, 'at': int(time.time())},
+                                                     sort_keys=True))
+        return {}
 
     def lands(self):
         """Every land's stage as last sent by the coordinator, and the admin

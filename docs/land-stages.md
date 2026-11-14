@@ -27,6 +27,33 @@ A land can also be **paused**: it keeps its stage, but new starts there wait.
   stage; transit, event, practice and battle worlds never do.
 - A stage change never moves a home or a character.
 
+## Readiness numbers
+
+Each world posts its population to its agent about once a minute
+(`/land/sample`: players connected, living characters owned by an account).
+The coordinator adds each fresh sample (under 3 minutes old) to an hourly
+bucket per land (`land_hour`, kept 8 days) and reports, per land, over the
+last 7 days:
+
+- `homes`: accounts whose home is that land in the ledger;
+- `players_avg` / `players_peak`: average and peak players;
+- `living`: living characters at the latest sample;
+- `suggest`: a change for an admin to consider, never applied by itself.
+
+Suggestions need at least 24 hours of mainland numbers in the window. The
+thresholds are placeholders in `tools/transfer_storage/coordinator.py`:
+
+| Suggestion | When |
+| --- | --- |
+| `OPEN` | A frontier or colonised land has at least 10 homes, the mainland averages at least 20 players, and the land has no more living characters than the mainland. |
+| `PAUSE` | A settled land while the mainland averages under 15 players or the land has more living characters than the mainland. |
+| `RESUME` | A paused settled land once the `OPEN` population rules hold again. |
+
+Admins see the numbers and suggestions in **Admin > Land Status** and get one
+admin message when a land's suggestion appears or changes. The host tool's
+`status` adds each land's stage and numbers (`land`, read-only from the
+coordinator database), and the launcher's region board and rows show them.
+
 ## Setting a stage
 
 - In game: **Admin > Land Status** shows every land and lets an admin choose a

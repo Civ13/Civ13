@@ -86,6 +86,7 @@ def _routes(store, radio):
                                                  body.get('lands'), body.get('land_done')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
+        '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living')),
         '/land/set': lambda body: store.request_land(body['region'], body['stage'], body.get('paused') in (True, 1),
                                                      body['admin']),
     }

@@ -163,6 +163,27 @@ class FakeMachine:
                 self.up.discard(port)
 
 
+class GroupLandsTests(unittest.TestCase):
+    """The host tool reads land stages from the coordinator database, read-only."""
+
+    def test_group_lands_reads_the_coordinator_database(self):
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage.coordinator import Coordinator
+        with tempfile.TemporaryDirectory() as root:
+            group = {'root': root, 'mainland': 'gaia'}
+            self.assertEqual({}, shard_group.group_lands(group))
+            c = Coordinator(os.path.join(root, 'coordinator.sqlite'), 'g', 'gaia')
+            try:
+                for name in ('gaia', 'europe'):
+                    c.enroll(name, 'http://127.0.0.1:1', 'x' * 40)
+                self.assertTrue(c.set_land('europe', 'FRONTIER', False, 'val'))
+            finally:
+                c.close()
+            lands = shard_group.group_lands(group)
+            self.assertEqual(('MAINLAND', 'FRONTIER'), (lands['gaia']['stage'], lands['europe']['stage']))
+            self.assertEqual(0, lands['europe']['readiness']['homes'])
+
+
 class ShardGroupTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
