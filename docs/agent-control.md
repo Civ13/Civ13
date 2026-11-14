@@ -275,7 +275,7 @@ walking. Riding a mount moves at the mount's pace.
 `bite`), `face_lock` and `aim` (gun aim mode), any of them in one step; the
 character's `stance` reports them. `equip` takes an optional `slot` (`back`,
 `belt`, `head`, `suit`, `uniform`, `shoes`, `gloves`, `mask`, `eyes`,
-`shoulder`, `id`, `l_ear`, `r_ear`, `l_store`, `r_store`, `s_store`), as
+`shoulder`, `id`, `l_ear`, `r_ear`, `l_store`, `r_store`), as
 dragging the item onto that inventory slot does. A storage container next to
 the character lists its `contents` (refs and names, as opening it shows), and
 `click` reaches an item inside a container that is next to the character or

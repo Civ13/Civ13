@@ -43,7 +43,7 @@
 	if (!H)	return FALSE
 /*
 	if (!H.back || !istype(H.back, /obj/item/weapon/storage/backpack))
-		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand, slot_s_store )
+		var/list/slots = list( slot_belt, slot_r_store, slot_l_store, slot_r_hand, slot_l_hand )
 		for ( var/path in put_in_backpack )
 			if ( !slots.len ) break
 			var/obj/item/I = new path(H)

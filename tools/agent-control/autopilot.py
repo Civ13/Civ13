@@ -84,7 +84,7 @@ DRIVE_CONTROLS = ("forward", "reverse", "turn_left", "turn_right", "gear_up", "g
 PLAN_KEYS = ("soft", "blueprint", "at", "reach", "leather", "water")
 DIRS = ("north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest")
 INTENTS = ("help", "disarm", "grab", "harm")
-EQUIP_SLOTS = ("back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder")
+EQUIP_SLOTS = ("back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "shoulder")
 MAX_NEARBY = 24
 MAX_TERRAIN = 10
 MAX_PLAN = 3
@@ -234,7 +234,7 @@ How to play:
   (unconscious people cannot answer: just treat them). Never treat someone who is attacking you.
 - When a player talks to you, answer first with a short in-character "say", then carry on. Greet people you meet and cooperate.
 - Hold an item and {"do": "equip"} to wear it or put it on your belt or back; add "slot": back|belt|head|suit|uniform|shoes|
-  gloves|mask|eyes|shoulder|l_store|r_store|s_store to put it in that slot.
+  gloves|mask|eyes|shoulder|l_store|r_store to put it in that slot.
 - Stance: {"do": "stance", "move": run|walk|sneak|crawl, "defense": dodge|parry, "tactic": charge|aim|rush|defend,
   "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
   Run to travel, walk to save stamina, sneak or crawl to hide, parry with a weapon, dodge without one.

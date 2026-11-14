@@ -158,5 +158,24 @@ class PouchVisibility(unittest.TestCase):
         self.assertIn('if (!H.w_uniform', body(ITEMS, '/obj/item/proc/mob_can_equip'))
 
 
+    def test_belt_stays_on_without_clothes_and_dead_slots_are_gone(self):
+        unequip = body(HUMAN_INV, '/mob/living/human/u_equip')
+        uniform = unequip.split('else if (W == w_uniform)', 1)[1].split('else if', 1)[0]
+        self.assertIn('drop_from_inventory(wear_id)', uniform)
+        self.assertIn('drop_from_inventory(l_store)', uniform)
+        self.assertNotIn('belt', uniform.replace('// The belt is buckled', ''))
+        # A belt never needed clothes to put on, so it must not need them to stay on.
+        equip_rules = body(ITEMS, '/obj/item/proc/mob_can_equip')
+        self.assertNotIn('if (slot_belt)', equip_rules)
+        defines = (ROOT / 'code/predefines.dm').read_text(encoding='utf8')
+        for dead in ('slot_s_store', 'slot_legs', 'slot_l_arm', 'slot_r_arm'):
+            self.assertNotIn('#define ' + dead, defines)
+        # Slot numbers are saved in HUD layouts, so the live ones keep their values.
+        self.assertRegex(defines, r'#define slot_shoulder\s+22\b')
+        self.assertRegex(defines, r'#define slot_accessory\s+25\b')
+        equip = body(HUMAN_INV, '/mob/living/human/equip_to_slot')
+        self.assertEqual(equip.count('if (slot_shoulder)'), 1)
+        self.assertEqual(ITEMS.count('"[slot_shoulder]" = SLOT_SHOULDER'), 1)
+
 if __name__ == '__main__':
     unittest.main()

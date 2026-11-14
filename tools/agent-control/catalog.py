@@ -19,7 +19,7 @@ VALUE = {
 }
 CHARACTER = {"type": "string", "description": "Ref of a character from character_list or character_spawn."}
 WINDOW = {"type": "string", "description": "topic/close_window: a window name from character_observe windows"}
-SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "s_store", "shoulder"], "description": "equip: the slot to put the held item in"}
+SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear", "eyes", "gloves", "head", "shoes", "suit", "uniform", "l_store", "r_store", "shoulder"], "description": "equip: the slot to put the held item in"}
 LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
 LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
 DRIVE_CONTROL = {"type": "string", "enum": ["forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend"], "description": "drive: the driver's seat HUD button to press"}

@@ -342,7 +342,6 @@ var/list/global/slot_flags_enumeration = list(
 	"[slot_wear_id]" = SLOT_ID,
 	"[slot_eyes]" = SLOT_EYES,
 	"[slot_accessory]" = SLOT_ACCESSORY,
-	"[slot_shoulder]" = SLOT_SHOULDER,
 	)
 
 //the mob M is attempting to equip this item into the slot passed through as 'slot'. Return TRUE if it can do this and FALSE if it can't.
