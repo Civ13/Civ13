@@ -85,9 +85,12 @@ def _generate(config,traversal):
     iteration=points if traversal=="forward" else list(reversed(points))
     grid=[[None for _ in range(w)] for _ in range(h)]
     underground=[[None for _ in range(w)] for _ in range(h)]
+    # The reserve plane is the same solid rock everywhere and is never written to
+    # again, so every one of its cells is one shared record (half a large map's memory).
+    reserve=ground(terrain="ROCK",biome="CAVERN",soil="ROCK",blocked=True)
     for x,y in iteration:
         grid[y][x]=ground()
-        underground[y][x]=ground(terrain="ROCK",biome="CAVERN",soil="ROCK",blocked=True)
+        underground[y][x]=reserve
     def at(p):return grid[p[1]][p[0]]
     def wet(p,kind,body):
         c=at(p);c.update(terrain="WATER",water=kind,salinity="SALT" if kind=="SEA" else "FRESH",
@@ -305,11 +308,18 @@ def _generate(config,traversal):
     max_route=config["starts"]["max_route_tiles"]
     candidates={p for p in walk if water_distance.get(p,area)<=max_route and all(q in walk for q in neighbors(p,w,h))}
     starts=[];spacing=config["starts"]["min_spacing_tiles"]
+    # Each candidate's distance to its nearest start so far and its rank are kept
+    # between picks; the choice is the same as ranking every candidate afresh.
+    nearest={};rank={}
     for i in range(config["starts"]["count"]):
         if not candidates:raise Rejection("START_PACKING","could not place requested separated safe starts")
-        p=max(candidates,key=lambda p:(min((abs(p[0]-s[0])+abs(p[1]-s[1]) for s in starts),default=0),draw("start-rank",*p),p))
+        if not rank:rank={q:draw("start-rank",*q) for q in candidates}
+        p=max(candidates,key=lambda p:(nearest.get(p,0),rank[p],p))
         starts.append(p)
         candidates={q for q in candidates if abs(q[0]-p[0])+abs(q[1]-p[1])>=spacing}
+        for q in candidates:
+            d=abs(q[0]-p[0])+abs(q[1]-p[1])
+            if i==0 or d<nearest[q]:nearest[q]=d
         path=[p]
         while path[-1] not in banks:path.append(water_parent[path[-1]])
         reserved.update(path)

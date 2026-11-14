@@ -1,6 +1,7 @@
 /*****************************Shovel********************************/
 /obj/item/weapon/plough
 	name = "plough"
+	tool_material = "wood"
 	desc = "A simple wood plough. Use it on dirt to plough farming areas."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "plough"
@@ -25,6 +26,7 @@
 
 /obj/item/weapon/plough/iron
 	name = "iron plough"
+	tool_material = "iron"
 	desc = "A sturdy iron plough. Use it on dirt to plough the land."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "iplough"
@@ -407,6 +409,7 @@
 /obj/item/weapon/chisel
 	tool_flags = TOOL_CHISEL
 	name = "stone chisel"
+	tool_material = "stone"
 	desc = "A stone chisel, for carving stone walls."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chisel"
@@ -443,6 +446,7 @@
 
 /obj/item/weapon/chisel/metal
 	name = "iron chisel"
+	tool_material = "iron"
 	desc = "A iron chisel, for carving stone walls."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "chisel_metal"

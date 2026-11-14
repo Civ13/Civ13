@@ -181,7 +181,7 @@ var/late_wait_result = TRUE
 	for(var/id in field_experiments)
 		var/list/E = field_experiments[id]
 		var/datum/research_node/N = get_research_node(E[1])
-		var/practice = findtext(E[2], "craft:") == 1
+		var/practice = findtext(E[2], "craft:") == 1 || findtext(E[2], "deed:") == 1
 		if(!N || (practice && N.era_tier >= 5) || (!practice && !(E[2] in field_activities)) || E[3] < 1 || E[4] <= 0 || !length(E[5]))
 			formed = FALSE
 			world.log << "FAIL: experiment [id] is malformed"
@@ -373,11 +373,11 @@ var/late_wait_result = TRUE
 // Practice and gathering for early nodes (practice_work.dm).
 /proc/late_test_practice_work()
 	build_practice_experiments()
-	var/list/iron = node_field_experiments("cooperage")
-	late_check(iron.len == 1 && iron[1] == "practice_cooperage_basic_tools", "Cooperage is advanced by practising Basic Toolmaking")
-	var/list/E = field_experiments["practice_cooperage_basic_tools"]
-	var/datum/research_node/IN = get_research_node("cooperage")
-	late_check(E[2] == "craft:basic_tools" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
+	var/list/iron = node_field_experiments("workshops")
+	late_check(iron.len == 1 && iron[1] == "practice_workshops_bronze_working", "Workshops is advanced by practising Bronze Working")
+	var/list/E = field_experiments["practice_workshops_bronze_working"]
+	var/datum/research_node/IN = get_research_node("workshops")
+	late_check(E[2] == "craft:bronze_working" && E[3] == practice_items_needed(IN) && E[4] == 0.5, "the experiment asks for [E[3]] things for half the node")
 	var/list/concrete = node_field_experiments("reinforced_concrete")
 	late_check(concrete.len == 2 && field_experiments[concrete[1]][4] == 0.25, "two prerequisites split the practice share")
 	late_check(!node_field_experiments("power_tools").len, "late nodes keep only their own field work")
@@ -397,16 +397,62 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	late_check(note_field_work(smith, "forage", 3) && smith.field_work_amount("forage") == 3, "foraging is counted")
 	// Credited at a bench once enough has been made.
-	note_field_work(smith, "craft:basic_tools", 50)
+	note_field_work(smith, "craft:bronze_working", 50)
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,3,1))
 	bench.tier = 8
 	var/obj/item/weapon/book/notes = new(bench)
-	bench.assigned_node = "cooperage"
-	var/list/rows = bench.field_work_rows(smith, "cooperage")
+	bench.assigned_node = "workshops"
+	var/list/rows = bench.field_work_rows(smith, "workshops")
 	late_check(rows.len == 1 && rows[1]["percent"] == 50 && rows[1]["have"] == E[3], "the bench lists the practice and the smith's own count")
 	var/expected = round(IN.cost_ticks * 0.5)
-	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
+	late_check(bench.credit_field_work() && notes.research_ticks("workshops") == expected && !bench.credit_field_work(), "the practice is written into the book once ([expected] of [IN.cost_ticks] points)")
 	qdel(bench)
+// Hand-written deeds for the first ages (practice_work.dm).
+/proc/late_test_subject_deeds()
+	build_practice_experiments()
+	var/sound = TRUE
+	for(var/node_id in subject_deeds)
+		var/datum/research_node/N = get_research_node(node_id)
+		var/total = 0
+		if(!N || N.era_tier > 1 || !N.prereqs.len)
+			sound = FALSE
+			world.log << "bad deed subject [node_id]"
+			continue
+		for(var/list/D in subject_deeds[node_id])
+			total += D[4]
+			for(var/path in D[2])
+				// Every deed must be something the groundwork teaches, or anyone can make.
+				var/req = recipe_node_requirements[path]
+				if(!ispath(text2path(path)) || (req && !(req in N.prereqs)))
+					sound = FALSE
+					world.log << "bad deed path [path] for [node_id] (taught by [req])"
+		if(abs(total - 0.5) > 0.001)
+			sound = FALSE
+			world.log << "deeds of [node_id] add up to [total]"
+		for(var/id in node_field_experiments(node_id))
+			if(findtext(id, "practice_") == 1)
+				sound = FALSE
+	late_check(sound && subject_deeds.len == 10, "every subject of the first two ages has deeds its groundwork teaches, worth half the chapter, and no counter")
+	var/list/coop = node_field_experiments("cooperage")
+	late_check(coop.len == 3 && ("deed_cooperage_handles" in coop), "Cooperage asks for three deeds")
+	var/mob/living/human/late_fixture/cooper = new(locate(4,6,1))
+	cooper.name = "Hild"
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle") && cooper.field_work_amount("deed:cooperage:handles") == 1, "making a handle counts towards its deed")
+	late_check(note_craft_practice(cooper, "/obj/item/weapon/material/handle/subtype_for_test") && cooper.field_work_amount("deed:cooperage:handles") == 2 && !note_deed_work(cooper, "/obj/item/weapon/material/handlebar"), "a kind of handle counts too, a lookalike name does not")
+	note_craft_practice(cooper, "/obj/item/weapon/material/handle")
+	late_check(cooper.field_work_amount("deed:cooperage:handles") == 2, "counting stops at what the deed asks")
+	note_craft_practice(cooper, "/obj/structure/furnace/kiln")
+	late_check(cooper.field_work_amount("deed:early_cells:kiln") == 1 && cooper.field_work_amount("deed:bronze_weapons:kiln") == 1, "one kiln serves both subjects that ask for it")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(4,7,1))
+	bench.tier = 8
+	var/obj/item/weapon/book/notes = new(bench)
+	bench.assigned_node = "cooperage"
+	var/datum/research_node/CN = get_research_node("cooperage")
+	var/list/rows = bench.field_work_rows(cooper, "cooperage")
+	late_check(rows.len == 3 && rows[1]["label"] == "Make 2 tool handles" && rows[1]["have"] == 2, "the bench lists the deeds by name")
+	late_check(bench.credit_field_work() && notes.research_ticks("cooperage") == round(CN.cost_ticks * 0.2) && !bench.credit_field_work(), "a finished deed is written into the book once")
+	qdel(bench)
+	cooper.loc = locate(1,1,1)
 // A scholar with the given levels who knows a subject's groundwork.
 /mob/living/human/late_fixture/scholar/research_tool_rate()
 	return 1
@@ -828,6 +874,49 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
 	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
+/proc/late_test_naturalist_finds()
+	var/datum/research_node/N = get_research_node("basic_agriculture")
+	var/mob/living/human/late_fixture/scholar/nat = new(locate(2,7,1))
+	nat.name = "Linne"
+	nat.real_name = "Linne"
+	nat.prepare("basic_agriculture", 0)
+	var/mob/living/simple_animal/rabbit/rabbit = new(locate(2,8,1))
+	var/obj/item/stack/ore/copper/ore = new(locate(3,7,1))
+	var/mob/living/simple_animal/civilian/person = new(locate(1,7,1))
+	late_check(find_discipline(rabbit) == "agriculture" && find_discipline(ore) == "natural_science" && find_discipline(new /obj/structure/wild/flowers(locate(2,6,1))) == "medicine", "animals, ores and wild plants are finds of their own disciplines")
+	late_check(isnull(find_discipline(person)) && isnull(find_discipline(nat)) && isnull(find_discipline(new /obj/structure/wild/tree_stump(locate(3,8,1)))), "people and stumps are no finds")
+	var/list/targets = find_targets(nat)
+	late_check(targets.len >= 3, "the scholar sees three things to record ([targets.len])")
+	var/obj/item/weapon/book/B = new(nat)
+	var/kind = "[rabbit.type]"
+	late_check(node_discipline("basic_agriculture") == "agriculture" && ("basic_agriculture" in find_subjects(nat, "agriculture", B, kind)), "a subject of the discipline whose groundwork is known can take the find")
+	var/level = nat.scholar_level("agriculture")
+	var/points = commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture")
+	late_check(points == max(1, round(N.cost_ticks * 0.05)) && B.research_ticks("basic_agriculture") == points, "a find writes a twentieth of the chapter ([points])")
+	late_check(nat.scholar_level("agriculture") > level, "and teaches the one who made it")
+	late_check(B.has_find(kind) && !commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture") && !B.find_room("weaving", kind), "a book takes each kind of find once")
+	late_check(!commit_find(nat, B, "[ore.type]", "natural_science", "copper ore", "basic_agriculture"), "a find cannot go to a subject of another discipline")
+	// Finds fill at most three tenths of a chapter.
+	var/total = points
+	for(var/i = 1 to 8)
+		total += B.record_find("basic_agriculture", "test_kind_[i]")
+	late_check(total == round(N.cost_ticks * 0.3) && B.find_points("basic_agriculture") == total && !B.find_room("basic_agriculture", "one_more"), "finds stop at three tenths of the chapter ([total] of [N.cost_ticks])")
+	// A sheet of notes goes to a bench working on the discipline.
+	var/obj/item/weapon/paper/P = new(nat)
+	late_check(commit_find(nat, P, kind, "agriculture", "rabbit") == 1 && P.find_kind == kind && P.find_discipline == "agriculture" && !find_paper_ok(P), "a sheet takes one record")
+	late_check(!field_study_carrier_ok(P, "basic_agriculture", "x") && !demonstration_carrier_ok(P, "steam_power"), "and is then no use for other notes")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,7,1))
+	var/obj/item/weapon/book/fresh = new(bench)
+	bench.assigned_node = "basic_agriculture"
+	nat.put_in_hands(P)
+	late_check(bench.take_find_notes(P, nat) && fresh.has_find(kind) && fresh.research_ticks("basic_agriculture") == points, "notes used on the bench are written into its book")
+	// Double on a land reached by expedition.
+	var/obj/item/weapon/book/far = new(nat)
+	expedition_land_info = list("biome" = "temperate", "land_type" = "plain", "size" = "small")
+	late_check(find_double_here() && commit_find(nat, far, kind, "agriculture", "rabbit", "basic_agriculture") == max(1, round(N.cost_ticks * 0.1)), "a find on an expedition land is worth double")
+	expedition_land_info = list()
+	late_check(!find_double_here(), "and the usual amount at home")
+	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
 /proc/late_test_compare_notes()
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
 	bench.tier = 8
@@ -921,6 +1010,8 @@ var/late_wait_result = TRUE
 		late_test_trial_and_error()
 		late_test_trade_learning()
 		late_test_compare_notes()
+		late_test_naturalist_finds()
+		late_test_subject_deeds()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

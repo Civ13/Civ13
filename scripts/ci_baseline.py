@@ -415,7 +415,8 @@ SUITES = {
                          'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
-        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm',
+        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm',
+                         'code/modules/1713/road_tamping.dm', 'code/modules/1713/barriers/sandbag.dm',
                          'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
                          'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
                          'code/processes/weather.dm', 'code/modules/persistence/durable_contract.dm',
@@ -465,6 +466,15 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
+        'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
+            'code/modules/visibility/los_terrain.dm',
+            'code/modules/visibility/los_context.dm',
+            'code/_onclick/other_mobs.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/objects/structures/tree_climbing.dm',
+            'code/modules/projectiles/projectile.dm',
+            'code/game/mob/living/carbon/human/human.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -852,6 +862,12 @@ SUITES = {
         'paths': ('tests/material_roles/', 'code/modules/materials/material_properties.dm',
                   'code/modules/materials/part_roles.dm', 'code/__defines/material_roles.dm'),
         'shared_paths': ('code/modules/materials/materials.dm',)},
+    'tool_material_speeds': {'files': ('tests/tool_material_speeds/test_tool_material_speeds.py',),
+        'paths': ('tests/tool_material_speeds/', 'code/modules/materials/tool_speeds.dm'),
+        'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
+                         'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
+                         'code/game/objects/items/weapons/material/material_weapons.dm',
+                         'code/game/objects/items/weapons/material/misc.dm')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -862,6 +878,10 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
+        'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
+            'code/game/objects/items/weapons/material/material_weapons.dm',
+            'code/game/objects/items/weapons/shields.dm', 'code/game/objects/items/clothing/clothing.dm')},
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
@@ -1271,7 +1291,7 @@ SUITES = {
     # Razor grooming guard and hygiene-gated razor recipes; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py',),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
-            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/misc.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},
@@ -1804,6 +1824,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
+        'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
     'sawmill': {'files': ('tests/sawmill/test_contract.py',

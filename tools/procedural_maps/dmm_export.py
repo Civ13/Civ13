@@ -8,7 +8,7 @@ import json
 import re
 from pathlib import Path
 from .source_audit import parse_classic
-from .validator import validate,canonical_hash
+from .validator import validate,canonical_hash,remembered
 from .repo_source import read_pinned,read_source
 
 HISTORICAL_COMMIT="067478b82c7ad9f1b83759a221e6f22080ba865a"
@@ -86,6 +86,13 @@ def select_catalog(catalog_root=None):
 
 
 def project(doc):
+    entry=remembered(doc)
+    if entry is None:return _project(doc)
+    if 'layout' not in entry[3]:entry[3]['layout']=_project(doc)
+    return dict(entry[3]['layout'])
+
+
+def _project(doc):
     errors=validate(doc)
     if errors:raise ValueError("IR_REJECTED: "+json.dumps(errors))
     if doc["profile"] not in {"SURFACE","OCEANIC","UNDERGROUND_CAVERN"} or set(doc["layers"])!={"SURFACE","UNDERGROUND"}:

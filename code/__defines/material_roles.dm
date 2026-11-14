@@ -14,6 +14,7 @@
 #define SHAPE_SEWN     (1<<7) // cut and sewn: leather, cloth
 
 #define ROLE_EDGE      "edge"      // knife, axe, saw, chisel, pick
+#define ROLE_WORK_HEAD "work_head" // pick, axe or shovel head: driven hard into things
 #define ROLE_STRIKER   "striker"   // hammer, mallet
 #define ROLE_HANDLE    "handle"    // handle, lever
 #define ROLE_GEAR      "gear"

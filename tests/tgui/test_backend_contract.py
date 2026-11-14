@@ -160,11 +160,11 @@ class BackendContract(unittest.TestCase):
         branch = re.search(r'if \("crafting_window\.tmpl"\)\s+return list\(([^\n]+)\)', DM)
         self.assertIsNotNone(branch, 'Crafting window buttons need a transport allowlist')
         allowed = set(re.findall(r'"([^"\n]+)"', branch.group(1)))
-        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source'})
-        self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity'})
+        self.assertEqual(allowed, {'make', 'makeable_only', 'images', 'atlas', 'pin', 'source', 'detail'})
+        self.assertEqual(set(re.findall(r'href_list\["([^"\n]+)"\]', topic)), allowed | {'quantity', 'options'})
         self.assertEqual(set(re.findall(r"ui\.act\('([^'\n]+)'", frontend)), allowed)
         transport = DM.split('/datum/nanoui/tgui/Topic', 1)[1]
-        self.assertRegex(transport, r'if \("make"\)\s+keys \+= "quantity"')
+        self.assertRegex(transport, r'if \("make"\)\s+keys \+= list\("quantity", "options"\)')
 
     def test_crafting_window_requests_keep_server_admission(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
@@ -174,8 +174,8 @@ class BackendContract(unittest.TestCase):
         # the batch limit and the busy lock before the unchanged craft proc.
         self.assertLess(topic.index('!still_valid(H) || H.stat || H.restrained()'), topic.index('href_list["makeable_only"]'))
         for earlier, later in (('working || !H.can_build_recipe', 'find_recipe('), ('find_recipe(', 'batch_limit(R)'),
-                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H)'),
-                               ('S.produce_recipe(R, quantity, H)', 'H.can_build_recipe = TRUE')):
+                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H, options)'),
+                               ('S.produce_recipe(R, quantity, H, options)', 'H.can_build_recipe = TRUE')):
             self.assertLess(make.index(earlier), make.index(later), (earlier, later))
         valid = source.split('/datum/crafting_window/proc/still_valid', 1)[1].split('/datum/topic_state', 1)[0]
         self.assertIn('source.loc == H && H.get_active_hand() == source', valid)
@@ -249,6 +249,62 @@ class BackendContract(unittest.TestCase):
             self.assertLess(craft.index(guard), craft.index('crafting_window_from_atlas(viewer, product)'))
         atlas = (ROOT / 'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
         self.assertIn("ui.act('atlas_craft', { atlas_craft: craftable })", atlas)
+
+    def test_crafting_window_details_read_only_and_choices_stay_declared(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        detail = source.split('/datum/crafting_window/proc/detail_for(id)', 1)[1].split('/datum/crafting_window/proc/given_options', 1)[0]
+        # Looking closely uses the shared read-only hooks and names a row the same way a craft does.
+        self.assertLess(detail.index('find_recipe(id)'), detail.index('craft_recipe_requirements(viewer, R)'))
+        self.assertIn('craft_product_for(R)', detail)
+        for action in ('player_input', 'WWinput', 'craft_product_options', 'craft_product_answer'):
+            self.assertNotIn(action, source)
+        given = source.split('/datum/crafting_window/proc/given_options(datum/stack_recipe/R, raw)', 1)[1].split('\n/', 1)[0]
+        # Only fields the product declares, bounded text only; the craft code validates each answer.
+        self.assertLess(given.index('length(raw) > 4096'), given.index('json_decode(raw)'))
+        self.assertIn('for (var/list/prompt in P.prompts)', given)
+        self.assertIn('istext(value) && length(value) <= 1024', given)
+        self.assertNotIn('for (var/key in sent)', given)
+        products = (ROOT / 'code/game/objects/items/stacks/craft_products.dm').read_text()
+        answer = products.split('/proc/craft_product_answer(', 1)[1].split('\n/proc/', 1)[0]
+        for check in ('if (!(answer in companies))', 'hex.Find(answer)', 'sanitize(copytext('):
+            self.assertIn(check, answer)
+        topic = source.split('/datum/crafting_window/Topic', 1)[1]
+        look = topic.split('if (href_list["detail"])', 1)[1].split('if (href_list["make"])', 1)[0]
+        self.assertNotIn('refresh()', look)
+        self.assertIn('push_cached()', look)
+
+    def test_anvil_window_routes_crafts_back_through_the_anvil(self):
+        window = (ROOT / 'code/game/objects/structures/blacksmithing/anvil_window.dm').read_text()
+        smith = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
+        topic = window.split('/datum/crafting_window/anvil/Topic(', 1)[1].split('/obj/structure/anvil/proc/anvil_window_shown', 1)[0]
+        make = topic.split('if (href_list["make"])', 1)[1]
+        # A request names a row offered right now, is refused mid-craft, and is
+        # worked by attackby() so the anvil's own admission checks run again.
+        self.assertLess(make.index('working || anvil.in_use'), make.index('offered_name(href_list["make"])'))
+        self.assertLess(make.index('offered_name(href_list["make"])'), make.index('A.attackby(S, H)'))
+        self.assertLess(make.index('pending = wanted'), make.index('A.attackby(S, H)'))
+        self.assertNotIn('forge_stack_recipe', topic)
+        self.assertNotIn('amount -=', window)
+        self.assertNotIn('new ', topic)
+        shown = window.split('/obj/structure/anvil/proc/anvil_window_shown', 1)[1]
+        picked = shown.split('if (!H.client', 1)[0]
+        # The pending row is consumed once and checked against the offered rows again.
+        self.assertLess(picked.index('W.pending = null'), picked.index('wanted in stack_offers(P, H)'))
+        self.assertLess(picked.index('wanted in stack_offers(P, H)'), picked.index('forge_stack_recipe(P, H, H, R[2], metal[1], metal[2], "[wanted] - ")'))
+        self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
+        # The window hook sits after the anvil's admission prefix and material check.
+        attack = smith.split('/obj/structure/anvil/attackby(', 1)[1]
+        self.assertLess(attack.index("You can't use this material on this anvil."), attack.index('else if (anvil_window_shown(P, H))'))
+        self.assertLess(attack.index('else if (anvil_window_shown(P, H))'), attack.index('/////////IRON//////////'))
+        # One category table serves the menus and the window.
+        self.assertEqual(smith.count('var/list/optlist = stack_categories(P, H)'), 4)
+        self.assertIn('(R[2] in kinds) && map.ordinal_age >= R[3] && recipe_age_allowed(R[4]) && R[metal[1]] > 0', window)
+        valid = window.split('/datum/crafting_window/anvil/still_valid(', 1)[1].split('/datum/crafting_window/anvil/load_recipes', 1)[0]
+        self.assertIn('source.loc == H && H.get_active_hand() == source && isturf(H.loc) && in_range(anvil, H)', valid)
+        base = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        fallback = base.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
+        self.assertLess(fallback.index('crafting_window_classic = TRUE'), fallback.index('A.attackby(S, H)'))
+        self.assertIn('W.type != /datum/crafting_window', base)
 
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()

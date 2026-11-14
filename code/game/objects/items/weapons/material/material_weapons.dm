@@ -77,6 +77,7 @@
 		if (applies_material_colour)
 			color = material.icon_colour
 		update_force()
+		apply_tool_material_speed()
 
 /obj/item/weapon/material/Destroy()
 	processing_objects -= src
@@ -87,13 +88,17 @@
 	if (!unbreakable)
 		if (material.is_brittle())
 			health = FALSE
+			check_health()
 		else if (!prob(material.hardness))
-			health -= plating_wear(1)
-		check_health()
+			apply_wear(1, WEAR_BLOW)
+		else
+			check_health()
 
-/obj/item/weapon/material/proc/check_health(var/consumed)
+/obj/item/weapon/material/check_health(consumed)
 	if (health<=0 || maxhealth <=0)
 		shatter(consumed)
+		return TRUE
+	return FALSE
 
 /obj/item/weapon/material/proc/shatter(var/consumed)
 	var/turf/T = get_turf(src)
@@ -125,10 +130,11 @@
 			H.adaptStat("strength", 1)
 		playsound(user.loc, pick('sound/weapons/blade_parry1.ogg', 'sound/weapons/blade_parry2.ogg', 'sound/weapons/blade_parry3.ogg'), 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
-			health -= plating_wear(5)
+			apply_wear(5, WEAR_BLOW)
 		else
-			health -= plating_wear(0.5)
-		check_health()
+			apply_wear(0.5, WEAR_BLOW)
+		if(QDELETED(src))
+			return 1
 		if(prob(15))
 			user.visible_message("<font color='#E55300'><big>\The [src] flies out of \the [user]'s hand!</big></font>")
 			user.drop_from_inventory(src)
@@ -180,12 +186,13 @@
 	maxhealth = max(1, round(maxhealth * handle_capacity))
 	health = maxhealth * min(tool_head_condition, tool_handle_condition)
 	var/handle_speed = max(0.75, min(1.25, wood.weight / max(1, HANDLE.material.weight)))
+	// The head sets the family speed (tool_speeds.dm); the handle scales it.
 	if (istype(src, /obj/item/weapon/material/pickaxe))
 		var/obj/item/weapon/material/pickaxe/P = src
-		var/material/iron = get_material_by_name("iron")
-		var/head_speed = max(0.5, min(1.5, head_part.material.hardness / iron.hardness))
-		P.usespeed = max(1, min(3, initial(P.usespeed) * head_speed * handle_speed))
+		var/head_speed = tool_material_speed(/obj/item/weapon/material/pickaxe, head_part.material.name) || initial(P.usespeed)
+		P.usespeed = max(1, min(3, head_speed * handle_speed))
 	else if (istype(src, /obj/item/weapon/material/shovel))
 		var/obj/item/weapon/material/shovel/S = src
-		S.usespeed = initial(S.usespeed) * handle_speed
+		var/head_speed = tool_material_speed(/obj/item/weapon/material/shovel, head_part.material.name) || initial(S.usespeed)
+		S.usespeed = head_speed * handle_speed
 

@@ -159,6 +159,7 @@
 		return FALSE
 	terrain_grade = clamp(round(terrain_grade), -TERRAIN_GRADE_LIMIT, TERRAIN_GRADE_LIMIT)
 	H.set_level(x, y, z, H.base_at(x, y, z) + terrain_grade)
+	flood_ground_changed(src) // Floodwater follows the new ground (flood_ground.dm).
 	if (terrain_shading_applied)
 		for (var/turf/near in block(locate(max(1, x - 3), max(1, y - 3), z), locate(min(world.maxx, x + 3), min(world.maxy, y + 3), z)))
 			near.terrain_shade_refresh()

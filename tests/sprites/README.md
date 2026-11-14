@@ -117,3 +117,5 @@ gameplay nor browser visual acceptance was established. Cleanup returned through
 the runner's `finally` unlink path, and the second run's generated-file preflight
 confirmed the first run's files were absent; no separate post-negative filesystem
 listing was retained. These limits are not waived by a green workflow.
+
+`create_clay_lime_fire.py` owns `icons/obj/workshop_machines.dmi`: the potter's wheel, bellows, brick mould bench, lime kiln and quicklime. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass, stone, snow and night.

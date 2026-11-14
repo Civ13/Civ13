@@ -58,6 +58,12 @@
 	performance_terms = list("firmness" = 0.5)
 	lifetime_terms = list("toughness" = 0.5, "wear" = 0.5)
 
+/datum/part_role/work_head
+	id = ROLE_WORK_HEAD
+	name = "working head"
+	performance_terms = list("firmness" = 0.5, "toughness" = 0.5)
+	lifetime_terms = list("toughness" = 0.5, "wear" = 0.5)
+
 /datum/part_role/striker
 	id = ROLE_STRIKER
 	name = "striking head"

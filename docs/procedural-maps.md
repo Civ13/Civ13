@@ -261,7 +261,7 @@ port spans; `preset` recomputes those for the selected dimensions.
 | Group | Supported controls and units |
 | --- | --- |
 | Identity | Schema, preset/profile and ASCII seed of 1..128 characters. Exact config is saved; no hidden wall-clock seed. |
-| Dimensions | Width/height 32..512. Two equal planes: `SURFACE: 2`, `UNDERGROUND: 1`. Limits are provisional offline caps, not measured safe native host ranges. Start with 64 x 80. |
+| Dimensions | Width/height 32..1280. Two equal planes: `SURFACE: 2`, `UNDERGROUND: 1`. This is the offline tool's cap, not what a world can hold: an expedition land is also held to the measured cell budget ([expedition lands](expedition-lands.md)). A 1132 x 920 map generates in about a minute and a half and about 2 GB of Python memory. Start with 64 x 80. |
 | `biome_mix_pct` | Land-only percentages summing to 100. Current SURFACE backend supports contiguous subsets of lush -> temperate -> steppe -> arid -> desert. |
 | `climate` | Moisture 0..100 and temperature -50..50 C ranges. Lush/desert envelopes and permitted transitions remain mandatory. |
 | `water` | Whole-map coverage/sea/swamp/lake-area percentage intervals; river-network/lake counts; interior raster-brush width 1..16. |

@@ -34,9 +34,10 @@ def _generate(config,traversal):
     points=[(x,y) for y in range(h) for x in range(w)];all_points=set(points)
     iteration=points if traversal=='forward' else list(reversed(points))
     grid=[[None]*w for _ in range(h)];underground=[[None]*w for _ in range(h)]
+    reserve=ground(terrain='ROCK',biome='CAVERN',soil='ROCK',blocked=True)  # one shared record, never written again
     for x,y in iteration:
         grid[y][x]=ground(terrain='WATER',water='SEA',salinity='SALT',body='ocean',depth_cm=200,soil='SILT',biome='COAST')
-        underground[y][x]=ground(terrain='ROCK',biome='CAVERN',soil='ROCK',blocked=True)
+        underground[y][x]=reserve
     def at(p):return grid[p[1]][p[0]]
     layout=config['ocean_layout'];water=config['water']
     count=choose('island-count',layout['island_count']);sea_pct=choose('sea-coverage',water['sea_pct'])

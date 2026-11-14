@@ -2,7 +2,7 @@
 Acceptance here is configuration consistency only, never runtime/resource admission.
 """
 from copy import deepcopy
-from .validator import canonical_hash
+from .validator import canonical_hash,MAX_SIDE
 
 CONFIG_VERSION="civ13-generation-config/1"
 PORT_CONFIG_VERSION="civ13-generation-config/2"
@@ -55,7 +55,7 @@ def _validate_v1(d):
         require(d["preset"] in {expected,"CUSTOM"},"preset/profile mismatch")
         require(type(d["seed"]) is str and d["seed"].isascii() and 1<=len(d["seed"])<=128,"ASCII seed")
         exact(d["dimensions"],{"width","height","layers"},"dimensions")
-        require(all(integer(d["dimensions"][k],32,512) for k in ["width","height"]),"dimensions 32..512")
+        require(all(integer(d["dimensions"][k],32,MAX_SIDE) for k in ["width","height"]),"dimensions 32..%d"%MAX_SIDE)
         require(d["dimensions"]["layers"]=={"SURFACE":2,"UNDERGROUND":1} and
                 all(type(v) is int for v in d["dimensions"]["layers"].values()),"classic two-layer mapping")
         mix=d["biome_mix_pct"]
