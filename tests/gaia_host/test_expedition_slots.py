@@ -132,6 +132,107 @@ class ExpeditionSlotTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'missing'):
             shard_group.place_map(self.group, self.region, self.slot)
 
+    def test_a_new_land_forgets_the_old_build_so_the_same_revision_compiles_again(self):
+        for path in (self.host.build_file(), self.host.staged_file):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('{"revision": "%s"}' % ('a' * 40))
+        self.give()
+        self.assertFalse(self.host.build_file().exists())
+        self.assertFalse(self.host.staged_file.exists())
+        self.host.build_file().write_text('{}')
+        slots.archive(self.group, self.host, 'far1')
+        self.assertFalse(self.host.build_file().exists())
+
+    def want(self, key='3,4'):
+        slots.write_wish(self.group, slots.WANTED, 'far1', {'region': 'far1', 'key': key, 'template': TEMPLATE, 'voyage': 'gaia-1-2'})
+
+    def serve(self, now=1000):
+        launched = []
+        done = slots.serve(self.group, [(self.region, self.host)], launched.append, now=now)
+        return done, launched
+
+    def test_a_wanted_land_is_opened_once_by_a_worker(self):
+        self.assertEqual(({}, []), self.serve())
+        self.want()
+        done, launched = self.serve()
+        self.assertEqual((['far1'], {'far1': {'opening': '3,4'}}), (launched, done))
+        self.assertTrue(slots.opening(self.group, 'far1', __import__('time').time()))
+        # The worker is still running: no second one.
+        self.assertEqual([], self.serve()[1])
+        update = mock.Mock(return_value={'accepted': {'far1': {'accepted': True}}, 'skipped': {}})
+        answer = slots.open_land(self.group, self.host, 'far1', update, build=fake_build)
+        self.assertEqual('building', answer['phase'])
+        update.assert_called_once_with(self.group, 'far1')
+        record = slots.read_slot(self.group, 'far1')
+        self.assertEqual(('LAND', '3,4', 'building', 'gaia-1-2'), (record['state'], record['key'], record['phase'], record['voyage']))
+        self.assertIsNone(slots.read_wish(self.group, slots.WANTED, 'far1'))
+        self.assertFalse(slots.opening(self.group, 'far1', __import__('time').time()))
+        self.assertEqual('building', slots.status(self.group)['far1']['phase'])
+
+    def test_a_free_slot_running_its_placeholder_is_stopped_first(self):
+        self.want()
+        self.machine.up.add(1721)
+        with mock.patch.object(self.host, 'request', return_value={'accepted': True}) as request:
+            done, launched = self.serve()
+        request.assert_called_once_with('stop')
+        self.assertEqual([], launched)
+
+    def test_a_land_that_cannot_be_built_is_given_up_and_the_coordinator_told(self):
+        self.want()
+        update = mock.Mock(return_value={'accepted': {}, 'skipped': {'far1': 'busy: start'}})
+        answer = slots.open_land(self.group, self.host, 'far1', update, build=fake_build)
+        self.assertIn('busy: start', answer['failed'])
+        self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
+        failed = slots.read_wish(self.group, slots.FAILED, 'far1')
+        self.assertEqual('3,4', failed['key'])
+        self.assertIsNone(slots.read_wish(self.group, slots.WANTED, 'far1'))
+        # Nothing wanted: the worker refuses and says so.
+        self.assertIn('no land is wanted', slots.open_land(self.group, self.host, 'far1', update)['failed'])
+
+    def test_a_built_land_is_started_and_a_failed_build_freed(self):
+        self.want()
+        slots.open_land(self.group, self.host, 'far1', mock.Mock(return_value={'skipped': {}}), build=fake_build)
+        # Still building: nothing happens.
+        with mock.patch.object(self.host, 'built_revision', return_value=None):
+            self.assertEqual({}, self.serve()[0])
+        with mock.patch.object(self.host, 'built_revision', return_value='a' * 40), \
+                mock.patch.object(self.host, 'request', return_value={'accepted': True}) as request:
+            done, _ = self.serve()
+        request.assert_called_once_with('start')
+        self.assertEqual({'far1': {'started': '3,4'}}, done)
+        self.assertEqual('started', slots.read_slot(self.group, 'far1')['phase'])
+        # A start refused (BYOND signed out) waits for the next pass.
+        slots.archive(self.group, self.host, 'far1')
+        self.want('5,6')
+        slots.open_land(self.group, self.host, 'far1', mock.Mock(return_value={'skipped': {}}), build=fake_build)
+        with mock.patch.object(self.host, 'built_revision', return_value='a' * 40), \
+                mock.patch.object(self.host, 'request', side_effect=slots.Refused('BYOND is not signed in yet')):
+            self.assertIn('BYOND', self.serve()[0]['far1']['waiting'])
+        self.assertEqual('building', slots.read_slot(self.group, 'far1')['phase'])
+        # A failed stage gives the land up.
+        self.host.write_json(self.host.stage_file, {'phase': 'failed', 'error': 'compile failed: boom'})
+        self.assertIn('compile failed', self.serve()[0]['far1']['failed'])
+        self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
+        self.assertEqual('5,6', slots.read_wish(self.group, slots.FAILED, 'far1')['key'])
+
+    def test_a_wish_for_a_slot_holding_another_land_is_refused(self):
+        self.give('1,1')
+        self.want('3,4')
+        self.assertEqual({'far1': {'refused': '3,4'}}, self.serve()[0])
+        self.assertIn('already holds land 1,1', slots.read_wish(self.group, slots.FAILED, 'far1')['reason'])
+
+    def test_the_coordinator_is_told_the_slots(self):
+        started = []
+        (Path(self.group['root']) / 'coordinator.pid').unlink(missing_ok=True)
+        with mock.patch.object(shard_group, 'coordinator_pid', return_value=None):
+            group = dict(self.group, transfers=True, mainland='gaia',
+                         regions=[dict(r, transfer_port=1800 + n) for n, r in enumerate(self.group['regions'])])
+            shard_group.ensure_coordinator(group,
+                                           start=lambda argv, cwd, log: started.append(argv) or 4242)
+        argv = started[0]
+        self.assertEqual('far1', argv[argv.index('--slots') + 1])
+        self.assertEqual(str(Path(self.group['root']) / 'expeditions'), argv[argv.index('--expeditions') + 1])
+
     def test_command_line(self):
         template = self.base / 'tile.json'
         template.write_text(json.dumps({'x': 3, 'y': 4, 'template': TEMPLATE}))

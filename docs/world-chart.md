@@ -3,9 +3,9 @@
 The world chart is the map boat expeditions will sail
 ([plan](https://claude.ai/artifact/61LciJHKi6eKEUsYMfFgwE)). It is kept by
 the group coordinator next to the land stages ([land stages](land-stages.md)).
-For now admins can look at it and reroll charted lands; no ship sails it yet.
-A template becomes a region map with the land generator
-([expedition lands](expedition-lands.md)); nothing builds one in game yet.
+Ships sail it ([voyages](ship-voyage.md)): a course for a land opens it in an
+expedition slot, built from the tile's template by the land generator
+([expedition lands](expedition-lands.md), [slots](expedition-slots.md)).
 
 ## Tiles
 
@@ -65,14 +65,36 @@ Each owner has its own chart: the tiles its ships have seen. Owners are
 `faction:NAME`, `crew:CKEY` (factionless crews) and `admin`. Admins see the
 whole chart.
 
+## Courses
+
+A ship that sets course for a land asks the coordinator for a world there
+(`WorldChart.set_course`). The land must be charted, on the ship's owner's
+chart, have a coast and not be lost. A tile already `LANDED` sends her to its
+slot; otherwise a free slot is chosen and the host asked to open it
+([slots](expedition-slots.md#lands-opened-for-ships)). With no free slot the
+course is refused ("every harbour master is busy").
+
+| Course state | Meaning |
+| --- | --- |
+| `ASSIGNED` | the land has a slot; the host is opening it |
+| `READY` | the host started the slot on that land |
+| `REFUSED` | with a reason; the ship turns back |
+
+Courses are kept for 6 hours. Each snapshot sent to the worlds carries them
+(`courses`, by voyage id) and what each owner has seen (`seen`: a hex bitmap,
+bit `y * width + x`), so a world shows a crew its own chart. A ship's `scout`
+request charts the tiles round a tile for its owner, as an admin `reveal` does.
+
 ## Where it lives
 
 - Coordinator database: `chart_tile` (templates and states), `chart_seen`
-  (each owner's tiles), `chart_pin`, `chart_meta` (seed and revision).
+  (each owner's tiles), `chart_pin`, `chart_meta` (seed and revision),
+  `chart_course` (ships' courses).
 - Each home pass sends the whole chart to any agent whose copy is older
   (`/homes`, key `chart`); a world reads it from its agent (`/chart`).
-- Admin requests from a world (`/chart/request`, ops `reroll` and `reveal`)
-  wait in its agent and are decided on the coordinator's next pass.
+- Requests from a world (`/chart/request`: admin ops `reroll` and `reveal`,
+  ships' `scout` and `course`) wait in its agent and are decided on the
+  coordinator's next pass.
 
 ## Admin tools
 
