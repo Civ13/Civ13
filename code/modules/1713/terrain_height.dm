@@ -383,6 +383,13 @@
 	var/dy = (direct & NORTH) ? 1 : ((direct & SOUTH) ? -1 : 0)
 	if (!dx && !dy)
 		return 0
+	// A straight slide reads the row (or column) the body is on, so a level
+	// path is not slowed by a hillside beside it when the body sits a few
+	// pixels off the path's centre line.
+	if (!dy)
+		v = round(v, 1)
+	else if (!dx)
+		u = round(u, 1)
 	var/rise = clamp(H.sample(u + dx, v + dy, M.z) - H.sample(u, v, M.z), -TERRAIN_MAX_LEVEL_STEP, TERRAIN_MAX_LEVEL_STEP)
 	return (dx && dy) ? rise / 1.4142 : rise
 
