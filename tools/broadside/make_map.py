@@ -132,8 +132,10 @@ def ship(grid, tx, ty, bow, side):
     for (k, dy) in sorted(hull):
         if halves[k] == 0:
             continue
-        for (sk, sdy, d) in ((0, 1, 1), (0, -1, 2), (bow, 0, 4), (-bow, 0, 8)):
-            if (k + sk * bow, dy + sdy) in hull:
+        for (sk, sdy, d) in ((0, 1, 1), (0, -1, 2),
+                              (1, 0, 4 if bow > 0 else 8),
+                              (-1, 0, 8 if bow > 0 else 4)):
+            if (k + sk, dy + sdy) in hull:
                 continue
             if sdy and (k in GUN_ROWS or k in BOARDING_GAP):
                 continue

@@ -4,6 +4,8 @@
 /mob/living/human/movement_delay()
 
 	if (world.time <= next_calculate_tally)
+		if (!isnull(riding_mob))
+			return 0
 		return stored_tally
 
 	var/tally = 0
@@ -44,7 +46,7 @@
 		if (150 to 192)
 			tally += 1.50
 	switch (mood)
-		if (0 to 20)
+		if (-INFINITY to 20)
 			tally += 0.90
 		if (20 to 40)
 			tally += 0.8
@@ -117,19 +119,18 @@
 	if (chem_effects.Find(CE_SPEEDBOOST))
 		tally -= 0.40
 
+	if (werewolf)
+		tally *= 0.7
+	if (football)
+		tally *= 1.35
+
 	stored_tally = tally
 
 	next_calculate_tally = world.time + 10
-	if (werewolf)
-		tally *= 0.7
 	if (!isnull(riding_mob))
 		return 0
 	else
-		if (football)
-			tally *= 1.35
-			return tally
-		else
-			return tally
+		return tally
 
 /mob/living/human/slip_chance(var/prob_slip = 5)
 	if (!..())

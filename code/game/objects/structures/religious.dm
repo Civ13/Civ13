@@ -281,13 +281,13 @@ obj/structure/religious/monument
 	if (L.original_job_title == "Orc tribesman")
 		name = "monumental ominous statue of morgoth"
 		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
-		return
+	..()
 
 /obj/structure/religious/monument/cultist/sauron/reverse/examine(var/mob/living/L)
 	if (L.original_job_title == "Orc tribesman")
 		name = "monumental ominous statue of morgoth"
 		desc = "A statue of a the dark lord morgoth, sceptre clutched firmly in hand, it cuts a impressive fiugure of authority."
-		return
+	..()
 
 /obj/structure/religious/monument/monk
 	name = "monumental monk statue"
@@ -381,7 +381,7 @@ obj/structure/religious/monument
 /obj/structure/religious/monument/shaman/ape/examine(var/mob/living/L)
 	if (L.original_job_title == "Gorilla tribesman")
 		desc = "A enormous stone statue of a fearsome ape, it is a exemplar specimen of our kind, a real adonis."
-		return
+	..()
 
 /*-Religious Monuments*/
 
@@ -751,7 +751,7 @@ obj/structure/religious/monument
 
 		//pleased
 		else if (power >= 150 && power < 250)
-			if (prob(power/250))
+			if (prob(power/2.5))
 				if (weather_at(src) == WEATHER_WET)
 					weather_disperse(src)
 					visible_message("The gods have blessed us with good weather!")

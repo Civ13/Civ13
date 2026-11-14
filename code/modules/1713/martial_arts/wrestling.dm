@@ -414,11 +414,11 @@ If you make a derivative work from this code, you must include this notification
 		D.Paralyse(40)
 
 		A.pixel_y = 0
+		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Legdropped by [A.name] ([A.ckey])</font>")
 
 	else
 		if (A)
 			A.pixel_y = 0
-		D.append_attack_log("\[[time_stamp()]\] <font color='orange'>Legdropped by [A.name] ([A.ckey])</font>")
 	return
 
 /datum/martial_art/wrestling/disarm_act(mob/living/human/A, mob/living/human/D)

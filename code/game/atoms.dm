@@ -520,7 +520,7 @@
 	if(!Adjacent(user) || user.incapacitated(INCAPACITATION_STUNNED|INCAPACITATION_KNOCKOUT) || istype(user.loc, /obj/structure/closet) || !ishuman(src))
 		return
 	if(user.pacifist)
-		to_chat(src, "<font color='yellow'><big><b>I don't want to bite!</b></big></font>")
+		to_chat(user, "<font color='yellow'><big><b>I don't want to bite!</b></big></font>")
 		return
 	var/mob/living/human/target = src
 	if(user.middle_click_intent == "bite")//We're in bite mode, so bite the opponent

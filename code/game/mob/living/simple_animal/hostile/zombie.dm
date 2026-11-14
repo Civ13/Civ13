@@ -151,9 +151,9 @@
 	update_icons()
 
 /mob/living/simple_animal/hostile/human/zombie/proc/limb_updates()
-	harm_intent_damage = 14
-	melee_damage_lower = 8
-	melee_damage_upper = 14
+	harm_intent_damage = 6
+	melee_damage_lower = 4
+	melee_damage_upper = 6
 	move_to_delay = 12
 	speed = 12
 
@@ -171,13 +171,13 @@
 			move_to_delay -= 1
 			speed -= 1
 		else if (i == "l_hand_s")
-			harm_intent_damage -= 4
-			melee_damage_lower -= 2
-			melee_damage_upper -= 4
+			harm_intent_damage += 4
+			melee_damage_lower += 2
+			melee_damage_upper += 4
 		else if (i == "r_hand_s")
-			harm_intent_damage -= 4
-			melee_damage_lower -= 2
-			melee_damage_upper -= 4
+			harm_intent_damage += 4
+			melee_damage_lower += 2
+			melee_damage_upper += 4
 		else if (i == "l_arm_s")
 			move_to_delay -= 1
 			speed -= 1

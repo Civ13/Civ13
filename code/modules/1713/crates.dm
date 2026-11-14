@@ -409,8 +409,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 	name = "Seeds: Cereals (+yeast)"
 	paths = list(/obj/item/stack/farming/seeds/wheat = 6,
 				/obj/item/stack/farming/seeds/corn = 6,
-				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1,
-				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 1)
+				/obj/item/weapon/reagent_containers/food/condiment/enzyme = 2)
 	cratevalue = 50
 
 /obj/structure/closet/crate/rations/seeds/vegetables
@@ -555,7 +554,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 	cratevalue = 60 //50 base
 /obj/structure/closet/crate/abashiri/batons
 	name = "Batons"
-	paths = list(/obj/item/weapon/gun/projectile/revolver/t26_revolver = 10,)
+	paths = list(/obj/item/weapon/melee/classic_baton = 10,)
 	cratevalue = 60 //50 base
 ////WW1////////
 /obj/structure/closet/crate/ww1/grenades_french
@@ -833,7 +832,7 @@ obj/structure/closet/crate/loottreasurechest/New()
 /obj/structure/closet/crate/ww2/russian/ammo
 	name = "Bulk 5.45x39mm magazines"
 	paths = list(/obj/item/ammo_magazine/ak74/ak74m = 10)
-/obj/structure/closet/crate/ww2/russian/ammo
+/obj/structure/closet/crate/ww2/russian/ammoboxes
 	name = "Bulk 5.45x39mm ammunition"
 	paths = list(/obj/item/ammo_magazine/ak74/box = 10)
 
@@ -1055,7 +1054,7 @@ obj/structure/closet/crate/airdrops/weapons
 	icon_state = "wood_crate"
 	icon_opened = "wood_crate_opened"
 	icon_closed = "wood_crate"
-	paths = list(/obj/item/ammo_casing/arrow = 20)
+	paths = list(/obj/item/ammo_casing/bolt = 20)
 
 /obj/structure/closet/crate/bolts/iron
 	name = "iron arrow crate"
