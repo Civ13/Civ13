@@ -289,6 +289,7 @@
 #include "code\game\mob\living\carbon\human\screaming.dm"
 #include "code\game\mob\living\carbon\human\shit_piss.dm"
 #include "code\game\mob\living\carbon\human\stripping.dm"
+#include "code\game\mob\living\carbon\human\survival_workload.dm"
 #include "code\game\mob\living\carbon\human\tester.dm"
 #include "code\game\mob\living\carbon\human\traits.dm"
 #include "code\game\mob\living\carbon\human\unarmed_attack.dm"
