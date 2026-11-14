@@ -141,8 +141,11 @@
 	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
 		options.Insert(2, "Leave these waters")
 	// Off a mainland's edge she can set out across the world chart (ship_voyage.dm).
-	if (istype(edge_body) && edge_body.at_map_edge() && shard_group && shard_group.enabled && shard_group.kind != "EXPEDITION")
+	if (istype(edge_body) && edge_body.at_map_edge() && shard_group && shard_group.enabled)
 		options.Insert(2, "Set out on a voyage")
+	// A land across the sea nobody has settled yet (land_choices.dm).
+	if (expedition_land_unsettled())
+		options.Insert(2, "Settle this land")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -177,6 +180,9 @@
 		return
 	if (choice == "Set out on a voyage")
 		voyage_menu(H)
+		return
+	if (choice == "Settle this land")
+		settle_menu(H)
 		return
 	if (choice == "Make for a berth")
 		if (craft.grapple)

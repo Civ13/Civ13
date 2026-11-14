@@ -23,7 +23,7 @@ A land can also be **paused**: it keeps its stage, but new starts there wait.
   and `land_done`). A land no admin has set is `CLOSED`.
 - Each world reads its agent's copy (`/lands`) about once a minute
   (`code/modules/persistence/land_stage.dm`) and shows it in the Regions panel.
-- Only lands of kind `SURFACE`, `OCEANIC`, `UNDERGROUND` or `OTHER` take a
+- Only lands of kind `SURFACE`, `OCEANIC`, `UNDERGROUND`, `OTHER` or `EXPEDITION` take a
   stage; transit, event, practice and battle worlds never do.
 - A stage change never moves a home or a character.
 

@@ -174,6 +174,14 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	if (user.civilization && user.civilization != "none")
 		return "You must not belong to a faction here."
 	var/name = party_train_party_name(origin)
+	// A land across the sea takes one faction's claim, and a faction claims one such land (land_choices.dm).
+	if (expedition_land_key())
+		var/list/tile = expedition_land_tile()
+		var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
+		if (claims[origin] && claims[origin] != expedition_land_key())
+			return "[name] already claims another land across the sea. A faction claims only one."
+		if (islist(tile) && tile["state"] == "CLAIMED" && claims[origin] != expedition_land_key())
+			return "Another faction has already claimed this land."
 	var/existing = map.colony_named_for(origin)
 	if (existing && map.colony_charter_of(existing))
 		return "[existing] already has a colony in this land. Members who arrive join it."
@@ -213,6 +221,9 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	faction = name
 	update_icon()
 	map.recruitment_audit(name, "[user.real_name] planted the colony charter at [x],[y].", faction_roster_account(user) || "")
+	// On a land across the sea the charter is the faction's claim to it.
+	if (expedition_land_key())
+		expedition_land_ask("claim", user.ckey, origin)
 	log_game("Colony: [key_name(user)] planted the charter of [name] ([origin]) at [x],[y],[z].")
 	to_chat(user, "<big>The charter of <b>[name]</b> now stands in this land.</big>")
 	return TRUE

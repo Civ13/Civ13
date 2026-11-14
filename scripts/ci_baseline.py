@@ -838,6 +838,8 @@ SUITES = {
     # branches gave; per-era equality checks only shrink. Source scan of code/.
     'era_helpers': {'files': ('tests/era_helpers/test_era_helpers.py',),
         'paths': ('tests/era_helpers/',), 'shared_paths': ()},
+    'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
+        'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
     'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
@@ -876,6 +878,11 @@ SUITES = {
     # parity against the frozen structure bodies, no BYOND runtime.
     'radio_shared': {'files': ('tests/radio_shared/test_radio_shared.py',),
         'paths': ('tests/radio_shared/',), 'shared_paths': ('code/modules/1713/radio.dm',)},
+    # Rusty bolt effect: metal near strong AM transmitters hums broadcasts.
+    'rusty_bolt': {'files': ('tests/rusty_bolt/test_sources.py',),
+        'paths': ('tests/rusty_bolt/', 'code/modules/1713/rusty_bolt.dm'), 'shared_paths': (
+            'code/modules/1713/radio.dm', 'code/modules/1713/modern_telecom.dm',
+            'code/modules/1713/radio_relay.dm')},
     # Copied capture chains in map update_win_condition use capture_step;
     # source parity against the frozen chains, no BYOND runtime.
     'capture_chain': {'files': ('tests/capture_chain/test_capture_chain.py',), 'paths': ('tests/capture_chain/',), 'shared_paths': ('code/game/objects/map_metadata/_map_metadata.dm',
@@ -1039,6 +1046,10 @@ SUITES = {
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Dugout canoe log stages, sea rules and recipes: source contracts only.
+    'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
+        'paths': ('tests/dugout_canoe/',), 'shared_paths': (
+            'code/modules/1713/dugout_canoe.dm', 'icons/obj/vehicles/dugout_canoe.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

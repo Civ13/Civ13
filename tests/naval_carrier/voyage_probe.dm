@@ -1,6 +1,7 @@
 // Voyages on the world chart (code/modules/naval/ship_voyage.dm,
 // docs/ship-voyage.md): the chart a crew sees, setting out, and landfall
-// waiting on the world directory's answer to her course.
+// waiting on the world directory's answer to her course; on a land across the
+// sea, onward voyages and what settling takes (land_choices.dm).
 /world
 	hub = ""
 	hub_password = ""
@@ -91,8 +92,6 @@ var/naval_runtime_error = FALSE
 	shard_group.enabled = FALSE
 	naval_check(findtext(tiller.voyage_refusal(H), "No world chart"), "a world outside a region group has no voyages")
 	shard_group.enabled = TRUE
-	shard_group.kind = "EXPEDITION"
-	naval_check(findtext(tiller.voyage_refusal(H), "No world chart"), "nor does a land across the sea (its ships sail home)")
 	shard_group.kind = "SURFACE"
 	tiller.craft.set_anchor(FALSE)
 	naval_check(tiller.set_out(H, "scout", 4, 3, "faction:romeempire", 8, "the unknown water to the north"), "she sets out to scout")
@@ -115,6 +114,39 @@ var/naval_runtime_error = FALSE
 	world_chart["courses"] = list("gaia-3-4" = list("state" = "REFUSED", "reason" = "every harbour master is busy"))
 	naval_check(tiller.voyage_landfall(mine) && isnull(tiller.voyage), "a refused course turns her back at once")
 	naval_check(tiller.craft && !QDELETED(tiller), "she is still here, off the coast where she set out")
+
+	// ---- A land across the sea: onward voyages and settling ----
+	shard_group.kind = "EXPEDITION"
+	expedition_land_info = list("biome" = "DESERT", "land_type" = "COASTAL_PLAIN", "size" = "TINY", "key" = "1,2")
+	world_chart["tiles"]["1,2"]["state"] = "LANDED"
+	world_chart["tiles"]["1,2"]["region"] = "far1"
+	world_chart["tiles"]["6,3"]["state"] = "SETTLED"
+	var/list/here = voyage_origin()
+	naval_check(islist(here) && here[1] == 1 && here[2] == 2, "a land across the sea sails from its own chart tile")
+	lands = voyage_destinations("faction:romeempire", here)
+	naval_check(lands.len == 1 && findtext(lands[1], "at 6,3"), "onward: a settled land is on every chart, the land she lies off is not offered")
+	naval_check(!findtext(tiller.voyage_refusal(H), "No world chart"), "her ships may set out from a land too")
+	naval_check(expedition_land_unsettled(), "the land is undecided")
+	var/refusal = expedition_settle_refusal()
+	naval_check(findtext(refusal, "mooring post"), "settling needs a mooring post ([refusal])")
+	var/obj/structure/berth/quay/post = new(locate(18, 20, 2))
+	var/list/owners = list("ann", "ann", "bob")
+	for (var/i in 1 to owners.len)
+		var/obj/structure/bed/B = new(locate(10 + i, 22, 2))
+		B.persistence_bed_owner_ckey = owners[i]
+	refusal = expedition_settle_refusal()
+	naval_check(findtext(refusal, "the best has 2"), "and 3 beds slept in by different people ([refusal])")
+	var/obj/structure/bed/far = new(locate(18 + 45, 20, 2))
+	far.persistence_bed_owner_ckey = "cat"
+	naval_check(findtext(expedition_settle_refusal(), "the best has 2"), "a bed far from the post does not count")
+	var/obj/structure/bed/third = new(locate(15, 22, 2))
+	third.persistence_bed_owner_ckey = "cat"
+	naval_check(isnull(expedition_settle_refusal()), "with a third sleeper near the post she may settle")
+	world_chart["tiles"]["1,2"]["state"] = "SETTLED"
+	naval_check(!expedition_land_unsettled() && findtext(expedition_settle_refusal(), "already settled"), "a settled land is decided")
+	shard_group.kind = "SURFACE"
+	naval_check(!expedition_land_unsettled() && isnull(expedition_land_key()), "the mainland is never an undecided land")
+	qdel(post)
 
 /proc/naval_run()
 	try

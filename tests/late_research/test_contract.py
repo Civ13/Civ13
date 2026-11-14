@@ -253,7 +253,7 @@ class Practice(unittest.TestCase):
             self.assertIn("build_practice_experiments()", proc(field, name), name)
     def test_crafting_routes_count_practice(self):
         for path, count in (("code/game/objects/items/stacks/stack.dm", 1),
-                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 5),
+                            ("code/game/objects/structures/blacksmithing/blacksmithing.dm", 2),
                             ("code/game/objects/structures/blacksmithing/component_workbench.dm", 1),
                             ("code/game/objects/structures/blacksmithing/dedicated_workbenches.dm", 3)):
             self.assertEqual(read(path).count("note_craft_practice("), count, path)

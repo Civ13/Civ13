@@ -264,6 +264,8 @@ class Coordinator(TrainCustody):
         players, living = sample['players'], sample['living']
         if not 0 <= players <= 1000 or not 0 <= living <= 10000:
             return False
+        if players:
+            self.chart.visit(region, now)
         colonies = sample.get('colonies', [])
         if type(colonies) is not list or not all(colony_valid(c) for c in colonies):
             return False
@@ -296,7 +298,27 @@ class Coordinator(TrainCustody):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
+        # A land's own world, for its crew: x and y name the land it holds, as a check.
+        found = self.chart.land_in(origin)
+        if op not in ('settle', 'claim', 'abandon') or not found or found[:2] != (x, y):
+            return False
+        if op == 'settle' and self.chart.settle(origin, admin):
+            self.set_land(origin, 'FRONTIER', False)
+            return True
+        if op == 'claim' and self.chart.claim(origin, owner, admin):
+            self.set_land(origin, 'COLONY', False)
+            return True
+        if op == 'abandon' and self.chart.abandon(origin, admin):
+            self.land_lost(origin)
+            return True
         return False
+
+    def land_lost(self, region):
+        """An abandoned land: whoever was homed there starts on the mainland again,
+        and the slot's next land starts unexplored."""
+        for (ckey,) in self.db.execute('SELECT ckey FROM home WHERE region = ?', (region,)).fetchall():
+            self._set_home(ckey, self.mainland)
+        self.db.execute('DELETE FROM land WHERE region = ?', (region,))
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
@@ -490,8 +512,11 @@ class Coordinator(TrainCustody):
             raise
         rev = int(self._ledger('rev'))
         lands = self.lands()
-        # Courses whose land the host has opened (or could not) since the last pass.
+        # Courses whose land the host has opened (or could not) since the last pass,
+        # and lands nobody has been to for 7 days.
         self.chart.refresh_courses()
+        for region in self.chart.expire():
+            self.land_lost(region)
         chart_rev = self.chart.key()
         chart = None
         for name, answer in asked.items():
