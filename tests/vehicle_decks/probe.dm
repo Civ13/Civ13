@@ -180,6 +180,32 @@ var/vehicle_decks_probe_checks = 0
 	eve.vehicle_deck_check()
 	vehicle_decks_probe_assert(!eve.vehicle_deck && !vehicle_deck_frame_at(get_turf(eve)), "stun_falls_beside")
 
+	// The double-decker bus: built from the works layout, every frame an
+	// upper deck, stairs inside lead up and back down without leaving it.
+	var/obj/structure/car_workshop/W = new(locate(2, 20, 1))
+	vehicle_decks_probe_assert(W.model_size("Double-decker bus") == 5 && W.largest_model_size() == 4, "bus_oversize_bay")
+	var/obj/effects/premadevehicles/bus/doubledecker/plan = new(null, TRUE)
+	var/obj/structure/vehicleparts/axis/bus = W.assemble_layout(plan, 5)
+	qdel(plan)
+	vehicle_decks_probe_assert(istype(bus, /obj/structure/vehicleparts/axis/car/bus), "bus_assembled")
+	var/decks = 0
+	var/obj/structure/vehicle_stairs/stairs = null
+	for (var/obj/structure/vehicleparts/frame/F in bus.components)
+		if (F.upper_deck && vehicle_deck_walkable(F))
+			decks++
+		if (!stairs)
+			stairs = locate(/obj/structure/vehicle_stairs) in F.loc
+	vehicle_decks_probe_assert(decks == 10 && stairs, "bus_upper_deck_and_stairs")
+	var/obj/structure/vehicleparts/frame/stair_frame = vehicle_decks_probe_frame(bus, stairs.loc)
+	vehicle_decks_probe_assert(vehicle_deck_hatch(stair_frame), "stairs_lead_up")
+	var/mob/living/human/vehicle_decks_probe/fay = vehicle_decks_probe_actor(stairs.x, stairs.y, "Fay")
+	vehicle_decks_probe_assert(isnull(fay.vehicle_deck_refusal(stair_frame, TRUE)), "upstairs_allowed")
+	vehicle_decks_probe_assert(fay.board_vehicle_deck(stair_frame) && los_on_vehicle_deck(fay) && vehicle_deck_axis(fay) == bus, "upstairs")
+	fay.leave_vehicle_deck(null)
+	vehicle_decks_probe_assert(!fay.vehicle_deck && fay.loc == stairs.loc, "downstairs_inside")
+	var/mob/living/human/vehicle_decks_probe/gus = vehicle_decks_probe_actor(stairs.x, stairs.y - 1, "Gus")
+	vehicle_decks_probe_assert(findtext(gus.vehicle_deck_refusal(vehicle_decks_probe_frame(bus, gus.loc), TRUE), "no hatch"), "only_the_stairs_lead_up")
+
 /world/New()
 	OpenPort("none")
 	var/error = null

@@ -1367,7 +1367,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_car_kit/railgun" = "field_artillery",
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
-		"/obj/item/weapon/beartrap" = "field_defenses",
+		"/obj/item/weapon/beartrap" = "iron_tools",
 		"/obj/item/weapon/pit_cover" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
 		"/obj/item/weapon/material/shovel/trench" = "field_defenses",
@@ -2170,6 +2170,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/barter_beads/stone" = "regalia",
 		"/obj/item/stack/barter_beads/bone" = "regalia",
 		"/obj/structure/barter_mat" = "basic_tools",
+		"/obj/item/stone_age_instrument/bone_flute" = "ritual_worship",
+		"/obj/item/stone_age_instrument/frame_drum" = "ritual_worship",
 		"/obj/structure/religious/impaledskull" = "ritual_worship",
 		"/obj/structure/religious/moai" = "ritual_worship",
 		"/obj/structure/religious/moai/long" = "ritual_worship",
