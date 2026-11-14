@@ -177,5 +177,26 @@ class PouchVisibility(unittest.TestCase):
         self.assertEqual(equip.count('if (slot_shoulder)'), 1)
         self.assertEqual(ITEMS.count('"[slot_shoulder]" = SLOT_SHOULDER'), 1)
 
+    def test_attachment_strip_is_wired_to_worn_clothing(self):
+        acc = (ROOT / 'code/game/objects/items/clothing/clothing_accessories.dm').read_text(encoding='utf8')
+        strip = (ROOT / 'code/_onclick/hud/attachment_strip.dm').read_text(encoding='utf8')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf8')
+        self.assertIn('#include "code\\_onclick\\hud\\attachment_strip.dm"', dme)
+        hand = body(acc, '/obj/item/clothing/attack_hand')
+        # One attachment keeps opening directly; several open the strip, and only for a real client.
+        self.assertIn('accessories.len > 1 && ishuman(user) && user.client', hand)
+        self.assertLess(hand.index('toggle_attachment_strip(src)'), hand.index('A.attack_hand(user)'))
+        offer = body(acc, '/obj/item/clothing/attackby')
+        loop = offer.split('for (var/obj/item/clothing/accessory/A in accessories)', 1)[1].split('return', 1)[0]
+        self.assertIn('A.attackby(I, user)', loop)
+        self.assertIn('if (QDELETED(I) || I.loc != user)\n\t\t\t\tbreak', loop)
+        self.assertIn('refresh_attachment_strip(src)', body(acc, '/obj/item/clothing/proc/remove_accessory'))
+        click = body(strip, '/obj/screen/attachment/Click')
+        self.assertLess(click.index('attachment_strip_valid(attachment, host, H)'), click.index('attachment.attackby(I, H)'))
+        self.assertIn('attachment.attack_hand(H)', click)
+        # The tiles live on the client, so nothing about them is saved with the body.
+        self.assertIn('/client/var/list/attachment_strip', strip)
+        self.assertNotIn('/mob/living/human/var', strip)
+
 if __name__ == '__main__':
     unittest.main()
