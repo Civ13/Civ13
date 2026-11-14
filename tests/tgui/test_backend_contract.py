@@ -273,6 +273,39 @@ class BackendContract(unittest.TestCase):
         self.assertNotIn('refresh()', look)
         self.assertIn('push_cached()', look)
 
+    def test_anvil_window_routes_crafts_back_through_the_anvil(self):
+        window = (ROOT / 'code/game/objects/structures/blacksmithing/anvil_window.dm').read_text()
+        smith = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text()
+        topic = window.split('/datum/crafting_window/anvil/Topic(', 1)[1].split('/obj/structure/anvil/proc/anvil_window_shown', 1)[0]
+        make = topic.split('if (href_list["make"])', 1)[1]
+        # A request names a row offered right now, is refused mid-craft, and is
+        # worked by attackby() so the anvil's own admission checks run again.
+        self.assertLess(make.index('working || anvil.in_use'), make.index('offered_name(href_list["make"])'))
+        self.assertLess(make.index('offered_name(href_list["make"])'), make.index('A.attackby(S, H)'))
+        self.assertLess(make.index('pending = wanted'), make.index('A.attackby(S, H)'))
+        self.assertNotIn('forge_stack_recipe', topic)
+        self.assertNotIn('amount -=', window)
+        self.assertNotIn('new ', topic)
+        shown = window.split('/obj/structure/anvil/proc/anvil_window_shown', 1)[1]
+        picked = shown.split('if (!H.client', 1)[0]
+        # The pending row is consumed once and checked against the offered rows again.
+        self.assertLess(picked.index('W.pending = null'), picked.index('wanted in stack_offers(P, H)'))
+        self.assertLess(picked.index('wanted in stack_offers(P, H)'), picked.index('forge_stack_recipe(P, H, H, R[2], metal[1], metal[2], "[wanted] - ")'))
+        self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
+        # The window hook sits after the anvil's admission prefix and material check.
+        attack = smith.split('/obj/structure/anvil/attackby(', 1)[1]
+        self.assertLess(attack.index("You can't use this material on this anvil."), attack.index('else if (anvil_window_shown(P, H))'))
+        self.assertLess(attack.index('else if (anvil_window_shown(P, H))'), attack.index('/////////IRON//////////'))
+        # One category table serves the menus and the window.
+        self.assertEqual(smith.count('var/list/optlist = stack_categories(P, H)'), 4)
+        self.assertIn('(R[2] in kinds) && map.ordinal_age >= R[3] && recipe_age_allowed(R[4]) && R[metal[1]] > 0', window)
+        valid = window.split('/datum/crafting_window/anvil/still_valid(', 1)[1].split('/datum/crafting_window/anvil/load_recipes', 1)[0]
+        self.assertIn('source.loc == H && H.get_active_hand() == source && isturf(H.loc) && in_range(anvil, H)', valid)
+        base = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        fallback = base.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
+        self.assertLess(fallback.index('crafting_window_classic = TRUE'), fallback.index('A.attackby(S, H)'))
+        self.assertIn('W.type != /datum/crafting_window', base)
+
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
         fallback = source.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]

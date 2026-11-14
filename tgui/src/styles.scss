@@ -205,6 +205,7 @@ button.rs-row-main { cursor: pointer; }
 .craft-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .craft-head { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #30271e; border: 1px solid #66513b; }
 .craft-amount { color: #bfae96; font-size: 13px; }
+.craft-station { margin-left: auto; color: #f0d9a8; font-size: 13px; font-weight: bold; }
 .craft-columns { display: grid; grid-template-columns: minmax(300px, 55%) minmax(0, 1fr); gap: 10px; flex: 1; min-height: 0; }
 .craft-left { display: flex; flex-direction: column; min-height: 0; background: #30271e; border: 1px solid #66513b; }
 .craft-tools-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; border-bottom: 1px solid #66513b; }

@@ -765,6 +765,7 @@
 #include "code\game\objects\structures\animalspawner\animal_spawner.dm"
 #include "code\game\objects\structures\animalspawner\bearcave.dm"
 #include "code\game\objects\structures\animalspawner\wolfcave.dm"
+#include "code\game\objects\structures\blacksmithing\anvil_window.dm"
 #include "code\game\objects\structures\blacksmithing\blacksmithing.dm"
 #include "code\game\objects\structures\blacksmithing\blacksmithing_recipes.dm"
 #include "code\game\objects\structures\blacksmithing\molds.dm"
