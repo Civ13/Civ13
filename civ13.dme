@@ -1753,6 +1753,7 @@
 #include "code\modules\1713\fish_pen.dm"
 #include "code\modules\1713\flint_mining.dm"
 #include "code\modules\1713\gemstones.dm"
+#include "code\modules\1713\glass_stone_machines.dm"
 #include "code\modules\1713\necklaces.dm"
 #include "code\modules\1713\belt_pouches.dm"
 #include "code\modules\1713\lanyards.dm"
