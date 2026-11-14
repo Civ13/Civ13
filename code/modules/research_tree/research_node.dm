@@ -948,6 +948,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
+		"/obj/structure/colony_charter" = "basic_furniture",
 		// --- basic_tools (27) ---
 		"/obj/structure/converter/tanning" = "basic_tools",
 		"/obj/structure/dehydrator" = "basic_tools",
