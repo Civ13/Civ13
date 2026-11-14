@@ -62,6 +62,18 @@ boolean vars are kept on the item (`wrist_loop`, `wrist_looped`,
 Long guns, bows, spears, flintlock pistols and two-handed weapons are left
 out on purpose. Cutting a lanyard from someone else is not implemented.
 
+## Gem science
+
+`code/modules/1713/gem_science.dm`, built in phases from a history review by
+Fable (2026-11-14).
+
+Jewel bearings (1704): chisel in the active hand and hammer in the other on a
+cut ruby or sapphire gives 4 jewel bearings, on a garnet 2 cheaper ones
+(Optics & Instruments). Two bearings fitted into a pocket watch, wrist watch
+or compass make it `jewelled`. Plain watches read only to the quarter hour
+(`watch_reading()`); jewelled ones read the exact minute. A jewelled compass
+has `max_offset` 2 and reads in 6 s.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
@@ -72,3 +84,5 @@ out on purpose. Cutting a lanyard from someone else is not implemented.
   `tests/sprites/create_gemstones.py` and `tests/sprites/create_belt_pouches.py`.
 - `icons/obj/lanyards.dmi`, `icons/mob/lanyards.dmi`: drawn for Civ13 from
   `tests/sprites/create_lanyards.py`.
+- `icons/obj/gem_science.dmi`: drawn for Civ13 from
+  `tests/sprites/create_gem_science.py`.
