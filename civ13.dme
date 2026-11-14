@@ -1001,6 +1001,7 @@
 #include "code\modules\nomad_raids\nomad_admin.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
+#include "code\modules\1713\flood_ground.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
 #include "code\modules\1713\complex_animal\__complex_animal.dm"
 #include "code\modules\1713\complex_animal\_backend.dm"
