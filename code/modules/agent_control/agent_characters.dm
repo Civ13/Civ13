@@ -353,6 +353,15 @@
 		for (var/obj/item/I in H.get_equipped_items())
 			worn += I.name
 		out["worn"] = worn
+		// The rest of a player's needs bars, for need-driven routines (tools/agent-control/needs.py).
+		out["max_nutrition"] = H.max_nutrition
+		out["max_water"] = H.max_water
+		out["hygiene"] = H.hygiene
+		out["bowels"] = H.bowels
+		out["stamina"] = H.stats["stamina"][1]
+		out["max_stamina"] = H.stats["stamina"][2]
+		out["resting"] = H.resting ? TRUE : FALSE
+		out["nude"] = H.is_nude() ? TRUE : FALSE
 		var/list/carried = list()
 		for (var/obj/item/weapon/storage/S in H.get_equipped_items())
 			for (var/obj/item/I in S.contents)
