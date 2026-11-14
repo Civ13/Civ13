@@ -16,6 +16,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_water_animation.py` owns the animated water states in `icons/turf/beach.dmi` (water bodies, their shoreline edges, the dock line and the flood overlays). They share one 12-frame loop so neighbouring water stays in step; change the water there and rerun it rather than editing those states by hand. `--check` verifies the committed sheet, `--gif` writes a tiled review animation. It leaves every other state in the sheet untouched.
 
+`create_floodwater.py` owns `icons/effects/floodwater.dmi`, the muddy river floodwater laid over ground tiles: the four depth bands `flood1`-`flood4`, their four-direction waterlines `flood_edge1`-`flood_edge4` for the dry neighbour tile, the foamless `flood_step2`-`flood_step4` for a shallower flooded neighbour, and the `silt1`-`silt4` mud film. The animated states take their frames and timing from `create_water_animation.py`, so floodwater ripples in step with the river; the edge direction convention is in the script docstring. `--check` verifies the committed sheet, `--gif` writes a tiled review animation.
+
 No live server, player data, game instances or external-effect tests are involved. Constructors and overlay/worn/held rendering are outside this defaults inventory. Add meaningful dedicated checks for those behaviors when introducing dynamic graphics.
 
 ## Current Linux toolchain and historical fixtures
