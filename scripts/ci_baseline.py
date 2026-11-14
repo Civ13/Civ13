@@ -833,6 +833,10 @@ SUITES = {
     # code/, run by full and preflight sweeps (not per-file selection).
     'duplicate_overrides': {'files': ('tests/duplicate_overrides/test_duplicate_overrides.py',),
         'paths': ('tests/duplicate_overrides/',), 'shared_paths': ()},
+    # istype/ispath/locate calls that join type paths with || (only the first
+    # path is tested); source scan of code/, run by full and preflight sweeps.
+    'istype_or_paths': {'files': ('tests/istype_or_paths/test_istype_or_paths.py',),
+        'paths': ('tests/istype_or_paths/',), 'shared_paths': ()},
     # Shared Campaign win condition and Battle Royale / Hunger Games shrinking
     # zone against frozen pre-refactor bodies; source projection only.
     'map_metadata_dedupe': {'files': ('tests/map_metadata_dedupe/test_map_metadata_dedupe.py',),
