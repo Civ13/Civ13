@@ -126,6 +126,7 @@
 				return "Wait for the train to stop."
 	for (var/obj/structure/trains/platform/S in P.car_segments())
 		S.braced = !!state
+		S.update_car_overlays()
 	icon_state = state ? "brace_down" : "brace_up"
 	return null
 

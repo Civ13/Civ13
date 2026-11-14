@@ -20,6 +20,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_aluminium.py` owns `icons/obj/aluminium.dmi`: the bauxite ore, alumina powder, aluminium ingot, ceramic armour tile and composite armour panel piles (each with the `_2`, `_3` and `_4` stack sizes), the alumina digester and the electrolytic reduction pot with their four-frame `_on` animations, and the red mud puddle. `--check` verifies the committed sheet, `--preview <png>` writes a 4x review sheet with the neighbouring ore and ingot sprites for comparison.
 
+`create_trains.py` owns `icons/obj/vehicles/train_platforms.dmi` (platform car decks, sides, doors, headstocks, roofs, the car kit, outriggers and the three 3x4 locomotive bodies) and `icons/obj/vehicles/railway_gun.dmi`, with shared helpers in `trainkit.py`: art is drawn once heading north and placed into each direction with the light kept at the upper left. `--check` verifies the committed sheets, `--preview <dir>` writes the state sheet and whole trains laid out as the game does. State names are listed in `docs/train-platforms.md`.
+
 No live server, player data, game instances or external-effect tests are involved. Constructors and overlay/worn/held rendering are outside this defaults inventory. Add meaningful dedicated checks for those behaviors when introducing dynamic graphics.
 
 ## Current Linux toolchain and historical fixtures

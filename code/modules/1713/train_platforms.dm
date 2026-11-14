@@ -223,17 +223,18 @@ var/global/train_platform_plan_time = -1
 	name = wrecked ? "wrecked [L["name"]]" : L["name"]
 	desc = L["desc"]
 	icon_state = "deck_center_[L["center"]]"
-	overlays.Cut()
-	if (wrecked)
-		overlays += image(icon, "wreck", layer = layer + 0.01)
 	clear_parts()
+	update_car_overlays()
 	// Stored in a rail warehouse (rail_warehouse.dm): no deck until it rolls out.
 	if (!isturf(loc))
 		return
 	deck_parts = list()
+	var/end_row = car_end_row()
 	for (var/side in list(TRAIN_LEFT, TRAIN_RIGHT))
 		var/obj/structure/train_part/deck/D = new(null)
 		D.setup(src, side, "out", "deck_side_[L["side"]]")
+		if (end_row)
+			D.overlays += "end_[end_row][side == TRAIN_LEFT ? "l" : "r"]"
 		deck_parts += D
 	var/list/edges = segment_layout()["edges"]
 	for (var/i in 1 to edges.len)
@@ -244,6 +245,34 @@ var/global/train_platform_plan_time = -1
 		G.set_open(open_doors & (1 << (i - 1)))
 		deck_parts += G
 	place_parts(loc, dir)
+
+// "f" on the car's front segment, "b" on its last one: where the headstock,
+// buffers and coupling are drawn.
+/obj/structure/trains/platform/proc/car_end_row()
+	if (seg_index == 1)
+		return "f"
+	if (seg_index == TRAIN_CAR_LENGTH)
+		return "b"
+	return null
+
+// The segment's own overlays. The headstock states turn with the segment;
+// outriggers are only down while the car is braced and cannot move.
+/obj/structure/trains/platform/proc/update_car_overlays()
+	overlays.Cut()
+	if (wrecked)
+		overlays += image(icon, "wreck", layer = layer + 0.01)
+	if (!isturf(loc))
+		return
+	var/end_row = car_end_row()
+	if (!end_row)
+		return
+	overlays += "end_[end_row]c"
+	if (braced)
+		for (var/out in list(turn(dir, 90), turn(dir, -90)))
+			var/image/leg = image(icon, "outrigger", dir = out, layer = layer + 0.01)
+			leg.pixel_x = 2 * world.icon_size * ((out == EAST) - (out == WEST))
+			leg.pixel_y = 2 * world.icon_size * ((out == NORTH) - (out == SOUTH))
+			overlays += leg
 
 /obj/structure/trains/platform/proc/place_parts(turf/T, heading)
 	var/list/tiles = train_platform_tiles(T, heading)

@@ -6,6 +6,27 @@ Code: `code/modules/1713/train_platforms.dm`, wartime cars in
 and `icons/obj/vehicles/railway_gun.dmi`.
 Tests: `tests/train_platforms` (source contracts plus a native fixture).
 
+## Art
+
+Both sheets are drawn by `tests/sprites/create_trains.py` (helpers in
+`tests/sprites/trainkit.py`); change the art there and rerun it rather than
+editing the sheets by hand. `--check` verifies the committed sheets and
+`--preview <dir>` writes whole trains composed the way the game lays the tiles
+out. Everything is seen from straight above and lit from the upper left in
+every direction. `l`, `c` and `r` in a state name are the tile left of the
+heading, the rail tile and the tile right of it.
+
+- `end_f*` / `end_b*`: the headstock with buffers and coupling on a car's
+  first and last segment. `apply_layout()` adds them as overlays that follow
+  their tile's own direction. `outrigger` is added either side of a braced
+  gun car's end segments by `update_car_overlays()`.
+- `roof_<coach|steel|armor>_<f|m|b><l|c|r>`: roofs for the enclosed cars
+  (front row, middle rows, back row), each with a flat walkway down the rail
+  tile. Not displayed yet: showing them belongs to the train roof riding work.
+- `loco_<steam|diesel|armored>_<1-4><l|c|r>` and `roof_loco_<variant>_<l|c|r>`:
+  3x4 locomotive bodies and their cab roofs (steam and armoured cab on
+  segment 3, diesel cab on segment 1). Not wired to a locomotive type yet.
+
 ## Shape
 
 A platform car is three tiles wide and `TRAIN_CAR_LENGTH` (4) tiles long. Each

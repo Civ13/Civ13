@@ -241,6 +241,7 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/obj/structure/trains/platform/P in gun_segs)
 		P.last_moved = -1000
 	platform_check("railgun/braces", B && !B.set_braced(TRUE) && gun_front.braced && G && !G.fire_problem())
+	platform_check("railgun/outriggers_down", gun_front.overlays.len == 3)
 	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(20, 11))
 	L.dir = NORTH
 	L.fuel = 100
@@ -248,6 +249,7 @@ var/global/platform_probe_runtime_error = FALSE
 	L.connected = gun_front
 	platform_check("railgun/braced_blocks_train", platform_step(L, 1) == 0 && L.loc == platform_turf(20, 11))
 	B.set_braced(FALSE)
+	platform_check("railgun/outriggers_up", gun_front.overlays.len == 1)
 	platform_check("railgun/unbraced_moves", platform_step(L, 1) == 1 && gun_front.loc == platform_turf(20, 11) && (G.loc == platform_turf(20, 10)))
 
 	// Explosions wreck a car, which stops the train until welded.
