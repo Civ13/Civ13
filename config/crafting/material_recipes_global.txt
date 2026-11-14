@@ -2568,6 +2568,10 @@ RECIPE: /material/wood/soft/,farmer's almanac,/obj/item/weapon/farmers_almanac,1
 
 //*********************| WOOD PAINTINGS |**************************
 
+RECIPE: /material/wood/,easel,/obj/structure/easel,4,80,1,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,miniature panel,/obj/item/canvas/miniature,1,30,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,table picture panel,/obj/item/canvas/table,1,40,0,1,paintings,0,0,0,8,null
+RECIPE: /material/wood/,wall canvas,/obj/item/canvas,2,60,0,1,paintings,0,0,0,8,null
 RECIPE: /material/wood/soft/,stormy sea,/obj/structure/sign/painting1,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,city street,/obj/structure/sign/painting2,3,40,1,1,paintings,65,0,0,8,null
 RECIPE: /material/wood/soft/,sea sunset,/obj/structure/sign/painting3,3,40,1,1,paintings,65,0,0,8,null
