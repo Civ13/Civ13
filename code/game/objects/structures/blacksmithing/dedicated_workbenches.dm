@@ -273,9 +273,9 @@
 	var/crafting_coefficient = H.getStatCoeff("crafting")
 	if (crafting_coefficient < 1.2)
 		return "Smithing tools requires an effective Crafting coefficient of at least 1.20x; yours is [num2text(crafting_coefficient, 9)]x. Check IC > Skill Progress for Crafting progress; mood and traits affect the effective coefficient."
-	if (map && !map.civilizations && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_GULAG13 && !(H.original_job_title in list("Blacksmith", "Pioneer Blacksmith", "Town Blacksmith", "Ferreiro", "Ferrero", "Grofsmid", "Forgeron", "British Blacksmith", "Marooned Pirate Crew", "Schmied")))
+	if (map && !map.civilizations && !map.tribes && map.ID != MAP_GULAG13 && !(H.original_job_title in list("Blacksmith", "Pioneer Blacksmith", "Town Blacksmith", "Ferreiro", "Ferrero", "Grofsmid", "Forgeron", "British Blacksmith", "Marooned Pirate Crew", "Schmied")))
 		return "Your job is not permitted to smith on this map. Ask a blacksmith."
-	if (map && (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS) && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
+	if (map && map.tribes && (H.gorillaman || H.ant || H.wolfman || H.lizard || H.crab))
 		return "You don't know how to use this."
 	return null
 

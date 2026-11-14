@@ -798,10 +798,9 @@ var/global/FREQM = rand(101,120)
 
 
 /proc/reploc(message,mob/living/human/speaker)
-	if (map.ID == MAP_CAMPAIGN || CAMPAIGN_MAP_LIST_MAPID_OR)
-		return "Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
-	else
-		return message
+	// Answers on every map: the campaign-only check that used to be here
+	// always passed (it tested a map ID string, not map.ID).
+	return "Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
 /proc/ten_code(message,mob/living/human/speaker)
 	if (!speaker)
 		return message

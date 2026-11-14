@@ -155,6 +155,10 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	//civ stuff
 	var/civilizations = FALSE
 	var/nomads = FALSE
+	// Map traits, set in each map's own file instead of listing map IDs in shared code.
+	var/tribes = FALSE // tribal faction maps (Tribes, Three Tribes, Four Kingdoms)
+	var/nationsrp = FALSE // the NationsRP family
+	var/campaign = FALSE // the campaign maps (old campaign and every campaign_new stage)
 	var/has_hunger = FALSE
 	var/list/custom_faction_nr = list()
 	var/list/list/custom_civs = list()

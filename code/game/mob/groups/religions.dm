@@ -15,7 +15,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.tribes || map.nationsrp)
 		if (U.religion != "none")
 			to_chat(usr, SPAN_WARNING("You are already member of a religion. Abandon it first."))
 			return
@@ -107,7 +107,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.nationsrp)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
@@ -138,7 +138,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.nationsrp)
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
