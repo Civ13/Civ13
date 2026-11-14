@@ -60,7 +60,7 @@ var/global/list/faction_hall_tiers = list(
 		if (!islist(entry) || !islist(entry["colonies"]))
 			continue
 		for (var/list/colony in entry["colonies"])
-			if (islist(colony) && colony["parent"] == parent)
+			if (islist(colony) && colony["parent"] == parent && !colony["paused"])
 				count++
 	return count
 

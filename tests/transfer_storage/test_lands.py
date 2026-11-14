@@ -219,6 +219,26 @@ class LandStageTests(unittest.TestCase):
         self.assertEqual([], self.stores['beta'].db.execute('SELECT * FROM colony_grant').fetchall())
         self.assertEqual([], self.coordinator.db.execute('SELECT * FROM colony_grant').fetchall())
 
+    def test_a_colony_nobody_lives_in_for_days_pauses_its_start(self):
+        c, now = self.coordinator, 1_800_000_000
+        wolves = 'civ:alpha:Wolves'
+        c.set_land('beta', 'COLONY', False, 'val')
+        quiet = coordinator_module.COLONY_QUIET_SECONDS
+
+        def sample(members, at):
+            row = {'parent': wolves, 'name': 'Wolves', 'age_hours': 100, 'members': members}
+            self.assertTrue(c.record_land_sample('beta', {'players': 1, 'living': members, 'at': at, 'colonies': [row]}, now=at))
+            return c.lands(at)['beta']['colonies'][0]['paused']
+
+        self.assertFalse(sample(1, now))
+        self.assertFalse(sample(1, now + quiet - 60), 'quiet only since the first low sample')
+        self.assertTrue(sample(0, now + quiet))
+        self.assertFalse(c.colony_start_allowed('alpha', 'beta', wolves, now + quiet))
+        # Members back: the colony takes starts again at once.
+        self.assertFalse(sample(2, now + quiet + 60))
+        self.assertTrue(c.colony_start_allowed('alpha', 'beta', wolves, now + quiet + 60))
+        self.assertFalse(sample(1, now + quiet + 120), 'the clock starts again')
+
     def test_a_player_starts_in_an_open_lands_wilds_from_their_home_only(self):
         def ask(land, ckey, op, **kw):
             return call(self.urls[land], TOKENS[land], '/account', dict({'ckey': ckey, 'op': op}, **kw))
