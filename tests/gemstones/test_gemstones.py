@@ -30,11 +30,11 @@ class GemstoneTest(unittest.TestCase):
                 self.assertTrue(icon, block.split('\n')[0])
                 self.assertIn(state[1], state_names(ROOT / icon[1]), block.split('\n')[0])
                 checked += 1
-        self.assertEqual(checked, 15)  # 6 rough, 7 cut, 2 pouches
+        self.assertEqual(checked, 17)  # 6 rough, 7 cut, 2 pouches, 2 belts
 
     def test_worn_pouch_states_have_four_directions(self):
         text = __import__('PIL.Image', fromlist=['Image']).open(ROOT / 'icons/mob/belt_pouches.dmi').info['Description']
-        for state in ('leather_pouch', 'cloth_pouch'):
+        for state in ('leather_pouch', 'cloth_pouch', 'leather_pouch_left', 'cloth_pouch_left', 'pouch_belt', 'baldric'):
             self.assertRegex(text, rf'state = "{state}"\n\tdirs = 4')
 
     def test_gem_roll_is_independent_of_ore_table(self):
@@ -46,9 +46,19 @@ class GemstoneTest(unittest.TestCase):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         for path, node in (('/obj/item/clothing/accessory/storage/belt_pouch', 'basic_tools'),
-                           ('/obj/item/clothing/accessory/storage/belt_pouch/cloth', 'weaving')):
+                           ('/obj/item/clothing/accessory/storage/belt_pouch/cloth', 'weaving'),
+                           ('/obj/item/clothing/pouch_belt', 'basic_tools'),
+                           ('/obj/item/clothing/accessory/storage/baldric', 'basic_tools')):
             self.assertRegex(recipes, rf'RECIPE: [^,]+,[^,]+,{re.escape(path)},')
             self.assertIn(f'"{path}" = "{node}"', nodes)
+
+    def test_belt_draws_its_pouches(self):
+        icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text(encoding='utf-8')
+        belt = icons[icons.index('/mob/living/human/update_inv_belt('):]
+        belt = belt[:belt.index('\n/mob/')]
+        self.assertIn('for (var/obj/item/clothing/accessory/A in cbelt.accessories)', belt)
+        pouches = (ROOT / 'code/modules/1713/belt_pouches.dm').read_text(encoding='utf-8')
+        self.assertIn('overlay_state = others ? "[icon_state]_left" : null', pouches)
 
     def test_items_read_as_ordinary(self):
         # Player-facing text stays plain: names and descriptions only describe

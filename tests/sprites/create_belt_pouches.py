@@ -4,16 +4,20 @@ Every pixel comes from the fixed palettes and the character stamps in this
 file; there is no external, traced or generated artwork. Released under
 Civ13's AGPL-3.0 licence. Run with Pillow from the repository root:
 
-    python3 tests/sprites/create_belt_pouches.py [--preview sheet.png]
+    python3 tests/sprites/create_belt_pouches.py [--preview sheet.png] [--belt-preview sheet.png]
 
-It writes two files with the same state names:
+It writes two files with matching state names:
 
-- icons/obj/belt_pouches.dmi: leather_pouch, cloth_pouch - inventory icons,
-  one direction, one frame.
-- icons/mob/belt_pouches.dmi: leather_pouch, cloth_pouch - worn overlays,
-  four directions (SOUTH, NORTH, EAST, WEST), one frame. The pouch hangs from
-  the belt line (y 18-20 from the top, as in icons/mob/belt.dmi) on the
-  wearer's right hip; seen from the west only its front edge shows past the body.
+- icons/obj/belt_pouches.dmi: leather_pouch, cloth_pouch, pouch_belt, baldric -
+  inventory icons, one direction, one frame.
+- icons/mob/belt_pouches.dmi: leather_pouch, cloth_pouch, pouch_belt, baldric,
+  leather_pouch_left, cloth_pouch_left - worn overlays, four directions
+  (SOUTH, NORTH, EAST, WEST), one frame. A pouch hangs from the belt line
+  (y 18-20 from the top, as in icons/mob/belt.dmi) on the wearer's right hip;
+  seen from the west only its front edge shows past the body. The _left
+  states are the same pouches mirrored to the left hip. pouch_belt is a waist
+  belt on that line with the buckle in front; baldric is a strap from the
+  left shoulder to the right hip.
 
 To change the look, edit this script and rerun it; do not hand-edit the DMIs.
 """
@@ -36,6 +40,10 @@ PAL = {
     'a': '#f0e7cb', 'b': '#ddd1ab', 'c': '#c4b58a', 'd': '#a3946a', 'e': '#7c704e', 'k': '#554b33',
     # hemp cord
     'h': '#a8834a', 'H': '#6f5127',
+    # iron buckle
+    'm': '#b9bdc1', 'M': '#73787d', 'n': '#45484c',
+    # bronze buckle
+    'z': '#dcae56', 'Z': '#94692a', 'y': '#5a3e14',
 }
 
 # name: (left, top, rows). '.' is transparent.
@@ -80,6 +88,46 @@ ITEMS = {
         '..kcccdddddek...',
         '...kdddddeek....',
         '....kkkkkkk.....',
+    )),
+    # Waist belt fastened into a loop, buckle and spare holes at the front.
+    'pouch_belt': (6, 11, (
+        '.....oooooooooo.....',
+        '...oo0011111111oo...',
+        '..o00111222222211o..',
+        '.o0112ooooooooo221o.',
+        '.o012o.........o22o.',
+        'o012o...........o22o',
+        'o112o...........o23o',
+        '.o122oooooooooo223o.',
+        '.o1122nmmn22o2o233o.',
+        '..o222nmoM22222333o.',
+        '...oo3nMMn33334oo...',
+        '.....oooooooooo.....',
+    )),
+    # Longer, narrower shoulder strap hung up as a loop, with a stitched tab.
+    'baldric': (9, 5, (
+        '....oooooo....',
+        '..oo011112oo..',
+        '.o0112oo2223o.',
+        '.o01o....o23o.',
+        'o01o......o23o',
+        'o01o......o23o',
+        'o01o......o23o',
+        'o01o......o23o',
+        'o11o......yzzy',
+        'o12o......zo2Z',
+        'o12o......yZZy',
+        'o12o......o23o',
+        'o12o......o23o',
+        '.o12o....o23o.',
+        '.o12o....o23o.',
+        '..o12o..o23o..',
+        '..o122oo233o..',
+        '...o122233o...',
+        '....o2233o....',
+        '....o2s3so....',
+        '....o2334o....',
+        '.....oooo.....',
     )),
 }
 
@@ -132,6 +180,60 @@ def worn(name):
         stamp(rows, WORN_LEFT[2], WORN_TOP, flip=True),
         stamp(['..' if i < 2 else r[:2] for i, r in enumerate(rows)], WEST_LEFT, WORN_TOP),
     ]
+
+
+def mirrored(img):
+    return img.transpose(Image.FLIP_LEFT_RIGHT)
+
+
+def worn_left(name):
+    """The same pouch on the wearer's left hip (the torso is centred on x 15)."""
+    south, north, east, west = worn(name)
+    return [north, south, mirrored(west), mirrored(east)]
+
+
+def plot(pixels):
+    img = Image.new('RGBA', (S, S))
+    for x, y, ch in pixels:
+        img.putpixel((x, y), rgba(ch))
+    return img
+
+
+def worn_belt():
+    """Two-pixel belt across the torso (x 11-19) at y 18-19; the arms hide the sides."""
+    band = [(x, 18, '1') for x in range(11, 20)] + [(x, 19, '3') for x in range(11, 20)]
+    ends = [(11, 18, '2'), (19, 18, '2'), (11, 19, '4'), (19, 19, '4')]
+    buckle = [(15, 18, 'm'), (15, 19, 'M')]
+    # Facing east the arm covers x 13-15; the buckle sits on the front edge.
+    east = [(12, 18, '2'), (12, 19, '4')]
+    east += [(x, 18, '1') for x in range(16, 20)] + [(x, 19, '3') for x in range(16, 20)]
+    east += [(20, 18, 'm'), (20, 19, 'M')]
+    return [plot(band + ends + buckle), plot(band + ends), plot(east), mirrored(plot(east))]
+
+
+def worn_baldric():
+    """Strap from the left shoulder to the right hip, light upper edge over a dark lower one."""
+    # Front: wearer's left shoulder is viewer-right. One step down per pixel.
+    front = []
+    for y in range(10, 19):
+        x = 29 - y
+        front.append((x, y, '1'))
+        if x + 1 <= 19:
+            front.append((x + 1, y, '3'))
+    # East shows the right hip: the strap rises from the hip to chest and back.
+    east = [(15, 18, '1'), (15, 19, '3')]
+    for i in range(1, 5):
+        east += [(15 + i, 18 - i, '1'), (15 + i, 19 - i, '3'), (15 - i, 18 - i, '1'), (15 - i, 19 - i, '3')]
+    # West shows the left shoulder: the strap falls from it to chest and back.
+    west = [(15, 10, '1'), (16, 10, '1'), (15, 11, '3'), (16, 11, '3')]
+    for i in range(1, 4):
+        west += [(15 - i, 10 + i, '1'), (15 - i, 11 + i, '3')]
+    for i in range(1, 5):
+        west += [(16 + i, 10 + i, '1'), (16 + i, 11 + i, '3')]
+    south = plot(front)
+    north = Image.new('RGBA', (S, S))
+    north.paste(mirrored(south).crop((1, 0, S, S)), (0, 0))  # mirror about x 15
+    return [south, north, plot(east), plot(west)]
 
 
 def write_dmi(path, states, dirs):
@@ -201,14 +303,53 @@ def preview(items, mobs, out, scale=4):
     img.save(out)
 
 
+def preview_belt(items, mobs, out, scale=4):
+    cell, label = S * scale, 14
+    rows = (
+        ('pouch_belt alone', None, ('pouch_belt',)),
+        ('pouch_belt alone over a plain tunic', 'white_tunic', ('pouch_belt',)),
+        ('pouch_belt, leather_pouch (right), cloth_pouch_left', None,
+         ('pouch_belt', 'leather_pouch', 'cloth_pouch_left')),
+        ('pouch_belt, leather_pouch (right), cloth_pouch_left over a plain tunic', 'white_tunic',
+         ('pouch_belt', 'leather_pouch', 'cloth_pouch_left')),
+        ('baldric and pouch_belt over a plain tunic', 'white_tunic', ('baldric', 'pouch_belt')),
+        ('baldric, pouch_belt, cloth_pouch (right), leather_pouch_left', 'white_tunic',
+         ('baldric', 'pouch_belt', 'cloth_pouch', 'leather_pouch_left')),
+    )
+    img = Image.new('RGBA', (cell * 5, (cell + label) * (1 + len(rows))), (34, 34, 40, 255))
+    d = ImageDraw.Draw(img)
+    for i, name in enumerate(('pouch_belt', 'baldric')):
+        img.alpha_composite(items[name].resize((cell, cell), Image.NEAREST), (i * cell, label))
+        img.alpha_composite(items[name], (2 * cell + i * 40 + 8, label + cell // 2 - 16))
+        d.text((i * cell + 4, 1), name + ' (inventory)', fill=(235, 235, 235, 255))
+    d.text((2 * cell + 8, 1), '1x', fill=(235, 235, 235, 255))
+    y = cell + label
+    for title, uniform, layers in rows:
+        d.text((4, y + 1), title + ': south, north, east, west, then 1x', fill=(235, 235, 235, 255))
+        for direction in range(4):
+            fig = figure(direction, uniform)
+            for name in layers:
+                fig.alpha_composite(mobs[name][direction])
+            img.alpha_composite(fig.resize((cell, cell), Image.NEAREST), (direction * cell, y + label))
+            img.alpha_composite(fig, (4 * cell + (direction % 2) * 40 + 8, y + label + 8 + (direction // 2) * 40))
+        y += cell + label
+    img.save(out)
+
+
 def main(argv):
     items = {name: stamp(rows, left, top) for name, (left, top, rows) in ITEMS.items()}
     mobs = {name: worn(name) for name in WORN}
+    mobs['pouch_belt'] = worn_belt()
+    mobs['baldric'] = worn_baldric()
+    for name in WORN:
+        mobs[name + '_left'] = worn_left(name)
     write_dmi(OBJ, items, 1)
     write_dmi(MOB, mobs, 4)
     print('wrote', OBJ.relative_to(ROOT), 'and', MOB.relative_to(ROOT))
     if '--preview' in argv:
-        preview(items, mobs, argv[argv.index('--preview') + 1])
+        preview({n: items[n] for n in WORN}, {n: mobs[n] for n in WORN}, argv[argv.index('--preview') + 1])
+    if '--belt-preview' in argv:
+        preview_belt(items, mobs, argv[argv.index('--belt-preview') + 1])
 
 
 if __name__ == '__main__':
