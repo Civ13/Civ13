@@ -14,11 +14,13 @@ through the same parsing, expansion and execution as the model's plans: the same
 import json
 
 import needs
+import scripts
 
 WORK_DRIVE = 0.25  # what a standing order is worth against a need's urgency
 MIN_NEED = 0.08  # needs pulling less than this are left alone even when idle
 STICKY = 0.05  # bonus that keeps the last routine going rather than flip-flopping
 MAX_TIMES = 40  # most repeats a director may order at once
+SCRIPT_BUDGET = 30  # steps a script order may take before the director reviews it
 FAIL_LIMIT = 2  # failed runs in a row before a routine is dropped and the director asked
 LOG_KEEP = 8
 WORK_DOS = ("build_next", "leather_next", "explore", "boil_water")
@@ -163,6 +165,13 @@ def plan_cure(sit):
     return steps if steps and not error else None
 
 
+def plan_hunt(sit):
+    if sit.levels.get("hunger", 100) >= 50 or sit.levels.get("safety", 100) < 100:
+        return None
+    step = scripts.hunt(sit)
+    return None if step == scripts.DONE else step
+
+
 def plan_rest(sit):
     if sit.levels.get("energy", 100) >= 25 or sit.levels.get("safety", 100) < 100:
         return None
@@ -176,6 +185,7 @@ NEED_ROUTINES = (
     ("warm up", "warmth", 70, plan_warm),
     ("eat", "hunger", 60, plan_eat),
     ("cook", "hunger", 45, plan_cook),
+    ("hunt", "hunger", 30, plan_hunt),
     ("relieve", "relief", 85, plan_relieve),
     ("rest", "energy", 40, plan_rest),
 )
@@ -195,9 +205,20 @@ def parse_order(raw):
         text = raw.strip().lower()
         if text in ("none", "stop", ""):
             return "none"
-        raw = {"do": text} if text in WORK_DOS else {"skill": text}
+        raw = {"do": text} if text in WORK_DOS else {"script": text} if scripts.name_of(text) else {"skill": text}
     if not isinstance(raw, dict):
         return None
+    script = scripts.name_of(raw.get("script"))
+    if raw.get("script") is not None:
+        if not script:
+            return None
+        order = {"script": script, "times": SCRIPT_BUDGET}
+        if script == "wood":
+            try:
+                order["logs"] = max(1, min(40, int(raw.get("logs", raw.get("amount", 4)))))
+            except (TypeError, ValueError):
+                order["logs"] = 4
+        return order
     try:
         times = int(raw.get("times", 5))
     except (TypeError, ValueError):
@@ -227,7 +248,7 @@ def parse_order(raw):
 def describe_order(order):
     if not order:
         return "none"
-    what = order.get("skill") or order.get("do")
+    what = ("make " + order["script"]) if order.get("script") else order.get("skill") or order.get("do")
     extra = f" on {order['word']}" if order.get("word") else f" {order['dir']}" if order.get("dir") else ""
     left = order.get("times")
     return f"{what}{extra}" + (f" ({left} more)" if left else "")
@@ -248,6 +269,7 @@ class Routines:
         self.problem = ""  # why the director must decide next turn ("" when routines may run)
         self.routine_steps = 0
         self.director_calls = 0
+        self.implicit = True  # with no order, follow the active project or the early survival ladder
 
     # The director -------------------------------------------------------------------------------------
 
@@ -277,9 +299,11 @@ class Routines:
             order = parse_order(data.get("routine"))
             if order == "none":
                 self.order = None
+                self.implicit = False  # she idles (needs only) until the director gives work again
                 notes.append("routine stopped")
             elif order:
                 self.order = order
+                self.implicit = True
                 self.failures.pop("work", None)
                 notes.append("routine " + describe_order(order))
         return "; ".join(notes)
@@ -312,13 +336,22 @@ class Routines:
         """The standing order's next step (or the active project's), as (name, plan) or (name, None)."""
         order = self.order
         if not order:
+            rung = scripts.ladder(sit) if self.implicit else ""
+            if not self.implicit:
+                return "", None
             if sit.box.get("leather"):
                 order = {"do": "leather_next", "make": sit.box["leather"]}
             elif sit.box.get("project"):
                 order = {"do": "build_next"}
+            elif rung:
+                order = {"script": rung}
             else:
                 return "", None
-        name = "work: " + describe_order({k: v for k, v in order.items() if k != "times"})
+        name = "work: " + describe_order({k: v for k, v in order.items() if k not in ("times", "logs")})
+        if order.get("script"):
+            script = scripts.SCRIPTS[order["script"]]
+            step = script(sit, order.get("logs", 4)) if order["script"] == "wood" else script(sit)
+            return name, step  # scripts.DONE once the product is in hand
         action = order.get("do")
         if action == "build_next":
             return name, [{"do": "build_next"}] if sit.box.get("project") else None
@@ -357,6 +390,13 @@ class Routines:
             if best is None or score > best.score:
                 best = Choice(name, plan, score, need)
         work_name, work_plan = self._work(sit)
+        if work_plan == scripts.DONE:
+            if self.order:
+                self.problem = f"your routine ({describe_order({'script': self.order['script']})}) is done"
+                self.order = None
+                if best is None or best.score < needs.CRITICAL_URGENCY:
+                    return None
+            work_name, work_plan = "", None
         if work_name and self.failures.get("work", 0) < FAIL_LIMIT:
             plan = numbered(work_plan, sit.refs) if work_plan else None
             if plan:

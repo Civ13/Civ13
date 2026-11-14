@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools" / "agent-control"))
 import autopilot  # noqa: E402
 import needs  # noqa: E402
 import routines  # noqa: E402
+import scripts  # noqa: E402
 
 
 def me(**over):
@@ -38,6 +39,13 @@ def observe(self_row, nearby=(), terrain=()):
 def situation(observation, **kw):
     refs = [observation["self"]["ref"]] + [row["ref"] for row in observation["terrain"] + observation["nearby"]]
     return routines.Situation(observation, refs, autopilot.routine_kit(), **kw), refs
+
+
+def quiet(**kw):
+    """A scheduler with no implicit ladder work, so need routines are tested on their own."""
+    scheduler = routines.Routines(**kw)
+    scheduler.implicit = False
+    return scheduler
 
 
 class NeedsTests(unittest.TestCase):
@@ -86,7 +94,7 @@ class RoutineTests(unittest.TestCase):
     def test_thirst_sends_her_to_clean_water_with_a_list_number(self):
         obs = observe(me(water=60), terrain=[RIVER])
         sit, refs = situation(obs)
-        choice = routines.Routines().choose(sit)
+        choice = quiet().choose(sit)
         self.assertEqual(choice.name, "drink")
         self.assertEqual(choice.plan, [{"do": "drink", "target": 1}])
         # The plan is the model's own vocabulary: the ordinary parser accepts it.
@@ -94,26 +102,26 @@ class RoutineTests(unittest.TestCase):
 
     def test_contented_and_idle_means_the_director_decides(self):
         sit, _ = situation(observe(me()))
-        scheduler = routines.Routines()
+        scheduler = quiet()
         self.assertIsNone(scheduler.choose(sit))
         self.assertIn("nothing to do", scheduler.problem)
 
     def test_relieve_uses_the_players_emote_verbs(self):
         sit, _ = situation(observe(me(bladder=420)))
-        self.assertEqual(routines.Routines().choose(sit).plan, [{"do": "verb", "name": "pee"}])
+        self.assertEqual(quiet().choose(sit).plan, [{"do": "verb", "name": "pee"}])
         sit, _ = situation(observe(me(bowels=470, bladder=420)))
-        self.assertEqual(routines.Routines().choose(sit).plan, [{"do": "verb", "name": "poop"}])
+        self.assertEqual(quiet().choose(sit).plan, [{"do": "verb", "name": "poop"}])
 
     def test_eats_cooked_food_but_raw_only_when_starving(self):
         roasted = me(nutrition=120, left_hand={"ref": "[0xm]", "name": "roasted meat"})
-        self.assertEqual(routines.Routines().choose(situation(observe(roasted))[0]).name, "eat")
+        self.assertEqual(quiet().choose(situation(observe(roasted))[0]).name, "eat")
         raw = me(nutrition=120, left_hand={"ref": "[0xm]", "name": "raw meat"})
-        self.assertIsNone(routines.Routines().choose(situation(observe(raw))[0]))
+        self.assertIsNone(quiet().choose(situation(observe(raw))[0]))
         starving = me(nutrition=40, left_hand={"ref": "[0xm]", "name": "raw meat"})
-        self.assertEqual(routines.Routines().choose(situation(observe(starving))[0]).name, "eat")
+        self.assertEqual(quiet().choose(situation(observe(starving))[0]).name, "eat")
 
     def test_cooks_raw_meat_then_lights_the_fire(self):
-        scheduler = routines.Routines()
+        scheduler = quiet()
         hungry = me(nutrition=150, left_hand={"ref": "[0xm]", "name": "raw meat"})
         choice = scheduler.choose(situation(observe(hungry, nearby=[FIRE]))[0])
         self.assertEqual((choice.name, choice.plan), ("cook", [{"do": "cook", "target": 1}]))
@@ -121,11 +129,11 @@ class RoutineTests(unittest.TestCase):
         choice = scheduler.choose(situation(observe(me(nutrition=150), nearby=[FIRE]))[0])
         self.assertEqual((choice.name, choice.plan), ("cook", [{"do": "light_fire", "target": 1}]))
         roasted = {"ref": "[0xr]", "name": "roasted meat", "item": True, "dx": 1, "dy": 1}
-        choice = routines.Routines().choose(situation(observe(me(nutrition=150), nearby=[FIRE, roasted]))[0])
+        choice = quiet().choose(situation(observe(me(nutrition=150), nearby=[FIRE, roasted]))[0])
         self.assertEqual(choice.plan, [{"do": "pick_up", "target": 2}])
 
     def test_standing_order_repeats_a_skill_until_done(self):
-        scheduler = routines.Routines()
+        scheduler = quiet()
         scheduler.directed(json.dumps({"plan": [], "routine": {"skill": "chop", "times": 2}}))
         sit, _ = situation(observe(me(), nearby=[TREE]))
         choice = scheduler.choose(sit)
@@ -138,7 +146,7 @@ class RoutineTests(unittest.TestCase):
         self.assertEqual(scheduler.director_reason(sit), scheduler.problem)
 
     def test_work_yields_only_to_pressing_needs(self):
-        scheduler = routines.Routines()
+        scheduler = quiet()
         scheduler.directed(json.dumps({"routine": {"skill": "chop", "times": 9}}))
         mild = situation(observe(me(water=230), nearby=[TREE], terrain=[RIVER]))[0]
         self.assertEqual(scheduler.choose(mild).name, "work: chop")
@@ -147,21 +155,21 @@ class RoutineTests(unittest.TestCase):
 
     def test_director_priorities_reorder_needs(self):
         obs = observe(me(water=200, bladder=220), terrain=[RIVER])
-        scheduler = routines.Routines()
+        scheduler = quiet()
         self.assertEqual(scheduler.choose(situation(obs)[0]).name, "drink")
         scheduler.directed(json.dumps({"priorities": {"relief": 3, "thirst": 0.5, "bogus": 2}}))
         self.assertNotIn("bogus", scheduler.priorities)
         self.assertEqual(scheduler.choose(situation(obs)[0]).name, "relieve")
 
     def test_order_with_nothing_to_work_on_goes_back_to_the_director(self):
-        scheduler = routines.Routines()
+        scheduler = quiet()
         scheduler.directed(json.dumps({"routine": {"skill": "chop", "times": 3}}))
         self.assertIsNone(scheduler.choose(situation(observe(me()))[0]))
         self.assertIn("nothing to work on", scheduler.problem)
         self.assertIsNone(scheduler.order)
 
     def test_repeated_failure_drops_the_routine(self):
-        scheduler = routines.Routines()
+        scheduler = quiet()
         sit = situation(observe(me(water=60), terrain=[RIVER]))[0]
         choice = scheduler.choose(sit)
         scheduler.record(choice, "go failed (blocked)")
@@ -213,6 +221,104 @@ class RoutineTests(unittest.TestCase):
         self.assertIn("NEEDS (0 empty, 100 full): ", report)
         self.assertIn("ROUTINE: none", report)
         self.assertIn("drink: drink ok", report)
+
+
+ROCK = {"ref": "[0xrock]", "name": "rock", "type": "/obj/covers/rock", "dx": 1, "dy": 0}
+GRASS = {"ref": "[0xgrass]", "name": "tall grass", "type": "/obj/structure/wild/tallgrass", "dx": 0, "dy": 1}
+DEER = {"ref": "[0xdeer]", "name": "deer", "mob": True, "type": "/mob/living/simple_animal/deer", "stat": 0, "dx": 3, "dy": 0}
+WOLF = {"ref": "[0xwolf]", "name": "wolf", "mob": True, "type": "/mob/living/simple_animal/hostile/wolf", "stat": 0, "dx": 2, "dy": 0}
+
+
+def holding(*names, items=None):
+    hands = {"left_hand": "empty", "right_hand": "empty"}
+    for slot, name in zip(("right_hand", "left_hand"), names):
+        hands[slot] = {"ref": f"[0x{slot}]", "name": name}
+    return me(items=items or [], **hands)
+
+
+def next_step(script, self_row, nearby=()):
+    sit, _ = situation(observe(self_row, nearby=nearby))
+    return script(sit)
+
+
+class ScriptTests(unittest.TestCase):
+    def test_flint_searches_then_sharpens(self):
+        self.assertEqual(next_step(scripts.flint, holding(), [ROCK]), [{"do": "find_flint", "target": "[0xrock]"}])
+        self.assertEqual(next_step(scripts.flint, holding("flint"), [ROCK]), [{"do": "sharpen_flint", "target": "[0xrock]"}])
+        self.assertEqual(next_step(scripts.flint, holding("sharpened flint"), [ROCK]), scripts.DONE)
+        self.assertEqual(next_step(scripts.flint, holding()), [{"do": "explore", "dir": "north"}])
+
+    def test_spear_builds_on_flint_and_a_stick(self):
+        branch = {"ref": "[0xbr]", "name": "branch", "item": True, "branch": "leafy", "dx": 1, "dy": 0}
+        self.assertEqual(next_step(scripts.spear, holding(), [ROCK, TREE]), [{"do": "find_flint", "target": "[0xrock]"}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened flint"), [TREE]), [{"do": "break_branch", "target": "[0xtree]"}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened flint"), [TREE, branch]), [{"do": "pick_leaves", "target": "[0xbr]"}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened flint", "stick")), [{"do": "sharpen_stick", "target": 0}])
+        self.assertEqual(next_step(scripts.spear, holding("sharpened stick")), scripts.DONE)
+
+    def test_axe_twists_two_cuttings_then_binds(self):
+        kit = ("sharpened flint", "sharpened stick")
+        self.assertEqual(next_step(scripts.axe, holding(*kit), [GRASS]), [{"do": "cut_grass", "target": "[0xgrass]"}])
+        one = holding(*kit, items=[{"name": "grass cuttings", "amount": 1}])
+        self.assertEqual(next_step(scripts.axe, one, [GRASS]), [{"do": "cut_grass", "target": "[0xgrass]"}])
+        two = holding(*kit, items=[{"name": "grass cuttings", "amount": 2}])
+        self.assertEqual(next_step(scripts.axe, two, [GRASS]), [{"do": "twist_twine", "target": 0}])
+        bound = holding(*kit)
+        bound["carried"] = ["crude twine (pocket)"]
+        self.assertEqual(next_step(scripts.axe, bound), [{"do": "bind_axe", "target": 0}])
+        self.assertEqual(next_step(scripts.axe, holding("flint axe")), scripts.DONE)
+
+    def test_wood_and_campfire(self):
+        self.assertEqual(next_step(scripts.campfire, holding("flint axe"), [TREE]), [{"do": "chop", "target": "[0xtree]"}])
+        logs = holding("flint axe", items=[{"name": "wood log", "amount": 4}])
+        self.assertEqual(next_step(scripts.campfire, logs, [TREE]), [{"do": "craft", "recipe": "campfire", "material": "wood log"}])
+        self.assertEqual(next_step(scripts.campfire, holding("flint axe"), [FIRE]), scripts.DONE)
+
+    def test_hunt_kills_prey_not_predators_then_butchers(self):
+        armed = holding("sharpened stick", "sharpened flint")
+        self.assertEqual(next_step(scripts.hunt, armed, [DEER, WOLF]), [{"do": "attack", "target": "[0xdeer]"}])
+        self.assertEqual(next_step(scripts.hunt, armed, [WOLF]), [{"do": "explore", "dir": "north"}])
+        dead = dict(DEER, stat=2)
+        self.assertEqual(next_step(scripts.hunt, armed, [dead]), [{"do": "butcher", "target": "[0xdeer]"}])
+        self.assertEqual(next_step(scripts.hunt, holding("raw meat")), scripts.DONE)
+
+    def test_ladder_order(self):
+        rows = [ROCK, TREE]
+        self.assertEqual(scripts.ladder(situation(observe(holding(), nearby=rows))[0]), "flint")
+        self.assertEqual(scripts.ladder(situation(observe(holding("sharpened flint"), nearby=rows))[0]), "spear")
+        self.assertEqual(scripts.ladder(situation(observe(holding("sharpened stick", "sharpened flint"), nearby=rows))[0]), "axe")
+        self.assertEqual(scripts.ladder(situation(observe(holding("flint axe"), nearby=rows))[0]), "campfire")
+        self.assertEqual(scripts.ladder(situation(observe(holding("flint axe"), nearby=[FIRE]))[0]), "")
+
+    def test_ladder_runs_without_an_order_and_none_pauses_it(self):
+        scheduler = routines.Routines()
+        sit = situation(observe(holding(), nearby=[ROCK]))[0]
+        choice = scheduler.choose(sit)
+        self.assertEqual((choice.name, choice.plan), ("work: make flint", [{"do": "find_flint", "target": 1}]))
+        scheduler.directed(json.dumps({"routine": "none"}))
+        self.assertIsNone(scheduler.choose(sit))
+        scheduler.directed(json.dumps({"routine": {"script": "make_axe"}}))
+        self.assertEqual(scheduler.order["script"], "axe")
+        self.assertEqual(scheduler.choose(sit).name, "work: make axe")
+
+    def test_script_order_ends_when_the_product_is_made(self):
+        scheduler = routines.Routines()
+        scheduler.directed(json.dumps({"routine": {"script": "wood", "logs": 2}}))
+        self.assertEqual(scheduler.order, {"script": "wood", "times": routines.SCRIPT_BUDGET, "logs": 2})
+        done = holding("flint axe", items=[{"name": "wood log", "amount": 2}])
+        sit = situation(observe(done, nearby=[TREE, FIRE]))[0]
+        self.assertIsNone(scheduler.choose(sit))
+        self.assertIn("make wood) is done", scheduler.problem)
+
+    def test_hunger_with_no_food_goes_hunting(self):
+        sit = situation(observe(holding("sharpened stick", "sharpened flint") | {"nutrition": 120}, nearby=[DEER]))[0]
+        choice = quiet().choose(sit)
+        self.assertEqual((choice.name, choice.plan), ("hunt", [{"do": "attack", "target": 1}]))
+
+    def test_script_names_and_aliases(self):
+        self.assertEqual(routines.parse_order("campfire"), {"script": "campfire", "times": routines.SCRIPT_BUDGET})
+        self.assertEqual(routines.parse_order({"script": "gather_wood", "logs": 99})["logs"], 40)
+        self.assertIsNone(routines.parse_order({"script": "spaceship"}))
 
 
 class FakeGame:
@@ -272,6 +378,12 @@ class LoopTests(unittest.TestCase):
         code, game, model = self.run_loop(observe(me(bladder=420)), answer, steps=3)
         self.assertEqual(model.calls, 1)
         self.assertEqual(sum(1 for actions in game.queued if {"do": "verb", "name": "pee"} in actions), 2)
+
+    def test_survival_ladder_runs_without_the_model(self):
+        answer = json.dumps({"plan": [{"do": "wait", "ticks": 5}]})
+        code, game, model = self.run_loop(observe(holding(), nearby=[ROCK]), answer, steps=4)
+        self.assertEqual(model.calls, 1)
+        self.assertEqual(sum(1 for actions in game.queued if any(a.get("target") == "[0xrock]" for a in actions)), 3)
 
     def test_no_routines_asks_the_model_every_turn(self):
         answer = json.dumps({"plan": [{"do": "wait", "ticks": 5}]})

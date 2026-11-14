@@ -124,9 +124,12 @@ You are the director of your character. Between your decisions her body runs rou
 when NEEDS run low it drinks, eats, cooks, warms up, treats wounds, chews healing herbs, relieves itself and catches its
 breath, and otherwise it carries out your standing ROUTINE. You are asked when something needs judgement (talk, danger,
 a question, a routine that failed or finished, nothing left to do) and every few turns to review. Routines:
-"routine": {"skill": "<skill>", "times": 1-40, "word": "<a word in the target's name>"} repeats a skill on the nearest
-fitting target (chop trees, mine rock, cut grass, find flint); {"do": "build_next"|"leather_next"|"boil_water"|"explore",
-"times": n} repeats that; "none" stops. Give a routine whenever the next part of your goal is repetitive work.
+"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"hunt"} runs a whole chain until it is made (sharpened
+flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; raw meat from a hunt),
+making what it needs first. {"skill": "<skill>", "times": 1-40, "word": "<a word in the target's name>"} repeats a skill on
+the nearest fitting target (chop trees, mine rock, cut grass); {"do": "build_next"|"leather_next"|"boil_water"|"explore",
+"times": n} repeats that; "none" stops all work until you give more. Without a routine she follows the survival ladder
+(flint, spear, axe, campfire) and any blueprint or leather project by herself. Give a routine for repetitive work.
 "priorities": {"<need>": 0 to 3} makes a need matter more or less (hunger, thirst, warmth, health, relief, energy, hygiene,
 social; 1 is normal). Needs no routine can meet (washing, company, cooling down) are yours to plan.
 MEMORY in the observation is what you remember from before: your home, places you found, and the people you know.
@@ -2886,7 +2889,8 @@ def routine_kit():
         target_rows=target_rows, has=_has, is_food=_is_food, fire_words=FIRE_WORDS,
         is_fuel=lambda name: any(word in str(name).lower() for word in FUEL_WORDS),
         thirst_plan=thirst_plan, cold_plan=cold_plan, worst_wound=worst_wound, treat_plan=treat_plan,
-        illness_plan=illness_plan, skills=SKILLS, skill_targets=SKILL_TARGETS)
+        illness_plan=illness_plan, skills=SKILLS, skill_targets=SKILL_TARGETS,
+        is_plain_stick=_is_plain_stick, binding_words=BINDING_WORDS, is_predator=is_predator)
 
 
 # A run may last days: bookkeeping lists keep only what the loop reads back (WINDOW_MIN..WINDOW_MAX exchanges, 6 signatures,

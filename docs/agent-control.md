@@ -626,7 +626,21 @@ then carries a `NEEDS` line, the current `ROUTINE`, what routines did since it
 last decided, a hint for needs no routine can meet (washing, company, cooling
 down) and why it is being asked. It may also send `"priorities"` (`{"hunger": 2,
 "hygiene": 0.5}`, 0 to 3) to weigh needs. `--no-routines` asks the model every turn
-as before. The run log prints `routine <name>` or `director (<reason>)` per turn
+as before.
+
+Scripts (`scripts.py`) are the multi-step chains the model used to direct one
+click at a time. Each looks at what she carries and sees and returns the next
+step, making what it needs first: `flint` (search a rock, sharpen), `stick`
+(break a branch, take its leaves, strip it, pick it up), `spear`, `axe` (spear,
+sharpened flint, two grass cuttings twisted into twine or sinew, bind), `wood`
+(`logs` wood logs with an axe), `campfire` (four logs, then craft) and `hunt`
+(butcher a carcass in view, or arm herself and attack the nearest animal that
+is not a predator). The director orders one with `"routine": {"script":
+"axe"}`; it ends when the product is in hand. With no order she follows the
+early survival ladder by herself (flint, spear, axe, campfire), after any
+blueprint or leather project, and `"routine": "none"` pauses that work until the
+director gives more. Hunger with no food in hand runs the `hunt` script as a
+need routine. The run log prints `routine <name>` or `director (<reason>)` per turn
 and, at the end, how many turns ran on routines and how many the model decided.
 
 Recipe book (`techtree.py`): the autopilot plans crafting from the game's own
