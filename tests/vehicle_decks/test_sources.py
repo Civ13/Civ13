@@ -79,5 +79,14 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertNotIn('spawn(', BUS)
 
 
+    def test_train_roofs(self):
+        life = read('code/game/mob/living/carbon/human/human_life.dm')
+        self.assertIn('process_train_roofs()', life)
+        trains = read('code/modules/1713/train_platforms.dm')
+        self.assertIn('train_deck_clearance(cargo, OPPOSITE_DIR(newdir))', trains)
+        self.assertIn('hang_roof_images()', trains)
+        self.assertIn('train_deck_segment(D)', proc(DECKS, '/proc/vehicle_deck_walkable('))
+
+
 if __name__ == '__main__':
     unittest.main()
