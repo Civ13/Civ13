@@ -3,8 +3,9 @@
 The world chart is the map boat expeditions will sail
 ([plan](https://claude.ai/artifact/61LciJHKi6eKEUsYMfFgwE)). It is kept by
 the group coordinator next to the land stages ([land stages](land-stages.md)).
-For now admins can look at it and reroll charted lands; no ship sails it yet,
-and nothing on it builds a world.
+For now admins can look at it and reroll charted lands; no ship sails it yet.
+A template becomes a region map with the land generator
+([expedition lands](expedition-lands.md)); nothing builds one in game yet.
 
 ## Tiles
 
