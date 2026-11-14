@@ -1129,7 +1129,12 @@ var/global/list/tailoring_name_block_list = null
 	examine(user)
 	if (!user.ckey || !tailoring_design_valid(design_body, design_colors, design_pieces))
 		return
-	var/choice = WWinput(user, "Copy this pattern into your own pattern book? Your book keeps up to [TAILORING_BOOK_MAX] designs for every character you play here.", "Sewing pattern", "Close", list("Copy into pattern book", "Close"))
+	var/choice = WWinput(user, "Copy this pattern into your own pattern book? Your book keeps up to [TAILORING_BOOK_MAX] designs for every character you play here.", "Sewing pattern", "Close", list("Copy into pattern book", "Show design code", "Close"))
+	if (choice == "Show design code")
+		var/code = tailoring_design_code(design_body, design_colors, design_pieces, design_name)
+		if (code)
+			design_code_show(user, "Clothing design code", code, "Paste it in a tailoring project: Pattern book, Paste a design code.")
+		return
 	if (choice != "Copy into pattern book" || QDELETED(src) || loc != user)
 		return
 	tailoring_book_add_feedback(user, user.ckey, design_body, design_colors, design_pieces, design_name, design_maker, design_author)
@@ -1254,11 +1259,35 @@ var/global/list/tailoring_books = list()
 	menu += "Save this design"
 	if (book.len)
 		menu += "Remove a design"
+	menu += "Copy a design code"
+	menu += "Paste a design code"
 	var/picked = WWinput(user, "Your pattern book holds [book.len] of [TAILORING_BOOK_MAX] designs, shared by every character you play here. Choose one to copy onto the project.", "Pattern book", null, menu)
 	if (!actor_ready(user, site, save_epoch) || stage != 0 || !(picked in menu))
 		return
 	if (picked == "Save this design")
 		tailoring_book_add_feedback(user, user.ckey, design_body, design_colors, design_pieces, design_name, design_maker, design_author)
+		return
+	if (picked == "Paste a design code")
+		paste_design_code(user, site, save_epoch)
+		return
+	if (picked == "Copy a design code")
+		var/list/code_menu = list()
+		if (tailoring_design_valid(design_body, design_colors, design_pieces))
+			code_menu["This design"] = list("body" = design_body, "colors" = design_colors, "pieces" = design_pieces, "name" = design_name)
+		for (var/label in entries)
+			code_menu[label] = entries[label]
+		if (!code_menu.len)
+			return
+		var/list/code_labels = list()
+		for (var/label in code_menu)
+			code_labels += label
+		var/chosen = WWinput(user, "Copy the design code of which design? Paste it into any tailoring project's pattern book to make it again.", "Pattern book", null, code_labels)
+		if (!(chosen in code_menu))
+			return
+		var/list/E = code_menu[chosen]
+		var/code = tailoring_design_code(E["body"], E["colors"], E["pieces"], E["name"])
+		if (code)
+			design_code_show(user, "Clothing design code", code, "Paste it in a tailoring project: Pattern book, Paste a design code.")
 		return
 	if (picked == "Remove a design")
 		var/list/remove_menu = list()
@@ -1270,6 +1299,80 @@ var/global/list/tailoring_books = list()
 		return
 	var/list/entry = entries[picked]
 	load_design(user, entry["body"], entry["colors"], entry["pieces"], entry["name"], entry["maker"], entry["author"], "design")
+
+// Design codes (design_codes.dm): C13CLOTH/1/<body>/<colours>/<pieces>/<name>.
+// Colours are hex without "#" joined by ".", pieces are the 1-based variant
+// number of every option, and the name has "_" for spaces; "-" is empty.
+/proc/tailoring_design_code(body_id, colors_text, pieces_text, design_name)
+	if (!tailoring_design_valid(body_id, colors_text, pieces_text))
+		return null
+	var/list/body = tailoring_body(body_id)
+	var/list/colours = list()
+	for (var/value in (istext(colors_text) && length(colors_text) ? splittext(colors_text, "|") : list()))
+		colours += lowertext(copytext(value, 2))
+	var/list/numbers = list()
+	if (length(body["options"]) && istext(pieces_text) && length(pieces_text))
+		var/list/options = body["options"]
+		var/list/chosen = splittext(pieces_text, "|")
+		for (var/i = 1, i <= chosen.len, i++)
+			var/list/variants = options[options[i]]
+			numbers += "[variants.Find(chosen[i])]"
+	var/name_field = "-"
+	if (istext(design_name) && length(design_name))
+		name_field = replacetext(replacetext(html_decode(design_name), "/", ""), " ", "_")
+		if (!length(name_field))
+			name_field = "-"
+	return "C13CLOTH/1/[body_id]/[colours.len ? jointext(colours, ".") : "-"]/[numbers.len ? jointext(numbers, ".") : "-"]/[name_field]"
+
+// A clothing code -> list("body", "colors", "pieces", "name"), or null.
+/proc/tailoring_parse_design_code(code)
+	var/list/F = design_code_fields(code, "CLOTH")
+	if (!F || F.len != 4)
+		return null
+	var/body_id = lowertext(F[1])
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return null
+	var/list/colours = list()
+	if (F[2] != "-")
+		for (var/value in splittext(F[2], "."))
+			var/hex = design_code_colour_in(value)
+			if (!hex)
+				return null
+			colours += hex
+	var/pieces_text = null
+	if (F[3] != "-")
+		var/list/options = body["options"]
+		var/list/numbers = splittext(F[3], ".")
+		if (numbers.len > length(options))
+			return null
+		var/list/values = list()
+		for (var/i = 1, i <= numbers.len, i++)
+			var/list/variants = options[options[i]]
+			var/n = text2num(numbers[i])
+			if (!isnum(n) || n != round(n) || n < 1 || n > variants.len)
+				return null
+			values += variants[n]
+		pieces_text = jointext(values, "|")
+	var/colors_text = colours.len ? jointext(colours, "|") : null
+	if (!tailoring_design_valid(body_id, colors_text, pieces_text))
+		return null
+	var/design_name = F[4] == "-" ? null : tailoring_clean_name(replacetext(F[4], "_", " "))
+	return list("body" = body_id, "colors" = colors_text, "pieces" = pieces_text, "name" = design_name)
+
+/obj/item/tailoring_project/proc/paste_design_code(mob/living/human/user, turf/site, datum/save_epoch)
+	var/code = design_code_ask(user, "Pattern book", "Paste the clothing design code (it starts with C13CLOTH/).")
+	if (!code || !actor_ready(user, site, save_epoch) || stage != 0)
+		return FALSE
+	var/list/design = tailoring_parse_design_code(code)
+	if (!design)
+		to_chat(user, SPAN_WARNING(design_code_refusal(code, "CLOTH")))
+		return FALSE
+	var/design_name = tailoring_name_blocked(user.ckey) ? null : design["name"]
+	if (!load_design(user, design["body"], design["colors"], design["pieces"], design_name, user.real_name, user.ckey, "design code"))
+		return FALSE
+	design_code_log(user, "clothing", "[src]", code)
+	return TRUE
 
 // Staff panel: every named design in the world, its designer and account.
 /proc/tailoring_admin_allowed(client/C)

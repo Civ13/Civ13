@@ -433,5 +433,23 @@ class SubjectDeeds(unittest.TestCase):
         block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
         self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 10)
 
+class SkillMastery(unittest.TestCase):
+    def setUp(self):
+        self.src = read("code/modules/research_tree/learning_by_doing.dm")
+    def test_hooked_into_skill_gain(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        adapt = proc(stats, "/mob/living/human/proc/adaptStat")
+        self.assertIn("note_skill_mastery(statname)", adapt)
+        self.assertLess(adapt.index("min(stats[statname][2], cap)"), adapt.index("note_skill_mastery(statname)"))
+    def test_paid_once_per_discipline(self):
+        note = proc(self.src, "/mob/living/human/proc/note_skill_mastery")
+        for guard in ("learning_by_doing_enabled()", "skill_mastery_key(discipline, M[1])", "if (key in skill_mastery)", "SCHOLAR_MAX_LEVEL"):
+            self.assertIn(guard, note)
+        self.assertIn("list(250, 12, \"master\")", self.src)
+    def test_saved_and_cleared_on_death(self):
+        imp = proc(self.src, "/mob/living/human/persistence_import_fields")
+        self.assertIn("skill_mastery = clean_skill_mastery(skill_mastery)", imp)
+        self.assertIn("skill_mastery = list()", imp)
+
 if __name__ == "__main__":
     unittest.main()

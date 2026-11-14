@@ -1680,7 +1680,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
-		// --- imperial_architecture (46) ---
+		// --- imperial_architecture (47) ---
+		"/obj/structure/workshop_machine/shear_legs/crane" = "imperial_architecture",
 		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
 		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile" = "imperial_architecture",
@@ -2149,7 +2150,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mine_support/stone/concrete" = "reinforced_concrete",
 		"/obj/structure/window_frame/metal" = "reinforced_concrete",
 		"/obj/structure/workshop_machine/cement_mixer" = "reinforced_concrete",
-		// --- resource_processing (9) ---
+		// --- resource_processing (10) ---
+		"/obj/structure/workshop_machine/mover/horse_gin" = "resource_processing",
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
 		"/obj/structure/flax_comb" = "resource_processing",
@@ -2268,7 +2270,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/harpoon/bone" = "stone_arms",
 		"/obj/structure/anvil/stone" = "stone_arms",
 		"/obj/structure/noose" = "stone_arms",
-		// --- stone_masonry (44) ---
+		// --- stone_masonry (45) ---
+		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
 		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
@@ -2521,7 +2524,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (2) ---
+		// --- watermills (4) ---
+		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
+		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
 		// --- weaving (90) ---

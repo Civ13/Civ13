@@ -41,6 +41,7 @@ var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hun
 /mob/living/human
 	var/list/scholar_lessons = null // lesson keys this character has already learned from
 	var/list/skill_variety = null   // "stat:thing" => times done, up to SKILL_VARIETY_TIRED_UNTIL
+	var/list/skill_mastery = null   // mastery milestones already paid, "mastery:discipline:value"
 
 /proc/learning_by_doing_enabled()
 	return map && map.book_research_enabled()
@@ -135,15 +136,86 @@ var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hun
 /mob/living/human/proc/skill_master_mult(statname)
 	return skill_master_nearby(statname) ? SKILL_MASTER_GAIN : 1
 
+// ---------- Mastery: body skills teach their scholarship ----------
+// Player suggestion (Localbox, relayed by Val 2026-11-14): reaching a milestone
+// in a body skill, or maxing it, gives a large piece of the scholarship that
+// goes with it, "so you actually feel like a master". Each milestone pays a
+// discipline once per character, whichever skill reaches it first, so six
+// weapon skills do not pay Military Science six times. Building walls and
+// the like already pay through deeds and practice (practice_work.dm) and
+// raise crafting, so there is no separate count for them.
+
+// body skill => the discipline it belongs to.
+var/global/list/skill_mastery_disciplines = list(
+	"medical" = "medicine",
+	"crafting" = "engineering",
+	"farming" = "agriculture",
+	"hunting" = "agriculture",
+	"philosophy" = "mathematics",
+	"swords" = "military",
+	"bows" = "military",
+	"rifle" = "military",
+	"pistol" = "military",
+	"machinegun" = "military",
+	"throwing" = "military")
+
+// Milestones: skill value reached, scholarship levels given, what it makes you.
+// The last is the most a skill can reach.
+var/global/list/skill_mastery_milestones = list(
+	list(150, 4, "skilled"),
+	list(200, 8, "expert"),
+	list(250, 12, "master"))
+
+/proc/clean_skill_mastery(value)
+	var/list/result = list()
+	if (islist(value))
+		for (var/key in value)
+			if (istext(key) && findtext(key, "mastery:") == 1 && length(key) <= 60 && result.len < 40)
+				result |= key
+	return result
+
+/proc/skill_mastery_key(discipline, value)
+	return "mastery:[discipline]:[value]"
+
+// Pays every milestone statname has reached and its discipline has not yet
+// been paid for. Returns the scholarship levels gained.
+/mob/living/human/proc/note_skill_mastery(statname)
+	. = 0
+	var/discipline = skill_mastery_disciplines[statname]
+	if (!discipline || !learning_by_doing_enabled() || stat == DEAD || !islist(stats[statname]))
+		return
+	var/value = stats[statname][1]
+	if (!isnum(value) || value < skill_mastery_milestones[1][1])
+		return
+	if (!islist(skill_mastery))
+		skill_mastery = list()
+	for (var/list/M in skill_mastery_milestones)
+		// A hair under the mark counts: gains are rounded on the way up.
+		if (value < M[1] - 0.01)
+			break
+		var/key = skill_mastery_key(discipline, M[1])
+		if (key in skill_mastery)
+			continue
+		skill_mastery += key
+		if (!islist(scholarship))
+			scholarship = list()
+		var/before = scholar_level(discipline)
+		scholarship[discipline] = min(SCHOLAR_MAX_LEVEL, round(before + M[2], 0.01))
+		var/gained = scholarship[discipline] - before
+		. += gained
+		to_chat(src, SPAN_NOTICE("<b>You have become \a [M[3]] at [statname].</b> What your hands know now, your mind keeps: you gain [round(gained, 0.1)] levels of [scholar_disciplines[discipline]]."))
+
 // ---------- Saved with the character ----------
 
 /mob/living/human/persistence_import_fields(list/saved_fields)
 	. = ..()
 	scholar_lessons = clean_scholar_lessons(scholar_lessons)
 	skill_variety = clean_skill_variety(skill_variety)
+	skill_mastery = clean_skill_mastery(skill_mastery)
 	if (stat == DEAD)
 		scholar_lessons = list()
 		skill_variety = list()
+		skill_mastery = list()
 
 /mob/living/human/forget_recipe_knowledge()
 	..()

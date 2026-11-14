@@ -6,9 +6,6 @@
 // level and the one above or below it, through open air beside the legs.
 // Nothing is stored inside the legs and nothing ticks: a haul is one wait.
 
-#define SHEAR_LEGS_REACH 2
-#define SHEAR_LEGS_TIME 60
-#define SHEAR_LEGS_HEAVY_TIME 100
 
 // Too heavy to drag up or down a ladder.
 var/global/list/hoist_only_types = list(
@@ -60,6 +57,10 @@ var/global/list/hoist_exempt_types = list(
 	desc = "Two timbers lashed at the head, with a block and tackle. Drag an unfastened object next to them onto the legs to raise it to the level above or lower it to the level below, through open air. Click them with an empty hand to haul up something lying below. Anvils, furnaces, kilns, machines, cannon and vehicle parts cannot go on a ladder and need a hoist like this."
 	icon = 'icons/obj/lifting_machines.dmi'
 	icon_state = "shear_legs"
+	var/reach = 2 // tiles from the legs a load can land or be picked up below
+	var/haul_time = 60
+	var/heavy_time = 100 // a hoist-only load
+	var/base_state = "shear_legs"
 
 // Why this cannot be slung, or null when it can.
 /obj/structure/workshop_machine/shear_legs/proc/sling_problem(atom/movable/A)
@@ -83,7 +84,7 @@ var/global/list/hoist_exempt_types = list(
 		return null
 	var/turf/best = null
 	var/best_dist = 0
-	for (var/turf/T in range(SHEAR_LEGS_REACH, centre))
+	for (var/turf/T in range(reach, centre))
 		if (!ledge_landing_clear(T))
 			continue
 		if (below_open_air && !edge_open_air(locate(T.x, T.y, z)))
@@ -114,7 +115,7 @@ var/global/list/hoist_exempt_types = list(
 	var/turf/centre = down ? locate(x, y, down) : null
 	if (!centre)
 		return found
-	for (var/turf/T in range(SHEAR_LEGS_REACH, centre))
+	for (var/turf/T in range(reach, centre))
 		if (!edge_open_air(locate(T.x, T.y, z)))
 			continue
 		for (var/obj/O in T)
@@ -140,7 +141,7 @@ var/global/list/hoist_exempt_types = list(
 		return
 	var/list/choices = haul_choices(dropping)
 	if (!length(choices))
-		to_chat(user, SPAN_WARNING("There is nowhere to hoist \the [dropping] to. Raising needs open air above the load and a clear floor within [SHEAR_LEGS_REACH] tiles of \the [src] on the level above; lowering needs open air beside \the [src] with clear ground under it."))
+		to_chat(user, SPAN_WARNING("There is nowhere to hoist \the [dropping] to. Raising needs open air above the load and a clear floor within [reach] tiles of \the [src] on the level above; lowering needs open air beside \the [src] with clear ground under it."))
 		return
 	var/choice = length(choices) == 1 ? choices[1] : player_input(user, "Where should \the [dropping] go?", "Shear legs", null, "anything", choices, TRUE)
 	if (!choice || busy || !hauler_ready(user) || sling_problem(dropping) || get_dist(src, dropping) > 1 || dropping.z != z)
@@ -162,7 +163,7 @@ var/global/list/hoist_exempt_types = list(
 		return
 	var/turf/landing = landing_on(z)
 	if (!landing)
-		to_chat(H, SPAN_WARNING("Clear a floor tile within [SHEAR_LEGS_REACH] tiles of \the [src] to land the load on."))
+		to_chat(H, SPAN_WARNING("Clear a floor tile within [reach] tiles of \the [src] to land the load on."))
 		return
 	var/choice = player_input(H, "What should the legs haul up?", "Shear legs", null, "anything", loads, TRUE)
 	var/obj/load = choice ? loads[choice] : null
@@ -183,14 +184,14 @@ var/global/list/hoist_exempt_types = list(
 		return FALSE
 	var/turf/start = load.loc
 	busy = TRUE
-	icon_state = "shear_legs_haul"
+	icon_state = "[base_state]_haul"
 	visible_message(SPAN_NOTICE("[H] slings \the [load] from \the [src] and starts to haul on the tackle."))
 	playsound(src, 'sound/effects/doorcreaky.ogg', 40, TRUE)
-	var/done = do_after(H, needs_hoist(load) ? SHEAR_LEGS_HEAVY_TIME : SHEAR_LEGS_TIME, src)
+	var/done = do_after(H, driven_time(needs_hoist(load) ? heavy_time : haul_time), src)
 	busy = FALSE
 	if (QDELETED(src))
 		return FALSE
-	icon_state = "shear_legs"
+	icon_state = base_state
 	if (!done || !hauler_ready(H) || QDELETED(load) || load.loc != start || sling_problem(load) || !ledge_landing_clear(destination))
 		to_chat(H, SPAN_WARNING("The load settles back where it was."))
 		return FALSE
@@ -204,6 +205,14 @@ var/global/list/hoist_exempt_types = list(
 	load.visible_message(SPAN_NOTICE("\The [load] is set down from a hoist."))
 	return TRUE
 
-#undef SHEAR_LEGS_REACH
-#undef SHEAR_LEGS_TIME
-#undef SHEAR_LEGS_HEAVY_TIME
+//////////////////////////////////////////////////////////////////////////////
+// Treadwheel crane: the same hoist with a longer jib. Like the shear legs it
+// hauls faster with a treadwheel, horse gin, mill wheel or windmill turning
+// next to it (mechanical_power.dm).
+
+/obj/structure/workshop_machine/shear_legs/crane
+	name = "treadwheel crane"
+	desc = "A timber crane with a long jib and a winding drum. It hoists like shear legs, but reaches three tiles: drag an unfastened object next to it onto the crane to raise or lower it one level through open air, or click it with an empty hand to haul up something lying below. A treadwheel or other prime mover turning next to it speeds the haul."
+	icon_state = "treadwheel_crane"
+	base_state = "treadwheel_crane"
+	reach = 3

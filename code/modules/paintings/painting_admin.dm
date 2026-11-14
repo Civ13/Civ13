@@ -36,7 +36,7 @@ var/global/datum/painting_admin/painting_admin = new
 	for (var/obj/item/canvas/C in painting_registry)
 		i++
 		var/turf/T = get_turf(C)
-		html += "<tr><td><canvas id='p[i]'></canvas></td><td>[html_encode(C.title || "Untitled")]</td><td>[html_encode(C.author_name)] ([html_encode(C.author_ckey)])</td><td>[C.format] [C.canvas_w]x[C.canvas_h]</td><td>[C.painted_at]</td><td>[html_encode(painting_place(C))]</td>"
+		html += "<tr><td><canvas id='p[i]'></canvas></td><td>[html_encode(C.title || "Untitled")]</td><td>[html_encode(C.author_name)] ([html_encode(C.author_ckey)])</td><td>[C.format] [C.canvas_w]x[C.canvas_h][C.imported_design ? " (from a design code)" : ""]</td><td>[C.painted_at]</td><td>[html_encode(painting_place(C))]</td>"
 		html += "<td><a href='?src=\ref[src];view=\ref[C]'>View</a> "
 		if (T)
 			html += "<a href='?_src_=holder;adminplayerobservecoodjump=1;X=[T.x];Y=[T.y];Z=[T.z]'>Jump</a> "
@@ -52,10 +52,11 @@ var/global/datum/painting_admin/painting_admin = new
 			if (!drawing_valid(D))
 				continue
 			i++
-			drawn += "<tr><td><canvas id='p[i]'></canvas></td><td>[html_encode(D["title"])]</td><td>[html_encode(D["by"])] ([html_encode(D["ckey"])])</td><td>[html_encode(A.name)]</td><td>[D["date"]]</td><td>[html_encode(painting_place(A))]</td><td><a href='?src=\ref[src];remove_drawing=\ref[A];n=[n]'>Remove</a></td></tr>"
+			drawn += "<tr><td><canvas id='p[i]'></canvas></td><td>[html_encode(D["title"])]</td><td>[html_encode(D["by"])] ([html_encode(D["ckey"])])</td><td>[html_encode(A.name)][D["imported"] ? " (from a design code)" : ""]</td><td>[D["date"]]</td><td>[html_encode(painting_place(A))]</td><td><a href='?src=\ref[src];remove_drawing=\ref[A];n=[n]'>Remove</a></td></tr>"
 			thumbs += "\['p[i]',[D["w"]],[D["h"]],'',\[[json_encode(painting_palette_list(D["palette"]))],'[painting_unpack(D["data"], D["w"] * D["h"])]'\]\]"
 	if (drawn.len)
 		html += "<h3>Drawings on paper and in books</h3><table><tr><th></th><th>Title</th><th>Drawn by</th><th>On</th><th>Drawn</th><th>Where</th><th></th></tr>[jointext(drawn, "")]</table>"
+	html += painting_import_log_html()
 	html += "<script>var T=\[[jointext(thumbs, ",")]\];"
 	html += {"for(var i=0;i<T.length;i++){var t=T\[i],cv=document.getElementById(t\[0]),k=Math.max(1,Math.floor(48/Math.max(t\[1],t\[2])));cv.width=t\[1]*k;cv.height=t\[2]*k;var g=cv.getContext('2d'),s=t\[3];if(t\[4]){for(var j=0;j<t\[1]*t\[2];j++){g.fillStyle=t\[4]\[0]\[parseInt(t\[4]\[1].charAt(j),16)];g.fillRect((j%t\[1])*k,Math.floor(j/t\[1])*k,k,k);}continue;}for(var j=0;j<t\[1]*t\[2]&&j*3<s.length;j++){var c=s.substr(j*3,3);g.fillStyle='#'+c;g.fillRect((j%t\[1])*k,Math.floor(j/t\[1])*k,k,k);}}"}
 	html += "</script></body></html>"

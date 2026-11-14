@@ -163,7 +163,7 @@ var/global/list/masons_saw_cuts = list(
 	var/made = 0
 	var/obj/item/stack/material/pile = null
 	while (worker_ready(H, S) && S.amount >= cut[1])
-		if (!do_after(H, MASONS_SAW_TIME, src))
+		if (!do_after(H, driven_time(MASONS_SAW_TIME), src))
 			break
 		if (!worker_ready(H, S) || S.amount < cut[1] || !crafting_recipe_allowed(H, "[cut[2]]"))
 			break
