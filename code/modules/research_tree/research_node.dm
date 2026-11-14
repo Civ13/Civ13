@@ -944,7 +944,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (22) ---
+		// --- basic_tools (23) ---
 		"/obj/structure/converter/tanning" = "basic_tools",
 		"/obj/structure/dehydrator" = "basic_tools",
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
@@ -952,6 +952,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
+		"/obj/item/clothing/accessory/storage/belt_pouch" = "basic_tools",
 		"/obj/item/weapon/chisel" = "basic_tools",
 		"/obj/item/weapon/chisel/metal" = "basic_tools",
 		"/obj/item/weapon/clay/mold/shovel" = "basic_tools",
@@ -2411,7 +2412,8 @@ var/global/list/node_grid_col_cache = null
 		// --- watermills (2) ---
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (88) ---
+		// --- weaving (89) ---
+		"/obj/item/clothing/accessory/storage/belt_pouch/cloth" = "weaving",
 		"/obj/structure/component_workbench/armor" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle" = "weaving",
 		"/obj/item/clothing/accessory/armband/armbangle/bronze" = "weaving",
