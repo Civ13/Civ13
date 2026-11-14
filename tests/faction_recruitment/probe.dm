@@ -67,6 +67,10 @@ var/global/persistence_load_recovery_required = FALSE
 	var/list/faction_research_director = list()
 /obj/map_metadata/proc/allows_custom_factions()
 	return TRUE
+// Hall tiers and colonies (faction_hall.dm) are not in this fixture.
+/obj/map_metadata/var/infrastructure_limit = 1000
+/obj/map_metadata/proc/faction_infrastructure_limit(faction)
+	return infrastructure_limit
 
 /proc/check(condition, label)
 	if (!condition)
@@ -244,6 +248,12 @@ var/global/probe_people = 0
 	map.faction_limits()["Alpha"] = length(map.faction_roster("Alpha"))
 	check(map.faction_member_limit("Alpha") == length(map.faction_roster("Alpha")), "a leader's lower limit applies")
 	var/mob/living/human/E2 = person("Eli", "none", "eli")
+	var/list/leader_limits = map.faction_limits()
+	leader_limits -= "Alpha"
+	map.infrastructure_limit = length(map.faction_roster("Alpha"))
+	check(E2.faction_enrollment_block("Alpha"), "a faction its hall cannot support refuses a new account")
+	map.infrastructure_limit = 1000
+	map.faction_limits()["Alpha"] = length(map.faction_roster("Alpha"))
 	check(E2.faction_enrollment_block("Alpha"), "a full faction refuses a new account")
 	check(!E2.enroll_in_faction("Alpha"), "a full faction does not enrol")
 	E1.stat = DEAD

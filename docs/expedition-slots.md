@@ -54,8 +54,9 @@ events.
 
 ## Not done yet
 
-- Ships carrying a crew there and back (craft payload), the voyage, and the
-  coordinator asking the host for a land (later steps of the plan).
+- The voyage over the world chart and the coordinator asking the host for a
+  land (later steps of the plan). Ships already cross to a slot that holds a
+  land and back ([ship crossing](ship-crossing.md)).
 - Placing the template's ore kinds, rare finds and game in the slot world.
 - What happens to characters still homed in a slot when it is archived
   (settle, claim and abandon step).
