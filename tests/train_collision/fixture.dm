@@ -38,6 +38,13 @@ var/datum/map_stub/map = new
 /obj/structure/trains/locomotive
 	var/fuel = 100
 /obj/structure/trains/locomotive/proc/set_speed()
+/obj/structure/trains/locomotive/proc/burn_fuel()
+/obj/structure/trains/locomotive/proc/stall()
+/proc/train_knock_down(mob/living/L, impact)
+/proc/train_consist_obstacle(obj/structure/trains/head, turf/target, heading, list/cars = null)
+	return null
+/atom/movable/proc/persistence_set_loc(atom/destination)
+	return Move(destination)
 /obj/item/proc/update_light()
 /mob/living
 	var/mob_size = 2
