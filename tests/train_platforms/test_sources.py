@@ -78,6 +78,38 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for state in ('car_kit', 'edge_armor', 'edge_armor_door', 'edge_armor_door_open', 'brace_up', 'brace_down',
                       'wreck', 'loco_armor'):
             self.assertIn(state, states)
+        # Headstocks ride on the end segments and their deck tiles; outriggers show while braced.
+        for state in ('end_fl', 'end_fc', 'end_fr', 'end_bl', 'end_bc', 'end_br', 'outrigger'):
+            self.assertIn(state, states)
+        self.assertIn('overlays += "end_[end_row]c"', SOURCE)
+        self.assertIn('D.overlays += "end_[end_row][side == TRAIN_LEFT ? "l" : "r"]"', SOURCE)
+        self.assertIn('image(icon, "outrigger", dir = out', SOURCE)
+        brace = WARFARE[WARFARE.index('/obj/structure/railway_gun_brace/proc/set_braced('):]
+        self.assertLess(brace.index('S.braced = !!state'), brace.index('S.update_car_overlays()'))
+        # Roof and 3x4 locomotive art, three tiles wide (left, rail tile, right).
+        for kind in ('coach', 'steel', 'armor'):
+            for row in 'fmb':
+                for col in 'lcr':
+                    self.assertIn('roof_%s_%s%s' % (kind, row, col), states)
+        for loco in ('steam', 'diesel', 'armored'):
+            for col in 'lcr':
+                self.assertIn('roof_loco_%s_%s' % (loco, col), states)
+                for seg in '1234':
+                    self.assertIn('loco_%s_%s%s' % (loco, seg, col), states)
+        for block in desc.split('state = ')[1:]:
+            self.assertRegex(block, r'dirs = [14]\n\tframes = 1')
+
+    def test_committed_sheets_match_the_drawing_script(self):
+        import subprocess
+        try:
+            import PIL  # noqa: F401
+        except ImportError:
+            self.skipTest('Pillow is not installed')
+        result = subprocess.run([sys.executable, str(ROOT / 'tests/sprites/create_trains.py'), '--check'],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_railway_gun_sheet(self):
         gun = dmi_description(ROOT / 'icons/obj/vehicles/railway_gun.dmi')
         self.assertIn('state = "railway_gun"', gun)
 

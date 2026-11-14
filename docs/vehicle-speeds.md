@@ -11,6 +11,8 @@ given, so `apply_speed_class()` hands it the interval less that overhead.
 
 | Vehicle | Deciseconds per tile | Source |
 | --- | --- | --- |
+| Propeller plane at cruise, full throttle | 0.8 | ladder `car` x 0.5, `aircraft_step_delay` |
+| Propeller plane in low flight, full throttle | 1.2 | ladder `car` x 0.75, floor 1.2 |
 | Diesel locomotive, full throttle, rated load | 1.2 | `locomotive/max_train_speed` |
 | Car with a light hull (extra top gear) | 1.2 | ladder, load factor floor |
 | Car, 5th gear | 1.6 | ladder `car` |
@@ -29,9 +31,10 @@ given, so `apply_speed_class()` hands it the interval less that overhead.
 
 Locomotives meet their targets with notches and load instead of gears; see
 [trains.md](trains.md): a train over its engines' rated pull is slower in
-proportion. Aircraft, ships and boats still carry their own figures. Targets
-for the work that moves them onto the ladder: propeller aircraft 0.8 in
-cruise, jets 0.4.
+proportion. Aircraft taxi on the `car` row and fly faster than it
+(`aircraft/aircraft_load.dm`): a heavy load stretches the cruise interval.
+Ships and boats still carry their own figures. Target for the work that
+moves the rest onto the ladder: jets 0.4.
 
 ## Rules
 

@@ -39,9 +39,12 @@ var/global/list/airborne_aircraft = list()
 	name = "aircraft"
 	desc = "The controls and frame of a light aircraft."
 	vehicle_type = "car"
+	// On the ground it taxis at a car's pace (vehicle_speeds.dm); in the air
+	// aircraft_step_delay() (aircraft_load.dm) flies faster than that.
+	speed_class = "car"
 	speeds = 5
 	maxpower = 800
-	speedlist = alist(1=8,2=6,3=4,4=3,5=2)
+	speedlist = alist(1=8,2=5,3=3,4=1.4,5=0.6)
 	turntimer = 10
 	var/flight_state = AIRCRAFT_GROUND
 	// Tiles rolled at full throttle on runway before the wheels leave it.
@@ -279,6 +282,10 @@ var/global/list/airborne_aircraft = list()
 		pilot_message(SPAN_WARNING("A tow line still holds the plane to the ground. Cast it off before taking off."))
 		runway_roll = 0
 		return FALSE
+	if (too_heavy_to_fly(TRUE))
+		pilot_message(SPAN_WARNING("The plane is too heavy to lift off. Unload some cargo or passengers."))
+		runway_roll = 0
+		return FALSE
 	var/up = multiz_level_above(flight_z())
 	if (!up)
 		if (!no_airspace_warned)
@@ -306,7 +313,7 @@ var/global/list/airborne_aircraft = list()
 	if (!on_runway() && !takeoff_armed)
 		return "On the ground the plane only taxis. Press Climb to line up for a takeoff from open ground, or taxi onto a runway."
 	if (currentspeed < speeds || reverse)
-		return "Throttle up to full (gear [speeds]) and roll forward in a straight line: the plane takes off by itself after [takeoff_roll] tiles of runway or [rough_takeoff_roll] tiles of open ground."
+		return "Throttle up to full (gear [speeds]) and roll forward in a straight line: the plane takes off by itself after [takeoff_distance(TRUE)] tiles of runway or [takeoff_distance(FALSE)] tiles of open ground."
 	return "Keep rolling: the plane takes off by itself after [max(1, takeoff_distance() - runway_roll)] more tile\s of [on_runway() ? "runway" : "open ground"]."
 
 // Climb on the ground: line up for a takeoff, which off a runway is the only
@@ -481,7 +488,8 @@ var/global/list/airborne_aircraft = list()
 	if (!istype(E))
 		return 0
 	var/share = flight_state == AIRCRAFT_CRUISE ? AIRCRAFT_FLIGHT_BURN_CRUISE : AIRCRAFT_FLIGHT_BURN_LOW
-	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share * flight_fuel_node_scale(driver)
+	// A heavier load burns more to stay up (aircraft_load.dm).
+	var/amount = E.fuelefficiency * AIRCRAFT_FUEL_MODIFIER * share * flight_fuel_node_scale(driver) * load_scale()
 	for (var/F in E.fuels)
 		if (E.fueltank.reagents.has_reagent(F, amount))
 			E.fueltank.reagents.remove_reagent(F, amount)
@@ -552,7 +560,8 @@ var/global/list/airborne_aircraft = list()
 			takeoff_armed = FALSE
 			stopmovementloop()
 		return
-	addtimer(CALLBACK(src, PROC_REF(next_aircraft_move)), vehicle_m_delay+1)
+	// Ground, low flight and cruise each keep their own pace (aircraft_load.dm).
+	addtimer(CALLBACK(src, PROC_REF(next_aircraft_move)), aircraft_step_delay())
 
 /obj/structure/vehicleparts/axis/aircraft/proc/next_aircraft_move()
 	movement_processes--
@@ -576,9 +585,7 @@ var/global/list/airborne_aircraft = list()
 		runway_roll = 0
 		field_hint_given = FALSE
 
-// Full-throttle tiles needed to lift off from where the aircraft is now.
-/obj/structure/vehicleparts/axis/aircraft/proc/takeoff_distance()
-	return on_runway() ? takeoff_roll : rough_takeoff_roll
+// takeoff_distance() is in aircraft_load.dm: the load scales the roll.
 
 // Any frame standing on arresting wires catches the hook.
 /obj/structure/vehicleparts/axis/aircraft/proc/on_arresting_wires()

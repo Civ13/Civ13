@@ -70,9 +70,9 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '466128e3ee41607680a3659a340543a93abf0c60'
+WIKI_REVIEWED_REVISION = '79dfc994008878bfd9289e84845a23df79727491'
 WIKI_REVIEWED_GUIDES = {
-    'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
+    'guides/Guide_to_Animals.md': ('d40907b97df21d9df98414a54e9da1b15c357855f0341c905f269dfb97bb8618', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('aae5510bcfb98ca648ee303cdea48af583f0a9ce383eed2fd585c98551fc663d', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('7f6ccc4c2340ac4f954173a12100410e9f557bf241a194e3dcb2dde2c83e08c5', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -123,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('a1a5f705ece3027336005a5fe08e5554eabe1bb6da16cc4294db54b39ad63b69', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('5812f97b73c5144c25ec72225cd56233c88db1d9d4fb01aa4271bd54be5571a1', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book candle candles'),
+    'Miscellaneous_Crafting.md': ('23ae77704542a4133bef1aba22cf6b6b45646ee32d480a2f9287a31c4e5d9ac4', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil candle candles'),
     'maps/Gaia.md': ('28a851bbbe27f13c32eeaaac1dac9400541f84ab16a37e97f1af77b720947aee', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
