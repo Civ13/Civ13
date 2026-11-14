@@ -172,8 +172,9 @@ class ReturnFixture:
                         PERSISTENCE_RETURN_SEARCH_RANGE=7)
         self.env['persistence_bed_return_enabled'] = self.proc('/proc/persistence_bed_return_enabled', '')
         self.env['persistence_sleep_transfer_blocked'] = lambda: self.blocked
+        self.env['persistence_character_floor_usable'] = self.proc('/proc/persistence_character_floor_usable', 'T')
         self.env['persistence_character_turf_safe'] = self.proc('/proc/persistence_character_turf_safe', 'T, H')
-        self.bed.valid_character_bed = MethodType(self.proc('/obj/structure/bed/proc/valid_character_bed', 'src, H', True), self.bed)
+        self.wire_bed(self.bed)
         self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False,
                         player_restoration_blocked=lambda: self.blocked,
                         find_restored_player=lambda account: self.body if self.ready else None)
@@ -191,7 +192,13 @@ class ReturnFixture:
         # The admin reason text is DM string formatting outside this boundary.
         self.store.note_character_return_hold = lambda lobby: self.held.append('Join held for ' + lobby.client.ckey)
         self.env['map_storage'] = self.store
-        self.body.enter_saved_bed_sleep = MethodType(self.proc('/mob/living/human/proc/enter_saved_bed_sleep', 'src', True), self.body)
+        for name in ('enter_saved_bed_sleep', 'saved_sleep_bed', 'saved_bed_sleep_refusal'):
+            setattr(self.body, name, MethodType(self.proc('/mob/living/human/proc/' + name, 'src', True), self.body))
+
+    def wire_bed(self, bed):
+        for name, argument in (('valid_character_bed', 'H'), ('valid_sleep_bed', 'H'),
+                               ('sleep_occupant', 'H'), ('assigned_to_other', 'ckey')):
+            setattr(bed, name, MethodType(self.proc('/obj/structure/bed/proc/' + name, 'src, ' + argument, True), bed))
 
     def proc(self, declaration, args, method=False):
         # Native type paths and one-based lists are injected engine boundaries.
@@ -205,7 +212,8 @@ class ReturnFixture:
                   'character_return_pending', 'reclaim_saved_player', 'find_restored_player',
                   'return_player_eligible', 'finish_character_return', 'restored_bodies_destroyed',
                   'dimension_recovery_required', 'dimension_budget_hold', 'persistence_bed_owner_ckey',
-                  'note_character_return_hold')
+                  'note_character_return_hold', 'sleep_occupant', 'valid_sleep_bed', 'saved_sleep_bed',
+                  'saved_bed_sleep_refusal', 'assigned_to_other')
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
 
@@ -339,7 +347,7 @@ class CharacterReturnTests(unittest.TestCase):
             f = ReturnFixture()
             if case == 'missing': f.world.remove(f.bed)
             if case == 'duplicate': f.world.append(NS(kind='/obj/structure/bed', persistence_bed_owner_ckey='account'))
-            if case == 'occupied': f.bed.buckled_mob = object()
+            if case == 'occupied': f.bed.buckled_mob = NS(gc_destroyed=False, gcDestroyed=False, buckled=f.bed, loc=f.bed_turf)
             if case == 'carried': f.bed.loc = NS(kind='/obj/container')
             if case == 'rolling': f.bed.anchored = False
             if case == 'chair': f.bed.buckle_lying = False
@@ -742,6 +750,63 @@ class CharacterReturnTests(unittest.TestCase):
                 self.assertFalse(f.body.enter_saved_bed_sleep())
                 self.assertFalse(f.body.inducedSSD)
                 self.assertIs(f.body.loc, f.bed_turf)
+
+    def own_bed_sleeper(self):
+        f = ReturnFixture()
+        f.body.loc, f.body.client, f.body.inducedSSD = f.bed_turf, f.client, False
+        f.bed_turf.append(f.bed)
+        return f
+
+    def test_own_bed_sleep_ignores_tile_clutter_and_stale_buckles(self):
+        # Player report: Sleep refused the bed assigned to the sleeper's own account.
+        for case in ('animal', 'corpse', 'crate', 'stale_buckle', 'deleted_sleeper', 'left_bed', 'owned_of_two'):
+            f = self.own_bed_sleeper()
+            if case == 'animal': f.bed_turf.append(NS(kind='/mob/living/simple_animal/mouse', density=False))
+            if case == 'corpse': f.bed_turf.append(NS(kind='/mob/living/human', density=True, stat=2))
+            if case == 'crate': f.bed_turf.append(NS(kind='/obj/structure/closet/crate', density=True))
+            if case == 'stale_buckle': f.bed.buckled_mob = NS(gc_destroyed=False, gcDestroyed=False, buckled=None, loc=f.bed_turf)
+            if case == 'deleted_sleeper': f.bed.buckled_mob = NS(gc_destroyed=True, gcDestroyed=False, buckled=f.bed, loc=f.bed_turf)
+            if case == 'left_bed': f.bed.buckled_mob = NS(gc_destroyed=False, gcDestroyed=False, buckled=f.bed, loc=f.home)
+            other = None
+            if case == 'owned_of_two':
+                other = NS(kind='/obj/structure/bed', loc=f.bed_turf, persistence_bed_owner_ckey=None, anchored=True,
+                           buckle_lying=True, buckled_mob=None, gc_destroyed=False, gcDestroyed=False, density=False)
+                f.wire_bed(other)
+                f.bed_turf.insert(0, other)
+            with self.subTest(case=case):
+                self.assertIsNone(f.body.saved_bed_sleep_refusal())
+                self.assertTrue(f.body.enter_saved_bed_sleep())
+                self.assertEqual(f.bed.persistence_bed_owner_ckey, 'account')
+                if other is not None:
+                    self.assertIsNone(other.persistence_bed_owner_ckey)
+
+    def test_free_bed_is_claimed_and_refusals_name_their_cause(self):
+        f = self.own_bed_sleeper()
+        f.bed.persistence_bed_owner_ckey = None
+        self.assertTrue(f.body.enter_saved_bed_sleep())
+        self.assertEqual(f.bed.persistence_bed_owner_ckey, 'account')
+        for case, words in (('save', 'save or load'), ('recovery', 'recovery'), ('occupied', 'lying in this bed'),
+                            ('loose', 'fastened'), ('water', 'solid, dry floor'), ('another_owner', 'someone else')):
+            f = self.own_bed_sleeper()
+            if case == 'save': f.blocked = True
+            if case == 'recovery': f.env['persistence_player_restore_ready'] = False; f.artifacts.append('map_saves/1.sav')
+            if case == 'occupied': f.bed.buckled_mob = NS(gc_destroyed=False, gcDestroyed=False, buckled=f.bed, loc=f.bed_turf)
+            if case == 'loose': f.bed.anchored = False
+            if case == 'water': f.bed_turf.kind = '/turf/floor/beach/water'
+            if case == 'another_owner': f.bed.persistence_bed_owner_ckey = 'other'
+            with self.subTest(case=case):
+                refusal = f.body.saved_bed_sleep_refusal()
+                self.assertIn(words, refusal)
+                self.assertFalse(f.body.enter_saved_bed_sleep())
+                self.assertFalse(f.body.inducedSSD)
+
+    def test_sleep_verb_reports_cause_and_clears_a_stopped_sleep_flag(self):
+        sleep = adapter.extract(adapter.read(HELPERS), '/mob/living/human/verb/mob_sleep')
+        self.assertNotIn('Choose an available stationary bed', sleep)
+        self.assertLess(sleep.index('if (sleeping)'), sleep.index('inducedSSD = FALSE'))
+        self.assertLess(sleep.index('inducedSSD = FALSE'), sleep.index('saved_bed_sleep_refusal()'))
+        self.assertLess(sleep.index('saved_bed_sleep_refusal()'), sleep.index('WWinput('))
+        self.assertIn('log_game("Sleep refused for', sleep)
 
     def test_unsafe_turfs_rejected_without_arbitrary_spawn(self):
         f = ReturnFixture()

@@ -8,15 +8,33 @@
 // Tiles around a restored body searched for a safe return when its own is unsafe.
 #define PERSISTENCE_RETURN_SEARCH_RANGE 7
 
-/proc/persistence_character_turf_safe(turf/T, mob/living/human/H)
+// The floor itself can hold a character: solid, dry and outside the old sleep zone.
+/proc/persistence_character_floor_usable(turf/T)
 	if(!istype(T, /turf/floor) || T.density || is_protected_sleep_location(T)) return FALSE
 	if(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/lava)) return FALSE
+	return TRUE
+
+/proc/persistence_character_turf_safe(turf/T, mob/living/human/H)
+	if(!persistence_character_floor_usable(T)) return FALSE
 	for(var/atom/movable/A in T)
 		if(A != H && (A.density || istype(A, /mob/living))) return FALSE
 	return TRUE
 
 /obj/structure/bed/proc/valid_character_bed(mob/living/human/H)
-	return !gc_destroyed && !gcDestroyed && anchored && buckle_lying && isturf(loc) && (!buckled_mob || buckled_mob == H) && persistence_character_turf_safe(loc, H)
+	return !gc_destroyed && !gcDestroyed && anchored && buckle_lying && isturf(loc) && !sleep_occupant(H) && persistence_character_turf_safe(loc, H)
+
+// Someone other than H actually lying in this bed. A one-sided buckled_mob left
+// behind by a save/load, a deleted body or a body that has left the tile is not.
+/obj/structure/bed/proc/sleep_occupant(mob/living/human/H)
+	var/mob/living/M = buckled_mob
+	if(!M || M == H || M.gc_destroyed || M.gcDestroyed || M.buckled != src || get_turf(M) != loc) return null
+	return M
+
+// Sleep admission: the sleeper already lies here, so only the bed and the floor
+// matter. Whatever else shares the tile (an animal, a corpse, a crate) is the
+// return's concern, and the return falls back to the nearest safe tile.
+/obj/structure/bed/proc/valid_sleep_bed(mob/living/human/H)
+	return !gc_destroyed && !gcDestroyed && anchored && buckle_lying && isturf(loc) && !sleep_occupant(H) && persistence_character_floor_usable(loc)
 
 // One account per bed: another account's assignment blocks Sleep there.
 /obj/structure/bed/proc/assigned_to_other(ckey)
@@ -50,14 +68,36 @@
 		where = "here"
 	return where
 
-/mob/living/human/proc/enter_saved_bed_sleep()
-	if(!persistence_bed_return_enabled() || persistence_sleep_transfer_blocked() || map_storage.character_recovery_unready() || stat == DEAD || inducedSSD || !client || IsGuestKey(client.key)) return FALSE
-	var/obj/structure/bed/bed
+// The bed on this tile that Sleep assigns: this account's own bed first, then a free one.
+/mob/living/human/proc/saved_sleep_bed()
+	if(!client || !isturf(loc)) return null
+	var/obj/structure/bed/free
 	for(var/obj/structure/bed/B in loc)
-		if(B.valid_character_bed(src) && (!B.persistence_bed_owner_ckey || B.persistence_bed_owner_ckey == client.ckey))
-			if(bed) return FALSE
-			bed = B
-	if(!bed || !isturf(loc) || (buckled && buckled != bed)) return FALSE
+		if(!B.valid_sleep_bed(src)) continue
+		if(B.persistence_bed_owner_ckey == client.ckey) return B
+		if(!B.persistence_bed_owner_ckey && !free) free = B
+	return free
+
+// Why Sleep cannot assign a bed here, as the message for the player; null when it can.
+/mob/living/human/proc/saved_bed_sleep_refusal()
+	if(persistence_sleep_transfer_blocked()) return "Wait for the world save or load to finish, then try Sleep again."
+	if(map_storage.character_recovery_unready()) return "The world is still finishing its recovery after a restart. Try Sleep again in a few minutes."
+	if(stat == DEAD || !client || IsGuestKey(client.key)) return "You cannot claim a bed right now."
+	if(!isturf(loc)) return "Get out of what you are in, then try Sleep again."
+	var/obj/structure/bed/bed = saved_sleep_bed()
+	if(!bed)
+		for(var/obj/structure/bed/B in loc)
+			if(B.assigned_to_other(client.ckey)) return "This bed is assigned to someone else. Sleep in an unassigned bed or your own."
+			if(B.sleep_occupant(src)) return "Someone else is lying in this bed."
+			if(!B.anchored || !B.buckle_lying) return "This bed is not fastened to the floor. Use a stationary bed."
+		return "This bed is not on solid, dry floor. Use a bed on solid ground."
+	if(buckled && buckled != bed) return "Get up from where you are sitting, then try Sleep again."
+	return null
+
+/mob/living/human/proc/enter_saved_bed_sleep()
+	if(!persistence_bed_return_enabled() || inducedSSD || saved_bed_sleep_refusal()) return FALSE
+	var/obj/structure/bed/bed = saved_sleep_bed()
+	if(!bed) return FALSE
 	// No prompt/wait or inventory drop between admission and scalar claim changes.
 	for(var/obj/structure/bed/B in world)
 		if(B != bed && B.persistence_bed_owner_ckey == client.ckey) B.persistence_bed_owner_ckey = null
