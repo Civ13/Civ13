@@ -1547,6 +1547,8 @@ RECIPE: /material/stone/,jersey barrier,/obj/structure/window/barrier/jersey,3,7
 //**************************************************************
 
 RECIPE: /material/marble/,reclaim stone from marble,/obj/item/stack/material/stone,2,15,0,1,none,0,0,0,8,null
+RECIPE: /material/marble/,marble bricks,/obj/item/stack/material/marblebrick,1,25,0,1,none,0,0,0,8,null
+RECIPE: /material/marblebrick/,marble brick wall,/obj/covers/marble_wall/plain/brick,6,140,1,1,construction,0,0,0,8,null
 RECIPE: /material/marble/,marble brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/marble/,well,/obj/structure/sink/well/marble,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/marble/,ashtray,/obj/item/weapon/material/ashtray/marble,3,30,0,1,none,14,0,0,8,null

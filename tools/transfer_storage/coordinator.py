@@ -42,6 +42,7 @@ if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, land_id_valid
+from tools.transfer_storage.world_chart import WorldChart, owner_valid, tile_valid
 
 
 # Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
@@ -163,6 +164,8 @@ class Coordinator(TrainCustody):
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('bootstrap', '0')")
         if bootstrap_new_group:
             self.db.execute("UPDATE ledger SET value = '1' WHERE key = 'bootstrap'")
+        # The world chart for boat expeditions (docs/world-chart.md).
+        self.chart = WorldChart(self.db, mainland)
 
     def close(self):
         self.db.close()
@@ -245,6 +248,19 @@ class Coordinator(TrainCustody):
                         (region, hour, players, players, living))
         self.db.execute('DELETE FROM land_hour WHERE hour <= ?', (hour - READY_WINDOW_HOURS - 24,))
         return True
+
+    def chart_request(self, request):
+        """One admin request from a world's chart panel: 'reroll' a charted
+        tile's template, or 'reveal' the tiles round one (for testing before
+        ships sail). Returns True when it changed the chart."""
+        x, y, admin = request.get('x'), request.get('y'), request.get('admin')
+        if not tile_valid(x, y) or not account_key_valid(admin):
+            return False
+        if request.get('op') == 'reroll':
+            return self.chart.reroll(x, y, admin) is not None
+        if request.get('op') == 'reveal' and owner_valid(request.get('owner')):
+            return bool(self.chart.reveal(request['owner'], x, y))
+        return False
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
@@ -392,23 +408,44 @@ class Coordinator(TrainCustody):
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 land_done[name] = ids
                 self.record_land_sample(name, a.get('land_sample'))
+            chart_done = {}
+            for name, a in asked.items():
+                store = 'chart:' + str(a.get('store') or '')
+                requests = [r for r in a.get('chart_requests') or [] if type(r) is dict and isinstance(r.get('id'), int)]
+                ids = [r['id'] for r in requests]
+                old = {i for (i,) in self.db.execute('SELECT id FROM decided WHERE store = ?', (store,))}
+                for i in old - set(ids):
+                    self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
+                for r in requests:
+                    if r['id'] not in old:
+                        self.chart_request(r)
+                        self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
+                chart_done[name] = ids
             self.db.execute('COMMIT')
         except Exception:
             self.db.execute('ROLLBACK')
             raise
         rev = int(self._ledger('rev'))
         lands = self.lands()
+        chart_rev = self.chart.key()
+        chart = None
         for name, answer in asked.items():
             url, token = regions[name]
             since = answer.get('rev', 0) if answer.get('epoch') == epoch else 0
             rows = [{'ckey': c, 'region': r} for c, r in self.db.execute(
                 'SELECT ckey, region FROM home WHERE rev > ? ORDER BY rev', (since,))]
+            body = {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
+                    'mainland': self.mainland, 'train_locks': self.train_locks(),
+                    'train_decisions': lease_decisions.get(name, []),
+                    'lands': lands, 'land_done': land_done.get(name, []),
+                    'chart_done': chart_done.get(name, []),
+                    'done': [r['id'] for r in answer.get('requests', [])]}
+            # The chart only goes to an agent whose copy is older.
+            if answer.get('chart_rev') != chart_rev:
+                chart = chart or self.chart.snapshot()
+                body['chart'] = chart
             try:
-                call(url, token, '/homes', {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
-                                            'mainland': self.mainland, 'train_locks': self.train_locks(),
-                                            'train_decisions': lease_decisions.get(name, []),
-                                            'lands': lands, 'land_done': land_done.get(name, []),
-                                            'done': [r['id'] for r in answer.get('requests', [])]})
+                call(url, token, '/homes', body)
             except (OSError, ValueError):
                 # Its requests stay queued; deciding them again changes nothing.
                 continue
@@ -491,6 +528,41 @@ class Coordinator(TrainCustody):
         return delivered
 
 
+def _xy(parser, text):
+    try:
+        x, y = (int(v) for v in text.split(','))
+    except ValueError:
+        parser.error('a tile is X,Y, got %r' % text)
+    if not tile_valid(x, y):
+        parser.error('tile %r is off the chart' % text)
+    return x, y
+
+
+def chart_cli(parser, chart, args):
+    """The --chart options: inspect and adjust the world chart on the host."""
+    if args.chart_pin:
+        region, _, at = args.chart_pin.partition('=')
+        if not chart.pin(region, *_xy(parser, at)):
+            parser.error('cannot pin %r: the tile holds a template or another land' % args.chart_pin)
+    if args.chart_reveal:
+        owner, _, at = args.chart_reveal.partition('=')
+        if not owner_valid(owner):
+            parser.error('an owner is admin, faction:NAME or crew:CKEY')
+        rolled = chart.reveal(owner, *_xy(parser, at))
+        print('charted %d new land(s)' % len(rolled))
+    if args.chart_reroll:
+        if chart.reroll(*_xy(parser, args.chart_reroll), by='host') is None:
+            parser.error('only a charted tile with no world can be rerolled')
+    if args.chart is not None:
+        owner = args.chart or None
+        if owner is not None and not owner_valid(owner):
+            parser.error('an owner is admin, faction:NAME or crew:CKEY')
+        if args.chart_json:
+            print(json.dumps(chart.snapshot(owner), sort_keys=True))
+        else:
+            print('\n'.join(chart.text_rows(owner)))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--db', required=True)
@@ -506,6 +578,12 @@ def main(argv=None):
     parser.add_argument('--lands', action='store_true', help='print every land\'s stage as JSON and exit')
     parser.add_argument('--set-land', metavar='REGION=STAGE[,paused]',
                         help='set one land\'s stage (%s), optionally paused, and exit' % ', '.join(LAND_STAGES))
+    parser.add_argument('--chart', nargs='?', const='', metavar='OWNER',
+                        help='print the world chart (everything, or what OWNER has seen) and exit')
+    parser.add_argument('--chart-json', action='store_true', help='with --chart, print JSON instead of text')
+    parser.add_argument('--chart-reveal', metavar='OWNER=X,Y', help='chart the tiles round X,Y for OWNER and exit')
+    parser.add_argument('--chart-reroll', metavar='X,Y', help='give a charted tile a new template and exit')
+    parser.add_argument('--chart-pin', metavar='REGION=X,Y', help='put a mainland region on a fixed tile and exit')
     args = parser.parse_args(argv)
     enrollments = []
     for item in args.region:
@@ -515,6 +593,12 @@ def main(argv=None):
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group)
+    if args.chart is not None or args.chart_reveal or args.chart_reroll or args.chart_pin:
+        try:
+            chart_cli(parser, coordinator.chart, args)
+            return
+        finally:
+            coordinator.close()
     if args.lands or args.set_land:
         try:
             if args.set_land:
