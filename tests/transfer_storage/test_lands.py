@@ -283,7 +283,7 @@ class LandStageSourceTests(unittest.TestCase):
         self.assertNotIn('/land/set', tell)
 
     def test_only_lived_in_kinds_take_a_stage_and_the_mainland_is_fixed(self):
-        self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")', self.land)
+        self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER", "EXPEDITION")', self.land)
         stage = self.land[self.land.index('/proc/land_stage(id)'):]
         self.assertLess(stage.index('return "MAINLAND"'), stage.index('return entry ? entry["stage"] : "CLOSED"'))
         choices = self.land[self.land.index('/proc/land_stage_choices()'):]

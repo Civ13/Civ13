@@ -425,7 +425,7 @@
 	desc = "A german heavy machinegun. Chambered in 7.62x51mm rounds."
 	icon_state = "mg3"
 	base_icon = "mg3"
-	caliber = "a792x57_weak"
+	caliber = "a762x51_weak"
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	firemodes = list(
@@ -440,7 +440,7 @@
 	desc = "A Belgian general-purpose machine gun, designed in the early 1950s by Ernest Vervier. It has been used by more than 80 countries and it has been made under licence in several countries."
 	icon_state = "mg3"
 	base_icon = "mg3"
-	caliber = "a792x57_weak"
+	caliber = "a762x51_weak"
 	magazine_type = /obj/item/ammo_magazine/mg3belt
 	good_mags = list(/obj/item/ammo_magazine/mg3belt)
 	firemodes = list(
