@@ -44,7 +44,7 @@ The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
    `shard_group.py --config group.json expedition-land --region far1 --template tile.json --key 24,16`.
    The template is a world-chart template, or a tile as the chart prints it
    (`{"template": {...}}`). The land is generated into
-   `<root>/expeditions/lands/far1-<time>/` (about 11 s for a tiny land and 29 s
+   `<root>/expeditions/lands/far1-<time>/` (about 4 s for a tiny land and 7 s
    for a small one in the cloud).
 2. **Compile it**: `update-offline --region far1`. The region's map becomes
    `maps/regions/far1.dmm` (a copy of the land), and the host writes
