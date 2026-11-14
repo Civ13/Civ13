@@ -38,7 +38,7 @@ one-go assembly does:
 
 The automobile workshop also builds works vehicles
 (`code/modules/craft/vehicle_works.dm`, `works_vehicle_specs`): a cargo
-truck, scout, field and armoured cars, a tankette, a tracked carrier and
+truck, a double-decker bus, scout, field and armoured cars, a tankette, a tracked carrier and
 light, medium, heavy and main battle tanks.
 They are projects only (`one_go(model)` is FALSE, so the one-go menu and
 `assemble_for()` leave them out). Each spec names an existing body layout,
@@ -56,11 +56,18 @@ out a map layout's free extras for every press model: tanks are empty, shell
 racks are empty, and loose guns, ammunition, supply crates, hull gunner
 seats and radios are not made.
 
+The bus is the one "oversize" spec: it needs a 5x5 bay when its project
+starts, but `largest_model_size()` leaves it out, so a press can still be set
+up where only the usual 4x4 bay fits. Its upper deck is the raised roof deck
+of `vehicle_decks.dm`, reached by the `/obj/structure/vehicle_stairs` inside
+it (`carparts/bus.dm`).
+
 | Model | Square | Steel | Glass | Cloth | Cable | Running gear |
 | --- | --- | --- | --- | --- | --- | --- |
 | Scout car | 3 | 50 | 4 | 4 | 10 | 4 wheels |
 | Field car | 3 | 90 | 6 | 4 | 10 | 4 wheels |
 | Cargo truck | 4 | 80 | 8 | 6 | 10 | 4 wheels |
+| Double-decker bus | 5 | 110 | 14 | 10 | 12 | 4 wheels |
 | Armoured car | 3 | 120 | 0 | 4 | 10 | 4 wheels |
 | Tankette | 3 | 140 | 0 | 4 | 10 | 4 tracks |
 | Tracked carrier | 4 | 180 | 0 | 6 | 12 | 4 tracks |
