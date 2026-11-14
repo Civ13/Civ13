@@ -283,6 +283,7 @@
 			to_chat(user, "You attach the " + W.name + " to the door!")
 			src.name = name + "("+W.name+")"
 			//LATER WE WILL ADD A SWITCH TO CHECK FOR EACH LOCKTYPE APPROPRIATELY
+			src.haslock = TRUE
 			src.locktype = "KEYPAD"
 			src.lockicon = "icons/obj/doors/locks.dmi"
 			src.lockstate = "keypad_door_overlay"

@@ -431,9 +431,11 @@
 					spawn (6 SECONDS)
 						if (!loadable.len)
 							to_chat(user, SPAN_WARNING("There are no shells to load."))
+							is_loading = FALSE
 							return
 						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
 						if (!chosen || chosen == "")
+							is_loading = FALSE
 							return
 						if (!chosen.persistence_set_loc(src))
 							is_loading = FALSE
@@ -572,6 +574,8 @@
 
 						travelled = 0
 						high = TRUE
+						explosion = initial(explosion)
+						incendiary = initial(incendiary)
 
 						if (fired_shell.atype == "INCENDIARY")
 							explosion = FALSE
@@ -1295,6 +1299,10 @@
 			travelled = 0
 			high = TRUE
 			var/obj/item/cannon_ball/fired_shell = loaded[1]
+			explosion = initial(explosion)
+			incendiary = initial(incendiary)
+			nuclear = initial(nuclear)
+			reagent_payload = initial(reagent_payload)
 
 			if (istype(fired_shell, /obj/item/cannon_ball/shell/gas))
 				explosion = FALSE

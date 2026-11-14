@@ -256,6 +256,9 @@ var/global/list/barracks_factions = null
 	if (!who || who == "Cancel")
 		return
 	var/list/roster = barracks_faction_roster()
+	if (roster[who] == BARRACKS_COORDINATOR && !user.client.holder)
+		to_chat(user, SPAN_WARNING("Only admins change a coordinator's role."))
+		return
 	roster[who] = role
 	barracks_faction_save()
 	log_admin("[key_name(user)] put [who] on the Barracks faction roster as [role].")

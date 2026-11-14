@@ -891,7 +891,7 @@ class Supervisor:
             backup, generation = self.stop_saved(operation)
         elif self.config.get('initial_save'):
             backup = self.root / 'backups' / operation
-            generation = snapshot(self.config['initial_save'], backup)
+            generation = snapshot(self.config['initial_save'], backup, expected_map=self.config.get('map', 'NOMADS_EUROPE'))
         else:
             backup, generation = None, None
         self.start(build, backup, generation, operation)

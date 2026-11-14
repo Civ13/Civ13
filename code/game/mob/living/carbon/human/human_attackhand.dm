@@ -121,7 +121,7 @@
 				var/f2 = FALSE
 				for (var/obj/structure/vehicleparts/frame/FR1 in get_turf(src))
 					f1 = TRUE
-				for (var/obj/structure/vehicleparts/frame/FR2 in get_turf(tgt))
+				for (var/obj/structure/vehicleparts/frame/FR2 in get_turf(M))
 					f2 = TRUE
 				if (f1 != f2)
 					return FALSE

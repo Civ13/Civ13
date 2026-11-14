@@ -89,6 +89,12 @@ vehicle from the back row to the front. The cells and parts come from the
 same layout the press assembles (`project_layout()`: the premade car's
 `tocreate` or the light plane's layout).
 
+A model whose cost names `wood` or `aluminium` (the hangar's planes) pays its
+frame and skin stages in that material, a quarter of it per piece, and its
+engine in steel (`vehicle_project_hull()`); every other model pays all three in
+steel. The trainer and light plane have wooden airframes; the cabin, cargo and
+twin-engine planes have aluminium ones (docs/aluminium.md).
+
 When the last piece is fitted the press offers "Roll out". Roll-out clears
 the jig, draws 20 power like an ordinary assembly, credits the plan's
 materials to the stock and runs `complete_assembly()`, so the car gets its

@@ -20,43 +20,68 @@ python3 -m tools.procedural_maps land --template template.json --out lands/24-16
 
 ## From template to land
 
-- **Land type** picks the layout. Archipelago (3 to 5 islands) and volcanic
-  isle (2 islands) use the oceanic generator; every other type is a surface
-  land with open sea on the template's first coast side. Highlands, plateau
-  and fjord coast always get a ridge; marsh and swamp get wetland.
+A land is built from its relief by the relief generator
+([procedural maps](procedural-maps.md#relief-lands)). Its coasts, ranges,
+rivers and lakes are shares of its own area, so the same template rules give a
+sound land at 200 x 200 and at 700 x 700: a larger land has more rivers, lakes,
+ranges and arrival spots, not the same few stretched.
+
+- **Coasts**: every coast side of the template is open sea, with bays, headlands
+  and offshore islets. The other sides are land that runs to the map edge. One
+  coast side makes about a seventh of the map sea, four sides a little under
+  half.
+- **Land type** shapes the relief:
+
+  | Land type | Mountains | Hills | Rivers | Else |
+  | --- | --- | --- | --- | --- |
+  | Coastal plain | 2% of land for each chart ridge, none without | 3-6% | 1.4-2.0% | |
+  | River delta | as coastal plain | 1-3% | 2.6-3.4% | 1-3% wetland |
+  | Marsh | as coastal plain | 1-3% | 1.8-2.6% | 4-8% wetland, more lakes |
+  | Highlands | 8-12% | 12-18% | 1.4-2.0% | |
+  | Plateau | 3-5% | 16-22% | 1.0-1.6% | smooth coast |
+  | Fjord coast | 6-10% | 8-12% | 1.4-2.0% | broken coast |
+  | Archipelago | 1-3% | 4-8% | 1.0-1.6% | 3 to 5 islands when tiny, 9 to 11 at 690 x 690 |
+  | Volcanic isle | 7-11% | 10-14% | 1.0-1.6% | 1-2 islands, 2-3 on a large map |
+
+- **Rivers** rise at springs and lakes, gather tributaries and run downhill to
+  the sea or a lake; they cut gorges through ranges. Hollows fill into lakes
+  that spill by a river. Desert and ice-sheet lands get half the rivers and a
+  third of the lakes; a swamp biome always has wetland.
 - **Biome** sets the generator's climate and biome mix, and then the land is
   reskinned: the surface area (which sets the in-game climate: ice, tundra,
   taiga, forest, grassland, desert, savanna, jungle), ground turfs (snow,
   desert sand, dust, jungle grass) and trees (pines, cacti and palms, jungle
   trees, or fewer trees on open land).
 - **Size** sets the tiles a side. Smaller lands get more stone and supply sites
-  per land tile; larger lands get more forage sites.
+  per land tile; larger lands get more forage sites. Arrival spots are one per
+  5,000 tiles of map, 6 to 48.
 - **Seed**: the same template always builds the same land. A rejected candidate
-  (for example too much water) is retried with a derived seed, at most 8 times;
-  the report lists the rejected attempts.
+  (for example too few safe arrival spots near fresh water) is retried with a
+  derived seed, at most 8 times; the report lists the rejected attempts. In a
+  test of 288 lands (every biome with every land type, four sizes) 287 built
+  on the first attempt and one on the second.
 
 ## Timings and sizes
 
-Measured in a cloud container, one run each, surface lands (islands are a
-little faster):
+Measured in a cloud container, one run each:
 
 | Size | Tiles | Total | Python memory |
 | --- | --- | --- | --- |
-| Tiny | about 200 x 200 | about 3 s | 116 MB |
-| Small | about 300 x 300 | about 7 s | 233 MB |
-| Medium (Gaia) | about 500 x 350 | about 14 s | 431 MB |
-| Massive, at its largest | 690 x 690 | about 42 s | 1.1 GB |
-| Americas size, tool only | 1132 x 920 | about 84 s | 2.0 GB |
+| Tiny | 200 x 200 | about 2 s | 89 MB |
+| Small | 300 x 300 | about 4 s | 179 MB |
+| Medium (Gaia) | 500 x 350 | about 11 s | 324 MB |
+| Massive, at its largest | 690 x 690 | about 41 s | 864 MB |
 
-Every biome built on its first attempt. The host will be faster or slower; the
-expedition slots will measure the time on Val's host before a crew waits on it.
+The host will be faster or slower; the expedition slots will measure the time
+on Val's host before a crew waits on it.
 
 A side may be 64 to 1280 tiles. A land's world holds both levels of its map,
 and the largest world measured on BYOND so far is about 1.04 million cells, so
 a template is refused when width x height x 2 is more than 1,050,000
 (`MEASURED_CELLS` in `tools/procedural_maps/land.py`): 724 x 724 at most. The
-generator itself runs past that (last row), but such a map is not a land a
-slot may open until a world that size has been measured.
+generator itself runs past that (a 1132 x 920 relief land takes about 40 s),
+but such a map is not a land a slot may open until a world that size has been
+measured.
 
 ## Ore, rare finds and game
 
@@ -72,10 +97,5 @@ the slot's `config/expedition_land.json`, and the land world applies it
   silver vein (3%, 8 ore) or diamonds (1%).
 - **Game:** the land's animals are three times as common as usual, up to
   twice their usual cap (ecology spawning).
-
-## Not placed yet
-
-- A surface land's sea strip is narrow (a few percent of the map); the ship
-  arrives on the open-sea side.
 
 Tests: `python3 -I -B tests/procedural_maps/run.py ...` (`test_land.py`).
