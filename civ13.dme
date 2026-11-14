@@ -1135,6 +1135,7 @@
 #include "code\modules\1713\siege\piece.dm"
 #include "code\modules\1713\siege\shell.dm"
 #include "code\modules\1713\siege\turret.dm"
+#include "code\modules\1713\solid_fuel.dm"
 #include "code\modules\1713\transporter\lever.dm"
 #include "code\modules\1713\weapons\attachment.dm"
 #include "code\modules\1713\gunsmithing\firearm_components.dm"
