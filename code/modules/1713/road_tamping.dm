@@ -186,7 +186,7 @@
 	for (var/turf/floor/beach/water/W in range(1, T))
 		return "The ground this close to water is too wet to grade."
 	var/level = terrain_height_at(T) + direction
-	if (level < 0 || level > 15)
+	if (level < 0 || level > TERRAIN_MAX_LEVEL)
 		return direction > 0 ? "The ground is as high as it can go here." : "The ground is as low as it can go here."
 	if (abs(T.terrain_grade + direction) > TERRAIN_GRADE_LIMIT)
 		return direction > 0 ? "You can't build this spot up any higher by hand." : "You can't dig this spot down any lower by hand."

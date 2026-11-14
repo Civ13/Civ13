@@ -37,6 +37,15 @@ HISTORY_KEPT = 50
 
 
 SLOTS_FOLDER = 'expeditions'  # under the group root, beside the region worktrees
+# A ship's course asks for a land (tools/transfer_storage/world_chart.py): the
+# coordinator writes wanted/<slot>.json, the host service opens the slot
+# (serve, open_land) and records its phase; a land it cannot open goes to
+# failed/<slot>.json for the coordinator to turn the ship back.
+WANTED = 'wanted'
+FAILED = 'failed'
+OPENING = 'opening'
+OPENING_STALE_SECONDS = 3600
+BUILDING_GIVE_UP_SECONDS = 3 * 3600
 
 
 def slots_dir(group):
@@ -54,6 +63,33 @@ def expedition_region(group, region_id):
     if region['kind'] != 'EXPEDITION':
         raise Refused('region %s is not an EXPEDITION slot' % region_id)
     return region
+
+
+def wish_file(group, folder, region_id):
+    return slots_dir(group) / folder / (region_id + '.json')
+
+
+def read_wish(group, folder, region_id):
+    try:
+        value = json.loads(wish_file(group, folder, region_id).read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def write_wish(group, folder, region_id, value):
+    path = wish_file(group, folder, region_id)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(value, indent=1, sort_keys=True) + '\n', encoding='utf-8')
+    os.replace(temporary, path)
+
+
+def forget_build(host):
+    """The region's build no longer matches its map: the next stage compiles
+    and installs it even at the same revision."""
+    for path in (host.build_file(), host.staged_file):
+        path.unlink(missing_ok=True)
 
 
 def read_slot(group, region_id):
@@ -144,6 +180,7 @@ def give_land(group, host, region_id, template, key=None, build=None, now=None):
                   world=world_summary(report), given_at=stamp(now), seconds=report.get('seconds'))
     record['history'].append({'at': stamp(now), 'event': 'land', 'key': key, 'land_dir': str(out)})
     write_slot(group, record)
+    forget_build(host)
     return {'region': region_id, 'state': 'LAND', 'key': key, 'map': record['map'], 'seconds': report.get('seconds'),
             'next': 'update-offline --region %s compiles the land; then start the slot' % region_id}
 
@@ -168,10 +205,11 @@ def archive(group, host, region_id, now=None):
         (target / 'slot.json').write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
     record['history'].append({'at': stamp(now), 'event': 'archive', 'key': record.get('key'),
                               'archive': str(target) if moved else None})
-    for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds'):
+    for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds', 'phase', 'voyage', 'refusal'):
         record.pop(field, None)
     record['state'] = 'FREE'
     write_slot(group, record)
+    forget_build(host)
     return {'region': region_id, 'state': 'FREE', 'archived': moved, 'archive': str(target) if moved else None,
             'next': 'update-offline --region %s compiles the placeholder map again' % region_id}
 
@@ -190,7 +228,9 @@ def status(group):
         entry = {'state': record['state']}
         if record['state'] == 'LAND':
             entry.update(key=record.get('key'), given_at=record.get('given_at'), map=record.get('map'),
-                         land=record.get('world'))
+                         land=record.get('world'), phase=record.get('phase'))
+        if read_wish(group, WANTED, region['id']):
+            entry['wanted'] = read_wish(group, WANTED, region['id']).get('key')
         answer[region['id']] = entry
     return answer
 
@@ -228,3 +268,121 @@ def load_template(path):
     if isinstance(template, dict) and isinstance(template.get('template'), dict):
         template = template['template']
     return template
+
+
+# ---------------------------------------------------------------- opening lands for ships
+
+def fail_wish(group, region_id, key, reason, now=None):
+    """Tell the coordinator the land for key could not be opened in this slot."""
+    write_wish(group, FAILED, region_id, {'region': region_id, 'key': key, 'reason': str(reason)[:300], 'at': stamp(now)})
+    wish_file(group, WANTED, region_id).unlink(missing_ok=True)
+
+
+def open_land(group, host, region_id, update, build=None, now=None):
+    """The detached worker the host service starts for a wanted land: build it
+    into the slot, then stage and install its build (update: shard_group's
+    update_offline). The host service starts the slot once it is installed."""
+    marker = wish_file(group, OPENING, region_id)
+    wish = read_wish(group, WANTED, region_id)
+    try:
+        if not wish or not isinstance(wish.get('template'), dict):
+            raise Refused('no land is wanted in slot %s' % region_id)
+        key = wish.get('key')
+        give_land(group, host, region_id, wish['template'], key=key, build=build, now=now)
+        record = read_slot(group, region_id)
+        record.update(phase='building', voyage=wish.get('voyage'), building_since=int(time.time() if now is None else now))
+        write_slot(group, record)
+        wish_file(group, WANTED, region_id).unlink(missing_ok=True)
+        answer = update(group, region_id)
+        if region_id in (answer.get('skipped') or {}):
+            raise Refused('its build could not start: %s' % answer['skipped'][region_id])
+        return {'region': region_id, 'key': key, 'phase': 'building'}
+    except (Refused, OSError, ValueError, RuntimeError) as error:
+        key = wish.get('key') if wish else None
+        if read_slot(group, region_id)['state'] == 'LAND':
+            try:
+                archive(group, host, region_id, now=now)
+            except (Refused, OSError) as again:
+                error = '%s (and the slot could not be freed: %s)' % (error, again)
+        fail_wish(group, region_id, key, error, now)
+        return {'region': region_id, 'key': key, 'failed': str(error)[:300]}
+    finally:
+        marker.unlink(missing_ok=True)
+
+
+def opening(group, region_id, now):
+    """True while an open_land worker for the slot is (probably) running."""
+    try:
+        return now - wish_file(group, OPENING, region_id).stat().st_mtime < OPENING_STALE_SECONDS
+    except OSError:
+        return False
+
+
+def serve(group, hosts, launch, now=None):
+    """One host service pass over the expedition slots: open a wanted land in
+    its slot (launch starts the open_land worker for a region id), then start
+    a slot once its land's build is installed. hosts: (region, host) pairs.
+    Returns what it did, by region."""
+    now = time.time() if now is None else now
+    done = {}
+    for region, host in hosts:
+        if region['kind'] != 'EXPEDITION':
+            continue
+        name = region['id']
+        try:
+            record = read_slot(group, name)
+            wish = read_wish(group, WANTED, name)
+            if wish and record['state'] == 'FREE':
+                if opening(group, name, now) or host.lock.exists():
+                    continue
+                if host.platform.listening(host.config['port']):
+                    # A free slot running its placeholder map is stopped first.
+                    done[name] = {'stopping': host.request('stop')}
+                    continue
+                marker = wish_file(group, OPENING, name)
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                marker.write_text(stamp(now) + '\n', encoding='utf-8')
+                launch(name)
+                done[name] = {'opening': wish.get('key')}
+            elif wish and record['state'] == 'LAND' and not opening(group, name, now):
+                fail_wish(group, name, wish.get('key'), 'the slot already holds land %s' % record.get('key'), now)
+                done[name] = {'refused': wish.get('key')}
+            elif record['state'] == 'LAND' and record.get('phase') == 'building':
+                done[name] = start_when_built(group, host, record, now)
+        except Refused as refusal:
+            done[name] = {'waiting': str(refusal)[:200]}
+        except (OSError, ValueError, RuntimeError) as error:
+            done[name] = {'error': str(error)[:200]}
+    return {k: v for k, v in done.items() if v}
+
+
+def start_when_built(group, host, record, now):
+    """A slot whose land is building: start it once the build is installed;
+    give the land up (and tell the coordinator) when the build failed."""
+    name = record['region']
+    if host.lock.exists() or host.stage_lock.exists() or host.install_marker.exists():
+        return None
+    stage = host.read_json(host.stage_file) or {}
+    problem = None
+    if stage.get('phase') == 'failed':
+        problem = 'its build failed: %s' % str(stage.get('error') or '')[:200]
+    elif (host.read_state() or {}).get('action') == 'update' and (host.read_state() or {}).get('error'):
+        problem = 'its build could not be installed: %s' % str(host.read_state()['error'])[:200]
+    elif str(stage.get('install') or '').startswith('not installed'):
+        problem = 'its build was %s' % stage['install']
+    elif now - (record.get('building_since') or now) > BUILDING_GIVE_UP_SECONDS:
+        problem = 'its build took too long'
+    if problem:
+        key = record.get('key')
+        archive(group, host, name)
+        fail_wish(group, name, key, problem, now)
+        return {'failed': problem}
+    if not host.built_revision():
+        return None
+    if not host.platform.listening(host.config['port']):
+        host.request('start')
+    record = read_slot(group, name)
+    record['phase'] = 'started'
+    record['history'].append({'at': stamp(now), 'event': 'started', 'key': record.get('key')})
+    write_slot(group, record)
+    return {'started': record.get('key')}
