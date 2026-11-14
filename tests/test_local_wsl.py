@@ -55,6 +55,7 @@ class LocalWslTests(unittest.TestCase):
                          'code/modules/1713/herbalism.dm',
                          'code/modules/1713/flint_mining.dm',
                          'code/modules/1713/stone_age_arms.dm',
+                         'code/modules/1713/obsidian.dm',
                          'code/modules/1713/herb_garden.dm',
                          'code/game/objects/farming.dm',
                          'code/modules/reagents/reagent_containers/food/snacks/meat.dm',

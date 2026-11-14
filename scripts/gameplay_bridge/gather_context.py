@@ -16,7 +16,7 @@ PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
  PATHS[0]: "65300bd76e9f96a461eb0a7faf486239d78deeedb27df183c2f0447dee365904",
- PATHS[1]: "c3e25e696e0f0ffe7110831b9e7bbfabc2f2fae6dadc1cb04ab87a3929ecff0d",
+ PATHS[1]: "499c2fd6ceee2c9910e5e1951c19e8463cd1d8593cccc459dee6f3c8c1247d23",
  PATHS[2]: "03d24a6cfbdbce40b25d1d085f5eea5871970b64365579dc40d8dddad85ba37d",
  PATHS[3]: "0864eee5ae079c6d3f98bfc50fec6388e499168e21a0ec09a6b0df45edd7ea4b",
 }

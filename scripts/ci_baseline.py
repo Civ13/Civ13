@@ -1010,6 +1010,11 @@ SUITES = {
             'code/modules/projectiles/_ammo_casing.dm', 'icons/obj/flint_mining.dmi',
             'code/game/objects/structures/blacksmithing/dedicated_workbenches.dm',
             'code/modules/1713/light_fuel.dm')},
+    # Obsidian sources, knapping and tools: source contracts only.
+    'obsidian': {'files': ('tests/obsidian/test_source.py',),
+        'paths': ('tests/obsidian/',), 'shared_paths': (
+            'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
+            'icons/obj/obsidian.dmi', 'code/modules/research_tree/research_node.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
