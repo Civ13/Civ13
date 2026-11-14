@@ -9,6 +9,8 @@
 //   Smithing tools you know (Basic Toolmaking) advances Iron Tools, and so on.
 //   Every early node with prerequisites gets one practice experiment per
 //   prerequisite, generated from the tree, so new nodes are covered too.
+// - Deeds: the first ages have hand-written deeds per subject instead of a
+//   counter (subject_deeds below).
 // - Gathering: a few first nodes with nothing before them advance by
 //   foraging or butchering.
 // Credit still happens at a bench, once per book, exactly like late field
@@ -25,6 +27,69 @@
 #define PRACTICE_MAX_ITEMS 20
 
 var/global/practice_experiments_built = FALSE
+
+// Hand-written deeds (Val, 2026-11-14): instead of "make N things taught by
+// P", a subject listed here asks for particular pieces of work that point at
+// what it is about. Every deed uses only things its groundwork teaches. A
+// subject without an entry keeps its generated practice.
+// node id => list of deeds, each list(key, list(result paths), amount, share, what to do).
+// A result path also covers its subtypes.
+var/global/list/subject_deeds = list(
+	"bronze_working" = list(
+		list("molds", list("/obj/item/weapon/clay/mold/shovel"), 2, 0.2, "Shape 2 unfired shovel molds from clay"),
+		list("hammer", list("/obj/item/weapon/hammer"), 1, 0.15, "Make a hammer"),
+		list("chisel", list("/obj/item/weapon/chisel"), 1, 0.15, "Make a chisel")),
+	"early_cells" = list(
+		list("kiln", list("/obj/structure/furnace/kiln"), 1, 0.3, "Build a clay kiln"),
+		list("molds", list("/obj/item/weapon/clay/mold"), 3, 0.2, "Shape 3 unfired clay molds")),
+	"stone_masonry" = list(
+		list("walls", list("/obj/covers/wood_wall"), 4, 0.2, "Raise 4 wooden walls"),
+		list("supports", list("/obj/structure/roof_support"), 2, 0.15, "Set up 2 roof supports"),
+		list("frames", list("/obj/structure/wallframe"), 2, 0.15, "Build 2 wall frames")),
+	"regalia" = list(
+		list("ornaments", list("/obj/item/clothing/accessory/armband"), 2, 0.25, "Make 2 arm ornaments, bangles or talismans"),
+		list("mask", list("/obj/item/clothing/mask/wooden"), 1, 0.25, "Carve a wearable wood mask")),
+	"cooperage" = list(
+		list("handles", list("/obj/item/weapon/material/handle"), 2, 0.2, "Make 2 tool handles"),
+		list("dowels", list("/obj/item/stack/wooden_dowels"), 1, 0.15, "Whittle a set of wooden dowels"),
+		list("bench", list("/obj/structure/component_workbench"), 1, 0.15, "Build a workbench")),
+	"resource_processing" = list(
+		list("tanning", list("/obj/structure/converter/tanning"), 1, 0.2, "Build a tanning rack"),
+		list("dehydrator", list("/obj/structure/dehydrator"), 1, 0.15, "Build a dehydrator"),
+		list("net", list("/obj/item/weapon/fishing/net"), 1, 0.15, "Make a fishing net")),
+	"furriery" = list(
+		list("pelts", list("/obj/item/clothing/head/bearpelt", "/obj/item/clothing/head/bisonpelt", "/obj/item/clothing/head/foxpelt", "/obj/item/clothing/head/gatorpelt", "/obj/item/clothing/head/goatpelt", "/obj/item/clothing/head/lionpelt", "/obj/item/clothing/head/lizardpelt", "/obj/item/clothing/head/pantherpelt", "/obj/item/clothing/head/sheeppelt", "/obj/item/clothing/head/wolfpelt"), 2, 0.2, "Make 2 pelt headcovers"),
+		list("coat", list("/obj/item/clothing/suit/prehistoricfurcoat"), 1, 0.15, "Sew a pelt coat"),
+		list("boots", list("/obj/item/clothing/shoes/fur"), 1, 0.15, "Make a pair of fur boots")),
+	"bronze_weapons" = list(
+		list("molds", list("/obj/item/weapon/clay/mold/sword", "/obj/item/weapon/clay/mold/spearhead", "/obj/item/weapon/clay/mold/axehead"), 2, 0.2, "Shape 2 unfired weapon molds: sword, spearhead or axehead"),
+		list("kiln", list("/obj/structure/furnace/kiln"), 1, 0.15, "Build a clay kiln"),
+		list("bench", list("/obj/structure/component_workbench/weapon"), 1, 0.15, "Build a weapon workbench")),
+	"field_surgery" = list(
+		list("bandages", list("/obj/item/stack/medical/bruise_pack/bint"), 3, 0.2, "Make bandages 3 times"),
+		list("splints", list("/obj/item/stack/medical/splint"), 2, 0.15, "Make splints twice"),
+		list("mortar", list("/obj/item/weapon/reagent_containers/glass/mortar"), 1, 0.15, "Make a mortar and pestle")),
+	"classical_dress" = list(
+		list("sandals", list("/obj/item/clothing/shoes/sandal"), 2, 0.2, "Make 2 pairs of sandals"),
+		list("hat", list("/obj/item/clothing/head/strawhat"), 1, 0.15, "Make a straw hat"),
+		list("robe", list("/obj/item/clothing/under/customtribalrobe", "/obj/item/clothing/under/aztec_loincloth", "/obj/item/clothing/under/indian1", "/obj/item/clothing/under/indian2", "/obj/item/clothing/under/indian3"), 1, 0.15, "Sew a tribal robe or loincloth")))
+
+// result path => list of deed activities it counts towards. Built with the experiments.
+var/global/list/deed_paths = list()
+
+/proc/deed_activity(node_id, key)
+	return "deed:[node_id]:[key]"
+
+// Counts a finished piece of work towards every deed it belongs to.
+/proc/note_deed_work(mob/user, result_path_string)
+	build_practice_experiments()
+	. = FALSE
+	for (var/path in deed_paths)
+		if (result_path_string != path && findtext(result_path_string, "[path]/") != 1)
+			continue
+		for (var/activity in deed_paths[path])
+			if (note_field_work(user, activity))
+				. = TRUE
 
 // The activity id that counts things made from node_id's recipes.
 /proc/practice_activity(node_id)
@@ -44,6 +109,16 @@ var/global/practice_experiments_built = FALSE
 		var/datum/research_node/N = research_nodes[node_id]
 		if (!N || N.era_tier >= PRACTICE_BELOW_TIER || N.mode == RESEARCH_MODE_BOOK || !N.prereqs.len)
 			continue
+		// Hand-written deeds replace the generated practice.
+		if (islist(subject_deeds[N.id]))
+			for (var/list/D in subject_deeds[N.id])
+				var/activity = deed_activity(N.id, D[1])
+				field_experiments["deed_[N.id]_[D[1]]"] = list(N.id, activity, D[3], D[4], D[5])
+				for (var/path in D[2])
+					if (!islist(deed_paths[path]))
+						deed_paths[path] = list()
+					deed_paths[path] |= activity
+			continue
 		var/needed = practice_items_needed(N)
 		var/share = round(PRACTICE_TOTAL_SHARE / N.prereqs.len, 0.01)
 		for (var/req in N.prereqs)
@@ -62,16 +137,17 @@ var/global/practice_experiments_built = FALSE
 /proc/note_craft_practice(mob/user, result_path_string)
 	if (!istext(result_path_string) || !map || !map.book_research_enabled())
 		return FALSE
+	var/deed = note_deed_work(user, result_path_string)
 	var/node_id = get_recipe_node_req(result_path_string)
 	if (!istext(node_id) || !get_research_node(node_id))
-		return FALSE
+		return deed
 	// Made beside someone who knows the subject: guided work (trade_learning.dm).
 	// Otherwise, made early from a part-written chapter: a prototype (subject_prototypes.dm).
 	if (!record_guided_work(user, result_path_string))
 		record_subject_prototype(user, result_path_string)
 	// People close by who could learn the subject watch how it is done.
 	note_craft_watched(user, result_path_string)
-	return note_field_work(user, practice_activity(node_id))
+	return note_field_work(user, practice_activity(node_id)) || deed
 
 #undef PRACTICE_BELOW_TIER
 #undef PRACTICE_TOTAL_SHARE
