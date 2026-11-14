@@ -4,6 +4,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `report.py` builds a source-linked unresolved-default review queue. `create_cinchona.py`, `create_crafted_repairs.py`, `create_diving_gear.py`, `create_hand_carts.py` (from the frozen `carts_one_direction.dmi`), `create_huey.py`, `create_naval_mines.py`, `create_naval_gear.py`, `create_rain_gear.py`, `create_sea_life.py`, `create_primitive_carrying.py` , `create_water_animation.py`, `create_stone_age_arms.py`, `create_weather_footwear.py` and `create_weather_instruments.py` reproduce the conventional pixel assets using Pillow; they are authoring utilities, not CI mutations.
 
+`create_brazier_fire.py` owns the lit states of the stone, sandstone, obsidian and marble braziers in `icons/obj/structures.dmi`: it draws the coals and a 16-frame flame over each unlit bowl. `--check` verifies the committed sheet, `--gif` writes a review animation. It leaves every other state in the sheet untouched.
+
 `create_water_animation.py` owns the animated water states in `icons/turf/beach.dmi` (water bodies, their shoreline edges, the dock line and the flood overlays). They share one 12-frame loop so neighbouring water stays in step; change the water there and rerun it rather than editing those states by hand. `--check` verifies the committed sheet, `--gif` writes a tiled review animation. It leaves every other state in the sheet untouched.
 
 No live server, player data, game instances or external-effect tests are involved. Constructors and overlay/worn/held rendering are outside this defaults inventory. Add meaningful dedicated checks for those behaviors when introducing dynamic graphics.
