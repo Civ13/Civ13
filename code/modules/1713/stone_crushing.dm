@@ -4,7 +4,8 @@
 
 // Weights are per 10,000 rolls (100 = 1%). The era gates match trace
 // sifting: iron and calamine (zinc) from the Bronze Age, coal/lead/saltpeter/sulphur from the
-// Medieval age. Anything not unlocked in the current age stays rubble.
+// Medieval age, bauxite from the Industrial age. Anything not unlocked in the
+// current age stays rubble.
 /proc/stone_crushing_table(age = 0, powered = FALSE)
 	var/list/table = list(
 		/obj/item/stack/ore/glass = 2000,
@@ -22,6 +23,8 @@
 		table[/obj/item/stack/ore/lead] = 150
 		table[/obj/item/stack/ore/saltpeter] = 100
 		table[/obj/item/stack/ore/sulphur] = 100
+	if (age >= 4)
+		table[/obj/item/stack/ore/bauxite] = 150
 	// Mechanised stamping and washing recovers half again as much of every
 	// ore and mineral; sand recovery rises from 20% to 25%.
 	if (powered)
