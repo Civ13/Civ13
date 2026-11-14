@@ -31,6 +31,9 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='ignore')
 LOOSE_INPUTS = {
     '/obj/item/weapon/reagent_containers/food/snacks/animalfat':
         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+    '/obj/item/machine_part/gear': 'code/modules/materials/machine_parts.dm',
+    '/obj/item/machine_part/shaft': 'code/modules/materials/machine_parts.dm',
+    '/obj/item/machine_part/bearing': 'code/modules/materials/machine_parts.dm',
 }
 
 

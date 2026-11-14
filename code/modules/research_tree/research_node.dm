@@ -637,6 +637,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/machine_part/belt" = "basic_tools",
 		"/obj/item/machine_part/spring" = "bronze_working",
 		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
+		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
+		"/obj/structure/workshop_machine/lathe/engine" = "machined_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools

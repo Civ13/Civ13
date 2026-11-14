@@ -139,6 +139,22 @@ in a metal that cannot do its job (no lead or tin gears) or a shape that
 cannot be cast (springs, chains). Brass joined `anvil_mold_costs`, so brass
 pours into every mould at the bronze cost.
 
+## Lathes
+
+`code/modules/materials/lathes.dm` adds two `/obj/structure/workshop_machine/lathe`
+subtypes. Use sheet stock on a fastened lathe to turn a precise gear set,
+shaft or bearing (`lathe_parts`: 4, 2 and 2 units), or use a rough part on it
+to cut it true. Springs and belts are never turned.
+
+| Lathe | Research | Built from | Cuts | Needs |
+| --- | --- | --- | --- | --- |
+| `lathe/pole` | Workshops | 8 wood, 2 rope | wood, bone, brass | a chisel held, worn or at your feet |
+| `lathe/engine` | Machined Tools | 12 iron, a gear set, a shaft and 2 bearings of any material, a wrench | copper, bronze, brass, iron, steel | nothing; twice as fast |
+
+Both are built from rough parts, so the first lathe never needs a lathe.
+`precise` changes nothing by itself yet: machines read it when they take part
+slots.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a
