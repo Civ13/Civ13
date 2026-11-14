@@ -998,6 +998,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
 		"/obj/structure/fish_pen" = "basic_tools",
+		"/obj/item/weapon/trap_kit/snare" = "basic_tools",
+		"/obj/item/weapon/trap_kit/deadfall" = "basic_tools",
+		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
@@ -1318,6 +1321,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
 		"/obj/item/weapon/beartrap" = "field_defenses",
+		"/obj/item/weapon/pit_cover" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
 		"/obj/item/weapon/material/shovel/trench" = "field_defenses",
 		"/obj/item/weapon/punji_sticks" = "field_defenses",
