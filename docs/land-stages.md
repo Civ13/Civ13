@@ -115,6 +115,11 @@ start new characters with a faction only after joining it in play.
   one of the colony's stations) and joins it, and `colony_used` clears the
   grant. On lands without random starts, job relocation places the body
   (`faction_start_turf`).
+- **Quiet colonies pause.** A colony that reports fewer than 2 living members
+  for 3 days (`COLONY_KEEP_MEMBERS`, `COLONY_QUIET_SECONDS` in coordinator.py)
+  is marked `paused` in the land list: it takes no colony starts and adds
+  nothing to its faction's hall limit until 2 members live there again. The
+  charter still stands and travellers still rejoin it.
 
 ## Open-land wild start
 

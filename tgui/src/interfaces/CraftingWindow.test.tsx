@@ -7,19 +7,19 @@ import type { Data, ScreenProps } from '../types';
 afterEach(cleanup);
 const image = 'craft_' + 'a'.repeat(32) + '.png';
 const row = (id: string, name: string, state: string, extra: Data = {}): Data => ({
-  id, name, state, category: 'General', cost: '4 logs', why: '', tools: '', desc: '', built: 0, one_per_turf: 0, on_floor: 0,
+  id, name, state, category: 'General', purpose: 'Building', pinned: 0, recent: 0, cost: '4 logs', why: '', tools: '', desc: '', built: 0, one_per_turf: 0, on_floor: 0,
   time: 140, makes: 1, batches: state === 'ready' ? 1 : 0, atlas: 0, image: '', ...extra,
 });
 const rows = () => [
   row('0:1:aaaaaaaa', 'campfire', 'ready', { built: 1, one_per_turf: 1, on_floor: 1, desc: 'A campfire made with wood logs.', image, atlas: 1 }),
-  row('2:1:bbbbbbbb', '3x arrow shaft', 'ready', { category: 'weapons', cost: '1 log', makes: 3, batches: 6, time: 40 }),
+  row('2:1:bbbbbbbb', '3x arrow shaft', 'ready', { category: 'weapons', purpose: 'Weapons', cost: '1 log', makes: 3, batches: 6, time: 40 }),
   row('0:2:cccccccc', 'travois', 'missing', { cost: '8 logs', why: 'Needs 8 logs, you have 6' }),
-  row('3:1:dddddddd', 'hewn table (wooden pegs)', 'missing', { category: 'joinery', batches: 1, why: 'Missing a tool, skill or second material', tools: 'Chisel and hammer/mallet equipped or at your feet.' }),
-  row('2:2:eeeeeeee', 'shortbow', 'locked', { category: 'weapons', cost: '8 logs', why: 'Needs the Archery manual' }),
+  row('3:1:dddddddd', 'hewn table (wooden pegs)', 'missing', { category: 'joinery', purpose: 'Furniture', batches: 1, why: 'Missing a tool, skill or second material', tools: 'Chisel and hammer/mallet equipped or at your feet.' }),
+  row('2:2:eeeeeeee', 'shortbow', 'locked', { category: 'weapons', purpose: 'Weapons', cost: '8 logs', why: 'Needs the Archery manual' }),
 ];
 const ui = (data: Data = {}, interactive = true): ScreenProps => ({
   template: 'crafting_window.tmpl', interactive, act: vi.fn(),
-  data: { material: 'wood logs', unit: 'log', amount: 6, image, makeable_only: 0, categories: ['weapons', 'joinery'], rows: rows(), working: null, more_images: 0, ...data },
+  data: { material: 'wood logs', unit: 'log', amount: 6, image, makeable_only: 0, categories: ['weapons', 'joinery'], purposes: ['Tools', 'Weapons', 'Building', 'Furniture', 'Other'], rows: rows(), working: null, more_images: 0, ...data },
 });
 const rowButton = (name: string) => screen.getByText(name).closest('button') as HTMLButtonElement;
 
@@ -67,9 +67,43 @@ describe('Crafting window', () => {
     expect(screen.getByText('shortbow')).toBeTruthy();
     expect(screen.queryByText('campfire')).toBeNull();
   });
-  it('searches across categories and never crafts from the search box', () => {
+  it('offers a tab for each purpose this material has, with counts', () => {
+    render(<CraftingWindow {...ui()} />);
+    const tabs = within(screen.getByRole('tablist')).getAllByRole('tab').map(tab => tab.textContent);
+    expect(tabs).toEqual(['All 5', 'Weapons 2', 'Building 2', 'Furniture 1']);
+    fireEvent.click(screen.getByRole('tab', { name: /Furniture/ }));
+    expect(screen.getByText('hewn table (wooden pegs)')).toBeTruthy();
+    expect(screen.queryByText('travois')).toBeNull();
+    expect(screen.getByRole('tab', { name: /Furniture/ }).getAttribute('aria-selected')).toBe('true');
+  });
+  it('keeps the old categories as sub-headings where a group mixes them', () => {
+    const view = render(<CraftingWindow {...ui()} />);
+    expect(Array.from(view.container.querySelectorAll('.craft-sub')).map(node => node.textContent)).toEqual(['General', 'weapons', 'General', 'joinery']);
+    fireEvent.click(screen.getByRole('tab', { name: /Building/ }));
+    expect(view.container.querySelectorAll('.craft-sub').length).toBe(0);
+  });
+  it('lists recent and pinned recipes as shortcuts that only select', () => {
+    const data = rows(); data[0].recent = 2; data[1].recent = 1; data[3].pinned = 1;
+    const props = ui({ rows: data }); render(<CraftingWindow {...props} />);
+    const recent = within(screen.getByRole('group', { name: 'Recent' }));
+    expect(recent.getAllByRole('button').map(button => button.textContent)).toEqual(['3x arrow shaft', 'campfire']);
+    fireEvent.click(within(screen.getByRole('group', { name: 'Pinned' })).getByText('hewn table (wooden pegs)'));
+    expect(props.act).not.toHaveBeenCalled();
+    const card = within(screen.getByLabelText('Selected recipe'));
+    fireEvent.click(card.getByText('Unpin'));
+    expect(props.act).toHaveBeenLastCalledWith('pin', { pin: '3:1:dddddddd' });
+  });
+  it('has no shortcut strip or tabs when there is nothing to put in them', () => {
+    const data = rows().slice(0, 1);
+    render(<CraftingWindow {...ui({ rows: data })} />);
+    expect(screen.queryByRole('tablist')).toBeNull();
+    expect(screen.queryByRole('group', { name: 'Recent' })).toBeNull();
+    fireEvent.click(rowButton('campfire'));
+    expect(within(screen.getByLabelText('Selected recipe')).getByText('Pin this recipe')).toBeTruthy();
+  });
+  it('searches across tabs and never crafts from the search box', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
-    fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'weapons' } });
+    fireEvent.click(screen.getByRole('tab', { name: /Weapons/ }));
     expect(screen.queryByText('campfire')).toBeNull();
     expect(screen.getByText('3x arrow shaft')).toBeTruthy();
     const search = screen.getByLabelText('Search recipes');
@@ -136,10 +170,11 @@ describe('Crafting window', () => {
 });
 describe('helpers', () => {
   it('matches every word against name and category', () => {
-    const r = { name: 'wood spear', category: 'weapons', state: 'missing' };
+    const r = { name: 'wood spear', category: 'weapons', purpose: 'Weapons', state: 'missing' };
     expect(matches(r, ['spear', 'weap'], '', false)).toBe(true);
     expect(matches(r, ['spear', 'bow'], '', false)).toBe(false);
-    expect(matches(r, [], 'tools', false)).toBe(false);
+    expect(matches(r, [], 'Tools', false)).toBe(false);
+    expect(matches(r, [], 'Weapons', false)).toBe(true);
     expect(matches(r, [], '', true)).toBe(false);
   });
   it('words build times for players', () => {

@@ -601,8 +601,8 @@ var/late_wait_result = TRUE
 			break
 	var/datum/research_node/IN = get_research_node("iron_tools")
 	var/mob/living/human/late_fixture/maker = new(locate(7,5,1))
-	maker.teach("basic_tools")
-	maker.teach("iron_smithing")
+	for(var/req in IN.prereqs)
+		maker.teach(req)
 	var/obj/item/weapon/book/notebook = new(maker)
 	notebook.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
 	var/proto_points = record_subject_prototype(maker, item_path)
@@ -669,6 +669,90 @@ var/late_wait_result = TRUE
 	var/list/clean = clean_skill_variety(dirty)
 	late_check(clean.len == 2 && clean["a"] == 3 && clean["b"] == 10, "saved variety counts are cleaned")
 	late_check(length(clean_scholar_lessons(list("x", "x", 7, ""))) == 1 && !length(clean_scholar_lessons("junk")), "saved lessons are cleaned")
+/proc/late_test_trial_and_error()
+	var/item_path = null
+	for(var/path in recipe_node_requirements)
+		if(recipe_node_requirements[path] == "iron_tools" && ispath(text2path(path), /obj/item/weapon))
+			item_path = path
+			break
+	var/datum/research_node/IN = get_research_node("iron_tools")
+	var/discipline = node_discipline("iron_tools")
+	var/mob/living/human/late_fixture/maker = new(locate(2,8,1))
+	maker.name = "Hild"
+	for(var/req in IN.prereqs)
+		maker.teach(req)
+	var/obj/item/weapon/book/B = new(maker)
+	late_check(!subject_prototype_allowed(maker, item_path), "an empty book alone allows no attempts")
+	var/list/choices = maker.trial_subject_choices(B)
+	late_check(choices["Iron Tools"] == "iron_tools" && !("Nuclear Power" in choices) && !(get_research_node(IN.prereqs[1]).name in choices), "a book can be set to subjects whose groundwork its carrier knows, and not to known ones")
+	late_check(!maker.set_trial_subject(B, "nuclear_power") && isnull(B.trial_subject), "a subject without its groundwork cannot be attempted")
+	late_check(maker.set_trial_subject(B, "iron_tools") && B.trial_subject == "iron_tools", "the book is opened to Iron Tools")
+	late_check(subject_prototype_allowed(maker, item_path) && crafting_recipe_allowed(maker, item_path), "now its things can be attempted from an empty chapter")
+	// The chance: a low start, worse without the scholarship, better with it.
+	var/req_level = node_scholar_requirement("iron_tools")
+	var/unskilled = maker.trial_success_chance("iron_tools", item_path, B)
+	maker.scholarship = list("[discipline]" = req_level, "mathematics" = req_level)
+	var/skilled = maker.trial_success_chance("iron_tools", item_path, B)
+	maker.scholarship = list("[discipline]" = req_level + 40, "mathematics" = req_level)
+	var/expert = maker.trial_success_chance("iron_tools", item_path, B)
+	late_check(skilled == 15 && unskilled == (req_level >= 10 ? 5 : 15 - req_level) && expert == 30, "an empty chapter gives 15 in 100, less without the scholarship and up to 30 with plenty ([unskilled], [skilled], [expert])")
+	maker.scholarship = list("[discipline]" = req_level, "mathematics" = req_level)
+	// A failure: a lesson in the book, a ruined piece, a better next try.
+	var/level_before = maker.scholar_level(discipline)
+	var/points = commit_trial_failure(maker, "iron_tools", item_path, B)
+	var/obj/item/trash/failed_attempt/ruin = locate() in get_turf(maker)
+	late_check(points == max(1, round(IN.cost_ticks * 0.04)) && B.research_ticks("iron_tools") == points && B.lessons_learned("iron_tools") == 1, "a failure writes a lesson of [points] points into the book")
+	late_check(ruin && findtext(ruin.name, "ruined ") == 1, "it leaves a ruined piece ([ruin ? ruin.name : "none"])")
+	late_check(maker.scholar_level(discipline) > level_before, "the lesson teaches scholarship")
+	var/after_one = maker.trial_success_chance("iron_tools", item_path, B)
+	late_check(after_one >= skilled + 10 + 5 && maker.trial_count("iron_tools>[item_path]") == 1, "the next try at the same thing is likelier to work ([skilled] to [after_one])")
+	late_check(maker.trial_success_chance("iron_tools", "/obj/item/other", B) < after_one, "a different thing has only the chapter's progress to go on")
+	for(var/i = 2 to 5)
+		commit_trial_failure(maker, "iron_tools", item_path, B)
+	var/ticks = B.research_ticks("iron_tools")
+	late_check(B.lessons_learned("iron_tools") == 5 && !commit_trial_failure(maker, "iron_tools", item_path, B) && B.research_ticks("iron_tools") == ticks, "a book takes five lessons per subject, then failures only improve the odds")
+	late_check(maker.trial_success_chance("iron_tools", item_path, B) == 95, "the odds never pass 95 in 100 before a third of the chapter")
+	// A working piece made early.
+	late_check(maker.trial_count("iron_tools") == 0, "no early pieces yet")
+	var/made = record_subject_prototype(maker, item_path)
+	late_check(made == max(1, round(IN.cost_ticks * 0.08)) && maker.trial_count("iron_tools") == 1 && maker.trial_count("iron_tools![item_path]") == 1, "a working piece writes its prototype share and is counted on its maker")
+	late_check(!maker.note_trial_success("iron_tools", item_path) && maker.trial_count("iron_tools") == 2, "only the first of each thing is a breakthrough")
+	// One character's early pieces are limited across books.
+	maker.trial_work["iron_tools"] = 5
+	var/obj/item/weapon/book/fresh = new(maker)
+	B.loc = locate(1,1,1)
+	maker.set_trial_subject(fresh, "iron_tools")
+	late_check(fresh.trial_subject == "iron_tools" && !subject_prototype_allowed(maker, item_path), "five early pieces per character: a fresh book does not start the count again")
+	// From a third of the chapter on it is the old rule: every one works.
+	fresh.add_research_work("iron_tools", round(IN.cost_ticks * 0.4))
+	late_check(subject_prototype_allowed(maker, item_path) && maker.trial_success_chance("iron_tools", item_path, fresh) == 100 && !trial_craft_ruined(maker, item_path), "from a third of the chapter prototypes always work, as before")
+	var/count_before = maker.trial_count("iron_tools")
+	record_subject_prototype(maker, item_path)
+	late_check(maker.trial_count("iron_tools") == count_before, "and they are not counted as early pieces")
+	// Nobody without a reason to fail fails.
+	maker.teach("iron_tools")
+	late_check(!trial_craft_ruined(maker, item_path) && !trial_craft_ruined(null, item_path) && !trial_craft_ruined(maker, "/obj/item/weapon/paper"), "someone who knows the subject, nobody, and ordinary things never fail this way")
+	// Mishaps only from the Industrial Age on.
+	var/mob/living/human/late_fixture/victim = new(locate(4,8,1))
+	late_check(isnull(trial_mishap(victim, IN)) && !victim.fixture_hurt.len, "early subjects fail safely")
+	var/datum/research_node/late_node = null
+	for(var/node_id in research_nodes)
+		var/datum/research_node/N = research_nodes[node_id]
+		if(N.era_tier >= 4 && rush_accident_kind(node_id) == "injury")
+			late_node = N
+			break
+	late_check(late_node && trial_mishap(victim, late_node) == "injury" && victim.fixture_hurt[BRUTE] >= 5, "a later engineering failure can cut the maker's hand")
+	// Saved records are cleaned, and nothing works where book research is off.
+	var/list/clean = clean_trial_work(list("a" = 3, "b" = 99, "c" = "x", 5))
+	late_check(clean.len == 2 && clean["a"] == 3 && clean["b"] == 9, "saved trial records are cleaned")
+	map.book_research = FALSE
+	var/mob/living/human/late_fixture/other = new(locate(6,8,1))
+	for(var/req in IN.prereqs)
+		other.teach(req)
+	var/obj/item/weapon/book/offbook = new(other)
+	offbook.trial_subject = "iron_tools"
+	late_check(!subject_prototype_allowed(other, item_path) && !trial_craft_ruined(other, item_path), "no attempts where book research is off")
+	map.book_research = TRUE
 /world/New()
 	OpenPort("none")
 	generate_gameid()
@@ -689,6 +773,7 @@ var/late_wait_result = TRUE
 		late_test_demonstrations()
 		late_test_subject_prototypes()
 		late_test_learning_by_doing()
+		late_test_trial_and_error()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()

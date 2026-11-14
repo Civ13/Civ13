@@ -74,6 +74,11 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				else
 					W.update_icon()
 			do_move()
+			// Boarding or unloading on the way changes the pace (vehicle_load.dm).
+			if (uses_load_factor() && currentspeed > 0)
+				var/loaded_delay = get_speed()
+				if (loaded_delay > 0)
+					vehicle_m_delay = loaded_delay
 		else
 			currentspeed = 0
 			moving = FALSE
