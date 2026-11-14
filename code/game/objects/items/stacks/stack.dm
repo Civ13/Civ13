@@ -327,6 +327,48 @@
 	// qdel the item
 	qdel(A)
 
+// Secondary craft inputs (rope, bronze, circuits...) are taken before the build checks.
+// Record each take so a refused or cancelled build can give them back.
+/mob/var/list/craft_secondary_takes = null
+/obj/item/stack/proc/secondary_take(obj/item/stack/S, amt, mob/user)
+	S.amount -= amt
+	if (!user)
+		return
+	if (!user.craft_secondary_takes)
+		user.craft_secondary_takes = list()
+	user.craft_secondary_takes += list(list(S, S.type, amt))
+	S.update_icon()
+
+/obj/item/stack/proc/secondary_forget(mob/user)
+	if (!user)
+		return
+	user.craft_secondary_takes = null
+	if (user.key in handReturnMap)
+		handReturnMap.Remove(user.key)
+
+/obj/item/stack/proc/secondary_refund(mob/user)
+	if (!user)
+		return
+	for (var/list/T in user.craft_secondary_takes)
+		var/obj/item/stack/S = T[1]
+		if (S && !QDELETED(S))
+			S.amount += T[3]
+			S.update_icon()
+		else
+			var/stack_type = T[2]
+			var/obj/item/stack/N = new stack_type(get_turf(user))
+			N.amount = T[3]
+			N.update_icon()
+			user.put_in_hands(N)
+	// Non-stack inputs (spears, heads) consumed whole: recreate them as before.
+	if (user.key in handReturnMap)
+		for (var/datum/A in handReturnMap[user.key])
+			if (istype(A, /obj/item/stack))
+				continue
+			var/atom/O = new A.type()
+			user.put_in_hands(O)
+	secondary_forget(user)
+
 /mob/var/can_build_recipe = TRUE
 // options: answers to the recipe's craft_product prompts (craft_products.dm); missing ones are asked.
 /obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)
@@ -338,6 +380,7 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/mob/living/human/H = user
+	secondary_forget(H)
 	if (!crafting_recipe_allowed(H, "[recipe.result_type]"))
 		to_chat(user, SPAN_WARNING("This recipe requires its research node."))
 		return
@@ -604,75 +647,93 @@
 	else if (findtext(recipe.title, "nightingale dress") || findtext(recipe.title, "nurse hat"))
 		if (H.getStatCoeff("medical") < 1.0)
 			to_chat(H, "<span class = 'danger'>This is too complex for your current medical skill level.</span>")
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "religious poster") || findtext(recipe.title, "altar") || findtext(recipe.title, "religious banner"))
 		if (H.religion == "none")
 			to_chat(H, "<span class = 'danger'>You can't make a [recipe.title] since you have no religion!</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "propaganda poster") || findtext(recipe.title, "faction banner") || findtext(recipe.title, "official faction paper"))
 		if (H.civilization == "none")
 			to_chat(H, "<span class = 'danger'>You can't make a [recipe.title] since you have no faction!</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "wall") || findtext(recipe.title, "well"))
 		if (H.getStatCoeff("crafting") < 1.1 && map.ID != MAP_VOYAGE)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked large stone double doors") || findtext(recipe.title, "locked large sandstone double doors") || findtext(recipe.title, "locked large lead double doors") || findtext(recipe.title, "locked large copper double doors") || findtext(recipe.title, "locked large bronze double doors") || findtext(recipe.title, "locked large silver double doors") || findtext(recipe.title, "locked large gold double doors") || findtext(recipe.title, "locked large bone double doors"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked wooden privacy door"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "unlocked iron door") || findtext(recipe.title, "unlocked large iron double doors"))
 		if (H.getStatCoeff("crafting") < 1.1)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "arquebus") || findtext(recipe.title, "matchlock musket"))
 		if (H.getStatCoeff("crafting") < 1.55)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "monumental stone pillar") || findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental stone buddha") || findtext(recipe.title, "monumental saint statue"))
 		if (H.getStatCoeff("crafting") < 1.55)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked reinforced large steel double doors"))
 		if (H.getStatCoeff("crafting") < 1.55)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "fire lance"))
 		if (H.getStatCoeff("crafting") < 1.25)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "moai") || findtext(recipe.title, "long moai") || findtext(recipe.title, "monumental sandstone obelisk") || findtext(recipe.title, "monumental stone megalith"))
 		if (H.getStatCoeff("crafting") < 1.25)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "handcannon") || findtext(recipe.title, "dragoon helmet"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "monumental crucero cross") || findtext(recipe.title, "stone statue") || findtext(recipe.title, "sandstone statue"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "grandfather clock") || findtext(recipe.title, "standing clock"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "locked iron door") || findtext(recipe.title, "locked large iron double doors"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "reinforced large steel double doors"))
 		if (H.getStatCoeff("crafting") < 1.35)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "fire lance"))
 		if (!istype(H.l_hand, /obj/item/weapon/material/spear) && !istype(H.r_hand, /obj/item/weapon/material/spear))
 			to_chat(user, "<span class = 'warning'>You need to have a spear in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/weapon/material/spear))
@@ -694,6 +755,7 @@
 			crafting_handle = find_crafting_handle(H)
 			if (!crafting_stack_accessible(H) || !crafting_handle)
 				to_chat(user, SPAN_WARNING("You need an accessible wood handle in your hands or equipment to make this."))
+				secondary_refund(H)
 				return
 			// Keep this exact item through the wait; cancellation must not recreate it.
 			handle_crafting_source_loc = loc
@@ -701,26 +763,30 @@
 	if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
 			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
+			secondary_refund(H)
 			return
 		if (!electronics_construction_iron(H, quantity))
 			to_chat(user, SPAN_WARNING("You need to have iron in the other hand to craft electronic circuits."))
+			secondary_refund(H)
 			return
 
 	else if (recipe.result_type == /obj/structure/sawmill/powered)
 		if (H.getStatCoeff("crafting") < 2.2)
 			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
+			secondary_refund(H)
 			return
 		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
 			to_chat(user, SPAN_WARNING("You need to have electronic circuits in the other hand to craft the powered saw mill."))
+			secondary_refund(H)
 			return
 		if (istype(H.l_hand, /obj/item/stack/material/electronics))
 			var/obj/item/stack/material/electronics/NR = H.l_hand
-			NR.amount -= 1
+			secondary_take(NR, 1, H)
 			if (NR.amount <= 0)
 				qdelHandReturn(H.l_hand, H)
 		else if (istype(H.r_hand, /obj/item/stack/material/electronics))
 			var/obj/item/stack/material/electronics/NR = H.r_hand
-			NR.amount -= 1
+			secondary_take(NR, 1, H)
 			if (NR.amount <= 0)
 				qdelHandReturn(H.r_hand, H)
 
@@ -759,6 +825,7 @@
 	else if (recipe.result_type == /obj/structure/religious/impaledskull)
 		if (!istype(H.l_hand, /obj/item/organ/external/head) && !istype(H.r_hand, /obj/item/organ/external/head))
 			to_chat(user, "<span class = 'warning'>You need to have a human head in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/organ/external/head))
@@ -777,6 +844,7 @@
 	if (findtext(recipe.title, "gravestone") || findtext(recipe.title, "cairn"))
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
+			secondary_refund(H)
 			return
 		customname = chosen["name"]
 		customdesc = chosen["desc"]
@@ -784,6 +852,7 @@
 	else if (findtext(recipe.title, "market stall") || findtext(recipe.title, "vending machine"))
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
+			secondary_refund(H)
 			return
 		customname = chosen["name"]
 		customvar = chosen["company"]
@@ -791,6 +860,7 @@
 	else if (findtext(recipe.title, "supply stall"))
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
+			secondary_refund(H)
 			return
 		customname = chosen["name"]
 		customvar = chosen["company"]
@@ -802,657 +872,744 @@
 			puddly = TRUE
 		if (puddly == FALSE)
 			to_chat(H, "<span class = 'danger'>You need to build this over a puddle.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "cannon") || findtext(recipe.title, "catapult") || findtext(recipe.title, "spadroon") || findtext(recipe.title, "arming sword") || findtext(recipe.title, "small sword"))
 		if (H.getStatCoeff("crafting") < 1.8 && !findtext(recipe.title, "catapult projectile"))
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "stormy sea") || findtext(recipe.title, "city street") || findtext(recipe.title, "sea sunset") || findtext(recipe.title, "valley") || findtext(recipe.title, "still life") || findtext(recipe.title, "bird and blossom") || findtext(recipe.title, "pine on the shore") || findtext(recipe.title, "temple by the river") || findtext(recipe.title, "desert camp") || findtext(recipe.title, "barque at sea"))
 		if (H.getStatCoeff("crafting") < 2)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 
 		cloth_payment = new(src, H, recipe, quantity, 3)
 		if (!cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold at least [3 * quantity] cloth or woolcloth sheets for the painting(s)."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "monumental marble statue of venus") || findtext(recipe.title, "monumental bronze statue of karl marx"))
 		if (H.getStatCoeff("crafting") < 2)
 			to_chat(H, "<span class = 'danger'>This is too complex for your skill level.</span>")
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "gong") && !findtext(recipe.title, "gong mallet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bronze) && !istype(H.r_hand, /obj/item/stack/material/bronze))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 5 bronze ingots in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.l_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 bronze ingots in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.r_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 bronze ingots in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "bell stand"))
 		if (!istype(H.l_hand, /obj/item/stack/material/copper) && !istype(H.r_hand, /obj/item/stack/material/copper))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 copper ingots in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/copper))
 				var/obj/item/stack/material/copper/NB = H.l_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 copper ingots in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/copper))
 				var/obj/item/stack/material/copper/NB = H.r_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 copper ingots in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "chimalli"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather sheets in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather sheets in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather sheets in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "aztec harness"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need at least 0.2 parts of a leather sheet in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.l_hand
 				if (NB.amount >= 0.2)
-					NB.amount -= 0.2
+					secondary_take(NB, 0.2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 0.2 parts of a leather sheet in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.r_hand
 				if (NB.amount >= 0.2)
-					NB.amount -= 0.2
+					secondary_take(NB, 0.2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 0.2 parts of a leather sheet in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "primitive wood armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			to_chat(user, "<span class = 'warning'>You need at least 15 units of wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NB = H.l_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 3 lengths of rope in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NB = H.r_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 3 lengths of rope in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "primitive bone hair-pipe armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/bone) && !istype(H.r_hand, /obj/item/stack/material/bone))
 			to_chat(user, "<span class = 'warning'>You need at least 5 pieces of bone in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NB = H.l_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 3 lengths of rope in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/rope))
 				var/obj/item/stack/material/rope/NB = H.r_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need at least 3 lengths of rope in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "doge hat"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/gold, 1 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [1 * quantity] gold for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "doge outfit"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/gold, 1 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [1 * quantity] gold for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "gold laurel crown"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leaf) && !istype(H.r_hand, /obj/item/stack/material/leaf))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 6 leaves in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.l_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.r_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "imperial gold laurel crown")) // for crabs
 		if (!istype(H.l_hand, /obj/item/stack/material/leaf) && !istype(H.r_hand, /obj/item/stack/material/leaf))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 leaves in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.l_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.r_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "leaf crown") || findtext(recipe.title, "ceremonial leaf crown"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leaf) && !istype(H.r_hand, /obj/item/stack/material/leaf))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 leaves in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/leather))
 				var/obj/item/stack/material/leather/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 leather in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "fiendish headdress"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/bone, 2 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [2 * quantity] bone for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "black african mask") || findtext(recipe.title, "ceremonial black african mask"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/pelt/cowpelt))
 				var/obj/item/stack/material/pelt/cowpelt/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 cowpelts in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/pelt/cowpelt))
 				var/obj/item/stack/material/pelt/cowpelt/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 cowpelts in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 /*
 	else if (findtext(recipe.title, "armorbench"))
 		if (!istype(H.l_hand, /obj/item/stack/material/wood) && !istype(H.r_hand, /obj/item/stack/material/wood))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 10 wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 */
 	else if (findtext(recipe.title, "fortress wall"))
 		if (!istype(H.l_hand, /obj/item/stack/material/stone) && !istype(H.r_hand, /obj/item/stack/material/stone))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 8 stone in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/stonebrick))
 				var/obj/item/stack/material/stonebrick/NB = H.l_hand
 				if (NB.amount >= 8)
-					NB.amount -= 8
+					secondary_take(NB, 8, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/stonebrick))
 				var/obj/item/stack/material/stonebrick/NB = H.r_hand
 				if (NB.amount >= 8)
-					NB.amount -= 8
+					secondary_take(NB, 8, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 8 stone bricks in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 	else if (findtext(recipe.title, "sandstone fortress wall"))
 		if (!istype(H.l_hand, /obj/item/stack/material/sandstone) && !istype(H.r_hand, /obj/item/stack/material/sandstone))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 8 sandstone in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/stonebrick))
 				var/obj/item/stack/material/stonebrick/NB = H.l_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 stone bricks in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/stonebrick))
 				var/obj/item/stack/material/stonebrick/NB = H.r_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 stone bricks in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "purple arabic turban helmet") || findtext(recipe.title, "red arabic turban helmet") || findtext(recipe.title, "green arabic turban helmet") || findtext(recipe.title, "blue arabic turban helmet"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/iron, 3 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [3 * quantity] iron for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "emirate turban"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/material/iron, 3 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [3 * quantity] iron for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "leather samurai armor") || findtext(recipe.title, "red leather samurai armor") || findtext(recipe.title, "blue leather samurai armor") || findtext(recipe.title, "black leather samurai armor"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 10 leather in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 5)
-					NB.amount -= 5
+					secondary_take(NB, 5, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 5 iron in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "leather samurai helmet") || findtext(recipe.title, "red leather samurai helmet") || findtext(recipe.title, "blue leather samurai helmet") || findtext(recipe.title, "black leather samurai helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 7 leather in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 3)
-					NB.amount -= 3
+					secondary_take(NB, 3, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 3 iron in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "grandfather clock"))
 		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 9 wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "standing clock"))
 		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 6 wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "wooden house door"))
 		if (!istype(H.l_hand, /obj/item/stack/material/woodplank) && !istype(H.r_hand, /obj/item/stack/material/woodplank))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 5 wood in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/glass))
 				var/obj/item/stack/material/glass/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 glass in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "plague doctor mask"))
 		if (!cloth_payment || !cloth_payment.select_secondary(/obj/item/stack/medical/advanced/herbs, 2 * quantity) || !cloth_payment.valid())
 			to_chat(user, SPAN_WARNING("Hold the cloth or woolcloth and at least [2 * quantity] herbs for this recipe."))
+			secondary_refund(H)
 			return
 
 	else if (findtext(recipe.title, "khepresh war crown"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 leather in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.l_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/gold))
 				var/obj/item/stack/material/gold/NB = H.r_hand
 				if (NB.amount >= 1)
-					NB.amount -= 1
+					secondary_take(NB, 1, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 1 gold in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "steppe leather helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 leather in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 iron in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "leather skullcap helmet"))
 		if (!istype(H.l_hand, /obj/item/stack/material/leather) && !istype(H.r_hand, /obj/item/stack/material/leather))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 5 leather in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 iron in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "television"))
 		if (!istype(H.l_hand, /obj/item/stack/material/electronics) && !istype(H.r_hand, /obj/item/stack/material/electronics))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 3 electronics in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.l_hand
 				if (NB.amount >= 4)
-					NB.amount -= 4
+					secondary_take(NB, 4, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 iron in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/iron))
 				var/obj/item/stack/material/iron/NB = H.r_hand
 				if (NB.amount >= 4)
-					NB.amount -= 4
+					secondary_take(NB, 4, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 4 iron in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (ispath(recipe.result_type, /obj/structure/drill))
 		if (!drill_construction_steel(H))
 			to_chat(user, SPAN_WARNING("You need at least 20 steel in your other hand to build an industrial drill."))
+			secondary_refund(H)
 			return
 	else if (findtext(recipe.title, "brown napoleonic bearskin hat"))
 		if (!istype(H.l_hand, /obj/item/stack/material/pelt/bearpelt/brown) && !istype(H.r_hand, /obj/item/stack/material/pelt/bearpelt/brown))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 brown bear pelts in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "black napoleonic bearskin hat"))
 		if (!istype(H.l_hand, /obj/item/stack/material/pelt/bearpelt/black) && !istype(H.r_hand, /obj/item/stack/material/pelt/bearpelt/black))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 black bear pelts in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	else if (findtext(recipe.title, "white napoleonic bearskin hat"))
 		if (!istype(H.l_hand, /obj/item/stack/material/pelt/bearpelt/white) && !istype(H.r_hand, /obj/item/stack/material/pelt/bearpelt/white))
 			to_chat(user, "<span class = 'warning'>You need a stack of at least 4 white bear pelts in one of your hands in order to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			if (istype(H.l_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.l_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.l_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one of your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 			else if (istype(H.r_hand, /obj/item/stack/material/bronze))
 				var/obj/item/stack/material/bronze/NB = H.r_hand
 				if (NB.amount >= 2)
-					NB.amount -= 2
+					secondary_take(NB, 2, H)
 					if (NB.amount <= 0)
 						qdelHandReturn(H.r_hand, H)
 				else
 					to_chat(user, "<span class = 'warning'>You need a stack of at least 2 bronze in one your hands in order to make this.</span>")
+					secondary_refund(H)
 					return
 
 	if (!can_use(required))
@@ -1460,20 +1617,24 @@
 			to_chat(user, "<span class='warning'>You haven't got enough [src] to build \the [produced] [recipe.title]\s!</span>")
 		else
 			to_chat(user, "<span class='warning'>You haven't got enough [src] to build \the [recipe.title]!</span>")
+		secondary_refund(H)
 		return
 
 	if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
 		to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
+		secondary_refund(H)
 		return
 
 	// One floor and one wall per tile (tile_occupancy.dm).
 	var/tile_refusal = tile_build_refusal(get_turf(user), recipe.result_type)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
+		secondary_refund(H)
 		return
 
 	if (recipe.on_floor && !isfloor(user.loc))
 		to_chat(user, "<span class='warning'>\The [recipe.title] must be constructed on the floor!</span>")
+		secondary_refund(H)
 		return
 
 	if (ishuman(user))
@@ -1484,10 +1645,12 @@
 			for (var/obj/structure/multiz/M in get_turf(H))
 				if (recipe.title != "mine support")
 					to_chat(H, "<span class = 'danger'>You can't build a structure here.</span>")
+					secondary_refund(H)
 					return
 	else if (recipe.result_type == /obj/item/weapon/key)
 		if (H.faction_text == INDIANS)
 			to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
+			secondary_refund(H)
 			return
 		else
 			var/keycode = player_input(user, "Choose a code for the key(From 1000 to 9999):", null, null, "num", null, FALSE)
@@ -1516,9 +1679,11 @@
 
 		if (structurecheck == 0)
 			to_chat(H, "<span class = 'warning'>You need to be on a structure to make a noose.</span>")
+			secondary_refund(H)
 			return
 		else if (structurecheck == 1)
 			to_chat(H, "<span class = 'warning'>This structure is not suitable for standing on.</span>")
+			secondary_refund(H)
 			return
 
 		if (H_area.location == AREA_OUTSIDE)
@@ -1534,6 +1699,7 @@
 
 			if (!structurecheck2 && !north.density)
 				to_chat(H, "<span class = 'warning'>You need a ceiling to make a noose.</span>")
+				secondary_refund(H)
 				return
 
 	if (recipe.time)
@@ -1546,28 +1712,26 @@
 
 		to_chat(user, "<span class='notice'>Building [recipe.title] ...</span>")
 		if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
-			if (H.key in handReturnMap)
-				var/atom/O
-				var/datum/A
-				for(A in handReturnMap[H.key])
-					O = new A.type()
-					H.put_in_hands(O)
-				handReturnMap.Remove(H.key)
+			secondary_refund(H)
 			return
 
 		// Hammocks pay only after this wait. Do not reject legacy recipes here:
 		// some already consumed secondary inputs before do_after.
 		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
 			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
+			secondary_refund(H)
 			return
 		// The builder may have moved, turned or changed the bay during the wait.
 		var/late_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)
 		if (!isnull(late_refusal))
 			if (late_refusal)
 				to_chat(user, late_refusal)
+			secondary_refund(H)
 			return
 		if (press_construction && !press_construction.valid())
+			secondary_refund(H)
 			return
+		secondary_forget(H)
 		if (H && !joinery && !carving && !cloth_payment)
 			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 	if (findtext(recipe.title, "coil"))
