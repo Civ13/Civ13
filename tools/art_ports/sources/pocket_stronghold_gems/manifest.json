@@ -1,0 +1,50 @@
+{
+  "repository": "Valgorithms/Pocket-Stronghold-13",
+  "revision": "2bfb1906a9a68f58c5e5da25383f83dd495bf138",
+  "source_path": "dwarfs/icons/items/ores_gems.dmi",
+  "source_file": {
+    "sha256": "f9f8f12eeeaa70e4b9a6ce8e9d748e8e9a7d3449c219101895808afed3c9d61b",
+    "git_blob": "e11522929f75caf80e3ab49a685e433c9bec404a"
+  },
+  "license": "CC-BY-SA-3.0",
+  "license_evidence": "https://github.com/Valgorithms/Pocket-Stronghold-13/blob/2bfb1906a9a68f58c5e5da25383f83dd495bf138/README.md#license",
+  "target": "icons/obj/pocket_stronghold_gems.dmi",
+  "changes": "Five states extracted into their own DMI with upstream names. Pixels, size and transparency unchanged.",
+  "states": [
+    {
+      "state": "ruby",
+      "source_state": "ruby",
+      "introduced_by": "Biomekmann, commit f29cd06",
+      "civ13_use": "cut ruby",
+      "rgba_sha256": "42168527f3bbe6b4c851ffbaf08528ed39d4d1c6db8d8068ed2a31992bf4d957"
+    },
+    {
+      "state": "ruby_uncut",
+      "source_state": "ruby_uncut",
+      "introduced_by": "LEEROY-2, commit 73b2c77",
+      "civ13_use": "rough ruby",
+      "rgba_sha256": "8d54c88a54392e1a31342ddee098b2869161aa1c347cdcb998325443124088f4"
+    },
+    {
+      "state": "sapphire",
+      "source_state": "sapphire",
+      "introduced_by": "Biomekmann, commit f29cd06",
+      "civ13_use": "cut sapphire",
+      "rgba_sha256": "a926bd9eeb07884e4c010c7f75337bca1f0220cb7516010bb7df16ad72fac00c"
+    },
+    {
+      "state": "sapphire_uncut",
+      "source_state": "sapphire_uncut",
+      "introduced_by": "LEEROY-2, commit 73b2c77",
+      "civ13_use": "rough sapphire",
+      "rgba_sha256": "d97d0bb321071386628c09364a3c14f1df89c4dc0fbb64f778ac68bd8b8f5849"
+    },
+    {
+      "state": "diamond",
+      "source_state": "diamond",
+      "introduced_by": "Biomekmann, commit 5c36135",
+      "civ13_use": "cut diamond",
+      "rgba_sha256": "f2b79b59419d0761a2697612428fa6d187cda55ce279b45f465deb3fe12871f6"
+    }
+  ]
+}
