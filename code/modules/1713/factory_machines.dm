@@ -14,13 +14,7 @@ var/global/list/factory_active_mills = list()
 
 // Fuel value of one unit of a stack, as the furnaces count it by hand.
 /proc/factory_fuel_value(obj/item/I)
-	if (istype(I, /obj/item/stack/material/wood) || istype(I, /obj/item/stack/material/bamboo) || istype(I, /obj/item/stack/material/woodplank))
-		return 1
-	if (istype(I, /obj/item/stack/ore/charcoal))
-		return 2.5
-	if (istype(I, /obj/item/stack/ore/coal))
-		return 3
-	return 0
+	return solid_fuel_unit_value(I, factory_fuel_rates)
 
 /proc/factory_loose_items(turf/T)
 	var/count = 0

@@ -52,14 +52,14 @@
 	desc = "It's a small [body_color] rodent."
 
 	if(body_color == "black")
-		if(map && (map.ordinal_age == 2 || map.ordinal_age == 3)) //Approx epochs where black plague was a thing.
+		if(era_between(2, 3)) //Approx epochs where black plague was a thing.
 			if(prob(50))
 				plaguemouse = TRUE
 		else
 			if(prob(25))
 				plaguemouse = TRUE
 	else
-		if(map && (map.ordinal_age == 2 || map.ordinal_age == 3)) //Approx epochs where black plague was a thing.
+		if(era_between(2, 3)) //Approx epochs where black plague was a thing.
 			if(prob(10))
 				plaguemouse = TRUE
 		else
@@ -100,13 +100,13 @@
 			if(plaguemouse && prob(2*dmod))
 				M.disease = TRUE
 				M.disease_type = "plague"
-			else if((plaguemouse && prob(0.03*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //2 percent chance because of if-else logic,
+			else if((plaguemouse && prob(0.03*dmod)) && era_between(2, 3)) //2 percent chance because of if-else logic,
 				M.disease = TRUE
 				M.disease_type = "plague"
 			else if(plaguemouse && body_color == "black" && prob(4*dmod)) //prob is 3 percent.
 				M.disease = TRUE
 				M.disease_type = "plague"
-			else if((plaguemouse && body_color == "black" && prob(5*dmod)) && (map.ordinal_age == 2 || map.ordinal_age == 3)) //four percent chance kinda
+			else if((plaguemouse && body_color == "black" && prob(5*dmod)) && era_between(2, 3)) //four percent chance kinda
 				M.disease = TRUE
 				M.disease_type = "plague"
 	..()

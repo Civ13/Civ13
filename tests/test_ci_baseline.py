@@ -1058,6 +1058,7 @@ class BaselinePolicyTests(unittest.TestCase):
                              'code/modules/materials/material_sheets.dm',
                              'code/game/objects/structures/kitchen/oven.dm',
                              'code/modules/1713/wood_ash_compost.dm',
+                             'code/modules/1713/solid_fuel.dm',
                              'code/game/objects/structures.dm',
                              'code/game/objects/items/stacks/civ_recipes.dm',
                              'code/modules/research_tree/research_node.dm',

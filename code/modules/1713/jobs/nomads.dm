@@ -15,22 +15,19 @@
 		return
 
 	if (map.ID == MAP_NOMADS_MOUNTAIN)
-		if (map.ordinal_age == 0)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bone(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
-		else if (map.ordinal_age == 1)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bronze(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe/bone(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel/bone(src), slot_belt)
-		else if (map.ordinal_age == 2)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/iron(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
-		else if (map.ordinal_age >= 3)
-			equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/steel(src), slot_l_store)
-			equip_to_slot_or_del(new /obj/item/weapon/material/pickaxe(src), slot_back)
-			equip_to_slot_or_del(new /obj/item/weapon/material/shovel(src), slot_belt)
+		// Knife, pickaxe and shovel for the era.
+		var/list/kit = era_pick(list(
+			"0" = list(/obj/item/weapon/material/kitchen/utensil/knife/bone, /obj/item/weapon/material/pickaxe/bone, /obj/item/weapon/material/shovel/bone),
+			"1" = list(/obj/item/weapon/material/kitchen/utensil/knife/bronze, /obj/item/weapon/material/pickaxe/bone, /obj/item/weapon/material/shovel/bone),
+			"2" = list(/obj/item/weapon/material/kitchen/utensil/knife/iron, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/shovel),
+			"3+" = list(/obj/item/weapon/material/kitchen/utensil/knife/steel, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/shovel)))
+		if (kit)
+			var/knife_type = kit[1]
+			var/pickaxe_type = kit[2]
+			var/shovel_type = kit[3]
+			equip_to_slot_or_del(new knife_type(src), slot_l_store)
+			equip_to_slot_or_del(new pickaxe_type(src), slot_back)
+			equip_to_slot_or_del(new shovel_type(src), slot_belt)
 	switch (map.ordinal_age)
 		if (0)
 			if (map && map.ID == MAP_NOMADS_ISLAND)

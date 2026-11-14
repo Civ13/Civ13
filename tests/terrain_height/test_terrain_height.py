@@ -46,7 +46,7 @@ class Generator(unittest.TestCase):
     def test_round_trip_and_format(self):
         out = self.generate()
         text = out.read_text(encoding='ascii')
-        self.assertTrue(text.startswith('civ13-terrain-heights 1\nsize 10 6\nz 1\n'))
+        self.assertTrue(text.startswith('civ13-terrain-heights 2\nsize 10 6\nz 1\n'))
         self.assertNotIn('\r', text)
         maxx, maxy, levels = tool.read_heights(out)
         self.assertEqual((maxx, maxy, list(levels)), (10, 6, [1]))
@@ -86,13 +86,29 @@ class Generator(unittest.TestCase):
         out = self.generate()
         tool.main(['check', '--heights', str(out), '--map', str(self.tmp / 'tiny.dmm')])
         bad = self.tmp / 'bad.txt'
-        for text in ('civ13-terrain-heights 2\nsize 1 1\nz 1\n0\n',
+        for text in ('civ13-terrain-heights 3\nsize 1 1\nz 1\n0\n',
+                     'civ13-terrain-heights 2\nsize 1 1\nz 1\n~\n',
+                     'civ13-terrain-heights 1\nsize 1 1\nz 1\ng\n',
                      'civ13-terrain-heights 1\nsize 2 1\nz 1\n0\n',
                      'civ13-terrain-heights 1\nsize 1 1\nz 1\nA\n',
                      'civ13-terrain-heights 1\nsize 1 1\nz 1\n0\nz 1\n0\n'):
             bad.write_text(text, encoding='ascii')
             with self.assertRaises(ValueError):
                 tool.read_heights(bad)
+
+    def test_half_levels_round_trip(self):
+        out = self.tmp / 'halves.txt'
+        rows = [[0, 0.5, 1, 1.5, 9.5, 10], [15, 15.5, 25.5, 26.5, 31, 31.5]]
+        tool.write_heights(out, 6, 2, {1: rows})
+        self.assertEqual(out.read_text(encoding='ascii').split('\n')[3:5], ['0A1BJa', 'fPZ!v+'])
+        self.assertEqual(tool.read_heights(out), (6, 2, {1: rows}))
+        self.assertEqual(len(tool.DIGITS), 64)
+        self.assertEqual(len(set(tool.DIGITS)), 64)
+
+    def test_version_1_files_still_read(self):
+        old = self.tmp / 'old.txt'
+        old.write_text('civ13-terrain-heights 1\nsize 3 1\nz 1\n09f\n', encoding='ascii')
+        self.assertEqual(tool.read_heights(old), (3, 1, {1: [[0, 9, 15]]}))
 
     def test_png_round_trip(self):
         try:
@@ -171,7 +187,7 @@ class Shading(unittest.TestCase):
         rows, turf_rows = levels[2], turfs[2]
         self.assertTrue(json.loads((ROOT / 'maps/heights/nomads_gaia.design.json').read_text(encoding='utf-8'))['ridges'])
         walkable = [[not (t.startswith('/turf/wall') or 'water' in t) for t in row] for row in turf_rows]
-        steps = [0] * (tool.MAX_LEVEL + 1)
+        steps = [0] * int(tool.MAX_LEVEL * 2 + 1)  # by half levels
         for y in range(maxy):
             for x in range(maxx):
                 if 'water' in turf_rows[y][x]:
@@ -180,9 +196,10 @@ class Shading(unittest.TestCase):
                     continue
                 for nx, ny in ((x + 1, y), (x, y + 1)):
                     if nx < maxx and ny < maxy and walkable[ny][nx]:
-                        steps[abs(rows[y][x] - rows[ny][nx])] += 1
-        self.assertEqual(sum(steps[tool.DESIGN_MAX_STEP + 1:]), 0, 'no walkable step is steeper than the game counts')
-        self.assertGreater(steps[3] + steps[4], 2000, 'Gaia has real steep grades')
+                        steps[int(abs(rows[y][x] - rows[ny][nx]) * 2)] += 1
+        self.assertEqual(sum(steps[tool.DESIGN_MAX_STEP * 2 + 1:]), 0, 'no walkable step is steeper than the game counts')
+        self.assertGreater(sum(steps[6:tool.DESIGN_MAX_STEP * 2 + 1]), 2000, 'Gaia has real steep grades')
+        self.assertGreater(sum(steps[1::2]), 2000, 'Gaia uses half levels')
         self.assertGreaterEqual(max(v for row in rows for v in row), 13, 'highlands reach the upper levels')
 
 
@@ -210,7 +227,11 @@ class Wiring(unittest.TestCase):
     def test_parser_matches_tool_format(self):
         self.assertIn(f'"{tool.HEADER.split()[0]}"', MODULE)
         self.assertIn('regex(@"[^0-9a-f]")', MODULE)
-        self.assertEqual(tool.DIGITS, '0123456789abcdef')
+        self.assertIn('regex(@"[^0-9a-vA-Z!#$%&+]")', MODULE)
+        self.assertIn(f'#define TERRAIN_HEIGHT_WHOLE "{tool.WHOLE}"', MODULE)
+        self.assertIn(f'#define TERRAIN_HEIGHT_HALF "{tool.HALF}"', MODULE)
+        defines = (ROOT / 'code/__defines/turfs.dm').read_text(encoding='utf-8')
+        self.assertIn(f'#define TERRAIN_MAX_LEVEL {tool.MAX_LEVEL}', defines)
 
     def test_shading_is_placed_once_and_kept_on_turf_changes(self):
         ticker = (ROOT / 'code/processes/ticker.dm').read_text(encoding='utf-8')

@@ -194,8 +194,8 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 		return
 	var/faction = civilization
 	var/list/roster = map.faction_roster(faction)
-	var/cap = faction_member_limit_default()
-	var/value = player_input(src, "[faction] has [roster.len] of [map.faction_member_limit(faction)] members. Set a limit from 1 to [cap] (the server's limit).", "Member Limit", map.faction_member_limit(faction), "num", null, TRUE)
+	var/cap = map.faction_member_cap(faction)
+	var/value = player_input(src, "[faction] has [roster.len] of [map.faction_member_limit(faction)] members. Set a limit from 1 to [cap] (what your hall and colonies support; build up your hall to raise it).", "Member Limit", map.faction_member_limit(faction), "num", null, TRUE)
 	if (!isnum(value) || civilization != faction || !map.is_faction_leader(src, faction) || stat == DEAD)
 		return
 	value = clamp(round(value), 1, cap)

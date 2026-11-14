@@ -26,44 +26,10 @@
 
 // Manual bloomery and blast-furnace stacks share the same payment and credits.
 /obj/structure/furnace/proc/accept_manual_stack(var/obj/item/I, var/mob/living/human/H)
-	if (istype(I, /obj/item/stack/material/wood))
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], smelting it.")
-
-	else if (istype(I, /obj/item/stack/material/bamboo))
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/weapon/branch))
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/stack/material/leaf))
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/stack/dung))
-		record_wood_fuel(I, I.amount+1)
-		fuel += I.amount+1
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/stack/ore/charcoal))
-		record_wood_fuel(I, I.amount*2.5)
-		fuel += I.amount*2.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/stack/ore/coal))
-		record_wood_fuel(I, I.amount*3)
-		fuel += I.amount*3
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-
-	else if (istype(I, /obj/item/stack/material/woodplank))
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
+	var/furnace_fuel = solid_fuel_value(I, furnace_fuel_rates)
+	if (furnace_fuel)
+		record_wood_fuel(I, furnace_fuel)
+		fuel += furnace_fuel
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 
 	else if (istype(I, /obj/item/stack/ore/iron))
@@ -259,51 +225,10 @@
 		if (handle_structure_tool(I, H))
 			return
 		if (istype(I, /obj/item/stack/))
-			if (istype(I, /obj/item/stack/material/wood))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], smelting it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/bamboo))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/weapon/branch))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/leaf))
-				record_wood_fuel(I, I.amount+0.5)
-				fuel += I.amount+0.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/dung))
-				record_wood_fuel(I, I.amount+1)
-				fuel += I.amount+1
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/charcoal))
-				record_wood_fuel(I, I.amount*2.5)
-				fuel += I.amount*2.5
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/ore/coal))
-				record_wood_fuel(I, I.amount*3)
-				fuel += I.amount*3
-				to_chat(H, "You place \the [I] in \the [src], refueling it.")
-				qdel(I)
-				return
-			else if (istype(I, /obj/item/stack/material/woodplank))
-				record_wood_fuel(I, I.amount)
-				fuel += I.amount
+			var/kiln_fuel = solid_fuel_value(I, furnace_fuel_rates)
+			if (kiln_fuel)
+				record_wood_fuel(I, kiln_fuel)
+				fuel += kiln_fuel
 				to_chat(H, "You place \the [I] in \the [src], refueling it.")
 				qdel(I)
 				return

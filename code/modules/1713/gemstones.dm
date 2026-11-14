@@ -123,7 +123,7 @@ var/global/list/gem_pocket_weights = list(
 	playsound(get_turf(src), 'sound/effects/pickaxe.ogg', 40, TRUE)
 	// A charged lapping wheel beside the cutter halves the time and takes
 	// the stone down without splitting it (gem_science.dm).
-	var/obj/structure/lapping_wheel/lap = gem_lap_near(H)
+	var/obj/structure/lapping_wheel/lap = gem_lap_near(H, cut_type)
 	if (!do_after(H, GEM_CUT_TIME / max(0.5, H.getStatCoeff("dexterity")) / (lap ? 2 : 1), src))
 		return TRUE
 	if (QDELETED(src) || amount < 1 || W.loc != H || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
@@ -133,9 +133,9 @@ var/global/list/gem_pocket_weights = list(
 	if (!use(1))
 		return TRUE
 	H.adaptStat("crafting", 1)
-	if (lap && !QDELETED(lap) && lap.use_charge())
+	if (lap && !QDELETED(lap) && lap.use_charge(cut_type))
 		to_chat(H, SPAN_NOTICE("You finish the stone on \the [lap]."))
-	else if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting"))))
+	else if (prob(GEM_CUT_FLAW_CHANCE / max(0.5, H.getStatCoeff("crafting")) / (inclusions_mapped ? 2 : 1)))
 		var/leftover = gem_flaw_leftovers(T, cut_type)
 		to_chat(H, SPAN_WARNING("The [stone_name] cracks along a hidden flaw and splinters into [leftover ? leftover : "worthless chips"]."))
 		return TRUE
