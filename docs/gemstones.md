@@ -20,14 +20,21 @@ Code: `code/modules/1713/gemstones.dm`, `code/modules/1713/belt_pouches.dm`.
 
 Leather belt pouch (1 leather, Basic Toolmaking) and cloth drawstring pouch
 (1 cloth, Weaving). Six slots, small items only, no containers. Worn in the
-belt slot, carried in a pocket, or hung from a garment or a leather belt (at
+belt slot or the Hip slot, carried in a pocket, or hung from a garment or a leather belt (at
 most two per garment or belt; the second hangs on the left hip).
 
 Belts: the leather belt (1 leather) is worn in the belt slot and takes up to
 two pouches, drawn on the wearer; clicking the worn belt opens them. The
 shoulder belt (2 leather) is a cross-body strap attached to clothing in the
 sash accessory slot, so it is worn together with the waist belt without a
-second belt slot; it holds two pouches. Both need Basic Toolmaking.
+second belt slot; it holds two pouches, or one sword and a pouch. Both need
+Basic Toolmaking.
+
+Belt points: besides its two pouches the leather belt takes one sheath or
+holster and one tool loop (1 leather, Basic Toolmaking). The loop holds one
+item that can be worn in the belt slot, other than bags, clothing and guns.
+A worn belt with several attachments opens the attachment strip
+(`code/_onclick/hud/attachment_strip.dm`).
 
 ## Art
 

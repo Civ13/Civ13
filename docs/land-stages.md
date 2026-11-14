@@ -62,3 +62,24 @@ coordinator database), and the launcher's region board and rows show them.
   coordinator's next pass; every land sees it within a minute.
 - On the host: `python tools/transfer_storage/coordinator.py --db <coordinator.sqlite> --group <group> --mainland <id> --set-land europe=frontier`
   (add `,paused` to pause). `--lands` prints every stage as JSON.
+
+## Faction members
+
+Val's rules (2026-11-14): factions have a member limit, and an account may
+start new characters with a faction only after joining it in play.
+
+- **Roster.** Each faction keeps a roster of member accounts in
+  `map.faction_recruitment` (`rosters`, `limits`), so it saves with the world
+  and follows renames. An account is added when its character founds the
+  faction, is recruited or is accepted at a recruitment station
+  (`enroll_in_faction`), or logs in as a living member. Leaving the faction
+  removes it. Death does not. An account that has not played a member for
+  `FACTION_ROSTER_IDLE_DAYS` (14) drops off.
+- **Limit.** `FACTION_MEMBER_LIMIT` (20) accounts per faction; a leader may set
+  a lower one with **Faction > Set Member Limit**. A full faction cannot enrol
+  a new account; accounts already on the roster are never refused by it.
+- **Member start.** On Gaia, an account on a roster is asked at Join where to
+  start: in the wilds as usual, or with one of its factions. The character
+  starts beside one of that faction's recruitment stations and is a member at
+  once. Without a station there is no member start. Nobody else is offered the
+  choice. Code: `code/game/mob/groups/faction_roster.dm` and `faction_start.dm`.

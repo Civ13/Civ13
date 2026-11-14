@@ -30,7 +30,7 @@ class GemstoneTest(unittest.TestCase):
                 self.assertTrue(icon, block.split('\n')[0])
                 self.assertIn(state[1], state_names(ROOT / icon[1]), block.split('\n')[0])
                 checked += 1
-        self.assertEqual(checked, 17)  # 6 rough, 7 cut, 2 pouches, 2 belts
+        self.assertEqual(checked, 18)  # 6 rough, 7 cut, 2 pouches, 2 belts, tool loop
 
     def test_worn_pouch_states_have_four_directions(self):
         text = __import__('PIL.Image', fromlist=['Image']).open(ROOT / 'icons/mob/belt_pouches.dmi').info['Description']
@@ -48,7 +48,8 @@ class GemstoneTest(unittest.TestCase):
         for path, node in (('/obj/item/clothing/accessory/storage/belt_pouch', 'basic_tools'),
                            ('/obj/item/clothing/accessory/storage/belt_pouch/cloth', 'weaving'),
                            ('/obj/item/clothing/pouch_belt', 'basic_tools'),
-                           ('/obj/item/clothing/accessory/storage/baldric', 'basic_tools')):
+                           ('/obj/item/clothing/accessory/storage/baldric', 'basic_tools'),
+                           ('/obj/item/clothing/accessory/storage/tool_loop', 'basic_tools')):
             self.assertRegex(recipes, rf'RECIPE: [^,]+,[^,]+,{re.escape(path)},')
             self.assertIn(f'"{path}" = "{node}"', nodes)
 

@@ -6,6 +6,8 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_brazier_fire.py` owns the lit states of the stone, sandstone, obsidian and marble braziers in `icons/obj/structures.dmi`: it draws the coals and a 16-frame flame over each unlit bowl. `--check` verifies the committed sheet, `--gif` writes a review animation. It leaves every other state in the sheet untouched.
 
+`create_hip_slot.py` owns the picture inside the Hip inventory slot tile (the `id` state) of the four HUD style sheets in `icons/mob/screen/`. `--check` verifies the committed sheets, `--preview` writes a before and after sheet. It leaves the tile frames and every other state untouched.
+
 `create_orchard.py` owns the fruit tree states in `icons/farming/fruits.dmi`, the redrawn cave wheat, plump helmet and turnip growth states and the two redrawn crab foods. `--check` verifies the committed sheets, `--preview` writes a review sheet. It leaves every other state in those sheets untouched.
 
 `create_water_animation.py` owns the animated water states in `icons/turf/beach.dmi` (water bodies, their shoreline edges, the dock line and the flood overlays). They share one 12-frame loop so neighbouring water stays in step; change the water there and rerun it rather than editing those states by hand. `--check` verifies the committed sheet, `--gif` writes a tiled review animation. It leaves every other state in the sheet untouched.

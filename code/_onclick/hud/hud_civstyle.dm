@@ -58,7 +58,7 @@
 		"shoulder" =	 list("loc" = ui_shoulder,  "name" = "Shoulder",		 "state" = "shoulder"),
 		"storage1" =	 list("loc" = ui_storage1,  "name" = "Left Pocket",	 "state" = "pocket_l"),
 		"storage2" =	 list("loc" = ui_storage2,  "name" = "Right Pocket",	"state" = "pocket_r"),
-		"id" =		   list("loc" = ui_id,  "name" = "Pouch",		   "state" = "id",	"hideflag" = TOGGLE_INVENTORY_FLAG),
+		"id" =		   list("loc" = ui_id,  "name" = "Hip",		   "state" = "id",	"hideflag" = TOGGLE_INVENTORY_FLAG),
 		"belt" =		 list("loc" = ui_belt,  "name" = "Belt",			"state" = "belt"),
 		"back" =		 list("loc" = ui_back,  "name" = "Back",			"state" = "back"),
 		"l_hand" =	   list("loc" = ui_l_hand,  "name" = "Left Hand",	   "state" = "hand-l", "type" = /obj/screen/inventory/hand),

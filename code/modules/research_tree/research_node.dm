@@ -958,6 +958,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/accessory/storage/belt_pouch" = "basic_tools",
 		"/obj/item/clothing/pouch_belt" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/baldric" = "basic_tools",
+		"/obj/item/clothing/accessory/storage/tool_loop" = "basic_tools",
 		"/obj/item/weapon/chisel" = "basic_tools",
 		"/obj/item/weapon/chisel/metal" = "basic_tools",
 		"/obj/item/weapon/clay/mold/shovel" = "basic_tools",

@@ -145,6 +145,8 @@ var/list/gamemode_cache = list()
 	var/daynight_client_tint = FALSE
 	var/seasons_on = TRUE
 	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
+	var/faction_member_limit = 20 // Accounts a faction's roster may hold (faction_roster.dm).
+	var/faction_roster_idle_days = 14 // Days without playing a member before an account leaves the roster.
 	var/recruitment_expiry_days = 7 // Faction recruitment applications and approved offers (faction_recruitment.dm).
 	var/recruitment_queue_limit = 50 // Pending applications per faction.
 	var/recruitment_cooldown_minutes = 5 // Between one player's applications.
@@ -209,6 +211,12 @@ var/list/gamemode_cache = list()
 					var/minutes = text2num(value)
 					if (isnum(minutes) && minutes >= 1 && minutes <= 1440 && "[minutes]" == trim(value))
 						season_duration_minutes = minutes
+
+				if ("faction_member_limit", "faction_roster_idle_days")
+					var/number = text2num(value)
+					var/list/bounds = list("faction_member_limit" = list(2, 500), "faction_roster_idle_days" = list(1, 90))
+					if (isnum(number) && number == round(number) && number >= bounds[name][1] && number <= bounds[name][2] && "[number]" == trim(value))
+						vars[name] = number
 
 				if ("recruitment_expiry_days", "recruitment_queue_limit", "recruitment_cooldown_minutes")
 					var/number = text2num(value)

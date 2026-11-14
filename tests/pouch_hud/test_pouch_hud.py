@@ -177,5 +177,44 @@ class PouchVisibility(unittest.TestCase):
         self.assertEqual(equip.count('if (slot_shoulder)'), 1)
         self.assertEqual(ITEMS.count('"[slot_shoulder]" = SLOT_SHOULDER'), 1)
 
+    def test_attachment_strip_is_wired_to_worn_clothing(self):
+        acc = (ROOT / 'code/game/objects/items/clothing/clothing_accessories.dm').read_text(encoding='utf8')
+        strip = (ROOT / 'code/_onclick/hud/attachment_strip.dm').read_text(encoding='utf8')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf8')
+        self.assertIn('#include "code\\_onclick\\hud\\attachment_strip.dm"', dme)
+        hand = body(acc, '/obj/item/clothing/attack_hand')
+        # One attachment keeps opening directly; several open the strip, and only for a real client.
+        self.assertIn('accessories.len > 1 && ishuman(user) && user.client', hand)
+        self.assertLess(hand.index('toggle_attachment_strip(src)'), hand.index('A.attack_hand(user)'))
+        offer = body(acc, '/obj/item/clothing/attackby')
+        loop = offer.split('for (var/obj/item/clothing/accessory/A in accessories)', 1)[1].split('return', 1)[0]
+        self.assertIn('A.attackby(I, user)', loop)
+        self.assertIn('if (QDELETED(I) || I.loc != user)\n\t\t\t\tbreak', loop)
+        self.assertIn('refresh_attachment_strip(src)', body(acc, '/obj/item/clothing/proc/remove_accessory'))
+        click = body(strip, '/obj/screen/attachment/Click')
+        self.assertLess(click.index('attachment_strip_valid(attachment, host, H)'), click.index('attachment.attackby(I, H)'))
+        self.assertIn('attachment.attack_hand(H)', click)
+        # The tiles live on the client, so nothing about them is saved with the body.
+        self.assertIn('/client/var/list/attachment_strip', strip)
+        self.assertNotIn('/mob/living/human/var', strip)
+
+    def test_hip_slot_is_named_drawn_and_takes_belt_pouches(self):
+        for style in ('civ', 'fof', 'liteweb', 'new'):
+            text = (ROOT / f'code/_onclick/hud/hud_{style}style.dm').read_text(encoding='utf8')
+            self.assertRegex(text, r'"id" =\s+list\("loc" = [^\n]*"name" = "Hip",[^\n]*"state" = "id"')
+        pouches = (ROOT / 'code/modules/1713/belt_pouches.dm').read_text(encoding='utf8')
+        pouch = pouches.split('/obj/item/clothing/accessory/storage/belt_pouch\n', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID', pouch)
+        # A pouch has no held state, so the hip slot draws it by its icon state.
+        self.assertIn('wear_id.item_state ? wear_id.item_state : wear_id.icon_state', body(ICONS, '/mob/living/human/update_inv_wear_id'))
+        worn = (ROOT / 'code/game/mob/living/carbon/human/worn_storage.dm').read_text(encoding='utf8')
+        self.assertIn('items = list(belt, wear_id)', worn)
+        self.assertIn('items = list(back, belt, wear_id, w_uniform, wear_suit, l_store, r_store)', worn)
+        # The slot tile art is owned by its script; the committed sheets must match it.
+        spec = importlib.util.spec_from_file_location('create_hip_slot', ROOT / 'tests/sprites/create_hip_slot.py')
+        hip = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(hip)
+        self.assertEqual(hip.main(['--check']), 0)
+
 if __name__ == '__main__':
     unittest.main()
