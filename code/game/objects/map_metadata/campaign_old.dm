@@ -1,5 +1,6 @@
 
 /obj/map_metadata/campaign
+	campaign = TRUE
 	ID = MAP_CAMPAIGN
 	gamemode_vote = FALSE
 	title = "Campaign"

@@ -798,7 +798,7 @@ var/global/FREQM = rand(101,120)
 
 
 /proc/reploc(message,mob/living/human/speaker)
-	if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+	if (map.campaign)
 		return "Reporting in, current location is [speaker.get_coded_loc(speaker)] ([speaker.x],[speaker.y])."
 	else
 		return message
