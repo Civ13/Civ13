@@ -23,8 +23,14 @@ notice was found for these states. Keep this attribution with copies of the
 asset; adaptations remain subject to ShareAlike.
 
 Changes for Civ13: the three states were extracted into their own DMI with
-their upstream names. No pixels were redrawn, recoloured or rescaled.
+their upstream names. `intestines` keeps the upstream pixels. `crab_meat_roasted`
+and `food_ruined` were redrawn for Civ13 as hand-placed pixels from a fixed
+palette by `tests/sprites/create_orchard.py` (a crab shell of roasted meat and a
+spoiled, mouldy heap); they replace the upstream drawings under the same state
+names and are distributed under the same CC BY-SA 3.0 terms so the file keeps
+one licence. No generated art is used.
 `tools/art_ports/sources/pocket_stronghold_food/manifest.json` pins the source
-file and per-state RGBA hashes; `tools/art_ports/pocket_stronghold_food.py`
+file and per-state RGBA hashes (`source_rgba_sha256` for the upstream pixels of a
+redrawn state); `tools/art_ports/pocket_stronghold_food.py`
 rebuilds and verifies the DMI. The inventory of every upstream food state and
 why it was imported or left out is in `docs/pocket-stronghold-food.md`.

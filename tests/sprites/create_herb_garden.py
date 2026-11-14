@@ -14,7 +14,9 @@ It appends (or replaces) these states and leaves every other state untouched:
   sunflowerseeds, roseseeds.
 - icons/obj/food/food.dmi: chamomile, dandelion, dandelion_root, mint_sprig,
   sunflower, sunflower_seeds, rosehips, rose_petals, yarrow_sprig,
-  comfrey_sprig, elderflower_sprig, milk_thistle_sprig.
+  comfrey_sprig, elderflower_sprig, milk_thistle_sprig, wormwood_sprig.
+- icons/farming/humanity_wild_herbs.dmi: wormwood (the wild patch; the
+  yarrow, milk_thistle, elderflower and comfrey states there are kept as is).
 - icons/obj/food/dryed.dmi: dried_chamomile, dried_mint,
   roasted_dandelion_root, dried_rose_petals.
 - icons/obj/food/dryer.dmi: hanging states and their "R" rotations for
@@ -48,6 +50,8 @@ PAL = {
     '1': '#25321e', '2': '#344723', '3': '#435c2c', '4': '#567035', '5': '#6f8244',
     '6': '#f0e5bc', '7': '#d7c99d', '8': '#c6b178', '9': '#ad965f',
     'a': '#a7639a', 'A': '#854279', 'z': '#60355c', 'u': '#3d3425', 'U': '#625138',
+    'S': '#8b985e', 'W': '#a8ad79',  # silvery sage highlights from the same sheet
+    'J': '#d8c970',  # wormwood's pale yellow flower heads
     # stone
     'K': '#37373b', 'c': '#56565b', 'C': '#7c7d82', 'D': '#a1a2a6', 'F': '#c8c9cc',
 }
@@ -613,6 +617,75 @@ PRODUCE['milk_thistle_sprig'] = art([
     '.......1.......',
 ], 9, 7).im
 
+PRODUCE['wormwood_sprig'] = art([
+    '.......J.......',
+    '......J3.J.....',
+    '.....8.3J8.....',
+    '....J.J3.......',
+    '....8.83.J.....',
+    '.......3J8.J...',
+    '.....J.33338...',
+    '.....8W3.......',
+    '.W.W..S3..W.W..',
+    '.SWSW.43.WSWS..',
+    '..4SS3.3.3SS4..',
+    '.W..443334..W..',
+    '.SW.W..3.W.WS..',
+    '..SWSW.3WSWS...',
+    '..44SS33SS44...',
+    '....44.3.44....',
+    '.......2.......',
+    '.......2.......',
+    '.......2.......',
+    '.......1.......',
+    '.......1.......',
+], 9, 6).im
+
+
+# ---------------------------------------------------------- wild herb patch
+# Wormwood (Artemisia absinthium) for icons/farming/humanity_wild_herbs.dmi,
+# drawn loose and unoutlined like the yarrow, thistle, elder and comfrey there:
+# upright dark stems, silvery divided leaves lit from above and small nodding
+# yellow flower heads up the top of each stem.
+WORMWOOD_STEMS = [  # base x, top x, top y, first leaf side; back stems first
+    (7, 4, 17, 1), (25, 28, 16, -1), (11, 8, 10, -1), (21, 24, 9, 1), (16, 15, 5, 1),
+]
+WORMWOOD_LEAF = ['WW..', '.SW.', '.14S']  # points up and left; flipped for the right
+
+
+def wormwood_patch():
+    c = Canvas()
+    # dark undergrowth so the pale leaves stand off the grass
+    c.pts('2', (9, 29), (13, 28), (14, 30), (18, 29), (19, 27), (23, 29), (5, 30), (27, 30),
+          (9, 25), (13, 24), (18, 23), (23, 25), (6, 26), (26, 26), (13, 20), (19, 19))
+    c.pts('3', (8, 28), (12, 30), (17, 27), (20, 30), (22, 27), (24, 28), (10, 22),
+          (14, 26), (22, 22), (18, 25), (6, 23), (26, 22), (14, 17), (18, 16))
+    c.pts('1', (10, 31), (13, 31), (18, 31), (22, 31), (9, 30), (23, 30), (5, 31), (27, 31))
+    for n, (xb, xt, yt, side) in enumerate(WORMWOOD_STEMS):
+        path = c.line('2', xb, 31, xt, yt)
+        c.pts('1', *path[:3])
+        leafy = (len(path) * 3) // 5  # lower three fifths carry the leaves
+        for k, (x, y) in enumerate(path):
+            if 2 <= k <= leafy and k % 3 == 2:
+                left = (k // 3 + (side > 0)) % 2 == 0
+                c.stamp(x - 4 if left else x + 1, y - 2, WORMWOOD_LEAF, flip=not left)
+                # a short leaflet on the other side keeps the clump feathery
+                ox = x + (1 if left else -1)
+                c.pts('S', (ox, y - 1))
+                c.pts('W', (ox + (1 if left else -1), y - 2))
+            elif k > leafy + 1 and (k - leafy) % 2 == 0 and k < len(path) - 1:
+                # nodding flower heads on alternate sides of the upper stem
+                ox = 1 if ((k - leafy) // 2 + n) % 2 else -1
+                c.px(x + ox, y, 'J')
+                c.px(x + ox, y + 1, '8')
+        tx, ty = path[-1]
+        c.px(tx, ty, '3')
+        c.px(tx, ty - 1, 'J')
+    for xb, _, _, _ in WORMWOOD_STEMS:  # stems stay readable through the leaves
+        c.pts('1', (xb, 31), (xb, 30))
+    return c.im
+
+
 # -------------------------------------------------------------- dried items
 DRIED = {}
 DRIED['dried_chamomile'] = art([
@@ -779,6 +852,7 @@ def build():
         'icons/farming/plants.dmi': [('%s-%s' % (crop, st), fn(st)) for crop, fn in CROPS.items() for st in STAGES],
         'icons/farming/seeds.dmi': [(name, seeds(name)) for name in SEED_STAMPS],
         'icons/obj/food/food.dmi': list(PRODUCE.items()),
+        'icons/farming/humanity_wild_herbs.dmi': [('wormwood', wormwood_patch())],
         'icons/obj/food/dryed.dmi': list(DRIED.items()),
         'icons/obj/food/dryer.dmi': dryer_states(),
         'icons/obj/herbalism.dmi': [('mortar_pestle', mortar(MORTAR)), ('mortar_pestle_full', mortar(MORTAR_FULL))],
@@ -792,6 +866,7 @@ def preview(sheets, out):
         ('Crops in icons/farming/plants.dmi: grow1 to grow6, harvest, dead', sheets['icons/farming/plants.dmi']),
         ('Seeds in icons/farming/seeds.dmi', sheets['icons/farming/seeds.dmi']),
         ('Produce and picked sprigs in icons/obj/food/food.dmi', sheets['icons/obj/food/food.dmi']),
+        ('Wild herb patch in icons/farming/humanity_wild_herbs.dmi', sheets['icons/farming/humanity_wild_herbs.dmi']),
         ('Dried products in icons/obj/food/dryed.dmi', sheets['icons/obj/food/dryed.dmi']),
         ('Mortar and pestle in icons/obj/herbalism.dmi', sheets['icons/obj/herbalism.dmi']),
         ('Dehydrator overlays in icons/obj/food/dryer.dmi (straight, then R)', sheets['icons/obj/food/dryer.dmi']),

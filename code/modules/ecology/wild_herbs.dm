@@ -1,4 +1,4 @@
-// Wild herbs: yarrow, comfrey, elderflower and milk thistle.
+// Wild herbs: yarrow, comfrey, elderflower, milk thistle and wormwood.
 //
 // Herb patches grow wild on ecology worlds. Pick a few sprigs by hand (help
 // intent); a patch regrows one sprig every 20 minutes and has none in winter.
@@ -6,7 +6,7 @@
 // bandage, comfrey soothes bruises like a salve. Elderflower and milk thistle
 // are tea herbs: hold one and click an open container holding 10 or more
 // water to steep it. Elderflower tea eases colds and fever; milk thistle tea
-// slowly clears poisons.
+// slowly clears poisons. Wormwood tea purges intestinal worms.
 
 #define WILD_HERB_SPRIGS 3
 #define WILD_HERB_REGROW 12000 // one sprig per 20 minutes
@@ -148,6 +148,13 @@ var/global/list/wild_herb_list = list()
 	sprig_type = /obj/item/stack/medical/wild_herb/milk_thistle
 	use_hint = "Steeped in water, milk thistle makes a tea that clears poisons."
 
+/obj/structure/wild/flowers/wild_herb/wormwood
+	name = "wormwood"
+	desc = "A silvery, feathery wormwood plant with drooping yellow flower heads. Its leaves are fiercely bitter."
+	icon_state = "wormwood"
+	sprig_type = /obj/item/stack/medical/wild_herb/wormwood
+	use_hint = "Steeped in water, wormwood makes a bitter tea that purges worms."
+
 /////////////////////////////// Picked herbs ///////////////////////////////
 
 /obj/item/stack/medical/wild_herb
@@ -243,6 +250,14 @@ var/global/list/wild_herb_list = list()
 	steep_reagent = "milk_thistle_tea"
 	steep_message = "The water turns a cloudy, bitter green."
 
+/obj/item/stack/medical/wild_herb/wormwood
+	name = "wormwood"
+	singular_name = "wormwood sprig"
+	desc = "Silvery, deeply cut wormwood leaves. Steep them in water for a bitter tea that purges intestinal worms."
+	icon_state = "wormwood_sprig"
+	steep_reagent = "wormwood_tea"
+	steep_message = "The water turns a murky green and smells sharply bitter."
+
 /////////////////////////////// Herbal teas ///////////////////////////////
 
 /datum/reagent/drink/elderflower_tea
@@ -275,6 +290,21 @@ var/global/list/wild_herb_list = list()
 /datum/reagent/drink/milk_thistle_tea/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.adjustToxLoss(-6 * removed)
+
+// Game balance: one cup (10 units, about three minutes) purges worms.
+/datum/reagent/drink/wormwood_tea
+	name = "Wormwood Tea"
+	id = "wormwood_tea"
+	description = "A fiercely bitter tea of wormwood leaves. It purges intestinal worms."
+	taste_description = "harsh bitterness"
+	color = "#7C8A5A"
+	adj_temp = 5
+	metabolism = 0.05
+
+/datum/reagent/drink/wormwood_tea/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (istype(M, /mob/living/human) && M.disease && M.disease_type == "worms")
+		M.receive_disease_treatment(0.3)
 
 /////////////////////////////// Herb patches in the wild ///////////////////////////////
 
@@ -319,6 +349,8 @@ var/global/wild_herb_seed_report = ""
 			return list("temperate", "taiga")
 		if (/obj/structure/wild/flowers/wild_herb/milk_thistle)
 			return list("temperate", "semiarid")
+		if (/obj/structure/wild/flowers/wild_herb/wormwood)
+			return list("temperate", "semiarid", "taiga")
 	return list()
 
 /proc/wild_herb_site_ok(turf/T)

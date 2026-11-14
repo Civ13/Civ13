@@ -3,13 +3,15 @@
 `verify` needs no upstream files: it checks the committed DMI against the
 manifest's per-state RGBA hashes. `rebuild --source <food.dmi>` checks the
 pinned upstream file, extracts the selected states unchanged and rewrites the
-DMI. `preview --output <png>` draws the actual pixels at 4x for review.
+DMI; states marked `redrawn_for_civ13` are then drawn over by
+tests/sprites/create_orchard.py. `preview --output <png>` draws the actual pixels at 4x for review.
 """
 import argparse
 import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 
 from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 
@@ -63,7 +65,7 @@ def verify(target=None):
         if image.size != (32, 32):
             raise AssertionError(f"{entry['state']} is {image.size}, expected 32x32")
         if rgba_hash(image) != entry['rgba_sha256']:
-            raise AssertionError(f"{entry['state']} pixels differ from the attributed source")
+            raise AssertionError(f"{entry['state']} pixels differ from the manifest")
     print(f'Verified {len(expected)} states in {target.relative_to(ROOT) if target.is_relative_to(ROOT) else target}')
 
 
@@ -80,7 +82,7 @@ def rebuild(source, output=None):
     text = '# BEGIN DMI\nversion = 4.0\n\twidth = 32\n\theight = 32\n'
     for i, entry in enumerate(states):
         image = read_state(source, entry['source_state'])
-        if rgba_hash(image) != entry['rgba_sha256']:
+        if rgba_hash(image) != entry.get('source_rgba_sha256', entry['rgba_sha256']):
             raise AssertionError(f"{entry['source_state']} upstream pixels changed")
         sheet.paste(image, (32 * i, 0))
         text += f'state = "{entry["state"]}"\n\tdirs = 1\n\tframes = 1\n'
@@ -89,6 +91,9 @@ def rebuild(source, output=None):
     info.add_text('Description', text, zip=True)
     output = Path(output) if output else ROOT / manifest['target']
     sheet.save(output, format='PNG', pnginfo=info)
+    sys.path.insert(0, str(ROOT / 'tests/sprites'))
+    import create_orchard
+    create_orchard.write_dmi(output, create_orchard.build()[manifest['target']])
     verify(output)
 
 
@@ -109,7 +114,7 @@ def preview(output):
         draw.text((x, 98), entry['civ13_use'], fill='#c8c8c8', font=label)
         canvas.paste(image, (x, 125), image)
     draw.text((20, 285), 'Pocket Stronghold 13 / Dwarf Fortress 13 contributors - CC BY-SA 3.0.', fill='white', font=label)
-    draw.text((20, 305), 'See icons/obj/food/pocket_stronghold_food.dmi.LICENSE.md. Pixels unchanged.', fill='white', font=label)
+    draw.text((20, 305), 'See icons/obj/food/pocket_stronghold_food.dmi.LICENSE.md. Roasted crab and ruined food redrawn for Civ13.', fill='white', font=label)
     Path(output).parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output)
     print(output)
