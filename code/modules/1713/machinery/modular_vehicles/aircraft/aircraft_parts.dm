@@ -15,6 +15,10 @@
 	icon = 'icons/obj/vehicles/lightplane.dmi'
 	icon_state = "fuselage_center_floor"
 	var/hull_state = "fuselage_center"
+	// The propeller drawn over this section, stopped and turning while an
+	// engine on its tile runs, or null.
+	var/prop_state = null
+	var/prop_spin_state = null
 
 /obj/structure/vehicleparts/frame/car/aircraft/update_icon()
 	overlays.Cut()
@@ -32,13 +36,13 @@
 			roof.color = override_color
 		else if (axis && axis.color)
 			roof.color = axis.color
-	if (istype(src, /obj/structure/vehicleparts/frame/car/aircraft/nose/center))
+	if (prop_state)
 		var/spinning = FALSE
 		for (var/obj/structure/engine/E in loc)
 			if (E.on)
 				spinning = TRUE
 				break
-		overlays += image(icon=icon, icon_state=spinning ? "prop_spin" : "prop", layer=11.2, dir=dir)
+		overlays += image(icon=icon, icon_state=spinning ? prop_spin_state : prop_state, layer=11.2, dir=dir)
 
 /obj/structure/vehicleparts/frame/car/aircraft/nose/right
 	hull_state = "nose_right"
@@ -46,6 +50,8 @@
 	w_right = list("c_wall",TRUE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/nose/center
 	hull_state = "nose_center"
+	prop_state = "prop"
+	prop_spin_state = "prop_spin"
 	w_front = list("c_armoredfront",FALSE,TRUE,0,0.1,FALSE,FALSE)
 /obj/structure/vehicleparts/frame/car/aircraft/nose/left
 	hull_state = "nose_left"
@@ -198,10 +204,13 @@ var/global/list/aircraft_light_plane_layout = list(
 				F.axis = A
 				A.components += F
 			if (istype(O, /obj/structure/engine/internal))
-				A.engine = O
-				A.engine.key_axis = A
-				A.engine.engineclass = "carengine"
-				A.engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
+				var/obj/structure/engine/internal/E = O
+				// The first engine is the pilot's; any others run with it.
+				if (!A.engine)
+					A.engine = E
+				E.key_axis = A
+				E.engineclass = "carengine"
+				E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 			if (istype(O, /obj/structure/bed/chair/drivers))
 				D = O
 	A.check_corners()
@@ -209,9 +218,7 @@ var/global/list/aircraft_light_plane_layout = list(
 	D.axis = A
 	A.wheel = D.wheel
 	A.wheel.control = locate(/obj/structure/vehicleparts/frame) in D.loc
-	for (var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/F in parts)
-		A.engine.fueltank = F
-		F.icon_state = "fueltank_incar"
+	A.link_fuel_tanks()
 	for (var/obj/structure/vehicleparts/movement/W in parts)
 		var/obj/structure/vehicleparts/frame/F = locate() in W.loc
 		W.MouseDrop(F)
@@ -320,14 +327,16 @@ var/global/list/aircraft_cargo_plane_layout = list(
 	"3,4" = list(/obj/structure/vehicleparts/frame/car/aircraft/tail/left, /obj/structure/vehicleparts/movement/reversed),
 	)
 
-// Hangar models: name -> axis type. Every model is 3 wide; the trainer turns
-// in a 3x3 square, the rest in 4x4 (aircraft_model_size()).
+// Hangar models: name -> axis type. The trainer turns in a 3x3 square, the
+// twin-engine plane (5 wide, aircraft_twin.dm) in 5x5 and the rest, 3 wide,
+// in 4x4 (aircraft_model_size()).
 /proc/aircraft_models()
 	var/static/list/models = list(
 		"Light plane" = /obj/structure/vehicleparts/axis/aircraft/light_plane,
 		"Cabin plane" = /obj/structure/vehicleparts/axis/aircraft/cabin_plane,
 		"Trainer" = /obj/structure/vehicleparts/axis/aircraft/trainer,
 		"Cargo plane" = /obj/structure/vehicleparts/axis/aircraft/cargo_plane,
+		"Twin-engine plane" = /obj/structure/vehicleparts/axis/aircraft/twin_plane,
 		)
 	return models
 
@@ -341,19 +350,30 @@ var/global/list/aircraft_cargo_plane_layout = list(
 			return aircraft_trainer_layout
 		if ("Cargo plane")
 			return aircraft_cargo_plane_layout
+		if ("Twin-engine plane")
+			return aircraft_twin_plane_layout
 	return null
 
 /proc/aircraft_model_size(model)
 	if (!(model in aircraft_models()))
 		return 0
-	return model == "Trainer" ? 3 : 4
+	switch (model)
+		if ("Trainer")
+			return 3
+		if ("Twin-engine plane")
+			return 5
+	return 4
+
+// How many sections wide a hangar model is: its wingspan.
+/proc/aircraft_model_width(model)
+	return model == "Twin-engine plane" ? 5 : 3
 
 /proc/build_aircraft_model(model, turf/origin)
 	var/axis_type = aircraft_models()[model]
 	var/list/layout = aircraft_model_layout(model)
 	if (!axis_type || !layout)
 		return null
-	return build_aircraft(origin, axis_type, layout, 3, aircraft_model_size(model))
+	return build_aircraft(origin, axis_type, layout, aircraft_model_width(model), aircraft_model_size(model))
 
 // Admin spawn: builds the light plane facing south, with this tile as the
 // bottom-left of its 4x4 footprint.

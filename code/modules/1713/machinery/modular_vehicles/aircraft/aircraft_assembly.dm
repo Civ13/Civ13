@@ -11,8 +11,11 @@
 
 // The airframe pieces are drawn for a three-section wingspan: a nose, a wing
 // each side of the cockpit and a tail. Length runs from 3 to the largest
-// vehicle (a nose, a wing row, fuselage rows and a tail).
+// vehicle (a nose, a wing row, fuselage rows and a tail). The twin-engine
+// pieces (aircraft_twin.dm) make a five-section wingspan, 4 long.
 #define AIRCRAFT_ASSEMBLY_SPAN 3
+#define AIRCRAFT_TWIN_SPAN 5
+#define AIRCRAFT_TWIN_LENGTH 4
 
 /obj/structure/vehicleparts/frame/car/aircraft/section
 	name = "airframe section"
@@ -40,9 +43,11 @@
 	return null
 
 /obj/structure/vehicleparts/axis/aircraft/assembly_refusal(datum/vehicle_survey/S)
-	if (min(S.width, S.height) != AIRCRAFT_ASSEMBLY_SPAN || max(S.width, S.height) < AIRCRAFT_ASSEMBLY_SPAN)
-		return "the airframe is [S.width] by [S.height] sections; a plane is [AIRCRAFT_ASSEMBLY_SPAN] sections wide (a wing each side of the cockpit) and [AIRCRAFT_ASSEMBLY_SPAN] or more long"
-	return null
+	if (min(S.width, S.height) == AIRCRAFT_ASSEMBLY_SPAN && max(S.width, S.height) >= AIRCRAFT_ASSEMBLY_SPAN)
+		return null
+	if (min(S.width, S.height) == AIRCRAFT_TWIN_LENGTH && max(S.width, S.height) == AIRCRAFT_TWIN_SPAN)
+		return null
+	return "the airframe is [S.width] by [S.height] sections; a plane is [AIRCRAFT_ASSEMBLY_SPAN] sections wide (a wing each side of the cockpit) and [AIRCRAFT_ASSEMBLY_SPAN] to 5 long, or a twin-engine plane [AIRCRAFT_TWIN_SPAN] wide and [AIRCRAFT_TWIN_LENGTH] long"
 
 // The airframe piece for a section in row (1 = nose) of rows, column (1 = the
 // plane's left) of cols; cockpit marks the pilot's tile in the wing row.
@@ -87,7 +92,7 @@
 		cols = (facing & (NORTH | SOUTH)) ? S.width : S.height
 		var/turf/T = get_turf(F)
 		var/cockpit = row == 2 && S.seat && get_turf(S.seat) == T
-		var/path = aircraft_section_type(row, rows, col, cols, cockpit)
+		var/path = cols == AIRCRAFT_TWIN_SPAN ? aircraft_twin_section_type(row, col, cockpit) : aircraft_section_type(row, rows, col, cols, cockpit)
 		if (!path || F.type == path)
 			continue
 		var/obj/structure/vehicleparts/frame/N = new path(T)
@@ -108,8 +113,9 @@
 	if (S.refusal)
 		return S.refusal
 	var/span = (facing & (NORTH | SOUTH)) ? S.width : S.height
-	if (span != AIRCRAFT_ASSEMBLY_SPAN)
-		return "its wings would be [span] sections across; point the nose along the airframe's long side"
+	var/twin = max(S.width, S.height) == AIRCRAFT_TWIN_SPAN && min(S.width, S.height) == AIRCRAFT_TWIN_LENGTH
+	if (span != (twin ? AIRCRAFT_TWIN_SPAN : AIRCRAFT_ASSEMBLY_SPAN))
+		return twin ? "its wings would be [span] sections across; a twin-engine plane's wings run along the 5-section side" : "its wings would be [span] sections across; point the nose along the airframe's long side"
 	shape_airframe(S, facing)
 	. = ..(facing)
 	if (.)
@@ -119,23 +125,53 @@
 	var/extra = max(0, round((frames().len - 12) / 2))
 	takeoff_roll = initial(takeoff_roll) + extra
 	rough_takeoff_roll = initial(rough_takeoff_roll) + extra * 2
+	// Two engines lift a twin's weight, as the hangar's twin-engine plane.
+	if (twin)
+		maxpower = max(maxpower, 1400)
 	finish_airframe_parts()
 	for (var/obj/O in components)
 		O.update_icon()
+
+// A twin's wing engines and their tanks come loose with the rest.
+/obj/structure/vehicleparts/axis/aircraft/take_apart()
+	var/list/loose = wing_engines()
+	..()
+	for (var/obj/structure/engine/internal/E in loose)
+		E.on = FALSE
+		E.anchored = FALSE
+		E.key_axis = null
+		if (E.fueltank)
+			E.fueltank.anchored = FALSE
+			E.fueltank = null
+		E.update_icon()
 
 /obj/structure/vehicleparts/axis/aircraft/fit_parts()
 	. = ..()
 	finish_airframe_parts()
 
-// The engine and tank sit inside the airframe like the hangar's planes.
+// The engines and tanks sit inside the airframe like the hangar's planes.
+// The first engine is the pilot's; any others (a twin's) run with it.
 /obj/structure/vehicleparts/axis/aircraft/proc/finish_airframe_parts()
 	if (!engine)
 		return
-	engine.key_axis = src
-	engine.engineclass = "carengine"
-	engine.density = FALSE
-	engine.update_icon()
+	for (var/obj/structure/vehicleparts/frame/F in components)
+		if (F.axis != src)
+			continue
+		for (var/obj/structure/engine/internal/E in get_turf(F))
+			E.key_axis = src
+			E.engineclass = "carengine"
+			E.icon = 'icons/obj/vehicles/vehicleparts.dmi'
+			E.anchored = TRUE
+			E.density = FALSE
+	link_fuel_tanks()
+	for (var/obj/structure/vehicleparts/frame/F in components)
+		if (F.axis != src)
+			continue
+		for (var/obj/structure/engine/internal/E in get_turf(F))
+			E.update_icon()
 	if (engine.fueltank)
 		engine.fueltank.icon_state = "fueltank_incar"
 
 #undef AIRCRAFT_ASSEMBLY_SPAN
+#undef AIRCRAFT_TWIN_SPAN
+#undef AIRCRAFT_TWIN_LENGTH

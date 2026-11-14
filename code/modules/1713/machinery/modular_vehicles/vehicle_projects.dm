@@ -132,12 +132,13 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	if (!layout)
 		return null
 	. = list()
-	// build_aircraft(): origin x + 1, the 3-wide body against the east edge
-	// of the model's turning square.
+	// build_aircraft(): origin x + 1, the body against the east edge of the
+	// model's turning square.
 	var/size = aircraft_model_size(model)
+	var/width = aircraft_model_width(model)
 	for (var/coords in layout)
 		var/list/C = splittext(coords, ",")
-		.["[1 + size - 3 + text2num(C[1]) - 1],[text2num(C[2])]"] = layout[coords]
+		.["[1 + size - width + text2num(C[1]) - 1],[text2num(C[2])]"] = layout[coords]
 
 /obj/structure/car_workshop/proc/get_project_plan()
 	return project ? project_plan(project) : null
@@ -403,8 +404,10 @@ var/global/list/vehicle_project_body_cache = list()
 		return vehicle_project_body_cache[key]
 	. = list()
 	if (ispath(path, /obj/structure/vehicleparts/frame/car/aircraft))
-		if (ispath(path, /obj/structure/vehicleparts/frame/car/aircraft/nose/center))
-			. += image(icon = 'icons/obj/vehicles/lightplane.dmi', icon_state = "prop", dir = SOUTH)
+		var/obj/structure/vehicleparts/frame/car/aircraft/AP = path
+		var/prop = initial(AP.prop_state)
+		if (prop)
+			. += image(icon = 'icons/obj/vehicles/lightplane.dmi', icon_state = prop, dir = SOUTH)
 	else
 		var/obj/structure/vehicleparts/frame/F = new path(null)
 		F.should_save = FALSE

@@ -301,7 +301,7 @@ var/aircraft_runtime_error = FALSE
 		shadowed += A.shadow_turfs[S]
 	shadowed += A.ground_view_anchor
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over the runway lands with the passenger")
-	aircraft_check(shadowed.len == 13 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow or ground view behind")
+	aircraft_check(shadowed.len == 13 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow or ground view behind ([shadowed.len] [aircraft_visuals_gone(A, shadowed)])")
 	aircraft_check(!(A in airborne_aircraft) && A.currentspeed == 1 && A.vehicle_m_delay == A.speedlist[1], "a landed aircraft leaves the airborne list and slows to first gear's taxi pace")
 	aircraft_check(!A.descend(M), "descending on the ground is refused")
 
@@ -657,6 +657,50 @@ var/aircraft_runtime_error = FALSE
 		qdel(freighter)
 	else
 		aircraft_check(FALSE, "the cargo plane builds")
+
+	// The twin-engine plane: 5 wide in a 5x5 square, an engine on each wing.
+	aircraft_check(hangar.model_size("Twin-engine plane") == 5 && hangar.costs("Twin-engine plane")["steel"] == 90 && hangar.largest_model_size() == 4, "the hangar offers the twin-engine plane in a 5x5 square and still fits where a light plane does")
+	var/list/twin_layout = hangar.project_layout("Twin-engine plane")
+	aircraft_check(twin_layout && twin_layout.len == 20 && ("1,1" in twin_layout) && ("5,4" in twin_layout), "a twin built piece by piece fills a 5 by 4 body in its square")
+	aircraft_clear_ground(13, 29, 19, 35)
+	var/obj/structure/vehicleparts/axis/aircraft/twin = build_aircraft_model("Twin-engine plane", locate(14, 30, 1))
+	if (istype(twin))
+		var/list/twin_wings = twin.wing_engines()
+		var/obj/structure/engine/internal/other = twin_wings.len ? twin_wings[1] : null
+		var/wseats = 0
+		for (var/obj/structure/vehicleparts/frame/F in twin.frames())
+			for (var/obj/structure/bed/chair/seat in F.loc)
+				wseats++
+		aircraft_check(twin.frames().len == 20 && twin.maxdist == 5 && wseats == 4 && twin.takeoff_roll == 12, "the twin has twenty frames, four seats and a long roll ([twin.frames().len] frames, maxdist [twin.maxdist], [wseats] seats)")
+		aircraft_check(twin.engine && other && twin.engine.fueltank && other.fueltank && twin.engine.fueltank != other.fueltank && get_turf(other.fueltank) == get_turf(other), "each wing engine has its own tank")
+		var/obj/structure/vehicleparts/frame/car/aircraft/twin_nose = locate(/obj/structure/vehicleparts/frame/car/aircraft/nose/center/twin) in twin.frames()
+		aircraft_check(twin_nose && !twin_nose.overlays.len, "the twin's nose has no propeller")
+		twin.engine.on = TRUE
+		twin.engine.update_icon()
+		aircraft_check(twin.check_engine() && other && other.on, "starting the pilot's engine runs the other engine too (weight [twin.get_weight()], one engine lifts [twin.engine.maxpower * 2])")
+		var/spinning = 0
+		for (var/obj/structure/vehicleparts/frame/car/aircraft/twin_engine/TE in twin.frames())
+			for (var/O in TE.overlays)
+				var/image/I = O
+				if (findtext(I.icon_state, "twin_prop_spin_"))
+					spinning++
+		aircraft_check(spinning == 2, "both propellers turn ([spinning])")
+		twin.moving = TRUE
+		twin.currentspeed = 1
+		twin.wheel.lastdirchange = world.time - 1
+		aircraft_check(twin.wheel.turndir(null, "right") && twin.dir == WEST && twin.frames().len == 20, "the twin turns within its 5x5 square")
+		twin.moving = FALSE
+		twin.currentspeed = 0
+		twin.engine.on = FALSE
+		twin.check_engine()
+		aircraft_check(other && !other.on, "stopping the pilot's engine stops the other")
+		for (var/atom/movable/part in twin.components.Copy())
+			if (part != twin)
+				qdel(part)
+		aircraft_clear_ground(13, 29, 19, 35)
+		qdel(twin)
+	else
+		aircraft_check(FALSE, "the twin-engine plane builds")
 
 	// Enough hits break the airframe up: the plane comes down where it is.
 	if (istype(built))
