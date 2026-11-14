@@ -102,5 +102,63 @@ class FlagColorOverlays(unittest.TestCase):
                               f'\tapply_color_overlay(choice{number}, "{prefix}")', body)
 
 
+class FlagCrossOverlays(unittest.TestCase):
+    def setUp(self):
+        image_call = 'image("icon" = \'icons/obj/decals.dmi\', "icon_state" = "[prefix][suffix]")'
+        self.assertEqual(FLAGS.count(image_call), 1)
+        projected = FLAGS.replace(image_call, 'image(prefix, suffix)')
+        for color in ('White', 'Black', 'Blue', 'Red', 'Green'):
+            projected = projected.replace(f'"{color} [shape]"', f'"{color} " + shape')
+        old_fields = source_adapter.FIELDS
+        try:
+            source_adapter.FIELDS += ('overlays', 'new_icon_state')
+            self.apply = source_adapter.project(
+                projected, '/obj/item/flagmaker/proc/apply_cross_overlay',
+                'src, choice, shape, prefix', {'image': lambda prefix, suffix: prefix + suffix}, method=True)
+        finally:
+            source_adapter.FIELDS = old_fields
+
+    def test_cross_and_saltire_keep_their_color_mappings_and_existing_overlays(self):
+        class Overlays(list):
+            def __iadd__(self, image):
+                self.append(image)
+                return self
+
+        available = states('icons/obj/decals.dmi')
+        for shape, prefix in (('Cross', 'e_bigcross'), ('Saltire', 'e_saltire')):
+            for color, suffix in (('White', '2'), ('Black', '0'), ('Blue', '3'),
+                                  ('Red', '1'), ('Green', '4')):
+                with self.subTest(shape=shape, color=color):
+                    flag = SimpleNamespace(icon_state='before', new_icon_state='base', overlays=Overlays(['prior']))
+                    self.apply(flag, f'{color} {shape}', shape, prefix)
+                    expected = prefix + suffix
+                    self.assertIn(expected, available)
+                    self.assertEqual(flag.overlays, ['prior', expected])
+                    self.assertEqual(flag.icon_state, 'before')
+
+        flag = SimpleNamespace(icon_state='before', new_icon_state='base', overlays=Overlays())
+        self.apply(flag, 'White Cross', 'Cross', 'e_bigcross')
+        self.apply(flag, 'Red Saltire', 'Saltire', 'e_saltire')
+        self.assertEqual(flag.overlays, ['e_bigcross2', 'e_saltire1'])
+
+    def test_no_and_unrecognized_choices_preserve_overlays(self):
+        for choice, expected in (('No', 'base'), (None, 'before'), ('Unknown', 'before'),
+                                 ('White Saltire', 'before')):
+            with self.subTest(choice=choice):
+                flag = SimpleNamespace(icon_state='before', new_icon_state='base', overlays=['prior'])
+                self.apply(flag, choice, 'Cross', 'e_bigcross')
+                self.assertEqual(flag.icon_state, expected)
+                self.assertEqual(flag.overlays, ['prior'])
+
+    def test_prompt_wiring_and_symbol_cross_remain_distinct(self):
+        body = source_adapter.extract(FLAGS, '/obj/item/flagmaker/attack_self')
+        cross = 'apply_cross_overlay(choice7, "Cross", "e_bigcross")'
+        saltire = 'apply_cross_overlay(choice8, "Saltire", "e_saltire")'
+        self.assertLess(body.index(cross), body.index(saltire))
+        self.assertIn('"White Cross", "Black Cross", "Blue Cross", "Red Cross", "Green Cross", "No"', body)
+        self.assertIn('"White Saltire", "Black Saltire", "Blue Saltire", "Red Saltire", "Green Saltire", "No"', body)
+        self.assertIn('"e_cross0"', body)
+
+
 if __name__ == '__main__':
     unittest.main()
