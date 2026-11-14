@@ -1227,11 +1227,11 @@ class AutopilotTests(unittest.TestCase):
                 return {"ok": True, "result": {"self": {"x": self.pos[0], "y": self.pos[1]}, "surroundings": around, "nearby": [{"ref": "[0x2]", "dx": 0 - self.pos[0], "dy": 3 - self.pos[1]}], "queue": {"results": results}}}
 
         client = FakeClient()
-        ok, detail, _ = autopilot.approach(client, "[0x9]", "[0x2]", 0)
+        ok, detail, _ = autopilot.step_to(client, "[0x9]", "[0x2]", 0)
         self.assertTrue(ok, detail)
         self.assertNotIn("north", client.moves[:1])
         self.assertLessEqual(len(client.moves), 4)
-        ok, detail, _ = autopilot.approach(client, "[0x9]", "turf:%d,%d,2" % (client.pos[0], client.pos[1] + 1), 0)
+        ok, detail, _ = autopilot.step_to(client, "[0x9]", "turf:%d,%d,2" % (client.pos[0], client.pos[1] + 1), 0)
         self.assertTrue(ok, detail)  # already next to it
         start = list(client.pos)
         ok, detail, _ = autopilot.walk(client, "[0x9]", 0, away_from="[0x2]", moves=3)
