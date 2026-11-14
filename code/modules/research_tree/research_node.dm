@@ -630,6 +630,13 @@ var/global/list/node_grid_col_cache = null
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
 		"/obj/item/weapon/crowbar" = "iron_tools",
+		// machine parts: the material and the shaping station are the real gates
+		"/obj/item/machine_part/gear" = "basic_tools",
+		"/obj/item/machine_part/shaft" = "basic_tools",
+		"/obj/item/machine_part/bearing" = "basic_tools",
+		"/obj/item/machine_part/belt" = "basic_tools",
+		"/obj/item/machine_part/spring" = "bronze_working",
+		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools

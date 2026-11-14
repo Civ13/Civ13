@@ -205,6 +205,15 @@
 	base_icon = "clay_jug"
 	result = /obj/item/weapon/clay/mold/clayjug/fired
 
+// One mold for every cast machine part; the shape is picked at the anvil.
+/obj/item/weapon/clay/mold/parts
+	name = "unfired clay parts mold"
+	desc = "An unfired mold with the shapes of a toothed wheel, a bushing and a bar pressed into it."
+	icon = 'icons/obj/machine_parts.dmi'
+	icon_state = "parts_mold_raw"
+	base_icon = "parts_mold"
+	result = /obj/item/weapon/clay/mold/parts/fired
+
 /obj/item/weapon/clay/mold/key
 	name = "unfired clay guard key mold"
 	icon_state = "key_mold_raw"
@@ -275,6 +284,14 @@
 	fired = TRUE
 	craftable_classes = "arrowheads"
 	max_capacity = 50
+
+/obj/item/weapon/clay/mold/parts/fired
+	name = "parts mold"
+	desc = "A mold for machine parts: gear sets, shafts and bushings. Fill it from a blacksmith pot, then work it on an anvil."
+	icon_state = "parts_mold_empty"
+	fired = TRUE
+	craftable_classes = "parts"
+	max_capacity = 12
 
 /obj/item/weapon/clay/mold/claypot/fired
 	name = "clay blacksmith pot"

@@ -16,6 +16,9 @@ ANVIL = ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm'
 
 FROZEN_LADDER = {'bronze': (7, 1), 'copper': (7, 1.2), 'tin': (7, 1.4), 'gold': (5, 1),
                  'silver': (5, 1), 'lead': (5, 1), 'iron': (6, 1), 'steel': (5, 1)}
+# Metals that had no mold recipes under the old ladder and were given a cost since.
+# Brass came with the parts mold (tests/machine_parts) and pours at the bronze cost.
+ADDED_METALS = {'brass': (7, 1)}
 FROZEN_SWORD_METALS = ('bronze', 'copper', 'iron', 'steel')
 
 
@@ -42,7 +45,7 @@ def rows():
 
 class AnvilMoldCosts(unittest.TestCase):
     def test_table_matches_the_old_ladder(self):
-        self.assertEqual(table(), {m: (c, float(s)) for m, (c, s) in FROZEN_LADDER.items()})
+        self.assertEqual(table(), {m: (c, float(s)) for m, (c, s) in {**FROZEN_LADDER, **ADDED_METALS}.items()})
 
     def test_every_row_costs_what_it_did(self):
         current = table()

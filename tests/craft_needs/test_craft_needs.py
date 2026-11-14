@@ -4,7 +4,8 @@ code/game/objects/items/stacks/craft_needs.dm reads the file; produce_recipe()
 checks it at the start and again after the wait, and pays only then.
 
 - Every entry names a product some catalog row makes, tool qualities the game
-  knows, and stack types that exist.
+  knows, and input types that exist: stacks, or whole items listed in
+  LOOSE_INPUTS.
 - A second material is never the stack the recipe itself is made from.
 - produce_recipe() checks before the wait, rechecks and pays after it, and the
   old title-matched rope blocks (which also charged "aircraft hangar" and
@@ -24,6 +25,13 @@ GUARDS = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text(enc
 SHEETS = (ROOT / 'code/modules/materials/material_sheets.dm').read_text(encoding='utf-8', errors='ignore')
 ATLAS = (ROOT / 'scripts/build-crafting-atlas.py').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='ignore')
+
+
+# Second inputs that are whole items, not stacks: type -> the file that defines it.
+LOOSE_INPUTS = {
+    '/obj/item/weapon/reagent_containers/food/snacks/animalfat':
+        'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
+}
 
 
 def catalog_rows():
@@ -55,10 +63,28 @@ class CraftNeeds(unittest.TestCase):
             self.assertTrue(need['tools'] or need['inputs'], product)
             for tool in need['tools']:
                 self.assertIn(tool, qualities, product)
-            for stack_type, amount in need['inputs'].items():
-                self.assertRegex(SHEETS, r'(?m)^' + re.escape(stack_type) + r'$')
+            for input_type, amount in need['inputs'].items():
+                if input_type.startswith('/obj/item/stack/'):
+                    self.assertRegex(SHEETS, r'(?m)^' + re.escape(input_type) + r'$')
+                else:
+                    self.assertIn(input_type, LOOSE_INPUTS, product)
+                    defined = (ROOT / LOOSE_INPUTS[input_type]).read_text(encoding='utf-8', errors='ignore')
+                    self.assertRegex(defined, r'(?m)^' + re.escape(input_type) + r'$')
                 self.assertIsInstance(amount, int)
                 self.assertGreater(amount, 0)
+
+    def test_loose_inputs_pay_whole_items(self):
+        lines = SOURCE[SOURCE.index('/proc/craft_need_lines('):SOURCE.index('/proc/craft_needs_refusal(')]
+        self.assertIn('ispath(input_type, /obj/item/stack)', lines)
+        self.assertIn('craft_need_items(input_type, amount, candidates)', lines)
+        items = SOURCE[SOURCE.index('/proc/craft_need_items('):SOURCE.index('// One list(')]
+        self.assertIn('found.len >= amount', items)
+        self.assertIn('return null', items)
+        pay = SOURCE[SOURCE.index('/proc/craft_needs_pay('):SOURCE.index('/datum/craft_guard/needs\n')]
+        self.assertIn('S.use(line["amount"])', pay)
+        self.assertIn('qdel(I)', pay)
+        self.assertEqual(NEEDS['/obj/item/machine_part/bearing']['inputs'],
+                         {'/obj/item/weapon/reagent_containers/food/snacks/animalfat': 1})
 
     def test_second_material_is_not_the_recipe_stack(self):
         materials = dict(re.findall(r'^(/material(?:/\w+)+)\n\tname = "([^"]+)"',
