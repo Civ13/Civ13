@@ -80,6 +80,7 @@
 #include "code\_helpers\datum_pool.dm"
 #include "code\_helpers\directions.dm"
 #include "code\_helpers\distance.dm"
+#include "code\_helpers\era.dm"
 #include "code\_helpers\files.dm"
 #include "code\_helpers\access_lists.dm"
 #include "code\_helpers\functional.dm"
