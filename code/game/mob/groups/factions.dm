@@ -68,7 +68,7 @@
 // The map types where players may found their own factions -- the condition
 // the Create Faction verb has always gated on.
 /obj/map_metadata/proc/allows_custom_factions()
-	return nomads == TRUE || ID == MAP_NATIONSRP || ID == MAP_NATIONSRP_TRIPLE || ID == MAP_NATIONSRPMED || ID == MAP_NATIONSRP_WW2 || ID == MAP_NATIONSRP_COLDWAR || ID == MAP_NATIONSRP_COLDWAR_CMP
+	return nomads == TRUE || nationsrp
 
 // except_faction: a faction renaming itself may take back its own old name.
 /obj/map_metadata/proc/faction_name_taken(name, except_faction = null)
@@ -113,7 +113,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.nomads == TRUE || map.nationsrp)
 		if (U.civilization == "none")
 			to_chat(usr, "You are not part of any faction.")
 			return
@@ -150,7 +150,7 @@
 	set category = "Faction"
 	if (!map)
 		return
-	if (!(map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP))
+	if (!(map.civilizations == TRUE || map.nationsrp))
 		to_chat(src, SPAN_WARNING("You cannot transfer leadership of a faction in this map."))
 		return
 	var/faction = civilization
@@ -187,7 +187,7 @@
 		U = src
 	else
 		return
-	if (map.civilizations == TRUE || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP)
+	if (map.civilizations == TRUE || map.nationsrp)
 		if (U.civilization == "none")
 			to_chat(usr, "You are not part of any faction.")
 			return
