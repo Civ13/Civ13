@@ -190,8 +190,15 @@ var/global/list/crafting_purpose_cache = list()
 	var/obj/item/stack/S = istype(W) ? W.source : null
 	if (H && H.client)
 		H.client.crafting_window_classic = TRUE
+	var/datum/crafting_window/anvil/station = W
+	var/obj/structure/anvil/A = istype(station) ? station.anvil : null
 	close()
 	if (istype(H) && S && !QDELETED(S) && S.loc == H && H.get_active_hand() == S)
+		if (istype(station))
+			// The anvil's own menus are its classic list.
+			if (A && !QDELETED(A) && in_range(A, H))
+				A.attackby(S, H)
+			return
 		S.list_recipes(H)
 
 // TRUE when the modern window took this request; FALSE sends the caller on to
@@ -206,7 +213,8 @@ var/global/list/crafting_purpose_cache = list()
 	if (W && W.working)
 		// A craft is under way: leave its window as it is.
 		return TRUE
-	if (W && W.source != src && !(reach && W.reach))
+	// A station's window (the anvil's) lists that station's rows, never this stack's own.
+	if (W && (W.type != /datum/crafting_window || (W.source != src && !(reach && W.reach))))
 		GLOB.nanomanager.close_uis(W)
 		W.closed()
 		W = null
