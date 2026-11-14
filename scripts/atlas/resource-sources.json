@@ -14414,6 +14414,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Mine obsidian near a volcano",
+      "file": "code/modules/1713/obsidian.dm",
+      "line": 82,
+      "source_commit": "51ca99b8a5c23f74501d06dce7a3e3541e6b23cd",
+      "inputs": [
+        "/turf/floor/dirt/underground"
+      ],
+      "outputs": [
+        "/obj/item/stack/ore/obsidian"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/pickaxe"
+      ],
+      "steps": [
+        "Mine rock near a volcano, on the volcano's level or the level below it.",
+        "Now and then a mining action also turns up four to eight pieces of rough obsidian, on top of the usual ore roll."
+      ],
+      "conditions": "Independent roll on each completed mining action; only near volcanic turf. Special caves double the amount.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Mine later-era finite minerals",
       "file": "code/game/turfs/floor_attackby.dm",
       "line": 767,
