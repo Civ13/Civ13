@@ -487,7 +487,10 @@ proc/admin_notice(var/message, var/rights)
 	set name = "Delay"
 
 	if (!check_rights(R_SERVER))	return
-	if (!ticker || ticker.current_state != GAME_STATE_PREGAME)
+	if (!ticker)
+		to_chat(usr, "<span class = 'warning'>The game ticker has not been set up yet.</span>")
+		return
+	if (ticker.current_state != GAME_STATE_PREGAME)
 		ticker.delay_end = !ticker.delay_end
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
 		message_admins("<span class = 'notice'>[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].</span>", key_name(usr))
@@ -1034,7 +1037,6 @@ proc/admin_notice(var/message, var/rights)
 		if ("Just clear")
 			do_clear = TRUE
 			do_load = FALSE
-			return
 		if ("Cancel")
 			return
 
@@ -1086,7 +1088,6 @@ proc/admin_notice(var/message, var/rights)
 			do_load = TRUE
 		if ("Just clear")
 			do_clear = TRUE
-			return
 		if ("Cancel")
 			return
 

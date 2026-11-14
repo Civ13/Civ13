@@ -193,6 +193,7 @@
 				S.switched = "split"
 				S.update_icon()
 			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
+			update_icon()
 			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 			return
 		else
@@ -612,10 +613,16 @@
 				"<span class='notice'>You hear metal clanking.</span>")
 		add_fingerprint(user)
 		for(var/turf/floor/F in range(1,src))
-			for(var/obj/O in F)
-				if (!O.density && !F.density)
-					M.forceMove(F)
-					return M
+			if (F == loc || F.density)
+				continue
+			var/blocked = FALSE
+			for(var/atom/movable/O in F)
+				if (O.density)
+					blocked = TRUE
+					break
+			if (!blocked)
+				M.forceMove(F)
+				return M
 	return M
 
 /obj/structure/trains/transport/verb/unsecure()

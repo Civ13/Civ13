@@ -313,7 +313,7 @@
 					tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 				var/obj/item/organ/external/affecting = get_organ(ran_zone(tgtm))
 
-				var/list/holding = list(get_active_hand() = 40, get_inactive_hand = 20)
+				var/list/holding = list(get_active_hand() = 40, get_inactive_hand() = 20)
 
 				//See if they have any guns that might go off
 				for (var/obj/item/weapon/gun/W in holding)

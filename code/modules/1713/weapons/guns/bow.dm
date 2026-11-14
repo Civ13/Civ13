@@ -43,7 +43,7 @@
 	..()
 	if (!can_lob)
 		verbs -= /obj/item/weapon/gun/projectile/bow/verb/toggle_arc
-	if (map && !map.civilizations)
+	if (map && !map.civilizations && caliber == "arrow")
 		if (map.ordinal_age == 1)
 			loaded = list()
 			var/obj/item/ammo_casing/C = new /obj/item/ammo_casing/arrow/bronze(src)

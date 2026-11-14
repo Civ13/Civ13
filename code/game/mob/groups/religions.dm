@@ -81,6 +81,7 @@
 			if ("Shamans")
 				if (H.gender == "male")
 					H.religious_title = "Elder Shaman"
+				else
 					H.religious_title = "Elder Shamaness"
 			if ("Priests")
 				if (H.gender == "male")
@@ -460,14 +461,14 @@ obj/structure/altar/attack_hand(mob/living/human/H as mob)
 					var/answer = WWinput(choice2, "[H] asks you to convert to his religion, [H.religion]. Will you accept?", null, "Yes", list("Yes","No"))
 					if (answer == "Yes")
 						to_chat(usr, ("[choice2] accepts your offer. They are worshipping [H.religion]."))
-						to_chat(src, ("You accept [H]'s offer. You are now worshipping [H.religion]."))
+						to_chat(choice2, ("You accept [H]'s offer. You are now worshipping [H.religion]."))
 						choice2.religion = H.religion
 						choice2.religious_leader = FALSE
 						choice2.religion_type = H.religion_type
 						choice2.religion_style = H.religion_style
 						return
 					else if (answer == "No")
-						to_chat(usr, ("[closemobs] has rejected your offer."))
+						to_chat(usr, ("[choice2] has rejected your offer."))
 						return
 					else
 						return

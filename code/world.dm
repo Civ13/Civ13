@@ -474,7 +474,7 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "[jointext(community_links, " | ")]<br>"
 
 	if (config.hub_banner_url)
-		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
+		s += "<img src=\"[config.hub_banner_url]\"><br>"
 	if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
@@ -482,11 +482,11 @@ var/world_topic_spam_protect_time = world.timeofday
 	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
-	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
+	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (map)
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
-	if (config.hub_body)
-		s += config.hub_body
+	if (hub_body)
+		s += hub_body
 
 	status = s
 

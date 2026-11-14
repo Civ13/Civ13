@@ -50,8 +50,8 @@ bullet_act
 								meat.radiation = radiation/10
 								if (germ && meat.reagents)
 									meat.reagents.add_reagent(germ, 2)
-								var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
-								HD.name = "[src.name]'s head"
+							var/obj/item/organ/external/head/HD = new/obj/item/organ/external/head(get_turf(src))
+							HD.name = "[src.name]'s head"
 						else
 							for(var/i=1;i<=4;i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))

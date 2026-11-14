@@ -88,7 +88,7 @@
 		for(var/datum/surgery_step/S in surgery_steps)
 			if(!affected.open && S.req_open)
 				return FALSE
-	return FALSE
+	return TRUE
 
 proc/spread_germs_to_organ(var/obj/item/organ/external/E, var/mob/living/human/user)
 	if (!istype(user) || !istype(E)) return

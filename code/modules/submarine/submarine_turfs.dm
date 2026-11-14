@@ -317,7 +317,7 @@
 	// Spread: 5-8% chance per tick to ignite an adjacent sub_deck turf
 	if(prob(rand(5, 8)))
 		var/list/spread_dirs = list(NORTH, SOUTH, EAST, WEST)
-		shuffle(spread_dirs)
+		spread_dirs = shuffle(spread_dirs)
 		for(var/dir in spread_dirs)
 			var/turf/floor/sub_deck/neighbor = get_step(src, dir)
 			if(!neighbor || !istype(neighbor)) continue

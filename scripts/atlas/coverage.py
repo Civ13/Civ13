@@ -80,6 +80,9 @@ def added_without_route(catalog, diff):
             if not current.startswith('/datum/') and current in resources and current not in explained:
                 found.setdefault(current, dict(file=path, name=resources[current].get('name', ''), problem='page has no recipe or route'))
             continue
+        if re.match(r'^/[\w/]+[ \t]*$', text):
+            current = ''
+            continue
         reagent = re.match(r'^\tid = "(\w+)"', text)
         if reagent and current.startswith('/datum/reagent/'):
             rid = reagent[1]

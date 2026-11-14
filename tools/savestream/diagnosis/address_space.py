@@ -59,7 +59,8 @@ if os.name == "nt":
 
     class MBI(ctypes.Structure):
         _fields_ = [("BaseAddress", ctypes.c_void_p), ("AllocationBase", ctypes.c_void_p),
-                    ("AllocationProtect", wintypes.DWORD), ("PartitionId", wintypes.WORD),
+                    ("AllocationProtect", wintypes.DWORD)] + (
+                    [("PartitionId", wintypes.WORD)] if ctypes.sizeof(ctypes.c_void_p) == 8 else []) + [
                     ("RegionSize", ctypes.c_size_t), ("State", wintypes.DWORD),
                     ("Protect", wintypes.DWORD), ("Type", wintypes.DWORD)]
 

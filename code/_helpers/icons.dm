@@ -451,7 +451,7 @@ proc/BlendRGB(rgb1, rgb2, amount)
 	return isnull(alpha) ? rgb(r, g, b) : rgb(r, g, b, alpha)
 
 proc/BlendRGBasHSV(rgb1, rgb2, amount)
-	return HSVtoRGB(RGBtoHSV(rgb1), RGBtoHSV(rgb2), amount)
+	return HSVtoRGB(BlendHSV(RGBtoHSV(rgb1), RGBtoHSV(rgb2), amount))
 
 proc/HueToAngle(hue)
 	// normalize hsv in case anything is screwy
