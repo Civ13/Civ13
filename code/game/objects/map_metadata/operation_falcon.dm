@@ -642,3 +642,5 @@ var/global/list/fob_names_russian = list("Anna", "Boris", "Dmitri", "Yelena", "I
 		name = "[map.roundend_condition_def2name(faction_text)] [name]"
 		message_admins("[H.ckey] ([H.faction_text]) has built an Anti-Air at ([src.x], [src.y], [src.z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[src.x];Y=[src.y];Z=[src.z]'>JMP</a>).", H.ckey)
 	return
+
+/obj/map_metadata/operation_falcon/faction_hud_icons = list(RUSSIAN = "ru_basic")

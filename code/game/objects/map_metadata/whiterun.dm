@@ -134,3 +134,4 @@ var/no_loop_whrn = FALSE
 
 /obj/map_metadata/whiterun/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction2, faction1)
+/obj/map_metadata/whiterun/faction_hud_icons = list(ROMAN = "empire", CIVILIAN = "stormcloak")

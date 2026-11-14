@@ -105,3 +105,5 @@ var/no_loop_lm = FALSE
 
 /obj/map_metadata/long_march/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction1, faction2, one_area = /area/caribbean/no_mans_land/invisible_wall/tundra/one, two_area = /area/caribbean/no_mans_land/invisible_wall/inside)
+
+/obj/map_metadata/long_march/faction_hud_icons = list(CIVILIAN = "sov_basic")

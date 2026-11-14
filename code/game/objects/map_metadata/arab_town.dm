@@ -184,3 +184,5 @@ var/no_loop_arab = FALSE
 		return ""
 	else
 		return ""
+
+/obj/map_metadata/arab_town/faction_hud_icons = list(ARAB = "hez_basic", AMERICAN = "idf_basic")

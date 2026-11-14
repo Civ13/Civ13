@@ -179,3 +179,5 @@ var/no_loop_clash = FALSE
 
 
 
+
+/obj/map_metadata/clash/faction_hud_icons = list(NORWEGIAN = "ger0_basic", DANISH = "barbarian_basic")

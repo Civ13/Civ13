@@ -136,3 +136,4 @@ var/no_loop_groz = FALSE
 
 /obj/map_metadata/grozny/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction1, faction2)
+/obj/map_metadata/grozny/faction_hud_icons = list(RUSSIAN = "ru_basic")

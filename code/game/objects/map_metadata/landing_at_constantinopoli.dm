@@ -127,3 +127,4 @@
 			return "The <b>Russians</b> have captured the city! They will win in {time} minutes."
 
 	return TRUE
+/obj/map_metadata/landing_at_constantinopoli/faction_hud_icons = list(RUSSIAN = "ru_basic")
