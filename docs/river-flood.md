@@ -31,13 +31,22 @@ fails when a committed sidecar no longer matches. Each run takes under a second.
   that reaches it over the ground. A tile behind a ridge needs the ridge's
   height. Land the sea reaches first belongs to no reach and never floods from
   a river.
+- **Hollows.** Closed basins on land: connected tiles below the same spill
+  level, at least 3 tiles and half a level deep (at most 4,095, the largest by
+  the water they hold). Each lists its spill and bottom levels, its tiles per
+  half level and its catchment, the land whose water runs into it along the
+  priority flood's drainage tree.
 
-The file is `civ13-river-flood 1`, `size W H`, `z Z`, `reaches N`, then one
+The file is `civ13-river-flood 2` (version 1 files, without hollows, still load), `size W H`, `z Z`, `reaches N`, then one
 line per reach (`r id down x y catchment upstream water`: the reach it drains
 to or 0, its catchment centre, catchment tiles, tiles upstream including its
 own, water tiles), then H rows of two-character reach ids per tile (`00` for
-none), then H rows of thresholds in the height alphabet (`.` for none). The
-Gaia file is 0.5 MB with 125 reaches.
+none), then H rows of thresholds in the height alphabet (`.` for none), then
+`hollows K`, one line per hollow (`h id spill bottom x y area catchment
+counts`, levels in the height alphabet, tile counts per half level from the
+bottom joined with commas) and `hollow_rows R` with only the rows that hold a
+hollow (`row-from-north ids`). The Gaia file is 0.8 MB with 125 reaches and
+217 hollows.
 
 ## Stages
 
@@ -63,6 +72,19 @@ plains: on Gaia a stage of 2 to 3 reaches about 15% of the land.
 `flood_depth_at(turf)` is the stage of the tile's reach above its threshold,
 0 when dry. `river_stage_at(turf)` is the stage of the tile's reach. Both are a
 table lookup; nothing loops over tiles.
+
+## Hollows
+
+`code/modules/1713/flood_hollows.dm`. Each hollow holds water in tile-levels
+(saved after the reaches in `river_flood_state`). Each minute, after the
+reaches, rain at its centre adds 0.003 per catchment tile per point of
+intensity, counting at most 8 catchment tiles per hollow tile; 0.5% of the
+water soaks away (1% in a dry season or under a heat system). The water stands
+level, worked out from the tile counts per half level, and never rises past
+the spill. Depth on a hollow tile is that level less its graded height. A river
+that rises over a tile's threshold now stands on the tile's own ground, so a
+basin behind a ridge or a wall fills to the river's level once the water tops
+it. The view scan also draws hollow tiles.
 
 ## Effects
 
@@ -156,6 +178,7 @@ tiles around you, blue where the water is now).
 
     python3 tests/river_flow/test_flood.py
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/flood_probe.dm
+    python3 tests/ecology_spawning/run_linux.py . tests/river_flow/flood_hollow_probe.dm
     python3 tests/sewers/test_sewers.py
     python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>

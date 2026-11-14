@@ -223,7 +223,8 @@ var/global/flood_draw_revision = 0
 	var/tmp/flood_drawn_y = 0
 	var/tmp/flood_drawn_z = 0
 
-// TRUE when some reach is above the lowest bank, so anything may be under water.
+// TRUE when some reach is above the lowest bank or a hollow holds rain, so
+// anything may be under water.
 /proc/flood_anywhere()
 	var/datum/river_flood/F = map && map.river_flood()
 	return F && F.flooding
@@ -265,7 +266,7 @@ var/global/flood_draw_revision = 0
 	for (var/y in y0 to y1)
 		for (var/x in x0 to x1)
 			var/r = F.reach_at(x, y)
-			if (!r || F.stage[r] <= 0)
+			if ((!r || F.stage[r] <= 0) && !F.hollow_at(x, y))
 				continue
 			var/band = flood_band_at(locate(x, y, centre.z))
 			if (band)
