@@ -1708,6 +1708,7 @@
 #include "code\modules\1713\gemstones.dm"
 #include "code\modules\1713\belt_pouches.dm"
 #include "code\modules\1713\stone_age_arms.dm"
+#include "code\modules\1713\obsidian.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\flax_processing.dm"
 #include "code\modules\1713\rope_making.dm"
