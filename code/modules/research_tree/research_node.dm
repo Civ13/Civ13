@@ -628,6 +628,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
+		"/obj/item/weapon/crowbar" = "iron_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools
