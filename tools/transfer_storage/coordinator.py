@@ -138,7 +138,7 @@ def read_lands(path, mainland, now=None):
 
 
 class Coordinator(TrainCustody):
-    def __init__(self, path, group, mainland=None, bootstrap_new_group=False):
+    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None):
         self.group = group
         self.mainland = mainland
         self.db = sqlite3.connect(path, isolation_level=None)
@@ -187,7 +187,7 @@ class Coordinator(TrainCustody):
         if bootstrap_new_group:
             self.db.execute("UPDATE ledger SET value = '1' WHERE key = 'bootstrap'")
         # The world chart for boat expeditions (docs/world-chart.md).
-        self.chart = WorldChart(self.db, mainland)
+        self.chart = WorldChart(self.db, mainland, slots, expeditions)
         # Nations (docs/land-stages.md, "Nations"), and the outcome of each
         # leader's request until its agent acknowledges it.
         self.nations = Nations(self.db)
@@ -286,17 +286,22 @@ class Coordinator(TrainCustody):
         self.db.execute('DELETE FROM land_hour WHERE hour <= ?', (hour - READY_WINDOW_HOURS - 24,))
         return True
 
-    def chart_request(self, request):
-        """One admin request from a world's chart panel: 'reroll' a charted
-        tile's template, or 'reveal' the tiles round one (for testing before
-        ships sail). Returns True when it changed the chart."""
+    def chart_request(self, request, origin=None):
+        """One request from a world (origin) for the chart: an admin's 'reroll'
+        of a charted tile's template or 'reveal' of the tiles round one, a
+        ship's 'scout' (what she saw round a tile) or 'course' (she set course
+        for a land: see WorldChart.set_course). admin is the account asking.
+        Returns True when it changed the chart."""
         x, y, admin = request.get('x'), request.get('y'), request.get('admin')
         if not tile_valid(x, y) or not account_key_valid(admin):
             return False
-        if request.get('op') == 'reroll':
+        op, owner = request.get('op'), request.get('owner')
+        if op == 'reroll':
             return self.chart.reroll(x, y, admin) is not None
-        if request.get('op') == 'reveal' and owner_valid(request.get('owner')):
-            return bool(self.chart.reveal(request['owner'], x, y))
+        if op in ('reveal', 'scout') and owner_valid(owner):
+            return bool(self.chart.reveal(owner, x, y))
+        if op == 'course' and owner_valid(owner):
+            return self.chart.set_course(request.get('voyage'), owner, x, y, origin) is not None
         return False
 
     def decide(self, source, request):
@@ -482,7 +487,7 @@ class Coordinator(TrainCustody):
                     self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
                 for r in requests:
                     if r['id'] not in old:
-                        self.chart_request(r)
+                        self.chart_request(r, name)
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 chart_done[name] = ids
             # Nation requests, each region's in its own order. An outcome is
@@ -507,6 +512,8 @@ class Coordinator(TrainCustody):
             raise
         rev = int(self._ledger('rev'))
         lands = self.lands()
+        # Courses whose land the host has opened (or could not) since the last pass.
+        self.chart.refresh_courses()
         chart_rev = self.chart.key()
         chart = None
         nations = self.nations.snapshot()
@@ -668,6 +675,9 @@ def main(argv=None):
     parser.add_argument('--chart-reveal', metavar='OWNER=X,Y', help='chart the tiles round X,Y for OWNER and exit')
     parser.add_argument('--chart-reroll', metavar='X,Y', help='give a charted tile a new template and exit')
     parser.add_argument('--chart-pin', metavar='REGION=X,Y', help='put a mainland region on a fixed tile and exit')
+    parser.add_argument('--slots', default='', metavar='A,B,...',
+                        help="the group's EXPEDITION regions, which ships' courses may open lands in")
+    parser.add_argument('--expeditions', metavar='DIR', help='where the host keeps its expedition slots (<group root>/expeditions)')
     args = parser.parse_args(argv)
     enrollments = []
     for item in args.region:
@@ -676,7 +686,8 @@ def main(argv=None):
             parser.error('--region takes NAME=URL=TOKEN_FILE, got %r' % item)
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
-    coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group)
+    coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group,
+                              [s for s in args.slots.split(',') if s], args.expeditions)
     if args.chart is not None or args.chart_reveal or args.chart_reroll or args.chart_pin:
         try:
             chart_cli(parser, coordinator.chart, args)

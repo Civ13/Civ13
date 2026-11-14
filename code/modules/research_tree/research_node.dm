@@ -999,6 +999,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
 		"/obj/structure/fish_pen" = "basic_tools",
+		"/obj/item/weapon/trap_kit/snare" = "basic_tools",
+		"/obj/item/weapon/trap_kit/deadfall" = "basic_tools",
+		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
@@ -1233,7 +1236,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (21) ---
+		// --- electricity (22) ---
+		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -1319,6 +1323,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/trains/locomotive/coal/armored" = "field_artillery",
 		// --- field_defenses (14) ---
 		"/obj/item/weapon/beartrap" = "field_defenses",
+		"/obj/item/weapon/pit_cover" = "field_defenses",
 		"/obj/item/weapon/dummy_armor" = "field_defenses",
 		"/obj/item/weapon/material/shovel/trench" = "field_defenses",
 		"/obj/item/weapon/punji_sticks" = "field_defenses",
@@ -1788,7 +1793,9 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (17) ---
+		// --- optics_instruments (19) ---
+		"/obj/item/gem_tester" = "optics_instruments",
+		"/obj/item/gem_tester/scale" = "optics_instruments",
 		"/obj/item/clothing/accessory/storage/lanyard/fob_chain" = "optics_instruments",
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",

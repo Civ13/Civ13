@@ -132,18 +132,14 @@
 					return
 				return forge_stack_recipe(P, user, H, choice, 6, "iron")
 			else
-				if (map.ordinal_age <= 1)
-					optlist = list("cancel","shields","helmets","armor")
-				else if (map.ordinal_age == 2)
-					optlist = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
-				else if (map.ordinal_age == 3)
-					optlist = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear")
-				else if (map.ordinal_age == 4)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age == 5)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age >= 8)
-					optlist = list("cancel","armor")
+				optlist = era_pick(list(
+					"0" = list("cancel","shields","helmets","armor"),
+					"1" = list("cancel","shields","helmets","armor"),
+					"2" = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+					"3" = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
+					"4" = list("cancel","helmets"),
+					"5" = list("cancel","helmets"),
+					"8+" = list("cancel","armor")), optlist)
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"
 				var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
@@ -166,20 +162,14 @@
 					return
 				return forge_stack_recipe(P, user, H, choice, 5, "steel")
 			else
-				if (map.ordinal_age == 2)
-					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
-				else if (map.ordinal_age == 3)
-					optlist = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons")
-				else if (map.ordinal_age == 4)
-					optlist = list("cancel","guns")
-				else if (map.ordinal_age == 5)
-					optlist = list("cancel","helmets","mk1 brodie","m15 adrian")
-				else if (map.ordinal_age == 6)
-					optlist = list("cancel","helmets")
-				else if (map.ordinal_age == 7)
-					optlist = list("cancel","helmets","ussr heavy visored helmets","guns")
-				else if (map.ordinal_age >= 8)
-					optlist = list("cancel","helmets","guns")
+				optlist = era_pick(list(
+					"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+					"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+					"4" = list("cancel","guns"),
+					"5" = list("cancel","helmets","mk1 brodie","m15 adrian"),
+					"6" = list("cancel","helmets"),
+					"7" = list("cancel","helmets","ussr heavy visored helmets","guns"),
+					"8+" = list("cancel","helmets","guns")), optlist)
 
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"
@@ -202,10 +192,11 @@
 /////////BRONZE//////////
 		else if (istype(P, /obj/item/stack/material/bronze))
 			var/list/optlist = list("cancel")
-			if (map.ordinal_age <= 2)
-				optlist = list("cancel","shields","helmets","armor")
-			else if (map.ordinal_age == 3)
-				optlist = list("cancel","helmets")
+			optlist = era_pick(list(
+				"0" = list("cancel","shields","helmets","armor"),
+				"1" = list("cancel","shields","helmets","armor"),
+				"2" = list("cancel","shields","helmets","armor"),
+				"3" = list("cancel","helmets")), optlist)
 
 			var/choice = WWinput(H, "What do you want to craft?", "Anvil", "cancel", optlist)
 			if (choice == "cancel")

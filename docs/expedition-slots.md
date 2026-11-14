@@ -4,7 +4,8 @@ Boat expeditions ([plan](https://claude.ai/artifact/61LciJHKi6eKEUsYMfFgwE))
 send crews to lands generated from the world chart ([world chart](world-chart.md),
 [expedition lands](expedition-lands.md)). A land runs in an **expedition slot**:
 a region of kind `EXPEDITION` in the group config that holds one land at a time.
-No ship sails to a slot yet; for now the host operator gives slots their lands.
+A ship's course opens a land in a free slot by itself (below); the host
+operator can also give a slot a land by hand.
 
 ## The group config
 
@@ -43,9 +44,36 @@ The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
    with the slot record, and frees the slot. Update it again before starting it,
    so it compiles the placeholder.
 
-`expedition-status` lists every slot's state, land and when it got it. Each
+`expedition-status` lists every slot's state, land, phase and any land waiting
+for it. Each
 slot's record is `<root>/expeditions/slots/<id>.json` and keeps its last 50
 events.
+
+## Lands opened for ships
+
+When a ship sets course for a land that has no world yet
+([voyages](ship-voyage.md)), the coordinator picks a free slot (no chart tile
+names it, its record is `FREE`, nothing waits or failed in it), marks the tile
+`LANDED` in that slot and writes `<root>/expeditions/wanted/<slot>.json` with the
+tile and its template. The host service's half-minute pass (`supervise`) does
+the rest by itself:
+
+1. A free slot running its placeholder is stopped first.
+2. A detached worker (`expedition-open --region <slot>`, log in
+   `<root>/expeditions/open-<slot>.log`) gives the slot the land, records phase
+   `building` and starts `update-offline` for it. Giving a land (and archiving)
+   forgets the slot's build record, so the land compiles even at the revision
+   the slot already runs.
+3. Once the build is installed the pass starts the slot and records phase
+   `started`. The coordinator then marks the ship's course `READY`; an idle land
+   falls asleep as any region does and wakes when the ship arrives.
+
+A land that cannot be opened (the build failed or took over three hours, or the
+slot already holds another land) is archived and reported in
+`<root>/expeditions/failed/<slot>.json`; the coordinator refuses the waiting
+courses, frees the tile (its template stays) and deletes the report. The
+coordinator learns the slots and this folder from `--slots` and
+`--expeditions`, which `ensure_coordinator` passes when the group has slots.
 
 ## In game
 
@@ -54,8 +82,6 @@ events.
 
 ## Not done yet
 
-- Ships carrying a crew there and back (craft payload), the voyage, and the
-  coordinator asking the host for a land (later steps of the plan).
 - Placing the template's ore kinds, rare finds and game in the slot world.
 - What happens to characters still homed in a slot when it is archived
   (settle, claim and abandon step).

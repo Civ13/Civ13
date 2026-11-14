@@ -360,6 +360,15 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   in it. A crew takes a contract with a registered ship lying in the home
   waters and can give it up.
 
+## Ships between worlds
+
+A built hull at the map edge can cross to another world of the group (a land
+across the sea, or home to the mainland): she is packed as a record that rides
+with her crew's travel payloads and built again off the far edge. See
+[ship-crossing.md](ship-crossing.md). Off a mainland she can also set out on
+a voyage across the world chart, to a land opened for her while she sails or
+to scout: [ship-voyage.md](ship-voyage.md).
+
 ## Contracts and freight
 
 `craft/contract.dm`: a contract is a record object (`/obj/craft_contract`)

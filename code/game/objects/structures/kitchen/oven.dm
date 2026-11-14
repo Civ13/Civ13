@@ -64,45 +64,10 @@
 			to_chat(H, "You add the wood chips to \the [src], refueling it.")
 		return TRUE
 
-	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/bamboo))
-		record_wood_fuel(I, I.amount)
-		fuel += I.amount
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/weapon/branch))	// FUEL +0.5 (adds a flat numerical addition ontop of the input reagent's baseline fuel, recommended for non stack objects)
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/material/leaf))
-		record_wood_fuel(I, I.amount+0.5)
-		fuel += I.amount+0.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/dung))	// FUEL +1
-		record_wood_fuel(I, I.amount+1)
-		fuel += I.amount+1
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/charcoal))	//FUEL *2.5 (multiplies it by 2 and a half)
-		record_wood_fuel(I, I.amount*2.5)
-		fuel += I.amount*2.5
-		to_chat(H, "You place \the [I] in \the [src], refueling it.")
-		qdel(I)
-		return
-	else if (istype(I, /obj/item/stack/ore/coal))	//FUEL *3
-		record_wood_fuel(I, I.amount*3)
-		fuel += I.amount*3
+	var/hearth_fuel = solid_fuel_value(I, hearth_fuel_rates)
+	if (hearth_fuel)
+		record_wood_fuel(I, hearth_fuel)
+		fuel += hearth_fuel
 		to_chat(H, "You place \the [I] in \the [src], refueling it.")
 		qdel(I)
 		return

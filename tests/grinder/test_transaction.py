@@ -46,6 +46,32 @@ class Returned(Exception):
         self.value = value
 
 
+FUEL_SOURCE = (ROOT / 'code/modules/1713/solid_fuel.dm').read_text(encoding='utf-8')
+
+
+def solid_fuel_globals():
+    """Mirror /proc/solid_fuel_kind and /proc/solid_fuel_value from the shared tables."""
+    kinds = re.findall(r'(/[\w/]+) = "(\w+)"', re.search(r'solid_fuel_kinds = list\((.*?)\)\n', FUEL_SOURCE, re.S)[1])
+
+    def kind_of(item):
+        kind_path = getattr(item, 'type', '') or ''
+        return next((kind for path, kind in kinds if kind_path == path or kind_path.startswith(path + '/')), None)
+
+    tables = {}
+    for name, body in re.findall(r'var/global/list/(\w+_fuel_rates) = list\((.*?)\)\n', FUEL_SOURCE, re.S):
+        tables[name] = {kind: tuple(float(v) for v in value[5:-1].split(',')) if value.startswith('list(') else (float(value), 0.0)
+                        for kind, value in re.findall(r'"(\w+)" = (list\([^)]*\)|[\d.]+)', body)}
+
+    def value(item, table):
+        kind = kind_of(item)
+        if not kind or kind not in table:
+            return 0
+        total = item.amount * table[kind][0] + table[kind][1]
+        return int(total) if total == int(total) else total
+
+    return dict(tables, solid_fuel_kind=kind_of, solid_fuel_value=value)
+
+
 class Projection:
     def __init__(self, source=SOURCE, oven=OVEN_SOURCE):
         self.source = source + '\n' + STACK_SOURCE + '\n' + SHEETS_SOURCE + '\n' + oven + '\n' + ASH_SOURCE
@@ -57,6 +83,8 @@ class Projection:
                             persistence_save_in_progress=False,
                             persistence_active_operation=None,
                             persistence_load_recovery_required=False)
+        # Fuel values come from the shared tables in code/modules/1713/solid_fuel.dm.
+        self.globals |= solid_fuel_globals()
 
     def proc(self, path):
         match = re.search(r'^' + re.escape(path) + r'\([^\n]*\)\n(.*?)(?=^/|\Z)',

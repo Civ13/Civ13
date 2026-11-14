@@ -47,8 +47,8 @@ class GemScienceTest(unittest.TestCase):
 
     def test_diamond_grit_and_lap(self):
         gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
-        self.assertIn('gem_lap_near(H)', gems)
-        self.assertIn('lap.use_charge()', gems)
+        self.assertIn('gem_lap_near(H, cut_type)', gems)
+        self.assertIn('lap.use_charge(cut_type)', gems)
         self.assertIn('gem_flaw_leftovers(T, cut_type)', gems)
         self.assertIn('/obj/item/stack/ore/diamond/attackby', self.text)
         self.assertIn('crafting_node_allowed_or_warn(H, "machined_tools")', self.text)
@@ -73,6 +73,40 @@ class GemScienceTest(unittest.TestCase):
         self.assertIn('R.crystal_freq == source_freq', self.text)
         self.assertNotIn('/obj/item/weapon/hammer)', self.text)
         self.assertIn('watch.jewelled || watch.quartz_movement', self.text)
+
+    def test_reading_stone_emery_and_garnet_paper(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/stack/garnet_paper/attack_self(mob/user)', self.text)
+        self.assertIn('istype(M.material, /material/wood)', self.text)
+        self.assertIn('/mob/living/human/reading_light_problem()', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "glassworking")', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "factories")', self.text)
+        # Emery is corundum, so it cannot cut ruby, sapphire or diamond.
+        self.assertIn('/proc/gem_needs_diamond(cut_type)', self.text)
+        self.assertIn('lap.use_charge(cut_type)', gems)
+        self.assertIn('gem_lap_near(H, cut_type)', gems)
+
+    def test_synthetic_ruby_and_laser_rod(self):
+        # Flame fusion (1902) needs a lit furnace; the rod (1960) a diamond lap.
+        self.assertIn('candidate.is_open_flame()', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "consumer_electronics")', self.text)
+        self.assertIn('J.amount = BOULE_BEARINGS', self.text)
+        self.assertIn('binoculars/binoculars/rangefinder(T)', self.text)
+        # A boule is not a gemstone, so it has no trade value as a stone.
+        self.assertNotIn('/obj/item/stack/gemstone/ruby_boule', self.text)
+
+    def test_gem_testing(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        for path, node in (('/obj/item/gem_tester', 'optics_instruments'), ('/obj/item/gem_tester/scale', 'optics_instruments'),
+                           ('/obj/item/gem_tester/refractometer', 'electricity')):
+            self.assertIn(f',{path},', recipes)
+            self.assertIn(f'"{path}" = "{node}",', nodes)
+        # A mapped stone splits half as often; a refractometer cannot read diamond.
+        self.assertIn('(inclusions_mapped ? 2 : 1)', gems)
+        self.assertIn('list("diamond", 10, 3.52, 0, FALSE)', self.text)
+        self.assertIn('list("ruby", 9, 4.0, 1.77, TRUE)', self.text)
 
     def test_included_after_lanyards(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')

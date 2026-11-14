@@ -19,13 +19,17 @@ buildings; terrain height only shapes the ground within one z-level.
 `maps/heights/nomads_gaia.txt`. The file is plain ASCII:
 
 ```
-civ13-terrain-heights 1
+civ13-terrain-heights 2
 size 500 350
 z 2
 <350 rows, north row first, 500 characters each>
 ```
 
-Each character is a level from `0`-`9` then `a`-`f` (0 to 15). Several `z`
+Levels come in halves from 0 to 31.5 (`TERRAIN_MAX_LEVEL`). Each character is
+one level: `0`-`9` then `a`-`v` for the whole levels 0 to 31, and `A`-`Z`
+then `!#$%&+` for the half levels 0.5 to 31.5 (`A` is 0.5, `B` 1.5 and so
+on). Version 1 files (`civ13-terrain-heights 1`, `0`-`9` then `a`-`f`, whole
+levels 0 to 15) still load, which keeps small test fixtures readable. Several `z`
 blocks may follow; z-levels without a block are flat. The size must match the
 world. Any error (wrong header, size, row length, character or a repeated z)
 leaves the whole map flat and logs the reason with `log_debug`.
@@ -158,7 +162,7 @@ level or lower ground it only tamps, and on lower ground it says to ram a dirt
 pile in. The rammer on a tile with a dirt pile on it packs the pile in, raises
 the tile a level and leaves tamped earth. A tile
 moves at most `TERRAIN_GRADE_LIMIT` (2) levels from the file's height and
-stays within 0-15; snow, covers, crops, dense objects or water within one tile
+stays within 0-31.5; snow, covers, crops, dense objects or water within one tile
 block it. The change is `turf.terrain_grade` (saved only when non-zero,
 carried across `ChangeTurf`, re-applied by `after_load`). `set_level` patches
 the height rows and recomputes the corner lights around the tile
@@ -195,9 +199,12 @@ cave rock, rubble and tunnel shafts (docs/underground-excavation.md).
   built wall turfs) sits on one level; natural rock walls are highland, built
   walls are not. Any tuning value in `DESIGN_DEFAULTS` can be
   overridden in the spec. Walkable neighbours never differ by more than 4
-  levels, the most the game counts for one step.
+  levels, the most the game counts for one step. Heights are rounded to the
+  nearest half level, and nothing is designed above `max_level` (15 unless
+  the spec raises it, up to 31.5); half levels give gentle slopes and low
+  river banks the detail that floods need.
 - `to-png` / `from-png` convert one z-level to and from a greyscale PNG (one
-  pixel per tile, level x 17) so heights can be painted by hand.
+  pixel per tile, level x 8) so heights can be painted by hand.
 - `check --heights FILE [--map FILE.dmm]` validates a file.
 - `bake-shading [--out icons/turf/terrain_shade.dmi]` writes the shading sprites.
 

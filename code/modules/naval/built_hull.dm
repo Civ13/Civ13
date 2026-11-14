@@ -129,9 +129,20 @@
 		commission_menu(H)
 		return
 	craft.fit_drives()
+	// At sea on the world chart (ship_voyage.dm): nobody steers until she is back or ashore.
+	if (voyage)
+		voyage_status_menu(H)
+		return
 	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
 	if (open_sea_world())
 		options.Insert(2, "Open sea chart")
+	// Off the edge of the map she can cross to a land across the sea (ship_crossing.dm).
+	var/datum/craft_body/built/edge_body = craft.body
+	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
+		options.Insert(2, "Leave these waters")
+	// Off a mainland's edge she can set out across the world chart (ship_voyage.dm).
+	if (istype(edge_body) && edge_body.at_map_edge() && shard_group && shard_group.enabled && shard_group.kind != "EXPEDITION")
+		options.Insert(2, "Set out on a voyage")
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -161,6 +172,12 @@
 		if (CRAFT_HELM_FORCE)
 			if (!craft.force_helm(H, src) || !craft)
 				return
+	if (choice == "Leave these waters")
+		crossing_menu(H)
+		return
+	if (choice == "Set out on a voyage")
+		voyage_menu(H)
+		return
 	if (choice == "Make for a berth")
 		if (craft.grapple)
 			to_chat(H, SPAN_WARNING(craft.grapple_refusal()))
