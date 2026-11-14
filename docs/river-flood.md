@@ -92,6 +92,10 @@ or person; nothing loops over the map.
   water) that fades 0.005 levels a minute. Examining a tree, a built wall or
   the ground within 2 tiles tells how high the last floods stood there, or how
   deep the water is now.
+- Things on the floor, on tiles a player can see (once per river tick per
+  tile): flour sacks are ruined and gunpowder pouches emptied; at knee depth
+  or more, small items float one tile toward deeper water, and into the river's
+  current. A table keeps things dry below waist depth.
 - Placeholder drawing: shallow water over flooded land as images only the
   viewer holds, more opaque when deeper, redrawn when the viewer has moved 4
   tiles or the rivers changed. Nothing is drawn while every reach is at or
