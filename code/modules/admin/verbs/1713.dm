@@ -148,8 +148,6 @@
 			map.lizard -= conf
 		if (conf in map.crab)
 			map.crab -= conf
-		if (conf in map.wolfman)
-			map.wolfman -= conf
 		if (conf in map.droid)
 			map.droid -= conf
 	else if (choice == "Crab")

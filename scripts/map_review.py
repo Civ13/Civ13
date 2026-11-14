@@ -117,6 +117,7 @@ def review(base, head, devtools, out, byond=None, dme="civ13.dme", node="node"):
                 lines.append(f"- Type tree unavailable, so no pictures or lint: {error}")
                 tree = None
         tools = Devtools(devtools, dme, tree, node)
+        merge_base = git("merge-base", base, head).strip()
         base_dir = ROOT / BASE_DIR
         shutil.rmtree(base_dir, ignore_errors=True)
         base_dir.mkdir()
@@ -140,7 +141,7 @@ def review(base, head, devtools, out, byond=None, dme="civ13.dme", node="node"):
                     added = sorted(problems or [])
                 else:
                     before_rel = f"{BASE_DIR}/{n}.dmm"
-                    (ROOT / before_rel).write_bytes(git("show", f"{base}:{old}", binary=True))
+                    (ROOT / before_rel).write_bytes(git("show", f"{merge_base}:{old}", binary=True))
                     code, data, err = tools.run("diff", "--root", str(ROOT), "--map", new, "--before", before_rel, "--limit", "0")
                     if code != 0 or not data:
                         lines.append(f"- **{label}** ({kind}): diff failed: {err[:300]}")

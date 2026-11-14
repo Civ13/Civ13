@@ -950,6 +950,10 @@ def _int(value, fallback):
     return value if type(value) is int and value > 0 else fallback
 
 
+def _offset(value, fallback=9):
+    return value if type(value) is int else fallback
+
+
 def _float(value, fallback):
     return float(value) if type(value) in (int, float) and value > 0 else fallback
 
@@ -1429,7 +1433,7 @@ def cold_plan(observation, ignored=(), threshold=COLD_DANGER):
     fires = [row for row in observation.get("nearby", []) if row.get("ref") not in ignored and not row.get("item")
              and any(word in str(row.get("name", "")).lower() for word in FIRE_WORDS)]
     if fires:
-        fire = min(fires, key=lambda row: max(abs(_int(row.get("dx"), 9)), abs(_int(row.get("dy"), 9))))
+        fire = min(fires, key=lambda row: max(abs(_offset(row.get("dx"))), abs(_offset(row.get("dy")))))
         if adjacent(fire):
             return {"skill": "light_fire", "target": fire.get("ref")}
         return {"do": "go", "target": fire.get("ref")}
@@ -1437,7 +1441,7 @@ def cold_plan(observation, ignored=(), threshold=COLD_DANGER):
         return {"do": "craft", "recipe": "campfire", "material": "wood log"}
     trees = [row for row in observation.get("nearby", []) if row.get("ref") not in ignored and "branches" in row]
     if trees and _has(me, lambda n: ("axe" in n or "hatchet" in n) and "pickaxe" not in n):
-        return {"skill": "chop", "target": min(trees, key=lambda row: max(abs(_int(row.get("dx"), 9)), abs(_int(row.get("dy"), 9)))).get("ref")}
+        return {"skill": "chop", "target": min(trees, key=lambda row: max(abs(_offset(row.get("dx"))), abs(_offset(row.get("dy"))))).get("ref")}
     return None
 
 

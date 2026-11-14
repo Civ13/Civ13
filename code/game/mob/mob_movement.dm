@@ -1042,7 +1042,7 @@
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/HH = src
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = 0.5
+				move_delay = 0.5 + HH.riding_mob.hitch_drag()
 			else
 				move_delay /= t_movement_speed_multiplier
 		else
