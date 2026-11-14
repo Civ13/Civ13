@@ -17,7 +17,7 @@
 
 
 /obj/item/weapon/plastique/attackby(var/obj/item/I, var/mob/user)
-	if (istype(I, /obj/item/weapon/wrench))
+	if (is_tool(I, TOOL_WRENCH))
 		open_panel = !open_panel
 		to_chat(user, "<span class='notice'>You [open_panel ? "open" : "close"] the wire panel.</span>")
 		..()

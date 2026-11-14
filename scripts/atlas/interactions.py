@@ -242,7 +242,7 @@ def add_interactions(files, add, records, covered):
 
     # Filleting: a raw fish cut with a knife, bayonet or hatchet.
     fish = files[FISH]
-    fillets = re.findall(r'^(/obj/[\w/]+)/attackby\([^\n]*\n\tif \(!roasted[^\n]*knife[^\n]*\n'
+    fillets = re.findall(r'^(/obj/[\w/]+)/attackby\([^\n]*\n\tif \(!roasted[^\n]*(?:knife|TOOL_KNIFE)[^\n]*\n'
                          r'\t\tfor \(var/i=1, i<=(\d+), i\+\+\)\n\t\t\tnew (/[\w/]+)\(src\)', fish, re.M)
     if not fillets:
         raise ValueError(f'{FISH} changed (no fish filleting found): review scripts/atlas/interactions.py')

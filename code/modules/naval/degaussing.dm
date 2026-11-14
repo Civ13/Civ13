@@ -173,7 +173,7 @@ var/global/list/degaussing_coils = list()
 	to_chat(H, SPAN_NOTICE(C.magnetic_text()))
 
 /obj/structure/degaussing_coil/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (on)
 			to_chat(user, SPAN_WARNING("Switch it off first."))
 			return

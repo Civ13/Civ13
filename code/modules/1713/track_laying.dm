@@ -343,7 +343,7 @@
 	if (istype(W, /obj/item/stack/rail_lengths))
 		lay_rails(W, user)
 		return TRUE
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		if (!railed)
 			to_chat(user, SPAN_WARNING("Put rails on the sleepers before spiking them."))
 			return TRUE
@@ -356,7 +356,7 @@
 		playsound(T, 'sound/effects/clang.ogg', 50, TRUE)
 		user.visible_message(SPAN_NOTICE("[user] spikes the rails down."), SPAN_NOTICE("You spike the rails down. The track is ready for trains."))
 		return TRUE
-	if (istype(W, /obj/item/weapon/crowbar))
+	if (is_tool(W, TOOL_CROWBAR))
 		var/had_rails = railed
 		to_chat(user, SPAN_NOTICE(had_rails ? "You start lifting the rails off \the [src]." : "You start prying up \the [src]."))
 		if (!do_after(user, TRACK_PRY_TIME, src) || QDELETED(src) || railed != had_rails)
@@ -391,10 +391,10 @@
 
 // A crowbar takes finished track apart; a hammer no longer turns rails into wood.
 /obj/structure/rails/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		to_chat(user, SPAN_NOTICE("This track is already spiked down. Pry it up with a crowbar to take it apart."))
 		return TRUE
-	if (!istype(W, /obj/item/weapon/crowbar))
+	if (!is_tool(W, TOOL_CROWBAR))
 		return ..()
 	if (locate(/obj/structure/trains) in get_turf(src))
 		to_chat(user, SPAN_WARNING("Move the wagon off this track first."))

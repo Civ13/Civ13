@@ -117,7 +117,7 @@
 		user.do_attack_animation(src)
 		try_destroy()
 	else
-		if (istype(W,/obj/item/weapon) || !istype(W,/obj/item/weapon/wrench) || !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+		if (istype(W,/obj/item/weapon) || !is_tool(W, TOOL_WRENCH) || !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 			to_chat(user, "You uselessly hit the wall!")
 		return
 	..()
@@ -350,7 +350,7 @@
 	crushable = FALSE
 
 /obj/structure/barricade/antitank/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/weldingtool))
+	if (is_tool(W, TOOL_WELDER))
 		visible_message(SPAN_NOTICE("[user] begins to remove \the [src]."))
 		playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 		if (do_after(user,30 SECONDS,src))

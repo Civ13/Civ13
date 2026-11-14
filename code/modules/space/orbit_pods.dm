@@ -234,7 +234,7 @@ var/global/list/orbit_pods = list()
 			A.forceMove(middle)
 
 /obj/structure/orbit_pod/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		var/reason = dock_refusal(user)
 		if (reason)
 			to_chat(user, SPAN_WARNING(reason))
@@ -413,7 +413,7 @@ var/global/list/orbit_pods = list()
 	return null
 
 /obj/structure/habitat_core/attackby(obj/item/W, mob/user)
-	if (!istype(W, /obj/item/weapon/wrench) || !orbit_world())
+	if (!is_tool(W, TOOL_WRENCH) || !orbit_world())
 		return ..()
 	var/reason = fold_refusal(user)
 	if (reason)

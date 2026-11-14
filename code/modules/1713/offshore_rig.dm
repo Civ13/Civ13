@@ -108,7 +108,7 @@
 		to_chat(user, "No barrel is connected.")
 
 /obj/structure/oilwell/offshore/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		hammer_action(user, W, 400, list("/obj/item/stack/material/steel"), list(34))
 		return
 	..(W, user)

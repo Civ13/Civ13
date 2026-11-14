@@ -187,7 +187,7 @@
 			ANCH.icon_state = ANCH.depicon
 			ANCH.dir = src.dir
 			return
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
 							"<span class='warning'>You hit \the [src] uselessly!</span>",
 							"You hear something being hit!")
@@ -222,7 +222,7 @@
 	open = TRUE
 
 /obj/structure/gate/blast/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
 							"<span class='warning'>You hit \the [src] uselessly!</span>",
 							"You hear something being hit!")
@@ -254,11 +254,11 @@
 	open = TRUE
 
 /obj/structure/gate/blast/garage/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/weldingtool)) //No weapons can harm me!
+	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WELDER)) //No weapons can harm me!
 		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",
 							"<span class='warning'>You hit \the [src] uselessly!</span>",
 							"You hear something being hit!")
-	else if (istype(W,/obj/item/weapon/weldingtool)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
+	else if (is_tool(W, TOOL_WELDER)) //ARGH! MY ONLY WEAKNESS... WELDINGTOOLS!
 		user.visible_message("<span class='warning'>[user] starts cutting through \the [src]...</span>",
 							"<span class='notice'>You start cutting through \the [src]...</span>",
 							"You hear something being cut.")
@@ -295,7 +295,7 @@
 	bound_height = 64
 
 /obj/structure/gate/whiterun/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon) && !istype(W,/obj/item/weapon/wrench) && !istype(W,/obj/item/weapon/hammer)) //No weapons can harm me! If not weapon and not a wrench.
+	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 		user.visible_message("<span class='warning'>[user] hits the gate uselessly!</span>",
 							"<span class='warning'>You hit the gate uselessly!</span>",
 							"You hear something being hit!")

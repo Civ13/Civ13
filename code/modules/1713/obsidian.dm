@@ -227,7 +227,7 @@ var/global/list/obsidian_volcano_cells = list()
 	if (ishuman(user) && obsidian_is_hammerstone(W))
 		knap(user, W)
 		return
-	if (ishuman(user) && istype(W, /obj/item/weapon/chisel))
+	if (ishuman(user) && is_tool(W, TOOL_CHISEL))
 		polish(user, W)
 		return
 	..()
@@ -614,7 +614,7 @@ var/global/list/obsidian_volcano_cells = list()
 // Chisel in the active hand, hammer in the other: grind a nodule into a
 // polished bead, set into clothing or necklaces like the cut gemstones.
 /obj/item/weapon/obsidian_nodule/proc/polish(mob/living/human/H, obj/item/chisel)
-	if (!istype(H.l_hand, /obj/item/weapon/hammer) && !istype(H.r_hand, /obj/item/weapon/hammer))
+	if (!is_tool(H.l_hand, TOOL_HAMMER) && !is_tool(H.r_hand, TOOL_HAMMER))
 		to_chat(H, SPAN_WARNING("You need a hammer in your other hand to use a chisel."))
 		return
 	if (!H.may_do_after || !obsidian_work_reachable(H, src, chisel))
@@ -660,7 +660,7 @@ var/global/list/obsidian_volcano_cells = list()
 	to_chat(user, SPAN_NOTICE("You gaze into \the [src]. Your reflection looks back, dark and smoky."))
 
 /obj/item/mirror/obsidian/attackby(obj/item/H as obj, mob/user as mob)
-	if (!istype(H, /obj/item/weapon/hammer) || !isturf(user.loc))
+	if (!is_tool(H, TOOL_HAMMER) || !isturf(user.loc))
 		return ..()
 	var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
 	if (!direction || !can_fasten(user, H))
@@ -679,7 +679,7 @@ var/global/list/obsidian_volcano_cells = list()
 	qdel(src)
 
 /obj/structure/mirror/obsidian/attackby(obj/item/I as obj, mob/user as mob)
-	if (istype(I, /obj/item/weapon/hammer) && !shattered)
+	if (is_tool(I, TOOL_HAMMER) && !shattered)
 		var/obj/item/mirror/obsidian/M = new /obj/item/mirror/obsidian(loc)
 		to_chat(user, "You unfasten \the [M] with your [I].")
 		qdel(src)

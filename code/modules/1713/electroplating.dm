@@ -216,7 +216,7 @@ var/global/list/plating_base_materials = list("iron", "steel", "bronze", "brass"
 		if (hang_anode(W))
 			to_chat(user, SPAN_NOTICE("You hang a sheet of [anode] in \the [src]."))
 		return
-	if (istype(W, /obj/item/weapon/wrench) || istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_WRENCH) || is_tool(W, TOOL_HAMMER))
 		return ..()
 	var/reason = start_refusal(W)
 	if (reason)

@@ -47,7 +47,7 @@
 					filled = FALSE
 			else
 				to_chat(user, "<span class='alert'> You need to insert [inputamount] [M.name]! </span>")
-		else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+		else if (is_tool(M, TOOL_HAMMER) || is_tool(M, TOOL_WRENCH))
 			..()
 			return
 		else
@@ -134,7 +134,7 @@
 			return TRUE
 		start_hide_drying(hide)
 		return TRUE
-	if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_HAMMER) || is_tool(W, TOOL_WRENCH))
 		return ..()
 	to_chat(user, SPAN_WARNING("Only washed wet hides go on this rack."))
 	return TRUE

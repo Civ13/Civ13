@@ -1,0 +1,75 @@
+// Placeholder map of a free expedition slot (scripts/shard-group/expedition_slots.py).
+// A slot that holds a land compiles that land instead. Open sea over bedrock.
+"a" = (/obj/structure/wild/rock/basalt,/obj/map_metadata/nomads/expedition,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"b" = (/obj/structure/wild/rock/basalt,/turf/floor/dirt/underground,/area/caribbean/void/caves)
+"c" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/nomads)
+
+(1,1,1) = {"
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+"}
+
+(1,1,2) = {"
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccc
+"}

@@ -28,7 +28,7 @@ from .configuration import oceanic_preset, port_surface_preset, validate_config
 from .dmm_export import TREES
 from .generator import generate
 from .io import json_text, new_output
-from .playable import (METADATA, SURFACE_AREA, apply_elevation, elevation_profile, playable_layout,
+from .playable import (SURFACE_AREA, apply_elevation, elevation_profile, playable_layout,
                        verify_types, write_text, DEFAULT_LAPSE)
 from .repo_source import read_source
 from .source_audit import parse_classic
@@ -78,8 +78,11 @@ BIOME_SKINS = {
                   trees=["/obj/structure/wild/jungle", "/obj/structure/wild/palm"], tree_share=0.7,
                   mix={"LUSH": 100}, moisture=[80, 100], temperature=[15, 32]),
 }
+# The slot world's map metadata (code/modules/persistence/expedition_land.dm).
+EXPEDITION_METADATA = "/obj/map_metadata/nomads/expedition"
 # Declaration file for every type a skin can place.
 SKIN_SOURCES = {
+    EXPEDITION_METADATA: "code/modules/persistence/expedition_land.dm",
     "/area/caribbean/nomads": "code/game/area/caribbean.dm",
     "/area/caribbean/nomads/ice": "code/game/area/caribbean.dm",
     "/area/caribbean/nomads/tundra": "code/game/area/caribbean.dm",
@@ -243,7 +246,7 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE):
     layout, counts = playable_layout(doc, "native")
     skin_counts = reskin(doc, layout, t)
     profile = elevation_profile(doc, lapse)
-    apply_elevation(layout, profile, METADATA)
+    apply_elevation(layout, profile, EXPEDITION_METADATA)
     text = write_text(doc, layout)
     _, parsed, dims = parse_classic(text)
     if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:

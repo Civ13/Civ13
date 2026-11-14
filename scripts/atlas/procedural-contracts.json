@@ -1,6 +1,6 @@
 {
   "code/modules/1713/gunsmithing/blackpowder_assembly.dm": "bce976a68501fe5438be35e9848a7863dc047a639f114a587dd9c237ff4728db",
-  "code/game/objects/structures/rocks.dm": "b7d1904758eba857fad272c7f6ba2062dde38d8be091b9ddb6e782c5ae2dbf83",
+  "code/game/objects/structures/rocks.dm": "82a937bb99cf423770eb32489cd2764f8754cf3c524fcfbb98866bf8b0997b17",
   "code/game/objects/structures/blacksmithing/component_workbench.dm": "fe56cbe136dc96087b079cec5692342cb9fcae397559af2fdaab2aa1048174fc",
   "code/game/objects/structures/blacksmithing/armor_workbench.dm": "20d6cdaed41622d74a596f608638d1cced6537911081fe8e5111872f8d5b73d8",
   "code/game/objects/structures/blacksmithing/dedicated_workbenches.dm": "94ff0c47f1a944448d619d43b632120990702cadb6d4802f12efe3a66965d237"

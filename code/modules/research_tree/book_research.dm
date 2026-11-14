@@ -297,7 +297,7 @@
 	book_refresh_ui()
 
 /obj/structure/research_bench/proc/book_attackby(obj/item/W, mob/living/human/user)
-	if (user.a_intent == I_HARM && (istype(W, /obj/item/weapon/wrench) || istype(W, /obj/item/weapon/hammer)))
+	if (user.a_intent == I_HARM && (is_tool(W, TOOL_WRENCH) || is_tool(W, TOOL_HAMMER)))
 		maintain_bench(W, user)
 		return
 	if (istype(W, /obj/item/weapon/book) && !istype(W, /obj/item/weapon/book/research/tree_book))

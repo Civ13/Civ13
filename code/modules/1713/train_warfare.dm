@@ -185,7 +185,7 @@
 	return ..()
 
 /obj/structure/trains/locomotive/coal/armored/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/weldingtool))
+	if (is_tool(W, TOOL_WELDER))
 		if (!disabled && health >= initial(health))
 			to_chat(user, "\The [src] is in good repair.")
 			return

@@ -75,7 +75,7 @@
 	return ..()
 
 /obj/structure/barbwire/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wirecutters))
+	if (is_tool(W, TOOL_WIRECUTTER))
 		if (anchored)
 			user.visible_message(SPAN_NOTICE("\The [user] starts to cut through \the [src] with \the [W]."))
 			if (!do_after(user,60))
@@ -86,7 +86,7 @@
 			qdel(src)
 			return
 
-	else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
+	else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet) || is_tool(W, TOOL_HATCHET) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		if (anchored)
 			user.visible_message(SPAN_NOTICE("\The [user] starts to hack through \the [src] with \the [W]."))
 			if (!do_after(user,120))
@@ -101,7 +101,7 @@
 				if (ishuman(user))
 					var/mob/living/human/H = user
 					var/obj/item/organ/external/affecting = null
-					if (istype(H.l_hand, /obj/item/weapon/material/kitchen/utensil/knife) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || istype(H.l_hand, /obj/item/weapon/material/hatchet) || istype(H.l_hand, /obj/item/weapon/material/shovel/trench/foldable/etool))
+					if (is_tool(H.l_hand, TOOL_KNIFE) || istype(H.l_hand, /obj/item/weapon/attachment/bayonet) || is_tool(H.l_hand, TOOL_HATCHET) || istype(H.l_hand, /obj/item/weapon/material/shovel/trench/foldable/etool))
 						affecting = H.get_organ("l_hand")
 					else
 						affecting = H.get_organ("r_hand")

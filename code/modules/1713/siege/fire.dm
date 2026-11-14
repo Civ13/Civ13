@@ -24,15 +24,15 @@
 
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (user.a_intent == I_HELP)
-		if (istype(W, /obj/item/weapon/wrench) || (istype(W, /obj/item/weapon/hammer)))
-			if (istype(W, /obj/item/weapon/wrench))
+		if (is_tool(W, TOOL_WRENCH) || (is_tool(W, TOOL_HAMMER)))
+			if (is_tool(W, TOOL_WRENCH))
 				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))
 					visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
 					anchored = !anchored
 					return
-			else if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/hammer/modern))
+			else if (is_tool(W, TOOL_HAMMER) || istype(W, /obj/item/weapon/hammer/modern))
 				visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 				if (do_after(user,50,src))

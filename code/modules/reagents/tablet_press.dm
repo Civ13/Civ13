@@ -179,7 +179,7 @@
 /obj/structure/chem_master/tablet_press/attackby(obj/item/W, mob/living/human/user)
 	if (tablet_action)
 		return
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		return
 	if (!can_operate(user) || beaker || !istype(W, /obj/item/weapon/reagent_containers/glass))

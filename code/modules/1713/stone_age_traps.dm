@@ -355,7 +355,7 @@
 /proc/pit_digging_tool(obj/item/I)
 	if (istype(I, /obj/item/weapon/plough/digging_stick))
 		return PIT_DIG_TIME_STICK
-	if (istype(I, /obj/item/weapon/material/shovel))
+	if (is_tool(I, TOOL_SHOVEL))
 		return PIT_DIG_TIME_SHOVEL
 	return 0
 

@@ -68,7 +68,7 @@
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
 			icon_state = idlesprite
-	else if (istype(M, /obj/item/weapon/hammer) || istype(M, /obj/item/weapon/wrench))
+	else if (is_tool(M, TOOL_HAMMER) || is_tool(M, TOOL_WRENCH))
 		..()
 		return
 	else
@@ -124,7 +124,7 @@
 	w_class = ITEM_SIZE_SMALL
 
 /obj/item/weapon/gun/projectile/proc/file_serial(obj/item/M, mob/user)
-	if (istype(M, /obj/item/weapon/material/kitchen/utensil/knife) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
+	if (is_tool(M, TOOL_KNIFE) && (!(istype(src, /obj/item/weapon/gun/projectile/bow))))
 		switch(player_alert(user, "Are you sure you want to scratch the serial number? This cannot be reversed and will make the gun illegal!", "Serial number filing", list("Yes", "No")))
 			if ("No")
 				return

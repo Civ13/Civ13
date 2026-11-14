@@ -744,7 +744,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		reagents.add_reagent("hyperzine", 5)
 
 /obj/item/weapon/reagent_containers/food/snacks/bearmeat/attackby(obj/item/weapon/W as obj, mob/user as mob) //TODO: REPAIR IT to slicing mechanic!
-	if (!roasted && istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if (!roasted && is_tool(W, TOOL_KNIFE))
 		if (!can_cut_preserved_meat())
 			to_chat(user, SPAN_WARNING("\The [src] cannot be cut into preservable meat."))
 			return
@@ -2143,7 +2143,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 
 // potato + knife = raw sticks
 /obj/item/weapon/reagent_containers/food/snacks/grown/potato/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W,/obj/item/weapon/material/kitchen/utensil/knife))
+	if (is_tool(W, TOOL_KNIFE))
 		new /obj/item/weapon/reagent_containers/food/snacks/rawsticks(src)
 		to_chat(user, "You cut the potato.")
 		qdel(src)
