@@ -939,6 +939,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/wood" = "basic_furniture",
 		"/obj/structure/brazier" = "basic_furniture",
 		"/obj/structure/brazier/obsidian" = "basic_furniture",
+		"/obj/item/mirror/obsidian" = "basic_furniture",
 		"/obj/structure/brazier/sandstone" = "basic_furniture",
 		"/obj/structure/brazier/stone" = "basic_furniture",
 		"/obj/structure/closet/coffin" = "basic_furniture",

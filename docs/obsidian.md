@@ -67,3 +67,12 @@ event starts fully edged. Use prismatic blades on the weapon (3 s) to set as man
 
 Each hit has a 10% chance to knock a blade out, or 20% against a target with melee armour on the
 struck zone. The old recipe's 4 cut obsidian blocks are no longer needed: the blades are the obsidian.
+
+## Mirror and polished stone
+
+- **Polished obsidian:** a chisel in the active hand and a hammer in the other, used on a nodule (8 s,
+  10% flaw into a shard), gives a `polished obsidian stone` (`/obj/item/stack/gemstone/obsidian`,
+  value 5). It sets into clothing and necklaces like the cut gemstones.
+- **Obsidian hand mirror:** 2 cut obsidian in the crafting menu (Basic Furniture research, every
+  recipe list that has the obsidian altar). A hammer fastens it to a wall as the existing
+  `/obj/structure/mirror/obsidian`, and a hammer takes that back down as the hand mirror.
