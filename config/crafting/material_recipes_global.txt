@@ -282,6 +282,7 @@ RECIPE: /material/leather/,slingstaff,/obj/item/weapon/gun/projectile/bow/sling/
 RECIPE: /material/leather/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,weapons,0,0,0,1,null
 RECIPE: /material/leather/,feasting mat,/obj/structure/feast_mat,3,60,1,1,furniture,0,0,0,8,null
 RECIPE: /material/leather/,barter mat,/obj/structure/barter_mat,2,40,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/leather/,frame drum,/obj/item/stone_age_instrument/frame_drum,2,80,0,1,none,0,0,0,8,null
 RECIPE: /material/leather/,bug swatter,/obj/item/weapon/swatter,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/leather/,bellows,/obj/structure/workshop_machine/bellows,3,100,1,1,tools,26,0,0,8,null
 RECIPE: /material/leather/,fire flapper,/obj/item/weapon/fire_beater/flapper,3,70,0,1,tools,0,0,0,8,null
@@ -1396,6 +1397,7 @@ RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,
 RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,3,null
 RECIPE: /material/bone/,bone bead necklace,/obj/item/clothing/accessory/necklace/bead,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone beads,/obj/item/stack/barter_beads/bone,1,30,0,1,none,0,0,0,8,null
+RECIPE: /material/bone/,bone flute,/obj/item/stone_age_instrument/bone_flute,1,60,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,8,null
