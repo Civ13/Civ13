@@ -1738,6 +1738,7 @@
 #include "code\modules\1713\stone_age_traps.dm"
 #include "code\modules\1713\dugout_canoe.dm"
 #include "code\modules\1713\domestication.dm"
+#include "code\modules\1713\rock_art.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\flax_processing.dm"
 #include "code\modules\1713\rope_making.dm"
