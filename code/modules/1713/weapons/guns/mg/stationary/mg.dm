@@ -48,6 +48,7 @@
 	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/pkm
+	vehicle_weight = 15
 	name = "PKM machine gun"
 	desc = "Soviet Heavy PKM machinegun. Uses 7.62x54mm rounds."
 	icon_state = "pkm"
@@ -63,6 +64,7 @@
 	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/dshk
+	vehicle_weight = 60
 	name = "DShK machine gun"
 	desc = "Soviet Heavy DShK machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "dshk"
@@ -78,6 +80,7 @@
 	accuracy = 1
 
 /obj/item/weapon/gun/projectile/automatic/stationary/nsvt
+	vehicle_weight = 60
 	name = "NSVT machine gun"
 	desc = "Modern Soviet Heavy NSVT machinegun, can also be as anti vehicle gun against some lightly armored vehicles. Uses 12.7x108mm rounds."
 	icon_state = "nsvt"
@@ -113,6 +116,7 @@
 		visible_message(SPAN_WARNING("[usr] retrieves the [src] from the ground."))
 
 /obj/item/weapon/gun/projectile/automatic/stationary/foldable/pkm
+	vehicle_weight = 15
 	name = "Foldable PKM machine gun"
 	desc = "Soviet Heavy foldable PKM machinegun. Chambered in 7.62x54mm rounds."
 	icon_state = "pkm_foldable"
@@ -185,6 +189,7 @@
 	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/type98
+	vehicle_weight = 30
 	name = "Type 92 machine gun"
 	desc = "A japanese heavy machinegun. Chambered in 7.7x58mm Arisaka."
 	icon_state = "type92hmg"
@@ -308,6 +313,7 @@
 
 
 /obj/item/weapon/gun/projectile/automatic/stationary/breda30
+	vehicle_weight = 20
 	name = "Breda 30 machine gun"
 	desc = "The Fucile Mitragliatore Breda modello 30 is a Italian light machinegun that entered service in 1930. The design of the gun is rather impractical and often makes for long reload times. Chambered in 6.5x52mm Carcano."
 	icon_state = "type92hmg"
@@ -371,6 +377,7 @@
 	can_turn = FALSE
 
 /obj/item/weapon/gun/projectile/automatic/stationary/browning
+	vehicle_weight = 20
 	name = "M1919A1 browning machine gun"
 	desc = "An american heavy machinegun. Chambered in 30-06. rounds."
 	icon_state = "browning"
@@ -390,6 +397,7 @@
 	icon_state = "browning[ammo_magazine ? round(ammo_magazine.stored_ammo.len, 50) : "_empty"]"
 
 /obj/item/weapon/gun/projectile/automatic/stationary/m2browning
+	vehicle_weight = 50
 	name = "M2HB browning machine gun"
 	desc = "An american heavy machinegun. Chambered in .50 cal rounds."
 	icon_state = "m2"
@@ -406,6 +414,7 @@
 	accuracy = 1
 
 /obj/item/weapon/gun/projectile/automatic/stationary/mg34
+	vehicle_weight = 15
 	name = "MG 34 machine gun"
 	desc = "A german heavy machinegun. Chambered in 7.92x57 Mauser."
 	icon_state = "mg34hmg"
@@ -421,6 +430,7 @@
 	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/mg3
+	vehicle_weight = 15
 	name = "MG 3 machine gun"
 	desc = "A german heavy machinegun. Chambered in 7.62x51mm rounds."
 	icon_state = "mg3"
@@ -436,6 +446,7 @@
 	accuracy = 3
 
 /obj/item/weapon/gun/projectile/automatic/stationary/fnmag
+	vehicle_weight = 15
 	name = "FN MAG machine gun"
 	desc = "A Belgian general-purpose machine gun, designed in the early 1950s by Ernest Vervier. It has been used by more than 80 countries and it has been made under licence in several countries."
 	icon_state = "mg3"
@@ -483,6 +494,7 @@
 // Autocannons
 
 /obj/item/weapon/gun/projectile/automatic/stationary/autocannon
+	vehicle_weight = 120
 	name = "30mm autocannon"
 	desc = "An autocannon capable of putting pretty big holes in people."
 	icon_state = "autocannon"

@@ -81,7 +81,7 @@
 			var/obj/item/organ/external/E = get_organ(organ_name)
 			if (!E || E.is_stump())
 				tally += 2
-			if (E.status & ORGAN_SPLINTED)
+			else if (E.status & ORGAN_SPLINTED)
 				tally += 0.4
 			else if (E.status & ORGAN_BROKEN)
 				tally += 1

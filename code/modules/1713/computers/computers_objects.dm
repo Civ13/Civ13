@@ -524,7 +524,7 @@
 		found1 = TRUE
 	for(var/obj/structure/assembler/unloader/A in locate(x+2,y,z))
 		found2 = TRUE
-	if (!found1 && !found2)
+	if (!found1 || !found2)
 		to_chat(H, "The assembler is incomplete and cannot be used.")
 		return
 	if (istype(I, requires))

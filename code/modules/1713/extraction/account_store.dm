@@ -301,7 +301,7 @@ var/global/list/extraction_account_read_leases = list()
 	for (var/name in entries)
 		if (copytext(name, length(name), 0) != "/") continue
 		var/other = copytext(name, 1, length(name))
-		if (other == "_settlement" || other == "_insurance" || other == "_bot" || other == "_mail") continue
+		if (other == "_settlement" || other == "_insurance" || other == "_bot" || other == "_mail" || other == "_home_replica") continue
 		if (other == owner) continue
 		if (!valid_owner(other)) return fail("Unknown directory in ownership inventory")
 		var/list/other_profile = load_profile(other)

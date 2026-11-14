@@ -116,19 +116,19 @@ var/global/train_platform_plan_time = -1
 				list("edges" = rails),
 				list("edges" = rails)))
 		layouts["armored"] = list(
-			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires machine guns through the slits.",
+			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires through the slits; bring your own emplaced machine guns.",
 			"center" = "steel", "side" = "steel", "armored" = TRUE,
 			"segments" = list(
 				list("edges" = armor_doors),
-				list("edges" = armor_sides, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim)),
 				list("edges" = armor_sides),
-				list("edges" = armor_sides + armor_back, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim))))
+				list("edges" = armor_sides),
+				list("edges" = armor_sides + armor_back)))
 		layouts["flak"] = list(
-			"name" = "flak car", "desc" = "An open car mounting autocannons that reach aircraft at cruising height.",
+			"name" = "flak car", "desc" = "An open armored car for autocannons that reach aircraft at cruising height. Forge the autocannons and bolt them to the deck.",
 			"center" = "steel", "side" = "steel", "armored" = TRUE,
 			"segments" = list(
 				list("edges" = rails),
-				list("edges" = rails, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/autocannon, null, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon)),
+				list("edges" = rails),
 				list("edges" = rails),
 				list("edges" = rails, "fit" = list(/obj/structure/closet/crate, null, /obj/structure/closet/crate))))
 	return layouts[kind]

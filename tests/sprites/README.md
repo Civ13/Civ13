@@ -8,7 +8,7 @@ See [the audit and provenance](../../docs/sprite-audit.md). `run.py` compiles pr
 
 `create_hip_slot.py` owns the picture inside the Hip inventory slot tile (the `id` state) of the four HUD style sheets in `icons/mob/screen/`. `--check` verifies the committed sheets, `--preview` writes a before and after sheet. It leaves the tile frames and every other state untouched.
 
-`create_paintings.py` owns `icons/obj/paintings.dmi` (easel, blank miniature, table and wall canvases, their frames and the four pigments) and the worn `locket` in `icons/mob/paintings.dmi`. The player's shrunk painting is drawn into fixed windows in those sprites (see `code/modules/paintings/`), and the script asserts every window before it writes. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet.
+`create_paintings.py` owns `icons/obj/paintings.dmi` (easel, blank miniature, table, wall and gallery canvases, their frames, the eight pigments and the oil paint box), the worn `locket` in `icons/mob/paintings.dmi` and the 64px gilded `gallery` and `gallery_wide` frames in `icons/obj/paintings_gallery.dmi`. The player's shrunk painting is drawn into fixed windows in those sprites (see `code/modules/paintings/`), and the script asserts every window before it writes. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet.
 
 `create_tailoring_pieces.py` owns `icons/mob/tailoring.dmi` (worn, four directions) and `icons/obj/clothing/tailoring.dmi` (loose items): the 39 greyscale `tl_*` pattern pieces players combine into their own clothes - garment bodies, sleeves, necklines, legwear, waist pieces, collars, closures, trims and patterns. Each piece is tinted in game with `color`, so the script asserts every pixel is a tintable grey and that patterns, trims and sleeves line up on their bodies before it writes. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet of tinted combinations and `--sheet <png>` lists every state on its own.
 
@@ -124,4 +124,8 @@ the runner's `finally` unlink path, and the second run's generated-file prefligh
 confirmed the first run's files were absent; no separate post-negative filesystem
 listing was retained. These limits are not waived by a green workflow.
 
+`create_craft_button.py` owns the `craft` HUD button (hammer over an anvil) in `icons/mob/screen/1713Style.dmi`, `litewebStyle.dmi` and `FoFStyle.dmi`, drawn on each sheet's own blank button frame in that sheet's picture colours. Rerun `python3 tools/hud-skin/build_console_style.py` afterwards so `ConsoleStyle.dmi` follows. `--check` verifies the committed sheets, `--preview <png>` writes a review sheet. It leaves every other state in those sheets untouched.
+
 `create_clay_lime_fire.py` owns `icons/obj/workshop_machines.dmi`: the potter's wheel, bellows, brick mould bench, lime kiln and quicklime. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet on grass, stone, snow and night.
+
+`create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

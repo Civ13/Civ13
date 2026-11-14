@@ -7,6 +7,7 @@ from .validator import canonical_hash,MAX_SIDE
 CONFIG_VERSION="civ13-generation-config/1"
 PORT_CONFIG_VERSION="civ13-generation-config/2"
 OCEAN_CONFIG_VERSION="civ13-generation-config/3"
+RELIEF_CONFIG_VERSION="civ13-generation-config/4"
 BIOMES={"TEMPERATE","LUSH","STEPPE","ARID","DESERT","ALPINE","COAST","CAVERN"}
 ROOT={"schema","profile","preset","seed","dimensions","biome_mix_pct","climate","water",
       "mountains","vegetation","resources","starts"}
@@ -152,7 +153,76 @@ def barren_surface_preset(seed="barren-0",width=200,height=200,*,sea_side="S"):
     return d
 
 
+RELIEF_ROOT={"schema","profile","preset","seed","dimensions","biome_mix_pct","climate","relief_layout",
+             "vegetation","resources","starts"}
+RELIEF_LAYOUT={"form","sea_sides","islands","sea_pct","coast_roughness","coast_width_tiles","mountain_pct","hill_pct",
+               "river_permille","river_max_half_width","lakes_per_100k_land","lake_max_pct","swamp_pct"}
+
+
+def relief_preset(seed="relief-0",width=200,height=200,*,sea_sides=("S",),islands=None):
+    """A land built from its relief (relief_generator.py): its coasts, ranges,
+    rivers and lakes are shares of its area, so it suits any size. sea_sides are
+    the edges that face open sea; islands=[lo,hi] makes an archipelago instead."""
+    d=dict(schema=RELIEF_CONFIG_VERSION,profile="SURFACE",preset="CUSTOM",seed=seed,
+           dimensions=dict(width=width,height=height,layers={"SURFACE":2,"UNDERGROUND":1}),
+           biome_mix_pct={"TEMPERATE":70,"STEPPE":30},
+           climate=dict(moisture_range=[20,80],temperature_c_range=[0,30]),
+           relief_layout=dict(form="MAINLAND",sea_sides=sorted(sea_sides),islands=[1,1],
+                              sea_pct=[[0,0],[12,16],[20,26],[28,34],[38,46]][len(set(sea_sides))],
+                              coast_roughness=2,coast_width_tiles=2,mountain_pct=[2,4],hill_pct=[5,9],
+                              river_permille=[14,20],river_max_half_width=1,lakes_per_100k_land=[6,10],
+                              lake_max_pct=6,swamp_pct=[0,0]),
+           vegetation=dict(suitable_site_density_pct=[10,35]),
+           resources=dict(density_per_1000_land_tiles=[10,30]),
+           starts=dict(count=max(6,min(48,width*height//5000)),min_spacing_tiles=8,max_route_tiles=60))
+    if islands is not None:
+        d["relief_layout"].update(form="ISLANDS",sea_sides=["E","N","S","W"],islands=list(islands),sea_pct=[58,68])
+        d["biome_mix_pct"]={"COAST":30,"TEMPERATE":70}
+    return d
+
+
+def _validate_relief(d):
+    def bad(detail):return [{"code":"CONFIG_RELIEF_LAYOUT","detail":detail}]
+    def integer(v,lo,hi):return type(v) is int and lo<=v<=hi
+    def interval(v,lo,hi):return type(v) is list and len(v)==2 and all(integer(i,lo,hi) for i in v) and v[0]<=v[1]
+    if type(d) is not dict or set(d)!=RELIEF_ROOT:return [{"code":"CONFIG_SCHEMA","detail":"root keys: invariant switches and unknown controls forbidden"}]
+    # The shared controls are checked by the common rules, with a neutral water and mountain section.
+    base={k:deepcopy(v) for k,v in d.items() if k!="relief_layout"}
+    base.update(schema=CONFIG_VERSION,preset="CUSTOM",
+                water=dict(coverage_pct=[0,95],river_networks=[0,8],river_width_tiles=[1,1],lake_count=[0,12],
+                           lake_area_pct=[0,95],swamp_pct=[0,95],sea_pct=[0,95]),
+                mountains=dict(range_count=[0,6],range_min_area=3,range_width_tiles=[2,2]))
+    errors=_validate_v1(base)
+    if errors:return errors
+    if d["profile"]!="SURFACE" or d["preset"]!="CUSTOM":return bad("relief lands are SURFACE with preset CUSTOM")
+    layout=d["relief_layout"]
+    if type(layout) is not dict or set(layout)!=RELIEF_LAYOUT:return bad("layout keys")
+    if layout["form"] not in ("MAINLAND","ISLANDS"):return bad("form is MAINLAND or ISLANDS")
+    sides=layout["sea_sides"]
+    if type(sides) is not list or not sides or sides!=sorted(set(sides)) or not set(sides)<={"N","S","E","W"}:return bad("sea_sides: sorted, distinct, one or more of E N S W")
+    if not interval(layout["islands"],1,24):return bad("islands interval 1..24")
+    if layout["form"]=="ISLANDS":
+        if len(sides)!=4:return bad("islands lie in open sea on all four sides")
+        if not interval(layout["sea_pct"],40,85):return bad("island sea share 40..85")
+        if d["dimensions"]["width"]*d["dimensions"]["height"]<layout["islands"][1]*1600:return bad("too many islands for this size")
+    else:
+        if layout["islands"]!=[1,1]:return bad("a mainland is one land: islands [1,1]")
+        if not interval(layout["sea_pct"],6,60):return bad("mainland sea share 6..60")
+    for key,lo,hi in (("mountain_pct",0,25),("hill_pct",0,30),("river_permille",0,60),("lakes_per_100k_land",0,40),("swamp_pct",0,10)):
+        if not interval(layout[key],lo,hi):return bad("%s interval %d..%d"%(key,lo,hi))
+    for key,lo,hi in (("coast_roughness",1,3),("coast_width_tiles",1,4),("river_max_half_width",0,2),("lake_max_pct",0,15)):
+        if not integer(layout[key],lo,hi):return bad("%s %d..%d"%(key,lo,hi))
+    mix={k:v for k,v in d["biome_mix_pct"].items() if v}
+    chain=["LUSH","TEMPERATE","STEPPE","ARID","DESERT"]
+    if set(mix)-set(chain)-{"COAST"}:return bad("land biomes are the lush-to-desert chain, with COAST for shores")
+    indices=[i for i,b in enumerate(chain) if b in mix]
+    if not indices or indices!=list(range(min(indices),max(indices)+1)):return bad("climate bands must be a run of the lush-to-desert chain")
+    if mix.get("COAST",0)>60:return bad("COAST is at most 60 percent")
+    return []
+
+
 def _validate_config(d):
+    if isinstance(d,dict) and d.get('schema')==RELIEF_CONFIG_VERSION:return _validate_relief(d)
     if isinstance(d,dict) and d.get('schema')==OCEAN_CONFIG_VERSION:
         base=deepcopy(d);layout=base.pop('ocean_layout',None);base['schema']=CONFIG_VERSION
         errors=_validate_v1(base)
