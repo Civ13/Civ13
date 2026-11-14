@@ -25,18 +25,17 @@
 	max_positions = 1
 
 /datum/job/roman/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/captain/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman_centurion = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/scale = slot_wear_suit,
+	/obj/item/weapon/shield/roman/praetorian = slot_l_hand,
+	/obj/item/clothing/head/helmet/roman_centurion = slot_head,
+	/obj/item/weapon/material/sword/gladius/iron = slot_belt)
 /datum/job/roman/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman_centurion(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_centurion(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a <b>Centuria</b>, a company of Legionaries. Organize your <b>Decurions</b> and lead your soldiers to victory!</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -57,19 +56,18 @@
 	max_positions = 10
 
 /datum/job/roman/squad_leader/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/squad_leader/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman = slot_w_uniform,
+	/obj/item/clothing/head/helmet/roman_decurion = slot_head,
+	/obj/item/clothing/suit/armor/ancient/scale = slot_wear_suit,
+	/obj/item/weapon/material/sword/gladius/iron = slot_belt,
+	/obj/item/weapon/material/pilum = slot_back,
+	/obj/item/weapon/shield/roman/praetorian = slot_l_hand)
 /datum/job/roman/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman/praetorian(H), slot_l_hand)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the leader of a Roman legionary squad. Lead your <b>Legionaries</b> to battle, following the orders of the <b>Centurion</b>!")
 	apply_job_stats(H)
@@ -87,14 +85,14 @@
 	max_positions = 6
 
 /datum/job/roman/bearer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/bearer/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/scale = slot_wear_suit)
 /datum/job/roman/bearer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
+	equip_loadout(H)
 	//pelt randomization
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt(H), slot_head)
@@ -123,19 +121,18 @@
 	max_positions = 200
 
 /datum/job/roman/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/scale = slot_wear_suit,
+	/obj/item/clothing/head/helmet/roman = slot_head,
+	/obj/item/weapon/material/sword/gladius/iron = slot_belt,
+	/obj/item/weapon/material/pilum = slot_back,
+	/obj/item/weapon/shield/roman = slot_l_hand)
 /datum/job/roman/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scale(H), slot_wear_suit)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/roman(H), slot_l_hand)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/pilum(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier of the Roman Army. You are equipped with two <b>Pila</b> javelins, your shield and a <b>Gladius</b>.")
 	apply_job_stats(H)
@@ -155,13 +152,14 @@
 	min_positions = 8
 	max_positions = 100
 /datum/job/roman/velites/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/roman/velites/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/chainmail = slot_wear_suit)
 /datum/job/roman/velites/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/chainmail(H), slot_wear_suit)
+	equip_loadout(H)
 
 	//pelt randomization
 	if (prob(50))
@@ -228,14 +226,15 @@
 	min_positions = 3
 	max_positions = 8
 /datum/job/roman/doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/roman/doctor/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/custom/toga = slot_w_uniform,
+	/obj/item/weapon/key/ancient/roman = slot_l_store,
+	/obj/item/weapon/doctor_handbook = slot_r_store)
 /datum/job/roman/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_r_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>. Keep the arena clean and the men alive.")
 	apply_job_stats(H)
@@ -260,17 +259,16 @@
 	max_positions = 8
 
 /datum/job/roman/guard/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_NORMAL)
+/datum/job/roman/guard/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/roman = slot_w_uniform,
+	/obj/item/clothing/head/helmet/roman_decurion = slot_head,
+	/obj/item/weapon/melee/classic_baton/whip = slot_belt,
+	/obj/item/weapon/material/sword/gladius/iron = slot_back)
 /datum/job/roman/guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/roman(H), slot_w_uniform)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/roman_decurion(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/whip(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gladius/iron(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, guarding the arena. Keep the gladiators organized and following the rules, while protecting the Emperor!")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -294,15 +292,16 @@
 	min_positions = 1
 	max_positions = 1
 /datum/job/roman/emperor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_VERY_HIGH)
+/datum/job/roman/emperor/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/custom/toga/purple = slot_w_uniform,
+	/obj/item/weapon/key/ancient/roman = slot_l_store,
+	/obj/item/weapon/horn = slot_r_store,
+	/obj/item/clothing/head/laurelcrown = slot_head)
 /datum/job/roman/emperor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/custom/toga/purple(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/ancient/roman(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/laurelcrown(H), slot_head)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are the <b>[title]</b>. You are responsible for organizing the games. You can use the interface of the <b>Gladiator Combat Organizer</b> to turn automatic mode on and off. If you decide to manage the games yourself, you will need to attribute the victory using the <b>Gladiator Ledger</b> - click on it and choose the winner!")
 
@@ -328,17 +327,16 @@
 	max_positions = 5
 
 /datum/job/german/chieftain/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/chieftain/job_loadout = list(
+	/obj/item/clothing/shoes/steppe_shoes = slot_shoes,
+	/obj/item/clothing/under/celtic_red = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/bronze_chestplate = slot_wear_suit,
+	/obj/item/clothing/head/helmet/asterix/conspicious = slot_head,
+	/obj/item/weapon/material/sword/gaelic/iron = slot_belt)
 /datum/job/german/chieftain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/bronze_chestplate(H), slot_wear_suit)
-		//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix/conspicious(H), slot_head)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_belt)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_r_store)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
@@ -362,13 +360,14 @@
 	max_positions = 100
 
 /datum/job/german/swordsman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
+/datum/job/german/swordsman/job_loadout = list(
+	/obj/item/clothing/shoes/steppe_shoes = slot_shoes,
+	/obj/item/clothing/under/celtic_short_braccae = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/scaled = slot_wear_suit)
 /datum/job/german/swordsman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
+	equip_loadout(H)
 		//head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/asterix(H), slot_head)
@@ -399,12 +398,13 @@
 	max_positions = 100
 
 /datum/job/german/axeman/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
+/datum/job/german/axeman/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/celtic_short_braccae = slot_w_uniform)
 /datum/job/german/axeman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_short_braccae(H), slot_w_uniform)
+	equip_loadout(H)
 		//head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/foxpelt(H), slot_head)
@@ -435,12 +435,13 @@
 	max_positions = 200
 
 /datum/job/german/spearman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_LOW)
+/datum/job/german/spearman/job_loadout = list(
+	/obj/item/clothing/shoes/steppe_shoes = slot_shoes,
+	/obj/item/clothing/under/celtic_long_braccae = slot_w_uniform)
 /datum/job/german/spearman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/steppe_shoes(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_long_braccae(H), slot_w_uniform)
+	equip_loadout(H)
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/steppe_leather(H), slot_wear_suit)
 	else
@@ -474,16 +475,16 @@
 	max_positions = 100
 
 /datum/job/german/skirmisher/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_LOW)
+/datum/job/german/skirmisher/job_loadout = list(
+	/obj/item/clothing/shoes/sandal = slot_shoes,
+	/obj/item/clothing/under/celtic_green = slot_w_uniform,
+	/obj/item/weapon/material/hatchet = slot_belt,
+	/obj/item/weapon/gun/projectile/bow/shortbow = slot_l_hand,
+	/obj/item/weapon/storage/backpack/quiver/full = slot_back)
 /datum/job/german/skirmisher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/celtic_green(H), slot_w_uniform)
-		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+	equip_loadout(H)
 		//head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/sheeppelt(H), slot_head)

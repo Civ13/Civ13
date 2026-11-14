@@ -20,18 +20,17 @@
 	max_positions = 1
 
 /datum/job/greek/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/greek/captain/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/greek_commander = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/scaled = slot_wear_suit,
+	/obj/item/clothing/head/helmet/greek_commander = slot_head,
+	/obj/item/weapon/material/sword/xiphos/bronze = slot_belt,
+	/obj/item/weapon/shield/aspis = slot_back)
 /datum/job/greek/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/greek_commander(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/scaled(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/greek_commander(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos/bronze(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/aspis(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a commander in charge of a <b>Lochos</b>, a group of Hoplites in a Phalanx. Give orders to your <b>Dimoerites</b> and lead your troops to victory!")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -124,19 +123,18 @@
 	min_positions = 8
 	max_positions = 100
 /datum/job/greek/toxotai/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/greek/toxotai/job_loadout = list(
+	/obj/item/clothing/shoes/roman = slot_shoes,
+	/obj/item/clothing/under/toxotai = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/linen = slot_wear_suit,
+	/obj/item/clothing/head/toxotai = slot_head,
+	/obj/item/weapon/material/sword/xiphos/bronze = slot_belt,
+	/obj/item/weapon/gun/projectile/bow/shortbow = slot_l_hand,
+	/obj/item/weapon/storage/backpack/quiver/full = slot_back)
 /datum/job/greek/toxotai/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/roman(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/toxotai(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/linen(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/toxotai(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/xiphos/bronze(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/bow/shortbow(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/quiver/full(H), slot_back)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a skirmisher. You have your <b>Xiphos</b> sword and your <b>Bow</b>.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -159,17 +157,15 @@
 	max_positions = 12
 
 /datum/job/greek/squad_leader_ww2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/greek/squad_leader_ww2/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/greek = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/weapon/gun/projectile/submachinegun/mp40/modello38 = slot_shoulder)
 /datum/job/greek/squad_leader_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/greek(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//head
-
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40/modello38(H), slot_shoulder)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/modello38/webbing = new /obj/item/clothing/accessory/storage/webbing/ww1/italian/ww2/modello38(null)
 	uniform.attackby(webbing, H)
@@ -197,13 +193,13 @@
 	max_positions = 999
 
 /datum/job/greek/soldier_ww2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/greek/soldier_ww2/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/greek = slot_w_uniform)
 /datum/job/greek/soldier_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/greek(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (prob(70))
@@ -255,19 +251,16 @@
 	max_positions = 16
 
 /datum/job/greek/medic_ww2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/greek/medic_ww2/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/greek = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/adrian/greekmedic = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt)
 /datum/job/greek/medic_ww2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/greek(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrian/greekmedic(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)

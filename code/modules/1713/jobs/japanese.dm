@@ -79,22 +79,20 @@
 	max_positions = 1
 
 /datum/job/japanese/lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/japoffuni = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat2 = slot_wear_suit,
+	/obj/item/clothing/head/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/nambu = slot_l_hand,
+	/obj/item/ammo_magazine/c8mmnambu = slot_l_store,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japoffuni(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -125,22 +123,20 @@
 	max_positions = 1
 
 /datum/job/japanese/lieutenant2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/lieutenant2/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/japoffuni = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat2 = slot_wear_suit,
+	/obj/item/clothing/head/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/nambu = slot_l_hand,
+	/obj/item/ammo_magazine/c8mmnambu = slot_l_store,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/lieutenant2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japoffuni(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -167,23 +163,20 @@
 	max_positions = 10
 
 /datum/job/japanese/sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/japuni = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/japcoat = slot_wear_suit,
+	/obj/item/clothing/head/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/revolver/t26_revolver = slot_l_hand,
+	/obj/item/ammo_magazine/c9mm_jap_revolver = slot_l_store,
+	/obj/item/weapon/gun/projectile/boltaction/arisaka30 = slot_shoulder,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/t26_revolver(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c9mm_jap_revolver(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -246,20 +239,16 @@
 	max_positions = 10
 
 /datum/job/japanese/sniper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/sniper/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/japuni = slot_w_uniform,
+	/obj/item/clothing/head/japcap = slot_head,
+	/obj/item/clothing/suit/storage/coat/japcoat = slot_wear_suit,
+	/obj/item/weapon/gun/projectile/boltaction/arisaka35 = slot_shoulder)
 /datum/job/japanese/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/japcoat(H), slot_wear_suit)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka35(H), slot_shoulder)
+	equip_loadout(H)
 
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
 
@@ -286,18 +275,15 @@
 	max_positions = 200
 
 /datum/job/japanese/whitesash_infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/whitesash_infantry/job_loadout = list(
+	/obj/item/clothing/shoes/japboots = slot_shoes,
+	/obj/item/clothing/under/japuni = slot_w_uniform,
+	/obj/item/clothing/head/japcap = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/arisaka30 = slot_shoulder)
 /datum/job/japanese/whitesash_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/japboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/japuni(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/japcap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka30(H), slot_shoulder)
+	equip_loadout(H)
 
 	var/obj/item/clothing/accessory/white_sash = new /obj/item/clothing/accessory/white_sash(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -332,19 +318,18 @@
 	max_positions = 1
 
 /datum/job/japanese/ija_captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_captain/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 = slot_shoes,
+	/obj/item/clothing/under/ww2/japoffuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ija_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japoffuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -384,19 +369,18 @@
 	max_positions = 1
 
 /datum/job/japanese/ija_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 = slot_shoes,
+	/obj/item/clothing/under/ww2/japoffuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ija_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japoffuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -436,19 +420,18 @@
 	max_positions = 1
 
 /datum/job/japanese/ija_lieutenant2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_lieutenant2/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2 = slot_shoes,
+	/obj/item/clothing/under/ww2/japoffuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ija_lieutenant2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japoffuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -485,16 +468,15 @@
 	max_positions = 4
 
 /datum/job/japanese/ija_sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand)
 /datum/job/japanese/ija_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
+	equip_loadout(H)
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING || map.ID == MAP_MARCO_POLO_BRIDGE)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
@@ -643,13 +625,13 @@
 	max_positions = 100
 
 /datum/job/japanese/ija_ww2infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_ww2infantry/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform)
 /datum/job/japanese/ija_ww2infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (map.ID == MAP_MARCO_POLO_BRIDGE)
@@ -728,16 +710,14 @@
 	H.name = H.species.get_random_korean_name(H.gender)
 	H.real_name = H.name
 /datum/job/japanese/ija_ww2ATunit/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_ww2ATunit/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/jap_headband = slot_head)
 /datum/job/japanese/ija_ww2ATunit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/jap_headband(H), slot_head)
+	equip_loadout(H)
 //back
 	H.equip_to_slot_or_del(new 	/obj/item/weapon/grenade/suicide_vest/kamikaze(H), slot_belt)
 
@@ -770,13 +750,13 @@
 	max_positions = 15
 
 /datum/job/japanese/ija_machinegunner/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_HIGH)
+/datum/job/japanese/ija_machinegunner/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform)
 /datum/job/japanese/ija_machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (map.ID == MAP_MARCO_POLO_BRIDGE)
@@ -834,13 +814,13 @@
 	max_positions = 4
 
 /datum/job/japanese/ija_machinegunner_assistant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_HIGH)
+/datum/job/japanese/ija_machinegunner_assistant/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform)
 /datum/job/japanese/ija_machinegunner_assistant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (map.ID == MAP_MARCO_POLO_BRIDGE)
@@ -898,13 +878,13 @@
 	max_positions = 10
 
 /datum/job/japanese/ija_sniper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_sniper/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform)
 /datum/job/japanese/ija_sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (map.ID == MAP_MARCO_POLO_BRIDGE)
@@ -962,17 +942,16 @@
 	max_positions = 3
 
 /datum/job/japanese/ija_sergeant_tanker/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/japanese/ija_sergeant_tanker/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni_tanker = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/ammo_magazine/c8mmnambu = slot_l_store)
 /datum/job/japanese/ija_sergeant_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_l_store)
+	equip_loadout(H)
 	if (map.ID == MAP_NANKOU || map.ID == MAP_NANJING)
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka38(H), slot_shoulder)
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/soldier(H), slot_belt)
@@ -1013,19 +992,16 @@
 	max_positions = 8
 
 /datum/job/japanese/ija_ww2_tanker/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/japanese/ija_ww2_tanker/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni_tanker = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww2/japhelm_tanker = slot_head,
+	/obj/item/weapon/key/japanese = slot_r_store,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_belt)
 /datum/job/japanese/ija_ww2_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_tanker(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/japhelm_tanker(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_belt)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
@@ -1066,20 +1042,19 @@
 	max_positions = 1
 
 /datum/job/japanese/ija_camp_director/job_stats = list("strength" = STAT_MAX, "crafting" = STAT_NORMAL, "rifle" = STAT_MAX, "dexterity" = STAT_MAX, "swords" = STAT_MAX, "pistol" = STAT_MAX, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ija_camp_director/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japoffcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/material/sword/katana = slot_r_hand,
+	/obj/item/ammo_magazine/c8mmnambu = slot_r_store,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_l_store,
+	/obj/item/weapon/storage/belt/jap/camp_officer = slot_belt)
 /datum/job/japanese/ija_camp_director/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japoffcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_officer(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -1115,20 +1090,18 @@
 	max_positions = 4
 
 /datum/job/japanese/camp_officer/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/camp_officer/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japcap = slot_head,
+	/obj/item/ammo_magazine/c8mmnambu = slot_r_store,
+	/obj/item/weapon/gun/projectile/submachinegun/type100 = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_store,
+	/obj/item/weapon/storage/belt/jap/camp_officer = slot_belt)
 /datum/job/japanese/camp_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c8mmnambu(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/type100(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_officer(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
@@ -1205,17 +1178,16 @@
 	max_positions = 50
 
 /datum/job/japanese/camp_guard/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/camp_guard/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni = slot_w_uniform,
+	/obj/item/clothing/head/ww2/japcap = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/arisaka99 = slot_shoulder,
+	/obj/item/weapon/storage/belt/jap/camp_guard = slot_belt)
 /datum/job/japanese/camp_guard/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/puttees(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/jap_ittoheih = new /obj/item/clothing/accessory/rank/jap_ittohei(null)
 	uniform.attackby(jap_ittoheih, H)
@@ -1254,6 +1226,11 @@
 	max_positions = 1
 
 /datum/job/japanese/ijn_captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ijn_captain/job_loadout = list(
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese_officer = slot_r_store,
+	/obj/item/weapon/key/japanese = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ijn_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
@@ -1268,10 +1245,7 @@
 //head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1306,6 +1280,11 @@
 	max_positions = 1
 
 /datum/job/japanese/ijn_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ijn_lieutenant/job_loadout = list(
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese_officer = slot_r_store,
+	/obj/item/weapon/key/japanese = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ijn_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
@@ -1320,10 +1299,7 @@
 //head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1358,6 +1334,11 @@
 	max_positions = 1
 
 /datum/job/japanese/ijn_lieutenant2/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ijn_lieutenant2/job_loadout = list(
+	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_hand,
+	/obj/item/weapon/key/japanese_officer = slot_r_store,
+	/obj/item/weapon/key/japanese = slot_l_store,
+	/obj/item/weapon/material/sword/katana = slot_belt)
 /datum/job/japanese/ijn_lieutenant2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
@@ -1372,10 +1353,7 @@
 //head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese_officer(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/japanese(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_belt)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -1456,6 +1434,10 @@
 	max_positions = 2
 
 /datum/job/japanese/ijn_doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/japanese/ijn_doctor/job_loadout = list(
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store)
 /datum/job/japanese/ijn_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	if (map.ID == MAP_BATTLE_SHIPS)
@@ -1470,9 +1452,7 @@
 //head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	equip_loadout(H)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)
 	give_random_name(H)
@@ -1595,13 +1575,13 @@
 	max_positions = 4
 
 /datum/job/japanese/ijn_machinegunner/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/japanese/ijn_machinegunner/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni_snlf = slot_w_uniform)
 /datum/job/japanese/ijn_machinegunner/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
@@ -1641,13 +1621,13 @@
 	max_positions = 4
 
 /datum/job/japanese/ijn_machinegunner_assistant/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/japanese/ijn_machinegunner_assistant/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni_snlf = slot_w_uniform)
 /datum/job/japanese/ijn_machinegunner_assistant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)
@@ -1689,13 +1669,13 @@
 	max_positions = 8
 
 /datum/job/japanese/ijn_sniper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ijn_sniper/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees = slot_shoes,
+	/obj/item/clothing/under/ww2/japuni_snlf = slot_w_uniform)
 /datum/job/japanese/ijn_sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots/jap_ww2/navy/puttees(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/japuni_snlf(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead = rand(1,2)
 	if (randhead == 1)

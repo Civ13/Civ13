@@ -14,19 +14,18 @@
 	max_positions = 1
 
 /datum/job/civilian/starwars/rebel/lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
+/datum/job/civilian/starwars/rebel/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel/officer = slot_w_uniform,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/clothing/suit/storage/jacket/rebel_vest/officer = slot_wear_suit,
+	/obj/item/weapon/gun/projectile/pistol/laser/westar34 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/rebel = slot_belt,
+	/obj/item/clothing/head/helmet/rebel = slot_head)
 /datum/job/civilian/starwars/rebel/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel/officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest/officer(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/westar34(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
+	equip_loadout(H)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -48,20 +47,19 @@
 	max_positions = 2
 
 /datum/job/civilian/starwars/rebel/doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/starwars/rebel/doctor/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel = slot_w_uniform,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/clothing/head/helmet/rebel = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/laser/dl44 = slot_l_hand)
 /datum/job/civilian/starwars/rebel/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dl44(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -83,23 +81,19 @@
 	max_positions = 10
 
 /datum/job/civilian/starwars/rebel/radio_technician/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/starwars/rebel/radio_technician/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/rebel_vest = slot_wear_suit,
+	/obj/item/clothing/head/helmet/rebel = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/weapon/radio/faction1/spaceradio = slot_back,
+	/obj/item/weapon/gun/projectile/pistol/laser/dl44 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/rebel = slot_belt)
 /datum/job/civilian/starwars/rebel/radio_technician/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-	//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest(H), slot_wear_suit)
-
-	//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
-
-	//gear
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1/spaceradio(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dl44(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -121,22 +115,19 @@
 	max_positions = 8
 
 /datum/job/civilian/starwars/rebel/sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH, "stamina" = STAT_VERY_HIGH)
+/datum/job/civilian/starwars/rebel/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/rebel_vest = slot_wear_suit,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/clothing/head/helmet/rebel = slot_head,
+	/obj/item/weapon/gun/projectile/semiautomatic/laser/a280 = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/rebel = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/laser/dl44 = slot_l_hand)
 /datum/job/civilian/starwars/rebel/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest(H), slot_wear_suit)
-//head
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/a280(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dl44(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -157,21 +148,20 @@
 	max_positions = 10
 
 /datum/job/civilian/starwars/rebel/soldierheavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/civilian/starwars/rebel/soldierheavy/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/rebel_vest = slot_wear_suit,
+	/obj/item/ammo_magazine/tibannagas/blaster_power_pack = slot_back,
+	/obj/item/weapon/storage/belt/smallpouches/rebel = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/clothing/head/helmet/rebel = slot_head,
+	/obj/item/weapon/gun/projectile/automatic/laser/z6/empire = slot_l_hand,
+	/obj/item/weapon/grenade/modern/thermaldetonator = slot_r_store)
 /datum/job/civilian/starwars/rebel/soldierheavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest(H), slot_wear_suit)
-//head
-
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tibannagas/blaster_power_pack(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/laser/z6/empire(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/modern/thermaldetonator(H), slot_r_store)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a heavy soldier in the Rebel Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Galactic Empire!")
 	apply_job_stats(H)
 	return TRUE
@@ -188,17 +178,17 @@
 	max_positions = 124
 
 /datum/job/civilian/starwars/rebel/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/civilian/starwars/rebel/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rebel = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/rebel_vest = slot_wear_suit,
+	/obj/item/weapon/storage/belt/smallpouches/rebel = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1/comlink = slot_wear_id,
+	/obj/item/clothing/head/helmet/rebel = slot_head)
 /datum/job/civilian/starwars/rebel/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rebel(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/rebel_vest(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/rebel(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/rebel(H), slot_head)
+	equip_loadout(H)
 	if	(prob(80))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dh17(H), slot_l_hand)
 	else
@@ -230,19 +220,17 @@
 	max_positions = 1
 
 /datum/job/american/starwars/empire/lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
+/datum/job/american/starwars/empire/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/navallieutenant = slot_w_uniform,
+	/obj/item/weapon/gun/projectile/pistol/laser/westar34 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic = slot_belt,
+	/obj/item/clothing/head/impofficercap = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2/comlink = slot_wear_id)
 /datum/job/american/starwars/empire/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/navallieutenant(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/westar34(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/impofficercap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2/comlink(H), slot_wear_id)
+	equip_loadout(H)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -264,22 +252,21 @@
 	max_positions = 2
 
 /datum/job/american/starwars/empire/doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/starwars/empire/doctor/job_loadout = list(
+	/obj/item/clothing/shoes/replicantshoes = slot_shoes,
+	/obj/item/clothing/under/bodyglove = slot_w_uniform,
+	/obj/item/clothing/gloves/replicantgloves = slot_gloves,
+	/obj/item/weapon/radio/walkietalkie/faction2/comlink = slot_wear_id,
+	/obj/item/weapon/gun/projectile/pistol/laser/dh17 = slot_l_hand,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/clothing/suit/armor/stormsurgeon = slot_wear_suit,
+	/obj/item/weapon/grenade/flashbang/galaxywars = slot_l_store,
+	/obj/item/clothing/head/helmet/replicant/stormsurgeon = slot_head)
 /datum/job/american/starwars/empire/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2/comlink(H), slot_wear_id)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dh17(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormsurgeon(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang/galaxywars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormsurgeon(H), slot_head)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -301,22 +288,21 @@
 	max_positions = 10
 
 /datum/job/american/starwars/empire/technician/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/starwars/empire/technician/job_loadout = list(
+	/obj/item/clothing/shoes/replicantshoes = slot_shoes,
+	/obj/item/clothing/under/bodyglove = slot_w_uniform,
+	/obj/item/clothing/gloves/replicantgloves = slot_gloves,
+	/obj/item/weapon/radio/galacticbattles = slot_back,
+	/obj/item/clothing/suit/armor/stormradio = slot_wear_suit,
+	/obj/item/weapon/radio/faction2/spaceradio = slot_back,
+	/obj/item/clothing/head/helmet/replicant/stormradio = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/laser/dh17 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash = slot_belt,
+	/obj/item/weapon/wrench = slot_l_store)
 /datum/job/american/starwars/empire/technician/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/galacticbattles(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormradio(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction2/spaceradio(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormradio(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dh17(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/wrench(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -338,17 +324,17 @@
 	max_positions = 8
 
 /datum/job/american/starwars/empire/sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH, "stamina" = STAT_VERY_HIGH)
+/datum/job/american/starwars/empire/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/replicantshoes = slot_shoes,
+	/obj/item/clothing/under/bodyglove = slot_w_uniform,
+	/obj/item/clothing/suit/armor/stormtrooper = slot_wear_suit,
+	/obj/item/clothing/gloves/replicantgloves = slot_gloves,
+	/obj/item/clothing/head/helmet/replicant/stormtrooper = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2/comlink = slot_wear_id)
 /datum/job/american/starwars/empire/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormtrooper(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2/comlink(H), slot_wear_id)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/laser/dh17(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/e11(H), slot_shoulder)
@@ -373,21 +359,21 @@
 	max_positions = 10
 
 /datum/job/american/starwars/empire/soldierheavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/american/starwars/empire/soldierheavy/job_loadout = list(
+	/obj/item/clothing/shoes/replicantshoes = slot_shoes,
+	/obj/item/clothing/under/bodyglove = slot_w_uniform,
+	/obj/item/clothing/suit/armor/stormtrooper = slot_wear_suit,
+	/obj/item/clothing/gloves/replicantgloves = slot_gloves,
+	/obj/item/ammo_magazine/tibannagas/blaster_power_pack = slot_back,
+	/obj/item/weapon/radio/walkietalkie/faction2/comlink = slot_wear_id,
+	/obj/item/clothing/head/helmet/replicant/stormtrooper = slot_head,
+	/obj/item/weapon/gun/projectile/automatic/laser/z6/empire = slot_l_hand,
+	/obj/item/weapon/grenade/flashbang/galaxywars = slot_r_store,
+	/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash = slot_belt)
 /datum/job/american/starwars/empire/soldierheavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormtrooper(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/tibannagas/blaster_power_pack(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/laser/z6/empire(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang/galaxywars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/flash(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Extra-Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
 	apply_job_stats(H)
 	return TRUE
@@ -404,20 +390,20 @@
 	max_positions = 124
 
 /datum/job/american/starwars/empire/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/starwars/empire/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/replicantshoes = slot_shoes,
+	/obj/item/clothing/under/bodyglove = slot_w_uniform,
+	/obj/item/clothing/suit/armor/stormtrooper = slot_wear_suit,
+	/obj/item/clothing/gloves/replicantgloves = slot_gloves,
+	/obj/item/weapon/radio/walkietalkie/faction2/comlink = slot_wear_id,
+	/obj/item/clothing/head/helmet/replicant/stormtrooper = slot_head,
+	/obj/item/weapon/gun/projectile/semiautomatic/laser/e11 = slot_l_hand,
+	/obj/item/weapon/grenade/flashbang/galaxywars = slot_r_store,
+	/obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic = slot_belt)
 /datum/job/american/starwars/empire/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/replicantshoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bodyglove(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/stormtrooper(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/replicantgloves(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2/comlink(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/replicant/stormtrooper(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/semiautomatic/laser/e11(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/flashbang/galaxywars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/white/stormtroomper/basic(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a soldier in the Extra-Galactic Imperial Army. Fight for the freedom of <b>the Galaxy</b>! Fight against the Rebel Alliance!")
 	apply_job_stats(H)
 	return TRUE

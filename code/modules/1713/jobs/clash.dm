@@ -25,20 +25,19 @@
 	max_positions = 1
 
 /datum/job/norwegian/bear_clan/king/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/norwegian/bear_clan/king/job_loadout = list(
+	/obj/item/clothing/shoes/fur/brown = slot_shoes,
+	/obj/item/clothing/under/medieval/red2 = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/red = slot_wear_suit,
+	/obj/item/weapon/shield/iron = slot_l_hand,
+	/obj/item/clothing/head/helmet/medieval/viking = slot_head,
+	/obj/item/weapon/material/sword/vikingsword/iron = slot_belt,
+	/obj/item/weapon/horn = slot_r_store,
+	/obj/item/weapon/map_tdm/clash = slot_l_store)
 /datum/job/norwegian/bear_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
-	//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/red(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_l_hand)
-	//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/viking(H), slot_head)
-	//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/vikingsword/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/horn(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/map_tdm/clash(H), slot_l_store)
+	equip_loadout(H)
 	H.f_style = pick("Lumberjack Beard")
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Bear Clan</b>, a fearsome clan. Organize your <b>Clan</b> and lead your fighters to victory!</b>.")
 	apply_job_stats(H)
@@ -61,11 +60,13 @@
 	max_positions = 1
 
 /datum/job/norwegian/bear_clan/jarl/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/norwegian/bear_clan/jarl/job_loadout = list(
+	/obj/item/clothing/shoes/fur/brown = slot_shoes,
+	/obj/item/clothing/under/medieval/red = slot_w_uniform)
 /datum/job/norwegian/bear_clan/jarl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+	equip_loadout(H)
 	//pelt randomization
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt(H), slot_head)
@@ -98,15 +99,15 @@
 	max_positions = 8
 
 /datum/job/norwegian/bear_clan/berserker/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
+/datum/job/norwegian/bear_clan/berserker/job_loadout = list(
+	/obj/item/clothing/shoes/fur/brown = slot_shoes,
+	/obj/item/clothing/under/medieval/red = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/chainmail = slot_wear_suit,
+	/obj/item/clothing/head/helmet/medieval/viking/varangian = slot_head)
 /datum/job/norwegian/bear_clan/berserker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
-	//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/chainmail(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/medieval/viking/varangian(H), slot_head)
+	equip_loadout(H)
 	//weapons
 	if(prob(60))
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
@@ -148,12 +149,13 @@
 	max_positions = 100
 
 /datum/job/norwegian/bear_clan/warrior/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_LOW)
+/datum/job/norwegian/bear_clan/warrior/job_loadout = list(
+	/obj/item/clothing/shoes/fur/brown = slot_shoes,
+	/obj/item/clothing/under/medieval/red = slot_w_uniform)
 /datum/job/norwegian/bear_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
+	equip_loadout(H)
 		//suits
 	if(prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/brown(H), slot_wear_suit)
@@ -199,13 +201,14 @@
 	max_positions = 5
 
 /datum/job/norwegian/bear_clan/healer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
+/datum/job/norwegian/bear_clan/healer/job_loadout = list(
+	/obj/item/clothing/shoes/fur/brown = slot_shoes,
+	/obj/item/clothing/under/medieval/red = slot_w_uniform,
+	/obj/item/clothing/suit/armor/ancient/chainmail = slot_wear_suit)
 /datum/job/norwegian/bear_clan/healer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 		//shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/brown(H), slot_shoes)
-		//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/ancient/chainmail(H), slot_wear_suit)
+	equip_loadout(H)
 
 	//pelt randomization
 	if (prob(50))
@@ -252,17 +255,17 @@
 	max_positions = 1
 
 /datum/job/danish/raven_clan/king/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/danish/raven_clan/king/job_loadout = list(
+	/obj/item/clothing/shoes/fur/black = slot_shoes,
+	/obj/item/clothing/under/medieval/blue = slot_w_uniform,
+	/obj/item/clothing/suit/armor/medieval/varangian = slot_wear_suit,
+	/obj/item/weapon/material/sword/vikingsword/iron = slot_belt,
+	/obj/item/weapon/shield/iron = slot_back,
+	/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron = slot_r_hand)
 /datum/job/danish/raven_clan/king/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/medieval/varangian(H), slot_wear_suit)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/vikingsword/iron(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/iron(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
+	equip_loadout(H)
 	H.add_note("Role", "You are the <b>[title]</b>, the leader of the <b>Raven clan</b>, a prosperous clan. Defend and lead your kingdom to victory!</b>.")
 	apply_job_stats(H)
 	H.f_style = pick("Sailor Beard")
@@ -372,12 +375,13 @@
 	max_positions = 100
 
 /datum/job/danish/raven_clan/warrior/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_HIGH, "medical" = STAT_LOW)
+/datum/job/danish/raven_clan/warrior/job_loadout = list(
+	/obj/item/clothing/shoes/fur/black = slot_shoes,
+	/obj/item/clothing/under/medieval/blue = slot_w_uniform)
 /datum/job/danish/raven_clan/warrior/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
+	equip_loadout(H)
 //suits
 	if(prob(60))
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/black(H), slot_wear_suit)
@@ -424,20 +428,18 @@
 	max_positions = 4
 
 /datum/job/danish/raven_clan/shaman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_LOW, "medical" = STAT_HIGH)
+/datum/job/danish/raven_clan/shaman/job_loadout = list(
+	/obj/item/clothing/shoes/fur/black = slot_shoes,
+	/obj/item/clothing/under/medieval/blue = slot_w_uniform,
+	/obj/item/clothing/suit/storage/coat/fur/black = slot_wear_suit,
+	/obj/item/clothing/mask/raven = slot_wear_mask,
+	/obj/item/weapon/material/kitchen/utensil/knife/dagger/iron = slot_r_hand,
+	/obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy = slot_r_store,
+	/obj/item/stack/medical/advanced/herbs = slot_l_store)
 /datum/job/danish/raven_clan/shaman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/fur/black(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/medieval/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/fur/black(H), slot_wear_suit)
-//face
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/raven(H), slot_wear_mask)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/dagger/iron(H), slot_r_hand)
-//pockets
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/snacks/grown/mushroompsy(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a magico-religious initiate. Your task is to use your mystical knowledge of medicine to aid your fellow clan members.")
 	apply_job_stats(H)

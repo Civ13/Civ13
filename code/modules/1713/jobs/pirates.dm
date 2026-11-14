@@ -24,19 +24,17 @@
 	max_positions = 1
 
 /datum/job/pirates/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/pirates/captain/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/pirate3 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/piratejacket5 = slot_wear_suit,
+	/obj/item/clothing/head/piratehat = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/pirates/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket5(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the Pirate ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	broadside_give_call(H)
@@ -61,18 +59,16 @@
 	max_positions = 1
 
 /datum/job/pirates/qm/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/pirates/qm/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/pirate3 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/piratejacket2 = slot_wear_suit,
+	/obj/item/clothing/head/piratehat = slot_head,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/pirates/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Quartermaster of the Pirate ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Captain</b>.")
 	apply_job_stats(H)
@@ -98,19 +94,17 @@
 	max_positions = 1
 
 /datum/job/pirates/boatswain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/pirates/boatswain/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/pirate3 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/piratejacket1 = slot_wear_suit,
+	/obj/item/clothing/head/piratehat = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/pirates/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket1(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/piratehat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Boatswain of the Pirate ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	apply_job_stats(H)
@@ -133,17 +127,16 @@
 	max_positions = 10
 
 /datum/job/pirates/midshipman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/pirates/midshipman/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/pirate3 = slot_w_uniform,
+	/obj/item/clothing/head/tricorne_black = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/pirates/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Boatswain</b>'s orders!")
 	apply_job_stats(H)
 
@@ -163,19 +156,17 @@
 	allowed_maps = list(MAP_SKULLISLAND, MAP_VOYAGE, MAP_NAVAL, MAP_BROADSIDE)
 
 /datum/job/pirates/surgeon/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/pirates/surgeon/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/pirate3 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/piratejacket2 = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_black = slot_head,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store)
 /datum/job/pirates/surgeon/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/pirate3(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/piratejacket2(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the sailors healthy.")
 	apply_job_stats(H)

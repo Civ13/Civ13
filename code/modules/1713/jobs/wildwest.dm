@@ -16,6 +16,10 @@
 	max_positions = 1
 
 /datum/job/civilian/sheriff/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/sheriff/job_loadout = list(
+	/obj/item/clothing/under/industrial3 = slot_w_uniform,
+	/obj/item/clothing/head/cowboyhat = slot_head,
+	/obj/item/weapon/key/civ/sheriff = slot_r_store)
 /datum/job/civilian/sheriff/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -24,11 +28,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/sheriff(H), slot_r_store)
+	equip_loadout(H)
 
 	if (prob(60))
 		var/randscarf = pick(1,2,3)
@@ -74,6 +74,9 @@
 	max_positions = 20
 
 /datum/job/civilian/deputy/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/deputy/job_loadout = list(
+	/obj/item/clothing/under/industrial3 = slot_w_uniform,
+	/obj/item/clothing/head/cowboyhat = slot_head)
 /datum/job/civilian/deputy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -82,9 +85,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	equip_loadout(H)
 	if (prob(60))
 		var/randscarf = pick(1,2,3)
 		if (randscarf == 1)
@@ -130,6 +131,9 @@
 	max_positions = 100
 
 /datum/job/civilian/deputy2/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/deputy2/job_loadout = list(
+	/obj/item/clothing/under/industrial3 = slot_w_uniform,
+	/obj/item/clothing/head/cowboyhat = slot_head)
 /datum/job/civilian/deputy2/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -138,9 +142,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding2(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial3(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/cowboyhat(H), slot_head)
+	equip_loadout(H)
 	if (prob(60))
 		var/randscarf = pick(1,2,3)
 		if (randscarf == 1)
@@ -186,18 +188,17 @@
 	max_positions = 6
 
 /datum/job/civilian/bank/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/bank/job_loadout = list(
+	/obj/item/clothing/shoes/leather = slot_shoes,
+	/obj/item/clothing/under/industrial5 = slot_w_uniform,
+	/obj/item/clothing/head/bowler_hat = slot_head,
+	/obj/item/weapon/key/civ/bank = slot_r_store,
+	/obj/item/stack/money/real/five = slot_l_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/bank/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leather(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/industrial5(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/bank(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/armband/british/red_a = new /obj/item/clothing/accessory/armband/british(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	uniform.attackby(red_a, H)
@@ -223,6 +224,9 @@
 	max_positions = 100
 
 /datum/job/civilian/townsmen/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_NORMAL)
+/datum/job/civilian/townsmen/job_loadout = list(
+	/obj/item/stack/money/real/five = slot_l_store,
+	/obj/item/weapon/gun/projectile/revolver/peacemaker = slot_belt)
 /datum/job/civilian/townsmen/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -279,8 +283,7 @@
 			var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_belt)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, living in Little Creek. You've heard of the robbery, and your job is to survive!")
@@ -365,17 +368,17 @@
 	max_positions = 3
 
 /datum/job/civilian/townbartender/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/civilian/townbartender/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/bartender = slot_w_uniform,
+	/obj/item/clothing/head/bowler_hat = slot_head,
+	/obj/item/weapon/gun/projectile/revolver/derringer = slot_l_store,
+	/obj/item/stack/money/real/ten = slot_r_store,
+	/obj/item/clothing/accessory/storage/coinpouch/wallet = slot_wear_id)
 /datum/job/civilian/townbartender/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/bartender(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bowler_hat(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/derringer(H), slot_l_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/ten(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/accessory/storage/coinpouch/wallet(H), slot_wear_id)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are the <b>Saloon's Bartender</b>, living in Little Creek. Take care of the Saloon, shooting the drunkards out if need be.")
@@ -397,6 +400,12 @@
 	max_positions = 8
 
 /datum/job/civilian/townrancher/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "farming" = STAT_VERY_HIGH)
+/datum/job/civilian/townrancher/job_loadout = list(
+	/obj/item/weapon/storage/belt/leather/farmer = slot_belt,
+	/obj/item/weapon/plough = slot_l_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife = slot_r_store,
+	/obj/item/stack/money/real/five = slot_l_store,
+	/obj/item/weapon/gun/projectile/revolver/peacemaker = slot_l_hand)
 /datum/job/civilian/townrancher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -429,11 +438,7 @@
 		var/obj/item/clothing/accessory/suspenders/dark/red_a = new /obj/item/clothing/accessory/suspenders/dark(null)
 		var/obj/item/clothing/under/uniform = H.w_uniform
 		uniform.attackby(red_a, H)
-	H.equip_to_slot_or_del(new/obj/item/weapon/storage/belt/leather/farmer(H), slot_belt)
-	H.equip_to_slot_or_del(new/obj/item/weapon/plough(H), slot_l_hand)
-	H.equip_to_slot_or_del(new/obj/item/weapon/material/kitchen/utensil/knife(H), slot_r_store)
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real/five(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>Rancher</b>, living in Little Creek. Take care of your farm and keep the town fed!")
@@ -602,6 +607,10 @@
 	max_positions = 100
 
 /datum/job/civilian/outlaw/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
+/datum/job/civilian/outlaw/job_loadout = list(
+	/obj/item/weapon/material/kitchen/utensil/knife/bowie = slot_l_store,
+	/obj/item/weapon/storage/bag/cash = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/peacemaker = slot_l_hand)
 /datum/job/civilian/outlaw/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -659,9 +668,7 @@
 			var/obj/item/clothing/under/uniform = H.w_uniform
 			uniform.attackby(red_a, H)
 
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/bowie(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/bag/cash(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/peacemaker(H), slot_l_hand)
+	equip_loadout(H)
 
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>. Find your partners in crime and organize the bank robbery! Get the gold from the Bank's vault and bring it back to the starting position, placing it into the stagecoach storage.")

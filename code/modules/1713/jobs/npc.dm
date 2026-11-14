@@ -16,14 +16,14 @@
 	min_positions = 0
 	max_positions = 0
 
+/datum/job/npc/bandit/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/wastelander = slot_w_uniform,
+	/obj/item/clothing/mask/shemagh = slot_wear_mask,
+	/obj/item/ammo_magazine/glock17 = slot_l_store)
 /datum/job/npc/bandit/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/wastelander(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/glock17(H), slot_l_store)
+	equip_loadout(H)
 
 	return TRUE

@@ -17,19 +17,17 @@
 	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/eastern_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/eastern_lord/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/samurai/red = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/lord/red = slot_wear_suit,
+	/obj/item/clothing/head/helmet/samurai/lord/red = slot_head,
+	/obj/item/weapon/material/sword/katana = slot_l_hand)
 /datum/job/japanese/eastern_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/samurai/red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/lord/red(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/lord/red(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
@@ -59,22 +57,20 @@
 	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/samurai_eastern/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/samurai_eastern/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/samurai/red = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/warrior/red = slot_wear_suit,
+	/obj/item/clothing/head/helmet/samurai/red = slot_head,
+	/obj/item/weapon/gun/projectile/ancient/tanegashima = slot_l_hand,
+	/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full = slot_wear_id,
+	/obj/item/stack/ammopart/stoneball = slot_r_store,
+	/obj/item/flashlight/torch = slot_l_store)
 /datum/job/japanese/samurai_eastern/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/samurai/red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/warrior/red(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/red(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
@@ -99,23 +95,21 @@
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_ranged/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ashigaru_ranged/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/red = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/red = slot_wear_suit,
+	/obj/item/clothing/head/helmet/kasa = slot_head,
+	/obj/item/weapon/gun/projectile/ancient/tanegashima = slot_shoulder,
+	/obj/item/weapon/material/sword/wakazashi = slot_l_hand,
+	/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full = slot_wear_id,
+	/obj/item/stack/ammopart/stoneball = slot_r_store,
+	/obj/item/flashlight/torch = slot_l_store)
 /datum/job/japanese/ashigaru_ranged/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/red(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kasa(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/wakazashi(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)
@@ -139,15 +133,15 @@
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ashigaru/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/red = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/red = slot_wear_suit)
 /datum/job/japanese/ashigaru/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/red(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/red(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/guard/red(H), slot_head)
@@ -184,21 +178,19 @@
 	
 
 /datum/job/japanese/western_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/western_lord/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/samurai/blue = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/lord/blue = slot_wear_suit,
+	/obj/item/clothing/head/helmet/samurai/lord/blue = slot_head,
+	/obj/item/weapon/material/sword/katana = slot_l_hand,
+	/obj/item/stack/ammopart/stoneball = slot_r_store,
+	/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full = slot_wear_id)
 /datum/job/japanese/western_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/samurai/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/lord/blue(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/lord/blue(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
@@ -228,21 +220,19 @@
 	allowed_maps = list(MAP_SEKIGAHARA)
 
 /datum/job/japanese/samurai_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/samurai_western/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/samurai/blue = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/warrior/blue = slot_wear_suit,
+	/obj/item/clothing/head/helmet/samurai/blue = slot_head,
+	/obj/item/weapon/gun/projectile/ancient/tanegashima = slot_l_hand,
+	/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full = slot_wear_id,
+	/obj/item/stack/ammopart/stoneball = slot_r_store)
 /datum/job/japanese/samurai_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/samurai/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/warrior/blue(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/blue(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/daishoh = new /obj/item/clothing/accessory/storage/sheath/daisho(null)
 	uniform.attackby(daishoh, H)
@@ -267,22 +257,20 @@
 	is_western = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_ranged_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ashigaru_ranged_western/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/blue = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/blue = slot_wear_suit,
+	/obj/item/clothing/head/helmet/kasa = slot_head,
+	/obj/item/weapon/gun/projectile/ancient/tanegashima = slot_shoulder,
+	/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full = slot_wear_id,
+	/obj/item/stack/ammopart/stoneball = slot_r_store,
+	/obj/item/flashlight/torch = slot_l_store)
 /datum/job/japanese/ashigaru_ranged_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/blue(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/kasa(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/ancient/tanegashima(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/gunpowder/full(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/stack/ammopart/stoneball(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/flashlight/torch(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbingh = new /obj/item/clothing/accessory/storage/webbing(null)
 	uniform.attackby(webbingh, H)
@@ -306,15 +294,15 @@
 	is_western = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 /datum/job/japanese/ashigaru_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/japanese/ashigaru_western/job_loadout = list(
+	/obj/item/clothing/shoes/tsuranuki = slot_shoes,
+	/obj/item/clothing/under/haori/blue = slot_w_uniform,
+	/obj/item/clothing/gloves/gauntlets/kote = slot_gloves,
+	/obj/item/clothing/suit/armor/samurai/blue = slot_wear_suit)
 /datum/job/japanese/ashigaru_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/tsuranuki(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/haori/blue(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/gauntlets/kote(H), slot_gloves)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/samurai/blue(H), slot_wear_suit)
+	equip_loadout(H)
 //head
 	if (prob(30))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/samurai/guard/blue(H), slot_head)

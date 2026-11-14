@@ -16,10 +16,12 @@
 	max_positions = 1
 	
 /datum/job/british/rchief/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/rchief/job_loadout = list(
+	/obj/item/weapon/material/hatchet/bone_battleaxe = slot_r_hand,
+	/obj/item/weapon/shield/nguni_shield = slot_l_hand,
+	/obj/item/clothing/under/loinleather = slot_w_uniform)
 /datum/job/british/rchief/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/nguni_shield(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(H), slot_w_uniform)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(armband, H)
@@ -42,10 +44,12 @@
 	max_positions = 8
 	
 /datum/job/british/rshaman/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
+/datum/job/british/rshaman/job_loadout = list(
+	/obj/item/stack/medical/bruise_pack/bint/leather = slot_l_hand,
+	/obj/item/stack/medical/advanced/herbs = slot_r_hand,
+	/obj/item/clothing/under/loinleather = slot_w_uniform)
 /datum/job/british/rshaman/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/leather(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(H), slot_w_uniform)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/british/armband = new /obj/item/clothing/accessory/armband/british(null)
 	uniform.attackby(armband, H)
@@ -89,10 +93,12 @@
 	max_positions = 1
 	
 /datum/job/french/bchief/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
+/datum/job/french/bchief/job_loadout = list(
+	/obj/item/weapon/material/hatchet/bone_battleaxe = slot_r_hand,
+	/obj/item/weapon/shield/nguni_shield = slot_l_hand,
+	/obj/item/clothing/under/loinleather = slot_w_uniform)
 /datum/job/french/bchief/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/nguni_shield(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(H), slot_w_uniform)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/armband = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(armband, H)
@@ -116,10 +122,12 @@
 	max_positions = 8
 	
 /datum/job/french/bshaman/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
+/datum/job/french/bshaman/job_loadout = list(
+	/obj/item/stack/medical/bruise_pack/bint/leather = slot_l_hand,
+	/obj/item/stack/medical/advanced/herbs = slot_r_hand,
+	/obj/item/clothing/under/loinleather = slot_w_uniform)
 /datum/job/french/bshaman/equip(var/mob/living/human/H)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/leather(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/loinleather(H), slot_w_uniform)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/french/armband = new /obj/item/clothing/accessory/armband/french(null)
 	uniform.attackby(armband, H)

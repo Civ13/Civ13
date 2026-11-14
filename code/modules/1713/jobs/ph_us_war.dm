@@ -15,18 +15,17 @@
 	max_positions = 1
 
 /datum/job/american/fp_captain/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/fp_captain/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/american/us_off_uni = slot_w_uniform,
+	/obj/item/clothing/head/unionhatlight = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/colt1892 = slot_l_hand,
+	/obj/item/clothing/gloves/union_gloves = slot_gloves)
 /datum/job/american/fp_captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/american/us_off_uni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/union_gloves(H), slot_gloves)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -52,18 +51,17 @@
 	max_positions = 2
 
 /datum/job/american/fp_lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/fp_lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/american/us_off_uni = slot_w_uniform,
+	/obj/item/clothing/head/unionhatlight = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/colt1892 = slot_l_hand,
+	/obj/item/clothing/gloves/union_gloves = slot_gloves)
 /datum/job/american/fp_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/american/us_off_uni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/unionhatlight(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/union_gloves(H), slot_gloves)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -89,20 +87,18 @@
 	max_positions = 10
 
 /datum/job/american/fp_sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/fp_sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/american/us_uni = slot_w_uniform,
+	/obj/item/clothing/head/ph_us_war/american/infantry_hat = slot_head,
+	/obj/item/weapon/attachment/bayonet = slot_belt,
+	/obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock = slot_shoulder,
+	/obj/item/weapon/gun/projectile/revolver/colt1892 = slot_l_hand,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_l_store)
 /datum/job/american/fp_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/american/us_uni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/american/infantry_hat(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/singleshot/rollingblock(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -156,20 +152,18 @@
 	max_positions = 4
 
 /datum/job/american/fp_doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/fp_doctor/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/weapon/gun/projectile/revolver/colt1892 = slot_l_hand,
+	/obj/item/clothing/under/ph_us_war/american/us_uni = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/clothing/head/ph_us_war/american/infantry_hat = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/surgery = slot_belt)
 /datum/job/american/fp_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/american/us_uni(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/american/infantry_hat(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -247,17 +241,16 @@
 	max_positions = 1
 
 /datum/job/filipino/captain/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/filipino/captain/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/filipino/filuni = slot_w_uniform,
+	/obj/item/clothing/head/ph_us_war/filipino/fil_off_cap = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/sw3 = slot_l_hand)
 /datum/job/filipino/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/filipino/filuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/fil_off_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/sw3(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -287,17 +280,16 @@
 	max_positions = 2
 
 /datum/job/filipino/lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/filipino/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/filipino/filuni = slot_w_uniform,
+	/obj/item/clothing/head/ph_us_war/filipino/fil_off_cap = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/sw3 = slot_l_hand)
 /datum/job/filipino/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/filipino/filuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/fil_off_cap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/sw3(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -328,18 +320,17 @@
 	max_positions = 10
 
 /datum/job/filipino/sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/filipino/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/filipino/filuni = slot_w_uniform,
+	/obj/item/clothing/head/ph_us_war/filipino/baliwag = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/sw3 = slot_l_hand,
+	/obj/item/weapon/gun/projectile/boltaction/mauser1893 = slot_shoulder)
 /datum/job/filipino/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/filipino/filuni(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/sw3(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mauser1893(H), slot_shoulder)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -420,19 +411,17 @@
 	max_positions = 4
 
 /datum/job/filipino/doctor/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/filipino/doctor/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/weapon/gun/projectile/revolver/colt1892 = slot_l_hand,
+	/obj/item/clothing/under/modern2 = slot_w_uniform,
+	/obj/item/clothing/head/ph_us_war/filipino/baliwag = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/surgery = slot_belt)
 /datum/job/filipino/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/colt1892(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/modern2(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -463,18 +452,16 @@
 	max_positions = 100
 
 /datum/job/filipino/sniper/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/filipino/sniper/job_loadout = list(
+	/obj/item/clothing/shoes/riding1 = slot_shoes,
+	/obj/item/clothing/under/ph_us_war/filipino/tiradores = slot_w_uniform,
+	/obj/item/weapon/material/sword/bolo = slot_belt,
+	/obj/item/clothing/head/ph_us_war/filipino/baliwag = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/mauser1893 = slot_shoulder)
 /datum/job/filipino/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/riding1(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ph_us_war/filipino/tiradores(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ph_us_war/filipino/baliwag(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mauser1893(H), slot_shoulder)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/bolo(H), slot_belt)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/filipinoh = new /obj/item/clothing/accessory/storage/webbing/filipino(null)
