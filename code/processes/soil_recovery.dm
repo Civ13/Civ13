@@ -21,7 +21,12 @@ var/global/soil_recovery_cursor = 1
 		var/index = soil_recovery_cursor
 		var/turf/floor/dirt/D = soil_recovery_pending[index]
 		if (!istype(D))
-			soil_recovery_pending.Cut(index, index + 1)
+			var/last_index = soil_recovery_pending.len
+			var/turf/floor/dirt/last_dirt = soil_recovery_pending[last_index]
+			soil_recovery_pending[index] = last_dirt
+			if (istype(last_dirt))
+				last_dirt.soil_recovery_index = index
+			soil_recovery_pending.Cut(last_index, last_index + 1)
 			continue
 		if (!isnull(D.soil_recovery_deadline) && world.time >= D.soil_recovery_deadline)
 			D.soil_nutrition_recover()

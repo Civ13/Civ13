@@ -130,7 +130,7 @@
 		++jamcheck
 
 	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 5), 50)
+		jammed_until = world.time + max(jamcheck * 5, 50)
 		jamcheck = 0
 	if (blackpowder)
 		spawn (1)

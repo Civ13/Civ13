@@ -86,6 +86,8 @@
 		return "wood"
 	if (istype(I, /obj/item/stack/material/steel))
 		return "steel"
+	if (istype(I, /obj/item/stack/material/aluminium))
+		return "aluminium"
 	if (istype(I, /obj/item/stack/material/glass))
 		return "glass"
 	if (istype(I, /obj/item/stack/material/rope))

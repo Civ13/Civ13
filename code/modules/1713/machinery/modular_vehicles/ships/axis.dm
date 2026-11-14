@@ -262,8 +262,9 @@
 /obj/structure/vehicleparts/axis/ship/add_transporting(var/trigger_mines=TRUE)
 	transporting = list()
 	prune_turning_placeholders()
+	var/turf/here = get_turf(src)
 	for (var/obj/structure/vehicleparts/frame/F in components)
-		if (!F || F.axis != src || !(F in range(7,loc)))
+		if (!F || F.axis != src || !here || F.z != here.z || get_dist(F, here) > 7)
 			components -= F
 			continue
 		var/turf/T = get_turf(F)

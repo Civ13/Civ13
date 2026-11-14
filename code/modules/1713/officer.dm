@@ -211,12 +211,12 @@ var/global/list/valid_coordinates = list()
 				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
-				if (inputx < 0)
+				if (inputx < 1)
 					inputx = 1
 				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
-				if (inputy < 0)
+				if (inputy < 1)
 					inputy = 1
 				if (global.valid_coordinates.Find("[inputx],[inputy]"))
 					valid_coords_check = TRUE
@@ -252,12 +252,12 @@ var/global/list/valid_coordinates = list()
 				var/inputx = player_input(src, "Choose the X coordinate:", null, null, "num", null, FALSE)
 				if (inputx > world.maxx)
 					inputx = world.maxx
-				if (inputx < 0)
+				if (inputx < 1)
 					inputx = 1
 				var/inputy = player_input(src, "Choose the Y coordinate:", null, null, "num", null, FALSE)
 				if (inputy > world.maxy)
 					inputy = world.maxy
-				if (inputy < 0)
+				if (inputy < 1)
 					inputy = 1
 				if (global.valid_coordinates.Find("[inputx],[inputy]"))
 					valid_coords_check = TRUE

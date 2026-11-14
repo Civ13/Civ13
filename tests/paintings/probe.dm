@@ -43,6 +43,7 @@ var/paint_runtime_error = FALSE
 		paint_hang_checks()
 		paint_locket_checks()
 		paint_drawing_checks()
+		paint_gallery_checks()
 	catch(var/exception/e)
 		paint_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = paint_failures, "runtime_error" = paint_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -213,4 +214,50 @@ var/paint_runtime_error = FALSE
 	H.r_hand = null
 	qdel(pen)
 	paint_check(!drawing_tool(H), "an empty hand cannot draw")
+	qdel(H)
+
+/proc/paint_gallery_checks()
+	var/turf/T = locate(4, 15, 1)
+	for (var/turf/W in block(locate(3, 16, 1), locate(7, 16, 1)))
+		W.density = TRUE
+	var/mob/living/human/paint_probe/H = new(T)
+	H.real_name = "Ada Painter"
+	paint_check(mortar_pigment_result(new /obj/item/stack/ore/copper(T)) == /obj/item/pigment/malachite && mortar_pigment_result(new /obj/item/stack/ore/mercury(T)) == /obj/item/pigment/vermilion && mortar_pigment_result(new /obj/item/stack/ore/lead(T)) == /obj/item/pigment/lead_white && mortar_pigment_result(new /obj/item/stack/ore/gem/sapphire(T)) == /obj/item/pigment/ultramarine, "the mortar grinds copper ore, cinnabar, lead ore and sapphire into later pigments")
+	var/obj/item/pigment/oil_paints/O = new(H)
+	var/obj/item/canvas/gallery/G = new(H)
+	var/list/allowed = painting_allowed_colours(H, G)
+	var/all = TRUE
+	for (var/c in O.pigment_colors)
+		if (!(c in allowed))
+			all = FALSE
+	paint_check(all, "a box of oil paints offers all eight colours")
+	var/count = G.canvas_w * G.canvas_h
+	var/plain = painting_repeat("1", count / 2) + painting_repeat("2", count / 2)
+	paint_check(isnull(G.accept_painting(H, painting_pack(plain), "[G.base_colour],#1f4fa0,#e0b020", TRUE, "Harbour")) && G.finished && length(G.small) == 56 * 56 * 3, "a 128x128 gallery painting shrinks to 56x56")
+	paint_check(O.pigment_uses == 40 - 8, "a full gallery painting uses at most eight of a box of oil paints ([O.pigment_uses])")
+	paint_check(!G.overlays.len, "a held gallery canvas shows its plain sprite")
+	var/list/framed = G.framed_overlays()
+	paint_check(framed.len == 2, "a gallery painting builds its art and gilded frame")
+	var/turf/side = locate(10, 15, 1)
+	var/turf/side_wall = locate(11, 15, 1)
+	side_wall.density = TRUE
+	H.forceMove(side)
+	paint_check(!painting_hang(H, G, side_wall), "a gallery painting refuses a wall that is not to the north")
+	H.forceMove(T)
+	paint_check(painting_hang(H, G, locate(4, 16, 1)), "a gallery painting hangs on a wall to the north")
+	var/obj/structure/painting_frame/F = locate() in T
+	paint_check(F && F.dir == NORTH && F.pixel_y == 32 && F.overlays.len == 2, "the gallery frame sits on the wall")
+	var/obj/item/canvas/C = new(H)
+	C.accept_painting(H, painting_pack(painting_repeat("0", C.canvas_w * C.canvas_h)), C.base_colour, TRUE, "Neighbour")
+	H.forceMove(locate(5, 15, 1))
+	paint_check(!painting_hang(H, C, locate(5, 16, 1)), "the second tile of a gallery painting is taken")
+	var/obj/item/canvas/gallery/wide/D = new(H)
+	D.accept_painting(H, painting_pack(painting_repeat("1", D.canvas_w * D.canvas_h)), "[D.base_colour],#1f4fa0", TRUE, "Shore")
+	paint_check(D.finished && length(D.small) == 56 * 24 * 3, "a 128x64 wide painting shrinks to 56x24")
+	H.forceMove(locate(7, 15, 1))
+	paint_check(!painting_hang(H, D, locate(7, 16, 1)), "a gallery painting needs the wall to run on to the right")
+	qdel(F)
+	qdel(C)
+	qdel(D)
+	qdel(O)
 	qdel(H)

@@ -848,7 +848,7 @@ var/list/coefflist = list()
 
 	if (!target_zone)
 		if (!user)
-			target_zone = pick("chest","chest","chest","left leg","right leg","left arm", "right arm", "head")
+			target_zone = pick("chest","chest","chest","l_leg","r_leg","l_arm","r_arm", "head")
 		else
 			target_zone = user.targeted_organ
 
@@ -1192,12 +1192,12 @@ var/list/coefflist = list()
 		if (currmask.blocks_scope)
 			to_chat(user, "You can't see any farther whilst wearing \the [currmask]!")
 			return FALSE
-	else if (global_hud.darkMask[1] in user.client.screen)
+	if (global_hud.darkMask[1] in user.client.screen)
 		to_chat(user, "Your visor gets in the way of seeing farther.")
 		return FALSE
 	else
 		var/obj/item/organ/eyes/E = H.internal_organs_by_name["eyes"]
-		if (E.is_bruised() || E.is_broken() || H.eye_blind > 0)
+		if (!E || E.is_bruised() || E.is_broken() || H.eye_blind > 0)
 			if (!silent) to_chat(user, SPAN_DANGER("Your eyes are injured! You can't see any farther!"))
 			return FALSE
 	return TRUE

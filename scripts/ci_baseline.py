@@ -191,6 +191,12 @@ SUITES = {
     'geiger_counter': {'files': ('tests/geiger_counter/test_geiger.py',),
         'paths': ('tests/geiger_counter/',),
         'shared_paths': ('code/modules/1713/radiation.dm',)},
+    'press_anchoring': {'files': ('tests/press_anchoring/test_anchoring.py',),
+        'paths': ('tests/press_anchoring/',),
+        'shared_paths': ('code/modules/1713/factory_packaging.dm', 'tests/primitive_woodworking/source_adapter.py')},
+    'splash_watering': {'files': ('tests/splash_watering/test_splash.py',),
+        'paths': ('tests/splash_watering/',),
+        'shared_paths': ('code/modules/reagents/Chemistry-Holder.dm', 'tests/primitive_woodworking/source_adapter.py')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
@@ -1833,6 +1839,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
+        'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
+        'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
         'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
@@ -2079,7 +2088,7 @@ SUITES = {
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
-        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi',
+        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',

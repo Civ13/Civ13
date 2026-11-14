@@ -8,7 +8,7 @@
 	hub = ""
 	hub_password = ""
 	maxx = 40
-	maxy = 30
+	maxy = 40
 	maxz = 1
 	turf = /turf
 	area = /area
@@ -79,7 +79,7 @@ var/project_runtime_error = FALSE
 // Fits every remaining piece through the player paths: stacks hit the press,
 // wheels and tracks are dragged onto the press.
 /proc/project_finish(obj/structure/car_workshop/W, mob/living/human/H)
-	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil)
+	var/list/paths = list("steel" = /obj/item/stack/material/steel, "glass" = /obj/item/stack/material/glass, "cloth" = /obj/item/stack/material/cloth, "cable" = /obj/item/stack/cable_coil, "wood" = /obj/item/stack/material/wood, "aluminium" = /obj/item/stack/material/aluminium)
 	var/guard = 0
 	while (!W.project_finished() && guard++ < 100)
 		var/list/needed = W.project_needed()
@@ -211,7 +211,7 @@ var/project_runtime_error = FALSE
 	for (var/model in works_vehicle_specs)
 		spots[model] = list(5 + 7 * (spot_index % 5), 12 + 8 * round(spot_index / 5))
 		spot_index++
-	project_check(spots.len == 10, "ten works models ([spots.len])")
+	project_check(spots.len == 11, "eleven works models ([spots.len])")
 	for (var/model in spots)
 		var/list/spot = spots[model]
 		var/obj/structure/car_workshop/project_probe/V = new(locate(spot[1], spot[2], 1))
@@ -244,8 +244,8 @@ var/project_runtime_error = FALSE
 		var/shells = 0
 		var/turrets = 0
 		var/frames = 0
-		for (var/dx = 1, dx <= 4, dx++)
-			for (var/dy = 1, dy <= 4, dy++)
+		for (var/dx = 1, dx <= size, dx++)
+			for (var/dy = 1, dy <= size, dy++)
 				var/turf/T = locate(V.x + dx, V.y + dy, 1)
 				for (var/atom/movable/O in T)
 					if (istype(O, /obj/item/weapon/gun) || istype(O, /obj/item/ammo_magazine) || istype(O, /obj/structure/supply_crate) || istype(O, /obj/structure/bed/chair/mgunner))
@@ -316,7 +316,14 @@ var/project_runtime_error = FALSE
 	A.stock = list("steel" = 0, "glass" = 0, "cloth" = 0, "cable" = 0, "wheels" = 0)
 	P = A.project_plan("Light plane")
 	var/list/first = P.stages[1]
-	project_check(first["name"] == "Airframe" && P.total_cost()["steel"] == 50 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is an airframe of 50 steel on 4 wheels")
+	var/list/engine_stage
+	for (var/list/stage in P.stages)
+		if (stage["part"] == "engine")
+			engine_stage = stage
+	project_check(first["name"] == "Airframe" && first["cost"]["wood"] == 10 && P.total_cost()["wood"] == 40 && P.total_cost()["steel"] == 10 && engine_stage && engine_stage["cost"]["steel"] == 10 && P.total_cost()["wheels"] == 4, "the hangar's plane plan is a wooden airframe (40 wood) with a steel engine (10) on 4 wheels")
+	var/datum/piece_plan/C = A.project_plan("Cabin plane")
+	var/list/cabin_first = C.stages[1]
+	project_check(cabin_first["cost"]["aluminium"] == 12 && C.total_cost()["aluminium"] == 48 && C.total_cost()["steel"] == 16, "the cabin plane's airframe is aluminium (48) with a steel engine (16)")
 	A.project_action(H, "Light plane")
 	project_check(project_parts(A) == 12, "the jig fills the plane's 12 cells")
 	project_finish(A, H)

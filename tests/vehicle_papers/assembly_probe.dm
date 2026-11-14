@@ -289,6 +289,12 @@ var/naval_runtime_error = FALSE
 	naval_check((/obj/item/ammo_magazine/emptybelt in hmg.good_mags) && (/obj/item/ammo_magazine/ammo127 in hmg.good_mags), "an emplaced gun also takes a hand-filled belt")
 	naval_check(tank.do_move() && get_turf(turret) == get_step(ring, NORTH) && get_turf(gseat) == get_turf(turret) && gun.loc == turret && hmg.loc == turret, "the turret, its guns and its seats ride along when she drives")
 	naval_check(get_turf(spare_mg) == get_turf(turret), "a loose emplaced gun on her frames rides along too")
+	var/weight_before = tank.get_weight()
+	var/obj/item/weapon/gun/projectile/automatic/stationary/dshk/heavy = new(get_turf(turret))
+	naval_check(tank.get_weight() - weight_before == heavy.vehicle_weight && heavy.vehicle_weight == 60, "an emplaced gun weighs its mount on the vehicle ([tank.get_weight() - weight_before])")
+	qdel(heavy)
+	var/obj/structure/vehicleparts/frame/under = locate() in get_turf(turret)
+	naval_check(under && under.total_weight() >= 10 + hmg.vehicle_weight + spare_mg.vehicle_weight, "the turret's fitted gun counts too")
 	var/list/styles = built_turret_styles()
 	naval_check(styles["plain"] == "tank_turret" && styles["round"] == "round_tank_turret" && styles.len == 2, "before the tank ages a builder has the plain and the round turret")
 	map.ordinal_age = 6

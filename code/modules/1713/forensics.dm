@@ -57,6 +57,18 @@ proc/is_complete_print(var/print)
 	if(!user.item_is_in_hands(src))
 		return //bag must be in your hands to use
 
+	if(istype(I, /obj/item/weapon/evidencebag))
+		to_chat(user, SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd."))
+		return
+
+	if(I.w_class > 3)
+		to_chat(user, SPAN_NOTICE("[I] won't fit in [src]."))
+		return
+
+	if(contents.len)
+		to_chat(user, SPAN_NOTICE("[src] already has something inside it."))
+		return
+
 	if (isturf(I.loc))
 		if (!user.Adjacent(I))
 			return
@@ -74,18 +86,6 @@ proc/is_complete_print(var/print)
 			user.drop_from_inventory(I)
 		else
 			return
-
-	if(istype(I, /obj/item/weapon/evidencebag))
-		to_chat(user, SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd."))
-		return
-
-	if(I.w_class > 3)
-		to_chat(user, SPAN_NOTICE("[I] won't fit in [src]."))
-		return
-
-	if(contents.len)
-		to_chat(user, SPAN_NOTICE("[src] already has something inside it."))
-		return
 
 	user.visible_message("[user] puts [I] into [src]", "You put [I] inside [src].",\
 	"You hear a rustle as someone puts something into a plastic bag.")
@@ -290,7 +290,6 @@ proc/is_complete_print(var/print)
 	HU.visible_message("[HU] takes a copy of \the [H]'s fingerprints.")
 	var/fullprint = H.get_full_print()
 	evidence[fullprint] = fullprint
-	copy_evidence(src)
 	name = "[initial(name)] (\the [H])"
 	icon_state = "fingerprint1"
 	return 1
@@ -700,6 +699,7 @@ proc/is_complete_print(var/print)
 	var/obj/item/weapon/forensics/swab/bloodsamp = null
 	var/closed = 0
 	var/scanning = 0
+	var/scan_id = 0
 	var/report_num = 0
 
 /obj/machinery/dnaforensics/attackby(var/obj/item/W, mob/user as mob)
@@ -750,6 +750,7 @@ proc/is_complete_print(var/print)
 /obj/machinery/dnaforensics/attack_hand(mob/user as mob)
 	if(scanning)
 		scanning = 0
+		scan_id++
 		to_chat(usr, SPAN_NOTICE("You abort the scan."))
 		update_icon()
 	else
@@ -758,7 +759,10 @@ proc/is_complete_print(var/print)
 				scanning = 1
 				to_chat(usr, SPAN_NOTICE("Scan initiated. Please wait."))
 				update_icon()
+				var/this_scan = ++scan_id
 				spawn(900)
+					if(!scanning || scan_id != this_scan)
+						return
 					to_chat(usr, SPAN_NOTICE("Scan finished."))
 					complete_scan()
 			else

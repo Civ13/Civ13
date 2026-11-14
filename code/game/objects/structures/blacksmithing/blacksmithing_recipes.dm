@@ -81,6 +81,7 @@ var/global/list/anvil_recipes = list(
 	"Mounted PKM" = list("Mounted PKM","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/pkm),
 	"Mounted MG 3" = list("Mounted MG 3","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
 	"Mounted FN MAG" = list("Mounted FN MAG","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/fnmag),
+	"30mm Autocannon" = list("30mm Autocannon","machine guns",7,8,90,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/autocannon),
 	"NSVT Heavy Machine Gun" = list("NSVT Heavy Machine Gun","machine guns",7,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/nsvt),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

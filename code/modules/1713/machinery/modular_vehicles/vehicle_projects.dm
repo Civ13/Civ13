@@ -64,22 +64,25 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	var/list/spec = works_spec(model)
 	var/gun = spec ? spec["gun"] : 0
 	steel -= gun
-	var/per = round(steel / 5)
+	// An airframe of wood or aluminium pays its frame and skin in that
+	// material and its engine in steel; otherwise all three are steel.
+	var/hull = vehicle_project_hull(cost)
+	var/per = hull == "steel" ? round(steel / 5) : round(cost[hull] / 4)
 	var/datum/piece_plan/P = new
 	P.name = model
 	var/list/stages = list()
 	if (per > 0)
-		stages += list(list("name" = words["frames"][1], "pieces" = 2, "cost" = list("steel" = per), "part" = "frames", "verb" = words["frames"][2]))
+		stages += list(list("name" = words["frames"][1], "pieces" = 2, "cost" = list("[hull]" = per), "part" = "frames", "verb" = words["frames"][2]))
 	if (cost["wheels"])
 		stages += list(list("name" = words["wheels"][1], "pieces" = cost["wheels"], "cost" = list("wheels" = 1), "part" = "wheels", "verb" = words["wheels"][2]))
 	if (cost["tracks"])
 		stages += list(list("name" = words["tracks"][1], "pieces" = cost["tracks"], "cost" = list("tracks" = 1), "part" = "wheels", "verb" = words["tracks"][2]))
-	var/list/engine = list("steel" = steel - 4 * per)
+	var/list/engine = list("steel" = hull == "steel" ? steel - 4 * per : steel)
 	if (cost["cable"])
 		engine["cable"] = cost["cable"]
 	stages += list(list("name" = words["engine"][1], "pieces" = 1, "cost" = engine, "part" = "engine", "verb" = words["engine"][2]))
 	if (per > 0)
-		stages += list(list("name" = words["body"][1], "pieces" = 2, "cost" = list("steel" = per), "part" = "body", "verb" = words["body"][2]))
+		stages += list(list("name" = words["body"][1], "pieces" = 2, "cost" = list("[hull]" = per), "part" = "body", "verb" = words["body"][2]))
 	if (cost["glass"])
 		stages += list(list("name" = words["windows"][1], "pieces" = 1, "cost" = list("glass" = cost["glass"]), "part" = "windows", "verb" = words["windows"][2]))
 	if (cost["cloth"])
@@ -89,6 +92,15 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	P.stages = stages
 	vehicle_project_plans[key] = P
 	return P
+
+// The material a project's frame and body are paid in: "wood" or
+// "aluminium" when the cost names one (a quarter each for the four pieces,
+// so those costs are multiples of 4), else "steel".
+/proc/vehicle_project_hull(list/cost)
+	for (var/hull in list("aluminium", "wood"))
+		if (cost[hull])
+			return hull
+	return "steel"
 
 // Where the parts of model stand in the bay: "dx,dy" from the press -> part
 // paths, the same cells complete_assembly() fills.

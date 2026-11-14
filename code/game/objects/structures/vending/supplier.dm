@@ -186,15 +186,7 @@
 						WS.forceMove(src)
 
 				if (accepted_currency == "standard")
-					if (payment > 0 && payment <= 3)
-						var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-						NM.amount = floor(payment/NM.value)
-					else if (payment > 3 && payment <= 40)
-						var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-						NM.amount = floor(payment/NM.value)
-					else if (payment > 40)
-						var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-						NM.amount = floor(payment/NM.value)
+					pay_standard_coins(payment)
 				else
 					new/obj/item/stack/money/fiat(loc, payment, accepted_currency)
 
@@ -210,15 +202,7 @@
 					user.drop_from_inventory(W)
 					W.forceMove(src)
 					if (accepted_currency == "standard")
-						if (orderprice > 0 && orderprice <= 3)
-							var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-							NM.amount = orderprice/NM.value
-						else if (orderprice > 3 && orderprice <= 40)
-							var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-							NM.amount = orderprice/NM.value
-						else
-							var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-							NM.amount = orderprice/NM.value
+						pay_standard_coins(orderprice)
 					else
 						new/obj/item/stack/money/fiat(loc, orderprice, accepted_currency)
 					moneyin -= orderprice
@@ -229,6 +213,23 @@
 					to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					return
 	return
+
+/** Pays out amount in standard coins (gold, silver, copper) without losing any remainder. */
+/obj/structure/supplier/proc/pay_standard_coins(var/amount)
+	var/coppers = round(amount*10)
+	var/golds = floor(coppers/40)
+	coppers -= golds*40
+	var/silvers = floor(coppers/10)
+	coppers -= silvers*10
+	if (golds > 0)
+		var/obj/item/stack/money/goldcoin/G = new/obj/item/stack/money/goldcoin(loc)
+		G.amount = golds
+	if (silvers > 0)
+		var/obj/item/stack/money/silvercoin/S = new/obj/item/stack/money/silvercoin(loc)
+		S.amount = silvers
+	if (coppers > 0)
+		var/obj/item/stack/money/coppercoin/C = new/obj/item/stack/money/coppercoin(loc)
+		C.amount = coppers
 
 /** Management interface for company members to configure buy orders, name, currency, and withdraw operating funds. */
 /obj/structure/supplier/attack_hand(mob/living/human/H as mob)
@@ -375,15 +376,7 @@
 		if (moneyin <= 0)
 			return
 		if (accepted_currency == "standard")
-			if (moneyin > 0 && moneyin <= 3)
-				var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-				NM.amount = moneyin/NM.value
-			else if (moneyin > 3 && moneyin <= 40)
-				var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-				NM.amount = moneyin/NM.value
-			else
-				var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-				NM.amount = moneyin/NM.value
+			pay_standard_coins(moneyin)
 		else
 			new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
 		moneyin = 0
