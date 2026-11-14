@@ -26,6 +26,17 @@ export function seconds(deciseconds: unknown) {
   const whole = Math.max(1, Math.round(value / 10));
   return whole === 1 ? '1 second' : whole + ' seconds';
 }
+// What each choice starts as: the game's default, a valid colour, or the first company.
+export function startingAnswers(fields: Data[]) {
+  const start: Record<string, string> = {};
+  for (const field of fields) {
+    const given = text(field.default);
+    if (field.kind === 'color') start[text(field.field)] = /^#[0-9a-fA-F]{6}$/.test(given) ? given.toLowerCase() : '#000000';
+    else if (field.kind === 'company') start[text(field.field)] = text(list(field.choices)[0] ?? '');
+    else start[text(field.field)] = given;
+  }
+  return start;
+}
 function Sprite({ image, large = false }: { image: unknown; large?: boolean }) {
   const src = typeof image === 'string' && /^craft_[0-9a-f]{32}\.png$/.test(image) ? image : '';
   const size = large ? 64 : 32;
@@ -48,7 +59,21 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
   const busy = !!working;
   const mine = busy && String(working?.id) === row.id;
   const ready = row.state === 'ready';
-  const craft = () => { if (ui.interactive && ready && !busy) ui.act('make', { make: row.id, quantity: amount }); };
+  // The server looks closely at the selected recipe only: exact unmet
+  // requirements, and the choices it would otherwise ask in pop-ups.
+  const detail: Data | null = data.detail && text(data.detail.id) === row.id ? data.detail : null;
+  const needs = list(detail?.needs);
+  const fields = list(detail?.fields);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  useEffect(() => { setAnswers(startingAnswers(fields)); }, [row.id, fields.map(field => text(field.field) + text(field.default)).join('|')]);
+  const answer = (field: Data) => answers[text(field.field)] ?? '';
+  const set = (field: Data, value: string) => setAnswers({ ...answers, [text(field.field)]: value });
+  const unanswered = fields.some(field => (field.kind === 'company' || !!field.required) && !answer(field).trim());
+  const craft = () => {
+    if (!ui.interactive || !ready || busy || unanswered) return;
+    if (fields.length) ui.act('make', { make: row.id, quantity: amount, options: JSON.stringify(Object.fromEntries(fields.map(field => [text(field.field), answer(field)]))) });
+    else ui.act('make', { make: row.id, quantity: amount });
+  };
   return <section className="craft-card" aria-label="Selected recipe">
     <div className="craft-card-top">
       <div className="craft-pic"><Sprite image={row.image} large /></div>
@@ -62,9 +87,21 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
     <ul className="craft-needs">
       <Need met={batches > 0}>{text(row.cost)} <small>{data.where && text(data.where) !== 'in your hand' ? text(data.where) + ': ' : 'you have '}{text(data.amount)}</small></Need>
       {row.state === 'locked' && <Need met={false}>{text(row.why)}</Need>}
-      {row.state === 'missing' && batches > 0 && <Need met={false}>{text(row.why)}</Need>}
-      {row.state === 'ready' && <Need met>Everything else is in place</Need>}
+      {needs.map((need, i) => <Need key={i} met={!!need.met}>{text(need.label)}</Need>)}
+      {row.state === 'missing' && batches > 0 && !needs.some(need => !need.met) && <Need met={false}>{text(row.why)}</Need>}
+      {row.state === 'ready' && !needs.some(need => !need.met) && <Need met>Everything else is in place</Need>}
     </ul>
+    {fields.length > 0 && <div className="craft-fields" role="group" aria-label="Choices">
+      <h3>Choices</h3>
+      {fields.map((field, i) => <label key={i} className="craft-field"><span>{text(field.question).replace(/:\s*$/, '')}{field.required || field.kind === 'company' ? ' (needed)' : ''}</span>
+        {field.kind === 'color' ? <input type="color" disabled={busy} value={answer(field) || '#000000'} onChange={event => set(field, event.target.value)} />
+          : field.kind === 'company' ? (list(field.choices).length
+            ? <select disabled={busy} value={answer(field)} onChange={event => set(field, event.target.value)}>{list(field.choices).map((name, j) => <option key={j} value={text(name)}>{text(name)}</option>)}</select>
+            : <em className="craft-note">You are not part of any company.</em>)
+          : <input type="text" disabled={busy} maxLength={Math.min(1024, Number(field.max_length) || 256)} value={answer(field)} onChange={event => set(field, event.target.value)}
+              onKeyDown={event => { if (event.key === 'Enter') event.preventDefault(); }} />}
+      </label>)}
+    </div>}
     {row.tools ? <p className="craft-tools">Tools: {text(row.tools)}</p> : null}
     {row.built ? <p className="craft-place">Builds on the tile you stand on, facing the way you face.
       {row.one_per_turf ? ' Only one per tile.' : ''}{row.on_floor ? ' Needs a floor under you.' : ''}</p> : null}
@@ -85,7 +122,7 @@ function Card({ ui, row, working }: { ui: ScreenProps; row: Row; working: Data |
         <button type="button" className="craft-max" disabled={amount >= batches || busy} onClick={() => setQuantity(batches)}>Max</button>
       </div>}
       {!ready && <span className="craft-note">{row.state === 'locked' ? 'Not learned yet' : 'Missing something'}</span>}
-      <button type="button" className="craft-go" disabled={!ui.interactive || !ready || busy} onClick={craft}>{busy ? 'Working...' : 'Craft'}</button>
+      <button type="button" className="craft-go" disabled={!ui.interactive || !ready || busy || unanswered} onClick={craft}>{busy ? 'Working...' : 'Craft'}</button>
     </div>
   </section>;
 }
@@ -106,6 +143,10 @@ export function CraftingWindow(ui: ScreenProps) {
     setSelected(focus); setQuery(''); setPurpose('');
     if (rows.find(row => row.id === focus)?.state === 'locked') setShowLocked(true);
   }, [data.focus_seq]);
+  // Ask the server what exactly the selected recipe needs. This spends nothing.
+  useEffect(() => {
+    if (selected && ui.interactive && !data.working && rows.some(row => row.id === selected)) ui.act('detail', { detail: selected });
+  }, [selected]);
   // Pictures arrive a batch at a time; ask for the next batch once per snapshot.
   useEffect(() => {
     if (data.more_images && !data.working && ui.interactive) ui.act('images', { images: 1 });
