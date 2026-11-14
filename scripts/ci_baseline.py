@@ -430,7 +430,7 @@ SUITES = {
                          'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py'),
-        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm',
+        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
                          'code/modules/1713/road_tamping.dm', 'code/modules/1713/barriers/sandbag.dm',
                          'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
                          'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
