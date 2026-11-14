@@ -205,10 +205,10 @@
 					"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
 					"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
 					"4" = list("cancel","guns"),
-					"5" = list("cancel","helmets","mk1 brodie","m15 adrian"),
-					"6" = list("cancel","helmets"),
-					"7" = list("cancel","helmets","ussr heavy visored helmets","guns"),
-					"8+" = list("cancel","helmets","guns")), optlist)
+					"5" = list("cancel","helmets","mk1 brodie","m15 adrian","machine guns"),
+					"6" = list("cancel","helmets","machine guns"),
+					"7" = list("cancel","helmets","ussr heavy visored helmets","guns","machine guns"),
+					"8+" = list("cancel","helmets","guns","machine guns")), optlist)
 
 				if (blackpowder_part_options(P, H).len > 1)
 					optlist += "flintlock parts"

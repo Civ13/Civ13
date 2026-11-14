@@ -219,6 +219,7 @@ var/global/list/field_activity_caps = null
 				continue
 			open -= id
 			credited = TRUE
+			H.gain_active_scholarship(assigned_node, points, "field:[id]")
 			var/finished = B.has_research_chapter(assigned_node)
 			for (var/mob/living/human/V in viewers(world.view, src))
 				to_chat(V, SPAN_NOTICE("[V == H ? "Your" : "[H.name]'s"] field work is written into [B]: <b>[N.name]</b> advances by [points] points[finished ? " and the chapter is finished. It can now be studied" : ""]."))

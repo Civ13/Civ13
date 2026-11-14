@@ -1230,7 +1230,7 @@
 			note_field_work(user, "harvests", 1)
 			if (ishuman(user))
 				var/mob/living/human/H = user
-				H.adaptStat("farming", 1)
+				H.adaptStat("farming", 1, type)
 			qdel(src)
 		else // destroy
 			to_chat(user, SPAN_WARNING("You uproot the dead [name]."))

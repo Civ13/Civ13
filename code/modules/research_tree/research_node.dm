@@ -1053,6 +1053,24 @@ var/global/list/node_grid_col_cache = null
 		// --- cartridge_ammo (5) ---
 		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
+		// Emplaced machine guns, forged at the anvil: the water-cooled WW1 guns
+		// with cartridges, the WW2 guns and the 12.7mm heavies with self-loading
+		// arms, the post-war general-purpose guns with automatic weapons.
+		"/obj/item/weapon/gun/projectile/automatic/stationary/maxim" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg08" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/vickers" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type3" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg34" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/breda30" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type98" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/dshk" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/m2browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/pkm" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
