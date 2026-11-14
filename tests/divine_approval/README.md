@@ -55,3 +55,15 @@ launching the existing unrestricted native runner.
 - Influence from active followers, including unaware faction subordinates,
   contribution caps, persistence and exactly-once transfer.
 - Full game inclusion/build/preflight, real-client visibility and audit tests.
+
+## God's book (`code/modules/divine/divine_book.dm`)
+
+Included in the game build; the verb lives in `code/modules/admin/verbs/divine_book.dm`. Staff playing a god use the admin verb Write God's
+Book to write that god's one original and hand it to a player (or drop it where
+they stand). While an original of that god (matched by name, ignoring case)
+exists anywhere in this world, including restored from a save, another cannot
+be written; burning, destroying or deleting it frees the god to write a new one,
+and staff are told when it is gone. The verb waits while a save runs or a load
+is still restoring characters. Players can copy the original with a printing
+press or a monk, which makes an ordinary book; only the god writes in the
+original. `test_divine_book.py` guards these rules from source.
