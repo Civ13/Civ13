@@ -143,7 +143,8 @@ By design, d1 is the smallest direction and d2 is the highest
 			return
 		user.visible_message("[user] cuts the cable.", "<span class='notice'>You cut the cable.</span>")
 		playsound(loc, usesound, 100, FALSE)
-		var/obj/item/stack/cable_coil/salvage = new(loc)
+		var/coil_type = cable_coil_type(cable_color)
+		var/obj/item/stack/cable_coil/salvage = new coil_type(loc)
 		salvage.amount = 1
 		salvage.cable_color = cable_color
 		salvage.color = color
@@ -224,7 +225,7 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links", "grid_wire_loss"))
 		return TRUE
 	return ..()
 
@@ -279,11 +280,14 @@ var/global/cable_identity_sequence = 0
 	var/list/generators = list()
 	var/capacity = 0
 	var/demand = 0
+	var/wire_loss = 0 // wire_materials.dm: cable that is not copper wastes supply
 	var/index = 1
 	var/identity = grid_identity()
 	while (index <= pending.len)
 		var/obj/structure/cable/CB = pending[index++]
 		cables[CB] = TRUE
+		if (cable_wire_materials[CB.cable_color])
+			wire_loss += cable_wire_loss(CB.cable_color)
 		identity = min(identity, CB.grid_identity())
 		if (!isturf(CB.loc))
 			continue
@@ -325,6 +329,9 @@ var/global/cable_identity_sequence = 0
 				if (!discovered[linked] && isturf(linked.loc) && linked.riser_links && (CB in linked.riser_links))
 					discovered[linked] = TRUE
 					pending += linked
+	if (wire_loss > 0)
+		capacity = cable_delivered(capacity, wire_loss)
+	grid_wire_loss = wire_loss
 	var/accepted = FALSE
 	if (requester)
 		var/reserved = power_consumers[requester]
