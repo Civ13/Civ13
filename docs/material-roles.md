@@ -152,8 +152,51 @@ to cut it true. Springs and belts are never turned.
 | `lathe/engine` | Machined Tools | 12 iron, a gear set, a shaft and 2 bearings of any material, a wrench | copper, bronze, brass, iron, steel | nothing; twice as fast |
 
 Both are built from rough parts, so the first lathe never needs a lathe.
-`precise` changes nothing by itself yet: machines read it when they take part
-slots.
+`precise` matters in machines that need precision (see Machine slots).
+
+## Machine slots
+
+`code/modules/materials/machine_slots.dm` gives a machine wearing slots for the
+standard parts. `machine_slot_tables` maps a machine type to its slots, each
+with the part type it takes and the material the machine is built with today;
+the nearest listed ancestor applies.
+
+| Machine | Slots | Built with |
+| --- | --- | --- |
+| `/obj/structure/mill` | shaft, bearing | wood |
+| `/obj/structure/mill/large` | gears, shaft, bearing | wood |
+| `/obj/structure/sawmill/large` | gears, shaft, bearing | wood |
+| `/obj/structure/sawmill/powered` | gears, shaft, bearing | iron; needs precision |
+| `/obj/structure/loom` | shaft, bearing | wood |
+
+A machine built the usual way stores nothing and runs at 100%. Two values on
+`/obj/structure` hold everything else, so no machine carries a list:
+`part_key` is text such as `gears=bronze;shaft=steel+` (slot=material, `+`
+when precise; BYOND keeps one copy of each distinct string) and `part_wear`
+packs six bits of wear a slot. That is why a machine has at most
+`MACHINE_MAX_SLOTS` (4) wearing slots; `tests/machine_parts` enforces it.
+
+```dm
+machine_performance(M)        // weakest slot against the built-in part, 0.25 to 1.25; 0 when one is worn out
+machine_work_time(M, time)    // time / performance
+machine_work_refusal(M, user) // TRUE: a part is worn out, or a failing part jammed (15%)
+machine_wear(M, jobs)         // charge wear; a part lasts by its material's lifetime rating
+machine_install_part(M, P, H) // fit a part item; a part someone fitted earlier comes back out
+machine_examine_parts(M, user)
+```
+
+A standard part lasts `MACHINE_PART_BASE_LIFE` (400) jobs in its own design.
+Wear 21 and up is worn (a quarter slower), 42 and up is failing (may jam), 63
+is worn out (the machine stops until the part is replaced). In a machine
+listed in `machine_precision_types`, a rough part someone fitted is capped at
+60%; the built-in part and lathe-cut parts are not. The part a machine was
+built with is scrap when replaced, so a one-step build never mints parts.
+
+To give another machine slots: add its row, call `machine_work_refusal()`
+before work, scale its time or progress with `machine_work_time()` or
+`machine_performance()`, call `machine_wear()` when a job finishes, and pass
+part items to `machine_install_part()`. The mills, saw mills and loom do this
+by wrapping their own procs in `machine_slots.dm`.
 
 ## Sparks
 
