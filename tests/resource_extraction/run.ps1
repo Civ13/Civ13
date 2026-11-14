@@ -67,7 +67,8 @@ try {
     Copy-Item -LiteralPath 'config' -Destination $temporary -Recurse
     [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty`ndigging_baseline=$DiggingBaseline")
     $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-params', "tested_commit=$commit", '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
-    if (!$runtime.WaitForExit(30000)) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit(); throw 'Task-owned probe timed out' }
+    # 60 s: the mining-yields matrix (13 ore rolls, every era) runs close to 30 s on hosted runners.
+    if (!$runtime.WaitForExit(60000)) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit(); throw 'Task-owned probe timed out' }
     $result = Get-Content -LiteralPath (Join-Path $temporary 'result.json') -Raw | ConvertFrom-Json
     $runtimeLog = Get-Content -LiteralPath (Join-Path $temporary 'runtime.log') -Raw
     Write-Output $runtimeLog
