@@ -591,6 +591,8 @@ FACTORY: VZ-58 magazine well 7.62x39mm|/obj/item/weapon/gun_component/vz58_feed_
 FACTORY: VZ-58 stock|/obj/item/weapon/gun_component/vz58_furniture_stock|1|/obj/item/stack/material/wood=3|40|2|automatic_weapons
 // Heavy machine-gun ammunition: 12.7mm brass is too big to load by hand, so it comes from a factory. Saltpeter stands in for the propellant.
 FACTORY: 12.7x108mm ammo can|/obj/item/ammo_magazine/ammo127|1|/obj/item/stack/material/copper=3;/obj/item/stack/material/steel=1;/obj/item/stack/ore/saltpeter=2|150|1|selfloading_firearms
+FACTORY: 30mm AP-T ammo belt|/obj/item/ammo_magazine/a30mm_ap|1|/obj/item/stack/material/copper=8;/obj/item/stack/material/steel=6;/obj/item/stack/ore/saltpeter=8|400|1|automatic_weapons
+FACTORY: 30mm HE-T ammo belt|/obj/item/ammo_magazine/a30mm_he|1|/obj/item/stack/material/copper=8;/obj/item/stack/material/steel=6;/obj/item/stack/ore/saltpeter=10|400|1|automatic_weapons
 FACTORY: .50 BMG ammo can|/obj/item/ammo_magazine/a50cal_can|1|/obj/item/stack/material/copper=6;/obj/item/stack/material/steel=2;/obj/item/stack/ore/saltpeter=4|300|1|selfloading_firearms
 // Machine gun parts (issue #4443).
 FACTORY: BAR receiver|/obj/item/weapon/gun/projectile/automatic/bar/receiver|1|/obj/item/stack/material/steel=5|150|1|selfloading_firearms
