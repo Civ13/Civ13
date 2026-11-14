@@ -64,7 +64,8 @@ def procedure(signature,env,hammer=False):
         elif line.startswith('return '):line='return '+expr(line[7:],FIELDS)
         else:line=expr(line,FIELDS)
         output.append('    '*depth+line)
-    namespace=dict(env);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
+    # Furniture has no part slots: handing back fitted machine parts does nothing here.
+    namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
 
