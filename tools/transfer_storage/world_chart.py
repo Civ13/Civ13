@@ -563,6 +563,19 @@ class WorldChart:
         self._bump()
         return True
 
+    def unclaim(self, region, faction, by=None, now=None):
+        """faction gives up its claim on the land in region: the land drops back
+        to SETTLED and stays, and the faction may claim another. True when it changed."""
+        found = self.land_in(region)
+        if not found or not claimant_valid(faction) or found[2]['state'] != 'CLAIMED':
+            return False
+        x, y, _ = found
+        if not self.db.execute('DELETE FROM chart_claim WHERE faction = ? AND x = ? AND y = ?', (faction, x, y)).rowcount:
+            return False
+        self.db.execute("UPDATE chart_tile SET state = 'SETTLED', by = ? WHERE region = ?", (by, region))
+        self._bump()
+        return True
+
     def abandon(self, region, by=None, now=None):
         """The land in region is given up for good: its tile is LOST and the
         host asked to archive the slot (<expeditions>/abandon/<slot>.json).
