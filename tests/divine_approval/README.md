@@ -67,3 +67,21 @@ and staff are told when it is gone. The verb waits while a save runs or a load
 is still restoring characters. Players can copy the original with a printing
 press or a monk, which makes an ordinary book; only the god writes in the
 original. `test_divine_book.py` guards these rules from source.
+
+## Wizard gear stays ordinary (`test_mundane_gear.py`)
+
+Val's rule (2026-11-14): on persistent worlds a wizard's gear must look like
+ordinary items to everyone (name, description, sprite, examine text). Magic
+comes from the wizard, not from a unique item type; a sharpened stick can serve
+as a wand, and any decoration on it is a cosmetic change anyone can make to any
+item. The only exception is a god's original book.
+
+Audit at the time of writing: no wizard gear is reachable on persistent worlds.
+Wands, wand parts, robes, potions, brooms and magic swords belong to Wizard Boy
+and a few fantasy round maps, and every drop of a wand part from ordinary
+objects (tables, beds, branches, pigeons) is gated to Wizard Boy. The test keeps
+it that way: no magic-module type on persistent-world maps (`maps/nomads`,
+`maps/sea`, `maps/space`) or in crafting recipes, magic recipes stay on Wizard
+Boy, and code outside the module only creates magic gear behind a Wizard Boy
+check or in the listed round-map files. Run
+`python3 -m unittest tests.divine_approval.test_mundane_gear -v`.
