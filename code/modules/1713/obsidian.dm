@@ -13,7 +13,6 @@
 #define OBSIDIAN_OUTCROP_SHARE 4 // one dry lava tile in four shows glass
 #define OBSIDIAN_OUTCROP_NODULES 3
 #define OBSIDIAN_OUTCROP_REGEN 18000 // same as flint rocks
-#define OBSIDIAN_ARROWHEADS 5
 #define OBSIDIAN_BLADES_PER_CORE 6
 #define OBSIDIAN_EDGE_HARVEST 0.75 // butchering and skinning time with an obsidian edge in hand
 #define OBSIDIAN_CHIP_CHANCE 10 // chance a hit knocks a blade out of a macuahuitl or tepoztopilli
@@ -235,34 +234,17 @@ var/global/list/obsidian_volcano_cells = list()
 /obj/item/weapon/obsidian_nodule/proc/knap(mob/living/human/H, obj/item/hammer)
 	if (!H.may_do_after || !obsidian_work_reachable(H, src, hammer))
 		return
-	var/list/options = list("Sharp flake", "Five arrowheads", "Knife", "Spearhead")
-	if (crafting_recipe_allowed(H, "/obj/item/weapon/material/hide_scraper/obsidian"))
-		options += "Scraper"
-	if (crafting_recipe_allowed(H, "/obj/item/weapon/obsidian_core"))
-		options += "Blade core"
+	// The choices, times and products live in processing_recipes.dm.
+	var/list/options = processing_recipe_choices("obsidian knapping", H)
 	options += "Cancel"
 	var/choice = WWinput(H, "What do you want to knap from \the [src]?", "Knapping", "Cancel", options)
 	if (!choice || choice == "Cancel" || !obsidian_work_reachable(H, src, hammer))
 		return
-	// Five points easier than the matching flint work: obsidian has no grain.
-	var/delay = 40
-	var/fail_chance = 5
-	switch (choice)
-		if ("Five arrowheads")
-			delay = 60
-			fail_chance = 20
-		if ("Knife")
-			delay = 80
-			fail_chance = 30
-		if ("Spearhead")
-			delay = 80
-			fail_chance = 25
-		if ("Scraper")
-			delay = 50
-			fail_chance = 10
-		if ("Blade core")
-			delay = 100
-			fail_chance = 25
+	var/datum/processing_recipe/R = processing_recipe_choice("obsidian knapping", choice)
+	if (!R)
+		return
+	var/delay = R.delay
+	var/fail_chance = R.fail_chance
 	H.visible_message(SPAN_NOTICE("[H] starts knapping \the [src] with \the [hammer]."), SPAN_NOTICE("You start knapping \the [src] with \the [hammer]."))
 	playsound(get_turf(src), 'sound/effects/chop.ogg', 60, TRUE)
 	if (!do_after(H, delay / max(0.5, H.getStatCoeff("dexterity")), src) || !obsidian_work_reachable(H, src, hammer))
@@ -275,24 +257,7 @@ var/global/list/obsidian_volcano_cells = list()
 		qdel(src)
 		obsidian_shatter(H, T, in_hand)
 		return
-	var/obj/item/result = null
-	switch (choice)
-		if ("Sharp flake")
-			result = new /obj/item/weapon/obsidian_flake(T)
-		if ("Five arrowheads")
-			result = new /obj/item/stack/arrowhead/obsidian(T, OBSIDIAN_ARROWHEADS)
-		if ("Knife")
-			result = new /obj/item/weapon/material/kitchen/utensil/knife/obsidian(T)
-		if ("Spearhead")
-			result = new /obj/item/weapon/obsidian_spearhead(T)
-		if ("Scraper")
-			if (crafting_recipe_allowed(H, "/obj/item/weapon/material/hide_scraper/obsidian"))
-				note_craft_practice(H, "/obj/item/weapon/material/hide_scraper/obsidian")
-				result = new /obj/item/weapon/material/hide_scraper/obsidian(T)
-		if ("Blade core")
-			if (crafting_recipe_allowed(H, "/obj/item/weapon/obsidian_core"))
-				note_craft_practice(H, "/obj/item/weapon/obsidian_core")
-				result = new /obj/item/weapon/obsidian_core(T)
+	var/obj/item/result = processing_recipe_make(R, T, H)
 	if (!result)
 		to_chat(H, SPAN_WARNING("You can't knap that from this nodule."))
 		return
@@ -695,7 +660,6 @@ var/global/list/obsidian_volcano_cells = list()
 #undef OBSIDIAN_OUTCROP_SHARE
 #undef OBSIDIAN_OUTCROP_NODULES
 #undef OBSIDIAN_OUTCROP_REGEN
-#undef OBSIDIAN_ARROWHEADS
 #undef OBSIDIAN_BLADES_PER_CORE
 #undef OBSIDIAN_EDGE_HARVEST
 #undef OBSIDIAN_CHIP_CHANCE

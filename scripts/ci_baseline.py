@@ -848,6 +848,10 @@ SUITES = {
         'shared_paths': ('code/modules/materials/materials.dm',)},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
+    'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
+        'paths': ('tests/processing_recipes/', 'code/modules/1713/processing_recipes.dm'), 'shared_paths': (
+            'code/modules/1713/herbalism.dm', 'code/modules/1713/flint_mining.dm', 'code/modules/1713/obsidian.dm',
+            'scripts/atlas/interactions.py')},
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
