@@ -182,6 +182,7 @@
 	var/author_ckey = null
 	var/author_name = null
 	var/painted_at = null // date text
+	var/imported_design = FALSE // painted from a pasted design code (design_codes.dm)
 	var/tmp/mob/editing = null
 	var/tmp/list/upload_parts = null
 	var/tmp/upload_count = 0

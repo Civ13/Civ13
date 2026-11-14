@@ -177,4 +177,7 @@
 	var/cap = (statname == "magic") ? 100.00 : 250.00
 	stats[statname][1] = min(stats[statname][1], cap)
 	stats[statname][2] = min(stats[statname][2], cap)
+	// Reaching a milestone in a skill teaches its scholarship (learning_by_doing.dm).
+	if (multiplier > 0)
+		note_skill_mastery(statname)
 		

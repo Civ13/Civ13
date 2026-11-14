@@ -114,8 +114,12 @@ def write_terrain_files(folder, doc, layout):
     flow = river_flow.build(rows, heights=levels)
     (folder / FLOW_FILE).write_text("%s\nsize %d %d\nz %d\n%s\n" % (river_flow.HEADER, w, h, z, "\n".join(flow)),
                                     encoding="ascii", newline="\n")
-    reaches, labels, thresholds, hollows, hollow_ids = river_flood.build(rows, levels)
-    river_flood.write_flood(folder / FLOOD_FILE, w, h, z, reaches, labels, thresholds, hollows, hollow_ids)
+    # Whatever the flood builder returns is what its writer takes: reaches, labels
+    # and thresholds, then the hollows rain pools in (flood file version 2).
+    built = river_flood.build(rows, levels)
+    river_flood.write_flood(folder / FLOOD_FILE, w, h, z, *built)
+    reaches, thresholds = built[0], built[2]
     return {"z": z, "highest_level": max(max(row) for row in levels),
             "flowing_tiles": sum(c != "." for row in flow for c in row), "flood_reaches": len(reaches),
-            "flood_tiles": sum(v is not None for row in thresholds for v in row)}
+            "flood_tiles": sum(v is not None for row in thresholds for v in row),
+            "hollows": len(built[3]) if len(built) > 3 else 0}

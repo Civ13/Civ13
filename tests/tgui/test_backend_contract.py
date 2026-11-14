@@ -298,7 +298,9 @@ class BackendContract(unittest.TestCase):
         self.assertLess(attack.index('else if (anvil_window_shown(P, H))'), attack.index('/////////IRON//////////'))
         # One category table serves the menus and the window.
         self.assertEqual(smith.count('var/list/optlist = stack_categories(P, H)'), 4)
-        self.assertIn('(R[2] in kinds) && map.ordinal_age >= R[3] && recipe_age_allowed(R[4]) && R[metal[1]] > 0', window)
+        # The window and the item menu admit rows through the same filter.
+        self.assertIn('(R[2] in kinds) && anvil_recipe_offered(R, R[2], R[metal[1]], metal[2])', window)
+        self.assertIn('anvil_recipe_offered(anvil_recipes[i], choice, anvil_recipes[i][material_index], material_name)', smith)
         valid = window.split('/datum/crafting_window/anvil/still_valid(', 1)[1].split('/datum/crafting_window/anvil/load_recipes', 1)[0]
         self.assertIn('source.loc == H && H.get_active_hand() == source && isturf(H.loc) && in_range(anvil, H)', valid)
         base = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
