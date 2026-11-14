@@ -1083,6 +1083,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/autocannon" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
