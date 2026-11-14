@@ -212,7 +212,6 @@
       "code/game/objects/structures/mail.dm": 1,
       "code/game/objects/structures/railing.dm": 1,
       "code/game/objects/structures/religious.dm": 7,
-      "code/game/objects/structures/rocks.dm": 1,
       "code/game/objects/structures/sea.dm": 1,
       "code/game/objects/structures/signs.dm": 2,
       "code/game/objects/structures/stool_bed_chair_nest/bed.dm": 3,
