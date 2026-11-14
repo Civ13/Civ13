@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'helper_edge_cases': {'files': ('tests/helper_edge_cases/test_helpers.py',),
+        'paths': ('tests/helper_edge_cases/',), 'shared_paths': (
+            'code/_helpers/time.dm', 'code/_helpers/lists.dm')},
     # Stdlib-only: poisonous frog meat coats crossbow bolts as well as arrows (#5258).
     'poison_frog_bolts': {'files': ('tests/poison_frog_bolts/test_bolts.py',), 'paths': (
         'tests/poison_frog_bolts/',), 'shared_paths': (
