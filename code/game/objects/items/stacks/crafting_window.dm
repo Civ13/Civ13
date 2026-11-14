@@ -10,12 +10,70 @@
 // whose browser cannot run the modern window, and for agent characters.
 
 #define CRAFTING_WINDOW_ICONS_PER_PUSH 60
+#define CRAFTING_WINDOW_PIN_LIMIT 60
+#define CRAFTING_WINDOW_RECENT_LIMIT 30
 
 /client
 	// Set once this client's browser fell back, or the player asked for the classic list.
 	var/tmp/crafting_window_classic = FALSE
 	// Product type path -> preview file already sent to this client ("-" = no picture).
 	var/tmp/list/craft_icon_cache
+	// Recipe keys this client crafted this session, newest first.
+	var/tmp/list/craft_recent
+
+/datum/preferences
+	// Recipe keys the player pinned; saved with the other interface choices.
+	var/list/craft_pinned = list()
+
+// Purpose tabs. The rules are data (config/crafting_purposes.json): a
+// recipe's old category decides first, then the first matching product type.
+var/global/list/crafting_purpose_rules
+var/global/list/crafting_purpose_cache = list()
+
+/proc/crafting_purpose(typepath, category)
+	var/path = "[typepath]"
+	var/named = lowertext(trim("[category]"))
+	var/key = "[path]|[named]"
+	var/known = crafting_purpose_cache[key]
+	if (known)
+		return known
+	if (!crafting_purpose_rules)
+		// A missing or empty file leaves every recipe under Other instead of failing.
+		var/raw = fexists("config/crafting_purposes.json") ? file2text("config/crafting_purposes.json") : null
+		crafting_purpose_rules = length(raw) ? json_decode(raw) : null
+		if (!islist(crafting_purpose_rules))
+			crafting_purpose_rules = list()
+	var/found = "Other"
+	var/list/categories = crafting_purpose_rules["categories"]
+	var/list/types = crafting_purpose_rules["types"]
+	if (islist(categories) && categories[named])
+		found = categories[named]
+	else if (islist(types))
+		for (var/i = 1, i <= types.len, i++)
+			var/list/rule = types[i]
+			if (!islist(rule) || rule.len < 2)
+				continue
+			if (path == rule[1] || findtext(path, "[rule[1]]/") == 1)
+				found = rule[2]
+				break
+	crafting_purpose_cache[key] = found
+	return found
+
+// One recipe of one material, the same on every visit: what Pinned and Recent remember.
+/proc/crafting_window_pin_key(obj/item/stack/S, datum/stack_recipe/R)
+	return md5("[S.type]|[R.title]|[R.result_type]")
+
+// The player's pins, with anything a damaged save left behind removed.
+/datum/crafting_window/proc/pinned_keys()
+	var/datum/preferences/P = viewer.client ? viewer.client.prefs : null
+	if (!P)
+		return list()
+	if (!islist(P.craft_pinned))
+		P.craft_pinned = list()
+	for (var/entry in P.craft_pinned)
+		if (!istext(entry) || length(entry) != 32)
+			P.craft_pinned -= entry
+	return P.craft_pinned
 
 /mob/living/human/var/tmp/datum/crafting_window/crafting_window = null
 
@@ -199,8 +257,9 @@
 	C.craft_icon_cache[key] = filename
 	return filename
 
-/datum/crafting_window/proc/row_data(datum/stack_recipe/R, sublist, index, category, list/budget)
+/datum/crafting_window/proc/row_data(datum/stack_recipe/R, sublist, index, category, list/budget, list/pinned, list/recent)
 	var/obj/item/stack/S = source
+	var/pin_key = crafting_window_pin_key(S, R)
 	var/result = "[R.result_type]"
 	var/limit = batch_limit(R)
 	var/manual_hint = crafting_recipe_manual_hint(viewer, result)
@@ -235,6 +294,9 @@
 		"id" = crafting_window_row_id(R, sublist, index),
 		"name" = html_encode(R.res_amount > 1 ? "[R.res_amount]x [R.title]\s" : "[R.title]"),
 		"category" = html_encode("[category]"),
+		"purpose" = html_encode(crafting_purpose(R.result_type, category)),
+		"pinned" = (pinned && pinned.Find(pin_key)) ? 1 : 0,
+		"recent" = recent ? recent.Find(pin_key) : 0,
 		"cost" = html_encode(cost),
 		"state" = row_state,
 		"why" = html_encode(why),
@@ -252,28 +314,28 @@
 /datum/crafting_window/proc/build_data()
 	var/obj/item/stack/S = source
 	var/list/rows = list()
-	var/list/categories = list()
 	// New pictures this snapshot may send, and whether any were left for the next one.
 	var/list/budget = list(CRAFTING_WINDOW_ICONS_PER_PUSH, FALSE)
+	var/list/pinned = pinned_keys()
+	var/list/recent = viewer.client ? viewer.client.craft_recent : null
 	// Flatten only the display, never the source lists: each row keeps its
 	// original category and index for find_recipe().
 	for (var/i = 1, i <= S.recipes.len, i++)
 		var/E = S.recipes[i]
 		if (istype(E, /datum/stack_recipe_list))
 			var/datum/stack_recipe_list/srl = E
-			categories += html_encode("[srl.title]")
 			for (var/j = 1, j <= srl.recipes.len, j++)
 				if (istype(srl.recipes[j], /datum/stack_recipe))
-					rows += list(row_data(srl.recipes[j], i, j, srl.title, budget))
+					rows += list(row_data(srl.recipes[j], i, j, srl.title, budget, pinned, recent))
 		else if (istype(E, /datum/stack_recipe))
-			rows += list(row_data(E, 0, i, "General", budget))
+			rows += list(row_data(E, 0, i, "General", budget, pinned, recent))
 	return list(
 		"material" = html_encode("[S.name]"),
 		"unit" = html_encode("[S.singular_name]"),
 		"amount" = S.amount,
 		"image" = product_image(S.type, budget),
 		"makeable_only" = viewer.craft_makeable_only() ? 1 : 0,
-		"categories" = categories,
+		"purposes" = islist(crafting_purpose_rules) && islist(crafting_purpose_rules["order"]) ? crafting_purpose_rules["order"] : list("Other"),
 		"rows" = rows,
 		"more_images" = budget[2] ? 1 : 0)
 
@@ -301,6 +363,28 @@
 		if (shown && crafting_atlas_reference && crafting_atlas_reference.resource_exists("[shown.result_type]"))
 			crafting_atlas_reference.show(H, "[shown.result_type]", 1, "[shown.result_type]")
 		return FALSE
+	if (href_list["pin"])
+		// Pinning spends nothing and changes no recipe: it only marks the row.
+		var/datum/stack_recipe/marked = find_recipe(href_list["pin"])
+		var/datum/preferences/P = H.client.prefs
+		if (!marked || !P || working)
+			return FALSE
+		var/list/pinned = pinned_keys()
+		var/pin_key = crafting_window_pin_key(source, marked)
+		if (pinned.Find(pin_key))
+			pinned -= pin_key
+		else if (pinned.len < CRAFTING_WINDOW_PIN_LIMIT)
+			pinned += pin_key
+		else
+			to_chat(H, "<span class='warning'>You can pin up to [CRAFTING_WINDOW_PIN_LIMIT] recipes. Unpin one first.</span>")
+			return FALSE
+		P.save_preferences()
+		if (cached)
+			for (var/list/row in cached["rows"])
+				if (row["id"] == href_list["pin"])
+					row["pinned"] = pinned.Find(pin_key) ? 1 : 0
+			ui_interact(H, force_open = FALSE)
+		return FALSE
 	if (href_list["make"])
 		if (working || !H.can_build_recipe)
 			return FALSE
@@ -317,10 +401,20 @@
 		var/obj/item/stack/S = source
 		working = list("id" = href_list["make"], "name" = html_encode("[R.title]"), "time" = expected_time(R))
 		GLOB.nanomanager.update_uis(src)
+		var/held_before = S.amount
+		var/recent_key = crafting_window_pin_key(S, R)
 		H.can_build_recipe = FALSE
 		S.produce_recipe(R, quantity, H)
 		H.can_build_recipe = TRUE
 		working = null
+		// Material went, so something was made: remember it for the Recent strip.
+		if (H.client && (QDELETED(S) || S.amount < held_before))
+			if (!islist(H.client.craft_recent))
+				H.client.craft_recent = list()
+			H.client.craft_recent -= recent_key
+			H.client.craft_recent.Insert(1, recent_key)
+			if (H.client.craft_recent.len > CRAFTING_WINDOW_RECENT_LIMIT)
+				H.client.craft_recent.len = CRAFTING_WINDOW_RECENT_LIMIT
 		// The craft may have used the stack up or the window may have closed.
 		if (viewer == H && source == S)
 			refresh()
@@ -328,3 +422,5 @@
 	return FALSE
 
 #undef CRAFTING_WINDOW_ICONS_PER_PUSH
+#undef CRAFTING_WINDOW_PIN_LIMIT
+#undef CRAFTING_WINDOW_RECENT_LIMIT
