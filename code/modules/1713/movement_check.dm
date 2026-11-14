@@ -119,24 +119,9 @@
 	if (!istype(F) || !isnull(riding_mob))
 		return
 	var/covered = locate(/obj/covers) in F
-	var/water_depth = 0
-	for (var/obj/effect/flooding/FLD in F)
-		switch (FLD.flood_level)
-			if (1)
-				water_depth = 2
-			if (2)
-				water_depth = 4
-			if (3)
-				water_depth = 6
-	if (istype(F, /turf/floor/sub_deck))
-		var/turf/floor/sub_deck/SD = F
-		if (SD.water_depth >= 150)
-			water_depth = 6
-		else if (SD.water_depth >= 100)
-			water_depth = 4
-		else if (SD.water_depth >= 50)
-			water_depth = 2
-	var/ground_label = "flood water"
+	var/water_depth = standing_water_delay(F)
+	var/flood_band = flood_band_at(F)
+	var/ground_label = flood_band ? "river floodwater, [flood_band_name(flood_band)] (raised mounds stay dry)" : "flood water"
 	var/ground = water_depth * footwear_terrain_mult(src, "wade")
 	if (F.has_snow_cover() && !covered && !lizard)
 		ground_label = "snow (snowshoes help; floors and roads stay clear)"

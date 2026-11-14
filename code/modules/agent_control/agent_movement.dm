@@ -37,24 +37,8 @@
 /proc/agent_ground_delay(mob/living/human/H, turf/floor/F)
 	if (!istype(F) || !ishuman(H) || !isnull(H.riding_mob))
 		return 0
-	. = 0
 	var/covered = locate(/obj/covers) in F
-	for (var/obj/effect/flooding/FLD in F)
-		switch (FLD.flood_level)
-			if (1)
-				. = 2
-			if (2)
-				. = 4
-			if (3)
-				. = 6
-	if (istype(F, /turf/floor/sub_deck))
-		var/turf/floor/sub_deck/SD = F
-		if (SD.water_depth >= 150)
-			. = 6
-		else if (SD.water_depth >= 100)
-			. = 4
-		else if (SD.water_depth >= 50)
-			. = 2
+	. = standing_water_delay(F)
 	if (F.has_snow_cover() && !covered && !H.lizard)
 		. = pick(1.25, 1.75)
 	else if (F.muddy && !H.lizard)
