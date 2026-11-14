@@ -63,6 +63,21 @@ class SweepPauseProgress(unittest.TestCase):
         self.assertIn('(work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_TICK_LIMIT)', body)
         self.assertNotIn('|| world.tick_usage', body)
 
+    # Start-up lighting owns the server, so it works several ticks between
+    # pauses; outside start-up the round's limit must still be the one used.
+    def test_startup_lighting_works_longer_between_pauses_and_still_yields(self):
+        game = (ROOT / 'code/_helpers/game.dm').read_text(encoding='utf-8')
+        body = proc_body(game, '/proc/environment_sweep_pause(work)')
+        startup = int(re.search(r'#define ENVIRONMENT_SWEEP_STARTUP_TICK_LIMIT (\d+)', game).group(1))
+        normal = int(re.search(r'#define ENVIRONMENT_SWEEP_TICK_LIMIT (\d+)', game).group(1))
+        self.assertTrue(normal < 100 < startup <= 1000)
+        branch, rest = body.split('\treturn FALSE', 1)
+        self.assertIn('if (lighting_startup_in_progress)', branch)
+        self.assertIn('work >= ENVIRONMENT_SWEEP_MIN_BATCH && world.tick_usage >= ENVIRONMENT_SWEEP_STARTUP_TICK_LIMIT', branch)
+        self.assertIn('sleep(world.tick_lag)', branch)
+        self.assertNotIn('STARTUP', rest)
+        self.assertIn('work >= ENVIRONMENT_SWEEP_BATCH', rest)
+
 
 class SoilRecoveryWake(unittest.TestCase):
     # Gaia has ~134k dirt turfs. One sleeping spawn chain per turf cost about
