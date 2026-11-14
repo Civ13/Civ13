@@ -268,9 +268,10 @@ var/message_spam_check_6 = FALSE
 	spawn(10)
 		round_status()
 
+/obj/map_metadata/bank_robbery/var/next_level_police = 0
+/obj/map_metadata/bank_robbery/var/next_level_robbers = 0
+
 /obj/map_metadata/bank_robbery/proc/supplies() //To be rebalanced
-	var/next_level_police = 0
-	var/next_level_robbers = 0
 	if (civilians_killed["Police"] >= kill_treshold && next_level_robbers == 0)
 		for (var/obj/structure/altar/stone/D in world)
 			if (D.name == "robber drop")
@@ -287,7 +288,6 @@ var/message_spam_check_6 = FALSE
 					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 					new /obj/item/clothing/accessory/armor/coldwar/plates/b5(T)
 		next_level_robbers = 1
-		return
 	if (civilians_evacuated >= civilians_alive/2 && civilians_alive != 0 && next_level_police == 0)
 		to_chat(world, "<big><span class = 'notice'>Half of the hostages have been evacuated, additional equipment is issued to the Police.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
@@ -301,7 +301,6 @@ var/message_spam_check_6 = FALSE
 				new /obj/item/weapon/shield/balistic(T)
 				new /obj/item/weapon/shield/balistic(T)
 		next_level_police = 1
-		return
 	if (civilians_evacuated >= civilians_alive && civilians_alive != 0 && next_level_police == 1)
 		to_chat(world, "<big><span class = 'notice'>All of the hostages have been evacuated, additional equipment is issued to the Police as more SWAT units are on the way.</span></big>")
 		for (var/obj/structure/altar/stone/D in world)
@@ -310,7 +309,6 @@ var/message_spam_check_6 = FALSE
 				for (var/i=1; i <= 4; i++)
 					new /obj/item/weapon/grenade/chemical/cs_gas/m7a2(T)
 		next_level_police = 2
-		return
 	spawn(10)
 		supplies()
 

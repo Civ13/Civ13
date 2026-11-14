@@ -78,7 +78,7 @@
 		jamcheck += 0.12
 
 	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 4), 45)
+		jammed_until = world.time + max(jamcheck * 4, 45)
 		jamcheck = 0
 
 	last_fire = world.time
@@ -680,7 +680,7 @@
 	caliber = "a545x39"
 	fire_sound = 'sound/weapons/guns/fire/AK74.ogg'
 	magazine_type = /obj/item/ammo_magazine/ak74
-	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak47/drum, /obj/item/ammo_magazine/ak74/ak74m)
+	good_mags = list(/obj/item/ammo_magazine/rpk74, /obj/item/ammo_magazine/rpk74/drum, /obj/item/ammo_magazine/ak74, /obj/item/ammo_magazine/ak74/drum, /obj/item/ammo_magazine/ak74/ak74m)
 	weight = 3.07
 	equiptimer = 15
 	slot_flags = SLOT_SHOULDER

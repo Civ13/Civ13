@@ -260,7 +260,7 @@
 		user.base_faction = new/datum/faction/filipino(user, src)
 	else if (istype(src, /datum/job/polish))
 		user.faction_text = "POLISH"
-		user.base_faction = new/datum/job/polish(user, src)
+		user.base_faction = new/datum/faction/polish(user, src)
 	else if (istype(src, /datum/job/bluefaction))
 		user.faction_text = "BLUEFACTION"
 		user.base_faction = new/datum/faction/bluefaction(user, src)

@@ -70,7 +70,10 @@
 		else
 			if (product_item.len)
 				for(var/i=1, i<=p_amount, i++)
+					if (!product_item.len)
+						break
 					var/atom/movable/product = pick(product_item)
+					product_item -= product
 					if (product)
 						product.forceMove(product_location)
 						amount--

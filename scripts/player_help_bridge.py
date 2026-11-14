@@ -1596,7 +1596,7 @@ class Bridge:
                     continue
                 if response.exists():
                     existing = bounded_json(response, 24000)
-                    if existing.get('id') == marker:
+                    if isinstance(existing, dict) and existing.get('id') == marker:
                         continue
                     response.unlink()
                 request = bounded_json(self.root / f'{slot}.request.json', 16384)

@@ -341,7 +341,7 @@
 /datum/language/armenian
 	name = "Armenian"
 	desc = "Baref!"
-	key = "ar"
+	key = "hy"
 	colour = "Armenian"
 	flags = RESTRICTED | COMMON_VERBS
 	syllables = ARAB_SYLLABLES
@@ -557,7 +557,7 @@
 /datum/language/apache
     name = "Apache"
     desc = "Western Apache."
-    key = "ap"
+    key = "aq"
     colour = "Apache"
     flags = RESTRICTED | COMMON_VERBS
     syllables = APACHE_SYLLABLES

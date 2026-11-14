@@ -35,11 +35,11 @@
 			break
 
 	// somehow we have no song, pick a random one
-	if (!song_title && random_order_songs)
+	if (!song_title && random_order_songs.len)
 		song_title = pick(random_order_songs)
 
 	// don't play the same song as before
-	while (song_title == last_song_title)
+	while (random_order_songs.len > 1 && song_title == last_song_title)
 		song_title = pick(random_order_songs)
 
 /datum/lobby_music_player/proc/announce(var/client/client)

@@ -42,7 +42,7 @@
 		jamcheck += 0.4
 
 	if (prob(jamcheck*reverse_health_percentage))
-		jammed_until = max(world.time + (jamcheck * 4), 40)
+		jammed_until = world.time + max(jamcheck * 4, 40)
 		jamcheck = 0
 
 	last_fire = world.time

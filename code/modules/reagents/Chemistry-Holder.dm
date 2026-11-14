@@ -243,7 +243,8 @@
 			update_total()
 			if (my_atom)
 				my_atom.on_reagent_change()
-			return FALSE
+			if (id != TRUE)
+				return FALSE
 
 /datum/reagents/proc/del_reagents()
 	return del_reagent(TRUE)

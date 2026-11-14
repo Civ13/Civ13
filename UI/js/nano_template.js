@@ -124,7 +124,7 @@ var NanoTemplate = function () {
 			}
 		},
 		removeHelper: function (helperName) {
-			if (helpers.hasOwnProperty(helperName))
+			if (_helpers.hasOwnProperty(helperName))
 			{
 				delete _helpers[helperName];
 			}	

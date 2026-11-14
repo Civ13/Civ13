@@ -287,11 +287,13 @@ def open_land(group, host, region_id, update, build=None, now=None):
     update_offline). The host service starts the slot once it is installed."""
     marker = wish_file(group, OPENING, region_id)
     wish = read_wish(group, WANTED, region_id)
+    given = False
     try:
         if not wish or not isinstance(wish.get('template'), dict):
             raise Refused('no land is wanted in slot %s' % region_id)
         key = wish.get('key')
         give_land(group, host, region_id, wish['template'], key=key, build=build, now=now)
+        given = True
         record = read_slot(group, region_id)
         record.update(phase='building', voyage=wish.get('voyage'), building_since=int(time.time() if now is None else now))
         write_slot(group, record)
@@ -302,7 +304,8 @@ def open_land(group, host, region_id, update, build=None, now=None):
         return {'region': region_id, 'key': key, 'phase': 'building'}
     except (Refused, OSError, ValueError, RuntimeError) as error:
         key = wish.get('key') if wish else None
-        if read_slot(group, region_id)['state'] == 'LAND':
+        # Only free a land this call gave; a refusal from give_land means the slot held someone else's land.
+        if given and read_slot(group, region_id)['state'] == 'LAND':
             try:
                 archive(group, host, region_id, now=now)
             except (Refused, OSError) as again:

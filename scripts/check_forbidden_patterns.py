@@ -84,7 +84,7 @@ def code_lines(text):
             line = line[end + 2:]
             in_block = False
         while True:
-            start = line.find('/*')
+            start = strip_comment(line).find('/*')
             if start < 0:
                 break
             end = line.find('*/', start + 2)
