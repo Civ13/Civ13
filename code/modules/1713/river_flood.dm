@@ -85,8 +85,9 @@ var/global/next_river_flood_tick = 0
 		F.error = "empty flood file"
 		return F
 	var/list/lines = splittext(replacetext(text, ascii2text(13), ""), "\n")
-	if (lines.len < 4 || lines[1] != "civ13-river-flood 1")
-		F.error = "missing 'civ13-river-flood 1' header"
+	// Version 1 files have no hollows.
+	if (lines.len < 4 || (lines[1] != "civ13-river-flood 2" && lines[1] != "civ13-river-flood 1"))
+		F.error = "missing 'civ13-river-flood 2' header"
 		return F
 	if (lines[2] != "size [world_maxx] [world_maxy]")
 		F.error = "size line '[lines[2]]' does not match the world"
@@ -134,6 +135,9 @@ var/global/next_river_flood_tick = 0
 			F.error = "threshold row [r + 1] is malformed"
 			return F
 		F.threshold_rows += row
+	start += world_maxy
+	if (!F.parse_hollows(lines, start))
+		return F
 	F.storage = new /list(F.count)
 	F.snow = new /list(F.count)
 	F.flow = new /list(F.count)
@@ -142,6 +146,59 @@ var/global/next_river_flood_tick = 0
 	for (var/i in 1 to F.count)
 		F.settle(i)
 	return F
+
+// The optional hollows section: "hollows K", K hollow lines, then
+// "hollow_rows R" and R lines "<row from the north> <2 characters per tile>".
+/datum/river_flood/proc/parse_hollows(list/lines, start)
+	hollow_rows = new /list(maxy)
+	if (start > lines.len || !findtext(lines[start], "hollows ", 1, 9))
+		return TRUE
+	hollow_count = text2num(copytext(lines[start], 9))
+	if (!isnum(hollow_count) || hollow_count < 0 || hollow_count > 4095 || lines.len < start + hollow_count + 1)
+		error = "bad hollows line"
+		return FALSE
+	for (var/i in 1 to hollow_count)
+		var/list/parts = splittext(lines[start + i], " ")
+		if (parts.len != 9 || parts[1] != "h" || text2num(parts[2]) != i || length(parts[3]) != 1 || length(parts[4]) != 1)
+			error = "bad hollow line [i]"
+			return FALSE
+		var/spill = terrain_height_levels[text2ascii(parts[3])]
+		var/bottom = terrain_height_levels[text2ascii(parts[4])]
+		var/list/hist = list()
+		for (var/n in splittext(parts[9], ","))
+			hist += max(0, text2num(n) || 0)
+		if (!isnum(spill) || !isnum(bottom) || spill <= bottom || hist.len != round((spill - bottom) * 2))
+			error = "bad hollow line [i]"
+			return FALSE
+		hollow_spill += spill
+		hollow_bottom += bottom
+		hollow_cx += text2num(parts[5])
+		hollow_cy += text2num(parts[6])
+		hollow_area += max(1, text2num(parts[7]))
+		hollow_catchment += max(1, text2num(parts[8]))
+		hollow_hist[++hollow_hist.len] = hist
+	start += hollow_count + 1
+	var/list/rline = start <= lines.len ? splittext(lines[start], " ") : list()
+	var/rows = rline.len == 2 && rline[1] == "hollow_rows" ? text2num(rline[2]) : null
+	if (!isnum(rows) || rows < 0 || rows > maxy || lines.len < start + rows)
+		error = "bad hollow_rows line"
+		return FALSE
+	var/static/regex/bad_label = regex(@"[^0-9a-zA-Z_\-]")
+	for (var/i in 1 to rows)
+		var/line = lines[start + i]
+		var/space = findtext(line, " ")
+		var/r = space ? text2num(copytext(line, 1, space)) : null
+		var/row = space ? copytext(line, space + 1) : null
+		if (!isnum(r) || r < 1 || r > maxy || length(row) != maxx * 2 || bad_label.Find(row))
+			error = "hollow row [i] is malformed"
+			return FALSE
+		hollow_rows[r] = row
+	hollow_volume = new /list(hollow_count)
+	hollow_level = new /list(hollow_count)
+	for (var/i in 1 to hollow_count)
+		hollow_volume[i] = 0
+		hollow_level[i] = hollow_bottom[i]
+	return TRUE
 
 /obj/map_metadata/persistence_runtime_var(var/key)
 	if (key == "river_flood_cache" || key == "river_flood_loaded")
@@ -176,9 +233,11 @@ var/global/next_river_flood_tick = 0
 
 // Older saves hold no high-water marks; the marks then start at the water.
 /datum/river_flood/proc/restore(list/state)
-	if (!islist(state) || (state.len != count * 2 + 1 && state.len != count * 3 + 1) || state[1] != count)
+	if (!islist(state) || state.len < count * 2 + 1 || state[1] != count)
 		return FALSE
-	var/marks = state.len == count * 3 + 1
+	var/marks = state.len >= count * 3 + 1
+	if (state.len != count * 2 + 1 && state.len != count * 3 + 1 && !(state.len > count * 3 + 1 && isnum(state[count * 3 + 2]) && state.len == count * 3 + 2 + state[count * 3 + 2]))
+		return FALSE
 	for (var/i in 1 to count)
 		var/s = state[i + 1]
 		var/w = state[count + i + 1]
@@ -192,16 +251,20 @@ var/global/next_river_flood_tick = 0
 		flow[i] = storage[i] * RIVER_FLOOD_RELEASE
 		stage[i] = stage_for(i, flow[i])
 		peak[i] = marks ? clamp(state[count * 2 + i + 1], RIVER_FLOOD_STAGE_MIN, RIVER_FLOOD_STAGE_CAP) : stage[i]
+	// Hollow water (flood_hollows.dm); a save from before hollows, or from a
+	// flood file with other hollows, starts them dry.
+	restore_hollows(state.len > count * 3 + 1 ? state.Copy(count * 3 + 2) : null)
 	stages_changed()
 	return TRUE
 
 // After any change to the stages: whether anything floods, and a redraw.
 /datum/river_flood/proc/stages_changed()
-	flooding = FALSE
+	flooding = hollows_hold_water()
 	for (var/i in 1 to count)
+		if (flooding)
+			break
 		if (stage[i] > 0)
 			flooding = TRUE
-			break
 	flood_draw_revision++
 
 // Saves the water on the map, where the durable world save picks it up.
@@ -217,6 +280,9 @@ var/global/next_river_flood_tick = 0
 		. += round(snow[i], 0.001)
 	for (var/i in 1 to count)
 		. += round(peak[i], 0.001)
+	. += hollow_count
+	for (var/i in 1 to hollow_count)
+		. += round(hollow_volume[i], 0.001)
 
 // Big rivers rise furthest: a stream draining a few hundred tiles moves about
 // half as much for the same rain.
@@ -281,6 +347,7 @@ var/global/next_river_flood_tick = 0
 		peak[i] = max(stage[i], peak[i] - RIVER_FLOOD_MARK_FADE)
 		if (down[i])
 			incoming[down[i]] = (incoming[down[i]] || 0) + released
+	step_hollows()
 	stages_changed()
 
 // Reach id of a tile (0 none) and the stage that floods it (null for none).
@@ -324,19 +391,16 @@ var/global/next_river_flood_tick = 0
 	var/datum/river_flood/F = map.river_flood()
 	if (!F || T.z != F.z_level || T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
 		return 0
+	. = F.hollow_count ? F.hollow_depth_at(T) : 0
 	var/r = F.reach_at(T.x, T.y)
 	if (!r || F.stage[r] <= 0)
-		return 0
+		return
 	var/threshold = F.effective_threshold(T)
-	if (isnull(threshold))
-		return 0
-	return max(0, F.stage[r] - flood_ground_level(T, threshold))
+	if (isnull(threshold) || F.stage[r] <= threshold)
+		return
+	// Once the river tops the rim, it stands on the ground behind it.
+	. = max(., F.stage[r] - terrain_height_at(T))
 
-// The stage at which floodwater stands on a tile: its threshold, or higher
-// where a player has raised the ground.
-/proc/flood_ground_level(turf/T, threshold)
-	var/own = terrain_height_at(T)
-	return own > threshold ? own : threshold
 
 // How high the last floods stood on a land tile, in levels (0 for none).
 /proc/flood_mark_at(turf/T)
@@ -351,4 +415,6 @@ var/global/next_river_flood_tick = 0
 	var/threshold = F.effective_threshold(T)
 	if (isnull(threshold))
 		return 0
-	return max(0, F.peak[r] - flood_ground_level(T, threshold))
+	if (F.peak[r] <= threshold)
+		return 0
+	return max(0, F.peak[r] - terrain_height_at(T))

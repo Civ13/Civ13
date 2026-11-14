@@ -43,7 +43,7 @@ def valley(width=70, height=9):
 class BuildTest(unittest.TestCase):
     def setUp(self):
         self.rows, self.heights = valley()
-        self.reaches, self.labels, self.thresholds = flood.build(self.rows, self.heights)
+        self.reaches, self.labels, self.thresholds, self.hollows, self.hollow_ids = flood.build(self.rows, self.heights)
 
     def test_reaches_drain_downstream_in_id_order(self):
         # 67 tiles of river cut by the 32-tile grid: three reaches.
@@ -70,10 +70,54 @@ class BuildTest(unittest.TestCase):
 
     def test_round_trip(self):
         out = Path(tempfile.mkdtemp()) / 'valley.flood.txt'
-        flood.write_flood(out, 70, 9, 1, self.reaches, self.labels, self.thresholds)
+        flood.write_flood(out, 70, 9, 1, self.reaches, self.labels, self.thresholds, self.hollows, self.hollow_ids)
         self.assertEqual(flood.read_flood(out), (70, 9, 1, self.reaches, self.labels, self.thresholds))
+        self.assertEqual(flood.read_hollows(out), (self.hollows, self.hollow_ids))
         text = out.read_text(encoding='ascii')
-        self.assertTrue(text.startswith('civ13-river-flood 1\nsize 70 9\nz 1\nreaches 3\nr 1 2 '))
+        self.assertTrue(text.startswith('civ13-river-flood 2\nsize 70 9\nz 1\nreaches 3\nr 1 2 '))
+
+
+def bowl():
+    """A river along the south edge and, north of it, a basin two levels deep
+    inside a rim at level 3, on ground that falls toward the river."""
+    width, height = 12, 10
+    rows = [[L] * width for _ in range(height)]
+    heights = [[1.0] * width for _ in range(height)]
+    for x in range(width):
+        rows[height - 1][x] = F
+        heights[height - 1][x] = 0
+    for y in range(1, 6):
+        for x in range(3, 9):
+            heights[y][x] = 3.0
+    for y in range(2, 5):
+        for x in range(4, 8):
+            heights[y][x] = 1.0
+    heights[3][5] = 1.5
+    return rows, heights
+
+
+class HollowTest(unittest.TestCase):
+    def test_a_closed_basin_is_a_hollow(self):
+        reaches, labels, thresholds, hollows, ids = flood.build(*bowl())
+        self.assertEqual(len(hollows), 1)
+        h = hollows[0]
+        self.assertEqual((h['spill'], h['bottom'], h['area']), (3.0, 1.0, 12))
+        # 11 tiles at the bottom, one half a level up, then nothing until the rim.
+        self.assertEqual(h['hist'], [11, 1, 0, 0])
+        self.assertGreaterEqual(h['catchment'], h['area'])
+        self.assertEqual(ids[3][5], 1)
+        self.assertEqual(ids[1][3], 0, 'the rim is not part of the hollow')
+        self.assertEqual(ids[7][0], 0)
+
+    def test_version_one_files_have_no_hollows(self):
+        reaches, labels, thresholds, hollows, ids = flood.build(*bowl())
+        out = Path(tempfile.mkdtemp()) / 'bowl.flood.txt'
+        flood.write_flood(out, 12, 10, 1, reaches, labels, thresholds, hollows, ids)
+        lines = out.read_text(encoding='ascii').split('\n')
+        cut = lines.index('hollows 1')
+        old = ['civ13-river-flood 1'] + lines[1:cut]
+        out.write_text('\n'.join(old) + '\n', encoding='ascii')
+        self.assertEqual(flood.read_hollows(out)[0], [])
 
 
 class CommittedSidecarTest(unittest.TestCase):
@@ -84,9 +128,11 @@ class CommittedSidecarTest(unittest.TestCase):
                 _, _, levels = read_dmm(ROOT / f'maps/nomads/{name}.dmm')
                 _, _, heights = read_heights(ROOT / f'maps/heights/{name}.txt')
                 built = flood.build(levels[z], heights[z])
-                width, height, fz, reaches, labels, thresholds = flood.read_flood(ROOT / f'maps/heights/{name}.flood.txt')
+                path = ROOT / f'maps/heights/{name}.flood.txt'
+                width, height, fz, reaches, labels, thresholds = flood.read_flood(path)
                 self.assertEqual(fz, z)
-                self.assertEqual((reaches, labels, thresholds), built, f'regenerate {name}.flood.txt (docs/river-flood.md)')
+                self.assertEqual((reaches, labels, thresholds), built[:3], f'regenerate {name}.flood.txt (docs/river-flood.md)')
+                self.assertEqual(flood.read_hollows(path), built[3:], f'regenerate {name}.flood.txt (docs/river-flood.md)')
                 self.assertLessEqual(len(reaches), flood.MAX_REACHES)
 
     def test_every_map_with_flow_has_a_flood_file(self):
