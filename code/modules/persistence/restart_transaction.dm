@@ -32,6 +32,10 @@ var/global/list/persistence_frozen_levels = list()
 /proc/persistence_freeze_level(z)
 	if(persistence_frozen_levels["[z]"]) return
 	persistence_frozen_levels["[z]"] = TRUE
+	// Animals on the level hold still too (ecology_spawning.dm). Resolved at
+	// runtime: standalone save fixtures compile without the ecology code.
+	var/hold_animals = text2path("/proc/persistence_hold_level_animals")
+	if(hold_animals) call(hold_animals)(z)
 	for(var/client/C in persistence_clients_on_level(z))
 		to_chat(C, "<span class='warning'>Your level is being saved. You can look around and chat, but not act, until it finishes in a moment.</span>")
 

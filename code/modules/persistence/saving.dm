@@ -496,6 +496,7 @@
 					catch
 						// Diagnostics must not replace the original refusal.
 						last_save_reference_failure = null
+					if(content) delete_unheld_save_animal(content, "turf contents")
 					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
 				save_work_check()
@@ -1290,6 +1291,9 @@
 		// A save hook changed the root itself (Gaia, 2026-11-14, a sea animal
 		// during a handover save): the same root must not refuse the next save.
 		if(findtext("[error]", "root changed during capture")) moving_save_demoted[record["identity"]] = TRUE
+		// It moved although its level is held still: delete it, so the next save
+		// cannot fail on it again (Val, 2026-11-14).
+		if(A && origin && A.loc != origin) delete_unheld_save_animal(A, "moving-save capture")
 		throw error
 	moving_save_chunk = null
 	if(chunk.overrun_usage || chunk.overrun_elapsed_ds)
@@ -1333,6 +1337,19 @@
 		var/value = A.vars[key]
 		if(islist(value) ? length(value) : value) return "reason=field [key] set"
 	return "reason=unknown"
+
+// The fallback for an animal that moved while its level was held still
+// (ecology_animal_frozen): its capture already failed this save, so it is
+// deleted and the next save cannot fail on it. Only an uncontrolled, living or
+// dead simple animal; players, their mobs and everything else are left alone.
+/map_storage/proc/delete_unheld_save_animal(mob/living/simple_animal/A, where)
+	if(!istype(A) || A.gcDestroyed || A.client || A.ckey) return FALSE
+	var/turf/T = get_turf(A)
+	var/line = "World save: deleted [A.type] at [T ? "[T.x],[T.y],[T.z]" : "nowhere"]: it moved while its level was being saved ([where])."
+	world.log << line
+	persistence_game_log(line)
+	qdel(A)
+	return TRUE
 
 /map_storage/proc/moving_save_root_edge(atom/movable/A, atom/parent)
 	var/identity = "\ref[A]"
@@ -1395,6 +1412,7 @@
 			// Capture yields. Apply the traversal's post-child rule: only a
 			// step to another tile of this level keeps the captured origin.
 			if(!A || A.gcDestroyed || !isturf(A.loc) || A.z != saving_z || saving_reference_pins[ref] != A)
+				if(A && !A.gcDestroyed && A.loc != origin) delete_unheld_save_animal(A, "uncaptured animal sweep")
 				throw EXCEPTION("Swept mob moved or disappeared during capture")
 			if(saving_reference_pins[parent_ref] != origin)
 				throw EXCEPTION("Uncaptured mob origin turf was replaced")

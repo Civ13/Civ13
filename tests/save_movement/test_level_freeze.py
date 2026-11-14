@@ -73,9 +73,40 @@ class LevelFreeze(unittest.TestCase):
         self.assertIn('(!M.ckey && !agent_characters[M])', helper)
         self.assertIn('persistence_frozen_levels["[T.z]"]', helper)
         mob = read('code/processes/mob.dm')
-        self.assertIn('!(persistence_frozen_levels.len && persistence_life_frozen(M)))\n\t\t\t\tM.Life()', mob)
+        self.assertIn('!(persistence_frozen_levels.len && persistence_life_frozen(M))', mob)
+        self.assertLess(mob.index('persistence_life_frozen(M)'), mob.index('\t\t\t\tM.Life()'))
         living = read('code/game/mob/living/living.dm')
         self.assertIn('!persistence_life_frozen(src))\n\t\t\t\tLife()', living)
+
+    def test_animals_hold_still_while_their_level_is_saved(self):
+        # Val (2026-11-14): simple animals are held like players while their
+        # level is captured; ai_step, the mob process and dog walking all ask
+        # ecology_animal_frozen.
+        eco = read('code/modules/ecology/ecology_spawning.dm')
+        frozen = proc_body(eco, '/proc/ecology_animal_frozen(mob/living/simple_animal/A)')
+        self.assertIn('return ecology_world_unwatched || persistence_animal_save_frozen(A)', frozen)
+        self.assertIn('if (!istype(A) || A.client || A.stat == DEAD)', frozen)
+        level = proc_body(eco, '/proc/persistence_animal_save_frozen(mob/living/simple_animal/A)')
+        self.assertIn('persistence_frozen_levels["[T.z]"]', level)
+        hold = proc_body(eco, '/proc/persistence_hold_level_animals(z)')
+        self.assertIn('if (A.z == z && ecology_animal_frozen(A))', hold)
+        self.assertIn('A.ecology_hold_still()', hold)
+        freeze = proc_body(self.restart, '/proc/persistence_freeze_level(z)')
+        self.assertLess(freeze.index('persistence_frozen_levels["[z]"] = TRUE'), freeze.index('call(hold_animals)(z)'))
+        self.assertIn('text2path("/proc/persistence_hold_level_animals")', freeze)
+        step = read('code/game/mob/living/simple_animal/subtile_movement.dm')
+        self.assertIn('ecology_animal_frozen(src)', step)
+
+    def test_an_animal_that_moves_anyway_is_deleted(self):
+        delete = proc_body(self.saving, '/map_storage/proc/delete_unheld_save_animal(mob/living/simple_animal/A, where)')
+        self.assertIn('if(!istype(A) || A.gcDestroyed || A.client || A.ckey) return FALSE', delete)
+        self.assertIn('qdel(A)', delete)
+        capture = proc_body(self.saving, '/map_storage/proc/capture_moving_save_root(savefile/destination, list/record)')
+        self.assertIn('if(A && origin && A.loc != origin) delete_unheld_save_animal(A, "moving-save capture")', capture)
+        sweep = proc_body(self.saving, '/map_storage/proc/sweep_uncaptured_animals(savefile/F)')
+        self.assertLess(sweep.index('delete_unheld_save_animal(A, "uncaptured animal sweep")'), sweep.index('throw EXCEPTION("Swept mob moved or disappeared during capture")'))
+        export = proc_body(self.saving, '/map_storage/proc/export_saved_entry(')
+        self.assertIn('if(content) delete_unheld_save_animal(content, "turf contents")', export)
 
 
 if __name__ == '__main__':
