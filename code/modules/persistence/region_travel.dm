@@ -27,7 +27,7 @@ var/global/list/region_travel_slots = list(
 	"back" = slot_back, "mask" = slot_wear_mask, "belt" = slot_belt, "id" = slot_wear_id,
 	"l_ear" = slot_l_ear, "r_ear" = slot_r_ear, "eyes" = slot_eyes, "gloves" = slot_gloves,
 	"head" = slot_head, "shoes" = slot_shoes, "suit" = slot_wear_suit, "uniform" = slot_w_uniform,
-	"l_store" = slot_l_store, "r_store" = slot_r_store, "s_store" = slot_s_store,
+	"l_store" = slot_l_store, "r_store" = slot_r_store,
 	"l_hand" = slot_l_hand, "r_hand" = slot_r_hand, "shoulder" = slot_shoulder)
 
 // Coins travel by kind and amount; preset-amount subtypes rebuild as the base.

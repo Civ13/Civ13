@@ -321,8 +321,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			drop_from_inventory(l_store)
 		if (wear_id)
 			drop_from_inventory(wear_id)
-		if (belt)
-			drop_from_inventory(belt)
+		// The belt is buckled around the waist, not sewn to the clothes, so it stays on.
 		w_uniform = null
 		update_inv_w_uniform()
 	else if (W == gloves)
@@ -451,10 +450,6 @@ This saves us from having to call add_fingerprint() any time something is put in
 			r_hand = W
 			W.equipped(src, slot)
 			update_inv_r_hand(redraw_mob)
-		if (slot_shoulder)
-			shoulder = W
-			W.equipped(src, slot)
-			update_inv_shoulder(redraw_mob)
 		if (slot_belt)
 			belt = W
 			W.equipped(src, slot)

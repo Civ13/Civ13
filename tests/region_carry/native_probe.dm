@@ -111,7 +111,7 @@ var/global/datum/region_carry_probe/region_carry_probe = new
 		require(rounds == mag.max_ammo - 3, "partial magazine count [rounds]")
 		var/mob/living/human/H = new(T)
 		H.persistence_owner_ckey = "carryprobe"
-		var/list/items = list("l_hand" = mag, "r_hand" = gun, "l_store" = pack, "r_store" = cola, "head" = helmet, "belt" = crowbar, "s_store" = cracker)
+		var/list/items = list("l_hand" = mag, "r_hand" = gun, "l_store" = pack, "r_store" = cola, "head" = helmet, "belt" = crowbar, "id" = cracker)
 		var/payload = H.region_travel_payload(items)
 		var/list/P = region_travel_decode(payload)
 		require(P, "payload did not decode: [payload]")
