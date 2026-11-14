@@ -2074,81 +2074,13 @@
 			RB.statue_material = recipe.use_material
 			RB.name = customname
 			RB.desc = customdesc
-			var/list/possible_clothes = list("none", "toga")
-			if (map && map.ordinal_age == 1)
-				possible_clothes += "tunic"
-			else if (map && map.ordinal_age == 2)
-				possible_clothes += "tunic"
-				possible_clothes += "medieval"
-				possible_clothes += "king"
-				possible_clothes += "templar"
-				possible_clothes += "knight"
-			else if (map && map.ordinal_age == 3)
-				possible_clothes += "tunic"
-				possible_clothes += "medieval"
-				possible_clothes += "king"
-				possible_clothes += "templar"
-				possible_clothes += "knight"
-				possible_clothes += "colonial"
-			else if (map && map.ordinal_age == 4)
-				possible_clothes += "tunic"
-				possible_clothes += "medieval"
-				possible_clothes += "king"
-				possible_clothes += "templar"
-				possible_clothes += "knight"
-				possible_clothes += "colonial"
-				possible_clothes += "modern civilian"
-			else if (map && map.ordinal_age >= 5)
-				possible_clothes += "tunic"
-				possible_clothes += "medieval"
-				possible_clothes += "king"
-				possible_clothes += "templar"
-				possible_clothes += "knight"
-				possible_clothes += "colonial"
-				possible_clothes += "modern civilian"
-				possible_clothes += "modern military"
+			var/list/possible_clothes = era_options(list("none" = null, "toga" = null, "tunic" = 1, "medieval" = 2, "king" = 2,
+				"templar" = 2, "knight" = 2, "colonial" = 3, "modern civilian" = 4, "modern military" = 5))
 			var/inpc = WWinput(user, "What clothing to add?", "Statue", "none", possible_clothes)
-			var/list/possible_objects = list("none", "spear")
-			if (map && map.ordinal_age == 1)
-				possible_objects += "spear and roman shield"
-				possible_objects += "spear and oval shield"
-			else if (map && map.ordinal_age == 2)
-				possible_objects += "spear and roman shield"
-				possible_objects += "spear and oval shield"
-				possible_objects += "spear and semioval shield"
-				possible_objects += "sword and roman shield"
-				possible_objects += "sword and oval shield"
-				possible_objects += "sword and semioval shield"
-				possible_objects += "flag"
-			else if (map && map.ordinal_age == 3)
-				possible_objects += "spear and roman shield"
-				possible_objects += "spear and oval shield"
-				possible_objects += "spear and semioval shield"
-				possible_objects += "sword and roman shield"
-				possible_objects += "sword and oval shield"
-				possible_objects += "sword and semioval shield"
-				possible_objects += "flag"
-				possible_objects += "rifle"
-			else if (map && map.ordinal_age >= 4 && map.ordinal_age < 7)
-				possible_objects += "spear and roman shield"
-				possible_objects += "spear and oval shield"
-				possible_objects += "spear and semioval shield"
-				possible_objects += "sword and roman shield"
-				possible_objects += "sword and oval shield"
-				possible_objects += "sword and semioval shield"
-				possible_objects += "flag"
-				possible_objects += "rifle"
-				possible_objects += "pistol"
-			else if (map && map.ordinal_age >= 7)
-				possible_objects += "spear and roman shield"
-				possible_objects += "spear and oval shield"
-				possible_objects += "spear and semioval shield"
-				possible_objects += "sword and roman shield"
-				possible_objects += "sword and oval shield"
-				possible_objects += "sword and semioval shield"
-				possible_objects += "flag"
-				possible_objects += "rifle"
-				possible_objects += "assault rifle"
+			var/list/possible_objects = era_options(list("none" = null, "spear" = null, "spear and roman shield" = 1,
+				"spear and oval shield" = 1, "spear and semioval shield" = 2, "sword and roman shield" = 2,
+				"sword and oval shield" = 2, "sword and semioval shield" = 2, "flag" = 2, "rifle" = 3,
+				"pistol" = list(4, 6), "assault rifle" = 7))
 
 			var/inpo = WWinput(user, "What object or objects to add?", "Statue", "none", possible_objects)
 			if (inpc != "none")

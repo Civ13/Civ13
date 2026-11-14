@@ -112,6 +112,15 @@ charges makes a ruby rod (Consumer Electronics), and a ruby rod fitted into
 field binoculars turns them into a laser rangefinder (ruby laser, 1960). The
 boule is not a gemstone, so it carries no gem trade value.
 
+Gem testing (`gem_test_attempt`, data in `gem_test_data`): a cut quartz point
+used on a stone is a scratch test (Regalia) that only tells harder than quartz
+from about as hard. The jeweller's loupe (1 brass, Optics & Instruments) maps
+a rough stack's inclusions (`inclusions_mapped`), halving its flaw chance. The
+gem scale (2 brass, Optics & Instruments) reads specific gravity, species,
+carats and value. The gem refractometer (3 brass, Electricity, 1905) reads a
+cut stone's refractive index, cannot read diamond, and marks a flame-grown
+boule as synthetic.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Make and edit terrain height files (docs/terrain-height.md).
 
-A height file gives one level (0-15, written 0-9 then a-f) per tile of one or
-more z-levels. The game reads it when a map sets terrain_height_file.
+A height file gives one level per tile of one or more z-levels. Levels come in
+halves from 0 to 31.5: 0-9 then a-v write whole levels 0-31, and A-Z then
+!#$%&+ write the half levels 0.5-31.5. Version 1 files (0-9, a-f) still read. The game reads it when a map sets terrain_height_file.
 
   generate  build heights for a .dmm level from its turfs (water low, land
             rising inland, ridges near rock walls, seeded noise)
@@ -22,9 +23,16 @@ import sys
 from collections import deque
 from pathlib import Path
 
-HEADER = 'civ13-terrain-heights 1'
-DIGITS = '0123456789abcdef'
-MAX_LEVEL = 15
+HEADER = 'civ13-terrain-heights 2'
+HEADER_V1 = 'civ13-terrain-heights 1'
+WHOLE = '0123456789abcdefghijklmnopqrstuv'
+HALF = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&+'
+# DIGITS[int(level * 2)] writes a level; every character is one half level up.
+DIGITS = ''.join(w + h for w, h in zip(WHOLE, HALF))
+LEVEL_OF = {c: i / 2 for i, c in enumerate(DIGITS)}
+MAX_LEVEL = 31.5
+# The tallest summit a design reaches unless its spec says otherwise.
+SUMMIT = 15
 # Neighbouring tiles differ by at most this many levels after generation.
 MAX_NEIGHBOUR_STEP = 2
 
@@ -116,6 +124,11 @@ def distance_from(np, mask):
     return dist
 
 
+def to_half_levels(np, height):
+    """Round a height field to the nearest half level the files can hold."""
+    return np.clip(np.round(np.asarray(height, dtype=float) * 2) / 2, 0, MAX_LEVEL)
+
+
 def limit_steps(np, levels, fixed, step=MAX_NEIGHBOUR_STEP):
     """Lower tiles until no neighbour pair differs by more than step levels."""
     while True:
@@ -150,7 +163,7 @@ def generate(np, rows, seed):
     height = hills * 9 * np.minimum(inland * 2, 1) + inland * 1.5 + ridge * 3
     height[water] = 0
     height[cls == 1] = np.minimum(height[cls == 1], 1)
-    levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
+    levels = to_half_levels(np, height)
     levels[water] = 0
     return limit_steps(np, levels, water)
 
@@ -178,6 +191,8 @@ DESIGN_DEFAULTS = {
     'coastal_range_width': 12,  # highland approaches this close to the sea are steep
     'cliff_height': 4,          # hills at least this high keep their height at the shore
     'crater_rim': 5,
+    'summit': SUMMIT,           # lava peaks reach this level
+    'max_level': SUMMIT,        # nothing is designed higher (files allow MAX_LEVEL)
     'ridges': [], 'passes': [], 'scarps': [], 'craters': [], 'flat': [],
 }
 
@@ -298,10 +313,10 @@ def design(np, rows, spec, landmarks=()):
         plateau = (cfg['highland_base'] + np.clip(d_inside - 1, 0, 8) * cfg['highland_rise']
                    + octave(np, rng, (h, w), 9, 1.2) * np.clip((d_inside - 2) / 3.0, 0, 1))
         if lava.any():
-            plateau = np.maximum(plateau, MAX_LEVEL - distance_from(np, lava) * 0.5)
+            plateau = np.maximum(plateau, cfg['summit'] - distance_from(np, lava) * 0.5)
         plateau = np.minimum(plateau, cfg['highland_max'])
         height[highland] = plateau[highland]
-        height[lava] = MAX_LEVEL
+        height[lava] = cfg['summit']
         # Approaches: steep where the range meets the sea or a scarp rectangle says so,
         # gentle inland and through passes. The grade field is blurred so zones blend.
         d_high = distance_from(np, highland)
@@ -376,7 +391,7 @@ def design(np, rows, spec, landmarks=()):
             height[component] = np.median(height[component])
 
     height[beach] = np.minimum(height[beach], 1)
-    levels = np.clip(np.round(height), 0, MAX_LEVEL).astype(int)
+    levels = to_half_levels(np, np.minimum(height, cfg['max_level']))
     levels[water] = 0
     return limit_steps(np, levels, water, DESIGN_MAX_STEP)
 
@@ -385,16 +400,19 @@ def write_heights(path, maxx, maxy, levels_by_z):
     lines = [HEADER, f'size {maxx} {maxy}']
     for z in sorted(levels_by_z):
         lines.append(f'z {z}')
-        lines.extend(''.join(DIGITS[int(v)] for v in row) for row in levels_by_z[z])
+        lines.extend(''.join(DIGITS[int(round(float(v) * 2))] for v in row) for row in levels_by_z[z])
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text('\n'.join(lines) + '\n', encoding='ascii', newline='\n')
 
 
 def read_heights(path):
-    """Return (maxx, maxy, {z: list of int rows}); raises ValueError like the game does."""
+    """Return (maxx, maxy, {z: list of level rows}); raises ValueError like the game does.
+
+    Levels are whole or half numbers (int or float)."""
     lines = Path(path).read_text(encoding='ascii').replace('\r', '').split('\n')
-    if lines[0] != HEADER:
+    if lines[0] not in (HEADER, HEADER_V1):
         raise ValueError(f"missing '{HEADER}' header")
+    allowed = set(DIGITS) if lines[0] == HEADER else set('0123456789abcdef')
     size = lines[1].split(' ') if len(lines) > 1 else []
     if len(size) != 3 or size[0] != 'size':
         raise ValueError("missing 'size X Y' line")
@@ -414,12 +432,17 @@ def read_heights(path):
         if len(rows) != maxy:
             raise ValueError(f'z {z} has {len(rows)} of {maxy} rows')
         for r, row in enumerate(rows, 1):
-            if len(row) != maxx or any(c not in DIGITS for c in row):
-                raise ValueError(f'z {z} row {r} must be {maxx} characters of 0-9 or a-f')
-        levels[z] = [[DIGITS.index(c) for c in row] for row in rows]
+            if len(row) != maxx or any(c not in allowed for c in row):
+                raise ValueError(f'z {z} row {r} must be {maxx} height characters')
+        levels[z] = [[level_value(LEVEL_OF[c]) for c in row] for row in rows]
     if not levels:
         raise ValueError('no z levels')
     return maxx, maxy, levels
+
+
+def level_value(level):
+    """A whole level as an int, a half level as a float, so 2 == 2.0 and printing stays tidy."""
+    return int(level) if level == int(level) else level
 
 
 # Slope shading. The game computes a light level (-2..2) at every tile corner
@@ -522,7 +545,7 @@ def cmd_to_png(args):
     maxx, maxy, levels = read_heights(args.heights)
     rows = levels[args.z]
     image = Image.new('L', (maxx, maxy))
-    image.putdata([v * 17 for row in rows for v in row])
+    image.putdata([int(round(v * 8)) for row in rows for v in row])
     image.save(args.out)
     print(f'wrote {args.out}')
 
@@ -532,7 +555,7 @@ def cmd_from_png(args):
     image = Image.open(args.png).convert('L')
     maxx, maxy = image.size
     data = list(image.getdata())
-    rows = [[min(MAX_LEVEL, round(data[y * maxx + x] / 17)) for x in range(maxx)] for y in range(maxy)]
+    rows = [[level_value(min(MAX_LEVEL, round(data[y * maxx + x] / 4) / 2)) for x in range(maxx)] for y in range(maxy)]
     existing = {}
     if Path(args.out).exists():
         old_x, old_y, existing = read_heights(args.out)

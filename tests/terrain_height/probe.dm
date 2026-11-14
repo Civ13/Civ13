@@ -74,6 +74,15 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_height_at(locate(5, 9, 1)) == 0, "no_file_flat")
 	terrain_height_probe_assert(terrain_slope_delay(locate(5, 9, 1), locate(6, 9, 1), 3) == 0, "no_file_no_cost")
 
+	// Version 2: half levels and the taller range; version 1 keeps hex only.
+	var/datum/terrain_heights/V2 = terrain_heights_parse("civ13-terrain-heights 2\nsize 2 2\nz 1\n0A\nv+\n", 2, 2, 1)
+	terrain_height_probe_assert(!V2.error && V2.at(1, 2, 1) == 0 && V2.at(2, 2, 1) == 0.5 && V2.at(1, 1, 1) == 31 && V2.at(2, 1, 1) == 31.5, "version_2_half_levels")
+	V2.set_level(1, 2, 1, 2.6)
+	V2.set_level(2, 2, 1, 40)
+	terrain_height_probe_assert(V2.at(1, 2, 1) == 2.5 && V2.at(2, 2, 1) == TERRAIN_MAX_LEVEL && V2.base_at(1, 2, 1) == 0, "set_level_keeps_half_levels")
+	terrain_height_probe_rejects("civ13-terrain-heights 1\nsize 2 2\nz 1\n0A\n00\n", "half_level_in_version_1")
+	terrain_height_probe_rejects("civ13-terrain-heights 2\nsize 2 2\nz 1\n0~\n00\n", "unknown_character")
+
 	map = new /obj/map_metadata/terrain_height_probe
 	terrain_height_probe_assert(map.terrain_heights(), "fixture_loads")
 	terrain_height_probe_assert(terrain_height_at(locate(1, 12, 1)) == 0, "north_west_corner")

@@ -230,6 +230,9 @@ class RegionStore(TrainLeaseQueue):
         db.execute('''CREATE TABLE IF NOT EXISTS chart_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, op TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL,
             owner TEXT, admin TEXT NOT NULL)''')
+        # A ship's course names its voyage (added for boat expeditions' voyages).
+        if 'voyage' not in [row[1] for row in db.execute('PRAGMA table_info(chart_request)')]:
+            db.execute('ALTER TABLE chart_request ADD COLUMN voyage TEXT')
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
@@ -815,8 +818,8 @@ class RegionStore(TrainLeaseQueue):
                                   for i, r, st, p, a in self.db.execute(
                                       'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')],
                 'chart_rev': json.loads(self._meta('chart')).get('key'),
-                'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin'), row)) for row in self.db.execute(
-                    'SELECT id, op, x, y, owner, admin FROM chart_request ORDER BY id')]}
+                'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin', 'voyage'), row)) for row in self.db.execute(
+                    'SELECT id, op, x, y, owner, admin, voyage FROM chart_request ORDER BY id')]}
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
                     lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None):
@@ -925,21 +928,25 @@ class RegionStore(TrainLeaseQueue):
 
     # -- world chart ---------------------------------------------------------
 
-    def request_chart(self, op, x, y, admin, owner=None):
-        """An admin's chart change from this world, decided on the
-        coordinator's next pass: 'reroll' a charted tile, or 'reveal' the tiles
-        round one for an owner."""
-        if op not in ('reroll', 'reveal'):
+    def request_chart(self, op, x, y, admin, owner=None, voyage=None):
+        """A chart change from this world, decided on the coordinator's next
+        pass: an admin's 'reroll' of a charted tile or 'reveal' of the tiles
+        round one for an owner, or a ship's 'scout' (what her crew saw round a
+        tile) or 'course' (she set course for a land; voyage names her
+        voyage). admin is the account asking."""
+        if op not in ('reroll', 'reveal', 'scout', 'course'):
             raise TransferError('unknown chart request')
         if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
             raise TransferError('bad chart tile')
         if not account_key_valid(admin):
             raise TransferError('bad admin key')
-        if op == 'reveal' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
+        if op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
             raise TransferError('bad chart owner')
+        if op == 'course' and not (isinstance(voyage, str) and re.match(r'^[a-z0-9_\-]{1,80}$', voyage)):
+            raise TransferError('bad voyage')
         with self._tx():
-            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin) VALUES (?, ?, ?, ?, ?)',
-                                     (op, x, y, owner if op == 'reveal' else None, admin))
+            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage) VALUES (?, ?, ?, ?, ?, ?)',
+                                     (op, x, y, owner if op != 'reroll' else None, admin, voyage if op == 'course' else None))
         return {'id': cursor.lastrowid}
 
     def chart(self):

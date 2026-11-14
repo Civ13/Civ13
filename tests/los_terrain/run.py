@@ -24,6 +24,9 @@ SEE_OVER = {'hill_far_ground': 0, 'hill_close_behind_wall': 1, 'hill_person_two_
 # LOS_TERRAIN_RELIEF and LOS_TERRAIN_ALLOWANCE in los_terrain.dm.
 RELIEF = 0.5
 ALLOWANCE = 0.5
+# TERRAIN_HEIGHT_WHOLE and TERRAIN_HEIGHT_HALF in terrain_height.dm.
+WHOLE = '0123456789abcdefghijklmnopqrstuv'
+HALF = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&+'
 PINNED = json.loads((ROOT / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
 
@@ -41,7 +44,8 @@ def heights():
     lines = HEIGHTS.read_text().split('\n')
     mx, my = map(int, lines[1].split()[1:])
     rows = lines[3:3 + my]
-    return lambda x, y: int(rows[my - y][x - 1], 16) if 1 <= x <= mx and 1 <= y <= my else 0
+    level = {c: i / 2 for i, c in enumerate(''.join(w + h for w, h in zip(WHOLE, HALF)))}
+    return lambda x, y: level[rows[my - y][x - 1]] if 1 <= x <= mx and 1 <= y <= my else 0
 
 
 def reference(H, x, y, sx, sy, lying, radius, top=0.25):
@@ -169,7 +173,8 @@ def main():
                       int(rng.random() < 0.25)])
     terrain = (ROOT / 'code/modules/1713/terrain_height.dm').read_text(encoding='utf-8')
     parser = ''.join(fragment(terrain, name) for name in
-                     ['/datum/terrain_heights\n', '/datum/terrain_heights/proc/at(', '/proc/terrain_heights_parse(', '/proc/terrain_height_row_valid('])
+                     ['#define TERRAIN_HEIGHT_WHOLE', '#define TERRAIN_HEIGHT_HALF', 'var/global/list/terrain_height_levels',
+                      '/proc/terrain_height_level_table(', '/datum/terrain_heights\n', '/datum/terrain_heights/proc/at(', '/proc/terrain_heights_parse(', '/proc/terrain_height_row_valid('])
     parser = '\n'.join(l for l in parser.split('\n') if 'base_rows_by_z' not in l)
     # The 2D blocker geometry the height rule plugs into.
     core = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
