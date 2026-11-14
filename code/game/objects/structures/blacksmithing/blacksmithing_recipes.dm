@@ -66,6 +66,22 @@ var/global/list/anvil_recipes = list(
 
 		/*Modern*/
 	"RPG-7" = list("RPG-7","guns",7,8,40,0,0,0,/obj/item/weapon/gun/launcher/rocket/rpg7/makeshift),
+		/*Machine guns: emplaced guns on their own mounts. Push one onto a vehicle's frame to carry it, or stand it on a built turret's tile to fit it there.*/
+	"Maxim 1895 Machine Gun" = list("Maxim 1895 Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/maxim),
+	"MG 08 Machine Gun" = list("MG 08 Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg08),
+	"Vickers Machine Gun" = list("Vickers Machine Gun","machine guns",5,8,50,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/vickers),
+	"Hotchkiss M1914 Machine Gun" = list("Hotchkiss M1914 Machine Gun","machine guns",5,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914),
+	"Type 3 Machine Gun" = list("Type 3 Machine Gun","machine guns",5,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/type3),
+	"Mounted MG 34" = list("Mounted MG 34","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg34),
+	"Mounted M1919 Browning" = list("Mounted M1919 Browning","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/browning),
+	"Mounted Breda 30" = list("Mounted Breda 30","machine guns",6,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/breda30),
+	"Type 92 Machine Gun" = list("Type 92 Machine Gun","machine guns",6,8,45,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/type98),
+	"DShK Heavy Machine Gun" = list("DShK Heavy Machine Gun","machine guns",6,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/dshk),
+	"M2 Browning Heavy Machine Gun" = list("M2 Browning Heavy Machine Gun","machine guns",6,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/m2browning),
+	"Mounted PKM" = list("Mounted PKM","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/pkm),
+	"Mounted MG 3" = list("Mounted MG 3","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/mg3),
+	"Mounted FN MAG" = list("Mounted FN MAG","machine guns",7,8,40,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/fnmag),
+	"NSVT Heavy Machine Gun" = list("NSVT Heavy Machine Gun","machine guns",7,8,70,0,0,0,/obj/item/weapon/gun/projectile/automatic/stationary/nsvt),
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///*Melee*///

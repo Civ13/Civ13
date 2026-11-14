@@ -34,6 +34,10 @@ def restore_crafting_projection(path, source):
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
+            # Hunger by workload (tests/idle_metabolism): timed actions report their target.
+            ('/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)', '/mob/proc/survival_action_started()'),
+            ('\tuser.survival_action_started(target)\n', '\tuser.survival_action_started()\n'),
+            ('\tuser.survival_action_started(target, mining_context)\n', '\tuser.survival_action_started()\n'),
         )
     elif path == MECHANICS:
         # 2026 age: recipe max-era 8 is open-ended, so the canopy gate no

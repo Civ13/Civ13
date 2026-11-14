@@ -34,6 +34,10 @@
 	return FALSE
 /proc/qdel(datum/D)
 	del(D)
+/proc/weather_heat_at(atom/A)
+	return map.heat_wave
+/datum/species
+	var/body_temperature = 310.15
 /obj/structure/bed
 /obj/structure/cross
 /obj/map_metadata
@@ -66,8 +70,16 @@ var/obj/map_metadata/map
 	var/probe_clock = 1000
 	var/probe_inactivity = 1000
 	var/list/probe_traits = list()
+	var/bodytemperature = 310.15
+	var/datum/species/species = new
+	var/probe_workload = 2
 /mob/living/human/proc/find_trait(trait)
 	return trait in probe_traits
+/mob/living/human/proc/trait_food_mult()
+	return 1
+// Item and target classification is a separate type table (survival_workload.dm).
+/mob/living/human/proc/survival_workload_for(atom/target)
+	return probe_workload
 /mob/living/human/probe/survival_metabolism_time()
 	return probe_clock
 /mob/living/human/probe/survival_input_inactivity()
@@ -91,54 +103,61 @@ var/obj/map_metadata/map
 	world.OpenPort("none")
 	map = new
 	var/mob/living/human/probe/H = new(locate(1,1,1))
-	consume(H, 0.0864, 0.0864, "active ordinary")
+	consume(H, 0.05184, 0.05184, "awake resting")
 	H.probe_clock = 1599
-	consume(H, 0.0864, 0.0864, "before idle threshold")
+	consume(H, 0.05184, 0.05184, "before idle threshold")
 	H.probe_clock = 1600
-	consume(H, 0.00864, 0.00864, "idle ordinary")
+	consume(H, 0.005184, 0.005184, "idle ordinary")
 	map.heat_wave = TRUE
-	consume(H, 0.00864, 0.0224, "idle heat")
+	consume(H, 0.005184, 0.0114048, "idle heat")
 	H.probe_inactivity = 0
-	consume(H, 0.0864, 0.224, "input reengagement heat")
+	consume(H, 0.05184, 0.114048, "input reengagement heat")
 	map.heat_wave = FALSE
 	map.ID = MAP_NOMADS_DESERT
-	consume(H, 0.0864, 0.224, "active desert")
+	consume(H, 0.05184, 0.114048, "resting desert")
 	map.ID = "plain"
 	H.probe_inactivity = 10000
 	H.probe_clock += 600
 	H.last_movement = H.probe_clock
 	consume(H, 0.0864, 0.0864, "movement reengagement")
+	H.bodytemperature = 304
+	consume(H, 0.11232, 0.0864, "walking chilled")
+	H.bodytemperature = 290
+	consume(H, 0.13824, 0.0864, "walking cold")
+	H.bodytemperature = 314
+	consume(H, 0.0864, 0.1296, "walking overheated")
+	H.bodytemperature = 310.15
 	H.probe_clock += 600
 	H.next_click = H.probe_clock + 1
-	consume(H, 0.0864, 0.0864, "stationary combat click")
+	consume(H, 0.05184, 0.05184, "stationary combat click")
 	H.probe_clock += 600
 	H.next_move = H.probe_clock + 50
 	consume(H, 0.0864, 0.0864, "combat cooldown")
 	H.next_move = 0
 	H.probe_clock += 600
-	consume(H, 0.00864, 0.00864, "idle after cooldown")
+	consume(H, 0.005184, 0.005184, "idle after cooldown")
 	H.probe_traits = list("Gigantism")
-	consume(H, 0.012096, 0.00864, "idle gigantism")
+	consume(H, 0.0072576, 0.005184, "idle gigantism")
 	H.probe_traits = list("Dwarfism")
-	consume(H, 0.006912, 0.00864, "idle dwarfism")
+	consume(H, 0.0041472, 0.005184, "idle dwarfism")
 	H.probe_traits = list()
 	H.crab = TRUE
-	consume(H, 0.006912, 0.0216, "idle crab")
+	consume(H, 0.0041472, 0.01296, "idle crab")
 	H.crab = FALSE
 	H.orc = TRUE
-	consume(H, 0.01296, 0.00864, "idle orc")
+	consume(H, 0.007776, 0.005184, "idle orc")
 	H.orc = FALSE
 	H.goblin = TRUE
-	consume(H, 0.006912, 0.00864, "idle goblin")
+	consume(H, 0.0041472, 0.005184, "idle goblin")
 	H.goblin = FALSE
 	H.gorillaman = TRUE
-	consume(H, 0.00864, 0.001728, "idle gorilla")
+	consume(H, 0.005184, 0.0010368, "idle gorilla")
 	H.gorillaman = FALSE
 	H.droid = TRUE
 	consume(H, 0, 0, "idle droid")
 	H.droid = FALSE
 	H.buckled = new /obj/structure/cross
-	consume(H, 0.01296, 0.0432, "idle cross")
+	consume(H, 0.007776, 0.02592, "idle cross")
 	H.buckled = new /obj/structure/bed
 	H.stat = UNCONSCIOUS
 	consume(H, 0.0032, 0.0032, "bed sleep")
@@ -154,23 +173,43 @@ var/obj/map_metadata/map
 	map.heat_wave = FALSE
 	H.stat = CONSCIOUS
 	H.probe_inactivity = -1
-	consume(H, 0.0864, 0.0864, "no client")
+	consume(H, 0.05184, 0.05184, "no client")
 	H.probe_inactivity = 10000
 	H.probe_clock = 0
-	consume(H, 0.0864, 0.0864, "clock reset")
+	consume(H, 0.05184, 0.05184, "clock reset")
 	H.last_movement = -1
 	H.next_click = 0
 	H.probe_clock += 600
-	consume(H, 0.00864, 0.00864, "idle before action")
+	consume(H, 0.005184, 0.005184, "idle before action")
 	spawn(0)
 		do_after(H, 5, progress = FALSE, check_for_repeats = FALSE)
 	sleep(1)
 	H.probe_clock += 1000
 	consume(H, 0.0864, 0.0864, "stationary unrestricted action")
 	check(H.survival_actions == 1, "timed action ownership")
+	check(H.survival_workload == 2, "ordinary action workload")
 	sleep(6)
 	check(H.survival_actions == 0, "completed action releases ownership")
-	consume(H, 0.0864, 0.0864, "completed action grace")
+	check(H.survival_workload == 0, "completed action releases workload")
+	consume(H, 0.05184, 0.05184, "completed action grace")
+	H.probe_workload = 3
+	spawn(0)
+		do_after(H, 5, progress = FALSE, check_for_repeats = FALSE)
+	sleep(1)
+	consume(H, 0.1512, 0.1728, "heavy labour")
+	H.probe_workload = 1
+	spawn(0)
+		do_after(H, 2, progress = FALSE, check_for_repeats = FALSE)
+	sleep(1)
+	check(H.survival_workload == 3, "overlapping work keeps the heaviest")
+	sleep(6)
+	check(H.survival_workload == 0, "heavy labour releases")
+	spawn(0)
+		do_after(H, 3, progress = FALSE, check_for_repeats = FALSE)
+	sleep(1)
+	consume(H, 0.06912, 0.06912, "light work")
+	sleep(4)
+	H.probe_workload = 2
 	H.probe_clock += 600
 	spawn(0)
 		do_after(H, 6, progress = FALSE, check_for_repeats = FALSE)
@@ -194,8 +233,9 @@ var/obj/map_metadata/map
 	check(H.survival_actions == 0, "do_mob finishes activity")
 	check(H.persistence_runtime_var("survival_rest_since"), "runtime clock exclusion")
 	check(H.persistence_runtime_var("survival_actions"), "runtime actions exclusion")
+	check(H.persistence_runtime_var("survival_workload"), "runtime workload exclusion")
 	check(H.persistence_runtime_var("exercise_equipment"), "existing exclusion retained")
 	check(H.persistence_runtime_var("parent_sentinel"), "parent exclusion retained")
 	check(!H.persistence_runtime_var("nutrition"), "durable nutrition retained")
-	text2file("PASS: idle metabolism, reengagement, heat, bed, floor sleep, SSD, traits, actions and exclusions", "result.txt")
+	text2file("PASS: idle metabolism, workload, climate, reengagement, heat, bed, floor sleep, SSD, traits, actions and exclusions", "result.txt")
 	shutdown()
