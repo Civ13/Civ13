@@ -1,6 +1,6 @@
 """Hand-placed sprites for the prime movers in
 icons/obj/mechanical_power.dmi: the treadwheel, horse gin, mill wheel and
-windmill, each standing still and turning. Every pixel is placed by this
+windmill, each standing still and turning, and the trip hammer. Every pixel is placed by this
 script from a fixed palette (Pillow only); no external or generated artwork.
 
 Run with Pillow to reproduce the sheet. `--check` verifies the committed
@@ -196,6 +196,50 @@ def windmill(step=None):
     return f
 
 
+# ------------------------------------------------------------ trip hammer --
+
+def trip_hammer(step=None):
+    """A helve hammer: a long beam pivoted on a post, an iron head at the
+    right over a low block, and a cam wheel at the tail that lifts it.
+    Working, the cams turn, the tail dips and the head rises and drops."""
+    f = Frame()
+    k = 0 if step is None else step % 4
+    raise_ = (0, 3, 6, 0)[k] if step is not None else 0
+    # sole plate
+    f.rect(2, 27, 29, 28, TIMBER[3])
+    f.hline(2, 29, 27, TIMBER[1])
+    f.hline(2, 29, 29, TIMBER[4])
+    # the block the head falls on
+    f.rect(22, 22, 28, 26, IRON[1])
+    f.hline(22, 28, 22, IRON[0])
+    f.hline(22, 28, 26, IRON[2])
+    # pivot post
+    f.rect(13, 14, 15, 26, TIMBER[2])
+    f.vline(13, 14, 26, TIMBER[1])
+    f.vline(15, 14, 26, TIMBER[4])
+    # the helve, swinging about the pivot
+    px, py = 14, 15
+    hx, hy = 25, 17 - raise_
+    tx, ty = 5, 14 + raise_ // 2
+    line(f, tx, ty, hx, hy, TIMBER[1])
+    line(f, tx, ty + 1, hx, hy + 1, TIMBER[3])
+    f.rect(px - 1, py - 1, px + 1, py + 1, IRON[1])
+    f.put(px, py, IRON[0])
+    # the iron head
+    f.rect(23, hy - 1, 27, hy + 4, IRON[1])
+    f.vline(23, hy - 1, hy + 4, IRON[0])
+    f.hline(23, 27, hy - 1, IRON[0])
+    f.hline(23, 27, hy + 4, IRON[2])
+    # cam wheel under the tail
+    wheel(f, 6, 21, 5, k * 22, spokes=4, tread=False)
+    a = math.radians(-90 + k * 22)
+    f.put(round(6 + 6 * math.cos(a)), round(21 + 6 * math.sin(a)), IRON[0])
+    if step is not None and k == 3:
+        f.pts((255, 232, 150), (21, 21), (29, 21), (20, 23), (30, 23))    # the blow
+    f.outline()
+    return f
+
+
 def states():
     """[(state, frames, delay)] in sheet order."""
     return [
@@ -207,6 +251,8 @@ def states():
         ('mill_wheel_on', [mill_wheel(i) for i in range(4)], 2),
         ('windmill', [windmill()], 0),
         ('windmill_on', [windmill(i) for i in range(4)], 2),
+        ('trip_hammer', [trip_hammer()], 0),
+        ('trip_hammer_on', [trip_hammer(i) for i in range(4)], 2),
     ]
 
 

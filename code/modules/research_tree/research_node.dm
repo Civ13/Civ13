@@ -2524,7 +2524,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (4) ---
+		// --- watermills (5) ---
+		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
 		"/obj/structure/sawmill/large" = "watermills",
