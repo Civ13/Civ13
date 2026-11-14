@@ -125,7 +125,7 @@ class StoneMoldTests(unittest.TestCase):
                 for state in (f'{base}_mold_empty',f'{base}_mold_full'):
                     self.assertIn('state = "'+state+'"',sprite_states())
         nodes=read('code/modules/research_tree/research_node.dm')
-        self.assertIn('null, 1, /obj/item/weapon/clay/mold/axehead)',nodes)
+        self.assertIn('list("basic_tools"), 1, /obj/item/weapon/clay/mold/axehead)',nodes)
         self.assertTrue(path('axehead').startswith('/obj/item/weapon/clay/mold/axehead/'))
         self.assertIn('istype(W, N.prototype_type)',read('code/modules/research_tree/research_bench.dm'))
         for file in ('blacksmithing.dm','refining.dm'):
