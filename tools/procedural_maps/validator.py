@@ -12,6 +12,8 @@ from pathlib import Path
 VERSION = "civ13-geography-ir/1"
 PORT_VERSION = "civ13-geography-ir/2"
 OCEAN_VERSION = "civ13-geography-ir/3"
+# Relief lands: rivers rise at springs or lakes and need no map-edge port.
+LAND_VERSION = "civ13-geography-ir/4"
 # Longest map side the offline tools accept. What a BYOND world can hold is a
 # separate, smaller budget: see MEASURED_CELLS in land.py.
 MAX_SIDE = 1280
@@ -131,8 +133,10 @@ def _validate(d: object) -> list[dict]:
     try:
         v2=type(d) is dict and d.get("schema")==PORT_VERSION
         ocean=type(d) is dict and d.get('schema')==OCEAN_VERSION
+        relief=type(d) is dict and d.get('schema')==LAND_VERSION
         exact(d, ROOT_KEYS|({"junctions"} if v2 else set())|({'ocean_policy'} if ocean else set()), "root keys")
-        require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION,LAND_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        if relief:require(d['profile']=='SURFACE' and not d['ports'],'relief lands are SURFACE and have no edge ports')
         if ocean:
             require(d['profile']=='OCEANIC','ocean schema profile')
             ocean_keys={'island_count','island_min_area','island_gap_tiles','start_min_spacing','coast_route_max'}
@@ -185,8 +189,9 @@ def _validate(d: object) -> list[dict]:
             for p in r["path"]: coord(p)
             for k in ("source", "sink"):
                 exact(r[k], {"kind", "target"}, "terminal keys")
-                require(r[k]["kind"] in ({"EDGE", "LAKE", "SEA","JUNCTION"} if v2 else {"EDGE", "LAKE", "SEA", "RIVER"}) and
+                require(r[k]["kind"] in ({"EDGE", "LAKE", "SEA","JUNCTION"} if v2 else {"EDGE", "LAKE", "SEA", "RIVER"}) | ({"SPRING"} if relief and k=="source" else set()) and
                         type(r[k]["target"]) is str, "terminal kind/target")
+                require(r[k]["kind"]!="SPRING" or r[k]["target"]=="", "a spring names no body")
         ids = set()
         for lake in d["lakes"]:
             exact(lake, {"id", "terminal_basin", "outflow"}, "lake keys")
@@ -246,10 +251,12 @@ def _validate(d: object) -> list[dict]:
     def walkable(c):
         return not (c["blocked"] or c["hazard"] or c["tree"] != "NONE" or
                     c["water"] != "NONE" or c["terrain"] in {"ROCK", "MOUNTAIN"})
-    def connected_distances(start, allowed, links=None):
+    def connected_distances(start, allowed, links=None, limit=None):
+        # limit: stop past that many steps, for checks that only ask about nearer cells.
         distances = {start: 0}; queue = deque([start])
         while queue:
             p = queue.popleft()
+            if limit is not None and distances[p] >= limit: continue
             for q in near(p) + (links or {}).get(p, []):
                 if q in allowed and q not in distances:
                     distances[q] = distances[p]+1; queue.append(q)
@@ -392,6 +399,7 @@ def _validate(d: object) -> list[dict]:
         # Island lake-to-sea rivers and cavern pool-to-pool streams are closed
         # networks with their own endpoint grammar; surface networks need an edge port.
         closed=(ocean and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="SEA" for r in seen)) or \
+               (d["schema"]==LAND_VERSION and all(rivers[r]["source"]["kind"] in {"LAKE","SPRING"} for r in seen)) or \
                (d["profile"]=="UNDERGROUND_CAVERN" and all(rivers[r]["source"]["kind"]=="LAKE" and rivers[r]["sink"]["kind"]=="LAKE" for r in seen))
         if not closed and not any(rivers[r][k]["kind"]=="EDGE" for r in seen for k in ["source","sink"]):
             err("RIVER_NO_EDGE", "river network requires explicit map edge port")
@@ -410,7 +418,7 @@ def _validate(d: object) -> list[dict]:
     for p in starts:
         if p not in walk or p not in active:
             err("START_SAFE", "start must be clear safe active-layer land", p); continue
-        distances=connected_distances(p, walk, links)
+        distances=connected_distances(p, walk, links, max(policy["max_resource_distance"],policy["max_water_distance"]))
         for resource in ("FOOD","WOOD","STONE"):
             if not any(cells[q]["resource"]==resource and dist<=policy["max_resource_distance"] for q,dist in distances.items()):
                 err("START_RESOURCE", "no safe bounded route to "+resource, p)
