@@ -21,7 +21,7 @@
 
 /obj/item/clothing/gloves/watch/examine(mob/user)
 	..()
-	to_chat(user, "<big>It is now [clock_time()].</big>")
+	to_chat(user, "<big>[watch_reading(src)]</big>")
 /obj/item/clothing/gloves/watch/watch
 	name = "watch"
 	desc = "A watch you wear on your hand."
