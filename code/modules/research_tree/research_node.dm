@@ -947,7 +947,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
-		// --- basic_tools (25) ---
+		// --- basic_tools (27) ---
 		"/obj/structure/converter/tanning" = "basic_tools",
 		"/obj/structure/dehydrator" = "basic_tools",
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
@@ -956,6 +956,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/cane" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/harness" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/belt_pouch" = "basic_tools",
+		"/obj/item/clothing/accessory/necklace" = "basic_tools",
+		"/obj/item/clothing/accessory/necklace/bead" = "basic_tools",
 		"/obj/item/clothing/pouch_belt" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/baldric" = "basic_tools",
 		"/obj/item/clothing/accessory/storage/tool_loop" = "basic_tools",
@@ -2027,7 +2029,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/customuniform/short" = "ready_made",
 		"/obj/item/clothing/under/punk" = "ready_made",
 		"/obj/item/clothing/shoes/weather/rubber_boots" = "ready_made",
-		// --- regalia (21) ---
+		// --- regalia (24) ---
+		"/obj/item/clothing/accessory/necklace/copper" = "regalia",
+		"/obj/item/clothing/accessory/necklace/silver" = "regalia",
+		"/obj/item/clothing/accessory/necklace/gold" = "regalia",
 		"/obj/item/clothing/accessory/custom/armband" = "regalia",
 		"/obj/item/clothing/accessory/custom/cape" = "regalia",
 		"/obj/item/clothing/accessory/custom/sash" = "regalia",
