@@ -110,6 +110,9 @@
 		to_chat(M, "<span class='warning'>You can't use \the [src] while you're restrained.</span>")
 		return
 
+	if (ladder_refuses_load(M))
+		return
+
 	if (!target || !istype(target.loc, /turf))
 		if (!istype(src, /obj/structure/multiz/ladder/ww2/tunneltop) && !istype(src, /obj/structure/multiz/ladder/ww2/tunnelbottom) && !istype(src, /obj/structure/multiz/ladder/ww2) && !istype(src, /obj/structure/multiz/ladder/ww2/up) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsdown) && !istype(src, /obj/structure/multiz/ladder/ww2/stairsup))
 			to_chat(M, "<span class='notice'>\The [src] is incomplete and can't be climbed.</span>")
@@ -394,6 +397,9 @@
 
 	if (M.restrained())
 		to_chat(M, "<span class='warning'>You can't use \the [src] while you're restrained.</span>")
+		return
+
+	if (ladder_refuses_load(M))
 		return
 
 	if (!target || !istype(target.loc, /turf))
