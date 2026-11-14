@@ -898,6 +898,7 @@
 	mining_flint_nodules(H, area_above) // Independent of the ore rolls; see flint_mining.dm.
 	mining_gem_pocket(H) // Independent of the ore rolls; see gemstones.dm.
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
+	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(12))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)

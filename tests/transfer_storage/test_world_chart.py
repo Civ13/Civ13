@@ -41,6 +41,26 @@ def first_land(c, coastal=True):
     raise AssertionError('no such land on this chart')
 
 
+
+class SlotWorldNamesTests(unittest.TestCase):
+    """Every ore, rare find and game name the chart rolls is one the land
+    world can place (code/modules/naval/land_resources.dm)."""
+
+    def read(self, path):
+        with open(os.path.join(ROOT, path), encoding='utf-8') as f:
+            return f.read()
+
+    def test_ores_rare_finds_and_game_are_placeable(self):
+        import re
+        lodes = self.read('code/modules/naval/land_resources.dm')
+        kinds = set(re.findall(r'^\t"([a-z]+)" = list\(/obj/item/stack/ore/', lodes, re.M)) | {'flint'}
+        self.assertTrue(set(wc.ORES) | {'obsidian'} <= kinds, sorted(set(wc.ORES) - kinds))
+        for rare in wc.RARE_FINDS:
+            self.assertIn('"%s" in rare' % rare, lodes)
+        species = set(re.findall(r'eco_species\("([^"]+)"', self.read('code/modules/ecology/ecology_spawning.dm')))
+        for biome, game in wc.GAME.items():
+            self.assertTrue(set(game) <= species, (biome, sorted(set(game) - species)))
+
 class ChartTests(unittest.TestCase):
     def test_the_same_seed_draws_the_same_chart_and_the_mainland_sits_in_open_water(self):
         a, b = chart(), chart()

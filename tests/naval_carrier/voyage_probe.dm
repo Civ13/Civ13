@@ -147,6 +147,45 @@ var/naval_runtime_error = FALSE
 	shard_group.kind = "SURFACE"
 	naval_check(!expedition_land_unsettled() && isnull(expedition_land_key()), "the mainland is never an undecided land")
 	qdel(post)
+	// ---- The land's ore, rare find and game (land_resources.dm) ----
+	expedition_land_info = list("biome" = "TUNDRA", "land_type" = "FJORD_COAST", "size" = "TINY", "key" = "1,2",
+		"slot_world" = list("ore" = "rich", "ores" = list("copper", "iron", "coal"), "rare" = list("rich gold vein"), "game" = list("reindeer", "white wolf")))
+	naval_check(expedition_lode_chance() == 12, "a rich land gives a lode on 12% of mined walls")
+	var/old_age = map.ordinal_age
+	map.ordinal_age = 0
+	naval_check(list2params(expedition_lode_kinds()) == list2params(list("copper")), "a stone age miner finds only the land's copper ([list2params(expedition_lode_kinds())])")
+	map.ordinal_age = 2
+	naval_check(length(expedition_lode_kinds()) == 3, "a later miner finds all three")
+	map.ordinal_age = old_age
+	var/turf/rock = locate(30, 30, 1)
+	var/bad = list()
+	for (var/kind in expedition_lode_types + "flint")
+		var/obj/item/I = rock.expedition_lode(kind)
+		if (!I || I.loc != rock)
+			bad += kind
+	naval_check(!length(bad), "every ore kind the chart rolls leaves a lode ([jointext(bad, ", ")])")
+	naval_check(isnull(rock.expedition_lode("amber")), "an unknown kind leaves nothing")
+	var/list/table = ecology_default_species()
+	var/datum/ecology_species/reindeer = null
+	var/datum/ecology_species/deer = null
+	for (var/datum/ecology_species/S in table)
+		if (S.name == "reindeer")
+			reindeer = S
+		if (S.name == "deer")
+			deer = S
+	var/before = reindeer.density
+	var/deer_before = deer.density
+	naval_check(expedition_land_tune_species(table) == 2 && reindeer.density == before * 3 && deer.density == deer_before, "the land's own game is plentiful, other animals as usual")
+	var/list/missing = list()
+	for (var/name in list("polar bear", "penguin", "white wolf", "reindeer", "arctic fox", "elk", "brown bear", "wolf", "deer", "wild boar", "black bear", "turkey", "bison", "horse", "rabbit", "cattle", "camel", "lizard", "cobra", "goat", "dik-dik", "lion", "buffalo", "monkey", "parrot", "jaguar", "gorilla", "constrictor", "alligator", "frog", "leech"))
+		var/found = FALSE
+		for (var/datum/ecology_species/S in table)
+			if (S.name == name)
+				found = TRUE
+		if (!found)
+			missing += name
+	naval_check(!length(missing), "every game name on the chart is an ecology species ([jointext(missing, ", ")])")
+	expedition_land_info = null
 
 /proc/naval_run()
 	try

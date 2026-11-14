@@ -72,7 +72,6 @@ know.
 - Rations, voyage events (storm, sighting, short rations) and engines sailing
   faster.
 - Giving up a faction's claim; deleting archived lands after 7 days.
-- Placing the template's ore kinds, rare finds and game in the slot world.
 
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
 `python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),

@@ -68,18 +68,20 @@ SIZES_ENABLED = ('TINY', 'SMALL')
 SIZE_ORE = {'TINY': 'rich', 'SMALL': 'good', 'MEDIUM': 'fair', 'LARGE': 'thin', 'MASSIVE': 'poor'}
 SIZE_FERTILITY = {'TINY': 'poor', 'SMALL': 'thin', 'MEDIUM': 'fair', 'LARGE': 'good', 'MASSIVE': 'rich'}
 
-ORES = ('iron', 'copper', 'tin', 'coal', 'flint', 'gold', 'silver', 'salt')
-RARE_FINDS = ('gems', 'rich gold vein', 'rich silver vein', 'amber', 'pearls')
+# Every name below is one the slot world places (code/modules/naval/land_resources.dm):
+# ores are extra lodes when mining, game names are ecology species.
+ORES = ('iron', 'copper', 'tin', 'coal', 'flint', 'gold', 'silver', 'zinc', 'lead', 'saltpeter', 'sulphur')
+RARE_FINDS = ('gems', 'rich gold vein', 'rich silver vein', 'diamonds')
 GAME = {
-    'ICE_SHEET': ('seals', 'polar bears', 'walruses'),
-    'TUNDRA': ('reindeer', 'arctic foxes', 'wolves'),
-    'BOREAL': ('elk', 'bears', 'wolves', 'beavers'),
-    'TEMPERATE_FOREST': ('deer', 'boars', 'bears', 'wolves'),
-    'GRASSLAND': ('bison', 'horses', 'wolves', 'hares'),
-    'DESERT': ('camels', 'lizards', 'jackals'),
-    'SAVANNA': ('antelope', 'zebras', 'lions', 'elephants'),
-    'RAINFOREST': ('monkeys', 'tapirs', 'jaguars', 'snakes'),
-    'SWAMP': ('alligators', 'frogs', 'herons', 'boars'),
+    'ICE_SHEET': ('polar bear', 'penguin', 'white wolf'),
+    'TUNDRA': ('reindeer', 'arctic fox', 'white wolf', 'polar bear'),
+    'BOREAL': ('elk', 'brown bear', 'wolf', 'reindeer', 'deer'),
+    'TEMPERATE_FOREST': ('deer', 'wild boar', 'black bear', 'wolf', 'turkey'),
+    'GRASSLAND': ('bison', 'horse', 'rabbit', 'cattle', 'wolf'),
+    'DESERT': ('camel', 'lizard', 'cobra', 'goat'),
+    'SAVANNA': ('dik-dik', 'lion', 'buffalo', 'monkey'),
+    'RAINFOREST': ('monkey', 'parrot', 'jaguar', 'gorilla', 'constrictor'),
+    'SWAMP': ('alligator', 'frog', 'wild boar', 'leech', 'constrictor'),
 }
 STATES = ('CHARTED', 'LANDED', 'SETTLED', 'CLAIMED', 'LOST')
 SIDES = (('N', 0, 1), ('S', 0, -1), ('E', 1, 0), ('W', -1, 0))
