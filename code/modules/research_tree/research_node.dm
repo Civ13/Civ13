@@ -1235,7 +1235,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (21) ---
+		// --- electricity (22) ---
+		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
 		"/obj/item/weapon/battery" = "electricity",
@@ -1791,7 +1792,9 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (17) ---
+		// --- optics_instruments (19) ---
+		"/obj/item/gem_tester" = "optics_instruments",
+		"/obj/item/gem_tester/scale" = "optics_instruments",
 		"/obj/item/clothing/accessory/storage/lanyard/fob_chain" = "optics_instruments",
 		"/obj/item/camera/early" = "optics_instruments",
 		"/obj/item/camera_film" = "optics_instruments",
