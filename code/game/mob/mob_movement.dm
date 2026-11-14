@@ -623,22 +623,8 @@
 			var/snow = TRUE
 			for (var/obj/covers/CV in get_turf(F))
 				snow = FALSE
-			for(var/obj/effect/flooding/FLD in get_turf(F))
-				switch(FLD.flood_level)
-					if (1)
-						standing_on_snow = 2
-					if (2)
-						standing_on_snow = 4
-					if (3)
-						standing_on_snow = 6
-			if(istype(F, /turf/floor/sub_deck))
-				var/turf/floor/sub_deck/SD = F
-				if(SD.water_depth >= 150)
-					standing_on_snow = 6
-				else if(SD.water_depth >= 100)
-					standing_on_snow = 4
-				else if(SD.water_depth >= 50)
-					standing_on_snow = 2
+			// Puddles, a flooded deck or river floodwater (flood_effects.dm).
+			standing_on_snow = standing_water_delay(F)
 			standing_on_snow *= footwear_terrain_mult(H, "wade")
 			if ((weather_at(F) == WEATHER_WET && findtext(weather_look_at(F),"rain")) || weather_at(F) == WEATHER_EXTREME)
 				if (F.may_become_muddy)

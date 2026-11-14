@@ -263,6 +263,10 @@ var/global/list/nomads_fire_callbacks = list()
 	if (falling == WEATHER_EXTREME)
 		qdel(src)
 	if(isDeleted(src) || !loc) return
+	// Floodwater puts it out (flood_effects.dm).
+	if (flood_douses(src))
+		qdel(src)
+		return
 
 	for (var/mob/living/L in src.loc)
 		L.adjustBurnLoss(rand(20, 40))

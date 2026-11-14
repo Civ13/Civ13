@@ -70,6 +70,8 @@ var/global/next_river_flood_tick = 0
 	var/list/stage = list()
 	// The state list last written to the map; anything else there was loaded from a save.
 	var/list/published = null
+	// TRUE while some reach is above stage 0, so some bank may be under water.
+	var/flooding = FALSE
 	var/error = null
 
 /proc/river_flood_parse(text, world_maxx, world_maxy, world_maxz)
@@ -178,7 +180,17 @@ var/global/next_river_flood_tick = 0
 		snow[i] = state[count + i + 1]
 		flow[i] = storage[i] * RIVER_FLOOD_RELEASE
 		stage[i] = stage_for(i, flow[i])
+	stages_changed()
 	return TRUE
+
+// After any change to the stages: whether anything floods, and a redraw.
+/datum/river_flood/proc/stages_changed()
+	flooding = FALSE
+	for (var/i in 1 to count)
+		if (stage[i] > 0)
+			flooding = TRUE
+			break
+	flood_draw_revision++
 
 // Saves the water on the map, where the durable world save picks it up.
 /datum/river_flood/proc/publish()
@@ -254,6 +266,7 @@ var/global/next_river_flood_tick = 0
 		stage[i] = stage_for(i, released)
 		if (down[i])
 			incoming[down[i]] = (incoming[down[i]] || 0) + released
+	stages_changed()
 
 // Reach id of a tile (0 none) and the stage that floods it (null for none).
 /datum/river_flood/proc/reach_at(x, y)
@@ -294,10 +307,14 @@ var/global/next_river_flood_tick = 0
 	var/datum/river_flood/F = map.river_flood()
 	if (!F || T.z != F.z_level || T.x < 1 || T.x > F.maxx || T.y < 1 || T.y > F.maxy)
 		return 0
+	var/r = F.reach_at(T.x, T.y)
+	if (!r || F.stage[r] <= 0)
+		return 0
 	var/threshold = F.threshold_at(T.x, T.y)
 	if (isnull(threshold))
 		return 0
-	var/r = F.reach_at(T.x, T.y)
-	if (!r)
-		return 0
+	// Ground a player has raised stays dry until the water tops it.
+	var/own = terrain_height_at(T)
+	if (own > threshold)
+		threshold = own
 	return max(0, F.stage[r] - threshold)

@@ -320,6 +320,13 @@
 	var/mob/living/human/H = user
 	if (!istype(H))
 		return FALSE
+	// Guided work beside a teacher comes first and has its own odds (trade_learning.dm).
+	var/guided = guided_work_node(H, result_path_string)
+	if (guided)
+		if (!prob(H.guided_fail_chance()))
+			return FALSE
+		commit_guided_failure(H, guided, result_path_string)
+		return TRUE
 	var/node_id = subject_prototype_node(H, result_path_string)
 	if (!node_id)
 		return FALSE

@@ -285,6 +285,13 @@
 /obj/structure/oven/fireplace/proc/keep_fire_on(epoch)
 	if (QDELETED(src) || epoch != fire_epoch)
 		return // A newer lighting owns the fire loop.
+	if (on && looping && fuel > 0 && flood_douses(src))
+		visible_message(SPAN_WARNING("Floodwater puts out \the [src]."))
+		on = FALSE
+		fire_epoch++
+		set_light(0)
+		update_icon()
+		return
 	if (on && looping && fuel > 0)
 		set_light(5)
 		update_icon()
@@ -298,7 +305,9 @@
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
 	stone_boil_epoch++ // Even an extinguish and relight invalidates a pending boil.
-	if (!on && fuel > 0)
+	if (!on && fuel > 0 && flood_douses(src))
+		to_chat(H, SPAN_WARNING("\The [src] is under floodwater. It won't light until the water goes down."))
+	else if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
 		var/epoch = ++fire_epoch

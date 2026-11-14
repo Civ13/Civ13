@@ -101,6 +101,26 @@ describe('Crafting window', () => {
     fireEvent.click(rowButton('campfire'));
     expect(within(screen.getByLabelText('Selected recipe')).getByText('Pin this recipe')).toBeTruthy();
   });
+  it('offers the other materials within reach and asks the server to switch', () => {
+    const sources = [
+      { key: '[0x1]', name: 'wood logs', amount: 6, where: 'in your hand', current: 1, image },
+      { key: '[0x2]', name: 'stone', amount: 12, where: 'next to you', current: 0, image: '' },
+    ];
+    const props = ui({ reach: 1, sources, where: 'in your hand' }); render(<CraftingWindow {...props} />);
+    const reach = within(screen.getByRole('group', { name: 'Materials within reach' }));
+    fireEvent.click(reach.getByText('wood logs'));
+    expect(props.act).not.toHaveBeenCalled();
+    fireEvent.click(reach.getByText('stone'));
+    expect(props.act).toHaveBeenLastCalledWith('source', { source: '[0x2]' });
+  });
+  it('says where the material is and hides the picker with one source or outside reach mode', () => {
+    render(<CraftingWindow {...ui({ reach: 1, where: 'next to you', sources: [{ key: '[0x1]', name: 'wood logs', amount: 6, where: 'next to you', current: 1, image }] })} />);
+    expect(screen.getByText('6 next to you')).toBeTruthy();
+    expect(screen.queryByRole('group', { name: 'Materials within reach' })).toBeNull();
+    cleanup();
+    render(<CraftingWindow {...ui()} />);
+    expect(screen.getByText('6 in your hand')).toBeTruthy();
+  });
   it('searches across tabs and never crafts from the search box', () => {
     const props = ui(); render(<CraftingWindow {...props} />);
     fireEvent.click(screen.getByRole('tab', { name: /Weapons/ }));

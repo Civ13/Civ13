@@ -488,9 +488,22 @@
 		life_water_refresh()
 		return
 	if (!istype(T, /turf/floor/beach/water/deep) || T.iscovered())
+		// River floodwater over land (flood_effects.dm): over the head, swim.
+		var/flood_band = T.iscovered() ? FLOOD_BAND_NONE : flood_band_at(T)
+		if (flood_band == FLOOD_BAND_DEEP && !istype(buckled, /obj/structure/vehicle/boat) && !istype(wear_suit, /obj/item/clothing/suit/lifejacket) && !seabed_diving_rating())
+			if (swim_step(T))
+				drowning = FALSE
+				water_overlay = TRUE
+				life_water_refresh()
+				return
+			drowning = TRUE
+			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning in the floodwater!</font>"))
+			life_water_refresh()
+			adjustOxyLoss(10)
+			return
 		drowning = FALSE
 		swim_rest()
-		if (((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered())
+		if ((((istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice)) || istype(T, /turf/floor/trench/flooded)) && !T.iscovered()) || flood_band >= FLOOD_BAND_KNEE)
 			water_overlay = TRUE
 			life_water_refresh()
 			return

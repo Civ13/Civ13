@@ -391,6 +391,7 @@
 				bad_external_organs -= E
 
 		handle_drowning()
+		flood_life_tick()
 
 		handle_blood()
 

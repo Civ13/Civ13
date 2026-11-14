@@ -126,7 +126,7 @@
 		return TRUE
 	for (var/obj/effect/flooding/FLD in T)
 		return TRUE
-	return FALSE
+	return flood_depth_at(T) > 0
 
 // Called for each running step: on ice, poorly gripping footwear can slip.
 // NOSLIP footwear still only halves the chance; ice grip is its own rating.

@@ -65,8 +65,12 @@ var/global/practice_experiments_built = FALSE
 	var/node_id = get_recipe_node_req(result_path_string)
 	if (!istext(node_id) || !get_research_node(node_id))
 		return FALSE
-	// Made early from a part-written chapter: a prototype (subject_prototypes.dm).
-	record_subject_prototype(user, result_path_string)
+	// Made beside someone who knows the subject: guided work (trade_learning.dm).
+	// Otherwise, made early from a part-written chapter: a prototype (subject_prototypes.dm).
+	if (!record_guided_work(user, result_path_string))
+		record_subject_prototype(user, result_path_string)
+	// People close by who could learn the subject watch how it is done.
+	note_craft_watched(user, result_path_string)
 	return note_field_work(user, practice_activity(node_id))
 
 #undef PRACTICE_BELOW_TIER

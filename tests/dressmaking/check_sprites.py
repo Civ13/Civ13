@@ -36,7 +36,7 @@ class TailoringSpriteTests(unittest.TestCase):
     def test_every_body_is_visible_from_all_sides_and_every_piece_somewhere(self):
         cache = {}
         for body_id, row in source.catalogue().items():
-            worn_path, item_path = source.ART[row['slot']]
+            worn_path, item_path = source.ART[row['art']]
             worn = cache.setdefault(worn_path, frames(worn_path))
             item = cache.setdefault(item_path, frames(item_path))
             with self.subTest(body=body_id):

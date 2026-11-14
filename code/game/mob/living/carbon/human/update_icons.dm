@@ -1536,6 +1536,15 @@ var/global/list/human_face_icon_cache = list()
 				return null
 		else if (drowning)
 			mask_state = "seashallow_over3"  // Deep water - fully submerged
+		else if (!istype(D, /turf/floor/beach/water) && !istype(D, /turf/floor/trench/flooded))
+			// River floodwater over land (flood_effects.dm).
+			switch (flood_band_at(D))
+				if (FLOOD_BAND_KNEE)
+					mask_state = "seashallow_over1"
+				if (FLOOD_BAND_WAIST)
+					mask_state = "seashallow_over2"
+				if (FLOOD_BAND_DEEP)
+					mask_state = "seashallow_over3"
 		return mask_state
 	return null
 
