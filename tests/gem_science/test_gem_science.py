@@ -95,6 +95,19 @@ class GemScienceTest(unittest.TestCase):
         # A boule is not a gemstone, so it has no trade value as a stone.
         self.assertNotIn('/obj/item/stack/gemstone/ruby_boule', self.text)
 
+    def test_gem_testing(self):
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        for path, node in (('/obj/item/gem_tester', 'optics_instruments'), ('/obj/item/gem_tester/scale', 'optics_instruments'),
+                           ('/obj/item/gem_tester/refractometer', 'electricity')):
+            self.assertIn(f',{path},', recipes)
+            self.assertIn(f'"{path}" = "{node}",', nodes)
+        # A mapped stone splits half as often; a refractometer cannot read diamond.
+        self.assertIn('(inclusions_mapped ? 2 : 1)', gems)
+        self.assertIn('list("diamond", 10, 3.52, 0, FALSE)', self.text)
+        self.assertIn('list("ruby", 9, 4.0, 1.77, TRUE)', self.text)
+
     def test_included_after_lanyards(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertLess(dme.index('lanyards.dm'), dme.index('gem_science.dm'))
