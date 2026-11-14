@@ -3,7 +3,7 @@
 	var/capacity = max(1, (((strength - 1) / 2) + 1) * 59)
 	return max(0, carried_weight) / capacity
 
-/proc/bicycle_step_delay(load_ratio, fastest = 1.5, slowest = 6)
+/proc/bicycle_step_delay(load_ratio, fastest = 1.8, slowest = 6)
 	return Clamp(fastest * (1 + max(0, load_ratio)), fastest, slowest)
 
 /proc/bicycle_step_cost(load_ratio)
@@ -72,7 +72,7 @@
 	wheeled = TRUE
 	not_movable = TRUE
 	not_disassemblable = TRUE
-	vehicle_m_delay = 1.5
+	vehicle_m_delay = 1.8
 	mobcapacity = 1
 	storagecapacity = 0
 	var/tmp/pedal_timer = null
@@ -84,7 +84,7 @@
 	var/overlay_state = "bicycle_overlay"
 	var/control_type = /obj/item/vehicleparts/wheel/handle/bicycle
 	// Deciseconds per tile with no load, and the slowest a load can make it.
-	var/pedal_fastest = 1.5
+	var/pedal_fastest = 1.8
 	var/pedal_slowest = 6
 	// Pixels a seated rider is drawn above the ground, so the hips rest on the
 	// saddle and the feet on the pedals (tests/pedal_bicycle/sprites.py).

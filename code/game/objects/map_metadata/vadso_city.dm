@@ -226,24 +226,24 @@
 				else if (H.faction_text == RUSSIAN && H.stat == CONSCIOUS)
 					c2++
 		if (c1 == c2 && c1 != 0)
-			a4_control = "none"
+			a5_control = "none"
 			cust_color = "white"
 		else if (c1 > c2)
-			a4_control = "British Armed Forces"
+			a5_control = "British Armed Forces"
 			cust_color = "blue"
 		else if (c2 > c1)
-			a4_control = "Russian Armed Forces"
+			a5_control = "Russian Armed Forces"
 			cust_color = "red"
-		if (a4_control != "none")
-			if (a4_control == "Russian Armed Forces")
+		if (a5_control != "none")
+			if (a5_control == "Russian Armed Forces")
 				cust_color = "red"
 				rus_points++
-			else if (a4_control == "British Armed Forces")
+			else if (a5_control == "British Armed Forces")
 				cust_color = "blue"
 				british_points++
 			else
 				cust_color = "white"
-			to_chat(world, "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a4_control]</font></big>")
+			to_chat(world, "<big><b>[a5_name]</b>: <font color='[cust_color]'>[a5_control]</font></big>")
 		else
 			to_chat(world, "<big><b>[a5_name]</b>: Nobody</big>")
 	spawn(600) // 1 minute

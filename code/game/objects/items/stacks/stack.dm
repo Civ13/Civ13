@@ -370,6 +370,11 @@
 		if (guard_refusal)
 			to_chat(user, guard_refusal)
 		return
+	// Tools and second materials declared in config/craft_needs.json.
+	var/needs_refusal = craft_needs_refusal(H, recipe, quantity, src)
+	if (needs_refusal)
+		to_chat(user, needs_refusal)
+		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
 	var/obj/structure/simple_door/key_door/faction_door/faction_override_door = null
@@ -693,54 +698,7 @@
 			// Keep this exact item through the wait; cancellation must not recreate it.
 			handle_crafting_source_loc = loc
 
-	if (findtext(recipe.title, "carriage"))
-		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
-			to_chat(user, "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>")
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/rope))
-				var/obj/item/stack/material/rope/NR = H.l_hand
-				if (NR.amount >= 20)
-					NR.amount -= 20
-					if (NR.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/rope))
-				var/obj/item/stack/material/rope/NR = H.r_hand
-				if (NR.amount >= 20)
-					NR.amount -= 20
-					if (NR.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least 20 ropes on one of your hands in order to make this.</span>")
-					return
-
-	if (findtext(recipe.title, "raft"))
-		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
-			to_chat(user, "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>")
-			return
-		else
-			if (istype(H.l_hand, /obj/item/stack/material/rope))
-				var/obj/item/stack/material/rope/NR = H.l_hand
-				if (NR.amount >= 2)
-					NR.amount -= 2
-					if (NR.amount <= 0)
-						qdelHandReturn(H.l_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>")
-					return
-			else if (istype(H.r_hand, /obj/item/stack/material/rope))
-				var/obj/item/stack/material/rope/NR = H.r_hand
-				if (NR.amount >= 2)
-					NR.amount -= 2
-					if (NR.amount <= 0)
-						qdelHandReturn(H.r_hand, H)
-				else
-					to_chat(user, "<span class = 'warning'>You need at least a stack of 2 ropes on one of your hands in order to make this.</span>")
-					return
-	else if (recipe.result_type == /obj/item/stack/material/electronics)
+	if (recipe.result_type == /obj/item/stack/material/electronics)
 		if (H.getStatCoeff("crafting") < 2.2)
 			to_chat(H, SPAN_DANGER("This is too complex for your skill level."))
 			return
@@ -1719,6 +1677,11 @@
 	var/offer_stone_hatchet = istype(src, /obj/item/stack/material/stone) && recipe.result_type == /obj/item/weapon/material/hatchet/tribal
 	// Retain and recheck tools, secondary stock, occupied tile and research after
 	// the wait. No debit occurs on an interrupted or invalidated action.
+	// Tools and second materials must still be there; they are paid below.
+	needs_refusal = craft_needs_refusal(H, recipe, quantity, src)
+	if (needs_refusal)
+		to_chat(user, needs_refusal)
+		return
 	if (press_construction && !press_construction.valid())
 		return
 	if (joinery && !joinery.valid())
@@ -1743,6 +1706,7 @@
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)
 			qdel(crafting_handle)
+		craft_needs_pay(H, recipe, quantity, src)
 		// Trial and error: an early attempt at an unknown subject can fail (subject_prototypes.dm).
 		if (trial_craft_ruined(user, "[recipe.result_type]"))
 			return

@@ -440,7 +440,7 @@
 				if (I_area != istype(I_area, /area/caribbean/prison/jail) && I_area == src_area)
 					CheckForContraband(I)
 			for(var/mob/living/human/H in range(7, src))
-				if (H.civilization != "Sheriff Office" || H.civilization != "Government")
+				if (H.civilization != "Sheriff Office" && H.civilization != "Government")
 					for(var/obj/item/I in H.contents)
 						CheckForContraband(I)
 					var/obj/item/weapon/storage/B
@@ -579,7 +579,7 @@
 		if (H.original_job.base_type_flag() == CIVILIAN)
 			. = (istype(H.l_hand, /obj/item/weapon/gun) || istype(H.r_hand, /obj/item/weapon/gun))
 		if (H.original_job.base_type_flag() == CIVILIAN)
-			. = (istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material))
+			. = (. || istype(H.l_hand, /obj/item/weapon/material) || istype(H.r_hand, /obj/item/weapon/material))
 		else
 			. = faction != H.original_job.base_type_flag()
 

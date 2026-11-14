@@ -114,7 +114,7 @@
 		return
 	// Check if escorted vessel reached a safe zone (within 100nm of a friendly port)
 	if(global.subcom_map)
-		var/dist = euclidean_distance(escort_target.x_pos, escort_target.y_pos, global.subcom_map.start_x, global.subcom_map.start_y)
+		var/dist = euclidean_distance(escort_target.x_pos, escort_target.y_pos, target_x, target_y)
 		if(dist <= 100)
 			complete_mission("Escort vessel reached safe waters. Mission complete.")
 

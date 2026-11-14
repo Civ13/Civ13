@@ -78,7 +78,7 @@ obj/aiming_overlay/proc/update_aiming_deferred()
 		cancel_aiming()
 		return
 
-	if (!locked && lock_time >= world.time)
+	if (!locked && world.time >= lock_time)
 		locked = TRUE
 		update_icon()
 

@@ -191,6 +191,12 @@ SUITES = {
     'geiger_counter': {'files': ('tests/geiger_counter/test_geiger.py',),
         'paths': ('tests/geiger_counter/',),
         'shared_paths': ('code/modules/1713/radiation.dm',)},
+    'press_anchoring': {'files': ('tests/press_anchoring/test_anchoring.py',),
+        'paths': ('tests/press_anchoring/',),
+        'shared_paths': ('code/modules/1713/factory_packaging.dm', 'tests/primitive_woodworking/source_adapter.py')},
+    'splash_watering': {'files': ('tests/splash_watering/test_splash.py',),
+        'paths': ('tests/splash_watering/',),
+        'shared_paths': ('code/modules/reagents/Chemistry-Holder.dm', 'tests/primitive_woodworking/source_adapter.py')},
     'matchbox_pickup': {'files': ('tests/matchbox/test_pickup.py',),
         'paths': ('tests/matchbox/',),
         'shared_paths': ('code/game/objects/items/weapons/storage/boxes.dm',
@@ -339,6 +345,8 @@ SUITES = {
     'gong_fastening': {'files': ('tests/gong_fastening/test_fastening.py',), 'paths': (
         'tests/gong_fastening/', 'code/game/objects/structures/gong.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
+    'lighting_overlay_idle': {'files': ('tests/lighting_idle/test_idle.py',),
+        'paths': ('tests/lighting_idle/', 'code/processes/lighting/overlays.dm')},
     'curtain_lighting': {'files': ('tests/curtain_lighting/test_curtain_lighting.py',), 'paths': (
         'tests/curtain_lighting/', 'code/game/objects/structures/curtains.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -868,6 +876,11 @@ SUITES = {
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/misc.dm')},
+    'craft_needs': {'files': ('tests/craft_needs/test_craft_needs.py',),
+        'paths': ('tests/craft_needs/', 'code/game/objects/items/stacks/craft_needs.dm',
+                  'config/craft_needs.json'),
+        'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/craft_guards.dm',
+                         'scripts/build-crafting-atlas.py')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -1831,6 +1844,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
+        'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
+        'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
         'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
@@ -2077,7 +2093,7 @@ SUITES = {
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
-        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi',
+        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',

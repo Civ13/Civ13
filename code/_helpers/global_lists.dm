@@ -164,6 +164,7 @@ var/global/list/string_slot_flags = list(
 var/list/hair_colors = list(
 	"Black" = "#090806",
 	"Light Brown" = "#6A4E42",
+	"Brown" = "#4F3B2E",
 	"Dark Brown" = "#3B3024",
 	"Red" = "#B55239",
 	"Orange" = "#91553D",
@@ -179,6 +180,7 @@ var/list/eye_colors = list(
 	"Dark Brown" = "#2B1D0E",
 	"Brown" = "#542A0E",
 	"Green" = "#4B7248",
+	"Red" = "#8B1A1A",
 	"Blue" = "#5EA4E7",
 )
 

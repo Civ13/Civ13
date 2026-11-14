@@ -16,6 +16,11 @@
 /process/lighting_overlays/fire()
 	if (processing_batch)
 		return PROCESS_TICK_CHECK_RETURNED_EARLY
+	if (!current_list && lighting_update_overlays && !lighting_update_overlays.len)
+		current_list = null
+		batch_index = 1
+		processing_batch = FALSE
+		return
 	processing_batch = TRUE
 	if (!current_list)
 		var/batch_size = min(lighting_update_overlays.len, 2000)

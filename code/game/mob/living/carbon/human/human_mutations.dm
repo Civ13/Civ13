@@ -4,21 +4,21 @@
 		if (src && orc+goblin+ant+crab+wolfman+lizard+gorillaman<=0)
 			switch(targetraceinput)
 				if ("orc")
-					orc = 0
+					orc = 1
 				if ("goblin")
-					goblin = 0
+					goblin = 1
 				if ("ant")
-					ant = 0
+					ant = 1
 				if ("crab")
-					crab = 0
+					crab = 1
 				if ("wolfman")
-					wolfman = 0
+					wolfman = 1
 				if ("lizard")
-					lizard = 0
+					lizard = 1
 				if ("gorillaman")
-					gorillaman = 0
+					gorillaman = 1
 				if ("droid")
-					droid = 0
+					droid = 1
 /mob/living/human/proc/checkrace()
 	if(!orc && !goblin && !ant && !wolfman && !lizard && !gorillaman && !crab && !droid && can_mutate)
 		return TRUE
@@ -82,9 +82,7 @@
 		if(stat == DEAD) //if dead.
 			if(!istype(get_area(src), /area/caribbean/admin)) //To prevent people from mutating into zombies in the sleepzone.
 				if (prob(30)) //decent chance.
-					var/i
-					for(i=1,i<contents.len,i++)//dump all items on ground
-						drop_item(contents[i])
+					strip(loc, TRUE) //dump all carried and worn items on the ground, keeping organs with the body
 					var/mob/living/simple_animal/hostile/human/zombie/playerzombie //make a var for the zombie
 					playerzombie = new /mob/living/simple_animal/hostile/human/zombie/ //make a zombie!
 					//transferring vars.

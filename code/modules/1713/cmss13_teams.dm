@@ -141,10 +141,11 @@
 		for (var/mob/living/human/other in human_mob_list)
 			if (other != M && other.fire_team_lead && other.fire_team == team && other.fire_team_kind == kind && other.fire_team_group == group)
 				other.fire_team_lead = FALSE
+	var/keep_lead = M.fire_team_lead && M.fire_team == team && M.fire_team_kind == kind && M.fire_team_group == group
 	M.fire_team = team
 	M.fire_team_kind = kind
 	M.fire_team_group = group
-	M.fire_team_lead = make_lead ? TRUE : (M.fire_team_lead && M.fire_team == team)
+	M.fire_team_lead = make_lead ? TRUE : keep_lead
 	to_chat(M, "<span class='notice'>You are now in <b>fire team [team]</b> of [fire_team_group_title(kind, group)][make_lead ? ", as its leader" : ""].</span>")
 	return TRUE
 

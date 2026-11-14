@@ -1,5 +1,5 @@
-"""Original hand-placed 32px art for player paintings: easel, canvases, frames,
-ground pigments and the worn locket.
+"""Original hand-placed art for player paintings: easel, canvases, frames,
+ground pigments, the oil paint box, the worn locket and the 64px gallery frames.
 
 Every pixel comes from the fixed palettes, coordinate lists and character
 stamps in this file; there is no external, traced or generated artwork.
@@ -8,9 +8,10 @@ root:
 
     python3 tests/sprites/create_paintings.py [--check] [--preview sheet.png]
 
-It writes icons/obj/paintings.dmi (one direction) and icons/mob/paintings.dmi
-(four directions: SOUTH, NORTH, EAST, WEST). `--check` writes nothing and
-fails if the committed sheets differ from what this script draws.
+It writes icons/obj/paintings.dmi (32px, one direction), icons/mob/paintings.dmi
+(32px, four directions: SOUTH, NORTH, EAST, WEST) and
+icons/obj/paintings_gallery.dmi (64px, one direction). `--check` writes nothing
+and fails if the committed sheets differ from what this script draws.
 
 The game overlays the player's painting (a generated icon) under or inside
 these sprites, so the art windows below are a contract with the code. They
@@ -28,12 +29,21 @@ are BYOND coordinates: x 1..32 from the left, y 1..32 from the BOTTOM.
     locket (SOUTH)    8x8 face x 13..20, y 11..18 transparent, 1px bezel
                       around it; the other directions show cord and edge only
 
+The 64px gallery frames are built with DrawBox from the top-left corner, so
+their windows are given both ways (pixels 0..63 from the TOP-LEFT, then BYOND):
+
+    gallery           frame on the outer four pixels; window x 4..59, y 4..59
+                      from the top-left (BYOND x 5..60, y 5..60) transparent
+    gallery_wide      frame only in the bottom 32 rows (rows 32..63 from the
+                      top); rows 0..31 transparent; window x 4..59, y 36..59
+                      from the top-left (BYOND x 5..60, y 5..28) transparent
+
 `main` asserts every window before writing. To change the look, edit this
 script and rerun it; do not hand-edit the DMIs.
 """
 import sys
 from pathlib import Path
-from PIL import Image, ImageChops, ImageDraw
+from PIL import Image, ImageChops, ImageDraw, PngImagePlugin
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_belt_pouches import dmi_frames, figure, tile, write_dmi  # noqa: E402
@@ -41,7 +51,9 @@ from create_belt_pouches import dmi_frames, figure, tile, write_dmi  # noqa: E40
 ROOT = Path(__file__).resolve().parents[2]
 OBJ = ROOT / 'icons/obj/paintings.dmi'
 MOB = ROOT / 'icons/mob/paintings.dmi'
+GALLERY = ROOT / 'icons/obj/paintings_gallery.dmi'
 S = 32
+G = 64  # gallery frame tile
 
 PRIMED = '#e9dfc8'
 # wood, light to dark, and the outline (the leather/wood ramp of the belt pouches)
@@ -55,6 +67,11 @@ BZ0, BZ1, BZ2 = '#dcae56', '#94692a', '#5a3e14'
 GILT, GILT_D = '#c1af5e', '#996c35'
 # hanging frame, as the painting1..13 decals: near-black edge over dark wood
 FR_EDGE, FR_WOOD, FR_LIT = '#1b140d', '#402308', '#6a4016'
+# gilded museum frame, light to dark, around #c9a24a
+GOLD = ('#f6e2a0', '#e2c06a', '#c9a24a', '#9c7730', '#6c4d1c')
+# paint pots of the oil box and its brush
+POTS = ('#c8321e', '#c99a3a', '#2f6e45', '#2a3f8f', '#e8e4da')
+FERRULE, BRISTLE, BRISTLE_D = '#b9bcc4', '#e6d3a0', '#b89a5c'
 # worn cord on skin
 NECK, NECK_D = '#8c5c30', '#5c3819'
 
@@ -65,15 +82,29 @@ WIN_TABLE = (9, 24, 11, 26)
 WIN_WALL_FACE = (2, 31, 2, 31)
 WIN_WALL = (3, 30, 3, 30)
 WIN_LOCKET = (13, 20, 11, 18)
+# Gallery windows on the 64px tile, pixels from the TOP-LEFT (x1, x2, y1, y2),
+# inclusive, and the rectangle the frame itself occupies.
+WIN_GALLERY = (4, 59, 4, 59)
+WIN_GALLERY_WIDE = (4, 59, 36, 59)
+BOX_GALLERY = (0, 63, 0, 63)
+BOX_GALLERY_WIDE = (0, 63, 32, 63)
 
 PIGMENTS = {
     'pigment_charcoal': '#2a2522',
     'pigment_red_ochre': '#9a3d26',
     'pigment_yellow_ochre': '#c99a3a',
     'pigment_bone_white': '#ece6d6',
+    # base, light and (optionally) shade given outright
+    'pigment_malachite': ('#2f6e45', '#5e9a62'),
+    'pigment_vermilion': ('#c8321e', '#e0603a'),
+    # lead white is the cold white: blue-grey shade against bone white's warm one
+    'pigment_lead_white': ('#e8e4da', '#ffffff', '#9aa6c0'),
+    'pigment_ultramarine': ('#2a3f8f', '#5068b8'),
 }
 OBJ_ORDER = ('easel', 'easel_canvas', 'canvas_miniature', 'frame_miniature', 'canvas_table',
-             'frame_table', 'canvas_wall', 'frame_wall') + tuple(PIGMENTS)
+             'frame_table', 'canvas_wall', 'frame_wall') + tuple(PIGMENTS) + (
+                 'oil_paints', 'canvas_gallery', 'canvas_gallery_wide')
+GALLERY_ORDER = ('gallery', 'gallery_wide')
 MOB_ORDER = ('locket',)
 
 # Ground pigment heaped on a scrap of leather. L M D are the pigment's light,
@@ -282,7 +313,11 @@ def frame_wall():
 # ------------------------------------------------------------------ pigments
 
 def pigment(colour):
-    pal = {'L': shade(colour, 1.22), 'M': colour, 'D': shade(colour, 0.72),
+    """A pile of one colour, or of (base, light[, shade]) given outright."""
+    light = dark = None
+    if not isinstance(colour, str):
+        colour, light, dark = (tuple(colour) + (None,))[:3]
+    pal = {'L': light or shade(colour, 1.22), 'M': colour, 'D': dark or shade(colour, 0.72),
            '0': W0, '1': W1, '2': W2, '3': W3, 'o': OUT}
     img = new()
     left, top = PIGMENT_AT
@@ -291,6 +326,187 @@ def pigment(colour):
             if ch != '.':
                 img.putpixel((left + x, top + y), rgba(pal[ch]))
     return img
+
+
+# ---------------------------------------------------------------- oil paints
+
+def oil_paints():
+    """An open walnut paint box: five pots in the tray, a brush, brass fittings."""
+    img = new()
+    # raised lid behind the tray, its inside panel inlaid with a brass line
+    fill(img, (5, 28, 19, 27), W1)
+    fill(img, (6, 27, 20, 26), W3)
+    for x in range(5, 29):
+        put(img, x, 27, W0 if x % 7 else W1)
+    for x in range(9, 25):
+        put(img, x, 25, BZ1)
+        put(img, x, 21, BZ2)
+    for y in range(21, 26):
+        put(img, 8, y, BZ1)
+        put(img, 25, y, BZ2)
+    for x, y in ((8, 25), (25, 25)):
+        put(img, x, y, BZ0)
+    for x, y in ((16, 24), (17, 24), (15, 23), (18, 23), (16, 22), (17, 22)):  # maker's mark
+        put(img, x, y, BZ0 if y >= 23 else BZ1)
+    # tray
+    fill(img, (4, 29, 12, 18), W4)
+    for y in range(12, 19):
+        put(img, 4, y, W1)
+        put(img, 29, y, W3)
+    for i, c in enumerate(POTS):  # pots, lit from the top left
+        x = 5 + i * 5
+        fill(img, (x, x + 3, 15, 18), c)
+        for px in range(x, x + 4):
+            put(img, px, 15, shade(c, 0.62))
+        for py in range(16, 19):
+            put(img, x + 3, py, shade(c, 0.8))
+        put(img, x, 18, shade(c, 1.45))
+        put(img, x + 1, 18, shade(c, 1.2))
+        put(img, x, 17, shade(c, 1.2))
+    # the brush laid along the front of the tray
+    for x in range(6, 19):
+        put(img, x, 13, '#7a1f16' if x % 6 else '#a23a26')
+    for x in (19, 20, 21):
+        put(img, x, 13, FERRULE)
+    put(img, 20, 13, '#ffffff')
+    for x in (22, 23, 24, 25):
+        put(img, x, 13, BRISTLE if x < 25 else BRISTLE_D)
+    put(img, 26, 13, POTS[0])  # still wet with vermilion
+    # front panel with brass corners, clasp and little feet
+    fill(img, (4, 29, 5, 11), W1)
+    for x in range(4, 30):
+        put(img, x, 11, W0)
+        put(img, x, 5, W3)
+        if x % 9 == 2 and x < 27:
+            put(img, x, 8, W2)  # grain
+            put(img, x + 1, 7, W2)
+    for y in range(5, 12):
+        put(img, 29, y, W2)
+    for x, y in ((4, 11), (5, 11), (4, 10), (29, 11), (28, 11), (29, 10),
+                 (4, 5), (5, 5), (4, 6), (29, 5), (28, 5), (29, 6)):
+        put(img, x, y, BZ0 if y >= 10 and x < 16 else BZ1)
+    for x, y, c in ((16, 11, BZ0), (17, 11, BZ0), (16, 10, BZ0), (17, 10, BZ1), (16, 9, BZ1), (17, 9, BZ2),
+                    (15, 10, BZ1), (18, 10, BZ2)):
+        put(img, x, y, c)
+    for x in (6, 7, 26, 27):
+        put(img, x, 4, W3)
+    return outline(img)
+
+
+# ------------------------------------------------------------ gallery canvas
+
+def great_canvas(x1, x2, top, bottom):
+    """A great stretched canvas stood on two workshop blocks: a deep stretcher
+    side with tacks on the near (left) edge, bronze corner guards and the
+    sheen of fresh primer on the face x1..x2, bottom..top."""
+    img = new()
+    for x, y in box(x1, x2, bottom, top):
+        c = PRIMED
+        if y == top:
+            c = LINEN_L
+        elif y == bottom or x == x2:
+            c = LINEN_D
+        elif (x - x1) + (top - y) in (8, 9, 12):
+            c = '#fbf6e6'  # sheen
+        elif (x2 - x) + (y - bottom) < 9:
+            c = shade(PRIMED, 0.93)  # the far corner falls into shade
+        put(img, x, y, c)
+    # the near side of the stretcher: folded linen tacked over a deep wooden bar
+    for y in range(bottom, top + 1):
+        put(img, x1 - 2, y, W1 if y % 5 else W2)
+        put(img, x1 - 1, y, LINEN_D if (y - bottom) % 4 != 1 else W3)
+    put(img, x1 - 2, top, W0)
+    put(img, x1 - 1, top, LINEN_L)
+    # bronze corner guards
+    for cx, sx in ((x1, 1), (x2, -1)):
+        for cy, sy in ((top, -1), (bottom, 1)):
+            lit = BZ0 if (sx > 0 or sy < 0) else BZ1
+            for i in range(5):
+                put(img, cx + sx * i, cy, lit if sy < 0 else BZ1)
+                put(img, cx, cy + sy * i, lit if sx > 0 else BZ1)
+            put(img, cx + sx, cy + sy, BZ1)
+            put(img, cx + sx * 2, cy + sy, BZ2)
+            put(img, cx + sx, cy + sy * 2, BZ2)
+    # blocks it stands on
+    for bx in (x1 + 2, x2 - 5):
+        for x in range(bx, bx + 4):
+            put(img, x, bottom - 1, W1 if x < bx + 3 else W2)
+            put(img, x, bottom - 2, W2 if x < bx + 3 else W3)
+    return outline(img)
+
+
+# ------------------------------------------------------------ gallery frames
+
+def new64():
+    return Image.new('RGBA', (G, G))
+
+
+def gilded_frame(rect, win):
+    """An ornate gilded frame on the 64px tile: rect is what it occupies, win
+    the transparent window, both (x1, x2, y1, y2) from the TOP-LEFT. The band
+    between them is four pixels: dark edge, outer rail, beaded cove and inner
+    lip, lit from the top left, with a boss in each corner, leaves running out
+    of the corners and a cartouche in the middle of each side."""
+    img = new64()
+    x1, x2, y1, y2 = rect
+    band = win[0] - x1
+    assert (x2 - win[1], win[2] - y1, y2 - win[3]) == (band,) * 3 and band == 4
+    boss = ((0, 0, 2), (0, 1, 3), (2, 3, 4))
+    for y in range(y1, y2 + 1):
+        for x in range(x1, x2 + 1):
+            if win[0] <= x <= win[1] and win[2] <= y <= win[3]:
+                continue
+            dl, dr, dt, db = x - x1, x2 - x, y - y1, y2 - y
+            d = min(dl, dr, dt, db)
+            if d == 0:
+                c = FR_EDGE
+            elif min(dl, dr) < band and min(dt, db) < band:
+                # corner boss, the same way up in every corner
+                bx = dl - 1 if dl < band else band - 1 - dr
+                by = dt - 1 if dt < band else band - 1 - db
+                c = GOLD[boss[by][bx]]
+            else:
+                lit = d in (dl, dt) and d not in (dr, db)  # top and left sides face the light
+                if d in (dt, db):
+                    a, length = dl - band, x2 - x1 + 1 - 2 * band
+                else:
+                    a, length = dt - band, y2 - y1 + 1 - 2 * band
+                near = min(a, length - 1 - a)  # distance from the corner boss
+                mid = abs(2 * a - (length - 1)) // 2  # distance from the middle of the side
+                if d == 3:  # inner lip: the bottom and right lips face up into the light
+                    i = 3 if lit else 1
+                    if near == 0:
+                        i = 4
+                elif near < 7:  # two leaves curling out of the corner
+                    i = ((4, 4), (0, 1), (0, 0), (1, 0), (1, 2), (3, 1), (4, 4))[near][d - 1]
+                    if not lit and i < 4:
+                        i += 1
+                elif mid <= 4:  # cartouche
+                    i = ((0, 0), (0, 1), (1, 0), (2, 1), (4, 4))[mid][d - 1]
+                    if not lit and 0 < i < 4:
+                        i += 1
+                elif d == 1:  # outer rail
+                    i = 1 if lit else 3
+                else:  # cove with a run of beads
+                    i = (0, 3, 2)[(near - 7) % 3]
+                    if not lit and i == 2:
+                        i = 3
+                c = GOLD[i]
+            img.putpixel((x, y), rgba(c))
+    return img
+
+
+def assert_gallery(img, rect, win, name):
+    """The window and everything outside rect is clear; the band is opaque."""
+    for y in range(G):
+        for x in range(G):
+            inside = rect[0] <= x <= rect[1] and rect[2] <= y <= rect[3]
+            window = win[0] <= x <= win[1] and win[2] <= y <= win[3]
+            a = img.getpixel((x, y))[3]
+            if window or not inside:
+                assert a == 0, '%s: (%d,%d) from the top-left must be transparent' % (name, x, y)
+            else:
+                assert a == 255, '%s: frame gap at (%d,%d) from the top-left' % (name, x, y)
 
 
 # -------------------------------------------------------------------- locket
@@ -345,8 +561,16 @@ def build():
         'canvas_wall': canvas_wall(), 'frame_wall': frame_wall(),
     }
     items.update({name: pigment(c) for name, c in PIGMENTS.items()})
+    items['oil_paints'] = oil_paints()
+    items['canvas_gallery'] = great_canvas(4, 30, 31, 4)
+    items['canvas_gallery_wide'] = great_canvas(4, 31, 24, 9)
     items = {name: items[name] for name in OBJ_ORDER}
     mobs = {'locket': locket()}
+    gallery = {'gallery': gilded_frame(BOX_GALLERY, WIN_GALLERY),
+               'gallery_wide': gilded_frame(BOX_GALLERY_WIDE, WIN_GALLERY_WIDE)}
+    assert tuple(gallery) == GALLERY_ORDER
+    assert_gallery(gallery['gallery'], BOX_GALLERY, WIN_GALLERY, 'gallery')
+    assert_gallery(gallery['gallery_wide'], BOX_GALLERY_WIDE, WIN_GALLERY_WIDE, 'gallery_wide')
 
     assert_window(items['easel_canvas'], WIN_EASEL, 'easel_canvas', colour=PRIMED)
     assert_window(items['canvas_miniature'], WIN_MINIATURE, 'canvas_miniature', colour=PRIMED)
@@ -372,26 +596,35 @@ def build():
     for x, y in box(*WIN_TABLE):
         blank.putpixel((x - 1, S - y), (0, 0, 0, 0))
     assert ImageChops.difference(blank, items['frame_table']).getbbox() is None
-    return items, mobs
+    return items, mobs, gallery
 
 
 # ------------------------------------------------------------------- preview
 
-def sample(size):
+def sample(size, height=None):
     """A test painting: sky, sun, hills and corner marks so the window edges show."""
-    img = Image.new('RGBA', (size, size))
-    for y in range(size):
-        for x in range(size):
-            t = y / (size - 1)
+    w, h = size, height or size
+    img = Image.new('RGBA', (w, h))
+    for y in range(h):
+        for x in range(w):
+            t = y / (h - 1)
             c = (int(70 + 120 * t), int(120 + 80 * t), int(210 - 60 * t))
-            if y > size * 0.55 + (x % (size // 2 or 1)) * 0.25:
-                c = (60, 130 - (x * 40 // size), 60)
-            if (x - size * 0.7) ** 2 + (y - size * 0.3) ** 2 <= (size * 0.16) ** 2:
+            if y > h * 0.55 + (x % (w // 2 or 1)) * 0.25 * h / w:
+                c = (60, 130 - (x * 40 // w), 60)
+            if (x - w * 0.7) ** 2 + (y - h * 0.3) ** 2 <= (min(w, h) * 0.16) ** 2:
                 c = (250, 214, 80)
             img.putpixel((x, y), c + (255,))
-    for x, y in ((0, 0), (size - 1, 0), (0, size - 1), (size - 1, size - 1)):
+    for x, y in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)):
         img.putpixel((x, y), (230, 40, 200, 255))
     return img
+
+
+def gallery_art(frame, win):
+    """A gallery frame over art built the way the game does it, from the top-left."""
+    out = new64()
+    out.alpha_composite(sample(win[1] - win[0] + 1, win[3] - win[2] + 1), (win[0], win[2]))
+    out.alpha_composite(frame)
+    return out
 
 
 def with_art(win, under=None, over=None, behind=None):
@@ -407,7 +640,7 @@ def with_art(win, under=None, over=None, behind=None):
     return out
 
 
-def preview(items, mobs, out, scale=6):
+def preview(items, mobs, gallery, out, scale=6):
     cell, label, pad = S * scale, 28, 10
     wall_art = with_art((1, 32, 1, 32), over=items['frame_wall'])
     easel_blank = items['easel'].copy()
@@ -422,7 +655,14 @@ def preview(items, mobs, out, scale=6):
          ('canvas_table', items['canvas_table']), ('frame_table', items['frame_table']),
          ('art x9-24 y11-26\n+ frame_table', with_art(WIN_TABLE, items['canvas_table'], items['frame_table']))],
         [('canvas_wall', items['canvas_wall']), ('frame_wall', items['frame_wall']),
-         ('32x32 art\n+ frame_wall', wall_art)] + [(n.replace('pigment_', 'pigment_\n'), items[n]) for n in PIGMENTS],
+         ('32x32 art\n+ frame_wall', wall_art)],
+        [(n.replace('pigment_', 'pigment_\n'), items[n]) for n in PIGMENTS],
+        [('oil_paints', items['oil_paints']), ('canvas_gallery', items['canvas_gallery']),
+         ('canvas_gallery_wide', items['canvas_gallery_wide']), ('canvas_wall\n(for scale)', items['canvas_wall'])],
+        [('gallery 64x64', gallery['gallery']),
+         ('art x4-59 y4-59 (top-left)\n+ gallery', gallery_art(gallery['gallery'], WIN_GALLERY)),
+         ('gallery_wide 64x64', gallery['gallery_wide']),
+         ('art x4-59 y36-59 (top-left)\n+ gallery_wide', gallery_art(gallery['gallery_wide'], WIN_GALLERY_WIDE))],
     ]
     names = ('SOUTH', 'NORTH', 'EAST', 'WEST')
     for uniform in (None, 'white_tunic'):
@@ -440,14 +680,16 @@ def preview(items, mobs, out, scale=6):
             row.append(('locket SOUTH\n(state only)', mobs['locket'][0]))
             row.append(('locket EAST\n(state only)', mobs['locket'][2]))
         rows.append(row)
-    cols = max(len(r) for r in rows)
-    img = Image.new('RGBA', (cols * (cell + pad) + pad + 80, len(rows) * (cell + label + pad) + pad),
-                    (58, 62, 70, 255))
+    # rows move to the 64px tile when they hold gallery frames
+    width = max(sum(icon.width * scale + pad for _, icon in row) + row[0][1].width * 2 + 8 for row in rows) + pad
+    height = sum(row[0][1].height * scale + label + pad for row in rows) + pad
+    img = Image.new('RGBA', (width, height), (58, 62, 70, 255))
     d = ImageDraw.Draw(img)
-    for r, row in enumerate(rows):
-        y = pad + r * (cell + label + pad)
-        for c, (name, icon) in enumerate(row):
-            x = pad + c * (cell + pad)
+    y = pad
+    for row in rows:
+        x = pad
+        for name, icon in row:
+            cell = icon.width * scale
             d.multiline_text((x + 2, y), name, fill=(240, 240, 240, 255), spacing=1)
             for cy in range(0, cell, scale * 2):  # checker so transparency reads
                 for cx in range(0, cell, scale * 2):
@@ -455,10 +697,12 @@ def preview(items, mobs, out, scale=6):
                     d.rectangle((x + cx, y + label + cy, x + cx + scale * 2 - 1, y + label + cy + scale * 2 - 1),
                                 fill=(92, 96, 104, 255) if dark else (108, 112, 120, 255))
             img.alpha_composite(icon.resize((cell, cell), Image.NEAREST), (x, y + label))
-        x = pad + len(row) * (cell + pad)
+            x += cell + pad
         d.text((x, y), '1x', fill=(240, 240, 240, 255))
+        step = row[0][1].width + 4
         for i, (name, icon) in enumerate(row):  # true-size strip
-            img.alpha_composite(icon, (x + (i % 2) * 36, y + label + (i // 2) * 36))
+            img.alpha_composite(icon, (x + (i % 2) * step, y + label + (i // 2) * step))
+        y += row[0][1].height * scale + label + pad
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
 
@@ -476,17 +720,42 @@ def same(path, states, dirs):
     return True
 
 
+def write_gallery(path, states):
+    """write_dmi for the one-direction 64px sheet."""
+    sheet = Image.new('RGBA', (len(states) * G, G))
+    text = '# BEGIN DMI\nversion = 4.0\n\twidth = %d\n\theight = %d\n' % (G, G)
+    for i, (name, frame) in enumerate(states.items()):
+        sheet.paste(frame, (i * G, 0))
+        text += 'state = "%s"\n\tdirs = 1\n\tframes = 1\n' % name
+    meta = PngImagePlugin.PngInfo()
+    meta.add_text('Description', text + '# END DMI\n', zip=True)
+    sheet.save(path, format='PNG', pnginfo=meta, optimize=True)
+
+
+def same_gallery(path, states):
+    if not path.exists():
+        return False
+    starts, sheet = dmi_frames(path)
+    if list(starts) != list(states) or sheet.size != (len(states) * G, G):
+        return False
+    if 'width = %d\n\theight = %d\n' % (G, G) not in Image.open(path).info.get('Description', ''):
+        return False
+    return all(sheet.crop((starts[n] * G, 0, starts[n] * G + G, G)).tobytes() == f.tobytes()
+               for n, f in states.items())
+
+
 def main(argv):
-    items, mobs = build()
+    items, mobs, gallery = build()
     if '--check' in argv:
-        ok = same(OBJ, items, 1) and same(MOB, mobs, 4)
+        ok = same(OBJ, items, 1) and same(MOB, mobs, 4) and same_gallery(GALLERY, gallery)
         print('paintings sprites', 'match' if ok else 'DIFFER from create_paintings.py')
         return 0 if ok else 1
     write_dmi(OBJ, items, 1)
     write_dmi(MOB, mobs, 4)
-    print('wrote', OBJ.relative_to(ROOT), 'and', MOB.relative_to(ROOT))
+    write_gallery(GALLERY, gallery)
+    print('wrote', OBJ.relative_to(ROOT), MOB.relative_to(ROOT), 'and', GALLERY.relative_to(ROOT))
     if '--preview' in argv:
-        preview(items, mobs, argv[argv.index('--preview') + 1])
+        preview(items, mobs, gallery, argv[argv.index('--preview') + 1])
         print('wrote', argv[argv.index('--preview') + 1])
     return 0
 
