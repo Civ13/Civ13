@@ -228,7 +228,7 @@
 /obj/item/weapon/wirecutters
 	tool_flags = TOOL_WIRECUTTER
 	name = "wirecutters"
-	tool_material = "iron"
+	tool_material = "steel"
 	desc = "This cuts wires."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "cutters-y"

@@ -61,7 +61,7 @@ TOOL_MATERIALS = {
     '/obj/item/weapon/chisel': 'stone', '/obj/item/weapon/chisel/metal': 'iron',
     '/obj/item/weapon/hammer': 'iron', '/obj/item/weapon/hammer/tribalhammer': 'wood',
     '/obj/item/weapon/hammer/modern': 'steel', '/obj/item/weapon/wrench': 'iron',
-    '/obj/item/weapon/screwdriver': 'iron', '/obj/item/weapon/wirecutters': 'iron',
+    '/obj/item/weapon/screwdriver': 'iron', '/obj/item/weapon/wirecutters': 'steel',
     '/obj/item/weapon/crowbar': 'iron', '/obj/item/weapon/saw': 'iron', '/obj/item/weapon/shears': 'iron',
 }
 
