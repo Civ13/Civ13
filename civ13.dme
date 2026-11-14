@@ -480,6 +480,7 @@
 #include "code\game\objects\items\paper\folder.dm"
 #include "code\game\objects\items\paper\paper.dm"
 #include "code\modules\paintings\painting_codec.dm"
+#include "code\modules\paintings\design_codes.dm"
 #include "code\modules\paintings\paintings.dm"
 #include "code\modules\paintings\painting_editor.dm"
 #include "code\modules\paintings\drawings.dm"

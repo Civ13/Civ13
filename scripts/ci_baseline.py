@@ -2135,6 +2135,10 @@ SUITES = {
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
         'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
+    'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
+        'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
+            'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
+            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',
