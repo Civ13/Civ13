@@ -84,7 +84,7 @@ var/global/list/mine_sweeps = list()
 	H.visible_message(SPAN_NOTICE("[H] streams \the [src] over the side."))
 
 /obj/structure/mine_sweep/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (streamed)
 			to_chat(user, SPAN_WARNING("Wind it in first."))
 			return

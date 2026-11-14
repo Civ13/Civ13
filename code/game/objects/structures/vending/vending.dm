@@ -118,7 +118,7 @@
 
 
 /obj/structure/vending/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (anchored)
 			user.visible_message("[user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
@@ -131,7 +131,7 @@
 			anchored = !anchored
 		return
 
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
 		if (do_after(user,50,src))

@@ -28,6 +28,8 @@ FACTIONS = 'code/game/mob/groups/factions.dm'
 RESEARCH = 'code/modules/research_tree/research_faction.dm'
 RENAME = 'code/game/mob/groups/faction_rename.dm'
 ROSTER = 'code/game/mob/groups/faction_roster.dm'
+COLONY = 'code/game/mob/groups/colony_charter.dm'
+PARTY = 'code/modules/persistence/party_train.dm'
 
 # Each control breaks one rule; the probe must then fail.
 CONTROLS = {
@@ -56,6 +58,10 @@ def build(directory, control):
         'leader.dm': proc_text(research, '/obj/map_metadata/proc/is_faction_leader(') + '\n' + proc_text(research, '/proc/faction_is_extant('),
         'rename.dm': proc_text(read(RENAME, control), '/proc/faction_rename_assoc_key('),
         'roster.dm': read(ROSTER, control),
+        'colony.dm': '\n'.join(proc_text(read(COLONY, control), name) for name in (
+            '/proc/colony_parent_valid(', '/obj/map_metadata/proc/faction_colonies(', '/obj/map_metadata/proc/colony_normalize(',
+            '/obj/map_metadata/proc/colony_rename(', '/obj/map_metadata/proc/colony_named_for(')) + '\n' +
+            proc_text(read(PARTY, control), '/proc/party_train_valid_party('),
     }
     for name, text in parts.items():
         (directory / name).write_text(text, encoding='utf-8')

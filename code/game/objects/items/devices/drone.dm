@@ -118,7 +118,7 @@
 		else
 			to_chat(user, SPAN_WARNING("\The [src] is already connected to a controller."))
 		return
-	if((istype(I, /obj/item/weapon/weldingtool) || istype(I, /obj/item/taperoll)) && broken)
+	if((is_tool(I, TOOL_WELDER) || istype(I, /obj/item/taperoll)) && broken)
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, 100, src))
 			visible_message("[user] repairs \the [src].")

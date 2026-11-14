@@ -31,7 +31,7 @@ bullet_act
 				return
 
 				 // Butchering mobs with a knife on harm intent.
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (is_tool(W, TOOL_KNIFE)))
 		if (stat == DEAD)
 			var/mob/living/human/H = user
 			if (istype(H))

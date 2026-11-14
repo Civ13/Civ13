@@ -79,15 +79,15 @@ def _routes(store, radio):
         '/load': lambda body: _load(store, body),
         # Home worlds: DM asks /account; the coordinator reads /accounts and answers /homes.
         '/account': lambda body: store.account(body['ckey'], body['op'], body.get('region'),
-                                                 body.get('body') in (True, 1)),
+                                                 body.get('body') in (True, 1), body.get('faction')),
         '/accounts': lambda body: store.account_requests(),
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
                                                  body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),
                                                  body.get('lands'), body.get('land_done'), body.get('chart'),
-                                                 body.get('chart_done')),
+                                                 body.get('chart_done'), body.get('colony_grants')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
-        '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living')),
+        '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),
         '/land/set': lambda body: store.request_land(body['region'], body['stage'], body.get('paused') in (True, 1),
                                                      body['admin']),
         # The world chart (docs/world-chart.md): DM reads /chart, admins queue /chart/request.

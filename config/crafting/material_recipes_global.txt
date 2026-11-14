@@ -2279,6 +2279,7 @@ RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,econ
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,recruitment station,/obj/structure/recruitment_station,10,150,1,1,economy & production,24,0,0,8,null
+RECIPE: /material/wood/soft/,colony charter,/obj/structure/colony_charter,8,120,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,stock market,/obj/structure/stockmarket,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,money printer,/obj/structure/money_printer,50,150,1,1,economy & production,27,0,0,8,null
 RECIPE: /material/wood/soft/,armourer's post,/obj/structure/specialist_trader/armourer,25,150,1,1,economy & production,24,0,0,8,null
@@ -2959,6 +2960,7 @@ RECIPE: /material/gold/,fancy pen,/obj/item/weapon/pen/fancy,1,60,0,1,paper & pr
 RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,abacus,/obj/item/weapon/abacus,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,drafting set,/obj/item/weapon/drafting_set,2,100,0,1,paper & printing,0,0,0,8,null
+RECIPE: /material/iron/,lapping wheel,/obj/structure/lapping_wheel,4,120,1,1,production,0,0,0,8,null
 RECIPE: /material/wood/soft/,model kit,/obj/item/weapon/scholar_practice/model_kit,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,specimen box,/obj/item/weapon/scholar_practice/specimen_box,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bones,2,60,0,1,paper & printing,0,0,0,8,null

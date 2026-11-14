@@ -64,7 +64,7 @@
 			if (health <= 0)
 				qdel(src)
 			return
-	if (istype(W, /obj/item/weapon/hammer))
+	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, "You start removing \the [src]...")
 		if (do_after(user, 60, src) && src)

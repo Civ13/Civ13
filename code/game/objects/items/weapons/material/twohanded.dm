@@ -62,7 +62,7 @@
 	if(wielded && default_parry_check(user, attacker, damage_source) && prob(15))
 		user.visible_message("<font color='#E55300'>\The [user] parries [attack_text] with \the [src]!</font>")
 		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
-		if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
+		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
 			health -= plating_wear(5)
 		else
 			health -= plating_wear(0.5)

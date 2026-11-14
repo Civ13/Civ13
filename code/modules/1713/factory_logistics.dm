@@ -144,7 +144,7 @@ var/global/list/factory_active_fast_belts = list()
 		..(over_object)
 
 /obj/structure/cargo_hold/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 		to_chat(user, SPAN_NOTICE("You [anchored ? "bolt down" : "unbolt"] \the [src]."))

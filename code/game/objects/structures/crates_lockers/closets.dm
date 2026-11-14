@@ -256,7 +256,7 @@
 		if (istype(W, /obj/item/weapon/key) && W.code != custom_code)
 			to_chat(user, "This key does not match this lock!")
 			return
-	if (istype(W, /obj/item/weapon/hammer) && user.a_intent == I_HARM)
+	if (is_tool(W, TOOL_HAMMER) && user.a_intent == I_HARM)
 		if (!opened)
 			to_chat(user, "You need to open the crate first.")
 		else

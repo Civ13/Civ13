@@ -215,7 +215,7 @@
 			user.show_message("\The [src] has been completely cut through.")
 
 /obj/structure/grille/chainlinkfence/attackby(obj/item/W, mob/living/human/user)
-	if(istype(W, /obj/item/weapon/wirecutters))
+	if(is_tool(W, TOOL_WIRECUTTER))
 		if(!cuttable)
 			to_chat(user, "<span class='notice'>This section of the fence can't be cut.</span>")
 			return
@@ -596,7 +596,7 @@
 	return TRUE
 
 /obj/structure/props/piping/small/plastic/attackby(obj/item/O, mob/user, icon_x, icon_y)
-	if(istype(O, /obj/item/weapon/hammer))
+	if(is_tool(O, TOOL_HAMMER))
 		to_chat(user, SPAN_NOTICE("You begin dismantling the plastic pipe."))
 		if(do_after(user, 25, src) && dismantle_plastic_pipe())
 			to_chat(user, SPAN_NOTICE("You dismantle the plastic pipe."))

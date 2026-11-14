@@ -190,7 +190,7 @@ var/global/list/naval_mines = list()
 	return ..()
 
 /obj/structure/naval_mine/attackby(obj/item/W, mob/user)
-	if (!ishuman(user) || !istype(W, /obj/item/weapon/wrench))
+	if (!ishuman(user) || !is_tool(W, TOOL_WRENCH))
 		user.visible_message(SPAN_DANGER("[user] hits \the [src]!"))
 		detonate(null)
 		return

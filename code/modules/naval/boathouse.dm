@@ -350,7 +350,7 @@
 	to_chat(user, "Its slip is the 7x7 square of water to the [dir2text(slip_dir)].")
 
 /obj/structure/boathouse/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench))
+	if (is_tool(W, TOOL_WRENCH))
 		if (busy)
 			return
 		if (stored_boats().len)

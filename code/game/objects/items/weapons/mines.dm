@@ -50,7 +50,7 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			if (istype(W, /obj/item/weapon/wirecutters))
+			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
@@ -63,7 +63,7 @@
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with the [W].</span>")
 				if (!do_after(user,120))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
@@ -271,7 +271,7 @@
 	if (anchored)
 		if (ishuman(user))
 			var/mob/living/human/H = user
-			if (istype(W, /obj/item/weapon/wirecutters))
+			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,60))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
@@ -284,7 +284,7 @@
 					return
 				else
 					Bumped(user)
-			else if (istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/attachment/bayonet))
+			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
 				if (!do_after(user,80))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")

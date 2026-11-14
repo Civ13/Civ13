@@ -948,6 +948,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		"/obj/structure/recruitment_station" = "basic_furniture",
+		"/obj/structure/colony_charter" = "basic_furniture",
 		// --- basic_tools (28) ---
 		"/obj/item/wrist_loop" = "basic_tools",
 		"/obj/structure/converter/tanning" = "basic_tools",
@@ -2529,7 +2530,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
-		// --- workshops (24) ---
+		// --- workshops (25) ---
+		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
 		"/obj/item/flashlight/lantern/copper" = "workshops",
 		"/obj/item/weapon/storage/belt/keychain" = "workshops",

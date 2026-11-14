@@ -129,7 +129,7 @@
 	return TRUE
 
 /proc/willow_bark_tool(obj/item/W)
-	return istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1)
+	return is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/material/thrown/throwing_knife) || istype(W, /obj/item/weapon/material/thrown/throwing_knife1)
 
 /////////////////////////////// Willow bark ///////////////////////////////
 

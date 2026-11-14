@@ -78,8 +78,38 @@ start new characters with a faction only after joining it in play.
 - **Limit.** `FACTION_MEMBER_LIMIT` (20) accounts per faction; a leader may set
   a lower one with **Faction > Set Member Limit**. A full faction cannot enrol
   a new account; accounts already on the roster are never refused by it.
-- **Member start.** On Gaia, an account on a roster is asked at Join where to
+- **Member start.** On a starting land (a Nomads map with `new_player_start_z`, `nomads_start.dm`), an account on a roster is asked at Join where to
   start: in the wilds as usual, or with one of its factions. The character
   starts beside one of that faction's recruitment stations and is a member at
   once. Without a station there is no member start. Nobody else is offered the
   choice. Code: `code/game/mob/groups/faction_roster.dm` and `faction_start.dm`.
+
+## Colonies
+
+- **Factions travel by id.** A traveller in a faction carries
+  `civ:<land>:<name>` (the land the faction was founded in) and whether they
+  lead it (`region_travel_payload` "faction", "faction_leader"). On arrival
+  they rejoin that faction if it lives here: at home, or as a standing colony.
+- **Colony charter.** Crafted from 8 soft wood planks (economy & production).
+  A faction's leader who has travelled into another land, and has no faction
+  there, plants it: that founds the faction in this land under the same name,
+  led by them, with this land's research (knowledge travels in books). If the
+  colony already exists but lost its charter, planting a new one puts it back.
+- **Standing.** A colony counts only while a charter bound to it stands, so
+  raiders can take it down. Each world reports its standing colonies (parent,
+  name, age in hours, living members) with its population sample; the
+  coordinator keeps them in its `colony` table, shows them in `/lands`, and
+  suggests COLONY for a CLOSED or FRONTIER land once one has stood for
+  `COLONY_SECONDS` (3 days) with `COLONY_MEMBERS` (3) living members. An admin
+  confirms the stage. Code: `code/game/mob/groups/colony_charter.dm`.
+- **Colony start.** In the faction's own land, a member (an account on its
+  roster) is also offered "With <colony> in <land>" for each standing colony
+  in a COLONY or OPEN land (a pause stops wild starts only). Choosing it sends
+  `/account` op `colony` with the faction id; the coordinator checks the
+  request came from the faction's own land and the colony stands there, moves
+  the account's home to that land and grants the start (`colony_grant`, sent
+  to that land's agent). There, a HOME claim carries the grant, the lobby
+  offers "With <colony>", the character starts beside the colony charter (or
+  one of the colony's stations) and joins it, and `colony_used` clears the
+  grant. On lands without random starts, job relocation places the body
+  (`faction_start_turf`).

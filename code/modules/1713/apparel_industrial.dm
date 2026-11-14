@@ -198,10 +198,10 @@
 
 /obj/item/weapon/watch/pocket/examine(mob/user)
 	..()
-	to_chat(user, "<big>It is now [clock_time()].</big>")
+	to_chat(user, "<big>[watch_reading(src)]</big>")
 
 /obj/item/weapon/watch/pocket/attack_self(var/mob/living/L)
-	to_chat(L, "<big>It is now [clock_time()].</big>")
+	to_chat(L, "<big>[watch_reading(src)]</big>")
 	return
 
 /* Industrial Uniforms*/

@@ -288,7 +288,7 @@ var/global/list/slipway_designs = null
 	return D.index_of(next)
 
 /obj/structure/slipway/attackby(obj/item/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/wrench) && !busy && !design)
+	if (is_tool(W, TOOL_WRENCH) && !busy && !design)
 		set_dir(turn(dir, -90))
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		to_chat(user, "You turn \the [src] to face [dir2text(dir)]: the berth now runs [dir2text(dir)] from it.")

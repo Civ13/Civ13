@@ -504,7 +504,7 @@ var/global/FREQM = rand(101,120)
 	freq = FREQ2
 	desc = "Used to communicate with distant places. Set to [freq]kHz."
 /obj/structure/radio/attackby(obj/item/W as obj, mob/user as mob)
-	if (!anchored && !istype(W, /obj/item/weapon/wrench))
+	if (!anchored && !is_tool(W, TOOL_WRENCH))
 		to_chat(user, "<span class='notice'>Fix the radio in place with a wrench first.</span>")
 		return
 	if (istype(W, /obj/item/stack/cable_coil))

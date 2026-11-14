@@ -41,7 +41,7 @@ def call(url, token, path, body=None, timeout=5):
 if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.train_custody import TrainCustody
-from tools.transfer_storage.region import LAND_STAGES, account_key_valid, land_id_valid
+from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, owner_valid, tile_valid
 
 
@@ -57,6 +57,10 @@ OPEN_HOMES = 10
 OPEN_MAINLAND_AVG = 20
 PAUSE_MAINLAND_AVG = 15
 SAMPLE_FRESH_SECONDS = 180  # worlds sample about once a minute
+# A colony (a faction planted in another land with a colony charter) moves its
+# land to COLONY once it has stood this long with this many living members.
+COLONY_MEMBERS = 3
+COLONY_SECONDS = 3 * 24 * 3600
 
 
 def land_rows(db, regions, mainland):
@@ -74,9 +78,9 @@ def land_rows(db, regions, mainland):
 
 
 def land_readiness(db, lands, mainland, now):
-    """Population numbers for each land over the last week, and the stage
-    change they suggest (None, 'OPEN', 'PAUSE' or 'RESUME'). Adds a 'readiness'
-    entry to each land in lands and returns lands."""
+    """Population numbers for each land over the last week, its colonies, and
+    the stage change they suggest (None, 'COLONY', 'OPEN', 'PAUSE' or 'RESUME').
+    Adds 'readiness' and 'colonies' entries to each land in lands and returns lands."""
     since = int(now // 3600) - READY_WINDOW_HOURS
     homes = dict(db.execute('SELECT region, COUNT(*) FROM home WHERE region IS NOT NULL GROUP BY region'))
     stats = {}
@@ -88,11 +92,20 @@ def land_readiness(db, lands, mainland, now):
         'SELECT region, living FROM land_hour h WHERE hour = (SELECT MAX(hour) FROM land_hour WHERE region = h.region)')}
     main_hours, main_avg, _ = stats.get(mainland, (0, 0.0, 0))
     main_living = living.get(mainland, 0)
+    colonies = {}
+    for region, parent, name, founded, members in db.execute(
+            'SELECT region, parent, name, founded, members FROM colony ORDER BY region, founded, name'):
+        colonies.setdefault(region, []).append({'parent': parent, 'name': name, 'founded': founded, 'members': members})
     for region, entry in lands.items():
         hours, avg, peak = stats.get(region, (0, 0.0, 0))
         ready = {'homes': homes.get(region, 0), 'players_avg': round(avg, 1), 'players_peak': peak,
                  'living': living.get(region, 0), 'hours': hours, 'suggest': None}
-        if region != mainland and main_hours >= READY_MIN_HOURS:
+        entry['colonies'] = colonies.get(region, [])
+        settled = any(c['members'] >= COLONY_MEMBERS and now - c['founded'] >= COLONY_SECONDS for c in entry['colonies'])
+        if region != mainland and entry['stage'] in ('CLOSED', 'FRONTIER') and settled:
+            # A standing colony needs no mainland numbers: people live there.
+            ready['suggest'] = 'COLONY'
+        elif region != mainland and main_hours >= READY_MIN_HOURS:
             busy = main_avg >= OPEN_MAINLAND_AVG
             outgrown = ready['living'] > main_living
             if entry['stage'] in ('FRONTIER', 'COLONY') and ready['homes'] >= OPEN_HOMES and busy and not outgrown:
@@ -144,6 +157,14 @@ class Coordinator(TrainCustody):
             region TEXT NOT NULL, hour INTEGER NOT NULL, samples INTEGER NOT NULL,
             players_sum INTEGER NOT NULL, players_peak INTEGER NOT NULL, living INTEGER NOT NULL,
             PRIMARY KEY(region, hour))''')
+        # Colonies each land reported in its latest sample (colony charters).
+        self.db.execute('''CREATE TABLE IF NOT EXISTS colony(
+            region TEXT NOT NULL, parent TEXT NOT NULL, name TEXT NOT NULL, founded INTEGER NOT NULL,
+            members INTEGER NOT NULL, PRIMARY KEY(region, name))''')
+        # Colony starts granted (colony_charter.dm): the account's home moved to
+        # region so its next character starts at the colony of faction there.
+        self.db.execute('''CREATE TABLE IF NOT EXISTS colony_grant(
+            ckey TEXT PRIMARY KEY, region TEXT NOT NULL, faction TEXT NOT NULL)''')
         # Requests already decided but not yet acknowledged by their agent, so a
         # lost acknowledgement never replays an old request over newer ones.
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
@@ -210,6 +231,8 @@ class Coordinator(TrainCustody):
         rev = int(self._ledger('rev')) + 1
         self.db.execute("UPDATE ledger SET value = ? WHERE key = 'rev'", (str(rev),))
         self.db.execute('INSERT OR REPLACE INTO home VALUES (?, ?, ?)', (ckey, region, rev))
+        # A colony start belongs to the land it was granted for.
+        self.db.execute('DELETE FROM colony_grant WHERE ckey = ? AND region IS NOT ?', (ckey, region))
 
     def set_land(self, region, stage, paused, by=None, now=None):
         """Set a land's stage and pause. Admins may correct a stage in either
@@ -241,6 +264,14 @@ class Coordinator(TrainCustody):
         players, living = sample['players'], sample['living']
         if not 0 <= players <= 1000 or not 0 <= living <= 10000:
             return False
+        colonies = sample.get('colonies', [])
+        if type(colonies) is not list or not all(colony_valid(c) for c in colonies):
+            return False
+        # The world's own list is the truth: a colony it no longer reports is gone.
+        self.db.execute('DELETE FROM colony WHERE region = ?', (region,))
+        for c in colonies:
+            self.db.execute('INSERT OR REPLACE INTO colony VALUES (?, ?, ?, ?, ?)',
+                            (region, c['parent'], c['name'], int(now) - c['age_hours'] * 3600, c['members']))
         hour = int(now // 3600)
         self.db.execute('INSERT INTO land_hour VALUES (?, ?, 1, ?, ?, ?) ON CONFLICT(region, hour) DO UPDATE SET '
                         'samples = samples + 1, players_sum = players_sum + excluded.players_sum, '
@@ -282,10 +313,29 @@ class Coordinator(TrainCustody):
                 self._set_home(ckey, self.mainland)
         elif op == 'claim' and home is None and region == source and self.mainland in (None, source):
             self._set_home(ckey, source)
+        elif op == 'colony' and home in (None, source) and region != source and self.colony_start_allowed(
+                source, region, request.get('faction')):
+            # The faction's own land vouches for its member; the colony must
+            # stand in a land open to colony starts.
+            self._set_home(ckey, region)
+            self.db.execute('INSERT OR REPLACE INTO colony_grant VALUES (?, ?, ?)', (ckey, region, request['faction']))
+        elif op == 'colony_used' and region == source:
+            self.db.execute('DELETE FROM colony_grant WHERE ckey = ? AND region = ?', (ckey, source))
         elif op == 'custody' and home is None and region == source:
             # A living character of an unhomed account is here (a lost ledger
             # forgot it); it stays where it lives.
             self._set_home(ckey, source)
+
+    def colony_start_allowed(self, source, region, faction):
+        """A member of faction (founded in source) may start at its colony in
+        region: the colony stands there and the land takes colony starts."""
+        if not faction_id_valid(faction) or faction[4:].partition(':')[0] != source:
+            return False
+        entry = land_rows(self.db, [region], self.mainland).get(region) if region in self.regions() else None
+        # A pause stops wild starts only; colony starts keep working.
+        if not entry or entry['stage'] not in ('COLONY', 'OPEN'):
+            return False
+        return self.db.execute('SELECT 1 FROM colony WHERE region = ? AND parent = ?', (region, faction)).fetchone() is not None
 
     def _proven_authority(self, roster, regions, asked, epoch):
         """Whether the agents that answer prove this database is still the
@@ -439,6 +489,8 @@ class Coordinator(TrainCustody):
                     'train_decisions': lease_decisions.get(name, []),
                     'lands': lands, 'land_done': land_done.get(name, []),
                     'chart_done': chart_done.get(name, []),
+                    'colony_grants': [{'ckey': c, 'faction': f} for c, f in self.db.execute(
+                        'SELECT ckey, faction FROM colony_grant WHERE region = ? ORDER BY ckey', (name,))],
                     'done': [r['id'] for r in answer.get('requests', [])]}
             # The chart only goes to an agent whose copy is older.
             if answer.get('chart_rev') != chart_rev:

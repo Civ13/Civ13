@@ -220,6 +220,13 @@ var/global/list/region_travel_carry_types = list(
 	// A party train trip says whose train it is.
 	if(party)
 		P["party"] = party
+	// The traveller's faction, named with the land it was founded in, so its
+	// members rejoin it or its colony on arrival (colony_charter.dm).
+	var/faction_id = colony_faction_id(src)
+	if(faction_id)
+		P["faction"] = faction_id
+		if(map.is_faction_leader(src, civilization))
+			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
 		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats"))
@@ -275,6 +282,8 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	if(!isnull(P["faction"]) && !colony_parent_valid(P["faction"])) return null
+	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
 	return P
 
@@ -466,6 +475,7 @@ var/global/list/region_travel_carry_types = list(
 	if(istext(P["party"]))
 		H.party_train_party = P["party"]
 		party_train_restore_faction(H, P["party"])
+	colony_arrival(H, P)
 	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
 	H.update_hair(FALSE)
