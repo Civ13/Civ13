@@ -613,8 +613,27 @@ var/global/ecology_world_unwatched = FALSE
 // starve or attack. Their whole Life() waits, including NPC humans, so a
 // raider cannot attack an empty settlement either. Dead animals keep running,
 // so carcasses still rot away.
+// Val (2026-11-14): they also hold still while their level is being saved,
+// like players, so a save never captures an animal mid-step.
 /proc/ecology_animal_frozen(mob/living/simple_animal/A)
-	return ecology_world_unwatched && istype(A) && !A.client && A.stat != DEAD
+	if (!istype(A) || A.client || A.stat == DEAD)
+		return FALSE
+	return ecology_world_unwatched || persistence_animal_save_frozen(A)
+
+// TRUE while A's level is being captured (persistence_freeze_level).
+/proc/persistence_animal_save_frozen(mob/living/simple_animal/A)
+	if (!persistence_frozen_levels.len)
+		return FALSE
+	var/turf/T = get_turf(A)
+	return (T && persistence_frozen_levels["[T.z]"]) ? TRUE : FALSE
+
+// Called by persistence_freeze_level when a level's capture begins: every
+// animal on it stops at once, instead of waiting for the mob process (which
+// the save's own yields can delay) to hold it on its next pass.
+/proc/persistence_hold_level_animals(z)
+	for (var/mob/living/simple_animal/A in mob_list)
+		if (A.z == z && ecology_animal_frozen(A))
+			A.ecology_hold_still()
 
 // Skipping Life() alone leaves walkers that are already running: native
 // walk()/walk_to() commands, and the subtile follow, flee, pet, pursuit and
