@@ -157,7 +157,20 @@ const worldNotes: Record<string, string> = {
 // Reference entries describe a type of thing; they never report what is in the world right now.
 const referenceNote = 'Reference entry. No recipe makes or uses this and no gathering route is recorded. It may be placed on some maps, sold, issued to a role or built another way. A page here does not mean it exists on the current map.';
 const routeLabels: Record<string, string> = { tools: 'Tools', conditions: 'Conditions', era: 'Era', map_notes: 'Map notes', status: 'Review status' };
+// Staff-only page: deliberately left out of the public atlas, web atlas and wiki.
+function AdminGuidance({ guidance }: { guidance: Data }) {
+  return <article className="atlas-card" aria-label="Admin-only entry">
+    <h2 className="atlas-resource-title"><Sprite image={guidance.image} /><span>{text(guidance.name)}</span></h2>
+    <p className="atlas-chips"><span className="atlas-chip atlas-warn">Admin only</span><span className="atlas-chip">Not in the public atlas</span></p>
+    {!!guidance.desc && <p className="atlas-desc">{text(guidance.desc)}</p>}
+    <h3 className="atlas-section">Staff note</h3>
+    <p>{text(guidance.admin_note)}</p>
+    <p className="atlas-footnote">Only admins see this entry. It is deliberately left out of the public atlas, the web atlas and the wiki; do not share it with players.</p>
+    <details className="atlas-technical"><summary>Catalog details</summary><p>{text(guidance.id)}</p></details>
+  </article>;
+}
 function Guidance({ ui, guidance }: { ui: ScreenProps; guidance: Data }) {
+  if (guidance.admin_only) return <AdminGuidance guidance={guidance} />;
   const routes = list(guidance.routes), stats = list(guidance.stats), made = Number(guidance.made_by_count) || 0, inside = list(guidance.found_in);
   const world = worldNotes[text(guidance.kind)];
   return <article className="atlas-card" aria-label="Resource">
@@ -212,7 +225,7 @@ export function CraftingAtlas(ui: ScreenProps) {
   const resetDraft = () => { setQuery(text(data.query)); setEra(String(data.era ?? '')); setProcessor(String(data.processor ?? '')); setAllResources(false); };
   useEffect(resetDraft, [data]);
   useEffect(() => () => resetAtlasRequests(), []);
-  const resources = list(data.resources), recipes = list(data.recipes);
+  const resources = list(data.resources), recipes = list(data.recipes), adminEntries = list(data.admin_entries);
   const families = Number(data.family_count ?? data.recipe_count), hidden = Number(data.hidden_count ?? 0);
   const open = (next: Partial<Navigation> = {}) => navigate(ui, { route: 'open', query, era, processor, ...next });
   const selectedId = data.detail ? String(data.detail.id) : '';
@@ -271,6 +284,12 @@ export function CraftingAtlas(ui: ScreenProps) {
           <ul>{recipes.map(recipe => <RecipeRow key={String(recipe.family_id ?? recipe.id)} ui={ui} row={recipe} selected={String(recipe.id) === selectedId}
             onPick={() => navigate(ui, { route: 'open', query: text(data.query), era: String(data.era ?? ''), processor: String(data.processor ?? ''), recipe: String(recipe.id) })} />)}</ul>
           {families > 150 && <p>First 150 recipe families shown. Refine filters to find more.</p>}
+          {adminEntries.length > 0 && <section className="atlas-admin" aria-label="Admin only"><h3>Admin only ({adminEntries.length})</h3>
+            <p className="atlas-footnote">Deliberately left out of the public atlas. Only admins see this list.</p>
+            <ul>{adminEntries.map(entry => <li key={String(entry.id)} data-result-type="admin">
+              <button type="button" className="atlas-row" disabled={!ui.interactive} onClick={() => navigate(ui, { route: 'resource', resource: String(entry.id) })}>
+                <Sprite image={entry.image} /><span className="atlas-row-text"><strong>{text(entry.name)}</strong><small>{text(entry.note)}</small></span>
+              </button></li>)}</ul></section>}
         </>}
       </nav>
       <div className="atlas-detail">

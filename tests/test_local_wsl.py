@@ -59,7 +59,9 @@ class LocalWslTests(unittest.TestCase):
                          'code/game/objects/farming.dm',
                          'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
                          'code/modules/projectiles/handloading.dm',
-                         'code/modules/projectiles/_ammo_casing.dm'):
+                         'code/modules/projectiles/_ammo_casing.dm',
+                         # Admin-only list that the build keeps out of public outputs.
+                         'code/game/mob/crafting_atlas_admin.dm'):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())
