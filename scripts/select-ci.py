@@ -121,6 +121,9 @@ MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
 FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', 'tests/fireman_carry/probe.dm',
                                          'tests/fireman_carry/run_native.py'})
 
+# Offline source contract plus the opt-in native probe (run by hand, not CI).
+DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/probe.dm'})
+
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})
 FUEL_PUMP_OFFLINE_TESTS = frozenset({'tests/fuel_pump/test_variants.py'})
@@ -483,6 +486,10 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/research_staff/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered research-staff executable test requires explicit CI review')
+        if path in DIVINE_APPROVAL_OFFLINE_TESTS:
+            continue
+        if path.startswith('tests/divine_approval/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
+            raise RuntimeError('Unregistered divine-approval executable test requires explicit CI review')
         if path in FIREMAN_CARRY_OFFLINE_TESTS:
             continue
         if path.startswith('tests/fireman_carry/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
