@@ -33,6 +33,103 @@
 	for (var/obj/item/I in site)
 		qdel(I)
 
+// Mix-and-match pieces: every variant draws, costs and validates; unknown
+// pieces are refused; research gates pieces; patterns and saves keep them.
+/proc/dressmaking_ci_pieces(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
+	dressmaking_ci_clear(site)
+	var/list/C = tailoring_bodies()
+	var/modular = 0
+	for (var/body_id in C)
+		var/list/body = C[body_id]
+		var/list/options = body["options"]
+		if (!options)
+			continue
+		modular++
+		dressmaking_ci_expect(body["art"] == "tailoring", "pieced body uses the shared template art [body_id]")
+		var/option_index = 0
+		for (var/option in options)
+			option_index++
+			var/list/variants = options[option]
+			for (var/variant in variants)
+				var/state = variants[variant]
+				var/pieces = tailoring_set_piece(body_id, null, option, variant)
+				var/list/chosen = tailoring_pieces(body_id, pieces)
+				dressmaking_ci_expect(chosen[option] == variant && tailoring_design_valid(body_id, "#ffffff", pieces), "variant selectable [body_id]/[option]/[variant]")
+				var/list/colors = list()
+				for (var/i = 1, i <= length(tailoring_piece_labels(body)), i++)
+					colors += rgb(10 * i, 10 * i, 10 * i)
+				var/list/layers = tailoring_layers(body_id, jointext(colors, "|"), TRUE, pieces)
+				var/found = FALSE
+				for (var/image/I in layers)
+					if (state && I.icon_state == state && I.color == colors[1 + length(body["panels"]) + option_index])
+						found = TRUE
+				dressmaking_ci_expect(!state || found, "variant drawn in its own colour [body_id]/[option]/[variant]")
+				var/list/info = state ? tailoring_piece_info[state] : null
+				var/list/defaults = tailoring_pieces(body_id, null)
+				var/list/default_variants = options[option]
+				var/list/default_info = default_variants[defaults[option]] ? tailoring_piece_info[default_variants[defaults[option]]] : null
+				var/expected = tailoring_design_cost(body_id, null) - (default_info ? default_info[2] : 0) + (info ? info[2] : 0)
+				dressmaking_ci_expect(tailoring_design_cost(body_id, pieces) == expected && expected <= 8, "variant fabric cost [body_id]/[option]/[variant]")
+	dressmaking_ci_expect(modular >= 6, "six pieced bodies")
+	dressmaking_ci_expect(!tailoring_design_valid("made_shirt", "#ffffff", "Wings"), "unknown variant rejected")
+	dressmaking_ci_expect(!tailoring_design_valid("made_cloak", "#ffffff", "None|None|None|None"), "extra piece choices rejected")
+	dressmaking_ci_expect(!tailoring_design_valid("toga", "#ffffff", "Long"), "a body without pieces takes no choices")
+	dressmaking_ci_expect(tailoring_set_piece("made_shirt", "Plain|Long", "Sleeves", "Wings") == "Plain|Long", "unknown variant not set")
+	dressmaking_ci_expect(tailoring_pieces_text(tailoring_pieces("made_shirt", "Plain|Long|V neck")) == "Plain|Long|V neck|Trousers|None", "missing choices take defaults")
+	// Research gates single pieces, and names the missing knowledge.
+	var/old_persistence = map.persistence
+	map.persistence = FALSE
+	var/list/entry = map.ensure_node_entry("recipe_ci", "fine_garments")
+	entry[RNODE_ENTRY_STATUS] = RNODE_LOCKED
+	dressmaking_ci_expect(tailoring_design_allowed(H, "made_shirt", "Plain|Long|V neck") && !tailoring_design_allowed(H, "made_shirt", "Plain|Long|High collar") && tailoring_missing_node(H, "made_shirt", "Plain|Long|High collar") == "fine_garments", "an unknown piece blocks the design")
+	var/obj/item/tailoring_project/dress_ci/gated = new(H)
+	H.r_hand = gated
+	gated.design_body = "made_shirt"
+	gated.design_colors = "#ffffff"
+	gated.design_pieces = "Plain|Long|High collar"
+	gated.fabric = 8
+	dressmaking_ci_expect(!gated.cut_fabric(H, site, save_epoch) && gated.stage == 0, "an unknown piece cannot be cut")
+	entry[RNODE_ENTRY_STATUS] = RNODE_DONE
+	map.persistence = old_persistence
+	// Cut and sew a full design; the cost includes its pieces.
+	gated.design_colors = "#aa0000|#00aa00|#0000aa|#aaaa00|#00aaaa|#aa00aa"
+	gated.design_pieces = "Checks|Long|High collar|Breeches|Sash"
+	var/cost = tailoring_design_cost("made_shirt", gated.design_pieces)
+	dressmaking_ci_expect(cost == 4 && gated.body_cost() == 4, "pieces add fabric")
+	dressmaking_ci_expect(gated.cut_fabric(H, site, save_epoch) && gated.fabric == 4, "a pieced design cuts")
+	var/obj/item/stack/material/cloth/spare = locate() in site
+	if (spare)
+		qdel(spare)
+	dressmaking_ci_expect(gated.sew_garment(H, site, save_epoch), "a pieced design sews")
+	var/obj/item/clothing/under/tailored/shirt = locate() in site
+	dressmaking_ci_expect(shirt && shirt.design_pieces == "Checks|Long|High collar|Breeches|Sash" && shirt.overlays.len == 6 && shirt.icon == 'icons/obj/clothing/tailoring.dmi' && shirt.icon_override == 'icons/mob/tailoring.dmi', "the garment keeps its pieces and template art")
+	if (!shirt)
+		return
+	// A pattern traced from the garment carries the pieces to a new project.
+	var/obj/item/weapon/paper/sheet = new(H)
+	H.r_hand = sheet
+	shirt.attackby(sheet, H)
+	var/obj/item/sewing_pattern/pattern = locate() in site
+	dressmaking_ci_expect(pattern && pattern.design_pieces == shirt.design_pieces, "a pattern records the pieces")
+	if (pattern)
+		var/obj/item/tailoring_project/dress_ci/copy = new(site)
+		dressmaking_ci_expect(copy.load_pattern(H, pattern) && copy.design_pieces == shirt.design_pieces && copy.body_cost() == 4, "a pattern loads the pieces")
+	// The pieces survive a save round trip and rebuild once.
+	var/savefile/F = new("dressmaking-pieces.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, shirt, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/clothing/loaded = map_storage.Load_Entry(F, ref, starting_loc = site)
+	if (loaded)
+		loaded.after_load()
+		loaded.after_load()
+	dressmaking_ci_expect(loaded && loaded.design_pieces == shirt.design_pieces && loaded.overlays.len == 6 && length(loaded.worn_design_layers()) == 6, "pieced garment round trip rebuilds once")
+	qdel(loaded)
+	dressmaking_ci_clear(site)
+	tailoring_named_items = list()
+
 // Sewing patterns, design names, the staff registry and the name block list.
 /proc/dressmaking_ci_patterns(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
 	dressmaking_ci_clear(site)
@@ -195,6 +292,19 @@
 		var/list/fixed = body["fixed"]
 		if (fixed)
 			states += fixed
+		var/list/options = body["options"]
+		for (var/option in options)
+			var/list/variants = options[option]
+			dressmaking_ci_expect(variants.len >= 2 && (!tailoring_piece_node(variants[variants[1]]) || tailoring_piece_node(variants[variants[1]]) == body["node"]), "first variant needs only the body's knowledge [body_id]/[option]")
+			for (var/variant in variants)
+				if (variants[variant])
+					states |= variants[variant]
+		var/default_pieces = 0
+		for (var/state in tailoring_piece_states(body_id, null))
+			if (state)
+				default_pieces++
+		var/cost = tailoring_design_cost(body_id, null)
+		dressmaking_ci_expect(cost >= 1 && cost <= 8, "default design fits one project [body_id]")
 		var/worn_art = tailoring_art(body, TRUE)
 		var/item_art = tailoring_art(body, FALSE)
 		for (var/state in states)
@@ -211,13 +321,13 @@
 		H.r_hand = P
 		P.design_body = body_id
 		P.design_colors = jointext(colors, "|")
-		P.fabric = body["cost"] - 1
+		P.fabric = cost - 1
 		dressmaking_ci_expect(!P.cut_fabric(H, site, save_epoch) && P.stage == 0, "too little fabric cannot cut [body_id]")
 		P.fabric = 8
 		dressmaking_ci_expect(!P.sew_garment(H, site, save_epoch) && P.stage == 0, "uncut fabric cannot sew [body_id]")
-		dressmaking_ci_expect(P.cut_fabric(H, site, save_epoch) && P.stage == 1 && P.fabric == body["cost"], "cut locks design and keeps the cost [body_id]")
+		dressmaking_ci_expect(P.cut_fabric(H, site, save_epoch) && P.stage == 1 && P.fabric == cost, "cut locks design and keeps the cost [body_id]")
 		var/obj/item/stack/material/cloth/spare = locate() in site
-		dressmaking_ci_expect(body["cost"] == 8 ? !spare : (spare && spare.amount == 8 - body["cost"]), "spare sheets set aside [body_id]")
+		dressmaking_ci_expect(cost == 8 ? !spare : (spare && spare.amount == 8 - cost), "spare sheets set aside [body_id]")
 		if (spare)
 			qdel(spare)
 		dressmaking_ci_expect(!P.cut_fabric(H, site, save_epoch), "cannot cut twice [body_id]")
@@ -228,7 +338,7 @@
 		dressmaking_ci_expect(istype(G) && G.design_body == body_id && G.design_colors == jointext(colors, "|") && G.name == body["name"], "one wearable keeps the chosen design [body_id]")
 		if (istype(G))
 			var/list/worn = G.worn_design_layers()
-			dressmaking_ci_expect(G.overlays.len == worn.len && worn.len == labels.len + (fixed ? fixed.len : 0), "item and worn layer counts agree [body_id]")
+			dressmaking_ci_expect(G.overlays.len == worn.len && worn.len == labels.len - length(options) + default_pieces + (fixed ? fixed.len : 0), "item and worn layer counts agree [body_id]")
 			if (body["slot"] == "under")
 				dressmaking_ci_expect(G.item_state_slots[slot_w_uniform_str] == body["base"], "worn base tracks chosen body [body_id]")
 			else
@@ -309,6 +419,7 @@
 	old_project.after_load()
 	dressmaking_ci_expect(old_project.design_body == "layered_dress" && old_project.fabric == 4 && old_project.stage == 1, "old dress project restores as tailoring")
 	qdel(old_project)
+	dressmaking_ci_pieces(H, site, save_epoch)
 	dressmaking_ci_patterns(H, site, save_epoch)
 	qdel(H)
 	dressmaking_ci_clear(site)

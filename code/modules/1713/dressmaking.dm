@@ -2,8 +2,10 @@
 // fabric; its owner picks a garment body, colours the body and each of its
 // pattern pieces, cuts the fabric (which locks the design) and sews one garment.
 //
-// A design is plain data: a body id and a "|"-separated list of colours (the
-// body first, then each piece in catalogue order). The loose item, the worn
+// A design is plain data: a body id, a "|"-separated list of colours (the
+// body first, then each panel and each piece option in catalogue order) and,
+// for bodies drawn as mix-and-match pieces, a "|"-separated list of the
+// chosen variant of every piece option. The loose item, the worn
 // sprite and the live preview are all built from the same coloured image
 // overlays. BYOND shares one appearance per icon, state and colour, so no
 // /icon is blended at runtime and nothing is added to the resource cache.
@@ -52,8 +54,133 @@ var/global/list/tailoring_catalogue = null
 	C["blazer"] = list("name" = "blazer", "slot" = "suit", "base" = "customblazer", "panels" = list(), "node" = "ready_made", "cost" = 4)
 	C["hoodie"] = list("name" = "hoodie", "slot" = "suit", "base" = "customhoodie", "panels" = list(), "node" = "ready_made", "cost" = 3)
 	C["tracksuit"] = list("name" = "tracksuit jacket", "slot" = "suit", "base" = "customtracksuit", "panels" = list("Jacket" = "customtracksuit_base", "Stripes" = "customtracksuit_lines"), "node" = "synthetics", "cost" = 3)
+	// Mix-and-match bodies, drawn on one shared template so every sleeve,
+	// neckline and belt fits every body of its layer. Options draw in the
+	// order listed (patterns right on the cloth, closures over trim). Each
+	// lists its variants in menu order; the first is the default and null
+	// draws nothing.
+	var/list/sleeves = list("Short" = "tl_sleeve_short", "Long" = "tl_sleeve_long", "None" = null)
+	var/list/necks = list("Plain" = null, "Round collar" = "tl_neck_round", "V neck" = "tl_neck_v", "High collar" = "tl_neck_high")
+	var/list/waist = list("None" = null, "Belt" = "tl_belt", "Sash" = "tl_sash")
+	C["made_shirt"] = list("name" = "shirt", "slot" = "under", "art" = "tailoring", "base" = "tl_shirt", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_shirt_stripes", "Checks" = "tl_shirt_checks", "Hem band" = "tl_shirt_hem"), "Sleeves" = sleeves.Copy(), "Neckline" = necks.Copy(), "Legwear" = list("Trousers" = "tl_legs_trousers", "Shorts" = "tl_legs_shorts", "Breeches" = "tl_legs_breeches", "Skirt" = "tl_legs_skirt"), "Waist" = waist.Copy()), "node" = "weaving", "cost" = 2)
+	C["made_tunic"] = list("name" = "knee tunic", "slot" = "under", "art" = "tailoring", "base" = "tl_tunic", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_tunic_stripes", "Checks" = "tl_tunic_checks", "Hem band" = "tl_tunic_hem"), "Sleeves" = sleeves.Copy(), "Neckline" = necks.Copy(), "Waist" = waist.Copy()), "node" = "weaving", "cost" = 3)
+	C["made_gown"] = list("name" = "gown", "slot" = "under", "art" = "tailoring", "base" = "tl_gown", "panels" = list(), "options" = list("Pattern" = list("Plain" = null, "Stripes" = "tl_gown_stripes", "Checks" = "tl_gown_checks", "Hem band" = "tl_gown_hem"), "Sleeves" = sleeves.Copy(), "Neckline" = necks.Copy(), "Waist" = waist.Copy()), "node" = "classical_dress", "cost" = 4)
+	var/list/coat_sleeves = list("Long" = "tl_coat_sleeve_long", "Cuffed" = "tl_coat_sleeve_cuffed", "None" = null)
+	var/list/collars = list("None" = null, "Stand collar" = "tl_collar_stand", "Lapels" = "tl_collar_lapels", "Fur collar" = "tl_collar_fur")
+	var/list/closures = list("None" = null, "Buttons" = "tl_buttons_single", "Double buttons" = "tl_buttons_double", "Toggles" = "tl_toggles")
+	C["made_jacket"] = list("name" = "jacket", "slot" = "suit", "art" = "tailoring", "base" = "tl_jacket", "panels" = list(), "options" = list("Sleeves" = coat_sleeves.Copy(), "Collar" = collars.Copy(), "Trim" = list("None" = null, "Edge trim" = "tl_jacket_trim"), "Closure" = closures.Copy()), "node" = "tailoring", "cost" = 3)
+	C["made_coat"] = list("name" = "coat", "slot" = "suit", "art" = "tailoring", "base" = "tl_coat", "panels" = list(), "options" = list("Sleeves" = coat_sleeves.Copy(), "Collar" = collars.Copy(), "Trim" = list("None" = null, "Edge trim" = "tl_coat_trim"), "Closure" = closures.Copy()), "node" = "tailoring", "cost" = 5)
+	C["made_cloak"] = list("name" = "cloak", "slot" = "suit", "art" = "tailoring", "base" = "tl_cloak", "panels" = list(), "options" = list("Hood" = list("None" = null, "Hood" = "tl_cloak_hood"), "Clasp" = list("None" = null, "Clasp" = "tl_cloak_clasp"), "Border" = list("None" = null, "Border" = "tl_cloak_border")), "node" = "weaving", "cost" = 3)
 	tailoring_catalogue = C
 	return C
+
+// Piece state -> list(research node, extra fabric). Pieces not listed need
+// only the body's own knowledge and no extra fabric.
+var/global/list/tailoring_piece_info = list(
+	"tl_sleeve_long" = list("weaving", 1),
+	"tl_neck_v" = list("tailoring", 0),
+	"tl_neck_high" = list("fine_garments", 0),
+	"tl_legs_trousers" = list("weaving", 2),
+	"tl_legs_shorts" = list("weaving", 1),
+	"tl_legs_breeches" = list("tailoring", 1),
+	"tl_legs_skirt" = list("weaving", 2),
+	"tl_sash" = list("classical_dress", 0),
+	"tl_shirt_checks" = list("tailoring", 0),
+	"tl_tunic_checks" = list("tailoring", 0),
+	"tl_gown_checks" = list("tailoring", 0),
+	"tl_coat_sleeve_long" = list("tailoring", 1),
+	"tl_coat_sleeve_cuffed" = list("fine_garments", 1),
+	"tl_collar_lapels" = list("fine_garments", 0),
+	"tl_buttons_double" = list("fine_garments", 0),
+	"tl_cloak_hood" = list("weaving", 1))
+
+// Option label -> chosen variant label, fitted to the body: unknown or
+// missing choices become the option's first variant.
+/proc/tailoring_pieces(body_id, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	var/list/chosen = list()
+	if (!body)
+		return chosen
+	var/list/options = body["options"]
+	var/list/given = istext(pieces_text) && length(pieces_text) ? splittext(pieces_text, "|") : list()
+	var/index = 0
+	for (var/label in options)
+		index++
+		var/list/variants = options[label]
+		var/value = index <= given.len ? given[index] : null
+		chosen[label] = (value && (value in variants)) ? value : variants[1]
+	return chosen
+
+/proc/tailoring_pieces_text(list/chosen)
+	var/list/values = list()
+	for (var/label in chosen)
+		values += chosen[label]
+	return jointext(values, "|")
+
+// The drawn state of every chosen piece, null where the variant draws nothing.
+/proc/tailoring_piece_states(body_id, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	var/list/states = list()
+	if (!body)
+		return states
+	var/list/options = body["options"]
+	var/list/chosen = tailoring_pieces(body_id, pieces_text)
+	for (var/label in options)
+		var/list/variants = options[label]
+		states += variants[chosen[label]]
+	return states
+
+/proc/tailoring_piece_node(state)
+	var/list/info = state ? tailoring_piece_info[state] : null
+	return info ? info[1] : null
+
+/proc/tailoring_variant_allowed(mob/living/human/H, list/body, state)
+	var/node = tailoring_piece_node(state)
+	return !node || crafting_node_allowed(H, node)
+
+// Fabric for the body and every chosen piece.
+/proc/tailoring_design_cost(body_id, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return TAILORING_MAX_FABRIC + 1
+	var/cost = body["cost"]
+	for (var/state in tailoring_piece_states(body_id, pieces_text))
+		var/list/info = state ? tailoring_piece_info[state] : null
+		if (info)
+			cost += info[2]
+	return cost
+
+// The body and every chosen piece must be known.
+/proc/tailoring_design_allowed(mob/living/human/H, body_id, pieces_text)
+	if (!tailoring_body_allowed(H, body_id))
+		return FALSE
+	var/list/body = tailoring_body(body_id)
+	for (var/state in tailoring_piece_states(body_id, pieces_text))
+		if (!tailoring_variant_allowed(H, body, state))
+			return FALSE
+	return TRUE
+
+// Names the knowledge a design still needs, or null when it is all known.
+/proc/tailoring_missing_node(mob/living/human/H, body_id, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return null
+	if (!crafting_node_allowed(H, body["node"]))
+		return body["node"]
+	for (var/state in tailoring_piece_states(body_id, pieces_text))
+		var/node = tailoring_piece_node(state)
+		if (node && !crafting_node_allowed(H, node))
+			return node
+	return null
+
+/proc/tailoring_set_piece(body_id, pieces_text, label, value)
+	var/list/chosen = tailoring_pieces(body_id, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	var/list/options = body ? body["options"] : null
+	if (!options || !(label in options) || !(value in options[label]))
+		return pieces_text
+	chosen[label] = value
+	return tailoring_pieces_text(chosen)
 
 /proc/tailoring_body(body_id)
 	if (!istext(body_id))
@@ -63,6 +190,8 @@ var/global/list/tailoring_catalogue = null
 
 // The worn and loose icon files for a body's slot.
 /proc/tailoring_art(list/body, worn)
+	if (body["art"] == "tailoring")
+		return worn ? 'icons/mob/tailoring.dmi' : 'icons/obj/clothing/tailoring.dmi'
 	if (body["slot"] == "suit")
 		return worn ? 'icons/mob/suit.dmi' : 'icons/obj/clothing/suits.dmi'
 	return worn ? 'icons/mob/uniform.dmi' : 'icons/obj/clothing/uniforms.dmi'
@@ -72,6 +201,9 @@ var/global/list/tailoring_catalogue = null
 	var/list/labels = list("Body")
 	var/list/panels = body["panels"]
 	labels += panels
+	var/list/options = body["options"]
+	if (options)
+		labels += options
 	return labels
 
 /proc/tailoring_body_allowed(mob/living/human/H, body_id)
@@ -110,10 +242,19 @@ var/global/list/tailoring_catalogue = null
 		colors += tailoring_color_valid(value) ? lowertext(value) : "#ffffff"
 	return colors
 
-/proc/tailoring_design_valid(body_id, colors_text)
+/proc/tailoring_design_valid(body_id, colors_text, pieces_text = null)
 	var/list/body = tailoring_body(body_id)
 	if (!body)
 		return FALSE
+	var/list/options = body["options"]
+	var/list/chosen = istext(pieces_text) && length(pieces_text) ? splittext(pieces_text, "|") : list()
+	if (chosen.len > length(options))
+		return FALSE
+	var/option_index = 0
+	for (var/value in chosen)
+		var/list/variants = options[options[++option_index]]
+		if (!(value in variants))
+			return FALSE
 	var/list/labels = tailoring_piece_labels(body)
 	if (labels.len > TAILORING_MAX_COLOURS)
 		return FALSE
@@ -127,8 +268,8 @@ var/global/list/tailoring_catalogue = null
 
 // The coloured body, then each coloured piece, then uncoloured fixed parts.
 // The same list drives the loose item, the worn sprite and the preview.
-/proc/tailoring_layers(body_id, colors_text, worn = FALSE)
-	if (!tailoring_design_valid(body_id, colors_text))
+/proc/tailoring_layers(body_id, colors_text, worn = FALSE, pieces_text = null)
+	if (!tailoring_design_valid(body_id, colors_text, pieces_text))
 		return list()
 	var/list/body = tailoring_body(body_id)
 	var/art = tailoring_art(body, worn)
@@ -142,6 +283,13 @@ var/global/list/tailoring_catalogue = null
 	for (var/label in panels)
 		var/image/piece = image(icon = art, icon_state = panels[label])
 		piece.color = colors[++index]
+		layers += piece
+	for (var/state in tailoring_piece_states(body_id, pieces_text))
+		index++
+		if (!state)
+			continue
+		var/image/piece = image(icon = art, icon_state = state)
+		piece.color = colors[index]
 		layers += piece
 	var/list/fixed = body["fixed"]
 	for (var/state in fixed)
@@ -159,6 +307,7 @@ var/global/list/tailoring_catalogue = null
 /obj/item/clothing
 	var/design_body = null
 	var/design_colors = null
+	var/design_pieces = null
 	// A player's own name for the design, the character who designed it (shown
 	// to players) and that player's ckey (shown only to staff).
 	var/design_name = null
@@ -171,9 +320,11 @@ var/global/list/tailoring_catalogue = null
 
 /obj/item/clothing/proc/tailoring_refresh()
 	var/list/body = tailoring_body(design_body)
-	if (!body || !tailoring_design_valid(design_body, design_colors))
+	if (!body || !tailoring_design_valid(design_body, design_colors, design_pieces))
 		return FALSE
 	name = design_name ? design_name : body["name"]
+	icon = tailoring_art(body, FALSE)
+	icon_override = body["art"] ? tailoring_art(body, TRUE) : initial(icon_override)
 	icon_state = body["item_base"] ? body["item_base"] : body["base"]
 	item_state = body["base"]
 	if (body["slot"] == "under")
@@ -186,7 +337,7 @@ var/global/list/tailoring_catalogue = null
 		heat_protection = body["covers"]
 	if (tailoring_overlays)
 		overlays -= tailoring_overlays
-	tailoring_overlays = tailoring_layers(design_body, design_colors)
+	tailoring_overlays = tailoring_layers(design_body, design_colors, FALSE, design_pieces)
 	overlays += tailoring_overlays
 	update_clothing_icon()
 	return TRUE
@@ -194,7 +345,7 @@ var/global/list/tailoring_catalogue = null
 /obj/item/clothing/proc/worn_design_layers()
 	if (!design_body)
 		return null
-	return tailoring_layers(design_body, design_colors, TRUE)
+	return tailoring_layers(design_body, design_colors, TRUE, design_pieces)
 
 // Saved overlays are derived. Rebuild in normal attachment order: design,
 // then accessories, then any existing stains.
@@ -230,7 +381,7 @@ var/global/list/tailoring_catalogue = null
 
 /obj/item/clothing/under/tailored/attackby(obj/item/W, mob/user)
 	if (recipe_blank_paper(W))
-		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
 		return
 	return ..()
 
@@ -261,7 +412,7 @@ var/global/list/tailoring_catalogue = null
 
 /obj/item/clothing/suit/storage/jacket/tailored/attackby(obj/item/W, mob/user)
 	if (recipe_blank_paper(W))
-		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
 		return
 	return ..()
 
@@ -295,14 +446,14 @@ var/global/list/tailoring_catalogue = null
 		qdel(T)
 	tailoring_preview = null
 
-/client/proc/show_tailoring_preview(body_id, colors_text)
+/client/proc/show_tailoring_preview(body_id, colors_text, pieces_text = null)
 	hide_tailoring_preview()
 	var/list/body = tailoring_body(body_id)
-	if (!body || !tailoring_design_valid(body_id, colors_text))
+	if (!body || !tailoring_design_valid(body_id, colors_text, pieces_text))
 		return FALSE
 	var/list/tiles = list()
 	var/list/facings = list(SOUTH, NORTH, EAST, WEST)
-	var/list/layers = tailoring_layers(body_id, colors_text, TRUE)
+	var/list/layers = tailoring_layers(body_id, colors_text, TRUE, pieces_text)
 	for (var/i = 1, i <= facings.len, i++)
 		var/obj/screen/tailoring_preview/T = new()
 		if (prefs && prefs.UI_file)
@@ -325,6 +476,7 @@ var/global/list/tailoring_catalogue = null
 	flammable = TRUE
 	var/design_body = "long_tunic"
 	var/design_colors = "#ffffff"
+	var/design_pieces = null
 	var/design_name = null
 	var/design_maker = null
 	var/design_author = null
@@ -344,8 +496,7 @@ var/global/list/tailoring_catalogue = null
 	return do_after(user, delay, src)
 
 /obj/item/tailoring_project/proc/body_cost()
-	var/list/body = tailoring_body(design_body)
-	return body ? body["cost"] : TAILORING_MAX_FABRIC + 1
+	return tailoring_design_cost(design_body, design_pieces)
 
 /obj/item/tailoring_project/after_load()
 	..()
@@ -357,7 +508,7 @@ var/global/list/tailoring_catalogue = null
 
 /obj/item/tailoring_project/attackby(obj/item/W, mob/user)
 	if (recipe_blank_paper(W))
-		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
 		return
 	if (istype(W, /obj/item/sewing_pattern))
 		load_pattern(user, W)
@@ -395,9 +546,11 @@ var/global/list/tailoring_catalogue = null
 	while (actor_ready(user, site, save_epoch) && (stage == 0 || stage == 1))
 		var/list/body = tailoring_body(design_body)
 		if (user.client)
-			user.client.show_tailoring_preview(design_body, design_colors)
+			user.client.show_tailoring_preview(design_body, design_colors, design_pieces)
 		var/garment = body ? body["name"] : "garment"
 		var/list/options = stage == 0 ? list("Choose garment", "Colours", "Name", "Cut fabric", "Close") : list("Sew", "Close")
+		if (stage == 0 && body && length(body["options"]))
+			options.Insert(2, "Pieces")
 		var/status = stage == 0 ? "Designing a [garment]: it needs [body_cost()] fabric and the project holds [fabric]." : "The [garment] is cut and ready to sew."
 		var/choice = WWinput(user, status, "Tailoring", "Close", options)
 		if (!actor_ready(user, site, save_epoch) || !choice || choice == "Close")
@@ -413,7 +566,13 @@ var/global/list/tailoring_catalogue = null
 				if (actor_ready(user, site, save_epoch) && stage == 0 && (selected in known) && tailoring_body_allowed(user, known[selected]))
 					design_body = known[selected]
 					design_colors = jointext(tailoring_colors(design_body, design_colors), "|")
+					var/list/new_body = tailoring_body(design_body)
+					design_pieces = length(new_body["options"]) ? tailoring_pieces_text(tailoring_pieces(design_body, null)) : null
 					claim_design(user)
+			if ("Pieces")
+				if (stage != 0 || !body)
+					return
+				choose_piece(user, site, save_epoch)
 			if ("Colours")
 				if (stage != 0 || !body)
 					return
@@ -443,8 +602,36 @@ var/global/list/tailoring_catalogue = null
 				sew_garment(user, site, save_epoch)
 				return
 
+// Pick a piece option, then one of its variants this person knows.
+/obj/item/tailoring_project/proc/choose_piece(mob/living/human/user, turf/site, datum/save_epoch)
+	var/list/body = tailoring_body(design_body)
+	var/list/options = body["options"]
+	if (!length(options))
+		return
+	var/list/chosen = tailoring_pieces(design_body, design_pieces)
+	var/list/menu = list()
+	for (var/label in options)
+		menu["[label]: [lowertext(chosen[label])]"] = label
+	var/picked = WWinput(user, "Choose a piece to change.", "Pieces", null, menu)
+	if (!actor_ready(user, site, save_epoch) || stage != 0 || !(picked in menu))
+		return
+	var/label = menu[picked]
+	var/list/variants = options[label]
+	var/list/known = list()
+	for (var/variant in variants)
+		var/state = variants[variant]
+		if (!tailoring_variant_allowed(user, body, state))
+			continue
+		var/list/info = state ? tailoring_piece_info[state] : null
+		known[info && info[2] ? "[variant] (+[info[2]] fabric)" : variant] = variant
+	var/selected = WWinput(user, "Choose the [lowertext(label)].", label, null, known)
+	if (!actor_ready(user, site, save_epoch) || stage != 0 || !(selected in known))
+		return
+	design_pieces = tailoring_set_piece(design_body, design_pieces, label, known[selected])
+	claim_design(user)
+
 /obj/item/tailoring_project/proc/cut_fabric(mob/living/human/user, turf/site, datum/save_epoch)
-	if (!actor_ready(user, site, save_epoch) || stage != 0 || !tailoring_design_valid(design_body, design_colors) || !tailoring_body_allowed(user, design_body) || fabric < body_cost())
+	if (!actor_ready(user, site, save_epoch) || stage != 0 || !tailoring_design_valid(design_body, design_colors, design_pieces) || !tailoring_design_allowed(user, design_body, design_pieces) || fabric < body_cost())
 		return FALSE
 	to_chat(user, SPAN_NOTICE("You start cutting the pattern pieces."))
 	if (!wait_for_tailoring(user, 30) || !actor_ready(user, site, save_epoch) || stage != 0 || fabric < body_cost())
@@ -460,7 +647,7 @@ var/global/list/tailoring_catalogue = null
 	return TRUE
 
 /obj/item/tailoring_project/proc/sew_garment(mob/living/human/user, turf/site, datum/save_epoch)
-	if (!actor_ready(user, site, save_epoch) || stage != 1 || !tailoring_design_valid(design_body, design_colors) || !tailoring_body_allowed(user, design_body))
+	if (!actor_ready(user, site, save_epoch) || stage != 1 || !tailoring_design_valid(design_body, design_colors, design_pieces) || !tailoring_design_allowed(user, design_body, design_pieces))
 		return FALSE
 	to_chat(user, SPAN_NOTICE("You start sewing the pieces together."))
 	if (!wait_for_tailoring(user, 60) || !actor_ready(user, site, save_epoch) || stage != 1)
@@ -476,6 +663,7 @@ var/global/list/tailoring_catalogue = null
 	var/obj/item/clothing/garment = new garment_type(site)
 	garment.design_body = design_body
 	garment.design_colors = design_colors
+	garment.design_pieces = design_pieces
 	garment.design_name = design_name
 	garment.design_maker = design_maker
 	garment.design_author = design_author
@@ -492,7 +680,7 @@ var/global/list/tailoring_catalogue = null
 	if (!body)
 		return
 	if (stage == 0)
-		to_chat(user, "Design: [body["name"]]. It needs [body["cost"]] fabric and holds [fabric].")
+		to_chat(user, "Design: [body["name"]]. It needs [body_cost()] fabric and holds [fabric].")
 	else
 		to_chat(user, "Design: [body["name"]]. The cut pieces are ready to sew.")
 
@@ -597,6 +785,26 @@ var/global/list/tailoring_name_block_list = null
 	var/savefile/S = new(TAILORING_BLOCK_FILE)
 	S["ckeys"] << blocks
 
+// "Body" and each panel with its colour, then each piece option's chosen
+// variant; options left plain are not listed.
+/proc/tailoring_describe(body_id, colors_text, pieces_text)
+	var/list/body = tailoring_body(body_id)
+	var/list/labels = tailoring_piece_labels(body)
+	var/list/colors = tailoring_colors(body_id, colors_text)
+	var/list/chosen = tailoring_pieces(body_id, pieces_text)
+	var/list/options = body["options"]
+	var/list/lines = list()
+	for (var/i = 1, i <= labels.len, i++)
+		var/label = labels[i]
+		var/text = lowertext(label)
+		if (options && (label in options))
+			var/list/variants = options[label]
+			if (!variants[chosen[label]])
+				continue
+			text = "[lowertext(chosen[label])] [lowertext(label)]"
+		lines += "<font color='[colors[i]]'>&#9632;</font> [text]"
+	return jointext(lines, ", ")
+
 /proc/tailoring_examine_credit(mob/user, body_id, maker)
 	var/list/body = tailoring_body(body_id)
 	if (!body)
@@ -630,32 +838,33 @@ var/global/list/tailoring_name_block_list = null
 	if (stage != 0)
 		to_chat(user, SPAN_WARNING("The fabric is already cut."))
 		return FALSE
-	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(P.design_body, P.design_colors))
+	if (!crafting_node_allowed_or_warn(user, "weaving") || !tailoring_design_valid(P.design_body, P.design_colors, P.design_pieces))
 		return FALSE
 	var/list/body = tailoring_body(P.design_body)
-	if (!tailoring_body_allowed(user, P.design_body))
-		var/datum/research_node/N = get_research_node(body["node"])
-		to_chat(user, SPAN_WARNING("You don't know how to make a [body["name"]] yet[N ? ". It needs <b>[N.name]</b>" : ""]."))
+	if (!tailoring_design_allowed(user, P.design_body, P.design_pieces))
+		var/datum/research_node/N = get_research_node(tailoring_missing_node(user, P.design_body, P.design_pieces))
+		to_chat(user, SPAN_WARNING("You don't know how to make this [body["name"]] yet[N ? ". It needs <b>[N.name]</b>" : ""]."))
 		return FALSE
 	design_body = P.design_body
 	design_colors = P.design_colors
+	design_pieces = P.design_pieces
 	design_name = P.design_name
 	design_maker = P.design_maker
 	design_author = P.design_author
 	if (design_name && tailoring_name_blocked(design_author))
 		design_name = null
 	tailoring_register(src)
-	to_chat(user, SPAN_NOTICE("You copy the [design_name ? "\"[design_name]\"" : body["name"]] pattern onto the project. It needs [body["cost"]] fabric."))
+	to_chat(user, SPAN_NOTICE("You copy the [design_name ? "\"[design_name]\"" : body["name"]] pattern onto the project. It needs [body_cost()] fabric."))
 	return TRUE
 
 /mob/living/human/proc/tailoring_trace_wait(obj/item/source)
 	return do_after(src, TAILORING_TRACE_TIME, source)
 
 // Traces a design onto a blank sheet the user holds, which becomes a pattern.
-/proc/tailoring_trace_pattern(mob/living/human/user, obj/item/weapon/paper/sheet, obj/item/source, body_id, colors_text, design_name, maker, author)
+/proc/tailoring_trace_pattern(mob/living/human/user, obj/item/weapon/paper/sheet, obj/item/source, body_id, colors_text, design_name, maker, author, pieces_text = null)
 	if (!istype(user) || !recipe_blank_paper(sheet) || sheet.loc != user || !source)
 		return FALSE
-	if (!tailoring_design_valid(body_id, colors_text))
+	if (!tailoring_design_valid(body_id, colors_text, pieces_text))
 		to_chat(user, SPAN_WARNING("There is no finished design on \the [source] to trace yet."))
 		return FALSE
 	if (!crafting_node_allowed_or_warn(user, "weaving"))
@@ -668,7 +877,7 @@ var/global/list/tailoring_name_block_list = null
 		return FALSE
 	qdel(sheet)
 	var/obj/item/sewing_pattern/P = new(get_turf(user))
-	P.set_design(body_id, colors_text, design_name, maker, author, parchment)
+	P.set_design(body_id, colors_text, design_name, maker, author, parchment, pieces_text)
 	user.put_in_any_hand_if_possible(P)
 	to_chat(user, SPAN_NOTICE("You finish \the [P]."))
 	return P
@@ -682,13 +891,15 @@ var/global/list/tailoring_name_block_list = null
 	flammable = TRUE
 	var/design_body = null
 	var/design_colors = null
+	var/design_pieces = null
 	var/design_name = null
 	var/design_maker = null
 	var/design_author = null
 
-/obj/item/sewing_pattern/proc/set_design(body_id, colors_text, new_name, maker, author, parchment)
+/obj/item/sewing_pattern/proc/set_design(body_id, colors_text, new_name, maker, author, parchment, pieces_text = null)
 	design_body = body_id
 	design_colors = colors_text
+	design_pieces = pieces_text
 	design_name = new_name
 	design_maker = maker
 	design_author = author
@@ -711,7 +922,7 @@ var/global/list/tailoring_name_block_list = null
 
 /obj/item/sewing_pattern/attackby(obj/item/W, mob/user)
 	if (recipe_blank_paper(W))
-		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author)
+		tailoring_trace_pattern(user, W, src, design_body, design_colors, design_name, design_maker, design_author, design_pieces)
 		return
 	return ..()
 
@@ -721,12 +932,7 @@ var/global/list/tailoring_name_block_list = null
 	if (!body)
 		return
 	tailoring_examine_credit(user, design_body, design_maker)
-	var/list/labels = tailoring_piece_labels(body)
-	var/list/colors = tailoring_colors(design_body, design_colors)
-	var/list/lines = list()
-	for (var/i = 1, i <= labels.len, i++)
-		lines += "<font color='[colors[i]]'>&#9632;</font> [lowertext(labels[i])]"
-	to_chat(user, "Pieces: [jointext(lines, ", ")]. It needs [body["cost"]] fabric.")
+	to_chat(user, "Pieces: [tailoring_describe(design_body, design_colors, design_pieces)]. It needs [tailoring_design_cost(design_body, design_pieces)] fabric.")
 
 /obj/item/sewing_pattern/attack_self(mob/user)
 	examine(user)
