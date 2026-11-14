@@ -70,14 +70,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '2ab56eee0dd1727d1a1faf5a2938cb2fa8f504f7'
+WIKI_REVIEWED_REVISION = '7114eaf5581798fc1f8889fc655bb244e8431e42'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('a567364dd25ed2d333915df91f4328eb4b79ac9a1af92f9f98db306eed911c8c', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('af81934c60bde5421a801ddf5fb2fa7c9415d559c1de0e41f9c3bc097b8da367', 'character skills traits languages'),
     'guides/Guide_to_Chemistry.md': ('cd18de133c5e560a495c22e26c5a33088d59ff81bbaf77e53ea267d646975230', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('f1318b85ea629b85d14d5411d2412a2e78944ed2c8d0904c99bb26f8de4ee799', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('11259c01cf9a78d7782b066b3f8c2211a3714fe4053d275a2c518607ca1d752c', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('dee6cc6eb5ba1af13b9b588c59feae607935dcc938e1c945e9a87fae4c920982', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('57325e5785194014b0370df7b80bb56d827003e85b3b79e43ff650aad5fc0a48', 'construction build building walls roof floor'),
     'guides/Guide_to_Cooking.md': ('4b8dc44d8a632be7989e46165c74bb6bf6ad7328ec3de1d8df64620bb7c3b2da', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('cd6d6e48f3ae664458e935bb88954a0c6d2232f00b6058e92fb520f5c7c76a09', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('61ae1ded41d56d44a1f7d0781f3dbc4cb3fa8695010d8023bc8e0e6a21eb71b2', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('eae4e1c91ce28009f16ec79d0e942f76895d80262e618320eaf44d3a7c5808a9', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('d2d63372eddc79fd7c3c9bffb390587fff7a5cb21c53d829ab5ec29ab9f11126', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('7d841e6db23560fc80845b05b5fea04277cabadc316440930211280c1e67901c', 'miscellaneous crafting misc items dress dresses dressmaking tailored sew sewing candle candles'),
-    'maps/Gaia.md': ('f3fd46d762cd9c01aa96e09e631255f091cb047a545b28d1c1febac8725054c7', 'gaia persistent persistence map world'),
+    'maps/Gaia.md': ('28a851bbbe27f13c32eeaaac1dac9400541f84ab16a37e97f1af77b720947aee', 'gaia persistent persistence map world'),
     'maps/Nomads_Maps.md': ('fdcb67459889783669de97dcd8d686c2be3e332d7a243f86a5d67528e560480e', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
