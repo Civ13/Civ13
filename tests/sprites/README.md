@@ -133,3 +133,5 @@ listing was retained. These limits are not waived by a green workflow.
 `create_glass_stone.py` owns `icons/obj/glass_stone_machines.dmi`: the glassblowing bench and the mason's saw with their working loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and their hauling loop. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
+`create_building_site.py` owns `icons/obj/building_site.dmi`: the cement mixer with its turning loop and the concrete block piles. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

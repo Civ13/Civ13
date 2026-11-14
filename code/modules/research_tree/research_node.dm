@@ -2122,7 +2122,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/banner/faction/banner_a" = "regalia",
 		"/obj/structure/banner/faction/banner_b" = "regalia",
 		"/obj/structure/flag/pole" = "regalia",
-		// --- reinforced_concrete (13) ---
+		// --- reinforced_concrete (14) ---
 		"/obj/covers/concretefloor" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span/concrete" = "reinforced_concrete",
@@ -2136,6 +2136,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/grille/metalsheetfence" = "reinforced_concrete",
 		"/obj/structure/mine_support/stone/concrete" = "reinforced_concrete",
 		"/obj/structure/window_frame/metal" = "reinforced_concrete",
+		"/obj/structure/workshop_machine/cement_mixer" = "reinforced_concrete",
 		// --- resource_processing (9) ---
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
