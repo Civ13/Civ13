@@ -131,13 +131,23 @@ var/global/list/river_moved = list()
 			occupied = TRUE
 			step(R, direction)
 	var/sheltered = iscovered()
+	// A river in flood carries things two tiles a pulse; at low water, sometimes none.
+	var/steps = river_current_steps(src)
 	for (var/atom/movable/A in contents.Copy())
 		if (!river_carryable(A))
 			continue
 		occupied = TRUE
 		if (!sheltered && !(A in river_moved))
 			river_moved |= A
-			step(A, direction)
+			var/d = direction
+			for (var/i in 1 to steps)
+				var/turf/before = A.loc
+				step(A, d)
+				if (A.loc == before || !istype(A.loc, /turf/floor/beach/water))
+					break
+				d = river_current_direction(A.loc)
+				if (!d)
+					break
 	if (!occupied)
 		river_active_water -= src
 

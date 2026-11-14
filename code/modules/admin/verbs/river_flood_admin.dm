@@ -48,6 +48,7 @@
 		F.flow[i] = F.upstream[i] * RIVER_FLOOD_MEAN_FLOW * (2 ** (target / (RIVER_FLOOD_STAGE_PER_DOUBLING * F.amplitude(i))))
 		F.storage[i] = F.flow[i] / RIVER_FLOOD_RELEASE
 		F.stage[i] = F.stage_for(i, F.flow[i])
+	F.stages_changed()
 	F.publish()
 	log_admin("[key_name(src)] set river stage [target] on [only ? "reach [only]" : "every reach"].")
 	message_admins("[key_name_admin(src)] set river stage [target] on [only ? "reach [only]" : "every reach"].")

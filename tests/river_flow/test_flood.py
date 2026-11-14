@@ -108,6 +108,26 @@ class WiringTest(unittest.TestCase):
         self.assertNotIn('in world', tick)
         self.assertNotIn('label_rows', tick)
 
+    def test_effects_read_the_flood_where_code_already_runs(self):
+        read = lambda rel: (ROOT / rel).read_text(encoding='utf-8')
+        self.assertIn('standing_on_snow = standing_water_delay(F)', read('code/game/mob/mob_movement.dm'))
+        self.assertIn('. = standing_water_delay(F)', read('code/modules/agent_control/agent_movement.dm'))
+        self.assertIn('var/water_depth = standing_water_delay(F)', read('code/modules/1713/movement_check.dm'))
+        self.assertIn('if (flood_douses(src))', read('code/modules/1713/oil_fires.dm'))
+        self.assertIn('flood_douses(src)', read('code/game/objects/structures/kitchen/oven.dm'))
+        self.assertIn('return flood_depth_at(T) > 0', read('code/modules/1713/weather_footwear.dm'))
+        self.assertIn('var/steps = river_current_steps(src)', read('code/modules/1713/river_flow.dm'))
+        self.assertIn('handle_drowning()\n\t\tflood_life_tick()', read('code/game/mob/living/carbon/human/human_life.dm'))
+        self.assertIn('flood_band == FLOOD_BAND_DEEP', read('code/game/mob/living/carbon/human/human_helpers.dm'))
+
+    def test_drawing_stays_in_the_viewers_window(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('in world', view)
+        self.assertNotIn('range(', view)
+        self.assertIn('FLOOD_VIEW_MOVE', view)
+        self.assertIn('flood_drawn_revision == flood_draw_revision', view)
+
     def test_state_is_saved_and_cache_is_not(self):
         self.assertIn('key == "river_flood_cache" || key == "river_flood_loaded"', MODULE)
         self.assertIn('var/tmp/datum/river_flood/river_flood_cache', MODULE)

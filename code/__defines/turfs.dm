@@ -13,3 +13,10 @@
 
 // Highest terrain height level (terrain_height.dm); levels come in halves.
 #define TERRAIN_MAX_LEVEL 31.5
+
+// River floodwater depth bands (flood_effects.dm), in levels over the ground.
+#define FLOOD_BAND_NONE 0
+#define FLOOD_BAND_ANKLE 1
+#define FLOOD_BAND_KNEE 2
+#define FLOOD_BAND_WAIST 3
+#define FLOOD_BAND_DEEP 4

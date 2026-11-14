@@ -66,6 +66,26 @@ var/flood_runtime_error = FALSE
 	flood_check(abs(flood_depth_at(locate(1, 3, 1)) - 1) < 0.001 && abs(flood_depth_at(locate(2, 3, 1)) - 0.5) < 0.001 && flood_depth_at(locate(3, 3, 1)) == 0, "depth is stage above threshold")
 	flood_check(flood_depth_at(locate(4, 3, 1)) == 0 && flood_depth_at(locate(1, 1, 1)) == 0, "ridge and sea-side land stay dry")
 	flood_check(river_stage_at(locate(1, 2, 1)) == F.stage[1], "water tile reports its reach")
+
+	// Effects (flood_effects.dm) at stage 1.5: 1 level on the low bank, 0.5 on the next.
+	flood_check(flood_band(0) == FLOOD_BAND_NONE && flood_band(0.1) == FLOOD_BAND_ANKLE && flood_band(0.3) == FLOOD_BAND_KNEE && flood_band(0.5) == FLOOD_BAND_WAIST && flood_band(1) == FLOOD_BAND_WAIST && flood_band(1.5) == FLOOD_BAND_DEEP, "depth bands")
+	flood_check(standing_water_delay(locate(1, 3, 1)) == 6 && standing_water_delay(locate(4, 3, 1)) == 0, "floodwater slows a step like deck water")
+	flood_check(footwear_wet_ground(locate(2, 3, 1)) && !footwear_wet_ground(locate(3, 3, 1)), "floodwater wets the feet")
+	var/obj/douse_probe = new /obj(locate(1, 3, 1))
+	flood_check(flood_douses(douse_probe) && !flood_douses(new /obj(locate(4, 3, 1))), "fires go out under floodwater")
+	flood_check(river_current_steps(locate(1, 2, 1)) == 2 && abs(river_current_power_factor(locate(1, 2, 1)) - 1.5) < 0.001, "a river in flood runs faster")
+	F.stages_changed()
+	flood_check(F.flooding && flood_anywhere(), "a reach above stage 0 counts as flooding")
+	var/revision = flood_draw_revision
+	var/s1 = F.stage[1]
+	var/s2 = F.stage[2]
+	F.stage[1] = -0.5
+	F.stage[2] = 0
+	F.stages_changed()
+	flood_check(!F.flooding && flood_draw_revision == revision + 1 && flood_depth_at(locate(1, 3, 1)) == 0, "rivers at or below normal flood nothing")
+	F.stage[1] = s1
+	F.stage[2] = s2
+	F.stages_changed()
 	F.flow[1] = F.upstream[1] * 0.04 * 1000
 	flood_check(F.stage_for(1, F.flow[1]) == 3, "stage is capped at 3")
 

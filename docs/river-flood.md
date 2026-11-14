@@ -2,9 +2,9 @@
 
 Rivers on maps with terrain heights rise and fall with rain, snowmelt and the
 season. This page covers the water model in `code/modules/1713/river_flood.dm`
-and its sidecar tool `scripts/river_flood.py`. It is the base the flood effects,
-drawing and defences build on (the flooding plan); on its own it changes
-nothing a player sees.
+and its sidecar tool `scripts/river_flood.py`. The effects players feel are
+in `code/modules/1713/flood_effects.dm`; defences and Fable's water art come
+later (the flooding plan).
 
 ## The sidecar
 
@@ -63,6 +63,30 @@ plains: on Gaia a stage of 2 to 3 reaches about 15% of the land.
 `flood_depth_at(turf)` is the stage of the tile's reach above its threshold,
 0 when dry. `river_stage_at(turf)` is the stage of the tile's reach. Both are a
 table lookup; nothing loops over tiles.
+
+## Effects
+
+Every effect asks `flood_depth_at()` from code that already runs for that tile
+or person; nothing loops over the map.
+
+| Depth (levels) | Band | What happens |
+| --- | --- | --- |
+| under 0.25 | ankle | +2 step delay (the sub-deck wading rule, footwear helps), wet feet |
+| 0.25 to 0.5 | knee | +4 step delay, the body drawn wading |
+| 0.5 to 1 | waist | +6 step delay |
+| over 1 | deep | swimming: the swimmer tires and drowns as in deep water; a boat, lifejacket or diving suit keeps them up |
+
+- Check Movement names river floodwater and its depth.
+- Fires on flooded ground go out, and campfires there can't be lit.
+- Rivers at stage 1 or more carry things two tiles a pulse; at stage -1 or
+  less, half the pulses move nothing. Waterwheels make 12 power scaled by
+  `1 + stage / 3` (0.5 to 2).
+- Ground a player has raised (shovel and rammer grading) stays dry until the
+  stage tops its new height.
+- Placeholder drawing: shallow water over flooded land as images only the
+  viewer holds, more opaque when deeper, redrawn when the viewer has moved 4
+  tiles or the rivers changed. Nothing is drawn while every reach is at or
+  below stage 0.
 
 ## Saving
 
