@@ -7,7 +7,7 @@ def add_dressmaking(files, add, records):
     source = files[PATH]
     required = ('wait_for_tailoring(user, 30)', 'wait_for_tailoring(user, 60)',
                 'stage = 1', 'stage = 2', 'var/obj/item/clothing/garment = new garment_type(site)',
-                'crafting_node_allowed(user, "weaving")', 'tailoring_body_allowed(user, design_body)')
+                'crafting_node_allowed(user, "weaving")', 'tailoring_design_allowed(user, design_body, design_pieces)')
     if any(text not in source for text in required):
         raise ValueError('Tailoring source changed; review Atlas costs and stages')
     marker = '/obj/item/tailoring_project/proc/sew_garment'
@@ -19,7 +19,7 @@ def add_dressmaking(files, add, records):
         steps = [
             'Craft a tailoring project from one cloth sheet (woolcloth also works) in Clothing. Weaving is required.',
             'Use cloth or woolcloth sheets on the project to add fabric, up to eight sheets.',
-            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and colour the body and each pattern piece. A live preview shows all four sides.',
+            f'Use the project in hand. Choose the {kind} to make from the garments your tailoring knowledge allows, and colour the body and each pattern piece. Shirts, knee tunics, gowns, jackets, coats and cloaks also let you choose Pieces such as sleeves, necklines, legwear, belts, collars, closures, trims and patterns; some pieces need more fabric or knowledge. A live preview shows all four sides.',
             'Choose Cut fabric (30 ticks) once the project holds enough fabric for that garment. Cutting locks the design and sets spare sheets aside.',
             'Use the cut pieces in hand and choose Sew (60 ticks). One paid project becomes one wearable garment. Finished garments accept ordinary clothing accessories.',
         ]
@@ -29,7 +29,7 @@ def add_dressmaking(files, add, records):
                            inputs=[x['id'] for x in record['inputs']],
                            outputs=[x['id'] for x in record['outputs']],
                            tools=[], steps=steps, conditions=' '.join(steps),
-                           era='Weaving for the project; each garment needs its own research (Classical Dress, Tailoring, Fine Garments, Textile Mills, Ready-Made Clothing or Synthetic Fabrics) and personal knowledge where enabled.',
+                           era='Weaving for the project; each garment and some pieces need their own research (Classical Dress, Tailoring, Fine Garments, Textile Mills, Ready-Made Clothing or Synthetic Fabrics) and personal knowledge where enabled.',
                            map_notes='Fabric supply and research depend on the map. No new material spawns.',
                            status='Current-source route; native and connected-client checks are reported separately.'))
     return routes

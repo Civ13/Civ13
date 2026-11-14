@@ -21,7 +21,8 @@ adapter = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(adapter)
 
 ART = {'under': ('icons/mob/uniform.dmi', 'icons/obj/clothing/uniforms.dmi'),
-       'suit': ('icons/mob/suit.dmi', 'icons/obj/clothing/suits.dmi')}
+       'suit': ('icons/mob/suit.dmi', 'icons/obj/clothing/suits.dmi'),
+       'tailoring': ('icons/mob/tailoring.dmi', 'icons/obj/clothing/tailoring.dmi')}
 
 
 def catalogue():
@@ -34,6 +35,8 @@ def catalogue():
                'base': re.search(r'"base" = "(\w+)"', text)[1],
                'node': re.search(r'"node" = "(\w+)"', text)[1],
                'cost': int(re.search(r'"cost" = (\d+)', text)[1])}
+        art = re.search(r'"art" = "(\w+)"', text)
+        row['art'] = art[1] if art else row['slot']
         item_base = re.search(r'"item_base" = "(\w+)"', text)
         row['item_base'] = item_base[1] if item_base else None
         panels = re.search(r'"panels" = list\(([^)]*)\)', text)[1]
@@ -76,7 +79,7 @@ class TailoringTests(unittest.TestCase):
         rows = catalogue()
         cache = {}
         for body_id, row in rows.items():
-            worn_path, item_path = ART[row['slot']]
+            worn_path, item_path = ART[row['art']]
             worn = cache.setdefault(worn_path, dmi_states(worn_path))
             item = cache.setdefault(item_path, dmi_states(item_path))
             for state in [row['base']] + row['panels'] + row['fixed']:
@@ -86,6 +89,21 @@ class TailoringTests(unittest.TestCase):
                         self.assertIn(state, item)
             if row['item_base']:
                 self.assertIn(row['item_base'], item)
+
+    def test_every_piece_state_has_template_art(self):
+        body = adapter.extract(SOURCE, '/proc/tailoring_bodies')
+        states = set(re.findall(r'"(tl_\w+)"', body))
+        self.assertGreaterEqual(len(states), 39)
+        worn, item = dmi_states(ART['tailoring'][0]), dmi_states(ART['tailoring'][1])
+        for state in sorted(states):
+            with self.subTest(state=state):
+                self.assertGreaterEqual(worn.get(state, 0), 4)
+                self.assertIn(state, item)
+        info = re.search(r'var/global/list/tailoring_piece_info = list\((.*?)\)\n\n', SOURCE, re.S)[1]
+        for state, node, cost in re.findall(r'"(tl_\w+)" = list\("(\w+)", (\d+)\)', info):
+            with self.subTest(piece=state):
+                self.assertIn(state, states)
+                self.assertTrue(0 <= int(cost) <= 2)
 
     def test_actor_guard_checks_hands_ability_research_and_save_identity(self):
         body = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/actor_ready')
@@ -97,7 +115,7 @@ class TailoringTests(unittest.TestCase):
             self.assertIn(term, body)
         for name in ('cut_fabric', 'sew_garment'):
             proc = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/' + name)
-            self.assertIn('tailoring_body_allowed(user, design_body)', proc)
+            self.assertIn('tailoring_design_allowed(user, design_body, design_pieces)', proc)
             # Re-check after every wait: the world can change while cutting.
             wait = proc.index('wait_for_tailoring(')
             self.assertIn('!actor_ready(user, site, save_epoch)', proc[wait:])
@@ -147,7 +165,7 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('crafting_node_allowed_or_warn(user, "weaving")', trace)
         load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_pattern')
         self.assertIn('if (stage != 0)', load)
-        self.assertIn('tailoring_body_allowed(user, P.design_body)', load)
+        self.assertIn('tailoring_design_allowed(user, P.design_body, P.design_pieces)', load)
         self.assertIn('tailoring_name_blocked(design_author)', load)
         clean = adapter.extract(SOURCE, '/proc/tailoring_clean_name')
         self.assertIn('sanitizeSafe(text, TAILORING_NAME_MAX + 1)', clean)
