@@ -1466,6 +1466,7 @@
 #include "code\modules\naval\sea_office.dm"
 #include "code\modules\naval\depot_jobs.dm"
 #include "code\modules\naval\sea_weather.dm"
+#include "code\modules\naval\ship_crossing.dm"
 #include "code\modules\naval\ship_papers.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
