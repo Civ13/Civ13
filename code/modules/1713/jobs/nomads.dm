@@ -357,7 +357,7 @@
 //coats/////////////////////////////////////////////////
 	spawn(5)
 		var/area/mob_area = get_area(src)
-		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == "WINTER") || map.ID == MAP_NOMADS_ICE_AGE)
+		if (mob_area.climate == "tundra" || mob_area.climate == "taiga" || (mob_area.climate == "temperate" && season == SEASON_WINTER) || map.ID == MAP_NOMADS_ICE_AGE)
 			if (map.ID != MAP_NOMADS_ASIA)
 				if (map.ordinal_age <= 4)
 					if (map.ordinal_age == 0)

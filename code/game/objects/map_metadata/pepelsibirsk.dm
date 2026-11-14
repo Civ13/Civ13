@@ -78,7 +78,7 @@ var/global/datum/external_relations/external_relations = new()
 /obj/map_metadata/pepelsibirsk/seasons(looping = TRUE, force = FALSE, advance_decay = null)
 	advance_decay = season_decay_requested(force, advance_decay)
 	if (real_season == "FALL")
-		season = "WINTER"
+		season = SEASON_WINTER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Winter</b> has started.</big>")
 		change_weather_somehow()
@@ -117,7 +117,7 @@ var/global/datum/external_relations/external_relations = new()
 				BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
 		real_season = "WINTER"
 	else if (real_season == "SPRING")
-		season = "SUMMER"
+		season = SEASON_SUMMER
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>Summer</b> has started.</big>")
 		change_weather_somehow()
@@ -139,12 +139,12 @@ var/global/datum/external_relations/external_relations = new()
 				DF.ChangeTurf(/turf/floor/dirt/flooded)
 		real_season = "SUMMER"
 	else if (real_season == "WINTER")
-		season = "SPRING"
+		season = SEASON_SPRING
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The weather is getting warmer in other places of the world, but not here. It is now <b>Spring</b>.</big>")
 		real_season = "SPRING"
 	else if (real_season == "SUMMER")
-		season = "FALL"
+		season = SEASON_FALL
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The warmth of summer abruptly ends, being replaced with strong winds and rain, swiftly turning to snowstorms and ice. It is now <b>Fall</b>.</big>")
 		spawn(1200)

@@ -48,7 +48,7 @@ class ForagingContract(unittest.TestCase):
         self.assertNotIn('berries', finds.split('/proc/foraging_focuses()')[1])
         self.assertNotIn('mushroompsy', finds)
         self.assertNotIn('/obj/item/stack/material/iron', finds)
-        self.assertIn('season != "WINTER"', finds)
+        self.assertIn('season != SEASON_WINTER', finds)
     def test_skill_changes_time_not_amount(self):
         timing = SOURCE.split('/mob/living/human/proc/foraging_search_time(turf/T)')[1].split('/proc/')[0]
         self.assertIn('clamp(getStatCoeff("farming"), 1, 1.5)', timing)

@@ -315,7 +315,7 @@ var/global/list/regrowing_stump_list = list()
 
 /datum/flora_regrowth/proc/regrow_stumps()
 	var/minutes = map ? map.stump_regrowth_minutes : 240
-	if (minutes <= 0 || season == "WINTER")
+	if (minutes <= 0 || season == SEASON_WINTER)
 		return 0
 	var/chance = 100 / minutes
 	var/grown = 0

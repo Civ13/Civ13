@@ -128,7 +128,7 @@
 	return callbacks
 
 /obj/map_metadata/proc/durable_nomads_initial_climate()
-	if(map == src && season == "SPRING") season = "Wet Season"
+	if(map == src && season == SEASON_SPRING) season = SEASON_WET
 
 /obj/map_metadata/proc/durable_nomads_eruption_check()
 	if(vars["eruptions_enabled"]) call(src, "do_eruption")()
@@ -292,15 +292,15 @@
 	var/delay
 	if(type == /obj/map_metadata/nomads/mountain)
 		if(vars["real_season"] == "dry")
-			season = "Wet Season"
+			season = SEASON_WET
 			vars["real_season"] = "wet"
 		else
-			season = "Dry Season"
+			season = SEASON_DRY
 			vars["real_season"] = "dry"
 		record_abandonment_season_change(advance_decay)
 		to_chat(world, "<big>The <b>[season]</b> has started.</big>")
 		change_weather_somehow()
-		if(season == "Wet Season")
+		if(season == SEASON_WET)
 			durable_nomads_replace(/turf/floor/beach/drywater, /turf/floor/beach/water/swamp, epoch)
 		else
 			durable_nomads_replace(/turf/floor/beach/water/swamp, /turf/floor/beach/drywater, epoch)

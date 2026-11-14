@@ -216,7 +216,7 @@ RECIPE: /material/clay/,unfired clay roofing,/obj/item/weapon/clay/roofing,0.5,2
 RECIPE: /material/clay/,unfired blue clay roofing,/obj/item/weapon/clay/roofing/blue,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black clay roofing,/obj/item/weapon/clay/roofing/black,0.5,25,0,1,none,18,0,0,8,null
 RECIPE: /material/clay/,unfired black kerawa roofing,/obj/item/weapon/clay/roofing/kerawa,0.5,25,0,1,none,0,0,0,8,null
-RECIPE: /material/clay/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,0.75,20,0,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete roof builder,/obj/item/weapon/roofbuilder/concrete,1,20,0,1,none,103,0,0,8,null
 
 //*****************| CLAY KITCHEN OBJECTS |***************************
 
@@ -240,13 +240,13 @@ RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 
-RECIPE: /material/clay/,concrete floor,/obj/covers/concretefloor,0.5,15,1,1,none,103,0,0,8,null
-RECIPE: /material/clay/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
 
-RECIPE: /material/clay/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete pillar,/obj/structure/mine_support/stone/concrete,2,20,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,unfired ingot mold,/obj/item/weapon/clay/mold,1.5,40,0,1,molds,0,0,0,8,null
 RECIPE: /material/clay/,unfired axehead mold,/obj/item/weapon/clay/mold/axehead,1.5,40,0,1,molds,0,0,0,8,null
@@ -2307,6 +2307,7 @@ RECIPE: /material/wood/,brick mould bench,/obj/structure/workshop_machine/brick_
 RECIPE: /material/wood/,glassblowing bench,/obj/structure/workshop_machine/glass_bench,6,120,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8,120,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/,shear legs,/obj/structure/workshop_machine/shear_legs,10,120,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/iron/,cement mixer,/obj/structure/workshop_machine/cement_mixer,8,150,1,1,economy & production,103,0,0,8,null
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null

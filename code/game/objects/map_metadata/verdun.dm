@@ -82,8 +82,8 @@
 		to_chat(world, "<font size=3>This battle will feature <b>[faction1]</b> and <b>[faction2]</b> troops.</font>")
 
 	spawn(101)
-		if (season == "SPRING")
-			season = "FALL"
+		if (season == SEASON_SPRING)
+			season = SEASON_FALL
 		var/area/A = get_area(T)
 		if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
 			A.weather = 3

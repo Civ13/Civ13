@@ -195,7 +195,7 @@ class HammockContracts(unittest.TestCase):
         body='\n'.join(line[1:] for line in production[start:end].splitlines())
         guard,_=compile_body('/proc/completion_occupancy()\n'+body+'\n\treturn TRUE\n',
                              '/proc/completion_occupancy()', 'recipe,user',
-                             dict(locate=lambda path:path,to_chat=lambda *args:None))
+                             dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
         path='/obj/structure/bed/hammock'
         for one_per,late_output,paid in ((True,path,False),(True,None,True),
                                         (True,'/obj/structure/bed/wood',True),(False,path,True)):
@@ -214,11 +214,11 @@ class HammockContracts(unittest.TestCase):
         broad_body=body.replace('recipe.result_type == /obj/structure/bed/hammock && ','')
         broad_guard,_=compile_body('/proc/old_completion()\n'+broad_body+'\n\treturn TRUE\n',
                                   '/proc/old_completion()', 'recipe,user',
-                                  dict(locate=lambda path:path,to_chat=lambda *args:None))
+                                  dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
         self.assertFalse(broad_guard(powered,NS(loc=[sawmill])))
         prepayment=production[production.index('else if (recipe.result_type == '+sawmill+')'):]
         prepayment=prepayment[:prepayment.index('\n\telse if (')]
-        self.assertIn('NR.amount -= 1',prepayment)
+        self.assertIn("secondary_take(NR, 1, H)",prepayment)
         self.assertIn('qdelHandReturn(',prepayment)
         self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'))
         rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()

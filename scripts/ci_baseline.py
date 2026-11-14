@@ -916,6 +916,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'season_helpers': {'files': ('tests/season_helpers/test_season_helpers.py',),
+        'paths': ('tests/season_helpers/', 'code/_helpers/seasons.dm', 'code/__defines/seasons.dm'), 'shared_paths': ()},
     'map_traits': {'files': ('tests/map_traits/test_map_traits.py',),
         'paths': ('tests/map_traits/', 'code/game/objects/map_metadata/'), 'shared_paths': ()},
     'job_stats': {'files': ('tests/job_stats/test_job_stats.py',),
@@ -1871,6 +1873,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
+        'tests/building_site/', 'code/modules/1713/building_site.dm',
+        'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},

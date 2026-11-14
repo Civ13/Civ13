@@ -14,8 +14,8 @@
 			eruption_check()
 	if(!durable_schedule("nomads_initial_climate", 1800))
 		spawn(1800)
-			if (season == "SPRING") //fixes game setting the season as spring
-				season = "Wet Season"
+			if (season == SEASON_SPRING) //fixes game setting the season as spring
+				season = SEASON_WET
 
 
 /obj/map_metadata/nomads/island/proc/eruption_check()
