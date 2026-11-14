@@ -8,7 +8,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/art_ports'))
 from pocket_stronghold_food import state_names  # noqa: E402
 
-FILES = [ROOT / 'code/modules/1713/gemstones.dm', ROOT / 'code/modules/1713/belt_pouches.dm']
+FILES = [ROOT / 'code/modules/1713/gemstones.dm', ROOT / 'code/modules/1713/belt_pouches.dm',
+         ROOT / 'code/modules/1713/necklaces.dm']
 
 
 def blocks(text):
@@ -30,7 +31,7 @@ class GemstoneTest(unittest.TestCase):
                 self.assertTrue(icon, block.split('\n')[0])
                 self.assertIn(state[1], state_names(ROOT / icon[1]), block.split('\n')[0])
                 checked += 1
-        self.assertEqual(checked, 18)  # 6 rough, 7 cut, 2 pouches, 2 belts, tool loop
+        self.assertEqual(checked, 23)  # 6 rough, 7 cut, 2 pouches, 2 belts, tool loop, 5 necklaces
 
     def test_worn_pouch_states_have_four_directions(self):
         text = __import__('PIL.Image', fromlist=['Image']).open(ROOT / 'icons/mob/belt_pouches.dmi').info['Description']
@@ -60,6 +61,16 @@ class GemstoneTest(unittest.TestCase):
         self.assertIn('for (var/obj/item/clothing/accessory/A in cbelt.accessories)', belt)
         pouches = (ROOT / 'code/modules/1713/belt_pouches.dm').read_text(encoding='utf-8')
         self.assertIn('overlay_state = others ? "[icon_state]_left" : null', pouches)
+
+    def test_necklace_states_and_pendant(self):
+        from PIL import Image
+        for dmi, dirs in (('icons/obj/necklaces.dmi', 1), ('icons/mob/necklaces.dmi', 4)):
+            text = Image.open(ROOT / dmi).info['Description']
+            for state in ('cord_necklace', 'bead_necklace', 'copper_necklace', 'silver_necklace', 'gold_necklace', 'necklace_pendant'):
+                self.assertRegex(text, rf'state = "{state}"\n\tdirs = {dirs}', dmi)
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertEqual(gems.count("\tgem_colour = \"#"), 7)  # 7 cut stones
+        self.assertIn('set_gem_colour = stone_colour', gems)
 
     def test_items_read_as_ordinary(self):
         # Player-facing text stays plain: names and descriptions only describe
