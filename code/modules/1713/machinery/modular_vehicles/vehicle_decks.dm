@@ -41,20 +41,75 @@
 /mob/living/human/persistence_runtime_var(key)
 	return key == "vehicle_deck_busy" || ..()
 
-// TRUE when someone may stand on top of F.
-/proc/vehicle_deck_walkable(obj/structure/vehicleparts/frame/F)
-	if (!istype(F) || QDELETED(F) || !F.axis || !isturf(F.loc))
-		return FALSE
-	return F.upper_deck || !F.noroof
+// Deck surfaces: what a rider can stand on top of. Either a vehicle frame
+// (modular vehicles) or a tile of a roofed train car (train_platforms.dm),
+// which is the segment on the rail tile or the deck part either side of it.
+// A rider's vehicle_deck is the surface on their own tile; nothing else about
+// the vehicle is kept, so a deck needs no saved references.
 
-// The frame on T whose top can be stood on, or null.
-/proc/vehicle_deck_frame_at(turf/T)
+// The train segment a deck surface belongs to, or null.
+/proc/train_deck_segment(atom/D)
+	if (istype(D, /obj/structure/trains/platform))
+		return D
+	if (istype(D, /obj/structure/train_part/deck))
+		var/obj/structure/train_part/deck/P = D
+		return P.segment
+	return null
+
+// TRUE when someone may stand on top of D.
+/proc/vehicle_deck_walkable(atom/D)
+	if (!D || QDELETED(D) || !isturf(D.loc))
+		return FALSE
+	if (istype(D, /obj/structure/vehicleparts/frame))
+		var/obj/structure/vehicleparts/frame/F = D
+		return F.axis && (F.upper_deck || !F.noroof)
+	var/obj/structure/trains/platform/S = train_deck_segment(D)
+	return S && S.roofed()
+
+// The deck surface on T, or null.
+/proc/vehicle_deck_at(turf/T)
 	if (!T)
 		return null
-	for (var/obj/structure/vehicleparts/frame/F in T)
-		if (F.loc == T && vehicle_deck_walkable(F))
-			return F
+	for (var/obj/O in T)
+		if (O.loc == T && vehicle_deck_walkable(O))
+			return O
 	return null
+
+// What D belongs to, so riders on the same vehicle can be told apart from
+// riders on another: a frame's axis, or a train car's id.
+/proc/vehicle_deck_vehicle(atom/D)
+	if (istype(D, /obj/structure/vehicleparts/frame))
+		var/obj/structure/vehicleparts/frame/F = D
+		return F.axis
+	var/obj/structure/trains/platform/S = train_deck_segment(D)
+	return S ? S.car_id : null
+
+// The vehicle M is riding on top of (frame axis or train car id), or null.
+/proc/vehicle_deck_group(mob/M)
+	if (!los_on_vehicle_deck(M))
+		return null
+	return vehicle_deck_vehicle(M.vehicle_deck)
+
+// TRUE when riders A and B can reach each other on top: the same vehicle, or
+// two coupled train cars with the riders next to each other.
+/proc/vehicle_deck_same_roof(mob/A, mob/B)
+	var/a = vehicle_deck_group(A)
+	var/b = vehicle_deck_group(B)
+	if (!a || !b)
+		return FALSE
+	if (a == b)
+		return TRUE
+	return istext(a) && istext(b) && get_dist(A, B) <= 1
+
+// TRUE when M stands inside the vehicle D is part of (under its roof).
+/proc/vehicle_deck_inside(mob/M, atom/D)
+	var/owner = vehicle_deck_vehicle(D)
+	if (!owner || !isturf(M.loc))
+		return FALSE
+	for (var/obj/O in M.loc)
+		if ((istype(O, /obj/structure/vehicleparts/frame) || train_deck_segment(O)) && vehicle_deck_vehicle(O) == owner)
+			return TRUE
+	return FALSE
 
 // The vehicle M is riding on top of, or null.
 /proc/vehicle_deck_axis(mob/M)
@@ -97,8 +152,7 @@
 	else
 		if (get_dist(src, F) != 1)
 			return "You need to stand next to \the [F]."
-		var/obj/structure/vehicleparts/frame/under = locate(/obj/structure/vehicleparts/frame) in loc
-		if (under && under.axis == F.axis)
+		if (vehicle_deck_inside(src, F))
 			return "You are inside it. Climb out through a hatch, or get out first."
 	if (stat || lying || resting || prone || weakened || stunned || paralysis || restrained())
 		return "You can't climb right now."
@@ -149,7 +203,8 @@
 		vehicle_deck_old_layer = layer
 	layer = VEHICLE_DECK_LAYER
 	animate(src, pixel_y = vehicle_deck_pose_y(), time = 3)
-	if (F.upper_deck)
+	var/obj/structure/vehicleparts/frame/upper = F
+	if (istype(upper) && upper.upper_deck)
 		visible_message(SPAN_NOTICE("[src] goes up to the upper deck."), SPAN_NOTICE("You are on the upper deck. You can see over walls from up here. Walk off the edge to jump down, or use Climb Down."))
 	else
 		visible_message(SPAN_NOTICE("[src] climbs up onto \the [F]."), SPAN_NOTICE("You are on top of \the [F]. You can see over walls from up here. Walk off the edge to jump down, or use Climb Down."))
@@ -206,7 +261,7 @@
 	dir = direct
 	if (!dest)
 		return FALSE
-	var/obj/structure/vehicleparts/frame/next = vehicle_deck_frame_at(dest)
+	var/obj/structure/vehicleparts/frame/next = vehicle_deck_at(dest)
 	if (next)
 		forceMove(dest)
 		step_x = 0
@@ -233,7 +288,7 @@
 	else
 		for (var/d in list(dir, NORTH, SOUTH, EAST, WEST))
 			var/turf/T = get_step(F.loc, d)
-			if (T && !vehicle_deck_frame_at(T) && vehicle_deck_landing_clear(T))
+			if (T && !vehicle_deck_at(T) && vehicle_deck_landing_clear(T))
 				dest = T
 				break
 	if (!dest)
@@ -262,7 +317,7 @@
 		var/turf/beside = null
 		for (var/d in shuffle(list(NORTH, SOUTH, EAST, WEST)))
 			var/turf/T = get_step(loc, d)
-			if (T && !vehicle_deck_frame_at(T) && vehicle_deck_landing_clear(T))
+			if (T && !vehicle_deck_at(T) && vehicle_deck_landing_clear(T))
 				beside = T
 				break
 		leave_vehicle_deck(beside, "fall")
@@ -295,7 +350,7 @@
 			T = get_step(T, throw_dir)
 			if (!T)
 				break
-			if (vehicle_deck_frame_at(T))
+			if (vehicle_deck_at(T))
 				continue
 			if (vehicle_deck_landing_clear(T))
 				dest = T
@@ -303,7 +358,7 @@
 	if (!dest)
 		for (var/d in shuffle(list(NORTH, SOUTH, EAST, WEST)))
 			var/turf/T = get_step(loc, d)
-			if (T && !vehicle_deck_frame_at(T) && vehicle_deck_landing_clear(T))
+			if (T && !vehicle_deck_at(T) && vehicle_deck_landing_clear(T))
 				dest = T
 				break
 	if (why)
@@ -337,17 +392,110 @@
 		if (R)
 			H.vehicle_deck_thrown(back_dir, "You hit \the [R] overhead and are knocked off!")
 
+// ---- Train car roofs (train_platforms.dm) ----
+
+// TRUE when this car has a roof to ride on: coaches, sleepers, dining,
+// storage and armored cars. Flatbeds and gun cars are open decks.
+/obj/structure/trains/platform/proc/roofed()
+	if (wrecked || !isturf(loc))
+		return FALSE
+	var/list/L = layout()
+	return L && L["roof"]
+
+// The roof pictures of this segment's three tiles, drawn over the car for
+// everyone but those riding inside it (process_train_roofs). Made only when
+// the art for this car and position exists.
+/obj/structure/trains/platform/proc/make_roof_images()
+	roof_images = null
+	if (!roofed())
+		return
+	var/list/L = layout()
+	var/list/segs = L["segments"]
+	var/row = seg_index <= 1 ? "f" : (seg_index >= segs.len ? "b" : "m")
+	var/list/states = train_roof_states()
+	var/list/made = list()
+	for (var/i in 1 to 3)
+		var/state = "roof_[L["roof"]]_[row][copytext("lcr", i, i + 1)]"
+		if (!(state in states))
+			return
+		made += state
+	roof_images = list()
+	for (var/i in 1 to 3)
+		var/image/R = image(icon, null, made[i], 8, dir)
+		roof_images += R
+	// Centre on the segment; the sides on their deck parts once placed.
+	var/image/C = roof_images[2]
+	C.loc = src
+	train_roof_segments |= src
+
+// Segments with roof pictures, for process_train_roofs.
+var/global/list/train_roof_segments = list()
+
+/proc/train_roof_states()
+	var/static/list/states = null
+	if (!states)
+		states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	return states
+
+// Hangs the side roof pictures on the deck parts made for them.
+/obj/structure/trains/platform/proc/hang_roof_images()
+	if (!roof_images)
+		return
+	for (var/obj/structure/train_part/deck/D in deck_parts)
+		var/image/R = roof_images[D.side + 2]
+		R.loc = D
+
+// After a car moves: anyone riding on top under a roof is knocked off,
+// backwards along the track.
+/proc/train_deck_clearance(list/cargo, back_dir)
+	for (var/mob/living/human/H in cargo)
+		if (!H.vehicle_deck || !train_deck_segment(H.vehicle_deck))
+			continue
+		var/obj/roof/R = locate(/obj/roof) in H.loc
+		if (R)
+			H.vehicle_deck_thrown(back_dir, "You hit \the [R] overhead and are knocked off!")
+
+/mob/living/human/var/tmp/list/train_roofs_shown = null
+
+// Shows train car roofs to this person, except the car they ride inside.
+/mob/living/human/proc/process_train_roofs()
+	if (!client)
+		train_roofs_shown = null
+		return
+	var/list/want = list()
+	var/inside = null
+	if (!vehicle_deck && isturf(loc))
+		for (var/obj/O in loc)
+			var/obj/structure/trains/platform/S = train_deck_segment(O)
+			if (S)
+				inside = S.car_id
+				break
+	var/reach = 12
+	for (var/obj/structure/trains/platform/S in train_roof_segments)
+		if (QDELETED(S) || !S.roof_images)
+			train_roof_segments -= S
+			continue
+		if (S.z != z || S.car_id == inside || get_dist(S, src) > reach)
+			continue
+		want += S.roof_images
+	var/list/had = train_roofs_shown || list()
+	if (had.len)
+		client.images -= (had - want)
+	if (want.len)
+		client.images |= want
+	train_roofs_shown = want.len ? want : null
+
 // Grab intent and a free hand on a vehicle from outside: climb onto its roof.
 /mob/living/human/proc/grab_climb_vehicle(atom/A)
 	if (a_intent != I_GRAB || get_active_hand() || vehicle_deck)
 		return FALSE
-	var/obj/structure/vehicleparts/frame/F = A
-	if (!istype(F))
-		F = isturf(A) ? vehicle_deck_frame_at(A) : null
-	if (!vehicle_deck_walkable(F) || get_dist(src, F) != 1)
-		return FALSE
-	var/obj/structure/vehicleparts/frame/under = locate(/obj/structure/vehicleparts/frame) in loc
-	if (under && under.axis == F.axis)
+	var/atom/F = null
+	if (vehicle_deck_walkable(A))
+		F = A
+	else if (isturf(A) || istype(A, /obj/structure/vehicleparts/frame) || istype(A, /obj/structure/train_part/deck) || istype(A, /obj/structure/trains/platform))
+		// A roofless frame or a car's floor: the roof on that tile, if any.
+		F = vehicle_deck_at(get_turf(A))
+	if (!F || get_dist(src, F) != 1 || vehicle_deck_inside(src, F))
 		return FALSE
 	climb_onto_vehicle(F)
 	return TRUE
@@ -360,6 +508,22 @@
 		return
 	var/mob/living/human/H = usr
 	H.climb_onto_vehicle(src)
+
+/obj/structure/train_part/deck/verb/climb_onto_car_roof_verb()
+	set name = "Climb Onto Roof"
+	set category = null
+	set src in view(1)
+	if (ishuman(usr))
+		var/mob/living/human/H = usr
+		H.climb_onto_vehicle(src)
+
+/obj/structure/trains/platform/verb/climb_onto_car_roof_verb()
+	set name = "Climb Onto Roof"
+	set category = null
+	set src in view(1)
+	if (ishuman(usr))
+		var/mob/living/human/H = usr
+		H.climb_onto_vehicle(src)
 
 /mob/living/human/verb/climb_through_hatch_verb()
 	set name = "Climb Through Hatch"

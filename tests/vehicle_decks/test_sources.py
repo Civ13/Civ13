@@ -62,7 +62,7 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertIn('start_vehicle_deck_down()', proc(CLIMB, '/mob/living/human/verb/climb_down_tree_verb('))
 
     def test_melee_and_animals(self):
-        self.assertIn('return attacker_deck != target_deck', proc(CLIMB, '/proc/tree_melee_blocked('))
+        self.assertIn('return !vehicle_deck_same_roof(attacker, target)', proc(CLIMB, '/proc/tree_melee_blocked('))
         self.assertIn('los_on_vehicle_deck(M)', proc(CLIMB, '/mob/living/simple_animal/proc/can_reach_tree_climber('))
 
     def test_shots(self):
