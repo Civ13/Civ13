@@ -230,6 +230,26 @@ class BackendContract(unittest.TestCase):
         shown = source.split('/obj/item/stack/proc/crafting_window_shown', 1)[1].split('/datum/crafting_window/ui_interact', 1)[0]
         self.assertIn('reach ? !crafting_stack_accessible(H) : (loc != H || H.get_active_hand() != src)', shown)
 
+    def test_atlas_hand_off_opens_the_window_and_makes_nothing(self):
+        source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        hand_off = source.split('/proc/crafting_window_from_atlas(mob/viewer, product)', 1)[1].split('// Where a material is', 1)[0]
+        # A working human only, a real type path, and only materials the server finds in reach.
+        self.assertLess(hand_off.index('!istype(H) || !H.client || H.stat || H.restrained()'), hand_off.index('text2path('))
+        self.assertLess(hand_off.index('ispath(wanted, /atom)'), hand_off.index('H.crafting_stacks_within_reach()'))
+        self.assertIn('near.crafting_window_shown(H, TRUE, row)', hand_off)
+        for action in ('produce_recipe', '.use(', 'put_in_hands', 'new wanted'):
+            self.assertNotIn(action, hand_off)
+        core = (ROOT / 'code/game/mob/crafting_atlas.dm').read_text()
+        adapter = (ROOT / 'code/game/mob/crafting_atlas_tgui.dm').read_text()
+        # The standalone Atlas fixture compiles without the Crafting window: only the adapter names it.
+        self.assertNotIn('crafting_window', core)
+        self.assertIn('crafting_atlas_presenter.craft(viewer, copytext("[href_list["atlas_craft"]]", 1, 257), state)', core)
+        craft = adapter.split('/datum/crafting_atlas_presenter/tgui/craft(mob/viewer, product, state)', 1)[1].split('\n/', 1)[0]
+        for guard in ('ui.user != viewer', 'ui.state != state', 'ui.legacy_renderer', '!ui.frontend_ready', '!ui.frontend_acknowledged', 'resource_exists(product)'):
+            self.assertLess(craft.index(guard), craft.index('crafting_window_from_atlas(viewer, product)'))
+        atlas = (ROOT / 'tgui/src/interfaces/CraftingAtlas.tsx').read_text()
+        self.assertIn("ui.act('atlas_craft', { atlas_craft: craftable })", atlas)
+
     def test_crafting_window_falls_back_to_the_classic_list(self):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
         fallback = source.split('/datum/nanoui/tgui/crafting_window/use_legacy_renderer()', 1)[1].split('/obj/item/stack/proc/crafting_window_shown', 1)[0]
