@@ -1011,7 +1011,11 @@ var/global/list/human_face_icon_cache = list()
 			standing.overlays += addin
 		else
 			standing = image(icon = t_icon, icon_state = t_state, layer = layer+0.01)
-		if (istype(head, /obj/item/clothing/head/custom_off_cap))
+		var/obj/item/clothing/tailored_head = head
+		if (istype(tailored_head) && tailored_head.design_body)
+			// Tailored headwear (dressmaking.dm) draws its coloured design layers.
+			standing.overlays += tailored_head.worn_design_layers()
+		else if (istype(head, /obj/item/clothing/head/custom_off_cap))
 			var/obj/item/clothing/head/custom_off_cap/CU = head
 			band = image("icon" = 'icons/mob/head.dmi', "icon_state" = "customcap_l2", layer = layer+0.01)
 			band.color = CU.bandcolor
