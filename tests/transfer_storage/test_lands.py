@@ -186,6 +186,39 @@ class LandStageTests(unittest.TestCase):
         # A colony the world stops reporting is gone.
         c.record_land_sample('beta', {'players': 1, 'living': 3, 'at': now, 'colonies': []}, now=now)
         self.assertEqual([], c.lands(now)['beta']['colonies'])
+    def test_a_member_starts_at_its_colony_only_where_it_stands_and_the_land_allows(self):
+        wolves = 'civ:alpha:Wolves'
+        call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': 1, 'living': 3, 'colonies': [
+            {'parent': wolves, 'name': 'Wolves', 'age_hours': 80, 'members': 3}]})
+
+        def ask(land, ckey, op, **kw):
+            return call(self.urls[land], TOKENS[land], '/account', dict({'ckey': ckey, 'op': op}, **kw))
+
+        self.assertFalse(ask('alpha', 'val', 'colony', region='beta', faction='Wolves').get('ok'))
+        self.assertFalse(ask('alpha', 'val', 'colony', region='alpha', faction=wolves).get('ok'))
+        # A frontier land takes no colony starts yet.
+        self.coordinator.set_land('beta', 'FRONTIER', False, 'val')
+        ask('alpha', 'val', 'colony', region='beta', faction=wolves)
+        self.coordinator.homes_once()
+        self.assertIsNone(self.coordinator.home('val'))
+        self.coordinator.set_land('beta', 'COLONY', True, 'val')
+        # Only the faction's own land vouches for its members.
+        ask('gamma', 'ann', 'colony', region='beta', faction=wolves)
+        ask('alpha', 'val', 'colony', region='beta', faction=wolves)
+        self.coordinator.homes_once()
+        self.assertIsNone(self.coordinator.home('ann'))
+        self.assertEqual('beta', self.coordinator.home('val'))
+        self.coordinator.homes_once()
+        claim = ask('beta', 'val', 'claim')['result']
+        self.assertEqual(('HOME', wolves), (claim['verdict'], claim['colony_grant']))
+        self.assertEqual('ELSEWHERE', ask('alpha', 'val', 'claim')['result']['verdict'])
+        self.assertTrue(ask('beta', 'val', 'colony_used', faction=wolves).get('ok'))
+        self.assertIsNone(ask('beta', 'val', 'claim')['result'].get('colony_grant'))
+        self.coordinator.homes_once()
+        self.coordinator.homes_once()
+        self.assertEqual([], self.stores['beta'].db.execute('SELECT * FROM colony_grant').fetchall())
+        self.assertEqual([], self.coordinator.db.execute('SELECT * FROM colony_grant').fetchall())
+
 
 def read(path):
     with open(os.path.join(ROOT, path), encoding='utf-8') as f:
