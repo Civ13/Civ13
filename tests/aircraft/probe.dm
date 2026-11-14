@@ -586,7 +586,7 @@ var/aircraft_runtime_error = FALSE
 		build_research_tree()
 	var/datum/research_node/flight = get_research_node("powered_flight")
 	var/datum/research_node/aviation = get_research_node("aviation_rocketry")
-	aircraft_check(flight && ("automobiles" in flight.prereqs) && flight.era_tier == 6 && aviation && ("powered_flight" in aviation.prereqs), "Powered Flight follows Automobiles and leads to Aviation & Rocketry (node [flight ? "found" : "missing"])")
+	aircraft_check(flight && ("combustion" in flight.prereqs) && flight.era_tier == 6 && aviation && ("powered_flight" in aviation.prereqs), "Powered Flight follows the Combustion Engine and leads to Aviation & Rocketry (node [flight ? "found" : "missing"])")
 	aircraft_check(get_recipe_node_req("/obj/structure/car_workshop/hangar") == "powered_flight", "Powered Flight gates the hangar (got [get_recipe_node_req("/obj/structure/car_workshop/hangar")])")
 	for (var/bx = 15, bx <= 18, bx++)
 		for (var/by = 3, by <= 6, by++)
