@@ -475,6 +475,7 @@
 #include "code\modules\paintings\painting_codec.dm"
 #include "code\modules\paintings\paintings.dm"
 #include "code\modules\paintings\painting_editor.dm"
+#include "code\modules\paintings\drawings.dm"
 #include "code\modules\paintings\painting_admin.dm"
 #include "code\modules\paperwork\written_languages.dm"
 #include "code\modules\paperwork\document.dm"

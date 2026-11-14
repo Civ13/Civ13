@@ -34,6 +34,7 @@ def environment(source=None,paper_source=None):
    self.type=vm.TypePath(PLAIN);self.desc='Fixture facsimile';self.rigged=False;self.spam_flag=False
    self.deffont='Verdana';self.signfont='Times New Roman';self.crayonfont='Comic Sans MS';self.effects=[]
    state['all_papers'].append(self)
+  def copy_drawings_from(self,source):self.effects.append('drawings')
   def updateinfolinks(self):self.info_links='rebuilt-for-copy';self.effects.append('links')
   def update_icon(self):self.effects.append('icon')
  original_type=env['istype']
@@ -67,7 +68,7 @@ def environment(source=None,paper_source=None):
   do_after=wait,WWinput=prompt,parent_destroy=parent_destroy,world=state['world'])
  names={'paper_document_copy_metadata_valid','paper_document_copy_metadata','paper_document_copy_snapshot','paper_document_copy_current','paper_document_create_copy','paper_document_copy_actor_valid','new_copy_paper','qdel','get_turf','remove_input','append_input','unique_input','paper_inputs','do_after','WWinput','parent_destroy'}
  vm.ALLOWED |= names
- vm.METHODS |= {'document_copy_legacy_valid','updateinfolinks','update_icon','visible_message','transfer_held_item_to'}
+ vm.METHODS |= {'document_copy_legacy_valid','copy_drawings_from','updateinfolinks','update_icon','visible_message','transfer_held_item_to'}
  Paper.document_copy_legacy_valid=vm.project(paper_source,'/obj/item/weapon/paper/proc/document_copy_legacy_valid','self,legacy',env)
  adapted=source
  marker='var/obj/item/weapon/paper/result = new /obj/item/weapon/paper(null, TRUE)'
@@ -128,7 +129,7 @@ class Copies(unittest.TestCase):
   data=self.Reader(out,self.actor,'paper').project(self.actor)
   self.assertNotIn('UNKNOWN_',json.dumps(data)+self.render(data,out));self.assertIn('KNOWN_BODY',json.dumps(data))
   self.assertEqual(out.info,views.LEGACY['info']);self.assertNotEqual(out.info_links,self.paper.info_links)
-  self.assertEqual(out.effects,['links','icon']);self.assertIsNone(getattr(out,'study_progress',None))
+  self.assertEqual(out.effects,['drawings','links','icon']);self.assertIsNone(getattr(out,'study_progress',None))
   snapshot['record']['sections'][0]['text']='caller changed token'
   self.assertEqual(out.document_record['sections'],before['sections'])
  def test_legacy_null_paths_lists_ink_and_capacity_remain_exact_and_unaliased(self):

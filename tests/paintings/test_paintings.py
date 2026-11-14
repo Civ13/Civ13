@@ -21,7 +21,7 @@ def source():
 class PaintingsTest(unittest.TestCase):
     def test_files_are_in_the_dme_and_the_old_port_is_gone(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
-        for name in ('painting_codec', 'paintings', 'painting_editor', 'painting_admin'):
+        for name in ('painting_codec', 'paintings', 'painting_editor', 'drawings', 'painting_admin'):
             self.assertIn(f'#include "code\\modules\\paintings\\{name}.dm"', dme)
         self.assertFalse((ROOT / 'code/game/objects/items/paper/artstuff.dm').exists())
 
@@ -83,3 +83,14 @@ class PaintingsTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+    def test_drawings_follow_paper_and_books(self):
+        hooks = {
+            'code/modules/paperwork/view.dm': 'drawings_html(src)',
+            'code/modules/paperwork/copy.dm': 'result.copy_drawings_from(snapshot["paper"])',
+            'code/modules/1713/book.dm': 'drawing_set_list(NB, drawings_copy(NC.drawings))',
+            'code/modules/research_tree/book_pages.dm': 'take_page_drawings(P)',
+        }
+        for path, hook in hooks.items():
+            self.assertIn(hook, (ROOT / path).read_text(encoding='utf-8'), path)
+        self.assertIn('show_drawings(user)', (ROOT / 'code/modules/1713/book.dm').read_text(encoding='utf-8'))
