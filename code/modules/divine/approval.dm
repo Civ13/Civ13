@@ -1,4 +1,4 @@
-// Disabled phase-one contract. No verbs, globals, UI or effect dispatch.
+// Server-only phase-one contract. No verbs, globals, UI or effect dispatch.
 // Call only from a server-owned adapter after resolving character and target.
 // Runtime approvals are intentionally not portable or restored from a save.
 // Snapshot comparisons cannot detect leave-and-return events. The integrating
