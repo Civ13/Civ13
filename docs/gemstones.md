@@ -92,6 +92,19 @@ frequency the radio always listens to (`radio_crystal_matches`).
 Fitted to a wrist watch (Digital Computing) it sets `quartz_movement`, which
 reads exact time like a jewelled watch.
 
+Reading stones, emery and garnet paper: chisel and hammer on cut quartz
+makes a reading stone (Glassworking); held in either hand it lets you read
+and write at half the usual minimum light (`reading_light_problem`). A ruby
+or sapphire that splits on a flaw leaves a pinch of emery. Emery charges a
+lapping wheel separately (`emery_charges`) and only serves stones softer
+than corundum; ruby, sapphire and diamond still need diamond grit. A rough
+garnet used with paper in the other hand makes 4 sheets of garnet paper
+(Factories). A sheet used with a worn wooden material tool or weapon in the
+other hand restores a quarter of its health for 1 max health, like the
+grindstone does for steel. (Speeding wood crafting would need stack.dm, whose
+projection tests are pinned.) Jewel microscope lenses were left out:
+the game's microscope is a modern electron microscope.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
