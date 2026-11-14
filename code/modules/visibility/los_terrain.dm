@@ -194,8 +194,7 @@ var/global/los_eye_offsets_paused = FALSE
 	var/list/floor_h = new /list(side * side)
 	var/base = 0
 	if (x >= 1 && x <= maxx && y >= 1 && y <= maxy)
-		base = text2ascii(rows[maxy - y + 1], x)
-		base = base >= 97 ? base - 87 : base - 48
+		base = terrain_height_levels[text2ascii(rows[maxy - y + 1], x)]
 	flat = TRUE
 	var/n = 1
 	for (var/i = -radius, i <= radius, i++)
@@ -204,8 +203,7 @@ var/global/los_eye_offsets_paused = FALSE
 			var/cy = y + j
 			var/g = 0
 			if (cx >= 1 && cx <= maxx && cy >= 1 && cy <= maxy)
-				g = text2ascii(rows[maxy - cy + 1], cx)
-				g = g >= 97 ? g - 87 : g - 48
+				g = terrain_height_levels[text2ascii(rows[maxy - cy + 1], cx)]
 			if (g != base)
 				flat = FALSE
 			ground[n] = g
