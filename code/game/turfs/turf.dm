@@ -88,7 +88,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 /turf/Destroy()
 	snowfall_ground_unregister()
 	turfs -= src
-	turf_registry_members -= src
+	turf_registry_remove(src)
 	for (var/obj/o in contents)
 		if (o.special_id == "seasons")
 			if (overlays.Find(o))
@@ -285,8 +285,7 @@ var/const/enterloopsanity = 100
 		turf_registration_done = TRUE
 		turfs += src
 #else
-	if (!turf_registry_members[src])
-		turf_registry_members[src] = TRUE
+	if (turf_registry_add(src))
 		turfs += src
 #endif
 
