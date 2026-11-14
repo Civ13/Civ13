@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only: clay blacksmith pots and jugs accept bronze and brass bars (#5143).
+    'blacksmith_jug_bars': {'files': ('tests/blacksmith_jug_bars/test_jug.py',), 'paths': (
+        'tests/blacksmith_jug_bars/',), 'shared_paths': (
+        'code/game/objects/structures/blacksmithing/molds.dm',
+        'code/game/objects/structures/blacksmithing/refining.dm')},
     'intestine_casings': {'files': ('tests/organ_utilities/test_casings.py',),
         'paths': ('tests/organ_utilities/',),
         'shared_paths': ('code/modules/1713/animal_harvest.dm', 'scripts/atlas/catalog_metadata.py')},

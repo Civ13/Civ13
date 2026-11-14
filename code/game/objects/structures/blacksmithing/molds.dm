@@ -203,8 +203,19 @@
 					if (O.amount <= 0)
 						qdel(O)
 					to_chat(user, "You put some [O] in \the [src].")
+			else if (istype(O, /obj/item/stack/material/bronze) || istype(O, /obj/item/stack/material/brass))
+				// Alloy bars melt back down on their own; they never mix with other metals.
+				var/alloy = istype(O, /obj/item/stack/material/bronze) ? "bronze" : "brass"
+				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials[alloy]))
+					contents_materials[alloy] += cap_to_add
+					O.amount -= cap_to_add
+					if (O.amount <= 0)
+						qdel(O)
+					to_chat(user, "You put some [O] in \the [src].")
+				else
+					to_chat(user, "<span class='warning'>\The [src] already holds a different metal.</span>")
 			else
-				to_chat(user, "You cannot use this material on a kiln.")
+				to_chat(user, "You can't melt that in \the [src].")
 				return
 			return
 /obj/item/weapon/clay/mold/axehead
