@@ -1031,6 +1031,10 @@ SUITES = {
         'paths': ('tests/obsidian/',), 'shared_paths': (
             'code/modules/1713/obsidian.dm', 'code/game/turfs/floor_attackby.dm',
             'icons/obj/obsidian.dmi', 'code/modules/research_tree/research_node.dm')},
+    # Snares, deadfalls, fish weirs and pit traps: source contracts only.
+    'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
+        'paths': ('tests/stone_age_traps/',), 'shared_paths': (
+            'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

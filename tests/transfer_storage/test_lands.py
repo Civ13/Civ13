@@ -289,6 +289,15 @@ class LandStageSourceTests(unittest.TestCase):
         choices = self.land[self.land.index('/proc/land_stage_choices()'):]
         self.assertIn('if(id == shard_group.mainland)', choices[:choices.index('/proc/land_stage_admin_html()')])
 
+    def test_the_world_keeps_each_lands_colonies_and_colony_suggestions(self):
+        refresh = self.land[self.land.index('/proc/land_stages_refresh()'):]
+        refresh = refresh[:refresh.index('/proc/land_readiness_clean(')]
+        self.assertIn('"colonies" = land_colonies_clean(entry["colonies"])', refresh)
+        clean = self.land[self.land.index('/proc/land_readiness_clean('):]
+        self.assertIn('list("COLONY", "OPEN", "PAUSE", "RESUME")', clean[:clean.index('/proc/land_colonies_clean(')])
+        colonies = self.land[self.land.index('/proc/land_colonies_clean('):]
+        self.assertIn('colony_parent_valid(colony["parent"])', colonies[:colonies.index('/proc/land_suggestion_text(')])
+
 
 if __name__ == '__main__':
     unittest.main()
