@@ -33,6 +33,7 @@ from .playable import (SURFACE_AREA, apply_elevation, elevation_profile, playabl
                        verify_types, write_text, DEFAULT_LAPSE)
 from .repo_source import read_source
 from .source_audit import parse_classic
+from .terrain_files import write_terrain_files
 from .validator import MAX_SIDE, unchanged
 
 LAND_VERSION = "civ13-expedition-land/2"
@@ -304,6 +305,7 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE, full_bundle=False
         if parsed != layout or sorted(dims) != [[doc["width"], doc["height"], 1], [doc["width"], doc["height"], 2]]:
             raise ValueError("LAND_LAYOUT_MISMATCH")
         (folder / "land.dmm").write_text(text, encoding="utf-8", newline="\n")
+        terrain = write_terrain_files(folder, doc, layout)
     finished = time.monotonic()
     report = {
         "schema": LAND_VERSION,
@@ -318,6 +320,8 @@ def build_land(t, out, catalog_root=None, lapse=DEFAULT_LAPSE, full_bundle=False
         "starts": len(doc["starts"]),
         "supplies": dict(sorted(counts.items())),
         "skin": skin_counts,
+        # Hill levels, river currents and flood reaches beside the map (terrain_files.py).
+        "terrain": terrain,
         # Applied by the slot world, not placed in the map (docs/expedition-lands.md).
         "slot_world": {"ore": t["resources"]["ore"], "ores": t["resources"].get("ores", []), "rare": t["resources"].get("rare", []),
                        "game": t["resources"].get("game", [])},

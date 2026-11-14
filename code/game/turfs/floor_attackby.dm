@@ -373,6 +373,7 @@
 		var/obj/item/weapon/barrier/sandbag/bag = C
 		if (bag.sand_amount <= 0)
 			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
+			return
 
 		var/sandbag_time = 50
 
@@ -1110,7 +1111,7 @@
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (H.shoveling)
-				..()
+				return ..()
 			if (T.has_snow_cover() && istype(H))
 				if (T.snow_units(generated_source) <= 0)
 					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))

@@ -132,7 +132,7 @@ var/no_loop_capitol = FALSE
 					if (win_condition_spam_check)
 						return FALSE
 					ticker.finished = TRUE
-					message = "The <b>Soviets</b> have reached [sov_points] points and won!"
+					message = "The <b>Militia</b> have reached [sov_points] points and won!"
 					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
@@ -141,7 +141,7 @@ var/no_loop_capitol = FALSE
 					if (win_condition_spam_check)
 						return FALSE
 					ticker.finished = TRUE
-					message = "The <b>Germans</b> have reached [ger_points] points and won!"
+					message = "The <b>National Guard</b> have reached [ger_points] points and won!"
 					to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 					show_global_battle_report(null)
 					win_condition_spam_check = TRUE
@@ -239,8 +239,8 @@ var/no_loop_capitol = FALSE
 			else
 				to_chat(world, "<big><font color='[cust_color]'>[a2_control]</font> captured the <b>Senate</b>!</big>")
 	to_chat(world, "<big><b>Current Points:</b></big>")
-	to_chat(world, "<big>National Guard: [scores["National Guard"]]</big>")
-	to_chat(world, "<big>Militia: [scores["Militia"]]</big>")
+	to_chat(world, "<big>National Guard: [ger_points]</big>")
+	to_chat(world, "<big>Militia: [sov_points]</big>")
 //	to_chat(world, "<big>Militia: [ger_points]</big>")
 //	to_chat(world, "<big>Soviet Army: [sov_points]</big>")
 	spawn(300)

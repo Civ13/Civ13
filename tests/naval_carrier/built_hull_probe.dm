@@ -265,6 +265,17 @@ var/naval_runtime_error = FALSE
 	naval_check(C.sail_interval() == 75 && hull_leg(C) && tiller.y == y_was + 4 && mast.y == y_was + 4, "half ahead is four tiles in the half minute, mast and all ([tiller.y])")
 	C.set_anchor(TRUE)
 	naval_check(!mast.sails_on && mast.icon_state == "sail1", "at anchor the sail is furled")
+	// ---- Points of sail (naval/points_of_sail.dm): she heads north ----
+	var/wind_was = map.winddirection
+	map.winddirection = "East"
+	naval_check(point_of_sail(NORTH) == SAIL_POINT_BEAM && C.thrust() == 31 && findtext(tiller.status_text(), "Her sails are on a beam reach"), "with the wind on her beam the sail gives its full push ([tiller.status_text()])")
+	map.winddirection = "South"
+	naval_check(point_of_sail(NORTH) == SAIL_POINT_RUNNING && C.thrust() == 23 && C.max_speed() == VESSEL_SPEED_HALF && findtext(tiller.status_text(), "running before the wind"), "running dead before the wind she is a little slower ([C.thrust()])")
+	map.winddirection = "North"
+	naval_check(point_of_sail(NORTH) == SAIL_POINT_BEATING && C.thrust() == 8 && C.max_speed() == VESSEL_SPEED_SLOW && findtext(tiller.status_text(), "beating into the wind"), "beating into the wind one sail cannot drive her past slow ahead ([C.thrust()])")
+	naval_check(point_of_sail(NORTHEAST) == SAIL_POINT_CLOSE && point_of_sail(SOUTHEAST) == SAIL_POINT_BROAD && sail_delay_factor(NORTHEAST) == SAIL_DELAY_CLOSE && sail_delay_factor(SOUTHEAST) == SAIL_DELAY_REACH, "close-hauled and broad reaches sit between")
+	naval_check(sail_step_delay(3) == 7 && sail_delay_factor(EAST) == SAIL_DELAY_REACH && sail_delay_factor(SOUTH) == SAIL_DELAY_RUNNING && sail_delay_factor(NORTH) == SAIL_DELAY_BEATING, "a frame ship's step: a reach is fastest, a run 1.3 times and a beat 3.5 times as long")
+	map.winddirection = wind_was
 	C.set_anchor(FALSE)
 	qdel(mast.sails)
 	mast.sails = null
@@ -286,7 +297,7 @@ var/naval_runtime_error = FALSE
 	engine.fueltank = bunker
 	engine.on = TRUE
 	naval_check(C.fit_drives() == 1 && C.thrust() == 66 && C.max_speed() == VESSEL_SPEED_FULL, "running, a hot bulb engine pushes her thirteen tiles at full ahead ([C.thrust()])")
-	naval_check(findtext(tiller.status_text(), "Under 1 engine: full ahead at best. Her drives push 66; 13 tiles of hull need 13 for half ahead and 26 from engines for full ahead."), "the tiller says what she needs ([tiller.status_text()])")
+	naval_check(findtext(tiller.status_text(), "Under 1 engine: full ahead at best. Her drives push 66; 13 tiles of hull need 13 for half ahead and 26 from engines or oars for full ahead."), "the tiller says what she needs ([tiller.status_text()])")
 	C.set_speed(VESSEL_SPEED_FULL)
 	y_was = tiller.y
 	naval_check(C.speed == VESSEL_SPEED_FULL && C.sail_interval() == 50 && hull_leg(C) && tiller.y == y_was + 6 && engine.y == y_was + 6 && bunker.y == y_was + 6, "full ahead is six tiles in the half minute, engine and tank and all ([tiller.y])")
@@ -309,6 +320,60 @@ var/naval_runtime_error = FALSE
 	qdel(engine)
 	qdel(bunker)
 	C.fit_drives()
+
+	// ---- Rowing benches (naval/rowing_bench.dm) ----
+	var/list/benches = list()
+	var/list/rowers = list()
+	var/list/deck = B.cells()
+	for (var/i = 1, i <= 7, i++)
+		var/turf/seat = deck[i]
+		var/obj/structure/bed/chair/wood/rowing_bench/RB = new(seat)
+		benches += RB
+		var/mob/living/human/naval_probe/R = new(seat)
+		R.real_name = "Rower [i]"
+		R.stats = list("stamina" = list(100, 100))
+		rowers += R
+	naval_check(C.fit_drives() == 7 && C.thrust() == 0 && C.max_speed() == VESSEL_SPEED_SLOW, "empty benches push nothing")
+	for (var/i = 1, i <= 7, i++)
+		var/obj/structure/bed/chair/wood/rowing_bench/RB = benches[i]
+		var/mob/living/human/naval_probe/R = rowers[i]
+		R.buckled = RB
+		RB.buckled_mob = R
+	naval_check(C.fit_drives() == 7 && C.thrust() == 7 * CRAFT_OAR_THRUST && C.max_speed() == VESSEL_SPEED_FULL && !C.sustained_full_ahead(), "seven manned benches row her thirteen tiles at full ahead, but not for a voyage ([C.thrust()])")
+	naval_check(findtext(tiller.status_text(), "Under 7 manned benches of oars: full ahead at best"), "the tiller counts the oars ([tiller.status_text()])")
+	C.set_speed(VESSEL_SPEED_FULL)
+	var/obj/structure/bed/chair/wood/rowing_bench/first = benches[1]
+	var/mob/living/human/naval_probe/stroke = rowers[1]
+	naval_check(C.speed == VESSEL_SPEED_FULL && C.sail_interval() == 50, "at full ahead she is rowed six tiles in the half minute")
+	C.burn_drives()
+	naval_check(stroke.stats["stamina"][1] == 100 - 3 * OAR_STAMINA_PER_STEP, "and each rower spends [3 * OAR_STAMINA_PER_STEP] stamina for it ([stroke.stats["stamina"][1]])")
+	C.set_speed(VESSEL_SPEED_SLOW)
+	C.burn_drives()
+	naval_check(stroke.stats["stamina"][1] == 100 - 4 * OAR_STAMINA_PER_STEP, "slow ahead costs a third of that ([stroke.stats["stamina"][1]])")
+	for (var/mob/living/human/naval_probe/R in rowers)
+		R.stats["stamina"][1] = OAR_MIN_STAMINA - 1
+	naval_check(C.fit_drives() == 7 && C.thrust() == 0 && C.max_speed() == VESSEL_SPEED_SLOW, "spent rowers cannot pull: she is poled at slow ahead")
+	for (var/mob/living/human/naval_probe/R in rowers)
+		R.stats["stamina"][1] = 100
+	stroke.buckled = null
+	first.buckled_mob = null
+	naval_check(C.fit_drives() == 7 && C.thrust() == 6 * CRAFT_OAR_THRUST && C.max_speed() == VESSEL_SPEED_HALF, "a rower who leaves the bench takes its push with him ([C.thrust()])")
+	C.set_speed(VESSEL_SPEED_STOP)
+	// Bare probe mobs have no species, so they are unseated by hand.
+	for (var/obj/structure/bed/chair/wood/rowing_bench/RB in benches)
+		if (RB.buckled_mob)
+			RB.buckled_mob.buckled = null
+			RB.buckled_mob = null
+		qdel(RB)
+	for (var/mob/living/human/naval_probe/R in rowers)
+		R.loc = null
+	naval_check(C.fit_drives() == 0, "benches taken off leave no drive")
+	if (!research_nodes.len)
+		build_research_tree()
+	var/obj/structure/hull_tiller/steering_oar/oar = new
+	var/datum/research_node/oared = research_nodes["oared_ships"]
+	naval_check(istype(oar, /obj/structure/hull_tiller) && oared && oared.era_tier == 1 && get_recipe_node_req("/obj/structure/hull_tiller/steering_oar") == "oared_ships" && get_recipe_node_req("/obj/structure/bed/chair/wood/rowing_bench") == "oared_ships", "the steering oar is a tiller, and both are taught by Oared Ships")
+	qdel(oar)
 
 	// ---- Wiring rides along ----
 	var/list/planks = B.cells()

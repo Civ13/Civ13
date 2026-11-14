@@ -1,0 +1,209 @@
+// Lifting: heavy things need a hoist, and the shear legs that hoist them.
+//
+// A ladder no longer carries an anvil, furnace, kiln, machine, cannon or
+// vehicle part along with the climber. Shear legs - two timbers lashed at
+// the head with a block and tackle - move one unfastened object between a
+// level and the one above or below it, through open air beside the legs.
+// Nothing is stored inside the legs and nothing ticks: a haul is one wait.
+
+#define SHEAR_LEGS_REACH 2
+#define SHEAR_LEGS_TIME 60
+#define SHEAR_LEGS_HEAVY_TIME 100
+
+// Too heavy to drag up or down a ladder.
+var/global/list/hoist_only_types = list(
+	/obj/structure/anvil,
+	/obj/structure/furnace,
+	/obj/structure/oven,
+	/obj/structure/sawmill,
+	/obj/structure/mill,
+	/obj/structure/workshop_machine,
+	/obj/structure/engine,
+	/obj/structure/vehicleparts,
+	/obj/structure/cannon,
+	/obj/structure/drill,
+	/obj/structure/printingpress,
+	/obj/structure/factory_fabricator,
+	/obj/structure/tanning_drum,
+	/obj/structure/research_forge,
+)
+// Light enough to carry on a ladder although their parent type is listed.
+var/global/list/hoist_exempt_types = list(
+	/obj/structure/workshop_machine/bellows,
+	/obj/structure/workshop_machine/shear_legs,
+)
+
+/proc/needs_hoist(atom/movable/A)
+	if (!isobj(A))
+		return FALSE
+	for (var/light in hoist_exempt_types)
+		if (istype(A, light))
+			return FALSE
+	for (var/heavy in hoist_only_types)
+		if (istype(A, heavy))
+			return TRUE
+	return FALSE
+
+// TRUE, with the reason told to the climber, when what they pull cannot go
+// on a ladder. Every ladder climb in multiz/structures.dm asks this first.
+/proc/ladder_refuses_load(mob/M)
+	if (!M || !M.pulling || !needs_hoist(M.pulling))
+		return FALSE
+	to_chat(M, SPAN_WARNING("\The [M.pulling] is far too heavy to haul on a ladder. Let go of it, or set up shear legs beside the drop and hoist it."))
+	return TRUE
+
+//////////////////////////////////////////////////////////////////////////////
+// Shear legs
+
+/obj/structure/workshop_machine/shear_legs
+	name = "shear legs"
+	desc = "Two timbers lashed at the head, with a block and tackle. Drag an unfastened object next to them onto the legs to raise it to the level above or lower it to the level below, through open air. Click them with an empty hand to haul up something lying below. Anvils, furnaces, kilns, machines, cannon and vehicle parts cannot go on a ladder and need a hoist like this."
+	icon = 'icons/obj/lifting_machines.dmi'
+	icon_state = "shear_legs"
+
+// Why this cannot be slung, or null when it can.
+/obj/structure/workshop_machine/shear_legs/proc/sling_problem(atom/movable/A)
+	if (A == src || !isturf(A.loc) || !(istype(A, /obj/item) || istype(A, /obj/structure)))
+		return "That cannot be slung from \the [src]."
+	if (A.anchored)
+		return "\The [A] is fastened down. Unfasten it first."
+	if (locate(/mob/living) in A)
+		return "Someone is inside \the [A]."
+	return null
+
+/obj/structure/workshop_machine/shear_legs/proc/hauler_ready(mob/living/human/H)
+	return !QDELETED(src) && anchored && istype(H) && get_dist(src, H) <= 1 && H.z == z && !H.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+
+// The nearest clear, supported turf within reach of the legs on that level.
+// With below_open_air the tile over it on the legs' own level must be open
+// air, so a load is never lowered through a floor.
+/obj/structure/workshop_machine/shear_legs/proc/landing_on(level, below_open_air = FALSE)
+	var/turf/centre = level ? locate(x, y, level) : null
+	if (!centre)
+		return null
+	var/turf/best = null
+	var/best_dist = 0
+	for (var/turf/T in range(SHEAR_LEGS_REACH, centre))
+		if (!ledge_landing_clear(T))
+			continue
+		if (below_open_air && !edge_open_air(locate(T.x, T.y, z)))
+			continue
+		var/d = get_dist(T, centre)
+		if (!best || d < best_dist)
+			best = T
+			best_dist = d
+	return best
+
+// Where a load beside the legs would go: list("Raise ..." = turf, ...).
+/obj/structure/workshop_machine/shear_legs/proc/haul_choices(atom/movable/load)
+	var/list/choices = list()
+	var/up = multiz_level_above(z)
+	if (up && edge_open_air(locate(load.x, load.y, up)))
+		var/turf/top = landing_on(up)
+		if (top)
+			choices["Raise it to the level above"] = top
+	var/turf/bottom = landing_on(multiz_level_below(z), TRUE)
+	if (bottom)
+		choices["Lower it to the level below"] = bottom
+	return choices
+
+// Unfastened objects on the level below, under open air within reach.
+/obj/structure/workshop_machine/shear_legs/proc/loads_below()
+	var/list/found = list()
+	var/down = multiz_level_below(z)
+	var/turf/centre = down ? locate(x, y, down) : null
+	if (!centre)
+		return found
+	for (var/turf/T in range(SHEAR_LEGS_REACH, centre))
+		if (!edge_open_air(locate(T.x, T.y, z)))
+			continue
+		for (var/obj/O in T)
+			if (!sling_problem(O))
+				found["[O.name] ([length(found) + 1])"] = O
+	return found
+
+/obj/structure/workshop_machine/shear_legs/MouseDrop_T(atom/movable/dropping, mob/living/human/user)
+	if (!istype(user) || !istype(dropping) || ismob(dropping) || user.incapacitated() || get_dist(src, user) > 1)
+		return
+	if (busy)
+		to_chat(user, SPAN_WARNING("\The [src] are already hauling a load."))
+		return
+	if (!anchored)
+		to_chat(user, SPAN_WARNING("Fasten \the [src] down first."))
+		return
+	if (get_dist(src, dropping) > 1 || dropping.z != z)
+		to_chat(user, SPAN_WARNING("Bring \the [dropping] right beside \the [src] first."))
+		return
+	var/problem = sling_problem(dropping)
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return
+	var/list/choices = haul_choices(dropping)
+	if (!length(choices))
+		to_chat(user, SPAN_WARNING("There is nowhere to hoist \the [dropping] to. Raising needs open air above the load and a clear floor within [SHEAR_LEGS_REACH] tiles of \the [src] on the level above; lowering needs open air beside \the [src] with clear ground under it."))
+		return
+	var/choice = length(choices) == 1 ? choices[1] : player_input(user, "Where should \the [dropping] go?", "Shear legs", null, "anything", choices, TRUE)
+	if (!choice || busy || !hauler_ready(user) || sling_problem(dropping) || get_dist(src, dropping) > 1 || dropping.z != z)
+		return
+	haul(user, dropping, choices[choice])
+
+/obj/structure/workshop_machine/shear_legs/attack_hand(mob/living/human/H)
+	if (!istype(H))
+		return
+	if (busy)
+		to_chat(H, SPAN_WARNING("\The [src] are already hauling a load."))
+		return
+	if (!anchored)
+		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+		return
+	var/list/loads = loads_below()
+	if (!length(loads))
+		to_chat(H, SPAN_NOTICE("Nothing unfastened lies below within reach. To raise or lower something on this level, drag it onto \the [src]."))
+		return
+	var/turf/landing = landing_on(z)
+	if (!landing)
+		to_chat(H, SPAN_WARNING("Clear a floor tile within [SHEAR_LEGS_REACH] tiles of \the [src] to land the load on."))
+		return
+	var/choice = player_input(H, "What should the legs haul up?", "Shear legs", null, "anything", loads, TRUE)
+	var/obj/load = choice ? loads[choice] : null
+	if (!load || busy || !hauler_ready(H) || QDELETED(load) || sling_problem(load))
+		return
+	haul(H, load, landing)
+
+/obj/structure/workshop_machine/shear_legs/attackby(obj/item/I, mob/living/human/H)
+	if (!istype(H))
+		return
+	if (handle_machine_tool(I, H))
+		return
+	return ..()
+
+// One haul: the load leaves its tile only when the whole wait succeeds.
+/obj/structure/workshop_machine/shear_legs/proc/haul(mob/living/human/H, obj/load, turf/destination)
+	if (busy || !hauler_ready(H) || !destination || !persistence_movement_allowed(load, destination))
+		return FALSE
+	var/turf/start = load.loc
+	busy = TRUE
+	icon_state = "shear_legs_haul"
+	visible_message(SPAN_NOTICE("[H] slings \the [load] from \the [src] and starts to haul on the tackle."))
+	playsound(src, 'sound/effects/doorcreaky.ogg', 40, TRUE)
+	var/done = do_after(H, needs_hoist(load) ? SHEAR_LEGS_HEAVY_TIME : SHEAR_LEGS_TIME, src)
+	busy = FALSE
+	if (QDELETED(src))
+		return FALSE
+	icon_state = "shear_legs"
+	if (!done || !hauler_ready(H) || QDELETED(load) || load.loc != start || sling_problem(load) || !ledge_landing_clear(destination))
+		to_chat(H, SPAN_WARNING("The load settles back where it was."))
+		return FALSE
+	if (load.pulledby)
+		load.pulledby.stop_pulling()
+	if (!load.persistence_set_loc(destination))
+		to_chat(H, SPAN_WARNING("The load settles back where it was."))
+		return FALSE
+	playsound(destination, 'sound/effects/drop_wood.ogg', 60, TRUE)
+	visible_message(SPAN_NOTICE("[H] hoists \the [load] [destination.z == z ? "up beside \the [src]" : "away on \the [src]"]."))
+	load.visible_message(SPAN_NOTICE("\The [load] is set down from a hoist."))
+	return TRUE
+
+#undef SHEAR_LEGS_REACH
+#undef SHEAR_LEGS_TIME
+#undef SHEAR_LEGS_HEAVY_TIME

@@ -163,8 +163,6 @@ var/global/list/train_raid_loot_pads = list()
 			warnings_sent["[mark]"] = TRUE
 			to_chat(world, SPAN_DANGER("<font size=3>The line collapses in [mark] minute[mark == 1 ? "" : "s"]. Anything still on the Hauler will be lost.</font>"))
 			break
-		else if (remaining <= mark MINUTES)
-			break
 	if (remaining <= 0)
 		collapse()
 

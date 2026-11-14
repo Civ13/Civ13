@@ -1368,7 +1368,7 @@
 
 /obj/item/clothing/head/helmet/medieval/viking/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
-	if (istype(W, /obj/item/stack/material/gold))
+	if (istype(W, /obj/item/stack/material/gold) && type == /obj/item/clothing/head/helmet/medieval/viking)
 		if (W.amount < 5)
 			to_chat(user, "<span class='warning'>You need 5 ingots.</span>")
 			return
@@ -1514,7 +1514,7 @@
 			new/obj/item/clothing/head/helmet/medieval/mamluk/helmet/king(user.loc)
 		else
 			qdel(src)
-			W.amount = W.amount - 1
+			W.amount = W.amount - 5
 			new/obj/item/clothing/head/helmet/medieval/mamluk/helmet/king(user.loc)
 
 /obj/item/clothing/head/helmet/medieval/mamluk/helmet/king

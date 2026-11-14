@@ -50,6 +50,9 @@ The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
    `maps/regions/far1.dmm` (a copy of the land), and the host writes
    `config/expedition_land.json` for the world: biome, land type, size, seed and
    the ore kinds, rare finds and game animals the slot world will place.
+   It also copies the land's hill, current and flood files to
+   `config/expedition_heights.txt`, `.flow.txt` and `.flood.txt`; a free slot's
+   update removes them.
 3. **Start it** as any region. The world's map is **A New Land (tiny desert
    coastal plain)**; it starts its round on its own and saves like any land.
 4. **Archive it** when the land is abandoned (the slot stopped):

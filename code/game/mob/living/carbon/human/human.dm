@@ -427,8 +427,9 @@ var/list/coefflist = list()
 /mob/living/human/Topic(href, href_list)
 
 	if (href_list["refresh"])
-		if ((using_object)&&(in_range(src, usr)))
-			show_inv(using_object)
+		if ((ismob(using_object))&&(in_range(src, usr)))
+			var/mob/M = using_object
+			M.show_inv(src)
 
 	if (href_list["mach_close"])
 		var/t1 = text("window=[]", href_list["mach_close"])

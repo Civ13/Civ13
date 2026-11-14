@@ -107,7 +107,21 @@ collects them (on commission, when a speed is rung and before each hop), and
 `craft.max_speed()` weighs their push against the tiles of hull: half ahead
 needs `CRAFT_THRUST_HALF` per tile, full ahead `CRAFT_THRUST_FULL` per tile
 from drives whose `top_step` reaches full ahead. A rigged ship mast is a sail
-drive of `CRAFT_SAIL_THRUST` that tops out at half ahead.
+drive of `CRAFT_SAIL_THRUST` that tops out at half ahead. Its push is divided
+by `sail_delay_factor()` (`naval/points_of_sail.dm`) for how the wind stands
+to her bow: full on a beam or broad reach, 1.3 times less running before the
+wind, 2.5 times less close-hauled and 3.5 times less beating upwind. Frame
+ships (`ships/axis.dm`) and sailing boats (`transports.dm`) take their step
+delay from the same file (`sail_step_time()`), and a frame ship under sail
+keeps `currentspeed` at gear 1 instead of writing a delay into it.
+
+A manned rowing bench (`naval/rowing_bench.dm`) is an oar drive of
+`CRAFT_OAR_THRUST` that can make full ahead. Its fuel is the rower's stamina:
+`OAR_STAMINA_PER_STEP` per telegraph step at each burn, and a rower under
+`OAR_MIN_STAMINA` pushes nothing. Oars are not `sustained`, so
+`craft.sustained_full_ahead()` (which paces a world chart voyage) counts only
+engines. The steering oar is a cheaper `hull_tiller` subtype; benches and the
+helm type cross between worlds in the ship record (`"o"` entries and `"helm"`).
 
 A running engine loose on a deck (`/obj/structure/engine`, not on a vehicle
 frame) is an engine drive: it pushes its current `maxpower` and can make full

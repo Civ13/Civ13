@@ -464,7 +464,7 @@
 
 	return TRUE
 
-/datum/job/german/obersturmmfuhrer
+/datum/job/german/occupation/obersturmmfuhrer
 	title = "SS Obersturmmfuhrer"
 	en_meaning = "SS First Lieutenant"
 	rank_abbreviation = "Obstmfhr."
@@ -482,8 +482,8 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/obersturmmfuhrer/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
-/datum/job/german/obersturmmfuhrer/equip(var/mob/living/human/H)
+/datum/job/german/occupation/obersturmmfuhrer/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/german/occupation/obersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
@@ -521,7 +521,7 @@
 
 	return TRUE
 
-/datum/job/german/untersturmmfuhrer
+/datum/job/german/occupation/untersturmmfuhrer
 	title = "SS Untersturmmfuhrer"
 	en_meaning = "SS Second Lieutenant"
 	rank_abbreviation = "Untstmfhr."
@@ -538,8 +538,8 @@
 	min_positions = 1
 	max_positions = 1
 
-/datum/job/german/untersturmmfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
-/datum/job/german/untersturmmfuhrer/equip(var/mob/living/human/H)
+/datum/job/german/occupation/untersturmmfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/german/occupation/untersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
@@ -578,7 +578,7 @@
 
 	return TRUE
 
-/datum/job/german/scharfuhrer
+/datum/job/german/occupation/scharfuhrer
 	title = "SS Scharfuhrer"
 	en_meaning = "SS Squad Leader"
 	rank_abbreviation = "Schfhr."
@@ -594,8 +594,8 @@
 	min_positions = 2
 	max_positions = 4
 
-/datum/job/german/scharfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_HIGH)
-/datum/job/german/scharfuhrer/equip(var/mob/living/human/H)
+/datum/job/german/occupation/scharfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_HIGH)
+/datum/job/german/occupation/scharfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
@@ -630,7 +630,7 @@
 
 	return TRUE
 
-/datum/job/german/schutzestaffel_soldaten
+/datum/job/german/occupation/schutzestaffel_soldaten
 	title = "SS Sturmman"
 	en_meaning = "SS Soldier"
 	rank_abbreviation = ""
@@ -646,8 +646,8 @@
 	min_positions = 8
 	max_positions = 20
 
-/datum/job/german/schutzestaffel_soldaten/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
-/datum/job/german/schutzestaffel_soldaten/equip(var/mob/living/human/H)
+/datum/job/german/occupation/schutzestaffel_soldaten/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/occupation/schutzestaffel_soldaten/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
@@ -834,6 +834,8 @@
 	allowed_maps = list(MAP_OCCUPATION)
 	equip(var/mob/living/human/H)
 		..()
+		if (H.w_uniform)
+			qdel(H.w_uniform)
 		if (prob(80))
 			H.equip_to_slot_or_del(new /obj/item/clothing/under/mechanic_outfit(H), slot_w_uniform)
 		else

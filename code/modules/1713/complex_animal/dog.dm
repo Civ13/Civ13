@@ -311,6 +311,7 @@
 		return FALSE
 	if (attack_mode != -1 || patrolling)
 		return FALSE
+	return TRUE
 
 // "frontend" procs
 /mob/living/simple_animal/complex_animal/dog/proc/attack(var/mob/living/human/H)
@@ -424,7 +425,7 @@
 
 				var/dist = abs_dist(H, src)
 				var/maxdist = 13
-				if (!locate(H) in view(7, src) && dist <= maxdist)
+				if (!(H in view(7, src)) && dist <= maxdist)
 					if (prob(5) && world.time >= next_bork)
 						visible_message("<span class = 'danger'>\The [src] starts barking! It smells an enemy!</span>")
 						if (prob(50))
@@ -437,7 +438,7 @@
 			for(var/obj/item/I in range(7, src))
 				var/area/I_area = get_area(I)
 				var/area/src_area = get_area(src)
-				if (I_area != istype(I_area, /area/caribbean/prison/jail) && I_area == src_area)
+				if (!istype(I_area, /area/caribbean/prison/jail) && I_area == src_area)
 					CheckForContraband(I)
 			for(var/mob/living/human/H in range(7, src))
 				if (H.civilization != "Sheriff Office" && H.civilization != "Government")

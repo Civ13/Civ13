@@ -201,7 +201,7 @@
 	desc = "the rank of 2nd class soldier, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_nitohei/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_nitohei_1937"
 		item_state = "jap_nitohei_1937"
 	else
@@ -209,7 +209,7 @@
 		item_state = "jap_nitohei"
 /obj/item/clothing/accessory/rank/jap_nitohei/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 //////////////////////////////////////////////////////////////////////////////
 
 /obj/item/clothing/accessory/rank/jap_ittohei
@@ -219,7 +219,7 @@
 	desc = "the rank of 1st class soldier, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_ittohei/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_ittohei_1937"
 		item_state = "jap_ittohei_1937"
 	else
@@ -227,7 +227,7 @@
 		item_state = "jap_ittohei"
 /obj/item/clothing/accessory/rank/jap_ittohei/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 
 /////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_jotohei
@@ -237,7 +237,7 @@
 	desc = "the rank of senior soldier (lance corporal or specialist), to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_jotohei/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_jotohei_1937"
 		item_state = "jap_jotohei_1937"
 	else
@@ -245,7 +245,7 @@
 		item_state = "jap_jotohei"
 /obj/item/clothing/accessory/rank/jap_jotohei/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 ////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_gunso
 	icon_state = "jap_gunso"
@@ -254,7 +254,7 @@
 	desc = "the rank of Gunso, squad leader or sergeanr, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_gunso/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_gunso_1937"
 		item_state = "jap_gunso_1937"
 	else
@@ -262,7 +262,7 @@
 		item_state = "jap_gunso"
 /obj/item/clothing/accessory/rank/jap_gunso/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 
 /////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_2lt
@@ -272,7 +272,7 @@
 	desc = "the rank of Shoi, 2nd Lieutenant, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_2lt/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_2lt_1937"
 		item_state = "jap_2lt_1937"
 	else
@@ -280,7 +280,7 @@
 		item_state = "jap_2lt"
 /obj/item/clothing/accessory/rank/jap_2lt/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 
 ////////////////////////////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_1lt
@@ -290,7 +290,7 @@
 	desc = "the rank of Chui, 1st Lieutenant, to be sewn into the collar of a uniform."
 
 /obj/item/clothing/accessory/rank/jap_1lt/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_1lt_1937"
 		item_state = "jap_1lt_1937"
 	else
@@ -298,7 +298,7 @@
 		item_state = "jap_1lt"
 /obj/item/clothing/accessory/rank/jap_1lt/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 
 ///////////////////////////////////////////////////////////////
 /obj/item/clothing/accessory/rank/jap_taii
@@ -307,7 +307,7 @@
 	name = "Tai-i rank patch"
 	desc = "the rank of Rikugun Tai-i, Captain, to be sewn into the collar of a uniform."
 /obj/item/clothing/accessory/rank/jap_taii/update_icon()
-	if (map && (map.ID == MAP_NANKOU || MAP_NANJING))
+	if (map && (map.ID == MAP_NANKOU || map.ID == MAP_NANJING))
 		icon_state = "jap_taii_1937"
 		item_state = "jap_taii_1937"
 	else
@@ -315,7 +315,7 @@
 		item_state = "jap_taii"
 /obj/item/clothing/accessory/rank/jap_taii/New()
 	..()
-	update_clothing_icon()
+	update_icon()
 
 //---------------------------------------------------------------------------
 

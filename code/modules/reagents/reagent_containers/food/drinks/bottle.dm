@@ -546,7 +546,7 @@
 	center_of_mass = list("x"=16, "y"=6)
 	New()
 		..()
-		reagents.del_reagent()
+		reagents.del_reagents()
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/wine
 	name = "Red Wine"
