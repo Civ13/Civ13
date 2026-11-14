@@ -877,6 +877,10 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
+        'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
+            'code/game/objects/items/weapons/material/material_weapons.dm',
+            'code/game/objects/items/weapons/shields.dm', 'code/game/objects/items/clothing/clothing.dm')},
     'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
         'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.

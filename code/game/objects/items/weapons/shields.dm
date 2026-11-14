@@ -231,23 +231,24 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
-			apply_block_wear(damage_source)
-			check_health()
+			apply_wear(block_wear(damage_source), WEAR_BLOW)
 			return TRUE
 	return FALSE
 
-/obj/item/weapon/shield/proc/apply_block_wear(atom/damage_source)
+// The wear one block puts on the shield, before plating.
+/obj/item/weapon/shield/proc/block_wear(atom/damage_source)
 	if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-		health -= plating_wear(10)
-	else
-		health -= plating_wear(1)
+		return 10
+	return 1
 
 /obj/item/weapon/shield/proc/get_block_chance(mob/user, var/damage, atom/damage_source = null, mob/attacker = null)
 	return base_block_chance
 
-/obj/item/weapon/shield/proc/check_health(var/consumed)
+/obj/item/weapon/shield/check_health(consumed)
 	if (health<=0)
 		shatter(consumed)
+		return TRUE
+	return FALSE
 
 /obj/item/weapon/shield/proc/shatter(var/consumed)
 	var/turf/T = get_turf(src)
@@ -410,13 +411,13 @@ obj/item/weapon/shield/attack_self(mob/user as mob)
 	w_class = ITEM_SIZE_NORMAL
 	base_block_chance = 40
 	slowdown = 0.05
-/obj/item/weapon/shield/tes13/apply_block_wear(atom/damage_source)
+/obj/item/weapon/shield/tes13/block_wear(atom/damage_source)
+	var/wear = 1
 	if (istype(damage_source, /obj/item/weapon/melee) || istype(damage_source, /obj/item/weapon/material/hatchet))
-		health -= plating_wear(2)
-	else
-		health -= plating_wear(1)
+		wear = 2
 	if (istype(damage_source, /obj/item/weapon/material/tes13/mace))
-		health -= plating_wear(10)
+		wear += 10
+	return wear
 /obj/item/weapon/shield/tes13/stormcloak
 	name = "stormcloak shield"
 	icon_state = "stormcloak"
