@@ -27,10 +27,27 @@ mainland's.
   Coming home, she charts the tiles round the turning point and halfway there
   for her owner.
 
-A voyage takes about a minute a chart tile (the larger of the two distances).
+A voyage takes about a minute a chart tile under sail (the larger of the two
+distances), or 40 seconds when her engines drive her at full ahead.
 She drops anchor and lies off the coast under way: the tiller only tells how
 long is left and offers **Turn back**. Whoever is aboard at landfall sails
 with her; anyone who steps off is left behind.
+
+## Rations and happenings
+
+Code: `code/modules/naval/voyage_provisions.dm`.
+
+- **Rations:** each crew member eats one ration a chart tile, and any food
+  aboard counts (in the hold, in crates, carried). The tiller says when she
+  carries too little and asks before she sails hungry. What the voyage needed
+  is eaten as she arrives (or comes home from scouting); every ration she was
+  short costs the crew 60 nutrition between them, never taking anyone below
+  150. Nobody starves at sea.
+- **Happenings,** at most one of each a voyage: a **storm** (8% a chart tile)
+  costs one or two tiles' time or washes something loose on deck overboard;
+  a **sighting** (10% a tile) charts the water a tile or two off her course
+  for her owner; sailing short, the crew are warned past halfway that rations
+  are low, so they can turn back.
 
 ## Landfall
 
@@ -69,8 +86,6 @@ know.
 
 ## Not done yet
 
-- Rations, voyage events (storm, sighting, short rations) and engines sailing
-  faster.
 - Giving up a faction's claim; deleting archived lands after 7 days.
 
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
