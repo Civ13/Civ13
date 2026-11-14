@@ -1863,6 +1863,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
+        'tests/building_site/', 'code/modules/1713/building_site.dm',
+        'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
