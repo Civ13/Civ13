@@ -163,9 +163,9 @@ def dust_spray(f, x, y, step, reach=4):
 # ------------------------------------------------------ primitive mill --
 
 def primitive(step=None):
-    """The primitive mill: a split-log bench on peg legs, a flint-toothed
-    blade standing in a slot, and a springy sapling that lifts the blade
-    after each stroke. step is the animation frame, or None when idle."""
+    """The primitive mill: a split-log bench on peg legs and a flint-toothed
+    blade in a slot, held by a guide post. A foot treadle pulls the blade
+    down and a springy sapling lifts it again after each stroke. step is the animation frame, or None when idle."""
     f = Frame(32, 32)
     stroke = 0 if step is None else (0, 1, 2, 1)[step % 4]
     bend = 1 if stroke == 2 else 0
@@ -190,10 +190,29 @@ def primitive(step=None):
         f.pts(TIMBER[2], (lx, y), (rx, y))
         f.pts(TIMBER[3], (lx + 1, y), (rx + 1, y))
         f.pts(TIMBER[4], (lx + 2, y), (rx + 2, y))
-    f.hline(8, 23, 27, TIMBER[3])
-    f.hline(8, 23, 28, TIMBER[4])
-    f.pts(CORD[0], (8, 27), (23, 27))
-    f.pts(CORD[1], (8, 28), (23, 28))
+
+    # foot treadle: a board hinged by a lashing at the right leg; treading
+    # its free end pulls the blade down against the sapling
+    rise = 2 - stroke
+    for x in range(8, 23):
+        y = 30 - ((22 - x) * rise + 7) // 14
+        f.put(x, y - 1, SAWN[1] if x > 10 else SAWN[0])
+        f.put(x, y, SAWN[3])
+        if x == 16:
+            pull = y - 1
+    f.pts(CORD[0], (22, 28), (23, 29))
+    f.pts(CORD[1], (22, 29), (23, 30))
+    # cord from the foot of the blade down to the treadle
+    for y in range(25, pull):
+        f.put(16, y, CORD[0] if y % 2 else CORD[1])
+
+    # guide post behind the blade, with two pegs the slat slides between
+    f.vline(20, 8, 18, POLE[1])
+    f.vline(21, 8, 18, POLE[2])
+    f.pts(POLE[0], (20, 8), (21, 8), (20, 12))
+    f.pts(TIMBER[3], (19, 11), (19, 17))
+    f.pts(CORD[0], (20, 10), (20, 16))
+    f.pts(CORD[1], (21, 10), (21, 16))
 
     # bench: a log split in half, flat face up
     f.hline(4, 27, 18, TIMBER[0])
@@ -226,9 +245,9 @@ def primitive(step=None):
         cutting = False
 
     # sawdust under the bench, a little more while cutting
-    f.rows(29, 12, ['..ab..', '.abab.'], {'a': DUST[0], 'b': DUST[1]})
+    f.rows(29, 1, ['.ab.', 'abab'], {'a': DUST[0], 'b': DUST[1]})
     if cutting:
-        f.pts(DUST[0], (13, 28), (16, 28))
+        f.pts(DUST[0], (2, 28))
         dust_spray(f, 15, 14, step)
 
     # blade: flint flakes set in a wooden slat, teeth toward the log
