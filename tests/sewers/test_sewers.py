@@ -1,0 +1,56 @@
+"""Sewers phase S1: source contract checks. The behaviour is in probe.dm:
+
+    python3 tests/sewers/test_sewers.py
+    python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
+"""
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SEWERS = (ROOT / 'code/modules/1713/sewers.dm').read_text(encoding='utf-8')
+
+
+class SewersSource(unittest.TestCase):
+    def test_states_exist_in_the_sheet(self):
+        from PIL import Image
+        meta = Image.open(ROOT / 'icons/obj/sewers.dmi').info['Description']
+        states = {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
+        for j in range(16):
+            self.assertIn(f'ditch{j}', states)
+            self.assertIn(f'stone_drain{j}', states)
+        for fill in range(4):
+            self.assertIn(f'cesspit{fill}', states)
+        self.assertIn('outfall', states)
+        self.assertIn('icon_state = "[junction_prefix][junction]"', SEWERS)
+        self.assertIn('image(icon, "outfall", dir = d)', SEWERS)
+
+    def test_toilets_flush_through_the_sewer(self):
+        poo = (ROOT / 'code/game/mob/living/carbon/human/shit_piss.dm').read_text(encoding='utf-8')
+        self.assertIn('T.flush_waste(V)', poo)
+        closet = (ROOT / 'code/game/objects/structures/watercloset.dm').read_text(encoding='utf-8')
+        self.assertIn('return sewers && sewer_fouls_near(src)', closet)
+        self.assertIn('return map && map.persistence', SEWERS)
+
+    def test_digging_and_recipe(self):
+        tools = (ROOT / 'code/modules/1713/tools.dm').read_text(encoding='utf-8')
+        self.assertIn('"Drain Ditch", "Cesspit"', tools)
+        self.assertIn('shovel_dig_sewer(user, TB, input == "Cesspit")', tools)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        self.assertIn('RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,', recipes)
+        research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        self.assertIn('"/obj/structure/sewer_piece/drain/stone" = "sanitation",', research)
+
+    def test_cheap_and_save_safe(self):
+        # The network is walked only on a flush, never on a timer or over the world.
+        self.assertNotIn('in world', SEWERS)
+        self.assertIsNone(re.search(r'(?<![_\w])spawn\(', SEWERS), 'no timers in sewers.dm')
+        self.assertIn('#define SEWER_WALK_LIMIT 600', SEWERS)
+        self.assertIn('return key == "last_waste" || ..()', SEWERS)
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertLess(dme.index('structures\\watercloset.dm"'), dme.index('1713\\sewers.dm"'))
+        self.assertLess(dme.index('1713\\tools.dm"'), dme.index('1713\\sewers.dm"'))
+
+
+if __name__ == '__main__':
+    unittest.main()

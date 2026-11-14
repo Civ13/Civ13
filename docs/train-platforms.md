@@ -134,3 +134,14 @@ the bay, facing the same way, and couples it; furniture turns with it if the
 car faces another way than when it was stored. In an empty bay it rolls to the
 far end it faces. The tiles it needs (and the deck tiles either side for a
 platform car) must be straight bay track and clear.
+
+## Riding on the roof
+
+Coaches, sleepers, dining, storage and armored cars have a roof (`"roof"` in
+`train_car_layout()`); flatbeds and gun cars stay open. Their segment and side
+deck parts are deck surfaces for `vehicle_decks.dm`: climb up from beside the
+car, walk along the roof and across couplings to the next car, and jump off
+the side. A rider is carried like any other cargo, and `train_deck_clearance()`
+knocks riders off under a building roof. Roof pictures (`roof_<kind>_<row><col>`
+in `train_platforms.dmi`) are shown by `process_train_roofs()` to everyone
+except those inside that car, and only once the art exists.
