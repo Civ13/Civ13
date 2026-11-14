@@ -88,7 +88,7 @@
 	for (var/turf/T in view(world.view, mob))
 		if (T.z != F.z_level)
 			continue
-		var/threshold = F.threshold_at(T.x, T.y)
+		var/threshold = F.effective_threshold(T)
 		var/r = F.reach_at(T.x, T.y)
 		if (isnull(threshold) || !r)
 			continue

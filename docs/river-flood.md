@@ -101,6 +101,21 @@ or person; nothing loops over the map.
   tiles or the rivers changed. Nothing is drawn while every reach is at or
   below stage 0.
 
+## Ground changes
+
+`code/modules/1713/flood_ground.dm`. Grading a tile (shovel and rammer) or
+building or breaking a finished dirt, sandbag or stone half-wall marks the
+16 x 16 cell it is in. On the next river tick (up to 6 per tick) a priority
+flood over that cell and 16 tiles around it, seeded from the river and from the
+window's edge at the edge tiles' current thresholds, works out each tile's
+threshold from today's ground: its graded height plus the crest of any
+half-wall on it (1 level, concrete 1.5, palisades and unfinished walls 0).
+Tiles that differ from the flood file go into the sparse `overrides` table
+(turf to threshold), which `flood_depth_at()` and the flood marks read first.
+A wall along a bank keeps the land behind it dry until the stage tops its
+crest; a gap lets the water in. Overrides are derived and never saved: graded
+tiles and walls mark their cells again as they load.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
