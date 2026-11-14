@@ -923,7 +923,6 @@ var/global/list/node_grid_col_cache = null
 		// --- basic_agriculture (10) ---
 		"/obj/item/stack/material/wool" = "basic_agriculture",
 		"/obj/item/weapon/berriesgatherer" = "basic_agriculture",
-		"/obj/item/weapon/leash" = "basic_agriculture",
 		"/obj/item/animal_tack/saddle" = "basic_agriculture",
 		"/obj/item/animal_tack/harness" = "basic_agriculture",
 		"/obj/item/weapon/material/pitchfork" = "basic_agriculture",
@@ -1017,6 +1016,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		"/obj/structure/dugout_log" = "basic_tools",
 		"/obj/item/weapon/paddle" = "basic_tools",
+		"/obj/item/weapon/leash" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
@@ -1053,6 +1053,24 @@ var/global/list/node_grid_col_cache = null
 		// --- cartridge_ammo (5) ---
 		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
+		// Emplaced machine guns, forged at the anvil: the water-cooled WW1 guns
+		// with cartridges, the WW2 guns and the 12.7mm heavies with self-loading
+		// arms, the post-war general-purpose guns with automatic weapons.
+		"/obj/item/weapon/gun/projectile/automatic/stationary/maxim" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg08" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/vickers" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/hotchkiss1914" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type3" = "cartridge_ammo",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg34" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/breda30" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/type98" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/dshk" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/m2browning" = "selfloading_firearms",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/pkm" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
