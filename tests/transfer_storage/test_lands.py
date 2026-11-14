@@ -156,6 +156,36 @@ class LandStageTests(unittest.TestCase):
         self.assertEqual(c.lands(now), read_lands(self.db, 'alpha', now))
         self.assertEqual({}, read_lands(os.path.join(self.tmp.name, 'missing.sqlite'), 'alpha', now))
 
+    def test_colonies_reach_the_coordinator_and_a_standing_one_suggests_colony(self):
+        colony = {'parent': 'civ:alpha:Wolves', 'name': 'Wolves', 'age_hours': 5, 'members': 3}
+        answer = call(self.urls['beta'], TOKENS['beta'], '/land/sample', {'players': 2, 'living': 3, 'colonies': [colony]})
+        self.assertTrue(answer.get('ok'), answer)
+        for bad in ([dict(colony, parent='Wolves')], [dict(colony, parent='civ:Alpha!:Wolves')],
+                    [dict(colony, members=-1)], [dict(colony, name='')], [dict(colony, age_hours=1.5)], 'Wolves'):
+            self.assertFalse(call(self.urls['beta'], TOKENS['beta'], '/land/sample',
+                                  {'players': 2, 'living': 3, 'colonies': bad}).get('ok'), bad)
+        self.coordinator.homes_once()
+        seen = self.lands('gamma')['lands']['beta']['colonies']
+        self.assertEqual([('civ:alpha:Wolves', 'Wolves', 3)], [(c['parent'], c['name'], c['members']) for c in seen])
+        c, now = self.coordinator, 1_800_000_000
+        c.set_land('beta', 'FRONTIER', False, 'val')
+        days = coordinator_module.COLONY_SECONDS // 3600
+
+        def sample(**kw):
+            row = dict(colony, **kw)
+            self.assertTrue(c.record_land_sample('beta', {'players': 1, 'living': 3, 'at': now, 'colonies': [row]}, now=now))
+            return c.lands(now)['beta']
+
+        self.assertEqual(now - 3600, sample(age_hours=1)['colonies'][0]['founded'])
+        self.assertIsNone(sample(age_hours=days - 1)['readiness']['suggest'], 'too young')
+        self.assertIsNone(sample(age_hours=days, members=coordinator_module.COLONY_MEMBERS - 1)['readiness']['suggest'],
+                          'too few members')
+        self.assertEqual('COLONY', sample(age_hours=days)['readiness']['suggest'])
+        c.set_land('beta', 'COLONY', False, 'val')
+        self.assertIsNone(c.lands(now)['beta']['readiness']['suggest'])
+        # A colony the world stops reporting is gone.
+        c.record_land_sample('beta', {'players': 1, 'living': 3, 'at': now, 'colonies': []}, now=now)
+        self.assertEqual([], c.lands(now)['beta']['colonies'])
 
 def read(path):
     with open(os.path.join(ROOT, path), encoding='utf-8') as f:

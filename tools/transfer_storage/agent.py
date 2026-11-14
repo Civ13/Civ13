@@ -87,7 +87,7 @@ def _routes(store, radio):
                                                  body.get('chart_done')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
-        '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living')),
+        '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),
         '/land/set': lambda body: store.request_land(body['region'], body['stage'], body.get('paused') in (True, 1),
                                                      body['admin']),
         # The world chart (docs/world-chart.md): DM reads /chart, admins queue /chart/request.

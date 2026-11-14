@@ -16,7 +16,7 @@ def read(path):
 class FactionRecruitmentSource(unittest.TestCase):
     def test_controls_and_extracted_procs_are_unique(self):
         for control in (None, *run.CONTROLS):
-            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME, run.ROSTER):
+            for path in (run.RECRUITMENT, run.MEMBERSHIP, run.FACTIONS, run.RESEARCH, run.RENAME, run.ROSTER, run.COLONY, run.PARTY):
                 run.read(path, control)
         self.assertIn('#include "code\\game\\mob\\groups\\faction_recruitment.dm"', read('civ13.dme'))
 
@@ -119,6 +119,47 @@ class FactionMemberStartSource(unittest.TestCase):
             self.assertIn(f'var/{key} = ', config)
             self.assertIn(key.upper() + ' ', text)
         self.assertIn('verbs += /mob/living/human/proc/set_faction_member_limit', read(run.FACTIONS))
+
+
+class ColonyCharterSource(unittest.TestCase):
+    """Colonies: factions travel by id, a leader plants a charter abroad."""
+
+    def setUp(self):
+        self.colony = read(run.COLONY)
+        self.travel = read('code/modules/persistence/region_travel.dm')
+
+    def test_included_craftable_and_registered(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('faction_start.dm"'), dme.index('colony_charter.dm"'))
+        self.assertIn('colony charter,/obj/structure/colony_charter,', read('config/crafting/material_recipes_global.txt'))
+        self.assertIn('"/obj/structure/colony_charter" = "basic_furniture"', read('code/modules/research_tree/research_node.dm'))
+        self.assertIn('colony_charters |= src', self.colony)
+        self.assertIn('colony_charters -= src', self.colony)
+
+    def test_travel_carries_the_faction_and_arrival_rejoins_it(self):
+        payload = run.proc_text(self.travel, '/mob/living/human/proc/region_travel_payload(')
+        self.assertIn('P["faction"] = faction_id', payload)
+        self.assertIn('P["faction_leader"] = 1', payload)
+        decode = run.proc_text(self.travel, '/proc/region_travel_decode(')
+        self.assertIn('!colony_parent_valid(P["faction"])) return null', decode)
+        self.assertIn('P["faction_leader"] != 1) return null', decode)
+        arrive = self.travel[self.travel.index('party_train_restore_faction(H, P["party"])'):]
+        self.assertLess(arrive.index('colony_arrival(H, P)'), arrive.index('region_raid_note_origin(H, P)'))
+        arrival = run.proc_text(self.colony, '/proc/colony_arrival(')
+        # Arrival goes through the one membership transition, so limits hold.
+        self.assertIn('H.enroll_in_faction(name)', arrival)
+        self.assertNotIn('civilization = name', arrival)
+
+    def test_planting_rechecks_after_the_prompt_and_only_counts_standing_charters(self):
+        attack = run.proc_text(self.colony, '/obj/structure/colony_charter/attack_hand(')
+        self.assertEqual(2, attack.count('plant_block(user)'))
+        self.assertLess(attack.index('WWinput('), attack.rindex('plant_block(user)'))
+        block = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant_block(')
+        for need in ('user.colony_origin_leader', 'civ:[shard_group.region]:', 'faction_name_taken(name)'):
+            self.assertIn(need, block)
+        for name in ('/obj/map_metadata/proc/colony_home_faction(', '/obj/map_metadata/proc/colony_report('):
+            self.assertIn('colony_charter_of(', run.proc_text(self.colony, name))
+        self.assertIn('"colonies" = colonies', read('code/modules/persistence/land_stage.dm'))
 
 
 if __name__ == '__main__':
