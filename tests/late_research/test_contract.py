@@ -302,6 +302,30 @@ class SubjectPrototypes(unittest.TestCase):
         for guard in ("held_writing_pen()", "do_reading(src, FIELD_STUDY_TIME, thing)", "commit_field_study(src, carrier, node_id, kind, thing.name)"):
             self.assertIn(guard, study)
 
+class LearningByDoing(unittest.TestCase):
+    def test_included_after_scholarship(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index('research_tree\\scholarship.dm"'), dme.index('research_tree\\learning_by_doing.dm"'))
+    def test_every_active_route_teaches_scholarship(self):
+        for path, call in (("code/modules/research_tree/field_work.dm", 'H.gain_active_scholarship(assigned_node, points, "field:[id]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", '"prototype:[node_id]:[B.prototypes_made(node_id)]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", 'user.gain_active_scholarship(N.id, points, "study:[N.id]:[kind]")'),
+                           ("code/modules/research_tree/subject_prototypes.dm", 'H.gain_active_scholarship(node_id, ., "study:[node_id]:[kind]")'),
+                           ("code/modules/research_tree/demonstrations.dm", 'H.gain_active_scholarship(node_id, demonstration_lesson_points(N), "demonstration:[node_id]")'),
+                           ("code/modules/research_tree/demonstrations.dm", 'user.gain_active_scholarship(N.id, demonstration_lesson_points(N), "demonstration:[N.id]")'),
+                           ("code/modules/research_tree/book_research.dm", 'user.gain_active_scholarship(assigned_node, boost, "sample:[assigned_node]:[W.type]")')):
+            with self.subTest(call=call):
+                self.assertIn(call, read(path))
+    def test_skill_gain_knows_what_was_done(self):
+        stats = read("code/game/mob/living/carbon/human/human_stats.dm")
+        self.assertIn("skill_variety_mult(statname, variety_key) * skill_master_mult(statname)", stats)
+        self.assertEqual(read("code/game/objects/items/stacks/stack.dm").count('H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)'), 3)
+        self.assertIn('H.adaptStat("medical", 1.5*mod, S.type)', read("code/modules/surgery/surgery.dm"))
+        self.assertIn('H.adaptStat("farming", 1, type)', read("code/game/objects/farming.dm"))
+    def test_only_on_book_research_worlds(self):
+        source = read("code/modules/research_tree/learning_by_doing.dm")
+        for name in ("/mob/living/human/proc/gain_active_scholarship", "/mob/living/human/proc/skill_variety_mult", "/mob/living/human/proc/skill_master_nearby"):
+            self.assertIn("learning_by_doing_enabled()", proc(source, name))
 
 if __name__ == "__main__":
     unittest.main()
