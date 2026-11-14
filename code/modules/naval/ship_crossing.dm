@@ -455,9 +455,14 @@
 	var/choice = WWinput(H, "Leave these waters with everyone and everything aboard? Your crew go with her and carry on there.", craft.name, "Stay", places + list("Stay"))
 	if (!choice || choice == "Stay" || !places[choice] || get_dist(H, src) > 1)
 		return
+	// Leaving a land nobody settled or claimed, the captain may give it up (land_choices.dm).
+	var/abandon = abandon_choice(H)
+	var/by = H.ckey
 	var/result = cross(places[choice], H)
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
+	else if (abandon)
+		expedition_land_ask("abandon", by)
 
 // Sends her to region id. Null when she left, else why not. Sleeps. voyage:
 // the voyage she makes the crossing on (ship_voyage.dm), else a new one.

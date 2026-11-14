@@ -137,7 +137,8 @@
 	// A raider who dies in a raid world goes home, not to the mainland.
 	var/origin = region_raid_death_origin(H)
 	if(!origin)
-		if(region_home_bed(account)) return
+		// On a land across the sea nobody has settled yet, a bed does not keep the home (land_choices.dm).
+		if(region_home_bed(account) && !expedition_land_unsettled()) return
 		for(var/mob/living/human/other in human_mob_list)
 			if(other != H && other.persistence_owner_ckey == account && other.stat != DEAD && !QDELETED(other))
 				return
