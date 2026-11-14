@@ -257,7 +257,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_divine_approval_suite_is_bounded_and_not_silently_omitted(self):
         name = 'divine_approval'
         suite = ci.SUITES[name]
-        self.assertEqual(suite['files'], ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py'))
+        self.assertEqual(suite['files'], ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))

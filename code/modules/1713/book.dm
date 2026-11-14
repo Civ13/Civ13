@@ -148,6 +148,9 @@
 		display_snapshot = stars(dat)
 	else
 		display_snapshot = dat
+	// Optional sealed notes never enter dat, normal pages or copying APIs.
+	if (hascall(src, "divine_journal_html"))
+		display_snapshot += call(src, "divine_journal_html")(user)
 	var/legacy_snapshot = "<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[display_snapshot]</BODY></HTML>"
 	// Fixed presentation hook keeps isolated base-book fixtures independent.
 	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
