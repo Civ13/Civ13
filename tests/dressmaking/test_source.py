@@ -138,6 +138,34 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('standing.overlays += tailored_under.worn_design_layers()', icons)
         self.assertIn('standing.overlays += tailored_suit.worn_design_layers()', icons)
 
+    def test_patterns_names_and_staff_panel(self):
+        trace = adapter.extract(SOURCE, '/proc/tailoring_trace_pattern')
+        # The sheet must be blank, held, and still blank and held after the wait.
+        wait = trace.index('user.tailoring_trace_wait(source)')
+        self.assertIn('recipe_blank_paper(sheet) || sheet.loc != user', trace[wait:])
+        self.assertLess(wait, trace.index('qdel(sheet)'))
+        self.assertIn('crafting_node_allowed_or_warn(user, "weaving")', trace)
+        load = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/load_pattern')
+        self.assertIn('if (stage != 0)', load)
+        self.assertIn('tailoring_body_allowed(user, P.design_body)', load)
+        self.assertIn('tailoring_name_blocked(design_author)', load)
+        clean = adapter.extract(SOURCE, '/proc/tailoring_clean_name')
+        self.assertIn('sanitizeSafe(text, TAILORING_NAME_MAX + 1)', clean)
+        self.assertIn('#define TAILORING_NAME_MAX 32', SOURCE)
+        name = adapter.extract(SOURCE, '/obj/item/tailoring_project/proc/choose_name')
+        self.assertLess(name.index('tailoring_name_blocked(user.ckey)'), name.index('WWinput('))
+        self.assertIn('!actor_ready(user, site, save_epoch) || stage != 0', name)
+        allowed = adapter.extract(SOURCE, '/proc/tailoring_admin_allowed')
+        self.assertIn('R_ADMIN|R_MOD', allowed)
+        topic = adapter.extract(SOURCE, '/datum/tailoring_admin_panel/Topic')
+        self.assertLess(topic.index('tailoring_admin_allowed(C)'), topic.index('switch'))
+        self.assertIn('!(I in tailoring_named_items)', topic)
+        self.assertEqual(topic.count('log_admin('), 3)
+        verbs = (ROOT / 'code/modules/admin/admin_verbs.dm').read_text()
+        self.assertEqual(verbs.count('/client/proc/admin_clothing_designs,'), 3)
+        for owner in ('/obj/item/sewing_pattern', '/obj/item/tailoring_project'):
+            self.assertIn('tailoring_named_items -= src', adapter.extract(SOURCE, owner + '/Destroy'))
+
     def test_recipe_and_research(self):
         rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text().splitlines()
         projects = [line for line in rows if ',/obj/item/tailoring_project,' in line]
