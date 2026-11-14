@@ -59,7 +59,7 @@
 
 /proc/trap_cold_season(atom/A)
 	var/area/AR = get_area(A)
-	return AR && AR.location == AREA_OUTSIDE && season == "WINTER"
+	return AR && AR.location == AREA_OUTSIDE && season == SEASON_WINTER
 
 /proc/trap_structure_on(turf/T)
 	return locate(/obj/structure/stone_age_trap) in T

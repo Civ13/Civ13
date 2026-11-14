@@ -55,7 +55,7 @@
 		map.triggered_blizzard = FALSE
 		map.triggered_sandstorm = FALSE
 		weather_system_spawn(WEATHER_SYSTEM_STORM, TRUE, null, null, 600)
-	if (map.triggered_heatwave || (season == "SUMMER" && prob(1) && prob(50)))
+	if (map.triggered_heatwave || (season == SEASON_SUMMER && prob(1) && prob(50)))
 		map.triggered_heatwave = FALSE
 		if (weather_systems.len == weather_storm_count)
 			weather_system_spawn(WEATHER_SYSTEM_HEAT, FALSE, null, null, 600)

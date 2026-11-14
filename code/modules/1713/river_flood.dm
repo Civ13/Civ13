@@ -244,9 +244,9 @@ var/global/next_river_flood_tick = 0
 	return 1
 
 /proc/river_flood_melt_rate()
-	if (season == "SPRING" || findtext(season, "Wet"))
+	if (season_is_wet())
 		return RIVER_FLOOD_MELT_SPRING
-	if (season == "WINTER")
+	if (season == SEASON_WINTER)
 		return 0
 	return RIVER_FLOOD_MELT_SUMMER
 

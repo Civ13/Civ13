@@ -52,7 +52,7 @@
 
 /obj/structure/wild/tree/live_tree/willow/proc/willow_state()
 	var/suffix = ""
-	if (season == "WINTER")
+	if (season == SEASON_WINTER)
 		suffix = "_winter"
 	else if (season in list("FALL", "Dry Season"))
 		suffix = "_autumn"

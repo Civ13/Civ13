@@ -891,6 +891,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'season_helpers': {'files': ('tests/season_helpers/test_season_helpers.py',),
+        'paths': ('tests/season_helpers/', 'code/_helpers/seasons.dm', 'code/__defines/seasons.dm'), 'shared_paths': ()},
     'map_traits': {'files': ('tests/map_traits/test_map_traits.py',),
         'paths': ('tests/map_traits/', 'code/game/objects/map_metadata/'), 'shared_paths': ()},
     'job_stats': {'files': ('tests/job_stats/test_job_stats.py',),
