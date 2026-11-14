@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'f75c9a6239dfa6a0c41c255500596411935e3a1a'
+WIKI_REVIEWED_REVISION = '3c3eb8ea4b3497a2c6867604b5e9c05521bf9074'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('d40907b97df21d9df98414a54e9da1b15c357855f0341c905f269dfb97bb8618', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('aae5510bcfb98ca648ee303cdea48af583f0a9ce383eed2fd585c98551fc663d', 'character skills traits languages'),
@@ -91,7 +91,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('4bfd68a7f6d60958e14da34916050fcedf06d7e1b9596a5dab8174b34a11c172', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('8781bde8fd55144b3614e0dc34b53d5d051af4b935446a2e0e2bcc7fb2a90fd0', 'research unlock study technology research bench'),
+    'guides/Guide_to_Research.md': ('698e0d0b98fcff745bfedbd816a8f4c7dcbc50ecb3c7be466f0cd3b8a2b847e2', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('4b02b4e5c0953e58a28374ba57d702403ea98f702e81a45cbeeaf555293d4120', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('a449eed1a1668a02a460076c3a08e61b512202b1cdfa95e13b18226238967bba', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('9250b410333e0da30224b09ed2126ce2ed676225aa2dda2be3b13c8f7ff3442a', 'tank driving crew ammunition'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('2fdc33cbe07cd424291728cc5450e8421b29a96e79846da362fb994148b825b1', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('1b72f0cd4191ae389b4d43718e53be3dee1f56945236361dce10bb62a4d83f66', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('7eeeab1bc3ed05075f56975fd7e36dbb895f177ae048d30c8008debc243e88b8', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing'),
     'guides/Guide_to_Aircraft_Carriers.md': ('d0009e9680476ab3b7c220e0f4dda18191b0c23d94271ab32219ed8fedf1bf53', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
