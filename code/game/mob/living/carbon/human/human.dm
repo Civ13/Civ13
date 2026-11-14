@@ -1228,6 +1228,9 @@ var/list/coefflist = list()
 	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
 	if (climbed_tree)
 		look_amount = max(look_amount, 8)
+	// On top of a vehicle the eye looks out over walls (vehicle_decks.dm).
+	if (vehicle_deck)
+		look_amount = max(look_amount, 6)
 
 	if(!user || !user.client)
 		return

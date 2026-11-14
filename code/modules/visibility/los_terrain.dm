@@ -18,6 +18,8 @@
 // Up a tree (tree_climbing.dm): near the top of the canopy, above other tree
 // tops (5) and walls (3), so a climber sees over both outdoors.
 #define LOS_EYE_CLIMBED 7
+// Standing on top of a vehicle (vehicle_decks.dm): over a wall, under a tree.
+#define LOS_EYE_DECK 3.5
 // The eye moves in steps of this many pixels inside a tile (half a tile).
 // Each step refreshes the viewer, so a walker refreshes twice per tile.
 #define LOS_EYE_OFFSET_QUANTUM 16
@@ -132,6 +134,8 @@ var/global/los_eye_offsets_paused = FALSE
 		return LOS_EYE_STANDING
 	if (los_up_tree(M))
 		return LOS_EYE_CLIMBED
+	if (los_on_vehicle_deck(M))
+		return LOS_EYE_DECK
 	if (M.resting || M.lying || M.prone)
 		return LOS_EYE_LOW
 	return LOS_EYE_STANDING
@@ -146,6 +150,8 @@ var/global/los_eye_offsets_paused = FALSE
 		var/mob/M = A
 		if (M.resting || M.lying || M.prone)
 			return 0.5
+		if (los_on_vehicle_deck(M))
+			return 3.5
 		return ishuman(M) ? 1.5 : 1
 	if (A.opacity)
 		return root_tree_family(A) ? 5 : 3
@@ -334,12 +340,12 @@ var/global/los_eye_offsets_paused = FALSE
 // (no ground hides anything); only its eye and ground levels matter, for
 // los_blocker_top and los_height_clears. Null for anyone not up a tree.
 /proc/los_canopy_field_for(mob/body, view_radius, datum/terrain_heights/H)
-	if (!los_up_tree(body))
+	if (!los_up_tree(body) && !los_on_vehicle_deck(body))
 		return null
 	var/base = 0
 	if (H && H.rows_by_z["[body.z]"])
 		base = H.at(body.x, body.y, body.z)
-	var/key = "canopy|[base]|[view_radius]"
+	var/key = "canopy|[base]|[view_radius]|[los_eye_level(body)]"
 	var/datum/los_terrain_field/F = los_terrain_cache[key]
 	if (!F)
 		F = new
@@ -349,7 +355,7 @@ var/global/los_eye_offsets_paused = FALSE
 		for (var/n in 1 to F.ground.len)
 			F.ground[n] = base
 		F.required = new /list(F.side * F.side)
-		F.eye = base + LOS_EYE_CLIMBED
+		F.eye = base + los_eye_level(body)
 		if (los_terrain_cache.len >= LOS_TERRAIN_CACHE_MAX)
 			los_terrain_cache.Cut(1, round(LOS_TERRAIN_CACHE_MAX / 2) + 1)
 		los_terrain_cache[key] = F
@@ -363,6 +369,13 @@ var/global/los_eye_offsets_paused = FALSE
 
 /proc/los_up_tree(mob/M)
 	return ismob(M) && M.climbed_tree && M.climbed_tree.loc == M.loc && isturf(M.loc)
+
+// Someone standing on top of a vehicle (vehicle_decks.dm) on the street's own
+// level: the frame under their feet rides with them.
+/mob/var/tmp/obj/vehicle_deck = null
+
+/proc/los_on_vehicle_deck(mob/M)
+	return ismob(M) && M.vehicle_deck && M.vehicle_deck.loc == M.loc && isturf(M.loc)
 
 // One-target terrain test for NPC sight, without a field or cache: TRUE when
 // ground under the straight line from the viewer's eye to the target's top
