@@ -241,12 +241,6 @@
 					attack_message = "[H] went for [src]'s [affecting.name] but was blocked!"
 					miss_type = 2
 					adaptStat("dexterity", 1)
-				var/hitcheck = rand(0, 9)
-				if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
-					var/obj/item/organ/external/head/U = affecting
-					if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
-						M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
-											"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				// See what attack they use
 				var/datum/unarmed_attack/attack = H.get_unarmed_attack(src, hit_zone)
@@ -266,6 +260,15 @@
 
 				if (miss_type)
 					return FALSE
+
+				// Only a landed, full-force strike can knock out teeth (#5324).
+				if (!attack.deal_halloss)
+					var/hitcheck = rand(0, 9)
+					if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
+						var/obj/item/organ/external/head/U = affecting
+						if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
+							M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
+												"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				var/real_damage = rand_damage
 				real_damage += attack.get_unarmed_damage(H)
