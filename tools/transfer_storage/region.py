@@ -42,7 +42,7 @@ REMOVE, CREDIT, RETURN = 'remove', 'credit', 'return'
 TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
 
 
-ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release', 'colony', 'colony_used')
+ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release', 'colony', 'colony_used', 'start')
 
 # A land's settlement stage (docs/land-stages.md). The mainland is always
 # MAINLAND; the coordinator keeps every other land's stage.
@@ -753,14 +753,15 @@ class RegionStore(TrainLeaseQueue):
         colony: start the account's next character at its faction's colony in
         region (faction names the parent; the coordinator checks the colony
         stands there and grants the start). colony_used: that start was taken.
-        A HOME claim says which colony start, if any, is granted here.
+        A HOME claim says which colony start, if any, is granted here. start:
+        start the account's next character in the wilds of region, an OPEN land.
         """
         if not account_key_valid(ckey):
             raise TransferError('bad account key')
         if op not in ACCOUNT_OPS:
             raise TransferError('unknown account operation')
-        target = region if op in ('depart', 'colony') else self.region
-        if op in ('depart', 'colony') and (not isinstance(region, str) or not region or region == self.region):
+        target = region if op in ('depart', 'colony', 'start') else self.region
+        if op in ('depart', 'colony', 'start') and (not isinstance(region, str) or not region or region == self.region):
             raise TransferError(op + ' needs another region')
         if op in ('colony', 'colony_used') and not faction_id_valid(faction):
             raise TransferError('bad faction id')

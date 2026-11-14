@@ -361,30 +361,10 @@
 	var/needs_crafting_handle = FALSE
 	var/obj/item/weapon/material/handle/crafting_handle = null
 	var/atom/handle_crafting_source_loc = null
-	if (!civ_generation_can_build(H, recipe.result_type))
-		to_chat(user, "This generator requires Modern research and crafting skill 105.")
-		return
-	if (!exercise_can_build(H, recipe.result_type))
-		to_chat(H, "This training equipment requires its era, completed research and crafting skill.")
-		return
-	if (!civ_telecom_can_build(H, recipe.result_type))
-		to_chat(user, "This equipment requires Modern research and sufficient crafting skill.")
-		return
-	var/trail_refusal = region_trail_build_refusal(user, recipe.result_type)
-	if (trail_refusal)
-		to_chat(user, SPAN_WARNING(trail_refusal))
-		return
-	var/workshop_refusal = car_workshop_build_refusal(user, recipe.result_type)
-	if (workshop_refusal)
-		to_chat(user, SPAN_WARNING(workshop_refusal))
-		return
-	var/waterwheel_refusal = waterwheel_build_refusal(user, recipe.result_type)
-	if (waterwheel_refusal)
-		to_chat(user, SPAN_WARNING(waterwheel_refusal))
-		return
-	var/rig_refusal = offshore_rig_build_refusal(user, recipe.result_type)
-	if (rig_refusal)
-		to_chat(user, SPAN_WARNING(rig_refusal))
+	var/guard_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_START)
+	if (!isnull(guard_refusal))
+		if (guard_refusal)
+			to_chat(user, guard_refusal)
 		return
 	var/obj/structure/religious/totem/newtotem = null
 	var/obj/structure/simple_door/key_door/custom/build_override_door = null
@@ -393,97 +373,6 @@
 	var/obj/item/weapon/gun/projectile/ancient/firelance/build_override_firelance = null
 	var/obj/structure/vending/sales/build_override_vending = null
 	var/obj/structure/supplier/build_override_supply = null
-	if (istype(get_turf(H), /turf/floor/beach/water/deep) && !bridge_deck_at(get_turf(H)) && map.ID != MAP_VOYAGE && map.ID != MAP_BATTLE_SHIPS)
-		to_chat(H, "<span class = 'danger'>You can't build here!</span>")
-		return
-	if (findtext(recipe.title, "talisman"))
-		if (H.religion == "none")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>")
-			return
-		else if (H.religion == "Priests")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Monks")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Clerics")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-	else if (findtext(recipe.title, "totem"))
-		if (H.religion == "none")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>")
-			return
-		else if (H.religion == "Priests")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Monks")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Clerics")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Cultists")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-	else if (findtext(recipe.title, "monumental ominous statue of the deep-one") || findtext(recipe.title, "monumental ominous statue of the evil-one") || findtext(recipe.title, "monumental ominous statue of the outsider") || findtext(recipe.title, "monumental ominous statue of the ruler"))
-		if (H.religion == "none")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>")
-			return
-		else if (H.religion == "Shamans")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Priests")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Monks")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Clerics")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-	else if (findtext(recipe.title, "monumental stone buddha"))
-		if (H.religion == "none")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>")
-			return
-		else if (H.religion == "Shamans")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Priests")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Cultists")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Clerics")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-	else if (findtext(recipe.title, "monumental statue of a giant ape"))
-		if (H.religion == "none")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title] as you have no religion.</span>")
-			return
-		else if (H.religion == "Monks")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Priests")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Cultists")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-		else if (H.religion == "Clerics")
-			to_chat(H, "<span class = 'danger'>You cannot make a [recipe.title]; your religion type doesn't allow this.</span>")
-			return
-	else if (H.original_job_title == "Gorilla tribesman" || H.original_job_title == "Ant tribesman")
-		if (findtext(recipe.title, "wood sarissa") || findtext(recipe.title, "wood dory") || findtext(recipe.title, "soft wood wall") || findtext(recipe.title, "log wall"))
-			to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
-			return
-		if (recipe.result_type == /obj/structure/simple_door/key_door/anyone/wood)
-			to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
-			return
-		if (H.original_job_title == "Ant tribesman")
-			if (findtext(recipe.title, "wall") || findtext(recipe.title, "door"))
-				to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
-				return
 	if (findtext(recipe.title, "custom") && findtext(recipe.title, "sign"))
 		customname = player_input(user, "Choose a name for this sign:", null, null, "text", null, TRUE)
 		if (customname == null)
@@ -1752,21 +1641,11 @@
 		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
 			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 			return
-		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
-			return
-		// The bay or cable may have changed during the wait.
-		var/late_workshop_refusal = car_workshop_build_refusal(user, recipe.result_type)
-		if (late_workshop_refusal)
-			to_chat(user, SPAN_WARNING(late_workshop_refusal))
-			return
-		// The builder may have turned or moved during the wait.
-		var/late_waterwheel_refusal = waterwheel_build_refusal(user, recipe.result_type)
-		if (late_waterwheel_refusal)
-			to_chat(user, SPAN_WARNING(late_waterwheel_refusal))
-			return
-		var/late_rig_refusal = offshore_rig_build_refusal(user, recipe.result_type)
-		if (late_rig_refusal)
-			to_chat(user, SPAN_WARNING(late_rig_refusal))
+		// The builder may have moved, turned or changed the bay during the wait.
+		var/late_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)
+		if (!isnull(late_refusal))
+			if (late_refusal)
+				to_chat(user, late_refusal)
 			return
 		if (press_construction && !press_construction.valid())
 			return

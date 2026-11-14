@@ -219,6 +219,28 @@ class LandStageTests(unittest.TestCase):
         self.assertEqual([], self.stores['beta'].db.execute('SELECT * FROM colony_grant').fetchall())
         self.assertEqual([], self.coordinator.db.execute('SELECT * FROM colony_grant').fetchall())
 
+    def test_a_player_starts_in_an_open_lands_wilds_from_their_home_only(self):
+        def ask(land, ckey, op, **kw):
+            return call(self.urls[land], TOKENS[land], '/account', dict({'ckey': ckey, 'op': op}, **kw))
+
+        ask('alpha', 'val', 'claim')
+        self.coordinator.homes_once()
+        self.assertEqual('alpha', self.coordinator.home('val'))
+        self.assertFalse(ask('alpha', 'val', 'start', region='alpha').get('ok'))
+        for stage, paused in (('COLONY', False), ('OPEN', True)):
+            self.coordinator.set_land('beta', stage, paused, 'val')
+            ask('alpha', 'val', 'start', region='beta')
+            self.coordinator.homes_once()
+            self.assertEqual('alpha', self.coordinator.home('val'), (stage, paused))
+        self.coordinator.set_land('beta', 'OPEN', False, 'val')
+        # Only the account's home land may send it elsewhere.
+        ask('gamma', 'val', 'start', region='beta')
+        self.coordinator.homes_once()
+        self.assertEqual('alpha', self.coordinator.home('val'))
+        ask('alpha', 'val', 'start', region='beta')
+        self.coordinator.homes_once()
+        self.assertEqual('beta', self.coordinator.home('val'))
+
 
 def read(path):
     with open(os.path.join(ROOT, path), encoding='utf-8') as f:

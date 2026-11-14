@@ -385,3 +385,11 @@ var/global/civ_telecom_cursor = 1
 
 /process/civ_telecom/reset_current_list()
 	return
+
+// Stack recipe guard: telecom equipment needs its era, research and skill.
+/datum/craft_guard/skill_gate/civ_telecom
+	order = 30
+	message = "This equipment requires Modern research and sufficient crafting skill."
+
+/datum/craft_guard/skill_gate/civ_telecom/allowed(mob/living/human/H, result_type)
+	return civ_telecom_can_build(H, result_type)

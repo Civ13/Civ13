@@ -373,6 +373,21 @@
       ]
     },
     {
+      "path": "code/modules/1713/dressmaking.dm",
+      "declarations": [
+        {
+          "owner": "/obj/item/dressmaking_project",
+          "declaration": "parent_type = /obj/item/tailoring_project",
+          "sha256_body": "2292c4714f718a386a4ef22a6809a6ba466878c8cc8d429c649af7ad57c1f83a"
+        },
+        {
+          "owner": "/obj/item/clothing/under/tailored_dress",
+          "declaration": "parent_type = /obj/item/clothing/under/tailored",
+          "sha256_body": "9e65f5cf78b61fbfe225f07d16c071814bfc8517bc0f84d9cb12169e12baa3d2"
+        }
+      ]
+    },
+    {
       "path": "code/modules/1713/extraction/container_keys.dm",
       "declarations": [
         {

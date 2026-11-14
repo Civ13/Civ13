@@ -150,3 +150,12 @@
 		if (A.density)
 			return "There is no room for a waterwheel there."
 	return null
+
+// Stack recipe guard: the builder may turn or move during the wait, so it is checked again.
+/datum/craft_guard/waterwheel
+	order = 60
+	after_wait = TRUE
+
+/datum/craft_guard/waterwheel/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
+	var/message = waterwheel_build_refusal(H, R.result_type)
+	return message ? SPAN_WARNING(message) : null
