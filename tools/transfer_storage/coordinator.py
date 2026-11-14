@@ -62,6 +62,10 @@ SAMPLE_FRESH_SECONDS = 180  # worlds sample about once a minute
 # land to COLONY once it has stood this long with this many living members.
 COLONY_MEMBERS = 3
 COLONY_SECONDS = 3 * 24 * 3600
+# A colony with fewer living members than this for COLONY_QUIET_SECONDS
+# pauses its colony start (and its faction hall bonus) until they are back.
+COLONY_KEEP_MEMBERS = 2
+COLONY_QUIET_SECONDS = 3 * 24 * 3600
 
 
 def land_rows(db, regions, mainland):
@@ -76,6 +80,10 @@ def land_rows(db, regions, mainland):
         stage, paused, by, at = rows.get(region, ('CLOSED', 0, None, 0))
         result[region] = {'stage': stage, 'paused': bool(paused), 'by': by, 'at': int(at)}
     return result
+
+
+def colony_paused(quiet_since, now):
+    return quiet_since is not None and now - quiet_since >= COLONY_QUIET_SECONDS
 
 
 def land_readiness(db, lands, mainland, now):
@@ -94,9 +102,10 @@ def land_readiness(db, lands, mainland, now):
     main_hours, main_avg, _ = stats.get(mainland, (0, 0.0, 0))
     main_living = living.get(mainland, 0)
     colonies = {}
-    for region, parent, name, founded, members in db.execute(
-            'SELECT region, parent, name, founded, members FROM colony ORDER BY region, founded, name'):
-        colonies.setdefault(region, []).append({'parent': parent, 'name': name, 'founded': founded, 'members': members})
+    for region, parent, name, founded, members, quiet in db.execute(
+            'SELECT region, parent, name, founded, members, quiet_since FROM colony ORDER BY region, founded, name'):
+        colonies.setdefault(region, []).append({'parent': parent, 'name': name, 'founded': founded, 'members': members,
+                                                'paused': colony_paused(quiet, now)})
     for region, entry in lands.items():
         hours, avg, peak = stats.get(region, (0, 0.0, 0))
         ready = {'homes': homes.get(region, 0), 'players_avg': round(avg, 1), 'players_peak': peak,
@@ -162,6 +171,9 @@ class Coordinator(TrainCustody):
         self.db.execute('''CREATE TABLE IF NOT EXISTS colony(
             region TEXT NOT NULL, parent TEXT NOT NULL, name TEXT NOT NULL, founded INTEGER NOT NULL,
             members INTEGER NOT NULL, PRIMARY KEY(region, name))''')
+        if 'quiet_since' not in {r[1] for r in self.db.execute('PRAGMA table_info(colony)')}:
+            # Since when the colony has had fewer than COLONY_KEEP_MEMBERS living members.
+            self.db.execute('ALTER TABLE colony ADD COLUMN quiet_since INTEGER')
         # Colony starts granted (colony_charter.dm): the account's home moved to
         # region so its next character starts at the colony of faction there.
         self.db.execute('''CREATE TABLE IF NOT EXISTS colony_grant(
@@ -276,10 +288,13 @@ class Coordinator(TrainCustody):
         if type(colonies) is not list or not all(colony_valid(c) for c in colonies):
             return False
         # The world's own list is the truth: a colony it no longer reports is gone.
+        quiet = dict(self.db.execute('SELECT name, quiet_since FROM colony WHERE region = ?', (region,)))
         self.db.execute('DELETE FROM colony WHERE region = ?', (region,))
         for c in colonies:
-            self.db.execute('INSERT OR REPLACE INTO colony VALUES (?, ?, ?, ?, ?)',
-                            (region, c['parent'], c['name'], int(now) - c['age_hours'] * 3600, c['members']))
+            since = None if c['members'] >= COLONY_KEEP_MEMBERS else (quiet.get(c['name']) or int(now))
+            self.db.execute('INSERT OR REPLACE INTO colony(region, parent, name, founded, members, quiet_since) '
+                            'VALUES (?, ?, ?, ?, ?, ?)',
+                            (region, c['parent'], c['name'], int(now) - c['age_hours'] * 3600, c['members'], since))
         hour = int(now // 3600)
         self.db.execute('INSERT INTO land_hour VALUES (?, ?, 1, ?, ?, ?) ON CONFLICT(region, hour) DO UPDATE SET '
                         'samples = samples + 1, players_sum = players_sum + excluded.players_sum, '
@@ -367,7 +382,7 @@ class Coordinator(TrainCustody):
         entry = land_rows(self.db, [region], self.mainland).get(region) if region in self.regions() else None
         return bool(entry) and entry['stage'] == 'OPEN' and not entry['paused']
 
-    def colony_start_allowed(self, source, region, faction):
+    def colony_start_allowed(self, source, region, faction, now=None):
         """A member of faction (founded in source) may start at its colony in
         region: the colony stands there and the land takes colony starts."""
         if not faction_id_valid(faction) or faction[4:].partition(':')[0] != source:
@@ -376,7 +391,9 @@ class Coordinator(TrainCustody):
         # A pause stops wild starts only; colony starts keep working.
         if not entry or entry['stage'] not in ('COLONY', 'OPEN'):
             return False
-        return self.db.execute('SELECT 1 FROM colony WHERE region = ? AND parent = ?', (region, faction)).fetchone() is not None
+        # A colony nobody lives in pauses its start until members are back.
+        row = self.db.execute('SELECT quiet_since FROM colony WHERE region = ? AND parent = ?', (region, faction)).fetchone()
+        return row is not None and not colony_paused(row[0], time.time() if now is None else now)
 
     def _proven_authority(self, roster, regions, asked, epoch):
         """Whether the agents that answer prove this database is still the
