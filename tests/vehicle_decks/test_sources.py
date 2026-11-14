@@ -26,6 +26,8 @@ CLIMB = read('code/game/objects/structures/tree_climbing.dm')
 PROJECTILE = read('code/modules/projectiles/projectile.dm')
 HUMAN = read('code/game/mob/living/carbon/human/human.dm')
 DME = read('civ13.dme')
+BUS = read('code/modules/1713/machinery/modular_vehicles/carparts/bus.dm')
+WORKS = read('code/modules/craft/vehicle_works.dm')
 
 
 def proc(text, name):
@@ -67,6 +69,14 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertIn('fired_from_deck_axis = vehicle_deck_axis(user)', PROJECTILE)
         self.assertIn('in projectile_tile_order(T)', PROJECTILE)
         self.assertIn('if (fired_from_deck_axis && fired_from_deck_axis == F.axis)', PROJECTILE)
+
+
+    def test_double_decker_bus(self):
+        self.assertIn('carparts\\bus.dm', DME)
+        self.assertIn('upper_deck = TRUE', BUS)
+        self.assertIn('/obj/structure/vehicle_stairs', proc(DECKS, '/proc/vehicle_deck_hatch('))
+        self.assertIn('"Double-decker bus" = list(', WORKS)
+        self.assertNotIn('spawn(', BUS)
 
 
 if __name__ == '__main__':

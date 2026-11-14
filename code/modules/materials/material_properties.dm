@@ -347,6 +347,20 @@
 	sparks = TRUE
 	shaping = SHAPE_FORGED|SHAPE_MACHINED
 
+// Aluminium (aluminium.dm): a third of steel's weight, soft and tough, does
+// not rust or strike sparks, conducts well.
+/material/aluminium
+	density = 35
+	firmness = 35
+	toughness = 60
+	wear = 30
+	heat_limit = 600
+	corrosion = 5
+	conductivity = 61
+	spring = 40
+	flammable = FALSE
+	shaping = SHAPE_CAST|SHAPE_FORGED|SHAPE_MACHINED
+
 /material/barbedwire
 	density = 100
 	firmness = 80
