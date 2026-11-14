@@ -182,7 +182,8 @@ var/global/list/fluid_tablet_cost = list("calcium_carbonate" = 1, "aspirin" = 4)
 	powered = FALSE
 
 /obj/structure/fluid_tablet_press/proc/can_press()
-	if (!isturf(loc) || !tablet_press_year_allowed())
+	// Unfastened factory parts do no work (docs/factory-automation-design.md).
+	if (!anchored || !isturf(loc) || !tablet_press_year_allowed())
 		return FALSE
 	for (var/id in fluid_tablet_cost)
 		if (reagents.get_reagent_amount(id) < fluid_tablet_cost[id])
