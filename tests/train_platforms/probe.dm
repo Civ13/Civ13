@@ -278,7 +278,7 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/turf/T in platform_car_tiles(platform_segments(arm)))
 		for (var/obj/item/weapon/gun/projectile/automatic/stationary/S in T)
 			guns++
-	platform_check("armor/machine_guns", guns == 4)
+	platform_check("armor/no_free_guns", guns == 0)
 	qdel(bullet)
 
 	// The armored locomotive survives a direct hit.
@@ -349,6 +349,116 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("warehouse/blocked_bay", W.retrieve_problem(blocked, W.retrieve_place(blocked)))
 	qdel(obstacle)
 
+// Driving (trains.dm): throttle, reverser, braking distance, load, double
+// heading, the tender and speed-scaled collisions.
+/mob/living/simple_animal/train_probe_dummy
+	health = 400
+	maxHealth = 400
+
+/proc/drive_train(x, y, wagons, wagon_type = /obj/structure/trains/transport/flatbed)
+	for (var/ty in 2 to 25)
+		platform_track(x, ty, NORTH)
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(x, y))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/obj/structure/trains/ahead = L
+	for (var/i in 1 to wagons)
+		var/obj/structure/trains/W = new wagon_type(platform_turf(x, y - i))
+		W.dir = NORTH
+		ahead.connected = W
+		ahead = W
+	return L
+
+/proc/drive_wait(obj/structure/trains/locomotive/L, limit = 150)
+	while (L.driving && limit > 0)
+		sleep(1)
+		limit--
+	return !L.driving
+
+/proc/platform_driving_run()
+	// Reverser: the train backs up with the wagon still behind the engine.
+	var/obj/structure/trains/locomotive/coal/L = drive_train(48, 12, 2)
+	var/obj/structure/trains/W1 = L.connected
+	var/obj/structure/trains/W2 = W1.connected
+	L.reverser = -1
+	L.throttle = 1
+	L.automovement = TRUE
+	platform_check("drive/reverse_step", L.process_rail_reverse() && L.y == 11 && W1.y == 10 && W2.y == 9)
+	platform_check("drive/reverse_keeps_facing", L.dir == NORTH && W1.dir == NORTH && W2.dir == NORTH && L.connected == W1)
+	L.reverser = 1
+
+	// Throttle: the drive loop gathers speed up to the notch's cruise speed.
+	L.refresh_consist()
+	var/light_cruise = L.cruise_speed()
+	platform_check("load/light_full_speed", L.pull_ratio() >= 1 && abs(light_cruise - 10 / L.max_train_speed / 3) < 0.01)
+	L.throttle = 3
+	var/start_y = L.y
+	L.locomotive()
+	sleep(12)
+	platform_check("drive/throttle_moves", L.driving && L.y > start_y && W1.y == L.y - 1 && W2.y == L.y - 2)
+	platform_check("drive/speed_capped", L.rail_speed > 0 && L.rail_speed <= 10 / L.max_train_speed)
+	L.throttle = 0
+	L.braking = TRUE
+	platform_check("drive/brake_stops", drive_wait(L) && L.rail_speed == 0 && !L.automovement)
+
+	// Load: fourteen loaded wagons are more than one engine's rated pull.
+	var/obj/structure/trains/locomotive/coal/H = drive_train(56, 17, 14, /obj/structure/trains/storage/closed)
+	H.throttle = 3
+	H.refresh_consist()
+	var/heavy_cruise = H.cruise_speed()
+	platform_check("load/heavy_slower", H.pull_ratio() < 1 && heavy_cruise < 10 / H.max_train_speed && heavy_cruise > 0)
+
+	// Braking distance grows with the train: both start at the same speed.
+	for (var/obj/structure/trains/locomotive/E in list(L, H))
+		E.throttle = 0
+		E.braking = TRUE
+		E.rail_speed = 2.5
+	var/light_from = L.y
+	var/heavy_from = H.y
+	L.drive()
+	H.drive()
+	drive_wait(L)
+	drive_wait(H)
+	platform_check("brake/heavy_longer", (H.y - heavy_from) > (L.y - light_from) && L.y - light_from >= 1)
+
+	// Double heading: a second running engine in the train adds its pull.
+	var/obj/structure/trains/storage/closed/rear = H
+	while (rear.connected)
+		rear = rear.connected
+	var/obj/structure/trains/locomotive/coal/helper = new(get_step(rear, SOUTH))
+	helper.dir = NORTH
+	helper.fuel = 100
+	helper.on = TRUE
+	rear.connected = helper
+	H.throttle = 3
+	H.refresh_consist()
+	platform_check("double_heading/power", H.consist_engines == 2 && H.cruise_speed() > heavy_cruise)
+	helper.throttle = 3
+	helper.locomotive()
+	platform_check("double_heading/helper_follows", helper.lead_car() == rear && !helper.driving)
+
+	// Tender: the fireman tops up a low firebox from a hitched tender.
+	var/obj/structure/trains/locomotive/coal/T = drive_train(52, 12, 0)
+	var/obj/structure/trains/storage/tender/tender = new(platform_turf(52, 11))
+	tender.dir = NORTH
+	T.connected = tender
+	var/obj/item/stack/ore/coal/coal = new(tender.storage)
+	coal.amount = 5
+	T.fuel = 20
+	T.refresh_consist()
+	platform_check("tender/feeds_firebox", T.fuel == 95 && QDELETED(coal))
+
+	// Collisions scale with speed: a crawl shoves a person aside unhurt,
+	// a fast train throws them clear and keeps going.
+	var/mob/living/simple_animal/train_probe_dummy/D = new(platform_turf(52, 13))
+	T.rail_speed = 0.5
+	platform_check("collision/crawl_shoves", T.rail_hit(D.loc, NORTH) && D.x != 52 && D.health >= 390)
+	D.persistence_set_loc(platform_turf(52, 13))
+	T.rail_speed = 6
+	var/hp = D.health
+	platform_check("collision/speed_hurts", !T.rail_hit(D.loc, NORTH) && D.x != 52 && hp - D.health >= 100)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -361,6 +471,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_probe_run()
 		platform_warfare_run()
 		platform_warehouse_run()
+		platform_driving_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

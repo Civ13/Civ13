@@ -182,6 +182,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		safety_timer = null
 	for (var/atom/movable/A in everything_aboard())
 		let_off(A)
+	if (hitched_cart)
+		hitched_cart.unhitch()
 	if (craft)
 		var/datum/craft/vehicle/carriage/C = craft
 		craft = null
@@ -193,7 +195,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	return ..()
 
 /obj/structure/vehicle/carriage/persistence_runtime_var(key)
-	return key == "craft" || key == "step_timer" || key == "safety_timer" || key == "next_step" || key == "stepping" || key == "last_refusal_message" || key == "moving" || key == "movement_processes" || key == "gear" || ..()
+	return key == "craft" || key == "step_timer" || key == "safety_timer" || key == "next_step" || key == "stepping" || key == "last_refusal_message" || key == "moving" || key == "movement_processes" || key == "gear" || key == "hitched_cart" || ..()
 
 // ---- Shape and layout ----
 
@@ -310,9 +312,15 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		if (why)
 			refuse("There is no room to turn: [why].")
 			return FALSE
+	// A hitched cart swings round behind the new rear.
+	if (hitched_cart && !cart_hitch_cell_clear(hitch_turf(want), hitched_cart, src))
+		refuse("There is no room to turn: the cart behind has nowhere to go.")
+		return FALSE
 	var/old = facing
 	facing = want
 	apply_shape()
+	if (hitched_cart)
+		hitched_cart.follow_leader(null, TRUE)
 	if (craft)
 		craft.on_turn(craft_turn_angle(old, want))
 	return TRUE
@@ -355,6 +363,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 			. += CARRIAGE_PERSON_WEIGHT + bicycle_carried_weight(A)
 		else if (A)
 			. += CARRIAGE_CARGO_WEIGHT + carriage_cargo_weight(A)
+	. += hitched_cart_weight()
 
 // What a crate or barrel holds. Most items carry no weight of their own, so
 // those count by their size, and a stack by how many it holds.
@@ -545,6 +554,35 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 	ontop |= user
 	lay_out()
 
+// A seated passenger takes the reins from a driver who cannot drive (asleep,
+// knocked out, gone from the game or tied up), who is moved to that seat.
+/obj/structure/vehicle/carriage/proc/take_reins_from_driver(mob/living/human/user)
+	var/index = seats.Find(user)
+	if (!index || !istype(user) || !driver || driver == user || driver_ready())
+		return FALSE
+	if (user.stat != CONSCIOUS || user.incapacitated(INCAPACITATION_DISABLED|INCAPACITATION_RESTRAINED))
+		return FALSE
+	if (user.get_active_hand())
+		to_chat(user, SPAN_WARNING("You need a free hand to take the reins."))
+		return TRUE
+	var/mob/living/human/old = driver
+	stopmovementloop()
+	if (dwheel && dwheel.loc == old)
+		old.remove_from_mob(dwheel)
+		dwheel.forceMove(src)
+	old.driver = FALSE
+	old.driver_vehicle = null
+	driver = null
+	buckled_mob = null
+	take_driver_seat(user)
+	if (!user.put_in_active_hand(dwheel))
+		dwheel.forceMove(src)
+	seats[index] = old
+	old.update_icons()
+	lay_out()
+	user.visible_message(SPAN_NOTICE("[user] takes the reins of \the [src] from [old]."), SPAN_NOTICE("You take the reins from [old]. [driving_hint()]"))
+	return TRUE
+
 /obj/structure/vehicle/carriage/driver_died(mob/living/human/H)
 	if (H != driver)
 		return FALSE
@@ -604,6 +642,11 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		hitch(SA)
 		user.visible_message(SPAN_NOTICE("[user] puts [SA] in harness to \the [src]."), SPAN_NOTICE("You put [SA] in harness. The team pulls [team_pull()]."))
 		return
+	// A cart standing right behind the carriage is hitched there, not loaded.
+	if (istype(M, /obj/structure/closet/crate/cart) && M.loc == hitch_turf(facing))
+		var/obj/structure/closet/crate/cart/cart = M
+		cart.player_hitch(user, src)
+		return
 	if (isliving(M) || (istype(M, /obj/structure) && can_load(M)))
 		if (!free_seat())
 			to_chat(user, SPAN_WARNING("\The [src] is full."))
@@ -635,6 +678,8 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		return "It is already in harness."
 	if (A.buckled || A.rider || A.ride)
 		return "It is tied up or ridden."
+	if (A.hitched_cart)
+		return "It has a cart hitched behind it. Unhitch the cart first."
 	if (team.len >= CARRIAGE_MAX_TEAM)
 		return "\The [src] has a full team."
 	if (team.len && istype(A, /mob/living/simple_animal/horse) != istype(team[1], /mob/living/simple_animal/horse))
@@ -660,7 +705,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 /obj/structure/vehicle/carriage/attack_hand(mob/living/human/user)
 	if (!istype(user))
 		return
-	if (retake_controls(user))
+	if (retake_controls(user) || take_reins_from_driver(user))
 		return
 	if (is_aboard(user))
 		user.visible_message(SPAN_NOTICE("[user] starts getting off \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
@@ -825,7 +870,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		if (!bridged)
 			return "the water is too deep"
 	for (var/obj/O in T)
-		if (O == src || is_aboard(O) || !O.density)
+		if (O == src || O == hitched_cart || is_aboard(O) || !O.density)
 			continue
 		if (istype(O, /obj/structure) || istype(O, /obj/covers))
 			return "\the [O] is in the way"

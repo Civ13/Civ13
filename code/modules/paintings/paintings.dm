@@ -49,6 +49,43 @@
 	icon_state = "pigment_bone_white"
 	pigment_colors = list("#ece6d6", "#b9ae98")
 
+// Mineral pigments of later ages, from mined ores and stones.
+/obj/item/pigment/malachite
+	name = "malachite green"
+	desc = "Copper ore ground to a green powder. Gives deep and light green."
+	icon_state = "pigment_malachite"
+	pigment_colors = list("#2f6e45", "#5e9a62")
+
+/obj/item/pigment/vermilion
+	name = "vermilion"
+	desc = "Cinnabar ground to a brilliant red powder. Gives scarlet and orange-red."
+	icon_state = "pigment_vermilion"
+	pigment_colors = list("#c8321e", "#e0603a")
+
+/obj/item/pigment/lead_white
+	name = "lead white"
+	desc = "Lead ore ground and washed to a cool white powder. Gives bright white and pale grey."
+	icon_state = "pigment_lead_white"
+	pigment_colors = list("#e8e4da", "#c9c6bc")
+
+/obj/item/pigment/ultramarine
+	name = "ultramarine"
+	desc = "A blue stone ground to a costly deep blue powder. Gives deep and light blue."
+	icon_state = "pigment_ultramarine"
+	pigment_colors = list("#2a3f8f", "#5068b8")
+	value = 4
+
+// Fine Arts: a box of ready-mixed oil paints, many colours and many uses.
+/obj/item/pigment/oil_paints
+	name = "box of oil paints"
+	desc = "Ready-mixed oil paints in a wooden box. Gives eight colours and lasts a long time."
+	icon_state = "oil_paints"
+	w_class = ITEM_SIZE_SMALL
+	flammable = TRUE
+	value = 6
+	pigment_colors = list("#141414", "#f4f1ea", "#b0202a", "#e0b020", "#1f4fa0", "#2e7d3a", "#6e4424", "#d8822a")
+	pigment_uses = 40
+
 // What grinds into a pigment in the stone mortar (herbalism.dm).
 /proc/mortar_pigment_result(obj/item/I)
 	if (istype(I, /obj/item/stack/ore/charcoal))
@@ -59,6 +96,14 @@
 		return /obj/item/pigment/ochre_yellow
 	if (istype(I, /obj/item/stack/material/bone))
 		return /obj/item/pigment/bone_white
+	if (istype(I, /obj/item/stack/ore/copper))
+		return /obj/item/pigment/malachite
+	if (istype(I, /obj/item/stack/ore/mercury))
+		return /obj/item/pigment/vermilion
+	if (istype(I, /obj/item/stack/ore/lead))
+		return /obj/item/pigment/lead_white
+	if (istype(I, /obj/item/stack/ore/gem/sapphire))
+		return /obj/item/pigment/ultramarine
 	return null
 
 /obj/item/weapon/reagent_containers/glass/mortar/proc/grind_pigment(obj/item/W, mob/user)
@@ -128,6 +173,7 @@
 	var/art_top = 0
 	var/frame_state = "frame_wall"
 	var/base_colour = "#e9dfc8"
+	var/pixel_use_scale = 1 // big canvases use pigment more thinly
 	var/palette = null // "#rrggbb,..." painting_codec.dm
 	var/paint_data = null // packed pixels
 	var/small = null // shrunk copy, 3 hex digits per pixel
@@ -178,6 +224,54 @@
 	art_top = 6
 	frame_state = "frame_table"
 
+// Fine Arts: gallery canvases for museums and halls, shown 2x2 or 2x1 tiles
+// in a gilded frame (icons/obj/paintings_gallery.dmi) when hung.
+/obj/item/canvas/gallery
+	name = "gallery canvas"
+	desc = "A large stretched canvas for a museum painting. Set it on an easel to paint it, then hang it on a wall to your north."
+	icon_state = "canvas_gallery"
+	w_class = ITEM_SIZE_LARGE
+	format = "gallery"
+	canvas_w = 128
+	canvas_h = 128
+	art_w = 56
+	art_h = 56
+	art_left = 4
+	art_top = 4
+	frame_state = "gallery"
+	pixel_use_scale = 8 // a full 128x128 canvas uses at most 8 of a pigment
+	value = 4
+
+/obj/item/canvas/gallery/wide
+	name = "wide gallery canvas"
+	desc = "A large stretched landscape canvas for a museum painting. Set it on an easel to paint it, then hang it on a wall to your north."
+	icon_state = "canvas_gallery_wide"
+	canvas_w = 128
+	canvas_h = 64
+	art_w = 56
+	art_h = 24
+	art_top = 36
+	frame_state = "gallery_wide"
+
+// Held and on an easel a gallery canvas shows its plain sprite; the art
+// shows in its frame on the wall.
+/obj/item/canvas/gallery/update_icon()
+	overlays.Cut()
+
+/obj/item/canvas/proc/framed_overlays()
+	if (!small)
+		return list()
+	update_icon()
+	return overlays.Copy()
+
+/obj/item/canvas/gallery/framed_overlays()
+	var/list/out = list()
+	var/icon/I = small ? painting_build_icon(small, art_w, art_h, art_left, art_top, 'icons/obj/paintings_gallery.dmi', frame_state) : null
+	if (I)
+		out += image(I)
+	out += image('icons/obj/paintings_gallery.dmi', frame_state)
+	return out
+
 /obj/item/canvas/New()
 	..()
 	if (finished && !restoring)
@@ -227,7 +321,7 @@
 	painting_open_editor(user, src)
 
 /obj/item/canvas/afterattack(atom/target, mob/user, proximity_flag, params)
-	if (!proximity_flag || format != "wall" || !finished)
+	if (!proximity_flag || !(format in list("wall", "gallery")) || !finished)
 		return ..()
 	if (!painting_is_wall(target))
 		return ..()
@@ -294,7 +388,7 @@
 					need[P] = (need[P] || 0) + counts[d]
 					break
 	for (var/obj/item/pigment/P in need)
-		P.pigment_uses -= max(1, round(need[P] / PAINT_PIXELS_PER_USE + 0.999))
+		P.pigment_uses -= max(1, round(need[P] / (PAINT_PIXELS_PER_USE * pixel_use_scale) + 0.999))
 		if (P.pigment_uses <= 0)
 			to_chat(user, SPAN_NOTICE("You use up the last of \the [P]."))
 			qdel(P)
@@ -404,8 +498,23 @@
 	if (!(dir in cardinal))
 		to_chat(user, SPAN_WARNING("Stand straight in front of the wall to hang it."))
 		return FALSE
-	for (var/obj/structure/painting_frame/F in T)
-		if (F.dir == dir)
+	var/list/spots = list(T)
+	if (C.format == "gallery")
+		// Two tiles wide, from the painter's tile to the east, on a wall to the north.
+		var/turf/E = get_step(T, EAST)
+		if (dir != NORTH || !E || !painting_is_wall_turf(get_step(E, NORTH)) || E.density)
+			to_chat(user, SPAN_WARNING("A gallery painting hangs on a wall to your north, two tiles wide: the wall must run on to your right."))
+			return FALSE
+		spots += E
+	for (var/turf/spot in spots)
+		for (var/obj/structure/painting_frame/F in spot)
+			if (F.dir == dir)
+				to_chat(user, SPAN_WARNING("A painting already hangs there."))
+				return FALSE
+	var/turf/west = get_step(T, WEST)
+	for (var/obj/structure/painting_frame/F in west)
+		var/obj/item/canvas/G = F.held_canvas()
+		if (F.dir == dir && G && G.format == "gallery")
 			to_chat(user, SPAN_WARNING("A painting already hangs there."))
 			return FALSE
 	var/obj/structure/painting_frame/F = new(T)
@@ -415,6 +524,16 @@
 	F.place()
 	user.visible_message(SPAN_NOTICE("[user] hangs [C.painting_name_text()] on the wall."), SPAN_NOTICE("You hang [C.painting_name_text()] on the wall."))
 	return TRUE
+
+/proc/painting_is_wall_turf(turf/T)
+	if (!T)
+		return FALSE
+	if (T.density)
+		return TRUE
+	for (var/obj/covers/C in T)
+		if (C.wall && C.density)
+			return TRUE
+	return FALSE
 
 /obj/structure/painting_frame
 	name = "painting"
@@ -457,8 +576,7 @@
 	if (!C)
 		return
 	name = C.title ? "\"[C.title]\"" : "painting"
-	C.update_icon()
-	overlays += C.overlays
+	overlays += C.framed_overlays()
 
 /obj/structure/painting_frame/examine(mob/user)
 	..()

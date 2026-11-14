@@ -85,3 +85,24 @@ Plain tools that are not material items name their material in
 `tool_material`; `tool_material_name(item)` reads either kind.
 `python3 -m unittest discover -s tests/tool_material_speeds -v` checks the
 table against the named variants and pins the in-between values.
+
+## Plain tools
+
+A hammer, chisel, wrench, screwdriver, saw, shears, wirecutters or crowbar is
+not a material item. It sets `tool_noun` and `tool_role`
+(`code/modules/materials/tool_materials.dm`), and a recipe row whose last field
+names a material builds the same type in that material:
+`set_tool_material()` renames it ("bronze wrench"), tints it and records the
+material in `tool_material`. A tool in its usual material stores nothing.
+
+`tool_speed(item)` is the tool's role performance against its usual material,
+1 for every tool that existed before and 0.4 to 1.5 otherwise;
+`tool_work_time(item, delay)` applies it. Sawing logs into planks and wrench
+fastening use it today; other work sites adopt it as they are touched.
+
+The rows come from `config/recipe_variants.json`: per product, the existing
+catalog row to copy and the other materials. `python3 scripts/recipe_variants.py
+--write` rewrites the marked block at the end of
+`config/crafting/material_recipes_global.txt` as ordinary `RECIPE:` rows, so
+every reader of the catalog keeps working. `tests/tool_materials` fails when
+the block is stale and pins each pair's speed.

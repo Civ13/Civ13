@@ -37,7 +37,7 @@
 		layer = TURF_LAYER + 0.01
 		icon_state = "mine_armed"
 		user.drop_item()
-		if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+		if (map.campaign)
 			var/obj/map_metadata/campaign/CM = map
 			if (istype(src, (/obj/item/mine/at)))
 				CM.at_mines_placed++
@@ -73,7 +73,7 @@
 					anchored = FALSE
 					icon_state = "mine"
 					layer = initial(layer)
-					if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+					if (map.campaign)
 						var/obj/map_metadata/campaign/CM = map
 						if (istype(src, (/obj/item/mine/at)))
 							CM.at_mines_placed--
@@ -100,7 +100,7 @@
 				anchored = FALSE
 				icon_state = "mine"
 				layer = initial(layer)
-				if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if (map.campaign)
 					var/obj/map_metadata/campaign/CM = map
 					if (istype(src, (/obj/item/mine/at)))
 						CM.at_mines_placed--
@@ -215,6 +215,8 @@
 
 /obj/item/mine/at/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
+	if (!anchored) return //If armed
+	if (triggered) return
 	if (istype(AM, /obj/item/projectile)) return
 	if (istype(AM, /obj/structure/vehicleparts/frame))
 		trigger(AM)

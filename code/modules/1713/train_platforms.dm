@@ -116,19 +116,19 @@ var/global/train_platform_plan_time = -1
 				list("edges" = rails),
 				list("edges" = rails)))
 		layouts["armored"] = list(
-			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires machine guns through the slits.",
+			"name" = "armored wagon", "desc" = "A steel-plated car. Its armor stops bullets from outside while the crew fires through the slits; bring your own emplaced machine guns.",
 			"center" = "steel", "side" = "steel", "armored" = TRUE,
 			"segments" = list(
 				list("edges" = armor_doors),
-				list("edges" = armor_sides, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim)),
 				list("edges" = armor_sides),
-				list("edges" = armor_sides + armor_back, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/maxim, null, /obj/item/weapon/gun/projectile/automatic/stationary/maxim))))
+				list("edges" = armor_sides),
+				list("edges" = armor_sides + armor_back)))
 		layouts["flak"] = list(
-			"name" = "flak car", "desc" = "An open car mounting autocannons that reach aircraft at cruising height.",
+			"name" = "flak car", "desc" = "An open armored car for autocannons that reach aircraft at cruising height. Forge the autocannons and bolt them to the deck.",
 			"center" = "steel", "side" = "steel", "armored" = TRUE,
 			"segments" = list(
 				list("edges" = rails),
-				list("edges" = rails, "fit" = list(/obj/item/weapon/gun/projectile/automatic/stationary/autocannon, null, /obj/item/weapon/gun/projectile/automatic/stationary/autocannon)),
+				list("edges" = rails),
 				list("edges" = rails),
 				list("edges" = rails, "fit" = list(/obj/structure/closet/crate, null, /obj/structure/closet/crate))))
 	return layouts[kind]
@@ -181,6 +181,18 @@ var/global/train_platform_plan_time = -1
 	var/wrecked = FALSE // knocked off the track by explosions until welded back
 	var/tmp/last_moved = -1000
 	var/tmp/list/deck_parts = null
+	train_weight = 0.5 // per segment, so a four-tile car weighs 2
+
+// A deck's weight counts the people and furniture on its three tiles.
+/obj/structure/trains/platform/car_load_weight()
+	var/w = train_weight
+	for (var/turf/T in train_platform_tiles(loc, dir))
+		for (var/atom/movable/AM in T)
+			if (isliving(AM))
+				w += 0.1
+			else if (istype(AM, /obj/structure) && !istype(AM, /obj/structure/rails) && !istype(AM, /obj/structure/trains) && !istype(AM, /obj/structure/train_part))
+				w += 0.2
+	return w
 
 /obj/structure/trains/platform/on_runtime_spawn()
 	..()
@@ -318,7 +330,7 @@ var/global/train_platform_plan_time = -1
 				if (M.client)
 					M.update_vision_cone()
 	place_parts(newloc, newdir)
-	if (connected)
+	if (connected && !train_solo_move)
 		connected.Move(oldloc, newdir)
 	moving_train = FALSE
 	return TRUE
@@ -573,9 +585,12 @@ var/global/train_platform_plan_time = -1
 	return tiles
 
 // Null when the step is clear, else the blocking atom.
-/proc/train_consist_obstacle(obj/structure/trains/head, turf/target, heading)
+// cars: the train in the order it travels, when it is not head's own chain
+// (a reversing train lists its cars from the rear).
+/proc/train_consist_obstacle(obj/structure/trains/head, turf/target, heading, list/cars = null)
 	train_platform_reset_plan()
-	var/list/cars = train_consist_list(head)
+	if (!cars)
+		cars = train_consist_list(head)
 	var/has_platform = FALSE
 	for (var/obj/structure/trains/car in cars)
 		if (istype(car, /obj/structure/trains/platform))

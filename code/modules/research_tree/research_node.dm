@@ -629,6 +629,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
+		"/obj/item/weapon/crowbar" = "iron_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools
@@ -1086,6 +1087,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/autocannon" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
@@ -1402,7 +1404,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/retractor/bronze" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel/bronze" = "field_surgery",
-		// --- fine_arts (39) ---
+		// --- fine_arts (42) ---
+		"/obj/item/canvas/gallery" = "fine_arts",
+		"/obj/item/canvas/gallery/wide" = "fine_arts",
+		"/obj/item/pigment/oil_paints" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar/havana" = "fine_arts",
@@ -1742,6 +1747,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
 		"/obj/structure/display_case" = "glassworking",
+		"/obj/structure/workshop_machine/glass_bench" = "glassworking",
 		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
 		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
@@ -2251,6 +2257,7 @@ var/global/list/node_grid_col_cache = null
 		// --- stone_masonry (44) ---
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
+		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",
 		"/obj/covers/sandstone" = "stone_masonry",
@@ -2599,6 +2606,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
+		"/obj/item/clothing/head/tailored" = "weaving",
 		// --- workshops (25) ---
 		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",

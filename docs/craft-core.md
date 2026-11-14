@@ -648,7 +648,9 @@ The carriage saves the register in `register_state`.
 `code/modules/1713/machinery/modular_vehicles/vehicle_load.dm` makes what a
 land vehicle carries set its pace. `get_speed()` multiplies the gear's listed
 delay by `get_load_factor()`: the vehicle as loaded against the same body with
-steel walls and a normal load (one person per seat plus 10 per frame). Wall
+steel walls and a normal load (one seated person per seat plus 10 per frame).
+A rider buckled into a seat counts half their weight and one standing on the
+deck or roof counts in full (`vehicle_rider_weight()`). Wall
 sides weigh 0.5 per point of armour (`frame.wall_weight()`), so a lighter hull
 material only has to override that proc. Loose items other than the fuel
 tank, crates and the contents of crates are cargo; everything else on the

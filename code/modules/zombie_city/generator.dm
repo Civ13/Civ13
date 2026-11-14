@@ -768,14 +768,16 @@ var/global/zombie_city_generating = FALSE
 	if (!entry_cells.len || !exit_cells.len)
 		failure = "no insertion or evacuation points"
 		return FALSE
+	var/entry_spacing = min(ZC_ENTRY_SPACING, round(min(w, h) / 4))
+	var/exit_spacing = min(ZC_EXIT_SPACING, round(min(w, h) / 6))
 	for (var/list/a in entry_cells)
 		for (var/list/b in entry_cells)
-			if (a != b && max(abs(a[1] - b[1]), abs(a[2] - b[2])) < ZC_ENTRY_SPACING)
-				failure = "insertion points closer than [ZC_ENTRY_SPACING]"
+			if (a != b && max(abs(a[1] - b[1]), abs(a[2] - b[2])) < entry_spacing)
+				failure = "insertion points closer than [entry_spacing]"
 				return FALSE
 		for (var/list/b in exit_cells)
-			if (max(abs(a[1] - b[1]), abs(a[2] - b[2])) < ZC_EXIT_SPACING)
-				failure = "evacuation point closer than [ZC_EXIT_SPACING] to an insertion point"
+			if (max(abs(a[1] - b[1]), abs(a[2] - b[2])) < exit_spacing)
+				failure = "evacuation point closer than [exit_spacing] to an insertion point"
 				return FALSE
 	if (!layout.pois["hospital"] || !layout.pois["police"] || !layout.pois["hardware"] || !layout.pois["garage"])
 		failure = "a special lot was not placed"

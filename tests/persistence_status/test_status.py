@@ -124,7 +124,7 @@ def largest(humans, registered, source=REPORT):
     env = environment(humans)
     constants = set(re.findall(r'\bMAP_\w+', selected))
     env.update({name: name for name in constants})
-    env['map'] = NS(civilizations=True, ID='MAP_NOMADS', custom_faction_nr=DMList(*registered))
+    env['map'] = NS(civilizations=True, ID='MAP_NOMADS', nationsrp=False, custom_faction_nr=DMList(*registered))
     result = project(selected, '/proc/probe', '', env)()
     return result, env['map'].facl
 

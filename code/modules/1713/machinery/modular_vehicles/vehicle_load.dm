@@ -1,10 +1,12 @@
 // Vehicle load: what a land vehicle carries sets how fast it drives.
 // ------------------------------------------------------------
-// Each gear's step delay (speedlist) is multiplied by a load factor. The
+// The time a tile takes in each gear (vehicle_speeds.dm) is multiplied by a
+// load factor. The
 // factor compares the vehicle as loaded against the same vehicle with steel
 // walls and a normal load: one person per seat plus a little payload per
-// frame. Today's vehicles with a normal load drive exactly as before (factor
-// 1.0); overloading slows them down to VEHICLE_LOAD_MAX, and a hull lighter
+// frame. A rider in a seat counts half their weight, since the seat carries
+// them low and braced; a rider standing on the deck or roof counts in full.
+// Today's vehicles with a normal load drive exactly as before (factor 1.0); overloading slows them down to VEHICLE_LOAD_MAX, and a hull lighter
 // than steel can speed them up to VEHICLE_LOAD_MIN, with one extra top gear
 // at VEHICLE_LOAD_BONUS_GEAR or less. Turning time follows the same factor,
 // held to a narrower band.
@@ -22,7 +24,7 @@
 #define VEHICLE_LOAD_BONUS_GEAR 0.8
 #define VEHICLE_TURN_LOAD_MIN 0.7
 #define VEHICLE_TURN_LOAD_MAX 1.3
-#define VEHICLE_SEAT_ALLOWANCE 40     // One human (MOB_MEDIUM x 2) per seat.
+#define VEHICLE_SEAT_ALLOWANCE 20     // One seated human (MOB_MEDIUM, half weight) per seat.
 #define VEHICLE_FRAME_PAYLOAD 10      // Free payload per frame before it slows down.
 #define VEHICLE_WALL_WEIGHT 0.5       // Weight per point of steel wall armour.
 #define VEHICLE_LOAD_RECHECK 20
@@ -61,6 +63,10 @@
 		return !istype(O, /obj/item/weapon/reagent_containers/glass/barrel/fueltank)
 	return istype(O, /obj/structure/closet) || istype(O, /obj/structure/supply_crate)
 
+// What a rider adds to the load: half in a seat, in full standing.
+/proc/vehicle_rider_weight(mob/living/L)
+	return istype(L.buckled, /obj/structure/bed/chair) ? L.mob_size : L.mob_size * 2
+
 // Weighs the vehicle once. Returns list(load, reference): the weight it
 // drives with, and the weight of the same body in steel with a normal load.
 /obj/structure/vehicleparts/axis/proc/vehicle_load_weights()
@@ -92,7 +98,7 @@
 				if (istype(O, /obj/structure/bed/chair))
 					seats++
 		for (var/mob/living/L in F.loc)
-			cargo += L.mob_size * 2
+			cargo += vehicle_rider_weight(L)
 	var/allowance = seats * VEHICLE_SEAT_ALLOWANCE + frames * VEHICLE_FRAME_PAYLOAD
 	return list(fitted + walls + max(cargo, allowance), fitted + steel_walls + allowance)
 
@@ -113,14 +119,17 @@
 		return speeds + 1
 	return speeds
 
-// The base step delay for gear, before load: the bonus gear is one tick
-// quicker than the last listed gear.
+// The base step delay for gear, before load. The bonus gear is a tenth of a
+// second per tile quicker than the last listed gear, or one server tick
+// quicker when that gear is already close to the floor.
 /obj/structure/vehicleparts/axis/proc/gear_delay(gear)
 	if (!speedlist || gear <= 0)
 		return 0
 	if (gear > speeds)
 		var/top = speedlist[speeds]
-		return top ? max(1, top - 1) : 0
+		if (!top)
+			return 0
+		return top > 1 ? max(1, top - 1) : max(0.2, top - 0.4) // VEHICLE_MIN_DELAY (vehicle_speeds.dm)
 	return speedlist[gear] || 0
 
 // How long a turn takes with this load.

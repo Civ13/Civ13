@@ -666,7 +666,7 @@
 	w_class = ITEM_SIZE_SMALL
 	caliber = "a44magnum"
 	fire_sound = 'sound/weapons/guns/fire/deagle.ogg'
-	magazine_type = /obj/item/ammo_magazine/deagle
+	magazine_type = /obj/item/ammo_magazine/deaglemagnum
 	good_mags = list(/obj/item/ammo_magazine/deaglemagnum)
 	weight = 0.794
 	ammo_type = /obj/item/ammo_casing/a44magnum
