@@ -121,7 +121,7 @@ class RecursiveExplosionSpread(unittest.TestCase):
         body = source.split('/process/explosion/proc/explosion_spread(', 1)[1]
         body = body.split('/process/explosion/proc/queue(', 1)[0]
         # These are model assumptions for the guards and resistance calculation.
-        for fragment in ('if (power <= 0)', 'if (explosion_turfs[s] >= power)',
+        for fragment in ('if (!s || power <= 0)', 'if (explosion_turfs[s] >= power)',
                          'explosion_turfs[s] = power',
                          'power - s.explosion_resistance',
                          'spread_power -= O.explosion_resistance'):

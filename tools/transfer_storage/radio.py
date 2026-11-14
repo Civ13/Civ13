@@ -61,7 +61,7 @@ def _frequency(value):
     if isinstance(value, bool):
         raise RadioError('frequency must be a number or a channel name')
     if isinstance(value, (int, float)):
-        if value != int(value) or not 150 <= value <= 300:
+        if not 150 <= value <= 300 or value != int(value):
             raise RadioError('frequency must be a whole number from 150 to 300')
         return int(value)
     return _text(value, MAX_TEXT, 'frequency')
@@ -420,7 +420,7 @@ class RadioRelay:
         for field, low in (('x', 1), ('y', 1), ('z', 0), ('shells', 1)):
             value = envelope.get(field)
             high = MAX_SHELLS if field == 'shells' else MAX_COORD
-            if isinstance(value, bool) or not isinstance(value, (int, float)) or value != int(value) or not low <= value <= high:
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not low <= value <= high or value != int(value):
                 raise RadioError('%s must be a whole number from %d to %d' % (field, low, high))
             clean[field] = int(value)
         return clean

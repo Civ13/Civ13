@@ -483,9 +483,18 @@ var/datum/extraction_trade_policy/extraction_trader_policy = new
 		var/list/plan = extraction_payment_plan(money_roots(S, from), amount)
 		if (!plan) return FALSE
 		take = plan["take"]
-		if (plan["change"]) given += extraction_make_notes(from, plan["change"])
+		if (plan["change"])
+			var/list/change_notes = extraction_make_notes(from, plan["change"])
+			if (!change_notes) return FALSE
+			given += change_notes
 	if (target == "CR") credits += out
-	else given += extraction_make_notes(target, out)
+	else
+		var/list/out_notes = extraction_make_notes(target, out)
+		if (!out_notes)
+			for (var/obj/item/I in given) qdel(I)
+			to_chat(H, "That is too much to change in one go.")
+			return FALSE
+		given += out_notes
 	if (!trader_commit(S, take, list(), given, credits))
 		for (var/obj/item/I in given) qdel(I)
 		return FALSE

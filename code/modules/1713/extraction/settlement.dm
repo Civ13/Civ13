@@ -156,7 +156,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owners[owner] || owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
+			if (owners[owner] || owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail" || owner == "_home_replica") continue
 			if (!service.store.valid_owner(owner)) return FALSE
 			var/list/P = service.store.load_profile(owner)
 			if (!P) return FALSE

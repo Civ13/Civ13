@@ -585,7 +585,7 @@
 								update_icon()
 			else
 				var/damage_modifier = proj.heavy_armor_penetration
-				if(wall_armor(penloc) > heavy_armor_penetration)
+				if(wall_armor(penloc) > proj.heavy_armor_penetration)
 					damage_modifier /= 2
 				switch(penloc)
 					if ("left")
@@ -630,7 +630,7 @@
 							visible_message("<span class = 'danger'><big>The rear hull is damaged!</big></span>")
 		else
 			var/damage_modifier = proj.heavy_armor_penetration
-			if(wall_armor(penloc) > heavy_armor_penetration)
+			if(wall_armor(penloc) > proj.heavy_armor_penetration)
 				damage_modifier /= 2
 			switch(penloc)
 				if ("left")
@@ -641,6 +641,26 @@
 					w_front[5] -= damage_modifier
 				if ("back")
 					w_back[5] -= damage_modifier
+				if ("frontleft")
+					if (w_left[4] > w_front[4] && w_left[5]>0 && w_front[5]>0)
+						w_left[5] -= damage_modifier
+					else
+						w_front[5] -= damage_modifier
+				if ("frontright")
+					if (w_right[4] > w_front[4] && w_right[5]>0 && w_front[5]>0)
+						w_right[5] -= damage_modifier
+					else
+						w_front[5] -= damage_modifier
+				if ("backleft")
+					if (w_left[4] > w_back[4] && w_left[5]>0 && w_back[5]>0)
+						w_left[5] -= damage_modifier
+					else
+						w_back[5] -= damage_modifier
+				if ("backright")
+					if (w_right[4] > w_back[4] && w_right[5]>0 && w_back[5]>0)
+						w_right[5] -= damage_modifier
+					else
+						w_back[5] -= damage_modifier
 		if (istype(proj, /obj/item/projectile/shell))
 			playsound(loc, pick('sound/effects/explosion1.ogg','sound/effects/explosion1.ogg'),100, TRUE)
 			new/obj/effect/effect/smoke/small/fast(loc)

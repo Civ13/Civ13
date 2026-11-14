@@ -100,10 +100,8 @@ var/round_elapsed_offset = 0
 	var/mills = roundduration2text_in_ticks // 1/10 of a second, not real milliseconds but whatever
 	var/mins = round((mills % 36000) / 600)
 	var/hours = round(mills / 36000)
-	if (hours >= 24)
-		var/t_hours = Floor(hours/24)
-		hours = hours - (t_hours*24)
 	var/days = round(hours/24)
+	hours = hours - (days*24)
 	if (hours >=1 && days >= 1)
 		last_roundduration2text_days = "[days] day[days >= 2 ? "s" : ""], [hours] hour[hours >= 2 ? "s" : ""], [mins] min[mins >= 2 ? "s" : ""]"
 	else if (hours >=1 && days < 1)

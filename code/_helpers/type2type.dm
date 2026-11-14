@@ -62,7 +62,7 @@
 
 	var/hex = ""
 	var/i = 0
-	while(16 ** i < num)
+	while(16 ** i <= num)
 		i++
 	var/power = null
 	power = i - 1
