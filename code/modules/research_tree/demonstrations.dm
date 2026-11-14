@@ -277,6 +277,7 @@ var/global/list/capstone_demonstrations = list(
 		return TRUE
 	var/obj/item/weapon/book/B = carrier
 	B.add_research_work(node_id, 0, TRUE)
+	H.gain_active_scholarship(node_id, demonstration_lesson_points(N), "demonstration:[node_id]")
 	return TRUE
 
 /mob/living/human/proc/record_demonstration(obj/item/carrier)
@@ -372,6 +373,7 @@ var/global/list/capstone_demonstrations = list(
 	if (!user.remove_from_mob(P))
 		return TRUE
 	qdel(P)
+	user.gain_active_scholarship(N.id, demonstration_lesson_points(N), "demonstration:[N.id]")
 	if (B.add_research_work(N.id, 0, TRUE))
 		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished."))
 	else

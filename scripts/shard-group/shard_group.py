@@ -2090,9 +2090,13 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         return False
     root = Path(group['root'])
     code = transfer_code()
+    # Ships' courses open lands in these (docs/expedition-slots.md); a slot added
+    # to the group restarts the coordinator like new code does.
+    slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
     pid = coordinator_pid(group)
     if pid:
-        if not refresh or read_record(root / 'coordinator.json').get('code') == code:
+        record = read_record(root / 'coordinator.json')
+        if not refresh or (record.get('code') == code and record.get('slots', []) == slots):
             return False
         (terminate or Platform().terminate)(pid)
     database = root / 'coordinator.sqlite'
@@ -2105,13 +2109,11 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     for region in group['regions']:
         token = region_dir(group, region['id']) / 'config' / 'transfer-token.txt'
         argv += ['--region', '%s=http://127.0.0.1:%d=%s' % (region['id'], region['transfer_port'], token)]
-    slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
     if slots:
-        # Ships' courses open lands in these (docs/expedition-slots.md).
         argv += ['--slots', ','.join(slots), '--expeditions', str(expedition_slots.slots_dir(group))]
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
-    write_record(root / 'coordinator.json', pid=pid, code=code)
+    write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots)
     return True
 
 
