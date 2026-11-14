@@ -268,7 +268,7 @@
 		if ("malaria")
 			return "Treatment: keep drinking quinine (tonic water) or chew healing herbs for a full course. Bed rest helps the body fight it."
 		if ("worms")
-			return "Treatment: penicillin does nothing. Chew healing herbs or drink absinthe until they are purged. They also pass on their own in time, faster in bed."
+			return "Treatment: penicillin does nothing. Wormwood tea, chewed healing herbs or absinthe purge them. They also pass on their own in time, faster in bed."
 		if ("zombie")
 			return "Treatment: potassium iodide in the blood stops it if given early."
 	return null

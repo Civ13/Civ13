@@ -67,6 +67,10 @@ var/boathouse_runtime_error = FALSE
 	var/list/slip = house.slip()
 	boathouse_check(slip.len == 49 && (list(locate(11, 6, 1)) & slip).len && (list(locate(17, 12, 1)) & slip).len && !(list(locate(18, 12, 1)) & slip).len && !(list(locate(10, 6, 1)) & slip).len, "the slip is the 7x7 square north-east of the office ([slip.len])")
 	boathouse_check(!house.boats_in_slip().len, "an empty slip holds no boats")
+	var/list/pile_turfs = list()
+	for (var/obj/effect/boathouse_pile/P in house.piles)
+		pile_turfs += P.loc
+	boathouse_check(house.piles.len == 3 && (list(locate(18, 13, 1)) & pile_turfs).len && (list(locate(18, 5, 1)) & pile_turfs).len && (list(locate(10, 13, 1)) & pile_turfs).len, "mooring piles stand just outside the slip's three far corners ([house.piles.len])")
 
 	// ---- The Teal: a 3 by 2 boat of ship frames with a crate on her deck ----
 	for (var/dx = 0, dx < 3, dx++)
@@ -173,6 +177,9 @@ var/boathouse_runtime_error = FALSE
 	boathouse_check(!house.stored_boats().len && outrigger.loc == locate(11, 11, 1), "the outrigger comes back where it lay ([outrigger.loc] [outrigger.x],[outrigger.y]; [house.stored_boats().len] left)")
 	house.attackby(W, H)
 	boathouse_check(house.slip_dir == SOUTHEAST && (list(locate(11, 4, 1)) & house.slip()).len, "an empty boathouse turns its slip to the next corner")
+	// South-east, two of the far corners fall off the bottom of the map.
+	var/obj/effect/boathouse_pile/moved = house.piles.len ? house.piles[1] : null
+	boathouse_check(house.piles.len == 1 && moved.loc == locate(18, 5, 1) && !(locate(/obj/effect/boathouse_pile) in locate(18, 13, 1)), "the piles move with the slip and skip corners off the map ([house.piles.len])")
 
 /proc/boathouse_run()
 	try
