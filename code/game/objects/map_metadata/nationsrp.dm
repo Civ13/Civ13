@@ -1,4 +1,5 @@
 /obj/map_metadata/nationsrp
+	nationsrp = TRUE
 	abandonment_season_cycle = TRUE
 	ID = MAP_NATIONSRP
 	title = "Nations RP"

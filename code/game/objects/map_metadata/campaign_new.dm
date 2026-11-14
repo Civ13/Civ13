@@ -304,6 +304,7 @@
 // CAMPAIGN METATATA //
 
 /obj/map_metadata/campaign_new
+	campaign = TRUE
 	// TRUE where the Turkestan SFSR holds the objective, so it wins when the timer runs out
 	// and the CAFR wins by capturing it.
 	var/timer_victor_is_tsfsr = FALSE
