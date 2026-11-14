@@ -368,9 +368,14 @@
 	var/obj/covers/S = stairs_in(T)
 	if (!S || !(get_dir(OL, T) & S.dir))
 		return
-	spawn(0)
-		if (H && H.loc == T && !QDELETED(S))
-			H.climb_stairs(S, FALSE)
+	stairs_step_up_later(H, T, S)
+
+// After the move that triggered it has finished.
+/proc/stairs_step_up_later(mob/living/human/H, turf/T, obj/covers/S)
+	set waitfor = FALSE
+	sleep(0)
+	if (H && H.loc == T && !QDELETED(S))
+		H.climb_stairs(S, FALSE)
 
 // Walking off an upper floor onto the open air over stairs steps down onto
 // them instead of falling. Returns TRUE when it handled the move.
