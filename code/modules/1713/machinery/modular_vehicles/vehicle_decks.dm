@@ -60,10 +60,13 @@
 	var/obj/structure/vehicleparts/frame/F = M.vehicle_deck
 	return istype(F) ? F.axis : null
 
-// TRUE when F opens through its roof over a seat: a tank hatch or a sunroof.
+// TRUE when F opens through its roof over a seat (a tank hatch or a sunroof),
+// or has a bus's stairs up to its upper deck.
 /proc/vehicle_deck_hatch(obj/structure/vehicleparts/frame/F)
 	if (!istype(F) || !F.axis)
 		return FALSE
+	if (locate(/obj/structure/vehicle_stairs) in F.loc)
+		return TRUE
 	if (!(locate(/obj/structure/bed/chair) in F.loc))
 		return FALSE
 	return F.sunroof || istype(F.axis, /obj/structure/vehicleparts/axis/heavy)
@@ -112,7 +115,7 @@
 		to_chat(src, SPAN_WARNING(why))
 		return FALSE
 	vehicle_deck_busy = TRUE
-	visible_message(SPAN_NOTICE("[src] starts climbing onto \the [F]."), SPAN_NOTICE("You start climbing [from_inside ? "out through the hatch" : "onto the roof"]..."))
+	visible_message(SPAN_NOTICE("[src] starts climbing onto \the [F]."), SPAN_NOTICE("You start climbing [from_inside ? ((locate(/obj/structure/vehicle_stairs) in F.loc) ? "the stairs" : "out through the hatch") : "onto the roof"]..."))
 	var/done = do_after(src, from_inside ? VEHICLE_DECK_DOWN_TIME : VEHICLE_DECK_CLIMB_TIME, F)
 	vehicle_deck_busy = FALSE
 	if (!done)
@@ -143,7 +146,10 @@
 		vehicle_deck_old_layer = layer
 	layer = VEHICLE_DECK_LAYER
 	animate(src, pixel_y = vehicle_deck_pose_y(), time = 3)
-	visible_message(SPAN_NOTICE("[src] climbs up onto \the [F]."), SPAN_NOTICE("You are on top of \the [F]. You can see over walls from up here. Walk off the edge to jump down, or use Climb Down."))
+	if (F.upper_deck)
+		visible_message(SPAN_NOTICE("[src] goes up to the upper deck."), SPAN_NOTICE("You are on the upper deck. You can see over walls from up here. Walk off the edge to jump down, or use Climb Down."))
+	else
+		visible_message(SPAN_NOTICE("[src] climbs up onto \the [F]."), SPAN_NOTICE("You are on top of \the [F]. You can see over walls from up here. Walk off the edge to jump down, or use Climb Down."))
 	vehicle_deck_refresh_sight()
 	return TRUE
 

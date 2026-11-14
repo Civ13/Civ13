@@ -17,6 +17,10 @@ var/global/list/works_vehicle_specs = list(
 		"cost" = list("steel" = 90, "glass" = 6, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Cargo truck" = list("path" = /obj/effects/premadevehicles/truck/daf, "size" = 4, "node" = null, "gun" = 0,
 		"cost" = list("steel" = 80, "glass" = 8, "cloth" = 6, "cable" = 10, "wheels" = 4)),
+	// Longer than the press's usual 4x4 bay: it needs a 5x5 bay when started
+	// ("oversize"), but a press can still be set up where only 4x4 fits.
+	"Double-decker bus" = list("path" = /obj/effects/premadevehicles/bus/doubledecker, "size" = 5, "node" = null, "gun" = 0, "oversize" = TRUE,
+		"cost" = list("steel" = 110, "glass" = 14, "cloth" = 10, "cable" = 12, "wheels" = 4)),
 	"Armoured car" = list("path" = /obj/effects/premadevehicles/apc/ba64, "size" = 3, "node" = "mechanized_war", "gun" = 0,
 		"cost" = list("steel" = 120, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Tankette" = list("path" = /obj/effects/premadevehicles/tank/l3, "size" = 3, "node" = "mechanized_war", "gun" = 0,
