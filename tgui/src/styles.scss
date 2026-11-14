@@ -246,6 +246,20 @@ button.rs-row-main { cursor: pointer; }
 .craft-tools, .craft-place { margin: 8px 0 0; padding: 6px 9px; font-size: 13px; background: #262019; border-left: 3px solid #66513b; }
 .craft-link { font: inherit; background: none; border: 0; padding: 0; color: #9ed2ff; text-decoration: underline; cursor: pointer; text-transform: none; letter-spacing: 0; }
 .craft-link:disabled { opacity: .5; cursor: default; }
+.craft-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.craft-tabs { display: flex; flex-wrap: wrap; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid #66513b; }
+.craft-tab { font: inherit; font-size: 12.5px; color: #cbbda8; background: none; border: 1px solid transparent; border-bottom: 0; border-radius: 3px 3px 0 0; padding: 5px 8px; margin-bottom: -1px; cursor: pointer; }
+.craft-tab small { color: #a99b87; margin-left: 2px; }
+.craft-tab:hover { color: #f5d99b; }
+.craft-tab-on { color: #f5d99b; font-weight: bold; background: #30271e; border-color: #66513b; }
+.craft-strip { padding: 6px 8px; border-bottom: 1px solid #66513b; display: flex; flex-direction: column; gap: 4px; }
+.craft-strip-row { display: flex; align-items: center; gap: 6px; overflow-x: auto; }
+.craft-strip-label { flex: 0 0 52px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #a99b87; }
+.craft-chip { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; max-width: 170px; font: inherit; font-size: 12.5px; color: #eee5d3; background: #211c16; border: 1px solid #66513b; border-radius: 3px; padding: 1px 7px 1px 2px; cursor: pointer; }
+.craft-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.craft-chip .craft-sprite { width: 24px; height: 24px; }
+.craft-chip:hover, .craft-chip-selected { border-color: #d9b36c; }
+.craft-sub { margin: 6px 4px 2px; font-size: 11.5px; font-weight: normal; color: #a99b87; text-transform: capitalize; }
 .craft-hint { margin: 4px 0; font-size: 12px; color: #bfae96; }
 .craft-progress { margin-top: 10px; }
 .craft-progress p { margin: 0 0 4px; }
