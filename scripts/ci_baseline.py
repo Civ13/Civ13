@@ -1054,6 +1054,7 @@ SUITES = {
             'tests/agent_control/test_visibility.py',
             'tests/agent_control/test_action_contract.py',
             'tests/agent_control/test_navigation_replay.py',
+            'tests/agent_control/test_needs_routines.py',
             'tools/agent-control/benchmarks/test_gateway_benchmark.py'),
         'paths': ('tests/agent_control/', 'tools/agent-control/', 'code/modules/agent_control/'), 'shared_paths': (
             'code/_helpers/admin.dm', 'code/world.dm', '.gitignore')},

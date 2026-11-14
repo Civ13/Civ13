@@ -334,6 +334,7 @@ class BaselinePolicyTests(unittest.TestCase):
             'tests/agent_control/test_visibility.py',
             'tests/agent_control/test_action_contract.py',
             'tests/agent_control/test_navigation_replay.py',
+            'tests/agent_control/test_needs_routines.py',
             'tools/agent-control/benchmarks/test_gateway_benchmark.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))

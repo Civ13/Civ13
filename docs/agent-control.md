@@ -596,6 +596,39 @@ says what boat she is on or sees and what it needs. `--minutes` caps the run tim
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
 
+Needs and routines (`needs.py`, `routines.py`): the character looks after
+herself like a Sims character, and the model is her director rather than her
+hands. `self` reports a player's needs bars (`nutrition`/`max_nutrition`,
+`water`/`max_water`, `bladder`, `bowels`, `hygiene`, `stamina`/`max_stamina`,
+`bodytemperature`, `resting`, `nude`, plus health, blood, wounds and
+illness). `needs.read` turns them into levels from 0 (empty) to 100 (full) for
+safety, health, thirst, hunger, warmth, relief, energy, hygiene and social
+(time since she last talked with someone). Each need's urgency is its weight
+times the square of what is missing, and a need under its critical level always
+wins. Every turn the scheduler first scores routines: cure (chew herbs), treat
+(bandage), drink (or boil water, or explore for it), warm up, eat, cook (fuel,
+cook, light the fire, pick up the roasted food), relieve (the `pee` and `poop`
+emote verbs) and rest (stand still for stamina). Each advertises the share of a
+need it restores; its score is that share times the need's urgency. The
+director's standing order (`"routine"` in its reply: repeat a skill on the
+nearest fitting target `times` times, or keep `build_next`, `leather_next`,
+`boil_water` or `explore` going; an active blueprint or leather project is an
+implicit order) scores a flat 0.25, so needs interrupt work only once they
+press. A routine is written as the model would write the plan and runs through
+the same parsing, expansion, overrides and `character_queue` steps, so it uses
+exactly a player's verbs and clicks. Reflexes still come first.
+
+The model is asked only when something needs judgement: the first look, danger,
+speech, an open game prompt, a routine that failed twice or finished, a standing
+order with nothing to work on, nothing left to do, loneliness with someone in
+view, or every `--director-every` routine turns (default 8) to review. Its prompt
+then carries a `NEEDS` line, the current `ROUTINE`, what routines did since it
+last decided, a hint for needs no routine can meet (washing, company, cooling
+down) and why it is being asked. It may also send `"priorities"` (`{"hunger": 2,
+"hygiene": 0.5}`, 0 to 3) to weigh needs. `--no-routines` asks the model every turn
+as before. The run log prints `routine <name>` or `director (<reason>)` per turn
+and, at the end, how many turns ran on routines and how many the model decided.
+
 Recipe book (`techtree.py`): the autopilot plans crafting from the game's own
 recipes rather than trial and error. On first use it builds
 `data/agent-control/game-catalog.json` with
