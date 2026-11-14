@@ -242,6 +242,33 @@ class BridgeTests(unittest.TestCase):
         self.request()
         self.assertEqual(len(self.finish(instance)['answer']), 4000)
 
+    def test_non_object_response_spool_recovers_and_preserves_idempotence(self):
+        # Exercise real Bridge.tick on a temporary spool, never an endpoint.
+        from concurrent.futures import Future
+        executor = mock.Mock()
+        future = Future()
+        future.set_result({'id': '1-2-3', 'status': 'ok', 'answer': 'fixture'})
+        executor.submit.return_value = future
+        with mock.patch.object(bridge, 'ThreadPoolExecutor', return_value=executor):
+            instance = self.make(lambda *args: self.fail('Network called'))
+        response = self.root / '1.response.json'
+        for malformed in (None, [], [1], 'text', 7, 1.5, True, False, {'id': 'stale'}):
+            with self.subTest(response=malformed):
+                instance.active.clear()
+                executor.submit.reset_mock()
+                self.request()
+                response.write_text(json.dumps(malformed))
+                instance.tick()
+                executor.submit.assert_called_once()
+                self.assertIn(1, instance.active)
+                self.assertFalse(response.exists())
+                instance.tick()
+                self.assertEqual(json.loads(response.read_text())['answer'], 'fixture')
+                self.assertFalse(instance.active)
+                # Matching completed response must not admit duplicate work.
+                instance.tick()
+                executor.submit.assert_called_once()
+
     def test_disconnected_reused_slot_drops_old_answer(self):
         started, release = threading.Event(), threading.Event()
         def transport(*args):
