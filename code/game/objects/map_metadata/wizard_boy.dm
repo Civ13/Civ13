@@ -827,3 +827,25 @@ var/wizard_style = {"
 					target.forceMove(release_point)
 			
 			to_chat(target, "<span class='notice'>Your sentence is complete. You have been released from the magical slammer.</span>")
+/obj/map_metadata/wizard_boy/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag != CIVILIAN)
+		return ..()
+	if (H.nationality == "T") // teacher/professor
+		return "wizard_teacher"
+	switch (H.faction)
+		if ("Rubywyrm")
+			return "civ1"
+		if ("Mintysnek")
+			return "civ2"
+		if ("Slatepie")
+			return "civ3"
+		if ("Mustardweasel")
+			return "civ4"
+	return ""
+
+/obj/map_metadata/wizard_boy/add_faction_hud_overlays(mob/living/human/H, image/holder)
+	if (H.faction_text != CIVILIAN)
+		return
+	var/static/list/marks = list("R" = "wizard_loser", "0" = "wizard_idiot", "1" = "wizard_unga", "2" = "wizard_coal", "3" = "wizard_gem", "4" = "wizard_based", "5" = "wizard_chad")
+	if (H.nationality in marks)
+		holder.overlays += icon(holder.icon, marks[H.nationality])

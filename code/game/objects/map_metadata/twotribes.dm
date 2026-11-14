@@ -105,3 +105,5 @@
 
 /obj/map_metadata/twotribes/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction1, faction2)
+
+/obj/map_metadata/twotribes/faction_hud_icons = list(BRITISH = "civ1", FRENCH = "civ3")

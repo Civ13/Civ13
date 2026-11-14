@@ -917,6 +917,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'faction_hud': {'files': ('tests/faction_hud/test_faction_hud.py',),
+        'paths': ('tests/faction_hud/', 'code/_helpers/faction_hud.dm'), 'shared_paths': ()},
     'structure_damage': {'files': ('tests/structure_damage/test_structure_damage.py',),
         'paths': ('tests/structure_damage/', 'code/_helpers/structure_damage.dm'), 'shared_paths': ()},
     'season_helpers': {'files': ('tests/season_helpers/test_season_helpers.py',),

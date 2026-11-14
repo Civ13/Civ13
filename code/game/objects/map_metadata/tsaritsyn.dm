@@ -113,3 +113,4 @@ var/no_loop_t = FALSE
 
 /obj/map_metadata/tsaritsyn/check_caribbean_block(var/mob/living/human/H, var/turf/T)
 	return check_faction_grace_wall(H, T, faction1, faction2, grace_side = 2)
+/obj/map_metadata/tsaritsyn/faction_hud_icons = list(CIVILIAN = "sov_basic")
