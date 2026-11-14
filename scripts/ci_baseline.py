@@ -1125,6 +1125,11 @@ SUITES = {
     'barter': {'files': ('tests/barter/test_source.py',),
         'paths': ('tests/barter/',), 'shared_paths': (
             'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
+    # Sewers phase S1: source contracts (the native probe is tests/sewers/probe.dm).
+    'sewers': {'files': ('tests/sewers/test_sewers.py',),
+        'paths': ('tests/sewers/',), 'shared_paths': (
+            'code/modules/1713/sewers.dm', 'icons/obj/sewers.dmi', 'tests/sprites/create_sewers.py',
+            'code/game/objects/structures/watercloset.dm', 'code/game/mob/living/carbon/human/shit_piss.dm')},
     # Bone flute, frame drum, flint sickle and bison herds: source contracts only.
     'stone_age_extras': {'files': ('tests/stone_age_extras/test_source.py',),
         'paths': ('tests/stone_age_extras/',), 'shared_paths': (

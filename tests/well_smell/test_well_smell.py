@@ -92,11 +92,13 @@ class PlumbedToiletContract(unittest.TestCase):
         self.assertIn("for (var/obj/structure/toilet/T in PP.loc)", scan)
         self.assertIn("if (T.is_plumbed())", scan)
         self.assertIn("if (!plumbed)\n\t\t\treturn TRUE", scan)
-        self.assertTrue(scan.rstrip().endswith("return FALSE"))
+        # Where sewers apply (sewers.dm), sewage close by also counts.
+        self.assertTrue(scan.rstrip().endswith("return sewers && sewer_fouls_near(src)"))
 
     def test_plumbed_toilet_flushes_waste(self):
         loo = WASTE.split("//Poo in the loo.", 1)[1].split("else if(w_uniform)", 1)[0]
-        self.assertIn("if (!in_outhouse && T.is_plumbed())\n\t\t\tqdel(V)", loo)
+        # flush_waste (sewers.dm) deletes it, or backs it up onto the floor.
+        self.assertIn("if (!in_outhouse && T.is_plumbed())\n\t\t\tT.flush_waste(V)", loo)
         self.assertIn("else if (!in_outhouse)\n\t\t\tV.forceMove(T)", loo)
 
     def test_outhouse_is_detected_by_location(self):

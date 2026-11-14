@@ -119,6 +119,23 @@ A wall along a bank keeps the land behind it dry until the stage tops its
 crest; a gap lets the water in. Overrides are derived and never saved: graded
 tiles and walls mark their cells again as they load.
 
+## Sewers (S1)
+
+`code/modules/1713/sewers.dm`, art `icons/obj/sewers.dmi` (Fable,
+`tests/sprites/create_sewers.py`). Only on persistence maps; elsewhere plumbing
+still carries waste away by itself. Drain pieces on adjacent tiles form a
+network: an open drain ditch (shovel, no research) or a covered stone drain
+(2 stone, Sanitation). A drain beside open water is an outfall and shows the
+`outfall` overlay; a cesspit (shovel) holds 40 flushes and is dug out with a
+shovel into compost (one per 10). A plumbed toilet with a piece on or next to
+its tile sends waste down the network: the walk (at most 600 pieces, only on a
+flush) stops at the first outfall or settles in the first cesspit with room. A
+toilet with nowhere to send waste backs up onto the floor. Wells and puddles
+count sewage near them as fecal waste: an outfall within 4 tiles or an open
+ditch within 2 that carried waste in the last 30 minutes, or a cesspit within 2
+holding any. Covered drains foul nothing. Cesspit fill is saved; the
+recently-carried time is not.
+
 ## Saving
 
 The water held, the snowpack and the high-water mark of every reach are the
@@ -139,4 +156,6 @@ tiles around you, blue where the water is now).
 
     python3 tests/river_flow/test_flood.py
     python3 tests/ecology_spawning/run_linux.py . tests/river_flow/flood_probe.dm
+    python3 tests/sewers/test_sewers.py
+    python3 tests/ecology_spawning/run_linux.py . tests/sewers/probe.dm
     python3 tests/durable_map_migration/run.py --byond-bin <dir>
