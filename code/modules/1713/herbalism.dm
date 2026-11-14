@@ -37,20 +37,12 @@
 	icon_state = (reagents && reagents.total_volume > 0) ? "mortar_pestle_full" : "mortar_pestle"
 
 // What one ingredient grinds into: list(reagent id = amount), or null.
+// The rows live in processing_recipes.dm (station "mortar").
 /proc/mortar_grind_result(obj/item/I)
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/wheat))
-		return list("flour" = 5)
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/oat))
-		return list("oatflour" = 5)
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/barley))
-		return list("barleyflour" = 5)
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/sunflower_seeds))
-		return list("sunflower_oil" = 5)
-	if (istype(I, /obj/item/stack/farming/seeds/flax))
-		return list("linseed_oil" = 2)
-	if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/olives))
-		return list("olive_oil" = 6)
-	return null
+	var/datum/processing_recipe/R = processing_recipe_for_input("mortar", I)
+	if (!R)
+		return null
+	return list("[R.output]" = R.amount)
 
 /obj/item/weapon/reagent_containers/glass/mortar/attackby(obj/item/W, mob/user)
 	if (mortar_pigment_result(W))
