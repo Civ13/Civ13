@@ -90,123 +90,58 @@
 			update_icon()
 	else if (istype(I, /obj/item/stack/ore) || istype(I, /obj/item/stack/material))
 		if (istype(src, /obj/item/weapon/clay/mold/clayjug) || istype(src, /obj/item/weapon/clay/mold/claypot))
+			var/obj/item/stack/O = I
+			var/metal = vessel_metal_key(O)
+			if (!metal)
+				to_chat(user, "<span class='warning'>\The [O] can't be melted in \the [src]. Use metal ore or metal bars.</span>")
+				return
+			if (!vessel_accepts_metal(metal))
+				to_chat(user, "<span class='warning'>\The [O] can't be mixed with what is already in \the [src].</span>")
+				return
 			var/current_cap = 0
 			for (var/i in contents_materials)
 				current_cap += contents_materials[i]
 			if (current_cap >= max_capacity)
 				to_chat(user, "<span class='warning'>[src] is full!</span>")
 				return
-			var/max_free_cap = max_capacity-current_cap
-			var/obj/item/stack/O = I
-			var/cap_to_add = min(max_free_cap, O.amount)
-			if (istype(O, /obj/item/stack/ore/gold))
-				if (contents_materials.len == 0)
-					contents_materials += list("gold" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if  (contents_materials.len == 1 && contents_materials["gold"])
-					contents_materials["gold"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/ore/silver))
-				if (contents_materials.len == 0)
-					contents_materials += list("silver" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if  (contents_materials.len == 1 && contents_materials["silver"])
-					contents_materials["silver"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/ore/copper))
-				if (contents_materials.len == 0 || (contents_materials.len == 1 && (contents_materials["tin"] || contents_materials["zinc"])))
-					contents_materials += list("copper" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if ((contents_materials.len == 1 && contents_materials["copper"]) || (contents_materials.len == 2 && contents_materials["copper"]))
-					contents_materials["copper"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/ore/tin))
-				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
-					contents_materials += list("tin" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if ((contents_materials.len == 1 && contents_materials["tin"]) || (contents_materials.len == 2 && contents_materials["tin"]))
-					contents_materials["tin"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/ore/lead))
-				if (contents_materials.len == 0)
-					contents_materials += list("lead" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if (contents_materials.len == 1 && contents_materials["lead"])
-					contents_materials["lead"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/ore/zinc))
-				if (contents_materials.len == 0 || (contents_materials.len == 1 && contents_materials["copper"]))
-					contents_materials += list("zinc" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if ((contents_materials.len == 1 && contents_materials["zinc"]) || (contents_materials.len == 2 && contents_materials["zinc"]))
-					contents_materials["zinc"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/material/iron))
-				if (contents_materials.len == 0)
-					contents_materials += list("iron" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if (contents_materials.len == 1 && contents_materials["iron"])
-					contents_materials["iron"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-			else if (istype(O, /obj/item/stack/material/steel))
-				if (contents_materials.len == 0)
-					contents_materials += list("steel" = cap_to_add)
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
-				else if (contents_materials.len == 1 && contents_materials["steel"])
-					contents_materials["steel"] += cap_to_add
-					O.amount -= cap_to_add
-					if (O.amount <= 0)
-						qdel(O)
-					to_chat(user, "You put some [O] in \the [src].")
+			var/cap_to_add = min(max_capacity - current_cap, O.amount)
+			if (metal in contents_materials)
+				contents_materials[metal] += cap_to_add
 			else
-				to_chat(user, "You cannot use this material on a kiln.")
-				return
+				contents_materials[metal] = cap_to_add
+			O.amount -= cap_to_add
+			if (O.amount <= 0)
+				qdel(O)
+			else
+				O.update_icon()
+			to_chat(user, "You put some [O] in \the [src].")
 			return
+
+// Smelting vessels take metal ore or bars (#5143: bronze bars were refused).
+// Returns the contents_materials key the kiln melts it into, or null.
+/obj/item/weapon/clay/mold/proc/vessel_metal_key(obj/item/stack/O)
+	if (istype(O, /obj/item/stack/ore))
+		for (var/metal in list("gold", "silver", "copper", "tin", "lead", "zinc"))
+			if (istype(O, text2path("/obj/item/stack/ore/[metal]")))
+				return metal
+		return null
+	if (istype(O, /obj/item/stack/material))
+		var/obj/item/stack/material/MT = O
+		if (MT.default_type in list("gold", "silver", "copper", "tin", "lead", "zinc", "iron", "steel", "bronze", "brass"))
+			return MT.default_type
+	return null
+
+// One metal at a time, except copper with tin (bronze) or zinc (brass), which the kiln alloys.
+/obj/item/weapon/clay/mold/proc/vessel_accepts_metal(metal)
+	if (!contents_materials.len || (metal in contents_materials))
+		return TRUE
+	if (contents_materials.len != 1)
+		return FALSE
+	var/other = contents_materials[1]
+	if (metal == "copper")
+		return other == "tin" || other == "zinc"
+	return other == "copper" && (metal == "tin" || metal == "zinc")
+
 /obj/item/weapon/clay/mold/axehead
 	name = "unfired clay axehead mold"
 	icon_state = "axehead_mold_raw"
