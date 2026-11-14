@@ -1,7 +1,8 @@
 """Hand-placed 32px obsidian art: three ground outcrops, the raw nodule, a
 struck flake, a polyhedral blade core, prismatic blades, arrowheads, a
 spearhead, the hafted spear, knife and end-scraper, and the obsidian-tipped
-arrow as an item and as a four-direction projectile. Every pixel is placed by
+arrow as an item and as a four-direction projectile; then the macuahuitl
+with its edge slots empty and the tepoztopilli, bladed and bare. Every pixel is placed by
 this script from a fixed palette (Pillow only); no external or generated
 artwork.
 The glass is black with blue-grey sheen, sharp specular glints, conchoidal
@@ -12,7 +13,8 @@ icons/obj/weapons.dmi and icons/obj/projectiles.dmi. Lit from the upper left.
 
 Run with Pillow to reproduce icons/obj/obsidian.dmi. `--preview <png>` also
 writes a review sheet (8x, with a 1x and 2x strip underneath, and the flint
-equivalents alongside for comparison).
+equivalents alongside for comparison). `--preview-weapons <png>` writes the
+three edged-weapon states at 8x beside weapons.dmi "macuahuitl".
 Released under Civ13 AGPL-3.0.
 """
 import math
@@ -45,6 +47,10 @@ AF = [(171, 171, 149), (156, 138, 128), (99, 88, 82)]
 # the flying arrow of projectiles.dmi: shaft and feathers
 PS = [(120, 68, 68), (113, 55, 43)]
 PF = (168, 168, 168)
+# the macuahuitl of weapons.dmi: paddle lit face, face, tip, edge, shade, pommel
+MW = [(163, 115, 80), (138, 97, 67), (92, 64, 45), (77, 54, 38), (48, 36, 28), (110, 77, 54)]
+# and its grip, light to dark
+MG = [(125, 107, 95), (94, 77, 65), (74, 61, 51)]
 # preview backgrounds
 GROUND = (120, 124, 112)
 LAVA = (66, 58, 54)
@@ -631,6 +637,105 @@ def flight(direction):
     return f
 
 
+# -------------------------------------------------------------- macuahuitl
+
+# icons/obj/weapons.dmi "macuahuitl" with the blades taken out of the edges:
+# c d e f g paddle wood (edge, tip, lit, face, shade), h pommel, i j k grip,
+# s an empty slot cut in the edge, S a snapped-off stub of glass
+MACUAHUITL_BARE = (
+    '................................',
+    '.........................cdc....',
+    '.......................sceeec...',
+    '......................sceefffd..',
+    '......................ccefffcs..',
+    '....................scefffcgs...',
+    '...................scefffcgc....',
+    '...................ccefffcgs....',
+    '.................scefffcgs......',
+    '................scefffcgc.......',
+    '................ccefffcgs.......',
+    '..............scefffcgs.........',
+    '.............scefffcgS..........',
+    '.............Scefffcgs..........',
+    '...........scefffcgs............',
+    '..........scefffcgc.............',
+    '..........ccefffcgs.............',
+    '.........chfffcgs...............',
+    '.........chffcgc................',
+    '.........gchcgs.................',
+    '........ijgggc..................',
+    '.......ikg......................',
+    '......ikg.......................',
+    '.....ikg........................',
+    '....ikg.........................',
+    '...gjg..........................',
+    '.hffg...........................',
+    '.chh............................',
+    '..cc............................',
+)
+
+
+def macuahuitl_bare():
+    f = Frame()
+    stamp(f, MACUAHUITL_BARE, {'c': MW[3], 'd': MW[2], 'e': MW[0], 'f': MW[1], 'g': MW[4], 'h': MW[5],
+                               'i': MG[2], 'j': MG[1], 'k': MG[0], 's': MW[4], 'S': OB[2]}, top=2)
+    return f
+
+
+# ------------------------------------------------------------ tepoztopilli
+
+TEPOZ_BASE, TEPOZ_TIP = (16.5, 15.5), (29.5, 2.5)
+
+
+def tepoztopilli(bladed):
+    f = Frame()
+    bar(f, (3.5, 28.5), (17.5, 14.5), 1.05, lambda s, t: WD[1] if s < 0 else WD[2])
+    f.pts(WD[3], (3, 28), (4, 28)); f.pts(WD[0], (8, 23), (12, 19))
+    f.outline()
+    # the broad wooden head: a long leaf, lit on the upper-left half
+    h = Frame()
+    bar(h, TEPOZ_BASE, TEPOZ_TIP, lambda t: 0.6 + 2.9 * min(1.0, 0.4 + 2.4 * t) * (1.0 - t) ** 0.8,
+        lambda s, t: WD[0] if s < -0.45 else WD[1] if s < 0.25 else WD[2])
+    wood = set(h.px)
+    h.outline()
+    # the groove down each edge: the ring round the head, cut into one slot
+    # per blade. s < 0 is the lit flank, t runs from socket to point.
+    (x0, y0), (x1, y1) = TEPOZ_BASE, TEPOZ_TIP
+    dx, dy = x1 - x0, y1 - y0
+    ln2 = dx * dx + dy * dy
+
+    def along(x, y):
+        px, py = x + 0.5 - x0, y + 0.5 - y0
+        return (px * dx + py * dy) / ln2, px * dy - py * dx
+
+    def slot(t):
+        k = (t - 0.1) * 6.3
+        return 0.0 <= k < 5.0 and k % 1.0 < 0.72
+
+    ring = [p for p in h.px if p not in wood]
+    for (x, y) in ring:
+        t, s = along(x, y)
+        if bladed and 0.1 <= t <= 0.9:
+            h.put(x, y, OB[5])              # blades butted end to end in the groove
+        if not slot(t):
+            continue
+        if not bladed:
+            # an empty slot: a dark notch through the rim and into the wood
+            h.put(x, y, MW[4])
+            for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                if n in wood and slot(along(*n)[0]):
+                    h.put(n[0], n[1], WD[3])
+            continue
+        # the blade stands proud of the wood by a pixel
+        for n in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+            if n not in h.px and slot(along(*n)[0]):
+                h.put(n[0], n[1], OB[2] if s > 0 else OB[4])
+    f.over(h)
+    # cord whipping where the head is socketed on the shaft
+    f.pts(CD[0], (16, 15), (17, 16)); f.pts(CD[1], (15, 15), (16, 16), (17, 17)); f.pts(CD[2], (16, 17), (18, 17))
+    return f
+
+
 # each state is a list of frames: one, or four in BYOND order S, N, E, W
 STATES = {
     'obsidian_outcrop1': [obsidian_outcrop1()],
@@ -647,6 +752,9 @@ STATES = {
     'obsidian_scraper': [obsidian_scraper()],
     'arrow_obsidian': [arrow_obsidian()],
     'arrow_obsidian_flight': [flight('south'), flight('north'), flight('east'), flight('west')],
+    'macuahuitl_bare': [macuahuitl_bare()],
+    'tepoztopilli': [tepoztopilli(True)],
+    'tepoztopilli_bare': [tepoztopilli(False)],
 }
 COLUMNS = 4
 
@@ -693,6 +801,8 @@ COMPARE = {
     'obsidian_scraper': ('icons/obj/stone_age_arms.dmi', 'hide_scraper'),
     'arrow_obsidian': ('icons/obj/weapons.dmi', 'arrow_flint'),
     'arrow_obsidian_flight': ('icons/obj/projectiles.dmi', 'arrow_flint'),
+    'macuahuitl_bare': ('icons/obj/weapons.dmi', 'macuahuitl'),
+    'tepoztopilli': ('icons/obj/weapons.dmi', 'spear'),
 }
 
 
@@ -737,8 +847,30 @@ def write_preview(path, scale=8, per_row=6):
     sheet.convert('RGB').save(path)
 
 
+WEAPONS = ('macuahuitl_bare', 'tepoztopilli', 'tepoztopilli_bare')
+
+
+def write_weapons_preview(path, scale=8):
+    """The edged-club states at 8x beside weapons.dmi "macuahuitl", each with
+    a 1x and 2x strip on the grass-grey ground and on dark dry lava."""
+    cell = 32 * scale
+    tiles = [STATES[name][0].image() for name in WEAPONS]
+    tiles.append(read_dmi(ROOT / 'icons/obj/weapons.dmi')['macuahuitl'][0])
+    sheet = Image.new('RGBA', (cell * len(tiles), cell + 80), DARK + (255,))
+    for i, im in enumerate(tiles):
+        for ground, k, pos in ((GROUND, scale, (0, 0)), (GROUND, 1, (8, cell + 24)), (GROUND, 2, (48, cell + 8)),
+                               (LAVA, 1, (128, cell + 24)), (LAVA, 2, (168, cell + 8))):
+            tile = Image.new('RGBA', (32, 32), ground + (255,))
+            tile.alpha_composite(im)
+            sheet.alpha_composite(tile.resize((32 * k, 32 * k), Image.NEAREST), (i * cell + pos[0], pos[1]))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert('RGB').save(path)
+
+
 def main():
     write_dmi(ROOT / 'icons/obj/obsidian.dmi', STATES)
+    if '--preview-weapons' in sys.argv[1:-1]:
+        write_weapons_preview(sys.argv[sys.argv.index('--preview-weapons') + 1])
     if '--preview' in sys.argv[1:-1]:
         write_preview(sys.argv[sys.argv.index('--preview') + 1])
 
