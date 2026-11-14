@@ -42,6 +42,40 @@ class SupervisorTests(unittest.TestCase):
         (folder / 'restart_intent.json').write_text(json.dumps({'version': 1, 'generation': marker, 'metadata': m.digest(folder / 'map.txt', 'md5'), 'round': m.digest(folder / 'round.json', 'md5')}))
         return folder
 
+    def test_initial_save_uses_configured_map_and_preserves_default(self):
+        for configured, saved, accepted in ((None, 'NOMADS_EUROPE', True),
+                                            ('GAIA', 'GAIA', True),
+                                            ('GAIA', 'NOMADS_EUROPE', False)):
+            with self.subTest(configured=configured, saved=saved):
+                folder = self.root / 'save'
+                if folder.exists():
+                    m.shutil.rmtree(folder)
+                folder = self.generation()
+                state = json.loads((folder / 'round.json').read_text())
+                state['map'] = saved
+                (folder / 'round.json').write_text(json.dumps(state))
+                (folder / 'map.txt').write_text(saved)
+                intent = json.loads((folder / 'restart_intent.json').read_text())
+                intent.update(metadata=m.byond_text_md5(folder / 'map.txt'),
+                              round=m.byond_text_md5(folder / 'round.json'))
+                (folder / 'restart_intent.json').write_text(json.dumps(intent))
+                self.supervisor.config['initial_save'] = str(folder)
+                self.supervisor.config.pop('map', None)
+                if configured:
+                    self.supervisor.config['map'] = configured
+                with patch.object(self.supervisor, 'candidate', return_value='c' * 40), \
+                     patch.object(self.supervisor, 'build', return_value=self.root / 'build'), \
+                     patch.object(self.supervisor, 'start') as start:
+                    if accepted:
+                        self.supervisor.cycle()
+                        start.assert_called_once()
+                        backup = start.call_args.args[1]
+                        self.assertEqual(saved, json.loads((backup / 'round.json').read_text())['map'])
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'another map'):
+                            self.supervisor.cycle()
+                        start.assert_not_called()
+
     def test_unchanged_revision_never_builds_saves_or_starts(self):
         self.running()
         with patch.object(self.supervisor, 'candidate', return_value='b' * 40), patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(self.supervisor, 'build') as build, patch.object(self.supervisor, 'stop_saved') as save, patch.object(self.supervisor, 'start') as start:
