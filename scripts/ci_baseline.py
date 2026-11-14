@@ -1099,6 +1099,10 @@ SUITES = {
         'paths': ('tests/stone_age_rites/',), 'shared_paths': (
             'code/modules/1713/stone_age_rites.dm', 'icons/obj/stone_age_rites.dmi',
             'code/game/objects/items/stacks/stack.dm')},
+    # Bead trade goods and the two-sided barter mat: source contracts only.
+    'barter': {'files': ('tests/barter/test_source.py',),
+        'paths': ('tests/barter/',), 'shared_paths': (
+            'code/modules/1713/barter.dm', 'icons/obj/barter.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
