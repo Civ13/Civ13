@@ -76,7 +76,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 		if(clean.len >= 50)
 			break
 		if(islist(colony) && colony_parent_valid(colony["parent"]) && istext(colony["name"]) && length(colony["name"]) <= 64)
-			clean += list(list("parent" = colony["parent"], "name" = colony["name"], "members" = isnum(colony["members"]) ? max(0, round(colony["members"])) : 0))
+			clean += list(list("parent" = colony["parent"], "name" = colony["name"], "members" = isnum(colony["members"]) ? max(0, round(colony["members"])) : 0, "paused" = colony["paused"] ? TRUE : FALSE))
 	return clean
 
 /proc/land_suggestion_text(suggest)

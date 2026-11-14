@@ -842,6 +842,8 @@ SUITES = {
         'paths': ('tests/era_helpers/',), 'shared_paths': ()},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
+    'anchoring': {'files': ('tests/anchoring/test_anchoring.py',),
+        'paths': ('tests/anchoring/',), 'shared_paths': ('code/_helpers/tools.dm',)},
     # Solid fuel kinds and per-device rates keep the old hard-coded values.
     'solid_fuel': {'files': ('tests/solid_fuel/test_solid_fuel.py',),
         'paths': ('tests/solid_fuel/',), 'shared_paths': ()},
@@ -1063,6 +1065,10 @@ SUITES = {
         'paths': ('tests/domestication/',), 'shared_paths': (
             'code/modules/1713/domestication.dm', 'code/modules/ecology/ecology_spawning.dm',
             'code/game/objects/effects/spawner.dm')},
+    # Rock art on natural rock with ground pigments: source contracts only.
+    'rock_art': {'files': ('tests/rock_art/test_source.py',),
+        'paths': ('tests/rock_art/',), 'shared_paths': (
+            'code/modules/1713/rock_art.dm', 'code/modules/paintings/painting_editor.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

@@ -157,9 +157,7 @@
 		else if (is_tool(W, TOOL_WRENCH) && !can_assemble)
 			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
-				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-				anchored = !anchored
+				toggle_anchor(M)
 		else if (can_assemble && assembled)
 			if (!gunner_chair && istype(W, /obj/structure/bed/chair/gunner))
 				M.remove_from_mob(W)
@@ -263,9 +261,7 @@
 		else if (is_tool(W, TOOL_WRENCH))
 			to_chat(M, (anchored ? SPAN_NOTICE("You start unfastening \the [src] from the floor.") : SPAN_NOTICE("You start securing \the [src] to the floor.")))
 			if (do_after(M, 3 SECONDS, src))
-				playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-				to_chat(M, (anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor.")))
-				anchored = !anchored
+				toggle_anchor(M)
 	else
 		if (is_tool(W, TOOL_WELDER)) // Repair normally with a welding tool
 			visible_message("[M] starts repairing the [src]...")

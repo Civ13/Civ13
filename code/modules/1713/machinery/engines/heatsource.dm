@@ -42,11 +42,7 @@
 	if (user.a_intent == I_HELP)
 		if (is_tool(W, TOOL_WRENCH) || (is_tool(W, TOOL_HAMMER)))
 			if (is_tool(W, TOOL_WRENCH))
-				visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-				playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-				if (do_after(user,50,src))
-					visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] \the [src] [anchored ? "from" : "to"] the ground.</span>")
-					anchored = !anchored
+				if (timed_toggle_anchor(user))
 					return
 			else if (is_tool(W, TOOL_HAMMER))
 				visible_message("<span class='warning'>[user] starts to deconstruct \the [src].</span>")

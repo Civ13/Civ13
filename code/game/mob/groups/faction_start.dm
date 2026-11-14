@@ -94,7 +94,8 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 			if (land == shard_group.region || !islist(entry) || !(entry["stage"] in list("COLONY", "OPEN")))
 				continue
 			for (var/list/colony in entry["colonies"])
-				if (islist(colony) && colony["parent"] == parent)
+				// A colony nobody has lived in for days takes no starts.
+				if (islist(colony) && colony["parent"] == parent && !colony["paused"])
 					var/list/peer = shard_group.peers[land]
 					choices["With [colony["name"]] in [peer ? peer["name"] : land]"] = list(land, parent)
 	return choices

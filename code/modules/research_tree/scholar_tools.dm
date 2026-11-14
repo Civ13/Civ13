@@ -85,9 +85,7 @@
 
 /obj/structure/writing_desk/attackby(obj/item/W, mob/living/human/user)
 	if (is_tool(W, TOOL_WRENCH))
-		playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
-		to_chat(user, SPAN_NOTICE(anchored ? "You unfasten \the [src] from the floor." : "You fasten \the [src] to the floor."))
-		anchored = !anchored
+		toggle_anchor(user)
 		return
 	if (is_tool(W, TOOL_HAMMER))
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
