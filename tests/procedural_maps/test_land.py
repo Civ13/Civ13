@@ -88,7 +88,7 @@ class BuildLandTests(unittest.TestCase):
         self.assertTrue(surface)
         self.assertTrue(all(skin["area"] in atoms and land.SURFACE_AREA not in atoms for atoms in surface))
         self.assertGreater(self.report["skin"]["ground swapped"], 0)
-        self.assertEqual({"ores": ["iron"], "rare": [], "game": ["deer"]}, self.report["slot_world"])
+        self.assertEqual({"ore": "rich", "ores": ["iron"], "rare": [], "game": ["deer"]}, self.report["slot_world"])
         saved = json.loads((Path(self.tmp.name) / "one" / "land.json").read_text(encoding="utf-8"))
         self.assertEqual(self.report["dmm_sha256"], saved["dmm_sha256"])
         self.assertTrue((Path(self.tmp.name) / "one" / "bundle").is_dir())

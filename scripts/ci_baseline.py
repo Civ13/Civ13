@@ -1075,6 +1075,11 @@ SUITES = {
     'rock_art': {'files': ('tests/rock_art/test_source.py',),
         'paths': ('tests/rock_art/',), 'shared_paths': (
             'code/modules/1713/rock_art.dm', 'code/modules/paintings/painting_editor.dm')},
+    # Deeds carved into tribal totem poles: source contracts only.
+    'tribal_deeds': {'files': ('tests/tribal_deeds/test_source.py',),
+        'paths': ('tests/tribal_deeds/',), 'shared_paths': (
+            'code/modules/1713/tribal_deeds.dm', 'code/modules/1713/dugout_canoe.dm',
+            'code/modules/1713/domestication.dm', 'code/modules/1713/rock_art.dm')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',

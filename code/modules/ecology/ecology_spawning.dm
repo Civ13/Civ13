@@ -213,6 +213,7 @@ var/global/list/ecology_species_table = null
 /datum/ecology_spawner/New()
 	..()
 	species = ecology_default_species()
+	expedition_land_tune_species(species) // a land across the sea: its own game is plentiful (land_resources.dm)
 
 // Cached per spawner: the species table can be replaced (tests, admin edits).
 /datum/ecology_spawner/proc/species_for_type(path)
