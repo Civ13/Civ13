@@ -8,6 +8,8 @@
 //   everyone's chart and becomes a frontier land: beds keep homes.
 // - Claim: a faction's leader plants its colony charter (colony_charter.dm).
 //   One claim per faction, one faction per land. The land becomes a colony.
+//   The colony's leader may give the claim up at the charter: it comes down
+//   and the land drops back to the frontier, settled.
 // - Abandon (the captain, as the ship leaves): the land is lost for good and
 //   its world is archived. Whoever was homed there starts on the mainland.
 // A land nobody settles or claims is abandoned after 7 days with nobody on it
@@ -94,6 +96,36 @@
 		to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
 		return
 	to_chat(world, "<big><b>[html_encode(H.real_name)] settles this land.</b> It stays on every chart, for any ship to reach.</big>")
+
+// The parent faction whose claim on this land user may give up at this
+// charter: the colony's leader, while the colony's parent holds the claim. Or null.
+/obj/structure/colony_charter/proc/unclaim_parent(mob/living/human/user)
+	var/key = expedition_land_key()
+	if (!key || !faction || !map || user.civilization != faction || !user.leader || get_dist(user, src) > 1)
+		return null
+	var/list/row = map.faction_colonies()[faction]
+	if (!islist(row) || !colony_parent_valid(row[1]))
+		return null
+	var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
+	return claims[row[1]] == key ? row[1] : null
+
+// A faction claims one land across the sea; to claim another it gives this
+// one up. The charter comes down and the land stays, settled, on every chart.
+/obj/structure/colony_charter/proc/unclaim_menu(mob/living/human/user)
+	if (WWinput(user, "Give up [faction]'s claim on this land? The charter comes down and the land stays on every chart, open to any faction's claim. Your faction may then claim another land across the sea.", "Colony Charter", "Keep the claim", list("Give up the claim", "Keep the claim")) != "Give up the claim")
+		return FALSE
+	var/parent = unclaim_parent(user)
+	if (!parent)
+		return FALSE
+	if (!expedition_land_ask("unclaim", user.ckey, parent))
+		to_chat(user, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
+		return FALSE
+	map.recruitment_audit(faction, "[user.real_name] gave up the claim on this land and took the charter down.", faction_roster_account(user) || "")
+	log_game("Colony: [key_name(user)] gave up [faction]'s claim ([parent]) on this land and took the charter down.")
+	to_chat(world, "<big><b>[html_encode(faction)]</b> gives up its claim on this land.</big>")
+	faction = null
+	update_icon()
+	return TRUE
 
 // Asked as the ship leaves a land nobody settled or claimed: TRUE to abandon it.
 /obj/structure/hull_tiller/proc/abandon_choice(mob/living/human/H)

@@ -88,10 +88,11 @@ request charts the tiles round a tile for its owner, as an admin `reveal` does.
 ## Settling, claiming and abandoning
 
 A land's own world asks for its crew (`/chart/request` ops `settle`, `claim`
-with the colony's parent faction as owner, `abandon`; x and y must name the
+and `unclaim` with the colony's parent faction as owner, `abandon`; x and y must name the
 land it holds). Settle: tile `SETTLED`, land stage `FRONTIER`. Claim: tile
 `CLAIMED`, stage `COLONY`, one claim per faction (`chart_claim`, sent to the
-worlds as `claims`). Abandon, or 7 days with no players on a land still
+worlds as `claims`); giving it up puts the tile back to `SETTLED`, stage
+`FRONTIER`. Abandon, or 7 days with no players on a land still
 `LANDED` (`chart_landed`, refreshed by land samples): tile `LOST` for good, the
 homes there go to the mainland and the host archives the slot. See
 [voyages](ship-voyage.md#settle-claim-or-abandon).

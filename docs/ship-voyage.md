@@ -77,16 +77,16 @@ A land opened for a ship is undecided until its crew choose
 | **Settle this land** (tiller) | any crew member: a mooring post that takes ships and 3 beds slept in by different people within 40 tiles of it | tile `SETTLED`, land stage `FRONTIER`: kept for good, on everyone's chart |
 | **Claim** | a faction leader plants the colony charter (`colony_charter.dm`); one claim per faction, one faction per land | tile `CLAIMED`, stage `COLONY`; the world directory keeps `chart_claim` |
 | **Abandon** | the captain, asked as she leaves (Leave these waters or a voyage onward) | tile `LOST` for good; homes there go to the mainland; the host saves, stops and archives the slot (`<root>/expeditions/abandon/<slot>.json`) and frees it |
+| **Give up the claim** | the colony's leader, at its charter | charter down, tile `SETTLED`, stage `FRONTIER`; the faction may claim another land |
 | nobody chooses | the land waits | abandoned after 7 days with no players there (the coordinator's land samples) |
 
-A settled land can still be claimed. Until a land is settled or claimed, a
+A settled land can still be claimed. The colony's leader can give the claim
+up at its charter (op `unclaim`): the charter comes down, the tile goes back to
+`SETTLED` and the land stage to `FRONTIER`, and the faction may claim another
+land. Until a land is settled or claimed, a
 death there always sends the character home to the mainland: a bed there
 does not keep the home. A land world reads its chart about once a minute to
 know.
-
-## Not done yet
-
-- Giving up a faction's claim; deleting archived lands after 7 days.
 
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
 `python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),
