@@ -2051,7 +2051,7 @@ SUITES = {
         'paths': ('tests/wild_herbs/', 'code/modules/ecology/wild_herbs.dm', 'icons/farming/humanity_wild_herbs.dmi',
                   'icons/obj/food/food.dmi')},
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
-        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi',
+        'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
