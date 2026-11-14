@@ -9,6 +9,7 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/american/eft/usec/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/american/eft/usec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -26,14 +27,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a Private Military Contractor working for USEC. After the chaos died down command didn't respond. And now you're on your own.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 
 	return TRUE
@@ -48,6 +42,7 @@
 	min_positions = 1
 	max_positions = 5
 
+/datum/job/russian/eft/bear/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/russian/eft/bear/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -65,14 +60,7 @@
 
 	give_random_name(H)
 	H.add_note("Role", "You are a Private Military Contractor working for BEAR. After the chaos died down command didn't respond. And now you're on your own.")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 
 	return TRUE
 

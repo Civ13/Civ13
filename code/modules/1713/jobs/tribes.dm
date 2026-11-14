@@ -15,6 +15,7 @@
 	min_positions = 1
 	max_positions = 1
 	
+/datum/job/british/rchief/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/british/rchief/equip(var/mob/living/human/H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/nguni_shield(H), slot_l_hand)
@@ -24,14 +25,7 @@
 	uniform.attackby(armband, H)
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/gatorpelt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	
 	
 /datum/job/british/rshaman
@@ -47,6 +41,7 @@
 	min_positions = 1
 	max_positions = 8
 	
+/datum/job/british/rshaman/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
 /datum/job/british/rshaman/equip(var/mob/living/human/H)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/leather(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_hand)
@@ -57,14 +52,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/goatpelt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
 	
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	
 /datum/job/british/rtribesperson
 	title = "Red Tribe Tribesperson"
@@ -79,15 +67,9 @@
 	min_positions = 1
 	max_positions = 200
 	
+/datum/job/british/rtribesperson/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/british/rtribesperson/equip(var/mob/living/human/H)
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	
 //Blue Tribe
 /datum/job/french/BChief
@@ -106,6 +88,7 @@
 	min_positions = 1
 	max_positions = 1
 	
+/datum/job/french/bchief/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/bchief/equip(var/mob/living/human/H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/bone_battleaxe(H), slot_r_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/nguni_shield(H), slot_l_hand)
@@ -116,14 +99,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/gatorpelt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
 	
-	H.setStat("strength", STAT_VERY_HIGH)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	
 	
 /datum/job/french/bshaman
@@ -139,6 +115,7 @@
 	min_positions = 1
 	max_positions = 8
 	
+/datum/job/french/bshaman/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_LOW, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_VERY_HIGH)
 /datum/job/french/bshaman/equip(var/mob/living/human/H)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint/leather(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/stack/medical/advanced/herbs(H), slot_r_hand)
@@ -149,14 +126,7 @@
 	H.equip_to_slot_or_del(new /obj/item/clothing/head/goatpelt(H), slot_head)
 	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H), slot_shoes)
 	
-	H.setStat("strength", STAT_MEDIUM_LOW)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_LOW)
-	H.setStat("dexterity", STAT_VERY_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_LOW)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_VERY_HIGH)
+	apply_job_stats(H)
 	
 /datum/job/french/btribesperson
 	title = "Blue Tribe Tribesperson"
@@ -171,12 +141,6 @@
 	min_positions = 1
 	max_positions = 200
 	
+/datum/job/french/btribesperson/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW)
 /datum/job/french/btribesperson/equip(var/mob/living/human/H)
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
