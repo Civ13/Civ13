@@ -517,7 +517,7 @@ var/list/seed_list_jungle
 		icon_state = deadicon_state
 		return
 	else
-		if (season == "WINTER")
+		if (season == SEASON_WINTER)
 			current_icon = 'icons/obj/flora/bigtrees_winter.dmi'
 		else if (season in list("SUMMER","Wet Season"))
 			current_icon = 'icons/obj/flora/bigtrees.dmi'
@@ -600,7 +600,7 @@ var/list/seed_list_jungle
 		icon = deadicon
 		return
 	else
-		if (season == "WINTER")
+		if (season == SEASON_WINTER)
 			current_icon = 'icons/obj/flora/pinetrees_snow.dmi'
 		else if (season in list("SUMMER","Wet Season"))
 			current_icon = 'icons/obj/flora/pinetrees.dmi'

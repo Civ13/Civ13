@@ -69,7 +69,7 @@ var/global/list/wild_herb_list = list()
 		schedule_sprig_regrowth()
 
 /obj/structure/wild/flowers/wild_herb/proc/herb_dormant()
-	return season == "WINTER" || radiation >= 15
+	return season == SEASON_WINTER || radiation >= 15
 
 /obj/structure/wild/flowers/wild_herb/examine(mob/user, distance = -1)
 	..()

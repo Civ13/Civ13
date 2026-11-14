@@ -74,7 +74,7 @@
 
 /obj/structure/fish_pen/proc/cold_season()
 	var/area/A = get_area(src)
-	return A && A.location == AREA_OUTSIDE && season == "WINTER"
+	return A && A.location == AREA_OUTSIDE && season == SEASON_WINTER
 
 // One five-minute cycle. Returns FALSE for a stale or retired callback.
 /obj/structure/fish_pen/proc/fish_cycle(epoch)

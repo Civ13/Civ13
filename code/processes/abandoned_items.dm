@@ -16,7 +16,7 @@ var/global/abandonment_season_changes = 0
 		return FALSE
 	if (abandonment_season_autonomous)
 		return TRUE
-	return config && config.seasons_on && (season == "SPRING" || season == "SUMMER" || season == "FALL" || season == "WINTER")
+	return config && config.seasons_on && season_is_temperate()
 
 /proc/season_decay_requested(force, advance_decay)
 	// Natural cycles age debris. Forced calls preserve it unless explicitly opted in.

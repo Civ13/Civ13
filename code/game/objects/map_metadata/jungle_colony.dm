@@ -43,8 +43,8 @@
 /obj/map_metadata/jungle_colony/New()
 	..()
 	spawn(500)
-		if (season == "SPRING") //fixes game setting the season as spring
-			season = "Wet Season"
+		if (season == SEASON_SPRING) //fixes game setting the season as spring
+			season = SEASON_WET
 	spawn(500)
 		for (var/i = 1, i <= 65, i++)
 			var/turf/areaspawn = safepick(get_area_turfs(/area/caribbean/sea/sea))
