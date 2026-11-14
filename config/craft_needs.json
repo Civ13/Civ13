@@ -121,6 +121,22 @@
       "/obj/item/machine_part/bearing": 2
     }
   },
+  "/obj/structure/workshop_machine/shear_legs/crane/steam": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/shear_legs/crane/steam/tower": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 2,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
   "/obj/structure/fluid_pump/hand": {
     "tools": [],
     "inputs": {

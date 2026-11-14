@@ -1896,6 +1896,10 @@ SUITES = {
     'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
         'tests/building_site/', 'code/modules/1713/building_site.dm',
         'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},
+    # Source contracts only; this suite does not run DM.
+    'power_cranes': {'files': ('tests/power_cranes/test_contract.py',), 'paths': (
+        'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
+        'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
