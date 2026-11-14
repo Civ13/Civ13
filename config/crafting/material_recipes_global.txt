@@ -2912,6 +2912,8 @@ RECIPE: /material/electronics/,photovoltaic panel,/obj/structure/civ_generator/s
 RECIPE: /material/iron/,wind charger,/obj/structure/civ_generator/wind/charger,15,200,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,distribution transformer,/obj/structure/power_point/transformer,10,150,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,power meter,/obj/structure/power_meter,3,80,1,1,none,105,0,0,8,null
+RECIPE: /material/copper/,wall outlet,/obj/structure/power_point/outlet,2,40,1,1,none,105,0,0,8,null
+RECIPE: /material/wood/,utility pole,/obj/structure/power_point/pole,6,100,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,waterwheel generator,/obj/structure/civ_generator/waterwheel,15,200,1,1,none,105,0,0,8,null
 RECIPE: /material/steel/,wind turbine,/obj/structure/civ_generator/wind/turbine,30,300,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,controlled reactor generator,/obj/structure/civ_generator/nuclear,40,300,1,1,none,105,0,0,8,null

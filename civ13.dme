@@ -1056,6 +1056,7 @@
 #include "code\modules\1713\machinery\cable_risers.dm"
 #include "code\modules\1713\machinery\cable_shapes.dm"
 #include "code\modules\1713\machinery\power_points.dm"
+#include "code\modules\1713\machinery\power_point_visuals.dm"
 #include "code\modules\1713\machinery\power_meter.dm"
 #include "code\modules\1713\machinery\cell.dm"
 #include "code\modules\1713\machinery\conveyor2.dm"

@@ -274,3 +274,229 @@ var/global/list/power_points = list()
 // Placed in a map already secured; it joins the cable under it on load.
 /obj/structure/power_point/transformer/secured
 	anchored = TRUE
+
+// ---------------------------------------------------------------- outlets
+
+// A small outlet box fixed against a wall. It does not block movement.
+/obj/structure/power_point/outlet
+	name = "wall outlet"
+	desc = "A wall-mounted outlet box. Secure it on a cable with a wrench: every machine within three tiles, with no wall, closed door or window in between, draws from that cable."
+	icon = 'icons/obj/power_distribution.dmi'
+	icon_state = "wall_outlet"
+	base_state = "wall_outlet"
+	density = FALSE
+	reach = 3
+	layer = 3.1
+
+// Turn the box toward the nearest wall so it is drawn against it.
+/obj/structure/power_point/outlet/proc/face_wall()
+	if (!isturf(loc))
+		return
+	for (var/d in list(NORTH, EAST, WEST, SOUTH))
+		var/turf/T = get_step(src, d)
+		if (T && T.density)
+			dir = d
+			return
+
+/obj/structure/power_point/outlet/on_runtime_spawn()
+	..()
+	face_wall()
+
+/obj/structure/power_point/outlet/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/wrench) && !anchored)
+		face_wall()
+	..()
+
+/obj/structure/power_point/outlet/secured
+	anchored = TRUE
+
+// ---------------------------------------------------------------- poles
+
+#define POWER_POLE_SPAN 8 // longest overhead wire, in tiles
+#define POWER_POLE_SPANS 4 // wires on one pole
+
+// The pole a person has started an overhead wire from, by person.
+var/global/list/power_pole_span_start = list()
+
+// A wooden utility pole. Besides feeding machines around it, it carries
+// overhead wires to other poles up to eight tiles away, so one grid can
+// cross roads, fields and rivers without cable on the ground. A wire joins
+// the cables under the two poles through the same runtime link the cable
+// risers use, so the grid code walks it without a distance check.
+/obj/structure/power_point/pole
+	name = "utility pole"
+	desc = "A wooden pole with a crossarm for overhead power lines. Secure it on a cable with a wrench; it feeds machines within three tiles, and a cable coil runs an overhead wire to another pole up to eight tiles away."
+	icon = 'icons/obj/power_distribution.dmi'
+	icon_state = "utility_pole"
+	base_state = "utility_pole"
+	reach = 3
+	layer = 4.1
+	var/list/span_poles = list() // poles this one has a wire to; saved
+	var/tmp/list/span_images = null
+
+/obj/structure/power_point/pole/secured
+	anchored = TRUE
+
+/obj/structure/power_point/pole/persistence_runtime_var(key)
+	return key == "span_images" || ..()
+
+/obj/structure/power_point/pole/proc/span_ok(obj/structure/power_point/pole/P)
+	return istype(P) && P != src && !QDELETED(P) && P.z == z && get_dist(src, P) <= POWER_POLE_SPAN
+
+// Joins this pole's cable to each partner's while both are in service.
+/obj/structure/power_point/pole/proc/relink_spans()
+	for (var/obj/structure/power_point/pole/P in span_poles.Copy())
+		if (!span_ok(P))
+			span_poles -= P
+			continue
+		// A partner restored later in the same load links back from its own after_load.
+		if (!(src in P.span_poles) || !in_service() || !P.in_service())
+			continue
+		var/obj/structure/cable/A = powersource
+		var/obj/structure/cable/B = P.powersource
+		if (!A.riser_links)
+			A.riser_links = list()
+		if (!B.riser_links)
+			B.riser_links = list()
+		A.riser_links |= B
+		B.riser_links |= A
+	if (in_service())
+		powersource.rebuild_supply()
+	update_icon()
+	update_span_overlays()
+
+// Drops the links between this pole's cable and its partners' cables only.
+/obj/structure/power_point/pole/proc/unlink_spans()
+	var/obj/structure/cable/A = powersource
+	if (!A || !A.riser_links)
+		return
+	for (var/obj/structure/power_point/pole/P in span_poles)
+		var/obj/structure/cable/B = P.powersource
+		if (!B)
+			continue
+		A.riser_links -= B
+		if (B.riser_links)
+			B.riser_links -= A
+			if (!B.riser_links.len)
+				B.riser_links = null
+		if (!QDELETED(B))
+			B.rebuild_supply()
+	if (!A.riser_links.len)
+		A.riser_links = null
+
+// Takes down every wire on this pole, dropping the cable they used.
+/obj/structure/power_point/pole/proc/cut_spans(refund = TRUE)
+	if (!span_poles.len)
+		return 0
+	unlink_spans()
+	var/pieces = 0
+	for (var/obj/structure/power_point/pole/P in span_poles.Copy())
+		pieces += max(1, get_dist(src, P))
+		P.span_poles -= src
+		P.update_icon()
+		P.update_span_overlays()
+	span_poles.Cut()
+	if (refund && pieces && isturf(loc))
+		var/obj/item/stack/cable_coil/C = new(loc)
+		C.amount = min(pieces, C.max_amount)
+		C.update_icon()
+	if (powersource)
+		powersource.rebuild_supply()
+	update_icon()
+	update_span_overlays()
+	return pieces
+
+/obj/structure/power_point/pole/proc/link_span(obj/structure/power_point/pole/P, mob/user)
+	if (!span_ok(P))
+		to_chat(user, "<span class='warning'>That pole is too far: an overhead wire spans at most [POWER_POLE_SPAN] tiles.</span>")
+		return FALSE
+	if (P in span_poles)
+		to_chat(user, "<span class='warning'>These poles are already wired together.</span>")
+		return FALSE
+	if (span_poles.len >= POWER_POLE_SPANS || P.span_poles.len >= POWER_POLE_SPANS)
+		to_chat(user, "<span class='warning'>A crossarm holds at most [POWER_POLE_SPANS] wires.</span>")
+		return FALSE
+	span_poles |= P
+	P.span_poles |= src
+	relink_spans()
+	P.relink_spans()
+	return TRUE
+
+/obj/structure/power_point/pole/attach_cable()
+	. = ..()
+	if (.)
+		relink_spans()
+
+/obj/structure/power_point/pole/detach_cable()
+	unlink_spans()
+	..()
+	update_span_overlays()
+
+/obj/structure/power_point/pole/after_load()
+	..()
+	relink_spans()
+
+/obj/structure/power_point/pole/Destroy()
+	cut_spans(FALSE)
+	power_pole_span_start -= src
+	for (var/key in power_pole_span_start.Copy())
+		if (power_pole_span_start[key] == src)
+			power_pole_span_start -= key
+	return ..()
+
+/obj/structure/power_point/pole/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous)
+		cut_spans()
+
+/obj/structure/power_point/pole/forceMove(atom/destination, special_event)
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous)
+		cut_spans()
+
+/obj/structure/power_point/pole/attackby(obj/item/W, mob/user)
+	var/mob/living/human/H = user
+	if (istype(W, /obj/item/weapon/wirecutters))
+		if (!istype(H) || H.stat != CONSCIOUS || get_dist(H, src) > 1)
+			return
+		if (!span_poles.len)
+			to_chat(user, "There are no overhead wires on \the [src].")
+			return
+		cut_spans()
+		playsound(loc, 'sound/items/Wirecutter.ogg', 100, TRUE)
+		to_chat(user, "<span class='notice'>You take down the overhead wires on \the [src].</span>")
+		return
+	if (istype(W, /obj/item/weapon/wrench) && anchored && span_poles.len)
+		cut_spans()
+		to_chat(user, "<span class='notice'>You take down its overhead wires first.</span>")
+	if (istype(W, /obj/item/stack/cable_coil) && in_service())
+		if (!istype(H) || H.stat != CONSCIOUS || get_dist(H, src) > 1)
+			return
+		var/obj/item/stack/cable_coil/CC = W
+		var/obj/structure/power_point/pole/start = power_pole_span_start[H]
+		if (!start || start == src || QDELETED(start) || !start.in_service())
+			power_pole_span_start[H] = src
+			to_chat(user, "<span class='notice'>You tie a wire to \the [src]. Use the coil on another secured pole within [POWER_POLE_SPAN] tiles to string it.</span>")
+			return
+		var/length = max(1, get_dist(start, src))
+		if (!start.span_ok(src))
+			to_chat(user, "<span class='warning'>The other pole is too far: an overhead wire spans at most [POWER_POLE_SPAN] tiles.</span>")
+			power_pole_span_start -= H
+			return
+		if (CC.amount < length)
+			to_chat(user, "<span class='warning'>You need [length] pieces of cable for this span.</span>")
+			return
+		if (start.link_span(src, user))
+			CC.use(length)
+			power_pole_span_start -= H
+			playsound(loc, 'sound/items/deconstruct.ogg', 50, TRUE)
+			to_chat(user, "<span class='notice'>You string an overhead wire between the poles.</span>")
+		return
+	..()
+
+/obj/structure/power_point/pole/examine(mob/user)
+	. = ..()
+	if (span_poles.len)
+		to_chat(user, "It carries [span_poles.len] overhead wire\s.")
