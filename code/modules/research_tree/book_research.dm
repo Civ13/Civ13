@@ -316,6 +316,9 @@
 	// Field notes (subject_prototypes.dm).
 	if (istype(W, /obj/item/weapon/paper) && take_field_notes(W, user))
 		return
+	// Naturalist's notes (naturalist_finds.dm).
+	if (istype(W, /obj/item/weapon/paper) && take_find_notes(W, user))
+		return
 	var/obj/item/weapon/book/B = placed_book()
 	if (!B || !assigned_node)
 		to_chat(user, SPAN_WARNING("Place a book on the bench and choose a subject first."))

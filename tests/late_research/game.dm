@@ -828,6 +828,49 @@ var/late_wait_result = TRUE
 	map.book_research = TRUE
 	var/list/clean = clean_trade_watched(list("a" = 1, "b" = 99, "c" = "x", 5))
 	late_check(clean.len == 2 && clean["b"] == 3, "saved watching records are cleaned")
+/proc/late_test_naturalist_finds()
+	var/datum/research_node/N = get_research_node("basic_agriculture")
+	var/mob/living/human/late_fixture/scholar/nat = new(locate(2,7,1))
+	nat.name = "Linne"
+	nat.real_name = "Linne"
+	nat.prepare("basic_agriculture", 0)
+	var/mob/living/simple_animal/rabbit/rabbit = new(locate(2,8,1))
+	var/obj/item/stack/ore/copper/ore = new(locate(3,7,1))
+	var/mob/living/simple_animal/civilian/person = new(locate(1,7,1))
+	late_check(find_discipline(rabbit) == "agriculture" && find_discipline(ore) == "natural_science" && find_discipline(new /obj/structure/wild/flowers(locate(2,6,1))) == "medicine", "animals, ores and wild plants are finds of their own disciplines")
+	late_check(isnull(find_discipline(person)) && isnull(find_discipline(nat)) && isnull(find_discipline(new /obj/structure/wild/tree_stump(locate(3,8,1)))), "people and stumps are no finds")
+	var/list/targets = find_targets(nat)
+	late_check(targets.len >= 3, "the scholar sees three things to record ([targets.len])")
+	var/obj/item/weapon/book/B = new(nat)
+	var/kind = "[rabbit.type]"
+	late_check(node_discipline("basic_agriculture") == "agriculture" && ("basic_agriculture" in find_subjects(nat, "agriculture", B, kind)), "a subject of the discipline whose groundwork is known can take the find")
+	var/level = nat.scholar_level("agriculture")
+	var/points = commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture")
+	late_check(points == max(1, round(N.cost_ticks * 0.05)) && B.research_ticks("basic_agriculture") == points, "a find writes a twentieth of the chapter ([points])")
+	late_check(nat.scholar_level("agriculture") > level, "and teaches the one who made it")
+	late_check(B.has_find(kind) && !commit_find(nat, B, kind, "agriculture", "rabbit", "basic_agriculture") && !B.find_room("weaving", kind), "a book takes each kind of find once")
+	late_check(!commit_find(nat, B, "[ore.type]", "natural_science", "copper ore", "basic_agriculture"), "a find cannot go to a subject of another discipline")
+	// Finds fill at most three tenths of a chapter.
+	var/total = points
+	for(var/i = 1 to 8)
+		total += B.record_find("basic_agriculture", "test_kind_[i]")
+	late_check(total == round(N.cost_ticks * 0.3) && B.find_points("basic_agriculture") == total && !B.find_room("basic_agriculture", "one_more"), "finds stop at three tenths of the chapter ([total] of [N.cost_ticks])")
+	// A sheet of notes goes to a bench working on the discipline.
+	var/obj/item/weapon/paper/P = new(nat)
+	late_check(commit_find(nat, P, kind, "agriculture", "rabbit") == 1 && P.find_kind == kind && P.find_discipline == "agriculture" && !find_paper_ok(P), "a sheet takes one record")
+	late_check(!field_study_carrier_ok(P, "basic_agriculture", "x") && !demonstration_carrier_ok(P, "steam_power"), "and is then no use for other notes")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,7,1))
+	var/obj/item/weapon/book/fresh = new(bench)
+	bench.assigned_node = "basic_agriculture"
+	nat.put_in_hands(P)
+	late_check(bench.take_find_notes(P, nat) && fresh.has_find(kind) && fresh.research_ticks("basic_agriculture") == points, "notes used on the bench are written into its book")
+	// Double on a land reached by expedition.
+	var/obj/item/weapon/book/far = new(nat)
+	expedition_land_info = list("biome" = "temperate", "land_type" = "plain", "size" = "small")
+	late_check(find_double_here() && commit_find(nat, far, kind, "agriculture", "rabbit", "basic_agriculture") == max(1, round(N.cost_ticks * 0.1)), "a find on an expedition land is worth double")
+	expedition_land_info = list()
+	late_check(!find_double_here(), "and the usual amount at home")
+	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
 /proc/late_test_compare_notes()
 	var/obj/structure/research_bench/late_fixture/bench = new(locate(7,3,1))
 	bench.tier = 8
@@ -921,6 +964,7 @@ var/late_wait_result = TRUE
 		late_test_trial_and_error()
 		late_test_trade_learning()
 		late_test_compare_notes()
+		late_test_naturalist_finds()
 		late_test_teams()
 		late_test_ciphers()
 		late_test_late_lines()
