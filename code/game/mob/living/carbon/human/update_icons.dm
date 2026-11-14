@@ -1120,6 +1120,11 @@ var/global/list/human_face_icon_cache = list()
 					var/i_state = i.item_state
 					if (!i_state) i_state = i.icon_state
 					standing.overlays	+= image(icon = body_build.belt_icon, icon_state = i_state)
+		else if (istype(belt, /obj/item/clothing))
+			// Pouches hung from a clothing belt (belt_pouches.dm) draw on it.
+			var/obj/item/clothing/cbelt = belt
+			for (var/obj/item/clothing/accessory/A in cbelt.accessories)
+				standing.overlays	+= A.get_mob_overlay()
 
 		standing.color = belt.color
 

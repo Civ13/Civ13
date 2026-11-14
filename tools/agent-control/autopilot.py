@@ -32,6 +32,8 @@ import leatherwork  # noqa: E402
 import boats  # noqa: E402
 import water  # noqa: E402
 import senses  # noqa: E402
+import needs  # noqa: E402
+import routines  # noqa: E402
 from action_contract import QueueClient, DecisionSlot, ModelWorker, targets_current  # noqa: E402
 from memory import CharacterMemory  # noqa: E402
 
@@ -116,7 +118,20 @@ TIP_WORDS = ("drink", "water", "wood", "plank", "log", "flint", "knife", "stick"
 SYSTEM = """You control one character in Civ13, a multiplayer survival and civilization game. Play it like a real player.
 Reply with one JSON object and nothing else:
 {"plan": [1 to 3 steps, usually 1], "note": "your short plan to remember, under 100 chars", "why": "a few words",
- "remember": "optional: a lasting fact to keep for days, like a promise you made or where you hid something"}
+ "remember": "optional: a lasting fact to keep for days, like a promise you made or where you hid something",
+ "routine": "optional standing order, see Routines", "priorities": "optional, see Routines"}
+You are the director of your character. Between your decisions her body runs routines by itself, like a Sims character:
+when NEEDS run low it drinks, eats, cooks, warms up, treats wounds, chews healing herbs, relieves itself and catches its
+breath, and otherwise it carries out your standing ROUTINE. You are asked when something needs judgement (talk, danger,
+a question, a routine that failed or finished, nothing left to do) and every few turns to review. Routines:
+"routine": {"script": "flint"|"spear"|"axe"|"wood"|"campfire"|"hunt"} runs a whole chain until it is made (sharpened
+flint; a spear from a branch; a flint axe from spear, flint and twine; "logs": n wood logs; a campfire; raw meat from a hunt),
+making what it needs first. {"skill": "<skill>", "times": 1-40, "word": "<a word in the target's name>"} repeats a skill on
+the nearest fitting target (chop trees, mine rock, cut grass); {"do": "build_next"|"leather_next"|"boil_water"|"explore",
+"times": n} repeats that; "none" stops all work until you give more. Without a routine she follows the survival ladder
+(flint, spear, axe, campfire) and any blueprint or leather project by herself. Give a routine for repetitive work.
+"priorities": {"<need>": 0 to 3} makes a need matter more or less (hunger, thirst, warmth, health, relief, energy, hygiene,
+social; 1 is normal). Needs no routine can meet (washing, company, cooling down) are yours to plan.
 MEMORY in the observation is what you remember from before: your home, places you found, and the people you know.
 Be warm to friends, keep your promises, and be careful around people who hurt you.
 Prefer a skill: {"do": skill, "target": number}. A skill sets the right intent and hand for you, then clicks the target:
@@ -1359,11 +1374,11 @@ def _stowed(self_state):
     return names + [str(item) for item in self_state.get("worn") or []]
 
 
-def thirst_plan(observation, explore_dir="north", ignored=()):
+def thirst_plan(observation, explore_dir="north", ignored=(), threshold=200):
     """When very thirsty, the step that goes for water: drink at listed water, else explore. None when not needed."""
     me = observation.get("self", {})
     level = me.get("water")
-    if not isinstance(level, (int, float)) or level >= 200:
+    if not isinstance(level, (int, float)) or level >= threshold:
         return None
     # Clean water first. Unclean water (cholera) is boiled in a mug first, and drunk raw only when dying of thirst.
     rows = [row for row in water.sources(observation) if row.get("ref") not in ignored and _is_drinkable(row)]
@@ -1402,11 +1417,11 @@ def _warm_clothes(self_state):
     return None
 
 
-def cold_plan(observation, ignored=()):
+def cold_plan(observation, ignored=(), threshold=COLD_DANGER):
     """When dangerously cold, the step that warms her: put on warm clothes, go to a fire, or build one. None when not needed."""
     me = observation.get("self", {})
     body = me.get("bodytemperature")
-    if not isinstance(body, (int, float)) or isinstance(body, bool) or body >= COLD_DANGER:
+    if not isinstance(body, (int, float)) or isinstance(body, bool) or body >= threshold:
         return None
     clothes = _warm_clothes(me)
     if clothes:
@@ -1782,7 +1797,43 @@ def choose_step(dx, dy, blocked=(), visited=(), here=(0, 0)):
     return min(options)[3] if options else None
 
 
+ROUTE_TIMEOUT = 90.0  # seconds a routed walk (up to 32 tiles at a slow pace) may take
+ROUTE_STEPS = {"north": (0, 1), "south": (0, -1), "east": (1, 0), "west": (-1, 0)}
+EXPLORE_TILES = 10  # how far one routed explore step aims
+
+
+def route(client, character, queue_since, step):
+    """One walk_to step through the queue, the route a player gets with Ctrl+click (docs/agent-control.md#walk-to).
+
+    Returns (status, detail, queue_since): status is "arrived", "stopped" (the game ended the route: hurt, a
+    predator close, no way there) or "unsupported" (an older server without walk_to, or too far to plan),
+    where the caller falls back to stepping tile by tile.
+    """
+    queued = client.request("character_queue", {"character": character, "actions": [step]})
+    if not queued.get("ok"):
+        return "unsupported", f"{queued.get('error')} {queued.get('detail', '')}".strip(), queue_since
+    results = wait_for_queue(client, character, queue_since, limit=ROUTE_TIMEOUT)
+    if results:
+        queue_since = max(r.get("id", 0) for r in results)
+    detail = next((str(r.get("detail", "")) for r in results if r.get("do") == "walk_to"), "")
+    ok = any(r.get("ok") for r in results if r.get("do") == "walk_to")
+    if ok:
+        return "arrived", detail or "arrived", queue_since
+    if not detail or "too far" in detail or "unknown" in detail or "not_found" in detail:
+        return "unsupported", detail or "no result", queue_since
+    return "stopped", detail.removeprefix("stopped: "), queue_since
+
+
 def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
+    """Walk next to ref (onto it with reach 0): a routed walk_to first, then tile steps for the last stretch.
+    Returns (ok, detail, queue_since)."""
+    status, detail, queue_since = route(client, character, queue_since, {"do": "walk_to", "target": ref})
+    if status == "stopped":
+        return False, detail, queue_since
+    return step_to(client, character, ref, queue_since, limit, reach)
+
+
+def step_to(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
     """Walk next to ref (onto it with reach 0), stepping around obstacles. Returns (ok, detail, queue_since)."""
     visited = set()
     blocked = {}
@@ -1826,6 +1877,21 @@ def approach(client, character, ref, queue_since, limit=MAX_APPROACH, reach=1):
             if any(r.get("detail") == "blocked" for r in results):
                 blocked.setdefault(here, set()).add(direction)
     return False, "still not there after walking", queue_since
+
+
+def explore_route(client, character, queue_since, direction):
+    """Explore: a routed walk about EXPLORE_TILES tiles in a direction, else tile steps. Returns (ok, detail, queue_since)."""
+    look = client.request("character_observe", {"character": character, "radius": 1, "queue_since": queue_since})
+    me = look.get("result", {}).get("self", {}) if look.get("ok") else {}
+    x, y = me.get("x"), me.get("y")
+    if isinstance(x, int) and isinstance(y, int) and direction in ROUTE_STEPS:
+        dx, dy = ROUTE_STEPS[direction]
+        status, detail, queue_since = route(client, character, queue_since, {"do": "walk_to", "x": x + dx * EXPLORE_TILES, "y": y + dy * EXPLORE_TILES})
+        if status == "arrived":
+            return True, f"walked about {EXPLORE_TILES} tiles {direction}", queue_since
+        if status == "stopped" and "no way" not in detail:
+            return False, detail, queue_since  # hurt or a predator close: do not keep walking
+    return walk(client, character, queue_since, direction=direction)
 
 
 def walk(client, character, queue_since, direction=None, away_from=None, moves=6):
@@ -1957,7 +2023,7 @@ def execute(client, character, steps, queue_since):
         elif step["do"] == "flee":
             ok, detail, queue_since = walk(client, character, queue_since, away_from=step["target"])
         else:
-            ok, detail, queue_since = walk(client, character, queue_since, direction=step["dir"])
+            ok, detail, queue_since = explore_route(client, character, queue_since, step["dir"])
         parts.append(f"{step['do']} {'ok' if ok else 'failed'} ({detail})")
         if not ok:
             return "; ".join(parts) + "; stopped there", queue_since
@@ -2066,6 +2132,8 @@ def main(argv=None):
     parser.add_argument("--leather", default="", help='pin a leather project from the start: belt, backpack or leather')
     parser.add_argument("--stay", action="store_true", help="with --job: start at the --spawn target rather than the job's spawn point")
     parser.add_argument("--pause-file", default="", help="stop safely when this operator-controlled file exists; remove it and restart to resume")
+    parser.add_argument("--no-routines", dest="routines", action="store_false", help="ask the model every turn instead of running need-driven routines between its decisions")
+    parser.add_argument("--director-every", type=int, default=DIRECTOR_EVERY, help="routine turns in a row before the model reviews them (default %(default)s)")
     parser.add_argument("--no-follow", dest="follow", action="store_false", help="stop when the character travels to another region instead of following her there")
     parser.add_argument("--release", action="store_true", help="release (and delete a spawned) character at the end")
     args = parser.parse_args(argv)
@@ -2143,7 +2211,7 @@ WATCH_POLL = 10  # seconds between character_list polls in --watch mode
 WATCH_STEPS = 1000000  # a watched character plays until it dies or the run is stopped
 WATCH_RETRY = 300  # seconds after a failed run starts before its character is tried again
 # Flags a watched run passes on to each character's own run.
-WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval", "pause_file")
+WATCH_PASSTHROUGH = ("ollama_url", "model", "player_help_config", "num_ctx", "timeout", "keep_alive", "memory", "catalog", "leather", "steps", "minutes", "interval", "pause_file", "director_every")
 
 
 def reap_runs(runs, rows=None):
@@ -2201,6 +2269,8 @@ def watch_command(args, row):
         command += ["--" + name.replace("_", "-"), str(value)]
     if getattr(args, "release", False):
         command.append("--release")
+    if not getattr(args, "routines", True):
+        command.append("--no-routines")
     return command
 
 
@@ -2474,6 +2544,10 @@ def _run(client, args, character, token, model_pool):
     tree = load_tree(args.catalog) if getattr(args, "catalog", "") != "none" else None
     deadline = time.monotonic() + args.minutes * 60 if args.minutes else None
     decisions = DecisionSlot()
+    # Need-driven routines run most turns; the model directs (goals, priorities, standing orders) and handles the rest.
+    scheduler = routines.Routines(enabled=getattr(args, "routines", True), director_every=getattr(args, "director_every", DIRECTOR_EVERY))
+    kit = routine_kit()
+    last_social = time.monotonic()  # when she last spoke with or heard someone
     for step in range(1, args.steps + 1):
         if operator_paused(args):
             print("operator pause requested; stopping")
@@ -2532,6 +2606,7 @@ def _run(client, args, character, token, model_pool):
                 memory.event("died")
                 memory.save()
             break
+        unanswered = []
         if hasattr(client, "take_news"):
             observation["news"] = client.take_news(character, self_state)
             unanswered = senses.prompt_lines(observation["news"].get("prompts") or [])
@@ -2594,67 +2669,98 @@ def _run(client, args, character, token, model_pool):
         text = (f"CURRENT GOAL: {goal} ({after}).\n" + (f"HOW (from the recipe book): {how}\n" if how else "")
                 + (f"PROJECT: {building}\n" if building else "") + (aid + "\n" if aid else "")
                 + text + (f"\nMEMORY:\n{recalled}" if recalled else ""))
-        prompt = (alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "") + ("LAST RESULT" + feedback + "\n\n" if feedback else "") + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?"
-        history.append({"role": "user", "content": prompt})
-        forget_old(history, signatures, target_turns, seen_lines)
-        # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
-        reacted = []
-        stats, asked_at = {}, time.monotonic()
-        decision_id = decisions.begin(observation, float(args.timeout) + MODEL_GRACE)
-        future = model_pool.submit(ask_ollama, args.ollama_url, args.model, list(model_window(history)), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think, keep_alive=getattr(args, "keep_alive", DEFAULT_KEEP_ALIVE), stats=stats)
-        pending = dict(zip(("steps", "what"), reflex(observation, previous_self)))
+        if talk:
+            last_social = time.monotonic()
+        situation = routines.Situation(observation, refs, kit, ignored, explore_dir, box, time.monotonic() - last_social, bool(alarm))
+        director_why = scheduler.director_reason(situation, talk, alarm, bool(unanswered))
+        choice = None if director_why else scheduler.choose(situation)
+        if choice is None and not director_why:
+            director_why = scheduler.problem or "nothing to do by routine"
+        if choice is not None:
+            # A routine runs without the model; a threat still comes first, exactly as while the model thinks.
+            fresh_reflex, fresh_reason = reflex(observation, previous_self)
+            if fresh_reflex:
+                summary, queue_since = execute(client, character, fresh_reflex, queue_since)
+                print(f"step {step}: reflex {fresh_reason} -> {summary}")
+                feedback = f"\nBy reflex, {fresh_reason}: {summary}."
+                previous_self = self_state
+                time.sleep(args.interval)
+                continue
+            answer = choice.answer(note)
+            current = observation
+            print(f"step {step}: routine {choice.name} (score {choice.score:.2f}, {needs.describe(situation.levels, scheduler.priorities)})")
+        else:
+            routine_report = scheduler.report(situation) if scheduler.enabled else ""
+            if scheduler.enabled:
+                print(f"step {step}: director ({director_why})")
+        if choice is None:
+            prompt = ((alarm + "\n\n" if alarm else "") + (talk + "\n\n" if talk and not alarm else "")
+                      + ("LAST RESULT" + feedback + "\n\n" if feedback else "")
+                      + (routine_report + f"\nYOU ARE ASKED BECAUSE: {director_why}\n\n" if routine_report else "")
+                      + "OBSERVATION\n" + text + "\nEND OBSERVATION\nWhat do you do next?")
+            history.append({"role": "user", "content": prompt})
+            forget_old(history, signatures, target_turns, seen_lines)
+            # Ask the model in the background and keep reflexes running meanwhile: a predator gets 10-15 hits in one model turn.
+            reacted = []
+            stats, asked_at = {}, time.monotonic()
+            decision_id = decisions.begin(observation, float(args.timeout) + MODEL_GRACE)
+            future = model_pool.submit(ask_ollama, args.ollama_url, args.model, list(model_window(history)), token, timeout=args.timeout, num_ctx=args.num_ctx, think=args.think, keep_alive=getattr(args, "keep_alive", DEFAULT_KEEP_ALIVE), stats=stats)
+            pending = dict(zip(("steps", "what"), reflex(observation, previous_self)))
 
-        def tick():
-            """One reflex poll while the model thinks: act on a threat, or say why the run should stop."""
-            nonlocal queue_since
+            def tick():
+                """One reflex poll while the model thinks: act on a threat, or say why the run should stop."""
+                nonlocal queue_since
+                if pending["steps"]:
+                    summary, queue_since = execute(client, character, pending["steps"], queue_since)
+                    print(f"  reflex: {pending['what']} -> {summary}")
+                    reacted.append(pending["what"])
+                    pending["steps"] = None
+                look = client.request("character_observe", {"character": character, "radius": 5, "since": since})
+                if not look.get("ok"):
+                    return "character observation failed; control is unconfirmed"
+                seen = look.get("result", {})
+                stat = seen.get("self", {}).get("stat") if seen else None
+                if stat == 2:
+                    return "the character is dead"
+                pending["steps"], pending["what"] = reflex(seen, self_state) if seen and stat in (None, 0) else (None, "")
+                return ""
+
             if pending["steps"]:
-                summary, queue_since = execute(client, character, pending["steps"], queue_since)
-                print(f"  reflex: {pending['what']} -> {summary}")
-                reacted.append(pending["what"])
-                pending["steps"] = None
-            look = client.request("character_observe", {"character": character, "radius": 5, "since": since})
-            if not look.get("ok"):
-                return "character observation failed; control is unconfirmed"
-            seen = look.get("result", {})
-            stat = seen.get("self", {}).get("stat") if seen else None
-            if stat == 2:
-                return "the character is dead"
-            pending["steps"], pending["what"] = reflex(seen, self_state) if seen and stat in (None, 0) else (None, "")
-            return ""
-
-        if pending["steps"]:
-            tick()  # a threat already in view is met before the first poll
-        answer, stop = wait_for_model(future, args, deadline, tick)
-        if stop:
-            decisions.cancel()
-            print(f"step {step}: {stop}; stopping", file=sys.stderr)
-            return 1 if "model" in stop else 0
-        print(f"  {timing_line(stats, time.monotonic() - asked_at)}")
-        history.append({"role": "assistant", "content": answer})
-        if reacted:
-            decisions.cancel()
-            # The plan was made before the attack; plan again from the new situation.
-            previous_self = self_state
-            feedback = "\nWhile you were deciding, you " + " and ".join(dict.fromkeys(reacted)) + " by reflex. Plan again from where you are now."
-            time.sleep(args.interval)
-            continue
-        # Even an immediately completed future must pass a fresh authoritative look.
-        checked = client.request("character_observe", {"character": character, "radius": 5, "since": since})
-        if not checked.get("ok"):
-            decisions.cancel()
-            raise ContractError("cannot revalidate the model decision")
-        current = checked["result"]
-        candidate = parse_plan(answer, refs)
-        if not decisions.complete(decision_id, current) or not targets_current(candidate, observation, current):
-            feedback = "\nThe situation changed while you were deciding. Nothing from that answer was executed. Plan again."
-            previous_self = self_state
-            continue
-        fresh_reflex, fresh_reason = reflex(current, self_state) if current.get("self", {}).get("stat") in (None, 0) else (None, "")
-        if fresh_reflex:
-            summary, queue_since = execute(client, character, fresh_reflex, queue_since)
-            feedback = f"\nWhile you were deciding, {fresh_reason} required a reflex: {summary}. Plan again."
-            previous_self = self_state
-            continue
+                tick()  # a threat already in view is met before the first poll
+            answer, stop = wait_for_model(future, args, deadline, tick)
+            if stop:
+                decisions.cancel()
+                print(f"step {step}: {stop}; stopping", file=sys.stderr)
+                return 1 if "model" in stop else 0
+            print(f"  {timing_line(stats, time.monotonic() - asked_at)}")
+            history.append({"role": "assistant", "content": answer})
+            directed = scheduler.directed(answer) if scheduler.enabled else ""
+            if directed:
+                print(f"  director: {directed}")
+            if reacted:
+                decisions.cancel()
+                # The plan was made before the attack; plan again from the new situation.
+                previous_self = self_state
+                feedback = "\nWhile you were deciding, you " + " and ".join(dict.fromkeys(reacted)) + " by reflex. Plan again from where you are now."
+                time.sleep(args.interval)
+                continue
+            # Even an immediately completed future must pass a fresh authoritative look.
+            checked = client.request("character_observe", {"character": character, "radius": 5, "since": since})
+            if not checked.get("ok"):
+                decisions.cancel()
+                raise ContractError("cannot revalidate the model decision")
+            current = checked["result"]
+            candidate = parse_plan(answer, refs)
+            if not decisions.complete(decision_id, current) or not targets_current(candidate, observation, current):
+                feedback = "\nThe situation changed while you were deciding. Nothing from that answer was executed. Plan again."
+                previous_self = self_state
+                continue
+            fresh_reflex, fresh_reason = reflex(current, self_state) if current.get("self", {}).get("stat") in (None, 0) else (None, "")
+            if fresh_reflex:
+                summary, queue_since = execute(client, character, fresh_reflex, queue_since)
+                feedback = f"\nWhile you were deciding, {fresh_reason} required a reflex: {summary}. Plan again."
+                previous_self = self_state
+                continue
         # Expansion and deterministic safety choices use the revalidated state,
         # never the pre-inference inventory, terrain or hazard metadata.
         observation = current
@@ -2697,6 +2803,8 @@ def _run(client, args, character, token, model_pool):
             if not plan:
                 previous_self = self_state
                 feedback = "\n" + built_note
+                if choice is not None:
+                    scheduler.record(choice, built_note)
                 if memory is not None:
                     memory.save()  # a plan just started or dropped must outlive a crash before the next turn
                 continue
@@ -2752,6 +2860,8 @@ def _run(client, args, character, token, model_pool):
             problem = plan_problem(answer, refs) or "your reply had no valid step"
             print(f"step {step}: wait ({answer[:120]!r}) -> {problem}")
             feedback = f"\nNothing happened: {problem}."
+            if choice is not None:
+                scheduler.record(choice, f"failed: {problem}")
         else:
             signatures.extend(f"{self_state.get('x')},{self_state.get('y')}:{json.dumps(item, sort_keys=True)}" for item in plan)
             plan = trim_greetings(plan, speakers, greeted, time.monotonic())
@@ -2764,6 +2874,8 @@ def _run(client, args, character, token, model_pool):
             if error:
                 print(f"step {step}: {json.dumps(plan)} -> not possible: {error}")
                 feedback = f"\nThat was not possible: {error}"
+                if choice is not None:
+                    scheduler.record(choice, f"not possible: {error}")
                 time.sleep(args.interval)
                 continue
             summary, queue_since = execute(client, character, steps, queue_since)
@@ -2777,6 +2889,7 @@ def _run(client, args, character, token, model_pool):
                 for who in speakers:
                     replied[who] = time.monotonic()  # only an answer that was actually said counts
                 note_greetings(plan, speakers, greeted, time.monotonic())
+                last_social = time.monotonic()
                 spoken = next((item.get("text", "") for item in plan if item.get("do") == "say"), "")
                 if memory is not None and speakers and spoken:
                     memory.said(speakers, spoken)
@@ -2805,12 +2918,30 @@ def _run(client, args, character, token, model_pool):
             problem = plan_problem(answer, refs)
             if problem:
                 feedback += f"\nA later step was skipped: {problem}."
+            if choice is not None:
+                scheduler.record(choice, summary)
         if memory is not None:
             memory.save()
         time.sleep(args.interval)
     if memory is not None:
         memory.save()
+    if scheduler.enabled:
+        print(f"routines ran {scheduler.routine_steps} turns; the model decided {scheduler.director_calls} times")
     return 0
+
+
+DIRECTOR_EVERY = 8  # routine turns in a row before the model reviews what she is doing
+
+
+def routine_kit():
+    """The autopilot helpers need routines use (routines.py cannot import this module)."""
+    import types
+    return types.SimpleNamespace(
+        target_rows=target_rows, has=_has, is_food=_is_food, fire_words=FIRE_WORDS,
+        is_fuel=lambda name: any(word in str(name).lower() for word in FUEL_WORDS),
+        thirst_plan=thirst_plan, cold_plan=cold_plan, worst_wound=worst_wound, treat_plan=treat_plan,
+        illness_plan=illness_plan, skills=SKILLS, skill_targets=SKILL_TARGETS,
+        is_plain_stick=_is_plain_stick, binding_words=BINDING_WORDS, is_predator=is_predator)
 
 
 # A run may last days: bookkeeping lists keep only what the loop reads back (WINDOW_MIN..WINDOW_MAX exchanges, 6 signatures,

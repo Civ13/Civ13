@@ -42,7 +42,7 @@ class WildHerbSourceTests(unittest.TestCase):
     def test_every_icon_state_exists(self):
         used = set(re.findall(r'icon_state = "([^"]*)"', self.source))
         sprigs = {state for state in used if state.endswith('_sprig')}
-        self.assertEqual(len(sprigs), 4)
+        self.assertEqual(len(sprigs), 5)
         self.assertLessEqual(used - sprigs, dmi_states(ICON))
         self.assertLessEqual(sprigs, dmi_states(FOOD_ICON))
 
@@ -53,7 +53,7 @@ class WildHerbSourceTests(unittest.TestCase):
     def test_every_tea_reagent_is_defined(self):
         teas = set(re.findall(r'steep_reagent = "([^"]*)"', self.source))
         ids = set(re.findall(r'\tid = "([^"]*)"', self.source))
-        self.assertEqual(teas, {'elderflower_tea', 'milk_thistle_tea'})
+        self.assertEqual(teas, {'elderflower_tea', 'milk_thistle_tea', 'wormwood_tea'})
         self.assertLessEqual(teas, ids)
 
 

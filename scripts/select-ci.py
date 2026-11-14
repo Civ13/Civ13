@@ -73,6 +73,7 @@ AGENT_CONTROL_OFFLINE_TESTS = frozenset({
     'tests/agent_control/test_visibility.py',
     'tests/agent_control/test_action_contract.py',
     'tests/agent_control/test_navigation_replay.py',
+    'tests/agent_control/test_needs_routines.py',
 })
 # Explicitly opt-in source-bound fixture; do not admit its native runner to CI.
 AGENT_CONTROL_MANUAL_NATIVE = frozenset({
@@ -123,7 +124,7 @@ FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', '
 
 # Offline source contract plus the opt-in native probe (run by hand, not CI).
 # These DM files only define optional procedures; no hosted native runner is admitted.
-DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/probe.dm', 'tests/divine_approval/journal_probe.dm'})
+DIVINE_APPROVAL_OFFLINE_TESTS = frozenset({'tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/probe.dm', 'tests/divine_approval/journal_probe.dm'})
 
 # Exact stdlib-only mood projections, registered in the bounded offline baseline.
 MOOD_SLEEP_OFFLINE_TESTS = frozenset({'tests/mood_sleep/test_mood_sleep.py'})

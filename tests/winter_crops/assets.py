@@ -1,9 +1,15 @@
-"""Repack attributed upstream pixels and render a labeled asset preview, not gameplay."""
+"""Repack attributed upstream pixels and render a labeled asset preview, not gameplay.
+
+The growth states listed in REDRAWN are Civ13 adaptations drawn by
+tests/sprites/create_orchard.py; a repack restores the upstream states and then
+lets that script draw its states over them.
+"""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -15,6 +21,9 @@ MAPPING = [('turnip-seeds', 'seeds.dmi', 'turnip'),
            ('turnip-harvest', 'growing.dmi', 'turnip-5'),
            ('turnip-dead', 'growing.dmi', 'turnip-dead'),
            ('turnip', 'growable.dmi', 'turnip')]
+REDRAWN = {'turnip': ('grow1', 'grow2', 'grow3', 'grow6'),
+           'plump_helmet': ('grow1', 'grow2', 'grow3', 'grow6'),
+           'cave_wheat': ('grow1', 'grow2', 'grow3', 'grow4', 'grow5', 'grow6', 'harvest', 'dead')}
 
 
 def state(path, name):
@@ -51,9 +60,16 @@ def repack(source):
     info = PngImagePlugin.PngInfo()
     info.add_text('Description', text, zip=True)
     sheet.save(TARGET, format='PNG', pnginfo=info)
-    for name, filename, original in MAPPING:
+    crop = TARGET.stem.replace('pocket_stronghold_', '')
+    redrawn = {f'{crop}-{stage}' for stage in REDRAWN[crop]}
+    sys.path.insert(0, str(ROOT / 'tests/sprites'))
+    import create_orchard
+    relative = TARGET.relative_to(ROOT).as_posix()
+    create_orchard.write_dmi(TARGET, create_orchard.build()[relative])
+    kept = [entry for entry in MAPPING if entry[0] not in redrawn]
+    for name, filename, original in kept:
         assert state(TARGET, name).tobytes() == state(source / filename, original).tobytes()
-    print('Repacked 10 states, exact upstream RGBA pixel equality verified')
+    print(f'Repacked 10 states: {len(kept)} with exact upstream RGBA equality, {len(redrawn)} redrawn for Civ13')
 
 
 def preview(output):
@@ -71,7 +87,7 @@ def preview(output):
         draw.text((x, y), name, fill='white', font=label_font)
         canvas.paste(im, (x, y + 28), im)
     draw.text((20, 466), 'Pocket Stronghold 13 / Dwarf Fortress 13 contributors - CC BY-SA 3.0.', fill='white', font=label_font)
-    draw.text((20, 487), 'Selected states extracted and renamed; pixels unchanged. See icons/farming/ATTRIBUTION.md.', fill='white', font=label_font)
+    draw.text((20, 487), 'Upstream states extracted and renamed; early and in-between growth stages redrawn for Civ13. See icons/farming/ATTRIBUTION.md.', fill='white', font=label_font)
     output.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output)
     print(output)

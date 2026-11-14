@@ -23,7 +23,7 @@ SLOT = {"type": "string", "enum": ["back", "mask", "belt", "id", "l_ear", "r_ear
 LINK = {"type": "integer", "minimum": 1, "description": "topic: the number of a link in that window"}
 LINK_LABEL = {"type": "string", "description": "topic: a link's label, instead of its number"}
 DRIVE_CONTROL = {"type": "string", "enum": ["forward", "reverse", "turn_left", "turn_right", "gear_up", "gear_down", "climb", "descend"], "description": "drive: the driver's seat HUD button to press"}
-CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen"]
+CHARACTER_ACTIONS = ["move", "face", "say", "emote", "click", "use", "craft", "equip", "take", "examine", "drop", "swap_hand", "intent", "resist", "board", "disembark", "drag", "verb", "throw", "ooc", "bug_report", "topic", "close_window", "stance", "drive", "screen", "walk_to"]
 RECIPE = {"type": "string", "description": 'craft: a recipe from character_observe self.craftable, e.g. "sharpened stick" or "group/title".'}
 ZONE = {"type": "string", "enum": ["head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"], "description": "click: the body part to aim at, e.g. a bleeding limb to bandage"}
 ONTO = {"type": "string", "description": "drag: what the target is dragged onto, e.g. a boat ref (target is your own ref from self, or a crate)"}
@@ -80,7 +80,7 @@ ACTIONS = {
         "view": {"type": "integer", "description": "with part > 1: the view id part 1 returned"},
         "part": {"type": "integer", "minimum": 1, "description": "which part of the dump text (the client fetches them all when omitted)"},
     }, ["character"])),
-    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim), or drive (driver's seat HUD: control forward, reverse, turn_left, turn_right, gear_up, gear_down, climb, descend); use with alternate presses the secondary-use key; screen presses an action of an open machine screen (character_observe screens) or closes it; equip takes an optional slot; board, disembark, drag, verb, throw, topic and screen (except close) only through character_queue. While driving a boat, move steers it one tile; in a car, tank or aircraft seat, or holding turret or drone controls, move presses that arrow key (east/west turn, north/south pick forward/reverse while stopped or change turret range).", _schema({
+    "character_act": ("characters", "Make a character act: move, face, say, emote, click, use, craft, equip, take, examine, drop, swap_hand, intent, resist, board (a raft or boat next to you), disembark, drag (target onto onto), verb (a right-click or panel verb of yourself, a held or worn item or something next to you) throw (the held item at target), topic (press a numbered link of a menu window from character_observe windows), close_window, stance (HUD toggles: move, defense, tactic, secondary, face_lock, aim), or drive (driver's seat HUD: control forward, reverse, turn_left, turn_right, gear_up, gear_down, climb, descend), or walk_to (target, or x and y: walk the quickest route up to 32 tiles there, as a player's Ctrl+click does; queue only, its receipt says arrived or why it stopped); use with alternate presses the secondary-use key; screen presses an action of an open machine screen (character_observe screens) or closes it; equip takes an optional slot; board, disembark, drag, verb, throw, topic and screen (except close) only through character_queue. While driving a boat, move steers it one tile; in a car, tank or aircraft seat, or holding turret or drone controls, move presses that arrow key (east/west turn, north/south pick forward/reverse while stopped or change turret range).", _schema({
         "character": CHARACTER,
         "do": {"type": "string", "enum": CHARACTER_ACTIONS},
         "recipe": RECIPE,
@@ -89,6 +89,8 @@ ACTIONS = {
         "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},
         "text": {"type": "string"},
         "target": TARGET,
+        "x": {"type": "integer", "minimum": 1, "description": "walk_to: map x of the destination on your level (instead of target)"},
+        "y": {"type": "integer", "minimum": 1, "description": "walk_to: map y of the destination"},
         "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
         "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
         "choose": CHOOSE,
@@ -127,6 +129,8 @@ ACTIONS = {
                 "dir": {"type": "string", "enum": ["north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest"]},
                 "text": {"type": "string"},
                 "target": TARGET,
+                "x": {"type": "integer", "minimum": 1, "description": "walk_to: map x of the destination on your level (instead of target)"},
+                "y": {"type": "integer", "minimum": 1, "description": "walk_to: map y of the destination"},
                 "modifier": {"type": "string", "enum": ["shift", "ctrl", "alt", "middle"]},
                 "intent": {"type": "string", "enum": ["help", "disarm", "grab", "harm"]},
                 "choose": CHOOSE,

@@ -405,6 +405,10 @@
 	For most objects, pull
 */
 /mob/proc/CtrlClickOn(var/atom/A)
+	// Ctrl+click on something next to you pulls it; anywhere else walks
+	// there along the quickest route (click_route.dm).
+	if (!(ismovable(A) && A.Adjacent(src)) && click_route_to(A))
+		return
 	A.CtrlClick(src)
 	return
 /atom/proc/CtrlClick(var/mob/user)
