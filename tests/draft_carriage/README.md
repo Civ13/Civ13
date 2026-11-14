@@ -17,7 +17,8 @@ horse's pull, refuses hand pulls while hitched and comes loose when left far
 behind or when the horse dies; behind a carriage it rolls centred behind the
 rear, adds its weight to the team's load, follows steps and swings round on
 turns, and a turn with no room for it is refused. A seated passenger takes the
-reins from a knocked-out driver, or when the driver has died.
+reins from a knocked-out driver, or when the driver has died. The harness
+overlay for the team's rank and the lap rugs over seated people are counted.
 
     python3 tests/ecology_spawning/run_linux.py . tests/draft_carriage/probe.dm 300
 
