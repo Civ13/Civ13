@@ -2365,7 +2365,8 @@ RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/soft/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
-RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl,5,90,0,1,weapons,0,26,0,3,null
+RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl/unedged,5,90,0,1,weapons,0,26,0,3,null
+RECIPE: /material/wood/,tepoztopilli,/obj/item/weapon/macuahuitl/tepoztopilli/unedged,4,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
 
 RECIPE: /material/wood/,wood shield,/obj/item/weapon/shield,8,180,0,1,weapons,0,14,0,3,null
@@ -2904,6 +2905,7 @@ RECIPE: /material/obsidian/,aztec column,/obj/structure/mine_support/stone/aztec
 //*********************| OBSIDIAN DECORATIONS & RELIGION |**************************
 
 RECIPE: /material/obsidian/,obsidian altar,/obj/structure/altar/stone/material/obsidian,15,200,1,1,religious & decoration,0,0,0,8,null
+RECIPE: /material/obsidian/,obsidian hand mirror,/obj/item/mirror/obsidian,2,150,0,1,religious & decoration,0,0,0,8,null
 RECIPE: /material/copper/,Baghdad-style jar cell assembly,/obj/structure/battery,2,80,1,1,electrical,25,0,0,8,null
 RECIPE: /material/copper/,iron-copper voltaic-style pile,/obj/structure/battery/pile,5,120,1,1,electrical,95,0,0,8,null
 RECIPE: /material/lead/,lead-acid accumulator,/obj/structure/battery/lead_acid,5,150,1,1,electrical,105,0,0,8,null
