@@ -92,16 +92,16 @@
       "/obj/item/machine_part/belt": 1
     }
   },
-<<<<<<< HEAD
-  "/obj/structure/fluid_pump/hand": {
-    "tools": [],
-    "inputs": {
-=======
   "/obj/structure/workshop_machine/trip_hammer": {
     "tools": [],
     "inputs": {
       "/obj/item/stack/material/iron": 6,
->>>>>>> origin/master
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/fluid_pump/hand": {
+    "tools": [],
+    "inputs": {
       "/obj/item/machine_part/shaft": 1
     }
   }
