@@ -92,6 +92,10 @@ var/global/list/crafting_purpose_cache = list()
 	// same row can be asked for twice. Set by the Atlas hand-off only.
 	var/focus = ""
 	var/focus_seq = 0
+	// The selected recipe's exact requirements and the choices it asks for.
+	var/list/detail
+	// Set for one push that must reuse the last snapshot instead of rebuilding every row.
+	var/keep_snapshot = FALSE
 
 /datum/crafting_window/New(mob/living/human/H, obj/item/stack/S)
 	viewer = H
@@ -225,9 +229,11 @@ var/global/list/crafting_purpose_cache = list()
 /datum/crafting_window/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/nanoui/master_ui = null, var/datum/topic_state/state = null)
 	if (user != viewer || !still_valid(viewer))
 		return
-	var/list/data = (working && cached) ? cached : build_data()
+	var/list/data = ((working || keep_snapshot) && cached) ? cached : build_data()
+	keep_snapshot = FALSE
 	cached = data
 	data["working"] = working
+	data["detail"] = detail
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		var/datum/topic_state/crafting_window/window_state = new()
@@ -249,7 +255,67 @@ var/global/list/crafting_purpose_cache = list()
 		return
 	cached = null
 	load_recipes()
+	// What the selected recipe needs may have changed with what was just made.
+	if (detail)
+		detail = detail_for(detail["id"])
 	ui_interact(viewer, force_open = FALSE)
+
+// Push the last snapshot again with only its small parts changed.
+/datum/crafting_window/proc/push_cached()
+	if (!viewer || !still_valid(viewer))
+		return
+	keep_snapshot = TRUE
+	ui_interact(viewer, force_open = FALSE)
+
+// One recipe looked at closely: every requirement its guards report as unmet
+// right now, and the choices it would otherwise ask in pop-ups. Read only.
+/datum/crafting_window/proc/detail_for(id)
+	var/datum/stack_recipe/R = find_recipe(id)
+	if (!R)
+		return null
+	var/list/needs = list()
+	for (var/list/line in craft_recipe_requirements(viewer, R))
+		needs += list(list("label" = html_encode(trim("[line["label"]]")), "met" = line["met"] ? 1 : 0))
+	var/list/fields = list()
+	var/datum/craft_product/P = craft_product_for(R)
+	if (P)
+		for (var/list/prompt in P.prompts)
+			var/list/field = list(
+				"field" = "[prompt["field"]]",
+				"kind" = "[prompt["kind"]]",
+				"question" = html_encode("[craft_product_text(prompt["question"], R, viewer)]"),
+				"default" = html_encode("[craft_product_text(prompt["default"], R, viewer)]"),
+				"required" = prompt["required"] ? 1 : 0,
+				"max_length" = prompt["max_length"] ? prompt["max_length"] : 256)
+			if (prompt["kind"] == "company")
+				var/list/choices = list()
+				for (var/company in craft_product_companies(viewer))
+					choices += html_encode("[company]")
+				field["choices"] = choices
+			fields += list(field)
+	return list("id" = "[id]", "needs" = needs, "fields" = fields)
+
+// The answers the card sent for this recipe's declared choices. Only fields the
+// product declares are kept; the craft code sanitizes and validates each one,
+// and asks in a pop-up for any that are missing.
+/datum/crafting_window/proc/given_options(datum/stack_recipe/R, raw)
+	var/datum/craft_product/P = craft_product_for(R)
+	if (!P || !istext(raw) || length(raw) > 4096)
+		return null
+	var/list/sent
+	try
+		sent = json_decode(raw)
+	catch
+		return null
+	if (!islist(sent))
+		return null
+	var/list/options = list()
+	for (var/list/prompt in P.prompts)
+		var/field = "[prompt["field"]]"
+		var/value = sent[field]
+		if (istext(value) && length(value) <= 1024)
+			options[field] = value
+	return options.len ? options : null
 
 // Material stacks rebuild their list for this character, as the classic list does on opening.
 /datum/crafting_window/proc/load_recipes()
@@ -537,7 +603,14 @@ var/global/list/crafting_purpose_cache = list()
 			for (var/list/row in cached["rows"])
 				if (row["id"] == href_list["pin"])
 					row["pinned"] = pinned.Find(pin_key) ? 1 : 0
-			ui_interact(H, force_open = FALSE)
+			push_cached()
+		return FALSE
+	if (href_list["detail"])
+		// Selecting a row asks what exactly it needs. Nothing is spent or built.
+		if (working)
+			return FALSE
+		detail = detail_for(href_list["detail"])
+		push_cached()
 		return FALSE
 	if (href_list["make"])
 		if (working || !H.can_build_recipe)
@@ -553,12 +626,13 @@ var/global/list/crafting_purpose_cache = list()
 			refresh()
 			return FALSE
 		var/obj/item/stack/S = source
+		var/list/options = given_options(R, href_list["options"])
 		working = list("id" = href_list["make"], "name" = html_encode("[R.title]"), "time" = expected_time(R))
 		GLOB.nanomanager.update_uis(src)
 		var/held_before = S.amount
 		var/recent_key = crafting_window_pin_key(S, R)
 		H.can_build_recipe = FALSE
-		S.produce_recipe(R, quantity, H)
+		S.produce_recipe(R, quantity, H, options)
 		H.can_build_recipe = TRUE
 		working = null
 		// Material went, so something was made: remember it for the Recent strip.
