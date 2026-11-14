@@ -290,3 +290,14 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Small boats:** a raft and an outrigger in the slip are offered; the outrigger is put away and a full office (three boats) refuses the raft.
 - **Taking out:** a rock or another boat in her tiles keeps a boat in; the Teal comes back on the same six tiles with her cargo where it lay and is a boat afloat again; the submarine comes back with her name, battery and all 15 hull frames; the outrigger comes back where it lay.
 - **Wrench:** an office with boats stored does not turn; an empty one turns its slip to the next corner clockwise.
+
+## Ships between worlds (`crossing_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/crossing_probe.dm
+```
+
+- **Packing:** a 12-tile hull with a rigged mast, a crate of 20 planks and a crowbar packs into a record; a thing that cannot be rebuilt keeps her in port and is named.
+- **Records:** unknown types, a repeated tile and an overfull stack are refused; a crew payload with her decodes, one with a bad ship does not, and a long payload without a ship is refused.
+- **Leaving:** stripped, nothing of her is left and the water is open sea again; planks floating beside her stay.
+- **Arriving:** an anchorage is found off a chosen edge (past the sand to deep water); she is built named, at anchor, 12 tiles bow east, with the mast rigged, the crate holding exactly 20 planks and the crowbar where it lay; she is not built twice on the same water; a crew member of her voyage comes aboard, and another voyage's carrier builds her own ship.

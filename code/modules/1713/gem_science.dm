@@ -9,6 +9,9 @@
 #define LAP_CHARGES_PER_GRIT 3
 #define LAP_MAX_CHARGES 30
 #define DRILL_BIT_CHARGES 6
+#define CRYSTAL_SET_WIRE 10
+#define READING_STONE_LIGHT 0.5
+#define GARNET_PAPER_SHEETS 4
 
 /obj/item
 	var/jewelled = FALSE // pivots run in jewel bearings (watches, compasses)
@@ -58,10 +61,10 @@
 // Chisel in the active hand, hammer in the other: drills one cut stone into
 // jewel bearings. Returns TRUE when the click was a drilling attempt.
 /obj/item/stack/gemstone/proc/drill_jewel_bearings(obj/item/W, mob/user)
-	if (!bearing_type || !istype(W, /obj/item/weapon/chisel) || !ishuman(user))
+	if (!bearing_type || !is_tool(W, TOOL_CHISEL) || !ishuman(user))
 		return FALSE
 	var/mob/living/human/H = user
-	if (!istype(H.get_inactive_hand(), /obj/item/weapon/hammer))
+	if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
 		to_chat(H, SPAN_WARNING("You need a hammer in your other hand to drill jewel bearings."))
 		return TRUE
 	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "optics_instruments"))
@@ -117,7 +120,10 @@
 	..()
 
 /obj/item/clothing/gloves/watch/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/stack/jewel_bearing) && fit_jewel_bearings(src, W, user))
+	if (istype(W, /obj/item/stack/jewel_bearing) && !quartz_movement && fit_jewel_bearings(src, W, user))
+		return
+	if (istype(W, /obj/item/quartz_crystal_unit) && ishuman(user))
+		fit_quartz(W, user)
 		return
 	..()
 
@@ -130,7 +136,7 @@
 // time to about the quarter hour; a jewelled one keeps time to the minute.
 /proc/watch_reading(obj/item/watch)
 	var/exact = clock_time()
-	if (watch && watch.jewelled)
+	if (watch && (watch.jewelled || watch.quartz_movement))
 		return "It is now [exact]."
 	var/hr = text2num(copytext(exact, 1, 3))
 	var/min = text2num(copytext(exact, 4, 6))
@@ -161,7 +167,7 @@
 
 // A hammer crushes a rough diamond into grit.
 /obj/item/stack/ore/diamond/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/hammer) && ishuman(user))
+	if (is_tool(W, TOOL_HAMMER) && ishuman(user))
 		var/mob/living/human/H = user
 		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "regalia"))
 			return
@@ -186,6 +192,9 @@
 	if (ispath(cut_type, /obj/item/stack/gemstone/diamond))
 		new /obj/item/stack/diamond_grit(T)
 		return "a pinch of diamond grit"
+	if (ispath(cut_type, /obj/item/stack/gemstone/ruby) || ispath(cut_type, /obj/item/stack/gemstone/sapphire))
+		new /obj/item/stack/emery_powder(T)
+		return "a pinch of emery"
 	return null
 
 // Iron lap for gem cutting (the scaife). Charged with diamond grit, it
@@ -200,13 +209,30 @@
 	flammable = FALSE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/charges = 0
+	var/charges = 0 // diamond grit, for any stone
+	var/emery_charges = 0 // emery, for stones softer than corundum
 
 /obj/structure/lapping_wheel/examine(mob/user)
 	..()
-	to_chat(user, charges ? "Its face is charged with grit for about [charges] more stone\s." : "Its face is bare. Rub diamond grit into it to charge it.")
+	if (!charges && !emery_charges)
+		to_chat(user, "Its face is bare. Rub diamond grit or emery into it to charge it.")
+		return
+	if (charges)
+		to_chat(user, "It is charged with diamond grit for about [charges] more stone\s.")
+	if (emery_charges)
+		to_chat(user, "It is charged with emery for about [emery_charges] more soft stone\s.")
 
-/obj/structure/lapping_wheel/proc/use_charge()
+// Emery (impure corundum) cuts only stones softer than itself; diamond cuts all.
+/proc/gem_needs_diamond(cut_type)
+	return ispath(cut_type, /obj/item/stack/gemstone/diamond) || ispath(cut_type, /obj/item/stack/gemstone/ruby) || ispath(cut_type, /obj/item/stack/gemstone/sapphire)
+
+/obj/structure/lapping_wheel/proc/can_cut(cut_type)
+	return charges > 0 || (emery_charges > 0 && !gem_needs_diamond(cut_type))
+
+/obj/structure/lapping_wheel/proc/use_charge(cut_type)
+	if (emery_charges > 0 && !gem_needs_diamond(cut_type))
+		emery_charges--
+		return TRUE
 	if (charges < 1)
 		return FALSE
 	charges--
@@ -222,6 +248,16 @@
 			return
 		charges = min(LAP_MAX_CHARGES, charges + LAP_CHARGES_PER_GRIT)
 		to_chat(user, SPAN_NOTICE("You rub the grit into \the [src] with a little oil."))
+		return
+	if (istype(W, /obj/item/stack/emery_powder))
+		var/obj/item/stack/emery_powder/E = W
+		if (emery_charges >= LAP_MAX_CHARGES)
+			to_chat(user, SPAN_NOTICE("\The [src] is fully charged with emery."))
+			return
+		if (!E.use(1))
+			return
+		emery_charges = min(LAP_MAX_CHARGES, emery_charges + LAP_CHARGES_PER_GRIT)
+		to_chat(user, SPAN_NOTICE("You rub the emery into \the [src] with a little oil."))
 		return
 	if (istype(W, /obj/item/stack/material/steel) && ishuman(user))
 		make_drill_bit(W, user)
@@ -245,9 +281,9 @@
 	new /obj/item/diamond_drill_bit(get_turf(src))
 	to_chat(H, SPAN_NOTICE("You finish a diamond drill bit."))
 
-/proc/gem_lap_near(mob/living/human/H)
+/proc/gem_lap_near(mob/living/human/H, cut_type)
 	for (var/obj/structure/lapping_wheel/L in range(1, H))
-		if (L.charges > 0)
+		if (L.can_cut(cut_type))
 			return L
 	return null
 
@@ -285,6 +321,290 @@
 	if (diamond_bit)
 		to_chat(user, "It is fitted with a diamond drill bit.")
 
+// ---- Quartz, galena and the crystal set ----
+
+/obj/item/stack/ore/gem/quartz
+	name = "rough quartz"
+	singular_name = "rough quartz"
+	desc = "A cloudy six-sided crystal in a scrap of rock. A chisel and a hammer would clear it."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "quartz_uncut"
+	value = 2
+	cut_type = /obj/item/stack/gemstone/quartz
+
+/obj/item/stack/gemstone/quartz
+	name = "quartz crystals"
+	singular_name = "quartz crystal"
+	desc = "A clear, cut rock crystal. Set it into clothing as a stone, use it with a sheet of tin in your other hand to make a radio crystal, or shape it with a chisel and hammer into a reading stone."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "quartz"
+	gem_colour = "#e8eef2"
+	value = 6
+
+// Cut quartz in the active hand, tin sheet in the other: a crystal unit
+// for frequency control (quartz oscillators, 1920s).
+/obj/item/stack/gemstone/quartz/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H) || !istype(H.get_inactive_hand(), /obj/item/stack/material/tin))
+		return ..()
+	var/obj/item/stack/material/tin/T = H.get_inactive_hand()
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "assembly_line"))
+		return
+	to_chat(H, SPAN_NOTICE("You start grinding \a [singular_name] to a thin plate and sealing it in a tin case..."))
+	if (!do_after(H, 60, src))
+		return
+	if (QDELETED(src) || QDELETED(T) || amount < 1 || T.loc != H || loc != H || !use(1) || !T.use(1))
+		return
+	H.put_in_hands(new /obj/item/quartz_crystal_unit(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("You make a quartz crystal unit."))
+
+/obj/item/quartz_crystal_unit
+	name = "quartz crystal unit"
+	desc = "A thin quartz plate sealed in a tin case with two pins. Fit it into a radio to hold a second frequency it always listens to, or into a wrist watch to make it keep perfect time."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "quartz_crystal_unit"
+	w_class = ITEM_SIZE_TINY
+	flags = CONDUCT
+	value = 12
+
+/obj/item/weapon/radio
+	var/crystal_freq = 0 // second frequency held by a quartz crystal unit
+
+/obj/item/weapon/radio/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/quartz_crystal_unit) && ishuman(user) && transmitter)
+		var/mob/living/human/H = user
+		if (crystal_freq)
+			to_chat(H, SPAN_NOTICE("\The [src] already holds a crystal for [crystal_freq]kHz."))
+			return
+		if (!crafting_node_allowed_or_warn(H, "assembly_line"))
+			return
+		var/input = player_input(H, "Which frequency should the crystal hold? (150-300 kHz)", null, null, "num", null, FALSE)
+		if (!input || QDELETED(W) || W.loc != H || !H.Adjacent(src))
+			return
+		crystal_freq = sanitize_integer(input, min = 150, max = 300, default = 150)
+		H.drop_from_inventory(W)
+		qdel(W)
+		to_chat(H, SPAN_NOTICE("You fit the crystal. \The [src] now also listens on [crystal_freq]kHz."))
+		return
+	..()
+
+// A crystal unit in a receiving radio also holds it to its second frequency.
+/obj/item/weapon/radio/check_freq(var/obj/original)
+	return ..() || radio_crystal_matches(original, freq, multifreq, multifreqlist)
+
+/obj/structure/radio/check_freq(var/obj/original)
+	return ..() || radio_crystal_matches(original, freq, multifreq, multifreqlist)
+
+/proc/radio_crystal_matches(obj/original, source_freq, source_multifreq, list/source_multifreqlist)
+	var/obj/item/weapon/radio/R = original
+	if (!istype(R) || !R.crystal_freq)
+		return FALSE
+	if (source_multifreq)
+		return (R.crystal_freq in source_multifreqlist)
+	return R.crystal_freq == source_freq
+
+/obj/item/weapon/radio/examine(mob/user)
+	..()
+	if (crystal_freq)
+		to_chat(user, "A quartz crystal holds it to [crystal_freq]kHz as well.")
+
+/obj/item
+	var/quartz_movement = FALSE // a quartz oscillator keeps its time (1969)
+
+/obj/item/clothing/gloves/watch/proc/fit_quartz(obj/item/quartz_crystal_unit/Q, mob/living/human/H)
+	if (quartz_movement)
+		to_chat(H, SPAN_NOTICE("\The [src] already keeps quartz time."))
+		return
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "digital_computing"))
+		return
+	to_chat(H, SPAN_NOTICE("You open \the [src] and replace its movement with the quartz crystal..."))
+	if (!do_after(H, 40, src))
+		return
+	if (QDELETED(Q) || Q.loc != H || quartz_movement)
+		return
+	H.drop_from_inventory(Q)
+	qdel(Q)
+	quartz_movement = TRUE
+	name = "quartz watch"
+	desc = "A wrist watch kept to time by a quartz crystal."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "quartz_watch"
+	value += 10
+	update_clothing_icon()
+	to_chat(H, SPAN_NOTICE("\The [src] now keeps quartz time."))
+
+// Galena (lead ore) gives the detector crystal of a crystal set (1900s).
+/obj/item/stack/ore/lead/attackby(obj/item/W, mob/user)
+	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to split out a crystal."))
+			return
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "electricity"))
+			return
+		to_chat(H, SPAN_NOTICE("You start splitting a clean crystal of galena from the ore..."))
+		if (!do_after(H, 30, src))
+			return
+		if (QDELETED(src) || amount < 1 || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		if (!use(1))
+			return
+		new /obj/item/galena_crystal(T)
+		to_chat(H, SPAN_NOTICE("You split out a bright crystal of galena."))
+		return
+	..()
+
+/obj/item/galena_crystal
+	name = "galena crystal"
+	desc = "A bright cube of lead ore. With some copper wire held in your other hand, use it to make a crystal radio set."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "galena"
+	w_class = ITEM_SIZE_TINY
+	value = 2
+
+/obj/item/galena_crystal/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H))
+		return
+	var/obj/item/stack/cable_coil/C = H.get_inactive_hand()
+	if (!istype(C) || C.amount < CRYSTAL_SET_WIRE)
+		to_chat(H, SPAN_WARNING("Hold at least [CRYSTAL_SET_WIRE] lengths of cable in your other hand to wind the coil."))
+		return
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "electricity"))
+		return
+	to_chat(H, SPAN_NOTICE("You start winding a coil and mounting the crystal on a board..."))
+	if (!do_after(H, 60, src))
+		return
+	if (QDELETED(src) || QDELETED(C) || C.loc != H || loc != H || !C.use(CRYSTAL_SET_WIRE))
+		return
+	H.drop_from_inventory(src)
+	H.put_in_hands(new /obj/item/weapon/radio/crystal_set(get_turf(H)))
+	to_chat(H, SPAN_NOTICE("You make a crystal radio set."))
+	qdel(src)
+
+// Receive-only set that needs no power: one earphone, for its holder.
+/obj/item/weapon/radio/crystal_set
+	name = "crystal radio set"
+	desc = "A coil, a galena crystal touched by a fine wire and an earphone, on a small board. It needs no power, but it can only listen."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "crystal_radio"
+	item_state = "portable_radio"
+	transmitter = FALSE
+	transmitter_on = FALSE
+	w_class = ITEM_SIZE_SMALL
+	slot_flags = SLOT_BELT
+	force = 1
+	throwforce = 1
+	value = 8
+
+// ---- Reading stones, emery and garnet paper ----
+
+// Cut quartz polished into a reading stone (Visby lenses, 11th-12th c.).
+/obj/item/stack/gemstone/quartz/attackby(obj/item/W, mob/user)
+	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
+		var/mob/living/human/H = user
+		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to shape a reading stone."))
+			return
+		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "glassworking"))
+			return
+		to_chat(H, SPAN_NOTICE("You start grinding \a [singular_name] into a reading stone..."))
+		if (!do_after(H, 60, src))
+			return
+		if (QDELETED(src) || amount < 1 || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+			return
+		var/turf/T = get_turf(src)
+		if (!use(1))
+			return
+		new /obj/item/reading_stone(T)
+		to_chat(H, SPAN_NOTICE("You polish a reading stone."))
+		return
+	..()
+
+/obj/item/reading_stone
+	name = "reading stone"
+	desc = "A clear, domed lens of rock crystal. Held in your other hand over a page, it makes the letters large enough to read and write by poorer light."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "rock_crystal_lens"
+	w_class = ITEM_SIZE_TINY
+	slot_flags = SLOT_POCKET
+	value = 10
+
+/mob/living/human/reading_light_problem()
+	. = ..()
+	if (. && (istype(l_hand, /obj/item/reading_stone) || istype(r_hand, /obj/item/reading_stone)))
+		var/turf/T = get_turf(src)
+		if (T && T.get_lumcount() >= SCHOLAR_MIN_LIGHT * READING_STONE_LIGHT)
+			return null
+
+/obj/item/stack/emery_powder
+	name = "emery"
+	singular_name = "pinch of emery"
+	desc = "Dark, gritty powder of crushed corundum. Rubbed into a lapping wheel it cuts the softer stones: garnet, amethyst, topaz, emerald and quartz."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "emery_powder"
+	w_class = ITEM_SIZE_TINY
+	max_amount = 50
+	amount = 1
+	flammable = FALSE
+	value = 2
+
+// Crushed garnet glued to paper (1878): rough garnet with paper in the other hand.
+/obj/item/stack/ore/gem/garnet/attack_self(mob/user)
+	var/mob/living/human/H = user
+	if (!istype(H) || !istype(H.get_inactive_hand(), /obj/item/weapon/paper))
+		return ..()
+	var/obj/item/weapon/paper/P = H.get_inactive_hand()
+	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "factories"))
+		return
+	to_chat(H, SPAN_NOTICE("You start crushing \a [singular_name] and gluing it to the paper..."))
+	if (!do_after(H, 40, src))
+		return
+	if (QDELETED(src) || QDELETED(P) || P.loc != H || loc != H || !use(1))
+		return
+	H.drop_from_inventory(P)
+	qdel(P)
+	var/obj/item/stack/garnet_paper/G = new(get_turf(H))
+	G.amount = GARNET_PAPER_SHEETS
+	G.update_icon()
+	H.put_in_hands(G)
+	to_chat(H, SPAN_NOTICE("You make [GARNET_PAPER_SHEETS] sheets of garnet paper."))
+
+/obj/item/stack/garnet_paper
+	name = "garnet paper"
+	singular_name = "sheet of garnet paper"
+	desc = "Paper faced with crushed garnet. Use a sheet with a worn wooden tool or weapon in your other hand to sand it smooth again."
+	icon = 'icons/obj/gem_science.dmi'
+	icon_state = "garnet_paper"
+	w_class = ITEM_SIZE_TINY
+	max_amount = 20
+	amount = 1
+	value = 1
+
+// Garnet paper in the active hand sands the wear out of a wooden tool or
+// weapon held in the other hand, as a grindstone does for steel.
+/obj/item/stack/garnet_paper/attack_self(mob/user)
+	var/mob/living/human/H = user
+	var/obj/item/weapon/material/M = istype(H) ? H.get_inactive_hand() : null
+	if (!istype(M) || !istype(M.material, /material/wood))
+		to_chat(user, SPAN_WARNING("Hold a wooden tool or weapon in your other hand to sand it."))
+		return
+	if (M.health >= M.maxhealth)
+		to_chat(user, SPAN_NOTICE("\The [M] is already smooth."))
+		return
+	if (!H.may_do_after)
+		return
+	to_chat(H, SPAN_NOTICE("You start sanding \the [M]..."))
+	playsound(get_turf(H), 'sound/effects/woodfile.ogg', 40, TRUE)
+	if (!do_after(H, 30, M))
+		return
+	if (QDELETED(src) || QDELETED(M) || H.get_inactive_hand() != M || !use(1))
+		return
+	M.maxhealth = max(1, M.maxhealth - 1)
+	M.health = min(M.maxhealth, M.health + round(M.maxhealth / 4))
+	to_chat(H, SPAN_NOTICE("You sand the wear out of \the [M]."))
+
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
 	if (jewelled)
@@ -297,3 +617,6 @@
 #undef LAP_CHARGES_PER_GRIT
 #undef LAP_MAX_CHARGES
 #undef DRILL_BIT_CHARGES
+#undef CRYSTAL_SET_WIRE
+#undef READING_STONE_LIGHT
+#undef GARNET_PAPER_SHEETS

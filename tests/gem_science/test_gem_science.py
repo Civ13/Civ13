@@ -47,8 +47,8 @@ class GemScienceTest(unittest.TestCase):
 
     def test_diamond_grit_and_lap(self):
         gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
-        self.assertIn('gem_lap_near(H)', gems)
-        self.assertIn('lap.use_charge()', gems)
+        self.assertIn('gem_lap_near(H, cut_type)', gems)
+        self.assertIn('lap.use_charge(cut_type)', gems)
         self.assertIn('gem_flaw_leftovers(T, cut_type)', gems)
         self.assertIn('/obj/item/stack/ore/diamond/attackby', self.text)
         self.assertIn('crafting_node_allowed_or_warn(H, "machined_tools")', self.text)
@@ -59,6 +59,32 @@ class GemScienceTest(unittest.TestCase):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertIn(',lapping wheel,/obj/structure/lapping_wheel,', recipes)
         self.assertIn('"/obj/structure/lapping_wheel" = "workshops",', nodes)
+
+    def test_quartz_and_crystal_set(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/stack/ore/gem/quartz = 30,', gems)
+        # The crystal set's detector is galena from lead ore, not quartz.
+        self.assertIn('/obj/item/stack/ore/lead/attackby', self.text)
+        self.assertRegex(self.text, r'/obj/item/weapon/radio/crystal_set\n(?:\t.*\n)*?\ttransmitter = FALSE')
+        self.assertIn('crafting_node_allowed_or_warn(H, "electricity")', self.text)
+        # Quartz holds a radio frequency (1920s) and keeps a watch's time (1969).
+        self.assertIn('crafting_node_allowed_or_warn(H, "assembly_line")', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "digital_computing")', self.text)
+        self.assertIn('R.crystal_freq == source_freq', self.text)
+        self.assertNotIn('/obj/item/weapon/hammer)', self.text)
+        self.assertIn('watch.jewelled || watch.quartz_movement', self.text)
+
+    def test_reading_stone_emery_and_garnet_paper(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/stack/garnet_paper/attack_self(mob/user)', self.text)
+        self.assertIn('istype(M.material, /material/wood)', self.text)
+        self.assertIn('/mob/living/human/reading_light_problem()', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "glassworking")', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "factories")', self.text)
+        # Emery is corundum, so it cannot cut ruby, sapphire or diamond.
+        self.assertIn('/proc/gem_needs_diamond(cut_type)', self.text)
+        self.assertIn('lap.use_charge(cut_type)', gems)
+        self.assertIn('gem_lap_near(H, cut_type)', gems)
 
     def test_included_after_lanyards(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
