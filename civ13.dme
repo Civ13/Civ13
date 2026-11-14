@@ -1776,6 +1776,7 @@
 #include "code\modules\1713\building_site.dm"
 #include "code\modules\1713\mechanical_power.dm"
 #include "code\modules\1713\machine_shop.dm"
+#include "code\modules\1713\power_cranes.dm"
 #include "code\modules\1713\necklaces.dm"
 #include "code\modules\1713\belt_pouches.dm"
 #include "code\modules\1713\lanyards.dm"

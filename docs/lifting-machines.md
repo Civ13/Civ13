@@ -39,3 +39,20 @@ give a way up, and floors already extend over open air.
 `/obj/structure/workshop_machine/shear_legs/crane`: 16 wood plus a shaft, two
 bearings and a belt, Imperial Architecture. It is the same hoist with
 `reach = 3` and its own sprites; it adds no procs.
+
+## Powered cranes
+
+`code/modules/1713/power_cranes.dm` adds two cranes that are the same hoist
+with their own engine. Fuel is one number counted in hauls: a powered crane
+refuses to haul with none, burns one haul when a haul starts and winds in
+0.35 of the hand time. Nothing ticks.
+
+| Crane | Built from | Research | Reach | Fuel |
+| --- | --- | --- | --- | --- |
+| Steam crane | 20 iron, gear set, shaft, 2 bearings | Steam Power | 4 tiles, one level | coal 4, charcoal 3, wood, planks or bamboo 1 haul a unit, up to 40 |
+| Tower crane | 30 steel, 2 gear sets, shaft, 2 bearings | Modern Construction | 6 tiles, up to 3 levels | 5 units of diesel, biodiesel or gasoline a haul, up to 60 |
+
+The tower crane overrides `haul_choices()` only. Raising stops at the first
+level where the tile over the load is not open air. Lowering follows the
+columns of open air within reach on the crane's level and offers the nearest
+clear ground on each level those columns still reach.
