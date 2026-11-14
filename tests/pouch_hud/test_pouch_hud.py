@@ -198,5 +198,23 @@ class PouchVisibility(unittest.TestCase):
         self.assertIn('/client/var/list/attachment_strip', strip)
         self.assertNotIn('/mob/living/human/var', strip)
 
+    def test_hip_slot_is_named_drawn_and_takes_belt_pouches(self):
+        for style in ('civ', 'fof', 'liteweb', 'new'):
+            text = (ROOT / f'code/_onclick/hud/hud_{style}style.dm').read_text(encoding='utf8')
+            self.assertRegex(text, r'"id" =\s+list\("loc" = [^\n]*"name" = "Hip",[^\n]*"state" = "id"')
+        pouches = (ROOT / 'code/modules/1713/belt_pouches.dm').read_text(encoding='utf8')
+        pouch = pouches.split('/obj/item/clothing/accessory/storage/belt_pouch\n', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('slot_flags = SLOT_BELT | SLOT_POCKET | SLOT_ID', pouch)
+        # A pouch has no held state, so the hip slot draws it by its icon state.
+        self.assertIn('wear_id.item_state ? wear_id.item_state : wear_id.icon_state', body(ICONS, '/mob/living/human/update_inv_wear_id'))
+        worn = (ROOT / 'code/game/mob/living/carbon/human/worn_storage.dm').read_text(encoding='utf8')
+        self.assertIn('items = list(belt, wear_id)', worn)
+        self.assertIn('items = list(back, belt, wear_id, w_uniform, wear_suit, l_store, r_store)', worn)
+        # The slot tile art is owned by its script; the committed sheets must match it.
+        spec = importlib.util.spec_from_file_location('create_hip_slot', ROOT / 'tests/sprites/create_hip_slot.py')
+        hip = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(hip)
+        self.assertEqual(hip.main(['--check']), 0)
+
 if __name__ == '__main__':
     unittest.main()

@@ -20,7 +20,7 @@ Code: `code/modules/1713/gemstones.dm`, `code/modules/1713/belt_pouches.dm`.
 
 Leather belt pouch (1 leather, Basic Toolmaking) and cloth drawstring pouch
 (1 cloth, Weaving). Six slots, small items only, no containers. Worn in the
-belt slot, carried in a pocket, or hung from a garment or a leather belt (at
+belt slot or the Hip slot, carried in a pocket, or hung from a garment or a leather belt (at
 most two per garment or belt; the second hangs on the left hip).
 
 Belts: the leather belt (1 leather) is worn in the belt slot and takes up to

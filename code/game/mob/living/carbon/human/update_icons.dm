@@ -840,7 +840,8 @@ var/global/list/human_face_icon_cache = list()
 		if (w_uniform && w_uniform:displays_id)
 			var/image/standing
 			if (wear_id.icon_override)
-				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state]")
+				// Hip items without a held state (pouches) use their own icon state.
+				standing = image("icon" = wear_id.icon_override, "icon_state" = "[wear_id.item_state ? wear_id.item_state : wear_id.icon_state]")
 
 			else
 				standing = image("icon" = 'icons/mob/mob.dmi', "icon_state" = "id")
