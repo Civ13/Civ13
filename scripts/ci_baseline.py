@@ -465,6 +465,15 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
+        'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
+            'code/modules/visibility/los_terrain.dm',
+            'code/modules/visibility/los_context.dm',
+            'code/_onclick/other_mobs.dm',
+            'code/game/mob/mob_movement.dm',
+            'code/game/objects/structures/tree_climbing.dm',
+            'code/modules/projectiles/projectile.dm',
+            'code/game/mob/living/carbon/human/human.dm')},
     'tree_climbing': {'files': ('tests/tree_climbing/test_sources.py',),
         'paths': ('tests/tree_climbing/', 'code/game/objects/structures/tree_climbing.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
