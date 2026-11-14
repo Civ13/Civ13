@@ -919,6 +919,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'liquid_fuels': {'files': ('tests/liquid_fuels/test_liquid_fuels.py',),
+        'paths': ('tests/liquid_fuels/', 'code/_helpers/liquid_fuels.dm', 'code/__defines/liquid_fuels.dm'), 'shared_paths': ()},
     'water_turfs': {'files': ('tests/water_turfs/test_water_turfs.py',),
         'paths': ('tests/water_turfs/', 'code/_helpers/water_turfs.dm'), 'shared_paths': ()},
     'faction_hud': {'files': ('tests/faction_hud/test_faction_hud.py',),
