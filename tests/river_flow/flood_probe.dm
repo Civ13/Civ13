@@ -1,0 +1,102 @@
+// Native probe for river stages and flood depth (river_flood.dm).
+// Run: python3 tests/ecology_spawning/run_linux.py . tests/river_flow/flood_probe.dm
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 6
+	maxy = 3
+	maxz = 1
+	turf = /turf
+	area = /area
+	visibility = 0
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/obj/map_metadata/flood_probe/New()
+	return
+var/flood_failures = 0
+var/flood_runtime_error = FALSE
+/proc/flood_check(condition, label)
+	if (!condition)
+		flood_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+/world/Error(exception/e)
+	flood_runtime_error = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+/world/New()
+	OpenPort("none")
+	try
+		map = new /obj/map_metadata/flood_probe
+		flood_checks()
+	catch(var/exception/e)
+		flood_check(FALSE, "exception [e] [e.file]:[e.line]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = flood_failures, "runtime_error" = flood_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+// Two reaches: reach 1 (west half of the middle row) drains into reach 2
+// (east half), which drains away. North row: banks at 0.5, 1, 2 and behind a
+// ridge; south row belongs to no reach.
+/proc/flood_probe_text(down1 = 2, cut = FALSE)
+	var/list/lines = list("civ13-river-flood 1", "size 6 3", "z 1", "reaches 2", "r 1 [down1] 2 2 30 30 3", "r 2 0 5 2 3000 3030 3")
+	lines += list("010101020202", "010101020202", "000000000000")
+	if (!cut)
+		lines += list("A12d..", "......", "......")
+	return jointext(lines, "\n")
+
+/proc/flood_checks()
+	var/datum/river_flood/F = river_flood_parse(flood_probe_text(), 6, 3, 1)
+	flood_check(!F.error && F.count == 2 && F.down[1] == 2 && F.down[2] == 0, "parses reaches ([F.error])")
+	flood_check(river_flood_parse(flood_probe_text(down1 = 1), 6, 3, 1).error, "rejects a reach draining upstream")
+	flood_check(river_flood_parse(flood_probe_text(cut = TRUE), 6, 3, 1).error, "rejects a cut file")
+	flood_check(river_flood_parse(flood_probe_text(), 7, 3, 1).error, "rejects the wrong size")
+	flood_check(F.reach_at(1, 3) == 1 && F.reach_at(4, 3) == 2 && F.reach_at(1, 1) == 0, "reach ids per tile")
+	flood_check(F.threshold_at(1, 3) == 0.5 && F.threshold_at(3, 3) == 2 && F.threshold_at(4, 3) == 13 && isnull(F.threshold_at(5, 3)), "thresholds in half levels")
+	flood_check(F.stage[2] < 0 && F.stage[1] < 0 && F.stage[2] < F.stage[1], "dry-spell rivers sit below normal, big ones lower")
+	map.river_flood_cache = F
+	map.river_flood_loaded = TRUE
+	map.river_flood_state = list()
+	F.published = map.river_flood_state
+	flood_check(flood_depth_at(locate(1, 3, 1)) == 0, "low bank dry at low water")
+
+	// Raise reach 1 to stage 1.5.
+	F.flow[1] = F.upstream[1] * 0.04 * (2 ** (1.5 / (1.2 * F.amplitude(1))))
+	F.stage[1] = F.stage_for(1, F.flow[1])
+	flood_check(abs(F.stage[1] - 1.5) < 0.001, "stage follows the flow")
+	flood_check(abs(flood_depth_at(locate(1, 3, 1)) - 1) < 0.001 && abs(flood_depth_at(locate(2, 3, 1)) - 0.5) < 0.001 && flood_depth_at(locate(3, 3, 1)) == 0, "depth is stage above threshold")
+	flood_check(flood_depth_at(locate(4, 3, 1)) == 0 && flood_depth_at(locate(1, 1, 1)) == 0, "ridge and sea-side land stay dry")
+	flood_check(river_stage_at(locate(1, 2, 1)) == F.stage[1], "water tile reports its reach")
+	F.flow[1] = F.upstream[1] * 0.04 * 1000
+	flood_check(F.stage_for(1, F.flow[1]) == 3, "stage is capped at 3")
+
+	// Water moves downstream and recedes without rain.
+	season = "SUMMER"
+	F.storage[1] = 500
+	var/before = F.storage[2]
+	F.step_minute()
+	flood_check(F.storage[2] > before + 50, "released water reaches the next reach in the same minute")
+	var/high = F.stage[2]
+	for (var/i in 1 to 30)
+		F.step_minute()
+	flood_check(F.stage[2] < high, "rivers fall after the rain")
+
+	// Snow waits for spring.
+	season = "WINTER"
+	F.snow[2] = 2000
+	F.step_minute()
+	flood_check(F.snow[2] == 2000, "no melt in winter")
+	var/winter_flow = F.flow[2]
+	season = "SPRING"
+	F.step_minute()
+	flood_check(F.snow[2] < 2000 && F.flow[2] > winter_flow * 2, "spring melts the snowpack into the river")
+
+	// Saved water comes back, and a loaded save replaces the live water.
+	var/list/state = F.snapshot()
+	flood_check(state.len == 5 && state[1] == 2, "snapshot holds every reach")
+	var/datum/river_flood/G = river_flood_parse(flood_probe_text(), 6, 3, 1)
+	flood_check(G.restore(state) && abs(G.storage[1] - F.storage[1]) < 0.01 && abs(G.snow[2] - F.snow[2]) < 0.01, "restore round trip")
+	flood_check(!G.restore(list(3, 1, 2)) && !G.restore(list(2, -1, 0, 0, 0)), "restore refuses another map's or negative water")
+	map.river_flood_state = list(2, 0, 0, 0, 77)
+	next_river_flood_tick = 0
+	river_flood_step()
+	flood_check(F.snow[2] < 77 && F.snow[2] > 70 && map.river_flood_state == F.published, "a loaded save's water is taken up on the next tick")
