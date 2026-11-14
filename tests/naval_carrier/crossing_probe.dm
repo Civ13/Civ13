@@ -74,8 +74,11 @@ var/naval_runtime_error = FALSE
 	for (var/x = 40, x <= 43, x++)
 		for (var/y = 30, y <= 32, y++)
 			hull_lay(x, y)
-	var/obj/structure/hull_tiller/tiller = new(locate(41, 31, 2))
+	// Steered by a steering oar and rowed from a bench (rowing_bench.dm).
+	var/obj/structure/hull_tiller/tiller = new /obj/structure/hull_tiller/steering_oar(locate(41, 31, 2))
 	naval_check(isnull(tiller.commission("Gull", EAST)) && tiller.craft, "the Gull is commissioned")
+	var/obj/structure/bed/chair/wood/rowing_bench/bench = new(locate(43, 31, 2))
+	bench.set_dir(NORTH)
 	var/obj/structure/vehicleparts/movement/sail/premade/mast = new(locate(42, 31, 2))
 	naval_check(mast.sails, "her mast is rigged")
 	var/obj/structure/closet/crate/chest = new(locate(40, 30, 2))
@@ -99,6 +102,7 @@ var/naval_runtime_error = FALSE
 	naval_check(sea_crossing_record_ok(R), "the record is a valid record")
 	var/text = json_encode(R)
 	naval_check(findtext(text, "/obj/structure/vehicleparts/movement/sail/premade") && findtext(text, "stack:wood") && findtext(text, "/obj/item/weapon/crowbar"), "the mast, the planks in the chest and the crowbar are in it")
+	naval_check(findtext(text, "/obj/structure/bed/chair/wood/rowing_bench") && R["helm"] == "/obj/structure/hull_tiller/steering_oar", "so are her rowing bench and her steering oar")
 
 	// ---- Bad records ----
 	var/list/bad = json_decode(text)
@@ -114,6 +118,9 @@ var/naval_runtime_error = FALSE
 			if (E[1] == "k")
 				E[4] = list(list("stack:wood", 99999))
 	naval_check(!sea_crossing_record_ok(bad), "a chest with more planks than a stack holds is refused")
+	bad = json_decode(text)
+	bad["helm"] = "/obj/structure/probe_rock"
+	naval_check(!sea_crossing_record_ok(bad), "a helm that is not a tiller is refused")
 
 	// ---- As a payload ----
 	naval_check(islist(region_travel_decode(probe_payload(R))), "a crew member carrying her decodes")
@@ -156,6 +163,8 @@ var/naval_runtime_error = FALSE
 	var/obj/item/stack/material/wood/new_planks = new_chest ? locate() in new_chest : null
 	naval_check(new_planks && new_planks.amount == 20 && length(new_chest.contents) == 1, "her chest holds exactly the twenty planks")
 	naval_check(locate(/obj/item/weapon/crowbar) in locate(anchorage.x + 2, anchorage.y + 1, 2), "the crowbar lies where it lay")
+	var/obj/structure/bed/chair/wood/rowing_bench/new_bench = locate() in locate(anchorage.x + 2, anchorage.y, 2)
+	naval_check(new_bench && new_bench.dir == NORTH && istype(built, /obj/structure/hull_tiller/steering_oar), "her bench is where it stood, facing as it faced, and she is steered by her oar")
 	naval_check(sea_crossing_ship("v-1") == built && !sea_crossing_ship("v-2"), "her crew find her by the voyage")
 	naval_check(isnull(sea_crossing_build(R, anchorage, "v-3")), "she is not built twice on the same water")
 

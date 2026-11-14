@@ -129,6 +129,9 @@ def restore_crafting_projection(path, source):
              '\t\t\tvar/dmod = 1\n\t\t\tif (H.find_trait("Weak Immune System"))\n\t\t\t\tdmod = 2\n\t\t\tif (H.find_trait("Strong Immune System"))\n\t\t\t\tdmod = 0.2\n\t\t\tif (prob(sickness*15*dmod) && !H.orc && !H.crab)\n\t\t\t\tif (H.disease == 0)\n\t\t\t\t\tH.disease_progression = 0\n\t\t\t\t\tH.disease_type ="cholera"\n\t\t\t\t\tH.disease = 1\n'),
             # Explosion remains: no tunnel down from a turf above the ground.
             ('\t\t\tif (turf_is_above_ground(get_turf(user)))\n\t\t\t\tto_chat(user, SPAN_NOTICE("You can\'t dig a tunnel here, there is no earth below."))\n\t\t\t\treturn\n', ''),
+            # Audit fixes: an empty sandbag stops after its warning; ant shoveling returns the parent's result.
+            ('SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n\t\t\treturn\n', 'SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n'),
+            ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
         )
     else:
         edits = ()

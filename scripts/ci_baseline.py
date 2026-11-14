@@ -889,6 +889,7 @@ SUITES = {
         'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
                          'code/modules/1713/tools.dm', 'code/game/objects/items/weapons/tools.dm',
                          'code/game/objects/weapons.dm', 'code/_helpers/tools.dm',
+                         'code/modules/reagents/reagent_containers/glass.dm', 'code/_onclick/item_attack.dm',
                          'config/crafting/material_recipes_global.txt')},
     'craft_needs': {'files': ('tests/craft_needs/test_craft_needs.py',),
         'paths': ('tests/craft_needs/', 'code/game/objects/items/stacks/craft_needs.dm',

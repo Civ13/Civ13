@@ -247,7 +247,11 @@ var/vehicle_decks_probe_checks = 0
 	vehicle_decks_probe_assert(!flat.roofed() && !vehicle_deck_at(flat.loc), "flatbed_has_no_roof")
 	var/atom/side_deck = vehicle_deck_at(locate(12, 5, 1))
 	vehicle_decks_probe_assert(istype(side_deck, /obj/structure/train_part/deck) && istype(vehicle_deck_at(locate(12, 4, 1)), /obj/structure/trains/platform), "car_tiles_are_deck_surfaces")
-	vehicle_decks_probe_assert((isnull(car1.roof_images)) == !("roof_coach_fl" in train_roof_states()), "roof_pictures_follow_the_art")
+	vehicle_decks_probe_assert(car1.roof_images && car1.roof_images.len == 3, "coach_has_roof_pictures")
+	var/image/roof_left = car1.roof_images[1]
+	var/image/roof_mid = car1.roof_images[2]
+	vehicle_decks_probe_assert(roof_mid.loc == car1 && istype(roof_left.loc, /obj/structure/train_part/deck) && roof_mid.icon_state == "roof_coach_fc" && roof_mid.dir == EAST, "roof_pictures_ride_the_car")
+	vehicle_decks_probe_assert(isnull(flat.roof_images), "flatbed_has_no_roof_picture")
 	var/mob/living/human/vehicle_decks_probe/jo = vehicle_decks_probe_actor(12, 6, "Jo")
 	var/mob/living/human/vehicle_decks_probe/kim = vehicle_decks_probe_actor(13, 4, "Kim")
 	vehicle_decks_probe_assert(isnull(jo.vehicle_deck_refusal(side_deck)), "climb_onto_coach_from_beside")

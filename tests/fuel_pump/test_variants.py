@@ -124,7 +124,7 @@ class ManagementPriceTests(unittest.TestCase):
                             events.append(('notice', actor))
 
                         run(pump, user, {'price': 'input'}, prompt, convert, update, notify)
-                        if action == 'change_price_direct' and unlocked:
+                        if unlocked:
                             self.assertEqual(pump.price, 7)
                             self.assertEqual(events, [('notice', user)])
                             continue

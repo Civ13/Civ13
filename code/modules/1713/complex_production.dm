@@ -464,8 +464,10 @@
 			return
 		else if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed") && findtext(icon_state, "flat"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -4
 			icon_state = "[icon_state]_crumbed"
@@ -487,8 +489,10 @@
 
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			icon_state = "[icon_state]_crumbed"
 			name = "crumbed [name]"
@@ -510,8 +514,10 @@
 	attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
 		if (istype(W, /obj/item/weapon/reagent_containers/food/condiment/flour) && !rotten && !findtext(icon_state, "crumbed"))
 			var/obj/item/weapon/reagent_containers/food/condiment/flour/F = W
-			if (F.reagents.has_reagent("flour", 5))
-				F.reagents.remove_reagent("flour", 5)
+			if (!F.reagents.has_reagent("flour", 5))
+				to_chat(user, "<span class='warning'>You need at least 5 units of flour.</span>")
+				return
+			F.reagents.remove_reagent("flour", 5)
 			to_chat(user, "You roll \the [src] in the flour.")
 			satisfaction = -3
 			icon_state = "[icon_state]_crumbed"

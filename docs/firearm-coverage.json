@@ -3,8 +3,8 @@
  "source": "tests/firearm_coverage/run.py (pinned compiler, initial() values)",
  "scope_rule": "modern = cartridge revolvers, pistols, rifles, shotguns, SMGs and machine guns; blackpowder, energy, launchers, bows, darts and custom gunsmith guns are separate categories",
  "summary": {
-  "types": 534,
-  "modern": 431,
+  "types": 535,
+  "modern": 432,
   "by_category": {
    "base": 2,
    "blackpowder": 33,
@@ -16,7 +16,7 @@
    "machine_gun": 49,
    "machine_gun_mounted": 32,
    "pistol": 58,
-   "revolver": 41,
+   "revolver": 42,
    "rifle_bolt": 66,
    "rifle_lever": 10,
    "rifle_semiauto": 39,
@@ -24,7 +24,7 @@
    "submachine_gun": 125
   },
   "modern_calibers": 61,
-  "migrated": 381,
+  "migrated": 382,
   "fixed": 39
  },
  "modern_calibers": [
@@ -1438,7 +1438,7 @@
    "name": "FN MAG machine gun",
    "category": "machine_gun_mounted",
    "scope": "modern",
-   "caliber": "a792x57_weak",
+   "caliber": "a762x51_weak",
    "load_method": 4,
    "max_shells": 500,
    "magazine_type": "/obj/item/ammo_magazine/mg3belt",
@@ -1589,7 +1589,7 @@
    "name": "MG 3 machine gun",
    "category": "machine_gun_mounted",
    "scope": "modern",
-   "caliber": "a792x57_weak",
+   "caliber": "a762x51_weak",
    "load_method": 4,
    "max_shells": 500,
    "magazine_type": "/obj/item/ammo_magazine/mg3belt",
@@ -3534,7 +3534,7 @@
    "caliber": "a44magnum",
    "load_method": 4,
    "max_shells": 0,
-   "magazine_type": "/obj/item/ammo_magazine/deagle",
+   "magazine_type": "/obj/item/ammo_magazine/deaglemagnum",
    "ammo_type": "/obj/item/ammo_casing/a44magnum",
    "family": "deagle",
    "migration": "modular"
@@ -4520,7 +4520,7 @@
   },
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/ivory",
-   "name": "Colt Storekeeper Ivory",
+   "name": "Colt Peacemaker Ivory",
    "category": "revolver",
    "scope": "modern",
    "caliber": "a45",
@@ -4547,6 +4547,19 @@
   {
    "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper",
    "name": "Colt Storekeeper",
+   "category": "revolver",
+   "scope": "modern",
+   "caliber": "a45",
+   "load_method": 1,
+   "max_shells": 6,
+   "magazine_type": "/obj/item/ammo_magazine/c45",
+   "ammo_type": "/obj/item/ammo_casing/a45",
+   "family": "colt_saa",
+   "migration": "modular"
+  },
+  {
+   "path": "/obj/item/weapon/gun/projectile/revolver/peacemaker/storekeeper/ivory",
+   "name": "Colt Storekeeper Ivory",
    "category": "revolver",
    "scope": "modern",
    "caliber": "a45",

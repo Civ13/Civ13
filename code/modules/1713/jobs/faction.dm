@@ -322,6 +322,9 @@ var/global/soldiers[27]
 	else if (istype(J, /datum/job/greek))
 		if ("[type]" == "/datum/faction/greek")
 			soldiers[GREEK]++
+	else if (istype(J, /datum/job/arab/civilian/chechen))
+		if ("[type]" == "/datum/faction/chechen")
+			soldiers[CHECHEN]++
 	else if (istype(J, /datum/job/arab))
 		if ("[type]" == "/datum/faction/arab")
 			soldiers[ARAB]++
@@ -334,9 +337,6 @@ var/global/soldiers[27]
 	else if (istype(J, /datum/job/russian))
 		if ("[type]" == "/datum/faction/russian")
 			soldiers[RUSSIAN]++
-	else if (istype(J, /datum/job/arab/civilian/chechen))
-		if ("[type]" == "/datum/faction/chechen")
-			soldiers[CHECHEN]++
 	else if (istype(J, /datum/job/finnish))
 		if ("[type]" == "/datum/faction/finnish")
 			soldiers[FINNISH]++

@@ -448,7 +448,7 @@
 		spawn(30)
 			if (src)
 				icon_state = "wall_fireplace0"
-				set_light(0)
+				set_light(initial(light_range))
 		playsound(src.loc, 'sound/weapons/magic/spell2.ogg', 75, TRUE)
 		user.forceMove(target_turf)
 		to_chat(user, SPAN_NOTICE("You emerge from another fireplace."))
@@ -459,5 +459,5 @@
 			spawn(30)
 				if (target_fp)
 					target_fp.icon_state = "wall_fireplace0"
-					target_fp.set_light(0)
+					target_fp.set_light(initial(target_fp.light_range))
 			target_fp.visible_message(SPAN_NOTICE("[user] emerges from the fireplace flames!"))

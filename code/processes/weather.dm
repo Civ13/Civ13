@@ -42,7 +42,7 @@
 		else if (prob(prob_of_weather_change))
 			if (world.realtime >= next_can_change_weather)
 				change_weather_somehow()
-			next_can_change_weather = world.realtime + change_delay
+				next_can_change_weather = world.realtime + change_delay
 	weather_events()
 
 // Blizzards, sandstorms and heat waves are weather systems like any other:
