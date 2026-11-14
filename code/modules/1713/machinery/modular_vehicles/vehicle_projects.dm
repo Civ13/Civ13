@@ -301,13 +301,16 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		update_project_frames()
 	return result
 
-// Menu entries for projects: label -> action.
-/obj/structure/car_workshop/proc/project_options()
+// Menu entries for projects: label -> action. With H, models whose own
+// research H lacks are left out.
+/obj/structure/car_workshop/proc/project_options(mob/living/human/H = null)
 	. = list()
 	if (!piece_projects)
 		return
 	if (!project)
 		for (var/model in models())
+			if (H && length(model_missing_research(H, model)))
+				continue
 			if (project_plan(model) && project_layout(model))
 				.["Start a [model] piece by piece"] = model
 		return

@@ -207,11 +207,11 @@ var/global/list/car_workshop_prototypes = list()
 		return
 	var/list/options = models()
 	for (var/model in options.Copy())
-		if (!one_go(model))
+		if (!one_go(model) || length(model_missing_research(H, model)))
 			options -= model
 	var/list/extras = extra_options()
 	options += extras
-	var/list/projects = project_options()
+	var/list/projects = project_options(H)
 	options += projects
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
@@ -254,6 +254,10 @@ var/global/list/car_workshop_prototypes = list()
 
 /obj/structure/car_workshop/proc/assemble_for(mob/living/human/H, choice)
 	if (busy || !Adjacent(H) || !allowed(H))
+		return null
+	var/list/unknown = model_missing_research(H, choice)
+	if (unknown.len)
+		to_chat(H, SPAN_WARNING("[english_list(unknown)] research is required to build a [choice]."))
 		return null
 	if (!one_go(choice) || !has_inputs(choice) || !clear_footprint(choice))
 		to_chat(H, SPAN_WARNING("Assembly needs all inputs and an empty, dry floor bay."))
