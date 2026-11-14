@@ -11,6 +11,7 @@
 // Weights for the stone found in a gem pocket. Rough diamonds keep their own
 // roll in the ore table (docs/mining-drop-balance.md).
 var/global/list/gem_pocket_weights = list(
+	/obj/item/stack/ore/gem/quartz = 30, // gem_science.dm
 	/obj/item/stack/ore/gem/garnet = 30,
 	/obj/item/stack/ore/gem/amethyst = 25,
 	/obj/item/stack/ore/gem/topaz = 20,

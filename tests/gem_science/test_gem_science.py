@@ -60,6 +60,20 @@ class GemScienceTest(unittest.TestCase):
         self.assertIn(',lapping wheel,/obj/structure/lapping_wheel,', recipes)
         self.assertIn('"/obj/structure/lapping_wheel" = "workshops",', nodes)
 
+    def test_quartz_and_crystal_set(self):
+        gems = (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/stack/ore/gem/quartz = 30,', gems)
+        # The crystal set's detector is galena from lead ore, not quartz.
+        self.assertIn('/obj/item/stack/ore/lead/attackby', self.text)
+        self.assertRegex(self.text, r'/obj/item/weapon/radio/crystal_set\n(?:\t.*\n)*?\ttransmitter = FALSE')
+        self.assertIn('crafting_node_allowed_or_warn(H, "electricity")', self.text)
+        # Quartz holds a radio frequency (1920s) and keeps a watch's time (1969).
+        self.assertIn('crafting_node_allowed_or_warn(H, "assembly_line")', self.text)
+        self.assertIn('crafting_node_allowed_or_warn(H, "digital_computing")', self.text)
+        self.assertIn('R.crystal_freq == source_freq', self.text)
+        self.assertNotIn('/obj/item/weapon/hammer)', self.text)
+        self.assertIn('watch.jewelled || watch.quartz_movement', self.text)
+
     def test_included_after_lanyards(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertLess(dme.index('lanyards.dm'), dme.index('gem_science.dm'))

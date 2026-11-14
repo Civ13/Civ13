@@ -82,6 +82,16 @@ A steel sheet on a wheel with 6 charges makes a diamond drill bit (Machined
 Tools); fitted to the base industrial drill it adds one ore per cycle.
 Diamond is kept off the jackhammer because it shatters under percussion.
 
+Quartz and the crystal set: rough quartz joins the mining gem roll (weight
+30) and cuts like the other stones. Chisel and hammer on lead ore splits out
+a galena crystal (Electricity); used with 10 cable in the other hand it makes
+a crystal radio set, a receive-only radio that needs no power. Cut quartz
+used with a tin sheet in the other hand makes a quartz crystal unit
+(Assembly Line). Fitted to a radio it adds `crystal_freq`, a second
+frequency the radio always listens to (`radio_crystal_matches`).
+Fitted to a wrist watch (Digital Computing) it sets `quartz_movement`, which
+reads exact time like a jewelled watch.
+
 ## Art
 
 - `icons/obj/pocket_stronghold_gems.dmi`: ruby, sapphire (cut and rough) and
