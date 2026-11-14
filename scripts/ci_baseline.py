@@ -878,6 +878,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'job_stats': {'files': ('tests/job_stats/test_job_stats.py',),
+        'paths': ('tests/job_stats/', 'code/modules/1713/jobs/'), 'shared_paths': ('code/game/jobs/job.dm',)},
     'item_wear': {'files': ('tests/item_wear/test_item_wear.py',),
         'paths': ('tests/item_wear/', 'code/_helpers/item_wear.dm'), 'shared_paths': (
             'code/game/objects/items/weapons/material/material_weapons.dm',

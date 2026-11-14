@@ -16,6 +16,7 @@
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 
+/datum/job/japanese/eastern_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/eastern_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -39,14 +40,7 @@
 	give_random_name(H)
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is the Daimyo of the Eastern Army!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the Eastern Army and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/samurai_eastern
@@ -64,6 +58,7 @@
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 
+/datum/job/japanese/samurai_eastern/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/samurai_eastern/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -90,14 +85,7 @@
 	give_random_name(H)
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is a Samurai of the Eastern Army!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the Eastern Army and their troops. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/ashigaru_ranged
@@ -110,6 +98,7 @@
 	is_samurai = TRUE
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
+/datum/job/japanese/ashigaru_ranged/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/ashigaru_ranged/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -136,14 +125,7 @@
 	H.civilization = "Eastern Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Eastern Army. Follow your <b>Superior's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/ashigaru
@@ -156,6 +138,7 @@
 	is_samurai = TRUE
 	is_eastern = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
+/datum/job/japanese/ashigaru/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/ashigaru/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -182,14 +165,7 @@
 	H.civilization = "Eastern Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 /////////////////////////////////////////////////////////////////////////ICHI/////////////////////////////////////////////////////
 /datum/job/japanese/western_lord
@@ -207,6 +183,7 @@
 	allowed_maps = list(MAP_SEKIGAHARA)
 	
 
+/datum/job/japanese/western_lord/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/western_lord/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -232,14 +209,7 @@
 	give_random_name(H)
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is the Daimyo of the Western Army!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the Western Army and their orders. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/samurai_western
@@ -257,6 +227,7 @@
 	is_western = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
 
+/datum/job/japanese/samurai_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/samurai_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -282,14 +253,7 @@
 	give_random_name(H)
 	to_chat(world, "<b><font color='yellow' size=3>[H.real_name] is a Samurai of the Western Army!</font></b>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the Western Army and their troops. The whole operation relies on you!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_VERY_HIGH)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/ashigaru_ranged_western
@@ -302,6 +266,7 @@
 	is_samurai = TRUE
 	is_western = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
+/datum/job/japanese/ashigaru_ranged_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/ashigaru_ranged_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -327,14 +292,7 @@
 	H.civilization = "Western Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a Ranged Ashigaru of the Western Army. Follow your <b>Superior's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/japanese/ashigaru_western
@@ -347,6 +305,7 @@
 	is_samurai = TRUE
 	is_western = TRUE
 	allowed_maps = list(MAP_SEKIGAHARA)
+/datum/job/japanese/ashigaru_western/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_VERY_HIGH, "medical" = STAT_MEDIUM_LOW)
 /datum/job/japanese/ashigaru_western/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -371,12 +330,5 @@
 	H.civilization = "Western Army"
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a foot soldier of the western army. Follow your <b>Superior's</b> orders!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_VERY_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_HIGH)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_VERY_HIGH)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

@@ -14,6 +14,7 @@
 	min_positions = 1
 	max_positions = 2
 
+/datum/job/american/atf_lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/atf_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -36,15 +37,7 @@
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>. You are in charge of the whole operation. Organize your troops accordingly!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/atf_sergeant
@@ -64,6 +57,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/american/atf_sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/atf_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -89,15 +83,7 @@
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>, lead a squad against the Davidians!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/atf_soldier
@@ -113,6 +99,7 @@
 	min_positions = 10
 	max_positions = 100
 
+/datum/job/american/atf_soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/atf_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -144,15 +131,7 @@
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>, a ATF soldier. Follow orders and secure the home!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_VERY_HIGH)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/american/atf_medic
@@ -168,6 +147,7 @@
 	min_positions = 2
 	max_positions = 8
 
+/datum/job/american/atf_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/atf_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -194,15 +174,7 @@
 	give_random_name(H)
 	H.civilization = "ATF"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow ATF healthy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 ////////////BRANCH DAVIDIANS/////////////
@@ -220,6 +192,7 @@
 	min_positions = 1
 	max_positions = 1
 
+/datum/job/civilian/cult_leader/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_NORMAL)
 /datum/job/civilian/cult_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -238,15 +211,7 @@
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/glock17(H), slot_belt)
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are the great messiah who will save the people, stay alive at all costs!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	H.real_name = "David Koresh"
 	H.h_style = "Volaju"
 	H.f_style = "Shaved"
@@ -278,6 +243,7 @@
 	can_be_female = TRUE
 	allowed_maps = list(MAP_WACO)
 
+/datum/job/civilian/believer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/believer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -330,14 +296,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/ak74(H), slot_belt)
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home against the evil government!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/disciple
@@ -350,6 +309,7 @@
 	can_be_female = TRUE
 	allowed_maps = list(MAP_WACO)
 
+/datum/job/civilian/disciple/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
 /datum/job/civilian/disciple/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -408,14 +368,7 @@
 
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the government scum!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_HIGH)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE
 
 /datum/job/civilian/healer
@@ -431,6 +384,7 @@
 	min_positions = 3
 	max_positions = 10
 
+/datum/job/civilian/healer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/civilian/healer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -452,13 +406,5 @@
 		H.f_style = pick("Full Beard","Medium Beard","Long Beard")
 	H.civilization = "Faithful"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your fellow believers healthy!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_MEDIUM_LOW)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_MEDIUM_LOW)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_VERY_HIGH)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	return TRUE

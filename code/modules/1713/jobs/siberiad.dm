@@ -17,6 +17,7 @@
 	max_positions = 1
 	selection_color = "#153043"
 
+/datum/job/american/siberiad/commander/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/american/siberiad/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -48,14 +49,7 @@
 
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Coordinate your men during the operation in order to complete the objective!")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_MEDIUM_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -75,6 +69,7 @@
 	max_positions = 8
 	selection_color = "#153043"
 
+/datum/job/american/siberiad/squadlead/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/american/siberiad/squadlead/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -130,15 +125,7 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/rucksack/small/extracap/medicalh(H), slot_back)
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Take orders from your Operation Leader and lead your squad towards victory!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -157,6 +144,7 @@
 	max_positions = 8
 	selection_color = "#153043"
 
+/datum/job/american/siberiad/spec/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/american/siberiad/spec/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -203,15 +191,7 @@
 
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Provide assistance to your squad sing your weapon expertise!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_MEDIUM_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -230,6 +210,7 @@
 	max_positions = 4
 	selection_color = "#153043"
 
+/datum/job/american/siberiad/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_HIGH, "machinegun" = STAT_LOW)
 /datum/job/american/siberiad/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -264,15 +245,7 @@
 
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Keep your squadmates alive!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_LOW)
-	H.setStat("medical", STAT_HIGH)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -292,6 +265,7 @@
 	max_positions = 90
 	selection_color = "#153043"
 
+/datum/job/american/siberiad/infantry/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/american/siberiad/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -339,15 +313,7 @@
 
 	H.civilization = "Coalition"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -372,6 +338,7 @@
 
 	selection_color = "#CC0000"
 
+/datum/job/russian/siberiad/commander/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
 /datum/job/russian/siberiad/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -405,14 +372,7 @@
 
 	H.civilization = "Soviet Army"
 	H.add_note("Role", "You are the <b>[title]</b>. Command and lead your men towards the objective.")
-	H.setStat("strength", STAT_HIGH)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_HIGH)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_NORMAL)
-	H.setStat("pistol", STAT_HIGH)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -432,6 +392,7 @@
 	max_positions = 8
 	selection_color = "#CC0000"
 
+/datum/job/russian/siberiad/sl/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_NORMAL)
 /datum/job/russian/siberiad/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -477,15 +438,7 @@
 //back
 	H.civilization = "Soviet Army"
 	H.add_note("Role", "You are a <b>[title]</b>. Take orders from your commander and lead your squad towards the objective!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_NORMAL)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_NORMAL)
-	H.setStat("medical", STAT_NORMAL)
-	H.setStat("machinegun", STAT_NORMAL)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -504,6 +457,7 @@
 	max_positions = 8
 	selection_color = "#CC0000"
 
+/datum/job/russian/siberiad/heavy/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
 /datum/job/russian/siberiad/heavy/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -545,15 +499,7 @@
 
 	H.civilization = "Soviet Army"
 	H.add_note("Role", "You are a <b>[title]</b>. Provide support to your squad using your heavy weaponry!")
-	H.setStat("strength", STAT_MEDIUM_HIGH)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_HIGH)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -572,6 +518,7 @@
 	max_positions = 4
 	selection_color = "#CC0000"
 
+/datum/job/russian/siberiad/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_HIGH, "machinegun" = STAT_LOW)
 /datum/job/russian/siberiad/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -603,15 +550,7 @@
 
 	H.civilization = "Soviet Army"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_MEDIUM_HIGH)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_HIGH)
-	H.setStat("machinegun", STAT_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
@@ -630,6 +569,7 @@
 	max_positions = 90
 	selection_color = "#CC0000"
 
+/datum/job/russian/siberiad/infantry/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
 /datum/job/russian/siberiad/infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -677,15 +617,7 @@
 
 	H.civilization = "Soviet Army"
 	H.add_note("Role", "You are a <b>[title]</b>. Follow your Squad Leader and his orders!")
-	H.setStat("strength", STAT_NORMAL)
-	H.setStat("crafting", STAT_MEDIUM_LOW)
-	H.setStat("rifle", STAT_NORMAL)
-	H.setStat("dexterity", STAT_NORMAL)
-	H.setStat("swords", STAT_MEDIUM_LOW)
-	H.setStat("pistol", STAT_NORMAL)
-	H.setStat("bows", STAT_MEDIUM_LOW)
-	H.setStat("medical", STAT_MEDIUM_LOW)
-	H.setStat("machinegun", STAT_MEDIUM_LOW)
+	apply_job_stats(H)
 	give_random_name(H)
 
 	return TRUE
