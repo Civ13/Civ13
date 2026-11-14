@@ -1,4 +1,4 @@
-"""Cement mixer and concrete blocks: source contract checks.
+"""Cement mixer, concrete blocks and the pile driver: source contract checks.
 
 Concrete is built from concrete blocks rather than raw clay, the mixer is the
 way to make those blocks, it has a recipe, a research node and sprite states,
@@ -21,6 +21,8 @@ NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encodin
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 DMI = ROOT / 'icons/obj/building_site.dmi'
 MIXER = '/obj/structure/workshop_machine/cement_mixer'
+DRIVER = '/obj/structure/workshop_machine/pile_driver'
+SPAN = '/obj/item/weapon/bridge_span/timber'
 CONCRETE_WORKS = {
     '/obj/item/weapon/roofbuilder/concrete': 1,
     '/obj/covers/concretefloor': 1,
@@ -98,6 +100,37 @@ class BuildingSite(unittest.TestCase):
         self.assertIn('new kind(get_turf(src))', body)
         self.assertIn('vars[part[2]] = 0', body)
 
+    def test_pile_driver_and_pier_span_have_recipes_and_nodes(self):
+        rows = recipe_rows()
+        for path, amount in ((DRIVER, 14), (SPAN, 8)):
+            self.assertEqual(len(rows[path]), 1, path)
+            self.assertEqual((rows[path][0][0], float(rows[path][0][3])), ('/material/wood/', amount), path)
+            self.assertIn('"%s" = "imperial_architecture"' % path, NODES)
+            self.assertRegex(SOURCE, r'(?m)^%s$' % re.escape(path))
+
+    def test_pier_span_is_a_bridge_span_that_needs_a_driver(self):
+        self.assertIn('deck_type = /obj/covers/bridge/timber', SOURCE)
+        self.assertIn('span_type = %s' % SPAN, SOURCE)
+        body = proc_body(SPAN + '/build_span(')
+        refuse = body.index('if (!D)')
+        build = body.index('. = ..()')
+        self.assertLess(body.index('pile_driver_for(T)'), refuse)
+        self.assertLess(refuse, build)
+        self.assertIn('return FALSE', body[refuse:build])
+        self.assertLess(body.index('D.busy = TRUE'), build)
+        self.assertIn('D.busy = FALSE', body[build:])
+        # the shared span rules (water only, firm footing, re-check after the wait) stay in bridges.dm
+        bridges = (ROOT / 'code/modules/1713/bridges.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/item/weapon/bridge_span/proc/build_span(turf/T, mob/user)', bridges)
+        self.assertIn('new deck_type(T)', bridges)
+
+    def test_driver_must_be_fastened_idle_and_on_firm_footing(self):
+        body = proc_body('/proc/pile_driver_for(')
+        self.assertIn('range(PILE_DRIVER_REACH, T)', body)
+        self.assertIn('if (!D.anchored || D.busy || !footing)\n\t\t\tcontinue', body)
+        self.assertIn('istype(footing, /turf/floor/beach/water/deep) && !footing.iscovered()', body)
+        self.assertIn('#define PILE_DRIVER_REACH 2', SOURCE)
+
     def test_sprite_sheet_states_and_script(self):
         data = DMI.read_bytes()
         at = data.index(b'zTXtDescription\x00\x00') + len(b'zTXtDescription\x00\x00')
@@ -105,7 +138,8 @@ class BuildingSite(unittest.TestCase):
         states = {m.group(1): int(m.group(2))
                   for m in re.finditer(r'state = "([^"]+)"\n\tdirs = 1\n\tframes = (\d+)', text)}
         self.assertEqual(states, {'cement_mixer': 1, 'cement_mixer_on': 4,
-                                  'concrete': 1, 'concrete_2': 1, 'concrete_3': 1})
+                                  'concrete': 1, 'concrete_2': 1, 'concrete_3': 1,
+                                  'pile_driver': 1, 'pile_driver_on': 4})
         self.assertIn('pile_suffix(amount, list(17, 33))', SOURCE)
         try:
             import PIL  # noqa: F401

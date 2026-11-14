@@ -1,4 +1,4 @@
-// Building site: the cement mixer and cast concrete.
+// Building site: the cement mixer, cast concrete and the pile driver.
 //
 // Concrete is no longer shaped out of raw clay. A hand-cranked mixer turns
 // quicklime, sand and stone into concrete blocks, and the concrete floor,
@@ -135,6 +135,80 @@ var/global/list/cement_mixer_charge = list(
 	if (made)
 		to_chat(H, SPAN_NOTICE("You tip out [made] concrete blocks."))
 	return made
+
+//////////////////////////////////////////////////////////////////////////////
+// Pile driver and timber piers
+//
+// A timber pier span is laid like the steel and concrete bridge spans in
+// bridges.dm, deep water included, but its log piles have to be driven: the
+// span only goes down within reach of a fastened pile driver.
+
+#define PILE_DRIVER_REACH 2
+
+/obj/structure/workshop_machine/pile_driver
+	name = "pile driver"
+	desc = "A drop hammer in a tall timber frame. Fasten it on the shore or on the pier built so far; a timber pier span can then be laid on water within two tiles of it, even over the deep."
+	icon = 'icons/obj/building_site.dmi'
+	icon_state = "pile_driver"
+
+/obj/structure/workshop_machine/pile_driver/attackby(obj/item/I, mob/living/human/H)
+	if (!istype(H))
+		return
+	if (handle_machine_tool(I, H))
+		return
+	return ..()
+
+/obj/structure/workshop_machine/pile_driver/attack_hand(mob/living/human/H)
+	if (istype(H))
+		to_chat(H, SPAN_NOTICE("Lay a timber pier span on the water within [PILE_DRIVER_REACH] tiles of \the [src]; the hammer drives its piles."))
+
+// A driver that can drive piles into T: fastened, idle and on firm footing.
+/proc/pile_driver_for(turf/T)
+	if (!T)
+		return null
+	for (var/obj/structure/workshop_machine/pile_driver/D in range(PILE_DRIVER_REACH, T))
+		var/turf/footing = get_turf(D)
+		if (!D.anchored || D.busy || !footing)
+			continue
+		if (istype(footing, /turf/floor/beach/water/deep) && !footing.iscovered())
+			continue
+		return D
+	return null
+
+/obj/covers/bridge/timber
+	name = "timber pier deck"
+	desc = "Plank decking on log piles driven into the bed below. Roads and railway track can be laid on it."
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "wood"
+	base_icon_state = "wood"
+	wood = TRUE
+	health = 200
+	explosion_resistance = 2
+	material = "Wood"
+	hardness = 40
+	buildstack = /obj/item/stack/material/wood
+	span_type = /obj/item/weapon/bridge_span/timber
+
+/obj/item/weapon/bridge_span/timber
+	name = "timber pier span"
+	desc = "Log piles, beams and planks for one tile of pier or trestle bridge. Use it on the water in front of you, within reach of a fastened pile driver; it can cross even the deep sea."
+	icon = 'icons/turf/flooring/wood.dmi'
+	icon_state = "wood"
+	deck_type = /obj/covers/bridge/timber
+
+/obj/item/weapon/bridge_span/timber/build_span(turf/T, mob/user)
+	var/obj/structure/workshop_machine/pile_driver/D = pile_driver_for(T)
+	if (!D)
+		to_chat(user, SPAN_WARNING("The piles must be driven. Fasten a pile driver within [PILE_DRIVER_REACH] tiles of that water, on the shore or on the pier built so far."))
+		return FALSE
+	D.busy = TRUE
+	D.icon_state = "pile_driver_on"
+	. = ..()
+	if (!QDELETED(D))
+		D.busy = FALSE
+		D.icon_state = "pile_driver"
+
+#undef PILE_DRIVER_REACH
 
 #undef CEMENT_MIXER_LIMIT
 #undef CEMENT_MIXER_TIME

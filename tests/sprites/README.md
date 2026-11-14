@@ -136,4 +136,4 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_lifting.py` owns `icons/obj/lifting_machines.dmi`: the shear legs and their hauling loop. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
-`create_building_site.py` owns `icons/obj/building_site.dmi`: the cement mixer with its turning loop and the concrete block piles. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+`create_building_site.py` owns `icons/obj/building_site.dmi`: the cement mixer with its turning loop, the concrete block piles and the pile driver with its hammer loop. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
