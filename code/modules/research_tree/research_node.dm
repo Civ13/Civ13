@@ -988,11 +988,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/wrench" = "basic_tools",
 		"/obj/structure/fishing_cage" = "basic_tools",
 		"/obj/structure/fish_pen" = "basic_tools",
-		// --- brickmaking (10) ---
+		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
 		"/obj/covers/stonebrickfloor" = "brickmaking",
 		"/obj/item/stack/material/stonebrick" = "brickmaking",
+		"/obj/item/stack/material/marblebrick" = "brickmaking",
+		"/obj/covers/marble_wall/plain/brick" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks" = "brickmaking",
 		"/obj/item/weapon/clay/advclaybricks/cement" = "brickmaking",
 		"/obj/item/weapon/clay/roofing/black" = "brickmaking",

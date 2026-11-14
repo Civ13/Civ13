@@ -1707,6 +1707,7 @@
 #include "code\modules\1713\flint_mining.dm"
 #include "code\modules\1713\gemstones.dm"
 #include "code\modules\1713\belt_pouches.dm"
+#include "code\modules\1713\marble_bricks.dm"
 #include "code\modules\1713\stone_age_arms.dm"
 #include "code\modules\1713\underground_excavation.dm"
 #include "code\modules\1713\flax_processing.dm"
