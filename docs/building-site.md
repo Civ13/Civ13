@@ -32,9 +32,10 @@ Imperial Architecture.
 
 - The timber pier span is a `/obj/item/weapon/bridge_span` subtype, so it is
   laid, checked and taken apart by the same code as the steel and concrete
-  spans in `code/modules/1713/bridges.dm`: water only, deep water included,
-  from firm footing, and roads or railway track can go on the deck.
-- Its `build_span()` first asks `pile_driver_for(T)` for a fastened, idle pile
+  spans in `code/modules/1713/bridges.dm`: water only, from firm footing, and roads or railway track can go on the deck.
+- It is refused on `/turf/floor/beach/water/deep` (Val, 2026-11-14): deep
+  water stays for steel and concrete spans.
+- Its `build_span()` then asks `pile_driver_for(T)` for a fastened, idle pile
   driver within 2 tiles of the water tile, standing on the shore, in the
   shallows or on a deck. Without one the span is refused. The driver shows its
   hammer loop and is busy while the span goes down.

@@ -133,6 +133,30 @@ class LandBudgetTests(unittest.TestCase):
             t = land_template(int(width * 1.15), int(height * 1.15), size=size)
             self.assertEqual([], land.template_errors(t), size)
 
+    def test_every_chart_size_class_generates_a_sound_land(self):
+        # One land per size class at its nominal size, validated by the generator:
+        # a rule that only holds on small maps fails here before a crew sails.
+        from tools.transfer_storage import world_chart as wc
+        from tools.procedural_maps.terrain_files import land_levels
+        types = ("COASTAL_PLAIN", "HIGHLANDS", "ARCHIPELAGO", "RIVER_DELTA", "FJORD_COAST")
+        for (size, (width, height)), land_type in zip(wc.SIZE_TILES.items(), types):
+            t = land_template(width, height, size=size, land_type=land_type, coast=["S", "W"])
+            for attempt in range(land.MAX_ATTEMPTS):
+                result = generate(land.land_config(t, attempt))
+                if result["document"] is not None:
+                    break
+            doc = result["document"]
+            self.assertIsNotNone(doc, (size, result["reasons"]))
+            self.assertEqual((width, height), (doc["width"], doc["height"]))
+            topology = result["manifest"]["generated_topology"]
+            self.assertGreaterEqual(topology["rivers"], 1, size)
+            self.assertGreaterEqual(topology["starts"], 2, size)
+            # Larger lands hold more: features are shares of the area, not fixed counts.
+            self.assertGreaterEqual(topology["rivers"] * 40000, width * height // 4, (size, topology))
+            levels = land_levels(doc)
+            self.assertEqual((height, width), (len(levels), len(levels[0])))
+            self.assertGreater(max(map(max, levels)), 2, size)
+
     def test_a_wide_land_builds(self):
         # Far from square and past the old 512 limit on one side.
         with tempfile.TemporaryDirectory() as tmp:

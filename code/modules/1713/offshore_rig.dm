@@ -44,7 +44,7 @@
 
 // Open-sea surface water: deep saltwater, not the seabed layer.
 /proc/offshore_sea_turf(turf/T)
-	return istype(T, /turf/floor/beach/water/deep/saltwater) && !istype(T, /turf/floor/beach/water/deep/saltwater/underwater)
+	return is_open_sea(T)
 
 /proc/offshore_oil_richness(turf/T)
 	if (!offshore_sea_turf(T))

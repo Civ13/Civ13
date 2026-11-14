@@ -530,7 +530,7 @@
 			var/deep = agent_deep_water(T)
 			if (steering)
 				// Driving: open water is the way on, and land stops the boat.
-				blocked = blocked || !(istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+				blocked = blocked || !is_open_water(T)
 			else if (deep && !lifejacket)
 				blocked = TRUE // deep water stops a walker; it needs a boat
 			var/list/side = list("turf" = T.name, "type" = "[T.type]", "blocked" = blocked ? TRUE : FALSE)

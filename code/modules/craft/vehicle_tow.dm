@@ -102,7 +102,7 @@
 			continue
 		if (T.density)
 			return "[T.name]"
-		var/wet = istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded)
+		var/wet = is_open_water(T)
 		if (afloat && !wet)
 			return "[T.name]"
 		if (!afloat && istype(T, /turf/floor/beach/water/deep))

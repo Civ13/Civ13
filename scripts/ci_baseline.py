@@ -896,9 +896,11 @@ SUITES = {
                   'config/craft_needs.json'),
         'shared_paths': ('code/game/objects/items/stacks/stack.dm', 'code/game/objects/items/stacks/craft_guards.dm',
                          'scripts/build-crafting-atlas.py')},
-    'machine_parts': {'files': ('tests/machine_parts/test_machine_parts.py', 'tests/machine_parts/test_lathes.py'),
+    'machine_parts': {'files': ('tests/machine_parts/test_machine_parts.py', 'tests/machine_parts/test_lathes.py',
+                                'tests/machine_parts/test_machine_slots.py'),
         'paths': ('tests/machine_parts/', 'code/modules/materials/machine_parts.dm',
                   'code/modules/materials/lathes.dm', 'tests/sprites/create_lathes.py', 'icons/obj/lathes.dmi',
+                  'code/modules/materials/machine_slots.dm',
                   'tests/sprites/create_machine_parts.py', 'icons/obj/machine_parts.dmi'),
         'shared_paths': ('code/modules/materials/part_roles.dm', 'code/modules/materials/material_properties.dm',
                          'code/game/objects/structures/blacksmithing/blacksmithing.dm',
@@ -906,7 +908,7 @@ SUITES = {
                          'code/game/objects/structures/blacksmithing/anvil_window.dm',
                          'code/game/objects/structures/blacksmithing/molds.dm',
                          'code/modules/research_tree/research_node.dm', 'config/craft_needs.json',
-                         'config/crafting/material_recipes_global.txt')},
+                         'config/crafting/material_recipes_global.txt', 'code/modules/1713/production.dm')},
     'anvil_mold_costs': {'files': ('tests/anvil_mold_costs/test_anvil_mold_costs.py',),
         'paths': ('tests/anvil_mold_costs/',), 'shared_paths': ()},
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
@@ -917,6 +919,8 @@ SUITES = {
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm',
             'code/game/objects/structures/ocean_fishing.dm')},
+    'water_turfs': {'files': ('tests/water_turfs/test_water_turfs.py',),
+        'paths': ('tests/water_turfs/', 'code/_helpers/water_turfs.dm'), 'shared_paths': ()},
     'faction_hud': {'files': ('tests/faction_hud/test_faction_hud.py',),
         'paths': ('tests/faction_hud/', 'code/_helpers/faction_hud.dm'), 'shared_paths': ()},
     'structure_damage': {'files': ('tests/structure_damage/test_structure_damage.py',),
@@ -1878,6 +1882,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'mechanical_power': {'files': ('tests/mechanical_power/test_contract.py',), 'paths': (
+        'tests/mechanical_power/', 'code/modules/1713/mechanical_power.dm', 'config/craft_needs.json',
+        'icons/obj/mechanical_power.dmi', 'tests/sprites/create_mechanical_power.py')},
     'building_site': {'files': ('tests/building_site/test_contract.py',), 'paths': (
         'tests/building_site/', 'code/modules/1713/building_site.dm',
         'icons/obj/building_site.dmi', 'tests/sprites/create_building_site.py')},

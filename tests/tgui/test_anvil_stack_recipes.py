@@ -57,6 +57,9 @@ class AnvilStackRecipe(unittest.TestCase):
         env = dict(list=lambda item: Menu([item]), anvil_recipes=self.rows,
                    map=type('Map', (), {'ordinal_age': 2})(),
                    recipe_age_allowed=lambda age: age >= 2,
+                   # The shared row filter (blacksmithing_recipes.dm); no machine parts in these rows.
+                   anvil_recipe_offered=lambda row, category, cost, material=None, cast=False: bool(
+                       row and row[2] == category and 2 >= row[3] and row[4] >= 2 and cost > 0),
                    menu_label=label, WWinput=menu, splittext=lambda value, sep: {1: value.split(sep)[0]},
                    crafting_recipe_allowed=lambda human, recipe: self.allowed,
                    do_after=wait, qdel=discard,

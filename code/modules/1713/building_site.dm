@@ -114,7 +114,7 @@ var/global/list/cement_mixer_charge = list(
 	var/made = 0
 	var/obj/item/stack/material/concrete/pile = null
 	while (mixer_ready(H) && !batch_refusal())
-		if (!do_after(H, CEMENT_MIXER_TIME, src))
+		if (!do_after(H, driven_time(CEMENT_MIXER_TIME), src))
 			break
 		if (!mixer_ready(H) || batch_refusal() || !crafting_recipe_allowed(H, "[type]"))
 			break
@@ -140,14 +140,15 @@ var/global/list/cement_mixer_charge = list(
 // Pile driver and timber piers
 //
 // A timber pier span is laid like the steel and concrete bridge spans in
-// bridges.dm, deep water included, but its log piles have to be driven: the
-// span only goes down within reach of a fastened pile driver.
+// bridges.dm, but only over shallow water (Val, 2026-11-14: deep water stays
+// for steel and concrete), and its log piles have to be driven: the span
+// only goes down within reach of a fastened pile driver.
 
 #define PILE_DRIVER_REACH 2
 
 /obj/structure/workshop_machine/pile_driver
 	name = "pile driver"
-	desc = "A drop hammer in a tall timber frame. Fasten it on the shore or on the pier built so far; a timber pier span can then be laid on water within two tiles of it, even over the deep."
+	desc = "A drop hammer in a tall timber frame. Fasten it on the shore or on the pier built so far; a timber pier span can then be laid on shallow water within two tiles of it. Deep water takes a steel or concrete span."
 	icon = 'icons/obj/building_site.dmi'
 	icon_state = "pile_driver"
 
@@ -160,7 +161,7 @@ var/global/list/cement_mixer_charge = list(
 
 /obj/structure/workshop_machine/pile_driver/attack_hand(mob/living/human/H)
 	if (istype(H))
-		to_chat(H, SPAN_NOTICE("Lay a timber pier span on the water within [PILE_DRIVER_REACH] tiles of \the [src]; the hammer drives its piles."))
+		to_chat(H, SPAN_NOTICE("Lay a timber pier span on shallow water within [PILE_DRIVER_REACH] tiles of \the [src]; the hammer drives its piles."))
 
 // A driver that can drive piles into T: fastened, idle and on firm footing.
 /proc/pile_driver_for(turf/T)
@@ -191,12 +192,15 @@ var/global/list/cement_mixer_charge = list(
 
 /obj/item/weapon/bridge_span/timber
 	name = "timber pier span"
-	desc = "Log piles, beams and planks for one tile of pier or trestle bridge. Use it on the water in front of you, within reach of a fastened pile driver; it can cross even the deep sea."
+	desc = "Log piles, beams and planks for one tile of pier or trestle bridge. Use it on shallow water in front of you, within reach of a fastened pile driver. It cannot stand in deep water."
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "wood"
 	deck_type = /obj/covers/bridge/timber
 
 /obj/item/weapon/bridge_span/timber/build_span(turf/T, mob/user)
+	if (istype(T, /turf/floor/beach/water/deep))
+		to_chat(user, SPAN_WARNING("Log piles cannot reach the bed in deep water. A timber pier crosses shallows; deep water takes a steel or concrete span."))
+		return FALSE
 	var/obj/structure/workshop_machine/pile_driver/D = pile_driver_for(T)
 	if (!D)
 		to_chat(user, SPAN_WARNING("The piles must be driven. Fasten a pile driver within [PILE_DRIVER_REACH] tiles of that water, on the shore or on the pier built so far."))

@@ -217,7 +217,7 @@ var/global/list/deck_berths = list()
 	return O ? O.z : z
 
 /proc/deck_berth_water(turf/T)
-	return istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded)
+	return is_open_water(T)
 
 // Why a boat cannot be set down on this tile of water, or null.
 /proc/deck_berth_water_refusal(turf/T, obj/structure/vehicleparts/axis/A)
