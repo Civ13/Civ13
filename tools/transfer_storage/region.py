@@ -933,20 +933,28 @@ class RegionStore(TrainLeaseQueue):
         pass: an admin's 'reroll' of a charted tile or 'reveal' of the tiles
         round one for an owner, or a ship's 'scout' (what her crew saw round a
         tile) or 'course' (she set course for a land; voyage names her
-        voyage). admin is the account asking."""
-        if op not in ('reroll', 'reveal', 'scout', 'course'):
+        voyage), or a land's own crew deciding on it: 'settle', 'claim' (owner
+        is the colony's parent faction) or 'abandon'. admin is the account asking."""
+        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'abandon'):
             raise TransferError('unknown chart request')
         if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
             raise TransferError('bad chart tile')
         if not account_key_valid(admin):
             raise TransferError('bad admin key')
-        if op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
+        if op == 'claim':
+            # The claim's owner is the colony's parent faction (colony_charter.dm).
+            if not (isinstance(owner, str) and re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)):
+                raise TransferError('bad claiming faction')
+        elif op in ('settle', 'abandon'):
+            owner = None
+        elif op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
             raise TransferError('bad chart owner')
         if op == 'course' and not (isinstance(voyage, str) and re.match(r'^[a-z0-9_\-]{1,80}$', voyage)):
             raise TransferError('bad voyage')
         with self._tx():
             cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage) VALUES (?, ?, ?, ?, ?, ?)',
-                                     (op, x, y, owner if op != 'reroll' else None, admin, voyage if op == 'course' else None))
+                                     (op, x, y, owner if op not in ('reroll', 'settle', 'abandon') else None, admin,
+                                      voyage if op == 'course' else None))
         return {'id': cursor.lastrowid}
 
     def chart(self):

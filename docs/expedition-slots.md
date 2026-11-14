@@ -75,6 +75,11 @@ courses, frees the tile (its template stays) and deletes the report. The
 coordinator learns the slots and this folder from `--slots` and
 `--expeditions`, which `ensure_coordinator` passes when the group has slots.
 
+An abandoned land (by its crew, or after 7 days with nobody there) is
+reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
+(it saves first), archives it and frees it. The coordinator has already moved
+any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).
+
 ## In game
 
 - The Regions panel calls a slot "land across the sea" and has no Join link for it.
@@ -83,7 +88,5 @@ coordinator learns the slots and this folder from `--slots` and
 ## Not done yet
 
 - Placing the template's ore kinds, rare finds and game in the slot world.
-- What happens to characters still homed in a slot when it is archived
-  (settle, claim and abandon step).
 
 Tests: `python3 -B tests/gaia_host/test_expedition_slots.py`.
