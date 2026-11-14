@@ -16,6 +16,8 @@
 #define OBSIDIAN_ARROWHEADS 5
 #define OBSIDIAN_BLADES_PER_CORE 6
 #define OBSIDIAN_EDGE_HARVEST 0.75 // butchering and skinning time with an obsidian edge in hand
+#define OBSIDIAN_CHIP_CHANCE 10 // chance a hit knocks a blade out of a macuahuitl or tepoztopilli
+#define OBSIDIAN_CHIP_CHANCE_ARMOUR 20
 
 // Knapped obsidian. The building stone (/material/obsidian, cut blocks for
 // pillars and braziers) keeps its own very high integrity; tools use this
@@ -496,6 +498,113 @@ var/global/list/obsidian_volcano_cells = list()
 		delay = round(delay * OBSIDIAN_EDGE_HARVEST)
 	return ..(user, delay)
 
+// ---------------------------------------------------------------- bladed clubs
+// The macuahuitl and tepoztopilli carry a row of prismatic blades in grooves
+// along their edges. Each hit can knock a blade out (more often against
+// armour); with none left they are blunt wooden weapons until re-edged with
+// new blades. Weapons placed on maps or spawned by events start fully edged;
+// crafted ones start bare (the /unedged subtypes).
+/obj/item/weapon/macuahuitl
+	var/blades = 8
+	var/max_blades = 8
+	var/edged_force = WEAPON_FORCE_ROBUST
+	var/blunt_force = 14
+	var/bare_icon_state = "macuahuitl_bare"
+
+/obj/item/weapon/macuahuitl/New()
+	..()
+	update_edge()
+
+/obj/item/weapon/macuahuitl/after_load()
+	..()
+	update_edge()
+
+/obj/item/weapon/macuahuitl/proc/update_edge()
+	blades = clamp(blades, 0, max_blades)
+	if (blades > 0)
+		force = edged_force
+		sharp = TRUE
+		edge = TRUE
+		icon = initial(icon)
+		icon_state = initial(icon_state)
+		attack_verb = list("slashed", "cut", "hacked")
+	else
+		force = blunt_force
+		sharp = FALSE
+		edge = FALSE
+		icon = OBSIDIAN_ICON
+		icon_state = bare_icon_state
+		attack_verb = list("smacked", "hit", "bludgeoned")
+	update_icon()
+
+/obj/item/weapon/macuahuitl/examine(mob/user, distance = -1)
+	..()
+	if (blades <= 0)
+		to_chat(user, SPAN_NOTICE("Its grooves are empty. Use prismatic blades on it to edge it."))
+	else
+		to_chat(user, SPAN_NOTICE("It holds [blades] of [max_blades] obsidian blades."))
+
+/obj/item/weapon/macuahuitl/attack(mob/living/M, mob/living/user, target_zone)
+	. = ..()
+	if (!. || blades <= 0 || !isliving(M))
+		return
+	var/chance = OBSIDIAN_CHIP_CHANCE
+	if (M.getarmor(target_zone, "melee") > 0)
+		chance = OBSIDIAN_CHIP_CHANCE_ARMOUR
+	if (!prob(chance))
+		return
+	blades--
+	if (blades <= 0)
+		to_chat(user, SPAN_WARNING("The last obsidian blade snaps out of \the [src]. It is only a wooden club now."))
+	else
+		to_chat(user, SPAN_WARNING("An obsidian blade chips out of \the [src]."))
+	update_edge()
+
+/obj/item/weapon/macuahuitl/attackby(obj/item/W, mob/user)
+	if (!istype(W, /obj/item/stack/obsidian_blades) || !ishuman(user))
+		return ..()
+	var/mob/living/human/H = user
+	if (blades >= max_blades)
+		to_chat(H, SPAN_NOTICE("Every groove of \the [src] already holds a blade."))
+		return
+	if (!H.may_do_after)
+		return
+	var/obj/item/stack/obsidian_blades/B = W
+	to_chat(H, SPAN_NOTICE("You start setting blades into \the [src] with pitch..."))
+	if (!do_after(H, 30, src) || QDELETED(B) || B.loc != H || blades >= max_blades)
+		return
+	var/fitted = min(B.amount, max_blades - blades)
+	if (fitted <= 0 || !B.use(fitted))
+		return
+	blades += fitted
+	update_edge()
+	to_chat(H, SPAN_NOTICE("You set [fitted] blade\s into \the [src]. It now holds [blades] of [max_blades]."))
+
+/obj/item/weapon/macuahuitl/unedged
+	blades = 0
+
+// Aztec thrusting spear with a blade-edged wooden head.
+/obj/item/weapon/macuahuitl/tepoztopilli
+	name = "tepoztopilli"
+	desc = "A Mesoamerican thrusting spear whose broad wooden head is edged with obsidian blades. It cuts as well as it stabs."
+	icon = OBSIDIAN_ICON
+	icon_state = "tepoztopilli"
+	item_state = "spear"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_weapons.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_weapons.dmi',
+		)
+	slot_flags = SLOT_SHOULDER | SLOT_BACK
+	w_class = ITEM_SIZE_LARGE
+	blades = 6
+	max_blades = 6
+	edged_force = 24
+	blunt_force = 12
+	bare_icon_state = "tepoztopilli_bare"
+
+/obj/item/weapon/macuahuitl/tepoztopilli/unedged
+	blades = 0
+
 #undef OBSIDIAN_ICON
 #undef OBSIDIAN_VOLCANO_RANGE
 #undef OBSIDIAN_VOLCANO_BUCKET
@@ -508,3 +617,5 @@ var/global/list/obsidian_volcano_cells = list()
 #undef OBSIDIAN_ARROWHEADS
 #undef OBSIDIAN_BLADES_PER_CORE
 #undef OBSIDIAN_EDGE_HARVEST
+#undef OBSIDIAN_CHIP_CHANCE
+#undef OBSIDIAN_CHIP_CHANCE_ARMOUR

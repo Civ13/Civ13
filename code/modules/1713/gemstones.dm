@@ -148,32 +148,38 @@ var/global/list/gem_pocket_weights = list(
 	amount = 1
 	flammable = FALSE
 	value = 10
+	var/gem_colour = "#ffffff" // tint for pendant settings (necklaces.dm)
 
 /obj/item/stack/gemstone/garnet
 	name = "garnets"
 	singular_name = "garnet"
+	gem_colour = "#8b1a2b"
 	icon_state = "garnet"
 
 /obj/item/stack/gemstone/amethyst
 	name = "amethysts"
 	singular_name = "amethyst"
+	gem_colour = "#9b59d0"
 	icon_state = "amethyst"
 
 /obj/item/stack/gemstone/topaz
 	name = "topazes"
 	singular_name = "topaz"
+	gem_colour = "#e8a33a"
 	icon_state = "topaz"
 	value = 12
 
 /obj/item/stack/gemstone/emerald
 	name = "emeralds"
 	singular_name = "emerald"
+	gem_colour = "#2fa35a"
 	icon_state = "emerald"
 	value = 18
 
 /obj/item/stack/gemstone/sapphire
 	name = "sapphires"
 	singular_name = "sapphire"
+	gem_colour = "#2a5fd6"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "sapphire"
 	value = 18
@@ -181,6 +187,7 @@ var/global/list/gem_pocket_weights = list(
 /obj/item/stack/gemstone/ruby
 	name = "rubies"
 	singular_name = "ruby"
+	gem_colour = "#d0263a"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "ruby"
 	value = 21
@@ -188,6 +195,7 @@ var/global/list/gem_pocket_weights = list(
 /obj/item/stack/gemstone/diamond
 	name = "diamonds"
 	singular_name = "diamond"
+	gem_colour = "#d8f4ff"
 	icon = 'icons/obj/pocket_stronghold_gems.dmi'
 	icon_state = "diamond"
 	value = 30
@@ -196,6 +204,7 @@ var/global/list/gem_pocket_weights = list(
 
 /obj/item/clothing
 	var/set_gem = null // singular name of the cut stone set into it, if any
+	var/set_gem_colour = null // its colour, for items that show the stone
 
 /obj/item/clothing/attackby(obj/item/I, mob/user)
 	if (istype(I, /obj/item/stack/gemstone) && ishuman(user))
@@ -218,10 +227,13 @@ var/global/list/gem_pocket_weights = list(
 		return FALSE
 	var/stone_name = G.singular_name
 	var/stone_value = G.value
+	var/stone_colour = G.gem_colour
 	if (!G.use(1))
 		return FALSE
 	set_gem = stone_name
+	set_gem_colour = stone_colour
 	value += stone_value
+	update_icon()
 	to_chat(H, SPAN_NOTICE("You set \a [stone_name] into \the [src]."))
 	return TRUE
 
