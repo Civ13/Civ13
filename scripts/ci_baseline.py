@@ -1708,7 +1708,8 @@ SUITES = {
     # Admin-only atlas list stays out of public atlas outputs; source contracts only.
     'atlas_admin_only': {'files': ('tests/atlas_admin_only/test_admin_only.py',), 'paths': (
         'tests/atlas_admin_only/', 'scripts/atlas/admin_only.py', 'code/game/mob/crafting_atlas_admin.dm'),
-        'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme')},
+        'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
+                         'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
     # Keep shared production and Atlas sources unmapped so their existing
     # conservative all-suite fallback remains intact.
