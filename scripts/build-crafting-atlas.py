@@ -12,6 +12,7 @@ from atlas.research_coverage import annotate_research
 from atlas.titles import display_titles
 from atlas.facts import resource_facts
 from atlas.entities import entity_resources
+from atlas.admin_only import admin_only_types, check_public, covers
 from atlas.interactions import add_interactions
 
 
@@ -448,10 +449,14 @@ def game_resource(x):
 def game_catalog():
     """Recipe resources first, then a reference entry for every other named player-facing type."""
     resources={x:game_resource(x) for x in resource_ids}
-    return dict(acquisition=acquisition,recipes=game_recipes(records),resources=resources|entity_resources(files,resources))
+    # Admin-only types get no reference page; the game shows them to admins from the type itself.
+    references={k:v for k,v in entity_resources(files,resources).items() if not covers(admin_only,k)}
+    return dict(acquisition=acquisition,recipes=game_recipes(records),resources=resources|references)
+admin_only=admin_only_types(files)
 if options.catalog_only:
     game=game_catalog()
     game_text=catalog_text(game)
+    check_public(admin_only,game_text,'the game atlas')
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
         options.game_catalog.write_text(game_text,encoding='utf-8')
@@ -488,6 +493,8 @@ for resource in resource_ids:
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
 game=game_catalog()
 game_text=catalog_text(game)
+check_public(admin_only,game_text,'the game atlas')
+check_public(admin_only,json.dumps(data),'the published web atlas')
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
     options.game_catalog.write_text(game_text,encoding='utf-8')
