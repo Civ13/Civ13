@@ -22,8 +22,8 @@
 /obj/structure/boathouse
 	name = "boathouse"
 	desc = "A shipwright's boathouse on the shore. The 7x7 square of water diagonally next to it, on the side it faces, is its slip: sail a stopped, empty boat wholly into the slip to put it away, and it waits here, out of the water, until you take it out again. A wrench turns it to face another corner while it is empty."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "gate_control"
+	icon = 'icons/obj/boathouse.dmi'
+	icon_state = "boathouse"
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
@@ -33,15 +33,61 @@
 	// Which diagonal the slip lies on from the office.
 	var/slip_dir = NORTHEAST
 	var/tmp/busy = FALSE
+	// Mooring piles marking the slip's three far corners; never saved.
+	var/tmp/list/piles = list()
 
 /obj/structure/boathouse/persistence_runtime_var(key)
-	return key == "busy" || ..(key)
+	return key == "busy" || key == "piles" || ..(key)
+
+/obj/structure/boathouse/New()
+	..()
+	place_piles()
+
+/obj/structure/boathouse/Destroy()
+	clear_piles()
+	return ..()
+
+// A mooring pile just outside a corner of the slip, so boats never carry it.
+/obj/effect/boathouse_pile
+	name = "mooring pile"
+	desc = "Tarred piles lashed together, marking a corner of a boathouse slip."
+	icon = 'icons/obj/boathouse.dmi'
+	icon_state = "slip_pile"
+	anchored = TRUE
+	density = FALSE
+	mouse_opacity = 0
+	layer = 2.9
+	should_save = FALSE
+
+/obj/effect/boathouse_pile/craft_left_behind()
+	return TRUE
+
+/obj/structure/boathouse/proc/clear_piles()
+	for (var/obj/effect/boathouse_pile/P in piles)
+		qdel(P)
+	piles = list()
+
+/obj/structure/boathouse/proc/place_piles()
+	clear_piles()
+	if (!isturf(loc))
+		return
+	var/far = BOATHOUSE_SLIP + 1
+	var/list/corners = list(list(far, far), list(far, 0), list(0, far))
+	for (var/list/C in corners)
+		var/turf/T = locate(x + C[1] * slip_x(), y + C[2] * slip_y(), z)
+		if (!T || T.density)
+			continue
+		var/obj/effect/boathouse_pile/P = new(T)
+		if (C[1] == far && C[2] == far)
+			P.icon_state = "slip_pile_lit"
+		piles += P
 
 /obj/structure/boathouse/after_load()
 	..()
 	busy = FALSE
 	if (!(slip_dir in cornerdirs))
 		slip_dir = NORTHEAST
+	place_piles()
 	// A stored boat's axis registers itself as it is made; it is not afloat.
 	for (var/obj/structure/boathouse_stored/B in contents)
 		B.forget_axis()
@@ -311,6 +357,7 @@
 			to_chat(user, SPAN_WARNING("Take the stored boats out before you turn \the [src]."))
 			return
 		slip_dir = turn(slip_dir, -90)
+		place_piles()
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		to_chat(user, SPAN_NOTICE("\The [src] now faces [dir2text(slip_dir)]: its slip is the 7x7 square of water that way."))
 		return

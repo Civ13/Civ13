@@ -41,6 +41,7 @@ def call(url, token, path, body=None, timeout=5):
 if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.train_custody import TrainCustody
+from tools.transfer_storage.region import LAND_STAGES, account_key_valid, land_id_valid
 
 
 class Coordinator(TrainCustody):
@@ -55,6 +56,10 @@ class Coordinator(TrainCustody):
         self.db.execute('''CREATE TABLE IF NOT EXISTS home(
             ckey TEXT PRIMARY KEY, region TEXT, rev INTEGER NOT NULL)''')
         self.db.execute('CREATE TABLE IF NOT EXISTS ledger(key TEXT PRIMARY KEY, value TEXT NOT NULL)')
+        # Land stages (docs/land-stages.md): one row per land an admin has set.
+        self.db.execute('''CREATE TABLE IF NOT EXISTS land(
+            region TEXT PRIMARY KEY, stage TEXT NOT NULL, paused INTEGER NOT NULL,
+            by TEXT, at INTEGER NOT NULL)''')
         # Requests already decided but not yet acknowledged by their agent, so a
         # lost acknowledgement never replays an old request over newer ones.
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
@@ -119,6 +124,31 @@ class Coordinator(TrainCustody):
         rev = int(self._ledger('rev')) + 1
         self.db.execute("UPDATE ledger SET value = ? WHERE key = 'rev'", (str(rev),))
         self.db.execute('INSERT OR REPLACE INTO home VALUES (?, ?, ?)', (ckey, region, rev))
+
+    def set_land(self, region, stage, paused, by=None, now=None):
+        """Set a land's stage and pause. Admins may correct a stage in either
+        direction; no home is ever moved by a stage change. Returns False for a
+        request that names the mainland, an unknown land or a bad value."""
+        if region == self.mainland or region not in self.regions() or not land_id_valid(region):
+            return False
+        if stage not in LAND_STAGES or paused not in (True, False) or (by is not None and not account_key_valid(by)):
+            return False
+        self.db.execute('INSERT OR REPLACE INTO land VALUES (?, ?, ?, ?, ?)',
+                        (region, stage, 1 if paused else 0, by, int(now if now is not None else time.time())))
+        return True
+
+    def lands(self):
+        """Every enrolled land's stage: the mainland is MAINLAND, a land no
+        admin has set is CLOSED."""
+        rows = {r: (st, p, b, a) for r, st, p, b, a in self.db.execute('SELECT region, stage, paused, by, at FROM land')}
+        result = {}
+        for region in self.regions():
+            if region == self.mainland:
+                result[region] = {'stage': 'MAINLAND', 'paused': False, 'by': None, 'at': 0}
+                continue
+            stage, paused, by, at = rows.get(region, ('CLOSED', 0, None, 0))
+            result[region] = {'stage': stage, 'paused': bool(paused), 'by': by, 'at': int(at)}
+        return result
 
     def decide(self, source, request):
         """Apply one account request from region source to the ledger."""
@@ -250,11 +280,27 @@ class Coordinator(TrainCustody):
             for _, name, request_id, store, request in queue:
                 self.decide(name, request)
                 self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, request_id))
+            # Admin land stage changes, each region's in its own order. Their
+            # ids live in a store of their own so they never meet account ids.
+            land_done = {}
+            for name, a in asked.items():
+                store = 'land:' + str(a.get('store') or '')
+                requests = [r for r in a.get('land_requests') or [] if type(r) is dict and isinstance(r.get('id'), int)]
+                ids = [r['id'] for r in requests]
+                old = {i for (i,) in self.db.execute('SELECT id FROM decided WHERE store = ?', (store,))}
+                for i in old - set(ids):
+                    self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
+                for r in requests:
+                    if r['id'] not in old:
+                        self.set_land(r.get('region'), r.get('stage'), r.get('paused'), r.get('admin'))
+                        self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
+                land_done[name] = ids
             self.db.execute('COMMIT')
         except Exception:
             self.db.execute('ROLLBACK')
             raise
         rev = int(self._ledger('rev'))
+        lands = self.lands()
         for name, answer in asked.items():
             url, token = regions[name]
             since = answer.get('rev', 0) if answer.get('epoch') == epoch else 0
@@ -264,6 +310,7 @@ class Coordinator(TrainCustody):
                 call(url, token, '/homes', {'epoch': epoch, 'rev': rev, 'rows': rows, 'reset': since == 0,
                                             'mainland': self.mainland, 'train_locks': self.train_locks(),
                                             'train_decisions': lease_decisions.get(name, []),
+                                            'lands': lands, 'land_done': land_done.get(name, []),
                                             'done': [r['id'] for r in answer.get('requests', [])]})
             except (OSError, ValueError):
                 # Its requests stay queued; deciding them again changes nothing.
@@ -359,6 +406,9 @@ def main(argv=None):
     parser.add_argument('--bootstrap-new-group', action='store_true',
                         help='explicitly assert a new group with no previous peers, epochs or custody; never use for recovery')
     parser.add_argument('--once', action='store_true', help='relay one pass and exit')
+    parser.add_argument('--lands', action='store_true', help='print every land\'s stage as JSON and exit')
+    parser.add_argument('--set-land', metavar='REGION=STAGE[,paused]',
+                        help='set one land\'s stage (%s), optionally paused, and exit' % ', '.join(LAND_STAGES))
     args = parser.parse_args(argv)
     enrollments = []
     for item in args.region:
@@ -368,6 +418,18 @@ def main(argv=None):
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group)
+    if args.lands or args.set_land:
+        try:
+            if args.set_land:
+                region, _, rest = args.set_land.partition('=')
+                stage, _, flag = rest.partition(',')
+                if flag not in ('', 'paused') or not coordinator.set_land(region, stage.upper(), flag == 'paused'):
+                    parser.error('cannot set %r: name an enrolled land other than the mainland and one of %s'
+                                 % (args.set_land, ', '.join(LAND_STAGES)))
+            print(json.dumps(coordinator.lands(), sort_keys=True))
+            return
+        finally:
+            coordinator.close()
     try:
         for name, url, token in enrollments:
             coordinator.enroll(name, url, token)

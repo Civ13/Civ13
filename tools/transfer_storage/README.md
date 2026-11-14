@@ -127,6 +127,9 @@ character lives, with a join link.
   ledger rows it has not seen (`/homes`). An agent that misses a pass catches
   up on the next; a request decided but not acknowledged is never decided
   again.
+- The coordinator also keeps each land's settlement stage (`land` table) and
+  sends the full list with every `/homes` pass; admins queue changes through
+  their agent's `/land/set`. See [land stages](../../docs/land-stages.md).
 - Keep `coordinator.sqlite` and its durable peer roster backed up: losing it
   does **not** authorize a new home ledger. Restore the original database.
   An empty replacement stays unreconciled even if every currently enrolled

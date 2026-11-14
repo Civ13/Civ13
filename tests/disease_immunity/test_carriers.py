@@ -133,6 +133,17 @@ class Worms(unittest.TestCase):
         self.assertIn('M.disease_type == "worms"', absinthe)
         self.assertIn("M.receive_disease_treatment(1)", absinthe)
 
+    def test_wormwood_tea_purges_worms_in_one_cup(self):
+        herbs = read("code/modules/ecology/wild_herbs.dm")
+        tea = proc(herbs, "/datum/reagent/drink/wormwood_tea/affect_ingest(")
+        self.assertIn('M.disease_type == "worms"', tea)
+        rate = float(re.search(r"M\.receive_disease_treatment\(([\d.]+)\)", tea).group(1))
+        block = herbs.split("/datum/reagent/drink/wormwood_tea\n", 1)[1].split("\n\n", 1)[0]
+        metabolism = float(re.search(r"metabolism = ([\d.]+)", block).group(1))
+        # A steeped cup holds 10 units.
+        self.assertGreaterEqual(10 / metabolism * rate, self.define("WORMS_COURSE"))
+        self.assertIn('steep_reagent = "wormwood_tea"', herbs)
+
     def test_wild_meat_sometimes_has_worms(self):
         harvest = proc(read("code/modules/1713/animal_harvest.dm"), "/mob/living/simple_animal/proc/harvest_food(")
         self.assertIn('F.reagents.add_reagent("worm_eggs", 1)', harvest)

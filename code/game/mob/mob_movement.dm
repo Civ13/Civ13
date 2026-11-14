@@ -1184,6 +1184,8 @@
 /client/var/tmp/fine_offset_glide_at = 0
 
 /mob/proc/held_movement_direction()
+	if (click_route)
+		click_route.steer()
 	return (movement_northsouth || 0) | (movement_eastwest || 0)
 
 // The fine_step value the movementMachine passes for this mob's held keys.
@@ -1194,6 +1196,7 @@
 
 // when a client changes mobs or logs out they stop moving
 /mob/Logout()
+	click_route_cancel()
 	movement_eastwest = null
 	movement_northsouth = null
 	movement_fine = FALSE
@@ -1203,6 +1206,7 @@
 	set name = ".startmovingup"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_northsouth = NORTH
 		mob.movement_fine = FALSE
 		try
@@ -1238,6 +1242,7 @@
 	set name = ".startmovingdown"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_northsouth = SOUTH
 		mob.movement_fine = FALSE
 		try
@@ -1271,6 +1276,7 @@
 	set name = ".startmovingright"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_eastwest = EAST
 		mob.movement_fine = FALSE
 		try
@@ -1306,6 +1312,7 @@
 	set name = ".startmovingleft"
 	set instant = TRUE
 	if (mob)
+		mob.click_route_cancel() // a movement key takes over from a route
 		mob.movement_eastwest = WEST
 		mob.movement_fine = FALSE
 		try
@@ -1421,6 +1428,7 @@
 	set instant = TRUE
 	if (!mob || !(direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)))
 		return FALSE
+	mob.click_route_cancel()
 	// Release ordinary held axes through their lifecycle, including drone/turret
 	// stop hooks, before they become precision axes.
 	if (!mob.movement_fine || !mob.held_movement_direction())

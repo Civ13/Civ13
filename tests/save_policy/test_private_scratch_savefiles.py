@@ -41,6 +41,17 @@ class PrivateScratchSavefileTest(unittest.TestCase):
         self.assertIn('world.port', body)
         self.assertIn('data/scratch-saves/[persistence_scratch_run]/', body)
 
+    def test_a_refused_name_is_skipped_instead_of_failing_the_load(self):
+        # Gaia 2026-11-14 (00:36 and 09:07): "Cannot open ...\\95.sav: file is
+        # in use" threw from new(path) and stopped the stream load.
+        text = HELPER.read_text(encoding='utf-8')
+        body = helper_body(text)
+        self.assertIn('#define PERSISTENCE_SCRATCH_OPEN_ATTEMPTS 8', text)
+        loop = body.index('for(var/attempt = 1, attempt <= PERSISTENCE_SCRATCH_OPEN_ATTEMPTS, attempt++)')
+        self.assertLess(loop, body.index('[++persistence_scratch_serial].sav'))
+        self.assertLess(body.index('try\n\t\t\tvar/savefile/S = new(path)'), body.index('catch(var/exception/error)'))
+        self.assertLess(body.index('catch(var/exception/error)'), body.rindex('return new /savefile'))
+
     def test_sweep_only_deletes_unreferenced_files(self):
         text = HELPER.read_text(encoding='utf-8')
         start = text.index('/proc/sweep_released_scratch_savefiles()')

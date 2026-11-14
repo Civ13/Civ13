@@ -42,6 +42,23 @@ TENTATIVE, CONFIRMED, JOURNALED = 'tentative', 'confirmed', 'journaled'
 
 ACCOUNT_OPS = ('claim', 'arrive', 'depart', 'release')
 
+# A land's settlement stage (docs/land-stages.md). The mainland is always
+# MAINLAND; the coordinator keeps every other land's stage.
+LAND_STAGES = ('CLOSED', 'FRONTIER', 'COLONY', 'OPEN')
+
+
+def land_id_valid(region):
+    """A region id as shard_region.json allows: a-z, 0-9, - and _, 1 to 32 characters."""
+    return isinstance(region, str) and 0 < len(region) <= 32 and all(
+        c.isdigit() or ('a' <= c <= 'z') or c in '-_' for c in region)
+
+
+def land_stage_valid(entry):
+    """One land's stage record as the coordinator sends it."""
+    return (type(entry) is dict and entry.get('stage') in LAND_STAGES + ('MAINLAND',)
+            and entry.get('paused') in (True, False) and (entry.get('by') is None or account_key_valid(entry.get('by')))
+            and isinstance(entry.get('at'), int))
+
 
 def account_key_valid(ckey):
     """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
@@ -178,6 +195,12 @@ class RegionStore(TrainLeaseQueue):
         db.execute("INSERT OR IGNORE INTO meta VALUES ('store_id', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO meta VALUES ('homes_rev', '0')")
         db.execute("INSERT OR IGNORE INTO meta VALUES ('mainland', '')")
+        # Land stages: this region's copy of the coordinator's stage list, and
+        # admin changes waiting for the coordinator's next pass.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('lands', '{}')")
+        db.execute('''CREATE TABLE IF NOT EXISTS land_request(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, region TEXT NOT NULL, stage TEXT NOT NULL,
+            paused INTEGER NOT NULL, admin TEXT NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
@@ -743,9 +766,13 @@ class RegionStore(TrainLeaseQueue):
         return {'requests': [dict(zip(('id', 'ckey', 'op', 'region', 'homes_epoch', 'home_rev'), r)) for r in self.db.execute(
                     'SELECT id, ckey, op, region, homes_epoch, home_rev FROM account_request ORDER BY id')],
                 'epoch': self._meta('homes_epoch'), 'rev': int(self._meta('homes_rev')),
-                'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests()}
+                'store': self._meta('store_id'), 'train_history': self._meta('train_history') == '1', 'train_requests': self.train_lease_requests(),
+                'land_requests': [dict(zip(('id', 'region', 'stage', 'paused', 'admin'), (i, r, st, bool(p), a)))
+                                  for i, r, st, p, a in self.db.execute(
+                                      'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')]}
 
-    def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None):
+    def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
+                    lands=None, land_done=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -778,7 +805,42 @@ class RegionStore(TrainLeaseQueue):
             self._set_meta('homes_epoch', epoch)
             self._set_meta('homes_rev', rev)
             self._set_meta('mainland', mainland if isinstance(mainland, str) else '')
+            # An older coordinator sends no land list: keep the copy we have.
+            if lands is not None:
+                if type(lands) is not dict or not all(land_id_valid(k) and land_stage_valid(v) for k, v in lands.items()):
+                    raise TransferError('invalid land stage snapshot')
+                self._set_meta('lands', json.dumps(lands, sort_keys=True))
+            for request_id in land_done or []:
+                self.db.execute('DELETE FROM land_request WHERE id = ?', (int(request_id),))
         return {'rev': rev}
+
+    # -- land stages ---------------------------------------------------------
+
+    def request_land(self, region, stage, paused, admin):
+        """An admin's change to a land's stage or pause, decided on the
+        coordinator's next pass (the newest change for a land wins)."""
+        if not land_id_valid(region):
+            raise TransferError('bad land id')
+        if stage not in LAND_STAGES:
+            raise TransferError('unknown land stage')
+        if paused not in (True, False):
+            raise TransferError('paused must be true or false')
+        if not account_key_valid(admin):
+            raise TransferError('bad admin key')
+        with self._tx():
+            if region == self._meta('mainland'):
+                raise TransferError('the mainland has no stage to set')
+            cursor = self.db.execute('INSERT INTO land_request(region, stage, paused, admin) VALUES (?, ?, ?, ?)',
+                                     (region, stage, 1 if paused else 0, admin))
+        return {'id': cursor.lastrowid}
+
+    def lands(self):
+        """Every land's stage as last sent by the coordinator, and the admin
+        changes still waiting for it."""
+        return {'mainland': self._meta('mainland') or None, 'lands': json.loads(self._meta('lands')),
+                'pending': [dict(zip(('region', 'stage', 'paused', 'admin'), (r, st, bool(p), a)))
+                            for r, st, p, a in self.db.execute(
+                                'SELECT region, stage, paused, admin FROM land_request ORDER BY id')]}
 
     # -- inspection ---------------------------------------------------------
 

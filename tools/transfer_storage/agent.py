@@ -82,7 +82,12 @@ def _routes(store, radio):
                                                  body.get('body') in (True, 1)),
         '/accounts': lambda body: store.account_requests(),
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
-                                                 body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions')),
+                                                 body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),
+                                                 body.get('lands'), body.get('land_done')),
+        # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
+        '/lands': lambda body: store.lands(),
+        '/land/set': lambda body: store.request_land(body['region'], body['stage'], body.get('paused') in (True, 1),
+                                                     body['admin']),
     }
 
 

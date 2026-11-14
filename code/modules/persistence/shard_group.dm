@@ -436,6 +436,8 @@ var/global/datum/shard_group/shard_group = new
 	spawn(0)
 		while(enabled)
 			poll_once()
+			// Land stages ride the same loop (land_stage.dm).
+			land_stages_refresh_due()
 			sleep(SHARD_POLL_INTERVAL)
 		polling = FALSE
 
@@ -490,8 +492,8 @@ var/global/datum/shard_group/shard_group = new
 
 /datum/shard_group/proc/panel_html()
 	var/list/lines = list("<p>Region group <b>[html_encode(group)]</b>. You are in <b>[html_encode(name)]</b>.</p>")
-	lines += "<table class='regions'><tr><th>Region</th><th>Kind</th><th>State</th><th>Players</th><th></th></tr>"
-	lines += "<tr class='here'><td>[html_encode(name)]</td><td>[shard_kind_text(kind, region)]</td><td>up, you are here</td><td>[length(clients)]</td><td></td></tr>"
+	lines += "<table class='regions'><tr><th>Region</th><th>Kind</th><th>Settled</th><th>State</th><th>Players</th><th></th></tr>"
+	lines += "<tr class='here'><td>[html_encode(name)]</td><td>[shard_kind_text(kind, region)]</td><td>[land_stage_column(region, kind)]</td><td>up, you are here</td><td>[length(clients)]</td><td></td></tr>"
 	for(var/id in order)
 		var/list/peer = peers[id]
 		var/state = peer["state"]
@@ -499,7 +501,7 @@ var/global/datum/shard_group/shard_group = new
 		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
 		// Event regions are reached only when an admin sends players there (region_event.dm).
 		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" ? "<a href='[player_href(id)]'>Join</a>" : ""
-		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
+		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[land_stage_column(id, peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
 	lines += "</table>"
 	if(!order.len)
 		lines += "<p>This is the only region in the group.</p>"

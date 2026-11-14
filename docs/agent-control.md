@@ -218,6 +218,23 @@ movement delay and is logged to the game log; other character actions reach
 the admin log.
 Controlled characters are not treated as SSD.
 
+### Walk to
+
+`walk_to` (queue only) walks the quickest route to `target`, or to `x`,`y` on
+the character's level, up to 32 tiles away: the route a player gets with
+Ctrl+click (`code/modules/1713/click_route.dm`). The planner weighs each step by
+what Check Movement says it costs (pace, snow, mud, flood, wading and hills),
+goes round walls, locked doors, deep water, lava, open air and fire, never cuts
+a corner, and ends next to a goal that cannot be stood on. The queue takes one
+step per movement delay through the same rules as `move`, and plans again (at
+most three times) when a step is blocked. The step's receipt is `arrived`, or
+`stopped: <reason>` such as `stopped: you are hurt`, `stopped: the wolf is
+close` (a hostile animal that came within 5 tiles) or `stopped: there is no way
+to get there`; a stopped route fails the step, so `stop_on_failure` applies.
+While it walks, `character_observe` `self.route` gives the `goal` and
+`steps_left`; `self.route_last` keeps how the last route ended. For longer
+trips, or across deep water, plan legs with `character_route` first.
+
 ### Change lists, prompts and sounds
 
 Every `character_observe` returns a `rev`. Passing it back as `since_rev`
@@ -520,8 +537,11 @@ It requires complete integer tokens, which may carry list punctuation such as
 notation, multiple target numbers and trailing numeric punctuation (such as
 `click 1.`) are refused, and the feedback quotes the unreadable step.
 Skills such as `find_flint`, `break_branch`, `drink` or `chop` name a
-target; the autopilot walks next to the target (stepping around blocked
-tiles), swaps to the right hand and intent before the click, stows (or drops) a
+target; the autopilot walks next to the target with one routed `walk_to`
+step (see [Walk to](#walk-to); `explore` routes about 10 tiles that way),
+stepping tile by tile only for the last stretch or when the server has no
+`walk_to`, and does not retry a route the game stopped (hurt, a predator close,
+no way there); it then swaps to the right hand and intent before the click, stows (or drops) a
 spare item rather than a tool when it needs a free hand, works a fallen
 branch where it lies (leaves, then stick) instead of trying to pick it up, and refuses a skill whose
 tool is not in either hand or a branch skill on a tree with no branches. The
@@ -595,6 +615,53 @@ disembarks and walks on. The boat it leaves moored is remembered as the
 says what boat she is on or sees and what it needs. `--minutes` caps the run time. It shows the
 model only names and offsets (refs stay local), marks game text as untrusted,
 and validates every reply before acting.
+
+Needs and routines (`needs.py`, `routines.py`): the character looks after
+herself like a Sims character, and the model is her director rather than her
+hands. `self` reports a player's needs bars (`nutrition`/`max_nutrition`,
+`water`/`max_water`, `bladder`, `bowels`, `hygiene`, `stamina`/`max_stamina`,
+`bodytemperature`, `resting`, `nude`, plus health, blood, wounds and
+illness). `needs.read` turns them into levels from 0 (empty) to 100 (full) for
+safety, health, thirst, hunger, warmth, relief, energy, hygiene and social
+(time since she last talked with someone). Each need's urgency is its weight
+times the square of what is missing, and a need under its critical level always
+wins. Every turn the scheduler first scores routines: cure (chew herbs), treat
+(bandage), drink (or boil water, or explore for it), warm up, eat, cook (fuel,
+cook, light the fire, pick up the roasted food), relieve (the `pee` and `poop`
+emote verbs) and rest (stand still for stamina). Each advertises the share of a
+need it restores; its score is that share times the need's urgency. The
+director's standing order (`"routine"` in its reply: repeat a skill on the
+nearest fitting target `times` times, or keep `build_next`, `leather_next`,
+`boil_water` or `explore` going; an active blueprint or leather project is an
+implicit order) scores a flat 0.25, so needs interrupt work only once they
+press. A routine is written as the model would write the plan and runs through
+the same parsing, expansion, overrides and `character_queue` steps, so it uses
+exactly a player's verbs and clicks. Reflexes still come first.
+
+The model is asked only when something needs judgement: the first look, danger,
+speech, an open game prompt, a routine that failed twice or finished, a standing
+order with nothing to work on, nothing left to do, loneliness with someone in
+view, or every `--director-every` routine turns (default 8) to review. Its prompt
+then carries a `NEEDS` line, the current `ROUTINE`, what routines did since it
+last decided, a hint for needs no routine can meet (washing, company, cooling
+down) and why it is being asked. It may also send `"priorities"` (`{"hunger": 2,
+"hygiene": 0.5}`, 0 to 3) to weigh needs. `--no-routines` asks the model every turn
+as before.
+
+Scripts (`scripts.py`) are the multi-step chains the model used to direct one
+click at a time. Each looks at what she carries and sees and returns the next
+step, making what it needs first: `flint` (search a rock, sharpen), `stick`
+(break a branch, take its leaves, strip it, pick it up), `spear`, `axe` (spear,
+sharpened flint, two grass cuttings twisted into twine or sinew, bind), `wood`
+(`logs` wood logs with an axe), `campfire` (four logs, then craft) and `hunt`
+(butcher a carcass in view, or arm herself and attack the nearest animal that
+is not a predator). The director orders one with `"routine": {"script":
+"axe"}`; it ends when the product is in hand. With no order she follows the
+early survival ladder by herself (flint, spear, axe, campfire), after any
+blueprint or leather project, and `"routine": "none"` pauses that work until the
+director gives more. Hunger with no food in hand runs the `hunt` script as a
+need routine. The run log prints `routine <name>` or `director (<reason>)` per turn
+and, at the end, how many turns ran on routines and how many the model decided.
 
 Recipe book (`techtree.py`): the autopilot plans crafting from the game's own
 recipes rather than trial and error. On first use it builds
