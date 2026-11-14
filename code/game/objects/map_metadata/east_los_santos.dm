@@ -402,3 +402,5 @@
 	icon_state = "bandana_grove"
 	item_state = "bandana_grove"
 	flags_inv = BLOCKHEADHAIR
+
+/obj/map_metadata/east_los_santos/faction_hud_icons = list(INDIANS = "ballas", AMERICAN = "civ2")

@@ -378,3 +378,9 @@ var/message_spam_check_6 = FALSE
 	spawn(1200)
 		to_chat(world, "<big>Stolen money: <b>[storedvalue]/10'000 Dollars</b></big>")
 		timer()
+/obj/map_metadata/bank_robbery/faction_hud_icons = list(RUSSIAN = "robbers")
+
+/obj/map_metadata/bank_robbery/faction_hud_icon(mob/living/human/H, faction_flag)
+	if (faction_flag == CIVILIAN && H.original_job.is_law)
+		return "police"
+	return ..()

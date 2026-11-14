@@ -362,3 +362,5 @@ var/no_loop_capitol = FALSE
 				win_condition.hash = 0
 				last_win_condition = win_condition.hash
 				return FALSE
+
+/obj/map_metadata/capitol_hill/faction_hud_icons = list(CIVILIAN = "civ1")
