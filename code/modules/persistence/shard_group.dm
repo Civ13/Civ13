@@ -439,6 +439,7 @@ var/global/datum/shard_group/shard_group = new
 			// Land stages ride the same loop (land_stage.dm).
 			land_stages_refresh_due()
 			land_sample_post()
+			nations_refresh_due() // nation.dm
 			sleep(SHARD_POLL_INTERVAL)
 		polling = FALSE
 

@@ -64,6 +64,9 @@ def land_stage_valid(entry):
 
 
 MAX_COLONIES = 50
+MAX_NATIONS = 200
+MAX_NATION_REQUESTS = 200
+NATION_RESULT_SECONDS = 7 * 24 * 3600
 FACTION_NAME_MAX = 64
 
 
@@ -239,6 +242,13 @@ class RegionStore(TrainLeaseQueue):
         # Colony starts granted to accounts whose home the coordinator moved
         # here for one (colony_charter.dm): ckey -> the colony's parent faction.
         db.execute('CREATE TABLE IF NOT EXISTS colony_grant(ckey TEXT PRIMARY KEY, faction TEXT NOT NULL)')
+        # Nations (docs/land-stages.md, "Nations"): the registry as the
+        # coordinator last sent it, leaders' requests waiting for its next
+        # pass, and outcomes waiting for the world to tell the leader.
+        db.execute("INSERT OR IGNORE INTO meta VALUES ('nations', '{}')")
+        db.execute('CREATE TABLE IF NOT EXISTS nation_request(id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL)')
+        db.execute('''CREATE TABLE IF NOT EXISTS nation_result(
+            id INTEGER PRIMARY KEY, actor TEXT NOT NULL, faction TEXT NOT NULL, text TEXT NOT NULL, at INTEGER NOT NULL)''')
         db.execute('CREATE TABLE IF NOT EXISTS train_home_wait(ckey TEXT PRIMARY KEY, target TEXT NOT NULL, epoch TEXT NOT NULL)')
         db.execute('CREATE TABLE IF NOT EXISTS train_custody_witness(transfer_id TEXT PRIMARY KEY, epoch TEXT NOT NULL)')
         columns = {r[1] for r in db.execute('PRAGMA table_info(account_request)')}
@@ -819,10 +829,13 @@ class RegionStore(TrainLeaseQueue):
                                       'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')],
                 'chart_rev': json.loads(self._meta('chart')).get('key'),
                 'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin', 'voyage'), row)) for row in self.db.execute(
-                    'SELECT id, op, x, y, owner, admin, voyage FROM chart_request ORDER BY id')]}
+                    'SELECT id, op, x, y, owner, admin, voyage FROM chart_request ORDER BY id')],
+                'nation_requests': [dict(json.loads(b), id=i) for i, b in self.db.execute(
+                    'SELECT id, body FROM nation_request ORDER BY id')]}
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
-                    lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None):
+                    lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None,
+                    nations=None, nation_results=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -880,6 +893,27 @@ class RegionStore(TrainLeaseQueue):
                 self._set_meta('chart', json.dumps(chart, sort_keys=True))
             for request_id in chart_done or []:
                 self.db.execute('DELETE FROM chart_request WHERE id = ?', (int(request_id),))
+            if nations is not None:
+                if type(nations) is not dict or len(nations) > MAX_NATIONS:
+                    raise TransferError('invalid nation registry')
+                self._set_meta('nations', json.dumps(nations, sort_keys=True))
+            if nation_results is not None:
+                if type(nation_results) is not list or not all(
+                        type(r) is dict and type(r.get('id')) is int and (r.get('text') is None or isinstance(r['text'], str))
+                        for r in nation_results):
+                    raise TransferError('invalid nation results')
+                now = int(time.time())
+                for r in nation_results:
+                    row = self.db.execute('SELECT body FROM nation_request WHERE id = ?', (r['id'],)).fetchone()
+                    if not row:
+                        continue
+                    asked = json.loads(row[0])
+                    if r['text']:
+                        self.db.execute('INSERT OR REPLACE INTO nation_result VALUES (?, ?, ?, ?, ?)',
+                                        (r['id'], asked['actor'], asked['faction'], r['text'][:300], now))
+                    self.db.execute('DELETE FROM nation_request WHERE id = ?', (r['id'],))
+                # A leader who never comes back does not keep outcomes forever.
+                self.db.execute('DELETE FROM nation_result WHERE at < ?', (now - NATION_RESULT_SECONDS,))
         return {'rev': rev}
 
     # -- land stages ---------------------------------------------------------
@@ -925,6 +959,43 @@ class RegionStore(TrainLeaseQueue):
                 'pending': [dict(zip(('region', 'stage', 'paused', 'admin'), (r, st, bool(p), a)))
                             for r, st, p, a in self.db.execute(
                                 'SELECT region, stage, paused, admin FROM land_request ORDER BY id')]}
+
+    # -- nations -------------------------------------------------------------
+
+    def request_nation(self, body):
+        """A faction leader's nation request from this world, decided on the
+        coordinator's next pass (tools/transfer_storage/nations.py)."""
+        from tools.transfer_storage.nations import nation_request_valid
+        if type(body) is not dict:
+            raise TransferError('bad nation request')
+        request = {k: body[k] for k in ('op', 'actor', 'faction', 'name', 'with', 'nation', 'applicant', 'yes',
+                                        'candidate', 'to', 'tier') if k in body}
+        if not nation_request_valid(request):
+            raise TransferError('bad nation request')
+        if not request['faction'].startswith('civ:%s:' % self.region):
+            raise TransferError('a world asks only for its own factions')
+        with self._tx():
+            if self.db.execute('SELECT COUNT(*) FROM nation_request').fetchone()[0] >= MAX_NATION_REQUESTS:
+                raise TransferError('too many nation requests waiting')
+            cursor = self.db.execute('INSERT INTO nation_request(body) VALUES (?)', (json.dumps(request, sort_keys=True),))
+        return {'id': cursor.lastrowid}
+
+    def nations(self):
+        """The nation registry as last sent by the coordinator, requests still
+        waiting for it, and outcomes the world has not yet told."""
+        return {'nations': json.loads(self._meta('nations')),
+                'pending': [json.loads(b) for (b,) in self.db.execute('SELECT body FROM nation_request ORDER BY id')],
+                'results': [dict(zip(('id', 'actor', 'faction', 'text'), row)) for row in self.db.execute(
+                    'SELECT id, actor, faction, text FROM nation_result ORDER BY id')]}
+
+    def nation_seen(self, ids):
+        """Outcomes the world has told their leader."""
+        if type(ids) is not list or not all(type(i) is int for i in ids):
+            raise TransferError('bad nation result ids')
+        with self._tx():
+            for i in ids:
+                self.db.execute('DELETE FROM nation_result WHERE id = ?', (i,))
+        return {}
 
     # -- world chart ---------------------------------------------------------
 

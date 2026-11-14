@@ -213,8 +213,9 @@ class FactionHallSource(unittest.TestCase):
         tier = run.proc_text(self.hall, '/obj/map_metadata/proc/faction_hall_tier(')
         self.assertIn('H.tier_stands(H.tier)', tier)
         attack = run.proc_text(self.hall, '/obj/structure/faction_hall/attack_hand(')
-        self.assertEqual(2, attack.count('map.is_faction_leader(user'))
-        self.assertLess(attack.index('WWinput('), attack.rindex('map.is_faction_leader(user'))
+        self.assertIn('map.is_faction_leader(user', run.proc_text(self.hall, '/obj/structure/faction_hall/proc/designate_block('))
+        self.assertEqual(2, attack.count('designate_block(user)'))
+        self.assertLess(attack.index('WWinput('), attack.rindex('designate_block(user)'))
         deliver = run.proc_text(self.hall, '/obj/structure/faction_hall/attackby(')
         self.assertLess(deliver.index('user.civilization != faction'), deliver.index('S.use(amount)'))
         self.assertLess(deliver.index('tier_block(t)'), deliver.index('S.use(amount)'))
@@ -223,6 +224,40 @@ class FactionHallSource(unittest.TestCase):
         self.assertIn('faction hall seat,/obj/structure/faction_hall,', read('config/crafting/material_recipes_global.txt'))
         self.assertIn('faction_halls |= src', self.hall)
         self.assertIn('faction_halls -= src', self.hall)
+
+
+class NationSource(unittest.TestCase):
+    """Val (2026-11-14): factions band together into nations they can leave,
+    and nations grow through infrastructure."""
+
+    def setUp(self):
+        self.nation = read('code/game/mob/groups/nation.dm')
+
+    def test_assembly_tiers_raise_capacity_like_the_coordinator(self):
+        import re
+        NATION_CAPACITY = [int(n) for n in re.search(r'NATION_CAPACITY = \(([\d, ]+)\)', read('tools/transfer_storage/nations.py')).group(1).split(',')]
+        tiers = re.findall(r'list\("([a-z ]+)", (\d+), (\d+), (TRUE|FALSE), list\(', self.nation)
+        self.assertEqual(['meeting ground', 'assembly hall', 'parliament'], [t[0] for t in tiers])
+        self.assertEqual(list(NATION_CAPACITY[1:]), [int(t[1]) for t in tiers])
+        self.assertEqual(sorted(int(t[2]) for t in tiers), [int(t[2]) for t in tiers])
+        self.assertNotIn('coin', self.nation)
+
+    def test_assemblies_are_not_faction_halls(self):
+        new = run.proc_text(self.nation, '/obj/structure/faction_hall/nation_assembly/New(')
+        self.assertLess(new.index('..()'), new.index('faction_halls -= src'))
+        self.assertIn('nation_assemblies |= src', new)
+        self.assertIn('nation assembly seat,/obj/structure/faction_hall/nation_assembly,', read('config/crafting/material_recipes_global.txt'))
+
+    def test_only_home_leaders_act_and_choices_recheck(self):
+        menu = run.proc_text(self.nation, '/mob/living/human/proc/nation_menu(')
+        self.assertIn('map.is_faction_leader(src, faction)', menu)
+        self.assertIn('nation_home_faction(faction)', menu)
+        self.assertLess(menu.index('WWinput('), menu.rindex('map.is_faction_leader(src, faction)'))
+        found = run.proc_text(self.nation, '/mob/living/human/proc/nation_found(')
+        self.assertLess(found.index('WWinput(partner'), found.index('nation_ask('))
+        self.assertIn('nation_name_ok(name)', found)
+        self.assertIn('nation_rename_faction(old_name, new_name)', read('code/game/mob/groups/faction_rename.dm'))
+        self.assertIn('nations_refresh_due()', read('code/modules/persistence/shard_group.dm'))
 
 
 if __name__ == '__main__':
