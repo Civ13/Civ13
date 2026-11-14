@@ -57,6 +57,18 @@ proc/is_complete_print(var/print)
 	if(!user.item_is_in_hands(src))
 		return //bag must be in your hands to use
 
+	if(istype(I, /obj/item/weapon/evidencebag))
+		to_chat(user, SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd."))
+		return
+
+	if(I.w_class > 3)
+		to_chat(user, SPAN_NOTICE("[I] won't fit in [src]."))
+		return
+
+	if(contents.len)
+		to_chat(user, SPAN_NOTICE("[src] already has something inside it."))
+		return
+
 	if (isturf(I.loc))
 		if (!user.Adjacent(I))
 			return
@@ -74,18 +86,6 @@ proc/is_complete_print(var/print)
 			user.drop_from_inventory(I)
 		else
 			return
-
-	if(istype(I, /obj/item/weapon/evidencebag))
-		to_chat(user, SPAN_NOTICE("You find putting an evidence bag in another evidence bag to be slightly absurd."))
-		return
-
-	if(I.w_class > 3)
-		to_chat(user, SPAN_NOTICE("[I] won't fit in [src]."))
-		return
-
-	if(contents.len)
-		to_chat(user, SPAN_NOTICE("[src] already has something inside it."))
-		return
 
 	user.visible_message("[user] puts [I] into [src]", "You put [I] inside [src].",\
 	"You hear a rustle as someone puts something into a plastic bag.")
