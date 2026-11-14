@@ -82,7 +82,7 @@ class BuildingSite(unittest.TestCase):
 
     def test_batch_is_paid_only_after_the_wait_rechecks(self):
         body = proc_body(MIXER + '/proc/mix(')
-        wait = body.index('do_after(H, CEMENT_MIXER_TIME, src)')
+        wait = body.index('do_after(H, driven_time(CEMENT_MIXER_TIME), src)')
         recheck = body.index('if (!mixer_ready(H) || batch_refusal() || !crafting_recipe_allowed(H, "[type]"))')
         pay = body.index('vars[part[2]] -= part[1]')
         self.assertLess(wait, recheck)
@@ -112,6 +112,9 @@ class BuildingSite(unittest.TestCase):
         self.assertIn('deck_type = /obj/covers/bridge/timber', SOURCE)
         self.assertIn('span_type = %s' % SPAN, SOURCE)
         body = proc_body(SPAN + '/build_span(')
+        # deep water stays for steel and concrete spans
+        deep = body.index('if (istype(T, /turf/floor/beach/water/deep))')
+        self.assertIn('return FALSE', body[deep:body.index('pile_driver_for(T)')])
         refuse = body.index('if (!D)')
         build = body.index('. = ..()')
         self.assertLess(body.index('pile_driver_for(T)'), refuse)

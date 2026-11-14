@@ -132,7 +132,7 @@ var/global/list/brick_bench_batches = list(
 	visible_message(SPAN_NOTICE("[H] kicks \the [src] up to speed and centres the clay."))
 	var/made = 0
 	while (worker_ready(H, S) && S.amount >= cost[1])
-		if (!do_after(H, max(5, round(cost[2] / POTTERS_WHEEL_SPEED)), src))
+		if (!do_after(H, driven_time(max(5, round(cost[2] / POTTERS_WHEEL_SPEED))), src))
 			break
 		if (!worker_ready(H, S) || S.amount < cost[1] || !crafting_recipe_allowed(H, "[ware]"))
 			break
