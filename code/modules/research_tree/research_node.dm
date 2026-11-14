@@ -2076,7 +2076,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/paper_bin/empty" = "public_health",
 		"/obj/item/weapon/storage/bag/trash" = "public_health",
 		"/obj/structure/closet/crate/dumpster" = "public_health",
-		// --- rail_steam (10) ---
+		// --- rail_steam (11) ---
+		"/obj/structure/workshop_machine/steam_site/road_roller" = "rail_steam",
 		"/obj/structure/rail_warehouse" = "rail_steam",
 		"/obj/structure/train_car_kit" = "rail_steam",
 		"/obj/structure/train_car_kit/coach" = "rail_steam",
@@ -2231,7 +2232,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
 		"/obj/structure/catapult" = "siege_engines",
-		// --- steam_power (3) ---
+		// --- steam_power (4) ---
+		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
