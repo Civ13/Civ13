@@ -213,6 +213,8 @@
 	. = list("<b>What affects your speed here</b>")
 	if (riding_mob)
 		. += "You are riding [riding_mob]: your mount sets the pace."
+		if (riding_mob.hitched_cart)
+			. += "The cart hitched behind [riding_mob] slows it by [round(riding_mob.hitch_drag(), 0.01)] per step."
 		return
 	var/turf/T = get_turf(src)
 	handle_stance()
