@@ -27,20 +27,18 @@
 	max_positions = 1
 
 /datum/job/british/captain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/captain/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_captain = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_british = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/british/captain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_captain(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Captain of the Royal Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, the highest ranking officer present. Your job is to command the ship.")
 	apply_job_stats(H)
@@ -64,19 +62,17 @@
 	max_positions = 1
 
 /datum/job/british/qm/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/qm/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_officer = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_british = slot_head,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/british/qm/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_officer(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Quartermaster of the Royal Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the ship's supply allocation. You are also the second in command, after the <b>Captain</b>.")
 	apply_job_stats(H)
@@ -101,20 +97,18 @@
 	max_positions = 1
 
 /datum/job/british/boatswain/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/boatswain/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_officer = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_british = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/british/boatswain/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_officer(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	to_chat(world, "<big><b>[H.real_name] is the Boatswain of the Royal Navy ship!</b></big>")
 	H.add_note("Role", "You are a <b>[title]</b>, an officer in charge of the crew and their job allocation. The whole ship relies on you!")
 	apply_job_stats(H)
@@ -137,18 +131,17 @@
 	max_positions = 10
 
 /datum/job/british/midshipman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/midshipman/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/british_sailor1 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_officer = slot_wear_suit,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_l_store,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/british/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/british_sailor1(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_officer(H), slot_wear_suit)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a petty officer in the ship. Organize your group according to the <b>Boatswain</b>'s orders!")
 	apply_job_stats(H)
 
@@ -341,21 +334,18 @@
 	max_positions = 1
 
 /datum/job/british/army_commander/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/army_commander/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_officer_army = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_british = slot_head,
+	/obj/item/weapon/material/sword/rapier = slot_back,
+	/obj/item/weapon/gun/projectile/flintlock/duellingpistol = slot_l_hand)
 /datum/job/british/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_officer_army(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_british(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_back)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/duellingpistol(H), slot_l_hand)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/duellingpistol(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball_pistol(H), slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball_pistol(H), slot_l_store)
@@ -384,21 +374,19 @@
 	max_positions = 20
 
 /datum/job/british/army_officer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/army_officer/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/civ2 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_soldier = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/material/sword/rapier = slot_back,
+	/obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol = slot_shoulder,
+	/obj/item/ammo_casing/blunderbuss = slot_r_store)
 /datum/job/british/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/rapier(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/blunderbuss/pistol(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/ammo_casing/blunderbuss(H), slot_r_store)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/blunderbuss(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_belt)
 
@@ -425,20 +413,19 @@
 	max_positions = 6
 
 /datum/job/british/field_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/british/field_medic/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store,
+	/obj/item/weapon/reagent_containers/pill/opium = slot_l_ear,
+	/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin = slot_r_store)
 /datum/job/british/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/pill/opium(H), slot_l_ear)
-	H.equip_to_slot_or_del(new /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin(H), slot_r_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/knife/h = new /obj/item/clothing/accessory/storage/sheath/knife(null)
@@ -462,20 +449,19 @@
 	max_positions = 100
 
 /datum/job/british/soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/civ2 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_soldier = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/gun/projectile/flintlock/brownbess = slot_shoulder,
+	/obj/item/weapon/material/sword/smallsword = slot_belt,
+	/obj/item/ammo_casing/musketball = slot_r_store)
 /datum/job/british/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/brownbess(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_r_store)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_l_store)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -500,20 +486,18 @@
 	max_positions = 20
 
 /datum/job/british/chasseur/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/chasseur/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/civ2 = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/british_soldier = slot_wear_suit,
+	/obj/item/clothing/head/chasseur_british = slot_head,
+	/obj/item/weapon/material/sword/sabre = slot_belt,
+	/obj/item/ammo_casing/musketball = slot_r_store)
 /datum/job/british/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/civ2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/british_soldier(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chasseur_british(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/sabre(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_r_store)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/ammo_casing/musketball(H), slot_l_store)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -590,19 +574,18 @@
 	max_positions = 1
 
 /datum/job/british/ww1lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww1lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/ww1/british = slot_w_uniform,
+	/obj/item/clothing/head/ww/britishcap = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_r_store,
+	/obj/item/weapon/gun/projectile/revolver/webley4 = slot_l_hand,
+	/obj/item/ammo_magazine/c455 = slot_l_store)
 /datum/job/british/ww1lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -631,19 +614,18 @@
 	max_positions = 1
 
 /datum/job/british/ww1second_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww1second_lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/ww1/british = slot_w_uniform,
+	/obj/item/clothing/head/ww/britishcap = slot_head,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_r_store,
+	/obj/item/weapon/gun/projectile/revolver/webley4 = slot_l_hand,
+	/obj/item/ammo_magazine/c455 = slot_l_store)
 /datum/job/british/ww1second_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/britishcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -671,21 +653,20 @@
 	max_positions = 10
 
 /datum/job/british/ww1sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww1sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww1/british = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/mk1brodieag = slot_head,
+	/obj/item/clothing/mask/gas/british = slot_belt,
+	/obj/item/weapon/gun/projectile/revolver/webley4 = slot_l_hand,
+	/obj/item/ammo_magazine/c455 = slot_l_store,
+	/obj/item/weapon/gun/projectile/boltaction/enfield = slot_shoulder,
+	/obj/item/weapon/whistle = slot_r_store)
 /datum/job/british/ww1sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/mk1brodieag(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c455(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -749,20 +730,17 @@
 	max_positions = 200
 
 /datum/job/british/ww1shocktroop/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww1shocktroop/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww1/british = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/mk1brodieag = slot_head,
+	/obj/item/weapon/gun/projectile/revolver/webley4 = slot_l_hand,
+	/obj/item/clothing/mask/gas/british = slot_belt)
 /datum/job/british/ww1shocktroop/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/mk1brodieag(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/webley4(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/modern/british/newplate = new /obj/item/clothing/accessory/armor/modern/british(null)
 	uniform.attackby(newplate, H)
@@ -787,19 +765,17 @@
 	max_positions = 400
 
 /datum/job/british/ww1infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww1infantry/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww1/british = slot_w_uniform,
+	/obj/item/clothing/head/helmet/ww/mk1brodieag = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/enfield = slot_shoulder,
+	/obj/item/clothing/mask/gas/british = slot_belt)
 /datum/job/british/ww1infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww1/british(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/mk1brodieag(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/enfield(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/british(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/webbing/ww1/british/fullwebbing = new /obj/item/clothing/accessory/storage/webbing/ww1/british(null)
 	uniform.attackby(fullwebbing, H)
@@ -833,15 +809,15 @@
 	max_positions = 1
 
 /datum/job/british/ww2lieutenant_pow/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww2lieutenant_pow/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/british_off = slot_w_uniform,
+	/obj/item/clothing/head/ww2/britishoffcap_tropical = slot_head)
 /datum/job/british/ww2lieutenant_pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british_off(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap_tropical(H), slot_head)
+	equip_loadout(H)
 //weapons
 	give_random_name(H)
 	to_chat(world, "<big><b>[H.real_name] is the Lieutenant of the British POWs!</b></big>")
@@ -866,15 +842,15 @@
 	max_positions = 4
 
 /datum/job/british/ww2sergeant_pow/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww2sergeant_pow/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww2/british = slot_w_uniform,
+	/obj/item/clothing/head/ww2/britishoffcap = slot_head)
 /datum/job/british/ww2sergeant_pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/britishoffcap(H), slot_head)
+	equip_loadout(H)
 //weapons
 	give_random_name(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a sergeant leading a squad of POWs. Organize your group according to the <b>Captain or Lieutenant's</b> orders!")
@@ -898,14 +874,14 @@
 	max_positions = 124
 
 /datum/job/british/ww2pow/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/british/ww2pow/job_loadout = list(
+	/obj/item/clothing/shoes/leatherboots = slot_shoes,
+	/obj/item/clothing/under/ww2/british = slot_w_uniform)
 /datum/job/british/ww2pow/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	give_random_name(H)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/leatherboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/british(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead = rand(1,3)
 	if (randhead == 1)

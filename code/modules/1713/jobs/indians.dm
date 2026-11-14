@@ -21,12 +21,13 @@
 	min_positions = 2
 	max_positions = 20
 /datum/job/indians/carib_chief/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_LOW, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_LOW, "bows" = STAT_VERY_HIGH, "medical" = STAT_NORMAL)
+/datum/job/indians/carib_chief/job_loadout = list(
+	/obj/item/clothing/head/chief_hat = slot_head,
+	/obj/item/clothing/under/indianchief = slot_w_uniform)
 /datum/job/indians/carib_chief/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chief_hat(H), slot_head)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/indianchief(H), slot_w_uniform)
+	equip_loadout(H)
 
 	var/obj/item/clothing/accessory/armband/indian2_a = new /obj/item/clothing/accessory/armband/indian2(null)
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -622,13 +623,15 @@ datum/job/indians/tribes/black
 	max_positions = 12
 	allowed_maps = list(MAP_TADOJSVILLE)
 
+/datum/job/indians/warlords/tadojsville/sergeant/job_loadout = list(
+	/obj/item/clothing/head/beret_black = slot_head,
+	/obj/item/clothing/shoes/jackboots = slot_shoes)
 /datum/job/indians/warlords/tadojsville/sergeant/equip(var/mob/living/human/H)
 	H.nationality = "Katnegwa"
 	H.add_note("Role", "You are a member of <b>Katnegwa Mercenary Force</b>. Lead your fellow mercs and honour your contract!")
 	H.add_note("Extra mechanics", "Collect Peacekeeper heads by targeting the head on HELP intent with machette in hand. Bring them back to the Shaman's Hut and place them on the altar to get weapons and equipment.  <b>Only United Nations Peacekeeper heads will do, all others are worthless.</b>.")
 	//hat or mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_black(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
+	equip_loadout(H)
 
 	if(prob(35))
 		H.equip_to_slot_or_del(new /obj/item/clothing/mask/shemagh(H), slot_wear_mask)

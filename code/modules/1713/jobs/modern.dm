@@ -18,21 +18,19 @@
 	max_positions = 2
 
 /datum/job/american/usmc_lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/usmc_lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/clothing/head/jungle_hat/khaki = slot_head,
+	/obj/item/clothing/glasses/sunglasses = slot_eyes,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/m9beretta = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/us/officer = slot_belt)
 /datum/job/american/usmc_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/officer(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -61,22 +59,20 @@
 	max_positions = 8
 
 /datum/job/american/usmc_sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/usmc_sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt/desert = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/m9beretta = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/us/officer = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store,
+	/obj/item/clothing/glasses/tactical_goggles = slot_eyes)
 /datum/job/american/usmc_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/officer(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -102,22 +98,20 @@
 	max_positions = 8
 
 /datum/job/american/usmc_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/usmc_medic/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt/desert = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/m9beretta = slot_l_hand,
+	/obj/item/roller = slot_r_hand,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store)
 /datum/job/american/usmc_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/roller(H), slot_r_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -146,20 +140,18 @@
 	max_positions = 12
 
 /datum/job/american/usmc_marksman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/usmc_marksman/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt/desert = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/submachinegun/m14/sniper = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/us/modern/m14 = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/m9beretta = slot_l_hand)
 /datum/job/american/usmc_marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m14/sniper(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/modern/m14(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/pasgt_armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
@@ -187,22 +179,20 @@
 	max_positions = 8
 
 /datum/job/american/usmc_lmg/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/usmc_lmg/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt/desert = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/automatic/manual/m249 = slot_shoulder,
+	/obj/item/weapon/storage/belt/largepouches/m249 = slot_belt,
+	/obj/item/stack/medical/bruise_pack/bint = slot_l_store,
+	/obj/item/ammo_magazine/m9beretta = slot_r_store,
+	/obj/item/weapon/gun/projectile/pistol/m9beretta = slot_l_hand)
 /datum/job/american/usmc_lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/manual/m249(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/m249(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/m9beretta(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/m9beretta(H), slot_l_hand)
+	equip_loadout(H)
 	if (prob(50))
 		if (prob(80))
 			H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
@@ -233,14 +223,14 @@
 	max_positions = 100
 
 /datum/job/american/usmc_soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/usmc_soldier/job_loadout = list(
+	/obj/item/clothing/shoes/usmc = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_dcu = slot_w_uniform,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/usmc_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/usmc(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_dcu(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/knife/knnif = new /obj/item/clothing/accessory/storage/sheath/knife(null)
 	uniform.attackby(knnif, H)
@@ -294,21 +284,19 @@
 	max_positions = 2
 
 /datum/job/american/idf/lieutenant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_VERY_HIGH, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/idf/lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/clothing/head/jungle_hat/khaki = slot_head,
+	/obj/item/clothing/glasses/sunglasses = slot_eyes,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/jericho941 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/us/idfoff = slot_belt)
 /datum/job/american/idf/lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat/khaki(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/idfoff(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -337,22 +325,20 @@
 	max_positions = 8
 
 /datum/job/american/idf/sergeant/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/idf/sergeant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/idf = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/jericho941 = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/us/idfoff = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store,
+	/obj/item/clothing/glasses/tactical_goggles = slot_eyes)
 /datum/job/american/idf/sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/m16/commando/m4mws/att(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us/idfoff(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/clothing/glasses/tactical_goggles(H), slot_eyes)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -380,21 +366,19 @@
 	max_positions = 8
 
 /datum/job/american/idf/medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/idf/medic/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/idf = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/weapon/attachment/bayonet = slot_l_store,
+	/obj/item/weapon/gun/projectile/pistol/jericho941 = slot_l_hand,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/idf/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
@@ -423,19 +407,17 @@
 	max_positions = 8
 
 /datum/job/american/idf/marksman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/idf/marksman/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/idf = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/boltaction/m24 = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/m24 = slot_belt)
 /datum/job/american/idf/marksman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/m24(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/m24(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/idf/idf_armor = new /obj/item/clothing/accessory/armor/coldwar/idf(null)
@@ -464,22 +446,20 @@
 	max_positions = 8
 
 /datum/job/american/idf/lmg/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/idf/lmg/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/idf = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/automatic/negev = slot_shoulder,
+	/obj/item/weapon/storage/belt/largepouches/green/negev = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/jericho941 = slot_l_hand,
+	/obj/item/stack/medical/bruise_pack/bint = slot_l_store,
+	/obj/item/ammo_magazine/jericho = slot_r_store)
 /datum/job/american/idf/lmg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/idf(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/automatic/negev(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/largepouches/green/negev(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/jericho941(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/stack/medical/bruise_pack/bint(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/jericho(H), slot_r_store)
+	equip_loadout(H)
 
 
 	if (prob(50))
@@ -510,15 +490,15 @@
 	max_positions = 100
 
 /datum/job/american/idf/soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/idf/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/idf = slot_w_uniform,
+	/obj/item/weapon/storage/belt/smallpouches/us_stanag = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id)
 /datum/job/american/idf/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/idf(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/us_stanag(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/idf/idf_armor = new /obj/item/clothing/accessory/armor/coldwar/idf(null)
 	uniform.attackby(idf_armor, H)
@@ -556,19 +536,18 @@
 	max_positions = 10
 
 /datum/job/arab/hezbollah/squad_leader/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/hezbollah/squad_leader/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer = slot_w_uniform,
+	/obj/item/clothing/head/jungle_hat = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74 = slot_shoulder,
+	/obj/item/weapon/storage/belt/smallpouches/green/insuroff = slot_belt,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = slot_l_hand)
 /datum/job/arab/hezbollah/squad_leader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah/officer(H), slot_w_uniform)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/jungle_hat(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/insuroff(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -615,21 +594,19 @@
 	max_positions = 10
 
 /datum/job/arab/hezbollah/medic/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/hezbollah/medic/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = slot_l_hand,
+	/obj/item/weapon/material/kitchen/utensil/knife/military = slot_l_store)
 /datum/job/arab/hezbollah/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_l_store)
+	equip_loadout(H)
 
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
@@ -678,21 +655,18 @@
 	max_positions = 12
 
 /datum/job/arab/hezbollah/sniper/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/hezbollah/sniper/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt = slot_head,
+	/obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper = slot_shoulder,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/storage/belt/smallpouches/green/mosinsniper = slot_belt,
+	/obj/item/weapon/material/kitchen/utensil/knife/military = slot_l_store)
 /datum/job/arab/hezbollah/sniper/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/mosin/m30/sniper(H), slot_shoulder)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/mosinsniper(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/kitchen/utensil/knife/military(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/fullwebbing = new /obj/item/clothing/accessory/armor/coldwar/pasgt(null)
@@ -737,14 +711,14 @@
 	max_positions = 120
 
 /datum/job/arab/hezbollah/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/hezbollah/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/blackboots = slot_shoes,
+	/obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/pasgt = slot_head)
 /datum/job/arab/hezbollah/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/blackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/us_camo_woodland/hezbollah(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt(H), slot_head)
+	equip_loadout(H)
 //back
 	if (prob(90))
 		H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak47/akms(H), slot_shoulder)
@@ -809,17 +783,16 @@
 	max_positions = 1
 
 /datum/job/arab/syrian_commander/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/arab/syrian_commander/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syrian_gov = slot_w_uniform,
+	/obj/item/clothing/head/beret_red = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow = slot_l_store)
 /datum/job/arab/syrian_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_red(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/rdg2_yellow(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
@@ -862,12 +835,13 @@
 	max_positions = 8
 
 /datum/job/arab/syrian_sl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/syrian_sl/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syrian_gov = slot_w_uniform)
 /datum/job/arab/syrian_sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/a6b47/emr/desert(H), slot_head)
@@ -916,12 +890,13 @@
 	max_positions = 120
 
 /datum/job/arab/syrian_soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/syrian_soldier/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syrian_gov = slot_w_uniform)
 /datum/job/arab/syrian_soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -998,19 +973,17 @@
 	max_positions = 8
 
 /datum/job/arab/syrian_medic/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/syrian_medic/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syrian_gov = slot_w_uniform,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/clothing/head/helmet/modern/ssh_68/med = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store)
 /datum/job/arab/syrian_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syrian_gov(H), slot_w_uniform)
-//mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/ssh_68/med(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
@@ -1054,6 +1027,10 @@
 	H.s_tone = rand(-35,-25)
 
 /datum/job/arab/wagner_pmc/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/wagner_pmc/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store)
 /datum/job/arab/wagner_pmc/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
@@ -1076,11 +1053,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/glasses/thermal/modern(H), slot_eyes)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/accessory/storage/webbing/khaki_webbing/web = new /obj/item/clothing/accessory/storage/webbing/khaki_webbing(null)
 	uniform.attackby(web, H)
 //back
@@ -1148,17 +1121,16 @@
 	max_positions = 1
 
 /datum/job/american/free_syrian_army/commander/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/free_syrian_army/commander/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syria_fsa = slot_w_uniform,
+	/obj/item/clothing/head/beret_green = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/grenade/smokebomb/signal/m18_red = slot_l_store)
 /datum/job/american/free_syrian_army/commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_green(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/grenade/smokebomb/signal/m18_red(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/nomads/thickcarrier/armor = new /obj/item/clothing/accessory/armor/nomads/thickcarrier(null)
@@ -1201,12 +1173,13 @@
 	max_positions = 8
 
 /datum/job/american/free_syrian_army/sl/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/american/free_syrian_army/sl/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syria_fsa = slot_w_uniform)
 /datum/job/american/free_syrian_army/sl/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
@@ -1254,12 +1227,13 @@
 	max_positions = 165
 
 /datum/job/american/free_syrian_army/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/free_syrian_army/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syria_fsa = slot_w_uniform)
 /datum/job/american/free_syrian_army/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead2 = rand(1,7)
 	switch(randhead2)
@@ -1331,19 +1305,17 @@
 	max_positions = 8
 
 /datum/job/american/free_syrian_army/medic/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_HIGH, "machinegun" = STAT_LOW)
+/datum/job/american/free_syrian_army/medic/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syria_fsa = slot_w_uniform,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/clothing/head/helmet/modern/pasgt/desert = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/weapon/attachment/bayonet = slot_l_store)
 /datum/job/american/free_syrian_army/medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
-//mask
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/pasgt/desert(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/bayonet(H), slot_l_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/pasgt/khaki/armor = new /obj/item/clothing/accessory/armor/coldwar/pasgt/khaki(null)
@@ -1380,12 +1352,13 @@
 	max_positions = 100
 
 /datum/job/american/free_syrian_army/insurgent/job_stats = list("strength" = STAT_MEDIUM_LOW, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_LOW, "machinegun" = STAT_LOW)
+/datum/job/american/free_syrian_army/insurgent/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/syria_fsa = slot_w_uniform)
 /datum/job/american/free_syrian_army/insurgent/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/syria_fsa(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	var/randhead2 = rand(1,5)
 	switch(randhead2)
@@ -1452,12 +1425,13 @@
 	max_positions = 5
 
 /datum/job/american/delta_force/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/american/delta_force/job_loadout = list(
+	/obj/item/clothing/under/us_uni/multicam = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/lwh = slot_head)
 /datum/job/american/delta_force/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //under
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/us_uni/multicam(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/lwh(H), slot_head)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	if (prob(60))
 		var/obj/item/clothing/accessory/armor/nomads/pcarriertan/armor = new /obj/item/clothing/accessory/armor/nomads/pcarriertan(null)

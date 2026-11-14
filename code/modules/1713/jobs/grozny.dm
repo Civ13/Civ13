@@ -17,25 +17,23 @@
 	max_positions = 3
 
 /datum/job/arab/civilian/chechen/leader/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
+/datum/job/arab/civilian/chechen/leader/job_loadout = list(
+	/obj/item/clothing/shoes/toughguy = slot_shoes,
+	/obj/item/clothing/head/ww/papakha = slot_head,
+	/obj/item/clothing/under/insurgent_leader = slot_w_uniform,
+	/obj/item/clothing/suit/b3 = slot_wear_suit,
+	/obj/item/clothing/mask/smokable/cigarette/cigar = slot_wear_mask,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/clothing/gloves/toughguy = slot_gloves,
+	/obj/item/clothing/mask/gas/russia = slot_l_store,
+	/obj/item/weapon/gun/projectile/pistol/tt30 = slot_l_hand,
+	/obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb = slot_shoulder,
+	/obj/item/weapon/storage/backpack/duffel = slot_back,
+	/obj/item/weapon/storage/belt/smallpouches/green/chechoff = slot_belt)
 /datum/job/arab/civilian/chechen/leader/equip(var/mob/living/human/H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/toughguy(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww/papakha(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_leader(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/b3(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/smokable/cigarette/cigar(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/toughguy(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/russia(H), slot_l_store)
-
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/tt30(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ak74/aks74/aks74u/aks74uso/kgb(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/backpack/duffel(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/chechoff(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
 	uniform.attackby(armor, H)
@@ -245,25 +243,22 @@
 	max_positions = 10
 
 /datum/job/arab/civilian/chechen/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/arab/civilian/chechen/job_loadout = list(
+	/obj/item/clothing/shoes/laceup = slot_shoes,
+	/obj/item/clothing/under/insurgent_black = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/clothing/head/helmet/ww/adrianm26medic = slot_head,
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/radio/walkietalkie/faction1 = slot_wear_id,
+	/obj/item/clothing/gloves/color/white = slot_gloves,
+	/obj/item/weapon/gun/projectile/revolver/smithwesson = slot_r_store)
 /datum/job/arab/civilian/chechen/equip(var/mob/living/human/H)
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/insurgent_black(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26medic(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction1(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/revolver/smithwesson(H), slot_r_store)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/interceptor/armor = new /obj/item/clothing/accessory/armor/coldwar/plates/interceptor(null)
@@ -308,20 +303,19 @@
 	max_positions = 1
 
 /datum/job/russian/ruff_lieutenant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL, "machinegun" = STAT_NORMAL)
+/datum/job/russian/ruff_lieutenant/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/rus_vsr93 = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/clothing/head/beret_rus_vdv = slot_head,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/weapon/gun/projectile/special/ak74mtactical = slot_shoulder,
+	/obj/item/weapon/gun/projectile/pistol/makarov = slot_l_hand,
+	/obj/item/weapon/storage/belt/smallpouches/green/rusoff = slot_belt)
 /datum/job/russian/ruff_lieutenant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rus_vsr93(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/beret_rus_vdv(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/special/ak74mtactical(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/green/rusoff(H), slot_belt)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -371,6 +365,9 @@
 	max_positions = 8
 
 /datum/job/russian/ruff_sergeant/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_HIGH, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/russian/ruff_sergeant/job_loadout = list(
+	/obj/item/clothing/under/rus_vsr93 = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/combat = slot_gloves)
 /datum/job/russian/ruff_sergeant/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
@@ -380,8 +377,7 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/soviet(H), slot_shoes)
 //clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/rus_vsr93(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/combat(H), slot_gloves)
+	equip_loadout(H)
 //head
 	if (prob(50))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/sfera(H), slot_head)
@@ -435,6 +431,14 @@
 	max_positions = 8
 
 /datum/job/russian/ruff_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/russian/ruff_medic/job_loadout = list(
+	/obj/item/clothing/mask/sterile = slot_wear_mask,
+	/obj/item/clothing/head/helmet/ww2/soviet_medic = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat/modern = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/makarov = slot_l_hand,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id,
+	/obj/item/clothing/gloves/color/white = slot_gloves)
 /datum/job/russian/ruff_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
@@ -453,14 +457,7 @@
 		if (prob(15))
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/afghanka(H), slot_wear_suit)
 //head
-	H.equip_to_slot_or_del(new /obj/item/clothing/mask/sterile(H), slot_wear_mask)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww2/soviet_medic(H), slot_head)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat/modern(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/makarov(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/custom/armband/white = new /obj/item/clothing/accessory/custom/armband(null)
 	uniform.attackby(white, H)
@@ -684,14 +681,14 @@
 	max_positions = 8
 
 /datum/job/russian/ruff_spetsnaz/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_MEDIUM_LOW, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/russian/ruff_spetsnaz/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/gorka = slot_w_uniform,
+	/obj/item/weapon/radio/walkietalkie/faction2 = slot_wear_id)
 /datum/job/russian/ruff_spetsnaz/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/gorka(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/walkietalkie/faction2(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/b5/armour = new /obj/item/clothing/accessory/armor/coldwar/plates/b5(null)
 	var/obj/item/weapon/armorplates/plates1 = new /obj/item/weapon/armorplates(null)

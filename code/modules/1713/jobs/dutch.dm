@@ -129,12 +129,13 @@
 	max_positions = 10
 
 /datum/job/dutch/midshipman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/dutch/midshipman/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/dutch_sailor1 = slot_w_uniform)
 /datum/job/dutch/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_sailor1(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/dutch_officer, slot_wear_suit)
 
@@ -316,20 +317,17 @@
 	max_positions = 1
 
 /datum/job/dutch/army_commander/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_VERY_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/dutch/army_commander/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/dutch_officer = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_dutch = slot_head,
+	/obj/item/weapon/material/sword/spadroon = slot_belt,
+	/obj/item/weapon/gun/projectile/flintlock/pistol = slot_l_store)
 /datum/job/dutch/army_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/dutch_officer(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_dutch(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_l_store)
+	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/pistol(H), slot_r_store)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the commander of this company. Organize your <b>Sergeant</b> and lead your country to victory!")
@@ -350,18 +348,16 @@
 	max_positions = 20
 
 /datum/job/dutch/army_officer/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/dutch/army_officer/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/dutch_soldier = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/dutch_officer = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/material/sword/spadroon = slot_belt)
 /datum/job/dutch/army_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_soldier(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/dutch_officer(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, squad leader. Organize your group of <b>Soldaat</b> according to your <b>Luitenant</b>'s orders!")
 	apply_job_stats(H)
@@ -382,17 +378,16 @@
 	max_positions = 6
 
 /datum/job/dutch/field_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH)
+/datum/job/dutch/field_medic/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/generic_officer = slot_w_uniform,
+	/obj/item/clothing/head/powdered_wig = slot_head,
+	/obj/item/weapon/storage/firstaid/surgery = slot_l_hand,
+	/obj/item/weapon/doctor_handbook = slot_l_store)
 /datum/job/dutch/field_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/generic_officer(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/powdered_wig(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/surgery(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/doctor_handbook(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, the most qualified medic present, and you are in charge of keeping the infantry healthy.")
 	apply_job_stats(H)
@@ -412,18 +407,16 @@
 	max_positions = 100
 
 /datum/job/dutch/soldier/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/dutch/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/dutch_soldier = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/dutch_officer_army = slot_wear_suit,
+	/obj/item/clothing/head/bicorne_british_soldier = slot_head,
+	/obj/item/weapon/material/sword/smallsword = slot_belt)
 /datum/job/dutch/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_soldier(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/dutch_officer_army(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/bicorne_british_soldier(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/smallsword(H), slot_belt)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a basic infantry soldier of the United Provinces Colonial Army. Follow your Officer's orders!")
 	apply_job_stats(H)
@@ -443,20 +436,17 @@
 	max_positions = 20
 
 /datum/job/dutch/chasseur/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_VERY_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/dutch/chasseur/job_loadout = list(
+	/obj/item/clothing/shoes/soldiershoes = slot_shoes,
+	/obj/item/clothing/under/dutch_soldier = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/dutch_officer_army = slot_wear_suit,
+	/obj/item/clothing/head/chasseur_dutch = slot_head,
+	/obj/item/weapon/material/sword/cutlass = slot_belt,
+	/obj/item/weapon/gun/projectile/flintlock/musketoon = slot_shoulder)
 /datum/job/dutch/chasseur/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/soldiershoes(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/dutch_soldier(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/dutch_officer_army(H), slot_wear_suit)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/chasseur_dutch(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/cutlass(H), slot_belt)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/musketoon(H), slot_shoulder)
+	equip_loadout(H)
 	H.add_note("Role", "You are a <b>[title]</b>, a light infantry soldier. You are very skilled in melee weapons and can move fast. Your job relies on hit-and-run tactics.")
 	apply_job_stats(H)
 	give_random_name(H)
@@ -481,12 +471,13 @@
 	max_positions = 1
 
 /datum/job/dutch/modern_commander/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_commander/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_commander/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -530,12 +521,13 @@
 	max_positions = 10
 
 /datum/job/dutch/modern_squadleader/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_squadleader/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_squadleader/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -579,14 +571,14 @@
 	max_positions = 8
 
 /datum/job/dutch/modern_medic/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_NORMAL, "bows" = STAT_LOW, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/dutch/modern_medic/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform,
+	/obj/item/clothing/head/helmet/modern/m95_dpm = slot_head)
 /datum/job/dutch/modern_medic/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
-//armor
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/modern/m95_dpm(H), slot_head)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
 	uniform.attackby(carrier, H)
@@ -629,12 +621,13 @@
 	max_positions = 5
 
 /datum/job/dutch/modern_radioman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_radioman/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_radioman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -676,12 +669,13 @@
 	max_positions = 8
 
 /datum/job/dutch/modern_breacher/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_breacher/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_breacher/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -725,12 +719,13 @@
 	max_positions = 100
 
 /datum/job/dutch/modern_rifleman/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_rifleman/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_rifleman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -770,12 +765,13 @@
 	max_positions = 6
 
 /datum/job/dutch/modern_tanker/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/modern_tanker/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/modern_tanker/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -813,12 +809,13 @@
 	max_positions = 6
 
 /datum/job/dutch/emplaced_weapon_specialist/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/emplaced_weapon_specialist/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/emplaced_weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)
@@ -855,12 +852,13 @@
 	max_positions = 10
 
 /datum/job/dutch/weapon_specialist/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL)
+/datum/job/dutch/weapon_specialist/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots/modern = slot_shoes,
+	/obj/item/clothing/under/m93_dpm = slot_w_uniform)
 /datum/job/dutch/weapon_specialist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots/modern(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/m93_dpm(H), slot_w_uniform)
+	equip_loadout(H)
 //armor
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen/carrier = new /obj/item/clothing/accessory/armor/coldwar/plates/platecarriergreen(null)

@@ -119,12 +119,13 @@
 	max_positions = 10
 
 /datum/job/spanish/midshipman/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/spanish/midshipman/job_loadout = list(
+	/obj/item/clothing/shoes/sailorboots1 = slot_shoes,
+	/obj/item/clothing/under/spanish_sailor1 = slot_w_uniform)
 /datum/job/spanish/midshipman/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sailorboots1(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spanish_sailor1(H), slot_w_uniform)
+	equip_loadout(H)
 //jacket
 	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_officer, slot_wear_suit)
 
@@ -290,22 +291,18 @@
 	max_positions = 30
 
 /datum/job/spanish/corpse/soldier/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/spanish/corpse/soldier/job_loadout = list(
+	/obj/item/clothing/shoes/whiteputtee = slot_shoes,
+	/obj/item/clothing/under/spanish_soldier = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/spanish_soldier = slot_wear_suit,
+	/obj/item/clothing/head/tricorne_black = slot_head,
+	/obj/item/weapon/material/sword/spadroon = slot_belt,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/spanish/corpse/soldier/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/whiteputtee(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spanish_soldier(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_soldier(H), slot_wear_suit)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/spadroon(H), slot_belt)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
 	apply_job_stats(H)
@@ -323,20 +320,18 @@
 	max_positions = 30
 
 /datum/job/spanish/corpse/soldier_rifle/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_NORMAL)
+/datum/job/spanish/corpse/soldier_rifle/job_loadout = list(
+	/obj/item/clothing/shoes/whiteputtee = slot_shoes,
+	/obj/item/clothing/under/spanish_soldier = slot_w_uniform,
+	/obj/item/clothing/suit/storage/jacket/spanish_soldier = slot_wear_suit,
+	/obj/item/weapon/gun/projectile/flintlock/m1752 = slot_l_hand,
+	/obj/item/clothing/head/tricorne_black = slot_head,
+	/obj/item/stack/money/real = slot_l_store)
 /datum/job/spanish/corpse/soldier_rifle/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/whiteputtee(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spanish_soldier(H), slot_w_uniform)
-//jacket
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/spanish_soldier(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/flintlock/m1752(H), slot_l_hand)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/tricorne_black(H), slot_head)
-
-	H.equip_to_slot_or_del(new/obj/item/stack/money/real(H), slot_l_store)
+	equip_loadout(H)
 
 	H.add_note("Role", "You are a <b>[title]</b>, a veteran of past wars. Your job is to organize the colony defense and hunting parties, according to the orders of the <b>Town Guard Officer</b>.")
 	apply_job_stats(H)
@@ -361,21 +356,20 @@
 	max_positions = 1
 
 /datum/job/spanish/cnat/capt/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_MEDIUM_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
+/datum/job/spanish/cnat/capt/job_loadout = list(
+	/obj/item/clothing/shoes/whiteputtee = slot_shoes,
+	/obj/item/clothing/under/spain/nationalist = slot_w_uniform,
+	/obj/item/clothing/head/ww2/german_fieldcap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/mauser = slot_l_hand,
+	/obj/item/weapon/gun/projectile/submachinegun/ermaemp = slot_shoulder,
+	/obj/item/ammo_magazine/mauser = slot_l_store,
+	/obj/item/weapon/whistle = slot_r_store,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars = slot_wear_id)
 /datum/job/spanish/cnat/capt/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/whiteputtee(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/ermaemp(H), slot_shoulder)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mauser(H), slot_l_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/whistle(H), slot_r_store)
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars(H), slot_wear_id)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
 	uniform.attackby(holsterh, H)
@@ -405,18 +399,16 @@
 	max_positions = 8
 
 /datum/job/spanish/cnat/serg/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_HIGH, "dexterity" = STAT_NORMAL, "swords" = STAT_HIGH, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
+/datum/job/spanish/cnat/serg/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/nationalist = slot_w_uniform,
+	/obj/item/clothing/head/ww2/german_fieldcap = slot_head,
+	/obj/item/weapon/radio/faction1 = slot_back,
+	/obj/item/weapon/storage/belt/smallpouches/gerbelt/officer = slot_belt)
 /datum/job/spanish/cnat/serg/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
-//radio
-	H.equip_to_slot_or_del(new /obj/item/weapon/radio/faction1(H), slot_back)
-//belt
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/smallpouches/gerbelt/officer(H), slot_belt)
+	equip_loadout(H)
 //weapons
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mp40/erma(H), slot_l_store)
@@ -449,19 +441,18 @@
 	max_positions = 5
 
 /datum/job/spanish/cnat/med/job_stats = list("strength" = STAT_NORMAL, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_MEDIUM_LOW, "pistol" = STAT_MEDIUM_LOW, "bows" = STAT_NORMAL, "medical" = STAT_VERY_HIGH, "machinegun" = STAT_NORMAL)
+/datum/job/spanish/cnat/med/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/nationalist = slot_w_uniform,
+	/obj/item/weapon/gun/projectile/pistol/mauser = slot_l_hand,
+	/obj/item/ammo_magazine/mauser = slot_r_store,
+	/obj/item/clothing/head/helmet/ww/adrianm26medic = slot_head,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt)
 /datum/job/spanish/cnat/med/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
-//head
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/mauser(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/mauser(H), slot_r_store)
-
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26medic(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/redcross/armband = new /obj/item/clothing/accessory/armband/redcross(null)
@@ -488,12 +479,13 @@
 	max_positions = 75
 
 /datum/job/spanish/cnat/rifle/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_NORMAL)
+/datum/job/spanish/cnat/rifle/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/nationalist = slot_w_uniform)
 /datum/job/spanish/cnat/rifle/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(40))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/helmet/ww/adrianm26(H), slot_head)
@@ -548,12 +540,13 @@
 	max_positions = 4
 
 /datum/job/spanish/cnat/tankist/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/spanish/cnat/tankist/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/spain/nationalist = slot_w_uniform)
 /datum/job/spanish/cnat/tankist/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/spain/nationalist(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(80))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_tanker(H), slot_head)

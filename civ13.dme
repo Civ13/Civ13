@@ -1376,6 +1376,7 @@
 #include "code\modules\materials\machine_parts.dm"
 #include "code\modules\materials\machine_slots.dm"
 #include "code\modules\materials\part_roles.dm"
+#include "code\modules\materials\pipe_materials.dm"
 #include "code\modules\materials\tool_materials.dm"
 #include "code\modules\materials\tool_speeds.dm"
 #include "code\modules\multiz\_stubs.dm"

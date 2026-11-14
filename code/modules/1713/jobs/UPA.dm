@@ -28,16 +28,14 @@
 	max_positions = 1
 
 /datum/job/civilian/ukrainian/upa_officer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
+/datum/job/civilian/ukrainian/upa_officer/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/upa/off = slot_w_uniform,
+	/obj/item/clothing/head/ww2/upa_cap_commander = slot_head)
 /datum/job/civilian/ukrainian/upa_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/upa/off(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/upa_cap_commander(H), slot_head)
+	equip_loadout(H)
 //back
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)
@@ -69,12 +67,13 @@
 	max_positions = 2
 
 /datum/job/civilian/ukrainian/upa_doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/ukrainian/upa_doctor/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/upa = slot_w_uniform)
 /datum/job/civilian/ukrainian/upa_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/upa(H), slot_w_uniform)
+	equip_loadout(H)
 
 //head
 	if (prob(50))
@@ -116,17 +115,15 @@
 	max_positions = 2
 
 /datum/job/civilian/ukrainian/sergeant_upa/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW, "stamina" = STAT_VERY_HIGH)
+/datum/job/civilian/ukrainian/sergeant_upa/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/upa = slot_w_uniform,
+	/obj/item/clothing/head/ww2/upa_cap_off = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/mp40 = slot_l_hand)
 /datum/job/civilian/ukrainian/sergeant_upa/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/upa(H), slot_w_uniform)
-
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/upa_cap_off(H), slot_head)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_l_hand)
+	equip_loadout(H)
 
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/rank/upa_sgt = new /obj/item/clothing/accessory/rank/upa_sgt(null)
@@ -162,12 +159,13 @@
 	max_positions = 15
 
 /datum/job/civilian/ukrainian/upa_infantry/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/ukrainian/upa_infantry/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/upa = slot_w_uniform)
 /datum/job/civilian/ukrainian/upa_infantry/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/upa(H), slot_w_uniform)
+	equip_loadout(H)
 //head
 	if (prob(70))
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/upa_pilotka(H), slot_head)

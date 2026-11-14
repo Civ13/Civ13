@@ -105,15 +105,15 @@
 	max_positions = 1
 
 /datum/job/civilian/ukrainian/occupation/upa_officer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
+/datum/job/civilian/ukrainian/occupation/upa_officer/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/civ1 = slot_w_uniform)
 /datum/job/civilian/ukrainian/occupation/upa_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "UPA"
 	H.nationality = "Ukrainian"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ1(H), slot_w_uniform)
+	equip_loadout(H)
 	if (prob(30))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
@@ -183,20 +183,19 @@
 	max_positions = 1
 
 /datum/job/civilian/ukrainian/occupation/upa_doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_MEDIUM_LOW, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_NORMAL, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MAX, "machinegun" = STAT_MEDIUM_LOW)
+/datum/job/civilian/ukrainian/occupation/upa_doctor/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/civ2 = slot_w_uniform,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/weapon/pen/reagent/sleepy = slot_l_ear)
 /datum/job/civilian/ukrainian/occupation/upa_doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "UPA"
 	H.nationality = "Ukrainian"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/weapon/pen/reagent/sleepy(H), slot_l_ear)
+	equip_loadout(H)
 	if (prob(40))
 		if (prob(50))
 			H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/sov_ushanka(H), slot_head)
@@ -422,6 +421,13 @@
 	max_positions = 1
 
 /datum/job/german/occupation/hauptsturmfuhrer/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_VERY_HIGH, "dexterity" = STAT_VERY_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_MAX, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_VERY_HIGH)
+/datum/job/german/occupation/hauptsturmfuhrer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss_officer = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt,
+	/obj/item/clothing/head/ww2/ss_cap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/waltherp38 = slot_l_hand)
 /datum/job/german/occupation/hauptsturmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
@@ -429,15 +435,7 @@
 	H.make_commander()
 	H.faction_perms = list(0,0,0,1)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	equip_loadout(H)
 	if (map.ID == MAP_STALINGRAD)
 		H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/coat/ww2/german_officer(H), slot_wear_suit)
 	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
@@ -483,6 +481,14 @@
 	max_positions = 1
 
 /datum/job/german/occupation/obersturmmfuhrer/job_stats = list("strength" = STAT_VERY_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_VERY_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/german/occupation/obersturmmfuhrer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss_officer = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt,
+	/obj/item/clothing/head/ww2/ss_cap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/waltherp38 = slot_l_hand,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_r_store)
 /datum/job/german/occupation/obersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
@@ -490,16 +496,7 @@
 	H.make_commander()
 	H.faction_perms = list(0,0,0,1)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/german/G1 = new/obj/item/weapon/key/german(null)
 	var/obj/item/weapon/key/german/officer/G2 = new/obj/item/weapon/key/german/officer(null)
@@ -539,6 +536,14 @@
 	max_positions = 1
 
 /datum/job/german/occupation/untersturmmfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_VERY_HIGH, "dexterity" = STAT_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_VERY_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_VERY_HIGH)
+/datum/job/german/occupation/untersturmmfuhrer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss_officer = slot_w_uniform,
+	/obj/item/clothing/gloves/thick/swat/officer = slot_gloves,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt,
+	/obj/item/clothing/head/ww2/ss_cap = slot_head,
+	/obj/item/weapon/gun/projectile/pistol/waltherp38 = slot_l_hand,
+	/obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars = slot_r_store)
 /datum/job/german/occupation/untersturmmfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
@@ -546,16 +551,7 @@
 	H.make_commander()
 	H.faction_perms = list(0,0,0,1)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss_officer(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/thick/swat/officer(H), slot_gloves)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars(H), slot_r_store)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/german/G1 = new/obj/item/weapon/key/german(null)
 	var/obj/item/weapon/key/german/officer/G2 = new/obj/item/weapon/key/german/officer(null)
@@ -595,21 +591,20 @@
 	max_positions = 4
 
 /datum/job/german/occupation/scharfuhrer/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_HIGH, "swords" = STAT_HIGH, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW, "machinegun" = STAT_HIGH)
+/datum/job/german/occupation/scharfuhrer/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss = slot_w_uniform,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt,
+	/obj/item/clothing/head/ww2/ss_cap = slot_head,
+	/obj/item/weapon/gun/projectile/submachinegun/mp40 = slot_belt,
+	/obj/item/weapon/gun/projectile/pistol/waltherp38 = slot_l_hand)
 /datum/job/german/occupation/scharfuhrer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
 	H.faction_perms = list(0,0,0,1)
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
-//head
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/ss_cap(H), slot_head)
-//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/submachinegun/mp40(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/waltherp38(H), slot_l_hand)
+	equip_loadout(H)
 	var/obj/item/weapon/storage/belt/keychain/KC = new/obj/item/weapon/storage/belt/keychain(H)
 	var/obj/item/weapon/key/german/G1 = new/obj/item/weapon/key/german(null)
 	KC.attackby(G1,H)
@@ -647,16 +642,16 @@
 	max_positions = 20
 
 /datum/job/german/occupation/schutzestaffel_soldaten/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_LOW)
+/datum/job/german/occupation/schutzestaffel_soldaten/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss = slot_w_uniform,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt)
 /datum/job/german/occupation/schutzestaffel_soldaten/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.civilization = "SS"
 	H.nationality = "SS"
 //shoes
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
+	equip_loadout(H)
 
 //head
 	if (prob(80))
@@ -891,21 +886,20 @@
 	max_positions = 4
 	allowed_maps = list(MAP_OCCUPATION)
 /datum/job/civilian/occupation/doctor/job_stats = list("strength" = STAT_MEDIUM_HIGH, "crafting" = STAT_MEDIUM_LOW, "rifle" = STAT_NORMAL, "dexterity" = STAT_NORMAL, "swords" = STAT_NORMAL, "pistol" = STAT_NORMAL, "bows" = STAT_NORMAL, "medical" = STAT_VERY_VERY_HIGH)
+/datum/job/civilian/occupation/doctor/job_loadout = list(
+	/obj/item/clothing/shoes/heavyboots/wrappedboots = slot_shoes,
+	/obj/item/clothing/under/ww2/civ2 = slot_w_uniform,
+	/obj/item/clothing/gloves/color/white = slot_gloves,
+	/obj/item/weapon/storage/firstaid/combat = slot_belt,
+	/obj/item/weapon/storage/firstaid/adv = slot_back,
+	/obj/item/clothing/suit/storage/jacket/doctor = slot_wear_suit,
+	/obj/item/roller_holder = slot_l_hand,
+	/obj/item/weapon/key/civ/paramedics = slot_l_store)
 /datum/job/civilian/occupation/doctor/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 	H.nationality = "none"
 	H.give_nationality_occupation()
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/heavyboots/wrappedboots(H), slot_shoes)
-//clothes
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/civ2(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/gloves/color/white(H), slot_gloves)
-//back
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/combat(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/adv(H), slot_back)
-	H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/doctor(H), slot_wear_suit)
-	H.equip_to_slot_or_del(new /obj/item/roller_holder(H), slot_l_hand)
-
-	H.equip_to_slot_or_del(new /obj/item/weapon/key/civ/paramedics(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/medal/pin/worker/medic = new /obj/item/clothing/accessory/medal/pin/worker/medic(null)
 	uniform.attackby(medic, H)
@@ -936,16 +930,18 @@
 	max_positions = 5
 	allowed_maps = list(MAP_OCCUPATION)
 /datum/job/civilian/occupation/collaborator/job_stats = list("strength" = STAT_HIGH, "crafting" = STAT_NORMAL, "rifle" = STAT_HIGH, "dexterity" = STAT_MEDIUM_LOW, "swords" = STAT_NORMAL, "pistol" = STAT_HIGH, "bows" = STAT_NORMAL, "medical" = STAT_MEDIUM_HIGH, "machinegun" = STAT_MEDIUM_HIGH)
+/datum/job/civilian/occupation/collaborator/job_loadout = list(
+	/obj/item/clothing/shoes/jackboots = slot_shoes,
+	/obj/item/clothing/under/ww2/german_ss = slot_w_uniform,
+	/obj/item/clothing/head/ww2/german_fieldcap = slot_head,
+	/obj/item/weapon/storage/belt/jap/camp_guard_SS = slot_belt,
+	/obj/item/ammo_magazine/c762x38mmR = slot_l_store)
 /datum/job/civilian/occupation/collaborator/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 
 	H.nationality = "none"
 	H.give_nationality_occupation()
-	H.equip_to_slot_or_del(new /obj/item/clothing/shoes/jackboots(H), slot_shoes)
-	H.equip_to_slot_or_del(new /obj/item/clothing/under/ww2/german_ss(H), slot_w_uniform)
-	H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/german_fieldcap(H), slot_head)
-	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/camp_guard_SS(H), slot_belt)
-	H.equip_to_slot_or_del(new /obj/item/ammo_magazine/c762x38mmR(H), slot_l_store)
+	equip_loadout(H)
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/armband/nsdap = new /obj/item/clothing/accessory/armband/nsdap(null)
 	var/obj/item/clothing/accessory/holster/hip/holsterh = new /obj/item/clothing/accessory/holster/hip(null)

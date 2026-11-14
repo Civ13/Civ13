@@ -2693,6 +2693,7 @@ RECIPE: /material/bamboo/,bamboo spear,/obj/item/weapon/material/spear,3,50,0,1,
 RECIPE: /material/bamboo/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
 RECIPE: /material/bamboo/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
 RECIPE: /material/bamboo/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
+RECIPE: /material/bamboo/,bamboo pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,bamboo
 
 //*******************************************************
 //*********************| IRON |**************************
@@ -2975,6 +2976,7 @@ RECIPE: /material/obsidian/,obsidian hand mirror,/obj/item/mirror/obsidian,2,150
 RECIPE: /material/copper/,Baghdad-style jar cell assembly,/obj/structure/battery,2,80,1,1,electrical,25,0,0,8,null
 RECIPE: /material/copper/,iron-copper voltaic-style pile,/obj/structure/battery/pile,5,120,1,1,electrical,95,0,0,8,null
 RECIPE: /material/lead/,lead-acid accumulator,/obj/structure/battery/lead_acid,5,150,1,1,electrical,105,0,0,8,null
+RECIPE: /material/lead/,lead pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,lead
 RECIPE: /material/wood/,wooden resource sieve,/obj/item/weapon/resource_sieve,4,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/stone/,stone lifting weights,/obj/structure/exercise,8,80,1,1,sports,30,0,0,8,null
 RECIPE: /material/wood/,agility and endurance course marker,/obj/structure/exercise/course,6,80,1,1,sports,30,0,0,8,null
@@ -2996,6 +2998,7 @@ RECIPE: /material/iron/,wind charger,/obj/structure/civ_generator/wind/charger,1
 RECIPE: /material/iron/,distribution transformer,/obj/structure/power_point/transformer,10,150,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,power meter,/obj/structure/power_meter,3,80,1,1,none,105,0,0,8,null
 RECIPE: /material/copper/,wall outlet,/obj/structure/power_point/outlet,2,40,1,1,none,105,0,0,8,null
+RECIPE: /material/copper/,copper pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,copper
 RECIPE: /material/wood/,utility pole,/obj/structure/power_point/pole,6,100,1,1,none,105,0,0,8,null
 RECIPE: /material/iron/,waterwheel generator,/obj/structure/civ_generator/waterwheel,15,200,1,1,none,105,0,0,8,null
 RECIPE: /material/steel/,wind turbine,/obj/structure/civ_generator/wind/turbine,30,300,1,1,none,105,0,0,8,null
@@ -3026,6 +3029,7 @@ RECIPE: /material/stone/,writing slate,/obj/item/weapon/writing_slate,2,60,0,1,p
 RECIPE: /material/wood/soft/,abacus,/obj/item/weapon/abacus,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,drafting set,/obj/item/weapon/drafting_set,2,100,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/iron/,lapping wheel,/obj/structure/lapping_wheel,4,120,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,iron pipe,/obj/structure/fluid_pipe/plain,1,40,1,1,plumbing,0,0,0,8,iron
 RECIPE: /material/wood/soft/,model kit,/obj/item/weapon/scholar_practice/model_kit,3,80,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/soft/,specimen box,/obj/item/weapon/scholar_practice/specimen_box,2,60,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/bone/,study bones,/obj/item/weapon/scholar_practice/study_bones,2,60,0,1,paper & printing,0,0,0,8,null
@@ -3038,6 +3042,11 @@ RECIPE: /material/wood/,comb,/obj/item/weapon/haircomb,1,40,0,1,none,0,0,0,8,nul
 RECIPE: /material/wood/,pack basket,/obj/item/weapon/storage/backpack/pack_basket,4,100,0,1,storage,0,0,0,8,null
 RECIPE: /material/wood/,pack frame,/obj/item/weapon/storage/backpack/pack_frame,6,120,0,1,storage,18,0,0,8,null
 RECIPE: /material/wood/,travois,/obj/structure/closet/crate/travois,8,150,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/,bored log pipe,/obj/structure/fluid_pipe/plain,2,60,1,1,plumbing,0,0,0,8,wood
+RECIPE: /material/wood/,hand pump,/obj/structure/fluid_pump/hand,6,150,1,1,plumbing,0,0,0,8,null
+RECIPE: /material/wood/,wooden water intake,/obj/structure/fluid_intake/wooden,4,100,1,1,plumbing,0,0,0,8,null
+RECIPE: /material/wood/,wooden cistern,/obj/structure/fluid_tank/cistern,10,150,1,1,plumbing,0,0,0,8,null
+RECIPE: /material/wood/,water trough,/obj/structure/water_tap/trough,4,100,1,1,plumbing,0,0,0,8,null
 RECIPE: /material/plastic/,black lipstick,/obj/item/weapon/lipstick/black,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/plastic/,purple lipstick,/obj/item/weapon/lipstick/purple,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/electronics/,video camera,/obj/item/video_camera,8,150,0,1,none,205,0,0,8,null
