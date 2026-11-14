@@ -100,6 +100,30 @@ var/naval_runtime_error = FALSE
 	tiller.end_voyage(null)
 	naval_check(isnull(tiller.voyage), "a voyage ends at the tiller")
 
+	// ---- Provisions, speed and happenings (voyage_provisions.dm) ----
+	naval_check(tiller.voyage_tile_time() == 600, "under sail a chart tile takes a minute")
+	var/obj/structure/closet/crate/hold = new(locate(64, 30, 2))
+	for (var/i = 1, i <= 3, i++)
+		new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(hold)
+	new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(locate(62, 30, 2))
+	naval_check(length(tiller.voyage_rations()) == 4, "food in her hold and on her deck counts as rations ([length(tiller.voyage_rations())])")
+	tiller.set_out(H, "scout", 4, 3, "faction:romeempire", 8, "the unknown water to the north")
+	var/list/fed = tiller.voyage
+	naval_check(fed["stores"] == 4 && fed["rations"] == fed["tiles"] * length(tiller.voyage_crew()), "she reckons the rations her crew need ([fed["stores"]] of [fed["rations"]])")
+	fed["ends"] = world.time + 3 * fed["tile"]
+	fed["rations"] = 10 // as if 2 crew sail 5 tiles on 4 rations
+	naval_check(tiller.voyage_event(fed) && ("short" in fed["events"]), "past halfway on short rations the crew are warned")
+	var/ends = fed["ends"]
+	tiller.voyage_storm(fed)
+	naval_check(fed["ends"] > ends || length(tiller.voyage_rations()) == 3, "a storm costs her time or something loose on deck")
+	fed["rations"] = 2
+	tiller.voyage_eat(fed)
+	naval_check(length(tiller.voyage_rations()) <= 2, "at landfall the crew eat what the voyage needed")
+	var/rations_left = length(tiller.voyage_rations())
+	tiller.voyage_eat(fed)
+	naval_check(length(tiller.voyage_rations()) == rations_left, "and only once")
+	tiller.end_voyage(null)
+
 	// ---- Landfall waits on the world directory ----
 	tiller.voyage = list("id" = "gaia-1-2", "kind" = "course", "x" = 1, "y" = 2, "owner" = "faction:romeempire", "label" = "a desert", "by" = "probe", "ends" = world.time - 10, "said" = null)
 	var/list/mine = tiller.voyage

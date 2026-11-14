@@ -14,7 +14,6 @@
 // ============================================================
 
 #define VOYAGE_TICK 100 // deciseconds between looks at the voyage
-#define VOYAGE_TILE_TIME 600 // deciseconds a chart tile takes
 #define VOYAGE_MIN_CREW 2
 #define VOYAGE_SCOUT_RANGE 4 // chart tiles out; she comes back the same way
 #define VOYAGE_WAIT_MAX 18000 // deciseconds she waits off an unready coast before turning back
@@ -170,12 +169,16 @@
 		var/list/target = voyage_scout_target(origin, scouting[choice])
 		if (!target)
 			return
+		if (!provisions_menu(H, VOYAGE_SCOUT_RANGE * 2))
+			return
 		set_out(H, "scout", target[1], target[2], owner, VOYAGE_SCOUT_RANGE * 2, "the unknown water to the [dir2text(scouting[choice])]")
 		return
 	var/list/land = lands[choice]
 	if (!islist(land))
 		return
 	if (WWinput(H, "Set out for [choice]? Everyone aboard sails with her; whoever stays ashore is left behind.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1 || !craft)
+		return
+	if (!provisions_menu(H, land[3]))
 		return
 	// Sailing on from a land nobody settled or claimed, the captain may give it up (land_choices.dm).
 	var/abandon = abandon_choice(H)
@@ -191,18 +194,23 @@
 		if (!answer || !answer["ok"])
 			to_chat(H, SPAN_WARNING("No word can be sent across the sea right now[answer && istext(answer["error"]) ? ": [html_encode(answer["error"])]" : ""]. She stays."))
 			return FALSE
+	var/tile = voyage_tile_time() // read before she stops: engines sail faster
+	var/crew = length(voyage_crew())
 	craft.set_speed(VESSEL_SPEED_STOP)
 	craft.set_anchor(TRUE)
-	voyage = list("id" = id, "kind" = kind, "x" = x, "y" = y, "owner" = owner, "label" = label, "by" = H.ckey, "ends" = world.time + tiles_time * VOYAGE_TILE_TIME, "minute" = world.time + VOYAGE_TILE_TIME, "said" = null)
-	log_game("Voyage: [key_name(H)] set the [craft.name] on a [kind] voyage to chart tile [x],[y] for [owner] (voyage [id], [length(voyage_crew())] crew).")
-	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [tiles_time] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
+	voyage = list("id" = id, "kind" = kind, "x" = x, "y" = y, "owner" = owner, "label" = label, "by" = H.ckey, "tile" = tile, "tiles" = tiles_time,
+		"ends" = world.time + tiles_time * tile, "minute" = world.time + tile, "said" = null,
+		"rations" = crew * tiles_time, "stores" = length(voyage_rations()), "events" = list())
+	log_game("Voyage: [key_name(H)] set the [craft.name] on a [kind] voyage to chart tile [x],[y] for [owner] (voyage [id], [crew] crew, [voyage["stores"]]/[voyage["rations"]] rations).")
+	var/minutes = round(tiles_time * tile / 600, 1)
+	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [max(1, minutes)] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
 	return TRUE
 
 /obj/structure/hull_tiller/proc/voyage_status_text()
 	if (!voyage)
 		return ""
-	var/left = round((voyage["ends"] - world.time) / VOYAGE_TILE_TIME, 1)
+	var/left = round((voyage["ends"] - world.time) / 600, 1)
 	if (left > 0)
 		return "The [craft.name] is at sea, bound for [voyage["label"]]: about [left] minute\s to go."
 	return voyage["kind"] == "course" ? "The [craft.name] stands off [voyage["label"]]. The coast is not yet in sight." : "The [craft.name] is coming back from [voyage["label"]]."
@@ -230,8 +238,9 @@
 		return
 	if (world.time < mine["ends"])
 		if (world.time >= mine["minute"])
-			mine["minute"] = world.time + VOYAGE_TILE_TIME
-			craft.crew_message(SPAN_NOTICE(voyage_status_text()))
+			mine["minute"] = world.time + mine["tile"]
+			if (!voyage_event(mine))
+				craft.crew_message(SPAN_NOTICE(voyage_status_text()))
 	else if (mine["kind"] == "scout")
 		voyage_scouted(mine)
 		return
@@ -248,6 +257,7 @@
 		asked.Insert(1, list(round((origin[1] + mine["x"]) / 2), round((origin[2] + mine["y"]) / 2)))
 	for (var/list/at in asked)
 		transfer_bridge.request("/chart/request", list("op" = "scout", "x" = at[1], "y" = at[2], "owner" = mine["owner"], "admin" = mine["by"]))
+	voyage_eat(mine)
 	log_game("Voyage: the [craft.name] came back from scouting chart tile [mine["x"]],[mine["y"]] (voyage [mine["id"]]).")
 	end_voyage(SPAN_NOTICE("The [craft.name] is back from [mine["label"]]. What her crew saw goes on your chart within a minute."))
 
@@ -270,6 +280,7 @@
 		if (!peer || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			problem = "The coast is not yet in sight."
 		else
+			voyage_eat(mine) // what she ate at sea stays behind
 			problem = cross(id, null, mine["id"])
 			if (!problem)
 				if (mine["abandon"])
@@ -285,7 +296,6 @@
 	return FALSE
 
 #undef VOYAGE_TICK
-#undef VOYAGE_TILE_TIME
 #undef VOYAGE_MIN_CREW
 #undef VOYAGE_SCOUT_RANGE
 #undef VOYAGE_WAIT_MAX
