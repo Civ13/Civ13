@@ -52,7 +52,7 @@ def action_error(action):
                 return {"recipe": "recipe", "direction": "direction", "intent": "intent"}.get(key, "slot")
         elif rule == "entity_id":
             if not isinstance(value, str) or not IDENT.fullmatch(value):
-                return "slot" if kind == "equip" else "recipe" if kind == "craft" else "target"
+                return "target"
         elif rule == "speech_160":
             if (not isinstance(value, str) or not value.strip() or len(value) > 160
                     or any(ord(c) < 32 or ord(c) == 127 or c in "*^:;<>" for c in value)):

@@ -752,11 +752,17 @@
 /obj/structure/bakelizer/proc/refine()
 	if (!powered || !active)
 		return
-	if (volume <= 0)
-		volume = 0
+	if (volume < 5)
+		if (volume < 0)
+			volume = 0
+		active = FALSE
+		powered = FALSE
+		if (powersource)
+			powersource.update_power(-powerneeded,1,src)
+		update_icon()
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
 		return
-	else if (volume >= 5)
+	else
 		volume-=5
 		plastic+=1
 		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."

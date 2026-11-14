@@ -87,6 +87,8 @@ class ExpeditionSlotTests(unittest.TestCase):
         world = json.loads((self.slot / slots.WORLD_FILE).read_text())
         self.assertEqual(('DESERT', 'COASTAL_PLAIN', 'TINY', '3,4'), (world['biome'], world['land_type'], world['size'], world['key']))
         self.assertEqual(['camel'], world['slot_world']['game'])
+        for name, place in slots.TERRAIN_FILES:
+            self.assertFalse((self.slot / place).exists(), 'a land made without terrain files stays flat')
         state = slots.status(self.group)['far1']
         self.assertEqual(('LAND', '3,4'), (state['state'], state['key']))
 
@@ -122,8 +124,12 @@ class ExpeditionSlotTests(unittest.TestCase):
         self.assertEqual('FREE', record['state'])
         self.assertEqual(['land', 'archive'], [h['event'] for h in record['history']])
         self.assertTrue(Path(record['history'][0]['land_dir']).is_dir(), 'the land folder is kept')
+        (self.slot / 'config').mkdir(exist_ok=True)
+        (self.slot / 'config/expedition_heights.txt').write_text('the last land')
         shard_group.place_map(self.group, self.region, self.slot)
         self.assertFalse((self.slot / slots.WORLD_FILE).exists())
+        for name, place in slots.TERRAIN_FILES:
+            self.assertFalse((self.slot / place).exists(), 'a free slot keeps no land\'s hills')
         self.give('5,6')  # the next land
 
     def test_an_archived_land_is_deleted_after_7_days(self):
@@ -296,6 +302,11 @@ class ExpeditionSlotTests(unittest.TestCase):
         world = slots.read_slot(self.group, 'far1')['world']
         self.assertEqual('/area/caribbean/nomads/desert', world['area'])
         self.assertIn('/obj/map_metadata/nomads/expedition', Path(answer['map']).read_text())
+        shard_group.place_map(self.group, self.region, self.slot)
+        for name, place in slots.TERRAIN_FILES:
+            self.assertEqual((Path(answer['map']).parent / name).read_bytes(), (self.slot / place).read_bytes())
+        heights = (self.slot / 'config/expedition_heights.txt').read_text().split('\n')
+        self.assertEqual(['civ13-terrain-heights 2', 'size 96 96', 'z 2'], heights[:3])
 
 
 if __name__ == '__main__':

@@ -1632,7 +1632,6 @@ var/global/list/human_face_icon_cache = list()
 			continue
 		if (O.wounds.len == 0)
 			continue
-		DD.overlays.Cut()
 		for (var/datum/wound/W in O.wounds)
 			if (W.bandaged && W.created+4800 >= world.time)
 				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")

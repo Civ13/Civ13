@@ -632,7 +632,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 			if (mob.m_intent == "proning")
 				mob.prone = TRUE
-				mob.facing_dir = dir
+				mob.facing_dir = mob.dir
 				mob.dir = prone_facing_dir(mob.dir)
 			else
 				mob.prone = FALSE
@@ -744,7 +744,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	if (mob.m_intent == "proning")
 		mob.prone = TRUE
-		mob.facing_dir = dir
+		mob.facing_dir = mob.dir
 		mob.dir = prone_facing_dir(mob.dir)
 	else
 		mob.prone = FALSE

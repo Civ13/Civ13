@@ -206,7 +206,7 @@
 		return
 	..()
 
-/obj/item/weapon/gun/projectile/shotgun/coachgun/unload_ammo(mob/user, var/allow_dump=1)
+/obj/item/weapon/gun/projectile/shotgun/mts225/unload_ammo(mob/user, var/allow_dump=1)
 	if (!open)
 		to_chat(user, "<span class='notice'>You need to release the cylinder of \the [src] first!</span>")
 		return

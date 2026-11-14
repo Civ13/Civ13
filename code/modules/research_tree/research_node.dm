@@ -1974,9 +1974,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/drill/sifter/panner" = "electricity",
 		"/obj/structure/drill/stamp_mill" = "electricity",
 		"/obj/item/weapon/resource_sieve" = "basic_tools",
-		// --- primitive_construction (24) ---
+		// --- primitive_construction (25) ---
 		"/obj/covers/fancywood" = "primitive_construction",
 		"/obj/covers/straw_wall" = "primitive_construction",
+		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
 		"/obj/covers/tatami_dark" = "primitive_construction",
 		"/obj/covers/tatami_dark_vertical" = "primitive_construction",

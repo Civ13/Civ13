@@ -699,14 +699,14 @@
 	return ..()
 
 /obj/item/stack/material/woodplank/update_icon()
-	if (amount >= 50)
-		icon_state = "[base_icon]-50"
-	else if (amount >= 100)
-		icon_state = "[base_icon]-100"
+	if (amount >= 200)
+		icon_state = "[base_icon]-200"
 	else if (amount >= 150)
 		icon_state = "[base_icon]-150"
-	else if (amount >= 200)
-		icon_state = "[base_icon]-200"
+	else if (amount >= 100)
+		icon_state = "[base_icon]-100"
+	else if (amount >= 50)
+		icon_state = "[base_icon]-50"
 	else
 		icon_state = "[base_icon]"
 

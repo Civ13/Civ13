@@ -241,12 +241,6 @@
 					attack_message = "[H] went for [src]'s [affecting.name] but was blocked!"
 					miss_type = 2
 					adaptStat("dexterity", 1)
-				var/hitcheck = rand(0, 9)
-				if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
-					var/obj/item/organ/external/head/U = affecting
-					if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
-						M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
-											"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				// See what attack they use
 				var/datum/unarmed_attack/attack = H.get_unarmed_attack(src, hit_zone)
@@ -266,6 +260,15 @@
 
 				if (miss_type)
 					return FALSE
+
+				// Only a landed, full-force strike can knock out teeth (#5324).
+				if (!attack.deal_halloss)
+					var/hitcheck = rand(0, 9)
+					if (istype(affecting, /obj/item/organ/external/head) && prob(hitcheck * (hit_zone == "mouth" ? 5 : TRUE))) //MUCH higher chance to knock out teeth if you aim for mouth
+						var/obj/item/organ/external/head/U = affecting
+						if (U.knock_out_teeth(get_dir(H, src), round(rand(28, 38) * ((hitcheck*2)/100))))
+							M.visible_message("<span class='danger'>Some of [src]'s teeth sail off in an arc!</span>", \
+												"<span class='userdanger'>Some of your teeth sail off in an arc!</span>")
 
 				var/real_damage = rand_damage
 				real_damage += attack.get_unarmed_damage(H)
@@ -313,7 +316,7 @@
 					tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 				var/obj/item/organ/external/affecting = get_organ(ran_zone(tgtm))
 
-				var/list/holding = list(get_active_hand() = 40, get_inactive_hand = 20)
+				var/list/holding = list(get_active_hand() = 40, get_inactive_hand() = 20)
 
 				//See if they have any guns that might go off
 				for (var/obj/item/weapon/gun/W in holding)

@@ -41,6 +41,10 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'pulled_punches': {'files': ('tests/pulled_punches/test_pulled_punches.py',), 'paths': (
+        'tests/pulled_punches/',), 'shared_paths': (
+        'code/game/mob/living/carbon/human/human_attackhand.dm',
+        'code/game/mob/living/carbon/human/unarmed_attack.dm')},
     # Stdlib-only: compost bins keep their stock through a save of a running world (#5292).
     'compost_save': {'files': ('tests/compost_save/test_compost_save.py',), 'paths': (
         'tests/compost_save/',), 'shared_paths': ('code/modules/1713/production.dm',)},
@@ -1856,6 +1860,9 @@ SUITES = {
         'shared_paths': ('scripts/build-crafting-atlas.py', 'code/game/mob/crafting_atlas_tgui.dm', 'UI/crafting-atlas.json', 'civ13.dme',
                          'code/modules/magic/')},
     # Source and injected-help contracts only; this suite does not run DM.
+    'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
+        'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
+        'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
