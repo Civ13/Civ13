@@ -30,9 +30,20 @@ class PaintingsTest(unittest.TestCase):
         text = source()
         used = set(re.findall(r'icon_state = "([^"]+)"', text)) | set(re.findall(r'frame_state = "([^"]+)"', text))
         used |= {'easel_canvas'}
-        self.assertTrue(used)
+        gallery = {'gallery', 'gallery_wide'}
+        self.assertTrue(gallery <= used)
+        used -= gallery
         for state in used:
             self.assertIn(state, obj)
+        self.assertEqual(states('icons/obj/paintings_gallery.dmi'), {'gallery': '1', 'gallery_wide': '1'})
+        sheet = Image.open(ROOT / 'icons/obj/paintings_gallery.dmi').convert('RGBA')
+        self.assertEqual(sheet.size[1] % 64, 0)
+        for i, (left, top, w, h) in enumerate(((4, 4, 56, 56), (4, 36, 56, 24))):
+            tile = sheet.crop((i * 64, 0, i * 64 + 64, 64))
+            for x in range(left, left + w):
+                for y in range(top, top + h):
+                    self.assertEqual(tile.getpixel((x, y))[3], 0)
+            self.assertGreater(tile.getpixel((left - 1, top + 3))[3], 0)
         self.assertEqual(states('icons/mob/paintings.dmi'), {'locket': '4'})
 
     def test_art_windows_match_the_sprites(self):

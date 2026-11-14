@@ -19,12 +19,13 @@ here launches the game. Run it with `python3 -m tools.procedural_maps land`.
 import hashlib
 import json
 import re
+from math import isqrt
 import time
 from copy import deepcopy
 from pathlib import Path
 
 from .bundle import write_bundle
-from .configuration import oceanic_preset, port_surface_preset, validate_config
+from .configuration import relief_preset, validate_config
 from .dmm_export import TREES
 from .generator import generate
 from .io import json_text, new_output
@@ -34,7 +35,7 @@ from .repo_source import read_source
 from .source_audit import parse_classic
 from .validator import MAX_SIDE, unchanged
 
-LAND_VERSION = "civ13-expedition-land/1"
+LAND_VERSION = "civ13-expedition-land/2"
 MAX_ATTEMPTS = 8
 # A land's world holds both planes of its map. The largest world measured on
 # BYOND 516.1688 so far is about 1.04 million cells (the Americas drafts: a
@@ -150,30 +151,67 @@ def template_errors(t):
     return problems
 
 
+# Per land type: mountain and hill shares of the land (percent), rivers (per
+# mille of land), lake sites per 100,000 land tiles, wetland (percent of land)
+# and how broken the coast is (1 smooth .. 3 fjords).
+LAND_RELIEF = {
+    "COASTAL_PLAIN": dict(mountain=[0, 1], hill=[3, 6], river=[14, 20], lakes=[5, 9], swamp=[0, 0], rough=2),
+    "RIVER_DELTA": dict(mountain=[0, 0], hill=[1, 3], river=[26, 34], lakes=[6, 10], swamp=[1, 3], rough=2),
+    "HIGHLANDS": dict(mountain=[8, 12], hill=[12, 18], river=[14, 20], lakes=[8, 12], swamp=[0, 0], rough=2),
+    "PLATEAU": dict(mountain=[3, 5], hill=[16, 22], river=[10, 16], lakes=[4, 8], swamp=[0, 0], rough=1),
+    "FJORD_COAST": dict(mountain=[6, 10], hill=[8, 12], river=[14, 20], lakes=[6, 10], swamp=[0, 0], rough=3),
+    "MARSH": dict(mountain=[0, 0], hill=[1, 3], river=[18, 26], lakes=[10, 16], swamp=[4, 8], rough=2),
+    "ARCHIPELAGO": dict(mountain=[1, 3], hill=[4, 8], river=[10, 16], lakes=[10, 16], swamp=[0, 0], rough=2),
+    "VOLCANIC_ISLE": dict(mountain=[7, 11], hill=[10, 14], river=[10, 16], lakes=[8, 12], swamp=[0, 0], rough=2),
+}
+DRY_BIOMES = ("DESERT", "ICE_SHEET")
+
+
+def island_count(t):
+    """Islands for an island land: more on a larger map, as [lo, hi]."""
+    side = isqrt(t["width"] * t["height"])
+    room = max(1, t["width"] * t["height"] // 1600)      # the generator wants 1,600 tiles an island
+    if t["land_type"] == "VOLCANIC_ISLE":
+        low, high = (1, 2) if side < 400 else (2, 3)
+    else:
+        low = max(3, min(12, side // 70))
+        high = min(16, low + 2)
+    return [min(low, room), min(high, room)]
+
+
 def land_config(t, attempt=0):
-    """The generator configuration for one attempt at a template's land."""
+    """The generator configuration for one attempt at a template's land. Every
+    share below is of the land's own area, so the same template rules hold at
+    any size (tools/procedural_maps/relief_generator.py)."""
     seed = "%s/a%d" % (t["seed"], attempt)
     skin = BIOME_SKINS[t["biome"]]
-    if t["land_type"] in ISLAND_TYPES:
-        c = oceanic_preset(seed, t["width"], t["height"])
-        c["ocean_layout"]["island_count"] = [3, 5] if t["land_type"] == "ARCHIPELAGO" else [2, 2]
-        c["water"]["lake_count"] = list(c["ocean_layout"]["island_count"])
-        c["starts"]["count"] = max(c["starts"]["count"], c["ocean_layout"]["island_count"][1])
-        # Islands always have a coast: the mix keeps COAST and scales the rest.
+    relief = LAND_RELIEF[t["land_type"]]
+    islands = t["land_type"] in ISLAND_TYPES
+    c = relief_preset(seed, t["width"], t["height"], sea_sides=tuple(sorted(set(t["coast"]))), islands=island_count(t) if islands else None)
+    layout = c["relief_layout"]
+    ridges = max(0, min(3, t["features"].get("ridges", 0)))
+    mountain = list(relief["mountain"])
+    if t["land_type"] in ("COASTAL_PLAIN", "RIVER_DELTA", "MARSH"):
+        # The chart's ridges count: 0 keeps the land flat, each ridge adds two percent.
+        mountain = [ridges * 2, ridges * 2 + 1] if ridges else [0, 0]
+    river, lakes = list(relief["river"]), list(relief["lakes"])
+    if t["biome"] in DRY_BIOMES:
+        river, lakes = [max(4, river[0] // 2), max(6, river[1] // 2)], [lakes[0] // 3, lakes[1] // 3]
+    swamp = list(relief["swamp"])
+    if t["biome"] == "SWAMP":
+        swamp = [max(swamp[0], 4), max(swamp[1], 8)]
+    layout.update(mountain_pct=mountain, hill_pct=list(relief["hill"]), river_permille=river, lakes_per_100k_land=lakes,
+                  swamp_pct=swamp, coast_roughness=relief["rough"],
+                  river_max_half_width=1 if t["width"] * t["height"] < 250000 else 2)
+    if islands:
+        # Islands always have a shore belt: the mix keeps COAST and scales the rest.
         mix = {"COAST": 30}
         for name, share in skin["mix"].items():
             mix[name] = mix.get(name, 0) + share * 70 // 100
         mix[max(skin["mix"], key=skin["mix"].get)] += 100 - sum(mix.values())
         c["biome_mix_pct"] = mix
-        c["mountains"]["range_count"] = [0, 1]
     else:
-        c = port_surface_preset(seed, t["width"], t["height"], sea_side=t["coast"][0])
         c["biome_mix_pct"] = dict(skin["mix"])
-        ridges = max(0, min(3, t["features"].get("ridges", 0)))
-        low = 1 if t["land_type"] in ("HIGHLANDS", "PLATEAU", "FJORD_COAST") else 0
-        c["mountains"]["range_count"] = [low, max(low, ridges)]
-        if t["land_type"] in ("MARSH",) or t["biome"] == "SWAMP":
-            c["water"]["swamp_pct"] = [2, 6]
     c["climate"] = dict(moisture_range=list(skin["moisture"]), temperature_c_range=list(skin["temperature"]))
     c["resources"]["density_per_1000_land_tiles"] = list(ORE_DENSITY[t["resources"]["ore"]])
     c["vegetation"]["suitable_site_density_pct"] = list(FERTILITY[t["resources"]["fertility"]])

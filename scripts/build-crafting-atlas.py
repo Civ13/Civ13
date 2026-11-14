@@ -109,6 +109,7 @@ def processing_only_material(typepath):
         typepath=typepath.rsplit('/',1)[0]
     return False
 joinery=json.loads((ROOT/"config/crafting/furniture_joinery.json").read_text())
+craft_needs=json.loads((ROOT/"config/craft_needs.json").read_text())
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -165,6 +166,11 @@ for p,s in files.items():
                 tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
                 if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
                 tool_notes+=' Tools reused; checked at end.'
+            need=craft_needs.get(canon(b))
+            if need:
+                ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]
+                if need['tools']:tool_notes+=' Tools held, worn or at your feet: '+' and '.join(need['tools'])+'; reused.'
+                if need['inputs']:tool_notes+=' Second materials held or at your feet; paid when the build completes.'
             add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):

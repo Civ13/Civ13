@@ -306,6 +306,9 @@ function changePrice() {
 		show_browse(user, null, "window=fuelpump_manage")
 		return
 
+	if (!find_company_member(user, owner))
+		return
+
 	if (href_list["action"] == "change_name_direct")
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")

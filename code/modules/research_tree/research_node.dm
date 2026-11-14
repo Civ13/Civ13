@@ -1085,6 +1085,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/automatic/stationary/mg3" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/fnmag" = "automatic_weapons",
 		"/obj/item/weapon/gun/projectile/automatic/stationary/nsvt" = "automatic_weapons",
+		"/obj/item/weapon/gun/projectile/automatic/stationary/autocannon" = "automatic_weapons",
 		"/obj/item/ammo_magazine/emptymagazine" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptymagazine/rifle" = "cartridge_ammo",
 		"/obj/item/stack/ammopart/casing/grenade" = "cartridge_ammo",
@@ -1401,7 +1402,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/surgery/retractor/bronze" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel" = "field_surgery",
 		"/obj/item/weapon/surgery/scalpel/bronze" = "field_surgery",
-		// --- fine_arts (39) ---
+		// --- fine_arts (42) ---
+		"/obj/item/canvas/gallery" = "fine_arts",
+		"/obj/item/canvas/gallery/wide" = "fine_arts",
+		"/obj/item/pigment/oil_paints" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar" = "fine_arts",
 		"/obj/item/clothing/mask/smokable/cigarette/cigar/havana" = "fine_arts",

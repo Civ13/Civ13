@@ -9,7 +9,7 @@ bullet_act
 
 /mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
-	if (stat != DEAD)
+	if (stat != DEAD && !(map && (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_OCCUPATION)))
 		return ..(W, user)
 
 	if (!istype(W) || !W.sharp)
@@ -31,7 +31,7 @@ bullet_act
 				return
 
 				 // Butchering mobs with a knife on harm intent.
-	if (W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (is_tool(W, TOOL_KNIFE)))
+	if (stat == DEAD && W.sharp && !istype(W, /obj/item/weapon/reagent_containers) && user.a_intent == I_HARM && !grabbed_by_user && (is_tool(W, TOOL_KNIFE)))
 		if (stat == DEAD)
 			var/mob/living/human/H = user
 			if (istype(H))
@@ -131,6 +131,7 @@ bullet_act
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], working for [SW2.tgtcmp], please detain the suspect as soon as possible.</big>")
 					else
 						global_broadcast(FREQP,"<big>Attention, a warrant has been issued for [SW2.tgt], please detain the suspect as soon as possible.</big>")
+		return ..(W, user)
 
 	else if (map.ID == MAP_OCCUPATION)
 		var/mob/living/human/H = user
@@ -143,6 +144,7 @@ bullet_act
 				else
 					last_harmed = H
 					H.civilization = "Killer"
+		return ..(W, user)
 
 	else
 		return ..(W, user)
@@ -733,7 +735,7 @@ bullet_act
 
 		//set the dislocate mult less than the effective force mult so that
 		//dislocating limbs on disarm is a bit easier than breaking limbs on harm
-		attack_joint(affecting, I, effective_force, 0.5, blocked) //...but can dislocate joints
+		attack_joint(affecting, I, user, blocked) //...but can dislocate joints
 	else if(!..())
 		return 0
 

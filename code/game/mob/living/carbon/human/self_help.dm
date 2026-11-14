@@ -23,7 +23,7 @@
 
 // Why this person can't push themselves up right now, or null when they can.
 // ignore_cooldown is used while an attempt is already under way.
-/mob/living/human/proc/get_up_blocker(ignore_cooldown = FALSE)
+/mob/living/human/proc/get_up_blocker(ignore_cooldown = FALSE, ignore_stamina = FALSE)
 	if (stat)
 		return "You can't get up while you're out cold."
 	if (!weakened)
@@ -41,7 +41,7 @@
 		return "You can't get your legs under you."
 	if (shock_stage >= GET_UP_MAX_SHOCK)
 		return "The pain is too much to get up."
-	if (stats["stamina"][1] < GET_UP_STAMINA)
+	if (!ignore_stamina && stats["stamina"][1] < GET_UP_STAMINA)
 		return "You're too exhausted to get up."
 	if (!ignore_cooldown && (getting_up || world.time < next_get_up))
 		return "You need to catch your breath before trying again."
@@ -90,7 +90,7 @@
 			bar.update(world.time - start)
 		if (!weakened)
 			break // it wore off on its own
-		if (weakened > start_weakened || getBruteLoss() + getBurnLoss() > start_hurt + 5 || get_up_blocker(TRUE))
+		if (weakened > start_weakened || getBruteLoss() + getBurnLoss() > start_hurt + 5 || get_up_blocker(TRUE, TRUE))
 			. = FALSE
 			break
 	if (bar)

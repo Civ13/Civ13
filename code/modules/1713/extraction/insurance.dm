@@ -36,7 +36,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
+			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail" || owner == "_home_replica") continue
 			if (!revisions[owner]) return FALSE
 			count++
 			var/list/P = service.store.load_profile(owner)
@@ -54,7 +54,7 @@
 		for (var/name in files)
 			if (copytext(name, length(name), 0) != "/") continue
 			var/owner = copytext(name, 1, length(name))
-			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail") continue
+			if (owner == "_settlement" || owner == "_insurance" || owner == "_bot" || owner == "_mail" || owner == "_home_replica") continue
 			if (!service.store.valid_owner(owner)) return fail("Unknown account directory")
 			accounts += owner
 			var/datum/extraction_mail_store/mail = service.mail_service()

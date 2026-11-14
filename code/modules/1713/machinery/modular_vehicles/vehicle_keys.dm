@@ -59,12 +59,16 @@ var/global/datum/vehicle_key_service/vehicle_key_service = new
 		A.key_generation = 1
 		A.extraction_vehicle_part_id = id
 		var/list/P = store.load_profile(id)
-		if (!islist(P) || P["revision"] != 0) return null
+		if (!islist(P) || P["revision"] != 0)
+			unkey_constructed(A)
+			return null
 		P["vehicle_key_state"] = "pending"
 		P["key_generation"] = 1
 		P["operation"] = "construction"
 		P["key_history"] = list(list("operation" = "construction", "generation" = 1, "timestamp" = num2text(world.realtime, 20)))
-		if (!store.commit_profile(id, P)) return null
+		if (!store.commit_profile(id, P))
+			unkey_constructed(A)
+			return null
 		var/obj/item/vehicle_key/K = new(destination)
 		K.vehicle_id = id
 		K.key_generation = 1
@@ -73,8 +77,14 @@ var/global/datum/vehicle_key_service/vehicle_key_service = new
 		P["issued_key_id"] = K.extraction_item_id
 		if (!store.commit_profile(id, P))
 			qdel(K)
+			unkey_constructed(A)
 			return null
 		return K
+	// Undo the binding set at the start of issue_constructed, so a failed issue leaves the vehicle unkeyed and usable.
+	proc/unkey_constructed(obj/structure/vehicleparts/axis/A)
+		A.keyed_vehicle_id = null
+		A.key_generation = 0
+		A.extraction_vehicle_part_id = null
 
 /obj/structure/engine
 	var/obj/structure/vehicleparts/axis/key_axis

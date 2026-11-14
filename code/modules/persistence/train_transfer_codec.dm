@@ -272,14 +272,14 @@
 		i += 3
 	var/list/owners = list()
 	for(var/list/E in entities)
-		if(!islist(E) || !train_transfer_string(E["id"]) || E["id"] in ids || !train_transfer_number(E["segment"], 1, segments.len) || !train_transfer_number(E["slot"], 1, 3) || !(E["dir"] in cardinal) || !(E["anchored"] in list(FALSE, TRUE))) return null
+		if(!islist(E) || !train_transfer_string(E["id"]) || (E["id"] in ids) || !train_transfer_number(E["segment"], 1, segments.len) || !train_transfer_number(E["slot"], 1, 3) || !(E["dir"] in cardinal) || !(E["anchored"] in list(FALSE, TRUE))) return null
 		ids += E["id"]
 		var/list/S = segments[E["segment"]]
 		if(S["type"] != "/obj/structure/trains/platform" && E["slot"] != 2) return null
 		switch(E["kind"])
 			if("character")
 				var/list/P = region_travel_decode(E["payload"])
-				if(!P || P["owner"] in owners || P["party"] != M["party"]) return null
+				if(!P || (P["owner"] in owners) || P["party"] != M["party"]) return null
 				owners += P["owner"]
 			if("item")
 				if(!party_freight_entry_valid(E["payload"])) return null

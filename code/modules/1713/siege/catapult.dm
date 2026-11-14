@@ -202,12 +202,12 @@
 
 					var/highcheck = high
 					var/area/target_area = get_area(target)
-					if (target && target_area.location == AREA_INSIDE)
+					if (target && target_area && target_area.location == AREA_INSIDE)
 						highcheck = FALSE
 
 					if (v >= max_distance)
 						hit = TRUE
-					else if (target.density && !highcheck)
+					else if (target && target.density && !highcheck)
 						hit = TRUE
 					else if (target && !(target in range(1, get_turf(src))))
 						if (!highcheck)
