@@ -134,6 +134,10 @@
 	if (sleeping)
 		to_chat(src, SPAN_RED("You are already sleeping."))
 		return
+	// A sleep flag whose refresh loop has stopped leaves an awake body that Sleep
+	// would refuse forever; the player is evidently awake, so clear it.
+	if (inducedSSD)
+		inducedSSD = FALSE
 	var/found = FALSE
 	for (var/obj/structure/bed/B in get_turf(src))
 		if (B)
@@ -144,6 +148,12 @@
 	if (persistence_bed_return_enabled() && saved_bed_taken_here())
 		to_chat(src, SPAN_RED("This bed is assigned to someone else. Sleep in an unassigned bed or your own."))
 		return
+	if (persistence_bed_return_enabled())
+		var/refusal = saved_bed_sleep_refusal()
+		if (refusal)
+			to_chat(src, SPAN_RED(refusal))
+			log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
+			return
 	var/sleep_message = "Are you sure you want to sleep for a while? This takes two minutes. Your body stays here and can be harmed, but you get hungry much more slowly."
 	if (persistence_bed_return_enabled())
 		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
@@ -169,7 +179,11 @@
 							return
 						var/previous_bed = saved_bed_assignment()
 						if (!enter_saved_bed_sleep())
-							to_chat(src, SPAN_WARNING("Choose an available stationary bed and wait for world recovery to finish, then try Sleep again."))
+							var/refusal = saved_bed_sleep_refusal()
+							if (!refusal)
+								refusal = "You could not fall asleep here. Try Sleep again."
+							to_chat(src, SPAN_WARNING(refusal))
+							log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
 						else if (previous_bed == "elsewhere")
 							to_chat(src, SPAN_NOTICE("This is now your bed. Your previous bed is no longer assigned to you."))
 						else if (!previous_bed)
