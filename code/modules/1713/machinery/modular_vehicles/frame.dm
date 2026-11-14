@@ -98,7 +98,8 @@
 	if (axis)
 		if (user in range(1,src))
 			to_chat(user, "<span class='notice'>Current Weight: <b>[axis.get_weight()]</b>.</span>")
-			var/load_text = axis.uses_load_factor() ? axis.load_description() : null
+			// Vehicles outside the load factor describe nothing, except aircraft.
+			var/load_text = axis.load_description()
 			if (load_text)
 				to_chat(user, "<span class='notice'>[load_text]</span>")
 

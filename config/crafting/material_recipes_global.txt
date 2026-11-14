@@ -1425,6 +1425,7 @@ RECIPE: /material/bone/,bone dart,/obj/item/ammo_casing/chemdart/bone,2,30,0,1,n
 //**************************************************************
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
+RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
@@ -2296,6 +2297,8 @@ RECIPE: /material/steel/,tanning drum,/obj/structure/tanning_drum,10,200,1,1,eco
 RECIPE: /material/wood/,primitive saw mill,/obj/structure/sawmill,28,60,1,1,economy & production,15,0,0,8,null
 RECIPE: /material/wood/,potter's wheel,/obj/structure/workshop_machine/potters_wheel,6,120,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,brick mould bench,/obj/structure/workshop_machine/brick_bench,6,100,1,1,economy & production,18,0,0,8,null
+RECIPE: /material/wood/,glassblowing bench,/obj/structure/workshop_machine/glass_bench,6,120,1,1,economy & production,35,0,0,8,null
+RECIPE: /material/wood/,mason's saw,/obj/structure/workshop_machine/masons_saw,8,120,1,1,economy & production,35,0,0,8,null
 
 RECIPE: /material/wood/soft/,market stall,/obj/structure/vending/sales/market_stall,25,150,1,1,economy & production,24,0,0,8,null
 RECIPE: /material/wood/soft/,supply stall,/obj/structure/supplier,25,150,1,1,economy & production,24,0,0,8,null
@@ -2725,6 +2728,7 @@ RECIPE: /material/iron/,iron plough,/obj/item/weapon/plough/iron,4,120,0,1,tools
 RECIPE: /material/iron/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,fire hook,/obj/item/weapon/fire_hook,3,90,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,null
+RECIPE: /material/iron/,crowbar,/obj/item/weapon/crowbar,4,60,0,1,tools,36,0,0,8,null
 RECIPE: /material/iron/,chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,iron
 RECIPE: /material/iron/,trench shovel,/obj/item/weapon/material/shovel/trench,2,50,0,1,tools,14,0,0,8,null
 RECIPE: /material/iron/,wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,null
@@ -3048,3 +3052,25 @@ RECIPE: /material/steel/,magnetic torpedo,/obj/item/naval_torpedo/magnetic,16,28
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null
+//**| GENERATED TOOL MATERIAL VARIANTS: edit config/recipe_variants.json, then run scripts/recipe_variants.py --write |**
+RECIPE: /material/copper/,copper hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,copper
+RECIPE: /material/bronze/,bronze hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,bronze
+RECIPE: /material/steel/,steel hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,steel
+RECIPE: /material/bone/,bone chisel,/obj/item/weapon/chisel,4,140,1,1,tools,0,0,0,8,bone
+RECIPE: /material/copper/,copper chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,copper
+RECIPE: /material/bronze/,bronze chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,bronze
+RECIPE: /material/steel/,steel chisel,/obj/item/weapon/chisel/metal,8,160,1,1,tools,0,0,0,8,steel
+RECIPE: /material/bronze/,bronze wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,bronze
+RECIPE: /material/steel/,steel wrench,/obj/item/weapon/wrench,5,50,0,1,tools,18,0,0,8,steel
+RECIPE: /material/bronze/,bronze screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,18,0,0,8,bronze
+RECIPE: /material/steel/,steel screwdriver,/obj/item/weapon/screwdriver,2,50,0,1,tools,18,0,0,8,steel
+RECIPE: /material/copper/,copper saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,copper
+RECIPE: /material/bronze/,bronze saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,bronze
+RECIPE: /material/steel/,steel saw,/obj/item/weapon/saw,3,60,0,1,tools,36,0,0,8,steel
+RECIPE: /material/copper/,copper shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,copper
+RECIPE: /material/steel/,steel shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,steel
+RECIPE: /material/iron/,iron wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,iron
+RECIPE: /material/bronze/,bronze wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,bronze
+RECIPE: /material/bronze/,bronze crowbar,/obj/item/weapon/crowbar,4,60,0,1,tools,36,0,0,8,bronze
+RECIPE: /material/steel/,steel crowbar,/obj/item/weapon/crowbar,4,60,0,1,tools,36,0,0,8,steel
+//**| END GENERATED TOOL MATERIAL VARIANTS |**

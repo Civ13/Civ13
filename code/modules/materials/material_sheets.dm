@@ -645,7 +645,7 @@
 	splitting_in_progress = TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts cutting [src] into planks."))
 	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
-	var/completed = do_after(user, (hatchet ? 80 : 60)/user.getStatCoeff("strength"), src)
+	var/completed = do_after(user, (hatchet ? 80 : 60)/user.getStatCoeff("strength")/tool_speed(tool), src)
 	if (QDELETED(src))
 		return FALSE
 	splitting_in_progress = FALSE

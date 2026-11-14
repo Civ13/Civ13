@@ -22,6 +22,7 @@ _spec.loader.exec_module(adapter)
 
 ART = {'under': ('icons/mob/uniform.dmi', 'icons/obj/clothing/uniforms.dmi'),
        'suit': ('icons/mob/suit.dmi', 'icons/obj/clothing/suits.dmi'),
+       'head': ('icons/mob/head.dmi', 'icons/obj/clothing/hats.dmi'),
        'tailoring': ('icons/mob/tailoring.dmi', 'icons/obj/clothing/tailoring.dmi')}
 
 
@@ -169,6 +170,7 @@ class TailoringTests(unittest.TestCase):
         icons = (ROOT / 'code/game/mob/living/carbon/human/update_icons.dm').read_text()
         self.assertIn('standing.overlays += tailored_under.worn_design_layers()', icons)
         self.assertIn('standing.overlays += tailored_suit.worn_design_layers()', icons)
+        self.assertIn('standing.overlays += tailored_head.worn_design_layers()', icons)
 
     def test_pattern_book(self):
         self.assertIn('#define TAILORING_BOOK_MAX 20', SOURCE)
@@ -239,7 +241,8 @@ class TailoringTests(unittest.TestCase):
                                 outputs=[dict(id=path) for path, count in outputs]))
         routes = atlas.add_dressmaking({PATH: SOURCE}, add, records)
         self.assertEqual([route['outputs'] for route in routes],
-                         [['/obj/item/clothing/under/tailored'], ['/obj/item/clothing/suit/storage/jacket/tailored']])
+                         [['/obj/item/clothing/under/tailored'], ['/obj/item/clothing/suit/storage/jacket/tailored'],
+                          ['/obj/item/clothing/head/tailored']])
         self.assertIn('Weaving', routes[0]['conditions'])
         for timing in ('30', '60'):
             bad = SOURCE.replace('wait_for_tailoring(user, ' + timing + ')', 'wait_for_tailoring(user, 999)')

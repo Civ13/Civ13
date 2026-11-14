@@ -423,6 +423,7 @@
 		handle_defib_timer()
 	process_turret_roofs()
 	process_vehicle_roofs()
+	process_train_roofs()
 	process_static_roofs()
 	if (!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
@@ -1529,7 +1530,7 @@
 				if (faction_text == CIVILIAN && map.ID == MAP_OCCUPATION)
 					holder2.icon_state = ""
 
-				if(map.ID == MAP_CAMPAIGN || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+				if(map.campaign || map.ID == MAP_ROTSTADT || map.ID == MAP_BATTLE_SHIPS)
 					switch (squad)
 						if (4)
 							holder2.overlays += icon(holder2.icon,"squad_recon")
@@ -1582,7 +1583,7 @@
 						holder2.icon_state = ""
 					else
 						holder2.overlays += icon(holder2.icon,"nco")
-			if (map.ID == MAP_CAMPAIGN || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+			if (map.campaign || map.ID == MAP_OPERATION_FALCON || map.ID == MAP_VADSO_CITY)
 				if (original_job.is_commander)
 					to_chat(world, "<font color='green' size=4>[ckey] is now the <b>[capitalize(lowertext(faction_text))] Army</b> Commander!</font>")
 			if (original_job.is_medic)

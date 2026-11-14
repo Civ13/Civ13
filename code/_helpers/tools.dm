@@ -26,6 +26,8 @@
 	var/was_anchored = anchored
 	visible_message("<span class='warning'>[user] starts to [anchored ? "unsecure" : "secure"] [label] [anchored ? "from" : "to"] the ground.</span>")
 	playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
+	// A wrench in a better or worse metal changes the wait (tool_materials.dm).
+	delay = tool_work_time(user.get_active_hand(), delay)
 	if (!do_after(user, delay, src) || QDELETED(src) || anchored != was_anchored)
 		return FALSE
 	visible_message("<span class='warning'>[user] [anchored ? "unsecures" : "secures"] [label] [anchored ? "from" : "to"] the ground.</span>")

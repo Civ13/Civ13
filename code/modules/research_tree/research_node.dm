@@ -628,6 +628,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
+		"/obj/item/weapon/crowbar" = "iron_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools
@@ -1745,6 +1746,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
 		"/obj/structure/display_case" = "glassworking",
+		"/obj/structure/workshop_machine/glass_bench" = "glassworking",
 		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
 		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
 		"/obj/item/weapon/attachment/under/weapon_light" = "consumer_electronics",
@@ -2190,7 +2192,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (9) ---
+		// --- sanitation (10) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2200,6 +2202,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink" = "sanitation",
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
+		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
@@ -2254,6 +2257,7 @@ var/global/list/node_grid_col_cache = null
 		// --- stone_masonry (44) ---
 		"/obj/covers/cobblestone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
+		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
 		"/obj/covers/cobblestone/stairs" = "stone_masonry",
 		"/obj/covers/roads/sandstone" = "stone_masonry",
 		"/obj/covers/sandstone" = "stone_masonry",
@@ -2600,6 +2604,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
+		"/obj/item/clothing/head/tailored" = "weaving",
 		// --- workshops (25) ---
 		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",
