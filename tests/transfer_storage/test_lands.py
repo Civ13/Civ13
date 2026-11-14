@@ -1,0 +1,154 @@
+"""Land stages: the coordinator keeps each land's stage and sends it to every agent."""
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import threading
+import unittest
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, ROOT)
+from tools.transfer_storage.agent import make_server  # noqa: E402
+from tools.transfer_storage.coordinator import Coordinator, call  # noqa: E402
+from tools.transfer_storage.region import RegionStore  # noqa: E402
+
+TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40, 'gamma': 'c' * 40}
+
+
+class LandStageTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.stores, self.servers, self.urls = {}, {}, {}
+        for name in ('alpha', 'beta', 'gamma'):
+            store = RegionStore(os.path.join(self.tmp.name, name + '.sqlite'), name, 'g')
+            server = make_server(store, TOKENS[name])
+            threading.Thread(target=server.serve_forever, daemon=True).start()
+            self.stores[name], self.servers[name] = store, server
+            self.urls[name] = 'http://127.0.0.1:%d' % server.server_address[1]
+        self.db = os.path.join(self.tmp.name, 'coordinator.sqlite')
+        self.coordinator = Coordinator(self.db, 'g', 'alpha', bootstrap_new_group=True)
+        for name in self.stores:
+            self.coordinator.enroll(name, self.urls[name], TOKENS[name])
+        self.coordinator.homes_once()
+
+    def tearDown(self):
+        for name in list(self.servers):
+            self.servers[name].shutdown()
+            self.servers[name].server_close()
+            self.stores[name].close()
+        self.coordinator.close()
+        self.tmp.cleanup()
+
+    def lands(self, region):
+        answer = call(self.urls[region], TOKENS[region], '/lands')
+        self.assertTrue(answer.get('ok'), answer)
+        return answer['result']
+
+    def set_land(self, region, land, stage, paused=False, admin='val'):
+        return call(self.urls[region], TOKENS[region], '/land/set',
+                    {'region': land, 'stage': stage, 'paused': 1 if paused else 0, 'admin': admin})
+
+    def test_every_agent_learns_the_stages_and_unset_lands_are_closed(self):
+        seen = self.lands('gamma')
+        self.assertEqual('alpha', seen['mainland'])
+        self.assertEqual('MAINLAND', seen['lands']['alpha']['stage'])
+        self.assertEqual('CLOSED', seen['lands']['beta']['stage'])
+        self.assertEqual([], seen['pending'])
+
+    def test_an_admin_change_waits_for_the_pass_then_reaches_every_land(self):
+        self.assertTrue(self.set_land('alpha', 'beta', 'FRONTIER').get('ok'))
+        pending = self.lands('alpha')
+        self.assertEqual('CLOSED', pending['lands']['beta']['stage'])
+        self.assertEqual([{'region': 'beta', 'stage': 'FRONTIER', 'paused': False, 'admin': 'val'}], pending['pending'])
+        self.coordinator.homes_once()
+        for region in ('alpha', 'beta', 'gamma'):
+            entry = self.lands(region)['lands']['beta']
+            self.assertEqual(('FRONTIER', False, 'val'), (entry['stage'], entry['paused'], entry['by']))
+        self.assertEqual([], self.lands('alpha')['pending'])
+
+    def test_a_lands_later_change_wins_and_decided_requests_never_replay(self):
+        self.set_land('gamma', 'beta', 'COLONY')
+        self.set_land('gamma', 'beta', 'OPEN', paused=True)
+        self.coordinator.homes_once()
+        self.assertEqual(('OPEN', True), (self.coordinator.lands()['beta']['stage'], self.coordinator.lands()['beta']['paused']))
+        # Another admin corrects it from the coordinator; the old requests,
+        # already acknowledged, are gone and a later pass changes nothing.
+        self.coordinator.set_land('beta', 'FRONTIER', False, 'admin2')
+        self.coordinator.homes_once()
+        self.assertEqual('FRONTIER', self.lands('gamma')['lands']['beta']['stage'])
+        self.assertEqual([], self.stores['gamma'].account_requests()['land_requests'])
+
+    def test_bad_requests_are_refused(self):
+        self.assertFalse(self.set_land('alpha', 'beta', 'CAPITAL').get('ok'))
+        self.assertFalse(self.set_land('alpha', 'Beta!', 'OPEN').get('ok'))
+        self.assertFalse(self.set_land('alpha', 'alpha', 'OPEN').get('ok'), 'the mainland has no stage')
+        self.assertFalse(self.set_land('alpha', 'beta', 'OPEN', admin='Not A Key').get('ok'))
+        # A land the coordinator does not know is dropped at the pass.
+        self.assertTrue(self.set_land('alpha', 'nowhere', 'OPEN').get('ok'))
+        self.coordinator.homes_once()
+        self.assertNotIn('nowhere', self.lands('alpha')['lands'])
+        self.assertEqual([], self.lands('alpha')['pending'])
+
+    def test_a_stage_change_never_moves_a_home(self):
+        call(self.urls['alpha'], TOKENS['alpha'], '/account', {'ckey': 'val', 'op': 'claim'})
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
+        self.coordinator.set_land('beta', 'OPEN', False, 'val')
+        self.coordinator.homes_once()
+        self.assertEqual({'val': 'alpha'}, self.coordinator.homes())
+
+    def test_command_line_sets_and_prints_stages(self):
+        self.coordinator.close()
+        script = os.path.join(ROOT, 'tools', 'transfer_storage', 'coordinator.py')
+        out = subprocess.run([sys.executable, '-I', script, '--db', self.db, '--group', 'g', '--mainland', 'alpha',
+                              '--set-land', 'beta=colony,paused'], capture_output=True, text=True, check=True).stdout
+        self.assertEqual({'stage': 'COLONY', 'paused': True}, {k: json.loads(out)['beta'][k] for k in ('stage', 'paused')})
+        bad = subprocess.run([sys.executable, '-I', script, '--db', self.db, '--group', 'g', '--mainland', 'alpha',
+                              '--set-land', 'alpha=open'], capture_output=True, text=True)
+        self.assertNotEqual(0, bad.returncode)
+        self.coordinator = Coordinator(self.db, 'g', 'alpha')
+
+
+def read(path):
+    with open(os.path.join(ROOT, path), encoding='utf-8') as f:
+        return f.read()
+
+
+class LandStageSourceTests(unittest.TestCase):
+    """The game side: included, polled, shown and set only by admins."""
+
+    def setUp(self):
+        self.land = read('code/modules/persistence/land_stage.dm')
+        self.group = read('code/modules/persistence/shard_group.dm')
+
+    def test_included_after_trails_and_registered_as_an_admin_verb(self):
+        dme = read('civ13.dme')
+        self.assertLess(dme.index('region_trails.dm"'), dme.index('land_stage.dm"'))
+        self.assertIn('/datum/admins/proc/land_status,', read('code/modules/admin/admin_verbs.dm'))
+
+    def test_the_poll_loop_refreshes_and_the_panel_shows_the_stage(self):
+        loop = self.group[self.group.index('/datum/shard_group/proc/start_polling()'):]
+        loop = loop[:loop.index('/datum/shard_group/proc/start_saving()')]
+        self.assertIn('land_stages_refresh_due()', loop)
+        panel = self.group[self.group.index('/datum/shard_group/proc/panel_html()'):]
+        panel = panel[:panel.index('/datum/shard_group/proc/panel_admin_html()')]
+        self.assertEqual(2, panel.count('land_stage_column('))
+        self.assertIn('<th>Settled</th>', panel)
+
+    def test_setting_needs_admin_rights_after_every_prompt(self):
+        verb = self.land[self.land.index('/datum/admins/proc/land_status()'):]
+        self.assertGreaterEqual(verb.count('check_rights(R_ADMIN)'), 4)
+        self.assertIn('transfer_bridge.request("/land/set"', verb)
+        self.assertIn('"admin" = M.ckey', verb)
+
+    def test_only_lived_in_kinds_take_a_stage_and_the_mainland_is_fixed(self):
+        self.assertIn('return kind in list("SURFACE", "OCEANIC", "UNDERGROUND", "OTHER")', self.land)
+        stage = self.land[self.land.index('/proc/land_stage(id)'):]
+        self.assertLess(stage.index('return "MAINLAND"'), stage.index('return entry ? entry["stage"] : "CLOSED"'))
+        choices = self.land[self.land.index('/proc/land_stage_choices()'):]
+        self.assertIn('if(id == shard_group.mainland)', choices[:choices.index('/proc/land_stage_admin_html()')])
+
+
+if __name__ == '__main__':
+    unittest.main()
