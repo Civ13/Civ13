@@ -759,18 +759,17 @@ var/global/datum/external_relations/external_relations = new()
 	w_class = ITEM_SIZE_LARGE
 	opacity = FALSE
 	density = TRUE
-	var/health = 250
+	health = 250
 
 /obj/structure/anti_air_crate/New()
 	..()
 	overlays += image(icon = 'icons/obj/junk.dmi', icon_state = "o-ru")
 
-/obj/structure/anti_air_crate/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_DANGER("<big>\The [src] took too much damage and explodes!</big>"))
-		explosion(get_turf(src),0,1,1,1)
-		qdel(src)
-		return
+/obj/structure/anti_air_crate/break_message()
+	return "<big>\The [src] took too much damage and explodes!</big>"
+
+/obj/structure/anti_air_crate/on_break()
+	explosion(get_turf(src),0,1,1,1)
 
 /obj/structure/anti_air_crate/ex_act(severity)
 	switch(severity)

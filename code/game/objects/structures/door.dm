@@ -19,7 +19,7 @@
 	var/hardness = TRUE
 	var/basic_icon = "metal"
 
-	var/health = 400
+	health = 400
 	var/initial_health = 400
 	not_movable = TRUE
 	not_disassemblable = TRUE

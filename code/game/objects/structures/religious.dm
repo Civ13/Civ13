@@ -3,7 +3,7 @@
 	desc = "A gravestone made with polished stone."
 	icon = 'icons/obj/cross.dmi'
 	icon_state = "gravestone"
-	var/health = 100
+	health = 100
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -649,23 +649,8 @@ obj/structure/religious/monument
 	icon_state = "tribalmask[rand(1,2)]"
 
 /obj/structure/religious/attackby(obj/item/W as obj, mob/user as mob)
-	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	switch(W.damtype)
-		if ("fire")
-			health -= W.force * 0.3
-		if ("brute")
-			health -= W.force * 0.3
-
-	playsound(get_turf(src), 'sound/weapons/smash.ogg', 100)
-	user.do_attack_animation(src)
-	try_destroy()
+	weapon_structure_damage(W, user, 0.3, 0.3)
 	..()
-
-/obj/structure/religious/proc/try_destroy()
-	if (health <= 0)
-		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		qdel(src)
-		return
 
 /obj/structure/religious/totem/offerings
 	icon = 'icons/misc/support.dmi'

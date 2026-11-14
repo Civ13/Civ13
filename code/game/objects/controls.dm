@@ -154,8 +154,8 @@
 	anchored = TRUE
 	density = TRUE
 	var/open = FALSE
-	var/health = 600
-	var/maxhealth = 600
+	health = 600
+	maxhealth = 600
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	crushable = FALSE

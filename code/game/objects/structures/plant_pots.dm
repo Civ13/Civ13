@@ -4,7 +4,7 @@
 	icon_state = null
 	desc = "If you can see this, ping a @cotributor on the discord or a @sergeant"
 	anchored = FALSE
-	var/health = 20
+	health = 20
 	density = TRUE
 	opacity = FALSE
 	flammable = FALSE
@@ -478,13 +478,9 @@
 	visible_message("<span class='warning'>\The [src] is hit by \the [proj.name]!</span>")
 	try_destroy()
 
-/obj/structure/plant_pot/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/plant_pot/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/plant_pot/attack_hand(mob/user as mob)
 	if (stored_unit)

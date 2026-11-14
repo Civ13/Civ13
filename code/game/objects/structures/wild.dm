@@ -16,8 +16,8 @@ var/list/seed_list_jungle
 	anchored = TRUE
 	var/sways = FALSE
 	var/amount = 0 //how much wood to drop. 0 = none
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	layer = 3.2
 	flammable = TRUE
 	not_movable = TRUE
@@ -258,13 +258,9 @@ var/list/seed_list_jungle
 	try_destroy()
 	..()
 
-/obj/structure/wild/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>\The [src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/wild/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/wild/bullet_act(var/obj/item/projectile/proj)
 	if (proj.damage > 200 && prob(33)) // makes shrapnel unable to take down trees

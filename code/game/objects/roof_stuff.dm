@@ -477,7 +477,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	var/health = 100
+	health = 100
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -515,7 +515,7 @@
 	anchored = TRUE
 	opacity = FALSE
 	density = FALSE
-	var/health = 100
+	health = 100
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -653,41 +653,13 @@
 
 /obj/structure/mine_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		switch(W.damtype)
-			if ("fire")
-				health -= W.force * TRUE
-			if ("brute")
-				health -= W.force * 0.20
-		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-		user.do_attack_animation(src)
-		try_destroy()
+		weapon_structure_damage(W, user, 1, 0.2, 'sound/effects/wood_cutting.ogg')
 	..()
-
-/obj/structure/mine_support/proc/try_destroy()
-	if (health <= 0)
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
 
 /obj/structure/roof_support/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon))
-		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-		switch(W.damtype)
-			if ("fire")
-				health -= W.force * TRUE
-			if ("brute")
-				health -= W.force * 0.20
-		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-		user.do_attack_animation(src)
-		try_destroy()
+		weapon_structure_damage(W, user, 1, 0.2, 'sound/effects/wood_cutting.ogg')
 	..()
-
-/obj/structure/roof_support/proc/try_destroy()
-	if (health <= 0)
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
 
 /obj/structure/roof_support/Destroy()
 	for(var/obj/roof/R in range(3,get_turf(src)))

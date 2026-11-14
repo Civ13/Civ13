@@ -8,8 +8,8 @@
 	var/active = FALSE
 	density = TRUE
 	flammable = FALSE
-	var/health = 100
-	var/maxhealth = 100
+	health = 100
+	maxhealth = 100
 	not_movable = TRUE
 	not_disassemblable = TRUE
 	var/mob/living/human/stored_unit = null
@@ -115,13 +115,9 @@
 	try_destroy()
 	..()
 
-/obj/structure/TV/proc/try_destroy()
-	if (health <= 0)
-		if (stored_unit)
-			release_stored()
-		visible_message("<span class='danger'>[src] is broken into pieces!</span>")
-		qdel(src)
-		return
+/obj/structure/TV/on_break()
+	if (stored_unit)
+		release_stored()
 
 /obj/structure/TV/attack_hand(mob/user as mob)
 	if (stored_unit)

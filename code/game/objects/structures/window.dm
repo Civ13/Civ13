@@ -8,10 +8,9 @@
 	layer = 3.2//Just above doors
 	anchored = 1.0
 	flags = ON_BORDER
-	var/maxhealth = 14.0
+	maxhealth = 14.0
 	var/maximal_heat = T0C + 100 		// Maximal heat before this window begins taking damage from fire
 	var/damage_per_fire_tick = 2.0 		// Amount of damage per fire tick. Regular windows are not fireproof so they might as well break quickly.
-	var/health
 	var/ini_dir = null
 	var/state = 2
 	var/reinf = FALSE
@@ -445,7 +444,7 @@
 	icon_state = "windownew_frame"
 	layer = MOB_LAYER + 0.01
 	anchored = TRUE
-	var/health = 20
+	health = 20
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE

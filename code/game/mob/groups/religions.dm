@@ -357,7 +357,7 @@ obj/structure/altar
 	var/color1 = "#000000"
 	var/color2 = "#FFFFFF"
 	flammable = TRUE
-	var/health = 70
+	health = 70
 	var/session = FALSE
 /obj/structure/altar/New()
 	..()
@@ -414,11 +414,6 @@ obj/structure/altar
 	try_destroy()
 	..()
 
-/obj/structure/altar/proc/try_destroy()
-	if (health <= 0)
-		visible_message(SPAN_WARNING("[src] is broken into pieces!"))
-		qdel(src)
-		return
 
 
 obj/structure/altar/attack_hand(mob/living/human/H as mob)

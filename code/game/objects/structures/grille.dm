@@ -8,7 +8,7 @@
 	flags = CONDUCT
 	layer = 2.9
 	explosion_resistance = TRUE
-	var/health = 10 // 50 is waaaaaay to fucking high.
+	health = 10 // 50 is waaaaaay to fucking high.
 	var/destroyed = FALSE
 	var/hitsound = 'sound/effects/grillehit.ogg'
 	flammable = TRUE

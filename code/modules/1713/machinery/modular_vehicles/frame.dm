@@ -670,7 +670,7 @@
 	else
 		..()
 
-/obj/structure/vehicleparts/frame/proc/try_destroy()
+/obj/structure/vehicleparts/frame/try_destroy()
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
 	var/isnowopen = FALSE
 
