@@ -1039,6 +1039,10 @@ SUITES = {
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Dugout canoe log stages, sea rules and recipes: source contracts only.
+    'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
+        'paths': ('tests/dugout_canoe/',), 'shared_paths': (
+            'code/modules/1713/dugout_canoe.dm', 'icons/obj/vehicles/dugout_canoe.dmi')},
     'door_intents': {'files': ('tests/door_intents/test_door_intents.py', 'tests/door_intents/test_jail_keys.py'),
         'paths': ('tests/door_intents/',), 'shared_paths': (
             'code/game/objects/structures/door.dm',
