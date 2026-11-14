@@ -194,6 +194,8 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		return ..()
 	if (faction)
 		examine(user)
+		if (unclaim_parent(user))
+			unclaim_menu(user) // land_choices.dm
 		return
 	var/block = plant_block(user)
 	if (block)

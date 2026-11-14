@@ -94,6 +94,10 @@ reported in `<root>/expeditions/abandon/<slot>.json`: the pass stops the slot
 (it saves first), archives it and frees it. The coordinator has already moved
 any home there to the mainland. See [voyages](ship-voyage.md#settle-claim-or-abandon).
 
+An archived save is kept 7 days so an admin can restore it by hand. After
+that the host service deletes it, with the land folder it was built from
+unless a slot holds that land again (`prune_archives`, each `serve` pass).
+
 ## In game
 
 - The Regions panel calls a slot "land across the sea" and has no Join link for it.

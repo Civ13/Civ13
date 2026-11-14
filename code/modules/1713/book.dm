@@ -144,13 +144,13 @@
 	return
 
 /obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)
-	show_drawings(user)
 	var/display_snapshot
 	if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))
 		display_snapshot = stars(dat)
 	else
 		display_snapshot = dat
 	var/legacy_snapshot = "<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[display_snapshot]</BODY></HTML>"
+	show_drawings(user)
 	// Fixed presentation hook keeps isolated base-book fixtures independent.
 	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
 		return

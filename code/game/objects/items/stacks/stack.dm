@@ -816,7 +816,7 @@
 				customname = targetskull
 				qdelHandReturn(H.r_hand, H)
 
-	if (findtext(recipe.title, "gravestone"))
+	if (findtext(recipe.title, "gravestone") || findtext(recipe.title, "cairn"))
 		var/list/chosen = craft_product_options(user, recipe, options)
 		if (!chosen)
 			return

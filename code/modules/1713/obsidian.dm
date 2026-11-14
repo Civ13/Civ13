@@ -118,12 +118,11 @@ var/global/list/obsidian_volcano_cells = list()
 // here adds to a saved world and every boot shows the same outcrops.
 /turf/floor/dirt/dry_lava
 	var/tmp/obsidian_outcrop = FALSE
-	var/tmp/obsidian_left = OBSIDIAN_OUTCROP_NODULES
-	var/tmp/obsidian_regen_at = 0
+	var/tmp/datum/resource_stock/obsidian_stock = null // refills OBSIDIAN_OUTCROP_REGEN after it runs out
 	var/tmp/image/obsidian_overlay = null
 
 /turf/floor/dirt/dry_lava/persistence_runtime_var(key)
-	return key == "obsidian_outcrop" || key == "obsidian_left" || key == "obsidian_regen_at" || key == "obsidian_overlay" || ..()
+	return key == "obsidian_outcrop" || key == "obsidian_stock" || key == "obsidian_overlay" || ..()
 
 /turf/floor/dirt/dry_lava/New()
 	..()
@@ -153,17 +152,14 @@ var/global/list/obsidian_volcano_cells = list()
 		return ..()
 	if (!H.may_do_after)
 		return
-	if (obsidian_left <= 0 && world.time >= obsidian_regen_at)
-		obsidian_left = OBSIDIAN_OUTCROP_NODULES
-	if (obsidian_left <= 0)
+	if (!obsidian_stock)
+		obsidian_stock = new /datum/resource_stock(OBSIDIAN_OUTCROP_NODULES, OBSIDIAN_OUTCROP_REGEN, TRUE)
+	if (obsidian_stock.available() <= 0)
 		to_chat(H, SPAN_NOTICE("You have already pried loose all the glass you can reach here."))
 		return
 	to_chat(H, SPAN_NOTICE("You start prying obsidian out of the cooled lava..."))
-	if (!do_after(H, 50, src) || get_dist(H, src) > 1 || obsidian_left <= 0)
+	if (!do_after(H, 50, src) || get_dist(H, src) > 1 || !obsidian_stock.take())
 		return
-	obsidian_left--
-	if (obsidian_left <= 0)
-		obsidian_regen_at = world.time + OBSIDIAN_OUTCROP_REGEN
 	var/obj/item/weapon/obsidian_nodule/N = new /obj/item/weapon/obsidian_nodule(src)
 	H.put_in_hands(N)
 	to_chat(H, SPAN_NOTICE("You pry loose \a [N]."))
