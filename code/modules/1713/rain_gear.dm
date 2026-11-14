@@ -508,7 +508,7 @@
 	var/turf/T = get_turf(src)
 	if (seabed_diving_rating())
 		return FALSE
-	return (istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice) && !T.iscovered()) || flood_soaks(T)
+	return (is_liquid_water(T) && !T.iscovered()) || flood_soaks(T)
 
 /mob/living/human/verb/wring_out_clothes()
 	set name = "Wring Out Clothes"

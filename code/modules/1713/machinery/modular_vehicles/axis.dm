@@ -766,7 +766,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			turn_turfs |= source_turf
 			if (T.density)
 				return FALSE
-			if (ship && ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded)))
+			if (ship && !is_open_water(T))
 				return FALSE
 			var/list/todestroy = list()
 			for (var/obj/O in T)

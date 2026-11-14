@@ -58,7 +58,7 @@ var/global/list/naval_mines = list()
 /proc/naval_mine_lay_problem(turf/T)
 	if (!T)
 		return "There is nothing there."
-	if (!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice))
+	if (!is_liquid_water(T))
 		return "A mine can only be laid on open water."
 	if (vessel_at(T) || craft_at(T))
 		return "There is a hull there."

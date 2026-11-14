@@ -202,7 +202,7 @@
 				if ((!(I in transporting) || istype(I, /obj/item/ammo_casing)) && !istype(I, /obj/item/weapon/grenade))
 					qdel(I)
 
-			if ((!istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/beach/water/ice)) && !istype(T, /turf/floor/trench/flooded))
+			if (!is_open_water(T))
 				moving = FALSE
 				stopmovementloop()
 				return FALSE
@@ -312,7 +312,7 @@
 	if (!masts.len || !moving)
 		return
 	if(reverse)
-		if (!istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/beach/water) && !istype(get_turf(get_step(src,OPPOSITE_DIR(dir))), /turf/floor/trench/flooded))
+		if (!is_open_water(get_turf(get_step(src,OPPOSITE_DIR(dir)))))
 			visible_message("<span class='notice'>\The [src] crashes into \the [get_turf(get_step(src,dir))]!</span>")
 			moving = FALSE
 			stopmovementloop()

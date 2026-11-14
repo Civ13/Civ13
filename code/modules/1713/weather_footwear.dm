@@ -117,7 +117,7 @@
 /proc/footwear_wet_ground(turf/T)
 	if (!istype(T))
 		return FALSE
-	if (istype(T, /turf/floor/beach/water) && !istype(T, /turf/floor/beach/water/ice))
+	if (is_liquid_water(T))
 		return TRUE
 	if (istype(T, /turf/floor/trench/flooded))
 		return TRUE
