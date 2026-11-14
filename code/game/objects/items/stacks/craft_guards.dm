@@ -142,7 +142,11 @@ var/global/list/religious_work_rules = list(
 	if (!R)
 		return found
 	for (var/datum/craft_guard/G in craft_guard_list())
-		var/list/line = G.describe(H, R)
-		if (line)
+		for (var/list/line in G.describe_lines(H, R))
 			found[++found.len] = line
 	return found
+
+// Every line a guard reports. A guard with several requirements overrides this.
+/datum/craft_guard/proc/describe_lines(mob/living/human/H, datum/stack_recipe/R)
+	var/list/line = describe(H, R)
+	return line ? list(line) : null
