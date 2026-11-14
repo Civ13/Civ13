@@ -1671,7 +1671,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/toilet/outhouse" = "hygiene",
 		"/obj/structure/toilet/outhouse/female" = "hygiene",
 		"/obj/structure/toilet/outhouse/male" = "hygiene",
-		// --- imperial_architecture (44) ---
+		// --- imperial_architecture (46) ---
+		"/obj/structure/workshop_machine/pile_driver" = "imperial_architecture",
+		"/obj/item/weapon/bridge_span/timber" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/black" = "imperial_architecture",
 		"/obj/covers/decorative_marbletile/pink" = "imperial_architecture",
