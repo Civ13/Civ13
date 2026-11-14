@@ -15,7 +15,7 @@
 	not_disassemblable = TRUE
 
 /obj/structure/researchdesk/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
-	if (!map.civilizations || map.ID == MAP_NATIONSRP || map.ID == MAP_NATIONSRP_TRIPLE || map.ID == MAP_NATIONSRPMED || map.ID == MAP_NATIONSRP_WW2 || map.ID == MAP_NATIONSRP_COLDWAR || map.ID == MAP_NATIONSRP_COLDWAR_CMP || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_CIVILIZATIONS || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+	if (!map.civilizations || map.nationsrp || map.ID == MAP_NOMADS_PERSISTENCE_BETA || map.ID == MAP_CIVILIZATIONS || map.tribes)
 		return
 
 	if (!W)
@@ -48,7 +48,7 @@
 		if (world.time < map.age5_timer && map.custom_civs[H.civilization][1]+map.custom_civs[H.civilization][2]+map.custom_civs[H.civilization][3] >= (map.age4_top*3))
 			to_chat(H, "You are already too advanced. You can research again in [(map.age5_timer-world.time)/600] minutes.")
 			return
-	if (!map.civilizations || map.ID == MAP_TRIBES || map.ID == MAP_FOUR_KINGDOMS || map.ID == MAP_THREE_TRIBES)
+	if (!map.civilizations || map.tribes)
 		return
 	if (done == FALSE)
 		if (istype(W, /obj/item/stack))

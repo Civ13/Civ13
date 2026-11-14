@@ -300,7 +300,7 @@
 		if(reagents)
 			reagents.trans_to(V, rand(1,5))
 		if (!in_outhouse && T.is_plumbed())
-			qdel(V) // Flushed away, so it cannot be fished back out of the cistern.
+			T.flush_waste(V) // Flushed down the drain (sewers.dm), so it cannot be fished back out of the cistern.
 		else if (!in_outhouse)
 			V.forceMove(T)
 

@@ -47,7 +47,7 @@
 	if (ishuman(src))
 		var/mob/living/human/H = src
 		if ((H.werewolf || H.gorillaman) && H.body_build.name != "Default")
-			if (map && map.ID != MAP_TRIBES && map.ID != MAP_THREE_TRIBES && map.ID != MAP_FOUR_KINGDOMS && map.ID != MAP_NOMADS_NEW_WORLD)
+			if (map && !map.tribes && map.ID != MAP_NOMADS_NEW_WORLD)
 				to_chat(usr, SPAN_RED("You can't emote."))
 				return
 	if (say_disabled)	//This is here to try to identify lag problems

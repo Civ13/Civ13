@@ -15,9 +15,13 @@
 		..()
 		maxhealth = health
 
-/obj/item/weapon/New()
+// A plain tool built by a recipe row that names a material takes that material
+// (code/modules/materials/tool_materials.dm).
+/obj/item/weapon/New(newloc, crafted_material)
 	..()
 	force*=global_damage_modifier
+	if (tool_noun && istext(crafted_material))
+		set_tool_material(crafted_material)
 
 /obj/item/weapon/Bump(mob/M as mob)
 	spawn(0)

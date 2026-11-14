@@ -114,6 +114,11 @@
 		return S.refusal
 	var/span = (facing & (NORTH | SOUTH)) ? S.width : S.height
 	var/twin = max(S.width, S.height) == AIRCRAFT_TWIN_SPAN && min(S.width, S.height) == AIRCRAFT_TWIN_LENGTH
+	// Two engines on the wings are the later, all-metal design (aircraft_model_node()).
+	var/mob/living/human/builder = usr
+	if (twin && istype(builder) && map && !research_node_known(builder, aircraft_model_node("Twin-engine plane")))
+		var/datum/research_node/N = get_research_node(aircraft_model_node("Twin-engine plane"))
+		return "a twin-engine airframe needs [N ? N.name : "more"] research"
 	if (span != (twin ? AIRCRAFT_TWIN_SPAN : AIRCRAFT_ASSEMBLY_SPAN))
 		return twin ? "its wings would be [span] sections across; a twin-engine plane's wings run along the 5-section side" : "its wings would be [span] sections across; point the nose along the airframe's long side"
 	shape_airframe(S, facing)

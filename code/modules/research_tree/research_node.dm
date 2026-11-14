@@ -628,6 +628,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/medical/splint/wooden" = "herbalism",
 		// iron_tools
 		"/obj/item/weapon/saw" = "iron_tools",
+		"/obj/item/weapon/crowbar" = "iron_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
 		// machined_tools
@@ -2192,7 +2193,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (9) ---
+		// --- sanitation (10) ---
 		"/obj/structure/mirror" = "sanitation",
 		"/obj/structure/shower" = "sanitation",
 		"/obj/structure/shower/bathtub/big/bronze" = "sanitation",
@@ -2202,6 +2203,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sink" = "sanitation",
 		"/obj/structure/sink/kitchen" = "sanitation",
 		"/obj/structure/toilet" = "sanitation",
+		"/obj/structure/sewer_piece/drain/stone" = "sanitation",
 		// --- siege_engines (3) ---
 		"/obj/item/catapult_ball" = "siege_engines",
 		"/obj/item/weapon/siegeladder" = "siege_engines",
@@ -2603,6 +2605,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
 		"/obj/item/tailoring_project" = "weaving",
 		"/obj/item/clothing/under/tailored" = "weaving",
+		"/obj/item/clothing/head/tailored" = "weaving",
 		// --- workshops (25) ---
 		"/obj/structure/lapping_wheel" = "workshops",
 		"/obj/item/flashlight/lantern/bronze" = "workshops",

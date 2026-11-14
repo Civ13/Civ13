@@ -2191,7 +2191,8 @@
 	flammable = TRUE
 	not_movable = FALSE
 	not_disassemblable = FALSE
-	var/tmp/current = 0
+	// Saved directly so a save of a running world leaves the stock in place (#5292).
+	var/current = 0
 	var/tmp/composting = FALSE
 
 /obj/structure/compost/examine(mob/user)
@@ -2323,14 +2324,6 @@
 		composting = TRUE
 		spawn(rand(25,100))
 			compost()
-
-/obj/structure/compost/before_save()
-	. = ..()
-	if (nitrary_mode)
-		return
-	var/obj/item/O = new/obj/item/stack/ore(src.loc, current/10)
-	O.alpha = 0
-	current = 0
 
 /obj/structure/compost/after_load()
 	. = ..()
