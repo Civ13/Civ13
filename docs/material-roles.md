@@ -216,6 +216,59 @@ someone fitted come back with their wear, the built-in ones and worn-out ones
 do not. The standing clock and hand-held machines such as crossbows have no
 slots; slots live on `/obj/structure` only.
 
+## Pipes
+
+`code/modules/materials/pipe_materials.dm` makes `/obj/structure/fluid_pipe`
+one type in any material. A pipe stores `pipe_material` (a material name,
+"steel" by default) and nothing else; a recipe row's supplied material sets it
+through `New(loc, material_name)`. A steel pipe keeps the name and look it
+always had. `factory_pipes.dm` is wrapped, not edited.
+
+```dm
+pipe_pressure("bamboo")       // 0.55: share of a pump's flow the pipe can carry
+pipe_material_toxic("lead")   // TRUE: /material/var/toxic
+```
+
+Pressure is `round(sqrt(toughness / 100), 0.05)`, at least 0.25 and at most 1:
+
+| Pipe | Pressure |
+| --- | --- |
+| Lead | 45% |
+| Bamboo | 55% |
+| Bored log | 65% |
+| Copper | 75% |
+| Iron | 90% |
+| Steel | 100% |
+
+A network moves at the pressure of its weakest pipe. `/datum/fluid_network`
+surveys its pipes the first time its pumps run (`pressure`, `weakest`,
+`toxic_pipes`); networks are rebuilt as new datums whenever a pipe changes, so
+the survey is never stale and a step costs nothing extra.
+
+Lead is the only toxic pipe material. Each step a network with lead pipe
+moves liquid there is a 2% chance (`PIPE_TOXIN_CHANCE`) that one unit of lead
+goes into a tank, trough or tap on it; machines that take only their own feed
+refuse it. Examining any pipe on the network warns of the lead. Swallowed lead
+is now a slow poison (`/datum/reagent/lead/affect_blood`).
+
+`/obj/structure/fluid_pipe/plain` is the same pipe behind an earlier research
+gate (Basic Toolmaking), because recipes are gated by result type. Hand-made
+pipe comes with what it needs to be useful before electricity:
+
+| Piece | Type | Gate |
+| --- | --- | --- |
+| Hand pump | `/obj/structure/fluid_pump/hand` | Workshops; 6 wood and a shaft |
+| Wooden water intake | `/obj/structure/fluid_intake/wooden` | Cooperage |
+| Wooden cistern | `/obj/structure/fluid_tank/cistern` | Cooperage |
+| Water trough | `/obj/structure/water_tap/trough` | Cooperage |
+
+The hand pump counts as a running pump while someone works its handle (each
+pull keeps it going eight seconds) or while a turning prime mover stands next
+to it (`mechanical_drive_factor()`). It reuses the unused `pump_s` art in
+`icons/obj/watercloset.dmi`; the trough reuses `water_trough` and the cistern
+the large cask in `icons/obj/barrel.dmi`. Corrosion, clay pipe and plastic
+pipe are not modelled yet.
+
 ## Sparks
 
 A tool whose material has `sparks` set (iron, steel, flint) can set off a

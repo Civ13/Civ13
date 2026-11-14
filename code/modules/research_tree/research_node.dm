@@ -526,6 +526,7 @@ var/global/list/node_grid_col_cache = null
 		// basic_tools
 		// Stone Age hide working (scrape, wash, dry, tan) is basic toolmaking.
 		"/obj/item/stack/material/dryhide" = "basic_tools",
+		"/obj/structure/fluid_pipe/plain" = "basic_tools",
 		"/obj/item/stack/material/hairlesshide" = "basic_tools",
 		"/obj/item/stack/material/leather" = "basic_tools",
 		"/obj/item/stack/material/wethide" = "basic_tools",
@@ -638,6 +639,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/machine_part/spring" = "bronze_working",
 		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
 		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
+		"/obj/structure/fluid_pump/hand" = "workshops",
 		"/obj/structure/workshop_machine/lathe/engine" = "machined_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
@@ -1168,6 +1170,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bakelizer" = "combustion",
 		// --- cooperage (15) ---
 		"/obj/item/weapon/reagent_containers/glass/barrel" = "cooperage",
+		"/obj/structure/fluid_tank/cistern" = "cooperage",
+		"/obj/structure/fluid_intake/wooden" = "cooperage",
+		"/obj/structure/water_tap/trough" = "cooperage",
 		"/obj/item/weapon/storage/backpack" = "cooperage",
 		"/obj/item/weapon/storage/backpack/pack_frame" = "cooperage",
 		"/obj/item/weapon/storage/backpack/rucksack" = "cooperage",
