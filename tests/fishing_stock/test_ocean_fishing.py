@@ -48,10 +48,11 @@ class OceanFishing(unittest.TestCase):
 
     def test_stock_is_bounded_and_regrows(self):
         self.assertIn('#define OCEAN_FISH_MAX 3', self.text)
-        available = proc(self.text, '/proc/ocean_fish_available(')
-        self.assertIn('entry[1] = min(OCEAN_FISH_MAX, entry[1] + regained)', available)
-        take = proc(self.text, '/proc/ocean_fish_take(')
-        self.assertLess(take.index('ocean_fish_available(T) <= 0'), take.index('entry[1]--'))
+        # The regrowth arithmetic is the shared stock (tests/resource_stock).
+        stock = proc(self.text, '/proc/ocean_fish_stock_at(')
+        self.assertIn('new /datum/resource_stock(OCEAN_FISH_MAX, OCEAN_FISH_REGEN)', stock)
+        self.assertIn('return stock.available()', proc(self.text, '/proc/ocean_fish_available('))
+        self.assertIn('return stock.take()', proc(self.text, '/proc/ocean_fish_take('))
 
     def test_bait_is_loaded_from_raw_meat_or_fish_and_spent_per_cast(self):
         self.assertIn('istype(I, /obj/item/weapon/reagent_containers/food/snacks/meat)', self.text)

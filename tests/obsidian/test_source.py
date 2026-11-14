@@ -113,8 +113,9 @@ class ObsidianSource(unittest.TestCase):
             self.assertIn('..(', body, header)
 
     def test_runtime_turf_state(self):
-        for key in ('obsidian_outcrop', 'obsidian_left', 'obsidian_regen_at', 'obsidian_overlay'):
-            self.assertIn('var/tmp/%s' % key if key != 'obsidian_overlay' else 'var/tmp/image/obsidian_overlay', self.text)
+        decl = {'obsidian_overlay': 'var/tmp/image/obsidian_overlay', 'obsidian_stock': 'var/tmp/datum/resource_stock/obsidian_stock'}
+        for key in ('obsidian_outcrop', 'obsidian_stock', 'obsidian_overlay'):
+            self.assertIn(decl.get(key, 'var/tmp/%s' % key), self.text)
             self.assertIn('key == "%s"' % key, self.text)
 
     def test_glass_is_brittle(self):

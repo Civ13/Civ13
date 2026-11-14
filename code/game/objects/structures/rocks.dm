@@ -11,7 +11,7 @@
 	amount = 0
 	health = 20
 	maxhealth = 20
-	var/flint_amount = 5
+	var/tmp/datum/resource_stock/flint_stock = null // five flints, one back every 30 minutes
 	var/rocktype = "rock"
 
 /obj/structure/wild/rock/basalt
@@ -26,12 +26,10 @@
 		if (!H.may_do_after)
 			return
 		to_chat(H, "You start looking for some flint among the rocks...")
-		if (do_after(H, 50, H.loc) && flint_amount > 0)
+		if (do_after(H, 50, H.loc) && rock_flint_stock().take())
 			to_chat(H, "You find some flint.")
-			flint_amount--
 			var/obj/item/weapon/flint/newflint = new/obj/item/weapon/flint(src.loc)
 			H.put_in_hands(newflint)
-			flint_regen()
 		return
 	else
 		..()
@@ -53,11 +51,10 @@
 
 	..()
 
-/obj/structure/wild/rock/proc/flint_regen()
-	spawn(18000)
-		if (src && flint_amount < 5)
-			flint_amount++
-		return
+/obj/structure/wild/rock/proc/rock_flint_stock()
+	if (!flint_stock)
+		flint_stock = new /datum/resource_stock(5, 18000)
+	return flint_stock
 
 /obj/structure/wild/rock/New()
 	..()
