@@ -300,6 +300,7 @@ RECIPE: /material/leather/,seed collector,/obj/item/weapon/storage/seed_collecto
 RECIPE: /material/leather/,quiver,/obj/item/weapon/storage/backpack/quiver,3,60,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt satchel,/obj/item/weapon/storage/belt/leather,3,60,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt pouch,/obj/item/clothing/accessory/storage/belt_pouch,1,40,0,1,storage,0,0,0,8,null
+RECIPE: /material/leather/,leather cord necklace,/obj/item/clothing/accessory/necklace,1,30,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,leather belt,/obj/item/clothing/pouch_belt,1,40,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,shoulder belt,/obj/item/clothing/accessory/storage/baldric,2,50,0,1,storage,0,0,0,8,null
 RECIPE: /material/leather/,tool loop,/obj/item/clothing/accessory/storage/tool_loop,1,30,0,1,storage,0,0,0,8,null
@@ -1390,6 +1391,7 @@ RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,
 //*************************************************************
 
 RECIPE: /material/bone/,bone talisman,/obj/item/clothing/accessory/armband/talisman,2,75,0,1,none,0,0,0,3,null
+RECIPE: /material/bone/,bone bead necklace,/obj/item/clothing/accessory/necklace/bead,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,skull mask,/obj/item/clothing/mask/skullmask,5,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone helmet,/obj/item/clothing/head/helmet/bone,10,100,0,1,none,0,0,0,8,null
 RECIPE: /material/bone/,bone armor,/obj/item/clothing/suit/storage/jacket/bonearmor,10,170,0,2,none,0,0,0,8,null
@@ -1741,6 +1743,7 @@ RECIPE: /material/stone/,stone cart,/obj/structure/closet/crate/cart/stone,50,19
 
 //RENAISSANCE AGE COPPER CART//
 RECIPE: /material/copper/,copper cart,/obj/structure/closet/crate/cart/copper,30,190,1,1,logistics,80,0,0,3,null
+RECIPE: /material/copper/,copper chain necklace,/obj/item/clothing/accessory/necklace/copper,1,60,0,1,none,0,0,0,8,null
 //RENAISSANCE AGE COPPER CART//
 
 //NAPOLEONIC AGE BRONZE CART//
@@ -1836,6 +1839,7 @@ RECIPE: /material/gold/,large gold double doors,/obj/structure/simple_door/key_d
 //*****************| GOLD CLOTHING & ACCESSORIES |***************************
 
 RECIPE: /material/gold/,gold crown,/obj/item/clothing/head/helmet/gold_crown,3,135,0,1,none,25,0,0,8,null
+RECIPE: /material/gold/,gold chain necklace,/obj/item/clothing/accessory/necklace/gold,1,60,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold arm bangles,/obj/item/clothing/accessory/armband/armbangle/gold,2,95,0,1,none,0,0,0,8,null
 RECIPE: /material/gold/,gold watch,/obj/item/clothing/gloves/watch/goldwatch,6,200,0,1,none,110,60,0,8,null
 RECIPE: /material/gold/,gold medal,/obj/item/clothing/accessory/medal/gold,2,150,0,1,none,60,60,0,8,null
@@ -1854,6 +1858,7 @@ RECIPE: /material/gold/,gold sceptre,/obj/item/weapon/goldsceptre,3,105,0,1,none
 //************************************************************
 
 RECIPE: /material/silver/,silver coins,/obj/item/stack/money/silvercoin,1,35,0,1,none,0,0,0,8,null
+RECIPE: /material/silver/,silver chain necklace,/obj/item/clothing/accessory/necklace/silver,1,60,0,1,none,0,0,0,8,null
 
 RECIPE: /material/silver/,large silver double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/silver,5,100,1,1,none,18,0,0,8,null
 
