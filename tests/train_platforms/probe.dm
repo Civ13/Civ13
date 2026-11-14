@@ -278,7 +278,7 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/turf/T in platform_car_tiles(platform_segments(arm)))
 		for (var/obj/item/weapon/gun/projectile/automatic/stationary/S in T)
 			guns++
-	platform_check("armor/machine_guns", guns == 4)
+	platform_check("armor/no_free_guns", guns == 0)
 	qdel(bullet)
 
 	// The armored locomotive survives a direct hit.

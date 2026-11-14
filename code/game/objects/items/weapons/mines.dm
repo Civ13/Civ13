@@ -215,6 +215,8 @@
 
 /obj/item/mine/at/Crossed(AM as mob|obj)
 	if (isobserver(AM)) return
+	if (!anchored) return //If armed
+	if (triggered) return
 	if (istype(AM, /obj/item/projectile)) return
 	if (istype(AM, /obj/structure/vehicleparts/frame))
 		trigger(AM)

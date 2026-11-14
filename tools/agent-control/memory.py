@@ -139,7 +139,7 @@ class CharacterMemory:
         made = self.data.setdefault("made", {})
         made[key] = made.get(key, 0) + 1
         if len(made) > 300:
-            del made[min(made, key=made.get)]
+            del made[min((k for k in made if k != key), key=made.get)]
         self.dirty = True
         return made[key]
 

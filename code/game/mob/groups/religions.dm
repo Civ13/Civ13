@@ -550,15 +550,17 @@ obj/structure/altar/iron
 		if (religion != "none")
 			name = "[religion]'s banner"
 			desc = "This is a [religion] religion banner."
-			var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
-			overc.color = map.custom_religions[religion][6]
-			overlays += overc
-			var/image/overc1 = image("icon" = icon, "icon_state" = "wall_banner_2")
-			overc1.color = map.custom_religions[religion][5]
-			overlays += overc1
-			var/image/overs = image("icon" = icon, "icon_state" = "banner_[map.custom_religions[religion][4]]")
-			overs.color = map.custom_religions[religion][5]
-			overlays += overs
+			var/list/look = religion_look_data(religion)
+			if (look)
+				var/image/overc = image("icon" = icon, "icon_state" = "wall_banner_1")
+				overc.color = look[6]
+				overlays += overc
+				var/image/overc1 = image("icon" = icon, "icon_state" = "wall_banner_2")
+				overc1.color = look[5]
+				overlays += overc1
+				var/image/overs = image("icon" = icon, "icon_state" = "banner_[look[4]]")
+				overs.color = look[5]
+				overlays += overs
 		update_icon()
 		invisibility = 0
 

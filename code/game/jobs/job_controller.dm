@@ -744,7 +744,7 @@ var/global/datum/controller/occupations/job_master
 			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[DUTCH])
 		
 		if (map.faction_distribution_coeffs.Find(ITALIAN))
-			max_dutch = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
+			max_italian = ceil(relevant_clients * map.faction_distribution_coeffs[ITALIAN])
 
 		if (map.faction_distribution_coeffs.Find(JAPANESE))
 			max_japanese = ceil(relevant_clients * map.faction_distribution_coeffs[JAPANESE])
