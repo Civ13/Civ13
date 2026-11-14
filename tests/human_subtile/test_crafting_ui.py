@@ -70,12 +70,13 @@ def restore_crafting_projection(path, source):
         # Mining balance is a separately checked production change. Invert only
         # this exact body so the original crafting reference remains frozen.
         # Includes the independent flint nodule roll (tests/flint_mining), the
-        # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian) and
-        # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm).
+        # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
+        # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm) and
+        # the bauxite roll (tests/aluminium).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '3aaf8dce754c561509f011b990ecbc884a01b0d075ec5b971879c49a181a0a1a':
+        if hashlib.sha256(mining.encode()).hexdigest() != '4b2d78a45d5925dcca73682f1f6bab7c6f3b9e029662983d3814f9687401d821':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

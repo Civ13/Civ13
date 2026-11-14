@@ -6,6 +6,14 @@ from pathlib import Path
 import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
+# Frozen evidence fragments that a later deliberate refactor renamed, with the
+# current-source fragment that carries the same behavior. The frozen catalog
+# and its historical blobs stay byte-exact; only the current-source check maps.
+# #5267: the rock's five flints became a shared regrowing resource stock.
+CURRENT_FRAGMENT_SUCCESSORS={
+    'var/flint_amount = 5':'var/tmp/datum/resource_stock/flint_stock = null // five flints',
+    'flint_amount--':'rock_flint_stock().take()',
+}
 
 
 class ResourceProposalTests(unittest.TestCase):
@@ -45,7 +53,7 @@ class ResourceProposalTests(unittest.TestCase):
                 self.assertIn(evidence['anchor'],new,evidence['anchor'])
                 for fragment in evidence['required_source_fragments']:
                     self.assertIn(fragment,section(old),evidence['anchor'])
-                    self.assertIn(fragment,section(new),(evidence['anchor'],fragment))
+                    self.assertIn(CURRENT_FRAGMENT_SUCCESSORS.get(fragment,fragment),section(new),(evidence['anchor'],fragment))
     def test_no_native_resource_admission(self):
         d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
         self.assertFalse(d['automatic_abstract_to_native_mapping']);self.assertFalse(d['native_interactions_implemented'])
