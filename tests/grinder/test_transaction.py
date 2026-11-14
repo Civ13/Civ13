@@ -888,7 +888,7 @@ class GrinderAcquisition(unittest.TestCase):
         self.assertFalse(p.menu(row_until_cold_war, done=True, age=8))
         self.assertFalse(p.menu(row, done=False))
         self.assertFalse(p.menu(row, done=False, legacy=999))
-        self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)
+        self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power","galvanic_cells"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)
 
     def test_missing_or_wrong_exact_registration_is_detected(self):
         binding = '"' + CONSTRUCTED + '" = "electricity",'

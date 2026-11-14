@@ -995,6 +995,10 @@ SUITES = {
             'code/modules/research_tree/book_research.dm',
             'code/modules/research_tree/book_pages.dm',
             'code/modules/research_tree/research_bench.dm')},
+    # Research tree groundwork order: real-need prerequisites, skippable side nodes, civil free of military; offline only.
+    'research_tree_order': {'files': ('tests/research_tree_order/test_order.py',),
+        'paths': ('tests/research_tree_order/',), 'shared_paths': (
+            'code/modules/research_tree/research_node.dm',)},
     # Late research: node effects, field work, teams, rushing and ciphers on book-research worlds; offline only.
     'late_research': {'files': ('tests/late_research/test_contract.py',),
         'paths': ('tests/late_research/',), 'shared_paths': (

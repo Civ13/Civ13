@@ -40,7 +40,7 @@ The carrier lies bow north in the same fixture so the light plane, which is buil
 
 The probe's map metadata answers `is_node_done()` from a global toggle, so the research gate can be exercised without a faction.
 
-- **Research:** the Naval Aviation node needs Powered Flight and Submarines; the shipyard office recipe is gated on it.
+- **Research:** the Naval Aviation node needs Powered Flight and Wagons & Ships; the shipyard office recipe is gated on it.
 - **Office:** without research the placement refusal names the research and the missing cable but not the sea; with research only the cable. A carrier fits bow east or west on the sea north-east of the office; bow north it would run off the map; fit checks lay nothing down. Laying down costs 400 steel, 20 glass and 40 cable and leaves the ship anchored with empty bunkers; an office whose sea is under another ship lays nothing down.
 - **Bunkers:** a dry ship stops with the reason; pouring a barrel takes its diesel and petroleum and leaves the water; the bunkers hold 1000 units; a hop at full ahead burns 6 and the last hop stops the ship.
 - **Chart:** heading, telegraph, fuel, hops left, the map edge or rock ahead with the distance, and the last refusal.
